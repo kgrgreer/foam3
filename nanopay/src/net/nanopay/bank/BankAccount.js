@@ -656,7 +656,8 @@ foam.CLASS({
         this.__subContext__.ctrl.add(this.Popup.create().tag({
           class: 'foam.u2.DeleteModal',
           dao: this.subject.user.accounts,
-          data: this
+          data: this,
+          label: this.name
         }));
       }
     }

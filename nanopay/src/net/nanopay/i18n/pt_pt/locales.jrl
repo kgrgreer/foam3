@@ -1104,7 +1104,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.Sign
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.PEPHIORELATED.label",target:"O oficial de assinatura é considerado uma pessoa politicamente exposta?"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.PEPHIORELATED.help",target:"Conforme definido no item 7 da Carta-Circular Bacen 3430/2010 –'Para fins do disposto no § 1º do art. 4º da Circular nº3.461, de 2009, sãoexemplos de situações que caracterizam relacionamento próximo e acarretam o enquadramento de Cliente permanente como pessoa politicamente exposta: \n I–constituição de pessoa politicamente exposta como procurador ou preposto; \n II–controle, direto ou indireto, por pessoa politicamente exposta, no caso deCliente pessoa jurídica; \n  e III–movimentação habitual de recursos financeiros de ou para pessoa politicamente exposta Cliente da instituição, não justificadapor eventos econômicos, como a aquisição de bens ou a prestação de serviços;'"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.FATCA.label",target:"Os ativos são informados de acordo com a Lei de Conformidade Fiscal de Contas Estrangeiras (FATCA)?"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.FATCA.help",target:"Nota 4: O FATCA - Foreign Account Tax Compliance Act é uma lei federal americana, que visa prevenir evasão fiscal por pessoas físicas e jurídicas que têm \n obrigação fiscal nos Estados Unidos da América (“EUA”), incluindo aquelas que possuem contas e investimentos no exterior. O FATCA visa identificar \n tais pessoas, estabelecer o reporte de contas e investimentos fora dos EUA para o propósito de tributar os rendimentos obtidos por elas, por meio de \n informações prestadas pelas instituições financeiras que detêm a conta e/ou investimento tributável. É considerado como “US Person” (Cidadão Americano)\n pelo FATCA, sujeito ao reporte às autoridades fiscais americanas, aquelas indicadas na FATCA, incluindo: (a) cidadão americano, ou seja, nascido nos \n Estados Unidos, seus territórios, Samoa Americana ou nas Ilhas Swain; (b) cidadão, nacional ou pessoa naturalizada dos EUA; (c) possua residência e/ou \n endereço e/ou telefone nos Estados Unidos; (d) possua cidadania americana derivada dos pais; (d) pessoa jurídica com controladores ou titulares substanciais \n que são pessoa física residente para fins fiscais nos Estados Unidos EUA., cidadã ou nacional dos EUA. \n No contexto da CRS, suas informações financeiras podem ser fornecidas aos governos que reportam que, oportunamente, trocaram as informações com \n autoridades do país ou países participantes nos quais você é residente fiscal, divulgando as informações exclusivamente às autoridades competentes, em \n conformidade com as leis aplicáveis da jurisdição.\nPara mais informações acesse:\n FATCA - E.U.A. Receita Federal dos EUA (www.irs.gov/fatca)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.FATCA.help",target:"O FATCA - Foreign Account Tax Compliance Act é uma lei federal americana, que visa prevenir evasão fiscal por pessoas físicas e jurídicas que têm \n obrigação fiscal nos Estados Unidos da América (“EUA”), incluindo aquelas que possuem contas e investimentos no exterior. O FATCA visa identificar \n tais pessoas, estabelecer o reporte de contas e investimentos fora dos EUA para o propósito de tributar os rendimentos obtidos por elas, por meio de \n informações prestadas pelas instituições financeiras que detêm a conta e/ou investimento tributável. É considerado como “US Person” (Cidadão Americano)\n pelo FATCA, sujeito ao reporte às autoridades fiscais americanas, aquelas indicadas na FATCA, incluindo: (a) cidadão americano, ou seja, nascido nos \n Estados Unidos, seus territórios, Samoa Americana ou nas Ilhas Swain; (b) cidadão, nacional ou pessoa naturalizada dos EUA; (c) possua residência e/ou \n endereço e/ou telefone nos Estados Unidos; (d) possua cidadania americana derivada dos pais; (d) pessoa jurídica com controladores ou titulares substanciais \n que são pessoa física residente para fins fiscais nos Estados Unidos EUA., cidadã ou nacional dos EUA. \n No contexto da CRS, suas informações financeiras podem ser fornecidas aos governos que reportam que, oportunamente, trocaram as informações com \n autoridades do país ou países participantes nos quais você é residente fiscal, divulgando as informações exclusivamente às autoridades competentes, em \n conformidade com as leis aplicáveis da jurisdição.\nPara mais informações acesse:\n FATCA - E.U.A. Receita Federal dos EUA (www.irs.gov/fatca)"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.HAS_SIGNED_CONTRATOS_DE_CAMBIO.label",target:"O contrato de câmbio foi assinado?"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.HAS_SIGNED_CONTRATOS_DE_CAMBIO.help",target:"Contratos de câmbio é um acordo legal no qual as partes concordam em transferir entre si uma determinada quantia de moeda estrangeira a uma taxa de câmbio predeterminada e em uma data predeterminada."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.BUSINESS_ID.label",target:"businessId pt"})
@@ -2001,6 +2001,11 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.Receivabl
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.ReceivableDAOBrowser.SUB_TITLE",target:"Aqui está uma lista dos fundos que você solicitou de outras pessoas"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.ReceivableDAOBrowser.SYNC.label",target:"Sincronizar com contabilidade"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.ReceivableDAOBrowser.DELETE_DRAFT.label",target:"O rascunho foi excluído"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.ReceivableDAOBrowser.RECONCILED_SUCCESS.label",target:"A fatura foi reconciliada pelo pagador"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.ReceivableDAOBrowser.RECONCILED_ERROR.label",target:"Ocorreu um erro ao reconciliar a fatura"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.ReceivableDAOBrowser.INVOICE.label",target:"Oatura"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.PayableDAOBrowser.SYNC.label",target:"Sincronizar com contabilidade"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.crunch.CapabilityStore.TITLE",target:"Característicos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.crunch.CapabilityStore.SUBTITLE",target:"Desbloqueie mais recursos no {appName}"})
@@ -2339,41 +2344,41 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.BankPickCurr
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.BusinessDirectorArrayView.ADD_MSG",target:"+ Adicionar"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.model_.label",target:"Banco Canada"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ATBankAccount.model_.label",target:"Banco Austria"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BEBankAccount.model_.label",target:"Banco Bélgica"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.model_.label",target:"Banco Brasil"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.model_.label",target:"Canadá"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ATBankAccount.model_.label",target:"Áustria"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BEBankAccount.model_.label",target:"Bélgica"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.model_.label",target:"Brasil"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.EEBankAccount.model_.label",target:"Banco Estônia"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CNBankAccount.model_.label",target:"Banco China"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CYBankAccount.model_.label",target:"Banco Chipre"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.DEBankAccount.model_.label",target:"Banco Alemanha"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.EEBankAccount.model_.label",target:"Estônia"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CNBankAccount.model_.label",target:"China"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CYBankAccount.model_.label",target:"Chipre"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.DEBankAccount.model_.label",target:"Alemanha"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ESBankAccount.model_.label",target:"Banco Espanha"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.EUBankAccount.model_.label",target:"Banco Europeia"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.FIBankAccount.model_.label",target:"Banco Finlândia"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.FRBankAccount.model_.label",target:"Banco França"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ESBankAccount.model_.label",target:"Espanha"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.EUBankAccount.model_.label",target:"Europeia"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.FIBankAccount.model_.label",target:"Finlândia"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.FRBankAccount.model_.label",target:"França"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.GBBankAccount.model_.label",target:"Banco Reino Unido"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.GRBankAccount.model_.label",target:"Banco Grécia"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.HKBankAccount.model_.label",target:"Banco Hong Kong"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.IEBankAccount.model_.label",target:"Banco Irlanda"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.GBBankAccount.model_.label",target:"Reino Unido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.GRBankAccount.model_.label",target:"Grécia"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.HKBankAccount.model_.label",target:"HongKong"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.IEBankAccount.model_.label",target:"Irlanda"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.INBankAccount.model_.label",target:"Banco Índia"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ITBankAccount.model_.label",target:"Banco Itália"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.LTBankAccount.model_.label",target:"Banco Lituânia"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.LUBankAccount.model_.label",target:"Banco Luxemburgo"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.LVBankAccount.model_.label",target:"Banco Letônia"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.MTBankAccount.model_.label",target:"Banco Malta"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.NLBankAccount.model_.label",target:"Banco Países Baixos"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.PKBankAccount.model_.label",target:"Banco Paquistão"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.INBankAccount.model_.label",target:"Índia"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ITBankAccount.model_.label",target:"Itália"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.LTBankAccount.model_.label",target:"Lituânia"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.LUBankAccount.model_.label",target:"Luxemburgo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.LVBankAccount.model_.label",target:"Letônia"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.MTBankAccount.model_.label",target:"Malta"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.NLBankAccount.model_.label",target:"Países Baixos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.PKBankAccount.model_.label",target:"Paquistão"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.PTBankAccount.model_.label",target:"Banco Portugal"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.SEBankAccount.model_.label",target:"Banco Suécia"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.SIBankAccount.model_.label",target:"Banco Eslovênia"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.SKBankAccount.model_.label",target:"Banco Eslováquia"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.PTBankAccount.model_.label",target:"Portugal"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.SEBankAccount.model_.label",target:"Suécia"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.SIBankAccount.model_.label",target:"Eslovênia"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.SKBankAccount.model_.label",target:"Eslováquia"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.model_.label",target:"Banco Estados Unidos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.model_.label",target:"Estados Unidos"})
 
 // Review Invoice Details
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.TITLE",target:"Revise os detalhes da fatura"})
@@ -2551,6 +2556,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.history.I
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.FXSummaryTransaction.DESCRIPTION",target:"Resumo"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.model_.label",target:"Fatura"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.SELECT_CONTACT",target:"Selecione o beneficiário"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.history.InvoiceStatusHistoryItemView.INVOICE_STATUS_CHNGE_TO",target:"Invoice status changed to"})
@@ -3149,6 +3155,11 @@ p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.Payable
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.APPROVE.label","target":"aprovar"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.MARK_VOID.label","target":"Marcar como nulo"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.DELETE.label","target":"Excluir"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.TITLE","target":"Pagáveis"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.SUB_TITLE","target":"Aqui está uma lista de pagamentos que você enviou"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.RECONCILED_SUCCESS","target":"A fatura foi reconciliada pelo pagador"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.RECONCILED_ERROR","target":"Ocorreu um erro ao reconciliar a fatura"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.INVOICE","target":"fatura"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.IBAN_REQUIRED",target:"IBAN necessário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.UNKNOWN_COUNTRY_CODE",target:"Código de país desconhecido"})
@@ -3367,3 +3378,14 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.StrategizedBank
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.BankPickCurrencyView.DOMICILED_BK_ACC_COUNTRY",target:"País com conta bancária domiciliada"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.ui.BeneficialOwnershipForm.NO_ADDITIONAL_OWNERS",target:"Certifico que as pessoas que possuem 25% ou mais do negócio, direta ou indiretamente, foram listadas e suas informações são precisas."})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"4f45c745-1c93-4380-b275-2d2fea091d1f-157.subject",target:"Notificação NOC"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.DeleteModal.TITLE",target:"Excluir "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.DeleteModal.CONFIRM_DELETE_1",target:"Tem certeza de que deseja excluir"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.DeleteModal.SUCCESS_MSG",target:" apagado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.DeleteModal.FAIL_MSG",target:"Falha ao excluir"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.DeleteModal.DELETE.label",target:"Excluir"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.DeleteModal.CANCEL.label",target:"Cancelar"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.Invitation.model_.label",target:"Convite"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.settings.business.DeleteInvitedUserView.DELETE.label",target:"Excluir"})
