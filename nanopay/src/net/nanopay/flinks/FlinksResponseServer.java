@@ -69,8 +69,10 @@ public class FlinksResponseServer implements FlinksResponseService {
 
       if ( "".equals(credentials.getUrl()) || "".equals(credentials.getCustomerId()) ) {
         logger.error("Flinks credentials not found");
-        Notification notification = new Notification.Builder(x)
+        Notification notification
+          = new Notification.Builder(x)
           .setTemplate("NOC")
+          .setEmailName("NOC")
           .setBody("Flinks credentials not found")
           .build();
         notificationDAO.put(notification);

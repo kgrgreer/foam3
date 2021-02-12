@@ -70,7 +70,7 @@ foam.CLASS({
     {
       name: 'plan',
       javaCode: `
-    
+
         FXService fxService = (FXService) x.get("ascendantFXService");
 
         // Add Disclosure line item
@@ -128,6 +128,7 @@ foam.CLASS({
             String message = "Unable to get FX quotes for source currency: "+ requestTxn.getSourceCurrency() + " and destination currency: " + requestTxn.getDestinationCurrency() + " from AscendantFX" ;
             Notification notification = new Notification.Builder(x)
               .setTemplate("NOC")
+              .setEmailName("NOC")
               .setBody(message)
               .build();
               ((DAO) x.get("localNotificationDAO")).put(notification);
@@ -230,7 +231,7 @@ foam.CLASS({
       {
         ascendantFXTransaction.setAccepted(true);
       }
-    
+
       ascendantFXTransaction.addLineItems( new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()} );
       return ascendantFXTransaction;
       `

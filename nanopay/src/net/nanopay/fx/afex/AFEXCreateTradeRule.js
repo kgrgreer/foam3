@@ -23,7 +23,7 @@ foam.CLASS({
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: `Rule to create trade on AFEX system when transaction is PENDING_PARENT_COMPLETED 
+  documentation: `Rule to create trade on AFEX system when transaction is PENDING_PARENT_COMPLETED
     and trade not yet created.`,
 
   javaImports: [
@@ -60,12 +60,12 @@ foam.CLASS({
           if ( ! (obj instanceof AFEXTransaction) ) {
             return;
           }
-          
+
           DAO transactionDAO = ((DAO) x.get("localTransactionDAO")).inX(x);
           AFEXTransaction transaction = (AFEXTransaction) obj.fclone();
-          
+
           AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
-          if ( transaction.getAfexTradeResponseNumber() == 0 ) {  
+          if ( transaction.getAfexTradeResponseNumber() == 0 ) {
             try {
               try {
                 int result = afexService.createTrade(transaction);
@@ -96,6 +96,7 @@ foam.CLASS({
               logger.error(msg, t);
               Notification notification = new Notification.Builder(x)
                 .setTemplate("NOC")
+                .setEmailName("NOC")
                 .setBody(msg + " " + t.getMessage())
                 .build();
                 ((DAO) x.get("localNotificationDAO")).put(notification);

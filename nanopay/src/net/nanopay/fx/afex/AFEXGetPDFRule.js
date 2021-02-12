@@ -59,10 +59,10 @@ foam.CLASS({
           if ( ! (obj instanceof AFEXTransaction) ) {
             return;
           }
-          
+
           DAO transactionDAO = ((DAO) x.get("localTransactionDAO")).inX(x);
           AFEXTransaction transaction = (AFEXTransaction) obj.fclone();
-          
+
           AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
 
           if ( transaction.getAfexTradeResponseNumber() != 0 ) {
@@ -84,7 +84,7 @@ foam.CLASS({
               File pdf = (File) fileDAO.inX(x).put(thePDF);
               transaction.addLineItems( new TransactionLineItem[]{new ConfirmationFileLineItem.Builder(x).setGroup("fx").setFile(pdf).build()} );
               transaction = (AFEXTransaction) transactionDAO.put(transaction);
-            
+
               // Append file to related invoice.
               Transaction root = transaction.findRootTransaction(x, transaction);
               if ( root.getInvoiceId() != 0 ) {
@@ -113,6 +113,7 @@ foam.CLASS({
                 .build());
               Notification notification = new Notification.Builder(x)
                 .setTemplate("NOC")
+                .setEmailName("NOC")
                 .setBody(msg + " " + t.getMessage())
                 .build();
                 ((DAO) x.get("localNotificationDAO")).put(notification);

@@ -248,6 +248,7 @@ public class BmoReportProcessor {
         BmoFormatUtil.sendEmail(x, msg, null);
         Notification notification = new Notification.Builder(x)
           .setTemplate("NOC")
+          .setEmailName("NOC")
           .setBody(msg)
           .build();
         ((DAO) x.get("localNotificationDAO")).put(notification);

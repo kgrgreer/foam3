@@ -24,7 +24,7 @@ foam.CLASS({
     'java.util.Calendar',
     'java.util.Date',
     'java.util.HashMap',
-    
+
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
@@ -67,7 +67,7 @@ foam.CLASS({
             setX(x);
             setLogger((Logger) x.get("logger"));
             setLogger(new PrefixLogger(new Object[] {this.getClass().getSimpleName()}, getLogger()));
-          }    
+          }
         `
         );
       }
@@ -187,6 +187,7 @@ foam.CLASS({
           getLogger().error(notificationMsg);
           Notification notification = new Notification.Builder(x)
             .setTemplate("NOC")
+            .setEmailName("NOC")
             .setBody(notificationMsg)
             .build();
           ((DAO) x.get("localNotificationDAO")).put(notification);

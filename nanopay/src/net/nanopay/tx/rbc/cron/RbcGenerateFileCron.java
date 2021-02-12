@@ -104,6 +104,7 @@ public class RbcGenerateFileCron implements ContextAgent {
       logger.error(msg, e);
       Notification notification = new Notification.Builder(x)
         .setTemplate("NOC")
+        .setEmailName("NOC")
         .setBody(msg)
         .build();
       ((DAO) x.get("localNotificationDAO")).put(notification);
@@ -155,6 +156,7 @@ public class RbcGenerateFileCron implements ContextAgent {
         BmoFormatUtil.sendEmail(x, msg, e);
         Notification notification = new Notification.Builder(x)
           .setTemplate("NOC")
+          .setEmailName("NOC")
           .setBody(msg)
           .build();
         ((DAO) x.get("localNotificationDAO")).put(notification);
