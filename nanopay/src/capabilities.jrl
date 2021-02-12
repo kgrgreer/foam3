@@ -536,10 +536,9 @@ p({
   "icon":"/images/capabilityIcons/BusinessRegistrationCap.svg",
   "of":"net.nanopay.crunch.onboardingModels.InitialBusinessData",
   "version":"0",
-  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
   "enabled":true,
   "keywords":["featured"],
-  "availabilityPredicate":{
+  "visibilityPredicate":{
     "class": "foam.mlang.predicate.Not",
     "arg1": {
       "class":"net.nanopay.crunch.predicate.IsBusiness"
@@ -553,6 +552,7 @@ p({
     "allowSkipping": false
   },
   "requirementViewTitle":"Have your business documents ready. You can save your progress and come back later.",
+  "associatedEntity": 1,
   "permissionsGranted":[
   "menu.read.mainmenu.banking",
   "menu.read.mainmenu.contacts",
