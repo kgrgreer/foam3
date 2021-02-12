@@ -130,6 +130,9 @@ foam.CLASS({
     ^ .stackColumn .foam-u2-stack-StackView {
       padding-left: 0 !important;
     }
+    ^ .foam-u2-ActionView-large {
+      max-height: 50px;
+    }
   `,
 
   constants: {
@@ -420,12 +423,12 @@ foam.CLASS({
 
         var capabilityIntercept = this.CapabilityIntercept.create();
         capabilityIntercept.daoKey = "invoiceDAO"
-        
+
         var wizardSeq = this.crunchController.createCapableWizardSequence(capabilityIntercept, this.invoice);
 
         try {
           var wizardContext = await wizardSeq.execute();
-        } catch (err) {          
+        } catch (err) {
           await this.abortQuoteAndSaveDraft(err);
           return;
         }
@@ -475,7 +478,7 @@ foam.CLASS({
     /**
      * Primarily used when receiving an exception from the back-end, to put the invoice
      * into a resubmittable state and save it as a draft
-     * @param {*} error 
+     * @param {*} error
      */
     async function abortQuoteAndSaveDraft(error) {
       this.invoice.paymentMethod = this.PaymentStatus.SUBMIT;
