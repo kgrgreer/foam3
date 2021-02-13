@@ -444,7 +444,7 @@ foam.CLASS({
               class: 'net.nanopay.ui.banner.Banner',
               data$: this.bannerData$
             })
-            .start(this.StackView.create({data: this.stack, showActions: false}))
+            .start({class: this.StackView, data: this.stack, showActions: false})
               .enableClass('login-stack', this.layoutInitialized$.map( li => ! li ))
               .enableClass('application-stack', this.layoutInitialized$.map( li => li ))
             .end()
