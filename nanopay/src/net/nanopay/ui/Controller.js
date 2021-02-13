@@ -263,7 +263,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'layoutInitialized',
       documentation: 'True if layout has been initialized.',
-      value: false,
       expression: async function(initLayout) {
         await initLayout;
         return true;
