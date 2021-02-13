@@ -413,7 +413,7 @@ foam.CLASS({
         this.SMEStyles.create();
 
         // TODO & NOTE: This is a workaround. This prevents the CSS from breaking when viewing it in a subclass first before the parent class.
-        this.BankPadAuthorization.create();
+        this.BankPadAuthorization.create({}, this.__subContext__.createSubContext({errors: foam.core.SimpleSlot.create()}));
 
         this.__subContext__.register(this.ConnectSubMenu, 'foam.nanos.menu.SubMenu');
         this.__subContext__.register(this.SMEWizardOverview, 'net.nanopay.ui.wizard.WizardOverview');
