@@ -37,7 +37,7 @@ foam.CLASS({
   ],
 
   implements: [
-    'net.nanopay.tx.SUmmarizingTransaction'
+    'net.nanopay.tx.SummarizingTransaction'
   ],
 
   sections: [
