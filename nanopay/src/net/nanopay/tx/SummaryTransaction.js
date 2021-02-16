@@ -21,6 +21,7 @@ foam.CLASS({
   extends: 'net.nanopay.tx.model.Transaction',
 
   javaImports: [
+    'net.nanopay.integration.ErrorCode',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.cico.CITransaction',
@@ -113,7 +114,10 @@ foam.CLASS({
         ChainSummary cs = new ChainSummary();
         if (t.getStatus() != TransactionStatus.COMPLETED) {
           cs.setErrorCode(t.calculateErrorCode());
-          cs.setErrorInfo(cs.getErrorInfo());
+          ErrorCode errorCode = cs.findErrorCode(x);
+          if ( errorCode != null ) {
+            cs.setErrorInfo(errorCode.getSummary());
+          }
         }
         cs.setStatus(t.getStatus());
         cs.setCategory(categorize_(t));
