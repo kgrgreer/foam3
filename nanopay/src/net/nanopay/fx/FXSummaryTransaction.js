@@ -36,6 +36,10 @@ foam.CLASS({
     { name: 'DESCRIPTION', message: 'Summary' },
   ],
 
+  implements: [
+    'net.nanopay.tx.SUmmarizingTransaction'
+  ],
+
   sections: [
       {
         name: 'transactionChainSummaryInformation',
