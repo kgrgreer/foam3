@@ -24,7 +24,8 @@ foam.CLASS({
     'foam.dao.*',
     'foam.core.FObject',
     'foam.core.X',
-    'net.nanopay.tx.SummaryTransaction'
+    'net.nanopay.tx.SummaryTransaction',
+    'net.nanopay.fx.FXSummaryTransaction',
   ],
 
   methods: [
@@ -36,7 +37,7 @@ foam.CLASS({
         // a summary transaction only happens when we are trying to 
         // trigger a DUG rule, so return immediately instead of trying
         // to put to the underlying DAO.
-        if (obj instanceof SummaryTransaction) {
+        if ( obj instanceof SummaryTransaction || obj instanceof FXSummaryTransaction ) {
           return obj;
         }
 
