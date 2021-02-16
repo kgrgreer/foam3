@@ -36,12 +36,7 @@ foam.CLASS({
         javaCode: `
           // Add this predicate to any DUGRule on the summaryTransactionDAO
           DUGRule dugRule = (DUGRule) obj;
-          dugRule.setPredicate(
-            foam.mlang.MLang.OR(new foam.mlang.predicate.Predicate[] {
-              foam.mlang.MLang.INSTANCE_OF(net.nanopay.tx.SummaryTransaction.class),
-              foam.mlang.MLang.INSTANCE_OF(net.nanopay.fx.FXSummaryTransaction.class)
-            })
-          );
+          dugRule.setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.tx.SummarizingTransaction.class));
         `
       }
     ]

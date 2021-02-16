@@ -37,7 +37,7 @@ foam.CLASS({
         // a summary transaction only happens when we are trying to 
         // trigger a DUG rule, so return immediately instead of trying
         // to put to the underlying DAO.
-        if ( obj instanceof SummaryTransaction || obj instanceof FXSummaryTransaction ) {
+        if ( obj instanceof SummarizingTransaction ) {
           return obj;
         }
 
