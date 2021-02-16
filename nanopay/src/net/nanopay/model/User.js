@@ -536,17 +536,17 @@ foam.CLASS({
               DAO contactDAO = (DAO) x.get("contactDAO");
               DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
               User user = null;
-              Contact contact = null;
-              try{
-                contact = (Contact) contactDAO.find(userId);
-                if ( contact != null && contact.getBusinessId() > 0 ){
-                  return (User) localBusinessDAO.find(contact.getBusinessId());
-                } else if (contact == null) {
+              try {
+                user = (User) contactDAO.find(userId);
+                if ( user != null && user instanceof Contact && ((Contact) user).getBusinessId() > 0 ) {
+                  return (User) localBusinessDAO.find(((Contact) user).getBusinessId());
+                }
+                if ( user == null ) {
                   return (User) bareUserDAO.find(userId);
                 }
-                user = (User) contact;
-                return user;
-              } catch(Exception e) {}
+              } catch(Exception e) {
+                ((foam.nanos.logger.Logger) x.get("logger")).warning("User", "findUser", userId, e);
+              }
               return user;
             }
         `);

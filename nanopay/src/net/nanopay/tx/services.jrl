@@ -155,10 +155,12 @@ p({
   "serviceScript":
   """
     dao = new foam.dao.FilteredDAO.Builder(x)
-      .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.tx.SummaryTransaction.class))
+      .setPredicate(foam.mlang.MLang.OR(new foam.mlang.predicate.Predicate[] {
+        foam.mlang.MLang.INSTANCE_OF(net.nanopay.tx.SummaryTransaction.class),
+        foam.mlang.MLang.INSTANCE_OF(net.nanopay.fx.FXSummaryTransaction.class)
+      }))
       .setDelegate(x.get("transactionDAO"))
-      .setOf(net.nanopay.tx.SummaryTransaction.getOwnClassInfo())
-      .setPrimaryKey(net.nanopay.tx.SummaryTransaction.ID)
+      .setPrimaryKey(net.nanopay.tx.model.Transaction.ID)
       .build();
 
     dao = new net.nanopay.tx.SummaryTransactionInnerDAO.Builder(x)

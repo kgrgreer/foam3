@@ -52,8 +52,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'accountDAO',
-    'auth',
     'checkAndNotifyAbilityToPay',
     'checkAndNotifyAbilityToReceive',
     'countryDAO',

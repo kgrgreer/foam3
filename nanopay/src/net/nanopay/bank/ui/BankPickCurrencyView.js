@@ -219,7 +219,8 @@ foam.CLASS({
     { name: 'CONNECT_LABEL', message: 'connect with a void check' },
     { name: 'BANK_ADDED', message: 'Your bank account was successfully added' },
     { name: 'CHOOSE_COUNTRY', message: 'Please select the originating country of the bank account you would like to add.' },
-    { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' }
+    { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' },
+    { name: 'DOMICILED_BK_ACC_COUNTRY', message: 'Domiciled bank account country' }
   ],
 
   properties: [
@@ -251,7 +252,7 @@ foam.CLASS({
           class: 'foam.u2.view.RichChoiceView',
           sections: [
             {
-              heading: 'Domiciled bank account country',
+              heading: x.data.DOMICILED_BK_ACC_COUNTRY,
               dao$: x.data.permittedCountries$
             }
           ]
@@ -265,7 +266,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'hasCompletedIntegration',
       value: false,
-      documentation: `Boolean to determine if the User has completed 
+      documentation: `Boolean to determine if the User has completed
                       the integration process before`
     },
     {

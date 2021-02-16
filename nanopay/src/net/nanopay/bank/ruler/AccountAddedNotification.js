@@ -47,14 +47,14 @@ foam.CLASS({
       name: 'body',
       transient: true,
       javaGetter: `
-        Subject subject = (Subject) getX().get("subject");
+        Subject subject = (Subject) foam.core.XLocator.get().get("subject");
         String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
-        TranslationService ts = (TranslationService) getX().get("translationService");
+        TranslationService ts = (TranslationService) foam.core.XLocator.get().get("translationService");
 
         BankAccount account = new BankAccount();
         String accountNumber = getAccountNumber() != null ? account.obfuscate(getAccountNumber(), 1, getAccountNumber().length() - 4) : "";
 
-        return accountNumber + ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_P1", this.NOTIFICATION_BODY_P1);
+        return accountNumber + ts.getTranslation(locale, getClassInfo().getId() + ".NOTIFICATION_BODY_P1", this.NOTIFICATION_BODY_P1);
       `,
       getter: function() {
         return this.accountNumber + this.NOTIFICATION_BODY_P1;

@@ -34,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import net.nanopay.bank.BankAccount;
+import net.nanopay.bank.BankHolidayService;
 import net.nanopay.contacts.Contact;
 import net.nanopay.country.br.BrazilBusinessInfoData;
 import net.nanopay.country.br.CPF;
@@ -302,20 +303,15 @@ public class ExchangeServiceProvider implements ExchangeService {
 
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-    String today = sdf.format(new Date());
-    Date completionDate = transaction.getCompletionDate();
-    if ( completionDate == null ) {
-      completionDate = ((ClearingTimeService) this.x.get("clearingTimeService")).estimateCompletionDateSimple(this.x, transaction);
-      transaction.setCompletionDate(completionDate);
-    }
-
+    Date completionDate =  skipHolidayAndWeekends();
+    String completionDateString = "";
     try {
-      String completionDateString = sdf.format(completionDate);
+      completionDateString = sdf.format(completionDate);
       dadosBoleto.setDATALQ(completionDateString);
       dadosBoleto.setDATAME(completionDateString); // TODO Foreign currency delivery date ( DD / MM / YYYY)
-      dadosBoleto.setDATAMN(today);
-      dadosBoleto.setDATAOP(today);
-      dadosBoleto.setDATAEN(today);
+      dadosBoleto.setDATAMN(completionDateString);
+      dadosBoleto.setDATAOP(completionDateString);
+      dadosBoleto.setDATAEN(completionDateString);
     } catch(Throwable t) {
       logger_.error("Unable to parse completion date", t);
       throw new RuntimeException("Error inserting boleto. Cound not parse completion date.");
@@ -351,7 +347,7 @@ public class ExchangeServiceProvider implements ExchangeService {
     dadosBoleto.setPAGADORC("/" + bankAccount.getIban());
     dadosBoleto.setGERENTE(exchangeClientValues.getGERENTE());
     dadosBoleto.setESP1(getESP("FORMA DE PAGAMENTO: ", dadosBoleto.getFORMAEN(),
-      " - DATA: ", today));
+      " - DATA: ", completionDateString));
     dadosBoleto.setESP6(getESP("OUR - INST.FINANC .: ", exchangeClientValues.getProcessorName()));
 
     Country userCountry = null;
@@ -423,6 +419,12 @@ public class ExchangeServiceProvider implements ExchangeService {
       }
     }
     return bancoBen3.toString();
+  }
+
+  public Date skipHolidayAndWeekends() {
+    BankHolidayService bankHolidayService = (BankHolidayService) this.x.get("bankHolidayService");
+    Address address = new Address.Builder(this.x).setCountryId("BR").setRegionId("").build();
+    return bankHolidayService.skipBankHolidays(this.x, new Date(), address, 0);
   }
 
   protected FindBankByNationalIDResponse getBankInformation(BankAccount bankAccount, String spid) {
@@ -510,19 +512,19 @@ public class ExchangeServiceProvider implements ExchangeService {
   public Transaction updateTransactionStatus(Transaction transaction) throws RuntimeException {
     if ( SafetyUtil.isEmpty(transaction.getExternalInvoiceId()) ) return transaction;
 
-    GetBoletoStatus request = new GetBoletoStatus();
+    SearchBoleto request = new SearchBoleto();
     request.setNrBoleto(transaction.getExternalInvoiceId());
     try {
-      BoletoStatusResponse response = exchangeClient.getBoletoStatus(request);
-      if ( response == null || response.getBoletoStatusResult() == null )
-        throw new RuntimeException("Unable to get a valid response from Exchange while calling GetBoletoStatus");
+      SearchBoletoResponse response = exchangeClient.searchBoleto(request);
+      if ( response == null || response.getSearchBoletoResult() == null )
+        throw new RuntimeException("Unable to get a valid response from Exchange while calling SearchBoletoResponse");
 
-      if ( response.getBoletoStatusResult().getBoleto() == null ||
-        response.getBoletoStatusResult().getBoleto().length < 1 )
+      if ( response.getSearchBoletoResult().getBoletos() == null ||
+        response.getSearchBoletoResult().getBoletos().length < 1 )
         throw new RuntimeException("GetBoletoStatus failed, transaction not found in exchange");
 
       transaction = (Transaction) transaction.fclone();
-      Boleto boleto = (Boleto) response.getBoletoStatusResult().getBoleto()[0];
+      Boleto boleto = (Boleto) response.getSearchBoletoResult().getBoletos()[0];
       transaction.setStatus(mapExchangeTransactionStatus(boleto.getSTATUS(), transaction));
       return transaction;
     } catch(Throwable t) {
@@ -540,7 +542,7 @@ public class ExchangeServiceProvider implements ExchangeService {
       case "R":
         return TransactionStatus.SENT;
       case "F":
-        return TransactionStatus.DECLINED;
+        return TransactionStatus.COMPLETED;
       default:
         return transaction.getStatus();
     }

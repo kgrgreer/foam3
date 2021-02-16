@@ -263,7 +263,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'layoutInitialized',
       documentation: 'True if layout has been initialized.',
-      value: false,
       expression: async function(initLayout) {
         await initLayout;
         return true;
@@ -414,7 +413,7 @@ foam.CLASS({
         this.SMEStyles.create();
 
         // TODO & NOTE: This is a workaround. This prevents the CSS from breaking when viewing it in a subclass first before the parent class.
-        this.BankPadAuthorization.create();
+        this.BankPadAuthorization.create({}, this.__subContext__.createSubContext({errors: foam.core.SimpleSlot.create()}));
 
         this.__subContext__.register(this.ConnectSubMenu, 'foam.nanos.menu.SubMenu');
         this.__subContext__.register(this.SMEWizardOverview, 'net.nanopay.ui.wizard.WizardOverview');
@@ -445,7 +444,7 @@ foam.CLASS({
               class: 'net.nanopay.ui.banner.Banner',
               data$: this.bannerData$
             })
-            .start(this.StackView.create({data: this.stack, showActions: false}))
+            .start({class: this.StackView, data: this.stack, showActions: false})
               .enableClass('login-stack', this.layoutInitialized$.map( li => ! li ))
               .enableClass('application-stack', this.layoutInitialized$.map( li => li ))
             .end()

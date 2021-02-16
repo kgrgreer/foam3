@@ -1322,5 +1322,52 @@ p({
   "displayName": "{{appName}}",
   "group": "sme",
   "subject": "Complete your Transaction",
-  "body": "\n\n<include template = 'treviso-email-base'>\n<h3 style=\"margin-top: 25px\">\n      ATENÇÃO : Esta transação ainda não foi enviada!<br>      Para completar, envie um TED de ({{amount}}) para :<br>      Treviso Corretora de Câmbio S.A<br>       CNPJ: 02.992.317/0001-87<br>       Banco SC Treviso (143)<br>       Agencia: 0001<br>       Conta: 1-1<br>       O não envio dos fundos causará o cancelamento automático desta transação.</a>\n</include>"
+  "body": """
+    <include template = 'treviso-email-base'>
+    <h3 style="margin-top: 25px">
+      ATENÇÃO : Esta transação ainda não foi enviada!
+    </h3>
+    <br>
+    Para completar, envie um TED de ({{amount}}) para :
+    <br>
+    <br>
+    Treviso Corretora de Câmbio S.A
+    <br>
+    CNPJ: 02.992.317/0001-87
+    <br>
+    Banco SC Treviso (143)
+    <br>
+    Agencia: 0001
+    <br>
+    Conta: 1-1
+    <br>
+    <br>
+    <strong>
+      O não envio dos fundos causará o cancelamento automático desta transação.
+    </strong>
+    <br>
+    <br>
+    <h3 style="margin-top: 25px">
+      Attention : This transaction is not complete yet!
+    </h3>
+    <br>
+    To finish it, please send a TED (Brazilian wire) of (BRL ${VAR FOR AMOUNT}) to :
+    <br>
+    <br>
+    Treviso Corretora de Câmbio S.A
+    <br>
+    CNPJ: 02.992.317/0001-87
+    <br>
+    Banco SC Treviso (143)
+    <br>
+    Agencia: 0001
+    <br>
+    Conta: 1-1
+    <br>
+    <br>
+    <strong>
+      Not sending the funds will cause this transaction to be automatically canceled.
+    </strong>
+    </include>
+  """
 })

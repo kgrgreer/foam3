@@ -49,7 +49,7 @@ foam.CLASS({
         test(true, "Valid IBAN");
         test("00360305".equals(account.getInstitutionNumber()), "BankCode parsed");
         test("00001".equals(account.getBranchId()), "Branch parsed");
-        test("0009795493P1".equals(account.getAccountNumber()), "Account parsed");
+        test("0009795493".equals(account.getAccountNumber()), "Account parsed");
 
         // TODO: not working as I expect.
         // try {
