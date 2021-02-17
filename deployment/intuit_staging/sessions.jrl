@@ -2,11 +2,48 @@
 p({
     class:"foam.nanos.session.Session",
     id:"2c2d88af-cba8-9549-05e9-18be400a0aed",
-    remoteHostWhiteList:[
-        "99.244.39.194",
-        "24.130.69.94",
-        "73.71.153.193",
-        "207.207.162.8",
-        "73.185.83.196"
+    cidrWhiteList:[
+        {
+            class:"foam.net.CIDR",
+            notation:"99.244.39.194/128",
+            startAddress:"99.244.39.194",
+            endAddress:"99.244.39.194"
+        },
+        {
+            class:"foam.net.CIDR",
+            notation:"142.112.172.124/128",
+            startAddress:"142.112.172.124",
+            endAddress:"142.112.172.124"
+        },
+        {
+            class:"foam.net.CIDR",
+            notation:"24.130.69.94/128",
+            startAddress:"24.130.69.94",
+            endAddress:"24.130.69.94"
+        },
+        {
+            class:"foam.net.CIDR",
+            notation:"73.71.153.193/128",
+            startAddress:"73.71.153.193",
+            endAddress:"73.71.153.193"
+        },
+        {
+            class:"foam.net.CIDR",
+            notation:"73.185.83.196/128",
+            startAddress:"73.185.83.196",
+            endAddress:"73.185.83.196"
+        },
+        {
+            class:"foam.net.CIDR",
+            notation:"207.207.162.0/24",
+            startAddress:"207.207.162.0",
+            endAddress:"207.207.162.255"
+        },
+        {
+            class:"foam.net.CIDR",
+            notation:"207.207.176.0/23",
+            startAddress:"207.207.176.0",
+            endAddress:"207.207.177.255"
+        }
     ]
 })
