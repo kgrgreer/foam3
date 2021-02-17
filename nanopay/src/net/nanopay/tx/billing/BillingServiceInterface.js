@@ -50,7 +50,8 @@ foam.INTERFACE({
           name: 'transactionId',
           type: 'String'
         }
-      ]
+      ],
+      flags: ['java']
     }
   ]
 });
