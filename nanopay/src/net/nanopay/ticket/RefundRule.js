@@ -65,9 +65,11 @@ foam.CLASS({
           Transaction problemTxn = (Transaction) txnDAO.inX(x).find(request.getProblemTransaction()).fclone();
           ArrayList<TransactionLineItem> array = new ArrayList<TransactionLineItem>();
 
+          Transaction summary = problemTxn.findRoot(x);
+
           if ( request.getRefundOldFees() ) {
             FeeSummaryTransactionLineItem feeSummary = null;
-            for ( TransactionLineItem lineItem : reverse.getLineItems() ) {
+            for ( TransactionLineItem lineItem : summary.getLineItems() ) {
               if ( lineItem instanceof FeeSummaryTransactionLineItem ) {
                 feeSummary = (FeeSummaryTransactionLineItem) lineItem;
                 break;
@@ -83,7 +85,7 @@ foam.CLASS({
           if ( request.getCreditAmount() > 0 ) {
             CreditLineItem feeRefund = new CreditLineItem();
             feeRefund.setAmount(request.getCreditAmount());
-            feeRefund.setFeeCurrency(reverse.findSourceAccount(x).getDenomination());
+            feeRefund.setFeeCurrency(summary.findSourceAccount(x).getDenomination());
             feeRefund.setSourceAccount(request.getCreditAccount());
             array.add(feeRefund);
           }

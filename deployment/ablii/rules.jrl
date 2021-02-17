@@ -221,8 +221,8 @@ p({
       "class":"foam.mlang.predicate.And",
       "args":[
         {
-          "class": "foam.mlang.predicate.IsClassOf",
-          "targetClass": "net.nanopay.ticket.RefundTicket"
+          class: "foam.nanos.ruler.predicate.IsInstancePredicate",   
+          "of": "net.nanopay.ticket.RefundTicket"
         },
         {
           "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
@@ -232,11 +232,6 @@ p({
             "class":"net.nanopay.tx.model.TransactionStatus",
             "ordinal":0
           }
-        },
-        {
-          "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
-          "txnProperty":"instance",
-          "txnValue":"net.nanopay.tx.cico.COTransaction"
         }
       ]
     },
