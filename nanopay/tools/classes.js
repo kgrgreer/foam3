@@ -49,6 +49,7 @@ var classes = [
   'net.nanopay.tx.ruler.SummaryTransactionUpdateDUGRule',
   'net.nanopay.tx.BulkTransaction',
   'net.nanopay.tx.test.BulkTransactionTest',
+  'net.nanopay.tx.InvoicedCreditLineItem',
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.cico.service.ClientBankAccountVerifierService',
   'net.nanopay.cico.paymentCard.model.PaymentCard',

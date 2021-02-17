@@ -38,6 +38,9 @@ foam.CLASS({
     'net.nanopay.ticket.RefundStatus',
     'net.nanopay.tx.CreditLineItem',
     'net.nanopay.tx.FeeSummaryTransactionLineItem',
+    'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.InvoicedFeeLineItem',
+    'net.nanopay.tx.InvoicedCreditLineItem',
     'net.nanopay.tx.SummaryTransaction',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.TransactionLineItem',
@@ -68,19 +71,37 @@ foam.CLASS({
           Transaction summary = problemTxn.findRoot(x);
 
           if ( request.getRefundOldFees() ) {
+            Long feeAmount = 0l;
+            Long invoicedFeeAmount = 0l;
             FeeSummaryTransactionLineItem feeSummary = null;
             for ( TransactionLineItem lineItem : summary.getLineItems() ) {
               if ( lineItem instanceof FeeSummaryTransactionLineItem ) {
                 feeSummary = (FeeSummaryTransactionLineItem) lineItem;
-                break;
+                for ( TransactionLineItem feeLineItems: ((FeeSummaryTransactionLineItem)lineItem).getLineItems() ) {
+                  if (feeLineItems instanceof InvoicedFeeLineItem) {
+                    invoicedFeeAmount += lineItem.getAmount();
+                  } else if (feeLineItems instanceof FeeLineItem) {
+                    feeAmount += lineItem.getAmount();
+                  }
+                }
               }
             }
-            CreditLineItem feeRefund = new CreditLineItem();
-            feeRefund.setAmount(feeSummary.getAmount());
-            feeRefund.setFeeCurrency(feeSummary.getCurrency());
-            feeRefund.setSourceAccount(request.getCreditAccount());
-            feeRefund.setDestinationAccount(reverse.getDestinationAccount());
-            array.add(feeRefund);
+            if ( feeAmount > 0 ) {
+              CreditLineItem feeRefund = new CreditLineItem();
+              feeRefund.setFeeCurrency(feeSummary.getCurrency());
+              feeRefund.setSourceAccount(request.getCreditAccount());
+              feeRefund.setDestinationAccount(reverse.getDestinationAccount());
+              feeRefund.setAmount(feeAmount);
+              array.add(feeRefund);
+            }
+            if ( invoicedFeeAmount > 0 ) {
+              InvoicedCreditLineItem invoicedFeeRefund = new InvoicedCreditLineItem();
+              invoicedFeeRefund.setSourceAccount(request.getCreditAccount());
+              invoicedFeeRefund.setDestinationAccount(reverse.getDestinationAccount());
+              invoicedFeeRefund.setFeeCurrency(feeSummary.getCurrency());
+              invoicedFeeRefund.setAmount(invoicedFeeAmount);
+              array.add(invoicedFeeRefund);
+            }
           }
 
           if ( request.getCreditAmount() > 0 ) {

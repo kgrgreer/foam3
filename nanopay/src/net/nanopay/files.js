@@ -28,6 +28,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/BulkTransaction' },
   { name: 'net/nanopay/tx/CreateExpediteApprovalRequest' },
   { name: 'net/nanopay/tx/TxnProcessorUserReference' },
+  { name: 'net/nanopay/tx/InvoicedCreditLineItem' },
   { name: 'net/nanopay/payment/CreatePaymentCode' },
   { name: 'net/nanopay/tx/test/BulkTransactionTest' },
   { name: 'net/nanopay/payment/Institution' },

@@ -87,7 +87,7 @@ try {
             co.setSourceAccount(digital.getId());
             //Note: if tx1, does not have all the transfers for getTotal this wont work.
             co.setAmount(tx1.getTotal(x, digital.getId()));
-            Transaction[] COs = multiQuoteTxn(x, co, quote);
+            Transaction[] COs = multiQuoteTxn(x, co, quote, false);
 
             for ( Transaction tx2 : COs ) {
               Transaction Digital = (Transaction) removeSummaryTransaction(tx1).fclone();
