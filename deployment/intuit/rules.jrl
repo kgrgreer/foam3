@@ -47,7 +47,6 @@ p({
   feeAccount:"93f3fa36-7429-4b20-a223-f5b50a6d9872",
   feeName:"Intuit Transaction Fee",
   sourceCurrencyAsFeeDenomination: true,
-  ab590614-f5bd-476a-84e0-6037607397b5
   predicate:{
     "class":"foam.mlang.predicate.And",
     "args: [
