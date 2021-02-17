@@ -53,7 +53,11 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
     'org.apache.commons.lang.ArrayUtils',
-    'net.nanopay.tx.TransactionException'
+    'net.nanopay.tx.TransactionException',
+    'net.nanopay.tx.CreditLineItem',
+    'net.nanopay.bank.BankAccount',
+    'foam.nanos.logger.Logger',
+
   ],
 
   tableColumns: [
@@ -367,7 +371,16 @@ foam.CLASS({
       javaCode: `
         TransactionLineItem [] ls = txn.getLineItems();
         for ( TransactionLineItem li : ls ) {
-          if ( li instanceof FeeLineItem && ! (li instanceof InvoicedFeeLineItem) && ! SafetyUtil.isEmpty(li.getSourceAccount()) ) {
+          if ( li instanceof CreditLineItem &&
+          ! SafetyUtil.equals(txn.getDestinationAccount(), ((CreditLineItem) li).getDestinationAccount()) )
+          {
+            // remove credit line items off txns where they dont apply?
+            continue;
+          }
+
+          if ( li instanceof FeeLineItem && ! (li instanceof InvoicedFeeLineItem) &&
+          ! SafetyUtil.isEmpty(li.getSourceAccount())  )
+          {
             FeeLineItem feeLineItem = (FeeLineItem) li;
             Account acc = null;
             if ( feeLineItem.getSourceAccount() == quote.getSourceAccount().getId() )
@@ -376,18 +389,50 @@ foam.CLASS({
               acc = quote.getDestinationAccount();
             if (acc == null)
               acc = feeLineItem.findSourceAccount(x);
-            if ( acc instanceof DigitalAccount) {
+            Account accDest = feeLineItem.findDestinationAccount(x);
+
+            if ( acc instanceof DigitalAccount && accDest instanceof DigitalAccount)
+            { // case: fee/credit from digital account to digital account .
               Transfer tSend = new Transfer(acc.getId(), -feeLineItem.getAmount());
               Transfer tReceive = new Transfer(feeLineItem.getDestinationAccount(), feeLineItem.getAmount());
               Transfer[] transfers = { tSend, tReceive };
               txn.add(transfers);
+              continue;
             }
-            else {
+
+            if ( acc instanceof DigitalAccount && accDest instanceof BankAccount
+            && SafetyUtil.equals(accDest.getId(), txn.getDestinationAccount()) )
+            { // case: Fee/credit from digital to an external, external must be txn dest, need trust transfer.
+              Transfer tSend = new Transfer(acc.getId(), -feeLineItem.getAmount());
+              Transfer tReceive = new ExternalTransfer(feeLineItem.getDestinationAccount(), feeLineItem.getAmount());
+              Transfer tTrust = new Transfer(( (DigitalAccount) acc).getTrustAccount(), feeLineItem.getAmount());
+              Transfer[] transfers = { tSend, tReceive, tTrust };
+              txn.add(transfers);
+              continue;
+            }
+
+            if ( acc instanceof BankAccount && accDest instanceof DigitalAccount
+            && SafetyUtil.equals(acc.getId(), txn.getSourceAccount()) )
+            { // case: Fee/credit from external to a digital, external must be txn source, need trust transfer.
+              Transfer tSend = new ExternalTransfer(acc.getId(), -feeLineItem.getAmount());
+              Transfer tReceive = new Transfer(feeLineItem.getDestinationAccount(), feeLineItem.getAmount());
+              Transfer tTrust = new Transfer( ((DigitalAccount) accDest).getTrustAccount(), feeLineItem.getAmount());
+              Transfer[] transfers = { tSend, tReceive, tTrust };
+              txn.add(transfers);
+              continue;
+            }
+            if ( acc instanceof BankAccount && accDest instanceof BankAccount )
+            { // case: Fee paid from external to an external.
               Transfer tSend = new ExternalTransfer(acc.getId(), -feeLineItem.getAmount());
               Transfer tReceive = new ExternalTransfer(feeLineItem.getDestinationAccount(), feeLineItem.getAmount());
               Transfer[] transfers = { tSend, tReceive };
               txn.add(transfers);
+              continue;
             }
+
+            // case: fee or credit can not be applied to this transaction. it is misconfigured
+            Logger logger = (Logger) x.get("logger");
+            logger.error("ERROR Fee/Credit Transfers not created for txn: "+txn.getId()+ " fee: "+li);
           }
         }
         return txn;

@@ -79,6 +79,7 @@ foam.CLASS({
             feeRefund.setAmount(feeSummary.getAmount());
             feeRefund.setFeeCurrency(feeSummary.getCurrency());
             feeRefund.setSourceAccount(request.getCreditAccount());
+            feeRefund.setDestinationAccount(reverse.getDestinationAccount());
             array.add(feeRefund);
           }
 
@@ -87,6 +88,7 @@ foam.CLASS({
             feeRefund.setAmount(request.getCreditAmount());
             feeRefund.setFeeCurrency(summary.findSourceAccount(x).getDenomination());
             feeRefund.setSourceAccount(request.getCreditAccount());
+            feeRefund.setDestinationAccount(reverse.getDestinationAccount());
             array.add(feeRefund);
           }
 
