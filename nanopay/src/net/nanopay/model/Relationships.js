@@ -235,30 +235,7 @@ foam.RELATIONSHIP({
   targetProperty: {
     section: 'ownerInformation',
     order: 10,
-    gridColumns: 6,
-    view: function(_, X) {
-      return foam.u2.view.RichChoiceView.create({
-        search: true,
-        selectionView: { class: 'net.nanopay.ui.UserSelectionView', userDAO: X.userDAO },
-        rowView: { class: 'net.nanopay.ui.UserRowView' },
-        sections: [
-          {
-            dao: X.userDAO
-          }
-        ],
-      });
-    },
-    tableCellFormatter: function(value, obj, axiom) {
-      this.__subSubContext__.userDAO
-        .find(value)
-        .then((user) => {
-          this.add(user.toSummary());
-        })
-        .catch((error) => {
-          this.add(value);
-        });
-    },
-    tableWidth: 220
+    gridColumns: 6
   }
 });
 
