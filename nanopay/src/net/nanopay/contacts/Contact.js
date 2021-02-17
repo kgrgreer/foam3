@@ -89,7 +89,7 @@ foam.CLASS({
     { name: 'ERROR_BUSINESS_PROFILE_NAME_MESSAGE', message: 'Business name required' },
     { name: 'CONFIRMATION_REQUIRED', message: 'Confirmation required' },
     { name: 'MISSING_BANK_WARNING', message: 'Missing bank information' },
-    { name: 'CONTACT_PERMISSION', message: 'contact.ro.shouldinvite' },
+    { name: 'CONTACT_PERMISSION', message: 'contact.rw.shouldinvite' },
   ],
 
   properties: [
