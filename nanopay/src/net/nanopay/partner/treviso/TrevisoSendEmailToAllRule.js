@@ -40,11 +40,14 @@ foam.CLASS({
     'foam.nanos.notification.email.EmailMessage',
     'foam.util.Emails.EmailsUtility',
     'java.util.HashMap',
+    'java.util.ArrayList',
     'java.util.List',
     'java.util.Map',
     'net.nanopay.model.Business',
     'net.nanopay.partner.treviso.onboarding.BRBeneficialOwner',
     'net.nanopay.partner.treviso.onboarding.BRBusinessDirector',
+    'net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData',
+    'net.nanopay.partner.treviso.onboarding.BusinessDirectorsData',
     'net.nanopay.partner.treviso.TrevisoSendEmailToAllNotification',
     'static foam.mlang.MLang.*'
   ],
@@ -57,61 +60,84 @@ foam.CLASS({
         @Override
         public void execute(X x) {
           DAO localUserDAO = (DAO) x.get("localuserDAO");
+          DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
           UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
           Business business = (Business) ucj.findSourceId(x);
+          List<String> uniqueEmails = new ArrayList<String>();
+          String soCapId = "777af38a-8225-87c8-dfdf-eeb15f71215f-123";
+          String ownerCapId = "554af38a-8225-87c8-dfdf-eeb15f71215f-7-br";
+          String directorCapId = "554af38a-8225-87c8-dfdf-eeb15f71215f-6-5";
 
-          DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
           // find all signingofficers of the business and send email to signing officers whose hasSignedContratosDeCambio is true
           List<UserCapabilityJunction> sopJunctions = ((ArraySink) userCapabilityJunctionDAO.where(AND(
               EQ(AgentCapabilityJunction.EFFECTIVE_USER, business.getId()),
-              EQ(UserCapabilityJunction.TARGET_ID, "777af38a-8225-87c8-dfdf-eeb15f71215f-123"),
-              EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED),
-              NOT(EQ(UserCapabilityJunction.DATA, null))
+              EQ(UserCapabilityJunction.TARGET_ID, soCapId),
+              EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED)
             ))
             .select(new ArraySink()))
             .getArray();
           for ( UserCapabilityJunction sopJunction : sopJunctions ) {
             SigningOfficerPersonalDataTreviso soData = (SigningOfficerPersonalDataTreviso) sopJunction.getData();
-            if ( soData.getHasSignedContratosDeCambio() ) sendNotificationToUser(x, business, sopJunction.findSourceId(x));
+            User so = sopJunction.findSourceId(x);
+            uniqueEmails.add(so.getEmail());
+            if ( soData.getHasSignedContratosDeCambio() ) sendNotificationToUser(x, business, so);
           }
 
           // send email to beneficial owners whose hasSignedContratosDeCambio is true
-          List<BRBeneficialOwner> beneficialOwners = (List<BRBeneficialOwner>) ((ArraySink) business.getBeneficialOwners(x)
-            .where(AND(
-              INSTANCE_OF(BRBeneficialOwner.class),
-              EQ(BRBeneficialOwner.HAS_SIGNED_CONTRATOS_DE_CAMBIO, true)
-            ))
-            .select(new ArraySink()))
-            .getArray();
-
-          for ( BRBeneficialOwner beneficialOwner : beneficialOwners ) {
-            List<User> beneficialOwnerUser = ((ArraySink) localUserDAO
-              .where(EQ(User.EMAIL, beneficialOwner.getEmail()))
-              .select(new ArraySink()))
-              .getArray();
-            if ( beneficialOwnerUser.isEmpty() ){
-              sendEmailToNonUser(x, business, beneficialOwner.getFirstName(), beneficialOwner.getEmail());
-            } else {
-              sendNotificationToUser(x, business, beneficialOwnerUser.get(0));
+          UserCapabilityJunction ownerUCJ = (UserCapabilityJunction) userCapabilityJunctionDAO.find(AND(
+            EQ(UserCapabilityJunction.SOURCE_ID, business.getId()),
+            EQ(UserCapabilityJunction.TARGET_ID, ownerCapId),
+            EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED)
+          ));
+          BRBusinessOwnershipData ownerData = (BRBusinessOwnershipData) ownerUCJ.getData();
+          for ( int i = 1; i <= ownerData.getAmountOfOwners(); i++ ) {
+            BRBeneficialOwner beneficialOwnerUser = (BRBeneficialOwner) ownerData.getProperty("owner"+i);
+            if ( hasAlreadyBeenEmailed(uniqueEmails, beneficialOwnerUser.getEmail()) ) continue;
+            else uniqueEmails.add(beneficialOwnerUser.getEmail());
+            if ( beneficialOwnerUser.getHasSignedContratosDeCambio() ){
+              sendEmailToNonUser(x, business, beneficialOwnerUser.getFirstName(), beneficialOwnerUser.getEmail());
             }
           }
 
           // send email to business directors whose hasSignedContratosDeCambio is true
-          for ( BRBusinessDirector bD : ((BRBusinessDirector[]) business.getBusinessDirectors()) ) {
-            BRBusinessDirector businessDirector = (BRBusinessDirector) bD;
-            if ( ! businessDirector.getHasSignedContratosDeCambio() ) continue;
-            List<User> businessDirectorUser = ((ArraySink) localUserDAO
-              .where(EQ(User.EMAIL, businessDirector.getEmail()))
-              .select(new ArraySink()))
-              .getArray();
-            if ( businessDirectorUser.isEmpty() ){
-              sendEmailToNonUser(x, business, businessDirector.getFirstName(), businessDirector.getEmail());
-            } else {
-              sendNotificationToUser(x, business, businessDirectorUser.get(0));
+          UserCapabilityJunction directorUCJ = (UserCapabilityJunction) userCapabilityJunctionDAO.find(AND(
+            EQ(UserCapabilityJunction.SOURCE_ID, business.getId()),
+            EQ(UserCapabilityJunction.TARGET_ID, directorCapId),
+            EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED)
+          ));
+          BusinessDirectorsData directorData = (BusinessDirectorsData) directorUCJ.getData();
+          BRBusinessDirector[] directorList = (BRBusinessDirector[]) directorData.getBusinessDirectors();
+          for ( int i = 0; i < directorList.length; i++ ) {
+            BRBusinessDirector directorUser = (BRBusinessDirector) directorList[i];
+            if ( hasAlreadyBeenEmailed(uniqueEmails, directorUser.getEmail()) ) continue;
+            else uniqueEmails.add(directorUser.getEmail());
+            if ( directorUser.getHasSignedContratosDeCambio() ){
+              sendEmailToNonUser(x, business, directorUser.getFirstName(), directorUser.getEmail());
             }
           }
         }
       }, "When the business account is approved, send emails to all directors, signing officers who have signed contratos de câmbio.");
+      `
+    },
+    {
+      name: 'hasAlreadyBeenEmailed',
+      args: [
+        {
+          name: 'uniqueEmails',
+          type: 'List'
+        },
+        {
+          name: 'userEmail',
+          type: 'String'
+        }
+      ],
+      description: `function checks if a user has already been emailed, if so it doesn't email the person again.`,
+      type: 'Boolean',
+      javaCode: `
+        for( Object email : uniqueEmails ) {
+          if ( email.toString().equals(userEmail) ) return true;
+        }
+        return false;
       `
     },
     {
