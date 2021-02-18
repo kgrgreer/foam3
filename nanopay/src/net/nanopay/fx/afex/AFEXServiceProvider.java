@@ -1220,8 +1220,6 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     str.append("-");
     String randomString = UUID.randomUUID().toString();
     str.append(randomString.substring(0, Math.min(randomString.length(), 8)));
-    str.append("-");
-    str.append("instant");
     request.setVendorId(str.toString());
     try {
       CreateInstantBenefiaryResponse response = afexClient.createInstantBenefiary(request, user.getSpid());
