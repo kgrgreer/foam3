@@ -19,7 +19,7 @@ foam.CLASS({
     package: 'net.nanopay.tx.ruler',
     name: 'SummaryTransactionUpdateDUGRule',
 
-    documentation: 'Update a DUGRule on summaryTransactionDAO.',
+    documentation: 'Update a DUGRule on summarizingTransactionDAO.',
 
     implements: [
       'foam.nanos.ruler.RuleAction'

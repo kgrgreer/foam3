@@ -24,8 +24,7 @@ foam.CLASS({
     'foam.dao.*',
     'foam.core.FObject',
     'foam.core.X',
-    'net.nanopay.tx.SummaryTransaction',
-    'net.nanopay.fx.FXSummaryTransaction',
+    'net.nanopay.tx.SummarizingTransaction'
   ],
 
   methods: [
