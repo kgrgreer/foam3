@@ -32,6 +32,7 @@ foam.CLASS({
     'menuDAO',
     'notify',
     'pushMenu',
+    'theme',
     'user',
     'window'
   ],
@@ -129,7 +130,8 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start().addClass('account-profile-menu')
           .select(dao, function(menu) {
-            if ( menu.id === 'sme.accountProfile.switch-business' ) {
+            var switchBusinessMenu = 'sme.accountProfile.switch-business-' + self.theme.spid
+            if ( menu.id === switchBusinessMenu ) {
               return this.E().addClass('account-profile-item')
                   .start('a').addClass('sme-noselect')
                     .add(menu.label)
@@ -140,7 +142,7 @@ foam.CLASS({
                   });
             }
 
-            if ( menu.id === 'sme.accountProfile.signout' ) {
+            if ( menu.id === 'sme.accountProfile.signout-' + this.theme.spid ) {
               return this.E()
                 .addClass('account-profile-item')
                 .addClass('red')

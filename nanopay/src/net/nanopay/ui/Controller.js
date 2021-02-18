@@ -682,7 +682,8 @@ foam.CLASS({
           .start('a').addClass('toast-link')
             .add(this.TWO_FACTOR_REQUIRED_TWO)
             .on('click', () => {
-              this.pushMenu('sme.accountProfile.personal-settings');
+              var personalSettingMenu = 'sme.accountProfile.personal-settings' + this.theme.spid
+              this.pushMenu(personalSettingMenu);
             })
           .end();
 
@@ -818,18 +819,19 @@ foam.CLASS({
       if ( this.sme ) {
         window.onpopstate = async event => {
           var menu;
-
+          var switchBusinessMenu = 'sme.accountProfile.switch-business-' + this.theme.spid;
+          var signOutMenu = 'sme.accountProfile.signout-' + this.theme.spid
           // Redirect user to switch business if agent doesn't exist.
           if ( ! this.subject.realUser || this.subject.realUser.id === this.subject.user.id ) {
             //by setting memento here we will trigger mementoChange function in ApplicationController
             //which will find and launch sme.accountProfile.switch-business menu
-            this.memento.value = 'sme.accountProfile.switch-business'
+            this.memento.value = switchBusinessMenu
             return;
           }
 
           var hash = location.hash.substr(1);
 
-          if ( hash !== 'sme.accountProfile.switch-business' ) {
+          if ( hash !== switchBusinessMenu ) {
             this.initLayout.resolve();
           }
 
@@ -846,7 +848,7 @@ foam.CLASS({
             menu.launch(this);
           }
 
-          if ( hash != 'sme.accountProfile.signout' && hash !== '' ) {
+          if ( hash != signOutMenu && hash !== '' ) {
             this.bannerizeCompliance();
           }
         };

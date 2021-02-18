@@ -56,6 +56,7 @@ foam.CLASS({
     'quickbooksService',
     'pushMenu',
     'stack',
+    'theme',
     'userDAO',
     'xeroService',
     'uSBusinessOnboardingDAO',
@@ -164,7 +165,8 @@ foam.CLASS({
         })
         .add(this.PutFinalJunctionsAgent)
         .execute().then(() => {
-          this.pushMenu('sme.accountProfile.switch-business', true);
+          var switchBusinessMenu = 'sme.accountProfile.switch-business-' + this.theme.spid;
+          this.pushMenu(switchBusinessMenu, true);
         });
     }
   ]

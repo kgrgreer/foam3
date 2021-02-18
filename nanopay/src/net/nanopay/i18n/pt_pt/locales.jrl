@@ -1978,12 +1978,16 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"sign-in.label",target:"Assinar e
 p({class:"foam.i18n.Locale",locale:"pt",source:"set-security.label",target:"Sair"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"sign-up.label",target:"Inscrever-se"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"sme.accountProfile.business-settings.label",target:"Configurações de negócios"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"sme.accountProfile.switch-business.label",target:"Mudar de empresa"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"sme.accountProfile.signout.label",target:"Sair"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"sme.accountProfile.business-settings-ablii.label",target:"Configurações de negócios"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"sme.accountProfile.switch-business-ablii.label",target:"Mudar de empresa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"sme.accountProfile.signout-ablii.label",target:"Sair"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"sme.bank.matching.label",target:"Banco Matching"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"sme.accountProfile.personal-settings.label",target:"Configurações pessoais"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"sme.accountProfile.personal-settings-ablii.label",target:"Configurações pessoais"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"sme.menu.addBankAccount.label",target:"Adicionar conta bancária"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"sme.accountProfile.business-settings-treviso.label",target:"Configurações de negócios"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"sme.accountProfile.signout-treviso.label",target:"Sair"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"sme.accountProfile.personal-settings-treviso.label",target:"Configurações pessoais"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"smeNavigation.label",target:"Navegação Ablii"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"sme.main.appStore.label",target:"Característicos"})

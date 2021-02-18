@@ -43,6 +43,7 @@ foam.CLASS({
     'uSBusinessOnboardingDAO',
     'menuDAO',
     'stack',
+    'theme',
     'auth',
     'appConfigService'
   ],
@@ -379,7 +380,8 @@ foam.CLASS({
               location.hash = 'sme.main.onboarding.international';
             });
           } else {
-            this.menuDAO.find('sme.accountProfile.business-settings').then((menu) => menu.launch());
+            var businessSettingMenu = 'sme.accountProfile.business-settings-' + this.theme.spid;
+            this.menuDAO.find(businessSettingMenu).then((menu) => menu.launch());
           }
       }
     }
