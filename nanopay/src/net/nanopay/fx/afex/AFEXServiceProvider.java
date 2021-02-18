@@ -1218,7 +1218,6 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     request.setFundingBalanceId(fundingBalance.getFundingBalanceId());
     StringBuilder str = new StringBuilder();
     str.append(String.valueOf(userId));
-    str.append("-");
     String randomString = UUID.randomUUID().toString();
     str.append(randomString.substring(0, Math.min(randomString.length(), 8)));
     request.setVendorId(str.toString());
