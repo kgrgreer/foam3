@@ -681,10 +681,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   }
 
   private AFEXBeneficiary addBeneficiary(X x, long beneficiaryId, long ownerId, String status) {
-    return addBeneficiary(x, beneficiaryId, ownerId, status, false);
+    return addBeneficiary(x, beneficiaryId, ownerId, status, false, null);
   }
 
-  private AFEXBeneficiary addBeneficiary(X x, long beneficiaryId, long ownerId, String status, boolean isInstantBeneficiary) {
+  private AFEXBeneficiary addBeneficiary(X x, long beneficiaryId, long ownerId, String status, boolean isInstantBeneficiary, String vendorId) {
     DAO afexBeneficiaryDAO = ((DAO) x.get("afexBeneficiaryDAO")).inX(x);
     AFEXBeneficiary afexBeneficiary = (AFEXBeneficiary) afexBeneficiaryDAO.find(
       AND(
@@ -702,6 +702,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     afexBeneficiary.setContact(beneficiaryId);
     afexBeneficiary.setOwner(ownerId);
     afexBeneficiary.setStatus(status);
+    afexBeneficiary.setVendorId(vendorId);
     afexBeneficiary.setIsInstantBeneficiary(isInstantBeneficiary);
     return (AFEXBeneficiary) afexBeneficiaryDAO.put(afexBeneficiary);
   }
@@ -879,7 +880,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     createPaymentRequest.setPaymentDate(txn.getValueDate());
     createPaymentRequest.setAmount(String.valueOf(toDecimal(txn.getAmount())));
     createPaymentRequest.setCurrency(txn.getSourceCurrency());
-    createPaymentRequest.setVendorId(String.valueOf(afexBeneficiary.getContact()+"instant"));
+    createPaymentRequest.setVendorId(String.valueOf(afexBeneficiary.getVendorId()));
     try {
       CreatePaymentResponse paymentResponse = this.afexClient.createPayment(createPaymentRequest, user.getSpid());
       if ( paymentResponse != null && paymentResponse.getReferenceNumber() > 0 ) {
@@ -1227,7 +1228,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
       if ( response.getCode() != 0 ) throw new RuntimeException("Unable to create instant beneficiary. " + response.getInformationMessage());
 
-      return addBeneficiary(x, userId, userId, "Active", true);
+      return addBeneficiary(x, userId, userId, "Active", true, str.toString());
     } catch(Throwable t) {
       logger_.error("Error creating instant beneficiary " + userId , t);
       throw new RuntimeException("Error creating instant beneficiary. ");
