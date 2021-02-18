@@ -45,11 +45,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
-      name: 'vendorId',
-      documentation: 'Vendor Id saved on AFEX.'
-    },
-    {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'owner',
@@ -60,10 +55,6 @@ foam.CLASS({
           if ( user ) self.add(user.businessName);
         });
       }
-    },
-    {
-      class: 'Boolean',
-      name: 'isInstantBeneficiary'
     },
     {
       class: 'String',
