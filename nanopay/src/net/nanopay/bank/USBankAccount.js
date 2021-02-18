@@ -333,6 +333,7 @@ foam.CLASS({
       transient: true,
       label: '',
       updateVisibility: 'HIDDEN',
+      autoValidate: true,
       factory: function() {
         return net.nanopay.model.USPadCapture.create({
           country: this.country,
