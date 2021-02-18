@@ -10,8 +10,8 @@ p({
   "admissionCapability": "",
   "defaultMenu":"businesses-support",
   "disableCurrencyChoice": true,
-  "loginImage": "images/sign_in_illustration.png",
-  "logo":"images/bepay/bepay_logo.png",
+  "loginImage": "images/bepay/bepay_sign_in.svg",
+  "logo":"images/bepay/bepay_logo.svg",
   "largeLogo": "images/bepay/bepay_logo_color.png",
   "headConfig": {
     "customFavIcon" : [
@@ -37,7 +37,7 @@ p({
   "font1":"Próxima Nova",
   "primary1":"#0074BA",
   "primary2":"#00A5E0",
-  "primary3":"#53087F",
+  "primary3":"#0074BA",
   "primary4":"#937dff",
   "primary5":"#e4e4f7",
   "secondary1":"#4a33f4",
