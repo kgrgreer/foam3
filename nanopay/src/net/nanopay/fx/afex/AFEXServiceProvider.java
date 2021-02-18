@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import foam.core.ContextAwareSupport;
 import foam.core.X;
@@ -680,10 +681,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   }
 
   private AFEXBeneficiary addBeneficiary(X x, long beneficiaryId, long ownerId, String status) {
-    return addBeneficiary(x, beneficiaryId, ownerId, status, false);
+    return addBeneficiary(x, beneficiaryId, ownerId, status, false, String.valueOf(beneficiaryId));
   }
 
-  private AFEXBeneficiary addBeneficiary(X x, long beneficiaryId, long ownerId, String status, boolean isInstantBeneficiary) {
+  private AFEXBeneficiary addBeneficiary(X x, long beneficiaryId, long ownerId, String status, boolean isInstantBeneficiary, String vendorId) {
     DAO afexBeneficiaryDAO = ((DAO) x.get("afexBeneficiaryDAO")).inX(x);
     AFEXBeneficiary afexBeneficiary = (AFEXBeneficiary) afexBeneficiaryDAO.find(
       AND(
@@ -701,6 +702,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     afexBeneficiary.setContact(beneficiaryId);
     afexBeneficiary.setOwner(ownerId);
     afexBeneficiary.setStatus(status);
+    afexBeneficiary.setVendorId(vendorId);
     afexBeneficiary.setIsInstantBeneficiary(isInstantBeneficiary);
     return (AFEXBeneficiary) afexBeneficiaryDAO.put(afexBeneficiary);
   }
@@ -878,7 +880,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     createPaymentRequest.setPaymentDate(txn.getValueDate());
     createPaymentRequest.setAmount(String.valueOf(toDecimal(txn.getAmount())));
     createPaymentRequest.setCurrency(txn.getSourceCurrency());
-    createPaymentRequest.setVendorId(String.valueOf(afexBeneficiary.getContact()+"instant"));
+    createPaymentRequest.setVendorId(String.valueOf(afexBeneficiary.getVendorId()));
     try {
       CreatePaymentResponse paymentResponse = this.afexClient.createPayment(createPaymentRequest, user.getSpid());
       if ( paymentResponse != null && paymentResponse.getReferenceNumber() > 0 ) {
@@ -1214,14 +1216,19 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     CreateInstantBenefiaryRequest request = new CreateInstantBenefiaryRequest();
     request.setAccountId(fundingBalance.getAccountId());
     request.setFundingBalanceId(fundingBalance.getFundingBalanceId());
-    request.setVendorId(String.valueOf(userId) + "instant");
+    StringBuilder str = new StringBuilder();
+    str.append(String.valueOf(userId));
+    str.append("-");
+    String randomString = UUID.randomUUID().toString();
+    str.append(randomString.substring(0, Math.min(randomString.length(), 8)));
+    request.setVendorId(str.toString());
     try {
       CreateInstantBenefiaryResponse response = afexClient.createInstantBenefiary(request, user.getSpid());
       if ( response == null ) throw new RuntimeException("Unable to get a valid response from  CreateInstantBeneficiary API" );
 
       if ( response.getCode() != 0 ) throw new RuntimeException("Unable to create instant beneficiary. " + response.getInformationMessage());
 
-      return addBeneficiary(x, userId, userId, "Active", true);
+      return addBeneficiary(x, userId, userId, "Active", true, str.toString());
     } catch(Throwable t) {
       logger_.error("Error creating instant beneficiary " + userId , t);
       throw new RuntimeException("Error creating instant beneficiary. ");
