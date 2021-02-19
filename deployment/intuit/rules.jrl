@@ -27,19 +27,7 @@ p({
   lifecycleState:1,
   spid: "intuit"
 })
-p({
-  class:"foam.nanos.auth.ruler.EnsurePropertyOnCreateRule",
-  id:"2ea398cf-4c6c-f2c2-b515-afc9cd431176",
-  name:"Auto-fill feeAccount for TransactionFeeRule - intuit",
-  daoKey:"localRuleDAO",
-  ruleGroup:"TransactionFeeRule",
-  targetClass:"net.nanopay.tx.fee.TransactionFeeRule",
-  propName:"feeAccount",
-  propValue:"43abf17e-da98-5251-471d-d48e1624ba8f",
-  enabled:false,
-  lifecycleState:1,
-  spid:"intuit"
-})
+
 p({
   class: "net.nanopay.tx.fee.TransactionFeeRule",
   name:"Intuit0.6PercentFee",
