@@ -66,9 +66,9 @@ foam.CLASS({
     {
       name: 'sourceAccount',
       label: 'Payer Account',
-      hidden: true,
       order: 20,
-      gridColumns: 6
+      gridColumns: 6,
+      readPermissionRequired: true
     },
     {
       name: 'destinationAccount',
