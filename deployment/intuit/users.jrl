@@ -17,7 +17,7 @@ p({
     "group":"intuit-api-session",
     "emailVerified":true,
     "status":2,
-    "compliance":3,
+    "compliance":2,
     "lifecycleState":1
 })
 
