@@ -869,7 +869,7 @@ p({"class": "net.nanopay.model.BusinessSector", "id": 92952, "name":  "Manufactu
 p({"class": "net.nanopay.model.BusinessSector", "id": 92953, "name":  "Manufacture Of Oil Derived Products, Except Refined Products", "code":  "1922519", "countryId":  "BR", "parent": 5})
 p({"class": "net.nanopay.model.BusinessSector", "id": 92954, "name":  "Alcohol Manufacture", "code":  "1931419", "countryId":  "BR", "parent": 5})
 p({"class": "net.nanopay.model.BusinessSector", "id": 92955, "name":  "Manufacture Of Biofuels, Except Alcohol", "code":  "1932219", "countryId":  "BR", "parent": 5})
-p({"class": "net.nanopay.model.BusinessSector", "id": 92956, "name":  "Manufacture Of Chlorine And Allcalis", "code":  "2011820", "countryId":  "BR", "parent": 5})
+p({"class": "net.nanopay.model.BusinessSector", "id": 92956, "name":  "Manufacture Of Chlorine And Alkalies", "code":  "2011820", "countryId":  "BR", "parent": 5})
 p({"class": "net.nanopay.model.BusinessSector", "id": 92957, "name":  "Manufacture Of Intermediaries For Fertilizers", "code":  "2012620", "countryId":  "BR", "parent": 5})
 p({"class": "net.nanopay.model.BusinessSector", "id": 92958, "name":  "Manufacture Of Fertilizers And Fertilizers", "code":  "2013420", "countryId":  "BR", "parent": 5})
 p({"class": "net.nanopay.model.BusinessSector", "id": 92959, "name":  "Manufacture Of Industrial Gases", "code":  "2014220", "countryId":  "BR", "parent": 5})
