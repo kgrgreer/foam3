@@ -74,14 +74,14 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.Transaction',
       name: 'requestTransaction',
-      documentation: `Id of transaction requiring reversal`,
+      documentation: `Transaction doing the reversal`,
       section: 'infoSection',
       hidden: true
     },
     {
       class: 'String',
       name: 'refundTransaction',
-      documentation: `Id of the transaction`,
+      documentation: `Id of the transaction requiring reversal`,
       section: 'infoSection'
     },
     {
