@@ -60,12 +60,13 @@ foam.CLASS({
     },
     {
       name: 'amount',
-      order: 10
+      order: 10,
+      gridColumns: 6
     },
     {
       name: 'sourceAccount',
       label: 'Payer Account',
-      hidden: false,
+      hidden: true,
       order: 20,
       gridColumns: 6
     },
