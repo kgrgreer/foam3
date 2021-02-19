@@ -819,12 +819,6 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       throw new RuntimeException("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
     }
 
-    AFEXBeneficiary afexBeneficiary = getOrCreateAFEXBeneficiary(x,afexTransaction.getPayeeId(), afexTransaction.getPayerId());
-    if ( null == afexBeneficiary ) {
-      logger_.error("Contact has not been completely onboarded on partner system as a Beneficiary. " + transaction.getPayerId());
-      throw new RuntimeException("Contact has not been completely onboarded on partner system as a Beneficiary. " + transaction.getPayerId());
-    }
-
     FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(afexTransaction.getFxQuoteId()));
     if  ( null == quote ) {
       logger_.error("FXQuote not found with Quote ID:  " + afexTransaction.getFxQuoteId());
