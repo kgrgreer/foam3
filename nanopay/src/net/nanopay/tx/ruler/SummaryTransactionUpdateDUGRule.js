@@ -19,7 +19,7 @@ foam.CLASS({
     package: 'net.nanopay.tx.ruler',
     name: 'SummaryTransactionUpdateDUGRule',
 
-    documentation: 'Update a DUGRule on summaryTransactionDAO.',
+    documentation: 'Update a DUGRule on summarizingTransactionDAO.',
 
     implements: [
       'foam.nanos.ruler.RuleAction'
@@ -36,7 +36,7 @@ foam.CLASS({
         javaCode: `
           // Add this predicate to any DUGRule on the summaryTransactionDAO
           DUGRule dugRule = (DUGRule) obj;
-          dugRule.setPredicate(new foam.nanos.ruler.predicate.IsInstancePredicate.Builder(x).setOf(net.nanopay.tx.SummaryTransaction.getOwnClassInfo()).build());
+          dugRule.setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.tx.SummarizingTransaction.class));
         `
       }
     ]

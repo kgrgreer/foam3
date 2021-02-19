@@ -20,6 +20,10 @@ foam.CLASS({
   name: 'SummaryTransaction',
   extends: 'net.nanopay.tx.model.Transaction',
 
+  implements: [
+    'net.nanopay.tx.SummarizingTransaction'
+  ],
+
   javaImports: [
     'net.nanopay.integration.ErrorCode',
     'net.nanopay.tx.model.Transaction',
