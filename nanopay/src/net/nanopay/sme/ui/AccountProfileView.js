@@ -130,8 +130,7 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start().addClass('account-profile-menu')
           .select(dao, function(menu) {
-            var switchBusinessMenu = 'sme.accountProfile.switch-business-' + self.theme.spid
-            if ( menu.id === switchBusinessMenu ) {
+            if ( menu.id === 'sme.accountProfile.switch-business' ) {
               return this.E().addClass('account-profile-item')
                   .start('a').addClass('sme-noselect')
                     .add(menu.label)

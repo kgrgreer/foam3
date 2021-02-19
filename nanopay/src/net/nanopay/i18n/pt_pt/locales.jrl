@@ -1979,7 +1979,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"set-security.label",target:"Sair
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"sign-up.label",target:"Inscrever-se"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"sme.accountProfile.business-settings-ablii.label",target:"Configurações de negócios"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"sme.accountProfile.switch-business-ablii.label",target:"Mudar de empresa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"sme.accountProfile.switch-business.label",target:"Mudar de empresa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"sme.accountProfile.signout-ablii.label",target:"Sair"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"sme.bank.matching.label",target:"Banco Matching"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"sme.accountProfile.personal-settings-ablii.label",target:"Configurações pessoais"})

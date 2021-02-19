@@ -819,19 +819,18 @@ foam.CLASS({
       if ( this.sme ) {
         window.onpopstate = async event => {
           var menu;
-          var switchBusinessMenu = 'sme.accountProfile.switch-business-' + this.theme.spid;
           var signOutMenu = 'sme.accountProfile.signout-' + this.theme.spid
           // Redirect user to switch business if agent doesn't exist.
           if ( ! this.subject.realUser || this.subject.realUser.id === this.subject.user.id ) {
             //by setting memento here we will trigger mementoChange function in ApplicationController
             //which will find and launch sme.accountProfile.switch-business menu
-            this.memento.value = switchBusinessMenu
+            this.memento.value = 'sme.accountProfile.switch-business'
             return;
           }
 
           var hash = location.hash.substr(1);
 
-          if ( hash !== switchBusinessMenu ) {
+          if ( hash !== 'sme.accountProfile.switch-business' ) {
             this.initLayout.resolve();
           }
 
