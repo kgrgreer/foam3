@@ -120,7 +120,8 @@ foam.CLASS({
       documentation: 'Previous reputation of the user.',
       label: 'Previous reputation',
       section: 'responseInformation',
-      order: 110
+      order: 110,
+      gridColumns: 6
     },
     {
       class: 'String',
