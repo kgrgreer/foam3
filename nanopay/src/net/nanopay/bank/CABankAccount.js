@@ -515,8 +515,12 @@ foam.CLASS({
       ],
       javaCode: `
         StringBuilder iban = new StringBuilder();
-        iban.append(this.getRoutingCode(x));
-        iban.append(this.getAccountNumber());
+        Branch branch = findBranch(x);
+        if ( branch != null ) {
+          iban.append(getBankCode(x));
+          iban.append(getAccountNumber());
+          iban.append(branch.getBranchId());
+        }
         return iban.toString();
       `
     }
