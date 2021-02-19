@@ -682,7 +682,7 @@ foam.CLASS({
           .start('a').addClass('toast-link')
             .add(this.TWO_FACTOR_REQUIRED_TWO)
             .on('click', () => {
-              var personalSettingMenu = 'sme.accountProfile.personal-settings' + this.theme.spid
+              var personalSettingMenu = 'sme.accountProfile.personal-settings-' + this.theme.spid
               this.pushMenu(personalSettingMenu);
             })
           .end();
