@@ -10,14 +10,14 @@ p({
   "admissionCapability": "",
   "defaultMenu":"businesses-support",
   "disableCurrencyChoice": true,
-  "loginImage": "images/sign_in_illustration.png",
-  "logo":"images/bepay/bepay_logo.png",
+  "loginImage": "images/bepay/bepay_sign_in.svg",
+  "logo":"images/bepay/bepay_logo.svg",
   "largeLogo": "images/bepay/bepay_logo_color.png",
   "headConfig": {
     "customFavIcon" : [
       "<link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/favicon/apple-touch-icon.png\">",
-      "<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon/favicon.png\">",
-      "<link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/favicon/favicon.png\">",
+      "<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon/bepay/favicon-32x32.svg\">",
+      "<link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/favicon/bepay/favicon-16x16.svg\">",
       "<link rel=\"manifest\" href=\"/favicon/manifest.json\">",
       "<link rel=\"mask-icon\" href=\"/favicon/safari-pinned-tab.svg\" color=\"#5bbad5\">",
       "<link rel=\"shortcut icon\" href=\"/favicon/favicon.png\">",
@@ -37,7 +37,7 @@ p({
   "font1":"Próxima Nova",
   "primary1":"#0074BA",
   "primary2":"#00A5E0",
-  "primary3":"#53087F",
+  "primary3":"#0074BA",
   "primary4":"#937dff",
   "primary5":"#e4e4f7",
   "secondary1":"#4a33f4",
@@ -73,6 +73,11 @@ p({
     }
     .foam-comics-BrowserView {
       margin-top: 30px;
+    }
+    .net-nanopay-sme-ui-FooterView {
+      background: black !important;
+      border-top: 1px solid /*%GREY4%*/ #e7eaec;
+      color: white !important;
     }
   """,
   "createdBy":1,
