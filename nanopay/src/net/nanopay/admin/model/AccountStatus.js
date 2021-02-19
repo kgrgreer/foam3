@@ -31,8 +31,8 @@ foam.ENUM({
     { 
       name: 'SUBMITTED',
       label: 'Submitted',
-      color: '/*%DESTRUCTIVE2%*/ #a61414',
-      background: '/*%DESTRUCTIVE5%*/ #fbedec',
+      color: '/*%WARNING1%*/ #816819',
+      background: '/*%WARNING4%*/ #fbe88f'
     },
     { 
       name: 'ACTIVE',
@@ -43,14 +43,14 @@ foam.ENUM({
     { 
       name: 'DISABLED',
       label: 'Disabled',
-      color: '/*%WARNING1%*/ #816819',
-      background: '/*%WARNING4%*/ #fbe88f',
+      color: '/*%DESTRUCTIVE2%*/ #a61414',
+      background: '/*%DESTRUCTIVE5%*/ #fbedec'
     },
     { 
       name: 'REVOKED',
       label: 'Revoked',
-      color: '/*%WARNING1%*/ #816819',
-      background: '/*%WARNING4%*/ #fbe88f',
+      color: '/*%DESTRUCTIVE2%*/ #a61414',
+      background: '/*%DESTRUCTIVE5%*/ #fbedec'
     },
   ]
 });

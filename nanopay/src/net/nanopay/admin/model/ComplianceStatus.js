@@ -26,25 +26,25 @@ foam.ENUM({
       name: 'NOTREQUESTED', 
       label: 'Not Requested',
       color: '/*%GREY1%*/ #5e6061',
-      background: '/*%GREY4%*/ #e7eaec',
+      background: '/*%GREY4%*/ #e7eaec'
     },
     { 
       name: 'REQUESTED', 
       label: 'Requested',
-      color: '/*%DESTRUCTIVE2%*/ #a61414',
-      background: '/*%DESTRUCTIVE5%*/ #fbedec',
+      color: '/*%WARNING1%*/ #816819',
+      background: '/*%WARNING4%*/ #fbe88f'
     },
     { 
       name: 'PASSED',    
       label: 'Passed',
       color: '/*%APPROVAL2%*/ #117a41',
-      background: '/*%APPROVAL5%*/ #e2f2dd',
+      background: '/*%APPROVAL5%*/ #e2f2dd'
     },
     { 
       name: 'FAILED',    
       label: 'Failed',
-      color: '/*%WARNING1%*/ #816819',
-      background: '/*%WARNING4%*/ #fbe88f', 
+      color: '/*%DESTRUCTIVE2%*/ #a61414',
+      background: '/*%DESTRUCTIVE5%*/ #fbedec'
     }
   ]
 });

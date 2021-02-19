@@ -36,8 +36,8 @@ foam.ENUM({
       label: 'Reverse',
       documentation: 'DEPRECATED. CICO: after transaction was marked as COMPLETED we might receive rejection file from EFT. We attempt to reverse balance - REVERSE status occurs when balance reverted successfully. Should never be set manully, the status is calculated.',
       ordinal: 1,
-      color: '/*%GREY1%*/ #5e6061',
-      background: '/*%GREY4%*/ #e7eaec',
+      color: '/*%WARNING1%*/ #816819',
+      background: '/*%WARNING4%*/ #fbe88f'
     },
     {
       // deprecated
@@ -45,24 +45,24 @@ foam.ENUM({
       label: 'ReverseFail',
       documentation: 'DEPRECATED. CICO: after transaction was marked as COMPLETED we might receive rejection file from EFT. We attempt to reverse balance - REVERSE_FAIL status occurs when balance failed to revert. Should never be set manully, the status is calculated.',
       ordinal: 2,
-      color: '/*%WARNING1%*/ #816819',
-      background: '/*%WARNING4%*/ #fbe88f', 
+      color: '/*%DESTRUCTIVE2%*/ #a61414',
+      background: '/*%DESTRUCTIVE5%*/ #fbedec',
     },
     {
       name: 'SENT',
       label: 'Sent',
       documentation: 'CICO: transaction takes status SENT when automatically generated CSV file with transactions is sent to EFT.',
       ordinal: 3,
-      color: '/*%DESTRUCTIVE2%*/ #a61414',
-      background: '/*%DESTRUCTIVE5%*/ #fbedec',
+      color: '/*%WARNING1%*/ #816819',
+      background: '/*%WARNING4%*/ #fbe88f'
     },
     {
       name: 'DECLINED',
       label: 'Declined',
       documentation: 'CICO: transaction that was rejected by EFT.',
       ordinal: 4,
-      color: '/*%WARNING1%*/ #816819',
-      background: '/*%WARNING4%*/ #fbe88f', 
+      color: '/*%DESTRUCTIVE2%*/ #a61414',
+      background: '/*%DESTRUCTIVE5%*/ #fbedec'
     },
     {
       name: 'COMPLETED',
@@ -78,47 +78,47 @@ foam.ENUM({
       label: 'Refunded',
       documentation: 'DEPRECATED. Retail transaction: status of a transaction that was refunded.',
       ordinal: 6,
-      color: '/*%GREY1%*/ #5e6061',
-      background: '/*%GREY4%*/ #e7eaec',
+      color: '/*%WARNING1%*/ #816819',
+      background: '/*%WARNING4%*/ #fbe88f'
     },
     {
       name: 'FAILED',
       label: 'Failed',
       documentation: 'CICO: in case confirmation files indicates invalid transactions, those transactions take FAILED status.',
       ordinal: 9,
-      color: '/*%WARNING1%*/ #816819',
-      background: '/*%WARNING4%*/ #fbe88f', 
+      color: '/*%DESTRUCTIVE2%*/ #a61414',
+      background: '/*%DESTRUCTIVE5%*/ #fbedec',
     },
     {
       name: 'PAUSED',
       label: 'Paused',
       documentation: 'CICO: PAUSED transactions are being ignored by the system. Example: transaction was voided on EFT portal, the transaction should be marked as PAUSED within the system.', // REVIEW
       ordinal: 10,
-      color: '/*%DESTRUCTIVE2%*/ #a61414',
-      background: '/*%DESTRUCTIVE5%*/ #fbedec',
+      color: '/*%WARNING1%*/ #816819',
+      background: '/*%WARNING4%*/ #fbe88f'
     },
     {
       name: 'CANCELLED',
       label: 'Cancelled',
       ordinal: 11,
-      color: '/*%WARNING1%*/ #816819',
-      background: '/*%WARNING4%*/ #fbe88f', 
+      color: '/*%DESTRUCTIVE2%*/ #a61414',
+      background: '/*%DESTRUCTIVE5%*/ #fbedec'
     },
     {
       name: 'PENDING_PARENT_COMPLETED',
       label: 'Pending Parent Completed',
       documentation: 'Chained transaction: child transactions are in PENDING_PARENT_COMPLETED and being ignored by the system until all parents go to COMPLETED state.',
       ordinal: 12,
-      color: '/*%DESTRUCTIVE2%*/ #a61414',
-      background: '/*%DESTRUCTIVE5%*/ #fbedec',
+      color: '/*%GREY1%*/ #5e6061',
+      background: '/*%GREY4%*/ #e7eaec'
     },
     {
       name: 'SCHEDULED',
       label: 'Scheduled',
       documentation: 'Scheduled transaction specifies the time when transaction needs to be processsed.',
       ordinal: 13,
-      color: '/*%DESTRUCTIVE2%*/ #a61414',
-      background: '/*%DESTRUCTIVE5%*/ #fbedec',
+      color: '/*%GREY1%*/ #5e6061',
+      background: '/*%GREY4%*/ #e7eaec',
     }
   ]
 });
