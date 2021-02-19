@@ -79,9 +79,9 @@ foam.CLASS({
                 feeSummary = (FeeSummaryTransactionLineItem) lineItem;
                 for ( TransactionLineItem feeLineItems: ((FeeSummaryTransactionLineItem)lineItem).getLineItems() ) {
                   if (feeLineItems instanceof InvoicedFeeLineItem) {
-                    invoicedFeeAmount += lineItem.getAmount();
+                    invoicedFeeAmount += feeLineItems.getAmount();
                   } else if (feeLineItems instanceof FeeLineItem) {
-                    feeAmount += lineItem.getAmount();
+                    feeAmount += feeLineItems.getAmount();
                   }
                 }
               }
