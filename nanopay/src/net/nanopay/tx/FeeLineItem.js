@@ -74,7 +74,10 @@ foam.CLASS({
       label: 'Fee Account',
       hidden: false,
       order: 30,
-      gridColumns: 6
+      gridColumns: 6,
+      view: {
+        class: 'foam.u2.view.ReferenceView'
+      }
     },
     {
       class: 'FObjectArray',
