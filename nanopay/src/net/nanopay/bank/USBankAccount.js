@@ -440,6 +440,21 @@ foam.CLASS({
       javaCode: `
         return getBranchId();
       `
+    },
+    {
+      name: 'getIban',
+      type: 'String',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      javaCode: `
+        StringBuilder iban = new StringBuilder();
+        iban.append(this.getRoutingCode(x));
+        iban.append(this.getAccountNumber());
+        return iban.toString();
+      `
     }
  ]
 });
