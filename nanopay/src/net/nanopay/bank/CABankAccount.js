@@ -505,6 +505,21 @@ foam.CLASS({
         }
         return code.toString();
       `
+    },
+    {
+      name: 'getIban',
+      type: 'String',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      javaCode: `
+        StringBuilder iban = new StringBuilder();
+        iban.append(this.getRoutingCode(x));
+        iban.append(this.getAccountNumber());
+        return iban.toString();
+      `
     }
   ]
 });
