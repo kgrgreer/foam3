@@ -121,18 +121,26 @@ foam.CLASS({
         return {
           class: 'net.nanopay.sme.ui.AddressView'
         };
-      }
+      },
+      section: 'userInformation',
+      order: 180
     },
     {
       class: 'foam.nanos.fs.FileProperty',
       name: 'profilePicture',
-      createVisibility: 'HIDDEN'
+      createVisibility: 'HIDDEN',
+      section: 'userInformation',
+      order: 230,
+      gridColumns: 6
     },
     {
       class: 'String',
       name: 'organization',
       order: 15,
-      label: 'Company Name'
+      label: 'Company Name',
+      section: 'businessInformation',
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'foam.nanos.fs.FileArray',
@@ -320,7 +328,10 @@ foam.CLASS({
       name: 'lifecycleState',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
-      readVisibility: 'RO'
+      readVisibility: 'RO',
+      section: 'systemInformation',
+      order: 40,
+      gridColumns: 6,
     },
     {
       class: 'Boolean',
