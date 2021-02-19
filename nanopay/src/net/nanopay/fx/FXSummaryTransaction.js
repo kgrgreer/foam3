@@ -23,14 +23,41 @@ foam.CLASS({
   documentation: `Transaction used as a summary to for AFEX BMO transactions`,
 
   javaImports: [
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.tx.cico.CITransaction',
+    'net.nanopay.tx.cico.COTransaction',
+    'net.nanopay.tx.PartnerTransaction',
+    'net.nanopay.tx.DigitalTransaction',
+    'net.nanopay.tx.ChainSummary'
   ],
 
   messages: [
     { name: 'DESCRIPTION', message: 'Summary' },
   ],
 
+  implements: [
+    'net.nanopay.tx.SummarizingTransaction'
+  ],
+
+  sections: [
+      {
+        name: 'transactionChainSummaryInformation',
+        title: 'Transaction Status Summary',
+        help: 'Transaction chain information can be added here',
+        order: 15
+      }
+    ],
+
   properties: [
+    {
+      name: 'chainSummary',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.ChainSummary',
+      storageTransient: true,
+      visibility: 'RO',
+      section: 'transactionChainSummaryInformation'
+    },
     {
       class: 'UnitValue',
       name: 'intermediateAmount',
@@ -98,6 +125,49 @@ foam.CLASS({
   },
   function toSummary() {
     return this.DESCRIPTION;
-  }
+  },
+  {
+    documentation: 'Returns childrens status.',
+    name: 'getState',
+    args: [
+      { name: 'x', type: 'Context' }
+    ],
+    type: 'net.nanopay.tx.model.TransactionStatus',
+    javaCode: `
+
+      Transaction t = getStateTxn(x);
+      ChainSummary cs = new ChainSummary();
+      if (t.getStatus() == TransactionStatus.DECLINED) {
+        cs.setErrorCode(t.calculateErrorCode());
+      }
+      cs.setStatus(t.getStatus());
+      cs.setCategory(categorize_(t));
+      cs.setSummary(cs.toSummary());
+      this.setChainSummary(cs);
+      return t.getStatus();
+    `
+  },
+  {
+    documentation: 'sorts transaction into category, for display to user.',
+    name: 'categorize_',
+    args: [
+      { name: 't', type: 'net.nanopay.tx.model.Transaction' }
+    ],
+    type: 'String',
+    javaCode: `
+      if (t.getStatus().equals(TransactionStatus.COMPLETED))
+        return "";
+      if (t instanceof CITransaction)
+        return "CashIn";
+      if (t instanceof COTransaction)
+        return "CashOut";
+      if (t instanceof PartnerTransaction)
+        return "Partner";
+      if (t instanceof DigitalTransaction)
+        return "Digital";
+      else
+        return "Approval";
+    `
+  },
  ],
 });

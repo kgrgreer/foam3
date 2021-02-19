@@ -22,75 +22,108 @@ foam.CLASS({
   properties: [
     {
       class: 'Int',
-      name: 'resultId'
-    },
-    {
-      class: 'String',
-      name: 'entityName'
-    },
-    {
-      class: 'String',
-      name: 'entityType'
-    },
-    {
-      class: 'String',
-      name: 'normalizedEntityType'
-    },
-    {
-      class: 'String',
-      name: 'entityStatus'
-    },
-    {
-      class: 'String',
-      name: 'normalizedEntityStatus'
-    },
-    {
-      class: 'Boolean',
-      name: 'extraProvincial'
-    },
-    {
-      class: 'String',
-      name: 'jurisdiction'
-    },
-    {
-      class: 'String',
-      name: 'homeJurisdiction'
-    },
-    {
-      class: 'String',
-      name: 'formationDate'
-    },
-    {
-      class: 'String',
-      name: 'entityNumber'
-    },
-    {
-      class: 'String',
-      name: 'annualReturnCompliance'
+      name: 'resultId',
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'Boolean',
       name: 'closeMatch',
       documentation: `This field will have a value of 'true' if Securefact determines the entity to
-        be the closest match to the search criteria and the Profile Report can be ordered.`
+        be the closest match to the search criteria and the Profile Report can be ordered.`,
+      order: 20,
+      gridColumns: 3
     },
     {
       class: 'String',
-      name: 'nameStatus'
+      name: 'confidenceScore',
+      order: 25,
+      gridColumns: 3
+    },
+    {
+      class: 'String',
+      name: 'entityName',
+      order: 30,
+      gridColumns: 6
+    },
+    {
+      class: 'String',
+      name: 'entityType',
+      order: 40,
+      gridColumns: 3
+    },
+    {
+      class: 'String',
+      name: 'normalizedEntityType',
+      order: 50,
+      gridColumns: 3
+    },
+    {
+      class: 'String',
+      name: 'entityStatus',
+      order: 60,
+      gridColumns: 6
+    },
+    {
+      class: 'String',
+      name: 'normalizedEntityStatus',
+      order: 70,
+      gridColumns: 6
+    },
+    {
+      class: 'Boolean',
+      name: 'extraProvincial',
+      order: 80,
+      gridColumns: 6
+    },
+    {
+      class: 'String',
+      name: 'jurisdiction',
+      order: 90,
+      gridColumns: 3
+    },
+    {
+      class: 'String',
+      name: 'homeJurisdiction',
+      order: 100,
+      gridColumns: 3
+    },
+    {
+      class: 'String',
+      name: 'formationDate',
+      order: 110,
+      gridColumns: 6
+    },
+    {
+      class: 'String',
+      name: 'entityNumber',
+      order: 120,
+      gridColumns: 6
+    },
+    {
+      class: 'String',
+      name: 'annualReturnCompliance',
+      order: 130,
+      gridColumns: 6
+    },
+    {
+      class: 'String',
+      name: 'nameStatus',
+      order: 140,
+      gridColumns: 6
     },
     {
       class: 'FObjectArray',
       of: 'net.nanopay.meter.compliance.secureFact.lev.LEVChange',
-      name: 'changes'
-    },
-    {
-      class: 'String',
-      name: 'confidenceScore'
+      name: 'changes',
+      order: 160
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.meter.compliance.secureFact.lev.LEVIndividualScores',
-      name: 'individualScores'
+      name: 'individualScores',
+      order: 170,
+      gridColumns: 6
     },
   ]
   });

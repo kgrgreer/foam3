@@ -6,40 +6,13 @@ p({
   feeName:"Nanopay Transaction Fee",
   sourceCurrencyAsFeeDenomination: true,
   predicate:{
-    "class":"foam.mlang.predicate.And",
-    "args: [
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
-        "propName":"destinationAccount",
-        "propValue":"ab590614-f5bd-476a-84e0-6037607397b5"
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
-        "propName":"destinationAccount",
-        "propValue":"93f3fa36-7429-4b20-a223-f5b50a6d9872"
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
-        "of":"net.nanopay.tx.DigitalTransaction"
-      }
-    ]
+    "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+    "of":"net.nanopay.tx.DigitalTransaction"
   },
   lifecycleState:1,
   spid: "intuit"
 })
-p({
-  class:"foam.nanos.auth.ruler.EnsurePropertyOnCreateRule",
-  id:"2ea398cf-4c6c-f2c2-b515-afc9cd431176",
-  name:"Auto-fill feeAccount for TransactionFeeRule - intuit",
-  daoKey:"localRuleDAO",
-  ruleGroup:"TransactionFeeRule",
-  targetClass:"net.nanopay.tx.fee.TransactionFeeRule",
-  propName:"feeAccount",
-  propValue:"43abf17e-da98-5251-471d-d48e1624ba8f",
-  enabled:false,
-  lifecycleState:1,
-  spid:"intuit"
-})
+
 p({
   class: "net.nanopay.tx.fee.TransactionFeeRule",
   name:"Intuit0.6PercentFee",
@@ -48,23 +21,8 @@ p({
   feeName:"Intuit Transaction Fee",
   sourceCurrencyAsFeeDenomination: true,
   predicate:{
-    "class":"foam.mlang.predicate.And",
-    "args: [
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
-        "propName":"destinationAccount",
-        "propValue":"ab590614-f5bd-476a-84e0-6037607397b5"
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
-        "propName":"destinationAccount",
-        "propValue":"93f3fa36-7429-4b20-a223-f5b50a6d9872"
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
-        "of":"net.nanopay.tx.DigitalTransaction"
-      }
-    ]
+    "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+    "of":"net.nanopay.tx.DigitalTransaction"
   },
   lifecycleState:1,
   spid: "intuit"

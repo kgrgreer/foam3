@@ -15,21 +15,26 @@
  * from nanopay Corporation.
  */
 
-foam.CLASS({
-  package: 'net.nanopay.fx.afex',
-  name: 'AFEXBusinessApprovalRequest',
+foam.INTERFACE({
+  package: 'net.nanopay.tx',
+  name: 'SummarizingTransaction',
+  documentation: 'Interface for transactions which act as summaries to a larger transaction chain',
 
-  documentation: 'Approval request to allow 5minutes delay in AFEX Client Onboarding',
-
-  extends: 'foam.nanos.approval.ApprovalRequest',
-
-  properties: [
+  methods: [
     {
-      class: 'String',
-      name: 'afexBusinessId',
-      section: 'approvalRequestInformation',
-      order: 92,
-      gridColumns: 6
+      name: 'categorize_',
+      args: [
+        { name: 't', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      type: 'String',
+    },
+    {
+      documentation: `Collect all line items of succeeding transactions of self.`,
+      name: 'collectLineItems',
+    },
+    {
+      name: 'getChainSummary',
+      type: 'net.nanopay.tx.ChainSummary'
     }
   ]
 });

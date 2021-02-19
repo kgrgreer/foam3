@@ -25,21 +25,11 @@ foam.CLASS({
   properties: [
     {
       name: 'classification',
-      value: 'Expedite transaction',
-      visibility: function(classification) {
-        return classification ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      }
+      value: 'Expedite transaction'
     },
     {
       name: 'daoKey',
-      value: 'localTransactionDAO',
-      visibility: function(daoKey) {
-        return daoKey ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      }
+      value: 'localTransactionDAO'
     }
   ]
 });
