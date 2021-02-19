@@ -1326,7 +1326,12 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
   protected String getBusinessSector(long sectorId) throws RuntimeException {
     BusinessSector businessSector = (BusinessSector) ((DAO) x.get("afexBusinessSectorDAO")).find(sectorId);
-    if ( businessSector == null ) throw new RuntimeException("Business Sector not found.");
+    if ( businessSector == null )
+      businessSector = (BusinessSector) ((DAO) x.get("businessSectorDAO")).find(sectorId);
+
+    if ( businessSector == null )
+      throw new RuntimeException("Business Sector not found.");
+
     return businessSector.getName();
   }
 
