@@ -24,11 +24,15 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'test'
+      name: 'test',
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: 'details'
+      name: 'details',
+      order: 20,
+      gridColumns: 6
     },
     {
       class: 'Boolean',
@@ -41,11 +45,15 @@ foam.CLASS({
     {
       class: 'String',
       name: 'firedString',
-      label: 'Fired'
+      label: 'Fired',
+      order: 30,
+      gridColumns: 6
     },
     {
       class: 'Boolean',
-      name: 'waitingForData'
+      name: 'waitingForData',
+      order: 40,
+      gridColumns: 6
     }
   ]
 })
