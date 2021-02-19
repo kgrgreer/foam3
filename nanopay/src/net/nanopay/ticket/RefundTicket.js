@@ -79,7 +79,8 @@ foam.CLASS({
       hidden: true
     },
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'net.nanopay.tx.model.Transaction',
       name: 'refundTransaction',
       documentation: `Id of the transaction requiring reversal`,
       section: 'infoSection'
@@ -91,13 +92,17 @@ foam.CLASS({
       section: 'infoSection'
     },
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'net.nanopay.tx.model.Transaction',
       name: 'problemTransaction',
       documentation: `Id of the problem transaction`,
       createVisibility: function(problemTransaction) {
         return (problemTransaction == null) ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RO;
       },
-      section: 'infoSection'
+      section: 'infoSection',
+      createVisibility: 'HIDDEN',
+      readVisibility: 'RO',
+      updateVisibility: 'RO'
     },
     {
       class: 'Enum',
@@ -107,11 +112,11 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'refundfees'
+      name: 'refundFees'
     },
     {
       class: 'Boolean',
-      name: 'waivecharges'
+      name: 'waiveCharges'
     },
     {
       class: 'String',

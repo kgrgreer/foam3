@@ -40,7 +40,8 @@ foam.CLASS({
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus'
+    'net.nanopay.tx.model.TransactionStatus',
+    'foam.nanos.logger.Logger',
   ],
 
   properties: [
@@ -87,7 +88,8 @@ foam.CLASS({
             }
           }
           catch ( Exception e2 ) {
-            // add note on ticket that the transaction was not paused.
+            Logger logger = (Logger) x.get("logger");
+            logger.error("we failed to pause the Transaction "+problem.getId());
           }
         }
 

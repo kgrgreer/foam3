@@ -70,7 +70,7 @@ foam.CLASS({
 
           Transaction summary = problemTxn.findRoot(x);
 
-          if ( request.getRefundOldFees() ) {
+          if ( request.getRefundFees() ) {
             Long feeAmount = 0l;
             Long invoicedFeeAmount = 0l;
             FeeSummaryTransactionLineItem feeSummary = null;
