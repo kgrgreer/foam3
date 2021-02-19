@@ -31,6 +31,11 @@ foam.CLASS({
     'foam.nanos.auth.ServiceProviderAware'
   ],
 
+  topics: [
+    'finished',
+    'throwError'
+  ],
+
   imports: [
     'accountDAO',
     'addCommas',
@@ -38,6 +43,8 @@ foam.CLASS({
     'ctrl',
     'currencyDAO',
     'securitiesDAO',
+    'ticketDAO',
+    'notify',
     'group',
     'homeDenomination',
     'stack?',
@@ -181,7 +188,9 @@ foam.CLASS({
   messages: [
     { name: 'INVALID_AMOUNT', message: 'Amount cannot be negative' },
     { name: 'BOTH_INVALID_AMOUNT', message: 'Both amount and destination amount cannot be 0' },
-    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History for' }
+    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History for' },
+    { name: 'REQUEST_CANCELLATION_SUCCESS', message: 'Successfully sent request for cancellation' },
+    { name: 'REQUEST_REFUND_SUCCESS', message: 'Successfully sent request for refund' }
   ],
 
   // relationships: parent, children
@@ -1415,6 +1424,47 @@ foam.CLASS({
       javaCode: `
       return 0;
     `,
+    }
+  ],
+
+  actions: [
+    {
+      name: 'requestRefund',
+      section: 'transactionInformation',
+      isAvailable: function(status){
+        return status === net.nanopay.tx.model.TransactionStatus.COMPLETED;
+      },
+      code: function(X) {
+        var refundTicket = net.nanopay.ticket.RefundTicket.create({refundTransaction: this.id});
+
+        this.ticketDAO.put(refundTicket).then(ticket => {
+          this.finished.pub();
+          this.notify(this.REQUEST_REFUND_SUCCESS, '', foam.log.LogLevel.INFO, true);
+          X.stack.back();
+        }).catch(error => {
+          this.throwError.pub(error);
+          this.notify(error.message, '', foam.log.LogLevel.ERROR, true);
+        })
+      }
+    },
+    {
+      name: 'requestCancellation',
+      section: 'transactionInformation',
+      isAvailable: function(status){
+        return status === net.nanopay.tx.model.TransactionStatus.PENDING;
+      },
+      code: function(X) {
+        var refundTicket = net.nanopay.ticket.RefundTicket.create({refundTransaction: this.id});
+
+        this.ticketDAO.put(refundTicket).then(ticket => {
+          this.finished.pub();
+          this.notify(this.REQUEST_CANCELLATION_SUCCESS, '', foam.log.LogLevel.INFO, true);
+          X.stack.back();
+        }).catch(error => {
+          this.throwError.pub(error);
+          this.notify(error.message, '', this.LogLevel.ERROR, true);
+        })
+      }
     }
   ]
 });
