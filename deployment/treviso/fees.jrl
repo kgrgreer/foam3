@@ -104,7 +104,7 @@ p({
 // Treviso Fee (CA): 25, 22, 18
 p({
   class: "net.nanopay.tx.fee.FixedFee",
-  id: "26464c66-3b64-4587-96da-5c56e300598f-001",
+  id: "26464c66-3b64-4587-96da-5c56e300598f-004",
   name: "Treviso Fee",
   fixedFee: 2500,
   predicate: {
@@ -134,7 +134,7 @@ p({
 })
 p({
   class: "net.nanopay.tx.fee.FixedFee",
-  id: "26464c66-3b64-4587-96da-5c56e300598f-002",
+  id: "26464c66-3b64-4587-96da-5c56e300598f-005",
   name: "Treviso Fee",
   fixedFee: 2200,
   predicate: {
@@ -176,7 +176,7 @@ p({
 })
 p({
   class: "net.nanopay.tx.fee.FixedFee",
-  id: "26464c66-3b64-4587-96da-5c56e300598f-003",
+  id: "26464c66-3b64-4587-96da-5c56e300598f-006",
   name: "Treviso Fee",
   fixedFee: 1800,
   predicate: {
@@ -207,7 +207,7 @@ p({
 // Treviso Fee (GB): 18, 15, 12
 p({
   class: "net.nanopay.tx.fee.FixedFee",
-  id: "26464c66-3b64-4587-96da-5c56e300598f-001",
+  id: "26464c66-3b64-4587-96da-5c56e300598f-007",
   name: "Treviso Fee",
   fixedFee: 1800,
   predicate: {
@@ -237,7 +237,7 @@ p({
 })
 p({
   class: "net.nanopay.tx.fee.FixedFee",
-  id: "26464c66-3b64-4587-96da-5c56e300598f-002",
+  id: "26464c66-3b64-4587-96da-5c56e300598f-008",
   name: "Treviso Fee",
   fixedFee: 1500,
   predicate: {
@@ -279,7 +279,7 @@ p({
 })
 p({
   class: "net.nanopay.tx.fee.FixedFee",
-  id: "26464c66-3b64-4587-96da-5c56e300598f-003",
+  id: "26464c66-3b64-4587-96da-5c56e300598f-009",
   name: "Treviso Fee",
   fixedFee: 1200,
   predicate: {
@@ -310,7 +310,7 @@ p({
 // Treviso Fee (Euro - EPA regions): 18, 15, 12
 p({
   class: "net.nanopay.tx.fee.FixedFee",
-  id: "26464c66-3b64-4587-96da-5c56e300598f-001",
+  id: "26464c66-3b64-4587-96da-5c56e300598f-010",
   name: "Treviso Fee",
   fixedFee: 1800,
   predicate: {
@@ -340,7 +340,7 @@ p({
 })
 p({
   class: "net.nanopay.tx.fee.FixedFee",
-  id: "26464c66-3b64-4587-96da-5c56e300598f-002",
+  id: "26464c66-3b64-4587-96da-5c56e300598f-011",
   name: "Treviso Fee",
   fixedFee: 1500,
   predicate: {
@@ -382,7 +382,7 @@ p({
 })
 p({
   class: "net.nanopay.tx.fee.FixedFee",
-  id: "26464c66-3b64-4587-96da-5c56e300598f-003",
+  id: "26464c66-3b64-4587-96da-5c56e300598f-012",
   name: "Treviso Fee",
   fixedFee: 1200,
   predicate: {
@@ -413,7 +413,7 @@ p({
 // Treviso Fee (CN): 25, 22, 18
 p({
   class: "net.nanopay.tx.fee.FixedFee",
-  id: "26464c66-3b64-4587-96da-5c56e300598f-001",
+  id: "26464c66-3b64-4587-96da-5c56e300598f-013",
   name: "Treviso Fee",
   fixedFee: 2500,
   predicate: {
@@ -443,7 +443,7 @@ p({
 })
 p({
   class: "net.nanopay.tx.fee.FixedFee",
-  id: "26464c66-3b64-4587-96da-5c56e300598f-002",
+  id: "26464c66-3b64-4587-96da-5c56e300598f-014",
   name: "Treviso Fee",
   fixedFee: 2200,
   predicate: {
@@ -485,7 +485,7 @@ p({
 })
 p({
   class: "net.nanopay.tx.fee.FixedFee",
-  id: "26464c66-3b64-4587-96da-5c56e300598f-003",
+  id: "26464c66-3b64-4587-96da-5c56e300598f-015",
   name: "Treviso Fee",
   fixedFee: 1800,
   predicate: {
@@ -516,7 +516,7 @@ p({
 // Treviso Fee (HK): 25, 22, 18
 p({
   class: "net.nanopay.tx.fee.FixedFee",
-  id: "26464c66-3b64-4587-96da-5c56e300598f-001",
+  id: "26464c66-3b64-4587-96da-5c56e300598f-016",
   name: "Treviso Fee",
   fixedFee: 2500,
   predicate: {
@@ -546,7 +546,7 @@ p({
 })
 p({
   class: "net.nanopay.tx.fee.FixedFee",
-  id: "26464c66-3b64-4587-96da-5c56e300598f-002",
+  id: "26464c66-3b64-4587-96da-5c56e300598f-017",
   name: "Treviso Fee",
   fixedFee: 2200,
   predicate: {
@@ -588,7 +588,7 @@ p({
 })
 p({
   class: "net.nanopay.tx.fee.FixedFee",
-  id: "26464c66-3b64-4587-96da-5c56e300598f-003",
+  id: "26464c66-3b64-4587-96da-5c56e300598f-018",
   name: "Treviso Fee",
   fixedFee: 1800,
   predicate: {
