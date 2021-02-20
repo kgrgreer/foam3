@@ -320,7 +320,7 @@ p({
         class: "net.nanopay.tx.fee.predicate.PaymentCorridorPredicate",
         paymentProvider: "Treviso",
         sourceCountry: "BR",
-        targetCountry: "US"
+        targetCountryList: [ "AT", "BE", "CY", "EE", "FI", "FR", "DE", "GR", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PT", "SK", "SI", "ES" ]
       },
       {
         class: "foam.mlang.predicate.Lte",
@@ -350,7 +350,7 @@ p({
         class: "net.nanopay.tx.fee.predicate.PaymentCorridorPredicate",
         paymentProvider: "Treviso",
         sourceCountry: "BR",
-        targetCountry: "US"
+        targetCountryList: [ "AT", "BE", "CY", "EE", "FI", "FR", "DE", "GR", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PT", "SK", "SI", "ES" ]
       },
       {
         class: "foam.mlang.predicate.Gt",
@@ -392,7 +392,7 @@ p({
         class: "net.nanopay.tx.fee.predicate.PaymentCorridorPredicate",
         paymentProvider: "Treviso",
         sourceCountry: "BR",
-        targetCountry: "US"
+        targetCountryList: [ "AT", "BE", "CY", "EE", "FI", "FR", "DE", "GR", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PT", "SK", "SI", "ES" ]
       },
       {
         class: "foam.mlang.predicate.Gt",
