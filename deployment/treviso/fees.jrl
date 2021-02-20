@@ -1,4 +1,4 @@
-// Treviso Fees
+// Treviso Fee (US): 18, 15, 12
 p({
   class: "net.nanopay.tx.fee.FixedFee",
   id: "26464c66-3b64-4587-96da-5c56e300598f-001",
@@ -101,7 +101,7 @@ p({
   },
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
-// CAD
+// Treviso Fee (CA): 25, 22, 18
 p({
   class: "net.nanopay.tx.fee.FixedFee",
   id: "26464c66-3b64-4587-96da-5c56e300598f-001",
@@ -204,7 +204,7 @@ p({
   },
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
-// GBP
+// Treviso Fee (GB): 18, 15, 12
 p({
   class: "net.nanopay.tx.fee.FixedFee",
   id: "26464c66-3b64-4587-96da-5c56e300598f-001",
@@ -307,7 +307,7 @@ p({
   },
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
-// EUR - EPA region
+// Treviso Fee (Euro - EPA regions): 18, 15, 12
 p({
   class: "net.nanopay.tx.fee.FixedFee",
   id: "26464c66-3b64-4587-96da-5c56e300598f-001",
@@ -410,7 +410,7 @@ p({
   },
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
-// RMB
+// Treviso Fee (CN): 25, 22, 18
 p({
   class: "net.nanopay.tx.fee.FixedFee",
   id: "26464c66-3b64-4587-96da-5c56e300598f-001",
@@ -513,7 +513,7 @@ p({
   },
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
-// HKD
+// Treviso Fee (HK): 25, 22, 18
 p({
   class: "net.nanopay.tx.fee.FixedFee",
   id: "26464c66-3b64-4587-96da-5c56e300598f-001",
@@ -617,21 +617,7 @@ p({
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
 
-// TODO: need update
-p({
-  class: "net.nanopay.tx.fee.FixedFee",
-  id: "1545bad0-b88e-40df-886d-98f22532b535",
-  name: "Treviso Fee",
-  fixedFee: 4000,
-  predicate: {
-    class: "net.nanopay.tx.fee.predicate.PaymentCorridorPredicate",
-    paymentProvider: "Treviso",
-    sourceCountry: "BR",
-    targetCountry: "CA"
-  },
-  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
-})
-
+// Bank Fee (USD): 0.09%
 p({
   class: "net.nanopay.tx.fee.PercentageFee",
   id: "4d88a81a-2fdf-4f1b-b649-20265603ebed-001",
@@ -651,6 +637,7 @@ p({
   },
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
+// Bank Fee (EUR): 0.13%
 p({
   class: "net.nanopay.tx.fee.PercentageFee",
   id: "4d88a81a-2fdf-4f1b-b649-20265603ebed-002",
@@ -670,6 +657,7 @@ p({
   },
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
+// Bank Fee (GBP): 0.7%
 p({
   class: "net.nanopay.tx.fee.PercentageFee",
   id: "4d88a81a-2fdf-4f1b-b649-20265603ebed-003",
@@ -689,6 +677,7 @@ p({
   },
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
+// Bank Fee (CAD): 0.4%
 p({
   class: "net.nanopay.tx.fee.PercentageFee",
   id: "4d88a81a-2fdf-4f1b-b649-20265603ebed-004",
@@ -708,6 +697,7 @@ p({
   },
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
+// Bank Fee (AUD): 0.7%
 p({
   class: "net.nanopay.tx.fee.PercentageFee",
   id: "4d88a81a-2fdf-4f1b-b649-20265603ebed-005",
