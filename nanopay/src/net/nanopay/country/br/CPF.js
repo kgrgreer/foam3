@@ -45,7 +45,7 @@ foam.CLASS({
   sections: [
     {
       name: 'collectCpf',
-      title: 'Enter your CPF',
+      title: 'Enter your Cadastro de Pessoas Físicas(CPF)',
       navTitle: 'Signing officer\’s CPF number',
       help: 'Require your CPF'
     }
@@ -74,8 +74,8 @@ foam.CLASS({
         return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
       },
       postSet: function(_,n) {
-        this.cpfName = "";
-        if ( n.length == 11 ) {
+        if ( n.length == 11 && this.verifyName !== true ) {
+          this.cpfName = "";
           this.getCpfName(n).then((v) => {
             this.cpfName = v;
           });
@@ -164,14 +164,7 @@ foam.CLASS({
       name: 'validate',
       javaCode: `
         if ( ! getVerifyName() )
-          throw new IllegalStateException("Must verify name attached to CPF is valid.");
-
-        try {
-          if ( ! ((BrazilVerificationService) x.get("brazilVerificationService")).validateUserCpf(x, getData(), getUser()) )
-            throw new RuntimeException(INVALID_CPF);
-        } catch(Throwable t) {
-          throw t;
-        }
+          throw new foam.core.ValidationException(INVALID_CPF);
       `
     }
   ]

@@ -38,6 +38,11 @@ foam.CLASS({
     'net.nanopay.payment.CorridorService',
     'net.nanopay.payment.PaymentProviderAware',
     'net.nanopay.payment.PaymentProviderCorridor',
+    'net.nanopay.tx.ExternalTransfer',
+    'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.InvoicedFeeLineItem',
+    'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.Transfer',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
@@ -52,7 +57,7 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'intermediaryAccountId',
-      javaFactory: `return new java.util.HashMap<String, Long>();`
+      javaFactory: `return new java.util.HashMap<String, String>();`
     },
     {
       class: 'Int',
@@ -161,11 +166,9 @@ foam.CLASS({
               fxSummary.setPaymentProvider(paymentProvider);
             }
 
-            Transaction l1 = leg1.getNext()[0].getNext()[0];
-            Transaction l2 = leg2.getNext()[0].getNext()[0];
+            Transaction l1 = removeSummaryTransaction(leg1);
+            Transaction l2 = removeSummaryTransaction(leg2);
             Transaction compliance = createComplianceTransaction(fxSummary);
-            l1.setStatus(TransactionStatus.PENDING);
-            l2.setStatus(TransactionStatus.PENDING);
             l1.addNext(l2);
             compliance.addNext(l1);
             fxSummary.addNext(compliance);
@@ -174,6 +177,22 @@ foam.CLASS({
         }
         return null;
       `
-    }
+    },
+    {
+      name: 'createFeeTransfers',
+      javaCode: `
+        TransactionLineItem [] ls = txn.getLineItems();
+        for ( TransactionLineItem li : ls ) {
+          if ( li instanceof FeeLineItem && ! (li instanceof InvoicedFeeLineItem) ) {
+            FeeLineItem feeLineItem = (FeeLineItem) li;
+            ExternalTransfer ext = new ExternalTransfer(feeLineItem.getSourceAccount(), -feeLineItem.getAmount());
+            ExternalTransfer ext2 = new ExternalTransfer(feeLineItem.getDestinationAccount(), feeLineItem.getAmount());
+            Transfer[] transfers = { ext, ext2 };
+            txn.add(transfers);
+          }
+        }
+        return txn;
+      `
+    },
   ]
 });

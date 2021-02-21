@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -18,103 +18,59 @@
 foam.CLASS({
   package: 'net.nanopay.crunch.compliance',
   name: 'SendExpiryNotification',
-  implements: [
-    'foam.nanos.ruler.RuleAction'
-  ],
-
-  documentation: `Send notification to user when UCJ transitions to grace period.`,
-
-  javaImports: [
-    'foam.core.ContextAgent',
-    'foam.core.X',
-    'foam.dao.DAO',
-    'foam.i18n.TranslationService',
-    'foam.nanos.auth.User',
-    'foam.nanos.crunch.Capability',
-    'foam.nanos.crunch.CapabilityJunctionStatus',
-    'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.nanos.notification.Notification',
-    'java.util.Date',
-    'java.util.HashMap',
-    'java.util.List',
-    'net.nanopay.model.Business',
-    'static foam.mlang.MLang.*'
-  ],
+  extends: 'foam.nanos.notification.Notification',
 
   messages: [
-    { name: 'NOTIF_PRE', message: 'Your capability \"' },
-    { name: 'EXPIRY_NOTIF_SUF', message: '\" has expired.' },
-    { name: 'GRACE_PERIOD_NOTIF_SUF_1', message: '\" has transitioned into a grace period of ' },
-    { name: 'GRACE_PERIOD_NOTIF_SUF_2', message: ' days.' },
+    { name: 'NOTIF_PRE', message: 'Your capability "' },
+    { name: 'EXPIRY_NOTIF_SUF', message: '" has expired' },
+    { name: 'GRACE_PERIOD_NOTIF_SUF_1', message: '" has transitioned into a grace period of ' },
+    { name: 'GRACE_PERIOD_NOTIF_SUF_2', message: ' days' },
   ],
 
-  methods: [
+  javaImports: [
+    'foam.i18n.TranslationService',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User'
+  ],
+
+  properties: [
     {
-      name: 'applyAction',
-      javaCode: `
-        agency.submit(x, new ContextAgent() {
-          @Override
-          public void execute(X x) {
-            UserCapabilityJunction junction = (UserCapabilityJunction) obj;
-            Capability cap = (Capability) junction.findTargetId(x);
-            User user = (User) junction.findSourceId(x);
+      class: 'String',
+      name: 'capabilityName'
+    },
+    {
+      class: 'String',
+      name: 'capabilitySource'
+    },
+    {
+      class: 'Int',
+      name: 'gracePeriod'
+    },
+    {
+      name: 'body',
+      transient: true,
+      javaGetter: `
+        Subject subject = (Subject) foam.core.XLocator.get().get("subject");
+        String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
+        TranslationService ts = (TranslationService) foam.core.XLocator.get().get("translationService");
 
-            TranslationService ts = (TranslationService) x.get("translationService");
-            String locale = user.getLanguage().getCode().toString();
-            String source = cap.getId() + ".name";
-            String capabilityName = ts.getTranslation(locale, source, cap.getName());
+        String t1 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIF_PRE", this.NOTIF_PRE);
+        String t2 = ts.getTranslation(locale, getClassInfo().getId()+ ".GRACE_PERIOD_NOTIF_SUF_1", this.GRACE_PERIOD_NOTIF_SUF_1);
+        String t3 = ts.getTranslation(locale, getClassInfo().getId()+ ".GRACE_PERIOD_NOTIF_SUF_2", this.GRACE_PERIOD_NOTIF_SUF_2);
+        String t4 = ts.getTranslation(locale, getClassInfo().getId()+ ".EXPIRY_NOTIF_SUF", this.EXPIRY_NOTIF_SUF);
+        String capName = ts.getTranslation(locale, getCapabilitySource(), getCapabilityName());
 
-            Notification notification = new Notification();
+        if ( getGracePeriod() > 0  )
+          return t1 + capName + t2 + getGracePeriod() + t3;
 
-            HashMap<String, Object> args = new HashMap<>();
-            args.put("link", user.findGroup(x).getAppConfig(x).getUrl());
-            args.put("capabilityName", capabilityName);
-            args.put("capabilityNameEn", cap.getName());
+        return t1 + capName + t4;
+      `,
+      getter: function() {
+        if ( this.gracePeriod )
+          return this.NOTIF_PRE + this.capabilityName + this.GRACE_PERIOD_NOTIF_SUF_1 + this.gracePeriod + this.GRACE_PERIOD_NOTIF_SUF_2;
 
-            // if the UserCapabilityJunction belongs to an actual user, send the notification to the user.
-            // otherwise, send the notification to the group the user is under
-            if ( ! user.getClass().equals(Business.class) ) {
-              String userName = user.getLegalName() != null && ! user.getLegalName().trim().isEmpty() ?
-                user.getLegalName() : user.getOrganization();
-              notification.setUserId(user.getId());
-              args.put("userName", userName);
-            } else {
-              notification.setGroupId(user.getGroup());
-              args.put("userName", ((Business) user).getBusinessName());
-            }
-
-            notification.setNotificationType("Capability Expiry Reminder");
-            notification.setCreated(new Date());
-
-            if ( junction.getIsInGracePeriod() ) {
-              String p1 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIF_PRE", NOTIF_PRE);
-              String p2 = ts.getTranslation(locale, getClassInfo().getId()+ ".GRACE_PERIOD_NOTIF_SUF_1", GRACE_PERIOD_NOTIF_SUF_1);
-              String p3 = ts.getTranslation(locale, getClassInfo().getId()+ ".GRACE_PERIOD_NOTIF_SUF_2", GRACE_PERIOD_NOTIF_SUF_2);
-              String body = new StringBuilder(p1)
-                .append(capabilityName)
-                .append(p2)
-                .append(junction.getGracePeriod())
-                .append(p3)
-                .toString();
-              args.put("gracePeriod", junction.getGracePeriod());
-              notification.setBody(body);
-              notification.setEmailName("ucjGracePeriodNotification");
-            } else {
-              String p1 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIF_PRE", NOTIF_PRE);
-              String p2 = ts.getTranslation(locale, getClassInfo().getId()+ ".EXPIRY_NOTIF_SUF", EXPIRY_NOTIF_SUF);
-              String body = new StringBuilder(p1)
-                .append(capabilityName)
-                .append(p2)
-                .toString();
-              notification.setBody(body);
-              notification.setEmailName("ucjExpiredNotification");
-            }
-            notification.setEmailArgs(args);
-
-            user.doNotify(x, notification);
-          }
-        }, "Send notification to user when UCJ transitions to grace period.");
-      `
+        return this.NOTIF_PRE + this.capabilityName + this.EXPIRY_NOTIF_SUF;
+      }
     }
   ]
 });

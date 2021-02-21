@@ -1,0 +1,5 @@
+p({class:"foam.nanos.auth.Group",id:"ablii-admin",url:"https://ablii.backoffice.release.nanopay.net"})
+p({class:"foam.nanos.auth.Group",id:"ablii-fraud-ops",url:"https://ablii.backoffice.release.nanopay.net"})
+p({class:"foam.nanos.auth.Group",id:"ablii-payment-ops",url:"https://ablii.backoffice.release.nanopay.net"})
+p({class:"foam.nanos.auth.Group",id:"ablii-support",url:"https://ablii.backoffice.release.nanopay.net"})
+p({class:"foam.nanos.auth.Group",id:"ablii-sme",url:"https://ablii.release.nanopay.net"})

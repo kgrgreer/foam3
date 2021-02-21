@@ -64,7 +64,7 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        if ( ! ( obj instanceof Contact ) ) {
+        if ( ! ( obj instanceof PersonalContact ) ) {
           return super.put_(x, obj);
         }
     

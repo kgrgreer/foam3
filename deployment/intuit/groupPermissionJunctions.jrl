@@ -3,6 +3,8 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-admin","
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"serviceprovider.read.intuit"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"serviceprovider.read.intuit"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"session.create.intuit"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"group.read.intuit-sme"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"group.update.intuit-sme"})
 
 // ********** ADMIN ***************
 
@@ -13,6 +15,10 @@ p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.upd
 p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.read.intuit-fraud-ops"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.update.intuit-payment-ops"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.read.intuit-payment-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.update.intuit-support"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.read.intuit-support"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.update.intuit-internal-support"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.read.intuit-internal-support"})
 
 // ********** FRAUD OPS ***************
 
@@ -41,3 +47,5 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support"
 
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-ops","targetId":"menu.read.admin.data"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-payment-ops","targetId":"menu.read.admin.data"})
+
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"feesummarytransactionlineitem.read.*"})

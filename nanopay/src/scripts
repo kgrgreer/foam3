@@ -823,7 +823,7 @@ p({
     import foam.nanos.auth.User;
     import net.nanopay.admin.model.ComplianceStatus;
     import net.nanopay.bank.BankAccount;
-    import net.nanopay.fx.afex.AFEXBusiness;
+    import net.nanopay.fx.afex.AFEXUser;
     import net.nanopay.fx.afex.AFEXServiceProvider;
     import net.nanopay.model.Business;
     import net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding;
@@ -843,8 +843,8 @@ p({
         return;
       }
 
-      DAO afexBusinessDAO = (DAO)x.get("afexBusinessDAO");
-      AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(foam.mlang.MLang.EQ(AFEXBusiness.USER, business.getId()));
+      DAO afexUserDAO = (DAO)x.get("afexUserDAO");
+      AFEXUser afexBusiness = (AFEXUser) afexUserDAO.find(foam.mlang.MLang.EQ(AFEXUser.USER, business.getId()));
       java.util.List signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
       if ( afexBusiness != null ) {
         print(" Business: " + business.getBusinessName() + " is already pushed to AFEX");
@@ -1552,8 +1552,8 @@ p({
       }
 
     ArrayList smeAddPermissionArray = new ArrayList();
-    smeAddPermissionArray.add("menu.read.capability.main.banking");
-    smeAddPermissionArray.add("menu.read.capability.main.dashboard");
+    smeAddPermissionArray.add("menu.read.mainmenu.banking");
+    smeAddPermissionArray.add("menu.read.mainmenu.dashboard");
     smeAddPermissionArray.add("menu.read.sme.accountProfile.switch-business");
     smeAddPermissionArray.add("menu.read.sme.accountProfile.signout");
 
@@ -1562,7 +1562,7 @@ p({
       junction.setSourceId("sme");
       junction.setTargetId(smeAddPermissionArray.get(i));
       if ( DRY_RUN ) {
-        print("'menu.read.capability.main.banking', 'menu.read.capability.main.dashboard' and 'menu.read.sme.accountProfile.switch-business' are added in sme group.");
+        print("'menu.read.mainmenu.banking', 'menu.read.mainmenu.dashboard' and 'menu.read.sme.accountProfile.switch-business' are added in sme group.");
       } else {
         groupPermissionJunctionDAO.put(junction);
       }
@@ -1778,9 +1778,9 @@ p({
     // *      Body       *
     // *******************
 
-    afexBusinessDAO = x.get("afexBusinessDAO");
+    afexUserDAO = x.get("afexUserDAO");
     userDAO = x.get("businessDAO");
-    afexBusinessDAO.select(new AbstractSink() {
+    afexUserDAO.select(new AbstractSink() {
       public void put(Object obj, Detachable sub) {
         Business business = (Business) userDAO.find(obj.getUser());
         if ( business != null ) {
@@ -1816,9 +1816,9 @@ p({
     users = userDAO.select(new ArraySink()).getArray();
 
     for ( User user : users ) {
-      notificationSetting = user.getNotificationSettings(x).where(NOT(INSTANCE_OF(EmailSetting.class))).select(new Count());
-      emailSetting = user.getNotificationSettings(x).where(INSTANCE_OF(EmailSetting.class)).select(new Count());
-      smsSetting = user.getNotificationSettings(x).where(INSTANCE_OF(SMSSetting.class)).select(new Count());
+      notificationSetting = user.getNotificationSettings(x).where(CLASS_OF(NotificationSetting.class)).select(new Count());
+      emailSetting = user.getNotificationSettings(x).where(CLASS_OF(EmailSetting.class)).select(new Count());
+      smsSetting = user.getNotificationSettings(x).where(CLASS_OF(SMSSetting.class)).select(new Count());
 
       if (notificationSetting.getValue() <= 0) {
         notificationSetting = new NotificationSetting();
@@ -1850,17 +1850,17 @@ p({
       junctionId.setTargetId(junction.getTargetId());
 
       notificationSettings = notificationSettingDAO.where(AND(new Predicate [] {
-        NOT(INSTANCE_OF(EmailSetting.class)),
+        CLASS_OF(NotificationSetting.class),
         EQ(NotificationSetting.USER_JUNCTION, junctionId)
       })).select(new Count()).getValue();
 
       emailSettings = notificationSettingDAO.where(AND(new Predicate [] {
-        INSTANCE_OF(EmailSetting.class),
+        CLASS_OF(EmailSetting.class),
         EQ(NotificationSetting.USER_JUNCTION, junctionId)
       })).select(new Count()).getValue();
 
       smsSettings = notificationSettingDAO.where(AND(new Predicate [] {
-        INSTANCE_OF(SMSSetting.class),
+        CLASS_OF(SMSSetting.class),
         EQ(NotificationSetting.USER_JUNCTION, junctionId)
       })).select(new Count()).getValue();
 

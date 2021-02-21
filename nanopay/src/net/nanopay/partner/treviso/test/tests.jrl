@@ -30,109 +30,109 @@ support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport.create({
     }, x)
   }, x);
 
-async function execute(x) {
+  async function execute(x) {
     try {
       support.setup(x);
       console.info('start');
       let n = Math.floor(Math.random() * 10000);
+      var name;
+      var ucj;
+      var u;
+      var business;
 
       // create user under admin
-      var u;
+      name = 'createUser: ';
       try {
         u = await support.createUser(x, 'u-'+support.uid+'-'+n, 'password', 'sme');
-        test(true, 'createUser: '+u.id+', '+u.userName);
+        test(true, name+u.id+', '+u.userName);
       } catch (e) {
-        test(false, 'createUser: '+(e.message || e));
+        test(false, name+(e.message || e));
         throw e;
       }
       var s;
+      name = 'createSession: ';
       try {
         s = await support.createSession(x, u.id, u.id);
-        test(true, 'createSession: '+s.id);
+        test(true, name + s.id);
       } catch (e) {
-        test(false, 'createSession: '+(e.message || e));
+        test(false, name + (e.message || e));
         throw e;
       }
 
       // switch to user.
       support.sudoStore(x);
       x = support.sudo(x, s.id, u, u);
+      name = 'userRegistrationData: ';
+      try {
+        ucj = await support.userRegistrationData(x, u);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
 
-      // general admission
+      name = 'abliiPrivacyPolicy: ';
       try {
-        await support.userRegistrationData(x, u);
-        test(true, 'userRegistrationData');
+        ucj = await support.abliiPrivacyPolicy(x, u);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
       } catch (e) {
-        test(false, 'userRegistrationData: '+(e.message || e));
+        test(false, name+(e.message || e));
         throw e;
       }
+
+      name = 'trevisoTermsAndConditions: ';
       try {
-        await support.abliiPrivacyPolicy(x, u);
-        test(true, 'abliiPrivacyPolicy');
+        ucj = await support.trevisoTermsAndConditions(x, u);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
       } catch (e) {
-        test(false, 'abliiPrivacyPolicy: '+(e.message || e));
+        test(false, name+(e.message || e));
         throw e;
       }
-      try {
-        await support.abliiTermsAndConditions(x, u);
-        test(true, 'abliiTermsAndConditions');
-      } catch (e) {
-        test(false, 'abliiTermsAndConditions: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.generalAdmission(x, u);
-        test(true, 'generalAdmission');
-      } catch (e) {
-        test(false, 'generalAdmission: '+(e.message || e));
-        throw e;
-      }
+
+      // name = 'generalAdmission: ';
+      // try {
+      //   ucj = await support.generalAdmission(x, u);
+      //   test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      // } catch (e) {
+      //   test(false, name+(e.message || e));
+      //   throw e;
+      // }
 
       // Required for business onboarding
+      name = 'userDetails: ';
       try {
-        await support.userDetails(x, u);
-        test(true, 'userDetails');
+        ucj = await support.userDetails(x, u);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
       } catch (e) {
-        test(false, 'userDetails: '+(e.message || e));
+        test(false, name+(e.message || e));
         throw e;
       }
 
+      name = 'userDetailExpandedData: ';
       try {
-        await support.trevisoUserIdentification(x, u);
-        test(true, 'trevisoUserIdentification');
+        ucj = await support.userDetailExpandedData(x, u);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
       } catch (e) {
-        test(false, 'trevisoUserIdentification: '+(e.message || e));
+        test(false, name+(e.message || e));
         throw e;
       }
+
+      name = 'businessInitialData: ';
       try {
-        await support.trevisoUserCPF(x, u);
-        test(true, 'trevisoUserCPF');
+        ucj = await support.businessInitialData(x, u);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
       } catch (e) {
-        test(false, 'trevisoUserCPF: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.trevisoUserUtilityBill(x, u);
-        test(true, 'trevisoUserUtilityBill');
-      } catch (e) {
-        test(false, 'trevisoUserUtilityBill: '+(e.message || e));
+        test(false, name+(e.message || e));
         throw e;
       }
 
       var business;
-      // try {
-      //   business = await support.createBusiness(x, u);
-      //   test(true, 'createBusiness: '+business.id);
-      // } catch (e) {
-      //   test(false, 'createBusiness: '+(e.message || e));
-      //   throw e;
-      // }
-
+      name = 'createBusiness: ';
       try {
-        business = await support.businessInitialData(x, u);
-        test(true, 'businessInitialData: '+business.id);
+        business = await support.createBusiness(x, u);
+        test(business && business.id, name+business.id);
       } catch (e) {
-        test(false, 'businessInitialData: '+(e.message || e));
+        test(false, name+(e.message || e));
         throw e;
       }
 
@@ -145,225 +145,297 @@ async function execute(x) {
         throw e;
       }
 
+      // switch to admin
+      support.sudoStore(x);
+      x = support.sudoAdmin(x);
+
+      name = 'updateBusinessComplianceStatus: ';
+      try {
+        let ub = await support.updateBusinessComplianceStatus(x, business);
+        test(ub && ub.compliance == net.nanopay.admin.model.ComplianceStatus.PASSED, name+(ub && ub.compliance));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      x = support.sudoRestore(x);
+
       // switch to business
       support.sudoStore(x);
       x = support.sudo(x, businessSession.id, u, business);
 
+      // Signing Officer
+      name = 'userDateOfBirth: ';
       try {
-        await support.updateBusinessComplianceStatus(x, business);
-        test(true, 'updateBusinessComplianceStatus');
+        ucj = await support.userDateOfBirth(x, u);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
       } catch (e) {
-        test(false, 'updateBusinessComplianceStatus: '+(e.message || e));
+        test(false, name+(e.message || e));
         throw e;
       }
+
+      name = 'trevisoUserCPF: ';
+      try {
+        ucj = await support.trevisoUserCPF(x, u);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      name = 'trevisoUserUtilityBill: ';
+      try {
+        ucj = await support.trevisoUserUtilityBill(x, u);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      name = 'trevisoUserIdentification: ';
+      try {
+        ucj = await support.trevisoUserIdentification(x, u);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      name = 'signingOfficerQuestion: ';
+      try {
+        ucj = await support.signingOfficerQuestion(x, u);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      var signingOfficerPersonalDataUCJ;
+      name = 'signingOfficerPersonalData: ';
+      try {
+        ucj = await support.signingOfficerPersonalData(x, u, business);
+        signingOfficerPersonalDataUCJ = ucj;
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status)+' signingOfficerPersonalDataUCJ: '+ucj);
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      // payments
+      name = 'internationalPaymentsAgreement: ';
+      try {
+        ucj = await support.internationalPaymentsAgreement(x);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+      name = 'sourceCountryCapabilityBR: ';
+      try {
+        ucj = await support.sourceCountryCapabilityBR(x);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      name = 'businessDetailExpandedData: ';
+      try {
+        ucj = await support.businessDetailExpandedData(x, business);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      // name = 'businessTypeData: ';
+      // try {
+      //   ucj = await support.businessTypeData(x, business);
+      //   test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      // } catch (e) {
+      //   test(false, name+(e.message || e));
+      //   throw e;
+      // }
+
+      name = 'businessExtraBusinessTypeDataNotRequired: ';
+      try {
+        ucj = await support.businessExtraBusinessTypeDataNotRequired(x, business);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      // name = 'businessExtraBusinessTypeDataRequired: ';
+      // try {
+      //   ucj = await support.businessExtraBusinessTypeDataRequired(x, business);
+      //   test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED, name+(ucj && ucj.status));
+      // } catch (e) {
+      //   test(false, name+(e.message || e));
+      //   throw e;
+      // }
+
+      name = 'businessAnnualFinancialStatement: ';
+      try {
+        ucj = await support.businessAnnualFinancialStatement(x, business);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      name = 'businessArticleOfIncorporation: ';
+      try {
+        ucj = await support.businessArticleOfIncorporation(x, business);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      name = 'businessIncorporationDate: ';
+      try {
+        ucj = await support.businessIncorporationDate(x, business);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      name = 'businessRegistrationDate: ';
+      try {
+        ucj = await support.businessRegistrationDate(x, business);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      name = 'businessLastRegistrationDate: ';
+      try {
+        ucj = await support.businessLastRegistrationDate(x, business);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      name = 'businessTaxIdNumber: ';
+      try {
+        ucj = await support.businessTaxIdNumber(x, business);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      name = 'businessTypeAndSector: ';
+      try {
+        ucj = await support.businessTypeAndSector(x, business);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      name = 'businessOfficeConsumptionDocument: ';
+      try {
+        ucj = await support.businessOfficeConsumptionDocument(x, business);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      name = 'trevisoBusinessIdentificationNumbers: ';
+      try {
+        ucj = await support.trevisoBusinessIdentificationNumbers(x, business);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      name = 'targetCountryCapabilityBR: ';
+      try {
+        ucj = await support.targetCountryCapabilityBR(x, business);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      name = 'businessCapitalAndEquity: ';
+      try {
+        ucj = await support.businessCapitalAndEquity(x, business);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      name = 'businessAccountData: ';
+      try {
+        ucj = await support.businessAccountData(x, business);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      name = 'transactionDetailsData: ';
+      try {
+        ucj = await support.transactionDetailsData(x, business);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      name = 'businessDirectorsData: ';
+      try {
+        ucj = await support.businessDirectorsData(x, business);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      name = 'businessOwnershipData: ';
+      try {
+        ucj = await support.businessOwnershipData(x, business);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      name = 'certifyReviewed: ';
+      try {
+        ucj = await support.certifyReviewed(x, u);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      var brazilOnboardingReviewedUCJ;
+      name = 'brazilOnboardingReviewed: ';
+      try {
+        ucj = await support.brazilOnboardingReviewed(x, u);
+        brazilOnboardingReviewedUCJ = ucj;
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.PENDING, name+(ucj && ucj.status)+' ucj.id: '+ucj.id);
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      // business bank account
       try {
         let bank = await support.createBRBankAccount(x, business);
         test(true, 'createBusinessBankAccount');
       } catch (e) {
         test(false, 'createBusinessBankAccount: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.userDateOfBirth(x, u);
-        test(true, 'userDateOfBirth');
-      } catch (e) {
-        test(false, 'userDateOfBirth: '+(e.message || e));
-        throw e;
-      }
-
-      try {
-        await support.signingOfficerPersonalData(x, u, business);
-        test(true, 'signingOfficerPersonalData');
-      } catch (e) {
-        test(false, 'signingOfficerPersonalData: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.internationalPaymentsAgreement(x);
-        test(true, 'internationalPaymentsAgreement');
-      } catch (e) {
-        test(false, 'internationalPaymentsAgreement: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.sourceCountryCapabilityBR(x);
-        test(true, 'sourceCountryCapabilityBR');
-      } catch (e) {
-        test(false, 'sourceCountryCapabilityBR: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.targetCountryCapabilityBR(x);
-        test(true, 'targetCountryCapabilityBR');
-      } catch (e) {
-        test(false, 'targetCountryCapabilityBR: '+(e.message || e));
-        throw e;
-      }
-
-      try {
-        await support.businessDetailExpandedData(x, business);
-        test(true, 'businessDetailExpandedData');
-      } catch (e) {
-        test(false, 'businessDetailExpandedData: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.businessTypeData(x, business);
-        test(true, 'businessTypeData');
-      } catch (e) {
-        test(false, 'businessTypeData: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.businessExtraBusinessTypeDataNotRequired(x, business);
-        test(true, 'businessExtraBusinessTypeDataNotRequired');
-      } catch (e) {
-        test(false, 'businessExtraBusinessTypeDataNotRequired: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.businessExtraBusinessTypeDataRequired(x, business);
-        test(true, 'businessExtraBusinessTypeDataRequired');
-      } catch (e) {
-        test(false, 'businessExtraBusinessTypeDataRequired: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.businessRegistrationDate(x, business);
-        test(true, 'businessRegistrationDate');
-      } catch (e) {
-        test(false, 'businessRegistrationDate: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.businessIncorporationDate(x, business);
-        test(true, 'businessIncorporationDate');
-      } catch (e) {
-        test(false, 'businessIncorporationDate: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.businessTaxIdNumber(x, business);
-        test(true, 'businessTaxIdNumber');
-      } catch (e) {
-        test(false, 'businessTaxIdNumber: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.businessAnnualFinancialStatement(x, business);
-        test(true, 'businessAnnualFinancialStatement');
-      } catch (e) {
-        test(false, 'businessAnnualFinancialStatement: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.businessArticleOfIncorporation(x, business);
-        test(true, 'businessArticleOfIncorporation');
-      } catch (e) {
-        test(false, 'businessArticleOfIncorporation: '+(e.message || e));
-        throw e;
-      }
-      // removed from treviso onboarding
-      // try {
-      //   await support.businessNatureOfBusiness(x, business);
-      //   test(true, 'businessNatureOfBusiness');
-      // } catch (e) {
-      //   test(false, 'businessNatureOfBusiness: '+(e.message || e));
-      //   throw e;
-      // }
-      try {
-        await support.businessInformationData(x, business);
-        test(true, 'businessInformationData');
-      } catch (e) {
-        test(false, 'businessInformationData: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.businessOfficeConsumptionDocument(x, business);
-        test(true, 'businessOfficeConsumption');
-      } catch (e) {
-        test(false, 'businessOfficeConsumption: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.trevisoBusinessIdentificationNumbers(x, business);
-        test(true, 'trevisoBusinessIdentificationNumbers');
-      } catch (e) {
-        test(false, 'trevisoBusinessIdentificationNumbers: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.businessCapitalAndEquity(x, business);
-        test(true, 'businessCaptialAndEquity');
-      } catch (e) {
-        test(false, 'businessCapitalAndEquity: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.businessAccountData(x, business);
-        test(true, 'businessCaptialAndEquity');
-      } catch (e) {
-        test(false, 'businessCapitalAndEquity: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.transactionDetailsData(x, business);
-        test(true, 'transactionDetailsData');
-      } catch (e) {
-        test(false, 'transactionDetailsData: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.businessDirectorsData(x, business);
-        test(true, 'businessDirectorsData');
-      } catch (e) {
-        test(false, 'businessDirectorsData: '+(e.message || e));
-        throw e;
-      }
-      // Removed from treviso onboarding
-      // try {
-      //  await support.certifyDirectorsListed(x, business);
-      //   test(true, 'certifyDirectorsListed');
-      // } catch (e) {
-      //   test(false, 'certifyDirectorsListed: '+(e.message || e));
-      //   throw e;
-      // }
-
-      // try {
-      //   await support.businessOwners(x, business);
-      //   test(true, 'businessOwners');
-      // } catch (e) {
-      //   test(false, 'businessOwners: '+(e.message || e));
-      //   throw e;
-      // }
-      try {
-        await support.ownersPercent(x, business);
-        test(true, 'ownersPercent');
-      } catch (e) {
-        test(false, 'ownersPercent: '+(e.message || e));
-        throw e;
-      }
-      // removed from treviso onboarding
-      // try {
-      //   await support.certifyOwnersPercent(x, business);
-      //   test(true, 'certifyOwnersPercent');
-      // } catch (e) {
-      //   test(false, 'certifyOwnersPercent: '+(e.message || e));
-      //   throw e;
-      // }
-
-      try {
-        await support.certifyReviewed(x, u);
-        test(true, 'certifyReviewed');
-      } catch (e) {
-        test(false, 'certifyReviewed: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.brazilOnboardingReviewed(x, u);
-        test(true, 'brazilOnboardingReviewed');
-      } catch (e) {
-        test(false, 'brazilOnboardingReviewed: '+(e.message || e));
         throw e;
       }
 
@@ -372,49 +444,70 @@ async function execute(x) {
       // US Contact US-USD bank Account
       try {
         contact = await support.createUSContact(x, business);
-        test(true, 'createUSContact');
+        test(true, 'createUSContact: '+contact.id);
       } catch (e) {
         test(false, 'createUSContact: '+(e.message || e));
         throw e;
       }
       try {
-        contactbank = await support.createUSBankAccount(x, contact);
-        test(true, 'createUSBankAccount');
+        contactbank = await support.createUSBankAccount(x, contact, true);
+        test(true, 'createUSBankAccount: '+contactbank.id);
       } catch (e) {
         test(false, 'createUSBankAccount: '+(e.message || e));
         throw e;
       }
+
       try {
         contact.bankAccount = contactbank.id;
-        await business.contacts.put(contact);
+        await support.updateContact(x, contact);
+        // await business.contacts.put(contact);
         test(true, 'adding business US contact: ' + contact.id + ', account: ' + contactbank.id);
       } catch (e) {
         test(false, 'adding business US contact: ' + contact.id + ', account: ' + contactbank.id + '. ' +(e.message || e));
         throw e;
       }
+
       // CA Contact CA-CAD bank Account
       try {
         contact = await support.createCAContact(x, business);
-        test(true, 'createCAContact');
+        test(true, 'createCAContact: '+contact.id);
       } catch (e) {
         test(false, 'createCAContact: '+(e.message || e));
         throw e;
       }
       try {
-        contactbank = await support.createContactCABankAccount(x, contact);
-        test(true, 'createContactCABankAccount');
+        contactbank = await support.createCABankAccount(x, contact, true);
+        test(true, 'createContactCABankAccount: '+contactbank.id);
       } catch (e) {
         test(false, 'createContactCABankAccount: '+(e.message || e));
         throw e;
       }
       try {
         contact.bankAccount = contactbank.id;
-        await business.contacts.put(contact);
+        await support.updateContact(x, contact);
+        // await business.contacts.put(contact);
         test(true, 'adding business CA contact: ' + contact.id + ', account: ' + contactbank.id);
       } catch (e) {
         test(false, 'adding business CA contact: ' + contact.id + ', account: ' + contactbank.id + '. ' +(e.message || e));
         throw e;
       }
+
+      // Validate Business Onboarding UserCapabilityJunction
+      // try {
+      //   let approval = support.approveRequest(x, business.spid+'-fraud-ops', 'userCapabilityJunctionDAO', brazilOnboardingReviewedUCJ.id);
+      //   test(approval && approval.status == foam.nanos.approval.ApprovalStatus.APPROVED, 'approveBusiness: '+approval.status);
+      // } catch (e) {
+      //   test(false, 'approveBusiness: '+(e.message || e));
+      // }
+
+      // name = 'brazilOnboardingReviewed: ';
+      // try {
+      //   ucj = await support.brazilOnboardingReviewed(x, u);
+      //   test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      // } catch (e) {
+      //   test(false, name+(e.message || e));
+      //   throw e;
+      // }
 
       console.info('done');
       support.teardown(x);

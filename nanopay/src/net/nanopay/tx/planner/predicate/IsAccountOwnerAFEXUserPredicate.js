@@ -42,10 +42,10 @@ foam.CLASS({
       if ( nu instanceof TransactionQuote ) {
         TransactionQuote tq = (TransactionQuote) nu;
         Long owner = tq.getRequestOwner() != 0 ? tq.getRequestOwner(): tq.getSourceAccount().getOwner();
-        return null != afexService.getAFEXBusiness(((X) obj), owner) ;
+        return null != afexService.getAFEXUser(((X) obj), owner) ;
       } else if ( nu instanceof Account ) {
         Account account = (Account) nu;
-        return null != afexService.getAFEXBusiness(((X) obj), account.getOwner());
+        return null != afexService.getAFEXUser(((X) obj), account.getOwner());
       } else {
         return false;
       }

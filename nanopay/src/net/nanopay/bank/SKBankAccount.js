@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'SKBankAccount',
-  label: 'Slovakia Bank Account',
+  label: 'Slovakia',
   extends: 'net.nanopay.bank.EUBankAccount',
 
   documentation: 'Slovakian bank account information.',
@@ -63,7 +63,7 @@ foam.CLASS({
       name: 'accountNumber',
       updateVisibility: 'RO',
       preSet: function(o, n) {
-        return /^\d*$/.test(n) ? n : o;
+        return /^[\d\w]*$/.test(n) ? n : o;
       },
       tableCellFormatter: function(str) {
         if ( ! str ) return;

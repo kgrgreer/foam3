@@ -32,8 +32,8 @@ foam.CLASS({
       value: true,
       writePermissionRequired: true,
       section: 'operationsInformation',
-      gridColumns: 6,
-      order: 45
+      order: 100,
+      gridColumns: 6
     }
   ]
 });
@@ -47,6 +47,7 @@ foam.CLASS({
       class: 'List',
       name: 'signatures',
       section: 'systemInformation',
+      order: 30,
       documentation: 'List of signatures for a given transaction',
       javaType: 'java.util.ArrayList<net.nanopay.security.Signature>',
       visibility: function(signatures) {

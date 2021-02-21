@@ -37,7 +37,8 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'java.util.List',
     'foam.nanos.auth.AuthService',
-    'foam.nanos.auth.LifecycleState'
+    'foam.nanos.auth.LifecycleState',
+    'foam.core.ValidationException'
   ],
 
   implements: [
@@ -63,11 +64,14 @@ foam.CLASS({
       updateVisibility: 'RO'
     },
     {
-      name: 'IBAN',
+      name: 'iban',
       class: 'Reference',
       of: 'net.nanopay.tx.IBAN',
       targetDAOKey: 'ibanDAO',
-    },
+      section: 'accountInformation',
+      order: 80,
+      gridColumns: 6
+    }
   ],
 
   actions: [
@@ -85,8 +89,9 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'liquiditySettingsSection',
-      title: 'Liquidity Settings'
+      name: 'liquiditySettingsInformation',
+      title: 'Liquidity Settings',
+      order: 40
     }
   ],
 
@@ -95,9 +100,21 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(`
         static public DigitalAccount findDefault(X x, User user, String currency) {
-          return findDefault(x, user, currency, null);
+          return findDefault(x, user, currency, null, null);
         }
-        static public DigitalAccount findDefault(X x, User user, String currency, DigitalAccount instance) {
+        static public DigitalAccount findDefault(X x, User user, String currency, String trustAccount) {
+
+          DAO accountDAO  = (DAO) x.get("localAccountDAO");
+          return (DigitalAccount) accountDAO.find(AND(
+            EQ(Account.OWNER, user.getId()),
+            EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE),
+            INSTANCE_OF(DigitalAccount.class),
+            EQ(Account.DENOMINATION, currency),
+            EQ(Account.IS_DEFAULT, true),
+            EQ(DigitalAccount.TRUST_ACCOUNT, trustAccount)
+          ));
+        }
+        static public DigitalAccount findDefault(X x, User user, String currency, DigitalAccount instance, String trustAccount) {
           Logger logger = (Logger) x.get("logger");
           DigitalAccount account = null;
 
@@ -120,10 +137,11 @@ foam.CLASS({
             }
           }
           synchronized(String.valueOf(user.getId()).intern()) {
-            DAO accountDAO  = ((DAO) x.get("localAccountDAO")).where(EQ(Account.OWNER, user.getId()));
+            DAO accountDAO  = (DAO) x.get("localAccountDAO");
             account = (DigitalAccount) accountDAO
               .find(
                 AND(
+                  EQ(Account.OWNER, user.getId()),
                   EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE),
                   INSTANCE_OF(instance == null ? DigitalAccount.class : instance.getClass()),
                   EQ(Account.DENOMINATION, denomination),
@@ -136,18 +154,36 @@ foam.CLASS({
                    ! auth.checkUser(x, user, "digitalaccount.default.create") ) {
                 return account;
               }
+              TrustAccount ta = null;
+              if ( trustAccount != null)
+                ta = (TrustAccount) accountDAO.find(trustAccount);
+              else
+                ta = (TrustAccount) accountDAO.find(AND(
+                  INSTANCE_OF(TrustAccount.class),
+                  EQ(Account.DENOMINATION, denomination),
+                  EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE)
+                ));
+              if (ta == null)
+                throw new ValidationException ("Trust Account with a "+denomination+" denomination is not available");
+
+              if (! ta.getDenomination().equals(denomination) )
+                throw new ValidationException ("Unable to create a "+denomination+" denominated account under a trust with denomination "+ta.getDenomination());
 
               account = instance == null ? new DigitalAccount() : instance;
               account.setName(DIGITAL_ACCOUNT_LABEL);
-              account.setDenomination(denomination);
+              account.setDenomination(ta.getDenomination());
               account.setIsDefault(true);
               account.setOwner(user.getId()); // required until user.getAccounts()
+              account.setSpid(user.getSpid());
               account.setLifecycleState(LifecycleState.ACTIVE);
+              account.setTrustAccount(ta.getId());
+
               account = (DigitalAccount) accountDAO.put(account);
             }
           }
           return account;
         }
+
         `);
       }
     }

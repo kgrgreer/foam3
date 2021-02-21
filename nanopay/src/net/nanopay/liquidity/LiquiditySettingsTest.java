@@ -37,17 +37,13 @@ public class LiquiditySettingsTest
     setupAccounts();
     long initialBalance = (Long)senderDigitalDefault.findBalance(x);
     senderBankAccount_ = (BankAccount) setupBankAccount(x, sender_);
-    ls_ = setupLiquiditySettings(x, (DigitalAccount) senderDigitalDefault, (Account) senderLiquidityDigital, minLimit, maxLimit, Frequency.PER_TRANSACTION);
+    ls_ = setupLiquiditySettings(x, senderDigitalDefault, senderLiquidityDigital, minLimit, maxLimit, Frequency.PER_TRANSACTION);
     Transaction ci = createCompletedCashIn(x, (Account) senderBankAccount_, (Account) senderDigitalDefault, CASH_IN_AMOUNT);
     // Cash-In to self will not trigger Liquidity
     Long balance = (Long)senderDigitalDefault.findBalance(x);
     test(balance == CASH_IN_AMOUNT + initialBalance, "Initial balance "+CASH_IN_AMOUNT);
     // Cash-Out to self will not trigger Liquidity
     Transaction co = createPendingCashOut(x, (Account) senderDigitalDefault, (Account) senderBankAccount_, CASH_OUT_AMOUNT);
-    //DAO approvalDAO = (DAO) x_.get("approvalRequestDAO");
-    //ApprovalRequest request = (ApprovalRequest) approvalDAO.find(AND(EQ(ApprovalRequest.OBJ_ID, co.getId()), EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"))).fclone();
-    //request.setStatus(ApprovalStatus.APPROVED);
-    //approvalDAO.put_(x_, request);
     balance = (Long)senderDigitalDefault.findBalance(x);
     test(balance == CASH_IN_AMOUNT + initialBalance - CASH_OUT_AMOUNT, "Balance with PENDING Cash-Out "+(initialBalance + CASH_IN_AMOUNT-CASH_OUT_AMOUNT));
 
@@ -59,37 +55,31 @@ public class LiquiditySettingsTest
   }
 
   public void setupAccounts() {
-    sender_ = (User) ((DAO)x_.get("localUserDAO")).find(EQ(User.EMAIL,"lstesting@nanopay.net" ));
-    if ( sender_ == null ) {
-      sender_ = new User();
-      sender_.setEmail("lstesting@nanopay.net");
-    }
+    sender_ = new User();
+    sender_.setEmail("lstesting1@nanopay.net");
     sender_ = (User) sender_.fclone();
     sender_.setEmailVerified(true);
     sender_.setFirstName("Francis");
     sender_.setLastName("Filth");
     sender_.setGroup("business");
-    sender_.setSpid("nanopay");
+    sender_.setSpid("test");
     sender_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, sender_)).fclone();
-    senderDigitalDefault = (DigitalAccount) DigitalAccount.findDefault(x_, sender_, "CAD").fclone();
+    senderDigitalDefault = (DigitalAccount) DigitalAccount.findDefault(x_, sender_, "CAD","7ee216ae-9371-4684-9e99-ba42a5759444").fclone();
     senderLiquidityDigital = new DigitalAccount();
     senderLiquidityDigital.setDenomination("CAD");
     senderLiquidityDigital.setOwner(sender_.getId());
+    senderLiquidityDigital.setTrustAccount("7ee216ae-9371-4684-9e99-ba42a5759444");
     ((DAO) x_.get("localAccountDAO")).put(senderLiquidityDigital);
 
-    receiver_ = (User) ((DAO)x_.get("localUserDAO")).find(EQ(User.EMAIL,"lstesting2@nanopay.net" ));
-    if ( receiver_ == null ) {
       receiver_ = new User();
       receiver_.setFirstName("Francis");
       receiver_.setLastName("Filth");
       receiver_.setEmail("lstesting2@nanopay.net");
       receiver_.setGroup("business");
-    }
-    receiver_ = (User) receiver_.fclone();
     receiver_.setEmailVerified(true);
-    receiver_.setSpid("nanopay");
+    receiver_.setSpid("test");
     receiver_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, receiver_)).fclone();
-    receiverDigital = DigitalAccount.findDefault(x_, receiver_, "CAD");
+    receiverDigital = DigitalAccount.findDefault(x_, receiver_, "CAD","7ee216ae-9371-4684-9e99-ba42a5759444");
   }
 
   public void testPerTransactionLiquidity() {
@@ -98,7 +88,7 @@ public class LiquiditySettingsTest
 
     defaultBalance = (long)senderDigitalDefault.findBalance(x_);
     // balance = 90.00
-    test(senderDigitalDefault.findBalance(x_) == (defaultBalance), "In the beginning user has CAD10000");
+    test(senderDigitalDefault.findBalance(x_) == (defaultBalance), "In the beginning user has CAD "+defaultBalance);
     Transaction txn1 = new Transaction();
     txn1.setSourceAccount(senderDigitalDefault.getId());
     txn1.setDestinationAccount(senderLiquidityDigital.getId());
@@ -106,7 +96,7 @@ public class LiquiditySettingsTest
     txn1 = (Transaction)txnDAO.put(txn1);
 
     liquidityBalance = liquidityBalance + defaultBalance - maxLimit;
-    test(senderDigitalDefault.findBalance(x_) == (maxLimit), "After test transaction was placed, money cashed out from digital account and balance matches maximum limit");
+    test(senderDigitalDefault.findBalance(x_) == (maxLimit), "After test transaction was placed, money cashed out from digital account and balance (" +senderDigitalDefault.findBalance(x_) + ") matches maximum limit, "+ maxLimit );
     test(senderLiquidityDigital.findBalance(x_) == (liquidityBalance), "Money were cashed out to specified digital account");
     Transaction txn2 = new Transaction();
     txn2.setSourceAccount(senderDigitalDefault.getId());
@@ -165,7 +155,7 @@ public class LiquiditySettingsTest
     test(SafetyUtil.equals(balance, CASH_IN_AMOUNT+high.getResetBalance()), "testAffectOfCICO: Cash-In, expecting: "+CASH_IN_AMOUNT+high.getResetBalance()+", found: "+balance);
     Transaction co = createPendingCashOut(x, (Account) senderDigitalDefault, (Account) senderBankAccount_, CASH_OUT_AMOUNT);
     //DAO approvalDAO = (DAO) x_.get("approvalRequestDAO");
-    //ApprovalRequest request = (ApprovalRequest) approvalDAO.find(AND(EQ(ApprovalRequest.OBJ_ID, co.getId()), EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"))).fclone();
+    //ApprovalRequest request = (ApprovalRequest) approvalDAO.find(AND(EQ(ApprovalRequest.OBJ_ID, co.getId()), EQ(ApprovalRequest.SERVER_DAO_KEY, "localTransactionDAO"))).fclone();
     //request.setStatus(ApprovalStatus.APPROVED);
     //approvalDAO.put_(x_, request);
 
@@ -180,14 +170,9 @@ public class LiquiditySettingsTest
   }
 
   public Account setupBankAccount(X x, User user) {
-    senderBankAccount_ = (CABankAccount) ((DAO)x_.get("localAccountDAO")).find(AND(EQ(CABankAccount.OWNER, user.getId()), INSTANCE_OF(CABankAccount.class)));
-    if ( senderBankAccount_ == null ) {
       senderBankAccount_ = new CABankAccount();
       senderBankAccount_.setAccountNumber("2131412443534534");
       senderBankAccount_.setOwner(user.getId());
-    } else {
-      senderBankAccount_ = (CABankAccount) senderBankAccount_.fclone();
-    }
     senderBankAccount_.setStatus(BankAccountStatus.VERIFIED);
     senderBankAccount_ = (CABankAccount) ((DAO)x_.get("localAccountDAO")).put_(x_, senderBankAccount_).fclone();
     return senderBankAccount_;
@@ -210,8 +195,8 @@ public class LiquiditySettingsTest
     ls.setHighLiquidity(highLiquidity);
     ls.setLowLiquidity(lowLiquidity);
     LiquiditySettings ls1 = (LiquiditySettings)((DAO)x.get("liquiditySettingsDAO")).put(ls).fclone();
-    senderDigitalDefault.setLiquiditySetting(ls1.getId());
-    ((DAO) x_.get("localAccountDAO")).put(senderDigitalDefault);
+    account.setLiquiditySetting(ls1.getId());
+    ((DAO) x_.get("localAccountDAO")).put(account);
     return ls1;
   }
 

@@ -55,6 +55,7 @@ foam.CLASS({
     { name: 'PLEASE_SELECT', message: 'Please select...' },
     { name: 'YES', message: 'Yes' },
     { name: 'NO', message: 'No' },
+    { name: 'SELECT_HAVE_SIGNED_CONTRACT', message: 'As the signing officer of this business, you are required to have signed this contract.' }
   ],
 
   properties: [
@@ -130,7 +131,7 @@ foam.CLASS({
     }),
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({
       section: 'signingOfficerPersonalInformationSection',
-      label: 'The signing officer is a politically exposed person (PEP) or head of an international organization',
+      label: 'Is the signing officer considered a politically exposed person (PEP)?',
       help: `
       As defined in item 7 of Bacen Circular Letter 3430/2010 -
       “For the purposes of the provisions of § 1 of art. 4 of Circular No. 3,461, of 2009,
@@ -140,7 +141,7 @@ foam.CLASS({
       II - control, direct or indirect, by a politically exposed person, in the case of a corporate client;
       and III – habitual movement of financial resources from or to a politically exposed person Client of the institution,
                 not justified by economic events, such as the acquisition of goods or provision of services;".
-      
+
       `,
       value: false,
       view: function(_, X) {
@@ -161,15 +162,15 @@ foam.CLASS({
       class: 'Boolean',
       documentation: `todo save this property somewhere`,
       section: 'signingOfficerPersonalInformationSection',
-      label: 'I need to report assets under FATCA',
+      label: 'Are assets reported under the Foreign Account Tax Compliance Act (FATCA)?',
       help: `
-      Note 4: The FATCA - Foreign Account Tax Compliance Act is an American federal law,
+      The FATCA - Foreign Account Tax Compliance Act is an American federal law,
       which aims to prevent tax evasion by individuals and legal entities that have a tax
       obligation in the United States of America (“USA”), including those that have accounts
       and investments abroad.
       The FATCA aims to identify such persons, establish the reporting of accounts and
       investments outside the USA for the purpose of taxing the income obtained by them,
-      through information provided by the financial institutions that hold the account and / or 
+      through information provided by the financial institutions that hold the account and / or
       taxable investment.
       It is considered as “US Person” (American Citizen) by the FATCA, subject to reporting to
       the American tax authorities, those indicated in the FATCA, including:
@@ -202,10 +203,10 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'hasSignedContratosDeCambio',
-      label: 'Have you signed the \'contratos de câmbio\'?',
+      label: 'Has the foreign exchange contract been signed?',
       section: 'signingOfficerPersonalInformationSection',
       help: `
-        Contratos de câmbio (foreign exchange contract) is a legal arrangement in which the
+        Foreign exchange contract (Contratos de câmbio) is a legal arrangement in which the
         parties agree to transfer between them a certain amount of foreign exchange at a
         predetermined rate of exchange, and as of a predetermined date.
       `,
@@ -219,7 +220,19 @@ foam.CLASS({
           isHorizontal: true
         };
       },
-      gridColumns: 12
+      gridColumns: 12,
+      validationPredicates: [
+        {
+          args: ['hasSignedContratosDeCambio'],
+          predicateFactory: function(e) {
+            return e.EQ(
+              net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.HAS_SIGNED_CONTRATOS_DE_CAMBIO,
+              true
+            );
+          },
+          errorMessage: 'SELECT_HAVE_SIGNED_CONTRACT'
+        }
+      ]
     },
     {
       name: 'businessId',

@@ -57,10 +57,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'Boolean',
-      name: 'isInstantBeneficiary'
-    },
-    {
       class: 'String',
       name: 'status',
       documentation: 'Beneficiary status on AFEX system.'

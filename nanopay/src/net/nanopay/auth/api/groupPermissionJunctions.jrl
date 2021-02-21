@@ -34,11 +34,13 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targ
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"document.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"document.update.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"document.remove.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"paymentcode.create"})
 
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"registration.email.enabled"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"rule.create"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"rule.read.*"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"rule.update.*"})
+// REVIEW: "rule.read.*" would allow the "api-base" group and descendants to execute all planners
+// p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"rule.create"})
+// p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"rule.read.*"})
+// p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"rule.update.*"})
 
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"service.run.dig"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"service.run.pacsMsg"})

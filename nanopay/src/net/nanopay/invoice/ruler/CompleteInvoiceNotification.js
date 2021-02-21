@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -18,102 +18,64 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.ruler',
   name: 'CompleteInvoiceNotification',
+  extends: 'foam.nanos.notification.Notification',
 
-  documentation: 'An action that sends a notification to both sender and receiver of ablii transaction',
-
-  implements: ['foam.nanos.ruler.RuleAction'],
-
-  javaImports: [
-    'foam.core.ContextAgent',
-    'foam.core.Currency',
-    'foam.core.X',
-    'foam.dao.DAO',
-    'foam.nanos.auth.Subject',
-    'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger',
-    'foam.nanos.notification.Notification',
-
-    'java.util.Date',
-
-    'net.nanopay.auth.PublicUserInfo',
-    'net.nanopay.invoice.model.Invoice',
-
-    'static foam.mlang.MLang.*',
+  messages: [
+    { name: 'NOTIFICATION_BODY_1', message: 'You have received payment from '},
+    { name: 'NOTIFICATION_BODY_2', message: ' for '},
+    { name: 'NOTIFICATION_BODY_3', message: ' has received your payment '}
   ],
 
-  methods: [
+  javaImports: [
+    'foam.i18n.TranslationService',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+  ],
+
+  properties: [
     {
-      name: 'applyAction',
-      javaCode: `
-         agency.submit(x, new ContextAgent() {
-            @Override
-            public void execute(X x) {
-              Invoice iv = (Invoice) obj;
-              DAO localUserDAO = (DAO) x.get("localUserDAO");
-              Logger logger = (Logger) x.get("logger");
+      class: 'String',
+      name: 'summary'
+    },
+    {
+      class: 'String',
+      name: 'amount'
+    },
+    {
+      class: 'String',
+      name: 'sourceCurrency'
+    },
+    {
+      class: 'Long',
+      name: 'payerId'
+    },
+    {
+      class: 'Long',
+      name: 'payeeId'
+    },
+    {
+      name: 'body',
+      transient: true,
+      javaGetter: `
+        Subject subject = (Subject) foam.core.XLocator.get().get("subject");
+        String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
+        TranslationService ts = (TranslationService) foam.core.XLocator.get().get("translationService");
 
-              PublicUserInfo payer = (PublicUserInfo) iv.getPayer();
-              PublicUserInfo payee = (PublicUserInfo) iv.getPayee();
+        String t1 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_1", this.NOTIFICATION_BODY_1);
+        String t2 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_2", this.NOTIFICATION_BODY_2);
+        String t3 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_3", this.NOTIFICATION_BODY_3);
 
-              Subject subject = new Subject.Builder(x).setUser(new User.Builder(x).setId(1).build()).build();
-              X systemX = x.put("subject", subject);
-              User payerUser = (User) localUserDAO.inX(systemX).find(payer.getId());
-              User payeeUser = (User) localUserDAO.inX(systemX).find(payee.getId());
+        if ( getPayerId() == getPayeeId() )
+          return t1 + getSummary() + t2 + getAmount() + " " + getSourceCurrency();
 
-              DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
-              Currency currency = (Currency) currencyDAO.find(iv.getDestinationCurrency());
+        return getSummary() + t3 + t2 + getAmount() + " " + getSourceCurrency();
+      `,
+      getter: function() {
+        if ( this.payerId == this.payeeId )
+          return this.NOTIFICATION_BODY_1 + this.summary + this.NOTIFICATION_BODY_2 + this.amount + " " + this.sourceCurrency;
 
-              StringBuilder sb = new StringBuilder("You have received payment from ")
-                .append(payer.toSummary())
-                .append(" for ")
-                .append(currency.format(iv.getAmount()))
-                .append(" ")
-                .append(iv.getSourceCurrency())
-                .append(".");
-
-              StringBuilder rb = new StringBuilder(payee.toSummary())
-                .append(" has received your payment ")
-                .append(" for ")
-                .append(currency.format(iv.getAmount()))
-                .append(" ")
-                .append(iv.getSourceCurrency())
-                .append(".");
-
-              String notificationMsg = sb.toString();
-              String payer_notificationMsg = rb.toString();
-
-              // notification to payee
-              Notification payeeNotification = new Notification();
-              payeeNotification.setUserId(payee.getId());
-              payeeNotification.setBody(notificationMsg);
-              payeeNotification.setNotificationType("Latest_Activity");
-              try {
-                if ( payeeUser != null ) {
-                  payeeUser.doNotify(x, payeeNotification);
-                } else {
-                  logger.warning("Cannot find payee " + payee.getId() + " for complete invoice notification");
-                }
-              }
-              catch (Exception E) { logger.error("Failed to put notification. "+E); };
-
-              // notification to payer
-              if ( payer.getId() != payee.getId() ) {
-                Notification payerNotification = new Notification();
-                payerNotification.setUserId(payer.getId());
-                payerNotification.setBody(payer_notificationMsg);
-                payerNotification.setNotificationType("Latest_Activity");
-                try {
-                  if ( payerUser != null ) {
-                    payerUser.doNotify(x, payerNotification);
-                  } else {
-                    logger.warning("Cannot find payer " + payer.getId() + " for complete invoice notification");
-                  }
-                }
-                catch (Exception E) { logger.error("Failed to put notification. "+E); };
-              }
-            }
-         },"send a Ablii Completed notification");
-      `
+        return this.summary + this.NOTIFICATION_BODY_3 + this.NOTIFICATION_BODY_2 + this.amount + " " + this.sourceCurrency;
+      }
     }
   ]
 });

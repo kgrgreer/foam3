@@ -16,11 +16,15 @@
  */
 package net.nanopay.country.br.exchange;
 
+import org.apache.commons.lang3.StringUtils;
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.Country;
 import foam.nanos.auth.User;
+import foam.nanos.crunch.CapabilityJunctionPayload;
+import foam.nanos.crunch.Capability;
 import foam.nanos.crunch.UserCapabilityJunction;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
@@ -30,11 +34,17 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import net.nanopay.bank.BankAccount;
+import net.nanopay.bank.BankHolidayService;
 import net.nanopay.contacts.Contact;
 import net.nanopay.country.br.BrazilBusinessInfoData;
 import net.nanopay.country.br.CPF;
 import net.nanopay.country.br.exchange.Pais;
+import net.nanopay.country.br.NatureCode;
+import net.nanopay.country.br.NatureCodeData;
 import net.nanopay.country.br.tx.NatureCodeLineItem;
+import net.nanopay.fx.afex.AFEXServiceProvider;
+import net.nanopay.fx.afex.FindBankByNationalIDResponse;
+import net.nanopay.invoice.model.Invoice;
 import net.nanopay.meter.clearing.ClearingTimeService;
 import net.nanopay.model.Business;
 import net.nanopay.payment.Institution;
@@ -77,7 +87,6 @@ public class ExchangeServiceProvider implements ExchangeService {
       EQ(UserCapabilityJunction.TARGET_ID, "688cb7c6-7316-4bbf-8483-fb79f8fdeaaf"),
       EQ(UserCapabilityJunction.SOURCE_ID, userId)
     ));
-
     return ucj != null && ucj.getData() != null ?  ((BrazilBusinessInfoData)ucj.getData()).getCnpj() : "";
   }
 
@@ -91,15 +100,20 @@ public class ExchangeServiceProvider implements ExchangeService {
   }
 
   public ExchangeCustomer createExchangeCustomerDefault(long userId) throws RuntimeException {
-    return createExchangeCustomer(userId, 1000000L); // Default limit
+    ExchangeCredential credential = (ExchangeCredential) x.get("exchangeCredential");
+    return createExchangeCustomer(userId, credential.getDefaultLimit());
   }
 
   public ExchangeCustomer createExchangeCustomer(long userId, long amount) throws RuntimeException {
     User user = (User) ((DAO) this.x.get("localUserDAO")).find(userId);
     if ( user == null ) throw new RuntimeException("User not found: " + userId);
 
-    ExchangeCustomer existingExchangeCustomer = findExchangeCustomer(user);
-    if ( existingExchangeCustomer != null ) return existingExchangeCustomer;
+    try {
+      ExchangeCustomer existingExchangeCustomer = findExchangeCustomer(user);
+      if ( existingExchangeCustomer != null ) return existingExchangeCustomer;
+    } catch(Throwable t) {
+      logger_.error("Error thrown while checking if Exchange user exists already. Would proceed to create anyways." , t);
+    }
 
     InsertTitular request = new InsertTitular();
     request.setDadosTitular(getTitularRequest(user, amount));
@@ -218,8 +232,8 @@ public class ExchangeServiceProvider implements ExchangeService {
     if ( SafetyUtil.isEmpty(formattedCpfCnpj) ) throw new RuntimeException("Invalid CNPJ");
     titular.setCODIGO(formattedCpfCnpj); // e.g 10786348070
     titular.setTIPO(1);
-    titular.setSUBTIPO("J"); // F = Physical, J = Legal, S = Symbolic
-    titular.setNOMEAB(getName(user));
+    titular.setSUBTIPO(user instanceof Business ? "J" : "F"); // F = Physical, J = Legal, S = Symbolic
+    titular.setNOMEAB(formatShortName(formattedCpfCnpj, user));
     titular.setNOME(getName(user));
     titular.setENDERECO(user.getAddress().getAddress());
     titular.setCIDADE(user.getAddress().getCity());
@@ -233,6 +247,17 @@ public class ExchangeServiceProvider implements ExchangeService {
     titular.setLIMITEOP(new Long(amount).doubleValue());
 
     return titular;
+  }
+
+  protected String formatShortName(String formattedCpf_Cnpj, User user) {
+    int MAX_LEN = 15; // Max characters accepted
+    int cpfLen = user instanceof Business ? 8 : 9;
+    String name = getName(user).replaceAll("\\s+","");
+    StringBuilder shortName = new StringBuilder();
+    shortName.append(name.substring(0, Math.min(name.length(), (MAX_LEN - cpfLen) - 1)));
+    shortName.append("-");
+    shortName.append(formattedCpf_Cnpj.substring(0, Math.min(formattedCpf_Cnpj.length(), cpfLen)));
+    return shortName.toString();
   }
 
   public Transaction createTransaction(Transaction transaction) throws RuntimeException {
@@ -251,21 +276,26 @@ public class ExchangeServiceProvider implements ExchangeService {
     if ( exchangeClientValues == null )
       throw new RuntimeException("Exchange is not properly configured. Missing exchange client values.");
 
+    BancoConfig bancoConfig = (BancoConfig) ((DAO) this.x.get("bancoConfigDAO")).find(AND(
+      EQ(BancoConfig.CURRENCY, transaction.getDestinationCurrency()),
+      EQ(BancoConfig.SPID, payer.getSpid())
+    ));
+
     InsertBoleto request = new InsertBoleto();
     Boleto dadosBoleto = new Boleto();
     dadosBoleto.setAGENCIA(exchangeClientValues.getAgencia());
-    dadosBoleto.setBANCO(exchangeClientValues.getBANCO());
+    if ( bancoConfig != null ) dadosBoleto.setBANCO(bancoConfig.getCode());
     dadosBoleto.setBANCOBEN0(exchangeClientValues.getBeneficiaryType());
-
-    Institution institution = (Institution) ((DAO) this.x.get("institutionDAO")).find(bankAccount.getInstitution());
-    if ( institution != null ) {
-      dadosBoleto.setBANCOBEN1(institution.getSwiftCode());
-      dadosBoleto.setPAGADORS(institution.getSwiftCode());
-      dadosBoleto.setESP5(getESP("SWIFT CODE: ", institution.getSwiftCode(),
+    dadosBoleto.setCONTA(exchangeClientValues.getCONTA());
+    dadosBoleto.setBANCOBEN1(bankAccount.getSwiftCode());
+    dadosBoleto.setBANCOBEN4(bankAccount.getRoutingCode(this.x));
+    dadosBoleto.setPAGADORS(bankAccount.getSwiftCode());
+    dadosBoleto.setESP5(getESP("SWIFT CODE: ", bankAccount.getSwiftCode(),
         " - IBAN:  ", bankAccount.getIban(), " - DETAILS OF CHARGE: "));
-    }
-    Address bankAddress = bankAccount.getAddress() == null ? bankAccount.getBankAddress() : bankAccount.getAddress();
-    if ( bankAddress != null ) dadosBoleto.setBANCOBEN3(bankAddress.getCity());
+
+    FindBankByNationalIDResponse bankInfo = getBankInformation(bankAccount, payer.getSpid());
+    if ( bankInfo != null ) dadosBoleto.setBANCOBEN2(bankInfo.getInstitutionName());
+    dadosBoleto.setBANCOBEN3(getBancoBen3(bankInfo, bankAccount));
 
     dadosBoleto.setCLAUSULAXX(false);
     String formattedCpfCnpj = findCpfCnpj(payer.getId()).replaceAll("[^0-9]", "");
@@ -273,18 +303,15 @@ public class ExchangeServiceProvider implements ExchangeService {
 
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-    String today = sdf.format(new Date());
-    Date completionDate = transaction.getCompletionDate();
-    if ( completionDate == null )
-      completionDate = ((ClearingTimeService) this.x.get("clearingTimeService")).estimateCompletionDateSimple(this.x, transaction);
-
+    Date completionDate =  skipHolidayAndWeekends();
+    String completionDateString = "";
     try {
-      String completionDateString = sdf.format(completionDate);
+      completionDateString = sdf.format(completionDate);
       dadosBoleto.setDATALQ(completionDateString);
       dadosBoleto.setDATAME(completionDateString); // TODO Foreign currency delivery date ( DD / MM / YYYY)
-      dadosBoleto.setDATAMN(today);
-      dadosBoleto.setDATAOP(today);
-      dadosBoleto.setDATAEN(today);
+      dadosBoleto.setDATAMN(completionDateString);
+      dadosBoleto.setDATAOP(completionDateString);
+      dadosBoleto.setDATAEN(completionDateString);
     } catch(Throwable t) {
       logger_.error("Unable to parse completion date", t);
       throw new RuntimeException("Error inserting boleto. Cound not parse completion date.");
@@ -317,10 +344,10 @@ public class ExchangeServiceProvider implements ExchangeService {
     }
     dadosBoleto.setOBSERVACAO("");
     dadosBoleto.setPAGADOR(getName(receiver));
-    dadosBoleto.setPAGADORC(bankAccount.getIban());
+    dadosBoleto.setPAGADORC("/" + bankAccount.getIban());
     dadosBoleto.setGERENTE(exchangeClientValues.getGERENTE());
     dadosBoleto.setESP1(getESP("FORMA DE PAGAMENTO: ", dadosBoleto.getFORMAEN(),
-      " - DATA: ", today));
+      " - DATA: ", completionDateString));
     dadosBoleto.setESP6(getESP("OUR - INST.FINANC .: ", exchangeClientValues.getProcessorName()));
 
     Country userCountry = null;
@@ -373,6 +400,38 @@ public class ExchangeServiceProvider implements ExchangeService {
     return transaction;
   }
 
+  protected String getBancoBen3(FindBankByNationalIDResponse bankInfo, BankAccount bankAccount) {
+    StringBuilder bancoBen3 = new StringBuilder();
+    if ( bankInfo != null ) {
+      bancoBen3.append(bankInfo.getCity());
+      bancoBen3.append("/");
+      bancoBen3.append(bankInfo.getCountryName());
+      return bancoBen3.toString();
+    }
+
+    Address bankAddress = bankAccount.getAddress() == null ? bankAccount.getBankAddress() : bankAccount.getAddress();
+    if ( bankAddress != null && ! ( SafetyUtil.isEmpty(bankAddress.getCity()))) {
+      bancoBen3.append(bankAddress.getCity());
+      Country country = bankAddress.findCountryId(this.x);
+      if ( country != null ) {
+        bancoBen3.append("/");
+        bancoBen3.append(country.getName());
+      }
+    }
+    return bancoBen3.toString();
+  }
+
+  public Date skipHolidayAndWeekends() {
+    BankHolidayService bankHolidayService = (BankHolidayService) this.x.get("bankHolidayService");
+    Address address = new Address.Builder(this.x).setCountryId("BR").setRegionId("").build();
+    return bankHolidayService.skipBankHolidays(this.x, new Date(), address, 0);
+  }
+
+  protected FindBankByNationalIDResponse getBankInformation(BankAccount bankAccount, String spid) {
+    AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) this.x.get("afexServiceProvider");
+    return afexServiceProvider.getBankInformation(x, null, bankAccount, spid);
+  }
+
   protected ExchangeClientValues getExchangeClientValues(String spid) {
     return (ExchangeClientValues) ((DAO) this.x.get("exchangeClientValueDAO"))
       .find(EQ(ExchangeClientValues.SPID, spid));
@@ -404,19 +463,23 @@ public class ExchangeServiceProvider implements ExchangeService {
   protected String extractNatureCode(Transaction txn) {
     if ( txn == null ) return "";
     for (TransactionLineItem lineItem : txn.getLineItems() ) {
-      if ( lineItem instanceof NatureCodeLineItem )
-        return ((NatureCodeLineItem)lineItem).getCode();
+      if ( lineItem instanceof NatureCodeLineItem ) {
+        NatureCodeData natureCodeData = ((NatureCodeLineItem) lineItem).getNatureCodeData();
+        if ( natureCodeData != null && ! SafetyUtil.isEmpty(natureCodeData.toString())
+          && ! SafetyUtil.isEmpty(((NatureCodeLineItem)lineItem).getNatureCode()) )
+          return ((NatureCodeLineItem)lineItem).getCode();
+      }
     }
-    return "";
+    return getNatureCodeFromInvoice(txn);
   }
 
   protected int getContactRelationship(User payer, User payee) {
-    if ( ! (payee instanceof Business) ) return 30; // Contact is not a business
+//    if ( ! (payee instanceof Business) ) return 30; // Contact is not a business
+//
+//    Contact contact = findContact(payer, payee);
+//    if ( contact != null && contact.getConfirm() ) return 12; // has relationship with contact
 
-    Contact contact = findContact(payer, payee);
-    if ( contact != null && contact.getConfirm() ) return 12; // has relationship with contact
-
-    return 20;
+    return 20; // Default to Business for now
   }
 
   protected Contact findContact(User payer, User payee) {
@@ -425,22 +488,43 @@ public class ExchangeServiceProvider implements ExchangeService {
     return (Contact) payer.getContacts(this.x).find(EQ(Contact.BUSINESS_ID, payee.getId()));
   }
 
+  protected String getNatureCodeFromInvoice(Transaction txn) {
+    StringBuilder str =  new StringBuilder();
+    Invoice invoice = txn.findInvoiceId(x);
+    if ( invoice == null ) return str.toString();
+
+    DAO capablePayloadDAO = (DAO) invoice.getCapablePayloadDAO(x);
+    List<CapabilityJunctionPayload> capablePayloadLst = (List<CapabilityJunctionPayload>) ((ArraySink) capablePayloadDAO.select(new ArraySink())).getArray();
+
+    for ( CapabilityJunctionPayload capablePayload : capablePayloadLst ) {
+      DAO capabilityDAO = (DAO) x.get("capabilityDAO");
+      Capability cap = (Capability) capabilityDAO.find(capablePayload.getCapability());
+      if ( cap instanceof NatureCode ) {
+        NatureCode natureCode = (NatureCode) cap;
+        str.append(natureCode.getOperationType());
+        str.append(capablePayload.getData().toString());
+        break;
+      }
+    }
+    return str.toString();
+  }
+
   public Transaction updateTransactionStatus(Transaction transaction) throws RuntimeException {
     if ( SafetyUtil.isEmpty(transaction.getExternalInvoiceId()) ) return transaction;
 
-    GetBoletoStatus request = new GetBoletoStatus();
+    SearchBoleto request = new SearchBoleto();
     request.setNrBoleto(transaction.getExternalInvoiceId());
     try {
-      BoletoStatusResponse response = exchangeClient.getBoletoStatus(request);
-      if ( response == null || response.getBoletoStatusResult() == null )
-        throw new RuntimeException("Unable to get a valid response from Exchange while calling GetBoletoStatus");
+      SearchBoletoResponse response = exchangeClient.searchBoleto(request);
+      if ( response == null || response.getSearchBoletoResult() == null )
+        throw new RuntimeException("Unable to get a valid response from Exchange while calling SearchBoletoResponse");
 
-      if ( response.getBoletoStatusResult().getBoleto() == null ||
-        response.getBoletoStatusResult().getBoleto().length < 1 )
+      if ( response.getSearchBoletoResult().getBoletos() == null ||
+        response.getSearchBoletoResult().getBoletos().length < 1 )
         throw new RuntimeException("GetBoletoStatus failed, transaction not found in exchange");
 
       transaction = (Transaction) transaction.fclone();
-      Boleto boleto = (Boleto) response.getBoletoStatusResult().getBoleto()[0];
+      Boleto boleto = (Boleto) response.getSearchBoletoResult().getBoletos()[0];
       transaction.setStatus(mapExchangeTransactionStatus(boleto.getSTATUS(), transaction));
       return transaction;
     } catch(Throwable t) {
@@ -458,7 +542,7 @@ public class ExchangeServiceProvider implements ExchangeService {
       case "R":
         return TransactionStatus.SENT;
       case "F":
-        return TransactionStatus.DECLINED;
+        return TransactionStatus.COMPLETED;
       default:
         return transaction.getStatus();
     }

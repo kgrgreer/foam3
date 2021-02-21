@@ -233,7 +233,7 @@ p({
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"afexBeneficiaryDAO",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"},
       "CRUDEnabledActionsAuth": {
         "class": "foam.comics.v2.CRUDEnabledActionsAuth",
         "isEnabled": true,
@@ -248,21 +248,21 @@ p({
 })
 p({
   "class":"foam.nanos.menu.Menu",
-  "id":"integration.afexbusiness",
+  "id":"integration.afexuser",
   "label":"AFEX Businesses",
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"afexBusinessDAO",
+      "daoKey":"afexUserDAO",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"},
       "CRUDEnabledActionsAuth": {
         "class": "foam.comics.v2.CRUDEnabledActionsAuth",
         "isEnabled": true,
         "enabledActionsAuth": {
           "class": "foam.comics.v2.BasicEnabledActionsAuth",
-          "modelName": "afexbusiness"
+          "modelName": "afexuser"
         }
       }
     }

@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'USBankAccount',
-  label: 'United States Bank',
+  label: 'United States',
   extends: 'net.nanopay.bank.BankAccount',
 
   imports: [
@@ -45,10 +45,52 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'accountInformation',
+      name: 'clientAccountInformation',
       title: function() {
-        return this.forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
-      }
+        return this.clientAccountInformationTitle;
+      },
+      properties: [
+        {
+          name: 'denomination',
+          order: 10,
+          gridColumns: 12
+        },
+        {
+          name: 'name',
+          order: 20,
+          gridColumns: 12
+        },
+        {
+          name: 'flagImage',
+          order: 30,
+          gridColumns: 12
+        },
+        {
+          name: 'country',
+          order: 40,
+          gridColumns: 12
+        },
+        {
+          name: 'voidChequeImage',
+          order: 50,
+          gridColumns: 12
+        },
+        {
+          name: 'branchId',
+          order: 60,
+          gridColumns: 6
+        },
+        {
+          name: 'accountNumber',
+          order: 70,
+          gridColumns: 6
+        },
+        {
+          name: 'supportingDocuments',
+          order: 80,
+          gridColumns: 12
+        }
+      ]
     },
     {
       name: 'pad',
@@ -119,12 +161,6 @@ foam.CLASS({
       name: 'iban',
       visibility: 'HIDDEN',
       required: false,
-      getter: function() {
-        return this.accountNumber;
-      },
-      javaGetter: `
-        return getAccountNumber();
-      `,
       validateObj: function(iban) {
       }
     },
@@ -157,7 +193,7 @@ foam.CLASS({
     },
     {
       name: 'branchId',
-      label: 'ACH Routing Number',
+      label: 'Routing Number',
       section: 'accountInformation',
       updateVisibility: 'RO',
       gridColumns: 6,
@@ -180,7 +216,7 @@ foam.CLASS({
     },
     {
       name: 'accountNumber',
-      label: 'ACH Account Number',
+      label: 'Account Number',
       section: 'accountInformation',
       updateVisibility: 'RO',
       postSet: function(o, n) {
@@ -311,7 +347,8 @@ foam.CLASS({
           views: [
             {
               class: 'foam.u2.view.FObjectView',
-              of: 'net.nanopay.model.USPadCapture'
+              of: 'net.nanopay.model.USPadCapture',
+              classIsFinal: true
             },
             {
               // displays us bank account capabilities
@@ -402,6 +439,21 @@ foam.CLASS({
       ],
       javaCode: `
         return getBranchId();
+      `
+    },
+    {
+      name: 'getIban',
+      type: 'String',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      javaCode: `
+        StringBuilder iban = new StringBuilder();
+        iban.append(this.getRoutingCode(x));
+        iban.append(this.getAccountNumber());
+        return iban.toString();
       `
     }
  ]

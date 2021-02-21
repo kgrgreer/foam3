@@ -319,10 +319,13 @@ foam.CLASS({
                   label$: self.optionLabel$,
                   size: 'LARGE'
                 })
-                .tag(self.GO_NEXT, {
-                  label$: self.nextLabel$,
-                  size: 'LARGE'
-                })
+                .add(self.slot(function() {
+                  return this.E()
+                    .tag(self.GO_NEXT, {
+                      label: self.translationService.getTranslation(foam.locale, `${self.nextLabel$.prop.forClass_}.${foam.String.constantize(self.nextLabel$.prop.name)}.value`),
+                      size: 'LARGE'
+                    });
+                }))
               .end()
             .end()
           .end();

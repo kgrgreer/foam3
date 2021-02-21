@@ -35,6 +35,12 @@ foam.CLASS({
     'subject'
   ],
 
+  css: `
+  ^ .foam-u2-view-TableView-tr div {
+    display: inline-block;
+  }
+`,
+
   properties: [
     {
       class: 'foam.dao.DAOProperty',
@@ -42,7 +48,7 @@ foam.CLASS({
       factory: function() {
         var dao = this.subject.user.accounts.where(
           this.INSTANCE_OF(this.BankAccount)
-        );
+        ).orderBy(this.BankAccount.CREATED);
         dao.of = 'net.nanopay.bank.BankAccount';
         return dao;
       }
@@ -88,7 +94,11 @@ foam.CLASS({
               .tag({
                 class: 'net.nanopay.account.ui.BankAccountWizard',
                 data: this.selection,
-                useSections: ['accountInformation', 'pad']
+                useSections: ['clientAccountInformation', 'pad'],
+                config: {
+                  id: { updateVisibility: 'HIDDEN' },
+                  summary: { updateVisibility: 'HIDDEN' }
+                }
               })
             .endContext();
         this.add(popupView);

@@ -21,6 +21,10 @@ foam.CLASS({
 
   documentation: `Model for an EFT file`,
 
+  implements: [
+    'foam.nanos.auth.ServiceProviderAware'
+  ],
+
   tableColumns: [
     'id', 'fileName'
   ],
@@ -77,5 +81,10 @@ foam.CLASS({
       class: 'String',
       view: { class: 'foam.u2.tag.TextArea', rows: 5, cols: 80 }
     },
-  ],
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid'
+    }
+  ]
 });

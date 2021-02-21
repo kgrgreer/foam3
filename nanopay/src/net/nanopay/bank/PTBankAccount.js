@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'PTBankAccount',
-  label: 'Portugal Bank',
+  label: 'Portugal',
   extends: 'net.nanopay.bank.EUBankAccount',
 
   documentation: 'Portugal bank account information.',
@@ -64,7 +64,7 @@ foam.CLASS({
       section: 'accountInformation',
       updateVisibility: 'RO',
       preSet: function(o, n) {
-        return /^\d*$/.test(n) ? n : o;
+        return /^[\d\w]*$/.test(n) ? n : o;
       },
       tableCellFormatter: function(str) {
         if ( ! str ) return;

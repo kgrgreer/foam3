@@ -31,6 +31,13 @@ foam.CLASS({
     'businessSectorDAO'
   ],
 
+  messages: [
+    { name: 'PLACE_HOLDER', message: 'Please select...' },
+    { name: 'SPECIFIC_INDUSTRIES', message: 'Specific Industries' },
+    { name: 'INDUSTRIES', message: 'Industries' },
+    { name: 'SEARCH', message: 'Search...' },
+  ],
+
   properties: [
     {
       class: 'Reference',
@@ -78,10 +85,6 @@ foam.CLASS({
     }
   ],
 
-  messages: [
-    { name: 'PLACE_HOLDER', message: 'Please select...' }
-  ],
-
   methods: [
     function initE() {
       this.SUPER();
@@ -89,23 +92,23 @@ foam.CLASS({
         .addClass(this.myClass())
         .start(this.Cols)
           .start()
-            .style({ 'flex': 1, 'margin-right': '16px' })
+            .style({ 'flex': 1, 'margin-right': '16px', 'width': 0 }) // 0 width to prevent the container to widen if the content overflows
             .tag(this.RichChoiceView, {
               data$: this.parentChoice$,
               sections: [
                 {
-                  heading: 'Industries',
+                  heading: this.INDUSTRIES,
                   dao: this.businessSectorDAO.where(this.EQ(this.BusinessSector.PARENT, 0))
                 }
               ],
               search: true,
-              searchPlaceholder: 'Search...',
+              searchPlaceholder: this.SEARCH,
               choosePlaceholder: this.PLACE_HOLDER
             })
           .end()
 
           .start()
-            .style({ flex: 1 })
+            .style({ flex: 1, width: 0 }) // 0 width to prevent the container to widen if the content overflows
             .add(this.parentChoice$.map((id) => {
               return this.E()
                 .tag(this.RichChoiceView, {
@@ -113,12 +116,12 @@ foam.CLASS({
                   data$: this.data$,
                   sections: [
                     {
-                      heading: 'Specific Industries',
+                      heading: this.SPECIFIC_INDUSTRIES,
                       dao: this.filteredDAO$proxy
                     }
                   ],
                   search: true,
-                  searchPlaceholder: 'Search...',
+                  searchPlaceholder: this.SEARCH,
                   choosePlaceholder: this.PLACE_HOLDER
                 });
             }))

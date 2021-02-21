@@ -6,18 +6,18 @@ p({
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.contacts.Contact.getOwnClassInfo())
+      .setOf(net.nanopay.contacts.PersonalContact.getOwnClassInfo())
       .setValidated(true)
       .setDecorator(
         new net.nanopay.contacts.CheckContactExistingTransaction(x,
         new net.nanopay.fx.afex.AFEXContactDAO(x,
-        new foam.dao.FilteredDAO(x, foam.mlang.MLang.INSTANCE_OF(net.nanopay.contacts.Contact.class), new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.contacts.Contact.getOwnClassInfo()).build(), net.nanopay.contacts.Contact.getOwnClassInfo(), net.nanopay.contacts.Contact.ID))))
+        new foam.dao.FilteredDAO(x, foam.mlang.MLang.INSTANCE_OF(net.nanopay.contacts.PersonalContact.class), new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.contacts.Contact.getOwnClassInfo()).build(), net.nanopay.contacts.Contact.getOwnClassInfo(), net.nanopay.contacts.Contact.ID))))
       .setAuthorize(false)
       .setEnableInterfaceDecorators(false)
       .setInnerDAO(x.get("localUserDAO"))
       .build();
   """,
-  "client": "{\"of\":\"net.nanopay.contacts.Contact\", \"remoteListenerSupport\": false}"
+  "client": "{\"of\":\"net.nanopay.contacts.PersonalContact\", \"remoteListenerSupport\": false}"
 })
 
 p({
@@ -27,17 +27,23 @@ p({
   "lazy":false,
   "serviceScript":
   """
+    import foam.nanos.crunch.lite.CapableDAO;
+
+    dao = new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.invoice.model.Invoice.getOwnClassInfo()).build();
+    dao = new CapableDAO.Builder(x).setDelegate(dao).setDaoKey("contactDAO").build();
+    dao = new net.nanopay.meter.BusinessStatusContactDAO.Builder(x).setDelegate(dao).build();
     return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.contacts.Contact.getOwnClassInfo())
-      .setDecorator(new net.nanopay.meter.BusinessStatusContactDAO.Builder(x).setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.contacts.Contact.getOwnClassInfo()).build()).build())
+      .setOf(net.nanopay.contacts.PersonalContact.getOwnClassInfo())
+      .setDecorator(dao)
       .setEnableInterfaceDecorators(false)
       .setInnerDAO(x.get("localContactDAO"))
+      .setPermissioned(true)
       .build();
   """,
   "client":
   """
     {
-      "of":"net.nanopay.contacts.Contact",
+      "of":"net.nanopay.contacts.PersonalContact",
       "remoteListenerSupport":false,
       "cache":false
     }

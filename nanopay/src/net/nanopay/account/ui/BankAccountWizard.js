@@ -57,10 +57,30 @@ foam.CLASS({
 
   messages: [
     { name: 'SUCCESS', message: 'Bank account successfully added' },
-    { name: 'ERROR', message: 'Bank account error occured' }
+    { name: 'ERROR', message: 'Bank account error occured' },
+    { name: 'CREATE_TITLE', message: 'Add Bank Account' },
+    { name: 'EDIT_TITLE', message: 'Edit Bank Account' }
+  ],
+
+  properties: [
+    {
+      name: 'config'
+      // Map of property-name: {map of property overrides} for configuring properties
+      // values include 'label', 'units', and 'view'
+    },
+    {
+      class: 'String',
+      name: 'customTitle'
+    }
   ],
 
   methods: [
+    function init() {
+      this.data.clientAccountInformationTitle = this.customTitle ? this.customTitle : this.CREATE_TITLE;
+      if ( this.controllerMode == foam.u2.ControllerMode.EDIT ) {
+        this.data.clientAccountInformationTitle = this.EDIT_TITLE;
+      }
+    },
     function initE() {
       var self = this;
       this.addClass(this.myClass());
@@ -70,7 +90,8 @@ foam.CLASS({
             return self.E()
               .tag(self.sectionView, {
                 section: sections[currentIndex],
-                data$: self.data$
+                data$: self.data$,
+                config: self.config
               });
           })).addClass(this.myClass('wizard-body'))
           .startContext({ data: this })
@@ -90,12 +111,16 @@ foam.CLASS({
       isEnabled: function(currentIndex,
                           data$errors_,
                           data$padCapture$address$errors_,
-                          data$padCapture$capablePayloads) {
+                          data$padCapture$capablePayloads,
+                          data$padCapture$capabilityIds,
+                          ) {
         if ( data$errors_ || data$padCapture$address$errors_ ) return false;
+
+        if ( data$padCapture$capabilityIds && data$padCapture$capabilityIds.length > data$padCapture$capablePayloads.length) return false;
         
         if ( data$padCapture$capablePayloads ) {
           for ( payload of data$padCapture$capablePayloads ) {
-            if ( ! payload.data || ! payload.data.agreement ) return false;
+            if ( ! data$padCapture$capabilityIds.includes(payload.capability) && (! payload.data || ! payload.data.agreement) ) return false;
           }
         }
 

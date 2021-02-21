@@ -134,9 +134,9 @@ foam.CLASS({
                 .setSenderName(sender.toSummary())
                 .setReceiverUserId(receiver.getId())
                 .setReceiverName(receiver.toSummary())
-                .setSourceAmount(transaction.getAmount())
+                .setSourceAmount(-transaction.getTotal(x, transaction.getSourceAccount()))
                 .setSourceCurrency(transaction.getSourceCurrency())
-                .setDestinationAmount(transaction.getDestinationAmount())
+                .setDestinationAmount(transaction.getTotal(x, transaction.getDestinationAccount()))
                 .setDestinationCurrency(transaction.getDestinationCurrency())
                 .build();
                 decoratedSink.put(pr, null);
@@ -146,7 +146,7 @@ foam.CLASS({
           }
         });
 
-        return decoratedSink;
+        return sink;
       `
     }
   ]

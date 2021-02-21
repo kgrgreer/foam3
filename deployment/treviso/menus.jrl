@@ -23,3 +23,21 @@ p({"class":"foam.nanos.menu.Menu","id":"trevisoSmeSettings","label":"Treviso Set
 p({"class":"foam.nanos.menu.Menu","id":"sme.accountProfile.business-settings","label":"Business settings","description":"View and update business profile information and permissions","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.BusinessSettingsView"}},"order":1,"parent":"trevisoSmeSettings"})
 p({"class":"foam.nanos.menu.Menu","id":"sme.accountProfile.personal-settings","label":"Personal settings","description":"Manage your password, email and notifications","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.PersonalSettingsView"}},"order":2, "parent":"trevisoSmeSettings"})
 p({"class":"foam.nanos.menu.Menu","id":"sme.accountProfile.signout","label":"Sign out","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.SignOutView"}},"order":100,"parent":"trevisoSmeSettings"})
+
+// TrevisoTransactionReport
+p({
+  "class":   "foam.nanos.menu.Menu",
+  "id":      "report.trevisoTransactionReport",
+  "label":   "Treviso Transaction Report",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "daoKey":        "trevisoTransactionReportDAO",
+      "browseTitle":   "Treviso Transaction Report",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  },
+  "parent":"report"
+})

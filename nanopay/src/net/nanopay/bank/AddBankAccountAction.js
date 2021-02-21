@@ -54,7 +54,7 @@ foam.CLASS({
       value: async function(X) {
         let permission = await X.auth.check(null, 'multi-currency.read');
         if ( permission ) {
-          X.controllerView.stack.push({
+          X.stack.push({
             class: 'net.nanopay.bank.ui.BankPickCurrencyView'
           }, X);
         } else {
@@ -62,7 +62,11 @@ foam.CLASS({
           .addClass('bank-account-popup').tag({
             class: 'net.nanopay.account.ui.BankAccountWizard',
             data: (foam.lookup(`net.nanopay.bank.${ X.subject.user.address.countryId }BankAccount`)).create({}, X),
-            useSections: ['accountInformation', 'pad']
+            useSections: ['clientAccountInformation', 'pad'],
+            config: {
+              id: { updateVisibility: 'HIDDEN' },
+              summary: { updateVisibility: 'HIDDEN' }
+            }
           }));
         }
       }

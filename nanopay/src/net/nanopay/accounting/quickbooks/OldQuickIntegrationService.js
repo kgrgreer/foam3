@@ -802,7 +802,7 @@ try {
         }
 
         newContact.setType("Contact");
-        newContact.setGroup("sme");
+        newContact.setGroup(user.getSpid() + "-sme");
         newContact.setQuickId(customer.getId());
         newContact.setRealmId(tokenStorage.getRealmId());
         newContact.setOwner(user.getId());
@@ -860,7 +860,7 @@ try {
     newContact.setBusinessPhone(businessPhone);
     newContact.setMobileNumber(mobilePhone);
     newContact.setMobileNumberVerified(mobilePhoneVerified);
-    newContact.setGroup("sme");
+    newContact.setGroup(user.getSpid() + "-sme");
     newContact.setQuickId(customer.getId());
     newContact.setRealmId(tokenStorage.getRealmId());
     contactDAO.put(newContact);
@@ -1300,7 +1300,7 @@ if ( existContact == null ) {
     }
 
     newContact.setType("Contact");
-    newContact.setGroup("sme");
+    newContact.setGroup(user.getSpid() + "-sme");
     newContact.setQuickId(importContact.getId());
     newContact.setRealmId(tokenStorage.getRealmId());
     newContact.setOwner(user.getId());
@@ -1359,7 +1359,7 @@ newContact.setBusinessPhoneNumber(businessPhone);
 newContact.setBusinessPhoneNumberVerified(businessPhoneNumberVerified);
 newContact.setMobileNumber(mobilePhone);
 newContact.setMobileNumberVerified(mobilePhoneVerified);
-newContact.setGroup("sme");
+newContact.setGroup(user.getSpid() + "-sme");
 newContact.setQuickId(importContact.getId());
 newContact.setRealmId(tokenStorage.getRealmId());
 contactDAO.put(newContact);

@@ -31,15 +31,24 @@ foam.CLASS({
   properties: [
     {
       name: 'rbcReferenceNumber',
-      class: 'String'
+      class: 'String',
+      section: 'transactionInformation',
+      order: 450,
+      gridColumns: 6
     },
     {
       name: 'rbcFileCreationNumber',
-      class: 'Long'
+      class: 'Long',
+      section: 'transactionInformation',
+      order: 460,
+      gridColumns: 6
     },
     {
       name: 'rejectReason',
-      class: 'String'
+      class: 'String',
+      section: 'transactionInformation',
+      order: 470,
+      gridColumns: 6
     },
     {
       name: 'institutionNumber',
@@ -49,7 +58,10 @@ foam.CLASS({
     },
     {
       name: 'settled',
-      class: 'Boolean'
+      class: 'Boolean',
+      section: 'transactionInformation',
+      order: 480,
+      gridColumns: 6
     }
   ],
 

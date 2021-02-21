@@ -44,9 +44,6 @@ import net.nanopay.country.br.exchange.ExchangeCredential;
 import net.nanopay.country.br.exchange.ExchangeCustomer;
 import net.nanopay.country.br.exchange.ExchangeService;
 import net.nanopay.country.br.exchange.ExchangeServiceProvider;
-import net.nanopay.country.br.OpenDataService;
-import net.nanopay.country.br.PTaxRate;
-import net.nanopay.country.br.PTaxDollarRateResponse;
 import net.nanopay.country.br.tx.NatureCodeLineItem;
 import net.nanopay.fx.afex.AFEXServiceProvider;
 import net.nanopay.fx.FXQuote;
@@ -58,6 +55,7 @@ import net.nanopay.partner.sintegra.Sintegra;
 import net.nanopay.partner.sintegra.CPFResponseData;
 import net.nanopay.partner.sintegra.CNPJResponseData;
 import net.nanopay.country.br.exchange.Boleto;
+import net.nanopay.partner.treviso.api.BusinessUnit;
 import net.nanopay.partner.treviso.api.ClientStatus;
 import net.nanopay.partner.treviso.api.CurrentPlatform;
 import net.nanopay.partner.treviso.api.Document;
@@ -124,7 +122,8 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     try {
       SaveEntityRequest request = buildSaveEntityRequest(x, user, findCpfCnpj(userId));
       FepWebResponse res = fepWebService.saveEntity(request);
-      if ( res != null && res.getCode() != 0 )
+      if ( res == null ) throw new RuntimeException("Unable to get a valid response from FepWeb.");
+      if ( res.getCode() != 0 )
         throw new RuntimeException("Error onboarding Treviso client to FepWeb. " + res.getMessage());
 
       return saveFepWebClient(user.getId(), "Active");
@@ -178,10 +177,22 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     request.setExtCode(user.getId());
     request.setPersonType((user instanceof Business) ? "J" : "P");
     request.setSocialName(getName(user));
+    request.setFntsyNm(getName(user));
     request.setCnpjCpf(cnpj);
     request.setIe(region.getName());
     request.setIm(user.getAddress().getCity());
+    net.nanopay.partner.treviso.api.Address address = new net.nanopay.partner.treviso.api.Address();
     TrevisoCredientials credentials = (TrevisoCredientials) x.get("trevisoCredientials");
+    address.setExtCode(credentials.getFepWebCode());
+    address.setCityName(user.getAddress().getCity());
+    address.setAddrName(user.getAddress().getStreetName());
+    address.setAddrNr(user.getAddress().getStreetNumber());
+    address.setZip(user.getAddress().getPostalCode());
+    address.setBusPhoneNr(user.getPhoneNumber());
+    address.setStAbbrvtn(region.getRegionCode());
+    net.nanopay.partner.treviso.api.Address[] adresses = new net.nanopay.partner.treviso.api.Address[1];
+    adresses[0] = address;
+    request.setAddresses(adresses);
     ResponsibleArea area = new ResponsibleArea();
     if ( credentials != null ) {
       area.setExtCode(credentials.getFepWebCode());
@@ -190,6 +201,8 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
       platform.setExtCode(credentials.getFepWebCode()); // Set from where?
       platform.setPltfrmNm(credentials.getFepWebCodeName()); // TODO should this be hardcoded?
       area.setCurrentPlatform(platform);
+    } else {
+      throw new RuntimeException("Invalid credentials");
     }
     request.setResponsibleArea(area);
     request.setDocuments(buildCustomerDocuments(user));

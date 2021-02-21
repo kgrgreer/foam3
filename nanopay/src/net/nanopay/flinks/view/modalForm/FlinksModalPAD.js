@@ -52,7 +52,7 @@ foam.CLASS({
     ^ {
       width: 504px;
       max-height: 80vh;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
     ^content {
       position: relative;
@@ -181,9 +181,9 @@ foam.CLASS({
         this.ctrl.notify(this.SUCCESS, '', this.LogLevel.INFO, true);
         if ( this.onComplete ) this.onComplete();
         this.closeDialog();
-        location.hash = 'capability.main.banking';
+        location.hash = 'mainmenu.banking';
         this.bannerizeCompliance();
-        this.pushMenu('capability.main.banking');
+        this.pushMenu('mainmenu.banking');
       }
     }
   ],

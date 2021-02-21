@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'GBBankAccount',
-  label: 'United Kingdom Bank',
+  label: 'United Kingdom',
   extends: 'net.nanopay.bank.EUBankAccount',
 
   documentation: 'United Kingdom/Great Britain bank account information.',
@@ -111,7 +111,7 @@ foam.CLASS({
       name: 'accountNumber',
       updateVisibility: 'RO',
       preSet: function(o, n) {
-        return /^\d*$/.test(n) ? n : o;
+        return /^[\d\w]*$/.test(n) ? n : o;
       },
       tableCellFormatter: function(str) {
         if ( ! str ) return;

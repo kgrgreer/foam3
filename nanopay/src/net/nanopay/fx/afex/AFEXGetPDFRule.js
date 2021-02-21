@@ -29,6 +29,7 @@ foam.CLASS({
     'foam.blob.BlobService',
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.fs.File',
     'foam.nanos.notification.Notification',
@@ -37,6 +38,8 @@ foam.CLASS({
     'java.io.ByteArrayInputStream',
     'java.io.ByteArrayOutputStream',
     'java.io.InputStream',
+    'java.util.List',
+    'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.fx.afex.AFEXServiceProvider',
     'net.nanopay.fx.afex.AFEXTransaction',
     'net.nanopay.fx.FXQuote',
@@ -44,7 +47,7 @@ foam.CLASS({
     'net.nanopay.tx.ConfirmationFileLineItem',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.TransactionLineItem'
   ],
 
   methods: [
@@ -55,13 +58,33 @@ foam.CLASS({
         @Override
         public void execute(X x) {
 
+          DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
+          Invoice invoice = (Invoice) obj.fclone();
           Logger logger = (Logger) x.get("logger");
-          if ( ! (obj instanceof AFEXTransaction) ) {
+          DAO transactionDAO = ((DAO) x.get("localTransactionDAO")).inX(x);
+
+          Transaction txn = (Transaction) transactionDAO.find(invoice.getPaymentId());
+
+          if ( ! (txn instanceof FXSummaryTransaction) ) {
             return;
           }
-          
-          DAO transactionDAO = ((DAO) x.get("localTransactionDAO")).inX(x);
-          AFEXTransaction transaction = (AFEXTransaction) obj.fclone();
+                   
+          while ( ! (txn.getClassInfo() == AFEXTransaction.getOwnClassInfo()) ) {
+            ArraySink sink = new ArraySink();
+            (txn.getChildren(x)).select(sink);
+            List list = sink.getArray();
+            txn = (Transaction) list.get(0);
+          }
+
+          if ( txn == null || ! (txn.getClassInfo() == AFEXTransaction.getOwnClassInfo()) ) {
+            return;
+          }
+
+          AFEXTransaction transaction = (AFEXTransaction) txn;
+
+          if ( transaction.getAfexTradeResponseNumber() == 0 || transaction.getStatus() != TransactionStatus.PENDING_PARENT_COMPLETED ) {
+            return;
+          }
           
           AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
 
@@ -86,22 +109,12 @@ foam.CLASS({
               transaction = (AFEXTransaction) transactionDAO.put(transaction);
             
               // Append file to related invoice.
-              Transaction root = transaction.findRootTransaction(x, transaction);
-              if ( root.getInvoiceId() != 0 ) {
-                DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
-                Invoice invoice = (Invoice) invoiceDAO.find(root.getInvoiceId());
-
-                if ( invoice == null ) {
-                  throw new RuntimeException("Couldn't fetch invoice associated to AFEX transaction");
-                }
-
-                File[] files = invoice.getInvoiceFile();
-                File[] fileArray = new File[files.length + 1];
-                System.arraycopy(files, 0, fileArray, 0, files.length);
-                fileArray[files.length] = pdf;
-                invoice.setInvoiceFile(fileArray);
-                invoiceDAO.put(invoice);
-              }
+              File[] files = invoice.getInvoiceFile();
+              File[] fileArray = new File[files.length + 1];
+              System.arraycopy(files, 0, fileArray, 0, files.length);
+              fileArray[files.length] = pdf;
+              invoice.setInvoiceFile(fileArray);
+              invoiceDAO.put(invoice);
             } catch (Throwable t) {
               String msg = "Error getting trade confirmation for AfexTransaction " + transaction.getId();
               logger.error(msg, t);

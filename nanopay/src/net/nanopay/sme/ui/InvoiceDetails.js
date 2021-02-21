@@ -67,7 +67,6 @@ foam.CLASS({
     ^ .invoice-note {
       display: inline-block;
       max-height: 260px;
-      overflow-y: auto;
     }
     ^ .text-fade-out {
       background-image: linear-gradient(90deg, #000000 70%, rgba(0,0,0,0));
@@ -136,6 +135,11 @@ foam.CLASS({
     }
     ^ .note {
       white-space: pre-line;
+    }
+    @media print {
+      ^ .note {
+        white-space: normal;
+      }
     }
   `,
 
@@ -208,7 +212,7 @@ foam.CLASS({
       name: 'dueDate',
       expression: function(invoice$dueDate) {
         return invoice$dueDate ?
-          invoice$dueDate.toISOString().substring(0, 10) : '';
+          invoice$dueDate.toLocaleDateString(foam.locale) : '';
       },
     },
     {
@@ -216,7 +220,7 @@ foam.CLASS({
       name: 'issueDate',
       expression: function(invoice$issueDate) {
         return invoice$issueDate ?
-          invoice$issueDate.toISOString().substring(0, 10) : '';
+          invoice$issueDate.toLocaleDateString(foam.locale) : '';
       },
     },
     {
@@ -285,8 +289,8 @@ foam.CLASS({
           .addClass(this.myClass('invoice-content-text'))
           .add(this.slot(function(invoice) {
             if ( isBillingInvoice )
-              return self.CYCLE_LABEL + invoice.billingStartDate.toISOString().substring(0, 10)
-                + " to " + invoice.billingEndDate.toISOString().substring(0, 10);
+              return self.CYCLE_LABEL + invoice.billingStartDate.toLocaleDateString(foam.locale)
+                + " to " + invoice.billingEndDate.toLocaleDateString(foam.locale);
           }))
         .end()
         .add(this.slot(function(invoice, invoice$status) {
@@ -551,16 +555,31 @@ foam.CLASS({
   listeners: [
     function exportAsPDF() {
       try {
+        window.scrollTo(0,0);
         var className = '.full-invoice';
         var downloadContent = ctrl.document.querySelector(className);
         downloadContent.style.backgroundColor = '#fff';
-        downloadContent.style.padding = '20px';
-        var doc = new jsPDF('l', 'mm', [downloadContent.clientHeight, downloadContent.clientWidth]);
+        downloadContent.style.margin = '350px 50px 250px 50px';
+        downloadContent.style.padding = '350px 50px 250px 50px';
+        downloadContent.offsetParent.style.margin = '120px 40px 120px 40px';
+        downloadContent.offsetParent.style.zoom = '60%';
+
+        downloadContent.offsetParent.style.width = downloadContent.scrollWidth + downloadContent.offsetParent.scrollWidth + 'px';
+        downloadContent.offsetParent.style.height = downloadContent.scrollHeight + downloadContent.offsetParent.scrollHeight + 'px';
+
+        var doc = new jsPDF('p', 'pt');
+
         doc.addHTML(downloadContent, () => {
-          doc.save(`invoice-${this.invoice.referenceId}.pdf`);
+           doc.save(`invoice-${this.invoice.referenceId}.pdf`);
         });
+
         downloadContent.style.backgroundColor = '#f9fbff';
-        downloadContent.style.padding = '0px';
+        downloadContent.offsetParent.style.zoom = '1.0';
+        downloadContent.style.margin = '';
+        downloadContent.style.padding = '';
+        downloadContent.offsetParent.style.margin = '';
+        downloadContent.offsetParent.style.width = '';
+        downloadContent.offsetParent.style.height = ''
       } catch (e) {
         this.notify(this.SAVE_AS_PDF_FAIL, '', this.LogLevel.ERROR, true);
         throw e;

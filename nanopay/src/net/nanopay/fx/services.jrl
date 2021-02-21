@@ -66,9 +66,9 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "securityPriceDAO",
+  "name": "localSecurityPriceDAO",
   "lazy": false,
-  "serve": true,
+  "serve": false,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
@@ -79,6 +79,23 @@ p({
       .setPipelinePm(true)
       .setAuthorize(false)
       .setRuler(false)
+      .build();
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "securityPriceDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.fx.SecurityPrice.getOwnClassInfo())
+      .setInnerDAO(x.get("localSecurityPriceDAO"))
+      .setAuthorize(false)
+      .setRuler(false)
+      .setEnableInterfaceDecorators(false)
       .build();
   """,
     "client": """
@@ -104,4 +121,23 @@ p({
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.fx.FXProvider\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "fxSpotRateDAO",
+  "documentation": "In-memory, server-side only datastore for SPOT fx rate. Caching the SPOT rates to minimize number of calls to exchange providers.",
+  "serve": false,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.fx.ExchangeRate.getOwnClassInfo())
+      .setAuthorize(false)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setRuler(false)
+      .setCluster(false)
+      .setIndex(new foam.core.PropertyInfo[] { net.nanopay.fx.ExchangeRate.FROM_CURRENCY, net.nanopay.fx.ExchangeRate.TO_CURRENCY, net.nanopay.fx.ExchangeRate.FX_PROVIDER })
+      .build();
+  """
 })

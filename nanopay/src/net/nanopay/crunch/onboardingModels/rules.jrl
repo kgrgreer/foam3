@@ -1,5 +1,5 @@
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d0-crunch0",
   "name":"inviteSigningOfficerRule",
   "priority":100,
@@ -18,7 +18,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d0-crunch1",
   "name":"addSigningOfficerRule",
   "priority":100,
@@ -36,25 +36,3 @@ p({
   "lifecycleState":1
 })
 
-p({
-  "class":"foam.nanos.ruler.Rule",
-  "id":"9734f035-fa30-4b49-972e-e5258aa9d2b8",
-  "name":"Create UCJ between User and  Registering Payment Provider Capability on user compliance passed",
-  "documentation":"Create UCJ between User and  Registering Payment Provider Capability on user compliance passed.",
-  "priority":80,
-  "ruleGroup":"onboarding",
-  "daoKey":"userCapabilityJunctionDAO",
-  "operation":3,
-  "after":true,
-  "predicate":{
-    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-    "category":"AFEXOnboarding",
-    "isRecurring":false,
-    "status": 1
-  },
-  "asyncAction":{
-    "class":"net.nanopay.crunch.onboardingModels.CreateRegisterPaymentProviderUCJ"
-  },
-  "enabled":true,
-  "lifecycleState":1
-})

@@ -49,7 +49,7 @@ import net.nanopay.tx.planner.AFEXTransactionPlanner;
 import net.nanopay.fx.afex.AFEXServiceProvider;
 import net.nanopay.fx.afex.AFEX;
 import net.nanopay.fx.afex.AFEXServiceMock;
-import net.nanopay.fx.afex.AFEXBusiness;
+import net.nanopay.fx.afex.AFEXUser;
 import net.nanopay.fx.afex.AFEXBeneficiary;
 import net.nanopay.payment.Institution;
 
@@ -85,12 +85,12 @@ public class BankVerificationTest
     userDAO = (DAO) x_.get("localUserDAO");
     txnQuoteDAO = (DAO) x_.get("localTransactionPlannerDAO");
     //set up receiver and sender
-    sender_ = addUser("txntest1@transactiontest.ca");
-    receiver_ = addUser("txntest2@transactiontest.ca");
-    sender_2 = addUser("txntest3@transactiontest.ca");
-    receiver_2 = addUser("txntest4@transactiontest.ca");
-    user1 = addUser("txntest5@transactiontest.ca");
-    user2 = addUsUser("txntest6@transactiontest.ca");
+    sender_ = addUser("BankVerification1@transactiontest.ca");
+    receiver_ = addUser("BankVerification2@transactiontest.ca");
+    sender_2 = addUser("BankVerification3@transactiontest.ca");
+    receiver_2 = addUser("BankVerification4@transactiontest.ca");
+    user1 = addUser("BankVerification5@transactiontest.ca");
+    user2 = addUsUser("BankVerification6@transactiontest.ca");
     // setUp bank account
     setup();
     //set up AFEX transaction
@@ -150,7 +150,7 @@ public class BankVerificationTest
       user.setLastName("Filth");
       user.setEmailVerified(true);
       user.setGroup("business");
-      user.setSpid("nanopay");
+      user.setSpid("test");
       user = (User) userDAO.put(user);
       user = (User) user.fclone();
     }
@@ -199,7 +199,7 @@ public class BankVerificationTest
       user.setLastName("Filth_US");
       user.setEmailVerified(true);
       user.setGroup("business");
-      user.setSpid("nanopay");
+      user.setSpid("test");
       user = (User) userDAO.put(user);
       user = (User) user.fclone();
     }
@@ -283,24 +283,24 @@ public class BankVerificationTest
     accDAO.put(user2USBankAccount);
 
 
-    DAO afexBusinessDAO = (DAO) x_.get("afexBusinessDAO");
+    DAO afexUserDAO = (DAO) x_.get("afexUserDAO");
     DAO afexBeneficiaryDAO = (DAO) x_.get("afexBeneficiaryDAO");
 
-    AFEXBusiness b1 = new AFEXBusiness.Builder(x_)
+    AFEXUser b1 = new AFEXUser.Builder(x_)
       .setApiKey("abc123")
       .setAccountNumber("0001")
       .setUser(user1.getId())
       .setStatus("Active")
       .build();
-    afexBusinessDAO.put(b1);
+    afexUserDAO.put(b1);
 
-    AFEXBusiness b2 = new AFEXBusiness.Builder(x_)
+    AFEXUser b2 = new AFEXUser.Builder(x_)
       .setApiKey("123abc")
       .setAccountNumber("0002")
       .setUser(user2.getId())
       .setStatus("Active")
       .build();
-    afexBusinessDAO.put(b2);
+    afexUserDAO.put(b2);
 
     AFEXBeneficiary beneficiary1 = new AFEXBeneficiary.Builder(x_)
       .setContact(user2.getId())

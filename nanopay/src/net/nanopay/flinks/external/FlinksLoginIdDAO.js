@@ -30,9 +30,17 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.Group',
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.connection.CapabilityPayload',
+    'foam.nanos.dig.exception.ExternalAPIException',
+    'foam.nanos.dig.exception.GeneralException',
+    'foam.nanos.dig.exception.UnknownIdException',
     'foam.nanos.logger.Logger',
+    'foam.nanos.notification.NotificationSetting',
+    'foam.nanos.notification.EmailSetting',
+    'foam.nanos.notification.sms.SMSSetting',
+    'foam.nanos.pm.PM',
     'foam.util.SafetyUtil',
     'java.util.ArrayList',
     'java.util.HashMap',
@@ -68,6 +76,10 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
+      var pm = new PM(FlinksLoginIdDAO.getOwnClassInfo().getId(), "put");
+
+      try {
+
         Logger logger = (Logger) x.get("logger");
         Subject subject = (Subject) x.get("subject");
 
@@ -92,25 +104,25 @@ foam.CLASS({
             flinksLoginId.setBusiness(previousFlinksLoginId.getBusiness());
           }
         }
-        
+
         FlinksResponse flinksResponse = (FlinksResponse) flinksResponseService.getFlinksResponse(x, flinksLoginId);
         if ( flinksResponse == null ) {
-          throw new RuntimeException("Flinks failed to provide a valid response when provided with login ID: " + flinksLoginId.getLoginId());
+          throw new ExternalAPIException("Flinks failed to provide a valid response when provided with login ID: " + flinksLoginId.getLoginId());
         }
-        
+
         FlinksResponse flinksAuthResponse = flinksAuth.getAccountSummary(x, flinksResponse.getRequestId(), subject.getUser(), false);
         while ( flinksAuthResponse.getHttpStatusCode() == 202 ) {
           flinksAuthResponse = flinksAuth.pollAsync(x, flinksAuthResponse.getRequestId(), subject.getUser());
         }
         if ( flinksAuthResponse.getHttpStatusCode() != 200 ) {
-          throw new RuntimeException("Flinks failed to provide valid account detials " + flinksAuthResponse);
+          throw new ExternalAPIException("Flinks failed to provide valid account detials " + flinksAuthResponse);
         }
         FlinksAccountsDetailResponse flinksDetailResponse = (FlinksAccountsDetailResponse) flinksAuthResponse;
         flinksLoginId.setFlinksAccountsDetails(flinksDetailResponse.getId());
 
         AccountWithDetailModel accountDetail = selectBankAccount(x, flinksLoginId, flinksDetailResponse);
         if ( accountDetail == null ) {
-          throw new RuntimeException("No matching Flinks bank account found. AccountId: " + flinksLoginId.getAccountId());
+          throw new UnknownIdException("No matching Flinks bank account found. AccountId: " + flinksLoginId.getAccountId());
         }
         LoginModel loginDetail = flinksDetailResponse.getLogin();
         if ( loginDetail == null ) {
@@ -120,38 +132,37 @@ foam.CLASS({
         // Find the user and business if they already exist
         User user = flinksLoginId.findUser(x);
         if ( user == null && flinksLoginId.getUser() != 0 ) {
-          throw new RuntimeException("User not found: " + flinksLoginId.getUser());
+          throw new UnknownIdException("User not found: " + flinksLoginId.getUser());
         }
         Business business = flinksLoginId.findBusiness(x);
         if ( business == null && flinksLoginId.getBusiness() != 0 ) {
-          throw new RuntimeException("Business not found: " + flinksLoginId.getBusiness());
+          throw new UnknownIdException("Business not found: " + flinksLoginId.getBusiness());
         }
 
         // Create the user if this is an onboarding request
-        if ( flinksLoginId instanceof FlinksLoginIdOnboarding )
-        {
+        if ( flinksLoginId instanceof FlinksLoginIdOnboarding ) {
           FlinksLoginIdOnboarding flinksLoginIdOnboarding = (FlinksLoginIdOnboarding) flinksLoginId;
-          
+
           if ( user == null ) {
             // Create the user when they do not exist
 
             onboarding(x, flinksLoginIdOnboarding, accountDetail, loginDetail);
-            
+
             // Retrieve the user and the business
             user = flinksLoginId.findUser(x);
             business = flinksLoginId.findBusiness(x);
-            
+
             // User must exist
             if ( user == null ) {
-              throw new RuntimeException("User not provisioned: " + flinksLoginId.getUser());
+              throw new GeneralException("User not provisioned: " + flinksLoginId.getUser());
             }
-          
+
           } else {
             // Retrieve any missing capabilities from previous calls with this Flinks LoginId
 
             // API CAD Personal Payments Under 1000CAD Capability ID
             String capabilityId = "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD";
-                
+
             // Switch contexts to the newly created user
             Subject newSubject = new Subject.Builder(x).setUser(user).build();
             if ( flinksLoginIdOnboarding.getType() != OnboardingType.PERSONAL && business != null ) {
@@ -159,14 +170,14 @@ foam.CLASS({
 
               // Business CAD payments capability
               capabilityId = "18DD6F03-998F-4A21-8938-358183151F96";
-            } 
+            }
             X subjectX = x.put("subject", newSubject);
 
             DAO capabilityPayloadDAO = (DAO) subjectX.get("capabilityPayloadDAO");
             addCapabilityPayload(x, flinksLoginIdOnboarding, (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId));
           }
         } else if ( user == null ) {
-          throw new RuntimeException("User is required to add a bank account");
+          throw new UnknownIdException("User is required to add a bank account");
         }
 
         // Set bank account owner to business, if it exists
@@ -174,11 +185,17 @@ foam.CLASS({
         BankAccount bankAccount = findBankAccount(x, owner, flinksLoginId, accountDetail);
         if ( bankAccount == null ) {
           // Create the bank account owned by the business if it exists, otherwise by the user
-          bankAccount = createBankAccount(x, owner, flinksLoginId, accountDetail);
+          bankAccount = createBankAccount(x, owner, flinksLoginId, accountDetail, loginDetail);
         }
         flinksLoginId.setAccount(bankAccount.getId());
 
         return super.put_(x, flinksLoginId);
+      } catch (Throwable t) {
+        pm.error(x, t.getMessage());
+        throw t;
+      } finally {
+        pm.log(x);
+      }
       `
     },
     {
@@ -197,7 +214,7 @@ foam.CLASS({
         AccountWithDetailModel[] accounts = flinksDetailResponse.getAccounts();
         for ( int i = 0; i < accounts.length; i++ ) {
           AccountWithDetailModel account = accounts[i];
-          
+
           // When no account ID is specific, take the first CAD account
           if ( SafetyUtil.isEmpty(request.getAccountId()) && account.getCurrency().equals("CAD") && firstCADAccountDetail == null ) {
             firstCADAccountDetail = account;
@@ -227,7 +244,8 @@ foam.CLASS({
           { name: 'x', type: 'Context' },
           { name: 'owner', type: 'User' },
           { name: 'request', type: 'FlinksLoginId' },
-          { name: 'accountDetail', type: 'AccountWithDetailModel' }
+          { name: 'accountDetail', type: 'AccountWithDetailModel' },
+          { name: 'loginDetail', type: 'LoginModel' }
         ],
         javaCode: `
         DAO accountDAO = (DAO) x.get("accountDAO");
@@ -235,7 +253,7 @@ foam.CLASS({
         // Do not allow a bank account in an other currency
         if ( !accountDetail.getCurrency().equals("CAD") &&
              !accountDetail.getCurrency().equals("USD") ) {
-          throw new RuntimeException("Only USD or Canadian dollar bank accounts are supported. Currency of account selected: " + accountDetail.getCurrency());
+          throw new GeneralException("Only USD or Canadian dollar bank accounts are supported. Currency of account selected: " + accountDetail.getCurrency());
         }
 
         CABankAccount bankAccount = new CABankAccount.Builder(x)
@@ -248,6 +266,10 @@ foam.CLASS({
           .setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED)
           .setVerifiedBy("FLINKS")
           .build();
+
+        // Save the login type for future reference
+        bankAccount.getExternalData().put("FlinksLoginUsername", loginDetail.getUsername());
+        bankAccount.getExternalData().put("FlinksLoginType", loginDetail.getType());
 
         return (BankAccount) accountDAO.put(bankAccount);
       `
@@ -263,7 +285,7 @@ foam.CLASS({
       ],
       javaCode: `
       DAO accountDAO = (DAO) x.get("accountDAO");
-      
+
       return (BankAccount) accountDAO.find(AND(
         INSTANCE_OF(CABankAccount.class),
         EQ(BankAccount.ACCOUNT_NUMBER, accountDetail.getAccountNumber()),
@@ -287,7 +309,7 @@ foam.CLASS({
         OnboardingType onboardingType = request.getType();
         if ( onboardingType == OnboardingType.DEFAULT ) {
           if ( loginDetail == null ) {
-            throw new RuntimeException("Flinks login information not found. Cannot determine onboarding type automatically.");
+            throw new ExternalAPIException("Flinks login information not found. Cannot determine onboarding type automatically.");
           }
 
           // Determine onboarding type
@@ -299,7 +321,7 @@ foam.CLASS({
           }
 
           if ( onboardingType == OnboardingType.DEFAULT ) {
-            throw new RuntimeException("Cannot determine onboarding type with login type: " + loginDetail.getType());
+            throw new ExternalAPIException("Cannot determine onboarding type with login type: " + loginDetail.getType());
           }
         }
 
@@ -311,7 +333,7 @@ foam.CLASS({
           onboardBusiness(x, request, accountDetail);
         }
         else {
-          throw new RuntimeException("Unexpected onboarding type: " + request.getType());
+          throw new GeneralException("Unexpected onboarding type: " + request.getType());
         }
       `
     },
@@ -324,35 +346,85 @@ foam.CLASS({
         { name: 'loginDetail', type: 'LoginModel' }
       ],
       javaCode: `
-        HolderModel holder = accountDetail.getHolder();  
+        HolderModel holder = accountDetail.getHolder();
         UserOverrideData overrides = null;
         if ( request.getFlinksOverrides() != null ) overrides = request.getFlinksOverrides().getUserOverrides();
         String userEmail = overrides != null && !SafetyUtil.isEmpty(overrides.getEmail()) ?
           overrides.getEmail() : holder.getEmail();
 
         Subject subject = (Subject) x.get("subject");
+
+        String groupId = "external-sme";
+        DAO groupDAO = (DAO) x.get("localGroupDAO");
+        Group group = (Group) groupDAO.find(subject.getRealUser().getSpid() + "-sme");
+        if ( group != null ) {
+          groupId = group.getId();
+        }
+
         DAO userDAO = (DAO) x.get("localUserDAO");
         User user = new User.Builder(x)
           .setEmail(userEmail)
           .setUserName(userEmail)
           .setDesiredPassword(java.util.UUID.randomUUID().toString())
           .setEmailVerified(true)
-          .setGroup("sme")
+          .setGroup(groupId)
           .setSpid(subject.getRealUser().getSpid())
           .setStatus(net.nanopay.admin.model.AccountStatus.ACTIVE)
           .build();
         user = (User) userDAO.put(user);
-        
+
+        // Update or create notification settings and disable them
+        ArraySink notificationSettings = (ArraySink) user.getNotificationSettings(x).where(CLASS_OF(NotificationSetting.class)).select(new ArraySink());
+        ArraySink emailSettings = (ArraySink) user.getNotificationSettings(x).where(CLASS_OF(EmailSetting.class)).select(new ArraySink());
+        ArraySink smsSettings = (ArraySink) user.getNotificationSettings(x).where(CLASS_OF(SMSSetting.class)).select(new ArraySink());
+
+        if (notificationSettings.getArray().size() == 0) {
+          NotificationSetting notificationSetting = new NotificationSetting();
+          notificationSetting.setOwner(user.getId());
+          notificationSetting.setEnabled(false);
+          user.getNotificationSettings(x).put(notificationSetting);
+        } else {
+          NotificationSetting notificationSetting = (NotificationSetting) notificationSettings.getArray().get(0);
+          notificationSetting = (NotificationSetting) notificationSetting.fclone();
+          notificationSetting.setEnabled(false);
+          user.getNotificationSettings(x).put(notificationSetting);
+        }
+
+        if (emailSettings.getArray().size() == 0) {
+          EmailSetting emailSetting = new EmailSetting();
+          emailSetting.setOwner(user.getId());
+          emailSetting.setEnabled(false);
+          user.getNotificationSettings(x).put(emailSetting);
+        } else {
+          EmailSetting emailSetting = (EmailSetting) emailSettings.getArray().get(0);
+          emailSetting = (EmailSetting) emailSetting.fclone();
+          emailSetting.setEnabled(false);
+          user.getNotificationSettings(x).put(emailSetting);
+        }
+
+        if (smsSettings.getArray().size() == 0) {
+          SMSSetting smsSetting = new SMSSetting();
+          smsSetting.setOwner(user.getId());
+          smsSetting.setEnabled(false);
+          user.getNotificationSettings(x).put(smsSetting);
+        } else {
+          SMSSetting smsSetting = (SMSSetting) smsSettings.getArray().get(0);
+          smsSetting = (SMSSetting)  smsSetting.fclone();
+          smsSetting.setEnabled(false);
+          user.getNotificationSettings(x).put(smsSetting);
+        }
+
         // Save the UserId on the request
         request.setUser(user.getId());
 
         // Switch contexts to the newly created user
         Subject newSubject = new Subject.Builder(x).setUser(user).build();
         X subjectX = getX().put("subject", newSubject);
+        subjectX = subjectX.put("group", null);
 
-        AddressModel holderAddress = holder.getAddress();        
+        AddressModel holderAddress = holder.getAddress();
         Address address = overrides != null && overrides.getAddress() != null ?
-          overrides.getAddress() : 
+          overrides.getAddress() :
           new Address.Builder(subjectX)
             .setStructured(false)
             .setAddress1(holderAddress.getCivicAddress())
@@ -372,7 +444,7 @@ foam.CLASS({
 
         // API CAD Personal Payments Under 1000CAD Capability ID
         final String capabilityId = "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD";
-        
+
         // Add capabilities for the new user
         DAO capabilityPayloadDAO = (DAO) subjectX.get("capabilityPayloadDAO");
         CapabilityPayload missingPayloads = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId);
@@ -393,7 +465,7 @@ foam.CLASS({
         // Update properties in the map
         userCapabilityDataObjects.put("User Details", userData);
         userCapabilityDataObjects.put("Personal Onboarding Type", onboardingTypeData);
-        
+
         // Resubmit the capability payload
         CapabilityPayload userCapPayload = new CapabilityPayload.Builder(subjectX)
           .setId(capabilityId)
@@ -423,7 +495,7 @@ foam.CLASS({
         X subjectX = getX().put("subject", newSubject);
 
         HolderModel holder = accountDetail.getHolder();
-        AddressModel holderAddress = holder.getAddress();        
+        AddressModel holderAddress = holder.getAddress();
         Address address = new Address.Builder(subjectX)
           .setStructured(false)
           .setAddress1(holderAddress.getCivicAddress())
@@ -444,8 +516,10 @@ foam.CLASS({
           overrides.getAddress() : address;
         Address mailingAddress = overrides != null && overrides.getMailingAddress() != null ?
           overrides.getMailingAddress() : businessAddress;
-        String phoneNumber = overrides != null && !SafetyUtil.isEmpty(overrides.getPhoneNumber()) ? 
+        String phoneNumber = overrides != null && !SafetyUtil.isEmpty(overrides.getPhoneNumber()) ?
           overrides.getPhoneNumber() : user.getPhoneNumber();
+        String externalId = overrides != null && !SafetyUtil.isEmpty(overrides.getExternalId()) ?
+          overrides.getExternalId() : "";
 
         // Create business with minimal information
         Business business = new Business.Builder(x)
@@ -453,16 +527,33 @@ foam.CLASS({
           .setOrganization(businessName)
           .setPhoneNumber(phoneNumber)
           .setAddress(businessAddress)
+          .setExternalId(externalId)
           .setSpid(user.getSpid())
           .setStatus(net.nanopay.admin.model.AccountStatus.ACTIVE)
           .build();
         DAO localUserDAO = (DAO) subjectX.get("localUserDAO");
         business = (Business) localUserDAO.inX(subjectX).put(business);
 
+        // Update or create notification settings and disable them
+        ArraySink notificationSettings = (ArraySink) business.getNotificationSettings(x).where(CLASS_OF(NotificationSetting.class)).select(new ArraySink());
+
+        if (notificationSettings.getArray().size() == 0) {
+          NotificationSetting notificationSetting = new NotificationSetting();
+          notificationSetting.setOwner(business.getId());
+          notificationSetting.setEnabled(false);
+          business.getNotificationSettings(x).put(notificationSetting);
+        } else {
+          NotificationSetting notificationSetting = (NotificationSetting) notificationSettings.getArray().get(0);
+          notificationSetting = (NotificationSetting) notificationSetting.fclone();
+          notificationSetting.setEnabled(false);
+          business.getNotificationSettings(x).put(notificationSetting);
+        }
+
         // Switch to business context
         Subject currentSubject = (Subject) subjectX.get("subject");
         currentSubject.setUser(business);
         subjectX = subjectX.put("subject", currentSubject);
+        subjectX = subjectX.put("group", null);
 
         // Set the business on the request
         request.setBusiness(business.getId());
@@ -474,7 +565,7 @@ foam.CLASS({
           .setMailingAddress(mailingAddress)
           .setEmail(businessEmail)
           .build();
-        
+
         // Create the capabilities data map
         Map<String,FObject> businessCapabilityDataObjects = new HashMap<>();
         businessCapabilityDataObjects.put("Business Onboarding Details", businessDetailData);
@@ -490,9 +581,9 @@ foam.CLASS({
         // Retrieve the updated business
         business = (Business) localUserDAO.inX(subjectX).find(business);
         if ( business == null ) {
-          throw new RuntimeException("Failed to create business during onboarding with Flinks");
+          throw new ExternalAPIException("Failed to create business during onboarding with Flinks");
         }
-        
+
         // Business CAD payments capability
         String capabilityId = "18DD6F03-998F-4A21-8938-358183151F96";
         CapabilityPayload missingPayloads = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId);
@@ -500,9 +591,9 @@ foam.CLASS({
 
         SecurefactOnboardingService securefactOnboardingService = (SecurefactOnboardingService) subjectX.get("securefactOnboardingService");
         if ( securefactOnboardingService == null ) {
-          throw new RuntimeException("Cannot find securefactOnboardingService");
+          throw new GeneralException("Cannot find securefactOnboardingService");
         }
-      
+
         // Fill the capability data objects from SecureFact LEV
         securefactOnboardingService.retrieveLEVCapabilityPayloads(subjectX, business, businessCapabilityDataObjects);
 
@@ -562,7 +653,7 @@ foam.CLASS({
           if ( signingOfficer.getUser() == user.getId() ) {
             return;
           }
-          
+
           if ( match == null &&
                SafetyUtil.equals(user.getFirstName(), signingOfficer.getFirstName()) &&
                SafetyUtil.equals(user.getLastName(), signingOfficer.getLastName()) )
@@ -581,7 +672,7 @@ foam.CLASS({
             .setSource("FLINKS")
             .setUser(user.getId())
             .build();
-          
+
           // Add the signing officer to current list of signing officers
           int size = signingOfficerList.getSigningOfficers() == null ? 0 : signingOfficerList.getSigningOfficers().length;
           SigningOfficer[] signingOfficersArray = new SigningOfficer[size + 1];

@@ -35,6 +35,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'net.nanopay.account.Account',
@@ -45,8 +46,13 @@ foam.CLASS({
     'net.nanopay.payment.PADTypeLineItem',
     'net.nanopay.tx.BulkTransaction',
     'net.nanopay.tx.CompositeTransaction',
+    'net.nanopay.tx.SummaryTransaction',
     'net.nanopay.tx.model.Transaction',
-    'static foam.mlang.MLang.*'
+    'net.nanopay.tx.PlanCostComparator',
+    'static foam.mlang.MLang.*',
+    'java.util.ArrayList',
+    'java.util.Collections',
+    'java.util.List'
   ],
 
   methods: [
@@ -55,7 +61,7 @@ foam.CLASS({
       javaCode: `
         BulkTransaction bulkTxn = (BulkTransaction) requestTxn.fclone();
         PADType bulkTxnPADType = PADTypeLineItem.getPADTypeFrom(x, bulkTxn);
-
+        DAO dao = (DAO) x.get("localAccountDAO");
         DAO userDAO = (DAO) x.get("localUserDAO");
 
         long sum = 0;
@@ -77,27 +83,39 @@ foam.CLASS({
           childTransaction.setSourceAccount(bulkTxn.getDestinationAccount());
 
           User payee = (User) userDAO.find_(x, childTransaction.getPayeeId());
-          // Get the default digital account
-          DigitalAccount digitalAccount = DigitalAccount.findDefault(x, payee, childTransaction.getDestinationCurrency());
+          // Get the default digital accounts
+          List<DigitalAccount> digitalList = ((ArraySink) dao.where(
+            AND(
+              EQ(Account.OWNER, payee.getId()),
+              CLASS_OF(DigitalAccount.class),
+              EQ(Account.DENOMINATION, childTransaction.getDestinationCurrency()),
+              EQ(DigitalAccount.IS_DEFAULT,true)
+            )).select(new ArraySink())).getArray();
+          List<Transaction> transactionPlans = new ArrayList<>();
+          for ( DigitalAccount digitalAccount : digitalList ) {
 
-          LiquiditySettings digitalAccLiquid = digitalAccount.findLiquiditySetting(x);
-          Boolean explicitCO = bulkTxn.getExplicitCO();
+            LiquiditySettings digitalAccLiquid = digitalAccount.findLiquiditySetting(x);
+            Boolean explicitCO = bulkTxn.getExplicitCO();
 
-          // Check liquidity settings of the digital account associated to the digital transaction
-          if ( digitalAccLiquid != null && digitalAccLiquid.getHighLiquidity().getEnabled()) {
-            // If it is a transaction to GFO or GD, then it should not trigger explicit cashout
-            explicitCO = false;
+            // Check liquidity settings of the digital account associated to the digital transaction
+            if ( digitalAccLiquid != null && digitalAccLiquid.getHighLiquidity().getEnabled()) {
+              // If it is a transaction to GFO or GD, then it should not trigger explicit cashout
+              explicitCO = false;
+            }
+
+            // Set the destination of each child transaction to payee's default digital account
+            childTransaction.setDestinationAccount(getAccount(x, payee, childTransaction.getDestinationCurrency(), explicitCO, digitalAccount).getId());
+
+            // set the pad type for each child transaction
+            if ( bulkTxnPADType != null ) { PADTypeLineItem.addTo(childTransaction, bulkTxnPADType.getId()); }
+            transactionPlans.add(quoteTxn(x, childTransaction, quote, false));
           }
-
-          // Set the destination of each child transaction to payee's default digital account
-          childTransaction.setDestinationAccount(getAccount(x, payee, childTransaction.getDestinationCurrency(), explicitCO).getId());
-
-          // set the pad type for each child transaction
-          if ( bulkTxnPADType != null ) { PADTypeLineItem.addTo(childTransaction, bulkTxnPADType.getId()); }
-
           // Inject compliance transaction before each child transaction and
           // add it as the next of the composite transaction
-          var quotedChild = quoteTxn(x, childTransaction, quote, false);
+          PlanCostComparator costComparator =  new PlanCostComparator.Builder(x).build();
+          Collections.sort(transactionPlans, costComparator);
+          var quotedChild = transactionPlans.get(0);
+          quotedChild = removeSummaryTransaction(quotedChild);
           var compliance = createComplianceTransaction(quotedChild);
           compliance.addNext(quotedChild);
           ct.addNext(compliance);
@@ -157,6 +175,10 @@ foam.CLASS({
         {
           name: 'cico',
           type: 'Boolean'
+        },
+        {
+          name: 'destAccount',
+          type: 'DigitalAccount'
         }
       ],
       javaType: 'net.nanopay.account.Account',
@@ -168,7 +190,7 @@ foam.CLASS({
           }
           throw new RuntimeException(currency + " BankAccount not found for " + user.getId());
         } else {
-          return DigitalAccount.findDefault(x, user, currency);
+          return destAccount;
         }
       `
     },

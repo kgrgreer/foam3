@@ -43,9 +43,10 @@ foam.CLASS({
           headTx = headTx.findParent(x);
         }
         String spid = ct.findSourceAccount(x).findOwner(x).getSpid();
-        String group = spid.equals("nanopay") ? "fraud-ops" : spid + "-fraud-ops";
+        String group = spid + "-fraud-ops";
         ComplianceApprovalRequest req = new ComplianceApprovalRequest.Builder(x)
-          .setDaoKey("localTransactionDAO")
+          .setDaoKey("transactionDAO")
+          .setServerDaoKey("localTransactionDAO")
           .setObjId(ct.getId())
           .setGroup(group)
           .setDescription(headTx.getSummary()+"  Summary Transaction Id: "+headTx.getId())

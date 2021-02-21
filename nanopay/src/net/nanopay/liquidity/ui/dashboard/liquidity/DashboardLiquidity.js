@@ -205,8 +205,7 @@ foam.CLASS({
     },
     {
       class: 'Map',
-      name: 'styling',
-      value: {}
+      name: 'styling'
     }
   ],
 

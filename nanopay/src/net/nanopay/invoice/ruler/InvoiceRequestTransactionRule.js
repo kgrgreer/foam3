@@ -20,18 +20,20 @@ foam.CLASS({
   name: 'InvoiceRequestTransactionRule',
   implements: ['foam.nanos.ruler.RuleAction'],
 
-   documentation: `creates request transactions when the invoice has status submit`,
+  documentation: `creates request transactions when the invoice has status submit`,
 
-   javaImports: [
+  javaImports: [
+    'foam.nanos.auth.User',
+    'foam.util.SafetyUtil',
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
+    'net.nanopay.contacts.PersonalContact',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.tx.model.Transaction',
   ],
-
-   methods: [
+  methods: [
     {
       name: 'applyAction',
       javaCode: ` 
@@ -39,6 +41,8 @@ foam.CLASS({
         Invoice invoice = (Invoice) obj;
         Transaction requestTxn = new Transaction();
         DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+        DAO userDAO = (DAO) x.get("localUserDAO");
+        User payee = (User) userDAO.find(invoice.getPayeeId());
 
         invoice.setProcessPaymentOnCreate(false);
 
@@ -50,6 +54,10 @@ foam.CLASS({
         requestTxn.setPayeeId(invoice.getPayeeId());
         requestTxn.setDestinationAmount(invoice.getAmount());
         requestTxn.setInvoiceId(invoice.getId());
+
+        if ( payee instanceof PersonalContact && SafetyUtil.isEmpty(invoice.getDestinationAccount()) ) {
+          requestTxn.setDestinationAccount(((PersonalContact) payee).getBankAccount());
+        }
 
         invoice.setRequestTransaction(requestTxn);
       `

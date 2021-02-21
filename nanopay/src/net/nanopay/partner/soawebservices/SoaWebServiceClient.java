@@ -49,7 +49,6 @@ public class SoaWebServiceClient extends ContextAwareSupport implements SoaWebSe
   private JSONParser jsonParser;
   private Logger logger;
   private OMLogger omLogger;
-  private SoaCredenciais credentials;
 
   public SoaWebServiceClient(X x) {
     setX(x);
@@ -61,14 +60,17 @@ public class SoaWebServiceClient extends ContextAwareSupport implements SoaWebSe
   }
 
   @Override
-  public PessoaResponse pessoaFisicaSimplificada(PessoaFisicaSimplificada request) {
+  public PessoaResponse pessoaFisicaNFe(PessoaFisicaNFe request) {
     try {
       SoaCredenciais creds = getCredentials();
-      String endpoint = creds.getUrl() + "pessoafisicasimplificada.ashx";
+      String endpoint = creds.getUrl() + "PessoaFisicaNFe.ashx";
       request.setCredenciais(creds);
       request.setCredenciais(getCredentials());
       CloseableHttpResponse httpResponse = sendPost(endpoint, getJsonMessage(request));
-      return (PessoaResponse) jsonParser.parseString(parseHttpResponse(httpResponse, endpoint), PessoaResponse.class);
+      String responseString = parseHttpResponse(httpResponse, endpoint);
+      PessoaResponse response = (PessoaResponse) jsonParser.parseString(responseString, PessoaResponse.class);
+      if ( response != null ) response.setResponseString(responseString);
+      return response;
     } catch (Exception e) {
       logger.error(e);
       throw e;
@@ -76,13 +78,16 @@ public class SoaWebServiceClient extends ContextAwareSupport implements SoaWebSe
   }
 
   @Override
-  public PessoaResponse pessoaJuridicaSimplificada(PessoaJuridicaSimplificada request) {
+  public PessoaResponse pessoaJuridicaNFe(PessoaJuridicaNFe request) {
     try {
       SoaCredenciais creds = getCredentials();
-      String endpoint = creds.getUrl() + "pessoajuridicasimplificada.ashx";
+      String endpoint = creds.getUrl() + "PessoaJuridicaNFe.ashx";
       request.setCredenciais(creds);
       CloseableHttpResponse httpResponse = sendPost(endpoint, getJsonMessage(request));
-      return (PessoaResponse) jsonParser.parseString(parseHttpResponse(httpResponse, endpoint), PessoaResponse.class);
+      String responseString = parseHttpResponse(httpResponse, endpoint);
+      PessoaResponse response = (PessoaResponse) jsonParser.parseString(responseString, PessoaResponse.class);
+      if ( response != null ) response.setResponseString(responseString);
+      return response;
     } catch (Exception e) {
       logger.error(e);
       throw e;
@@ -90,22 +95,15 @@ public class SoaWebServiceClient extends ContextAwareSupport implements SoaWebSe
   }
 
   protected SoaCredenciais getCredentials() {
-    if ( credentials == null ) {
-      credentials = (SoaCredenciais) getX().get("SoaWebServiceCredientials");
-      if ( ! isCredientialsValid() ) {
-        credentials = null;
-        logger.error(this.getClass().getSimpleName(), "Invalid credentials");
-        throw new RuntimeException("Invalid credentials" );
-      }
+    SoaCredenciais credentials = (SoaCredenciais) getX().get("SoaWebServiceCredientials");
+    if ( credentials == null ||
+         SafetyUtil.isEmpty(credentials.getUrl()) ||
+         SafetyUtil.isEmpty(credentials.getEmail()) ||
+         SafetyUtil.isEmpty(credentials.getSenha()) ) {
+      logger.error(this.getClass().getSimpleName(), "Invalid credentials");
+      throw new RuntimeException("Invalid credentials" );
     }
     return credentials;
-  }
-
-  protected boolean isCredientialsValid() {
-    return credentials != null &&
-      ! SafetyUtil.isEmpty(credentials.getUrl()) &&
-      ! SafetyUtil.isEmpty(credentials.getEmail()) &&
-      ! SafetyUtil.isEmpty(credentials.getSenha());
   }
 
   protected CloseableHttpClient getHttpClient() {

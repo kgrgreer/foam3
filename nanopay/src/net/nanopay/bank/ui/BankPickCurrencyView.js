@@ -57,7 +57,7 @@ foam.CLASS({
   }
   ^ .bank-currency-pick-height {
     height: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
   ^ .bank-pick-margin {
     width: 1046px;
@@ -203,13 +203,12 @@ foam.CLASS({
     font-size: 16px;
   }
   ^ .net-nanopay-sme-ui-SMEModal-inner {
-    width: 515px;
     height: 500px;
   }
   ^ .net-nanopay-sme-ui-SMEModal-content {
     box-sizing: border-box;
     width: 600px;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding: 30px;
   }
   `,
@@ -219,7 +218,9 @@ foam.CLASS({
     { name: 'SUB_TITLE', message: 'Connect through a banking partner below, or ' },
     { name: 'CONNECT_LABEL', message: 'connect with a void check' },
     { name: 'BANK_ADDED', message: 'Your bank account was successfully added' },
-    { name: 'CHOOSE_COUNTRY', message: 'Please select the originating country of the bank account you would like to add.' }
+    { name: 'CHOOSE_COUNTRY', message: 'Please select the originating country of the bank account you would like to add.' },
+    { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' },
+    { name: 'DOMICILED_BK_ACC_COUNTRY', message: 'Domiciled bank account country' }
   ],
 
   properties: [
@@ -251,7 +252,7 @@ foam.CLASS({
           class: 'foam.u2.view.RichChoiceView',
           sections: [
             {
-              heading: 'Domiciled bank account country',
+              heading: x.data.DOMICILED_BK_ACC_COUNTRY,
               dao$: x.data.permittedCountries$
             }
           ]
@@ -265,7 +266,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'hasCompletedIntegration',
       value: false,
-      documentation: `Boolean to determine if the User has completed 
+      documentation: `Boolean to determine if the User has completed
                       the integration process before`
     },
     {
@@ -317,7 +318,8 @@ foam.CLASS({
                   this.add(this.SMEModal.create().tag({
                     class: 'net.nanopay.account.ui.BankAccountWizard',
                     data: this.bankAccount,
-                    useSections: ['accountInformation', 'pad']
+                    customTitle: this.SECTION_DETAILS_TITLE_VOID,
+                    useSections: ['clientAccountInformation', 'pad']
                   }));
                 })
               .end()
@@ -359,7 +361,7 @@ foam.CLASS({
     function createOnComplete() {
       var self = this;
       return function() {
-        var menuLocation = 'capability.main.banking';
+        var menuLocation = 'mainmenu.banking';
         window.location.hash.substr(1) != menuLocation ?
           self.pushMenu(menuLocation) : self.stack.back();
         return;

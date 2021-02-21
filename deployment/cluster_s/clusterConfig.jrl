@@ -1,0 +1,31 @@
+p({
+  "class":"foam.nanos.medusa.ClusterConfig",
+  "id":"mm",
+  "name":"mm",
+  "enabled":true,
+  "realm":"nanopay",
+  "region":"Toronto",
+  "regionStatus":1,
+  "zone":0,
+  "port":8080,
+  "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
+  "type":0,
+  "created":"2020-03-28T14:57:12.959Z",
+  "createdBy":2
+})
+
+p({
+  "class":"foam.nanos.medusa.ClusterConfig",
+  "id":"mn",
+  "name":"mn",
+  "enabled":true,
+  "realm":"nanopay",
+  "region":"Toronto",
+  "regionStatus":1,
+  "zone":0,
+  "port":8080,
+  "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
+  "type":1,
+  "created":"2020-03-28T14:57:12.959Z",
+  "createdBy":2
+})

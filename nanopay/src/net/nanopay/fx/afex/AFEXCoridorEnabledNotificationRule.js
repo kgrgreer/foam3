@@ -53,14 +53,14 @@ foam.CLASS({
 
           Logger logger = (Logger) x.get("logger");
 
-          if ( ! (obj instanceof AFEXBusiness) ) {
+          if ( ! (obj instanceof AFEXUser) ) {
             return;
           }
 
-          AFEXBusiness afexBusiness = (AFEXBusiness) obj;
+          AFEXUser afexUser = (AFEXUser) obj;
           DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
 
-          Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexBusiness.getUser()));
+          Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexUser.getUser()));
           if ( null != business ) {
             Address businessAddress = business.getAddress();
             if ( null != businessAddress && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {
@@ -90,7 +90,7 @@ foam.CLASS({
       DAO                  localGroupDAO  = (DAO) x.get("localGroupDAO");
       Group                group          = (Group) localGroupDAO.find(business.getGroup());
       AppConfig            appConfig      = group.getAppConfig(x);
-      String               url            = appConfig.getUrl().replaceAll("/$", "");
+      String               url            = appConfig.getUrl();
 
       message.setTo(new String[]{business.getEmail()});
       String toCountry = business.getAddress().getCountryId().equals("CA") ? "USA" : "Canada";
@@ -98,7 +98,7 @@ foam.CLASS({
       args.put("business", business.toSummary());
       args.put("toCurrency", toCurrency);
       args.put("toCountry", toCountry);
-      args.put("link",   url + "#capability.main.dashboard");
+      args.put("link",   url + "#mainmenu.dashboard");
       try {
         Notification internationalPaymentsEnabledNotification = new Notification.Builder(x)
           .setBody("AFEX Business has been created and corridor has been enabled.")

@@ -34,9 +34,9 @@ foam.CLASS({
       value: 'I acknowledge that international payments are authorized and provided by AFEX and not nanopay. I certify that all statements provided are true and correct and I have obtained consent to submit all personal information provided. I have read, understood and agree to '
     },
     {
-      name: 'link',
+      name: 'fileId',
       factory: function() {
-        '/service/httpFileService/11d13e7c-692b-eb6c-22a0-647b4f3ca94e?sessionId=' + localStorage['defaultSession'];
+        return '11d13e7c-692b-eb6c-22a0-647b4f3ca94e';
       }
     },
     {

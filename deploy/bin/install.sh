@@ -5,12 +5,16 @@ NANOPAY_ROOT=/opt/nanopay
 NANOPAY_TARBALL=
 NANOPAY_REMOTE_OUTPUT=/tmp/tar_extract
 NANOPAY_SERVICE_FILE=/lib/systemd/system/nanopay.service
+BACKUP=true
 MNT_HOME=/mnt/nanopay
-LOG_HOME=${MNT_HOME}/logs
-JOURNAL_HOME=${MNT_HOME}/journals
-CONF_HOME=${MNT_HOME}/conf
-BACKUP_HOME=${MNT_HOME}/backups
-VAR_HOME=${MNT_HOME}/var
+SHARED_HOME=${MNT_HOME}
+UNIQUE_HOME=${MNT_HOME}/$HOSTNAME
+FILES_HOME=${MNT_HOME}/files
+LOG_HOME=${UNIQUE_HOME}/logs
+JOURNAL_HOME=${UNIQUE_HOME}/journals
+CONF_HOME=${UNIQUE_HOME}/conf
+BACKUP_HOME=${UNIQUE_HOME}/backups
+VAR_HOME=${UNIQUE_HOME}/var
 
 function quit {
     echo "ERROR :: Remote Install Failed"
@@ -21,6 +25,8 @@ function usage {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "Options are:"
+    echo "  -B <true | false> : disable Backup "
+    echo "  -C <true | false> : Enable clustering"
     echo "  -h                  : Print usage information."
     echo "  -I <path>           : Remote location of tarball"
     echo "  -N <nanopay_home>   : Remote Nanopay home directory, can't be /opt/nanopay"
@@ -28,8 +34,10 @@ function usage {
     echo ""
 }
 
-while getopts "hN:O:I:" opt ; do
+while getopts "B:C:hN:O:I:" opt ; do
     case $opt in
+        B) BACKUP=${OPTARG};;
+        C) CLUSTER=${OPTARG};;
         h) usage; exit 0;;
         I) NANOPAY_TARBALL=$OPTARG;;
         N) NANOPAY_HOME=$OPTARG;;
@@ -51,7 +59,7 @@ function backupFiles {
     if [ ! -d ${MNT_HOME} ]; then
         return;
     fi
-    
+
     if [ ! -d ${BACKUP_HOME} ]; then
         mkdir -p ${BACKUP_HOME} 
         chgrp nanopay ${BACKUP_HOME}
@@ -62,22 +70,30 @@ function backupFiles {
     # tar'ing the live directories will fail with changed files.
     rm -rf ${BACKUP_HOME}/journals
     rm -rf ${BACKUP_HOME}/logs
-    cp -r ${MNT_HOME}/journals ${BACKUP_HOME}/
-    cp -r ${MNT_HOME}/logs ${BACKUP_HOME}/
+    if [ -d ${JOURNAL_HOME} ]; then
+        cp -r ${JOURNAL_HOME} ${BACKUP_HOME}/
+    fi
+    if [ -d ${LOG_HOME} ]; then
+        cp -r ${LOG_HOME} ${BACKUP_HOME}/
+    fi
     
     # Move same/duplicate version installation.
     if [ -d $NANOPAY_HOME ]; then
         NANOPAY_BACKUP=${BACKUP_HOME}/$(basename ${NANOPAY_HOME})-$(date +%s)-backup.tar.gz
         echo "INFO :: ${NANOPAY_HOME} found, backing up to ${NANOPAY_BACKUP}"
-        tar -czf  ${NANOPAY_BACKUP} -C ${NANOPAY_HOME} . ${BACKUP_HOME}/journals ${BACKUP_HOME}/logs
+        if [ -d ${BACKUP_HOME}/journals ]; then
+            tar -czf  ${NANOPAY_BACKUP} -C ${NANOPAY_HOME} . ${BACKUP_HOME}/journals ${BACKUP_HOME}/logs
+        fi
         
         if [ ! $? -eq 0 ]; then
             echo "ERROR :: Couldn't backup ${NANOPAY_HOME} to ${NANOPAY_BACKUP}"
             quit
         fi
-        chgrp nanopay ${NANOPAY_BACKUP}
-        chmod 750 ${NANOPAY_BACKUP}
-        rm -rf ${NANOPAY_HOME}
+        if [ -d ${NANOPAY_BACKUP} ]; then
+            chgrp nanopay ${NANOPAY_BACKUP}
+            chmod 750 ${NANOPAY_BACKUP}
+            rm -rf ${NANOPAY_HOME}
+        fi
     fi
 }
 
@@ -128,7 +144,10 @@ function installFiles {
     
     if [ ! -f "${CONF_HOME}/shrc.custom" ]; then
         echo '#!/bin/bash' > ${CONF_HOME}/shrc.custom
-        echo '  JAVA_OPTS="${JAVA_OPTS} -Xmx2048m"' >> ${CONF_HOME}/shrc.custom
+        echo '  JAVA_OPTS="${JAVA_OPTS} -Xmx4096m"' >> ${CONF_HOME}/shrc.custom
+        if [[ ${CLUSTER} = "true" ]]; then
+            echo '  JAVA_OPTS="${JAVA_OPTS} -DCLUSTER=true"' >> ${CONF_HOME}/shrc.custom
+        fi
     fi
     chown -R nanopay:nanopay ${CONF_HOME}
     chmod -R 750 ${CONF_HOME}
@@ -148,18 +167,16 @@ function installFiles {
     if [ ! -d ${JOURNAL_HOME} ]; then
         mkdir ${JOURNAL_HOME}
     fi
-    mkdir -p ${JOURNAL_HOME}/sha256
-    mkdir -p ${JOURNAL_HOME}/tmp
-    mkdir -p ${JOURNAL_HOME}/migrated
-    mkdir -p ${JOURNAL_HOME}/migrated_backup
 
     chown -R nanopay:nanopay ${JOURNAL_HOME}
     chmod 750 ${JOURNAL_HOME}
-    chmod -R 640 ${JOURNAL_HOME}/*
-    chmod 750 ${JOURNAL_HOME}/sha256
-    chmod 750 ${JOURNAL_HOME}/tmp
-    chmod 750 ${JOURNAL_HOME}/migrated
-    chmod 750 ${JOURNAL_HOME}/migrated_backup
+ #   chmod -R 640 ${JOURNAL_HOME}/*
+
+    if [ ! -d ${FILES_HOME} ]; then
+        mkdir -p ${FILES_HOME}
+    fi
+    chown -R nanopay:nanopay ${FILES_HOME}
+    chmod 750 ${FILES_HOME}
 }
 
 function setupUser {
@@ -202,7 +219,6 @@ function setupNanopaySymLink {
 
     ln -s ${NANOPAY_HOME} ${NANOPAY_ROOT}
 
-    # symlink to journals
     if [ -h ${NANOPAY_HOME}/journals ]; then
         unlink ${NANOPAY_HOME}/journals
     fi
@@ -211,7 +227,6 @@ function setupNanopaySymLink {
         ln -s ${JOURNAL_HOME} ${NANOPAY_HOME}/journals
     fi
 
-    # symlink to logs
     if [ -h ${NANOPAY_HOME}/logs ]; then
         unlink ${NANOPAY_HOME}/logs
     fi
@@ -220,7 +235,6 @@ function setupNanopaySymLink {
         ln -s ${LOG_HOME} ${NANOPAY_HOME}/logs
     fi
 
-    # symlink to conf
     if [ -h ${NANOPAY_HOME}/conf ]; then
         unlink ${NANOPAY_HOME}/conf
     fi
@@ -228,14 +242,21 @@ function setupNanopaySymLink {
     if [ -d ${CONF_HOME} ]; then
         ln -s ${CONF_HOME} ${NANOPAY_HOME}/conf
     fi
-    
-    # symlink to var
+
     if [ -h ${NANOPAY_HOME}/var ]; then
         unlink ${NANOPAY_HOME}/var
     fi
 
     if [ -d ${VAR_HOME} ]; then
         ln -s ${VAR_HOME} ${NANOPAY_HOME}/var
+    fi
+
+    if [ -h ${JOURNAL_HOME}/largefiles ]; then
+        unlink ${JOURNAL_HOME}/largefiles
+    fi
+    
+    if [ -d ${JOURNAL_HOME} ]; then
+        ln -s ${FILES_HOME} ${JOURNAL_HOME}/largefiles
     fi
 }
 
@@ -279,7 +300,9 @@ fi
 
 setupUser
 
-backupFiles
+if [[ ${BACKUP} = 'true' ]]; then
+    backupFiles
+fi
 
 installFiles
 

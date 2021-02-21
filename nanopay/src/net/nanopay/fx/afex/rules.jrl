@@ -33,7 +33,7 @@ p({
   "documentation":"Rule to add currency.read.FX_CURRENCY when a business is pushed to AFEX and AFEXBusiness is created.",
   "priority":100,
   "ruleGroup":"onboarding",
-  "daoKey":"afexBusinessDAO",
+  "daoKey":"afexUserDAO",
   "operation":3,
   "after":true,
   "predicate":{
@@ -98,7 +98,7 @@ p({
   "documentation":"Rule to create AFEXBusiness Approval Request.",
   "priority":100,
   "ruleGroup":"AFEXOnboarding",
-  "daoKey":"afexBusinessDAO",
+  "daoKey":"afexUserDAO",
   "operation":0,
   "after":true,
   "predicate":{
@@ -171,7 +171,7 @@ p({
   "documentation":"Rule to upload business bank account information to AFEX",
   "priority":100,
   "ruleGroup":"AFEXOnboarding",
-  "daoKey":"afexBusinessDAO",
+  "daoKey":"afexUserDAO",
   "operation":0,
   "after":true,
   "asyncAction":{
@@ -218,7 +218,7 @@ p({
   "documentation":"Rule to add IN currency and strategizer Permission when a business is pushed to AFEX and AFEXBusiness is created.",
   "priority":100,
   "ruleGroup":"onboarding",
-  "daoKey":"afexBusinessDAO",
+  "daoKey":"afexUserDAO",
   "operation":3,
   "after":true,
   "predicate":{
@@ -259,29 +259,34 @@ p({
   "documentation":"Rule to get pdf confirmation from AFEX",
   "priority":10,
   "ruleGroup":"AFEX",
-  "daoKey":"localTransactionDAO",
-  "operation":0,
+  "daoKey":"invoiceDAO",
+  "operation":1,
   "after":true,
-  "predicate":{
-    "class":"foam.mlang.predicate.And",
-    "args":[
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
       {
-        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
-        "of":"net.nanopay.fx.afex.AFEXTransaction"
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{
+          "class":"net.nanopay.invoice.model.InvoiceStatus",
+          "ordinal":6
+        },
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "isNew": false,
+        "propValue":{
+          "class":"net.nanopay.invoice.model.InvoiceStatus",
+          "ordinal":11
+        },
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
-        "propName":"afexTradeResponseNumber",
-        "propValue":0
-      },
-      {
-        "class": "foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName": "status",
-        "propValue": {
-          "class": "net.nanopay.tx.model.TransactionStatus",
-          "ordinal":12
-        }
-     }
+        "propName":"paymentId",
+        "propValue": ""
+      }
     ]
   },
   "asyncAction":{
@@ -319,7 +324,7 @@ p({
   "documentation":"Rule to push Business Beneficial Owner to AFEX after AFEX Business is created.",
   "priority":100,
   "ruleGroup":"AFEX",
-  "daoKey":"afexBusinessDAO",
+  "daoKey":"afexUserDAO",
   "operation":0,
   "after":true,
   "predicate":{
@@ -342,7 +347,7 @@ p({
   "documentation":"Rule to push Signing Officers to AFEX after AFEX Business is created.",
   "priority":100,
   "ruleGroup":"AFEX",
-  "daoKey":"afexBusinessDAO",
+  "daoKey":"afexUserDAO",
   "operation":0,
   "after":true,
   "predicate":{
@@ -365,7 +370,7 @@ p({
   "documentation":"Rule to push Business Directors to AFEX after AFEX Business is created.",
   "priority":100,
   "ruleGroup":"AFEX",
-  "daoKey":"afexBusinessDAO",
+  "daoKey":"afexUserDAO",
   "operation":0,
   "after":true,
   "predicate":{
@@ -498,7 +503,7 @@ p({
       }
     ]
   },
-  "asyncAction":{
+  "action":{
     "class":"net.nanopay.fx.afex.AFEXCreateFundingBalancesRule"
   },
   "enabled":true,
@@ -532,12 +537,12 @@ p({
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName":"referenceNumber",
+        "propName":"externalInvoiceId",
         "propValue": ""
       }
     ]
   },
-  "asyncAction":{
+  "action":{
     "class":"net.nanopay.fx.afex.AFEXSubmitFundingTxnRule"
   },
   "enabled":true,

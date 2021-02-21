@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'MTBankAccount',
-  label: 'Malta Bank',
+  label: 'Malta',
   extends: 'net.nanopay.bank.EUBankAccount',
 
   documentation: 'Malta bank account information.',
@@ -64,7 +64,7 @@ foam.CLASS({
       section: 'accountInformation',
       updateVisibility: 'RO',
       preSet: function(o, n) {
-        return /^\d*$/.test(n) ? n : o;
+        return /^[\d\w]*$/.test(n) ? n : o;
       },
       tableCellFormatter: function(str) {
         if ( ! str ) return;

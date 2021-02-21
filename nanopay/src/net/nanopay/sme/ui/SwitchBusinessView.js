@@ -72,7 +72,7 @@ foam.CLASS({
       margin: 0 !important;
       padding: 0 !important;
       text-align: center;
-      overflow-y: scroll
+      overflow-y: auto
     }
     ^ h2 {
       font-weight: 700;
@@ -169,7 +169,8 @@ foam.CLASS({
     { name: 'GO_BACK', message: 'Go back' },
     { name: 'SELECT_COMPANY', message: 'Select a company' },
     { name: 'DISABLED_BUSINESS_MSG', message: 'This business has been disabled. You cannot switch to it at this time.' },
-    { name: 'ERROR_DISABLED', message: 'Please contact an administrator for this company to enable access' }
+    { name: 'ERROR_DISABLED', message: 'Please contact an administrator for this company to enable access' },
+    { name: 'SIGN_OUT', message: 'Sign out' },
   ],
 
   properties: [
@@ -386,7 +387,7 @@ foam.CLASS({
           .addClass(this.myClass('sme-side-block'))
           .start().addClass(this.myClass('button'))
             .addClass(this.myClass('button-red'))
-            .add('Sign out')
+            .add(self.SIGN_OUT)
             .on('click', () => {
               this.auth.logout().then(function() {
                 self.window.location.assign(self.window.location.origin);

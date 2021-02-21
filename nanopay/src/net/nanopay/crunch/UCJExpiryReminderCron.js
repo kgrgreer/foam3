@@ -29,23 +29,18 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.i18n.TranslationService',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.Subject',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.RenewableData',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.nanos.notification.Notification',
     'java.util.Calendar',
     'java.util.Date',
     'java.util.HashMap',
     'java.util.List',
+    'net.nanopay.crunch.UCJExpiryReminderNotification',
     'net.nanopay.model.Business',
     'static foam.mlang.MLang.*'
-  ],
-
-  messages: [
-    { name: 'NOTIFICATION_BODY_P1', message: 'Your Capability \"' },
-    { name: 'NOTIFICATION_BODY_P2', message: '\" will expire in ' },
-    { name: 'NOTIFICATION_BODY_P3', message: ' days.' }
   ],
 
   properties: [
@@ -87,7 +82,7 @@ foam.CLASS({
           .getArray();
         if ( activeJunctions.size() == 0 ) return;
 
-        Notification notification = new Notification();
+        UCJExpiryReminderNotification notification = new UCJExpiryReminderNotification();
         notification.setNotificationType("Capability Expiry Reminder");
         notification.setCreated(today);
         notification.setEmailName("ucjExpiryReminder");
@@ -98,20 +93,14 @@ foam.CLASS({
         for ( UserCapabilityJunction ucj : activeJunctions ) {
           User user = (User) ucj.findSourceId(x);
           Capability capability = (Capability) ucj.findTargetId(x);
-          String locale = user.getLanguage().getCode().toString();
+          Subject subject = (Subject) x.get("subject");
+          String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
 
           String capabilityName = ts.getTranslation(locale, capability.getId() + ".name", capability.getName());
-          
-          String notificationP1 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_P1", this.NOTIFICATION_BODY_P1);
-          String notificationP2 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_P2", this.NOTIFICATION_BODY_P2);
-          String notificationP3 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_P3", this.NOTIFICATION_BODY_P3);
-          String body = new StringBuilder(notificationP1)
-            .append(capabilityName)
-            .append(notificationP2)
-            .append(getDaysBeforeNotification())
-            .append(notificationP3)
-            .toString();
-          notification.setBody(body);
+
+          notification.setCapabilityName(capabilityName);
+          notification.setCapabilitySource(capability.getId() + ".name");
+          notification.setDaysBeforeNotification(getDaysBeforeNotification());
 
           args.put("capabilityName", capabilityName);
           args.put("capabilityNameEn", capability.getName());
@@ -159,7 +148,7 @@ foam.CLASS({
         ucj.setIsInRenewablePeriod(true);
 
         userCapabilityJunctionDAO.put(ucj);
-        
+
       `
     }
   ]

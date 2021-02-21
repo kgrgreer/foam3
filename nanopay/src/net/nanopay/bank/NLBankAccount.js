@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'NLBankAccount',
-  label: 'Netherlands Bank',
+  label: 'Netherlands',
   extends: 'net.nanopay.bank.EUBankAccount',
 
   documentation: 'Netherlands bank account information.',
@@ -63,7 +63,7 @@ foam.CLASS({
       name: 'accountNumber',
       updateVisibility: 'RO',
       preSet: function(o, n) {
-        return /^\d*$/.test(n) ? n : o;
+        return /^[\d\w]*$/.test(n) ? n : o;
       },
       tableCellFormatter: function(str) {
         if ( ! str ) return;

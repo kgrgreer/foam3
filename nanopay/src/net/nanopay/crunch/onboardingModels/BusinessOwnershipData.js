@@ -84,11 +84,8 @@ foam.CLASS({
     },
     {
       name: 'reviewOwnersSection',
-      title: 'Review the list of owners',
-      isAvailable: function(amountOfOwners) {
-        return amountOfOwners > 0;
-      }
-    },
+      title: 'Review the list of owners'
+    }
   ],
 
   messages: [
@@ -138,33 +135,6 @@ foam.CLASS({
           of: net.nanopay.model.BeneficialOwner
         });
 
-        // set the hidden properties from capabilities
-        var hasSignedContratosDeCambio = false;
-        var pepHioRelated = false;
-        var cpf, verifyName, cpfName;
-
-        if ( this.subject.user.address.countryId == 'BR' ) {
-          this.crunchService.getJunction(x, 'fb7d3ca2-62f2-4caf-a84c-860392e4676b').then(cap=> {
-            // signing officer's CPF
-            if ( cap && cap.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-              cpf = cap.data.data;
-              verifyName = cap.data.verifyName;
-              cpfName = cap.data.cpfName;
-            }
-
-            this.crunchService.getJunction(x, '777af38a-8225-87c8-dfdf-eeb15f71215f-123').then(ucj=> {
-              // SigningOfficerPersonalData
-              if ( ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-                hasSignedContratosDeCambio = ucj.data.hasSignedContratosDeCambio;
-                pepHioRelated = ucj.data.PEPHIORelated;
-              }
-            })
-
-          }).catch((err) => {
-            this.notify(this.SIGNINGOFFICER_DATA_FETCHING_ERR, '', this.LogLevel.ERROR, true);
-          });
-        }
-
         var sinkFn = so => {
           var obj = net.nanopay.model.BeneficialOwner.create(
             {
@@ -175,14 +145,7 @@ foam.CLASS({
               business: this.subject.user.id,
               address: so.address,
               birthday: so.birthday,
-              mode: 'percent',
-              email: so.email,
-              cpf: cpf,
-              cpfName: cpfName,
-              verifyName: verifyName,
-              hasSignedContratosDeCambio: hasSignedContratosDeCambio,
-              PEPHIORelated: pepHioRelated,
-              type: this.subject.user.address.countryId
+              mode: 'percent'
             }, x);
             adao.put(obj);
         };
@@ -239,7 +202,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
-          0, 1, 2, 3, 4
+          1, 2, 3, 4
         ],
         isHorizontal: true
       },
@@ -249,7 +212,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.AND(
               e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-                .AMOUNT_OF_OWNERS, 0),
+                .AMOUNT_OF_OWNERS, 1),
               e.LTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
                 .AMOUNT_OF_OWNERS, 4)
             );
@@ -264,20 +227,6 @@ foam.CLASS({
           }
         }
       ]
-    },
-    {
-      class: 'Boolean',
-      name: 'publiclyTraded',
-      section: 'ownershipAmountSection',
-      documentation: 'Whether this is a publicly traded company.',
-      label: 'This is a publicly traded company',
-      postSet: function(_, n) {
-        if ( n ) this.clearAllOwnerAndPercentData();
-      },
-      visibility: function(amountOfOwners) {
-        return this.subject.user.address.countryId != 'BR' && amountOfOwners == 0 ?
-          foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
-      }
     },
     {
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
@@ -412,10 +361,6 @@ foam.CLASS({
           'jobTitle',
           'ownershipPercent'
         ]
-      },
-      visibility: function(amountOfOwners) {
-        return amountOfOwners > 0 ?
-          foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
@@ -595,24 +540,29 @@ foam.CLASS({
       value: ''
     },
     {
+      class: 'String',
+      name: 'ownerModel',
+      factory: () => 'net.nanopay.model.BeneficialOwner'
+    },
+    {
       name: 'view',
       value: function(_, X) {
+        var ownerCls = this.__context__.lookup(this.ownerModel);
         var dao2 = X.data.slot((soUsersDAO) => soUsersDAO);
         var dao = foam.dao.MDAO.create({
-            of: net.nanopay.model.BeneficialOwner
+            of: ownerCls
           });
 
-        var user = X.data.subject.user;
-          // note: the one access to businessId(below) ensures the prop is set on obj as it travels through network
-        var obj = net.nanopay.model.BeneficialOwner.create({
+        // note: the one access to businessId(below) ensures the prop is set on obj as it travels through network
+        var obj = ownerCls.create({
             business: X.data.businessId,
-            type: user.address.countryId,
             id: (this.index * 1000)
           }, X);
         obj.toSummary = () => this.OTHER_MSG;
         dao.put(obj);
         return {
           class: 'net.nanopay.crunch.onboardingModels.SelectionViewOwner',
+          ownerModel: this.ownerModel,
           dao2$: dao2,
           dao: dao,
           index: this.index,
@@ -680,6 +630,11 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'index'
+    },
+    {
+      class: 'String',
+      name: 'ownerModel',
+      factory: () => 'net.nanopay.model.BeneficialOwner'
     },
     {
       class: 'List',
@@ -787,13 +742,15 @@ foam.CLASS({
       var choiceSections = [];
       var choiceSectionsNonSoFirst = [];
 
+      var ownerCls = this.__context__.lookup(this.ownerModel);
+
       choiceSections.push({
         // filter out all the siging officers except the one chosen by this owner
         dao: this.dao2.where(
           this.OR(
-            this.EQ(net.nanopay.model.BeneficialOwner.ID, choice),
+            this.EQ(ownerCls.ID, choice),
             this.NOT(
-              this.IN(net.nanopay.model.BeneficialOwner.ID, this.chosenOwners)
+              this.IN(ownerCls.ID, this.chosenOwners)
             )
           )
         ),
@@ -811,9 +768,9 @@ foam.CLASS({
         // filter out all the siging officers except the one chosen by this owner
         dao: this.dao2.where(
           this.OR(
-            this.EQ(net.nanopay.model.BeneficialOwner.ID, choice),
+            this.EQ(ownerCls.ID, choice),
             this.NOT(
-              this.IN(net.nanopay.model.BeneficialOwner.ID, this.chosenOwners)
+              this.IN(ownerCls.ID, this.chosenOwners)
             )
           )
         ),

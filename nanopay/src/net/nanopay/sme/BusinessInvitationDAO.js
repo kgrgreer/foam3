@@ -190,7 +190,7 @@ foam.CLASS({
 
         Group group = business.findGroup(x);
         AppConfig appConfig = group.getAppConfig(x);
-        String url = appConfig.getUrl().replaceAll("/$", "");
+        String url = appConfig.getUrl();
 
         // Create the email message
         EmailMessage message = new EmailMessage.Builder(x)

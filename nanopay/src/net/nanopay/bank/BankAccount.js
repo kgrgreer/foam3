@@ -65,6 +65,7 @@ foam.CLASS({
     'java.util.List',
     'java.util.regex.Pattern',
     'net.nanopay.account.Account',
+    'net.nanopay.contacts.PersonalContact',
     'static foam.mlang.MLang.*'
   ],
 
@@ -92,15 +93,70 @@ foam.CLASS({
 
   sections: [
     {
+      name: 'complianceInformation',
+      permissionRequired: true,
+      order: 30
+    },
+    {
+      name: 'clientAccountInformation',
+      title: function() {
+        return this.clientAccountInformationTitle;
+      },
+      properties: [
+        {
+          name: 'denomination',
+          order: 10,
+          gridColumns: 12
+        },
+        {
+          name: 'name',
+          order: 20,
+          gridColumns: 12
+        },
+        {
+          name: 'flagImage',
+          order: 30,
+          gridColumns: 12
+        },
+        {
+          name: 'country',
+          order: 40,
+          gridColumns: 12
+        },
+        {
+          name: 'branchId',
+          order: 50,
+          gridColumns: 12
+        },
+        {
+          name: 'institutionNumber',
+          order: 60,
+          gridColumns: 12
+        },
+        {
+          name: 'accountNumber',
+          order: 70,
+          gridColumns: 12
+        },
+        {
+          name: 'swiftCode',
+          order: 80,
+          gridColumns: 12
+        },
+        {
+          name: 'iban',
+          order: 90,
+          gridColumns: 12
+        }
+      ]
+    },
+    {
       name: 'pad',
       permissionRequired: true,
       isAvailable: function(forContact) {
         return ! forContact;
-      }
-    },
-    {
-      name: 'complianceInformation',
-      permissionRequired: true
+      },
+      order: 110
     },
     {
       name: 'contextMenuActions'
@@ -112,12 +168,12 @@ foam.CLASS({
     { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required' },
     { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number invalid' },
     { name: 'NICKNAME_REQUIRED', message: 'Nickname required' },
-    { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution number required' },
-    { name: 'INSTITUTION_NUMBER_INVALID', message: 'Institution number invalid' },
+    { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution required' },
+    { name: 'INSTITUTION_NUMBER_INVALID', message: 'Institution invalid' },
     { name: 'CHECK_DIGIT_REQUIRED', message: 'Check digit required' },
     { name: 'CHECK_DIGIT_INVALID', message: 'Check digit invalid' },
-    { name: 'BRANCH_ID_REQUIRED', message: 'Branch id required' },
-    { name: 'BRANCH_ID_INVALID', message: 'Branch id invalid' },
+    { name: 'BRANCH_ID_REQUIRED', message: 'Branch required' },
+    { name: 'BRANCH_ID_INVALID', message: 'Branch invalid' },
     { name: 'SWIFT_CODE_REQUIRED', message: 'SWIFT/BIC code required' },
     { name: 'SWIFT_CODE_INVALID', message: 'SWIFT/BIC code invalid' },
     { name: 'IBAN_REQUIRED', message: 'IBAN required' },
@@ -132,7 +188,8 @@ foam.CLASS({
     { name: 'UNABLE_TO_DEFAULT', message: 'Unable to set non verified bank accounts as default' },
     { name: 'STATUS_ACTIVE', message: 'Active' },
     { name: 'STATUS_PENDING', message: 'Pending' },
-    { name: 'STATUS_DISABLED', message: 'Disabled' }
+    { name: 'STATUS_DISABLED', message: 'Disabled' },
+    { name: 'CLIENT_ACCOUNT_INFORMATION_DEFAULT_TITLE', message: 'Client Account Information' }
   ],
 
   css: `
@@ -141,12 +198,12 @@ foam.CLASS({
       height: 500px;
     }
     .bank-account-popup .net-nanopay-sme-ui-SMEModal-content {
-      overflow: scroll !important;
+      overflow: auto !important;
       padding: 30px;
     }
     .bank-account-detail-popup .net-nanopay-sme-ui-SMEModal-inner {
       max-height: 100vh;
-      overflow: scroll;
+      overflow: auto;
     }
   `,
 
@@ -156,11 +213,26 @@ foam.CLASS({
       updateVisibility: 'RO'
     },
     {
+      name: 'name',
+      label: 'Nickname',
+      section: 'accountInformation',
+      order: 40,
+      gridColumns: 6,
+      tableWidth: 168,
+      validateObj: function(name) {
+        if ( name === '' || ! name ) {
+          return this.NICKNAME_REQUIRED;
+        }
+      }
+    },
+    {
       class: 'String',
       name: 'accountNumber',
       documentation: 'The account number of the bank account.',
       updateVisibility: 'RO',
       section: 'accountInformation',
+      order: 50,
+      gridColumns: 6,
       view: {
           class: 'foam.u2.view.StringView'
       },
@@ -185,279 +257,13 @@ foam.CLASS({
       }
     },
     {
-      name: 'summary',
-      updateVisibility: 'RO',
-      networkTransient: false,
-      tableCellFormatter: function(_, obj) {
-        this.start()
-        .start()
-          .add(obj.slot((accountNumber) => {
-              if ( accountNumber ) {
-                return this.E()
-                  .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('accountNumber').label} `).end()
-                  .start('span').add(`*** ${accountNumber.substring(accountNumber.length - 4, accountNumber.length)}`).end();
-              }
-          }))
-        .end();
-      },
-      javaFactory: `
-        return "***" + getAccountNumber().substring(Math.max(getAccountNumber().length() - 4, 0));
-      `
-    },
-    {
-      class: 'foam.core.Enum',
-      of: 'net.nanopay.bank.BankAccountStatus',
-      name: 'status',
-      documentation: 'Tracks the status of the bank account.',
-      tableWidth: 82,
-      section: 'operationsInformation',
-      writePermissionRequired: true,
-      tableCellFormatter: function(a) {
-        var backgroundColour = 'transparent';
-        var colour = '#545d87';
-        var label = a.label;
-        switch ( a ) {
-          case net.nanopay.bank.BankAccountStatus.VERIFIED :
-            colour = '#2cab70';
-            backgroundColour = colour;
-            label = net.nanopay.bank.BankAccount.STATUS_ACTIVE;
-            break;
-          case net.nanopay.bank.BankAccountStatus.DISABLED :
-            colour = '#f91c1c';
-            backgroundColour = colour;
-            label = net.nanopay.bank.BankAccount.STATUS_DISABLED;
-            break;
-          case net.nanopay.bank.BankAccountStatus.UNVERIFIED :
-            label = net.nanopay.bank.BankAccount.STATUS_PENDING;
-            break;
-        }
-        this.start()
-          .start()
-            .style({
-              'display': 'inline-block',
-              'vertical-align': 'middle',
-              'box-sizing': 'border-box',
-              'width': '6px',
-              'height': '6px',
-              'margin-right': '6px',
-              'background-color': backgroundColour,
-              'border': '1px solid',
-              'border-color': colour,
-              'border-radius': '6px'
-            })
-          .end()
-          .start()
-            .style({
-              'display': 'inline-block',
-              'vertical-align': 'middle',
-              'font-size': '11px',
-              'color': colour,
-              'text-transform': 'capitalize',
-              'line-height': '11px'
-            })
-            .add(label)
-          .end()
-        .end();
-      }
-    },
-    {
-      class: 'String',
-      name: 'institutionNumber',
-      section: 'accountInformation',
-      documentation: `International bank code that identifies banks worldwide. BIC/SWIFT`,
-      updateVisibility: 'RO',
-      storageTransient: true
-    },
-    {
-      class: 'String',
-      name: 'branchId',
-      section: 'accountInformation',
-      storageTransient: true
-    },
-    {
-      class: 'Long',
-      name: 'randomDepositAmount',
-      documentation:`A small financial sum deposited into a bank account to test
-        onboarding onto our system.`,
-      section: 'operationsInformation',
-      networkTransient: true
-    },
-    {
-      class: 'Int',
-      name: 'verificationAttempts',
-      documentation: `Defines the number of times it is attempted to verify
-        ownership of the bank account.`,
-      value: 0,
-      section: 'operationsInformation',
-      writePermissionRequired: true
-    },
-    {
-      class: 'DateTime',
-      name: 'microVerificationTimestamp',
-      documentation: 'The date and time of when ownership of the bank account is verified.',
-      section: 'operationsInformation'
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.Country',
-      name: 'country',
-      documentation: `The name of the country associated with the bank account.
-        This should be set by the child class.
-      `,
-      section: 'accountInformation',
-      visibility: 'RO',
-      view: {
-        class: 'foam.u2.view.ReferencePropertyView',
-        readView: { class: 'foam.u2.view.StringView' }
-      }
-    },
-    {
-      class: 'URL',
-      name: 'flagImage',
-      label: 'Country', // To set table column heading
-      documentation: `A URL link to an image of the country's flag. Used for
-        display purposes. This should be set by the child class.
-      `,
-      tableWidth: 91,
-      section: 'accountInformation',
-      visibility: 'RO',
-      view: function(_, X) {
-        return {
-          class: 'foam.u2.tag.Image',
-          displayWidth: '44px',
-          displayHeight: '30px'
-        };
-      },
-      tableCellFormatter: function(value, obj, axiom) {
-        this.start('img').attr('src', value).end();
-      }
-    },
-    {
-      class: 'String',
-      name: 'integrationId',
-      documentation:`A unique identifier for a bank account within the
-        client's accounting software.`,
-      section: 'systemInformation'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.auth.Address',
-      name: 'address',
-      section: 'ownerInformation',
-      documentation: `User pad authorization address.`,
-      // section: 'pad',
-      // Note: To be removed
-      factory: function() {
-        return this.Address.create();
-      },
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.auth.Address',
-      name: 'bankAddress',
-      section: 'accountInformation',
-      visibility: 'HIDDEN',
-      documentation: `Returns the bank account address from the Address model.`,
-      // section: 'pad',
-      factory: function() {
-        return this.Address.create();
-      },
-    },
-    {
-      class: 'foam.dao.DAOProperty',
-      name: 'availableCurrencies',
-      documentation: `Contains list of available currencies to receive or send in selected account country`,
-      visibility: 'HIDDEN',
-      section: 'accountInformation',
-      expression: function(user, currencyDAO, forContact) {
-        let propInfo = forContact ? this.PaymentProviderCorridor.TARGET_COUNTRY : this.PaymentProviderCorridor.SOURCE_COUNTRY;
-        let propInfoCurrency = forContact ? this.PaymentProviderCorridor.TARGET_CURRENCIES : this.PaymentProviderCorridor.SOURCE_CURRENCIES;
-        let dao = forContact ? this.targetCorridorDAO : this.sourceCorridorDAO;
-        return this.PromisedDAO.create({
-          of: 'foam.core.Currency',
-          promise: dao.where(this.AND(
-              this.EQ(propInfo, this.country),
-              this.INSTANCE_OF(this.PaymentProviderCorridor)
-            ))
-            .select(this.MAP(propInfoCurrency))
-            .then((sink) => {
-              let currencies = sink.delegate.array ? sink.delegate.array : [];
-              currencies.push(this.denomination);
-              return currencyDAO.where(
-                this.IN(this.Currency.ID, currencies.flat())
-              );
-            })
-        });
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'forContact',
-      section: 'ownerInformation',
-      documentation: `Flag for whether bank account is owned by a contact.
-          Required for visibility property expressions.`
-    },
-    {
-      name: 'denomination',
-      label: 'Currency',
-      updateVisibility: 'RO',
-      writePermissionRequired: false,
-      gridColumns: 12,
-      section: 'accountInformation',
-      view: function(_, X) {
-        return {
-          class: 'foam.u2.view.ModeAltView',
-          readView: { class: 'foam.u2.view.ReferenceView' },
-          writeView: {
-            class: 'foam.u2.view.RichChoiceView',
-            data$: X.data.denomination$,
-            sections: [
-              {
-                heading: X.data.AVAILABLE_CURRENCIES_MSG,
-                dao$: X.data.availableCurrencies$
-              }
-            ]
-          }
-        };
-      }
-    },
-    {
-      name: 'name',
-      label: 'Nickname',
-      section: 'accountInformation',
-      order: 4,
-      tableWidth: 168,
-      validateObj: function(name) {
-        if ( name === '' || ! name ) {
-          return this.NICKNAME_REQUIRED;
-        }
-      }
-    },
-    {
-      class: 'String',
-      name: 'swiftCode',
-      label: 'SWIFT/BIC',
-      updateVisibility: 'RO',
-      section: 'accountInformation',
-      validateObj: function(swiftCode, iban) {
-        if ( iban )
-          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
-
-        if ( ! iban || (iban && ibanMsg != 'passed') ) {
-          if ( ! swiftCode || swiftCode === '' ) {
-            return this.SWIFT_CODE_REQUIRED;
-          } else if ( ! this.SWIFT_CODE_PATTERN.test(swiftCode) ) {
-            return this.SWIFT_CODE_INVALID;
-          }
-        }
-      }
-    },
-    {
       class: 'String',
       name: 'iban',
       label: 'International Bank Account Number (IBAN)',
       updateVisibility: 'RO',
       section: 'accountInformation',
+      order: 80,
+      gridColumns: 6,
       documentation: `Standard international numbering system developed to
           identify a bank account.`,
       validateObj: function(iban, swiftCode, country) {
@@ -493,9 +299,267 @@ foam.CLASS({
       `
     },
     {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'bankAddress',
+      section: 'accountInformation',
+      order: 90,
+      visibility: 'HIDDEN',
+      documentation: `Returns the bank account address from the Address model.`,
+      // section: 'pad',
+      factory: function() {
+        return this.Address.create();
+      },
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
+      name: 'country',
+      documentation: `The name of the country associated with the bank account.
+        This should be set by the child class.
+      `,
+      section: 'accountInformation',
+      order: 100,
+      gridColumns: 6,
+      visibility: 'RO',
+      view: {
+        class: 'foam.u2.view.ReferencePropertyView',
+        readView: { class: 'foam.u2.view.StringView' }
+      }
+    },
+    {
+      class: 'URL',
+      name: 'flagImage',
+      label: 'Country', // To set table column heading
+      documentation: `A URL link to an image of the country's flag. Used for
+        display purposes. This should be set by the child class.
+      `,
+      tableWidth: 91,
+      section: 'accountInformation',
+      order: 105,
+      gridColumns: 6,
+      visibility: 'RO',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.tag.Image',
+          displayWidth: '44px',
+          displayHeight: '30px'
+        };
+      },
+      tableCellFormatter: function(value, obj, axiom) {
+        this.start('img').attr('src', value).end();
+      }
+    },
+    {
+      class: 'String',
+      name: 'institutionNumber',
+      label: 'Institution',
+      section: 'accountInformation',
+      order: 120,
+      gridColumns: 6,
+      documentation: `International bank code that identifies banks worldwide. BIC/SWIFT`,
+      updateVisibility: 'RO',
+      storageTransient: true
+    },
+    {
+      class: 'String',
+      name: 'branchId',
+      label: 'Branch',
+      section: 'accountInformation',
+      order: 130,
+      gridColumns: 6,
+      storageTransient: true
+    },
+    {
+      class: 'String',
+      name: 'swiftCode',
+      label: 'SWIFT/BIC',
+      updateVisibility: 'RO',
+      section: 'accountInformation',
+      order: 150,
+      gridColumns: 6,
+      validateObj: function(swiftCode, iban) {
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
+
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( ! swiftCode || swiftCode === '' ) {
+            return this.SWIFT_CODE_REQUIRED;
+          } else if ( ! this.SWIFT_CODE_PATTERN.test(swiftCode) ) {
+            return this.SWIFT_CODE_INVALID;
+          }
+        }
+      }
+    },
+    {
+      name: 'denomination',
+      label: 'Currency',
+      updateVisibility: 'RO',
+      writePermissionRequired: false,
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.ModeAltView',
+          readView: { class: 'foam.u2.view.ReferenceView' },
+          writeView: {
+            class: 'foam.u2.view.RichChoiceView',
+            data$: X.data.denomination$,
+            sections: [
+              {
+                heading: X.data.AVAILABLE_CURRENCIES_MSG,
+                dao$: X.data.availableCurrencies$
+              }
+            ]
+          }
+        };
+      }
+    },
+    {
+      name: 'summary',
+      updateVisibility: 'RO',
+      networkTransient: false,
+      tableCellFormatter: function(_, obj) {
+        this.start()
+        .start()
+          .add(obj.slot((accountNumber) => {
+              if ( accountNumber ) {
+                return this.E()
+                  .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('accountNumber').label} `).end()
+                  .start('span').add(obj.obfuscate(accountNumber, 1, accountNumber.length - 4)).end();
+              }
+          }))
+        .end();
+      },
+      javaFactory: `
+        net.nanopay.bank.BankAccount account = new net.nanopay.bank.BankAccount();
+        return account.obfuscate(getAccountNumber(), 1, getAccountNumber().length() - 4);
+      `
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.bank.BankAccountStatus',
+      name: 'status',
+      documentation: 'Tracks the status of the bank account.',
+      tableWidth: 82,
+      section: 'operationsInformation',
+      order: 10,
+      gridColumns: 6,
+      writePermissionRequired: true,
+      tableCellFormatter: function(a) {
+        var backgroundColour = 'transparent';
+        var colour = a.color;
+        var label = a.label;
+        switch ( a ) {
+          case net.nanopay.bank.BankAccountStatus.VERIFIED :
+            backgroundColour = colour;
+            label = net.nanopay.bank.BankAccount.STATUS_ACTIVE;
+            break;
+          case net.nanopay.bank.BankAccountStatus.DISABLED :
+            backgroundColour = colour;
+            label = net.nanopay.bank.BankAccount.STATUS_DISABLED;
+            break;
+          case net.nanopay.bank.BankAccountStatus.UNVERIFIED :
+            label = net.nanopay.bank.BankAccount.STATUS_PENDING;
+            break;
+        }
+        this.start().style({ color : colour }).add(label).end();
+      }
+    },
+    {
+      class: 'Long',
+      name: 'randomDepositAmount',
+      documentation:`A small financial sum deposited into a bank account to test
+        onboarding onto our system.`,
+      section: 'operationsInformation',
+      order: 30,
+      gridColumns: 6,
+      networkTransient: true
+    },
+    {
+      class: 'DateTime',
+      name: 'microVerificationTimestamp',
+      documentation: 'The date and time of when ownership of the bank account is verified.',
+      section: 'operationsInformation',
+      order: 40,
+      gridColumns: 6
+    },
+    {
+      class: 'Int',
+      name: 'verificationAttempts',
+      documentation: `Defines the number of times it is attempted to verify
+        ownership of the bank account.`,
+      value: 0,
+      section: 'operationsInformation',
+      order: 50,
+      gridColumns: 6,
+      writePermissionRequired: true
+    },
+    {
       class: 'String',
       name: 'verifiedBy',
-      section: 'operationsInformation'
+      section: 'operationsInformation',
+      order: 60,
+      gridColumns: 6
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'address',
+      section: 'ownerInformation',
+      order: 20,
+      documentation: `User pad authorization address.`,
+      // section: 'pad',
+      // Note: To be removed
+      factory: function() {
+        return this.Address.create();
+      },
+    },
+    {
+      class: 'Boolean',
+      name: 'forContact',
+      section: 'ownerInformation',
+      order: 40,
+      gridColumns: 6,
+      documentation: `Flag for whether bank account is owned by a contact.
+          Required for visibility property expressions.`,
+      javaFactory: `
+        return findOwner(foam.core.XLocator.get()) instanceof PersonalContact;
+      `
+    },
+    {
+      class: 'String',
+      name: 'integrationId',
+      documentation:`A unique identifier for a bank account within the
+        client's accounting software.`,
+      section: 'systemInformation',
+      order: 10,
+      gridColumns: 6
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'availableCurrencies',
+      documentation: `Contains list of available currencies to receive or send in selected account country`,
+      visibility: 'HIDDEN',
+      section: 'accountInformation',
+      expression: function(user, currencyDAO, forContact) {
+        let propInfo = forContact ? this.PaymentProviderCorridor.TARGET_COUNTRY : this.PaymentProviderCorridor.SOURCE_COUNTRY;
+        let propInfoCurrency = forContact ? this.PaymentProviderCorridor.TARGET_CURRENCIES : this.PaymentProviderCorridor.SOURCE_CURRENCIES;
+        let dao = forContact ? this.targetCorridorDAO : this.sourceCorridorDAO;
+        return this.PromisedDAO.create({
+          of: 'foam.core.Currency',
+          promise: dao.where(this.AND(
+              this.EQ(propInfo, this.country),
+              this.INSTANCE_OF(this.PaymentProviderCorridor)
+            ))
+            .select(this.MAP(propInfoCurrency))
+            .then((sink) => {
+              let currencies = sink.delegate.array ? sink.delegate.array : [];
+              currencies.push(this.denomination);
+              return currencyDAO.where(
+                this.IN(this.Currency.ID, currencies.flat())
+              );
+            })
+        });
+      }
     },
     {
       class: 'String',
@@ -507,6 +571,14 @@ foam.CLASS({
         });
       },
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'clientAccountInformationTitle',
+      transient: true,
+      visibility: 'HIDDEN',
+      factory: function() {
+        return this.CLIENT_ACCOUNT_INFORMATION_DEFAULT_TITLE;
+      }
     }
   ],
 
@@ -521,7 +593,7 @@ foam.CLASS({
         return this.status === this.BankAccountStatus.UNVERIFIED;
       },
       code: function(X) {
-        this.ctrl.add(this.Popup.create().tag({
+        X.ctrl.add(this.Popup.create().tag({
           class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
           bank: this
         }));
@@ -541,7 +613,11 @@ foam.CLASS({
             .tag({
               class: 'net.nanopay.account.ui.BankAccountWizard',
               data: account,
-              useSections: ['accountInformation', 'pad']
+              useSections: ['clientAccountInformation', 'pad'],
+              config: {
+                id: { updateVisibility: 'HIDDEN' },
+                summary: { updateVisibility: 'HIDDEN' }
+              }
             })
           .endContext()
           );
@@ -580,7 +656,8 @@ foam.CLASS({
         this.__subContext__.ctrl.add(this.Popup.create().tag({
           class: 'foam.u2.DeleteModal',
           dao: this.subject.user.accounts,
-          data: this
+          data: this,
+          label: this.name
         }));
       }
     }
@@ -589,6 +666,46 @@ foam.CLASS({
   methods: [
     function toSummary() {
       return `${ this.name } ${ this.country } ${ this.BANK_ACCOUNT_LABEL } (${this.denomination})`;
+    },
+    {
+      name: 'obfuscate',
+      documentation: ``,
+      code: function(str, start, end) {
+        var obfuscatedString = str;
+        var count = 0;
+        for ( let i = 0; i < str.length; i++ ) {
+          if ( count == end ) {
+            break;
+          }
+          if ( str[i] != ' ' ) {
+            if ( count >= start - 1 ) {
+              obfuscatedString = obfuscatedString.substring(0, i) + '*' + obfuscatedString.substring(i + 1);
+            }
+            count++;
+          }
+        }
+        return obfuscatedString;
+      },
+      type: 'String',
+      args: [
+        { name: 'str', type: 'String' },
+        { name: 'start', type: 'Long' },
+        { name: 'end', type: 'Long' }
+      ],
+      javaCode: `
+        StringBuilder sb = new StringBuilder();
+        int count = 0;
+        for (char c : str.toCharArray()) {
+          if ( c != ' ' ) {
+            if ( count >= start - 1 && count <= end - 1 ) {
+              c = '*';
+            }
+            count++;
+          }
+          sb.append(c);
+        }
+        return sb.toString();
+      `
     },
     {
       name: 'calcCheckSum',

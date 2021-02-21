@@ -34,6 +34,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
+    'foam.core.ClientRuntimeException',
     'net.nanopay.crunch.onboardingModels.InitialBusinessData',
     'net.nanopay.model.Business'
   ],
@@ -60,7 +61,6 @@ foam.CLASS({
           UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
           DAO localUserDAO = (DAO) x.get("localUserDAO");
           DAO businessDAO = (DAO) x.get("businessDAO");
-          DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
           User user = ((Subject) x.get("subject")).getUser();
 
           if ( ucj.getStatus() != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) return;
@@ -98,7 +98,7 @@ foam.CLASS({
             ucj.setSourceId(business.getId());
           } catch (Exception e) {
             ((Logger) x.get("logger")).warning(e);
-            throw new Error(BUSINESS_CREATE_ERROR);
+            throw new ClientRuntimeException(BUSINESS_CREATE_ERROR, e);
           }
 
           try {
@@ -106,7 +106,7 @@ foam.CLASS({
               agentAuth.actAs(x, business);
           } catch (Exception e) {
             ((Logger) x.get("logger")).warning(e);
-            throw new Error(UNABLE_SIGN_IN);
+            throw new ClientRuntimeException(UNABLE_SIGN_IN, e);
           }
         }
       }, "Creates business on initial business data submit.");

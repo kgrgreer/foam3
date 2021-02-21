@@ -29,16 +29,13 @@ foam.CLASS({
     'subject'
   ],
 
-  requires: [
-    'net.nanopay.model.BusinessUserJunction'
-  ],
-
   javaImports: [
-    'net.nanopay.model.BusinessDirector',
+    'net.nanopay.partner.treviso.onboarding.BRBusinessDirector',
   ],
 
   messages: [
     { name: 'NO_DIRECTOR_INFO', message: 'Director information required' },
+    { name: 'DIRECTOR_INFO_NOT_VALID', message: 'Director information is not valid' },
     { name: 'NO_DIR_NEEDED', message: 'No Business Directors required for this business type. Please proceed to next step.' }
   ],
 
@@ -55,12 +52,20 @@ properties: [
       name: 'needDirector',
       class: 'Boolean',
       section: 'directorsInfoSection',
+      documentation: 'a hack for updating businessTypeId',
       hidden: true,
       transient: true,
       getter: function() {
         var self = this;
         this.businessDAO.find(this.subject.user.id).then((business) => {
+          if ( ! business ) return;
+          
           self.businessTypeId = business.businessTypeId;
+
+          // Clear directors if directors are not required for this business type
+          if ( self.businessTypeId < 4 ) {
+            self.businessDirectors = [];
+          }
         });
       }
     },
@@ -87,7 +92,7 @@ properties: [
       name: 'businessDirectors',
       documentation: 'Array of business directors.',
       label: '',
-      of: 'net.nanopay.model.BusinessDirector',
+      of: 'net.nanopay.partner.treviso.onboarding.BRBusinessDirector',
       section: 'directorsInfoSection',
       view: function(_, x) {
         return {
@@ -95,32 +100,23 @@ properties: [
           mode: 'RW',
           enableAdding: true,
           enableRemoving: true,
-          defaultNewItem: net.nanopay.model.BusinessDirector.create({
-            type: x.data.subject.user.address.countryId
-          }, x),
+          defaultNewItem: net.nanopay.partner.treviso.onboarding.BRBusinessDirector.create({}, x),
           name: 'director'
         };
       },
       visibility: function(businessTypeId, needDirector) {
          return businessTypeId < 4 ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
+      validateObj: function(businessTypeId, businessDirectors, businessDirectors$errors) {
+        if ( businessTypeId < 4 ) return;
+        if ( ! businessDirectors || businessDirectors.length == 0 )
+          return this.NO_DIRECTOR_INFO;
+        if ( businessDirectors$errors && businessDirectors$errors.length  )
+          return this.DIRECTOR_INFO_NOT_VALID;
+      },
       autoValidate: true,
       validationTextVisible: true,
-      validationPredicates: [
-        {
-          args: ['businessTypeId', 'businessDirectors'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.HAS(net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.BUSINESS_DIRECTORS),
-              e.AND(
-                e.GT(net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.BUSINESS_TYPE_ID, 0),
-                e.LT(net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.BUSINESS_TYPE_ID, 4),
-              )
-            );
-          },
-          errorMessage: 'NO_DIRECTOR_INFO'
-        }
-      ]
+      validationStyleEnabled: false
     }
   ],
 
@@ -137,7 +133,7 @@ properties: [
           }
         }
 
-        for ( BusinessDirector director : getBusinessDirectors()  ) director.validate(x);
+        for ( BRBusinessDirector director : getBusinessDirectors()  ) director.validate(x);
       `
     }
   ]

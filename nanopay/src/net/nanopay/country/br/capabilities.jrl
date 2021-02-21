@@ -24,8 +24,8 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-3",
-  "name":"Bank Domicile Reasis",
-  "description":"Provide bank domicile for payment of Reasis",
+  "name":"Domicile bank for payments in reais",
+  "description":"Provide a document that shows your bank address for payment in reais",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
   "version":"0",
@@ -449,7 +449,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D",
+  "id":"bf6a49d5-4027-4dac-a269-4d3ed070609e-4",
   "name":"International payments",
   "description":"International payments from Brazil",
   "icon":"/images/capabilityIcons/BrazilCap.svg",
@@ -457,6 +457,27 @@ p({
   "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
   "enabled":true,
   "keywords":["featured"],
+  "availabilityPredicate": {
+    "class":"foam.mlang.predicate.And",
+    "args": [
+      { "class":"net.nanopay.crunch.predicate.IsBusiness" },
+      {
+        "class":"net.nanopay.crunch.predicate.CheckUserCountry",
+        "country":"BR"
+      }
+    ]
+  },
+  "associatedEntity":2
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D",
+  "name":"International payments onboarding",
+  "description":"International payments from Brazil",
+  "icon":"/images/capabilityIcons/BrazilCap.svg",
+  "version":"0",
+  "enabled":true,
   "availabilityPredicate": {
     "class":"foam.mlang.predicate.And",
     "args": [
@@ -484,7 +505,8 @@ p({
   "enabled":true,
   "reviewRequired":true,
   "permissionsGranted":[
-    "business.invoice.pay"
+    "business.invoice.pay",
+    "menu.read.capability.main.invoices.receivables"
   ],
   "permissionsIntercepted": [
     "business.invoice.pay"
@@ -520,20 +542,37 @@ p({
 })
 
 p({
+  "class": "net.nanopay.payment.RegisterPaymentProviderCapability",
+  "id":"89cc91da-4bbd-458b-81d4-574815e455fa-4",
+  "name":"Registering with Payment Provider(BR International)",
+  "description":"Registering with Payment Provider(BR International)",
+  "version":"0",
+  "enabled":true,
+  "min": 1,
+  "permissionsGranted":[
+    "menu.read.mainmenu.invoices.payables"
+  ],
+  beforeWizardlet: {
+    class: "foam.nanos.crunch.ui.MinMaxCapabilityWizardlet",
+    consumePrerequisites: true,
+    hideChoiceView: true,
+  }
+})
+
+p({
   "class":"foam.nanos.crunch.Capability",
   "id":"2910C2C9-3597-42A3-BF85-CFBC8F0E1388",
   "name":"User Invoice Capability",
   "icon":"/images/capabilityIcons/BrazilCap.svg",
   "enabled":true,
-  "associatedEntity": 2
+  "associatedEntity":2
 })
 
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"7b41a164-29bd-11eb-adc1-0242ac120002",
   "name":"Brazil Bank Account",
-  "of":"net.nanopay.bank.BRBankAccount",
-  "daoKey":"accountDAO",
+  "of":"net.nanopay.partner.treviso.onboarding.BRBankAccountData",
   "enabled":true
 })
 
@@ -550,7 +589,7 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"9d4d667c-04c3-11eb-adc1-0242ac120002",
-  "name":"Business Capital and Equity",
+  "name":"Business Financials",
   "of":"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation",
   "version":"0",
   "enabled":true
@@ -582,5 +621,15 @@ p({
     "class": "foam.u2.crunch.EasyCrunchWizard",
     "skipMode":1
   },
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"1d72f804-4019-11eb-b378-0242ac130002",
+  "name":"What is the Expected Boarding Date?",
+  "description":"Expect Boarding Date",
+  "of":"net.nanopay.country.br.ExpectedBoardingDate",
+  "version":"0",
   "enabled":true
 })

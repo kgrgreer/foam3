@@ -37,7 +37,7 @@ foam.CLASS({
     'ctrl',
     'contactService',
     'invitationDAO',
-    'user'
+    'subject'
   ],
 
   css: `
@@ -46,11 +46,18 @@ foam.CLASS({
       width: 600px;
       padding: 30px;
       max-height: 570px;
-      overflow-y: scroll;
+      overflow-y: auto;
+    }
+    ^left-button-container {
+      width: 200px;
+      display: flex;
+      justify-content: flex-start;
+    }
+    ^option {
+      margin-left: 15px;
     }
     ^step-indicator {
-      display: flex;
-      justify-content: flex-end;
+      margin-right: 150px;
     }
     .property-rbiLink {
       margin-top: -33px;
@@ -60,7 +67,7 @@ foam.CLASS({
     }
     ^ .button-container-wrapper {
       position: relative;
-      width: 585px;
+      width: 600px;
       right: 30px;
       top: 30px;
     }
@@ -123,7 +130,7 @@ foam.CLASS({
     async function init() {
       var sectionOne = this.Section.create({
         title: this.SECTION_ONE_TITLE,
-        properties: [ 
+        properties: [
           net.nanopay.contacts.Contact.ORGANIZATION.clone().copyFrom({ gridColumns: 12 }),
           net.nanopay.contacts.Contact.EMAIL.clone().copyFrom({ gridColumns: 12 }),
           net.nanopay.contacts.Contact.FIRST_NAME,
@@ -157,7 +164,7 @@ foam.CLASS({
       this.sections = [ sectionOne, sectionTwo, sectionThree ];
       this.data.copyFrom({
         type: 'Contact',
-        group: 'sme'
+        group: this.subject.user.spid +  '-sme'
       });
       if ( this.isEdit ) {
         this.data.isEdit = true;
@@ -189,13 +196,17 @@ foam.CLASS({
           .startContext({ data: this })
             .start().addClass('button-container-wrapper')
               .start().addClass('button-container')
-                .tag(this.BACK, { buttonStyle: 'TERTIARY' })
+                .start().addClass(self.myClass('left-button-container'))
+                  .tag(this.BACK, { buttonStyle: 'TERTIARY' })
+                  .start().addClass(self.myClass('option'))
+                    .tag(this.OPTION, { buttonStyle: 'SECONDARY' })
+                  .end()
+                .end()
                 .start().addClass(self.myClass('step-indicator'))
                   .add(this.slot(function(currentIndex) {
                     return `${self.STEP} ${currentIndex + 1} ${self.OF_MSG} 3`;
                   }))
                 .end()
-                .tag(this.OPTION, { buttonStyle: 'SECONDARY' })
                 .start(this.NEXT).end()
                 .start(this.SAVE).end()
               .end()
@@ -215,7 +226,7 @@ foam.CLASS({
 
           if ( ! isExisting ) {
             try {
-              this.contact = await this.user.contacts.put(this.data);
+              this.contact = await this.subject.user.contacts.put(this.data);
 
               if ( await this.sendInvite(false) ) {
                 this.ctrl.notify(this.CONTACT_ADDED_INVITE_SUCCESS, '', this.LogLevel.INFO, true);
@@ -229,7 +240,7 @@ foam.CLASS({
             return false;
           }
         } else {
-          this.contact = await this.user.contacts.put(this.data);
+          this.contact = await this.subject.user.contacts.put(this.data);
           this.ctrl.notify(this.isEdit ? this.CONTACT_EDITED : this.CONTACT_ADDED, '', this.LogLevel.INFO, true);
         }
       } catch (e) {
@@ -238,6 +249,7 @@ foam.CLASS({
         this.isConnecting = false;
         return false;
       }
+      this.data.copyFrom(this.contact);
       this.isConnecting = false;
       return true;
     },
@@ -245,7 +257,7 @@ foam.CLASS({
     async function sendInvite(showToastMsg) {
       var invite = this.Invitation.create({
         email: this.data.email,
-        createdBy: this.user.id,
+        createdBy: this.subject.user.id,
         inviteeId: this.data.id,
         businessName: this.data.organization,
         message: ''
@@ -256,7 +268,7 @@ foam.CLASS({
           this.ctrl.notify(this.INVITE_SUCCESS, '', this.LogLevel.INFO, true);
         }
         // Force the view to update.
-        this.user.contacts.cmd(foam.dao.AbstractDAO.RESET_CMD);
+        this.subject.user.contacts.cmd(foam.dao.AbstractDAO.RESET_CMD);
       } catch (e) {
         this.ctrl.notify(this.CONTACT_ADDED_INVITE_FAILURE, '', this.LogLevel.ERROR, true);
         return false;
@@ -284,7 +296,7 @@ foam.CLASS({
     async function updateContactBankInfo(contact, bankAccountId) {
       try {
         contact.bankAccount = bankAccountId;
-        await this.user.contacts.put(contact);
+        await this.subject.user.contacts.put(contact);
       } catch (err) {
         var msg = err.message || this.GENERIC_PUT_FAILED;
         this.ctrl.notify(msg, '', this.LogLevel.ERROR, true);
@@ -327,10 +339,10 @@ foam.CLASS({
       name: 'option',
       label: 'Save and close',
       isAvailable: function(currentIndex, data$bankAccount) {
-        return currentIndex === 1 && data$bankAccount === 0;
+        return currentIndex === 1 && ! data$bankAccount;
       },
       code: async function(X) {
-        this.data.createBankAccount = net.nanopay.bank.BankAccount.create({ isDefault: true });
+        this.data.clearProperty("createBankAccount");
         if ( ! await this.addContact() ) return;
         X.closeDialog();
       }

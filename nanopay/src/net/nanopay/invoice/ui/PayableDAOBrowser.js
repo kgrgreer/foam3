@@ -42,11 +42,16 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountingIntegrationUtil',
     'checkAndNotifyAbilityToPay',
     'currencyDAO',
     'stack',
     'subject',
-    'accountingIntegrationUtil',
+    'translationService'
+  ],
+
+  exports: [
+    'as payables'
   ],
 
   css: `
@@ -94,7 +99,6 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Payables' },
     { name: 'SUB_TITLE', message: `Here's a list of payments you've sent` },
-    { name: 'DELETE_DRAFT', message: 'Draft has been deleted' },
     { name: 'RECONCILED_SUCCESS', message: 'Invoice has been reconciled by payer' },
     { name: 'RECONCILED_ERROR', message: `There was an error reconciling the invoice` },
     { name: 'INVOICE', message: 'invoice' }
@@ -107,6 +111,21 @@ foam.CLASS({
 
       imports: [
         'accountingIntegrationUtil'
+      ],
+
+      exports: [
+        'click',
+      ],
+
+      methods: [
+        function click(obj, id, X) {
+          let updatedInvoice = X.accountingIntegrationUtil.forceSyncInvoice(this);
+          X.stack.push({
+            class: 'net.nanopay.sme.ui.InvoiceOverview',
+            invoice: updatedInvoice,
+            isPayable: true
+          });
+        },
       ]
     }
   ],
@@ -209,7 +228,7 @@ foam.CLASS({
       .tag(this.DAOBrowser.create({
         config: this.config,
         summaryView: this.summaryView,
-        serviceName: 'invoiceDAO'
+        serviceName: 'expensesDAO'
       }));
     }
   ],
@@ -243,7 +262,7 @@ foam.CLASS({
         return permissions[0];
       },
       code: function(X) {
-        this.ctrl.add(this.Popup.create().tag({
+        this.ctrl.add(ctrl.Popup.create().tag({
           class: 'net.invoice.ui.modal.IntegrationModal'
         }));
       }
@@ -252,15 +271,15 @@ foam.CLASS({
       name: 'reconcile',
       label: 'Reconcile',
       isAvailable: function() {
-        var self = this.private_;
         return ! this.payerReconciled && this.status === this.InvoiceStatus.PAID;
       },
       code: async function(X) {
+        var self = this.__subContext__;
         this.payerReconciled = true;
         self.subject.user.expenses.put(this).then(() => {
-          self.notify(self.RECONCILED_SUCCESS, '', self.LogLevel.INFO, true);
+          self.notify(X.payables.RECONCILED_SUCCESS, '', X.payables.LogLevel.INFO, true);
         }).catch((err) => {
-          self.notify(self.RECONCILED_ERROR, '', self.LogLevel.ERROR, true);
+          self.notify(X.payables.RECONCILED_ERROR, '', X.payables.LogLevel.ERROR, true);
         });
       }
     },
@@ -280,17 +299,17 @@ foam.CLASS({
       name: 'payNow',
       label: 'Pay now',
       isAvailable: function() {
-        var self = this.private_;
-        return this.status === self.InvoiceStatus.UNPAID ||
-          this.status === self.InvoiceStatus.OVERDUE;
+        return this.status === this.InvoiceStatus.UNPAID ||
+          this.status === this.InvoiceStatus.OVERDUE;
       },
       code: async function(X) {
+        var self = this;
         let updatedInvoice = await X.accountingIntegrationUtil.forceSyncInvoice(this);
 
-        if (! updatedInvoice) {
+        if ( ! updatedInvoice ) {
           return;
         }
-        self.checkAndNotifyAbilityToPay().then((result) => {
+        this.checkAndNotifyAbilityToPay().then((result) => {
           if ( result ) {
             X.menuDAO.find('sme.quickAction.send').then((menu) => {
               var clone = menu.clone();
@@ -311,8 +330,7 @@ foam.CLASS({
       name: 'edit',
       label: 'Edit',
       isAvailable: function() {
-        var self = this.private_;
-        return this.status === self.InvoiceStatus.DRAFT;
+        return this.status === this.InvoiceStatus.DRAFT;
       },
       code: function(X) {
         X.menuDAO.find('sme.quickAction.send').then((menu) => {
@@ -330,8 +348,7 @@ foam.CLASS({
     {
       name: 'approve',
       isAvailable: function() {
-        var self = this.private_;
-        return this.status === self.InvoiceStatus.PENDING_APPROVAL;
+        return this.status === this.InvoiceStatus.PENDING_APPROVAL;
       },
       availablePermissions: ['business.invoice.pay', 'user.invoice.pay'],
       code: function(X) {
@@ -353,24 +370,22 @@ foam.CLASS({
       name: 'markVoid',
       label: 'Mark as Void',
       isEnabled: function() {
-      var self = this.private_;
         return this.__subContext__.subject.user.id === this.createdBy &&
-          ( this.status === self.InvoiceStatus.UNPAID ||
-          this.status === self.InvoiceStatus.OVERDUE ||
-          this.status === self.InvoiceStatus.PENDING_APPROVAL ) && !
-          ( self.QuickbooksInvoice.isInstance(this) || self.XeroInvoice.isInstance(this) );
+          ( this.status === this.InvoiceStatus.UNPAID ||
+          this.status === this.InvoiceStatus.OVERDUE ||
+          this.status === this.InvoiceStatus.PENDING_APPROVAL ) && !
+          ( net.nanopay.accounting.quickbooks.model.QuickbooksInvoice.isInstance(this) || net.nanopay.accounting.xero.model.XeroInvoice.isInstance(this) );
       },
       isAvailable: function() {
-        var self = this.private_;
-        return this.status === self.InvoiceStatus.UNPAID ||
-          this.status === self.InvoiceStatus.PAID ||
-          this.status === self.InvoiceStatus.PROCESSING ||
-          this.status === self.InvoiceStatus.OVERDUE ||
-          this.status === self.InvoiceStatus.PENDING_APPROVAL;
+        return this.status === this.InvoiceStatus.UNPAID ||
+          this.status === this.InvoiceStatus.PAID ||
+          this.status === this.InvoiceStatus.PROCESSING ||
+          this.status === this.InvoiceStatus.OVERDUE ||
+          this.status === this.InvoiceStatus.PENDING_APPROVAL;
       },
       code: function() {
-        var self = this.__subContext__.data;
-        self.ctrl.add(self.Popup.create().tag({
+        var self = this.__subContext__;
+        ctrl.add(ctrl.Popup.create().tag({
           class: 'net.nanopay.invoice.ui.modal.MarkAsVoidModal',
           invoice: this
         }));
@@ -380,16 +395,16 @@ foam.CLASS({
       name: 'delete',
       label: 'Delete',
       isAvailable: function() {
-        var self = this.private_;
-        return this.status === self.InvoiceStatus.DRAFT;
+        return this.status === this.InvoiceStatus.DRAFT;
       },
-      code: function() {
-        var self = this.__subContext__.data;
-        ctrl.add(self.Popup.create().tag({
+      code: function(X) {
+        var self = this.__subContext__;
+        var label_ = self.translationService.getTranslation(foam.locale, X.payables.INVOICE, X.payables.INVOICE);
+        ctrl.add(ctrl.Popup.create().tag({
           class: 'foam.u2.DeleteModal',
           dao: self.subject.user.expenses,
           data: this,
-          label: self.INVOICE
+          label: label_
         }));
       }
     }

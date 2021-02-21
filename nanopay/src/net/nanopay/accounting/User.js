@@ -29,6 +29,7 @@ foam.CLASS({
       value: 'NONE',
       label: 'Accounting Integration',
       section: 'systemInformation',
+      order: 10,
       gridColumns: 6
     },
     {

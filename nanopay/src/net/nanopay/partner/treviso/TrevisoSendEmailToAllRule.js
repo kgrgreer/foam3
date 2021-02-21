@@ -32,23 +32,21 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Group',
-    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.crunch.AgentCapabilityJunction',
+    'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.nanos.notification.Notification',
     'foam.util.Emails.EmailsUtility',
-    'foam.util.SafetyUtil',
     'java.util.HashMap',
     'java.util.List',
     'java.util.Map',
-    'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Business',
-    'net.nanopay.model.BusinessDirector',
-    'net.nanopay.model.BusinessUserJunction',
-    'static foam.mlang.MLang.AND',
-    'static foam.mlang.MLang.EQ',
+    'net.nanopay.partner.treviso.onboarding.BRBeneficialOwner',
+    'net.nanopay.partner.treviso.onboarding.BRBusinessDirector',
+    'net.nanopay.partner.treviso.TrevisoSendEmailToAllNotification',
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -58,42 +56,35 @@ foam.CLASS({
       agency.submit(x, new ContextAgent() {
         @Override
         public void execute(X x) {
-          DAO localUserDAO = (DAO) x.get("localUserDAO");
-          DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
+          DAO localUserDAO = (DAO) x.get("localuserDAO");
           UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
-          Business business = (Business) localBusinessDAO.find(EQ(Business.ID, ucj.getSourceId()));
-          User user = ((Subject) x.get("subject")).getUser();
-          
-          // send email to signing officers whose hasSignedContratosDeCambio is true
-          DAO signingOfficerJunctionDAO = (DAO) x.get("signingOfficerJunctionDAO");
+          Business business = (Business) ucj.findSourceId(x);
+
           DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
-          List<BusinessUserJunction> soJunctions = ((ArraySink) signingOfficerJunctionDAO
-            .where(EQ(BusinessUserJunction.SOURCE_ID, business.getId()))
+          // find all signingofficers of the business and send email to signing officers whose hasSignedContratosDeCambio is true
+          List<UserCapabilityJunction> sopJunctions = ((ArraySink) userCapabilityJunctionDAO.where(AND(
+              EQ(AgentCapabilityJunction.EFFECTIVE_USER, business.getId()),
+              EQ(UserCapabilityJunction.TARGET_ID, "777af38a-8225-87c8-dfdf-eeb15f71215f-123"),
+              EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED),
+              NOT(EQ(UserCapabilityJunction.DATA, null))
+            ))
             .select(new ArraySink()))
             .getArray();
-
-          if ( soJunctions == null || soJunctions.size() == 0 ) {
-            throw new RuntimeException("Signing officers not found");
-          }
-
-          for ( BusinessUserJunction soJunction : soJunctions ){
-            UserCapabilityJunction soCapJunc = (UserCapabilityJunction) userCapabilityJunctionDAO.find(AND(
-              EQ(UserCapabilityJunction.SOURCE_ID, soJunction.getTargetId()),
-              EQ(UserCapabilityJunction.TARGET_ID, "777af38a-8225-87c8-dfdf-eeb15f71215f-123")
-            ));
-            SigningOfficerPersonalDataTreviso soData = (SigningOfficerPersonalDataTreviso) soCapJunc.getData();
-            User signingOfficer = (User) localUserDAO.find(soJunction.getTargetId());
-
-            if ( soData.getHasSignedContratosDeCambio() ) sendNotificationToUser(x, business, signingOfficer);
+          for ( UserCapabilityJunction sopJunction : sopJunctions ) {
+            SigningOfficerPersonalDataTreviso soData = (SigningOfficerPersonalDataTreviso) sopJunction.getData();
+            if ( soData.getHasSignedContratosDeCambio() ) sendNotificationToUser(x, business, sopJunction.findSourceId(x));
           }
 
           // send email to beneficial owners whose hasSignedContratosDeCambio is true
-          List<BeneficialOwner> beneficialOwners = ((ArraySink) business.getBeneficialOwners(x)
-            .where(EQ(BeneficialOwner.HAS_SIGNED_CONTRATOS_DE_CAMBIO, true))
+          List<BRBeneficialOwner> beneficialOwners = (List<BRBeneficialOwner>) ((ArraySink) business.getBeneficialOwners(x)
+            .where(AND(
+              INSTANCE_OF(BRBeneficialOwner.class),
+              EQ(BRBeneficialOwner.HAS_SIGNED_CONTRATOS_DE_CAMBIO, true)
+            ))
             .select(new ArraySink()))
             .getArray();
 
-          for ( BeneficialOwner beneficialOwner : beneficialOwners ) {
+          for ( BRBeneficialOwner beneficialOwner : beneficialOwners ) {
             List<User> beneficialOwnerUser = ((ArraySink) localUserDAO
               .where(EQ(User.EMAIL, beneficialOwner.getEmail()))
               .select(new ArraySink()))
@@ -106,7 +97,8 @@ foam.CLASS({
           }
 
           // send email to business directors whose hasSignedContratosDeCambio is true
-          for ( BusinessDirector businessDirector : business.getBusinessDirectors() ) {
+          for ( BRBusinessDirector bD : ((BRBusinessDirector[]) business.getBusinessDirectors()) ) {
+            BRBusinessDirector businessDirector = (BRBusinessDirector) bD;
             if ( ! businessDirector.getHasSignedContratosDeCambio() ) continue;
             List<User> businessDirectorUser = ((ArraySink) localUserDAO
               .where(EQ(User.EMAIL, businessDirector.getEmail()))
@@ -136,9 +128,9 @@ foam.CLASS({
         {
           name: 'recipient',
           type: 'foam.nanos.auth.User'
-        },        
+        }
       ],
-      javaCode:`
+      javaCode: `
         Map<String, Object>  args           = new HashMap<>();
         Group                group          = business.findGroup(x);
         AppConfig            config         = group != null ? group.getAppConfig(x) : (AppConfig) x.get("appConfig");
@@ -151,13 +143,13 @@ foam.CLASS({
         args.put("name", recipient.getFirstName());
 
         try {
-          Notification notification = new Notification.Builder(x)
-            .setBody(business.toSummary() + " can now make international payments")
+          TrevisoSendEmailToAllNotification notification = new TrevisoSendEmailToAllNotification.Builder(x)
+            .setSummary(business.toSummary())
             .setNotificationType("Latest_Activity")
             .setUserId(recipient.getId())
             .setEmailArgs(args)
             .setEmailName("compliance-notification-to-user")
-            .build();  
+            .build();
           recipient.doNotify(x, notification);
         } catch (Throwable t) {
           String msg = String.format("Email meant for business Error: Business (id = %1$s) has been enabled for international payments.", business.getId());
@@ -185,7 +177,7 @@ foam.CLASS({
           type: 'String'
         }
       ],
-      javaCode:`
+      javaCode: `
         Map<String, Object>  args           = new HashMap<>();
         Group                group          = business.findGroup(x);
         AppConfig            config         = group != null ? group.getAppConfig(x) : (AppConfig) x.get("appConfig");

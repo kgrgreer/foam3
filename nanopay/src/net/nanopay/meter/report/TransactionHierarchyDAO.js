@@ -54,7 +54,7 @@ foam.CLASS({
           TransactionReport transactionDetail = new TransactionReport();
           transactionDetail.setId(transaction.getId());
           transactionDetail.setType(transaction.getType());
-          transactionDetail.setAmount(Long.toString(transaction.getAmount()));
+          transactionDetail.setAmount(Long.toString(-transaction.getTotal(x, transaction.getSourceAccount())));
           transactionDetail.setCreated(transaction.getCreated());
           transactionDetail.setPayeeId(transaction.getPayeeId());
           transactionDetail.setPayerId(transaction.getPayerId());

@@ -70,7 +70,8 @@ foam.CLASS({
                 requestApproval(x,
                   new DowJonesApprovalRequest.Builder(x)
                     .setObjId(business.getId())
-                    .setDaoKey("localUserDAO")
+                    .setDaoKey("userDAO")
+                    .setServerDaoKey("localUserDAO")
                     .setCauseId(response.getId())
                     .setCauseDaoKey("dowJonesResponseDAO")
                     .setClassification("Validate Entity Using Dow Jones")
@@ -105,7 +106,8 @@ foam.CLASS({
                     requestApproval(x,
                       new DowJonesApprovalRequest.Builder(x)
                         .setObjId(business.getId())
-                        .setDaoKey("localUserDAO")
+                        .setServerDaoKey("localUserDAO")
+                        .setDaoKey("userDAO")
                         .setCauseId(directorResponse.getId())
                         .setCauseDaoKey("dowJonesResponseDAO")
                         .setClassification("Validate Business Director Using Dow Jones")

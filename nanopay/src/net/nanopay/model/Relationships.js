@@ -24,7 +24,9 @@ foam.RELATIONSHIP({
   targetDAOKey: 'accountDAO',
   unauthorizedTargetDAOKey: 'localAccountDAO',
   targetProperty: {
-    section: 'deprecated',
+    section: 'accountInformation',
+    order: 135,
+    gridColumns: 6,
     label: 'Transit No.',
     view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' },
     tableCellFormatter: function(value, obj, axiom) {
@@ -48,7 +50,9 @@ foam.RELATIONSHIP({
   targetDAOKey: 'accountDAO',
   unauthorizedTargetDAOKey: 'localAccountDAO',
   targetProperty: {
-    section: 'deprecated',
+    section: 'accountInformation',
+    order: 125,
+    gridColumns: 6,
     view: function(_, X) {
       return foam.u2.view.ChoiceView.create({
         dao: X.institutionDAO,
@@ -106,11 +110,13 @@ foam.RELATIONSHIP({
   forwardName: 'children',
   cardinality: '1:*',
   sourceProperty: {
-    section: 'parentSection'
+    section: 'parentInformation',
+    order: 10
   },
   targetProperty: {
-    section: 'parentSection',
-    order: 4,
+    section: 'parentInformation',
+    order: 20,
+    gridColumns: 6,
     label: 'Parent Account',
     tableCellFormatter: function(value, obj, axiom) {
       this.__subSubContext__.accountDAO
@@ -158,10 +164,13 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'accountDAO',
   cardinality: '1:*',
   sourceProperty: {
-    section: 'parentSection'
+    section: 'parentInformation',
+    order: 30
   },
   targetProperty: {
-    section: 'parentSection'
+    section: 'accountInformation',
+    order: 190,
+    gridColumns: 6
   }
 });
 
@@ -179,9 +188,8 @@ foam.RELATIONSHIP({
     updateVisibility: 'RO'
   },
   targetProperty: {
-    section: 'liquiditySettingsSection',
+    section: 'liquiditySettingsInformation',
     label: '',
-    value: 0,
     tableCellFormatter: function(value, obj, axiom) {
       this.__subSubContext__.liquiditySettingsDAO
         .find(value)
@@ -226,6 +234,8 @@ foam.RELATIONSHIP({
   },
   targetProperty: {
     section: 'ownerInformation',
+    order: 10,
+    gridColumns: 6,
     view: function(_, X) {
       return foam.u2.view.RichChoiceView.create({
         search: true,
@@ -306,7 +316,8 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceProperty: {
     readPermissionRequired: true,
-    section: 'operationsInformation'
+    section: 'operationsInformation',
+    order: 170
   }
 });
 
@@ -330,7 +341,8 @@ foam.CLASS({
       name: 'transactionLimits',
       of: 'net.nanopay.tx.model.TransactionLimit',
       createVisibility: 'HIDDEN',
-      section: 'operationsInformation'
+      section: 'operationsInformation',
+      order: 110
     }
   ]
 });
@@ -341,31 +353,18 @@ foam.RELATIONSHIP({
   forwardName: 'children',
   inverseName: 'parent',
   sourceProperty: {
-    section: 'basicInfo',
-    updateVisibility: function(parent) {
-      return parent ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    },
-    readVisibility: function(parent) {
-      return parent ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    },
+    section: 'transactionInformation',
+    order: 187,
+    updateVisibility: 'RO',
+    readVisibility: 'RO',
     createVisibility: 'HIDDEN'
   },
   targetProperty: {
-    section: 'basicInfo',
-    updateVisibility: function(children) {
-      return children ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    },
-    readVisibility: function(children) {
-      return children ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    },
+    section: 'transactionInformation',
+    order: 185,
+    gridColumns: 6,
+    updateVisibility: 'RO',
+    readVisibility: 'RO',
     createVisibility: 'HIDDEN'
   }
 });
@@ -377,33 +376,19 @@ foam.RELATIONSHIP({
   forwardName: 'associatedTransactions',
   inverseName: 'associateTransaction',
   sourceProperty: {
-    section: 'basicInfo',
+    section: 'systemInformation',
+    order: 60,
     createVisibility: 'HIDDEN',
-    readVisibility: function(associateTransaction) {
-      return associateTransaction ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    },
-    updateVisibility: function(associateTransaction) {
-      return associateTransaction ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    },
+    readVisibility: 'RO',
+    updateVisibility: 'RO',
     view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
   },
   targetProperty: {
-    section: 'basicInfo',
+    section: 'systemInformation',
+    order: 70,
     createVisibility: 'HIDDEN',
-    readVisibility: function(associatedTransactions) {
-      return associatedTransactions ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    },
-    updateVisibility: function(associatedTransactions) {
-      return associatedTransactions ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    },
+    readVisibility: 'RO',
+    updateVisibility: 'RO',
     view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
   }
 });
@@ -425,11 +410,13 @@ foam.RELATIONSHIP({
   junctionDAOKey: 'partnerJunctionDAO',
   sourceProperty: {
     createVisibility: 'HIDDEN',
-    section: 'contactInformation'
+    section: 'contactInformation',
+    order: 20
   },
   targetProperty: {
     createVisibility: 'HIDDEN',
-    section: 'contactInformation'
+    section: 'contactInformation',
+    order: 30
   }
 });
 
@@ -680,14 +667,15 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   package: 'net.nanopay.auth',
   sourceModel: 'foam.nanos.auth.User',
-  targetModel: 'net.nanopay.contacts.Contact',
+  targetModel: 'net.nanopay.contacts.PersonalContact',
   forwardName: 'contacts',
   inverseName: 'owner',
   targetDAOKey: 'contactDAO',
   unauthorizedTargetDAOKey: 'localContactDAO',
   sourceProperty: {
     readPermissionRequired: true,
-    section: 'contactInformation'
+    section: 'contactInformation',
+    order: 10
   },
   targetProperty: {
     section: 'userInformation'
@@ -757,13 +745,13 @@ foam.RELATIONSHIP({
   sourceProperty: {
     createVisibility: 'HIDDEN',
     section: 'ownerInformation',
-    order: 30
+    order: 80
   },
   targetProperty: {
-    label: 'Businesses User is Signing Officer',
+    label: 'Businesses User is Signing Officer Within',
     createVisibility: 'HIDDEN',
     section: 'ownerInformation',
-    order: 31
+    order: 81
   },
   junctionDAOKey: 'signingOfficerJunctionDAO'
 });
@@ -833,7 +821,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'beneficialOwnerDAO',
   sourceProperty: {
     section: 'ownerInformation',
-    order: 40
+    order: 50
   }
 });
 
@@ -853,7 +841,10 @@ foam.RELATIONSHIP({
   targetProperty: {
     help: `Set this to the account you would like to withdraw funds from.
     Selection of shadow accounts is only available for admin of group.`,
-    gridColumns: 7,
+    label: 'Payer Account',
+    section: 'transactionInformation',
+    order: 30,
+    gridColumns: 6,
     required: true,
     postSet: function(_, n) {
       // only want this postSet to fire off when we are creating txns not viewing
@@ -888,7 +879,7 @@ foam.RELATIONSHIP({
       };
     },
     updateVisibility: 'RO',
-    section: 'basicInfo',
+    section: 'transactionInformation',
     tableWidth: 180,
     tableCellFormatter: function(value, obj) {
       this.add(value);
@@ -941,7 +932,10 @@ foam.RELATIONSHIP({
   },
   targetProperty: {
     help: `Please input your payee's account id. Confirm account id with contact externally.`,
-    gridColumns: 7,
+    label: 'Payee Account',
+    section: 'transactionInformation',
+    order: 70,
+    gridColumns: 6,
     required: true,
     readVisibility: 'RO',
     updateVisibility: 'RO',
@@ -964,7 +958,6 @@ foam.RELATIONSHIP({
         sections: sec
       };
     },
-    section: 'basicInfo',
     postSet: function(o, n) {
       if ( this.mode == 'create' ) { // validation check for users manually creating a Transaction
         // setup
@@ -1034,7 +1027,10 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'accountDAO',
   unauthorizedSourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'flinksAccountsDetailResponseDAO',
-  sourceProperty: { section: 'complianceInformation' },
+  sourceProperty: { 
+    section: 'complianceInformation',
+    order: 20
+  },
   targetProperty: { visibility: 'RO' }
 });
 
@@ -1047,7 +1043,10 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'accountDAO',
   unauthorizedSourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'plaidAccountDetailDAO',
-  sourceProperty: { section: 'complianceInformation' },
+  sourceProperty: { 
+    section: 'complianceInformation',
+    order: 30
+  },
   targetProperty: { visibility: 'RO' }
 });
 
@@ -1067,7 +1066,7 @@ foam.RELATIONSHIP({
   sourceProperty: {
     readPermissionRequired: true,
     section: 'complianceInformation',
-    order: 2
+    order: 50
   }
 });
 
@@ -1086,7 +1085,8 @@ foam.RELATIONSHIP({
   },
   sourceProperty: {
     readPermissionRequired: true,
-    section: 'complianceInformation'
+    section: 'complianceInformation',
+    order: 40
   }
 });
 
@@ -1122,16 +1122,43 @@ foam.RELATIONSHIP({
   sourceProperty: {
     section: 'complianceInformation',
     createVisibility: 'HIDDEN',
-    readVisibility: function(complianceResponses) {
-      return complianceResponses.length > 0 ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    },
-    updateVisibility: function(complianceResponses) {
-      return complianceResponses.length > 0 ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    }
+    readVisibility: 'RO',
+    updateVisibility: 'RO'
+  }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.tx.SummaryTransaction',
+  targetModel: 'net.nanopay.tx.billing.Bill',
+  forwardName: 'bills',
+  inverseName: 'originatingSummaryTransaction',
+  cardinality: '1:*',
+  sourceDAOKey: 'transactionDAO',
+  unauthorizedSourceDAOKey: 'localTransactionDAO',
+  targetDAOKey: 'billDAO',
+  sourceProperty: {
+    section: 'systemInformation'
+  },
+  targetProperty: {
+    section: 'billInformation',
+    order: 45,
+    gridColumns: 6
+  }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.tx.SummaryTransaction',
+  targetModel: 'net.nanopay.tx.billing.Bill',
+  forwardName: 'chargedBills',
+  inverseName: 'billingTransaction',
+  cardinality: '1:*',
+  sourceDAOKey: 'transactionDAO',
+  unauthorizedSourceDAOKey: 'localTransactionDAO',
+  targetDAOKey: 'billDAO',
+  targetProperty: {
+    section: 'billInformation',
+    order: 90,
+    gridColumns: 6
   }
 });
 
@@ -1145,7 +1172,6 @@ foam.RELATIONSHIP({
   targetDAOKey: 'securitiesDAO',
 });
 
-
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.tx.model.Transaction',
   targetModel: 'net.nanopay.tx.TransactionEvent',
@@ -1155,18 +1181,11 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'transactionDAO',
   targetDAOKey: 'transactionEventDAO',
   sourceProperty: {
-    section: 'basicInfo',
+    section: 'systemInformation',
+    order: 50,
     createVisibility: 'HIDDEN',
-    readVisibility: function(transactionEvents) {
-      return transactionEvents.length > 0 ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    },
-    updateVisibility: function(transactionEvents) {
-      return transactionEvents.length > 0 ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    }
+    readVisibility: 'RO',
+    updateVisibility: 'RO'
   }
 });
 
@@ -1177,7 +1196,8 @@ foam.RELATIONSHIP({
   inverseName: 'owner',
   cardinality: '1:*',
   sourceProperty: {
-    section: 'businessInformation'
+    section: 'operationsInformation',
+    order: 180
   }
 });
 
@@ -1197,4 +1217,14 @@ foam.RELATIONSHIP({
   forwardName: 'paymentProviders',
   inverseName: 'natureCodes',
   junctionDAOKey: 'NatureCodePaymentProviderJunctionDAO'
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.TrustAccount',
+  targetModel: 'net.nanopay.account.DigitalAccount',
+  forwardName: 'digitalAccounts',
+  inverseName: 'trustAccount',
+  cardinality: '1:*',
+  sourceDAOKey: 'accountDAO',
+  targetDAOKey: 'accountDAO',
 });
