@@ -22,23 +22,33 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'nameScore'
+      name: 'nameScore',
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: 'numberScore'
+      name: 'numberScore',
+      order: 20,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: 'formationDateScore'
+      name: 'formationDateScore',
+      order: 30,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: 'jurisdictionScore'
+      name: 'jurisdictionScore',
+      order: 40,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: 'typeScore'
+      name: 'typeScore',
+      order: 50,
+      gridColumns: 6
     }
   ]
 });

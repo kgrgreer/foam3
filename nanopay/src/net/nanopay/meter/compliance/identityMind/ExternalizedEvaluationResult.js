@@ -21,19 +21,23 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'firedRules',
-      type: 'foam.lib.json.UnknownFObjectArray',
-      javaInfoType: 'foam.core.AbstractFObjectPropertyInfo',
-      javaJSONParser: 'new foam.lib.json.UnknownFObjectArrayParser()'
+      class: 'String',
+      name: 'profile',
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.meter.compliance.identityMind.ExternalizedRule',
-      name: 'reportedRule'
+      name: 'reportedRule',
+      order: 20
     },
     {
-      class: 'String',
-      name: 'profile'
+      name: 'firedRules',
+      type: 'foam.lib.json.UnknownFObjectArray',
+      javaInfoType: 'foam.core.AbstractFObjectPropertyInfo',
+      javaJSONParser: 'new foam.lib.json.UnknownFObjectArrayParser()',
+      order: 30
     }
   ]
 });

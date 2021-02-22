@@ -26,7 +26,8 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.payment.PaymentProviderAware'
+    'net.nanopay.payment.PaymentProviderAware',
+    'java.util.Arrays'
   ],
 
   properties: [
@@ -40,7 +41,13 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'targetCountry'
+      name: 'targetCountry',
+      documentation: 'Match a single target country'
+    },
+    {
+      class: 'StringArray',
+      name: 'targetCountryList',
+      documentation: 'Match a list of target countries.'
     }
   ],
 
@@ -55,7 +62,9 @@ foam.CLASS({
         return transaction instanceof PaymentProviderAware
           && getPaymentProvider().equals(((PaymentProviderAware) transaction).getPaymentProvider())
           && getSourceCountry().equals(sourceAccount.getCountry())
-          && getTargetCountry().equals(destinationAccount.getCountry());
+          && ( getTargetCountry().equals(destinationAccount.getCountry())
+            || Arrays.stream(getTargetCountryList()).anyMatch(c -> c.equals(destinationAccount.getCountry()))
+          );
       `,
       code: function(obj) {
         throw new Error('PaymentCorridorPredicate is not supported.');

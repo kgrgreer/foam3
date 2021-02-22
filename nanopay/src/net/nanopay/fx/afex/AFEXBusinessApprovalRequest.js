@@ -27,11 +27,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'afexBusinessId',
-      visibility: function(afexBusinessId) {
-        return afexBusinessId ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      }
+      section: 'approvalRequestInformation',
+      order: 92,
+      gridColumns: 6
     }
   ]
 });

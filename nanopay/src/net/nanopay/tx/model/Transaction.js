@@ -519,17 +519,17 @@ foam.CLASS({
         outputter.outputValue(get_(obj));
         outputter.outputValue(((Transaction)obj).getState(x));
       `,
-      view: function(o, x) {
-        if ( x.data.statusChoices.indexOf(x.data.status) == -1 ) {
-          return foam.u2.Element.create()
-            .start()
-              .add(x.data.status.label)
-            .end();
-        }
-        return {
-          class: 'foam.u2.view.ChoiceView',
-          choices: x.data.statusChoices
-        };
+      view: function(o, x) {	
+        if ( x.data.statusChoices.indexOf(x.data.status) == -1 ) {	
+          return foam.u2.Element.create()	
+            .start()	
+              .add(x.data.status.label)	
+            .end();	
+        }	
+        return {	
+          class: 'foam.u2.view.ChoiceView',	
+          choices: x.data.statusChoices	
+        };	
       },
       createVisibility: 'HIDDEN',
       readVisibility: 'RO'

@@ -42,6 +42,10 @@ foam.CLASS({
       name: 'lineItems',
       hidden: false
     },
+    {
+      name: 'name',
+      hidden: true
+    }
   ],
 
   messages: [
