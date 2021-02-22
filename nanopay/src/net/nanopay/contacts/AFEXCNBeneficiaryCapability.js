@@ -32,7 +32,8 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Phone',
-      name: 'phone'
+      name: 'phone',
+      autoValidate: true
     },
     {
       class: 'Reference',
