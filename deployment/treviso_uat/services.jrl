@@ -89,3 +89,18 @@ p({
     return new net.nanopay.country.br.OpenDataService(x);
   """
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"SMTPConfig",
+  "lazy": false,
+  "service":{
+    "class":"foam.nanos.notification.email.SMTPConfig",
+    "host":"email-smtp.sa-east-1.amazonaws.com",
+    "port":"587",
+    "starttls":true,
+    "authenticate":true,
+    "username":"AKIA5CI4IJ6Y2WRQLTXY",
+    "password":"BFFyAqJoPr0ns6gUT97MOlyIk0Hhqc94OxY638p7nhX3"
+  }
+})
