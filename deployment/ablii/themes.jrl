@@ -6,7 +6,7 @@ p({
   "appName":"Ablii",
   "description":"Ablii",
   "navigationRootMenu":"smeNavigation",
-  "settingsRootMenu":"abliiSmeSettings",
+  "settingsRootMenu":"smeSettings",
   "logoRedirect":"sme.main.appStore",
   "admissionCapability": "554af38a-8225-87c8-dfdf-eeb15f71215e-18",
   "defaultMenu":"sme.main.appStore",

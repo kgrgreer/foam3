@@ -32,7 +32,6 @@ foam.CLASS({
     'menuDAO',
     'notify',
     'pushMenu',
-    'theme',
     'user',
     'window'
   ],
@@ -141,7 +140,7 @@ foam.CLASS({
                   });
             }
 
-            if ( menu.id === 'sme.accountProfile.signout-' + this.theme.spid ) {
+            if ( menu.id === 'sme.accountProfile.signout' ) {
               return this.E()
                 .addClass('account-profile-item')
                 .addClass('red')

@@ -56,7 +56,6 @@ foam.CLASS({
     'quickbooksService',
     'pushMenu',
     'stack',
-    'theme',
     'userDAO',
     'xeroService',
     'uSBusinessOnboardingDAO',

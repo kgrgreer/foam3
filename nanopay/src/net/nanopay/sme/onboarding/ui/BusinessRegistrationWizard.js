@@ -43,7 +43,6 @@ foam.CLASS({
     'pushMenu',
     'signingOfficerJunctionDAO',
     'stack',
-    'theme',
     'user',
     'userDAO',
     'validateAddress',
@@ -706,9 +705,8 @@ foam.CLASS({
             this.ctrl.bannerizeCompliance();
             var isBusinessSaved = await this.saveBusiness();
             if ( isBusinessSaved ) {
-              var businessSettingMenu =  'sme.accountProfile.business-settings-' + this.theme.spid;
               this.notify(this.SUCCESS_REGISTRATION_MESSAGE, '', this.LogLevel.INFO, true);
-              this.pushMenu(businessSettingMenu);
+              this.pushMenu('sme.accountProfile.business-settings');
             }
             return;
           }
