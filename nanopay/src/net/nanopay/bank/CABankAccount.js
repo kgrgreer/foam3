@@ -170,7 +170,14 @@ foam.CLASS({
       visibility: 'HIDDEN',
       required: false,
       validateObj: function(iban) {
-      }
+      },
+      javaGetter: `
+        StringBuilder iban = new StringBuilder();
+        iban.append(getInstitutionNumber());
+        iban.append(getAccountNumber());
+        iban.append(getBranchId());
+        return iban.toString();
+      `
     },
     {
       name: 'country',
@@ -503,25 +510,6 @@ foam.CLASS({
           code.append(getBankCode(x));
         }
         return code.toString();
-      `
-    },
-    {
-      name: 'getIban',
-      type: 'String',
-      args: [
-        {
-          name: 'x', type: 'Context'
-        }
-      ],
-      javaCode: `
-        StringBuilder iban = new StringBuilder();
-        Branch branch = findBranch(x);
-        if ( branch != null ) {
-          iban.append(getBankCode(x));
-          iban.append(getAccountNumber());
-          iban.append(branch.getBranchId());
-        }
-        return iban.toString();
       `
     }
   ]
