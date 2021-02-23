@@ -189,9 +189,12 @@ var classes = [
   'net.nanopay.bank.ruler.AccountDeletedNotificationRule',
   'net.nanopay.bank.ruler.AccountAddedNotificationRule',
   'net.nanopay.bank.ruler.CorridorAuthorizationRule',
+  'net.nanopay.bank.ruler.SwiftBicCodeTranslation',
   'net.nanopay.plaid.PlaidAccountDetailTest',
   'net.nanopay.plaid.PlaidResultReportAuthorizer',
   'net.nanopay.plaid.PlaidResultReportAuthorizerTest',
+  'net.nanopay.bank.BankAccountValidationService',
+  'net.nanopay.bank.MockBankAccountValidationService',
 
   // Util
   'net.nanopay.util.Tag',
@@ -1345,6 +1348,12 @@ var classes = [
   'net.nanopay.partner.bepay.tx.BePayTransaction',
   'net.nanopay.partner.bepay.tx.planner.BePayTransactionPlanner',
   'net.nanopay.partner.bepay.tx.ScreenUsersOnTransactionCreate',
+
+  // accuity
+  'net.nanopay.partner.accuity.AccuityCredentials',
+  'net.nanopay.partner.accuity.AccuityAPIResponse',
+  'net.nanopay.partner.accuity.AccuityBankAccountValidationService',
+
 
   // crunch predicates - todo move all predicates used in crunch here
   'net.nanopay.crunch.predicate.IsBusiness',
