@@ -60,21 +60,25 @@ foam.CLASS({
     },
     {
       name: 'amount',
-      order: 10
+      order: 10,
+      gridColumns: 6
     },
     {
       name: 'sourceAccount',
       label: 'Payer Account',
-      hidden: false,
       order: 20,
-      gridColumns: 6
+      gridColumns: 6,
+      readPermissionRequired: true
     },
     {
       name: 'destinationAccount',
       label: 'Fee Account',
       hidden: false,
       order: 30,
-      gridColumns: 6
+      gridColumns: 6,
+      view: {
+        class: 'foam.u2.view.ReferenceView'
+      }
     },
     {
       class: 'FObjectArray',
