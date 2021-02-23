@@ -1428,7 +1428,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.S
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.SECURITY_PROMOTE_INFO.label",target:"segurança Promova informações"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.SUMMARY.documentation",target:"\n        Usado para exibir muitas informações de forma visualmente compacta na tabela\n        visualizações de contas bancárias.\n      "})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.PAD_CAPTURE.label",target:"padCapture"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.SECTION_ACCOUNT_DETAILS.subTitle",target:"Conecte-se à conta sem entrar no banco online.\n          Certifique-se de que os detalhes foram inseridos corretamente."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.SECTION_PAD.title",target:"Conecte usando uma verificação de vazio"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.SECTION_PAD.subTitle",target:"Conecte-se à sua conta sem fazer login no banco online.\n          Certifique-se de que seus dados foram inseridos corretamente."})
@@ -1471,7 +1470,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.S
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.SUMMARY.documentation",target:"\n        Usado para exibir muitas informações de forma visualmente compacta na tabela\n        visualizações de contas bancárias.\n      "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.SUPPORTING_DOCUMENTS.label",target:"Faça upload da imagem de um cheque anulado ou de um extrato bancário dos últimos 3 meses para verificar a propriedade desta conta bancária"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.SUPPORTING_DOCUMENTS.documentation",target:"Documentos comprovativos para verificar conta bancária"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.PAD_CAPTURE.label",target:"padCapture"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.SECTION_ACCOUNT_DETAILS.subTitle",target:"Conecte-se à conta sem fazer login no banco on-line.\n          Certifique-se de que os detalhes foram inseridos corretamente."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.SECTION_PAD.subTitle",target:"Conecte-se à sua conta sem fazer login no banco online.\n          Certifique-se de que seus dados foram inseridos corretamente."})
