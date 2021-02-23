@@ -1,0 +1,68 @@
+p({
+    "class":"foam.nanos.boot.NSpec",
+    "name":"securefactSIDniDAO",
+    "serve":true,
+    "serviceScript":"""
+        mdao = new foam.dao.MDAO(net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse.getOwnClassInfo());
+        inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "securefactSIDniDAO", "true".equals(System.getProperty("CLUSTER")));
+        dao = new foam.dao.EasyDAO.Builder(x)
+            .setOf(net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse.getOwnClassInfo())
+            .setPm(true)
+            .setPipelinePm(true)
+            .setSeqNo(true)
+            .setMdao(mdao)
+            .setInnerDAO(inner)
+            .setName("securefactSIDni")
+            .setRuler(true)
+            .build(); 
+        return dao;
+    """,
+    "client":"""
+        {
+            "of":"net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse"
+        }
+    """
+})
+p({
+    "class":"foam.nanos.boot.NSpec",
+    "name":"securefactLEVDAO",
+    "serve":true,
+    "serviceScript":"""
+      mdao = new foam.dao.MDAO(net.nanopay.meter.compliance.secureFact.lev.LEVResponse.getOwnClassInfo());
+      inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "securefactLEVDAO", "true".equals(System.getProperty("CLUSTER"))); 
+        dao = new foam.dao.EasyDAO.Builder(x)
+            .setOf(net.nanopay.meter.compliance.secureFact.lev.LEVResponse.getOwnClassInfo())
+            .setPm(true)
+            .setPipelinePm(true)
+            .setSeqNo(true)
+            .setMdao(mdao)
+            .setInnerDAO(inner)
+            .setName("securefactLEV")
+            .build(); 
+        return dao;
+    """,
+    "client":"""
+        {
+            "of":"net.nanopay.meter.compliance.secureFact.lev.LEVResponse"
+        }
+    """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"securefactService",
+  "lazy":false,
+  "serve":true,
+  "service":{
+    "class":"net.nanopay.meter.compliance.secureFact.SecurefactService"
+  }
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"securefactOnboardingService",
+  "lazy":false,
+  "service":{
+    "class":"net.nanopay.meter.compliance.secureFact.ServerSecurefactOnboardingService"
+  }
+})

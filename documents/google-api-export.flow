@@ -6,6 +6,6 @@
 <h2>Google Sheets API</h2>
 <p>In order to create/update Google Sheets we need to make calls to Google Sheets API. For our GoogleSheets and PDFGoogleSheets export we send "create sheet" request and then send a batch of requests for adding data, formatting and styling it.</p>
 <h2>Google Sheets Export</h2>
-<p>Our GoogleSheetsExportDriver uses GoogleSheetsOutputter to format data and gather information related to columns and their formatting. After that, GoogleSheetsExportDriver makes call to GoogleSheetsExportService.</p>
-<p>GoogleSheetsExportService uses GoogleApiAuthService for authorization, creates Google Sheet and returns sheet's id which is used for creating url to GoogleSheetsExportDriver. ExportModal opens returned url.</p>
+<p>Our GoogleSheetsExportDriver uses GoogleSheetsOutputter to format data and gather information related to columns and their formatting. After that, GoogleSheetsExportDriver makes call to GoogleSheetsApiService.</p>
+<p>GoogleSheetsApiService uses GoogleApiAuthService for authorization, creates Google Sheet and returns sheet's id which is used for creating url to GoogleSheetsExportDriver. ExportModal opens returned url.</p>
 <p>The same procedure is used for PDFGoogleSheetsExportDriver.</p>

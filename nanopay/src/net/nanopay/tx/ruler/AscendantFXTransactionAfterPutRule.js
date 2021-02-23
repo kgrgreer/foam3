@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
     package: 'net.nanopay.tx.ruler',
     name: 'AscendantFXTransactionAfterPutRule',
@@ -54,17 +71,22 @@ foam.CLASS({
                 InputStream inStream = new ByteArrayInputStream(outStream.toByteArray());
 
                 // Save the PDF on disk.
-                BlobService blobStore = (BlobService) x.get("blobStore");
-                foam.blob.Blob data = blobStore.put(new foam.blob.InputStreamBlob(inStream, size));
+                // BlobService blobStore = (BlobService) x.get("blobStore");
+                // foam.blob.Blob data = blobStore.put(new foam.blob.InputStreamBlob(inStream, size));
+                foam.blob.Blob data = new foam.blob.InputStreamBlob(inStream, size);
 
                 // Save the file in fileDAO.
                 DAO fileDAO = (DAO) x.get("fileDAO");
-                foam.nanos.fs.File thePDF = new foam.nanos.fs.File.Builder(x).setData(data)
-                    .setOwner(txn.findSourceAccount(x).getOwner()).setFilesize(size)
-                    .setFilename("TransactionConfirmation_" + txn.getId() + ".pdf").setMimeType("application/pdf").build();
+                foam.nanos.fs.File thePDF = new foam.nanos.fs.File.Builder(x)
+                    .setData(data)
+                    .setOwner(txn.findSourceAccount(x).getOwner())
+                    .setFilesize(size)
+                    .setFilename("TransactionConfirmation_" + txn.getId() + ".pdf")
+                    .setMimeType("application/pdf")
+                    .build();
 
                 File pdf = (File) fileDAO.inX(x).put(thePDF);
-                txn.addLineItems(new TransactionLineItem[] {new ConfirmationFileLineItem.Builder(x).setGroup("fx").setFile(pdf).build()}, null);
+                txn.addLineItems( new TransactionLineItem[] {new ConfirmationFileLineItem.Builder(x).setGroup("fx").setFile(pdf).build()} );
                 ((DAO) x.get("transactionDAO")).inX(x).put(txn.fclone());
 
                 // Append file to related invoice.

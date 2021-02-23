@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import foam.nanos.auth.Subject;
 import org.apache.commons.io.IOUtils;
 
 import foam.core.X;
@@ -53,8 +54,6 @@ public class FlinksConnectWebAgent
       FlinksAuthRequest authRequest = new FlinksAuthRequest.Builder(x)
           .setLoginId(loginId)
           .setLanguage("en")
-          .setWithTransactions(false)
-          .setWithBalance(false)
           .build();
 
       URL url = new URL(FLINKS_HOST);
@@ -86,7 +85,7 @@ public class FlinksConnectWebAgent
       FlinksResponse response = (FlinksResponse)
           parser.parseString(builder.toString(), FlinksResponse.class);
 
-      String appUrl = ((User)x.get("user")).findGroup(x).getAppConfig(x).getUrl();
+      String appUrl = ((Subject) x.get("subject")).getUser().findGroup(x).getAppConfig(x).getUrl();
       builder.setLength(0);
       builder.append(appUrl)
           .append("service/appRedirect")

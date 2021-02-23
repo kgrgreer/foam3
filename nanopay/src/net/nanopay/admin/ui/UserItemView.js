@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.admin.ui',
   name: 'UserItemView',
@@ -5,7 +22,6 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.User',
-    'foam.nanos.auth.Phone',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.admin.model.AccountStatus'
@@ -24,7 +40,7 @@ foam.CLASS({
 
     ^ th {
       height: 14px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: 500;
       font-style: normal;
@@ -44,7 +60,7 @@ foam.CLASS({
 
     ^ td {
       height: 20px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       font-weight: normal;
       font-style: normal;
@@ -105,7 +121,7 @@ foam.CLASS({
             .start('td').add(this.data.id$).end()
             .start('td').add(this.data.legalName$).end()
             .start('td').add(this.data.email$).end()
-            .start('td').add(this.data.phone.number$).end()
+            .start('td').add(this.data.phoneNumber$).end()
             .start('td').add(this.data.jobTitle$).end()
             .start('td').add(this.data.businessName$).end()
             .start('td')

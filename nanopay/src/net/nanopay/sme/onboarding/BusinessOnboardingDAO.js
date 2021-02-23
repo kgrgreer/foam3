@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.onboarding',
   name: 'BusinessOnboardingDAO',
@@ -11,7 +28,6 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.Phone',
     'foam.nanos.notification.Notification',
     'foam.nanos.session.Session',
     'net.nanopay.admin.model.ComplianceStatus',
@@ -82,7 +98,7 @@ foam.CLASS({
                * In NewUserCreateBusinessDAO.java, it generates the business specific group
                * in the format of: businessName+businessId.admin. (such as: nanopay8010.admin).
                */
-              invitation.setGroup("admin");
+              invitation.setGroup(user.getSpid() + "-admin");
               invitation.setCreatedBy(businessOnboarding.getBusinessId());
               invitation.setEmail(businessOnboarding.getSigningOfficerEmail());
 
@@ -142,7 +158,7 @@ foam.CLASS({
 
         // *Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());
-        user.setPhone(businessOnboarding.getPhone());
+        user.setPhoneNumber(businessOnboarding.getPhoneNumber());
         user.setAddress(businessOnboarding.getAddress());
 
         if ( businessOnboarding.getStatus() == OnboardingStatus.SUBMITTED ) {
@@ -153,11 +169,10 @@ foam.CLASS({
 
             if ( businessOnboarding.getPEPHIORelated() ) {
               Notification notification = new Notification();
-              notification.setEmailIsEnabled(true);
               notification.setBody("A PEP/HIO related user with Id: " + user.getId() + ", Business Name: " +
                                     business.getOrganization() + " and Business Id: " + business.getId() + " has been Onboarded.");
               notification.setNotificationType("A PEP/HIO related user has been Onboarded");
-              notification.setGroupId("fraud-ops");
+              notification.setGroupId(user.getSpid() + "-fraud-ops");
               localNotificationDAO.put(notification);
             }
             user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());
@@ -175,7 +190,7 @@ foam.CLASS({
             // * Business info
             // Business info: business address
             business.setAddress(businessOnboarding.getBusinessAddress());
-            business.setPhone(businessOnboarding.getPhone());
+            business.setPhoneNumber(businessOnboarding.getPhoneNumber());
 
             // Business info: business details
             business.setBusinessTypeId(businessOnboarding.getBusinessTypeId());

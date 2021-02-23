@@ -93,9 +93,17 @@ public class KotakPaymentProcessor implements ContextAgent {
           requestInstrument.setTelephoneNo(payee.getPhoneNumber());
           requestInstrument.setChgBorneBy(kotakTransaction.getChargeBorneBy());
 
-          String remitPurpose = getPurposeText(destinationBankAccount.getPurposeCode());
           String beneACType   = destinationBankAccount.getBeneAccountType();
-          String relationShip = destinationBankAccount.getAccountRelationship().replace("/", " ");
+
+          String remitPurpose = kotakTransaction.getPurposeCode();
+          String relationShip = kotakTransaction.getAccountRelationship().replaceAll("[^A-Za-z0-9]"," ");
+          // Todo remove after all kotakpaymentTransactions have line items
+          if ( SafetyUtil.isEmpty(remitPurpose) ) {
+            remitPurpose = getPurposeText(destinationBankAccount.getPurposeCode());
+          }
+          if ( SafetyUtil.isEmpty(relationShip) ) {
+            relationShip = destinationBankAccount.getAccountRelationship().replaceAll("[^A-Za-z0-9]"," ");
+          }
 
           EnrichmentSetType type = new EnrichmentSetType();
           type.setEnrichment(new String[]{
@@ -143,7 +151,7 @@ public class KotakPaymentProcessor implements ContextAgent {
               kotakTransaction.setStatus(TransactionStatus.FAILED);
               kotakTransaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction Failed.").build());
               sendNotification(x, "Kotak payment initialization failed. TransactionId: " + kotakTransaction.getId() +
-                ". Reason: " + kotakTransaction.getPaymentStatusRem() + ".");
+                ". Reason: " + kotakTransaction.getPaymentStatusRem() + ".", payer.getSpid());
             }
 
             transactionDAO.put(kotakTransaction);
@@ -158,17 +166,16 @@ public class KotakPaymentProcessor implements ContextAgent {
     });
   }
 
-  private void sendNotification(X x, String body) {
+  private void sendNotification(X x, String body, String spid) {
     Notification notification = new Notification.Builder(x)
       .setNotificationType(body)
-      .setGroupId("payment-ops")
-      .setEmailIsEnabled(true)
+      .setGroupId(spid + "-payment-ops")
       .build();
 
     ((DAO) x.get("localNotificationDAO")).put(notification);
   }
 
-  public INBankAccount getAccountById(X x, long id) {
+  public INBankAccount getAccountById(X x, String id) {
     DAO accountDAO = (DAO) x.get("localAccountDAO");
 
     Account account = (Account) accountDAO.inX(x).find(id);

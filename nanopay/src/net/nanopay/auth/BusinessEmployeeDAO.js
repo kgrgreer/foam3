@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.auth',
   name: 'BusinessEmployeeDAO',
@@ -13,11 +30,13 @@ foam.CLASS({
     'foam.core.Detachable',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.dao.Sink',
     'foam.dao.ProxySink',
+    'foam.dao.Sink',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
-    'net.nanopay.model.Business',
     'foam.nanos.auth.UserUserJunction',
+
+    'net.nanopay.model.Business',
     'static foam.mlang.MLang.*'
   ],
 
@@ -36,7 +55,7 @@ foam.CLASS({
         };
 
         getDelegate().select_(x, proxy, skip, limit, order, predicate);
-        
+
         return proxy.getDelegate();
       `
     },
@@ -48,9 +67,9 @@ foam.CLASS({
         { name: 'user', type: 'foam.nanos.auth.User' }
       ],
       javaCode: `
-        if (user == null) return false; 
+        if (user == null) return false;
 
-        User business = (Business) x.get("user");
+        User business = (Business) ((Subject) x.get("subject")).getUser();
         DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
         UserUserJunction junction = (UserUserJunction) agentJunctionDAO.find(
           AND(

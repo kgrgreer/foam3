@@ -2,17 +2,18 @@ package net.nanopay.flinks;
 
 import foam.core.*;
 import foam.dao.*;
-import java.util.*;
-
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.User;
-import net.nanopay.flinks.model.*;
-import foam.nanos.NanoService;
-import org.apache.commons.io.IOUtils;
-import java.util.Base64;
-import java.util.Date;
-import java.io.*;
 import foam.nanos.logger.Logger;
+import foam.nanos.NanoService;
+import foam.util.SafetyUtil;
+import net.nanopay.flinks.model.*;
+
+import java.io.*;
+import java.util.*;
+
+import org.apache.commons.io.IOUtils;
+
 
 /**
  * The FlinksAuthService is used as service that will be delegated into the Skeleton Box.
@@ -60,7 +61,7 @@ public class FlinksAuthService
       if ( httpCode == 200 ) {
         //forward to fetch account
         FlinksAuthResponse resp = (FlinksAuthResponse) respMsg.getModel();
-        return getAccountSummary(x, resp.getRequestId(), currentUser);
+        return getAccountSummary(x, resp.getRequestId(), currentUser, true);
       } else if ( httpCode == 203 ) {
         FlinksMFAResponse resp = (FlinksMFAResponse) respMsg.getModel();
         resp.validate();
@@ -104,7 +105,7 @@ public class FlinksAuthService
       if ( httpCode == 200 ) {
         //forward to get account info
         FlinksAuthResponse resp = (FlinksAuthResponse) respMsg.getModel();
-        return getAccountSummary(x, resp.getRequestId(), currentUser);
+        return getAccountSummary(x, resp.getRequestId(), currentUser, true);
       } else if ( httpCode == 203 || httpCode == 401) {
         FlinksMFAResponse resp = (FlinksMFAResponse) respMsg.getModel();
         resp.validate();
@@ -128,7 +129,8 @@ public class FlinksAuthService
     }
   }
 
-  public FlinksResponse getAccountSummary(X x, String requestId, User currentUser) throws AuthenticationException {
+
+  public FlinksResponse getAccountSummary(X x, String requestId, User currentUser, boolean keepOnlyCADAccounts) throws AuthenticationException {
     try {
       RequestMsg reqMsg = FlinksRequestGenerator.getAccountDetailRequest(getX(), requestId);
       ResponseMsg respMsg = null;
@@ -137,7 +139,7 @@ public class FlinksAuthService
       } catch ( Throwable t ) {
         Logger logger = (Logger) x.get("logger");
         logger.error("Exception [Account Detail]: " + t);
-        throw new AuthenticationException("An error has occurred in an attempt to connect to Flinks");
+        throw new AuthenticationException("An error has occurred in an attempt to connect to Flinks: " + t.getMessage(), t);
       }
       int httpCode = respMsg.getHttpStatusCode();
       FlinksResponse feedback;
@@ -145,22 +147,25 @@ public class FlinksAuthService
         //send accounts to the client
         FlinksAccountsDetailResponse resp = (FlinksAccountsDetailResponse) respMsg.getModel();
 
-        resp.setAccounts(filterAccounts(resp.getAccounts()));
+        if ( keepOnlyCADAccounts ) {
+          resp.setAccounts(filterAccounts(resp.getAccounts()));
+        }
 
-        feedback = resp;
         // save flinks response
         resp.setUserId(currentUser.getId());
-        flinksAccountsDetailResponseDAO_.put(resp);
+        feedback = (FlinksAccountsDetailResponse) flinksAccountsDetailResponseDAO_.put(resp);
       } else {
         feedback = (FlinksInvalidResponse) respMsg.getModel();
         Logger logger = (Logger) x.get("logger");
         logger.error("Flinks AccountSummary: [ HttpStatusCode: " + feedback.getHttpStatusCode() + ", FlinksCode: " + feedback.getFlinksCode() + ", Message: " + feedback.getMessage() + "]");
       }
       return feedback;
+    } catch ( AuthenticationException ae ) {
+      throw ae; 
     } catch ( Throwable t ) {
       Logger logger = (Logger) x.get("logger");
       logger.error("Flinks AccountSummary: [ " + t.toString() + "]");
-      throw new AuthenticationException("UnknownError");
+      throw new AuthenticationException("UnknownError: " + t.getMessage(), t);
     }
   }
 
@@ -183,10 +188,9 @@ public class FlinksAuthService
 
         resp.setAccounts(filterAccounts(resp.getAccounts()));
 
-        feedback = resp;
         // save flinks response
         resp.setUserId(currentUser.getId());
-        flinksAccountsDetailResponseDAO_.put(resp);
+        feedback = (FlinksAccountsDetailResponse) flinksAccountsDetailResponseDAO_.put(resp);
       } else {
         feedback = (FlinksInvalidResponse) respMsg.getModel();
         Logger logger = (Logger) x.get("logger");
@@ -204,7 +208,7 @@ public class FlinksAuthService
     AccountWithDetailModel[] filteredAccounts = accounts;
     return Arrays.stream(filteredAccounts).filter(
       account ->
-        ! account.getTransitNumber().isEmpty() &&
+        ! SafetyUtil.isEmpty(account.getTransitNumber()) &&
         account.getCategory().equals("Operations") &&
         account.getCurrency().equals("CAD")
     ).toArray(AccountWithDetailModel[]::new);

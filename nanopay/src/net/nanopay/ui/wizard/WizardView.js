@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.ui.wizard',
   name: 'WizardView',
@@ -35,6 +52,10 @@ foam.CLASS({
     'net.nanopay.ui.wizard.WizardOverview'
   ],
 
+  imports: [
+    'translationService'
+  ],
+
   axioms: [
     { class: 'net.nanopay.ui.wizard.WizardCssAxiom' },
   ],
@@ -61,7 +82,10 @@ foam.CLASS({
     },
 
     // Array of ViewSpecs.
-    'views',
+    {
+      name: 'views',
+      class: 'Array'
+    },
 
     // The stack that is handled by this Wizard View.
     {
@@ -104,7 +128,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'hasExitOption',
-      value: false
+      value: true
     },
 
     // If true, displays the Next Action
@@ -284,7 +308,7 @@ foam.CLASS({
                   if ( hasSaveOption ) {
                     return this.E()
                       .tag(self.SAVE, {
-                        label$: self.saveLabel$,
+                        label: self.translationService.getTranslation(foam.locale, `${self.saveLabel$.prop.forClass_}.${foam.String.constantize(self.saveLabel$.prop.name)}.value`),
                         buttonStyle: 'SECONDARY',
                         size: 'LARGE'
                       });
@@ -295,10 +319,13 @@ foam.CLASS({
                   label$: self.optionLabel$,
                   size: 'LARGE'
                 })
-                .tag(self.GO_NEXT, {
-                  label$: self.nextLabel$,
-                  size: 'LARGE'
-                })
+                .add(self.slot(function() {
+                  return this.E()
+                    .tag(self.GO_NEXT, {
+                      label: self.translationService.getTranslation(foam.locale, `${self.nextLabel$.prop.forClass_}.${foam.String.constantize(self.nextLabel$.prop.name)}.value`),
+                      size: 'LARGE'
+                    });
+                }))
               .end()
             .end()
           .end();
@@ -326,7 +353,7 @@ foam.CLASS({
         self.position = this.subStack.pos;
       }
     },
-    
+
     function onDragOver(e) {
       e.preventDefault();
     },
@@ -366,7 +393,7 @@ foam.CLASS({
         return hasNextOption;
       },
       code: function(X) {
-        if ( this.position == this.views.length - 1 ) { // If last page
+        if ( position == this.views.length - 1 ) { // If last page
           this.onComplete ? this.onComplete(this) : X.stack.back();
           return;
         }
@@ -397,6 +424,9 @@ foam.CLASS({
       name: 'otherOption',
       isAvailable: function(hasOtherOption) {
         return hasOtherOption;
+      },
+      code: function(X) {
+        return;
       }
     },
   ]

@@ -1,4 +1,21 @@
 /**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+/**
  * @license
  * Copyright 2018 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -16,35 +33,38 @@ foam.CLASS({
     'com.xero.api.XeroClient',
     'com.xero.model.*',
     'foam.blob.BlobService',
+    'foam.core.Currency',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.Sink',
-    'static foam.mlang.MLang.*',
-    'foam.nanos.auth.UserUserJunction',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.*',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.UserUserJunction',
     'foam.nanos.fs.File',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
-    'net.nanopay.bank.BankAccount',
-    'net.nanopay.accounting.AccountingBankAccount',
-    'net.nanopay.accounting.AccountingContactEmailCache',
-    'net.nanopay.accounting.ResultResponse',
-    'net.nanopay.accounting.xero.model.XeroContact',
-    'net.nanopay.accounting.xero.model.XeroInvoice',
-    'net.nanopay.invoice.model.InvoiceStatus',
-    'net.nanopay.model.Business',
-    'foam.core.Currency',
-    'net.nanopay.contacts.Contact',
+
     'java.math.BigDecimal',
     'java.util.ArrayList',
     'java.util.Calendar',
     'java.util.Date',
     'java.util.List',
     'java.util.regex.Matcher',
-    'java.util.regex.Pattern'
+    'java.util.regex.Pattern',
+
+    'net.nanopay.accounting.AccountingBankAccount',
+    'net.nanopay.accounting.AccountingContactEmailCache',
+    'net.nanopay.accounting.ResultResponse',
+    'net.nanopay.accounting.xero.model.XeroContact',
+    'net.nanopay.accounting.xero.model.XeroInvoice',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.contacts.Contact',
+    'net.nanopay.invoice.model.InvoiceStatus',
+    'net.nanopay.model.Business',
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -67,7 +87,7 @@ foam.CLASS({
       ],
       javaCode: `
 
-      if ( SafetyUtil.isEmpty(xeroContact.getEmailAddress()) || SafetyUtil.isEmpty(xeroContact.getFirstName()) 
+      if ( SafetyUtil.isEmpty(xeroContact.getEmailAddress()) || SafetyUtil.isEmpty(xeroContact.getFirstName())
       || SafetyUtil.isEmpty(xeroContact.getLastName()) || SafetyUtil.isEmpty(xeroContact.getName()) ) {
         return false;
       }
@@ -84,7 +104,7 @@ foam.CLASS({
       name: 'isSignedIn',
       documentation: `Used to check if the access-token's are expired for the specific users`,
       javaCode:
-`User             user         = (User) x.get("user");
+`User             user         = ((Subject) x.get("subject")).getUser();
 DAO              store        = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
 XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 Group            group        = user.findGroup(x);
@@ -114,7 +134,7 @@ try {
       name: 'syncSys',
       documentation: `Calls the functions that retrieve contacts and invoices. If fails returns error messages for each`,
       javaCode:
-`User             user         = (User) x.get("user");
+`User             user         = ((Subject) x.get("subject")).getUser();
 DAO              store        = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
 XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 Group            group        = user.findGroup(x);
@@ -169,7 +189,7 @@ try {
       name: 'contactSync',
       documentation: `Calls the functions that retrieve customers and vendors. If fails returns error messages for each`,
       javaCode:
-`User             user         = (User) x.get("user");
+`User             user         = ((Subject) x.get("subject")).getUser();
 DAO              store        = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
 XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 Group            group        = user.findGroup(x);
@@ -200,7 +220,7 @@ try {
     if ( ! this.isValidContact(x, xeroContact, user) ) {
       continue;
     }
-    
+
     cacheDAO.inX(x).put(
       new AccountingContactEmailCache.Builder(x)
         .setXeroId(xeroContact.getContactID())
@@ -209,7 +229,7 @@ try {
     );
 
     newContact = new XeroContact();
-    
+
     Contact existingContact = (Contact) contactDAO.find(AND(
       EQ(Contact.EMAIL, xeroContact.getEmailAddress()),
       EQ(Contact.OWNER, user.getId())
@@ -244,14 +264,13 @@ try {
           UserUserJunction userUserJunction = (UserUserJunction) sink.getArray().get(0);
           Business business = (Business) businessDAO.find(userUserJunction.getTargetId());
           newContact.setOrganization(business.getOrganization());
-          newContact.setBusinessName(business.getBusinessName());
           newContact.setBusinessId(business.getId());
           newContact.setEmail(business.getEmail());
         } else {
 
         }
         newContact.setType("Contact");
-        newContact.setGroup("sme");
+        newContact.setGroup(user.getSpid() + "-sme");
         newContact.setOwner(user.getId());
         contactDAO.put(newContact);
         continue;
@@ -312,29 +331,22 @@ try {
           (xeroMobilePhone.getPhoneAreaCode() != null ? xeroMobilePhone.getPhoneAreaCode() : "") +
           (xeroMobilePhone.getPhoneNumber() != null ? xeroMobilePhone.getPhoneNumber() : "");
 
-      foam.nanos.auth.Phone nanoPhone = new foam.nanos.auth.Phone.Builder(getX())
-        .setNumber(phoneNumber)
-        .setVerified(!phoneNumber.equals(""))
-        .build();
+      Boolean nanoPhoneVerified = ! SafetyUtil.isEmpty(phoneNumber);
+      Boolean nanoMobileVerified = ! SafetyUtil.isEmpty(mobileNumber);
 
-      foam.nanos.auth.Phone nanoMobilePhone = new foam.nanos.auth.Phone.Builder(getX())
-        .setNumber(mobileNumber)
-        .setVerified(!mobileNumber.equals(""))
-        .build();
-
-      newContact.setBusinessPhone(nanoPhone);
-      newContact.setMobile(nanoMobilePhone);
-      newContact.setPhoneNumber(phoneNumber);
+      newContact.setBusinessPhoneNumber(phoneNumber);
+      newContact.setBusinessPhoneNumberVerified(nanoPhoneVerified);
+      newContact.setMobileNumber(nanoMobilePhone);
+      newContact.setMobileNumberVerified(nanoMobileVerified);
     }
 
     newContact.setXeroId(xeroContact.getContactID());
     newContact.setEmail(xeroContact.getEmailAddress());
     newContact.setOrganization(xeroContact.getName());
-    newContact.setBusinessName(xeroContact.getName());
     newContact.setFirstName(xeroContact.getFirstName());
     newContact.setLastName(xeroContact.getLastName());
     newContact.setOwner(user.getId());
-    newContact.setGroup("sme");
+    newContact.setGroup(user.getSpid() + "-sme");
     contactDAO.put(newContact);
   }
   return new ResultResponse(true, "All contacts have been synchronized");
@@ -351,13 +363,12 @@ try {
       name: 'invoiceSync',
       documentation: `Calls the functions that retrieve invoices and bills. If fails returns error messages for each`,
       javaCode:
-`User             user         = (User) x.get("user");
+`User             user         = ((Subject) x.get("subject")).getUser();
 DAO              store        = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
 XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 Group            group        = user.findGroup(x);
 AppConfig        app          = group.getAppConfig(x);
 DAO              configDAO    = ((DAO) x.get("xeroConfigDAO")).inX(x);
-DAO              notification = ((DAO) x.get("localNotificationDAO")).inX(x);
 XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client_      = new XeroClient(config);
 Logger           logger       = (Logger) x.get("logger");
@@ -443,11 +454,10 @@ try {
     //TODO: Remove this when we accept other currencies
     if ( ! (xeroInvoice.getCurrencyCode() == CurrencyCode.CAD || xeroInvoice.getCurrencyCode() == CurrencyCode.USD) ) {
       Notification notify = new Notification();
-      notify.setUserId(user.getId());
       notify.setBody("Xero Invoice # " +
         xeroInvoice.getInvoiceNumber()+
         " cannot sync due to portal only accepting CAD and USD");
-      notification.put(notify);
+      user.doNotify(x, notify);
       continue;
     }
 
@@ -459,7 +469,7 @@ try {
     if ( cache == null || SafetyUtil.isEmpty(cache.getEmail()) ) {
       continue;
     }
-    
+
     Contact contact = (Contact) contactDAO.find( AND(
       EQ( XeroContact.EMAIL, cache.getEmail() ),
       EQ( XeroContact.OWNER, user.getId() )
@@ -479,7 +489,7 @@ try {
     if ( xeroInvoice.getType() == InvoiceType.ACCREC ) {
       xInvoice.setContactId(contact.getId());
       xInvoice.setPayeeId(user.getId());
-      xInvoice.setPayerId(contact.getId());      
+      xInvoice.setPayerId(contact.getId());
       xInvoice.setStatus(net.nanopay.invoice.model.InvoiceStatus.DRAFT);
       xInvoice.setDraft(true);
       xInvoice.setInvoiceNumber(xeroInvoice.getInvoiceNumber());
@@ -578,7 +588,7 @@ try {
       ],
       javaCode:
 `DAO              store          = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
-User             user           = (User) x.get("user");
+User             user           = ((Subject) x.get("subject")).getUser();
 XeroTokenStorage tokenStorage   = (XeroTokenStorage) store.find(user.getId());
 Group            group          = user.findGroup(x);
 AppConfig        app            = group.getAppConfig(x);
@@ -631,7 +641,7 @@ try {
       name: 'removeToken',
       documentation: `Removes the token making access to Xero not possible`,
       javaCode:
-`User             user         = (User) x.get("user");
+`User             user         = ((Subject) x.get("subject")).getUser();
 DAO              store        = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
 XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 if ( tokenStorage == null ) {
@@ -649,7 +659,7 @@ return new ResultResponse(true, "User has been Signed out of Xero");`
       name: 'pullBanks',
       documentation: `Pulls the bank accounts to allow linking with portal bank accounts`,
       javaCode:
-`User                        user         = (User) x.get("user");
+`User                        user         = ((Subject) x.get("subject")).getUser();
 DAO                         store        = ((DAO) x.get("xeroTokenStorageDAO")).inX(x);
 Group                       group        = user.findGroup(x);
 AppConfig                   app          = group.getAppConfig(x);

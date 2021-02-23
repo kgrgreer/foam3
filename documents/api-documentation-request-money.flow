@@ -1,0 +1,247 @@
+<title>API Documentation</title>
+
+<h1>Introduction</h1>
+This API Reference is designed to guide nanopay partners that integrate with our system to use the nanopay API.
+
+<h4>DATA ACCESS OBJECTS (DAOS)</h4>
+<p>
+    It is important to note a key feature, and its functions, in the technology used in the nanopay API. 
+    A <b>Data Access Object (DAO)</b> is a generic interface for a collection of objects. 
+    The DAO interface supports fetching and deleting many rows (select, removeAll), fetching and deleting single rows (find, remove) and inserts (put). 
+    The interface also includes a rich and extensible query language for filtering, sorting and aggregation.
+</p>
+<p>
+    DAOs are the primary way that records are accessed through the API. The Digital Integration Gateway (DIG) is a web endpoint that receives requests for DAO actions and supports all DAO operations.
+</p>
+
+<h2>DIG</h2>
+<p>
+    DIG provides a simple unified method for users and systems to interact with Nanopay's Data Access Objects (DAOs). 
+    DIG supports multiple data formats, including: XML, JSON, CSV, HTML, and JSON/J. 
+    DIG is intended as an end-point for programmatic integration, but also includes a simple user interface to aid developers with the creation of their query parameters.
+</p>
+
+<h2>DUG</h2>
+<p>
+    The Data Update Gateway (DUG) allows for the creation of subscriptions which invoke web-callbacks when data in the services is updated. 
+    An HTTP post is submitted to the web-callback URL whenever data is created, updated or deleted from the specified DAO.
+</p>
+
+<p>
+    A DUG could be used, for example, to notify an external system when transactions are created, have their statuses updated, or when users are created or deleted.
+</p>
+
+<p>
+    DUGs can be created either through the DUG GUI, or programmatically through DIG. 
+    When a subscription is no longer needed, it should be removed, again, either with the DUG GUI or via DIG.
+</p>
+
+<h2>DIG AUTHENTICATION</h2>
+<p>
+    Authentication is how the client proves its identity to the server.
+    The nanopay API uses two methods for authentication:
+</p>
+<ul>
+    <li>User Name and Password Authentication</li>
+    <li>API Key / Session ID Authentication</li>
+</ul>
+<p>
+HTTPS and TLS Encryption Requirements:
+</p>
+<ul>
+    <li>All API requests must be made over a secure TLS channel such as an HTTPS session.</li>
+    <li>Calls made over plain HTTP will fail.</li>
+    <li>API requests without authentication will also fail.</li>
+</ul>
+
+<h4>User Name and Password Authentication</h4>
+<p>
+    The nanopay API uses Basic Authentication with user name and password to authenticate requests. As the simplest form of authentication, this method should not be used as the only way to authenticate.
+    For a general understanding of Basic Authentication, please select this <a href="https://tools.ietf.org/html/rfc7617">link</a>.
+</p>
+
+<p>
+  To enable basic authentication, simply add the Authorization header: 
+  <code>Authorization      Basic ---encoded-string---</code>
+  In the above header, the <i>---encoded-string---</i> string should be replaced with the Base64 encoded string of the username and password separated by a colon.
+</p>
+
+<h4>API Key / Session ID Authentication</h4>
+<p>
+The nanopay API uses <a href="https://oauth.net/2/bearer-tokens/">Bearer Tokens</a> with API Key or Session ID authentication. 
+A session can be established using the user name and password authentication, which returns a sessionId in the response headers.
+The sessionId can then be placed into the Bearer Token header for authentication.
+</p>
+
+<h2>REQUEST MONEY</h2>
+<p>
+    Request money requests can be made over the DIG interface. The request and response are outlined below.
+</p>
+
+<h4>Request Data</h4>
+<table border="1px" width="100%">
+    <thead>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Usage</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>requestId</td>
+            <td>String</td>
+            <td>Required</td>
+            <td>Unique ID for each Request Money request.</td>
+        </tr>
+         <tr>
+            <td>requestAmount</td>
+            <td>Long</td>
+            <td>Required</td>
+            <td>Request Amount in CAD.</td>
+        </tr>
+         <tr>
+            <td>requestExpiryDate</td>
+            <td>DateTime</td>
+            <td>Required</td>
+            <td>Request Expiry Date in UTC.</td>
+        </tr>
+         <tr>
+            <td>senderMemo</td>
+            <td>String</td>
+            <td>Optional</td>
+            <td>Message to Recipient.</td>
+        </tr>
+         <tr>
+            <td>requesterName</td>
+            <td>String</td>
+            <td>Required</td>
+            <td>Name of the requester.</td>
+        </tr>
+         <tr>
+            <td>requesterEmail</td>
+            <td>String</td>
+            <td>Optional</td>
+            <td>Email of the requester.</td>
+        </tr>
+         <tr>
+            <td>fiAccountId</td>
+            <td>String</td>
+            <td>Optional</td>
+            <td>Unique FI Identifier for Requester’s Account.</td>
+        </tr>
+         <tr>
+            <td>custAccount</td>
+            <td>String</td>
+            <td>Required</td>
+            <td>Requester account number. Canadian bank account format is aaa-bbbbb-cccccccccccccccccccc ‘aaa’ is the Financial Institution Identifier ‘bbbbb’ is the Transit Number ‘cccccccc...’ is the Account Number. Maximum length = 30.</td>
+        </tr>
+         <tr>
+            <td>returnUrl</td>
+            <td>String</td>
+            <td>Optional</td>
+            <td>If present the Responder’s browser is redirected to the Return URL after the Responder fulfills the Request Money request</td>
+        </tr>
+    </tbody>
+</table>
+
+<h4>Response Data</h4>
+<table border="1px" width="100%">
+    <thead>
+        <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Usage</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>requestId</td>
+            <td>String</td>
+            <td>Required</td>
+            <td>Unique ID for each Request Money request. Same as in request message.</td>
+        </tr>
+         <tr>
+            <td>gatewayUrl</td>
+            <td>String</td>
+            <td>Required</td>
+            <td>Success: Gateway URL returned by Interac. <p>Failure: Failure code</p></td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>DIG ERROR CODES</h3>
+<table border="1px" width="100%">
+    <thead>
+        <tr>
+            <th>Exception</th>
+            <th>Code</th>
+            <th>Status</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>DAONotFoundException</td>
+            <td>1000</td>
+            <td>400</td>
+            <td>DAO not found.</td>
+        </tr>
+        <tr>
+            <td>DAOPutException</td>
+            <td>1001</td>
+            <td>400</td>
+            <td>DAO put rejection.</td>
+        </tr>
+        <tr>
+            <td>EmptyDataException</td>
+            <td>1002</td>
+            <td>400</td>
+            <td>DAO rejection.</td>
+        </tr>
+        <tr>
+            <td>ParsingErrorException</td>
+            <td>1003</td>
+            <td>400</td>
+            <td>Data parsing error.</td>
+        </tr>
+        <tr>
+            <td>UnsupportException</td>
+            <td>1004</td>
+            <td>400</td>
+            <td>Unsupported operation.</td>
+        </tr>
+        <tr>
+            <td>UnknownIdException</td>
+            <td>1005</td>
+            <td>400</td>
+            <td>ID not found.</td>
+        </tr>
+        <tr>
+            <td>DigSuccessMessage</td>
+            <td>1006</td>
+            <td>200</td>
+            <td>Success.</td>
+        </tr>
+        <tr>
+            <td>EmptyParameterException</td>
+            <td>1007</td>
+            <td>400</td>
+            <td>Empty parameter.</td>
+        </tr>
+        <tr>
+            <td>GeneralException</td>
+            <td>1008</td>
+            <td>400</td>
+            <td>General server exception.</td>
+        </tr>
+        <tr>
+            <td>AuthorizationException</td>
+            <td>1009</td>
+            <td>403</td>
+            <td>Authorization failed.</td>
+        </tr>
+    </tbody>
+</table>

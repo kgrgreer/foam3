@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.flinks.view.form',
   name: 'FlinksOldForm',
@@ -18,17 +35,18 @@ foam.CLASS({
   imports: [
     'flinksAuth',
     'institutionDAO',
+    'notify',
     'stack'
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'foam.nanos.auth.Country',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.model.Institution',
-    'net.nanopay.ui.LoadingSpinner'
+    'foam.u2.LoadingSpinner'
   ],
 
   properties: [
@@ -82,7 +100,7 @@ foam.CLASS({
     ^ .subTitle {
       width: 490px;
       height: 16px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       line-height: 1.33;
       letter-spacing: 0.3px;
@@ -218,7 +236,7 @@ foam.CLASS({
         // sign in
         if ( this.position == 1 ) {
           if ( this.viewData.check != true ) {
-            this.add(this.NotificationMessage.create({ message: 'Please read the condition and check', type: 'error' }));
+            X.notify('Please read the condition and check.', '', this.LogLevel.ERROR, true);
             return;
           }
           // disable button, prevent double click
@@ -253,15 +271,14 @@ foam.CLASS({
               }
               self.subStack.push(self.views[self.subStack.pos + 1].view);
             } else {
-              self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.Message, type: 'error'}));
+              X.notify('flinks: ' + msg.Message, '', self.LogLevel.ERROR, true);
             }
           }).catch( function(a) {
             // repeated as .finally is not supported in Safari/Edge/IE
             self.isConnecting = false;
             self.loadingSpinner.hide();
             self.isEnabledButtons(true);
-
-            self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
+            X.notify(a.message + '. Please try again.', '', self.LogLevel.ERROR, true);
           });
           return;
         }
@@ -293,18 +310,17 @@ foam.CLASS({
 
             } else if ( status == 401 ) {
               // MFA response error and forwar to another security challenge
-              self.add(self.NotificationMessage.create({ message: msg.Message, type: 'error' }));
+              X.notify(msg.Message, '', self.LogLevel.ERROR, true);
               self.viewData.securityChallenges = msg.securityChallenges;
             } else {
-              self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.Message, type: 'error'}));
+              X.notify('flinks: ' + msg.Message, '', self.LogLevel.ERROR, true);
             }
           }).catch( function(a) {
             // repeated as .finally is not supported in Safari/Edge/IE
             self.loadingSpinner.hide();
             self.isEnabledButtons(true);
             self.isConnecting = false;
-
-            self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
+            X.notify(a.message + '. Please try again.', '', self.LogLevel.ERROR, true);
           });
           return;
         }
@@ -322,7 +338,7 @@ foam.CLASS({
                   branch: item.TransitNumber,
                   status: self.BankAccountStatus.VERIFIED
                 })).catch(function(a) {
-                  self.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
+                  X.notify(a.message, '', self.LogLevel.ERROR, true);
                 });
               }
             });

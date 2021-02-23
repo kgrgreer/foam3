@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'JackieRuleOnCreate',
@@ -25,12 +42,15 @@ foam.CLASS({
         while ( ! SafetyUtil.isEmpty(headTx.getParent()) ) {
           headTx = headTx.findParent(x);
         }
+        String spid = ct.findSourceAccount(x).findOwner(x).getSpid();
+        String group = spid + "-fraud-ops";
         ComplianceApprovalRequest req = new ComplianceApprovalRequest.Builder(x)
-          .setDaoKey("localTransactionDAO")
+          .setDaoKey("transactionDAO")
+          .setServerDaoKey("localTransactionDAO")
           .setObjId(ct.getId())
-          .setGroup("fraud-ops")
-          .setDescription("Main Summary txn: "+headTx.getSummary()+" The Id of Summary txn: "+headTx.getId() )
-          .setClassification("Validate Transaction Using Jackie Rule")
+          .setGroup(group)
+          .setDescription(headTx.getSummary()+"  Summary Transaction Id: "+headTx.getId())
+          .setClassification("Compliance Transaction")
           .build();
 
         agency.submit(x, new ContextAgent() {

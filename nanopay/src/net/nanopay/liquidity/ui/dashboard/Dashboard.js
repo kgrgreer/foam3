@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.liquidity.ui.dashboard',
   name: 'Dashboard',
@@ -58,7 +75,7 @@ foam.CLASS({
     }
 
     ^ .foam-u2-layout-Card {
-      overflow-x: scroll;
+      overflow-x: auto;
     }
 
     ^ .foam-u2-view-RichChoiceView {
@@ -156,7 +173,7 @@ foam.CLASS({
             .start(this.Cols).style({'align-items': 'baseline'})
               .start().add(this.cls_.name).addClass(this.myClass('header')).end()
               .start()
-                .add(this.lastUpdated$.map(v => `${this.UPDATED}: ${v.toLocaleString()}`))
+                .add(this.lastUpdated$.map(v => `${this.UPDATED}: ${v.toLocaleString(foam.locale)}`))
                 .addClass(this.myClass('last-updated'))
               .end()
             .end()

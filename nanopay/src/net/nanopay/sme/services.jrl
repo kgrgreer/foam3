@@ -1,6 +1,6 @@
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "smeBusinessRegistrationDAO",
+  "name": "smeUserRegistrationDAO",
   "lazy": false,
   "serve": true,
   "authenticate": false,
@@ -11,9 +11,8 @@ p({
       .setInnerDAO(x.get("localUserDAO"))
       .setDecorator(
         new net.nanopay.security.UserRegistrationSanitationDAO.Builder(x).setDelegate(
-        new foam.nanos.auth.UserPasswordHashingDAO(x,
-        new net.nanopay.onboarding.UserRegistrationDAO(x, "sme",
-        new net.nanopay.onboarding.NewUserCreateBusinessDAO(x, new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build())))).build())
+        new net.nanopay.onboarding.UserRegistrationDAO(x, "sme", 
+        new foam.dao.NullDAO(x,foam.nanos.auth.User.getOwnClassInfo()))).build())
       .setAuthorize(false)
       .setRuler(true)
       .setPm(true)
@@ -41,16 +40,20 @@ p({
   "serve":true,
   "serviceScript":
   """
-  hashingJDAO = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, net.nanopay.model.Invitation.getOwnClassInfo(), "businessInvitations");
-  ed = new foam.dao.EasyDAO.Builder(x)
-    .setAuthorize(false)
-    .setInnerDAO(hashingJDAO)
-    .setSeqNo(true)
+  mdao = new foam.dao.MDAO(net.nanopay.model.Invitation.getOwnClassInfo());
+  inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "businessInvitations", "true".equals(System.getProperty("CLUSTER")));
+  decorator = new net.nanopay.auth.PublicUserInfoDAO(x, "createdBy", "inviter",
+    new net.nanopay.partners.AuthenticatedInvitationDAO(x,
+      new net.nanopay.sme.BusinessInvitationDAO(x,
+        new foam.dao.NullDAO(x, net.nanopay.model.Invitation.getOwnClassInfo()))));
+  return new foam.dao.EasyDAO.Builder(x)
     .setOf(net.nanopay.model.Invitation.getOwnClassInfo())
+    .setAuthorize(false)
+    .setSeqNo(true)
+    .setMdao(mdao)
+    .setInnerDAO(inner)
+    .setDecorator(decorator)
     .build();
-  bid = new net.nanopay.sme.BusinessInvitationDAO(x, ed);
-  aid = new net.nanopay.partners.AuthenticatedInvitationDAO(x, bid);
-  return new net.nanopay.auth.PublicUserInfoDAO(x, "createdBy", "inviter", aid);
   """,
   "client":
   """
@@ -80,7 +83,10 @@ p({
     businessOnboardingDAO = new net.nanopay.sme.onboarding.BusinessOnboardingDAO.Builder(x).setDelegate(easyDAO).build();
     updateOnboardingDAO = new net.nanopay.onboarding.UpdateOnboardingDAO(x, businessOnboardingDAO);
     validatingDAO = new foam.dao.ValidatingDAO(x, updateOnboardingDAO);
-    return new foam.nanos.auth.AuthorizationDAO(x, validatingDAO, new foam.nanos.auth.AuthorizableAuthorizer(\"businessOnboarding\"));
+    return new foam.nanos.auth.AuthorizationDAO.Builder(x)
+      .setDelegate(validatingDAO)
+      .setAuthorizer(new foam.nanos.auth.AuthorizableAuthorizer("businessOnboarding"))
+      .build();
   """,
   "client":
   """
@@ -109,7 +115,10 @@ p({
 
     canadaUsBusinessOnboarding = new net.nanopay.sme.onboarding.CanadaUsBusinessOnboardingDAO.Builder(x).setDelegate(easyDAO).build();
     validatingDAO = new foam.dao.ValidatingDAO(x, canadaUsBusinessOnboarding);
-    return new foam.nanos.auth.AuthorizationDAO(x, validatingDAO, new foam.nanos.auth.AuthorizableAuthorizer("canadaUsBusinessOnboarding"));
+    return new foam.nanos.auth.AuthorizationDAO.Builder(x)
+      .setDelegate(validatingDAO)
+      .setAuthorizer(new foam.nanos.auth.AuthorizableAuthorizer("canadaUsBusinessOnboarding"))
+      .build();
   """,
   "client":
   """
@@ -139,7 +148,10 @@ p({
     usBusinessOnboarding = new net.nanopay.sme.onboarding.USBusinessOnboardingDAO.Builder(x).setDelegate(easyDAO).build();
     updateOnboardingDAO = new net.nanopay.onboarding.UpdateOnboardingDAO(x, usBusinessOnboarding);
     validatingDAO = new foam.dao.ValidatingDAO(x, updateOnboardingDAO);
-    return new foam.nanos.auth.AuthorizationDAO(x, validatingDAO, new foam.nanos.auth.AuthorizableAuthorizer("usBusinessOnboarding"));
+    return new foam.nanos.auth.AuthorizationDAO.Builder(x)
+      .setDelegate(validatingDAO)
+      .setAuthorizer(new foam.nanos.auth.AuthorizableAuthorizer("usBusinessOnboarding"))
+      .build();
   """,
   "client":
   """

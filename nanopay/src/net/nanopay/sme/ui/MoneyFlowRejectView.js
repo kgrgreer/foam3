@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'MoneyFlowRejectView',
@@ -99,7 +116,7 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'This invoice has been voided' },
-    { name: 'V_PAY', message: 'View this payable' },
+    { name: 'V_PAY', message: 'View this invoice' },
     { name: 'V_REC', message: 'View this receivable' }
   ],
 
@@ -145,8 +162,8 @@ foam.CLASS({
       label: 'Done',
       code: function(X) {
         var menuId = this.isPayable_ ?
-            'sme.main.invoices.payables' :
-            'sme.main.invoices.receivables';
+            'mainmenu.invoices.payables' :
+            'mainmenu.invoices.receivables';
         this.menuDAO
           .find(menuId)
           .then((menu) => menu.launch());

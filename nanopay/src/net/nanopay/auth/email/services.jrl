@@ -1,3 +1,18 @@
-p({"class":"foam.nanos.boot.NSpec", "name":"whitelistedEmailDAO", "serve":true, "serviceScript":"new foam.dao.EasyDAO.Builder(x).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"whitelistedEmails\").setName(\"whitelistedEmail\").setOf(net.nanopay.auth.email.EmailWhitelistEntry.getOwnClassInfo()).build();","client":"{\"of\":\"net.nanopay.auth.email.EmailWhitelistEntry\"\}"})
-
-p({"class":"foam.nanos.boot.NSpec", "name":"doNotSolicitDAO", "serve":true, "serviceScript":"new foam.nanos.auth.CreatedAwareDAO.Builder(x).setDelegate(new foam.nanos.auth.CreatedByAwareDAO.Builder(x).setDelegate(new foam.nanos.auth.LastModifiedAwareDAO.Builder(x).setDelegate(new foam.nanos.auth.LastModifiedByAwareDAO.Builder(x).setDelegate( new foam.dao.EasyDAO.Builder(x).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"doNotSolicit\").setName(\"doNotSolicit\").setOf(net.nanopay.auth.email.DoNotSolicit.getOwnClassInfo()).build()).build()).build()).build()).build();","client":"{\"of\":\"net.nanopay.auth.email.DoNotSolicit\"\}"})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"doNotSolicitDAO",
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.auth.email.DoNotSolicit.getOwnClassInfo())
+      .setGuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("doNotSolicit")
+      .build();
+  """,
+  "client":"""
+    {
+      "of":"net.nanopay.auth.email.DoNotSolicit"
+    }
+  """
+})

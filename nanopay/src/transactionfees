@@ -1,2 +1,2 @@
-//p({"class":"net.nanopay.tx.model.TransactionFee","id":1,"name":"alternaCOTransactionFee","transactionClass":"AlternaCOTransaction","minAmount":1,"maxAmount":200000000,"feeAccount":2,"fee":{"class":"net.nanopay.tx.model.FixedFee","fixedFee":50},"feeCurrency":"CAD"})
+//p({"class":"net.nanopay.tx.model.TransactionFee","id":1,"name":"alternaCOTransactionFee","transactionClass":"AlternaCOTransaction","minAmount":1,"maxAmount":200000000,"feeAccount":2,"fee":{"class":"net.nanopay.tx.fees.FixedFee","fixedFee":50},"feeCurrency":"CAD"})
 

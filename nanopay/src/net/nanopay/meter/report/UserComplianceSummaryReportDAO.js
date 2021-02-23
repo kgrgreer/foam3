@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.meter.report',
   name: 'UserComplianceSummaryReportDAO',
@@ -54,7 +71,7 @@ foam.CLASS({
               .setCountry(address != null ? address.getCountryId() : "")
               .setAddressLine(address != null ? address.getSuite() : "")
               .setAddressUrl(address != null ? address.getStreetNumber() + " " + address.getStreetName() : "")
-              .setPhoneNumber(user.getPhone() != null ? user.getPhone().getNumber() : "")
+              .setPhoneNumber(user.getPhoneNumber())
               .setCity(address != null ? address.getCity() : "")
               .setState(address != null ? address.getRegionId() : "")
               .setPostalCode(address != null ? address.getPostalCode() : "")
@@ -64,7 +81,7 @@ foam.CLASS({
           }
         });
 
-        return decoratedSink;
+        return sink;
       `
     }
   ]

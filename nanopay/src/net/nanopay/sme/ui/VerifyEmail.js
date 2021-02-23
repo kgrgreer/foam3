@@ -1,4 +1,21 @@
 /**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+/**
  * @license
  * Copyright 2018 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -11,12 +28,13 @@ foam.CLASS({
   documentation: 'Resend verification email view (Deprecated since release 3.0)',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage'
+    'foam.log.LogLevel'
   ],
 
   imports: [
     'auth',
     'emailToken',
+    'notify',
     'stack',
     'user'
   ],
@@ -42,7 +60,7 @@ foam.CLASS({
     }
 
     ^ .header{
-      font-family: lato;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 30px;
       font-weight: bold;
       line-height: 48px;
@@ -67,7 +85,7 @@ foam.CLASS({
       background: none;
       color: #604aff;
       font-size: 16px;
-      font-family: lato;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       border: none !important;
     }
 
@@ -80,7 +98,7 @@ foam.CLASS({
     ^ .Instructions-Text{
       height: 16px;
       height: 24px;
-      font-family: Lato;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 16px;
       font-weight: normal;
       font-style: normal;
@@ -94,7 +112,7 @@ foam.CLASS({
     ^ .Email-Text{
       width: 182px;
       height: 16px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-weight: 300;
       letter-spacing: 0.2px;
       text-align: left;
@@ -114,7 +132,7 @@ foam.CLASS({
       padding-left: 8px;
       padding-right: 8px;
       margin: 0px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       text-align: left;
       color: /*%BLACK%*/ #1e1f21;
@@ -137,7 +155,7 @@ foam.CLASS({
       margin-top: 10px;
       text-align: center;
       color: #ffffff;
-      font-family: Lato;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 16px;
       line-height: 2.86;
       cursor: pointer;
@@ -177,7 +195,8 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Verify your email' },
     { name: 'INSTRUCTIONS1', message: `We've sent a verification link to your email. Click on the link to get started!` },
-    { name: 'INSTRUCTIONS2', message: `If the email doesn’t arrive soon, check your spam folder or have us` }
+    { name: 'INSTRUCTIONS2', message: `If the email doesn’t arrive soon, check your spam folder or have us` },
+    { name: 'VERIFICATION_EMAIL', message: 'Verification email sent to' }
   ],
 
   methods: [
@@ -216,9 +235,9 @@ foam.CLASS({
           if ( ! result ) {
             throw new Error('Error generating reset token');
           }
-          self.add(self.NotificationMessage.create({ message: 'Verification email sent to ' + self.user.email }));
+          self.notify(self.VERIFICATION_EMAIL + ' ' + self.user.email, '', self.LogLevel.INFO, true);
         }).catch(function(err) {
-          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+          self.notify(err.message, '', this.LogLevel.ERROR, true);
         });
       }
     },

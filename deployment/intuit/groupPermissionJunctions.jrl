@@ -1,0 +1,51 @@
+// Intuit
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-admin","targetId":"serviceprovider.read.intuit"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"serviceprovider.read.intuit"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"serviceprovider.read.intuit"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"session.create.intuit"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"group.read.intuit-sme"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"group.update.intuit-sme"})
+
+// ********** ADMIN ***************
+
+// Intuit SPID Extras
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.update.intuit-admin"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.read.intuit-admin"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.update.intuit-fraud-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.read.intuit-fraud-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.update.intuit-payment-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.read.intuit-payment-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.update.intuit-support"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.read.intuit-support"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.update.intuit-internal-support"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.read.intuit-internal-support"})
+
+// ********** FRAUD OPS ***************
+
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"group.update.intuit-fraud-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"group.update.intuit-payment-ops"})
+
+// ********** PAYMENT OPS ***************
+
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-payment-ops",targetId:"group.update.intuit-payment-ops"})
+
+// ********** REMOVALS *****************
+
+// Removing documentation around raw provisioning
+r({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.api-doc-40-onboarding-business"})
+r({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.api-doc-50-onboarding-personal"})
+
+// ********** SUPPORT ***************
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"group.read.intuit-support"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"group.update.intuit-support"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"foam.nanos.auth.user.section.administrative"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"net.nanopay.model.business.section.administrative"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"menu.read.accounts-support"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"menu.read.businesses-support"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"menu.read.transactions-support"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"menu.read.users-support"})
+
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-ops","targetId":"menu.read.admin.data"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-payment-ops","targetId":"menu.read.admin.data"})
+
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"feesummarytransactionlineitem.read.*"})

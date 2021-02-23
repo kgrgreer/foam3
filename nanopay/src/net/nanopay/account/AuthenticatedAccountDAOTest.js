@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.account',
   name: 'AuthenticatedAccountDAOTest',
@@ -12,7 +29,9 @@ foam.CLASS({
     'foam.nanos.auth.*',
     'foam.nanos.auth.LifecycleState',
     'foam.util.Auth',
+
     'java.util.List',
+
     'static foam.mlang.MLang.*'
   ],
 
@@ -22,6 +41,11 @@ foam.CLASS({
       javaCode: `
       DAO accountDAO = (DAO) x.get("accountDAO");
       DAO userDAO = (DAO) x.get("localUserDAO");
+
+      // create admin user
+      User adminUser = new User();
+      adminUser.setGroup("admin");
+      x = x.put("user", adminUser);
 
       // create new user1 user and context with them logged in
       User user1 = new User();
@@ -45,12 +69,14 @@ foam.CLASS({
       X user2Context = Auth.sudo(x, user2);
 
       // run tests
+      test(AuthenticatedAccountDAO_UpdateNonDefaultProperty(user1, user1Context, accountDAO), "User can not update any property except isDefault");
       test(AuthenticatedAccountDAO_CreateAccountWithNullUser(x,accountDAO), "Put to the DAO without a user logged in fails");
       test(AuthenticatedAccountDAO_UpdateUnownedAccount(user1, user1Context, user2Context, accountDAO) , "Trying to update an unowned account throws an Exception");
       test(AuthenticatedAccountDAO_UpdateOwnedAccount(user1, user1Context, accountDAO), "A user can update an owned account");
       test(AuthenticatedAccountDAO_CreateAccountForOtherUser(user1, user2Context, accountDAO), "Trying to create an account with another user as owner throws an Exception");
       test(AuthenticatedAccountDAO_SelectOnTheDAO(user1, user2, user1Context, user2Context, accountDAO), "A select on the DAO only returns owned accounts");
       test(AuthenticatedAccountDAO_DeleteUnownedAccount(user1, user1Context, user2Context, accountDAO), "Cannot delete unowned bank account");
+      // test(AuthenticatedAccountDAO_UpdateAnyPropertyByAdmin(adminUser, x, accountDAO), "Admin can update any property of account");
 
       AuthenticatedAccountDAO_RunFindTests(user1, user1Context, user2, user2Context, accountDAO);
       AuthenticatedAccountDAO_SummarilyDeleteAccounts(user1, user2, user1Context, user2Context, accountDAO);
@@ -69,7 +95,8 @@ foam.CLASS({
       ],
       javaCode: `
       try {
-        X nullUserContext = x.put("user", null);
+        Subject subject = new Subject.Builder(x).setUser(null).build();
+        X nullUserContext = x.put("subject", subject);
         DigitalAccount account = new DigitalAccount();
         try {
           accountDAO.put_(nullUserContext, account);
@@ -144,7 +171,7 @@ foam.CLASS({
       } catch (Throwable t) {
         test(false, "Tests for 'find' failed due to an unexpected exception.");
       } finally {
-        accountDAO.where(INSTANCE_OF(DigitalAccount.class)).removeAll();
+        accountDAO.where(CLASS_OF(DigitalAccount.class)).removeAll();
       }
       `
     },
@@ -161,16 +188,16 @@ foam.CLASS({
       DigitalAccount clonedAccount = null;
       try {
         DigitalAccount account = new DigitalAccount();
-        account.setDenomination("CAD");
+        account.setIsDefault(false);
         account.setOwner(user1.getId());
         FObject putAccount = accountDAO.put_(user1Context, account);
 
         // Update the account to be USD denominated, assert that the account is now USD
         clonedAccount = (DigitalAccount) putAccount.fclone();
-        clonedAccount.setDenomination("USD");
+        clonedAccount.setIsDefault(true);
         accountDAO.put(clonedAccount);
         FObject updatedPutAccount = accountDAO.find(clonedAccount.getId());
-        return updatedPutAccount.getProperty("denomination").equals("USD");
+        return updatedPutAccount.getProperty("isDefault").equals(true);
       } catch (Throwable t) {
         return false;
       } finally {
@@ -214,7 +241,7 @@ foam.CLASS({
       ],
       javaCode: `
       // create an accounts for different users, verify that a select returns only owned accounts
-    
+
       // create accounts
       DigitalAccount account1 = null;
       DigitalAccount account2 = null;
@@ -309,6 +336,62 @@ foam.CLASS({
         test(false, "The 'removeAll' tests failed due to an unexpected exception.");
       }
       `
-    }
+    },
+    {
+      name: 'AuthenticatedAccountDAO_UpdateNonDefaultProperty',
+      type: 'boolean',
+      args: [
+        { name: 'user1', type: 'foam.nanos.auth.User' },
+        { name: 'user1Context', type: 'Context' },
+        { name: 'accountDAO', type: 'foam.dao.DAO' },
+      ],
+      javaCode: `
+        DigitalAccount clonedAccount = null;
+        try {
+          DigitalAccount account = new DigitalAccount();
+          account.setName("Account");
+          account.setOwner(user1.getId());
+          FObject putAccount = accountDAO.put_(user1Context, account);
+          // Update the account type
+          clonedAccount = (DigitalAccount) putAccount.fclone();
+          clonedAccount.setType("Invalid");
+          accountDAO.put_(user1Context, clonedAccount);
+          FObject updatedPutAccount = accountDAO.find(clonedAccount.getId());
+          return ! updatedPutAccount.getProperty("type").equals("Invalid");
+        } catch (Throwable t) {
+          return true;
+        } finally {
+          if (clonedAccount != null) accountDAO.remove_(user1Context, clonedAccount);
+        }
+      `
+    },
+    {
+      name: 'AuthenticatedAccountDAO_UpdateAnyPropertyByAdmin',
+      type: 'boolean',
+      args: [
+        { name: 'adminUser', type: 'foam.nanos.auth.User' },
+        { name: 'adminContext', type: 'Context' },
+        { name: 'accountDAO', type: 'foam.dao.DAO' },
+      ],
+      javaCode: `
+         DigitalAccount clonedAccount = null;
+        try {
+          DigitalAccount account = new DigitalAccount();
+          account.setName("Account");
+          account.setOwner(adminUser.getId());
+          FObject putAccount = accountDAO.put_(adminContext, account);
+          // Update the account type
+          clonedAccount = (DigitalAccount) putAccount.fclone();
+          clonedAccount.setType("Invalid");
+          accountDAO.put_(adminContext, clonedAccount);
+          FObject updatedPutAccount = accountDAO.find(clonedAccount.getId());
+          return ! updatedPutAccount.getProperty("type").equals("Invalid");
+        } catch (Throwable t) {
+          return true;
+        } finally {
+          if (clonedAccount != null) accountDAO.remove_(adminContext, clonedAccount);
+        }
+      `
+    },
   ]
 });

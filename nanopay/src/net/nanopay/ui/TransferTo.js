@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'TransferTo',
@@ -319,7 +336,7 @@ foam.CLASS({
             return mdao;
           }),
           objToChoice: function(user) {
-            return [user.id, user.label() + ' - (' + user.email + ')'];
+            return [user.id, user.toSummary() + ' - (' + user.email + ')'];
           }
         });
       }
@@ -338,7 +355,7 @@ foam.CLASS({
             return X.user.contacts.limit(50);
           }),
           objToChoice: function(contact) {
-            return [contact.id, contact.label() + ' - (' + contact.email + ')'];
+            return [contact.id, contact.toSummary() + ' - (' + contact.email + ')'];
           }
         });
       }

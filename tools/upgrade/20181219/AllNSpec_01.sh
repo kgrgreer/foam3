@@ -13,7 +13,6 @@ declare -a arr=(
   "brokers,brokerDAO"
   "businessSectors,businessSectorDAO"
   "businessTypes,businessTypeDAO"
-  "corridors,localCorridorDAO"
   "countries,countryDAO"
   "cronjobs,cronDAO"
   "currencies,currencyDAO"

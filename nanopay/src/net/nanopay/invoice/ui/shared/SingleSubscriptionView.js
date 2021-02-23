@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.shared',
   name: 'SingleSubscriptionView',
@@ -75,9 +92,9 @@ foam.CLASS({
           .end()
           .start().addClass(this.myClass('table-body'))
             .start('h3').add(this.data.id).end()
-            .start('h3').add(this.data.payer.label()).end()
+            .start('h3').add(this.data.payer.toSummary()).end()
             .start('h3').add('$', this.data.amount.toFixed(2)).end()
-            .start('h4').add(this.data.nextInvoiceDate.toISOString().substring(0,10)).end()
+            .start('h4').add(this.data.nextInvoiceDate.toLocaleDateString(foam.locale)).end()
             .start('h4').add(this.data.frequency).end()
             .start('h3').add(this.data.endsAfter).end()
           .end()

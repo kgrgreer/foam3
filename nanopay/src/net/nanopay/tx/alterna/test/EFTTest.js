@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx.alterna.test',
   name: 'EFTTest',
@@ -36,7 +53,8 @@ foam.CLASS({
     'java.util.List',
     'static foam.mlang.MLang.EQ',
     'net.nanopay.payment.Institution',
-    'net.nanopay.model.Branch'
+    'net.nanopay.model.Branch',
+    'foam.core.ValidationException'
   ],
 
   methods: [
@@ -260,7 +278,7 @@ System.out.println("createTEstCItransaction before initial put status: "+plan.ge
 System.out.println("createTEstCItransaction after initial put status: "+plan.getStatus());
   return (AlternaCITransaction) plan;
 }
-throw new RuntimeException("Plan transaction not instance of AlternaCITransaction. transaction: "+plan);
+throw new ValidationException("Plan transaction not instance of AlternaCITransaction. transaction: "+plan);
     `
     },
      {
@@ -447,13 +465,13 @@ test(txn.getStatus() == TransactionStatus.SENT, "Transaction status SENT");
 Account destAccount = txn.findDestinationAccount(x);
 //Account destAcccount = (Account) ((DAO) x.get("localAccountDAO")).find_(x, txn.getSourceAccount());
 Long destBalanceBefore = (Long) destAccount.findBalance(x);
-TrustAccount trustAccount = TrustAccount.find(x, txn.findSourceAccount(x));
+TrustAccount trustAccount = ((DigitalAccount) txn.findDestinationAccount(x)).findTrustAccount(x);
 Long trustBalanceBefore = (Long) trustAccount.findBalance(x);
 logger.info("completionTest trust balance before", trustBalanceBefore);
 txn.setStatus(TransactionStatus.COMPLETED);
 txn = (AlternaCITransaction) transactionDAO.put_(x, txn);
 Long destBalanceAfter = (Long) destAccount.findBalance(x);
-trustAccount = TrustAccount.find(x, txn.findSourceAccount(x));
+trustAccount = ((DigitalAccount) txn.findDestinationAccount(x)).findTrustAccount(x);
 Long trustBalanceAfter = (Long) trustAccount.findBalance(x);
 logger.info("completionTest dest account balance: before", destBalanceBefore, "after", destBalanceAfter, "amount", txn.getAmount());
 logger.info("completionTest trust account balance:  before", trustBalanceBefore, "after", trustBalanceAfter, "amount", txn.getAmount());

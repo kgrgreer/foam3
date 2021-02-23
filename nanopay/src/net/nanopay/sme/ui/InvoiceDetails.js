@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'InvoiceDetails',
@@ -12,6 +29,7 @@ foam.CLASS({
 
   requires: [
     'foam.core.PromiseSlot',
+    'foam.log.LogLevel',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
@@ -21,7 +39,7 @@ foam.CLASS({
   imports: [
     'currencyDAO',
     'notify',
-    'user'
+    'subject'
   ],
 
   css: `
@@ -49,7 +67,6 @@ foam.CLASS({
     ^ .invoice-note {
       display: inline-block;
       max-height: 260px;
-      overflow-y: auto;
     }
     ^ .text-fade-out {
       background-image: linear-gradient(90deg, #000000 70%, rgba(0,0,0,0));
@@ -116,6 +133,14 @@ foam.CLASS({
     ^ .reference-id-text {
       font-size: 12px;
     }
+    ^ .note {
+      white-space: pre-line;
+    }
+    @media print {
+      ^ .note {
+        white-space: normal;
+      }
+    }
   `,
 
   constants: [
@@ -168,12 +193,12 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payer',
-      expression: function(invoice$payer, invoice$payerId, user$id, user, invoice$contactId) {
+      expression: function(invoice$payer, invoice$payerId, subject$user$id, subject, invoice$contactId) {
         if ( ! invoice$payer && invoice$payerId ) {
-          if ( invoice$payerId === user$id ) {
-            return Promise.resolve(this.PublicUserInfo.create(user));
+          if ( invoice$payerId === subject$user$id ) {
+            return Promise.resolve(this.PublicUserInfo.create(subject.user));
           } else {
-            return Promise.resolve(user.contacts.find(invoice$contactId).then(
+            return Promise.resolve(subject.user.contacts.find(invoice$contactId).then(
               (u) => this.PublicUserInfo.create(u)
             ));
           }
@@ -187,7 +212,7 @@ foam.CLASS({
       name: 'dueDate',
       expression: function(invoice$dueDate) {
         return invoice$dueDate ?
-          invoice$dueDate.toISOString().substring(0, 10) : '';
+          invoice$dueDate.toLocaleDateString(foam.locale) : '';
       },
     },
     {
@@ -195,19 +220,19 @@ foam.CLASS({
       name: 'issueDate',
       expression: function(invoice$issueDate) {
         return invoice$issueDate ?
-          invoice$issueDate.toISOString().substring(0, 10) : '';
+          invoice$issueDate.toLocaleDateString(foam.locale) : '';
       },
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payee',
-      expression: function(invoice$payee, invoice$payeeId, user$id, user, invoice$contactId) {
+      expression: function(invoice$payee, invoice$payeeId, subject$user$id, subject, invoice$contactId) {
         if ( ! invoice$payee && invoice$payeeId ) {
-          if ( invoice$payeeId === user$id ) {
-            return Promise.resolve(this.PublicUserInfo.create(user));
+          if ( invoice$payeeId === subject$user$id ) {
+            return Promise.resolve(this.PublicUserInfo.create(subject.user));
           } else {
-            return Promise.resolve(user.contacts.find(invoice$contactId).then(
+            return Promise.resolve(subject.user.contacts.find(invoice$contactId).then(
               (u) => this.PublicUserInfo.create(u)));
           }
         } else {
@@ -221,17 +246,19 @@ foam.CLASS({
     { name: 'ATTACHMENT_LABEL', message: 'Attachments' },
     { name: 'AMOUNT_LABEL', message: 'Amount due' },
     { name: 'REFERENCE_LABEL', message: 'Reference ID' },
-    { name: 'DUE_DATE_LABEL', message: 'Date due' },
-    { name: 'INVOICE_NUMBER_LABEL', message: 'Invoice #' },
-    { name: 'BILLING_INVOICE_NUMBER_LABEL', message: 'Billing Invoice #' },
-    { name: 'ISSUE_DATE_LABEL', message: 'Date issued' },
+    { name: 'DUE_DATE_LABEL', message: 'Due date' },
+    { name: 'INVOICE_NUMBER_LABEL', message: 'Invoice number' },
+    { name: 'BILLING_INVOICE_NUMBER_LABEL', message: 'Billing Invoice number' },
+    { name: 'ISSUE_DATE_LABEL', message: 'Issue date' },
     { name: 'LINE_ITEMS', message: 'Items' },
     { name: 'NOTE_LABEL', message: 'Notes' },
     { name: 'PAYEE_LABEL', message: 'Payment to' },
     { name: 'PAYER_LABEL', message: 'Payment from' },
-    { name: 'PO_NO_LABEL', message: 'P.O. No. ' },
+    { name: 'PO_NO_LABEL', message: 'Purchase order number' },
     { name: 'CYCLE_LABEL', message: 'Billing Cycle: '},
-    { name: 'SAVE_AS_PDF_FAIL', message: 'There was an unexpected error when creating the PDF. Please contact support.' }
+    { name: 'SAVE_AS_PDF_FAIL', message: 'There was an unexpected error when creating the PDF. Please contact support.' },
+    { name: 'NO_ATTACHEMENT_PROVIDED', message: 'No attachments provided'},
+    { name: 'NO_NOTES_PROVIDED', message: 'No notes provided'},
   ],
 
   methods: [
@@ -246,8 +273,8 @@ foam.CLASS({
           .addClass('inline')
           .add(this.slot(function(invoice$invoiceNumber) {
             return isBillingInvoice ?
-              self.BILLING_INVOICE_NUMBER_LABEL + invoice$invoiceNumber :
-              self.INVOICE_NUMBER_LABEL + invoice$invoiceNumber;
+              `${self.BILLING_INVOICE_NUMBER_LABEL} ${invoice$invoiceNumber}` :
+              `${self.INVOICE_NUMBER_LABEL} ${invoice$invoiceNumber}`;
           }))
         .end()
         .start()
@@ -262,8 +289,8 @@ foam.CLASS({
           .addClass(this.myClass('invoice-content-text'))
           .add(this.slot(function(invoice) {
             if ( isBillingInvoice )
-              return self.CYCLE_LABEL + invoice.billingStartDate.toISOString().substring(0, 10)
-                + " to " + invoice.billingEndDate.toISOString().substring(0, 10);
+              return self.CYCLE_LABEL + invoice.billingStartDate.toLocaleDateString(foam.locale)
+                + " to " + invoice.billingEndDate.toLocaleDateString(foam.locale);
           }))
         .end()
         .add(this.slot(function(invoice, invoice$status) {
@@ -283,11 +310,11 @@ foam.CLASS({
               .end()
               .start().addClass(this.myClass('invoice-content-text'))
                 .add(this.payer$.map(function(payer) {
-                  return payer.then(async function(payer) {
+                  return payer.then(function(payer) {
                     if ( payer != null ) {
                       var address = payer.address;
                       return self.E()
-                        .start().add(await payer.label()).end()
+                        .start().add(payer.toSummary()).end()
                         .start().add(self.formatStreetAddress(address)).end()
                         .start().add(self.formatRegionAddress(address)).end()
                         .start().add(address != undefined ? address.postalCode : '').end();
@@ -304,10 +331,10 @@ foam.CLASS({
               .end()
               .start().addClass(this.myClass('invoice-content-text'))
                 .add(this.payee$.map(function(payee) {
-                  return payee.then(async function(payee) {
+                  return payee.then(function(payee) {
                     if ( payee != null ) {
                       return self.E()
-                        .start().add(await payee.label()).end();
+                        .start().add(payee.toSummary()).end();
                     }
                   });
                 }))
@@ -317,39 +344,36 @@ foam.CLASS({
           .start()
             .addClass('invoice-row')
             .start()
-              .addClass(this.myClass('invoice-content-block'))
+              .addClass('bold-label')
+              .add(this.AMOUNT_LABEL)
+            .end()
+            .start().addClass(this.myClass('invoice-content-text'))
+              .add(this.PromiseSlot.create({
+                promise$: this.formattedAmount$,
+                value: '--',
+              }))
+            .end()
+          .end()
+          .start()
+            .addClass('invoice-row')
+            .start().addClass(this.myClass('invoice-content-block'))
               .start()
                 .addClass('bold-label')
-                .add(this.AMOUNT_LABEL)
+                .add(this.DUE_DATE_LABEL)
               .end()
-              .start().addClass(this.myClass('invoice-content-text'))
-                .add(this.PromiseSlot.create({
-                  promise$: this.formattedAmount$,
-                  value: '--',
-                }))
+              .start()
+                .addClass(this.myClass('invoice-content-text'))
+                .add(this.dueDate$)
               .end()
             .end()
-            .start()
-              .addClass(this.myClass('invoice-content-block'))
-              .start().addClass('inline-block')
-                .start()
-                  .addClass('bold-label')
-                  .add(this.DUE_DATE_LABEL)
-                .end()
-                .start()
-                  .addClass(this.myClass('invoice-content-text'))
-                  .add(this.dueDate$)
-                .end()
+            .start().addClass(this.myClass('invoice-content-block'))
+              .start()
+                .addClass('bold-label')
+                .add(this.ISSUE_DATE_LABEL)
               .end()
-              .start().addClass(this.myClass('issue-date-block'))
-                .start()
-                  .addClass('bold-label')
-                  .add(this.ISSUE_DATE_LABEL)
-                .end()
-                .start()
-                  .addClass(this.myClass('invoice-content-text'))
-                  .add(this.issueDate$)
-                .end()
+              .start()
+                .addClass(this.myClass('invoice-content-text'))
+                .add(this.issueDate$)
               .end()
             .end()
           .end()
@@ -422,7 +446,7 @@ foam.CLASS({
                     .addClass(this.myClass('invoice-content-block'))
                     .addClass(this.myClass('invoice-content-text'))
                     .addClass(this.myClass('italic'))
-                    .add('No attachments provided')
+                    .add(this.NO_ATTACHEMENT_PROVIDED)
                   .end();
               }
             }))
@@ -441,12 +465,13 @@ foam.CLASS({
               if ( invoice$note ) {
                 return self.E()
                   .start()
+                  .addClass('note')
                     .add(invoice$note)
                   .end();
               } else {
                 return self.E()
                   .start().addClass(this.myClass('italic'))
-                    .add('No notes provided')
+                    .add(this.NO_NOTES_PROVIDED)
                   .end();
               }
             }))
@@ -530,18 +555,33 @@ foam.CLASS({
   listeners: [
     function exportAsPDF() {
       try {
+        window.scrollTo(0,0);
         var className = '.full-invoice';
         var downloadContent = ctrl.document.querySelector(className);
         downloadContent.style.backgroundColor = '#fff';
-        downloadContent.style.padding = '20px';
-        var doc = new jsPDF('l', 'mm', [downloadContent.clientHeight, downloadContent.clientWidth]);
+        downloadContent.style.margin = '350px 50px 250px 50px';
+        downloadContent.style.padding = '350px 50px 250px 50px';
+        downloadContent.offsetParent.style.margin = '120px 40px 120px 40px';
+        downloadContent.offsetParent.style.zoom = '60%';
+
+        downloadContent.offsetParent.style.width = downloadContent.scrollWidth + downloadContent.offsetParent.scrollWidth + 'px';
+        downloadContent.offsetParent.style.height = downloadContent.scrollHeight + downloadContent.offsetParent.scrollHeight + 'px';
+
+        var doc = new jsPDF('p', 'pt');
+
         doc.addHTML(downloadContent, () => {
-          doc.save(`invoice-${this.invoice.referenceId}.pdf`);
+           doc.save(`invoice-${this.invoice.referenceId}.pdf`);
         });
+
         downloadContent.style.backgroundColor = '#f9fbff';
-        downloadContent.style.padding = '0px';
+        downloadContent.offsetParent.style.zoom = '1.0';
+        downloadContent.style.margin = '';
+        downloadContent.style.padding = '';
+        downloadContent.offsetParent.style.margin = '';
+        downloadContent.offsetParent.style.width = '';
+        downloadContent.offsetParent.style.height = ''
       } catch (e) {
-        this.notify(this.SAVE_AS_PDF_FAIL, 'error');
+        this.notify(this.SAVE_AS_PDF_FAIL, '', this.LogLevel.ERROR, true);
         throw e;
       }
     }

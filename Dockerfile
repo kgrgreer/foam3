@@ -1,10 +1,13 @@
 FROM buildpack-deps:bionic-scm
 
 RUN apt-get update
-RUN apt-get install -y --no-install-recommends \
-	npm \
-	nodejs \
-	unzip
+RUN apt-get install -y --no-install-recommends curl
+RUN apt-get install -y --no-install-recommends unzip
+RUN apt-get install -y --no-install-recommends npm
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash
+RUN apt-get install -y --no-install-recommends nodejs
+RUN node -v
+RUN npm -v
 
 RUN apt-get purge -y openjdk-11*
 
@@ -23,7 +26,8 @@ RUN set -eux; \
 ENV JAVA_HOME=/opt/java/openjdk \
     PATH="/opt/java/openjdk/bin:$PATH"
 	
-RUN wget https://downloads.gradle-dn.com/distributions/gradle-5.2.1-bin.zip --no-check-certificate -P /tmp
+RUN wget https://downloads.gradle-dn.com/distributions/gradle-5.4.1-bin.zip --no-check-certificate -P /tmp
 RUN unzip -d /opt/gradle /tmp/gradle-*.zip
 ENV GRADLE_HOME /opt/gradle/gradle-5.2.1
 ENV PATH ${GRADLE_HOME}/bin:${PATH}
+

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.settings.business',
   name: 'PrincipalOwnersDetailView',
@@ -40,7 +57,7 @@ foam.CLASS({
     position: relative;
   }
   ^ .companyName {
-    font-family: 'Roboto';
+    font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 14px;
     font-weight: 300;
     letter-spacing: 0.2px;
@@ -65,7 +82,7 @@ foam.CLASS({
     vertical-align: top;
   }
   ^ .labelTitle {
-    font-family: Roboto;
+    font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 14px;
     font-weight: bold;
     letter-spacing: 0.2px;
@@ -84,7 +101,7 @@ foam.CLASS({
     display: inline-block;
   }
   ^ .labelContent {
-    font-family: Roboto;
+    font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 14px;
     font-weight: 300;
     letter-spacing: 0.2px;
@@ -150,7 +167,7 @@ foam.CLASS({
               .end()
               .start().addClass('labelDiv')
                 .start().add('Phone Number').addClass('labelTitle').end()
-                .start().add(user.phone.number).addClass('labelContent').end()
+                .start().add(user.phoneNumber).addClass('labelContent').end()
               .end()
             .end()
             .start().addClass('inlineDiv')
@@ -166,7 +183,7 @@ foam.CLASS({
               .end()
               .start().addClass('labelDiv')
                 .start().add('Date of Birth').addClass('labelTitle').end()
-                .start().add(user.birthday.toISOString().substring(0,10)).addClass('labelContent').end()
+                .start().add(user.birthday.toLocaleDateString(foam.locale)).addClass('labelContent').end()
               .end()
             .end()
             .start().addClass('topInlineDiv')

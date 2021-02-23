@@ -1,0 +1,2 @@
+p({"class":"foam.nanos.auth.User","id":1012,"spid":"test","firstName":"Fraud","lastName":"Operations","email":"fraudops@test.com","group":"test-fraud-ops","emailVerified":true,"status":2,"lifecycleState":1})
+p({"class":"foam.nanos.auth.User","id":1014,"spid":"test","firstName":"test","lastName":"admin","email":"test-admin@test.com","group":"test-admin","emailVerified":true,"status":2,"lifecycleState":1})

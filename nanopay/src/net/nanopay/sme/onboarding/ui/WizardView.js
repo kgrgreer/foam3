@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.onboarding.ui',
   name: 'WizardView',
@@ -23,7 +40,7 @@ foam.CLASS({
       z-index: 950;
       margin: 0;
       padding: 0;
-      overflow: scroll;
+      overflow: auto;
     }
 
     ^logo {
@@ -123,7 +140,7 @@ foam.CLASS({
     }
   ],
   messages: [
-    { name: 'SUCCESS_SUBMIT_MESSAGE', message: 'Business profile submitted successfully.' }
+    { name: 'SUCCESS_SUBMIT_MESSAGE', message: 'Business profile submitted successfully' }
   ],
   reactions: [
     ['data', 'propertyChange', 'saveDraft']
@@ -210,26 +227,26 @@ foam.CLASS({
             sendInvitation: true
           })).
           then(async () => {
-            await x.userDAO.find(x.user.id).then((o) => {
+            await x.userDAO.find(x.user.id).then(o => {
               x.user = o;
               x.user.onboarded = o.onboarded;
               x.user.countryOfBusinessRegistration = o.countryOfBusinessRegistration;
               x.user.businessRegistrationDate = o.businessRegistrationDate;
-              x.user.address = o.address
+              x.user.address = o.address;
             });
 
-            await x.userDAO.find(x.agent.id).then((agent) => {
-              x.agent = agent;
+            await x.userDAO.find(x.subject.realUser.id).then(agent => {
+              x.subject.realUser = agent;
             });
 
             this.auth.cache = {};
-            x.ctrl.notify(this.SUCCESS_SUBMIT_MESSAGE);
-            x.pushMenu('sme.main.dashboard');
+            x.pushMenu('mainmenu.dashboard');
+            x.ctrl.notify(this.SUCCESS_SUBMIT_MESSAGE, '', foam.log.LogLevel.INFO, true);
           }, function(err) {
             console.log('Error during submitting the onboarding info: ' + err);
             x.ctrl.notify('Business profile submission failed.  ' +
                           ( ( err && err.message ) ? err.message : 'Please try again later.' ),
-                          'error');
+                          '', foam.log.LogLevel.ERROR, true);
           });
       }
     },
@@ -243,10 +260,10 @@ foam.CLASS({
           sendInvitation: true
           })).
           then(function() {
-            x.ctrl.notify('Progress saved.');
-            x.pushMenu('sme.main.dashboard');
+            x.pushMenu('mainmenu.dashboard');
+            x.ctrl.notify('Progress saved.', '', foam.log.LogLevel.INFO, true);
           }, function() {
-            x.ctrl.notify('Error saving progress, please try again shortly.', 'error');
+            x.ctrl.notify('Error saving progress, please try again shortly.', '', foam.log.LogLevel.ERROR, true);
           });
       }
     }

@@ -1,4 +1,21 @@
 /**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+/**
  * @license
  * Copyright 2018 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -13,48 +30,6 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.blob.BlobService',
-    'foam.dao.DAO',
-    'foam.dao.ArraySink',
-    'foam.lib.json.JSONParser',
-    'foam.lib.json.Outputter',
-    'foam.lib.NetworkPropertyPredicate',
-    'foam.nanos.app.AppConfig',
-    'foam.nanos.auth.*',
-    'foam.nanos.auth.Address',
-    'foam.nanos.auth.Phone',
-    'foam.nanos.auth.User',
-    'foam.nanos.fs.File',
-    'foam.nanos.logger.Logger',
-    'foam.nanos.notification.Notification',
-    'foam.util.SafetyUtil',
-    'net.nanopay.bank.BankAccount',
-    'net.nanopay.model.Business',
-    'foam.core.Currency',
-    'net.nanopay.accounting.AccountingBankAccount',
-    'net.nanopay.accounting.AccountingContactEmailCache',
-    'net.nanopay.accounting.ResultResponse',
-    'net.nanopay.accounting.quickbooks.model.*',
-    'net.nanopay.accounting.quickbooks.model.QuickQueryCustomerResponse',
-    'net.nanopay.invoice.model.PaymentStatus',
-    'net.nanopay.invoice.model.InvoiceStatus',
-    'net.nanopay.contacts.Contact',
-    'org.apache.http.HttpResponse',
-    'org.apache.http.client.HttpClient',
-    'org.apache.http.client.methods.HttpGet',
-    'org.apache.http.client.methods.HttpPost',
-    'org.apache.http.entity.StringEntity',
-    'org.apache.http.impl.client.HttpClients',
-    'java.io.BufferedReader',
-    'java.io.InputStreamReader',
-    'java.util.List',
-    'java.text.SimpleDateFormat',
-    'java.util.Date',
-    'java.math.BigDecimal',
-    'java.util.ArrayList',
-    'java.net.URL',
-    'java.net.URLEncoder',
-    'static foam.mlang.MLang.*',
     'com.intuit.ipp.core.Context',
     'com.intuit.ipp.core.ServiceType',
     'com.intuit.ipp.data.*',
@@ -62,9 +37,53 @@ foam.CLASS({
     'com.intuit.ipp.security.OAuth2Authorizer',
     'com.intuit.ipp.services.DataService',
     'com.intuit.ipp.util.Config',
+    'foam.blob.BlobService',
+    'foam.core.Currency',
+    'foam.dao.ArraySink',
+    'foam.dao.DAO',
+    'foam.lib.NetworkPropertyPredicate',
+    'foam.lib.json.JSONParser',
+    'foam.lib.json.Outputter',
     'foam.mlang.sink.Count',
+    'foam.nanos.app.AppConfig',
+    'foam.nanos.auth.*',
+    'foam.nanos.auth.Address',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+    'foam.nanos.fs.File',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.notification.Notification',
+    'foam.util.SafetyUtil',
+
+    'java.io.BufferedReader',
+    'java.io.InputStreamReader',
+    'java.math.BigDecimal',
+    'java.net.URL',
+    'java.net.URLEncoder',
+    'java.text.SimpleDateFormat',
+    'java.util.ArrayList',
+    'java.util.Date',
+    'java.util.List',
     'java.util.regex.Matcher',
-    'java.util.regex.Pattern'
+    'java.util.regex.Pattern',
+
+    'net.nanopay.accounting.AccountingBankAccount',
+    'net.nanopay.accounting.AccountingContactEmailCache',
+    'net.nanopay.accounting.ResultResponse',
+    'net.nanopay.accounting.quickbooks.model.*',
+    'net.nanopay.accounting.quickbooks.model.QuickQueryCustomerResponse',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.contacts.Contact',
+    'net.nanopay.invoice.model.InvoiceStatus',
+    'net.nanopay.invoice.model.PaymentStatus',
+    'net.nanopay.model.Business',
+    'org.apache.http.HttpResponse',
+    'org.apache.http.client.HttpClient',
+    'org.apache.http.client.methods.HttpGet',
+    'org.apache.http.client.methods.HttpPost',
+    'org.apache.http.entity.StringEntity',
+    'org.apache.http.impl.client.HttpClients',
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -74,7 +93,7 @@ foam.CLASS({
       javaCode:
 `Logger            logger       = (Logger) x.get("logger");
 DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
-User              user         = (User) x.get("user");
+User              user         = ((Subject) x.get("subject")).getUser();
 Group             group        = user.findGroup(x);
 AppConfig         app          = group.getAppConfig(x);
 DAO               configDAO    = ((DAO) x.get("quickConfigDAO")).inX(x);
@@ -138,7 +157,7 @@ try {
       documentation: `Calls the functions that retrieve customers and vendors. If fails returns error messages for each`,
       javaCode:
 `DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
-User              user         = (User) x.get("user");
+User              user         = ((Subject) x.get("subject")).getUser();
 Group             group        = user.findGroup(x);
 AppConfig         app          = group.getAppConfig(x);
 DAO               configDAO    = ((DAO) x.get("quickConfigDAO")).inX(x);
@@ -184,7 +203,7 @@ try {
       documentation: `Calls the functions that retrieve invoices and bills. If fails returns error messages for each`,
       javaCode:
 `DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
-User              user         = (User) x.get("user");
+User              user         = ((Subject) x.get("subject")).getUser();
 Group             group        = user.findGroup(x);
 AppConfig         app          = group.getAppConfig(x);
 DAO               configDAO    = ((DAO) x.get("quickConfigDAO")).inX(x);
@@ -334,7 +353,6 @@ if ( ! query.getResult() ) {
 }
 
 try {
-  DAO notification = ((DAO) x.get("localNotificationDAO")).inX(x);
   DAO invoiceDAO   = ((DAO) x.get("invoiceDAO")).inX(x);
   DAO contactDAO   = ((DAO) x.get("contactDAO")).inX(x);
   DAO currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
@@ -373,11 +391,11 @@ try {
         }
         continue;
       }
-      
+
       if (! (
-         net.nanopay.invoice.model.InvoiceStatus.UNPAID  == portal.getStatus() || 
-         net.nanopay.invoice.model.InvoiceStatus.DRAFT   == portal.getStatus() || 
-         net.nanopay.invoice.model.InvoiceStatus.OVERDUE == portal.getStatus() )) 
+         net.nanopay.invoice.model.InvoiceStatus.UNPAID  == portal.getStatus() ||
+         net.nanopay.invoice.model.InvoiceStatus.DRAFT   == portal.getStatus() ||
+         net.nanopay.invoice.model.InvoiceStatus.OVERDUE == portal.getStatus() ))
       {
         continue;
       }
@@ -429,14 +447,13 @@ try {
     // Only allows CAD and USD
     if ( ! ("CAD".equals(qInvoice.getCurrencyRef().getValue()) || "USD".equals(qInvoice.getCurrencyRef().getValue())) ) {
       Notification notify = new Notification();
-      notify.setUserId(user.getId());
       String s = "Quick Invoice # " +
         qInvoice.getId() +
         " can not be sync'd because the currency " +
         qInvoice.getCurrencyRef().getValue() +
         " is not supported in this system ";
       notify.setBody(s);
-      notification.put(notify);
+      user.doNotify(x, notify);
       continue;
     }
     portal.setDesync(false);
@@ -495,7 +512,7 @@ try {
         }
       ],
       javaCode:
-`    
+`
 Logger logger = (Logger) x.get("logger");
 DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
 DAO               cacheDAO     = (DAO) x.get("AccountingContactEmailCacheDAO");
@@ -507,7 +524,6 @@ if ( ! query.getResult() ) {
 }
 
 try {
-  DAO notification = ((DAO) x.get("localNotificationDAO")).inX(x);
   DAO invoiceDAO   = ((DAO) x.get("invoiceDAO")).inX(x);
   DAO contactDAO   = ((DAO) x.get("contactDAO")).inX(x);
   DAO currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
@@ -544,11 +560,11 @@ try {
         }
         continue;
       }
-      
+
       if (! (
-         net.nanopay.invoice.model.InvoiceStatus.UNPAID  == portal.getStatus() || 
-         net.nanopay.invoice.model.InvoiceStatus.DRAFT   == portal.getStatus() || 
-         net.nanopay.invoice.model.InvoiceStatus.OVERDUE == portal.getStatus() )) 
+         net.nanopay.invoice.model.InvoiceStatus.UNPAID  == portal.getStatus() ||
+         net.nanopay.invoice.model.InvoiceStatus.DRAFT   == portal.getStatus() ||
+         net.nanopay.invoice.model.InvoiceStatus.OVERDUE == portal.getStatus() ))
       {
         continue;
       }
@@ -599,14 +615,13 @@ try {
     // Only allows CAD and USD
     if ( ! ("CAD".equals(qInvoice.getCurrencyRef().getValue()) || "USD".equals(qInvoice.getCurrencyRef().getValue())) ) {
       Notification notify = new Notification();
-      notify.setUserId(user.getId());
       String s = "Quick Invoice # " +
         qInvoice.getId() +
         " can not be sync'd because the currency " +
         qInvoice.getCurrencyRef().getValue() +
         " is not supported in this system ";
       notify.setBody(s);
-      notification.put(notify);
+      user.doNotify(x, notify);
       continue;
     }
     portal.setPayerId(contact.getId());
@@ -704,7 +719,6 @@ return true;
 `
 Logger         logger         = (Logger) x.get("logger");
 DAO            contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
-DAO            notification   = ((DAO) x.get("localNotificationDAO")).inX(x);
 DAO            userDAO        = ((DAO) x.get("localUserUserDAO")).inX(x);
 DAO            businessDAO    = ((DAO) x.get("localBusinessDAO")).inX(x);
 DAO            agentJunctionDAO = ((DAO) x.get("agentJunctionDAO"));
@@ -723,7 +737,7 @@ try {
     }
 
     QuickQueryEMail email  = customer.getPrimaryEmailAddr();
-    
+
     cacheDAO.inX(x).put(
       new AccountingContactEmailCache.Builder(x)
         .setQuickId(customer.getId())
@@ -746,7 +760,7 @@ try {
 
     // If the contact is a existing contact
     if ( existContact != null ) {
-    
+
       // existing user
       if ( existUser != null ) {
         continue;
@@ -763,39 +777,38 @@ try {
 
     // If the contact is not a existing contact
     if ( existContact == null ) {
-      
+
       if ( existUser != null ) {
-  
+
         ArraySink sink = (ArraySink) agentJunctionDAO.where(EQ(
           UserUserJunction.SOURCE_ID, existUser.getId()
         )).select(new ArraySink());
-  
+
         if ( sink.getArray().size() == 0 ) {
           //
         }
-  
+
         if ( sink.getArray().size() == 1 ) {
           UserUserJunction userUserJunction = (UserUserJunction) sink.getArray().get(0);
           Business business = (Business) businessDAO.find(userUserJunction.getTargetId());
           newContact.setOrganization(business.getOrganization());
-          newContact.setBusinessName(business.getBusinessName());
           newContact.setBusinessId(business.getId());
           newContact.setEmail(business.getEmail());
         }
-  
+
         if ( sink.getArray().size() > 1) {
           // TODO: handle the mismatch
           continue;
         }
-  
+
         newContact.setType("Contact");
-        newContact.setGroup("sme");
+        newContact.setGroup(user.getSpid() + "-sme");
         newContact.setQuickId(customer.getId());
         newContact.setRealmId(tokenStorage.getRealmId());
         newContact.setOwner(user.getId());
         contactDAO.put(newContact);
         continue;
-  
+
       }
     }
 
@@ -827,32 +840,27 @@ try {
     /*
      * Phone integration
      */
-    String busPhoneNumber =
+    String businessPhone =
       customer.getPrimaryPhone() != null ?
       customer.getPrimaryPhone().getFreeFormNumber() : "";
 
-    String mobilePhoneNumber =
+    Boolean businessPhoneNumberVerified = ! SafetyUtil.isEmpty(businessPhone);
+    String mobilePhone = 
       customer.getMobile() != null ?
       customer.getMobile().getFreeFormNumber() : "";
-
-    Phone businessPhone = new Phone.Builder(x)
-      .setNumber( busPhoneNumber )
-      .setVerified( ! busPhoneNumber.equals("") )
-      .build();
-
-    Phone mobilePhone = new Phone.Builder(x)
-      .setNumber( mobilePhoneNumber )
-      .setVerified( ! mobilePhoneNumber.equals("") )
-      .build();
+    Boolean mobilePhoneVerified = ! SafetyUtil.isEmpty(mobilePhone);
 
     newContact.setEmail(email.getAddress());
     newContact.setOrganization(customer.getCompanyName());
     newContact.setFirstName(customer.getGivenName());
     newContact.setLastName(customer.getFamilyName());
     newContact.setOwner(user.getId());
+    newContact.setBusinessPhoneNumber(businessPhone);
+    newContact.setBusinessPhoneNumberVerified(businessPhoneNumberVerified);
     newContact.setBusinessPhone(businessPhone);
-    newContact.setMobile(mobilePhone);
-    newContact.setGroup("sme");
+    newContact.setMobileNumber(mobilePhone);
+    newContact.setMobileNumberVerified(mobilePhoneVerified);
+    newContact.setGroup(user.getSpid() + "-sme");
     newContact.setQuickId(customer.getId());
     newContact.setRealmId(tokenStorage.getRealmId());
     contactDAO.put(newContact);
@@ -944,7 +952,7 @@ try {
         },
       ],
       javaCode:
-`User              user         = (User) x.get("user");
+`User              user         = ((Subject) x.get("subject")).getUser();
 Group             group        = user.findGroup(x);
 AppConfig         app          = group.getAppConfig(x);
 BlobService       blobStore    = (BlobService) x.get("blobStore");
@@ -1012,7 +1020,7 @@ return files;`,
       javaCode:
 `DAO                       store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
 DAO                        userDAO      = ((DAO) x.get("localUserDAO")).inX(x);
-User                       user         = (User) x.get("user");
+User                       user         = ((Subject) x.get("subject")).getUser();
 DAO                        currencyDAO  = ((DAO) x.get("currencyDAO")).inX(x);
 QuickTokenStorage          tokenStorage = (QuickTokenStorage) store.find(user.getId());
 Group                      group        = user.findGroup(x);
@@ -1044,7 +1052,7 @@ try {
     QuickPostPayment payment = new QuickPostPayment();
     QuickQueryNameValue customer = new QuickQueryNameValue();
 
-    customer.setName(sUser.getBusinessName());
+    customer.setName(sUser.getOrganization());
     customer.setValue("" + sUser.getQuickId());
 
     QuickQueryNameValue bInfo = new QuickQueryNameValue();
@@ -1143,7 +1151,7 @@ try {
       name: 'removeToken',
       documentation: `Removes the token making access to Quickbooks not possible`,
       javaCode:
-`User              user         = (User) x.get("user");
+`User              user         = ((Subject) x.get("subject")).getUser();
 DAO               store        = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
 QuickTokenStorage tokenStorage = (QuickTokenStorage) store.find(user.getId());
 if ( tokenStorage == null ) {
@@ -1161,7 +1169,7 @@ return new ResultResponse(true, "User has been signed out of Quick Books");`
       name: 'pullBanks',
       documentation: `Pulls the bank accounts to allow linking with portal bank accounts`,
       javaCode:
-`User                        user      = (User) x.get("user");
+`User                        user      = ((Subject) x.get("subject")).getUser();
 DAO                         store     = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
 Group                       group     = user.findGroup(x);
 AppConfig                   app       = group.getAppConfig(x);
@@ -1218,7 +1226,7 @@ try {
       javaCode: `
 Logger         logger         = (Logger) x.get("logger");
 DAO            contactDAO     = ((DAO) x.get("contactDAO")).inX(x);
-User              user         = (User) x.get("user");
+User              user         = ((Subject) x.get("subject")).getUser();
 DAO            userDAO        = ((DAO) x.get("localUserUserDAO")).inX(x);
 DAO            businessDAO    = ((DAO) x.get("localBusinessDAO")).inX(x);
 DAO            agentJunctionDAO = ((DAO) x.get("agentJunctionDAO"));
@@ -1279,7 +1287,6 @@ if ( existContact == null ) {
       UserUserJunction userUserJunction = (UserUserJunction) sink.getArray().get(0);
       Business business = (Business) businessDAO.find(userUserJunction.getTargetId());
       newContact.setOrganization(business.getOrganization());
-      newContact.setBusinessName(business.getBusinessName());
       newContact.setBusinessId(business.getId());
       newContact.setEmail(business.getEmail());
     }
@@ -1290,11 +1297,10 @@ if ( existContact == null ) {
       newContact.setFirstName(existUser.getFirstName());
       newContact.setLastName(existUser.getLastName());
       newContact.setOrganization("TBD");
-      newContact.setBusinessName("TBD");
     }
 
     newContact.setType("Contact");
-    newContact.setGroup("sme");
+    newContact.setGroup(user.getSpid() + "-sme");
     newContact.setQuickId(importContact.getId());
     newContact.setRealmId(tokenStorage.getRealmId());
     newContact.setOwner(user.getId());
@@ -1334,32 +1340,26 @@ if ( customerAddress != null ) {
 /*
  * Phone integration
  */
-String busPhoneNumber =
+String businessPhone =
   importContact.getPrimaryPhone() != null ?
-    importContact.getPrimaryPhone().getFreeFormNumber() : "";
+  importContact.getPrimaryPhone().getFreeFormNumber() : "";
+Boolean businessPhoneNumberVerified = ! SafetyUtil.isEmpty(businessPhone);
 
-String mobilePhoneNumber =
+String mobilePhone = 
   importContact.getMobile() != null ?
-    importContact.getMobile().getFreeFormNumber() : "";
-
-Phone businessPhone = new Phone.Builder(x)
-  .setNumber( busPhoneNumber )
-  .setVerified( ! busPhoneNumber.equals("") )
-  .build();
-
-Phone mobilePhone = new Phone.Builder(x)
-  .setNumber( mobilePhoneNumber )
-  .setVerified( ! mobilePhoneNumber.equals("") )
-  .build();
+  importContact.getMobile().getFreeFormNumber() : "";
+Boolean mobilePhoneVerified = ! SafetyUtil.isEmpty(mobilePhone);
 
 newContact.setEmail(email.getAddress());
 newContact.setOrganization(importContact.getCompanyName());
 newContact.setFirstName(importContact.getGivenName());
 newContact.setLastName(importContact.getFamilyName());
 newContact.setOwner(user.getId());
-newContact.setBusinessPhone(businessPhone);
-newContact.setMobile(mobilePhone);
-newContact.setGroup("sme");
+newContact.setBusinessPhoneNumber(businessPhone);
+newContact.setBusinessPhoneNumberVerified(businessPhoneNumberVerified);
+newContact.setMobileNumber(mobilePhone);
+newContact.setMobileNumberVerified(mobilePhoneVerified);
+newContact.setGroup(user.getSpid() + "-sme");
 newContact.setQuickId(importContact.getId());
 newContact.setRealmId(tokenStorage.getRealmId());
 contactDAO.put(newContact);
@@ -1422,7 +1422,7 @@ return (NameBase) sendRequest(x, query).get(0);
         }
       ],
       javaCode:`
-User                        user      = (User) x.get("user");
+User                        user      = ((Subject) x.get("subject")).getUser();
 DAO                         store     = ((DAO) x.get("quickTokenStorageDAO")).inX(x);
 Group                       group     = user.findGroup(x);
 AppConfig                   app       = group.getAppConfig(x);
@@ -1458,14 +1458,11 @@ return null;
         }
       ],
       javaCode:`
-User user = (User) x.get("user");
-DAO notification   = ((DAO) x.get("localNotificationDAO")).inX(x);
-
-Notification notify = new Notification();
-notify.setUserId(user.getId());
-
-notify.setBody(body);
-notification.put(notify);
+        User user = ((Subject) x.get("subject")).getUser();
+        Notification notify = new Notification.Builder(x)
+          .setBody(body)
+          .build();
+        user.doNotify(x, notify);
       `
     },
     {

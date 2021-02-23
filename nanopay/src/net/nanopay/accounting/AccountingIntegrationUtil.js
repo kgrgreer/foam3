@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.accounting',
   name: 'AccountingIntegrationUtil',
@@ -5,8 +22,8 @@ foam.CLASS({
   documentation: 'Manages the front-end common logic for Accounting Integrations',
 
   requires: [
+    'foam.log.LogLevel',
     'foam.u2.dialog.Popup',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.accounting.IntegrationCode',
     'net.nanopay.accounting.AccountingErrorCodes',
     'net.nanopay.invoice.model.Invoice',
@@ -26,7 +43,8 @@ foam.CLASS({
     'quickbooksService',
     'userDAO',
     'xeroService',
-    'user'
+    'subject',
+    'theme'
   ],
 
   exports: [
@@ -42,10 +60,13 @@ foam.CLASS({
     { name: 'MISSING_EMAIL', message: 'Missing Email' },
     { name: 'MISS_ADDRESS', message: 'Missing Business Address' },
     { name: 'OTHER', message: 'Other' },
-    { name: 'EXISTING_USER_CONTACT', message: 'There is a contact who is also a user with that email.' },
-    { name: 'EXISTING_CONTACT', message: 'There is an existing contact with that email.' },
-    { name: 'EXISTING_USER', message: 'There is already a user with that email.' },
-    { name: 'EXISTING_USER_MULTI', message: 'The user belongs to multiple businesses.' }
+    { name: 'EXISTING_USER_CONTACT', message: 'There is a contact who is also a user with that email' },
+    { name: 'EXISTING_CONTACT', message: 'There is an existing contact with that email' },
+    { name: 'EXISTING_USER', message: 'There is already a user with that email' },
+    { name: 'EXISTING_USER_MULTI', message: 'The user belongs to multiple businesses' },
+    { name: 'REQUIRE_BUSINESS_1', message: 'These contacts have been added to ' },
+    { name: 'REQUIRE_BUSINESS_2', message: ' but require a business address' }
+
   ],
 
   properties: [
@@ -64,10 +85,10 @@ foam.CLASS({
       // find the service
       let service = null;
 
-      if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
+      if ( this.subject.user.integrationCode == this.IntegrationCode.XERO ) {
         service = this.xeroService;
       }
-      if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
+      if ( this.subject.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
         service = this.quickbooksService;
       }
 
@@ -83,43 +104,45 @@ foam.CLASS({
         return null;
       }
       if ( ! contactResult.result ) {
-        this.ctrl.notify(contactResult.reason, 'error');
+        this.ctrl.notify(contactResult.reason, '', this.LogLevel.ERROR, true);
       }
 
       // invoice sync
       let invoiceResult = await service.invoiceSync(null);
       if ( ! invoiceResult.result ) {
-        this.ctrl.notify(contactResult.reason, 'error');
+        this.ctrl.notify(contactResult.reason, '', this.LogLevel.ERROR, true);
       }
 
       // build final result
       let finalResult = contactResult.clone();
       finalResult.invoiceErrors = invoiceResult.invoiceErrors;
       finalResult.successInvoice = invoiceResult.successInvoice;
-      this.ctrl.notify('All information has been synchronized', 'success');
-      
+      this.ctrl.notify('All information has been synchronized', '', this.LogLevel.INFO, true);
+
       let report = this.AccountingResultReport.create();
-      report.userId = this.user.id;
+      report.userId = this.subject.user.id;
       report.time = new Date();
       report.resultResponse = finalResult;
-      report.integrationCode = this.user.integrationCode;
+      report.integrationCode = this.subject.user.integrationCode;
       this.accountingReportDAO.put(report);
 
-      this.userDAO.put(this.user);
+      this.userDAO.put(this.subject.user);
 
       return finalResult;
     },
 
 
     async function forceSyncInvoice(invoice) {
+      //TODO rename to findInvoice
+      //it should be in the list of services
       this.showIntegrationModal = false;
       let service = null;
       let accountingSoftwareName = null;
-      if ( this.XeroInvoice.isInstance(invoice) && this.user.id == invoice.createdBy &&(invoice.status == this.InvoiceStatus.UNPAID || invoice.status == this.InvoiceStatus.OVERDUE) ) {
+      if ( this.XeroInvoice.isInstance(invoice) && this.subject.user.id == invoice.createdBy &&(invoice.status == this.InvoiceStatus.UNPAID || invoice.status == this.InvoiceStatus.OVERDUE) ) {
         service = this.xeroService;
         accountingSoftwareName = 'Xero';
         this.redirectUrl = '/service/xeroWebAgent?portRedirect=';
-      } else if ( this.QuickbooksInvoice.isInstance(invoice) && this.user.id == invoice.createdBy &&(invoice.status == this.InvoiceStatus.UNPAID || invoice.status == this.InvoiceStatus.OVERDUE) ) {
+      } else if ( this.QuickbooksInvoice.isInstance(invoice) && this.subject.user.id == invoice.createdBy &&(invoice.status == this.InvoiceStatus.UNPAID || invoice.status == this.InvoiceStatus.OVERDUE) ) {
         service = this.quickbooksService;
         accountingSoftwareName = 'Quickbooks';
         this.redirectUrl = '/service/quickbooksWebAgent?portRedirect=';
@@ -134,7 +157,7 @@ foam.CLASS({
               accountingSoftwareName: accountingSoftwareName
             }));
           } else {
-            this.ctrl.notify(result.reason, 'error');
+            this.ctrl.notify(result.reason, '', this.LogLevel.ERROR, true);
           }
           return null;
         }
@@ -146,9 +169,9 @@ foam.CLASS({
     function callback() {
       if ( this.showIntegrationModal ) {
         let service = null;
-        if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
+        if ( this.subject.user.integrationCode == this.IntegrationCode.XERO ) {
           service = this.xeroService;
-        } else if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
+        } else if ( this.subject.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
           service = this.quickbooksService;
         }
         if ( service != null ) {
@@ -174,7 +197,7 @@ foam.CLASS({
       this.createInvoiceErrorsTables(reportResult.invoiceErrors, doc);
       this.createContactMismatchTable(reportResult.contactSyncMismatches, doc);
 
-      doc.save(this.user.integrationCode.label + ' sync report.pdf');
+      doc.save(this.subject.user.integrationCode.label + ' sync report.pdf');
     },
 
     function createContactMismatchTable(mismatch, doc) {
@@ -183,7 +206,7 @@ foam.CLASS({
       }
 
       let columns = [
-        { header: 'Business', dataKey: 'businessName' },
+        { header: 'Business', dataKey: 'organization' },
         { header: 'Name', dataKey: 'name' },
         { header: 'Message', dataKey: 'message' }
       ];
@@ -194,7 +217,7 @@ foam.CLASS({
 
       for ( let item of mismatch ) {
         data.push({
-          businessName: item.existContact.businessName,
+          organization: item.existContact.organization,
           name: item.existContact.firstName + ' ' + item.existContact.lastName,
           message: this.getMessage(item.resultCode.name)
         });
@@ -212,7 +235,7 @@ foam.CLASS({
 
     function createContactWarningTables(contactErrors, doc) {
       let columns = [
-        { header: 'Business', dataKey: 'businessName' },
+        { header: 'Business', dataKey: 'organization' },
         { header: 'Name', dataKey: 'name' }
       ];
       for ( let key of Object.keys(contactErrors) ) {
@@ -220,7 +243,7 @@ foam.CLASS({
           if ( contactErrors[key].length !== 0 ) {
               doc.text('Contact Sync Action Required', 14, doc.myY);
               doc.myY = doc.myY + 10;
-              doc.text('These contacts have been added to Ablii, but require a business address', 14, doc.myY);
+              doc.text(this.REQUIRE_BUSINESS_1 + this.theme.appName + this.REQUIRE_BUSINESS_2, 14, doc.myY);
               doc.myY = doc.myY + 7;
               doc.text('before you can pay them.', 14, doc.myY);
             doc.text('', 14, doc.myY);
@@ -241,7 +264,7 @@ foam.CLASS({
       let printTitle = true;
       let removeLastItem = false;
       let columns = [
-        { header: 'Business', dataKey: 'businessName' },
+        { header: 'Business', dataKey: 'organization' },
         { header: 'Name', dataKey: 'name' }
       ];
       for ( key of Object.keys(contactErrors) ) {

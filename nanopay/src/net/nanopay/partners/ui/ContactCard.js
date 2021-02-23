@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.partners.ui',
   name: 'ContactCard',
@@ -9,7 +26,7 @@ foam.CLASS({
 
   requires: [
     'foam.comics.DAOCreateControllerView',
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'foam.u2.PopupView',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
@@ -21,6 +38,7 @@ foam.CLASS({
   imports: [
     'invitationDAO',
     'invoiceDAO',
+    'notify',
     'stack',
     'user'
   ],
@@ -39,7 +57,7 @@ foam.CLASS({
       vertical-align: top;
       }
     ^ h5 {
-      font-family: 'Roboto';
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-weight: normal;
       letter-spacing: 0.2px;
       padding-bottom: 4px;
@@ -213,7 +231,7 @@ foam.CLASS({
         }).addClass('profilePicture').end()
         .start().addClass('companyInfoDiv')
           .start('h2').addClass('companyName')
-            .add(i.businessName ? i.businessName : '')
+            .add(i.organization ? i.organization : '')
           .end()
           .start('h2').addClass('companyAddress')
             .add(this.addressLine1)
@@ -235,8 +253,8 @@ foam.CLASS({
             .add(i.firstName + ' ' + i.lastName).end()
           .start('h5').addClass('contactInfoDetail').add(i.email).end()
           .start('h5').addClass('contactInfoDetail')
-            .add(i.phone.number ?
-              i.phone.number : '')
+            .add(i.phoneNumber ?
+              i.phoneNumber : '')
           .end()
         .end()
         .start().addClass(this.myClass('bottom-status'))
@@ -309,15 +327,10 @@ foam.CLASS({
       });
       try {
         await this.invitationDAO.put(invite);
-        this.add(this.NotificationMessage.create({
-          message: this.InviteSendSuccess,
-        }));
+        this.notify(this.InviteSendSuccess, '', this.LogLevel.INFO, true);
       } catch (err) {
         console.error(err);
-        this.add(this.NotificationMessage.create({
-          message: this.InviteSendError,
-          type: 'error',
-        }));
+        this.notify(this.InviteSendError, '', this.LogLevel.ERROR, true);
       }
     },
 
@@ -332,15 +345,10 @@ foam.CLASS({
 
         if ( result ) {
           this.status = undefined;
-          this.add(this.NotificationMessage.create({
-            message: this.DisconnectSuccess
-          }));
+          this.notify(this.DisconnectSuccess, '', this.LogLevel.INFO, true);
         }
       } catch (e) {
-        this.add(this.NotificationMessage.create({
-          message: this.DisconnectError,
-          type: 'error'
-        }));
+        this.notify(this.DisconnectError, '', this.LogLevel.ERROR, true);
       }
     }
   ],
@@ -352,11 +360,11 @@ foam.CLASS({
     },
     {
       name: 'InviteSendError',
-      message: 'There was a problem sending the invitation.'
+      message: 'There was a problem sending the invitation'
     },
     {
       name: 'DisconnectSuccess',
-      message: 'You have successfully disconnected.'
+      message: 'You have successfully disconnected'
     },
     {
       name: 'DisconnectError',

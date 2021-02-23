@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.onboarding.ui',
   name: 'WizardPageView',
@@ -6,6 +23,9 @@ foam.CLASS({
     'foam.u2.detail.SectionView',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
+  ],
+  imports: [
+    'theme'
   ],
   css: `
     ^ {
@@ -26,7 +46,7 @@ foam.CLASS({
     ^help {
       width: 331px;
       margin-top: 36px;
-      font-family: Lato;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 24px;
       font-weight: normal;
       line-height: 1.5;
@@ -38,7 +58,7 @@ foam.CLASS({
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      overflow: scroll;
+      overflow: auto;
       height: 100%;
       flex: 1;
       basis:0;
@@ -72,6 +92,7 @@ foam.CLASS({
   ],
   methods: [
     function initE() {
+      var help = this.section.help.replace('Ablii', this.theme.appName)
       this.SUPER();
       this.addClass(this.myClass())
         .start(this.Cols)
@@ -82,7 +103,7 @@ foam.CLASS({
               .addClass(this.myClass('joanne'))
             .end()
             .start('h1').addClass(this.myClass('help'))
-              .add(this.section$.dot('help'))
+              .add(help)
             .end()
           .end()
 

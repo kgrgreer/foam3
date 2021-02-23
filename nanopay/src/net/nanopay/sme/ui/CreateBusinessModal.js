@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'CreateBusinessModal',
@@ -6,6 +23,7 @@ foam.CLASS({
   documentation: 'Create new business modal',
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
     'net.nanopay.model.Business'
@@ -13,7 +31,7 @@ foam.CLASS({
 
   imports: [
     'businessDAO',
-    'countryDAO',
+    'permittedCountryDAO',
     'notify'
   ],
 
@@ -23,7 +41,7 @@ foam.CLASS({
       background: white;
       padding: 20px;
     }
-    .net-nanopay-sme-ui-AbliiActionView-closeModal {
+    .foam-u2-ActionView-closeModal {
       width: 60px;
       background: none !important;
       border: none !important;
@@ -38,7 +56,7 @@ foam.CLASS({
       text-align: center;
       margin-bottom: 20px;
     }
-    ^ .net-nanopay-sme-ui-AbliiActionView-create {
+    ^ .foam-u2-ActionView-create {
       float: right;
     }
     ^ .foam-u2-TextField, ^ .foam-u2-tag-Select {
@@ -66,7 +84,7 @@ foam.CLASS({
           objToChoice: function(a) {
             return [a.id, a.name];
           },
-          dao: X.data.countryDAO.where(E.IN(X.data.Country.ID, ['CA', 'US']))
+          dao: X.data.permittedCountryDAO
         }, X);
       },
       required: true,
@@ -82,8 +100,8 @@ foam.CLASS({
         this business on the switch business menu.`
     },
     { name: 'TITLE', message: 'Create a Business' },
-    { name: 'SUCCESS_MESSAGE', message: 'Business successfully created!' },
-    { name: 'ERROR_MESSAGE', message: 'Sorry, there was an error creating this business.' }
+    { name: 'SUCCESS_MESSAGE', message: 'Business successfully created' },
+    { name: 'ERROR_MESSAGE', message: 'There was an error creating this business' }
   ],
 
   methods: [
@@ -94,7 +112,7 @@ foam.CLASS({
         .start().addClass('content')
           .start('p').addClass('description').add(this.DESCRIPTION).end()
           .start().addClass('input-label').add(this.COMPANY_NAME.label).end()
-          .start(this.COMPANY_NAME).end()
+          .start(this.COMPANY_NAME).focus().end()
           .start().addClass('input-label').add(this.COUNTRY_ID.label).end()
           .start(this.COUNTRY_ID).end()
           .startContext({ data: this })
@@ -128,9 +146,9 @@ foam.CLASS({
         try {
           await this.businessDAO.put(business);
           this.updated = ! this.updated;
-          this.notify(this.SUCCESS_MESSAGE);
+          this.notify(this.SUCCESS_MESSAGE, '', this.LogLevel.INFO, true);
         } catch (e) {
-          this.notify(`${this.ERROR_MESSAGE} ${e}`, 'error');
+          this.notify(`${this.ERROR_MESSAGE} ${e}`, '', this.LogLevel.ERROR, true);
         }
         X.closeDialog();
       }

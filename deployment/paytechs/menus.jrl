@@ -1,0 +1,27 @@
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "rtp",
+  "label": "Requests To Pay",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"requestToPayDAO",
+      "browseTitle": "Requests to Pay",
+      "createTitle": "Create a New Request to Pay"
+    }
+  }
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "rtpLogin",
+  "serve":true,
+  "label": "Login",
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "net.nanopay.rtp.RtpFlinksView"
+    }
+  }
+})

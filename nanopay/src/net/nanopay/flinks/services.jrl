@@ -1,1 +1,101 @@
-p({"class":"foam.nanos.boot.NSpec","name":"flinksAccountsDetailResponseDAO",                   "serve":true,  "serviceScript":"foam.dao.DAO hashingJDAO = new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, net.nanopay.flinks.model.FlinksAccountsDetailResponse.getOwnClassInfo(), \"flinksAccountsDetailResponse\"); return new foam.nanos.auth.CreatedAwareDAO.Builder(x).setDelegate(new net.nanopay.flinks.MaskedFlinksAccountDAO.Builder(x).setDelegate(new net.nanopay.flinks.RefinedFlinksAccountDAO.Builder(x).setDelegate(new foam.dao.EasyDAO.Builder(x).setSeqNo(true).setInnerDAO(hashingJDAO).setName(\"flinksAccountsDetailResponse\").setOf(net.nanopay.flinks.model.FlinksAccountsDetailResponse.getOwnClassInfo()).build()).build()).build()).build();", "client":"{\"of\":\"net.nanopay.flinks.model.FlinksAccountsDetailResponse\"}"})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"flinksAuth",
+  "serve":true,
+  "boxClass":"net.nanopay.flinks.FlinksAuthSkeleton", 
+  "serviceClass":"net.nanopay.flinks.FlinksAuthService",
+  "client":"{\"class\":\"net.nanopay.flinks.ClientFlinksAuthService\",\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/flinksAuth\"}}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"flinksCredentials",
+  "lazy":false,
+  "service":{"class":"net.nanopay.flinks.model.FlinksCredentials"}
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "flinksResponseService",
+  "serve": true,
+  "serviceClass": "net.nanopay.flinks.FlinksResponseServer"
+})
+
+p({
+    "class":"foam.nanos.boot.NSpec",
+    "name":"flinksAccountsDetailResponseDAO",
+    "serve":true,
+    "serviceScript":"""
+      mdao = new foam.dao.MDAO(net.nanopay.flinks.model.FlinksAccountsDetailResponse.getOwnClassInfo());
+      inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "flinksAccountsDetailResponse", "true".equals(System.getProperty("CLUSTER")));
+      decorator = new net.nanopay.flinks.MaskedFlinksAccountDAO.Builder(x)
+        .setDelegate(new net.nanopay.flinks.RefinedFlinksAccountDAO.Builder(x)
+          .setDelegate(new foam.dao.NullDAO(x, net.nanopay.flinks.model.FlinksAccountsDetailResponse.getOwnClassInfo()))
+          .build())
+        .build();
+
+      return new foam.dao.EasyDAO.Builder(x)
+        .setOf(net.nanopay.flinks.model.FlinksAccountsDetailResponse.getOwnClassInfo())
+        .setSeqNo(true)
+        .setMdao(mdao)
+        .setInnerDAO(inner)
+        .setDecorator(decorator)
+        .build();
+    """, 
+    "client":"""
+        { 
+            "of":"net.nanopay.flinks.model.FlinksAccountsDetailResponse" 
+        }
+    """
+})
+
+p({
+    "class":"foam.nanos.boot.NSpec",
+    "name":"flinksLoginIdDAO",
+    "serve":true,
+    "serviceScript":"""
+      return new foam.dao.EasyDAO.Builder(x)
+        .setDecorator(new net.nanopay.flinks.external.FlinksLoginIdDAO.Builder(x)
+            .setDelegate(new foam.dao.NullDAO(x, net.nanopay.flinks.external.FlinksLoginId.getOwnClassInfo()))
+            .setOf(net.nanopay.flinks.external.FlinksLoginId.getOwnClassInfo())
+            .build())
+        .setPm(true)
+        .setGuid(true)
+        .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+        .setJournalName("flinksLoginIds")
+        .setOf(net.nanopay.flinks.external.FlinksLoginId.getOwnClassInfo())
+        .build();
+    """, 
+    "client":"""
+        { 
+            "of":"net.nanopay.flinks.external.FlinksLoginId" 
+        }
+    """
+})
+
+p({
+    "class":"foam.nanos.boot.NSpec",
+    "name":"flinksLoginIdAsyncDAO",
+    "serve":true,
+    "serviceScript":"""
+      return new foam.dao.EasyDAO.Builder(x)
+        .setDecorator(new net.nanopay.flinks.external.FlinksLoginIdAsyncDAO.Builder(x)
+            .setDelegate(new net.nanopay.flinks.external.CancelInProgressAsyncDAO.Builder(x)
+                .setDelegate(new foam.dao.NullDAO(x, net.nanopay.flinks.external.FlinksLoginIdRequest.getOwnClassInfo()))
+                .setOf(net.nanopay.flinks.external.FlinksLoginIdRequest.getOwnClassInfo())
+                .build())
+            .setOf(net.nanopay.flinks.external.FlinksLoginIdRequest.getOwnClassInfo())
+            .build())
+        .setPm(true)
+        .setGuid(true)
+        .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+        .setJournalName("flinksLoginIdAsyncRequests")
+        .setOf(net.nanopay.flinks.external.FlinksLoginIdRequest.getOwnClassInfo())
+        .build();
+    """, 
+    "client":"""
+        { 
+            "of":"net.nanopay.flinks.external.FlinksLoginIdAsync" 
+        }
+    """
+})

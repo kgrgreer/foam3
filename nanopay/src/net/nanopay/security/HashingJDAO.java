@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 package net.nanopay.security;
 
 import java.security.Security;
@@ -26,11 +43,11 @@ public class HashingJDAO
   }
 
   public HashingJDAO(X x, String algorithm, ClassInfo classInfo, String filename) {
-    this(x, algorithm, false, false, new MDAO(classInfo), filename);
+    this(x, algorithm, true, true, new MDAO(classInfo), filename);
   }
 
   public HashingJDAO(X x, boolean rollDigests, ClassInfo classInfo, String filename) {
-    this(x, "SHA-256", false, rollDigests, new MDAO(classInfo), filename);
+    this(x, "SHA-256", true, rollDigests, new MDAO(classInfo), filename);
   }
 
   public HashingJDAO(X x, String algorithm, boolean digestRequired, boolean rollDigests, ClassInfo classInfo, String filename) {
@@ -38,22 +55,26 @@ public class HashingJDAO
   }
 
   public HashingJDAO(X x, DAO delegate, String filename) {
-    this(x, "SHA-256", false, false, delegate, filename);
+    this(x, "SHA-256", true, true, delegate, filename);
   }
 
   public HashingJDAO(X x, String algorithm, DAO delegate, String filename) {
-    this(x, algorithm, false, false, delegate, filename);
+    this(x, algorithm, true, true, delegate, filename);
   }
 
   public HashingJDAO(X x, boolean rollDigests, DAO delegate, String filename) {
-    this(x, "SHA-256", false, rollDigests, delegate, filename);
+    this(x, "SHA-256", true, rollDigests, delegate, filename);
   }
 
   public HashingJDAO(X x, String algorithm, boolean rollDigests, DAO delegate, String filename) {
-    this(x, algorithm, false, rollDigests, delegate, filename);
+    this(x, algorithm, true, rollDigests, delegate, filename);
   }
 
   public HashingJDAO(X x, String algorithm, boolean digestRequired, boolean rollDigests, DAO delegate, String filename) {
+    this(x, algorithm, digestRequired, rollDigests, delegate, filename, false);
+  }
+
+  public HashingJDAO(X x, String algorithm, boolean digestRequired, boolean rollDigests, DAO delegate, String filename, boolean cluster) {
     setX(x);
     setOf(delegate.getOf());
     setDelegate(delegate);
@@ -68,22 +89,31 @@ public class HashingJDAO
     HashingJournal repo = new HashingJournal.Builder(resourceStorageX)
       .setFilename(filename + ".0")
       .setCreateFile(false)
-      .setAlgorithm(algorithm)
-      .setDigestRequired(digestRequired)
-      .setRollDigests(rollDigests)
+      .setDigestRequired(false)
+      .setMessageDigest(new MessageDigest.Builder(resourceStorageX)
+                        .setAlgorithm(algorithm)
+                        //.setProvider()
+                        .setRollDigests(false)
+                        .build())
       .build();
     repo.replay(x, delegate);
 
-    // replay runtime journal
-    setJournal(new HashingJournal.Builder(x)
-      .setAlgorithm(algorithm)
-      .setPreviousDigest(repo.getPreviousDigest())
-      .setDigestRequired(digestRequired)
-      .setRollDigests(rollDigests)
-      .setDao(delegate)
-      .setFilename(filename)
-      .setCreateFile(true)
-      .build());
-    getJournal().replay(x, delegate);
+    if ( cluster ) {
+      setJournal(new foam.dao.NullJournal.Builder(x).build());
+    } else {
+      // replay runtime journal
+      setJournal(new HashingJournal.Builder(x)
+                 .setDigestRequired(digestRequired)
+                 .setDao(delegate)
+                 .setFilename(filename)
+                 .setCreateFile(true)
+                 .setMessageDigest(new MessageDigest.Builder(x)
+                                   .setAlgorithm(algorithm)
+                                   //.setProvider()
+                                   .setRollDigests(rollDigests)
+                                   .build())
+                 .build());
+      getJournal().replay(x, delegate);
+    }
   }
 }

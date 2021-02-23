@@ -1,0 +1,1646 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://tempuri.org/">
+  <xs:import schemaLocation="Exchange_1.xsd" namespace="http://schemas.datacontract.org/2004/07/Exchange"/>
+  <xs:import schemaLocation="Exchange_1_2.xsd" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+  <xs:complexType name="KeepConnected">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_LOOP" type="xs:double"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="KeepConnectedResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="KeepConnectedResult" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateLibor">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_DATABS" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_TIPO" type="xs:short"/>
+      <xs:element minOccurs="0" name="CD_MOEDA" type="xs:int"/>
+      <xs:element minOccurs="0" name="CD_FONTE" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_LIBOR1D" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_LIBOR1M" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_LIBOR2M" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_LIBOR3M" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_LIBOR4M" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_LIBOR5M" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_LIBOR6M" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_LIBOR12M" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_PRIME" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateLiborResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="updateLiborResult" nillable="true" type="q1:ServiceStatus" xmlns:q1="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SaldoCCME">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_AGENCIA" type="xs:int"/>
+      <xs:element minOccurs="0" name="CD_CONTA" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_MOEDA" type="xs:int"/>
+      <xs:element minOccurs="0" name="CD_TITULAR" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_SUBTITULAR" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_DATABS" type="xs:dateTime"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SaldoCCMEResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="SaldoCCMEResult" nillable="true" type="q2:LctoContabil" xmlns:q2="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SaldoOperacoes">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_SISTEMA" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_AGENCIA" type="xs:int"/>
+      <xs:element minOccurs="0" name="CD_TIPO" type="xs:int"/>
+      <xs:element minOccurs="0" name="CD_NUMERO" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_VCTO" type="xs:int"/>
+      <xs:element minOccurs="0" name="CD_DATABS" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SaldoOperacoesResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="SaldoOperacoesResult" nillable="true" type="q3:ArrayOfdecimal" xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchDocumentos">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_BOLETO" type="xs:double"/>
+      <xs:element minOccurs="0" name="CD_CNPJCPF" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchDocumentosResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchDocumentosResult" nillable="true" type="q4:ArrayOfMo05" xmlns:q4="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertDocumentos">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_AGENCIA" type="xs:double"/>
+      <xs:element minOccurs="0" name="CD_BOLETO" type="xs:double"/>
+      <xs:element minOccurs="0" name="CD_CNPJCPF" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_OCORRENCIA" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_OCORRENCIAP" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_OCORRENCIAN" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_SITUACAO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_ORIGEM" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertDocumentosResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="insertDocumentosResult" nillable="true" type="q5:ServiceStatus" xmlns:q5="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Santander_InsertRodabmf">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_SENTIDO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_CODMSG" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_NUMTRLIF" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_XML" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Santander_InsertRodabmfResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Santander_InsertRodabmfResult" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Santander_SearchOperacoes">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="req" nillable="true" type="q6:RequestSantanderSearchOperacoes" xmlns:q6="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Santander_SearchOperacoesResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Santander_SearchOperacoesResult" nillable="true" type="q7:ResponseSantanderSearchOperacoes" xmlns:q7="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Santander_SearchContratos">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="req" nillable="true" type="q8:RequestSantanderSearchContratos" xmlns:q8="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Santander_SearchContratosResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Santander_SearchContratosResult" nillable="true" type="q9:ResponseSantanderSearchContratos" xmlns:q9="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ExtratoCCME">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_AGENCIA" type="xs:int"/>
+      <xs:element minOccurs="0" name="CD_CONTA" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_MOEDA" type="xs:int"/>
+      <xs:element minOccurs="0" name="CD_TITULAR" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_SUBTITULAR" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_DATAINICIO" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="CD_DATAFIM" type="xs:dateTime"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ExtratoCCMEResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ExtratoCCMEResult" nillable="true" type="q10:ArrayOfLctoContabil" xmlns:q10="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchClausula">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_CLAUSULA" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchClausulaResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchClausulaResult" nillable="true" type="q11:ResponseClausula" xmlns:q11="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertPraca">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dadosDb09" nillable="true" type="q12:Praca" xmlns:q12="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertPracaResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="insertPracaResult" nillable="true" type="q13:ServiceStatus" xmlns:q13="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updatePraca">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dadosDb09" nillable="true" type="q14:Praca" xmlns:q14="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updatePracaResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="updatePracaResult" nillable="true" type="q15:ServiceStatus" xmlns:q15="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="deletePraca">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_PRACA" type="xs:double"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="deletePracaResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="deletePracaResult" nillable="true" type="q16:ServiceStatus" xmlns:q16="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchPraca">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_PRACA" type="xs:double"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchPracaResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchPracaResult" nillable="true" type="q17:Praca" xmlns:q17="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertIndicesFinanceiros">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dadosDb06" nillable="true" type="q18:IndicesFinanceiros" xmlns:q18="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertIndicesFinanceirosResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="insertIndicesFinanceirosResult" nillable="true" type="q19:ServiceStatus" xmlns:q19="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertGerente">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dadosTitular" nillable="true" type="q20:Gerente" xmlns:q20="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertGerenteResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="insertGerenteResult" nillable="true" type="q21:ServiceStatus" xmlns:q21="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateGerente">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dadosTitular" nillable="true" type="q22:Gerente" xmlns:q22="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateGerenteResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="updateGerenteResult" nillable="true" type="q23:ServiceStatus" xmlns:q23="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="deleteGerente">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_GERENTE" type="xs:double"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="deleteGerenteResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="deleteGerenteResult" nillable="true" type="q24:ServiceStatus" xmlns:q24="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchGerente">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CODIGO" type="xs:double"/>
+      <xs:element minOccurs="0" name="CD_NOMEAB" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_CODIGOIN" type="xs:double"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchGerenteResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchGerenteResult" nillable="true" type="q25:ResponseGerente" xmlns:q25="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertDb01Cta">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dadosConta" nillable="true" type="q26:Db01Cta" xmlns:q26="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertDb01CtaResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="insertDb01CtaResult" nillable="true" type="q27:ServiceStatus" xmlns:q27="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateDb01Cta">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dadosConta" nillable="true" type="q28:Db01Cta" xmlns:q28="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateDb01CtaResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="updateDb01CtaResult" nillable="true" type="q29:ServiceStatus" xmlns:q29="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="deleteDb01Cta">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dadosConta" nillable="true" type="q30:Db01Cta" xmlns:q30="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="deleteDb01CtaResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="deleteDb01CtaResult" nillable="true" type="q31:ServiceStatus" xmlns:q31="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchDb01cta">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="TIPOCT" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TITULAR" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="MOEDA" type="xs:int"/>
+      <xs:element minOccurs="0" name="HASH" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="REGISTRO" type="xs:double"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchDb01ctaResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchDb01ctaResult" nillable="true" type="q32:ResponseDb01cta" xmlns:q32="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getToken">
+      <xs:sequence>
+        <xs:element minOccurs="0" name="agencia" nillable="true" type="xs:string"/>
+        <xs:element minOccurs="0" name="login" nillable="true" type="xs:string"/>
+        <xs:element minOccurs="0" name="senha" nillable="true" type="xs:string"/>
+        <xs:element minOccurs="0" name="numero" nillable="true" type="xs:string"/>
+      </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getTokenResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="getTokenResult" nillable="true" type="q33:ResponseToken" xmlns:q33="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="cotacaoTaxaCambio">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dataBase" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_MOEDA" type="xs:long"/>
+      <xs:element minOccurs="0" name="CD_TIPO" type="xs:int"/>
+      <xs:element minOccurs="0" name="CD_HORARIO" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="cotacaoTaxaCambioResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="cotacaoTaxaCambioResult" nillable="true" type="ResponseCotacaoTaxa" xmlns:q34="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ResponseCotacaoTaxa">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="TaxasCambio" nillable="true" type="tns:ArrayOfCotacaoTaxaCambio"/>
+      <xs:element minOccurs="0" name="serviceStatus" nillable="true" type="tns:ServiceStatus"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfCotacaoTaxaCambio">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="CotacaoTaxaCambio" nillable="true" type="tns:CotacaoTaxaCambio"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CotacaoTaxaCambio">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CLIENTEC" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CLIENTEV" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="COMERCIALC" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="COMERCIALV" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="DATA" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="HORARIO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="MOEDA" type="xs:int"/>
+      <xs:element minOccurs="0" name="PARIDADEC" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="PARIDADEV" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="TURISMOC" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="TURISMOV" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="cotacaoNaturezaTributos">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_NATUREZA" type="xs:double"/>
+      <xs:element minOccurs="0" name="CD_TIPO" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="cotacaoNaturezaTributosResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="cotacaoNaturezaTributosResult" nillable="true" type="q35:ResponseCotacaoNatureza" xmlns:q35="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="cotacaoTarifas">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_TITULAR" type="xs:double"/>
+      <xs:element minOccurs="0" name="CD_TIPOOP" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="cotacaoTarifasResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="cotacaoTarifasResult" nillable="true" type="q36:ResponseCotacaoTarifas" xmlns:q36="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="MUFG_RetornoHotScan">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ResponseType" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TRN" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="UserID" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="HSDate" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="MUFG_RetornoHotScanResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="MUFG_RetornoHotScanResult" nillable="true" type="q37:ResponseMUFGRetornoHotScan" xmlns:q37="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchExiste_Operador">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_AGENCIA" type="xs:int"/>
+      <xs:element minOccurs="0" name="CD_OPERADOR" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchExiste_OperadorResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchExiste_OperadorResult" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchExiste_Grupo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_GRUPO" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchExiste_GrupoResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchExiste_GrupoResult" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchExiste_GrupoOperador">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_AGENCIA" type="xs:int"/>
+      <xs:element minOccurs="0" name="CD_OPERADOR" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_GRUPO" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchExiste_GrupoOperadorResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchExiste_GrupoOperadorResult" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchOperador_Dados">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_AGENCIA" type="xs:int"/>
+      <xs:element minOccurs="0" name="CD_OPERADOR" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchOperador_DadosResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchOperador_DadosResult" nillable="true" type="q38:ResponseOperador" xmlns:q38="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchOperador_Transacoes">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_AGENCIA" type="xs:int"/>
+      <xs:element minOccurs="0" name="CD_OPERADOR" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchOperador_TransacoesResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchOperador_TransacoesResult" nillable="true" type="q39:ResponseTransacoes" xmlns:q39="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchGrupo_Transacoes">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_GRUPO" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchGrupo_TransacoesResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchGrupo_TransacoesResult" nillable="true" type="q40:ResponseTransacoes" xmlns:q40="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchGrupo_Operadores">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_GRUPO" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchGrupo_OperadoresResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchGrupo_OperadoresResult" nillable="true" type="q41:ResponseGrupo" xmlns:q41="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchListaGrupos">
+      <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="searchListaGruposResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchListaGruposResult" nillable="true" type="q42:ArrayOfGrupo" xmlns:q42="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchListaOperadores">
+      <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="searchListaOperadoresResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchListaOperadoresResult" nillable="true" type="q43:ArrayOfOperador" xmlns:q43="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Original_PesquisarOperacoesEmSer">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CNPJCPF" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CodigoInterno" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Original_PesquisarOperacoesEmSerResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Original_PesquisarOperacoesEmSerResult" nillable="true" type="q44:ResponseOriginalOperacoesEmSer" xmlns:q44="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchContrapartes_Codigobase">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_CODIGOBASE" type="xs:double"/>
+      <xs:element minOccurs="0" name="CD_CONTRAPARTE" type="xs:double"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchContrapartes_CodigobaseResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchContrapartes_CodigobaseResult" nillable="true" type="q45:ResponseContrapartes" xmlns:q45="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertTitular">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dadosTitular" nillable="true" type="Titular" xmlns:q46="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertTitularResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="insertTitularResult" nillable="true" type="ServiceStatus" xmlns:q47="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateTitular">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dadosTitular" nillable="true" type="Titular" xmlns:q48="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateTitularResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="updateTitularResult" nillable="true" type="ServiceStatus" xmlns:q49="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchTitular">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CODIGO" type="xs:double"/>
+      <xs:element minOccurs="0" name="CD_NOMEAB" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_CODIGOIN" type="xs:double"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchTitularResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchTitularResult" nillable="true" type="ResponseTitular" xmlns:q50="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchTitularCapFin">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CODIGO" type="xs:double"/>
+      <xs:element minOccurs="0" name="CD_NOMEAB" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchTitularCapFinResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchTitularCapFinResult" nillable="true" type="ResponseTitular" xmlns:q51="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchTitularLimPronto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CODIGO" type="xs:double"/>
+      <xs:element minOccurs="0" name="CD_NOMEAB" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchTitularLimProntoResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchTitularLimProntoResult" nillable="true" type="ResponseTitular" xmlns:q52="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertContraparte">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dadosTitular" nillable="true" type="q53:Contraparte" xmlns:q53="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertContraparteResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="insertContraparteResult" nillable="true" type="q54:ServiceStatus" xmlns:q54="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateContraparte">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dadosTitular" nillable="true" type="q55:Contraparte" xmlns:q55="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateContraparteResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="updateContraparteResult" nillable="true" type="q56:ServiceStatus" xmlns:q56="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertCl04">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dadosCl04" nillable="true" type="q57:RegistroCl04" xmlns:q57="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertCl04Response">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="insertCl04Result" nillable="true" type="q58:ServiceStatus" xmlns:q58="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateCl04_TesRetorno">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_REGISTRO" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_LOTE" type="xs:int"/>
+      <xs:element minOccurs="0" name="CD_TESRETORNO" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateCl04_TesRetornoResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="updateCl04_TesRetornoResult" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateCl04_Liberado">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_REGISTRO" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_LIBERADO" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateCl04_LiberadoResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="updateCl04_LiberadoResult" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Tesouraria">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_AGENCIA" type="xs:int"/>
+      <xs:element minOccurs="0" name="CD_DATABS" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TesourariaResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="TesourariaResult" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchMoeda">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_MOEDA" nillable="true" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchMoedaResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchMoedaResult" nillable="true" type="q59:ResponseMoeda" xmlns:q59="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchFeriado">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_PAIS" type="xs:double"/>
+      <xs:element minOccurs="0" name="CD_DATAI" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_DATAF" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchFeriadoResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchFeriadoResult" nillable="true" type="q60:ResponseFeriado" xmlns:q60="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchNatureza">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_NATUREZA" type="xs:double"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchNaturezaResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchNaturezaResult" nillable="true" type="ResponseNatureza" xmlns:q61="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchPais">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_PAIS" nillable="true" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchPaisResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchPaisResult" nillable="true" type="q62:ResponsePais" xmlns:q62="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchTaxasCambio">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dataInicio" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="dataFim" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="tipo" type="xs:short"/>
+      <xs:element minOccurs="0" name="CD_MOEDA" nillable="true" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchTaxasCambioResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchTaxasCambioResult" nillable="true" type="q63:ResponseTaxasCambio" xmlns:q63="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="InsertBoleto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dadosBoleto" nillable="true" type="Boleto" xmlns:q64="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="InsertBoletoResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="insertBoletoResult" nillable="true" type="q65:ServiceStatus" xmlns:q65="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertBoleto_CapApl">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dadosBoleto" nillable="true" type="q66:Boleto" xmlns:q66="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertBoleto_CapAplResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="insertBoleto_CapAplResult" nillable="true" type="q67:ServiceStatus" xmlns:q67="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="BoletoImagens">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dataInicio" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="dataFim" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="nrBoleto" type="xs:double"/>
+      <xs:element minOccurs="0" name="nrBoletoin" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="cdtipo" type="xs:short"/>
+      <xs:element minOccurs="0" name="cdsubtipo" type="xs:short"/>
+      <xs:element minOccurs="0" name="status" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="BoletoImagensResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="BoletoImagensResult" nillable="true" type="q68:ArrayOfImagens" xmlns:q68="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertBoleto_Alteracao">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dadosBoleto" nillable="true" type="q69:Boleto" xmlns:q69="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertBoleto_AlteracaoResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="insertBoleto_AlteracaoResult" nillable="true" type="q70:ServiceStatus" xmlns:q70="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertBoleto_Cancelamento">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dadosBoleto" nillable="true" type="q71:Boleto" xmlns:q71="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertBoleto_CancelamentoResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="insertBoleto_CancelamentoResult" nillable="true" type="q72:ServiceStatus" xmlns:q72="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertBoleto_Credoc">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dadosBoleto" nillable="true" type="q73:Boleto" xmlns:q73="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertBoleto_CredocResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="insertBoleto_CredocResult" nillable="true" type="q74:ServiceStatus" xmlns:q74="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertBoleto_Garantias">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dadosBoleto" nillable="true" type="q75:Boleto" xmlns:q75="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="insertBoleto_GarantiasResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="insertBoleto_GarantiasResult" nillable="true" type="q76:ServiceStatus" xmlns:q76="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateBoleto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dadosBoleto" nillable="true" type="q77:Boleto" xmlns:q77="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateBoletoResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="updateBoletoResult" nillable="true" type="q78:ServiceStatus" xmlns:q78="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateBoleto_OutrasEsp">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dadosBoleto" nillable="true" type="q79:Boleto" xmlns:q79="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name=" ">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="updateBoleto_OutrasEspResult" nillable="true" type="q80:ServiceStatus" xmlns:q80="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateBoleto_Monitorar">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_BOLETO" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_STATUS" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateBoleto_MonitorarResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="updateBoleto_MonitorarResult" nillable="true" type="q81:ServiceStatus" xmlns:q81="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateBoleto_Alcada">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_BOLETO" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_ALCADA" type="xs:short"/>
+      <xs:element minOccurs="0" name="CD_INFORMACAO" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateBoleto_AlcadaResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="updateBoleto_AlcadaResult" nillable="true" type="q82:ServiceStatus" xmlns:q82="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Santander_updateBoleto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dadosBoleto" nillable="true" type="q83:Boleto" xmlns:q83="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Santander_updateBoletoResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Santander_updateBoletoResult" nillable="true" type="q84:ServiceStatus" xmlns:q84="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="deleteBoleto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Boleto" type="xs:double"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="deleteBoletoResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="deleteBoletoResult" nillable="true" type="q85:ServiceStatus" xmlns:q85="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchBoleto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dataInicio" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="dataFim" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Titular" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="nrBoleto" type="xs:double"/>
+      <xs:element minOccurs="0" name="tipo" type="xs:int"/>
+      <xs:element minOccurs="0" name="subtipo" type="xs:int"/>
+      <xs:element minOccurs="0" name="concilia" type="xs:double"/>
+      <xs:element minOccurs="0" name="status" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="statuspg" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="segmento" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="rsisb" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="tpmesa" type="xs:int"/>
+      <xs:element minOccurs="0" name="refinterna" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchBoletoResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchBoletoResult" nillable="true" type="q86:ResponseBoleto" xmlns:q86="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchBoletoField">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dataInicio" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="dataFim" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Titular" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="nrBoleto" type="xs:double"/>
+      <xs:element minOccurs="0" name="tipo" type="xs:int"/>
+      <xs:element minOccurs="0" name="subtipo" type="xs:int"/>
+      <xs:element minOccurs="0" name="concilia" type="xs:double"/>
+      <xs:element minOccurs="0" name="status" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="statuspg" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="segmento" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="rsisb" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="tpmesa" type="xs:int"/>
+      <xs:element minOccurs="0" name="refinterna" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_CAMPO1" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_CAMPO2" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_CAMPO3" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_CAMPO4" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_CAMPO5" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchBoletoFieldResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchBoletoFieldResult" nillable="true" type="q87:ResponseBoletoField" xmlns:q87="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchBoletoAtualizado">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dataInicio" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="dataFim" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="Titular" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="nrBoleto" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="tipo" type="xs:int"/>
+      <xs:element minOccurs="0" name="subtipo" type="xs:int"/>
+      <xs:element minOccurs="0" name="concilia" type="xs:double"/>
+      <xs:element minOccurs="0" name="status" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="statuspg" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="segmento" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="rsisb" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="tpmesa" type="xs:int"/>
+      <xs:element minOccurs="0" name="refinterna" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchBoletoAtualizadoResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchBoletoAtualizadoResult" nillable="true" type="q88:ResponseBoleto" xmlns:q88="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="BoletoStatus">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dataInicio" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="dataFim" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="nrBoleto" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="nrBoletoin" type="xs:double"/>
+      <xs:element minOccurs="0" name="status" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="BoletoStatusResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="BoletoStatusResult" nillable="true" type="ArrayOfBoleto" xmlns:q89="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchOrdensRecebidas">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Cliente" type="xs:double"/>
+      <xs:element minOccurs="0" name="moeda" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchOrdensRecebidasResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchOrdensRecebidasResult" nillable="true" type="q90:ResponseOrdensRecebidas" xmlns:q90="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DominioVinculo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Codigo" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DominioVinculoResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DominioVinculoResult" nillable="true" type="q91:DomainVinculo" xmlns:q91="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchFluxoME">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dataInicio" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="dataFim" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="dataBase" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_MOEDA" nillable="true" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchFluxoMEResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchFluxoMEResult" nillable="true" type="q92:ResponseFluxoME" xmlns:q92="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchFluxoMN">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dataInicio" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="dataFim" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="dataBase" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="searchFluxoMNResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="searchFluxoMNResult" nillable="true" type="q93:ResponseFluxoMN" xmlns:q93="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Indusval_Sumario_Mesa">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Cliente" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="dataInicio" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="dataFim" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Indusval_Sumario_MesaResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Indusval_Sumario_MesaResult" nillable="true" type="q94:ResponseBoleto" xmlns:q94="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TributosCalcular">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CD_SERVICO" type="xs:int"/>
+      <xs:element minOccurs="0" name="CD_TRIBUTO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_DATAOP" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CD_AGENCIA" type="xs:long"/>
+      <xs:element minOccurs="0" name="CD_MOEDA" type="xs:long"/>
+      <xs:element minOccurs="0" name="CD_VALORME" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_TAXAOP" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_VALORMN" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_TAXAIR" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_IRREAJUSTA" type="xs:int"/>
+      <xs:element minOccurs="0" name="CD_TAXAIOF" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_TAXAISS" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_TAXAPIS" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_TAXACOFINS" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CD_TAXACIDE" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TributosCalcularResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="TributosCalcularResult" nillable="true" type="q95:ResponseTributo" xmlns:q95="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Cargill_Posicao">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="req" nillable="true" type="q96:RequestCargillPosicao" xmlns:q96="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Cargill_PosicaoResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Cargill_PosicaoResult" nillable="true" type="q97:ResponseCargillPosicao" xmlns:q97="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Cargill_Eventos">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="req" nillable="true" type="q98:RequestCargillEventos" xmlns:q98="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Cargill_EventosResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Cargill_EventosResult" nillable="true" type="q99:ResponseCargillEventos" xmlns:q99="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Boleto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AGENCIA" type="xs:int"/>
+      <xs:element minOccurs="0" name="ANO" type="xs:int"/>
+      <xs:element minOccurs="0" name="ASSINATURA" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="AVISO2" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BANCO" type="xs:string"/>
+      <xs:element minOccurs="0" name="BANCO2" type="xs:string"/>
+      <xs:element minOccurs="0" name="BANCO2NIF" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BANCOBEN0" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BANCOBEN1" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BANCOBEN2" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BANCOBEN3" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BANCOBEN4" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BANCOBEN5" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BANCOCC" type="xs:double"/>
+      <xs:element minOccurs="0" name="BANCOINT0" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BANCOINT1" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BANCOINT2" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BANCOINT3" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BANCOINT4" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BANCOINT5" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BANCOINT6" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BANCONIF" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BASEEN" type="xs:long"/>
+      <xs:element minOccurs="0" name="BBENCC" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="BOLETO" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="BTIME" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CAPTALIZA" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CARTAO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CIDEBASE" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CIDETAXA" type="xs:double"/>
+      <xs:element minOccurs="0" name="CIDEVALOR" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CLAUSULA01" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA01D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA02" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA02D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA03" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA03D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA04" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA04D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA05" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA05D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA06" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA06D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA07" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA07D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA08" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA08D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA09" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA09D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA10" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA10D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA11" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA11D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA12" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA12D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA13" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA13D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA14" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA14D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA15" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA15D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA16" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA16D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA17" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA17D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA18" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA18D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA19" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA19D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA20" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA20D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA21" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA21D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA22" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA22D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA23" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA23D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA24" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA24D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA25" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA25D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA26" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA26D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA27" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA27D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA28" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA28D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA29" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA29D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA30" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA30D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA31" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA31D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA32" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA32D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA33" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA33D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA34" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA34D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA35" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA35D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA36" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA36D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA37" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA37D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA38" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA38D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA39" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA39D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULA40" type="xs:short"/>
+      <xs:element minOccurs="0" name="CLAUSULA40D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CLAUSULAXX" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="CNPJPCPFCLIENTE" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CNPJPCPFCORRETOR" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CNPJPCPFINDICADOR" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CODCLI" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="COFINSBASE" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="COFINSTAXA" type="xs:double"/>
+      <xs:element minOccurs="0" name="COFINSVALOR" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CONCILIA" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTAME" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTRATO" type="xs:double"/>
+      <xs:element minOccurs="0" name="CUSTOLN" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="DATADC" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DATAEB" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DATAEF" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DATAEI" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DATAEN" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DATAFX" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DATALQ" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DATAME" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DATAMN" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DATAOP" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DATAROF" nillable="true" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="DATAV" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DAYTRADE" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DR" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DR2" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DR3" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DR4" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DR5" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ENCARGO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP1" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP10" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP11" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP12" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP13" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP14" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP15" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP16" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP17" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP18" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP19" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP2" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP20" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP21" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP22" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP23" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP24" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP25" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP26" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP27" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP28" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP29" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP3" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP30" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP4" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP5" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP6" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP7" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP8" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESP9" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="FIRCE1" type="xs:long"/>
+      <xs:element minOccurs="0" name="FIRCE2" type="xs:long"/>
+      <xs:element minOccurs="0" name="FIRCE3" type="xs:long"/>
+      <xs:element minOccurs="0" name="FLUXOME" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="FLUXOMN" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="FORMAEN" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="FORMAME" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="FORMAMN" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="GARANTIA" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="GARANTIA2" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="GARANTIA3" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="GARDET" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="GARDET2" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="GARDET3" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="GARPERC" type="xs:double"/>
+      <xs:element minOccurs="0" name="GARPERC2" type="xs:double"/>
+      <xs:element minOccurs="0" name="GARPERC3" type="xs:double"/>
+      <xs:element minOccurs="0" name="GERENTE" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="GIRO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IMPRESSO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="INDEN" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IOFBASE" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="IOFCONTA" type="xs:int"/>
+      <xs:element minOccurs="0" name="IOFTAXA" type="xs:double"/>
+      <xs:element minOccurs="0" name="IOFVALOR" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="IR" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IRBANCO" type="xs:int"/>
+      <xs:element minOccurs="0" name="IRBASE" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="IRDATA" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IRREAJUSTA" type="xs:int"/>
+      <xs:element minOccurs="0" name="IRRECOLHE" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="IRRESP" type="xs:int"/>
+      <xs:element minOccurs="0" name="IRTAXA" type="xs:double"/>
+      <xs:element minOccurs="0" name="ISSBASE" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="ISSTAXA" type="xs:double"/>
+      <xs:element minOccurs="0" name="ISSVALOR" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="JUROS" nillable="true" type="ArrayOfParcelas"/>
+      <xs:element minOccurs="0" name="JUSTIFICA" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="LEILAO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="LINKEDOP" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="MERCADORIA" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="MODALIDADE" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="MOEDA" type="xs:int"/>
+      <xs:element minOccurs="0" name="MOEDA2" type="xs:int"/>
+      <xs:element minOccurs="0" name="MOEDAEN" type="xs:long"/>
+      <xs:element minOccurs="0" name="MOEDAR" type="xs:long"/>
+      <xs:element minOccurs="0" name="MOEDAR2" type="xs:long"/>
+      <xs:element minOccurs="0" name="MOEDAR3" type="xs:long"/>
+      <xs:element minOccurs="0" name="MOEDAR4" type="xs:long"/>
+      <xs:element minOccurs="0" name="MOEDAR5" type="xs:long"/>
+      <xs:element minOccurs="0" name="NATUREZA" type="xs:double"/>
+      <xs:element minOccurs="0" name="NIF" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="NUMSEQCOR" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="OBSERVACAO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="OBSERVACAO2" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="OPERADOR" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="OPLINHA" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PAGACR" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PAGADOR" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PAGADORC" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PAGADORCADE" type="xs:long"/>
+      <xs:element minOccurs="0" name="PAGADORCD" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PAGADORE" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PAGADORORD1" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PAGADORORD2" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PAGADORORD3" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PAGADORS" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PAGADORUF" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PAGS" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PAIS" type="xs:long"/>
+      <xs:element minOccurs="0" name="PARIDADE" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="PERIEN" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PISBASE" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="PISTAXA" type="xs:double"/>
+      <xs:element minOccurs="0" name="PISVALOR" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="PLACEFX" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PLATBMF" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="POC" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PORTFOLIO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PRACA" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PRAZODC" type="xs:int"/>
+      <xs:element minOccurs="0" name="PRAZOL" type="xs:int"/>
+      <xs:element minOccurs="0" name="PRINCIPAL" nillable="true" type="ArrayOfParcelas"/>
+      <xs:element minOccurs="0" name="PROPOSTA" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="RATING" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="RDE" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="RDETPLIQ" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="REF1" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="REFINTERNA" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="REMETEDORA" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="RSISB" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SACADO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SEGMENTO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SIMBOLICO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SIMBOLICOCEP" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SIMBOLICOCIDADE" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SIMBOLICOCODIGO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SIMBOLICODATA" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SIMBOLICOENDERECO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SIMBOLICOESTADO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SIMBOLICONOME" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SIMBOLICOPAIS" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SIMBOLICOTIPO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SPREAD" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="STATUS" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="STATUSPG" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SUBTIPO" type="xs:int"/>
+      <xs:element minOccurs="0" name="SWIFT" type="xs:double"/>
+      <xs:element minOccurs="0" name="TAXACET" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="TAXAEN" type="xs:double"/>
+      <xs:element minOccurs="0" name="TAXANV" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="TAXANV2" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="TAXAOP" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="TAXAOP2" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="TIPO" type="xs:int"/>
+      <xs:element minOccurs="0" name="TIPOCT" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TIPOEV" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TIPOJR" type="xs:long"/>
+      <xs:element minOccurs="0" name="TIPOPF" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TOKEN" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TOTALEN" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="TPADTO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TPFIRCE" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TPMESA" type="xs:int"/>
+      <xs:element minOccurs="0" name="TPMESA2" type="xs:int"/>
+      <xs:element minOccurs="0" name="TPMESA2D" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TPMESAD" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TRANSITO" type="xs:int"/>
+      <xs:element minOccurs="0" name="TRANSMITE" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="VALOR2" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="VALORAD" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="VALORADPERC" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="VALORCR" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="VALOREN" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="VALORIN" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="VALORLQ" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="VALORME" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="VALORMN" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="VALORR" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="VALORR2" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="VALORR3" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="VALORR4" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="VALORR5" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="VALORROF" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="VINCULO" type="xs:int"/>
+      <xs:element minOccurs="0" name="YIELD" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Parcelas">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="banco" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="basis" type="xs:int"/>
+      <xs:element minOccurs="0" name="captaliza" type="xs:double"/>
+      <xs:element minOccurs="0" name="dataf" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="datai" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="datap" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="inden" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="moeda" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="perien" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="rate" type="xs:double"/>
+      <xs:element minOccurs="0" name="sequencia" type="xs:int"/>
+      <xs:element minOccurs="0" name="tipo" type="xs:long"/>
+      <xs:element minOccurs="0" name="valor" type="xs:double"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfParcelas">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Parcelas" nillable="true" type="Parcelas"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ServiceStatus">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CODRETORNO" type="xs:int"/>
+      <xs:element minOccurs="0" name="MENSAGEM" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="MENSAGEMEN" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="NRREFERENCE" type="xs:double"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ResponseBoleto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Boletos" nillable="true" type="ArrayOfBoleto"/>
+      <xs:element minOccurs="0" name="serviceStatus" nillable="true" type="ServiceStatus"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfBoleto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Boleto" nillable="true" type="Boleto"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Titular">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AGENCIA" type="xs:long"/>
+      <xs:element minOccurs="0" name="ATIVIDADE" type="xs:double"/>
+      <xs:element minOccurs="0" name="ATIVIDADE3" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ATIVO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="AUDITOR" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CELULAR" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CEP" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CEP2" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CIDADE" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CIDADE2" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CIVIL" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CODIGO" type="xs:double"/>
+      <xs:element minOccurs="0" name="CODIGOIN" type="xs:double"/>
+      <xs:element minOccurs="0" name="COMP" type="xs:double"/>
+      <xs:element minOccurs="0" name="CONJC" nillable="true" type="xs:double"/>
+      <xs:element minOccurs="0" name="CONJN" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA11" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA12" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA13" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA131" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA132" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA133" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA141" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA142" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA143" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA151" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA152" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA153" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA161" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA162" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA163" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA171" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA172" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA173" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA181" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA182" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA183" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA191" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA192" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA193" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA201" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA202" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA203" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA21" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA211" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA212" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA213" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA22" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA221" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA222" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA223" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA23" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA231" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA232" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA233" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA241" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA242" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA243" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA31" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA32" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA33" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA41" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA42" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA43" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA51" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA52" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA53" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA61" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA62" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA63" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA71" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA72" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA73" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA81" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA82" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTA83" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="CONTATO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="DATAAT" nillable="true" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="DATAN" nillable="true" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="DTFIM" nillable="true" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="DTINICIO" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="ENDERECO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ENDERECO2" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ENDERECON" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESTADO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="ESTADO2" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="FATURAMENT" type="xs:double"/>
+      <xs:element minOccurs="0" name="FAX" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="GERENTE" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="GRUPO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IBAN" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IBAN10" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IBAN2" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IBAN3" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IBAN4" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IBAN5" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IBAN6" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IBAN7" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IBAN8" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IBAN9" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="INDICADOR" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="INTERNET" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="IOF" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="LIMITEABPT" nillable="true" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="LIMITEDT" type="xs:long"/>
+      <xs:element minOccurs="0" name="LIMITEDT1" nillable="true" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="LIMITEDT2" nillable="true" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="LIMITEOP" type="xs:double"/>
+      <xs:element minOccurs="0" name="LIMITEPT" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="LIMITEQT" type="xs:long"/>
+      <xs:element minOccurs="0" name="LIMITEV1PT" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="MAE" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="MONITORAR" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="NOME" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="NOMEAB" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="NOMESRF" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="OCUPACAO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PAI" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PAIS" type="xs:long"/>
+      <xs:element minOccurs="0" name="PAISMT" type="xs:long"/>
+      <xs:element minOccurs="0" name="PEP1" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PEP2" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PEP3" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PEP4" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PORTE" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="PROCURACAO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="RADAR" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="REFINTERNA" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="RG" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="RGDATA" nillable="true" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="RGEMISSOR" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="RSISBACEN" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SEC" type="xs:long"/>
+      <xs:element minOccurs="0" name="SEXO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SPB" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="SUBTIPO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TAG" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TAG2" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TELEFONE" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TIPO" type="xs:int"/>
+      <xs:element minOccurs="0" name="TIPOLIM" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="TOKEN" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="UTILIZADO" type="xs:double"/>
+      <xs:element minOccurs="0" name="UTILIZADOPT" type="xs:double"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ResponseTitular">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="serviceStatus" nillable="true" type="ServiceStatus"/>
+      <xs:element minOccurs="0" name="titular" nillable="true" type="Titular"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Natureza">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="contrato" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="cp_Cide" type="xs:double"/>
+      <xs:element minOccurs="0" name="cp_Clausula1" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula10" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula11" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula12" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula13" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula14" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula15" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula16" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula17" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula18" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula19" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula2" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula20" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula21" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula22" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula23" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula24" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula25" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula26" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula27" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula28" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula29" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula3" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula30" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula31" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula32" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula33" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula34" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula35" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula36" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula37" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula38" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula39" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula4" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula40" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula5" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula6" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula7" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula8" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Clausula9" type="xs:int"/>
+      <xs:element minOccurs="0" name="cp_Cofins" type="xs:double"/>
+      <xs:element minOccurs="0" name="cp_Doc1" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="cp_Doc10" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="cp_Doc2" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="cp_Doc3" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="cp_Doc4" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="cp_Doc5" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="cp_Doc6" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="cp_Doc7" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="cp_Doc8" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="cp_Doc9" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="cp_Iof" type="xs:double"/>
+      <xs:element minOccurs="0" name="cp_Ir" type="xs:double"/>
+      <xs:element minOccurs="0" name="cp_Iss" type="xs:double"/>
+      <xs:element minOccurs="0" name="cp_Pis" type="xs:double"/>
+      <xs:element minOccurs="0" name="descricao" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="descricao2" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="natureza" type="xs:double"/>
+      <xs:element minOccurs="0" name="vd_Cide" type="xs:double"/>
+      <xs:element minOccurs="0" name="vd_Clausula1" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula10" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula11" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula12" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula13" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula14" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula15" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula16" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula17" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula18" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula19" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula2" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula20" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula21" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula22" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula23" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula24" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula25" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula26" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula27" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula28" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula29" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula3" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula30" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula31" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula32" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula33" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula34" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula35" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula36" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula37" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula38" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula39" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula4" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula40" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula5" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula6" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula7" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula8" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Clausula9" type="xs:int"/>
+      <xs:element minOccurs="0" name="vd_Cofins" type="xs:double"/>
+      <xs:element minOccurs="0" name="vd_Doc1" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="vd_Doc10" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="vd_Doc2" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="vd_Doc3" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="vd_Doc4" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="vd_Doc5" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="vd_Doc6" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="vd_Doc7" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="vd_Doc8" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="vd_Doc9" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="vd_Iof" type="xs:double"/>
+      <xs:element minOccurs="0" name="vd_Ir" type="xs:double"/>
+      <xs:element minOccurs="0" name="vd_Iss" type="xs:double"/>
+      <xs:element minOccurs="0" name="vd_Pis" type="xs:double"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ResponseNatureza">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="natureza" nillable="true" type="ArrayOfNatureza"/>
+      <xs:element minOccurs="0" name="serviceStatus" nillable="true" type="ServiceStatus"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfNatureza">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Natureza" nillable="true" type="Natureza"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Moeda">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="moeda" nillable="true" type="xs:long"/>
+      <xs:element minOccurs="0" name="nomeP" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="paridade" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="simbolo" nillable="true" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

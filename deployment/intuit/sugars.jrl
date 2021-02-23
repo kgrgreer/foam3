@@ -1,0 +1,22 @@
+p({
+    class:"foam.nanos.dig.SUGAR",
+    id:"Create Session Token",
+    createdBy:8023,
+    lastUpdatedBy:8023,
+    data:"""
+    {
+        "service":"sessionService",
+        "method":"createSessionWithTTL",
+        "interfaceName":"foam.nanos.session.SessionService",
+        "userId":--INSERT BUSINESS ID HERE--,
+        "agentId":--INSERT USER ID HERE--,
+        "ttl": 28800000
+    }
+    """,
+    description:"""'userId':  the ID of the business to act on behalf of
+'agentId': the ID of the user to act on behalf of
+'ttl': time in milliseconds
+========================================================
+Result:   use the sessionId returned in the bearer token for authentication
+    """
+})

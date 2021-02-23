@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.admin.ui',
   name: 'DisableProfileModal',
@@ -10,7 +27,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.ui.modal.ModalHeader',
   ],
@@ -20,6 +37,7 @@ foam.CLASS({
     'approvePopUp',
     'closeDialog',
     'editProfilePopUp',
+    'notify',
     'userDAO'
   ],
 
@@ -104,10 +122,10 @@ foam.CLASS({
           if ( ! result ) throw new Error('Unable to disable profile');
           X.closeDialog();
           self.data.copyFrom(result);
-          self.add(self.NotificationMessage.create({ message: 'Profile successfully disabled.' }));
+          self.notify('Profile successfully disabled.', '', self.LogLevel.INFO, true);
         })
         .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: 'Unable to disable profile.', type: 'error' }));
+          self.notify('Unable to disable profile', '', self.LogLevel.ERROR, true);
         });
       }
     }

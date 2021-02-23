@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'InvoiceRowView',
@@ -38,8 +55,9 @@ foam.CLASS({
     'ctrl',
     'currencyDAO',
     'notificationDAO',
+    'notify',
     'stack',
-    'user',
+    'subject',
     'xeroService',
     'quickbooksService',
     'accountingIntegrationUtil',
@@ -47,8 +65,8 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.notification.Notification',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.accounting.AccountingErrorCodes',
     'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.accounting.IntegrationCode',
@@ -125,8 +143,8 @@ foam.CLASS({
     },
     {
       name: 'isPayable',
-      expression: function(data, user) {
-        return data.payerId === user.id;
+      expression: function(data, subject) {
+        return data.payerId === subject.user.id;
       }
     },
     {
@@ -148,11 +166,11 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      var label = this.data.payeeId === this.user.id ?
-        this.data.payer.label() :
-        this.data.payee.label();
+      var label = this.data.payeeId === this.subject.user.id ?
+        this.data.payer.toSummary() :
+        this.data.payee.toSummary();
       var dueDateFormatted = this.data.dueDate ?
-        'Due ' + this.data.dueDate.toISOString().slice(0, 10) :
+        'Due ' + this.data.dueDate.toLocaleDateString(foam.locale) :
         '';
       this.currencyDAO.find(this.data.destinationCurrency)
         .then((currency) => {
@@ -197,7 +215,7 @@ foam.CLASS({
       });
       let responseObj = await this.canReceiveCurrencyDAO.put(request);
       if ( ! responseObj.response ) {
-        this.ctrl.notify(responseObj.message, 'error');
+        this.ctrl.notify(responseObj.message, '', this.LogLevel.ERROR, true);
         return;
       }
       let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(this.data);
@@ -216,17 +234,16 @@ foam.CLASS({
       event.stopPropagation();
 
       var notification = this.Notification.create();
-      notification.emailIsEnabled = true;
       // TODO: set email template when ready using 'emailName'
       notification.userId = this.data.payerId;
 
       try {
         await this.notificationDAO.put(notification);
-        var successMessage = this.REMINDER_SENT_SUCCESSFULLY.replace('${0}', this.data.payer.businessName || this.data.payer.label());
-        this.add(this.NotificationMessage.create({ message: successMessage }));
+        var successMessage = this.REMINDER_SENT_SUCCESSFULLY.replace('${0}', this.data.payer.businessName || this.data.payer.toSummary());
+        this.notify(successMessage, '', this.LogLevel.INFO, true);
       } catch (exception) {
-        var errorMessage = this.REMINDER_ERROR_MESSAGE.replace('${0}', this.data.payer.businessName || this.data.payer.label());
-        this.add(this.NotificationMessage.create({ message: errorMessage, type: 'error' }));
+        var errorMessage = this.REMINDER_ERROR_MESSAGE.replace('${0}', this.data.payer.businessName || this.data.payer.toSummary());
+        this.notify(errorMessage, '', this.LogLevel.ERROR, true);
         console.error(exception);
       }
     }

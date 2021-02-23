@@ -114,7 +114,7 @@ foam.CLASS({
     ^ .small-roboto{
       color: white;
       font-size: 14px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       line-height: 1.5;
       font-weight: 300;
     }
@@ -139,7 +139,7 @@ foam.CLASS({
       display: block;
       height: 600px;
       width: 600px;
-      overflow: scroll;
+      overflow: auto;
       background: white;
       margin-top: 20px;
     }
@@ -717,7 +717,7 @@ foam.CLASS({
   css: `
     ^ {
       width: 275px;
-      overflow: scroll;
+      overflow: auto;
       height: 575px;
       margin-top: 30px;
       font-weight: 300;
@@ -794,7 +794,7 @@ foam.CLASS({
     }
     ^ .boxTitle {
       opacity: 0.6;
-      font-family: 'Roboto';
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 20px;
       font-weight: 300;
       line-height: 20px;
@@ -812,7 +812,7 @@ foam.CLASS({
       border-radous: 2px;
       background-color: #59a5d5;
       border-radius: 2px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       line-height: 2.86;
       letter-spacing: 0.2px;
@@ -830,7 +830,7 @@ foam.CLASS({
       border-radius: 2px;
       // background-color: rgba(164, 179, 184, 0.1);
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-      font-family: 2px;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       line-height: 2.86;
       letter-spacing: 0.2px;

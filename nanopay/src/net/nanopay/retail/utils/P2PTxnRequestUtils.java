@@ -6,6 +6,7 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.mlang.sink.Count;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import java.security.AccessControlException;
@@ -28,7 +29,7 @@ public final class P2PTxnRequestUtils {
   }
 
   public static User getCurrentUser(X x) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
 
     if ( user == null ) {
       throw new AccessControlException("User is not logged in");

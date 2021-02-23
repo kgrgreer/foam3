@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.admin.ui',
   name: 'ReviewProfileView',
@@ -17,7 +34,7 @@ foam.CLASS({
     ^ h2 {
       height: 20px;
       opacity: 0.6;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 20px;
       font-weight: 300;
       font-style: normal;
@@ -115,7 +132,7 @@ foam.CLASS({
             .start('p').add(this.BusiNameLabel).addClass('wizardBoldLabel').end()
             .start('p').add(this.data.businessName$).end()
             .start('p').add(this.BusiPhoneLabel).addClass('wizardBoldLabel').end()
-            .start('p').add(this.data.phone.number$).end()
+            .start('p').add(this.data.phoneNumber$).end()
             .start('p').add(this.BusiWebsiteLabel).addClass('wizardBoldLabel').end()
             .start('p').add(this.data.website$).end()
             .start('p').add(this.BusiTypeLabel).addClass('wizardBoldLabel').end()
@@ -126,7 +143,7 @@ foam.CLASS({
             .start('p').add(this.data.businessRegistrationAuthority$).end()
             .start('p').add(this.BusiRegDateLabel).addClass('wizardBoldLabel').end()
             .start('p').add(this.data.businessRegistrationDate$.map(function (date) {
-              return ( date ) ? date.toISOString().substring(0, 10) : '';
+              return ( date ) ? date.toLocaleDateString(foam.locale) : '';
             })).end()
             .start('p').add(this.BusiAddressLabel).addClass('wizardBoldLabel').end()
             .start('p').add(
@@ -167,9 +184,9 @@ foam.CLASS({
                       .start('p').add('Email Address').addClass('wizardBoldLabel').end()
                       .start('p').add(data.email).end()
                       .start('p').add('Phone Number').addClass('wizardBoldLabel').end()
-                      .start('p').add(data.phone.number).end()
+                      .start('p').add(data.phoneNumber).end()
                       .start('p').add('Date of Birth').addClass('wizardBoldLabel').end()
-                      .start('p').add(data.birthday.toISOString().substring(0,10)).end()
+                      .start('p').add(data.birthday.toLocaleDateString(foam.locale)).end()
                       .start('p').add('Residential Address').addClass('wizardBoldLabel').end()
                       .start('p').add(
                         (data.address.suite

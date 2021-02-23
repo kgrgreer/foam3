@@ -6,7 +6,10 @@ import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import foam.core.*;
+import foam.dao.DAO;
 import foam.lib.json.OutputterMode;
+import foam.nanos.alarming.Alarm;
+import foam.nanos.alarming.AlarmReason;
 import foam.nanos.logger.Logger;
 import net.nanopay.kotak.model.paymentResponse.Acknowledgement;
 import net.nanopay.kotak.model.paymentResponse.AcknowledgementType;
@@ -243,6 +246,7 @@ public class KotakService extends ContextAwareSupport implements Kotak {
 
       token = response.getAccessToken();
     } catch (IOException e) {
+      ((DAO) getX().get("alarmDAO")).put(new Alarm.Builder(getX()).setName("Kotak getToken").setReason(AlarmReason.TIMEOUT).build());
       logger.error(e);
     }
 

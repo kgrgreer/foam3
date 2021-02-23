@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx.ruler',
   name: 'MicroDepositSent',
@@ -12,11 +29,11 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.User',
-    'foam.nanos.notification.Notification',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.payment.Institution',
     'net.nanopay.tx.cico.VerificationTransaction',
+    'net.nanopay.tx.ruler.MicroDepositSentNotification',
     'java.util.HashMap',
     'static foam.mlang.MLang.*'
   ],
@@ -38,7 +55,7 @@ foam.CLASS({
             AppConfig config = user.findGroup(x).getAppConfig(x);
 
             institutionName = institution == null ? null : institution.toSummary();
-            
+
             HashMap<String, Object> args = new HashMap<>();
             args.put("name", User.FIRST_NAME);
             args.put("institutionNumber", acc.getInstitutionNumber());
@@ -48,12 +65,13 @@ foam.CLASS({
             args.put("sendTo", User.EMAIL);
             args.put("link", config.getUrl());
 
-            Notification notification = new Notification.Builder(x)
-            .setBody(acc.toSummary() + " is processing ")
+            MicroDepositSentNotification notification = new MicroDepositSentNotification.Builder(x)
+            .setSummary(acc.toSummary())
             .setNotificationType("bankNotifications")
             .setEmailName("micro-deposit-sent")
             .setEmailArgs(args)
             .build();
+
             user.doNotify(x, notification);
 
           }

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.contacts.ui.modal',
   name: 'BusinessNameSearch',
@@ -19,21 +36,27 @@ foam.CLASS({
 
   imports: [
     'publicBusinessDAO',
-    'user'
+    'user',
+    'theme'
   ],
 
   sections: [
     {
       name: 'search',
       title: 'Search by Business Name',
-      subTitle: `Search a business on Ablii to add them to your
-      contacts.  For better results, search using their registered
-      business name and location.`
+      subTitle: function() {
+        return this.SEARCH_BUSINESS_1 + this.theme.appName + this.SEARCH_BUSINESS_2
+      }
     },
     {
       name: 'confirmation',
       title: ''
     }
+  ],
+
+  messages: [
+    { name:'SEARCH_BUSINESS_1', message:'Search a business on '},
+    { name:'SEARCH_BUSINESS_2', message:' to add them to your contacts. For better results, search using their registered business name and location.'}
   ],
 
   properties: [
@@ -48,7 +71,8 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.IconTextFieldView',
         icon: 'images/ablii/search.png',
-        onKey: true
+        onKey: true,
+        focused: true
       }
     },
     {

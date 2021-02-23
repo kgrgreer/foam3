@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'AbliiTransaction',
@@ -20,7 +37,11 @@ foam.CLASS({
     {
       name: 'PROHIBITED_MESSAGE',
       message: 'You do not have permission to pay invoices.'
-    }
+    },
+    {
+      name: 'DESCRIPTION',
+      message: 'Summary'
+    },
   ],
 
   methods: [
@@ -52,7 +73,7 @@ foam.CLASS({
         super.authorizeOnCreate(x);
 
         AuthService auth = (AuthService) x.get("auth");
-        if ( ! auth.check(x, "invoice.pay") ) {
+        if ( ! auth.check(x, "business.invoice.pay") || ! auth.check(x, "user.invoice.pay") ) {
           throw new AuthorizationException(PROHIBITED_MESSAGE);
         }
       `
@@ -68,7 +89,7 @@ foam.CLASS({
         super.authorizeOnUpdate(x, oldObj);
 
         AuthService auth = (AuthService) x.get("auth");
-        if ( ! auth.check(x, "invoice.pay") ) {
+        if ( ! auth.check(x, "business.invoice.pay") || ! auth.check(x, "user.invoice.pay") ) {
           throw new AuthorizationException(PROHIBITED_MESSAGE);
         }
       `
@@ -93,5 +114,15 @@ foam.CLASS({
         super.authorizeOnRead(x);
       `
     },
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function(x) {
+        return this.DESCRIPTION;
+      },
+      javaCode: `
+        return "Summary";
+      `
+    }
   ]
 });

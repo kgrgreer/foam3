@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.shared',
   name: 'SingleItemView',
@@ -139,14 +156,14 @@ foam.CLASS({
             .start('h3')
               .add(
                 this.type ?
-                    this.data.payee.label() :
-                    this.data.payer.label()
+                    this.data.payee.toSummary() :
+                    this.data.payer.toSummary()
               )
             .end()
             .start('h3')
               .add(
                 this.data.dueDate ?
-                    this.data.dueDate.toISOString().substring(0, 10) :
+                    this.data.dueDate.toLocaleDateString(foam.locale) :
                     ''
               )
             .end()
@@ -161,7 +178,7 @@ foam.CLASS({
                 return self.E()
                   .add(
                     self.data.paymentDate > Date.now() ?
-                        self.data.paymentDate.toISOString().substring(0, 10) :
+                        self.data.paymentDate.toLocaleDateString(foam.locale) :
                         status.label
                   )
                   .addClass('generic-status')

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.onboarding.b2b.ui',
   name: 'NextStepView',
@@ -6,10 +23,11 @@ foam.CLASS({
   documentation: 'next step view',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage'
+    'foam.log.LogLevel'
   ],
 
   imports: [
+    'notify',
     'user',
     'userDAO',
     'window'
@@ -46,7 +64,7 @@ foam.CLASS({
           X.window.location.reload();
         })
         .catch(function (err) {
-          X.add(X.NotificationMessage.create({ message: 'Sorry something went wrong.', type: 'error' }));
+          X.notify('Sorry something went wrong.', '', X.LogLevel.ERROR, true);
         });
       }
     }

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.liquidity.tx',
   name: 'TxLimitPredicate',
@@ -9,13 +26,16 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+
     'net.nanopay.account.Account',
     'net.nanopay.fx.FXTransaction',
+    'net.nanopay.model.Business',
     'net.nanopay.tx.DigitalTransaction',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.model.Business',
     'static foam.mlang.MLang.*',
+    'foam.util.SafetyUtil'
   ],
   properties: [
     {
@@ -24,9 +44,9 @@ foam.CLASS({
       name: 'entityType'
     },
     {
-      class: 'Long',
+      class: 'Object',
       name: 'id',
-      documentation: 'ID of the entity that is being limited.'
+      documentation: 'ID of the entity that is being limited. It could be accountId, userId, or businessId'
     },
     {
       class: 'Boolean',
@@ -42,7 +62,6 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-        // Retrieve the transaction
         Transaction tx = (Transaction) NEW_OBJ.f(obj);
 
         // Only check digital transactions
@@ -52,7 +71,7 @@ foam.CLASS({
         }
 
         // When there is no ID to match, always return false
-        if (this.getId() == 0) {
+        if (this.getId() == null) {
           return false;
         }
 
@@ -62,38 +81,38 @@ foam.CLASS({
           // When including children, use the custom predicate
           if (this.getIncludeChildAccounts()) {
             IsChildAccountPredicate isChildAccountPredicate = new IsChildAccountPredicate.Builder((X) obj)
-              .setParentId(this.getId())
+              .setParentId((String) this.getId())
               .build();
             return isChildAccountPredicate.f(account);
           }
 
           // Check if account IDs match exactly
-          return account.getId() == this.getId();
+          return SafetyUtil.equals(account.getId(), this.getId());
         }
 
         if (this.getSend()) {
           // When sending, retrieve the user/business from the context
-          User user = (User) ((X) obj).get("user");
+          User user = ((Subject) ((X) obj).get("subject")).getUser();
           if (this.getEntityType() == TxLimitEntityType.BUSINESS) {
-            return 
-              (user instanceof Business) ? user.getId() == this.getId() :
+            return
+              (user instanceof Business) ? SafetyUtil.equals((Long) user.getId(), this.getId()) :
               false;
           }
 
           // Retrieve the agent from the context
-          User agent = (User) ((X) obj).get("agent");
+          User agent = ((Subject) ((X) obj).get("subject")).getRealUser();
           if (this.getEntityType() == TxLimitEntityType.USER) {
-            return 
-              (user instanceof Business && agent != null) ? agent.getId() == this.getId() :
-              (user != null) ? user.getId() == this.getId() :
+            return
+              (user instanceof Business && agent != null) ? SafetyUtil.equals((Long) agent.getId(), this.getId()) :
+              (user != null) ? SafetyUtil.equals((Long) user.getId(), this.getId()) :
               false;
           }
         } else {
           // When receiving, lookup the user or business from the account
-          User user = account.findOwner((X) obj); 
+          User user = account.findOwner((X) obj);
           if (this.getEntityType() == TxLimitEntityType.USER ||
              (this.getEntityType() == TxLimitEntityType.BUSINESS && user instanceof Business)) {
-            return user.getId() == this.getId();
+            return SafetyUtil.equals((Long) user.getId(), this.getId());
           }
         }
 

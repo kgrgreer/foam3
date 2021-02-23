@@ -90,6 +90,11 @@ nanopay/src/net/nanopay/iso20022/*
 !nanopay/src/net/nanopay/iso20022/ISOTimeTest.js
 !nanopay/src/net/nanopay/iso20022/README.md
 
+# editor dump files
+Snap.*
+heapdump.*
+javacore.*
+
 # sha256 folder
 sha256/
 

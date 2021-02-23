@@ -14,6 +14,7 @@ import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankHolidayService;
 import net.nanopay.fx.ascendantfx.AscendantFXUser;
 import net.nanopay.invoice.model.BillingInvoice;
+import net.nanopay.tx.ComplianceTransaction;
 import net.nanopay.tx.InvoicedFeeLineItem;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
@@ -86,9 +87,14 @@ public class BillingInvoicesCron implements ContextAgent {
   private StringBuilder error_ = new StringBuilder();
 
   /**
+   * Spid to be billed
+   */
+  protected String spid_ = "nanopay";
+
+  /**
    * Error notification group id
    */
-  private String errorNotificationGroupId_ = "payment-ops";
+  protected String errorNotificationGroupId_ = spid_ + "-payment-ops";
 
   /**
    * BillingInvoice by payer/business
@@ -135,12 +141,25 @@ public class BillingInvoicesCron implements ContextAgent {
     error_.setLength(0);
     transactionDAO.where(AND(
       predicate_,
+      EQ(Transaction.SPID, spid_),
       EQ(Transaction.STATUS, TransactionStatus.COMPLETED),
       GTE(Transaction.CREATED, getDate(startDate_)),
       LT(Transaction.CREATED, getDate(endDate_.plusDays(1)))
     )).select(new AbstractSink() {
       public void put(Object obj, Detachable sub) {
         Transaction transaction = (Transaction) obj;
+
+        // Only want to charge fees on completed or declined Transaction chains
+        TransactionStatus state = transaction.getState(x);
+
+        Transaction ct = (Transaction) transactionDAO.find(AND(
+          EQ(Transaction.PARENT, transaction.getId()),
+          INSTANCE_OF(ComplianceTransaction.class)
+        ));
+        if ( ct != null && ct.getStatus() != TransactionStatus.COMPLETED ) {
+          return; 
+        }
+
         Account sourceAccount = transaction.findSourceAccount(x);
         if ( sourceAccount == null ) {
           error_.append(" . id: ").append(transaction.getId())
@@ -226,7 +245,6 @@ public class BillingInvoicesCron implements ContextAgent {
       if ( ! dryRun_ ) {
         ((DAO) x.get("localNotificationDAO")).put(
           new Notification.Builder(x)
-            .setEmailIsEnabled(true)
             .setBody(result_.toString())
             .setNotificationType("BillingInvoicesCron")
             .setGroupId(errorNotificationGroupId_)

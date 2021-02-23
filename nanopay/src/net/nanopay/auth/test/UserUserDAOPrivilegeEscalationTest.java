@@ -8,11 +8,7 @@ package net.nanopay.auth.test;
 
 import foam.core.X;
 import foam.dao.DAO;
-import foam.nanos.auth.AuthorizationException;
-import foam.nanos.auth.Group;
-import foam.nanos.auth.GroupPermissionJunction;
-import foam.nanos.auth.Permission;
-import foam.nanos.auth.User;
+import foam.nanos.auth.*;
 import foam.nanos.logger.Logger;
 import foam.util.Auth;
 
@@ -32,6 +28,7 @@ public class UserUserDAOPrivilegeEscalationTest
   User testUser = null;
   Logger logger = null;
   String TEST_MESSAGE = "";
+  String spid_ = "";
 
   @Override
   public void runTest(X x) {
@@ -44,6 +41,8 @@ public class UserUserDAOPrivilegeEscalationTest
     testGroup = null;
     testUser = null;
     logger = new foam.nanos.logger.PrefixLogger(new Object[] {"PreventPriviledgeEscalation"}, (Logger) x.get("logger"));
+    spid_ = generateId();
+    ((DAO) x.get("localServiceProviderDAO")).put(new ServiceProvider.Builder(x).setId(spid_).build());
 
     // Run the tests.
 
@@ -64,11 +63,11 @@ public class UserUserDAOPrivilegeEscalationTest
     } catch (Throwable e) {
       logger.error(e);
       e.printStackTrace();
-      test(false, "An unexpected exception was thrown. Some tests might not have been executed.");
+      test(false, "An unexpected exception was thrown. Some tests might not have been executed. "+e.getMessage());
     }
   }
   String generateId() {
-    return java.util.UUID.randomUUID().toString();
+    return java.util.UUID.randomUUID().toString().split("-")[0];
   }
 
   // Generate a test user and a group with the given permissions for them to be in.
@@ -83,6 +82,8 @@ public class UserUserDAOPrivilegeEscalationTest
     groupDAO.put(group);
 
     groupPermissionJunctionDAO.where(foam.mlang.MLang.EQ(GroupPermissionJunction.SOURCE_ID, groupId)).removeAll();
+
+    permissionIds.add("serviceprovider.read."+spid_);
 
     for ( String id : permissionIds ) {
       permissionDAO.where(foam.mlang.MLang.EQ(Permission.ID, id)).removeAll();
@@ -99,7 +100,7 @@ public class UserUserDAOPrivilegeEscalationTest
     User user = new User.Builder(x)
       .setEmail("ppet@example.com")
       .setGroup(groupId)
-      .setSpid("nanopay")
+      .setSpid(spid_)
       .build();
     user = (User) bareUserDAO.put(user);
     return Auth.sudo(x, user);
@@ -115,7 +116,7 @@ public class UserUserDAOPrivilegeEscalationTest
     groupDAO.remove(g);
 
     // Remove the user.
-    testUser = (User) testContext.get("user");
+    testUser = ((Subject) testContext.get("subject")).getUser();
     bareUserDAO.remove(testUser);
   }
 
@@ -203,7 +204,7 @@ public class UserUserDAOPrivilegeEscalationTest
       // Clean up.
       groupDAO.remove(g);
     } catch (AuthorizationException e) {
-      test(e.getMessage().equals("Permission denied. You cannot change the parent of a group if doing so grants that group permissions that you do not have."), "Users cannot set the parent of a group to a group containing a permission that isn't implied by one they already have.");
+      test(e.getMessage().equals("Permission denied. You cannot change the parent of a group."), "Users cannot set the parent of a group to a group containing a permission that isn't implied by one they already have.");
     }
 
     cleanUp(userContext);
@@ -276,7 +277,7 @@ public class UserUserDAOPrivilegeEscalationTest
       // Clean up.
       groupDAO.remove(g);
     } catch (AuthorizationException e) {
-      test(e.getMessage().equals("Permission denied. You cannot change the parent of a group if doing so grants that group permissions that you do not have."), "Users cannot set the parent of a group to a group containing a permission that isn't implied by one they already have.");
+      test(e.getMessage().equals("Permission denied. You cannot change the parent of a group."), "Users cannot set the parent of a group to a group containing a permission that isn't implied by one they already have.");
     }
 
     cleanUp(userContext);
@@ -290,7 +291,7 @@ public class UserUserDAOPrivilegeEscalationTest
     // Create a user for the test user to put.
     User u = new User.Builder(x)
       .setGroup("admin")
-      .setSpid("nanopay")
+      .setSpid(spid_)
       .setEmail("ppet+admin@example.com")
       .setDesiredPassword("!@#$ppet1234")
       .build();
@@ -330,7 +331,7 @@ public class UserUserDAOPrivilegeEscalationTest
     // Create a user for the test user to put.
     User u = new User.Builder(x)
       .setGroup("basicUser")
-      .setSpid("nanopay")
+      .setSpid(spid_)
       .setEmail("ppet+admin@example.com")
       .setFirstName("ppet")
       .setLastName("ppet")
@@ -378,7 +379,7 @@ public class UserUserDAOPrivilegeEscalationTest
 
     try {
       // Try to update the user's group to "admin".
-      User u = (User) ((User)userContext.get("user")).fclone();
+      User u = (User) ((Subject) userContext.get("subject")).getUser().fclone();
       u.setGroup("admin");
       u = (User) userDAO.inX(userContext).put(u);
 

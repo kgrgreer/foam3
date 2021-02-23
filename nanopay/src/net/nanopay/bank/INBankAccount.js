@@ -1,10 +1,29 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'INBankAccount',
-  label: 'India Bank Account',
+  label: 'India',
   extends: 'net.nanopay.bank.BankAccount',
 
   javaImports: [
+    'foam.nanos.iban.IBANInfo',
+    'foam.nanos.iban.ValidationIBAN',
     'foam.util.SafetyUtil',
     'java.util.regex.Pattern'
   ],
@@ -27,13 +46,13 @@ foam.CLASS({
     {
       name: 'country',
       value: 'IN',
-      createVisibility: 'HIDDEN'
+      visibility: 'RO'
     },
     {
       name: 'flagImage',
       label: '',
       value: 'images/flags/india.png',
-      createVisibility: 'HIDDEN'
+      visibility: 'RO'
     },
     {
       name: 'desc',
@@ -42,11 +61,11 @@ foam.CLASS({
       name: 'denomination',
       value: 'INR'
     },
-    { // REVIEW: remove
+    {
       name: 'institutionNumber',
       hidden: true
     },
-    { // REVIEW: remove
+    {
       name: 'branchId',
       hidden: true
     },
@@ -55,7 +74,7 @@ foam.CLASS({
       name: 'rbiLink',
       label: '',
       value: 'https://www.rbi.org.in/Scripts/IFSCMICRDetails.aspx',
-      section: 'accountDetails',
+      section: 'accountInformation',
       view: {
         class: 'net.nanopay.sme.ui.Link',
         data: this.value,
@@ -84,13 +103,13 @@ foam.CLASS({
           errorString: 'IFSC Code must be in the following format four letters, 0, 6 numbers. eg: ABCD0123456.'
         }
       ],
-      section: 'accountDetails'
+      section: 'accountInformation'
     },
     {
       class: 'String',
       name: 'beneAccountType',
-      label: 'Account Type',
-      section: 'accountDetails',
+      label: 'Account type',
+      section: 'accountInformation',
       view: {
         class: 'foam.u2.view.ChoiceView',
         placeholder: 'Please select',
@@ -134,58 +153,24 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.tx.AccountRelationship',
       label: 'Relationship with the contact',
-      view: {
-        class: 'foam.u2.view.ChoiceWithOtherView',
-        choiceView: {
-          class: 'foam.u2.view.ChoiceView',
-          placeholder: 'Please Select',
-          choices: [
-            'Employer/Employee',
-            'Contractor',
-            'Vendor/Client',
-            'Other'
-          ]
-        },
-        otherKey: 'Other'
-      },
-      validationPredicates: [
-        {
-          args: ['accountRelationship'],
-          predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.bank.INBankAccount.ACCOUNT_RELATIONSHIP, '');
-          },
-          errorString: 'Please specify your Relationship with the contact.'
-        }
-      ],
-      section: 'accountDetails'
+      visibility: 'HIDDEN'
     },
     {
       name: 'purposeCode',
       class: 'Reference',
       of: 'net.nanopay.tx.PurposeCode',
       label: 'Purpose of Transfer',
-      section: 'accountDetails',
-      validationPredicates: [
-        {
-          args: ['purposeCode'],
-          predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.bank.INBankAccount.PURPOSE_CODE, '');
-          },
-          errorString: 'Please enter a Purpose of Transfer.'
-        }
-      ],
-      view: function(_, x) {
-        return foam.u2.view.ChoiceWithOtherView.create({
-          choiceView: foam.u2.view.ChoiceView.create({
-            dao: x.purposeCodeDAO,
-            placeholder: 'Please select',
-            objToChoice: function(purposeCode) {
-              return [purposeCode.code, purposeCode.description];
-            }
-          }),
-          otherKey: 'Other'
-        });
-      }
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'iban',
+      required: false,
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'swiftCode',
+      required: false,
+      visibility: 'HIDDEN'
     }
   ],
 

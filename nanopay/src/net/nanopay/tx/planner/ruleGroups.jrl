@@ -1,61 +1,65 @@
 p({
-  "class":"foam.nanos.ruler.RuleGroup",
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"Planner"
+})
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"SecurityPlanner",
   "documentation":"Transaction Planning Engine (TPE) which deals with securities transactions",
-  "predicate":{
-    "class":"net.nanopay.tx.ruler.IsSecurityQuote"
-  },
-  "enabled":true
 })
 p({
-  "class":"foam.nanos.ruler.RuleGroup",
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"transactionPlanner",
   "documentation":"Transaction Planning Engine (TPE) which deals with cash transactions",
-  "predicate":
-  {
-    "class": "foam.mlang.predicate.Not",
-    "arg1":{
-      "class":"net.nanopay.tx.ruler.IsSecurityQuote",
-    }
-  },
-  "enabled":true
 })
 p({
-  "class":"foam.nanos.ruler.RuleGroup",
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"genericPlanner",
   "documentation":"TPE that makes plans for instant txns that can potentially print money such as in liquid",
-  "predicate":
-  {
-    "class": "foam.mlang.predicate.Not",
-    "arg1":{
-      "class":"net.nanopay.tx.ruler.IsSecurityQuote",
-    }
-  },
   "enabled":false
 })
 
 p({
-  "class":"foam.nanos.ruler.RuleGroup",
-  "id":"FeeEngine",
-  "documentation":"Fee Engine which deals with adding fees to transactions",
-  "enabled":true
-})
-
-p({
-  "class":"foam.nanos.ruler.RuleGroup",
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"AlternaPlanner",
   "documentation":"Alterna CICO operations",
-  "enabled":true
 })
 p({
-  "class":"foam.nanos.ruler.RuleGroup",
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"BMOPlanner",
   "documentation":"BMO CICO operations",
-  "enabled":true
 })
 p({
-  "class":"foam.nanos.ruler.RuleGroup",
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"RBCPlanner",
   "documentation":"RBC CICO operations",
-  "enabled":true
+})
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"KotakPlanner",
+  "documentation":"Kotak Transaction planning",
+  "enabled":false,
+})
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"TrevisoPlanner",
+  "documentation":"Treviso Transaction planning",
+  "enabled":false,
+})
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"SandBoxPlanner",
+  "documentation":"planning for instant bank to bank ",
+  "enabled":false
+})
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"LoanPlanner",
+  "documentation":"planning for loans ",
+  "enabled":false
+})
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"FeeEngine",
+  "documentation":"Fee Engine which deals with adding fees to transactions",
 })

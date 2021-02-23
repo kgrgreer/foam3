@@ -1,63 +1,4 @@
-p({"class":"foam.nanos.boot.NSpec", "name":"ascendantFX",                  "serviceScript":"return new net.nanopay.fx.ascendantfx.AscendantFXService(x);"})
-p({"class":"foam.nanos.boot.NSpec", "name":"ascendantFXService",                 "lazy":false,  "serve":true, "serviceScript":"return new net.nanopay.fx.ascendantfx.AscendantFXServiceProvider(x, x.get(\"ascendantFX\"));"})
 p({"class":"foam.nanos.boot.NSpec", "name":"localFXService",                  "serviceScript":"return new net.nanopay.fx.localfx.NanopayFXService.Builder(x).build();"})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"afexService",
-  "lazy":true,
-  "serve":false,
-  "serviceScript":"""
-    return new net.nanopay.fx.afex.AFEXService(x);
-  """
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"afexServiceProvider",
-  "lazy":false,
-  "serve":true,
-  "serviceScript":"""
-    return new net.nanopay.fx.afex.AFEXServiceProvider(x, x.get("afexService"));
-  """
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec", 
-  "name": "afexBusinessDAO",                  
-  "lazy": false,  
-  "serve": true,  
-  "serviceScript":
-  """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.fx.afex.AFEXBusiness.getOwnClassInfo())
-      .setSeqNo(true)
-      .setName("afexBusinessDAO")
-      .setJournalName("afexBusinesses")
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setAuthorize(false)
-      .build();
-  """, 
-  "client": "{\"of\":\"net.nanopay.fx.afex.AFEXBusiness\"}"
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec", 
-  "name": "afexBeneficiaryDAO",                  
-  "lazy": false,  
-  "serve": true,  
-  "serviceScript": 
-  """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.fx.afex.AFEXBeneficiary.getOwnClassInfo())
-      .setSeqNo(true)
-      .setJournalName("afexBeneficiaries")
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setAuthorize(false)
-      .build();
-  """, 
-  "client": "{\"of\":\"net.nanopay.fx.afex.AFEXBeneficiary\"}"
-})
 
 p({
   "class": "foam.nanos.boot.NSpec",
@@ -73,7 +14,7 @@ p({
     "class":"net.nanopay.fx.client.ClientFXService",
     "delegate":{
       "class":"foam.box.HTTPBox",
-      "url":"service/fxService"   
+      "url":"service/fxService"
     }
   }
 }
@@ -81,9 +22,9 @@ p({
 })
 
 p({
-  "class": "foam.nanos.boot.NSpec", 
-  "name": "fxQuoteDAO",                  
-  "serve": true,  
+  "class": "foam.nanos.boot.NSpec",
+  "name": "fxQuoteDAO",
+  "serve": true,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
@@ -94,7 +35,7 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setSeqNo(true)
       .build();
-  """, 
+  """,
   "client": "{\"of\":\"net.nanopay.fx.FXQuote\"}"
 })
 
@@ -106,10 +47,10 @@ p({
 })
 
 p({
-  "class": "foam.nanos.boot.NSpec", 
-  "name": "currencyFXServiceDAO",                 
-  "lazy": false,  
-  "serve": true, 
+  "class": "foam.nanos.boot.NSpec",
+  "name": "currencyFXServiceDAO",
+  "lazy": false,
+  "serve": true,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
@@ -124,50 +65,10 @@ p({
 })
 
 p({
-  "class": "foam.nanos.boot.NSpec", 
-  "name": "ascendantFXUserDAO",                  
-  "lazy": false,  
-  "serve": true,  
-  "serviceScript":
-  """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.fx.ascendantfx.AscendantFXUser.getOwnClassInfo())
-      .setPm(true)
-      .setSeqNo(true)
-      .setJournalName("ascendantfxusers")
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .build();
-  """, 
-  "client": "{\"of\":\"net.nanopay.fx.ascendantfx.AscendantFXUser\"}"
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec", 
-  "name": "ascendantUserPayeeJunctionDAO",                  
-  "lazy": false,  
-  "serve": true,  
-  "serviceScript":
-  """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.fx.ascendantfx.AscendantUserPayeeJunction.getOwnClassInfo())
-      .setPm(true)
-      .setSeqNo(true)
-      .setJournalName("ascendantUserPayeeJunctions")
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .build();
-  """, 
-  "client": "{\"of\":\"net.nanopay.fx.ascendantfx.AscendantUserPayeeJunction\"}"
-})
-
-p({"class":"foam.nanos.boot.NSpec", "name":"ascendantFXCredientials",         "lazy":false, "serve":false, "service":{"class":"net.nanopay.fx.ascendantfx.AscendantFXCredientials"}})
-
-p({"class":"foam.nanos.boot.NSpec", "name":"AFEXLogDAO",                 "lazy":false,  "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setOf(net.nanopay.fx.afex.AFEXLog.getOwnClassInfo()).setSeqNo(true).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"afexLogs\").build();","client":"{\"of\":\"net.nanopay.fx.afex.AFEXLog\"}" })
-
-p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "securityPriceDAO",
+  "name": "localSecurityPriceDAO",
   "lazy": false,
-  "serve": true,
+  "serve": false,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
@@ -179,6 +80,23 @@ p({
       .setAuthorize(false)
       .setRuler(false)
       .build();
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "securityPriceDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.fx.SecurityPrice.getOwnClassInfo())
+      .setInnerDAO(x.get("localSecurityPriceDAO"))
+      .setAuthorize(false)
+      .setRuler(false)
+      .setEnableInterfaceDecorators(false)
+      .build();
   """,
     "client": """
       {
@@ -186,6 +104,7 @@ p({
       }
   """
 })
+
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "fxProviderDAO",
@@ -202,4 +121,23 @@ p({
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.fx.FXProvider\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "fxSpotRateDAO",
+  "documentation": "In-memory, server-side only datastore for SPOT fx rate. Caching the SPOT rates to minimize number of calls to exchange providers.",
+  "serve": false,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.fx.ExchangeRate.getOwnClassInfo())
+      .setAuthorize(false)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setRuler(false)
+      .setCluster(false)
+      .setIndex(new foam.core.PropertyInfo[] { net.nanopay.fx.ExchangeRate.FROM_CURRENCY, net.nanopay.fx.ExchangeRate.TO_CURRENCY, net.nanopay.fx.ExchangeRate.FX_PROVIDER })
+      .build();
+  """
 })

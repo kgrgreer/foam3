@@ -27,7 +27,7 @@ foam.CLASS({
     padding: 24px;
   }
   ^ .labelContent {
-    font-family: Roboto;
+    font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 14px;
     font-weight: 300;
     letter-spacing: 0.2px;
@@ -37,7 +37,7 @@ foam.CLASS({
   ^ .headerTitle{
     width: 510px;
     height: 36px;
-    font-family: Avenir;
+    font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 24px;
     font-weight: 900;
     font-style: normal;

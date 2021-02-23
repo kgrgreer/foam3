@@ -8,10 +8,11 @@ import foam.core.ContextAgent;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import net.nanopay.fx.afex.AFEXBeneficiary;
 import net.nanopay.fx.afex.AFEXBeneficiaryComplianceTransaction;
-import net.nanopay.fx.afex.AFEXBusiness;
+import net.nanopay.fx.afex.AFEXUser;
 import net.nanopay.fx.afex.AFEXServiceProvider;
 import net.nanopay.fx.afex.FindBeneficiaryResponse;
 import net.nanopay.tx.model.Transaction;
@@ -20,7 +21,7 @@ import net.nanopay.tx.model.TransactionStatus;
 public class AFEXBeneficiaryStatusCron implements ContextAgent {
   private DAO afexBeneficiaryDAO;
   private Logger logger;
-  private DAO afexBusinessDAO;
+  private DAO afexUserDAO;
   private AFEXServiceProvider afexServiceProvider;
   private DAO txnDAO;
 
@@ -28,16 +29,17 @@ public class AFEXBeneficiaryStatusCron implements ContextAgent {
   public void execute(X x) {
     logger = (Logger) x.get("logger");
     afexBeneficiaryDAO = (DAO) x.get("afexBeneficiaryDAO");
-    afexBusinessDAO = (DAO) x.get("afexBusinessDAO");
+    afexUserDAO = (DAO) x.get("afexUserDAO");
     afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
     txnDAO = (DAO) x.get("localTransactionDAO");
 
     ArraySink sink = (ArraySink) afexBeneficiaryDAO.where(EQ(AFEXBeneficiary.STATUS, "Pending")).select(new ArraySink());
     List<AFEXBeneficiary> pendingBeneficiaries = sink.getArray();
     for (AFEXBeneficiary beneficiary : pendingBeneficiaries) {
-      AFEXBusiness afexBusiness =  (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, beneficiary.getOwner()));
-      if ( afexBusiness != null ) {
-        FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(beneficiary.getContact(),afexBusiness.getApiKey());
+      AFEXUser afexUser =  (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, beneficiary.getOwner()));
+      if ( afexUser != null ) {
+        User user = User.findUser(x, afexUser.getUser());
+        FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(beneficiary.getContact(),afexUser.getApiKey(), user.getSpid());
         if ( beneficiaryResponse != null ) {
           if ( beneficiaryResponse.getStatus().equals("Approved") ) {
             AFEXBeneficiary obj = (AFEXBeneficiary) beneficiary.fclone();

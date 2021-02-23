@@ -1,0 +1,62 @@
+p({
+  class:"foam.nanos.cron.Cron",
+  id:"Treviso Transaction Completion Cron",
+  description:"Move Treviso Transaction to Completed on Completion Date",
+  enabled:true,
+  code:"""
+    import net.nanopay.partner.treviso.cron.TrevisoTransactionStatusCron;
+    cron = new TrevisoTransactionStatusCron();
+    cron.execute(x);
+    print("done");
+  """,
+  schedule:{
+    class:"foam.nanos.cron.IntervalSchedule",
+    duration:{
+      class:"foam.nanos.cron.TimeHMS",
+      hour:0,
+      minute:15,
+      second:0
+    }
+  }
+})
+
+p({
+  class:"foam.nanos.cron.Cron",
+  id:"FepWeb Client on New Business Cron",
+  description:"Create FepWeb Client on New Business",
+  enabled:true,
+  code:"""
+    import net.nanopay.partner.treviso.cron.FepWebNewBusinessCron;
+    cron = new FepWebNewBusinessCron();
+    cron.execute(x);
+    print("done");
+  """,
+  schedule:{
+    class:"foam.nanos.cron.CronSchedule",
+    minute:38,
+    hour:-1,
+    dayOfMonth:-1,
+    month:-1,
+    dayOfWeek:-1,
+    second:38
+  }
+})
+
+p({
+  class:"foam.nanos.cron.Cron",
+  id:"ExchangeLimitTransactionCron",
+  description:"Check for stalled ExchangeLimitTransactions",
+  enabled:false,
+  code:"""
+    new net.nanopay.country.br.tx.ExchangeLimitTransactionCronAgent().execute(x);
+  """,
+  schedule:{
+    class:"foam.nanos.cron.IntervalSchedule",
+    duration:{
+      class:"foam.nanos.cron.TimeHMS",
+      hour:0,
+      minute:5,
+      second:0
+    }
+  }
+})

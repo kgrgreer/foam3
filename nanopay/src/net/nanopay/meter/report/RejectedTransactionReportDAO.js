@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.meter.report',
   name: 'RejectedTransactionReportDAO',
@@ -114,12 +131,12 @@ foam.CLASS({
                 .setState(transaction.getState(x))
                 .setType(transaction.getType())
                 .setSenderUserId(sender.getId())
-                .setSenderName(sender.label())
+                .setSenderName(sender.toSummary())
                 .setReceiverUserId(receiver.getId())
-                .setReceiverName(receiver.label())
-                .setSourceAmount(transaction.getAmount())
+                .setReceiverName(receiver.toSummary())
+                .setSourceAmount(-transaction.getTotal(x, transaction.getSourceAccount()))
                 .setSourceCurrency(transaction.getSourceCurrency())
-                .setDestinationAmount(transaction.getDestinationAmount())
+                .setDestinationAmount(transaction.getTotal(x, transaction.getDestinationAccount()))
                 .setDestinationCurrency(transaction.getDestinationCurrency())
                 .build();
                 decoratedSink.put(pr, null);
@@ -129,7 +146,7 @@ foam.CLASS({
           }
         });
 
-        return decoratedSink;
+        return sink;
       `
     }
   ]

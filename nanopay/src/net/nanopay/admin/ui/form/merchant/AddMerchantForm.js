@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.admin.ui.form.merchant',
   name: 'AddMerchantForm',
@@ -6,9 +23,9 @@ foam.CLASS({
   documentation: 'Pop up that extends WizardView for adding a merchant',
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.NotificationMessage',
@@ -19,6 +36,7 @@ foam.CLASS({
     'balanceDAO',
     'email',
     'formatCurrency',
+    'notify',
     'validatePhone',
     'validatePassword',
     'validateEmail',
@@ -53,23 +71,23 @@ foam.CLASS({
       var merchantInfo = this.viewData;
 
       if ( merchantInfo.firstName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
+        this.notify('First name cannot exceed 70 characters.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( merchantInfo.lastName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
+        this.notify('Last name cannot exceed 70 characters.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( !this.validatePhone(merchantInfo.phoneNumber) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
+        this.notify('Invalid phone number.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validatePassword(merchantInfo.password) ) {
-        this.add(this.NotificationMessage.create({ message: 'Password must be at least 6 characters long', type: 'error' }));
+        this.notify('Password must be at least 6 characters long.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( merchantInfo.password != merchantInfo.confirmPassword ) {
-        this.add(this.NotificationMessage.create({ message: 'Confirmation password does not match.', type: 'error' }));
+        this.notify('Confirmation password does not match.', '', this.LogLevel.ERROR, true);
         return false;
       }
 
@@ -79,39 +97,39 @@ foam.CLASS({
       var merchantInfo = this.viewData;
 
       if ( merchantInfo.businessName.length > 35 ) {
-        this.add(this.NotificationMessage.create({ message: 'Business name must be less than 35 characters.', type: 'error' }));
+        this.notify('Business name must be less than 35 characters.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateEmail(merchantInfo.companyEmail) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
+        this.notify('Invalid email address.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( merchantInfo.registrationNumber.length > 0 && ! this.validateTitleNumOrAuth(merchantInfo.registrationNumber) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid registration number.', type: 'error' }));
+        this.notify('Invalid registration number.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( merchantInfo.website.length > 0 && ! this.validateWebsite(merchantInfo.website) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid website.', type: 'error' }));
+        this.notify('Invalid website.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateStreetNumber(merchantInfo.streetNumber) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
+        this.notify('Invalid street number.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateAddress(merchantInfo.streetName) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
+        this.notify('Invalid street name.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( merchantInfo.addressLine.length > 0 && ! this.validateAddress(merchantInfo.addressLine) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid address line.', type: 'error' }));
+        this.notify('Invalid address line.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateCity(merchantInfo.city) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
+        this.notify('Invalid city name.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validatePostalCode(merchantInfo.postalCode, merchantInfo.country) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
+        this.notify('Invalid postal code.', '', this.LogLevel.ERROR, true);
         return false;
       }
 
@@ -148,7 +166,7 @@ foam.CLASS({
           ( merchantInfo.lastName == null || merchantInfo.lastName.trim() == '' ) ||
           ( merchantInfo.phoneNumber == null || merchantInfo.phoneNumber.trim() == '' ) ||
           ( merchantInfo.password == null || merchantInfo.password.trim() == '' ) ) {
-            this.add(this.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
+            this.notify('Please fill out all nececssary fields before proceeding.', '', this.LogLevel.ERROR, true);
             return;
           }
 
@@ -169,7 +187,7 @@ foam.CLASS({
           ( merchantInfo.streetName == null || merchantInfo.streetName.trim() == '' ) ||
           ( merchantInfo.city == null || merchantInfo.city.trim() == '' ) ||
           ( merchantInfo.postalCode == null || merchantInfo.postalCode.trim() == '' ) ) {
-            self.add(self.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
+            this.notify('Please fill out all nececssary fields before proceeding.', '', this.LogLevel.ERROR, true);
             return;
           }
 
@@ -186,7 +204,7 @@ foam.CLASS({
           this.balanceDAO.find(this.user.id).then(function(response) {
             var currentBalance = response;
             if ( merchantInfo.amount > currentBalance.balance ) {
-              self.add(self.NotificationMessage.create({ message: 'Amount entered is more than current balance', type: 'error' }));
+              self.notify('Amount entered is more than current balance.', '', this.LogLevel.ERROR, true);
               return;
             }
             if ( merchantInfo.amount == 0 || merchantInfo.amount == null ) {
@@ -200,9 +218,7 @@ foam.CLASS({
         if ( this.position == 3 ) {
           // Review
 
-          var merchantPhone = this.Phone.create({
-            number: merchantInfo.phoneNumber
-          });
+          var merchantPhone = merchantInfo.phoneNumber;
 
           var merchantAddress = this.Address.create({
             address1: merchantInfo.streetNumber + ' ' + merchantInfo.streetName,
@@ -235,15 +251,11 @@ foam.CLASS({
           });
 
           if ( newMerchant.errors_ ) {
-            this.add(this.NotificationMessage.create({ message: newMerchant.errors_[0][1], type: 'error' }));
-            return;
-          }
-          if ( merchantPhone.errors_ ) {
-            this.add(this.NotificationMessage.create({ message: newMerchant.errors_[0][1], type: 'error' }));
+            this.notify(newMerchant.errors_[0][1], '', this.LogLevel.ERROR, true);
             return;
           }
           if ( merchantAddress.errors_ ) {
-            this.add(this.NotificationMessage.create({ message: merchantAddress.errors_[0][1], type: 'error' }));
+            this.notify(merchantAddress.errors_[0][1], '', this.LogLevel.ERROR, true);
             return;
           }
 
@@ -257,18 +269,18 @@ foam.CLASS({
                 amount: merchantInfo.amount
               });
               return self.transactionDAO.put(transaction).then( function(response) {
-                self.add(self.NotificationMessage.create({ message: 'New merchant ' + merchantInfo.businessName + ' successfully added and value transfer sent.' }));
+                self.notify('New merchant ' + merchantInfo.businessName + ' sucessfully added and value transfer sent.', '', self.LogLevel.INFO, true);
                 self.subStack.push(self.views[self.subStack.pos + 1].view);
                 self.nextLabel = 'Done';
               });
             } else {
-              self.add(self.NotificationMessage.create({ message: 'New merchant ' + merchantInfo.businessName + ' successfully added.' }));
+              self.notify('New merchant ' + merchantInfo.businessName + ' successfully added.', '', self.LogLevel.INFO, true);
               self.subStack.push(self.views[self.subStack.pos + 1].view);
               self.nextLabel = 'Done';
               return;
             }
           }).catch(function(error) {
-            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+            self.notify(error.message, '', self.LogLevel.ERROR, true);
             return;
           });
         }

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.flinks.view.modalForm',
   name: 'FlinksModalPAD',
@@ -6,10 +23,10 @@ foam.CLASS({
   documentation: 'PAD form for Flinks',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'foam.u2.dialog.Popup',
     'net.nanopay.model.PadCapture',
-    'net.nanopay.ui.LoadingSpinner'
+    'foam.u2.LoadingSpinner'
   ],
 
   exports: [
@@ -26,6 +43,7 @@ foam.CLASS({
     'isConnecting',
     'notify',
     'padCaptureDAO',
+    'pushMenu',
     'stack',
     'user'
   ],
@@ -34,7 +52,7 @@ foam.CLASS({
     ^ {
       width: 504px;
       max-height: 80vh;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
     ^content {
       position: relative;
@@ -76,17 +94,17 @@ foam.CLASS({
 
   messages: [
     { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.' },
-    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.' },
-    { name: 'SUCCESS', message: 'Your bank account was successfully added.' },
+    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding' },
+    { name: 'SUCCESS', message: 'Your bank account was successfully added' },
     { name: 'INSTRUCTIONS', message: 'Connect to your account without signing in to online banking. Please ensure your details are entered properly.' },
-    { name: 'ERROR_FIRST', message: 'First name cannot be empty.' },
-    { name: 'ERROR_LAST', message: 'Last name cannot be empty.' },
-    { name: 'ERROR_FLENGTH', message: 'First name cannot exceed 70 characters.' },
-    { name: 'ERROR_LLENGTH', message: 'Last name cannot exceed 70 characters.' },
-    { name: 'ERROR_STREET_NAME', message: 'Invalid street number.' },
-    { name: 'ERROR_STREET_NUMBER', message: 'Invalid street name.' },
-    { name: 'ERROR_CITY', message: 'Invalid city name.' },
-    { name: 'ERROR_POSTAL', message: 'Invalid postal code.' }
+    { name: 'ERROR_FIRST', message: 'First name cannot be empty' },
+    { name: 'ERROR_LAST', message: 'Last name cannot be empty' },
+    { name: 'ERROR_FLENGTH', message: 'First name cannot exceed 70 characters' },
+    { name: 'ERROR_LLENGTH', message: 'Last name cannot exceed 70 characters' },
+    { name: 'ERROR_STREET_NAME', message: 'Invalid street number' },
+    { name: 'ERROR_STREET_NUMBER', message: 'Invalid street name' },
+    { name: 'ERROR_CITY', message: 'Invalid city name' },
+    { name: 'ERROR_POSTAL', message: 'Invalid postal code' }
   ],
 
   methods: [
@@ -116,19 +134,19 @@ foam.CLASS({
     function validateInputs() {
       var user = this.viewData.user;
       if ( user.firstName.trim() === '' ) {
-        this.notify(this.ERROR_FIRST, 'error');
+        this.notify(this.ERROR_FIRST, '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( user.lastName.trim() === '' ) {
-        this.notify(this.ERROR_LAST, 'error');
+        this.notify(this.ERROR_LAST, '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( user.firstName.length > 70 ) {
-        this.notify(this.ERROR_FLENGTH, 'error');
+        this.notify(this.ERROR_FLENGTH, '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( user.lastName.length > 70 ) {
-        this.notify(this.ERROR_LLENGTH, 'error');
+        this.notify(this.ERROR_LLENGTH, '', this.LogLevel.ERROR, true);
         return false;
       }
       return true;
@@ -152,21 +170,20 @@ foam.CLASS({
             accountNumber: account.accountNumber
           }));
           account.address = user.address;
+          account.verifiedBy = "FLINKS";
           await this.bankAccountDAO.put(account);
         } catch (error) {
-          this.notify(error.message, 'error');
+          this.notify(error.message, '', this.LogLevel.ERROR, true);
           return;
         } finally {
           this.isConnecting = false;
         }
-        this.ctrl.notify(this.SUCCESS);
+        this.ctrl.notify(this.SUCCESS, '', this.LogLevel.INFO, true);
         if ( this.onComplete ) this.onComplete();
         this.closeDialog();
-        location.hash = 'sme.main.banking';
+        location.hash = 'mainmenu.banking';
         this.bannerizeCompliance();
-        this.stack.push({
-          class: 'net.nanopay.bank.BankAccountController'
-        });
+        this.pushMenu('mainmenu.banking');
       }
     }
   ],

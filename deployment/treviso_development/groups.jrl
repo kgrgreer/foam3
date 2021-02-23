@@ -1,0 +1,5 @@
+p({class:"foam.nanos.auth.Group",id:"treviso-admin",url:"https://treviso.backoffice.development.nanopay.net"})
+p({class:"foam.nanos.auth.Group",id:"treviso-fraud-ops",url:"https://treviso.backoffice.development.nanopay.net"})
+p({class:"foam.nanos.auth.Group",id:"treviso-payment-ops",url:"https://treviso.backoffice.development.nanopay.net"})
+p({class:"foam.nanos.auth.Group",id:"treviso-support",url:"https://treviso.backoffice.development.nanopay.net"})
+p({class:"foam.nanos.auth.Group",id:"treviso-sme",url:"https://treviso.development.nanopay.net"})

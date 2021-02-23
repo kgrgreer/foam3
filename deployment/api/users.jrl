@@ -1,0 +1,20 @@
+p({
+    "class":"foam.nanos.auth.User",
+    "id":8021,
+    "firstName":"Neil",
+    "lastName":"T",
+    "jobTitle":"Treasurer",
+    "organization":"Acme",
+    "email":"neil@acme.com",
+    "password":"rjS7gfPL5Aw=:oRLD/6/Hqj4bniLQBcwxCJGavlq7h6eBqf0awzXT/GdOu+JEiQnyIp0tIqWL8xya17z+Ug3w6E4TTcsJilmV9Q==",
+    "passwordLastModified":"2019-10-11T20:18:57.186Z",
+    "created":"2019-10-11T20:18:57.186Z",
+    "lastModified":"2019-10-11T20:18:57.186Z",
+    "nextLoginAttemptAllowedAt":"2019-10-11T20:18:57.186Z",
+    "lastModifiedBy":1348,
+    "createdBy":1348,
+    "spid":"nanopay",
+    "group":"api-base",
+    "emailVerified":true,
+    "lifecycleState":1
+})

@@ -1,10 +1,28 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.history',
   name: 'InvoiceReceivedHistoryItemView',
   extends: 'foam.u2.View',
 
   implements: [
-    'foam.u2.history.HistoryItemView'
+    'foam.u2.history.HistoryItemView',
+    'net.nanopay.invoice.util.InvoiceHistoryUtility'
   ],
 
   requires: [
@@ -16,6 +34,7 @@ foam.CLASS({
   imports: [
     'invoiceDAO',
     'userDAO',
+    'user'
   ],
 
   properties: [
@@ -34,7 +53,7 @@ foam.CLASS({
       padding-left: 40px;
     }
     ^ .statusDate {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 8px;
       line-height: 1.33;
       letter-spacing: 0.1px;
@@ -43,7 +62,7 @@ foam.CLASS({
       position: relative;
     }
     ^ .statusTitle {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       line-height: 1.33;
       letter-spacing: 0.2px;
@@ -54,10 +73,8 @@ foam.CLASS({
   methods: [
     async function outputRecord(parentView, record) {
       var invoice = await this.invoiceDAO.find(record.objectId);
-      var user = invoice.createdBy === invoice.payer.id ?
-        invoice.payer :
-        invoice.payee;
-      this.name = user.label();
+      // check which name should use agent name or business name
+      this.name = this.getDisplayName(record, this.user, invoice);
 
       return parentView
         .addClass(this.myClass())
@@ -79,14 +96,6 @@ foam.CLASS({
             .end()
           .end()
         .end();
-    },
-
-    function formatDate(timestamp) {
-      var locale = 'en-US';
-      return timestamp.toLocaleTimeString(locale, { hour12: false }) +
-        ' ' + timestamp.toLocaleString(locale, { month: 'short' }) +
-        ' ' + timestamp.getDate() +
-        ' ' + timestamp.getFullYear();
     }
   ]
 });

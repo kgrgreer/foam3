@@ -1,10 +1,28 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.history',
   name: 'InvoiceStatusHistoryItemView',
   extends: 'foam.u2.View',
 
   implements: [
-    'foam.u2.history.HistoryItemView'
+    'foam.u2.history.HistoryItemView',
+    'net.nanopay.invoice.util.InvoiceHistoryUtility'
   ],
 
   requires: [
@@ -14,13 +32,19 @@ foam.CLASS({
   ],
 
   imports: [
-    'invoiceDAO'
+    'invoiceDAO',
+    'subject'
   ],
 
   documentation: 'View for displaying history for invoice status',
 
+  messages: [
+    { name: 'INVOICE_STATUS_CHANGED_TO', message: 'Invoice status changed to ' }
+  ],
+
   properties: [
-    'paymentDate'
+    'paymentDate',
+    'name'
   ],
 
   css: `
@@ -40,7 +64,7 @@ foam.CLASS({
       padding-left: 40px;
     }
     ^ .statusDate {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 8px;
       line-height: 1.33;
       letter-spacing: 0.1px;
@@ -49,7 +73,7 @@ foam.CLASS({
       position: relative;
     }
     ^ .statusTitle {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       line-height: 1.33;
       letter-spacing: 0.2px;
@@ -58,87 +82,6 @@ foam.CLASS({
   `,
 
   methods: [
-    function getAttributes(record) {
-      var status = record.updates.find((u) => u.name === 'status');
-
-      if ( status === undefined ) return null;
-
-      switch ( status.newValue ) {
-        case this.InvoiceStatus.VOID:
-          return {
-            labelText: this.InvoiceStatus.VOID.label,
-            labelDecoration: 'Invoice-Status-Void',
-            icon: 'images/ic-void.svg'
-          };
-        case this.InvoiceStatus.FAILED:
-          return {
-            labelText: this.InvoiceStatus.FAILED.label,
-            labelDecoration: 'Invoice-Status-Void',
-            icon: 'images/ic-void.svg'
-          };
-        case this.InvoiceStatus.PROCESSING:
-          return {
-            labelText: this.InvoiceStatus.PROCESSING.label,
-            labelDecoration: 'Invoice-Status-Processing',
-            icon: 'images/ic-pending.svg',
-          };
-        case this.InvoiceStatus.PAID:
-          return {
-            labelText: this.InvoiceStatus.PAID.label,
-            labelDecoration: 'Invoice-Status-Paid',
-            icon: 'images/ic-approve.svg'
-          };
-        case this.InvoiceStatus.SCHEDULED:
-          return {
-            labelText: this.InvoiceStatus.SCHEDULED.label,
-            labelDecoration: 'Invoice-Status-Scheduled',
-            icon: 'images/ic-scheduled.svg'
-          };
-        case this.InvoiceStatus.OVERDUE:
-          return {
-            labelText: this.InvoiceStatus.OVERDUE.label,
-            labelDecoration: 'Invoice-Status-Overdue',
-            icon: 'images/ic-overdue.svg'
-          };
-        case this.InvoiceStatus.UNPAID:
-          return {
-            labelText: this.InvoiceStatus.UNPAID.label,
-            labelDecoration: 'Invoice-Status-Unpaid',
-            icon: 'images/ic-scheduled.svg'
-          };
-        case this.InvoiceStatus.PENDING_APPROVAL:
-          var user = ctrl.user;
-          var currentUser = `${user.lastName}, ${user.firstName}(${user.id})`;
-          if ( record.user === currentUser ) {
-            return {
-              labelText: this.InvoiceStatus.PENDING_APPROVAL.label,
-              labelDecoration: 'Invoice-Status-Pending-approval',
-              icon: 'images/ic-scheduled.svg'
-            };
-          } else return null;
-        case this.InvoiceStatus.PENDING_ACCEPTANCE:
-          return {
-            labelText: this.InvoiceStatus.PENDING_ACCEPTANCE.label,
-            labelDecoration: 'Invoice-Status-Pending-approval',
-            icon: 'images/ic-scheduled.svg'
-          };
-        case this.InvoiceStatus.DEPOSITING_MONEY:
-          return {
-            labelText: this.InvoiceStatus.DEPOSITING_MONEY.label,
-            labelDecoration: 'Invoice-Status-Pending-approval',
-            icon: 'images/ic-scheduled.svg'
-          };
-      }
-    },
-
-    function formatDate(timestamp, displayTime=true) {
-      var locale = 'en-US';
-      var time = displayTime ? `${timestamp.toLocaleTimeString(locale, { hour12: false })}s ` : '';
-      return time
-        + `${timestamp.toLocaleString(locale, { month: 'short' })} `
-        + `${timestamp.getDate()} `
-        + timestamp.getFullYear();
-    },
 
     async function outputRecord(parentView, record) {
       const attributes = this.getAttributes(record);
@@ -153,10 +96,16 @@ foam.CLASS({
       const displayDate = hasDisplayDate ? new Date(paymentDateUpdate.newValue) : null;
 
       const invoice = await this.invoiceDAO.find(record.objectId);
-      // name of the payee
-      const payee = await invoice.payee.label();
+
+      this.name = this.getDisplayName(record, this.subject.user, invoice);
+
+      const payee = invoice.payee.id === this.subject.user.id ? this.name : invoice.payee.toSummary();
       // a flag for checking if the invoice was completed by the payee
       const completedByPayee = invoice.paymentMethod === this.PaymentStatus.CHEQUE;
+      // a flag for checking if the invoice was edited by employee
+      const emplyeeChanges = attributes.labelText === this.InvoiceStatus.PENDING_APPROVAL.label;
+      // a flag for checking if the invoice was marked as void
+      const markAsVoid = attributes.labelText === this.InvoiceStatus.VOID.label;
 
       return parentView
         .addClass(this.myClass())
@@ -167,27 +116,36 @@ foam.CLASS({
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusTitle')
-              .callIfElse(completedByPayee, function() {
+              .callIf(completedByPayee, function() {
                 this.add(`${payee} marked invoice as `);
-              }, function() {
-                this.add('Invoice status changed to ');
+              })
+              .callIf(emplyeeChanges, function() {
+                this.add(` ${self.name} send invoice for approval `);
+              })
+              .callIf( markAsVoid, function() {
+                this.add(`${self.name} marks invoice as `);
+              })
+              .callIf( ! completedByPayee && ! emplyeeChanges && ! markAsVoid, function() {
+                this.add(this.INVOICE_STATUS_CHANGED_TO);
               })
             .end()
-            .start('span')
-              .add(attributes.labelText)
-            .end()
+            .callIf( ! emplyeeChanges, function() {
+              this.start('span')
+                .add(attributes.labelText)
+              .end()
+            })
             .callIf(hasDisplayDate &&
               (attributes.labelText === 'Scheduled' || completedByPayee),
               function() {
                 this.start('span').addClass('statusTitle')
-                  .add(` on ${self.formatDate(displayDate, false)}`)
+                  .add(` on ${self.formatDate(displayDate)}`)
                 .end();
             })
           .end()
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusDate')
-              .add(this.formatDate(record.timestamp))
+              .add(self.formatDate(record.timestamp))
             .end()
           .end()
         .end();

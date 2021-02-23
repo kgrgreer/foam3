@@ -1,4 +1,21 @@
 /**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+/**
  * @license
  * Copyright 2019 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -33,9 +50,18 @@ foam.CLASS({
       args: [{ type: 'User', name: 'user' }],
       documentation: `Return a sanitized copy of the given user.`,
       javaCode: `
-          User userClone;
-          userClone = (User) user.fclone();
-          return userClone;
+        User nu = new User();
+        nu.setUserName(user.getUserName());
+        nu.setEmail(user.getEmail());
+        nu.setDesiredPassword(user.getDesiredPassword());
+        nu.setSignUpToken(user.getSignUpToken());
+        nu.setGroup(user.getGroup());
+        nu.setLanguage(user.getLanguage());
+
+        if ( nu.isAdmin() ) {
+          nu.setGroup("basicUser");
+        }
+        return nu;
       `
     }
   ],

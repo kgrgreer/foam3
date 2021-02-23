@@ -6,6 +6,7 @@ import com.xero.model.Invoice;
 import com.xero.model.InvoiceStatus;
 import foam.core.X;
 import foam.dao.DAO;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import net.nanopay.accounting.ContactMismatchPair;
@@ -30,7 +31,7 @@ public class XeroIntegrationTest extends foam.nanos.test.Test {
 
   public void createToken(X x) {
     DAO tokenDAO =  (DAO) x.get("xeroTokenDAO");
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     XeroToken token = new XeroToken();
     token.setId(user.getId());
     token.setBusinessName("test company");

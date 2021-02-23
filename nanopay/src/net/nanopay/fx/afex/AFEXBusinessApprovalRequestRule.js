@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.fx.afex',
   name: 'AFEXBusinessApprovalRequestRule',
@@ -22,13 +39,17 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            AFEXBusiness afexBusiness = (AFEXBusiness) obj;
+            AFEXUser afexUser = (AFEXUser) obj;
             DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
+            String spid = afexUser.findUser(x).getSpid();
+            String group = spid + "-payment-ops";
             approvalRequestDAO.put_(x,
               new AFEXBusinessApprovalRequest.Builder(x)
-                .setDaoKey("afexBusinessDAO")
-                .setObjId(afexBusiness.getId())
-                .setGroup("payment-ops")
+                .setDaoKey("afexUserDAO")
+                .setObjId(afexUser.getId())
+                .setClassification("Validate AFEX Business")
+                .setDescription("Approve AFEX business to enable the international payments.")
+                .setGroup(group)
                 .setStatus(ApprovalStatus.REQUESTED).build());
           }
         }, "Create AFEXBusiness Approval Request Rule");

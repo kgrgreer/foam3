@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui.dashboard',
   name: 'DashboardBorder',
@@ -5,17 +22,17 @@ foam.CLASS({
 
   css: `
     ^ {
-      max-width: 1024px;
-      margin: auto;
-      padding: 12px 24px 24px 24px;
+      padding: 0 2vw 15vh 2vw;
     }
     ^ .two-column-grid {
+      margin: auto;
       margin-top: 32px;
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
       flex-basis: 100%;
       justify-content: space-between;
+      width: 94%;
     }
     ^ .left-column {
       width: 500px;
@@ -42,8 +59,8 @@ foam.CLASS({
     function init() {
       this
         .addClass(this.myClass())
-        .tag('div', null, this.topButtons$)
-        .tag('div', null, this.line$)
+        .start().tag('div', null, this.topButtons$).end()
+        .start().tag('div', null, this.line$).end()
         .start()
           .addClass('two-column-grid')
           .start()

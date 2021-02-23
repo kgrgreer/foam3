@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx.planner',
   name: 'GenericCIPlanner',
@@ -6,13 +23,22 @@ foam.CLASS({
   documentation: 'Planner for doing Cash Ins for any currency instantly.',
 
   javaImports: [
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.cico.CITransaction',
     'net.nanopay.account.TrustAccount',
   ],
 
-  //TODO: Predicate:
-  /*if ( sourceAccount instanceof BankAccount &&
-                           destinationAccount instanceof DigitalAccount ) */
+  properties: [
+    {
+      name: 'bestPlan',
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'instantComplete',
+      value: true
+    }
+  ],
 
   methods: [
     {
@@ -23,21 +49,21 @@ foam.CLASS({
       cashIn.copyFrom(requestTxn);
       cashIn.setName("Cash In of "+cashIn.getSourceCurrency());
       // i think these are backwards.. should use the trust of the dest accnt here.
-      TrustAccount trustAccount = TrustAccount.find(x, quote.getSourceAccount());
+      cashIn.setLineItems(requestTxn.getLineItems());
+      TrustAccount trustAccount = ((DigitalAccount) quote.getDestinationAccount()).findTrustAccount(x);
 
-      quote.addTransfer(trustAccount.getId(), - cashIn.getAmount());
-      quote.addTransfer(quote.getDestinationAccount().getId(), cashIn.getAmount());
+      quote.addTransfer(true, trustAccount.getId(), - cashIn.getAmount(), 0);
+      quote.addTransfer(true, quote.getDestinationAccount().getId(), cashIn.getAmount(), 0);
+      quote.addTransfer(false, quote.getSourceAccount().getId(), - cashIn.getAmount(), 0);
 
-      cashIn.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
+      if ( getInstantComplete() ) {
+        cashIn.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
+      } else {
+        cashIn.setStatus(net.nanopay.tx.model.TransactionStatus.PENDING);
+      }
 
       return cashIn;
 
-      `
-    },
-    {
-      name: 'forceBestPlan',
-      javaCode: `
-        return true;
       `
     }
   ]

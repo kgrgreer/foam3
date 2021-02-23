@@ -47,8 +47,14 @@ p({
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"alarmDAO",
-      "editPredicate":{"class":"foam.mlang.predicate.False"},
-      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "alarm"
+        }
+      }
     }
   },
   "parent":"admin"
@@ -135,29 +141,14 @@ p({
 })
 
 // integration
-p({"class":"foam.nanos.menu.Menu","id":"integration.alterna-eft","label":"Alterna-EFT","handler":{"class":"foam.nanos.menu.ViewMenu", "view":{"class":"net.nanopay.cico.ui.AlternaEFTDownload"}},"parent":"integration"})
 p({
   "class":"foam.nanos.menu.Menu",
-  "id":"integration.afexBeneficiaries",
-  "label":"AFEX Beneficiaries",
+  "id":"integration.alterna-eft",
+  "label":"Alterna-EFT",
   "handler":{
-    "class":"foam.nanos.menu.DAOMenu2",
-    "config":{
-      "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"afexBeneficiaryDAO"
-    }
-  },
-  "parent":"integration"
-})
-p({
-  "class":"foam.nanos.menu.Menu",
-  "id":"integration.afexBusiness",
-  "label":"AFEX Businesses",
-  "handler":{
-    "class":"foam.nanos.menu.DAOMenu2",
-    "config":{
-      "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"afexBusinessDAO"
+    "class":"foam.nanos.menu.ViewMenu",
+    "view":{
+      "class":"net.nanopay.cico.ui.AlternaEFTDownload"
     }
   },
   "parent":"integration"
@@ -188,7 +179,18 @@ p({
   },
   "parent":"integration"
 })
-p({"class":"foam.nanos.menu.Menu","id":"integration.devices","label":"Devices","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.retail.ui.devices.DevicesView"}},"parent":"integration"})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"integration.devices",
+  "label":"Devices",
+  "handler":{
+    "class":"foam.nanos.menu.ViewMenu",
+    "view":{
+      "class":"net.nanopay.retail.ui.devices.DevicesView"
+    }
+  },
+  "parent":"integration"
+})
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"integration.flinksResponses",
@@ -199,7 +201,8 @@ p({
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"flinksAccountsDetailResponseDAO",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"}
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":"integration"
@@ -214,7 +217,54 @@ p({
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"plaidResultReportDAO",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"}
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  },
+  "parent":"integration"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"integration.afexbeneficiaries",
+  "label":"AFEX Beneficiaries",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"afexBeneficiaryDAO",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"},
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "afexbeneficiary"
+        }
+      }
+    }
+  },
+  "parent":"integration"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"integration.afexuser",
+  "label":"AFEX Businesses",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"afexUserDAO",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"},
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "afexuser"
+        }
+      }
     }
   },
   "parent":"integration"
@@ -231,7 +281,15 @@ p({
       "config":
         {
           "class": "foam.comics.v2.DAOControllerConfig",
-          "daoKey": "businessDAO"
+          "daoKey": "businessDAO",
+          "CRUDEnabledActionsAuth": {
+            "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+            "isEnabled": true,
+            "enabledActionsAuth": {
+              "class": "foam.comics.v2.BasicEnabledActionsAuth",
+              "modelName": "business"
+            }
+          }
         }
     }
 })
@@ -247,7 +305,15 @@ p({
       "config":
         {
           "class": "foam.comics.v2.DAOControllerConfig",
-          "daoKey": "contactDAO"
+          "daoKey": "contactDAO",
+          "CRUDEnabledActionsAuth": {
+            "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+            "isEnabled": true,
+            "enabledActionsAuth": {
+              "class": "foam.comics.v2.BasicEnabledActionsAuth",
+              "modelName": "contact"
+            }
+          }
         }
     }
 })
@@ -262,7 +328,15 @@ p({
       "config":
         {
           "class": "foam.comics.v2.DAOControllerConfig",
-          "daoKey": "invoiceDAO"
+          "daoKey": "detailedInvoiceDAO",
+          "CRUDEnabledActionsAuth": {
+            "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+            "isEnabled": true,
+            "enabledActionsAuth": {
+              "class": "foam.comics.v2.BasicEnabledActionsAuth",
+              "modelName": "invoice"
+            }
+          }
         }
     }
 })

@@ -1,3 +1,1 @@
-p({"class":"foam.nanos.notification.Notification","id":2,"template":"NOC","notificationType":"Log","issuedDate":"2018-11-15T11:44:45.236Z","expiryDate":"2019-02-13T11:44:45.236Z","userId":8004,"emailArgs":{},"emailName":"","emailIsEnabled":false})
-p({"class":"foam.nanos.notification.Notification","id":3,"template":"KotakPayment","notificationType":"Log","issuedDate":"2018-12-07T19:34:06.683Z","expiryDate":"2019-03-06T19:34:06.683Z","emailArgs":{},"emailName":"","emailIsEnabled":true})
-p({"class":"foam.nanos.notification.Notification","id":4,"template":"KotakStatusChecking","notificationType":"Log","issuedDate":"2018-12-07T19:34:06.683Z","expiryDate":"2019-03-06T19:34:06.683Z","emailArgs":{},"emailName":"","emailIsEnabled":true})
+p({"class":"foam.nanos.notification.Notification","id":2,"template":"NOC","notificationType":"Log","issuedDate":"2018-11-15T11:44:45.236Z","expiryDate":"2019-02-13T11:44:45.236Z","userId":8004,"emailArgs":{},"emailName":"NOC"})

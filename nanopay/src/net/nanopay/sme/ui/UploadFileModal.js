@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'UploadFileModal',
@@ -8,13 +25,14 @@ foam.CLASS({
   requires: [
     'net.nanopay.ui.modal.ModalHeader',
     'foam.blob.BlobBlob',
-    'foam.nanos.fs.File',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.log.LogLevel',
+    'foam.nanos.fs.File'
   ],
 
   imports: [
     'blobService',
     'invoice',
+    'notify',
     'uploadFileData',
     'user',
   ],
@@ -56,7 +74,7 @@ foam.CLASS({
     ^ .inputText{
       width: 177px;
       height: 40px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: normal;
       font-style: normal;
@@ -70,7 +88,7 @@ foam.CLASS({
       width: 480px;
       height: 16px;
       opacity: 0.7;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       font-weight: normal;
       font-style: normal;
@@ -244,7 +262,7 @@ foam.CLASS({
               if ( this.isFileType(file) ) {
                 files.push(file);
               } else {
-                this.add(this.NotificationMessage.create({ message: this.FILE_TYPE_ERROR, type: 'error' }));
+                this.notify(this.FILE_TYPE_ERROR, '', this.LogLevel.ERROR, true);
               }
             }
           }
@@ -255,7 +273,7 @@ foam.CLASS({
           var file = inputFile[i];
           if ( this.isFileType(file) ) files.push(file);
           else {
-            this.add(this.NotificationMessage.create({ message: this.FILE_TYPE_ERROR, type: 'error' }));
+            this.notify(this.FILE_TYPE_ERROR, '', this.LogLevel.ERROR, true);
           }
         }
       }
@@ -288,7 +306,7 @@ foam.CLASS({
         // skip files that exceed limit
         if ( files[i].size > ( 8 * 1024 * 1024 ) ) {
           if ( ! errors ) errors = true;
-          this.add(this.NotificationMessage.create({ message: this.FILE_SIZE_ERROR, type: 'error' }));
+          this.notify(this.FILE_SIZE_ERROR, '', this.LogLevel.ERROR, true);
           continue;
         }
         var isIncluded = false;

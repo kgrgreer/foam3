@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.settings.business',
   name: 'BusinessProfileView',
@@ -47,7 +64,7 @@ foam.CLASS({
       position: relative;
     }
     ^ .companyName {
-      font-family: 'Roboto';
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
@@ -72,7 +89,7 @@ foam.CLASS({
       vertical-align: top;
     }
     ^ .labelTitle {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: bold;
       letter-spacing: 0.2px;
@@ -91,7 +108,7 @@ foam.CLASS({
       display: inline-block;
     }
     ^ .labelContent {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
@@ -195,7 +212,7 @@ foam.CLASS({
             .start().addClass('inlineDiv')
               .start().addClass('labelDiv')
                 .start().add('Business Phone').addClass('labelTitle').end()
-                .start().add(this.user.phone.number).addClass('labelContent').end()
+                .start().add(this.user.phoneNumber).addClass('labelContent').end()
               .end()
               .start().addClass('labelDiv')
                 .start().add('Business Registration Number').addClass('labelTitle').end()
@@ -219,7 +236,7 @@ foam.CLASS({
               .end()
               .start().addClass('labelDiv')
                 .start().add('Registration Date').addClass('labelTitle').end()
-                .start().add(this.user.businessRegistrationDate ? this.user.businessRegistrationDate.toISOString().substring(0,10) : '').addClass('labelContent').end()
+                .start().add(this.user.businessRegistrationDate ? this.user.businessRegistrationDate.toLocaleDateString(foam.locale) : '').addClass('labelContent').end()
               .end()
             .end()
             .start().addClass('topInlineDiv')
