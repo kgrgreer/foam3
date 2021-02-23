@@ -681,10 +681,12 @@ var classes = [
   'net.nanopay.fx.FXDirection',
   'net.nanopay.fx.FXProvider',
   'net.nanopay.fx.localfx.NanopayFXService',
-
   'net.nanopay.fx.GetFXQuote',
   'net.nanopay.fx.AcceptFXRate',
   'net.nanopay.fx.FXQuote',
+
+  // credit engine
+  'net.nanopay.tx.creditengine.creditCode',
 
   // documents
   'net.nanopay.documents.AcceptanceDocument',

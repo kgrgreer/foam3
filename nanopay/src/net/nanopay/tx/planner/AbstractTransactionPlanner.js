@@ -356,6 +356,11 @@ foam.CLASS({
 
         txn.setLineItems(txnclone.getLineItems());
         txn = createFeeTransfers(x, txn, quote);
+        // hit creditEngine
+        if ( ! SafetyUtil.isEmpty(getCreditCode())) {
+          DAO creditDAO = (DAO) x.get("localCreditCodeDAO");
+          txn = creditDAO.put(txn);
+        }
         return txn;
       `
     },

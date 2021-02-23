@@ -701,3 +701,38 @@ p({
     """
 })
 
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "localCreditCodeDAO",
+  "lazy": false,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setGUID(true);
+      .setJournalName("creditCodeDAO")
+      .setOf(net.nanopay.tx.creditengine.creditCode.getOwnClassInfo())
+      .build();
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "creditCodeDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("creditCodeDAO"))
+      .setInnerDAO(x.get("localCreditCodeDAO"))
+      .setOf(net.nanopay.tx.creditengine.creditCode.getOwnClassInfo())
+      .build();
+  """,
+  "client":
+    """
+      {
+        "of":"net.nanopay.tx.creditengine.creditCode"
+      }
+    """
+})

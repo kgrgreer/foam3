@@ -749,6 +749,9 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/AllAccountsController', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/CicoBorder', flags: ['web'] },
 
+  //credit engine
+    { name: 'net/nanopay/tx/creditengine/creditCode' },
+
   // invoice
   { name: 'net/nanopay/invoice/ruler/CapabilityValidateRule' },
   { name: 'net/nanopay/invoice/ruler/NoCapabilityCheckRule' },
