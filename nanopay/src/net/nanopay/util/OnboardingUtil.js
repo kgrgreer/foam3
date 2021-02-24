@@ -164,7 +164,7 @@ foam.CLASS({
         })
         .add(this.PutFinalJunctionsAgent)
         .execute().then(() => {
-          this.pushMenu('sme.accountProfile.switch-business', true);
+          this.pushMenu('sme.accountProfile.switch-business-page', true);
         });
     }
   ]

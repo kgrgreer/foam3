@@ -9,7 +9,7 @@ p({
     "treviso"
   ],
   "navigationRootMenu":"smeNavigation",
-  "settingsRootMenu":"trevisoSmeSettings",
+  "settingsRootMenu":"smeSettings",
   "disableCurrencyChoice":true,
   "logoRedirect":"sme.main.appStore",
   "defaultMenu":"mainmenu.invoices.payables",

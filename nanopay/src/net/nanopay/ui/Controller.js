@@ -823,13 +823,13 @@ foam.CLASS({
           if ( ! this.subject.realUser || this.subject.realUser.id === this.subject.user.id ) {
             //by setting memento here we will trigger mementoChange function in ApplicationController
             //which will find and launch sme.accountProfile.switch-business menu
-            this.memento.value = 'sme.accountProfile.switch-business'
+            this.memento.value = 'sme.accountProfile.switch-business-page'
             return;
           }
 
           var hash = location.hash.substr(1);
 
-          if ( hash !== 'sme.accountProfile.switch-business' ) {
+          if ( hash !== 'sme.accountProfile.switch-business-page' ) {
             this.initLayout.resolve();
           }
 
