@@ -25,7 +25,7 @@ p({
   },
   "asyncAction":{
     "class":"net.nanopay.crunch.compliance.SecurefactSIDniValidator",
-    "classification":"Validate Signing Officer UserCapabilityJunction Using SecureFact"
+    "classification":"Signing Officer SecureFact SIDni"
   },
   "enabled":true,
   "saveHistory":true,
@@ -57,7 +57,7 @@ p({
   },
   "asyncAction":{
     "class":"net.nanopay.crunch.compliance.PersonSanctionValidator",
-    "classification":"Validate Signing Officer UserCapabilityJunction Using Dow Jones"
+    "classification":"Signing Officer Dow Jones R&C"
   },
   "enabled":true,
   "saveHistory":true,
@@ -81,7 +81,7 @@ p({
   },
   "asyncAction":{
     "class":"net.nanopay.crunch.compliance.SecurefactLEVValidator",
-    "classification":"Validate Business Onboarding UserCapabilityJunction Using SecureFact"
+    "classification":"Business Onboarding SecureFact LEV"
   },
   "enabled":true,
   "saveHistory":true,
@@ -104,7 +104,7 @@ p({
   },
   "asyncAction":{
     "class":"net.nanopay.crunch.compliance.EntitySanctionValidator",
-    "classification":"Validate Business Onboarding UserCapabilityJunction Using Dow Jones"
+    "classification":"Business Onboarding Dow Jones Entity KYC"
   },
   "enabled":true,
   "validity":1,
@@ -161,7 +161,7 @@ p({
   },
   "asyncAction":{
     "class":"net.nanopay.crunch.compliance.ManualPersonSanctionValidator",
-    "classification":"Validate Expanded User Detail UserCapabilityJunction Using Dow Jones"
+    "classification":"Manual User Dow Jones R&C"
   },
   "enabled":true,
   "validity":1,
@@ -195,7 +195,7 @@ p({
   },
   "asyncAction":{
     "class":"net.nanopay.crunch.compliance.ManualSecurefactSIDniValidator",
-    "classification":"Validate Expanded User Detail UserCapabilityJunction Using SecureFact"
+    "classification":"Manual User SecureFact SIDni"
   },
   "enabled":true,
   "saveHistory":true,
@@ -228,7 +228,7 @@ p({
   },
   "asyncAction":{
     "class":"net.nanopay.crunch.compliance.ManualConsumerKYCValidator",
-    "classification":"Validate Expanded User Detail UserCapabilityJunction Using IdentityMind"
+    "classification":"Manual User IdentityMind (Acuant)"
   },
   "enabled":true,
   "saveHistory":true,
@@ -262,7 +262,7 @@ p({
   },
   "asyncAction":{
     "class":"net.nanopay.crunch.compliance.ManualEntitySanctionValidator",
-    "classification":"Validate Busiiness Detail Data UserCapabilityJunction Using Dow Jones"
+    "classification":"Manual Business Dow Jones R&C"
   },
   "enabled":true,
   "validity":1,
@@ -296,7 +296,7 @@ p({
   },
   "asyncAction":{
     "class":"net.nanopay.crunch.compliance.ManualSecurefactLEVValidator",
-    "classification":"Validate Business Detail Data UserCapabilityJunction Using SecureFact"
+    "classification":"Business SecureFact LEV"
   },
   "enabled":true,
   "saveHistory":true,
@@ -329,7 +329,7 @@ p({
   },
   "asyncAction":{
     "class":"net.nanopay.crunch.compliance.ManualMerchantKYCValidator",
-    "classification":"Validate Business Detail Data UserCapabilityJunction Using IdentityMind"
+    "classification":"Business IdentityMind KYC (Acuant)"
   },
   "enabled":true,
   "saveHistory":true,
@@ -775,7 +775,7 @@ p({
   },
   "action": {
     "class": "net.nanopay.crunch.compliance.GenericSigningOfficerValidator",
-    "classification":"Validate Signing Officer UserCapabilityJunction Using Generic Rule"
+    "classification":"Generic Signing Officer Validator"
   },
   "enabled": false,
   "validity": 1,
@@ -798,8 +798,47 @@ p({
   },
   "action":{
     "class":"net.nanopay.crunch.compliance.GenericBusinessValidator",
-    "classification":"Validate Business Onboarding UserCapabilityJunction Using Generic Rule"
+    "classification":"Generic Business Validator"
   },
   "enabled":false,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"add-effectiveUser-to-compliance-approval-request",
+  "name":"Add effectiveUser to ComplianceApprovalRequest",
+  "priority":200,
+  "ruleGroup":"crunchApprovals",
+  "documentation":"To add the proper effectiveUser to a ComplianceApprovalRequest",
+  "daoKey":"approvalRequestDAO",
+  "operation":0,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args": [
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.meter.compliance.ComplianceApprovalRequest"
+      },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1":{
+          "class":"foam.nanos.ruler.predicate.PropertyHasValue",
+          "propName":"effectiveUser"
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"daoKey",
+        "propValue":"userCapabilityJunctionDAO",
+      },
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.meter.compliance.ComplianceApprovalRequestEffectiveUserRuleAction"
+  },
+  "enabled":true,
+  "saveHistory":false,
   "lifecycleState":1
 })

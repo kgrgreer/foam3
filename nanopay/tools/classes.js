@@ -883,6 +883,7 @@ var classes = [
   // compliance
   'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
   'net.nanopay.meter.compliance.ComplianceApprovalRequest',
+  'net.nanopay.meter.compliance.ComplianceApprovalRequestEffectiveUserRuleAction',
   'net.nanopay.meter.compliance.ComplianceAuthService',
   'net.nanopay.meter.compliance.ComplianceAware',
   'net.nanopay.meter.compliance.ComplianceItem',

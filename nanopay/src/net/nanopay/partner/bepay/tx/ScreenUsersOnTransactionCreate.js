@@ -70,7 +70,7 @@ foam.CLASS({
                 .setObjId(tx.getId())
                 .setGroup(group)
                 .setDescription(description.toString())
-                .setClassification("Compliance Transaction")
+                .setClassification("Payee/Payer Dow Jones Transaction")
                 .build();
 
               ((DAO) x.get("approvalRequestDAO")).put(approvalRequest);

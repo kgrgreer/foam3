@@ -1351,6 +1351,7 @@ FOAM_FILES([
   // compliance
   { name: 'net/nanopay/meter/compliance/AbstractComplianceRuleAction' },
   { name: 'net/nanopay/meter/compliance/ComplianceApprovalRequest' },
+  { name: 'net/nanopay/meter/compliance/ComplianceApprovalRequestEffectiveUserRuleAction' },
   { name: 'net/nanopay/meter/compliance/ComplianceAuthService' },
   { name: 'net/nanopay/meter/compliance/ComplianceAware' },
   { name: 'net/nanopay/meter/compliance/ComplianceItem' },
