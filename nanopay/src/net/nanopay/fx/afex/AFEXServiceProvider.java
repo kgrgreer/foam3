@@ -37,6 +37,7 @@ import net.nanopay.fx.ExchangeRate;
 import net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
+import net.nanopay.meter.clearing.ClearingTimeService;
 import net.nanopay.model.BeneficialOwner;
 import net.nanopay.model.Business;
 import net.nanopay.model.BusinessDirector;
@@ -948,10 +949,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
           AFEXTransaction txn = (AFEXTransaction) afexTransaction.fclone();
           txn.setExternalInvoiceId(String.valueOf(paymentResponse.getReferenceNumber()));
           try {
-            Date valueDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(tradeResponse.getValueDate());
-            txn.setCompletionDate(valueDate);
+            ClearingTimeService clearingTimeService = (ClearingTimeService) x.get("clearingTimeService");
+            txn.setCompletionDate(clearingTimeService.estimateCompletionDateSimple(x, txn));
           } catch(Throwable t) {
-            logger_.error("Error parsing date.", t);
+            logger_.error("Error setting completion date on transaction", t);
           }
           return txn;
         }
