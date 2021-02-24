@@ -768,45 +768,313 @@ p({
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-100",
   "name": "receivable",
   "group": "sme",
+  "locale": "en",
   "displayName": "{{fromName}}",
   "subject": "{{fromName}} sent you a payment request using {{appName}}",
-  "body": "\n\n<include template = 'treviso-email-base_2'>\n <p style= \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">\n {{fromName}} enviou para você um pedido de pagamento através do portal da {{appName}}\n </p>\n <p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\"> Olá {{name}},</p>\n <br>\n <p style= \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin-bottom: 40px; margin-top: 0;\">{{fromName}} enviou a você um pedido de pagamento de {{amount}} {{currency}}.</p>\n \n <div style= \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  border-radius: 4px; font-size: 14px;\">\n {% if OperationCode != '' %}\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;\">\n <div class= \"left  \" style= \"float:left;  font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \">\n <b>Código da Operação</b>\n </div>\n <div class= \"right  \" style= \"float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \">\n {{OperationCode}}\n </div>\n </div>\n {% endif %}\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;\">\n <div class= \"left \" style = \"float:left; font-weight: 900;\">\n Pagamento para \n </div>\n <div class= \"right  \" style= \"float:right; color: #8e9090;\">\n {{fromName}}\n </div>\n </div> \n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;\">\n <div class= \"left  \" style= \"float:left;  font-weight: 900;\">Número da Fatura</div>  \n <div class= \"right  \" style= \"float:right; color: #8e9090;\">#{{account}}</div>\n </div>\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top:8px  \"> \n <div class= \"left  \" style= \"float:left;  font-weight: 900;\">Valor</div>\n <div class= \"right  \" style= \"float:right; color: #8e9090;\">{{amount}} {{currency}}</div>\n </div>\n <div style= \"overflow: hidden; padding-bottom: 8px; padding-top:8px  \">\n <div class= \"left  \" style= \"float:left;  font-weight: 900;\">Data de vencimento</div>\n <div class= \"right\" style= \"float:right; color: #8e9090;\">{{date}}</div>\n </div>\n {% if note != '' %} <div style= \"overflow: hidden; padding-bottom: 8px; padding-top:8px \">\n <div style =  \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 0; margin-bottom: 4;  fontweight: 600;\">\n <b>Observação {{fromName}}</b>\n </div>\n <div style = \"border: 1px solid lightgrey; color:#8e9090; width:485px; height:80px; padding: 10px 8px;\">\n {{note}}\n </div>{% endif %}</div> \n <a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n <p style = \"padding: 14px 0 0; margin: 0;\">Visualizar Fatura</p>\n </div></a>\n <p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">Se você tem alguma questão sobre este pagamento, por favor contate {{fromName}} diretamente.</p>\n <p style= \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">\n {{fromName}} sent you a payment request\n </p>\n <p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\"> Hello {{name}},</p>\n <br>\n <p style= \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin-bottom: 40px; margin-top: 0;\">{{fromName}} sent you a payment request for {{amount}} {{currency}}.</p>\n \n <div style= \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  border-radius: 4px; font-size: 14px;\">\n {% if OperationCode != '' %}\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;\">\n <div class= \"left  \" style= \"float:left;  font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \">\n <b>Operation Code</b>\n </div>\n <div class= \"right  \" style= \"float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \">\n {{OperationCode}}\n </div>\n </div>\n {% endif %}\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;\">\n <div class= \"left \" style = \"float:left; font-weight: 900;\">\n Payment to\n </div>\n <div class= \"right  \" style= \"float:right; color: #8e9090;\">\n {{fromName}}\n </div>\n </div> \n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;\">\n <div class= \"left  \" style= \"float:left;  font-weight: 900;\">Invoice no.</div>  \n <div class= \"right  \" style= \"float:right; color: #8e9090;\">#{{account}}</div>\n </div>\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top:8px  \"> \n <div class= \"left  \" style= \"float:left;  font-weight: 900;\">Amount due</div>\n <div class= \"right  \" style= \"float:right; color: #8e9090;\">{{amount}} {{currency}}</div>\n </div>\n <div style= \"overflow: hidden; padding-bottom: 8px; padding-top:8px  \">\n <div class= \"left  \" style= \"float:left;  font-weight: 900;\">Due date</div>\n <div class= \"right\" style= \"float:right; color: #8e9090;\">{{date}}</div>\n </div>\n {% if note != '' %} <div style= \"overflow: hidden; padding-bottom: 8px; padding-top:8px \">\n <div style =  \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 0; margin-bottom: 4;  fontweight: 600;\">\n <b>Notes from {{fromName}}</b>\n </div>\n <div style = \"border: 1px solid lightgrey; color:#8e9090; width:485px; height:80px; padding: 10px 8px;\">\n {{note}}\n </div>{% endif %}</div> \n <a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n <p style = \"padding: 14px 0 0; margin: 0;\">View invoice</p>\n </div></a>\n <p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">If you have any questions about this payment, please contact {{fromName}} directly.</p>\n  </include>"
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">
+        {{fromName}} sent you a payment request
+      </p>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> Hello {{name}},</p>
+      <br>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin-bottom: 40px; margin-top: 0;">{{fromName}} sent you a payment request for {{amount}} {{currency}}.</p>
+      <div style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  border-radius: 4px; font-size: 14px;">
+      {% if OperationCode != '' %}
+      <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;">
+        <div class= "left  " style= "float:left;  font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; ">
+          <b>Operation Code</b>
+        </div>
+        <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; ">
+          {{OperationCode}}
+        </div>
+      </div>
+      {% endif %}
+      <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;">
+        <div class= "left " style = "float:left; font-weight: 900;">
+          Payment to
+        </div>
+        <div class= "right  " style= "float:right; color: #8e9090;">
+          {{fromName}}
+        </div>
+      </div>
+      <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;">
+        <div class= "left  " style= "float:left;  font-weight: 900;">Invoice no.</div>
+        <div class= "right  " style= "float:right; color: #8e9090;">#{{account}}</div>
+      </div>
+      <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top:8px  ">
+        <div class= "left  " style= "float:left;  font-weight: 900;">Amount due</div>
+        <div class= "right  " style= "float:right; color: #8e9090;">{{amount}} {{currency}}</div>
+      </div>
+      <div style= "overflow: hidden; padding-bottom: 8px; padding-top:8px  ">
+        <div class= "left  " style= "float:left;  font-weight: 900;">Due date</div>
+        <div class= "right" style= "float:right; color: #8e9090;">{{date}}</div>
+      </div>
+      {% if note != '' %} 
+      <div style= "overflow: hidden; padding-bottom: 8px; padding-top:8px ">
+        <div style =  "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 0; margin-bottom: 4;  fontweight: 600;">
+          <b>Notes from {{fromName}}</b>
+        </div>
+        <div style = "border: 1px solid lightgrey; color:#8e9090; width:485px; height:80px; padding: 10px 8px;">
+          {{note}}
+        </div>
+        {% endif %}
+      </div>
+      <a href="{{link}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">View invoice</p>
+        </div>
+      </a>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">If you have any questions about this payment, please contact {{fromName}} directly.</p>
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-100-pt",
+  "name": "receivable",
+  "group": "sme",
+  "locale": "pt",
+  "displayName": "{{fromName}}",
+  "subject": "{{fromName}} enviou a você uma solicitação de pagamento usando o {{appName}}",
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">
+        {{fromName}} enviou para você um pedido de pagamento através do portal da {{appName}}
+      </p>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> Olá {{name}},</p>
+      <br>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin-bottom: 40px; margin-top: 0;">{{fromName}} enviou a você um pedido de pagamento de {{amount}} {{currency}}.</p>
+      <div style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  border-radius: 4px; font-size: 14px;">
+      {% if OperationCode != '' %}
+      <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;">
+        <div class= "left  " style= "float:left;  font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; ">
+          <b>Código da Operação</b>
+        </div>
+        <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; ">
+          {{OperationCode}}
+        </div>
+      </div>
+      {% endif %}
+      <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;">
+        <div class= "left " style = "float:left; font-weight: 900;">
+          Pagamento para 
+        </div>
+        <div class= "right  " style= "float:right; color: #8e9090;">
+          {{fromName}}
+        </div>
+      </div>
+      <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;">
+        <div class= "left  " style= "float:left;  font-weight: 900;">Número da Fatura</div>
+        <div class= "right  " style= "float:right; color: #8e9090;">#{{account}}</div>
+      </div>
+      <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top:8px  ">
+        <div class= "left  " style= "float:left;  font-weight: 900;">Valor</div>
+        <div class= "right  " style= "float:right; color: #8e9090;">{{amount}} {{currency}}</div>
+      </div>
+      <div style= "overflow: hidden; padding-bottom: 8px; padding-top:8px  ">
+        <div class= "left  " style= "float:left;  font-weight: 900;">Data de vencimento</div>
+        <div class= "right" style= "float:right; color: #8e9090;">{{date}}</div>
+      </div>
+      {% if note != '' %} 
+      <div style= "overflow: hidden; padding-bottom: 8px; padding-top:8px ">
+        <div style =  "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 0; margin-bottom: 4;  fontweight: 600;">
+          <b>Observação {{fromName}}</b>
+        </div>
+        <div style = "border: 1px solid lightgrey; color:#8e9090; width:485px; height:80px; padding: 10px 8px;">
+          {{note}}
+        </div>
+        {% endif %}
+      </div>
+      <a href="{{link}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Visualizar Fatura</p>
+        </div>
+      </a>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">Se você tem alguma questão sobre este pagamento, por favor contate {{fromName}} diretamente.</p>
+    </include>
+  """
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-101",
   "name": "reset-password",
   "group": "sme",
+  "locale": "en",
   "displayName": "{{appName}}",
   "subject": "Reset your {{appName}} password",
-  "body": "\n\n<include template = 'treviso-email-base_2'>\n <p style= \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">Esqueceu a sua senha do portal da {{appName}} ? </p>\n <p style= \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">Olá {{name}},</p>\n <br>\n <p style= \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\"> Recebemos um pedido para mudar a sua senha do portal da {{appName}}. Para continuar, pressione o botão abaixo : </p>\n <a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n <p style = \"padding: 14px 0 0; margin: 0;\">Mudar senha</p>\n </div></a>\n <p style= \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\"> Caso você ignore este pedido para mudar a sua senha, ela não será alterada. Se este pedido não foi feito por você por favor entre em contato através do email <a href=\"mailto:{{supportEmail}}\" style=\"text-decoration: none; font-weight: 900; color: #604aff;\">{{supportEmail}}</a> ou pelo telefone {{supportPhone}}para falar com a área de Atendimento ao Cliente</p>\n \n <p style= \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">Reset your {{appName}} password </p>\n <p style= \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">Hi {{name}},</p>\n <br>\n <p style= \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\"> We got a request to reset your {{appName}} password. Click the button below to complete the reset: </p>\n <a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n <p style = \"padding: 14px 0 0; margin: 0;\">Reset password</p>\n </div></a>\n <p style= \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">If you ignore this message, your password will not be changed. If you need additional assistance, or did not request this change, contact us at <a href=\"mailto:{{supportEmail}}\" style=\"text-decoration: none; font-weight: 900; color: #604aff;\">{{supportEmail}}</a> </p>\n \n </include>"
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">Reset your {{appName}} password </p>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Hi {{name}},</p>
+      <br>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;"> We got a request to reset your {{appName}} password. Click the button below to complete the reset: </p>
+      <a href="{{link}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Reset password</p>
+        </div>
+      </a>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">If you ignore this message, your password will not be changed. If you need additional assistance, or did not request this change, contact us at <a href="mailto:{{supportEmail}}" style="text-decoration: none; font-weight: 900; color: #604aff;">{{supportEmail}}</a> </p>
+    </include>
+  """
+})
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-101-pt",
+  "name": "reset-password",
+  "group": "sme",
+  "locale": "pt",
+  "displayName": "{{appName}}",
+  "subject": "Redefina sua senha do {{appName}}",
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">Esqueceu a sua senha do portal da {{appName}} ? </p>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Olá {{name}},</p>
+      <br>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;"> Recebemos um pedido para mudar a sua senha do portal da {{appName}}. Para continuar, pressione o botão abaixo : </p>
+      <a href="{{link}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Mudar senha</p>
+        </div>
+      </a>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;"> Caso você ignore este pedido para mudar a sua senha, ela não será alterada. Se este pedido não foi feito por você por favor entre em contato através do email <a href="mailto:{{supportEmail}}" style="text-decoration: none; font-weight: 900; color: #604aff;">{{supportEmail}}</a> ou pelo telefone {{supportPhone}}para falar com a área de Atendimento ao Cliente</p>
+    </include>
+  """
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-102",
   "name": "verifyEmail",
   "group": "sme",
+  "locale": "en",
   "displayName": "{{appName}}",
   "subject": "Verify your email to activate your {{appName}} account",
-  "body": "\n\n<include template = 'treviso-email-base_2'> \n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">Verifique o seu endereço de email</p> \n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">Olá {{name}},</p> \n <br> \n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">Bem vindo ao portal self-service de pagamentos e remessas internacionais da {{appName}}. Nós estamos feliz por ter você a bordo! </p> \n <br> \n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">Por favor, verifique seu e-mail para ativar sua conta.</p> \n <a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\"> \n <p style = \"padding: 14px 0 0; margin: 0;\">Verificar email</p> \n </div></a> \n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">Verify your email address</p> \n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">Hello {{name}},</p> \n <br> \n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">Welcome to {{appName}}, the self-service online payment platform for businesses. We are happy to have you on board! </p> \n <br> \n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">Please verify your email to activate your account.</p> \n <a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\"> \n <p style = \"padding: 14px 0 0; margin: 0;\">Verify email</p> \n </div></a> \n </include>"
+  "body": """
+    <include template = 'treviso-email-base_2'>  
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">Verify your email address</p> 
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Hello {{name}},</p> 
+      <br> 
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Welcome to {{appName}}, the self-service online payment platform for businesses. We are happy to have you on board! </p> 
+      <br> 
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Please verify your email to activate your account.</p> 
+      <a href="{{link}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;"> 
+          <p style = "padding: 14px 0 0; margin: 0;">Verify email</p> 
+        </div>
+      </a> 
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-102-pt",
+  "name": "verifyEmail",
+  "group": "sme",
+  "locale": "pt",
+  "displayName": "{{appName}}",
+  "subject": "Verifique seu e-mail para ativar sua conta do {{appName}}",
+  "body": """
+    <include template = 'treviso-email-base_2'> 
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">Verifique o seu endereço de email</p> 
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Olá {{name}},</p> 
+      <br> 
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Bem vindo ao portal self-service de pagamentos e remessas internacionais da {{appName}}. Nós estamos feliz por ter você a bordo! </p> 
+      <br> 
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Por favor, verifique seu e-mail para ativar sua conta.</p> 
+      <a href="{{link}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;"> 
+          <p style = "padding: 14px 0 0; margin: 0;">Verificar email</p> 
+        </div>
+      </a>  
+    </include>
+  """
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-103",
   "name": "password-changed",
   "group": "sme",
+  "locale": "en",
   "displayName": "{{appName}}",
   "subject": "Your {{appName}} password has been changed",
-  "body": "\n\n<include template = 'treviso-email-base_2'>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">A senha foi atualizada</p>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">Olá {{name}},</p>\n <br>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">Sua senha foi atualizada. Se este pedido não foi feito por você por favor entre em contato através do email <a href=\"mailto:{{supportEmail}}\" style=\"text-decoration: none; color: #604aff; font-weight: 900;\">{{SupportEmail}}</a> ou pelo serviço de atendimento ao cliente imediatamente.</p>\n <a href=\"{{appLink}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n <p style = \"padding: 14px 0 0; margin: 0;\">Entrar no portal da {{appName}}</p>\n </div></a>\n \n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">Password was updated</p>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">Hi {{name}},</p>\n <br>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">Your password was recently updated. If you did not make this change, contact us at <a href=\"mailto:{{supportEmail}}\" style=\"text-decoration: none; color: #604aff; font-weight: 900;\">{{SupportEmail}}</a> </p>\n <a href=\"{{appLink}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n <p style = \"padding: 14px 0 0; margin: 0;\">Go to {{appName}}</p>\n </div></a>\n \n </include>"
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">Password was updated</p>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Hi {{name}},</p>
+      <br>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Your password was recently updated. If you did not make this change, contact us at <a href="mailto:{{supportEmail}}" style="text-decoration: none; color: #604aff; font-weight: 900;">{{SupportEmail}}</a> </p>
+      <a href="{{appLink}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Go to {{appName}}</p>
+        </div>
+      </a>
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-103-pt",
+  "name": "password-changed",
+  "group": "sme",
+  "locale": "pt",
+  "displayName": "{{appName}}",
+  "subject": "Sua senha do {{appName}} foi alterada",
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">A senha foi atualizada</p>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Olá {{name}},</p>
+      <br>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Sua senha foi atualizada. Se este pedido não foi feito por você por favor entre em contato através do email <a href="mailto:{{supportEmail}}" style="text-decoration: none; color: #604aff; font-weight: 900;">{{SupportEmail}}</a> ou pelo serviço de atendimento ao cliente imediatamente.</p>
+      <a href="{{appLink}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Entrar no portal da {{appName}}</p>
+        </div>
+      </a>
+    </include>
+  """
 })
 p({
   "class":"foam.nanos.notification.email.EmailTemplate",
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-104",
   "name":"addBank",
   "group":"sme",
+  "locale":"en",
   "displayName":"{{appName}}",
   "subject":"Your bank account has been added",
-  "body": "\n\n<include template = 'treviso-email-base_2'>\n<p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">Bank account added</p>\n<p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">Hello {{name}},</p>\n<br>\n<p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">A bank account ending in {{account}} was added to your company {{business}} on {{appName}}.</p>\n<a href=\"{{appLink}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n<p style = \"padding: 14px 0 0; margin: 0;\">Go to {{appName}}</p>\n</div></a>\n</include>"
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">Bank account added</p>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Hello {{name}},</p>
+      <br>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">A bank account ending in {{account}} was added to your company {{business}} on {{appName}}.</p>
+      <a href="{{appLink}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Go to {{appName}}</p>
+        </div>
+      </a>
+    </include>
+  """
+})
+p({
+  "class":"foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-104-pt",
+  "name":"addBank",
+  "group":"sme",
+  "locale":"pt",
+  "displayName":"{{appName}}",
+  "subject":"Sua conta bancária foi adicionada",
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">Conta bancária adicionada</p>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Olá {{name}},</p>
+      <br>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Uma conta bancária com final {{account}} foi adicionada à sua empresa {{business}} em {{appName}}.</p>
+      <a href="{{appLink}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Vá para {{appName}}</p>
+        </div>
+      </a>
+    </include>
+  """
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
@@ -822,9 +1090,98 @@ p({
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-106",
   "name": "deletedBank",
   "group": "sme",
+  "locale": "en",
   "displayName": "{{appName}}",
   "subject": "Your bank account has been successfully deleted",
-  "body": "\n\n<include template = 'treviso-email-base_2'>\n<p style=\"font-size: 24px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 50px;margin-bottom: 40px;\"><b>Bank account has been successfully removed</b></p>\n<p style = \"font-size: 16px;\"> Hi {{name}},</p><br>\n<p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 16px; margin-top: -5px; margin-bottom: 30px;\">Your bank account ending in ***{{account}} has been successfully removed from your {{appName}} account.</p>\n<br>\n<div style= \"border-radius: 4px; font-size: 14px;\">\n<div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;\">\n<div class= \"left  \" style= \"float:left  \">\n<span style = \"width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;font-weight: 900; font-stretch: normal; font-style: normal; line-height: 1.5; letter-spacing: normal; color: #2b2b2b;\">Institution Number</span>\n</div>\n<div class= \"right  \" style= \"float:right; color: #8e9090;\">\n{{institutionNumber}}\n</div>\n</div>\n<div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;\"> \n<div class= \"left  \" style= \"float:left  \">\n<span style = \"width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 900; font-stretch: normal; font-style: normal; line-height: 1.5; letter-spacing: normal; color: #2b2b2b;\">Institution</span>\n</div> \n<div class= \"right  \" style= \"float:right; color: #8e9090;\">\n{{institutionName}}\n</div>\n </div>\n<div style= \"overflow: hidden; padding-bottom: 8px; padding-top:8px  \"> \n<div class= \"left  \" style= \"float:left  \">\n<span style = \"width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;font-weight: 900;font-stretch: normal;font-style: normal;line-height: 1.5;letter-spacing: normal;color: #2b2b2b;\">Account Number</span>\n</div>\n<div class= \"right  \" style= \"float:right; color: #8e9090;\">\n***{{account}}\n</div>\n</div>\n<p style = \"margin-top: 40px;margin-bottom: 20px; line-height: 24px; font-size: 16px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\">To add a new bank account please go to the bank accounts tab in the app. Your bank account details will remain confidential, as privacy is our top priority.</p>\n<p style = \"margin-top: 20px;margin-bottom: 30px; line-height: 24px; font-size: 16px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\">If you have any questions, contact us at <a style = \" color: #604aff; font-weight: 900;\">{{supportEmail}}<a> </p>\n</div>\n<a href=\"{{appLink}}\" style=\" text-decoration: none;\">\n<div style=\"margin-top: 30px; padding: 14px 0; text-align: center; width: 504px; border-radius: 4px; font-weight: 600; background: #604aff; border-color: #4a33f4; color: #fff; cursor: pointer;\">Go to {{appName}}\n</div>\n</a>\n</include>"
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style="font-size: 24px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 50px;margin-bottom: 40px;"><b>Bank account has been successfully removed</b></p>
+      <p style = "font-size: 16px;"> Hi {{name}},</p>
+      <br>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 16px; margin-top: -5px; margin-bottom: 30px;">Your bank account ending in ***{{account}} has been successfully removed from your {{appName}} account.</p>
+      <br>
+      <div style= "border-radius: 4px; font-size: 14px;">
+        <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;">
+          <div class= "left  " style= "float:left  ">
+            <span style = "width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;font-weight: 900; font-stretch: normal; font-style: normal; line-height: 1.5; letter-spacing: normal; color: #2b2b2b;">Institution Number</span>
+          </div>
+          <div class= "right  " style= "float:right; color: #8e9090;">
+            {{institutionNumber}}
+          </div>
+        </div>
+        <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;">
+          <div class= "left  " style= "float:left  ">
+            <span style = "width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 900; font-stretch: normal; font-style: normal; line-height: 1.5; letter-spacing: normal; color: #2b2b2b;">Institution</span>
+          </div>
+          <div class= "right  " style= "float:right; color: #8e9090;">
+            {{institutionName}}
+          </div>
+        </div>
+        <div style= "overflow: hidden; padding-bottom: 8px; padding-top:8px  ">
+          <div class= "left  " style= "float:left  ">
+            <span style = "width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;font-weight: 900;font-stretch: normal;font-style: normal;line-height: 1.5;letter-spacing: normal;color: #2b2b2b;">Account Number</span>
+          </div>
+          <div class= "right  " style= "float:right; color: #8e9090;">
+            ***{{account}}
+          </div>
+        </div>
+        <p style = "margin-top: 40px;margin-bottom: 20px; line-height: 24px; font-size: 16px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;">To add a new bank account please go to the bank accounts tab in the app. Your bank account details will remain confidential, as privacy is our top priority.</p>
+        <p style = "margin-top: 20px;margin-bottom: 30px; line-height: 24px; font-size: 16px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;">If you have any questions, contact us at <a style = " color: #604aff; font-weight: 900;">{{supportEmail}}<a> </p>
+      </div>
+      <a href="{{appLink}}" style=" text-decoration: none;">
+        <div style="margin-top: 30px; padding: 14px 0; text-align: center; width: 504px; border-radius: 4px; font-weight: 600; background: #604aff; border-color: #4a33f4; color: #fff; cursor: pointer;">Go to {{appName}}</div>
+      </a>
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-106-pt",
+  "name": "deletedBank",
+  "group": "sme",
+  "locale": "pt",
+  "displayName": "{{appName}}",
+  "subject": "Sua conta bancária foi excluída com sucesso",
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style="font-size: 24px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 50px;margin-bottom: 40px;"><b>A conta bancária foi removida com sucesso</b></p>
+      <p style = "font-size: 16px;"> Oi {{name}},</p>
+      <br>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 16px; margin-top: -5px; margin-bottom: 30px;">Sua conta bancária com final ***{{account}} foi removida com sucesso de sua conta {{appName}}.</p>
+      <br>
+      <div style= "border-radius: 4px; font-size: 14px;">
+        <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;">
+          <div class= "left  " style= "float:left  ">
+            <span style = "width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;font-weight: 900; font-stretch: normal; font-style: normal; line-height: 1.5; letter-spacing: normal; color: #2b2b2b;">Número da instituição</span>
+          </div>
+          <div class= "right  " style= "float:right; color: #8e9090;">
+            {{institutionNumber}}
+          </div>
+        </div>
+        <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;">
+          <div class= "left  " style= "float:left  ">
+            <span style = "width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 900; font-stretch: normal; font-style: normal; line-height: 1.5; letter-spacing: normal; color: #2b2b2b;">Instituição</span>
+          </div>
+          <div class= "right  " style= "float:right; color: #8e9090;">
+            {{institutionName}}
+          </div>
+        </div>
+        <div style= "overflow: hidden; padding-bottom: 8px; padding-top:8px  ">
+          <div class= "left  " style= "float:left  ">
+            <span style = "width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;font-weight: 900;font-stretch: normal;font-style: normal;line-height: 1.5;letter-spacing: normal;color: #2b2b2b;">Número da conta</span>
+          </div>
+          <div class= "right  " style= "float:right; color: #8e9090;">
+            ***{{account}}
+          </div>
+        </div>
+        <p style = "margin-top: 40px;margin-bottom: 20px; line-height: 24px; font-size: 16px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;">Para adicionar uma nova conta bancária, acesse a guia contas bancárias no aplicativo. Os detalhes da sua conta bancária permanecerão confidenciais, pois a privacidade é nossa prioridade.</p>
+        <p style = "margin-top: 20px;margin-bottom: 30px; line-height: 24px; font-size: 16px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;">Se você tiver alguma dúvida, entre em contato conosco pelo <a style = " color: #604aff; font-weight: 900;">{{supportEmail}}<a> </p>
+      </div>
+      <a href="{{appLink}}" style=" text-decoration: none;">
+        <div style="margin-top: 30px; padding: 14px 0; text-align: center; width: 504px; border-radius: 4px; font-weight: 600; background: #604aff; border-color: #4a33f4; color: #fff; cursor: pointer;">Vá para {{appName}}</div>
+      </a>
+    </include>
+  """ 
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
@@ -876,9 +1233,163 @@ p({
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-112",
   "name": "payable",
   "group": "sme",
+  "locale": "en",
   "subject": "{{fromName}} sent you a payment using {{appName}}",
   "displayName": "{{fromName}} (Via {{appName}})",
-  "body": "\n\n<include template = 'treviso-email-base_2'>\n <p style = \"margin-top: -46px;float:right; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:12px; color:#8e9090;\"> ID da transação: {{transId}}</p>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">{{agentName}} da {{fromName}} te enviou um pagamento.</p>\n <p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\"> Olá {{name}},</p>\n <br>\n <p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">{{agentName}} da {{fromName}} enviou um pagamento de {{currency}} {{amount}} .</p>\n <br>\n <p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin-top: 0; margin-bottom: 40px;\">O pagamento poderá demorar até 4 dias úteis para estar disponível em sua conta bancária. {% if currency != 'INR' %} Você pode acompanhar este pagamento no portal da {{appName}}.{% endif %} </p>\n <div style= \"border-radius: 4px; font-size: 14px;\">\n {% if OperationCode != '' %}\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;\">\n <div class= \"left  \" style= \"float:left;  font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \">\n <b>Código da Operação</b>\n </div>\n <div class= \"right  \" style= \"float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \">\n {{OperationCode}}\n </div>\n </div>\n {% endif %}\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;\">\n <div class= \"left  \" style= \"float:left;  font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \">\n <b>Pagamento de </b>\n </div>\n <div class= \"right  \" style= \"float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \">\n {{fromName}}\n </div>\n </div>\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;\"> \n <div class= \"left  \" style= \"float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  \">\n <b>Número da Fatura</b>\n </div> \n <div class= \"right  \" style= \"float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \">\n #{{account}}\n </div>\n </div>\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top:8px  \"> \n <div class= \"left  \" style= \"float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;   \">\n <b>Total</b>\n </div>\n <div class= \"right  \" style= \"float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \">\n {{amount}} {{currency}}\n </div>\n </div>\n <div style= \"overflow: hidden; padding-bottom: 8px; padding-top:8px  \">\n <div class= \"left  \" style= \"float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;   \">\n <b>Data do Pagamento</b>\n </div> \n <div class= \"right  \" style= \"float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \">\n {{date}}\n </div>\n </div>\n {% if note != '' %} <div style= \"overflow: hidden; padding-bottom: 8px; padding-top:8px \">\n <div style =  \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 0; margin-bottom: 4;  fontweight: 600;\">\n <b>Observação {{fromName}}</b>\n </div>\n <div style = \"border: 1px solid lightgrey; color:#8e9090; width:485px; height:80px; padding: 10px 8px;\">\n {{note}}\n </div>{% endif %}</div> \n {% if currency != 'INR' %}\n <a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 20px 0 0 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n <p style = \"padding: 14px 0 0; margin: 0;\">Acompanhar Pagamento</p>\n </div></a>\n {% endif %} \n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 20px 0 0 0;\"> Se você tem alguma dúvida sobre este pagamento, por favor contate {{fromName}} diretamente.</p>\n <br>\n <p style = \"margin-top: -46px;float:right; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:12px; color:#8e9090;\">Transaction ID: {{transId}}</p>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">{{agentName}} from  {{fromName}} sent you a payment.</p>\n <p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\"> Hello {{name}},</p>\n <br>\n <p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">{{agentName}} from  {{fromName}} sent you a payment for {{amount}} {{currency}}.</p>\n <br>\n <p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin-top: 0; margin-bottom: 40px;\">It will take up to 4 business days for this payment to show in your bank account. {% if currency != 'INR' %} In the meantime, you can track the status of the payment on {{appName}}.{% endif %} </p>\n <div style= \"border-radius: 4px; font-size: 14px;\">\n {% if OperationCode != '' %}\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;\">\n <div class= \"left  \" style= \"float:left;  font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \">\n <b>Operation Code</b>\n </div>\n <div class= \"right  \" style= \"float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \">\n {{OperationCode}}\n </div>\n </div>\n {% endif %}\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;\">\n <div class= \"left  \" style= \"float:left;  font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \">\n <b>Payment from</b>\n </div>\n <div class= \"right  \" style= \"float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \">\n {{fromName}}\n </div>\n </div>\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;\"> \n <div class= \"left  \" style= \"float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  \">\n <b>Invoice No.</b>\n </div> \n <div class= \"right  \" style= \"float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \">\n #{{account}}\n </div>\n </div>\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top:8px  \"> \n <div class= \"left  \" style= \"float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;   \">\n <b>Amount paid</b>\n </div>\n <div class= \"right  \" style= \"float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \">\n {{amount}} {{currency}}\n </div>\n </div>\n <div style= \"overflow: hidden; padding-bottom: 8px; padding-top:8px  \">\n <div class= \"left  \" style= \"float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;   \">\n <b>Date Paid</b>\n </div> \n <div class= \"right  \" style= \"float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \">\n {{date}}\n </div>\n </div>\n {% if note != '' %} <div style= \"overflow: hidden; padding-bottom: 8px; padding-top:8px \">\n <div style =  \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 0; margin-bottom: 4;  fontweight: 600;\">\n <b>Notes from {{fromName}}</b>\n </div>\n <div style = \"border: 1px solid lightgrey; color:#8e9090; width:485px; height:80px; padding: 10px 8px;\">\n {{note}}\n </div>{% endif %}</div> \n {% if currency != 'INR' %}\n <a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 20px 0 0 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n <p style = \"padding: 14px 0 0; margin: 0;\">Track Payment</p>\n </div></a>\n {% endif %} \n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 20px 0 0 0;\"> If you have any questions about this payment, please contact {{fromName}} directly. </p>\n <br>\n </include>"
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style = "margin-top: -46px;float:right; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:12px; color:#8e9090;">Transaction ID: {{transId}}</p>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">{{agentName}} from  {{fromName}} sent you a payment.</p>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> Hello {{name}},</p>
+      <br>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">{{agentName}} from  {{fromName}} sent you a payment for {{amount}} {{currency}}.</p>
+      <br>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin-top: 0; margin-bottom: 40px;">It will take up to 4 business days for this payment to show in your bank account. {% if currency != 'INR' %} In the meantime, you can track the status of the payment on {{appName}}.{% endif %} </p>
+      <div style= "border-radius: 4px; font-size: 14px;">
+      {% if OperationCode != '' %}
+      <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;">
+        <div class= "left  " style= "float:left;  font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; ">
+          <b>Operation Code</b>
+        </div>
+        <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; ">
+          {{OperationCode}}
+        </div>
+      </div>
+      {% endif %}
+      <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;">
+        <div class= "left  " style= "float:left;  font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; ">
+          <b>Payment from</b>
+        </div>
+        <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; ">
+          {{fromName}}
+        </div>
+      </div>
+      <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;">
+        <div class= "left  " style= "float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  ">
+          <b>Invoice No.</b>
+        </div>
+        <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; ">
+          #{{account}}
+        </div>
+      </div>
+      <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top:8px  ">
+        <div class= "left  " style= "float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;   ">
+          <b>Amount paid</b>
+        </div>
+        <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; ">
+          {{amount}} {{currency}}
+        </div>
+      </div>
+      <div style= "overflow: hidden; padding-bottom: 8px; padding-top:8px  ">
+        <div class= "left  " style= "float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;   ">
+          <b>Date Paid</b>
+        </div>
+        <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; ">
+          {{date}}
+        </div>
+      </div>
+      {% if note != '' %} 
+      <div style= "overflow: hidden; padding-bottom: 8px; padding-top:8px ">
+        <div style =  "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 0; margin-bottom: 4;  fontweight: 600;">
+          <b>Notes from {{fromName}}</b>
+        </div>
+        <div style = "border: 1px solid lightgrey; color:#8e9090; width:485px; height:80px; padding: 10px 8px;">
+          {{note}}
+        </div>
+        {% endif %}
+      </div>
+      {% if currency != 'INR' %}
+      <a href="{{link}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 20px 0 0 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Track Payment</p>
+        </div>
+      </a>
+      {% endif %} 
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 20px 0 0 0;"> If you have any questions about this payment, please contact {{fromName}} directly. </p>
+      <br>
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-112-pt",
+  "name": "payable",
+  "group": "sme",
+  "locale": "pt",
+  "subject": "{{fromName}} enviou a você um pagamento usando {{appName}}",
+  "displayName": "{{fromName}} (Via {{appName}})",
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style = "margin-top: -46px;float:right; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:12px; color:#8e9090;"> ID da transação: {{transId}}</p>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">{{agentName}} da {{fromName}} te enviou um pagamento.</p>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> Olá {{name}},</p>
+      <br>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">{{agentName}} da {{fromName}} enviou um pagamento de {{currency}} {{amount}} .</p>
+      <br>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin-top: 0; margin-bottom: 40px;">O pagamento poderá demorar até 4 dias úteis para estar disponível em sua conta bancária. {% if currency != 'INR' %} Você pode acompanhar este pagamento no portal da {{appName}}.{% endif %} </p>
+      <div style= "border-radius: 4px; font-size: 14px;">
+      {% if OperationCode != '' %}
+      <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;">
+        <div class= "left  " style= "float:left;  font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; ">
+          <b>Código da Operação</b>
+        </div>
+        <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; ">
+          {{OperationCode}}
+        </div>
+      </div>
+      {% endif %}
+      <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;">
+        <div class= "left  " style= "float:left;  font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; ">
+          <b>Pagamento de </b>
+        </div>
+        <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; ">
+          {{fromName}}
+        </div>
+      </div>
+      <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;">
+        <div class= "left  " style= "float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  ">
+          <b>Número da Fatura</b>
+        </div>
+        <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; ">
+          #{{account}}
+        </div>
+      </div>
+      <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top:8px  ">
+        <div class= "left  " style= "float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;   ">
+          <b>Total</b>
+        </div>
+        <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; ">
+          {{amount}} {{currency}}
+        </div>
+      </div>
+      <div style= "overflow: hidden; padding-bottom: 8px; padding-top:8px  ">
+        <div class= "left  " style= "float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;   ">
+          <b>Data do Pagamento</b>
+        </div>
+        <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; ">
+          {{date}}
+        </div>
+      </div>
+      {% if note != '' %} 
+      <div style= "overflow: hidden; padding-bottom: 8px; padding-top:8px ">
+        <div style =  "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 0; margin-bottom: 4;  fontweight: 600;">
+          <b>Observação {{fromName}}</b>
+        </div>
+        <div style = "border: 1px solid lightgrey; color:#8e9090; width:485px; height:80px; padding: 10px 8px;">
+          {{note}}
+        </div>
+        {% endif %}
+      </div>
+      {% if currency != 'INR' %}
+      <a href="{{link}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 20px 0 0 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Acompanhar Pagamento</p>
+        </div>
+      </a>
+      {% endif %} 
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 20px 0 0 0;"> Se você tem alguma dúvida sobre este pagamento, por favor contate {{fromName}} diretamente.</p>
+    </include>
+  """
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
@@ -902,9 +1413,43 @@ p({
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-115",
   "name": "compliance-notification-to-user",
   "group": "sme",
+  "locale": "en",
   "displayName": "{{appName}}",
   "subject": "{{business}} is ready to send payments with {{appName}}",
-  "body": "\n\n<include template = 'treviso-email-base_2'> \n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\"> Boas notícias ! </p> \n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">{{business}} está pronto para enviar pagamentos!</p> \n <a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\"> \n <p style = \"padding: 14px 0 0; margin: 0;\">Assinar em</p> \n </div></a> \n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">Se você tiver alguma pergunta por favor nos contate através do email <a href=\"mailto:{{supportEmail}}\" style=\"text-decoration: none;\">{{supportEmail}}</a> ou pelo telefone {{supportPhone}} para falar com a área de Atendimento ao Cliente.</p> \n <br> \n \n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\"> Great news! </p> \n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">{{business}} is all set to send payments on {{appName}}.</p> \n <a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\"> \n <p style = \"padding: 14px 0 0; margin: 0;\">Sign in</p> \n </div></a> \n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">If you have any questions, please contact us at <a href=\"mailto:{{supportEmail}}\" style=\"text-decoration: none;\">{{supportEmail}}</a> or by calling {{supportPhone}} to speak to Customer Service.</p> \n <br> \n \n </include>"
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"> Great news! </p>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">{{business}} is all set to send payments on {{appName}}.</p>
+      <a href="{{link}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Sign in</p>
+        </div>
+      </a>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">If you have any questions, please contact us at <a href="mailto:{{supportEmail}}" style="text-decoration: none;">{{supportEmail}}</a> or by calling {{supportPhone}} to speak to Customer Service.</p>
+      <br> 
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-115-pt",
+  "name": "compliance-notification-to-user",
+  "group": "sme",
+  "locale": "pt",
+  "displayName": "{{appName}}",
+  "subject": "{{business}} está pronta para enviar pagamentos com {{appName}}",
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"> Boas notícias ! </p>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">{{business}} está pronto para enviar pagamentos!</p>
+      <a href="{{link}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Assinar em</p>
+        </div>
+      </a>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">Se você tiver alguma pergunta por favor nos contate através do email <a href="mailto:{{supportEmail}}" style="text-decoration: none;">{{supportEmail}}</a> ou pelo telefone {{supportPhone}} para falar com a área de Atendimento ao Cliente.</p>
+    </include>
+  """
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
@@ -937,18 +1482,155 @@ p({
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-119",
   "name": "invoice-transaction-completed",
   "group": "sme",
+  "locale": "en",
   "displayName": "{{appName}}",
   "subject": "The payment from {{fromName}} has been deposited using {{appName}}",
-  "body": "\n\n<include template = 'treviso-email-base_2'>\n <p style =\"margin-top: -46px; float:right; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:12px; color:#8e9090;\">ID da transação: {{transId}}</p>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">Pagamento de {{fromName}} depositado com sucesso !</p>\n <p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\"> Olá {{name}},</p>\n <br>\n <p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0; margin-bottom: 40px;\">O pagamento de {{amount}} {{currency}} enviado por {{fromName}} foi creditado com sucesso na sua conta</p>\n <div style= \"border-radius: 4px; font-size: 14px;\"> \n {% if OperationCode != '' %}\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;\">\n <div class= \"left  \" style= \"float:left;  font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \">\n <b>Código da Operação</b>\n </div>\n <div class= \"right  \" style= \"float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \">\n {{OperationCode}}\n </div>\n </div>\n {% endif %}\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;\">\n <div class= \"left  \" style= \"float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\"><b>Pagamento de</b></div>\n <div class= \"right  \" style= \"float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\">{{fromName}}</div>\n </div>\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;\">\n <div class= \"left  \" style= \"float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \"><b>Fatura número</b></div>\n <div class= \"right  \" style= \"float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\">#{{account}}</div></div>\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top:8px  \">\n <div class= \"left  \" style= \"float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \"><b>Valor pago</b></div>\n <div class= \"right  \" style= \"float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\">{{amount}}{{currency}}</div></div>\n <div style= \"overflow: hidden; padding-bottom: 8px; padding-top:8px  \">\n <div class= \"left  \" style= \"float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \"> <b>Data de pagamento</b></div>\n <div class= \"right  \" style= \"float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\">{{date}} </div> </div></div>\n {% if currency != 'INR' %}\n <a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 20px 0 0 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n <p style = \"padding: 14px 0 0; margin: 0;\">Visualizar fatura</p>\n </div></a>\n {% endif %} \n <p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 20px 0 0 0;\">Se você tem alguma questão sobre este pagamento, por favor contate {{fromName}} diretamente.</p>\n <br>\n <p style =\"margin-top: -46px; float:right; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:12px; color:#8e9090;\">Transaction ID: {{transId}}</p>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">Successfully deposited payment from {{fromName}}</p>\n <p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\"> Hello {{name}},</p>\n <br>\n <p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0; margin-bottom: 40px;\">The payment for {{amount}} {{currency}} sent from {{fromName}} has been successfully deposited to your bank account.</p>\n <div style= \"border-radius: 4px; font-size: 14px;\"> \n {% if OperationCode != '' %}\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;\">\n <div class= \"left  \" style= \"float:left;  font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \">\n <b>Operation Code</b>\n </div>\n <div class= \"right  \" style= \"float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \">\n {{OperationCode}}\n </div>\n </div>\n {% endif %}\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;\">\n <div class= \"left  \" style= \"float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\"><b>Payment from</b></div>\n <div class= \"right  \" style= \"float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\">{{fromName}}</div>\n </div>\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;\">\n <div class= \"left  \" style= \"float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \"><b>Invoice No.</b></div>\n <div class= \"right  \" style= \"float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\">#{{account}}</div></div>\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top:8px  \">\n <div class= \"left  \" style= \"float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \"><b>Amount paid</b></div>\n <div class= \"right  \" style= \"float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\">{{amount}}{{currency}}</div></div>\n <div style= \"overflow: hidden; padding-bottom: 8px; padding-top:8px  \">\n <div class= \"left  \" style= \"float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; \"> <b>Date paid</b></div>\n <div class= \"right  \" style= \"float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\">{{date}} </div> </div></div>\n {% if currency != 'INR' %}\n <a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 20px 0 0 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n <p style = \"padding: 14px 0 0; margin: 0;\">View invoice</p>\n </div></a>\n {% endif %} \n <p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 20px 0 0 0;\">If you have any questions about this payment, please contact {{fromName}} directly.</p>\n <br>\n </include>"
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style ="margin-top: -46px; float:right; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:12px; color:#8e9090;">Transaction ID: {{transId}}</p>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">Successfully deposited payment from {{fromName}}</p>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> Hello {{name}},</p>
+      <br>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0; margin-bottom: 40px;">The payment for {{amount}} {{currency}} sent from {{fromName}} has been successfully deposited to your bank account.</p>
+      <div style= "border-radius: 4px; font-size: 14px;">
+        {% if OperationCode != '' %}
+        <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;">
+          <div class= "left  " style= "float:left;  font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; ">
+            <b>Operation Code</b>
+          </div>
+          <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; ">
+            {{OperationCode}}
+          </div>
+        </div>
+        {% endif %}
+        <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;">
+          <div class= "left  " style= "float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;"><b>Payment from</b></div>
+          <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;">{{fromName}}</div>
+        </div>
+        <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;">
+          <div class= "left  " style= "float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; "><b>Invoice No.</b></div>
+          <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;">#{{account}}</div>
+        </div>
+        <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top:8px  ">
+          <div class= "left  " style= "float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; "><b>Amount paid</b></div>
+          <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;">{{amount}}{{currency}}</div>
+        </div>
+        <div style= "overflow: hidden; padding-bottom: 8px; padding-top:8px  ">
+          <div class= "left  " style= "float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; "> <b>Date paid</b></div>
+          <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;">{{date}} </div>
+        </div>
+      </div>
+      {% if currency != 'INR' %}
+      <a href="{{link}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 20px 0 0 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">View invoice</p>
+        </div>
+      </a>
+      {% endif %} 
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 20px 0 0 0;">If you have any questions about this payment, please contact {{fromName}} directly.</p>
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-119-pt",
+  "name": "invoice-transaction-completed",
+  "group": "sme",
+  "locale": "pt",
+  "displayName": "{{appName}}",
+  "subject": "O pagamento de {{fromName}} foi depositado usando {{appName}}",
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style ="margin-top: -46px; float:right; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:12px; color:#8e9090;">ID da transação: {{transId}}</p>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">Pagamento de {{fromName}} depositado com sucesso !</p>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> Olá {{name}},</p>
+      <br>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0; margin-bottom: 40px;">O pagamento de {{amount}} {{currency}} enviado por {{fromName}} foi creditado com sucesso na sua conta</p>
+      <div style= "border-radius: 4px; font-size: 14px;">
+        {% if OperationCode != '' %}
+        <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;">
+          <div class= "left  " style= "float:left;  font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; ">
+            <b>Código da Operação</b>
+          </div>
+          <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; ">
+            {{OperationCode}}
+          </div>
+        </div>
+        {% endif %}
+        <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;">
+          <div class= "left  " style= "float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;"><b>Pagamento de</b></div>
+          <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;">{{fromName}}</div>
+        </div>
+        <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;">
+          <div class= "left  " style= "float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; "><b>Fatura número</b></div>
+          <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;">#{{account}}</div>
+        </div>
+        <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top:8px  ">
+          <div class= "left  " style= "float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; "><b>Valor pago</b></div>
+          <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;">{{amount}}{{currency}}</div>
+        </div>
+        <div style= "overflow: hidden; padding-bottom: 8px; padding-top:8px  ">
+          <div class= "left  " style= "float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; "> <b>Data de pagamento</b></div>
+          <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;">{{date}} </div>
+        </div>
+      </div>
+      {% if currency != 'INR' %}
+      <a href="{{link}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 20px 0 0 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Visualizar fatura</p>
+        </div>
+      </a>
+      {% endif %} 
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 20px 0 0 0;">Se você tem alguma questão sobre este pagamento, por favor contate {{fromName}} diretamente.</p>
+    </include>
+  """
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-120",
   "name": "voidInvoice",
   "group": "sme",
+  "locale": "en",
   "subject": "Payment request from {{fromName}} has been voided",
   "displayName": "{{fromName}}",
-  "body": "\n\n<include template = 'treviso-email-base_2'>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">Pagamento de {{fromName}} foi cancelado</p>\n <p style =\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\"> Olá {{toName}},</p>\n <br>\n <p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin-top: 0; margin-bottom: 40px;\">O pedido de pagamento de fatura de {{fromName}} foi cancelado pelo mesmo. Não é necessária mais nenhuma ação de sua parte.</p>\n <a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n <p style = \"padding: 14px 0 0; margin: 0;\">Visualizar fatura</p>\n </div></a>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\"> Não é você ? Contate-nos através do email <a style=\"color:#604aff\">{{supportEmail}}</a> ou pelo serviço de atendimento ao cliente.</p>\n <br>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">Receivable from {{fromName}} was voided</p>\n <p style =\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\"> Hello {{toName}},</p>\n <br>\n <p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin-top: 0; margin-bottom: 40px;\">The payment request for Invoice #{{account}} from {{fromName}} has been voided by {{fromName}}. There is no further action required on your part. </p>\n <a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n <p style = \"padding: 14px 0 0; margin: 0;\">View invoice</p>\n </div></a>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\"> Wasn't you? Contact us at <a style=\"color:#604aff\">{{supportEmail}}</a></p>\n <br>\n </include>"
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">Receivable from {{fromName}} was voided</p>
+      <p style ="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> Hello {{toName}},</p>
+      <br>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin-top: 0; margin-bottom: 40px;">The payment request for Invoice #{{account}} from {{fromName}} has been voided by {{fromName}}. There is no further action required on your part. </p>
+      <a href="{{link}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">View invoice</p>
+        </div>
+      </a>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> Wasn't you? Contact us at <a style="color:#604aff">{{supportEmail}}</a></p>
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-120-pt",
+  "name": "voidInvoice",
+  "group": "sme",
+  "locale": "pt",
+  "subject": "O pedido de pagamento de {{fromName}} foi anulado",
+  "displayName": "{{fromName}}",
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">Pagamento de {{fromName}} foi cancelado</p>
+      <p style ="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> Olá {{toName}},</p>
+      <br>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin-top: 0; margin-bottom: 40px;">O pedido de pagamento de fatura de {{fromName}} foi cancelado pelo mesmo. Não é necessária mais nenhuma ação de sua parte.</p>
+      <a href="{{link}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Visualizar fatura</p>
+        </div>
+      </a>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> Não é você ? Contate-nos através do email <a style="color:#604aff">{{supportEmail}}</a> ou pelo serviço de atendimento ao cliente.</p>
+    </include>
+  """
+
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
@@ -994,11 +1676,66 @@ p({
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-126",
-  "subject": "Invoice #{{account}} has been marked as complete",
   "name": "mark-as-complete",
   "group": "sme",
+  "locale" "en",
+  "subject": "Invoice #{{account}} has been marked as complete",
   "displayName": "Treviso",
-  "body": "\n\n<include template = 'treviso-email-base_2'>\n<p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">{{fromName}} marked {{invoiceType}} Invoice #{{account}} as complete.</p>\n<p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">Hello {{name}},</p>\n<br>\n<p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">{{fromName}} has marked Invoice #{{account}} for {{name}} as complete because it was paid outside of Treviso.</p>\n<br>\n<br>\n{% if note|length %}<p style =  \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 0; font-size: 12px; font-weight: 600;\">Notes from {{fromName}}</p>\n<div style = \"border: 1px solid lightgrey; color:#8e9090; width:500px; height:100px; padding: 10px 8px;\">\n<p style=\"margin: 0; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;\">{{note}}</p>\n</div> {% endif %} \n<a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n<p style = \"padding: 14px 0 0; margin: 0;\">View invoice</p>\n</div></a>\n<p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\"> If you have any questions about this payment, please contact {{fromName}} directly. </p>\n<br></include>"
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">{{fromName}} marked {{invoiceType}} Invoice #{{account}} as complete.</p>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">Hello {{name}},</p>
+      <br>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">{{fromName}} has marked Invoice #{{account}} for {{name}} as complete because it was paid outside of Treviso.</p>
+      <br>
+      <br>
+      {% if note|length %}
+      <p style =  "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 0; font-size: 12px; font-weight: 600;">Notes from {{fromName}}</p>
+      <div style = "border: 1px solid lightgrey; color:#8e9090; width:500px; height:100px; padding: 10px 8px;">
+        <p style="margin: 0; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;">{{note}}</p>
+      </div>
+      {% endif %} 
+      <a href="{{link}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">View invoice</p>
+        </div>
+      </a>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> If you have any questions about this payment, please contact {{fromName}} directly. </p>
+      <br>
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-126-pt",
+  "name": "mark-as-complete",
+  "group": "sme",
+  "locale": "pt",
+  "subject": "A fatura nº {{account}} foi marcada como completa",
+  "displayName": "Treviso",
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">{{fromName}} marcou a {{invoiceType}} fatura # {{account}} como concluída.</p>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">Olá {{name}},</p>
+      <br>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">{{fromName}} marcou a fatura nº {{account}} de {{name}} como concluída porque foi paga fora de Treviso.</p>
+      <br>
+      <br>
+      {% if note|length %}
+      <p style =  "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 0; font-size: 12px; font-weight: 600;">Notas de {{fromName}}</p>
+      <div style = "border: 1px solid lightgrey; color:#8e9090; width:500px; height:100px; padding: 10px 8px;">
+        <p style="margin: 0; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;">{{note}}</p>
+      </div>
+      {% endif %} 
+      <a href="{{link}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">View invoice</p>
+        </div>
+      </a>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">Se você tiver alguma dúvida sobre este pagamento, entre em contato com {{fromName}} diretamente.</p>
+      <br>
+    </include>
+  """
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
@@ -1015,9 +1752,50 @@ p({
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-128",
   "name": "international-payments-enabled-notification",
   "group": "sme",
+  "locale" "en",
   "displayName": "{{appName}}",
   "subject": "{{business}} can now send payments to {{toCountry}} using Treviso",
-  "body": "\n\n<include template = 'treviso-email-base_2'>\n<p style= \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">{{business}} is all set to send payments to {{toCountry}} using Treviso.</p>\n<p style= \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">Hello {{name}}, </p>\n<br>\n<p style= \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">Great news! {{business}} is all set to send payments to {{toCountry}} using Treviso. Click the link below to start sending.</p>\n<br>\n<a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n<p style = \"padding: 14px 0 0; margin: 0;\">Sign in</p>\n</div></a>\n<p style= \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">If you have any questions, please contact us at <a style=\"text-decoration: none; color: #6c54ff;\" href=\"mailto:{{supportEmail}}\">{{supportEmail}}</a></p>\n</include>"
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">{{business}} is all set to send payments to {{toCountry}} using Treviso.</p>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Hello {{name}}, </p>
+      <br>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Great news! {{business}} is all set to send payments to {{toCountry}} using Treviso. Click the link below to start sending.</p>
+      <br>
+      <a href="{{link}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Sign in</p>
+        </div>
+      </a>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">If you have any questions, please contact us at <a style="text-decoration: none; color: #6c54ff;" href="mailto:{{supportEmail}}">{{supportEmail}}</a></p>
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-128-pt",
+  "name": "international-payments-enabled-notification",
+  "group": "sme",
+  "locale": "pt",
+  "displayName": "{{appName}}",
+  "subject": "{{business}} agora pode enviar pagamentos para {{toCountry}} usando Treviso",
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">{{business}} está pronto para enviar pagamentos para {{toCountry}} usando Treviso.</p>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Olá {{name}}, </p>
+      <br>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Boas notícias! {{business}} está pronto para enviar pagamentos para {{toCountry}} usando Treviso. Clique no link abaixo para começar a enviar.</p>
+      <br>
+      <a href="{{link}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Entrar</p>
+        </div>
+      </a>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">
+        Se você tiver alguma dúvida, entre em contato conosco pelo<a style="text-decoration: none; color: #6c54ff;" href="mailto:{{supportEmail}}">{{supportEmail}}</a>
+      </p>
+    </include>
+  """
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
@@ -1042,10 +1820,52 @@ p({
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-131",
   "name": "helpsignup",
   "group": "sme",
+  "locale": "en",
   "replyTo": "{{supportEmail}}",
   "displayName": "{{appName}}",
   "subject": "Can we help with your {{appName}} sign up?",
-  "body": "\n\n<include template = 'treviso-email-base_3'>\n <div style=\"font-size: 13px;\">\n <p style = \"margin: 0;\"> Olá {{name}},</p>\n <br>\n <p style = \"margin: 0;\"> Muito obrigado por criar sua conta no portal da {{appName}} ! Meu nome é {{personalSupportFirstName}}, da central de atendimento {{appName}}, e estou aqui para ajudá-lo a terminar o seu cadastro.</p>\n <br>\n <p style = \"margin: 0;\">Agora seria um bom momento para conversarmos ?</p>\n <br>\n <p style = \"margin: 0;\">O nosso time está a espera para aprová-lo (a) para que você possa enviar seus pagamentos e remessas internacionais o mais rápido possível.</p>\n <br>\n <p style =  \"margin: 0;\"> Atenciosamente,</p>\n <p style = \"margin: 4px 0 0;\"> Atendimento ao Cliente {{appName}}</p>\n <br>\n <p style = \"margin: 0 0 20px;\"> --</p>\n </div>\n \n <div style=\"font-size: 13px;\">\n <p style = \"margin: 0;\"> Hello {{name}},</p>\n <br>\n <p style = \"margin: 0;\"> Thank you for creating an {{appName}} account! I'm {{personalSupportFirstName}}, the onboarding specialist here at {{appName}}, and I'm here to help you complete your registration.</p>\n <br>\n <p style = \"margin: 0;\">Is now a good time to hop on a call?</p>\n <br>\n <p style = \"margin: 0;\">Our review team is standing by to get your profile approved, so your business can start sending payments as soon as possible.</p>\n <br>\n <p style =  \"margin: 0;\"> Chat soon,</p>\n <p style = \"margin: 4px 0 0;\"> {{personalSupportFirstName}}</p>\n <br>\n <p style = \"margin: 0 0 20px;\"> --</p>\n </div>\n \n </include>"
+  "body": """
+    <include template = 'treviso-email-base_3'>
+      <div style="font-size: 13px;">
+        <p style = "margin: 0;"> Hello {{name}},</p>
+        <br>
+        <p style = "margin: 0;"> Thank you for creating an {{appName}} account! I'm {{personalSupportFirstName}}, the onboarding specialist here at {{appName}}, and I'm here to help you complete your registration.</p>
+        <br>
+        <p style = "margin: 0;">Is now a good time to hop on a call?</p>
+        <br>
+        <p style = "margin: 0;">Our review team is standing by to get your profile approved, so your business can start sending payments as soon as possible.</p>
+        <br>
+        <p style =  "margin: 0;"> Chat soon,</p>
+        <p style = "margin: 4px 0 0;"> {{personalSupportFirstName}}</p>
+      </div>
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-131-pt",
+  "name": "helpsignup",
+  "group": "sme",
+  "locale": "pt",
+  "replyTo": "{{supportEmail}}",
+  "displayName": "{{appName}}",
+  "subject": "Podemos ajudá-lo (a) a se cadastrar no portal da {{appName}}",
+  "body": """
+    <include template = 'treviso-email-base_3'>
+      <div style="font-size: 13px;">
+        <p style = "margin: 0;"> Olá {{name}},</p>
+        <br>
+        <p style = "margin: 0;"> Muito obrigado por criar sua conta no portal da {{appName}} ! Meu nome é {{personalSupportFirstName}}, da central de atendimento {{appName}}, e estou aqui para ajudá-lo a terminar o seu cadastro.</p>
+        <br>
+        <p style = "margin: 0;">Agora seria um bom momento para conversarmos ?</p>
+        <br>
+        <p style = "margin: 0;">O nosso time está a espera para aprová-lo (a) para que você possa enviar seus pagamentos e remessas internacionais o mais rápido possível.</p>
+        <br>
+        <p style =  "margin: 0;"> Atenciosamente,</p>
+        <p style = "margin: 4px 0 0;"> Atendimento ao Cliente {{appName}}</p>
+      </div>
+    </include>
+  """
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
@@ -1086,9 +1906,70 @@ p({
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-136",
   "name": "onboarding-reminder",
   "group": "sme",
+  "locale: "en",
   "displayName": "{{appName}}",
   "subject": "Do you need help completing {{business}}'s business profile on {{appName}}?",
-  "body": "\n\n<include template = 'treviso-email-base_3'>\n<div style=\"font-size: 13px;\">\n<p style = \"margin: 0;\"> Hello {{name}},</p>\n<br>\n<p style = \"margin: 0;\"> I see that you are missing a few important steps to set up your {{appName}} account.</p>\n<br>\n<p style = \"margin: 0;\"> To start sending, you need to add your business information and bank account. I’m here to help walk you through the process. Is now a good time to hop on a call?</p>\n<br>\n<p style = \" margin: 0;\"> I have also included the the step-by-step guides below:</p>\n<br>\n<div>\n<a href=\"{{businessRegistrationLink}}\" style=\"color: #1155cc;\">How to register your business</a>\n</div>\n<br>\n<div>\n<a href=\"{{bankAccountSetupLink}}\" style=\"color: #1155cc;\">How to add your bank account</a>\n</div>\n<br>\n<p style =  \"margin: 0;\"> Chat soon,</p>\n<p style = \"margin: 4px 0 0;\"> {{personalSupportFirstName}}</p>\n<br>\n<p style = \"margin: 0 0 20px;\"> --</p>\n</div>\n</include>"
+  "body": """
+    <include template = 'treviso-email-base_3'>
+      <div style="font-size: 13px;">
+        <p style = "margin: 0;"> Hello {{name}},</p>
+        <br>
+        <p style = "margin: 0;"> I see that you are missing a few important steps to set up your {{appName}} account.</p>
+        <br>
+        <p style = "margin: 0;"> To start sending, you need to add your business information and bank account. I’m here to help walk you through the process. Is now a good time to hop on a call?</p>
+        <br>
+        <p style = " margin: 0;"> I have also included the the step-by-step guides below:</p>
+        <br>
+        <div>
+          <a href="{{businessRegistrationLink}}" style="color: #1155cc;">How to register your business</a>
+        </div>
+        <br>
+        <div>
+          <a href="{{bankAccountSetupLink}}" style="color: #1155cc;">How to add your bank account</a>
+        </div>
+        <br>
+        <p style =  "margin: 0;"> Chat soon,</p>
+        <p style = "margin: 4px 0 0;"> {{personalSupportFirstName}}</p>
+        <br>
+        <p style = "margin: 0 0 20px;"> --</p>
+      </div>
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-136-pt",
+  "name": "onboarding-reminder",
+  "group": "sme",
+  "locale": "pt",
+  "displayName": "{{appName}}",
+  "subject": "Você precisa de ajuda para preencher o perfil de negócios de {{business}} no {{appName}}?",
+  "body": """
+    <include template = 'treviso-email-base_3'>
+      <div style="font-size: 13px;">
+        <p style = "margin: 0;"> Olá {{name}},</p>
+        <br>
+        <p style = "margin: 0;"> Vejo que você está faltando algumas etapas importantes para configurar sua conta do {{appName}}.</p>
+        <br>
+        <p style = "margin: 0;"> Para começar a enviar, você precisa adicionar suas informações comerciais e conta bancária. Estou aqui para ajudá-lo a orientar o processo. Agora é uma boa hora para atender uma chamada?</p>
+        <br>
+        <p style = " margin: 0;"> Também incluí os guias passo a passo abaixo:</p>
+        <br>
+        <div>
+          <a href="{{businessRegistrationLink}}" style="color: #1155cc;">Como registrar sua empresa</a>
+        </div>
+        <br>
+        <div>
+          <a href="{{bankAccountSetupLink}}" style="color: #1155cc;">Como adicionar sua conta bancária</a>
+        </div>
+        <br>
+        <p style =  "margin: 0;"> Falamos em breve,</p>
+        <p style = "margin: 4px 0 0;"> {{personalSupportFirstName}}</p>
+        <br>
+        <p style = "margin: 0 0 20px;"> --</p>
+      </div>
+    </include>
+  """
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
@@ -1102,48 +1983,125 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-156",
-  "name": "top-level-capability-status-update",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-141",
+  "name": "contact-bank-add-failed",
+  "sendTo": "{{userEmail}}",
   "group": "sme",
-  "displayName":"{{appName}}",
-  "subject": "Your capability status has been updated",
+  "locale": "en",
+  "displayName": "{{appName}}",
+  "subject": "The transaction between you and {{contactBusiness}} has failed",
+  "body": "\n\n<include template = 'ablii-email-base_2'>\n <p style=\"font-size: 24px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 50px;margin-bottom: 40px;\"><b>Transaction Failed</b></p>\n <p style = \"font-size: 16px;\"> Hi {{name}},</p><br>\n <p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 16px; margin-top: -5px; margin-bottom: 30px;\">The transaction to contact <b>{{contactBusiness}}</b> failed</p>\n <br>\n <div style= \"border-radius: 4px; font-size: 14px;\">\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;\">\n <div class= \"left  \" style= \"float:left  \">\n <span style = \"width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;font-weight: 900; font-stretch: normal; font-style: normal; line-height: 1.5; letter-spacing: normal; color: #2b2b2b;\">Institution Number</span>\n </div>\n <div class= \"right  \" style= \"float:right; color: #8e9090;\">\n {{institutionNumber}}\n </div>\n </div>\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;\"> \n <div class= \"left  \" style= \"float:left  \">\n <span style = \"width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 900; font-stretch: normal; font-style: normal; line-height: 1.5; letter-spacing: normal; color: #2b2b2b;\">Institution</span>\n </div> \n <div class= \"right  \" style= \"float:right; color: #8e9090;\">\n {{institutionName}}\n </div>\n </div>\n <div style= \"overflow: hidden; padding-bottom: 8px; padding-top:8px  \"> \n <div class= \"left  \" style= \"float:left  \">\n <span style = \"width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;font-weight: 900;font-stretch: normal;font-style: normal;line-height: 1.5;letter-spacing: normal;color: #2b2b2b;\">Account Number</span>\n </div>\n <div class= \"right  \" style= \"float:right; color: #8e9090;\">\n ***{{accountNumber}}\n </div>\n </div>\n <p style = \"margin-top: 40px;margin-bottom: 20px; line-height: 24px; font-size: 16px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\">The transaction between you and <b>{{contactBusiness}}</b> failed due to an invalid bank account. Please confirm that you have the correct information for <b>{{contactBusiness}}</b>'s account, and re-add the bank account. Thank you.</p>\n <p style = \"margin-top: 20px;margin-bottom: 30px; line-height: 24px; font-size: 16px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\">If you have any questions, contact us at <a style = \" color: #604aff; font-weight: 900;\">{{supportEmail}}<a> </p>\n </div>\n <a href=\"{{appLink}}\" style=\" text-decoration: none;\">\n <div style=\"margin-top: 30px; padding: 14px 0; text-align: center; width: 504px; border-radius: 4px; font-weight: 600; background: #604aff; border-color: #4a33f4; color: #fff; cursor: pointer;\">Go to {{appName}}\n </div>\n </a>\n </include>"
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-141-pt",
+  "name": "contact-bank-add-failed",
+  "sendTo": "{{userEmail}}",
+  "group": "sme",
+  "locale": "pt",
+  "displayName": "{{appName}}",
+  "subject": "A transação entre você e {{contactBusiness}} falhou",
   "body": """
-    <include template = 'treviso-email-base_2'>
-    <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">
-      Status de capacidade atualizado
-    </p>
-    <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">
-      Olá {{userName}},
-    </p>
-    <br>
-    <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">
-      Sua capacidade \"{{capName}}\" foi definido para o status {{junctionStatus}} em {{appName}}.
-    </p>
-    <br>
-    <a href=\"{{appLink}}\" style=\"text-decoration: none;\">
-      <div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">
-        <p style = \"padding: 14px 0 0; margin: 0;\">
-          Assinar em
-        </p>
+    <include template = 'ablii-email-base_2'>
+      <p style="font-size: 24px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 50px;margin-bottom: 40px;"><b>Falha na transação</b></p>
+      <p style = "font-size: 16px;"> Oi {{name}},</p>
+      <br>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 16px; margin-top: -5px; margin-bottom: 30px;">A transação para contato <b>{{contactBusiness}}</b> falhou</p>
+      <br>
+      <div style= "border-radius: 4px; font-size: 14px;">
+        <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;">
+          <div class= "left  " style= "float:left  ">
+            <span style = "width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;font-weight: 900; font-stretch: normal; font-style: normal; line-height: 1.5; letter-spacing: normal; color: #2b2b2b;">Número da Instituição</span>
+          </div>
+          <div class= "right  " style= "float:right; color: #8e9090;">
+            {{institutionNumber}}
+          </div>
+        </div>
+        <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;">
+          <div class= "left  " style= "float:left  ">
+            <span style = "width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 900; font-stretch: normal; font-style: normal; line-height: 1.5; letter-spacing: normal; color: #2b2b2b;">Instituição</span>
+          </div>
+          <div class= "right  " style= "float:right; color: #8e9090;">
+            {{institutionName}}
+          </div>
+        </div>
+        <div style= "overflow: hidden; padding-bottom: 8px; padding-top:8px  ">
+          <div class= "left  " style= "float:left  ">
+            <span style = "width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;font-weight: 900;font-stretch: normal;font-style: normal;line-height: 1.5;letter-spacing: normal;color: #2b2b2b;">Número da conta</span>
+          </div>
+          <div class= "right  " style= "float:right; color: #8e9090;">
+            ***{{accountNumber}}
+          </div>
+        </div>
+        <p style = "margin-top: 40px;margin-bottom: 20px; line-height: 24px; font-size: 16px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;">A transação entre você e <b>{{contactBusiness}}</b> falhou devido a uma conta bancária inválida. Confirme se você possui as informações corretas para a conta de <b>{{contactBusiness}}</b>, e adicione novamente a conta bancária. Obrigada.</p>
+        <p style = "margin-top: 20px;margin-bottom: 30px; line-height: 24px; font-size: 16px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;">Se você tiver alguma dúvida, entre em contato conosco em <a style = " color: #604aff; font-weight: 900;">{{supportEmail}}<a> </p>
       </div>
-    </a>
-    <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">
-      Capability status updated
-    </p>
-    <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">
-      Hello {{userName}},
-    </p>
-    <br>
-    <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">
-      The Capability \"{{capNameEn}}\" has been set to {{junctionStatusEn}} on {{appName}}.
-    </p>
-    <a href=\"{{appLink}}\" style=\"text-decoration: none;\">
-      <div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">
-        <p style = \"padding: 14px 0 0; margin: 0;\">
-          Sign in
-        </p>
+      <a href="{{appLink}}" style=" text-decoration: none;">
+        <div style="margin-top: 30px; padding: 14px 0; text-align: center; width: 504px; border-radius: 4px; font-weight: 600; background: #604aff; border-color: #4a33f4; color: #fff; cursor: pointer;">vá para {{appName}}
+        </div>
+      </a>
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-142",
+  "name": "edit-bank-account",
+  "sendTo": "{{userEmail}}",
+  "group": "sme",
+  "locale": "en",
+  "displayName": "{{appName}}",
+  "subject": "Your transaction has failed, please confirm that the bank information you provided is correct",
+  "body": "\n\n<include template = 'ablii-email-base_2'>\n <p style=\"font-size: 24px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 50px;margin-bottom: 40px;\"><b>Transaction Failed</b></p>\n <p style = \"font-size: 16px;\"> Hi {{name}},</p><br>\n <p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 16px; margin-top: -5px; margin-bottom: 30px;\">The account ending in ***{{accountNumber}} was involved in a failed transaction.</p>\n <br>\n <div style= \"border-radius: 4px; font-size: 14px;\">\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;\">\n <div class= \"left  \" style= \"float:left  \">\n <span style = \"width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;font-weight: 900; font-stretch: normal; font-style: normal; line-height: 1.5; letter-spacing: normal; color: #2b2b2b;\">Institution Number</span>\n </div>\n <div class= \"right  \" style= \"float:right; color: #8e9090;\">\n {{institutionNumber}}\n </div>\n </div>\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;\"> \n <div class= \"left  \" style= \"float:left  \">\n <span style = \"width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 900; font-stretch: normal; font-style: normal; line-height: 1.5; letter-spacing: normal; color: #2b2b2b;\">Institution</span>\n </div> \n <div class= \"right  \" style= \"float:right; color: #8e9090;\">\n {{institutionName}}\n </div>\n </div>\n <div style= \"overflow: hidden; padding-bottom: 8px; padding-top:8px  \"> \n <div class= \"left  \" style= \"float:left  \">\n <span style = \"width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;font-weight: 900;font-stretch: normal;font-style: normal;line-height: 1.5;letter-spacing: normal;color: #2b2b2b;\">Account Number</span>\n </div>\n <div class= \"right  \" style= \"float:right; color: #8e9090;\">\n ***{{accountNumber}}\n </div>\n </div>\n <p style = \"margin-top: 40px;margin-bottom: 20px; line-height: 24px; font-size: 16px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\">The transaction between you and <b>{{contactBusiness}}</b> failed due to an invalid bank account. Please confirm that your account information is correct. Thank you.</p>\n <p style = \"margin-top: 20px;margin-bottom: 30px; line-height: 24px; font-size: 16px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\">If you have any questions, contact us at <a style = \" color: #604aff; font-weight: 900;\">{{supportEmail}}<a> </p>\n </div>\n <a href=\"{{appLink}}\" style=\" text-decoration: none;\">\n <div style=\"margin-top: 30px; padding: 14px 0; text-align: center; width: 504px; border-radius: 4px; font-weight: 600; background: #604aff; border-color: #4a33f4; color: #fff; cursor: pointer;\">Go to {{appName}}\n </div>\n </a>\n </include>"
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-142-pt",
+  "name": "edit-bank-account",
+  "sendTo": "{{userEmail}}",
+  "group": "sme",
+  "locale": "pt",
+  "displayName": "{{appName}}",
+  "subject": "Sua transação falhou, por favor, confirme se as informações bancárias fornecidas estão corretas",
+  "body": """
+    <include template = 'ablii-email-base_2'>
+      <p style="font-size: 24px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 50px;margin-bottom: 40px;"><b>Falha na transação</b></p>
+      <p style = "font-size: 16px;"> Oi {{name}},</p>
+      <br>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 16px; margin-top: -5px; margin-bottom: 30px;">A conta que termina em *** {{accountNumber}} foi envolvida em uma transação com falha.</p>
+      <br>
+      <div style= "border-radius: 4px; font-size: 14px;">
+        <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;">
+          <div class= "left  " style= "float:left  ">
+            <span style = "width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;font-weight: 900; font-stretch: normal; font-style: normal; line-height: 1.5; letter-spacing: normal; color: #2b2b2b;">Número da Instituição</span>
+          </div>
+          <div class= "right  " style= "float:right; color: #8e9090;">
+            {{institutionNumber}}
+          </div>
+        </div>
+        <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;">
+          <div class= "left  " style= "float:left  ">
+            <span style = "width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 900; font-stretch: normal; font-style: normal; line-height: 1.5; letter-spacing: normal; color: #2b2b2b;">Instituição</span>
+          </div>
+          <div class= "right  " style= "float:right; color: #8e9090;">
+            {{institutionName}}
+          </div>
+        </div>
+        <div style= "overflow: hidden; padding-bottom: 8px; padding-top:8px  ">
+          <div class= "left  " style= "float:left  ">
+            <span style = "width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;font-weight: 900;font-stretch: normal;font-style: normal;line-height: 1.5;letter-spacing: normal;color: #2b2b2b;">Número da conta</span>
+          </div>
+          <div class= "right  " style= "float:right; color: #8e9090;">
+            ***{{accountNumber}}
+          </div>
+        </div>
+        <p style = "margin-top: 40px;margin-bottom: 20px; line-height: 24px; font-size: 16px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;">A transação entre você e <b>{{contactBusiness}}</b> falhou devido a uma conta bancária inválida. Confirme se as informações da sua conta estão corretas. Obrigada.</p>
+        <p style = "margin-top: 20px;margin-bottom: 30px; line-height: 24px; font-size: 16px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;">Se você tiver alguma dúvida, entre em contato conosco em <a style = " color: #604aff; font-weight: 900;">{{supportEmail}}<a> </p>
       </div>
-    </a>
+      <a href="{{appLink}}" style=" text-decoration: none;">
+        <div style="margin-top: 30px; padding: 14px 0; text-align: center; width: 504px; border-radius: 4px; font-weight: 600; background: #604aff; border-color: #4a33f4; color: #fff; cursor: pointer;">Vá para {{appName}}
+        </div>
+      </a>
     </include>
   """
 })
@@ -1153,53 +2111,68 @@ p({
   "name": "ucjExpiredNotification",
   "sendTo": "{{userEmail}}",
   "group": "sme",
+  "locale": "en",
   "displayName": "{{appName}}",
   "subject": "Your capability has expired",
   "body": """
-  <include template = 'treviso-email-base_2'>
-    <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">
-      Capacidade expirada
-    </p>
-    <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">
-      Olá {{userName}},
-    </p>
-    <br>
-    <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">
-      Sua capacidade \"{{capabilityName}}\" expirou.
-    </p>
-    <br>
-    <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">
-      Faça login para renovar sua capacidade.
-    </p>
-    <br>
-    <a href=\"{{link}}\" style=\"text-decoration: none;\">
-      <div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">
-        <p style = \"padding: 14px 0 0; margin: 0;\">
-          Assinar em
-        </p>
-      </div>
-    </a>
-    <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">
-      Capability expired
-    </p>
-    <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">
-      Hello {{userName}},
-    </p>
-    <br>
-    <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">
-      Your capability \"{{capabilityNameEn}}\" has expired.
-    </p>
-    <br>
-    <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">
-      Please sign in to renew your capability.
-    </p>
-    <a href=\"{{link}}\" style=\"text-decoration: none;\">
-      <div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">
-        <p style = \"padding: 14px 0 0; margin: 0;\">
-          Sign in
-        </p>
-      </div>
-    </a>
+    <include template = 'treviso-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">
+        Capability expired
+      </p>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">
+        Hello {{userName}},
+      </p>
+      <br>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">
+        Your capability "{{capabilityNameEn}}" has expired.
+      </p>
+      <br>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">
+        Please sign in to renew your capability.
+      </p>
+      <a href="{{link}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">
+            Sign in
+          </p>
+        </div>
+      </a>
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-143-pt",
+  "name": "ucjExpiredNotification",
+  "sendTo": "{{userEmail}}",
+  "group": "sme",
+  "locale": "pt",
+  "displayName": "{{appName}}",
+  "subject": "Sua capacidade expirou",
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">
+        Capacidade expirada
+      </p>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">
+        Olá {{userName}},
+      </p>
+      <br>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">
+        Sua capacidade "{{capabilityName}}" expirou.
+      </p>
+      <br>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">
+        Faça login para renovar sua capacidade.
+      </p>
+      <br>
+      <a href="{{link}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">
+            Assinar em
+          </p>
+        </div>
+      </a>
     </include>
   """
 })
@@ -1306,6 +2279,53 @@ p({
       Please sign in to renew your capability.
     </p>
     <a href=\"{{link}}\" style=\"text-decoration: none;\">
+      <div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">
+        <p style = \"padding: 14px 0 0; margin: 0;\">
+          Sign in
+        </p>
+      </div>
+    </a>
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-156",
+  "name": "top-level-capability-status-update",
+  "group": "sme",
+  "displayName":"{{appName}}",
+  "subject": "Your capability status has been updated",
+  "body": """
+    <include template = 'treviso-email-base_2'>
+    <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">
+      Status de capacidade atualizado
+    </p>
+    <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">
+      Olá {{userName}},
+    </p>
+    <br>
+    <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">
+      Sua capacidade \"{{capName}}\" foi definido para o status {{junctionStatus}} em {{appName}}.
+    </p>
+    <br>
+    <a href=\"{{appLink}}\" style=\"text-decoration: none;\">
+      <div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">
+        <p style = \"padding: 14px 0 0; margin: 0;\">
+          Assinar em
+        </p>
+      </div>
+    </a>
+    <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">
+      Capability status updated
+    </p>
+    <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">
+      Hello {{userName}},
+    </p>
+    <br>
+    <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">
+      The Capability \"{{capNameEn}}\" has been set to {{junctionStatusEn}} on {{appName}}.
+    </p>
+    <a href=\"{{appLink}}\" style=\"text-decoration: none;\">
       <div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">
         <p style = \"padding: 14px 0 0; margin: 0;\">
           Sign in
