@@ -32,6 +32,7 @@ import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.bank.*;
 import net.nanopay.contacts.AFEXCNBeneficiaryCapability;
 import net.nanopay.contacts.Contact;
+import net.nanopay.country.br.CPF;
 import net.nanopay.country.br.BrazilBusinessInfoData;
 import net.nanopay.fx.ExchangeRate;
 import net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms;
@@ -233,6 +234,15 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     ));
 
     return ucj != null && ucj.getData() != null ?  ((BrazilBusinessInfoData)ucj.getData()).getCnpj() : "";
+  }
+
+  protected String findCPF(long userId) {
+    UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) this.x.get("bareUserCapabilityJunctionDAO")).find(AND(
+      EQ(UserCapabilityJunction.TARGET_ID, "fb7d3ca2-62f2-4caf-a84c-860392e4676b"),
+      EQ(UserCapabilityJunction.SOURCE_ID, userId)
+    ));
+
+    return  ( ucj != null && ucj.getData() != null ) ? ((CPF) ucj.getData()).getData() : "";
   }
 
   public void pushSigningOfficers(Business business, String clientKey) {
@@ -1255,6 +1265,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       KeyIndividual individual = new KeyIndividual();
       individual.setFirstName(officer.getFirstName());
       individual.setLastName(officer.getLastName());
+      individual.setEmail(officer.getEmail());
       individual.setIndividualRoles(new String[] {"OFFICER"}); // TODO ENUM TYPE
       individual.setJobTitle(officer.getJobTitle());
       individual.setAccountPrimaryContact("True");
@@ -1293,6 +1304,11 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
           logger_.error("Failed parse company officer identification expiration date.", e);
         }
       }
+
+      if ( SafetyUtil.isEmpty(individual.getIdNo()) && "BR".equals(address.getCountryId()) ) {
+        individual.setIdNo(findCPF(officer.getId()));
+      }
+
       keyIndividualList.add(individual);
     }
     return keyIndividualList.toArray(new KeyIndividual[keyIndividualList.size()]);

@@ -26,267 +26,267 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'termsAndConditions',
+      name: 'TermsAndConditions',
       description: 'Accept AFEX terms and conditions?'
     },
     {
       class: 'String',
-      name: 'accountEntityType',
+      name: 'AccountEntityType',
       description: 'Entity Type of an account that is going to be onboarded'
     },
     {
       class: 'String',
-      name: 'accountNumber',
+      name: 'AccountNumber',
       description: 'Used to retrieve and update account information'
     },
     {
       class: 'String',
-      name: 'salutation',
+      name: 'Salutation',
       description: 'Greeting for communication'
     },
     {
       class: 'String',
-      name: 'firstName',
+      name: 'FirstName',
       description: 'First Name of the individual'
     },
     {
       class: 'String',
-      name: 'middleName',
+      name: 'MiddleName',
       description: 'Middle Name of the individual'
     },
     {
       class: 'String',
-      name: 'lastName',
+      name: 'LastName',
       description: 'Last Name of the inidividual'
     },
     {
       class: 'String',
-      name: 'citizenship',
+      name: 'Citizenship',
       description: 'Citizenship of the individual'
     },
     {
       class: 'String',
-      name: 'contactAddress1',
+      name: 'ContactAddress1',
       description: 'Contact primary location - Address line 1'
     },
     {
       class: 'String',
-      name: 'contactAddress2',
+      name: 'ContactAddress2',
       description: 'Contact primary location - Address line 2'
     },
     {
       class: 'String',
-      name: 'contactAddress3',
+      name: 'ContactAddress3',
       description: 'Contact primary location - Address line 3'
     },
     {
       class: 'String',
-      name: 'contactZip',
+      name: 'ContactZip',
       description: 'Contact primary location - Zip Code / Post Code'
     },
     {
       class: 'String',
-      name: 'contactCity',
+      name: 'ContactCity',
       description: 'Contact primary location - City'
     },
     {
       class: 'String',
-      name: 'contactStateRegion',
+      name: 'ContactStateRegion',
       description: 'Contact primary location - State / Region'
     },
     {
       class: 'String',
-      name: 'contactCountryCode',
+      name: 'ContactCountryCode',
       description: 'Contact primary location - Country'
     },
     {
       class: 'String',
-      name: 'contactPhone',
+      name: 'ContactPhone',
       description: 'Individual phone number'
     },
     {
       class: 'String',
-      name: 'contactPrimaryIdentificationExpirationDate',
+      name: 'ContactPrimaryIdentificationExpirationDate',
       description: 'Individual primary identification expiration date'
     },
     {
       class: 'String',
-      name: 'contactPrimaryIdentificationIssuingAgency',
+      name: 'ContactPrimaryIdentificationIssuingAgency',
       description: 'Individual primary identification issuing agency'
     },
     {
       class: 'String',
-      name: 'contactPrimaryIdentificationNumber',
+      name: 'ContactPrimaryIdentificationNumber',
       description: 'Individual primary identification number'
     },
     {
       class: 'String',
-      name: 'contactPrimaryIdentificationType',
+      name: 'ContactPrimaryIdentificationType',
       description: 'Individual primary identification type'
     },
     {
       class: 'String',
-      name: 'dateOfBirth',
+      name: 'DateOfBirth',
       description: 'Individual date of birth'
     },
     {
       class: 'String',
-      name: 'employmentStatus',
+      name: 'EmploymentStatus',
       description: 'Individual employment status'
     },
     {
       class: 'String',
-      name: 'jobTitle',
+      name: 'JobTitle',
       description: `Individual job title for private user or individual with the company`
     },
     {
       class: 'String',
-      name: 'jobTitleOther',
+      name: 'JobTitleOther',
       description: 'Description of the job title if unable to locate a value in the job title field '
     },
     {
       class: 'String',
-      name: 'occupation',
+      name: 'Occupation',
       description: 'Individual occupation'
     },
     {
       class: 'String',
-      name: 'primaryEmailAddress',
+      name: 'PrimaryEmailAddress',
       description: 'Individual primary email address'
     },
     {
       class: 'String',
-      name: 'secondaryIdentificationExpirationDate',
+      name: 'SecondaryIdentificationExpirationDate',
       description: 'Individual secondary identification expiration date'
     },
     {
       class: 'String',
-      name: 'secondaryIdentificationIssuingAgency',
+      name: 'SecondaryIdentificationIssuingAgency',
       description: 'Individual secondary identification issuing agency'
     },
     {
       class: 'String',
-      name: 'secondaryIdentificationNumber',
+      name: 'SecondaryIdentificationNumber',
       description: 'Individual secondary identification number'
     },
     {
       class: 'String',
-      name: 'secondaryIdentificationType',
+      name: 'SecondaryIdentificationType',
       description: 'Individual secondary identification type'
     },
     {
       class: 'StringArray',
-      name: 'sourcesOfWealth',
+      name: 'SourcesOfWealth',
       description: 'Individual sources of wealth'
     },
     {
       class: 'String',
-      name: 'taxIdentificationNumber',
+      name: 'TaxIdentificationNumber',
       description: 'Individual tax identification number'
     },
     {
       class: 'String',
-      name: 'legalCompanyName',
+      name: 'LegalCompanyName',
       description: 'Business legal entity name'
     },
     {
       class: 'String',
-      name: 'doingBusinessAs',
+      name: 'DoingBusinessAs',
       description: 'Business Name'
     },
     {
       class: 'String',
-      name: 'businessTelephoneNo',
+      name: 'BusinessTelephoneNo',
       description: 'Registered business phone number'
     },
     {
       class: 'String',
-      name: 'businessWebsite',
+      name: 'BusinessWebsite',
       description: 'Registered business website'
     },
     {
       class: 'String',
-      name: 'companyType',
+      name: 'CompanyType',
       description: 'Type of company'
     },
     {
       class: 'String',
-      name: 'descriptionOfBusiness',
+      name: 'DescriptionOfBusiness',
       description: 'Definition of business'
     },
     {
       class: 'String',
-      name: 'dateOfFormation',
+      name: 'DateOfFormation',
       description: 'Effective date of the original Certificate of Formation of the company'
     },
     {
       class: 'String',
-      name: 'countryOfIncorporation',
+      name: 'CountryOfIncorporation',
       description: 'The country in which the company is incorporated or legally registered'
     },
     {
       class: 'String',
-      name: 'stateRegionOfIncorporation',
+      name: 'StateRegionOfIncorporation',
       description: 'The state/region in which the company is incorporated or legally registered'
     },
     {
       class: 'String',
-      name: 'federalTaxId',
+      name: 'FederalTaxId',
       description: 'IRS unique identifier for a business entity (i.e. Employer Identification Number - EIN)'
     },
     {
       class: 'String',
-      name: 'companyRegistrationNumber',
+      name: 'CompanyRegistrationNumber',
       description: 'Unique identifier issued by government commission when a company is incorporated'
     },
     {
       class: 'String',
-      name: 'businessCountry',
+      name: 'BusinessCountry',
       description: 'Country the business resides within'
     },
     {
       class: 'String',
-      name: 'businessAddress',
+      name: 'BusinessAddress',
       description: 'Local business address'
     },
     {
       class: 'String',
-      name: 'businessCity',
+      name: 'BusinessCity',
       description: 'Local business city'
     },
     {
       class: 'String',
-      name: 'businessState',
+      name: 'BusinessState',
       description: 'Local business state / region'
     },
     {
       class: 'String',
-      name: 'businessZip',
+      name: 'BusinessZip',
       description: 'Local business zip / postcode'
     },
     {
       class: 'String',
-      name: 'correspondanceCountry',
+      name: 'CorrespondanceCountry',
       description: 'Miscellaneous correspondance with business from particular country'
     },
     {
       class: 'String',
-      name: 'correspondanceAddress',
+      name: 'CorrespondanceAddress',
       description: 'Miscellaneous correspondance with business from particular address'
     },
     {
       class: 'String',
-      name: 'correspondanceCity',
+      name: 'CorrespondanceCity',
       description: 'Miscellaneous correspondance with business from particular city'
     },
     {
       class: 'String',
-      name: 'correspondanceState',
+      name: 'CorrespondanceState',
       description: 'Miscellaneous correspondance with business from particular state / region'
     },
     {
       class: 'String',
-      name: 'correspondanceZip',
+      name: 'CorrespondanceZip',
       description: 'Miscellaneous correspondance with business from particular zip / postcode'
     },
     {
@@ -296,22 +296,22 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'tickerSymbol',
+      name: 'TTickerSymbol',
       description: 'Stock Exchange Symbol'
     },
     {
       class: 'String',
-      name: 'description',
+      name: 'Description',
       description: 'additional information to describe the account'
     },
     {
       class: 'String',
-      name: 'expectedMonthlyPayments',
+      name: 'ExpectedMonthlyPayments',
       description: 'Expected number of recurring monthly payments'
     },
     {
       class: 'String',
-      name: 'expectedMonthlyVolume',
+      name: 'ExpectedMonthlyVolume',
       description: 'Expected volume of recurring monthly payments'
     },
     {
@@ -326,48 +326,48 @@ foam.CLASS({
     },
     {
       class: 'StringArray',
-      name: 'tradingCountries',
+      name: 'TradingCountries',
       description: 'Expected trading countries'
     },
 		{
 			class: "FObjectArray",
-			name: "keyIndividuals",
+			name: "KeyIndividuals",
 			documentation: "An array of signing officers.",
 			of: "net.nanopay.fx.afex.KeyIndividual",
 		},
     {
       class: 'String',
-      name: 'individualRoles',
+      name: 'IndividualRoles',
       description: 'What is this individual\'s roles in the company?'
     },
     {
       class: 'String',
-      name: 'percentOwnership',
+      name: 'PercentOwnership',
       description: 'Individual\'s percentage of ownership of the company'
     },
     {
       class: 'String',
-      name: 'address',
+      name: 'Address',
       description: 'Residential address of the individual'
     },
     {
       class: 'String',
-      name: 'city',
+      name: 'City',
       description: 'Residential city of the individual'
     },
     {
       class: 'String',
-      name: 'zip',
+      name: 'Zip',
       description: 'Residential zip / postcode of the individual'
     },
     {
       class: 'String',
-      name: 'email',
+      name: 'Email',
       description: 'Email of the individual'
     },
     {
       class: 'String',
-      name: 'phoneNumber',
+      name: 'PhoneNumber',
       description: 'Phone number of the individual'
     },
     {
@@ -392,12 +392,12 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'issueJurisdiction',
+      name: 'IssueJurisdiction',
       description: 'Authority that granted the identification'
     },
     {
       class: 'String',
-      name: 'accountPrimaryContact',
+      name: 'AccountPrimaryContact',
       description: 'Is this individual the primary contact for the account?'
     },
     {
@@ -407,12 +407,12 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'state',
+      name: 'State',
       description: 'Residential state / region of the individual'
     },
     {
       class: 'String',
-      name: 'country',
+      name: 'Country',
       description: 'Residential country of the individual'
     }
   ]
