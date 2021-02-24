@@ -880,12 +880,10 @@ foam.CLASS({
     {
       name: 'exportComplianceDocuments',
       section: 'complianceInformation',
+      isEnabled: function(compliance, onboarded) {
+        return compliance !== this.ComplianceStatus.NOTREQUESTED && onboarded;
+      },
       code: function() {
-        if ( this.compliance === this.ComplianceStatus.NOTREQUESTED
-          || ! this.onboarded ) {
-          this.ctrl.notify(this.organization + this.COMPLIANCE_REPORT_WARNING, '', this.LogLevel.INFO, true);
-          return;
-        }
         var url = window.location.origin
           + '/service/ascendantFXReports?userId=' + this.id;
         window.location.assign(url);

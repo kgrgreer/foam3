@@ -19,6 +19,10 @@ mediator treviso
 ./build.sh -uJbr,treviso,treviso_dev,cluster_2,mm -Nmediator1 -W8100 -m -c
 ./build.sh -uJbr,treviso,treviso_dev,cluster_2,mm -Nmediator2 -W8110 -m
 
+mediator intuit
+./build.sh -uJapi,external,intuit,intuit_dev,cluster_2,mm -Nmediator1 -W8100 -m -c
+./build.sh -uJapi,external,intuit,intuit_dev,cluster_2,mm -Nmediator2 -W8110 -m
+
 'User' interface at mediator1:8100 or mediator2:8110
 'Admin' interface at localhost:8100 or localhost:8110
 

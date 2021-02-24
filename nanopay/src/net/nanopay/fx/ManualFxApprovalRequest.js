@@ -41,39 +41,37 @@ foam.CLASS({
     {
       class: 'String',
       name: 'dealId',
-      section: 'requestDetails'
+      section: 'approvalRequestInformation',
+      order: 95,
+      gridColumns: 6
     },
     {
       class: 'Double',
       name: 'fxRate',
-      section: 'requestDetails'
+      section: 'approvalRequestInformation',
+      order: 96,
+      gridColumns: 6
     },
     {
       class: 'DateTime',
       name: 'valueDate',
-      section: 'requestDetails',
-      visibility: function(valueDate) {
-        return valueDate ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      }
+      section: 'approvalRequestInformation',
+      order: 97,
+      gridColumns: 6
     },
     {
       class: 'DateTime',
       name: 'expiryDate',
-      section: 'requestDetails',
-      visibility: function(expiryDate) {
-        return expiryDate ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      }
+      section: 'approvalRequestInformation',
+      order: 98,
+      gridColumns: 6
     }
   ],
   
   actions: [
     {
       name: 'updateDealId',
-      section: 'requestDetails',
+      section: 'approvalRequestInformation',
       code: function(X) {
         var objToAdd = X.objectSummaryView ? X.objectSummaryView : X.summaryView;
         objToAdd.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
@@ -89,7 +87,7 @@ foam.CLASS({
     },
     {
       name: 'updateFxRate',
-      section: 'requestDetails',
+      section: 'approvalRequestInformation',
       code: function(X) {
         var objToAdd = X.objectSummaryView ? X.objectSummaryView : X.summaryView;
         objToAdd.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({

@@ -15,6 +15,7 @@ import net.nanopay.bank.BankHolidayService;
 import net.nanopay.fx.ascendantfx.AscendantFXUser;
 import net.nanopay.invoice.model.BillingInvoice;
 import net.nanopay.tx.ComplianceTransaction;
+import net.nanopay.tx.InvoicedCreditLineItem;
 import net.nanopay.tx.InvoicedFeeLineItem;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
@@ -209,7 +210,21 @@ public class BillingInvoicesCron implements ContextAgent {
 
         List<InvoiceLineItem> invoiceLineItems = invoiceLineItemByPayer_.get(payerId);
         for (TransactionLineItem lineItem : transaction.getLineItems()) {
-          if ( lineItem instanceof InvoicedFeeLineItem ) {
+          if ( lineItem instanceof InvoicedCreditLineItem ) {
+            long amount = lineItem.getAmount();
+            InvoiceLineItem invoiceLineItem = new InvoiceLineItem.Builder(x)
+              .setTransaction(transaction.getId())
+              .setGroup("Discount")
+              .setDescription(String.format("%s → $%.2f %s",
+                formatTransaction(x, transaction),
+                amount / 100.0,
+                lineItem.getCurrency()))
+              .setAmount(amount)
+              .setCurrency(lineItem.getCurrency())
+            .build();
+            invoiceLineItems.add(invoiceLineItem);
+            invoice.setAmount(invoice.getAmount() - amount);
+          } else if ( lineItem instanceof InvoicedFeeLineItem ) {
             long amount = check90DaysPromotion(payer, isAscendantFXUser, transaction) ? 0L : lineItem.getAmount();
             InvoiceLineItem invoiceLineItem = new InvoiceLineItem.Builder(x)
               .setTransaction(transaction.getId())

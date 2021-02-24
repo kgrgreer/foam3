@@ -413,7 +413,8 @@ p({
   },
   "asyncAction":{
     "class":"net.nanopay.crunch.compliance.UserComplianceApproval",
-    "clearDataOnRejection": false
+    "clearDataOnRejection": false,
+    "setComplianceStatusOnRejection": true
   },
   "enabled":true,
   "lifecycleState":1
