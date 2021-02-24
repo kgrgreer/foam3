@@ -23,7 +23,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'CreditLineItem',
-  extends: 'net.nanopay.tx.FeeLineItem',
+  extends: 'net.nanopay.tx.TransactionLineItem',
   documentation: 'A line item for giving discounts/credits.',
 
   javaImports: [
@@ -33,16 +33,53 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'group',
+      hidden: true
+    },
+    {
+      name: 'type',
+      hidden: true
+    },
+    {
+      name: 'reversable',
+      hidden: true
+    },
+    {
+      name: 'note',
+      hidden: true
+    },
+    {
+      name: 'name',
+      hidden: true
+    },
+    {
       class: 'Reference',
       of: 'foam.core.Currency',
       name: 'creditCurrency',
       targetDAOKey: 'currencyDAO',
-      hidden: true,
-      javaSetter: `
-        creditCurrency_ = val;
-        creditCurrencyIsSet_ = true;
-        calculateView_();
-      `
+      hidden: true
+    },
+    {
+      name: 'amount',
+      order: 10,
+      gridColumns: 6
+    },
+    {
+      name: 'sourceAccount',
+      label: 'Payer Account',
+      order: 20,
+      gridColumns: 6,
+      readPermissionRequired: true
+    },
+    {
+      name: 'destinationAccount',
+      label: 'credited Account',
+      hidden: false,
+      order: 30,
+      gridColumns: 6,
+      view: {
+        class: 'foam.u2.view.ReferenceView'
+      }
     }
   ]
 });
