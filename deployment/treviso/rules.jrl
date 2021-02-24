@@ -529,7 +529,7 @@ p({
 
 p({
   "class": "net.nanopay.meter.clearing.ruler.TransactionTypeClearingTimeRule",
-  "id":"bf6670a5-957e-4407-a80f-7eda6f27ab23",
+  "id":"0466c0ce-27bb-48ed-acf8-4f63f3ec5632",
   "name":"TrevisoTransaction ClearingTime Rule",
   "of": "net.nanopay.partner.treviso.tx.TrevisoTransaction",
   "duration": 0,
@@ -550,6 +550,7 @@ p({
       }
     ]
   },
+  spid: "treviso",
   "saveHistory":true,
   "lifecycleState":1
 })
