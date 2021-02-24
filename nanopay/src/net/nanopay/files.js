@@ -184,6 +184,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TransactionException' },
   { name: 'net/nanopay/tx/UnsupportedTransactionException' },
   { name: 'net/nanopay/tx/GrandTotalLineItem' },
+  { name: 'net/nanopay/tx/TransactionUnPauseRule' },
 
   { name: 'net/nanopay/model/CurrencyAmount' },
   { name: 'net/nanopay/model/BusinessSector' },
