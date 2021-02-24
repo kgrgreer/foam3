@@ -1244,6 +1244,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.Address.ADDRESS1
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.Address.ADDRESS2.label",target:"Endereço2"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.Address.ADDRESS1.documentation",target:"Um campo não estruturado para o endereço postal principal."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.Address.ADDRESS2.documentation",target:"Um campo não estruturado para o endereço postal secundário."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.Address.PROPERTY_TYPE.label",target:"Tipo de Propriedade"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.Address.COUNTRY_ID.documentation",target:"Uma chave estrangeira para o CountryDAO que representa o país."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.Address.COUNTRY_ID.label",target:"País"})
