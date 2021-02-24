@@ -821,8 +821,15 @@ foam.CLASS({
 
           // Redirect user to switch business if agent doesn't exist.
           if ( ! this.subject.realUser || this.subject.realUser.id === this.subject.user.id ) {
+
             //by setting memento here we will trigger mementoChange function in ApplicationController
-            //which will find and launch sme.accountProfile.switch-business menu
+            //which will find and launch sme.accountProfile.switch-business-page menu.
+            /**
+              switch-business menus is used to set subject, direct user to correct page, and show switch-business menus
+              In order to control the accountProfile menus disply without break login, add switch-business-page,
+              which use for set subject and redirect pages, to menus. And switch-business menu is only use to display
+              the page and shows in accountProfile.
+            */
             this.memento.value = 'sme.accountProfile.switch-business-page'
             return;
           }
