@@ -131,10 +131,10 @@ foam.CLASS({
       ],
       javaCode: `
         Account acct =  transaction.findDestinationAccount(x);
-        if ( acct instanceof BankAccount ) {
-          return (BankAccount) acct;
+        if ( ! (acct instanceof BankAccount) ) {
+          acct = transaction.findSourceAccount(x);
         }
-        return (BankAccount) transaction.findSourceAccount(x);
+        return (BankAccount) acct;
       `
     },
     {
