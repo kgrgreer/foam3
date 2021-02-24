@@ -299,12 +299,10 @@ public class ExchangeServiceProvider implements ExchangeService {
     String formattedCpfCnpj = findCpfCnpj(payer.getId()).replaceAll("[^0-9]", "");
     dadosBoleto.setCNPJPCPFCLIENTE(formattedCpfCnpj); // eg 10786348070
 
-    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-
     ClearingTimeService clearingTimeService = (ClearingTimeService) this.x.get("clearingTimeService");
     Date completionDate = clearingTimeService.estimateCompletionDateSimple(this.x, transaction);
 
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     String completionDateString = "";
     try {
       completionDateString = sdf.format(completionDate);
