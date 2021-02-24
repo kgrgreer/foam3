@@ -329,12 +329,12 @@ foam.CLASS({
       name: 'TradingCountries',
       description: 'Expected trading countries'
     },
-		{
-			class: "FObjectArray",
-			name: "KeyIndividuals",
-			documentation: "An array of signing officers.",
-			of: "net.nanopay.fx.afex.KeyIndividual",
-		},
+    {
+      class: "FObjectArray",
+      name: "KeyIndividuals",
+      documentation: "An array of signing officers.",
+      of: "net.nanopay.fx.afex.KeyIndividual",
+    },
     {
       class: 'String',
       name: 'IndividualRoles',
