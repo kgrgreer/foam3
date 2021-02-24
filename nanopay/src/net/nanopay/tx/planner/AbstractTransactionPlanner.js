@@ -374,7 +374,7 @@ foam.CLASS({
           if ( li instanceof CreditLineItem &&
           ! SafetyUtil.equals(txn.getDestinationAccount(), ((CreditLineItem) li).getDestinationAccount()) )
           {
-            // remove credit line items off txns where they dont apply?
+            // remove credit line items off txns where they dont apply? TODO: ReThink this.
             continue;
           }
 

@@ -1241,6 +1241,9 @@ foam.CLASS({
           if ( this.FeeLineItem.isInstance( this.lineItems[i] ) ) {
             value += this.lineItems[i].amount;
           }
+          if ( this.CreditLineItem.isInstance( this.lineItems[i] ) ) {
+            value -= this.lineItems[i].amount;
+          }
         }
         return value;
       },
