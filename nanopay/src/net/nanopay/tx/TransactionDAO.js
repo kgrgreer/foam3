@@ -113,6 +113,12 @@ foam.CLASS({
       if ( foam.dao.DAO.LAST_CMD.equals(obj) ) {
         return this;
       }
+      if ( foam.dao.MDAO.NOW_CMD.equals(obj) ) {
+        return getDelegate().cmd_(x, obj);
+      }
+      if ( obj instanceof foam.dao.MDAO.WhenCmd ) {
+        return new foam.dao.ReadOnlyDAO(x, (DAO) getDelegate().cmd_(x, obj), getOf(), Transaction.ID);
+      }
       return null;
       `
     },

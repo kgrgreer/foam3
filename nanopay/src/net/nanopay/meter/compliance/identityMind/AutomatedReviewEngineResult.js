@@ -24,19 +24,27 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'result'
+      name: 'result',
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: 'ruleId'
+      name: 'ruleId',
+      order: 20,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: 'ruleName'
+      name: 'ruleName',
+      order: 30,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: 'ruleDescription'
+      name: 'ruleDescription',
+      order: 40,
+      gridColumns: 6
     },
   ]
 });

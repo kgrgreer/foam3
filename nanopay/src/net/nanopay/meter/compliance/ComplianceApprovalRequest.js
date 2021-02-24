@@ -20,6 +20,13 @@ foam.CLASS({
   name: 'ComplianceApprovalRequest',
   extends: 'foam.nanos.approval.ApprovalRequest',
 
+  sections: [
+    {
+      name: 'complianceInformation',
+      order: 20
+    }
+  ],
+
   properties: [
     {
       name: 'status',
@@ -29,21 +36,23 @@ foam.CLASS({
       class: 'Long',
       name: 'causeId',
       section: 'complianceInformation',
-      visibility: function(causeDaoKey) {
-        return causeDaoKey !== ''
-          ? 'RW'
-          : 'HIDDEN';
-      }
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'String',
       name: 'causeDaoKey',
       section: 'complianceInformation',
-      visibility: function(causeDaoKey) {
-        return causeDaoKey !== ''
-          ? 'RW'
-          : 'HIDDEN';
-      }
+      order: 20,
+      gridColumns: 6
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'causeObject',
+      label: '',
+      section: 'complianceInformation',
+      order: 30,
+      transient: true
     },
     {
       class: 'FObjectProperty',
@@ -64,17 +73,6 @@ foam.CLASS({
           });
         }
         return null;
-      }
-    },
-    {
-      class: 'FObjectProperty',
-      name: 'causeObject',
-      section: 'complianceInformation',
-      transient: true,
-      visibility: function(causeDaoKey) {
-        return causeDaoKey !== ''
-          ? 'RO'
-          : 'HIDDEN';
       }
     }
   ]

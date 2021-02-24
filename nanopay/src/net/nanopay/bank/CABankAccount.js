@@ -58,6 +58,11 @@ foam.CLASS({
       name: 'INSTITUTION_NUMBER_PATTERN',
       type: 'Regex',
       javaValue: 'Pattern.compile("^[0-9]{3}$")'
+    },
+    {
+      name: 'ROUTING_CODE_PATTERN',
+      type: 'Regex',
+      value: /^0(\d{3})(\d{5})$/
     }
   ],
 
@@ -170,7 +175,14 @@ foam.CLASS({
       visibility: 'HIDDEN',
       required: false,
       validateObj: function(iban) {
-      }
+      },
+      javaGetter: `
+        StringBuilder iban = new StringBuilder();
+        iban.append(getInstitutionNumber());
+        iban.append(getAccountNumber());
+        iban.append(getBranchId());
+        return iban.toString();
+      `
     },
     {
       name: 'country',
@@ -341,6 +353,7 @@ foam.CLASS({
       transient: true,
       label: '',
       updateVisibility: 'HIDDEN',
+      autoValidate: true,
       factory: function() {
         return net.nanopay.model.CAPadCapture.create({
           country: this.country,
@@ -409,8 +422,10 @@ foam.CLASS({
       javaCode: `
         super.validate(x);
         validateAccountNumber();
-        validateInstitutionNumber(x);
-        validateBranchId(x);
+        if ( SafetyUtil.isEmpty(getSwiftCode()) ) {
+          validateInstitutionNumber(x);
+          validateBranchId(x);
+        }
       `
     },
     {
@@ -503,6 +518,28 @@ foam.CLASS({
           code.append(getBankCode(x));
         }
         return code.toString();
+      `
+    },
+    {
+      name: 'setRoutingCode',
+      javaCode: `
+        if ( ! SafetyUtil.isEmpty(routingCode) ) {
+          try {
+            var matcher = ROUTING_CODE_PATTERN.matcher(routingCode);
+            if ( matcher.find() ) {
+              var institutionNumber = matcher.group(1);
+              var branchId = matcher.group(2);
+
+              // Reset institution and branch
+              clearInstitution();
+              clearBranch();
+              setInstitutionNumber(institutionNumber);
+              setBranchId(branchId);
+              return true;
+            }
+          } catch ( RuntimeException e ) { /* ignore */ }
+        }
+        return false;
       `
     }
   ]

@@ -173,20 +173,6 @@ foam.CLASS({
           groupPermissionJunctionDAO.put(junction);
         }
 
-        // Create spid-admin's default digital account
-        var digitalAccount = DigitalAccount.findDefault(x, adminUser, mspInfo.getDenomination());
-
-        // Create rule to auto-fill feeAccount for TransactionFeeRule created in the spid
-        var ensureFeeAccountRule = new EnsurePropertyOnCreateRule();
-        ensureFeeAccountRule.setName("Auto-fill feeAccount for TransactionFeeRule - " + spid);
-        ensureFeeAccountRule.setDaoKey("localRuleDAO");
-        ensureFeeAccountRule.setRuleGroup("TransactionFeeRule");
-        ensureFeeAccountRule.setTargetClass(TransactionFeeRule.getOwnClassInfo());
-        ensureFeeAccountRule.setPropName("feeAccount");
-        ensureFeeAccountRule.setPropValue(digitalAccount.getId());
-        ensureFeeAccountRule.setSpid(spid);
-        ruleDAO.put(ensureFeeAccountRule);
-
         // Create spid-fraud-ops group
         Group fraudOpsGroup = new Group();
         fraudOpsGroup.setId(mspInfo.getSpid() + "-fraud-ops");

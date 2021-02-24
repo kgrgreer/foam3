@@ -22,9 +22,29 @@ foam.ENUM({
   documentation: 'Status on compliance',
 
   values: [
-    { name: 'NOTREQUESTED', label: 'Not Requested' },
-    { name: 'REQUESTED', label: 'Requested' },
-    { name: 'PASSED',    label: 'Passed'    },
-    { name: 'FAILED',    label: 'Failed'    }
+    { 
+      name: 'NOTREQUESTED', 
+      label: 'Not Requested',
+      color: '/*%GREY1%*/ #5e6061',
+      background: '/*%GREY4%*/ #e7eaec'
+    },
+    { 
+      name: 'REQUESTED', 
+      label: 'Requested',
+      color: '/*%WARNING1%*/ #816819',
+      background: '/*%WARNING4%*/ #fbe88f'
+    },
+    { 
+      name: 'PASSED',    
+      label: 'Passed',
+      color: '/*%APPROVAL2%*/ #117a41',
+      background: '/*%APPROVAL5%*/ #e2f2dd'
+    },
+    { 
+      name: 'FAILED',    
+      label: 'Failed',
+      color: '/*%DESTRUCTIVE2%*/ #a61414',
+      background: '/*%DESTRUCTIVE5%*/ #fbedec'
+    }
   ]
 });

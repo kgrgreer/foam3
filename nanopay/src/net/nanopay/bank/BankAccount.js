@@ -789,6 +789,17 @@ foam.CLASS({
         return "";
       `
     },
+    {
+      name: 'setRoutingCode',
+      type: 'Boolean',
+      args: [
+        { name: 'routingCode', type: 'String' }
+      ],
+      documentation: 'Set bank info from the routingCode. To be implemented by the sub-classes.',
+      javaCode: `
+        throw new RuntimeException("Not yet implemented");
+      `
+    },
     function purgeCachedDAOs() {
       this.__subContext__.accountDAO.cmd_(this, foam.dao.CachingDAO.PURGE);
     },

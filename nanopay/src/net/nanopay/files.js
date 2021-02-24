@@ -22,6 +22,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/DigitalTransaction' },
   { name: 'net/nanopay/tx/SecurityTransaction' },
   { name: 'net/nanopay/tx/SummaryTransaction' },
+  { name: 'net/nanopay/tx/SummarizingTransaction' },
   { name: 'net/nanopay/tx/LiquidSummaryTransaction' },
   { name: 'net/nanopay/tx/LiquidCashTransactionType' },
   { name: 'net/nanopay/tx/CompositeTransaction' },
@@ -207,6 +208,8 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/IsDefaultRule' },
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
+  { name: 'net/nanopay/bank/BankAccountValidationService' },
+  { name: 'net/nanopay/bank/MockBankAccountValidationService' },
 
   { name: 'net/nanopay/model/User' },
   { name: 'net/nanopay/ui/wizard/WizardCssAxiom', flags: ['web'] },
@@ -310,6 +313,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ruler/CorridorAuthorizationRule' },
   { name: 'net/nanopay/bank/ruler/VerifyBankRule' },
   { name: 'net/nanopay/bank/ruler/CapabilityAddBankAccountRule' },
+  { name: 'net/nanopay/bank/ruler/SwiftBicCodeTranslation' },
   { name: 'net/nanopay/country/br/ruler/BRBankAccountCapabilityOnGrantRule' },
 
   // fx
@@ -1893,6 +1897,11 @@ FOAM_FILES([
 
   // bepay
   { name: 'net/nanopay/partner/bepay/tx/ScreenUsersOnTransactionCreate' },
+
+  // accuity
+  { name: 'net/nanopay/partner/accuity/AccuityCredentials' },
+  { name: 'net/nanopay/partner/accuity/AccuityAPIResponse' },
+  { name: 'net/nanopay/partner/accuity/AccuityBankAccountValidationService' },
 
   // support
   { name: 'net/nanopay/support/SupportAccount' },

@@ -1,0 +1,14 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "bankAccountValidationService",
+  "lazy": false,
+  "service": {
+    "class": "net.nanopay.bank.MockBankAccountValidationService",
+    "stubRoutingCodeMap": {
+      "CA": "012345678",
+      "US": "123456789",
+      "GB": "123456",
+      "PT": "12345678"
+    }
+  }
+})

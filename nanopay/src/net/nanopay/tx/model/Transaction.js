@@ -529,15 +529,9 @@ foam.CLASS({
         outputter.outputValue(((Transaction)obj).getState(x));
       `,
       view: function(o, x) {
-        if ( o && o.mode$.obj && o.mode$.obj.mode == foam.u2.DisplayMode.RO) {
-          return foam.u2.Element.create()
-            .start()
-              .add(x.data.status.label)
-            .end();
-        }
-        return { 
-          class: 'foam.u2.view.ChoiceView', 
-          choices: x.data.statusChoices 
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          choices: x.data.statusChoices
         };
       },
       createVisibility: 'HIDDEN',
