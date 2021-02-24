@@ -651,7 +651,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         Contact contact = (Contact) ((DAO) x.get("localContactDAO")).find(user.getId());
         AFEXCNBeneficiaryCapability cap = (AFEXCNBeneficiaryCapability) contact.getCapablePayloads()[0].getData();
         createBeneficiaryRequest.setRemittanceLine2(cap.getPurposeCode());
-        createBeneficiaryRequest.setRemittanceLine3(beneficiaryName + " " + cap.getPhone().getNumber());
+        createBeneficiaryRequest.setRemittanceLine3(beneficiaryName + " " + cap.getPhoneNumber());
       }
 
       try {

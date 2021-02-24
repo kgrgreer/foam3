@@ -3389,3 +3389,17 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.DeleteModal.CANCEL.label
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.Invitation.model_.label",target:"Convite"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.settings.business.DeleteInvitedUserView.DELETE.label",target:"Excluir"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"contact.capable.afex.cn.name",target:"aaaaa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.SECTION_ADDITIONAL_INFO_SECTION.title",target:"bbb"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.SECTION_ADDITIONAL_INFO_SECTION.help",target:"ccc"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.INVALID_PURPOSE_CODE",target:"Selecione uma finalidade de pagamento"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.PURPOSE_CODE.label",target:"Propósito do pagamento"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.PLACE_HOLDER",target:"Por favor selecione..."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.PHONE_NUMBER.label",target:"Número de telefone"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"Charity Donation",target:"Doação de caridade"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Send money to own account, family or friend",target:"Envie dinheiro para conta própria, família ou amigo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Send money to pay a utility bill",target:"Envie dinheiro para pagar uma conta de serviço público"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Send money to pay a vendor",target:"Envie dinheiro para pagar um fornecedor"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"OTHER",target:"Outro"})
