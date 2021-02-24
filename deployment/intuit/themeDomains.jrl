@@ -11,3 +11,5 @@ p({class:"foam.nanos.theme.ThemeDomain",id:"intuit.backoffice.development.nanopa
 p({class:"foam.nanos.theme.ThemeDomain",id:"intuit.backoffice.release.nanopay.net",theme:"B5BB2FC2-AD9B-404C-BED0-59E1BF583F02"})
 p({class:"foam.nanos.theme.ThemeDomain",id:"intuit.backoffice.development.medusa.nanopay.net",theme:"B5BB2FC2-AD9B-404C-BED0-59E1BF583F02"})
 p({class:"foam.nanos.theme.ThemeDomain",id:"intuit.backoffice.release.medusa.nanopay.net",theme:"B5BB2FC2-AD9B-404C-BED0-59E1BF583F02"})
+p({class:"foam.nanos.theme.ThemeDomain",id:"intuit.backoffice.nanopay.net",theme:"B5BB2FC2-AD9B-404C-BED0-59E1BF583F02"})
+p({class:"foam.nanos.theme.ThemeDomain",id:"intuit.nanopay.net",theme:"B5BB2FC2-AD9B-404C-BED0-59E1BF583F02"})
