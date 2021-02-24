@@ -1051,6 +1051,7 @@ p({
     </include>
   """
 })
+p({
   "class": "foam.nanos.notification.email.EmailTemplate",
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-101-pt",
   "name": "reset-password",
@@ -1069,7 +1070,7 @@ p({
           <p style = "padding: 14px 0 0; margin: 0;">Mudar senha</p>
         </div>
       </a>
-      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;"> Caso você ignore este pedido para mudar a sua senha, ela não será alterada. Se este pedido não foi feito por você por favor entre em contato através do email <a href="mailto:{{supportEmail}}" style="text-decoration: none; font-weight: 900; color: #604aff;">{{supportEmail}}</a> ou pelo telefone {{supportPhone}}para falar com a área de Atendimento ao Cliente</p>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;"> Caso você ignore este pedido para mudar a sua senha, ela não será alterada. Se este pedido não foi feito por você por favor entre em contato através do email <a href="mailto:{{supportEmail}}" style="text-decoration: none; font-weight: 900; color: #604aff;">{{supportEmail}}</a> ou pelo telefone {{supportPhone}} para falar com a área de Atendimento ao Cliente</p>
     </include>
   """
 })
@@ -1862,7 +1863,7 @@ p({
       {% endif %} 
       <a href="{{link}}" style="text-decoration: none;">
         <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
-          <p style = "padding: 14px 0 0; margin: 0;">View invoice</p>
+          <p style = "padding: 14px 0 0; margin: 0;">Ver fatura</p>
         </div>
       </a>
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">Se você tiver alguma dúvida sobre este pagamento, entre em contato com {{fromName}} diretamente.</p>
@@ -1925,7 +1926,7 @@ p({
         </div>
       </a>
       <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">
-        Se você tiver alguma dúvida, entre em contato conosco pelo<a style="text-decoration: none; color: #6c54ff;" href="mailto:{{supportEmail}}">{{supportEmail}}</a>
+        Se você tiver alguma dúvida, entre em contato conosco pelo <a style="text-decoration: none; color: #6c54ff;" href="mailto:{{supportEmail}}">{{supportEmail}}</a>
       </p>
     </include>
   """
