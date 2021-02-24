@@ -74,24 +74,30 @@ foam.CLASS({
           summary = summary.findRoot(x);
         }
         Transaction problem = summary.getStateTxn(x);
-        ticket.setProblemTransaction(problem.getId());
-        try {
-          problem.setStatus(TransactionStatus.PAUSED);
-          txnDAO.put(problem);
-        }
-        catch ( Exception e ) {
+
+        agency.submit(x, agencyX -> {
+          Transaction problemClone = (Transaction) problem.fclone();
+          ticket.setProblemTransaction(problem.getId());
+          DAO txnDAO2 = (DAO) agencyX.get("localTransactionDAO");
           try {
-            List children = ((ArraySink) problem.getChildren(x).select(new ArraySink())).getArray();
-            for ( Object t : children) {
-              ((Transaction) t).setStatus(TransactionStatus.PAUSED);
-              txnDAO.put((Transaction) t);
+            problemClone.setStatus(TransactionStatus.PAUSED);
+            txnDAO2.put(problemClone);
+          }
+          catch ( Exception e ) {
+            try {
+              List children = ((ArraySink) problem.getChildren(x).select(new ArraySink())).getArray();
+              for ( Object t : children) {
+                t = (Transaction) ((Transaction) t).fclone(); 
+                ((Transaction) t).setStatus(TransactionStatus.PAUSED);
+                txnDAO2.put((Transaction) t);
+              }
+            }
+            catch ( Exception e2 ) {
+              Logger logger = (Logger) x.get("logger");
+              logger.error("we failed to pause the Transaction "+problem.getId());
             }
           }
-          catch ( Exception e2 ) {
-            Logger logger = (Logger) x.get("logger");
-            logger.error("we failed to pause the Transaction "+problem.getId());
-          }
-        }
+        }, "Reput transaction as paused");
 
         Transaction newRequest = new Transaction();
         newRequest.setAmount(problem.getAmount());
