@@ -188,7 +188,6 @@ public class FeeEngine {
     result.setGroup(getFeeGroup());
     result.setName(name);
     result.setAmount(amount);
-    result.setFeeId(); // set the fee that created the line item. 
     result.setFeeCurrency(currency.getId());
     if ( ! loadedFees_.isEmpty() ) {
       result.setRates(

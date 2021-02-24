@@ -34,6 +34,11 @@ foam.CLASS({
   properties: [
     {
       class: 'Reference',
+      of: 'net.nanopay.tx.creditengine.AbstractCreditCode',
+      name: 'creditCode'
+    },
+    {
+      class: 'Reference',
       of: 'foam.core.Currency',
       name: 'creditCurrency',
       targetDAOKey: 'currencyDAO',
