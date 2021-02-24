@@ -10,13 +10,13 @@ p({
     print("done");
   """,
   schedule:{
-    class:"foam.nanos.cron.CronSchedule",
-    minute:37,
-    hour:-1,
-    dayOfMonth:-1,
-    month:-1,
-    dayOfWeek:-1,
-    second:37
+    class:"foam.nanos.cron.IntervalSchedule",
+    duration:{
+      class:"foam.nanos.cron.TimeHMS",
+      hour:0,
+      minute:15,
+      second:0
+    }
   }
 })
 

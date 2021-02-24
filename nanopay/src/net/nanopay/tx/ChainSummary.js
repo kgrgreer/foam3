@@ -74,7 +74,11 @@ foam.CLASS({
         return this.category + ' ' + this.status.name;
       },
       javaCode: `
-        return getCategory() + ' ' + getStatus().getName();
+        if ( getCategory() != null && getCategory().length() > 0) {
+          return getCategory() + ' ' + getStatus().getName();
+        }
+        
+        return getStatus().getName();
       `
     }
   ]

@@ -163,6 +163,19 @@ foam.CLASS({
       `
     },
     {
+      name: 'setRoutingCode',
+      javaCode: `
+        if ( routingCode != null
+          && BRANCH_ID_PATTERN.matcher(routingCode).matches()
+        ) {
+          clearBranch();
+          setBranchId(routingCode);
+          return true;
+        }
+        return false;
+      `
+    },
+    {
       name: 'getApiAccountNumber',
       javaCode: `
         return getAccountNumber();

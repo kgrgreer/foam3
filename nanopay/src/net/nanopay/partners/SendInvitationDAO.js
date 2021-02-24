@@ -161,6 +161,7 @@ foam.CLASS({
         @param {User} currentUser The current user
       `,
       javaCode: `
+        User agent = ((Subject) x.get("subject")).getRealUser();
         AppConfig config = (AppConfig) x.get("appConfig");
         Logger logger = (Logger) getX().get("logger");
         EmailMessage message = new EmailMessage();
@@ -173,7 +174,7 @@ foam.CLASS({
             "partners-external-invite";
 
         // Populate the email template.
-        String url = currentUser.findGroup(x).getAppConfig(x).getUrl();
+        String url = agent.findGroup(x).getAppConfig(x).getUrl();
         String urlPath = invite.getInternal() ? "#notifications" : "#sign-up";
 
         if ( invite.getIsContact() ) {

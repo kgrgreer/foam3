@@ -88,7 +88,7 @@ foam.CLASS({
             }
             if ( feeAmount > 0 ) {
               CreditLineItem feeRefund = new CreditLineItem();
-              feeRefund.setFeeCurrency(feeSummary.getCurrency());
+              feeRefund.setCreditCurrency(feeSummary.getCurrency());
               feeRefund.setSourceAccount(request.getCreditAccount());
               feeRefund.setDestinationAccount(reverse.getDestinationAccount());
               feeRefund.setAmount(feeAmount);
@@ -98,7 +98,7 @@ foam.CLASS({
               InvoicedCreditLineItem invoicedFeeRefund = new InvoicedCreditLineItem();
               invoicedFeeRefund.setSourceAccount(request.getCreditAccount());
               invoicedFeeRefund.setDestinationAccount(reverse.getDestinationAccount());
-              invoicedFeeRefund.setFeeCurrency(feeSummary.getCurrency());
+              invoicedFeeRefund.setCreditCurrency(feeSummary.getCurrency());
               invoicedFeeRefund.setAmount(invoicedFeeAmount);
               array.add(invoicedFeeRefund);
             }
@@ -107,7 +107,7 @@ foam.CLASS({
           if ( request.getCreditAmount() > 0 ) {
             CreditLineItem feeRefund = new CreditLineItem();
             feeRefund.setAmount(request.getCreditAmount());
-            feeRefund.setFeeCurrency(summary.findSourceAccount(x).getDenomination());
+            feeRefund.setCreditCurrency(summary.findSourceAccount(x).getDenomination());
             feeRefund.setSourceAccount(request.getCreditAccount());
             feeRefund.setDestinationAccount(reverse.getDestinationAccount());
             array.add(feeRefund);

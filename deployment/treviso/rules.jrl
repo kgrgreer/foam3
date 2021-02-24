@@ -1,22 +1,3 @@
-// from MSP setup
-p({
-  class: "foam.nanos.auth.ruler.EnsurePropertyOnCreateRule",
-  id: "ab1d31f3-64fe-56d8-9a6d-dd2a7d2a4d5a",
-  name: "Auto-fill feeAccount for TransactionFeeRule - treviso",
-  daoKey: "localRuleDAO",
-  ruleGroup: "TransactionFeeRule",
-  targetClass: "net.nanopay.tx.fee.TransactionFeeRule",
-  propName: "feeAccount",
-  propValue: "707911f9-5129-4916-a27a-6a6c469668ce",
-  created: 1601313462375,
-  createdBy: 1,
-  createdByAgent: 1,
-  lastModified: 1601313462375,
-  lastModifiedBy: 1,
-  spid: "treviso",
-  lifecycleState: 1
-})
-
 p({
   "class":"net.nanopay.tx.planner.AFEXTransactionPlanner",
   "id":"13df0d76-ba3e-4287-b42e-c7ceff059dd8",
@@ -27,7 +8,12 @@ p({
   class: "net.nanopay.tx.fee.TransactionFeeRule",
   id: "91194da9-8391-436a-8468-fa2c706126b8",
   name: "Treviso Fee",
-  documentation: "Add fee line item for Treviso transactions.",
+  documentation: `
+    Add fee line item to FXSummaryTransaction returned by IntermediaryDestinationAccountSplitPlanner.
+
+    Does not apply on the summary transaction from TrevisoTransactionPlanner
+    because it doesn't carry the nature code with it.
+  `,
   feeName: "Total Fee Due",
   feeDenomination: "BRL",
   feeClass: "net.nanopay.tx.FeeLineItem",

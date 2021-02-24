@@ -81,9 +81,12 @@ foam.CLASS({
       placeholder: 'example@email.com',
       validationPredicates: [
         {
-          args: ['signingOfficerEmail'],
+          args: ['signingOfficerEmail', 'isSigningOfficer'],
           predicateFactory: function(e) {
-            return e.REG_EXP(net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.SIGNING_OFFICER_EMAIL, /.+@.+/);
+            return e.OR(
+              e.REG_EXP(net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.SIGNING_OFFICER_EMAIL, /.+@.+/),
+              e.EQ(net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.IS_SIGNING_OFFICER, true)
+            )
           },
           errorMessage: 'SIGNING_OFFICER_EMAIL_ERROR'
         },

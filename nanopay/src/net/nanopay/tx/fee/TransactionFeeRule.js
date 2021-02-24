@@ -128,8 +128,8 @@ foam.CLASS({
       name: 'feeAccount',
       section: 'basicInfo',
       documentation: 'Set fee account to create transfers for the fee line item added.',
-      readPermissionRequired: true,
-      writePermissionRequired: true
+      writePermissionRequired: true,
+      required: true
     },
     {
       name: 'priority',

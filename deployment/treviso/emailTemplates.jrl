@@ -1351,7 +1351,7 @@ p({
       Attention : This transaction is not complete yet!
     </h3>
     <br>
-    To finish it, please send a TED (Brazilian wire) of (BRL ${VAR FOR AMOUNT}) to :
+    To finish it, please send a TED (Brazilian wire) of (BRL {{amount}}) to :
     <br>
     <br>
     Treviso Corretora de Câmbio S.A

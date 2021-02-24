@@ -44,10 +44,10 @@ foam.CLASS({
     'net.nanopay.model.Business',
     'net.nanopay.model.Invitation',
     'net.nanopay.model.InvitationStatus',
-    
+
     'java.net.URLEncoder',
     'java.util.*',
-    
+
     'static foam.mlang.MLang.*'
   ],
 
@@ -64,7 +64,7 @@ foam.CLASS({
         cls.extras.push(`
           public BusinessInvitationDAO(X x, DAO delegate) {
             super(x, delegate);
-          }    
+          }
         `
         );
       }
@@ -188,7 +188,7 @@ foam.CLASS({
         User agent = ((Subject) x.get("subject")).getRealUser();
         Logger logger = (Logger) getX().get("logger");
 
-        Group group = business.findGroup(x);
+        Group group = agent.findGroup(x);
         AppConfig appConfig = group.getAppConfig(x);
         String url = appConfig.getUrl();
 
