@@ -498,3 +498,60 @@ p({
   "lifecycleState":1,
   "spid": "treviso"
 })
+
+// Clearing time rules
+p({
+  "class": "net.nanopay.meter.clearing.ruler.TransactionTypeClearingTimeRule",
+  "id":"0466c0ce-27bb-48ed-acf8-4f63f3ec5632",
+  "name":"AFEXTransaction ClearingTime Rule",
+  "of": "net.nanopay.fx.afex.AFEXTransaction",
+  "duration": 1,
+  "predicate": {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of: "net.nanopay.fx.afex.AFEXTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal":0
+        }
+      }
+    ]
+  },
+  "spid": "treviso",
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+p({
+  "class": "net.nanopay.meter.clearing.ruler.TransactionTypeClearingTimeRule",
+  "id":"bf6670a5-957e-4407-a80f-7eda6f27ab23",
+  "name":"TrevisoTransaction ClearingTime Rule",
+  "of": "net.nanopay.partner.treviso.tx.TrevisoTransaction",
+  "duration": 0,
+  "predicate": {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of: "net.nanopay.partner.treviso.tx.TrevisoTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal":0
+        }
+      }
+    ]
+  },
+  "spid": "treviso",
+  "saveHistory":true,
+  "lifecycleState":1
+})
