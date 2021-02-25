@@ -241,6 +241,11 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'CompanyRegistrationNo',
+      description: 'Unique identifier issued by government commission when a company is incorporated'
+    },
+    {
+      class: 'String',
       name: 'BusinessCountry',
       description: 'Country the business resides within'
     },
