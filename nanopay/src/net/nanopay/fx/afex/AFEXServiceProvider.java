@@ -1300,7 +1300,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         }
       }
 
-      if ( SafetyUtil.isEmpty(individual.getIdNo()) && "BR".equals(address.getCountryId()) ) {
+      if ( SafetyUtil.isEmpty(individual.getIdNo()) && address != null
+        && "BR".equals(address.getCountryId()) ) {
         individual.setIdNo(findCPF(officer.getId()));
       }
 

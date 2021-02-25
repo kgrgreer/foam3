@@ -21,6 +21,7 @@ foam.CLASS({
 
   documentation: `
     Model of the request parameters used in the AFEX accountcreate api.
+    All properties are in Uppercase to match the sample request from AFEX.
   `,
 
   properties: [
