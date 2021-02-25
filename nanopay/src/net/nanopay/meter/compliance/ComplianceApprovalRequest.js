@@ -86,72 +86,106 @@ foam.CLASS({
       visibility: 'RO',
       tableCellFormatter: function(_,obj) {
         let self = this;
-        this.__subSubContext__[obj.daoKey].find(obj.objId).then(ucj => {
 
-          let referenceSummaryString = `ID:${obj.objId}`;
+        if ( ! (obj.daoKey === "userCapabilityJunctionDAO") ){
+          this.__subSubContext__[obj.daoKey].find(obj.objId).then(requestObj => {
+            let referenceSummaryString = `ID:${obj.objId}`;
+  
+            if ( requestObj ){
+              Promise.resolve(requestObj.toSummary()).then(function(requestObjSummary) {
+                if ( requestObjSummary ){
+                  referenceSummaryString = requestObjSummary;
+                }
 
-          if ( ucj ){
-            this.__subSubContext__.userDAO.find(ucj.sourceId).then(user => {
-              if ( user && user.toSummary && user.toSummary() ){
-                referenceSummaryString = user.toSummary();
-              }
-
-              if ( 
-                foam.nanos.crunch.AgentCapabilityJunction.isInstance(ucj) &&
-                ucj.sourceId !== ucj.effectiveUser
-              ){
-                this.__subSubContext__.userDAO.find(ucj.effectiveUser).then(effectiveUser => {
-                  let effectiveUserString = `U:${ucj.effectiveUser}`;
-                  if (effectiveUser && effectiveUser.toSummary() ){
-                    effectiveUserString = effectiveUser.toSummary();
-                  }
-
-                  referenceSummaryString = `${effectiveUserString}: ${referenceSummaryString}`;
-
-                  self.add(referenceSummaryString);
-                })
-              } else {
                 self.add(referenceSummaryString);
-              }
-            })
-          }
-        });
+              })
+            }
+
+          });
+        } else {
+          this.__subSubContext__[obj.daoKey].find(obj.objId).then(ucj => {
+
+            let referenceSummaryString = `ID:${obj.objId}`;
+  
+            if ( ucj ){
+              this.__subSubContext__.userDAO.find(ucj.sourceId).then(user => {
+                if ( user && user.toSummary && user.toSummary() ){
+                  referenceSummaryString = user.toSummary();
+                }
+  
+                if (
+                  foam.nanos.crunch.AgentCapabilityJunction.isInstance(ucj) &&
+                  ucj.sourceId !== ucj.effectiveUser
+                ){
+                  this.__subSubContext__.userDAO.find(ucj.effectiveUser).then(effectiveUser => {
+                    let effectiveUserString = `U:${ucj.effectiveUser}`;
+                    if (effectiveUser && effectiveUser.toSummary() ){
+                      effectiveUserString = effectiveUser.toSummary();
+                    }
+  
+                    referenceSummaryString = `${effectiveUserString}: ${referenceSummaryString}`;
+  
+                    self.add(referenceSummaryString);
+                  })
+                } else {
+                  self.add(referenceSummaryString);
+                }
+              })
+            }
+          });
+        }
       },
       view: function(_, X) {
         let slot = foam.core.SimpleSlot.create();
         let data = X.data;
 
-        X[data.daoKey].find(data.objId).then(ucj => {
-          let referenceSummaryString = `ID:${data.objId}`;
+        if ( ! (data.daoKey === "userCapabilityJunctionDAO") ){
+          X[data.daoKey].find(data.objId).then(requestObj => {
+            let referenceSummaryString = `ID:${data.objId}`;
 
-          if ( ucj ){
-            X.userDAO.find(ucj.sourceId).then(user => {
-              if ( user && user.toSummary && user.toSummary() ){
-                referenceSummaryString = user.toSummary();
-              }
+            if ( requestObj ){
+              Promise.resolve(requestObj.toSummary()).then(function(requestObjSummary) {
+                if ( requestObjSummary ){
+                  referenceSummaryString = requestObjSummary;
+                }
 
-              if ( 
-                foam.nanos.crunch.AgentCapabilityJunction.isInstance(ucj) &&
-                ucj.sourceId !== ucj.effectiveUser
-              ){
-                X.userDAO.find(ucj.effectiveUser).then(effectiveUser => {
-                  let effectiveUserString = `U:${ucj.effectiveUser}`;
-                  if (effectiveUser && effectiveUser.toSummary() ){
-                    effectiveUserString = effectiveUser.toSummary();
-                  }
-
-                  referenceSummaryString = `${effectiveUserString}: ${referenceSummaryString}`;
-
-                  slot.set(referenceSummaryString);
-                })
-              } else {
                 slot.set(referenceSummaryString);
-              }
-            })
-          }
-
-          slot.set(referenceSummaryString);
-        })
+              })
+            }
+          })
+        } else {
+          X[data.daoKey].find(data.objId).then(ucj => {
+            let referenceSummaryString = `ID:${data.objId}`;
+  
+            if ( ucj ){
+              X.userDAO.find(ucj.sourceId).then(user => {
+                if ( user && user.toSummary && user.toSummary() ){
+                  referenceSummaryString = user.toSummary();
+                }
+  
+                if (
+                  foam.nanos.crunch.AgentCapabilityJunction.isInstance(ucj) &&
+                  ucj.sourceId !== ucj.effectiveUser
+                ){
+                  X.userDAO.find(ucj.effectiveUser).then(effectiveUser => {
+                    let effectiveUserString = `U:${ucj.effectiveUser}`;
+                    if (effectiveUser && effectiveUser.toSummary() ){
+                      effectiveUserString = effectiveUser.toSummary();
+                    }
+  
+                    referenceSummaryString = `${effectiveUserString}: ${referenceSummaryString}`;
+  
+                    slot.set(referenceSummaryString);
+                  })
+                } else {
+                  slot.set(referenceSummaryString);
+                }
+              })
+            }
+  
+            slot.set(referenceSummaryString);
+          })
+        }
         
         return {
           class: 'foam.u2.view.ValueView',
