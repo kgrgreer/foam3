@@ -42,6 +42,7 @@ foam.CLASS({
     {
       name: 'usage',
       class: 'Long',
+      value: 0
     },
     {
       class: 'StringArray',

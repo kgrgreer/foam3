@@ -20,11 +20,11 @@ foam.CLASS({
   name: 'InvoicedCreditLineItem',
   extends: 'net.nanopay.tx.CreditLineItem',
 
-  documentation: 'A refund for a Fee LineItem whereby the fee collection occurs after the Transaction during some billing period. ',
+  documentation: 'A credit that is given, whereby the crediting occurs after the Transaction during some billing period. ',
 
   messages: [
     { name: 'DESCRIPTION', message: 'Invoice Credit' },
-    { name: 'NOTE_MESSAGE', message: 'Credit will be charged at the end of billing period.' },
+    { name: 'NOTE_MESSAGE', message: 'Credit will be applied at the end of billing period.' },
   ],
   properties: [
     {

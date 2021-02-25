@@ -604,10 +604,9 @@ foam.CLASS({
       includeInDigest: true
     },
     {
-      class: 'Reference',
-      of: 'net.nanopay.tx.creditengine.AbstractCreditCode',
-      name: 'creditCode',
-      documentation: `The id of the credit code to be applied to transaction.`,
+      class: 'StringArray',
+      name: 'creditCodes',
+      documentation: `The ids of the credit code to be applied to transaction.`,
       visibility: 'HIDDEN',
       includeInDigest: true
     },

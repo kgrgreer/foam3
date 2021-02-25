@@ -76,7 +76,7 @@ foam.CLASS({
       type: 'Long',
       javaCode: `
       /* needs to be overwritten by extending class */
-        return null;
+        return -1;
       `,
       documentation: 'calculates how much this promo has saved on this transaction'
     },

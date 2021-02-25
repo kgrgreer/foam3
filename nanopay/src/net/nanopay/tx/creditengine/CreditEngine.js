@@ -55,12 +55,11 @@ foam.CLASS({
             return obj;
           }
           Transaction t = (Transaction) obj;
-
-
-          AbstractCreditCode creditCode = t.findCreditCode(x);
-
-          //apply credit line items..
-          t.addLineItems(calculateCredits_(creditCode, t));
+          for ( String code : t.getCreditCode()) {
+            AbstractCreditCode creditCode = getDelegate().find(code);
+            //apply credit line items..
+            t.addLineItems(calculateCredits_(creditCode, t));
+          }
           return t;
 
         }
@@ -69,7 +68,7 @@ foam.CLASS({
         if ( obj != null && obj instanceof AbstractCreditCode ) {
           return super.put_(x, obj);
         }
-
+        throw new RuntimeException("incorrect input to creditEngine");
       `
     },
     {

@@ -131,6 +131,10 @@ foam.CLASS({
         }
       ],
       javaCode: `
+        if ( getUsed == true ) {
+          throw new RuntimeException("This Courtesy Credit has already been applied!");
+        }
+
         setUsed(true);
         // do we want to add a link to transaction that consumed this? maybe not rn.
         try {
