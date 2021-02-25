@@ -482,6 +482,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionEntity' },
   { name: 'net/nanopay/tx/model/Transaction' },
   { name: 'net/nanopay/tx/model/TransactionDAOCreateView' },
+  { name: 'net/nanopay/tx/model/TransactionReadReferenceView' },
+  { name: 'net/nanopay/tx/model/TransactionReference' },
   { name: 'net/nanopay/tx/bench/TransactionBenchmarkClient' },
   { name: 'net/nanopay/tx/bench/TransactionPlannerBenchmarkClient' },
   { name: 'net/nanopay/tx/ComplianceTransaction' },
