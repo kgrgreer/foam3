@@ -2237,10 +2237,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"4f45c745-1c93-4380-b275-2d2fea09
 p({class:"foam.i18n.Locale",locale:"pt",source:"4f45c745-1c93-4380-b275-2d2fea091d1f-136.subject",target:"Você precisa de ajuda para preencher o perfil de negócios de {{business}} no {{appName}}?"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"4f45c745-1c93-4380-b275-2d2fea091d1f-137.subject",target:"Sua conta bancária foi adicionada"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"4f45c745-1c93-4380-b275-2d2fea091d1f-139.subject",target:"O status da capacidade de {{capName}} foi atualizado"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"4f45c745-1c93-4380-b275-2d2fea091d1f-156.subject",target:"Seu status de capacidade foi atualizado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"4f45c745-1c93-4380-b275-2d2fea091d1f-143.subject",target:"Sua capacidade expirou"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"4f45c745-1c93-4380-b275-2d2fea091d1f-144.subject",target:"Sua capacidade mudou para um período de carência"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"4f45c745-1c93-4380-b275-2d2fea091d1f-155.subject",target:"Sua capacidade irá expirar em breve"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"4f45c745-1c93-4380-b275-2d2fea091d1f-156.subject",target:"Seu status de capacidade foi atualizado"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"4f45c745-1c93-4380-b275-2d2fea091d1f-treviso-1.subject",target:"Conclua sua transação"})
 
