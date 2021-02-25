@@ -422,7 +422,6 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXSubmitPaymentRule' },
   { name: 'net/nanopay/fx/afex/AFEXBeneficialOwnerRule' },
   { name: 'net/nanopay/fx/afex/AFEXBusinessDirectorRule' },
-  { name: 'net/nanopay/fx/afex/AFEXSigningOfficerRule' },
   { name: 'net/nanopay/fx/afex/AFEXBankUpdatingRule' },
   { name: 'net/nanopay/fx/afex/TransactionInvalidBankAccountRule' },
   { name: 'net/nanopay/fx/afex/TransactionVerifyBankAccountRule' },
