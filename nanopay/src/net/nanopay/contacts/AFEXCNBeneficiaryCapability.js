@@ -19,6 +19,14 @@ foam.CLASS({
   package: 'net.nanopay.contacts',
   name: 'AFEXCNBeneficiaryCapability',
 
+  requires: [
+    'net.nanopay.tx.PurposeCode'
+  ],
+
+  imports: [
+    'purposeCodeDAO'
+  ],
+
   implements: [
     'foam.core.Validatable',
     'foam.mlang.Expressions'
@@ -27,8 +35,7 @@ foam.CLASS({
   sections: [
     {
       name: 'additionalInfoSection',
-      title: 'Additional Information',
-      help: 'Require your most convenient phone number.'
+      title: 'Corridor-specific payment information'
     }
   ],
 
@@ -38,14 +45,15 @@ foam.CLASS({
   ],
 
   properties: [
-    foam.nanos.auth.User.PHONE_NUMBER.clone().copyFrom({
-      section: 'additionalInfoSection',
-      label: 'Phone number',
-      visibility: 'RW',
-      required: true,
-      autoValidate: true,
-      gridColumns: 12
-    }),
+      {
+        class: 'PhoneNumber',
+        name: 'contactPhone',
+        label: 'Contact phone number',
+        section: 'additionalInfoSection',
+        required: true,
+        autoValidate: true,
+        gridColumns: 12
+      },
     {
       class: 'Reference',
       of: 'net.nanopay.tx.PurposeCode',
@@ -56,7 +64,7 @@ foam.CLASS({
       view: function(_, X) {
         return {
           class: 'foam.u2.view.ChoiceView',
-          dao: X.purposeCodeDAO.where(X.data.EQ(net.nanopay.tx.PurposeCode.COUNTRY, 'CN')),
+          dao: X.purposeCodeDAO.where(X.data.EQ(X.data.PurposeCode.COUNTRY, 'CN')).orderBy(X.data.PurposeCode.ORDER, X.data.PurposeCode.DESCRIPTION),
           placeholder: X.data.PLACE_HOLDER,
           objToChoice: function(purposeCode) {
             return [purposeCode.code, X.translationService.getTranslation(foam.locale, purposeCode.description, purposeCode.description)];
