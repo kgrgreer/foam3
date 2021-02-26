@@ -25,7 +25,6 @@ p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.rea
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"group.update.intuit-fraud-ops"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"group.update.intuit-payment-ops"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.accounts"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.admin"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.admin.alarm"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.admin.logs"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.admin.spids"})

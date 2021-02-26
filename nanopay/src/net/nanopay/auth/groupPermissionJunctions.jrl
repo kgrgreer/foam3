@@ -158,6 +158,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"loanedtotalaccount.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"loanedtotalaccount.rw.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"loanedtotalaccount.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"menu.read.admin"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"menu.read.admin.users-2"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"menu.read.approvals"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"menu.read.bankaccounts"})

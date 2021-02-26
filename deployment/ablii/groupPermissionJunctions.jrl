@@ -14,7 +14,6 @@ p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"ablii-fraud-ops",ta
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"ablii-fraud-ops",targetId:"group.update.ablii-payment-ops"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"ablii-fraud-ops",targetId:"invoice.create"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"ablii-fraud-ops",targetId:"menu.read.accounts"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"ablii-fraud-ops",targetId:"menu.read.admin"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"ablii-fraud-ops",targetId:"menu.read.admin.alarm"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"ablii-fraud-ops",targetId:"menu.read.admin.logs"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"ablii-fraud-ops",targetId:"menu.read.admin.spids"})
