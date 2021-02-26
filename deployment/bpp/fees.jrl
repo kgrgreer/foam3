@@ -1,4 +1,3 @@
-
 p({
   class: "net.nanopay.tx.fee.FixedFee",
   id: "d14ad888-4f3a-4199-bd37-18f7373cf193",

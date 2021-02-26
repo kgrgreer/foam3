@@ -8,5 +8,7 @@ p({class:"foam.nanos.auth.Group",id:"bpp-sme",description:"bpp sme group",parent
 p({
   class:"foam.nanos.auth.Group",
   id:"bpp-sme",
-  parent:"bepay-sme"
+  parent:"external-sme"
 })
+
+p({class:"foam.nanos.auth.Group",id:"bpp-api-session",description:"BPP API session group",parent:"external-api-session",defaultMenu:"view-users"})

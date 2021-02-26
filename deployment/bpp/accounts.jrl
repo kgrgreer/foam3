@@ -1,4 +1,4 @@
-// REVIEW: should estimate accounts be in bepay instead of bpp?
+// REVIEW: investigate moving estimate accounts from bpp to nanopay?
 p({
   "class":"net.nanopay.bank.EstimationAccount",
   "id":"44fff2fc-62f8-4f0c-8e23-e70324c7fe05",
@@ -36,9 +36,8 @@ p({
   "lifecycleState":1
 })
 
-// intermediary accounts
-// REVIEW: should the intermediary accounts should belong to bepay?
-// or would need to configure planners per each child spid eg. bpp.
+// intermediary accounts, each child spid of bepay would need it own account
+// with AFEX as the intermediary account
 p({
   "class":"net.nanopay.bank.USBankAccount",
   "branchId":"111111111",
