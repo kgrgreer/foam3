@@ -690,10 +690,11 @@ var classes = [
   'net.nanopay.fx.FXQuote',
 
   // credit engine
-  'net.nanopay.tx.creditengine.AbstractCreditCode',
+  'net.nanopay.tx.creditengine.AbstractCreditCodeAccount',
   'net.nanopay.tx.creditengine.FeeWaiver',
   'net.nanopay.tx.creditengine.CourtesyCredit',
   'net.nanopay.tx.creditengine.CreditEngine',
+  'net.nanopay.tx.creditengine.CreditCodeTransaction',
 
   // documents
   'net.nanopay.documents.AcceptanceDocument',
@@ -1187,6 +1188,7 @@ var classes = [
   'net.nanopay.tx.planner.RbcInterTrustPlanner',
   'net.nanopay.tx.planner.BmoInterTrustPlanner',
   'net.nanopay.tx.planner.PartialPlanDAO',
+  'net.nanopay.tx.planner.CreditCodeTransactionPlanner',
 
   // Billing
   'net.nanopay.tx.billing.Bill',

@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.creditengine',
   name: 'FeeWaiver',
-  extends: 'net.nanopay.tx.creditengine.AbstractCreditCode',
+  extends: 'net.nanopay.tx.creditengine.AbstractCreditCodeAccount',
 
   documentation: `give a credit for each fee id on the transaction at the discount percentage specified `,
 
@@ -39,11 +39,6 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      name: 'usage',
-      class: 'Long',
-      value: 0
-    },
     {
       class: 'StringArray',
       name: 'applicableFees'
@@ -114,19 +109,16 @@ foam.CLASS({
           type: 'net.nanopay.tx.model.Transaction'
         }
       ],
+      documentation: 'When the Credit code is consumed on final submission of transaction increment its usage count',
       javaCode: `
-        setUsage(getUsage()+1);
-        // do we want to add a link to transaction that consumed this? maybe not rn.
-        try {
-          ((DAO) x.get("localCreditCodeDAO")).put(this);
-        }
-        catch( Exception E ) {
-          Logger logger = (Logger) x.get("logger");
-          logger.error("Credit Code "+getName()+" with id "+getId()+" failed to increment usage on Transaction "+t.getId()+ " with the following exception: "+E);
-        }
-      `,
-      documentation: 'When the Credit code is consumed on final submission of transaction increment its usage count'
-    },
+        CreditCodeTransaction counter = new CreditCodeTransaction();
+        counter.setAmount(1);
+        counter.setName("Counter Incrementation for " + this.getId());
+        counter.setSourceAccount(this.getId());
+        counter.setDestinationAccount(this.getId());
+        ((DAO) x.get("localTransactionDAO")).put(counter);
+      `
+      },
     {
       name: 'onUpdate',
       args: [

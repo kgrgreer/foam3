@@ -17,7 +17,8 @@
 
 foam.CLASS({
   package: 'net.nanopay.tx.creditengine',
-  name: 'AbstractCreditCode',
+  name: 'AbstractCreditCodeAccount',
+  extends:'net.nanopay.account.Account',
   abstract: true,
 
   documentation: `A creditCode can create a credit line item on a given transaction or fee.
@@ -25,28 +26,42 @@ foam.CLASS({
   It must also be able to calculate savings it applied to a given transaction.
   All creditCodes at minimum must be tied to a spid, have a UUID, and a name.`,
 
-  implements: [
-    'foam.nanos.auth.ServiceProviderAware'
-  ],
-
   properties: [
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.ServiceProvider',
-      name: 'spid'
-    },
-    {
-      name: 'id',
-      class: 'String',
-      javaFactory: `return java.util.UUID.randomUUID().toString();`,
-    },
     {
       class: 'String',
       name: 'name',
       javaFactory: `
         return getClass().getSimpleName();
       `,
-    }
+    },
+    {
+      name: 'validateAmount',
+      documentation: `creditCode accounts have a certain usage, and must remain positive`,
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'balance',
+          type: 'net.nanopay.account.Balance'
+        },
+        {
+          name: 'amount',
+          type: 'Long'
+        }
+      ],
+      javaCode: `
+        long bal = balance == null ? 0L : balance.getBalance();
+
+        if ( amount < 0 &&
+             -amount > bal ) {
+          foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
+          logger.debug(this, "amount", amount, "balance", bal);
+          throw new RuntimeException("This promotion can not be applied");
+        }
+      `
+    },
   ],
 
   methods: [

@@ -754,10 +754,11 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/CicoBorder', flags: ['web'] },
 
   //credit engine
-  { name: 'net/nanopay/tx/creditengine/AbstractCreditCode' },
+  { name: 'net/nanopay/tx/creditengine/AbstractCreditCodeAccount' },
   { name: 'net/nanopay/tx/creditengine/FeeWaiver' },
   { name: 'net/nanopay/tx/creditengine/CourtesyCredit' },
   { name: 'net/nanopay/tx/creditengine/CreditEngine' },
+  { name: 'net/nanopay/tx/creditengine/CreditCodeTransaction' },
 
   // invoice
   { name: 'net/nanopay/invoice/ruler/CapabilityValidateRule' },
@@ -1650,6 +1651,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/RbcInterTrustPlanner' },
   { name: 'net/nanopay/tx/planner/BmoInterTrustPlanner' },
   { name: 'net/nanopay/tx/planner/PartialPlanDAO' },
+  { name: 'net/nanopay/tx/planner/CreditCodeTransactionPlanner' },
 
   // Billing
   { name: 'net/nanopay/tx/billing/Bill' },
