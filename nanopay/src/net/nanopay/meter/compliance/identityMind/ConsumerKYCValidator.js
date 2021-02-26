@@ -64,7 +64,7 @@ foam.CLASS({
                   .setCauseDaoKey("identityMindResponseDAO")
                   .setStatus(getApprovalStatus(status))
                   .setApprover(getApprover(status))
-                  .setClassification("Validate User Using IdentityMind")
+                  .setClassification("User IdentityMind Consumer KYC")
                   .build()
               );
             }

@@ -172,3 +172,32 @@ p({
   "saveHistory":false,
   "lifecycleState":1
 })
+
+// Clearing time rules
+p({
+  "class": "net.nanopay.meter.clearing.ruler.TransactionTypeClearingTimeRule",
+  "id":"b3bc934e-39d3-4a50-afdf-1b631000eab3",
+  "name":"AFEXTransaction ClearingTime Rule",
+  "of": "net.nanopay.fx.afex.AFEXTransaction",
+  "duration": 2,
+  "predicate": {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of: "net.nanopay.fx.afex.AFEXTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal":0
+        }
+      }
+    ]
+  },
+  "spid": "ablii",
+  "saveHistory":true,
+  "lifecycleState":1,
+})
