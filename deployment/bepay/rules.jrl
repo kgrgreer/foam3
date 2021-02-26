@@ -43,7 +43,6 @@ p({
       }
     ]
   },
-  spid: "bepay",
   lifecycleState:1
 })
 p({
@@ -92,7 +91,6 @@ p({
       }
     ]
   },
-  spid: "bepay",
   lifecycleState:1
 })
 
@@ -100,9 +98,7 @@ p({
   "class":"net.nanopay.tx.planner.IntermediaryDestinationAccountSplitPlanner",
   "id":"119fa381-d2a2-4369-b242-1dc8e2163bb9",
   "intermediaryAccountId":{
-    "USD":"35931861-7dd4-4ddb-b3a0-5d091cc82fcf",
-    "GBP":"c86bcf5e-8251-49f5-8e58-54dc38d14bfe",
-    "EUR":"c0f5a1ad-1d3d-4bee-bf16-56e12d2ff7ca"
+    "USD":"35931861-7dd4-4ddb-b3a0-5d091cc82fcf"
   },
   "priority":90,
   "ruleGroup":"BePayPlanner",
@@ -132,7 +128,6 @@ p({
       }
     ]
   },
-  "spid": "bepay",
   "lifecycleState":1
 })
 
@@ -194,7 +189,6 @@ p({
     ]
   },
   "isFeeOnRootCorridors": true,
-  "spid": "bepay",
   "lifecycleState":1
 })
 p({
@@ -216,8 +210,7 @@ p({
   "action":{"class":"net.nanopay.partner.afex.crunch.AFEXUserOnboardingRule"},
   "enabled":true,
   "saveHistory":true,
-  "lifecycleState":1,
-  "spid":"bepay"
+  "lifecycleState":1
 })
 
 p({
@@ -239,8 +232,7 @@ p({
   "action":{"class":"net.nanopay.crunch.compliance.SetComplianceOnUser"},
   "enabled":true,
   "saveHistory":true,
-  "lifecycleState":1,
-  "spid":"bepay"
+  "lifecycleState":1
 })
 p({
   "class":"net.nanopay.tx.planner.AFEXTransactionPlanner",

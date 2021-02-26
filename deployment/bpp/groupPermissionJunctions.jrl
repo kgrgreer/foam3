@@ -9,3 +9,5 @@ p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-admin",targetId
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-admin",targetId:"group.read.bpp-support"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-fraud-ops",targetId:"group.update.bpp-fraud-ops"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-fraud-ops",targetId:"group.update.bpp-payment-ops"})
+
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-session","targetId":"session.create.bpp"})
