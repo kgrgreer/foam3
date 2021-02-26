@@ -1,21 +1,4 @@
 p({
-  class:"foam.nanos.auth.ruler.EnsurePropertyOnCreateRule",
-  id:"f2b09cea-9dd0-3570-99c0-6f037ef623e6",
-  name:"Auto-fill feeAccount for TransactionFeeRule - ablii",
-  daoKey:"localRuleDAO",
-  ruleGroup:"TransactionFeeRule",
-  targetClass:"net.nanopay.tx.fee.TransactionFeeRule",
-  propName:"feeAccount",
-  propValue:"38157811-a62c-ca34-1718-3bcbcefc5dc8",
-  created:1609960629939,
-  createdBy:1,
-  createdByAgent:1,
-  lastModified:1609960629939,lastModifiedBy:1,
-  lifecycleState:1,
-  spid:"ablii"
-})
-
-p({
   "class":"foam.nanos.ruler.Rule",
   "id":"afex-crunch-onboarding-rule1",
   "name":"Onboard Business to AFEX",
@@ -188,4 +171,33 @@ p({
   "enabled":true,
   "saveHistory":false,
   "lifecycleState":1
+})
+
+// Clearing time rules
+p({
+  "class": "net.nanopay.meter.clearing.ruler.TransactionTypeClearingTimeRule",
+  "id":"b3bc934e-39d3-4a50-afdf-1b631000eab3",
+  "name":"AFEXTransaction ClearingTime Rule",
+  "of": "net.nanopay.fx.afex.AFEXTransaction",
+  "duration": 2,
+  "predicate": {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of: "net.nanopay.fx.afex.AFEXTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal":0
+        }
+      }
+    ]
+  },
+  "spid": "ablii",
+  "saveHistory":true,
+  "lifecycleState":1,
 })

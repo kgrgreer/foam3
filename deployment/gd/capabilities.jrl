@@ -48,6 +48,6 @@ p({
     "menu.read.submenu.contact.search",
     "menu.read.submenu.contact.paymentcode",
     "menu.read.submenu.contact.invitation",
-    "contact.ro.shouldinvite"
+    "contact.rw.shouldinvite"
   ]
 })

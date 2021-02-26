@@ -339,6 +339,7 @@ foam.CLASS({
       transient: true,
       label: '',
       updateVisibility: 'HIDDEN',
+      autoValidate: true,
       factory: function() {
         return net.nanopay.model.USPadCapture.create({
           country: this.country,
@@ -417,21 +418,23 @@ foam.CLASS({
       javaThrows: ['IllegalStateException'],
       javaCode: `
         super.validate(x);
-        String branchId = this.getBranchId();
         String accountNumber = this.getAccountNumber();
-
-        if ( SafetyUtil.isEmpty(branchId) ) {
-          throw new IllegalStateException(this.ROUTING_NUMBER_REQUIRED);
-        }
-        if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
-          throw new IllegalStateException(this.ROUTING_NUMBER_INVALID);
-        }
 
         if ( SafetyUtil.isEmpty(accountNumber) ) {
           throw new IllegalStateException(this.ACCOUNT_NUMBER_REQUIRED);
         }
         if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
           throw new IllegalStateException(this.ACCOUNT_NUMBER_INVALID);
+        }
+
+        if ( SafetyUtil.isEmpty(getSwiftCode()) ) {
+          String branchId = this.getBranchId();
+          if ( SafetyUtil.isEmpty(branchId) ) {
+            throw new IllegalStateException(this.ROUTING_NUMBER_REQUIRED);
+          }
+          if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
+            throw new IllegalStateException(this.ROUTING_NUMBER_INVALID);
+          }
         }
       `
     },
@@ -445,6 +448,19 @@ foam.CLASS({
       ],
       javaCode: `
         return getBranchId();
+      `
+    },
+    {
+      name: 'setRoutingCode',
+      javaCode: `
+        if ( routingCode != null
+          && BRANCH_ID_PATTERN.matcher(routingCode).matches()
+        ) {
+          clearBranch();
+          setBranchId(routingCode);
+          return true;
+        }
+        return false;
       `
     }
  ]

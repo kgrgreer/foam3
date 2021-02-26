@@ -86,7 +86,7 @@ foam.CLASS({
                     .setDaoKey("userCapabilityJunctionDAO")
                     .setCauseId(response != null ? response.getId() : 0L)
                     .setCauseDaoKey("dowJonesResponseDAO")
-                    .setClassification("Validate Business Director: " + directorName + " Using Dow Jones")
+                    .setClassification("Business Director: " + directorName + " Dow Jones R&C")
                     .setMatches(response != null ? response.getResponseBody().getMatches() : null)
                     .setComments("Further investigation needed for director: " + directorName)
                     .setGroup(group)

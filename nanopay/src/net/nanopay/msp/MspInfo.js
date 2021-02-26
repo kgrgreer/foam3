@@ -122,13 +122,6 @@ foam.CLASS({
       name: 'description'
     },
     {
-      class: 'Reference',
-      of: 'foam.core.Currency',
-      name: 'denomination',
-      documentation: "Used as the denomination for the spid-admin's default digital account.",
-      required: true
-    },
-    {
       class: 'String',
       name: 'backofficeGroupUrl',
       value: null

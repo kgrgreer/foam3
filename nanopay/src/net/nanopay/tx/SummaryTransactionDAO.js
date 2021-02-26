@@ -32,7 +32,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.SummaryTransaction',
+    'net.nanopay.tx.SummarizingTransaction',
   ],
 
   axioms: [
@@ -52,8 +52,8 @@ foam.CLASS({
             @Override
             public void put(Object obj, foam.core.Detachable sub)
             {
-              if (obj instanceof SummaryTransaction) {
-                obj = doChainCalculation((SummaryTransaction) obj);
+              if (obj instanceof SummarizingTransaction) {
+                obj = doChainCalculation((Transaction) obj);
               }
               getDelegate().put(obj, sub);
             }
@@ -74,8 +74,8 @@ foam.CLASS({
       name: 'find_',
       javaCode: `
         FObject obj = getDelegate().find_(x, id);
-        if( obj != null && obj instanceof SummaryTransaction ) {
-          obj = doChainCalculation((SummaryTransaction) obj);
+        if( obj != null && obj instanceof SummarizingTransaction ) {
+          obj = doChainCalculation((Transaction) obj);
         }
         return obj;
       `
@@ -92,7 +92,7 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
         obj = super.put_(x, obj);
-        if (obj instanceof SummaryTransaction) {
+        if (obj instanceof SummarizingTransaction) {
           Transaction txn = (Transaction) obj.fclone();
           txn.getState(x);
           return txn;
@@ -105,7 +105,7 @@ foam.CLASS({
       visibility: 'protected',
       type: 'FObject',
       args: [
-        { type: 'net.nanopay.tx.SummaryTransaction', name: 't' }
+        { type: 'net.nanopay.tx.model.Transaction', name: 't' }
       ],
       javaCode: `
           Transaction tx = (Transaction) t.fclone();

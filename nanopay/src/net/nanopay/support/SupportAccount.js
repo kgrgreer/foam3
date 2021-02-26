@@ -72,9 +72,6 @@ foam.CLASS({
       section: 'accountInformation',
     }),
     net.nanopay.account.Account.OWNER.clone().copyFrom({
-      view: {
-        class: 'foam.u2.view.ReferenceView'
-      },
       section: 'accountInformation',
       order: 30,
       gridColumns: 6
