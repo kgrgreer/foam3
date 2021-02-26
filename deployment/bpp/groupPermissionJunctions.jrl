@@ -1,0 +1,11 @@
+// From MSP setup
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-admin",targetId:"group.update.bpp-admin"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-admin",targetId:"group.update.bpp-fraud-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-admin",targetId:"group.update.bpp-payment-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-admin",targetId:"group.update.bpp-support"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-admin",targetId:"group.read.bpp-admin"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-admin",targetId:"group.read.bpp-fraud-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-admin",targetId:"group.read.bpp-payment-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-admin",targetId:"group.read.bpp-support"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-fraud-ops",targetId:"group.update.bpp-fraud-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-fraud-ops",targetId:"group.update.bpp-payment-ops"})

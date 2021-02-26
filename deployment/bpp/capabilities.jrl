@@ -1,0 +1,25 @@
+// BPP spid
+p({class:"foam.nanos.auth.ServiceProvider",id:"bpp",description:"bpp spid",enabled:true})
+p({
+  class:"foam.nanos.crunch.Capability",
+  id:"bppCountryCapability",
+  permissionsGranted:[
+    "country.read.CA",
+    "country.read.US",
+    "country.read.GB",
+    "country.read.PT"
+  ]
+})
+
+// Reason codes
+p({
+  class:"foam.nanos.crunch.Capability",
+  id:"bpp-tx-reason-codes",
+  name:"Enable BPP reason codes",
+  permissionsGranted:[
+    "naturecode.read.4cfa9007-1d87-4bdd-b6e1-4e3c6fe78a2c",
+    "naturecode.read.f0224036-2a37-4fa9-8879-a413fe168f34"
+  ]
+})
+
+
