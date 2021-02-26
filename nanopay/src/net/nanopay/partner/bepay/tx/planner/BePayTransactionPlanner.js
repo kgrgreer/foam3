@@ -72,7 +72,7 @@ foam.CLASS({
 
       ExchangeRateService exchangeRateService = (ExchangeRateService) x.get("exchangeRateService");
 
-      Double fxRate = exchangeRateService.getRate(requestTxn.getSourceCurrency(), requestTxn.getDestinationCurrency());
+      Double fxRate = exchangeRateService.getRate(requestTxn.getDestinationCurrency(), requestTxn.getSourceCurrency());
       FXSummaryTransaction txn = new FXSummaryTransaction();
       txn.copyFrom(requestTxn);
       txn.setPaymentProvider(PAYMENT_PROVIDER);
