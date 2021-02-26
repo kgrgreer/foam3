@@ -162,7 +162,6 @@ foam.CLASS({
       txn.addLineItems( new TransactionLineItem[] {
         new FXLineItem.Builder(x)
           .setGroup("fx").setNote("FX Broker Fee")
-          .setDestinationAccount(requestTxn.getSourceAccount())
           .setSourceCurrency(requestTxn.getDestinationCurrency())
           .setDestinationCurrency(requestTxn.getSourceCurrency())
           .setExpiry(c.getTime())
