@@ -27,7 +27,8 @@ foam.CLASS({
     'foam.core.X',
     'foam.nanos.crunch.UserCapabilityJunction',
     'net.nanopay.model.Business',
-    'foam.nanos.approval.ApprovalRequest'
+    'foam.nanos.approval.ApprovalRequest',
+    'net.nanopay.meter.compliance.ComplianceApprovalRequest'
   ],
 
   properties: [
@@ -51,7 +52,7 @@ foam.CLASS({
             String group = business.getSpid() + "-fraud-ops";
 
             requestApproval(x,
-              new ApprovalRequest.Builder(x)
+              new ComplianceApprovalRequest.Builder(x)
                 .setObjId(ucj.getId())
                 .setDaoKey("userCapabilityJunctionDAO")
                 .setRefObjId(business.getId())
