@@ -119,7 +119,9 @@ foam.CLASS({
     },
     {
       name: 'clearingTimes',
-      javaFactory: 'return new java.util.HashMap<>();'
+      javaFactory: 'return new java.util.HashMap<>();',
+      networkTransient: true,
+      hiddem: true
     },
     {
       name: 'estimatedCompletionDate',
