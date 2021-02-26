@@ -2,18 +2,3 @@
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"C9233187-7C24-4DAB-BE04-E661D1F281D1","sourceId":8053,"targetId":"bepay","status":1})
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"4F92603A-2DF7-4ACE-BEE2-3596D32253BA","sourceId":8054,"targetId":"bepay","status":1})
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"01327FE5-DFD6-4E8C-9143-8109AF14A6C2","sourceId":8055,"targetId":"bepay","status":1})
-
-// corridors
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"9977B35C-A228-4843-8A4C-E24BA375AC5E","sourceId":8053,"targetId":"bepayCorridorCapability","status":1})
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"4F66648E-EECE-4808-A7E2-BD9EA0174784","sourceId":8054,"targetId":"bepayCorridorCapability","status":1})
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"95B7A02F-638B-4433-A1EB-7C15806085BC","sourceId":8055,"targetId":"bepayCorridorCapability","status":1})
-
-// planners
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"EBA9E983-D494-499A-BF77-F63415C928F6","sourceId":8053,"targetId":"bepayPlannerCapability","status":1})
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"96D309CA-70FD-4673-A0F7-640FB1280F1B","sourceId":8054,"targetId":"bepayPlannerCapability","status":1})
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"96B19FF2-8765-4F8D-B386-91F0EBE20434","sourceId":8055,"targetId":"bepayPlannerCapability","status":1})
-
-// fees
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"C27A72F4-78C2-4908-8075-4616DDE6F10C","sourceId":8053,"targetId":"bepay-tx-fees","status":1})
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"306D430C-A330-451C-AB7D-BB783C29DE9D","sourceId":8054,"targetId":"bepay-tx-fees","status":1})
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"8ADF6826-89AB-4A0E-BDDA-5F6241CFF8E2","sourceId":8055,"targetId":"bepay-tx-fees","status":1})
