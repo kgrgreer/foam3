@@ -121,7 +121,16 @@ foam.CLASS({
             EQ(Account.SPID, payer.getSpid())
           )
         );
-        X y = x.put("localAccountDAO", dao);
+
+        var userDao = ((DAO) x.get("bareUserDAO")).where(
+          OR(
+            EQ(User.SPID, getReserveAccountSpid()),
+            EQ(User.SPID, payer.getSpid())
+          )
+        );
+
+        X y = x.put("localAccountDAO", dao)
+               .put("bareUserDAO", userDao);
         return y;
       `
     },
