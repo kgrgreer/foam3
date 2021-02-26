@@ -302,7 +302,6 @@ var classes = [
   'net.nanopay.fx.afex.AFEXSubmitPaymentRule',
   'net.nanopay.fx.afex.AFEXBeneficialOwnerRule',
   'net.nanopay.fx.afex.AFEXBusinessDirectorRule',
-  'net.nanopay.fx.afex.AFEXSigningOfficerRule',
   'net.nanopay.fx.afex.AFEXBankUpdatingRule',
   'net.nanopay.fx.afex.TransactionInvalidBankAccountRule',
   'net.nanopay.fx.afex.TransactionVerifyBankAccountRule',
