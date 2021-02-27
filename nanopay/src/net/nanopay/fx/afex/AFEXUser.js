@@ -33,10 +33,6 @@ foam.CLASS({
     'publicBusinessDAO'
   ],
 
-  javaImports: [
-    'java.util.HashMap'
-  ],
-
   messages: [
     { name: 'BENEFICIARIES_MSG', message: 'Beneficiaries for' }
   ],
@@ -73,11 +69,6 @@ foam.CLASS({
       class: 'String',
       name: 'accountNumber',
       documentation: 'AFEX account number'
-    },
-    {
-      class: 'Map',
-      name: 'fundingIds',
-      javaFactory: `return new HashMap();`,
     },
     {
       class: 'String',

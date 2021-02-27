@@ -358,7 +358,7 @@ foam.CLASS({
       },
       code: async function(X) {
         if ( ! await this.addContact() ) return;
-        if ( this.data.bankAccount === 0 && ! await this.addBankAccount() ) return;
+        if ( ! await this.addBankAccount() ) return;
         X.closeDialog();
       }
     }
