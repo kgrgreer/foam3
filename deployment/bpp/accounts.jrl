@@ -2,7 +2,7 @@
 p({
   "class":"net.nanopay.bank.EstimationAccount",
   "id":"44fff2fc-62f8-4f0c-8e23-e70324c7fe05",
-  "owner":8056,
+  "owner":2024,
   "denomination":"USD",
   "country":"US",
   "name":"US estimation account",
@@ -11,7 +11,7 @@ p({
 p({
   "class":"net.nanopay.bank.EstimationAccount",
   "id":"92e18fb8-ae57-4a41-834a-ec96984dfe11",
-  "owner":8056,
+  "owner":2024,
   "denomination":"CAD",
   "country":"CA",
   "name":"Canadian estimation account",
@@ -20,7 +20,7 @@ p({
 p({
   "class":"net.nanopay.bank.EstimationAccount",
   "id":"dab4e0d5-eb1a-4af3-9f6e-3b0cc02119e9",
-  "owner":8056,
+  "owner":2024,
   "denomination":"EUR",
   "country":"PT",
   "name":"Portugal estimation account",
@@ -29,7 +29,7 @@ p({
 p({
   "class":"net.nanopay.bank.EstimationAccount",
   "id":"09faf398-b203-4496-bbfc-f106bb3f3116",
-  "owner":8056,
+  "owner":2024,
   "denomination":"GBP",
   "country":"GB",
   "name":"GB estimation account",
@@ -51,7 +51,7 @@ p({
   "lastModified":"2020-04-28T17:20:41.561Z",
   "lastModifiedBy":101,
   "lifecycleState":1,
-  "owner":8056,
+  "owner":2024,
   "enabled":true
 })
 
@@ -65,7 +65,7 @@ p({
   id:"512360f6-ec67-4339-9fc4-9a677bc2bff7",
   name:"FeeAccount-bpp",
   isDefault:true,
-  owner:8056,
+  owner:2024,
   created:1601392287945,
   createdBy:1,
   createdByAgent:1,
