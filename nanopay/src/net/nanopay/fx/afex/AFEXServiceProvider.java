@@ -695,7 +695,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     AFEXBeneficiary afexBeneficiary = (AFEXBeneficiary) afexBeneficiaryDAO.find(
       AND(
         EQ(AFEXBeneficiary.CONTACT, beneficiaryId),
-        EQ(AFEXBeneficiary.OWNER, ownerId)
+        EQ(AFEXBeneficiary.OWNER, ownerId),
+        EQ(AFEXBeneficiary.IS_INSTANT_BENEFICIARY, isInstantBeneficiary)
       )
     );
 
@@ -872,9 +873,9 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   public AFEXFundingTransaction submitInstantPayment(AFEXFundingTransaction txn) {
 
     Account destinationAccount = txn.findDestinationAccount(x);
-    AFEXUser afexUser = getAFEXUser(x, destinationAccount.getOwner());
+    AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x, destinationAccount.getOwner(), destinationAccount.getOwner(), true);
 
-    User user = User.findUser(x, destinationAccount.getOwner());
+    User user = User.findUser(x, txn.findDestinationAccount(x).getOwner());
     CreatePaymentRequest createPaymentRequest = new CreatePaymentRequest();
     createPaymentRequest.setPaymentDate(txn.getValueDate());
     createPaymentRequest.setAmount(String.valueOf(toDecimal(txn.getAmount())));
@@ -1088,7 +1089,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     DAO dao = (DAO) x.get("afexBeneficiaryDAO");
     return (AFEXBeneficiary) dao.find(AND(
       EQ(AFEXBeneficiary.CONTACT, beneficiaryId),
-      EQ(AFEXBeneficiary.OWNER, ownerId)
+      EQ(AFEXBeneficiary.OWNER, ownerId),
+      EQ(AFEXBeneficiary.IS_INSTANT_BENEFICIARY, isInstantBeneficiary)
     ));
   }
 
@@ -1196,13 +1198,17 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return null;
   }
 
-  public void createInstantBeneficiary(X x, AFEXFundingTransaction transaction) throws RuntimeException {
+  public AFEXBeneficiary createInstantBeneficiary(X x, AFEXFundingTransaction transaction) throws RuntimeException {
     long userId = transaction.findDestinationAccount(x).getOwner();
     User user = User.findUser(x, userId);
     if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
-    AFEXUser afexUser = getAFEXUser(x, user.getId());
-    if ( null == afexUser ) throw new RuntimeException("Unable to find AFEX user " + userId);
 
+    AFEXUser afexUser = getAFEXUser(x, user.getId());
+    // check if instant beneficiary exists already;
+    AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x, afexUser.getId(), afexUser.getId(), true);
+    if ( afexBeneficiary != null ) {
+      return afexBeneficiary;
+    }
 
     AFEXFundingBalance fundingBalance = getOrCreateFundingBalance(x, transaction);
     if ( fundingBalance == null || SafetyUtil.isEmpty(fundingBalance.getFundingBalanceId())  ) throw new RuntimeException("Unable to find funding balance for user " + userId);

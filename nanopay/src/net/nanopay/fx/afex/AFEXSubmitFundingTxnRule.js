@@ -49,10 +49,10 @@ foam.CLASS({
           AFEXFundingTransaction transaction = (AFEXFundingTransaction) obj;
           AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
 
-          AFEXUser afexUser = afexService.getAFEXUser(x, transaction.findDestinationAccount(x).getOwner());
-          if ( null == afexUser.getFundingIds().get(transaction.getSourceCurrency()) ) {
+          AFEXBeneficiary afexBeneficiary = afexService.getAFEXBeneficiary(x, transaction.findDestinationAccount(x).getOwner(), transaction.findDestinationAccount(x).getOwner(),true);
+          if ( afexBeneficiary == null ) {
             try {
-              afexService.createInstantBeneficiary(x,transaction);
+              afexBeneficiary = afexService.createInstantBeneficiary(x,transaction);
               transaction.getTransactionEvents(x).put_(x, new TransactionEvent("Instant beneficiary created."));
             } catch (Throwable t) {
               String msg = "Error creating instant beneficiary " + transaction.getId();
@@ -78,7 +78,7 @@ foam.CLASS({
               .setBody(msg + " " + t.getMessage())
               .build();
             ((DAO) x.get("localNotificationDAO")).put(notification);
-          }
+          } 
         }
       }, "Rule to create submit transaction on AFEX system when transaction is pending and balance is completed.");
       `
