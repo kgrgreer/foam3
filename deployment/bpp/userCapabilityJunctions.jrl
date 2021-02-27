@@ -15,6 +15,7 @@ p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2025-bpp-tx-reason-codes
 p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2025-bepay-tx-fees",sourceId:2025,targetId:"bepay-tx-fees",status:1})
 
 // Allow bepay users to access bpp data
-p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"8053-bpp","sourceId":8053,"targetId":"bpp","status":1})
-p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"8054-bpp","sourceId":8054,"targetId":"bpp","status":1})
-p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"8055-bpp","sourceId":8055,"targetId":"bpp","status":1})
+p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2021-bpp","sourceId":2021,"targetId":"bpp","status":1})
+p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2022-bpp","sourceId":2022,"targetId":"bpp","status":1})
+p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2023-bpp","sourceId":2023,"targetId":"bpp","status":1})
+p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2026-bpp","sourceId":2026,"targetId":"bpp","status":1})
