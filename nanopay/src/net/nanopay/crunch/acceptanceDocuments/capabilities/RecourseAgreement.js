@@ -75,7 +75,6 @@ foam.CLASS({
           labelFormatter: function() {
             this.start('span')
               .start('a')
-                .addClass('link')
                 .add(self.dot('checkboxText'))
                 .attrs({
                   href: self.dot('link'),

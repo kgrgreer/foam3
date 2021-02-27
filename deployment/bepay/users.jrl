@@ -1,6 +1,6 @@
 p({
     "class":"foam.nanos.auth.User",
-    "id":8053,
+    "id":2021,
     "firstName":"API",
     "lastName":"BePay",
     "jobTitle":"Treasurer",
@@ -22,7 +22,7 @@ p({
 // BePay Admins
 p({
     class:"foam.nanos.auth.User",
-    id:8054,
+    id:2022,
     spid:"bepay",
     firstName:"Admin",
     lastName:"Admin",
@@ -36,7 +36,7 @@ p({
 })
 p({
     class:"foam.nanos.auth.User",
-    id:8055,
+    id:2023,
     spid:"bepay",
     firstName:"Dev",
     lastName:"Admin",
