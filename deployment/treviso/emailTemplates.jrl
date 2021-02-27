@@ -1812,7 +1812,7 @@ p({
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-126",
   "name": "mark-as-complete",
   "group": "sme",
-  "locale" "en",
+  "locale": "en",
   "subject": "Invoice #{{account}} has been marked as complete",
   "displayName": "Treviso",
   "body": """
@@ -1886,7 +1886,7 @@ p({
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-128",
   "name": "international-payments-enabled-notification",
   "group": "sme",
-  "locale" "en",
+  "locale": "en",
   "displayName": "{{appName}}",
   "subject": "{{business}} can now send payments to {{toCountry}} using Treviso",
   "body": """
@@ -2040,7 +2040,7 @@ p({
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-136",
   "name": "onboarding-reminder",
   "group": "sme",
-  "locale: "en",
+  "locale": "en",
   "displayName": "{{appName}}",
   "subject": "Do you need help completing {{business}}'s business profile on {{appName}}?",
   "body": """
