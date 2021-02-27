@@ -7,7 +7,8 @@ p({
     id:"bepay-fraud-ops",
     description:"BePay Fraud Operations Group",
     parent:"fraud-ops",
-    defaultMenu:"accounts",
+    theme:"18E4CEBB-2C91-4D14-AC5B-64D38103D524",
+    defaultMenu:"bankaccounts",
     url:"http://bepay:8080"
 })
 p({
@@ -15,7 +16,8 @@ p({
     id:"bepay-payment-ops",
     description:"BePay Payment Operations Group",
     parent:"payment-ops",
-    defaultMenu:"accounts",
+    theme:"18E4CEBB-2C91-4D14-AC5B-64D38103D524",
+    defaultMenu:"bankaccounts",
     url:"http://bepay:8080"
 })
 
@@ -33,6 +35,7 @@ p({
     id:"bepay-support",
     description:"bepay support group",
     parent:"external-support",
+    theme:"18E4CEBB-2C91-4D14-AC5B-64D38103D524",
     defaultMenu:"businesses-support",
     url:"http://bepay:8080"
 })

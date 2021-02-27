@@ -48,3 +48,18 @@ p({
     status:2,
     spid:"bepay"
 })
+
+// BePay Fraud Ops
+p({
+  "class":"foam.nanos.auth.User",
+  "id":2026,
+  "firstName":"Fraud-Ops",
+  "lastName":"BePay",
+  "email":"fraudops@bepay.com",
+  "emailVerified":true,
+  "password":"2CxrwHroVFM=:nsICZ86QWyvDeDGI6gKYWKpVlQTFa8O+2RV/YzwCGxjaXCE/99JBYR0/YCkTnyvMcfXJoOisDVr9Jc2tJIIYLw==",
+  "status":2,
+  "group":"bepay-fraud-ops",
+  "spid":"bepay",
+  "lifecycleState":1
+})
