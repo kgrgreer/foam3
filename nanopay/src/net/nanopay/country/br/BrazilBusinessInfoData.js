@@ -43,7 +43,6 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'NO_NIRE_NUMBER', message: '14-digit NIRE/State Commercial Identification Number required' },
     { name: 'NO_CNPJ', message: '14-digit National Registry of Legal Entities Number required' },
     { name: 'CNPJ_INVALID', message: 'CNPJ required' },
     { name: 'VERIFY_BUSINESS_NAME', message: 'Confirm your business name' }
@@ -151,16 +150,7 @@ foam.CLASS({
       label: 'State Commercial Identification Number(NIRE)',
       required: true,
       documentation: `NIRE is the State Commercial Identification Number used by the State Commercial Board.`,
-      section: 'businessInformation',
-      validationPredicates: [
-        {
-          args: ['nire'],
-          predicateFactory: function(e) {
-            return e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.NIRE }), 14);
-          },
-          errorMessage: 'NO_NIRE_NUMBER'
-        }
-      ]
+      section: 'businessInformation'
     },
     {
       class: 'String',
