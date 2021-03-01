@@ -30,8 +30,11 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.dao.PromisedDAO',
     'foam.log.LogLevel',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.UserUserJunction',
+    'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'foam.nanos.notification.ToastState',
@@ -49,6 +52,7 @@ foam.CLASS({
     'net.nanopay.accounting.AccountingIntegrationUtil',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.auth.AgentJunctionStatus',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.BRBankAccount',
     'net.nanopay.bank.CABankAccount',
@@ -75,11 +79,14 @@ foam.CLASS({
   ],
 
   imports: [
-    'canadaUsBusinessOnboardingDAO',
-    'digitalAccount',
     'accountDAO',
+    'agentAuth',
+    'businessDAO',
+    'canadaUsBusinessOnboardingDAO',
+    'crunchService',
+    'digitalAccount',
     'balanceDAO',
-    'notificationDAO'
+    'notificationDAO',
   ],
 
   exports: [
@@ -229,6 +236,10 @@ foam.CLASS({
     {
       name: 'INVALID_TOKEN_ERROR_2',
       message: 'If you feel you’ve reached this message in error, please contact your Company Administrator.'
+    },
+    { 
+      name: 'BUSINESS_LOGIN_FAILED', 
+      message: 'Error trying to log into business.' 
     }
   ],
 
@@ -381,7 +392,32 @@ foam.CLASS({
         else
           return true;
       }
-    }
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'enabledBusinesses_',
+      documentation: `
+        The DAO used to populate the enabled businesses in the list.
+      `,
+      expression: function(subject) {
+        var agent = subject.realUser;
+        var user = subject.user;
+        var party = agent.created ? agent : user;
+        return this.PromisedDAO.create({
+          promise: party.entities.dao
+            .where(this.NEQ(this.Business.STATUS, this.AccountStatus.DISABLED))
+            .select(this.MAP(this.Business.ID))
+            .then(mapSink => {
+              return party.entities.junctionDAO.where(
+                this.AND(
+                  this.EQ(this.UserUserJunction.SOURCE_ID, party.id),
+                  this.IN(this.UserUserJunction.TARGET_ID, mapSink.delegate.array)
+                )
+              );
+            })
+        });
+      }
+    },
   ],
 
   methods: [
@@ -790,7 +826,36 @@ foam.CLASS({
       } catch (e) {
         return true;
       }
-    }
+    },
+    async function assignBusinessAndLogIn(junction) {
+      var business = await this.client.businessDAO.find(junction.targetId);
+      try {
+        var result = await this.client.agentAuth.actAs(this, business);
+
+        if ( result ) {
+          this.subject.user = business;
+          this.subject.realUser = result;
+          this.client.menuDAO.cmd_(this, foam.dao.CachingDAO.PURGE);
+          this.client.menuDAO.cmd_(this, foam.dao.AbstractDAO.RESET_CMD);
+          this.crunchController.purgeCachedCapabilityDAOs();
+          this.initLayout.resolve();
+          await this.pushDefaultMenu()
+          return;
+        }
+      } catch (err) {
+        var msg = err != null && typeof err.message === 'string'
+          ? err.message
+          : this.BUSINESS_LOGIN_FAILED;
+        this.notify(msg, '', this.LogLevel.ERROR, true);
+      }
+    },
+    async function pushDefaultMenu() {
+      //check if default menu is avaiable. if default menu is not permitted yet, direct to appStore
+      var menu = await this.client.menuDAO.find(this.theme.defaultMenu) ? 
+      this.theme.defaultMenu : 
+      'sme.main.appStore';
+      this.pushMenu(menu);
+    },
   ],
 
   listeners: [
@@ -821,22 +886,38 @@ foam.CLASS({
 
           // Redirect user to switch business if agent doesn't exist.
           if ( ! this.subject.realUser || this.subject.realUser.id === this.subject.user.id ) {
-
-            //by setting memento here we will trigger mementoChange function in ApplicationController
-            //which will find and launch sme.accountProfile.switch-business-page menu.
-            /**
-              switch-business menus is used to set subject, direct user to correct page, and show switch-business menus
-              In order to control the accountProfile menus disply without break login, add switch-business-page,
-              which use for set subject and redirect pages, to menus. And switch-business menu is only use to display
-              the page and shows in accountProfile.
-            */
-            this.memento.value = 'sme.accountProfile.switch-business-page'
-            return;
+            let sink = await this.enabledBusinesses_.select();
+            var ac = this.theme.admissionCapability;
+            if ( ac ) {
+              var ucj = await this.client.crunchService.getJunction(null, ac);
+              //Check if user has finished registration
+              if ( ucj.status !==  this.CapabilityJunctionStatus.GRANTED ) {
+                this.onboardingUtil.initUserRegistration(ac);
+                return;
+              }
+              //
+              if ( sink.array.length === 0 ) {
+                this.initLayout.resolve();
+                await this.pushDefaultMenu();
+                return;
+              }
+      
+              if ( sink.array.length === 1 ) {
+                this.initLayout.resolve();
+                var junction = sink.array[0];
+      
+                // If the user is only in one business but that business has
+                // disabled them, then don't immediately switch to that business.
+                if ( junction.status === this.AgentJunctionStatus.DISABLED ) return;
+                await this.assignBusinessAndLogIn(junction);
+                return;
+              }
+            }
           }
 
           var hash = location.hash.substr(1);
 
-          if ( hash !== 'sme.accountProfile.switch-business-page' ) {
+          if ( hash !== 'sme.accountProfile.switch-business' ) {
             this.initLayout.resolve();
           }
 
@@ -879,58 +960,6 @@ foam.CLASS({
 
       else {
         this.initLayout.resolve();
-        // only show B2B onboarding if user is a Business
-        if ( this.subject.user.type === 'Business' ) {
-          // check account status and show UI accordingly
-          switch ( this.subject.user.status ) {
-            case this.AccountStatus.PENDING:
-              this.loginSuccess = false;
-              this.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard' });
-              return;
-
-            case this.AccountStatus.SUBMITTED:
-              this.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
-              this.loginSuccess = false;
-              return;
-
-            case this.AccountStatus.DISABLED:
-
-              // If the user submitted the form before their account was
-              // disabled but before it was activated, they should see page
-              // 5 of the onboarding wizard to be able to review what they
-              // submitted.
-              if ( this.subject.user.previousStatus === this.AccountStatus.SUBMITTED ) {
-                this.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
-
-              // Otherwise, if they haven't submitted yet, or were already
-              // activated, they shouldn't need to be able to review their
-              // submission, so they should just see the simple "account
-              // disabled" view.
-              } else {
-                this.stack.push({ class: 'net.nanopay.admin.ui.AccountRevokedView' });
-              }
-              this.loginSuccess = false;
-              return;
-
-            // show onboarding screen if user hasn't clicked "Go To Portal" button
-            case this.AccountStatus.ACTIVE:
-              if ( ! this.subject.user.createdPwd ) {
-                this.loginSuccess = false;
-                this.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 6 });
-                return;
-              }
-              if ( this.subject.user.onboarded ) break;
-              this.loginSuccess = false;
-              this.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
-              return;
-
-            case this.AccountStatus.REVOKED:
-              this.loginSuccess = false;
-              this.stack.push({ class: 'net.nanopay.admin.ui.AccountRevokedView' });
-              return;
-          }
-        }
-
         this.SUPER();
 
         if ( this.appConfig.mode == foam.nanos.app.Mode.PRODUCTION ) {

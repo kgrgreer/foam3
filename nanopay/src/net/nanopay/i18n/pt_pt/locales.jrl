@@ -2433,6 +2433,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.Controller.SHOW_F
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.Controller.SHOW_NAV.label",target:"showNav"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.Controller.SHOW_NAV.value",target:"true"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.Controller.IS_MENU_OPEN.label",target:"isMenuOpen"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.Controller.BUSINESS_LOGIN_FAILED",target:"Erro ao tentar fazer login no negócio."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.FXLineItem.DESCRIPTION",target:"Foreign Exchange Information2"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.FXLineItem.RATE.label",target:"rate"})
