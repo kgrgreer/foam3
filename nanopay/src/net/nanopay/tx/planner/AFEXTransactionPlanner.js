@@ -202,7 +202,7 @@ foam.CLASS({
         else {
           afexCT.addNext( afexTransaction );
         }
-        afexCT.setAmount(afexCT.getNext().getAmount());
+        afexCT.setAmount(afexCT.getNext()[0].getAmount());
         //--- Create Fx Summary ---
         FXSummaryTransaction summary = new FXSummaryTransaction();
         // get Summary amounts from the fxQuote
