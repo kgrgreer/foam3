@@ -24,3 +24,16 @@ p({
   "emailVerified":true,
   "lifecycleState":1
 })
+p({
+  "class":"foam.nanos.auth.User",
+  "id":2027,
+  "firstName":"FraudOps",
+  "lastName":"BPP",
+  "email":"fraudops-bpp@bepay.com",
+  "password":"IhDlgTOqqQI=:qiFAc9SEhthKa7y+Be3qMmQZm04HV32uSDid7HgZFaSQooXh0vaKU7ZdszOMWnUuxECI3rlGmox5z1B8uy6G7A==",
+  "emailVerified":true,
+  "status":2,
+  "group":"bpp-fraud-ops",
+  "spid":"bpp",
+  "lifecycleState":1
+})
