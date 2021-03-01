@@ -72,7 +72,7 @@ foam.CLASS({
 
       ExchangeRateService exchangeRateService = (ExchangeRateService) x.get("exchangeRateService");
 
-      Double fxRate = exchangeRateService.getRate(requestTxn.getSourceCurrency(), requestTxn.getDestinationCurrency());
+      Double fxRate = exchangeRateService.getRate(requestTxn.getDestinationCurrency(), requestTxn.getSourceCurrency());
       FXSummaryTransaction txn = new FXSummaryTransaction();
       txn.copyFrom(requestTxn);
       txn.setPaymentProvider(PAYMENT_PROVIDER);
@@ -162,9 +162,8 @@ foam.CLASS({
       txn.addLineItems( new TransactionLineItem[] {
         new FXLineItem.Builder(x)
           .setGroup("fx").setNote("FX Broker Fee")
-          .setDestinationAccount(requestTxn.getSourceAccount())
-          .setSourceCurrency(requestTxn.getSourceCurrency())
-          .setDestinationCurrency(requestTxn.getDestinationCurrency())
+          .setSourceCurrency(requestTxn.getDestinationCurrency())
+          .setDestinationCurrency(requestTxn.getSourceCurrency())
           .setExpiry(c.getTime())
           .setRate(fxRate)
           .build()

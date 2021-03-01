@@ -1,0 +1,11 @@
+p({
+  class:"foam.nanos.boot.NSpec",
+  id:"dowjonesCredentials",
+  service:{
+    class:"net.nanopay.meter.compliance.dowJones.DowJonesCredentials",
+    namespace:"18",
+    username:"nanoAPI",
+    password:"4ZszDP3c51Va",
+    baseUrl:"https://djrc.api.test.dowjones.com/v1/search/"
+  }
+})
