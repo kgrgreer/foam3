@@ -17,13 +17,13 @@
 
 foam.CLASS({
   package: 'net.nanopay.ticket',
-  name: 'BasicFullReverseRefundTicketCreateRule',
+  name: 'BasicRetryTicketRule',
 
   implements: [
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: `Rule to determine if the transaction can be refunded`,
+  documentation: `Rule to create a retry transaction. tries to send the current funds to the summary destination again`,
 
   javaImports: [
     'foam.core.ContextAgent',
@@ -86,7 +86,7 @@ foam.CLASS({
             try {
               List children = ((ArraySink) problem.getChildren(x).select(new ArraySink())).getArray();
               for ( Object t : children) {
-                t = (Transaction) ((Transaction) t).fclone(); 
+                t = (Transaction) ((Transaction) t).fclone();
                 ((Transaction) t).setStatus(TransactionStatus.PAUSED);
                 txnDAO2.put((Transaction) t);
               }
@@ -100,10 +100,10 @@ foam.CLASS({
 
         Transaction newRequest = new Transaction();
         newRequest.setAmount(problem.getAmount());
-        newRequest.setDestinationAccount(summary.getSourceAccount());
+        newRequest.setDestinationAccount(summary.getDestinationAccount());
         newRequest.setSourceAccount(problem.getSourceAccount());
         newRequest.setSourceCurrency(problem.getSourceCurrency());
-        newRequest.setDestinationCurrency(summary.getSourceCurrency());
+        newRequest.setDestinationCurrency(summary.getDestinationCurrency());
 
         if ( ! SafetyUtil.isEmpty(getErrorCode()) ) {
           // TODO: look up error code fee. and create a fee line item for this.
