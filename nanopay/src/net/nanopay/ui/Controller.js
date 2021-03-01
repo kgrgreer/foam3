@@ -86,7 +86,7 @@ foam.CLASS({
     'crunchService',
     'digitalAccount',
     'balanceDAO',
-    'notificationDAO',
+    'notificationDAO'
   ],
 
   exports: [
