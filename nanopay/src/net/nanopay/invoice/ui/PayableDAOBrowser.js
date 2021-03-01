@@ -219,11 +219,11 @@ foam.CLASS({
             size: 'MEDIUM'
           })
         .endContext()
-        .startContext({ data: this })
+        /*.startContext({ data: this })
           .tag(this.SYNC, {
             size: 'MEDIUM'
           })
-        .endContext()
+        .endContext()*/
       .end()
       .tag(this.DAOBrowser.create({
         config: this.config,
@@ -254,7 +254,7 @@ foam.CLASS({
         });
       }
     },
-    {
+    /*{
       name: 'sync',
       label: 'Sync with Accounting',
       isAvailable: async function() {
@@ -266,7 +266,7 @@ foam.CLASS({
           class: 'net.invoice.ui.modal.IntegrationModal'
         }));
       }
-    },
+    },*/
     {
       name: 'reconcile',
       label: 'Reconcile',
