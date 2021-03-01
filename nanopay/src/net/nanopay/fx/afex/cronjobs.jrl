@@ -125,7 +125,7 @@ p({
   "class":"foam.nanos.cron.Cron",
   "id":"AFEX Check Business Compliance Status",
   "description":"Check AFEX Business Compliance Status",
-  "enabled":true,
+  "enabled":false,
   "schedule":{
     "class":"foam.nanos.cron.CronSchedule",
     "minute":0,
