@@ -32,11 +32,13 @@ import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.bank.*;
 import net.nanopay.contacts.AFEXCNBeneficiaryCapability;
 import net.nanopay.contacts.Contact;
+import net.nanopay.country.br.CPF;
 import net.nanopay.country.br.BrazilBusinessInfoData;
 import net.nanopay.fx.ExchangeRate;
 import net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
+import net.nanopay.meter.clearing.ClearingTimeService;
 import net.nanopay.model.BeneficialOwner;
 import net.nanopay.model.Business;
 import net.nanopay.model.BusinessDirector;
@@ -125,15 +127,21 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
           }
 
           if ( signingOfficer != null ) {
-            Boolean useHardCoded = business.getAddress().getCountryId().equals("CA");
-            String identificationType = businessCountry == null || businessCountry.getId().equals("CA") ? "Passport"
-              : "EmployerIdentificationNumber_EIN"; // Madlen asked it is hardcoded
-            String identificationNumber = SafetyUtil.isEmpty(business.getBusinessRegistrationNumber()) ? "N/A"
-              : business.getBusinessRegistrationNumber(); // Madlen asked it is hardcoded
+//            Boolean useHardCoded = business.getAddress().getCountryId().equals("CA");
+//            String identificationType = businessCountry == null || businessCountry.getId().equals("US") ? "Employer Identification Number(EIN)"
+//              : "Business Registration Number";
+
+            String identificationNumber = business.getBusinessRegistrationNumber();
+            if ( SafetyUtil.isEmpty(identificationNumber) && businessCountry.getId().equals("BR") )
+              identificationNumber = findCNPJ(business.getId());
+            onboardingRequest.setCompanyRegistrationNo(identificationNumber);
+            onboardingRequest.setCompanyRegistrationNumber(identificationNumber);
+
             if ( businessRegion != null ) onboardingRequest.setBusinessState(businessRegion.getRegionCode());
-            onboardingRequest.setIDExpirationDate("01/01/2099"); // Asked to hardcode this by Madlen(AFEX)
-            onboardingRequest.setIDNo( useHardCoded ? "000000000" : identificationNumber);
-            onboardingRequest.setIDType(useHardCoded ? "BusinessRegistrationNumber" : identificationType);
+//            onboardingRequest.setContactPrimaryIdentificationExpirationDate("01/01/2099"); // Asked to hardcode this by Madlen(AFEX)
+//            onboardingRequest.setContactPrimaryIdentificationNumber( useHardCoded ? "000000000" : identificationNumber);
+//            onboardingRequest.setContactPrimaryIdentificationType(useHardCoded ? "Business Registration Number" : identificationType);
+
             if ( businessCountry.getId().equals("US") ) onboardingRequest.setFederalTaxId(business.getTaxIdentificationNumber());
             if ( businessCountry != null ) onboardingRequest.setBusinessCountry(businessCountry.getCode());
             if ( businessRegion != null ) onboardingRequest.setBusinessState(businessRegion.getRegionCode());
@@ -142,7 +150,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             onboardingRequest.setBusinessWebsite(business.getWebsite());
 
             if ( businessCountry != null )
-              onboardingRequest.setCountryOfIncorporation( useHardCoded ? "Canada" : businessCountry.getName());
+              onboardingRequest.setCountryOfIncorporation(businessCountry.getName());
             onboardingRequest.setLegalCompanyName(business.getBusinessName());
             onboardingRequest.setBusinessZip(business.getAddress().getPostalCode());
             onboardingRequest.setCompanyType(getBusinessType(business.getBusinessTypeId()));
@@ -159,17 +167,6 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             onboardingRequest.setDateOfFormation(businessRegDate);
             onboardingRequest.setFirstName(signingOfficer.getFirstName());
             onboardingRequest.setLastName(signingOfficer.getLastName());
-            onboardingRequest.setEmail(signingOfficer.getEmail());
-            Address contactAddress = signingOfficer.getAddress();
-            if ( contactAddress != null ) {
-              onboardingRequest.setAddress(contactAddress.getAddress());
-              onboardingRequest.setCity(contactAddress.getCity());
-              Region region = contactAddress.findRegionId(this.x);
-              if ( region != null ) onboardingRequest.setState(region.getRegionCode());
-              onboardingRequest.setCountry(contactAddress.getCountryId());
-              onboardingRequest.setZip(contactAddress.getPostalCode());
-              onboardingRequest.setCitizenship(contactAddress.getCountryId());
-            }
 
             try {
               SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -233,6 +230,15 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     ));
 
     return ucj != null && ucj.getData() != null ?  ((BrazilBusinessInfoData)ucj.getData()).getCnpj() : "";
+  }
+
+  protected String findCPF(long userId) {
+    UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) this.x.get("bareUserCapabilityJunctionDAO")).find(AND(
+      EQ(UserCapabilityJunction.TARGET_ID, "fb7d3ca2-62f2-4caf-a84c-860392e4676b"),
+      EQ(UserCapabilityJunction.SOURCE_ID, userId)
+    ));
+
+    return  ( ucj != null && ucj.getData() != null ) ? ((CPF) ucj.getData()).getData() : "";
   }
 
   public void pushSigningOfficers(Business business, String clientKey) {
@@ -948,10 +954,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
           AFEXTransaction txn = (AFEXTransaction) afexTransaction.fclone();
           txn.setExternalInvoiceId(String.valueOf(paymentResponse.getReferenceNumber()));
           try {
-            Date valueDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(tradeResponse.getValueDate());
-            txn.setCompletionDate(valueDate);
+            ClearingTimeService clearingTimeService = (ClearingTimeService) x.get("clearingTimeService");
+            txn.setCompletionDate(clearingTimeService.estimateCompletionDateSimple(x, txn));
           } catch(Throwable t) {
-            logger_.error("Error parsing date.", t);
+            logger_.error("Error setting completion date on transaction", t);
           }
           return txn;
         }
@@ -1255,6 +1261,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       KeyIndividual individual = new KeyIndividual();
       individual.setFirstName(officer.getFirstName());
       individual.setLastName(officer.getLastName());
+      individual.setEmail(officer.getEmail());
       individual.setIndividualRoles(new String[] {"OFFICER"}); // TODO ENUM TYPE
       individual.setJobTitle(officer.getJobTitle());
       individual.setAccountPrimaryContact("True");
@@ -1293,6 +1300,12 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
           logger_.error("Failed parse company officer identification expiration date.", e);
         }
       }
+
+      if ( SafetyUtil.isEmpty(individual.getIdNo()) && address != null
+        && "BR".equals(address.getCountryId()) ) {
+        individual.setIdNo(findCPF(officer.getId()));
+      }
+
       keyIndividualList.add(individual);
     }
     return keyIndividualList.toArray(new KeyIndividual[keyIndividualList.size()]);

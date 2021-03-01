@@ -73,8 +73,7 @@ p({
       "targetName":"net.nanopay.account.AccountDAOSummaryView",
       "className":"foam.comics.v2.DAOSummaryView"
     }
-  ],
-  "parent": "liquid"
+  ]
 })
 
 p({

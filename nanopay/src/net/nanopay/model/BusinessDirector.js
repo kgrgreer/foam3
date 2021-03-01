@@ -28,6 +28,10 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
+  javaImports: [
+    'foam.util.SafetyUtil'
+  ],
+
   properties: [
     {
       class: 'String',
@@ -40,6 +44,20 @@ foam.CLASS({
       name: 'lastName',
       gridColumns: 6,
       required: true
+    }
+  ],
+
+  methods: [
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function toSummary() {
+        return this.lastName ? this.firstName + ' ' + this.lastName : this.firstName;
+      },
+      javaCode: `
+        if ( SafetyUtil.isEmpty(getLastName()) ) return getFirstName();
+        return getFirstName() + " " + getLastName();
+      `
     }
   ]
 });
