@@ -1584,6 +1584,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ticket/RefundStatus' },
   { name: 'net/nanopay/ticket/RefundTicketPropertyPredicate' },
   { name: 'net/nanopay/ticket/BasicFullReverseRefundTicketCreateRule' },
+  { name: 'net/nanopay/ticket/BasicRetryTicketRule' },
   { name: 'net/nanopay/ticket/AgentRefundTicketCreateRule' },
 
 
