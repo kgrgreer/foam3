@@ -189,7 +189,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onbo
 
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.model.BeneficialOwner.STREET_NAME_LABEL",target:"Number"})
 
-// #2
 p({class:"foam.i18n.Locale",locale:"pt",source:"7e2739cc-db32-11ea-87d0-0242ac130003.name",target:"Demonstrativos Financeiros (balanço, faturamento, defis, etc)"})
 p({class:"foam.i18n.Locale",locale:"en",source:"7e2739cc-db32-11ea-87d0-0242ac130003.name",target:"Financial Statements (balance sheet, billing, defis, etc.)"})
 
@@ -198,5 +197,3 @@ p({class:"foam.i18n.Locale",locale:"en",source:"7e2739cc-db32-11ea-87d0-0242ac13
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"26d32e86-db11-11ea-87d0-0242ac130003.description",target:"Cópia do Contrato Social e da Última Alteração ou Consolidação e, para empresas sociedade anônima, cópia do Estatuto Social e da ata."})
 p({class:"foam.i18n.Locale",locale:"en",source:"26d32e86-db11-11ea-87d0-0242ac130003.description",target:"Copy of Articles of Incorporation and the Last Amendment or Consolidation and, for corporations, a copy of the Bylaws and the minutes."})
-
-// #4
