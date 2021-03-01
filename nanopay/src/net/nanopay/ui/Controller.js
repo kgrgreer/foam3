@@ -93,6 +93,7 @@ foam.CLASS({
     'accountingIntegrationUtil',
     'appConfig',
     'as ctrl',
+    'assignBusinessAndLogIn',
     'balance',
     'bannerData',
     'bannerizeCompliance',
@@ -107,6 +108,7 @@ foam.CLASS({
     'isIframe',
     'onboardingUtil',
     'privacyUrl',
+    'pushDefaultMenu',
     'showFooter',
     'showNav',
     'sme',
@@ -400,9 +402,7 @@ foam.CLASS({
         The DAO used to populate the enabled businesses in the list.
       `,
       expression: function(subject) {
-        var agent = subject.realUser;
-        var user = subject.user;
-        var party = agent.created ? agent : user;
+        var party = subject.realUser;
         return this.PromisedDAO.create({
           promise: party.entities.dao
             .where(this.NEQ(this.Business.STATUS, this.AccountStatus.DISABLED))
@@ -411,7 +411,8 @@ foam.CLASS({
               return party.entities.junctionDAO.where(
                 this.AND(
                   this.EQ(this.UserUserJunction.SOURCE_ID, party.id),
-                  this.IN(this.UserUserJunction.TARGET_ID, mapSink.delegate.array)
+                  this.IN(this.UserUserJunction.TARGET_ID, mapSink.delegate.array),
+                  this.NEQ(this.UserUserJunction.STATUS, this.AgentJunctionStatus.DISABLED)
                 )
               );
             })
@@ -885,7 +886,7 @@ foam.CLASS({
           var menu;
 
           // Redirect user to switch business if agent doesn't exist.
-          if ( ! this.subject.realUser || this.subject.realUser.id === this.subject.user.id ) {
+          if ( this.subject.realUser.id === this.subject.user.id ) {
             let sink = await this.enabledBusinesses_.select();
             var ac = this.theme.admissionCapability;
             if ( ac ) {
@@ -895,7 +896,6 @@ foam.CLASS({
                 this.onboardingUtil.initUserRegistration(ac);
                 return;
               }
-              //
               if ( sink.array.length === 0 ) {
                 this.initLayout.resolve();
                 await this.pushDefaultMenu();
@@ -905,13 +905,11 @@ foam.CLASS({
               if ( sink.array.length === 1 ) {
                 this.initLayout.resolve();
                 var junction = sink.array[0];
-      
-                // If the user is only in one business but that business has
-                // disabled them, then don't immediately switch to that business.
-                if ( junction.status === this.AgentJunctionStatus.DISABLED ) return;
                 await this.assignBusinessAndLogIn(junction);
                 return;
               }
+              // If more than one business, direct to switch-business menu
+              this.pushMenu('sme.accountProfile.switch-business')
             }
           }
 

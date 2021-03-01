@@ -13,6 +13,7 @@ p({
   class:"foam.nanos.crunch.Capability",
   id:"abliiMenuCapability",
   permissionsGranted:[
+    "menu.read.sme.accountProfile.switch-business",
     "menu.read.sme.accountProfile.personal-settings",
     "menu.read.sme.accountProfile.signout",
     "menu.read.submenu.contact.invitation",
@@ -64,7 +65,6 @@ p({
   "enabled":true,
   "permissionsGranted":[
     "menu.read.sme.accountProfile.business-settings",
-    "menu.read.sme.accountProfile.switch-business",
     "menu.read.submenu.contact.search",
     "menu.read.submenu.contact.paymentcode",
     "menu.read.submenu.contact.invitation",
