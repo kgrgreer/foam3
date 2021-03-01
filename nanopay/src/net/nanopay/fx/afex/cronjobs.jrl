@@ -126,14 +126,14 @@ p({
   "id":"AFEX Check Business Compliance Status",
   "description":"Check AFEX Business Compliance Status",
   "enabled":true,
-  schedule:{
-    class:"foam.nanos.cron.IntervalSchedule",
-    duration:{
-      class:"foam.nanos.cron.TimeHMS",
-      hour:1,
-      minute:0,
-      second:0
-    }
+  "schedule":{
+    "class":"foam.nanos.cron.CronSchedule",
+    "minute":0,
+    "hour":0,
+    "dayOfMonth":-1,
+    "month":-1,
+    "dayOfWeek":-1,
+    "second":0
   },
   "code":"""
     import net.nanopay.fx.afex.cron.AFEXBusinessComplianceStatusCron;
