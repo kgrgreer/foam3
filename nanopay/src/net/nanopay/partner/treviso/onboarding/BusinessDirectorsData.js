@@ -34,7 +34,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { nname: 'ADD_NAME', message: 'Administrators or Legal Representatives' },
+    { name: 'ADD_NAME', message: 'Administrators or Legal Representatives' },
     { name: 'NO_DIRECTOR_INFO', message: 'Administrators or Legal Representatives information required' },
     { name: 'DIRECTOR_INFO_NOT_VALID', message: 'Administrators or Legal Representatives information is not valid' },
     { name: 'NO_DIR_NEEDED', message: 'No Administrators or Legal Representatives required for this business type. Please proceed to next step.' }
