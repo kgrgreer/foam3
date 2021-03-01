@@ -529,7 +529,7 @@ foam.CLASS({
     {
       name: 'businessLastRegistrationDate',
       code: async function(x, business) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-19';
+        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-19'; // this is br/treviso capability
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
