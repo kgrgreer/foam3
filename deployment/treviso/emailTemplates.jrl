@@ -848,7 +848,7 @@ p({
   "class": "foam.nanos.notification.email.EmailTemplate",
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-98",
   "name": "treviso-email-base",
-  "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"> \n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title>Treviso</title>\n<link href=\"https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i\" rel=\"stylesheet\">\n<style type=\"text/css\"> \n\n</style>\n</head>\n<body style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #f2f2f2;\">\n<div style=\"max-width: 420px; margin: auto; padding: 40px\">\n<div style=\"width: 100%; background: #fff; border-radius: 5px; padding: 20px; text-align: center\">\n<a href=\"#\" title=\"Email logo\" target=\"_blank\" style=\"cursor: default\">\n<img src=\"{{logo}}\" alt=\"\" style=\"width: 100px; padding: 24px; float: left; padding-right: 100%\"/>\n</a><content></content>\n</div>\n<div style=\"width: 100%; background: #fff; border-radius: 5px; padding: 20px; text-align: center; margin-top: 10px\">\n<div style=\"font-size: 14px; color: #444; line-height: 20px\">\n{{supportAddress}}\n</div>\n</div>\n</div>\n</body>\n</html>"
+  "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"> \n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title>{{appName}}</title>\n<link href=\"https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i\" rel=\"stylesheet\">\n<style type=\"text/css\"> \n\n</style>\n</head>\n<body style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #f2f2f2;\">\n<div style=\"max-width: 420px; margin: auto; padding: 40px\">\n<div style=\"width: 100%; background: #fff; border-radius: 5px; padding: 20px; text-align: center\">\n<a href=\"#\" title=\"Email logo\" target=\"_blank\" style=\"cursor: default\">\n<img src=\"{{logo}}\" alt=\"\" style=\"width: 100px; padding: 24px; float: left; padding-right: 100%\"/>\n</a><content></content>\n</div>\n<div style=\"width: 100%; background: #fff; border-radius: 5px; padding: 20px; text-align: center; margin-top: 10px\">\n<div style=\"font-size: 14px; color: #444; line-height: 20px\">\n{{supportAddress}}\n</div>\n</div>\n</div>\n</body>\n</html>"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
@@ -860,7 +860,7 @@ p({
   "body": """
     <include template = 'treviso-email-base'>
       <h3 style="margin-top: 25px">Hello, {{name}}</h3>
-      <p >{{fromName}} has sent you money on Treviso</p>
+      <p >{{fromName}} has sent you money on {{appName}}</p>
       <div><span style="font-weight: 600; font-size: 16px;">{{amount}}</span></div>
       <br>
       <div style="padding: 15px; margin-bottom: 8px; border-radius: 4px"></div>
@@ -883,7 +883,7 @@ p({
   "body": """
     <include template = 'treviso-email-base'>
       <h3 style="margin-top: 25px">Olá, {{name}}</h3>
-      <p >{{fromName}} enviou dinheiro para você em Treviso</p>
+      <p >{{fromName}} enviou dinheiro para você em {{appName}}</p>
       <div><span style="font-weight: 600; font-size: 16px;">{{amount}}</span></div>
       <br>
       <div style="padding: 15px; margin-bottom: 8px; border-radius: 4px"></div>
@@ -943,7 +943,7 @@ p({
         <div class= "left  " style= "float:left;  font-weight: 900;">Due date</div>
         <div class= "right" style= "float:right; color: #8e9090;">{{date}}</div>
       </div>
-      {% if note != '' %} 
+      {% if note != '' %}
       <div style= "overflow: hidden; padding-bottom: 8px; padding-top:8px ">
         <div style =  "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 0; margin-bottom: 4;  fontweight: 600;">
           <b>Notes from {{fromName}}</b>
@@ -991,7 +991,7 @@ p({
       {% endif %}
       <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;">
         <div class= "left " style = "float:left; font-weight: 900;">
-          Pagamento para 
+          Pagamento para
         </div>
         <div class= "right  " style= "float:right; color: #8e9090;">
           {{fromName}}
@@ -1009,7 +1009,7 @@ p({
         <div class= "left  " style= "float:left;  font-weight: 900;">Data de vencimento</div>
         <div class= "right" style= "float:right; color: #8e9090;">{{date}}</div>
       </div>
-      {% if note != '' %} 
+      {% if note != '' %}
       <div style= "overflow: hidden; padding-bottom: 8px; padding-top:8px ">
         <div style =  "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 0; margin-bottom: 4;  fontweight: 600;">
           <b>Observação {{fromName}}</b>
@@ -1083,18 +1083,18 @@ p({
   "displayName": "{{appName}}",
   "subject": "Verify your email to activate your {{appName}} account",
   "body": """
-    <include template = 'treviso-email-base_2'>  
-      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">Verify your email address</p> 
-      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Hello {{name}},</p> 
-      <br> 
-      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Welcome to {{appName}}, the self-service online payment platform for businesses. We are happy to have you on board! </p> 
-      <br> 
-      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Please verify your email to activate your account.</p> 
+    <include template = 'treviso-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">Verify your email address</p>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Hello {{name}},</p>
+      <br>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Welcome to {{appName}}, the self-service online payment platform for businesses. We are happy to have you on board! </p>
+      <br>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Please verify your email to activate your account.</p>
       <a href="{{link}}" style="text-decoration: none;">
-        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;"> 
-          <p style = "padding: 14px 0 0; margin: 0;">Verify email</p> 
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Verify email</p>
         </div>
-      </a> 
+      </a>
     </include>
   """
 })
@@ -1107,18 +1107,18 @@ p({
   "displayName": "{{appName}}",
   "subject": "Verifique seu e-mail para ativar sua conta do {{appName}}",
   "body": """
-    <include template = 'treviso-email-base_2'> 
-      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">Verifique o seu endereço de email</p> 
-      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Olá {{name}},</p> 
-      <br> 
-      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Bem vindo ao portal self-service de pagamentos e remessas internacionais da {{appName}}. Nós estamos feliz por ter você a bordo! </p> 
-      <br> 
-      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Por favor, verifique seu e-mail para ativar sua conta.</p> 
+    <include template = 'treviso-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">Verifique o seu endereço de email</p>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Olá {{name}},</p>
+      <br>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Bem vindo ao portal self-service de pagamentos e remessas internacionais da {{appName}}. Nós estamos feliz por ter você a bordo! </p>
+      <br>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Por favor, verifique seu e-mail para ativar sua conta.</p>
       <a href="{{link}}" style="text-decoration: none;">
-        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;"> 
-          <p style = "padding: 14px 0 0; margin: 0;">Verificar email</p> 
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Verificar email</p>
         </div>
-      </a>  
+      </a>
     </include>
   """
 })
@@ -1214,10 +1214,10 @@ p({
   "class": "foam.nanos.notification.email.EmailTemplate",
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-105",
   "name": "verifiedBank",
-  "displayName": "Treviso",
+  "displayName": "{{appName}}",
   "group": "sme",
   "subject": "Your bank account has been verified",
-  "body": "\n\n<include template = 'treviso-email-base'>\n<h3 style=\"margin-top: 25px\">Hello, {{name}}</h3>\n<p >Your bank account ending in {{account}} has been successfully verified</p>\n<p>You can now send money from this account</p>\n<br>\n<a href=\"{{link}}\"><div style=\"width: 100%; padding: 20px 0px; border-radius: 3px; font-weight: 600; background: #6c54ff; color: #fff;cursor: pointer\">\nSee it in Treviso\n</div></a>\n</include>"
+  "body": "\n\n<include template = 'treviso-email-base'>\n<h3 style=\"margin-top: 25px\">Hello, {{name}}</h3>\n<p >Your bank account ending in {{account}} has been successfully verified</p>\n<p>You can now send money from this account</p>\n<br>\n<a href=\"{{link}}\"><div style=\"width: 100%; padding: 20px 0px; border-radius: 3px; font-weight: 600; background: #6c54ff; color: #fff;cursor: pointer\">\nSee it in {{appName}}\n</div></a>\n</include>"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
@@ -1315,7 +1315,7 @@ p({
         <div style="margin-top: 30px; padding: 14px 0; text-align: center; width: 504px; border-radius: 4px; font-weight: 600; background: #604aff; border-color: #4a33f4; color: #fff; cursor: pointer;">Vá para {{appName}}</div>
       </a>
     </include>
-  """ 
+  """
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
@@ -1330,28 +1330,28 @@ p({
   "class": "foam.nanos.notification.email.EmailTemplate",
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-108",
   "name": "transfer-paid",
-  "displayName": "{{senderCompany}} (via Treviso)",
+  "displayName": "{{senderCompany}} (via {{appName}})",
   "group": "sme",
   "subject": "You got paid!",
-  "body": "\n\n<include template = 'treviso-email-base'>\n<h3 style=\"margin-top: 25px\">Hello, {{name}}</h3>\n<p >{{fromName}} has sent you money on Treviso</p>\n<div>\n<span style=\"font-weight: 900; font-size: 50px; color: #775fff;\">{{amount}}</span><span style=\"font-size:20px\">{{denomination}}</span>\n</div>\n<br>\n<a href=\"{{link}}\"><div style=\"width: 100%; padding: 20px 0px; border-radius: 3px; font-weight: 600; background: #6c54ff; color: #fff;cursor: pointer\">\nTrack payment\n</div></a>\n</include>"
+  "body": "\n\n<include template = 'treviso-email-base'>\n<h3 style=\"margin-top: 25px\">Hello, {{name}}</h3>\n<p >{{fromName}} has sent you money on {{appName}}</p>\n<div>\n<span style=\"font-weight: 900; font-size: 50px; color: #775fff;\">{{amount}}</span><span style=\"font-size:20px\">{{denomination}}</span>\n</div>\n<br>\n<a href=\"{{link}}\"><div style=\"width: 100%; padding: 20px 0px; border-radius: 3px; font-weight: 600; background: #6c54ff; color: #fff;cursor: pointer\">\nTrack payment\n</div></a>\n</include>"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-109",
   "name": "external-payable",
-  "displayName": "{{fromName}} (via Treviso)",
+  "displayName": "{{fromName}} (via {{appName}})",
   "group": "sme",
-  "subject": "You've been paid via Treviso",
-  "body": "\n\n<include template = 'treviso-email-base'>\n<h3 style=\"margin-top: 25px\">Hello, {{name}}</h3>\n<p style=\"color: #252c3d; font-size: 15px\">{{fromName}} (<a style=\"text-decoration: none; color: #775fff;\">{{fromEmail}}</a>) sent a payment via Treviso. Payment should arrive within five business days.</p>\n<div>\n<span style=\"font-weight: 600; font-size: 32px; color: #775fff;\">{{amount}}</span>\n</div>\n<br>\n<a href=\"{{link}}\" style=\"text-decoration: none\"><div style=\"width: 100%; padding: 20px 0px; border-radius: 3px; font-weight: 600; background: #6c54ff; color: #fff; cursor: pointer; margin-bottom: 8px\">\nTrack payment\n</div></a>\n</include>"
+  "subject": "You've been paid via {{appName}}",
+  "body": "\n\n<include template = 'treviso-email-base'>\n<h3 style=\"margin-top: 25px\">Hello, {{name}}</h3>\n<p style=\"color: #252c3d; font-size: 15px\">{{fromName}} (<a style=\"text-decoration: none; color: #775fff;\">{{fromEmail}}</a>) sent a payment via {{appName}}. Payment should arrive within five business days.</p>\n<div>\n<span style=\"font-weight: 600; font-size: 32px; color: #775fff;\">{{amount}}</span>\n</div>\n<br>\n<a href=\"{{link}}\" style=\"text-decoration: none\"><div style=\"width: 100%; padding: 20px 0px; border-radius: 3px; font-weight: 600; background: #6c54ff; color: #fff; cursor: pointer; margin-bottom: 8px\">\nTrack payment\n</div></a>\n</include>"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-110",
   "name": "external-receivable",
-  "displayName": "{{fromName}} (via Treviso)",
+  "displayName": "{{fromName}} (via {{appName}})",
   "group": "sme",
-  "subject": "New payment request via Treviso",
-  "body": "\n\n<include template = 'treviso-email-base'>\n<h3 style=\"margin-top: 25px\">Hello, {{name}}</h3>\n<p style=\"color: #252c3d; font-size: 15px\">{{fromName}} (<a style=\"text-decoration: none; color: #775fff;\">{{fromEmail}}</a>) request a payment via Treviso.</p>\n<div>\n<span style=\"font-weight: 600; font-size: 24px; color: #775fff;\">{{amount}}</span>\n</div>\n<br>\n<a href=\"{{link}}\" style=\"text-decoration: none\"><div style=\"width: 100%; padding: 20px 0px; border-radius: 3px; font-weight: 600; background: #6c54ff; color: #fff; cursor: pointer; margin-bottom: 8px\">\nPay now\n</div></a>\n</include>"
+  "subject": "New payment request via {{appName}}",
+  "body": "\n\n<include template = 'treviso-email-base'>\n<h3 style=\"margin-top: 25px\">Hello, {{name}}</h3>\n<p style=\"color: #252c3d; font-size: 15px\">{{fromName}} (<a style=\"text-decoration: none; color: #775fff;\">{{fromEmail}}</a>) request a payment via {{appName}}.</p>\n<div>\n<span style=\"font-weight: 600; font-size: 24px; color: #775fff;\">{{amount}}</span>\n</div>\n<br>\n<a href=\"{{link}}\" style=\"text-decoration: none\"><div style=\"width: 100%; padding: 20px 0px; border-radius: 3px; font-weight: 600; background: #6c54ff; color: #fff; cursor: pointer; margin-bottom: 8px\">\nPay now\n</div></a>\n</include>"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
@@ -1360,7 +1360,7 @@ p({
   "group": "sme",
   "displayName": "{{senderCompany}}",
   "subject": "{{senderCompany}} is inviting you to join {{appName}}",
-  "body": "\n\n<include template = 'treviso-email-base_2'>\n \n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">{{senderCompany}} convidou você para participar do portal da {{appName}}</p>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">Olá {{name}},</p>\n <br>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">Você foi convidado por {{senderCompany}} para participar do portal da {{appName}}. {{appName}} que permitirá a você realizar pagamentos e remessas internacionais para mais de 150 países.</p>\n \n {% if message != '' %}\n \t<p style =  \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 40px; font-size: 12px; font-weight: 600;\">Message from {{senderCompany}}</p>\n \t<div style = \"border: 1px solid lightgrey; color:#8e9090; width:500px; height:100px; padding: 10px 8px;\">\n \t\t<p style=\"margin: 0; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;\">{{message}}</p>\n \t</div> \n {% endif %}\n \n <a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n <p style = \"padding: 14px 0 0; margin: 0;\">Participar</p>\n </div></a>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">Não é você ? Contate-nos através do email <a href=\"mailto:support@treviso.com\" style=\"text-decoration: none;\">{{supportEmail}}</a> ou pelo telefone {{supportPhone}} para falar com a área de Atendimento ao Cliente.</p>\n \n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">{{senderCompany}} is inviting you to join {{appName}}</p>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">Hello {{name}},</p>\n <br>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">You've been invited by {{senderCompany}} to join {{appName}}. {{appName}} is an online payments platform that lets your business pay anyone in the U.S. and Canada.</p>\n \n {% if message != '' %}\n \t<p style =  \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 40px; font-size: 12px; font-weight: 600;\">Message from {{senderCompany}}</p>\n \t<div style = \"border: 1px solid lightgrey; color:#8e9090; width:500px; height:100px; padding: 10px 8px;\">\n \t\t<p style=\"margin: 0; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;\">{{message}}</p>\n \t</div> \n {% endif %}\n \n <a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n <p style = \"padding: 14px 0 0; margin: 0;\">Join Treviso</p>\n </div></a>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">Not you? Contact us at <a href=\"mailto:support@treviso.com\" style=\"text-decoration: none;\">{{supportEmail}}</a></p>\n \n </include>\n "
+  "body": "\n\n<include template = 'treviso-email-base_2'>\n \n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">{{senderCompany}} convidou você para participar do portal da {{appName}}</p>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">Olá {{name}},</p>\n <br>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">Você foi convidado por {{senderCompany}} para participar do portal da {{appName}}. {{appName}} que permitirá a você realizar pagamentos e remessas internacionais para mais de 150 países.</p>\n \n {% if message != '' %}\n \t<p style =  \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 40px; font-size: 12px; font-weight: 600;\">Message from {{senderCompany}}</p>\n \t<div style = \"border: 1px solid lightgrey; color:#8e9090; width:500px; height:100px; padding: 10px 8px;\">\n \t\t<p style=\"margin: 0; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;\">{{message}}</p>\n \t</div> \n {% endif %}\n \n <a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n <p style = \"padding: 14px 0 0; margin: 0;\">Participar</p>\n </div></a>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">Não é você ? Contate-nos através do email <a href=\"mailto:support@treviso.com\" style=\"text-decoration: none;\">{{supportEmail}}</a> ou pelo telefone {{supportPhone}} para falar com a área de Atendimento ao Cliente.</p>\n \n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">{{senderCompany}} is inviting you to join {{appName}}</p>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">Hello {{name}},</p>\n <br>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">You've been invited by {{senderCompany}} to join {{appName}}. {{appName}} is an online payments platform that lets your business pay anyone in the U.S. and Canada.</p>\n \n {% if message != '' %}\n \t<p style =  \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 40px; font-size: 12px; font-weight: 600;\">Message from {{senderCompany}}</p>\n \t<div style = \"border: 1px solid lightgrey; color:#8e9090; width:500px; height:100px; padding: 10px 8px;\">\n \t\t<p style=\"margin: 0; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;\">{{message}}</p>\n \t</div> \n {% endif %}\n \n <a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n <p style = \"padding: 14px 0 0; margin: 0;\">Join {{appName}}</p>\n </div></a>\n <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">Not you? Contact us at <a href=\"mailto:support@treviso.com\" style=\"text-decoration: none;\">{{supportEmail}}</a></p>\n \n </include>\n "
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
@@ -1422,7 +1422,7 @@ p({
           {{date}}
         </div>
       </div>
-      {% if note != '' %} 
+      {% if note != '' %}
       <div style= "overflow: hidden; padding-bottom: 8px; padding-top:8px ">
         <div style =  "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 0; margin-bottom: 4;  fontweight: 600;">
           <b>Notes from {{fromName}}</b>
@@ -1438,7 +1438,7 @@ p({
           <p style = "padding: 14px 0 0; margin: 0;">Track Payment</p>
         </div>
       </a>
-      {% endif %} 
+      {% endif %}
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 20px 0 0 0;"> If you have any questions about this payment, please contact {{fromName}} directly. </p>
       <br>
     </include>
@@ -1504,7 +1504,7 @@ p({
           {{date}}
         </div>
       </div>
-      {% if note != '' %} 
+      {% if note != '' %}
       <div style= "overflow: hidden; padding-bottom: 8px; padding-top:8px ">
         <div style =  "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-top: 0; margin-bottom: 4;  fontweight: 600;">
           <b>Observação {{fromName}}</b>
@@ -1520,7 +1520,7 @@ p({
           <p style = "padding: 14px 0 0; margin: 0;">Acompanhar Pagamento</p>
         </div>
       </a>
-      {% endif %} 
+      {% endif %}
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 20px 0 0 0;"> Se você tem alguma dúvida sobre este pagamento, por favor contate {{fromName}} diretamente.</p>
     </include>
   """
@@ -1538,7 +1538,7 @@ p({
   "class": "foam.nanos.notification.email.EmailTemplate",
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-114",
   "name": "verify-email-link",
-  "displayName": "Treviso",
+  "displayName": "{{appName}}",
   "group": "sme",
   "body": "<!doctype html>\n<html>\n\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"description\" content=\"\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->\n<style type=\"text/css\">\n/* Trevisoâ<84>¢ 2018 */\nbody, div {\n margin: 0;\npadding: 0;\nbackground: white;\n}\n\n#message {\nwidth: 320px;\ntext-align: center;\nposition: absolute;\ntop: 45%;\nleft: 50%;\nz-index: 1;\n-webkit-transform: translate(-50%, -50%);\n-moz-transform: translate(-50%, -50%);\n-o-transform: translate(-50%, -50%);\ntransform: translate(-50%, -50%);\n}\n\n#message img {\nmax-width: 260px;\n}\n\n#message p {\ncolor: black;\nfont-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\nfont-size: 1rem;\nmargin-top: -10px;\n}\n</style>\n</head>\n\n<body>\n<div id=\"message\">\n<img src=\"/images/treviso/treviso_black_logo.svg\" alt=\"Treviso\" style=\"margin-bottom: 30px\">\n\n<p>{{ msg }}</p>\n</div>\n</body>\n\n</html>\n"
 })
@@ -1560,7 +1560,7 @@ p({
         </div>
       </a>
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">If you have any questions, please contact us at <a href="mailto:{{supportEmail}}" style="text-decoration: none;">{{supportEmail}}</a> or by calling {{supportPhone}} to speak to Customer Service.</p>
-      <br> 
+      <br>
     </include>
   """
 })
@@ -1592,8 +1592,8 @@ p({
   "sendTo": "enrollment-team@nanopay.net",
   "group": "sme",
   "subject": "{{title}}",
-  "displayName": "Treviso",
-  "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"> \n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title>Treviso</title>\n<link href=\"https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i\" rel=\"stylesheet\">\n<style type=\"text/css\"> \n\n</style>\n</head>\n<body style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #f2f2f2;\">\n<div style=\"max-width: 75%; margin: auto; padding: 40px\">\n<div style=\"width: 100%; background: #fff; border-radius: 5px; padding: 20px; text-align: center\">\n<a href=\"#\" title=\"Email logo\" target=\"_blank\" style=\"cursor: default\">\n<img src=\"https://image.ibb.co/dzVx7q/wordmark.png\" alt=\"\" style=\"width: 180px; margin-top: 20px; margin: auto\" />\n</a>\n\n<p><b>{{subTitle1}}</b></p>\n\n<ul><li>User: Id = {{userId}} - Email = {{userEmail}} - Company = {{userCo}}</li></ul>\n<p><b>{{subTitle2}}</b></p>\n<ul><li>Bank Account: Currency/Denomination = {{accDen}} - Bank Account Name = {{accName}} - Bank Account id = {{accId}}</li></ul>\n\n\n</div>\n</div>\n</body>\n</html> "
+  "displayName": "{{appName}}",
+  "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"> \n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title>{{appName}}</title>\n<link href=\"https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i\" rel=\"stylesheet\">\n<style type=\"text/css\"> \n\n</style>\n</head>\n<body style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #f2f2f2;\">\n<div style=\"max-width: 75%; margin: auto; padding: 40px\">\n<div style=\"width: 100%; background: #fff; border-radius: 5px; padding: 20px; text-align: center\">\n<a href=\"#\" title=\"Email logo\" target=\"_blank\" style=\"cursor: default\">\n<img src=\"https://image.ibb.co/dzVx7q/wordmark.png\" alt=\"\" style=\"width: 180px; margin-top: 20px; margin: auto\" />\n</a>\n\n<p><b>{{subTitle1}}</b></p>\n\n<ul><li>User: Id = {{userId}} - Email = {{userEmail}} - Company = {{userCo}}</li></ul>\n<p><b>{{subTitle2}}</b></p>\n<ul><li>Bank Account: Currency/Denomination = {{accDen}} - Bank Account Name = {{accName}} - Bank Account id = {{accId}}</li></ul>\n\n\n</div>\n</div>\n</body>\n</html> "
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
@@ -1641,10 +1641,12 @@ p({
           <div class= "left  " style= "float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;"><b>Payment from</b></div>
           <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;">{{fromName}}</div>
         </div>
+        {% if account != '' %}
         <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;">
           <div class= "left  " style= "float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; "><b>Invoice No.</b></div>
           <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;">#{{account}}</div>
         </div>
+        {% endif %}
         <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top:8px  ">
           <div class= "left  " style= "float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; "><b>Amount paid</b></div>
           <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;">{{amount}}{{currency}}</div>
@@ -1660,7 +1662,7 @@ p({
           <p style = "padding: 14px 0 0; margin: 0;">View invoice</p>
         </div>
       </a>
-      {% endif %} 
+      {% endif %}
       <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 20px 0 0 0;">If you have any questions about this payment, please contact {{fromName}} directly.</p>
     </include>
   """
@@ -1695,10 +1697,12 @@ p({
           <div class= "left  " style= "float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;"><b>Pagamento de</b></div>
           <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;">{{fromName}}</div>
         </div>
+        {% if account != '' %}
         <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;">
           <div class= "left  " style= "float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; "><b>Fatura número</b></div>
           <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;">#{{account}}</div>
         </div>
+        {% endif %}
         <div style= "overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top:8px  ">
           <div class= "left  " style= "float:left; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; "><b>Valor pago</b></div>
           <div class= "right  " style= "float:right; color: #8e9090; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;">{{amount}}{{currency}}</div>
@@ -1714,7 +1718,7 @@ p({
           <p style = "padding: 14px 0 0; margin: 0;">Visualizar fatura</p>
         </div>
       </a>
-      {% endif %} 
+      {% endif %}
       <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 20px 0 0 0;">Se você tem alguma questão sobre este pagamento, por favor contate {{fromName}} diretamente.</p>
     </include>
   """
@@ -1787,7 +1791,7 @@ p({
   "name": "pay-from-bank-account-reject",
   "group": "sme",
   "subject": "Declined payment to {{name}}",
-  "displayName": "Treviso",
+  "displayName": "{{appName}}",
   "body": "\n\n<include template = 'treviso-email-base_2'>\n<p style = \"margin-top: -46px;float:right; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:12px; color:#8e9090;\">Transaction ID: {{reference}}</p>\n<p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 45px 0;\">Payment to {{name}} was declined.</p>\n<p style =\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\"> Hello {{toName}},</p>\n<br>\n<p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin-top: 0; margin-bottom: 40px;\">Your payment to {{name}} for invoice #{{invoiceNumber}} has been declined by {{name}}. Please contact {{name}} directly if you have any questions. </p>\n<a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n<p style = \"padding: 14px 0 0; margin: 0;\">See invoice details</p>\n</div></a>\n<br>\n</include>"
 })
 p({
@@ -1803,7 +1807,7 @@ p({
   "class": "foam.nanos.notification.email.EmailTemplate",
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-125",
   "name": "join-business-splash-page",
-  "displayName": "Treviso",
+  "displayName": "{{appName}}",
   "group": "sme",
   "body": "<!doctype html>\n<html>\n\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"description\" content=\"\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->\n<style type=\"text/css\">\n/* Trevisoâ<84>¢ 2018 */\nbody, div {\nmargin: 0;\npadding: 0;\nbackground: white;\n}\n\n#message {\nwidth: 320px;\ntext-align: center;\nposition: absolute;\ntop: 45%;\nleft: 50%;\nz-index: 1;\n-webkit-transform: translate(-50%, -50%);\n-moz-transform: translate(-50%, -50%);\n-o-transform: translate(-50%, -50%);\ntransform: translate(-50%, -50%);\n}\n\n#message img {\nmax-width: 260px;\nmargin-bottom: 20px;\n}\n\n#message img {\nmax-width: 260px;\nmargin-bottom: 20px;\n}\n\n#message p {\ncolor: black;\nfont-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\nfont-size: 1rem;\nline-height: 1.5;\n}\n</style>\n</head>\n\n<body>\n<div id=\"message\">\n<img src=\"/images/treviso-wordmark.svg\" alt=\"Treviso\">\n\n<p>{{ msg }}</p>\n</div>\n</body>\n\n</html>"
 })
@@ -1814,13 +1818,13 @@ p({
   "group": "sme",
   "locale" "en",
   "subject": "Invoice #{{account}} has been marked as complete",
-  "displayName": "Treviso",
+  "displayName": "{{appName}}",
   "body": """
     <include template = 'treviso-email-base_2'>
       <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">{{fromName}} marked {{invoiceType}} Invoice #{{account}} as complete.</p>
       <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">Hello {{name}},</p>
       <br>
-      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">{{fromName}} has marked Invoice #{{account}} for {{name}} as complete because it was paid outside of Treviso.</p>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">{{fromName}} has marked Invoice #{{account}} for {{name}} as complete because it was paid outside of {{appName}}.</p>
       <br>
       <br>
       {% if note|length %}
@@ -1828,7 +1832,7 @@ p({
       <div style = "border: 1px solid lightgrey; color:#8e9090; width:500px; height:100px; padding: 10px 8px;">
         <p style="margin: 0; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;">{{note}}</p>
       </div>
-      {% endif %} 
+      {% endif %}
       <a href="{{link}}" style="text-decoration: none;">
         <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
           <p style = "padding: 14px 0 0; margin: 0;">View invoice</p>
@@ -1846,13 +1850,13 @@ p({
   "group": "sme",
   "locale": "pt",
   "subject": "A fatura nº {{account}} foi marcada como completa",
-  "displayName": "Treviso",
+  "displayName": "{{appName}}",
   "body": """
     <include template = 'treviso-email-base_2'>
       <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">{{fromName}} marcou a {{invoiceType}} fatura # {{account}} como concluída.</p>
       <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">Olá {{name}},</p>
       <br>
-      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">{{fromName}} marcou a fatura nº {{account}} de {{name}} como concluída porque foi paga fora de Treviso.</p>
+      <p style = "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">{{fromName}} marcou a fatura nº {{account}} de {{name}} como concluída porque foi paga fora de {{appName}}.</p>
       <br>
       <br>
       {% if note|length %}
@@ -1860,7 +1864,7 @@ p({
       <div style = "border: 1px solid lightgrey; color:#8e9090; width:500px; height:100px; padding: 10px 8px;">
         <p style="margin: 0; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;">{{note}}</p>
       </div>
-      {% endif %} 
+      {% endif %}
       <a href="{{link}}" style="text-decoration: none;">
         <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
           <p style = "padding: 14px 0 0; margin: 0;">Ver fatura</p>
@@ -1878,8 +1882,8 @@ p({
   "sendTo": "enrollment-team@nanopay.net",
   "group": "sme",
   "subject": "{{title}}",
-  "displayName": "Treviso",
-  "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"> \n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title>Treviso</title>\n<link href=\"https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i\" rel=\"stylesheet\">\n<style type=\"text/css\"> \n\n</style>\n</head>\n<body style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #f2f2f2;\">\n<div style=\"max-width: 75%; margin: auto; padding: 40px\">\n<div style=\"width: 100%; background: #fff; border-radius: 5px; padding: 20px; text-align: center\">\n<a href=\"#\" title=\"Email logo\" target=\"_blank\" style=\"cursor: default\">\n<img src=\"https://image.ibb.co/dzVx7q/wordmark.png\" alt=\"\" style=\"width: 180px; margin-top: 20px; margin: auto\" />\n</a>\n\n<p><b>{{subTitle1}}</b></p>\n\n<ul><li>User: Id = {{userId}} - Email = {{userEmail}} - Company = {{userCo}}</li></ul>\n\n\n</div>\n</div>\n</body>\n</html> "
+  "displayName": "{{appName}}",
+  "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"> \n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title>{{appName}}</title>\n<link href=\"https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i\" rel=\"stylesheet\">\n<style type=\"text/css\"> \n\n</style>\n</head>\n<body style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #f2f2f2;\">\n<div style=\"max-width: 75%; margin: auto; padding: 40px\">\n<div style=\"width: 100%; background: #fff; border-radius: 5px; padding: 20px; text-align: center\">\n<a href=\"#\" title=\"Email logo\" target=\"_blank\" style=\"cursor: default\">\n<img src=\"https://image.ibb.co/dzVx7q/wordmark.png\" alt=\"\" style=\"width: 180px; margin-top: 20px; margin: auto\" />\n</a>\n\n<p><b>{{subTitle1}}</b></p>\n\n<ul><li>User: Id = {{userId}} - Email = {{userEmail}} - Company = {{userCo}}</li></ul>\n\n\n</div>\n</div>\n</body>\n</html> "
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
@@ -1888,13 +1892,13 @@ p({
   "group": "sme",
   "locale" "en",
   "displayName": "{{appName}}",
-  "subject": "{{business}} can now send payments to {{toCountry}} using Treviso",
+  "subject": "{{business}} can now send payments to {{toCountry}} using {{appName}}",
   "body": """
     <include template = 'treviso-email-base_2'>
-      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">{{business}} is all set to send payments to {{toCountry}} using Treviso.</p>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">{{business}} is all set to send payments to {{toCountry}} using {{appName}}.</p>
       <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Hello {{name}}, </p>
       <br>
-      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Great news! {{business}} is all set to send payments to {{toCountry}} using Treviso. Click the link below to start sending.</p>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Great news! {{business}} is all set to send payments to {{toCountry}} using {{appName}}. Click the link below to start sending.</p>
       <br>
       <a href="{{link}}" style="text-decoration: none;">
         <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
@@ -1912,13 +1916,13 @@ p({
   "group": "sme",
   "locale": "pt",
   "displayName": "{{appName}}",
-  "subject": "{{business}} agora pode enviar pagamentos para {{toCountry}} usando Treviso",
+  "subject": "{{business}} agora pode enviar pagamentos para {{toCountry}} usando {{appName}}",
   "body": """
     <include template = 'treviso-email-base_2'>
-      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">{{business}} está pronto para enviar pagamentos para {{toCountry}} usando Treviso.</p>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">{{business}} está pronto para enviar pagamentos para {{toCountry}} usando {{appName}}.</p>
       <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Olá {{name}}, </p>
       <br>
-      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Boas notícias! {{business}} está pronto para enviar pagamentos para {{toCountry}} usando Treviso. Clique no link abaixo para começar a enviar.</p>
+      <p style= "font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Boas notícias! {{business}} está pronto para enviar pagamentos para {{toCountry}} usando {{appName}}. Clique no link abaixo para começar a enviar.</p>
       <br>
       <a href="{{link}}" style="text-decoration: none;">
         <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
@@ -1945,9 +1949,9 @@ p({
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-130",
   "name": "user-signup",
   "group": "payment-ops",
-  "displayName": "Treviso",
+  "displayName": "{{appName}}",
   "subject": "A new user has been added to the platform",
-  "body": "\n\n<include template = 'treviso-email-base'>\n<h3 style=\"margin-top: 25px\"> {{businessName}} has joined treviso</h3>\n<div>\n<span style=\"font-size:20px\">userId: </span><span style=\"ffont-weight: 900; font-size: 30px; color: #775fff;\">{{userId}}</span>\n<br>\n<span style=\"font-size:20px\">userEmail: </span><span style=\"font-weight: 900; font-size: 30px; color: #775fff;\">{{userEmail}}</span>\n<br>\n<span style=\"font-size:20px\">businessId: </span><span style=\"font-weight: 900; font-size: 30px; color: #775fff;\">{{businessId}}</span>\n<br>\n<span style=\"font-size:20px\">businessName: </span><span style=\"font-weight: 900; font-size: 30px; color: #775fff;\">{{businessName}}</span>\n<br>\n<span style=\"font-size:20px\">businessEmail: </span><span style=\"font-weight: 900; font-size: 30px; color: #775fff;\">{{businessEmail}}</span>\n</div>\n\n</include>"
+  "body": "\n\n<include template = 'treviso-email-base'>\n<h3 style=\"margin-top: 25px\"> {{businessName}} has joined {{appName}}</h3>\n<div>\n<span style=\"font-size:20px\">userId: </span><span style=\"ffont-weight: 900; font-size: 30px; color: #775fff;\">{{userId}}</span>\n<br>\n<span style=\"font-size:20px\">userEmail: </span><span style=\"font-weight: 900; font-size: 30px; color: #775fff;\">{{userEmail}}</span>\n<br>\n<span style=\"font-size:20px\">businessId: </span><span style=\"font-weight: 900; font-size: 30px; color: #775fff;\">{{businessId}}</span>\n<br>\n<span style=\"font-size:20px\">businessName: </span><span style=\"font-weight: 900; font-size: 30px; color: #775fff;\">{{businessName}}</span>\n<br>\n<span style=\"font-size:20px\">businessEmail: </span><span style=\"font-weight: 900; font-size: 30px; color: #775fff;\">{{businessEmail}}</span>\n</div>\n\n</include>"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
@@ -2006,8 +2010,8 @@ p({
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-132",
   "name": "signingOfficerReminder",
   "group": "sme",
-  "subject": "Invitation from your employee to join Treviso",
-  "body": "<include template = 'treviso-email-base_2'> <br> \n <h2>An invitation is waiting for you</h2>\n <br>\n <p>\n Hello, <br><br>\n You have been invited to join {{companyname}} in Treviso. <br>\n We noticed that {{companyname}} has signed up to Treviso but hasn’t completed the business profile.\n <br><br> \n You’ll need to complete the business profile before sending or receiving payments, so we recommend getting started as soon as you can. \n <br><br>\n Click on the outstanding onboarding items on Dashboard to get started. \n <br><br>\n If you need an assistance, please contact us at <strong style=\"color:#604aff\">{{supportEmail}}</strong></p> <br><br>\n\n <a href=\"{{link}}\"><button  style=\"width: 100%;margin: auto;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background: #604aff; color: #ffffff; text-align:center;\">Sign in</button></a>\n </include>"
+  "subject": "Invitation from your employee to join {{appName}}",
+  "body": "<include template = 'treviso-email-base_2'> <br> \n <h2>An invitation is waiting for you</h2>\n <br>\n <p>\n Hello, <br><br>\n You have been invited to join {{companyname}} in {{appName}}. <br>\n We noticed that {{companyname}} has signed up to {{appName}} but hasn’t completed the business profile.\n <br><br> \n You’ll need to complete the business profile before sending or receiving payments, so we recommend getting started as soon as you can. \n <br><br>\n Click on the outstanding onboarding items on Dashboard to get started. \n <br><br>\n If you need an assistance, please contact us at <strong style=\"color:#604aff\">{{supportEmail}}</strong></p> <br><br>\n\n <a href=\"{{link}}\"><button  style=\"width: 100%;margin: auto;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background: #604aff; color: #ffffff; text-align:center;\">Sign in</button></a>\n </include>"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
