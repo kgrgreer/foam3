@@ -215,6 +215,10 @@ p({
             "class":"net.nanopay.tx.model.TransactionStatus",
             "ordinal":0
           }
+        },
+        {
+          "class":"net.nanopay.ticket.RefundTicketInstanceOfPredicate",
+          "instanceOf":"net.nanopay.tx.cico.COTransaction",
         }
       ]
     },

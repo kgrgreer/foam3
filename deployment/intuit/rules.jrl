@@ -72,9 +72,8 @@ p({
         }
       },
       {
-        "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
-        "txnProperty":"instance",
-        "txnValue":"net.nanopay.tx.cico.COTransaction"
+        "class":"net.nanopay.ticket.RefundTicketInstanceOfPredicate",
+        "instanceOf":"net.nanopay.tx.cico.COTransaction"
       }
     ]
   },
