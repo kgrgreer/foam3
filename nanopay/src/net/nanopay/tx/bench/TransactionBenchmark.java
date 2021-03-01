@@ -27,9 +27,7 @@ import foam.dao.DAO;
 import foam.mlang.sink.Count;
 import foam.nanos.boot.NSpec;
 import foam.nanos.app.AppConfig;
-import foam.nanos.auth.User;
-import foam.nanos.auth.Group;
-import foam.nanos.auth.GroupPermissionJunction;
+import foam.nanos.auth.*;
 import foam.nanos.bench.Benchmark;
 import foam.nanos.auth.LifecycleState;
 import foam.nanos.logger.PrefixLogger;
@@ -89,6 +87,8 @@ public class TransactionBenchmark
   protected Long STARTING_BALANCE = 100000L;
   protected String ADMIN_BANK_ACCOUNT_NUMBER = "2131412443534534";
   protected Boolean setupOnly_ = false;
+  protected String spid_ = "transactionsrus";
+
 
   public void setPurgePerRun(Boolean purge) {
     // nop - legacy script support
@@ -106,7 +106,11 @@ public class TransactionBenchmark
   public void teardown(X x, java.util.Map stats) {
     DAO dao = (DAO) x.get("localTransactionDAO");
     Count txns = (Count) dao.select(new Count());
-    stats.put("Transactions (M)", String.format(".02%", (txns.getValue() / 1000000.0)));
+    if ( txns.getValue() > 0 ) {
+      stats.put("Transactions (M)", String.format(".02%", (txns.getValue() / 1000000.0)));
+    } else {
+      stats.put("Transactions (M)", "0");
+    }
 
     // dump all dao sizes - looking for memory leak
     StringBuilder sb = new StringBuilder();
@@ -148,6 +152,7 @@ public class TransactionBenchmark
     transactionDAO_ = (DAO) x.get("localTransactionDAO");
     plannerDAO_ = (DAO) x.get("localTransactionPlannerDAO");
     userDAO_ = (DAO) x.get("localUserDAO");
+    groupDAO_ = (DAO) x.get("groupDAO");
     sessionDAO_ = (DAO) x.get("localSessionDAO");
 
     groupPermissionJunctionDAO_ = (DAO) x.get("groupPermissionJunctionDAO");
@@ -155,11 +160,55 @@ public class TransactionBenchmark
     groupPermissionJunctionDAO_.put(new GroupPermissionJunction.Builder(x).setSourceId("api-base").setTargetId("service.balanceDAO").build());
     groupPermissionJunctionDAO_.put(new GroupPermissionJunction.Builder(x).setSourceId("api-base").setTargetId("balanceDAO").build());
 
-    String spid = "nanopay";
+    ServiceProvider sp = new ServiceProvider();
+    sp.setId(spid_);
+    sp.setDescription(spid_);
+    sp = (ServiceProvider) ((DAO) x.get("serviceProviderDAO")).put_(x, sp);
+
+    Group group = new Group();
+    group.setId(spid_+"-payment-ops");
+    group = (Group) groupDAO_.put_(x, group);
+    group = new Group();
+    group.setId(spid_+"-fraud-ops");
+    group = (Group) groupDAO_.put_(x, group);
+
     User admin = (User) userDAO_.find(EQ(User.EMAIL, "admin@nanopay.net"));
     if ( admin == null ) {
       throw new RuntimeException("Failed to find admin user");
     }
+    admin = (User) admin.fclone();
+    admin.setId(14L);
+    admin.setSpid(spid_);
+    admin.setFirstName(spid_);
+    admin.setLastName(spid_);
+    admin.setUserName(spid_);
+    admin.setEmail(spid_+"@nanopay.net");
+    admin = (User) userDAO_.put_(x, admin);
+
+    CABankAccount ra = new CABankAccount();
+    ra.setId("FE9A4359-CF42-42B3-B47E-6C8D923CF4AF");
+    ra.setInstitutionNumber("943");
+    ra.setBranchId("59423");
+    ra.setAccountNumber("47689234");
+    Address raa = new Address();
+    raa.setCountryId("CA");
+    raa.setPostalCode("X1X 1X1");
+    raa.setRegionId("CA-ON");
+    raa.setCity("Toronto");
+    raa.setStreetName("1");
+    raa.setStreetNumber("1");
+    ra.setAddress(raa);
+    ra.setOwner(admin.getId());
+    ra.setLifecycleState(LifecycleState.ACTIVE);
+    ra.setStatus(BankAccountStatus.VERIFIED);
+    ra = (CABankAccount) accountDAO_.put_(x, ra);
+
+    TrustAccount ta = new TrustAccount();
+    ta.setId("1C3AC214-AA14-4167-868D-B5FA9044CA22");
+    ta.setReserveAccount(ra.getId());
+    ta.setOwner(admin.getId());
+    ta.setDenomination("CAD");
+    ta = (TrustAccount) accountDAO_.put_(x, ta);
 
     DAO dao = accountDAO_.where(EQ(BankAccount.ACCOUNT_NUMBER,ADMIN_BANK_ACCOUNT_NUMBER)).limit(1);
     List banks = ((ArraySink) dao.select(new ArraySink())).getArray();
@@ -176,6 +225,10 @@ public class TransactionBenchmark
       bank.setLifecycleState(LifecycleState.ACTIVE);
       bank = ((BankAccount) accountDAO_.put_(x, bank));
     }
+    if ( bank.getStatus() != BankAccountStatus.VERIFIED ) {
+      bank.setStatus(BankAccountStatus.VERIFIED);
+      bank = ((BankAccount) accountDAO_.put_(x, bank));
+    }
 
     for ( long i = 1; i <= MAX_USERS; i++ ) {
       User user;
@@ -189,19 +242,23 @@ public class TransactionBenchmark
         user.setLastName("Tester");
         user.setEmail(s+"@nanopay.net");
         user.setEmailVerified(true);
-        user.setSpid(spid);
+        user.setSpid(spid_);
         // NOTE: use 'business' group so default digital account is created below.
         user.setGroup("api-base");
         user = (User) userDAO_.put(user);
 
         DigitalAccount da = new DigitalAccount();
         da.setId(String.valueOf(user.getId()));
-        Account a = (Account) accountDAO_.find(da);
+        DigitalAccount a = (DigitalAccount) accountDAO_.find(da);
         if ( a == null ) {
           da.setDenomination("CAD");
           da.setOwner(user.getId());
           da.setIsDefault(true);
+          da.setTrustAccount(ta.getId());
           accountDAO_.put(da);
+        } else if ( foam.util.SafetyUtil.isEmpty(a.getTrustAccount()) ) {
+          a.setTrustAccount(ta.getId());
+          a = (DigitalAccount) accountDAO_.put(a);
         }
       }
       Session session = (Session) sessionDAO_.find(user.getId());
@@ -261,6 +318,7 @@ public class TransactionBenchmark
       Transaction txn = new Transaction();
       txn.setSourceAccount(bank.getId());
       txn.setDestinationAccount(account.getId());
+      txn.setSpid(spid_);
       txn.setAmount(STARTING_BALANCE);
       transactionDAO_.put(txn);
       Long balance = account.findBalance(x);
@@ -297,6 +355,7 @@ public class TransactionBenchmark
     if ( payeeId != payerId ) {
       Transaction transaction = new Transaction();
       transaction.setPayeeId(payeeId);
+      transaction.setSpid(spid_);
       transaction.setPayerId(payerId);
       transaction.setAmount(amount);
       Account payerAccount = (DigitalAccount) accounts_.get(fi);
