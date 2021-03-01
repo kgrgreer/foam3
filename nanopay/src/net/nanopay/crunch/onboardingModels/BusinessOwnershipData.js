@@ -613,14 +613,6 @@ foam.CLASS({
 
   messages: [
     {
-      name: 'OTHER_SELECTION',
-      message: 'If owner is not a Signing Officer, please select the following...'
-    },
-    {
-      name: 'SO_SELECTION',
-      message: 'Please select one of the following Signing Officers...'
-    },
-    {
       name: 'CHOICEDATA_POSTSET_ERR',
       message: 'Unexpected error @ choiceData_ postset net.nanopay.crunch.onboardingModels.SectionViewOwner'
     }

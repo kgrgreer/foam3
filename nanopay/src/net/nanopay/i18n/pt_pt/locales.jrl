@@ -1159,8 +1159,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessTypeAndSector.BUSINESS_SECTOR_ID.label",target:"Setor de negócios"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessTypeAndSector.SECTION_BUSINESS_DETAILS_SECTION.title",target:"Tipo de negócio e setor"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SelectionViewOwner.OTHER_SELECTION",target:"Se o proprietário não for um oficial de assinatura, selecione o seguinte ..."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SelectionViewOwner.SO_SELECTION",target:"Selecione um dos seguintes agentes de assinatura ..."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SelectionViewOwner.CHOICEDATA_POSTSET_ERR",target:"erro inesperado @ choiceData_ postset net.nanopay.crunch.onboardingModels.SectionViewOwner"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SelectionViewOwner.CHOICE_VIEW.label",target:"choiceView pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SelectionViewOwner.DAO2.documentation",target:"dao que é usado em choiceView, não deve mudar."})
@@ -2965,7 +2963,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.StructuredAdd
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.STEP",target:"Degrau"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.OF_MSG",target:"do"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.OTHER_MSG",target:"Adicionar outro cotista})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Add another owner",target:"Adicionar outro cotista"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.PLEASE_SELECT_ONE",target:"Selecione um dos seguintes ..."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.AddBankAccountAction.ACTION_LABEL",target:"Adicionar Conta"})

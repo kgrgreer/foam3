@@ -612,7 +612,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"26d32e86-db11-11ea-87d0-0242ac130003",
   "name":"Articles Of Incorporation",
-  "description":"Provide the articles of incorporation for your business." // Copy of the Articles of Association and the Last Amendment or Consolidation and, for corporations, a copy of the Bylaws and the Minutes.",
+  "description":"Provide the articles of incorporation for your business.",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
