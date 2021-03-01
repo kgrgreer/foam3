@@ -27,7 +27,7 @@ p({
   id: "bppPlannerCapability",
   enabled: true,
   permissionsGranted: [
-    "rule.read.119fa381-d2a2-4369-b242-1dc8e2163bb9",
+    "rule.read.119fa381-d2a2-4369-b242-1dc8e2163bb9-bpp",
     "rule.read.2fdd7d35-6704-47dc-9f0e-9419e0aa74ed",
     "rule.read.77480e3b-fc7e-400c-bee6-dda5a22b982a",
   ]
@@ -40,8 +40,8 @@ p({
   name: "Enable BPP Fees",
   enabled: true,
   permissionsGranted: [
-    "rule.read.454df571-f639-4506-8d59-98b4f39934e4",
-    "rule.read.9e7661a6-610b-47ad-b521-96b9c760fb16"
+    "rule.read.454df571-f639-4506-8d59-98b4f39934e4-bpp",
+    "rule.read.9e7661a6-610b-47ad-b521-96b9c760fb16-bpp"
   ]
 })
 

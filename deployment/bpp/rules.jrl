@@ -1,10 +1,47 @@
 p({
+  "class":"net.nanopay.tx.planner.IntermediaryDestinationAccountSplitPlanner",
+  "id":"119fa381-d2a2-4369-b242-1dc8e2163bb9-bpp",
+  "intermediaryAccountId":{
+    "USD":"35931861-7dd4-4ddb-b3a0-5d091cc82fcf-bpp"
+  },
+  "priority":90,
+  "ruleGroup":"BePayPlanner",
+  "enabled":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"parent",
+        "propValue":null
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.BRBankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"sourceUnit",
+        "propValue":"BRL"
+      }
+    ]
+  },
+  "lifecycleState":1
+})
+
+p({
   class: "net.nanopay.tx.fee.TransactionFeeRule",
-  id: "454df571-f639-4506-8d59-98b4f39934e4",
+  id: "454df571-f639-4506-8d59-98b4f39934e4-bpp",
   name: "BPP Fee",
   documentation: "BPP transaction fee",
   feeName: "BPP Fee",
-  feeAccount: "512360f6-ec67-4339-9fc4-9a677bc2bff7",
+  feeAccount: "512360f6-ec67-4339-9fc4-9a677bc2bff7-bpp",
   feeDenomination: "BRL",
   feeClass: "net.nanopay.tx.FeeLineItem",
   rateExpiry: {
@@ -48,11 +85,11 @@ p({
 
 p({
   class: "net.nanopay.tx.fee.TransactionFeeRule",
-  id: "9e7661a6-610b-47ad-b521-96b9c760fb16",
+  id: "9e7661a6-610b-47ad-b521-96b9c760fb16-bpp",
   name: "IOF",
   documentation: "IOF charge for BPP transactions.",
   feeName: "IOF",
-  feeAccount: "512360f6-ec67-4339-9fc4-9a677bc2bff7",
+  feeAccount: "512360f6-ec67-4339-9fc4-9a677bc2bff7-bpp",
   ruleGroup: "TransactionFeeRule",
   feeDenomination: "BRL",
   feeClass: "net.nanopay.tx.FeeLineItem",

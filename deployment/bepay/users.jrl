@@ -49,11 +49,11 @@ p({
     spid:"bepay"
 })
 
-// BePay Fraud Ops
+// BePay FraudOps
 p({
   "class":"foam.nanos.auth.User",
   "id":2026,
-  "firstName":"Fraud-Ops",
+  "firstName":"FraudOps",
   "lastName":"BePay",
   "email":"fraudops@bepay.com",
   "emailVerified":true,
