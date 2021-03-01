@@ -307,11 +307,6 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"crunch-onboard-compliance-so-0",
-  "enabled":false
-})
-p({
-  "class":"foam.nanos.ruler.Rule",
   "id":"crunch-onboard-compliance-so-1",
   "enabled":false
 })
