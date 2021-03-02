@@ -3209,6 +3209,7 @@ p({class:"foam.i18n.Locale",locale:"pt","source":"1d72f804-4019-11eb-b378-0242ac
 
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.ExpectedBoardingDate.MIN_DATE_ERROR",target:"A data de embarque prevista deve ser uma data futura"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.ExpectedBoardingDate.INVALID_DATE_ERROR",target:"Data esperada de embarque válida exigida"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.ExpectedBoardingDate.SECTION_DATE_OF_BOARDING_SECTION.title",target:"Data prevista de embarque"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.ExpectedBoardingDate.BOARDING_DATE.label",target:"Data prevista de embarque"})
 
