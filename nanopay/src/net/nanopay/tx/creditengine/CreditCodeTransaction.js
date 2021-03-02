@@ -64,6 +64,12 @@ foam.CLASS({
       if ( getSourceAccount() == null ) {
         throw new ValidationException("CreditCode account not found");
       }
+      if ( ! (findSourceAccount(x) instanceof AbstractCreditCodeAccount) ) {
+        throw new ValidationException("This Source account type should not be set");
+      }
+      if ( ! (findDestinationAccount(x) instanceof AbstractCreditCodeAccount) ) {
+        throw new ValidationException("This Destination account type should not be set");
+      }
       /*if ( destinationAccount() != null ) {
         throw new ValidationException("destination account should not be set");
       }*/

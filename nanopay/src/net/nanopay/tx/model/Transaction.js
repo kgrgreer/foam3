@@ -1096,6 +1096,9 @@ foam.CLASS({
       if ( sourceAccount == null ) {
         throw new ValidationException("Source account not found");
       }
+      if ( sourceAccount instanceof AbstractCreditCodeAccount ) {
+        throw new ValidationException("Improper source account");
+      }
       User sourceOwner = (User) userDAO.find(sourceAccount.getOwner());
       if ( sourceOwner == null ) {
         throw new ValidationException("Payer not found");
@@ -1109,6 +1112,9 @@ foam.CLASS({
       Account destinationAccount = findDestinationAccount(x);
       if ( destinationAccount == null ) {
         throw new ValidationException("Destination account not found");
+      }
+      if ( destinationAccount instanceof AbstractCreditCodeAccount ) {
+        throw new ValidationException("Improper destination account");
       }
       User destinationOwner = (User) userDAO.find(destinationAccount.getOwner());
       if ( destinationOwner == null ) {
