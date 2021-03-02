@@ -43,10 +43,6 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'used',
-      class: 'Boolean',
-    },
-    {
       name: 'invoiced',
       class: 'Boolean',
       documentation: 'this indicates whether the credit is applied on this transaction, or if we credit during monthly billing'
@@ -61,7 +57,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'creditAccount',
-      documentation: 'credit value',
+      documentation: 'Credit account that this code pulls funds from',
     },
     {
       class: 'String',
@@ -131,19 +127,12 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        if ( getUsed == true ) {
-          throw new RuntimeException("This Courtesy Credit has already been applied!");
-        }
-
-        setUsed(true);
-        // do we want to add a link to transaction that consumed this? maybe not rn.
-        try {
-          ((DAO) x.get("localCreditCodeDAO")).put(this);
-        }
-        catch( Exception E ) {
-          Logger logger = (Logger) x.get("logger");
-          logger.error("Credit Code "+getName()+" with id "+getId()+" failed to consume on transaction "+t.getId()+ " with the following exception: "+E);
-        }
+        CreditCodeTransaction counter = new CreditCodeTransaction();
+        counter.setAmount(-1);
+        counter.setName("Counter Incrementation for " + this.getId());
+        counter.setSourceAccount(this.getId());
+        counter.setDestinationAccount(this.getId());
+        ((DAO) x.get("localTransactionDAO")).put(counter);
       `,
       documentation: 'When the courtesy credit is applied on final submission of transaction mark it as used'
     },

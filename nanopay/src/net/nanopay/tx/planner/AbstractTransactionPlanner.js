@@ -357,7 +357,7 @@ foam.CLASS({
         txn.setLineItems(txnclone.getLineItems());
         txn = createFeeTransfers(x, txn, quote);
         // hit creditEngine
-        if ( ! SafetyUtil.isEmpty(txn.getCreditCode())) {
+        if ( txn.getCreditCodes() != null && txn.getCreditCodes().length > 0 ) {
           DAO creditDAO = (DAO) x.get("localCreditCodeDAO");
           txn = (Transaction) creditDAO.put(txn);
         }

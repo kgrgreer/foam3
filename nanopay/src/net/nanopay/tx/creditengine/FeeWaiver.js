@@ -133,14 +133,13 @@ foam.CLASS({
       ],
       javaCode: `
         if ( t.getStatus() == TransactionStatus.CANCELLED ) {
-          setUsage(getUsage()-1);
-          try {
-            ((DAO) x.get("localCreditCodeDAO")).put(this);
-          }
-          catch( Exception E ) {
-            Logger logger = (Logger) x.get("logger");
-            logger.error("Credit Code "+getName()+" with id "+getId()+" failed to decrement usage on Cancelled of Transaction "+t.getId()+ " with the following exception: "+E);
-          }
+          CreditCodeTransaction counter = new CreditCodeTransaction();
+          counter.setAmount(-1);
+          counter.setName("Counter Incrementation for " + this.getId());
+          counter.setSourceAccount(this.getId());
+          counter.setDestinationAccount(this.getId());
+          ((DAO) x.get("localTransactionDAO")).put(counter);
+
         }
       `,
       documentation: 'On a successful update to the transaction, '

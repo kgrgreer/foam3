@@ -16,8 +16,8 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.tx',
-  name: 'DigitalTransaction',
+  package: 'net.nanopay.tx.creditengine',
+  name: 'CreditCodeTransaction',
   extends: 'net.nanopay.tx.model.Transaction',
   documentation: `This transaction is used for managing the balance in credit code accounts.
   All it does is try to increment or decrement the balance of the "applicable account" the applicable account
@@ -61,12 +61,12 @@ foam.CLASS({
       type: 'Void',
       javaCode: `
       AbstractCreditCodeAccount account = (AbstractCreditCodeAccount) findSourceAccount(x);
-      if ( sourceAccount == null ) {
+      if ( getSourceAccount() == null ) {
         throw new ValidationException("CreditCode account not found");
       }
-      if ( deatinationAccount != null ) {
+      /*if ( destinationAccount() != null ) {
         throw new ValidationException("destination account should not be set");
-      }
+      }*/
       `
     },
   ]

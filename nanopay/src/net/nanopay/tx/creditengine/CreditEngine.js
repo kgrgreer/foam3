@@ -75,7 +75,7 @@ foam.CLASS({
     {
       name: 'calculateCredits_',
       args: [
-        { name: 'creditCode', type: 'net.nanopay.tx.creditengine.AbstractCreditCode' },
+        { name: 'creditCode', type: 'net.nanopay.tx.creditengine.AbstractCreditCodeAccount' },
         { name: 't', type: 'net.nanopay.tx.model.Transaction' },
       ],
       type: 'net.nanopay.tx.CreditLineItem[]',

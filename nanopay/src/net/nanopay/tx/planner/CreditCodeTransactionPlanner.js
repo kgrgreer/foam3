@@ -24,8 +24,9 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.account.Account',
-    'net.nanopay.tx.creditEngine.CreditCodeTransaction',
-    'net.nanopay.tx.creditEngine.AbstractCreditCodeAccount',
+    'net.nanopay.tx.creditengine.CreditCodeTransaction',
+    'net.nanopay.tx.creditengine.AbstractCreditCodeAccount',
+
   ],
 
   properties: [
@@ -44,10 +45,10 @@ foam.CLASS({
       credit.copyFrom(requestTxn);
       credit.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
 
-      quote.addTransfer(false, sourceAccount.getId(), credit.getAmount(), 0);
+      quote.addTransfer(false, credit.getSourceAccount(), credit.getAmount(), 0);
       // if a secondary credit account is specified fill that in too.
-      if ( SafetyUtil.equals(destinationAccount.getId(), sourceAccount.getId()) ) {
-        quote.addTransfer(false, destinationAccount.getId(), credit.getDestinationAmount(), 0);
+      if ( ! SafetyUtil.equals(credit.getDestinationAccount(), credit.getSourceAccount()) && ! SafetyUtil.isEmpty( getDestinationAccount() ) ) {
+        quote.addTransfer(false, credit.getDestinationAccount(), credit.getDestinationAmount(), 0);
       }
       return credit;
 
