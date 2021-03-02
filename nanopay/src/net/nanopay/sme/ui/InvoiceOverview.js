@@ -659,8 +659,8 @@ foam.CLASS({
                   //   .add(this.bankAccount$.map((account) => {
                   //     if ( account ) {
                   //       return `${account.name} ` +
-                  //         `${'*'.repeat(account.accountNumber.length-4)}` +
-                  //         `${account.accountNumber.slice(-4)}`;
+                  //         `***` +
+                  //         `${account.accountNumber.slice(-3)}`;
                   //     } else {
                   //       return '--';
                   //     }

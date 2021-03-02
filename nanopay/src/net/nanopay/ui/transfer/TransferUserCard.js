@@ -204,7 +204,7 @@ foam.CLASS({
 
     function setBankInfo(account) {
       var self = this;
-      self.accountNo_ = '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length);
+      self.accountNo_ = '***' + account.accountNumber.substring(account.accountNumber.length - 3);
       self.branchDAO.find(account.branchId).then(function(bank) {
         switch ( self.user.address.countryId ) {
           case 'CA':

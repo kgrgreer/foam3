@@ -94,7 +94,7 @@ foam.CLASS({
       gridColumns: 6,
       tableCellFormatter: function(str) {
         this.start()
-          .add('***' + str.substring(str.length - 4, str.length));
+          .add('***' + str.substring(str.length - 3));
       },
       validateObj: function(accountNumber) {
         var accNumberRegex = /^[0-9]{1,30}$/;

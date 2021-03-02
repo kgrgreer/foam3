@@ -241,7 +241,7 @@ foam.CLASS({
       },
       tableCellFormatter: function(str) {
         if ( ! str ) return;
-        var displayAccountNumber = '***' + str.substring(str.length - 4, str.length);
+        var displayAccountNumber = '***' + str.substring(str.length - 3);
         this.start()
           .add(displayAccountNumber);
         this.tooltip = displayAccountNumber;
@@ -422,9 +422,7 @@ foam.CLASS({
         .start()
           .add(obj.slot((accountNumber) => {
               if ( accountNumber ) {
-                if (accountNumber.length > 3) {
-                  accountNumber = obj.obfuscate(accountNumber, 1, accountNumber.length - 4);
-                }
+                accountNumber = `***${accountNumber.substring(accountNumber.length() - 3)}`;
 
                 return this.E()
                   .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('accountNumber').label} `).end()
@@ -434,15 +432,8 @@ foam.CLASS({
         .end();
       },
       javaFactory: `
-        net.nanopay.bank.BankAccount account = new net.nanopay.bank.BankAccount();
-        String accountNumber = getAccountNumber();
-        if (accountNumber == null) {
-          accountNumber = "";
-        } else if (accountNumber.length() > 3) {
-          accountNumber = account.obfuscate(accountNumber, 1, accountNumber.length() - 4);
-        }
-        
-        return accountNumber;
+        return getAccountNumber() == null ? "" :
+          "***" + getAccountNumber().substring(getAccountNumber().length() - 3);
       `
     },
     {

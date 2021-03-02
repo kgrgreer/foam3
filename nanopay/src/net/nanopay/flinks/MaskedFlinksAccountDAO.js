@@ -95,7 +95,7 @@ foam.CLASS({
         { type: 'String', name: 'accountNumber' }
       ],
       javaCode: `
-        int maskedLength = accountNumber.length() - 4;
+        int maskedLength = accountNumber.length() - 3;
         StringBuilder masked = sb.get();
         for (int i = 0; i < maskedLength; i++) {
           masked.append("*");

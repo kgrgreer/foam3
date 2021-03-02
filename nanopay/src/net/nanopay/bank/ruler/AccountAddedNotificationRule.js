@@ -51,17 +51,13 @@ foam.CLASS({
             if( account.getRandomDepositAmount() != 0) return;
             if( account.findOwner(x) instanceof PersonalContact ) return;
             
-            String accountNumber = account.getAccountNumber();
-            if (accountNumber == null) {
-              accountNumber = "";
-            } else if (accountNumber.length() > 3) {
-              accountNumber = account.obfuscate(accountNumber, 1, accountNumber.length() - 4);
-            }
+            String accountNumber   = account.getAccountNumber() == null ? "" :
+                                      "***" + account.getAccountNumber().substring(account.getAccountNumber().length() - 3);
 
             User        owner      = (User) userDAO.find(account.getOwner());
             Group       group      = owner.findGroup(x);
             AppConfig   config     = group != null ? (AppConfig) group.getAppConfig(x) : (AppConfig) x.get("appConfig");
-            
+
             HashMap<String, Object> args = new HashMap<>();
             args.put("name",    User.FIRST_NAME);
             args.put("sendTo",  User.EMAIL);

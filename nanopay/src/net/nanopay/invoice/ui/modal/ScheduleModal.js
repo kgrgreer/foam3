@@ -79,10 +79,7 @@ foam.CLASS({
           objToChoice: function(account) {
             return [account.id, account.name + ' ' +
                      '***' +
-                     account.accountNumber.substring(
-                       account.accountNumber.length - 4,
-                       account.accountNumber.length
-                     )
+                     account.accountNumber.substring(account.accountNumber.length - 3)
                    ];
           }
         };

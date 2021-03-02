@@ -297,7 +297,7 @@ foam.CLASS({
                   .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' })
                     .add(`${obj.cls_.getAxiomByName('accountNumber').label} `)
                   .end()
-                  .start('span').add(`*** ${accountNumber.substring(accountNumber.length - 4, accountNumber.length)} |`).end();
+                  .start('span').add(`***${accountNumber.substring(accountNumber.length - 3)} |`).end();
               }
           }))
           .add(obj.slot((branch, branchDAO) => {

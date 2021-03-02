@@ -61,7 +61,7 @@ foam.CLASS({
                   .start('img')
                     .attrs({ src: account.flagImage })
                   .end()
-                  .add(`${account.name} ****${account.accountNumber.substring(account.accountNumber.length - 4)} - ${account.denomination}`);
+                  .add(`${account.name} ***${account.accountNumber.substring(account.accountNumber.length - 3)} - ${account.denomination}`);
               }
             }));
           },

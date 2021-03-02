@@ -168,7 +168,7 @@ foam.CLASS({
       }
 
       if ( isVerified ) {
-        var accountNumber = '***' + this.bank.accountNumber.slice(-4);
+        var accountNumber = '***' + this.bank.accountNumber.slice(-3);
         ctrl.notify(this.SUCCESS_ONE + ` ${accountNumber} ` + this.SUCCESS_TWO, '', this.LogLevel.INFO, true);
         if ( this.onComplete ) this.onComplete();
 

@@ -216,7 +216,7 @@ foam.CLASS({
               .addClass('accountNumber')
               .call(function() {
                 self.bankAccountDAO.find(self.bankList).then(function(bank) {
-                  this.add('***' + bank.accountNumber.substring(bank.accountNumber.length - 4, bank.accountNumber.length));
+                  this.add('***' + bank.accountNumber.substring(bank.accountNumber.length - 3));
                 }.bind(this));
               })
             .end()

@@ -539,7 +539,7 @@ foam.CLASS({
             }
              if ( type.length >= 11 && type.substring(type.length - 11) == 'BankAccount')  {
               var length = account.accountNumber.length;
-              choice = account.name + ' ' + '***' + account.accountNumber.substring(length - 4, length);
+              choice = account.name + ' ' + '***' + account.accountNumber.substring(length - 3);
             }
             return [ account.id, choice ];
           }
