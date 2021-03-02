@@ -7,7 +7,7 @@ p({
     created:1594308371944,
     createdBy:1348,
     createdByAgent:1348,
-    ttl:3153600000000
+    ttl:3153600000000,
     cidrWhiteList:[
         {
             class:"foam.net.CIDR",

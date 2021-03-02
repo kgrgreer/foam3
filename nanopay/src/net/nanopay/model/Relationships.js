@@ -1047,6 +1047,10 @@ foam.RELATIONSHIP({
     section: 'systemInformation'
   },
   targetProperty: {
+    view: {
+      class: 'foam.u2.view.ReferencePropertyView',
+      readView: 'net.nanopay.tx.model.TransactionReadReferenceView'
+    },
     section: 'billInformation',
     order: 45,
     gridColumns: 6
@@ -1063,6 +1067,10 @@ foam.RELATIONSHIP({
   unauthorizedSourceDAOKey: 'localTransactionDAO',
   targetDAOKey: 'billDAO',
   targetProperty: {
+    view: {
+      class: 'foam.u2.view.ReferencePropertyView',
+      readView: 'net.nanopay.tx.model.TransactionReadReferenceView'
+    },
     section: 'billInformation',
     order: 90,
     gridColumns: 6

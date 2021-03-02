@@ -1,10 +1,4 @@
 p({
-  "class":"net.nanopay.tx.planner.AFEXTransactionPlanner",
-  "id":"13df0d76-ba3e-4287-b42e-c7ceff059dd8",
-  "ruleGroup":"TrevisoPlanner",
-})
-
-p({
   class: "net.nanopay.tx.fee.TransactionFeeRule",
   id: "91194da9-8391-436a-8468-fa2c706126b8",
   name: "Treviso Fee",
@@ -250,10 +244,10 @@ p({
     "propValue": null
   },
   "enabled":true,
-  "lifecycleState":1
+  "lifecycleState":1,
+  "spid": "treviso"
 })
 
-// TODO: add spid
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"520c5c8a-f3a8-11ea-adc1-0242ac120002",
@@ -290,7 +284,8 @@ p({
     "groupToNotify":"treviso-fraud-ops"
   },
   "enabled":true,
-  "lifecycleState":1
+  "lifecycleState":1,
+  "spid": "treviso"
 })
 p({
   "class": "foam.nanos.ruler.Rule",
