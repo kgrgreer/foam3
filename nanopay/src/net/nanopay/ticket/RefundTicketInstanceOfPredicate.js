@@ -17,9 +17,9 @@
 
 foam.CLASS({
   package: 'net.nanopay.ticket',
-  name: 'RefundTicketPropertyPredicate',
+  name: 'RefundTicketInstanceOfPredicate',
 
-  documentation: `For Refund Ticket use only.. compares txn properties with values provided works like mlang.EQ but digs the request txn out of ticket first`,
+  documentation: `For Refund Ticket use only.. uses instanceOf on class with class provided works like mlang.INSTANCE_OF but digs the request txn out of ticket first`,
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
 
@@ -27,24 +27,19 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
+    'foam.mlang.predicate.IsInstanceOf',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.SummarizingTransaction',
     'net.nanopay.tx.TransactionException',
     'net.nanopay.ticket.RefundTicket',
-    'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.NEW_OBJ'
   ],
 
   properties: [
     {
-      class: 'String',
-      name: 'txnProperty',
-      documentation: 'The property that is to be checked. "class" checks isClassOf, "instance" checks instanceOf'
-    },
-    {
-      class: 'Object',
-      name: 'txnValue',
-      documentation: 'The value that is compared to the found property value of txnProperty'
+      class: 'Class',
+      name: 'instanceOf',
+      documentation: 'The class that is to be checked'
     },
   ],
 
@@ -58,14 +53,14 @@ foam.CLASS({
       Transaction txn = (Transaction) txnDAO.find(ticket.getRefundTransaction());
       if ( txn == null ) {
         Logger logger = (Logger) x.get("logger");
-        logger.error("RefundTicketPropertyPredicate has failed, because txn find returned null "+ ticket.getId());
-        throw new TransactionException("RefundTicketPropertyPredicate has failed, because txn find returned null "+ ticket.getId());
+        logger.error("RefundTicketInstanceOfPredicate has failed, because txn find returned null "+ ticket.getId());
+        throw new TransactionException("RefundTicketInstanceOfPredicate has failed, because txn find returned null "+ ticket.getId());
       }
       if ( txn instanceof SummarizingTransaction ) {
         txn = txn.getStateTxn(x);
       }
-
-      return EQ(txn.getClassInfo().getAxiomByName(getTxnProperty()), getTxnValue()).f(txn);
+      IsInstanceOf predicate = new IsInstanceOf(getInstanceOf());
+      return predicate.f(txn);
       `
     }
   ]
