@@ -63,7 +63,7 @@ foam.CLASS({
         if (accountNumber == null) {
           accountNumber = "";
         } else if (accountNumber.length() > 3) {
-            accountNumber = account.obfuscate(accountNumber, 1, accountNumber.length() - 4);
+          accountNumber = account.obfuscate(accountNumber, 1, accountNumber.length() - 4);
         }
 
         return accountNumber + ts.getTranslation(locale, getClassInfo().getId() + ".NOTIFICATION_BODY_P1", this.NOTIFICATION_BODY_P1);
