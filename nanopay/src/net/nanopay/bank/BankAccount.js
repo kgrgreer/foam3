@@ -422,16 +422,27 @@ foam.CLASS({
         .start()
           .add(obj.slot((accountNumber) => {
               if ( accountNumber ) {
+                if (accountNumber.length > 3) {
+                  accountNumber = obj.obfuscate(accountNumber, 1, accountNumber.length - 4);
+                }
+
                 return this.E()
                   .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('accountNumber').label} `).end()
-                  .start('span').add(obj.obfuscate(accountNumber, 1, accountNumber.length - 4)).end();
+                  .start('span').add(accountNumber).end();
               }
           }))
         .end();
       },
       javaFactory: `
         net.nanopay.bank.BankAccount account = new net.nanopay.bank.BankAccount();
-        return account.obfuscate(getAccountNumber(), 1, getAccountNumber().length() - 4);
+        String accountNumber = getAccountNumber();
+        if (accountNumber == null) {
+          accountNumber = "";
+        } else if (accountNumber.length() > 3) {
+          accountNumber = account.obfuscate(accountNumber, 1, accountNumber.length() - 4);
+        }
+        
+        return accountNumber;
       `
     },
     {
