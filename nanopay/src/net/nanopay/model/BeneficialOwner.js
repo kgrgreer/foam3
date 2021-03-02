@@ -74,7 +74,9 @@ foam.CLASS({
     { name: 'STREET_NUMBER_LABEL', message: 'Street number' },
     { name: 'STREET_NAME_LABEL', message: 'Street name' },
     { name: 'PLACEHOLDER', message: 'Select a country' },
-    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History for' }
+    { name: 'PLEASE_SELECT', message: 'Please select...' },
+    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History for' },
+    { name: 'OTHER_KEY', message: 'Other' }
   ],
 
   properties: [
@@ -202,13 +204,13 @@ foam.CLASS({
       view: function(_, X) {
         return {
           class: 'foam.u2.view.ChoiceWithOtherView',
-          otherKey: 'Other',
+          otherKey: X.data.OTHER_KEY,
           choiceView: {
             class: 'foam.u2.view.ChoiceView',
-            placeholder: 'Please select...',
+            placeholder: X.data.PLEASE_SELECT,
             dao: X.jobTitleDAO,
             objToChoice: function(a) {
-              return [a.name, a.label];
+              return [a.name, X.translationService.getTranslation(foam.locale, `${a.name}.label`, a.label)];
             }
           }
         };
