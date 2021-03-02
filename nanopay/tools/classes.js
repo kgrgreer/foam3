@@ -685,6 +685,7 @@ var classes = [
   'net.nanopay.fx.FXDirection',
   'net.nanopay.fx.FXProvider',
   'net.nanopay.fx.localfx.NanopayFXService',
+  'net.nanopay.tx.TransactionUnPauseRule',
   'net.nanopay.fx.GetFXQuote',
   'net.nanopay.fx.AcceptFXRate',
   'net.nanopay.fx.FXQuote',
@@ -1127,8 +1128,11 @@ var classes = [
   'net.nanopay.ticket.RefundTicket',
   'net.nanopay.ticket.RefundStatus',
   'net.nanopay.ticket.BasicFullReverseRefundTicketCreateRule',
+  'net.nanopay.ticket.BasicRetryTicketRule',
   'net.nanopay.ticket.AgentRefundTicketCreateRule',
   'net.nanopay.ticket.RefundTicketPropertyPredicate',
+  'net.nanopay.ticket.RefundTicketInstanceOfPredicate',
+  'net.nanopay.ticket.RefundTicketClassOfPredicate',
 
   // Planners
   'net.nanopay.tx.planner.PlannerGroup',

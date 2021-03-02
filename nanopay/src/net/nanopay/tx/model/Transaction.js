@@ -74,6 +74,7 @@ foam.CLASS({
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.FeeSummaryTransactionLineItem',
     'net.nanopay.tx.InterestTransaction',
+    'net.nanopay.tx.HistoricStatus',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.TransactionException',
@@ -658,6 +659,24 @@ foam.CLASS({
         return Array.isArray(statusHistory)
           && statusHistory.length > 0 ? statusHistory[statusHistory.length - 1].timeStamp : null;
       }
+    },
+    {
+      name: 'lastStatus',
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
+      includeInDigest: false,
+      section: 'transactionInformation',
+      createVisibility: 'HIDDEN',
+      readVisibility: 'HIDDEN',
+      updateVisibility: 'HIDDEN',
+      storageTransient: true,
+      javaGetter: `
+        HistoricStatus[] statusHistory = getStatusHistory();
+        if ( statusHistory.length-2 > 0 ) {
+          return  statusHistory[statusHistory.length-2].getStatus();
+        }
+        return getInitialStatus();
+      `
     },
     {
       name: 'statusHistory',

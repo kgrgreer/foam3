@@ -185,6 +185,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TransactionException' },
   { name: 'net/nanopay/tx/UnsupportedTransactionException' },
   { name: 'net/nanopay/tx/GrandTotalLineItem' },
+  { name: 'net/nanopay/tx/TransactionUnPauseRule' },
 
   { name: 'net/nanopay/model/CurrencyAmount' },
   { name: 'net/nanopay/model/BusinessSector' },
@@ -1586,10 +1587,12 @@ FOAM_FILES([
   { name: 'net/nanopay/ticket/RefundRule' },
   { name: 'net/nanopay/ticket/RefundTicket' },
   { name: 'net/nanopay/ticket/RefundTicketCreateApprovals' },
-
   { name: 'net/nanopay/ticket/RefundStatus' },
   { name: 'net/nanopay/ticket/RefundTicketPropertyPredicate' },
+  { name: 'net/nanopay/ticket/RefundTicketInstanceOfPredicate' },
+  { name: 'net/nanopay/ticket/RefundTicketClassOfPredicate' },
   { name: 'net/nanopay/ticket/BasicFullReverseRefundTicketCreateRule' },
+  { name: 'net/nanopay/ticket/BasicRetryTicketRule' },
   { name: 'net/nanopay/ticket/AgentRefundTicketCreateRule' },
 
 

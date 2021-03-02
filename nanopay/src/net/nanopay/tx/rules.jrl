@@ -949,3 +949,36 @@ p({
   "lifecycleState":1,
   "spid":"intuit"
 })
+
+p({
+  "class": "net.nanopay.tx.ruler.PermissionedTransactionRule",
+  "id":"11f42644-b326-41c0-a5a8-5d6251139574",
+  "name":"Transaction unpause rule",
+  "priority":100,
+  "ruleGroup":"(Default)",
+  "documentation":"Check if parent completed while transaction is paused.",
+  "daoKey":"localTransactionDAO",
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{"class":"net.nanopay.tx.model.TransactionStatus","ordinal":10},
+        "isNew":false
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"status",
+        "propValue":{"class":"net.nanopay.tx.model.TransactionStatus","ordinal":10},
+        "isNew":true
+      }
+    ],
+  },
+  "operation":1,
+  "after":false,
+  "action":{"class":"net.nanopay.tx.TransactionUnPauseRule"},
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})

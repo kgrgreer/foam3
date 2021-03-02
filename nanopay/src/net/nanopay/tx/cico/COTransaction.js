@@ -166,9 +166,8 @@ foam.CLASS({
         if ( ! (getStatus() == TransactionStatus.PENDING || getStatus() == TransactionStatus.COMPLETED) ) return false;
 
         // Updating status=PENDING, can transfer when transitioning from
-        // PENDING_PARENT_COMPLETED, PAUSED or SCHEDULED.
+        // PENDING_PARENT_COMPLETED or SCHEDULED.
         return oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED
-          || oldTxn.getStatus() == TransactionStatus.PAUSED
           || oldTxn.getStatus() == TransactionStatus.SCHEDULED
           || oldTxn.getStatus() == TransactionStatus.PENDING;
       `

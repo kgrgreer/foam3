@@ -118,6 +118,12 @@ foam.CLASS({
           }
 
           try {
+            problemTxn = (Transaction) problemTxn.fclone();
+            if ( problemTxn.getStatus() == TransactionStatus.PAUSED ) {
+              problemTxn.setStatus(problemTxn.getLastStatus());
+              problemTxn = (Transaction) txnDAO.inX(x).put(problemTxn);
+              problemTxn = (Transaction) problemTxn.fclone();
+            }
             problemTxn.setStatus(TransactionStatus.CANCELLED);
             txnDAO.inX(x).put(problemTxn);
           }
