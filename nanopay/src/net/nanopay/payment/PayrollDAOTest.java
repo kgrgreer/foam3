@@ -110,11 +110,6 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
   }
 
   public void createPayerIfNotFound(X x) {
-    User us = (User)userDAO.find(EQ(User.EMAIL, PAYER_EMAIL));
-    if ( us != null ) {
-      PAYER_ID = us.getId();
-      return;
-    }
       User user = new User();
       user.setFirstName("payroll");
       user.setLastName("payer");
