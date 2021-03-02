@@ -422,7 +422,7 @@ foam.CLASS({
         .start()
           .add(obj.slot((accountNumber) => {
               if ( accountNumber ) {
-                accountNumber = `***${accountNumber.substring(accountNumber.length() - 3)}`;
+                accountNumber = `***${accountNumber.substring(accountNumber.length - 3)}`;
 
                 return this.E()
                   .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('accountNumber').label} `).end()
