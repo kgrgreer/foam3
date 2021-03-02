@@ -38,6 +38,7 @@ foam.CLASS({
 
   messages: [
     { name: 'MIN_DATE_ERROR', message: 'Expected boarding date must be a future date' },
+    { name: 'INVALID_DATE_ERROR', message: 'Valid expected date of boarding required' }
   ],
 
   properties: [
