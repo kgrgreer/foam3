@@ -56,8 +56,8 @@ foam.CLASS({
           }
           Transaction t = (Transaction) obj;
           DAO creditCodeDAO = (DAO) x.get("localAccountDAO");
-          for ( String code : t.getCreditCode()) {
-            AbstractCreditCodeAccount creditCode = creditCodeDAO().find(code);
+          for ( String code : t.getCreditCodes()) {
+            AbstractCreditCodeAccount creditCode = (AbstractCreditCodeAccount) creditCodeDAO.find(code);
             //apply credit line items..
             t.addLineItems(calculateCredits_(creditCode, t));
           }

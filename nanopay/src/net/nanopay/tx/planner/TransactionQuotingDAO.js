@@ -109,17 +109,17 @@ foam.CLASS({
             DAO creditCodeDAO = (DAO) x.get("localAccountDAO");
             for ( String code : loadedTxn.getCreditCodes() ) {
               AbstractCreditCodeAccount creditCode = (AbstractCreditCodeAccount) creditCodeDAO.find(code);
-              creditCode.consume();
+              creditCode.consume(x, loadedTxn);
             }
           }
           return getDelegate().put_(x, loadedTxn); //recovered plan is put in.
         }
         // consume creditcodes
-        if ( loadedTxn.getCreditCodes() != null && loadedTxn.getCreditCodes().length > 0 ) {
+        if ( txn.getCreditCodes() != null && txn.getCreditCodes().length > 0 ) {
           DAO creditCodeDAO = (DAO) x.get("localAccountDAO");
           for ( String code : txn.getCreditCodes() ) {
             AbstractCreditCodeAccount creditCode = (AbstractCreditCodeAccount) creditCodeDAO.find(code);
-            creditCode.consume();
+            creditCode.consume(x, txn);
           }
         }
         return getDelegate().put_(x, txn); // txn being saved as part of chain here.

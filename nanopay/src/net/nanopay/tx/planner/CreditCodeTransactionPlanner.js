@@ -26,7 +26,7 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.tx.creditengine.CreditCodeTransaction',
     'net.nanopay.tx.creditengine.AbstractCreditCodeAccount',
-
+    'foam.util.SafetyUtil',
   ],
 
   properties: [
@@ -47,7 +47,7 @@ foam.CLASS({
 
       quote.addTransfer(false, credit.getSourceAccount(), credit.getAmount(), 0);
       // if a secondary credit account is specified fill that in too.
-      if ( ! SafetyUtil.equals(credit.getDestinationAccount(), credit.getSourceAccount()) && ! SafetyUtil.isEmpty( getDestinationAccount() ) ) {
+      if ( (! SafetyUtil.equals(credit.getDestinationAccount(), credit.getSourceAccount())) && (! SafetyUtil.isEmpty( credit.getDestinationAccount() )) ) {
         quote.addTransfer(false, credit.getDestinationAccount(), credit.getDestinationAmount(), 0);
       }
       return credit;
