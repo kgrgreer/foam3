@@ -555,7 +555,7 @@ p({
   "associatedEntity": 1,
   "permissionsGranted":[
   "menu.read.mainmenu.banking",
-  "menu.read.mainmenu.contacts",
+  "menu.read.mainmenu.contacts"
   ]
 })
 
