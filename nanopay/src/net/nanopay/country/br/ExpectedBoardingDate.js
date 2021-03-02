@@ -51,10 +51,17 @@ foam.CLASS({
         {
           args: ['boardingDate'],
           predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.country.br.ExpectedBoardingDate.BOARDING_DATE, null);
+          },
+          errorMessage: 'INVALID_DATE_ERROR'
+        },
+        {
+          args: ['boardingDate'],
+          predicateFactory: function(e) {
             return e.GTE(net.nanopay.country.br.ExpectedBoardingDate.BOARDING_DATE, new Date());
           },
           errorMessage: 'MIN_DATE_ERROR'
-        },
+        }
       ]
     }
   ],
