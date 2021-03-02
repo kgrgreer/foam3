@@ -85,19 +85,6 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"b5f2b020-db0f-11ea-87d0-0242ac130003",
-  "name":"Office Consumption",
-  "description":"Provide three months of bills, such as water, electricity, telephone, cable TV, internet, or property tax. Alternatively, you can provide bank statements.",
-  "of":"net.nanopay.crunch.document.Document",
-  "version":"0",
-  "duration":90,
-  "gracePeriod":7,
-  "enabled":true,
-  "associatedEntity": 0
-})
-
-p({
-  "class":"foam.nanos.crunch.Capability",
   "id":"8ad3c898-db232-1ea-87d0-0242ac130z0",
   "name":"Date of Issue",
   "description":"Date of issue of an identification document",
@@ -135,6 +122,7 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5",
+  "name":"Information from Administrators and Legal Representatives",
   "of":"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData",
   "reviewRequired":false
 })
