@@ -830,25 +830,8 @@ foam.CLASS({
     },
     async function assignBusinessAndLogIn(junction) {
       var business = await this.client.businessDAO.find(junction.targetId);
-      try {
-        var result = await this.client.agentAuth.actAs(this, business);
-
-        if ( result ) {
-          this.subject.user = business;
-          this.subject.realUser = result;
-          this.client.menuDAO.cmd_(this, foam.dao.CachingDAO.PURGE);
-          this.client.menuDAO.cmd_(this, foam.dao.AbstractDAO.RESET_CMD);
-          this.crunchController.purgeCachedCapabilityDAOs();
-          this.initLayout.resolve();
-          await this.pushDefaultMenu()
-          return;
-        }
-      } catch (err) {
-        var msg = err != null && typeof err.message === 'string'
-          ? err.message
-          : this.BUSINESS_LOGIN_FAILED;
-        this.notify(msg, '', this.LogLevel.ERROR, true);
-      }
+      this.client.agentAuth.actAs(this, business);
+      return
     },
     async function pushDefaultMenu() {
       //check if default menu is avaiable. if default menu is not permitted yet, direct to appStore
