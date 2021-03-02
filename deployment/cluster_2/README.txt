@@ -1,4 +1,4 @@
-Run 2 Mediator, 4 Node on same machine
+Run 2 Mediator, 2 Node on same machine
 NOTE: need at least 16Gbytes free - 4Gb x 4
 
 /etc/hosts:
@@ -12,8 +12,6 @@ NOTE: need at least 16Gbytes free - 4Gb x 4
 node:
 ./build.sh -uJcluster_4,mn -Nnode1 -W8200 -c [-j]
 ./build.sh -uJcluster_4,mn -Nnode2 -W8210 [-j]
-./build.sh -uJcluster_4,mn -Nnode3 -W8220 [-j]
-./build.sh -uJcluster_4,mn -Nnode3 -W8230 [-j]
 
 mediator
 ./build.sh -uJcluster_4,mm -Nmediator1 -W8100 -m -c
