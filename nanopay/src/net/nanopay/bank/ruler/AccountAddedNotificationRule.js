@@ -58,7 +58,7 @@ foam.CLASS({
               accountNumber = account.obfuscate(accountNumber, 1, accountNumber.length() - 4);
             }
 
-            User owner             = (User) userDAO.find(account.getOwner());
+            User        owner      = (User) userDAO.find(account.getOwner());
             Group       group      = owner.findGroup(x);
             AppConfig   config     = group != null ? (AppConfig) group.getAppConfig(x) : (AppConfig) x.get("appConfig");
             
