@@ -1418,6 +1418,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/secureFact/SecurefactRequest' },
   { name: 'net/nanopay/meter/compliance/secureFact/SecurefactResponse' },
   { name: 'net/nanopay/meter/compliance/secureFact/SecurefactService' },
+  { name: 'net/nanopay/meter/compliance/secureFact/MockSecurefactService' },
   { name: 'net/nanopay/meter/compliance/secureFact/sidni/SIDniRequest' },
   { name: 'net/nanopay/meter/compliance/secureFact/sidni/SIDniResponse' },
   { name: 'net/nanopay/meter/compliance/secureFact/sidni/SIDniPhone' },

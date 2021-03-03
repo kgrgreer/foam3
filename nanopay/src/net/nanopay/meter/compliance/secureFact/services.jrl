@@ -54,7 +54,7 @@ p({
   "lazy":false,
   "serve":true,
   "service":{
-    "class":"net.nanopay.meter.compliance.secureFact.SecurefactService"
+    "class":"net.nanopay.meter.compliance.secureFact.MockSecurefactService"
   }
 })
 

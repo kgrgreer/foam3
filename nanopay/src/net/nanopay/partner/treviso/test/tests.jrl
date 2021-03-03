@@ -89,16 +89,6 @@ support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport.create({
         throw e;
       }
 
-      // name = 'generalAdmission: ';
-      // try {
-      //   ucj = await support.generalAdmission(x, u);
-      //   test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
-      // } catch (e) {
-      //   test(false, name+(e.message || e));
-      //   throw e;
-      // }
-
-      // Required for business onboarding
       name = 'userDetails: ';
       try {
         ucj = await support.userDetails(x, u);
@@ -111,6 +101,15 @@ support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport.create({
       name = 'userDetailExpandedData: ';
       try {
         ucj = await support.userDetailExpandedData(x, u);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      name = 'generalAdmission: ';
+      try {
+        ucj = await support.generalAdmission(x, u);
         test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
       } catch (e) {
         test(false, name+(e.message || e));
@@ -225,7 +224,8 @@ support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport.create({
       name = 'internationalPaymentsAgreement: ';
       try {
         ucj = await support.internationalPaymentsAgreement(x);
-        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+        // waiting on CertifyDataReviewed
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED, name+(ucj && ucj.status));
       } catch (e) {
         test(false, name+(e.message || e));
         throw e;
@@ -257,14 +257,14 @@ support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport.create({
       //   throw e;
       // }
 
-      name = 'businessExtraBusinessTypeDataNotRequired: ';
-      try {
-        ucj = await support.businessExtraBusinessTypeDataNotRequired(x, business);
-        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
-      } catch (e) {
-        test(false, name+(e.message || e));
-        throw e;
-      }
+      // name = 'businessExtraBusinessTypeDataNotRequired: ';
+      // try {
+      //   ucj = await support.businessExtraBusinessTypeDataNotRequired(x, business);
+      //   test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      // } catch (e) {
+      //   test(false, name+(e.message || e));
+      //   throw e;
+      // }
 
       // name = 'businessExtraBusinessTypeDataRequired: ';
       // try {
@@ -425,6 +425,24 @@ support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport.create({
         ucj = await support.brazilOnboardingReviewed(x, u);
         brazilOnboardingReviewedUCJ = ucj;
         test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.PENDING, name+(ucj && ucj.status)+' ucj.id: '+ucj.id);
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      name = 'explicitInternationalOnboarding: ';
+      try {
+        ucj = await support.explicitInternationalOnboardingCaps(x, u);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
+      name = 'corridor: ';
+      try {
+        ucj = await support.corridor(x, u);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
       } catch (e) {
         test(false, name+(e.message || e));
         throw e;
