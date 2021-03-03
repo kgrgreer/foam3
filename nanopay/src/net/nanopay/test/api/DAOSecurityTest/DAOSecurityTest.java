@@ -44,6 +44,7 @@ public abstract class DAOSecurityTest extends ApiTestBase {
     GLOBAL_IGNORES.add("userUserDAO");
     GLOBAL_IGNORES.add("localeDAO");
     GLOBAL_IGNORES.add("oauthProviderDAO");
+    GLOBAL_IGNORES.add("commonPasswordDAO");
   }
 
   // Helper class for holding results

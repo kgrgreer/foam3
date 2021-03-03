@@ -19,6 +19,8 @@ foam.CLASS({
   package: 'net.nanopay.security.auth',
   name: 'LoginAttempts',
 
+  implements: [ 'foam.nanos.medusa.Clusterable' ],
+
   javaImports: [
     'java.util.Date'
   ],

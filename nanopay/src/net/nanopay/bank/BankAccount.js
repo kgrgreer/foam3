@@ -789,6 +789,21 @@ foam.CLASS({
         return "";
       `
     },
+    {
+      name: 'setRoutingCode',
+      type: 'Boolean',
+      args: [
+        { name: 'routingCode', type: 'String' }
+      ],
+      documentation: 'Set bank info from the routingCode. To be implemented by the sub-classes.',
+      javaCode: `
+        var logger = (Logger) getX().get("logger");
+        logger.error(this.getClass().getSimpleName(), "setRoutingCode() is not yet implemented.");
+        // TODO: Need routing code validation similar to IBAN validation to
+        // parse the routingCode and convert it into bank code and branch code.
+        return true;
+      `
+    },
     function purgeCachedDAOs() {
       this.__subContext__.accountDAO.cmd_(this, foam.dao.CachingDAO.PURGE);
     },

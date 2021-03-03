@@ -106,6 +106,19 @@ foam.CLASS({
     }
   ],
 
+  methods: [
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function toSummary() {
+        return `AFEX User#${this.id}`;
+      },
+      javaCode: `
+        return "AFEX User#" + getId();
+      `
+    }
+  ],
+
   actions: [
     {
       name: 'viewBeneficiaries',

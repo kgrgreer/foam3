@@ -47,7 +47,7 @@ foam.CLASS({
               new AFEXBusinessApprovalRequest.Builder(x)
                 .setDaoKey("afexUserDAO")
                 .setObjId(afexUser.getId())
-                .setClassification("Validate AFEX Business")
+                .setClassification("AFEX Business")
                 .setDescription("Approve AFEX business to enable the international payments.")
                 .setGroup(group)
                 .setStatus(ApprovalStatus.REQUESTED).build());

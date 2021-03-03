@@ -6,6 +6,8 @@ NOTE: need at least 16Gbytes free - 4Gb x 4
 127.0.0.1       mediator2
 127.0.0.1       node1
 127.0.0.1       node2
+127.0.0.1       node3
+127.0.0.1       node4
 
 node:
 ./build.sh -uJcluster_2,mn -Nnode1 -W8200 -c [-j]

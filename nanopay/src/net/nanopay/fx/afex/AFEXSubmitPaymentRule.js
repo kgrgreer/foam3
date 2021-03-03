@@ -56,11 +56,11 @@ foam.CLASS({
           if ( ! (obj instanceof AFEXTransaction) ) {
             return;
           }
-          
+
           AFEXTransaction transaction = (AFEXTransaction) obj;
           AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
 
-          if (transaction.getStatus() == TransactionStatus.PENDING 
+          if (transaction.getStatus() == TransactionStatus.PENDING
             && SafetyUtil.isEmpty( transaction.getExternalInvoiceId() ) ) {
 
               try {
@@ -68,16 +68,7 @@ foam.CLASS({
                 if ( ! SafetyUtil.isEmpty(txn.getExternalInvoiceId()) ) {
                   transaction.setStatus(TransactionStatus.SENT);
                   transaction.setExternalInvoiceId(txn.getExternalInvoiceId());
-                  FXQuote fxQuote = (FXQuote) ((DAO) x.get("fxQuoteDAO")).find(Long.parseLong(transaction.getFxQuoteId()));            
-                  if ( null != fxQuote ) {
-                    Date date = null;
-                    try{
-                      DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
-                      transaction.setCompletionDate(format.parse(fxQuote.getValueDate()));
-                    } catch ( Exception e) {
-                      ((Logger) x.get("logger")).error(" Error parsing FX quote value date ", e);
-                    } 
-                  }
+                  transaction.setCompletionDate(txn.getCompletionDate());
                 } else {
                   transaction.setStatus(TransactionStatus.DECLINED);
                   logger.error("Error submitting payment to AFEX.");

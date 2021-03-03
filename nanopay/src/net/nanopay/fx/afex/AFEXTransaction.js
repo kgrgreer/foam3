@@ -28,6 +28,7 @@ foam.CLASS({
   documentation: `Hold AFEX specific properties`,
 
   implements: [
+    'net.nanopay.meter.clearing.ClearingTimesTrait',
     'net.nanopay.tx.PartnerTransaction'
   ],
 
@@ -75,7 +76,7 @@ foam.CLASS({
       gridColumns: 6,
       documentation: 'id of the AFEX trade response'
     },
-    
+
     {
       class: 'DateTime',
       name: 'completionDate',
@@ -115,7 +116,17 @@ foam.CLASS({
                 }
        return ['No status to choose'];
       }
-    }
+    },
+    {
+      name: 'clearingTimes',
+      javaFactory: 'return new java.util.HashMap<>();',
+      networkTransient: true,
+      hidden: true
+    },
+    {
+      name: 'estimatedCompletionDate',
+      javaFactory: 'return null;'
+    },
   ],
 
   methods: [

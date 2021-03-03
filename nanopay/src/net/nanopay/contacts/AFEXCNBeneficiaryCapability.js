@@ -45,15 +45,15 @@ foam.CLASS({
   ],
 
   properties: [
-      {
-        class: 'PhoneNumber',
-        name: 'contactPhone',
-        label: 'Contact phone number',
-        section: 'additionalInfoSection',
-        required: true,
-        autoValidate: true,
-        gridColumns: 12
-      },
+    {
+      class: 'PhoneNumber',
+      name: 'contactPhone',
+      label: 'Contact phone number',
+      section: 'additionalInfoSection',
+      required: true,
+      autoValidate: true,
+      gridColumns: 12
+    },
     {
       class: 'Reference',
       of: 'net.nanopay.tx.PurposeCode',

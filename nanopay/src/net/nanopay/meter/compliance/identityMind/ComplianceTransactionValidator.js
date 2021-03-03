@@ -48,7 +48,7 @@ foam.CLASS({
               .setObjId(transaction.getId())
               .setServerDaoKey("localTransactionDAO")
               .setDaoKey("transactionDAO")
-              .setClassification("Validate Transaction Using IdentityMind")
+              .setClassification("Transaction IdentityMind Transfer")
               .build();
 
           IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");

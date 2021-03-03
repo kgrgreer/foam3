@@ -146,7 +146,6 @@ foam.CLASS({
         properties: [
           net.nanopay.contacts.Contact.CREATE_BANK_ACCOUNT,
           net.nanopay.contacts.Contact.NO_CORRIDORS_AVAILABLE,
-          net.nanopay.contacts.Contact.LOADING_SPINNER,
           net.nanopay.contacts.Contact.SHOULD_INVITE
         ],
         fromClass: 'net.nanopay.contacts.Contact'

@@ -1,0 +1,4 @@
+p({"class":"foam.nanos.notification.NotificationSetting","id":"7BAA87C9-B543-48C8-9270-299EA10C9FDD-bpp","spid":"bpp","enabled":false})
+p({"class":"foam.nanos.notification.EmailSetting","id":"0ADE200C-D9F8-49F0-A32E-9AF0951F424D-bpp","spid":"bpp","enabled":false})
+p({"class":"foam.nanos.notification.SlackSetting","id":"B25C252F-DCA9-4B05-BCEE-900B8F3CD5C3-bpp","spid":"bpp","enabled":false})
+p({"class":"foam.nanos.notification.sms.SMSSetting","id":"BDC54564-C225-498D-A95E-DB6DC8E28E09-bpp","spid":"bpp","enabled":false})

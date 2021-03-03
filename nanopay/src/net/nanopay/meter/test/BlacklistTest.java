@@ -101,7 +101,7 @@ public class BlacklistTest extends Test {
     User myAdmin = new User();
     myAdmin.setUserName("Admin321");
     myAdmin.setEmail("email@admin321.com");
-    myAdmin.setDesiredPassword("password123");
+    myAdmin.setDesiredPassword("password123!");
     myAdmin.setGroup("sme");
     myAdmin.setOrganization("testBusiness");
     myAdmin.setSpid("test");

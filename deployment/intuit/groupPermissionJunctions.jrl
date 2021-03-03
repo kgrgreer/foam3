@@ -24,6 +24,17 @@ p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.rea
 
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"group.update.intuit-fraud-ops"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"group.update.intuit-payment-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.accounts"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.admin.alarm"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.admin.logs"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.admin.spids"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.dashboard-backoffice"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.dashboard-backoffice.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.integration.flinksResponses"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.integration.plaidResultReport"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.onboarding"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.onboarding.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.operation.*"})
 
 // ********** PAYMENT OPS ***************
 
@@ -44,8 +55,5 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support"
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"menu.read.businesses-support"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"menu.read.transactions-support"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"menu.read.users-support"})
-
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-ops","targetId":"menu.read.admin.data"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-payment-ops","targetId":"menu.read.admin.data"})
 
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"feesummarytransactionlineitem.read.*"})
