@@ -36,6 +36,10 @@ foam.CLASS({
     'supportTransactionDAO'
   ],
 
+  javaImports: [
+    'net.nanopay.bank.BankAccount'
+  ],
+
   tableColumns: [
     'id',
     'owner',

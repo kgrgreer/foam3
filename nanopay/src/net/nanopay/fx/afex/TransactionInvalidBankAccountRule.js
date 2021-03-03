@@ -80,7 +80,7 @@ foam.CLASS({
             sourceArgs.put("name", sourceAccountOwner.FIRST_NAME);
             sourceArgs.put("institutionNumber", sourceAccount.getInstitutionNumber());
             sourceArgs.put("institutionName", sourceAccountInstitutionName);
-            sourceArgs.put("accountNumber", "***" + sourceAccount.getAccountNumber().substring(sourceAccount.getAccountNumber().length() - 3));
+            sourceArgs.put("accountNumber", BankAccount.mask(sourceAccount.getAccountNumber()));
             sourceArgs.put("userEmail", sourceAccountOwner.EMAIL);
             sourceArgs.put("sendTo", sourceAccountOwner.EMAIL);
             sourceArgs.put("link", sourceConfig.getUrl());
@@ -112,7 +112,7 @@ foam.CLASS({
             );
             destinationArgs.put("institutionNumber", destinationAccount.getInstitutionNumber());
             destinationArgs.put("institutionName", destinationAccountInstitutionName);
-            destinationArgs.put("accountNumber", "***" + destinationAccount.getAccountNumber().substring(destinationAccount.getAccountNumber().length() - 3));
+            destinationArgs.put("accountNumber", BankAccount.mask(destinationAccount.getAccountNumber()));
             destinationArgs.put("userEmail", destinationAccountOwner.EMAIL);
             destinationArgs.put("sendTo", destinationAccountOwner.EMAIL);
             destinationArgs.put("link", destinationConfig.getUrl());

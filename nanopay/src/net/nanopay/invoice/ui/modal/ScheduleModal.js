@@ -77,10 +77,10 @@ foam.CLASS({
                   net.nanopay.bank.BankAccountStatus.VERIFIED
                 )),
           objToChoice: function(account) {
-            return [account.id, account.name + ' ' +
-                     '***' +
-                     account.accountNumber.substring(account.accountNumber.length - 3)
-                   ];
+            return [
+              account.id,
+              `${account.name} ${X.bankAccount.mask(account.accountNumber)}`
+            ];
           }
         };
       }

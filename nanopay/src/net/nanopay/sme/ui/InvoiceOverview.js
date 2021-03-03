@@ -41,6 +41,7 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
     'net.nanopay.accounting.xero.model.XeroInvoice',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.bank.CanReceiveCurrency',
@@ -658,9 +659,7 @@ foam.CLASS({
                   //   .start().addClass('table-content').add(this.bankAccountLabel).end()
                   //   .add(this.bankAccount$.map((account) => {
                   //     if ( account ) {
-                  //       return `${account.name} ` +
-                  //         `***` +
-                  //         `${account.accountNumber.slice(-3)}`;
+                  //       return `${account.name} ${self.BankAccount.mask(account.accountNumber)}`;
                   //     } else {
                   //       return '--';
                   //     }
