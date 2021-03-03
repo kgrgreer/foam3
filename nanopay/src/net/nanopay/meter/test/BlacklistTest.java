@@ -550,7 +550,7 @@ public class BlacklistTest extends Test {
       foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())
     );
 
-    ucjUDPAI = UCJTestingUtility.fetchJunctionPeriodically(x, ucjUDPAIPredicate, defaultLoops, defaultMillis, isDebuggingOn, "ucjUDPAI");
+    ucjUDPAI = UCJTestingUtility.fetchJunctionPeriodically(x, ucjUDPAIPredicate, 10, defaultMillis, isDebuggingOn, "ucjUDPAI");
 
     test(ucjBD.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjBD: " + ucjBD.getStatus());
     test(ucjTD.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjTD: " + ucjTD.getStatus());
