@@ -832,6 +832,7 @@ foam.CLASS({
       var business = await this.client.businessDAO.find(junction.targetId);
       try {
         await this.client.agentAuth.actAs(this, business);
+        this.initLayout.resolve();
         this.pushDefaultMenu() 
       } catch (err) {
         var msg = err != null && typeof err.message === 'string'
