@@ -175,7 +175,7 @@ foam.CLASS({
           objToChoice: function(account) {
             return [
               account.id,
-              'Account No. ' + '***' + account.accountNumber.substring(account.accountNumber.length - 3)
+              `Account No. ${X.BankAccount.mask(account.accountNumber)}`
             ]; // TODO: Grab amount and display
           }
         });
