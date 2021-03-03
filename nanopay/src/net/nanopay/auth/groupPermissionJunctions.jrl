@@ -716,7 +716,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"shopper","targe
 
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"abliibusinessreport.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"account.read.*"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"approval.ro.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"approvalrequest.ro.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"bankaccount.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"balance.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"business.read.*"})
