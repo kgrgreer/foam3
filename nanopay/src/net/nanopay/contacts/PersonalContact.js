@@ -59,7 +59,8 @@ foam.CLASS({
     'targetCorridorDAO',
     'pushMenu',
     'subject',
-    'user'
+    'user',
+    'stack'
   ],
 
   requires: [
@@ -477,7 +478,7 @@ foam.CLASS({
     {
       name: 'delete',
       code: function(X) {
-        X.controllerView.add(this.Popup.create(null, X).tag({
+        X.stack.push(this.Popup.create(null, X).tag({//controllerView
           class: 'net.nanopay.contacts.ui.modal.DeleteContactView',
           data: this
         }));
