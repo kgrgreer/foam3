@@ -73,8 +73,17 @@ foam.CLASS({
         ApprovalRequest approvalRequest = (ApprovalRequest) obj;
         Long userId = ((Subject) x.get("subject")).getUser().getId();
         AuthService authService = (AuthService) x.get("auth");
+        DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
+        ApprovalRequest currentApprovalRequestInDAO = (ApprovalRequest) approvalRequestDAO.find(approvalRequest.getId());
 
-        if ( ! authService.check(x, GLOBAL_APPROVAL_UPDATE) && ! SafetyUtil.equals(approvalRequest.getApprover(), userId) ) {
+        if ( 
+          ! authService.check(x, GLOBAL_APPROVAL_UPDATE) &&
+          ! SafetyUtil.equals(approvalRequest.getApprover(), userId) &&
+          ! ( 
+            SafetyUtil.equals(approvalRequest.getCreatedBy(), userId) &&
+            currentApprovalRequestInDAO == null
+          )
+        ){
           throw new AuthorizationException();
         }
 
