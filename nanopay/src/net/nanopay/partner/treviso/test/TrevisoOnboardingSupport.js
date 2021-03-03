@@ -81,19 +81,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'generalAdmission',
-      code: async function(x, user) {
-        // GeneralAdmission-Treviso
-        var id = '242B00F8-C775-4899-AEBA-F287EC54E901';
-        var ucj = await this.crunchService.getJunction(x, id);
-        if ( ! ucj ||
-             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
-        }
-        return ucj;
-      }
-    },
-    {
       name: 'trevisoTermsAndConditions',
       code: async function(x, user) {
         var id = '554af38a-8225-87c8-dfdf-eeb15f71215e-25';
@@ -105,6 +92,19 @@ foam.CLASS({
             agreement: true,
           });
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        }
+        return ucj;
+      }
+    },
+    {
+      name: 'generalAdmission',
+      code: async function(x, user) {
+        // GeneralAdmission-Treviso
+        var id = '242B00F8-C775-4899-AEBA-F287EC54E901';
+        var ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
         }
         return ucj;
       }
