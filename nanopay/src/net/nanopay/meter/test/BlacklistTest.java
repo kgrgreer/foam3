@@ -454,12 +454,27 @@ public class BlacklistTest extends Test {
       }
     }
 
+    Predicate ucjBDDPredicate = foam.mlang.MLang.AND(
+      foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-6-5"),
+      foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())
+    );
+
+    ucjBDD = UCJTestingUtility.fetchJunctionPeriodically(x, ucjBDDPredicate, 5, defaultMillis, isDebuggingOn, "ucjBDD");
+
+    Predicate ucjBODRRPredicate = foam.mlang.MLang.AND(
+      foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID,"554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired"),
+      foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())
+    );
+
+    ucjBODRR = UCJTestingUtility.fetchJunctionPeriodically(x, ucjBODRRPredicate, 5, defaultMillis, isDebuggingOn, "ucjBODRR");
+
     Predicate ucjSOPPredicate = foam.mlang.MLang.AND(
       foam.mlang.MLang.EQ(AgentCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5"),
       foam.mlang.MLang.EQ(AgentCapabilityJunction.SOURCE_ID, myAdmin.getId()),
-      foam.mlang.MLang.EQ(AgentCapabilityJunction.EFFECTIVE_USER, myBusiness.getId()));
+      foam.mlang.MLang.EQ(AgentCapabilityJunction.EFFECTIVE_USER, myBusiness.getId())
+    );
 
-    ucjSOP = UCJTestingUtility.fetchAgentJunctionPeriodically(x, ucjSOPPredicate, 5, defaultMillis, isDebuggingOn,"ucjSOP");
+    ucjSOP = UCJTestingUtility.fetchAgentJunctionPeriodically(x, ucjSOPPredicate, 5, defaultMillis, isDebuggingOn, "ucjSOP");
     
     // approve business approval requests after beneficial owner/signing officers approved
     approvalRequests = ((ArraySink) approvalRequestDAO
@@ -487,7 +502,8 @@ public class BlacklistTest extends Test {
 
     Predicate ucjCDRPredicate = foam.mlang.MLang.AND(
       foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-14"), 
-      foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId()));
+      foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())
+    );
 
     ucjCDR = UCJTestingUtility.fetchJunctionPeriodically(x, ucjCDRPredicate, defaultLoops, defaultMillis, isDebuggingOn, "ucjCDR");
 
@@ -496,12 +512,6 @@ public class BlacklistTest extends Test {
       foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId()));
 
     ucjCOP = UCJTestingUtility.fetchJunctionPeriodically(x, ucjCOPPredicate, defaultLoops, defaultMillis, isDebuggingOn, "ucjCOP");
-
-    Predicate ucjBDDPredicate = foam.mlang.MLang.AND(
-      foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-6-5"),
-      foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId()));
-
-    ucjBDD = UCJTestingUtility.fetchJunctionPeriodically(x, ucjBDDPredicate, defaultLoops, defaultMillis, isDebuggingOn, "ucjBDD");
 
     Predicate ucjCDLPredicate = foam.mlang.MLang.AND(
       foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215e-17"),
@@ -550,17 +560,18 @@ public class BlacklistTest extends Test {
       foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())
     );
 
-    ucjUDPAI = UCJTestingUtility.fetchJunctionPeriodically(x, ucjUDPAIPredicate, 10, defaultMillis, isDebuggingOn, "ucjUDPAI");
+    ucjUDPAI = UCJTestingUtility.fetchJunctionPeriodically(x, ucjUDPAIPredicate, 5, defaultMillis, isDebuggingOn, "ucjUDPAI");
 
     test(ucjBD.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjBD: " + ucjBD.getStatus());
     test(ucjTD.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjTD: " + ucjTD.getStatus());
     test(ucjBOD.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjBOD: " + ucjBOD.getStatus());
     test(ucjCOP.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjCOP: " + ucjCOP.getStatus());
-    test(ucjBDD.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjBDD: " + ucjBDD.getStatus());
     test(ucjCDL.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjCDL: " + ucjCDL.getStatus());
     test(ucjDPAC.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjDPAC: " + ucjDPAC.getStatus());
     test(ucjCDR.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjCDR: " + ucjCDR.getStatus());
     test(ucjABA.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjABA: " + ucjABA.getStatus());
+    test(ucjBODRR.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjBODRR: " + ucjBODRR.getStatus());
+    test(ucjBDD.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjBDD: " + ucjBDD.getStatus());
     test(ucjSOP.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjSOP: " + ucjSOP.getStatus());
     test(ucjUDPAI.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjUDPAI: " + ucjUDPAI.getStatus());
 
