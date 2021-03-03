@@ -177,31 +177,6 @@ foam.CLASS({
 
   properties: [
     ['updated', false],
-    // {
-    //   class: 'foam.dao.DAOProperty',
-    //   name: 'enabledBusinesses_',
-    //   documentation: `
-    //     The DAO used to populate the enabled businesses in the list.
-    //   `,
-    //   expression: function(subject, updated) {
-    //     var agent = subject.realUser;
-    //     var user = subject.user;
-    //     var party = agent.created ? agent : user;
-    //     return this.PromisedDAO.create({
-    //       promise: party.entities.dao
-    //         .where(this.NEQ(this.Business.STATUS, this.AccountStatus.DISABLED))
-    //         .select(this.MAP(this.Business.ID))
-    //         .then(mapSink => {
-    //           return party.entities.junctionDAO.where(
-    //             this.AND(
-    //               this.EQ(this.UserUserJunction.SOURCE_ID, party.id),
-    //               this.IN(this.UserUserJunction.TARGET_ID, mapSink.delegate.array)
-    //             )
-    //           );
-    //         })
-    //     });
-    //   }
-    // },
     net.nanopay.ui.Controller.ENABLED_BUSINESSES_.clone(),
     {
       class: 'foam.dao.DAOProperty',

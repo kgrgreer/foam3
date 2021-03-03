@@ -830,7 +830,15 @@ foam.CLASS({
     },
     async function assignBusinessAndLogIn(junction) {
       var business = await this.client.businessDAO.find(junction.targetId);
-      this.client.agentAuth.actAs(this, business);
+      try {
+        await this.client.agentAuth.actAs(this, business);
+        this.pushDefaultMenu() 
+      } catch (err) {
+        var msg = err != null && typeof err.message === 'string'
+          ? err.message
+          : this.BUSINESS_LOGIN_FAILED;
+        this.notify(msg, '', this.LogLevel.ERROR, true);
+      }
       return
     },
     async function pushDefaultMenu() {
@@ -881,7 +889,8 @@ foam.CLASS({
               }
               if ( sink.array.length > 1 ) {
                 // If more than one business, direct to switch-business menu
-                this.pushMenu('sme.accountProfile.switch-business')
+                this.pushMenu('sme.accountProfile.switch-business');
+                return;
               }
       
               if ( sink.array.length === 1 ) {
@@ -890,6 +899,9 @@ foam.CLASS({
                 await this.assignBusinessAndLogIn(junction);
                 return;
               }
+              // if sink.array.length === 0, push to default page
+              await this.pushDefaultMenu();
+              return;
             }
           }
 
