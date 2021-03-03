@@ -188,7 +188,6 @@ foam.CLASS({
       label: 'Is this the business owner?',
       section: 'requiredSection',
       visibility: function(cpfName, mode) {
-      debugger;
         return mode === 'percent' ?
           foam.u2.DisplayMode.HIDDEN : cpfName.length > 0 ?
             foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
@@ -281,7 +280,6 @@ foam.CLASS({
       label: 'Please upload proof of address',
       section: 'requiredSection',
       view: function(_, X) {
-      debugger;
         let selectSlot = foam.core.SimpleSlot.create({ value: 0 });
         return foam.u2.MultiView.create({
         views: [
@@ -311,7 +309,6 @@ foam.CLASS({
       label: 'Please upload proof of identification',
       section: 'requiredSection',
       view: function(_, X) {
-      debugger;
         let selectSlot = foam.core.SimpleSlot.create({ value: 0 });
         return foam.u2.MultiView.create({
         views: [
