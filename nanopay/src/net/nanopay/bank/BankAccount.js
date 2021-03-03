@@ -797,7 +797,11 @@ foam.CLASS({
       ],
       documentation: 'Set bank info from the routingCode. To be implemented by the sub-classes.',
       javaCode: `
-        throw new RuntimeException("Not yet implemented");
+        var logger = (Logger) getX().get("logger");
+        logger.error(this.getClass().getSimpleName(), "setRoutingCode() is not yet implemented.");
+        // TODO: Need routing code validation similar to IBAN validation to
+        // parse the routingCode and convert it into bank code and branch code.
+        return true;
       `
     },
     function purgeCachedDAOs() {

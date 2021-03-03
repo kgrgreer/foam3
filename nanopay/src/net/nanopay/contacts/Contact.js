@@ -68,7 +68,6 @@ foam.CLASS({
     'foam.nanos.auth.Country',
     'foam.u2.dialog.Popup',
     'foam.u2.DisplayMode',
-    'foam.u2.LoadingSpinner',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.bank.INBankAccount',
     'net.nanopay.contacts.ContactStatus',

@@ -30,7 +30,7 @@ foam.CLASS({
   sections: [
     {
       name: 'transactionSection',
-      title: 'Transaction details',
+      title: 'Transactional Information',
       help: `Require details on the company's transactions.`,
       order: 1
     },

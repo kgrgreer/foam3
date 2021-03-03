@@ -55,7 +55,8 @@ foam.CLASS({
     { name: 'PLEASE_SELECT', message: 'Please select...' },
     { name: 'YES', message: 'Yes' },
     { name: 'NO', message: 'No' },
-    { name: 'SELECT_HAVE_SIGNED_CONTRACT', message: 'As the signing officer of this business, you are required to have signed this contract.' }
+    { name: 'SELECT_HAVE_SIGNED_CONTRACT', message: 'As the signing officer of this business, you are required to have signed this contract.' },
+    { name: 'OTHER_KEY', message: 'Other' }
   ],
 
   properties: [
@@ -97,7 +98,7 @@ foam.CLASS({
       view: function(_, X) {
         return {
           class: 'foam.u2.view.ChoiceWithOtherView',
-          otherKey: 'Other',
+          otherKey: X.data.OTHER_KEY,
           choiceView: {
             class: 'foam.u2.view.ChoiceView',
             placeholder: X.data.PLEASE_SELECT,

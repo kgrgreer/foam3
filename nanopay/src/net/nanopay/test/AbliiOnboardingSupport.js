@@ -308,6 +308,7 @@ foam.CLASS({
         ));
         if ( ! u ) {
           u = await this.client(x, 'userDAO', foam.nanos.auth.User).put_(x, foam.nanos.auth.User.create({
+            spid: 'ablii',
             email: email,
             userName: userName,
             firstName: userName,
@@ -529,7 +530,7 @@ foam.CLASS({
     {
       name: 'businessLastRegistrationDate',
       code: async function(x, business) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-19';
+        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-19'; // this is br/treviso capability
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -1133,6 +1134,36 @@ foam.CLASS({
         }
         return ucj;
       }
-    }
+    },
+    {
+      name: 'explicitInternationalOnboardingCaps',
+      code: async function(x, business) {
+        var id = '05a663b8-2b48-11eb-adc1-0242ac120002';
+        var ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        }
+        id = '0B2E7305-B898-43F2-9C1B-63FB2CE38B2D';
+        ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        }
+        id = 'bf6a49d5-4027-4dac-a269-4d3ed070609e-4'; 
+        ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        }
+        id = '89cc91da-4bbd-458b-81d4-574815e455fa-4'; 
+        ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        }
+        return ucj;
+      }
+    },
   ]
 });

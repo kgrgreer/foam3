@@ -61,35 +61,3 @@ p({
   "created":"2020-03-28T14:57:12.959Z",
   "createdBy":2
 })
-
-p({
-  "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"node3",
-  "name":"node3",
-  "enabled":true,
-  "realm":"nanopay",
-  "region":"Toronto",
-  "regionStatus":1,
-  "zone":0,
-  "port":8220,
-  "sessionId":"086C9BA5-7E06-4E96-9F7E-FE3CD7347EE3",
-  "type":1,
-  "created":"2020-03-28T14:57:12.959Z",
-  "createdBy":2
-})
-
-p({
-  "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"node4",
-  "name":"node4",
-  "enabled":true,
-  "realm":"nanopay",
-  "region":"Toronto",
-  "regionStatus":1,
-  "zone":0,
-  "port":8230,
-  "sessionId":"B73FCE34-7F0C-4BC1-A0F1-F2CCF5ECC976",
-  "type":1,
-  "created":"2020-03-28T14:57:12.959Z",
-  "createdBy":2
-})

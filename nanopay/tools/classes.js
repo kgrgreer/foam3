@@ -952,6 +952,7 @@ var classes = [
   'net.nanopay.meter.compliance.secureFact.SecurefactRequest',
   'net.nanopay.meter.compliance.secureFact.SecurefactResponse',
   'net.nanopay.meter.compliance.secureFact.SecurefactService',
+  'net.nanopay.meter.compliance.secureFact.MockSecurefactService',
   'net.nanopay.meter.compliance.secureFact.sidni.SIDniRequest',
   'net.nanopay.meter.compliance.secureFact.sidni.SIDniCustomer',
   'net.nanopay.meter.compliance.secureFact.sidni.SIDniName',
