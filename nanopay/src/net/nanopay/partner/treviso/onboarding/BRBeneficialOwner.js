@@ -188,6 +188,7 @@ foam.CLASS({
       label: 'Is this the business owner?',
       section: 'requiredSection',
       visibility: function(cpfName, mode) {
+      debugger;
         return mode === 'percent' ?
           foam.u2.DisplayMode.HIDDEN : cpfName.length > 0 ?
             foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
@@ -233,7 +234,7 @@ foam.CLASS({
       II - control, direct or indirect, by a politically exposed person, in the case of a corporate client;
       and III – habitual movement of financial resources from or to a politically exposed person Client of the institution,
                 not justified by economic events, such as the acquisition of goods or provision of services;".
-      
+
       `,
       value: false,
       visibility: function(mode) {
@@ -280,6 +281,7 @@ foam.CLASS({
       label: 'Please upload proof of address',
       section: 'requiredSection',
       view: function(_, X) {
+      debugger;
         let selectSlot = foam.core.SimpleSlot.create({ value: 0 });
         return foam.u2.MultiView.create({
         views: [
@@ -298,6 +300,9 @@ foam.CLASS({
         if ( documentsOfAddress.length === 0 ) {
           return this.PROOF_OF_ADDRESS;
         }
+      },
+      visibility: function(mode) {
+        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       }
     },
     {
@@ -306,6 +311,7 @@ foam.CLASS({
       label: 'Please upload proof of identification',
       section: 'requiredSection',
       view: function(_, X) {
+      debugger;
         let selectSlot = foam.core.SimpleSlot.create({ value: 0 });
         return foam.u2.MultiView.create({
         views: [
@@ -324,6 +330,9 @@ foam.CLASS({
         if ( documentsOfId.length === 0 ) {
           return this.PROOF_OF_IDENTIFICATION;
         }
+      },
+      visibility: function(mode) {
+        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       }
     }
   ],
