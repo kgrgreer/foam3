@@ -430,6 +430,15 @@ support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport.create({
         throw e;
       }
 
+      name = 'corridor: ';
+      try {
+        ucj = await support.corridor(x, u);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
       // business bank account
       try {
         let bank = await support.createBRBankAccount(x, business);
