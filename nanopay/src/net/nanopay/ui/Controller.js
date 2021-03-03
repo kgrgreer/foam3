@@ -887,9 +887,9 @@ foam.CLASS({
                 this.onboardingUtil.initUserRegistration(ac);
                 return;
               }
-              if ( sink.array.length > 1 ) {
-                // If more than one business, direct to switch-business menu
-                this.pushMenu('sme.accountProfile.switch-business');
+              if ( sink.array.length === 0 ) {
+                // if sink.array.length === 0, push to default page
+                await this.pushDefaultMenu();
                 return;
               }
       
@@ -899,9 +899,6 @@ foam.CLASS({
                 await this.assignBusinessAndLogIn(junction);
                 return;
               }
-              // if sink.array.length === 0, push to default page
-              await this.pushDefaultMenu();
-              return;
             }
           }
 
