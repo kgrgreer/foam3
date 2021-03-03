@@ -85,7 +85,7 @@ public class BillingCron implements ContextAgent {
         String name = "BillingCron: Unable to find bank account to bill user: " + userId;
         DAO alarmDAO = (DAO) x.get("alarmDAO");
         Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, name));
-        if ( alarm != null && alarm.getIsActive() ) { return; }
+        if ( alarm != null && alarm.getIsActive() ) { continue; }
         alarm = new Alarm.Builder(x)
                   .setName(name)
                   .setIsActive(true)
@@ -93,7 +93,7 @@ public class BillingCron implements ContextAgent {
                   .build();
         alarmDAO.put(alarm);
         ((Logger) x.get("logger")).warning(name);
-        return;
+        continue;
       }
       
       Account userAccount = (Account) userAccountSink.getArray().get(0);
