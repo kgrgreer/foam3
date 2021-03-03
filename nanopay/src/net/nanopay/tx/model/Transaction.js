@@ -81,6 +81,7 @@ foam.CLASS({
     'foam.core.ValidationException',
     'net.nanopay.account.Balance',
     'static foam.mlang.MLang.EQ',
+    'net.nanopay.tx.creditengine.AbstractCreditCodeAccount',
     'net.nanopay.tx.planner.AbstractTransactionPlanner'
   ],
 
