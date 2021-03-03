@@ -239,9 +239,9 @@ foam.CLASS({
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
       },
-      tableCellFormatter: function(str) {
+      tableCellFormatter: function(str, obj) {
         if ( ! str ) return;
-        var displayAccountNumber = '***' + str.substring(str.length - 3);
+        var displayAccountNumber = obj.mask(str);
         this.start()
           .add(displayAccountNumber);
         this.tooltip = displayAccountNumber;
@@ -422,18 +422,15 @@ foam.CLASS({
         .start()
           .add(obj.slot((accountNumber) => {
               if ( accountNumber ) {
-                accountNumber = `***${accountNumber.substring(accountNumber.length - 3)}`;
-
                 return this.E()
                   .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('accountNumber').label} `).end()
-                  .start('span').add(accountNumber).end();
+                  .start('span').add(obj.mask(accountNumber)).end();
               }
           }))
         .end();
       },
       javaFactory: `
-        return getAccountNumber() == null ? "" :
-          "***" + getAccountNumber().substring(getAccountNumber().length() - 3);
+        return BankAccount.mask(getAccountNumber());
       `
     },
     {
@@ -662,6 +659,27 @@ foam.CLASS({
           label: this.name
         }));
       }
+    }
+  ],
+
+  static: [
+    {
+      name: 'mask',
+      documentation: `
+        Use this method instead of obfusicate if specific mask format is required.
+        Currently formats str using ***### format. Update this method or 
+        use obfusicate if format changes.
+      `,
+      code: function(str) {
+        return str ? `***${str.substring(str.length - 3)}` : '';
+      },
+      type: 'String',
+      args: [
+        { name: 'str', type: 'String' }
+      ],
+      javaCode: `
+        return str == null ? "" : "***" + str.substring(str.length() - 3);
+      `
     }
   ],
 
