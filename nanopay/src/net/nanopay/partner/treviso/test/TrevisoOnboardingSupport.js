@@ -52,6 +52,7 @@ foam.CLASS({
         ));
         if ( ! u ) {
           u = await this.client(x, 'userDAO', foam.nanos.auth.User).put_(x, foam.nanos.auth.User.create({
+            spid: 'treviso',
             email: email,
             userName: userName,
             firstName: userName,
