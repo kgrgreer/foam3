@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import net.nanopay.account.Account;
+import net.nanopay.bank.BankAccount;
 import net.nanopay.tx.billing.Bill;
 import net.nanopay.tx.billing.BillingFee;
 import net.nanopay.tx.model.Transaction;
@@ -69,7 +70,12 @@ public class BillingCron implements ContextAgent {
     Account feeAccount = (Account) x.get("feeAccount");
     for ( Long userId : billingMap.keySet() ) {
       ArraySink userAccountSink = (ArraySink) ((DAO) x.get("localAccountDAO"))
-        .where(EQ(Account.OWNER, userId))
+        .where(
+          AND(
+            EQ(Account.OWNER, userId),
+            INSTANCE_OF(BankAccount.class)
+          )
+        )
         .orderBy(Account.CREATED)
         .limit(1)
         .select(new ArraySink());
@@ -101,6 +107,7 @@ public class BillingCron implements ContextAgent {
       try {
         billingTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).put(billingTxn);
         for ( Bill bill : billList ) {
+          bill = (Bill) bill.fclone();
           bill.setBillingTransaction(billingTxn.getId());
           bill.setStatus(TransactionStatus.SENT);
           ((DAO) x.get("billDAO")).put(bill);
