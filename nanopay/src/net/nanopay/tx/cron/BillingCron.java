@@ -21,6 +21,7 @@ import foam.core.ContextAgent;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.nanos.alarming.Alarm;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
@@ -79,8 +80,23 @@ public class BillingCron implements ContextAgent {
         .orderBy(Account.CREATED)
         .limit(1)
         .select(new ArraySink());
-      Account userAccount = (Account) userAccountSink.getArray().get(0);
       
+      if ( userAccountSink.getArray().size() == 0 ) {
+        String name = "BillingCron: Unable to find bank account to bill user: " + userId;
+        DAO alarmDAO = (DAO) x.get("alarmDAO");
+        Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, name));
+        if ( alarm != null && alarm.getIsActive() ) { return; }
+        alarm = new Alarm.Builder(x)
+                  .setName(name)
+                  .setIsActive(true)
+                  .setNote("Bank account for user: " + userId + " does not exist")
+                  .build();
+        alarmDAO.put(alarm);
+        ((Logger) x.get("logger")).warning(name);
+        return;
+      }
+      
+      Account userAccount = (Account) userAccountSink.getArray().get(0);
       long amount = 0;
       String currency = userAccount.getDenomination();
       List<Bill> billList = billingMap.get(userId);
