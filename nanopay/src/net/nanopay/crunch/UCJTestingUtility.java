@@ -26,7 +26,7 @@ import foam.nanos.crunch.UserCapabilityJunction;
 
 
 public class UCJTestingUtility {
-  public static UserCapabilityJunction fetchJunctionPeriodically(X x, Predicate predicate, int loops, int millisSleep, boolean isDebuggingOn, String debuggerName){
+  public static UserCapabilityJunction fetchJunctionPeriodically(X x, CapabilityJunctionStatus status, Predicate predicate, int loops, int millisSleep, boolean isDebuggingOn, String debuggerName){
     DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
     UserCapabilityJunction ucj = null;
 
@@ -38,7 +38,7 @@ public class UCJTestingUtility {
         System.out.println(debuggerName + " loop " + i + ": " + ucj.getStatus());
       }
 
-      if (ucj.getStatus() == CapabilityJunctionStatus.GRANTED) {
+      if (ucj.getStatus() == status) {
         break;
       }
       try {
@@ -52,7 +52,7 @@ public class UCJTestingUtility {
     return ucj;
   }
 
-  public static AgentCapabilityJunction fetchAgentJunctionPeriodically(X x, Predicate predicate, int loops, int millisSleep, boolean isDebuggingOn, String debuggerName){
+  public static AgentCapabilityJunction fetchAgentJunctionPeriodically(X x, CapabilityJunctionStatus status, Predicate predicate, int loops, int millisSleep, boolean isDebuggingOn, String debuggerName){
     DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
     AgentCapabilityJunction ucj = null;
 
@@ -64,7 +64,7 @@ public class UCJTestingUtility {
         System.out.println(debuggerName + " loop " + i + ": " + ucj.getStatus());
       }
 
-      if (ucj.getStatus() == CapabilityJunctionStatus.GRANTED) {
+      if (ucj.getStatus() == status) {
         break;
       }
       try {
