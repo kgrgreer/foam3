@@ -302,7 +302,8 @@ p({
   "keywords":["featured"],
   "permissionsGranted":[
     "business.invoice.pay",
-    "menu.read.capability.main.invoices.receivables"
+    "menu.read.capability.main.invoices.receivables",
+    "invoice.create"
   ],
   "permissionsIntercepted": [
     "business.invoice.pay"
@@ -329,7 +330,8 @@ p({
   "reviewRequired":true,
   "permissionsGranted":[
     "business.invoice.pay",
-    "menu.read.capability.main.invoices.receivables"
+    "menu.read.capability.main.invoices.receivables",
+    "invoice.create"
   ],
   "permissionsIntercepted": [
     "business.invoice.pay"
