@@ -97,6 +97,7 @@ foam.CLASS({
 
         ClearingTimesTrait trait = (ClearingTimesTrait) transaction;
         int totalClearingTime = trait.getClearingTimes().values().stream()
+          .map(Long::intValue)
           .reduce(0, Integer::sum);
         if ( trait.getClearingTimes().isEmpty()
           || totalClearingTime < 0
