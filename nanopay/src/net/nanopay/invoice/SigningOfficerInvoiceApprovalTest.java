@@ -480,8 +480,9 @@ for ( ApprovalRequest approvalRequest : approvalRequests ) {
 
 Predicate ucjSOPPredicate = foam.mlang.MLang.AND(
   foam.mlang.MLang.EQ(AgentCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5"),
-  foam.mlang.MLang.EQ(AgentCapabilityJunction.SOURCE_ID, myAdmin.getId()),
-  foam.mlang.MLang.EQ(AgentCapabilityJunction.EFFECTIVE_USER, myBusiness.getId()));
+  foam.mlang.MLang.EQ(AgentCapabilityJunction.SOURCE_ID, myApprover.getId()),
+  foam.mlang.MLang.EQ(AgentCapabilityJunction.EFFECTIVE_USER, myBusiness.getId())
+);
 
 ucjSOP = UCJTestingUtility.fetchAgentJunctionPeriodically(x, ucjSOPPredicate, 5, defaultMillis, isDebuggingOn, "ucjSOP");
 
