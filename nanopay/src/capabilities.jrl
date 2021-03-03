@@ -556,6 +556,7 @@ p({
   "permissionsGranted":[
   "menu.read.mainmenu.banking",
   "menu.read.mainmenu.contacts",
+  "menu.read.mainmenu.contacts2",
   ]
 })
 

@@ -59,7 +59,8 @@ foam.CLASS({
     'publicBusinessDAO',
     'pushMenu',
     'subject',
-    'user'
+    'user',
+    'stack'
   ],
 
   requires: [
@@ -234,7 +235,7 @@ foam.CLASS({
         return this.signUpStatus === this.ContactStatus.READY && this.businessId === 0;
       },
       code: function(X) {
-        X.controllerView.add(this.WizardController.create({
+        X.stack.push(this.WizardController.create({//controllerView
           model: 'net.nanopay.contacts.Contact',
           data: this,
           controllerMode: foam.u2.ControllerMode.EDIT,

@@ -60,7 +60,7 @@ p({
     "class":"foam.nanos.menu.DAOMenu",
     "daoKey":"contactDAO",
     "title":"Contacts",
-    "searchMode":2,
+    "searchMode":0,
     "editPredicate":{"class":"foam.mlang.predicate.False"},
     "createPredicate":{"class":"foam.mlang.predicate.True"},
     "exportEnabled":false,
@@ -82,6 +82,154 @@ p({
   "order":503,
   "parent":"smeNavigation"
 })
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"mainmenu.contacts2",
+  "label":"Contacts DAOMenu2",
+  "xxxparent":"gateways",
+  "icon":"images/ablii/contacts-icon-resting.svg",
+  "activeIcon":"images/ablii/contacts-icon-active.svg",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"contactDAO",
+      "browseTitle": "Contacts",
+      "XXXbrowseSubtitle": "API calls for services.",
+      "createTitle": "Create contact",
+      "createPredicate":{"class":"foam.mlang.predicate.True"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"},
+      "searchMode":0,
+
+
+      "exportEnabled":false,
+      "createEnabled":true,
+      "XXXeditEnabled":false,
+
+
+      "summaryView":{ "class":"net.nanopay.contacts.ui.ContactTableView" },
+      "createLabel":"Add contact",
+      "AAAcreateLabel":{
+        "Label":"Add contact",
+      },
+      "createControllerView":{
+        "class":"net.nanopay.sme.ui.MenuRedirectSMEModalView",
+        "menu":"mainmenu.contacts",
+        "view":{
+          "class":"foam.nanos.menu.MenuToolBar",
+          "classification":"submenu.contact",
+          "parent":"sme",
+          "title":"Add contact"
+        }
+      },
+      "XXXdefaultColumns":[
+        "type",
+        "id",
+        "name",
+        "owner"
+      ],
+      "XXXCRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "net.nanopay.liquidity.crunch.LiquidEnabledActionsAuth",
+          "modelName": "user"
+        }
+      },
+      "XXXfilterExportPredicate": {
+        "class": "foam.mlang.predicate.Neq",
+        "arg1": {
+          "class": "__Property__",
+          "forClass_": "foam.nanos.export.ExportDriverRegistry",
+          "name": "id"
+        },
+        "arg2": {
+          "class": "foam.mlang.Constant",
+          "value": "CSV"
+        }
+      },
+      "XXXfactory": "net.nanopay.account.AggregateAccount",
+      "XXXcannedQueries": [
+        {
+          "class": "foam.comics.v2.CannedQuery",
+          "label": "All",
+          "predicate": {
+            "class": "foam.mlang.predicate.And",
+            "args": [
+              {
+                "class": "foam.mlang.predicate.Eq",
+                "arg1": {
+                  "class": "__Property__",
+                  "forClass_": "net.nanopay.account.Account",
+                  "name": "isDefault"
+                },
+                "arg2": {
+                  "class": "foam.mlang.Constant",
+                  "value": false
+                }
+              },
+              {
+                "class": "foam.mlang.predicate.Or",
+                "args": [
+                  {
+                    "class": "foam.mlang.predicate.IsInstanceOf",
+                    "targetClass": "net.nanopay.account.ShadowAccount"
+                  },
+                  {
+                    "class": "foam.mlang.predicate.IsInstanceOf",
+                    "targetClass": "net.nanopay.account.AggregateAccount"
+                  },
+                  {
+                    "class": "foam.mlang.predicate.IsClassOf",
+                    "targetClass": "net.nanopay.account.SecuritiesAccount"
+                  },
+                  {
+                    "class": "foam.mlang.predicate.IsClassOf",
+                    "targetClass": "net.nanopay.account.DigitalAccount"
+                  }
+                ]
+              }
+            ]
+          }
+        }],
+
+        "XXXbrowseViews": [
+          {
+            "class": "foam.comics.v2.namedViews.NamedViewCollection",
+            "name": "Transactions",
+            "view": { "class": "net.nanopay.liquidity.ui.transaction.TransactionDAOBrowserView" }
+          }
+        ],
+        "XXXviewBorder": {
+          "class": "net.nanopay.liquidity.ui.transaction.LiquidSourceAccountFilterBorder"
+        }
+
+    },
+  },
+  "order":503,
+  "parent":"smeNavigation",
+  "XXXregistrations":[
+    {
+      "class":"foam.nanos.menu.XRegistration",
+      "targetName":"net.nanopay.liquidity.ui.account.AccountDetailView",
+      "className":"foam.u2.detail.SectionedDetailView"
+    },
+    {
+      "class":"foam.nanos.menu.XRegistration",
+      "targetName":"net.nanopay.account.AccountDAOSummaryViewView",
+      "className":"foam.u2.detail.SectionedDetailView"
+    },
+    {
+      "class":"foam.nanos.menu.XRegistration",
+      "targetName":"net.nanopay.account.AccountDAOSummaryView",
+      "className":"foam.comics.v2.DAOSummaryView"
+    }
+  ]
+})
+
+
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "mainmenu.banking",
