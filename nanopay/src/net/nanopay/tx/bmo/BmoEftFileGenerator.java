@@ -260,6 +260,7 @@ public class BmoEftFileGenerator implements EFTFileGenerator {
           detailRecord.setAmount              (-transaction.getTotal(x, transaction.getSourceAccount()));
           detailRecord.setLogicalRecordTypeId (type);
           detailRecord.setClientName          (getNameById(bankAccount.getOwner()));
+          // Question: Would BMO accept the standard 9 digit Canadian routing code? Or just the institution + branch which is only 8 digits.
           detailRecord.setClientInstitutionId (getInstitutionById(branch.getInstitution()) + branch.getBranchId());
           detailRecord.setClientAccountNumber (bankAccount.getAccountNumber());
           detailRecord.setReferenceNumber     (String.valueOf(getRefNumber(transaction)));

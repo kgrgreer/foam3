@@ -372,6 +372,15 @@ foam.CLASS({
       required: false,
       validateObj: function(swiftCode) {
       }
+    },
+    {
+      name: 'bankRoutingCode',
+      javaPostSet: `
+        if ( val != null && BRANCH_ID_PATTERN.matcher(val).matches() ) {
+          clearBranch();
+          setBranchId(val);
+        }
+      `
     }
   ],
 
@@ -448,19 +457,6 @@ foam.CLASS({
       ],
       javaCode: `
         return getBranchId();
-      `
-    },
-    {
-      name: 'setRoutingCode',
-      javaCode: `
-        if ( routingCode != null
-          && BRANCH_ID_PATTERN.matcher(routingCode).matches()
-        ) {
-          clearBranch();
-          setBranchId(routingCode);
-          return true;
-        }
-        return false;
       `
     }
  ]

@@ -780,7 +780,7 @@ foam.CLASS({
     {
       name: 'approveRequest',
       type: 'foam.nanos.approval.ApprovalRequest',
-      code: async function(x, groupId, daoKey, objId) {
+      code: async function(x, groupId, daoKey, classification) {
         let y = this.sudoStore(x);
         let z = this.sudoAdmin(x);
         const E = foam.mlang.ExpressionsSingleton.create();
@@ -788,19 +788,19 @@ foam.CLASS({
         var u = await this.client(z, 'userDAO', foam.nanos.auth.User).find(E.EQ(foam.nanos.auth.User.GROUP, groupId));
         if ( u ) {
           console.info('approveRequest', 'approver', u.id);
-          var r = await this.findApprovalRequest(z, u, daoKey, objId);
+          var r = await this.findApprovalRequest(z, u, daoKey, classification);
           if ( r ) {
             console.info('approveRequest', 'approval', r.id, r.status);
             r = r.clone();
             r.status = foam.nanos.approval.ApprovalStatus.APPROVED;
             r.isFulfilled = true;
             r = await this.client(z, 'approvalRequestDAO', foam.nanos.approval.ApprovalRequest).put_(z, r);
-            console.info('approveRequest', 'approved', r & r.id, r & r.status);
+            console.info('approveRequest', 'approved', r && r.id, r && r.status);
             this.sudoRestore(y);
             return r;
           }
           this.sudoRestore(y);
-          throw 'ApprovalRequest not found for objId '+objId;
+          throw 'ApprovalRequest not found for classification '+classification;
         }
         this.sudoRestore(y);
         throw 'ApprovalRequest user not found in group '+groupId;
@@ -809,13 +809,13 @@ foam.CLASS({
     {
       name: 'findApprovalRequest',
       type: 'foam.nanos.approval.ApprovalRequest',
-      code: async function(x, approver, daoKey, objId) {
+      code: async function(x, approver, daoKey, classification) {
         const E = foam.mlang.ExpressionsSingleton.create();
         return await this.client(x, 'approvalRequestDAO', foam.nanos.approval.ApprovalRequest).find(
           E.AND(
             E.EQ(foam.nanos.approval.ApprovalRequest.APPROVER, approver.id),
             E.EQ(foam.nanos.approval.ApprovalRequest.DAO_KEY, daoKey),
-            E.EQ(foam.nanos.approval.ApprovalRequest.OBJ_ID, objId),
+            E.EQ(foam.nanos.approval.ApprovalRequest.CLASSIFICATION, classification),
             E.EQ(foam.nanos.approval.ApprovalRequest.IS_FULFILLED, false)
           )
         );
