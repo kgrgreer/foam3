@@ -115,6 +115,9 @@ foam.CLASS({
           txn.setDestinationCurrency(quote.getDestinationAccount().getDenomination());
         }
 
+        quote.setAmount(txn.getAmount());
+        quote.setDestinationAmount(txn.getDestinationAmount());
+
         quote.setSourceUnit(txn.getSourceCurrency());
         quote.setDestinationUnit(txn.getDestinationCurrency());
         if ( quote.getParent() != null && quote.getParent().getRequestOwner() != 0 ){
