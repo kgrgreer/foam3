@@ -678,7 +678,7 @@ foam.CLASS({
         { name: 'str', type: 'String' }
       ],
       javaCode: `
-        return str == null ? "" : "***" + str.substring(str.length() - 3);
+        return str == null ? "" : "***" + str.substring(str.length() - Math.min(str.length(), 3));
       `
     }
   ],
