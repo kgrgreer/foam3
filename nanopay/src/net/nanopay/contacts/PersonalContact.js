@@ -73,7 +73,7 @@ foam.CLASS({
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.payment.PaymentProviderCorridor',
-    'net.nanopay.ui.wizard.WizardController'
+    'net.nanopay.ui.wizard.ContactWizardDetailView'
   ],
 
   constants: [
@@ -152,7 +152,6 @@ foam.CLASS({
       name: 'email',
       documentation: 'The email address of the Contact.',
       label: 'Email',
-      view: { class: 'foam.u2.tag.Input' },
       validateObj: function(email) {
         var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if ( ! emailRegex.test(email) ) {
@@ -162,7 +161,6 @@ foam.CLASS({
     },
     {
       name: 'firstName',
-      view: { class: 'foam.u2.tag.Input' },
       validateObj: function(firstName) {
         if ( !! firstName ) {
           if ( firstName.length > this.NAME_MAX_LENGTH ) {
@@ -178,7 +176,6 @@ foam.CLASS({
     },
     {
       name: 'lastName',
-      view: { class: 'foam.u2.tag.Input' },
       validateObj: function(lastName) {
         if ( !! lastName ) {
           if ( lastName.length > this.NAME_MAX_LENGTH ) {
@@ -384,7 +381,7 @@ foam.CLASS({
         return this.signUpStatus !== this.ContactStatus.READY && ! this.bankAccount;
       },
       code: function(X) {
-        X.controllerView.add(this.WizardController.create({
+        X.controllerView.add(this.ContactWizardDetailView.create({
           model: 'net.nanopay.contacts.Contact',
           data: this,
           controllerMode: foam.u2.ControllerMode.CREATE,
@@ -396,7 +393,7 @@ foam.CLASS({
       name: 'edit',
       label: 'Edit Details',
       code: function(X) {
-        X.controllerView.add(this.WizardController.create({
+        X.controllerView.add(this.ContactWizardDetailView.create({
           model: 'net.nanopay.contacts.Contact',
           data: this,
           controllerMode: foam.u2.ControllerMode.EDIT,
@@ -420,7 +417,7 @@ foam.CLASS({
           createdBy: this.subject.user.id,
           isContact: true
         }, X);
-        X.controllerView.add(this.WizardController.create({
+        X.controllerView.add(this.ContactWizardDetailView.create({
           model: 'net.nanopay.model.Invitation',
           data: invite,
           controllerMode: foam.u2.ControllerMode.EDIT

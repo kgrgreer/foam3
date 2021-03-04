@@ -15,6 +15,14 @@ p({
     return new net.nanopay.auth.BusinessAgentAuthService.Builder(x)
       .setDelegate(new foam.nanos.auth.AgentUserAuthService(x))
       .build();
+  """,
+  "client": """
+    {
+      "class": "foam.nanos.auth.AgentAuthClient",
+      "delegate": {
+        "class": "foam.nanos.auth.ClientAgentAuthService"
+      }
+    }
   """
 })
 
