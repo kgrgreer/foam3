@@ -25,13 +25,10 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.DAO',
     'foam.nanos.crunch.UserCapabilityJunction',
     'net.nanopay.model.Business',
     'foam.nanos.approval.ApprovalRequest',
-    'foam.util.SafetyUtil',
-    'net.nanopay.meter.compliance.ComplianceApprovalRequest',
-    'static foam.mlang.MLang.EQ'
+    'net.nanopay.meter.compliance.ComplianceApprovalRequest'
   ],
 
   properties: [
@@ -42,26 +39,6 @@ foam.CLASS({
   ],
 
   methods: [
-    {
-      name: 'requestApproval',
-      type: 'Void',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'approvalRequest',
-          type: 'foam.nanos.approval.ApprovalRequest'
-        }
-      ],
-      javaCode: `
-        if ( SafetyUtil.isEmpty(approvalRequest.getGroup()) ) {
-          approvalRequest.setGroup(getApproverGroupId());
-        }
-        ((DAO) x.get("approvalRequestDAO")).put_(x, approvalRequest);
-      `
-    },
     {
       name: 'applyAction',
       javaCode: `
@@ -80,6 +57,7 @@ foam.CLASS({
                 .setDaoKey("userCapabilityJunctionDAO")
                 .setRefObjId(business.getId())
                 .setRefDaoKey("businessDAO")
+                .setCreatedFor(business.getId())
                 .setClassification(getClassification())
                 .setGroup(group)
                 .build()
