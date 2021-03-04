@@ -9,3 +9,22 @@ p({
     baseUrl:"https://djrc.api.test.dowjones.com/v1/search/"
   }
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "accuityCredentials",
+  "service": {
+    "class": "net.nanopay.partner.accuity.AccuityCredentials",
+    "baseUrl": "https://apps.applyfinancial.co.uk",
+    "username": "nadir@nanopay.net",
+    "password": "NaPa0212!"
+  }
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "bankAccountValidationService",
+  "service": {
+    "class": "net.nanopay.partner.accuity.AccuityBankAccountValidationService"
+  }
+})
