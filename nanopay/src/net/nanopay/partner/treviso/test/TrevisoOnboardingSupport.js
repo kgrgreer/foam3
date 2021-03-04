@@ -52,6 +52,7 @@ foam.CLASS({
         ));
         if ( ! u ) {
           u = await this.client(x, 'userDAO', foam.nanos.auth.User).put_(x, foam.nanos.auth.User.create({
+            spid: 'treviso',
             email: email,
             userName: userName,
             firstName: userName,
@@ -81,19 +82,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'generalAdmission',
-      code: async function(x, user) {
-        // GeneralAdmission-Treviso
-        var id = '242B00F8-C775-4899-AEBA-F287EC54E901';
-        var ucj = await this.crunchService.getJunction(x, id);
-        if ( ! ucj ||
-             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
-        }
-        return ucj;
-      }
-    },
-    {
       name: 'trevisoTermsAndConditions',
       code: async function(x, user) {
         var id = '554af38a-8225-87c8-dfdf-eeb15f71215e-25';
@@ -105,6 +93,19 @@ foam.CLASS({
             agreement: true,
           });
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        }
+        return ucj;
+      }
+    },
+    {
+      name: 'generalAdmission',
+      code: async function(x, user) {
+        // GeneralAdmission-Treviso
+        var id = '242B00F8-C775-4899-AEBA-F287EC54E901';
+        var ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
         }
         return ucj;
       }
@@ -419,6 +420,18 @@ foam.CLASS({
       }
     },
     {
+      name: 'corridor',
+      code: async function(x) {
+        var id = 'f9c7ce45-c076-4f55-93d2-867c011ee6ca';
+        var ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        }
+        return ucj;
+      }
+    },
+    {
       name: 'createBRBankAccount',
       type: 'net.nanopay.bank.BankAccount',
       code: async function(x, user) {
@@ -433,13 +446,11 @@ foam.CLASS({
           b = await this.client(x, 'accountDAO', net.nanopay.account.Account).put_(x, net.nanopay.bank.BRBankAccount.create({
             owner: user.id,
             name: 'savings',
-            accountType: 'Current',
-            accountOwnerType: '1st Holder',
-            iban: 'BR1800360305000010009795493C1',
-//            // TODO: following just to satisfy Branch and Institution decorators
-//            accountNumber: '12345678',
-//            institutionNumber: '123',
-//            branchId: '12345'
+            accountType: 'Savings',
+            accountOwnerType: 'Individual',
+            accountNumber: '12345678',
+            institutionNumber: '12345',
+            branchId: '12345'
           }, x));
 
           this.sudoStore(x);
@@ -499,7 +510,7 @@ foam.CLASS({
     {
       name: 'businessOwnershipData',
       code: async function(x, business) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-7';
+        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-7-br';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {

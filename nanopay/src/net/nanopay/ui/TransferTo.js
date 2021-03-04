@@ -531,15 +531,15 @@ foam.CLASS({
                     X.data.EQ(X.data.Account.DENOMINATION, denominations || ''),
                     X.data.EQ(X.data.Account.TYPE, types || ''))));
           }),
-          objToChoice: function(account) {
+          objToChoice: function(account, obj) {
             var choice = account.name;
             var type = account.type;
             if ( type == 'DigitalAccount' ) {
               choice = account.name ? account.name : 'Digital Account';
             }
-             if ( type.length >= 11 && type.substring(type.length - 11) == 'BankAccount')  {
+            if ( type.length >= 11 && type.substring(type.length - 11) == 'BankAccount')  {
               var length = account.accountNumber.length;
-              choice = account.name + ' ' + '***' + account.accountNumber.substring(length - 4, length);
+              choice = `${account.name} ${obj.BankAccount.mask(account.accountNumber)}`;
             }
             return [ account.id, choice ];
           }

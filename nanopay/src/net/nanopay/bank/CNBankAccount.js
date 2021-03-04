@@ -47,9 +47,9 @@ foam.CLASS({
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
       },
-      tableCellFormatter: function(str) {
+      tableCellFormatter: function(str, obj) {
         if ( ! str ) return;
-        var displayAccountNumber = '***' + str.substring(str.length - 4, str.length)
+        var displayAccountNumber = obj.mask(str);
         this.start()
           .add(displayAccountNumber);
         this.tooltip = displayAccountNumber;
