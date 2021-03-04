@@ -294,7 +294,7 @@ foam.CLASS({
               if ( accountNumber ) {
                 return this.E()
                   .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('accountNumber').label} `).end()
-                  .start('span').add(`*** ${accountNumber.substring(accountNumber.length - 4, accountNumber.length)}`).end();
+                  .start('span').add(obj.mask(accountNumber)).end();
               }
           }))
         .end();
@@ -372,6 +372,15 @@ foam.CLASS({
       required: false,
       validateObj: function(swiftCode) {
       }
+    },
+    {
+      name: 'bankRoutingCode',
+      javaPostSet: `
+        if ( val != null && BRANCH_ID_PATTERN.matcher(val).matches() ) {
+          clearBranch();
+          setBranchId(val);
+        }
+      `
     }
   ],
 
@@ -448,19 +457,6 @@ foam.CLASS({
       ],
       javaCode: `
         return getBranchId();
-      `
-    },
-    {
-      name: 'setRoutingCode',
-      javaCode: `
-        if ( routingCode != null
-          && BRANCH_ID_PATTERN.matcher(routingCode).matches()
-        ) {
-          clearBranch();
-          setBranchId(routingCode);
-          return true;
-        }
-        return false;
       `
     }
  ]

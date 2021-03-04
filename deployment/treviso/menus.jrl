@@ -18,12 +18,6 @@ p({
 // Remove liquid transactions menu
 r({"class":"foam.nanos.menu.Menu","id":"transactions"})
 
-
-p({"class":"foam.nanos.menu.Menu","id":"trevisoSmeSettings","label":"Treviso Settings","handler":{"class":"foam.nanos.menu.SubMenu"},"order":102,"parent":"sme"})
-p({"class":"foam.nanos.menu.Menu","id":"sme.accountProfile.business-settings","label":"Business settings","description":"View and update business profile information and permissions","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.BusinessSettingsView"}},"order":1,"parent":"trevisoSmeSettings"})
-p({"class":"foam.nanos.menu.Menu","id":"sme.accountProfile.personal-settings","label":"Personal settings","description":"Manage your password, email and notifications","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.PersonalSettingsView"}},"order":2, "parent":"trevisoSmeSettings"})
-p({"class":"foam.nanos.menu.Menu","id":"sme.accountProfile.signout","label":"Sign out","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.SignOutView"}},"order":100,"parent":"trevisoSmeSettings"})
-
 // TrevisoTransactionReport
 p({
   "class":   "foam.nanos.menu.Menu",

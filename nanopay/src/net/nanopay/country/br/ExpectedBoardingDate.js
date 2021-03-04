@@ -38,6 +38,7 @@ foam.CLASS({
 
   messages: [
     { name: 'MIN_DATE_ERROR', message: 'Expected boarding date must be a future date' },
+    { name: 'INVALID_DATE_ERROR', message: 'Valid expected date of boarding required' }
   ],
 
   properties: [
@@ -51,10 +52,17 @@ foam.CLASS({
         {
           args: ['boardingDate'],
           predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.country.br.ExpectedBoardingDate.BOARDING_DATE, null);
+          },
+          errorMessage: 'INVALID_DATE_ERROR'
+        },
+        {
+          args: ['boardingDate'],
+          predicateFactory: function(e) {
             return e.GTE(net.nanopay.country.br.ExpectedBoardingDate.BOARDING_DATE, new Date());
           },
           errorMessage: 'MIN_DATE_ERROR'
-        },
+        }
       ]
     }
   ],

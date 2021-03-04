@@ -133,7 +133,7 @@ foam.CLASS({
 
         // set the hidden properties from capabilities
         var hasSignedContratosDeCambio, pepHioRelated;
-        var cpf, verifyName, cpfName;
+        var cpf, verifyName, cpfName, documentsOfId, documentsOfAddress;
 
         this.crunchService.getJunction(x, 'fb7d3ca2-62f2-4caf-a84c-860392e4676b').then(cap=> {
           // signing officer's CPF
@@ -147,6 +147,12 @@ foam.CLASS({
             if ( ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
               hasSignedContratosDeCambio = ucj.data.hasSignedContratosDeCambio;
               pepHioRelated = ucj.data.PEPHIORelated;
+              this.crunchService.getJunction(x, '85cee1de-db32-11ea-87d0-0242ac130003').then( c => {
+                documentsOfAddress = c.data.documents;
+              })
+              this.crunchService.getJunction(x, '8ad3c898-db32-11ea-87d0-0242ac130003').then( c => {
+                documentsOfId = c.data.documents;
+              })
             }
           }).catch(err => {
             this.notify(this.SIGNINGOFFICER_DATA_FETCHING_ERR, '', this.LogLevel.ERROR, true);
@@ -171,6 +177,8 @@ foam.CLASS({
               cpfName: cpfName,
               verifyName: verifyName,
               hasSignedContratosDeCambio: hasSignedContratosDeCambio,
+              documentsOfAddress: documentsOfAddress,
+              documentsOfId: documentsOfId,
               PEPHIORelated: pepHioRelated
             }, x);
             adao.put(obj);

@@ -853,8 +853,15 @@ foam.RELATIONSHIP({
         ((foam.nanos.logger.Logger) x.get("logger")).error("Transaction.sourceAccount not found (during toCSV).", ((Transaction)obj).getId());
       }
     `,
-    includeInDigest: true
-  },
+    includeInDigest: true,
+    view: {
+      class: 'foam.u2.view.ReferencePropertyView',
+      readView: {
+        class: 'foam.u2.view.ReadReferenceView',
+        enableLink: false
+      }
+    }
+  }
 });
 
 foam.RELATIONSHIP({
@@ -922,7 +929,7 @@ foam.RELATIONSHIP({
       }
     `,
     includeInDigest: true
-  },
+  }
 });
 
 foam.RELATIONSHIP({

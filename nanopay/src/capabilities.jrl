@@ -302,7 +302,8 @@ p({
   "keywords":["featured"],
   "permissionsGranted":[
     "business.invoice.pay",
-    "menu.read.capability.main.invoices.receivables"
+    "menu.read.capability.main.invoices.receivables",
+    "invoice.create"
   ],
   "permissionsIntercepted": [
     "business.invoice.pay"
@@ -329,7 +330,8 @@ p({
   "reviewRequired":true,
   "permissionsGranted":[
     "business.invoice.pay",
-    "menu.read.capability.main.invoices.receivables"
+    "menu.read.capability.main.invoices.receivables",
+    "invoice.create"
   ],
   "permissionsIntercepted": [
     "business.invoice.pay"
@@ -555,7 +557,7 @@ p({
   "associatedEntity": 1,
   "permissionsGranted":[
   "menu.read.mainmenu.banking",
-  "menu.read.mainmenu.contacts",
+  "menu.read.mainmenu.contacts"
   ]
 })
 

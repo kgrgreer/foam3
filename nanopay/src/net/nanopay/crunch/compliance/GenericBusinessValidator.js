@@ -57,6 +57,7 @@ foam.CLASS({
                 .setDaoKey("userCapabilityJunctionDAO")
                 .setRefObjId(business.getId())
                 .setRefDaoKey("businessDAO")
+                .setCreatedFor(business.getId())
                 .setClassification(getClassification())
                 .setGroup(group)
                 .build()
