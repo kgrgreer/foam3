@@ -17,7 +17,8 @@
 
 foam.CLASS({
   package: 'net.nanopay.ui.wizard',
-  name: 'WizardController',
+//  name: 'WizardController',
+  name: 'ContactWizardDetailView',
   extends: 'foam.u2.View',
 
   imports: [
@@ -96,7 +97,7 @@ foam.CLASS({
       documentation: 'isEdit property to be passed to the WizardView'
     }
   ],
-  
+
   methods: [
     function initE() {
       var self = this;
