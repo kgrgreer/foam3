@@ -105,6 +105,8 @@ p({
       "of": "net.nanopay.contacts.Contact",
       "DAOCreateView":false,
 
+      "XXXDetailView":{"class":"net.nanopay.contacts.ui.ContactWizardView"},
+
 
       "exportEnabled":false,
       "createEnabled":true,
