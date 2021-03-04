@@ -39,7 +39,6 @@ foam.CLASS({
     'foam.core.ContextAwareAgent',
     'foam.core.X',
     'foam.util.SafetyUtil',
-    'foam.nanos.ruler.predicate.PropertyCompare',
     'net.nanopay.tx.ComplianceTransaction',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.ExternalTransfer',
