@@ -26,6 +26,7 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.iban.IBANInfo',
     'foam.nanos.iban.ValidationIBAN',
+    'foam.util.SafetyUtil'
   ],
 
   constants: [
@@ -152,6 +153,15 @@ foam.CLASS({
           }
         }
       }
+    },
+    {
+      name: 'bankRoutingCode',
+      javaPostSet: `
+        if ( val != null && BRANCH_ID_PATTERN.matcher(val).matches() ) {
+          clearBranch();
+          setBranchId(val);
+        }
+      `
     }
   ],
 
@@ -160,19 +170,6 @@ foam.CLASS({
       name: 'getRoutingCode',
       javaCode: `
         return getBranchId();
-      `
-    },
-    {
-      name: 'setRoutingCode',
-      javaCode: `
-        if ( routingCode != null
-          && BRANCH_ID_PATTERN.matcher(routingCode).matches()
-        ) {
-          clearBranch();
-          setBranchId(routingCode);
-          return true;
-        }
-        return false;
       `
     },
     {

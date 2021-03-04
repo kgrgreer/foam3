@@ -40,9 +40,10 @@ foam.CLASS({
           try {
             var routingCode = bankAccountValidationService.convertToRoutingCode(x,
               account.getCountry(), account.getSwiftCode());
-            var success = account.setRoutingCode(routingCode);
 
-            if ( ! success ) {
+            if ( ! SafetyUtil.isEmpty(routingCode) ) {
+              account.setBankRoutingCode(routingCode);
+            } else {
               throw new ValidationException(BankAccount.SWIFT_CODE_INVALID);
             }
           } catch ( RuntimeException e ) {

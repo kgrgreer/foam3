@@ -379,6 +379,24 @@ foam.CLASS({
           ]
         }, X);
       }
+    },
+    {
+      name: 'bankRoutingCode',
+      javaPostSet: `
+        if ( ! SafetyUtil.isEmpty(val) ) {
+          var matcher = ROUTING_CODE_PATTERN.matcher(val);
+          if ( matcher.find() ) {
+            var institutionNumber = matcher.group(1);
+            var branchId = matcher.group(2);
+
+            // Update institution and branch
+            clearInstitution();
+            clearBranch();
+            setInstitutionNumber(institutionNumber);
+            setBranchId(branchId);
+          }
+        }
+      `
     }
   ],
   methods: [
@@ -511,35 +529,18 @@ foam.CLASS({
         }
       ],
       javaCode: `
+        if ( ! SafetyUtil.isEmpty(getBankRoutingCode()) ) {
+          return getBankRoutingCode();
+        }
+
         StringBuilder code = new StringBuilder();
         Branch branch = findBranch(x);
         if ( branch != null ) {
-          code.append(branch.getBranchId());
-          code.append(getBankCode(x));
+          code.append('0')
+              .append(branch.getBranchId())
+              .append(getBankCode(x));
         }
         return code.toString();
-      `
-    },
-    {
-      name: 'setRoutingCode',
-      javaCode: `
-        if ( ! SafetyUtil.isEmpty(routingCode) ) {
-          try {
-            var matcher = ROUTING_CODE_PATTERN.matcher(routingCode);
-            if ( matcher.find() ) {
-              var institutionNumber = matcher.group(1);
-              var branchId = matcher.group(2);
-
-              // Reset institution and branch
-              clearInstitution();
-              clearBranch();
-              setInstitutionNumber(institutionNumber);
-              setBranchId(branchId);
-              return true;
-            }
-          } catch ( RuntimeException e ) { /* ignore */ }
-        }
-        return false;
       `
     }
   ]
