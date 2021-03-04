@@ -12,7 +12,10 @@ p({
   id: "trevisoMenuCapability",
   version: "0",
   enabled: true,
-  permissionsGranted: []
+  permissionsGranted: [
+    "menu.read.sme.accountProfile.personal-settings",
+    "menu.read.sme.accountProfile.signout",
+  ]
 })
 p({
   class: "foam.nanos.crunch.Capability",
@@ -63,7 +66,9 @@ p({
   version: "0",
   enabled: true,
   visible: false,
-  permissionsGranted: []
+  permissionsGranted: [
+    "menu.read.sme.accountProfile.business-settings"
+  ]
 })
 
 p({
