@@ -67,7 +67,6 @@ foam.CLASS({
     'foam.nanos.auth.Country',
     'foam.u2.dialog.Popup',
     'foam.u2.DisplayMode',
-    'foam.u2.LoadingSpinner',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.bank.INBankAccount',
     'net.nanopay.contacts.ContactStatus',
@@ -152,7 +151,6 @@ foam.CLASS({
       name: 'email',
       documentation: 'The email address of the Contact.',
       label: 'Email',
-      view: { class: 'foam.u2.tag.Input' },
       validateObj: function(email) {
         var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if ( ! emailRegex.test(email) ) {
@@ -162,7 +160,6 @@ foam.CLASS({
     },
     {
       name: 'firstName',
-      view: { class: 'foam.u2.tag.Input' },
       validateObj: function(firstName) {
         if ( !! firstName ) {
           if ( firstName.length > this.NAME_MAX_LENGTH ) {
@@ -178,7 +175,6 @@ foam.CLASS({
     },
     {
       name: 'lastName',
-      view: { class: 'foam.u2.tag.Input' },
       validateObj: function(lastName) {
         if ( !! lastName ) {
           if ( lastName.length > this.NAME_MAX_LENGTH ) {
@@ -291,7 +287,6 @@ foam.CLASS({
                 if ( model ) arr.push(model);
               }
               this.countries = arr;
-              this.showSpinner = false;
             })
         });
       }
@@ -310,8 +305,8 @@ foam.CLASS({
       label: 'Action Required',
       name: 'noCorridorsAvailable',
       documentation: 'GUI when no corridor capabilities have been added to user.',
-      visibility: function(showSpinner, countries, createBankAccount) {
-        return ! showSpinner && countries.length == 0 && ! createBankAccount ?
+      visibility: function(countries, createBankAccount) {
+        return countries.length == 0 && ! createBankAccount ?
           foam.u2.DisplayMode.RO :
           foam.u2.DisplayMode.HIDDEN;
       },
@@ -330,28 +325,6 @@ foam.CLASS({
             .add(arr[1])
           .end()
       }
-    },
-    {
-      transient: true,
-      flags: ['web'],
-      name: 'loadingSpinner',
-      label: '',
-      visibility: function(showSpinner, createBankAccount) {
-        return showSpinner && ! createBankAccount ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
-      },
-      factory: function() {
-        return this.LoadingSpinner.create().addClass('spinner');
-      },
-      view: function(_, X) {
-        return X.E().start().add(X.data.loadingSpinner).end();
-      }
-    },
-    {
-      transient: true,
-      flags: ['web'],
-      class: 'Boolean',
-      name: 'showSpinner',
-      value: true
     },
     {
       transient: true,

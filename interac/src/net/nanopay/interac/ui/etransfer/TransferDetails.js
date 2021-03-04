@@ -173,9 +173,10 @@ foam.CLASS({
         return foam.u2.view.ChoiceView.create({
           dao: X.data.bankAccountDAO.where(X.data.EQ(X.data.BankAccount.ID, 1)),
           objToChoice: function(account) {
-            return [account.id, 'Account No. ' +
-                                '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length)
-                    ]; // TODO: Grab amount and display
+            return [
+              account.id,
+              `Account No. ${X.BankAccount.mask(account.accountNumber)}`
+            ]; // TODO: Grab amount and display
           }
         });
       }

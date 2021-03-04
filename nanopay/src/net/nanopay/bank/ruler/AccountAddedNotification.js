@@ -40,7 +40,7 @@ foam.CLASS({
       class: 'String',
       name: 'accountNumber',
       preSet: function(_, value) {
-        return value ? this.BankAccount.create({}).obfuscate(value, 1, value.length - 4) : "";
+        return this.BankAccount.mask(value);
       }
     },
     {
@@ -51,8 +51,7 @@ foam.CLASS({
         String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
         TranslationService ts = (TranslationService) foam.core.XLocator.get().get("translationService");
 
-        BankAccount account = new BankAccount();
-        String accountNumber = getAccountNumber() != null ? account.obfuscate(getAccountNumber(), 1, getAccountNumber().length() - 4) : "";
+        String accountNumber = BankAccount.mask(getAccountNumber());
 
         return accountNumber + ts.getTranslation(locale, getClassInfo().getId() + ".NOTIFICATION_BODY_P1", this.NOTIFICATION_BODY_P1);
       `,

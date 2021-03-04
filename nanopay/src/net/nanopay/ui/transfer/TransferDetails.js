@@ -201,7 +201,7 @@ foam.CLASS({
             return [
               account.id,
               account.name + ' ' + '***' +
-                account.accountNumber.substring(length - 4, length)
+                account.accountNumber.substring(length - 3)
             ];
           }
         });
