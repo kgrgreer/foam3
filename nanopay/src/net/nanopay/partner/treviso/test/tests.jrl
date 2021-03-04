@@ -508,12 +508,12 @@ support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport.create({
       }
 
       // Validate Business Onboarding UserCapabilityJunction
-      try {
-        let approval = await support.approveRequest(x, business.spid+'-fraud-ops', 'userCapabilityJunctionDAO', 'Generic Business Validator');
-        test(approval && approval.status == foam.nanos.approval.ApprovalStatus.APPROVED, 'approveBusiness: '+approval && approval.status);
-      } catch (e) {
-        test(false, 'approveBusiness: '+(e.message || e));
-      }
+      // try {
+      //   let approval = await support.approveRequest(x, business.spid+'-fraud-ops', 'userCapabilityJunctionDAO', 'Generic Business Validator');
+      //   test(approval && approval.status == foam.nanos.approval.ApprovalStatus.APPROVED, 'approveBusiness: '+approval && approval.status);
+      // } catch (e) {
+      //   test(false, 'approveBusiness: '+(e.message || e));
+      // }
 
       console.info('done');
       support.teardown(x);
