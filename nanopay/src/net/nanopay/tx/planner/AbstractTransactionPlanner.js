@@ -39,12 +39,13 @@ foam.CLASS({
     'foam.core.ContextAwareAgent',
     'foam.core.X',
     'foam.util.SafetyUtil',
+    'foam.nanos.ruler.predicate.PropertyCompare',
     'net.nanopay.tx.ComplianceTransaction',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.Account',
-    'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.*',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.SummaryTransaction',
     'net.nanopay.tx.TransactionQuote',
@@ -116,6 +117,18 @@ foam.CLASS({
       value: false
     },
     {
+      name: 'upperLimit',
+      class: 'Long',
+      value: 0,
+      documentation: 'The planner will only plan txns with an amount below this limit. 0 means not set'
+    },
+    {
+      name: 'lowerLimit',
+      class: 'Long',
+      value: 0,
+      documentation: 'The planner will only plan txns with an amount above this limit'
+    },
+    {
       name: 'daoKey',
       value: 'transactionPlannerDAO',
       visibility: 'HIDDEN',
@@ -137,6 +150,17 @@ foam.CLASS({
       javaCode: `
         this.__frozen__ = false;
         return this;
+      `
+    },
+    {
+      name: 'getPredicate',
+      type: 'foam.mlang.predicate.Predicate',
+      javaCode: `
+        return AND(
+          super.getPredicate(),
+          new PropertyCompare( "gte", "amount", getLowerLimit(), true ),
+          new PropertyCompare( "lt", "amount", getUpperLimit(), true )
+        );
       `
     },
     {
