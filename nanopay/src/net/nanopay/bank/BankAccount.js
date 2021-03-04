@@ -582,7 +582,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'bankRoutingCode',
-      documentation: 'Bank routing code aka. national ID used to clear funds and/or route payments domestically.'
+      documentation: 'Bank routing code aka. national ID used to clear funds and/or route payments domestically.',
+      visibility: 'HIDDEN'
     }
   ],
 
