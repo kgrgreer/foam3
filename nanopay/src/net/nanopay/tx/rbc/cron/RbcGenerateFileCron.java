@@ -91,7 +91,7 @@ public class RbcGenerateFileCron implements ContextAgent {
         .filter(transaction -> transaction instanceof CITransaction)
         .collect(Collectors.toList());
 
-      generateFile(x, ciTransactions);
+      generateFile(x, eftLimitTransactions(ciTransactions));
 
       logger.info("Generating EFT File for CO transactions.");
 
@@ -99,7 +99,7 @@ public class RbcGenerateFileCron implements ContextAgent {
         .filter(transaction -> (transaction instanceof COTransaction || transaction instanceof RbcVerificationTransaction))
         .collect(Collectors.toList());
 
-      generateFile(x, coTransactions);
+      generateFile(x, eftLimitTransactions(coTransactions));
 
     } catch ( Exception e ) {
       String msg = "RBC EFT File Generation Failed : " + e.getMessage();
@@ -162,6 +162,18 @@ public class RbcGenerateFileCron implements ContextAgent {
         ((DAO) x.get("localNotificationDAO")).put(notification);
       }
     }
+  }
+
+  protected List<Transaction> eftLimitTransactions(List<Transaction> transactions) {
+    List<Transaction> limitedTransactions = new ArrayList<>();
+    long cumulativeAmount = 0;
+    for ( int i = 0; i < transactions.size(); i++ ) {
+      Transaction txn = (Transaction) transactions.get(i);
+      cumulativeAmount += txn.getAmount();
+      if ( cumulativeAmount >= eftLimit ) break;
+      limitedTransactions.add(txn);
+    }
+    return limitedTransactions;
   }
 
 }
