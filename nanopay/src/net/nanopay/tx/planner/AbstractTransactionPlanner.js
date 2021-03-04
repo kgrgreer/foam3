@@ -155,12 +155,32 @@ foam.CLASS({
     {
       name: 'getPredicate',
       type: 'foam.mlang.predicate.Predicate',
+      documentation: 'override predicate with transaction value limits (sender side)',
       javaCode: `
-        return AND(
-          super.getPredicate(),
-          new PropertyCompare( "gte", "amount", getLowerLimit(), true ),
-          new PropertyCompare( "lt", "amount", getUpperLimit(), true )
-        );
+        if ( getLowerLimit() > 0 ) {
+          if ( getUpperLimit() > 0 ) {
+          // both lower and upper limits active
+            return AND(
+              super.getPredicate(),
+              new PropertyCompare( "gte", "amount", getLowerLimit(), true ),
+              new PropertyCompare( "lt", "amount", getUpperLimit(), true )
+            );
+          }
+          // lower limit active upper not
+          return AND(
+            super.getPredicate(),
+            new PropertyCompare( "gte", "amount", getLowerLimit(), true )
+          );
+        }
+        if ( getUpperLimit() > 0 ) {
+          // upper limit active, lower not
+          return AND(
+            super.getPredicate(),
+            new PropertyCompare( "lt", "amount", getUpperLimit(), true )
+          );
+        }
+        // limits not active
+        return super.getPredicate();
       `
     },
     {

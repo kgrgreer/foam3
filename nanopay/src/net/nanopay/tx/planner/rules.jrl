@@ -923,6 +923,7 @@ p({
   "documentation":"RBC CI Transaction Planner",
   "priority":100,
   "ruleGroup":"RBCPlanner",
+  "upperLimit":25000000,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -970,6 +971,7 @@ p({
   "documentation":"RBC CO Transaction Planner",
   "priority":100,
   "ruleGroup":"RBCPlanner",
+  "upperLimit":25000000,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
