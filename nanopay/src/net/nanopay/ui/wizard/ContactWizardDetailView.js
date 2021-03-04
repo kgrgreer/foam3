@@ -17,7 +17,6 @@
 
 foam.CLASS({
   package: 'net.nanopay.ui.wizard',
-//  name: 'WizardController',
   name: 'ContactWizardDetailView',
   extends: 'foam.u2.View',
 
