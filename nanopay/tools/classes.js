@@ -189,9 +189,12 @@ var classes = [
   'net.nanopay.bank.ruler.AccountDeletedNotificationRule',
   'net.nanopay.bank.ruler.AccountAddedNotificationRule',
   'net.nanopay.bank.ruler.CorridorAuthorizationRule',
+  'net.nanopay.bank.ruler.SwiftBicCodeTranslation',
   'net.nanopay.plaid.PlaidAccountDetailTest',
   'net.nanopay.plaid.PlaidResultReportAuthorizer',
   'net.nanopay.plaid.PlaidResultReportAuthorizerTest',
+  'net.nanopay.bank.BankAccountValidationService',
+  'net.nanopay.bank.MockBankAccountValidationService',
 
   // Util
   'net.nanopay.util.Tag',
@@ -299,7 +302,6 @@ var classes = [
   'net.nanopay.fx.afex.AFEXSubmitPaymentRule',
   'net.nanopay.fx.afex.AFEXBeneficialOwnerRule',
   'net.nanopay.fx.afex.AFEXBusinessDirectorRule',
-  'net.nanopay.fx.afex.AFEXSigningOfficerRule',
   'net.nanopay.fx.afex.AFEXBankUpdatingRule',
   'net.nanopay.fx.afex.TransactionInvalidBankAccountRule',
   'net.nanopay.fx.afex.TransactionVerifyBankAccountRule',
@@ -577,6 +579,7 @@ var classes = [
   'net.nanopay.tx.SecurityTransaction',
   'net.nanopay.tx.ruler.IsSecurityQuote',
   'net.nanopay.tx.SaveChainedTransactionDAO',
+  'net.nanopay.tx.SummarizingTransaction',
   'net.nanopay.tx.SummaryTransaction',
   'net.nanopay.tx.LiquidSummaryTransaction',
   'net.nanopay.tx.LiquidCashTransactionType',
@@ -879,6 +882,7 @@ var classes = [
   // compliance
   'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
   'net.nanopay.meter.compliance.ComplianceApprovalRequest',
+  'net.nanopay.meter.compliance.ComplianceApprovalRequestEffectiveUserRuleAction',
   'net.nanopay.meter.compliance.ComplianceAuthService',
   'net.nanopay.meter.compliance.ComplianceAware',
   'net.nanopay.meter.compliance.ComplianceItem',
@@ -948,6 +952,7 @@ var classes = [
   'net.nanopay.meter.compliance.secureFact.SecurefactRequest',
   'net.nanopay.meter.compliance.secureFact.SecurefactResponse',
   'net.nanopay.meter.compliance.secureFact.SecurefactService',
+  'net.nanopay.meter.compliance.secureFact.MockSecurefactService',
   'net.nanopay.meter.compliance.secureFact.sidni.SIDniRequest',
   'net.nanopay.meter.compliance.secureFact.sidni.SIDniCustomer',
   'net.nanopay.meter.compliance.secureFact.sidni.SIDniName',
@@ -1344,6 +1349,12 @@ var classes = [
   'net.nanopay.partner.bepay.tx.BePayTransaction',
   'net.nanopay.partner.bepay.tx.planner.BePayTransactionPlanner',
   'net.nanopay.partner.bepay.tx.ScreenUsersOnTransactionCreate',
+
+  // accuity
+  'net.nanopay.partner.accuity.AccuityCredentials',
+  'net.nanopay.partner.accuity.AccuityAPIResponse',
+  'net.nanopay.partner.accuity.AccuityBankAccountValidationService',
+
 
   // crunch predicates - todo move all predicates used in crunch here
   'net.nanopay.crunch.predicate.IsBusiness',

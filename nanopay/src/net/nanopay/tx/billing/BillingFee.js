@@ -21,21 +21,37 @@ foam.CLASS({
 
   documentation: 'Represents details on the charges associated to a transaction error',
 
+  imports: [
+    'currencyDAO'
+  ],
+
   properties: [
     {
       class: 'UnitValue',
       name: 'amount',
-      documentation: 'Amount being charged'
+      documentation: 'Amount being charged',
+      unitPropName: 'currency',
+      unitPropValueToString: async function(x, val, unitPropName) {
+        var unitProp = await x.currencyDAO.find(unitPropName);
+        if ( unitProp )
+          return unitProp.format(val);
+        return val;
+      },
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'String',
       name: 'currency',
-      documentation: 'Currency of amount being charged'
+      documentation: 'Currency of amount being charged',
+      order: 20,
+      gridColumns: 6
     },
     {
       class: 'String',
       name: 'description',
-      documentation: 'Description of the charge'
+      documentation: 'Description of the charge',
+      order: 30
     }
   ]
 });

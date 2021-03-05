@@ -26,68 +26,117 @@ foam.CLASS({
     'foam.nanos.auth.ServiceProviderAware'
   ],
 
+  tableColumns: [
+    'originatingTransaction',
+    'errorCode',
+    'chargeToUser',
+    'chargeToBusiness',
+    'chargeDate',
+    'status'
+  ],
+
+  sections: [
+    {
+      name: 'billInformation'
+    },
+    {
+      name: 'systemInformation',
+      permissionRequired: true
+    }
+  ],
+
   properties: [
     {
       class: 'String',
-      name: 'id'
+      name: 'id',
+      section: 'billInformation',
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'Reference',
       targetDAOKey: 'errorCodeDAO',
       name: 'errorCode',
       of: 'net.nanopay.integration.ErrorCode',
-      documentation: 'Error code associated to transaction error'
+      documentation: 'Error code associated to transaction error',
+      section: 'billInformation',
+      order: 20,
+      gridColumns: 6
     },
     {
       class: 'FObjectArray',
       name: 'fees',
-      of: 'net.nanopay.tx.billing.BillingFee'
+      of: 'net.nanopay.tx.billing.BillingFee',
+      section: 'billInformation',
+      order: 30
     },
     {
-      class: 'Reference',
-      targetDAOKey: 'transactionDAO',
+      class: 'net.nanopay.tx.model.TransactionReference',
       name: 'originatingTransaction',
-      of: 'net.nanopay.tx.model.Transaction'
+      section: 'billInformation',
+      order: 40,
+      gridColumns: 6,
     },
     {
       class: 'Reference',
       targetDAOKey: 'userDAO',
       name: 'chargeToUser',
       of: 'foam.nanos.auth.User',
-      documentation: 'User paying the fee'
+      documentation: 'User paying the fee',
+      section: 'billInformation',
+      order: 50,
+      gridColumns: 6
     },
     {
       class: 'Reference',
       targetDAOKey: 'businessDAO',
       name: 'chargeToBusiness',
       of: 'net.nanopay.model.Business',
-      documentation: 'Business paying the fee'
+      documentation: 'Business paying the fee',
+      section: 'billInformation',
+      order: 60,
+      gridColumns: 6
+    },
+    {
+      class: 'Date',
+      name: 'chargeDate',
+      documentation: 'Calculated date of when the fees will be charged',
+      section: 'billInformation',
+      order: 70,
+      gridColumns: 6
+    },
+    {
+      class: 'DateTime',
+      name: 'created',
+      visibility: 'RO',
+      section: 'billInformation',
+      order: 80,
+      gridColumns: 6
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
+      name: 'status',
+      section: 'billInformation',
+      order: 100,
+      gridColumns: 6
     },
     {
       class: 'Enum',
       of: 'net.nanopay.tx.ChargedTo',
       name: 'chargedTo',
-      documentation: 'Determines if Payer or Payee is charged the fee'
-    },
-    {
-      class: 'Date',
-      name: 'chargeDate',
-      documentation: 'Calculated date of when the fees will be charged'
+      documentation: 'Determines if Payer or Payee is charged the fee',
+      section: 'systemInformation',
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
-      name: 'spid'
-    },
-    {
-      class: 'foam.core.Enum',
-      of: 'net.nanopay.tx.model.TransactionStatus',
-      name: 'status'
-    },
-    {
-      class: 'DateTime',
-      name: 'created',
-      visibility: 'RO'
+      name: 'spid',
+      section: 'systemInformation',
+      order: 20,
+      gridColumns: 6
     }
   ]
 });

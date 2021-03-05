@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'SKBankAccount',
-  label: 'Slovakia Bank',
+  label: 'Slovakia',
   extends: 'net.nanopay.bank.EUBankAccount',
 
   documentation: 'Slovakian bank account information.',
@@ -65,9 +65,9 @@ foam.CLASS({
       preSet: function(o, n) {
         return /^[\d\w]*$/.test(n) ? n : o;
       },
-      tableCellFormatter: function(str) {
+      tableCellFormatter: function(str, obj) {
         if ( ! str ) return;
-        var displayAccountNumber = '***' + str.substring(str.length - 4, str.length)
+        var displayAccountNumber = obj.mask(str);
         this.start()
           .add(displayAccountNumber);
         this.tooltip = displayAccountNumber;

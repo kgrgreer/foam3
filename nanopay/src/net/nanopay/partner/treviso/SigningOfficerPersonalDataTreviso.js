@@ -55,7 +55,8 @@ foam.CLASS({
     { name: 'PLEASE_SELECT', message: 'Please select...' },
     { name: 'YES', message: 'Yes' },
     { name: 'NO', message: 'No' },
-    { name: 'SELECT_HAVE_SIGNED_CONTRACT', message: 'As the signing officer of this business, you are required to have signed this contract.' }
+    { name: 'SELECT_HAVE_SIGNED_CONTRACT', message: 'As the signing officer of this business, you are required to have signed this contract.' },
+    { name: 'OTHER_KEY', message: 'Other' }
   ],
 
   properties: [
@@ -97,7 +98,7 @@ foam.CLASS({
       view: function(_, X) {
         return {
           class: 'foam.u2.view.ChoiceWithOtherView',
-          otherKey: 'Other',
+          otherKey: X.data.OTHER_KEY,
           choiceView: {
             class: 'foam.u2.view.ChoiceView',
             placeholder: X.data.PLEASE_SELECT,
@@ -141,7 +142,7 @@ foam.CLASS({
       II - control, direct or indirect, by a politically exposed person, in the case of a corporate client;
       and III – habitual movement of financial resources from or to a politically exposed person Client of the institution,
                 not justified by economic events, such as the acquisition of goods or provision of services;".
-      
+
       `,
       value: false,
       view: function(_, X) {
@@ -164,13 +165,13 @@ foam.CLASS({
       section: 'signingOfficerPersonalInformationSection',
       label: 'Are assets reported under the Foreign Account Tax Compliance Act (FATCA)?',
       help: `
-      Note 4: The FATCA - Foreign Account Tax Compliance Act is an American federal law,
+      The FATCA - Foreign Account Tax Compliance Act is an American federal law,
       which aims to prevent tax evasion by individuals and legal entities that have a tax
       obligation in the United States of America (“USA”), including those that have accounts
       and investments abroad.
       The FATCA aims to identify such persons, establish the reporting of accounts and
       investments outside the USA for the purpose of taxing the income obtained by them,
-      through information provided by the financial institutions that hold the account and / or 
+      through information provided by the financial institutions that hold the account and / or
       taxable investment.
       It is considered as “US Person” (American Citizen) by the FATCA, subject to reporting to
       the American tax authorities, those indicated in the FATCA, including:

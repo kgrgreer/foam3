@@ -25,12 +25,16 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
-      documentation: 'The exact name that was matched in the search'
+      documentation: 'The exact name that was matched in the search',
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'String',
       name: 'nameType',
-      documentation: 'the type of name field that was matched'
+      documentation: 'the type of name field that was matched',
+      order: 20,
+      gridColumns: 6
     }
   ]
 });

@@ -56,7 +56,7 @@ foam.CLASS({
           public BankAccountInstitutionDAO(X x, DAO delegate) {
             setX(x);
             setDelegate(delegate);
-          }  
+          }
         `
         );
       }

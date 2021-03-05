@@ -1,5 +1,3 @@
-
-// TODO: write ClassOfPredicate instead
 p({
     "class":"foam.nanos.ruler.Rule",
     "id":"f2c694e4-ca5c-4fc7-bbf0-747f8aa794db",
@@ -11,21 +9,9 @@ p({
     "action":{
       "class":"net.nanopay.partner.bepay.tx.ScreenUsersOnTransactionCreate"
     },
-    "predicate":{
-      "class": "foam.mlang.predicate.And",
-      "args": [
-        {
-          class: "foam.nanos.ruler.predicate.IsInstancePredicate",
-          of:"net.nanopay.tx.ComplianceTransaction"
-        },
-        {
-          class: "foam.mlang.predicate.Not",
-          arg1: {
-            class: "foam.nanos.ruler.predicate.IsInstancePredicate",
-            of:"net.nanopay.fx.afex.AFEXBeneficiaryComplianceTransaction"
-          }
-        }
-      ]
+    "predicate": {
+      class: "foam.nanos.ruler.predicate.IsClassPredicate",
+      of:"net.nanopay.tx.ComplianceTransaction"
     },
     "lifecycleState":1
 })

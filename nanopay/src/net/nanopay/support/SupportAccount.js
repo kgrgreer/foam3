@@ -36,6 +36,10 @@ foam.CLASS({
     'supportTransactionDAO'
   ],
 
+  javaImports: [
+    'net.nanopay.bank.BankAccount'
+  ],
+
   tableColumns: [
     'id',
     'owner',
@@ -72,9 +76,6 @@ foam.CLASS({
       section: 'accountInformation',
     }),
     net.nanopay.account.Account.OWNER.clone().copyFrom({
-      view: {
-        class: 'foam.u2.view.ReferenceView'
-      },
       section: 'accountInformation',
       order: 30,
       gridColumns: 6
@@ -162,6 +163,19 @@ foam.CLASS({
       return this.supportTransactionDAO.where(
         this.EQ(net.nanopay.support.SupportTransaction.SOURCE_ACCOUNT, this.id)
       );
+    }
+  ],
+
+  static: [
+    {
+      name: 'mask',
+      type: 'String',
+      args: [
+        { name: 'str', type: 'String' }
+      ],
+      code: function(str) {
+        return net.nanopay.bank.BankAccount.mask(str);
+      }
     }
   ]
 });

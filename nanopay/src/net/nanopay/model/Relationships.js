@@ -235,30 +235,7 @@ foam.RELATIONSHIP({
   targetProperty: {
     section: 'ownerInformation',
     order: 10,
-    gridColumns: 6,
-    view: function(_, X) {
-      return foam.u2.view.RichChoiceView.create({
-        search: true,
-        selectionView: { class: 'net.nanopay.ui.UserSelectionView', userDAO: X.userDAO },
-        rowView: { class: 'net.nanopay.ui.UserRowView' },
-        sections: [
-          {
-            dao: X.userDAO
-          }
-        ],
-      });
-    },
-    tableCellFormatter: function(value, obj, axiom) {
-      this.__subSubContext__.userDAO
-        .find(value)
-        .then((user) => {
-          this.add(user.toSummary());
-        })
-        .catch((error) => {
-          this.add(value);
-        });
-    },
-    tableWidth: 220
+    gridColumns: 6
   }
 });
 
@@ -859,44 +836,9 @@ foam.RELATIONSHIP({
         });
       }
     },
-    view: function(_, X) {
-      sec = [
-        {
-          dao: X.accountDAO.where(X.data.AND(
-            X.data.EQ(net.nanopay.account.Account.DELETED, false),
-            X.data.EQ(net.nanopay.account.Account.LIFECYCLE_STATE,
-              foam.nanos.auth.LifecycleState.ACTIVE)
-          )).orderBy(net.nanopay.account.Account.NAME),
-          objToChoice: function(a) {
-            return [a.id, a.summary];
-          }
-        }
-      ];
-      return {
-        class: 'foam.u2.view.RichChoiceView',
-        search: true,
-        sections: sec
-      };
-    },
     updateVisibility: 'RO',
     section: 'transactionInformation',
     tableWidth: 180,
-    tableCellFormatter: function(value, obj) {
-      this.add(value);
-
-      // TODO: Temporary fix for now since we need to figure out integrations
-      // we have to show the CICOTransactions from shadows but don't have access to view
-      // the bank accounts
-      if ( net.nanopay.tx.cico.CITransaction.isInstance(obj) ){
-        this.removeChild(value.toString());
-        this.add('External Bank Account');
-      } else {
-        this.__subSubContext__.accountDAO.find(value).then((account) => {
-          this.removeChild(value.toString());
-          account.name === '' ? this.add('Account ' + account.id) : this.add(account.name);
-        });
-      }
-    },
     javaToCSVLabel: `
       outputter.outputValue("Sender User Id");
       outputter.outputValue("Sender Name");
@@ -911,8 +853,15 @@ foam.RELATIONSHIP({
         ((foam.nanos.logger.Logger) x.get("logger")).error("Transaction.sourceAccount not found (during toCSV).", ((Transaction)obj).getId());
       }
     `,
-    includeInDigest: true
-  },
+    includeInDigest: true,
+    view: {
+      class: 'foam.u2.view.ReferencePropertyView',
+      readView: {
+        class: 'foam.u2.view.ReadReferenceView',
+        enableLink: false
+      }
+    }
+  }
 });
 
 foam.RELATIONSHIP({
@@ -939,25 +888,6 @@ foam.RELATIONSHIP({
     required: true,
     readVisibility: 'RO',
     updateVisibility: 'RO',
-    view: function(_, X) {
-      sec = [
-        {
-          dao: X.accountDAO.where(X.data.AND(
-            X.data.EQ(net.nanopay.account.Account.DELETED, false),
-            X.data.EQ(net.nanopay.account.Account.LIFECYCLE_STATE,
-              foam.nanos.auth.LifecycleState.ACTIVE)
-          )).orderBy(net.nanopay.account.Account.NAME),
-          objToChoice: function(a) {
-            return [a.id, a.summary];
-          }
-        }
-      ];
-      return {
-        class: 'foam.u2.view.RichChoiceView',
-        search: true,
-        sections: sec
-      };
-    },
     postSet: function(o, n) {
       if ( this.mode == 'create' ) { // validation check for users manually creating a Transaction
         // setup
@@ -984,22 +914,6 @@ foam.RELATIONSHIP({
       return dstAccountError;
     },
     tableWidth: 180,
-    tableCellFormatter: function(value, obj) {
-      this.add(value);
-
-      // TODO: Temporary fix for now since we need to figure out integrations
-      // we have to show the CICOTransactions from shadows but don't have access to view
-      // the bank accounts
-      if ( net.nanopay.tx.cico.COTransaction.isInstance(obj) ){
-        this.removeChild(value.toString());
-        this.add('External Bank Account');
-      } else {
-        this.__subSubContext__.accountDAO.find(value).then((account) => {
-          this.removeChild(value.toString());
-          account.name === '' ? this.add('Account ' + account.id) : this.add(account.name);
-        });
-      }
-    },
     javaToCSVLabel: `
       outputter.outputValue("Receiver User Id");
       outputter.outputValue("Receiver Name");
@@ -1015,7 +929,7 @@ foam.RELATIONSHIP({
       }
     `,
     includeInDigest: true
-  },
+  }
 });
 
 foam.RELATIONSHIP({
@@ -1138,6 +1052,15 @@ foam.RELATIONSHIP({
   targetDAOKey: 'billDAO',
   sourceProperty: {
     section: 'systemInformation'
+  },
+  targetProperty: {
+    view: {
+      class: 'foam.u2.view.ReferencePropertyView',
+      readView: 'net.nanopay.tx.model.TransactionReadReferenceView'
+    },
+    section: 'billInformation',
+    order: 45,
+    gridColumns: 6
   }
 });
 
@@ -1149,7 +1072,16 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceDAOKey: 'transactionDAO',
   unauthorizedSourceDAOKey: 'localTransactionDAO',
-  targetDAOKey: 'billDAO'
+  targetDAOKey: 'billDAO',
+  targetProperty: {
+    view: {
+      class: 'foam.u2.view.ReferencePropertyView',
+      readView: 'net.nanopay.tx.model.TransactionReadReferenceView'
+    },
+    section: 'billInformation',
+    order: 90,
+    gridColumns: 6
+  }
 });
 
 foam.RELATIONSHIP({

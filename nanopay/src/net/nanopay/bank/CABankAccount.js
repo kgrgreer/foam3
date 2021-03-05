@@ -58,6 +58,11 @@ foam.CLASS({
       name: 'INSTITUTION_NUMBER_PATTERN',
       type: 'Regex',
       javaValue: 'Pattern.compile("^[0-9]{3}$")'
+    },
+    {
+      name: 'ROUTING_CODE_PATTERN',
+      type: 'Regex',
+      value: /^0(\d{3})(\d{5})$/
     }
   ],
 
@@ -170,7 +175,14 @@ foam.CLASS({
       visibility: 'HIDDEN',
       required: false,
       validateObj: function(iban) {
-      }
+      },
+      javaGetter: `
+        StringBuilder iban = new StringBuilder();
+        iban.append(getInstitutionNumber());
+        iban.append(getAccountNumber());
+        iban.append(getBranchId());
+        return iban.toString();
+      `
     },
     {
       name: 'country',
@@ -285,7 +297,7 @@ foam.CLASS({
                   .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' })
                     .add(`${obj.cls_.getAxiomByName('accountNumber').label} `)
                   .end()
-                  .start('span').add(`*** ${accountNumber.substring(accountNumber.length - 4, accountNumber.length)} |`).end();
+                  .start('span').add(`${obj.mask(accountNumber)} |`).end();
               }
           }))
           .add(obj.slot((branch, branchDAO) => {
@@ -341,6 +353,7 @@ foam.CLASS({
       transient: true,
       label: '',
       updateVisibility: 'HIDDEN',
+      autoValidate: true,
       factory: function() {
         return net.nanopay.model.CAPadCapture.create({
           country: this.country,
@@ -366,6 +379,24 @@ foam.CLASS({
           ]
         }, X);
       }
+    },
+    {
+      name: 'bankRoutingCode',
+      javaPostSet: `
+        if ( ! SafetyUtil.isEmpty(val) ) {
+          var matcher = ROUTING_CODE_PATTERN.matcher(val);
+          if ( matcher.find() ) {
+            var institutionNumber = matcher.group(1);
+            var branchId = matcher.group(2);
+
+            // Update institution and branch
+            clearInstitution();
+            clearBranch();
+            setInstitutionNumber(institutionNumber);
+            setBranchId(branchId);
+          }
+        }
+      `
     }
   ],
   methods: [
@@ -409,8 +440,10 @@ foam.CLASS({
       javaCode: `
         super.validate(x);
         validateAccountNumber();
-        validateInstitutionNumber(x);
-        validateBranchId(x);
+        if ( SafetyUtil.isEmpty(getSwiftCode()) ) {
+          validateInstitutionNumber(x);
+          validateBranchId(x);
+        }
       `
     },
     {
@@ -496,11 +529,16 @@ foam.CLASS({
         }
       ],
       javaCode: `
+        if ( ! SafetyUtil.isEmpty(getBankRoutingCode()) ) {
+          return getBankRoutingCode();
+        }
+
         StringBuilder code = new StringBuilder();
         Branch branch = findBranch(x);
         if ( branch != null ) {
-          code.append(branch.getBranchId());
-          code.append(getBankCode(x));
+          code.append('0')
+              .append(branch.getBranchId())
+              .append(getBankCode(x));
         }
         return code.toString();
       `

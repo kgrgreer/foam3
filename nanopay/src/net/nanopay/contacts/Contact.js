@@ -52,8 +52,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'accountDAO',
-    'auth',
     'checkAndNotifyAbilityToPay',
     'checkAndNotifyAbilityToReceive',
     'countryDAO',
@@ -69,13 +67,12 @@ foam.CLASS({
     'foam.nanos.auth.Country',
     'foam.u2.dialog.Popup',
     'foam.u2.DisplayMode',
-    'foam.u2.LoadingSpinner',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.bank.INBankAccount',
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.payment.PaymentProviderCorridor',
-    'net.nanopay.ui.wizard.WizardController'
+    'net.nanopay.ui.wizard.ContactWizardDetailView'
   ],
 
   tableColumns: [
@@ -91,7 +88,7 @@ foam.CLASS({
     { name: 'ERROR_BUSINESS_PROFILE_NAME_MESSAGE', message: 'Business name required' },
     { name: 'CONFIRMATION_REQUIRED', message: 'Confirmation required' },
     { name: 'MISSING_BANK_WARNING', message: 'Missing bank information' },
-    { name: 'CONTACT_PERMISSION', message: 'contact.ro.shouldinvite' },
+    { name: 'CONTACT_PERMISSION', message: 'contact.rw.shouldinvite' },
   ],
 
   properties: [
@@ -236,7 +233,7 @@ foam.CLASS({
         return this.signUpStatus === this.ContactStatus.READY && this.businessId === 0;
       },
       code: function(X) {
-        X.controllerView.add(this.WizardController.create({
+        X.controllerView.add(this.ContactWizardDetailView.create({
           model: 'net.nanopay.contacts.Contact',
           data: this,
           controllerMode: foam.u2.ControllerMode.EDIT,
@@ -261,7 +258,7 @@ foam.CLASS({
           createdBy: this.subject.user.id,
           isContact: true
         }, X);
-        X.controllerView.add(this.WizardController.create({
+        X.controllerView.add(this.ContactWizardDetailView.create({
           model: 'net.nanopay.model.Invitation',
           data: invite,
           controllerMode: foam.u2.ControllerMode.EDIT

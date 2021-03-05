@@ -50,13 +50,17 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.country.br.NatureCode',
       name: 'natureCode',
-      section: 'requestDetails'
+      section: 'approvalRequestInformation',
+      order: 25,
+      gridColumns: 6
     },
     {
       class: 'Reference',
       of: 'net.nanopay.country.br.NatureCodeData',
       name: 'natureCodeData',
-      section: 'requestDetails',
+      section: 'approvalRequestInformation',
+      order: 27,
+      gridColumns: 6,
       view: function(_, X) {
         var E = foam.mlang.Expressions.create();
 
@@ -89,7 +93,7 @@ foam.CLASS({
     },
     {
       name: 'approve',
-      section: 'requestDetails',
+      section: 'approvalRequestInformation',
       isAvailable: (isTrackingRequest, status) => {
         if (
           status === foam.nanos.approval.ApprovalStatus.REJECTED ||
@@ -115,7 +119,7 @@ foam.CLASS({
     },
     {
       name: 'reject',
-      section: 'requestDetails',
+      section: 'approvalRequestInformation',
       isAvailable: (isTrackingRequest, status) => {
         if (
           status === foam.nanos.approval.ApprovalStatus.REJECTED ||

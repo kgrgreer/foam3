@@ -690,6 +690,10 @@ if [ "${MODE}" == "TEST" ]; then
     fi
 fi
 
+if [ -z "${INSTANCE}" ]; then
+    HOST_NAME="localhost"
+fi
+
 if [ ${CLEAN_BUILD} -eq 1 ]; then
     GRADLE_FLAGS="${GRADLE_FLAGS} --rerun-tasks"
 fi

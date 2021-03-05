@@ -302,7 +302,8 @@ p({
   "keywords":["featured"],
   "permissionsGranted":[
     "business.invoice.pay",
-    "menu.read.capability.main.invoices.receivables"
+    "menu.read.capability.main.invoices.receivables",
+    "invoice.create"
   ],
   "permissionsIntercepted": [
     "business.invoice.pay"
@@ -329,7 +330,8 @@ p({
   "reviewRequired":true,
   "permissionsGranted":[
     "business.invoice.pay",
-    "menu.read.capability.main.invoices.receivables"
+    "menu.read.capability.main.invoices.receivables",
+    "invoice.create"
   ],
   "permissionsIntercepted": [
     "business.invoice.pay"
@@ -536,10 +538,9 @@ p({
   "icon":"/images/capabilityIcons/BusinessRegistrationCap.svg",
   "of":"net.nanopay.crunch.onboardingModels.InitialBusinessData",
   "version":"0",
-  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
   "enabled":true,
   "keywords":["featured"],
-  "availabilityPredicate":{
+  "visibilityPredicate":{
     "class": "foam.mlang.predicate.Not",
     "arg1": {
       "class":"net.nanopay.crunch.predicate.IsBusiness"
@@ -553,9 +554,10 @@ p({
     "allowSkipping": false
   },
   "requirementViewTitle":"Have your business documents ready. You can save your progress and come back later.",
+  "associatedEntity": 1,
   "permissionsGranted":[
   "menu.read.mainmenu.banking",
-  "menu.read.mainmenu.contacts",
+  "menu.read.mainmenu.contacts"
   ]
 })
 
@@ -623,7 +625,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"7e2739cc-db32-11ea-87d0-0242ac130003",
   "name":"Annual Financial Statements",
-  "description":"Provide the most recent annual financial statements for your business.",
+  "description":"Formal financial statements that are published annually and sent to the company's shareholders and several other stakeholders.",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
@@ -1040,7 +1042,7 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-19",
-  "name":"When was your business last Registered?",
+  "name":"Date of the last Contractual Amendment or Minutes",
   "of":"net.nanopay.crunch.onboardingModels.BusinessLastRegistrationDateData",
   "description":"Business Last Registration Date",
   "daoKey": "businessDAO",
@@ -1052,9 +1054,9 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-17",
-  "name":"When was your business first incorporated?",
+  "name":"Business Incorporationn",
   "of":"net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData",
-  "description":"Business Incorporated Date",
+  "description":"Date of incorporation of the business",
   "daoKey": "businessDAO",
   "contextDAOFindKey": "subject.user",
   "version":"0",

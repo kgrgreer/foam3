@@ -15,6 +15,14 @@ p({
     return new net.nanopay.auth.BusinessAgentAuthService.Builder(x)
       .setDelegate(new foam.nanos.auth.AgentUserAuthService(x))
       .build();
+  """,
+  "client": """
+    {
+      "class": "foam.nanos.auth.AgentAuthClient",
+      "delegate": {
+        "class": "foam.nanos.auth.ClientAgentAuthService"
+      }
+    }
   """
 })
 
@@ -2432,7 +2440,16 @@ p({
     userCap =  new foam.nanos.crunch.UserCapabilityJunctionDAO.Builder(x).setDelegate(dao).build();
     return userCap;
   """,
-  "client":"{\"of\":\"foam.nanos.crunch.UserCapabilityJunction\", \"remoteListenerSupport\": false}"
+  "client":"{
+    \"of\":\"foam.nanos.crunch.UserCapabilityJunction\",
+    \"remoteListenerSupport\": false,
+    \"decorators\": [
+      {
+        \"class\":\"foam.nanos.fs.FileArrayDAODecorator\",
+        \"skipToData\": true
+      }
+    ]
+  }"
 })
 
 p({

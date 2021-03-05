@@ -1,6 +1,7 @@
 acceptanceDocuments
 accounts
 accountTemplates
+afexBusinessSectors
 afexUsers
 afexCredentialDAO
 agentJunctions
@@ -9,6 +10,7 @@ ascendantfxusers
 ascendantUserPayeeJunctions
 assetClasses
 bancoConfigs
+bankHolidays
 beneficialOwners
 bills
 blacklists
@@ -115,3 +117,4 @@ users
 xeroConfig
 xeroToken
 zeroAccountUserAssociations
+commonPasswords

@@ -20,27 +20,52 @@ foam.CLASS({
   name: 'ErrorCode',
   documentation: 'Error codes used for returning error cause information',
 
+  tableColumns: [
+    'id',
+    'category',
+    'abbreviation',
+    'fullText'
+  ],
+
+  sections: [
+    {
+      name: 'errorCodeInformation'
+    }
+  ],
+
   properties: [
     {
       class: 'Long',
       name: 'id',
       label: 'Code',
       alias: 'code',
-      documentation: 'The error code number'
+      documentation: 'The error code number',
+      section: 'errorCodeInformation',
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'String',
       name: 'category',
-      documentation: 'the category of the error code'
+      documentation: 'the category of the error code',
+      section: 'errorCodeInformation',
+      order: 20,
+      gridColumns: 6
+    },
+    {
+      class: 'String',
+      name: 'abbreviation',
+      section: 'errorCodeInformation',
+      order: 30,
+      gridColumns: 6
     },
     {
       class: 'String',
       name: 'fullText',
-      documentation: 'Full description of the error'
-    },
-    {
-      class: 'String',
-      name: 'abbreviation'
+      documentation: 'Full description of the error',
+      section: 'errorCodeInformation',
+      order: 40,
+      gridColumns: 6
     },
     {
       class: 'String',
@@ -49,7 +74,10 @@ foam.CLASS({
       getter: function() {
         return this.toSummary();
       },
-      javaGetter: 'return toSummary();'
+      javaGetter: 'return toSummary();',
+      section: 'errorCodeInformation',
+      order: 50,
+      gridColumns: 6
     },
   ],
 

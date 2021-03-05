@@ -121,18 +121,26 @@ foam.CLASS({
         return {
           class: 'net.nanopay.sme.ui.AddressView'
         };
-      }
+      },
+      section: 'userInformation',
+      order: 180
     },
     {
       class: 'foam.nanos.fs.FileProperty',
       name: 'profilePicture',
-      createVisibility: 'HIDDEN'
+      createVisibility: 'HIDDEN',
+      section: 'userInformation',
+      order: 230,
+      gridColumns: 6
     },
     {
       class: 'String',
       name: 'organization',
       order: 15,
-      label: 'Company Name'
+      label: 'Company Name',
+      section: 'businessInformation',
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'foam.nanos.fs.FileArray',
@@ -320,7 +328,10 @@ foam.CLASS({
       name: 'lifecycleState',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
-      readVisibility: 'RO'
+      readVisibility: 'RO',
+      section: 'systemInformation',
+      order: 40,
+      gridColumns: 6,
     },
     {
       class: 'Boolean',
@@ -536,17 +547,17 @@ foam.CLASS({
               DAO contactDAO = (DAO) x.get("contactDAO");
               DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
               User user = null;
-              Contact contact = null;
-              try{
-                contact = (Contact) contactDAO.find(userId);
-                if ( contact != null && contact.getBusinessId() > 0 ){
-                  return (User) localBusinessDAO.find(contact.getBusinessId());
-                } else if (contact == null) {
+              try {
+                user = (User) contactDAO.find(userId);
+                if ( user != null && user instanceof Contact && ((Contact) user).getBusinessId() > 0 ) {
+                  return (User) localBusinessDAO.find(((Contact) user).getBusinessId());
+                }
+                if ( user == null ) {
                   return (User) bareUserDAO.find(userId);
                 }
-                user = (User) contact;
-                return user;
-              } catch(Exception e) {}
+              } catch(Exception e) {
+                ((foam.nanos.logger.Logger) x.get("logger")).warning("User", "findUser", userId, e);
+              }
               return user;
             }
         `);

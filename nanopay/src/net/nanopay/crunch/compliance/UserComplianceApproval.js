@@ -40,6 +40,7 @@ foam.CLASS({
     'foam.nanos.crunch.CrunchService',
     'foam.nanos.crunch.UserCapabilityJunction',
     'java.util.List',
+    'net.nanopay.admin.model.ComplianceStatus',
     'static foam.mlang.MLang.*'
   ],
 
@@ -48,6 +49,11 @@ foam.CLASS({
       name:  'clearDataOnRejection',
       class: 'Boolean',
       value: true
+    },
+    {
+      name: 'setComplianceStatusOnRejection',
+      class: 'Boolean',
+      value: false
     }
   ],
 
@@ -70,7 +76,14 @@ foam.CLASS({
               X ownerContext = x.put("subject", subject);
 
               status = ApprovalStatus.REJECTED == approval ? CapabilityJunctionStatus.ACTION_REQUIRED : CapabilityJunctionStatus.APPROVED;          
-              if ( approval == ApprovalStatus.REJECTED ) return;
+              if ( approval == ApprovalStatus.REJECTED ) {
+                if ( getSetComplianceStatusOnRejection() ) {
+                  User user = (User) ((DAO) x.get("localUserDAO")).find(ucj.getSourceId()).fclone();
+                  user.setCompliance(ComplianceStatus.FAILED);
+                  ((DAO) x.get("localUserDAO")).put(user);
+                }
+                return;
+              }
               
               ucj.setStatus(status);
 

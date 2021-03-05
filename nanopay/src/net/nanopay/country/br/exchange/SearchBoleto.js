@@ -33,7 +33,7 @@ foam.CLASS({
 			required: false
 		},
 		{
-			class: "foam.core.Double",
+			class: "foam.core.String",
 			name: "nrBoleto",
 			required: false
 		},

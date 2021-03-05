@@ -520,15 +520,9 @@ foam.CLASS({
         outputter.outputValue(((Transaction)obj).getState(x));
       `,
       view: function(o, x) {
-        if ( o && o.mode$.obj && o.mode$.obj.mode == foam.u2.DisplayMode.RO) {
-          return foam.u2.Element.create()
-            .start()
-              .add(x.data.status.label)
-            .end();
-        }
-        return { 
-          class: 'foam.u2.view.ChoiceView', 
-          choices: x.data.statusChoices 
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          choices: x.data.statusChoices
         };
       },
       createVisibility: 'HIDDEN',
@@ -930,6 +924,13 @@ foam.CLASS({
       name: 'toSummary',
       type: 'String',
       code: function() {
+        return this.type;
+      }
+    },
+    {
+      name: 'findCurrency',
+      type: 'Promise',
+      code: function() {
         return Promise.all([
           this.currencyDAO.find(this.sourceCurrency),
           this.currencyDAO.find(this.destinationCurrency)
@@ -945,7 +946,6 @@ foam.CLASS({
                         ? dstCurrency.format(this.destinationAmount)
                         : `${this.destinationAmount} ${this.destinationCurrency}`;
           }
-
           return output;
         });
       }

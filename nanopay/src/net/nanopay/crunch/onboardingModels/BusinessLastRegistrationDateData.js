@@ -24,7 +24,7 @@ foam.CLASS({
   sections: [
     {
       name: 'businessLastRegistrationDateSection',
-      title: 'Business last registration date',
+      title: 'Date of the last Contractual Amendment or Minutes',
       help: 'Enter business last registration date'
     },
   ],
@@ -39,7 +39,7 @@ foam.CLASS({
     {
       section: 'businessLastRegistrationDateSection',
       name: 'businessLastRegistrationDate',
-      label: 'Input date of last registration date',
+      label: 'Insert the date of the last Contractual Amendment or Minutes',
       class: 'Date',
       documentation: 'Date of Business last Registration.',
       validationPredicates: [

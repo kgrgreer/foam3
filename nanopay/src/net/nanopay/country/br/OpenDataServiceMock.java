@@ -21,8 +21,14 @@ import foam.core.X;
 
 public class OpenDataServiceMock extends ContextAwareSupport implements OpenData {
 
+  protected double stubPTaxRate = 1.1;
+
   public OpenDataServiceMock(X x) {
     setX(x);
+  }
+
+  public void setStubPTaxRate(double val) {
+    this.stubPTaxRate = val;
   }
 
   public PTaxDollarRateResponse getLatestPTaxRates(int days) {
@@ -35,8 +41,8 @@ public class OpenDataServiceMock extends ContextAwareSupport implements OpenData
 
   public PTaxRate getPTaxRate() throws RuntimeException {
     PTaxRate response = new PTaxRate();
-    response.setCotacaoCompra(1.1);
-    response.setCotacaoVenda(1.1);
+    response.setCotacaoCompra(stubPTaxRate);
+    response.setCotacaoVenda(stubPTaxRate);
     return response;
   }
 }

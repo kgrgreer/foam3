@@ -60,7 +60,6 @@ foam.CLASS({
 
     ^ .foam-nanos-menu-VerticalMenu .side-nav-view {
       margin-top: 56px;
-      margin-left: -50px;
     }
 
     ^ .imageMenuStyle {
@@ -92,7 +91,7 @@ foam.CLASS({
       var i;
       var value;
       for ( i = 0; i < coll.length; i++ ) {
-        value = this.isMenuOpen ? 250 : 0;
+        value = this.isMenuOpen ? 264 : 0;
         coll[i].style.paddingLeft = `${value}px`;
         coll[i].style.maxWidth = `${window.innerWidth - value}px`;
       }
@@ -123,7 +122,8 @@ foam.CLASS({
           .start('img')
             .addClass('imageMenuStyle')
             .attr('src', '/images/menu/threeBars.svg')
-            .on('click', function() { self.toggleMenu(); } )
+            .attr('alt', 'toggle menu open')
+        .on('click', function() { self.toggleMenu(); } )
           .end()
           .start()
             .show(this.isMenuOpen$)

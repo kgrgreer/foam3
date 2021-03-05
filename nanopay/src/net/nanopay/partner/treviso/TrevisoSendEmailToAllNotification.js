@@ -43,9 +43,9 @@ foam.CLASS({
       name: 'body',
       transient: true,
       javaGetter: `
-        Subject subject = (Subject) getX().get("subject");
+        Subject subject = (Subject) foam.core.XLocator.get().get("subject");
         String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
-        TranslationService ts = (TranslationService) getX().get("translationService");
+        TranslationService ts = (TranslationService) foam.core.XLocator.get().get("translationService");
 
         return getSummary() + ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY", this.NOTIFICATION_BODY);
       `,

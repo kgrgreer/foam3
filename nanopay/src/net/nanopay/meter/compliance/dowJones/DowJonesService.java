@@ -5,11 +5,13 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.NanoService;
 import foam.nanos.auth.AuthenticationException;
+import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.approval.ApprovalStatus;
 import foam.nanos.pm.PM;
 import net.nanopay.meter.compliance.dowJones.EntityNameSearchData;
 import net.nanopay.meter.compliance.dowJones.PersonNameSearchData;
+import net.nanopay.model.BeneficialOwner;
 
 import java.util.Date;
 
@@ -51,7 +53,9 @@ public class DowJonesService
       DowJonesResponse feedback;
       if ( httpCode == 200 ) {
         DowJonesResponse resp = (DowJonesResponse) respMsg.getModel();
+        User user = (User) ((DAO) x.get("localUserDAO")).find(searchData.getSearchId());
         feedback = resp;
+        resp.setSpid(user != null ? user.getSpid() : "nanopay");
         resp.setSearchType("Dow Jones User");
         resp.setNameSearched(searchData.getFirstName() + " " + searchData.getSurName());
         resp.setUserId(searchData.getSearchId());
@@ -97,7 +101,9 @@ public class DowJonesService
       DowJonesResponse feedback;
       if ( httpCode == 200 ) {
         DowJonesResponse resp = (DowJonesResponse) respMsg.getModel();
+        BeneficialOwner owner = (BeneficialOwner) ((DAO) x.get("beneficialOwnerDAO")).find(searchData.getSearchId());
         feedback = resp;
+        resp.setSpid(owner != null ? owner.getSpid() : "nanopay");
         resp.setSearchType("Dow Jones Beneficial Owner");
         resp.setNameSearched(searchData.getFirstName() + " " + searchData.getSurName());
         resp.setUserId(searchData.getSearchId());
@@ -140,7 +146,9 @@ public class DowJonesService
       DowJonesResponse feedback;
       if ( httpCode == 200 ) {
         DowJonesResponse resp = (DowJonesResponse) respMsg.getModel();
+        User user = (User) ((DAO) x.get("localUserDAO")).find(searchData.getSearchId());
         feedback = resp;
+        resp.setSpid(user != null ? user.getSpid() : "nanopay");
         resp.setSearchType("Dow Jones Entity");
         resp.setNameSearched(searchData.getEntityName());
         resp.setUserId(searchData.getSearchId());

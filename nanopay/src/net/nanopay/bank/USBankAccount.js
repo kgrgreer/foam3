@@ -162,7 +162,13 @@ foam.CLASS({
       visibility: 'HIDDEN',
       required: false,
       validateObj: function(iban) {
-      }
+      },
+      javaGetter: `
+        StringBuilder iban = new StringBuilder();
+        iban.append(getBranchId());
+        iban.append(getAccountNumber());
+        return iban.toString();
+      `
     },
     {
       name: 'institutionNumber',
@@ -288,7 +294,7 @@ foam.CLASS({
               if ( accountNumber ) {
                 return this.E()
                   .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('accountNumber').label} `).end()
-                  .start('span').add(`*** ${accountNumber.substring(accountNumber.length - 4, accountNumber.length)}`).end();
+                  .start('span').add(obj.mask(accountNumber)).end();
               }
           }))
         .end();
@@ -333,6 +339,7 @@ foam.CLASS({
       transient: true,
       label: '',
       updateVisibility: 'HIDDEN',
+      autoValidate: true,
       factory: function() {
         return net.nanopay.model.USPadCapture.create({
           country: this.country,
@@ -365,6 +372,15 @@ foam.CLASS({
       required: false,
       validateObj: function(swiftCode) {
       }
+    },
+    {
+      name: 'bankRoutingCode',
+      javaPostSet: `
+        if ( val != null && BRANCH_ID_PATTERN.matcher(val).matches() ) {
+          clearBranch();
+          setBranchId(val);
+        }
+      `
     }
   ],
 
@@ -411,21 +427,23 @@ foam.CLASS({
       javaThrows: ['IllegalStateException'],
       javaCode: `
         super.validate(x);
-        String branchId = this.getBranchId();
         String accountNumber = this.getAccountNumber();
-
-        if ( SafetyUtil.isEmpty(branchId) ) {
-          throw new IllegalStateException(this.ROUTING_NUMBER_REQUIRED);
-        }
-        if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
-          throw new IllegalStateException(this.ROUTING_NUMBER_INVALID);
-        }
 
         if ( SafetyUtil.isEmpty(accountNumber) ) {
           throw new IllegalStateException(this.ACCOUNT_NUMBER_REQUIRED);
         }
         if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
           throw new IllegalStateException(this.ACCOUNT_NUMBER_INVALID);
+        }
+
+        if ( SafetyUtil.isEmpty(getSwiftCode()) ) {
+          String branchId = this.getBranchId();
+          if ( SafetyUtil.isEmpty(branchId) ) {
+            throw new IllegalStateException(this.ROUTING_NUMBER_REQUIRED);
+          }
+          if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
+            throw new IllegalStateException(this.ROUTING_NUMBER_INVALID);
+          }
         }
       `
     },

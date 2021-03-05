@@ -42,11 +42,16 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountingIntegrationUtil',
     'checkAndNotifyAbilityToPay',
     'currencyDAO',
     'stack',
     'subject',
-    'accountingIntegrationUtil',
+    'translationService'
+  ],
+
+  exports: [
+    'as payables'
   ],
 
   css: `
@@ -94,7 +99,6 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Payables' },
     { name: 'SUB_TITLE', message: `Here's a list of payments you've sent` },
-    { name: 'DELETE_DRAFT', message: 'Draft has been deleted' },
     { name: 'RECONCILED_SUCCESS', message: 'Invoice has been reconciled by payer' },
     { name: 'RECONCILED_ERROR', message: `There was an error reconciling the invoice` },
     { name: 'INVOICE', message: 'invoice' }
@@ -215,11 +219,11 @@ foam.CLASS({
             size: 'MEDIUM'
           })
         .endContext()
-        .startContext({ data: this })
+        /*.startContext({ data: this })
           .tag(this.SYNC, {
             size: 'MEDIUM'
           })
-        .endContext()
+        .endContext()*/
       .end()
       .tag(this.DAOBrowser.create({
         config: this.config,
@@ -250,7 +254,7 @@ foam.CLASS({
         });
       }
     },
-    {
+    /*{
       name: 'sync',
       label: 'Sync with Accounting',
       isAvailable: async function() {
@@ -262,7 +266,7 @@ foam.CLASS({
           class: 'net.invoice.ui.modal.IntegrationModal'
         }));
       }
-    },
+    },*/
     {
       name: 'reconcile',
       label: 'Reconcile',
@@ -273,9 +277,9 @@ foam.CLASS({
         var self = this.__subContext__;
         this.payerReconciled = true;
         self.subject.user.expenses.put(this).then(() => {
-          self.notify(self.RECONCILED_SUCCESS, '', self.LogLevel.INFO, true);
+          self.notify(X.payables.RECONCILED_SUCCESS, '', X.payables.LogLevel.INFO, true);
         }).catch((err) => {
-          self.notify(self.RECONCILED_ERROR, '', self.LogLevel.ERROR, true);
+          self.notify(X.payables.RECONCILED_ERROR, '', X.payables.LogLevel.ERROR, true);
         });
       }
     },
@@ -395,11 +399,12 @@ foam.CLASS({
       },
       code: function(X) {
         var self = this.__subContext__;
+        var label_ = self.translationService.getTranslation(foam.locale, X.payables.INVOICE, X.payables.INVOICE);
         ctrl.add(ctrl.Popup.create().tag({
           class: 'foam.u2.DeleteModal',
           dao: self.subject.user.expenses,
           data: this,
-          label: this.model_.label
+          label: label_
         }));
       }
     }

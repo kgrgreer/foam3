@@ -308,6 +308,7 @@ foam.CLASS({
         ));
         if ( ! u ) {
           u = await this.client(x, 'userDAO', foam.nanos.auth.User).put_(x, foam.nanos.auth.User.create({
+            spid: 'ablii',
             email: email,
             userName: userName,
             firstName: userName,
@@ -529,7 +530,7 @@ foam.CLASS({
     {
       name: 'businessLastRegistrationDate',
       code: async function(x, business) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-19';
+        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-19'; // this is br/treviso capability
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -779,7 +780,7 @@ foam.CLASS({
     {
       name: 'approveRequest',
       type: 'foam.nanos.approval.ApprovalRequest',
-      code: async function(x, groupId, daoKey, objId) {
+      code: async function(x, groupId, daoKey, classification) {
         let y = this.sudoStore(x);
         let z = this.sudoAdmin(x);
         const E = foam.mlang.ExpressionsSingleton.create();
@@ -787,19 +788,19 @@ foam.CLASS({
         var u = await this.client(z, 'userDAO', foam.nanos.auth.User).find(E.EQ(foam.nanos.auth.User.GROUP, groupId));
         if ( u ) {
           console.info('approveRequest', 'approver', u.id);
-          var r = await this.findApprovalRequest(z, u, daoKey, objId);
+          var r = await this.findApprovalRequest(z, u, daoKey, classification);
           if ( r ) {
             console.info('approveRequest', 'approval', r.id, r.status);
             r = r.clone();
             r.status = foam.nanos.approval.ApprovalStatus.APPROVED;
             r.isFulfilled = true;
             r = await this.client(z, 'approvalRequestDAO', foam.nanos.approval.ApprovalRequest).put_(z, r);
-            console.info('approveRequest', 'approved', r & r.id, r & r.status);
+            console.info('approveRequest', 'approved', r && r.id, r && r.status);
             this.sudoRestore(y);
             return r;
           }
           this.sudoRestore(y);
-          throw 'ApprovalRequest not found for objId '+objId;
+          throw 'ApprovalRequest not found for classification '+classification;
         }
         this.sudoRestore(y);
         throw 'ApprovalRequest user not found in group '+groupId;
@@ -808,13 +809,13 @@ foam.CLASS({
     {
       name: 'findApprovalRequest',
       type: 'foam.nanos.approval.ApprovalRequest',
-      code: async function(x, approver, daoKey, objId) {
+      code: async function(x, approver, daoKey, classification) {
         const E = foam.mlang.ExpressionsSingleton.create();
         return await this.client(x, 'approvalRequestDAO', foam.nanos.approval.ApprovalRequest).find(
           E.AND(
             E.EQ(foam.nanos.approval.ApprovalRequest.APPROVER, approver.id),
             E.EQ(foam.nanos.approval.ApprovalRequest.DAO_KEY, daoKey),
-            E.EQ(foam.nanos.approval.ApprovalRequest.OBJ_ID, objId),
+            E.EQ(foam.nanos.approval.ApprovalRequest.CLASSIFICATION, classification),
             E.EQ(foam.nanos.approval.ApprovalRequest.IS_FULFILLED, false)
           )
         );
@@ -1133,6 +1134,36 @@ foam.CLASS({
         }
         return ucj;
       }
-    }
+    },
+    {
+      name: 'explicitInternationalOnboardingCaps',
+      code: async function(x, business) {
+        var id = '05a663b8-2b48-11eb-adc1-0242ac120002';
+        var ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        }
+        id = '0B2E7305-B898-43F2-9C1B-63FB2CE38B2D';
+        ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        }
+        id = 'bf6a49d5-4027-4dac-a269-4d3ed070609e-4'; 
+        ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        }
+        id = '89cc91da-4bbd-458b-81d4-574815e455fa-4'; 
+        ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        }
+        return ucj;
+      }
+    },
   ]
 });

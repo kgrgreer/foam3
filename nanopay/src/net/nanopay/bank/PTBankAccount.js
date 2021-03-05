@@ -23,6 +23,33 @@ foam.CLASS({
 
   documentation: 'Portugal bank account information.',
 
+  javaImports: [
+    'foam.util.SafetyUtil'
+  ],
+
+  constants: [
+    {
+      name: 'BRANCH_ID_PATTERN',
+      type: 'Regex',
+      value: /^\d{4}$/
+    },
+    {
+      name: 'INSTITUTION_NUMBER_PATTERN',
+      type: 'Regex',
+      value: /^\d{4}$/
+    },
+    {
+      name: 'ACCOUNT_NUMBER_PATTERN',
+      type: 'Regex',
+      value: /^\d{11}$/
+    },
+    {
+      name: 'ROUTING_CODE_PATTERN',
+      type: 'Regex',
+      value: /^(\d{4})(\d{4})$/
+    }
+  ],
+
   properties: [
     {
       name: 'country',
@@ -45,15 +72,13 @@ foam.CLASS({
       name: 'institutionNumber',
       updateVisibility: 'RO',
       validateObj: function(institutionNumber, iban) {
-        var regex = /^[A-z0-9a-z]{4}$/;
-
         if ( iban )
           var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
         if ( ! iban || (iban && ibanMsg != 'passed') ) {
           if ( institutionNumber === '' ) {
             return this.INSTITUTION_NUMBER_REQUIRED;
-          } else if ( ! regex.test(institutionNumber) ) {
+          } else if ( ! this.INSTITUTION_NUMBER_PATTERN.test(institutionNumber) ) {
             return this.INSTITUTION_NUMBER_INVALID;
           }
         }
@@ -66,23 +91,21 @@ foam.CLASS({
       preSet: function(o, n) {
         return /^[\d\w]*$/.test(n) ? n : o;
       },
-      tableCellFormatter: function(str) {
+      tableCellFormatter: function(str, obj) {
         if ( ! str ) return;
-        var displayAccountNumber = '***' + str.substring(str.length - 4, str.length)
+        var displayAccountNumber = obj.mask(str);
         this.start()
           .add(displayAccountNumber);
         this.tooltip = displayAccountNumber;
       },
       validateObj: function(accountNumber, iban) {
-        var accNumberRegex = /^[0-9]{11}$/;
-
         if ( iban )
           var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
         if ( ! iban || (iban && ibanMsg != 'passed') ) {
           if ( accountNumber === '' ) {
             return this.ACCOUNT_NUMBER_REQUIRED;
-          } else if ( ! accNumberRegex.test(accountNumber) ) {
+          } else if ( ! this.ACCOUNT_NUMBER_PATTERN.test(accountNumber) ) {
             return this.ACCOUNT_NUMBER_INVALID;
           }
         }

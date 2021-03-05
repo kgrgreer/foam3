@@ -1,3 +1,0 @@
-p({"class":"net.nanopay.fx.ExchangeRate","toCurrency":"USD","rate":5,"fromCurrency":"BRL"})
-p({"class":"net.nanopay.fx.ExchangeRate","toCurrency":"EUR","rate":6,"fromCurrency":"BRL"})
-p({"class":"net.nanopay.fx.ExchangeRate","toCurrency":"GBP","rate":7,"fromCurrency":"BRL"})

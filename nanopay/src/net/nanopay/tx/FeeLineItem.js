@@ -44,30 +44,41 @@ foam.CLASS({
       hidden: true
     },
     {
+      name: 'note',
+      hidden: true
+    },
+    {
+      name: 'name',
+      hidden: true
+    },
+    {
       class: 'Reference',
       of: 'foam.core.Currency',
       name: 'feeCurrency',
       targetDAOKey: 'currencyDAO',
-      hidden: true,
-      javaSetter: `
-        feeCurrency_ = val;
-        feeCurrencyIsSet_ = true;
-        calculateView_();
-      `
+      hidden: true
     },
     {
       name: 'amount',
-      hidden: true,
-      javaSetter: `
-        amount_ = val;
-        amountIsSet_ = true;
-        calculateView_();
-      `
+      order: 10,
+      gridColumns: 6
     },
     {
-      name: 'amountView',
-      label: 'Amount',
-      class: 'String'
+      name: 'sourceAccount',
+      label: 'Payer Account',
+      order: 20,
+      gridColumns: 6,
+      readPermissionRequired: true
+    },
+    {
+      name: 'destinationAccount',
+      label: 'Fee Account',
+      hidden: false,
+      order: 30,
+      gridColumns: 6,
+      view: {
+        class: 'foam.u2.view.ReferenceView'
+      }
     },
     {
       class: 'FObjectArray',
@@ -79,23 +90,8 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       of: 'net.nanopay.tx.fee.Rate',
-      name: 'rates'
-    }
-  ],
-  methods: [
-    {
-      name: 'calculateView_',
-      javaCode: `
-        DAO currDAO = (DAO) getX().get("currencyDAO");
-        if (currDAO != null) {
-          Currency cur = (Currency) currDAO.find(getFeeCurrency());
-          if (cur != null ) {
-            setAmountView(""+cur.format(getAmount()));
-            return;
-          }
-        }
-        setAmountView(""+getAmount());
-      `
+      name: 'rates',
+      hidden: true
     }
   ]
 });
