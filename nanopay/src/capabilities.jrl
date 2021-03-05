@@ -1113,3 +1113,4 @@ p({
   "of":"net.nanopay.contacts.AFEXCNBeneficiaryCapability",
   "enabled":true
 })
+p({class:"foam.nanos.auth.ServiceProvider",id:"nanopay.estimationaccounts",description:"estimation account spid",enabled:true})
