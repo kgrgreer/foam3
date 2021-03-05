@@ -1,0 +1,12 @@
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"96b52369-946a-4bf2-8e17-1832acf8922e",
+  "desiredModelId":"net.nanopay.account.Account",
+  "strategy":"net.nanopay.tx.creditengine.CourtesyCredit"
+})
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"6246258d-a62e-4388-a3e4-c08d73998ab6",
+  "desiredModelId":"net.nanopay.account.Account",
+  "strategy":"net.nanopay.tx.creditengine.FeeWaiver"
+})
