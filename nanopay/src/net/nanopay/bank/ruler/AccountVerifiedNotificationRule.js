@@ -61,7 +61,7 @@ foam.CLASS({
             HashMap<String, Object> args    = new HashMap<>();
             args.put("link",    config.getUrl());
             args.put("name",    User.FIRST_NAME);
-            args.put("accountNumber",  "***" + account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
+            args.put("accountNumber",  BankAccount.mask(account.getAccountNumber()));
             args.put("institution", institutionName);
             args.put("institutionNumber", account.getInstitutionNumber());
             args.put("accountType", account.getType());

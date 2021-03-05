@@ -36,6 +36,10 @@ foam.CLASS({
     'supportTransactionDAO'
   ],
 
+  javaImports: [
+    'net.nanopay.bank.BankAccount'
+  ],
+
   tableColumns: [
     'id',
     'owner',
@@ -159,6 +163,19 @@ foam.CLASS({
       return this.supportTransactionDAO.where(
         this.EQ(net.nanopay.support.SupportTransaction.SOURCE_ACCOUNT, this.id)
       );
+    }
+  ],
+
+  static: [
+    {
+      name: 'mask',
+      type: 'String',
+      args: [
+        { name: 'str', type: 'String' }
+      ],
+      code: function(str) {
+        return net.nanopay.bank.BankAccount.mask(str);
+      }
     }
   ]
 });

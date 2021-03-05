@@ -78,7 +78,7 @@ p({
             "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
             "propName":"destinationAccount",
             "of":"net.nanopay.bank.GBBankAccount"
-          },
+          }
         ]
       },
       {
@@ -288,7 +288,7 @@ p({
       {
         "class": "foam.nanos.ruler.predicate.PropertyChangePredicate",
         "propName": "status"
-      },
+      }
     ]
   },
   "action":{

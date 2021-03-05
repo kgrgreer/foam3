@@ -211,14 +211,16 @@ foam.CLASS({
         Logger logger = (Logger) x.get("logger");
         try {
           HttpServletRequest               request          = (HttpServletRequest) x.get(HttpServletRequest.class);
-          String                           ipAddress        = request.getRemoteAddr();
           User                             user             = ((Subject) x.get("subject")).getUser(); // potentially non-exiting
           long                             userId           = (((Subject) x.get("subject")).getRealUser()).getId();
           long                             businessId       = user != null ? user.getId() : 0;
 
           setUser(userId);
           setBusiness(businessId);
-          setIpAddress(request.getRemoteAddr());
+
+          if ( request != null ){
+            setIpAddress(request.getRemoteAddr());
+          }
         } catch (Exception e) {
           logger.warning("Some thing may have went wrong in saving properties to acceptance document.");
         }
