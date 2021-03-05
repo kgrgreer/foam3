@@ -55,7 +55,7 @@ public class DowJonesService
         DowJonesResponse resp = (DowJonesResponse) respMsg.getModel();
         User user = (User) ((DAO) x.get("localUserDAO")).find(searchData.getSearchId());
         feedback = resp;
-        resp.setSpid(user.getSpid());
+        resp.setSpid(user != null ? user.getSpid() : "nanopay");
         resp.setSearchType("Dow Jones User");
         resp.setNameSearched(searchData.getFirstName() + " " + searchData.getSurName());
         resp.setUserId(searchData.getSearchId());
@@ -103,7 +103,7 @@ public class DowJonesService
         DowJonesResponse resp = (DowJonesResponse) respMsg.getModel();
         BeneficialOwner owner = (BeneficialOwner) ((DAO) x.get("beneficialOwnerDAO")).find(searchData.getSearchId());
         feedback = resp;
-        resp.setSpid(owner.getSpid());
+        resp.setSpid(owner != null ? owner.getSpid() : "nanopay");
         resp.setSearchType("Dow Jones Beneficial Owner");
         resp.setNameSearched(searchData.getFirstName() + " " + searchData.getSurName());
         resp.setUserId(searchData.getSearchId());
@@ -148,7 +148,7 @@ public class DowJonesService
         DowJonesResponse resp = (DowJonesResponse) respMsg.getModel();
         User user = (User) ((DAO) x.get("localUserDAO")).find(searchData.getSearchId());
         feedback = resp;
-        resp.setSpid(user.getSpid());
+        resp.setSpid(user != null ? user.getSpid() : "nanopay");
         resp.setSearchType("Dow Jones Entity");
         resp.setNameSearched(searchData.getEntityName());
         resp.setUserId(searchData.getSearchId());

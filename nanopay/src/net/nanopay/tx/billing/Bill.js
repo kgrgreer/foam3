@@ -71,13 +71,11 @@ foam.CLASS({
       order: 30
     },
     {
-      class: 'Reference',
-      targetDAOKey: 'transactionDAO',
+      class: 'net.nanopay.tx.model.TransactionReference',
       name: 'originatingTransaction',
-      of: 'net.nanopay.tx.model.Transaction',
       section: 'billInformation',
       order: 40,
-      gridColumns: 6
+      gridColumns: 6,
     },
     {
       class: 'Reference',

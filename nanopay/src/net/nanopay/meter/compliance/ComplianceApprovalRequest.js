@@ -74,6 +74,136 @@ foam.CLASS({
         }
         return null;
       }
+    },
+    {
+      // TODO: True fix will be with ReferenceView
+      class: 'String',
+      name: 'referenceSummary',
+      section: 'approvalRequestInformation',
+      transient: true,
+      tableWidth: 200,
+      order: 31,
+      gridColumns: 6,
+      visibility: 'RO',
+      tableCellFormatter: function(_,obj) {
+        let self = this;
+
+        if ( ! (obj.daoKey === "userCapabilityJunctionDAO") ){
+          this.__subSubContext__[obj.daoKey].find(obj.objId).then(requestObj => {
+            let referenceSummaryString = `ID:${obj.objId}`;
+  
+            if ( requestObj ){
+              Promise.resolve(requestObj.toSummary()).then(function(requestObjSummary) {
+                if ( requestObjSummary ){
+                  referenceSummaryString = requestObjSummary;
+                }
+
+                self.add(referenceSummaryString);
+              })
+            }
+
+          });
+        } else {
+          this.__subSubContext__[obj.daoKey].find(obj.objId).then(ucj => {
+
+            let referenceSummaryString = `ID:${obj.objId}`;
+  
+            if ( ucj ){
+              this.__subSubContext__.userDAO.find(ucj.sourceId).then(user => {
+                if ( user && user.toSummary && user.toSummary() ){
+                  referenceSummaryString = user.toSummary();
+                }
+  
+                if (
+                  foam.nanos.crunch.AgentCapabilityJunction.isInstance(ucj) &&
+                  ucj.sourceId !== ucj.effectiveUser
+                ){
+                  this.__subSubContext__.userDAO.find(ucj.effectiveUser).then(effectiveUser => {
+                    let effectiveUserString = `U:${ucj.effectiveUser}`;
+                    if (effectiveUser && effectiveUser.toSummary() ){
+                      effectiveUserString = effectiveUser.toSummary();
+                    }
+  
+                    referenceSummaryString = `${effectiveUserString}: ${referenceSummaryString}`;
+  
+                    self.add(referenceSummaryString);
+                  })
+                } else {
+                  self.add(referenceSummaryString);
+                }
+              })
+            }
+          });
+        }
+      },
+      view: function(_, X) {
+        let slot = foam.core.SimpleSlot.create();
+        let data = X.data;
+
+        if ( ! (data.daoKey === "userCapabilityJunctionDAO") ){
+          X[data.daoKey].find(data.objId).then(requestObj => {
+            let referenceSummaryString = `ID:${data.objId}`;
+
+            if ( requestObj ){
+              Promise.resolve(requestObj.toSummary()).then(function(requestObjSummary) {
+                if ( requestObjSummary ){
+                  referenceSummaryString = requestObjSummary;
+                }
+
+                slot.set(referenceSummaryString);
+              })
+            }
+          })
+        } else {
+          X[data.daoKey].find(data.objId).then(ucj => {
+            let referenceSummaryString = `ID:${data.objId}`;
+  
+            if ( ucj ){
+              X.userDAO.find(ucj.sourceId).then(user => {
+                if ( user && user.toSummary && user.toSummary() ){
+                  referenceSummaryString = user.toSummary();
+                }
+  
+                if (
+                  foam.nanos.crunch.AgentCapabilityJunction.isInstance(ucj) &&
+                  ucj.sourceId !== ucj.effectiveUser
+                ){
+                  X.userDAO.find(ucj.effectiveUser).then(effectiveUser => {
+                    let effectiveUserString = `U:${ucj.effectiveUser}`;
+                    if (effectiveUser && effectiveUser.toSummary() ){
+                      effectiveUserString = effectiveUser.toSummary();
+                    }
+  
+                    referenceSummaryString = `${effectiveUserString}: ${referenceSummaryString}`;
+  
+                    slot.set(referenceSummaryString);
+                  })
+                } else {
+                  slot.set(referenceSummaryString);
+                }
+              })
+            }
+  
+            slot.set(referenceSummaryString);
+          })
+        }
+        
+        return {
+          class: 'foam.u2.view.ValueView',
+          data$: slot
+        };
+      }
+    },
+    {
+      name: 'effectiveUser',
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      section: 'complianceInformation',
+      documentation: `
+        The entity that the user in the approval request is acting as
+      `,
+      order: 32,
+      gridColumns: 6
     }
   ]
 });

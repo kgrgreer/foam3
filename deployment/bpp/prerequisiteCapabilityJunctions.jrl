@@ -1,0 +1,5 @@
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bpp",targetId:"serviceProviderCapability"})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bpp",targetId:"bppCorridorCapability"})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bpp",targetId:"bppPlannerCapability"})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bpp",targetId:"bpp-tx-reason-codes"})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bpp",targetId:"bpp-tx-fees"})

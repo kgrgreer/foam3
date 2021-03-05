@@ -41,6 +41,7 @@ foam.CLASS({
   imports: [
     'subject',
     'agentAuth',
+    'assignBusinessAndLogIn',
     'auth',
     'businessDAO',
     'capabilityDAO',
@@ -52,6 +53,7 @@ foam.CLASS({
     'menuDAO',
     'notify',
     'onboardingUtil',
+    'pushDefaultMenu',
     'pushMenu',
     'stack',
     'theme',
@@ -175,31 +177,7 @@ foam.CLASS({
 
   properties: [
     ['updated', false],
-    {
-      class: 'foam.dao.DAOProperty',
-      name: 'enabledBusinesses_',
-      documentation: `
-        The DAO used to populate the enabled businesses in the list.
-      `,
-      expression: function(subject, updated) {
-        var agent = subject.realUser;
-        var user = subject.user;
-        var party = agent.created ? agent : user;
-        return this.PromisedDAO.create({
-          promise: party.entities.dao
-            .where(this.NEQ(this.Business.STATUS, this.AccountStatus.DISABLED))
-            .select(this.MAP(this.Business.ID))
-            .then(mapSink => {
-              return party.entities.junctionDAO.where(
-                this.AND(
-                  this.EQ(this.UserUserJunction.SOURCE_ID, party.id),
-                  this.IN(this.UserUserJunction.TARGET_ID, mapSink.delegate.array)
-                )
-              );
-            })
-        });
-      }
-    },
+    net.nanopay.ui.Controller.ENABLED_BUSINESSES_.clone(),
     {
       class: 'foam.dao.DAOProperty',
       name: 'disabledBusinesses_',
@@ -243,38 +221,6 @@ foam.CLASS({
      * @param {*} junction The junction between the User and the Business they
      * want to switch to.
      */
-    async function assignBusinessAndLogIn(junction) {
-      var business = await this.businessDAO.find(junction.targetId);
-      try {
-        var result = await this.agentAuth.actAs(this, business);
-        // set default menuState as open
-        window.localStorage.setItem('isMenuOpen', 'true');
-
-        if ( result ) {
-          await this.ctrl.fetchGroup();
-          this.subject.user = business;
-          this.subject.realUser = result;
-          this.clearCachedDAOs();
-          this.initLayout.resolve();
-          await this.pushDefaultMenu();
-
-          return;
-        }
-      } catch (err) {
-        var msg = err != null && typeof err.message === 'string'
-          ? err.message
-          : this.BUSINESS_LOGIN_FAILED;
-        this.notify(msg, '', this.LogLevel.ERROR, true);
-      }
-    },
-
-    async function pushDefaultMenu() {
-      var defaultMenu = this.theme ?
-        await this.menuDAO.find(this.theme.defaultMenu) :
-        'sme.main.appStore';
-      if ( ! defaultMenu ) defaultMenu = 'sme.main.appStore';
-      this.pushMenu(defaultMenu);
-    },
 
     async function init() {
       if ( this.user.cls_ != net.nanopay.model.Business ) {

@@ -91,3 +91,6 @@ p({
         }
     ]
 })
+
+// Remove testing key
+r({class:"foam.nanos.session.Session", id:"2c2d88af-cba8-9549-05e9-18be400a0aed"})

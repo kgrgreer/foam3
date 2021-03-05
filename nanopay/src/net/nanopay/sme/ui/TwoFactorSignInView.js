@@ -95,7 +95,7 @@ foam.CLASS({
     }
     ^ .sme-image {
       width: 30vw;
-      min-width: 560px; 
+      min-width: 560px;
       margin-top: 19vh;
       margin-left: 12vw;
     }
@@ -124,7 +124,7 @@ foam.CLASS({
     }
     ^ .sub-note {
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 12px 
+      font-size: 12px
     }
   `,
 
@@ -166,7 +166,7 @@ foam.CLASS({
         return supportConfig ? supportConfig.supportPhone : '';
       }
     },
-    
+
   ],
 
   messages: [
@@ -250,7 +250,7 @@ foam.CLASS({
               .end()
               .add(this.GO_BACK + this.appName)
               .on('click', () => {
-                window.location = this.ABLII_ADDRESS;
+                window.location = window.location.href;
               })
             .end()
           .end()

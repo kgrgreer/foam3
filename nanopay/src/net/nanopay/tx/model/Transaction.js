@@ -960,6 +960,13 @@ foam.CLASS({
       name: 'toSummary',
       type: 'String',
       code: function() {
+        return this.type;
+      }
+    },
+    {
+      name: 'findCurrency',
+      type: 'Promise',
+      code: function() {
         return Promise.all([
           this.currencyDAO.find(this.sourceCurrency),
           this.currencyDAO.find(this.destinationCurrency)
@@ -975,7 +982,6 @@ foam.CLASS({
                         ? dstCurrency.format(this.destinationAmount)
                         : `${this.destinationAmount} ${this.destinationCurrency}`;
           }
-
           return output;
         });
       }

@@ -100,7 +100,12 @@ public class JoinBusinessWebAgent implements WebAgent {
 
     if ( redirect.equals("/") ) redirect = url + "?email=" + encodedEmail;
 
-    EmailTemplate emailTemplate = DAOResourceLoader.findTemplate(x, "join-business-splash-page", user.getGroup());
+    EmailTemplate emailTemplate = DAOResourceLoader.findTemplate(
+      x,
+      "join-business-splash-page",
+      user.getGroup(),
+      user.getLanguage().getCode().toString()
+    );
     EmailTemplateEngine templateEngine = (EmailTemplateEngine) x.get("templateEngine");
     HashMap args = new HashMap();
     args.put("msg", message);

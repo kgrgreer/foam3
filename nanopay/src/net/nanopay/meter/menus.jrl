@@ -237,7 +237,8 @@ p({
           "class": "foam.comics.v2.BasicEnabledActionsAuth",
           "modelName": "report"
         }
-      }
+      },
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
     }
   },
   "parent":  "report"

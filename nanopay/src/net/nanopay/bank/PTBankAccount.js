@@ -91,9 +91,9 @@ foam.CLASS({
       preSet: function(o, n) {
         return /^[\d\w]*$/.test(n) ? n : o;
       },
-      tableCellFormatter: function(str) {
+      tableCellFormatter: function(str, obj) {
         if ( ! str ) return;
-        var displayAccountNumber = '***' + str.substring(str.length - 4, str.length)
+        var displayAccountNumber = obj.mask(str);
         this.start()
           .add(displayAccountNumber);
         this.tooltip = displayAccountNumber;
@@ -119,30 +119,5 @@ foam.CLASS({
       name: 'branchId',
       visibility: 'HIDDEN'
     }
-  ],
-
-  methods: [
-    {
-      name: 'setRoutingCode',
-      javaCode: `
-        if ( ! SafetyUtil.isEmpty(routingCode) ) {
-          try {
-            var matcher = ROUTING_CODE_PATTERN.matcher(routingCode);
-            if ( matcher.find() ) {
-              var institutionNumber = matcher.group(1);
-              var branchId = matcher.group(2);
-
-              // Reset institution and branch
-              clearInstitution();
-              clearBranch();
-              setInstitutionNumber(institutionNumber);
-              setBranchId(branchId);
-              return true;
-            }
-          } catch ( RuntimeException e ) { /* ignore */ }
-        }
-        return false;
-      `
-    },
   ]
 });

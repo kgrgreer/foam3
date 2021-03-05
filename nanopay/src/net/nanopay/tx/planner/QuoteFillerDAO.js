@@ -59,7 +59,7 @@ foam.CLASS({
             payer = (User) source.findOwner(x);
           }
         }
-        if (payer == null ) { // we require a user to get the spid, no way to get user = failure to plan.
+        if (payer == null ) {
           ((Logger) x.get("logger")).error("Payer not found", txn.getId(), "source", txn.getSourceAccount(), "payer", txn.getPayerId());
           throw new ValidationException("Payer not found");
         }
@@ -73,14 +73,14 @@ foam.CLASS({
         quote.setSourceAccount(account);
 
         // ---- set destination account
-        Account destAccount = txn.findDestinationAccount(x); //context looking in admin, but spid+nanopay constrained.
+        Account destAccount = txn.findDestinationAccount(x);
         if ( destAccount == null ) {
           User payee = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayeeId());
           if ( payee == null ) {
             ((Logger) x.get("logger")).error("Payee not found", txn.getId(), "source", txn.getDestinationAccount(), "payee", txn.getPayeeId());
             throw new ValidationException("Payee not found");
           }
-          DigitalAccount accountDigital = DigitalAccount.findDefault(x, payee, txn.getDestinationCurrency()); //context looking in admin, but spid+nanopay constrained.
+          DigitalAccount accountDigital = DigitalAccount.findDefault(x, payee, txn.getDestinationCurrency());
           
           // Once Ablii has digital account support, will need to make AFEX support CAD digital accounts as well.
           // AFEX planner will know which trust account to use for AFEXTransaction and then add on
@@ -114,6 +114,9 @@ foam.CLASS({
           logger.log("Transaction Source Currency not specified, defaulting to source account denomination");
           txn.setDestinationCurrency(quote.getDestinationAccount().getDenomination());
         }
+
+        quote.setAmount(txn.getAmount());
+        quote.setDestinationAmount(txn.getDestinationAmount());
 
         quote.setSourceUnit(txn.getSourceCurrency());
         quote.setDestinationUnit(txn.getDestinationCurrency());

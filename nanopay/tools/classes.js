@@ -302,7 +302,6 @@ var classes = [
   'net.nanopay.fx.afex.AFEXSubmitPaymentRule',
   'net.nanopay.fx.afex.AFEXBeneficialOwnerRule',
   'net.nanopay.fx.afex.AFEXBusinessDirectorRule',
-  'net.nanopay.fx.afex.AFEXSigningOfficerRule',
   'net.nanopay.fx.afex.AFEXBankUpdatingRule',
   'net.nanopay.fx.afex.TransactionInvalidBankAccountRule',
   'net.nanopay.fx.afex.TransactionVerifyBankAccountRule',
@@ -891,6 +890,7 @@ var classes = [
   // compliance
   'net.nanopay.meter.compliance.AbstractComplianceRuleAction',
   'net.nanopay.meter.compliance.ComplianceApprovalRequest',
+  'net.nanopay.meter.compliance.ComplianceApprovalRequestEffectiveUserRuleAction',
   'net.nanopay.meter.compliance.ComplianceAuthService',
   'net.nanopay.meter.compliance.ComplianceAware',
   'net.nanopay.meter.compliance.ComplianceItem',
@@ -960,6 +960,7 @@ var classes = [
   'net.nanopay.meter.compliance.secureFact.SecurefactRequest',
   'net.nanopay.meter.compliance.secureFact.SecurefactResponse',
   'net.nanopay.meter.compliance.secureFact.SecurefactService',
+  'net.nanopay.meter.compliance.secureFact.MockSecurefactService',
   'net.nanopay.meter.compliance.secureFact.sidni.SIDniRequest',
   'net.nanopay.meter.compliance.secureFact.sidni.SIDniCustomer',
   'net.nanopay.meter.compliance.secureFact.sidni.SIDniName',
