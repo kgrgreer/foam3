@@ -105,11 +105,10 @@ p({
       "of": "net.nanopay.contacts.Contact",
       "DAOCreateView":false,
 
-      "XXXWizardDetailView":{"class":"net.nanopay.ui.wizard.ContactWizardDetailView"},
       "wizardDetailView":"net.nanopay.ui.wizard.ContactWizardDetailView",
 
 
-      "XXXcreateControllerView":{
+      "NNNcreateControllerView":{
         "class":"net.nanopay.sme.ui.MenuRedirectSMEModalView",
         "menu":"mainmenu.contacts",
         "view":{
