@@ -68,8 +68,8 @@ foam.CLASS({
       factory: function() {
         return net.nanopay.bank.BRBankAccount.create({ clientAccountInformationTitle: '' }, this);
       },
-      validateObj: function(bankAccount$errors_) {
-        if ( bankAccount$errors_ && bankAccount$errors_.length ) {
+      validateObj: function(bankAccount$errors_, hasBankAccount) {
+        if ( ! hasBankAccount && bankAccount$errors_ && bankAccount$errors_.length ) {
           return this.INVALID_BANK;
         }
       }
