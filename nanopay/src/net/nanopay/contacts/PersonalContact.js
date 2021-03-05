@@ -72,7 +72,7 @@ foam.CLASS({
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.payment.PaymentProviderCorridor',
-    'net.nanopay.ui.wizard.WizardController'
+    'net.nanopay.ui.wizard.ContactWizardDetailView'
   ],
 
   constants: [
@@ -380,7 +380,7 @@ foam.CLASS({
         return this.signUpStatus !== this.ContactStatus.READY && ! this.bankAccount;
       },
       code: function(X) {
-        X.controllerView.add(this.WizardController.create({
+        X.controllerView.add(this.ContactWizardDetailView.create({
           model: 'net.nanopay.contacts.Contact',
           data: this,
           controllerMode: foam.u2.ControllerMode.CREATE,
@@ -392,7 +392,7 @@ foam.CLASS({
       name: 'edit',
       label: 'Edit Details',
       code: function(X) {
-        X.controllerView.add(this.WizardController.create({
+        X.controllerView.add(this.ContactWizardDetailView.create({
           model: 'net.nanopay.contacts.Contact',
           data: this,
           controllerMode: foam.u2.ControllerMode.EDIT,
@@ -416,7 +416,7 @@ foam.CLASS({
           createdBy: this.subject.user.id,
           isContact: true
         }, X);
-        X.controllerView.add(this.WizardController.create({
+        X.controllerView.add(this.ContactWizardDetailView.create({
           model: 'net.nanopay.model.Invitation',
           data: invite,
           controllerMode: foam.u2.ControllerMode.EDIT
