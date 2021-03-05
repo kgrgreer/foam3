@@ -35,6 +35,39 @@ foam.CLASS({
       `,
     },
     {
+      class: 'Reference',
+      of: 'foam.core.Unit',
+      name: 'denomination',
+      includeInDigest: true,
+      label: 'Currency',
+      targetDAOKey: 'currencyDAO',
+      value:'CAD'
+    },
+    {
+      class: 'Long',
+      name: 'initialQuantity',
+      value: 0,
+      documentation: 'Initial amount of promos available. either "$ quantity, usage Amounts, or whatever else thats code specific'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'createOnTransaction',
+      args: [
+        {
+          name: 't',
+          type: 'net.nanopay.tx.model.Transaction'
+        }
+      ],
+      type: 'net.nanopay.tx.CreditLineItem',
+      javaCode: `
+        /* can be overwritten by extending class */
+        return null;
+      `,
+      documentation: 'Create a credit line item based on the transaction as a whole'
+    },
+    {
       name: 'validateAmount',
       documentation: `creditCode accounts have a certain usage, and must remain positive`,
       args: [
@@ -61,24 +94,6 @@ foam.CLASS({
           throw new RuntimeException("This promotion can not be applied");
         }
       `
-    },
-  ],
-
-  methods: [
-    {
-      name: 'createOnTransaction',
-      args: [
-        {
-          name: 't',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'net.nanopay.tx.CreditLineItem',
-      javaCode: `
-        /* can be overwritten by extending class */
-        return null;
-      `,
-      documentation: 'Create a credit line item based on the transaction as a whole'
     },
     {
       name: 'totalSaved',

@@ -696,6 +696,7 @@ var classes = [
   'net.nanopay.tx.creditengine.CourtesyCredit',
   'net.nanopay.tx.creditengine.CreditEngine',
   'net.nanopay.tx.creditengine.CreditCodeTransaction',
+  'net.nanopay.tx.creditengine.CreditCodeLoadAction',
 
   // documents
   'net.nanopay.documents.AcceptanceDocument',
