@@ -105,6 +105,32 @@ p({
       "of": "net.nanopay.contacts.Contact",
       "DAOCreateView":false,
 
+      "XXXWizardDetailView":{"class":"net.nanopay.ui.wizard.ContactWizardDetailView"},
+      "wizardDetailView":"net.nanopay.ui.wizard.ContactWizardDetailView",
+
+
+      "XXXcreateControllerView":{
+        "class":"net.nanopay.sme.ui.MenuRedirectSMEModalView",
+        "menu":"mainmenu.contacts",
+        "view":{
+          "class":"foam.nanos.menu.MenuToolBar",
+          "classification":"submenu.contact",
+          "parent":"sme",
+          "title":"Add contact"
+        }
+      },
+
+      "XXXbrowseViews": [
+        {
+          "class": "foam.comics.v2.namedViews.NamedViewCollection",
+          "name": "Transactions",
+          "view": { "class": "net.nanopay.liquidity.ui.transaction.TransactionDAOBrowserView" }
+        }
+      ],
+      "XXXviewBorder": {
+        "class": "net.nanopay.liquidity.ui.transaction.LiquidSourceAccountFilterBorder"
+      },
+
       "XXXDetailView":{"class":"net.nanopay.contacts.ui.ContactWizardView"},
 
 
@@ -118,16 +144,7 @@ p({
       "AAAcreateLabel":{
         "Label":"Add contact",
       },
-      "XXXcreateControllerView":{
-        "class":"net.nanopay.sme.ui.MenuRedirectSMEModalView",
-        "menu":"mainmenu.contacts",
-        "view":{
-          "class":"foam.nanos.menu.MenuToolBar",
-          "classification":"submenu.contact",
-          "parent":"sme",
-          "title":"Add contact"
-        }
-      },
+
       "defaultColumns":[
         "organization",
         "firstName",
@@ -202,16 +219,7 @@ p({
           }
         }],
 
-        "XXXbrowseViews": [
-          {
-            "class": "foam.comics.v2.namedViews.NamedViewCollection",
-            "name": "Transactions",
-            "view": { "class": "net.nanopay.liquidity.ui.transaction.TransactionDAOBrowserView" }
-          }
-        ],
-        "XXXviewBorder": {
-          "class": "net.nanopay.liquidity.ui.transaction.LiquidSourceAccountFilterBorder"
-        }
+
 
     },
   },
