@@ -31,7 +31,11 @@ import net.nanopay.tx.model.TransactionStatus;
 
 public class RbcGenerateFileCron implements ContextAgent {
   String spid;
-  long eftLimit;
+  long eftLimit = 100000000;
+
+  public RbcGenerateFileCron(String spid) {
+    this.spid = spid;
+  }
 
   public RbcGenerateFileCron(String spid, long eftLimit) {
     this.spid = spid;
