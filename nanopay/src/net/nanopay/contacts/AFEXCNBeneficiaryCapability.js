@@ -19,43 +19,68 @@ foam.CLASS({
   package: 'net.nanopay.contacts',
   name: 'AFEXCNBeneficiaryCapability',
 
+  requires: [
+    'net.nanopay.tx.PurposeCode'
+  ],
+
+  imports: [
+    'purposeCodeDAO'
+  ],
+
   implements: [
     'foam.core.Validatable',
-    'foam.mlang.Expressions',
+    'foam.mlang.Expressions'
+  ],
+
+  sections: [
+    {
+      name: 'additionalInfoSection',
+      title: 'Corridor-specific payment information'
+    }
   ],
 
   messages: [
-    { name: 'INVALID_PURPOSE_CODE',  message: 'Select a purpose of payment' }
+    { name: 'INVALID_PURPOSE_CODE',  message: 'Select a purpose of payment' },
+    { name: 'PLACE_HOLDER', message: 'Please select...' }
   ],
 
   properties: [
     {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.auth.Phone',
-      name: 'phone',
-      autoValidate: true
+      class: 'PhoneNumber',
+      name: 'contactPhone',
+      label: 'Contact phone number',
+      section: 'additionalInfoSection',
+      required: true,
+      autoValidate: true,
+      gridColumns: 12
     },
     {
       class: 'Reference',
       of: 'net.nanopay.tx.PurposeCode',
       name: 'purposeCode',
       label: 'Purpose of payment',
-      view: function(_, x) {
-        return foam.u2.view.ChoiceView.create({
-          dao: x.purposeCodeDAO.where(x.data.EQ(net.nanopay.tx.PurposeCode.COUNTRY, 'CN')),
-          placeholder: '--',
+      section: 'additionalInfoSection',
+      gridColumns: 12,
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          dao: X.purposeCodeDAO.where(X.data.EQ(X.data.PurposeCode.COUNTRY, 'CN')).orderBy(X.data.PurposeCode.ORDER, X.data.PurposeCode.DESCRIPTION),
+          placeholder: X.data.PLACE_HOLDER,
           objToChoice: function(purposeCode) {
-            return [purposeCode.code, purposeCode.description];
+            return [purposeCode.code, X.translationService.getTranslation(foam.locale, purposeCode.description, purposeCode.description)];
           }
-        });
+        };
       },
       validationPredicates: [
         {
           args: ['purposeCode'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.contacts.AFEXCNBeneficiaryCapability.PURPOSE_CODE, '--');
+            return e.GT(
+              foam.mlang.StringLength.create({
+                arg1: net.nanopay.contacts.AFEXCNBeneficiaryCapability.PURPOSE_CODE
+              }), 0);
           },
-          errorString: this.INVALID_PURPOSE_CODE
+          errorMessage: 'INVALID_PURPOSE_CODE'
         }
       ]
     }
