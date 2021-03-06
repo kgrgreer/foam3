@@ -300,7 +300,8 @@ p({
       "XXXdeletePredicate":{"class":"foam.mlang.predicate.False"},
 
 
-      "DAOCreateView":true,
+      "DAOCreateView":"true",
+      "wizardDetailView":"net.nanopay.account.ui.BankAccountWizard",
 
 
       "exportEnabled":false,
