@@ -620,8 +620,8 @@ support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport_v2.create({
     };
 
     // grant things
+    var name = "GENERAL ADMISSION";
     try {
-      var name = "GENERAL ADMISSION";
       let arrayOfID_lastIsRoot = await x.crunchService.getGrantPath(x,'242B00F8-C775-4899-AEBA-F287EC54E901');
       for(let j = 0; j < arrayOfID_lastIsRoot.length; j++) {
         if ( arrayOfID_lastIsRoot[j].cls_ ) {
@@ -635,10 +635,11 @@ support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport_v2.create({
         }
       }
     } catch(e){
+      test(false, name+": "+e);
       print(e);
     }
+    name = "BUSINESS REGITSTRATION";
     try {
-      var name = "BUSINESS REGITSTRATION";
       let arrayOfID_lastIsRoot = await x.crunchService.getGrantPath(x,'554af38a-8225-87c8-dfdf-eeb15f71215f-76');
       for(let j = 0; j < arrayOfID_lastIsRoot.length; j++) {
         if ( arrayOfID_lastIsRoot[j].cls_ ) {
@@ -658,14 +659,15 @@ support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport_v2.create({
         test(true, 'createBusinessSession: '+businessSession.id);
       }
     } catch(e){
+      test(false, name+": "+e);
       print(e);
     }
 
     support.sudoStore(x);
     x = support.sudo(x, businessSession.id, u, business);
 
+    name = "SIGNING OFFICER DATA CAP";
     try {
-      var name = "SIGNING OFFICER DATA CAP";
       let arrayOfID_lastIsRoot = await x.crunchService.getGrantPath(x,'777af38a-8225-87c8-dfdf-eeb15f71215f-123');
       for(let j = 0; j < arrayOfID_lastIsRoot.length; j++) {
         if ( arrayOfID_lastIsRoot[j].cls_ ) {
@@ -679,11 +681,12 @@ support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport_v2.create({
         }
       }
     } catch(e){
+      test(false, name+": "+e);
       print(e);
     }
 
+    name = "BRAZIL ONBOARDING";
     try {
-      var name = "BRAZIL ONBOARDING";
       var pendingCapabilities = ['554af38a-8225-87c8-dfdf-eeb15f71215f-49','05a663b8-2b48-11eb-adc1-0242ac120002','0B2E7305-B898-43F2-9C1B-63FB2CE38B2D', 'bf6a49d5-4027-4dac-a269-4d3ed070609e-4'];
       var ignoreCapabilities = [];//['1f6b2047-1eef-471d-82e7-d86bdf511375','89cc91da-4bbd-458b-81d4-574815e455fa-4']; // Payment Provider caps
       var arrayOfID_lastIsRoot = await x.crunchService.getGrantPath(x,'bf6a49d5-4027-4dac-a269-4d3ed070609e-4');
@@ -703,6 +706,7 @@ support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport_v2.create({
         }
       }
     } catch(e){
+      test(false, name+": "+e);
       print(e);
     }
 
