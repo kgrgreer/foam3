@@ -234,7 +234,7 @@ foam.CLASS({
         return this.signUpStatus === this.ContactStatus.READY && this.businessId === 0;
       },
       code: function(X) {
-        X.controllerView.add(this.ContactWizardDetailView.create({
+        X.stack.push(this.ContactWizardDetailView.create({
           model: 'net.nanopay.contacts.Contact',
           data: this,
           controllerMode: foam.u2.ControllerMode.EDIT,
