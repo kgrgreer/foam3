@@ -600,8 +600,24 @@ support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport_v2.create({
     // switch to user.
       support.sudoStore(x);
       x = support.sudo(x, s.id, u, u);
+/*
+functonIdNameParser - is a way of converting the capabilityIds(capIds) into a function name.
 
+Function names in js cannot start with a digit and cannot contain char '-'.
+Thus functionIdNameParser - used to convert the capIds to function names and using this convention in the supporting test models.
+*/
     var functonIdNameParser = function(id) { return '_'+id.replaceAll('-','_'); };
+
+/*
+So some of the capabilities in the 'onboarding' capability are suppose to remain in pending.
+I've created a list in the call that tests 'onboarding' and use this to iteratively check that the capability we want to test is either PENDING result or GRANTED result.
+
+Say,
+n = pendingCapabilities.length,
+m = calls to functionDetermineStatus -> equals the number of capabilities under the root 'onboarding capability'
+On^2
+But n = 4 and m = ~30 ... so really 120 calls which any microprocessor can achieve quickly.
+*/
     var functionDetermineStatus = function(id, pendingCapabilities) {
       if ( ! pendingCapabilities ) return print('Function for pendingCapabilities is called with no pendingCapabilities list');
       for(let i = 0; i < pendingCapabilities.length; i++) {
@@ -610,6 +626,9 @@ support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport_v2.create({
       }
       return foam.nanos.crunch.CapabilityJunctionStatus.GRANTED;
     };
+/*
+There are some 'MANUAL' capabilities - such that they are granted with triggers outside of crunch. So was thinking to avoid them with this function. Same principal as above 'functionDetermineStatus' however just return true or false if in list.
+*/
     var functionDetermineIgnore = function(id, ignoreCapabilities) {
       if ( ! ignoreCapabilities ) return print('Function for ignoreCapabilities is called with no ignoreCapabilities list');
       for(let i = 0; i < ignoreCapabilities.length; i++) {
@@ -622,6 +641,28 @@ support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport_v2.create({
     // grant things
     var name = "GENERAL ADMISSION";
     try {
+    /*
+crunchService.getGrantPath(x, capabilitityId)
+returns an array of capabilities or another array of capabilities.
+The array of capabilities is from either a FlattendingWizardlet or from MinMaxCapability.
+Thus the If statement 'arrayOfID_lastIsRoot[j].cls_' checks if it is a capability else is an array of capabilities.
+
+The more correct function would recurse from the else statement. No reason to assume (other then prior knowledge of hierarchy) that within an array couldn't be another array.
+
+CONSIDER : support[functonIdNameParser(arrayOfID_lastIsRoot[j].id)](x, business);
+support -> instantiated testing model with functions
+<SOME_STRING> -> function name, then support[<SOME_STRING>] -> access to instantiated testing model functions
+arrayOfID_lastIsRoot -> array variable for all capabilities under the called capabilityId. using getGrantPath.
+arrayOfID_lastIsRoot[j] -> a capability. The last value of 'j' = the root capabilityId. Also maybe an array - described in previous comment.
+support[<SOME_STRING>](x, business) -> does the call to the function. Each function signature the same.
+
+SO,
+support[functonIdNameParser(arrayOfID_lastIsRoot[j].id)](x, business);
+Is calling test model dynamically based on the capability hierarchy of the root. Have all capabilities set up in support models.
+
+FUTURE CHANGES:
+So this will work for a changing hierarchy. Possible we add a capability that we use for a user/business in which case we'll need to add a function to support model to complete this test. Might be interesting to create a function that can replace each individual ucj creation. BUT each ucj has different data and thus minorly different data. So didn't have an obvious way to do this.
+    */
       let arrayOfID_lastIsRoot = await x.crunchService.getGrantPath(x,'242B00F8-C775-4899-AEBA-F287EC54E901');
       for(let j = 0; j < arrayOfID_lastIsRoot.length; j++) {
         if ( arrayOfID_lastIsRoot[j].cls_ ) {
