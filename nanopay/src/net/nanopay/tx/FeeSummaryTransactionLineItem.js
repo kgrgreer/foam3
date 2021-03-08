@@ -40,7 +40,8 @@ foam.CLASS({
     },
     {
       name: 'lineItems',
-      hidden: false
+      hidden: false,
+      readPermissionRequired: true
     },
     {
       name: 'name',

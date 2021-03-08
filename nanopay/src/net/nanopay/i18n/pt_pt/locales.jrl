@@ -1074,7 +1074,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.ADMIN_FIRST_NAME_ERROR",target:"Insira o primeiro nome com pelo menos 1 caractere."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.ADMIN_LAST_NAME_ERROR",target:"Insira o sobrenome com pelo menos 1 caractere."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.NO_JOB_TITLE_ERROR",target:"Selecione o cargo."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.INVALID_PHONE_NUMBER_ERROR",target:"Número de telefone inválido. pt"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.INVALID_PHONE_NUMBER_ERROR",target:"Número de telefone inválido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.IS_SIGNING_OFFICER.label",target:"é oficial de assinatura"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.IS_SIGNING_OFFICER.documentation",target:"Um oficial de assinatura é uma pessoa legalmente autorizada a agir em nome da empresa (por exemplo, CEO, COO, diretor do conselho)"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.SIGNING_OFFICER_EMAIL.label",target:"Digite o e-mail do oficial de assinatura"})
@@ -2202,8 +2202,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"4f45c745-1c93-4380-b275-2d2fea09
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"4f45c745-1c93-4380-b275-2d2fea091d1f-treviso-1.subject",target:"Conclua sua transação"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.PhoneNumber.PHONE_NUMBER_REQUIRED",target:"Número de telefone obrigatório."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.PhoneNumber.INVALID_PHONE_NUMBER",target:"Número de telefone inválido."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.PhoneNumber.PHONE_NUMBER_REQUIRED",target:"Número de telefone obrigatório"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.PhoneNumber.INVALID_PHONE_NUMBER",target:"Número de telefone inválido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.StringPropertyValidationRefinement.REQUIRED.value",target:"requeridos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.ORGANIZATION.label",target:"organização"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.String.REQUIRED",target:"requeridos"})
@@ -3346,3 +3346,18 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.DeleteModal.CANCEL.label
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.Invitation.model_.label",target:"Convite"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.settings.business.DeleteInvitedUserView.DELETE.label",target:"Excluir"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"contact.capable.afex.cn.name",target:"Informações adicionais necessárias"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"contact.capable.afex.cn.requirementViewTitle",target:"Para enviar um pagamento a um contato neste corredor, você precisará fornecer mais informações"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.SECTION_ADDITIONAL_INFO_SECTION.title",target:"Informações de pagamento específicas do corredor"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.SECTION_ADDITIONAL_INFO_SECTION.help",target:"ccc"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.INVALID_PURPOSE_CODE",target:"Selecione uma finalidade de pagamento"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.PURPOSE_CODE.label",target:"Propósito do pagamento"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.PLACE_HOLDER",target:"Por favor selecione..."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.PHONE_NUMBER.label",target:"Telefone para contato"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"Charity Donation",target:"Doação de caridade"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Send money to own account, family or friend",target:"Envie dinheiro para conta própria, família ou amigo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Send money to pay a utility bill",target:"Envie dinheiro para pagar uma conta de serviço público"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Send money to pay a vendor",target:"Envie dinheiro para pagar um fornecedor"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Other",target:"Outro"})

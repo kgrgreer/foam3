@@ -1111,7 +1111,8 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"contact.capable.afex.cn",
-  "name":"Additional information",
+  "name":"Additional information required",
+  "requirementViewTitle":"To send a payment to a contact in this corridor you will need to provide more information",
   "of":"net.nanopay.contacts.AFEXCNBeneficiaryCapability",
   "enabled":true
 })
