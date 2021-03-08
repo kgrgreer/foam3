@@ -895,6 +895,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/test/RollingJournalTest' },
 
   { name: 'net/nanopay/test/AbliiOnboardingSupport' },
+  { name: 'net/nanopay/test/AbliiOnboardingSupport_v2' },
 
   // password entropy
   { name: 'net/nanopay/auth/passwordutil/ClientPasswordEntropy' },
@@ -1873,6 +1874,7 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/onboarding/BRBusinessOwnershipData' },
   { name: 'net/nanopay/partner/treviso/onboarding/BRBankAccountData' },
   { name: 'net/nanopay/partner/treviso/test/TrevisoOnboardingSupport' },
+  { name: 'net/nanopay/partner/treviso/test/TrevisoOnboardingSupport_v2' },
   { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllRule' },
   { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllNotification' },
   { name: 'net/nanopay/partner/treviso/invoice/TrevisoNotification' },

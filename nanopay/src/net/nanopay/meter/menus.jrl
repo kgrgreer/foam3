@@ -455,11 +455,11 @@ p({
   "parent":"onboarding"
 })
 
-// transactions-2
+// transactions
 p({
   "class":"foam.nanos.menu.Menu",
-  "id":"transactions-2",
-  "label":"Transactions",
+  "id":"transactions",
+  "label":"Transaction Details",
   "handler":{
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {

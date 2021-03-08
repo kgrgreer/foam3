@@ -37,6 +37,14 @@ foam.CLASS({
       order: 30,
       gridColumns: 6,
       sheetsOutput: true
+    },
+    {
+      class: 'DateTime',
+      name: 'dateCompliancePassed',
+      documentation: 'Date compliance was passed',
+      section: 'complianceInformation',
+      order: 31,
+      gridColumns: 6
     }
   ]
 });

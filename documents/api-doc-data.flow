@@ -57,7 +57,7 @@
 
 <h2><a name="transaction">Transaction</a></h2>
 <p>A "Transaction" on the platform is an transfer of value from a source account with a source currency to a destination account in the destination currency.</p>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.tx.SummaryTransaction" whitelist="['chainSummary', 'status', 'name', 'type', 'id', 'created', 'createdBy', 'lastModified', 'lastModifiedBy', 'referenceNumber', 'amount', 'summary', 'destinationAmount', 'sourceCurrency', 'destinationCurrency', 'statusHistory', 'lineItems', 'lifecycleState', 'destinationAccount', 'sourceAccount', 'parent', 'signatures']"/>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.tx.SummaryTransaction" whitelist="['chainSummary', 'status', 'name', 'type', 'id', 'payer', 'payerId', 'payee', 'payeeId', 'created', 'createdBy', 'lastModified', 'lastModifiedBy', 'invoiceId', 'externalId', 'externalInvoiceId', 'externalData', 'amount', 'destinationAmount', 'sourceCurrency', 'destinationCurrency', 'statusHistory', 'lineItems', 'destinationAccount', 'sourceAccount', 'spid', 'signatures' ]" />
 
 <h3>Supporting Data</h3>
 <h4><a name="chain-summary">ChainSummary</a></h4>
