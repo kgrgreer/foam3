@@ -30,6 +30,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
+    'java.util.Calendar',
+    'java.util.TimeZone',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.meter.compliance.ComplianceValidationStatus'
   ],
@@ -45,6 +47,9 @@ foam.CLASS({
             DAO userDAO = (DAO) x.get("localUserDAO");
             User user = (User) userDAO.find(ucj.getSourceId()).fclone();
             user.setCompliance(ComplianceStatus.PASSED);
+            if ( user.getDateCompliancePassed() == null ) {
+              user.setDateCompliancePassed(Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime());
+            }
             userDAO.put(user);
           }
         }, "Pass Compliance");
