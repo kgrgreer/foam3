@@ -141,7 +141,7 @@ p({
       "XXXsummaryView":{ "class":"net.nanopay.contacts.ui.ContactTableView" },
       "createLabel":"Add contact",
       "AAAcreateLabel":{
-        "Label":"Add contact",
+        "Label":"Add contact"
       },
 
       "defaultColumns":[
@@ -220,7 +220,7 @@ p({
 
 
 
-    },
+    }
   },
   "order":503,
   "parent":"smeNavigation",
@@ -312,7 +312,7 @@ p({
       "XXXsummaryView":{ "class":"net.nanopay.bank.BankAccountTableView" },
       "createLabel":"Add contact",
       "AAAcreateLabel":{
-        "Label":"Add contact",
+        "Label":"Add contact"
       },
 
       "XXXHerEbrowseViews": [
@@ -417,7 +417,7 @@ p({
           "class": "net.nanopay.liquidity.ui.transaction.LiquidSourceAccountFilterBorder"
         }
 
-    },
+    }
   },
   "XXXregistrations":[
     {
