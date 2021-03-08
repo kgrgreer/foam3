@@ -32,40 +32,6 @@ p({
 })
 
 p({
-  "class":"net.nanopay.ticket.SudoTicketApprovalResponseRule",
-  "id":"40c3758f-054b-490c-8328-f6ab33ebaed0",
-  "name":"RefundTicketCreateRule",
-  "predicate": {
-    "class": "foam.mlang.predicate.And",
-    "args": [
-      {
-        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
-        "of": "net.nanopay.ticket.RefundTicket"
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName":"refundStatus",
-        "propValue":{
-          "class":"net.nanopay.ticket.RefundStatus",
-          "ordinal":0
-        }
-      }
-    ]
-  },
-  "priority":101,
-  "ruleGroup":"Ticket",
-  "daoKey":"localTicketDAO",
-  "operation":3,
-  "after":false,
-  "enabled":true,
-  "saveHistory":false,
-  "action":{
-    "class":"net.nanopay.ticket.RefundTicketCreateRule"
-  },
-  "lifecycleState":1
-})
-
-p({
   "class":"foam.nanos.ruler.Rule",
   "id":"b64905d0-289b-4371-92a5-f843e344109a",
   "name":"Reversal Rule",
