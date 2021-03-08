@@ -302,6 +302,7 @@ p({
 
       "DAOCreateView":"true",
       "wizardDetailView":"net.nanopay.account.ui.BankAccountWizard",
+      "OKXXXwizardDetailView":"net.nanopay.ui.wizard.ContactWizardDetailView",
 
 
       "exportEnabled":false,
