@@ -4,7 +4,6 @@ p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bepay",targe
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bepay",targetId:"bepayPlannerCapability"})
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bepay",targetId:"bepay-tx-reason-codes"})
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bepay",targetId:"bepay-tx-fees"})
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bepay",targetId:"nanopay.estimationaccounts"})
 
 // Prerequisites for "BePay Personal International Payments"
 // user details
@@ -27,6 +26,12 @@ p({
   sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
   targetId:"554af38a-8225-87c8-dfdf-eeb15f712bepay-10",
   priority:4
+})
+// estimation accounts
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
+  targetId:"nanopay.estimationaccounts"
 })
 // cpf - extended user details
 p({
