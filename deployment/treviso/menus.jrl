@@ -8,7 +8,7 @@ p({
     "class":"foam.nanos.menu.ViewMenu",
     "view":{
       "class":"foam.u2.crunch.CapabilityStore",
-      "hideGrantedCapabilities": true,
+      "hideGrantedCapabilities": true
     }
   },
   "order":499,
@@ -16,7 +16,7 @@ p({
 })
 
 // Remove liquid transactions menu
-r({"class":"foam.nanos.menu.Menu","id":"transactions"})
+r({"class":"foam.nanos.menu.Menu","id":"transactions-liquid"})
 
 // TrevisoTransactionReport
 p({
@@ -34,12 +34,4 @@ p({
     }
   },
   "parent":"report"
-})
-p({
-  "class": "foam.nanos.menu.Menu",
-  "id": "transactions-support",
-  "label": "Transactions",
-  "icon":"images/intuit/transactions-24px-resting.svg",
-  "activeIcon":"images/intuit/transactions-24px-active.svg",
-  "parent": ""
 })

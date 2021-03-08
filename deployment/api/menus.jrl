@@ -123,7 +123,7 @@ p({
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"view-summarytransactions",
-  "label":"Transactions",
+  "label":"Summary Transactions",
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
@@ -135,27 +135,6 @@ p({
     }
   },
   "parent":"data"
-})
-p({
-  "class":"foam.nanos.menu.Menu",
-  "id":"view-transactions",
-  "label":"Transactions",
-  "handler":{
-    "class": "foam.nanos.menu.DAOMenu2",
-    "config": {
-      "class": "foam.comics.v2.DAOControllerConfig",
-      "daoKey":"tableViewTransactionDAO",
-      "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "defaultColumns":[
-        "type",
-        "status",
-        "summary",
-        "created",
-        "completionDate"
-      ]
-    }
-  },
-  "parent":"hidden"
 })
 p({
   "class": "foam.nanos.menu.Menu",
