@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.HashMap;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
@@ -45,7 +46,7 @@ public class BillingCron implements ContextAgent {
     // query all bills from this month
     ArraySink bills = (ArraySink) ((DAO) x.get("billDAO")).where(
         AND(
-          LT(Bill.CHARGE_DATE, new Date()),
+          LTE(Bill.CHARGE_DATE, new Date()),
           EQ(Bill.STATUS, TransactionStatus.PENDING)
         )
     ).select(new ArraySink());
