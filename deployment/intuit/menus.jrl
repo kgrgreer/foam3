@@ -39,7 +39,7 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "credits-support",
   "label": "CreditCodes",
-  "icon":"images/intuit/transactions-24px-resting.svg",
-  "activeIcon":"images/intuit/transactions-24px-active.svg",
+  "icon":"images/intuit/coupons-24px-resting.svg",
+  "activeIcon":"images/intuit/coupons-24px-active.svg",
   "parent": ""
 })
