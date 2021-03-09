@@ -26,14 +26,57 @@ foam.CLASS({
   It must also be able to calculate savings it applied to a given transaction.
   All creditCodes at minimum must be tied to a spid, have a UUID, and a name.`,
 
+  javaImports: [
+    'foam.nanos.session.LocalSetting',
+    'foam.nanos.session.Session',
+    'net.nanopay.fx.ExchangeRateService',
+    'static foam.mlang.MLang.EQ',
+  ],
+
   properties: [
     {
       class: 'String',
       name: 'name',
+      label: 'Credit Code Name',
+      order: 10,
       javaFactory: `
         return getClass().getSimpleName();
       `,
     },
+    {
+      class: 'String',
+      name: 'desc',
+      documentation: `The given description of this Credit Code, provided by
+        the credit creator`,
+      label: 'Description',
+      order: 20,
+      section: 'accountInformation',
+    },
+    {
+      class: 'Long',
+      name: 'initialQuantity',
+      value: 0,
+      documentation: 'Initial amount of promos available. either "$ quantity, usage Amounts, or whatever else thats code specific',
+      section: 'accountInformation',
+      label: 'Initial Number of Uses Available',
+      createVisibility: 'RW',
+      updateVisibility: 'RO',
+      editVisibility: 'RO',
+      gridColumns: 6,
+      order: 30,
+    },
+    {
+      class: 'Boolean',
+      name: 'codeActive',
+      documentation: 'Indicates whether or nto the credit code is currently Active',
+      value: false,
+      createVisibility: 'RW',
+      updateVisibility: 'RW',
+      editVisibility: 'RW',
+      section: 'accountInformation',
+      order: 60
+    },
+    // * properties that need hiding beyond this point *
     {
       class: 'Reference',
       of: 'foam.core.Unit',
@@ -41,14 +84,82 @@ foam.CLASS({
       includeInDigest: true,
       label: 'Currency',
       targetDAOKey: 'currencyDAO',
-      value:'CAD'
+      value:'CAD',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'HIDDEN',
+      editVisibility: 'HIDDEN',
+      hidden: true
     },
     {
-      class: 'Long',
-      name: 'initialQuantity',
-      value: 0,
-      documentation: 'Initial amount of promos available. either "$ quantity, usage Amounts, or whatever else thats code specific'
-    }
+      class: 'Boolean',
+      name: 'isDefault',
+      documentation: `Not used here`,
+      includeInDigest: false,
+      section: 'operationsInformation',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'HIDDEN',
+      editVisibility: 'HIDDEN',
+      hidden: true,
+    },
+    {
+      class: 'Boolean',
+      name: 'transferIn',
+      documentation: 'Not used',
+      value: true,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'HIDDEN',
+      editVisibility: 'HIDDEN',
+      hidden: true,
+    },
+    {
+      class: 'Boolean',
+      name: 'transferOut',
+      documentation: 'Not used',
+      value: true,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'HIDDEN',
+      editVisibility: 'HIDDEN',
+      hidden: true,
+    },
+    {
+      class: 'String',
+      name: 'homeBalance',
+      documentation: 'Not used',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'HIDDEN',
+      editVisibility: 'HIDDEN',
+      hidden: true,
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      documentation: 'Not used',
+      name: 'parent',
+      hidden: true,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'HIDDEN',
+      editVisibility: 'HIDDEN',
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      documentation: 'Not used',
+      name: 'securitiesAccount',
+      hidden: true,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'HIDDEN',
+      editVisibility: 'HIDDEN',
+    },
+    {
+      class: 'Boolean',
+      name: 'deleted',
+      documentation: 'Not used',
+      value: false,
+      hidden: true,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'HIDDEN',
+      editVisibility: 'HIDDEN',
+    },
   ],
 
   methods: [

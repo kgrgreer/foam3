@@ -24,7 +24,6 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.CreditLineItem',
     'java.util.ArrayList',
     'foam.nanos.logger.Logger',
     'net.nanopay.tx.TransactionLineItem',
@@ -40,14 +39,21 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'StringArray',
-      name: 'applicableFees'
-    },
-    {
       class: 'Double',
       name: 'discountPercent',
+      section: 'accountInformation',
       documentation: '1 is treated as 100%, 0.5 as 50%',
-      value: 0
+      value: 0,
+      gridColumns: 6,
+      order: 31,
+    },
+    {
+      class: 'StringArray',
+      name: 'applicableFees',
+      label: 'Discount Will Apply To',
+      section: 'accountInformation',
+      order: 32,
+      gridColumns: 12,
     }
   ],
 

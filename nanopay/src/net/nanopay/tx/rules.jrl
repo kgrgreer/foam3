@@ -54,7 +54,8 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d30","name":"Getting FX Rate for Transactions",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d30",
+  "name":"Getting FX Rate for Transactions",
   "priority":100,
   "ruleGroup":"ManualFxTxn",
   "documentation":"Get FX rate if a FX quote is available",

@@ -26,7 +26,6 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.CreditLineItem',
     'net.nanopay.tx.InvoicedCreditLineItem',
     'java.util.ArrayList',
     'foam.nanos.logger.Logger',
@@ -43,27 +42,40 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'invoiced',
-      class: 'Boolean',
-      documentation: 'this indicates whether the credit is applied on this transaction, or if we credit during monthly billing'
+      class: 'UnitValue',
+      name: 'amount',
+      label: 'Credit Value',
+      documentation: 'credit value',
+      section: 'accountInformation',
+      value: 0,
+      gridColumns: 6,
+      order: 31
     },
     {
-      class: 'Long',
-      name: 'amount',
-      documentation: 'credit value',
-      value: 0
+      name: 'invoiced',
+      class: 'Boolean',
+      label: 'Apply credit on monthly invoice?',
+      documentation: 'this indicates whether the credit is applied on this transaction, or if we credit during monthly billing',
+      section: 'accountInformation',
+      order: 33,
     },
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'creditAccount',
+      label: 'Credit Source Account',
       documentation: 'Credit account that this code pulls funds from',
+      section: 'accountInformation',
+      order: 32,
+      gridColumns: 6,
     },
     {
       class: 'String',
-      name: 'note',
+      name: 'desc',
+      label: 'Reason For Courtesy Credit',
       documentation: 'purpose of credit, or note from agent.',
-    }
+      section: 'accountInformation'
+    },
   ],
 
   methods: [
@@ -82,7 +94,7 @@ foam.CLASS({
           credit.setAmount(getAmount());
           credit.setCreditCode(getId());
           credit.setName(getName());
-          credit.setNote(getNote());
+          credit.setNote(getDesc());
           //credit.setFeeCurrency(t.getDenomination());
           credit.setSourceAccount(getCreditAccount());
           credit.setDestinationAccount(t.getDestinationAccount());
@@ -92,7 +104,7 @@ foam.CLASS({
         invoiceCredit.setAmount(getAmount());
         invoiceCredit.setCreditCode(getId());
         invoiceCredit.setName(getName());
-        invoiceCredit.setNote(getNote());
+        invoiceCredit.setNote(getDesc());
         //credit.setFeeCurrency(t.getDenomination());
         invoiceCredit.setSourceAccount(getCreditAccount());
         invoiceCredit.setDestinationAccount(t.getDestinationAccount());

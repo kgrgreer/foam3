@@ -39,8 +39,7 @@ foam.CLASS({
     'net.nanopay.tx.SummarizingTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus',
-    'foam.nanos.logger.Logger',
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   properties: [
