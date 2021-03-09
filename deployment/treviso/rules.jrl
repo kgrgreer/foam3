@@ -396,7 +396,7 @@ p({
   "id":"crunch-onboard-compliance-0",
   "name":"Crunch Onboarding - User Final Compliance Rule",
   "documentation":"Final rule for User compliance.",
-  "priority":50,
+  "priority":90,
   "ruleGroup":"crunchOnboarding",
   "daoKey":"userCapabilityJunctionDAO",
   "operation":3,
