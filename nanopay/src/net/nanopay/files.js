@@ -1910,4 +1910,5 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/MicroDepositSentNotification'},
   { name: 'net/nanopay/sme/cron/OnboardingReminderNotification'},
   { name: 'net/nanopay/notification/PermissionedNotificationSettingRule'},
+  { name: 'net/nanopay/sme/ruler/BusinessCompliancePassedEmailNotification'},
 ]);
