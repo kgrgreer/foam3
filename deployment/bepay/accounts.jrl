@@ -36,40 +36,6 @@ p({
   "lifecycleState":1
 })
 
-
-p({
-  "class":"net.nanopay.bank.BRBankAccount",
-  "accountNumber":"1234567890",
-  "status":1,
-  "denomination":"BRL",
-  "id":"512360f6-ec67-4339-9fc4-9a677bc2bff7",
-  "name":"FeeAccount-bepay",
-  "isDefault":true,
-  "owner":8054,
-  "created":1601392287945,
-  "createdBy":1,
-  "createdByAgent":1,
-  "lastModified":1601392287945,
-  "lastModifiedBy":1,
-  "lifecycleState":1
-})
-p({
-  "class":"net.nanopay.bank.BRBankAccount",
-  "accountNumber":"1234567890",
-  "status":1,
-  "denomination":"BRL",
-  "id":"8b07bb7b-8459-4602-9c52-1c043506fda1",
-  "name":"CreditAccount-bepay",
-  "owner":8054,
-  "created":1601392287945,
-  "createdBy":1,
-  "createdByAgent":1,
-  "lastModified":1601392287945,
-  "lastModifiedBy":1,
-  "lifecycleState":1
-})
-
-// intermediary accounts
 // intermediary accounts, each child spid of bepay would need it own account
 // with AFEX as the intermediary account
 p({

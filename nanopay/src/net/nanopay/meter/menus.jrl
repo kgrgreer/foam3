@@ -455,15 +455,16 @@ p({
   "parent":"onboarding"
 })
 
-// transactions-2
+// transactions
 p({
   "class":"foam.nanos.menu.Menu",
-  "id":"transactions-2",
-  "label":"Transactions",
+  "id":"transactions",
+  "label":"Transaction Details",
   "handler":{
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
+      "browseTitle": "Transaction Details",
       "daoKey":"tableViewTransactionDAO",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
       "deletePredicate":{"class":"foam.mlang.predicate.False"},
