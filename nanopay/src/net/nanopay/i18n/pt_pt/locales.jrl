@@ -322,8 +322,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.ConfirmDisabl
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.ConfirmDisable2FAModal.ERROR_DISABLE",target:"Não foi possível desativar a autenticação de dois fatores. Tente novamente."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.ConfirmDisable2FAModal.SUCCESS",target:"Autenticação de dois fatores desativada"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.ConfirmDisable2FAModal.VALIDATION_CODE.label",target:"validationCode"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.ConfirmDisable2FAModal.DISABLE.label",target:"disable"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.ConfirmDisable2FAModal.CANCEL.label",target:"cancel"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.ConfirmDisable2FAModal.DISABLE.label",target:"desabilitar"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.ConfirmDisable2FAModal.CANCEL.label",target:"cancelar"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.MoneyFlowSuccessView.TITLE_SEND",target:"Você está quase lá!"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.MoneyFlowSuccessView.TITLE_REC1",target:"Solicitado"})

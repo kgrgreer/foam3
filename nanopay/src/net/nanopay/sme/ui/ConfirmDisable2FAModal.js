@@ -44,7 +44,7 @@ foam.CLASS({
     }
 
     ^title {
-      font-size: 24px;
+      font-size: 23px;
       font-weight: 800;
       color: /*%BLACK%*/ #1e1f21;
       margin: 0;
