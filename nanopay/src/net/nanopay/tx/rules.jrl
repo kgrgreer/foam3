@@ -846,11 +846,11 @@ p({
                     "class": "net.nanopay.tx.model.TransactionStatus",
                     "ordinal":5
                   }
-                },
+                }
               ]
             }
           ]
-        },
+        }
       ]
     },
     "action":{

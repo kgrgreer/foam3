@@ -294,14 +294,14 @@ foam.CLASS({
           size: 'LARGE'
         })
       .end()
-      .start('div').addClass(this.myClass('row'))
+      /*.start('div').addClass(this.myClass('row'))
         .start('h3').addClass('subdued-text').add(this.SUB_TITLE).end()
         .startContext({ data: this })
           .tag(this.SYNC, {
             size: 'MEDIUM'
           })
         .endContext()
-      .end()
+      .end()*/
       .tag(this.DAOBrowser.create({
         config: this.config,
         summaryView: this.summaryView
@@ -330,7 +330,7 @@ foam.CLASS({
         });
       }
     },
-    {
+    /*{
       name: 'sync',
       label: 'Sync with Accounting',
       isAvailable: async function() {
@@ -342,6 +342,6 @@ foam.CLASS({
           class: 'net.invoice.ui.modal.IntegrationModal'
         }));
       }
-    }
+    }*/
   ]
 });

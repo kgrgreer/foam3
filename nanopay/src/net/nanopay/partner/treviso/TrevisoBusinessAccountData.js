@@ -82,7 +82,7 @@ foam.CLASS({
     {
       section: 'accountingSection',
       name: 'isTaxFiled',
-      label: 'Has this business filed taxes?',
+      label: 'Has this business registered a Balance, DRE or declared DEFIS?',
       class: 'Boolean',
       postSet: function(_, n) {
         if ( ! n )
@@ -104,7 +104,7 @@ foam.CLASS({
       class: 'Date',
       name: 'dateOfFilingTaxes',
       label: 'When did the business last file taxes?',
-      help: 'The date the last time you filed taxes',
+      help: 'Date of the last registration or declaration or Balance, DRE or declared DEFIS',
       documentation: 'The date the last time you filed taxes',
       visibility: function(isTaxFiled) {
         return isTaxFiled ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;

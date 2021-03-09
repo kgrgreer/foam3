@@ -1,0 +1,75 @@
+// REVIEW: investigate moving estimate accounts from bpp to nanopay?
+p({
+  "class":"net.nanopay.bank.EstimationAccount",
+  "id":"44fff2fc-62f8-4f0c-8e23-e70324c7fe05-bpp",
+  "owner":2024,
+  "denomination":"USD",
+  "country":"US",
+  "name":"US estimation account",
+  "lifecycleState":1
+})
+p({
+  "class":"net.nanopay.bank.EstimationAccount",
+  "id":"92e18fb8-ae57-4a41-834a-ec96984dfe11-bpp",
+  "owner":2024,
+  "denomination":"CAD",
+  "country":"CA",
+  "name":"Canadian estimation account",
+  "lifecycleState":1
+})
+p({
+  "class":"net.nanopay.bank.EstimationAccount",
+  "id":"dab4e0d5-eb1a-4af3-9f6e-3b0cc02119e9-bpp",
+  "owner":2024,
+  "denomination":"EUR",
+  "country":"PT",
+  "name":"Portugal estimation account",
+  "lifecycleState":1
+})
+p({
+  "class":"net.nanopay.bank.EstimationAccount",
+  "id":"09faf398-b203-4496-bbfc-f106bb3f3116-bpp",
+  "owner":2024,
+  "denomination":"GBP",
+  "country":"GB",
+  "name":"GB estimation account",
+  "lifecycleState":1
+})
+
+// intermediary accounts, each child spid of bepay would need it own account
+// with AFEX as the intermediary account
+p({
+  "class":"net.nanopay.bank.USBankAccount",
+  "branchId":"111111111",
+  "accountNumber":"3333333",
+  "name":"BPP USD Bank",
+  "status":1,
+  "id":"35931861-7dd4-4ddb-b3a0-5d091cc82fcf-bpp",
+  "isDefault":true,
+  "created":"2020-04-28T17:20:41.561Z",
+  "createdBy":101,
+  "lastModified":"2020-04-28T17:20:41.561Z",
+  "lastModifiedBy":101,
+  "lifecycleState":1,
+  "owner":2024,
+  "enabled":true
+})
+
+// fee account
+p({
+  "class":"net.nanopay.bank.BRBankAccount",
+  "accountNumber":"1234567890",
+  "status":1,
+  "name":"Bank BRL",
+  denomination:"BRL",
+  id:"512360f6-ec67-4339-9fc4-9a677bc2bff7-bpp",
+  name:"FeeAccount-bpp",
+  isDefault:true,
+  owner:2024,
+  created:1601392287945,
+  createdBy:1,
+  createdByAgent:1,
+  lastModified:1601392287945,
+  lastModifiedBy:1,
+  lifecycleState:1
+})

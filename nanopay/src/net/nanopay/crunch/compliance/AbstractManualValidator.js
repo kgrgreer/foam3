@@ -37,6 +37,7 @@ foam.CLASS({
     'foam.nanos.crunch.UserCapabilityJunctionDAO',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
+    'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus'
   ],
@@ -69,6 +70,12 @@ foam.CLASS({
               public void execute(X x) {
                 ucj.setStatus(CapabilityJunctionStatus.PENDING_REVIEW);
                 ((DAO) x.get("userCapabilityJunctionDAO")).put(ucj);
+
+                if ( user.getCompliance() == ComplianceStatus.NOTREQUESTED ) {
+                  User complianceUser = (User) user.fclone();
+                  complianceUser.setCompliance(ComplianceStatus.REQUESTED);
+                  ((DAO) x.get("localUserDAO")).put(complianceUser);
+                }
 
                 String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
                 requestApproval(x, createComplianceApprovalRequest(x, ucj, group));

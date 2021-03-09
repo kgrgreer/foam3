@@ -12,8 +12,10 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","targetId":"service.read.contactDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","targetId":"service.contactDAO"})
 
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-sme","targetId":"service.auth.checkUser"})
-
 // Removing documentation around flinks
 r({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.api-doc-45-onboarding-flinks-business"})
 r({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.api-doc-55-onboarding-flinks-personal"})
+
+// BePay Fraud Ops
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bepay-fraud-ops",targetId:"group.update.bepay-fraud-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bepay-fraud-ops",targetId:"group.update.bepay-payment-ops"})

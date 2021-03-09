@@ -853,8 +853,15 @@ foam.RELATIONSHIP({
         ((foam.nanos.logger.Logger) x.get("logger")).error("Transaction.sourceAccount not found (during toCSV).", ((Transaction)obj).getId());
       }
     `,
-    includeInDigest: true
-  },
+    includeInDigest: true,
+    view: {
+      class: 'foam.u2.view.ReferencePropertyView',
+      readView: {
+        class: 'foam.u2.view.ReadReferenceView',
+        enableLink: false
+      }
+    }
+  }
 });
 
 foam.RELATIONSHIP({
@@ -922,7 +929,7 @@ foam.RELATIONSHIP({
       }
     `,
     includeInDigest: true
-  },
+  }
 });
 
 foam.RELATIONSHIP({
@@ -1047,6 +1054,10 @@ foam.RELATIONSHIP({
     section: 'systemInformation'
   },
   targetProperty: {
+    view: {
+      class: 'foam.u2.view.ReferencePropertyView',
+      readView: 'net.nanopay.tx.model.TransactionReadReferenceView'
+    },
     section: 'billInformation',
     order: 45,
     gridColumns: 6
@@ -1063,6 +1074,10 @@ foam.RELATIONSHIP({
   unauthorizedSourceDAOKey: 'localTransactionDAO',
   targetDAOKey: 'billDAO',
   targetProperty: {
+    view: {
+      class: 'foam.u2.view.ReferencePropertyView',
+      readView: 'net.nanopay.tx.model.TransactionReadReferenceView'
+    },
     section: 'billInformation',
     order: 90,
     gridColumns: 6

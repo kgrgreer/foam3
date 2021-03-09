@@ -38,7 +38,6 @@ import net.nanopay.bank.BankHolidayService;
 import net.nanopay.contacts.Contact;
 import net.nanopay.country.br.BrazilBusinessInfoData;
 import net.nanopay.country.br.CPF;
-import net.nanopay.country.br.exchange.Pais;
 import net.nanopay.country.br.NatureCode;
 import net.nanopay.country.br.NatureCodeData;
 import net.nanopay.country.br.tx.NatureCodeLineItem;
@@ -47,7 +46,6 @@ import net.nanopay.fx.afex.FindBankByNationalIDResponse;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.meter.clearing.ClearingTimeService;
 import net.nanopay.model.Business;
-import net.nanopay.payment.Institution;
 import net.nanopay.tx.FeeLineItem;
 import net.nanopay.tx.FeeSummaryTransactionLineItem;
 import net.nanopay.tx.fee.Rate;
@@ -301,9 +299,13 @@ public class ExchangeServiceProvider implements ExchangeService {
     String formattedCpfCnpj = findCpfCnpj(payer.getId()).replaceAll("[^0-9]", "");
     dadosBoleto.setCNPJPCPFCLIENTE(formattedCpfCnpj); // eg 10786348070
 
+    Date completionDate = transaction.getCompletionDate();
+    if ( completionDate == null ) {
+      ClearingTimeService clearingTimeService = (ClearingTimeService) this.x.get("clearingTimeService");
+      completionDate = clearingTimeService.estimateCompletionDateSimple(this.x, transaction);
+    }
+
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-    Date completionDate =  skipHolidayAndWeekends();
     String completionDateString = "";
     try {
       completionDateString = sdf.format(completionDate);
