@@ -374,7 +374,7 @@ p({
   "name":"Onboard Business to AFEX",
   "documentation":"Rule to onboard business to AFEX if it has passed comliance.",
   "priority":1,
-  "ruleGroup":"AFEXCrunchOnboarding",
+  "ruleGroup":"crunchOnboarding",
   "daoKey":"userCapabilityJunctionDAO",
   "operation":3,
   "after":true,
