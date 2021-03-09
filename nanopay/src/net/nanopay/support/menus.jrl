@@ -316,13 +316,13 @@ p({
       "daoKey":"accountDAO",
       "browseTitle": "CreditCodes",
       "createTitle": "Create a Credit Code",
-      "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "createPredicate":{"class":"foam.mlang.predicate.True"},
+      "editPredicate":{"class":"foam.mlang.predicate.True"},
       "deletePredicate":{"class":"foam.mlang.predicate.False"},
       "defaultColumns":[
         "id",
         "balance",
-        "initialQuantity",
+        "initialQuantity"
       ],
       "filterExportPredicate": {
         "class": "foam.mlang.predicate.Or",

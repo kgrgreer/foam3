@@ -18,9 +18,8 @@
 foam.CLASS({
   package: 'net.nanopay.tx.creditengine',
   name: 'CreditCodeLoadAction',
-  abstract: true,
 
-  documentation: 'Abstract rule action for compliance validator.',
+  documentation: 'Load a creditcode account',
 
   implements: [
     'foam.nanos.ruler.RuleAction'
