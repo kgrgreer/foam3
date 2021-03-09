@@ -3354,7 +3354,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBenef
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.INVALID_PURPOSE_CODE",target:"Selecione uma finalidade de pagamento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.PURPOSE_CODE.label",target:"Propósito do pagamento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.PLACE_HOLDER",target:"Por favor selecione..."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.PHONE_NUMBER.label",target:"Telefone para contato"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.CONTACT_PHONE.label",target:"Telefone para contato"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"Charity Donation",target:"Doação de caridade"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Send money to own account, family or friend",target:"Envie dinheiro para conta própria, família ou amigo"})
