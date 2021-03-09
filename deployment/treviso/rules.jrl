@@ -429,7 +429,7 @@ p({
       }
     ]
   },
-  "asyncAction":{
+  "action":{
     "class":"net.nanopay.crunch.compliance.UserComplianceApproval"
   },
   "enabled":true,
