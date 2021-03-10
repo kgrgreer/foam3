@@ -89,7 +89,7 @@ foam.CLASS({
       ],
       type: 'net.nanopay.tx.CreditLineItem',
       javaCode: `
-        if ( getInvoiced() ) {
+        if ( ! getInvoiced() ) {
           CreditLineItem credit = new CreditLineItem();
           credit.setAmount(getAmount());
           credit.setCreditCode(getId());
