@@ -76,11 +76,11 @@ foam.CLASS({
       width: 80%;
       margin-top: 20px;
     }
-    ^ .net-nanopay-sme-ui-AbliiEmptyTopNavView {
+    ^ .net-nanopay-sme-ui-EmptyTopNavView {
       border: 0;
       height: 36px
     }
-    ^ .net-nanopay-sme-ui-AbliiEmptyTopNavView img{
+    ^ .net-nanopay-sme-ui-EmptyTopNavView img{
       width: auto;
       height: 20px;
       padding-left: 5px;
@@ -198,7 +198,7 @@ foam.CLASS({
 
       var right = this.Element.create()
       .addClass(this.myClass())
-      .tag({ class: 'net.nanopay.sme.ui.AbliiEmptyTopNavView' })
+      .tag({ class: 'net.nanopay.sme.ui.EmptyTopNavView' })
       .start().addClass('tf-container')
         .start('h2').addClass('tfa-title').add(this.TWO_FACTOR_TITLE).end()
         .start().addClass(this.myClass('TwoFactAuthNote'))
