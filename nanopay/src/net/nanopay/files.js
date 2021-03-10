@@ -1189,7 +1189,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/PersonalSettingsView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AddUserToBusinessModal', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/CreateBusinessModal', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/AbliiEmptyTopNavView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/EmptyTopNavView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/TwoFactorAuthView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/TwoFactorSignInView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/Link', flags: ['web'] },
