@@ -76,6 +76,12 @@ foam.CLASS({
       section: 'accountInformation',
       order: 60
     },
+    {
+      class: 'foam.mlang.predicate.PredicateProperty',
+      name: 'predicate',
+      javaFactory: 'return foam.mlang.MLang.TRUE;',
+      hidden: true
+    },
     // * properties that need hiding beyond this point *
     {
       class: 'Reference',
@@ -164,14 +170,14 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'createOnTransaction',
+      name: 'createLineItems',
       args: [
         {
           name: 't',
           type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      type: 'net.nanopay.tx.CreditLineItem',
+      type: 'net.nanopay.tx.CreditLineItem[]',
       javaCode: `
         /* can be overwritten by extending class */
         return null;
@@ -220,21 +226,6 @@ foam.CLASS({
         return -1;
       `,
       documentation: 'calculates how much this promo has saved on this transaction'
-    },
-    {
-      name: 'createOnFee',
-      args: [
-        {
-          name: 'fli',
-          type: 'net.nanopay.tx.FeeLineItem'
-        }
-      ],
-      type: 'net.nanopay.tx.CreditLineItem',
-      javaCode: `
-       /* can be overwritten by extending class */
-        return null;
-      `,
-      documentation: 'Create a credit line item based on a other credit line item'
     },
     {
       name: 'consume',

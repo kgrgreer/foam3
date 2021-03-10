@@ -24,6 +24,7 @@
 
   javaImports: [
     'foam.dao.DAO',
+    'java.util.ArrayList',
     'net.nanopay.tx.ComplianceTransaction',
     'net.nanopay.tx.CreditLineItem',
     'net.nanopay.tx.InvoicedCreditLineItem',
@@ -82,13 +83,14 @@
           type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      type: 'net.nanopay.tx.CreditLineItem',
+      type: 'net.nanopay.tx.CreditLineItem[]',
       javaCode: `
         if ( t instanceof SummaryTransaction
             || t instanceof ComplianceTransaction
             || t.getSourceAccount() != getRefundAccount() ) {
           return null;
         }
+        ArrayList<CreditLineItem> credits = new ArrayList<CreditLineItem>();
 
         if ( ! getInvoiced() ) {
           CreditLineItem credit = new CreditLineItem();
@@ -98,16 +100,19 @@
           credit.setNote(getDesc());
           credit.setSourceAccount(getCreditAccount());
           credit.setDestinationAccount(getRefundAccount());
-          return credit;
+          credits.add(credit);
         }
-        InvoicedCreditLineItem invoiceCredit = new InvoicedCreditLineItem();
-        invoiceCredit.setAmount(getAmount());
-        invoiceCredit.setCreditCode(getId());
-        invoiceCredit.setName(getName());
-        invoiceCredit.setNote(getDesc());
-        invoiceCredit.setSourceAccount(getCreditAccount());
-        invoiceCredit.setDestinationAccount(getRefundAccount());
-        return invoiceCredit;
+        else {
+          InvoicedCreditLineItem invoiceCredit = new InvoicedCreditLineItem();
+          invoiceCredit.setAmount(getAmount());
+          invoiceCredit.setCreditCode(getId());
+          invoiceCredit.setName(getName());
+          invoiceCredit.setNote(getDesc());
+          invoiceCredit.setSourceAccount(getCreditAccount());
+          invoiceCredit.setDestinationAccount(getRefundAccount());
+          credits.add(invoiceCredit);
+        }
+        return (CreditLineItem[]) credits.toArray(new CreditLineItem[credits.size()] );
       `,
       documentation: 'Create a credit line item based on the transaction as a whole'
     },

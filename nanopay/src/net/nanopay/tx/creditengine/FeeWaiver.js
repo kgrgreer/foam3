@@ -29,6 +29,9 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.CreditLineItem',
+    'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.InvoicedFeeLineItem',
+    'net.nanopay.tx.InvoicedCreditLineItem',
     'foam.util.SafetyUtil',
     'foam.dao.DAO',
   ],
@@ -79,29 +82,46 @@ foam.CLASS({
       documentation: 'calculates how much this promo has saved on this transaction'
     },
     {
-      name: 'createOnFee',
+      name: 'createLineItems',
       args: [
         {
-          name: 'fli',
-          type: 'net.nanopay.tx.FeeLineItem'
+          name: 't',
+          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      type: 'net.nanopay.tx.CreditLineItem',
+      type: 'net.nanopay.tx.CreditLineItem[]',
       javaCode: `
-        for ( String fee : getApplicableFees()) {
-          if ( SafetyUtil.equals(fee, fli.getName())) {
-            CreditLineItem cli = new CreditLineItem();
-            cli.setCreditCode(getId());
-            cli.setName(getName()+" credit for "+fli.getName());
-            cli.setAmount((long) (getDiscountPercent() * fli.getAmount()) );
-            cli.setDestinationAccount(fli.getSourceAccount());
-            cli.setSourceAccount(fli.getDestinationAccount());
-            return cli;
+      ArrayList<CreditLineItem> credits = new ArrayList<CreditLineItem>();
+      for (TransactionLineItem tli : t.getLineItems()) {
+        if ( tli instanceof FeeLineItem) {
+          FeeLineItem fli = (FeeLineItem) tli;
+          for ( String fee : getApplicableFees()) {
+            if ( SafetyUtil.equals(fee, fli.getName())) {
+              if ( ! (fli instanceof InvoicedFeeLineItem) ) {
+                CreditLineItem cli = new CreditLineItem();
+                cli.setCreditCode(getId());
+                cli.setName(getName()+" credit for "+fli.getName());
+                cli.setAmount((long) (getDiscountPercent() * fli.getAmount()) );
+                cli.setDestinationAccount(fli.getSourceAccount());
+                cli.setSourceAccount(fli.getDestinationAccount());
+                credits.add(cli);
+              }
+              else {
+                InvoicedCreditLineItem cli = new InvoicedCreditLineItem();
+                cli.setCreditCode(getId());
+                cli.setName(getName()+" credit for "+fli.getName());
+                cli.setAmount((long) (getDiscountPercent() * fli.getAmount()) );
+                cli.setDestinationAccount(fli.getSourceAccount());
+                cli.setSourceAccount(fli.getDestinationAccount());
+                credits.add(cli);
+              }
+            }
           }
         }
-        return null;
+      }
+      return (CreditLineItem[]) credits.toArray(new CreditLineItem[credits.size()] );
       `,
-      documentation: 'Create a credit line item based on a other credit line item'
+      documentation: 'Create a credit line item for each matching fee on the transaction'
     },
     {
       name: 'consume',

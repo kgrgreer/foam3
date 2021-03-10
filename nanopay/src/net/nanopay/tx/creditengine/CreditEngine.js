@@ -40,6 +40,7 @@ foam.CLASS({
     'net.nanopay.tx.Transfer',
     'java.util.ArrayList',
     'java.util.List',
+    'java.util.HashSet',
     'net.nanopay.account.Account',
     'foam.mlang.sink.Count',
     'net.nanopay.tx.creditengine.AbstractCreditCodeAccount'
@@ -56,13 +57,28 @@ foam.CLASS({
           }
           Transaction t = (Transaction) obj;
           DAO creditCodeDAO = (DAO) x.get("localAccountDAO");
+          // check if credit code exists, if so, only retain if not duplicate, and if applicable.
+
+          ArrayList<CreditLineItem> credits = new ArrayList<CreditLineItem>();
+          HashSet<String> codeHash = new HashSet<String>(t.getCreditCodes().length);
+
           for ( String code : t.getCreditCodes()) {
             AbstractCreditCodeAccount creditCode = (AbstractCreditCodeAccount) creditCodeDAO.find(code);
-            //apply credit line items..
-            t.addLineItems(calculateCredits_(creditCode, t));
+            if ( creditCode != null ) {
+              CreditLineItem[] clis = creditCode.createLineItems(t);
+              if ( clis != null && clis.length > 0 ) {
+                if ( codeHash.add(code) ) {
+                  for( CreditLineItem cli : clis ) {
+                    credits.add(cli);
+                  }
+                }
+              }
+            }
           }
-          return t;
 
+          t.setCreditCodes((String []) codeHash.toArray(new String[codeHash.size()] ));
+          t.addLineItems((CreditLineItem[]) credits.toArray(new CreditLineItem[credits.size()] ));
+          return t;
         }
 
         // --- Deal with incoming creditCodes ---
@@ -71,34 +87,6 @@ foam.CLASS({
         }
         throw new RuntimeException("incorrect input to creditEngine");
       `
-    },
-    {
-      name: 'calculateCredits_',
-      args: [
-        { name: 'creditCode', type: 'net.nanopay.tx.creditengine.AbstractCreditCodeAccount' },
-        { name: 't', type: 'net.nanopay.tx.model.Transaction' },
-      ],
-      type: 'net.nanopay.tx.CreditLineItem[]',
-      javaCode: `
-        ArrayList<CreditLineItem> credits = new ArrayList<CreditLineItem>();
-        // --- apply per fee ---
-        for (TransactionLineItem tli : t.getLineItems()) {
-          if ( tli instanceof FeeLineItem ) {
-            FeeLineItem fli = (FeeLineItem) tli;
-            CreditLineItem cli = creditCode.createOnFee(fli);
-            if ( cli != null ) {
-              credits.add(cli);
-            }
-          }
-        }
-        // --- apply per Transaction ---
-        CreditLineItem cli = creditCode.createOnTransaction(t);
-        if ( cli != null ) {
-          credits.add(cli);
-        }
-        return (CreditLineItem[]) credits.toArray(new CreditLineItem[credits.size()] );
-      `
-    },
-
+    }
   ]
 });

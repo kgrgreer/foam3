@@ -34,8 +34,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.tx.SummaryTransaction',
-    'net.nanopay.fx.FXSummaryTransaction',
+    'net.nanopay.tx.SummarizingTransaction',
     'net.nanopay.tx.planner.UnableToPlanException',
     'net.nanopay.tx.creditengine.AbstractCreditCodeAccount'
   ],
@@ -105,7 +104,7 @@ foam.CLASS({
           }
 
           // consume creditcodes
-          if ( loadedTxn.getCreditCodes() != null && loadedTxn.getCreditCodes().length > 0 ) {
+          if ( ( ! (loadedTxn instanceof SummarizingTransaction) ) && loadedTxn.getCreditCodes() != null && loadedTxn.getCreditCodes().length > 0 ) {
             DAO creditCodeDAO = (DAO) x.get("localAccountDAO");
             for ( String code : loadedTxn.getCreditCodes() ) {
               AbstractCreditCodeAccount creditCode = (AbstractCreditCodeAccount) creditCodeDAO.find(code);
@@ -115,7 +114,7 @@ foam.CLASS({
           return getDelegate().put_(x, loadedTxn); //recovered plan is put in.
         }
         // consume creditcodes
-        if ( txn.getCreditCodes() != null && txn.getCreditCodes().length > 0 ) {
+        if ( ( ! (txn instanceof SummarizingTransaction) ) && txn.getCreditCodes() != null && txn.getCreditCodes().length > 0 ) {
           DAO creditCodeDAO = (DAO) x.get("localAccountDAO");
           for ( String code : txn.getCreditCodes() ) {
             AbstractCreditCodeAccount creditCode = (AbstractCreditCodeAccount) creditCodeDAO.find(code);
