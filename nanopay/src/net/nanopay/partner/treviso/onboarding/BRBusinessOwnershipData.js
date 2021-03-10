@@ -131,36 +131,7 @@ foam.CLASS({
           of: net.nanopay.partner.treviso.onboarding.BRBeneficialOwner
         });
 
-        // set the hidden properties from capabilities
-        var hasSignedContratosDeCambio, pepHioRelated;
-        var cpf, verifyName, cpfName, documentsOfId, documentsOfAddress;
-
-        this.crunchService.getJunction(x, 'fb7d3ca2-62f2-4caf-a84c-860392e4676b').then(cap=> {
-          // signing officer's CPF
-          if ( cap && cap.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-            cpf = cap.data.data;
-            verifyName = cap.data.verifyName;
-            cpfName = cap.data.cpfName;
-          }
-          this.crunchService.getJunction(x, '777af38a-8225-87c8-dfdf-eeb15f71215f-123').then(ucj=> {
-            // SigningOfficerPersonalData
-            if ( ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-              hasSignedContratosDeCambio = ucj.data.hasSignedContratosDeCambio;
-              pepHioRelated = ucj.data.PEPHIORelated;
-              this.crunchService.getJunction(x, '85cee1de-db32-11ea-87d0-0242ac130003').then( c => {
-                documentsOfAddress = c.data.documents;
-              })
-              this.crunchService.getJunction(x, '8ad3c898-db32-11ea-87d0-0242ac130003').then( c => {
-                documentsOfId = c.data.documents;
-              })
-            }
-          }).catch(err => {
-            this.notify(this.SIGNINGOFFICER_DATA_FETCHING_ERR, '', this.LogLevel.ERROR, true);
-          });
-        }).catch(err => {
-          this.notify(this.SIGNINGOFFICER_DATA_FETCHING_ERR, '', this.LogLevel.ERROR, true);
-        });
-
+        // function in sink
         var sinkFn = so => {
           var obj = net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.create(
             {
@@ -184,7 +155,40 @@ foam.CLASS({
             adao.put(obj);
         };
 
-        this.signingOfficerJunctionDAO
+        // set the hidden properties from capabilities
+        var hasSignedContratosDeCambio, pepHioRelated;
+        var cpf, verifyName, cpfName;
+        var documentsOfId = foam.nanos.fs.FileArray.create();
+        var documentsOfAddress = foam.nanos.fs.FileArray.create();
+        
+        Promise.all([
+          this.crunchService.getJunction(x, 'fb7d3ca2-62f2-4caf-a84c-860392e4676b'),
+          this.crunchService.getJunction(x, '777af38a-8225-87c8-dfdf-eeb15f71215f-123'),
+          this.crunchService.getJunction(x, '85cee1de-db32-11ea-87d0-0242ac130003'),
+          this.crunchService.getJunction(x, '8ad3c898-db32-11ea-87d0-0242ac130003')
+        ]).then(values => {
+          let cpf  = values[0] ? values[0].data : '';
+          let so   = values[1] ? values[1].data : '';
+          let doc1 = values[2] ? values[2].data : '';
+          let doc2 = values[3] ? values[3].data : '';
+
+          if ( values[0].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED && cpf ) {
+            verifyName = cpf.verifyName;
+            cpfName = cpf.cpfName;
+          }
+          if ( values[1].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED && so ) {
+            hasSignedContratosDeCambio = so.hasSignedContratosDeCambio;
+            pepHioRelated = so.PEPHIORelated;
+          }
+          if ( values[2].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED && doc1 ) {
+            documentsOfAddress = doc1.documents;
+          }
+          if ( values[3].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED && doc2 ) {
+            documentsOfId = doc2.documents;
+          }
+
+          // POPULATE DAO
+          this.signingOfficerJunctionDAO
           .where(this.EQ(net.nanopay.model.BusinessUserJunction
             .SOURCE_ID, this.subject.user.id))
           .select(this.PROJECTION(net.nanopay.model.BusinessUserJunction
@@ -195,6 +199,10 @@ foam.CLASS({
               .select({ put: sinkFn })
               .then(() => pdao.promise.resolve(adao));
           });
+        }).catch(err => {
+          this.notify(this.SIGNINGOFFICER_DATA_FETCHING_ERR, '', this.LogLevel.ERROR, true);
+        });
+
         return pdao;
       }
     },
