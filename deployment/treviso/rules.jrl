@@ -374,7 +374,7 @@ p({
   "name":"Onboard Business to AFEX",
   "documentation":"Rule to onboard business to AFEX if it has passed comliance.",
   "priority":1,
-  "ruleGroup":"AFEXCrunchOnboarding",
+  "ruleGroup":"crunchOnboarding",
   "daoKey":"userCapabilityJunctionDAO",
   "operation":3,
   "after":true,
@@ -384,7 +384,7 @@ p({
     "statusChanged": false,
     "category": "AFEXOnboarding"
   },
-  "asyncAction":{ "class":"net.nanopay.partner.afex.crunch.AFEXBusinessOnboardingRule"},
+  "action":{ "class":"net.nanopay.partner.afex.crunch.AFEXBusinessOnboardingRule"},
   "enabled":true,
   "saveHistory":true,
   "lifecycleState":1
@@ -396,7 +396,7 @@ p({
   "id":"crunch-onboard-compliance-0",
   "name":"Crunch Onboarding - User Final Compliance Rule",
   "documentation":"Final rule for User compliance.",
-  "priority":50,
+  "priority":90,
   "ruleGroup":"crunchOnboarding",
   "daoKey":"userCapabilityJunctionDAO",
   "operation":3,
@@ -429,7 +429,7 @@ p({
       }
     ]
   },
-  "asyncAction":{
+  "action":{
     "class":"net.nanopay.crunch.compliance.UserComplianceApproval"
   },
   "enabled":true,

@@ -23,11 +23,12 @@ foam.CLASS({
   documentation: 'Two-Factor sign in view',
 
   imports: [
+    'auth',
     'loginSuccess',
-    'notify',
-    'twofactor',
     'menuDAO',
-    'theme'
+    'notify',
+    'theme',
+    'twofactor'
   ],
 
   requires: [
@@ -187,6 +188,7 @@ foam.CLASS({
 
     async function initE() {
       this.SUPER();
+      var self = this;
       var split = foam.u2.borders.SplitScreenBorder.create();
       var left = this.Element.create()
         .start('img')
@@ -250,7 +252,9 @@ foam.CLASS({
               .end()
               .add(this.GO_BACK + this.appName)
               .on('click', () => {
-                window.location = window.location.href;
+                 this.auth.logout().then(function() {
+                    window.location = window.location.href;
+                 });
               })
             .end()
           .end()
