@@ -760,6 +760,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/creditengine/CreditEngine' },
   { name: 'net/nanopay/tx/creditengine/CreditCodeTransaction' },
   { name: 'net/nanopay/tx/creditengine/CreditCodeLoadAction' },
+  { name: 'net/nanopay/tx/creditengine/PreviousFeeRefund' },
 
   // invoice
   { name: 'net/nanopay/invoice/ruler/CapabilityValidateRule' },
