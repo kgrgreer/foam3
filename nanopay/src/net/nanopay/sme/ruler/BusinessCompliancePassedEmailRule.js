@@ -35,6 +35,7 @@ foam.CLASS({
       'foam.nanos.logger.Logger',
       'foam.nanos.notification.Notification',
       'net.nanopay.model.Business',
+      'net.nanopay.sme.ruler.BusinessCompliancePassedEmailNotification',
       'java.util.HashMap',
       'java.util.Map',
       'static foam.mlang.MLang.*'
@@ -68,8 +69,7 @@ foam.CLASS({
               }
               try {
 
-                Notification businessCompliancePassedNotification = new Notification.Builder(x)
-                  .setBody("This business can now make payments")
+                Notification businessCompliancePassedNotification = new BusinessCompliancePassedEmailNotification.Builder(x)
                   .setNotificationType("Latest_Activity")
                   .setGroupId(group.toString())
                   .setEmailArgs(args)

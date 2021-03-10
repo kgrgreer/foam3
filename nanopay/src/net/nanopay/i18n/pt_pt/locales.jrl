@@ -3364,3 +3364,4 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Send money to pay a utility bill
 p({class:"foam.i18n.Locale",locale:"pt",source:"Send money to pay a vendor",target:"Envie dinheiro para pagar um fornecedor"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Other",target:"Outro"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ruler.BusinessCompliancePassedEmailNotification.NOTIFICATION_BODY_P1",target:"Esta empresa agora pode fazer pagamentos"})
