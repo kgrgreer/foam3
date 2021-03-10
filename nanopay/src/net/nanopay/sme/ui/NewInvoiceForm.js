@@ -59,7 +59,7 @@ foam.CLASS({
     'net.nanopay.bank.GetDefaultCurrency',
     'net.nanopay.contacts.Contact',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.ui.wizard.WizardController',
+    'net.nanopay.ui.wizard.ContactWizardDetailView',
     'foam.u2.dialog.Popup',
     'net.nanopay.accounting.xero.model.XeroInvoice',
     'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
@@ -99,7 +99,7 @@ foam.CLASS({
       outline: none;
     }
     ^ .invoice-amount-input {
-      width: calc(100% - 87px);
+      width: calc(100% - 90px);
       display: inline-block;
     }
     ^ .net-nanopay-sme-ui-CurrencyChoice {
@@ -237,6 +237,9 @@ foam.CLASS({
     }
     ^ .foam-u2-TextField {
       max-width: 240px;
+    }
+    ^ .input-wrapper-width {
+      width: 100%;
     }
   `,
 
@@ -545,7 +548,7 @@ foam.CLASS({
               .start().add(this.ADD_BANK).addClass('add-banking-information')
                 .on('click', async function() {
                   self.userDAO.find(self.invoice.contactId).then((contact)=>{
-                    self.add(self.WizardController.create({
+                    self.add(self.ContactWizardDetailView.create({
                       model: 'net.nanopay.contacts.Contact',
                       data: contact,
                       controllerMode: foam.u2.ControllerMode.CREATE,
@@ -558,7 +561,7 @@ foam.CLASS({
           .end()
         .end()
         .startContext({ data: this.invoice })
-          .start().addClass('input-wrapper')
+          .start().addClass('input-wrapper').addClass('input-wrapper-width')
             .start().addClass('input-label').add(this.AMOUNT).end()
               .start()
                 .on('mouseenter', this.toggleTooltip)
@@ -575,7 +578,7 @@ foam.CLASS({
                     })
                   .end()
                 .endContext()
-                .start()
+                .start().addClass('invoice-amount-input')
                   .start(this.Invoice.AMOUNT, { mode: displayMode })
                     .enableClass('error-box', this.slot( function(isInvalid, type, showAddBank) {
                       return isInvalid && type === 'payable' && ! showAddBank;
@@ -798,7 +801,7 @@ foam.CLASS({
       icon: 'images/plus-no-bg.svg',
       code: function(X, e) {
         var self = X.data;
-        X.ctrl.add(net.nanopay.ui.wizard.WizardController.create({
+        X.ctrl.add(net.nanopay.ui.wizard.ContactWizardDetailView.create({
           model: 'net.nanopay.contacts.Contact',
           data$: self.addedContact$,
           controllerMode: foam.u2.ControllerMode.CREATE,

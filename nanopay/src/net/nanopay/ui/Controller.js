@@ -890,6 +890,7 @@ foam.CLASS({
               }
               if ( sink.array.length === 0 ) {
                 // if sink.array.length === 0, push to default page
+                this.initLayout.resolve();
                 await this.pushDefaultMenu();
                 return;
               }

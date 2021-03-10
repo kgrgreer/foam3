@@ -43,13 +43,15 @@ foam.CLASS({
         return foam.uuid.randomGUID();
       },
       javaFactory: `return java.util.UUID.randomUUID().toString();`,
-      hidden: true
+      hidden: true,
+      externalTransient: true
     },
     {
       documentation: 'Assigned when line items are added to a transaction. All lineitems add at the same time are assigned to the same group so line items can be shown together.  For example, FX rate, expiry, fee can be grouped in the output.',
       name: 'group',
       class: 'String',
-      hidden: true
+      hidden: true,
+      externalTransient: true
     },
     {
       name: 'sourceAccount',
@@ -118,13 +120,15 @@ foam.CLASS({
       readVisibility: 'RO',
       updateVisibility: 'RO',
       value: true,
-      view: { class: 'foam.u2.CheckBox', showLabel: false }
+      view: { class: 'foam.u2.CheckBox', showLabel: false },
+      externalTransient: true
     },
     {
       name: 'requiresUserInput',
       class: 'Boolean',
       value: false,
-      hidden: true
+      hidden: true,
+      externalTransient: true
     },
     {
       name: 'transaction',
@@ -133,13 +137,15 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.Transaction',
       visibility: 'HIDDEN',
       storageTransient: true,
+      externalTransient: true
     },
     {
       name: 'quoteOnChange',
       class: 'Boolean',
       value: false,
       hidden: true,
-      storageTransient: true
+      storageTransient: true,
+      externalTransient: true
     }
   ],
 

@@ -95,7 +95,7 @@ p({
       "daoKey":"accountDAO",
       "of":"net.nanopay.bank.BankAccount",
       "browseTitle": "Bank accounts",
-      "browseSubtitle": "View all bank accounts.",
+      "browseSubtitle": "View all bank accounts",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
       "editPredicate":{"class":"foam.mlang.predicate.False"},
       "searchMode": 2,
@@ -122,7 +122,7 @@ p({
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
-      "class": "net.nanopay.ui.wizard.WizardController",
+      "class": "net.nanopay.ui.wizard.ContactWizardDetailView",
       "model": "net.nanopay.contacts.ui.modal.BusinessNameSearch"
     }
   }
@@ -138,7 +138,7 @@ p({
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
-      "class": "net.nanopay.ui.wizard.WizardController",
+      "class": "net.nanopay.ui.wizard.ContactWizardDetailView",
       "model": "net.nanopay.contacts.ui.modal.PaymentCodeSearch"
     }
   }
@@ -154,7 +154,7 @@ p({
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
-      "class": "net.nanopay.ui.wizard.WizardController",
+      "class": "net.nanopay.ui.wizard.ContactWizardDetailView",
       "model": "net.nanopay.model.Invitation"
     }
   }
@@ -170,7 +170,7 @@ p({
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
-      "class": "net.nanopay.ui.wizard.WizardController",
+      "class": "net.nanopay.ui.wizard.ContactWizardDetailView",
       "model": "net.nanopay.contacts.Contact"
     }
   }

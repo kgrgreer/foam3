@@ -74,7 +74,7 @@ foam.CLASS({
           if ( this.selection.signUpStatus !== net.nanopay.contacts.ContactStatus.READY && ! this.selection.bankAccount ) {
             controllerMode_ = foam.u2.ControllerMode.CREATE;
           }
-          this.add(net.nanopay.ui.wizard.WizardController.create({
+          this.add(net.nanopay.ui.wizard.ContactWizardDetailView.create({
             model: 'net.nanopay.contacts.Contact',
             data: this.selection,
             controllerMode: controllerMode_,

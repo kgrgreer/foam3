@@ -1,16 +1,6 @@
 // BPP spid
 p({class:"foam.nanos.auth.ServiceProvider",id:"bpp",description:"bpp spid",enabled:true})
 p({
-  class:"foam.nanos.crunch.Capability",
-  id:"bppCountryCapability",
-  permissionsGranted:[
-    "country.read.CA",
-    "country.read.US",
-    "country.read.GB",
-    "country.read.PT"
-  ]
-})
-p({
   class: "foam.nanos.crunch.Capability",
   id: "bppCorridorCapability",
   version: "0",
@@ -19,7 +9,8 @@ p({
     "paymentprovidercorridor.read.afex",
     "paymentprovidercorridor.read.bepay",
     "paymentprovidercorridor.source.read.bepay",
-    "paymentprovidercorridor.target.read.afex"
+    "paymentprovidercorridor.target.read.2869DB5B-0AFE-4113-8EF7-5E5B6B8BB4AC",
+    "paymentprovidercorridor.target.read.5B9EE768-4B35-493C-A356-FEC306235AB7"
   ]
 })
 p({
@@ -29,7 +20,7 @@ p({
   permissionsGranted: [
     "rule.read.119fa381-d2a2-4369-b242-1dc8e2163bb9-bpp",
     "rule.read.2fdd7d35-6704-47dc-9f0e-9419e0aa74ed",
-    "rule.read.77480e3b-fc7e-400c-bee6-dda5a22b982a",
+    "rule.read.77480e3b-fc7e-400c-bee6-dda5a22b982a"
   ]
 })
 

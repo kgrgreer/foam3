@@ -428,12 +428,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       .setBankName(bankResponse != null ? bankResponse.getInstitutionName() : bankAccount.findInstitution(x).getName())
       .setCurrency(bankAccount.getDenomination())
       .build();
-    if ( bankAccount instanceof CABankAccount ) {
-      directDebitEnrollmentRequest.setBankRoutingCode("0" + bankAccount.getInstitutionNumber() + bankAccount.getBranchId());
-    } else if ( bankAccount instanceof USBankAccount ) {
-      directDebitEnrollmentRequest.setBankRoutingCode(bankAccount.getBranchId());
-    }
-
+    directDebitEnrollmentRequest.setBankRoutingCode(bankAccount.getRoutingCode(x));
     String directDebitEnrollmentResponse = afexClient.directDebitEnrollment(directDebitEnrollmentRequest, business.getSpid());
 
     if ( ! directDebitEnrollmentResponse.equals("\"This account is submitted to enroll in Direct Debit.\"") ) {
@@ -632,10 +627,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       createBeneficiaryRequest.setBankAccountNumber(bankAccount.getApiAccountNumber());
       createBeneficiaryRequest.setBankCountryCode(bankAddress.getCountryId());
       createBeneficiaryRequest.setBankName(bankName);
-      String bankRoutingCode = bankAccount.getBranchId();
-      if ( bankAccount instanceof CABankAccount) {
-        bankRoutingCode = "0" + bankAccount.getInstitutionNumber() + bankRoutingCode;
-      }
+      String bankRoutingCode = bankAccount.getRoutingCode(x);
       String swift = bankAccount.getSwiftCode();
       if ( SafetyUtil.isEmpty(swift) ) {
         swift = bankAccount.getInstitutionNumber();
@@ -657,7 +649,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         Contact contact = (Contact) ((DAO) x.get("localContactDAO")).find(user.getId());
         AFEXCNBeneficiaryCapability cap = (AFEXCNBeneficiaryCapability) contact.getCapablePayloads()[0].getData();
         createBeneficiaryRequest.setRemittanceLine2(cap.getPurposeCode());
-        createBeneficiaryRequest.setRemittanceLine3(beneficiaryName + " " + cap.getPhone().getNumber());
+        createBeneficiaryRequest.setRemittanceLine3(beneficiaryName + " " + cap.getContactPhone());
       }
 
       try {
@@ -739,9 +731,6 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     updateBeneficiaryRequest.setBankCountryCode(bankAddress.getCountryId());
     updateBeneficiaryRequest.setBankName(bankName);
     String bankRoutingCode = bankAccount.getRoutingCode(this.x);
-    if ( bankAccount instanceof CABankAccount) {
-      bankRoutingCode = "0" + bankRoutingCode;
-    }
     updateBeneficiaryRequest.setBankRoutingCode(bankRoutingCode);
     updateBeneficiaryRequest.setBeneficiaryAddressLine1(bankAddress.getAddress());
     updateBeneficiaryRequest.setBeneficiaryCity(userAddress.getCity());
@@ -1041,13 +1030,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     FindBankByNationalIDRequest findBankByNationalIDRequest = new FindBankByNationalIDRequest();
     findBankByNationalIDRequest.setClientAPIKey(clientAPIKey);
     findBankByNationalIDRequest.setCountryCode(bankAccount.getCountry());
-    if ( bankAccount instanceof CABankAccount ) {
-      findBankByNationalIDRequest.setNationalID("0" + bankAccount.getRoutingCode(x) );
-    } else if ( bankAccount instanceof USBankAccount ) {
-      findBankByNationalIDRequest.setNationalID(bankAccount.getBranchId());
-    } else {
-      return null;
-    }
+    findBankByNationalIDRequest.setNationalID(bankAccount.getRoutingCode(x));
     try {
       bankInformation = this.afexClient.findBankByNationalID(findBankByNationalIDRequest, spid);
     } catch(Throwable t) {
