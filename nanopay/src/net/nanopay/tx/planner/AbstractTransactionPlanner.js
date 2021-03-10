@@ -421,24 +421,42 @@ foam.CLASS({
       javaCode: `
         TransactionLineItem [] ls = txn.getLineItems();
         for ( TransactionLineItem li : ls ) {
-          if ( li instanceof CreditLineItem &&
-          ! SafetyUtil.equals(txn.getDestinationAccount(), ((CreditLineItem) li).getDestinationAccount()) )
-          {
+          // *** dont bother for not fee or credit line items ***
+          if ( ( ! (
+            ( (li instanceof CreditLineItem) && (! (li instanceof InvoicedCreditLineItem)) ) ||
+            ( (li instanceof FeeLineItem) && (! (li instanceof InvoicedFeeLineItem)) )
+          )) && (! ( SafetyUtil.isEmpty(li.getSourceAccount()) ) ) ) {
             continue;
           }
+          Account acc = null;
+          Account accDest = null;
+        // *** Prep accounts for Credit Transfers ***
+        // we can assume destination will likely be one of the txn accounts
+          if ( li instanceof CreditLineItem ) {
+            CreditLineItem cli = (CreditLineItem) li;
 
-          if ( li instanceof FeeLineItem && ! (li instanceof InvoicedFeeLineItem) &&
-          ! SafetyUtil.isEmpty(li.getSourceAccount())  )
+            if ( cli.getDestinationAccount() == quote.getSourceAccount().getId() )
+              accDest = quote.getSourceAccount();
+            if ( cli.getDestinationAccount() == quote.getDestinationAccount().getId() )
+              accDest = quote.getDestinationAccount();
+            if (accDest == null)
+              accDest = feeLineItem.findDestinationAccount(x);
+            acc = feeLineItem.findSourceAccount(x);
+          }
+
+        // *** Prep accounts for Fee Transfers ***
+        // we can assume source will likely be one of the txn accounts
+          if ( li instanceof FeeLineItem )
           {
             FeeLineItem feeLineItem = (FeeLineItem) li;
-            Account acc = null;
             if ( feeLineItem.getSourceAccount() == quote.getSourceAccount().getId() )
               acc = quote.getSourceAccount();
             if ( feeLineItem.getSourceAccount() == quote.getDestinationAccount().getId() )
               acc = quote.getDestinationAccount();
             if (acc == null)
               acc = feeLineItem.findSourceAccount(x);
-            Account accDest = feeLineItem.findDestinationAccount(x);
+            accDest = feeLineItem.findDestinationAccount(x);
+          }
 
             if ( acc instanceof DigitalAccount && accDest instanceof DigitalAccount)
             { // case: fee/credit from digital account to digital account .
@@ -481,7 +499,7 @@ foam.CLASS({
 
             // case: fee or credit can not be applied to this transaction. it is misconfigured
             Logger logger = (Logger) x.get("logger");
-            logger.error("ERROR Fee/Credit Transfers not created for txn: "+txn.getId()+ " fee: "+li);
+            logger.error("ERROR Fee Transfers not created for txn: "+txn.getId()+ " fee: "+li);
           }
         }
         return txn;
