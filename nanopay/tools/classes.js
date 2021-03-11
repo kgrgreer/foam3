@@ -590,6 +590,7 @@ var classes = [
   'net.nanopay.tx.PurposeCode',
   'net.nanopay.tx.PurposeCodeLineItem',
   'net.nanopay.tx.TransactionQuote',
+  'net.nanopay.tx.TransactionSummary',
   'net.nanopay.tx.RefundTransaction',
   'net.nanopay.tx.RetailTransaction',
   'net.nanopay.tx.model.TransactionLimit',
