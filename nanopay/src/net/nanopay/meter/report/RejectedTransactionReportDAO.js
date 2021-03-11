@@ -119,7 +119,7 @@ foam.CLASS({
           )
         )).orderBy(Transaction.INVOICE_ID).select(new AbstractSink() {
           public void put(Object obj, Detachable sub) {
-            Transaction transaction = (Transaction) obj;
+            Transaction transaction = (Transaction) ((foam.core.FObject)obj).fclone();
             try {
               User sender = ((Account) transaction.findSourceAccount(x)).findOwner(x);
               User receiver = ((Account) transaction.findDestinationAccount(x)).findOwner(x);
