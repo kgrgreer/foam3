@@ -92,21 +92,14 @@ p({
   "associatedEntity": 0
 })
 
+// update description to say cpf instead of identification
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"8ad3c898-db32-11ea-87d0-0242ac130003",
   "name":"Identification",
   "description":"""
     Provide a copy of a piece of government issued identification which shows your full name, picture, and CPF number.
-  """,
-  "of":"net.nanopay.crunch.document.Document",
-  "wizardlet": {
-    class: "foam.u2.crunch.FlatteningCapabilityWizardlet",
-    before: true
-  },
-  "version":"0",
-  "enabled":true,
-  "associatedEntity": 1
+  """
 })
 
 // AFEX payment provider corridors
