@@ -1,5 +1,4 @@
 FOAM_FILES([
-  { name: 'net/nanopay/proto/Proto' },
   // DAO
   { name: 'net/nanopay/dao/EasyDAO'},
 
