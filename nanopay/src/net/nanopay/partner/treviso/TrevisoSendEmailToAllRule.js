@@ -64,7 +64,7 @@ foam.CLASS({
           UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
           Business business = (Business) ucj.findSourceId(x);
           List<String> uniqueEmails = new ArrayList<String>();
-          String soCapId = "777af38a-8225-87c8-dfdf-eeb15f71215f-123";
+          String soCapId = "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5";
           String ownerCapId = "554af38a-8225-87c8-dfdf-eeb15f71215f-7-br";
           String directorCapId = "554af38a-8225-87c8-dfdf-eeb15f71215f-6-5";
 

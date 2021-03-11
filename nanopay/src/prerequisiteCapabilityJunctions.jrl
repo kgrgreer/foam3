@@ -359,16 +359,24 @@ p({
 // BR Signing Officer to Residence Consumption Bill (Utility bills)
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
   "targetId":"85cee1de-db32-11ea-87d0-0242ac130003",
+  "predicate":{ "class":"net.nanopay.crunch.predicate.CheckUserCountry","country":"BR" },
   "priority":2
 })
 
-// BR Signing Officer to User Identity (Identification)
+// BR/US Signing Officer to User Identity (Identification)
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
   "targetId":"8ad3c898-db32-11ea-87d0-0242ac130003",
+  "predicate":{ 
+    "class":"foam.mlang.predicate.Or",
+    "args":[
+      { "class":"net.nanopay.crunch.predicate.CheckUserCountry","country":"BR" },
+      { "class":"net.nanopay.crunch.predicate.CheckUserCountry","country":"US" }
+    ]
+  },
   "priority":3
 })
 
@@ -389,8 +397,9 @@ p({
 // BR Signing Officer to CPF
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
   "targetId":"fb7d3ca2-62f2-4caf-a84c-860392e4676b",
+  "predicate":{ "class":"net.nanopay.crunch.predicate.CheckUserCountry","country":"BR" },
   "priority":1
 })
 
@@ -399,22 +408,14 @@ p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
   "targetId":"8bffdedc-5176-4843-97df-1b75ff6054fb",
+  "predicate":{ 
+    "class":"foam.mlang.predicate.Or",
+    "args":[
+      { "class":"net.nanopay.crunch.predicate.CheckUserCountry","country":"CA" },
+      { "class":"net.nanopay.crunch.predicate.CheckUserCountry","country":"US" }
+    ]
+  },
   "priority":5
-})
-
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5-us",
-  "targetId":"8bffdedc-5176-4843-97df-1b75ff6054fb",
-  "priority":5
-})
-
-// US sigining officer to User Identity (Identification)
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5-us",
-  "targetId":"8ad3c898-db32-11ea-87d0-0242ac130003",
-  "priority":3
 })
 
 // Prerequisites for apiUserBusinessOnboarding

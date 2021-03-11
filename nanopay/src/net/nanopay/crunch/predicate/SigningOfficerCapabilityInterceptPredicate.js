@@ -61,11 +61,7 @@ foam.CLASS({
           AND(
             INSTANCE_OF(AgentCapabilityJunction.class),
             EQ(UserCapabilityJunction.SOURCE_ID, agent.getId()),
-            OR(
-              EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5"),
-              EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5-us"),
-              EQ(UserCapabilityJunction.TARGET_ID, "777af38a-8225-87c8-dfdf-eeb15f71215f-123")
-            ),
+            EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5"),
             EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId()),
             OR(
               EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED),
