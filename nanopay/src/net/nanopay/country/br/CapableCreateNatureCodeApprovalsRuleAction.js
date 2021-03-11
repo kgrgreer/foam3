@@ -69,7 +69,7 @@ foam.CLASS({
           .setDaoKey(request.getDaoKey())
           .setObjId(request.getObjId())
           .setOperation(request.getOperation())
-          .setCreatedFor(request.getCreatedBy())
+          .setCreatedFor(request.getCreatedFor())
           .setGroup(request.getGroup())
           .setClassification(request.getClassification())
           .setStatus(request.getStatus())
