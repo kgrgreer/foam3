@@ -35,7 +35,7 @@ p({
 
 
 p({
-  "class":"foam.nanos.boot.NSpec", 
+  "class":"foam.nanos.boot.NSpec",
   "name":"securefactService",
   "lazy":false,
   "serve":true,
