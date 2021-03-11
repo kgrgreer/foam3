@@ -111,6 +111,7 @@ foam.CLASS({
         session.setContext(session.getContext().put("subject", sessionSubject));
         session.setContext(session.getContext().put("group", actingWithinGroup));
         foam.nanos.auth.CachingAuthService.purgeCache(x);
+        foam.nanos.crunch.ServerCrunchService.purgeCache(x);
         DAO sessionDAO = (DAO) getX().get("localSessionDAO");
         sessionDAO.put(session);
         return realUser;
