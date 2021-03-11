@@ -1,6 +1,6 @@
 p({"class":"foam.nanos.menu.Menu","id":"sme","label":"Ablii","handler":{"class":"foam.nanos.menu.SubMenu"},"order":101,"parent":""})
 
-p({"class":"foam.nanos.menu.Menu","id":"smeSettings","label":"Ablii Settings","handler":{"class":"foam.nanos.menu.SubMenu"},"order":102,"parent":"sme"})
+p({"class":"foam.nanos.menu.Menu","id":"smeSettings","label":"Settings","handler":{"class":"foam.nanos.menu.SubMenu"},"order":102,"parent":"sme"})
 p({"class":"foam.nanos.menu.Menu","id":"sme.accountProfile.business-settings","label":"Business settings","description":"View and update business profile information and permissions","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.BusinessSettingsView"}},"order":1,"parent":"smeSettings"})
 p({"class":"foam.nanos.menu.Menu","id":"sme.accountProfile.personal-settings","label":"Personal settings","description":"Manage your password, email and notifications","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.PersonalSettingsView"}},"order":2, "parent":"smeSettings"})
 p({"class":"foam.nanos.menu.Menu","id":"sme.accountProfile.switch-business","label":"Switch Company","description":"","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.SwitchBusinessView"}},"order":3, "parent":"smeSettings"})
@@ -95,7 +95,7 @@ p({
       "daoKey":"accountDAO",
       "of":"net.nanopay.bank.BankAccount",
       "browseTitle": "Bank accounts",
-      "browseSubtitle": "View all bank accounts.",
+      "browseSubtitle": "View all bank accounts",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
       "editPredicate":{"class":"foam.mlang.predicate.False"},
       "searchMode": 2,
@@ -122,7 +122,7 @@ p({
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
-      "class": "net.nanopay.ui.wizard.WizardController",
+      "class": "net.nanopay.ui.wizard.ContactWizardDetailView",
       "model": "net.nanopay.contacts.ui.modal.BusinessNameSearch"
     }
   }
@@ -138,7 +138,7 @@ p({
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
-      "class": "net.nanopay.ui.wizard.WizardController",
+      "class": "net.nanopay.ui.wizard.ContactWizardDetailView",
       "model": "net.nanopay.contacts.ui.modal.PaymentCodeSearch"
     }
   }
@@ -154,7 +154,7 @@ p({
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
-      "class": "net.nanopay.ui.wizard.WizardController",
+      "class": "net.nanopay.ui.wizard.ContactWizardDetailView",
       "model": "net.nanopay.model.Invitation"
     }
   }
@@ -170,7 +170,7 @@ p({
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
-      "class": "net.nanopay.ui.wizard.WizardController",
+      "class": "net.nanopay.ui.wizard.ContactWizardDetailView",
       "model": "net.nanopay.contacts.Contact"
     }
   }

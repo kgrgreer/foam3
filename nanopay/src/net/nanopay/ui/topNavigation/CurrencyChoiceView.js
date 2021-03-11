@@ -188,7 +188,7 @@ foam.CLASS({
                 if ( c.flagImage != null ) {
                   return self.E()
                     .start('div').start('img')
-                      .attrs({ src: c.flagImage })
+                      .attrs({ src: c.flagImage, alt: c.name })
                       .addClass('flag').end().add(c.id)
                       .on('click', function() {
                         self.lastCurrency = c;

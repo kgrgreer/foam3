@@ -21,8 +21,7 @@ import foam.core.ContextAgent;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.nanos.auth.Subject;
-import foam.nanos.auth.User;
+import foam.nanos.alarming.Alarm;
 import foam.nanos.logger.Logger;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import net.nanopay.account.Account;
+import net.nanopay.bank.BankAccount;
 import net.nanopay.tx.billing.Bill;
 import net.nanopay.tx.billing.BillingFee;
 import net.nanopay.tx.model.Transaction;
@@ -43,7 +43,7 @@ public class BillingCron implements ContextAgent {
     // query all bills from this month
     ArraySink bills = (ArraySink) ((DAO) x.get("billDAO")).where(
         AND(
-          LT(Bill.CHARGE_DATE, new Date()),
+          LTE(Bill.CHARGE_DATE, new Date()),
           EQ(Bill.STATUS, TransactionStatus.PENDING)
         )
     ).select(new ArraySink());
@@ -69,12 +69,32 @@ public class BillingCron implements ContextAgent {
     Account feeAccount = (Account) x.get("feeAccount");
     for ( Long userId : billingMap.keySet() ) {
       ArraySink userAccountSink = (ArraySink) ((DAO) x.get("localAccountDAO"))
-        .where(EQ(Account.OWNER, userId))
+        .where(
+          AND(
+            EQ(Account.OWNER, userId),
+            INSTANCE_OF(BankAccount.class)
+          )
+        )
         .orderBy(Account.CREATED)
         .limit(1)
         .select(new ArraySink());
-      Account userAccount = (Account) userAccountSink.getArray().get(0);
       
+      if ( userAccountSink.getArray().size() == 0 ) {
+        String name = "BillingCron: Unable to find bank account to bill user: " + userId;
+        DAO alarmDAO = (DAO) x.get("alarmDAO");
+        Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, name));
+        if ( alarm != null && alarm.getIsActive() ) { continue; }
+        alarm = new Alarm.Builder(x)
+                  .setName(name)
+                  .setIsActive(true)
+                  .setNote("Bank account for user: " + userId + " does not exist")
+                  .build();
+        alarmDAO.put(alarm);
+        ((Logger) x.get("logger")).warning(name);
+        continue;
+      }
+      
+      Account userAccount = (Account) userAccountSink.getArray().get(0);
       long amount = 0;
       String currency = userAccount.getDenomination();
       List<Bill> billList = billingMap.get(userId);
@@ -101,6 +121,7 @@ public class BillingCron implements ContextAgent {
       try {
         billingTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).put(billingTxn);
         for ( Bill bill : billList ) {
+          bill = (Bill) bill.fclone();
           bill.setBillingTransaction(billingTxn.getId());
           bill.setStatus(TransactionStatus.SENT);
           ((DAO) x.get("billDAO")).put(bill);

@@ -82,7 +82,7 @@ foam.CLASS({
                     .setDaoKey("userCapabilityJunctionDAO")
                     .setCauseId(response != null ? response.getId() : 0L)
                     .setCauseDaoKey("dowJonesResponseDAO")
-                    .setClassification("Validate Beneficial Owner " + index + " Using Dow Jones")
+                    .setClassification("Beneficial Owner " + index + " Dow Jones R&C")
                     .setMatches(response != null ? response.getResponseBody().getMatches() : null)
                     .setComments("Further investigation needed for owner: " + index)
                     .setGroup(group)

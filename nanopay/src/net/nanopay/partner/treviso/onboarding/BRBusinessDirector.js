@@ -40,8 +40,8 @@ foam.CLASS({
     { name: 'UNDER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old' },
     { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be less than 125 years old' },
     { name: 'INVALID_CPF', message: 'Valid CPF number required' },
-    { name: 'INVALID_DIRECTOR_NAME', message: 'Confirm your director\’s name' },
-    { name: 'FOREIGN_ID_ERROR', message: 'RG/RNE required' },
+    { name: 'INVALID_DIRECTOR_NAME', message: 'Confirm your administrator\’s or legal representative name' },
+    { name: 'FOREIGN_ID_ERROR', message: 'Identification Document required' },
     { name: 'NATIONALITY_ERROR', message: 'Nationality required' },
     { name: 'YES', message: 'Yes' },
     { name: 'NO', message: 'No' },
@@ -61,7 +61,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'foreignId',
-      label: 'RG/RNE:(National/Passport/Foreign ID)',
+      label: 'Identification Document (Ex: RG, CNH, OAB, RNE)',
       required: true,
       validationPredicates: [
         {
@@ -195,7 +195,7 @@ foam.CLASS({
         return cpfName.length > 0 ?
           foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
-      label: 'Is this your director?',
+      label: 'Is this your administrator or legal representative?',
       view: function(n, X) {
         var self = X.data$;
         return foam.u2.CheckBox.create({

@@ -25,6 +25,7 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.Address',
+    'net.nanopay.bank.BankAccount'
   ],
 
   messages: [
@@ -77,9 +78,9 @@ foam.CLASS({
       documentation: 'Account associated with PAD capture.',
       visibility: 'DISABLED',
       gridColumns: 5,
-      tableCellFormatter: function(str) {
+      tableCellFormatter: function(str, obj) {
         this.start()
-          .add('***' + str.substring(str.length - 4, str.length));
+          .add(obj.BankAccount.mask(str));
       },
       validateObj: function(accountNumber) {
         var accNumberRegex = /^[0-9]{5,12}$/;

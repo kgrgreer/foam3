@@ -239,9 +239,9 @@ foam.CLASS({
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
       },
-      tableCellFormatter: function(str) {
+      tableCellFormatter: function(str, obj) {
         if ( ! str ) return;
-        var displayAccountNumber = '***' + str.substring(str.length - 4, str.length);
+        var displayAccountNumber = obj.mask(str);
         this.start()
           .add(displayAccountNumber);
         this.tooltip = displayAccountNumber;
@@ -424,14 +424,13 @@ foam.CLASS({
               if ( accountNumber ) {
                 return this.E()
                   .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('accountNumber').label} `).end()
-                  .start('span').add(obj.obfuscate(accountNumber, 1, accountNumber.length - 4)).end();
+                  .start('span').add(obj.mask(accountNumber)).end();
               }
           }))
         .end();
       },
       javaFactory: `
-        net.nanopay.bank.BankAccount account = new net.nanopay.bank.BankAccount();
-        return account.obfuscate(getAccountNumber(), 1, getAccountNumber().length() - 4);
+        return BankAccount.mask(getAccountNumber());
       `
     },
     {
@@ -579,6 +578,12 @@ foam.CLASS({
       factory: function() {
         return this.CLIENT_ACCOUNT_INFORMATION_DEFAULT_TITLE;
       }
+    },
+    {
+      class: 'String',
+      name: 'bankRoutingCode',
+      documentation: 'Bank routing code aka. national ID used to clear funds and/or route payments domestically.',
+      visibility: 'HIDDEN'
     }
   ],
 
@@ -660,6 +665,27 @@ foam.CLASS({
           label: this.name
         }));
       }
+    }
+  ],
+
+  static: [
+    {
+      name: 'mask',
+      documentation: `
+        Use this method instead of obfusicate if specific mask format is required.
+        Currently formats str using ***### format. Update this method or 
+        use obfusicate if format changes.
+      `,
+      code: function(str) {
+        return str ? `***${str.substring(str.length - 3)}` : '';
+      },
+      type: 'String',
+      args: [
+        { name: 'str', type: 'String' }
+      ],
+      javaCode: `
+        return str == null ? "" : "***" + str.substring(str.length() - Math.min(str.length(), 3));
+      `
     }
   ],
 
@@ -786,7 +812,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        return "";
+        return getBankRoutingCode();
       `
     },
     function purgeCachedDAOs() {

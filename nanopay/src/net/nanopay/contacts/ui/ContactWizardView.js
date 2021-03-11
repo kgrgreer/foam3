@@ -146,7 +146,6 @@ foam.CLASS({
         properties: [
           net.nanopay.contacts.Contact.CREATE_BANK_ACCOUNT,
           net.nanopay.contacts.Contact.NO_CORRIDORS_AVAILABLE,
-          net.nanopay.contacts.Contact.LOADING_SPINNER,
           net.nanopay.contacts.Contact.SHOULD_INVITE
         ],
         fromClass: 'net.nanopay.contacts.Contact'
@@ -358,7 +357,7 @@ foam.CLASS({
       },
       code: async function(X) {
         if ( ! await this.addContact() ) return;
-        if ( this.data.bankAccount === 0 && ! await this.addBankAccount() ) return;
+        if ( ! await this.addBankAccount() ) return;
         X.closeDialog();
       }
     }

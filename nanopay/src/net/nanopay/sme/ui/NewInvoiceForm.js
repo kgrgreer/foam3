@@ -59,7 +59,7 @@ foam.CLASS({
     'net.nanopay.bank.GetDefaultCurrency',
     'net.nanopay.contacts.Contact',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.ui.wizard.WizardController',
+    'net.nanopay.ui.wizard.ContactWizardDetailView',
     'foam.u2.dialog.Popup',
     'net.nanopay.accounting.xero.model.XeroInvoice',
     'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
@@ -68,10 +68,12 @@ foam.CLASS({
   css: `
     ^ .invoice-block {
       display: inline-block;
+      max-width: 240px;
     }
     ^ .invoice-block-right {
       display: inline-block;
       float: right;
+      max-width: 240px;
     }
     ^ .title {
       margin-top: 15px !important;
@@ -97,7 +99,7 @@ foam.CLASS({
       outline: none;
     }
     ^ .invoice-amount-input {
-      width: calc(100% - 87px);
+      width: calc(100% - 90px);
       display: inline-block;
     }
     ^ .net-nanopay-sme-ui-CurrencyChoice {
@@ -230,6 +232,13 @@ foam.CLASS({
       color: /*%BLACK%*/ #1e1f21;
     }
     ^ .foam-u2-DateView {
+      width: 100%;
+      height: 44px;
+    }
+    ^ .foam-u2-TextField {
+      max-width: 240px;
+    }
+    ^ .input-wrapper-width {
       width: 100%;
     }
   `,
@@ -539,7 +548,7 @@ foam.CLASS({
               .start().add(this.ADD_BANK).addClass('add-banking-information')
                 .on('click', async function() {
                   self.userDAO.find(self.invoice.contactId).then((contact)=>{
-                    self.add(self.WizardController.create({
+                    self.add(self.ContactWizardDetailView.create({
                       model: 'net.nanopay.contacts.Contact',
                       data: contact,
                       controllerMode: foam.u2.ControllerMode.CREATE,
@@ -552,7 +561,7 @@ foam.CLASS({
           .end()
         .end()
         .startContext({ data: this.invoice })
-          .start().addClass('input-wrapper')
+          .start().addClass('input-wrapper').addClass('input-wrapper-width')
             .start().addClass('input-label').add(this.AMOUNT).end()
               .start()
                 .on('mouseenter', this.toggleTooltip)
@@ -617,15 +626,13 @@ foam.CLASS({
             .start().addClass('invoice-block')
               .start().addClass('input-wrapper')
                 .start().addClass('input-label').add(this.INVOICE_NUMBER).end()
-                .start()
                   .on('mouseenter', this.toggleTooltip)
                   .on('mouseleave', this.toggleTooltip)
                   .on('mousemove', this.setCoordinates)
-                  .start(this.Invoice.INVOICE_NUMBER, { mode: displayMode })
+                  .start(this.Invoice.INVOICE_NUMBER, { mode: displayMode }).addClass('input-string')
                     .enableClass('disabled', this.disableAccountingInvoiceFields$)
                     .attrs({ placeholder: this.INVOICE_NUMBER_PLACEHOLDER })
                   .end()
-                .end()
               .end()
 
               .start().addClass('input-wrapper')
@@ -645,7 +652,7 @@ foam.CLASS({
             .start().addClass('invoice-block-right')
               .start().addClass('input-wrapper')
                 .start().addClass('input-label').add(this.PO_NUMBER).end()
-                .start(this.Invoice.PURCHASE_ORDER)
+                .start(this.Invoice.PURCHASE_ORDER).addClass('input-string')
                   .attrs({ placeholder: this.PO_PLACEHOLDER })
                 .end()
               .end()
@@ -794,7 +801,7 @@ foam.CLASS({
       icon: 'images/plus-no-bg.svg',
       code: function(X, e) {
         var self = X.data;
-        X.ctrl.add(net.nanopay.ui.wizard.WizardController.create({
+        X.ctrl.add(net.nanopay.ui.wizard.ContactWizardDetailView.create({
           model: 'net.nanopay.contacts.Contact',
           data$: self.addedContact$,
           controllerMode: foam.u2.ControllerMode.CREATE,

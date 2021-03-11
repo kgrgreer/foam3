@@ -13,6 +13,9 @@ p({
   class:"foam.nanos.crunch.Capability",
   id:"abliiMenuCapability",
   permissionsGranted:[
+    "menu.read.sme.accountProfile.switch-business",
+    "menu.read.sme.accountProfile.personal-settings",
+    "menu.read.sme.accountProfile.signout",
     "menu.read.submenu.contact.invitation",
     "menu.read.submenu.contact.create",
     "menu.read.submenu.contact.search",
@@ -50,7 +53,7 @@ p({
   id:"abliiCorridorCapability",
   permissionsGranted: [
     "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15f7rbcca-ca",
-    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
+    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca"
   ]
 })
 
@@ -61,6 +64,7 @@ p({
   "version":"0",
   "enabled":true,
   "permissionsGranted":[
+    "menu.read.sme.accountProfile.business-settings",
     "menu.read.submenu.contact.search",
     "menu.read.submenu.contact.paymentcode",
     "menu.read.submenu.contact.invitation",
@@ -168,7 +172,8 @@ p({
   permissionsGranted: [
     "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d31",
     "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d32",
-    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d94"
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d94",
+    "rule.read.b3bc934e-39d3-4a50-afdf-1b631000eab3"
   ]
 })
 

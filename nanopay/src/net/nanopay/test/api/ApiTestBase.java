@@ -96,8 +96,10 @@ public class ApiTestBase extends Test {
     {
       for (String s : entry.getValue())
       {
-        if (printHeaders)
+        if (printHeaders) {
           print("Key: " + entry.getKey() + " -> " + s);
+          System.out.println("key: "+entry.getKey()+" -> "+s);
+        }
 
         // Take the latest session cookie
         if ("Set-Cookie".equalsIgnoreCase(entry.getKey()) &&

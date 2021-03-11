@@ -23,11 +23,12 @@ foam.CLASS({
   documentation: 'Two-Factor sign in view',
 
   imports: [
+    'auth',
     'loginSuccess',
-    'notify',
-    'twofactor',
     'menuDAO',
-    'theme'
+    'notify',
+    'theme',
+    'twofactor'
   ],
 
   requires: [
@@ -75,11 +76,11 @@ foam.CLASS({
       width: 80%;
       margin-top: 20px;
     }
-    ^ .net-nanopay-sme-ui-AbliiEmptyTopNavView {
+    ^ .net-nanopay-sme-ui-EmptyTopNavView {
       border: 0;
       height: 36px
     }
-    ^ .net-nanopay-sme-ui-AbliiEmptyTopNavView img{
+    ^ .net-nanopay-sme-ui-EmptyTopNavView img{
       width: auto;
       height: 20px;
       padding-left: 5px;
@@ -95,7 +96,7 @@ foam.CLASS({
     }
     ^ .sme-image {
       width: 30vw;
-      min-width: 560px; 
+      min-width: 560px;
       margin-top: 19vh;
       margin-left: 12vw;
     }
@@ -124,7 +125,7 @@ foam.CLASS({
     }
     ^ .sub-note {
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 12px 
+      font-size: 12px
     }
   `,
 
@@ -166,7 +167,7 @@ foam.CLASS({
         return supportConfig ? supportConfig.supportPhone : '';
       }
     },
-    
+
   ],
 
   messages: [
@@ -187,6 +188,7 @@ foam.CLASS({
 
     async function initE() {
       this.SUPER();
+      var self = this;
       var split = foam.u2.borders.SplitScreenBorder.create();
       var left = this.Element.create()
         .start('img')
@@ -196,7 +198,7 @@ foam.CLASS({
 
       var right = this.Element.create()
       .addClass(this.myClass())
-      .tag({ class: 'net.nanopay.sme.ui.AbliiEmptyTopNavView' })
+      .tag({ class: 'net.nanopay.sme.ui.EmptyTopNavView' })
       .start().addClass('tf-container')
         .start('h2').addClass('tfa-title').add(this.TWO_FACTOR_TITLE).end()
         .start().addClass(this.myClass('TwoFactAuthNote'))
@@ -250,7 +252,9 @@ foam.CLASS({
               .end()
               .add(this.GO_BACK + this.appName)
               .on('click', () => {
-                window.location = this.ABLII_ADDRESS;
+                 this.auth.logout().then(function() {
+                    window.location = window.location.href;
+                 });
               })
             .end()
           .end()

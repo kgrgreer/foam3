@@ -7,7 +7,7 @@ p({
   """
     dao = new foam.dao.FilteredDAO.Builder(x)
       .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.bank.BankAccount.class))
-      .setDelegate(x.get("accountDAO"))
+      .setDelegate(x.get("tableViewAccountDAO"))
       .setOf(net.nanopay.bank.BankAccount.getOwnClassInfo())
       .setPrimaryKey(net.nanopay.bank.BankAccount.ID)
       .build();

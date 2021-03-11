@@ -203,4 +203,4 @@ p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"CCDNDR","description"
 p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"CCTFDR","description":"Send money to own account, family or friend","send":false, "country":"CN"})
 p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"CSTRDR","description":"Send money to pay a utility bill","send":false, "country":"CN"})
 p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"CGODDR","description":"Send money to pay a vendor","send":false, "country":"CN"})
-p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"COCADR","description":"OTHER","send":false, "country":"CN"})
+p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"COCADR","description":"Other","send":false, "country":"CN", "order":100})
