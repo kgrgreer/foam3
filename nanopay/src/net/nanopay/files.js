@@ -414,7 +414,6 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXBankOnboardingRule' },
   { name: 'net/nanopay/fx/afex/AFEXBankUploadingRule' },
   { name: 'net/nanopay/fx/afex/AFEXBankUploadingRule2' },
-  { name: 'net/nanopay/fx/afex/AFEXBusinessOnboardingRule' },
   { name: 'net/nanopay/fx/afex/AFEXCreateTradePredicate' },
   { name: 'net/nanopay/fx/afex/AFEXCreateTradeRule' },
   { name: 'net/nanopay/fx/afex/AFEXSubmitPaymentPredicate' },
