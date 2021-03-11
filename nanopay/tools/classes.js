@@ -826,7 +826,6 @@ var classes = [
   'net.nanopay.tx.alterna.test.EFTTest',
   'net.nanopay.invoice.model.InvoiceTest',
   'net.nanopay.auth.BusinessAgentAuthService',
-  'net.nanopay.auth.AgentJunctionStatus',
   'net.nanopay.auth.email.DoNotSolicit',
   'net.nanopay.auth.email.PreventDuplicateEmailDAO',
   'net.nanopay.auth.email.EmailWhitelistEntry',
