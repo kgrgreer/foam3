@@ -58,6 +58,14 @@ foam.CLASS({
 
         Capability capability = (Capability) ucj.findTargetId(x);
         User user = (User) ucj.saveDataToDAO(x, capability, false);
+        foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");     
+        logger.error(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - subject", x.get("subject"));
+        logger.error(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - user", ((foam.nanos.auth.Subject) x.get("subject")).getUser());
+        logger.error(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - realuser", ((foam.nanos.auth.Subject) x.get("subject")).getRealUser());
+        logger.error(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - capability", capability);
+        logger.error(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - ucj", ucj);
+        logger.error(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - data", ucj.getData());
+        logger.error(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - savedObj", user);
 
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {

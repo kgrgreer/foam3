@@ -50,6 +50,14 @@ foam.CLASS({
             Capability capability = (Capability) ucj.findTargetId(x);
             User user = (User) ucj.saveDataToDAO(x, capability, false);
 
+            foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");            
+            logger.error(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", true). - subject", x.get("subject"));
+            logger.error(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", true). - user", ((foam.nanos.auth.Subject) x.get("subject")).getUser());
+            logger.error(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", true). - realuser", ((foam.nanos.auth.Subject) x.get("subject")).getRealUser());
+            logger.error(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", true). - capability", capability);
+            logger.error(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", true). - ucj", ucj);
+            logger.error(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", true). - data", ucj.getData());
+            logger.error(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", true). - savedObj", user);
             String group = user.getSpid() + "-fraud-ops";
 
             requestApproval(x,
