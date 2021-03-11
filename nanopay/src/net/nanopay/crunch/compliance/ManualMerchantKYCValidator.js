@@ -81,6 +81,7 @@ foam.CLASS({
           .setDaoKey("userCapabilityJunctionDAO")
           .setRefObjId(business.getId())
           .setRefDaoKey("businessDAO")
+          .setCreatedFor(business.getId())
           .setCauseId(identityMindResponse != null ? identityMindResponse.getId() : 0L)
           .setCauseDaoKey("identityMindResponseDAO")
           .setClassification(getClassification())

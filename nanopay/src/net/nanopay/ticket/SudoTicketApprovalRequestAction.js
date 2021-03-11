@@ -85,6 +85,7 @@ foam.CLASS({
                 .setDaoKey(getDaoKey())
                 .setClassification(getClassification())
                 .setDescription(owner.getLegalName()+" request access to "+as.getLegalName())
+                .setCreatedFor(owner.getId())
                 .build();
               for ( Long approverId : myRule.getApprovers() ) {
                 ApprovalRequest request = (ApprovalRequest) approval.fclone();

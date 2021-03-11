@@ -134,7 +134,7 @@ p({
       "defaultColumns": [
         "classification",
         "operation",
-        "createdBy",
+        "createdFor",
         "approver.legalName",
         "status",
         "lastModified"
