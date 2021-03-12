@@ -166,7 +166,7 @@ public class RbcGenerateFileCron implements ContextAgent {
     long cumulativeAmount = 0;
     for ( int i = 0; i < transactions.size(); i++ ) {
       Transaction txn = (Transaction) transactions.get(i);
-      cumulativeAmount += txn.getAmount();
+      cumulativeAmount += txn.getTotal(x, txn.getSourceAccount());
       if ( cumulativeAmount >= eftLimit ) {
         int leftoverTxns = transactions.size() - i;
         logger.warning("RBC EFT limit of " + eftLimit + " was reached with " + leftoverTxns + " transactions remaining for next EFT file.");
