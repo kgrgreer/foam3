@@ -1,15 +1,24 @@
 package net.nanopay.fx.afex;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.mlang.predicate.Eq;
+import foam.mlang.predicate.Has;
 import net.nanopay.tx.UnsupportedDateException;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
@@ -42,11 +51,12 @@ import foam.util.StringUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-
+import java.net.http.HttpRequest;
 public class AFEXService extends ContextAwareSupport implements AFEX {
 
   AFEXCredentials credentials;
   private CloseableHttpClient httpClient;
+  private HttpClient javaHttpClient;
   private JSONParser jsonParser;
   private Logger logger;
   private String valueDate;
@@ -94,44 +104,50 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     return httpClient;
   }
 
+  protected HttpClient getJavaHttpClient() {
+    if ( javaHttpClient == null ) {
+      javaHttpClient = HttpClient.newBuilder()
+        .version(HttpClient.Version.HTTP_2)
+        .connectTimeout(Duration.ofSeconds(100))
+        .build();
+    }
+    return javaHttpClient;
+  }
+
   @Override
   public Token getToken(String spid) {
     try {
 
       credentials = getCredentials(spid);
-      HttpPost httpPost = new HttpPost(credentials.getPartnerApi() + "token");
 
-      httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+      Map<String, String> map = new HashMap<>();
+      map.put("Grant_Type", "password");
+      map.put("Username", credentials.getApiKey());
+      map.put("Password", credentials.getApiPassword());
 
-      List<NameValuePair> nvps = new ArrayList<>();
-      nvps.add(new BasicNameValuePair("Grant_Type", "password"));
-      nvps.add(new BasicNameValuePair("Username", credentials.getApiKey()));
-      nvps.add(new BasicNameValuePair("Password", credentials.getApiPassword()));
+      HttpRequest request = HttpRequest.newBuilder()
+        .uri(new URI(credentials.getPartnerApi() + "token"))
+        .POST(ofFormData(map))
+        .header("Content-Type", "application/x-www-form-urlencoded")
+        .build();
 
-      httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
-
-      logMessage(credentials.getApiKey(), "getToken", parseHttpPost(httpPost), false);
+      logMessage(credentials.getApiKey(), "getToken", request.bodyPublisher().toString(), false);
       omLogger.log("AFEX getToken starting");
 
-      CloseableHttpResponse httpResponse = getHttpClient().execute(httpPost);
+      HttpResponse<String> response = getJavaHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 
       omLogger.log("AFEX getToken complete");
 
-      try {
-        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String errorMsg = parseHttpResponse("getToken", httpResponse);
+        if ( response.statusCode() / 100 != 2 ) {
+          String errorMsg = response.statusCode() + " " + response.body();
           logger.error(errorMsg);
           throw new RuntimeException(errorMsg);
         }
 
-        String response = new BasicResponseHandler().handleResponse(httpResponse);
-        logMessage(credentials.getApiKey(), "getToken", response, true);
-        return (Token) jsonParser.parseString(response, Token.class);
-      } finally {
-        httpResponse.close();
-      }
+        logMessage(credentials.getApiKey(), "getToken", response.body(), true);
+        return (Token) jsonParser.parseString(response.body(), Token.class);
 
-    } catch (IOException e) {
+    } catch (IOException | URISyntaxException | InterruptedException e) {
       omLogger.log("AFEX getToken timeout");
       ((DAO) getX().get("alarmDAO")).put(new Alarm.Builder(getX()).setName("AFEX getToken").setReason(AlarmReason.TIMEOUT).build());
       logger.error(e);
@@ -140,59 +156,57 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     return null;
   }
 
-  @Override
+  public static HttpRequest.BodyPublisher ofFormData(Map<String, String> data) {
+    var builder = new StringBuilder();
+    for (Map.Entry<String, String> entry : data.entrySet()) {
+      if (builder.length() > 0) {
+        builder.append("&");
+      }
+      builder.append(URLEncoder.encode(entry.getKey().toString(), StandardCharsets.UTF_8));
+      builder.append("=");
+      builder.append(URLEncoder.encode(entry.getValue().toString(), StandardCharsets.UTF_8));
+    }
+    return HttpRequest.BodyPublishers.ofString(builder.toString());
+  }
+
   public OnboardAFEXClientResponse onboardAFEXClient(OnboardAFEXClientRequest request, String spid, AccountEntityType entityType) {
     String requestLabel = "onboard " + entityType.getLabel();
     try {
       credentials = getCredentials(spid);
-      HttpPost httpPost = new HttpPost(credentials.getPartnerApi() + "api/v1/AccountCreate");
-
-      httpPost.addHeader("API-Key", credentials.getApiKey());
-      httpPost.addHeader("Content-Type", "application/json");
-      httpPost.addHeader("Authorization", "bearer " + getToken(spid).getAccess_token());
-
-      StringEntity params = null;
-
+      String requestJson ="";
       try(Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false)) {
-    	  String requestJson = StringUtil.normalize(jsonOutputter.stringify(request));
-          params = new StringEntity(requestJson);
+        requestJson = StringUtil.normalize(jsonOutputter.stringify(request));
       }
 
-
-      httpPost.setEntity(params);
-
-      logMessage(credentials.getApiKey(), requestLabel, parseHttpPost(httpPost), false);
+      HttpRequest httpRequest = HttpRequest.newBuilder()
+        .uri(new URI(credentials.getPartnerApi() + "api/v1/AccountCreate"))
+        .POST(HttpRequest.BodyPublishers.ofString(requestJson.toString()))
+        .header("Content-Type", "application/json")
+        .headers("Authorization", "bearer " + getToken(spid).getAccess_token())
+        .header("API-Key", credentials.getApiKey())
+        .build();
+      logMessage(credentials.getApiKey(), requestLabel, requestJson, false);
 
       omLogger.log("AFEX " + requestLabel + " starting");
 
-      logger.debug(params);
-
-      CloseableHttpResponse httpResponse = getHttpClient().execute(httpPost);
+      HttpResponse<String> response = getJavaHttpClient().send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
       omLogger.log("AFEX " + requestLabel + " complete");
-
-
-      try {
-        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          if ( httpResponse.getStatusLine().getStatusCode() / 100 == 5 ) {
-            logger.debug("AFEX " + requestLabel + " failed with 500, retrying.");
-            httpResponse = getHttpClient().execute(httpPost);
-          }
-          if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-            String errorMsg = parseHttpResponse(requestLabel, httpResponse);
-            logger.error(errorMsg);
-            throw new RuntimeException(errorMsg);
-          }
-        }
-
-        String response = new BasicResponseHandler().handleResponse(httpResponse);
-        logMessage(credentials.getApiKey(), requestLabel, response, true);
-        return (OnboardAFEXClientResponse) jsonParser.parseString(response, OnboardAFEXClientResponse.class);
-      } finally {
-        httpResponse.close();
+      if ( response.statusCode() / 100 == 5 ) {
+        logger.debug("AFEX " + requestLabel + " failed with 500, retrying.");
+        response = getJavaHttpClient().send(httpRequest, HttpResponse.BodyHandlers.ofString());
       }
 
-    } catch (IOException e) {
+      if ( response.statusCode() / 100 != 2 ) {
+        String errorMsg = response.statusCode() + " " + response.body();
+        logger.error(errorMsg);
+        throw new RuntimeException(errorMsg);
+      }
+
+      logMessage(credentials.getApiKey(), requestLabel, response.body(), true);
+      return (OnboardAFEXClientResponse) jsonParser.parseString(response.body(), OnboardAFEXClientResponse.class);
+
+    } catch (IOException | InterruptedException | URISyntaxException e) {
       omLogger.log("AFEX " + requestLabel + " timeout");
       logger.error(e);
     }

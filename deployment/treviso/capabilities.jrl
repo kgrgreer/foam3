@@ -14,7 +14,7 @@ p({
   enabled: true,
   permissionsGranted: [
     "menu.read.sme.accountProfile.personal-settings",
-    "menu.read.sme.accountProfile.signout",
+    "menu.read.sme.accountProfile.signout"
   ]
 })
 p({

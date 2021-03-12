@@ -29,6 +29,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.util.SafetyUtil',
+    'foam.nanos.auth.User',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.tx.model.Transaction',
   ],
@@ -42,13 +43,15 @@ foam.CLASS({
         while ( ! SafetyUtil.isEmpty(headTx.getParent()) ) {
           headTx = headTx.findParent(x);
         }
-        String spid = ct.findSourceAccount(x).findOwner(x).getSpid();
+        User owner = ct.findSourceAccount(x).findOwner(x);
+        String spid = owner.getSpid();
         String group = spid + "-fraud-ops";
         ComplianceApprovalRequest req = new ComplianceApprovalRequest.Builder(x)
           .setDaoKey("transactionDAO")
           .setServerDaoKey("localTransactionDAO")
           .setObjId(ct.getId())
           .setGroup(group)
+          .setCreatedFor(owner.getId())
           .setDescription(headTx.getSummary()+"  Summary Transaction Id: "+headTx.getId())
           .setClassification("Compliance Transaction")
           .build();

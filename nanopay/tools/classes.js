@@ -295,7 +295,6 @@ var classes = [
   'net.nanopay.fx.afex.AFEXBankOnboardingRule',
   'net.nanopay.fx.afex.AFEXBankUploadingRule',
   'net.nanopay.fx.afex.AFEXBankUploadingRule2',
-  'net.nanopay.fx.afex.AFEXBusinessOnboardingRule',
   'net.nanopay.fx.afex.AFEXCreateTradePredicate',
   'net.nanopay.fx.afex.AFEXCreateTradeRule',
   'net.nanopay.fx.afex.AFEXSubmitPaymentPredicate',
@@ -826,7 +825,6 @@ var classes = [
   'net.nanopay.tx.alterna.test.EFTTest',
   'net.nanopay.invoice.model.InvoiceTest',
   'net.nanopay.auth.BusinessAgentAuthService',
-  'net.nanopay.auth.AgentJunctionStatus',
   'net.nanopay.auth.email.DoNotSolicit',
   'net.nanopay.auth.email.PreventDuplicateEmailDAO',
   'net.nanopay.auth.email.EmailWhitelistEntry',
@@ -1595,6 +1593,7 @@ var classes = [
   'net.nanopay.crunch.compliance.SendExpiryNotification',
   'net.nanopay.tx.ruler.MicroDepositSentNotification',
   'net.nanopay.sme.cron.OnboardingReminderNotification',
+  'net.nanopay.sme.ruler.BusinessCompliancePassedEmailNotification',
 ];
 
 var abstractClasses = [

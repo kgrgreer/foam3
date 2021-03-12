@@ -140,33 +140,6 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d13","name":"Onboard Business to AFEX",
-  "documentation":"Rule to onboard business to AFEX if it has passed comliance and has a verified bank account.",
-  "priority":100,
-  "ruleGroup":"AFEXOnboarding",
-  "daoKey":"localUserDAO",
-  "operation":3,
-  "after":true,
-  "predicate": {
-    "class": "foam.mlang.predicate.And",
-    "args": [
-      {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessCompliancePassed"
-      },
-      {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessHasVerifiedBankAccount"
-      }
-    ]
-  },
-  "asyncAction":{
-    "class":"net.nanopay.fx.afex.AFEXBusinessOnboardingRule"
-  },
-  "enabled":false,
-  "saveHistory":true,
-  "lifecycleState":1
-})
-p({
-  "class":"foam.nanos.ruler.Rule",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d14","name":"Upload Business bank accounts to AFEX",
   "documentation":"Rule to upload business bank account information to AFEX",
   "priority":100,

@@ -86,6 +86,7 @@ foam.CLASS({
                     .setMatches(response != null ? response.getResponseBody().getMatches() : null)
                     .setComments("Further investigation needed for owner: " + index)
                     .setGroup(group)
+                    .setCreatedFor(user.getId())
                     .build());
               }
             }, "Beneficial Owner Sanction Validator");

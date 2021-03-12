@@ -69,6 +69,7 @@ foam.CLASS({
                 .setServerDaoKey("localTransactionDAO")
                 .setObjId(tx.getId())
                 .setGroup(group)
+                .setCreatedFor(payer.getId())
                 .setDescription(description.toString())
                 .setClassification("Payee/Payer Dow Jones Transaction")
                 .build();
