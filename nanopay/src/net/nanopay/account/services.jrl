@@ -103,6 +103,30 @@ p({
 })
 
 p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"creditCodeDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.tx.creditengine.AbstractCreditCodeAccount.getOwnClassInfo())
+      .setPm(true)
+      .setAuthorize(true)
+      .setInnerDAO((x.get("localAccountDAO")).where(foam.mlang.MLang.INSTANCE_OF(net.nanopay.tx.creditengine.AbstractCreditCodeAccount.class)))
+      .setEnableInterfaceDecorators(false)
+      .build();
+  """,
+  "client":
+  """
+  {
+    "of":"net.nanopay.tx.creditengine.AbstractCreditCodeAccount"
+  }
+  """
+
+})
+
+p({
   "class": "foam.nanos.boot.NSpec",
   "name": "tableViewAccountDAO",
   "lazy": false,
