@@ -171,6 +171,9 @@ foam.CLASS({
           this.setWithdrawAmount(child.getTotal(x, child.getDestinationAccount()));
         }
       }
+      if ( t == null ) {
+        t = this;
+      }
       ChainSummary cs = new ChainSummary();
       if (t.getStatus() != TransactionStatus.COMPLETED) {
         cs.setErrorCode(t.calculateErrorCode());
