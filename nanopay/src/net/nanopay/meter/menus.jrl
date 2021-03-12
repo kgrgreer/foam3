@@ -83,7 +83,7 @@ p({
       "class":"foam.nanos.menu.DAOMenu2",
       "config":{
          "class":"foam.comics.v2.DAOControllerConfig",
-         "daoKey":"errorCodeDAO",
+         "daoKey":"errorCodeDAO"
       }
    },
    "parent":"operation"
@@ -96,7 +96,7 @@ p({
       "class":"foam.nanos.menu.DAOMenu2",
       "config":{
          "class":"foam.comics.v2.DAOControllerConfig",
-         "daoKey":"errorFeeDAO",
+         "daoKey":"errorFeeDAO"
       }
    },
    "parent":"operation"
@@ -238,7 +238,7 @@ p({
           "modelName": "report"
         }
       },
-      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":  "report"

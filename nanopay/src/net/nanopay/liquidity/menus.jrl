@@ -54,7 +54,7 @@ p({
               "class": "foam.comics.v2.BasicEnabledActionsAuth",
               "modelName": "account"
             }
-          },
+          }
         }
     },
   "registrations":[
@@ -118,7 +118,7 @@ p({
           "class": "foam.comics.v2.BasicEnabledActionsAuth",
           "modelName": "liquiditysettings"
         }
-      },
+      }
     }
   },
   "parent": "liquid"
@@ -171,7 +171,7 @@ p({
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "accountTemplateDAO",
       "browseTitle": "Account Groups for Rules",
-      "createTitle": "Create a New Account Group for Rules",
+      "createTitle": "Create a New Account Group for Rules"
     }
   },
   "parent": "rules"
@@ -205,7 +205,7 @@ p({
           "class": "foam.comics.v2.BasicEnabledActionsAuth",
           "modelName": "rule"
         }
-      },
+      }
     }
   },
   "parent": "rules"
