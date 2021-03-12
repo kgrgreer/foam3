@@ -91,7 +91,7 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        obj = super.put_(x, obj);
+        FObject obj = (FObject) super.put_(x, obj);
         if (obj instanceof SummarizingTransaction) {
           ((SummarizingTransaction) obj.fclone()).calculateTransients(getX());
         }
