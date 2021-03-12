@@ -543,7 +543,7 @@ p({
       }
     ]
   },
-  "action":{
+  "asyncAction":{
     "class":"net.nanopay.crunch.compliance.UserComplianceApproval"
   },
   "enabled":true,
@@ -693,7 +693,7 @@ p({
       }
     ]
   },
-  "action":{
+  "asyncAction":{
     "class":"net.nanopay.crunch.compliance.SetComplianceOnUser"
   },
   "enabled":true,
@@ -717,7 +717,7 @@ p({
     "isRecurring":false,
     "status": 1
   },
-  "action":{
+  "asyncAction":{
     "class":"net.nanopay.crunch.compliance.SetComplianceOnBusiness"
   },
   "enabled":true,

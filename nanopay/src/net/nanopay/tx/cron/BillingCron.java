@@ -22,8 +22,6 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.alarming.Alarm;
-import foam.nanos.auth.Subject;
-import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,7 +43,7 @@ public class BillingCron implements ContextAgent {
     // query all bills from this month
     ArraySink bills = (ArraySink) ((DAO) x.get("billDAO")).where(
         AND(
-          LT(Bill.CHARGE_DATE, new Date()),
+          LTE(Bill.CHARGE_DATE, new Date()),
           EQ(Bill.STATUS, TransactionStatus.PENDING)
         )
     ).select(new ArraySink());

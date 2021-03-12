@@ -17,8 +17,12 @@
 
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
-  name: 'AbliiEmptyTopNavView',
+  name: 'EmptyTopNavView',
   extends: 'foam.u2.View',
+
+  imports: [
+    'theme'
+  ],
 
   css: `
   ^ {
@@ -36,9 +40,11 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      let logo = this.theme.largeLogo ? this.theme.largeLogo : this.theme.logo;
+
       this.addClass(this.myClass())
         .start('img')
-          .attr('src', 'images/ablii-wordmark.svg')
+          .attr('src', logo)
         .end()
       .end();
     }

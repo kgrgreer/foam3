@@ -806,7 +806,9 @@ foam.CLASS({
         // Always disabled the paid button
         return false;
       },
-      code: function() {}
+      code: function() {
+        // Do nothing since it always disabled
+      }
     },
     {
       name: 'approve',
