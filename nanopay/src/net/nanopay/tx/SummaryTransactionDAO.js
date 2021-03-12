@@ -53,7 +53,7 @@ foam.CLASS({
             public void put(Object obj, foam.core.Detachable sub)
             {
               if (obj instanceof SummarizingTransaction) {
-                obj = doChainCalculation((Transaction) obj);
+                ((SummarizingTransaction) ((FObject) obj).fclone()).calculateTransients(getX());
               }
               getDelegate().put(obj, sub);
             }
@@ -75,7 +75,7 @@ foam.CLASS({
       javaCode: `
         FObject obj = getDelegate().find_(x, id);
         if( obj != null && obj instanceof SummarizingTransaction ) {
-          obj = doChainCalculation((Transaction) obj);
+          ((SummarizingTransaction) obj.fclone()).calculateTransients(getX());
         }
         return obj;
       `
@@ -93,24 +93,9 @@ foam.CLASS({
       javaCode: `
         obj = super.put_(x, obj);
         if (obj instanceof SummarizingTransaction) {
-          Transaction txn = (Transaction) obj.fclone();
-          txn.getState(x);
-          return txn;
+          ((SummarizingTransaction) obj.fclone()).calculateTransients(getX());
         }
         return obj;
-      `
-    },
-    {
-      name: 'doChainCalculation',
-      visibility: 'protected',
-      type: 'FObject',
-      args: [
-        { type: 'net.nanopay.tx.model.Transaction', name: 't' }
-      ],
-      javaCode: `
-          Transaction tx = (Transaction) t.fclone();
-          tx.getState(getX());
-          return tx;
       `
     }
   ]
