@@ -53,7 +53,8 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
     'org.apache.commons.lang.ArrayUtils',
-    'net.nanopay.tx.TransactionException'
+    'net.nanopay.tx.TransactionException',
+    'net.nanopay.tx.PropertyCompare'
   ],
 
   tableColumns: [

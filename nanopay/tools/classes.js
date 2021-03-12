@@ -581,6 +581,7 @@ var classes = [
   'net.nanopay.tx.SummarizingTransaction',
   'net.nanopay.tx.ValueMovementTransaction',
   'net.nanopay.tx.SummaryTransaction',
+  'net.nanopay.tx.PropertyCompare',
   'net.nanopay.tx.LiquidSummaryTransaction',
   'net.nanopay.tx.LiquidCashTransactionType',
   'net.nanopay.tx.BulkTransaction',
