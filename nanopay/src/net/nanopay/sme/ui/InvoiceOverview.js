@@ -632,6 +632,7 @@ foam.CLASS({
                     .start().add('--').hide(this.isProcessOrComplete$).end()
                   .end()
                 .end()
+                // NOTE: Temporarily hiding til we refactor invoice view
 //                .start().addClass('invoice-row')
 //                  .start().show(this.isProcessOrComplete$)
 //                    .addClass('invoice-text')
