@@ -141,10 +141,10 @@ foam.CLASS({
           if ( current.getStatus() != TransactionStatus.COMPLETED ) {
             t = current; // get statetxn
           }
-          if ( depositAmountIsSet_ && (child instanceof ValueMovementTransaction) && (SafetyUtil.equals(this.getSourceAccount(), child.getSourceAccount())) ){
+          if ( ( ! depositAmountIsSet_) && (child instanceof ValueMovementTransaction) && (SafetyUtil.equals(this.getSourceAccount(), child.getSourceAccount())) ){
             this.setDepositAmount(child.getTotal(x, child.getSourceAccount()));
           }
-          if ( withdrawAmountIsSet_ && (child instanceof ValueMovementTransaction) && (SafetyUtil.equals(this.getDestinationAccount(), child.getDestinationAccount())) ){
+          if ( ( ! withdrawAmountIsSet_) && (child instanceof ValueMovementTransaction) && (SafetyUtil.equals(this.getDestinationAccount(), child.getDestinationAccount())) ){
             this.setWithdrawAmount(child.getTotal(x, child.getDestinationAccount()));
           }
         }
