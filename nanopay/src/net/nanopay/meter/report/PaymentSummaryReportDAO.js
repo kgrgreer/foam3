@@ -281,7 +281,7 @@ foam.CLASS({
 
         transactions.where(EQ(Transaction.PARENT, "")).select(new AbstractSink() {
           public void put(Object obj, Detachable sub) {
-            Transaction transaction = (Transaction) obj;
+            Transaction transaction = (Transaction) ((foam.core.FObject)obj).fclone();
             if ((transaction.getState(x) == TransactionStatus.PENDING) ||
               (transaction.getState(x) == TransactionStatus.SENT)) {
               // In Process (Any payment that has started processing but not yet completed)

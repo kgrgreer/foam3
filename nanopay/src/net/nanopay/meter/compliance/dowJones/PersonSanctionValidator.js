@@ -78,6 +78,7 @@ foam.CLASS({
                     .setClassification("User Dow Jones R&C")
                     .setMatches(response.getResponseBody().getMatches())
                     .setGroup(group)
+                    .setCreatedFor(user.getId())
                     .build());
               }
             }, "Person Sanction Validator");

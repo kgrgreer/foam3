@@ -219,7 +219,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/wizardModal/example/ExampleWizardModal', flags: ['web'] },
   { name: 'net/nanopay/ui/wizardModal/example/ExampleWizardModalSubView1', flags: ['web'] },
   { name: 'net/nanopay/ui/wizardModal/example/ExampleWizardModalSubView2', flags: ['web'] },
-  { name: 'net/nanopay/auth/AgentJunctionStatus' },
   { name: 'net/nanopay/auth/NanopayUserAndGroupAuthService' },
   { name: 'net/nanopay/auth/OneTimeAuthenticationTokenService' },
   { name: 'net/nanopay/auth/email/EmailTokenService' },
@@ -416,7 +415,6 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXBankOnboardingRule' },
   { name: 'net/nanopay/fx/afex/AFEXBankUploadingRule' },
   { name: 'net/nanopay/fx/afex/AFEXBankUploadingRule2' },
-  { name: 'net/nanopay/fx/afex/AFEXBusinessOnboardingRule' },
   { name: 'net/nanopay/fx/afex/AFEXCreateTradePredicate' },
   { name: 'net/nanopay/fx/afex/AFEXCreateTradeRule' },
   { name: 'net/nanopay/fx/afex/AFEXSubmitPaymentPredicate' },
@@ -896,6 +894,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/test/RollingJournalTest' },
 
   { name: 'net/nanopay/test/AbliiOnboardingSupport' },
+  { name: 'net/nanopay/test/AbliiOnboardingSupport_v2' },
 
   // password entropy
   { name: 'net/nanopay/auth/passwordutil/ClientPasswordEntropy' },
@@ -1189,7 +1188,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/PersonalSettingsView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AddUserToBusinessModal', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/CreateBusinessModal', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/AbliiEmptyTopNavView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/EmptyTopNavView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/TwoFactorAuthView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/TwoFactorSignInView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/Link', flags: ['web'] },
@@ -1874,6 +1873,7 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/onboarding/BRBusinessOwnershipData' },
   { name: 'net/nanopay/partner/treviso/onboarding/BRBankAccountData' },
   { name: 'net/nanopay/partner/treviso/test/TrevisoOnboardingSupport' },
+  { name: 'net/nanopay/partner/treviso/test/TrevisoOnboardingSupport_v2' },
   { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllRule' },
   { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllNotification' },
   { name: 'net/nanopay/partner/treviso/invoice/TrevisoNotification' },
@@ -1909,4 +1909,5 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/MicroDepositSentNotification'},
   { name: 'net/nanopay/sme/cron/OnboardingReminderNotification'},
   { name: 'net/nanopay/notification/PermissionedNotificationSettingRule'},
+  { name: 'net/nanopay/sme/ruler/BusinessCompliancePassedEmailNotification'},
 ]);

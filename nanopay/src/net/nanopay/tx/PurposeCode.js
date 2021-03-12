@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'PurposeCode',
-  documentation: 'Purpose code for Indian payments.',
+  documentation: 'Purpose code for payments',
 
   ids: ['code'],
 
@@ -52,5 +52,10 @@ foam.CLASS({
       of: 'foam.nanos.auth.Country',
       name: 'country'
     },
+    {
+      class: 'Int',
+      name: 'order',
+      documentation: 'Used to order the list.'
+    }
   ]
 });

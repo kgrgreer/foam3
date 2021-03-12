@@ -54,6 +54,7 @@ foam.CLASS({
                     .setServerDaoKey("localUserDAO")
                     .setCauseId(response.getId())
                     .setClassification("User SecureFact SIDni")
+                    .setCreatedFor(user.getId())
                     .setCauseDaoKey("securefactSIDniDAO")
                     .build()
                 );

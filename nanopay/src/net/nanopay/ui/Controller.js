@@ -52,7 +52,7 @@ foam.CLASS({
     'net.nanopay.accounting.AccountingIntegrationUtil',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.auth.AgentJunctionStatus',
+    'foam.nanos.auth.AgentJunctionStatus',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.BRBankAccount',
     'net.nanopay.bank.CABankAccount',
@@ -890,6 +890,7 @@ foam.CLASS({
               }
               if ( sink.array.length === 0 ) {
                 // if sink.array.length === 0, push to default page
+                this.initLayout.resolve();
                 await this.pushDefaultMenu();
                 return;
               }
