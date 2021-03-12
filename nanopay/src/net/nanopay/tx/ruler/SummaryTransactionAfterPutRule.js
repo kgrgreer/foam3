@@ -50,7 +50,7 @@ foam.CLASS({
                (oldTxn == null || oldTxn.getStatus() != txn.getStatus()))
             {
               // Update the transient fields of the summary transaction
-              root.calculateTransients(x);
+              ((Transaction) root.fclone()).calculateTransients(x);
 
               // Put the summary transaction
               ((DAO) x.get("summaryTransactionDAO")).put(root);
