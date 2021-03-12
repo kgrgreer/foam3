@@ -53,7 +53,7 @@ foam.CLASS({
             public void put(Object obj, foam.core.Detachable sub)
             {
               if (obj instanceof SummarizingTransaction) {
-                ((SummarizingTransaction) obj.fclone()).calculateTransients(getX());
+                ((SummarizingTransaction) ((FObject) obj).fclone()).calculateTransients(getX());
               }
               getDelegate().put(obj, sub);
             }
@@ -91,7 +91,7 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        FObject obj = (FObject) super.put_(x, obj);
+        obj = super.put_(x, obj);
         if (obj instanceof SummarizingTransaction) {
           ((SummarizingTransaction) obj.fclone()).calculateTransients(getX());
         }
