@@ -283,8 +283,8 @@ foam.CLASS({
           public void put(Object obj, Detachable sub) {
             Transaction transaction = (Transaction) obj;
             TransactionStatus state = transaction.getState(x);
-            if (state == TransactionStatus.PENDING) ||
-              (state == TransactionStatus.SENT)) {
+            if ( (state == TransactionStatus.PENDING) ||
+              (state == TransactionStatus.SENT) ) {
               // In Process (Any payment that has started processing but not yet completed)
               txsInProcess.put(transaction);
             } else if (state == TransactionStatus.COMPLETED) {
