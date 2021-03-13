@@ -84,6 +84,7 @@ foam.CLASS({
                     .setCauseId(getResponse().getId())
                     .setClassification(getClassification())
                     .setCauseDaoKey("securefactSIDniDAO")
+                    .setCreatedFor(user.getId())
                     .setGroup(group)
                     .build()
                 );
@@ -102,6 +103,7 @@ foam.CLASS({
             .setCauseId(response == null ? 0L : getResponse().getId())
             .setClassification(getClassification())
             .setCauseDaoKey("securefactSIDniDAO")
+            .setCreatedFor(user.getId())
             .setGroup(group)
             .build());
           ruler.putResult(ComplianceValidationStatus.PENDING);

@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
+    'foam.nanos.auth.User',
     'foam.nanos.approval.ApprovalRequest',
     'foam.nanos.approval.ApprovalStatus',
   ],
@@ -41,7 +42,8 @@ foam.CLASS({
           public void execute(X x) {
             AFEXUser afexUser = (AFEXUser) obj;
             DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
-            String spid = afexUser.findUser(x).getSpid();
+            User user = afexUser.findUser(x);
+            String spid = user.getSpid();
             String group = spid + "-payment-ops";
             approvalRequestDAO.put_(x,
               new AFEXBusinessApprovalRequest.Builder(x)
@@ -50,6 +52,7 @@ foam.CLASS({
                 .setClassification("AFEX Business")
                 .setDescription("Approve AFEX business to enable the international payments.")
                 .setGroup(group)
+                .setCreatedFor(user.getId())
                 .setStatus(ApprovalStatus.REQUESTED).build());
           }
         }, "Create AFEXBusiness Approval Request Rule");

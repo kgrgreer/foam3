@@ -470,15 +470,6 @@ foam.CLASS({
       name: 'jobTitle',
       documentation: `Job title of source user.`
     },
-    {
-      class: 'Enum',
-      of: 'net.nanopay.auth.AgentJunctionStatus',
-      name: 'status',
-      documentation: 'Describes the active state between agent and entity.',
-      readPermissionRequired: true,
-      writePermissionRequired: true,
-      value: net.nanopay.auth.AgentJunctionStatus.ACTIVE
-    }
   ],
 
   methods: [

@@ -67,6 +67,7 @@ foam.CLASS({
                   "Please review whether they should be given this capability ")
                 .setDaoKey("userCapabilityJunctionDAO")
                 .setObjId(ucj.getId())
+                .setCreatedFor(user.getId())
                 .setGroup(group)
               .build()
             );

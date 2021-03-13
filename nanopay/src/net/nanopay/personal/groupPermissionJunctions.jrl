@@ -29,6 +29,5 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targ
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"txlimitentitytype.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"usbankaccount.ro.verificationattempts"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"user.ro.compliance"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"useruserjunction.ro.status"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"user.ro.onboarded"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"useruserjunction.rw.status"})

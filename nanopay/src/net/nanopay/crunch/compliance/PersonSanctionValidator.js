@@ -110,6 +110,7 @@ foam.CLASS({
                     .setClassification(getClassification())
                     .setMatches(response.getResponseBody().getMatches())
                     .setGroup(group)
+                    .setCreatedFor(user.getId())
                     .build());
               }
             }, "Person Sanction Validator");
@@ -128,6 +129,7 @@ foam.CLASS({
               .setClassification(getClassification())
               .setMatches(response != null ? response.getResponseBody().getMatches() : null)
               .setGroup(group)
+              .setCreatedFor(user.getId())
               .build());
           ruler.putResult(ComplianceValidationStatus.PENDING);
         }
