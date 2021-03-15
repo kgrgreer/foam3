@@ -1476,7 +1476,7 @@ foam.CLASS({
         return status === net.nanopay.tx.model.TransactionStatus.PENDING;
       },
       code: function(X) {
-        var refundTicket = net.nanopay.ticket.RefundTicket.create({refundTransaction: this.id});
+        var refundTicket = net.nanopay.ticket.RefundTicket.create({problemTransaction: this.id});
 
         this.ticketDAO.put(refundTicket).then(ticket => {
           this.finished.pub();
