@@ -40,7 +40,8 @@ foam.INTERFACE({
       documentation: 'Returns childrens status.',
       name: 'calculateTransients',
       args: [
-        { name: 'x', type: 'Context' }
+      { name: 'x', type: 'Context' },
+      { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
       ],
     }
   ]

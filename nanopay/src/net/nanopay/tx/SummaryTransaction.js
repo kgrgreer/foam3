@@ -129,18 +129,16 @@ foam.CLASS({
       documentation: 'Returns childrens status.',
       name: 'calculateTransients',
       args: [
-        { name: 'x', type: 'Context' }
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
-        Transaction t = null;
         DAO dao = (DAO) x.get("localTransactionDAO");
-        List children = ((ArraySink) dao.where(EQ(Transaction.PARENT, getId())).select(new ArraySink())).getArray();
+        List children = ((ArraySink) dao.where(EQ(Transaction.PARENT, txn.getId())).select(new ArraySink())).getArray();
+
         for ( Object obj : children ) {
           Transaction child = (Transaction) obj;
-          Transaction current = child.getStateTxn(x);
-          if ( current.getStatus() != TransactionStatus.COMPLETED ) {
-            t = current; // get statetxn
-          }
+          this.calculateTransients(x, child, this);
           if ( ( ! depositAmountIsSet_) && (child instanceof ValueMovementTransaction) && (SafetyUtil.equals(this.getSourceAccount(), child.getSourceAccount())) ){
             this.setDepositAmount(child.getTotal(x, child.getSourceAccount()));
           }
@@ -148,21 +146,22 @@ foam.CLASS({
             this.setWithdrawAmount(child.getTotal(x, child.getDestinationAccount()));
           }
         }
-        if ( t == null ) {
-          t = this;
-        }
-        ChainSummary cs = new ChainSummary();
-        if (t.getStatus() != TransactionStatus.COMPLETED) {
-          cs.setErrorCode(t.calculateErrorCode());
-          ErrorCode errorCode = cs.findErrorCode(x);
-          if ( errorCode != null ) {
-            cs.setErrorInfo(errorCode.getSummary());
+
+        if (SafetyUtil.equals(txn, this)) {
+          Transaction t = this.getStateTxn(x);
+          ChainSummary cs = new ChainSummary();
+          if (t.getStatus() != TransactionStatus.COMPLETED) {
+            cs.setErrorCode(t.calculateErrorCode());
+            ErrorCode errorCode = cs.findErrorCode(x);
+            if ( errorCode != null ) {
+              cs.setErrorInfo(errorCode.getSummary());
+            }
           }
+          cs.setStatus(t.getStatus());
+          cs.setCategory(categorize_(t));
+          cs.setSummary(cs.toSummary());
+          this.setChainSummary(cs);
         }
-        cs.setStatus(t.getStatus());
-        cs.setCategory(categorize_(t));
-        cs.setSummary(cs.toSummary());
-        this.setChainSummary(cs);
       `
     },
     {
