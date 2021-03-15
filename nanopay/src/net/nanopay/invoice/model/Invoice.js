@@ -977,7 +977,7 @@ foam.CLASS({
         return (status === net.nanopay.invoice.model.InvoiceStatus.PAID) && paymentId;
       },
       code: function(X) {
-        var refundTicket = net.nanopay.ticket.RefundTicket.create({refundTransaction: this.paymentId});
+        var refundTicket = net.nanopay.ticket.RefundTicket.create({problemTransaction: this.paymentId});
 
         this.ticketDAO.put(refundTicket).then(ticket => {
           this.finished.pub();
