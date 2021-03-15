@@ -36,10 +36,12 @@ foam.CLASS({
     'foam.nanos.notification.Notification',
     'foam.nanos.logger.Logger',
     'net.nanopay.ticket.RefundTicket',
+    'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.SummarizingTransaction',
     'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.billing.ErrorFee',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus'
+    'net.nanopay.tx.model.TransactionStatus'  
   ],
 
   properties: [
@@ -57,6 +59,11 @@ foam.CLASS({
       name: 'creditAccount',
       documentation: 'The default credit account to be used in this scenario'
       // add validator make sure not empty
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'feeAccount'
     }
   ],
 
@@ -105,7 +112,16 @@ foam.CLASS({
         newRequest.setDestinationCurrency(summary.getSourceCurrency());
 
         if ( ! SafetyUtil.isEmpty(getErrorCode()) ) {
-          // TODO: look up error code fee. and create a fee line item for this.
+          DAO errorFeeDAO = (DAO) x.get("localErrorFeeDAO");
+          ErrorFee error = (ErrorFee) errorFeeDAO.find(getErrorCode());
+          if ( error != null ) {
+            FeeLineItem fee = new FeeLineItem();
+            fee.setAmount(error.getAmount());
+            fee.setFeeCurrency(error.getCurrency());
+            fee.setDestinationAccount(getFeeAccount());
+            fee.setSourceAccount(newRequest.getSourceAccount());
+            newRequest.addLineItems(new TransactionLineItem[]{fee});
+          }
         }
 
         ticket.setRequestTransaction(newRequest);
