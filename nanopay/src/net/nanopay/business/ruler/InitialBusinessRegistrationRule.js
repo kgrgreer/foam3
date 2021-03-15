@@ -98,7 +98,8 @@ foam.CLASS({
             ucj.setSourceId(business.getId());
           } catch (Exception e) {
             ((Logger) x.get("logger")).warning(e);
-            throw new ClientRuntimeException(BUSINESS_CREATE_ERROR, e);
+            String locale = user.getLanguage().getCode().toString();            
+            throw new ClientRuntimeException(BUSINESS_CREATE_ERROR, getClassInfo().getId(), locale, e);
           }
 
           try {
@@ -106,7 +107,8 @@ foam.CLASS({
               agentAuth.actAs(x, business);
           } catch (Exception e) {
             ((Logger) x.get("logger")).warning(e);
-            throw new ClientRuntimeException(UNABLE_SIGN_IN, e);
+            String locale = user.getLanguage().getCode().toString();            
+            throw new ClientRuntimeException(UNABLE_SIGN_IN, getClassInfo().getId(), locale, e);
           }
         }
       }, "Creates business on initial business data submit.");
