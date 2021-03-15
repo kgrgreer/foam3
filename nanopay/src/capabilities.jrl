@@ -562,6 +562,14 @@ p({
 })
 
 p({
+  id: "554af38a-8225-87c8-dfdf-eeb15f71215f-76.submit",
+  name: "Submit Business Information",
+  wizardlet: {
+    class: "foam.u2.wizard.SubmitWizardlet"
+  }
+})
+
+p({
   class:"net.nanopay.payment.CountryCapability",
   country:"BR",
   type:0,
