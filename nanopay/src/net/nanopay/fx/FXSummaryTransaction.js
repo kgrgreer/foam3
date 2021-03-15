@@ -160,12 +160,12 @@ foam.CLASS({
       List children = ((ArraySink) dao.where(EQ(Transaction.PARENT, txn.getId())).select(new ArraySink())).getArray();
       for ( Object obj : children ) {
         Transaction child = (Transaction) obj;
-        this.calculateTransients(x, child, this);
-        if ( ( ! depositAmountIsSet_) && (child instanceof ValueMovementTransaction) && (SafetyUtil.equals(this.getSourceAccount(), child.getSourceAccount())) ){
-          this.setDepositAmount(child.getTotal(x, child.getSourceAccount()));
+        this.calculateTransients(x, child);
+        if ( ( ! depositAmountIsSet_) && (child instanceof ValueMovementTransaction) && (SafetyUtil.equals(this.getDestinationAccount(), child.getDestinationAccount())) ){
+          this.setDepositAmount(child.getTotal(x, child.getDestinationAccount()));
         }
-        if ( ( ! withdrawAmountIsSet_) && (child instanceof ValueMovementTransaction) && (SafetyUtil.equals(this.getDestinationAccount(), child.getDestinationAccount())) ){
-          this.setWithdrawAmount(child.getTotal(x, child.getDestinationAccount()));
+        if ( ( ! withdrawAmountIsSet_) && (child instanceof ValueMovementTransaction) && (SafetyUtil.equals(this.getSourceAccount(), child.getSourceAccount())) ){
+          this.setWithdrawAmount(child.getTotal(x, child.getSourceAccount()));
         }
       }
 

@@ -79,7 +79,7 @@ foam.CLASS({
         if( obj != null && obj instanceof SummarizingTransaction ) {
           SummarizingTransaction txn = (SummarizingTransaction) obj.fclone();
           txn.calculateTransients(getX(), (Transaction) txn);
-          return txn;
+          return (Transaction) txn;
         }
         return obj;
       `
@@ -99,7 +99,7 @@ foam.CLASS({
         if (obj instanceof SummarizingTransaction) {
           SummarizingTransaction txn = (SummarizingTransaction) ((FObject) obj).fclone();
           txn.calculateTransients(getX(), (Transaction) txn);
-          return txn;
+          return (Transaction) txn;
         }
         return obj;
       `
