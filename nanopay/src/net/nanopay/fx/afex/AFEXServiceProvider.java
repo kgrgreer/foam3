@@ -1175,8 +1175,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       if ( f != null )
         return saveFundingBalance(x, userId, f.getFundingBalanceId(), f.getAccountId(), currency);
     } catch(Throwable t) {
-      logger_.error("Error creating funding balance for user.", t);
-      throw new RuntimeException("Error creating funding balance for user. " + t.getMessage());
+      logger_.warning("Funding balance was not found for user. ", user.getId(), t.getMessage());
     }
     return null;
   }

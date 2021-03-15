@@ -116,7 +116,7 @@ p({
     "rule.read.eab3592a-b79e-4c5f-a198-328729133d25"
   ]
 })
-// digital planner,  generic CI, generic CO, Bank to Bank planner
+// digital planner,  generic CI, generic CO, Bank to Bank planner, digital bank, bank digital
 p({
   class: "foam.nanos.crunch.Capability",
   description: "All planners that are generic",
@@ -126,7 +126,9 @@ p({
     "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d182",
     "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d183",
     "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d184",
-    "rule.read.61d57d66-3e63-4c53-9eee-de3f8f75e56c"
+    "rule.read.61d57d66-3e63-4c53-9eee-de3f8f75e56c",
+    "rule.read.3cb6aab3-107a-495a-8974-ed3286192b35",
+    "rule.read.ab51def7-b5d4-48ee-99ee-e3d418583740"
   ]
 })
 

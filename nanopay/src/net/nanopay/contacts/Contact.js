@@ -128,7 +128,7 @@ foam.CLASS({
       name: 'organization',
       label: 'Business',
       documentation: 'The organization/business associated with the Contact.',
-      view: { class: 'foam.u2.tag.Input', focused: true },
+      view: { class: 'foam.u2.TextField', focused: true },
       validateObj: function(organization) {
         if (
           typeof organization !== 'string' ||
