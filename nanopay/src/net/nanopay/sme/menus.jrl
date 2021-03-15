@@ -105,8 +105,12 @@ p({
       "of": "net.nanopay.contacts.Contact",
       "DAOCreateView":false,
 
-      "wizardDetailView":"net.nanopay.ui.wizard.ContactWizardDetailView",
+      "XXXwizardDetailView":"net.nanopay.ui.wizard.ContactWizardDetailView",
+      "XXXdetailView":"net.nanopay.contacts.ui.ContactWizardView",
+      "menu": "mainmenu.contacts2",
 
+      "wizardDetailView":{"class":"net.nanopay.ui.wizard.ContactWizardDetailView"},
+      "detailView":{"class":"net.nanopay.contacts.ui.ContactWizardView"},
 
       "NNNcreateControllerView":{
         "class":"net.nanopay.sme.ui.MenuRedirectSMEModalView",
@@ -130,7 +134,7 @@ p({
         "class": "net.nanopay.liquidity.ui.transaction.LiquidSourceAccountFilterBorder"
       },
 
-      "XXXDetailView":{"class":"net.nanopay.contacts.ui.ContactWizardView"},
+
 
 
       "exportEnabled":false,
@@ -301,8 +305,14 @@ p({
 
 
       "DAOCreateView":"true",
-      "wizardDetailView":"net.nanopay.account.ui.BankAccountWizard",
+      "XXXwizardDetailView":"net.nanopay.account.ui.BankAccountWizard",
       "OKXXXwizardDetailView":"net.nanopay.ui.wizard.ContactWizardDetailView",
+
+      "menu": "mainmenu.banking2",
+
+      "wizardDetailView":{"class":"net.nanopay.ui.wizard.ContactWizardDetailView"},
+      "EEEdetailView":{"class":"net.nanopay.bank.AddBankAccountAction"},
+      "detailView":{"class":"net.nanopay.account.ui.BankAccountWizard"},
 
 
       "exportEnabled":false,
