@@ -158,9 +158,7 @@ foam.CLASS({
             allowSkipping: false
           }),
           view: {
-            // class: 'foam.u2.wizard.IncrementalStepWizardView',
-            // class: 'foam.u2.wizard.ScrollingStepWizardView',
-            class: 'foam.u2.wizard.StepWizardletView',
+            class: 'foam.u2.wizard.ScrollingStepWizardView',
             fullScreen: true,
             hideX: true,
             backDisabled: true
