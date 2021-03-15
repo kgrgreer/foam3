@@ -52,7 +52,7 @@ foam.CLASS({
     'net.nanopay.accounting.AccountingIntegrationUtil',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.auth.AgentJunctionStatus',
+    'foam.nanos.auth.AgentJunctionStatus',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.BRBankAccount',
     'net.nanopay.bank.CABankAccount',
