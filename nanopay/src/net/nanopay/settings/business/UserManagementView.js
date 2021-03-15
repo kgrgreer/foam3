@@ -31,7 +31,7 @@ foam.CLASS({
     'foam.nanos.auth.UserUserJunction',
     'foam.u2.dialog.Popup',
     'foam.u2.ConfirmationModal',
-    'net.nanopay.auth.AgentJunctionStatus',
+    'foam.nanos.auth.AgentJunctionStatus',
     'net.nanopay.model.ClientUserJunction',
     'net.nanopay.model.Invitation',
     'net.nanopay.model.InvitationStatus'

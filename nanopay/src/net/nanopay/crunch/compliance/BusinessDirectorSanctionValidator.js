@@ -90,6 +90,7 @@ foam.CLASS({
                     .setMatches(response != null ? response.getResponseBody().getMatches() : null)
                     .setComments("Further investigation needed for director: " + directorName)
                     .setGroup(group)
+                    .setCreatedFor(user.getId())
                     .build());
               }
             }, "Business Director Sanction Validator");
