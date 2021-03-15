@@ -148,9 +148,7 @@ foam.CLASS({
             }
           }  else {
             String locale = user.getLanguage().getCode().toString();
-            TranslationService ts = (TranslationService) getX().get("translationService");
-            String exc = ts.getTranslation(locale, getClassInfo().getId()+ ".ACCOUNT_LOCKED", this.ACCOUNT_LOCKED);
-            throw new foam.nanos.auth.AuthenticationException(exc);
+            throw new foam.nanos.auth.AuthenticationException(this.ACCOUNT_LOCKED, getClassInfo().getId()+ ".ACCOUNT_LOCKED", locale);
           }
         }
 
