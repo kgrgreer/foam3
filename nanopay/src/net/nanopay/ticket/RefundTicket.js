@@ -127,6 +127,12 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'creditAmount'
+    },
+    {
+      class: 'FObjectArray',
+      of: 'net.nanopay.tx.FeeLineItem',
+      name: 'feeLineItems',
+      visibility: 'HIDDEN'
     }
   ]
 });
