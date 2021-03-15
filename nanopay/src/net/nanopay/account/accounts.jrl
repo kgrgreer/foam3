@@ -10,7 +10,7 @@ p({
   "owner":101,
   "denomination":"USD",
   "country":"US",
-  "spid": "nanopay.estimationaccounts",
+  "spid": "nanopay.estimationaccount",
   "name":"US estimation account",
   "lifecycleState":1
 })
@@ -20,7 +20,7 @@ p({
   "owner":101,
   "denomination":"CAD",
   "country":"CA",
-  "spid": "nanopay.estimationaccounts",
+  "spid": "nanopay.estimationaccount",
   "name":"Canadian estimation account",
   "lifecycleState":1
 })
@@ -30,7 +30,7 @@ p({
   "owner":101,
   "denomination":"EUR",
   "country":"PT",
-  "spid": "nanopay.estimationaccounts",
+  "spid": "nanopay.estimationaccount",
   "name":"Portugal estimation account",
   "lifecycleState":1
 })
@@ -40,7 +40,7 @@ p({
   "owner":101,
   "denomination":"GBP",
   "country":"GB",
-  "spid": "nanopay.estimationaccounts",
+  "spid": "nanopay.estimationaccount",
   "name":"GB estimation account",
   "lifecycleState":1
 })
