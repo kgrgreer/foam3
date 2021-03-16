@@ -26,7 +26,8 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'net.nanopay.tx.model.Transaction',
       name: 'id'
     },
     {
