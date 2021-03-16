@@ -809,7 +809,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'getBrachCode',
+      name: 'getBranchCode',
       type: 'String',
       args: [
         {
