@@ -24,7 +24,8 @@ foam.CLASS({
   documentation: 'Estonia bank account information.',
 
   javaImports: [
-    'foam.core.ValidationException'
+    'foam.core.ValidationException',
+    'foam.util.SafetyUtil'
   ],
 
   constants: [
