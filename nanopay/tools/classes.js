@@ -621,6 +621,7 @@ var classes = [
   'net.nanopay.tx.TestTransaction',
   'net.nanopay.tx.AbliiTransaction',
   'net.nanopay.tx.InterestTransaction',
+  'net.nanopay.tx.IntuitTransactionSummary',
   'net.nanopay.tx.FailedTransactionNotification',
   'net.nanopay.tx.DebtRepaymentTransaction',
   'net.nanopay.tx.DVPTransaction',
