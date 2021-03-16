@@ -164,26 +164,15 @@ foam.CLASS({
           if ( ! INSTITUTION_NUMBER_PATTERN.matcher(institutionNumber).matches() ) {
             throw new ValidationException(this.INSTITUTION_NUMBER_INVALID);
           }
-        }
-      `
-    },
-    {
-      name: 'getRoutingCode',
-      javaCode: `
-        if ( ! SafetyUtil.isEmpty(getBankRoutingCode()) ) {
-          return getBankRoutingCode();
-        }
 
-        var code = new StringBuilder();
-        var branch = findBranch(x);
-        if ( branch != null ) {
-          code.append(branch.getBranchId());
-          var institution = findInstitution(x);
-          if ( institution != null ) {
-            code.append(institution.getInstitutionNumber());
+          var branchId = this.getBranchId();
+          if ( SafetyUtil.isEmpty(branchId) ) {
+            throw new ValidationException(this.BRANCH_ID_REQUIRED);
+          }
+          if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
+            throw new ValidationException(this.BRANCH_ID_INVALID);
           }
         }
-        return code.toString();
       `
     }
   ]

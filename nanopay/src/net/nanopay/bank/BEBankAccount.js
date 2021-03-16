@@ -137,10 +137,6 @@ foam.CLASS({
           }
         }
       `
-    },
-    {
-      name: 'getRoutingCode',
-      javaCode: 'return getInstitutionNumber();'
     }
   ]
 });

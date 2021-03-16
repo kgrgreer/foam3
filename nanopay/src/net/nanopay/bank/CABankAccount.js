@@ -412,23 +412,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'getBankCode',
-      type: 'String',
-      args: [
-        {
-          name: 'x', type: 'Context'
-        }
-      ],
-      javaCode: `
-        StringBuilder code = new StringBuilder();
-        Institution institution = findInstitution(x);
-        if ( institution != null ) {
-          code.append(institution.getInstitutionNumber());
-        }
-        return code.toString();
-      `
-    },
-    {
       name: 'validate',
       args: [
         {
@@ -529,18 +512,12 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        if ( ! SafetyUtil.isEmpty(getBankRoutingCode()) ) {
-          return getBankRoutingCode();
-        }
-
-        StringBuilder code = new StringBuilder();
-        Branch branch = findBranch(x);
-        if ( branch != null ) {
-          code.append('0')
-              .append(branch.getBranchId())
-              .append(getBankCode(x));
-        }
-        return code.toString();
+        // REVIEW: CA routing code = "0" + branch(5 digits) + institution(3 digits)
+        var code = new StringBuilder();
+        code.append('0')
+            .append(getBranchCode(x))
+            .append(getBankCode(x));
+        return code.length() > 1 ? code.toString() : getBankRoutingCode();
       `
     }
   ]

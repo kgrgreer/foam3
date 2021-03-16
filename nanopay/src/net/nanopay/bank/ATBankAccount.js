@@ -127,7 +127,7 @@ foam.CLASS({
       javaCode: `
         super.validate(x);
 
-        String accountNumber = this.getAccountNumber();
+        var accountNumber = this.getAccountNumber();
         if ( SafetyUtil.isEmpty(accountNumber) ) {
           throw new ValidationException(this.ACCOUNT_NUMBER_REQUIRED);
         }
@@ -136,7 +136,7 @@ foam.CLASS({
         }
 
         if ( SafetyUtil.isEmpty(getSwiftCode()) ) {
-          String branchId = this.getBranchId();
+          var branchId = this.getBranchId();
           if ( SafetyUtil.isEmpty(branchId) ) {
             throw new ValidationException(this.BRANCH_ID_REQUIRED);
           }
@@ -145,10 +145,6 @@ foam.CLASS({
           }
         }
       `
-    },
-    {
-      name: 'getRoutingCode',
-      javaCode: 'return getBranchId();'
     }
   ]
 });
