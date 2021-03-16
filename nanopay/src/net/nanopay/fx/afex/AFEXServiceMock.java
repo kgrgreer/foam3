@@ -179,8 +179,8 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public CreateInstantBenefiaryResponse createInstantBenefiary(CreateInstantBenefiaryRequest createInstantBenefiaryRequest, String spid) {
-    CreateInstantBenefiaryResponse response = new CreateInstantBenefiaryResponse();
+  public CreateInstantBeneficiaryResponse createInstantBeneficiary(CreateInstantBeneficiaryRequest request, String spid) {
+    CreateInstantBeneficiaryResponse response = new CreateInstantBeneficiaryResponse();
     response.setCode(0);
     return response;
   }
