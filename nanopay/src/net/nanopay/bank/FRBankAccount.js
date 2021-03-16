@@ -23,6 +23,34 @@ foam.CLASS({
 
   documentation: 'France bank account information.',
 
+  javaImports: [
+    'foam.core.ValidationException',
+    'foam.util.SafetyUtil'
+  ],
+
+  constants: [
+    {
+      name: 'INSTITUTION_NUMBER_PATTERN',
+      type: 'Regex',
+      value: /^\d{5}$/
+    },
+    {
+      name: 'BRANCH_ID_PATTERN',
+      type: 'Regex',
+      value: /^\d{5}$/
+    },
+    {
+      name: 'ACCOUNT_NUMBER_PATTERN',
+      type: 'Regex',
+      value: /^[a-zA-Z0-9]{11}$/
+    },
+    {
+      name: 'ROUTING_CODE_PATTERN',
+      type: 'Regex',
+      value: /^(\d{5})(\d{5})$/
+    }
+  ],
+
   properties: [
     {
       name: 'country',
@@ -95,6 +123,59 @@ foam.CLASS({
     {
       name: 'branchId',
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'bankRoutingCode',
+      javaPostSet: `
+        if ( ! SafetyUtil.isEmpty(val) ) {
+          var matcher = ROUTING_CODE_PATTERN.matcher(val);
+          if ( matcher.find() ) {
+            var institutionNumber = matcher.group(1);
+            var branchId = matcher.group(2);
+
+            // Update institution and branch
+            clearInstitution();
+            clearBranch();
+            setInstitutionNumber(institutionNumber);
+            setBranchId(branchId);
+          }
+        }
+      `
+    }
+  ],
+
+  methods: [
+    {
+      name: 'validate',
+      javaCode: `
+        super.validate(x);
+
+        var accountNumber = this.getAccountNumber();
+        if ( SafetyUtil.isEmpty(accountNumber) ) {
+          throw new ValidationException(this.ACCOUNT_NUMBER_REQUIRED);
+        }
+        if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
+          throw new ValidationException(this.ACCOUNT_NUMBER_INVALID);
+        }
+
+        if ( SafetyUtil.isEmpty(getSwiftCode()) ) {
+          var institutionNumber = this.getInstitutionNumber();
+          if ( SafetyUtil.isEmpty(institutionNumber) ) {
+            throw new ValidationException(this.INSTITUTION_NUMBER_REQUIRED);
+          }
+          if ( ! INSTITUTION_NUMBER_PATTERN.matcher(institutionNumber).matches() ) {
+            throw new ValidationException(this.INSTITUTION_NUMBER_INVALID);
+          }
+
+          var branchId = this.getBranchId();
+          if ( SafetyUtil.isEmpty(branchId) ) {
+            throw new ValidationException(this.BRANCH_ID_REQUIRED);
+          }
+          if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
+            throw new ValidationException(this.BRANCH_ID_INVALID);
+          }
+        }
+      `
     }
   ]
 });
