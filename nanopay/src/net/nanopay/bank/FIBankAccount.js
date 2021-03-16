@@ -23,6 +23,23 @@ foam.CLASS({
 
   documentation: 'Finland bank account information.',
 
+  javaImports: [
+    'foam.core.ValidationException'
+  ],
+
+  constants: [
+    {
+      name: 'BRANCH_ID_PATTERN',
+      type: 'Regex',
+      value: /^\d{6}$/
+    },
+    {
+      name: 'ACCOUNT_NUMBER_PATTERN',
+      type: 'Regex',
+      value: /^\d{8}$/
+    }
+  ],
+
   properties: [
     {
       name: 'country',
@@ -94,6 +111,42 @@ foam.CLASS({
     {
       name: 'branchId',
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'bankRoutingCode',
+      javaPostSet: `
+        if ( val != null && BRANCH_ID_PATTERN.matcher(val).matches() ) {
+          clearBranch();
+          setBranchId(val);
+        }
+      `
+    }
+  ],
+
+  methods: [
+    {
+      name: 'validate',
+      javaCode: `
+        super.validate(x);
+
+        var accountNumber = this.getAccountNumber();
+        if ( SafetyUtil.isEmpty(accountNumber) ) {
+          throw new ValidationException(this.ACCOUNT_NUMBER_REQUIRED);
+        }
+        if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
+          throw new ValidationException(this.ACCOUNT_NUMBER_INVALID);
+        }
+
+        if ( SafetyUtil.isEmpty(getSwiftCode()) ) {
+          var branchId = this.getBranchId();
+          if ( SafetyUtil.isEmpty(branchId) ) {
+            throw new ValidationException(this.BRANCH_ID_REQUIRED);
+          }
+          if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
+            throw new ValidationException(this.BRANCH_ID_INVALID);
+          }
+        }
+      `
     }
   ]
 });
