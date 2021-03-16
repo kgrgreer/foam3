@@ -49,7 +49,7 @@ foam.CLASS({
       value: true
     },
     {
-      name: 'fxTandC',
+      name: 'termsAndConditions',
       class: 'String',
       documentation: 'Terms and conditions added to the bepay transaction'
     }
@@ -153,7 +153,7 @@ foam.CLASS({
       javaCode: `
         InfoLineItem tandc = new InfoLineItem();
         tandc.setName("Terms and Conditions");
-        tandc.setNote(getFxTandC());
+        tandc.setNote(getTermsAndConditions());
         txn.addLineItems( new TransactionLineItem[] { tandc } );
         return txn;
       `
