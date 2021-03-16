@@ -17,15 +17,15 @@
 
 foam.CLASS({
   package: "net.nanopay.fx.afex",
-  name: "CreateInstantBenefiaryRequest",
+  name: "CreateInstantBeneficiaryResponse",
   properties: [
     {
-      class: 'String',
-      name: "clientAPIKey"
+      class: 'Int',
+      name: "Code"
     },
     {
       class: 'String',
-      name: "AccountId"
+      name: "Name"
     },
     {
       class: 'String',
@@ -33,15 +33,15 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: "NotificationId"
+      name: "InformationMessage"
+    },
+    {
+      class: 'Int',
+      name: "InformationCode"
     },
     {
       class: 'String',
-      name: "RemittanceLine4"
-    },
-    {
-      class: 'String',
-      name: "VendorId"
+      name: "Status"
     }
   ]
 });
