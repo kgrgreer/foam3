@@ -716,6 +716,7 @@ p({
   "serviceScript":
   """
     foam.dao.DAO dao = new foam.dao.MDAO(net.nanopay.tx.TransactionSummary.getOwnClassInfo());
+    dao = new foam.nanos.ruler.RulerDAO(x, dao, "transactionSummaryDAO");
     return new foam.dao.EasyDAO.Builder(x)
       .setDecorator(dao)
       .setOf(net.nanopay.tx.TransactionSummary.getOwnClassInfo())
