@@ -24,6 +24,7 @@ foam.CLASS({
   documentation: 'United Kingdom/Great Britain bank account information.',
 
   javaImports: [
+    'foam.core.ValidationException',
     'foam.nanos.iban.IBANInfo',
     'foam.nanos.iban.ValidationIBAN',
     'foam.util.SafetyUtil'
@@ -167,16 +168,34 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'getRoutingCode',
-      javaCode: `
-        return getBranchId();
-      `
-    },
-    {
       name: 'getApiAccountNumber',
       javaCode: `
         return getAccountNumber();
       `
     },
+    {
+      name: 'validate',
+      javaCode: `
+        super.validate(x);
+
+        var accountNumber = this.getAccountNumber();
+        if ( SafetyUtil.isEmpty(accountNumber) ) {
+          throw new ValidationException(this.ACCOUNT_NUMBER_REQUIRED);
+        }
+        if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
+          throw new ValidationException(this.ACCOUNT_NUMBER_INVALID);
+        }
+
+        if ( SafetyUtil.isEmpty(getSwiftCode()) ) {
+          var branchId = this.getBranchId();
+          if ( SafetyUtil.isEmpty(branchId) ) {
+            throw new ValidationException(this.BRANCH_ID_REQUIRED);
+          }
+          if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
+            throw new ValidationException(this.BRANCH_ID_INVALID);
+          }
+        }
+      `
+    }
   ]
 });
