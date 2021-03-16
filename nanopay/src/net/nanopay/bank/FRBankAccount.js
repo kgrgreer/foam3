@@ -73,15 +73,13 @@ foam.CLASS({
       name: 'institutionNumber',
       updateVisibility: 'RO',
       validateObj: function(institutionNumber, iban) {
-        var regex = /^[A-z0-9a-z]{5}$/;
-
         if ( iban )
           var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
         if ( ! iban || (iban && ibanMsg != 'passed') ) {
           if ( institutionNumber === '' ) {
             return this.INSTITUTION_NUMBER_REQUIRED;
-          } else if ( ! regex.test(institutionNumber) ) {
+          } else if ( ! INSTITUTION_NUMBER_PATTERN.test(institutionNumber) ) {
             return this.INSTITUTION_NUMBER_INVALID;
           }
         }
@@ -102,15 +100,13 @@ foam.CLASS({
         this.tooltip = displayAccountNumber;
       },
       validateObj: function(accountNumber, iban) {
-        var accNumberRegex = /^[0-9]{11}$/;
-
         if ( iban )
           var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
         if ( ! iban || (iban && ibanMsg != 'passed') ) {
           if ( accountNumber === '' ) {
             return this.ACCOUNT_NUMBER_REQUIRED;
-          } else if ( ! accNumberRegex.test(accountNumber) ) {
+          } else if ( ! ACCOUNT_NUMBER_PATTERN.test(accountNumber) ) {
             return this.ACCOUNT_NUMBER_INVALID;
           }
         }
