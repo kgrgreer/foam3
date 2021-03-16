@@ -1291,23 +1291,6 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-158",
-  "name": "compliance-notification-to-non-user",
-  "group": "sme",
-  "locale": "en",
-  "displayName": "{{appName}}",
-  "subject": "{{business}} is ready to send payments with {{appName}}",
-  "body": """
-    <include template = 'treviso-email-base_2'>
-      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"> Great news! </p>
-      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">{{business}} is all set to send payments on {{appName}}.</p>
-      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">If you have any questions, please contact us at <a href="mailto:{{supportEmail}}" style="text-decoration: none;">{{supportEmail}}</a> or by calling {{supportPhone}} to speak to Customer Service.</p>
-      <br>
-    </include>
-  """
-})
-p({
-  "class": "foam.nanos.notification.email.EmailTemplate",
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-158-pt",
   "name": "compliance-notification-to-non-user",
   "group": "sme",
