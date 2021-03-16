@@ -46,9 +46,18 @@ public class BmoGenerateFileCron implements ContextAgent {
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
 
     Predicate condition1 = MLang.OR(
-      MLang.INSTANCE_OF(BmoCITransaction.getOwnClassInfo()),
-      MLang.INSTANCE_OF(BmoCOTransaction.getOwnClassInfo()),
-      MLang.INSTANCE_OF(BmoVerificationTransaction.getOwnClassInfo())
+      MLang.AND(
+        MLang.INSTANCE_OF(BmoCITransaction.getOwnClassInfo()),
+        MLang.EQ(BmoCITransaction.SETTLED, false)
+      ),
+      MLang.AND(
+        MLang.INSTANCE_OF(BmoCOTransaction.getOwnClassInfo()),
+        MLang.EQ(BmoCOTransaction.SETTLED, false)
+      ),
+      MLang.AND(
+        MLang.INSTANCE_OF(BmoVerificationTransaction.getOwnClassInfo()),
+        MLang.EQ(BmoVerificationTransaction.SETTLED, false)
+      )
     );
 
     Predicate condition2 = MLang.EQ(
@@ -59,14 +68,8 @@ public class BmoGenerateFileCron implements ContextAgent {
       Transaction.SPID, spid
     );
 
-    Predicate condition4 = MLang.OR(
-      MLang.EQ(BmoCITransaction.SETTLED, false),
-      MLang.EQ(BmoCOTransaction.SETTLED, false),
-      MLang.EQ(BmoVerificationTransaction.SETTLED, false)
-    );
-
     ArraySink sink = (ArraySink) transactionDAO.where(
-      MLang.AND(condition1, condition2, condition3, condition4)
+      MLang.AND(condition1, condition2, condition3)
     ).select(new ArraySink());
     ArrayList<Transaction> transactions = (ArrayList<Transaction>) sink.getArray();
 
