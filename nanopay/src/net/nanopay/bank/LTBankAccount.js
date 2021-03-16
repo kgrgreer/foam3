@@ -23,6 +23,24 @@ foam.CLASS({
 
   documentation: 'Lithuanian bank account information.',
 
+  javaImports: [
+    'foam.core.ValidationException',
+    'foam.util.SafetyUtil'
+  ],
+
+  constants: [
+    {
+      name: 'INSTITUTION_NUMBER_PATTERN',
+      type: 'Regex',
+      value: /^\d{5}$/
+    },
+    {
+      name: 'ACCOUNT_NUMBER_PATTERN',
+      type: 'Regex',
+      value: /^\d{11}$/
+    }
+  ],
+
   properties: [
     {
       name: 'country',
@@ -45,15 +63,13 @@ foam.CLASS({
       name: 'institutionNumber',
       updateVisibility: 'RO',
       validateObj: function(institutionNumber, iban) {
-        var regex = /^[A-z0-9a-z]{5}$/;
-
         if ( iban )
           var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
         if ( ! iban || (iban && ibanMsg != 'passed') ) {
           if ( institutionNumber === '' ) {
             return this.INSTITUTION_NUMBER_REQUIRED;
-          } else if ( ! regex.test(institutionNumber) ) {
+          } else if ( ! INSTITUTION_NUMBER_PATTERN.test(institutionNumber) ) {
             return this.INSTITUTION_NUMBER_INVALID;
           }
         }
@@ -73,15 +89,13 @@ foam.CLASS({
         this.tooltip = displayAccountNumber;
       },
       validateObj: function(accountNumber, iban) {
-        var accNumberRegex = /^[0-9]{11}$/;
-
         if ( iban )
           var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
         if ( ! iban || (iban && ibanMsg != 'passed') ) {
           if ( accountNumber === '' ) {
             return this.ACCOUNT_NUMBER_REQUIRED;
-          } else if ( ! accNumberRegex.test(accountNumber) ) {
+          } else if ( ! ACCOUNT_NUMBER_PATTERN.test(accountNumber) ) {
             return this.ACCOUNT_NUMBER_INVALID;
           }
         }
@@ -94,6 +108,42 @@ foam.CLASS({
     {
       name: 'branchId',
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'bankRoutingCode',
+      javaPostSet: `
+        if ( val != null && INSTITUTION_NUMBER_PATTERN.matcher(val).matches() ) {
+          clearInstitution();
+          setInstitutionNumber(val);
+        }
+      `
+    }
+  ],
+
+  methods: [
+    {
+      name: 'validate',
+      javaCode: `
+        super.validate(x);
+
+        var accountNumber = this.getAccountNumber();
+        if ( SafetyUtil.isEmpty(accountNumber) ) {
+          throw new ValidationException(this.ACCOUNT_NUMBER_REQUIRED);
+        }
+        if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
+          throw new ValidationException(this.ACCOUNT_NUMBER_INVALID);
+        }
+
+        if ( SafetyUtil.isEmpty(getSwiftCode()) ) {
+          var institutionNumber = this.getInstitutionNumber();
+          if ( SafetyUtil.isEmpty(institutionNumber) ) {
+            throw new ValidationException(this.INSTITUTION_NUMBER_REQUIRED);
+          }
+          if ( ! INSTITUTION_NUMBER_PATTERN.matcher(institutionNumber).matches() ) {
+            throw new ValidationException(this.INSTITUTION_NUMBER_INVALID);
+          }
+        }
+      `
     }
   ]
 });
