@@ -32,6 +32,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.Subject',
+    'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.connection.CapabilityPayload',
     'foam.nanos.dig.exception.ExternalAPIException',
     'foam.nanos.dig.exception.GeneralException',
@@ -52,6 +53,7 @@ foam.CLASS({
     'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy',
     'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions',
     'net.nanopay.crunch.registration.BusinessDetailData',
+    'net.nanopay.crunch.registration.LimitedAPICapability',
     'net.nanopay.crunch.registration.PersonalOnboardingTypeData',
     'net.nanopay.crunch.registration.SigningOfficerList',
     'net.nanopay.crunch.registration.UserRegistrationData',
@@ -159,10 +161,10 @@ foam.CLASS({
 
           } else {
             // Retrieve any missing capabilities from previous calls with this Flinks LoginId
-
-            // API CAD Personal Payments Under 1000CAD Capability ID
-            String capabilityId = "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD";
-
+            
+            // Select one of the API CAD Personal Payments Capabilities
+            String capabilityId = getUserCapabilityId(x, flinksLoginId);
+            
             // Switch contexts to the newly created user
             Subject newSubject = new Subject.Builder(x).setUser(user).build();
             if ( flinksLoginIdOnboarding.getType() != OnboardingType.PERSONAL && business != null ) {
@@ -325,15 +327,13 @@ foam.CLASS({
           }
         }
 
-        if ( onboardingType == OnboardingType.PERSONAL ) {
-          onboardUser(x, request, accountDetail, loginDetail);
+        if ( onboardingType != OnboardingType.PERSONAL && onboardingType != OnboardingType.BUSINESS ) {
+          throw new GeneralException("Unexpected onboarding type and login type: " + request.getType() + ", " + loginDetail.getType());
         }
-        else if ( onboardingType == OnboardingType.BUSINESS ) {
-          onboardUser(x, request, accountDetail, loginDetail);
+
+        onboardUser(x, request, accountDetail, loginDetail, onboardingType);
+        if ( onboardingType == OnboardingType.BUSINESS ) {
           onboardBusiness(x, request, accountDetail);
-        }
-        else {
-          throw new GeneralException("Unexpected onboarding type: " + request.getType());
         }
       `
     },
@@ -343,7 +343,8 @@ foam.CLASS({
         { name: 'x', type: 'Context' },
         { name: 'request', type: 'FlinksLoginIdOnboarding' },
         { name: 'accountDetail', type: 'AccountWithDetailModel' },
-        { name: 'loginDetail', type: 'LoginModel' }
+        { name: 'loginDetail', type: 'LoginModel' },
+        { name: 'onboardingType', type: 'OnboardingType' }
       ],
       javaCode: `
         HolderModel holder = accountDetail.getHolder();
@@ -442,8 +443,8 @@ foam.CLASS({
         String lastName = overrides != null && !SafetyUtil.isEmpty(overrides.getLastName()) ? overrides.getLastName() : last;
         String phoneNumber = overrides != null && !SafetyUtil.isEmpty(overrides.getPhoneNumber()) ? overrides.getPhoneNumber() : holder.getPhoneNumber().replaceAll("[^0-9]", "");
 
-        // API CAD Personal Payments Under 1000CAD Capability ID
-        final String capabilityId = "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD";
+        // Select one of the API CAD Personal Payments Capabilities
+        final String capabilityId = getUserCapabilityId(x, request);
 
         // Add capabilities for the new user
         DAO capabilityPayloadDAO = (DAO) subjectX.get("capabilityPayloadDAO");
@@ -474,7 +475,9 @@ foam.CLASS({
         userCapPayload = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).put(userCapPayload);
 
         // Query the capabilityPayloadDAO to see what capabilities are still required
-        addCapabilityPayload(x, request, (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId));
+        if ( onboardingType == OnboardingType.PERSONAL ) {
+          addCapabilityPayload(x, request, (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId));
+        }
       `
     },
     {
@@ -636,6 +639,26 @@ foam.CLASS({
         }
         capabilityPayloadArray[capabilityPayloadArray.length - 1] = capabilityPayload;
         request.setCapabilityPayloads(capabilityPayloadArray);
+      `
+    },
+    {
+      name: 'getUserCapabilityId',
+      type: 'String',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'request', type: 'FlinksLoginId' }
+      ],
+      javaCode: `
+        var amount = request != null ? request.getAmount() : 0;
+
+        DAO dao = (DAO) x.get("localCapabilityDAO");
+        Capability fullUserCapability = (Capability) dao.find("1F0B39AD-934E-462E-A608-D590D1081298");
+        LimitedAPICapability minimalUserCapability = (LimitedAPICapability) dao.find("F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD");
+
+        // Return the capability ID
+        return amount <= minimalUserCapability.getMaximumAmount() ?
+          minimalUserCapability.getId() :
+          fullUserCapability.getId();
       `
     },
     {
