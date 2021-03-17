@@ -1841,6 +1841,7 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/ExpectedBoardingDate' },
   { name: 'net/nanopay/country/br/NatureCodePaymentProviderJunctionRefinement' },
   { name: 'net/nanopay/country/br/NatureBusinessRelationship' },
+  { name: 'net/nanopay/country/br/NatureCodeSelectView', flags: ['web'] },
   { name: 'net/nanopay/country/br/NatureCodeCardSelectView' },
 
   // RequestToPay
