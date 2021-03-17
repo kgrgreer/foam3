@@ -292,3 +292,27 @@ p({
     print("done");
   """
 })
+
+p({
+  "class": "foam.nanos.cron.Cron",
+  "enabled": false,
+  "schedule": {
+    "class": "foam.nanos.cron.CronSchedule",
+    "minute": 5,
+    "hour": -1,
+    "dayOfMonth": -1,
+    "month": -1,
+    "dayOfWeek": -1,
+    "second": 0
+  },
+  "id":"TransactionSummaryCron",
+  "description":"Creates Transaction Summary objects for all transactions in the summaryTransactionDAO",
+  "enabled":true,
+  "code": """
+    import net.nanopay.tx.cron.TransactionSummaryCron;
+    cron = new TransactionSummaryCron();
+    cron.execute(x);
+    print("Transaction Summary Cron run.");
+  """
+
+})

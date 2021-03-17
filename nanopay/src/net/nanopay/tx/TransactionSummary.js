@@ -19,11 +19,6 @@ foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'TransactionSummary',
 
-  implements: [
-    'foam.nanos.auth.CreatedAware',
-    'foam.nanos.auth.LastModifiedAware'
-  ],
-
   properties: [
     {
       class: 'Reference',
