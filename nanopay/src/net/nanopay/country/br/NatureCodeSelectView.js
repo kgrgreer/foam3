@@ -82,15 +82,13 @@ foam.CLASS({
 
       this.setChildren(this.slot(function(choices) {
         var cs = [];
-        // preselect the data if there is only one choice
-        self.data = choices.length === 1 ? 0 : -1;
 
         for ( var i = 0 ; i < choices.length ; i++ ) {
           var c = choices[i];
           let value = c[1];
           let e = self.E('option').addClass(self.myClass('card')).attrs({
             value: i,
-            selected: false
+            selected: choices.length === 1 // preselect option if there is only one
           }).translate(c[1]+'.name', value)
 
           cs.push(e);

@@ -76,7 +76,7 @@ foam.CLASS({
           objToChoice: function(obj) {
             return obj.toSummary();
           },
-          size: 10,
+          size: 5,
           selectSpec: { class: 'net.nanopay.country.br.NatureCodeSelectView' }
         }
       }
