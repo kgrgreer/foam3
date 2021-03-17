@@ -5,7 +5,7 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.cron.Cron;
-import java.util.Date;
+import java.util.*;
 import net.nanopay.fx.FXSummaryTransaction;
 import net.nanopay.integration.ErrorCode;
 import net.nanopay.tx.ChainSummary;
@@ -25,23 +25,25 @@ public class TransactionSummaryCron implements ContextAgent {
     Date lastRun = ((Cron)((DAO)x.get("cronDAO")).find("TransactionSummaryCron")).getLastRun();
     
     if (lastRun != null) {
-      // query transactions that have been modified since the lastRun and update the TransactionSummarys
-      ArraySink txnSink = (ArraySink) transactionDAO.where(
+      ArraySink txnLastModifiedSink = (ArraySink) transactionDAO.where(
         AND(
           GT(Transaction.LAST_MODIFIED, lastRun),
           NEQ(Transaction.SPID, "intuit")
         )
       ).select(new ArraySink());
 
-      ArraySink intuitTxnSink = (ArraySink) transactionDAO.where(
+      ArraySink intuitLastModifiedTxnSink = (ArraySink) transactionDAO.where(
         AND(
           GT(Transaction.LAST_MODIFIED, lastRun),
           EQ(Transaction.SPID, "intuit")
         )
       ).select(new ArraySink());
 
-      // fetch summaryTxn ids from queried transactions and store in hashset. Create TransactionSummarys from hashset ids
-
+      HashSet<String> summaryTxnIds = setupTxnIdSet(x, txnLastModifiedSink.getArray());
+      HashSet<String> intuitSummaryTxnIds = setupTxnIdSet(x, intuitLastModifiedTxnSink.getArray());
+      List<Transaction> txnList = setupTxnListFromSet(x, summaryTxnIds);
+      List<Transaction> intuitTxnList = setupTxnListFromSet(x, intuitSummaryTxnIds);
+      generateTransactionSummaries(x, txnList, intuitTxnList);
     } else {
       ArraySink txnSink = (ArraySink) summaryTransactionDAO.where(
         NEQ(Transaction.SPID, "intuit")
@@ -50,16 +52,16 @@ public class TransactionSummaryCron implements ContextAgent {
       ArraySink intuitTxnSink = (ArraySink) summaryTransactionDAO.where(
         EQ(Transaction.SPID, "intuit")
       ).select(new ArraySink());
-      
-      createTransactionSummaries(x, txnSink, intuitTxnSink);
+
+      generateTransactionSummaries(x, txnSink.getArray(), intuitTxnSink.getArray());
     }
   }
 
-  private void createTransactionSummaries(X x, ArraySink txnSink, ArraySink intuitTxnSink) {
+  private void generateTransactionSummaries(X x, List txns, List intuitTxns) {
     DAO transactionSummaryDAO = (DAO) x.get("localTransactionSummaryDAO");
     DAO errorCodeDAO = (DAO) x.get("errorCodeDAO");
-    for ( int i = 0; i < txnSink.getArray().size(); i++ ) {
-      Transaction txn = (Transaction) txnSink.getArray().get(i);
+    for ( int i = 0; i < txns.size(); i++ ) {
+      Transaction txn = (Transaction) txns.get(i);
       if ( txn instanceof SummaryTransaction ) {
         txn = (SummaryTransaction) txn;
       } else if ( txn instanceof FXSummaryTransaction ) {
@@ -79,8 +81,8 @@ public class TransactionSummaryCron implements ContextAgent {
       transactionSummaryDAO.put(txnSummary);
     }
 
-    for ( int i = 0; i < intuitTxnSink.getArray().size(); i++ ) {
-      Transaction txn = (Transaction) intuitTxnSink.getArray().get(i);
+    for ( int i = 0; i < intuitTxns.size(); i++ ) {
+      Transaction txn = (Transaction) intuitTxns.get(i);
       if ( txn instanceof SummaryTransaction ) {
         txn = (SummaryTransaction) txn;
       } else if ( txn instanceof FXSummaryTransaction ) {
@@ -101,6 +103,26 @@ public class TransactionSummaryCron implements ContextAgent {
         .build();
       transactionSummaryDAO.put(intuitTxnSummary);
     }
+  }
+
+  private List<Transaction> setupTxnListFromSet(X x, HashSet<String> txnIdSet) {
+    DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+    List<Transaction> txnList = new ArrayList<>();
+    for ( String id : txnIdSet ) {
+      Transaction txn = (Transaction) transactionDAO.find(id);
+      txnList.add(txn);
+    }
+    return txnList;
+  }
+
+  private HashSet<String> setupTxnIdSet(X x, List txns) {
+    HashSet<String> txnIdSet = new HashSet<String>();
+    for ( int i = 0; i < txns.size(); i++ ) {
+      Transaction txn = (Transaction) txns.get(i);
+      Transaction summaryTxn = txn.findRoot(x);
+      txnIdSet.add(summaryTxn.getId());
+    }
+    return txnIdSet;
   }
 
 }
