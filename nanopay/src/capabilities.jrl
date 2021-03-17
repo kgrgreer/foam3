@@ -911,7 +911,7 @@ p({
 })
 
 p({
-  "class":"net.nanopay.crunch.registration.LimitedAPICapability",
+  "class":"net.nanopay.crunch.registration.LimitedAmountCapability",
   "id":"F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD",
   "name":"API CAD Personal Payments Under 1000CAD",
   "description":"Unlock capability for Canadian personal payments under $1000",

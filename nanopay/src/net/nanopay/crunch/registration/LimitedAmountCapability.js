@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.crunch.registration',
-  name: 'LimitedAPICapability',
+  name: 'LimitedAmountCapability',
   extends: 'foam.nanos.crunch.Capability',
 
   properties: [

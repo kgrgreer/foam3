@@ -53,7 +53,7 @@ foam.CLASS({
     'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy',
     'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions',
     'net.nanopay.crunch.registration.BusinessDetailData',
-    'net.nanopay.crunch.registration.LimitedAPICapability',
+    'net.nanopay.crunch.registration.LimitedAmountCapability',
     'net.nanopay.crunch.registration.PersonalOnboardingTypeData',
     'net.nanopay.crunch.registration.SigningOfficerList',
     'net.nanopay.crunch.registration.UserRegistrationData',
@@ -328,7 +328,7 @@ foam.CLASS({
         }
 
         if ( onboardingType != OnboardingType.PERSONAL && onboardingType != OnboardingType.BUSINESS ) {
-          throw new GeneralException("Unexpected onboarding type and login type: " + request.getType() + ", " + loginDetail.getType());
+          throw new GeneralException("Unexpected onboarding type: " + request.getType() + ", and login type: " + loginDetail.getType());
         }
 
         onboardUser(x, request, accountDetail, loginDetail, onboardingType);
@@ -653,7 +653,7 @@ foam.CLASS({
 
         DAO dao = (DAO) x.get("localCapabilityDAO");
         Capability fullUserCapability = (Capability) dao.find("1F0B39AD-934E-462E-A608-D590D1081298");
-        LimitedAPICapability minimalUserCapability = (LimitedAPICapability) dao.find("F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD");
+        LimitedAmountCapability minimalUserCapability = (LimitedAmountCapability) dao.find("F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD");
 
         // Return the capability ID
         return amount <= minimalUserCapability.getMaximumAmount() ?
