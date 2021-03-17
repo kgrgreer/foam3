@@ -287,7 +287,7 @@ foam.CLASS({
           setAccountNumber(info.getAccountNumber());
           setBranchId(info.getBranch());
           setInstitutionNumber(info.getBankCode());
-          setAccountType(info.getAccountType);
+          setAccountType(info.getAccountType());
           setAccountOwnerType(info.getOwnerAccountNumber());
         }
       `
