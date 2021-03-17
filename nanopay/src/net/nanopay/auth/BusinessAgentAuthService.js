@@ -112,6 +112,10 @@ foam.CLASS({
 
         return getDelegate().canActAs(x, agent, entity);
       `
+    },
+    {
+      name: 'logout',
+      javaCode: 'getDelegate().logout(x);'
     }
   ]
 });
