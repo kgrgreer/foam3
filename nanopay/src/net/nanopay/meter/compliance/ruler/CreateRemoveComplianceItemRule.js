@@ -39,7 +39,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.dig.exception.GeneralException',
     'foam.nanos.logger.Logger',
-    'foam.nanos.ruler.Operations',
+    'foam.nanos.dao.Operation',
     'java.util.List',
     'net.nanopay.meter.compliance.ComplianceItem',
     'net.nanopay.meter.compliance.dowJones.DowJonesResponse',
@@ -65,7 +65,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Enum',
-      of: 'foam.nanos.ruler.Operations',
+      of: 'foam.nanos.dao.Operation',
       name: 'operation',
       documentation: `
         Describes whether a compliance item is being created or removed. Only
@@ -90,7 +90,7 @@ foam.CLASS({
           agency.submit(x, new ContextAgent() {
             @Override
             public void execute(X x) {
-              if(CreateRemoveComplianceItemRule.this.getOperation() == Operations.CREATE) {
+              if(CreateRemoveComplianceItemRule.this.getOperation() == Operation.CREATE) {
                 if ( obj instanceof DowJonesResponse ) {
                   DowJonesResponse response = (DowJonesResponse) obj;
                   // entity could be User or Beneficial Owner
@@ -163,7 +163,7 @@ foam.CLASS({
                   DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
                   complianceItemDAO.inX(x).put(complianceItem);
                 }
-              } else if(CreateRemoveComplianceItemRule.this.getOperation() == Operations.REMOVE && obj != null) {
+              } else if(CreateRemoveComplianceItemRule.this.getOperation() == Operation.REMOVE && obj != null) {
                 if ( obj instanceof DowJonesResponse ) {
                   DowJonesResponse response = (DowJonesResponse) obj;
                   DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");

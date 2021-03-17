@@ -13,7 +13,7 @@ import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserQueryService;
 import foam.nanos.logger.Logger;
-import foam.nanos.ruler.Operations;
+import foam.nanos.dao.Operation;
 import foam.nanos.test.Test;
 
 import java.util.ArrayList;
@@ -49,15 +49,15 @@ public class ApprovalTestExecutor extends LiquidTestExecutor {
 
     // Test approval request creation
     this.logger.info(getTestPrefix(), "Checking approval requests");
-    Approvable approvable = this.testApprovableCreation(this.getSystemX(), user, ApprovalStatus.REQUESTED, false, Operations.CREATE);
+    Approvable approvable = this.testApprovableCreation(this.getSystemX(), user, ApprovalStatus.REQUESTED, false, Operation.CREATE);
 
     // Test approval request creation
     this.logger.info(getTestPrefix(), "Checking approval requests");
-    ApprovalRequest request = this.testApprovalRequestCreation(this.getSystemX(), this.getSecondSystemUser(x), Operations.CREATE, approvable, null);
+    ApprovalRequest request = this.testApprovalRequestCreation(this.getSystemX(), this.getSecondSystemUser(x), Operation.CREATE, approvable, null);
 
     // 01 - Approve / reject
     this.logger.info(getTestPrefix(), "Applying approval action", states[0].getApprovalStatus());
-    this.applyApprovalAction(this.getSecondX(), states[0].getApprovalStatus(), request, Operations.CREATE);
+    this.applyApprovalAction(this.getSecondX(), states[0].getApprovalStatus(), request, Operation.CREATE);
 
     // Check status
     this.logger.info(getTestPrefix(), "Checking lifecycle state", states[0].getLifecycleState());
@@ -75,19 +75,19 @@ public class ApprovalTestExecutor extends LiquidTestExecutor {
 
     // Test approvable created
     this.logger.info(getTestPrefix(), "Checking requested approvables");
-    approvable = this.testApprovableCreation(this.getSystemX(), user, ApprovalStatus.REQUESTED, false, Operations.UPDATE);
+    approvable = this.testApprovableCreation(this.getSystemX(), user, ApprovalStatus.REQUESTED, false, Operation.UPDATE);
 
     // Test approval request creation
     this.logger.info(getTestPrefix(), "Checking approval requests");
-    request = this.testApprovalRequestCreation(this.getSystemX(), this.getSecondSystemUser(x), Operations.UPDATE, approvable, null);
+    request = this.testApprovalRequestCreation(this.getSystemX(), this.getSecondSystemUser(x), Operation.UPDATE, approvable, null);
 
     // 02 - Approve / reject
     this.logger.info(getTestPrefix(), "Applying approval action", states[1].getApprovalStatus());
-    this.applyApprovalAction(this.getSecondX(), states[1].getApprovalStatus(), request, Operations.UPDATE);
+    this.applyApprovalAction(this.getSecondX(), states[1].getApprovalStatus(), request, Operation.UPDATE);
 
     // Validation
     this.logger.info(getTestPrefix(), "Validating requested approvables");
-    this.testApprovableCreation(this.getSystemX(), user, states[1].getApprovalStatus(), states[1].getApprovalStatus() == ApprovalStatus.APPROVED, Operations.UPDATE);
+    this.testApprovableCreation(this.getSystemX(), user, states[1].getApprovalStatus(), states[1].getApprovalStatus() == ApprovalStatus.APPROVED, Operation.UPDATE);
 
     // Check status
     this.logger.info(getTestPrefix(), "Checking lifecycle state", states[1].getLifecycleState());
@@ -99,11 +99,11 @@ public class ApprovalTestExecutor extends LiquidTestExecutor {
 
     // Test approval request creation
     this.logger.info(getTestPrefix(), "Checking approval requests");
-    request = this.testApprovalRequestCreation(this.getSystemX(), this.getSecondSystemUser(x), Operations.REMOVE, null, user);
+    request = this.testApprovalRequestCreation(this.getSystemX(), this.getSecondSystemUser(x), Operation.REMOVE, null, user);
 
     // 03 - Approve / reject
     this.logger.info(getTestPrefix(), "Applying approval action", states[2].getApprovalStatus());
-    this.applyApprovalAction(this.getSecondX(), states[2].getApprovalStatus(), request, Operations.REMOVE);
+    this.applyApprovalAction(this.getSecondX(), states[2].getApprovalStatus(), request, Operation.REMOVE);
 
     // Check status
     this.logger.info(getTestPrefix(), "Checking lifecycle state", states[2].getLifecycleState());
@@ -226,7 +226,7 @@ public class ApprovalTestExecutor extends LiquidTestExecutor {
     test(foundUser != null, "Checking if user found after unapproved delete");
   }
 
-  private ApprovalRequest testApprovalRequestCreation(X x, User approvingUser, Operations operation, Approvable approvable, User user) {
+  private ApprovalRequest testApprovalRequestCreation(X x, User approvingUser, Operation operation, Approvable approvable, User user) {
     // Request to return
     ApprovalRequest approvalRequest = null;
 
@@ -275,7 +275,7 @@ public class ApprovalTestExecutor extends LiquidTestExecutor {
     return approvalRequest;
   }
 
-  private Approvable testApprovableCreation(X x, User user, ApprovalStatus expectedStatus,Boolean actionApplied, Operations operation) {
+  private Approvable testApprovableCreation(X x, User user, ApprovalStatus expectedStatus,Boolean actionApplied, Operation operation) {
     String approvableHashKey = ApprovableAware.getApprovableHashKey(x, user, operation);
 
     String hashedId = new StringBuilder("d")
@@ -295,7 +295,7 @@ public class ApprovalTestExecutor extends LiquidTestExecutor {
     test(foundApprovable != null, "Checking if Approvable found after update");
     test(foundApprovable.getStatus() == expectedStatus, "Expected status: " + expectedStatus + ". Actual status: " + foundApprovable.getStatus());
 
-    if ( operation == Operations.UPDATE ){
+    if ( operation == Operation.UPDATE ){
       // Test that the user has not been updated
       User foundUser = (User) getLocalUserDAO(x).inX(x).find(user.getId());
       test(foundUser != null, "Checking if user found for update applied check");
@@ -303,7 +303,7 @@ public class ApprovalTestExecutor extends LiquidTestExecutor {
       // Check if the update should have been applied
       if (actionApplied)
         test(foundUser.getLastName().equals(this.getTestPrefix()), "Checking if the update (action) has been applied: " + actionApplied);
-    } else if ( operation == Operations.CREATE ){
+    } else if ( operation == Operation.CREATE ){
       // check that user is not in the user dao
       User foundUser = (User) getLocalUserDAO(x).inX(x).find(user.getId());
 
@@ -319,7 +319,7 @@ public class ApprovalTestExecutor extends LiquidTestExecutor {
     return foundApprovable;
   }
 
-  private void applyApprovalAction(X x, ApprovalStatus status, ApprovalRequest request, Operations operation) {
+  private void applyApprovalAction(X x, ApprovalStatus status, ApprovalRequest request, Operation operation) {
     test(request != null, "Checking if ApprovalRequest found for approving user: " + this.getTestPrefix());
 
     // Mark the request with the appropriate status

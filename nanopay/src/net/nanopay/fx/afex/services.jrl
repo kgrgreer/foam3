@@ -23,7 +23,7 @@ p({
   "lazy":true,
   "serve":false,
   "serviceScript":"""
-    return new net.nanopay.fx.afex.AFEXService(x);
+    return new net.nanopay.fx.afex.AFEXServiceMock(x);
   """
 })
 
