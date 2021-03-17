@@ -21,6 +21,8 @@ foam.CLASS({
   label: 'Austria',
   extends: 'net.nanopay.bank.EUBankAccount',
 
+  mixins: [ 'net.nanopay.bank.BankAccountValidationMixin' ],
+
   documentation: 'Austrian bank account information.',
 
   javaImports: [
@@ -117,33 +119,6 @@ foam.CLASS({
         if ( val != null && BRANCH_ID_PATTERN.matcher(val).matches() ) {
           clearBranch();
           setBranchId(val);
-        }
-      `
-    }
-  ],
-
-  methods: [
-    {
-      name: 'validate',
-      javaCode: `
-        super.validate(x);
-
-        var accountNumber = this.getAccountNumber();
-        if ( SafetyUtil.isEmpty(accountNumber) ) {
-          throw new ValidationException(this.ACCOUNT_NUMBER_REQUIRED);
-        }
-        if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
-          throw new ValidationException(this.ACCOUNT_NUMBER_INVALID);
-        }
-
-        if ( SafetyUtil.isEmpty(getSwiftCode()) ) {
-          var branchId = this.getBranchId();
-          if ( SafetyUtil.isEmpty(branchId) ) {
-            throw new ValidationException(this.BRANCH_ID_REQUIRED);
-          }
-          if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
-            throw new ValidationException(this.BRANCH_ID_INVALID);
-          }
         }
       `
     }

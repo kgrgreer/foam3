@@ -21,6 +21,8 @@ foam.CLASS({
   label: 'Cyprus',
   extends: 'net.nanopay.bank.EUBankAccount',
 
+  mixins: [ 'net.nanopay.bank.BankAccountValidationMixin' ],
+
   documentation: 'Cyprus bank account information.',
 
   javaImports: [
@@ -137,41 +139,6 @@ foam.CLASS({
             clearBranch();
             setInstitutionNumber(institutionNumber);
             setBranchId(branchId);
-          }
-        }
-      `
-    }
-  ],
-
-  methods: [
-    {
-      name: 'validate',
-      javaCode: `
-        super.validate(x);
-
-        var accountNumber = this.getAccountNumber();
-        if ( SafetyUtil.isEmpty(accountNumber) ) {
-          throw new ValidationException(this.ACCOUNT_NUMBER_REQUIRED);
-        }
-        if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
-          throw new ValidationException(this.ACCOUNT_NUMBER_INVALID);
-        }
-
-        if ( SafetyUtil.isEmpty(getSwiftCode()) ) {
-          var institutionNumber = this.getInstitutionNumber();
-          if ( SafetyUtil.isEmpty(institutionNumber) ) {
-            throw new ValidationException(this.INSTITUTION_NUMBER_REQUIRED);
-          }
-          if ( ! INSTITUTION_NUMBER_PATTERN.matcher(institutionNumber).matches() ) {
-            throw new ValidationException(this.INSTITUTION_NUMBER_INVALID);
-          }
-
-          var branchId = this.getBranchId();
-          if ( SafetyUtil.isEmpty(branchId) ) {
-            throw new ValidationException(this.BRANCH_ID_REQUIRED);
-          }
-          if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
-            throw new ValidationException(this.BRANCH_ID_INVALID);
           }
         }
       `
