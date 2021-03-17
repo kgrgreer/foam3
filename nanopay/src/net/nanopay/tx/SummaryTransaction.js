@@ -25,19 +25,19 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.dao.DAO',
+    'foam.dao.ArraySink',
+    'foam.util.SafetyUtil',
+    'java.util.List',
     'net.nanopay.integration.ErrorCode',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.cico.CITransaction',
     'net.nanopay.tx.cico.COTransaction',
-    'net.nanopay.tx.PartnerTransaction',
-    'net.nanopay.tx.DigitalTransaction',
-    'net.nanopay.tx.ValueMovementTransaction',
     'net.nanopay.tx.ChainSummary',
-    'foam.dao.DAO',
-    'foam.dao.ArraySink',
-    'java.util.List',
-    'foam.util.SafetyUtil',
+    'net.nanopay.tx.DigitalTransaction',
+    'net.nanopay.tx.PartnerTransaction',
+    'net.nanopay.tx.ValueMovementTransaction',
     'static foam.mlang.MLang.EQ'
   ],
 
@@ -69,7 +69,7 @@ foam.CLASS({
       section: 'transactionChainSummaryInformation'
     },
     {
-      name: 'withdrawAmount',
+      name: 'withdrawalAmount',
       class: 'UnitValue',
       storageTransient: true,
       visibility: 'RO',
@@ -142,8 +142,8 @@ foam.CLASS({
           if ( ( ! depositAmountIsSet_) && (child instanceof ValueMovementTransaction) && (SafetyUtil.equals(this.getDestinationAccount(), child.getDestinationAccount())) ){
             this.setDepositAmount(child.getTotal(x, child.getDestinationAccount()));
           }
-          if ( ( ! withdrawAmountIsSet_) && (child instanceof ValueMovementTransaction) && (SafetyUtil.equals(this.getSourceAccount(), child.getSourceAccount())) ){
-            this.setWithdrawAmount(child.getTotal(x, child.getSourceAccount()));
+          if ( ( ! withdrawalAmountIsSet_) && (child instanceof ValueMovementTransaction) && (SafetyUtil.equals(this.getSourceAccount(), child.getSourceAccount())) ){
+            this.setWithdrawalAmount(child.getTotal(x, child.getSourceAccount()));
           }
         }
 

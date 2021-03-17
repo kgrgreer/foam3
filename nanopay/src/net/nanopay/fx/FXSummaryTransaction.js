@@ -74,7 +74,7 @@ foam.CLASS({
       section: 'transactionChainSummaryInformation'
     },
     {
-      name: 'withdrawAmount',
+      name: 'withdrawalAmount',
       class: 'UnitValue',
       storageTransient: true,
       visibility: 'RO',
@@ -164,8 +164,8 @@ foam.CLASS({
         if ( ( ! depositAmountIsSet_) && (child instanceof ValueMovementTransaction) && (SafetyUtil.equals(this.getDestinationAccount(), child.getDestinationAccount())) ){
           this.setDepositAmount(child.getTotal(x, child.getDestinationAccount()));
         }
-        if ( ( ! withdrawAmountIsSet_) && (child instanceof ValueMovementTransaction) && (SafetyUtil.equals(this.getSourceAccount(), child.getSourceAccount())) ){
-          this.setWithdrawAmount(child.getTotal(x, child.getSourceAccount()));
+        if ( ( ! withdrawalAmountIsSet_) && (child instanceof ValueMovementTransaction) && (SafetyUtil.equals(this.getSourceAccount(), child.getSourceAccount())) ){
+          this.setWithdrawalAmount(child.getTotal(x, child.getSourceAccount()));
         }
       }
 
