@@ -46,13 +46,9 @@ foam.CLASS({
           throw new ValidationException(this.ACCOUNT_NUMBER_REQUIRED);
         }
 
-        try {
-          var pattern = (Pattern) getClass().getDeclaredField("ACCOUNT_NUMBER_PATTERN").get(this);
-          if ( ! pattern.matcher(accountNumber).matches() ) {
-            throw new ValidationException(this.ACCOUNT_NUMBER_INVALID);
-          }
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-          // No accountNumber validation
+        var pattern = getPattern("ACCOUNT_NUMBER_PATTERN");
+        if ( pattern != null && ! pattern.matcher(accountNumber).matches() ) {
+          throw new ValidationException(this.ACCOUNT_NUMBER_INVALID);
         }
       `
     },
@@ -60,8 +56,8 @@ foam.CLASS({
       name: 'validateInstitutionNumber',
       javaCode: `
         if ( SafetyUtil.isEmpty(getSwiftCode()) ) {
-          try {
-            var pattern = (Pattern) getClass().getDeclaredField("INSTITUTION_NUMBER_PATTERN").get(this);
+          var pattern = getPattern("INSTITUTION_NUMBER_PATTERN");
+          if ( pattern != null ) {
             var institutionNumber = this.getInstitutionNumber();
             if ( SafetyUtil.isEmpty(institutionNumber) ) {
               throw new ValidationException(this.INSTITUTION_NUMBER_REQUIRED);
@@ -69,8 +65,6 @@ foam.CLASS({
             if ( ! pattern.matcher(institutionNumber).matches() ) {
               throw new ValidationException(this.INSTITUTION_NUMBER_INVALID);
             }
-          } catch (NoSuchFieldException | IllegalAccessException e) {
-            // No institutionNumber validation
           }
         }
       `
@@ -79,8 +73,8 @@ foam.CLASS({
       name: 'validateBranchId',
       javaCode: `
         if ( SafetyUtil.isEmpty(getSwiftCode()) ) {
-          try {
-            var pattern = (Pattern) getClass().getDeclaredField("BRANCH_ID_PATTERN").get(this);
+          var pattern = getPattern("BRANCH_ID_PATTERN");
+          if ( pattern != null ) {
             var branchId = this.getBranchId();
             if ( SafetyUtil.isEmpty(branchId) ) {
               throw new ValidationException(this.BRANCH_ID_REQUIRED);
@@ -88,9 +82,23 @@ foam.CLASS({
             if ( ! pattern.matcher(branchId).matches() ) {
               throw new ValidationException(this.BRANCH_ID_INVALID);
             }
-          } catch (NoSuchFieldException | IllegalAccessException e) {
-            // No branchId validation
           }
+        }
+      `
+    },
+    {
+      name: 'getPattern',
+      type: 'Regex',
+      args: [
+        { name: 'name', type: 'String' }
+      ],
+      javaCode: `
+        try {
+          var field = getClass().getDeclaredField(name);
+          return (Pattern) field.get(this);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+          // Pattern not found
+          return null;
         }
       `
     }
