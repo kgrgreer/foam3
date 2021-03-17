@@ -40,8 +40,6 @@ foam.CLASS({
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
     'foam.nanos.auth.User',
-    'foam.nanos.logger.PrefixLogger',
-    'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
