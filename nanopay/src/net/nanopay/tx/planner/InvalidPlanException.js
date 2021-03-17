@@ -16,39 +16,57 @@
  */
 
 foam.CLASS({
-  name: 'TransactionException',
-  package: 'net.nanopay.tx',
-  extends: 'foam.core.FOAMException',
+  name: 'InvalidPlanException',
+  package: 'net.nanopay.tx.planner',
+  javaExtends: 'net.nanopay.tx.TransactionException',
+  implements: ['foam.core.Exception'],
+  javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
   javaImports: [
     'foam.core.X'
   ],
-
+  
   axioms: [
     {
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data: `
-  public TransactionException(String message) {
+  public InvalidPlanException() {
+    super("Invalid plan");
+  }
+
+  public InvalidPlanException(X x) {
+    super(x, "Invalid plan");
+  }
+
+  public InvalidPlanException(X x, Exception cause) {
+    super(x, "Invalid plan", cause);
+  }
+
+  public InvalidPlanException(Exception cause) {
+    super("Invalid plan", cause);
+  }
+
+  public InvalidPlanException(String message) {
     super(message);
   }
 
-  public TransactionException(X x, String message) {
-    super(x, message);
-  }
-
-  public TransactionException(X x, String message, Exception cause) {
-    super(x, message, cause);
-  }
-
-  public TransactionException(String message, Exception cause) {
+  public InvalidPlanException(String message, Exception cause) {
     super(message, cause);
   }
           `
         }));
       }
+    }
+  ],
+
+  methods: [
+    {
+      name: 'getClientRethrowException',
+      type: 'RuntimeException',
+      javaCode: 'return this;'
     }
   ]
 });

@@ -148,7 +148,7 @@ foam.CLASS({
             }
           }  else {
             String locale = user.getLanguage().getCode().toString();
-            throw new foam.nanos.auth.AuthenticationException(this.ACCOUNT_LOCKED, getClassInfo().getId()+ ".ACCOUNT_LOCKED", locale);
+            throw new foam.nanos.auth.LoginException();
           }
         }
 
@@ -240,7 +240,7 @@ foam.CLASS({
       ],
       javaCode: `
         if ( loginAttempts == null ) {
-          throw new foam.nanos.auth.AuthenticationException("User not found.");
+          throw new foam.nanos.auth.UnknowUserException();
         }
         return loginAttempts.getLoginAttempts() >= getMaxAttempts();
       `
@@ -371,7 +371,7 @@ foam.CLASS({
       ],
       javaCode: `
         if ( user == null ) {
-          throw new foam.nanos.auth.AuthenticationException("User not found.");
+          throw new foam.nanos.auth.UnknowUserException();
         }
         return user.isAdmin();
       `
@@ -388,7 +388,7 @@ foam.CLASS({
       ],
       javaCode: `
         if ( loginAttempts == null ) {
-          throw new foam.nanos.auth.AuthenticationException("User not found.");
+          throw new foam.nanos.auth.UnknowUserException();
         }
         Calendar now = Calendar.getInstance();
         Calendar cal = Calendar.getInstance();

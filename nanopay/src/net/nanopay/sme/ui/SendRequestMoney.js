@@ -307,7 +307,8 @@ foam.CLASS({
     { name: 'REVIEW_MSG', message: 'Review' },
     { name: 'REVIEW_PAYMENT', message: 'Review payment'},
     { name: 'CANCEL', message: 'Cancel'},
-    { name: 'VOID', message: 'Void'}
+    { name: 'VOID', message: 'Void'},
+    { name: 'QUOTE_MISSING', message: 'Quote not set'}
   ],
 
   methods: [
@@ -468,7 +469,7 @@ foam.CLASS({
       }
 
       if ( ! this.invoice.quote ) {
-        this.abortQuoteAndSaveDraft(new Error("quote not set"));
+        this.abortQuoteAndSaveDraft(new Error(this.QUOTE_MISSING));
         return;
       }
       this.txnQuote = this.invoice.quote.plan;

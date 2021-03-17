@@ -31,7 +31,8 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.TransactionQuote'
+    'net.nanopay.tx.TransactionQuote',
+    'foam.nanos.session.Session',
   ],
 
    methods: [
@@ -48,6 +49,7 @@ foam.CLASS({
             try {
               quote = (TransactionQuote) transactionPlannerDAO.put(quote);
             } catch(RuntimeException error){
+              Session session = x.get(Session.class);
               throw new ClientRuntimeException(error.getMessage(), error);
             }
 

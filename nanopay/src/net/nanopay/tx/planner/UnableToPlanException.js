@@ -20,6 +20,12 @@ foam.CLASS({
   package: 'net.nanopay.tx.planner',
   javaExtends: 'net.nanopay.tx.TransactionException',
   implements: ['foam.core.Exception'],
+  javaGenerateDefaultConstructor: false,
+  javaGenerateConvenienceConstructor: false,
+
+  javaImports: [
+    'foam.core.X'
+  ],
   
   axioms: [
     {
@@ -27,6 +33,14 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data: `
+  public UnableToPlanException() {
+    super("Unable to plan");
+  }
+
+  public UnableToPlanException(X x) {
+    super(x, "Unable to plan");
+  }
+
   public UnableToPlanException(String message) {
     super(message);
   }

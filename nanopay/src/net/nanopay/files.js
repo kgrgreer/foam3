@@ -1632,6 +1632,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/QuoteFillerDAO' },
   { name: 'net/nanopay/tx/planner/PlanNotFoundException' },
   { name: 'net/nanopay/tx/planner/UnableToPlanException' },
+  { name: 'net/nanopay/tx/planner/InvalidPlanException' },
   { name: 'net/nanopay/tx/planner/InterTrustPlanner' },
   { name: 'net/nanopay/tx/planner/RbcInterTrustPlanner' },
   { name: 'net/nanopay/tx/planner/BmoInterTrustPlanner' },
