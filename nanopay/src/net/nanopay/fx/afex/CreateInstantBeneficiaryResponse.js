@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: "net.nanopay.fx.afex",
-  name: "CreateInstantBenefiaryResponse",
+  name: "CreateInstantBeneficiaryResponse",
   properties: [
     {
       class: 'Int',

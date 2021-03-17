@@ -30,7 +30,7 @@ foam.CLASS({
     'foam.nanos.approval.ApprovalRequest',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
-    'foam.nanos.ruler.Operations',
+    'foam.nanos.dao.Operation',
     'foam.util.SafetyUtil',
     'java.util.HashSet',
     'java.util.Map',
@@ -56,7 +56,7 @@ foam.CLASS({
         if ( dao == null ) return;
 
         Set<Long> referencedUserSet = null;
-        if ( approvalRequest.getOperation() == Operations.REMOVE ) {
+        if ( approvalRequest.getOperation() == Operation.REMOVE ) {
           // Get the users being referenced
           referencedUserSet = getReferencedUsersOnDelete(x, dao.inX(getX()).find(approvalRequest.getObjId()));
         } else {

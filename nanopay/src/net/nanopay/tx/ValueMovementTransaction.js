@@ -15,33 +15,9 @@
  * from nanopay Corporation.
  */
 
-foam.CLASS({
-  package: "net.nanopay.fx.afex",
-  name: "CreateInstantBenefiaryRequest",
-  properties: [
-    {
-      class: 'String',
-      name: "clientAPIKey"
-    },
-    {
-      class: 'String',
-      name: "AccountId"
-    },
-    {
-      class: 'String',
-      name: "FundingBalanceId"
-    },
-    {
-      class: 'String',
-      name: "NotificationId"
-    },
-    {
-      class: 'String',
-      name: "RemittanceLine4"
-    },
-    {
-      class: 'String',
-      name: "VendorId"
-    }
-  ]
+foam.INTERFACE({
+  package: 'net.nanopay.tx',
+  name: 'ValueMovementTransaction',
+  documentation: 'Marker Transaction interface, for transactions which make some kind of transfers',
+
 });
