@@ -23,20 +23,19 @@ foam.CLASS({
   documentation: `Transaction used as a summary to for AFEX BMO transactions`,
 
   javaImports: [
-    'net.nanopay.tx.model.Transaction',
+    'foam.dao.DAO',
+    'foam.dao.ArraySink',
+    'foam.util.SafetyUtil',
+    'java.util.List',
     'net.nanopay.integration.ErrorCode',
+    'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.cico.CITransaction',
     'net.nanopay.tx.cico.COTransaction',
-    'net.nanopay.tx.PartnerTransaction',
+    'net.nanopay.tx.ChainSummary',
     'net.nanopay.tx.DigitalTransaction',
-    'net.nanopay.tx.ChainSummary',
+    'net.nanopay.tx.PartnerTransaction',
     'net.nanopay.tx.ValueMovementTransaction',
-    'net.nanopay.tx.ChainSummary',
-    'foam.dao.DAO',
-    'foam.dao.ArraySink',
-    'java.util.List',
-    'foam.util.SafetyUtil',
     'static foam.mlang.MLang.EQ'
   ],
 
