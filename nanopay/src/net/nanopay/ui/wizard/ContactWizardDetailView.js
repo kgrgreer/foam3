@@ -115,7 +115,8 @@ foam.CLASS({
             return self.Popup.create({ onClose: self.onClose }, self)
               .startContext({ controllerMode: self.controllerMode })
                 .tag({
-                  class: self.detailView,//`net.nanopay.contacts.ui.${self.modelName}WizardView`,//delete
+                  //class: self.detailView,//`net.nanopay.contacts.ui.${self.modelName}WizardView`,//delete
+                  class: `net.nanopay.contacts.ui.${self.modelName}WizardView`,
                   //net.nanopay.contacts.ui.ContactWizardView
                   data$: self.data$,
                   isEdit: self.isEdit
