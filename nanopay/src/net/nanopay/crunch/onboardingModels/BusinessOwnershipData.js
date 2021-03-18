@@ -446,23 +446,6 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'validate',
-      javaCode: `
-        java.util.List<foam.core.PropertyInfo> props = getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
-        for ( foam.core.PropertyInfo prop : props ) {
-          try {
-            prop.validateObj(x, this);
-          } catch ( IllegalStateException e ) {
-            throw e;
-          }
-        }
-
-        // validate BeneficialOwner objects
-        BeneficialOwner[] owners = new BeneficialOwner[]{ getOwner1(), getOwner2(), getOwner3(), getOwner4() };
-        for ( int i = 0 ; i < getAmountOfOwners(); i++ ) owners[i].validate(x);
-      `
-    },
-    {
       name: 'clearAllOwnerAndPercentData',
       code: function() {
         this.chosenOwners = [];
