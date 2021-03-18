@@ -1453,6 +1453,7 @@ var classes = [
   'net.nanopay.crunch.acceptanceDocuments.capabilities.AFXColoradoDisclosure',
   'net.nanopay.crunch.acceptanceDocuments.capabilities.CABankAccountAuthAgreement',
   'net.nanopay.crunch.acceptanceDocuments.capabilities.RecourseAgreement',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.ThirdPartyVerificationAFEXTerms',
   'net.nanopay.crunch.acceptanceDocuments.capabilities.CACancellationAgreement',
   'net.nanopay.crunch.acceptanceDocuments.capabilities.USBankAccountAuthAgreement',
   'net.nanopay.crunch.acceptanceDocuments.capabilities.USCancellationAgreement',
