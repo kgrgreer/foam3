@@ -35,7 +35,7 @@ foam.CLASS({
     'foam.nanos.approval.Approvable',
     'foam.nanos.approval.ApprovalRequest',
     'foam.nanos.approval.ApprovalStatus',
-    'foam.nanos.ruler.Operations',
+    'foam.nanos.ruler.Operation',
     'foam.nanos.auth.Subject',
     'java.util.Map',
     'java.util.ArrayList',
@@ -74,7 +74,7 @@ foam.CLASS({
             DAO approvalRequestDAO = (DAO) getX().get("approvalRequestDAO");
             DAO approvableDAO = (DAO) getX().get("approvableDAO");
 
-            Operations operation = Operations.UPDATE;
+            Operation operation = Operation.UPDATE;
 
             String hashedId = new StringBuilder("d")
               .append("localTicketDAO")
