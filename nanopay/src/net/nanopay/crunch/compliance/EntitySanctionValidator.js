@@ -98,6 +98,7 @@ foam.CLASS({
                     .setClassification(getClassification())
                     .setMatches(response.getResponseBody().getMatches())
                     .setGroup(group)
+                    .setCreatedFor(business.getId())
                     .build());
               }
             }, "Entity Sanction Validator");
@@ -117,6 +118,7 @@ foam.CLASS({
               .setClassification(getClassification())
               .setMatches(response != null ? response.getResponseBody().getMatches() : null)
               .setGroup(group)
+              .setCreatedFor(business.getId())
               .build());
           ruler.putResult(ComplianceValidationStatus.PENDING);
         }

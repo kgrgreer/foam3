@@ -99,7 +99,7 @@ foam.CLASS({
       outline: none;
     }
     ^ .invoice-amount-input {
-      width: calc(100% - 87px);
+      width: calc(100% - 90px);
       display: inline-block;
     }
     ^ .net-nanopay-sme-ui-CurrencyChoice {
@@ -237,6 +237,9 @@ foam.CLASS({
     }
     ^ .foam-u2-TextField {
       max-width: 240px;
+    }
+    ^ .input-wrapper-width {
+      width: 100%;
     }
   `,
 
@@ -558,7 +561,7 @@ foam.CLASS({
           .end()
         .end()
         .startContext({ data: this.invoice })
-          .start().addClass('input-wrapper')
+          .start().addClass('input-wrapper').addClass('input-wrapper-width')
             .start().addClass('input-label').add(this.AMOUNT).end()
               .start()
                 .on('mouseenter', this.toggleTooltip)
@@ -575,7 +578,7 @@ foam.CLASS({
                     })
                   .end()
                 .endContext()
-                .start()
+                .start().addClass('invoice-amount-input')
                   .start(this.Invoice.AMOUNT, { mode: displayMode })
                     .enableClass('error-box', this.slot( function(isInvalid, type, showAddBank) {
                       return isInvalid && type === 'payable' && ! showAddBank;

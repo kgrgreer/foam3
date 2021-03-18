@@ -83,7 +83,7 @@ foam.CLASS({
 
         // Check source account owner compliance
         User sourceOwner = txn.findSourceAccount(x).findOwner(x);
-        if ( ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED) ||
+        if ( ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED) &&
              ! grantedOneOfCapabilitySet(x, sourceOwner, sourceCapabilityList)) {
           Logger logger = (Logger) x.get("logger");
           logger.warning(txn.getId() + " planner validation failure on source account owner. (" + sourceOwner.getId() + ") " + sourceOwner.toSummary());
@@ -94,7 +94,7 @@ foam.CLASS({
         // Check destination account owner compliance
         List destinationCapabilityList = new ArrayList(Arrays.asList(getDestinationCapabilityList()));
         User destinationOwner = txn.findDestinationAccount(x).findOwner(x);
-        if ( ! destinationOwner.getCompliance().equals(ComplianceStatus.PASSED) ||
+        if ( ! destinationOwner.getCompliance().equals(ComplianceStatus.PASSED) &&
              ! grantedOneOfCapabilitySet(x, destinationOwner, destinationCapabilityList) ) {
           Logger logger = (Logger) x.get("logger");
           logger.warning(txn.getId() + " planner validation failure on destination account owner. (" + destinationOwner.getId() + ") " + destinationOwner.toSummary());

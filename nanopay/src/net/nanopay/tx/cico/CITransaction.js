@@ -20,6 +20,10 @@ foam.CLASS({
   name: 'CITransaction',
   extends: 'net.nanopay.tx.ClearingTimeTransaction',
 
+  implements: [
+    'net.nanopay.tx.ValueMovementTransaction'
+  ],
+
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
@@ -34,6 +38,7 @@ foam.CLASS({
     'net.nanopay.tx.model.TransactionStatus',
     'foam.nanos.auth.LifecycleState'
   ],
+
   properties: [
     {
       name: 'name',

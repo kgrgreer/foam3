@@ -44,3 +44,12 @@ p({
     parent:"external-sme",
     url:"http://intuit:8080"
 })
+
+p({
+    class:"foam.nanos.auth.Group",
+    id:"intuit-reporting",
+    description:"intuit Reporting group",
+    parent:"intuit-support",
+    defaultMenu:"businesses-support",
+    url:"http://intuit:8080"
+})

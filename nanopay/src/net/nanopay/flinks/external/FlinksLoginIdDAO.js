@@ -682,6 +682,9 @@ foam.CLASS({
           signingOfficersArray[signingOfficersArray.length - 1] = signingOfficer;
           signingOfficerList.setSigningOfficers(signingOfficersArray);
         }
+
+        // Set the business
+        signingOfficerList.setBusiness(business.getId());
       `
     }
   ]

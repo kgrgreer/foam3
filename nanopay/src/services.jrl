@@ -715,6 +715,7 @@ p({
   """
   {
     "of": "foam.nanos.auth.User",
+    "cache": false,
     "order": [
       {
         "class": "foam.mlang.order.Desc",

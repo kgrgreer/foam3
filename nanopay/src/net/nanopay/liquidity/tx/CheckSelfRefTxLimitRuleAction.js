@@ -27,7 +27,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.approval.Approvable',
     'foam.nanos.auth.User',
-    'foam.nanos.ruler.Operations',
+    'foam.nanos.dao.Operation',
     'foam.util.SafetyUtil',
     'java.util.HashSet',
     'java.util.Map',
@@ -39,7 +39,7 @@ foam.CLASS({
       name: 'getReferencedUsers',
       javaCode: `
         Set<Long> referencedUserSet = new HashSet<Long>();
-        if ( approvable.getOperation() == Operations.CREATE ){
+        if ( approvable.getOperation() == Operation.CREATE ){
           Map propsToUpdate = approvable.getPropertiesToUpdate();  
           if ( ! propsToUpdate.containsKey(TxLimitRule.USER_TO_LIMIT.getName()) )
             return referencedUserSet;
