@@ -21,7 +21,27 @@ foam.CLASS({
   label: 'Belgium',
   extends: 'net.nanopay.bank.EUBankAccount',
 
+  mixins: [ 'net.nanopay.bank.BankAccountValidationMixin' ],
+
   documentation: 'Belgium bank account information.',
+
+  javaImports: [
+    'foam.core.ValidationException',
+    'foam.util.SafetyUtil'
+  ],
+
+  constants: [
+    {
+      name: 'INSTITUTION_NUMBER_PATTERN',
+      type: 'Regex',
+      value: /^\d{3}$/
+    },
+    {
+      name: 'ACCOUNT_NUMBER_PATTERN',
+      type: 'Regex',
+      value: /^\d{7}$/
+    }
+  ],
 
   properties: [
     {
@@ -84,6 +104,15 @@ foam.CLASS({
     {
       name: 'branchId',
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'bankRoutingCode',
+      javaPostSet: `
+        if ( val != null && INSTITUTION_NUMBER_PATTERN.matcher(val).matches() ) {
+          clearInstitution();
+          setInstitutionNumber(val);
+        }
+      `
     }
   ]
 });

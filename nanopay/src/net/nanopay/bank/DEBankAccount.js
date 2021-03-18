@@ -21,7 +21,27 @@ foam.CLASS({
   label: 'Germany',
   extends: 'net.nanopay.bank.EUBankAccount',
 
+  mixins: [ 'net.nanopay.bank.BankAccountValidationMixin' ],
+
   documentation: 'German bank account information.',
+
+  javaImports: [
+    'foam.core.ValidationException',
+    'foam.util.SafetyUtil'
+  ],
+
+  constants: [
+    {
+      name: 'BRANCH_ID_PATTERN',
+      type: 'Regex',
+      value: /^\d{8}$/
+    },
+    {
+      name: 'ACCOUNT_NUMBER_PATTERN',
+      type: 'Regex',
+      value: /^\d{10}$/
+    }
+  ],
 
   properties: [
     {
@@ -94,6 +114,15 @@ foam.CLASS({
     {
       name: 'branchId',
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'bankRoutingCode',
+      javaPostSet: `
+        if ( val != null && BRANCH_ID_PATTERN.matcher(val).matches() ) {
+          clearBranch();
+          setBranchId(val);
+        }
+      `
     }
   ]
 });

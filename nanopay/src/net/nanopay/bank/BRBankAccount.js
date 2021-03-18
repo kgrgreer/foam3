@@ -68,7 +68,7 @@ foam.CLASS({
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      factory: function() { return /^[0-9]{3,12}$/; }
+      factory: function() { return /^[0-9]{3,10}$/; }
     },
     {
       name: 'INSTITUTION_NUMBER_PATTERN',
@@ -279,8 +279,27 @@ foam.CLASS({
     {
       name: 'iban',
       visibility: 'HIDDEN',
-      validateObj: function(iban) {
-      }
+      validateObj: function(iban) {},
+      javaPostSet: `
+        ValidationIBAN vban = new ValidationIBAN(getX());
+        IBANInfo info = vban.parse(val);
+        if ( info != null ) {
+          setAccountNumber(info.getAccountNumber());
+          setBranchId(info.getBranch());
+          setInstitutionNumber(info.getBankCode());
+          setAccountType(info.getAccountType());
+          setAccountOwnerType(info.getOwnerAccountNumber());
+        }
+      `
+    },
+    {
+      name: 'bankRoutingCode',
+      javaPostSet: `
+        if ( val != null && INSTITUTION_NUMBER_PATTERN.matcher(val).matches() ) {
+          clearInstitution();
+          setInstitutionNumber(val);
+        }
+      `
     }
   ],
 
@@ -303,15 +322,20 @@ foam.CLASS({
       javaThrows: ['ValidationException'],
       javaCode: `
         super.validate(x);
-        validateInstitutionNumber();
-        validateBranchId();
+
         validateAccountNumber();
-        if ( SafetyUtil.isEmpty(this.getAccountType()) ) {
-          throw new ValidationException(this.ACCOUNT_TYPE_REQUIRED);
+
+        if ( SafetyUtil.isEmpty(getSwiftCode()) ) {
+          validateInstitutionNumber();
+          validateBranchId();
+          if ( SafetyUtil.isEmpty(this.getAccountType()) ) {
+            throw new ValidationException(this.ACCOUNT_TYPE_REQUIRED);
+          }
+          if ( SafetyUtil.isEmpty(this.getAccountOwnerType()) ) {
+            throw new ValidationException(this.ACCOUNT_HOLDER_REQUIRED);
+          }
         }
-        if ( SafetyUtil.isEmpty(this.getAccountOwnerType()) ) {
-          throw new ValidationException(this.ACCOUNT_HOLDER_REQUIRED);
-        }
+
         if ( getOwner() == 0 ) {
           setOwner(((foam.nanos.auth.Subject) x.get("subject")).getUser().getId());
         }

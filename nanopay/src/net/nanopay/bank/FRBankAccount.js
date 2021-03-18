@@ -21,7 +21,37 @@ foam.CLASS({
   label: 'France',
   extends: 'net.nanopay.bank.EUBankAccount',
 
+  mixins: [ 'net.nanopay.bank.BankAccountValidationMixin' ],
+
   documentation: 'France bank account information.',
+
+  javaImports: [
+    'foam.core.ValidationException',
+    'foam.util.SafetyUtil'
+  ],
+
+  constants: [
+    {
+      name: 'INSTITUTION_NUMBER_PATTERN',
+      type: 'Regex',
+      value: /^\d{5}$/
+    },
+    {
+      name: 'BRANCH_ID_PATTERN',
+      type: 'Regex',
+      value: /^\d{5}$/
+    },
+    {
+      name: 'ACCOUNT_NUMBER_PATTERN',
+      type: 'Regex',
+      value: /^[a-zA-Z0-9]{11}$/
+    },
+    {
+      name: 'ROUTING_CODE_PATTERN',
+      type: 'Regex',
+      value: /^(\d{5})(\d{5})$/
+    }
+  ],
 
   properties: [
     {
@@ -45,15 +75,13 @@ foam.CLASS({
       name: 'institutionNumber',
       updateVisibility: 'RO',
       validateObj: function(institutionNumber, iban) {
-        var regex = /^[A-z0-9a-z]{5}$/;
-
         if ( iban )
           var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
         if ( ! iban || (iban && ibanMsg != 'passed') ) {
           if ( institutionNumber === '' ) {
             return this.INSTITUTION_NUMBER_REQUIRED;
-          } else if ( ! regex.test(institutionNumber) ) {
+          } else if ( ! INSTITUTION_NUMBER_PATTERN.test(institutionNumber) ) {
             return this.INSTITUTION_NUMBER_INVALID;
           }
         }
@@ -74,15 +102,13 @@ foam.CLASS({
         this.tooltip = displayAccountNumber;
       },
       validateObj: function(accountNumber, iban) {
-        var accNumberRegex = /^[0-9]{11}$/;
-
         if ( iban )
           var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
         if ( ! iban || (iban && ibanMsg != 'passed') ) {
           if ( accountNumber === '' ) {
             return this.ACCOUNT_NUMBER_REQUIRED;
-          } else if ( ! accNumberRegex.test(accountNumber) ) {
+          } else if ( ! ACCOUNT_NUMBER_PATTERN.test(accountNumber) ) {
             return this.ACCOUNT_NUMBER_INVALID;
           }
         }
@@ -95,6 +121,24 @@ foam.CLASS({
     {
       name: 'branchId',
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'bankRoutingCode',
+      javaPostSet: `
+        if ( ! SafetyUtil.isEmpty(val) ) {
+          var matcher = ROUTING_CODE_PATTERN.matcher(val);
+          if ( matcher.find() ) {
+            var institutionNumber = matcher.group(1);
+            var branchId = matcher.group(2);
+
+            // Update institution and branch
+            clearInstitution();
+            clearBranch();
+            setInstitutionNumber(institutionNumber);
+            setBranchId(branchId);
+          }
+        }
+      `
     }
   ]
 });

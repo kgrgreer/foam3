@@ -21,9 +21,12 @@ foam.CLASS({
   label: 'Portugal',
   extends: 'net.nanopay.bank.EUBankAccount',
 
+  mixins: [ 'net.nanopay.bank.BankAccountValidationMixin' ],
+
   documentation: 'Portugal bank account information.',
 
   javaImports: [
+    'foam.core.ValidationException',
     'foam.util.SafetyUtil'
   ],
 
@@ -118,6 +121,24 @@ foam.CLASS({
     {
       name: 'branchId',
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'bankRoutingCode',
+      javaPostSet: `
+        if ( ! SafetyUtil.isEmpty(val) ) {
+          var matcher = ROUTING_CODE_PATTERN.matcher(val);
+          if ( matcher.find() ) {
+            var institutionNumber = matcher.group(1);
+            var branchId = matcher.group(2);
+
+            // Update institution and branch
+            clearInstitution();
+            clearBranch();
+            setInstitutionNumber(institutionNumber);
+            setBranchId(branchId);
+          }
+        }
+      `
     }
   ]
 });
