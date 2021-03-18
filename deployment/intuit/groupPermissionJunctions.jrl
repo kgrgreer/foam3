@@ -5,10 +5,6 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-sess
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"group.read.intuit-sme"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"group.update.intuit-sme"})
 
-// ********** DEV ***************
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"serviceprovider.read.intuit"})
-
-
 // ********** ADMIN ***************
 
 // Intuit SPID Extras

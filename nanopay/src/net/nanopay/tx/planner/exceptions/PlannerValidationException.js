@@ -19,7 +19,6 @@ foam.CLASS({
   package: 'net.nanopay.tx.planner.exceptions',
   name: 'PlannerValidationException',
   extends: 'foam.core.ValidationException',
-  implements: ['foam.core.ExceptionInterface'],
   javaGenerateConvenienceConstructor: false,
 
   properties: [
@@ -45,14 +44,6 @@ foam.CLASS({
             `
         }));
       }
-    }
-  ],
-
-  methods: [
-    {
-      name: 'getClientRethrowException',
-      type: 'RuntimeException',
-      javaCode: 'return this;'
     }
   ]
 });

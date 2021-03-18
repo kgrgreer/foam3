@@ -19,7 +19,6 @@ foam.CLASS({
   package: 'net.nanopay.tx.planner.exceptions',
   name: 'PlannerComplianceFailureException',
   extends: 'net.nanopay.tx.planner.exceptions.PlannerCapabilityIncompleteException',
-  implements: ['foam.core.ExceptionInterface'],
   javaGenerateConvenienceConstructor: false,
 
   axioms: [
@@ -38,14 +37,6 @@ foam.CLASS({
             `
         }));
       }
-    }
-  ],
-
-  methods: [
-    {
-      name: 'getClientRethrowException',
-      type: 'RuntimeException',
-      javaCode: 'return this;'
     }
   ]
 });
