@@ -1177,6 +1177,11 @@ var classes = [
   'net.nanopay.tx.planner.BmoInterTrustPlanner',
   'net.nanopay.tx.planner.PartialPlanDAO',
 
+  // Planner Exceptions
+  'net.nanopay.tx.planner.exceptions.PlannerValidationException',
+  'net.nanopay.tx.planner.exceptions.PlannerCapabilityIncompleteException',
+  'net.nanopay.tx.planner.exceptions.PlannerComplianceFailureException',
+
   // Billing
   'net.nanopay.tx.billing.Bill',
   'net.nanopay.tx.billing.BillingFee',
@@ -1465,6 +1470,7 @@ var classes = [
   'net.nanopay.crunch.registration.BusinessDirectorList',
   'net.nanopay.crunch.registration.BusinessOwnerList',
   'net.nanopay.crunch.registration.IsSelectedData',
+  'net.nanopay.crunch.registration.LimitedAmountCapability',
   'net.nanopay.crunch.registration.PersonalOnboardingTypeData',
   'net.nanopay.crunch.registration.SigningOfficerList',
   'net.nanopay.crunch.registration.UserRegistrationData',

@@ -1637,6 +1637,11 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/PartialPlanDAO' },
   { name: 'net/nanopay/tx/PropertyCompare' },
 
+  // Planner Exceptions
+  { name: 'net/nanopay/tx/planner/exceptions/PlannerValidationException' },
+  { name: 'net/nanopay/tx/planner/exceptions/PlannerCapabilityIncompleteException' },
+  { name: 'net/nanopay/tx/planner/exceptions/PlannerComplianceFailureException' },
+
   // Billing
   { name: 'net/nanopay/tx/billing/Bill' },
   { name: 'net/nanopay/tx/billing/BillingFee' },
@@ -1673,6 +1678,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/registration/BusinessDirectorList' },
   { name: 'net/nanopay/crunch/registration/BusinessOwnerList' },
   { name: 'net/nanopay/crunch/registration/IsSelectedData' },
+  { name: 'net/nanopay/crunch/registration/LimitedAmountCapability' },
   { name: 'net/nanopay/crunch/registration/PersonalOnboardingTypeData' },
   { name: 'net/nanopay/crunch/registration/SigningOfficerList' },
   { name: 'net/nanopay/crunch/registration/UserRegistrationData' },
