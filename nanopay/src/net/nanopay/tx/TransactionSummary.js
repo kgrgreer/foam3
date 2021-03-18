@@ -26,9 +26,25 @@ foam.CLASS({
       name: 'id'
     },
     {
-      class: 'Enum',
+      class: 'String',
+      name: 'currency'
+    },
+    {
+      class: 'UnitValue',
+      name: 'amount'
+    },
+    {
+      class: 'String',
+      name: 'summary'
+    },
+    {
+      class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status'
+    },
+    {
+      class: 'String',
+      name: 'category'
     },
     {
       class: 'Reference',
@@ -37,8 +53,8 @@ foam.CLASS({
       name: 'errorCode'
     },
     {
-      class: 'UnitValue',
-      name: 'amount'
+      class: 'String',
+      name: 'errorInfo'
     },
     {
       class: 'DateTime',

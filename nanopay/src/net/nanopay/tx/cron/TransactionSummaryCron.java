@@ -7,9 +7,9 @@ import foam.dao.DAO;
 import foam.nanos.cron.Cron;
 import java.util.*;
 import net.nanopay.fx.FXSummaryTransaction;
-import net.nanopay.integration.ErrorCode;
 import net.nanopay.tx.ChainSummary;
 import net.nanopay.tx.IntuitTransactionSummary;
+import net.nanopay.tx.SummarizingTransaction;
 import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.TransactionSummary;
 import net.nanopay.tx.model.Transaction;
@@ -59,7 +59,6 @@ public class TransactionSummaryCron implements ContextAgent {
 
   private void generateTransactionSummaries(X x, List txns, List intuitTxns) {
     DAO transactionSummaryDAO = (DAO) x.get("localTransactionSummaryDAO");
-    DAO errorCodeDAO = (DAO) x.get("errorCodeDAO");
     for ( int i = 0; i < txns.size(); i++ ) {
       Transaction txn = (Transaction) txns.get(i);
       if ( txn instanceof SummaryTransaction ) {
@@ -68,13 +67,17 @@ public class TransactionSummaryCron implements ContextAgent {
         txn = (FXSummaryTransaction) txn;
       }
 
-      Long errorCode = txn.calculateErrorCode();
-      ErrorCode errorCodeObj = (ErrorCode) errorCodeDAO.find(errorCode);
+      SummarizingTransaction summarizingTransaction = (SummarizingTransaction) txn;
+      ChainSummary chainSummary = summarizingTransaction.getChainSummary();
       TransactionSummary txnSummary = new TransactionSummary.Builder(x)
         .setId(txn.getId())
-        .setStatus(txn.getStatus())
-        .setErrorCode(errorCodeObj.getId())
+        .setCurrency(txn.getSourceCurrency())
         .setAmount(txn.getAmount())
+        .setSummary(chainSummary.getSummary())
+        .setStatus(chainSummary.getStatus())
+        .setCategory(chainSummary.getCategory())
+        .setErrorCode(chainSummary.getErrorCode())
+        .setErrorInfo(chainSummary.getErrorInfo())
         .setCreated(new Date())
         .setLastModified(new Date())
         .build();
@@ -89,13 +92,17 @@ public class TransactionSummaryCron implements ContextAgent {
         txn = (FXSummaryTransaction) txn;
       }
 
-      Long errorCode = txn.calculateErrorCode();
-      ErrorCode errorCodeObj = (ErrorCode) errorCodeDAO.find(errorCode);
+      SummarizingTransaction summarizingTransaction = (SummarizingTransaction) txn;
+      ChainSummary chainSummary = summarizingTransaction.getChainSummary();
       IntuitTransactionSummary intuitTxnSummary = new IntuitTransactionSummary.Builder(x)
         .setId(txn.getId())
-        .setStatus(txn.getStatus())
-        .setErrorCode(errorCodeObj.getId())
+        .setCurrency(txn.getSourceCurrency())
         .setAmount(txn.getAmount())
+        .setSummary(chainSummary.getSummary())
+        .setStatus(chainSummary.getStatus())
+        .setCategory(chainSummary.getCategory())
+        .setErrorCode(chainSummary.getErrorCode())
+        .setErrorInfo(chainSummary.getErrorInfo())
         .setCreated(new Date())
         .setLastModified(new Date())
         .setExternalId(txn.getExternalId() != null ? txn.getExternalId() : "")
