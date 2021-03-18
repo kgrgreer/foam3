@@ -45,6 +45,11 @@ foam.CLASS({
     'natureCodeDataDAO'
   ],
 
+  messages: [
+    { name: 'TITLE', message: 'Please select a nature code (required)' },
+    { name: 'HEADING', message: 'Select a Nature Code' }
+  ],
+
   properties: [
     {
       class: 'Reference',
@@ -71,7 +76,7 @@ foam.CLASS({
           search: true,
           sections: [
             {
-              heading: 'Select a Nature Code',
+              heading: this.HEADING,
               dao$: X.data.slot(function(natureCode) {
                 return X.natureCodeDataDAO.where(
                   E.EQ(net.nanopay.country.br.NatureCodeData.NATURE_CODE, natureCode)
@@ -112,7 +117,7 @@ foam.CLASS({
           isModalRequired: true,
           data$: X.data$,
           propertyData$: X.data.natureCodeData$,
-          title: "Please select a nature code (required)",
+          title: this.TITLE,
           onExecute: this.approveWithData.bind(this, X)
         }));
       }
