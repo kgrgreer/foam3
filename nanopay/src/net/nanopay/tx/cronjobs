@@ -305,14 +305,14 @@ p({
     "dayOfWeek": -1,
     "second": 0
   },
-  "id":"TransactionSummaryCron",
+  "id":"TransactionSummaryGenerator",
   "description":"Creates Transaction Summary objects for all transactions in the summaryTransactionDAO",
   "enabled":true,
   "code": """
-    import net.nanopay.tx.cron.TransactionSummaryCron;
-    cron = new TransactionSummaryCron();
+    import net.nanopay.tx.cron.TransactionSummaryGenerator;
+    cron = new TransactionSummaryGenerator();
     cron.execute(x);
-    print("Transaction Summary Cron run.");
+    print("Transaction Summary Generator run.");
   """
 
 })

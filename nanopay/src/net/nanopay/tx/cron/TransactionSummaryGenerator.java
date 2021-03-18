@@ -33,12 +33,12 @@ import net.nanopay.tx.model.TransactionStatus;
 
 import static foam.mlang.MLang.*;
 
-public class TransactionSummaryCron implements ContextAgent {
+public class TransactionSummaryGenerator implements ContextAgent {
   @Override
   public void execute(X x) {
     DAO summaryTransactionDAO = (DAO) x.get("summaryTransactionDAO");
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
-    Date lastRun = ((Cron)((DAO)x.get("cronDAO")).find("TransactionSummaryCron")).getLastRun();
+    Date lastRun = ((Cron)((DAO)x.get("cronDAO")).find("TransactionSummaryGenerator")).getLastRun();
     
     if (lastRun != null) {
       ArraySink txnLastModifiedSink = (ArraySink) transactionDAO.where(
