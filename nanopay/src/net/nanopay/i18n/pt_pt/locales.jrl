@@ -3364,3 +3364,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Send money to pay a vendor",targ
 p({class:"foam.i18n.Locale",locale:"pt",source:"Other",target:"Outro"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ruler.BusinessCompliancePassedEmailNotification.NOTIFICATION_BODY_P1",target:"Esta empresa agora pode fazer pagamentos"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeApprovalRequest.SELECT_DATA",target:"Selecione os dados associados a: "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeApprovalRequest.REQUIRED_LABEL",target:" (requeridos)"})
