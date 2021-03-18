@@ -207,7 +207,6 @@ foam.CLASS({
         ],
         isHorizontal: true
       },
-      validationTextVisible: true,
       validationPredicates: [
         {
           args: ['amountOfOwners'],
