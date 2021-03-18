@@ -232,6 +232,7 @@ p({
   "saveHistory":false,
   "lifecycleState":1,
   "spid": "ablii"
+})
 // Clearing time rules
 p({
   "class": "net.nanopay.meter.clearing.ruler.TransactionTypeClearingTimeRule",

@@ -122,7 +122,7 @@ foam.CLASS({
                   "Ticket:" +
                   oldRefundTicket.getId() +
                   " for Transaction:" +
-                  oldRefundTicket.getRequestTransaction().getId()
+                  oldRefundTicket.getProblemTransaction()
                 )
                 .setStatus(ApprovalStatus.REQUESTED).build();
 
