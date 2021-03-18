@@ -21,27 +21,7 @@ foam.CLASS({
   label: 'Malta',
   extends: 'net.nanopay.bank.EUBankAccount',
 
-  mixins: [ 'net.nanopay.bank.BankAccountValidationMixin' ],
-
   documentation: 'Malta bank account information.',
-
-  javaImports: [
-    'foam.core.ValidationException',
-    'foam.util.SafetyUtil'
-  ],
-
-  constants: [
-    {
-      name: 'BRANCH_ID_PATTERN',
-      type: 'Regex',
-      value: /^\d{5}$/
-    },
-    {
-      name: 'ACCOUNT_NUMBER_PATTERN',
-      type: 'Regex',
-      value: /^[a-zA-z0-9]{18}$/
-    }
-  ],
 
   properties: [
     {
@@ -94,13 +74,15 @@ foam.CLASS({
         this.tooltip = displayAccountNumber;
       },
       validateObj: function(accountNumber, iban) {
+        var accNumberRegex = /^[0-9]{18}$/;
+
         if ( iban )
           var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
         if ( ! iban || (iban && ibanMsg != 'passed') ) {
           if ( accountNumber === '' ) {
             return this.ACCOUNT_NUMBER_REQUIRED;
-          } else if ( ! ACCOUNT_NUMBER_PATTERN.test(accountNumber) ) {
+          } else if ( ! accNumberRegex.test(accountNumber) ) {
             return this.ACCOUNT_NUMBER_INVALID;
           }
         }
@@ -113,15 +95,6 @@ foam.CLASS({
     {
       name: 'branchId',
       visibility: 'HIDDEN'
-    },
-    {
-      name: 'bankRoutingCode',
-      javaPostSet: `
-        if ( val != null && BRANCH_ID_PATTERN.matcher(val).matches() ) {
-          clearBranch();
-          setBranchId(val);
-        }
-      `
     }
   ]
 });

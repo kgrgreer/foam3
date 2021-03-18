@@ -21,37 +21,7 @@ foam.CLASS({
   label: 'Greece',
   extends: 'net.nanopay.bank.EUBankAccount',
 
-  mixins: [ 'net.nanopay.bank.BankAccountValidationMixin' ],
-
   documentation: 'Greece bank account information.',
-
-  javaImports: [
-    'foam.core.ValidationException',
-    'foam.util.SafetyUtil'
-  ],
-
-  constants: [
-    {
-      name: 'INSTITUTION_NUMBER_PATTERN',
-      type: 'Regex',
-      value: /^\d{3}$/
-    },
-    {
-      name: 'BRANCH_ID_PATTERN',
-      type: 'Regex',
-      value: /^\d{4}$/
-    },
-    {
-      name: 'ACCOUNT_NUMBER_PATTERN',
-      type: 'Regex',
-      value: /^[a-zA-Z0-9]{16}$/
-    },
-    {
-      name: 'ROUTING_CODE_PATTERN',
-      type: 'Regex',
-      value: /^(\d{3})(\d{4})$/
-    }
-  ],
 
   properties: [
     {
@@ -124,24 +94,6 @@ foam.CLASS({
     {
       name: 'branchId',
       visibility: 'HIDDEN'
-    },
-    {
-      name: 'bankRoutingCode',
-      javaPostSet: `
-        if ( ! SafetyUtil.isEmpty(val) ) {
-          var matcher = ROUTING_CODE_PATTERN.matcher(val);
-          if ( matcher.find() ) {
-            var institutionNumber = matcher.group(1);
-            var branchId = matcher.group(2);
-
-            // Update institution and branch
-            clearInstitution();
-            clearBranch();
-            setInstitutionNumber(institutionNumber);
-            setBranchId(branchId);
-          }
-        }
-      `
     }
   ]
 });

@@ -792,7 +792,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'getBankCode',
+      name: 'getInstitutionNumber',
       type: 'String',
       args: [
         {
@@ -800,29 +800,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        var code = new StringBuilder();
-        var institution = findInstitution(x);
-        if ( institution != null ) {
-          code.append(institution.getInstitutionNumber());
-        }
-        return code.toString();
-      `
-    },
-    {
-      name: 'getBranchCode',
-      type: 'String',
-      args: [
-        {
-          name: 'x', type: 'Context'
-        }
-      ],
-      javaCode: `
-        var code = new StringBuilder();
-        var branch = findBranch(x);
-        if ( branch != null ) {
-          code.append(branch.getBranchId());
-        }
-        return code.toString();
+        return getInstitutionNumber();
       `
     },
     {
@@ -834,14 +812,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        if ( ! SafetyUtil.isEmpty(getBankRoutingCode()) ) {
-          return getBankRoutingCode();
-        }
-
-        var code = new StringBuilder();
-        code.append(getBankCode(x))
-            .append(getBranchCode(x));
-        return code.toString();
+        return getBankRoutingCode();
       `
     },
     function purgeCachedDAOs() {
