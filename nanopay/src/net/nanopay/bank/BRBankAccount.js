@@ -68,7 +68,7 @@ foam.CLASS({
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      factory: function() { return /^[0-9]{3,12}$/; }
+      factory: function() { return /^[0-9]{3,10}$/; }
     },
     {
       name: 'INSTITUTION_NUMBER_PATTERN',
