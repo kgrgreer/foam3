@@ -265,7 +265,7 @@ foam.CLASS({
         if (clearTLIs) {
           quote.getRequestTransaction().clearLineItems();
         }
-        return (TransactionQuote) dao.inX(x).put(quote);
+        return (TransactionQuote) dao.put(quote);
       `
     },
     {
