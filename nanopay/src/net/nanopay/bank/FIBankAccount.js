@@ -21,27 +21,7 @@ foam.CLASS({
   label: 'Finland',
   extends: 'net.nanopay.bank.EUBankAccount',
 
-  mixins: [ 'net.nanopay.bank.BankAccountValidationMixin' ],
-
   documentation: 'Finland bank account information.',
-
-  javaImports: [
-    'foam.core.ValidationException',
-    'foam.util.SafetyUtil'
-  ],
-
-  constants: [
-    {
-      name: 'BRANCH_ID_PATTERN',
-      type: 'Regex',
-      value: /^\d{6}$/
-    },
-    {
-      name: 'ACCOUNT_NUMBER_PATTERN',
-      type: 'Regex',
-      value: /^\d{8}$/
-    }
-  ],
 
   properties: [
     {
@@ -114,15 +94,6 @@ foam.CLASS({
     {
       name: 'branchId',
       visibility: 'HIDDEN'
-    },
-    {
-      name: 'bankRoutingCode',
-      javaPostSet: `
-        if ( val != null && BRANCH_ID_PATTERN.matcher(val).matches() ) {
-          clearBranch();
-          setBranchId(val);
-        }
-      `
     }
   ]
 });

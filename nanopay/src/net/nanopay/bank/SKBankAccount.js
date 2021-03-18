@@ -21,32 +21,7 @@ foam.CLASS({
   label: 'Slovakia',
   extends: 'net.nanopay.bank.EUBankAccount',
 
-  mixins: [ 'net.nanopay.bank.BankAccountValidationMixin' ],
-
   documentation: 'Slovakian bank account information.',
-
-  javaImports: [
-    'foam.core.ValidationException',
-    'foam.util.SafetyUtil'
-  ],
-
-  constants: [
-    {
-      name: 'INSTITUTION_NUMBER_PATTERN',
-      type: 'Regex',
-      value: /^\d{4}$/
-    },
-    {
-      name: 'BRANCH_ID_PATTERN',
-      type: 'Regex',
-      value: /^\d{6}$/
-    },
-    {
-      name: 'ACCOUNT_NUMBER_PATTERN',
-      type: 'Regex',
-      value: /\d{10}$/
-    }
-  ],
 
   properties: [
     {
@@ -70,13 +45,15 @@ foam.CLASS({
       name: 'institutionNumber',
       updateVisibility: 'RO',
       validateObj: function(institutionNumber, iban) {
+        var regex = /^[A-z0-9a-z]{4}$/;
+
         if ( iban )
           var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
         if ( ! iban || (iban && ibanMsg != 'passed') ) {
           if ( institutionNumber === '' ) {
             return this.INSTITUTION_NUMBER_REQUIRED;
-          } else if ( ! INSTITUTION_NUMBER_PATTERN.test(institutionNumber) ) {
+          } else if ( ! regex.test(institutionNumber) ) {
             return this.INSTITUTION_NUMBER_INVALID;
           }
         }
@@ -96,13 +73,15 @@ foam.CLASS({
         this.tooltip = displayAccountNumber;
       },
       validateObj: function(accountNumber, iban) {
+        var accNumberRegex = /^[0-9]{16}$/;
+
         if ( iban )
           var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
         if ( ! iban || (iban && ibanMsg != 'passed') ) {
           if ( accountNumber === '' ) {
             return this.ACCOUNT_NUMBER_REQUIRED;
-          } else if ( ! ACCOUNT_NUMBER_PATTERN.test(accountNumber) ) {
+          } else if ( ! accNumberRegex.test(accountNumber) ) {
             return this.ACCOUNT_NUMBER_INVALID;
           }
         }
@@ -115,15 +94,6 @@ foam.CLASS({
     {
       name: 'branchId',
       visibility: 'HIDDEN'
-    },
-    {
-      name: 'bankRoutingCode',
-      javaPostSet: `
-        if ( val != null && INSTITUTION_NUMBER_PATTERN.matcher(val).matches() ) {
-          clearInstitution();
-          setInstitutionNumber(val);
-        }
-      `
     }
   ]
 });

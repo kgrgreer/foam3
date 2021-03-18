@@ -456,8 +456,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        var branchCode = getBranchCode(x);
-        return ! branchCode.isBlank() ? branchCode : getBankRoutingCode();
+        return getBranchId();
       `
     }
  ]

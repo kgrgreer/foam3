@@ -21,25 +21,18 @@ foam.CLASS({
   label: 'Ireland',
   extends: 'net.nanopay.bank.EUBankAccount',
 
-  mixins: [ 'net.nanopay.bank.BankAccountValidationMixin' ],
-
   documentation: 'Ireland bank account information.',
-
-  javaImports: [
-    'foam.core.ValidationException',
-    'foam.util.SafetyUtil'
-  ],
 
   constants: [
     {
-      name: 'BRANCH_ID_PATTERN',
-      type: 'Regex',
-      value: /^\d{6}$/
-    },
-    {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      value: /^\d{8}$/
+      factory: function() { return /^[0-9]{8}$/; }
+    },
+    {
+      name: 'INSTITUTION_NUMBER_PATTERN',
+      type: 'Regex',
+      factory: function() { return /^[A-z0-9a-z]{4}$/; }
     }
   ],
 
@@ -89,7 +82,19 @@ foam.CLASS({
     },
     {
       name: 'institutionNumber',
-      visibility: 'HIDDEN'
+      updateVisibility: 'RO',
+      validateObj: function(institutionNumber, iban) {
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
+
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( institutionNumber === '' ) {
+            return this.INSTITUTION_NUMBER_REQUIRED;
+          } else if ( ! this.INSTITUTION_NUMBER_PATTERN.test(institutionNumber) ) {
+            return this.INSTITUTION_NUMBER_INVALID;
+          }
+        }
+      }
     },
     {
       name: 'desc',
@@ -98,15 +103,6 @@ foam.CLASS({
     {
       name: 'branchId',
       visibility: 'HIDDEN'
-    },
-    {
-      name: 'bankRoutingCode',
-      javaPostSet: `
-        if ( val != null && BRANCH_ID_PATTERN.matcher(val).matches() ) {
-          clearBranch();
-          setBranchId(val);
-        }
-      `
     }
   ]
 });
