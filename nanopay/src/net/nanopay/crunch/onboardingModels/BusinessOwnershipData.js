@@ -406,6 +406,7 @@ foam.CLASS({
         return Number(totalOwnership) > 100 ?
           foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
+      validationTextVisible: true,
       validationPredicates: [
         {
           args: ['totalOwnership'],
