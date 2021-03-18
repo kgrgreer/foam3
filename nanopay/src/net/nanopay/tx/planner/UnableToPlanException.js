@@ -22,10 +22,6 @@ foam.CLASS({
   implements: ['foam.core.Exception'],
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
-
-  javaImports: [
-    'foam.core.X'
-  ],
   
   axioms: [
     {
@@ -37,16 +33,8 @@ foam.CLASS({
     super("Unable to plan");
   }
 
-  public UnableToPlanException(X x) {
-    super(x, "Unable to plan");
-  }
-
-  public UnableToPlanException(String message) {
-    super(message);
-  }
-
-  public UnableToPlanException(String message, Exception cause) {
-    super(message, cause);
+  public UnableToPlanException(Exception cause) {
+    super("Unable to plan", cause);
   }
           `
         }));

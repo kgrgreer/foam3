@@ -23,10 +23,6 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
-  javaImports: [
-    'foam.core.X'
-  ],
-  
   axioms: [
     {
       name: 'javaExtras',
@@ -37,25 +33,10 @@ foam.CLASS({
     super("Invalid plan");
   }
 
-  public InvalidPlanException(X x) {
-    super(x, "Invalid plan");
-  }
-
-  public InvalidPlanException(X x, Exception cause) {
-    super(x, "Invalid plan", cause);
-  }
-
   public InvalidPlanException(Exception cause) {
     super("Invalid plan", cause);
   }
 
-  public InvalidPlanException(String message) {
-    super(message);
-  }
-
-  public InvalidPlanException(String message, Exception cause) {
-    super(message, cause);
-  }
           `
         }));
       }

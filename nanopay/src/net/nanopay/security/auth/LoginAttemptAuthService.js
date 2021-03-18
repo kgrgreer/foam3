@@ -148,7 +148,7 @@ foam.CLASS({
             }
           }  else {
             String locale = user.getLanguage().getCode().toString();
-            throw new foam.nanos.auth.LoginException();
+            throw new foam.nanos.auth.AccountLockedException();
           }
         }
 

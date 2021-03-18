@@ -21,10 +21,6 @@ foam.CLASS({
   extends: 'foam.core.FOAMException',
   javaGenerateConvenienceConstructor: false,
 
-  javaImports: [
-    'foam.core.X'
-  ],
-
   axioms: [
     {
       name: 'javaExtras',
@@ -33,14 +29,6 @@ foam.CLASS({
           data: `
   public TransactionException(String message) {
     super(message);
-  }
-
-  public TransactionException(X x, String message) {
-    super(x, message);
-  }
-
-  public TransactionException(X x, String message, Exception cause) {
-    super(x, message, cause);
   }
 
   public TransactionException(String message, Exception cause) {
