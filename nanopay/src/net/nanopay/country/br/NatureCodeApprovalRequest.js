@@ -45,6 +45,11 @@ foam.CLASS({
     'natureCodeDataDAO'
   ],
 
+  messages: [
+    { name: 'SELECT_DATA', message: 'Please select the data associated to: '},
+    { name: 'REQUIRED_LABEL', message: ' (required)' }
+  ],
+
   properties: [
     {
       class: 'Reference',
@@ -103,6 +108,12 @@ foam.CLASS({
         return ! isTrackingRequest;
       },
       code: function(X) {
+        let titleSlot = foam.core.SimpleSlot.create();
+        X.natureCodeDAO
+          .find(this.natureCode)
+          .then(obj => 
+            titleSlot.set(this.SELECT_DATA + ( obj ? obj.name : this.natureCode ) + this.REQUIRED_LABEL)
+          );
         var objToAdd = X.objectSummaryView ? X.objectSummaryView : X.summaryView;
         objToAdd.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
           class: "foam.u2.PropertyModal",
@@ -110,7 +121,7 @@ foam.CLASS({
           isModalRequired: true,
           data$: X.data$,
           propertyData$: X.data.natureCodeData$,
-          title: "Please select a nature code for (required)",
+          title$: titleSlot,
           onExecute: this.approveWithData.bind(this, X)
         }));
       }
