@@ -36,7 +36,7 @@ foam.CLASS({
   ],
 
   messages: [
-   { name: 'DESCRIPTION', message: 'Approve AFEX business to enable the international payments' },
+   { name: 'DESCRIPTION', message: 'Approve AFEX business to enable international payments' },
    { name: 'CLASSIFICATION', message: 'AFEX Business' }
  ],
 
