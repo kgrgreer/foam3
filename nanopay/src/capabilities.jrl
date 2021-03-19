@@ -562,6 +562,14 @@ p({
 })
 
 p({
+  id: "554af38a-8225-87c8-dfdf-eeb15f71215f-76.submit",
+  name: "Submit Business Information",
+  wizardlet: {
+    class: "foam.u2.wizard.SubmitWizardlet"
+  }
+})
+
+p({
   class:"net.nanopay.payment.CountryCapability",
   country:"BR",
   type:0,
@@ -911,14 +919,15 @@ p({
 })
 
 p({
-  "class":"foam.nanos.crunch.Capability",
+  "class":"net.nanopay.crunch.registration.LimitedAmountCapability",
   "id":"F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD",
   "name":"API CAD Personal Payments Under 1000CAD",
   "description":"Unlock capability for Canadian personal payments under $1000",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
-  "keywords":["intuit"]
+  "keywords":["intuit"],
+  "maximumAmount": 100000
 })
 
 p({
