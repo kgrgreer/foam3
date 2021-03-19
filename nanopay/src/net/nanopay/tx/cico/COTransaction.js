@@ -20,6 +20,10 @@ foam.CLASS({
   name: 'COTransaction',
   extends: 'net.nanopay.tx.ClearingTimeTransaction',
 
+  implements: [
+    'net.nanopay.tx.ValueMovementTransaction'
+  ],
+
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.LifecycleState',

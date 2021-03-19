@@ -1304,7 +1304,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public CreateInstantBenefiaryResponse createInstantBenefiary(CreateInstantBenefiaryRequest createInstantBenefiaryRequest, String spid) {
+  public CreateInstantBeneficiaryResponse createInstantBeneficiary(CreateInstantBeneficiaryRequest createInstantBeneficiaryRequest, String spid) {
     try {
       credentials = getCredentials(spid);
       HttpPost httpPost = new HttpPost(credentials.getAFEXApi() + "api/instantbeneficiarycreate");
@@ -1313,38 +1313,38 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       StringEntity params = null;
       try(Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false)) {
-        String requestJson = StringUtil.normalize(jsonOutputter.stringify(createInstantBenefiaryRequest));
+        String requestJson = StringUtil.normalize(jsonOutputter.stringify(createInstantBeneficiaryRequest));
         params =new StringEntity(requestJson);
       } catch(Exception e) {
         logger.error(e);
       }
 
       httpPost.setEntity(params);
-      logMessage(credentials.getInstantPaymentApiKey(), "CreateInstantBenefiary", parseHttpPost(httpPost), false);
-      omLogger.log("AFEX CreateInstantBenefiary starting");
+      logMessage(credentials.getInstantPaymentApiKey(), "CreateInstantBeneficiary", parseHttpPost(httpPost), false);
+      omLogger.log("AFEX CreateInstantBeneficiary starting");
       logger.debug(params);
 
       CloseableHttpResponse httpResponse = getHttpClient().execute(httpPost);
 
-      omLogger.log("AFEX CreateInstantBenefiary complete");
+      omLogger.log("AFEX CreateInstantBeneficiary complete");
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String errorMsg = parseHttpResponse("CreateInstantBenefiary", httpResponse);
+          String errorMsg = parseHttpResponse("CreateInstantBeneficiary", httpResponse);
           logger.error(errorMsg);
           throw new RuntimeException(errorMsg);
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
-        logMessage(credentials.getInstantPaymentApiKey(), "CreateInstantBenefiary", response, true);
-        Object[] instantBenefiaryResponses = jsonParser.parseStringForArray(response, CreateInstantBenefiaryResponse.class);
-        if ( instantBenefiaryResponses != null && instantBenefiaryResponses.length > 0 )
-          return (CreateInstantBenefiaryResponse)instantBenefiaryResponses[0];
+        logMessage(credentials.getInstantPaymentApiKey(), "CreateInstantBeneficiary", response, true);
+        Object[] instantBeneficiaryResponses = jsonParser.parseStringForArray(response, CreateInstantBeneficiaryResponse.class);
+        if ( instantBeneficiaryResponses != null && instantBeneficiaryResponses.length > 0 )
+          return (CreateInstantBeneficiaryResponse)instantBeneficiaryResponses[0];
       } finally {
         httpResponse.close();
       }
     } catch (IOException e) {
-      omLogger.log("AFEX CreateInstantBenefiary timeout");
+      omLogger.log("AFEX CreateInstantBeneficiary timeout");
       logger.error(e);
     }
 

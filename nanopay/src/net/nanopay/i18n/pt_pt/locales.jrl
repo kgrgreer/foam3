@@ -87,6 +87,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.PRE_SET.label",target:"preSet"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.NO_AMOUNT_OF_OWNERS_SELECTED_ERROR",target:"Selecione vários proprietários."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.INVALID_OWNER_SELECTION_ERROR",target:"Uma ou mais seleções do proprietário são inválidas."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OWNER_NOT_SELECTED",target:"Por favor selecione uma das opções da lista suspensa."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OWNER_1_ERROR",target:"Proprietário 1 é inválido."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OWNER_2_ERROR",target:"Proprietário 2 é inválido."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OWNER_3_ERROR",target:"Proprietário 3 é inválido."})
@@ -3373,6 +3374,15 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Other",target:"Outro"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ruler.BusinessCompliancePassedEmailNotification.NOTIFICATION_BODY_P1",target:"Esta empresa agora pode fazer pagamentos"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeApprovalRequest.SELECT_DATA",target:"Selecione os dados associados a: "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeApprovalRequest.REQUIRED_LABEL",target:" (requeridos)"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeData.PAYER_TYPE.label",target:"tipo de pagador"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeData.APPROVAL_TYPE.label",target:"tipo de aprovação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeData.PAYEE_TYPE.label",target:"Tipo de beneficiário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeData.GROUP_CODE.label",target:"Código de grupo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeData.NATURE_CODE.label",target:"Código da natureza"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeApprovalRequest.model_.name",target:"NaturezaCódigoAprovaçãoPedido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBusinessApprovalRequest.model_.name",target:"AFEXComercialAprovaçãoSolicitação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.compliance.dowJones.DowJonesApprovalRequest.model_.name",target:"DowJonesAprovaçãoPedido"})
@@ -3387,8 +3397,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.compliance.dow
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.compliance.dowJones.DowJonesApprovalRequest.MATCHES.label",target:"Comentários"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeApprovalRequest.NATURE_CODE.label",target:"NaturezaCódigo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeApprovalRequest.NATURE_CODE_DATA.label",target:"NaturezaCódigoDados"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeApprovalRequest.TITLE",target:"Selecione um código natural (obrigatório)"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeApprovalRequest.HEADING",target:"Selecione um código da natureza"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest.OUTGOING_ACCOUNT.label",target:"SaídaConta"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest.TO_SUMMARY.label",target:"Resumir"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.ManualFxApprovalRequest.DEAL_ID.label",target:"NegócioId"})
@@ -3463,3 +3471,4 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransac
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransaction.name",target:"Conformidade Transação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.FXSummaryTransaction.model_.label",target:"Câmbio Resumo Transação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.FXSummaryTransaction.name",target:"Câmbio Resumo Transação"})
+
