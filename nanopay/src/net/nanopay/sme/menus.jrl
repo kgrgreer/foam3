@@ -135,7 +135,7 @@ p({
           "class": "net.nanopay.liquidity.crunch.LiquidEnabledActionsAuth",
           "modelName": "user"
         }
-      },
+      }
 
 
 
