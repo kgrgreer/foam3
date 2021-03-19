@@ -1405,3 +1405,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Nonprofit/Charitable Organizatio
 p({class:"foam.i18n.Locale",locale:"pt",source:"Limited Liability Company",target:"Empresa de responsabilidade limitada "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Publicly Traded Corporation",target:"Corporação de capital aberto"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Trust",target:"Confiar em"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"Read",target:"leitura"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Unread",target:"Não lida"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Today",target:"hoje"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"View all notifications",target:"Veja todas as notificações."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Notifications",target:"Notificações"})
