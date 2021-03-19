@@ -45,6 +45,11 @@ foam.CLASS({
     'natureCodeDataDAO'
   ],
 
+  messages: [
+    { name: 'SELECT_DATA', message: 'Please select the data associated to: '},
+    { name: 'REQUIRED_LABEL', message: ' (required)' }
+  ],
+
   properties: [
     {
       class: 'Reference',
@@ -67,22 +72,20 @@ foam.CLASS({
         // TODO: for some reason this doesn't update when nature code changes
         // isn't a concern for this use  case however since Nature Code shouldn't be changing
         return {
-          class: 'foam.u2.view.RichChoiceView',
-          search: true,
-          sections: [
-            {
-              heading: 'Select a Nature Code',
-              dao$: X.data.slot(function(natureCode) {
-                return X.natureCodeDataDAO.where(
-                  E.EQ(net.nanopay.country.br.NatureCodeData.NATURE_CODE, natureCode)
-                )
-              })
-            }
-          ],
-          choosePlaceholder: '--'
-        };
-      },
-    },
+          class: 'foam.u2.view.ChoiceView',
+          dao$: X.data.slot(function(natureCode) {
+            return X.natureCodeDataDAO.where(
+              E.EQ(net.nanopay.country.br.NatureCodeData.NATURE_CODE, natureCode)
+            )
+          }),
+          objToChoice: function(obj) {
+            return obj.toSummary();
+          },
+          size: 5,
+          selectSpec: { class: 'net.nanopay.country.br.NatureCodeSelectView' }
+        }
+      }
+    }
   ],
 
   actions: [
@@ -105,14 +108,20 @@ foam.CLASS({
         return ! isTrackingRequest;
       },
       code: function(X) {
+        let titleSlot = foam.core.SimpleSlot.create();
+        X.natureCodeDAO
+          .find(this.natureCode)
+          .then(obj => 
+            titleSlot.set(this.SELECT_DATA + ( obj ? obj.name : this.natureCode ) + this.REQUIRED_LABEL)
+          );
         var objToAdd = X.objectSummaryView ? X.objectSummaryView : X.summaryView;
         objToAdd.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
           class: "foam.u2.PropertyModal",
-          property: this.NATURE_CODE_DATA,
+          property: this.NATURE_CODE_DATA.clone().copyFrom({ label: '' }),
           isModalRequired: true,
           data$: X.data$,
           propertyData$: X.data.natureCodeData$,
-          title: "Please select a nature code (required)",
+          title$: titleSlot,
           onExecute: this.approveWithData.bind(this, X)
         }));
       }
