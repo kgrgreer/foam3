@@ -9,7 +9,7 @@ import foam.dao.DAO;
 import foam.dao.GUIDDAO;
 import foam.dao.MDAO;
 import foam.nanos.auth.User;
-import foam.nanos.ruler.Operations;
+import foam.nanos.dao.Operation;
 import foam.nanos.ruler.RuleGroup;
 import foam.nanos.ruler.RulerDAO;
 import foam.nanos.ruler.RulerProbe;
@@ -51,7 +51,7 @@ public class TransactionLimitTest extends Test {
     tx.setDestinationAccount(receiver_.getId());
     RulerProbe probe = new RulerProbe();
     probe.setObject(tx);
-    probe.setOperation(Operations.CREATE);
+    probe.setOperation(Operation.CREATE);
     probe = (RulerProbe) txDAO.cmd_(x, probe);
     TestedRule txRule = null;
     for ( TestedRule testedRule : probe.getAppliedRules() ) {

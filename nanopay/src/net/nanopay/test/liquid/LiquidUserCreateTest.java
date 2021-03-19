@@ -6,7 +6,7 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.approval.*;
 import foam.nanos.auth.User;
-import foam.nanos.ruler.Operations;
+import foam.nanos.dao.Operation;
 
 import java.util.List;
 
@@ -59,7 +59,7 @@ public class LiquidUserCreateTest extends LiquidTestExecutor {
 
     DAO approvableDAO = getApprovableDAO(getFirstX());
 
-    String approvableHashKey = ApprovableAware.getApprovableHashKey(getFirstX(), user, Operations.CREATE);
+    String approvableHashKey = ApprovableAware.getApprovableHashKey(getFirstX(), user, Operation.CREATE);
 
     String hashedId = new StringBuilder("d")
       .append("bareUserDAO")
