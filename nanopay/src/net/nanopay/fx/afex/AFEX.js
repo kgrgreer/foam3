@@ -402,13 +402,13 @@ foam.INTERFACE({
       ]
     },
     {
-      name: 'createInstantBenefiary',
+      name: 'createInstantBeneficiary',
       documentation: 'This method is used to create an Instant Beneficiary',
       async: true,
-      type: 'net.nanopay.fx.afex.CreateInstantBenefiaryResponse',
+      type: 'net.nanopay.fx.afex.CreateInstantBeneficiaryResponse',
       args: [
         {
-          type: 'net.nanopay.fx.afex.CreateInstantBenefiaryRequest',
+          type: 'net.nanopay.fx.afex.CreateInstantBeneficiaryRequest',
           name: 'request'
         },
         {

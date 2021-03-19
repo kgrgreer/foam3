@@ -161,8 +161,10 @@ public class ExchangeServiceProvider implements ExchangeService {
     String formattedcpfCnpj = findCpfCnpj(userId).replaceAll("[^0-9]", "");
     request.setCODIGO(formattedcpfCnpj);
     SearchTitularResponse response = exchangeClient.searchTitular(request);
-    if ( response == null || response.getSearchTitularResult() == null )
-      throw new RuntimeException("Unable to get a valid response from Exchange while calling SearchTitular");
+    if ( response == null || response.getSearchTitularResult() == null ) {
+        logger_.warning("Unable to retrieve customer from exchange.");
+        return null;
+    }
 
     ServiceStatus status = response.getSearchTitularResult().getServiceStatus();
     if ( status == null )

@@ -50,9 +50,18 @@ public class RbcGenerateFileCron implements ContextAgent {
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
 
     Predicate condition1 = MLang.OR(
-      MLang.INSTANCE_OF(RbcCITransaction.getOwnClassInfo()),
-      MLang.INSTANCE_OF(RbcCOTransaction.getOwnClassInfo()),
-      MLang.INSTANCE_OF(RbcVerificationTransaction.getOwnClassInfo())
+      MLang.AND(
+        MLang.INSTANCE_OF(RbcCITransaction.getOwnClassInfo()),
+        MLang.EQ(RbcCITransaction.SETTLED, false)
+      ),
+      MLang.AND(
+        MLang.INSTANCE_OF(RbcCOTransaction.getOwnClassInfo()),
+        MLang.EQ(RbcCOTransaction.SETTLED, false)
+      ),
+      MLang.AND(
+        MLang.INSTANCE_OF(RbcVerificationTransaction.getOwnClassInfo()),
+        MLang.EQ(RbcVerificationTransaction.SETTLED, false)
+      )
     );
 
     Predicate condition2 = MLang.EQ(
@@ -63,14 +72,8 @@ public class RbcGenerateFileCron implements ContextAgent {
       Transaction.SPID, spid
     );
 
-    Predicate condition4 = MLang.OR(
-      MLang.EQ(RbcCITransaction.SETTLED, false),
-      MLang.EQ(RbcCOTransaction.SETTLED, false),
-      MLang.EQ(RbcVerificationTransaction.SETTLED, false)
-    );
-
     ArraySink sink = (ArraySink) transactionDAO.where(
-      MLang.AND(condition1, condition2, condition3, condition4)
+      MLang.AND(condition1, condition2, condition3)
     ).select(new ArraySink());
     ArrayList<Transaction> transactions = (ArrayList<Transaction>) sink.getArray();
 
@@ -166,7 +169,7 @@ public class RbcGenerateFileCron implements ContextAgent {
     long cumulativeAmount = 0;
     for ( int i = 0; i < transactions.size(); i++ ) {
       Transaction txn = (Transaction) transactions.get(i);
-      cumulativeAmount += txn.getAmount();
+      cumulativeAmount -= txn.getTotal(x, txn.getSourceAccount());
       if ( cumulativeAmount >= eftLimit ) {
         int leftoverTxns = transactions.size() - i;
         logger.warning("RBC EFT limit of " + eftLimit + " was reached with " + leftoverTxns + " transactions remaining for next EFT file.");

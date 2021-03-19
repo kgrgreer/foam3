@@ -148,7 +148,7 @@ foam.CLASS({
             AND(
               EQ(ApprovalRequest.DAO_KEY, "roleAssignmentDAO"),
               EQ(ApprovalRequest.OBJ_ID, getId()),
-              EQ(ApprovalRequest.OPERATION, foam.nanos.ruler.Operations.CREATE),
+              EQ(ApprovalRequest.OPERATION, foam.nanos.dao.Operation.CREATE),
               EQ(ApprovalRequest.IS_FULFILLED, false),
               EQ(ApprovalRequest.STATUS, ApprovalStatus.REJECTED)
             )

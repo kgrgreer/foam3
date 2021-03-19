@@ -57,7 +57,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionException',
     'net.nanopay.bank.BankAccount',
     'foam.nanos.logger.Logger',
-
+    'net.nanopay.tx.PropertyCompare'
   ],
 
   tableColumns: [
@@ -138,7 +138,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'foam.nanos.ruler.Operations',
+      of: 'foam.nanos.dao.Operation',
       name: 'operation',
       value: 'CREATE',
       visibility: 'HIDDEN',
@@ -160,31 +160,31 @@ foam.CLASS({
       type: 'foam.mlang.predicate.Predicate',
       documentation: 'override predicate with transaction value limits (sender side)',
       javaCode: `
-      /* TODO: uncomment code block when MQL done
+      // TODO: uncomment code block when MQL done
         if ( getLowerLimit() > 0 ) {
           if ( getUpperLimit() > 0 ) {
           // both lower and upper limits active
             return AND(
               super.getPredicate(),
-              //new PropertyCompare( "gte", "amount", getLowerLimit(), true ), TODO: replace with MQL predicate
-              //new PropertyCompare( "lt", "amount", getUpperLimit(), true ) TODO: replace with MQL predicate
+              new PropertyCompare( "gte", "amount", getLowerLimit(), true ), //TODO: replace with MQL predicate
+              new PropertyCompare( "lt", "amount", getUpperLimit(), true ) //TODO: replace with MQL predicate
             );
           }
           // lower limit active upper not
           return AND(
             super.getPredicate(),
-            //new PropertyCompare( "gte", "amount", getLowerLimit(), true ) TODO: replace with MQL predicate
+            new PropertyCompare( "gte", "amount", getLowerLimit(), true ) //TODO: replace with MQL predicate
           );
         }
         if ( getUpperLimit() > 0 ) {
           // upper limit active, lower not
           return AND(
             super.getPredicate(),
-            //new PropertyCompare( "lt", "amount", getUpperLimit(), true ) TODO: replace with MQL predicate
+            new PropertyCompare( "lt", "amount", getUpperLimit(), true ) //TODO: replace with MQL predicate
           );
         }
         // limits not active
-        */
+
         return super.getPredicate();
       `
     },
@@ -310,7 +310,7 @@ foam.CLASS({
         if (clearTLIs) {
           quote.getRequestTransaction().clearLineItems();
         }
-        return (TransactionQuote) dao.inX(x).put(quote);
+        return (TransactionQuote) dao.put(quote);
       `
     },
     {

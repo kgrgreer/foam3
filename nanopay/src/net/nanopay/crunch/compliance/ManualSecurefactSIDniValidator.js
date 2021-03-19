@@ -61,6 +61,7 @@ foam.CLASS({
           .setCauseId(sidniResponse != null ? sidniResponse.getId() : 0L)
           .setClassification(getClassification())
           .setCauseDaoKey("securefactSIDniDAO")
+          .setCreatedFor(user.getId())
           .setGroup(group)
           .build();
       `

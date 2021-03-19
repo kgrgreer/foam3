@@ -9,11 +9,11 @@ p({
   "operation": 1,
   "after": true,
   "predicate":{
-    "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+    "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
     "propName":"lifecycleState",
     "propValue":{
       "class":"foam.nanos.auth.LifecycleState",
-      "ordinal":3
+      "ordinal":1
     }
   },
   "action":{ "class":"net.nanopay.auth.ruler.LogoutUserAction" },

@@ -50,7 +50,7 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'foam.nanos.ruler.Operations',
+    'foam.nanos.dao.Operation',
 
     'java.util.List',
 
@@ -170,7 +170,7 @@ foam.CLASS({
             .setClassification(classification)
             .setObjId(objId)
             .setDaoKey(daoKey)
-            .setOperation(Operations.CREATE)
+            .setOperation(Operation.CREATE)
             .setOutgoingAccount(accountId)
             .setStatus(ApprovalStatus.REQUESTED)
             .setDescription(description)

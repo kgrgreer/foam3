@@ -22,31 +22,21 @@ foam.CLASS({
   documentation: 'In charge of continuing the planning of partial plans.',
 
   javaImports: [
-    'foam.nanos.logger.Logger',
-    'foam.nanos.auth.User',
     'java.util.UUID',
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.nanos.auth.Subject',
     'foam.util.SafetyUtil',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.SummaryTransaction',
-    'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.TransactionException',
-    'net.nanopay.tx.FxSummaryTransactionLineItem',
-    'net.nanopay.tx.ComplianceTransaction',
     'net.nanopay.tx.planner.TransactionPlan',
     'foam.core.ValidationException',
     'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.ComplianceTransaction',
+    'net.nanopay.tx.SummarizingTransaction',
+    'net.nanopay.tx.FxSummaryTransactionLineItem',
     'java.util.ArrayList',
-    'java.util.List',
-    'net.nanopay.tx.UnsupportedTransactionException',
-    'static foam.mlang.MLang.EQ',
-    'static foam.mlang.MLang.OR',
-    'net.nanopay.account.Account',
-    'foam.mlang.sink.Count'
   ],
 
 
@@ -142,7 +132,7 @@ foam.CLASS({
       type: 'net.nanopay.tx.TransactionLineItem[]',
       documentation: 'Create an info line item for the difference in fees between old and new txns',
       javaCode: `
-        if ( ! ((txn instanceof SummaryTransaction) || ( txn instanceof FXSummaryTransaction )) )
+        if ( ! (txn instanceof SummarizingTransaction) )
           throw new TransactionException("unable to properly update new fx line item");
         TransactionLineItem[] oldTli = txn.getLineItems();
         for (TransactionLineItem tli : oldTli) {
@@ -165,7 +155,7 @@ foam.CLASS({
       documentation: 'Remove the summary and or compliance transaction from this chain.',
       javaCode: `
         boolean removed = false;
-        if ( (txn != null) && (txn instanceof FXSummaryTransaction || txn instanceof SummaryTransaction) ) {
+        if ( (txn != null) && (txn instanceof SummarizingTransaction) ) {
           txn = txn.getNext()[0];
           removed = true;
         }

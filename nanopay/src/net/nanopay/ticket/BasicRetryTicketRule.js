@@ -67,7 +67,7 @@ foam.CLASS({
         RefundTicket ticket = (RefundTicket) obj;
         DAO txnDAO = (DAO) x.get("localTransactionDAO");
         ticket.setCreditAccount(getCreditAccount());
-        Transaction summary = (Transaction) txnDAO.find(ticket.getRefundTransaction());
+        Transaction summary = (Transaction) txnDAO.find(ticket.getProblemTransaction());
         if (! (summary instanceof SummarizingTransaction ) ) {
           summary = summary.findRoot(x);
         }

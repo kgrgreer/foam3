@@ -1486,11 +1486,15 @@ foam.CLASS({
     {
       name: 'requestCancellation',
       section: 'transactionInformation',
-      isAvailable: function(status){
+      isAvailable: function(status) {
         return status === net.nanopay.tx.model.TransactionStatus.PENDING;
       },
       code: function(X) {
-        var refundTicket = net.nanopay.ticket.RefundTicket.create({refundTransaction: this.id});
+        var refundTicket = net.nanopay.ticket.RefundTicket.create({
+          problemTransaction: this.id,
+          refundStatus: net.nanopay.ticket.RefundStatus.REQUESTED,
+          title: 'Refund request for transaction: ' + this.id
+        });
 
         this.ticketDAO.put(refundTicket).then(ticket => {
           this.finished.pub();

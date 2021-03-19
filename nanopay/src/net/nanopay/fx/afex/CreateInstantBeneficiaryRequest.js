@@ -15,25 +15,33 @@
  * from nanopay Corporation.
  */
 
-foam.ENUM({
-  package: 'net.nanopay.auth',
-  name: 'AgentJunctionStatus',
-  documentation: 'Describes the status between agent and entity on their junction.',
-   values: [
+foam.CLASS({
+  package: "net.nanopay.fx.afex",
+  name: "CreateInstantBeneficiaryRequest",
+  properties: [
     {
-      name: 'ACTIVE',
-      label: 'Active',
-      documentation: 'Junction is satisfied and agent may act as entity.'
+      class: 'String',
+      name: "clientAPIKey"
     },
     {
-      name: 'DISABLED',
-      label: 'Disabled',
-      documentation: 'Junction is unsatisfied disabling agent from acting as entity.'
+      class: 'String',
+      name: "AccountId"
     },
     {
-      name: 'INVITED',
-      label: 'Invited',
-      documentation: 'The person has been invited to join the business.'
+      class: 'String',
+      name: "FundingBalanceId"
+    },
+    {
+      class: 'String',
+      name: "NotificationId"
+    },
+    {
+      class: 'String',
+      name: "RemittanceLine4"
+    },
+    {
+      class: 'String',
+      name: "VendorId"
     }
   ]
 });

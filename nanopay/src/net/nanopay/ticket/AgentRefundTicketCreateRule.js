@@ -62,7 +62,7 @@ foam.CLASS({
         RefundTicket ticket = (RefundTicket) obj;
         ticket.setAgentInstructions(getTextToAgent());
         DAO txnDAO = (DAO) x.get("localTransactionDAO");
-        Transaction summary = (Transaction) txnDAO.find(ticket.getRefundTransaction());
+        Transaction summary = (Transaction) txnDAO.find(ticket.getProblemTransaction());
         if (! (summary instanceof SummaryTransaction || summary instanceof FXSummaryTransaction) ) {
           summary = summary.findRoot(x);
         }

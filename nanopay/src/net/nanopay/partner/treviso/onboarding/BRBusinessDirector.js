@@ -135,10 +135,9 @@ foam.CLASS({
         {
           args: ['cpfName'],
           predicateFactory: function(e) {
-            return e.GT(
-              net.nanopay.partner.treviso.onboarding.BRBusinessDirector
-                .CPF_NAME,
-              0);
+            return e.GT(foam.mlang.StringLength.create({
+              arg1: net.nanopay.partner.treviso.onboarding.BRBusinessDirector.CPF_NAME
+            }), 0);
           },
           errorMessage: 'INVALID_CPF'
         }
@@ -279,23 +278,27 @@ foam.CLASS({
       view: function(_, X) {
         let selectSlot = foam.core.SimpleSlot.create({ value: 0 });
         return foam.u2.MultiView.create({
-        views: [
-          foam.nanos.fs.fileDropZone.FileDropZone.create({
-            files$: X.data.documentsOfAddress$,
-            selected$: selectSlot
-          }, X),
-          foam.nanos.fs.fileDropZone.FilePreview.create({
-            data$: X.data.documentsOfAddress$,
-            selected$: selectSlot
-          })
-        ]
+          views: [
+            foam.nanos.fs.fileDropZone.FileDropZone.create({
+              files$: X.data.documentsOfAddress$,
+              selected$: selectSlot
+            }, X),
+            foam.nanos.fs.fileDropZone.FilePreview.create({
+              data$: X.data.documentsOfAddress$,
+              selected$: selectSlot
+            })
+          ]
         });
       },
-      validateObj: function(documentsOfAddress) {
-        if ( documentsOfAddress.length === 0 ) {
-          return this.PROOF_OF_ADDRESS;
+      validationPredicates: [
+        {
+          args: ['documentsOfAddress'],
+          predicateFactory: function(e) {
+            return e.HAS(net.nanopay.partner.treviso.onboarding.BRBusinessDirector.DOCUMENTS_OF_ADDRESS);
+          },
+          errorMessage: 'PROOF_OF_ADDRESS'
         }
-      }
+      ]
     },
     {
       class: 'foam.nanos.fs.FileArray',
@@ -316,11 +319,15 @@ foam.CLASS({
         ]
         });
       },
-      validateObj: function(documentsOfId) {
-        if ( documentsOfId.length === 0 ) {
-          return this.PROOF_OF_IDENTIFICATION;
+      validationPredicates: [
+        {
+          args: ['documentsOfId'],
+          predicateFactory: function(e) {
+            return e.HAS(net.nanopay.partner.treviso.onboarding.BRBusinessDirector.DOCUMENTS_OF_ID);
+          },
+          errorMessage: 'PROOF_OF_IDENTIFICATION'
         }
-      }
+      ]
     }
   ],
   methods: [
@@ -330,19 +337,6 @@ foam.CLASS({
         return await this.brazilVerificationService
           .getCPFNameWithBirthDate(this.__subContext__, cpf, this.birthday);
       }
-    },
-    {
-      name: 'validate',
-      args: [
-        { name: 'x', javaType: 'foam.core.X' }
-      ],
-      javaCode: `
-        super.validate(x);
-
-        // validate CPF
-        if ( ! getVerifyName() )
-          throw new IllegalStateException("Must verify name attached to CPF is valid.");
-      `
     }
   ]
 });

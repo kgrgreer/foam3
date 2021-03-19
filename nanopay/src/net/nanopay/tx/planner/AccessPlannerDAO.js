@@ -66,7 +66,6 @@ foam.CLASS({
           }
           if ( obj instanceof Transaction )
             t = (Transaction) obj;
-
           if (t != null) {
             // if transaction has been planned already, just load it.
             if ( ! SafetyUtil.isEmpty(t.getId()) ) {
@@ -119,7 +118,6 @@ foam.CLASS({
           logger.warning("Transaction Plan Validation Failed. \\ntxn:", txn, "\\nplan:", plannedTx);
           throw e;
         }
-
         // --- Remove the plan ---
         getDelegate().remove_(x, plannedTx);
         return (Transaction) plannedTx.getTransaction().fclone();
@@ -157,7 +155,6 @@ foam.CLASS({
     javaCode: `
       // --- Transaction Validation ---
       txn.validate(x);
-
       // --- Planner Validation ---
       AbstractTransactionPlanner atp = (AbstractTransactionPlanner) txn.findPlanner(x);
       if (atp == null || ! atp.postPlanning(x, txn, root)) {
@@ -165,18 +162,15 @@ foam.CLASS({
         logger.warning(txn.getId() + " failed planner validation");
         throw new ValidationException("Planner validation failed"); // return txn to user on failure
       }
-
       // --- Line Item Validation ---
       for ( TransactionLineItem li : txn.getLineItems() )
         li.validate();
-
       if ( txn.getNext() != null || txn.getNext().length == 0 ) {
         Transaction [] txs = txn.getNext();
         for ( Transaction tx : txs ) {
           postPlanning_(x, tx, root);
         }
       }
-
       txn.setIsValid(true);
     `
     }

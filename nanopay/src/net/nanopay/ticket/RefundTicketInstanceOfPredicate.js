@@ -50,7 +50,7 @@ foam.CLASS({
       X x = (X) obj;
       RefundTicket ticket = (RefundTicket) NEW_OBJ.f(obj);
       DAO txnDAO = (DAO) x.get("localTransactionDAO");
-      Transaction txn = (Transaction) txnDAO.find(ticket.getRefundTransaction());
+      Transaction txn = (Transaction) txnDAO.find(ticket.getProblemTransaction());
       if ( txn == null ) {
         Logger logger = (Logger) x.get("logger");
         logger.error("RefundTicketInstanceOfPredicate has failed, because txn find returned null "+ ticket.getId());
