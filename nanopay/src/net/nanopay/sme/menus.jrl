@@ -115,14 +115,13 @@ p({
       "createEnabled":true,
       "XXXeditEnabled":false,
 
-
       "XXXsummaryView":{ "class":"net.nanopay.contacts.ui.ContactTableView" },
       "createLabel":"Add contact",
 
       "defaultColumns":[
         "organization",
         "firstName",
-        "XXXlastName",
+        "lastName",
         "email",
         "businessAddress.countryId",
         "bankAccount.denomination",
@@ -136,17 +135,11 @@ p({
           "modelName": "user"
         }
       }
-
-
-
-
-
     }
   },
   "order":503,
   "parent":"smeNavigation"
 })
-
 
 p({
   "class": "foam.nanos.menu.Menu",
