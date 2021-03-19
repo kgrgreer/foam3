@@ -105,6 +105,9 @@ p({
       "of": "net.nanopay.contacts.Contact",
       "DAOCreateView":false,
 
+      "primaryAction": {"class":"net.nanopay.ui.AddPrimaryAction"},
+      "viewBorder":{class:"foam.u2.borders.NullBorder"},
+
       "XXXwizardDetailView":"net.nanopay.ui.wizard.ContactWizardDetailView",
       "XXXdetailView":"net.nanopay.contacts.ui.ContactWizardView",
       "menu": "mainmenu.contacts2",
@@ -157,7 +160,7 @@ p({
         "bankAccount.denomination",
         "signUpStatus"
       ],
-      "XXXCRUDEnabledActionsAuth": {
+      "CRUDEnabledActionsAuth": {
         "class": "foam.comics.v2.CRUDEnabledActionsAuth",
         "isEnabled": true,
         "enabledActionsAuth": {
@@ -299,18 +302,24 @@ p({
       "editPredicate":{"class":"foam.mlang.predicate.False"},
       "searchMode": 0,
       "XXXprimaryAction": {"class":"net.nanopay.bank.AddBankAccountAction"},
-      "createTitle": "Create contact",
-      "editPredicate":{"class":"foam.mlang.predicate.False"},
-      "XXXdeletePredicate":{"class":"foam.mlang.predicate.False"},
+      "createTitle": "Create Bank accounts",
 
+      "XXXdeletePredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{class:"foam.mlang.predicate.True"},
+
+      "primaryAction": {"class":"net.nanopay.bank.AddBankAccountAction"},
+      "viewBorder":{class:"foam.u2.borders.NullBorder"},
+
+
+      "XXXCRUDEnabledActionsAuth":{},
+      "wizardDetailView":{class:"net.nanopay.ui.wizard.ContactWizardDetailView"},
+      "detailView":{class:"net.nanopay.account.ui.BankAccountWizard"},
 
       "DAOCreateView":"true",
       "XXXwizardDetailView":"net.nanopay.account.ui.BankAccountWizard",
-      "OKXXXwizardDetailView":"net.nanopay.ui.wizard.ContactWizardDetailView",
 
       "menu": "mainmenu.banking2",
 
-      "wizardDetailView":{"class":"net.nanopay.ui.wizard.ContactWizardDetailView"},
       "EEEdetailView":{"class":"net.nanopay.bank.AddBankAccountAction"},
       "detailView":{"class":"net.nanopay.account.ui.BankAccountWizard"},
 
