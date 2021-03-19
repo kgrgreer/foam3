@@ -21,6 +21,8 @@ foam.CLASS({
   extends: 'net.nanopay.flinks.external.FlinksLoginIdRequest',
 
   javaImports: [
+    'foam.core.FObject',
+    'java.util.HashMap',
     'net.nanopay.account.Account',
     'net.nanopay.flinks.model.FlinksAccountsDetailResponse'
   ], 
@@ -87,6 +89,29 @@ foam.CLASS({
       name: 'currency',
       value: 'CAD',
       externalTransient: true
+    },
+    {
+      class: 'Enum',
+      of: 'net.nanopay.flinks.external.OnboardingType',
+      name: 'type',
+      value: 'DEFAULT',
+      documentation: `Personal or business onboarding. 
+        If type is provided, it forces that type of onboarding. 
+        If not provided, the login type from Flinks is used to determine the type of onboarding.`
+    },
+    {
+      name: 'capabilityPayloads',
+      class: 'FObjectArray',
+      of: 'foam.nanos.crunch.connection.CapabilityPayload',
+      readPermissionRequired: false,
+      writePermissionRequired: true,
+      documentation: 'Onboarding capabilities that remain to be satisfied for top level capabilities'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.flinks.external.FlinksOverrides',
+      name: 'flinksOverrides',
+      documentation: 'Data that will override the data retrieved from Flinks.'
     }
   ]
 });

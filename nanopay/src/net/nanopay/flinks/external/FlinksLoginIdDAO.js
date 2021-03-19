@@ -76,6 +76,36 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'resolveLoginId',      
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'request', type: 'FlinksLoginId' }
+      ],
+      javaCode: `
+        // Whether to skip lookup of previous requests altogether
+        if ( request.getSkipLoginIdResolution() ) return;
+
+        // Only lookup previous requests if no user is defined
+        if ( request.getUser() != 0 ) return;
+
+        // Lookup most recent FlinksLoginId with the given LoginId
+        List oldRecords = ((ArraySink) getDelegate().where(AND(
+            EQ(FlinksLoginId.LOGIN_ID, flinksLoginId.getLoginId()),
+            NEQ(FlinksLoginId.USER, 0)
+          ))
+          .orderBy(net.nanopay.flinks.external.FlinksLoginId.CREATED)
+          .limit(1)
+          .select(new foam.dao.ArraySink())).getArray();
+
+        // Use the previously assigned user and business
+        if ( oldRecords.size() == 1 ) {
+          FlinksLoginId previousFlinksLoginId = (FlinksLoginId) oldRecords.get(0);
+          flinksLoginId.setUser(previousFlinksLoginId.getUser());
+          flinksLoginId.setBusiness(previousFlinksLoginId.getBusiness());
+        }
+      `
+    },
+    {
       name: 'put_',
       javaCode: `
       var pm = new PM(FlinksLoginIdDAO.getOwnClassInfo().getId(), "put");
@@ -85,53 +115,12 @@ foam.CLASS({
         Logger logger = (Logger) x.get("logger");
         Subject subject = (Subject) x.get("subject");
 
-        FlinksAuth flinksAuth = (FlinksAuth) x.get("flinksAuth");
-        FlinksResponseService flinksResponseService = (FlinksResponseService) x.get("flinksResponseService");
-
         FlinksLoginId flinksLoginId = (FlinksLoginId) obj;
 
-        // When a user has not been explicitly set, attempt to resolve the loginId against previous calls
-        if ( ! flinksLoginId.getSkipLoginIdResolution() && flinksLoginId.getUser() == 0 ) {
+        // Resolve Login ID
+        resolveLoginId(x, flinksLoginId);
 
-          // Check if we have seen the Flinks LoginId before, using the user and business previously provisioned
-          List oldRecords = ((ArraySink) getDelegate().where(AND(
-              EQ(FlinksLoginId.LOGIN_ID, flinksLoginId.getLoginId()),
-              NEQ(FlinksLoginId.USER, 0)
-            ))
-            .limit(1)
-            .select(new foam.dao.ArraySink())).getArray();
-          if ( oldRecords.size() == 1 ) {
-            FlinksLoginId previousFlinksLoginId = (FlinksLoginId) oldRecords.get(0);
-            flinksLoginId.setUser(previousFlinksLoginId.getUser());
-            flinksLoginId.setBusiness(previousFlinksLoginId.getBusiness());
-          }
-        }
-
-        FlinksResponse flinksResponse = (FlinksResponse) flinksResponseService.getFlinksResponse(x, flinksLoginId);
-        if ( flinksResponse == null ) {
-          throw new ExternalAPIException("Flinks failed to provide a valid response when provided with login ID: " + flinksLoginId.getLoginId());
-        }
-
-        FlinksResponse flinksAuthResponse = flinksAuth.getAccountSummary(x, flinksResponse.getRequestId(), subject.getUser(), false);
-        while ( flinksAuthResponse.getHttpStatusCode() == 202 ) {
-          flinksAuthResponse = flinksAuth.pollAsync(x, flinksAuthResponse.getRequestId(), subject.getUser());
-        }
-        if ( flinksAuthResponse.getHttpStatusCode() != 200 ) {
-          throw new ExternalAPIException("Flinks failed to provide valid account detials " + flinksAuthResponse);
-        }
-        FlinksAccountsDetailResponse flinksDetailResponse = (FlinksAccountsDetailResponse) flinksAuthResponse;
-        flinksLoginId.setFlinksAccountsDetails(flinksDetailResponse.getId());
-
-        AccountWithDetailModel accountDetail = selectBankAccount(x, flinksLoginId, flinksDetailResponse);
-        if ( accountDetail == null ) {
-          throw new UnknownIdException("No matching Flinks bank account found. AccountId: " + flinksLoginId.getAccountId());
-        }
-        LoginModel loginDetail = flinksDetailResponse.getLogin();
-        if ( loginDetail == null ) {
-          logger.warning("Unexpected behaviour - No login section found in FlinksResponse for loginId: " + flinksLoginId.getLoginId());
-        }
-
-        // Find the user and business if they already exist
+        // Lookup User and Business and Account
         User user = flinksLoginId.findUser(x);
         if ( user == null && flinksLoginId.getUser() != 0 ) {
           throw new UnknownIdException("User not found: " + flinksLoginId.getUser());
@@ -140,15 +129,42 @@ foam.CLASS({
         if ( business == null && flinksLoginId.getBusiness() != 0 ) {
           throw new UnknownIdException("Business not found: " + flinksLoginId.getBusiness());
         }
+        Account account = flinksLoginId.findAccount(x);
+        if ( account == null && !SafetyUtil.isEmpty(flinksLoginId.getAccount()) ) {
+          throw new UnknownIdException("Account not found: " + flinksLoginId.getAccount());
+        }
 
-        // Create the user if this is an onboarding request
-        if ( flinksLoginId instanceof FlinksLoginIdOnboarding ) {
-          FlinksLoginIdOnboarding flinksLoginIdOnboarding = (FlinksLoginIdOnboarding) flinksLoginId;
+        // Perform Flinks Operations
+        if ( !SafetyUtil.isEmpty(flinksLoginId.getLogin()) ) {
+          FlinksResponse flinksResponse = (FlinksResponse) ((FlinksResponseService) x.get("flinksResponseService")).getFlinksResponse(x, flinksLoginId);
+          if ( flinksResponse == null ) {
+            throw new ExternalAPIException("Flinks failed to provide a valid response when provided with login ID: " + flinksLoginId.getLoginId());
+          }
 
+          FlinksResponse flinksAuthResponse = ((FlinksAuth) x.get("flinksAuth")).getAccountSummary(x, flinksResponse.getRequestId(), subject.getUser(), false);
+          while ( flinksAuthResponse.getHttpStatusCode() == 202 ) {
+            flinksAuthResponse = flinksAuth.pollAsync(x, flinksAuthResponse.getRequestId(), subject.getUser());
+          }
+          if ( flinksAuthResponse.getHttpStatusCode() != 200 ) {
+            throw new ExternalAPIException("Flinks failed to provide valid account detials " + flinksAuthResponse);
+          }
+          FlinksAccountsDetailResponse flinksDetailResponse = (FlinksAccountsDetailResponse) flinksAuthResponse;
+          flinksLoginId.setFlinksAccountsDetails(flinksDetailResponse.getId());
+
+          AccountWithDetailModel accountDetail = selectBankAccount(x, flinksLoginId, flinksDetailResponse);
+          if ( accountDetail == null ) {
+            throw new UnknownIdException("No matching Flinks bank account found. AccountId: " + flinksLoginId.getAccountId());
+          }
+
+          LoginModel loginDetail = flinksDetailResponse.getLogin();
+          if ( loginDetail == null ) {
+            logger.warning("Unexpected behaviour - No login section found in FlinksResponse for loginId: " + flinksLoginId.getLoginId());
+          }
+
+          // Onboarding
           if ( user == null ) {
             // Create the user when they do not exist
-
-            onboarding(x, flinksLoginIdOnboarding, accountDetail, loginDetail);
+            onboarding(x, flinksLoginId, accountDetail, loginDetail);
 
             // Retrieve the user and the business
             user = flinksLoginId.findUser(x);
@@ -158,29 +174,55 @@ foam.CLASS({
             if ( user == null ) {
               throw new GeneralException("User not provisioned: " + flinksLoginId.getUser());
             }
-
-          } else {
-            // Retrieve any missing capabilities from previous calls with this Flinks LoginId
-            
-            // Select one of the API CAD Personal Payments Capabilities
-            String capabilityId = getUserCapabilityId(x, flinksLoginId);
-            
-            // Switch contexts to the newly created user
-            Subject newSubject = new Subject.Builder(x).setUser(user).build();
-            if ( flinksLoginIdOnboarding.getType() != OnboardingType.PERSONAL && business != null ) {
-              newSubject.setUser(business);
-
-              // Business CAD payments capability
-              capabilityId = "18DD6F03-998F-4A21-8938-358183151F96";
-            }
-            X subjectX = x.put("subject", newSubject);
-
-            DAO capabilityPayloadDAO = (DAO) subjectX.get("capabilityPayloadDAO");
-            addCapabilityPayload(x, flinksLoginIdOnboarding, (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId));
           }
-        } else if ( user == null ) {
+
+          // Account Creation
+          if ( account == null ) {
+            User owner = (business != null) ? business : user;
+            account = findBankAccount(x, owner, flinksLoginId, accountDetail);
+            if ( account == null ) {
+              // Create the bank account owned by the business if it exists, otherwise by the user
+              account = createBankAccount(x, owner, flinksLoginId, accountDetail, loginDetail);
+            }
+            flinksLoginId.setAccount(account.getId());
+          }
+        }
+        
+        // Ensure user exists
+        if ( user == null ) {
           throw new UnknownIdException("User is required to add a bank account");
         }
+
+        // Lookup Missing Capabilities
+
+        // Create Account if necessary
+
+
+        // Old ....
+
+        // Create the user if this is an onboarding request
+        
+        } else {
+          // Retrieve any missing capabilities from previous calls with this Flinks LoginId
+          
+          // Select one of the API CAD Personal Payments Capabilities
+          String capabilityId = getUserCapabilityId(x, flinksLoginId);
+          
+          // Switch contexts to the newly created user
+          Subject newSubject = new Subject.Builder(x).setUser(user).build();
+          if ( flinksLoginId.getType() != OnboardingType.PERSONAL && business != null ) {
+            newSubject.setUser(business);
+
+            // Business CAD payments capability
+            capabilityId = "18DD6F03-998F-4A21-8938-358183151F96";
+          }
+          X subjectX = x.put("subject", newSubject);
+
+          DAO capabilityPayloadDAO = (DAO) subjectX.get("capabilityPayloadDAO");
+          addCapabilityPayload(x, flinksLoginId, (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId));
+        }
+        
+        
 
         // Set bank account owner to business, if it exists
         User owner = (business != null) ? business : user;
@@ -302,7 +344,7 @@ foam.CLASS({
       name: 'onboarding',
       args: [
         { name: 'x', type: 'Context' },
-        { name: 'request', type: 'FlinksLoginIdOnboarding' },
+        { name: 'request', type: 'FlinksLoginId' },
         { name: 'accountDetail', type: 'AccountWithDetailModel' },
         { name: 'loginDetail', type: 'LoginModel' }
       ],
@@ -341,7 +383,7 @@ foam.CLASS({
       name: 'onboardUser',
       args: [
         { name: 'x', type: 'Context' },
-        { name: 'request', type: 'FlinksLoginIdOnboarding' },
+        { name: 'request', type: 'FlinksLoginId' },
         { name: 'accountDetail', type: 'AccountWithDetailModel' },
         { name: 'loginDetail', type: 'LoginModel' },
         { name: 'onboardingType', type: 'OnboardingType' }
@@ -484,7 +526,7 @@ foam.CLASS({
       name: 'onboardBusiness',
       args: [
         { name: 'x', type: 'Context' },
-        { name: 'request', type: 'FlinksLoginIdOnboarding' },
+        { name: 'request', type: 'FlinksLoginId' },
         { name: 'accountDetail', type: 'AccountWithDetailModel' }
       ],
       javaCode: `
@@ -622,7 +664,7 @@ foam.CLASS({
       name: 'addCapabilityPayload',
       args: [
         { name: 'x', type: 'Context' },
-        { name: 'request', type: 'FlinksLoginIdOnboarding' },
+        { name: 'request', type: 'FlinksLoginId' },
         { name: 'capabilityPayload', type: 'CapabilityPayload' }
       ],
       javaCode: `
