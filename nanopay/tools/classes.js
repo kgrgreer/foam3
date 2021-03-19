@@ -179,6 +179,7 @@ var classes = [
   'net.nanopay.model.JobTitle',
   'net.nanopay.model.SigningOfficer',
   'net.nanopay.bank.AddBankAccountAction',
+  'net.nanopay.ui.AddPrimaryAction',
   'net.nanopay.bank.BankHoliday',
   'net.nanopay.bank.BankHolidayService',
   'net.nanopay.bank.test.USBankAccountTest',
