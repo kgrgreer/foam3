@@ -3367,3 +3367,12 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Send money to pay a vendor",targ
 p({class:"foam.i18n.Locale",locale:"pt",source:"Other",target:"Outro"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ruler.BusinessCompliancePassedEmailNotification.NOTIFICATION_BODY_P1",target:"Esta empresa agora pode fazer pagamentos"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeApprovalRequest.SELECT_DATA",target:"Selecione os dados associados a: "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeApprovalRequest.REQUIRED_LABEL",target:" (requeridos)"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeData.PAYER_TYPE.label",target:"tipo de pagador"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeData.APPROVAL_TYPE.label",target:"tipo de aprovação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeData.PAYEE_TYPE.label",target:"Tipo de beneficiário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeData.GROUP_CODE.label",target:"Código de grupo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeData.NATURE_CODE.label",target:"Código da natureza"})
