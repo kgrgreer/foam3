@@ -1059,6 +1059,9 @@ var classes = [
   'net.nanopay.business.ruler.RegistrationLoginDisabledRule',
   'net.nanopay.business.ruler.businessCapabilitySetUp',
   'net.nanopay.business.ruler.InitialBusinessRegistrationRule',
+  'net.nanopay.business.BusinessAssociationException',
+  'net.nanopay.business.BusinessSignInException',
+  'net.nanopay.business.BusinessValidationException',
 
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',

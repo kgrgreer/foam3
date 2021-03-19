@@ -34,8 +34,8 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
-    'foam.nanos.auth.BusinessValidationException',
-    'foam.nanos.auth.BusinessSignInException',
+    'net.nanopay.business.BusinessValidationException',
+    'net.nanopay.business.BusinessSignInException',
     'net.nanopay.crunch.onboardingModels.InitialBusinessData',
     'net.nanopay.model.Business'
   ],
@@ -87,7 +87,7 @@ foam.CLASS({
             ucj.setSourceId(business.getId());
           } catch (Exception e) {
             ((Logger) x.get("logger")).warning(e);
-            throw new BusinessValidationException();
+            throw new BusinessValidationException(e);
           }
 
           try {
@@ -95,7 +95,7 @@ foam.CLASS({
               agentAuth.actAs(x, business);
           } catch (Exception e) {
             ((Logger) x.get("logger")).warning(e);
-            throw new BusinessSignInException();
+            throw new BusinessSignInException(e);
           }
         }
       }, "Creates business on initial business data submit.");

@@ -1520,6 +1520,9 @@ FOAM_FILES([
   { name: 'net/nanopay/business/ruler/RegistrationLoginDisabledRule' },
   { name: 'net/nanopay/business/ruler/InitialBusinessRegistrationRule' },
   { name: 'net/nanopay/business/ruler/businessCapabilitySetUp' },
+  { name: 'net/nanopay/business/BusinessAssociationException' },
+  { name: 'net/nanopay/business/BusinessSignInException' },
+  { name: 'net/nanopay/business/BusinessValidationException' },
 
   // bmo
   { name: 'net/nanopay/tx/bmo/BmoAssignedClientValue' },
