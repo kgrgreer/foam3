@@ -310,8 +310,8 @@ p({
   "enabled":true,
   "code": """
     String spid = "intuit";
-    import net.nanopay.tx.cron.TransactionSummaryAgent;
-    cron = new TransactionSummaryAgent(spid);
+    import net.nanopay.partner.intuit.tx.IntuitTransactionSummaryAgent;
+    cron = new IntuitTransactionSummaryAgent(spid);
     cron.execute(x);
     print("Transaction Summary Agent run.");
   """
