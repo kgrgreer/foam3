@@ -95,14 +95,14 @@ foam.CLASS({
       name: 'isEdit',
       documentation: 'isEdit property to be passed to the WizardView'
     },
-    {
-      class: 'String',
-      name: 'detailView'
-    },
-    {
-      class: 'String',
-      name: 'menu'
-    }
+//     {
+//       class: 'String',
+//       name: 'detailView'
+//     },
+//     {
+//       class: 'String',
+//       name: 'menu'
+//     }
   ],
 
   methods: [
@@ -114,7 +114,6 @@ foam.CLASS({
             return self.Popup.create({ onClose: self.onClose }, self)
               .startContext({ controllerMode: self.controllerMode })
                 .tag({
-                  //class: self.detailView,//`net.nanopay.contacts.ui.${self.modelName}WizardView`,//delete
                   class: `net.nanopay.contacts.ui.${self.modelName}WizardView`,
                   //net.nanopay.contacts.ui.ContactWizardView
                   data$: self.data$,
@@ -125,10 +124,8 @@ foam.CLASS({
           return self.MenuRedirectSMEModalView.create({
             menu: 'mainmenu.contacts',//self.menu,
             view: {
-              data: (foam.lookup('net.nanopay.contacts.Contact')).create({}, this),
-              class:'net.nanopay.contacts.ui.ContactWizardView',//'foam.nanos.menu.MenuToolBar',
-              parent:"sme",
-              title:"Add contact"
+              data: (foam.lookup('net.nanopay.contacts.Contact')).create({}, this),//self.model_
+              class:`net.nanopay.contacts.ui.${self.modelName}WizardView`,//'net.nanopay.contacts.ui.ContactWizardView'
             }
           });
         }))

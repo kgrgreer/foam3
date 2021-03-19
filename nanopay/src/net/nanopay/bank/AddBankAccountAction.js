@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.bank',
-  name: 'AddBankAccountAction',//TODO delete
+  name: 'AddBankAccountAction',
   extends: 'foam.core.Action',
 
   documentation: 'An action that displays the view to add a bank account.',
