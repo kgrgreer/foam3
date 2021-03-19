@@ -44,7 +44,7 @@ foam.CLASS({
     'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.Account',
-    'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.*',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.SummaryTransaction',
     'net.nanopay.tx.TransactionQuote',
@@ -53,7 +53,8 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
     'org.apache.commons.lang.ArrayUtils',
-    'net.nanopay.tx.TransactionException'
+    'net.nanopay.tx.TransactionException',
+    'net.nanopay.tx.PropertyCompare'
   ],
 
   tableColumns: [
@@ -116,13 +117,25 @@ foam.CLASS({
       value: false
     },
     {
+      name: 'upperLimit',
+      class: 'Long',
+      value: 0,
+      documentation: 'The planner will only plan txns with an amount below this limit. 0 means not set'
+    },
+    {
+      name: 'lowerLimit',
+      class: 'Long',
+      value: 0,
+      documentation: 'The planner will only plan txns with an amount above this limit'
+    },
+    {
       name: 'daoKey',
       value: 'transactionPlannerDAO',
       visibility: 'HIDDEN',
     },
     {
       class: 'Enum',
-      of: 'foam.nanos.ruler.Operations',
+      of: 'foam.nanos.dao.Operation',
       name: 'operation',
       value: 'CREATE',
       visibility: 'HIDDEN',
@@ -137,6 +150,39 @@ foam.CLASS({
       javaCode: `
         this.__frozen__ = false;
         return this;
+      `
+    },
+    {
+      name: 'getPredicate',
+      type: 'foam.mlang.predicate.Predicate',
+      documentation: 'override predicate with transaction value limits (sender side)',
+      javaCode: `
+      // TODO: uncomment code block when MQL done
+        if ( getLowerLimit() > 0 ) {
+          if ( getUpperLimit() > 0 ) {
+          // both lower and upper limits active
+            return AND(
+              super.getPredicate(),
+              new PropertyCompare( "gte", "amount", getLowerLimit(), true ), //TODO: replace with MQL predicate
+              new PropertyCompare( "lt", "amount", getUpperLimit(), true ) //TODO: replace with MQL predicate
+            );
+          }
+          // lower limit active upper not
+          return AND(
+            super.getPredicate(),
+            new PropertyCompare( "gte", "amount", getLowerLimit(), true ) //TODO: replace with MQL predicate
+          );
+        }
+        if ( getUpperLimit() > 0 ) {
+          // upper limit active, lower not
+          return AND(
+            super.getPredicate(),
+            new PropertyCompare( "lt", "amount", getUpperLimit(), true ) //TODO: replace with MQL predicate
+          );
+        }
+        // limits not active
+
+        return super.getPredicate();
       `
     },
     {

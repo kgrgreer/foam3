@@ -32,7 +32,7 @@ foam.CLASS({
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
-    'foam.nanos.ruler.Operations',
+    'foam.nanos.dao.Operation',
     'foam.util.SafetyUtil',
     'java.util.Map',
     'static foam.mlang.MLang.*'

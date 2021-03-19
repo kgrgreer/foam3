@@ -61,6 +61,7 @@ foam.CLASS({
           .setCauseId(levResponse != null ? levResponse.getId() : 0L)
           .setClassification(getClassification())
           .setCauseDaoKey("securefactLEVDAO")
+          .setCreatedFor(business.getId())
           .setGroup(group)
           .build();
       `
