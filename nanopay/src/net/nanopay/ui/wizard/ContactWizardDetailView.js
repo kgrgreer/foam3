@@ -124,10 +124,12 @@ foam.CLASS({
               .endContext();
           }
           return self.MenuRedirectSMEModalView.create({
-            menu: self.menu,// 'mainmenu.contacts',
+            menu:  'mainmenu.contacts',//self.menu,
             view: {
-              class: self.detailView,//`net.nanopay.contacts.ui.${self.modelName}WizardView`,//delete
-              data: self.model_
+              data: (foam.lookup('net.nanopay.contacts.Contact')).create({}, this),
+              class:'net.nanopay.contacts.ui.ContactWizardView',//'foam.nanos.menu.MenuToolBar',
+              parent:"sme",
+              title:"Add contact"
             }
           });
         }))
