@@ -16,7 +16,7 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.tx',
+  package: 'net.nanopay.partner.intuit.tx',
   name: 'IntuitTransactionSummary',
   extends: 'net.nanopay.tx.TransactionSummary',
 

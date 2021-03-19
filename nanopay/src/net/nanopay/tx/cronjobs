@@ -309,10 +309,10 @@ p({
   "description":"Creates Transaction Summary objects for all summary transactions",
   "enabled":true,
   "code": """
+    String spid = "intuit";
     import net.nanopay.tx.cron.TransactionSummaryAgent;
-    cron = new TransactionSummaryAgent();
+    cron = new TransactionSummaryAgent(spid);
     cron.execute(x);
     print("Transaction Summary Agent run.");
   """
-
 })

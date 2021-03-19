@@ -23,8 +23,9 @@ import foam.dao.DAO;
 import foam.nanos.cron.Cron;
 import java.util.*;
 import net.nanopay.fx.FXSummaryTransaction;
+import net.nanopay.partner.intuit.tx.IntuitTransactionSummary;
+import net.nanopay.partner.intuit.tx.IntuitTransactionSummaryAgent;
 import net.nanopay.tx.ChainSummary;
-import net.nanopay.tx.IntuitTransactionSummary;
 import net.nanopay.tx.SummarizingTransaction;
 import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.TransactionSummary;
@@ -34,6 +35,13 @@ import net.nanopay.tx.model.TransactionStatus;
 import static foam.mlang.MLang.*;
 
 public class TransactionSummaryAgent implements ContextAgent {
+  String spid;
+
+  public TransactionSummaryAgent() {}
+  public TransactionSummaryAgent(String spid) {
+    this.spid = spid;
+  }
+
   @Override
   public void execute(X x) {
     DAO summaryTransactionDAO = (DAO) x.get("summaryTransactionDAO");
@@ -42,15 +50,31 @@ public class TransactionSummaryAgent implements ContextAgent {
     
     if ( lastRun != null ) {
       ArraySink txnLastModifiedSink = (ArraySink) transactionDAO.where(
-          GT(Transaction.LAST_MODIFIED, lastRun)
+        AND(
+          GT(Transaction.LAST_MODIFIED, lastRun),
+          EQ(Transaction.SPID, spid)
+        )
       ).select(new ArraySink());
 
       HashSet<String> summaryTxnIds = setupTxnIdSet(x, txnLastModifiedSink.getArray());
       List<Transaction> txnList = setupTxnListFromSet(x, summaryTxnIds);
-      generateTransactionSummaries(x, txnList);
+      if ( spid.equals("intuit") ) {
+        IntuitTransactionSummaryAgent intuitTxnSummaryAgent = new IntuitTransactionSummaryAgent(txnList);
+        intuitTxnSummaryAgent.generateTransactionSummaries(x);
+      } else {
+        generateTransactionSummaries(x, txnList);
+      }
     } else {
-      ArraySink txnSink = (ArraySink) summaryTransactionDAO.select(new ArraySink());
-      generateTransactionSummaries(x, txnSink.getArray());
+      ArraySink txnSink = (ArraySink) summaryTransactionDAO.where(
+        EQ(Transaction.SPID, spid)
+      ).select(new ArraySink());
+      if ( spid.equals("intuit") ) {
+        IntuitTransactionSummaryAgent intuitTxnSummaryAgent = new IntuitTransactionSummaryAgent(txnSink.getArray());
+        intuitTxnSummaryAgent.generateTransactionSummaries(x);
+      } else {
+        generateTransactionSummaries(x, txnSink.getArray());
+      }
+      
     }
   }
 
@@ -61,37 +85,19 @@ public class TransactionSummaryAgent implements ContextAgent {
       SummarizingTransaction summarizingTransaction = (SummarizingTransaction) txn;
       ChainSummary chainSummary = summarizingTransaction.getChainSummary();
 
-      if ( txn.getSpid().equals("intuit") ) {
-        IntuitTransactionSummary intuitTxnSummary = new IntuitTransactionSummary.Builder(x)
-          .setId(txn.getId())
-          .setCurrency(txn.getSourceCurrency())
-          .setAmount(txn.getAmount())
-          .setSummary(chainSummary.getSummary())
-          .setStatus(chainSummary.getStatus())
-          .setCategory(chainSummary.getCategory())
-          .setErrorCode(chainSummary.getErrorCode())
-          .setErrorInfo(chainSummary.getErrorInfo())
-          .setCreated(new Date())
-          .setLastModified(new Date())
-          .setExternalId(txn.getExternalId() != null ? txn.getExternalId() : "")
-          .setExternalInvoiceId(txn.getExternalInvoiceId() != null ? txn.getExternalInvoiceId() : "")
-          .build();
-        transactionSummaryDAO.put(intuitTxnSummary);
-      } else {
-        TransactionSummary txnSummary = new TransactionSummary.Builder(x)
-          .setId(txn.getId())
-          .setCurrency(txn.getSourceCurrency())
-          .setAmount(txn.getAmount())
-          .setSummary(chainSummary.getSummary())
-          .setStatus(chainSummary.getStatus())
-          .setCategory(chainSummary.getCategory())
-          .setErrorCode(chainSummary.getErrorCode())
-          .setErrorInfo(chainSummary.getErrorInfo())
-          .setCreated(new Date())
-          .setLastModified(new Date())
-          .build();
-        transactionSummaryDAO.put(txnSummary);
-      }
+      TransactionSummary txnSummary = new TransactionSummary.Builder(x)
+        .setId(txn.getId())
+        .setCurrency(txn.getSourceCurrency())
+        .setAmount(txn.getAmount())
+        .setSummary(chainSummary.getSummary())
+        .setStatus(chainSummary.getStatus())
+        .setCategory(chainSummary.getCategory())
+        .setErrorCode(chainSummary.getErrorCode())
+        .setErrorInfo(chainSummary.getErrorInfo())
+        .setCreated(new Date())
+        .setLastModified(new Date())
+        .build();
+      transactionSummaryDAO.put(txnSummary);
     }
   }
 
@@ -114,5 +120,5 @@ public class TransactionSummaryAgent implements ContextAgent {
     }
     return txnIdSet;
   }
-  
+
 }
