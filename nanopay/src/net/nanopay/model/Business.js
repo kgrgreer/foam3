@@ -18,6 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.model',
   name: 'Business',
+  plural: 'Businesses',
   extends: 'foam.nanos.auth.User',
 
   implements: [
@@ -76,7 +77,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'COMPLIANCE_REPORT_WARNING', message: ' has not completed the business profile, and cannot generate compliance documents.' }
+    { name: 'COMPLIANCE_REPORT_WARNING', message: ' has not completed the business profile, and cannot generate compliance documents' }
   ],
 
   sections: [
@@ -546,7 +547,7 @@ foam.CLASS({
       includeInDigest: false
     },
     // REVIEW: includeInDigest - many of the following are UCJ entries on the
-    // business, or will be, hence marked as false - assuming they will move. 
+    // business, or will be, hence marked as false - assuming they will move.
     {
       class: 'FObjectArray',
       of: 'foam.nanos.auth.User',
@@ -658,7 +659,7 @@ foam.CLASS({
     {
       name: 'lastName',
       hidden: true,
-      validateObj: function() {}  
+      validateObj: function() {}
     }
  ],
 
@@ -765,7 +766,7 @@ foam.CLASS({
       javaCode: `
         User user = ((Subject) x.get("subject")).getUser();
         Group group = (Group) x.get("group");
-        if ( ! SafetyUtil.equals(group.getId(), "admin") && 
+        if ( ! SafetyUtil.equals(group.getId(), "admin") &&
             ! SafetyUtil.equals(group.getId(), user.getSpid() + "-admin") ) {
           throw new AuthorizationException("Businesses cannot be deleted.");
         }
