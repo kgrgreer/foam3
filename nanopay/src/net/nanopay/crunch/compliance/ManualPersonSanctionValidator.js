@@ -88,6 +88,7 @@ foam.CLASS({
           .setClassification(getClassification())
           .setMatches(dowJonesResponse != null ? dowJonesResponse.getResponseBody().getMatches() : null)
           .setGroup(group)
+          .setCreatedFor(user.getId())
           .build();
       `
     }

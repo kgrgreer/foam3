@@ -35,7 +35,8 @@ foam.CLASS({
   sections: [
     {
       name: 'additionalInfoSection',
-      title: 'Corridor-specific payment information'
+      title: 'Corridor-specific payment information',
+      help: 'Require Corridor-specific payment information'
     }
   ],
 

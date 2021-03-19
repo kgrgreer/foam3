@@ -39,7 +39,7 @@ foam.CLASS({
     'foam.nanos.approval.ApprovalRequest',
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.logger.Logger',
-    'foam.nanos.ruler.Operations',
+    'foam.nanos.dao.Operation',
     'foam.mlang.sink.Count',
     'foam.mlang.MLang',
     'foam.mlang.MLang.*',
@@ -65,7 +65,7 @@ foam.CLASS({
             MLang.AND(
               MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED),
               MLang.EQ(AccountRoleApprovalRequest.OUTGOING_ACCOUNT, request.getObjId()),
-              MLang.EQ(ApprovalRequest.OPERATION, Operations.CREATE)
+              MLang.EQ(ApprovalRequest.OPERATION, Operation.CREATE)
             )
           ).select(MLang.COUNT())).getValue();
 
@@ -82,7 +82,7 @@ foam.CLASS({
             MLang.EQ(ApprovalRequest.DAO_KEY, request.getDaoKey()),
             MLang.EQ(ApprovalRequest.OBJ_ID, request.getObjId()),
             MLang.NOT(
-              MLang.EQ(ApprovalRequest.OPERATION, Operations.REMOVE)
+              MLang.EQ(ApprovalRequest.OPERATION, Operation.REMOVE)
             )
           )
         ).select(MLang.COUNT())).getValue();

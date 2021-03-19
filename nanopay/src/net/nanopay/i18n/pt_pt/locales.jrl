@@ -101,7 +101,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.CHOSEN_OWNERS.label",target:"proprietários escolhidos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OWNER_SELECTIONS_VALIDATED.label",target:"Seleções do proprietário validadas"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS.value",target:"-1"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS.documentation",target:"Número de proprietários"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.SIGNINGOFFICER_DATA_FETCHING_ERR",target:"Falha ao encontrar as informações deste oficial de assinatura"})
 
@@ -3352,7 +3351,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.settings.business.De
 p({class:"foam.i18n.Locale",locale:"pt",source:"contact.capable.afex.cn.name",target:"Informações adicionais necessárias"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"contact.capable.afex.cn.requirementViewTitle",target:"Para enviar um pagamento a um contato neste corredor, você precisará fornecer mais informações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.SECTION_ADDITIONAL_INFO_SECTION.title",target:"Informações de pagamento específicas do corredor"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.SECTION_ADDITIONAL_INFO_SECTION.help",target:"ccc"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.SECTION_ADDITIONAL_INFO_SECTION.help",target:"Exigir informações de pagamento específicas do corredor"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.INVALID_PURPOSE_CODE",target:"Selecione uma finalidade de pagamento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.PURPOSE_CODE.label",target:"Propósito do pagamento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.PLACE_HOLDER",target:"Por favor selecione..."})

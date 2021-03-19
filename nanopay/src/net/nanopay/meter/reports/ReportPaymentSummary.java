@@ -214,12 +214,13 @@ public class ReportPaymentSummary extends AbstractReport {
     DAO txsInProcess = new MDAO(Transaction.getOwnClassInfo());
     DAO txsCompleted = new MDAO(Transaction.getOwnClassInfo());
     for (Object obj : transactionRootLst) {
-      Transaction transaction = (Transaction) ((foam.core.FObject)obj).fclone();
-      if ((transaction.getState(x) == TransactionStatus.PENDING) ||
-        (transaction.getState(x) == TransactionStatus.SENT)) {
+      Transaction transaction = (Transaction) obj;
+      TransactionStatus state = transaction.getState(x);
+      if ((state == TransactionStatus.PENDING) ||
+        (state == TransactionStatus.SENT)) {
         // In Process (Any payment that has started processing but not yet completed)
         txsInProcess.put(transaction);
-      } else if (transaction.getState(x) == TransactionStatus.COMPLETED) {
+      } else if (state == TransactionStatus.COMPLETED) {
         // Completed (All components of the transaction is completed)
         txsCompleted.put(transaction);
       }
