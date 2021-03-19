@@ -10,3 +10,4 @@ p({"class":"foam.nanos.auth.Permission","id":"menu.read.rules.restrictaccountsru
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.rules.txapprovalrules"})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.transactions"})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.users"})
+p({"class":"foam.nanos.auth.Permission","id":"liquid.approvable.requests","description":"Permits users to approve approval requests."})

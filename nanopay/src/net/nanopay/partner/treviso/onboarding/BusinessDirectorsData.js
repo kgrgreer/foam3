@@ -30,7 +30,7 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'net.nanopay.partner.treviso.onboarding.BRBusinessDirector',
+    'net.nanopay.partner.treviso.onboarding.BRBusinessDirector'
   ],
 
   messages: [
@@ -107,17 +107,15 @@ properties: [
         };
       },
       visibility: function(businessTypeId, needDirector) {
-         return businessTypeId < 4 ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+        return businessTypeId < 4 ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       validateObj: function(businessTypeId, businessDirectors, businessDirectors$errors) {
         if ( businessTypeId < 4 ) return;
         if ( ! businessDirectors || businessDirectors.length == 0 )
           return this.NO_DIRECTOR_INFO;
-        if ( businessDirectors$errors && businessDirectors$errors.length  )
+        if ( businessDirectors$errors && businessDirectors$errors.length )
           return this.DIRECTOR_INFO_NOT_VALID;
       },
-      autoValidate: true,
-      validationTextVisible: true,
       validationStyleEnabled: false
     }
   ],
@@ -126,16 +124,20 @@ properties: [
     {
       name: 'validate',
       javaCode: `
-        java.util.List<foam.core.PropertyInfo> props = getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
-        for ( foam.core.PropertyInfo prop : props ) {
-          try {
-            prop.validateObj(x, this);
-          } catch ( IllegalStateException e ) {
-            throw e;
-          }
+        if (getBusinessTypeId() < 4) return;
+
+        // validate directors
+        if (getBusinessDirectors() == null || getBusinessDirectors().length == 0) {
+          throw new IllegalStateException(NO_DIRECTOR_INFO);
         }
 
-        for ( BRBusinessDirector director : getBusinessDirectors()  ) director.validate(x);
+        for (BRBusinessDirector director : getBusinessDirectors()) {
+          try {
+            director.validate(x);
+          } catch (RuntimeException e) {
+            throw new IllegalStateException(DIRECTOR_INFO_NOT_VALID);
+          }
+        }
       `
     }
   ]

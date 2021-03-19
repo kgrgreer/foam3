@@ -76,6 +76,17 @@ foam.CLASS({
       of: 'net.nanopay.account.Account',
       targetDAOKey: 'accountDAO',
       documentation: 'Account associated to this Flinks AccountId'
+    },
+    {
+      class: 'UnitValue',
+      name: 'amount',
+      unitPropName: 'currency'
+    },
+    {
+      class: 'String',
+      name: 'currency',
+      value: 'CAD',
+      externalTransient: true
     }
   ]
 });

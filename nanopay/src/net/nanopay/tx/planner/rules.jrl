@@ -734,6 +734,7 @@ p({
   "id":"4763d336-e876-4611-a8b4-b0325b187d79",
   "name":"BMO CI Planner",
   "documentation":"BMO CI Transaction Planner",
+  "upperLimit":50000000,
   "priority":100,
   "ruleGroup":"BMOPlanner",
   "predicate":{
@@ -923,6 +924,7 @@ p({
   "documentation":"RBC CI Transaction Planner",
   "priority":100,
   "ruleGroup":"RBCPlanner",
+  "upperLimit":25000000,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -970,6 +972,7 @@ p({
   "documentation":"RBC CO Transaction Planner",
   "priority":100,
   "ruleGroup":"RBCPlanner",
+  "upperLimit":25000000,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
