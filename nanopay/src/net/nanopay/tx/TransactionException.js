@@ -18,8 +18,10 @@
 foam.CLASS({
   name: 'TransactionException',
   package: 'net.nanopay.tx',
-  extends: 'foam.core.FOAMException',
+  extends: 'foam.core.ClientRuntimeException',
   javaGenerateConvenienceConstructor: false,
+  javaGenerateDefaultConstructor: false,
+
 
   axioms: [
     {
@@ -27,12 +29,20 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data: `
+  public TransactionException() {
+    super();
+  }
+
   public TransactionException(String message) {
     super(message);
   }
 
   public TransactionException(String message, Exception cause) {
     super(message, cause);
+  }
+
+  public TransactionException(Exception cause) {
+    super(cause);
   }
           `
         }));

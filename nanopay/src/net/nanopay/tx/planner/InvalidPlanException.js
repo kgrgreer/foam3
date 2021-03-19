@@ -19,9 +19,15 @@ foam.CLASS({
   name: 'InvalidPlanException',
   package: 'net.nanopay.tx.planner',
   javaExtends: 'net.nanopay.tx.TransactionException',
-  implements: ['foam.core.Exception'],
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
+
+  messages: [
+    {
+      name: 'EXCEPTION_MESSAGE',
+      message: 'Invalid plan'
+    }
+  ],
 
   axioms: [
     {
@@ -30,24 +36,15 @@ foam.CLASS({
         cls.extras.push(foam.java.Code.create({
           data: `
   public InvalidPlanException() {
-    super("Invalid plan");
+    super();
   }
 
   public InvalidPlanException(Exception cause) {
-    super("Invalid plan", cause);
+    super(cause);
   }
-
           `
         }));
       }
-    }
-  ],
-
-  methods: [
-    {
-      name: 'getClientRethrowException',
-      type: 'RuntimeException',
-      javaCode: 'return this;'
     }
   ]
 });

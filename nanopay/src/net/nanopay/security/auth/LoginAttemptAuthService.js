@@ -237,7 +237,7 @@ foam.CLASS({
       ],
       javaCode: `
         if ( loginAttempts == null ) {
-          throw new foam.nanos.auth.UnknowUserException();
+          throw new foam.nanos.auth.UserNotFoundException();
         }
         return loginAttempts.getLoginAttempts() >= getMaxAttempts();
       `
@@ -362,7 +362,7 @@ foam.CLASS({
       ],
       javaCode: `
         if ( loginAttempts == null ) {
-          throw new foam.nanos.auth.UnknowUserException();
+          throw new foam.nanos.auth.UserNotFoundException();
         }
         Calendar now = Calendar.getInstance();
         Calendar cal = Calendar.getInstance();
