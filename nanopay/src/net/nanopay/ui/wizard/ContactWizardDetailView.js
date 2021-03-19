@@ -18,7 +18,6 @@
 foam.CLASS({
   package: 'net.nanopay.ui.wizard',
   name: 'ContactWizardDetailView',
-  //TODO rename
   extends: 'foam.u2.View',
 
   imports: [
@@ -124,7 +123,7 @@ foam.CLASS({
               .endContext();
           }
           return self.MenuRedirectSMEModalView.create({
-            menu:  'mainmenu.contacts',//self.menu,
+            menu: 'mainmenu.contacts',//self.menu,
             view: {
               data: (foam.lookup('net.nanopay.contacts.Contact')).create({}, this),
               class:'net.nanopay.contacts.ui.ContactWizardView',//'foam.nanos.menu.MenuToolBar',
