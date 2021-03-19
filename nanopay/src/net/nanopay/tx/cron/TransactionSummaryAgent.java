@@ -23,11 +23,8 @@ import foam.dao.DAO;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.cron.Cron;
 import java.util.*;
-import net.nanopay.partner.intuit.tx.IntuitTransactionSummary;
-import net.nanopay.partner.intuit.tx.IntuitTransactionSummaryAgent;
 import net.nanopay.tx.ChainSummary;
 import net.nanopay.tx.SummarizingTransaction;
-import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.TransactionSummary;
 import net.nanopay.tx.model.Transaction;
 
@@ -63,7 +60,7 @@ public class TransactionSummaryAgent implements ContextAgent {
     List<Transaction> txns = setupTxnListFromSet(x, summaryTxnIds);
     DAO transactionSummaryDAO = (DAO) x.get("localTransactionSummaryDAO");
     for ( int i = 0; i < txns.size(); i++ ) {
-      Transaction txn = (Transaction) txns.get(i);
+      Transaction txn = txns.get(i);
       SummarizingTransaction summarizingTransaction = (SummarizingTransaction) txn;
       ChainSummary chainSummary = summarizingTransaction.getChainSummary();
 

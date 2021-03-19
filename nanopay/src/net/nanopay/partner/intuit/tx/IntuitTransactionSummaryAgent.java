@@ -26,7 +26,6 @@ import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.cron.TransactionSummaryAgent;
 
 public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
-  String spid;
   public IntuitTransactionSummaryAgent(String spid) {
     super(spid);
   }
@@ -38,25 +37,25 @@ public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
     List<Transaction> txns = setupTxnListFromSet(x, summaryTxnIds);
     DAO transactionSummaryDAO = (DAO) x.get("localTransactionSummaryDAO");
     for ( int i = 0; i < txns.size(); i++ ) {
-      Transaction txn = (Transaction) txns.get(i);
+      Transaction txn = txns.get(i);
       SummarizingTransaction summarizingTransaction = (SummarizingTransaction) txn;
       ChainSummary chainSummary = summarizingTransaction.getChainSummary();
 
       IntuitTransactionSummary intuitTxnSummary = new IntuitTransactionSummary.Builder(x)
-          .setId(txn.getId())
-          .setCurrency(txn.getSourceCurrency())
-          .setAmount(txn.getAmount())
-          .setSummary(chainSummary.getSummary())
-          .setStatus(chainSummary.getStatus())
-          .setCategory(chainSummary.getCategory())
-          .setErrorCode(chainSummary.getErrorCode())
-          .setErrorInfo(chainSummary.getErrorInfo())
-          .setCreated(new Date())
-          .setLastModified(new Date())
-          .setExternalId(txn.getExternalId() != null ? txn.getExternalId() : "")
-          .setExternalInvoiceId(txn.getExternalInvoiceId() != null ? txn.getExternalInvoiceId() : "")
-          .build();
-        transactionSummaryDAO.put(intuitTxnSummary);
+        .setId(txn.getId())
+        .setCurrency(txn.getSourceCurrency())
+        .setAmount(txn.getAmount())
+        .setSummary(chainSummary.getSummary())
+        .setStatus(chainSummary.getStatus())
+        .setCategory(chainSummary.getCategory())
+        .setErrorCode(chainSummary.getErrorCode())
+        .setErrorInfo(chainSummary.getErrorInfo())
+        .setCreated(new Date())
+        .setLastModified(new Date())
+        .setExternalId(txn.getExternalId() != null ? txn.getExternalId() : "")
+        .setExternalInvoiceId(txn.getExternalInvoiceId() != null ? txn.getExternalInvoiceId() : "")
+        .build();
+      transactionSummaryDAO.put(intuitTxnSummary);
     }
   }
   
