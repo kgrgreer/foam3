@@ -509,6 +509,13 @@ p({
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
   "priority":2
 })
+// Submit button
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76.submit",
+  "priority":3
+})
 
 // Prerequisites for apiDomesticPayments
 p({
