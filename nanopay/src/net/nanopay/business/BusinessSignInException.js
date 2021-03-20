@@ -29,6 +29,15 @@ foam.CLASS({
     },
   ],
 
+  properties: [
+    {
+      documentation: 'java message template',
+      name: 'javaExceptionMessage',
+      class: 'String',
+      value: 'There was an issue signing in to the newly created business, Please go to the switch business menu in your personal menus to sign in to your business.',
+      transient: true
+    }
+  ],
 
   axioms: [
     {

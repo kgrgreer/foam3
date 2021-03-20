@@ -29,6 +29,16 @@ foam.CLASS({
     }
   ],
 
+  properties: [
+    {
+      documentation: 'java message template',
+      name: 'javaExceptionMessage',
+      class: 'String',
+      value: 'Unable to plan',
+      transient: true
+    }
+  ],
+
   axioms: [
     {
       name: 'javaExtras',

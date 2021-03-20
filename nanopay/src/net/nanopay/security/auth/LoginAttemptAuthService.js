@@ -143,7 +143,7 @@ foam.CLASS({
           
           if ( auth.check(x, "loginattempts.lock.time") ) {
             if ( ! loginFreezeWindowReached(la) ) {
-              throw new foam.nanos.auth.AuthenticationException("Account temporarily locked. You can attempt to login after " + getDateFormat().format(la.getNextLoginAttemptAllowedAt()));
+              throw new foam.nanos.auth.AccountTemporarilyLockedException(getDateFormat().format(la.getNextLoginAttemptAllowedAt()));
             }
           }  else {
             String locale = user.getLanguage().getCode().toString();
