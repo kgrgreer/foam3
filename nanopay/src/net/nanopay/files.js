@@ -367,6 +367,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXBeneficiaryComplianceTransaction' },
   { name: 'net/nanopay/fx/afex/AFEXUser' },
   { name: 'net/nanopay/fx/afex/AFEXPayableMenuCapabilityRule' },
+  { name: 'net/nanopay/fx/afex/GrantAFEXPaymentProviderCapRule' },
   { name: 'net/nanopay/fx/afex/AFEXAddCurrencyPermissionRule' },
   { name: 'net/nanopay/fx/afex/AFEXBusinessCreatedPredicate' },
   { name: 'net/nanopay/fx/afex/AFEXBusinessCreatedNotificationRule' },
