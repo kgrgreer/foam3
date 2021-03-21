@@ -59,6 +59,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import foam.u2.wizard.data.BooleanHolder;
+
 public class SigningOfficerInvoiceApprovalTest
   extends foam.nanos.test.Test
 {
@@ -174,6 +176,15 @@ UserCapabilityJunction ucjBR = new UserCapabilityJunction();
 ucjBR.setSourceId(myAdmin.getId());
 ucjBR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-76");
 ucjBR.setData(br);
+
+userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBR);
+
+ucjBR = new UserCapabilityJunction();
+ucjBR.setSourceId(myAdmin.getId());
+ucjBR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-76.submit");
+ucjBR.setData(new BooleanHolder.Builder(myAdminContext)
+  .setValue(true)
+  .build());
 
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBR);
 
@@ -528,7 +539,7 @@ for ( ApprovalRequest approvalRequest : approvalRequests ) {
   */
 
 Predicate ucjCDRPredicate = foam.mlang.MLang.AND(
-  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-14"), 
+  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-14"),
   foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId()));
 
 ucjCDR = UCJTestingUtility.fetchJunctionPeriodically(x, CapabilityJunctionStatus.GRANTED, ucjCDRPredicate, defaultLoops, defaultMillis, isDebuggingOn, "ucjCDR");
