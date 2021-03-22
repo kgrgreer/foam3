@@ -518,6 +518,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/AbliiTransaction' },
   { name: 'net/nanopay/tx/InterestTransaction' },
   { name: 'net/nanopay/tx/TransactionQuote' },
+  { name: 'net/nanopay/tx/TransactionSummary' },
   { name: 'net/nanopay/tx/JackieRuleOnCreate' },
   { name: 'net/nanopay/tx/JackieRuleOnPut' },
   { name: 'net/nanopay/tx/ClearingTimeTransaction' },
@@ -1775,6 +1776,7 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/afex/crunch/AFEXBusinessOnboardingRule' },
   { name: 'net/nanopay/partner/afex/crunch/AFEXUserOnboardingRule' },
   { name: 'net/nanopay/partner/afex/crunch/BankAccountOwnerIsBusiness' },
+  { name: 'net/nanopay/partner/intuit/tx/IntuitTransactionSummary' },
 
   { name: 'net/nanopay/partner/bmo/BMOPaymentProviderCapabilityRule' },
   { name: 'net/nanopay/partner/rbc/RBCPaymentProviderCapabilityRule' },
