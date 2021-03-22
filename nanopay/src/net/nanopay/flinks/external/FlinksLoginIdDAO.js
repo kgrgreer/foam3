@@ -172,9 +172,9 @@ foam.CLASS({
         if ( account == null ) {
           User owner = ( business != null ) ? business : user;
           DAO accountDAO = (DAO) x.get("localAccountDAO");
-          var accounts = accountDAO.where(EQ(Account.OWNER, owner.getId())).orderBy(Account.CREATED).limit(1);
-          if ( accounts.getSize() > 0 ) {
-            account = accounts.get(0);
+          ArraySink accounts = (ArraySink) accountDAO.where(EQ(Account.OWNER, owner.getId())).orderBy(Account.CREATED).limit(1).select(new ArraySink());
+          if ( accounts.getArray().size() > 0 ) {
+            account = (Account) accounts.getArray().get(0);
             flinksLoginId.setAccount(account.getId());
           }
         }
@@ -206,7 +206,7 @@ foam.CLASS({
 
         // Lookup most recent FlinksLoginId with the given LoginId
         List oldRecords = ((ArraySink) getDelegate().where(AND(
-            EQ(FlinksLoginId.LOGIN_ID, flinksLoginId.getLoginId()),
+            EQ(FlinksLoginId.LOGIN_ID, request.getLoginId()),
             NEQ(FlinksLoginId.USER, 0)
           ))
           .orderBy(net.nanopay.flinks.external.FlinksLoginId.CREATED)
