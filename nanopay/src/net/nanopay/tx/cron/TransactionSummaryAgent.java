@@ -73,8 +73,8 @@ public class TransactionSummaryAgent implements ContextAgent {
         .setCategory(chainSummary.getCategory())
         .setErrorCode(chainSummary.getErrorCode())
         .setErrorInfo(chainSummary.getErrorInfo())
-        .setCreated(new Date())
-        .setLastModified(new Date())
+        .setCreated(txn.getCreated())
+        .setLastModified(txn.getLastModified())
         .build();
       transactionSummaryDAO.put(txnSummary);
     }

@@ -306,7 +306,7 @@ p({
     }
   },
   "id":"TransactionSummaryAgent",
-  "description":"Creates Transaction Summary objects for all summary transactions",
+  "description":"Creates Transaction Summary objects for all intuit summary transactions",
   "enabled":true,
   "code": """
     String spid = "intuit";

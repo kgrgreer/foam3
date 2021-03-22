@@ -50,8 +50,8 @@ public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
         .setCategory(chainSummary.getCategory())
         .setErrorCode(chainSummary.getErrorCode())
         .setErrorInfo(chainSummary.getErrorInfo())
-        .setCreated(new Date())
-        .setLastModified(new Date())
+        .setCreated(txn.getCreated())
+        .setLastModified(txn.getLastModified())
         .setExternalId(txn.getExternalId() != null ? txn.getExternalId() : "")
         .setExternalInvoiceId(txn.getExternalInvoiceId() != null ? txn.getExternalInvoiceId() : "")
         .build();
