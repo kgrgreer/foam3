@@ -295,7 +295,6 @@ p({
 
 p({
   "class": "foam.nanos.cron.Cron",
-  "enabled": false,
   "schedule":{
     "class":"foam.nanos.cron.IntervalSchedule",
     "duration":{
