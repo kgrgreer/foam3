@@ -59,7 +59,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import foam.u2.wizard.data.BooleanHolder;
+import foam.core.BooleanHolder;
 
 public class SigningOfficerInvoiceApprovalTest
   extends foam.nanos.test.Test
