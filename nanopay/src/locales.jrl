@@ -1405,3 +1405,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Nonprofit/Charitable Organizatio
 p({class:"foam.i18n.Locale",locale:"pt",source:"Limited Liability Company",target:"Empresa de responsabilidade limitada "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Publicly Traded Corporation",target:"Corporação de capital aberto"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Trust",target:"Confiar em"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"Requested",target:"Requeridos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Approved",target:"Aprovado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Pending",target:"Pendente"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"All",target:"Todo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Rejected",target:"Rejeitado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Completed",target:"Concluído"})

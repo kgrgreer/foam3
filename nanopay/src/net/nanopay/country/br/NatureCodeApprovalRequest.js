@@ -111,7 +111,7 @@ foam.CLASS({
         let titleSlot = foam.core.SimpleSlot.create();
         X.natureCodeDAO
           .find(this.natureCode)
-          .then(obj => 
+          .then(obj =>
             titleSlot.set(this.SELECT_DATA + ( obj ? obj.name : this.natureCode ) + this.REQUIRED_LABEL)
           );
         var objToAdd = X.objectSummaryView ? X.objectSummaryView : X.summaryView;
