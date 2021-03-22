@@ -39,11 +39,18 @@ function install {
     MACOS='darwin*'
 
     cd "$PROJECT_HOME"
-
-    git submodule init
-    git submodule update
+    submoduleout=$(git submodule)
+    if [ -z "${submoduleout}" ]; then
+        git submodule add git@github.com:kgrgreer/foam3.git
+    else
+        git submodule init
+        git submodule update
+    fi
 
     npm install
+    cd foam3
+    npm install
+    cd ..
 
     if [[ $IS_MAC -eq 1 ]]; then
         mkdir -p "$NANOPAY_HOME/journals"
