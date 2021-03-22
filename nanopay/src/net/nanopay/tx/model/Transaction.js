@@ -18,6 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'Transaction',
+  plural: 'Transactions',
 
   implements: [
     'foam.mlang.Expressions',
@@ -831,7 +832,7 @@ foam.CLASS({
     {
       // TODO: DELETE... DEPRECATED
       // REVIEW: processDate and completionDate are Alterna specific?
-      class: 'DateTime', 
+      class: 'DateTime',
       name: 'processDate',
       section: 'deprecatedInformation',
       storageTransient: true,
