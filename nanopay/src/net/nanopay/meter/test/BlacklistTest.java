@@ -77,7 +77,11 @@ public class BlacklistTest extends Test {
     DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
     DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
     DAO smeUserRegistrationDAO = (DAO) x.get("smeUserRegistrationDAO");
-
+    Group group = new Group.Builder(x)
+      .setId("test-sme")
+      .setParent("sme")
+      .build();
+    group = (Group) groupDAO.put(group);
     ((DAO) x.get("localServiceProviderDAO")).put(new ServiceProvider.Builder(x).setId("test").build());
     ((DAO) x.get("notificationSettingDefaultsDAO")).put(new NotificationSetting.Builder(x).setSpid("test").setEnabled(false).build());
     ((DAO) x.get("notificationSettingDefaultsDAO")).put(new SlackSetting.Builder(x).setSpid("test").setEnabled(false).build());
@@ -107,13 +111,13 @@ public class BlacklistTest extends Test {
     myAdmin.setUserName("Admin321");
     myAdmin.setEmail("email@admin321.com");
     myAdmin.setDesiredPassword("password123!");
-    myAdmin.setGroup("sme");
+    myAdmin.setGroup("test-sme");
     myAdmin.setOrganization("testBusiness");
     myAdmin.setSpid("test");
 
     myAdmin = (User) smeUserRegistrationDAO.put(myAdmin);
     myAdmin.setEmailVerified(true);
-    myAdmin = (User)((DAO)x.get("userDAO")).put(myAdmin);
+    myAdmin = (User)((DAO)x.get("localUserDAO")).put(myAdmin);
 
     // nanopay admission : 554af38a-8225-87c8-dfdf-eeb15f71215e-18 || 242B00F8-C775-4899-AEBA-F287EC54E901 for treviso
 
@@ -597,5 +601,6 @@ public class BlacklistTest extends Test {
     } catch (Throwable t) {
       test(false, "Unexpected exception putting transaction after setting compliance to passed: " + t);
     }
+    groupDAO.remove(group);
   }
 }

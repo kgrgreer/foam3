@@ -25,10 +25,13 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.i18n.TranslationService',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'net.nanopay.model.Business',
     'foam.nanos.approval.ApprovalRequest',
-    'net.nanopay.meter.compliance.ComplianceApprovalRequest'
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+    'net.nanopay.meter.compliance.ComplianceApprovalRequest',
+    'net.nanopay.model.Business',
   ],
 
   properties: [
@@ -36,6 +39,10 @@ foam.CLASS({
       name: 'classification',
       class: 'String'
     }
+  ],
+
+  messages: [
+    { name: 'CLASSIFICATION_MSG', message: 'Generic Business Validator' }
   ],
 
   methods: [
@@ -51,6 +58,11 @@ foam.CLASS({
 
             String group = business.getSpid() + "-fraud-ops";
 
+            Subject subject = (Subject) x.get("subject");
+            String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
+            TranslationService ts = (TranslationService) x.get("translationService");
+            String classification = ts.getTranslation(locale, getClassInfo().getId() + ".CLASSIFICATION_MSG", CLASSIFICATION_MSG);
+
             requestApproval(x,
               new ComplianceApprovalRequest.Builder(x)
                 .setObjId(ucj.getId())
@@ -58,7 +70,7 @@ foam.CLASS({
                 .setRefObjId(business.getId())
                 .setRefDaoKey("businessDAO")
                 .setCreatedFor(business.getId())
-                .setClassification(getClassification())
+                .setClassification(classification)
                 .setGroup(group)
                 .build()
             );

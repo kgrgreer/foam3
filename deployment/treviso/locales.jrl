@@ -207,3 +207,5 @@ p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.AFEXCNBenef
 
 p({class:"foam.i18n.Locale",locale:"en",source:"foam.nanos.u2.navigation.SignIn.TITLE",target:"Log in to the platform"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignIn.TITLE",target:"Autentique-se na plataforma"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.tx.TrevisoTransaction.model_.name",target:"TrevisoTransação"})

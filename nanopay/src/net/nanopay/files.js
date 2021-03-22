@@ -164,6 +164,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/SEBankAccount' },
   { name: 'net/nanopay/bank/AddBankAccountAction' },
   { name: 'net/nanopay/bank/BankAccountTableView', flags: ['web'] },
+  { name: 'net/nanopay/bank/BankAccountValidationMixin' },
   { name: 'net/nanopay/bank/StrategizedBankAccount' },
   { name: 'net/nanopay/bank/BankAccountStatus' },
   { name: 'net/nanopay/bank/ui/BankPickCurrencyView', flags: ['web'] },
@@ -1635,6 +1636,11 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/PartialPlanDAO' },
   { name: 'net/nanopay/tx/PropertyCompare' },
 
+  // Planner Exceptions
+  { name: 'net/nanopay/tx/planner/exceptions/PlannerValidationException' },
+  { name: 'net/nanopay/tx/planner/exceptions/PlannerCapabilityIncompleteException' },
+  { name: 'net/nanopay/tx/planner/exceptions/PlannerComplianceFailureException' },
+
   // Billing
   { name: 'net/nanopay/tx/billing/Bill' },
   { name: 'net/nanopay/tx/billing/BillingFee' },
@@ -1671,6 +1677,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/registration/BusinessDirectorList' },
   { name: 'net/nanopay/crunch/registration/BusinessOwnerList' },
   { name: 'net/nanopay/crunch/registration/IsSelectedData' },
+  { name: 'net/nanopay/crunch/registration/LimitedAmountCapability' },
   { name: 'net/nanopay/crunch/registration/PersonalOnboardingTypeData' },
   { name: 'net/nanopay/crunch/registration/SigningOfficerList' },
   { name: 'net/nanopay/crunch/registration/UserRegistrationData' },
@@ -1790,6 +1797,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AFXWashingtonDisclosure' },
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/CABankAccountAuthAgreement' },
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/RecourseAgreement' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/ThirdPartyVerificationAFEXTerms' },
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/CACancellationAgreement' },
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/USBankAccountAuthAgreement' },
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/USCancellationAgreement' },
@@ -1841,6 +1849,7 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/ExpectedBoardingDate' },
   { name: 'net/nanopay/country/br/NatureCodePaymentProviderJunctionRefinement' },
   { name: 'net/nanopay/country/br/NatureBusinessRelationship' },
+  { name: 'net/nanopay/country/br/NatureCodeSelectView', flags: ['web'] },
   { name: 'net/nanopay/country/br/NatureCodeCardSelectView' },
 
   // RequestToPay
