@@ -20,7 +20,7 @@ foam.CLASS({
   name: 'SpidLimitedPermissionedUserRule',
   extends: 'foam.nanos.ruler.Rule',
 
-  documentation: 'Rule that applies to all SPIDs exception those that are limited, in which case the rule can only be seen if the user has permissions to select it.',
+  documentation: 'Rule that applies to all SPIDs except those that are in the limited SPID list, in which case the rule can only be seen if the user has permissions to select it.',
 
   javaImports: [
     'foam.core.X',
