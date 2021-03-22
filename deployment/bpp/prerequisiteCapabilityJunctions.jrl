@@ -3,4 +3,3 @@ p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bpp",targetI
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bpp",targetId:"bppPlannerCapability"})
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bpp",targetId:"bpp-tx-reason-codes"})
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bpp",targetId:"bpp-tx-fees"})
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bpp",targetId:"nanopay.estimationaccount"})

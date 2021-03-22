@@ -692,13 +692,13 @@ So this will work for a changing hierarchy. Possible we add a capability that we
             test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+' '+arrayOfID_lastIsRoot[j][i].id+' '+arrayOfID_lastIsRoot[j][i].id+' '+(ucj && ucj.status));
           }
         }
-        // find and setup business
-        name = 'TEST BUSINESS CREATED';
-        business = await support.findBusiness(x, u);
-        test(business && business.id, name+' id: '+business.id + ' namme:'+business.businessName);
-        businessSession = await support.createSession(x, u.id, business.id);
-        test(true, 'createBusinessSession: '+businessSession.id);
       }
+      // find and setup business
+      name = 'TEST BUSINESS CREATED';
+      business = await support.findBusiness(x, u);
+      test(business && business.id, name+' id: '+business.id + ' namme:'+business.businessName);
+      businessSession = await support.createSession(x, u.id, business.id);
+      test(true, 'createBusinessSession: '+businessSession.id);
     } catch(e){
       test(false, name+": "+e);
       print(e);

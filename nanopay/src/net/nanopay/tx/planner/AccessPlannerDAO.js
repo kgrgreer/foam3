@@ -41,6 +41,7 @@ foam.CLASS({
     'java.util.ArrayList',
     'java.util.List',
     'net.nanopay.tx.UnsupportedTransactionException',
+    'net.nanopay.tx.planner.exceptions.PlannerValidationException',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.OR',
     'net.nanopay.account.Account',
@@ -160,7 +161,10 @@ foam.CLASS({
       if (atp == null || ! atp.postPlanning(x, txn, root)) {
         Logger logger = (Logger) x.get("logger");
         logger.warning(txn.getId() + " failed planner validation");
-        throw new ValidationException("Planner validation failed"); // return txn to user on failure
+        
+        PlannerValidationException exception = new PlannerValidationException("Planner validation failed");
+        exception.setTransactionId(txn.getId());
+        throw exception; // throw txn error to user on failure
       }
       // --- Line Item Validation ---
       for ( TransactionLineItem li : txn.getLineItems() )
