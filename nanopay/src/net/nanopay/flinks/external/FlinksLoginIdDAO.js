@@ -455,7 +455,7 @@ foam.CLASS({
         DAO userDAO = (DAO) x.get("localUserDAO");
         User user = new User.Builder(x)
           .setEmail(userEmail)
-          .setUserName(userEmail)
+          .setUserName(request.getGuestMode() ? java.util.UUID.randomUUID().toString() : userEmail)
           .setDesiredPassword(java.util.UUID.randomUUID().toString())
           .setEmailVerified(true)
           .setGroup(groupId)
