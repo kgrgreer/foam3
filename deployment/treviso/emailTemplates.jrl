@@ -1546,7 +1546,7 @@ p({
   "class": "foam.nanos.notification.email.EmailTemplate",
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-115",
   "name": "compliance-notification-to-user",
-  "group": "sme",
+  "group": "treviso-sme",
   "locale": "en",
   "displayName": "{{appName}}",
   "subject": "{{business}} is ready to send payments with {{appName}}",
