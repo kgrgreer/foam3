@@ -235,6 +235,7 @@ var classes = [
   'net.nanopay.fx.afex.AFEXUser',
   'net.nanopay.fx.afex.AFEXUser',
   'net.nanopay.fx.afex.AFEXPayableMenuCapabilityRule',
+  'net.nanopay.fx.afex.GrantAFEXPaymentProviderCapRule',
   'net.nanopay.fx.afex.AFEXBusinessCreatedPredicate',
   'net.nanopay.fx.afex.AFEXBusinessDisabledPredicate',
   'net.nanopay.fx.afex.AFEXRemoveCurrencyPermissionRule',
