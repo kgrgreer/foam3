@@ -40,7 +40,7 @@ public class TransactionSummaryAgent implements ContextAgent {
   public void execute(X x) {
     DAO summaryTransactionDAO = (DAO) x.get("summaryTransactionDAO");
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
-    Date lastRun = ((Cron)((DAO)x.get("cronDAO")).find("TransactionSummaryAgent")).getLastRun();
+    Date lastRun = getLastRun(x);
     
     if ( lastRun != null ) {
       Predicate predicate = AND(
@@ -98,6 +98,10 @@ public class TransactionSummaryAgent implements ContextAgent {
       txnIdSet.add(summaryTxn.getId());
     }
     return txnIdSet;
+  }
+
+  public Date getLastRun(X x) {
+    return ((Cron)((DAO)x.get("cronDAO")).find("TransactionSummaryAgent")).getLastRun();
   }
 
 }

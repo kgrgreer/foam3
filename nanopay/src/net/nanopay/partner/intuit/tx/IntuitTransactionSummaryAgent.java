@@ -19,6 +19,7 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.predicate.Predicate;
+import foam.nanos.cron.Cron;
 import java.util.*;
 import net.nanopay.tx.ChainSummary;
 import net.nanopay.tx.SummarizingTransaction;
@@ -57,6 +58,11 @@ public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
         .build();
       transactionSummaryDAO.put(intuitTxnSummary);
     }
+  }
+
+  @Override
+  public Date getLastRun(X x) {
+    return ((Cron)((DAO)x.get("cronDAO")).find("IntuitTransactionSummaryAgent")).getLastRun();
   }
   
 }

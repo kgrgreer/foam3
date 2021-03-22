@@ -305,7 +305,7 @@ p({
       "second":0
     }
   },
-  "id":"TransactionSummaryAgent",
+  "id":"IntuitTransactionSummaryAgent",
   "description":"Creates Transaction Summary objects for all intuit summary transactions",
   "enabled":true,
   "code": """
