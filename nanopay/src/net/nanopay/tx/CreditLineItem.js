@@ -55,7 +55,8 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.tx.creditengine.AbstractCreditCodeAccount',
-      name: 'creditCode'
+      name: 'creditCode',
+      targetDAOKey: 'creditCodeDAO'
     },
     {
       class: 'Reference',

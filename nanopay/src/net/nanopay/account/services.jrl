@@ -112,7 +112,31 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.creditengine.AbstractCreditCodeAccount.getOwnClassInfo())
       .setPm(true)
-      .setAuthorize(true)
+      .setAuthorize(false)
+      .setDecorator(new net.nanopay.tx.creditengine.CreditEngine())
+      .setInnerDAO((x.get("accountDAO")).where(foam.mlang.MLang.INSTANCE_OF(net.nanopay.tx.creditengine.AbstractCreditCodeAccount.class)))
+      .setEnableInterfaceDecorators(false)
+      .build();
+  """,
+  "client":
+  """
+  {
+    "of":"net.nanopay.tx.creditengine.AbstractCreditCodeAccount"
+  }
+  """
+})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"localCreditCodeDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.tx.creditengine.AbstractCreditCodeAccount.getOwnClassInfo())
+      .setPm(true)
+      .setAuthorize(false)
+      .setDecorator(new net.nanopay.tx.creditengine.CreditEngine())
       .setInnerDAO((x.get("localAccountDAO")).where(foam.mlang.MLang.INSTANCE_OF(net.nanopay.tx.creditengine.AbstractCreditCodeAccount.class)))
       .setEnableInterfaceDecorators(false)
       .build();
@@ -123,7 +147,6 @@ p({
     "of":"net.nanopay.tx.creditengine.AbstractCreditCodeAccount"
   }
   """
-
 })
 
 p({

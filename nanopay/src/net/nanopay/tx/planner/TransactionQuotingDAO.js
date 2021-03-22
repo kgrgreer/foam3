@@ -105,9 +105,12 @@ foam.CLASS({
 
           // consume creditcodes
           if ( ( ! (loadedTxn instanceof SummarizingTransaction) ) && loadedTxn.getCreditCodes() != null && loadedTxn.getCreditCodes().length > 0 ) {
-            DAO creditCodeDAO = (DAO) x.get("localAccountDAO");
+            DAO creditCodeDAO = (DAO) x.get("creditCodeDAO"); // TODO local or nah?
             for ( String code : loadedTxn.getCreditCodes() ) {
               AbstractCreditCodeAccount creditCode = (AbstractCreditCodeAccount) creditCodeDAO.find(code);
+              if ( creditCode == null ) {
+                throw new RuntimeException("cant find error code");
+              }
               creditCode.consume(x, loadedTxn);
             }
           }
@@ -115,9 +118,12 @@ foam.CLASS({
         }
         // consume creditcodes
         if ( ( ! (txn instanceof SummarizingTransaction) ) && txn.getCreditCodes() != null && txn.getCreditCodes().length > 0 ) {
-          DAO creditCodeDAO = (DAO) x.get("localAccountDAO");
+          DAO creditCodeDAO = (DAO) x.get("creditCodeDAO"); // TODO local or nah?
           for ( String code : txn.getCreditCodes() ) {
             AbstractCreditCodeAccount creditCode = (AbstractCreditCodeAccount) creditCodeDAO.find(code);
+            if ( creditCode == null ) {
+              throw new RuntimeException("cant find error code");
+            }
             creditCode.consume(x, txn);
           }
         }

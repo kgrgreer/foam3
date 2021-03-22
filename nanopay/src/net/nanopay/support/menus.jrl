@@ -313,7 +313,7 @@ p({
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"accountDAO",
+      "daoKey":"creditCodeDAO",
       "browseTitle": "CreditCodes",
       "createTitle": "Create a Credit Code",
       "createPredicate":{"class":"foam.mlang.predicate.True"},
