@@ -134,10 +134,7 @@ foam.CLASS({
             throw new RuntimeException("Configuration error: Theme not found on user registration");
           }
         }
-
-        if ( SafetyUtil.isEmpty(user.getGroup()) ) {
-          user.setGroup(spid + "-" + getGroup());
-        }
+        user.setGroup(spid + "-" + getGroup());
 
         // We want the system user to be putting the User we're trying to create. If
         // we didn't do this, the user in the context's id would be 0 and many

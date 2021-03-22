@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -16,20 +16,18 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.tx.fee',
-  name: 'FeeDAOCreateView',
-  extends: 'foam.comics.v2.DAOCreateView',
+  package: 'net.nanopay.partner.intuit.tx',
+  name: 'IntuitTransactionSummary',
+  extends: 'net.nanopay.tx.TransactionSummary',
 
   properties: [
     {
-      class: 'foam.u2.ViewSpec',
-      name: 'viewView',
-      expression: function() {
-        return {
-          class: 'foam.u2.view.FObjectView',
-          of: 'net.nanopay.tx.fee.Fee'
-        };
-      }
+      class: 'String',
+      name: 'externalId'
+    },
+    {
+      class: 'String',
+      name: 'externalInvoiceId'
     }
   ]
 });

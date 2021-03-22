@@ -435,14 +435,6 @@ p({
   "priority":15
 })
 
-// BR Signing Officer to Residence Consumption Bill (Utility bills)
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
-  "targetId":"85cee1de-db32-11ea-87d0-0242ac130003",
-  "priority":2
-})
-
 // BR Signing Officer to User Identity (Identification)
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
@@ -508,6 +500,13 @@ p({
   "sourceId":"B98D97EE-4A43-4B03-84C1-9DE2C0109E87",
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
   "priority":2
+})
+// Submit button
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76.submit",
+  "priority":3
 })
 
 // Prerequisites for apiDomesticPayments
