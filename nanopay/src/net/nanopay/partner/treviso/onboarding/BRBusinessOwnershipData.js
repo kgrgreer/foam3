@@ -109,13 +109,6 @@ foam.CLASS({
             );
           },
           errorMessage: 'NO_AMOUNT_OF_OWNERS_SELECTED_ERROR'
-        },
-        {
-          args: ['ownerSelectionsValidated', 'owner1', 'owner2', 'owner3', 'owner4', 'chosenOwners'],
-          predicateFactory: function(e) {
-            return e.EQ(net.nanopay.partner.treviso.onboarding
-              .BRBusinessOwnershipData.OWNER_SELECTIONS_VALIDATED, true);
-          }
         }
       ]
     },

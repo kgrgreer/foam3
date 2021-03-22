@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -17,13 +17,13 @@
 
 foam.CLASS({
   package: 'net.nanopay.bank',
-  name: 'ESBankAccount',
-  label: 'Spain',
+  name: 'RSBankAccount',
+  label: 'Serbia',
   extends: 'net.nanopay.bank.EUBankAccount',
 
   mixins: [ 'net.nanopay.bank.BankAccountValidationMixin' ],
 
-  documentation: 'Spain bank account information.',
+  documentation: 'Serbian bank account information.',
 
   javaImports: [
     'foam.core.ValidationException',
@@ -34,35 +34,25 @@ foam.CLASS({
     {
       name: 'INSTITUTION_NUMBER_PATTERN',
       type: 'Regex',
-      value: /^\d{4}$/
-    },
-    {
-      name: 'BRANCH_ID_PATTERN',
-      type: 'Regex',
-      value: /^\d{4}$/
+      value: /^\d{3}$/
     },
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      value: /^\d{10}$/
-    },
-    {
-      name: 'ROUTING_CODE_PATTERN',
-      type: 'Regex',
-      value: /^(\d{4})(\d{4})$/
+      value: /^\d{15}$/
     }
   ],
 
   properties: [
     {
       name: 'country',
-      value: 'ES',
+      value: 'RS',
       visibility: 'RO'
     },
     {
       name: 'flagImage',
       label: '',
-      value: 'images/flags/spain.svg',
+      value: 'images/flags/serbia.svg',
       visibility: 'RO'
     },
     {
@@ -78,18 +68,9 @@ foam.CLASS({
     {
       name: 'bankRoutingCode',
       javaPostSet: `
-        if ( ! SafetyUtil.isEmpty(val) ) {
-          var matcher = ROUTING_CODE_PATTERN.matcher(val);
-          if ( matcher.find() ) {
-            var institutionNumber = matcher.group(1);
-            var branchId = matcher.group(2);
-
-            // Update institution and branch
-            clearInstitution();
-            clearBranch();
-            setInstitutionNumber(institutionNumber);
-            setBranchId(branchId);
-          }
+        if ( val != null && INSTITUTION_NUMBER_PATTERN.matcher(val).matches() ) {
+          clearInstitution();
+          setInstitutionNumber(val);
         }
       `
     }
