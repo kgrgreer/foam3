@@ -91,6 +91,7 @@ foam.CLASS({
   messages: [
     { name: 'NO_AMOUNT_OF_OWNERS_SELECTED_ERROR', message: 'Please select a number of owners' },
     { name: 'INVALID_OWNER_SELECTION_ERROR', message: 'One or more of the owner selection is invalid' },
+    { name: 'OWNER_NOT_SELECTED_ERROR', message: 'Please select one of the options from the dropdown' },
     { name: 'OWNER_1_ERROR', message: 'Owner1 is invalid' },
     { name: 'OWNER_2_ERROR', message: 'Owner2 is invalid' },
     { name: 'OWNER_3_ERROR', message: 'Owner3 is invalid' },
@@ -218,13 +219,6 @@ foam.CLASS({
             );
           },
           errorMessage: 'NO_AMOUNT_OF_OWNERS_SELECTED_ERROR'
-        },
-        {
-          args: ['ownerSelectionsValidated', 'owner1', 'owner2', 'owner3', 'owner4', 'chosenOwners'],
-          predicateFactory: function(e) {
-            return e.EQ(net.nanopay.crunch.onboardingModels
-              .BusinessOwnershipData.OWNER_SELECTIONS_VALIDATED, true);
-          }
         }
       ]
     },
@@ -232,105 +226,117 @@ foam.CLASS({
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 1,
       documentation: 'First owner',
-      autoValidate: true,
-      validationTextVisible: false,
       validationPredicates: [
-      {
-        args: ['amountOfOwners', 'owner1$errors_'],
-        predicateFactory: function(e) {
-          return e.OR(
-            e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-              .AMOUNT_OF_OWNERS, 1),
-            e.AND(
-              e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-                .AMOUNT_OF_OWNERS, 1),
+        {
+          args: ['amountOfOwners', 'owner1', 'owner1$errors_'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS, 1),
+              e.HAS(net.nanopay.crunch.onboardingModels.BusinessOwnershipData['OWNER1'])
+            )
+          },
+          errorMessage: 'OWNER_NOT_SELECTED_ERROR'
+        },
+        {
+          args: ['amountOfOwners', 'owner1', 'owner1$errors_'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS, 1),
               e.EQ(foam.mlang.IsValid.create({
                 arg1: net.nanopay.crunch.onboardingModels.BusinessOwnershipData['OWNER1']
               }), true)
             )
-          );
-        },
-        errorMessage: 'OWNER_1_ERROR'
-      }
-     ]
+          },
+          errorMessage: 'OWNER_1_ERROR'
+        }
+      ]
     },
     {
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 2,
       documentation: 'Second owner',
-      autoValidate: true,
-      validationTextVisible: false,
       validationPredicates: [
-      {
-        args: ['amountOfOwners', 'owner2$errors_'],
-        predicateFactory: function(e) {
-          return e.OR(
-            e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-              .AMOUNT_OF_OWNERS, 2),
-            e.AND(
-              e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-                .AMOUNT_OF_OWNERS, 2),
+        {
+          args: ['amountOfOwners', 'owner2', 'owner2$errors_'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS, 2),
+              e.HAS(net.nanopay.crunch.onboardingModels.BusinessOwnershipData['OWNER2'])
+            )
+          },
+          errorMessage: 'OWNER_NOT_SELECTED_ERROR'
+        },
+        {
+          args: ['amountOfOwners', 'owner2', 'owner2$errors_'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS, 2),
               e.EQ(foam.mlang.IsValid.create({
                 arg1: net.nanopay.crunch.onboardingModels.BusinessOwnershipData['OWNER2']
               }), true)
             )
-          );
-        },
-        errorMessage: 'OWNER_2_ERROR'
-      }
-     ]
+          },
+          errorMessage: 'OWNER_2_ERROR'
+        }
+      ]
     },
     {
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 3,
       documentation: 'Third owner',
-      autoValidate: true,
-      validationTextVisible: false,
       validationPredicates: [
-      {
-        args: ['amountOfOwners', 'owner3$errors_'],
-        predicateFactory: function(e) {
-          return e.OR(
-            e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-              .AMOUNT_OF_OWNERS, 3),
-            e.AND(
-              e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-                .AMOUNT_OF_OWNERS, 3),
+        {
+          args: ['amountOfOwners', 'owner3', 'owner3$errors_'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS, 3),
+              e.HAS(net.nanopay.crunch.onboardingModels.BusinessOwnershipData['OWNER3'])
+            )
+          },
+          errorMessage: 'OWNER_NOT_SELECTED_ERROR'
+        },
+        {
+          args: ['amountOfOwners', 'owner3', 'owner3$errors_'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS, 3),
               e.EQ(foam.mlang.IsValid.create({
                 arg1: net.nanopay.crunch.onboardingModels.BusinessOwnershipData['OWNER3']
               }), true)
             )
-          );
-        },
-        errorMessage: 'OWNER_3_ERROR'
-      }
-     ]
+          },
+          errorMessage: 'OWNER_3_ERROR'
+        }
+      ]
     },
     {
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 4,
       documentation: 'Forth owner',
-      autoValidate: true,
-      validationTextVisible: false,
       validationPredicates: [
-      {
-        args: ['amountOfOwners', 'owner4$errors_'],
-        predicateFactory: function(e) {
-          return e.OR(
-            e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-              .AMOUNT_OF_OWNERS, 4),
-            e.AND(
-              e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-                .AMOUNT_OF_OWNERS, 4),
+        {
+          args: ['amountOfOwners', 'owner4', 'owner4$errors_'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS, 4),
+              e.HAS(net.nanopay.crunch.onboardingModels.BusinessOwnershipData['OWNER4'])
+            )
+          },
+          errorMessage: 'OWNER_NOT_SELECTED_ERROR'
+        },
+        {
+          args: ['amountOfOwners', 'owner4', 'owner4$errors_'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS, 4),
               e.EQ(foam.mlang.IsValid.create({
                 arg1: net.nanopay.crunch.onboardingModels.BusinessOwnershipData['OWNER4']
               }), true)
             )
-          );
-        },
-        errorMessage: 'OWNER_4_ERROR'
-      }
-     ]
+          },
+          errorMessage: 'OWNER_4_ERROR'
+        }
+      ]
     },
 
     // Review Owners Section
@@ -399,8 +405,7 @@ foam.CLASS({
         return Number(totalOwnership) > 100 ?
           foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
-      autoValidate: true,
-      max: 100,
+      validationTextVisible: true,
       validationPredicates: [
         {
           args: ['totalOwnership'],
@@ -441,27 +446,9 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'validate',
-      javaCode: `
-        java.util.List<foam.core.PropertyInfo> props = getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
-        for ( foam.core.PropertyInfo prop : props ) {
-          try {
-            prop.validateObj(x, this);
-          } catch ( IllegalStateException e ) {
-            throw e;
-          }
-        }
-
-        // validate BeneficialOwner objects
-        BeneficialOwner[] owners = new BeneficialOwner[]{ getOwner1(), getOwner2(), getOwner3(), getOwner4() };
-        for ( int i = 0 ; i < getAmountOfOwners(); i++ ) owners[i].validate(x);
-      `
-    },
-    {
       name: 'clearAllOwnerAndPercentData',
       code: function() {
         this.chosenOwners = [];
-        this.ownerSelectionsValidated = false;
         this.owner1 = this.owner2 = this.owner3 = this.owner4 = undefined;
         this.beneficialOwnersTable.removeAll();
       }
