@@ -62,13 +62,13 @@ function deploy_documents {
     cd "$PROJECT_HOME"
 
     declare -a sources=(
-        "foam2/src"
+        "foam3/src"
         "nanopay/src"
         "documents"
     )
 
     declare -a exclude=(
-        "foam2/src/com/google/flow"
+        "foam3/src/com/google/flow"
     )
 
     for dir in "${sources[@]}"; do
@@ -337,9 +337,9 @@ function start_nanos {
         elif [ "$RUNTIME_COMPILE" -eq 1 ]; then
           gradle genJava
           gradle copyLib
-          CLASSPATH="$CLASSPATH":foam2/src:build/src/java:nanopay/src
-          JAVA_SOURCES="{sources:[\"nanopay/src\",\"foam2/src\",\"build/src/java\"],\"output\":\"build/classes/java/main\"}"
-          javac -cp "$CLASSPATH" -d build/classes/java/main foam2/src/foam/nanos/ccl/CCLoader.java
+          CLASSPATH="$CLASSPATH":foam3/src:build/src/java:nanopay/src
+          JAVA_SOURCES="{sources:[\"nanopay/src\",\"foam3/src\",\"build/src/java\"],\"output\":\"build/classes/java/main\"}"
+          javac -cp "$CLASSPATH" -d build/classes/java/main foam3/src/foam/nanos/ccl/CCLoader.java
           exec java -cp "$CLASSPATH" -DJAVA_SOURCES=$JAVA_SOURCES -Djava.system.class.loader=foam.nanos.ccl.CCLoader foam.nanos.boot.Boot
         elif [ "$DAEMONIZE" -eq 0 ]; then
             exec java -cp "$CLASSPATH" foam.nanos.boot.Boot

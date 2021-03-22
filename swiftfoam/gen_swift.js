@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var dir = __dirname;
-var foam_root = dir + '/../foam2';
+var foam_root = dir + '/../foam3';
 var nanopay_root = dir + '/../nanopay';
 var outdir = dir + '/swiftfoam/stubs';
 

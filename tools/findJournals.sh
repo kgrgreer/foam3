@@ -32,7 +32,7 @@ declare -a sources=(
 )
 
 
-sources+=("foam2/src")
+sources+=("foam3/src")
 sources+=("nanopay/src")
 
 if [ ! -z ${EXTRA_FILES} ]; then

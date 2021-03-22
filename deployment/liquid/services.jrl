@@ -53,7 +53,7 @@ p({
       "className": "foam.nanos.servlet.ImageServlet",
       "pathSpec": "/images/*",
       "initParameters": {
-        "paths": "images:merchant/src/net/nanopay/merchant/images:nanopay/src/net/nanopay/images:foam2/src/foam/support/images:foam2/src/foam/u2/images"
+        "paths": "images:merchant/src/net/nanopay/merchant/images:nanopay/src/net/nanopay/images:foam3/src/foam/support/images:foam3/src/foam/u2/images"
       }
     }, {
       "class": "foam.nanos.servlet.ServletMapping",

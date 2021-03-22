@@ -1,8 +1,8 @@
-var foam = require('../foam2/tools/classes.js')
-foam.classes = foam.classes.map(function(element) { return [ 'foam2/src/', element ]; })
-foam.abstractClasses = foam.abstractClasses.map(function(element) { return ['foam2/src/', element ]; })
-foam.skeletons = foam.skeletons.map(function(element) { return ['foam2/src/', element ]; })
-foam.proxies = foam.proxies.map(function(element) { return ['foam2/src/', element ]; })
+var foam = require('../foam3/tools/classes.js')
+foam.classes = foam.classes.map(function(element) { return [ 'foam3/src/', element ]; })
+foam.abstractClasses = foam.abstractClasses.map(function(element) { return ['foam3/src/', element ]; })
+foam.skeletons = foam.skeletons.map(function(element) { return ['foam3/src/', element ]; })
+foam.proxies = foam.proxies.map(function(element) { return ['foam3/src/', element ]; })
 
 var nanopay = require('../nanopay/tools/classes.js')
 nanopay.classes = nanopay.classes.map(function(element) { return [ 'nanopay/src/', element ]; })
