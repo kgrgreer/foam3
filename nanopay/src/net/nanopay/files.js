@@ -228,7 +228,7 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/ruler/LogoutUserAction' },
   { name: 'net/nanopay/auth/ruler/PreventDuplicateEmailAction' },
   { name: 'net/nanopay/auth/ruler/PreventDuplicateUsernameAction' },
-  { name: 'net/nanopay/auth/ruler/SpidLimitingPermissionedUserRule' },
+  { name: 'net/nanopay/auth/ruler/SpidLimitedPermissionedUserRule' },
   { name: 'net/nanopay/auth/ruler/predicate/IsUserInGroups' },
   { name: 'net/nanopay/auth/sms/PhoneVerificationTokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/UserDetailView', flags: ['web'] },

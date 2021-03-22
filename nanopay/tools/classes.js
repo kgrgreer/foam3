@@ -727,7 +727,7 @@ var classes = [
   'net.nanopay.auth.ruler.LogoutUserAction',
   'net.nanopay.auth.ruler.PreventDuplicateEmailAction',
   'net.nanopay.auth.ruler.PreventDuplicateUsernameAction',
-  'net.nanopay.auth.ruler.SpidLimitingPermissionedUserRule',
+  'net.nanopay.auth.ruler.SpidLimitedPermissionedUserRule',
   'net.nanopay.auth.ruler.predicate.IsUserInGroups',
   'net.nanopay.security.auth.IPLoggingAuthService',
   'net.nanopay.security.auth.LoginAttemptAuthService',

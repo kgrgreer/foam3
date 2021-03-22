@@ -27,7 +27,7 @@ p({
   "action":{ "class":"net.nanopay.auth.ruler.PreventDuplicateUsernameAction" }
 })
 p({
-  "class":"net.nanopay.auth.ruler.SpidLimitingPermissionedUserRule",
+  "class":"net.nanopay.auth.ruler.SpidLimitedPermissionedUserRule",
   "id":"user-prevent-duplicate-email-rule",
   "limitedSpidList": [ "intuit" ],
   "action":{ "class":"net.nanopay.auth.ruler.PreventDuplicateEmailAction" }
