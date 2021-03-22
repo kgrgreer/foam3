@@ -36,7 +36,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'foam.u2.ViewSpecWithJava',
+      class: 'foam.u2.ViewSpec',
       name: 'viewView',
       factory: function() {
         const { data } = this;
