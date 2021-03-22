@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.creditengine',
   name: 'CourtesyCredit',
-  extends: 'net.nanopay.tx.creditengine.AbstractCreditCodeAccount',
+  extends: 'net.nanopay.tx.creditengine.CreditCodeAccount',
 
   documentation: `One time credit from a certain account for a certain amount. `,
 

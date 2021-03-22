@@ -1065,7 +1065,7 @@ p({
       {
         class: "foam.nanos.ruler.predicate.PropertyIsInstance",
         propName: "sourceAccount",
-        of: "net.nanopay.tx.creditengine.AbstractCreditCodeAccount"
+        of: "net.nanopay.tx.creditengine.CreditCodeAccount"
       }
     ]
   },

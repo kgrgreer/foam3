@@ -10,7 +10,7 @@ p({
   "after":true,
   "predicate": {
     "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
-    "of":"net.nanopay.tx.creditengine.AbstractCreditCodeAccount"
+    "of":"net.nanopay.tx.creditengine.CreditCodeAccount"
   },
   "action":{
     "class": "net.nanopay.tx.creditengine.CreditCodeLoadAction"

@@ -54,7 +54,7 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'net.nanopay.tx.creditengine.AbstractCreditCodeAccount',
+      of: 'net.nanopay.tx.creditengine.CreditCodeAccount',
       name: 'creditCode'
     },
     {

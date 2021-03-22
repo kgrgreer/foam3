@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.creditengine',
   name: 'FeeWaiver',
-  extends: 'net.nanopay.tx.creditengine.AbstractCreditCodeAccount',
+  extends: 'net.nanopay.tx.creditengine.CreditCodeAccount',
 
   documentation: `give a credit for each fee id on the transaction at the discount percentage specified `,
 

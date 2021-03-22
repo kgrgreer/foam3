@@ -18,7 +18,7 @@
  foam.CLASS({
   package: 'net.nanopay.tx.creditengine',
   name: 'PreviousFeeRefund',
-  extends: 'net.nanopay.tx.creditengine.AbstractCreditCodeAccount',
+  extends: 'net.nanopay.tx.creditengine.CreditCodeAccount',
 
   documentation: `One time credit to refund fees`,
 

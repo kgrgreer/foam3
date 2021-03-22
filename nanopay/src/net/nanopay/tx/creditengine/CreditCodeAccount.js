@@ -17,9 +17,8 @@
 
 foam.CLASS({
   package: 'net.nanopay.tx.creditengine',
-  name: 'AbstractCreditCodeAccount',
+  name: 'CreditCodeAccount',
   extends:'net.nanopay.account.Account',
-  abstract: true,
 
   documentation: `A creditCode can create a credit line item on a given transaction or fee.
   It can also execute some logic on consumption, as well as execute some logic on a transaction update.

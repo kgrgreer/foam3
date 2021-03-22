@@ -81,7 +81,7 @@ foam.CLASS({
     'foam.core.ValidationException',
     'net.nanopay.account.Balance',
     'static foam.mlang.MLang.EQ',
-    'net.nanopay.tx.creditengine.AbstractCreditCodeAccount',
+    'net.nanopay.tx.creditengine.CreditCodeAccount',
     'net.nanopay.tx.planner.AbstractTransactionPlanner'
   ],
 
@@ -1103,7 +1103,7 @@ foam.CLASS({
       if ( sourceAccount == null ) {
         throw new ValidationException("Source account not found");
       }
-      if ( sourceAccount instanceof AbstractCreditCodeAccount ) {
+      if ( sourceAccount instanceof CreditCodeAccount ) {
         throw new ValidationException("Improper source account");
       }
       User sourceOwner = (User) userDAO.find(sourceAccount.getOwner());
@@ -1120,7 +1120,7 @@ foam.CLASS({
       if ( destinationAccount == null ) {
         throw new ValidationException("Destination account not found");
       }
-      if ( destinationAccount instanceof AbstractCreditCodeAccount ) {
+      if ( destinationAccount instanceof CreditCodeAccount ) {
         throw new ValidationException("Improper destination account");
       }
       User destinationOwner = (User) userDAO.find(destinationAccount.getOwner());

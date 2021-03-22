@@ -29,7 +29,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'net.nanopay.payment.CorridorService',
     'net.nanopay.payment.PaymentProviderCorridor',
-    'net.nanopay.tx.creditengine.AbstractCreditCodeAccount',
+    'net.nanopay.tx.creditengine.CreditCodeAccount',
     'net.nanopay.tx.creditengine.CreditCodeTransaction',
     'java.util.List',
     'java.util.ArrayList',
@@ -58,7 +58,7 @@ foam.CLASS({
         }
 
         // Skip corridors for promos. corridors only specific to $.
-        if ( quote.getRequestTransaction() instanceof CreditCodeTransaction && quote.getSourceAccount() instanceof AbstractCreditCodeAccount && quote.getDestinationAccount() instanceof AbstractCreditCodeAccount) {
+        if ( quote.getRequestTransaction() instanceof CreditCodeTransaction && quote.getSourceAccount() instanceof CreditCodeAccount && quote.getDestinationAccount() instanceof CreditCodeAccount) {
           quote.setCorridorsEnabled(false);
           return getDelegate().put_(x, quote);
         }

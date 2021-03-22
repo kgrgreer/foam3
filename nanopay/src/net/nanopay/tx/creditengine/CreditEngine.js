@@ -43,7 +43,7 @@ foam.CLASS({
     'java.util.HashSet',
     'net.nanopay.account.Account',
     'foam.mlang.sink.Count',
-    'net.nanopay.tx.creditengine.AbstractCreditCodeAccount'
+    'net.nanopay.tx.creditengine.CreditCodeAccount'
   ],
 
   methods: [
@@ -63,7 +63,7 @@ foam.CLASS({
           HashSet<String> codeHash = new HashSet<String>(t.getCreditCodes().length);
 
           for ( String code : t.getCreditCodes()) {
-            AbstractCreditCodeAccount creditCode = (AbstractCreditCodeAccount) creditCodeDAO.find(code);
+            CreditCodeAccount creditCode = (CreditCodeAccount) creditCodeDAO.find(code);
             if ( creditCode != null ) {
               CreditLineItem[] clis = creditCode.createLineItems(t);
               if ( clis != null && clis.length > 0 ) {
@@ -82,7 +82,7 @@ foam.CLASS({
         }
 
         // --- Deal with incoming creditCodes ---
-        if ( obj != null && obj instanceof AbstractCreditCodeAccount ) {
+        if ( obj != null && obj instanceof CreditCodeAccount ) {
           return super.put_(x, obj);
         }
         throw new RuntimeException("incorrect input to creditEngine");

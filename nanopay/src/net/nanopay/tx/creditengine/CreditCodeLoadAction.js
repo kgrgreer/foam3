@@ -28,7 +28,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.core.X',
-    'net.nanopay.tx.creditengine.AbstractCreditCodeAccount',
+    'net.nanopay.tx.creditengine.CreditCodeAccount',
     'net.nanopay.tx.creditengine.CreditCodeTransaction',
     'foam.core.ContextAwareAgent',
 
@@ -41,7 +41,7 @@ foam.CLASS({
         agency.submit(x, new ContextAwareAgent() {
           @Override
           public void execute(X x) {
-            AbstractCreditCodeAccount promo = (AbstractCreditCodeAccount) obj;
+            CreditCodeAccount promo = (CreditCodeAccount) obj;
             CreditCodeTransaction tx = new CreditCodeTransaction();
             tx.setAmount(promo.getInitialQuantity());
             tx.setSourceAccount(promo.getId());

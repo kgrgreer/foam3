@@ -691,7 +691,7 @@ var classes = [
   'net.nanopay.fx.FXQuote',
 
   // credit engine
-  'net.nanopay.tx.creditengine.AbstractCreditCodeAccount',
+  'net.nanopay.tx.creditengine.CreditCodeAccount',
   'net.nanopay.tx.creditengine.FeeWaiver',
   'net.nanopay.tx.creditengine.CourtesyCredit',
   'net.nanopay.tx.creditengine.CreditEngine',

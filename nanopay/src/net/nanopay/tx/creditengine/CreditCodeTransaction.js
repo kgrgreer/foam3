@@ -60,14 +60,14 @@ foam.CLASS({
       ],
       type: 'Void',
       javaCode: `
-      AbstractCreditCodeAccount account = (AbstractCreditCodeAccount) findSourceAccount(x);
+      CreditCodeAccount account = (CreditCodeAccount) findSourceAccount(x);
       if ( getSourceAccount() == null ) {
         throw new ValidationException("CreditCode account not found");
       }
-      if ( ! (findSourceAccount(x) instanceof AbstractCreditCodeAccount) ) {
+      if ( ! (findSourceAccount(x) instanceof CreditCodeAccount) ) {
         throw new ValidationException("This Source account type should not be set");
       }
-      if ( ! (findDestinationAccount(x) instanceof AbstractCreditCodeAccount) ) {
+      if ( ! (findDestinationAccount(x) instanceof CreditCodeAccount) ) {
         throw new ValidationException("This Destination account type should not be set");
       }
       /*if ( destinationAccount() != null ) {

@@ -25,7 +25,7 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.account.Account',
     'net.nanopay.tx.creditengine.CreditCodeTransaction',
-    'net.nanopay.tx.creditengine.AbstractCreditCodeAccount',
+    'net.nanopay.tx.creditengine.CreditCodeAccount',
     'foam.util.SafetyUtil',
   ],
 
