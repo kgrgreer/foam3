@@ -57,7 +57,8 @@ foam.CLASS({
     'net.nanopay.tx.TransactionException',
     'net.nanopay.bank.BankAccount',
     'foam.nanos.logger.Logger',
-    'net.nanopay.tx.PropertyCompare'
+    'net.nanopay.tx.PropertyCompare',
+    'net.nanopay.tx.creditengine.CreditEngine'
   ],
 
   tableColumns: [
@@ -403,8 +404,7 @@ foam.CLASS({
         txn = createFeeTransfers(x, txn, quote);
         // hit creditEngine
         if ( txn.getCreditCodes() != null && txn.getCreditCodes().length > 0 ) {
-          DAO creditDAO = (DAO) x.get("localCreditCodeDAO");
-          txn = (Transaction) creditDAO.put(txn);
+          txn = ((CreditEngine) x.get("creditEngine")).calculateCredits(x, txn);
         }
         return txn;
       `

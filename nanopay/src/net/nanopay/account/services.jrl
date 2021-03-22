@@ -113,7 +113,6 @@ p({
       .setOf(net.nanopay.tx.creditengine.CreditCodeAccount.getOwnClassInfo())
       .setPm(true)
       .setAuthorize(false)
-      .setDecorator(new net.nanopay.tx.creditengine.CreditEngine())
       .setInnerDAO((x.get("accountDAO")).where(foam.mlang.MLang.INSTANCE_OF(net.nanopay.tx.creditengine.CreditCodeAccount.class)))
       .setEnableInterfaceDecorators(false)
       .build();
@@ -136,7 +135,6 @@ p({
       .setOf(net.nanopay.tx.creditengine.CreditCodeAccount.getOwnClassInfo())
       .setPm(true)
       .setAuthorize(false)
-      .setDecorator(new net.nanopay.tx.creditengine.CreditEngine())
       .setInnerDAO((x.get("localAccountDAO")).where(foam.mlang.MLang.INSTANCE_OF(net.nanopay.tx.creditengine.CreditCodeAccount.class)))
       .setEnableInterfaceDecorators(false)
       .build();
@@ -148,6 +146,13 @@ p({
   }
   """
 })
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "creditEngine",
+  "serve": true,
+  "serviceClass": "net.nanopay.tx.creditengine.CreditEngine"
+})
+
 
 p({
   "class": "foam.nanos.boot.NSpec",

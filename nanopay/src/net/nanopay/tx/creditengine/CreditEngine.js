@@ -18,7 +18,6 @@
 foam.CLASS({
   package: 'net.nanopay.tx.creditengine',
   name: 'CreditEngine',
-  extends: 'foam.dao.ProxyDAO',
   documentation: `THis is where credits are calculated and applied to the transaction
   promos can be applied "per fee", or as a general bonus on the transaction.
   promos can also do other stuff too after the credit engine is done calculating them.
@@ -48,24 +47,28 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'put_',
+      name: 'calculateCredits',
+      args: [
+        { name: 'x', type: 'Context'},
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction'}
+      ],
+      type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
         // --- Deal With Incoming Transactions ---
-        if ( obj != null && obj instanceof Transaction ) {
-          if (obj instanceof SummarizingTransaction) {
-            return obj;
+        if ( txn != null ) {
+          if (txn instanceof SummarizingTransaction) {
+            return txn;
           }
-          Transaction t = (Transaction) obj;
-          DAO creditCodeDAO = (DAO) getDelegate();
+          DAO creditCodeDAO = (DAO) x.get("localCreditCodeDAO");
           // check if credit code exists, if so, only retain if not duplicate, and if applicable.
 
           ArrayList<CreditLineItem> credits = new ArrayList<CreditLineItem>();
-          HashSet<String> codeHash = new HashSet<String>(t.getCreditCodes().length);
+          HashSet<String> codeHash = new HashSet<String>(txn.getCreditCodes().length);
 
-          for ( String code : t.getCreditCodes()) {
+          for ( String code : txn.getCreditCodes()) {
             CreditCodeAccount creditCode = (CreditCodeAccount) creditCodeDAO.find(code);
             if ( creditCode != null ) {
-              CreditLineItem[] clis = creditCode.createLineItems(t);
+              CreditLineItem[] clis = creditCode.createLineItems(txn);
               if ( clis != null && clis.length > 0 ) {
                 if ( codeHash.add(code) ) {
                   for( CreditLineItem cli : clis ) {
@@ -76,15 +79,11 @@ foam.CLASS({
             }
           }
 
-          t.setCreditCodes((String []) codeHash.toArray(new String[codeHash.size()] ));
-          t.addLineItems((CreditLineItem[]) credits.toArray(new CreditLineItem[credits.size()] ));
-          return t;
+          txn.setCreditCodes((String []) codeHash.toArray(new String[codeHash.size()] ));
+          txn.addLineItems((CreditLineItem[]) credits.toArray(new CreditLineItem[credits.size()] ));
+          return txn;
         }
 
-        // --- Deal with incoming creditCodes ---
-        if ( obj != null && obj instanceof CreditCodeAccount ) {
-          return super.put_(x, obj);
-        }
         throw new RuntimeException("incorrect input to creditEngine");
       `
     }
