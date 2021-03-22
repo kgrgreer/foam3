@@ -142,6 +142,7 @@ foam.CLASS({
   properties: [
     {
       name: 'denomination',
+      readPermissionRequired: true,
       value: 'BRL',
       order: 1
     },

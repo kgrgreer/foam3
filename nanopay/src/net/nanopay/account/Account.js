@@ -240,6 +240,7 @@ foam.CLASS({
       expression: function() {
         return this.toSummary() + ` - ${this.type}`;
       },
+     //  getter: function() { return this.toSummary();},
       tableCellFormatter: function(_, obj) {
         this.add(obj.slot(function(
           name,
