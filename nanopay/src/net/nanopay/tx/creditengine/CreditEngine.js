@@ -56,7 +56,7 @@ foam.CLASS({
             return obj;
           }
           Transaction t = (Transaction) obj;
-          DAO creditCodeDAO = (DAO) x.get("localAccountDAO");
+          DAO creditCodeDAO = (DAO) getDelegate();
           // check if credit code exists, if so, only retain if not duplicate, and if applicable.
 
           ArrayList<CreditLineItem> credits = new ArrayList<CreditLineItem>();
