@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.auth.ruler',
-  name: 'PermissionedUserRule',
+  name: 'SpidLimitingPermissionedUserRule',
   extends: 'foam.nanos.ruler.Rule',
 
   documentation: 'Rule that can only be seen if the user has permissions to select it.',
@@ -27,11 +27,25 @@ foam.CLASS({
     'foam.nanos.auth.User'
   ],
 
+  properties: [
+    {
+      class: 'StringArray',
+      name: 'limitedSpidList',
+      documentation: 'List of SPIDs that are limited to permission check.'
+    }
+  ],
+
   methods: [
     {
       name: 'getUser',
       javaCode: `
-        return (User) obj;
+        User user = (User) obj;
+        if (Arrays.stream(getLimitedSpidList()).anyMatch(s -> s.equals(user.getSpid())) {
+          return user;
+        }
+
+        // When the SPID is not limited, no permission check is necessary (i.e. the rule applies to all SPIDs not listed)
+        return null;
       `
     }
   ]

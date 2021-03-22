@@ -27,6 +27,8 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.nanos.app.AppConfig',
+    'foam.nanos.app.Mode',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
@@ -228,6 +230,12 @@ foam.CLASS({
         { name: 'request', type: 'FlinksLoginId' }
       ],
       javaCode: `
+        AppConfig config = (AppConfig) x.get("appConfig");
+        if ( config != null && config.getMode() == Mode.PRODUCTION ) {
+          // Skipping user email lookup in PRODUCTION
+          return;
+        }
+
         // Only resolve email when skip login ID resolution is true
         if ( ! request.getSkipLoginIdResolution() ) return;
 

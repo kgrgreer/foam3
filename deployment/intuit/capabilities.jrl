@@ -83,14 +83,3 @@ p({
     "rule.read.d2a9b4b5-3c84-4742-84cc-6bb11928ed82"
   ]
 })
-
-p({
-  class: "foam.nanos.crunch.Capability",
-  id: "intuit-user-tmp",
-  name: "Temp Rules for Intuit",
-  version: "0",
-  enabled: true,
-  permissionsGranted: [
-    "rule.read.user-prevent-duplicate-email-rule"
-  ]
-})
