@@ -68,7 +68,7 @@ foam.CLASS({
                 return;
               }
 
-              if ( business.getSpid() != "Ablii" ) {
+              if ( business.getSpid().equals("ablii") ) {
                 return;
               }
 
