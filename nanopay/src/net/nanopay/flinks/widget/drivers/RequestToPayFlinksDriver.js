@@ -25,7 +25,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'net.nanopay.rtp.RequestToPay',
     'net.nanopay.flinks.external.OnboardingType',
-    'net.nanopay.flinks.external.FlinksLoginIdOnboarding',
+    'net.nanopay.flinks.external.FlinksLoginId',
     'net.nanopay.flinks.widget.FlinksException'
   ],
 
@@ -53,7 +53,7 @@ foam.CLASS({
           throw new FlinksException("No request to pay found for id: " + getId());
         }
 
-        FlinksLoginIdOnboarding onboardingRequest = new FlinksLoginIdOnboarding.Builder(x)
+        FlinksLoginId onboardingRequest = new FlinksLoginId.Builder(x)
           .setLoginId(getLoginId())
           .setAccountId(getAccountId())
           .setInstitution(getInstitution())
@@ -62,7 +62,7 @@ foam.CLASS({
 
         // Elevate to system here to complete onboarding
         DAO onboardingDao = (DAO) x.get("flinksLoginIdDAO");
-        onboardingRequest = (FlinksLoginIdOnboarding) onboardingDao.put(onboardingRequest);
+        onboardingRequest = (FlinksLoginId) onboardingDao.put(onboardingRequest);
 
         // Link the onboading request to the request to pay
         requestToPay.setOnboardingRequest(onboardingRequest.getId());
