@@ -81,6 +81,7 @@ foam.CLASS({
     },
     {
       name: 'reviewOwnersSection',
+      title: 'Review the list of owners',
       isAvailable: function(amountOfOwners) {
         return amountOfOwners > 0;
       }

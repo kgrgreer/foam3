@@ -38,6 +38,7 @@ foam.CLASS({
         'email',
         'businessAddress.countryId',
         'bankAccount.denomination',
+        'bankAccount.summary',
         'signUpStatus'
       ]
     }
@@ -53,15 +54,7 @@ foam.CLASS({
             class: 'foam.u2.view.ScrollTableView',
             enableDynamicTableHeight: false,
             editColumnsEnabled: false,
-            columns: [
-              'organization',
-              'firstName',
-              'lastName',
-              'email',
-              'businessAddress.countryId',
-              'bankAccount.denomination',
-              'signUpStatus'
-            ],
+            columns: this.columns,
             data$: this.data$,
             dblClickListenerAction: this.dblclick
           }).end()
