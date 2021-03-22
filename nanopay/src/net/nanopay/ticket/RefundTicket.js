@@ -125,10 +125,6 @@ foam.CLASS({
       updateVisibility: 'RO'
     },
     {
-      class: 'Long',
-      name: 'creditAmount'
-    },
-    {
       class: 'FObjectArray',
       of: 'net.nanopay.tx.FeeLineItem',
       name: 'feeLineItems',

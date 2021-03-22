@@ -36,6 +36,7 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.ticket.RefundTicket',
     'net.nanopay.ticket.RefundStatus',
+    'net.nanopay.tx.creditengine.FeeWaiver',
     'net.nanopay.tx.CreditLineItem',
     'net.nanopay.tx.FeeSummaryTransactionLineItem',
     'net.nanopay.tx.FeeLineItem',
@@ -104,13 +105,18 @@ foam.CLASS({
             }
           }
 
-          if ( request.getCreditAmount() > 0 ) {
-            CreditLineItem feeRefund = new CreditLineItem();
-            feeRefund.setAmount(request.getCreditAmount());
-            feeRefund.setCreditCurrency(summary.findSourceAccount(x).getDenomination());
-            feeRefund.setSourceAccount(request.getCreditAccount());
-            feeRefund.setDestinationAccount(reverse.getDestinationAccount());
-            array.add(feeRefund);
+          if ( request.getWaiveCharges() ) {
+            FeeWaiver feeWaiver = new FeeWaiver();
+            feeWaiver.setDiscountPercent(1);
+            feeWaiver.setApplicableFees(new String[] {"Ablii Fee"});
+            feeWaiver.setName("Fee waiver");
+            feeWaiver.setSpid(reverse.getSpid());
+            feeWaiver.setOwner(request.getOwner());
+            feeWaiver.setInitialQuantity(1);
+            DAO creditCodeDAO = (DAO) x.get("creditCodeDAO");
+            feeWaiver = (FeeWaiver) creditCodeDAO.put(feeWaiver);
+            
+            reverse.setCreditCodes(new String[]{ feeWaiver.getId()});
           }
 
           if ( array.size() > 0 ) {
