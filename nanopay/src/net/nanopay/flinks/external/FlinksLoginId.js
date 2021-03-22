@@ -46,8 +46,12 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'skipLoginIdResolution',
-      documentation: 'Whether to skip resolution of loginId against FlinksLoginId calls',
-      storageTransient: true
+      documentation: 'Whether to skip resolution of loginId against FlinksLoginId calls'
+    },
+    {
+      class: 'Boolean',
+      name: 'guestMode',
+      documentation: 'Whether the user is logging in in guest mode or not'
     },
     {
       class: 'Reference',
