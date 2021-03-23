@@ -70,9 +70,9 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
 </p>
 <p>
     In order to start the provisioning process, the loginId has to be passed in to the flinksLoginIdDAO through DIG.
-    The FlinksLoginIdOnboarding API call is a DIG API call to the flinksLoginIdDAO with the following payload:
+    The FlinksLoginId API call is a DIG API call to the flinksLoginIdDAO with the following payload:
     <code>{
-    "class": "net.nanopay.flinks.external.FlinksLoginIdOnboarding",
+    "class": "net.nanopay.flinks.external.FlinksLoginId",
     "loginId": "2ff467b7-bcde-4346-8996-08d69b30c4d8",
     "accountId": "8cd3e122-4826-4e24-48c4-08d69b30caf5",
     "institution": "FlinksCapital",
@@ -84,7 +84,7 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
       }
     }
 }   </code>
-    Note that the class is required to be 'net.nanopay.flinks.external.FlinksLoginIdOnboarding' in order for the onboarding process to be triggered.
+    Note that the class is required to be 'net.nanopay.flinks.external.FlinksLoginId' in order for the onboarding process to be triggered.
 </p>
 <p>
     If necessary, we have also provided the ability to override data returned from Flinks with your own overrides. Specifically, you can include
@@ -98,7 +98,7 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
     The property that needs to be checked is the missingUserCapabilityDataObjects property. Here is an example of a response
     with the privacy policy still needing to be agreed to as well as the terms and conditions agreement:
     <code>{
-    "class": "net.nanopay.flinks.external.FlinksLoginIdOnboarding",
+    "class": "net.nanopay.flinks.external.FlinksLoginId",
     "type": 1,
     "capabilityPayloads": [
         {
@@ -129,10 +129,10 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
     </code>
     This map can be extracted and directly used in the next API call to the capabilityPayloadDAO.
 </p>
-<h4><a name="flinks-login-id-onboarding">FlinksLoginIdOnboarding</a></h4>
+<h4><a name="flinks-login-id-onboarding">FlinksLoginId</a></h4>
 <p>
-  Here is the full structure of the FlinksLoginIdOnboarding object:
-  <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.flinks.external.FlinksLoginIdOnboarding"  whitelist="['type', 'missingUserCapabilityDataObjects', 'missingBusinessCapabilityDataObjects', 'loginId', 'institution', 'flinksOverrides', 'user', 'business', 'account', 'created', 'createdBy']" />
+  Here is the full structure of the FlinksLoginId object:
+  <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.flinks.external.FlinksLoginId"  whitelist="['type', 'missingUserCapabilityDataObjects', 'missingBusinessCapabilityDataObjects', 'loginId', 'institution', 'flinksOverrides', 'user', 'business', 'account', 'created', 'createdBy']" />
 </p>
 <h4><a name="onboarding-type">OnboardingType</a></h4>
 <table>

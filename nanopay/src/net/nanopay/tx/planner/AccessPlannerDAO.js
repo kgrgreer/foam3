@@ -41,18 +41,11 @@ foam.CLASS({
     'java.util.ArrayList',
     'java.util.List',
     'net.nanopay.tx.UnsupportedTransactionException',
+    'net.nanopay.tx.planner.exceptions.PlannerValidationException',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.OR',
     'net.nanopay.account.Account',
     'foam.mlang.sink.Count'
-  ],
-
-  properties: [
-    {
-      name: 'reserveAccountSpid',
-      class: 'String',
-      value: 'nanopay'
-    }
   ],
 
   methods: [
@@ -67,62 +60,26 @@ foam.CLASS({
               tq.setPlan(null);
               tq.setPlans(new Transaction [0]);
               if (tq.getParent() == null)
-                return getDelegate().put_(getPlannerContext_(x, tq.getRequestTransaction()), tq);
+                return getDelegate().put_(x, tq);
               return getDelegate().put_(x, tq); // sub plan call
             }
             t = tq.getRequestTransaction();
           }
           if ( obj instanceof Transaction )
             t = (Transaction) obj;
-
           if (t != null) {
             // if transaction has been planned already, just load it.
             if ( ! SafetyUtil.isEmpty(t.getId()) ) {
-              return loadPlan(getPlannerContext_(x, t), t);
+              return loadPlan(x, t);
             // otherwise make a new clean quote.
             }
             t.setNext(null);
             TransactionQuote tq = new TransactionQuote();
             tq.setRequestTransaction(t);
-            return getDelegate().put_(getPlannerContext_(x, t), tq);
+            return getDelegate().put_(x, tq);
           }
         }
         throw new UnsupportedTransactionException("Error, Only transaction or TransactionQuote objects can be put to the TransactionPlannerDAO");
-      `
-    },
-    {
-      name: 'getPlannerContext_',
-      type: 'net.nanopay.tx.model.Transaction',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
-      ],
-      type: 'foam.core.X',
-      javaCode: `
-        DAO dao = (DAO) getX().get("localAccountDAO");
-        User payer = null;
-        // Assume source account owner is the user making the txn.
-        if ( txn.getPayerId() != 0 ) {
-          payer = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayerId());
-        }
-        else {
-          if (txn.getSourceAccount() != null) {
-            Account source = (Account) ((DAO) x.get("accountDAO")).find_(x, txn.getSourceAccount());
-            payer = (User) source.findOwner(x);
-          }
-        }
-        if (payer == null ) { // we require a user to get the spid, no way to get user = failure to plan.
-          ((Logger) x.get("logger")).error("user not found - for transaction planning");
-          throw new ValidationException("Payer not found");
-        }
-        dao = dao.where(
-          OR(
-            EQ(Account.SPID, getReserveAccountSpid()),
-            EQ(Account.SPID, payer.getSpid())
-          )
-        );
-        X y = x.put("localAccountDAO", dao);
-        return y;
       `
     },
     {
@@ -162,7 +119,6 @@ foam.CLASS({
           logger.warning("Transaction Plan Validation Failed. \\ntxn:", txn, "\\nplan:", plannedTx);
           throw e;
         }
-
         // --- Remove the plan ---
         getDelegate().remove_(x, plannedTx);
         return (Transaction) plannedTx.getTransaction().fclone();
@@ -200,26 +156,25 @@ foam.CLASS({
     javaCode: `
       // --- Transaction Validation ---
       txn.validate(x);
-
       // --- Planner Validation ---
       AbstractTransactionPlanner atp = (AbstractTransactionPlanner) txn.findPlanner(x);
       if (atp == null || ! atp.postPlanning(x, txn, root)) {
         Logger logger = (Logger) x.get("logger");
         logger.warning(txn.getId() + " failed planner validation");
-        throw new ValidationException("Planner validation failed"); // return txn to user on failure
+        
+        PlannerValidationException exception = new PlannerValidationException("Planner validation failed");
+        exception.setTransactionId(txn.getId());
+        throw exception; // throw txn error to user on failure
       }
-
       // --- Line Item Validation ---
       for ( TransactionLineItem li : txn.getLineItems() )
         li.validate();
-
       if ( txn.getNext() != null || txn.getNext().length == 0 ) {
         Transaction [] txs = txn.getNext();
         for ( Transaction tx : txs ) {
           postPlanning_(x, tx, root);
         }
       }
-
       txn.setIsValid(true);
     `
     }

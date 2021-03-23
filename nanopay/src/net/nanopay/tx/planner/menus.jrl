@@ -11,7 +11,7 @@ p({
         "class": "foam.mlang.predicate.IsInstanceOf",
         "targetClass": "net.nanopay.tx.planner.AbstractTransactionPlanner"
       },
-      "of": "net.nanopay.tx.planner.AbstractTransactionPlanner",
+      "of": "net.nanopay.tx.planner.AbstractTransactionPlanner"
     }
   },
   "parent": "admin"
@@ -29,7 +29,7 @@ p({
         "class": "foam.mlang.predicate.IsInstanceOf",
         "targetClass": "net.nanopay.tx.planner.PlannerGroup"
       },
-      "of": "net.nanopay.tx.planner.PlannerGroup",
+      "of": "net.nanopay.tx.planner.PlannerGroup"
     }
   },
   "parent": "admin"

@@ -52,7 +52,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'foam.u2.ViewSpecWithJava',
+      class: 'foam.u2.ViewSpec',
       name: 'viewView',
       expression: function() {
         return {
@@ -93,7 +93,7 @@ foam.CLASS({
           this.stack.back();
         }, (e) => {
           this.throwError.pub(e);
-          
+
           if ( e.exception && e.exception.userFeedback  ) {
             var currentFeedback = e.exception.userFeedback;
             while ( currentFeedback ) {

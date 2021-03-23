@@ -42,6 +42,7 @@ foam.CLASS({
     {
       name: 'signingOfficerAddressSection',
       title: 'Signing officer\’s address',
+      subTitle: 'Enter your home address',
       help: 'Require your personal address. Used only to confirm your identity.'
     }
   ],

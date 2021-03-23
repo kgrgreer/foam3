@@ -321,7 +321,7 @@
   "requestId": "79a01bb5-30f4-dfd3-237a-ccf54aed7142",
   "status": "Completed",
   "flinksLoginIdResult": {
-    "class": "net.nanopay.flinks.external.FlinksLoginIdOnboarding",
+    "class": "net.nanopay.flinks.external.FlinksLoginId",
     "type": 1,
     "capabilityPayloads": [
       {
