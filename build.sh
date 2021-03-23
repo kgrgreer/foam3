@@ -41,7 +41,8 @@ function install {
     cd "$PROJECT_HOME"
     submoduleout=$(git submodule)
     if [ -z "${submoduleout}" ]; then
-        git submodule add git@github.com:kgrgreer/foam3.git
+        git submodule add https://github.com/kgrgreer/foam3.git
+#git@github.com:kgrgreer/foam3.git
     else
         git submodule init
         git submodule update
