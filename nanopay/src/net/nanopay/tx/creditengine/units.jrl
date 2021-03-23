@@ -1,0 +1,18 @@
+p({
+  "class":"foam.core.Unit",
+  "id":"use",
+  "name":"uses",
+  "precision":0
+})
+p({
+  "class":"foam.core.Unit",
+  "id":"stamp",
+  "name":"stamps",
+  "precision":0
+})
+p({
+  "class":"foam.core.Unit",
+  "id":"coupon",
+  "name":"coupons",
+  "precision":0
+})

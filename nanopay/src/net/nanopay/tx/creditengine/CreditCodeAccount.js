@@ -30,6 +30,11 @@ foam.CLASS({
     'foam.nanos.session.Session',
     'net.nanopay.fx.ExchangeRateService',
     'static foam.mlang.MLang.EQ',
+    'foam.core.Unit'
+  ],
+
+  imports: [
+    'unitDAO'
   ],
 
   properties: [
@@ -87,13 +92,66 @@ foam.CLASS({
       of: 'foam.core.Unit',
       name: 'denomination',
       includeInDigest: true,
-      label: 'Currency',
-      targetDAOKey: 'currencyDAO',
-      value:'CAD',
+      label: 'Unit',
+      targetDAOKey: 'unitDAO',
+      value:'uses',
+      createVisibility: 'RW',
+      updateVisibility: 'RO',
+      editVisibility: 'RO',
+      section: 'accountInformation',
+      gridColumns: 6,
+      order: 40,
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          sections: [
+            {
+              dao: X.unitDAO,
+              heading: 'Units'
+            }
+          ]
+        };
+      }
+    },
+    {
+      class: 'UnitValue',
+      unitPropName: 'denomination',
+      name: 'balance',
+      label: 'Balance',
+      documentation: 'A numeric value representing the available funds in the account.',
+      section: 'balanceInformation',
+      order: 20,
+      gridColumns: 6,
+      storageTransient: true,
       createVisibility: 'HIDDEN',
-      updateVisibility: 'HIDDEN',
-      editVisibility: 'HIDDEN',
-      hidden: true
+      updateVisibility: 'RO',
+      readVisibility: 'RO',
+      unitPropValueToString: async function(x, val, unitPropName) {
+        var unitProp = await x.unitDAO.find(unitPropName);
+        if ( unitProp )
+          return unitProp.format(val);
+        return val;
+      },
+      javaToCSV: `
+        DAO unitDAO = (DAO) x.get("unitDAO");
+        long balance  = (Long) ((Account)obj).findBalance(x);
+        Unit curr = (Unit) unitDAO.find(((Account)obj).getDenomination());
+
+        // Output formatted balance or zero
+        outputter.outputValue(curr.format(balance));
+      `,
+      tableWidth: 175,
+      tableCellFormatter: function(value, obj, axiom) {
+        var self = this;
+        this.add(obj.slot(function(denomination) {
+          return self.E().add(foam.core.PromiseSlot.create({
+            promise: this.unitDAO.find(denomination).then((result) => {
+              return self.E().add(result.format(value));
+            })
+          }));
+        }))
+      }
     },
     {
       class: 'Boolean',
