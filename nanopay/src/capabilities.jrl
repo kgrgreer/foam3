@@ -219,6 +219,10 @@ p({
   "version":"0",
   "enabled":true,
   "daoKey":"businessDAO",
+  "wizardlet": {
+    class: "net.nanopay.crunch.wizardlet.RerenderWizardlet",
+    rerenderList: ["554af38a-8225-87c8-dfdf-eeb15f71215f-6-5"]
+  },
   "contextDAOFindKey":"subject.user"
 })
 
@@ -231,6 +235,10 @@ p({
   "version":"0",
   "enabled":true,
   "daoKey":"businessDAO",
+  "wizardlet": {
+    class: "net.nanopay.crunch.wizardlet.RerenderWizardlet",
+    rerenderList: ["554af38a-8225-87c8-dfdf-eeb15f71215f-6-5"]
+  },
   "contextDAOFindKey":"subject.user"
 })
 
