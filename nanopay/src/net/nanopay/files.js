@@ -209,6 +209,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/IsDefaultRule' },
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
+  { name: 'net/nanopay/approval/AgentCapabilityJunctionDAOSummaryView' },
   { name: 'net/nanopay/bank/BankAccountValidationService' },
   { name: 'net/nanopay/bank/MockBankAccountValidationService' },
 

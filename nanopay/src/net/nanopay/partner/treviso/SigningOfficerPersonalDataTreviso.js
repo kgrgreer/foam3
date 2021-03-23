@@ -126,7 +126,6 @@ foam.CLASS({
     foam.nanos.auth.User.PHONE_NUMBER.clone().copyFrom({
       section: 'signingOfficerPersonalInformationSection',
       label: 'Phone number',
-      visibility: 'RW',
       required: true,
       autoValidate: true,
       gridColumns: 12
@@ -156,7 +155,7 @@ foam.CLASS({
           isHorizontal: true
         };
       },
-      visibility: 'RW',
+      createVisibility: 'RW',
       gridColumns: 12
     }),
     {
@@ -199,7 +198,6 @@ foam.CLASS({
           isHorizontal: true
         };
       },
-      visibility: 'RW',
       gridColumns: 12
     },
     {

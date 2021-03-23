@@ -566,7 +566,8 @@ p({
   name: "Submit Business Information",
   wizardlet: {
     class: "foam.u2.wizard.SubmitWizardlet"
-  }
+  },
+  associatedEntity: 1
 })
 
 p({

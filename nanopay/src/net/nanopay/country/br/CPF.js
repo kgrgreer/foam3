@@ -104,7 +104,7 @@ foam.CLASS({
               maxLength: 2
             })
           ]
-        })
+        }, X)
       }
     },
     {

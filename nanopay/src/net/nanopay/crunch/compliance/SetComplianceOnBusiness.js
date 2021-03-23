@@ -29,6 +29,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'foam.nanos.crunch.AgentCapabilityJunction',
     'foam.nanos.crunch.UserCapabilityJunction',
     'java.lang.UnsupportedOperationException',
     'net.nanopay.admin.model.ComplianceStatus',
@@ -44,8 +45,8 @@ foam.CLASS({
           @Override
           public void execute(X x) {
             DAO userDAO = ((DAO) x.get("localUserDAO")).inX(systemX);
-
-            User user = (User) userDAO.find(((UserCapabilityJunction) obj).getSourceId());
+            Long id = obj instanceof AgentCapabilityJunction ? ((AgentCapabilityJunction) obj).getEffectiveUser() : ((UserCapabilityJunction) obj).getSourceId();
+            User user = (User) userDAO.find(id);
             try {
               Business business = (Business) user.fclone();
               business.setCompliance(ComplianceStatus.PASSED); // for access into the invoicing
