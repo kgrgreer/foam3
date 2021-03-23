@@ -67,7 +67,6 @@ foam.CLASS({
                 logger.error("Error sending compliance-notification-to-user email, group is null.");
                 return;
               }
-
               try {
 
                 Notification businessCompliancePassedNotification = new BusinessCompliancePassedEmailNotification.Builder(x)
