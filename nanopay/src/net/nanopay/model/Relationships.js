@@ -415,7 +415,61 @@ foam.CLASS({
     'foam.nanos.auth.Authorizable'
   ],
 
+  messages: [
+    { name: 'VIEW_TITLE_USER', message: 'Users' }
+  ],
+
   properties: [
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'sourceId',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.ModeAltView',
+          readView: {
+            class: 'foam.u2.view.ReadReferenceView',
+            of: 'foam.nanos.auth.User'
+          },
+          writeView: {
+            class: 'foam.u2.view.RichChoiceView',
+            search: true,
+            rowView: { class: 'net.nanopay.ui.UserRowView' },
+            sections: [
+              {
+                heading: X.data.VIEW_TITLE_USER,
+                dao: X.userDAO
+              }
+            ]
+          }
+        };
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'targetId',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.ModeAltView',
+          readView: {
+            class: 'foam.u2.view.ReadReferenceView',
+            of: 'foam.nanos.auth.User'
+          },
+          writeView: {
+            class: 'foam.u2.view.RichChoiceView',
+            search: true,
+            rowView: { class: 'net.nanopay.ui.UserRowView' },
+            sections: [
+              {
+                heading: X.data.VIEW_TITLE_USER,
+                dao: X.userDAO
+              }
+            ]
+          }
+        };
+      }
+    },
     {
       class: 'Long',
       name: 'partnerId',
@@ -470,6 +524,16 @@ foam.CLASS({
       name: 'jobTitle',
       documentation: `Job title of source user.`
     },
+    {
+      flags: ['js'],
+      name: 'targetUser',
+      expression: function(targetId) {
+        const user = foam.nanos.auth.User.create({ id: targetId }, this);
+        user.copyFrom(targetId === this.yourId ? this.yourInfo : this.partnerInfo);
+        return user;
+      },
+      hidden: true
+    }
   ],
 
   methods: [
@@ -496,7 +560,8 @@ foam.CLASS({
           throw new IllegalStateException(String.format("No group found with id '%s'.", this.getGroup()));
         }
 
-        if ( ! auth.check(x, (String) buildPermissionString(x, this, "add")) ) {
+        var permission = buildBusinessPermissionString(x, this, "add");
+        if ( permission != null && ! auth.check(x, permission) ) {
           throw new AuthorizationException("Unable to create junction due to permission restrictions.");
         }
 
@@ -542,7 +607,7 @@ foam.CLASS({
             )
           );
 
-        if ( ! ( isSourceOrTarget || auth.check(x, (String) buildPermissionString(x, this, "read")) )){
+        if ( ! ( isSourceOrTarget || auth.check(x, buildBusinessPermissionString(x, this, "read")) )){
           throw new AuthorizationException("Unable to retrieve junction due to permission restrictions.");
         }
       `
@@ -573,7 +638,8 @@ foam.CLASS({
         }
 
         // Checks authorization using update permission.
-        if ( ! auth.check(x, (String) buildPermissionString(x, this, "update")) ) {
+        var permission = buildBusinessPermissionString(x, this, "update");
+        if ( permission != null && ! auth.check(x, permission) ) {
           throw new AuthorizationException("Unable to update junction due to permission restrictions.");
         }
 
@@ -599,13 +665,18 @@ foam.CLASS({
           return;
         }
 
-        if ( ! auth.check(x, (String) buildPermissionString(x, this, "remove")) ) {
+        var permission = buildBusinessPermissionString(x, this, "remove");
+        if ( permission != null && ! auth.check(x, permission) ) {
           throw new AuthorizationException("Unable to remove object due to permission restrictions.");
+        }
+
+        if ( ! auth.check(x, "group.update." + this.getGroup()) ) {
+          throw new AuthorizationException("Unable to remove relationship due to permission restrictions.");
         }
       `
     },
     {
-      name: 'buildPermissionString',
+      name: 'buildBusinessPermissionString',
       args: [
         { name: 'x', type: 'Context' },
         { name: 'junctionObj', type: 'foam.nanos.auth.UserUserJunction' },
@@ -616,16 +687,10 @@ foam.CLASS({
         DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
         Business targetUser = (Business) localBusinessDAO.inX(x).find(junctionObj.getTargetId());
 
-        if ( targetUser == null ) {
-          Logger logger = (Logger) x.get("logger");
-          logger.error(String.format("Could not find business with id = %d in localBusinessDAO. The source id, which is the id of the user, is %d.", junctionObj.getTargetId(), junctionObj.getSourceId()));
-          throw new RuntimeException("An unexpected error occured. Please try again later.");
+        if ( targetUser != null ) {
+          return "business." + permissionAction + "." + targetUser.getBusinessPermissionId() + ".*";
         }
-
-        // Permission string to check authorization.
-        String permissionString = "business." + permissionAction + "." + targetUser.getBusinessPermissionId() + ".*";
-
-        return permissionString;
+        return null;
       `
     }
   ]
@@ -932,7 +997,7 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'accountDAO',
   unauthorizedSourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'flinksAccountsDetailResponseDAO',
-  sourceProperty: { 
+  sourceProperty: {
     section: 'complianceInformation',
     order: 20
   },
@@ -948,7 +1013,7 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'accountDAO',
   unauthorizedSourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'plaidAccountDetailDAO',
-  sourceProperty: { 
+  sourceProperty: {
     section: 'complianceInformation',
     order: 30
   },

@@ -87,22 +87,41 @@ foam.CLASS({
     {
       name: 'type',
       createVisibility: 'HIDDEN',
-      readVisibility: 'HIDDEN'
+      readVisibility: 'HIDDEN',
+      transient: true
     },
     {
       name: 'note',
       createVisibility: 'HIDDEN',
-      readVisibility: 'HIDDEN'
+      readVisibility: 'HIDDEN',
+      transient: true
+    },
+    {
+      name: 'sourceAccount',
+      visibility: 'HIDDEN',
+      transient: true
+    },
+    {
+      name: 'destinationAccount',
+      visibility: 'HIDDEN',
+      transient: true
     },
     {
       name: 'amount',
       createVisibility: 'HIDDEN',
-      readVisibility: 'HIDDEN'
+      readVisibility: 'HIDDEN',
+      transient: true
+    },
+    {
+      name: 'currency',
+      visibility: 'HIDDEN',
+      transient: true
     },
     {
       name: 'reversable',
       createVisibility: 'HIDDEN',
-      readVisibility: 'HIDDEN'
+      readVisibility: 'HIDDEN',
+      transient: true
     },
     {
       name: 'requiresUserInput',

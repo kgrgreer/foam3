@@ -9,6 +9,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-sessi
 
 // Allow BePay users to see contacts menu
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","targetId":"menu.read.view-contacts"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","targetId":"menu.read.switch-user"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","targetId":"service.read.contactDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","targetId":"service.contactDAO"})
 
