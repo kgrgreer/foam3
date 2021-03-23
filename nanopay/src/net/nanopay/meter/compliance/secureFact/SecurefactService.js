@@ -24,6 +24,7 @@ foam.CLASS({
 
   imports: [
     'DAO securefactLEVDAO?',
+    'DAO securefactResponseDAO?',
     'DAO securefactSIDniDAO?'
   ],
 
@@ -179,7 +180,8 @@ foam.CLASS({
           request.setUrl(getLevDocumentOrderUrl());
           request.setAuthKey(getLevApiKey());
           LEVDocumentOrderResponse response = (LEVDocumentOrderResponse) sendRequest(x, request, LEVDocumentOrderResponse.class);
-          return response;
+          return (LEVDocumentOrderResponse)
+            ((DAO) getSecurefactResponseDAO()).put(response);
         } catch (Throwable t) {
           pm.error(x, t.getMessage());
           throw t;
@@ -208,6 +210,8 @@ foam.CLASS({
           request.setUrl(getLevDocumentDataUrl());
           request.setAuthKey(getLevApiKey());
           LEVDocumentDataResponse response = (LEVDocumentDataResponse) sendRequest(x, request, LEVDocumentDataResponse.class);
+          return (LEVDocumentDataResponse)
+            ((DAO) getSecurefactResponseDAO()).put(response);
           return response;
         } catch (Throwable t) {
           pm.error(x, t.getMessage());
