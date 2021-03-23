@@ -324,6 +324,7 @@ p({
     "rule.read.b82fc19c-0f13-11eb-adc1-0242ac120002",
     "rule.read.crunch-onboard-compliance-approvalrequest-0",
     "rule.read.crunch-onboard-compliance-notification",
-    "rule.read.crunch-business-registration"
+    "rule.read.crunch-business-registration",
+    "rule.read.9cb36c96-c2e6-4c2a-8b38-f009d44c341a"
   ]
 })

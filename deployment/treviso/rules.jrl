@@ -437,7 +437,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"9cb36c96-c2e6-4c2a-8b38-f009d44c341a",
   "name":"Treviso TrevisoSendEmailToAllRule",
   "priority":1,
