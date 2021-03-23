@@ -39,10 +39,10 @@ foam.CLASS({
   ],
 
   tableColumns: [
-      'id', 
-      'user.id', 
-      'acceptedDocument', 
-      'createdBy.legalName', 
+      'id',
+      'user.id',
+      'acceptedDocument',
+      'createdBy.legalName',
       'createdByAgent.legalName'
   ],
 
@@ -102,6 +102,11 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedByAgent'
     }
   ],
 

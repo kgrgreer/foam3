@@ -441,6 +441,25 @@ foam.CLASS({
       },
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedByAgent',
+      includeInDigest: true,
+      section: 'operationsInformation',
+      order: 110,
+      gridColumns: 6,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subSubContext__.userDAO
+          .find(value)
+          .then((user) => this.add(user.toSummary()))
+          .catch((error) => {
+            this.add(value);
+          });
+      },
+    },
+    {
       class: 'foam.core.Enum',
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
@@ -517,7 +536,7 @@ foam.CLASS({
       javaFactory: 'return foam.mlang.MLang.FALSE;',
       visibility: 'HIDDEN'
     },
-    
+
     {
       class: 'String',
       name: 'externalId',
