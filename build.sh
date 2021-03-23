@@ -39,13 +39,14 @@ function install {
     MACOS='darwin*'
 
     cd "$PROJECT_HOME"
-    submoduleout=$(git submodule)
-    if [ -z "${submoduleout}" ]; then
-        git submodule add https://github.com/kgrgreer/foam3.git
-#git@github.com:kgrgreer/foam3.git
-    else
-        git submodule init
-        git submodule update
+    if [ IS_AWS -eq 0 ]; then
+        submoduleout=$(git submodule)
+        if [ -z "${submoduleout}" ]; then
+            git submodule add https://github.com/kgrgreer/foam3.git
+        else
+            git submodule init
+            git submodule update
+        fi
     fi
 
     npm install
