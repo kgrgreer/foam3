@@ -212,7 +212,6 @@ foam.CLASS({
           LEVDocumentDataResponse response = (LEVDocumentDataResponse) sendRequest(x, request, LEVDocumentDataResponse.class);
           return (LEVDocumentDataResponse)
             ((DAO) getSecurefactResponseDAO()).put(response);
-          return response;
         } catch (Throwable t) {
           pm.error(x, t.getMessage());
           throw t;
