@@ -68,10 +68,6 @@ foam.CLASS({
                 return;
               }
 
-              if ( ! business.getSpid().equals("ablii") ) {
-                return;
-              }
-
               try {
 
                 Notification businessCompliancePassedNotification = new BusinessCompliancePassedEmailNotification.Builder(x)
