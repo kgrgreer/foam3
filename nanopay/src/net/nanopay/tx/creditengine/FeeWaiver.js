@@ -170,5 +170,37 @@ foam.CLASS({
       `,
       documentation: 'On a successful update to the transaction, '
     },
+    {
+      name: 'createLineItems',
+      args: [
+        {
+          name: 't',
+          type: 'net.nanopay.tx.model.Transaction'
+        }
+      ],
+      type: 'net.nanopay.tx.CreditLineItem[]',
+      javaCode: `
+      ArrayList<CreditLineItem> array = new ArrayList<CreditLineItem>();
+      for ( TransactionLineItem lineItem : t.getLineItems() ) {
+        if (lineItem instanceof InvoicedFeeLineItem) {
+          InvoicedCreditLineItem invoicedFeeRefund = new InvoicedCreditLineItem();
+          invoicedFeeRefund.setSourceAccount(lineItem.getDestinationAccount());
+          invoicedFeeRefund.setDestinationAccount(lineItem.getSourceAccount());
+          invoicedFeeRefund.setCreditCurrency(lineItem.getCurrency());
+          invoicedFeeRefund.setAmount(lineItem.getAmount());
+          array.add(invoicedFeeRefund);
+        } else if (lineItem instanceof FeeLineItem) {
+          CreditLineItem feeRefund = new CreditLineItem();
+          feeRefund.setCreditCurrency(lineItem.getCurrency());
+          feeRefund.setSourceAccount(lineItem.getDestinationAccount());
+          feeRefund.setDestinationAccount(lineItem.getSourceAccount());
+          feeRefund.setAmount(lineItem.getAmount());
+          array.add(feeRefund);
+        }
+      }
+      return array.toArray(new CreditLineItem[array.size()]);
+      `,
+      documentation: 'Create a credit line item based on the transaction as a whole'
+    },
   ]
 });
