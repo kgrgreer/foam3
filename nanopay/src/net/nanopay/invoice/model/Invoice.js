@@ -977,7 +977,11 @@ foam.CLASS({
         return (status === net.nanopay.invoice.model.InvoiceStatus.PAID) && paymentId;
       },
       code: function(X) {
-        var refundTicket = net.nanopay.ticket.RefundTicket.create({problemTransaction: this.paymentId});
+        var refundTicket = net.nanopay.ticket.RefundTicket.create({
+          problemTransaction: this.paymentId,
+          refundStatus: net.nanopay.ticket.RefundStatus.REQUESTED,
+          title: 'Refund request for invoice: ' + this.id
+        });
 
         this.ticketDAO.put(refundTicket).then(ticket => {
           this.finished.pub();
@@ -995,7 +999,11 @@ foam.CLASS({
         return (status === net.nanopay.invoice.model.InvoiceStatus.PROCESSING) && paymentId
       },
       code: function(X) {
-        var refundTicket = net.nanopay.ticket.RefundTicket.create({refundTransaction: this.paymentId});
+        var refundTicket = net.nanopay.ticket.RefundTicket.create({
+          problemTransaction: this.paymentId,
+          refundStatus: net.nanopay.ticket.RefundStatus.REQUESTED,
+          title: 'Refund request for invoice: ' + this.id
+        });
 
         this.ticketDAO.put(refundTicket).then(ticket => {
           this.finished.pub();
