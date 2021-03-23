@@ -34,7 +34,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'ACTION_LABEL', message: 'Add account TO_CHANGE' },
+    { name: 'ACTION_LABEL', message: 'Add account' },//TODO get it from the journal
   ],
 
   properties: [
@@ -56,8 +56,8 @@ foam.CLASS({
       class: 'Function',
       name: 'code',
       value: async function(X) {
-        X.ctrl.add(net.nanopay.sme.ui.SMEModal.create({}, X)
-        .addClass('bank-account-popup').tag({
+        X.stack.push(net.nanopay.sme.ui.SMEModal.create({}, X)
+        .tag({
           class: this.config.detailView.class,
           data: (foam.lookup(this.config.of.id)).create({}, this),
           useSections: ['clientAccountInformation', 'pad'],

@@ -74,6 +74,28 @@ foam.CLASS({
     ^ .button-container {
       padding: 0 30px;
     }
+
+    .wizard {
+      display: flex;
+      flex-direction: column;
+      width: 540px;
+      max-height: 80vh;
+      overflow-y: scroll;
+    }
+    .section-container {
+      padding: 24px 24px 32px;
+      max-height: 570px;
+      overflow-y: scroll;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 84px;
+      background-color: #fafafa;
+      padding: 0 24px 0;
+    }
   `,
 
   messages: [
