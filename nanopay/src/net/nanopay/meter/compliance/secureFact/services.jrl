@@ -8,7 +8,7 @@ p({
         .setPm(true)
         .setPipelinePm(true)
         .setSeqNo(true)
-        .setInnerDAO("securefactResponseDAO")
+        .setInnerDAO(x.get("securefactResponseDAO"))
         .setDecorator(
           new foam.dao.FilteredDAO.Builder(x)
             .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse.class))
@@ -34,7 +34,7 @@ p({
         .setPm(true)
         .setPipelinePm(true)
         .setSeqNo(true)
-        .setInnerDAO("securefactResponseDAO")
+        .setInnerDAO(x.get("securefactResponseDAO"))
         .setDecorator(
           new foam.dao.FilteredDAO.Builder(x)
             .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.meter.compliance.secureFact.lev.LEVResponse.class))
