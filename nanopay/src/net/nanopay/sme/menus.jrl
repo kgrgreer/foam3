@@ -197,11 +197,20 @@ p({
 
       "primaryAction": {"class":"net.nanopay.bank.AddBankAccountAction"},
       "viewBorder":{class:"foam.u2.borders.NullBorder"},
+      "browseBorder":{class:"net.nanopay.bank.CustomBankAccountsBorder"},
+      "XXXbrowseBorder":{class:"foam.u2.borders.NullBorder"},
 
       "wizardDetailView":{class:"net.nanopay.ui.wizard.ContactWizardDetailView"},
       "detailView":{class:"net.nanopay.account.ui.BankAccountWizard"},
 
       "DAOCreateView":"true",
+      "XXXbrowseViews": [
+        {
+          "class": "foam.comics.v2.namedViews.NamedViewCollection",
+          "name": "BankAccountTableView",
+          "view": { "class":"net.nanopay.bank.BankAccountTableView" }
+        }
+      ],
 
       "menu": "mainmenu.banking2",
       "detailView":{"class":"net.nanopay.account.ui.BankAccountWizard"},
