@@ -2071,6 +2071,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.Account.DEFAULT_MSG",target:"Padrão"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.Account.SECTION_ACCOUNT_DETAILS.title",target:"Detalhes da conta"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.Account.DENOMINATION.label",target:"Moeda"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.Account.SUMMARY.label",target:"Sumário"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.approval.AgentCapabilityJunctionDAOSummaryView.SUCCESS_REMOVED",target:"Informações de integração removidas com sucesso. Aguarde o reenvio."})
 
