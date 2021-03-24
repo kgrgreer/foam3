@@ -386,6 +386,11 @@ foam.CLASS({
         if ( SafetyUtil.isEmpty(getLastName()) ) return getFirstName();
         return getFirstName() + " " + getLastName();
       `
+    },
+    function fromUser(u) {
+      var common = ['firstName', 'lastName', 'jobTitle', 'address', 'birthday'];
+      for ( let p of common ) this[p] = u[p];
+      return this;
     }
   ],
 
