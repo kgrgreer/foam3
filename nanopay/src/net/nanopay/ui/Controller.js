@@ -543,7 +543,9 @@ foam.CLASS({
     },
 
     function bannerizeTwoFactorAuth() {
-      if ( ! this.subject.user.twoFactorEnabled ) {
+      if ( this.appConfig.mode == foam.nanos.app.Mode.PRODUCTION &&
+           this.theme.twoFactorEnabled &&
+           ! this.subject.user.twoFactorEnabled ) {
         this.setBanner(this.BannerMode.NOTICE, 'Please enable Two-Factor Authentication in Personal Settings.');
       }
     },
@@ -731,7 +733,8 @@ foam.CLASS({
            description: ''
          }));
 
-        if ( this.appConfig.mode != foam.nanos.app.Mode.PRODUCTION ) {
+        if ( this.appConfig.mode != foam.nanos.app.Mode.PRODUCTION ||
+             ! this.theme.twoFactorEnabled ) {
           return true;
         } else {
           return false;
@@ -951,10 +954,7 @@ foam.CLASS({
       else {
         this.initLayout.resolve();
         this.SUPER();
-
-        if ( this.appConfig.mode == foam.nanos.app.Mode.PRODUCTION ) {
-          this.bannerizeTwoFactorAuth();
-        }
+        this.bannerizeTwoFactorAuth();
       }
     }
   ]
