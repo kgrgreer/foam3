@@ -63,6 +63,11 @@ foam.CLASS({
       name: 'results',
       section: 'responseInformation',
       order: 80
+    },
+
+    {
+      name: 'type',
+      value: 'LEV'
     }
   ],
 

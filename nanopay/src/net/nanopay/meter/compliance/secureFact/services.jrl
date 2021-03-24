@@ -11,7 +11,7 @@ p({
         .setInnerDAO(x.get("securefactResponseDAO"))
         .setDecorator(
           new foam.dao.FilteredDAO.Builder(x)
-            .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse.class))
+            .setPredicate(foam.mlang.MLang.EQ(net.nanopay.meter.compliance.secureFact.SecurefactResponse.TYPE, "SIDni"))
             .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.meter.compliance.secureFact.SecurefactResponse.getOwnClassInfo()).build())
             .build()
         )
@@ -37,7 +37,7 @@ p({
         .setInnerDAO(x.get("securefactResponseDAO"))
         .setDecorator(
           new foam.dao.FilteredDAO.Builder(x)
-            .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.meter.compliance.secureFact.lev.LEVResponse.class))
+            .setPredicate(foam.mlang.MLang.EQ(net.nanopay.meter.compliance.secureFact.SecurefactResponse.TYPE, "LEV"))
             .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.meter.compliance.secureFact.SecurefactResponse.getOwnClassInfo()).build())
             .build()
         )

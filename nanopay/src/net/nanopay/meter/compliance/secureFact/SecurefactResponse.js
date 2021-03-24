@@ -49,6 +49,10 @@ foam.CLASS({
       gridColumns: 6
     },
     {
+      class: 'String',
+      name: 'type'
+    },
+    {
       class: 'Int',
       name: 'statusCode',
       section: 'responseInformation',
