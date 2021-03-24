@@ -1,20 +1,11 @@
-
-p({
-  "class": "foam.nanos.menu.Menu",
-  "id": "accounts-support",
-  "label": "Accounts",
-  "icon":"images/intuit/accounts-24px-resting.svg",
-  "activeIcon":"images/intuit/accounts-24px-active.svg",
-  "parent": ""
-})
-
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "businesses-support",
   "label": "Businesses",
   "icon":"images/intuit/businesses-24px-resting.svg",
   "activeIcon":"images/intuit/businesses-24px-active.svg",
-  "parent": ""
+  "parent": "",
+  "order": 10
 })
 
 p({
@@ -23,7 +14,18 @@ p({
   "label": "Transactions",
   "icon":"images/intuit/transactions-24px-resting.svg",
   "activeIcon":"images/intuit/transactions-24px-active.svg",
-  "parent": ""
+  "parent": "",
+  "order": 20
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "accounts-support",
+  "label": "Accounts",
+  "icon":"images/intuit/accounts-24px-resting.svg",
+  "activeIcon":"images/intuit/accounts-24px-active.svg",
+  "parent": "",
+  "order": 30
 })
 
 p({
@@ -32,5 +34,6 @@ p({
   "label": "Users",
   "icon":"images/intuit/users-24px-resting.svg",
   "activeIcon":"images/intuit/users-24px-active.svg",
-  "parent": ""
+  "parent": "",
+  "order": 40
 })
