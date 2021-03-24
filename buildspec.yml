@@ -13,15 +13,13 @@ phases:
   pre_build:
     commands:
       - echo Entered the pre_build phase...
-      - cd $CODEBUILD_SRC_DIR
-      - apt-get update -y
-      - apt-get install -y maven
       - add-apt-repository ppa:cwchien/gradle
       - apt-get update -y
       - apt upgrade -y gradle
       - gradle --version
+      - apt-get install -y maven
       # Copy foam repository, at desired branch/commit, into place
-      - cp -rv $CODEBUILD_SRC_DIR_nanopay_forked_foam_repository/ $CODEBUILD_SRC_DIR/
+      - cp -rv $CODEBUILD_SRC_DIR_nanopay_foam/ $CODEBUILD_SRC_DIR/
       - cd $CODEBUILD_SRC_DIR
       - ./build.sh -i
       #
@@ -39,10 +37,10 @@ phases:
       - echo $CODEBUILD_SRC_DIR
       - echo $CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo $CODEBUILD_SOURCE_VERSION
-      - cd $CODEBUILD_SRC_DIR_nanopay_forked_foam_repository
-      - echo $CODEBUILD_SRC_DIR_nanopay_forked_foam_repository
-      - echo $CODEBUILD_RESOLVED_SOURCE_VERSION_nanopay_forked_foam_repository
-      - echo $CODEBUILD_SOURCE_VERSION_nanopay_forked_foam_repository
+      - cd $CODEBUILD_SRC_DIR_nanopay_foam
+      - echo $CODEBUILD_SRC_DIR_nanopay_foam
+      - echo $CODEBUILD_RESOLVED_SOURCE_VERSION_nanopay_foam
+      - echo $CODEBUILD_SOURCE_VERSION_nanopay_foam
       - cd $CODEBUILD_SRC_DIR_technology_operations_repository
       - echo $CODEBUILD_SRC_DIR_technology_operations_repository
       - echo $CODEBUILD_RESOLVED_SOURCE_VERSION_technology_operations_repository
@@ -75,7 +73,7 @@ artifacts:
     - $CODEBUILD_SRC_DIR_technology_operations_repository/codedeployAfterInstall.sh
     - $CODEBUILD_SRC_DIR_technology_operations_repository/codedeploySetHostMapping.sh
     - $CODEBUILD_SRC_DIR_technology_operations_repository/codedeploySetJAVA_OPTS.sh
-    #- $CODEBUILD_SRC_DIR_technology_operations_repository/shrc.custom
+    - $CODEBUILD_SRC_DIR_technology_operations_repository/shrc.custom
     #- $CODEBUILD_SRC_DIR_technology_operations_repository/shrc.custom.medusa.mediator
     #- $CODEBUILD_SRC_DIR_technology_operations_repository/shrc.custom.medusa.node
     - $CODEBUILD_SRC_DIR_technology_operations_repository/codedeployApplicationStart.sh
