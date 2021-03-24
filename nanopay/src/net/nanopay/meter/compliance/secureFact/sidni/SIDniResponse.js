@@ -88,10 +88,6 @@ foam.CLASS({
       name: 'additionalMatchInfo',
       section: 'responseInformation',
       order: 140
-    },
-    {
-      name: 'type',
-      value: 'SIDni'
     }
   ],
 

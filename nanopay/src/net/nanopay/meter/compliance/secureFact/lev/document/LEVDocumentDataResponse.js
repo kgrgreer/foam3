@@ -47,10 +47,6 @@ foam.CLASS({
       class: 'String',
       name: 'message',
       documentation: 'Additional message with description of the status.'
-    },
-    {
-      name: 'type',
-      value: 'LEVDocumentData'
     }
   ]
 });

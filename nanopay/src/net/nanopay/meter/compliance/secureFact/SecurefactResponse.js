@@ -50,7 +50,11 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'type'
+      name: 'type',
+      factory: function() {
+        return this.cls_.name;
+      },
+      javaFactory: `return getClass().getSimpleName();`
     },
     {
       class: 'Int',

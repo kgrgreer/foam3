@@ -25,10 +25,6 @@ foam.CLASS({
       class: 'Int',
       name: 'orderId',
       documentation: 'A unique number provided to the customer once the profile order request is submitted.'
-    },
-    {
-      name: 'type',
-      value: 'LEVDocumentOrder'
     }
   ]
 });
