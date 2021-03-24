@@ -47,7 +47,6 @@ p({
             .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(SecurefactResponse.getOwnClassInfo()).build())
             .build()
         )
-        .setJournalName("securefactLEVResponses")
         .build(); 
     """,
     "client":"""
