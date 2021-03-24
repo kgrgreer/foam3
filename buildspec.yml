@@ -2,69 +2,48 @@ version: 0.2
 
 phases:
   install:
-    #If you use the Ubuntu standard image 2.0 or later, you must specify runtime-versions.
-    #If you specify runtime-versions and use an image other than Ubuntu standard image 2.0, the build fails.
+    #These depende on 'standard' Ubuntu image, v5.0
     runtime-versions:
       java: corretto11
       nodejs: 12
     commands:
-      - echo Entered the install phase...
+      - echo phase install...
 
   pre_build:
     commands:
-      - echo Entered the pre_build phase...
-      - cd $CODEBUILD_SRC_DIR
-      - apt-get update -y
-      - apt-get install -y maven
+      - echo phase pre_build...
       - add-apt-repository ppa:cwchien/gradle
       - apt-get update -y
       - apt upgrade -y gradle
       - gradle --version
+      - apt-get install -y maven
       # Copy foam repository, at desired branch/commit, into place
-      - cp -rv $CODEBUILD_SRC_DIR_nanopay_forked_foam_repository/ $CODEBUILD_SRC_DIR/
+      - cp -rv $CODEBUILD_SRC_DIR_nanopay_foam/ $CODEBUILD_SRC_DIR/
       - cd $CODEBUILD_SRC_DIR
       - ./build.sh -i
-      #
-      #uncomment the tests below if you want to use AWS Codebuild in stead of CircleCI in future (enable the appropriate webhooks in the source section via the console)
-      #- echo test Connect
-      #- echo Add host file entry for ablii, liquid unit tests to pass
-      #- echo "127.0.0.1  ablii" >> /etc/hosts
-      #- echo "127.0.0.1  liquid" >> /etc/hosts
-      #- ./build.sh -ct
-      
+
   build:
     commands:
-      - echo Entered the build phase...
+      - echo phase build...
       - cd $CODEBUILD_SRC_DIR
       - echo $CODEBUILD_SRC_DIR
       - echo $CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo $CODEBUILD_SOURCE_VERSION
-      - cd $CODEBUILD_SRC_DIR_nanopay_forked_foam_repository
-      - echo $CODEBUILD_SRC_DIR_nanopay_forked_foam_repository
-      - echo $CODEBUILD_RESOLVED_SOURCE_VERSION_nanopay_forked_foam_repository
-      - echo $CODEBUILD_SOURCE_VERSION_nanopay_forked_foam_repository
+      - cd $CODEBUILD_SRC_DIR_nanopay_foam
+      - echo $CODEBUILD_SRC_DIR_nanopay_foam
+      - echo $CODEBUILD_RESOLVED_SOURCE_VERSION_nanopay_foam
+      - echo $CODEBUILD_SOURCE_VERSION_nanopay_foam
       - cd $CODEBUILD_SRC_DIR_technology_operations_repository
       - echo $CODEBUILD_SRC_DIR_technology_operations_repository
       - echo $CODEBUILD_RESOLVED_SOURCE_VERSION_technology_operations_repository
       - echo $CODEBUILD_SOURCE_VERSION_technology_operations_repository
       - cd $CODEBUILD_SRC_DIR
-      - echo journals $BUILD_JOURNALS
       - ./build.sh -uckJ$BUILD_JOURNALS
-      
-  #post_build:
-    #commands:
-      # - command
-      # - command
-      
-#reports:
-  #report-name-or-arn:
-    #files:
-      # - location
-      # - location
-    #base-directory: location
-    #discard-paths: yes
-    #file-format: JunitXml | CucumberJson
-    
+
+  post_build:
+    commands:
+      - echo phase post_build...
+
 artifacts:
   files:
     - $CODEBUILD_SRC_DIR/gradle.properties
@@ -75,14 +54,6 @@ artifacts:
     - $CODEBUILD_SRC_DIR_technology_operations_repository/codedeployAfterInstall.sh
     - $CODEBUILD_SRC_DIR_technology_operations_repository/codedeploySetHostMapping.sh
     - $CODEBUILD_SRC_DIR_technology_operations_repository/codedeploySetJAVA_OPTS.sh
-    #- $CODEBUILD_SRC_DIR_technology_operations_repository/shrc.custom
-    #- $CODEBUILD_SRC_DIR_technology_operations_repository/shrc.custom.medusa.mediator
-    #- $CODEBUILD_SRC_DIR_technology_operations_repository/shrc.custom.medusa.node
+    - $CODEBUILD_SRC_DIR_technology_operations_repository/shrc.custom
     - $CODEBUILD_SRC_DIR_technology_operations_repository/codedeployApplicationStart.sh
-  #name: $(date +%Y-%m-%d)
   discard-paths: yes
-  #base-directory: location
-  
-#cache:
-  #paths:
-    # - paths
