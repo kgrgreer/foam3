@@ -452,10 +452,10 @@ p({
   "id":"bf6a49d5-4027-4dac-a269-4d3ed070609e-4",
   "name":"International payments",
   "description":"International payments from Brazil",
-  "requirementViewTitle":"Register the bank details of your company for receipts from abroad and the bank details of your beneficiaries for sending abroad. We use payment corridors that streamline your operations, you will notice that much information needed to make conventional payments will not be necessary.",
+  "requirementViewTitle":"Register your business details of your company. We use payment corridors to streamline your operations, you will notice that much of the information needed to make conventional payments will not be necessary, once you are setup.",
   "icon":"/images/capabilityIcons/BrazilCap.svg",
   "version":"0",
-  "visibilityPredicate":  { 
+  "visibilityPredicate":  {
     "class": "foam.nanos.crunch.predicate.CapabilityGranted",
     "capabilityId": "777af38a-8225-87c8-dfdf-eeb15f71215f-123",
     "subjectFromUCJ": false
@@ -624,6 +624,7 @@ p({
   "requirementViewTitle":"You will be asked to select a nature code for this transaction and provide the required document.",
   "wizardConfig": {
     "class": "foam.u2.crunch.EasyCrunchWizard",
+    "incrementalWizard": true,
     "skipMode":1
   },
   "enabled":true
@@ -632,7 +633,7 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"1d72f804-4019-11eb-b378-0242ac130002",
-  "name":"What is the Expected Boarding Date?",
+  "name":"What is the expected date of shipment?",
   "description":"Expect Boarding Date",
   "of":"net.nanopay.country.br.ExpectedBoardingDate",
   "version":"0",

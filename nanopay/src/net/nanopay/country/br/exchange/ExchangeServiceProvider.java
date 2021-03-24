@@ -503,10 +503,14 @@ public class ExchangeServiceProvider implements ExchangeService {
     for ( CapabilityJunctionPayload capablePayload : capablePayloadLst ) {
       DAO capabilityDAO = (DAO) x.get("capabilityDAO");
       Capability cap = (Capability) capabilityDAO.find(capablePayload.getCapability());
-      if ( cap instanceof NatureCode ) {
+      if ( cap instanceof NatureCode && capablePayload.getData() instanceof NatureCodeData ) {
         NatureCode natureCode = (NatureCode) cap;
+        NatureCodeData natureCodeData = (NatureCodeData) capablePayload.getData();
         str.append(natureCode.getOperationType());
-        str.append(capablePayload.getData().toString());
+        str.append(natureCodeData.getPayerType());
+        str.append(natureCodeData.getApprovalType());
+        str.append(natureCodeData.getPayeeType());
+        str.append(natureCodeData.getGroupCode());
         break;
       }
     }

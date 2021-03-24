@@ -389,10 +389,11 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isMenuOpen',
       factory: function() {
-        if ( window.localStorage.getItem('isMenuOpen') === 'false' )
-          return false;
-        else
-          return true;
+        return window.localStorage['isMenuOpen'] === 'true'
+         || ( window.localStorage['isMenuOpen'] = false );
+      },
+      postSet: function(_, n) {
+        window.localStorage['isMenuOpen'] = n;
       }
     },
     {

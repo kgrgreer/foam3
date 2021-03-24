@@ -149,7 +149,6 @@ foam.CLASS({
         .add(this.LoadCapabilitiesAgent)
         .add(this.CreateWizardletsAgent)
         .add(this.FilterWizardletsAgent)
-        .add(this.LoadTopConfig)
         .add(this.LoadWizardletsAgent)
         .add(this.AutoSaveWizardletsAgent)
         .add(this.StepWizardAgent, {

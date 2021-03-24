@@ -1372,7 +1372,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.B
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_TYPE.label",target:"Tipo de conta"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_TYPE.view.placeholder",target:"Por favor selecione"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_OWNER_TYPE.label",target:"Tipo de Conta"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_OWNER_TYPE.label",target:"Titularidade"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_OWNER_TYPE.view.placeholder",target:"Por favor selecione"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.IBAN.label",target:"Número de conta bancária internacional (IBAN)"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.TYPE.label",target:"Tipo"})
@@ -1532,7 +1532,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.CON
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.BUSINESS_ID.label",target:"businessId pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.SIGN_UP_STATUS.documentation",target:"Rastreia o status de registro de um beneficiário em relação a\n        se uma pessoa, ou um usuário real, pode entrar ou não.\n        Pendente, Pronto e Conectado\n"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.SIGN_UP_STATUS.label",target:"A posição"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.SIGN_UP_STATUS.label",target:"Status"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.CONFIRM.documentation",target:"Verdadeiro se o usuário confirmar seu relacionamento com o beneficiário."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.BUSINESS_ID.documentation",target:"Um identificador exclusivo para a empresa associada ao beneficiário."})
 
@@ -2071,6 +2071,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.Account.DEFAULT_MSG",target:"Padrão"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.Account.SECTION_ACCOUNT_DETAILS.title",target:"Detalhes da conta"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.Account.DENOMINATION.label",target:"Moeda"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.Account.SUMMARY.label",target:"Sumário"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.approval.AgentCapabilityJunctionDAOSummaryView.SUCCESS_REMOVED",target:"Informações de integração removidas com sucesso. Aguarde o reenvio."})
 
@@ -3192,10 +3193,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessLastRegistrationDateData.SECTION_BUSINESS_LAST_REGISTRATION_DATE_SECTION.title",target:"Data da última Alteração Contratual ou Ata exigida"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessLastRegistrationDateData.BUSINESS_LAST_REGISTRATION_DATE.label",target:"Insira a data da última Alteração Contratual ou Ata"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessLastRegistrationDateData.BUSINESS_LAST_REGISTRATION_DATE.documentation",target:"Data do último registro comercial."})
-
-p({class:"foam.i18n.Locale",locale:"pt","source":"49b77f74-124e-41a5-9c0c-da3e86102d0b.name","target":"Previsão de Embarque"})
-p({class:"foam.i18n.Locale",locale:"pt","source":"ed4ca3a0-3c2a-4161-93db-48fe963f1729.name","target":"Previsão de Embarque  - draw back"})
-p({class:"foam.i18n.Locale",locale:"pt","source":"eecb85f8-66d4-43b9-8c26-a187a5a00b7a.name","target":"Previsão de Embarque  - antecipado"})
 
 p({class:"foam.i18n.Locale",locale:"pt","source":"1d72f804-4019-11eb-b378-0242ac130002.name","target":"Qual é a data prevista de embarque?"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"1d72f804-4019-11eb-b378-0242ac130002.description","target":"Data prevista de embarque"})
