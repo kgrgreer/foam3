@@ -18,7 +18,8 @@ p({
             .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(SecurefactResponse.getOwnClassInfo()).build())
             .build()
         )
-        .setName("securefactSIDni")
+        .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+        .setJournalName("securefactSIDniResponses")
         .build(); 
     """,
     "client":"""
@@ -47,7 +48,8 @@ p({
             .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(SecurefactResponse.getOwnClassInfo()).build())
             .build()
         )
-        .setName("securefactLEV")
+        .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+        .setJournalName("securefactLEVResponses")
         .build(); 
     """,
     "client":"""
@@ -66,14 +68,15 @@ p({
 
     mdao = new foam.dao.MDAO(SecurefactResponse.getOwnClassInfo());
     mdao.addIndex(new foam.core.PropertyInfo[] {SecurefactResponse.TYPE});
-    
+
     dao = new foam.dao.EasyDAO.Builder(x)
         .setOf(SecurefactResponse.getOwnClassInfo())
         .setPm(true)
         .setPipelinePm(true)
         .setSeqNo(true)
         .setMdao(mdao)
-        .setName("securefactResponse")
+        .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+        .setJournalName("securefactResponses")
         .build();
     return dao;
   """,
