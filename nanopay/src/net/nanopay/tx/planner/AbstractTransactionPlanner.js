@@ -426,7 +426,7 @@ foam.CLASS({
           if ( ( ! (
             ( (li instanceof CreditLineItem) && (! (li instanceof InvoicedCreditLineItem)) ) ||
             ( (li instanceof FeeLineItem) && (! (li instanceof InvoicedFeeLineItem)) )
-          )) && (! ( SafetyUtil.isEmpty(li.getSourceAccount()) ) ) ) {
+          ))) {
             continue;
           }
           Account acc = null;
