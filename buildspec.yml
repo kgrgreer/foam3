@@ -46,7 +46,6 @@ phases:
       - echo $CODEBUILD_RESOLVED_SOURCE_VERSION_technology_operations_repository
       - echo $CODEBUILD_SOURCE_VERSION_technology_operations_repository
       - cd $CODEBUILD_SRC_DIR
-      - echo journals $BUILD_JOURNALS
       - ./build.sh -uckJ$BUILD_JOURNALS
       
   #post_build:
