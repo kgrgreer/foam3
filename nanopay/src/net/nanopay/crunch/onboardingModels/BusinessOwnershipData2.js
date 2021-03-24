@@ -48,17 +48,16 @@ foam.CLASS({
       documentation: `this property converts SigningOfficer Users to BeneficialOwners,
       as a way of mini pre-processing for owner selections.`,
       factory: function() {
-        console.log('--', this);
         var self = this;
         var x = this.__subContext__;
-        console.log('--x', this.__subContext__);
         var daoSpec = { of: this.ownerClass };
         var adao = foam.dao.ArrayDAO.create(daoSpec);
         var pdao = foam.dao.PromisedDAO.create(daoSpec);
 
+        var index = 0;
         var sinkFn = so => {
           var obj = this.ownerClass.create({
-            id: ++self.index,
+            id: ++index,
             business: this.businessId,
             mode: 'percent'
           }, x).fromUser(so);
@@ -105,8 +104,6 @@ foam.CLASS({
       of: 'net.nanopay.model.BeneficialOwner',
       autoValidate: true,
       view: function (_, X) {
-        console.log('thtisthis', X.data);
-        X.data.owners$.sub(() => console.log('A'));
         var otherChoiceDAO = foam.dao.MDAO.create({ of: X.data.ownerClass });
         var obj = X.data.ownerClass.create({
           business: X.data.businessId
@@ -178,6 +175,7 @@ foam.CLASS({
 
   listeners: [
     function updateOwnersListeners() {
+      this.updateTotalOwnership();
       this.ownerPropertySub.detach();
       this.ownerPropertySub = foam.core.FObject.create();
       var sub = this.ownerPropertySub;
@@ -232,9 +230,6 @@ foam.CLASS({
   ],
 
   methods: [
-    function init() {
-      console.log('testing obj', this);
-    },
     function initE() {
       var self = this;
       this.start(this.CardBorder)
