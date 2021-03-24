@@ -4,7 +4,7 @@ p({
     "serve":true,
     "serviceScript":"""
       return new foam.dao.EasyDAO.Builder(x)
-        .setOf(net.nanopay.meter.compliance.secureFact.SecurefactResponse.getOwnClassInfo())
+        .setOf(net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse.getOwnClassInfo())
         .setPm(true)
         .setPipelinePm(true)
         .setSeqNo(true)
@@ -20,7 +20,7 @@ p({
     """,
     "client":"""
         {
-            "of":"net.nanopay.meter.compliance.secureFact.SecurefactResponse"
+            "of":"net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse"
         }
     """
 })
@@ -30,7 +30,7 @@ p({
     "serve":true,
     "serviceScript":"""
       return new foam.dao.EasyDAO.Builder(x)
-        .setOf(net.nanopay.meter.compliance.secureFact.SecurefactResponse.getOwnClassInfo())
+        .setOf(net.nanopay.meter.compliance.secureFact.lev.LEVResponse.getOwnClassInfo())
         .setPm(true)
         .setPipelinePm(true)
         .setSeqNo(true)
@@ -46,7 +46,7 @@ p({
     """,
     "client":"""
         {
-            "of":"net.nanopay.meter.compliance.secureFact.SecurefactResponse"
+            "of":"net.nanopay.meter.compliance.secureFact.lev.LEVResponse"
         }
     """
 })
