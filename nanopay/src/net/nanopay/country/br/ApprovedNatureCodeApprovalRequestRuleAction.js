@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'ApprovedNatureCodeApprovalRequestRuleAction',
 
   documentation: `
-    To add NatureCodeData to the payment transaction (stored in Invoice.paymentId) NatureCodeLineItem 
+    To add NatureCodeData to the payment transaction (stored in Invoice.paymentId) NatureCodeLineItem
     and to the related approvable for the capablePayload of the NatureCode which gets processed
     to the Capable object in CapablePayloadApprovableRuleAction
   `,
@@ -51,7 +51,7 @@ foam.CLASS({
         NatureCodeApprovalRequest ncarObj = (NatureCodeApprovalRequest) obj;
 
         agency.submit(x, new ContextAwareAgent() {
-          
+
           @Override
           public void execute(X x) {
             DAO approvalRequestDAO = (DAO) getX().get("approvalRequestDAO");

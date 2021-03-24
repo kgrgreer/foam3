@@ -646,6 +646,26 @@ foam.CLASS({
       includeInDigest: true
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedByAgent',
+      section: 'transactionInformation',
+      order: 180,
+      gridColumns: 6,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
+      tableCellFormatter: function(value, obj) {
+        obj.userDAO.find(value).then(function(user) {
+          if ( user ) {
+            if ( user.email ) {
+              this.add(user.email);
+            }
+          }
+        }.bind(this));
+      },
+      includeInDigest: true
+    },
+    {
       name: 'lastStatusChange',
       class: 'DateTime',
       includeInDigest: false,

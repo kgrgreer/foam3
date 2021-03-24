@@ -25,7 +25,9 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'foam.nanos.crunch.AgentCapabilityJunction',
     'foam.nanos.crunch.UserCapabilityJunction',
     'net.nanopay.fx.afex.AFEXServiceProvider',
     'net.nanopay.model.Business'
@@ -38,8 +40,9 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
-            User user = (User) ucj.findSourceId(x);
+            DAO userDAO = (DAO) x.get("localUserDAO");
+            Long id = obj instanceof AgentCapabilityJunction ? ((AgentCapabilityJunction) obj).getEffectiveUser() : ((UserCapabilityJunction) obj).getSourceId();
+            User user = (User) userDAO.find(id);
             Business business;
 
             try {

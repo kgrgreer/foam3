@@ -149,20 +149,19 @@ foam.CLASS({
         .add(this.LoadCapabilitiesAgent)
         .add(this.CreateWizardletsAgent)
         .add(this.FilterWizardletsAgent)
-        .add(this.LoadTopConfig)
         .add(this.LoadWizardletsAgent)
         .add(this.AutoSaveWizardletsAgent)
         .add(this.StepWizardAgent, {
           config: foam.u2.wizard.StepWizardConfig.create({
             allowBacktracking: false,
-            allowSkipping: false
-          }),
-          view: {
-            class: 'foam.u2.wizard.ScrollingStepWizardView',
-            fullScreen: true,
-            hideX: true,
-            backDisabled: true
-          }
+            allowSkipping: false,
+            wizardView: {
+              class: 'foam.u2.wizard.ScrollingStepWizardView',
+              fullScreen: true,
+              hideX: true,
+              backDisabled: true
+            }
+          })
         })
         .add(this.PutFinalJunctionsAgent)
         .execute().then(() => {

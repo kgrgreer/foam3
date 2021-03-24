@@ -211,6 +211,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/IsDefaultRule' },
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
+  { name: 'net/nanopay/approval/AgentCapabilityJunctionDAOSummaryView' },
   { name: 'net/nanopay/bank/BankAccountValidationService' },
   { name: 'net/nanopay/bank/MockBankAccountValidationService' },
 
@@ -225,11 +226,13 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/NanopayUserAndGroupAuthService' },
   { name: 'net/nanopay/auth/OneTimeAuthenticationTokenService' },
   { name: 'net/nanopay/auth/email/EmailTokenService' },
-  { name: 'net/nanopay/auth/email/PreventDuplicateEmailDAO' },
   { name: 'net/nanopay/auth/email/EmailWhitelistEntry' },
   { name: 'net/nanopay/auth/email/DoNotSolicit' },
   { name: 'net/nanopay/auth/ExternalInvoiceTokenService' },
   { name: 'net/nanopay/auth/ruler/LogoutUserAction' },
+  { name: 'net/nanopay/auth/ruler/PreventDuplicateEmailAction' },
+  { name: 'net/nanopay/auth/ruler/PreventDuplicateUsernameAction' },
+  { name: 'net/nanopay/auth/ruler/SpidLimitedPermissionedUserRule' },
   { name: 'net/nanopay/auth/ruler/predicate/IsUserInGroups' },
   { name: 'net/nanopay/auth/sms/PhoneVerificationTokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/UserDetailView', flags: ['web'] },
@@ -240,6 +243,8 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/BusinessAgentAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/CheckCurrencyRule' },
   { name: 'net/nanopay/auth/ServiceProviderRefinement' },
+  { name: 'net/nanopay/auth/SwitchUserRowView', flags: ['web'] },
+  { name: 'net/nanopay/auth/SwitchUserView', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardOverview', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardSubView', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/ContactWizardDetailView', flags: ['web'] },
@@ -1839,6 +1844,7 @@ FOAM_FILES([
 
   // wizardlets
   { name: 'net/nanopay/crunch/wizardlet/RefreshWizardlet' },
+  { name: 'net/nanopay/crunch/wizardlet/RerenderWizardlet' },
   { name: 'net/nanopay/crunch/wizardlet/SigningOfficerQuestionWizardlet' },
   { name: 'net/nanopay/crunch/wizardlet/UnlockPaymentsWizardConfig' },
 

@@ -147,7 +147,14 @@ p({
       "editPredicate":{"class":"foam.mlang.predicate.False"},
       "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
-  }
+  },
+  "registrations":[
+    {
+      "class":"foam.nanos.menu.XRegistration",
+      "targetName":"foam.nanos.crunch.AgentCapabilityJunctionDAOSummaryView",
+      "className":"net.nanopay.approval.AgentCapabilityJunctionDAOSummaryView"
+    }
+  ]
 })
 
 // Business Rules

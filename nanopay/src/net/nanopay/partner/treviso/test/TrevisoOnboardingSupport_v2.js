@@ -120,7 +120,7 @@ foam.CLASS({
         var ucj = await this.crunchService.getJunction(x, id);
         // note: !ucj not needed (anywhere)
         if ( ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          let bHolder = foam.u2.wizard.data.BooleanHolder.create({ value: true });
+          let bHolder = foam.core.BooleanHolder.create({ value: true });
           ucj = await this.crunchService.updateJunction(x, id, bHolder, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
         }
         return ucj;

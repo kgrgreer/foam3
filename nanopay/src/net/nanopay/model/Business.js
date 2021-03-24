@@ -422,6 +422,12 @@ foam.CLASS({
       gridColumns: 6
     },
     {
+      name: 'lastModifiedByAgent',
+      section: 'businessInformation',
+      order: 260,
+      gridColumns: 6
+    },
+    {
       name: 'email',
       section: 'businessInformation',
       order: 270,

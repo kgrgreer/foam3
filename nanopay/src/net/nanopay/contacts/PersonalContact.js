@@ -194,7 +194,7 @@ foam.CLASS({
       includeInDigest: true,
       visibility: 'HIDDEN',
       label: 'Status',
-      tableWidth: 170,
+      tableWidth: 100,
       expression: function(bankAccount) {
         return bankAccount ? net.nanopay.contacts.ContactStatus.READY : net.nanopay.contacts.ContactStatus.PENDING;
       },

@@ -736,6 +736,9 @@ var classes = [
   'net.nanopay.auth.OneTimeAuthenticationTokenService',
   'net.nanopay.auth.PublicBusinessInfo',
   'net.nanopay.auth.ruler.LogoutUserAction',
+  'net.nanopay.auth.ruler.PreventDuplicateEmailAction',
+  'net.nanopay.auth.ruler.PreventDuplicateUsernameAction',
+  'net.nanopay.auth.ruler.SpidLimitedPermissionedUserRule',
   'net.nanopay.auth.ruler.predicate.IsUserInGroups',
   'net.nanopay.security.auth.IPLoggingAuthService',
   'net.nanopay.security.auth.LoginAttemptAuthService',
@@ -839,7 +842,6 @@ var classes = [
   'net.nanopay.invoice.model.InvoiceTest',
   'net.nanopay.auth.BusinessAgentAuthService',
   'net.nanopay.auth.email.DoNotSolicit',
-  'net.nanopay.auth.email.PreventDuplicateEmailDAO',
   'net.nanopay.auth.email.EmailWhitelistEntry',
 
   'net.nanopay.security.test.HashingJDAOTestModel',

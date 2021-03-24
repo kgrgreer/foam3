@@ -340,6 +340,13 @@ foam.CLASS({
         who last modified the Invoice.`,
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedByAgent',
+      includeInDigest: true,
+      section: 'invoiceInformation',
+    },
+    {
       class: 'DateTime',
       name: 'lastDateUpdated',
       includeInDigest: true,
