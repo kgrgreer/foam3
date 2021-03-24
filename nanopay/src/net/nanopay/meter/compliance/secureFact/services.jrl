@@ -3,16 +3,19 @@ p({
     "name":"securefactSIDniDAO",
     "serve":true,
     "serviceScript":"""
+      import net.nanopay.meter.compliance.secureFact.SecurefactResponse;
+      import net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse;
+
       return new foam.dao.EasyDAO.Builder(x)
-        .setOf(net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse.getOwnClassInfo())
+        .setOf(SIDniResponse.getOwnClassInfo())
         .setPm(true)
         .setPipelinePm(true)
         .setSeqNo(true)
         .setInnerDAO(x.get("securefactResponseDAO"))
         .setDecorator(
           new foam.dao.FilteredDAO.Builder(x)
-            .setPredicate(foam.mlang.MLang.EQ(net.nanopay.meter.compliance.secureFact.SecurefactResponse.TYPE, net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse.class.getSimpleName()))
-            .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.meter.compliance.secureFact.SecurefactResponse.getOwnClassInfo()).build())
+            .setPredicate(foam.mlang.MLang.EQ(SecurefactResponse.TYPE, SIDniResponse.class.getSimpleName()))
+            .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(SecurefactResponse.getOwnClassInfo()).build())
             .build()
         )
         .setName("securefactSIDni")
@@ -29,16 +32,19 @@ p({
     "name":"securefactLEVDAO",
     "serve":true,
     "serviceScript":"""
+      import net.nanopay.meter.compliance.secureFact.SecurefactResponse;
+      import net.nanopay.meter.compliance.secureFact.lev.LEVResponse;
+
       return new foam.dao.EasyDAO.Builder(x)
-        .setOf(net.nanopay.meter.compliance.secureFact.lev.LEVResponse.getOwnClassInfo())
+        .setOf(LEVResponse.getOwnClassInfo())
         .setPm(true)
         .setPipelinePm(true)
         .setSeqNo(true)
         .setInnerDAO(x.get("securefactResponseDAO"))
         .setDecorator(
           new foam.dao.FilteredDAO.Builder(x)
-            .setPredicate(foam.mlang.MLang.EQ(net.nanopay.meter.compliance.secureFact.SecurefactResponse.TYPE, net.nanopay.meter.compliance.secureFact.lev.LEVResponse.class.getSimpleName()))
-            .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.meter.compliance.secureFact.SecurefactResponse.getOwnClassInfo()).build())
+            .setPredicate(foam.mlang.MLang.EQ(SecurefactResponse.TYPE, LEVResponse.class.getSimpleName()))
+            .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(SecurefactResponse.getOwnClassInfo()).build())
             .build()
         )
         .setName("securefactLEV")
@@ -56,15 +62,17 @@ p({
   "name":"securefactResponseDAO",
   "serve":true,
   "serviceScript":"""
-    mdao = new foam.dao.MDAO(net.nanopay.meter.compliance.secureFact.SecurefactResponse.getOwnClassInfo());
-    inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "securefactResponseDAO", "true".equals(System.getProperty("CLUSTER")));
+    import net.nanopay.meter.compliance.secureFact.SecurefactResponse;
+
+    mdao = new foam.dao.MDAO(SecurefactResponse.getOwnClassInfo());
+    mdao.addIndex(new foam.core.PropertyInfo[] {SecurefactResponse.TYPE});
+    
     dao = new foam.dao.EasyDAO.Builder(x)
-        .setOf(net.nanopay.meter.compliance.secureFact.SecurefactResponse.getOwnClassInfo())
+        .setOf(SecurefactResponse.getOwnClassInfo())
         .setPm(true)
         .setPipelinePm(true)
         .setSeqNo(true)
         .setMdao(mdao)
-        .setInnerDAO(inner)
         .setName("securefactResponse")
         .build();
     return dao;
