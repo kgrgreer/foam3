@@ -1721,7 +1721,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/BusinessInformationData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessTypeAndSector' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessOwnershipData' },
-  { name: 'net/nanopay/crunch/onboardingModels/BusinessOwnershipData_v2' },
+  { name: 'net/nanopay/crunch/onboardingModels/BusinessOwnershipData2' },
   { name: 'net/nanopay/crunch/onboardingModels/IsPubliclyTradedQuestion' },
   { name: 'net/nanopay/crunch/onboardingModels/TransactionDetailsData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessDirectorsData' },
