@@ -118,6 +118,7 @@ foam.CLASS({
           class: 'foam.u2.view.FObjectArrayView',
           of: X.data.ownerClass,
           defaultNewItem: X.data.ownerClass.create({ mode: 'blank' }, X),
+          enableAdding$: X.data.owners$.map(a => a.length < 4),
           valueView: {
             class: 'net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView',
 
