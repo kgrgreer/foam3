@@ -39,7 +39,7 @@ public class TransactionSummaryAgent implements ContextAgent {
   @Override
   public void execute(X x) {
     DAO summaryTransactionDAO = (DAO) x.get("summaryTransactionDAO");
-    DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+    DAO transactionDAO = (DAO) x.get("tableViewTransactionDAO");
     Date lastRun = getLastRun(x);
     
     if ( lastRun != null ) {
@@ -68,7 +68,9 @@ public class TransactionSummaryAgent implements ContextAgent {
         .setId(txn.getId())
         .setCurrency(txn.getSourceCurrency())
         .setAmount(txn.getAmount())
-        .setSummary(chainSummary.getSummary())
+        .setPayer(txn.getPayer())
+        .setPayee(txn.getPayee())
+        .setSummary(txn.summarize(x))
         .setStatus(chainSummary.getStatus())
         .setCategory(chainSummary.getCategory())
         .setErrorCode(chainSummary.getErrorCode())
@@ -81,7 +83,7 @@ public class TransactionSummaryAgent implements ContextAgent {
   }
 
   public List<Transaction> setupTxnListFromSet(X x, HashSet<String> txnIdSet) {
-    DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+    DAO transactionDAO = (DAO) x.get("tableViewTransactionDAO");
     List<Transaction> txnList = new ArrayList<>();
     for ( String id : txnIdSet ) {
       Transaction txn = (Transaction) transactionDAO.find(id);

@@ -20,6 +20,16 @@ p({
 
 p({
   "class": "foam.nanos.menu.Menu",
+  "id": "transactions-summary",
+  "label": "Transactions",
+  "icon":"images/intuit/transactions-24px-resting.svg",
+  "activeIcon":"images/intuit/transactions-24px-active.svg",
+  "parent": "",
+  "order": 25
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
   "id": "accounts-support",
   "label": "Accounts",
   "icon":"images/intuit/accounts-24px-resting.svg",

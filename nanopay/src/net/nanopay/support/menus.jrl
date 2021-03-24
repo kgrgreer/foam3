@@ -129,6 +129,40 @@ p({
 })
 
 p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"transactions-summary",
+  "label":"Transactions",
+  "icon":"images/transactions-24px-resting.svg",
+  "activeIcon":"images/transactions-24px-active.svg",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"intuitTransactionSummaryDAO",
+      "browseTitle": "Transactions",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"},
+      "filterExportPredicate": {
+        "class": "foam.mlang.predicate.Or",
+        "args": [
+          {
+            "class": "foam.mlang.predicate.Eq",
+            "arg1": { "class": "__Property__", "forClass_": "foam.nanos.export.ExportDriverRegistry", "name": "id" },
+            "arg2": { "class": "foam.mlang.Constant", "value": "CSV" }
+          },
+          {
+            "class": "foam.mlang.predicate.Eq",
+            "arg1": { "class": "__Property__", "forClass_": "foam.nanos.export.ExportDriverRegistry", "name": "id" },
+            "arg2": { "class": "foam.mlang.Constant", "value": "JSON" }
+          }
+        ]
+      }
+    }
+  }
+})
+
+p({
   "class": "foam.nanos.menu.Menu",
   "id": "users-support",
   "label": "Users (Support)",
