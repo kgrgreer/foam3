@@ -260,7 +260,23 @@ foam.CLASS({
               showTitle: false
             }, { data$: self.data$ })
         }))
-    }
+    },
+    {
+      name: 'validate',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      type: 'Void',
+      javaThrows: ['IllegalStateException'],
+      javaCode: `
+        for ( BeneficialOwner bo : getOwners() ) {
+          bo.validate(x);
+        }
+        FObject.super.validate(x);
+      `
+    },
   ]
 
 });
