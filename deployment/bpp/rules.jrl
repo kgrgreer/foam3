@@ -2,7 +2,10 @@ p({
   "class":"net.nanopay.tx.planner.IntermediaryDestinationAccountSplitPlanner",
   "id":"119fa381-d2a2-4369-b242-1dc8e2163bb9-bpp",
   "intermediaryAccountId":{
-    "USD":"35931861-7dd4-4ddb-b3a0-5d091cc82fcf-bpp"
+    "USD":"35931861-7dd4-4ddb-b3a0-5d091cc82fcf-bpp",
+    "GBP":"c1a4ac13-0046-4d12-b4e1-c14d32e69d94-bpp",
+    "EUR":"30724107-f0c9-49ef-a3c2-460b77e3dc1e-bpp",
+    "CAD":"c3d0b7b5-cd32-439e-b3bc-63c9f456ec80-bpp"
   },
   "priority":90,
   "ruleGroup":"BePayPlanner",
