@@ -58,10 +58,10 @@ foam.CLASS({
         String group = user.getSpid() + "-fraud-ops";
 
         boolean autoValidated = true;
+        int i = 0;
         for ( BeneficialOwner owner : data.getOwners() ) {
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           try {
-            owner = (BeneficialOwner) data.getProperty("owner"+i);
             status = checkOwnerCompliance(x, owner);
           } catch (Exception e) {
             status = ComplianceValidationStatus.PENDING;
@@ -90,6 +90,7 @@ foam.CLASS({
               }
             }, "Beneficial Owner Sanction Validator");
           }
+          i++;
         }
         if ( autoValidated ) {
           X userX = ruler.getX().put("subject", ucj.getSubject(x));
