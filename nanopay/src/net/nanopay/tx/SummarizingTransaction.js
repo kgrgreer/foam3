@@ -35,6 +35,14 @@ foam.INTERFACE({
     {
       name: 'getChainSummary',
       type: 'net.nanopay.tx.ChainSummary'
+    },
+    {
+      documentation: 'Returns childrens status.',
+      name: 'calculateTransients',
+      args: [
+      { name: 'x', type: 'Context' },
+      { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
     }
   ]
 });

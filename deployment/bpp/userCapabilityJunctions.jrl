@@ -11,6 +11,7 @@ p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2025-bppCorridorCapabili
 p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2025-bppPlannerCapability",sourceId:2025,targetId:"bppPlannerCapability",status:1})
 p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2025-bpp-tx-reason-codes",sourceId:2025,targetId:"bpp-tx-reason-codes",status:1})
 p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2025-bpp-tx-fees",sourceId:2025,targetId:"bpp-tx-fees",status:1})
+p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2025-nanopay.estimationaccount",sourceId:2025,targetId:"nanopay.estimationaccount",status:1})
 
 // fraudops-bpp
 p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2027-bpp",sourceId:2027,targetId:"bpp",status:1})
@@ -18,10 +19,3 @@ p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2027-bppCorridorCapabili
 p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2027-bppPlannerCapability",sourceId:2027,targetId:"bppPlannerCapability",status:1})
 p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2027-bpp-tx-reason-codes",sourceId:2027,targetId:"bpp-tx-reason-codes",status:1})
 p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2027-bpp-tx-fees",sourceId:2027,targetId:"bpp-tx-fees",status:1})
-
-
-// Allow bepay users to access bpp data
-p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2021-bpp","sourceId":2021,"targetId":"bpp","status":1})
-p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2022-bpp","sourceId":2022,"targetId":"bpp","status":1})
-p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2023-bpp","sourceId":2023,"targetId":"bpp","status":1})
-p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2026-bpp","sourceId":2026,"targetId":"bpp","status":1})

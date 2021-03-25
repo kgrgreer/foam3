@@ -30,6 +30,7 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.model.BusinessDirector',
+    'java.util.Arrays'
   ],
 
   messages: [
@@ -107,14 +108,12 @@ foam.CLASS({
         return businessTypeId === 3 || businessTypeId === 5 || businessTypeId === 6 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validateObj: function(businessTypeId, businessDirectors, businessDirectors$errors) {
-        if ( [0, 1, 2, 4, 7].includes(businessTypeId) ) return;
+        if ( [1, 2, 4, 7].includes(businessTypeId) ) return;
         if ( ! businessDirectors || businessDirectors.length === 0 )
           return this.NO_DIRECTOR_INFO;
         if ( businessDirectors$errors && businessDirectors$errors.length )
           return this.DIRECTOR_INFO_NOT_VALID;
       },
-      autoValidate: true,
-      validationTextVisible: true,
       validationStyleEnabled: false
     }
   ],
@@ -123,16 +122,22 @@ foam.CLASS({
       {
         name: 'validate',
         javaCode: `
-          java.util.List<foam.core.PropertyInfo> props = getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
-          for ( foam.core.PropertyInfo prop : props ) {
-            try {
-              prop.validateObj(x, this);
-            } catch ( IllegalStateException e ) {
-              throw e;
-            }
+          // TODO: avoid using hard coded business type ids 
+          int[] businessTypesWithDirectors = {3, 5, 6};
+          if (!Arrays.asList(businessTypesWithDirectors).contains(getBusinessTypeId())) return;
+
+          // validate directors
+          if (getBusinessDirectors() == null || getBusinessDirectors().length == 0) {
+            throw new IllegalStateException(NO_DIRECTOR_INFO);
           }
 
-          for ( BusinessDirector director : getBusinessDirectors()  ) director.validate(x);
+          for (BusinessDirector director : getBusinessDirectors()) {
+            try {
+              director.validate(x);
+            } catch (RuntimeException e) {
+              throw new IllegalStateException(DIRECTOR_INFO_NOT_VALID);
+            }
+          }
         `
       }
     ]

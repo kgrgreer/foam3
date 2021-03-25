@@ -280,7 +280,8 @@ p({
     "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d31",
     "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d32",
     "rule.read.0466c0ce-27bb-48ed-acf8-4f63f3ec5632",
-    "rule.read.bf6670a5-957e-4407-a80f-7eda6f27ab23"
+    "rule.read.bf6670a5-957e-4407-a80f-7eda6f27ab23",
+    "rule.read.c65f1e3e-7347-4f90-82c8-ca05dc01d16a"
   ]
 })
 
@@ -323,6 +324,7 @@ p({
     "rule.read.b82fc19c-0f13-11eb-adc1-0242ac120002",
     "rule.read.crunch-onboard-compliance-approvalrequest-0",
     "rule.read.crunch-onboard-compliance-notification",
-    "rule.read.crunch-business-registration"
+    "rule.read.crunch-business-registration",
+    "rule.read.9cb36c96-c2e6-4c2a-8b38-f009d44c341a"
   ]
 })

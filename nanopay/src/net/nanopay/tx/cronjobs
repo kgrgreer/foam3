@@ -292,3 +292,26 @@ p({
     print("done");
   """
 })
+
+p({
+  "class": "foam.nanos.cron.Cron",
+  "schedule":{
+    "class":"foam.nanos.cron.IntervalSchedule",
+    "duration":{
+      "class":"foam.nanos.cron.TimeHMS",
+      "hour":0,
+      "minute":5,
+      "second":0
+    }
+  },
+  "id":"IntuitTransactionSummaryAgent",
+  "description":"Creates Transaction Summary objects for all intuit summary transactions",
+  "enabled":true,
+  "code": """
+    String spid = "intuit";
+    import net.nanopay.partner.intuit.tx.IntuitTransactionSummaryAgent;
+    cron = new IntuitTransactionSummaryAgent(spid);
+    cron.execute(x);
+    print("Transaction Summary Agent run.");
+  """
+})

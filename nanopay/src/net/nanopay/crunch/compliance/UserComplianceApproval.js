@@ -87,6 +87,13 @@ foam.CLASS({
               
               ucj.setStatus(status);
 
+              foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");     
+              logger.debug(this.getClass().getSimpleName(), "ucjdao.inx.put(ucj) - subject", ownerContext.get("subject"));
+              logger.debug(this.getClass().getSimpleName(), "ucjdao.inx.put(ucj) - user", ((foam.nanos.auth.Subject) ownerContext.get("subject")).getUser());
+              logger.debug(this.getClass().getSimpleName(), "ucjdao.inx.put(ucj) - realuser", ((foam.nanos.auth.Subject) ownerContext.get("subject")).getRealUser());
+              logger.debug(this.getClass().getSimpleName(), "ucjdao.inx.put(ucj) - ucj", ucj);
+              logger.debug(this.getClass().getSimpleName(), "ucjdao.inx.put(ucj) - data", ucj.getData());
+
               // Update junction
               ((DAO) x.get("userCapabilityJunctionDAO")).inX(ownerContext).put(ucj);
             }

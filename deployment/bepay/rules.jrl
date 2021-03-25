@@ -40,6 +40,7 @@ p({
   "id":"2fdd7d35-6704-47dc-9f0e-9419e0aa74ed",
   "name":"BePayTransactionPlanner",
   "documentation":"Planner for transaction from BRL to USD/EUR/GBP (leg 1)",
+  "termsAndConditions":"https://afex.com/unitedstates/global_terms_and_conditions.php",
   "priority":80,
   "ruleGroup":"BePayPlanner",
   "enabled":true,

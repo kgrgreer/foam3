@@ -95,6 +95,12 @@ foam.CLASS({
     },
     {
       class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      visibility: 'RO',
+      name: 'lastModifiedByAgent'
+    },
+    {
+      class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid'
     }

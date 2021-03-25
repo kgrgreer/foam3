@@ -80,7 +80,6 @@ foam.CLASS({
           AND(
             EQ(Account.OWNER, sourceAccount.getOwner()),
             CLASS_OF(DigitalAccount.class)
-            //TODO also add spid check
           )).select(new ArraySink())).getArray();
 
         for ( Object obj : digitals ) {

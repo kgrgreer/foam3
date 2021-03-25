@@ -46,7 +46,6 @@ var classes = [
   'net.nanopay.flinks.external.FlinksLoginIdAsync',
   'net.nanopay.flinks.external.FlinksLoginIdAsyncDAO',
   'net.nanopay.flinks.external.FlinksLoginIdDAO',
-  'net.nanopay.flinks.external.FlinksLoginIdOnboarding',
   'net.nanopay.flinks.external.FlinksLoginIdRequest',
   'net.nanopay.flinks.external.FlinksOverrides',
   'net.nanopay.flinks.external.OnboardingType',

@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -16,32 +16,20 @@
  */
 
 foam.CLASS({
-  package: "net.nanopay.fx.afex",
-  name: "CreateInstantBenefiaryResponse",
+  package: 'net.nanopay.crunch.registration',
+  name: 'LimitedAmountCapability',
+  extends: 'foam.nanos.crunch.Capability',
+
   properties: [
     {
-      class: 'Int',
-      name: "Code"
+      class: 'UnitValue',
+      name: 'maximumAmount',
+      unitPropName: 'currency'
     },
     {
       class: 'String',
-      name: "Name"
-    },
-    {
-      class: 'String',
-      name: "FundingBalanceId"
-    },
-    {
-      class: 'String',
-      name: "InformationMessage"
-    },
-    {
-      class: 'Int',
-      name: "InformationCode"
-    },
-    {
-      class: 'String',
-      name: "Status"
+      name: 'currency',
+      value: 'CAD'
     }
   ]
 });

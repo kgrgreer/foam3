@@ -26,7 +26,7 @@ foam.CLASS({
     'java.util.List',
     'foam.core.FObject',
     'foam.nanos.logger.Logger',
-    'foam.nanos.ruler.Operations',
+    'foam.nanos.dao.Operation',
     'foam.nanos.approval.ApprovalRequest',
     'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
     'foam.nanos.approval.ApprovableAware',
@@ -74,11 +74,11 @@ foam.CLASS({
 
       AccountApprovableAware accountApprovableAwareObj = (AccountApprovableAware) obj;
   
-      if ( accountRequest.getOperation() == Operations.CREATE ) {
+      if ( accountRequest.getOperation() == Operation.CREATE ) {
         accountRequest.setOutgoingAccount(accountApprovableAwareObj.getOutgoingAccountCreate(x));
-      } else if ( accountRequest.getOperation() == Operations.UPDATE ) {
+      } else if ( accountRequest.getOperation() == Operation.UPDATE ) {
         accountRequest.setOutgoingAccount(accountApprovableAwareObj.getOutgoingAccountUpdate(x));
-      } else if ( accountRequest.getOperation() == Operations.REMOVE ) {
+      } else if ( accountRequest.getOperation() == Operation.REMOVE ) {
         accountRequest.setOutgoingAccount(accountApprovableAwareObj.getOutgoingAccountDelete(x));
       } else {
         logger.error("Using an invalid operation!");
@@ -104,7 +104,7 @@ foam.CLASS({
       args: [
         { name: 'x', type: 'Context' },
         { name: 'obj', type: 'FObject' },
-        { name: 'operation', javaType: 'foam.nanos.ruler.Operations' },
+        { name: 'operation', javaType: 'foam.nanos.dao.Operation' },
         { name: 'user', javaType: 'foam.nanos.auth.User' }
       ],
       javaType: 'List<Long>',
@@ -116,8 +116,8 @@ foam.CLASS({
 
         AccountUCJQueryService ucjQueryService = (AccountUCJQueryService) x.get("accountUcjQueryService");
         AccountApprovableAware aaaObj = (AccountApprovableAware) obj;
-        String outgoingAccount = operation == Operations.CREATE ? aaaObj.getOutgoingAccountCreate(x) : 
-                                operation == Operations.UPDATE ? aaaObj.getOutgoingAccountUpdate(x) : 
+        String outgoingAccount = operation == Operation.CREATE ? aaaObj.getOutgoingAccountCreate(x) : 
+                                operation == Operation.UPDATE ? aaaObj.getOutgoingAccountUpdate(x) : 
                                                                 aaaObj.getOutgoingAccountDelete(x);
 
         List<Long> approverIds = ucjQueryService.getAllApprovers(x, modelName, outgoingAccount);

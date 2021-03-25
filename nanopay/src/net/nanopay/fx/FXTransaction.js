@@ -30,7 +30,8 @@ foam.CLASS({
 Stores all Exchange Rate info.`,
 
   implements: [
-    'net.nanopay.tx.AcceptAware'
+    'net.nanopay.tx.AcceptAware',
+    'net.nanopay.tx.ValueMovementTransaction'
   ],
 
   javaImports: [

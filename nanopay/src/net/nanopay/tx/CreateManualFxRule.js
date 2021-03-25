@@ -27,6 +27,7 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.auth.User',
     'static foam.mlang.MLang.*',
     'foam.nanos.approval.ApprovalStatus',
     'net.nanopay.fx.KotakFxTransaction',
@@ -42,6 +43,9 @@ foam.CLASS({
           public void execute(X x) {
             KotakFxTransaction kotakFxTransaction = (KotakFxTransaction) obj;
             DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
+
+            User owner = kotakFxTransaction.findSourceAccount(x).findOwner(x);
+
             approvalRequestDAO.put_(x,
               new ManualFxApprovalRequest.Builder(x)
                 .setClassification("Kotak Manual FX Transaction Completion")
@@ -49,6 +53,7 @@ foam.CLASS({
                 .setDaoKey("transactionDAO")
                 .setObjId(kotakFxTransaction.getId())
                 .setGroup(kotakFxTransaction.getSpid() + "-payment-ops")
+                .setCreatedFor(owner.getId())
                 .setStatus(ApprovalStatus.REQUESTED).build());
           }
         }, "Create Manual FX Rule");
