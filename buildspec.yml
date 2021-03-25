@@ -17,7 +17,8 @@ phases:
       - apt upgrade -y gradle
       - gradle --version
       # Copy foam repository, at desired branch/commit, into place
-      - cp -rv $CODEBUILD_SRC_DIR_nanopay_foam/ $CODEBUILD_SRC_DIR/
+      - echo cp foam
+      - cp -r $CODEBUILD_SRC_DIR_nanopay_foam/ $CODEBUILD_SRC_DIR/
       - cd $CODEBUILD_SRC_DIR
       - ./build.sh -i
 
