@@ -16,7 +16,6 @@ phases:
       - apt-get update -y
       - apt upgrade -y gradle
       - gradle --version
-      - apt-get install -y maven
       # Copy foam repository, at desired branch/commit, into place
       - cp -rv $CODEBUILD_SRC_DIR_nanopay_foam/ $CODEBUILD_SRC_DIR/
       - cd $CODEBUILD_SRC_DIR
