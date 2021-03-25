@@ -1825,6 +1825,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/wizardlet/RerenderWizardlet' },
   { name: 'net/nanopay/crunch/wizardlet/SigningOfficerQuestionWizardlet' },
   { name: 'net/nanopay/crunch/wizardlet/UnlockPaymentsWizardConfig' },
+  { name: 'net/nanopay/crunch/wizardlet/BusinessRegistrationWizardConfig' },
 
   // msp
   { name: 'net/nanopay/msp/MspInfo' },
