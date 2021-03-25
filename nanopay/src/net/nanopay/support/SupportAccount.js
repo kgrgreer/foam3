@@ -78,7 +78,10 @@ foam.CLASS({
     net.nanopay.account.Account.OWNER.clone().copyFrom({
       section: 'accountInformation',
       order: 30,
-      gridColumns: 6
+      gridColumns: 6,
+      view: {
+        class: 'foam.u2.view.ReferenceView'
+      }
     }),
     net.nanopay.bank.BankAccount.BRANCH.clone().copyFrom({
       label: 'Transit Number',

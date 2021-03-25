@@ -46,8 +46,6 @@ public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
         .setId(txn.getId())
         .setCurrency(txn.getSourceCurrency())
         .setAmount(txn.getAmount())
-        .setPayer(txn.getPayer())
-        .setPayee(txn.getPayee())
         .setSummary(txn.summarize(x))
         .setStatus(chainSummary.getStatus())
         .setCategory(chainSummary.getCategory())
@@ -58,6 +56,8 @@ public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
         .setExternalId(txn.getExternalId() != null ? txn.getExternalId() : "")
         .setExternalInvoiceId(txn.getExternalInvoiceId() != null ? txn.getExternalInvoiceId() : "")
         .build();
+      if (txn.getPayer() != null) intuitTxnSummary.setPayer(txn.getPayer().getId());
+      if (txn.getPayee() != null) intuitTxnSummary.setPayee(txn.getPayee().getId());
       transactionSummaryDAO.put(intuitTxnSummary);
     }
   }

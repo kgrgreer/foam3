@@ -88,7 +88,7 @@ p({
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"transactions-support",
-  "label":"Transactions",
+  "label":"Transaction Summary",
   "icon":"images/transactions-24px-resting.svg",
   "activeIcon":"images/transactions-24px-active.svg",
   "handler":{

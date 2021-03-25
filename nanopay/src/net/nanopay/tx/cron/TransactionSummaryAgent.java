@@ -68,8 +68,6 @@ public class TransactionSummaryAgent implements ContextAgent {
         .setId(txn.getId())
         .setCurrency(txn.getSourceCurrency())
         .setAmount(txn.getAmount())
-        .setPayer(txn.getPayer())
-        .setPayee(txn.getPayee())
         .setSummary(txn.summarize(x))
         .setStatus(chainSummary.getStatus())
         .setCategory(chainSummary.getCategory())
@@ -78,6 +76,8 @@ public class TransactionSummaryAgent implements ContextAgent {
         .setCreated(txn.getCreated())
         .setLastModified(txn.getLastModified())
         .build();
+      if (txn.getPayer() != null) txnSummary.setPayer(txn.getPayer().getId());
+      if (txn.getPayee() != null) txnSummary.setPayee(txn.getPayee().getId());
       transactionSummaryDAO.put(txnSummary);
     }
   }

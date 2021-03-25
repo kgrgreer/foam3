@@ -61,14 +61,24 @@ foam.CLASS({
       name: 'id',
       section: 'transactionInformation',
       order: 20,
-      gridColumns: 6
+      gridColumns: 6,
+      view: {
+        class: 'foam.u2.view.ReferenceView'
+      }
     },
     {
       class: 'UnitValue',
       name: 'amount',
       section: 'transactionInformation',
       order: 30,
-      gridColumns: 6
+      gridColumns: 6,
+      unitPropName: 'currency',
+      unitPropValueToString: async function(x, val, unitPropName) {
+        var unitProp = await x.currencyDAO.find(unitPropName);
+        if ( unitProp )
+          return unitProp.format(val);
+        return val;
+      }
     },
     {
       class: 'String',
@@ -124,39 +134,27 @@ foam.CLASS({
       gridColumns: 6
     },
     {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.tx.model.TransactionEntity',
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      targetDAOKey: 'userDAO',
       name: 'payer',
       section: 'transactionInformation',
       order: 110,
       gridColumns: 6,
-      view: function(_, x) {
-        return _.displayName;
-      },
-      tableCellFormatter: function(value) {
-        this.start()
-          .start('p').style({ 'margin-bottom': 0 })
-            .add(value ? value.displayName : 'n/a')
-          .end()
-        .end();
+      view: {
+        class: 'foam.u2.view.ReferenceView'
       }
     },
     {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.tx.model.TransactionEntity',
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      targetDAOKey: 'userDAO',
       name: 'payee',
       section: 'transactionInformation',
       order: 120,
       gridColumns: 6,
-      view: function(_, x) {
-        return _.displayName;
-      },
-      tableCellFormatter: function(value) {
-        this.start()
-          .start('p').style({ 'margin-bottom': 0 })
-            .add(value ? value.displayName : 'n/a')
-          .end()
-        .end();
+      view: {
+        class: 'foam.u2.view.ReferenceView'
       }
     }
   ],
