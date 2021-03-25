@@ -143,10 +143,19 @@ foam.CLASS({
       name: 'getCode',
       type: 'String',
       code: function() {
-        return this.natureCode + this.natureCodeData.toString();
+        return this.natureCode + this.natureCodeData.payerType
+          + this.natureCodeData.approvalType
+          + this.natureCodeData.payeeType
+          + this.natureCodeData.groupCode;
       },
       javaCode: `
-        return getNatureCode() + getNatureCodeData().toString();
+        StringBuilder str = new StringBuilder();
+        str.append(getNatureCode());
+        str.append(getNatureCodeData().getPayerType());
+        str.append(getNatureCodeData().getApprovalType());
+        str.append(getNatureCodeData().getPayeeType());
+        str.append(getNatureCodeData().getGroupCode());
+        return str.toString();
       `
     }
   ]
