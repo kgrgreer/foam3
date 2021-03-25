@@ -53,6 +53,7 @@ foam.CLASS({
                 .setCauseDaoKey("identityMindResponseDAO")
                 .setStatus(getApprovalStatus(status))
                 .setApprover(getApprover(status))
+                .setCreatedFor(business.getId())
                 .setClassification("Business IdentityMind Merchant KYC, Response ID: " + response.getId())
                 .build()
             );

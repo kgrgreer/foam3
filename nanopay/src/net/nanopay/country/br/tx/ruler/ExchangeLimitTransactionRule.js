@@ -97,6 +97,7 @@ foam.CLASS({
                       .setServerDaoKey("localTransactionDAO")
                       .setObjId(txn.getId())
                       .setGroup(agentGroup)
+                      .setCreatedFor(sender.getId())
                       .setStatus(ApprovalStatus.REQUESTED).build());
 
                   // Notify the sender that the transaction failed without telling them limit check failed

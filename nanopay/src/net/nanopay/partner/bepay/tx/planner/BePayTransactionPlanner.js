@@ -33,6 +33,7 @@ foam.CLASS({
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.partner.bepay.tx.BePayTransaction',
     'net.nanopay.tx.ExternalTransfer',
+    'net.nanopay.tx.InfoLineItem',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.InvoicedFeeLineItem',
     'net.nanopay.tx.TransactionLineItem',
@@ -46,6 +47,11 @@ foam.CLASS({
     {
       name: 'bestPlan',
       value: true
+    },
+    {
+      name: 'termsAndConditions',
+      class: 'String',
+      documentation: 'Terms and conditions added to the bepay transaction'
     }
   ],
 
@@ -88,6 +94,7 @@ foam.CLASS({
       bTx.setPlanner(this.getId());
       bTx = addNatureCodeLineItems(x, bTx, requestTxn);
       bTx = addFxLineItems(x, bTx, requestTxn, fxRate);
+      bTx = addTandC(bTx);
       txn.addNext(bTx);
       ExternalTransfer[] exT = new ExternalTransfer[2];
       exT[0] = new ExternalTransfer(quote.getDestinationAccount().getId(), bTx.getDestinationAmount());
@@ -131,6 +138,23 @@ foam.CLASS({
           throw new RuntimeException("[Transaction Validation error]"+ this.INVALID_NATURE_CODE);
         }
         txn.addLineItems( new TransactionLineItem[] { natureCode } );
+        return txn;
+      `
+    },
+    {
+      name: 'addTandC',
+      javaType: 'BePayTransaction',
+      args: [
+        {
+          name: 'txn',
+          type: 'BePayTransaction',
+        }
+      ],
+      javaCode: `
+        InfoLineItem tandc = new InfoLineItem();
+        tandc.setName("Terms and Conditions");
+        tandc.setNote(getTermsAndConditions());
+        txn.addLineItems( new TransactionLineItem[] { tandc } );
         return txn;
       `
     },

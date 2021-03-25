@@ -54,6 +54,7 @@ foam.CLASS({
                     .setServerDaoKey("localUserDAO")
                     .setCauseId(response.getId())
                     .setClassification("Business SecureFact LEV, Response ID: " + response.getId())
+                    .setCreatedFor(business.getId())
                     .setCauseDaoKey("securefactLEVDAO")
                     .build()
                 );

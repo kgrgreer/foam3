@@ -36,8 +36,8 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.approval.ApprovalRequest',
     'foam.nanos.approval.ApprovalStatus',
-    'foam.nanos.ruler.Operations',
-    'static foam.mlang.MLang.*',
+    'foam.nanos.dao.Operation',
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -46,7 +46,7 @@ foam.CLASS({
       javaCode: `
         return AND(
           EQ(DOT(NEW_OBJ, ApprovalRequest.STATUS), ApprovalStatus.APPROVED),
-          EQ(DOT(NEW_OBJ, ApprovalRequest.OPERATION), Operations.REMOVE)
+          EQ(DOT(NEW_OBJ, ApprovalRequest.OPERATION), Operation.REMOVE)
         ).f(obj);
       `
     } 

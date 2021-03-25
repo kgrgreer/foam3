@@ -29,7 +29,7 @@ public class BankAccountCodesTest
     accountId = "99999";
     b = new CABankAccount.Builder(x).setInstitutionNumber(institutionNumber).setBranchId(branchId).setAccountNumber(accountId).setOwner(u.getId()).setStatus(BankAccountStatus.VERIFIED).build();
     b = (BankAccount) d.put(b);
-    test(b.getInstitutionNumber(x).equals(institutionNumber), "Invalid InstitutionNumber");
+    test(b.getBankCode(x).equals(institutionNumber), "Invalid InstitutionNumber");
     test(b.getRoutingCode(x).equals("0" + branchId + b.getInstitutionNumber()), "Invalid RoutingCode");
     //test(b.getIban().equals(accountId), "Invalid IBAN/Account");
   }

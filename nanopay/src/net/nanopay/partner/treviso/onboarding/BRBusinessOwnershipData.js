@@ -81,6 +81,7 @@ foam.CLASS({
     },
     {
       name: 'reviewOwnersSection',
+      title: 'Review the list of owners',
       isAvailable: function(amountOfOwners) {
         return amountOfOwners > 0;
       }
@@ -109,13 +110,6 @@ foam.CLASS({
             );
           },
           errorMessage: 'NO_AMOUNT_OF_OWNERS_SELECTED_ERROR'
-        },
-        {
-          args: ['ownerSelectionsValidated', 'owner1', 'owner2', 'owner3', 'owner4', 'chosenOwners'],
-          predicateFactory: function(e) {
-            return e.EQ(net.nanopay.partner.treviso.onboarding
-              .BRBusinessOwnershipData.OWNER_SELECTIONS_VALIDATED, true);
-          }
         }
       ]
     },
@@ -164,13 +158,11 @@ foam.CLASS({
         Promise.all([
           this.crunchService.getJunction(x, 'fb7d3ca2-62f2-4caf-a84c-860392e4676b'),
           this.crunchService.getJunction(x, '777af38a-8225-87c8-dfdf-eeb15f71215f-123'),
-          this.crunchService.getJunction(x, '85cee1de-db32-11ea-87d0-0242ac130003'),
           this.crunchService.getJunction(x, '8ad3c898-db32-11ea-87d0-0242ac130003')
         ]).then(values => {
           let cpf  = values[0] ? values[0].data : '';
           let so   = values[1] ? values[1].data : '';
           let doc1 = values[2] ? values[2].data : '';
-          let doc2 = values[3] ? values[3].data : '';
 
           if ( values[0].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED && cpf ) {
             verifyName = cpf.verifyName;
@@ -181,10 +173,10 @@ foam.CLASS({
             pepHioRelated = so.PEPHIORelated;
           }
           if ( values[2].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED && doc1 ) {
+            // Treviso removed the requirement for the address doc
+            // todo confirm the logic of duplicationg doc setting to both these requirements
             documentsOfAddress = doc1.documents;
-          }
-          if ( values[3].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED && doc2 ) {
-            documentsOfId = doc2.documents;
+            documentsOfId = doc1.documents;
           }
 
           // POPULATE DAO

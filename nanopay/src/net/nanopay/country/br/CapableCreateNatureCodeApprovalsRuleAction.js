@@ -27,7 +27,7 @@ foam.CLASS({
     'foam.comics.v2.userfeedback.UserFeedback',
     'foam.comics.v2.userfeedback.UserFeedbackException',
     'foam.comics.v2.userfeedback.UserFeedbackStatus',
-    'foam.nanos.ruler.Operations',
+    'foam.nanos.dao.Operation',
     'foam.nanos.auth.Subject',
     'java.util.Map',
     'java.util.ArrayList',
@@ -69,7 +69,7 @@ foam.CLASS({
           .setDaoKey(request.getDaoKey())
           .setObjId(request.getObjId())
           .setOperation(request.getOperation())
-          .setCreatedBy(request.getCreatedBy())
+          .setCreatedFor(request.getCreatedFor())
           .setGroup(request.getGroup())
           .setClassification(request.getClassification())
           .setStatus(request.getStatus())

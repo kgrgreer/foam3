@@ -18,6 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.model',
   name: 'Transaction',
+  plural: 'Transactions',
 
   implements: [
     'foam.mlang.Expressions',
@@ -47,6 +48,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.Currency',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
@@ -627,6 +629,26 @@ foam.CLASS({
       includeInDigest: true
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedByAgent',
+      section: 'transactionInformation',
+      order: 180,
+      gridColumns: 6,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
+      tableCellFormatter: function(value, obj) {
+        obj.userDAO.find(value).then(function(user) {
+          if ( user ) {
+            if ( user.email ) {
+              this.add(user.email);
+            }
+          }
+        }.bind(this));
+      },
+      includeInDigest: true
+    },
+    {
       name: 'lastStatusChange',
       class: 'DateTime',
       includeInDigest: false,
@@ -795,7 +817,7 @@ foam.CLASS({
     {
       // TODO: DELETE... DEPRECATED
       // REVIEW: processDate and completionDate are Alterna specific?
-      class: 'DateTime', 
+      class: 'DateTime',
       name: 'processDate',
       section: 'deprecatedInformation',
       storageTransient: true,

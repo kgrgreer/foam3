@@ -28,6 +28,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.logger.Logger',
+    'foam.util.SafetyUtil'
   ],
 
   imports: [
@@ -45,6 +46,7 @@ foam.CLASS({
   messages: [
     { name: 'NO_CNPJ', message: '14-digit National Registry of Legal Entities Number required' },
     { name: 'CNPJ_INVALID', message: 'CNPJ required' },
+    { name: 'NO_NIRE', message: 'NIRE required' },
     { name: 'VERIFY_BUSINESS_NAME', message: 'Confirm your business name' }
   ],
 
@@ -84,6 +86,10 @@ foam.CLASS({
             this.cnpjName = v;
           });
         }
+        else {
+          this.cnpjName = "";
+          this.verifyName = false;
+        }
       },
       view: function(_, X) {
         return foam.u2.FragmentedTextField.create({
@@ -113,7 +119,7 @@ foam.CLASS({
               maxLength: 2
             })
           ]
-        });
+        }, X);
       }
     },
     {
@@ -187,8 +193,13 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
-        if ( ! getVerifyName() )
+        if ( ! getVerifyName() ) {
           throw new foam.core.ValidationException(CNPJ_INVALID);
+        }
+
+        if ( SafetyUtil.isEmpty(getNire()) ) {
+          throw new foam.core.ValidationException(NO_NIRE);
+        }
       `
     }
   ]

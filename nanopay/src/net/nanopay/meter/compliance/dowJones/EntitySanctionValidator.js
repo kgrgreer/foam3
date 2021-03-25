@@ -76,6 +76,7 @@ foam.CLASS({
                     .setCauseDaoKey("dowJonesResponseDAO")
                     .setClassification("Business Dow Jones R&C")
                     .setMatches(response.getResponseBody().getMatches())
+                    .setCreatedFor(business.getId())
                     .build());
               }
             }, "Entity Sanction Validator");
@@ -113,6 +114,7 @@ foam.CLASS({
                         .setReferenceSummary(businessDirector.toSummary())
                         .setClassification("Business Director Dow Jones R&C")
                         .setMatches(directorResponse.getResponseBody().getMatches())
+                        .setCreatedFor(business.getId())
                         .build());
                   }
                 }, "Business Director Sanction Validator");

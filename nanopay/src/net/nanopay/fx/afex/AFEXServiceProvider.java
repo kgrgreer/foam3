@@ -1195,7 +1195,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     AFEXFundingBalance fundingBalance = getOrCreateFundingBalance(x, transaction);
     if ( fundingBalance == null || SafetyUtil.isEmpty(fundingBalance.getFundingBalanceId())  ) throw new RuntimeException("Unable to find funding balance for user " + userId);
 
-    CreateInstantBenefiaryRequest request = new CreateInstantBenefiaryRequest();
+    CreateInstantBeneficiaryRequest request = new CreateInstantBeneficiaryRequest();
     request.setAccountId(fundingBalance.getAccountId());
     request.setFundingBalanceId(fundingBalance.getFundingBalanceId());
     StringBuilder str = new StringBuilder();
@@ -1204,7 +1204,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     str.append(randomString.substring(0, Math.min(randomString.length(), 8)));
     request.setVendorId(str.toString());
     try {
-      CreateInstantBenefiaryResponse response = afexClient.createInstantBenefiary(request, user.getSpid());
+      CreateInstantBeneficiaryResponse response = afexClient.createInstantBeneficiary(request, user.getSpid());
       if ( response == null ) throw new RuntimeException("Unable to get a valid response from  CreateInstantBeneficiary API" );
 
       if ( response.getCode() != 0 ) throw new RuntimeException("Unable to create instant beneficiary. " + response.getInformationMessage());

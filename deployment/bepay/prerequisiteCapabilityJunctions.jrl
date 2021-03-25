@@ -24,8 +24,14 @@ p({
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
-  targetId:"554af38a-8225-87c8-dfdf-eeb15f712bepay-10",
+  targetId:"D423CDC6-6BDA-4A84-B5AE-71B4C503AD30",
   priority:4
+})
+// estimation accounts
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
+  targetId:"nanopay.estimationaccount"
 })
 // cpf - extended user details
 p({
