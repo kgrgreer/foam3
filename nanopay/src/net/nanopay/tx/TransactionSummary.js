@@ -21,6 +21,12 @@ foam.CLASS({
 
   documentation: `This model represents the summary of a transaction`,
 
+  javaImports: [
+    'foam.core.Currency',
+    'foam.dao.DAO',
+    'foam.util.SafetyUtil'
+  ],
+
   tableColumns: [
     'summary',
     'category',
@@ -168,6 +174,57 @@ foam.CLASS({
       },
       javaCode: `
         return getSummary();
+      `
+    },
+    {
+      name: 'summarizeTransaction',
+      args: [ 
+        { name: 'x', type: 'Context' },
+        { name: 'transaction', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      type: 'String',
+      javaCode: `
+        DAO currencyDAO = (DAO) x.get("currencyDAO");
+        Currency sourceCurrency = (Currency) currencyDAO.find(transaction.getSourceCurrency());
+        Currency destinationCurrency = (Currency) currencyDAO.find(transaction.getDestinationCurrency());
+        StringBuilder summary = new StringBuilder();
+
+        if ( transaction.getAmount() > 0 ) {
+          if ( SafetyUtil.isEmpty(transaction.getSourceCurrency()) ) {
+            summary.append(transaction.getAmount());
+          }
+          else if ( sourceCurrency == null ) {
+            summary.append(transaction.getAmount())
+              .append(" ")
+              .append(transaction.getSourceCurrency());
+          }
+          else {
+            summary.append(sourceCurrency.format(transaction.getAmount()));
+          }
+        }
+
+        if ( transaction.getDestinationAmount() > 0 ) {
+          if ( summary.length() > 0 ) summary.append(" → ");
+          
+          if ( SafetyUtil.isEmpty(transaction.getDestinationCurrency()) ) {
+            summary.append(transaction.getDestinationAmount());
+          } else if ( destinationCurrency == null) {
+            summary.append(transaction.getDestinationAmount())
+              .append(" ")
+              .append(transaction.getDestinationCurrency());
+          } else {
+            summary.append(destinationCurrency.format(transaction.getDestinationAmount()));
+          }
+        }
+
+        if ( transaction.getPayer() != null && transaction.getPayee() != null ) {
+          summary.append(" | ")
+            .append(transaction.getPayer().getDisplayName())
+            .append(" → ")
+            .append(transaction.getPayee().getDisplayName());
+        }
+
+        return summary.toString();
       `
     }
   ]

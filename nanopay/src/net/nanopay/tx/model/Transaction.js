@@ -981,54 +981,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'summarize',
-      args: [ { name: 'x', type: 'Context' }],
-      type: 'String',
-      javaCode: `
-        DAO currencyDAO = (DAO) x.get("currencyDAO");
-        Currency sourceCurrency = (Currency) currencyDAO.find(getSourceCurrency());
-        Currency destinationCurrency = (Currency) currencyDAO.find(getDestinationCurrency());
-        StringBuilder summary = new StringBuilder();
-
-        if ( getAmount() > 0 ) {
-          if ( SafetyUtil.isEmpty(getSourceCurrency()) ) {
-            summary.append(getAmount());
-          }
-          else if ( sourceCurrency == null ) {
-            summary.append(getAmount())
-              .append(" ")
-              .append(getSourceCurrency());
-          }
-          else {
-            summary.append(sourceCurrency.format(getAmount()));
-          }
-        }
-
-        if ( getDestinationAmount() > 0 ) {
-          if ( summary.length() > 0 ) summary.append(" → ");
-          
-          if ( SafetyUtil.isEmpty(getDestinationCurrency()) ) {
-            summary.append(getDestinationAmount());
-          } else if ( destinationCurrency == null) {
-            summary.append(getDestinationAmount())
-              .append(" ")
-              .append(getDestinationCurrency());
-          } else {
-            summary.append(destinationCurrency.format(getDestinationAmount()));
-          }
-        }
-
-        if ( getPayer() != null && getPayee() != null ) {
-          summary.append(" | ")
-            .append(getPayer().getDisplayName())
-            .append(" → ")
-            .append(getPayee().getDisplayName());
-        }
-
-        return summary.toString();
-      `
-    },
-    {
       name: 'limitedClone',
       args: [
         {
