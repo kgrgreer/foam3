@@ -36,14 +36,8 @@ foam.CLASS({
   sections: [
     {
       name: 'signingOfficerPersonalInformationSection',
-      title: 'Signing officer\’s role information',
+      title: 'Additional Operator Information',
       help: 'Require your most convenient phone number.'
-    },
-    {
-      name: 'signingOfficerAddressSection',
-      title: 'Signing officer\’s address',
-      subTitle: 'Enter your home address',
-      help: 'Require your personal address. Used only to confirm your identity.'
     }
   ],
 
@@ -62,7 +56,7 @@ foam.CLASS({
 
   properties: [
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
-      section: 'signingOfficerAddressSection',
+      section: 'signingOfficerPersonalInformationSection',
       label: '',
       view: function(_, X) {
         return {

@@ -885,9 +885,9 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-115",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-115-ablii",
   "name": "compliance-notification-to-user",
-  "group": "sme",
+  "group": "ablii-sme",
   "displayName": "{{appName}}",
   "subject": "{{business}} is ready to send and request payments with {{appName}}",
   "body": "\n\n<include template = 'ablii-email-base_2'>\n<p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">Great news!</p>\n<p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">{{business}} is all set to send and receive payments on {{appName}}.</p>\n<a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n<p style = \"padding: 14px 0 0; margin: 0;\">Sign in</p>\n</div></a>\n<p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;\">If you have any questions, please contact us at <a href=\"mailto:{{supportEmail}}\" style=\"text-decoration: none;\">{{supportEmail}}</a></p>\n<br>\n\n</include>"
@@ -939,7 +939,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-121",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-121-ablii",
   "name": "ablii-email-base_2",
   "body": "<!DOCTYPE html>\n<html>\n\n<head>\n <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n  <title>{{appName}}</title>\n  <link href=\"https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i\" rel=\"stylesheet\">\n</head>\n\n<body style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #f2f2f2; padding: 50px;\">\n  <div style=\"width: 575px; background: #f5f7fa; border-radius: 5px; padding: 20px; text-align: center; margin-top: 10px\">\n    <div style=\"max-width: 505px; filter: drop-shadow(0 0 3px #e2e2e3);\">\n     <div style=\"width: 100%; min-height: 100px; background: #fff; border-radius: 5px; padding: 34px; text-align: left;\">\n   <div style=\"display: flex; justify-content: space-between; align-items: flex-end;\">\n          <a href=\"{{appLink}}\" title=\"{{appName}} Logo\" target=\"_blank\" style=\"cursor: default\">\n            <img src= \"{{logo}}\"  alt=\"{{appName}} Logo\" style=\"width: 115px;\" />\n          </a>\n       \n        </div>\n        <content></content>\n      </div>\n    </div>\n    <a href=\"https://facebook.com/HelloAblii\" style=\"text-decoration: none;\">\n      <img src=\"https://i.ibb.co/J3dd9Q3/facebook-logo.png\" alt=\"facebook-logo\" style=\"width: 20px; margin-top: 20px; margin-right: 10px;\" />\n    </a>\n    <a href=\"https://linkedin.com/company/ablii\" style=\"text-decoration: none;\">\n      <img src=\"https://i.ibb.co/qMk76LQ/linkedin-logo.png\" alt=\"linkedin-logo\" style=\"width: 20px;\" />\n    </a>\n    <div style=\"font-size: 10px; color: #8e9090;\">\n      <p>This message was sent to {{sendTo}}</p>\n      <p>{{supportAddress}}</p>\n    </div>\n  </div>\n</body>\n\n</html>"
 })
