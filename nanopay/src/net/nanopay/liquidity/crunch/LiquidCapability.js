@@ -21,21 +21,22 @@ foam.CLASS({
   extends: 'foam.nanos.crunch.Capability',
   
   javaImports: [
-    'foam.core.X',
+    'foam.core.FObject',
     'foam.core.NumberSet',
+    'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
+    'foam.util.SafetyUtil',
     'java.util.ArrayList',
     'java.util.Arrays',
-    'java.util.List',
-    'foam.core.FObject',
-    'java.util.Set',
     'java.util.HashSet',
-    'static foam.mlang.MLang.*',
-    'foam.util.SafetyUtil'
+    'java.util.List',
+    'java.util.Set',
+    'javax.security.auth.AuthPermission',
+    'static foam.mlang.MLang.*'
   ],
 
   properties: [
@@ -78,7 +79,7 @@ foam.CLASS({
         Logger logger    = (Logger) getX().get("logger");
         String[] permissionsGranted = this.getPermissionsGranted();
         for ( String permissionName : permissionsGranted ) {
-          if ( this.stringImplies(permissionName, permission) ) return true;
+          if ( new AuthPermission(permissionName).implies(new AuthPermission(permission)) ) return true;
         }
 
         try {
