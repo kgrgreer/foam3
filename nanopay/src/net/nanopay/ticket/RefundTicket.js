@@ -127,8 +127,48 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       of: 'net.nanopay.tx.FeeLineItem',
-      name: 'feeLineItems',
+      name: 'feeLineItemsAvaliable',
       visibility: 'HIDDEN'
+    },
+    {
+      class: 'FObjectArray',
+      of: 'net.nanopay.tx.FeeLineItem',
+      name: 'feeLineItemsSelected',
+      view: function(_, X) { 
+        if ( X.controllerMode === foam.u2.ControllerMode.EDIT ){
+          return {
+            class: 'foam.u2.view.MultiChoiceView',
+            choices$: X.data.feeLineItemChoices$,
+            isValidNumberOfChoices$: X.data.selectedFeeLineItemsIsValid$,
+            showValidNumberOfChoicesHelper: false,
+            minSelected: 0,
+            maxSelected: X.data.feeLineItemChoices.length
+          };
+        }
+        return {
+          class: 'foam.u2.view.FObjectArrayView',
+          of: net.nanopay.tx.FeeLineItem
+        }
+      },
+      createVisibility: 'HIDDEN',
+    },
+    {
+      class: 'Boolean',
+      name: 'selectedFeeLineItemsIsValid',
+      visibility: 'HIDDEN',
+      value: false
+    },
+    {
+      name: 'feeLineItemChoices',
+      visibility: 'HIDDEN',
+      expression: function(feeLineItemsAvaliable){
+        return feeLineItemsAvaliable.map(feeLineItem => {
+          // TODO: add condition if isFinal is implemented for fee line item
+          var isFinal = false;
+
+          return [feeLineItem, feeLineItem.toSummary(), isFinal]
+        })
+      }
     }
   ]
 });

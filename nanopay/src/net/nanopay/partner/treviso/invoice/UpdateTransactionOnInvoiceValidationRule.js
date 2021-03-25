@@ -41,11 +41,10 @@ foam.CLASS({
         'foam.nanos.alarming.AlarmReason'
     ],
 
-    constants: [
+    properties: [
         {
-            name: 'NATURE_CODE_ID',
-            type: 'String',
-            value: 'cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode'
+            class: 'String',
+            name:'requiredCapabilityId',
         }
     ],
   
@@ -68,36 +67,41 @@ foam.CLASS({
                     throw new RuntimeException(message);
                 }
 
-                try {
-                    // If invoice is valid & capabilities are granted, change the summaryTransaction status to completed
-                    SafetyUtil.validate(agencyX, invoice);
-                    var crunchService = (CrunchService) agencyX.get("crunchService");
-
-                    Boolean isRejected = invoice.checkRequirementsStatusNoThrow(x, new String[]{NATURE_CODE_ID}, CapabilityJunctionStatus.REJECTED);
-
-                    if ( isRejected ){
-                        var transactionDAO = (DAO) agencyX.get("transactionDAO");
-                        var transaction = (Transaction) transactionDAO.find(invoice.getPaymentId());
-                        if (transaction != null) {
-                            transaction = (Transaction) transaction.fclone();
-                            transaction.setStatus(TransactionStatus.CANCELLED);
-                            transactionDAO.put(transaction);
-                        }
-                        
-                        var invoiceDAO = (DAO) agencyX.get("invoiceDAO");
-                    
-                        invoice.setPaymentMethod(PaymentStatus.REJECTED);
-
-                        invoiceDAO.put(invoice);
-                        return;
-                    }
-                    
+                if ( ! SafetyUtil.isEmpty(getRequiredCapabilityId()) ){
                     try {
-                        invoice.verifyRequirements(x, new String[]{NATURE_CODE_ID});
-                    } catch (IllegalStateException e) {
-                        return;
-                    }
+                        // If invoice is valid & capabilities are granted, change the summaryTransaction status to completed
+                        SafetyUtil.validate(agencyX, invoice);
+                        var crunchService = (CrunchService) agencyX.get("crunchService");
 
+                        Boolean isRejected = invoice.checkRequirementsStatusNoThrow(x, new String[]{getRequiredCapabilityId()}, CapabilityJunctionStatus.REJECTED);
+
+                        if ( isRejected ){
+                            var transactionDAO = (DAO) agencyX.get("transactionDAO");
+                            var transaction = (Transaction) transactionDAO.find(invoice.getPaymentId());
+                            if (transaction != null) {
+                                transaction = (Transaction) transaction.fclone();
+                                transaction.setStatus(TransactionStatus.CANCELLED);
+                                transactionDAO.put(transaction);
+                            }
+                            
+                            var invoiceDAO = (DAO) agencyX.get("invoiceDAO");
+                        
+                            invoice.setPaymentMethod(PaymentStatus.REJECTED);
+
+                            invoiceDAO.put(invoice);
+                            return;
+                        }
+                        try {
+                            invoice.verifyRequirements(x, new String[]{ getRequiredCapabilityId() });
+                        } catch (IllegalStateException e) {
+                            return;
+                        }
+                    } catch (IllegalStateException e) {
+                        throw e;
+                    }
+                }
+
+                try{
                     var transactionDAO = (DAO) agencyX.get("transactionDAO");
                     var transaction = (Transaction) transactionDAO.find(invoice.getPaymentId());
                     if (transaction != null) {

@@ -32,6 +32,8 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'java.util.List',
+    'java.util.Arrays',
+    'java.util.ArrayList',
     'foam.nanos.fs.File',
     'foam.nanos.notification.Notification',
     'foam.nanos.logger.Logger',
@@ -39,6 +41,8 @@ foam.CLASS({
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.SummarizingTransaction',
     'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.SummaryTransactionLineItem',
     'net.nanopay.tx.billing.ErrorFee',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus'  
@@ -68,6 +72,32 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      name: 'findFeeLineItems',
+      args: [
+        {
+          name: 'lineItems',
+          type: 'List<TransactionLineItem>'
+        }
+      ],
+      javaType: 'List<FeeLineItem>',
+      javaCode: `
+        List<FeeLineItem> feeLineItemsAvaliable = new ArrayList<>();
+
+        for ( TransactionLineItem lineItem : lineItems ){
+          if ( lineItem instanceof FeeLineItem ){
+            feeLineItemsAvaliable.add((FeeLineItem) lineItem);
+          }
+
+          if ( lineItem instanceof SummaryTransactionLineItem ){
+            SummaryTransactionLineItem summaryTransactionLineItem = (SummaryTransactionLineItem) lineItem;
+            feeLineItemsAvaliable.addAll(findFeeLineItems(Arrays.asList(summaryTransactionLineItem.getLineItems())));
+          }
+        }
+
+        return feeLineItemsAvaliable;
+      `
+    },
     {
       name: 'applyAction',
       javaCode: `
@@ -124,6 +154,9 @@ foam.CLASS({
           }
         }
 
+        List<FeeLineItem> feeLineItemsAvaliable = findFeeLineItems(Arrays.asList(summary.getLineItems()));
+        
+        ticket.setFeeLineItemsAvaliable(feeLineItemsAvaliable.toArray(FeeLineItem[]::new));
         ticket.setRequestTransaction(newRequest);
         ticket.setAgentInstructions(getTextToAgent() + " The proposed transaction will move "+newRequest.getAmount()+
         " from account "+newRequest.getSourceAccount()+" to Account "+newRequest.getDestinationAccount());
