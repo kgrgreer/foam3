@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.partner.treviso.onboarding',
   name: 'BRBusinessOwnershipData',
-  extends: 'net.nanopay.crunch.onboardingModels.BusinessOwnershipData2',
+  extends: 'net.nanopay.crunch.onboardingModels.BusinessOwnershipData',
   documentation: `
     This model represents the detailed information of a Business Ownership.
     This model is the Brazil extension of the generic BusinessOwnershipData model.
