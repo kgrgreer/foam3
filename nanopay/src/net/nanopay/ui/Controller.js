@@ -707,14 +707,15 @@ foam.CLASS({
     },
 
     /**
-     * This function is to check if the user enable the 2FA when the user
-     * have the permission to send a payable.
-     * It is only required for payables.
+     * This function is to check if 2FA is required and if so, is it 
+     * enabled for the user. It is only required for payables.
      */
-    async function check2FAEnalbed() {
+    async function check2FA() {
       var canPayInvoice = await this.client.auth.check(null, 'business.invoice.pay') && await this.client.auth.check(null, 'user.invoice.pay');
 
-      if ( canPayInvoice && ! this.subject.realUser.twoFactorEnabled ) {
+      if ( canPayInvoice &&
+           ! this.subject.realUser.twoFactorEnabled &&
+           this.theme.twoFactorEnabled ) {
         var TwoFactorNotificationDOM = this.Element.create()
           .start().style({ 'display': 'inline-block' })
             .add(this.TWO_FACTOR_REQUIRED_ONE)
@@ -746,7 +747,7 @@ foam.CLASS({
     async function checkAndNotifyAbilityToPay() {
       try {
         var result = await this.checkComplianceAndBanking();
-        return result ? await this.check2FAEnalbed() : result;
+        return result ? await this.check2FA() : result;
       } catch (err) {
         console.warn(`${this.ABILITY_TO_PAY_ERROR}: `, err);
         this.notify(`${this.ABILITY_TO_PAY_ERROR}.`, '', this.LogLevel.ERROR, true);
