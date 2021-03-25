@@ -5,6 +5,7 @@ p({class:"foam.nanos.fs.FileType",id:"4c441799-58e2-4a45-6f9c-98b687088f89",type
 p({class:"foam.nanos.fs.FileType",id:"8b568cc5-3ec6-c3d5-0e45-5277834c2aa0",type:"application",subType:"msword",abbreviation:"DOC"})
 p({class:"foam.nanos.fs.FileType",id:"cf2fa003-1a18-40e1-f84a-8de6f9d11788",type:"application",subType:"pdf",abbreviation:"PDF"})
 p({class:"foam.nanos.fs.FileType",id:"db60fb59-8e4c-6369-7eae-6005a00fef51",type:"text",subType:"csv",abbreviation:"CSV"})
+p({class:"foam.nanos.fs.FileType",id:"68167bf0-a346-41e3-9d8b-066f9b69cbe4",type:"text",subType:"plain",abbreviation:"TXT"})
 p({class:"foam.nanos.fs.FileType",id:"7a12ab04-9036-9efb-b0d8-870b9bf0f918",type:"application",subType:"vnd.ms-excel",abbreviation:"XLS"})
 p({class:"foam.nanos.fs.FileType",id:"91e6c4a0-f41d-9e3f-223e-b090e8644b66",type:"application",subType:"vnd.openxmlformats-officedocument.spreadsheetml.sheet",abbreviation:"XLSX"})
 p({class:"foam.nanos.fs.FileType",id:"ef4e0751-64a9-05ef-d5eb-754696d2afaa",type:"application",subType:"x-pkcs12"})

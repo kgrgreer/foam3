@@ -48,6 +48,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.Currency',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.app.AppConfig',

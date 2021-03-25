@@ -2111,7 +2111,7 @@ p({
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
 
-// Fee Due = Treviso Fee * Intermediary Spot Rate * Total Rate
+// Fee Due = Treviso Fee * USD Spot Rate * Total Rate
 p({
   class: "net.nanopay.tx.fee.Fee",
   id: "ff1122ca-e32a-4c8c-8a7e-c367b6066077",
@@ -2125,7 +2125,7 @@ p({
       },
       {
         class: "net.nanopay.tx.fee.FeeExpr",
-        feeName: "Intermediary Spot Rate"
+        feeName: "USD Spot Rate"
       },
       {
         class: "net.nanopay.tx.fee.FeeExpr",

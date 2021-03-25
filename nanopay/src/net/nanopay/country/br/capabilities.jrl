@@ -455,7 +455,7 @@ p({
   "requirementViewTitle":"Register your business details of your company. We use payment corridors to streamline your operations, you will notice that much of the information needed to make conventional payments will not be necessary, once you are setup.",
   "icon":"/images/capabilityIcons/BrazilCap.svg",
   "version":"0",
-  "visibilityPredicate":  { 
+  "visibilityPredicate":  {
     "class": "foam.nanos.crunch.predicate.CapabilityGranted",
     "capabilityId": "777af38a-8225-87c8-dfdf-eeb15f71215f-123",
     "subjectFromUCJ": false
@@ -624,6 +624,7 @@ p({
   "requirementViewTitle":"You will be asked to select a nature code for this transaction and provide the required document.",
   "wizardConfig": {
     "class": "foam.u2.crunch.EasyCrunchWizard",
+    "incrementalWizard": true,
     "skipMode":1
   },
   "enabled":true
