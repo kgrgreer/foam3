@@ -39,7 +39,7 @@ public class TransactionSummaryAgent implements ContextAgent {
   @Override
   public void execute(X x) {
     DAO summaryTransactionDAO = (DAO) x.get("summaryTransactionDAO");
-    DAO transactionDAO = (DAO) x.get("tableViewTransactionDAO");
+    DAO transactionDAO = (DAO) x.get("localTransactionDAO");
     Date lastRun = getLastRun(x);
     
     if ( lastRun != null ) {
