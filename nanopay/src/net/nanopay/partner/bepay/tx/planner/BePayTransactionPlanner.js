@@ -28,7 +28,6 @@ foam.CLASS({
     'java.util.Date',
     'java.util.UUID',
     'net.nanopay.country.br.tx.NatureCodeLineItem',
-    'net.nanopay.fx.ExchangeRateService',
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.partner.bepay.tx.BePayTransaction',
@@ -74,17 +73,11 @@ foam.CLASS({
     {
       name: 'plan',
       javaCode: `
-      //TODO: add api call to retrieve fx rate
-
-      ExchangeRateService exchangeRateService = (ExchangeRateService) x.get("exchangeRateService");
-
-      Double fxRate = exchangeRateService.getRate(requestTxn.getDestinationCurrency(), requestTxn.getSourceCurrency());
       FXSummaryTransaction txn = new FXSummaryTransaction();
       txn.copyFrom(requestTxn);
       txn.setPaymentProvider(PAYMENT_PROVIDER);
       txn.setStatus(TransactionStatus.COMPLETED);
       txn.clearLineItems();
-      txn.setAmount( (long) (requestTxn.getDestinationAmount() * fxRate) ); // if rate is in different format, need / here instead of *
       BePayTransaction bTx = new BePayTransaction();
       bTx.setLineItems(requestTxn.getLineItems());
       bTx.copyFrom(requestTxn);
