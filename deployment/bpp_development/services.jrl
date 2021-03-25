@@ -1,0 +1,8 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "bpp",
+  "documentation": "Symbolic link to bepay spid sub context.",
+  "serviceScript": """
+    return new foam.core.ProxyX(x.get("bepay"));
+  """
+})
