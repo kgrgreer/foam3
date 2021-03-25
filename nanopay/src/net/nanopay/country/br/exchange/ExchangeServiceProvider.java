@@ -162,8 +162,8 @@ public class ExchangeServiceProvider implements ExchangeService {
     request.setCODIGO(formattedcpfCnpj);
     SearchTitularResponse response = exchangeClient.searchTitular(request);
     if ( response == null || response.getSearchTitularResult() == null ) {
-        logger_.warning("Unable to retrieve customer from exchange.");
-        return null;
+      logger_.warning("Unable to retrieve customer from exchange.");
+      return null;
     }
 
     ServiceStatus status = response.getSearchTitularResult().getServiceStatus();
@@ -285,17 +285,19 @@ public class ExchangeServiceProvider implements ExchangeService {
     Boleto dadosBoleto = new Boleto();
     dadosBoleto.setAGENCIA(exchangeClientValues.getAgencia());
     if ( bancoConfig != null ) dadosBoleto.setBANCO(bancoConfig.getCode());
-    dadosBoleto.setBANCOBEN0(exchangeClientValues.getBeneficiaryType());
+    dadosBoleto.setBANCOBEN0(StringUtils.leftPad(exchangeClientValues.getBeneficiaryType(), 1, " "));
     dadosBoleto.setCONTA(exchangeClientValues.getCONTA());
-    dadosBoleto.setBANCOBEN1(bankAccount.getSwiftCode());
-    dadosBoleto.setBANCOBEN4(bankAccount.getRoutingCode(this.x));
+    dadosBoleto.setBANCOBEN1(StringUtils.leftPad(bankAccount.getSwiftCode(), 35, " "));
+    dadosBoleto.setBANCOBEN4(StringUtils.leftPad(bankAccount.getRoutingCode(this.x), 35, " "));
+    dadosBoleto.setBANCOBEN5(StringUtils.leftPad("", 20, " "));
     dadosBoleto.setPAGADORS(bankAccount.getSwiftCode());
     dadosBoleto.setESP5(getESP("SWIFT CODE: ", bankAccount.getSwiftCode(),
-        " - IBAN:  ", bankAccount.getIban(), " - DETAILS OF CHARGE: "));
+      " - IBAN:  ", bankAccount.getIban(), " - DETAILS OF CHARGE: "));
 
     FindBankByNationalIDResponse bankInfo = getBankInformation(bankAccount, payer.getSpid());
-    if ( bankInfo != null ) dadosBoleto.setBANCOBEN2(bankInfo.getInstitutionName());
-    dadosBoleto.setBANCOBEN3(getBancoBen3(bankInfo, bankAccount));
+    if ( bankInfo != null )
+      dadosBoleto.setBANCOBEN2(StringUtils.leftPad(bankInfo.getInstitutionName(), 35, " "));
+    dadosBoleto.setBANCOBEN3(StringUtils.leftPad(getBancoBen3(bankInfo, bankAccount), 35, " "));
 
     dadosBoleto.setCLAUSULAXX(false);
     String formattedCpfCnpj = findCpfCnpj(payer.getId()).replaceAll("[^0-9]", "");
@@ -381,11 +383,11 @@ public class ExchangeServiceProvider implements ExchangeService {
     if ( taxaop != null ) dadosBoleto.setTAXAOP(taxaop);
     Double taxanv = extractRate(summaryTransaction, "Currency Value Rate");
     if ( taxaop != null ) dadosBoleto.setTAXANV(taxanv);
-    Double totalFeeRate = extractRate(summaryTransaction, "Treviso Fee");
-    if ( totalFeeRate != null ) dadosBoleto.setVALORR((totalFeeRate.longValue())/100);
-    Double spotRate = extractRate(summaryTransaction, "Spot Rate");
-    if ( spotRate != null ) dadosBoleto.setPARIDADE(spotRate);
+    Double totalFeeBRL = extractRate(summaryTransaction, "Fee Due");
+    if ( totalFeeBRL != null )
+      dadosBoleto.setVALORR(totalFeeBRL/100);
 
+    dadosBoleto.setPARIDADE(dadosBoleto.getPARIDADE());
     dadosBoleto.setVINCULO(getContactRelationship(payer, receiver));
     dadosBoleto.setYIELD(sourceAmount/destinationAmount);
     dadosBoleto.setVALORME(destinationAmount);

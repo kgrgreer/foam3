@@ -1090,7 +1090,8 @@ foam.CLASS({
 			class: "foam.core.Double",
 			name: "PARIDADE",
 			value: 1,
-			documentation: "Foreign currency parity",
+			documentation: `FX rate to be reported to exhange. The full flow of funds: 1 Treviso BRL > 2 Bank in Brazil BRL >
+			  3 Bank in US USD > 4 AFEX USD. PARIDADE is between 3 and 4`,
 			required: false
 		},
 		{
@@ -1404,7 +1405,7 @@ foam.CLASS({
 			required: false
 		},
 		{
-			class: "foam.core.Long",
+			class: "foam.core.Double",
 			name: "VALORR",
 			required: false
 		},
