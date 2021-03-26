@@ -67,6 +67,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/DuplicateEntryRule' },
   { name: 'net/nanopay/account/DuplicateCABankAccountRule' },
   { name: 'net/nanopay/account/DuplicateUSBankAccountRule' },
+  { name: 'net/nanopay/account/SetBankAccountOnContact' },
   { name: 'net/nanopay/account/InsufficientBalanceException' },
   { name: 'net/nanopay/account/ui/BankAccountWizard' },
   { name: 'net/nanopay/account/ui/AccountSummaryView' },
