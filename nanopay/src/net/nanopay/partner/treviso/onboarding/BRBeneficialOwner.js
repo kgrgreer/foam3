@@ -349,6 +349,14 @@ foam.CLASS({
 
         if ( ! getVerifyName() ) throw new IllegalStateException("Must verify name attached to CPF is valid.");
       `
+    },
+    function fromUser(u) {
+      var common = [
+        'firstName', 'lastName', 'jobTitle', 'address', 'birthday',
+        'email'
+      ];
+      for ( let p of common ) this[p] = u[p];
+      return this;
     }
   ]
 });

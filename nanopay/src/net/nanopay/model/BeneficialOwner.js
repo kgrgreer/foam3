@@ -245,12 +245,9 @@ foam.CLASS({
         {
           args: ['ownershipPercent', 'showValidation'],
           predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(net.nanopay.model.BeneficialOwner.SHOW_VALIDATION, false),
-              e.AND(
-                e.GTE(net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT, 25),
-                e.LTE(net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT, 100)
-              )
+            return e.AND(
+              e.GTE(net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT, 25),
+              e.LTE(net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT, 100)
             );
           },
           errorMessage: 'INVALID_OWNER_PERCENT'
@@ -386,6 +383,11 @@ foam.CLASS({
         if ( SafetyUtil.isEmpty(getLastName()) ) return getFirstName();
         return getFirstName() + " " + getLastName();
       `
+    },
+    function fromUser(u) {
+      var common = ['firstName', 'lastName', 'jobTitle', 'address', 'birthday'];
+      for ( let p of common ) this[p] = u[p];
+      return this;
     }
   ],
 
