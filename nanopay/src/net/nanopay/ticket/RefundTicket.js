@@ -112,10 +112,6 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'refundFees'
-    },
-    {
-      class: 'Boolean',
       name: 'waiveCharges'
     },
     {

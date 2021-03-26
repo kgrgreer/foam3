@@ -83,6 +83,10 @@ foam.CLASS({
       name: 'createLineItems',
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           name: 't',
           type: 'net.nanopay.tx.model.Transaction'
         }

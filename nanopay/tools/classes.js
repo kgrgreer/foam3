@@ -694,6 +694,7 @@ var classes = [
 
   // credit engine
   'net.nanopay.tx.creditengine.CreditCodeAccount',
+  'net.nanopay.tx.creditengine.FeeRefund',
   'net.nanopay.tx.creditengine.FeeWaiver',
   'net.nanopay.tx.creditengine.CourtesyCredit',
   'net.nanopay.tx.creditengine.CreditEngine',

@@ -36,6 +36,7 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.ticket.RefundTicket',
     'net.nanopay.ticket.RefundStatus',
+    'net.nanopay.tx.creditengine.FeeRefund',
     'net.nanopay.tx.creditengine.FeeWaiver',
     'net.nanopay.tx.CreditLineItem',
     'net.nanopay.tx.FeeSummaryTransactionLineItem',
@@ -63,46 +64,24 @@ foam.CLASS({
           
           RefundTicket request = (RefundTicket) obj;
           DAO txnDAO = (DAO) x.get("localTransactionDAO");
+          DAO creditCodeDAO = (DAO) x.get("creditCodeDAO");
 
           Transaction reverse = request.getRequestTransaction();
 
           Transaction problemTxn = (Transaction) txnDAO.inX(x).find(request.getProblemTransaction()).fclone();
-          ArrayList<TransactionLineItem> array = new ArrayList<TransactionLineItem>();
+          ArrayList<String> array = new ArrayList<String>();
 
           Transaction summary = problemTxn.findRoot(x);
 
-          if ( request.getRefundFees() ) {
-            Long feeAmount = 0l;
-            Long invoicedFeeAmount = 0l;
-            FeeSummaryTransactionLineItem feeSummary = null;
-            for ( TransactionLineItem lineItem : summary.getLineItems() ) {
-              if ( lineItem instanceof FeeSummaryTransactionLineItem ) {
-                feeSummary = (FeeSummaryTransactionLineItem) lineItem;
-                for ( TransactionLineItem feeLineItems: ((FeeSummaryTransactionLineItem)lineItem).getLineItems() ) {
-                  if (feeLineItems instanceof InvoicedFeeLineItem) {
-                    invoicedFeeAmount += feeLineItems.getAmount();
-                  } else if (feeLineItems instanceof FeeLineItem) {
-                    feeAmount += feeLineItems.getAmount();
-                  }
-                }
-              }
-            }
-            if ( feeAmount > 0 ) {
-              CreditLineItem feeRefund = new CreditLineItem();
-              feeRefund.setCreditCurrency(feeSummary.getCurrency());
-              feeRefund.setSourceAccount(request.getCreditAccount());
-              feeRefund.setDestinationAccount(reverse.getDestinationAccount());
-              feeRefund.setAmount(feeAmount);
-              array.add(feeRefund);
-            }
-            if ( invoicedFeeAmount > 0 ) {
-              InvoicedCreditLineItem invoicedFeeRefund = new InvoicedCreditLineItem();
-              invoicedFeeRefund.setSourceAccount(request.getCreditAccount());
-              invoicedFeeRefund.setDestinationAccount(reverse.getDestinationAccount());
-              invoicedFeeRefund.setCreditCurrency(feeSummary.getCurrency());
-              invoicedFeeRefund.setAmount(invoicedFeeAmount);
-              array.add(invoicedFeeRefund);
-            }
+          if ( request.getFeeLineItemsSelected() != null && request.getFeeLineItemsSelected().length > 0 ) {
+            FeeRefund feeRefund = new FeeRefund();
+            feeRefund.setTicket(request.getId());
+            feeRefund.setName("Fee Refund");
+            feeRefund.setSpid(request.getSpid());
+            feeRefund.setOwner(request.getOwner());
+            feeRefund.setInitialQuantity(1);
+            feeRefund = (FeeRefund) creditCodeDAO.put(feeRefund);
+            array.add(feeRefund.getId());
           }
 
           if ( request.getWaiveCharges() ) {
@@ -113,14 +92,12 @@ foam.CLASS({
             feeWaiver.setSpid(reverse.getSpid());
             feeWaiver.setOwner(request.getOwner());
             feeWaiver.setInitialQuantity(1);
-            DAO creditCodeDAO = (DAO) x.get("creditCodeDAO");
             feeWaiver = (FeeWaiver) creditCodeDAO.put(feeWaiver);
-            
-            reverse.setCreditCodes(new String[]{ feeWaiver.getId()});
+            array.add(feeWaiver.getId());
           }
 
           if ( array.size() > 0 ) {
-            reverse.setLineItems(array.toArray(new TransactionLineItem[array.size()]));
+            reverse.setCreditCodes(array.toArray(new String[array.size()]));
           }
 
           try {

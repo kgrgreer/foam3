@@ -68,7 +68,7 @@ foam.CLASS({
           for ( String code : txn.getCreditCodes()) {
             CreditCodeAccount creditCode = (CreditCodeAccount) creditCodeDAO.find(code);
             if ( creditCode != null ) {
-              CreditLineItem[] clis = creditCode.createLineItems(txn);
+              CreditLineItem[] clis = creditCode.createLineItems(x,txn);
               if ( clis != null && clis.length > 0 ) {
                 if ( codeHash.add(code) ) {
                   for( CreditLineItem cli : clis ) {
