@@ -198,21 +198,19 @@ foam.CLASS({
       expression: function(bankAccount) {
         return bankAccount ? net.nanopay.contacts.ContactStatus.READY : net.nanopay.contacts.ContactStatus.PENDING;
       },
+      getter: function() {
+        return this.bankAccount ? this.ContactStatus.READY : this.ContactStatus.PENDING;
+      },
       tableCellFormatter: function(state, obj) {
-        var color = state.color;
-
-        this.__subContext__.contactDAO.find(obj.id).then(contactObj=> {
-          var format = contactObj.bankAccount ? net.nanopay.contacts.ContactStatus.READY : net.nanopay.contacts.ContactStatus.PENDING;
-          var label = state == net.nanopay.contacts.ContactStatus.CONNECTED ? state.label.replace(/\s+/g, '') : format.label.replace(/\s+/g, '');
-
+        this.__subContext__.contactDAO.find(obj.id).then(contactObj => {
           this.start()
             .start('img')
-              .show(state == net.nanopay.contacts.ContactStatus.CONNECTED)
+              .show(state === net.nanopay.contacts.ContactStatus.CONNECTED)
               .attrs({ src: this.__subContext__.theme.logo })
               .style({ 'width': '15px', 'position': 'relative', 'top': '3px', 'right': '4px' })
             .end()
-            .start().style({ color : color })
-              .add(label)
+            .start().style({ color: state.color })
+              .add(state.label)
             .end()
           .end();
         });
