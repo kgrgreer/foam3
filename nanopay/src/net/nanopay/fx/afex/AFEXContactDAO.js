@@ -67,14 +67,14 @@ foam.CLASS({
           return getDelegate().put_(x, obj);
         }
 
-        DAO localBusinessDAO = ((DAO) x.get("localUserDAO")).inX(x);
+        DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
         DAO localAccountDAO = ((DAO) x.get("localAccountDAO")).inX(x);
         AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
 
         PersonalContact contact = (PersonalContact) obj;
 
         AuthService auth = (AuthService) x.get("auth");
-        User contactOwner = (User) localBusinessDAO.find(contact.getOwner());
+        User contactOwner = (User) localUserDAO.find(contact.getOwner());
         if ( contactOwner == null ) {
           return getDelegate().put_(x, obj);
         }
@@ -98,7 +98,7 @@ foam.CLASS({
         if (contact instanceof Contact ) {
           Contact c = (Contact) contact;
           // Check If Contact has business and create AFEX beneficiary for business also
-          Business business = (Business) localBusinessDAO.find(c.getBusinessId());
+          Business business = (Business) ((DAO) x.get("localBusinessDAO")).find(c.getBusinessId());
           if ( business != null ) {
             BankAccount businessBankAccount = ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, business.getId()), INSTANCE_OF(BankAccount.class), EQ(BankAccount.LIFECYCLE_STATE, LifecycleState.ACTIVE))));
             if ( null != businessBankAccount ) {
