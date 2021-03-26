@@ -191,16 +191,8 @@ foam.CLASS({
           if( destAccount == null ) continue;
           User payee = destAccount.findOwner(x);
           Address payeeAddress = payee == null ? null : payee.getAddress();
+          // TODO: It looks like payee address is required, so the below check for getStructured() should be done here or we need to be able to find a way to send in an unstructured address
           if ( payeeAddress == null ) throw new RuntimeException("Invalid Payee address.");
-
-          String senderEmail = payee.getEmail();
-          if ( payee instanceof Business && SafetyUtil.isEmpty(senderEmail)  ) {
-            Business business = (Business) payee;
-            List<User> signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
-            if ( signingOfficers.size() > 0 ) {
-              senderEmail = signingOfficers.get(0).getEmail();
-            }
-          }
 
           net.nanopay.iso20022.CreditTransferTransactionInformation10 cdtTrfTxInf = new net.nanopay.iso20022.CreditTransferTransactionInformation10();
           net.nanopay.iso20022.PaymentIdentification1 pmtId = new net.nanopay.iso20022.PaymentIdentification1();
@@ -251,7 +243,7 @@ foam.CLASS({
           // Creditor
           net.nanopay.iso20022.PartyIdentification32 creditor = new net.nanopay.iso20022.PartyIdentification32();
           creditor.setName(getName(payee));
-          if ( payeeAddress != null ) {
+          if ( payeeAddress != null && payeeAddress.getStructured() ) {
             net.nanopay.iso20022.PostalAddress6 pstlAdr2 = new net.nanopay.iso20022.PostalAddress6();
             String streetName = payeeAddress.getStreetName() == null ? "" : payeeAddress.getStreetName();
             String buildingNumber = payeeAddress.getStreetNumber() == null ? "" : payeeAddress.getStreetNumber();
@@ -432,20 +424,10 @@ foam.CLASS({
         try{
           isValidTransaction(txn);
           txn = (Transaction) txn.fclone();
-          Invoice invoice = txn.findInvoiceId(x);
           BankAccount sourceAccount = (BankAccount) txn.findSourceAccount(x);
           User sender = sourceAccount.findOwner(x);
           Address senderAddress = sender.getAddress();
           Address payerBankAddress = sourceAccount.getBankAddress();
-
-          String senderEmail = sender.getEmail();
-          if ( sender instanceof Business && SafetyUtil.isEmpty(senderEmail)  ) {
-            Business business = (Business) sender;
-            List<User> signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
-            if ( signingOfficers.size() > 0 ) {
-              senderEmail = signingOfficers.get(0).getEmail();
-            }
-          }
 
           net.nanopay.iso20022.DirectDebitTransactionInformation9 drctDbtTxInf = new net.nanopay.iso20022.DirectDebitTransactionInformation9();
           net.nanopay.iso20022.PaymentIdentification1 pmtId = new net.nanopay.iso20022.PaymentIdentification1();
@@ -504,7 +486,7 @@ foam.CLASS({
           // Debitor
           net.nanopay.iso20022.PartyIdentification32 debtor = new net.nanopay.iso20022.PartyIdentification32();
           debtor.setName(getName(sender));
-          if ( senderAddress != null ) {
+          if ( senderAddress != null && senderAddress.getStructured() ) {
             net.nanopay.iso20022.PostalAddress6 pstlAdr3 = new net.nanopay.iso20022.PostalAddress6();
             String streetName = senderAddress.getStreetName() == null ? "" : senderAddress.getStreetName();
             String buildingNumber = senderAddress.getStreetNumber() == null ? "" : senderAddress.getStreetNumber();
