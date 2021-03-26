@@ -107,6 +107,7 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.model.BeneficialOwner',
       autoValidate: true,
+      validationStyleEnabled: false,
       view: function (_, X) {
         var otherChoiceDAO = foam.dao.MDAO.create({ of: X.data.ownerClass });
         var obj = X.data.ownerClass.create({
