@@ -198,9 +198,6 @@ foam.CLASS({
       expression: function(bankAccount) {
         return bankAccount ? net.nanopay.contacts.ContactStatus.READY : net.nanopay.contacts.ContactStatus.PENDING;
       },
-      getter: function() {
-        return this.bankAccount ? this.ContactStatus.READY : this.ContactStatus.PENDING;
-      },
       tableCellFormatter: function(state, obj) {
         this.__subContext__.contactDAO.find(obj.id).then(contactObj => {
           this.start()
