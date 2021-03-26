@@ -4,51 +4,8 @@ p({
   "name":"Operator",
   "navigationRootMenu":"",
   "settingsRootMenu":"settings",
-  "topNavigation":"net.nanopay.ui.TopSideNavigation",
-  "footerView":"net.nanopay.sme.ui.FooterView",
-  "logoRedirect":"accounts",
-  "defaultMenu":"accounts",
-  "largeLogoEnabled": true,
-  "largeLogo": "images/nanopay_blue_white_206x42.png",
-  "logoBackgroundColour":"#202341",
-  "logo":"images/nanopay_logo_blue.png",
-  "font1":"IBM Plex Sans",
-  "primary1":"#202341",
-  "primary2":"#144794",
-  "primary3":"#406dea",
-  "primary4":"#a7beff",
-  "primary5":"#e5f1fc",
-  "approval1":"#19402E",
-  "approval2":"#117A41",
-  "approval3":"#32BF5E",
-  "approval4":"#B8E5B3",
-  "approval5":"#E2F2DD",
-  "warning1":"#816819",
-  "warning2":"#C1AE12",
-  "warning3":"#EEDC00",
-  "warning4":"#FBE88F",
-  "warning5":"#FDF8DE",
-  "destructive1":"#631414",
-  "destructive2":"#A61414",
-  "destructive3":"#D9170E",
-  "destructive4":"#F79393",
-  "destructive5":"#FBEDEC",
-  "grey1":"#5E6061",
-  "grey2":"#9BA1A6",
-  "grey3":"#CBCFD4",
-  "grey4":"#E7EAEC",
-  "grey5":"#F5F7FA",
-  "createdBy":1,
-  "createdByAgent":1,
-  "created":"2020-04-29T22:32:52.685Z",
-  "customCSS":"""
-    .net-nanopay-ui-Controller {
-      overflow: hidden;
-    }
-    .foam-comics-BrowserView {
-      width: 95%;
-    }
-  """
+  "logoRedirect":"bankaccounts",
+  "defaultMenu":"bankaccounts"
 })
 
 p({
