@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.crunch.wizardlet',
-  name: 'UnlockPaymentsWizardConfig',
+  name: 'BusinessRegistrationWizardConfig',
   extends: 'foam.u2.crunch.EasyCrunchWizard',
 
   implements: [
@@ -15,12 +15,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.model.BusinessUserJunction',
     'foam.u2.crunch.wizardflow.SaveAllAgent'
-  ],
-
-  imports: [
-    'subject'
   ],
 
   methods: [
@@ -37,8 +32,7 @@ foam.CLASS({
       name: 'execute',
       flags: ['web'],
       code: async function execute() {
-        this.allowSkipping = await this.subject.user.signingOfficers.dao
-        .find(this.subject.realUser.id) == null;
+        
       }
     }
   ]

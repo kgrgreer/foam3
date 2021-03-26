@@ -306,7 +306,7 @@ foam.CLASS({
     { name: 'SELECT_PAYABLE', message: 'Select payable' },
     { name: 'REVIEW_MSG', message: 'Review' },
     { name: 'REVIEW_PAYMENT', message: 'Review payment'},
-    { name: 'CANCEL', message: 'Cancel'},
+    { name: 'DELETE', message: 'Delete'},
     { name: 'VOID', message: 'Void'}
   ],
 
@@ -347,7 +347,7 @@ foam.CLASS({
         }
       });
 
-      this.exitLabel = this.CANCEL;
+      this.exitLabel = this.DELETE;
       this.optionLabel = this.VOID;
       this.hasExitOption = true;
 

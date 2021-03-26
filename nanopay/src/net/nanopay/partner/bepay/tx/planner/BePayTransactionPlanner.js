@@ -28,7 +28,6 @@ foam.CLASS({
     'java.util.Date',
     'java.util.UUID',
     'net.nanopay.country.br.tx.NatureCodeLineItem',
-    'net.nanopay.fx.ExchangeRateService',
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.partner.bepay.tx.BePayTransaction',
@@ -74,27 +73,19 @@ foam.CLASS({
     {
       name: 'plan',
       javaCode: `
-      //TODO: add api call to retrieve fx rate
-
-      ExchangeRateService exchangeRateService = (ExchangeRateService) x.get("exchangeRateService");
-
-      Double fxRate = exchangeRateService.getRate(requestTxn.getDestinationCurrency(), requestTxn.getSourceCurrency());
       FXSummaryTransaction txn = new FXSummaryTransaction();
       txn.copyFrom(requestTxn);
       txn.setPaymentProvider(PAYMENT_PROVIDER);
       txn.setStatus(TransactionStatus.COMPLETED);
       txn.clearLineItems();
-      txn.setAmount( (long) (requestTxn.getDestinationAmount() * fxRate) ); // if rate is in different format, need / here instead of *
       BePayTransaction bTx = new BePayTransaction();
+      bTx.setLineItems(requestTxn.getLineItems());
       bTx.copyFrom(requestTxn);
       bTx.setId(UUID.randomUUID().toString());
       bTx.setAmount(txn.getAmount());
       bTx.setName("BePay transaction");
       bTx.setPaymentProvider(PAYMENT_PROVIDER);
       bTx.setPlanner(this.getId());
-      bTx = addNatureCodeLineItems(x, bTx, requestTxn);
-      bTx = addFxLineItems(x, bTx, requestTxn, fxRate);
-      bTx = addTandC(bTx);
       txn.addNext(bTx);
       ExternalTransfer[] exT = new ExternalTransfer[2];
       exT[0] = new ExternalTransfer(quote.getDestinationAccount().getId(), bTx.getDestinationAmount());
@@ -107,92 +98,6 @@ foam.CLASS({
       name: 'postPlanning',
       javaCode: `
         return super.postPlanning(x,txn,root);
-      `
-    },
-    {
-      name: 'addNatureCodeLineItems',
-      javaType: 'BePayTransaction',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'txn',
-          type: 'BePayTransaction',
-        },
-        {
-          name: 'requestTxn',
-          type: 'Transaction'
-        }
-      ],
-      javaCode: `
-      NatureCodeLineItem natureCode = null;
-        for (TransactionLineItem lineItem: requestTxn.getLineItems() ) {
-          if ( lineItem instanceof NatureCodeLineItem ) {
-            natureCode = (NatureCodeLineItem) lineItem;
-            break;
-          }
-        }
-        if ( natureCode == null || SafetyUtil.isEmpty(natureCode.getNatureCode()) ) {
-          throw new RuntimeException("[Transaction Validation error]"+ this.INVALID_NATURE_CODE);
-        }
-        txn.addLineItems( new TransactionLineItem[] { natureCode } );
-        return txn;
-      `
-    },
-    {
-      name: 'addTandC',
-      javaType: 'BePayTransaction',
-      args: [
-        {
-          name: 'txn',
-          type: 'BePayTransaction',
-        }
-      ],
-      javaCode: `
-        InfoLineItem tandc = new InfoLineItem();
-        tandc.setName("Terms and Conditions");
-        tandc.setNote(getTermsAndConditions());
-        txn.addLineItems( new TransactionLineItem[] { tandc } );
-        return txn;
-      `
-    },
-    {
-      name: 'addFxLineItems',
-      javaType: 'BePayTransaction',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'txn',
-          type: 'BePayTransaction',
-        },
-        {
-          name: 'requestTxn',
-          type: 'Transaction'
-        },
-        {
-          name: 'fxRate',
-          type: 'Double'
-        }
-      ],
-      javaCode: `
-      Calendar c = Calendar.getInstance();
-      c.setTime(new Date());
-      c.add(Calendar.DATE, 1);
-      txn.addLineItems( new TransactionLineItem[] {
-        new FXLineItem.Builder(x)
-          .setGroup("fx").setNote("FX Broker Fee")
-          .setSourceCurrency(requestTxn.getDestinationCurrency())
-          .setDestinationCurrency(requestTxn.getSourceCurrency())
-          .setExpiry(c.getTime())
-          .setRate(fxRate)
-          .build()
-      } );
-      return txn;
       `
     },
     {

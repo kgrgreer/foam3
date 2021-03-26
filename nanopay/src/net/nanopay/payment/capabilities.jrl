@@ -40,7 +40,8 @@ p({
   "sourceCurrencies":["USD"],
   "targetCurrencies":["USD"],
   "description": "US to US corridor via AFEX",
-  "enabled":true
+  "enabled":true,
+  "ranking":1
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",

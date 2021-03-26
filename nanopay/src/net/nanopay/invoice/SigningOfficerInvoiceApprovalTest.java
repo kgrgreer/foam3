@@ -351,10 +351,7 @@ bo.setOwnershipPercent(30);
 int[] chosenOwners = {1};
 
 BusinessOwnershipData bod = new BusinessOwnershipData.Builder(myAdminContext)
-  .setOwnerSelectionsValidated(true)
-  .setAmountOfOwners(1)
-  .setOwner1(bo)
-  .setChosenOwners(Arrays.stream(chosenOwners).boxed().collect(Collectors.toList()))
+  .setOwners(new BeneficialOwner[]{bo})
   .build();
 MinMaxCapabilityData bodSelection = new MinMaxCapabilityData.Builder(x)
   .setSelectedData(new String[]{"554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired"})
