@@ -1131,6 +1131,12 @@ p({
   "requirementViewTitle":"To send a payment to a contact in this corridor you will need to provide more information",
   "of":"net.nanopay.contacts.AFEXCNBeneficiaryCapability",
   "enabled":true,
-  "icon":"/images/capabilityIcons/BeneficiaryCap.png"
+  "icon":"/images/capabilityIcons/BeneficiaryCap.png",
+  "wizardConfig": {
+    "class": "foam.u2.crunch.EasyCrunchWizard",
+    "incrementalWizard": true,
+    "skipMode":1
+  }
 })
+
 p({class:"foam.nanos.auth.ServiceProvider",id:"nanopay.estimationaccount",description:"estimation account spid",enabled:true})
