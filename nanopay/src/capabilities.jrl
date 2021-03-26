@@ -519,11 +519,7 @@ p({
     "class":"net.nanopay.crunch.IsSpid",
     "spid": "treviso"
   },
-  "associatedEntity": 1,
-  "wizardConfig": {
-    "class": "foam.u2.crunch.EasyCrunchWizard",
-    "allowSkipping": false
-  }
+  "associatedEntity": 1
 })
 
 p({
@@ -558,7 +554,7 @@ p({
     "class": "net.nanopay.crunch.wizardlet.RefreshWizardlet"
   },
   "wizardConfig": {
-    "class": "foam.u2.crunch.EasyCrunchWizard",
+    "class": "net.nanopay.crunch.wizardlet.BusinessRegistrationWizardConfig",
     "allowSkipping": false
   },
   "requirementViewTitle":"Have your business documents ready. You can save your progress and come back later.",

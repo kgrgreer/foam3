@@ -1502,6 +1502,7 @@ var classes = [
   'net.nanopay.crunch.wizardlet.SigningOfficerQuestionWizardlet',
   'net.nanopay.crunch.wizardlet.RefreshWizardlet',
   'net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig',
+  'net.nanopay.crunch.wizardlet.BusinessRegistrationWizardConfig',
 
   // Notification
   'net.nanopay.notification.PermissionedNotificationSettingRule',
