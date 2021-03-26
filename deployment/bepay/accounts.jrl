@@ -57,6 +57,7 @@ p({
   "branchId":"111111111",
   "accountNumber":"3333333",
   "name":"BePay EUR Bank",
+  "country":"PT",
   "status":1,
   "id":"1dfec169-6cfb-4d60-a573-17235c2a5d7d-bepay",
   "isDefault":true,

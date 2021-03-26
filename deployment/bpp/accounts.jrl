@@ -58,6 +58,7 @@ p({
   "branchId":"111111111",
   "accountNumber":"3333333",
   "name":"BPP EUR Bank",
+  "country":"PT",
   "status":1,
   "id":"30724107-f0c9-49ef-a3c2-460b77e3dc1e-bpp",
   "isDefault":true,
