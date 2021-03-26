@@ -7,6 +7,7 @@ p({
     "GBP":"43cfa197-600e-4e97-8f77-6e3222dfedcf-bepay",
     "EUR":"1dfec169-6cfb-4d60-a573-17235c2a5d7d-bepay"
   },
+  "provider": "BePay",
   "priority":90,
   "ruleGroup":"BePayPlanner",
   "enabled":true,
