@@ -25,21 +25,11 @@ foam.CLASS({
   documentation: `Returns true if user in context is business and has passed compliance.`,
 
   javaImports: [
-    'foam.core.Detachable',
     'foam.core.X',
-    'foam.dao.AbstractSink',
-    'foam.dao.ArraySink',
-    'foam.dao.DAO',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
-    'foam.nanos.crunch.CapabilityCategory',
-    'foam.nanos.crunch.CapabilityCategoryCapabilityJunction',
-    'foam.nanos.crunch.CapabilityJunctionStatus',
-    'foam.nanos.crunch.UserCapabilityJunction',
-    'java.util.ArrayList',
-    'java.util.List',
-    'net.nanopay.model.Business',
-    'static foam.mlang.MLang.*'
+    'foam.nanos.crunch.CrunchService',
+    'net.nanopay.model.Business'
   ],
 
   methods: [
@@ -51,26 +41,8 @@ foam.CLASS({
         User user = ((Subject) x.get("subject")).getUser();
         if ( user == null || ! ( user instanceof Business ) ) return false;
 
-        //check if business has unlocked international payment
-        DAO categoryJunctionDAO = (DAO) x.get("capabilityCategoryCapabilityJunctionDAO");
-        final List<String> junctions = new ArrayList<>();
-        categoryJunctionDAO.where(EQ(CapabilityCategoryCapabilityJunction.SOURCE_ID, "AFEXOnboarding"))
-        .select(new AbstractSink() {
-          @Override
-          public void put(Object obj, Detachable sub) {
-            junctions.add(((CapabilityCategoryCapabilityJunction) obj).getTargetId());
-          }
-        });
-
-        UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) x.get("userCapabilityJunctionDAO"))
-          .find(AND(
-              EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),
-              IN(UserCapabilityJunction.TARGET_ID, junctions),
-              EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED)
-            )
-          );
-
-        return ucj != null;
+        CrunchService crunchService = (CrunchService) x.get("crunchService");
+        return crunchService.atLeastOneInCategory(x, "AFEXOnboarding");
       `
     }
   ]

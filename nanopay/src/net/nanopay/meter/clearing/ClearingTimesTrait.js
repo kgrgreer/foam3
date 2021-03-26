@@ -29,7 +29,7 @@ foam.INTERFACE({
       visibility: 'RO',
       readPermissionRequired: true,
       writePermissionRequired: true,
-      javaType: 'java.util.Map<String, Integer>',
+      javaType: 'java.util.Map<String, Long>',
       javaFactory: ''
     },
     {

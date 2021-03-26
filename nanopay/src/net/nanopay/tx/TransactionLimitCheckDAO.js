@@ -107,14 +107,14 @@ foam.CLASS({
         }
 
 
-        Object firstLock  = String.valueOf(((Account)transaction.findSourceAccount(x)).getId() < ((Account)transaction.findDestinationAccount(x)).getId() ? transaction.findSourceAccount(x) : transaction.findDestinationAccount(x)).intern();
-        Object secondLock = String.valueOf(((Account)transaction.findSourceAccount(x)).getId() < ((Account)transaction.findDestinationAccount(x)).getId() ? transaction.findDestinationAccount(x) : transaction.findSourceAccount(x)).intern();
+        Object firstLock  = String.valueOf(((Account)transaction.findSourceAccount(x)).getId().compareTo(((Account)transaction.findDestinationAccount(x)).getId()) < 0 ? transaction.findSourceAccount(x) : transaction.findDestinationAccount(x)).intern();
+        Object secondLock = String.valueOf(((Account)transaction.findSourceAccount(x)).getId().compareTo(((Account)transaction.findDestinationAccount(x)).getId()) >= 0 ? transaction.findDestinationAccount(x) : transaction.findSourceAccount(x)).intern();
 
         synchronized ( firstLock ) {
           synchronized ( secondLock ) {
 
-            if ( ! limitsNotAbove(transaction, payer, isBroker(payer), TransactionLimitType.SEND,    true) ||
-                ! limitsNotAbove(transaction, payee, isBroker(payee), TransactionLimitType.RECEIVE, false) ) {
+            if ( ! limitsNotAbove(x, transaction, payer, isBroker(payer), TransactionLimitType.SEND,    true) ||
+                ! limitsNotAbove(x, transaction, payee, isBroker(payee), TransactionLimitType.RECEIVE, false) ) {
               logger.error("Transaction limits overstepped for " + transaction.getId());
               throw new RuntimeException(OVERSTEP_TRANS_LIMITS_ERROR_MSG);
             }
@@ -146,6 +146,7 @@ foam.CLASS({
       visibility: 'protected',
       type: 'boolean',
       args: [
+        { type: 'Context', name: 'x' },
         { type: 'Transaction', name: 'transaction' },
         { type: 'User', name: 'user' },
         { type: 'boolean', name: 'isBroker' },
@@ -180,7 +181,7 @@ foam.CLASS({
 
             userLimitValue = ((Double)(((Sum) sumLimitDAO.select(SUM(TransactionLimit.AMOUNT))).getValue())).longValue();
           }
-          if ( isOverTimeFrameLimit(transaction, user, timeFrame, userLimitValue, isPayer) ) {
+          if ( isOverTimeFrameLimit(x,transaction, user, timeFrame, userLimitValue, isPayer) ) {
             return false;
           }
         }
@@ -192,6 +193,7 @@ foam.CLASS({
       visibility: 'protected',
       type: 'boolean',
       args: [
+        { type: 'Context', name: 'x' },
         { type: 'Transaction', name: 'transaction' },
         { type: 'User', name: 'user' },
         { type: 'TransactionLimitTimeFrame', name: 'timeFrame' },
@@ -215,7 +217,7 @@ foam.CLASS({
             userTransactionAmount = getTransactionAmounts(user, isPayer, Calendar.DAY_OF_YEAR);
             break;
         }
-        return ( ( userTransactionAmount + transaction.getAmount() ) > limit);
+        return ( ( userTransactionAmount + -transaction.getTotal(x, transaction.getSourceAccount()) ) > limit);
       `
     },
     {

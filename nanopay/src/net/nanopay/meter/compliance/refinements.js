@@ -29,11 +29,22 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.ComplianceStatus',
       name: 'compliance',
+      value: net.nanopay.admin.model.ComplianceStatus.NOTREQUESTED,
       documentation: 'Operations approval status for user.',
       readPermissionRequired: true,
       writePermissionRequired: true,
-      section: 'administrative',
+      section: 'complianceInformation',
+      order: 30,
+      gridColumns: 6,
       sheetsOutput: true
+    },
+    {
+      class: 'DateTime',
+      name: 'dateCompliancePassed',
+      documentation: 'Date compliance was passed',
+      section: 'complianceInformation',
+      order: 31,
+      gridColumns: 6
     }
   ]
 });
@@ -52,6 +63,9 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.ComplianceStatus',
       name: 'compliance',
+      section: 'complianceInformation',
+      order: 10,
+      gridColumns: 6,
       documentation: 'Operations approval status for bank account.',
       readPermissionRequired: true,
       writePermissionRequired: true,

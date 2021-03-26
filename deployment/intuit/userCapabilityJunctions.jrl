@@ -7,3 +7,5 @@ p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"F7B7E01A-C684-4889-A
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"4F92603A-2DF7-4ACE-BEE2-3596D32253BA","sourceId":8034,"targetId":"intuit","status":1})
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"01327FE5-DFD6-4E8C-9143-8109AF14A6C2","sourceId":8035,"targetId":"intuit","status":1})
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"FF1EF762-66A1-4E65-A9A2-80BFB0B93E27","sourceId":9035,"targetId":"intuit","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"40934EFD-7FE8-4C02-8882-FBD814417AC9","sourceId":7036,"targetId":"intuit","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"0A22C369-5E4A-4921-B2C7-8AA1ACA15FCB","sourceId":9100,"targetId":"intuit","status":1})

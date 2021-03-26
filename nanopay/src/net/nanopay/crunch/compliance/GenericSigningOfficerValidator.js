@@ -50,7 +50,15 @@ foam.CLASS({
             Capability capability = (Capability) ucj.findTargetId(x);
             User user = (User) ucj.saveDataToDAO(x, capability, false);
 
-            String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
+            foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");            
+            logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", true). - subject", x.get("subject"));
+            logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", true). - user", ((foam.nanos.auth.Subject) x.get("subject")).getUser());
+            logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", true). - realuser", ((foam.nanos.auth.Subject) x.get("subject")).getRealUser());
+            logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", true). - capability", capability);
+            logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", true). - ucj", ucj);
+            logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", true). - data", ucj.getData());
+            logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", true). - savedObj", user);
+            String group = user.getSpid() + "-fraud-ops";
 
             requestApproval(x,
               new ApprovalRequest.Builder(x)
@@ -59,6 +67,7 @@ foam.CLASS({
                   "Please review whether they should be given this capability ")
                 .setDaoKey("userCapabilityJunctionDAO")
                 .setObjId(ucj.getId())
+                .setCreatedFor(user.getId())
                 .setGroup(group)
               .build()
             );

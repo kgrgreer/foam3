@@ -21,9 +21,14 @@ p({
         "status",
         "ownerType"
       ],
-      "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"},
-      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+      "CRUDEnabledActionsAuth":{
+        "class":"foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled":true,
+        "enabledActionsAuth":{
+          "class":"foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName":"bankaccount"
+        }
+      }
     }
   }
 })
@@ -37,7 +42,22 @@ p({
     "class":"foam.nanos.menu.SubMenu"
   }
 })
-
+p({
+   "class":"foam.nanos.menu.Menu",
+   "id":"operation.bills",
+   "label":"Bills",
+   "handler":{
+      "class":"foam.nanos.menu.DAOMenu2",
+      "config":{
+         "class":"foam.comics.v2.DAOControllerConfig",
+         "daoKey":"billDAO",
+         "createPredicate":{"class":"foam.mlang.predicate.False"},
+         "editPredicate":{"class":"foam.mlang.predicate.False"},
+         "deletePredicate":{"class":"foam.mlang.predicate.False"}
+      }
+   },
+   "parent":"operation"
+})
 r({"class":"foam.nanos.menu.Menu", "id":"admin.emailmessages"})
 p({
    "class":"foam.nanos.menu.Menu",
@@ -51,6 +71,32 @@ p({
          "createPredicate":{"class":"foam.mlang.predicate.False"},
          "editPredicate":{"class":"foam.mlang.predicate.False"},
          "deletePredicate":{"class":"foam.mlang.predicate.False"}
+      }
+   },
+   "parent":"operation"
+})
+p({
+   "class":"foam.nanos.menu.Menu",
+   "id":"operation.errorcodes",
+   "label":"Error Codes",
+   "handler":{
+      "class":"foam.nanos.menu.DAOMenu2",
+      "config":{
+         "class":"foam.comics.v2.DAOControllerConfig",
+         "daoKey":"errorCodeDAO"
+      }
+   },
+   "parent":"operation"
+})
+p({
+   "class":"foam.nanos.menu.Menu",
+   "id":"operation.errorfees",
+   "label":"Error Fees",
+   "handler":{
+      "class":"foam.nanos.menu.DAOMenu2",
+      "config":{
+         "class":"foam.comics.v2.DAOControllerConfig",
+         "daoKey":"errorFeeDAO"
       }
    },
    "parent":"operation"
@@ -79,7 +125,8 @@ p({
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"ipHistoryDAO",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"}
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":"operation"
@@ -101,17 +148,69 @@ p({
   "parent":"operation"
 })
 p({
-  "class":"foam.nanos.menu.Menu",
-  "id":"operation.whitelistedemail",
-  "label":"Email Whitelist",
+  "class": "foam.nanos.menu.Menu",
+  "id": "operation.txlimitrules",
+  "label": "Transaction Limits",
   "handler": {
-    "class":"foam.nanos.menu.DAOMenu2",
-    "config":{
-      "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"whitelistedEmailDAO"
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "daoKey": "ruleDAO",
+      "predicate": {
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.liquidity.tx.TxLimitRule"
+      },
+      "defaultColumns": [
+        "id",
+        "name",
+        "enabled",
+        "applyLimitTo",
+        "send",
+        "limit",
+        "period"
+      ],
+      "of": "net.nanopay.liquidity.tx.TxLimitRule",
+      "browseTitle": "Transaction Limits",
+      "createTitle": "Create a New Transaction Limit",
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "rule"
+        }
+      }
     }
   },
-  "parent":"operation"
+  "parent": "operation"
+})
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "operation.clearingtimerules",
+  "label": "Clearing Times",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "daoKey": "ruleDAO",
+      "factory": "net.nanopay.meter.clearing.ruler.BusinessClearingTimeRule",
+      "predicate": {
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.meter.clearing.ruler.ClearingTimeRule"
+      },
+      "of": "net.nanopay.meter.clearing.ruler.ClearingTimeRule",
+      "deletePredicate":{"class":"foam.mlang.predicate.False"},
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "clearingtimerule"
+        }
+      }
+    }
+  },
+  "parent": "operation"
 })
 
 // reports
@@ -138,7 +237,8 @@ p({
           "class": "foam.comics.v2.BasicEnabledActionsAuth",
           "modelName": "report"
         }
-      }
+      },
+      "editPredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":  "report"
@@ -155,7 +255,8 @@ p({
       "daoKey":        "abliiBusinessReportDAO",
       "browseTitle":   "Ablii Business Report",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"}
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":"report"
@@ -182,7 +283,8 @@ p({
       "daoKey":        "paymentReportDAO",
       "browseTitle":   "Payment Report",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"}
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":  "report"
@@ -199,7 +301,8 @@ p({
       "daoKey":        "businessSummaryReportDAO",
       "browseTitle":   "Business Summary Report",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"}
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":  "report"
@@ -216,7 +319,8 @@ p({
       "daoKey":        "paymentSummaryReportDAO",
       "browseTitle":   "Payment Summary Report for Leadership",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"}
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":  "report"
@@ -233,7 +337,8 @@ p({
       "daoKey":        "userComplianceSummaryReportDAO",
       "browseTitle":   "User Compliance Summary Report",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"}
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":  "report"
@@ -250,7 +355,8 @@ p({
       "daoKey":        "rejectedTransactionReportDAO",
       "browseTitle":   "Rejected Transaction Report",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"}
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":  "report"
@@ -274,6 +380,7 @@ p({
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"businessOnboardingDAO",
+      "deletePredicate":{"class":"foam.mlang.predicate.False"},
       "CRUDEnabledActionsAuth": {
         "class": "foam.comics.v2.CRUDEnabledActionsAuth",
         "isEnabled": true,
@@ -295,6 +402,7 @@ p({
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"canadaUsBusinessOnboardingDAO",
+      "deletePredicate":{"class":"foam.mlang.predicate.False"},
       "CRUDEnabledActionsAuth": {
         "class": "foam.comics.v2.CRUDEnabledActionsAuth",
         "isEnabled": true,
@@ -316,6 +424,7 @@ p({
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"uSBusinessOnboardingDAO",
+      "deletePredicate":{"class":"foam.mlang.predicate.False"},
       "CRUDEnabledActionsAuth": {
         "class": "foam.comics.v2.CRUDEnabledActionsAuth",
         "isEnabled": true,
@@ -346,17 +455,19 @@ p({
   "parent":"onboarding"
 })
 
-// transactions-2
+// transactions
 p({
   "class":"foam.nanos.menu.Menu",
-  "id":"transactions-2",
-  "label":"Transactions",
+  "id":"transactions",
+  "label":"Transaction Details",
   "handler":{
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
+      "browseTitle": "Transaction Details",
       "daoKey":"tableViewTransactionDAO",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"},
       "defaultColumns":[
         "type",
         "status",

@@ -61,6 +61,7 @@ foam.CLASS({
 
               OnboardingPaymentOpsNotification notification = new OnboardingPaymentOpsNotification.Builder(x)
               .setEmailArgs(args)
+              .setGroupId(user.getSpid() + "-payment-ops")
               .build();
 
               DAO notificationDAO = (DAO) getX().get("localNotificationDAO");

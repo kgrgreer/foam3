@@ -150,11 +150,13 @@ foam.CLASS({
             invoice.clearPaymentMethod();
             invoice.clearPaymentDate();
             invoiceDAO.put(invoice);
+
             // Send a notification to the payment-ops team.
             FailedTransactionNotification notification = new FailedTransactionNotification.Builder(x)
               .setTransactionId(transaction.getId())
               .setInvoiceId(invoice.getId())
               .setEmailArgs(args)
+              .setGroupId(transaction.getSpid() + "-payment-ops")
               .build();
             DAO notificationDAO = ((DAO) x.get("localNotificationDAO")).inX(x);
             notificationDAO.put(notification);

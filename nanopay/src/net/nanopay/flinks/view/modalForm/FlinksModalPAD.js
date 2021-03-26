@@ -43,6 +43,7 @@ foam.CLASS({
     'isConnecting',
     'notify',
     'padCaptureDAO',
+    'pushMenu',
     'stack',
     'user'
   ],
@@ -51,7 +52,7 @@ foam.CLASS({
     ^ {
       width: 504px;
       max-height: 80vh;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
     ^content {
       position: relative;
@@ -180,11 +181,9 @@ foam.CLASS({
         this.ctrl.notify(this.SUCCESS, '', this.LogLevel.INFO, true);
         if ( this.onComplete ) this.onComplete();
         this.closeDialog();
-        location.hash = 'capability.main.banking';
+        location.hash = 'mainmenu.banking';
         this.bannerizeCompliance();
-        this.stack.push({
-          class: 'net.nanopay.bank.BankAccountController'
-        });
+        this.pushMenu('mainmenu.banking');
       }
     }
   ],

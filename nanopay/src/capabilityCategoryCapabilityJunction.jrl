@@ -34,12 +34,12 @@ p({
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "app",
-"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-49"
+"targetId": "0B2E7305-B898-43F2-9C1B-63FB2CE38B2D"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "onboarding",
-"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-49"
+"targetId": "0B2E7305-B898-43F2-9C1B-63FB2CE38B2D"
 })
 
 p({
@@ -69,7 +69,7 @@ p({
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "beneficialOwnerOnboarding",
-"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-7"
+"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
@@ -99,7 +99,7 @@ p({
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "AFEXOnboarding",
-"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-49"
+"targetId": "0B2E7305-B898-43F2-9C1B-63FB2CE38B2D"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
@@ -119,11 +119,88 @@ p({
 
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
-"sourceId": "userComplianceCheck",
-"targetId": "FB1C8CF2-34B9-40FE-A4AA-58CFA2FDBA15"
+"sourceId": "secureFactUserValidation",
+"targetId": "manual.compliance.securefact.user"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
-"sourceId": "businessComplianceCheck",
-"targetId": "EC535109-E9C0-4B5D-8D24-31282EF72F8F"
+"sourceId": "dowJonesUserValidation",
+"targetId": "manual.compliance.dowjones.user"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "identityMindUserValidation",
+"targetId": "manual.compliance.identitymind.user"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "secureFactBusinessValidation",
+"targetId": "manual.compliance.securefact.business"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "dowJonesBusinessValidation",
+"targetId": "manual.compliance.dowjones.business"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "identityMindBusinessValidation",
+"targetId": "manual.compliance.identitymind.business"
+})
+
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "compliancePassed",
+"targetId": "1F0B39AD-934E-462E-A608-D590D1081298"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "compliancePassed",
+"targetId": "25D9499A-36D3-436A-9C87-3CA41B5FC08F"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "compliancePassed",
+"targetId": "18DD6F03-998F-4A21-8938-358183151F96"
+})
+
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "toplevelonboarding",
+"targetId": "bf6a49d5-4027-4dac-a269-4d3ed070609e-1"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "toplevelonboarding",
+"targetId": "bf6a49d5-4027-4dac-a269-4d3ed070609e-2"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "toplevelonboarding",
+"targetId": "bf6a49d5-4027-4dac-a269-4d3ed070609e-3"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "toplevelonboarding",
+"targetId": "bf6a49d5-4027-4dac-a269-4d3ed070609e-4"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "registerPaymentProvider",
+"targetId": "89cc91da-4bbd-458b-81d4-574815e455fa-1"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "registerPaymentProvider",
+"targetId": "89cc91da-4bbd-458b-81d4-574815e455fa-2"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "registerPaymentProvider",
+"targetId": "89cc91da-4bbd-458b-81d4-574815e455fa-3"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "registerPaymentProvider",
+"targetId": "89cc91da-4bbd-458b-81d4-574815e455fa-4"
 })

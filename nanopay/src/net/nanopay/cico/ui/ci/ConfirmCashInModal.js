@@ -22,6 +22,7 @@ foam.CLASS({
 
   requires: [
     'foam.log.LogLevel',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.model.Transaction'
   ],
 
@@ -216,7 +217,7 @@ foam.CLASS({
               .addClass('accountNumber')
               .call(function() {
                 self.bankAccountDAO.find(self.bankList).then(function(bank) {
-                  this.add('***' + bank.accountNumber.substring(bank.accountNumber.length - 4, bank.accountNumber.length));
+                  this.add(this.BankAccount.mask(bank.accountNumber));
                 }.bind(this));
               })
             .end()

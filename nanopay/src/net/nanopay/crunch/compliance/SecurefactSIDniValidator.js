@@ -58,6 +58,14 @@ foam.CLASS({
 
         Capability capability = (Capability) ucj.findTargetId(x);
         User user = (User) ucj.saveDataToDAO(x, capability, false);
+        foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");     
+        logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - subject", x.get("subject"));
+        logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - user", ((foam.nanos.auth.Subject) x.get("subject")).getUser());
+        logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - realuser", ((foam.nanos.auth.Subject) x.get("subject")).getRealUser());
+        logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - capability", capability);
+        logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - ucj", ucj);
+        logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - data", ucj.getData());
+        logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - savedObj", user);
 
         SecurefactService securefactService = (SecurefactService) x.get("securefactService");
         try {
@@ -68,7 +76,7 @@ foam.CLASS({
             agency.submit(x, new ContextAgent() {
               @Override
               public void execute(X x) {
-                String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
+                String group = user.getSpid() + "-fraud-ops";
                 requestApproval(x,
                   new ComplianceApprovalRequest.Builder(x)
                     .setObjId(ucj.getId())
@@ -76,6 +84,7 @@ foam.CLASS({
                     .setCauseId(getResponse().getId())
                     .setClassification(getClassification())
                     .setCauseDaoKey("securefactSIDniDAO")
+                    .setCreatedFor(user.getId())
                     .setGroup(group)
                     .build()
                 );
@@ -87,13 +96,14 @@ foam.CLASS({
           ((Logger) x.get("logger")).warning("SIDniValidator failed.", e);
 
           SIDniResponse response = getResponse();
-          String group = SafetyUtil.isEmpty(user.getSpid()) || user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
+          String group = user.getSpid() + "-fraud-ops";
           requestApproval(x, new ComplianceApprovalRequest.Builder(x)
             .setObjId(ucj.getId())
             .setDaoKey("userCapabilityJunctionDAO")
             .setCauseId(response == null ? 0L : getResponse().getId())
             .setClassification(getClassification())
             .setCauseDaoKey("securefactSIDniDAO")
+            .setCreatedFor(user.getId())
             .setGroup(group)
             .build());
           ruler.putResult(ComplianceValidationStatus.PENDING);

@@ -23,7 +23,7 @@ foam.CLASS({
   documentation: 'PTaxRate from the Central Bank of Brazil for use as fee.',
 
   javaImports: [
-    'net.nanopay.country.br.OpenDataService'
+    'net.nanopay.country.br.OpenData'
   ],
 
   messages: [
@@ -45,7 +45,7 @@ foam.CLASS({
     {
       name: 'getRate',
       javaCode: `
-        var openDataService = (OpenDataService) getX().get("openDataService");
+        var openDataService = (OpenData) getX().get("openDataService");
         var pTaxRate = openDataService.getPTaxRate();
         return pTaxRate.getCotacaoVenda();
       `

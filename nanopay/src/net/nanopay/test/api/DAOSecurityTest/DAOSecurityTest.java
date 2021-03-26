@@ -43,6 +43,8 @@ public abstract class DAOSecurityTest extends ApiTestBase {
     GLOBAL_IGNORES.add("userDAO");
     GLOBAL_IGNORES.add("userUserDAO");
     GLOBAL_IGNORES.add("localeDAO");
+    GLOBAL_IGNORES.add("oauthProviderDAO");
+    GLOBAL_IGNORES.add("commonPasswordDAO");
   }
 
   // Helper class for holding results
@@ -65,7 +67,7 @@ public abstract class DAOSecurityTest extends ApiTestBase {
   }
 
   private boolean testDAO(X x, String dao, String request) throws ParseException, IOException, TestDAOFailed {
-    String urlString = getBaseUrl(x) + "/service/" + dao;
+    String urlString = this.getBaseUrl(x) + "/service/"+dao;
     URL url = new URL(urlString);
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
 

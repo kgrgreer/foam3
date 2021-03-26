@@ -170,7 +170,7 @@ foam.CLASS({
         this.data.payer.toSummary() :
         this.data.payee.toSummary();
       var dueDateFormatted = this.data.dueDate ?
-        'Due ' + this.data.dueDate.toISOString().slice(0, 10) :
+        'Due ' + this.data.dueDate.toLocaleDateString(foam.locale) :
         '';
       this.currencyDAO.find(this.data.destinationCurrency)
         .then((currency) => {

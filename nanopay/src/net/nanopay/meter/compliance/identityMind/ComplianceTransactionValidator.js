@@ -25,7 +25,9 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
+    'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
@@ -41,22 +43,31 @@ foam.CLASS({
         public void execute(X x) {
           Transaction transaction = (Transaction) obj;
           ComplianceValidationStatus status = ComplianceValidationStatus.PENDING;
+          User owner = transaction.findSourceAccount(x).findOwner(x);
+
           ComplianceApprovalRequest approvalRequest =
             new ComplianceApprovalRequest.Builder(x)
               .setObjId(transaction.getId())
-              .setDaoKey("localTransactionDAO")
-              .setClassification("Validate Transaction Using IdentityMind")
+              .setServerDaoKey("localTransactionDAO")
+              .setDaoKey("transactionDAO")
+              .setCreatedFor(owner.getId())
+              .setClassification("Transaction IdentityMind Transfer")
               .build();
 
           IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
           IdentityMindResponse response = identityMindService.evaluateTransfer(x, transaction);
           status = response.getComplianceValidationStatus();
 
+          Account sourceAccount = transaction.findSourceAccount(x);
+          User accountOwner = sourceAccount != null ? sourceAccount.findOwner(x) : null;
+          String approvalGroup = accountOwner != null ? accountOwner.getSpid() + "-" + getApproverGroupId() : getApproverGroupId();
+
           // Create approval request
           approvalRequest.setCauseId(response.getId());
           approvalRequest.setCauseDaoKey("identityMindResponseDAO");
           approvalRequest.setStatus(getApprovalStatus(status));
           approvalRequest.setApprover(getApprover(status));
+          approvalRequest.setGroup(approvalGroup);
           requestApproval(x, approvalRequest);
           ruler.putResult(status);
         }

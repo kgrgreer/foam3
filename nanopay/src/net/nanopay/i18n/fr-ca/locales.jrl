@@ -6,8 +6,8 @@ p({class:"foam.i18n.Locale",locale:"fr",variant:"CA",locale_variant:"fr-CA",sour
 p({class:"foam.i18n.Locale",locale:"fr",variant:"CA",locale_variant:"fr-CA",source:"fr-CA.region.error",target:"Region required"})
 
 p({class:"foam.i18n.Locale",locale:"fr",variant:"CA",locale_variant:"fr-CA",source:"us.postalCode.label",target:"ZIP Code"})
-p({class:"foam.i18n.Locale",locale:"fr",variant:"CA",locale_variant:"fr-CA",source:"us.postalCode.error",target:"ZIP Code required"})
-p({class:"foam.i18n.Locale",locale:"fr",variant:"CA",locale_variant:"fr-CA",source:"ca.postalCode.label",target:"Postal Code"})
-p({class:"foam.i18n.Locale",locale:"fr",variant:"CA",locale_variant:"fr-CA",source:"ca.postalCode.error",target:"Postal Code required"})
-p({class:"foam.i18n.Locale",locale:"fr",variant:"CA",locale_variant:"fr-CA",source:"fr-CA.postalCode.label",target:"Postal Code"})
-p({class:"foam.i18n.Locale",locale:"fr",variant:"CA",locale_variant:"fr-CA",source:"fr-CA.postalCode.error",target:"Postal Code required"})
+p({class:"foam.i18n.Locale",locale:"fr",variant:"CA",locale_variant:"fr-CA",source:"us.postalCode.error",target:"Code postal requis"})
+p({class:"foam.i18n.Locale",locale:"fr",variant:"CA",locale_variant:"fr-CA",source:"ca.postalCode.label",target:"Code Postal"})
+p({class:"foam.i18n.Locale",locale:"fr",variant:"CA",locale_variant:"fr-CA",source:"ca.postalCode.error",target:"Code postal valide requis"})
+p({class:"foam.i18n.Locale",locale:"fr",variant:"CA",locale_variant:"fr-CA",source:"fr-CA.postalCode.label",target:"Code Postal"})
+p({class:"foam.i18n.Locale",locale:"fr",variant:"CA",locale_variant:"fr-CA",source:"fr-CA.postalCode.error",target:"Code postal valide requis"})

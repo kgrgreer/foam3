@@ -1,0 +1,156 @@
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "ucj-crunchOnboarding-rules",
+  priority: 1
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "serviceProviderCapability",
+  priority: 2
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "abliiPlannerCapability",
+  priority: 3
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "abliiCountryCapability",
+  priority: 4
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "abliiCorridorCapability",
+  priority: 5
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "abliiCurrencyCapability",
+  priority: 6
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "abliiMenuCapability",
+  priority: 7
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "ablii-tx-rules",
+  priority: 8
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "ablii-tx-fees",
+  priority: 9
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "ablii-user-notification-settings",
+  priority: 10
+})
+
+// REVIEW: Planners for ablii
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "RBCPlannerCapability",
+  priority: 10
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "BMOPlannerCapability",
+  priority: 11
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "AFEXPlannerCapability",
+  priority: 12
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "KotakPlannerCapability",
+  priority: 13
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "DomesticInterBankAccountPlannerCapability",
+  priority: 14
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "89cc91da-4bbd-458b-81d4-574815e455fa-1",
+  targetId: "1f6b2047-1eef-471d-82e7-d86bdf511375-2",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "89cc91da-4bbd-458b-81d4-574815e455fa-1",
+  targetId: "1f6b2047-1eef-471d-82e7-d86bdf511375-3",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "bf6a49d5-4027-4dac-a269-4d3ed070609e-1",
+  targetId: "554af38a-8225-87c8-dfdf-eeb15f71215f-11",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "bf6a49d5-4027-4dac-a269-4d3ed070609e-1",
+  targetId: "89cc91da-4bbd-458b-81d4-574815e455fa-1",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "bf6a49d5-4027-4dac-a269-4d3ed070609e-2",
+  targetId: "554af38a-8225-87c8-dfdf-eeb15f71215f-12",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "bf6a49d5-4027-4dac-a269-4d3ed070609e-2",
+  targetId: "89cc91da-4bbd-458b-81d4-574815e455fa-2",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "bf6a49d5-4027-4dac-a269-4d3ed070609e-3",
+  targetId: "554af38a-8225-87c8-dfdf-eeb15f71215f-13",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "bf6a49d5-4027-4dac-a269-4d3ed070609e-3",
+  targetId: "89cc91da-4bbd-458b-81d4-574815e455fa-3",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "89cc91da-4bbd-458b-81d4-574815e455fa-2",
+  targetId: "1f6b2047-1eef-471d-82e7-d86bdf511375",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "89cc91da-4bbd-458b-81d4-574815e455fa-3",
+  targetId: "1f6b2047-1eef-471d-82e7-d86bdf511375",
+})

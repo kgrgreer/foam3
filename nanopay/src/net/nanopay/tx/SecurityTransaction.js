@@ -35,7 +35,7 @@ foam.CLASS({
         return 'Digital Security Transfer';
       },
       javaFactory: `
-    return "Digital Security Transfer";
+        return "Digital Security Transfer";
       `,
     },
     {
@@ -52,8 +52,6 @@ foam.CLASS({
       class: 'String',
       name: 'sourceCurrency',
       aliases: ['sourceDenomination'],
-      section: 'paymentInfoSource',
-      gridColumns: 5,
       visibility: 'RO',
       factory: function() {
         return this.ctrl.homeDenomination ? 'fail' : 'NANO.TO';
@@ -74,10 +72,7 @@ foam.CLASS({
     {
       class: 'UnitValue',
       name: 'amount',
-      label: 'Source Amount',
-      section: 'amountSelection',
       required: true,
-      gridColumns: 5,
       visibility: 'RO',
       help: `This is the amount to be withdrawn from payers chosen account (Source Account).`,
       view: function(_, X) {
@@ -123,8 +118,6 @@ foam.CLASS({
     {
       class: 'UnitValue',
       name: 'destinationAmount',
-      label: 'Destination Amount',
-      gridColumns: 7,
       help: `This is the amount to be transfered to payees account (destination account).`,
       view: function(_, X) {
         return {
@@ -136,7 +129,6 @@ foam.CLASS({
         };
       },
       documentation: 'Amount in Receiver Currency',
-      section: 'amountSelection',
       unitPropValueToString: async function(x, val, unitPropName) {
         var unitProp = await x.securitiesDAO.find(unitPropName);
         if ( unitProp )
@@ -171,7 +163,6 @@ foam.CLASS({
       class: 'String',
       name: 'summary',
       createVisibility: 'HIDDEN',
-      section: 'basicInfo',
       readVisibility: function(summary) {
         return summary ?
           foam.u2.DisplayMode.RO :

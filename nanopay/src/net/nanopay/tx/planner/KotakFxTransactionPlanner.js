@@ -60,9 +60,9 @@ foam.CLASS({
       value: 1021
     },
     {
-      type: 'Long',
+      type: 'String',
       name: 'KOTAK_CO_DESTINATION_ACCOUNT_ID',
-      value: 9
+      value: '9'
     },
     {
       name: 'PAYMENT_PROVIDER',
@@ -107,10 +107,15 @@ foam.CLASS({
       Transfer t = new Transfer();
       t.setAccount(requestTxn.getSourceAccount());
       t.setAmount(-requestTxn.getAmount());
-      Transfer[] transfers = new Transfer[1];
+      Transfer[] transfers = new Transfer[2];
       transfers[0] = t;
 
-      TrustAccount trustAccount = TrustAccount.find(x, requestTxn.findSourceAccount(x));
+      TrustAccount trustAccount = ((DigitalAccount) requestTxn.findSourceAccount(x)).findTrustAccount(x);
+      Transfer t2 = new Transfer();
+      t2.setAccount(trustAccount.getId());
+      t2.setAmount(requestTxn.getAmount());
+      transfers[1] = t2;
+
       KotakCOTransaction kotakCO = new KotakCOTransaction.Builder(x).build();
       kotakCO.setAmount(requestTxn.getAmount());
       kotakCO.setSourceAccount(requestTxn.getSourceAccount());

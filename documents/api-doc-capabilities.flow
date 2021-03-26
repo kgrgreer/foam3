@@ -89,7 +89,7 @@
     "class": "foam.nanos.crunch.connection.CapabilityPayload",
     "id": "1F0B39AD-934E-462E-A608-D590D1081298",
     "capabilityDataObjects": {
-        "AbliiPrivacyPolicy": {
+        "Ablii Privacy Policy": {
             "class": "net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy",
             "title": "Ablii's Privacy Policy",
             "agreement": false,
@@ -103,7 +103,7 @@
         }
     },
     "capabilityValidationErrors": {
-        "AbliiPrivacyPolicy": "Must acknowledge the agreement.",
+        "Ablii Privacy Policy": "Must acknowledge the agreement.",
         "Expanded User Details": "Must be at least 18 years old."
     }
 }</code>
@@ -146,8 +146,16 @@
       <td style="text-align:center">REQUIRED</td>
     </tr>
     <tr>
-      <td>Ablii Terms & Conditions</td>
+      <td>Ablii Terms and Conditions</td>
       <td>AbliiTermsAndConditions</td>
+      <td style="text-align:center">REQUIRED</td>
+      <td style="text-align:center">REQUIRED</td>
+      <td style="text-align:center">REQUIRED</td>
+      <td style="text-align:center">REQUIRED</td>
+    </tr>
+    <tr>
+      <td>CA Account Authorization Agreement</td>
+      <td>CABankAccountAuthAgreement</td>
       <td style="text-align:center">REQUIRED</td>
       <td style="text-align:center">REQUIRED</td>
       <td style="text-align:center">REQUIRED</td>

@@ -1,22 +1,34 @@
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d5","name":"Logout user on user delete",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d5",
+  "name":"Logout user on user delete",
   "priority": 100,
   "enabled": true,
   "ruleGroup": "auth",
   "documentation": "remove sessions on user removal",
   "daoKey": "localUserDAO",
-  "operation": 1, 
+  "operation": 1,
   "after": true,
   "predicate":{
-    "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+    "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
     "propName":"lifecycleState",
     "propValue":{
       "class":"foam.nanos.auth.LifecycleState",
-      "ordinal":3
+      "ordinal":1
     }
   },
   "action":{ "class":"net.nanopay.auth.ruler.LogoutUserAction" },
-  "saveHistory": true,
+  "saveHistory": false,
   "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"user-prevent-duplicate-usernames-rule",
+  "action":{ "class":"net.nanopay.auth.ruler.PreventDuplicateUsernameAction" }
+})
+p({
+  "class":"net.nanopay.auth.ruler.SpidLimitedPermissionedUserRule",
+  "id":"user-prevent-duplicate-email-rule",
+  "limitedSpidList": [ "intuit" ],
+  "action":{ "class":"net.nanopay.auth.ruler.PreventDuplicateEmailAction" }
 })

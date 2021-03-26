@@ -27,7 +27,8 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.UnsupportedTransactionException',
-    'foam.core.ValidationException'
+    'foam.core.ValidationException',
+    'foam.util.SafetyUtil'
   ],
 
   methods: [
@@ -35,7 +36,7 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
       // TODO: swap runtime errors for Transaction Request Error Codes.
-        if ( obj instanceof Transaction && ((Transaction) obj).getId() != null )
+        if ( obj instanceof Transaction && ! SafetyUtil.isEmpty(((Transaction) obj).getId()) )
           throw new ValidationException("Only transactions without an ID can be planned");
         if ( obj instanceof Transaction || obj instanceof TransactionQuote )
           return getDelegate().put_(x, obj);

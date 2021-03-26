@@ -18,10 +18,30 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'MTBankAccount',
-  label: 'Malta Bank',
+  label: 'Malta',
   extends: 'net.nanopay.bank.EUBankAccount',
 
+  mixins: [ 'net.nanopay.bank.BankAccountValidationMixin' ],
+
   documentation: 'Malta bank account information.',
+
+  javaImports: [
+    'foam.core.ValidationException',
+    'foam.util.SafetyUtil'
+  ],
+
+  constants: [
+    {
+      name: 'BRANCH_ID_PATTERN',
+      type: 'Regex',
+      value: /^\d{5}$/
+    },
+    {
+      name: 'ACCOUNT_NUMBER_PATTERN',
+      type: 'Regex',
+      value: /^[a-zA-z0-9]{18}$/
+    }
+  ],
 
   properties: [
     {
@@ -37,70 +57,22 @@ foam.CLASS({
     },
     {
       name: 'denomination',
-      section: 'accountDetails',
+      section: 'accountInformation',
       gridColumns: 12,
       value: 'EUR',
     },
     {
-      name: 'bankCode',
-      updateVisibility: 'RO',
-      validateObj: function(bankCode) {
-        var regex = /^[A-z0-9a-z]{4}$/;
-
-        if ( bankCode === '' ) {
-          return this.BANK_CODE_REQUIRED;
-        } else if ( ! regex.test(bankCode) ) {
-          return this.BANK_CODE_INVALID;
-        }
-      }
-    },
-    {
-      class: 'String',
-      name: 'branchCode',
-      section: 'accountDetails',
-      updateVisibility: 'RO',
-      validateObj: function(branchCode) {
-        var regex = /^[0-9]{5}$/;
-
-        if ( branchCode === '' ) {
-          return this.BRANCH_CODE_REQUIRED;
-        } else if ( ! regex.test(branchCode) ) {
-          return this.BRANCH_CODE_INVALID;
-        }
-      }
-    },
-    {
-      name: 'accountNumber',
-      section: 'accountDetails',
-      updateVisibility: 'RO',
-      view: {
-         class: 'foam.u2.tag.Input',
-         placeholder: '123456789012345678',
-         onKey: true
-       },
-       preSet: function(o, n) {
-         return /^\d*$/.test(n) ? n : o;
-       },
-       tableCellFormatter: function(str) {
-         if ( ! str ) return;
-         var displayAccountNumber = '***' + str.substring(str.length - 4, str.length)
-         this.start()
-           .add(displayAccountNumber);
-         this.tooltip = displayAccountNumber;
-       },
-      validateObj: function(accountNumber) {
-        var accNumberRegex = /^[0-9]{18}$/;
-
-        if ( accountNumber === '' ) {
-          return this.ACCOUNT_NUMBER_REQUIRED;
-        } else if ( ! accNumberRegex.test(accountNumber) ) {
-          return this.ACCOUNT_NUMBER_INVALID;
-        }
-      }
-    },
-    {
       name: 'desc',
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'bankRoutingCode',
+      javaPostSet: `
+        if ( val != null && BRANCH_ID_PATTERN.matcher(val).matches() ) {
+          clearBranch();
+          setBranchId(val);
+        }
+      `
     }
   ]
 });

@@ -33,6 +33,15 @@ foam.CLASS({
       label: 'Expires',
       hidden: true
     }
+  ],
+
+  methods: [
+    {
+      name: 'showLineItem',
+      code: function() {
+        return false;
+      }
+    }
   ]
 
 });

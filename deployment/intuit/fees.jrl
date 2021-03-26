@@ -1,0 +1,40 @@
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "7521329b-651e-4f12-bcdd-b1b68032957f",
+  name: "Intuit Transaction Fee",
+  percentage: 0.6,
+  chargedTo: 1,
+  predicate: {
+    class: "foam.mlang.predicate.Eq",
+    arg1: {
+      class: "__Property__",
+      forClass_: "net.nanopay.tx.model.Transaction",
+      name: "destinationCurrency"
+    },
+    arg2: {
+      class: "foam.mlang.Constant",
+      value: "CAD"
+    }
+  },
+  feeRule: "b57ad1a4-d907-4d6a-adf2-bdf9e51fe905"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "216b204f-3c41-4a9a-934a-5f5ddf873299",
+  name: "Nanopay Transaction Fee",
+  percentage: 0.4,
+  chargedTo: 1,
+  predicate: {
+    class: "foam.mlang.predicate.Eq",
+    arg1: {
+      class: "__Property__",
+      forClass_: "net.nanopay.tx.model.Transaction",
+      name: "destinationCurrency"
+    },
+    arg2: {
+      class: "foam.mlang.Constant",
+      value: "CAD"
+    }
+  },
+  feeRule: "d2a9b4b5-3c84-4742-84cc-6bb11928ed82"
+})

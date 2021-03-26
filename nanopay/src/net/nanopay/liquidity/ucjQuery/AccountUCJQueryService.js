@@ -91,7 +91,7 @@ foam.INTERFACE({
         },
         {
           name: 'accountId',
-          type: 'Long'
+          type: 'String'
         },
         {
           name: 'level',
@@ -100,6 +100,7 @@ foam.INTERFACE({
       ]
     },
     {
+      //TODO: Does this approverIds refer to accountId? 
       name: 'getAllApprovers',
       async: true,
       type: 'List',
@@ -114,7 +115,7 @@ foam.INTERFACE({
         },
         {
           name: 'accountId',
-          type: 'Long'
+          type: 'String'
         }
       ]
     },

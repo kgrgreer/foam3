@@ -125,13 +125,15 @@ foam.CLASS({
           ImageIO.write(image, "png", baos);
           byte[] bytes = baos.toByteArray();
           InputStream is = new ByteArrayInputStream(bytes);
-          foam.blob.Blob data = blobStore.put(new foam.blob.InputStreamBlob(is, bytes.length));
+          foam.blob.Blob data = new foam.blob.InputStreamBlob(is, bytes.length);
           ffile = new foam.nanos.fs.File.Builder(x)
             .setFilename("testimg")
             .setFilesize(bytes.length)
             .setData(data)
+            .setMimeType("image/png")
             .build();
-        } catch ( IOException e ) {
+          ((foam.dao.DAO) x.get("fileDAO")).put(ffile);
+        } catch ( java.io.IOException | foam.core.FOAMException e ) {
           test(false, "Can't create Image blob");
         }
         return ffile;

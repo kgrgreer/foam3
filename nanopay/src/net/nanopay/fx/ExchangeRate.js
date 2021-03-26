@@ -39,7 +39,7 @@ foam.CLASS({
     'expirationDate'
   ],
 
-  ids: [ 'fromCurrency', 'toCurrency' ],
+  ids: [ 'fromCurrency', 'toCurrency', 'fxProvider' ],
 
   searchColumns: [
     'expirationDate',

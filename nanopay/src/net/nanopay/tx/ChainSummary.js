@@ -27,27 +27,31 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'String',
+      name: 'summary',
+      documentation: 'Summary of the transaction status.',
+      gridColumns: 4
+    },
+    {
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
-      documentation: 'Status of the transaction chain.'
+      documentation: 'Status of the transaction chain.',
+      gridColumns: 4
     },
     {
       class: 'String',
       name: 'category',
-      documentation: 'Category of the transaction status.'
-    },
-    {
-      class: 'String',
-      name: 'summary',
-      documentation: 'Summary of the transaction status.'
+      documentation: 'Category of the transaction status.',
+      gridColumns: 4
     },
     {
       class: 'Reference',
       of: 'net.nanopay.integration.ErrorCode',
       targetDAOKey: 'errorCodeDAO',
       name: 'errorCode',
-      documentation: 'Error code for transaction chain.'
+      documentation: 'Error code for transaction chain.',
+      gridColumns: 4
     },
     {
       class: 'String',
@@ -57,7 +61,8 @@ foam.CLASS({
         ( getErrorCode() == 0 ) ? "No Error" :
         ( findErrorCode(foam.core.XLocator.get()) == null ) ? "Unknown Error: " + getErrorCode() :
           findErrorCode(foam.core.XLocator.get()).getSummary()
-      `
+      `,
+      gridColumns: 8
     }
   ],
 
@@ -66,10 +71,14 @@ foam.CLASS({
       name: 'toSummary',
       type: 'String',
       code: function() {
-        return this.category + ' ' + this.status.getName();
+        return this.category + ' ' + this.status.name;
       },
       javaCode: `
-        return getCategory() + ' ' + getStatus().getName();
+        if ( getCategory() != null && getCategory().length() > 0) {
+          return getCategory() + ' ' + getStatus().getName();
+        }
+        
+        return getStatus().getName();
       `
     }
   ]

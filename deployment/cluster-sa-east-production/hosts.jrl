@@ -1,0 +1,61 @@
+p({
+  "class":"foam.net.Host",
+  "id": "sa-east-1a-treviso-production-primary-mediator-1",
+  "address":"10.150.0.218"
+})
+p({
+  "class":"foam.net.Host",
+  "id": "sa-east-1b-treviso-production-primary-mediator-2",
+  "address":"10.150.1.198"
+})
+p({
+  "class":"foam.net.Host",
+  "id": "sa-east-1c-treviso-production-primary-mediator-3",
+  "address":"10.150.2.95"
+})
+
+p({
+  "class":"foam.net.Host",
+  "id": "sa-east-1a-treviso-production-primary-node-1",
+  "address":"10.150.0.75"
+})
+p({
+  "class":"foam.net.Host",
+  "id": "sa-east-1a-treviso-production-primary-node-2",
+  "address":"10.150.0.248"
+})
+p({
+  "class":"foam.net.Host",
+  "id": "sa-east-1a-treviso-production-primary-node-3",
+  "address":"10.150.0.251"
+})
+p({
+  "class":"foam.net.Host",
+  "id": "sa-east-1b-treviso-production-primary-node-4",
+  "address":"10.150.1.196"
+})
+p({
+  "class":"foam.net.Host",
+  "id": "sa-east-1b-treviso-production-primary-node-5",
+  "address":"10.150.1.212"
+})
+p({
+  "class":"foam.net.Host",
+  "id": "sa-east-1b-treviso-production-primary-node-6",
+  "address":"10.150.1.151"
+})
+p({
+  "class":"foam.net.Host",
+  "id": "sa-east-1c-treviso-production-primary-node-7",
+  "address":"10.150.2.29"
+})
+p({
+  "class":"foam.net.Host",
+  "id": "sa-east-1c-treviso-production-primary-node-8",
+  "address":"10.150.2.156"
+})
+p({
+  "class":"foam.net.Host",
+  "id": "sa-east-1c-treviso-production-primary-node-9",
+  "address":"10.150.2.233"
+})

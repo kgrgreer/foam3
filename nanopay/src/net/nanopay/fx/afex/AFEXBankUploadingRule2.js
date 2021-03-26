@@ -46,15 +46,15 @@ foam.CLASS({
             if ( user instanceof Business ) {
               Business business = (Business) user;
               AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
-              AFEXBusiness afexBusiness = afexServiceProvider.getAFEXBusiness(x, account.getOwner());
+              AFEXUser afexUser = afexServiceProvider.getAFEXUser(x, account.getOwner());
 
               try {
                 if ( ! afexServiceProvider.directDebitEnrollment(business, account) ) {
-                  sendFailureEmail(x, String.valueOf(account.getId()), String.valueOf(afexBusiness.getUser()), business);
+                  sendFailureEmail(x, String.valueOf(account.getId()), String.valueOf(afexUser.getUser()), business);
                 }
               } catch (Exception e) {
                 ((Logger) x.get("logger")).error("Error uploading bank account on AFEX", account, e);
-                sendFailureEmail(x, String.valueOf(account.getId()), String.valueOf(afexBusiness.getUser()), business);
+                sendFailureEmail(x, String.valueOf(account.getId()), String.valueOf(afexUser.getUser()), business);
               }
             }
           }
@@ -74,7 +74,7 @@ foam.CLASS({
         },
         {
           type: 'String',
-          name: 'afexBusiness'
+          name: 'afexUser'
         },
         {
           type: 'Business',
@@ -84,7 +84,7 @@ foam.CLASS({
       javaCode: `
         EmailMessage message = new EmailMessage();
         String businessInfo = business == null ? "" : business.getId() + " " + business.getBusinessName();
-        String body = "Failed to upload bank account: " + account + ", for AFEX business " + afexBusiness + ", business: " + businessInfo;
+        String body = "Failed to upload bank account: " + account + ", for AFEX business " + afexUser + ", business: " + businessInfo;
         message.setTo(new String[]{"enrollment@ablii.com"});
         message.setSubject("Failed AFEX Bank Account Upload");
         message.setBody(body);

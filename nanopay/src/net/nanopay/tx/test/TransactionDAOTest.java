@@ -29,6 +29,7 @@ public class TransactionDAOTest
   X x_;
   CABankAccount senderBankAccount_;
   DigitalAccount senderDigitalAccount_;
+  DigitalAccount destinationDigitalAccount_;
   DAO txnDAO;
   public void runTest(X x) {
     txnDAO = (DAO) x.get("localTransactionDAO");
@@ -46,36 +47,11 @@ public class TransactionDAOTest
   public X addUsers() {
     //x = TestUtils.mockDAO(x, "localUserDAO");
 
-    sender_ = (User) ((DAO)x_.get("localUserDAO")).find(EQ(User.EMAIL,"testuser1@nanopay.net" ));
-    if ( sender_ == null ) {
-      sender_ = new User();
-      sender_.setEmail("testuser1@nanopay.net");
-      sender_.setGroup("business");
-      sender_.setFirstName("Francis");
-      sender_.setLastName("Filth");
-    }
-    sender_ = (User) sender_.fclone();
-    sender_.setEmailVerified(true);
-    sender_.setSpid("nanopay");
-    sender_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, sender_)).fclone();
+    sender_ = TransactionTestUtil.createUser(x_);
+    receiver_ = TransactionTestUtil.createUser(x_);
 
-    receiver_ = (User) ((DAO)x_.get("localUserDAO")).find(EQ(User.EMAIL,"testuser2@nanopay.net" ));
-    if ( receiver_ == null ) {
-      receiver_ = new User();
-      receiver_.setEmail("testuser2@nanopay.net");
-    }
-    receiver_ = (User) receiver_.fclone();
-    receiver_.setEmailVerified(true);
-    receiver_.setGroup("business");
-    receiver_.setFirstName("Francis");
-    receiver_.setLastName("Filth");
-    receiver_.setSpid("nanopay");
-    receiver_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, receiver_)).fclone();
-
-    if ( senderDigitalAccount_ == null ) {
-      senderDigitalAccount_ = DigitalAccount.findDefault(x_, sender_, "CAD");
-    }
-
+    senderDigitalAccount_ = DigitalAccount.findDefault(x_, sender_, "CAD");
+    destinationDigitalAccount_ = TransactionTestUtil.RetrieveDigitalAccount(x_, receiver_, "CAD", senderDigitalAccount_);
     return x_;
   }
 
@@ -148,17 +124,18 @@ public class TransactionDAOTest
       RuntimeException.class), "Exception: Txn amount cannot be negative");
 
 
-    txn.setAmount( DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_)+ 1);
+    txn.setAmount( senderDigitalAccount_.findBalance(x_)+ 1);
     txn.setPayeeId(receiver_.getId());
+    txn.setDestinationAccount(destinationDigitalAccount_.getId());
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, txn),
-      "Insufficient balance in account: " + DigitalAccount.findDefault(x_, sender_, "CAD").getId(),
+      "Insufficient balance in account: " + senderDigitalAccount_.getId(),
       net.nanopay.account.InsufficientBalanceException.class), "Exception: Insufficient balance");
 
     // Test return transactionStatus
     cashIn();
-    long initialBalanceSender =   DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
-    long initialBalanceReceiver = DigitalAccount.findDefault(x_, receiver_, "CAD").findBalance(x_);
+    long initialBalanceSender =   senderDigitalAccount_.findBalance(x_);
+    long initialBalanceReceiver = 0;
     Transaction transaction = (Transaction) txnDAO.put_(x_, txn.fclone()).fclone();
     test(transaction.getStatus() == TransactionStatus.COMPLETED, "transaction is completed");
     test(transaction instanceof DigitalTransaction, "transaction is NONE type");
@@ -181,18 +158,18 @@ public class TransactionDAOTest
     txn.setDestinationAccount(senderDigitalAccount_.getId());
     txn.setAmount(1l);
     setBankAccount(BankAccountStatus.VERIFIED);
-    long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
+    long senderInitialBalance = (long) senderDigitalAccount_.findBalance(x_);
     FObject obj = txnDAO.put_(x_, txn);
     FObject x =  obj.fclone();
     Transaction tx = (Transaction) x;
     test(tx instanceof CITransaction, "Transaction type is CASHIN, "+ tx.getClass().getName() );
     test(tx.getStatus() == TransactionStatus.PENDING, "CashIn transaction has status pending" );
-    test(senderInitialBalance == DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "While cash in is pending balance remains the same" );
+    test(senderInitialBalance == senderDigitalAccount_.findBalance(x_), "While cash in is pending balance remains the same" );
     tx.setStatus(TransactionStatus.COMPLETED);
     Transaction n = (Transaction) txnDAO.put_(x_, tx);
     tx = (Transaction) txnDAO.find_(x_, tx.getId()).fclone();
     test(tx.getStatus() == TransactionStatus.COMPLETED, "CashIn transaction has status completed" );
-    test(senderInitialBalance + tx.getAmount() == DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After transaction is completed balance is updated" );
+    test(senderInitialBalance + tx.getAmount() == senderDigitalAccount_.findBalance(x_), "After transaction is completed balance is updated" );
     // by sending the txn in declined status, we are expecting the returned txn to remain in completed, but the balance to change.
     tx.setStatus(TransactionStatus.DECLINED);
     tx = (Transaction) txnDAO.put_(x_, tx);
@@ -203,7 +180,7 @@ public class TransactionDAOTest
     //find the reversal
     Transaction tx3 = (Transaction) txnDAO.find(EQ(Transaction.ASSOCIATE_TRANSACTION, tx2.getId()));
     test( tx3 instanceof DigitalTransaction && tx3.getStatus() == TransactionStatus.COMPLETED , "Reversal txn is a digitalTransaction which is complete..");
-    Long balance = DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
+    Long balance = senderDigitalAccount_.findBalance(x_);
     // the balance should have reverted
     test( senderInitialBalance == balance, "After transaction is DECLINED, balance is reverted by ReverseCIRule. initialBalance: "+ senderInitialBalance +" balance: "+balance );
   }
@@ -216,11 +193,11 @@ public class TransactionDAOTest
     txn.setAmount(1l);
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, txn),
-      "Bank account must be verified",
+      "Destination bank account must be verified",
       RuntimeException.class
       ),"Bank account must be verified to cash out.");
     setBankAccount(BankAccountStatus.VERIFIED);
-    long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
+    long senderInitialBalance = (long) senderDigitalAccount_.findBalance(x_);
     Transaction tx = (Transaction) txnDAO.put_(x_, txn.fclone()).fclone();
 
     Transaction t = (Transaction) txnDAO.find_(x_, tx).fclone();
@@ -228,11 +205,11 @@ public class TransactionDAOTest
     test( t instanceof COTransaction, "Transaction type is CASHOUT" );
 
     test( t.getStatus()  == TransactionStatus.PENDING, "CashOUT transaction has status pending" );
-    test( senderInitialBalance - (txn.getAmount() + getFee(t)) ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "Pending status. Cashout updated balance" );
+    test( senderInitialBalance - (txn.getAmount() + getFee(t)) ==  (Long) senderDigitalAccount_.findBalance(x_), "Pending status. Cashout updated balance" );
     t.setStatus(TransactionStatus.SENT);
     t = (Transaction) txnDAO.put_(x_, t);
     test(t.getStatus() == TransactionStatus.SENT, "CashOut transaction has status sent" );
-    test( senderInitialBalance - (txn.getAmount() + getFee(t)) ==  (Long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_), "After cashout transaction is sent balance updated" );
+    test( senderInitialBalance - (txn.getAmount() + getFee(t)) ==  (Long) senderDigitalAccount_.findBalance(x_), "After cashout transaction is sent balance updated" );
 
 
   }

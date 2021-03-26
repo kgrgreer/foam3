@@ -1,32 +1,5 @@
 p({
   "class":"foam.nanos.script.Script",
-  "id":"benchmarkTransactionCreation",
-  "code":`
-    import foam.nanos.bench.*;
-    import net.nanopay.bench.*;
-    lc = x.get("logLevelFilterLogger");
-    lc.setLogInfo(true);
-    lc.setLogDebug(false);
-    x = x.put("pmLogger", null);
-    b = new TransactionBenchmark();
-    b.setDisableRules(true);
-    builder = new BenchmarkRunner.Builder(x)
-      .setInvocationCount(10000)
-      .setRunPerThread(true)
-      .setBenchmark(b);
-    runner = builder.build();
-    runner.execute(x);
-    print("done");
-    print(runner.getResult());
-    l = x.get("logger");
-    lc.setLogInfo(true);
-    lc.setLogDebug(true);
-    l.info(new Object[] {runner.getResult()});
-  `,
-  "output":""
-})
-p({
-  "class":"foam.nanos.script.Script",
   "id":"plannerIntuit",
   "code":`
     import net.nanopay.tx.planner.GenericCIPlanner;

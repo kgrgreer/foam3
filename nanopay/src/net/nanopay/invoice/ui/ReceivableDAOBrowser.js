@@ -100,6 +100,21 @@ foam.CLASS({
 
       imports: [
         'accountingIntegrationUtil'
+      ],
+
+      exports: [
+        'click',
+      ],
+
+      methods: [
+        function click(obj, id, X) {
+          let updatedInvoice = X.accountingIntegrationUtil.forceSyncInvoice(this);
+          X.stack.push({
+            class: 'net.nanopay.sme.ui.InvoiceOverview',
+            invoice: updatedInvoice,//this
+            isPayable: false
+          });
+        }
       ]
     }
   ],
@@ -266,30 +281,7 @@ foam.CLASS({
     },
     {
       name: 'primaryAction',
-      factory: function() {
-        var self = this;
-        return this.Action.create({
-          name: 'reqMoney',
-          label: 'Request payment',
-          code: function(X) {
-            self.checkAndNotifyAbilityToReceive().then((result) => {
-              if ( result ) {
-                X.menuDAO.find('sme.quickAction.request').then((menu) => {
-                  var clone = menu.clone();
-                  Object.assign(clone.handler.view, {
-                    invoice: self.Invoice.create({}),
-                    isPayable: false,
-                    isForm: true,
-                    isList: false,
-                    isDetailView: false
-                  });
-                  clone.launch(X, X.controllerView);
-                });
-              }
-            });
-          }
-        });
-      }
+      factory: function() { return this.REQ_MONEY; }
     }
   ],
 
@@ -302,14 +294,14 @@ foam.CLASS({
           size: 'LARGE'
         })
       .end()
-      .start('div').addClass(this.myClass('row'))
+      /*.start('div').addClass(this.myClass('row'))
         .start('h3').addClass('subdued-text').add(this.SUB_TITLE).end()
         .startContext({ data: this })
           .tag(this.SYNC, {
             size: 'MEDIUM'
           })
         .endContext()
-      .end()
+      .end()*/
       .tag(this.DAOBrowser.create({
         config: this.config,
         summaryView: this.summaryView
@@ -318,6 +310,27 @@ foam.CLASS({
   ],
   actions: [
     {
+      name: 'reqMoney',
+      label: 'Request payment',
+      code: function(X) {
+        self.checkAndNotifyAbilityToReceive().then((result) => {
+          if ( result ) {
+            X.menuDAO.find('sme.quickAction.request').then((menu) => {
+              var clone = menu.clone();
+              Object.assign(clone.handler.view, {
+                invoice: self.Invoice.create({}),
+                isPayable: false,
+                isForm: true,
+                isList: false,
+                isDetailView: false
+              });
+              clone.launch(X, X.controllerView);
+            });
+          }
+        });
+      }
+    },
+    /*{
       name: 'sync',
       label: 'Sync with Accounting',
       isAvailable: async function() {
@@ -329,6 +342,6 @@ foam.CLASS({
           class: 'net.invoice.ui.modal.IntegrationModal'
         }));
       }
-    }
+    }*/
   ]
 });

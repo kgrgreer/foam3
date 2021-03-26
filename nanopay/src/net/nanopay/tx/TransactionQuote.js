@@ -34,8 +34,7 @@ foam.CLASS({
       documentation: `Request quote on behalf of this transaction.`,
       name: 'requestTransaction',
       class: 'FObjectProperty',
-      of: 'net.nanopay.tx.model.Transaction',
-      type: 'net.nanopay.tx.model.Transaction'
+      of: 'net.nanopay.tx.model.Transaction'
     },
     {
       class: 'FObjectArray',
@@ -61,6 +60,18 @@ foam.CLASS({
       name: 'destinationAccount',
       networkTransient: true,
       documentation: 'helper property to be used during planning in order to avoid overuse of transaction.findDestinationAccount'
+    },
+    {
+      class: 'Long',
+      name: 'amount',
+      networkTransient: true,
+      documentation: 'helper property to be used during planning'
+    },
+    {
+      class: 'Long',
+      name: 'destinationAmount',
+      networkTransient: true,
+      documentation: 'helper property to be used during planning'
     },
     {
       class: 'String',
@@ -124,6 +135,14 @@ foam.CLASS({
       name: 'requestOwner',
       networkTransient: true,
     },
+    {
+      documentation: `if we are finishing a partial transaction, it is stored here`,
+      name: 'partialTransaction',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.Transaction',
+      javaFactory: 'return null;',
+      networkTransient: true,
+    },
   ],
 
   methods: [
@@ -147,31 +166,19 @@ foam.CLASS({
       `
     },
     {
-      name: 'addExternalTransfer',
-      documentation: 'helper function for adding transfers to the plan',
-      args: [
-        { name: 'account', type: 'Long' },
-        { name: 'amount', type: 'Long' }
-      ],
-      javaCode: `
-        ExternalTransfer t = new ExternalTransfer();
-        t.setAccount(account);
-        t.setAmount(amount);
-        getMyTransfers_().add(t);
-      `
-    },
-    {
       name: 'addTransfer',
       documentation: 'helper function for adding transfers to the plan',
       args: [
-        { name: 'account', type: 'Long' },
-        { name: 'amount', type: 'Long' }
+        { name: 'internal', type: 'Boolean' },
+        { name: 'account', type: 'String' },
+        { name: 'amount', type: 'Long' },
+        { name: 'stage', type: 'Long' }
       ],
       javaCode: `
-        Transfer t = new Transfer();
-        t.setAccount(account);
-        t.setAmount(amount);
-        getMyTransfers_().add(t);
+        if (internal)
+          getMyTransfers_().add( new Transfer(account, amount, stage) );
+        else
+          getMyTransfers_().add( new ExternalTransfer(account, amount, stage) );
       `
     },
   ]

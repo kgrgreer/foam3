@@ -1,21 +1,3 @@
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-admin",targetId:"group.update.treviso-admin"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-admin",targetId:"group.update.treviso-fraud-ops"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-admin",targetId:"group.update.treviso-payment-ops"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-admin",targetId:"group.update.treviso-support"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-admin",targetId:"group.read.treviso-admin"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-admin",targetId:"group.read.treviso-fraud-ops"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-admin",targetId:"group.read.treviso-payment-ops"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-admin",targetId:"group.read.treviso-support"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"group.update.treviso-fraud-ops"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"group.update.treviso-payment-ops"})
-
-// TODO: need to figure out where to properly place the following 4 entries
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"service.natureCodeDAO"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"service.natureCodeDataDAO"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"naturecode.read.*"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"naturecodedata.read.*"})
-
-//
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"business2005.employee",targetId:"invoice.holdingAccount"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"business2005.admin",targetId:"business.add.business2005.*"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"business2005.admin",targetId:"business.read.business2005.*"})

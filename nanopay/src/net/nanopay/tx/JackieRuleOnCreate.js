@@ -28,9 +28,17 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.i18n.TranslationService',
     'foam.util.SafetyUtil',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.tx.model.Transaction',
+  ],
+
+  messages: [
+    { name: 'COMPLIANCE_TRANSACTION', message: 'Compliance Transaction' },
+    { name: 'SUMMARY_TRANSACTION', message: '  Summary Transaction Id: ' }
   ],
 
   methods: [
@@ -42,14 +50,24 @@ foam.CLASS({
         while ( ! SafetyUtil.isEmpty(headTx.getParent()) ) {
           headTx = headTx.findParent(x);
         }
-        String spid = ct.findSourceAccount(x).findOwner(x).getSpid();
-        String group = spid.equals("nanopay") ? "fraud-ops" : spid + "-fraud-ops";
+        User owner = ct.findSourceAccount(x).findOwner(x);
+        String spid = owner.getSpid();
+        String group = spid + "-fraud-ops";
+
+        Subject subject = (Subject) x.get("subject");
+        String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
+        TranslationService ts = (TranslationService) x.get("translationService");
+        String complianceTx = ts.getTranslation(locale, getClassInfo().getId() + ".COMPLIANCE_TRANSACTION", COMPLIANCE_TRANSACTION);
+        String summaryTx = ts.getTranslation(locale, getClassInfo().getId() + ".SUMMARY_TRANSACTION", SUMMARY_TRANSACTION);
+
         ComplianceApprovalRequest req = new ComplianceApprovalRequest.Builder(x)
-          .setDaoKey("localTransactionDAO")
+          .setDaoKey("transactionDAO")
+          .setServerDaoKey("localTransactionDAO")
           .setObjId(ct.getId())
           .setGroup(group)
-          .setDescription("Main Summary txn: "+headTx.getSummary()+" The Id of Summary txn: "+headTx.getId() )
-          .setClassification("Validate Transaction Using Jackie Rule")
+          .setCreatedFor(owner.getId())
+          .setDescription(headTx.getSummary() + summaryTx + headTx.getId())
+          .setClassification(complianceTx)
           .build();
 
         agency.submit(x, new ContextAgent() {

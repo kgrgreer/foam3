@@ -30,8 +30,11 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.dao.PromisedDAO',
     'foam.log.LogLevel',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.UserUserJunction',
+    'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'foam.nanos.notification.ToastState',
@@ -49,6 +52,7 @@ foam.CLASS({
     'net.nanopay.accounting.AccountingIntegrationUtil',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
+    'foam.nanos.auth.AgentJunctionStatus',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.BRBankAccount',
     'net.nanopay.bank.CABankAccount',
@@ -75,9 +79,12 @@ foam.CLASS({
   ],
 
   imports: [
-    'canadaUsBusinessOnboardingDAO',
-    'digitalAccount',
     'accountDAO',
+    'agentAuth',
+    'businessDAO',
+    'canadaUsBusinessOnboardingDAO',
+    'crunchService',
+    'digitalAccount',
     'balanceDAO',
     'notificationDAO'
   ],
@@ -86,6 +93,7 @@ foam.CLASS({
     'accountingIntegrationUtil',
     'appConfig',
     'as ctrl',
+    'assignBusinessAndLogIn',
     'balance',
     'bannerData',
     'bannerizeCompliance',
@@ -100,6 +108,7 @@ foam.CLASS({
     'isIframe',
     'onboardingUtil',
     'privacyUrl',
+    'pushDefaultMenu',
     'showFooter',
     'showNav',
     'sme',
@@ -229,6 +238,10 @@ foam.CLASS({
     {
       name: 'INVALID_TOKEN_ERROR_2',
       message: 'If you feel you’ve reached this message in error, please contact your Company Administrator.'
+    },
+    { 
+      name: 'BUSINESS_LOGIN_FAILED', 
+      message: 'Error trying to log into business.' 
     }
   ],
 
@@ -263,7 +276,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'layoutInitialized',
       documentation: 'True if layout has been initialized.',
-      value: false,
       expression: async function(initLayout) {
         await initLayout;
         return true;
@@ -274,9 +286,7 @@ foam.CLASS({
       expression: function( client$smeUserRegistrationDAO ) {
         return {
           dao_: client$smeUserRegistrationDAO || null,
-          imgPath: this.theme.loginImage,
-          group_: 'sme',
-          countryChoices_: ['CA', 'US']
+          imgPath: this.theme.loginImage
         };
       }
     },
@@ -379,12 +389,37 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isMenuOpen',
       factory: function() {
-        if ( window.localStorage.getItem('isMenuOpen') === 'false' )
-          return false;
-        else
-          return true;
+        return window.localStorage['isMenuOpen'] === 'true'
+         || ( window.localStorage['isMenuOpen'] = false );
+      },
+      postSet: function(_, n) {
+        window.localStorage['isMenuOpen'] = n;
       }
-    }
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'enabledBusinesses_',
+      documentation: `
+        The DAO used to populate the enabled businesses in the list.
+      `,
+      expression: function(subject) {
+        var party = subject.realUser;
+        return this.PromisedDAO.create({
+          promise: party.entities.dao
+            .where(this.NEQ(this.Business.STATUS, this.AccountStatus.DISABLED))
+            .select(this.MAP(this.Business.ID))
+            .then(mapSink => {
+              return party.entities.junctionDAO.where(
+                this.AND(
+                  this.EQ(this.UserUserJunction.SOURCE_ID, party.id),
+                  this.IN(this.UserUserJunction.TARGET_ID, mapSink.delegate.array),
+                  this.NEQ(this.UserUserJunction.STATUS, this.AgentJunctionStatus.DISABLED)
+                )
+              );
+            })
+        });
+      }
+    },
   ],
 
   methods: [
@@ -416,7 +451,7 @@ foam.CLASS({
         this.SMEStyles.create();
 
         // TODO & NOTE: This is a workaround. This prevents the CSS from breaking when viewing it in a subclass first before the parent class.
-        this.BankPadAuthorization.create();
+        this.BankPadAuthorization.create({}, this.__subContext__.createSubContext({errors: foam.core.SimpleSlot.create()}));
 
         this.__subContext__.register(this.ConnectSubMenu, 'foam.nanos.menu.SubMenu');
         this.__subContext__.register(this.SMEWizardOverview, 'net.nanopay.ui.wizard.WizardOverview');
@@ -431,6 +466,7 @@ foam.CLASS({
       });
 
       await this.themeInstalled;
+      await this.languageInstalled;
 
       if ( ! this.isIframe() ) {
         this
@@ -446,7 +482,7 @@ foam.CLASS({
               class: 'net.nanopay.ui.banner.Banner',
               data$: this.bannerData$
             })
-            .start(this.StackView.create({data: this.stack, showActions: false}))
+            .start({class: this.StackView, data: this.stack, showActions: false})
               .enableClass('login-stack', this.layoutInitialized$.map( li => ! li ))
               .enableClass('application-stack', this.layoutInitialized$.map( li => li ))
             .end()
@@ -483,8 +519,33 @@ foam.CLASS({
       }
     },
 
+    async function fetchSubject() {
+      /** Get current user, else show login. */
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const otLoginToken = urlParams.get('otltoken');
+
+        if ( otLoginToken != null ) {
+          await this.client.otLoginService.loginTokenId(null, otLoginToken);
+          window.location.href = "/";
+        }
+
+        var result = await this.client.auth.getCurrentSubject(null);
+
+        if ( ! result || ! result.user) throw new Error();
+
+        this.subject = result;
+      } catch (err) {
+        this.languageInstalled.resolve();
+        await this.requestLogin();
+        return await this.fetchSubject();
+      }
+    },
+
     function bannerizeTwoFactorAuth() {
-      if ( ! this.subject.user.twoFactorEnabled ) {
+      if ( this.appConfig.mode == foam.nanos.app.Mode.PRODUCTION &&
+           this.theme.twoFactorEnabled &&
+           ! this.subject.user.twoFactorEnabled ) {
         this.setBanner(this.BannerMode.NOTICE, 'Please enable Two-Factor Authentication in Personal Settings.');
       }
     },
@@ -591,7 +652,6 @@ foam.CLASS({
             disableEmail_: searchParams.has('email'),
             disableCompanyName_: searchParams.has('companyName'),
             organization: searchParams.has('companyName') ? searchParams.get('companyName') : '',
-            countryChoices_: searchParams.has('country') ? [searchParams.get('country')] : ['CA', 'US'],
             firstName: searchParams.has('firstName') ? searchParams.get('firstName') : '',
             lastName: searchParams.has('lastName') ? searchParams.get('lastName') : '',
             jobTitle: searchParams.has('jobTitle') ? searchParams.get('jobTitle') : '',
@@ -647,14 +707,15 @@ foam.CLASS({
     },
 
     /**
-     * This function is to check if the user enable the 2FA when the user
-     * have the permission to send a payable.
-     * It is only required for payables.
+     * This function is to check if 2FA is required and if so, is it 
+     * enabled for the user. It is only required for payables.
      */
-    async function check2FAEnalbed() {
+    async function check2FA() {
       var canPayInvoice = await this.client.auth.check(null, 'business.invoice.pay') && await this.client.auth.check(null, 'user.invoice.pay');
 
-      if ( canPayInvoice && ! this.subject.realUser.twoFactorEnabled ) {
+      if ( canPayInvoice &&
+           ! this.subject.realUser.twoFactorEnabled &&
+           this.theme.twoFactorEnabled ) {
         var TwoFactorNotificationDOM = this.Element.create()
           .start().style({ 'display': 'inline-block' })
             .add(this.TWO_FACTOR_REQUIRED_ONE)
@@ -673,7 +734,8 @@ foam.CLASS({
            description: ''
          }));
 
-        if ( this.appConfig.mode != foam.nanos.app.Mode.PRODUCTION ) {
+        if ( this.appConfig.mode != foam.nanos.app.Mode.PRODUCTION ||
+             ! this.theme.twoFactorEnabled ) {
           return true;
         } else {
           return false;
@@ -685,7 +747,7 @@ foam.CLASS({
     async function checkAndNotifyAbilityToPay() {
       try {
         var result = await this.checkComplianceAndBanking();
-        return result ? await this.check2FAEnalbed() : result;
+        return result ? await this.check2FA() : result;
       } catch (err) {
         console.warn(`${this.ABILITY_TO_PAY_ERROR}: `, err);
         this.notify(`${this.ABILITY_TO_PAY_ERROR}.`, '', this.LogLevel.ERROR, true);
@@ -770,7 +832,28 @@ foam.CLASS({
       } catch (e) {
         return true;
       }
-    }
+    },
+    async function assignBusinessAndLogIn(junction) {
+      var business = await this.client.businessDAO.find(junction.targetId);
+      try {
+        await this.client.agentAuth.actAs(this, business);
+        this.initLayout.resolve();
+        this.pushDefaultMenu() 
+      } catch (err) {
+        var msg = err != null && typeof err.message === 'string'
+          ? err.message
+          : this.BUSINESS_LOGIN_FAILED;
+        this.notify(msg, '', this.LogLevel.ERROR, true);
+      }
+      return
+    },
+    async function pushDefaultMenu() {
+      //check if default menu is avaiable. if default menu is not permitted yet, direct to appStore
+      var menu = await this.client.menuDAO.find(this.theme.defaultMenu) ? 
+      this.theme.defaultMenu : 
+      'sme.main.appStore';
+      this.pushMenu(menu);
+    },
   ],
 
   listeners: [
@@ -800,10 +883,30 @@ foam.CLASS({
           var menu;
 
           // Redirect user to switch business if agent doesn't exist.
-          if ( ! this.subject.realUser || this.subject.realUser.id === this.subject.user.id ) {
-            menu = await this.client.menuDAO.find('sme.accountProfile.switch-business');
-            menu.launch(this);
-            return;
+          if ( this.subject.realUser.id === this.subject.user.id ) {
+            let sink = await this.enabledBusinesses_.select();
+            var ac = this.theme.admissionCapability;
+            if ( ac ) {
+              var ucj = await this.client.crunchService.getJunction(null, ac);
+              //Check if user has finished registration
+              if ( ucj.status !==  this.CapabilityJunctionStatus.GRANTED ) {
+                this.onboardingUtil.initUserRegistration(ac);
+                return;
+              }
+              if ( sink.array.length === 0 ) {
+                // if sink.array.length === 0, push to default page
+                this.initLayout.resolve();
+                await this.pushDefaultMenu();
+                return;
+              }
+      
+              if ( sink.array.length === 1 ) {
+                this.initLayout.resolve();
+                var junction = sink.array[0];
+                await this.assignBusinessAndLogIn(junction);
+                return;
+              }
+            }
           }
 
           var hash = location.hash.substr(1);
@@ -851,63 +954,8 @@ foam.CLASS({
 
       else {
         this.initLayout.resolve();
-        // only show B2B onboarding if user is a Business
-        if ( this.subject.user.type === 'Business' ) {
-          // check account status and show UI accordingly
-          switch ( this.subject.user.status ) {
-            case this.AccountStatus.PENDING:
-              this.loginSuccess = false;
-              this.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard' });
-              return;
-
-            case this.AccountStatus.SUBMITTED:
-              this.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
-              this.loginSuccess = false;
-              return;
-
-            case this.AccountStatus.DISABLED:
-
-              // If the user submitted the form before their account was
-              // disabled but before it was activated, they should see page
-              // 5 of the onboarding wizard to be able to review what they
-              // submitted.
-              if ( this.subject.user.previousStatus === this.AccountStatus.SUBMITTED ) {
-                this.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
-
-              // Otherwise, if they haven't submitted yet, or were already
-              // activated, they shouldn't need to be able to review their
-              // submission, so they should just see the simple "account
-              // disabled" view.
-              } else {
-                this.stack.push({ class: 'net.nanopay.admin.ui.AccountRevokedView' });
-              }
-              this.loginSuccess = false;
-              return;
-
-            // show onboarding screen if user hasn't clicked "Go To Portal" button
-            case this.AccountStatus.ACTIVE:
-              if ( ! this.subject.user.createdPwd ) {
-                this.loginSuccess = false;
-                this.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 6 });
-                return;
-              }
-              if ( this.subject.user.onboarded ) break;
-              this.loginSuccess = false;
-              this.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
-              return;
-
-            case this.AccountStatus.REVOKED:
-              this.loginSuccess = false;
-              this.stack.push({ class: 'net.nanopay.admin.ui.AccountRevokedView' });
-              return;
-          }
-        }
-
         this.SUPER();
-
-        if ( this.appConfig.mode == foam.nanos.app.Mode.PRODUCTION ) {
-          this.bannerizeTwoFactorAuth();
-        }
+        this.bannerizeTwoFactorAuth();
       }
     }
   ]

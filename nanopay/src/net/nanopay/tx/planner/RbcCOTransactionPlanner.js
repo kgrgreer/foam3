@@ -24,6 +24,7 @@ foam.CLASS({
 
   javaImports: [
     'java.time.Duration',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.payment.PADTypeLineItem',
     'net.nanopay.tx.ETALineItem',
@@ -48,15 +49,15 @@ foam.CLASS({
     {
       name: 'plan',
       javaCode: `
-        TrustAccount trustAccount = TrustAccount.find(x, quote.getSourceAccount(), INSTITUTION_NUMBER);
+        TrustAccount trustAccount = ((DigitalAccount) quote.getSourceAccount()).findTrustAccount(x);
         RbcCOTransaction t = new RbcCOTransaction();
         t.copyFrom(requestTxn);
         t.setStatus(net.nanopay.tx.model.TransactionStatus.PENDING);
         t.setInstitutionNumber(INSTITUTION_NUMBER);
         t.setPaymentProvider(PAYMENT_PROVIDER);
-        quote.addTransfer(trustAccount.getId(), t.getAmount());
-        quote.addTransfer(quote.getSourceAccount().getId(), -t.getAmount());
-        quote.addExternalTransfer(quote.getDestinationAccount().getId(), t.getAmount());
+        quote.addTransfer(true, trustAccount.getId(), t.getAmount(), 0);
+        quote.addTransfer(true, quote.getSourceAccount().getId(), -t.getAmount(), 0);
+        quote.addTransfer(false, quote.getDestinationAccount().getId(), t.getAmount(), 0);
 
         t.addLineItems(new TransactionLineItem[] {
           new ETALineItem.Builder(x).setEta(Duration.ofDays(1).toMillis()).build()

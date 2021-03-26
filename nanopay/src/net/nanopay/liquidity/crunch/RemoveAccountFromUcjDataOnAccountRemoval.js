@@ -44,27 +44,30 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            if ( ((LifecycleAware) obj).getLifecycleState() == foam.nanos.auth.LifecycleState.DELETED ) {
-              DAO dao = (DAO) x.get("userCapabilityJunctionDAO");
+            //TODO: fix numberSet for string id
+            if ( true ) throw new RuntimeException("fix numberSet for string id in RemoveAccountFromUcjDataOnAccountRemoval");
 
-              Long id = ((Account) obj).getId();
+            // if ( ((LifecycleAware) obj).getLifecycleState() == foam.nanos.auth.LifecycleState.DELETED ) {
+            //   DAO dao = (DAO) x.get("userCapabilityJunctionDAO");
 
-              List<UserCapabilityJunction> list= ((ArraySink) dao
-                .select(new ArraySink()))
-                .getArray();
+            //   String id = ((Account) obj).getId();
 
-              for ( UserCapabilityJunction ucj : list ) {
-                if ( ucj.getData() instanceof NumberSet ) {
-                  NumberSet numberSet = (NumberSet) ucj.getData();
+            //   List<UserCapabilityJunction> list= ((ArraySink) dao
+            //     .select(new ArraySink()))
+            //     .getArray();
 
-                  if ( numberSet.contains(id) ) {
-                    numberSet.remove(id);
-                    ucj.setData(numberSet);
-                    dao.put(ucj);
-                  }
-                }
-              }
-            }
+            //   for ( UserCapabilityJunction ucj : list ) {
+            //     if ( ucj.getData() instanceof NumberSet ) {
+            //       NumberSet numberSet = (NumberSet) ucj.getData();
+
+            //       if ( numberSet.contains(id) ) {
+            //         numberSet.remove(id);
+            //         ucj.setData(numberSet);
+            //         dao.put(ucj);
+            //       }
+            //     }
+            //   }
+            // }
           }
         }, "Remove accounts from ucjdata on account removal");
         `

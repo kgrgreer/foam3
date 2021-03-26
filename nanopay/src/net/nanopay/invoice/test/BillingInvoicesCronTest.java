@@ -53,7 +53,7 @@ public class BillingInvoicesCronTest extends Test {
   private X setUpDAOs(X x) {
     x = x.put("localUserDAO", new SequenceNumberDAO(new MDAO(User.getOwnClassInfo())));
     x = x.put("invoiceDAO", new SequenceNumberDAO(new MDAO(Invoice.getOwnClassInfo())));
-    x = x.put("localAccountDAO", new SequenceNumberDAO(new MDAO(Account.getOwnClassInfo())));
+    x = x.put("localAccountDAO", new GUIDDAO(new MDAO(Account.getOwnClassInfo())));
     x = x.put("localTransactionDAO", new GUIDDAO(new MDAO(Transaction.getOwnClassInfo())));
     x = x.put("ascendantFXUserDAO", new SequenceNumberDAO(new MDAO(AscendantFXUser.getOwnClassInfo())));
 
@@ -297,6 +297,7 @@ public class BillingInvoicesCronTest extends Test {
             .setCurrency(payerAccount.getDenomination())
             .build() })
         .setStatus(TransactionStatus.COMPLETED)
+        .setSpid("nanopay")
         .build()
     );
   }

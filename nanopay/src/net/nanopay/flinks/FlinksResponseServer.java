@@ -32,6 +32,7 @@ import foam.lib.json.Outputter;
 import foam.nanos.auth.Subject;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
+import foam.nanos.pm.PM;
 import net.nanopay.flinks.external.FlinksLoginId;
 import net.nanopay.flinks.model.FlinksAuthRequest;
 import net.nanopay.flinks.model.FlinksCredentials;
@@ -61,6 +62,8 @@ public class FlinksResponseServer implements FlinksResponseService {
     Subject subject = (Subject) x.get("subject");
     DAO notificationDAO = (DAO) x.get("notificationDAO");
 
+    var pm = new PM(FlinksResponseServer.class.getName(), "flinks.getFlinksReponse");
+
     try {
       FlinksCredentials credentials = (FlinksCredentials) x.get("flinksCredentials");
 
@@ -74,7 +77,7 @@ public class FlinksResponseServer implements FlinksResponseService {
         return null;
       }
       String flinksHost = credentials.getUrl() + "/" + credentials.getCustomerId() + "/BankingServices/Authorize";
-      
+
       FlinksAuthRequest authRequest = new FlinksAuthRequest.Builder(x)
           .setLoginId(flinksLoginId.getLoginId())
           .setLanguage("en")
@@ -95,10 +98,12 @@ public class FlinksResponseServer implements FlinksResponseService {
         writer.write(new Outputter(x).setPropertyPredicate(new StoragePropertyPredicate()).stringify(authRequest));
         writer.flush();
       }
-      String line = null;
+
       int code = conn.getResponseCode();
+
       StringBuilder builder = sb.get();
 
+      String line = null;
       try (BufferedReader reader = new BufferedReader(new InputStreamReader(code >= 200 && code < 300 ? conn.getInputStream() : conn.getErrorStream()))) {
         while ((line = reader.readLine()) != null) {
           builder.append(line);
@@ -108,10 +113,12 @@ public class FlinksResponseServer implements FlinksResponseService {
       JSONParser parser = x.create(JSONParser.class);
       response = (FlinksResponse) parser.parseString(builder.toString(), FlinksResponse.class);
     } catch (Throwable throwable) {
+      pm.error(x, throwable.getMessage());
       logger.error(throwable.getMessage(), throwable);
     } finally {
       if ( conn != null ) conn.disconnect();
-      return response;
+      pm.log(x);
     }
+    return response;
   }
 }

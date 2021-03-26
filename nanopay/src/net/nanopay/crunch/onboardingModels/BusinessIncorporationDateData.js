@@ -24,7 +24,7 @@ foam.CLASS({
   sections: [
     {
       name: 'businessIncorporationDateSection',
-      title: 'Business incorporation date',
+      title: 'Insert the date of incorporation of the business',
       help: 'Enter business incorporated date'
     },
   ],
@@ -38,31 +38,31 @@ foam.CLASS({
   properties: [
     {
       section: 'businessIncorporationDateSection',
-      name: 'businessIncorporationDate',
-      label: 'Business incorporation date',
+      name: 'businessRegistrationDate',
+      label: 'Date of incorporation of the business',
       class: 'Date',
       documentation: 'Date of Business Incorporation.',
       validationPredicates: [
         {
-          args: ['businessIncorporationDate'],
+          args: ['businessRegistrationDate'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.BUSINESS_INCORPORATION_DATE, null);
+            return e.NEQ(net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.BUSINESS_REGISTRATION_DATE, null);
           },
           errorMessage: 'INVALID_DATE_ERROR'
         },
         {
-          args: ['businessIncorporationDate'],
+          args: ['businessRegistrationDate'],
           predicateFactory: function(e) {
             var min = new Date();
             min.setDate(min.getDate() - ( 350 * 365 ));
-            return e.GTE(net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.BUSINESS_INCORPORATION_DATE, min);
+            return e.GTE(net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.BUSINESS_REGISTRATION_DATE, min);
           },
           errorMessage: 'MIN_DATE_ERROR'
         },
         {
-          args: ['businessIncorporationDate'],
+          args: ['businessRegistrationDate'],
           predicateFactory: function(e) {
-            return e.LTE(net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.BUSINESS_INCORPORATION_DATE, new Date());
+            return e.LTE(net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.BUSINESS_REGISTRATION_DATE, new Date());
           },
           errorMessage: 'MAX_DATE_ERROR'
         }

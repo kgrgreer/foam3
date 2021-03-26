@@ -24,3 +24,25 @@ p({
   "saveHistory":false,
   "lifecycleState":1
 })
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"7ceedf87-0236-452e-a44b-ccd55b59766e",
+  "name":"Create Default Digital Accounts",
+  "priority":100,
+  "ruleGroup":"CreateDefaultDigitalAccount",
+  "documentation":"Creates a default digital account when a user is created.",
+  "daoKey":"localUserDAO",
+  "operation":0,
+  "action":{
+    "class":"net.nanopay.account.CreateDefaultDigitalAccountOnUserCreateRule",
+    "trusts":[
+      "325e128a-f76f-46bd-ba82-26d12d92865f",
+      "7ee216ae-9371-4684-9e99-ba42a5759444"
+    ]
+  },
+  "after":true,
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid": "test"
+})

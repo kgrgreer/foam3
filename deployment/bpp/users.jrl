@@ -1,50 +1,40 @@
 p({
-    "class":"foam.nanos.auth.User",
-    "id":8053,
-    "firstName":"API",
-    "lastName":"BPP",
-    "jobTitle":"Treasurer",
-    "organization":"BPP",
-    "email":"api@bpp.com",
-    "password":"rjS7gfPL5Aw=:oRLD/6/Hqj4bniLQBcwxCJGavlq7h6eBqf0awzXT/GdOu+JEiQnyIp0tIqWL8xya17z+Ug3w6E4TTcsJilmV9Q==",
-    "passwordLastModified":"2019-10-11T20:18:57.186Z",
-    "created":"2019-10-11T20:18:57.186Z",
-    "lastModified":"2019-10-11T20:18:57.186Z",
-    "nextLoginAttemptAllowedAt":"2019-10-11T20:18:57.186Z",
-    "lastModifiedBy":1348,
-    "createdBy":1348,
-    "spid":"bpp",
-    "group":"bpp-api-session",
-    "emailVerified":true,
-    "lifecycleState":1
+  "class":"foam.nanos.auth.User",
+  "id":2024,
+  "firstName":"Admin",
+  "lastName":"BPP",
+  "email":"admin-bpp@bepay.com",
+  "emailVerified":true,
+  "password":"mk7f99xdVVw=:3uehDHKyUB9aPhEyHeJFKInwKILMJlVXZSHykGN4+3gtffTYFLaBC2Zy2P/YDomdPnHY5hKr1GIuEA3Ij6/1YA==",
+  "group":"bpp-admin",
+  "status":2,
+  "spid":"bpp",
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.auth.User",
+  "id":2025,
+  "firstName":"API",
+  "lastName":"BPP",
+  "organization":"BPP",
+  "email":"api-bpp@bepay.com",
+  "password":"rjS7gfPL5Aw=:oRLD/6/Hqj4bniLQBcwxCJGavlq7h6eBqf0awzXT/GdOu+JEiQnyIp0tIqWL8xya17z+Ug3w6E4TTcsJilmV9Q==",
+  "spid":"bpp",
+  "group":"bpp-api-session",
+  "emailVerified":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.auth.User",
+  "id":2027,
+  "firstName":"FraudOps",
+  "lastName":"BPP",
+  "email":"fraudops-bpp@bepay.com",
+  "password":"qdJjMcVeNnQ=:+aDHTFQsuBCvFibd0sUpuE8p/jnnkB7AaruuYAiza/IhPbew2PzBu+NDcIPh46EIi6iBGytVWlhVWOOgJkXdbw==",
+  "emailVerified":true,
+  "status":2,
+  "group":"bpp-fraud-ops",
+  "spid":"bpp",
+  "lifecycleState":1
 })
 
-// BPP Admins
-p({
-    class:"foam.nanos.auth.User",
-    id:8054,
-    spid:"bpp",
-    firstName:"Admin",
-    lastName:"Admin",
-    email:"admin@bpp.com",
-    emailVerified:true,
-    password:"rjS7gfPL5Aw=:oRLD/6/Hqj4bniLQBcwxCJGavlq7h6eBqf0awzXT/GdOu+JEiQnyIp0tIqWL8xya17z+Ug3w6E4TTcsJilmV9Q==",
-    lifecycleState:1,
-    group:"bpp-dev",
-    status:2,
-    spid:"bpp"
-})
-p({
-    class:"foam.nanos.auth.User",
-    id:8055,
-    spid:"bpp",
-    firstName:"Dev",
-    lastName:"Admin",
-    email:"dev@bpp.com",
-    emailVerified:true,
-    password:"rjS7gfPL5Aw=:oRLD/6/Hqj4bniLQBcwxCJGavlq7h6eBqf0awzXT/GdOu+JEiQnyIp0tIqWL8xya17z+Ug3w6E4TTcsJilmV9Q==",
-    lifecycleState:1,
-    group:"bpp-dev",
-    status:2,
-    spid:"bpp"
-})

@@ -30,6 +30,7 @@ import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.country.br.exchange.Exchange;
 import net.nanopay.country.br.exchange.ExchangeClientMock;
+import net.nanopay.country.br.exchange.ExchangeClientValues;
 import net.nanopay.country.br.exchange.ExchangeService;
 import net.nanopay.model.Branch;
 import net.nanopay.partner.treviso.FepWebClient;
@@ -63,6 +64,15 @@ public class TrevisoServiceTest
     testBankAccount = createTestBankAccount();
     ((TrevisoService) trevisoService)
       .saveFepWebClient(testBankAccount.getOwner(), "Active");
+
+    setUpExchangeClientValues();
+  }
+
+
+  private void setUpExchangeClientValues() {
+    ExchangeClientValues e = new ExchangeClientValues();
+    e.setSpid("test");
+    ((DAO) this.x.get("exchangeClientValueDAO")).put(e);
   }
 
   public void createUsers(X x) {
@@ -74,6 +84,7 @@ public class TrevisoServiceTest
       Address address = new Address.Builder(x).setCountryId("CA")
         .setRegionId("CA-ON").setCity("Toronto").build();
       user.setAddress(address);
+      user.setSpid("test");
       user.setEmail("trevisouser@nanopay.net");
     }
     user = (User) user.fclone();
@@ -93,7 +104,9 @@ public class TrevisoServiceTest
 
   private void testCreateTrevisoTransaction() {
     Transaction transaction = ((ExchangeService) trevisoService).createTransaction(
-      new Transaction.Builder(x).setSourceAccount(testBankAccount.getId()).setCompletionDate(new Date()).build());
+      new Transaction.Builder(x).setAmount(1000).setSourceAccount(testBankAccount.getId())
+        .setDestinationAccount(testBankAccount.getId())
+        .setCompletionDate(new Date()).build());
     test( transaction != null , "treviso transaction created" );
   }
 
@@ -118,7 +131,7 @@ public class TrevisoServiceTest
       BankAccount testBankAccount = new CABankAccount.Builder(x)
         .setAccountNumber("12345678")
         .setBranch( branch.getId() )
-        .setOwner(1348)
+        .setOwner(1014)
         .setName("RBC Test Account")
         .setStatus(BankAccountStatus.VERIFIED)
         .build();

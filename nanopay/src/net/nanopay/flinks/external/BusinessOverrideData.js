@@ -33,5 +33,10 @@ foam.CLASS({
       name: 'mailingAddress',
       documentation: 'Address'
     },
+    {
+      class: 'String',
+      name: 'externalId',
+      documentation: 'External ID for business'
+    },
   ]
 });

@@ -145,7 +145,7 @@ foam.CLASS({
       class: 'Date',
       name: 'birthday',
       tableCellFormatter: function(date) {
-        this.add(date ? date.toISOString().substring(0,10) : '');
+        this.add(date ? date.toLocaleDateString(foam.locale) : '');
       },
       factory: function() {
         return this.viewData.birthday;

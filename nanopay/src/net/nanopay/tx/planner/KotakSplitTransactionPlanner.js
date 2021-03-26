@@ -35,6 +35,7 @@ foam.CLASS({
     'net.nanopay.bank.INBankAccount',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.fx.CurrencyFXService',
+    'net.nanopay.tx.SummaryTransaction',
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXService',
     'net.nanopay.fx.FXQuote',
@@ -123,6 +124,7 @@ foam.CLASS({
       t1.setDestinationCurrency(t1.getSourceCurrency());
       t1.setDestinationAmount(t1.getAmount());
       Transaction cashinPlan = quoteTxn(x, t1, quote);
+      cashinPlan = removeSummaryTransaction(cashinPlan);
       if ( cashinPlan != null ) {
         txn.addNext(cashinPlan);
       } else {
@@ -136,14 +138,7 @@ foam.CLASS({
       if ( kotakPlan != null ) {
 
         // add transfer to update CI trust account
-        TrustAccount trustAccount = null;
-        if ( cashinPlan instanceof BmoCITransaction ) {
-          trustAccount = TrustAccount.find(x, quote.getSourceAccount(), BMO_INSTITUTION_NUMBER);
-        } else if ( cashinPlan instanceof RbcCITransaction ) {
-          trustAccount = TrustAccount.find(x, quote.getSourceAccount(), RBC_INSTITUTION_NUMBER);
-        } else {
-          trustAccount = TrustAccount.find(x, quote.getSourceAccount(), ALTERNA_INSTITUTION_NUMBER);
-        }
+        TrustAccount trustAccount =  ((DigitalAccount) cashinPlan.findDestinationAccount(x)).findTrustAccount(x);
         Transfer t = new Transfer();
         t.setAccount(trustAccount.getId());
         t.setAmount(requestTxn.getAmount());

@@ -32,6 +32,7 @@ foam.CLASS({
   `,
 
   javaImports: [
+    'foam.nanos.auth.AuthService',
     'foam.nanos.auth.User',
     'java.util.Objects'
   ],
@@ -47,12 +48,21 @@ foam.CLASS({
     {
       name: 'sanitize',
       type: 'User',
-      args: [{ type: 'User', name: 'user' }],
+      args: [
+        {
+          type: 'User',
+          name: 'user'
+        }
+      ],
       documentation: `Return a sanitized copy of the given user.`,
       javaCode: `
-          User userClone;
-          userClone = (User) user.fclone();
-          return userClone;
+        User nu = new User();
+        nu.setUserName(user.getUserName());
+        nu.setEmail(user.getEmail());
+        nu.setDesiredPassword(user.getDesiredPassword());
+        nu.setSignUpToken(user.getSignUpToken());
+        nu.setLanguage(user.getLanguage());
+        return nu;
       `
     }
   ],

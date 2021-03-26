@@ -120,7 +120,7 @@ foam.CLASS({
                 .setStatus(transaction.getStatus())
                 .setState(transaction.getState(x))
                 .setId(transaction.getId())
-                .setReferenceNumber(transaction.getReferenceNumber())
+                .setReferenceNumber(transaction.getExternalInvoiceId())
                 .setParent(transaction.getParent())
                 .setCreated(transaction.getCreated())
                 .setProcessDate(transaction.getProcessDate())
@@ -130,9 +130,9 @@ foam.CLASS({
                 .setSenderName(sender.toSummary())
                 .setReceiverUserId(receiver.getId())
                 .setReceiverName(receiver.toSummary())
-                .setSourceAmount(transaction.getAmount())
+                .setSourceAmount(-transaction.getTotal(x, transaction.getSourceAccount()))
                 .setSourceCurrency(transaction.getSourceCurrency())
-                .setDestinationAmount(transaction.getDestinationAmount())
+                .setDestinationAmount(transaction.getTotal(x, transaction.getDestinationAccount()))
                 .setDestinationCurrency(transaction.getDestinationCurrency())
                 .build();
                 decoratedSink.put(pr, null);
@@ -142,7 +142,7 @@ foam.CLASS({
           }
         });
 
-        return decoratedSink;
+        return sink;
       `
     }
   ]

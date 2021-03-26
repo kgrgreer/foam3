@@ -301,7 +301,7 @@ foam.CLASS({
           .end()
           .start('b')
             .add(this.BODY_SEND_TREVISO_9_0 + this.invoice.totalSourceAmount + this.BODY_SEND_TREVISO_9_1 +
-              this.invoice.payee.businessName + this.BODY_SEND_TREVISO_9_2)
+              (this.invoice.payee.organization || this.invoice.payee.businessName) + this.BODY_SEND_TREVISO_9_2)
           .end();
       } else if ( this.isPayable_ ) {
         return this.BODY_PENDING;
@@ -317,8 +317,8 @@ foam.CLASS({
       label: 'Done',
       code: function(X) {
         var menuId = this.isPayable_ ?
-            'capability.main.invoices.payables' :
-            'capability.main.invoices.receivables';
+            'mainmenu.invoices.payables' :
+            'mainmenu.invoices.receivables';
         this.menuDAO
           .find(menuId)
           .then((menu) => menu.launch());

@@ -25,6 +25,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.auth.User',
+    'foam.mlang.predicate.EndsWith',
     'static foam.mlang.MLang.*',
   ],
 
@@ -34,7 +35,10 @@ foam.CLASS({
       javaCode: `
         return AND(
           EQ(OLD_OBJ, null),
-          EQ(DOT(NEW_OBJ, User.GROUP), "sme"),
+          new EndsWith.Builder(getX())
+            .setArg1(DOT(NEW_OBJ, User.GROUP))
+            .setArg2(prepare("-sme"))
+            .build(),
           EQ(DOT(NEW_OBJ, CLASS_OF(User.class)), true)
         ).f(obj);
       `

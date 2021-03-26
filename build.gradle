@@ -74,6 +74,8 @@ dependencies {
     compile "mysql:mysql-connector-java:8.0.16"
     compile "com.sun.xml.ws:jaxws-ri:2.3.2"
     compile "io.methvin:directory-watcher:0.9.10"
+    compile "com.auth0:java-jwt:3.11.0"
+    compile "com.auth0:jwks-rsa:0.15.0"
 }
 
 configurations.all {
@@ -201,6 +203,30 @@ task incrementalGenTask(type: IncrementalGenTask) {
     }
 }
 
+def getNanopayGitHash = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-parse', '--short', 'HEAD'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+def getFOAMGitHash = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        workingDir 'foam2/'
+        commandLine 'git', 'rev-parse', '--short', 'HEAD'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+task versions() {
+    project.nanopayRevision = "${getNanopayGitHash()}"
+    project.foamRevision = "${getFOAMGitHash()}"
+}
+
 task runFoamlink(type: Exec) {
     dependsOn tasks.incrementalGenTask
     onlyIf {
@@ -264,6 +290,7 @@ task nanopayNodeModulesCopy(type: Copy) {
 }
 
 task foamCopy(type: Copy) {
+    dependsOn tasks.versions
     dependsOn tasks.packageFoam
     dependsOn tasks.foamNodeModulesCopy
     dependsOn tasks.nanopayNodeModulesCopy
@@ -287,7 +314,6 @@ task copyResources(type: Copy) {
 task copyJournals(type: Copy) {
     from "${project.targetDir}/journals"
     into "${project.targetDir}/classes/journals"
-    include "*.0"
 }
 
 task copyImages(type: Copy) {
@@ -319,6 +345,15 @@ tasks.withType(JavaCompile) {
 task getVersion() {
     doLast {
         println project.version
+    }
+}
+
+task printVersions() {
+    doLast {
+        logger.quiet("Application Version: ${project.version}")
+        logger.quiet("nanopay revision:    ${project.nanopayRevision}")
+        logger.quiet("FOAM revision:       ${project.foamRevision}")
+        logger.quiet("Transaction Engine: ${project.transactionEngine}")
     }
 }
 
@@ -359,12 +394,14 @@ clean {
 compileJava {
     dependsOn tasks.genJava
     dependsOn tasks.copyLib
+    dependsOn printVersions
 
     options.incremental = true
     options.compilerArgs += ["-parameters"]
 }
 
 task buildJar(type: Jar) {
+    dependsOn versions
     dependsOn tasks.withType(Copy)
     dependsOn compileJava
     destinationDirectory = file("${project.targetDir}/lib")
@@ -379,8 +416,12 @@ task buildJar(type: Jar) {
         /* version - see settings.gradle and override on the command line
             with -Pversion=x.y.z */
         attributes "Implementation-Version": project.version
+        attributes "Implementation-Revision": project.nanopayRevision
         attributes "Implementation-Timestamp": new Date()
         attributes "Implementation-Vendor-Id": project.group
         attributes "Implementation-Vendor": "nanopay"
+        attributes "nanopay-Revision":project.nanopayRevision
+        attributes "FOAM-Revision":project.foamRevision
+        attributes "Transaction-Engine":project.transactionEngine
     }
 }

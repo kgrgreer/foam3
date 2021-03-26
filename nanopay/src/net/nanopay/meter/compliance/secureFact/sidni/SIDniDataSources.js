@@ -22,35 +22,51 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'verificationSource'
+      name: 'verificationSource',
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: 'type'
+      name: 'type',
+      order: 20,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: 'reference'
+      name: 'reference',
+      order: 30,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: 'date'
+      name: 'date',
+      order: 40,
+      gridColumns: 6
     },
     {
       class: 'Boolean',
-      name: 'verifiedNameAndDOB'
+      name: 'verifiedNameAndDOB',
+      order: 50,
+      gridColumns: 6
     },
     {
       class: 'Boolean',
-      name: 'verifiedNameAndAddress'
+      name: 'verifiedNameAndAddress',
+      order: 60,
+      gridColumns: 6
     },
     {
       class: 'Boolean',
-      name: 'verifiedNameAndAccount'
+      name: 'verifiedNameAndAccount',
+      order: 70,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: 'creditFileAge'
+      name: 'creditFileAge',
+      order: 80,
+      gridColumns: 6
     }
   ]
 });

@@ -56,7 +56,7 @@ foam.CLASS({
         {
             name: 'OBJECT_CAPABILITY_ID',
             type: 'String',
-            value: 'dfbe9220-ba4e-42d1-9bed-f4b4f8efcbb8',
+            value: 'invoice.capable.treviso',
             documentation: `
               This invoice requires its own fulfillment of this capability.
             `

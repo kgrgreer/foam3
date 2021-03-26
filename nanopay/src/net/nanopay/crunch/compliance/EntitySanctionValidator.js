@@ -56,7 +56,7 @@ foam.CLASS({
         Business business = (Business) ucj.findSourceId(x);
 
         User user = (User) ucj.findSourceId(x);
-        String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
+        String group = user.getSpid() + "-fraud-ops";
         
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {
@@ -98,6 +98,7 @@ foam.CLASS({
                     .setClassification(getClassification())
                     .setMatches(response.getResponseBody().getMatches())
                     .setGroup(group)
+                    .setCreatedFor(business.getId())
                     .build());
               }
             }, "Entity Sanction Validator");
@@ -117,6 +118,7 @@ foam.CLASS({
               .setClassification(getClassification())
               .setMatches(response != null ? response.getResponseBody().getMatches() : null)
               .setGroup(group)
+              .setCreatedFor(business.getId())
               .build());
           ruler.putResult(ComplianceValidationStatus.PENDING);
         }

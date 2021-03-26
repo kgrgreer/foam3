@@ -31,11 +31,11 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'foam.nanos.notification.Notification',
     'foam.nanos.notification.ToastState',
     'foam.util.SafetyUtil',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
+    'net.nanopay.partner.treviso.invoice.TrevisoNotification',
     'net.nanopay.partner.treviso.tx.TrevisoTransaction',
     'net.nanopay.tx.model.Transaction',
     'java.util.*'
@@ -69,7 +69,7 @@ foam.CLASS({
    methods: [
     {
       name: 'applyAction',
-      javaCode: ` 
+      javaCode: `
         Logger logger = (Logger) x.get("logger");
 
         agency.submit(x, new ContextAgent() {
@@ -91,10 +91,9 @@ foam.CLASS({
             Map<String, Object>  args = new HashMap<>();
             String amount = currency.format(-txn.getTotal(x, txn.getSourceAccount()));
             args.put("amount", amount);
-            Notification notify = new Notification.Builder(x)
-              .setBody(TEXT + amount + TEXT2)
+            TrevisoNotification notify = new TrevisoNotification.Builder(x)
+              .setAmount(amount)
               .setUserId(user.getId())
-              .setToastState(ToastState.REQUESTED)
               .setEmailName("tedTransfer")
               .setEmailArgs(args)
               .build();

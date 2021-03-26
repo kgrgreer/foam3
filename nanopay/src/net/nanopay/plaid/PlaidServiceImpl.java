@@ -311,7 +311,7 @@ public class PlaidServiceImpl implements PlaidService {
     return responseItem;
   }
 
-  public PlaidResultReport createReport(X x, PlaidAccountDetail accountDetail, Long nanopayAccountId, PlaidItem plaidItem) throws IOException {
+  public PlaidResultReport createReport(X x, PlaidAccountDetail accountDetail, String nanopayAccountId, PlaidItem plaidItem) throws IOException {
     PlaidClient plaidClient   = getClient(x);
     DAO plaidReportDAO        = (DAO) x.get("plaidResultReportDAO");
     User user                 = ((Subject) x.get("subject")).getUser();

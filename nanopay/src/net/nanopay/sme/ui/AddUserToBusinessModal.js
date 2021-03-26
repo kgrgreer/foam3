@@ -26,7 +26,7 @@ foam.CLASS({
 
   requires: [
     'foam.log.LogLevel',
-    'net.nanopay.auth.AgentJunctionStatus',
+    'foam.nanos.auth.AgentJunctionStatus',
     'net.nanopay.model.ClientUserJunction',
     'net.nanopay.model.Invitation'
   ],

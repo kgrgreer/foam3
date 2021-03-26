@@ -1,0 +1,65 @@
+p({
+    "class":"foam.nanos.auth.User",
+    "id":2021,
+    "firstName":"API",
+    "lastName":"BePay",
+    "jobTitle":"Treasurer",
+    "organization":"BePay",
+    "email":"api@bepay.com",
+    "password":"rjS7gfPL5Aw=:oRLD/6/Hqj4bniLQBcwxCJGavlq7h6eBqf0awzXT/GdOu+JEiQnyIp0tIqWL8xya17z+Ug3w6E4TTcsJilmV9Q==",
+    "passwordLastModified":"2019-10-11T20:18:57.186Z",
+    "created":"2019-10-11T20:18:57.186Z",
+    "lastModified":"2019-10-11T20:18:57.186Z",
+    "nextLoginAttemptAllowedAt":"2019-10-11T20:18:57.186Z",
+    "lastModifiedBy":1348,
+    "createdBy":1348,
+    "spid":"bepay",
+    "group":"bepay-api-session",
+    "emailVerified":true,
+    "lifecycleState":1
+})
+
+// BePay Admins
+p({
+    class:"foam.nanos.auth.User",
+    id:2022,
+    spid:"bepay",
+    firstName:"Admin",
+    lastName:"Admin",
+    email:"admin@bepay.com",
+    emailVerified:true,
+    password:"rjS7gfPL5Aw=:oRLD/6/Hqj4bniLQBcwxCJGavlq7h6eBqf0awzXT/GdOu+JEiQnyIp0tIqWL8xya17z+Ug3w6E4TTcsJilmV9Q==",
+    lifecycleState:1,
+    group:"bepay-dev",
+    status:2,
+    spid:"bepay"
+})
+p({
+    class:"foam.nanos.auth.User",
+    id:2023,
+    spid:"bepay",
+    firstName:"Dev",
+    lastName:"Admin",
+    email:"dev@bepay.com",
+    emailVerified:true,
+    password:"rjS7gfPL5Aw=:oRLD/6/Hqj4bniLQBcwxCJGavlq7h6eBqf0awzXT/GdOu+JEiQnyIp0tIqWL8xya17z+Ug3w6E4TTcsJilmV9Q==",
+    lifecycleState:1,
+    group:"bepay-dev",
+    status:2,
+    spid:"bepay"
+})
+
+// BePay FraudOps
+p({
+  "class":"foam.nanos.auth.User",
+  "id":2026,
+  "firstName":"FraudOps",
+  "lastName":"BePay",
+  "email":"fraudops@bepay.com",
+  "emailVerified":true,
+  "password":"TBJGH4IyGqY=:ZL5CC1rlL1fBmqRoJ5dhCz03J3r8KIuMWS7zua5cr/gL0j1LBD2P7HKluI5fN7roE1GTjlWnJBhdYbhHkwhK3Q==",
+  "status":2,
+  "group":"bepay-fraud-ops",
+  "spid":"bepay",
+  "lifecycleState":1
+})

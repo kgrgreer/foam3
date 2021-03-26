@@ -1,7 +1,7 @@
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "canReceiveCurrencyDAO",
-  "serve":true, 
+  "serve":true,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
@@ -11,14 +11,14 @@ p({
       .setOf(net.nanopay.bank.CanReceiveCurrency.getOwnClassInfo())
       .setAuthorize(false)
       .build();
-  """, 
+  """,
   "client": "{\"of\":\"net.nanopay.bank.CanReceiveCurrency\"}"
 })
 
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "getDefaultCurrencyDAO",
-  "serve":true, 
+  "serve":true,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
@@ -28,6 +28,26 @@ p({
       .setOf(net.nanopay.bank.GetDefaultCurrency.getOwnClassInfo())
       .setAuthorize(false)
       .build();
-  """, 
+  """,
   "client": "{\"of\":\"net.nanopay.bank.GetDefaultCurrency\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "accuityCredentials",
+  "description": "Accuity Validate API Credentials",
+  "lazy": false,
+  "service": {
+    "class": "net.nanopay.partner.accuity.AccuityCredentials"
+  }
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "bankAccountValidationService",
+  "description": "Bank account validation service.",
+  "lazy": false,
+  "service": {
+    "class": "net.nanopay.partner.accuity.AccuityBankAccountValidationService"
+  }
 })

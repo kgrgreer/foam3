@@ -16,7 +16,7 @@ foam.CLASS({
     'foam.nanos.auth.Group',
     'foam.nanos.auth.UserUserJunction',
     'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.auth.AgentJunctionStatus',
+    'foam.nanos.auth.AgentJunctionStatus',
     'net.nanopay.model.ClientUserJunction',
     'net.nanopay.model.Invitation'
   ],
@@ -35,8 +35,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 650px;
-      height: 745px;
+      width: 600px;
     }
     ^title {
       margin: 24px;
@@ -53,14 +52,13 @@ foam.CLASS({
       margin: 24px;
     }
     ^button-container {
-      width: 650px;
+      width: 600px;
       justify-content: flex-end;
       align-items: center;
       display: flex;
       height: 84px;
       background-color: #fafafa;
       position: fixed;
-      bottom: 0;
       position: absolute;
       margin: 0;
     }
@@ -105,6 +103,7 @@ foam.CLASS({
     ^emailStyle {
       margin-top: 24px;
       margin-left: 32px;
+      margin-bottom: 24px;
       width: 92%;
     }
     ^emailStyle .foam-u2-TextField {
@@ -203,7 +202,7 @@ foam.CLASS({
         .start()
           .start('h2').addClass(this.myClass('title'))
             .add(this.isAddUser ? this.INVITE_TITLE : this.TITLE_1)
-            .add(this.isAddUser ? this.subject.user.toSummary():(this.junction && this.junction.name !== '') ? this.junction.name : this.THE_USER) 
+            .add(this.isAddUser ? this.subject.user.toSummary():(this.junction && this.junction.name !== '') ? this.junction.name : this.THE_USER)
             .add(this.isAddUser ? '' : this.TITLE_2)
           .end()
           .start('p').addClass(this.myClass('subTitle'))

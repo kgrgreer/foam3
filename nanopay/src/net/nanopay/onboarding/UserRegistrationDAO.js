@@ -26,22 +26,24 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.Sink',
-    'foam.mlang.order.Comparator',
     'foam.mlang.predicate.Predicate',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Address',
+    'foam.nanos.auth.ServiceProviderAwareDAO',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserUserJunction',
     'foam.nanos.auth.token.Token',
-    'foam.nanos.crunch.AgentCapabilityJunction',
     'foam.nanos.crunch.CapabilityJunctionStatus',
+    'foam.nanos.crunch.CrunchService',
     'foam.nanos.logger.Logger',
+    'foam.nanos.theme.Theme',
+    'foam.nanos.theme.Themes',
     'foam.util.Auth',
     'foam.util.SafetyUtil',
     'net.nanopay.contacts.Contact',
     'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion',
     'net.nanopay.model.Business',
-    'net.nanopay.model.BusinessUserJunction',
     'net.nanopay.model.Invitation',
     'net.nanopay.model.InvitationStatus',
     
@@ -84,10 +86,6 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'localBusinessDAO'
-    },
-    {
-      class: 'foam.dao.DAOProperty',
-      name: 'userCapabilityJunctionDAO'
     }
   ],
 
@@ -104,8 +102,7 @@ foam.CLASS({
             setLocalBusinessDAO((DAO) x.get("localBusinessDAO"));
             setInvitationDAO((DAO) x.get("businessInvitationDAO"));
             setAgentJunctionDAO((DAO) x.get("agentJunctionDAO"));
-            setUserCapabilityJunctionDAO((DAO) x.get("userCapabilityJunctionDAO"));
-          }    
+          }
         `
         );
       }
@@ -122,8 +119,22 @@ foam.CLASS({
         if ( user == null || SafetyUtil.isEmpty(user.getEmail()) ) {
           throw new RuntimeException(EMAIL_REQUIRED_ERROR_MSG);
         }
-
-        user.setGroup(getGroup());
+        String spid = null;
+        if ( user != null && SafetyUtil.isEmpty(user.getSpid()) ) {
+          Theme theme = ((Themes) x.get("themes")).findTheme(x);
+          if ( theme != null &&
+                ! SafetyUtil.isEmpty(theme.getSpid()) ) {
+            spid = theme.getSpid();
+          } else {
+            ((foam.dao.DAO) x.get("alarmDAO")).put(new foam.nanos.alarming.Alarm.Builder(x)
+            .setName("Theme not found.")
+            .setSeverity(foam.log.LogLevel.ERROR)
+            .setNote(" Theme not found for user registration when looking for appropriate service provider.")
+            .build());
+            throw new RuntimeException("Configuration error: Theme not found on user registration");
+          }
+        }
+        user.setGroup(spid + "-" + getGroup());
 
         // We want the system user to be putting the User we're trying to create. If
         // we didn't do this, the user in the context's id would be 0 and many
@@ -152,7 +163,7 @@ foam.CLASS({
 
           Map<String, Object> params = (Map) token.getParameters();
 
-          // TODO: Why are we doing this here instead of letting PreventDuplicateEmailDAO catch this down the line?
+          // TODO: Why are we doing this here instead of letting PreventDuplicateEmailAction catch this down the line?
           // Check if user is internal ( already a registered user ), which will happen if adding a user to
           // a business.
           isInternal = params.containsKey("internal") && ((Boolean) params.get("internal"));
@@ -207,16 +218,10 @@ foam.CLASS({
                 SigningOfficerQuestion soq = new SigningOfficerQuestion.Builder(x)
                   .setIsSigningOfficer(true)
                   .build();
-
-                AgentCapabilityJunction ucj = new AgentCapabilityJunction.Builder(businessContext)
-                  .setSourceId(user.getId())
-                  .setEffectiveUser(business.getId())
-                  .setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-0")
-                  .setStatus(CapabilityJunctionStatus.GRANTED)
-                  .setData(soq)
-                  .build();
-
-                getUserCapabilityJunctionDAO().inX(sysContext).put(ucj);
+                CrunchService crunchService = (CrunchService) x.get("crunchService");
+                Subject subject = new Subject(user);
+                subject.setUser(business);
+                crunchService.updateUserJunction(sysContext, subject, "554af38a-8225-87c8-dfdf-eeb15f71215f-0", soq, CapabilityJunctionStatus.GRANTED);
               }
 
               Invitation invitation = (Invitation) getInvitationDAO()

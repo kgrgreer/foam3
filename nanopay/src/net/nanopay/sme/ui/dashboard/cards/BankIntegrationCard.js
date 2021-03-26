@@ -186,14 +186,14 @@ foam.CLASS({
       name: 'viewAccount',
       label: 'View',
       code: function() {
-        this.pushMenu('capability.main.banking');
+        this.pushMenu('mainmenu.banking');
       }
     },
     {
       name: 'verifyAccount',
       label: 'Pending',
       code: function() {
-        this.pushMenu('capability.main.banking');
+        this.pushMenu('mainmenu.banking');
       }
     },
     {

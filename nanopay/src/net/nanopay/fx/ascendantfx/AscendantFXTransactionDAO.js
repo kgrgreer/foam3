@@ -60,7 +60,7 @@ foam.CLASS({
         }
     
         AscendantFXTransaction transaction = (AscendantFXTransaction) obj;
-        if ( transaction.getStatus() != TransactionStatus.PENDING || ! SafetyUtil.isEmpty(transaction.getReferenceNumber()) ) {
+        if ( transaction.getStatus() != TransactionStatus.PENDING || ! SafetyUtil.isEmpty(transaction.getExternalInvoiceId()) ) {
           return getDelegate().put_(x, obj);
         }
     

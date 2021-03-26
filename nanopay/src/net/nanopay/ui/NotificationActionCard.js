@@ -67,7 +67,7 @@ foam.CLASS({
 
         ^ .titleContainer {
           display: inline-block;
-          overflow: scroll;
+          overflow: auto;
           width: 692px;
           height: 40px;
 

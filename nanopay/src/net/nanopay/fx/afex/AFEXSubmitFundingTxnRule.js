@@ -23,7 +23,7 @@ foam.CLASS({
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: `Rule to submit funding transaction on AFEX system when transaction is pending and balance is completed.`,
+  documentation: `Rule to submit funding transaction on AFEX system when transaction is sent and balance is completed.`,
 
   javaImports: [
     'foam.core.ContextAgent',
@@ -33,6 +33,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'net.nanopay.fx.afex.AFEXServiceProvider',
     'net.nanopay.fx.afex.AFEXFundingTransaction',
+    'net.nanopay.tx.TransactionEvent',
   ],
 
   methods: [
@@ -48,10 +49,11 @@ foam.CLASS({
           AFEXFundingTransaction transaction = (AFEXFundingTransaction) obj;
           AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
 
-          AFEXBeneficiary afexBeneficiary = afexService.getAFEXBeneficiary(x, transaction.findSourceAccount(x).getOwner(), transaction.findSourceAccount(x).getOwner(),true);
+          AFEXBeneficiary afexBeneficiary = afexService.getAFEXBeneficiary(x, transaction.findDestinationAccount(x).getOwner(), transaction.findDestinationAccount(x).getOwner(),true);
           if ( afexBeneficiary == null ) {
             try {
               afexBeneficiary = afexService.createInstantBeneficiary(x,transaction);
+              transaction.getTransactionEvents(x).put_(x, new TransactionEvent("Instant beneficiary created."));
             } catch (Throwable t) {
               String msg = "Error creating instant beneficiary " + transaction.getId();
               logger.error(msg, t);
@@ -60,11 +62,13 @@ foam.CLASS({
                 .setBody(msg + " " + t.getMessage())
                 .build();
               ((DAO) x.get("localNotificationDAO")).put(notification);
+              return;
             }
           }
 
           try {
             AFEXFundingTransaction txn = afexService.submitInstantPayment(transaction);
+            txn.getTransactionEvents(x).put_(x, new TransactionEvent("Instant payment submitted."));
             transactionDAO.put(txn);
           } catch (Throwable t) {
             String msg = "Error submitting AfexFundingTransaction " + transaction.getId();

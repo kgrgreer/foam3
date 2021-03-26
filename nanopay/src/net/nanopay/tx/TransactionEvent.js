@@ -23,6 +23,26 @@ foam.CLASS({
     'foam.nanos.auth.CreatedAware'
   ],
 
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function(cls) {
+        cls.extras.push(foam.java.Code.create({
+          data: `
+  public TransactionEvent(String event) {
+    setEvent(event);
+  }
+          `
+        }));
+      }
+    }
+  ],
+
+  tableColumns: [
+    'event',
+    'created'
+  ],
+
   properties: [
     {
       class: 'Long',

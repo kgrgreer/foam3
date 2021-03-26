@@ -5,6 +5,7 @@ import foam.dao.DAO;
 import foam.nanos.auth.LifecycleState;
 import foam.nanos.auth.User;
 import foam.test.TestUtils;
+import foam.util.SafetyUtil;
 
 import static foam.mlang.MLang.EQ;
 
@@ -47,7 +48,7 @@ public class DuplicateDigitalAccountRuleTest
       .setOwner(user.getId())
       .build();
     dA.setParent(dParent.getId());
-    test(0 == dA.getId(), "dA id == 0");
+    test(SafetyUtil.equals("", dA.getId()), "dA id should be empty");
     dA = (DigitalAccount) accountDAO.put(dA);
 
     DigitalAccount dB = new DigitalAccount.Builder(x_)
@@ -58,7 +59,7 @@ public class DuplicateDigitalAccountRuleTest
       .setOwner(user.getId())
       .build();
     dB.setParent(dParent.getId());
-    test(0 == dB.getId(), "dB id == 0");
+    test(SafetyUtil.equals("", dB.getId()), "dB id should be empty");
 
     // FIXME: I can't make this trigger, the rule is only receiving on update, not create.
     // test(TestUtils.testThrows(

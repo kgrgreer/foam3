@@ -19,40 +19,62 @@ foam.CLASS({
   package: 'net.nanopay.meter.compliance.secureFact',
   name: 'SecurefactResponse',
 
+  sections: [
+    {
+      name: 'responseInformation'
+    }
+  ],
+
   properties: [
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      section: 'responseInformation',
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: 'entityName'
+      name: 'entityName',
+      section: 'responseInformation',
+      order: 20,
+      gridColumns: 6
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
-      name: 'entityId'
+      name: 'entityId',
+      section: 'responseInformation',
+      order: 30,
+      gridColumns: 6
+    },
+    {
+      class: 'String',
+      name: 'type',
+      factory: function() {
+        return this.cls_.name;
+      },
+      javaFactory: `return getClass().getSimpleName();`
     },
     {
       class: 'Int',
-      name: 'statusCode'
+      name: 'statusCode',
+      section: 'responseInformation',
+      order: 40,
+      gridColumns: 6
     },
     {
       class: 'String',
       name: 'requestJson',
-      view: {
-        class: 'io.c9.ace.Editor',
-        config: {
-          width: 600, height: 200,
-          mode: 'JSON',
-          isReadOnly: true
-        }
-      }
+      section: 'responseInformation',
+      order: 100
     },
     {
       class: 'FObjectArray',
       of: 'net.nanopay.meter.compliance.secureFact.ResponseError',
-      name: 'errors'
+      name: 'errors',
+      section: 'responseInformation',
+      order: 110
     }
   ]
 });

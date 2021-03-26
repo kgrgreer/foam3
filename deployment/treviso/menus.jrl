@@ -8,7 +8,7 @@ p({
     "class":"foam.nanos.menu.ViewMenu",
     "view":{
       "class":"foam.u2.crunch.CapabilityStore",
-      "hideGrantedCapabilities": true,
+      "hideGrantedCapabilities": true
     }
   },
   "order":499,
@@ -16,4 +16,22 @@ p({
 })
 
 // Remove liquid transactions menu
-r({"class":"foam.nanos.menu.Menu","id":"transactions"})
+r({"class":"foam.nanos.menu.Menu","id":"transactions-liquid"})
+
+// TrevisoTransactionReport
+p({
+  "class":   "foam.nanos.menu.Menu",
+  "id":      "report.trevisoTransactionReport",
+  "label":   "Treviso Transaction Report",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "daoKey":        "trevisoTransactionReportDAO",
+      "browseTitle":   "Treviso Transaction Report",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  },
+  "parent":"report"
+})

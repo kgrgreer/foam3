@@ -1,15 +1,5 @@
-// Prerequisites for bpp spid capability
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "bpp",
-  targetId: "serviceProviderCapability",
-  priority: 1
-})
-
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "bpp",
-  targetId: "2EFEFD46-967D-43B3-A464-2ACDC3B2D032",
-  priority: 2
-})
-
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bpp",targetId:"serviceProviderCapability"})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bpp",targetId:"bppCorridorCapability"})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bpp",targetId:"bppPlannerCapability"})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bpp",targetId:"bpp-tx-reason-codes"})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bpp",targetId:"bpp-tx-fees"})

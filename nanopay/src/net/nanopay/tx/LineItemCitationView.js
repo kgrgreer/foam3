@@ -39,7 +39,7 @@ foam.CLASS({
     'data',
     {
       name: 'prop',
-      expression: function(data) {
+      expression: function(data, hideInnerLineItems) {
         var of = this.data.cls_;
         var props = of.getAxiomsByClass(foam.core.Property);
         var candidates = [];
@@ -48,13 +48,17 @@ foam.CLASS({
           var p = props[i];
 
           // filter unnecessary properties
-          if ( p.name !== 'id' && p.name !== 'name' ) {
+          if ( p.name !== 'id' && p.name !== 'name' && ! (hideInnerLineItems && p.name == 'lineItems') ) {
             candidates.push(p);
           }
         }
 
         return candidates;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'hideInnerLineItems'
     }
   ],
 
@@ -65,7 +69,7 @@ foam.CLASS({
       this.start()
         this.start('h3').add(this.data.toSummary()).end()
         this.forEach(self.prop, function(p) {
-          if ( p.label && ! p.hidden && ! p.visibility ) {
+          if ( p.label && ! p.hidden && p.visibility !== foam.u2.DisplayMode.HIDDEN ) {
              self.start(self.Cols)
                .add(p.label)
                .start(p, { mode: this.data.requiresUserInput && p.required ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.RO }).end()

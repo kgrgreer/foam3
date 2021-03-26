@@ -23,6 +23,10 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.logger.Logger',
+    'foam.nanos.auth.User',
+    'foam.core.X',
+    'foam.dao.DAO',
+    'foam.nanos.auth.Subject',
     'foam.util.SafetyUtil',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionQuote',
@@ -36,7 +40,12 @@ foam.CLASS({
     'net.nanopay.tx.TransactionException',
     'java.util.ArrayList',
     'java.util.List',
-    'net.nanopay.tx.UnsupportedTransactionException'
+    'net.nanopay.tx.UnsupportedTransactionException',
+    'net.nanopay.tx.planner.exceptions.PlannerValidationException',
+    'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.OR',
+    'net.nanopay.account.Account',
+    'foam.mlang.sink.Count'
   ],
 
   methods: [
@@ -50,18 +59,20 @@ foam.CLASS({
             if (SafetyUtil.isEmpty(tq.getRequestTransaction().getId())) {
               tq.setPlan(null);
               tq.setPlans(new Transaction [0]);
-              return getDelegate().put_(x, tq);
+              if (tq.getParent() == null)
+                return getDelegate().put_(x, tq);
+              return getDelegate().put_(x, tq); // sub plan call
             }
             t = tq.getRequestTransaction();
           }
           if ( obj instanceof Transaction )
             t = (Transaction) obj;
-
           if (t != null) {
             // if transaction has been planned already, just load it.
-            if ( ! SafetyUtil.isEmpty(t.getId()) )
+            if ( ! SafetyUtil.isEmpty(t.getId()) ) {
               return loadPlan(x, t);
             // otherwise make a new clean quote.
+            }
             t.setNext(null);
             TransactionQuote tq = new TransactionQuote();
             tq.setRequestTransaction(t);
@@ -85,8 +96,22 @@ foam.CLASS({
           ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), "Plan Not Found", txn.getId());
           throw new PlanNotFoundException("Plan not found");
         }
-
-       // --- Run post planning & validate the plan ---
+        // --- Ensure Completeness of plan ---
+          if ( ! plannedTx.getComplete() ) {
+            if ( SafetyUtil.equals(txn.getDestinationAccount(), plannedTx.getTransaction().getDestinationAccount()) ) {
+              // User has not updated the estimation account to a proper bank account.
+              throw new ValidationException("Estimate can not be acted on with provided information");
+            }
+            TransactionQuote tq = new TransactionQuote();
+            tq.setPartialTransaction(plannedTx.getTransaction());
+            Transaction newTx = (Transaction) txn.fclone();
+            newTx.clearId();
+            tq.setRequestTransaction(newTx);
+            Transaction t = ((TransactionQuote) getDelegate().put_(x, tq)).getPlan();
+            getDelegate().remove_(x, plannedTx);
+            return t;
+          }
+        // --- Run post planning & validate the plan ---
         try {
           postPlanning_(x, plannedTx.getTransaction(), plannedTx.getTransaction());
         } catch(foam.core.ValidationException e) {
@@ -94,7 +119,6 @@ foam.CLASS({
           logger.warning("Transaction Plan Validation Failed. \\ntxn:", txn, "\\nplan:", plannedTx);
           throw e;
         }
-
         // --- Remove the plan ---
         getDelegate().remove_(x, plannedTx);
         return (Transaction) plannedTx.getTransaction().fclone();
@@ -132,26 +156,25 @@ foam.CLASS({
     javaCode: `
       // --- Transaction Validation ---
       txn.validate(x);
-
       // --- Planner Validation ---
       AbstractTransactionPlanner atp = (AbstractTransactionPlanner) txn.findPlanner(x);
       if (atp == null || ! atp.postPlanning(x, txn, root)) {
         Logger logger = (Logger) x.get("logger");
         logger.warning(txn.getId() + " failed planner validation");
-        throw new ValidationException("Planner validation failed"); // return txn to user on failure
+        
+        PlannerValidationException exception = new PlannerValidationException("Planner validation failed");
+        exception.setTransactionId(txn.getId());
+        throw exception; // throw txn error to user on failure
       }
-
       // --- Line Item Validation ---
       for ( TransactionLineItem li : txn.getLineItems() )
         li.validate();
-
       if ( txn.getNext() != null || txn.getNext().length == 0 ) {
         Transaction [] txs = txn.getNext();
         for ( Transaction tx : txs ) {
           postPlanning_(x, tx, root);
         }
       }
-
       txn.setIsValid(true);
     `
     }

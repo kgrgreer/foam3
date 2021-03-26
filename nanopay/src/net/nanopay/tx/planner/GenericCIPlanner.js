@@ -23,6 +23,7 @@ foam.CLASS({
   documentation: 'Planner for doing Cash Ins for any currency instantly.',
 
   javaImports: [
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.cico.CITransaction',
     'net.nanopay.account.TrustAccount',
   ],
@@ -49,11 +50,11 @@ foam.CLASS({
       cashIn.setName("Cash In of "+cashIn.getSourceCurrency());
       // i think these are backwards.. should use the trust of the dest accnt here.
       cashIn.setLineItems(requestTxn.getLineItems());
-      TrustAccount trustAccount = TrustAccount.find(x, quote.getSourceAccount());
+      TrustAccount trustAccount = ((DigitalAccount) quote.getDestinationAccount()).findTrustAccount(x);
 
-      quote.addTransfer(trustAccount.getId(), - cashIn.getAmount());
-      quote.addTransfer(quote.getDestinationAccount().getId(), cashIn.getAmount());
-      quote.addExternalTransfer(quote.getSourceAccount().getId(), - cashIn.getAmount());
+      quote.addTransfer(true, trustAccount.getId(), - cashIn.getAmount(), 0);
+      quote.addTransfer(true, quote.getDestinationAccount().getId(), cashIn.getAmount(), 0);
+      quote.addTransfer(false, quote.getSourceAccount().getId(), - cashIn.getAmount(), 0);
 
       if ( getInstantComplete() ) {
         cashIn.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);

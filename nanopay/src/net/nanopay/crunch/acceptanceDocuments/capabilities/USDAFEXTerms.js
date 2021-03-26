@@ -36,17 +36,13 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'title',
-      value: `AFEX terms and conditions`
-    },
-    {
       name: 'checkboxText',
-      value: 'I certify that I have consent to submit all personal information provided, and that all information is correct. I have read, understood, and agree to '
+      value: 'I recognize that domestic and international payments are authorized and provided by AFEX, an international Means of Payment company. I certify that all information provided is true and correct and that I am authorized to send this information. I declare that I have read, understood and agree to the AFEX Terms and Conditions.'
     },
     {
-      name: 'link',
+      name: 'fileId',
       getter: function() {
-        return '/service/httpFileService/' + this.AGREEMENT_HASH + '?sessionId=' + localStorage['defaultSession'];
+        return this.AGREEMENT_HASH;
       }
     },
     {

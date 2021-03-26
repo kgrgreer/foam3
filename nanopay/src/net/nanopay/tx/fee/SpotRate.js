@@ -46,12 +46,12 @@ foam.CLASS({
       name: 'useInvertedRate'
     },
     {
-      class: 'String',
-      name: 'sourceCurrency'
+      class: 'foam.mlang.ExprProperty',
+      name: 'sourceCurrencyExpr'
     },
     {
-      class: 'String',
-      name: 'destinationCurrency'
+      class: 'foam.mlang.ExprProperty',
+      name: 'destinationCurrencyExpr'
     }
   ],
 
@@ -59,15 +59,15 @@ foam.CLASS({
     {
       name: 'getRate',
       javaCode: `
-        var sourceCurrency = getSourceCurrency();
-        var destinationCurrency = getDestinationCurrency();
-
         var transaction = (Transaction) obj;
-        if ( SafetyUtil.isEmpty(sourceCurrency) ) {
-          sourceCurrency = transaction.getSourceCurrency();
+        var sourceCurrency = transaction.getSourceCurrency();
+        var destinationCurrency = transaction.getDestinationCurrency();
+
+        if ( getSourceCurrencyExpr() != null ) {
+          sourceCurrency = String.valueOf(getSourceCurrencyExpr().f(transaction));
         }
-        if ( SafetyUtil.isEmpty(destinationCurrency) ) {
-          destinationCurrency = transaction.getDestinationCurrency();
+        if ( getDestinationCurrencyExpr() != null ) {
+          destinationCurrency = String.valueOf(getDestinationCurrencyExpr().f(transaction));
         }
         var sender = transaction.findSourceAccount(getX()).findOwner(getX());
         var fxService = CurrencyFXService.getFXService(getX(),

@@ -78,7 +78,7 @@ foam.CLASS({
             .end()
             .start().addClass('info-container')
               .start().addClass('table-content').add(this.DATE_OF_BIRTH_LABEL).end()
-              .start().addClass('table-content').addClass('subdued-text').add(owner.birthday ? owner.birthday.toISOString().substring(0, 10) : '').end()
+              .start().addClass('table-content').addClass('subdued-text').add(owner.birthday ? owner.birthday.toLocaleDateString(foam.locale) : '').end()
             .end()
           .end();
       });

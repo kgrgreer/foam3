@@ -31,6 +31,11 @@ import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
 public class BmoGenerateFileCron implements ContextAgent {
+  String spid;
+
+  public BmoGenerateFileCron(String spid) {
+    this.spid = spid;
+  }
 
   @Override
   public void execute(X x) {
@@ -41,19 +46,26 @@ public class BmoGenerateFileCron implements ContextAgent {
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
 
     Predicate condition1 = MLang.OR(
-      MLang.INSTANCE_OF(BmoCITransaction.getOwnClassInfo()),
-      MLang.INSTANCE_OF(BmoCOTransaction.getOwnClassInfo()),
-      MLang.INSTANCE_OF(BmoVerificationTransaction.getOwnClassInfo())
+      MLang.AND(
+        MLang.INSTANCE_OF(BmoCITransaction.getOwnClassInfo()),
+        MLang.EQ(BmoCITransaction.SETTLED, false)
+      ),
+      MLang.AND(
+        MLang.INSTANCE_OF(BmoCOTransaction.getOwnClassInfo()),
+        MLang.EQ(BmoCOTransaction.SETTLED, false)
+      ),
+      MLang.AND(
+        MLang.INSTANCE_OF(BmoVerificationTransaction.getOwnClassInfo()),
+        MLang.EQ(BmoVerificationTransaction.SETTLED, false)
+      )
     );
 
     Predicate condition2 = MLang.EQ(
       Transaction.STATUS, TransactionStatus.PENDING
     );
 
-    Predicate condition3 = MLang.OR(
-      MLang.EQ(BmoCITransaction.SETTLED, false),
-      MLang.EQ(BmoCOTransaction.SETTLED, false),
-      MLang.EQ(BmoVerificationTransaction.SETTLED, false)
+    Predicate condition3 = MLang.EQ(
+      Transaction.SPID, spid
     );
 
     ArraySink sink = (ArraySink) transactionDAO.where(
@@ -120,6 +132,7 @@ public class BmoGenerateFileCron implements ContextAgent {
         });
         updateTransaction(x, passedTransaction, eftFile);
         eftFile.setStatus(EFTFileStatus.GENERATED);
+        eftFile.setSpid(spid);
         ((DAO) x.get("bmoEftFileDAO")).put(eftFile);
       } catch ( Exception e ) {
         logger.error("BMO Batch Error while updating transaction: " + e.getMessage(), e);

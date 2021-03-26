@@ -29,7 +29,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.nanos.crunch.lite.CapablePayload',
+    'foam.nanos.crunch.CapabilityJunctionPayload',
     'foam.nanos.crunch.Capability',
     'net.nanopay.country.br.NatureCode',
     'net.nanopay.country.br.tx.NatureCodeLineItem',
@@ -52,9 +52,9 @@ foam.CLASS({
         Transaction requestTxn = (Transaction) invoice.getRequestTransaction();
 
         DAO capablePayloadDAO = (DAO) invoice.getCapablePayloadDAO(x);
-        List<CapablePayload> capablePayloadLst = (List<CapablePayload>) ((ArraySink) capablePayloadDAO.select(new ArraySink())).getArray();
+        List<CapabilityJunctionPayload> capablePayloadLst = (List<CapabilityJunctionPayload>) ((ArraySink) capablePayloadDAO.select(new ArraySink())).getArray();
 
-        for ( CapablePayload capablePayload : capablePayloadLst ) {
+        for ( CapabilityJunctionPayload capablePayload : capablePayloadLst ) {
           DAO capabilityDAO = (DAO) x.get("capabilityDAO");
           Capability cap = (Capability) capabilityDAO.find(capablePayload.getCapability());
 
@@ -72,4 +72,3 @@ foam.CLASS({
     }
   ]
 });
-  

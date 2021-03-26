@@ -231,22 +231,25 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'DETAILS_SUBTITLE', message: 'Create new or choose from existing' },
+    { name: 'DETAILS_SUBTITLE', message: 'Create new payable or choose from existing' },
     { name: 'EXISTING_HEADER', message: 'Choose an existing ' },
     { name: 'DETAILS_HEADER', message: 'Invoice Details' },
     { name: 'BACK', message: 'Back to selection' },
     { name: 'ACCOUNT_WITHDRAW_LABEL', message: 'Withdraw from' },
-    { name: 'SELECT_BANK_ACCOUNT', message: 'Please select a bank account' }
+    { name: 'SELECT_BANK_ACCOUNT', message: 'Please select a bank account' },
+    { name: 'NEW_MSG', message: 'New' },
+    { name: 'EXISTING_MSG', message: 'Existing' },
+    { name: 'NEXT', message: 'Next' },
   ],
 
   methods: [
     function initE() {
       this.SUPER();
-      var newButtonLabel = `New`;
-      var existingButtonLabel = `Existing`;
+      var newButtonLabel = this.NEW_MSG;
+      var existingButtonLabel = this.EXISTING_MSG;
       this.hasBackOption = false;
       // Update the next button label
-      this.nextLabel = 'Next';
+      this.nextLabel = this.NEXT;
 
       this.addClass(this.myClass())
       .startContext({ data: this })
@@ -398,7 +401,7 @@ foam.CLASS({
   actions: [
     {
       name: 'new',
-      label: 'New',
+      label: this.NEW_MSG,
       code: function(X) {
         if ( this.isApproving ) return;
         this.isForm = true;
@@ -415,7 +418,7 @@ foam.CLASS({
     },
     {
       name: 'existing',
-      label: 'Existing',
+      label: this.EXISTING_MSG,
       code: function(X) {
         if ( this.isApproving ) return;
         this.isForm = false;

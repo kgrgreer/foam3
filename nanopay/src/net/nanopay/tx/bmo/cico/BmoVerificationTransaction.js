@@ -65,10 +65,7 @@ foam.CLASS({
         BmoTransactionHistory bmoHistory = new BmoTransactionHistory();
         bmoHistory.setTimeEDT(BmoFormatUtil.getCurrentDateTimeEDT());
         bmoHistory.setMessage(history);
-    
-        ArrayList<FObject> temp = new ArrayList<>(Arrays.asList(this.getReferenceData()));
-        temp.add(bmoHistory);
-        this.setReferenceData(temp.toArray(new FObject[temp.size()]));
+        this.getExternalData().put("BMO History", bmoHistory);
       `
     },
     {

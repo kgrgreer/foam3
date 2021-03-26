@@ -28,6 +28,7 @@ foam.CLASS({
     'isConnecting',
     'notify',
     'padCaptureDAO',
+    'pushMenu',
     'pushViews',
     'validateAddress',
     'validateCity',
@@ -173,10 +174,7 @@ foam.CLASS({
 
             X.closeDialog();
 
-            location.hash = 'capability.main.banking';
-            this.stack.push({
-              class: 'net.nanopay.bank.BankAccountController'
-            })
+            this.pushMenu('mainmenu.banking');
           });
         }
       }

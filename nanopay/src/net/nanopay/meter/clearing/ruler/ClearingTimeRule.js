@@ -67,7 +67,7 @@ foam.CLASS({
       visibility: 'HIDDEN'
     },
     {
-      class: 'Int',
+      class: 'Long',
       name: 'duration',
       value: 2,
       validationPredicates:  [
@@ -92,6 +92,10 @@ foam.CLASS({
     {
       name: 'validity',
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'spid',
+      value: ''
     }
   ],
 

@@ -25,6 +25,12 @@ foam.CLASS({
   name: 'ExpiryLineItem',
   extends: 'net.nanopay.tx.InfoLineItem',
 
+  javaImports: [
+    'java.time.LocalDateTime',
+    'java.time.ZoneId',
+    'java.util.Date'
+  ],
+
   properties: [
     {
       documentation: 'A Transaction may depend on an FX Quote for example which is only valid for some time window.',
@@ -39,5 +45,23 @@ foam.CLASS({
           .end();
       }
     }
+  ],
+
+  methods: [
+    {
+      name: 'validate',
+      javaCode: `
+        Date expiryDate = getExpiry();
+        if ( expiryDate == null ) {
+          return;
+        }
+        LocalDateTime expiry = LocalDateTime.ofInstant(expiryDate.toInstant(), ZoneId.systemDefault());
+        LocalDateTime now = LocalDateTime.now();
+        if ( now.isAfter(expiry)) {
+          throw new ExpiredTransactionException();
+        }
+          
+      `
+    },
   ]
 });

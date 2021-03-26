@@ -45,7 +45,7 @@ foam.CLASS({
       position: relative;
     }
     .business-list {
-      overflow-y: scroll;
+      overflow-y: auto;
       height: 288px;
     }
     .search-count {
@@ -80,7 +80,7 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'CONTACT_ADDED', message: 'Personal contact added' }
+    { name: 'CONTACT_ADDED', message: 'Contact added successfully' }
   ],
 
   properties: [

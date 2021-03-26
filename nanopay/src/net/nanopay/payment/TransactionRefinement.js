@@ -24,7 +24,14 @@ foam.CLASS({
     'net.nanopay.payment.PaymentProviderAware'
   ],
 
-  properties: [ 'paymentProvider' ]
+  properties: [
+    {
+      name: 'paymentProvider',
+      section: 'transactionInformation',
+      order: 270,
+      gridColumns: 6
+    }
+  ]
 });
 
 foam.CLASS({
@@ -36,7 +43,14 @@ foam.CLASS({
     'net.nanopay.payment.PaymentProviderAware'
   ],
 
-  properties: [ 'paymentProvider' ]
+  properties: [
+    {
+      name: 'paymentProvider',
+      section: 'transactionInformation',
+      order: 270,
+      gridColumns: 6
+    }
+  ]
 });
 
 foam.CLASS({
@@ -48,5 +62,32 @@ foam.CLASS({
     'net.nanopay.payment.PaymentProviderAware'
   ],
 
-  properties: [ 'paymentProvider' ]
+  properties: [
+    {
+      name: 'paymentProvider',
+      section: 'transactionInformation',
+      order: 270,
+      gridColumns: 6
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'net.nanopay.payment',
+  name: 'InterTrustTransactionRefinement',
+  refines: 'net.nanopay.tx.cico.InterTrustTransaction',
+
+  implements: [
+    'net.nanopay.payment.PaymentProviderAware'
+  ],
+
+  properties: 
+  [ 
+    {
+      name: 'paymentProvider',
+      section: 'transactionInformation',
+      order: 270,
+      gridColumns: 6
+    }
+  ]
 });

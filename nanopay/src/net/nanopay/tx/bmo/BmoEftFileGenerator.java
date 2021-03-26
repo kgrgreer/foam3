@@ -53,20 +53,30 @@ public class BmoEftFileGenerator implements EFTFileGenerator {
   DAO    currencyDAO;
   DAO    bmoEftFileDAO;
   Logger logger;
-  BmoAssignedClientValue         clientValue;
   private ArrayList<Transaction> passedTransactions = new ArrayList<>();
 
   public static final String SEND_FOLDER = System.getProperty("NANOPAY_HOME") + "/var" + "/bmo_eft/send/";
   public static final String SEND_FAILED = System.getProperty("NANOPAY_HOME") + "/var" + "/bmo_eft/send_failed/";
 
+  public X getX() {
+    return x;
+  }
+  
   public BmoEftFileGenerator(X x) {
     this.x = x;
     this.currencyDAO    = (DAO) x.get("currencyDAO");
     this.bmoEftFileDAO  = (DAO) x.get("bmoEftFileDAO");
-    this.clientValue    = (BmoAssignedClientValue) x.get("bmoAssignedClientValue");
     this.logger         = new PrefixLogger(new String[] {"BMO"}, (Logger) x.get("logger"));
   }
 
+  public BmoAssignedClientValue getClientValue() {
+    BmoAssignedClientValue clientValue = (BmoAssignedClientValue) getX().get("bmoAssignedClientValue");
+    if ( clientValue == null ) {
+      throw new RuntimeException("Invalid credentials");
+    }
+    return clientValue;
+  }
+  
   /**
    * Create the real file object and save it into the disk.		
    * @param transactions a list of transactins to be sent
@@ -114,9 +124,9 @@ public class BmoEftFileGenerator implements EFTFileGenerator {
     String               originatorID = "";
 
     if ( transactions.get(0) instanceof CITransaction ) {
-      originatorID = this.clientValue.getDebitOriginatorId();
+      originatorID = getClientValue().getDebitOriginatorId();
     } else {
-      originatorID = this.clientValue.getCreditOriginatorId();
+      originatorID = getClientValue().getCreditOriginatorId();
     }
 
     try {
@@ -174,7 +184,7 @@ public class BmoEftFileGenerator implements EFTFileGenerator {
     file.setHeaderRecord        (fileHeader);
     file.setBatchRecords        (records.toArray(new BmoBatchRecord[records.size()]));
     file.setTrailerRecord       (fileControl);
-    file.setProduction          (this.clientValue.getProduction());
+    file.setProduction          (getClientValue().getProduction());
     file.setFileName            (fileHeader.getFileCreationNumber() + "-" + originatorID + ".txt");
     file.setBeautifyString      (file.beautify());
     file.setFileCreationTimeEDT (BmoFormatUtil.getCurrentDateTimeEDT());
@@ -188,15 +198,15 @@ public class BmoEftFileGenerator implements EFTFileGenerator {
   public BmoFileHeader createFileHeader(String originatorId) {
     int fileCreationNumber = 0;
 
-    if ( this.clientValue.getProduction() ) {
+    if ( getClientValue().getProduction() ) {
       Count count        = (Count) bmoEftFileDAO.inX(x).where(MLang.EQ(BmoEftFile.PRODUCTION, true)).select(new Count());
-      fileCreationNumber = (int) (this.clientValue.getFileCreationNumberOffset() + count.getValue() + 1);
+      fileCreationNumber = (int) (getClientValue().getFileCreationNumberOffset() + count.getValue() + 1);
     }
 
     BmoFileHeader fileHeader =              new BmoFileHeader();
     fileHeader.setOriginatorId              (originatorId);
     fileHeader.setFileCreationNumber        (fileCreationNumber);
-    fileHeader.setDestinationDataCentreCode (this.clientValue.getDestinationDataCentre());
+    fileHeader.setDestinationDataCentreCode (getClientValue().getDestinationDataCentre());
     fileHeader.setFileCreationDate          (BmoFormatUtil.getCurrentJulianDateEDT());
     return fileHeader;
   }
@@ -218,14 +228,14 @@ public class BmoEftFileGenerator implements EFTFileGenerator {
       BmoBatchHeader batchHeader =           new BmoBatchHeader();
       batchHeader.setBatchPaymentType        (type);
       batchHeader.setPayableDate             (BmoFormatUtil.getCurrentJulianDateEDT());
-      batchHeader.setOriginatorShortName     (this.clientValue.getOriginatorShortName());
-      batchHeader.setOriginatorLongName      (this.clientValue.getOriginatorLongName());
-      batchHeader.setInstitutionIdForReturns (this.clientValue.getInstitutionIdForReturns());
-      batchHeader.setAccountNumberForReturns (this.clientValue.getAccountNumberForReturns());
-      if ( PADType != -1 ) {
+      batchHeader.setOriginatorShortName     (getClientValue().getOriginatorShortName());
+      batchHeader.setOriginatorLongName      (getClientValue().getOriginatorLongName());
+      batchHeader.setInstitutionIdForReturns (getClientValue().getInstitutionIdForReturns());
+      batchHeader.setAccountNumberForReturns (getClientValue().getAccountNumberForReturns());
+      if ( PADType != -1l ) {
         batchHeader.setTransactionTypeCode   (PADType);
       } else {
-        batchHeader.setTransactionTypeCode   (clientValue.getTransactionType());
+        batchHeader.setTransactionTypeCode   (getClientValue().getTransactionType());
       }
 
       /**
@@ -247,15 +257,16 @@ public class BmoEftFileGenerator implements EFTFileGenerator {
           Branch branch = getBranchById(bankAccount.getBranch());
 
           BmoDetailRecord detailRecord =      new BmoDetailRecord();
-          detailRecord.setAmount              (transaction.getAmount());
+          detailRecord.setAmount              (-transaction.getTotal(x, transaction.getSourceAccount()));
           detailRecord.setLogicalRecordTypeId (type);
           detailRecord.setClientName          (getNameById(bankAccount.getOwner()));
+          // Question: Would BMO accept the standard 9 digit Canadian routing code? Or just the institution + branch which is only 8 digits.
           detailRecord.setClientInstitutionId (getInstitutionById(branch.getInstitution()) + branch.getBranchId());
           detailRecord.setClientAccountNumber (bankAccount.getAccountNumber());
           detailRecord.setReferenceNumber     (String.valueOf(getRefNumber(transaction)));
           detailRecord.validate(x);
 
-          sum = sum + transaction.getAmount();
+          sum = sum + -transaction.getTotal(x, transaction.getSourceAccount());
           detailRecords.add(detailRecord);
           transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction added to EFT file").build());
           ((BmoTransaction)transaction). setBmoReferenceNumber(detailRecord.getReferenceNumber());
@@ -311,7 +322,7 @@ public class BmoEftFileGenerator implements EFTFileGenerator {
     return referenceNumber.getId();
   }
 
-  public CABankAccount getAccountById(long id) {
+  public CABankAccount getAccountById(String id) {
     DAO accountDAO = (DAO) x.get("localAccountDAO");
 
     Account account = (Account) accountDAO.inX(x).find(id);
@@ -377,7 +388,7 @@ public class BmoEftFileGenerator implements EFTFileGenerator {
     HashMap<Integer, List<Transaction>> result = new HashMap<>();
 
     for ( Transaction transaction : transactions ) {
-      int type = PADTypeLineItem.getPADTypeFrom(x, transaction) == null ? -1 : PADTypeLineItem.getPADTypeFrom(x, transaction).getId();
+      int type = PADTypeLineItem.getPADTypeFrom(x, transaction) == null ? -1 : (int) PADTypeLineItem.getPADTypeFrom(x, transaction).getId();
 
       if ( ! result.containsKey(type) ) {
         ArrayList<Transaction> newList = new ArrayList<>();

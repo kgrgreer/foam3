@@ -25,7 +25,8 @@ foam.CLASS({
   messages: [
     { name: 'NO_CURRENCY_ERROR', message: 'Currency required' },
     { name: 'NO_AMOUNT_ERROR', message: 'Amount required' },
-    { name: 'CURRENCY_PLACEHOLDER', message: 'Select currency' }
+    { name: 'CURRENCY_PLACEHOLDER', message: 'Select currency' },
+    { name: 'AVAILABLE_CURRENCIES', message: 'Available Currencies' }
   ],
 
   properties: [
@@ -40,7 +41,7 @@ foam.CLASS({
           placeholder: this.CURRENCY_PLACEHOLDER,
           sections: [
             {
-              heading: 'Available Currencies',
+              heading: this.sourceCls_.AVAILABLE_CURRENCIES,
               dao$: X.data.customCurrencyDAO$
             }
           ]
@@ -54,7 +55,7 @@ foam.CLASS({
             return e.NEQ(net.nanopay.model.CurrencyAmount.CURRENCY, null);
           }
         }
-      ],
+      ]
     },
     {
       class: 'UnitValue',
@@ -62,7 +63,7 @@ foam.CLASS({
       gridColumns: 6,
       unitPropName: 'currency',
       unitPropValueToString: async function(x, val, unitPropName) {
-        var unitProp = await x.customCurrencyDAO.find(unitPropName);
+        var unitProp = await this.customCurrencyDAO.find(unitPropName);
         if ( unitProp ) return unitProp.format(val);
         return val;
       },
@@ -80,7 +81,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'customCurrencyDAO',
       documentation: 'DAO used for currency selection',
-      visiblility: 'HIDDEN',
+      visibility: 'HIDDEN',
       preSet: function(_, n) {
         if ( n.of != foam.core.Currency ) {
           console.warn('Custom currency dao provided in CurrencyAmount view is not of currency model.');

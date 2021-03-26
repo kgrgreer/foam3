@@ -38,13 +38,26 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'BANCO',
-      documentation: 'Agency Code'
+      name: 'BANCO'
+    },
+    {
+      class: 'String',
+      name: 'CONTA'
     },
     {
       class: 'String',
       name: 'beneficiaryType',
       documentation: 'Type of beneficiary supported. A - Individual/Company'
+    },
+    {
+      class: 'String',
+      name: 'initialStatus',
+      documentation: 'Initial status when creating transaction in exchange'
+    },
+    {
+      class: 'String',
+      name: 'processorName',
+      documentation: 'Bank or financial institution that will process the remittance'
     },
     {
       class: 'String',
@@ -85,6 +98,20 @@ foam.CLASS({
       class: 'Int',
       name: 'TIPO',
       documentation: 'Operation type code: 01 - Export, 02 - Import, 03 - Financial Transfer Abroad, 04 - Financial Transfer Abroad, 05 - Banking Purchase, 06 - Banking Sale'
+    },
+    {
+      class: 'String',
+      name: 'GERENTE',
+      documentation: 'Platform Manager'
+    },
+    {
+      class: 'String',
+      name: 'FORMAME'
+    },
+    {
+      class: 'String',
+      name: 'FORMAEN',
+      documentation: "Delivery method of the national currency: “CAIXA” - Caixa “CC” - Current account “TED” - Electronic Transfer"
     },
     {
       class: 'Reference',

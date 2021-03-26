@@ -25,9 +25,17 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.dao.DAO',
+    'foam.i18n.TranslationService',
+    'foam.mlang.sink.Count',
+    'foam.nanos.crunch.AgentCapabilityJunction',
     'foam.nanos.crunch.UserCapabilityJunction',
+    'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+    'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.model.Business',
-    'foam.nanos.approval.ApprovalRequest'
+    'static foam.mlang.MLang.*'
   ],
 
   properties: [
@@ -37,6 +45,10 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'CLASSIFICATION_MSG', message: 'Generic Business Validator' }
+  ],
+
   methods: [
     {
       name: 'applyAction',
@@ -44,19 +56,36 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-
+            DAO                userDAO            = (DAO)                x.get("userDAO");
+            DAO                approvalRequestDAO = (DAO)                x.get("approvalRequestDAO");
+            Subject            subject            = (Subject)            x.get("subject");
+            TranslationService ts                 = (TranslationService) x.get("translationService");
+            
             UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
-            Business business = (Business) ucj.findSourceId(x);
+            Business business = (Business) userDAO.find(((AgentCapabilityJunction) ucj).getEffectiveUser());
 
-            String group = business.getSpid().equals("nanopay") ? "fraud-ops" : business.getSpid() + "-fraud-ops";
+            String group = business.getSpid() + "-fraud-ops";
+
+            String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
+            String classification = ts.getTranslation(locale, getClassInfo().getId() + ".CLASSIFICATION_MSG", CLASSIFICATION_MSG);
+
+            Long count = (Long) ((Count) approvalRequestDAO.where(AND(
+              EQ(ComplianceApprovalRequest.OBJ_ID, ucj.getId()),
+              EQ(ComplianceApprovalRequest.DAO_KEY, "userCapabilityJunctionDAO"),
+              EQ(ComplianceApprovalRequest.CLASSIFICATION, classification),
+              EQ(ComplianceApprovalRequest.STATUS, foam.nanos.approval.ApprovalStatus.REQUESTED)
+            )).select(COUNT())).getValue();
+
+            if ( count > 0 ) return;
 
             requestApproval(x,
-              new ApprovalRequest.Builder(x)
+              new ComplianceApprovalRequest.Builder(x)
                 .setObjId(ucj.getId())
                 .setDaoKey("userCapabilityJunctionDAO")
-                .setRefObjId(business.getId())
-                .setRefDaoKey("businessDAO")
-                .setClassification(getClassification())
+                .setRefObjId(ucj.getId())
+                .setRefDaoKey("userCapabilityJunctionDAO")
+                .setCreatedFor(business.getId())
+                .setClassification(classification)
                 .setGroup(group)
                 .build()
             );

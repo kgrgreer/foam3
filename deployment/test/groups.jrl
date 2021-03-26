@@ -1,0 +1,19 @@
+p({
+  class:"foam.nanos.auth.Group",
+  id:"test-admin",
+  description:"test admin",
+  parent:"msp-admin"
+})
+p({
+  class:"foam.nanos.auth.Group",
+  id:"test-fraud-ops",
+  description:"test fraud-ops group",
+  parent:"fraud-ops"
+})
+p({
+  class:"foam.nanos.auth.Group",
+  id:"test-payment-ops",
+  description:"test fraud-ops group",
+  parent:"payment-ops"
+})
+

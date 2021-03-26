@@ -136,6 +136,7 @@ foam.CLASS({
       name: 'voidMethod',
       label: 'Void',
       code: function(X) {
+        this.invoice.draft = false
         this.invoice.paymentMethod = this.PaymentStatus.VOID;
         // if void note is provided, append it to the end of the existing invoice note
         if ( this.note ) {
@@ -144,7 +145,7 @@ foam.CLASS({
         this.invoiceDAO.put(this.invoice).then((invoice) => {
          if ( invoice.paymentMethod == this.PaymentStatus.VOID ) {
           X.closeDialog();
-          if ( X.currentMenu.id == 'sme.quickAction.send' || X.currentMenu.id == 'capability.main.dashboard' ) {
+          if ( X.currentMenu.id == 'sme.quickAction.send' || X.currentMenu.id == 'mainmenu.dashboard' ) {
             X.stack.push({
               class: 'net.nanopay.sme.ui.MoneyFlowRejectView',
               invoice: this.invoice

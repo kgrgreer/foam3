@@ -32,6 +32,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'static foam.mlang.MLang.EQ',
@@ -54,10 +55,24 @@ foam.CLASS({
           public BankAccountBranchDAO(X x, DAO delegate) {
             setX(x);
             setDelegate(delegate);
-          }    
+          }
         `
         );
       }
+    }
+  ],
+
+  properties: [
+    {
+      name: 'logger',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.logger.Logger',
+      visibility: 'HIDDEN',
+      javaFactory: `
+        return new PrefixLogger(new Object[] {
+          this.getClass().getSimpleName()
+        }, (Logger) getX().get("logger"));
+      `
     }
   ],
 
@@ -128,16 +143,17 @@ foam.CLASS({
         if ( fObject == null ) {
           return fObject;
         }
-        fObject = fObject.fclone();
 
         if (fObject instanceof BankAccount) {
           BankAccount bankAccount = (BankAccount) fObject;
 
           Branch branch = bankAccount.findBranch(x);
-          if ( branch != null )
+          if ( branch != null ) {
+            bankAccount = (BankAccount) bankAccount.fclone();
             bankAccount.setBranchId(branch.getBranchId());
-
-          return bankAccount;
+            return bankAccount;
+          }
+          getLogger().debug("Branch not found", bankAccount.getBranch(), "account", bankAccount.getId());
         }
         return fObject;
       `

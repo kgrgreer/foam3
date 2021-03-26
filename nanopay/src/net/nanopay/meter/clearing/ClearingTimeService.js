@@ -31,6 +31,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.util.Date',
+    'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankHolidayService',
     'net.nanopay.tx.cico.CITransaction',
@@ -96,6 +97,7 @@ foam.CLASS({
 
         ClearingTimesTrait trait = (ClearingTimesTrait) transaction;
         int totalClearingTime = trait.getClearingTimes().values().stream()
+          .map(Long::intValue)
           .reduce(0, Integer::sum);
         if ( trait.getClearingTimes().isEmpty()
           || totalClearingTime < 0
@@ -129,10 +131,11 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        if ( transaction instanceof COTransaction ) {
-          return (BankAccount) transaction.findDestinationAccount(x);
+        Account acct =  transaction.findDestinationAccount(x);
+        if ( ! (acct instanceof BankAccount) ) {
+          acct = transaction.findSourceAccount(x);
         }
-        return (BankAccount) transaction.findSourceAccount(x);
+        return (BankAccount) acct;
       `
     },
     {

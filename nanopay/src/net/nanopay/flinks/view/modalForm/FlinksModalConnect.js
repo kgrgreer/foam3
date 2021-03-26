@@ -45,12 +45,12 @@ foam.CLASS({
   ],
 
   css: `
-    ^ {
-      width: 504px;
-    }
     ^content {
+      box-sizing: border-box;
+      min-width: 615px;
       position: relative;
-      padding: 0px 50px 24px 0px;
+      padding: 24px;
+      padding-top: 0;
     }
     ^ .foam-u2-tag-Input {
       -webkit-transition: all .15s ease-in-out;
@@ -90,9 +90,6 @@ foam.CLASS({
     }
     ^ label > span {
       display: none;
-    }
-    ^ .net-nanopay-sme-ui-wizardModal-WizardModalNavigationBar-container {
-      padding: 0 60px 0 0;
     }
   `,
 

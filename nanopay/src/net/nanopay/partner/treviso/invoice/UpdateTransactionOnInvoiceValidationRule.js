@@ -30,11 +30,15 @@ foam.CLASS({
         'foam.nanos.crunch.CapabilityJunctionStatus',
         'foam.nanos.crunch.CrunchService',
         'foam.util.SafetyUtil',
+        'foam.log.LogLevel',
 
         'net.nanopay.invoice.model.Invoice',
         'net.nanopay.invoice.model.PaymentStatus',
         'net.nanopay.tx.model.Transaction',
-        'net.nanopay.tx.model.TransactionStatus'
+        'net.nanopay.tx.model.TransactionStatus',
+
+        'foam.nanos.alarming.Alarm',
+        'foam.nanos.alarming.AlarmReason'
     ],
 
     constants: [
@@ -51,6 +55,18 @@ foam.CLASS({
             javaCode: `
             agency.submit(x, agencyX -> {
                 var invoice = (Invoice) obj;
+
+                if ( SafetyUtil.isEmpty(invoice.getPaymentId()) ){
+                    String message = "Invoice " + invoice.getId() + " does not have a paymentId while in processing";
+                    ((DAO) agencyX.get("alarmDAO")).put(new Alarm.Builder(x)
+                        .setName("Update Transaction On Invoice Validation")
+                        .setReason(AlarmReason.UNSPECIFIED)
+                        .setSeverity(LogLevel.ERROR)
+                        .setNote(message)
+                        .build());
+                    
+                    throw new RuntimeException(message);
+                }
 
                 try {
                     // If invoice is valid & capabilities are granted, change the summaryTransaction status to completed

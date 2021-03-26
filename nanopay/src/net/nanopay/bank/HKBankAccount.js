@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'HKBankAccount',
-  label: 'Hong Kong Bank',
+  label: 'Hong Kong',
   extends: 'net.nanopay.bank.BankAccount',
 
   documentation: 'Hong Kong bank account information.',
@@ -37,40 +37,34 @@ foam.CLASS({
     },
     {
       name: 'denomination',
-      section: 'accountDetails',
+      section: 'accountInformation',
       gridColumns: 12,
       value: 'HKD',
     },
     {
-      name: 'swiftCode',
-      label: 'SWIFT/BIC',
+      name: 'institutionNumber',
       updateVisibility: 'RO',
-      section: 'accountDetails',
-      validateObj: function(swiftCode) {
-        var regex = /^[A-z0-9a-z]{8,11}$/;
+      section: 'accountInformation',
+      validateObj: function(institutionNumber) {
+        var regex = /^[0-9]{3}$/;
 
-        if ( swiftCode === '' ) {
-          return this.SWIFT_CODE_REQUIRED;
-        } else if ( ! regex.test(swiftCode) ) {
-          return this.SWIFT_CODE_INVALID;
+        if ( institutionNumber === '' ) {
+          return this.INSTITUTION_NUMBER_REQUIRED;
+        } else if ( ! regex.test(institutionNumber) ) {
+          return this.INSTITUTION_NUMBER_INVALID;
         }
       }
     },
     {
       name: 'accountNumber',
       updateVisibility: 'RO',
-      section: 'accountDetails',
-      view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: '1234567890',
-        onKey: true
-      },
+      section: 'accountInformation',
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
       },
-      tableCellFormatter: function(str) {
+      tableCellFormatter: function(str, obj) {
         if ( ! str ) return;
-        var displayAccountNumber = '***' + str.substring(str.length - 4, str.length)
+        var displayAccountNumber = obj.mask(str);
         this.start()
           .add(displayAccountNumber);
         this.tooltip = displayAccountNumber;
@@ -86,16 +80,20 @@ foam.CLASS({
       }
     },
     {
-      name: 'bankCode',
-      visibility: 'HIDDEN'
-    },
-    {
       name: 'iban',
       required: false,
-      visibility: 'HIDDEN'
+      visibility: 'HIDDEN',
+      validateObj: function(iban) {
+      },
+      javaPostSet: `
+      `
     },
     {
       name: 'desc',
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'branchId',
       visibility: 'HIDDEN'
     }
   ]

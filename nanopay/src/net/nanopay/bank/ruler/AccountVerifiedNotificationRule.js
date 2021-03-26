@@ -32,7 +32,7 @@ foam.CLASS({
     'foam.nanos.notification.Notification',
     'java.util.HashMap',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.contacts.Contact',
+    'net.nanopay.contacts.PersonalContact',
     'net.nanopay.model.Branch',
     'net.nanopay.payment.Institution'
   ],
@@ -44,7 +44,7 @@ foam.CLASS({
         DAO userDAO = (DAO) x.get("userDAO");
         BankAccount account = (BankAccount) obj;
         User owner = (User) userDAO.find(account.getOwner());
-        if ( owner instanceof Contact && account.getCreatedBy() != owner.getId() ) return;
+        if ( owner instanceof PersonalContact && account.getCreatedBy() != owner.getId() ) return;
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
@@ -61,7 +61,7 @@ foam.CLASS({
             HashMap<String, Object> args    = new HashMap<>();
             args.put("link",    config.getUrl());
             args.put("name",    User.FIRST_NAME);
-            args.put("accountNumber",  "***" + account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
+            args.put("accountNumber",  BankAccount.mask(account.getAccountNumber()));
             args.put("institution", institutionName);
             args.put("institutionNumber", account.getInstitutionNumber());
             args.put("accountType", account.getType());

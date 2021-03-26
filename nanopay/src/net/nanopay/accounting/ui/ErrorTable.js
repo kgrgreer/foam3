@@ -100,13 +100,13 @@ foam.CLASS({
 
   .error-table-container .foam-u2-view-TableView tbody {
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 
   .error-table-container .table-container {
     max-height: 180px;
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 
   .error-table-container .table-container .foam-u2-view-TableView thead > tr {

@@ -30,14 +30,19 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
+    'foam.mlang.Constant',
+    'foam.nanos.alarming.Alarm',
+    'foam.nanos.alarming.AlarmReason',
     'foam.nanos.approval.ApprovalRequest',
     'foam.nanos.approval.ApprovalRequestUtil',
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
+    'net.nanopay.tx.fee.SpotRate',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.tx.TransactionEvent',
     'net.nanopay.partner.treviso.TrevisoService',
     'net.nanopay.country.br.tx.ExchangeLimitTransaction',
 
@@ -56,29 +61,27 @@ foam.CLASS({
           @Override
           public void execute(X x) {
             ExchangeLimitTransaction txn = (ExchangeLimitTransaction) obj;
-            TrevisoService trevisoService = (TrevisoService) x.get("trevisoService");
             DAO txnDAO = (DAO) x.get("localTransactionDAO");
 
             Transaction trevisoTxn = (Transaction) txnDAO.find(EQ(Transaction.PARENT,txn.getId()));
 
             try {
               User sender = txn.findSourceAccount(x).findOwner(x);
-              long limit = trevisoService.getTransactionLimit(sender.getId());
 
               // check the limit
-              if ( (-trevisoTxn.getTotal(x, trevisoTxn.getSourceAccount())) <= limit ) {
+              if ( checkExchangeLimit(x, trevisoTxn, sender) ) {
                 txn.setStatus(TransactionStatus.COMPLETED);
                 txnDAO.put(txn);
               } else {
                 DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
                 DAO filteredApprovalRequestDAO = approvalRequestDAO.where(
                   AND(
-                    EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"),
+                    EQ(ApprovalRequest.SERVER_DAO_KEY, "localTransactionDAO"),
                     EQ(ApprovalRequest.OBJ_ID, txn.getId()),
                     EQ(ApprovalRequest.IS_FULFILLED, false)
                   )
                 );
-                
+
                 ApprovalStatus approval = ApprovalRequestUtil.getState(filteredApprovalRequestDAO);
                 String senderSummary = sender.toSummary();
                 String agentGroup = sender.getSpid() + "-payment-ops";
@@ -90,11 +93,13 @@ foam.CLASS({
                       .setClassification("Exchange Limit Exceeded")
                       .setDescription(senderSummary + " has initiated a transaction that exceeds the allowed limit. " +
                         "Please review the transaction. ")
-                      .setDaoKey("localTransactionDAO")
+                      .setDaoKey("transactionDAO")
+                      .setServerDaoKey("localTransactionDAO")
                       .setObjId(txn.getId())
                       .setGroup(agentGroup)
+                      .setCreatedFor(sender.getId())
                       .setStatus(ApprovalStatus.REQUESTED).build());
-                  
+
                   // Notify the sender that the transaction failed without telling them limit check failed
                   notificationBody = "Your transaction ( transaction id : " + txn.getId()
                     + " ) requires further attention. Please contact the agent. ";
@@ -123,7 +128,8 @@ foam.CLASS({
                       .setClassification("Exchange Limit Exceeded")
                       .setDescription("A transaction for " + senderSummary
                         + " was approved but the amount exceeded the allowed limit again. Please review the transaction. ")
-                      .setDaoKey("localTransactionDAO")
+                      .setDaoKey("transactionDAO")
+                      .setServerDaoKey("localTransactionDAO")
                       .setObjId(txn.getId())
                       .setGroup(agentGroup)
                       .setStatus(ApprovalStatus.REQUESTED).build());
@@ -135,6 +141,7 @@ foam.CLASS({
 
                 } else if ( approval == ApprovalStatus.REJECTED ) {
                   txn.setStatus(TransactionStatus.DECLINED);
+                  txn.getTransactionEvents(x).put_(x, new TransactionEvent("Approval Rejected"));
                   txnDAO.put(txn);
 
                   // Send notifications
@@ -145,15 +152,56 @@ foam.CLASS({
 
                 }
               }
+              DAO alarmDAO = (DAO) x.get("alarmDAO");
+              Alarm alarm = (Alarm) alarmDAO.find_(x, new Alarm("ExchangeServer"));
+              if ( alarm != null &&
+                   alarm.getIsActive() ) {
+                alarm = (Alarm) alarm.fclone();
+                alarm.setIsActive(false);
+                alarmDAO.put_(x, alarm);
+              }
             } catch ( Throwable t ) {
               Logger logger = (Logger) x.get("logger");
-              logger.error("Failed updating exchange limit transaction status", t);
 
-              txn.setStatus(TransactionStatus.FAILED);
-              txnDAO.put(txn);
+              Throwable cause = t.getCause();
+              while ( cause != null ) {
+                if ( cause instanceof java.net.ConnectException ) {
+                  // timeout - do nothing.
+                  ((DAO) x.get("alarmDAO")).put_(x, new Alarm("ExchangeService", AlarmReason.TIMEOUT));
+                  txn.getTransactionEvents(x).put_(x, new TransactionEvent("ExchangeService timeout"));
+                  break;
+                }
+                cause = cause.getCause();
+              }
+              if ( cause == null) {
+                cause = t.getCause(); // thrown is RuntimeException
+                logger.error("Failed updating exchange limit transaction status", cause);
+                txn.setStatus(TransactionStatus.FAILED);
+                txn.getTransactionEvents(x).put_(x, new TransactionEvent(cause.getMessage()));
+                txnDAO.put(txn);
+              }
             }
           }
         }, "Exchange Limit Transaction");
+      `
+    },
+    {
+      name: 'checkExchangeLimit',
+      type: 'Boolean',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'Transaction' },
+        { name: 'sender', type: 'User' }
+      ],
+      javaCode: `
+        TrevisoService trevisoService = (TrevisoService) x.get("trevisoService");
+        var limit = trevisoService.getTransactionLimit(sender.getId());
+        var spotRate = new SpotRate.Builder(x)
+          .setSourceCurrencyExpr(Transaction.SOURCE_CURRENCY)
+          .setDestinationCurrencyExpr(new Constant("USD"))
+          .build();
+        var totalSourceAmount = -txn.getTotal(x, txn.getSourceAccount());
+        return limit >= totalSourceAmount * spotRate.getRate(txn).doubleValue();
       `
     },
     {

@@ -50,7 +50,7 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'foam.nanos.ruler.Operations',
+    'foam.nanos.dao.Operation',
 
     'java.util.List',
 
@@ -143,7 +143,7 @@ foam.CLASS({
 
           AccountUCJQueryService ucjQueryService = (AccountUCJQueryService) x.get("accountUcjQueryService");
           MethodInfo method = (MethodInfo) obj.getClassInfo().getAxiomByName(getOutgoingAccountFinder());
-          long accountId = ((Long) method.call(x, obj, null)).longValue();
+          String accountId = (String) method.call(x, obj, null);
 
           List<Long> approvers = ucjQueryService.getApproversByLevel(
             x, modelName, accountId, getApproverLevel());
@@ -170,7 +170,7 @@ foam.CLASS({
             .setClassification(classification)
             .setObjId(objId)
             .setDaoKey(daoKey)
-            .setOperation(Operations.CREATE)
+            .setOperation(Operation.CREATE)
             .setOutgoingAccount(accountId)
             .setStatus(ApprovalStatus.REQUESTED)
             .setDescription(description)

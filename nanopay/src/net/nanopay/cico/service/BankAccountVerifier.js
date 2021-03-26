@@ -37,7 +37,7 @@ foam.INTERFACE({
         },
         {
           name: 'bankAccountId',
-          type: 'Long',
+          type: 'String',
         },
         {
           name: 'randomDepositAmount',

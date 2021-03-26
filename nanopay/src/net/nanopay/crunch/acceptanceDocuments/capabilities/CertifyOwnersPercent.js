@@ -23,7 +23,7 @@ foam.CLASS({
   messages: [
     { name: 'CERTIFY_OWNER_PERCENTAGE', message: 'Certification required' },
     { name: 'TITLE_MSG', message: 'the people who own 25% or more of the business, either directly or indirectly, have been listed and their information is accurate' },
-    
+
   ],
 
   sections: [
@@ -48,9 +48,9 @@ foam.CLASS({
       }
     },
     {
-      name: 'link',
+      name: 'fileId',
       factory: function() {
-        return '/service/httpFileService/488eedba-b34a-4b61-9f6d-1c501f13dcc5?sessionId=' + localStorage['defaultSession'];
+        return '488eedba-b34a-4b61-9f6d-1c501f13dcc5';
       }
     },
     {

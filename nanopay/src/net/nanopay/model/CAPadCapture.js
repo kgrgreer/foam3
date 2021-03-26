@@ -25,6 +25,7 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.Address',
+    'net.nanopay.bank.BankAccount'
   ],
 
   messages: [
@@ -43,6 +44,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'branchId',
+      label: 'Transit',
       documentation: 'Transit/Branch associated with PAD capture.',
       visibility: 'DISABLED',
       gridColumns: 4,
@@ -57,9 +59,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'institutionNumber',
+      label: 'Institution',
       documentation: 'Institution associated with PAD capture.',
       visibility: 'DISABLED',
-      gridColumns: 2,
+      gridColumns: 3,
       validateObj: function(institutionNumber) {
         var instNumRegex = /^[0-9]{3}$/;
 
@@ -71,12 +74,13 @@ foam.CLASS({
     {
       class: 'String',
       name: 'accountNumber',
+      label: 'Account',
       documentation: 'Account associated with PAD capture.',
       visibility: 'DISABLED',
-      gridColumns: 6,
-      tableCellFormatter: function(str) {
+      gridColumns: 5,
+      tableCellFormatter: function(str, obj) {
         this.start()
-          .add('***' + str.substring(str.length - 4, str.length));
+          .add(obj.BankAccount.mask(str));
       },
       validateObj: function(accountNumber) {
         var accNumberRegex = /^[0-9]{5,12}$/;
@@ -87,13 +91,12 @@ foam.CLASS({
       }
     },
     {
-      name: 'capableRequirements',
+      class: 'StringArray',
+      name: 'capabilityIds',
+      section: 'capabilityInformation',
       factory: () => {
         return [
-          '554af38a-8225-87c8-dfdf-eeb15f71215e-13', // Certify Bank Account Ownership Agreement
-          '554af38a-8225-87c8-dfdf-eeb15f71215e-20', // CA Bank Account Auth Agreement
-          '554af38a-8225-87c8-dfdf-eeb15f71215e-21', // Recourse/Reimbursement Agreement
-          '554af38a-8225-87c8-dfdf-eeb15f71215e-22'  // CA Cancellation Agreement
+          "67d9a3c7-6243-4b80-a8a9-9fe0c05db6d0"
         ];
       }
     },

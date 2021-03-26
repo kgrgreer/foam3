@@ -1,0 +1,47 @@
+// Prerequisites for bepay spid capability
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bepay",targetId:"serviceProviderCapability"})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bepay",targetId:"bepayCorridorCapability"})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bepay",targetId:"bepayPlannerCapability"})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bepay",targetId:"bepay-tx-reason-codes"})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bepay",targetId:"bepay-tx-fees"})
+
+// Prerequisites for "BePay Personal International Payments"
+// user details
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
+  targetId:"0ED5DD86-AA1A-452B-BA7D-E7A2D0542135",
+  priority:1
+})
+// cpf number
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
+  targetId:"fb7d3ca2-62f2-4caf-a84c-860392e46bepay",
+  priority:2
+})
+// AFEX Terms and Conditions
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
+  targetId:"D423CDC6-6BDA-4A84-B5AE-71B4C503AD30",
+  priority:4
+})
+// estimation accounts
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
+  targetId:"nanopay.estimationaccount"
+})
+// cpf - extended user details
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"fb7d3ca2-62f2-4caf-a84c-860392e46bepay",
+  targetId:"fb7d3ca2-62f2-2131-a84c-8603dsrf2bepay"
+})
+// cpf - date of issue
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"fb7d3ca2-62f2-4caf-a84c-860392e46bepay",
+  targetId:"8ad3c898-db232-1ea-87d0-0242ac130z0-bepay"
+})

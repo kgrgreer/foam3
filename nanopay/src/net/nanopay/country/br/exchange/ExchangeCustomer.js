@@ -23,7 +23,8 @@ foam.CLASS({
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.EnabledAware',
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware'
+    'foam.nanos.auth.LastModifiedByAware',
+    'foam.nanos.auth.ServiceProviderAware'
   ],
 
   imports: [
@@ -91,6 +92,17 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       visibility: 'RO',
       name: 'lastModifiedBy'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      visibility: 'RO',
+      name: 'lastModifiedByAgent'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid'
     }
   ]
 });

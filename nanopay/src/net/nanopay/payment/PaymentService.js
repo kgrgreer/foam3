@@ -35,7 +35,7 @@ foam.INTERFACE({
           documentation: 'User to be added as Payee'
         },
         {
-          type: 'Long',
+          type: 'String',
           name: 'bankAccount',
           documentation: 'Payee Bank Account'
         },
@@ -55,7 +55,7 @@ foam.INTERFACE({
           documentation: 'User to be added as Payee'
         },
         {
-          type: 'Long',
+          type: 'String',
           name: 'bankAccount',
           documentation: 'Payee Bank Account'
         },

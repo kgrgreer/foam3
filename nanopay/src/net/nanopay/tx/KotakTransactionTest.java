@@ -1,30 +1,21 @@
 package net.nanopay.tx;
 
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.INSTANCE_OF;
-
-import java.util.Calendar;
-import java.util.Date;
-
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
 import foam.nanos.ruler.RuleGroup;
 import foam.util.SafetyUtil;
-import foam.nanos.approval.ApprovalRequest;
-import foam.nanos.approval.ApprovalStatus;
-import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.INBankAccount;
 import net.nanopay.fx.*;
-import net.nanopay.fx.afex.Quote;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
+import net.nanopay.tx.cico.InterTrustTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
+import net.nanopay.tx.test.TransactionTestUtil;
 
 public class KotakTransactionTest extends foam.nanos.test.Test {
   CABankAccount sourceAccount;
@@ -35,7 +26,6 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
   KotakFxTransaction kotakTxn;
   ManualFxApprovalRequest approval;
   net.nanopay.fx.FXQuote quote;
-  String senderEmail = "senderca@nanopay.net", receiverEmail = "receiverin@nanopay.net";
   ArraySink sink;
 
   public void runTest(X x) {
@@ -57,8 +47,8 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     exchangeRate.setRate(55);
     exchangeRate.setFxProvider("nanopay");
     exchangeRateDAO.put(exchangeRate);
-    sender = addUserIfNotFound(x, senderEmail);
-    receiver = addUserIfNotFound(x, receiverEmail);
+    sender = TransactionTestUtil.createUser(x);
+    receiver = TransactionTestUtil.createUser(x);
     addCAAccountIfNotFound(x);
     addINAccountIfNotFound(x);
     Transaction plan = createTxn(x);
@@ -94,8 +84,9 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     ;
 
     // test fourth txn in the chain
+    //TODO: isolate this test from others, then get rid of the intertrust check
     txn4 = (Transaction) txn3.getNext()[0];
-    test(txn4 instanceof DigitalTransaction, "txn4 is a DigitalTransaction");
+    test((txn4 instanceof DigitalTransaction) || (txn4 instanceof InterTrustTransaction) , "txn4 is a DigitalTransaction");
     test(txn4.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "txn4 has status PENDING_PARENT_COMPLETED");
     test(SafetyUtil.equals(txn4.getSourceCurrency(), "CAD"), "txn4 has source currency CAD");
     test(SafetyUtil.equals(txn4.getDestinationCurrency(), "CAD"), "txn4 has destination currency CAD");
@@ -122,51 +113,24 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     test(SafetyUtil.equals(txn7.getDestinationCurrency(), "INR"), "txn7 has destination currency INR");
   }
 
-  public User addUserIfNotFound(X x, String email) {
-    User user = (User) userDAO.find(EQ(User.EMAIL, email));
-    if ( user == null ) {
-      user = new User();
-      user.setEmail(email);
-      user.setFirstName("Francis");
-      user.setLastName("Filth");
-      user.setEmailVerified(true);
-      user.setGroup("business");
-      user.setSpid("nanopay");
-    }
-    return ((User) userDAO.put_(x, user));
-  }
-
   public void addCAAccountIfNotFound(X x) {
-    sourceAccount = (CABankAccount) accountDAO.find(
-      AND(
-        EQ(BankAccount.OWNER, sender.getId()),
-        INSTANCE_OF(net.nanopay.bank.CABankAccount.class),
-        EQ(BankAccount.DENOMINATION, "CAD")));
-    if ( sourceAccount == null ) {
-      sourceAccount = new CABankAccount();
-      sourceAccount.setOwner(sender.getId());
-      sourceAccount.setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED);
-      sourceAccount.setAccountNumber("87654321");
-      sourceAccount.setStatus(BankAccountStatus.VERIFIED);
-      sourceAccount = (CABankAccount) accountDAO.put_(x, sourceAccount);
-    }
+    sourceAccount = new CABankAccount();
+    sourceAccount.setOwner(sender.getId());
+    sourceAccount.setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED);
+    sourceAccount.setAccountNumber("87654321");
+    sourceAccount.setStatus(BankAccountStatus.VERIFIED);
+    sourceAccount = (CABankAccount) accountDAO.put_(x, sourceAccount);
   }
 
   public void addINAccountIfNotFound(X x) {
-    destinationAccount = (INBankAccount) accountDAO.find(
-      AND(
-        EQ(BankAccount.OWNER, receiver.getId()),
-        INSTANCE_OF(net.nanopay.bank.INBankAccount.class),
-        EQ(BankAccount.DENOMINATION, "INR")));
-    if ( destinationAccount == null ) {
-      destinationAccount = new INBankAccount();
-      destinationAccount.setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED);
-      destinationAccount.setOwner(receiver.getId());
-      destinationAccount.setAccountNumber("9876543210");
-      destinationAccount.setStatus(BankAccountStatus.VERIFIED);
-      destinationAccount.setPurposeCode("P1306");
-      destinationAccount = (INBankAccount) accountDAO.put_(x, destinationAccount);
-    }
+    destinationAccount = new INBankAccount();
+    destinationAccount.setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED);
+    destinationAccount.setOwner(receiver.getId());
+    destinationAccount.setAccountNumber("9876543210");
+    destinationAccount.setStatus(BankAccountStatus.VERIFIED);
+    destinationAccount.setPurposeCode("P1306");
+    destinationAccount.setForContact(true);
+    destinationAccount = (INBankAccount) accountDAO.put_(x, destinationAccount);
   }
 
   public Transaction createTxn(X x) {

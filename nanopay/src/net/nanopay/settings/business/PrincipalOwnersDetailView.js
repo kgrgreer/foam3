@@ -183,7 +183,7 @@ foam.CLASS({
               .end()
               .start().addClass('labelDiv')
                 .start().add('Date of Birth').addClass('labelTitle').end()
-                .start().add(user.birthday.toISOString().substring(0,10)).addClass('labelContent').end()
+                .start().add(user.birthday.toLocaleDateString(foam.locale)).addClass('labelContent').end()
               .end()
             .end()
             .start().addClass('topInlineDiv')

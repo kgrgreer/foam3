@@ -23,31 +23,42 @@ foam.CLASS({
   ],
   properties: [
     {
-      class: 'String',
-      name: 'name'
+      class: 'Int',
+      name: 'ruleId',
+      documentation: `The unique rule identifier.`,
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: 'description'
+      name: 'name',
+      order: 20,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: 'details'
+      name: 'description',
+      order: 30,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: 'resultCode'
+      name: 'resultCode',
+      order: 40,
+      gridColumns: 6
+    },
+    {
+      class: 'String',
+      name: 'details',
+      order: 50
     },
     {
       class: 'FObjectArray',
       of: 'net.nanopay.meter.compliance.identityMind.ConditionResult',
       name: 'testResults',
-      view: 'foam.u2.view.FObjectArrayTableView'
+      view: 'foam.u2.view.FObjectArrayTableView',
+      order: 60
     },
-    {
-      class: 'Int',
-      name: 'ruleId',
-      documentation: `The unique rule identifier.`
-    },
+    
   ]
 });

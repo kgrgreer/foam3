@@ -89,7 +89,7 @@ foam.CLASS({
           Invitation invitation = (Invitation) businessInvitationDAO
             .find(
               AND(
-                EQ(Invitation.GROUP, "admin"),
+                EQ(Invitation.GROUP, business.getSpid() + "-admin"),
                 EQ(Invitation.CREATED_BY, business.getId()),
                 EQ(Invitation.STATUS, InvitationStatus.SENT)
               )
@@ -248,7 +248,7 @@ foam.CLASS({
 
         Group group         = business.findGroup(x);
         AppConfig appConfig = group.getAppConfig(x);
-        String url          = appConfig.getUrl().replaceAll("/$", "");
+        String url          = appConfig.getUrl();
 
         if ( invitation.getInternal() ) {
           return url += "/service/joinBusiness?token=" + token.getData() + "&redirect=/";

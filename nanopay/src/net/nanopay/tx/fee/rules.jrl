@@ -21,7 +21,7 @@ p({
       }
     ]
   },
-  spid: "nanopay",
+  spid: "ablii",
   lifecycleState:1
 })
 

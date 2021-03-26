@@ -28,7 +28,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.*',
     'foam.nanos.logger.Logger',
-    'foam.nanos.ruler.Operations',
+    'foam.nanos.dao.Operation',
     'java.util.ArrayList',
     'java.util.List',
     'static foam.mlang.MLang.*'
@@ -45,46 +45,58 @@ foam.CLASS({
     'natureCodeDataDAO'
   ],
 
+  messages: [
+    { name: 'SELECT_DATA', message: 'Please select the data associated to: '},
+    { name: 'REQUIRED_LABEL', message: ' (required)' }
+  ],
+
   properties: [
     {
       class: 'Reference',
       of: 'net.nanopay.country.br.NatureCode',
       name: 'natureCode',
-      section: 'supportDetails'
+      section: 'approvalRequestInformation',
+      order: 25,
+      gridColumns: 6
     },
     {
       class: 'Reference',
       of: 'net.nanopay.country.br.NatureCodeData',
       name: 'natureCodeData',
-      section: 'supportDetails',
+      section: 'approvalRequestInformation',
+      order: 27,
+      gridColumns: 6,
       view: function(_, X) {
         var E = foam.mlang.Expressions.create();
 
         // TODO: for some reason this doesn't update when nature code changes
         // isn't a concern for this use  case however since Nature Code shouldn't be changing
         return {
-          class: 'foam.u2.view.RichChoiceView',
-          search: true,
-          sections: [
-            {
-              heading: 'Select a Nature Code',
-              dao$: X.data.slot(function(natureCode) {
-                return X.natureCodeDataDAO.where(
-                  E.EQ(net.nanopay.country.br.NatureCodeData.NATURE_CODE, natureCode)
-                )
-              })
-            }
-          ],
-          choosePlaceholder: '--'
-        };
-      },
-    },
+          class: 'foam.u2.view.ChoiceView',
+          dao$: X.data.slot(function(natureCode) {
+            return X.natureCodeDataDAO.where(
+              E.EQ(net.nanopay.country.br.NatureCodeData.NATURE_CODE, natureCode)
+            )
+          }),
+          objToChoice: function(obj) {
+            return  [obj, obj.toSummary()];
+          },
+          size: 5,
+          selectSpec: { class: 'net.nanopay.country.br.NatureCodeSelectView' }
+        }
+      }
+    }
   ],
 
   actions: [
     {
+      name: 'approveWithMemo',
+      isAvailable: () => false,
+      code: () => { return; }
+    },
+    {
       name: 'approve',
-      section: 'requestDetails',
+      section: 'approvalRequestInformation',
       isAvailable: (isTrackingRequest, status) => {
         if (
           status === foam.nanos.approval.ApprovalStatus.REJECTED ||
@@ -96,20 +108,27 @@ foam.CLASS({
         return ! isTrackingRequest;
       },
       code: function(X) {
+        let titleSlot = foam.core.SimpleSlot.create();
+        X.natureCodeDAO
+          .find(this.natureCode)
+          .then(obj =>
+            titleSlot.set(this.SELECT_DATA + ( obj ? obj.name : this.natureCode ) + this.REQUIRED_LABEL)
+          );
         var objToAdd = X.objectSummaryView ? X.objectSummaryView : X.summaryView;
         objToAdd.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
           class: "foam.u2.PropertyModal",
-          property: this.NATURE_CODE_DATA,
+          property: this.NATURE_CODE_DATA.clone().copyFrom({ label: '' }),
           isModalRequired: true,
           data$: X.data$,
-          title: "Please select a nature code (required)",
+          propertyData$: X.data.natureCodeData$,
+          title$: titleSlot,
           onExecute: this.approveWithData.bind(this, X)
         }));
       }
     },
     {
       name: 'reject',
-      section: 'requestDetails',
+      section: 'approvalRequestInformation',
       isAvailable: (isTrackingRequest, status) => {
         if (
           status === foam.nanos.approval.ApprovalStatus.REJECTED ||

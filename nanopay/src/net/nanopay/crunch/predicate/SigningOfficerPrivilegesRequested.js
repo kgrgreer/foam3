@@ -29,15 +29,13 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
-    'foam.dao.DAO',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
-    'foam.nanos.crunch.AgentCapabilityJunction',
+    'foam.nanos.crunch.CapabilityJunctionStatus',
+    'foam.nanos.crunch.CrunchService',
     'foam.nanos.crunch.UserCapabilityJunction',
     'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion',
-    'net.nanopay.model.Business',
-    'net.nanopay.model.BusinessUserJunction',
-    'static foam.mlang.MLang.*'
+    'net.nanopay.model.Business'
   ],
 
   methods: [
@@ -46,24 +44,16 @@ foam.CLASS({
       javaCode: `
         if ( ! ( obj instanceof X ) ) return false;
         X x = (X) obj;
-        DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
+        CrunchService crunchService = (CrunchService) x.get("crunchService");
         User agent = ((Subject) x.get("subject")).getRealUser();
         User user = ((Subject) x.get("subject")).getUser();
         if ( agent == null || user == null || ! ( agent instanceof User ) || ! ( user instanceof Business ) ) return false;
-        AgentCapabilityJunction acj = (AgentCapabilityJunction) userCapabilityJunctionDAO.find(
-          AND(
-            INSTANCE_OF(AgentCapabilityJunction.class),
-            EQ(UserCapabilityJunction.SOURCE_ID, agent.getId()),
-            EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-0"),
-            EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId()),
-            EQ(UserCapabilityJunction.STATUS, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED)
-          )
-        );
-        if ( acj == null ) {
+        UserCapabilityJunction acj = crunchService.getJunction(x, "554af38a-8225-87c8-dfdf-eeb15f71215f-0");
+        if ( acj == null || acj.getStatus() != CapabilityJunctionStatus.GRANTED ) {
           return false;
         }
         SigningOfficerQuestion soq = (SigningOfficerQuestion) acj.getData();
-        return soq.getIsSigningOfficer();
+        return soq != null && soq.getIsSigningOfficer();
       `
     }
   ]

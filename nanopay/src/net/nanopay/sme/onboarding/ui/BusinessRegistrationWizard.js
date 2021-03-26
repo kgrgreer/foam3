@@ -105,7 +105,7 @@ foam.CLASS({
       box-sizing: border-box;
       position: relative;
       top: -20px;
-      overflow-y: scroll;
+      overflow-y: auto;
       vertical-align: top;
       -ms-overflow-style: none;  // IE 10+
       overflow: -moz-scrollbars-none;  // Firefox

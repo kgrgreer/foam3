@@ -28,7 +28,8 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.contacts.Contact',
-    'net.nanopay.model.Invitation'
+    'net.nanopay.model.Invitation',
+    'foam.layout.Section'
   ],
 
   imports: [
@@ -36,13 +37,27 @@ foam.CLASS({
     'ctrl',
     'contactService',
     'invitationDAO',
-    'user'
+    'subject'
   ],
 
   css: `
-    ^step-indicator {
+    ^ {
+      box-sizing: border-box;
+      width: 600px;
+      padding: 30px;
+      max-height: 570px;
+      overflow-y: auto;
+    }
+    ^left-button-container {
+      width: 200px;
       display: flex;
-      justify-content: flex-end;
+      justify-content: flex-start;
+    }
+    ^option {
+      margin-left: 15px;
+    }
+    ^step-indicator {
+      margin-right: 150px;
     }
     .property-rbiLink {
       margin-top: -33px;
@@ -50,8 +65,14 @@ foam.CLASS({
       position: relative;
       float: right;
     }
-    .wizard {
-      width: 650px;
+    ^ .button-container-wrapper {
+      position: relative;
+      width: 600px;
+      right: 30px;
+      top: 30px;
+    }
+    ^ .button-container {
+      padding: 0 30px;
     }
   `,
 
@@ -59,11 +80,13 @@ foam.CLASS({
     { name: 'EDIT_STEP_ONE_TITLE', message: 'Edit contact' },
     { name: 'EDIT_STEP_TWO_TITLE', message: 'Edit banking information' },
     { name: 'EDIT_STEP_THREE_TITLE', message: 'Edit business address' },
-    { name: 'CONTACT_ADDED', message: 'Personal contact added' },
-    { name: 'CONTACT_EDITED', message: 'Personal contact edited' },
+    { name: 'STEP', message: 'Step' },
+    { name: 'OF_MSG', message: 'of' },
+    { name: 'CONTACT_ADDED', message: 'Contact added successfully' },
+    { name: 'CONTACT_EDITED', message: 'Contact edited' },
     { name: 'INVITE_SUCCESS', message: 'Sent a request to connect' },
-    { name: 'CONTACT_ADDED_INVITE_SUCCESS', message: 'Personal contact added. An email invitation was sent.' },
-    { name: 'CONTACT_ADDED_INVITE_FAILURE', message: 'Personal contact added. An email invitation could not be sent.' },
+    { name: 'CONTACT_ADDED_INVITE_SUCCESS', message: 'Contact added successfully. An email invitation was sent.' },
+    { name: 'CONTACT_ADDED_INVITE_FAILURE', message: 'Contact added successfully. An email invitation could not be sent.' },
     { name: 'ACCOUNT_CREATION_ERROR', message: 'Failed to add an account' },
     {
       name: 'EXISTING_BUSINESS',
@@ -73,6 +96,12 @@ foam.CLASS({
                `
     },
     { name: 'GENERIC_PUT_FAILED', message: 'Failed to add an account.' },
+    { name: 'SECTION_ONE_TITLE', message: 'Add Contact' },
+    { name: 'SECTION_TWO_TITLE', message: 'Add Bank Account' },
+    { name: 'SECTION_TWO_SUBTITLE', message: 'Enter the contact’s bank account information.  Please make sure that this is accurate as payments will go directly to the specified account.' },
+    { name: 'SECTION_THREE_TITLE', message: 'Add Business Address' },
+    { name: 'SECTION_THREE_SUBTITLE', message: 'Enter the contact’s business address. PO boxes are not accepted.' },
+    { name: 'OF_MGS', message: 'of' }
   ],
 
   properties: [
@@ -99,11 +128,42 @@ foam.CLASS({
 
   methods: [
     async function init() {
-      // filter out inherited sections
-      this.sections = this.sections.filter((section) => section.fromClass === 'Contact');
+      var sectionOne = this.Section.create({
+        title: this.SECTION_ONE_TITLE,
+        properties: [
+          net.nanopay.contacts.Contact.ORGANIZATION.clone().copyFrom({ gridColumns: 12 }),
+          net.nanopay.contacts.Contact.EMAIL.clone().copyFrom({ gridColumns: 12 }),
+          net.nanopay.contacts.Contact.FIRST_NAME,
+          net.nanopay.contacts.Contact.LAST_NAME,
+          net.nanopay.contacts.Contact.CONFIRM.clone().copyFrom({ gridColumns: 12 }),
+          net.nanopay.contacts.Contact.AVAILABLE_COUNTRIES
+        ],
+        fromClass: 'net.nanopay.contacts.Contact'
+      });
+      var sectionTwo = this.Section.create({
+        title: this.SECTION_TWO_TITLE,
+        subTitle: this.SECTION_TWO_SUBTITLE,
+        properties: [
+          net.nanopay.contacts.Contact.CREATE_BANK_ACCOUNT,
+          net.nanopay.contacts.Contact.NO_CORRIDORS_AVAILABLE,
+          net.nanopay.contacts.Contact.SHOULD_INVITE
+        ],
+        fromClass: 'net.nanopay.contacts.Contact'
+      });
+      var sectionThree = this.Section.create({
+        title: this.SECTION_THREE_TITLE,
+        subTitle: this.SECTION_THREE_SUBTITLE,
+        properties: [
+          net.nanopay.contacts.Contact.BUSINESS_ADDRESS
+        ],
+        fromClass: 'net.nanopay.contacts.Contact'
+      });
+
+      // custom sections for contact wizard
+      this.sections = [ sectionOne, sectionTwo, sectionThree ];
       this.data.copyFrom({
         type: 'Contact',
-        group: 'sme'
+        group: this.subject.user.spid +  '-sme'
       });
       if ( this.isEdit ) {
         this.data.isEdit = true;
@@ -114,36 +174,41 @@ foam.CLASS({
         this.sections[1].subTitle = '';
         this.sections[2].title = this.EDIT_STEP_THREE_TITLE;
         this.sections[2].subTitle = '';
-        if ( this.data.bankAccount > 0 ) {
+        if ( this.data.bankAccount.length != 0 ) {
           this.data.createBankAccount = await this.bankAccountDAO.find(this.data.bankAccount);
         }
       }
     },
     function initE() {
       var self = this;
-      this.addClass('wizard');
+
       self
+        .addClass(this.myClass())
         .start(self.Rows)
           .add(self.slot(function(sections, currentIndex) {
-            return self.E().addClass('section-container')
-              .start().addClass(self.myClass('step-indicator'))
-                .add(this.slot(function(currentIndex) {
-                  return `Step ${currentIndex + 1} of 3`;
-                }))
-              .end()
+            return self.E()
               .tag(self.sectionView, {
                 section: sections[currentIndex],
                 data$: self.data$
               });
           }))
           .startContext({ data: this })
-            .start().addClass('button-container')
-              .tag(this.BACK, { buttonStyle: 'TERTIARY' })
-              .start().addClass(this.myClass('button-sub-container'))
-                .tag(this.OPTION, { buttonStyle: 'SECONDARY' })
+            .start().addClass('button-container-wrapper')
+              .start().addClass('button-container')
+                .start().addClass(self.myClass('left-button-container'))
+                  .tag(this.BACK, { buttonStyle: 'TERTIARY' })
+                  .start().addClass(self.myClass('option'))
+                    .tag(this.OPTION, { buttonStyle: 'SECONDARY' })
+                  .end()
+                .end()
+                .start().addClass(self.myClass('step-indicator'))
+                  .add(this.slot(function(currentIndex) {
+                    return `${self.STEP} ${currentIndex + 1} ${self.OF_MSG} 3`;
+                  }))
+                .end()
                 .start(this.NEXT).end()
+                .start(this.SAVE).end()
               .end()
-              .start(this.SAVE).end()
             .end()
           .endContext()
         .end();
@@ -152,14 +217,15 @@ foam.CLASS({
     async function addContact() {
       this.isConnecting = true;
       try {
-        let canInvite = this.data.createBankAccount.country != 'IN';
+        let canInvite = this.data.createBankAccount && this.data.createBankAccount.country != 'IN';
+
         if ( this.data.shouldInvite && canInvite ) {
           // check if it is already joined
           var isExisting = await this.contactService.checkExistingContact(this.__subContext__, this.data.email, false);
 
           if ( ! isExisting ) {
             try {
-              this.contact = await this.user.contacts.put(this.data);
+              this.contact = await this.subject.user.contacts.put(this.data);
 
               if ( await this.sendInvite(false) ) {
                 this.ctrl.notify(this.CONTACT_ADDED_INVITE_SUCCESS, '', this.LogLevel.INFO, true);
@@ -173,7 +239,7 @@ foam.CLASS({
             return false;
           }
         } else {
-          this.contact = await this.user.contacts.put(this.data);
+          this.contact = await this.subject.user.contacts.put(this.data);
           this.ctrl.notify(this.isEdit ? this.CONTACT_EDITED : this.CONTACT_ADDED, '', this.LogLevel.INFO, true);
         }
       } catch (e) {
@@ -182,6 +248,7 @@ foam.CLASS({
         this.isConnecting = false;
         return false;
       }
+      this.data.copyFrom(this.contact);
       this.isConnecting = false;
       return true;
     },
@@ -189,7 +256,7 @@ foam.CLASS({
     async function sendInvite(showToastMsg) {
       var invite = this.Invitation.create({
         email: this.data.email,
-        createdBy: this.user.id,
+        createdBy: this.subject.user.id,
         inviteeId: this.data.id,
         businessName: this.data.organization,
         message: ''
@@ -200,7 +267,7 @@ foam.CLASS({
           this.ctrl.notify(this.INVITE_SUCCESS, '', this.LogLevel.INFO, true);
         }
         // Force the view to update.
-        this.user.contacts.cmd(foam.dao.AbstractDAO.RESET_CMD);
+        this.subject.user.contacts.cmd(foam.dao.AbstractDAO.RESET_CMD);
       } catch (e) {
         this.ctrl.notify(this.CONTACT_ADDED_INVITE_FAILURE, '', this.LogLevel.ERROR, true);
         return false;
@@ -228,7 +295,7 @@ foam.CLASS({
     async function updateContactBankInfo(contact, bankAccountId) {
       try {
         contact.bankAccount = bankAccountId;
-        await this.user.contacts.put(contact);
+        await this.subject.user.contacts.put(contact);
       } catch (err) {
         var msg = err.message || this.GENERIC_PUT_FAILED;
         this.ctrl.notify(msg, '', this.LogLevel.ERROR, true);
@@ -249,15 +316,15 @@ foam.CLASS({
         else if ( this.currentIndex > 0 ) {
           this.currentIndex = this.prevIndex;
         } else {
-          X.pushMenu('sme.menu.toolbar');
+          X.closeDialog();
         }
       }
     },
     {
       name: 'next',
       label: 'Next',
-      isEnabled: function(data$errors_, data$createBankAccount$errors_, currentIndex) {
-        if ( currentIndex === 1 ) return ! data$createBankAccount$errors_;
+      isEnabled: function(data$errors_, data$createBankAccount, data$createBankAccount$errors_, currentIndex) {
+        if ( currentIndex === 1 ) return data$createBankAccount && ! data$createBankAccount$errors_;
         return ! data$errors_;
       },
       isAvailable: function(nextIndex) {
@@ -271,10 +338,10 @@ foam.CLASS({
       name: 'option',
       label: 'Save and close',
       isAvailable: function(currentIndex, data$bankAccount) {
-        return currentIndex === 1 && data$bankAccount === 0;
+        return currentIndex === 1 && ! data$bankAccount;
       },
       code: async function(X) {
-        this.data.createBankAccount = net.nanopay.bank.BankAccount.create({ isDefault: true }, X);
+        this.data.clearProperty("createBankAccount");
         if ( ! await this.addContact() ) return;
         X.closeDialog();
       }

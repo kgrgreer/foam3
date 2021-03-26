@@ -18,11 +18,9 @@ public class ApiTestBase extends Test {
   
   protected String getBaseUrl(X x)
   {
-    AppConfig appConfig = (AppConfig) x.get("appConfig");
-    String url = appConfig.getUrl();
-    return url == null ? null :
-           url.endsWith("/") ? url.substring(0, url.length() - 1) :
-           url;
+    String hostname = System.getProperty("hostname", "localhost");
+    String port = System.getProperty("http.port", "8080");
+    return "http://"+hostname+":"+port;
   }
 
   protected HttpURLConnection createRequest(String digUrl)
@@ -98,8 +96,10 @@ public class ApiTestBase extends Test {
     {
       for (String s : entry.getValue())
       {
-        if (printHeaders)
+        if (printHeaders) {
           print("Key: " + entry.getKey() + " -> " + s);
+          System.out.println("key: "+entry.getKey()+" -> "+s);
+        }
 
         // Take the latest session cookie
         if ("Set-Cookie".equalsIgnoreCase(entry.getKey()) &&

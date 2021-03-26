@@ -12,7 +12,7 @@ import foam.nanos.approval.ApprovalStatus;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.crunch.UserCapabilityJunction;
-import foam.nanos.ruler.Operations;
+import foam.nanos.dao.Operation;
 import net.nanopay.test.liquid.LiquidTestExecutor;
 
 import static foam.mlang.MLang.*;
@@ -113,7 +113,7 @@ public class ApprovalStatusTestExecutor extends LiquidTestExecutor {
 
     DAO approvableDAO = getApprovableDAO(getFirstX());
 
-    String approvableHashKey = ApprovableAware.getApprovableHashKey(x, userInApproval, Operations.CREATE);
+    String approvableHashKey = ApprovableAware.getApprovableHashKey(x, userInApproval, Operation.CREATE);
 
     String hashedId = new StringBuilder("d")
       .append("bareUserDAO")
@@ -145,7 +145,7 @@ public class ApprovalStatusTestExecutor extends LiquidTestExecutor {
     approvalRequests = (ArraySink) getApprovalRequestDAO(getSystemX()).inX(getSystemX()).where(AND(
       EQ(ApprovalRequest.OBJ_ID, approvable.getId()),
       EQ(ApprovalRequest.CLASSIFICATION, "User"),
-      EQ(ApprovalRequest.OPERATION, Operations.CREATE),
+      EQ(ApprovalRequest.OPERATION, Operation.CREATE),
       EQ(ApprovalRequest.APPROVER, xUser.getId()),
       EQ(ApprovalRequest.STATUS, status)
     )).select(new ArraySink());
@@ -212,7 +212,7 @@ public class ApprovalStatusTestExecutor extends LiquidTestExecutor {
     this.getApprovalRequestDAO(x).where(AND(
       EQ(ApprovalRequest.OBJ_ID, userInApproval.getId()),
       EQ(ApprovalRequest.CLASSIFICATION, "User"),
-      EQ(ApprovalRequest.OPERATION, Operations.CREATE)
+      EQ(ApprovalRequest.OPERATION, Operation.CREATE)
     )).removeAll();
 
     ArraySink approvalRequestsAfter = (ArraySink) this.getApprovalRequestDAO(x).select(new ArraySink());

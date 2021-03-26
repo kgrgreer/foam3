@@ -9,13 +9,11 @@ p({
     lc.setLogInfo(true);
     savedDebug = lc.getLogDebug();
     lc.setLogDebug(false);
-    x = x.put("pmLogger", null);
     b = new TransactionBenchmark();
-    b.setDisableRules(false);
-    b.setPurgePerRun(false);
     builder = new BenchmarkRunner.Builder(x)
-      .setInvocationCount(10000)
-      .setRunPerThread(true)
+      .setInvocationCount(1000)
+      .setThreadCount(1)
+      .setRunPerThread(false)
       .setBenchmark(b);
     runner = builder.build();
     runner.execute(x);
@@ -37,24 +35,58 @@ p({
     import foam.nanos.bench.*;
     import net.nanopay.tx.bench.*;
 
-    domain = "172.19.241.156"; //aws-mm1
+    lc = x.get("logLevelFilterLogger");
+    lc.setLogInfo(true);
+    savedDebug = lc.getLogDebug();
+    lc.setLogDebug(false);
+    b = new TransactionBenchmarkClient();
+    b.setX(x);
+    b.setHost("moosehead");
+    b.setPort(80);
+    b.setMinUserId(10001);
+    b.setMaxUserId(10100);
+    builder = new BenchmarkRunner.Builder(x)
+      .setInvocationCount(1000)
+      .setRunPerThread(true)
+      .setBenchmark(b);
+    runner = builder.build();
+    runner.execute(x);
+    print("done");
+    print(runner.getResult());
+    l = x.get("logger");
+    lc.setLogInfo(true);
+    lc.setLogDebug(savedDebug);
+    l.info(new Object[] {runner.getResult()});
+  `,
+  "output":""
+})
+
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"TransactionPlannerBenchmarkClient",
+  "description":"Transaction Quote Creation Benchmark - Client - runs against remote DAO",
+  "code":`
+    import foam.nanos.bench.*;
+    import net.nanopay.tx.bench.*;
+
+    // domain = "172.19.241.156"; //aws-mm1
     // domain = "172.19.240.89"; //aws-mm2
     // domain = "172.19.241.252"; //aws-mm3
-    // domain = "172.19.5.38"; //aws-mm4
+    domain = "172.19.5.38"; //aws-mm4
 
     lc = x.get("logLevelFilterLogger");
     lc.setLogInfo(true);
     savedDebug = lc.getLogDebug();
     lc.setLogDebug(false);
-    x = x.put("pmLogger", null);
-    b = new TransactionBenchmarkClient();
+    //x = x.put("pmLogger", null);
+    b = new TransactionPlannerBenchmarkClient();
     b.setX(x);
-    b.setUrl("http://"+domain+":8080/service/transactionDAO");
+    b.setUrl("http://"+domain+":8080/service/transactionPlannerDAO");
     b.setSessionId("e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738");
     b.setMinAccountId(182);
     b.setMaxAccountId(282);
     builder = new BenchmarkRunner.Builder(x)
-      .setInvocationCount(1000)
+      .setInvocationCount(10)
       .setRunPerThread(true)
       .setBenchmark(b);
     runner = builder.build();
@@ -78,10 +110,10 @@ p({
 
 print('start');
 
-var domain = '172.19.241.156'; //'aws-mm1';
+// var domain = '172.19.241.156'; //'aws-mm1';
 // var domain = '172.19.240.89'; //'aws-mm2';
 // var domain = '172.19.241.252'; //'aws-mm3';
-// var domain = '172.19.5.38'; //'aws-mm4';
+var domain = '172.19.5.38'; //'aws-mm4';
 var port = 8080;
 var sessionId = 'e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738';
 
@@ -113,7 +145,28 @@ var min = 182;
 var max = 282;
 var limit = 10000;
 var processed = 0;
+var passed = 0;
+var failed = 0;
 var startTime = new Date();
+
+function process(pf) {
+    processed++;
+    if ( pf ) {
+        passed++;
+    } else {
+        failed++;
+    }
+    if ( processed >= limit ) {
+        var endTime = new Date();
+        var delta = endTime.getTime() - startTime.getTime()
+        var tps = processed / (delta/1000);
+        console.log(passed+', '+failed+', '+processed+', '+tps);
+        print('domain, passed, failed, total, delta, tps, startTime, endTime');
+        print(domain+', '+passed+', '+failed+', '+processed+', '+delta+', '+tps+', '+startTime+', '+endTime+', ');
+        print('endTime: '+endTime);
+    }
+}
+
 print('startTime: '+startTime);
 for ( var i = 0; i < limit; i++ ) {
     var source = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -124,28 +177,106 @@ for ( var i = 0; i < limit; i++ ) {
         destinationAccount: dest,
         amount: amount
     }, x);
+
     dao.put(txn).then(function(t) {
-        console.log("txn: "+t.id);
-        processed++;
-        if ( processed >= limit ) {
-            var endTime = new Date();
-            var delta = endTime.getTime() - startTime.getTime()
-            console.log(processed+' / '+ delta + 'ms');
-            print(processed + '/' + delta + 'ms');
-            print('endTime: '+endTime);
-        }
+        console.log("txn: "+t.getId);
+        process(true);
     }).catch(function(e) {
         console.error(e.message);
-        processed++;
-        if ( processed >= limit ) {
-            var endTime = new Date();
-            var delta = endTime.getTime() - startTime.getTime()
-            console.log(processed+' / '+ delta + 'ms');
-            print(processed + '/' + delta + 'ms');
-            print('endTime: '+endTime);
-       }
+        process(false);
     });
 }
 
+"""
+})
+
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"TransactionPlannerBenchmarkClient-Javascript",
+  "description":"Transaction Planner Benchmark - (Javascript) Client - runs against remote DAO",
+  "server":false,
+  "code":"""
+
+print('start');
+
+// var domain = '172.19.241.156'; //'aws-mm1';
+// var domain = '172.19.240.89'; //'aws-mm2';
+// var domain = '172.19.241.252'; //'aws-mm3';
+// var domain = '172.19.5.38'; //'aws-mm4';
+var domain = "jhughes";
+var port = 8080;
+var sessionId = 'e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738';
+
+var of = net.nanopay.tx.TransactionQuote;
+var serviceName = 'transactionPlannerDAO';
+
+var box = foam.box.HTTPBox.create({
+    url: 'http://'+domain+':'+port+'/service/'+serviceName,
+    authorizationType: foam.box.HTTPAuthorizationType.BEARER,
+    sessionID: sessionId
+}, x);
+box = foam.box.TimeoutBox.create({ delegate: box }, x);
+box = foam.box.SessionClientBox.create({ sessionID: sessionId, delegate: box }, x);
+var dao = foam.dao.EasyDAO.create({
+    daoType: 'CLIENT',
+    of: of,
+    serverBox: box
+}, x);
+
+dao.select(foam.mlang.sink.Count.create()).then(function(c) {
+    console.log("count: "+c.value);
+}).catch(function(e) {
+    console.error(e.message);
+});
+
+// account range
+var min = 182;
+var max = 282;
+var limit = 10000;
+var processed = 0;
+var passed = 0;
+var failed = 0;
+var startTime = new Date();
+
+function process(pf) {
+    processed++;
+    if ( pf ) {
+        passed++;
+    } else {
+        failed++;
+    }
+    if ( processed >= limit ) {
+        var endTime = new Date();
+        var delta = endTime.getTime() - startTime.getTime()
+        var tps = processed / (delta/1000);
+        console.log(passed+', '+failed+', '+processed+', '+tps);
+        print('domain, passed, failed, total, delta, tps, startTime, endTime');
+        print(domain+', '+passed+', '+failed+', '+processed+', '+delta+', '+tps+', '+startTime+', '+endTime+', ');
+        print('endTime: '+endTime);
+    }
+}
+
+print('startTime: '+startTime);
+for ( var i = 0; i < limit; i++ ) {
+    var source = Math.floor(Math.random() * (max - min + 1)) + min;
+    var dest = Math.floor(Math.random() * (max - min + 1)) + min;
+    var amount = Math.random() * 100;
+    var txn = net.nanopay.tx.model.Transaction.create({
+        sourceAccount: source,
+        destinationAccount: dest,
+        amount: amount
+    }, x);
+    var quote = net.nanopay.tx.TransactionQuote.create({
+        requestTransaction: txn
+    });
+
+    dao.put(quote).then(function(q) {
+        console.log("quote: "+q);
+        process(true);
+    }).catch(function(e) {
+        console.error(e.message);
+        process(false);
+    });
+}
 """
 })

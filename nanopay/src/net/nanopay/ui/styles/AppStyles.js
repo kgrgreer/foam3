@@ -44,7 +44,7 @@ foam.CLASS({
     .foam-u2-DetailView-title {
       background: #ddd;
       color: gray;
-      padding: 6px;
+      padding: 8px;
     }
     .foam-u2-ActionView{
       border: none;
@@ -442,7 +442,7 @@ foam.CLASS({
       height: 290px;
       background: white;
       border-radius: 2px;
-      overflow-y: scroll;
+      overflow-y: auto;
       padding: 20px;
     }
     .bottomMargin {
@@ -623,16 +623,16 @@ foam.CLASS({
     }
     .foam-doc-DocBrowser {
       width: 100%;
-      overflow: scroll;
+      overflow: auto;
       padding: 20px 0px 0px 20px;
     }
     .foam-doc-DocBorder-content {
       height: 80vh !important;
-      overflow: scroll;
+      overflow: auto;
     }
     .foam-doc-DocBorder-content .foam-u2-DetailView {
       width: 200px;
-      overflow: scroll;
+      overflow: auto;
     }
     .foam-doc-ClassList {
       display: inline-block;

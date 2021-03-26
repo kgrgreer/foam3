@@ -87,7 +87,7 @@ p({
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class": "net.nanopay.tx.ruler.PermissionedTransactionRule",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d31",
   "name":"The Jackie Rule1",
   "priority":100,
@@ -99,11 +99,11 @@ p({
   "predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.IsComplianceTransaction"},
   "action":{"class":"net.nanopay.tx.JackieRuleOnCreate"},
   "enabled":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class": "net.nanopay.tx.ruler.PermissionedTransactionRule",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d32",
   "name":"The Jackie Rule2",
   "priority":100,
@@ -114,8 +114,7 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
-        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
-        "of":"net.nanopay.tx.ComplianceTransaction"
+        "class":"net.nanopay.meter.compliance.ruler.predicate.IsComplianceTransaction"
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
@@ -159,7 +158,6 @@ p({
   },
   "after":false,
   "enabled":true,
-  "saveHistory":false,
   "lifecycleState":1
 })
 p({
@@ -216,11 +214,26 @@ p({
 })
 p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d36","name":"SwitchToSlowPay","priority":100,"ruleGroup":"FastPay","documentation":"If we know that fast pay will fail due to nsf in some account, transition to slowpay","daoKey":"localTransactionDAO","operation":1,"after":false,"action":{"class":"net.nanopay.tx.ruler.SlowDownRule"},"enabled":true,"lifecycleState":1})
 p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d37","name":"Modify Cico Status","priority":100,"ruleGroup":"ModifyCicoStatus","documentation":"When a cico transaction is updated, check if status is SENT and check if ApprovalRequest is Approved, then update transaction status to COMPLETED.","daoKey":"localTransactionDAO","operation":1,"after":false,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"net.nanopay.meter.compliance.ruler.predicate.IsSentTransaction"},{"class":"net.nanopay.meter.compliance.ruler.predicate.IsCITransaction"}]},"action":{"class":"net.nanopay.tx.ModifyCicoStatus"},"enabled":true,"saveHistory":true,"lifecycleState":1})
-p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d38","name":"Create Expedite Aproval Request","priority":100,"ruleGroup":"CreateExpediteApprovalRequest","documentation":"When a cico transaction is created, create an approval request that allows the status to be modified.","daoKey":"localTransactionDAO","operation":0,"after":true,"predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.IsCITransaction"},"action":{"class":"net.nanopay.tx.CreateExpediteApprovalRequest"},"enabled":true,"saveHistory":true,"lifecycleState":1})
-p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d39","name":"Prune Cico Approval Cleanup","priority":100,"ruleGroup":"PruneCicoApprovalCleanup","documentation":"Clear pending approval requests for a cico transaction.","daoKey":"localTransactionDAO","operation":1,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"net.nanopay.meter.compliance.ruler.predicate.IsCompletedTransaction"},{"class":"net.nanopay.meter.compliance.ruler.predicate.IsCITransaction"}]},"action":{"class":"net.nanopay.meter.compliance.ruler.PruneApprovalRequests","objDaoKey":"localTransactionDAO"},"enabled":true,"saveHistory":true,  "lifecycleState":1})
+p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d38","name":"Create Expedite Aproval Request","priority":100,"ruleGroup":"CreateExpediteApprovalRequest","documentation":"When a cico transaction is created, create an approval request that allows the status to be modified.","daoKey":"localTransactionDAO","operation":0,"after":true,"predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.IsCITransaction"},"action":{"class":"net.nanopay.tx.CreateExpediteApprovalRequest"},"enabled":true,"saveHistory":false,"lifecycleState":1})
+p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d39","name":"Prune Cico Approval Cleanup","priority":100,"ruleGroup":"PruneCicoApprovalCleanup","documentation":"Clear pending approval requests for a cico transaction.","daoKey":"localTransactionDAO","operation":1,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"net.nanopay.meter.compliance.ruler.predicate.IsCompletedTransaction"},{"class":"net.nanopay.meter.compliance.ruler.predicate.IsCITransaction"}]},"action":{"class":"net.nanopay.meter.compliance.ruler.PruneApprovalRequests","objDaoKey":"localTransactionDAO"},"enabled":true,"saveHistory":false,  "lifecycleState":1})
 p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d40","name":"Account Liquification","priority":100,"ruleGroup":"Liquidity","documentation":"Triggers liquidity settings","daoKey":"localTransactionDAO","operation":3,"after":true,"enabled":true,"action":{"class":"net.nanopay.liquidity.LiquidityRule"},"saveHistory":true,"lifecycleState":1})
-p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d41","name":"ReverseCashIn","priority":100,"ruleGroup":"ReverseTransactions","documentation":"Reverses Failed and Declined CI Transactions","daoKey":"localTransactionDAO","operation":1,"action":{"class":"net.nanopay.tx.cico.ReverseCIRule"},"after":false,"enabled":true,"saveHistory":true,"lifecycleState":1})
-p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d42","name":"ReverseCashOut","priority":90,"ruleGroup":"ReverseTransactions","documentation":"Reverses Failed and Declined CO Transactions","daoKey":"localTransactionDAO","operation":1,"action":{"class":"net.nanopay.tx.cico.ReverseCORule"},"after":false,"enabled":true,"saveHistory":true,"lifecycleState":1})
+p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d41","name":"ReverseCashIn","priority":100,"ruleGroup":"ReverseTransactions","documentation":"Reverses Failed and Declined CI Transactions","daoKey":"localTransactionDAO","operation":1,"action":{"class":"net.nanopay.tx.cico.ReverseCIRule"},"after":false,"enabled":true,"saveHistory":false,"lifecycleState":1})
+p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d42","name":"ReverseCashOut","priority":90,"ruleGroup":"ReverseTransactions","documentation":"Reverses Failed and Declined CO Transactions","daoKey":"localTransactionDAO","operation":1,"action":{"class":"net.nanopay.tx.cico.ReverseCORule"},"after":false,"enabled":true,"saveHistory":false,"lifecycleState":1})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"ca43e9a4-9034-44df-b303-4dac92acf1c4",
+  "name":"ReverseInterTrust",
+  "priority":90,
+  "ruleGroup":"ReverseTransactions",
+  "documentation":"Reverses Failed and Declined CO Transactions",
+  "daoKey":"localTransactionDAO",
+  "operation":1,
+  "action":{"class":"net.nanopay.tx.cico.ReverseInterTrustRule"},
+  "after":false,
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})
 p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d43","name":"observeStatus","priority":100,"ruleGroup":"Observer","documentation":"Change the last status field to the current time for all transaction status changes","daoKey":"localTransactionDAO","operation":1,"after":false,"predicate":{"class":"foam.nanos.ruler.predicate.PropertyChangePredicate","observedProperty":"status","observedClass":"net.nanopay.tx.model.Transaction"},"enabled":true,"action":{"class":"foam.nanos.ruler.action.ChangePropertyAction","propName":"lastStatusChange","valueExpr":{"class":"foam.mlang.CurrentTime"}},"lifecycleState":1})
 p({
   "class":"foam.nanos.ruler.Rule",
@@ -240,7 +253,7 @@ p({
       {"class":"foam.nanos.ruler.predicate.PropertyNEQValue","propName":"invoiceId","propValue":0}
   ]},
   "action":{"class":"net.nanopay.tx.ruler.AbliiSendCompletedNotification"},
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -263,7 +276,7 @@ p({
         {"class":"foam.nanos.ruler.predicate.PropertyNEQValue","propName":"status","propValue":{"class":"net.nanopay.tx.model.TransactionStatus","ordinal":5},"isNew":false}
     ]},
   "action":{"class":"net.nanopay.tx.ruler.AbliiSendCompletedNotification"},
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 p({
@@ -284,7 +297,7 @@ p({
         {"class":"foam.nanos.ruler.predicate.PropertyChangePredicate","propName":"status"}
     ]},
   "action":{"class":"net.nanopay.tx.ruler.SendDeclinedCINotification"},
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 p({
@@ -318,7 +331,7 @@ p({
     }
   },
   "enabled":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 p({
@@ -346,7 +359,7 @@ p({
     }
   },
   "enabled":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 p({
@@ -415,7 +428,7 @@ p({
         "class":"net.nanopay.tx.ruler.MicroDepositFailed"
     },
     "enabled":true,
-    "saveHistory":true,
+    "saveHistory":false,
     "lifecycleState":1
 })
 p({
@@ -453,7 +466,7 @@ p({
         "class":"net.nanopay.tx.ruler.MicroDepositSuccessed"
     },
     "enabled":true,
-    "saveHistory":true,
+    "saveHistory":false,
     "lifecycleState":1
 })
 p({
@@ -477,7 +490,7 @@ p({
         "class":"net.nanopay.tx.ruler.MicroDepositSent"
     },
     "enabled":true,
-    "saveHistory":true,
+    "saveHistory":false,
     "lifecycleState":1
 })
 p({
@@ -568,7 +581,7 @@ p({
       "class":"net.nanopay.tx.ruler.SendCompleteRetailTransactionNotificationRule"
     },
     "enabled":true,
-    "saveHistory":true,
+    "saveHistory":false,
     "lifecycleState":1
 })
 p({
@@ -648,6 +661,7 @@ p({
     "class":"net.nanopay.tx.ruler.CascadingCancelAction",
   },
   "enabled":true,
+  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -705,7 +719,7 @@ p({
     "class":"net.nanopay.fx.afex.TransactionVerifyBankAccountRule"
   },
   "enabled":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -759,10 +773,9 @@ p({
     "class":"net.nanopay.tx.ruler.CICOTransactionInvalidBankAccountRule"
   },
   "enabled":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
-
 p({
     "class":"foam.nanos.ruler.Rule",
     "id":"B11C328F-9572-426D-8373-09BA2DF73114",
@@ -834,17 +847,17 @@ p({
                     "class": "net.nanopay.tx.model.TransactionStatus",
                     "ordinal":5
                   }
-                },
+                }
               ]
             }
           ]
-        },
+        }
       ]
     },
     "action":{
       "class":"net.nanopay.tx.ruler.SummaryTransactionAfterPutRule"
     },
-    "enabled":false,
+    "enabled":true,
     "saveHistory":false,
     "lifecycleState":1
 })
@@ -877,7 +890,63 @@ p({
     "action":{
       "class":"net.nanopay.tx.ruler.SummaryTransactionUpdateDUGRule"
     },
-    "enabled":false,
+    "enabled":true,
     "saveHistory":false,
     "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"transactions-billing-engine-create-bill",
+  "name":"Create bills from failed transactions",
+  "priority":100,
+  "ruleGroup":"billing",
+  "documentation":"Creates bills from failed transactions",
+  "daoKey":"localTransactionDAO",
+  "operation":1,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.Or",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal":4
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal":6
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal":9
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal":11
+        }
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.tx.billing.CreateBillsRule"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1,
+  "spid":"intuit"
 })

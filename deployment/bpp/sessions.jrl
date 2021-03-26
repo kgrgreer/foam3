@@ -1,11 +1,8 @@
-// Long lived session ID for BPP API user
+// Long lived session ID for api-bpp user
 p({
-    class:"foam.nanos.session.Session",
-    id:"E50DCA40-3B75-4617-9C0C-92E6E8AAE93B",
-    userId:8053,
-    agentId:0,
-    created:1594308371944,
-    createdBy:1348,
-    createdByAgent:1348,
-    ttl:3153600000000
+  class:"foam.nanos.session.Session",
+  id:"845CECB9-32B3-49A1-8C95-7687E93673EA",
+  userId:2025,
+  agentId:0,
+  ttl:3153600000000
 })

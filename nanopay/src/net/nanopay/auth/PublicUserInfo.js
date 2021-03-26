@@ -35,7 +35,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'id',
-      tableWidth: 50,
+      tableWidth: 60,
       documentation: `The unique identifier for the User.`,
       visibility: 'RO'
     },
@@ -118,6 +118,10 @@ foam.CLASS({
       class: 'String',
       name: 'type',
       documentation: 'The type of the public information of a User.'
+    },
+    {
+      class: 'String',
+      name: 'spid'
     }
   ],
 
@@ -174,6 +178,7 @@ foam.CLASS({
             setAddress(user.getAddress());
             setPhoneNumber(user.getPhoneNumber());
             setType(user.getType());
+            setSpid(user.getSpid());
           }
         `);
       },

@@ -1,0 +1,208 @@
+// planner capabilities. Here we group planners into capabilities to run certain functions without needing to list all rules.
+// digital planner
+p({
+  class: "foam.nanos.crunch.Capability",
+  description: "Grants Digital Transaction planner",
+  id: "DigitalPlannerCapability",
+  version: "0",
+  permissionsGranted: [
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d182"
+  ]
+})
+// Bank to Digital different user planner,  Digital to Bank different user planner,Bank to Bank planner, Verification Planner
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "DomesticInterBankAccountPlannerCapability",
+  description: "Grants BankBank, BankDigital, DigitalBank planners and Verification Transaction planner",
+  version: "0",
+  permissionsGranted: [
+    "rule.read.3cb6aab3-107a-495a-8974-ed3286192b35",
+    "rule.read.ab51def7-b5d4-48ee-99ee-e3d418583740",
+    "rule.read.61d57d66-3e63-4c53-9eee-de3f8f75e56c",
+    "rule.read.9577e4ae-c3c3-41a2-b479-43d91a12b2a0"
+  ]
+})
+// rbc inter trust, rbc CI,  rbc CO
+p({
+  class: "foam.nanos.crunch.Capability",
+  description: "Grants RBC cico planners",
+  id: "RBCPlannerCapability",
+  version: "0",
+  permissionsGranted: [
+    "rule.read.c4f3e4ae-01b6-4638-8a09-06e6b9f05f42",
+    "rule.read.3ced1642-1bed-4615-a263-d816b2a2db60",
+    "rule.read.1dce9ad8-41cc-44f6-a64f-4e7596556fa6"
+  ]
+})
+// alterna CI, alterna CO
+p({
+  class: "foam.nanos.crunch.Capability",
+  description: "Grants Alterna cico planners",
+  id: "AlternaPlannerCapability",
+  version: "0",
+  permissionsGranted: [
+    "rule.read.826d7ac5-65ce-4459-972b-6211a3fb8554",
+    "rule.read.b72c9818-1446-4041-8ea8-598205bd3a1f"
+  ]
+})
+// bmo inter trust, bmo CI, bmo CO
+p({
+  class: "foam.nanos.crunch.Capability",
+  description: "Grants BMO cico planners",
+  id: "BMOPlannerCapability",
+  version: "0",
+  permissionsGranted: [
+    "rule.read.884607ff-055e-41d4-9dbb-69433b2aa816",
+    "rule.read.4763d336-e876-4611-a8b4-b0325b187d79",
+    "rule.read.8ddd5708-1420-4e7a-b383-d9f683405179"
+  ]
+})
+// AFEX planner
+p({
+  class: "foam.nanos.crunch.Capability",
+  description: "AFEX planner",
+  id: "AFEXPlannerCapability",
+  version: "0",
+  permissionsGranted: [
+    "rule.read.13df0d76-ba3e-4287-b42e-c7ceff059dd8"
+  ]
+})
+// Ascendant planner
+p({
+  class: "foam.nanos.crunch.Capability",
+  description: "Ascendant planner",
+  id: "AscendantPlannerCapability",
+  version: "0",
+  permissionsGranted: [
+    "rule.read.33666aa9-2294-415a-a015-31530f9e0204"
+  ]
+})
+// FOP planner, DVP planner,  Bucket planner, generic Security CI, generic Security CO
+p({
+  class: "foam.nanos.crunch.Capability",
+  description: "All planners dealing with securities transactions",
+  id: "SecuritiesPlannerCapability",
+  version: "0",
+  permissionsGranted: [
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d52",
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d53",
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d54",
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d51",
+    "rule.read.dad02a73-5a81-4f38-8b0c-0b7cbb09fa71"
+  ]
+})
+
+// generic CI, generic CO, generic FX
+p({
+  class: "foam.nanos.crunch.Capability",
+  description: "All planners that are generic",
+  id: "GenericPlannerCapability",
+  version: "0",
+  permissionsGranted: [
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d183",
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d184",
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d185"
+  ]
+})
+// Kotak FX planner, Kotak split planner, Kotak INR digital to bank planner
+p({
+  class: "foam.nanos.crunch.Capability",
+  description: "All planners that are generic",
+  id: "KotakPlannerCapability",
+  version: "0",
+  permissionsGranted: [
+    "rule.read.43db5d84-1d63-4b28-b671-7bd1e7cccf5f",
+    "rule.read.10625392-606c-4d9b-9cec-8e588b28e134",
+    "rule.read.eab3592a-b79e-4c5f-a198-328729133d25"
+  ]
+})
+// digital planner,  generic CI, generic CO, Bank to Bank planner, digital bank, bank digital
+p({
+  class: "foam.nanos.crunch.Capability",
+  description: "All planners that are generic",
+  id: "SandBoxPlannerCapability",
+  version: "0",
+  permissionsGranted: [
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d182",
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d183",
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d184",
+    "rule.read.61d57d66-3e63-4c53-9eee-de3f8f75e56c",
+    "rule.read.3cb6aab3-107a-495a-8974-ed3286192b35",
+    "rule.read.ab51def7-b5d4-48ee-99ee-e3d418583740"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  description: "All planners",
+  id: "AllPlannerCapability",
+  version: "0",
+  permissionsGranted: [
+    "rule.read.ea880670-142c-4be3-930d-acfba1bd5914",
+    "rule.read.d4d6dc04-db17-43f6-a7e8-e720d18b22df",
+    "rule.read.9522dba0-ea23-4249-b6a5-cfe5105cf12f",
+    "rule.read.9124f118-f408-456b-813d-2ca92c95747e",
+    "rule.read.2585bc32-02f1-4a66-bebe-39e61740abf7",
+    "rule.read.8A9B2980-F6C5-4A67-966E-760FE6649B56",
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d182",
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d183",
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d184",
+    "rule.read.43db5d84-1d63-4b28-b671-7bd1e7cccf5f",
+    "rule.read.10625392-606c-4d9b-9cec-8e588b28e134",
+    "rule.read.eab3592a-b79e-4c5f-a198-328729133d25",
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d185",
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d51",
+    "rule.read.dad02a73-5a81-4f38-8b0c-0b7cbb09fa71",
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d52",
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d53",
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d54",
+    "rule.read.33666aa9-2294-415a-a015-31530f9e0204",
+    "rule.read.13df0d76-ba3e-4287-b42e-c7ceff059dd8",
+    "rule.read.884607ff-055e-41d4-9dbb-69433b2aa816",
+    "rule.read.4763d336-e876-4611-a8b4-b0325b187d79",
+    "rule.read.8ddd5708-1420-4e7a-b383-d9f683405179",
+    "rule.read.826d7ac5-65ce-4459-972b-6211a3fb8554",
+    "rule.read.b72c9818-1446-4041-8ea8-598205bd3a1f",
+    "rule.read.c4f3e4ae-01b6-4638-8a09-06e6b9f05f42",
+    "rule.read.3ced1642-1bed-4615-a263-d816b2a2db60",
+    "rule.read.1dce9ad8-41cc-44f6-a64f-4e7596556fa6",
+    "rule.read.3cb6aab3-107a-495a-8974-ed3286192b35",
+    "rule.read.ab51def7-b5d4-48ee-99ee-e3d418583740",
+    "rule.read.61d57d66-3e63-4c53-9eee-de3f8f75e56c",
+    "rule.read.9577e4ae-c3c3-41a2-b479-43d91a12b2a0"
+  ]
+})
+
+//     ------ ALL PLANNER CAPABILITIES, NAMED FOR COPY+PASTE ---------
+//  "rule.read.ea880670-142c-4be3-930d-acfba1bd5914",    // Nanopay FX
+//  "rule.read.d4d6dc04-db17-43f6-a7e8-e720d18b22df",    // Loan Transaction
+//  "rule.read.9522dba0-ea23-4249-b6a5-cfe5105cf12f",    // Debtable
+//  "rule.read.9124f118-f408-456b-813d-2ca92c95747e",    // Debt Repayment
+//  "rule.read.2585bc32-02f1-4a66-bebe-39e61740abf7",    // Bulk Transaction
+//  "rule.read.8A9B2980-F6C5-4A67-966E-760FE6649B56",    // Intuit bank to bank
+//  "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d182", // digital planner
+//  "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d183", // generic CI
+//  "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d184", // generic CO
+//  "rule.read.43db5d84-1d63-4b28-b671-7bd1e7cccf5f",    // Kotak FX planner
+//  "rule.read.10625392-606c-4d9b-9cec-8e588b28e134",    // Kotak split planner
+//  "rule.read.eab3592a-b79e-4c5f-a198-328729133d25",    // Kotak INR digital to bank planner
+//  "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d185", // generic FX
+//  "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d51",  // generic Security CI
+//  "rule.read.dad02a73-5a81-4f38-8b0c-0b7cbb09fa71",    // generic Security CO
+//  "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d52",  // FOP planner
+//  "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d53",  // DVP planner
+//  "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d54",  // Bucket planner
+//  "rule.read.33666aa9-2294-415a-a015-31530f9e0204",    // Ascendant planner
+//  "rule.read.13df0d76-ba3e-4287-b42e-c7ceff059dd8",    // AFEX planner
+//  "rule.read.884607ff-055e-41d4-9dbb-69433b2aa816",    // bmo inter trust
+//  "rule.read.4763d336-e876-4611-a8b4-b0325b187d79",    // bmo CI
+//  "rule.read.8ddd5708-1420-4e7a-b383-d9f683405179",    // bmo CO
+//  "rule.read.826d7ac5-65ce-4459-972b-6211a3fb8554",    // alterna CI
+//  "rule.read.b72c9818-1446-4041-8ea8-598205bd3a1f",    // alterna CO
+//  "rule.read.c4f3e4ae-01b6-4638-8a09-06e6b9f05f42",    // rbc inter trust
+//  "rule.read.3ced1642-1bed-4615-a263-d816b2a2db60",    // rbc CI
+//  "rule.read.1dce9ad8-41cc-44f6-a64f-4e7596556fa6",    // rbc CO
+//  "rule.read.3cb6aab3-107a-495a-8974-ed3286192b35",    // Bank to Digital different user planner
+//  "rule.read.ab51def7-b5d4-48ee-99ee-e3d418583740",    // Digital to Bank different user planner
+//  "rule.read.61d57d66-3e63-4c53-9eee-de3f8f75e56c",    // Bank to Bank planner
+//  "rule.read.9577e4ae-c3c3-41a2-b479-43d91a12b2a0",    // Verification Planner

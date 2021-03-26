@@ -63,7 +63,7 @@ foam.CLASS({
       border: dashed 4px /*%GREY5%*/ #f5f7fa;
       height: 300px;
       width: 560px;
-      overflow: scroll;
+      overflow: auto;
     }
 
     ^ .dragText{

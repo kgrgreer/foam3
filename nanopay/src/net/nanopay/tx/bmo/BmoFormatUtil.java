@@ -100,7 +100,7 @@ public class BmoFormatUtil {
     }
 
     Notification notification = new Notification();
-    notification.setGroupId("payment-ops");
+    notification.setGroupId("nanopay-payment-ops");
     notification.setNotificationType("BMO EFT");
     notification.setBody(subject + "\n" + body);
     notificationDAO.put(notification);

@@ -87,9 +87,14 @@ public class BillingInvoicesCron implements ContextAgent {
   private StringBuilder error_ = new StringBuilder();
 
   /**
+   * Spid to be billed
+   */
+  protected String spid_ = "nanopay";
+
+  /**
    * Error notification group id
    */
-  private String errorNotificationGroupId_ = "payment-ops";
+  protected String errorNotificationGroupId_ = spid_ + "-payment-ops";
 
   /**
    * BillingInvoice by payer/business
@@ -136,6 +141,7 @@ public class BillingInvoicesCron implements ContextAgent {
     error_.setLength(0);
     transactionDAO.where(AND(
       predicate_,
+      EQ(Transaction.SPID, spid_),
       EQ(Transaction.STATUS, TransactionStatus.COMPLETED),
       GTE(Transaction.CREATED, getDate(startDate_)),
       LT(Transaction.CREATED, getDate(endDate_.plusDays(1)))
@@ -144,7 +150,6 @@ public class BillingInvoicesCron implements ContextAgent {
         Transaction transaction = (Transaction) obj;
 
         // Only want to charge fees on completed or declined Transaction chains
-        TransactionStatus state = transaction.getState(x);
 
         Transaction ct = (Transaction) transactionDAO.find(AND(
           EQ(Transaction.PARENT, transaction.getId()),

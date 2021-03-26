@@ -39,7 +39,7 @@ foam.CLASS({
          PlaidAccountDetail plaidAccountDetail = new PlaidAccountDetail();
          boolean threw;
 
-         paymentOps.setGroup("payment-ops");
+         paymentOps.setGroup("nanopay-payment-ops");
          paymentOps = (User) bareUserDAO.put(paymentOps);
 
          Session paymentOpsSession = new Session.Builder(x)

@@ -12,7 +12,7 @@ p({
       "class": "net.nanopay.invoice.ruler.IsCompletePayment"
     },
     "action":{
-      "class":"net.nanopay.invoice.ruler.CompleteInvoiceNotification"
+      "class":"net.nanopay.invoice.ruler.CompleteInvoiceNotificationRule"
     },
     "enabled":true,
     "lifecycleState":1

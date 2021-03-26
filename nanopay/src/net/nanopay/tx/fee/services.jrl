@@ -12,19 +12,6 @@ p({
       .setPm(true)
       .setPipelinePm(true)
       .setAuthorize(false)
-      .setServiceProviderAware(true)
-      .setServiceProviderAwarePropertyInfos(
-        foam.util.Arrays.asMap(new Object[]
-          {
-            net.nanopay.account.Account.class.getName(),
-            new foam.core.PropertyInfo[] { net.nanopay.account.Account.OWNER },
-            net.nanopay.tx.model.Transaction.class.getName(),
-            new foam.core.PropertyInfo[] {
-              net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT,
-              net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT,
-            }
-          }
-        ))
       .build();
   """
 })

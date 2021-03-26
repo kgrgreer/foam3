@@ -26,8 +26,21 @@ foam.CLASS({
   properties: [
     {
       name: 'country',
-      value: 'DE',
       visibility: 'RO'
+    },
+    {
+      name: 'denomination',
+      value: 'EUR'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'getApiAccountNumber',
+      type: 'String',
+      javaCode: `
+        return getIban();
+      `
     }
   ]
 });

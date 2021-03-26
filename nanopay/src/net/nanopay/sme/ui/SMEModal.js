@@ -24,16 +24,8 @@ foam.CLASS({
 
   css: `
     ^X {
-      position: absolute;
-      top: -30px;
-      right: -30px;
-      background: none !important;
-      width: 24px !important;
-      height: 24px !important;
-      cursor: pointer;
-      transition: ease 0.2s;
-      padding: 0;
-      border: none !important;
+      top: 24px !important;
+      right: 24px !important;
     }
 
     ^inner {
@@ -51,9 +43,6 @@ foam.CLASS({
       border-radius: 3px;
       overflow: hidden;
     }
-    .net-nanopay-sme-ui-SMEModal .net-nanopay-sme-ui-SMEModal-content .foam-u2-ModalHeader button {
-      display: none;
-    }
   `,
 
   methods: [
@@ -70,13 +59,11 @@ foam.CLASS({
         .end()
         .start()
           .addClass(this.myClass('inner'))
-          .callIf(this.closeable, () => {
-            this.startContext({ data: this })
-              .start(this.CLOSE_MODAL).show(this.closeable$)
-                .addClass(this.myClass('X'))
-              .end()
-            .endContext()
-          })
+          .startContext({ data: this })
+            .start(this.CLOSE_MODAL).show(this.closeable$)
+              .addClass(this.myClass('X'))
+            .end()
+          .endContext()
           .start()
             .addClass(this.myClass('content'))
             .call(function() { content = this; })
@@ -88,14 +75,4 @@ foam.CLASS({
     }
   ],
 
-  actions: [
-    {
-      name: 'closeModal',
-      label: '',
-      icon: 'images/ic-cancelwhite.svg',
-      code: function(X) {
-        X.closeDialog();
-      }
-    }
-  ]
 });

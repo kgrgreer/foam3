@@ -32,7 +32,29 @@ foam.INTERFACE({
         {
           name: 'denomination',
           type: 'String'
-        }
+        },
+        {
+          name: 'trustAccount',
+          type: 'String'
+        },
+      ]
+    },
+    {
+      name: 'createDefaults',
+      async: true,
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'denomination',
+          type: 'String'
+        },
+        {
+          name: 'trustAccounts',
+          type: 'String[]'
+        },
       ]
     }
   ]

@@ -181,7 +181,7 @@ foam.CLASS({
             .start('h3')
               .add(
                 this.data.dueDate ?
-                    this.data.dueDate.toISOString().substring(0, 10) :
+                    this.data.dueDate.toLocaleDateString(foam.locale) :
                     ''
               )
             .end()
@@ -206,7 +206,7 @@ foam.CLASS({
                 return self.E()
                   .add(
                     self.data.paymentDate > Date.now() ? a + ' ' +
-                        self.data.paymentDate.toISOString().substring(0, 10) : a
+                        self.data.paymentDate.toLocaleDateString(foam.locale) : a
                   )
                   .addClass('generic-status')
                   .addClass('Invoice-Status-' + a.label.replace(/\W+/g, '-'));

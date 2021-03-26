@@ -32,9 +32,9 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.Permission',
-    'foam.nanos.auth.User',
+    'foam.nanos.auth.Subject',
     'foam.nanos.crunch.CapabilityJunctionStatus',
-    'foam.nanos.crunch.UserCapabilityJunction',
+    'foam.nanos.crunch.CrunchService',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'javax.security.auth.AuthPermission',
@@ -56,15 +56,15 @@ foam.CLASS({
         public void execute(X x) {
           Logger logger = (Logger) x.get("logger");
 
-          if ( ! (obj instanceof AFEXBusiness) ) {
+          if ( ! (obj instanceof AFEXUser) ) {
             return;
           }
 
-          AFEXBusiness afexBusiness = (AFEXBusiness) obj;
+          AFEXUser afexUser = (AFEXUser) obj;
           DAO dao = ((DAO) x.get("approvalRequestDAO"))
           .where(AND(
-            EQ(ApprovalRequest.DAO_KEY, "afexBusinessDAO"),
-            EQ(ApprovalRequest.OBJ_ID, afexBusiness.getId())
+            EQ(ApprovalRequest.DAO_KEY, "afexUserDAO"),
+            EQ(ApprovalRequest.OBJ_ID, afexUser.getId())
           ));
 
           ApprovalStatus approval = ApprovalRequestUtil.getState(dao);
@@ -72,25 +72,18 @@ foam.CLASS({
             DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
             DAO localGroupDAO = (DAO) x.get("localGroupDAO");
 
-            Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexBusiness.getUser()));
+            Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexUser.getUser()));
             if ( null != business ) {
               Address businessAddress = business.getAddress();
               if ( null != businessAddress && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {
 
                 // TODO check and remove if currency.read permissions still need to be given here and update rule name
 
-                DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
+                CrunchService crunchService = (CrunchService) x.get("crunchService");
                 String afexPaymentMenuCapId = "1f6b2047-1eef-471d-82e7-d86bdf511375";
-                UserCapabilityJunction ucj = (UserCapabilityJunction) ucjDAO.find(afexPaymentMenuCapId);
-                if ( ucj == null ) {
-                  ucj = new UserCapabilityJunction.Builder(x).setSourceId(business.getId())
-                    .setTargetId(afexPaymentMenuCapId)
-                    .build();
-                }
-
-                ucj.setStatus(CapabilityJunctionStatus.GRANTED);
-                ucjDAO.put(ucj);
-
+                Subject subject = new Subject(business);
+                crunchService.updateUserJunction(x, subject, afexPaymentMenuCapId, null, CapabilityJunctionStatus.GRANTED);
+                
                 String permissionString = "currency.read.";
                 permissionString = businessAddress.getCountryId().equals("CA") ? permissionString + "USD" : permissionString + "CAD";
                 Permission permission = new Permission.Builder(x).setId(permissionString).build();

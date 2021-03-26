@@ -1,0 +1,22 @@
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","targetId":"serviceprovider.read.bepay"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-session","targetId":"serviceprovider.read.bepay"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-session","targetId":"session.create.bepay"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-session","targetId":"group.read.bepay-sme"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-session","targetId":"group.update.bepay-sme"})
+
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-session","targetId":"business.rw.compliance"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-session","targetId":"business.rw.status"})
+
+// Allow BePay users to see contacts menu
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","targetId":"menu.read.view-contacts"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","targetId":"menu.read.switch-user"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","targetId":"service.read.contactDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","targetId":"service.contactDAO"})
+
+// Removing documentation around flinks
+r({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.api-doc-45-onboarding-flinks-business"})
+r({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.api-doc-55-onboarding-flinks-personal"})
+
+// BePay Fraud Ops
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bepay-fraud-ops",targetId:"group.update.bepay-fraud-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bepay-fraud-ops",targetId:"group.update.bepay-payment-ops"})

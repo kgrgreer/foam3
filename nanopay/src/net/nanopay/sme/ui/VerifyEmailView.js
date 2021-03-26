@@ -98,6 +98,7 @@ foam.CLASS({
       left: 10vw;
     }
     ^ .sme-image {
+      width: 34vw;
       margin-top: 15vh !important;
     }
     ^ .bold {
@@ -116,7 +117,7 @@ foam.CLASS({
       border-bottom: 5px solid blue;
     }
     ^ .centerVertical {
-      padding-top: 3vh; 
+      padding-top: 3vh;
       max-width: 30vw;
       margin: 0 auto;
     }
@@ -135,26 +136,18 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Check your email' },
-    { name: 'INSTRUCTIONS1', message: 'We\'ve sent an email to ' },
-    { name: 'INSTRUCTIONS2', message: ' with a link to activate your account.' },
-    { name: 'NO_EMAIL_LINK', message: 'Don\'t see the email?' },
+    { name: 'INSTRUCTIONS1', message: 'We\'ve sent a link to ' },
+    { name: 'INSTRUCTIONS2', message: ' to activate your account.' },
+    { name: 'NO_EMAIL_LINK', message: 'Didn\'t receive the email?' },
     { name: 'RESEND_EMAIL_LINK', message: 'Resend the email' },
     { name: 'ERROR_MSG', message: 'There was an issue with resending your verification email.' },
     {
-      name: 'NO_EMAIL_INSTRUCTIONS_1', message: 'If you don\'t see an email from us within a few minutes, the following may have happened:'
+      name: 'NO_EMAIL_INSTRUCTIONS_1', message: '\u2022 Check your spam folder'
     },
     {
-      name: 'NO_EMAIL_INSTRUCTIONS_2', message: 'The email went into your spam folder. (We know it\'s a scary place to look at, but it might be in there!)'
+      name: 'NO_EMAIL_INSTRUCTIONS_2', message: '\u2022 Verify the email address above is correct'
     },
-    {
-      name: 'NO_EMAIL_INSTRUCTIONS_3', message: 'The email you entered may have had typo. (Don\'t sweat it, we type fast too! It happens)'
-    },
-    {
-      name: 'NO_EMAIL_INSTRUCTIONS_4', message: 'We can\'t send emails to this address. (You might have strong filtering or corporate firewalls)'
-    },
-    {
-      name: 'NO_EMAIL_INSTRUCTIONS_5', message: `If none of the above helped, we can simply`
-    }
+    { name: 'VERIFICATION_EMAIL', message: 'Verification email sent to' }
   ],
 
   methods: [
@@ -198,15 +191,10 @@ foam.CLASS({
             .addClass('text-container')
             .show(this.noEmailToggle$)
             .start().add(this.NO_EMAIL_INSTRUCTIONS_1).end()
-            .br()
             .start().add(this.NO_EMAIL_INSTRUCTIONS_2).end()
             .br()
-            .start().add(this.NO_EMAIL_INSTRUCTIONS_3).end()
-            .br()
-            .start().add(this.NO_EMAIL_INSTRUCTIONS_4).end()
-            .br()
-            .start().add(this.NO_EMAIL_INSTRUCTIONS_5).end()
             .start(this.RESEND_EMAIL, { buttonStyle: 'UNSTYLED' }).addClass('link').end()
+            .br()
           .end()
         .end();
 
@@ -237,7 +225,7 @@ foam.CLASS({
             throw new Error('Error generating reset token');
           }
           self.ctrl.add(self.NotificationMessage.create({
-            message: 'Verification email sent to ' + self.user.email,
+            message: self.VERIFICATION_EMAIL+ ' ' + self.user.email,
             type: self.LogLevel.INFO
           }));
         }).catch(function(err) {

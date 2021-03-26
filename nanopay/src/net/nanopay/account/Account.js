@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware',
+    'foam.nanos.auth.ServiceProviderAware',
     'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
   ],
 
@@ -41,6 +42,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.core.Currency',
+    'foam.nanos.auth.ServiceProviderAwareSupport',
     'foam.nanos.logger.Logger',
     'foam.nanos.session.LocalSetting',
     'foam.nanos.session.Session',
@@ -84,37 +86,55 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'accountType',
+      name: 'accountInformation',
       permissionRequired: true,
-      isAvailable: function(id) { return !! id; },
-      order: 1
+      order: 10
     },
     {
-      name: 'accountDetails',
-      order: 2
+      name: 'balanceInformation',
+      title: 'Balance',
+      permissionRequired: true,
+      order: 20
     },
     {
-      // liquid
-      name: 'parentSection',
-      permissionRequired: true,
-      order: 3
+      name: 'complianceInformation',
+      title: 'Compliance',
+      order: 30
     },
     {
-      name: 'balanceDetails',
+      name: 'operationsInformation',
+      title: 'Operations',
       permissionRequired: true,
-      order: 4
+      order: 50
     },
     {
-      name: 'administration',
+      name: 'ownerInformation',
+      title: 'Owner',
       permissionRequired: true,
-      order: 5
+      order: 60
     },
     {
-      name: '_defaultSection',
-      title: 'Relationships',
+      name: 'parentInformation',
       permissionRequired: true,
-      order: 6
-     }
+      order: 70
+    },
+    {
+      name: 'systemInformation',
+      permissionRequired: true,
+      order: 80
+    },
+    {
+      name: 'deprecatedInformation',
+      title: 'Deprecated',
+      permissionRequired: true,
+      order: 90
+    },
+    {
+      name: 'transactionInformation',
+      title: 'Transactions',
+      permissionRequired: true,
+      order: 100
+    }
   ],
 
   properties: [
@@ -122,6 +142,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'type',
+      includeInDigest: false,
       documentation: 'The type of the account.',
       transient: true,
       getter: function() {
@@ -131,31 +152,29 @@ foam.CLASS({
         return getClass().getSimpleName();
       `,
       tableWidth: 150,
-      section: 'accountType',
-      visibility: 'RO'
+      section: 'accountInformation',
+      order: 1,
+      gridColumns: 6,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
-      class: 'Long',
+      class: 'String',
       name: 'id',
+      includeInDigest: true,
       documentation: 'The ID for the account.',
-      section: 'administration',
-      visibility: 'RO',
+      section: 'accountInformation',
+      order: 2,
+      gridColumns: 6,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       tableWidth: 150
-    },
-    {
-      class: 'Boolean',
-      name: 'deleted',
-      documentation: 'Determines whether the account is deleted.',
-      value: false,
-      section: 'administration',
-      writePermissionRequired: true,
-      visibility: 'RO',
-      tableWidth: 85
     },
     {
       class: 'String',
       name: 'name',
       label: 'Account Name',
+      includeInDigest: false,
       documentation: `The given name of the account,
         provided by the individual person, or real user.`,
       validateObj: function(name) {
@@ -163,37 +182,16 @@ foam.CLASS({
           return 'Account name may not consist of only whitespace.';
         }
       },
-      section: 'accountDetails',
-      order: 1,
+      section: 'accountInformation',
+      order: 30,
+      gridColumns: 6,
       tableWidth: 200
-    },
-    {
-      class: 'String',
-      name: 'desc',
-      documentation: `The given description of the account, provided by
-        the individual person, or real user.`,
-      label: 'Memo',
-      section: 'accountDetails',
-      order: 2
-    },
-    {
-      class: 'Boolean',
-      name: 'transferIn',
-      documentation: 'Determines whether an account can receive transfers.',
-      value: true,
-      section: 'administration'
-    },
-    {
-      class: 'Boolean',
-      name: 'transferOut',
-      documentation: 'Determines whether an account can make transfers out.',
-      value: true,
-      section: 'administration'
     },
     {
       class: 'Reference',
       of: 'foam.core.Unit',
       name: 'denomination',
+      includeInDigest: true,
       label: 'Currency',
       targetDAOKey: 'currencyDAO',
       documentation: `The unit of measure of the payment type. The payment system can handle
@@ -201,8 +199,9 @@ foam.CLASS({
       `,
       tableWidth: 127,
       writePermissionRequired: true,
-      section: 'accountDetails',
-      order: 3,
+      section: 'accountInformation',
+      order: 160,
+      gridColumns: 6,
       view: function(_, X) {
         return {
           class: 'foam.u2.view.RichChoiceView',
@@ -217,67 +216,49 @@ foam.CLASS({
       }
     },
     {
-      class: 'Boolean',
-      name: 'isDefault',
-      documentation: `Determines whether an account is the first preferred option of the User for a particular denomination.`,
-      tableWidth: 87,
-      label: 'Set As Default',
-      value: false,
-      section: 'administration',
-      tableHeaderFormatter: function(axiom) {
-        this.add('Default');
-      },
-      tableHeader: function(axiom) {
-        return this.sourceCls_.DEFAULT_MSG;
-      },
-      tableCellFormatter: function(value, obj, property) {
-        this
-          .start()
-            .callIf(value, function() {
-              this.style({ color: '#32bf5e' });
-            })
-            .add(value ? 'Y' : '-')
-          .end();
-      },
+      class: 'String',
+      name: 'desc',
+      includeInDigest: false,
+      documentation: `The given description of the account, provided by
+        the individual person, or real user.`,
+      label: 'Memo',
+      section: 'accountInformation',
+      order: 170,
+      gridColumns: 6
     },
     {
-      class: 'UnitValue',
-      unitPropName: 'denomination',
-      name: 'balance',
-      label: 'Balance (local)',
-      documentation: 'A numeric value representing the available funds in the account.',
-      section: 'balanceDetails',
-      storageTransient: true,
-      createVisibility: 'HIDDEN', // No point in showing as read-only during create since it'll always be 0
+      class: 'String',
+      name: 'summary',
+      section: 'accountInformation',
+      order: 200,
+      gridColumns: 6,
+      createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
-      readVisibility: 'RO',
-      unitPropValueToString: async function(x, val, unitPropName) {
-        var unitProp = await x.currencyDAO.find(unitPropName);
-        if ( unitProp )
-          return unitProp.format(val);
-        return val;
+      transient: true,
+      documentation: `
+        Used to display a lot of information in a visually compact way in table views`,
+      expression: function() {
+        return this.toSummary() + ` - ${this.type}`;
       },
-      javaToCSV: `
-        DAO currencyDAO = (DAO) x.get("currencyDAO");
-        long balance  = (Long) ((Account)obj).findBalance(x);
-        Currency curr = (Currency) currencyDAO.find(((Account)obj).getDenomination());
-
-        // Output formatted balance or zero
-        outputter.outputValue(curr.format(balance));
-      `,
-      tableWidth: 175,
-      tableCellFormatter: function(value, obj, axiom) {
-        var self = this;
-        this.add(obj.slot(function(denomination) {
-          return self.E().add(foam.core.PromiseSlot.create({
-            promise: this.currencyDAO.find(denomination).then((result) => {
-              return self.E().add(result.format(value));
-            })
-          }));
-        }))
+      tableCellFormatter: function(value, obj) {
+        this.add(obj.slot(function(
+          name,
+          desc
+        ) {
+          let output = '';
+          if ( name ) {
+            output += name;
+            if ( desc ) {
+              output += ' - ';
+            }
+          }
+          if ( desc ) {
+            output += desc;
+          }
+          return output ? output : value;
+        }));
       }
-
-  },
+    },
     {
       class: 'String',
       name: 'homeBalance',
@@ -286,7 +267,9 @@ foam.CLASS({
         A numeric value representing the available funds in the
         account converted to the home denomination.
       `,
-      section: 'balanceDetails',
+      section: 'balanceInformation',
+      order: 10,
+      gridColumns: 6,
       storageTransient: true,
       visibility: 'RO',
       javaGetter: `
@@ -324,44 +307,129 @@ foam.CLASS({
       }
     },
     {
+      class: 'UnitValue',
+      unitPropName: 'denomination',
+      name: 'balance',
+      label: 'Balance (local)',
+      documentation: 'A numeric value representing the available funds in the account.',
+      section: 'balanceInformation',
+      order: 20,
+      gridColumns: 6,
+      storageTransient: true,
+      createVisibility: 'HIDDEN', // No point in showing as read-only during create since it'll always be 0
+      updateVisibility: 'RO',
+      readVisibility: 'RO',
+      unitPropValueToString: async function(x, val, unitPropName) {
+        var unitProp = await x.currencyDAO.find(unitPropName);
+        if ( unitProp )
+          return unitProp.format(val);
+        return val;
+      },
+      javaToCSV: `
+        DAO currencyDAO = (DAO) x.get("currencyDAO");
+        long balance  = (Long) ((Account)obj).findBalance(x);
+        Currency curr = (Currency) currencyDAO.find(((Account)obj).getDenomination());
+
+        // Output formatted balance or zero
+        outputter.outputValue(curr.format(balance));
+      `,
+      tableWidth: 175,
+      tableCellFormatter: function(value, obj, axiom) {
+        var self = this;
+        this.add(obj.slot(function(denomination) {
+          return self.E().add(foam.core.PromiseSlot.create({
+            promise: this.currencyDAO.find(denomination).then((result) => {
+              return self.E().add(result.format(value));
+            })
+          }));
+        }))
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'isDefault',
+      documentation: `Determines whether an account is the first preferred option of the User for a particular denomination.`,
+      tableWidth: 87,
+      label: 'Set As Default',
+      value: false,
+      includeInDigest: false,
+      section: 'operationsInformation',
+      order: 20,
+      gridColumns: 6,
+      tableHeaderFormatter: function(axiom) {
+        this.add('Default');
+      },
+      tableHeader: function(axiom) {
+        return this.sourceCls_.DEFAULT_MSG;
+      },
+      tableCellFormatter: function(value, obj, property) {
+        this
+          .start()
+            .callIf(value, function() {
+              this.style({ color: '#32bf5e' });
+            })
+            .add(value ? 'Y' : '-')
+          .end();
+      },
+    },
+    {
       class: 'DateTime',
       name: 'created',
+      includeInDigest: true,
       documentation: 'The date and time of when the account was created in the system.',
-      section: 'administration',
-      visibility: 'RO',
+      section: 'operationsInformation',
+      order: 70,
+      gridColumns: 6,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
+      includeInDigest: true,
       documentation: 'The ID of the User who created the account.',
-      section: 'administration',
-      visibility: 'RO',
+      section: 'operationsInformation',
+      order: 80,
+      gridColumns: 6,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdByAgent',
+      includeInDigest: true,
       documentation: 'The ID of the Agent who created the account.',
-      section: 'administration',
-      // visibility: 'RO',
-      visibility: 'HIDDEN'
+      section: 'operationsInformation',
+      order: 90,
+      gridColumns: 6,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
       class: 'DateTime',
       name: 'lastModified',
+      includeInDigest: true,
       documentation: 'The date and time of when the account was last changed in the system.',
-      section: 'administration',
-      visibility: 'RO',
+      section: 'operationsInformation',
+      order: 100,
+      gridColumns: 6,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
+      includeInDigest: true,
       documentation: `The unique identifier of the individual person, or real user,
         who last modified this account.`,
-      section: 'administration',
-      visibility: 'RO',
+      section: 'operationsInformation',
+      order: 110,
+      gridColumns: 6,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.userDAO
           .find(value)
@@ -372,44 +440,88 @@ foam.CLASS({
       },
     },
     {
-      class: 'String',
-      name: 'summary',
-      visibility: 'RO',
-      transient: true,
-      documentation: `
-        Used to display a lot of information in a visually compact way in table views`,
-      expression: function() {
-        return this.toSummary() + ` - ${this.type}`;
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedByAgent',
+      includeInDigest: true,
+      section: 'operationsInformation',
+      order: 110,
+      gridColumns: 6,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subSubContext__.userDAO
+          .find(value)
+          .then((user) => this.add(user.toSummary()))
+          .catch((error) => {
+            this.add(value);
+          });
       },
-      tableCellFormatter: function(_, obj) {
-        this.add(obj.slot(function(
-          name,
-          desc
-        ) {
-          let output = '';
-          if ( name ) {
-            output += name;
-            if ( desc ) {
-              output += ' - ';
-            }
-          }
-          if ( desc ) {
-            output += desc;
-          }
-          return output;
-        }));
-      }
     },
     {
       class: 'foam.core.Enum',
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
-      section: 'administration',
+      includeInDigest: true,
+      section: 'systemInformation',
+      order: 30,
+      gridColumns: 6,
       value: foam.nanos.auth.LifecycleState.PENDING,
       writePermissionRequired: true,
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       readVisibility: 'RO'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid',
+      storageTransient: true,
+      section: 'systemInformation',
+      order: 40,
+      gridColumns: 6,
+      javaFactory: `
+        var accountSpidMap = new java.util.HashMap();
+        accountSpidMap.put(
+          Account.class.getName(),
+          new foam.core.PropertyInfo[] { Account.OWNER }
+        );
+        return new ServiceProviderAwareSupport()
+          .findSpid(foam.core.XLocator.get(), accountSpidMap, this);
+      `
+    },
+    {
+      class: 'Boolean',
+      name: 'transferIn',
+      documentation: 'Determines whether an account can receive transfers.',
+      value: true,
+      includeInDigest: false,
+      section: 'systemInformation',
+      order: 50,
+      gridColumns: 6
+    },
+    {
+      class: 'Boolean',
+      name: 'transferOut',
+      documentation: 'Determines whether an account can make transfers out.',
+      value: true,
+      includeInDigest: false,
+      section: 'systemInformation',
+      order: 60,
+      gridColumns: 6
+    },
+    {
+      class: 'Boolean',
+      name: 'deleted',
+      documentation: 'Determines whether the account is deleted.',
+      value: false,
+      includeInDigest: false,
+      section: 'deprecatedInformation',
+      order: 10,
+      gridColumns: 6,
+      writePermissionRequired: true,
+      visibility: 'RO',
+      tableWidth: 85
     },
     {
       class: 'FObjectProperty',
@@ -420,7 +532,19 @@ foam.CLASS({
     },
     {
       name: 'checkerPredicate',
-      javaFactory: 'return foam.mlang.MLang.FALSE;'
+      javaFactory: 'return foam.mlang.MLang.FALSE;',
+      visibility: 'HIDDEN'
+    },
+
+    {
+      class: 'String',
+      name: 'externalId',
+      visibility: 'HIDDEN'
+    },
+    {
+      class: 'Map',
+      name: 'externalData',
+      visibility: 'HIDDEN'
     }
   ],
 
@@ -511,7 +635,7 @@ foam.CLASS({
     },
     {
       name: 'getOutgoingAccountCreate',
-      type: 'Long',
+      type: 'String',
       args: [
         {
           type: 'Context',
@@ -524,7 +648,7 @@ foam.CLASS({
     },
     {
       name: 'getOutgoingAccountRead',
-      type: 'Long',
+      type: 'String',
       args: [
         {
           type: 'Context',
@@ -537,7 +661,7 @@ foam.CLASS({
     },
     {
       name: 'getOutgoingAccountUpdate',
-      type: 'Long',
+      type: 'String',
       args: [
         {
           type: 'Context',
@@ -550,7 +674,7 @@ foam.CLASS({
     },
     {
       name: 'getOutgoingAccountDelete',
-      type: 'Long',
+      type: 'String',
       args: [
         {
           type: 'Context',

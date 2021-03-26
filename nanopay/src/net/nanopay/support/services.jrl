@@ -1,0 +1,114 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"supportAccountDAO",
+  "serve":true,
+  "description":"Accounts for support",
+  "serviceScript":
+  """
+    dao = new foam.dao.FilteredDAO.Builder(x)
+      .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.bank.BankAccount.class))
+      .setDelegate(x.get("tableViewAccountDAO"))
+      .setOf(net.nanopay.bank.BankAccount.getOwnClassInfo())
+      .setPrimaryKey(net.nanopay.bank.BankAccount.ID)
+      .build();
+
+    dao = new foam.dao.CopyFromDAO.Builder(x)
+        .setDelegate(dao)
+        .setTo(net.nanopay.account.Account.getOwnClassInfo())
+        .setOf(net.nanopay.support.SupportAccount.getOwnClassInfo())
+        .build();
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.support.SupportAccount.getOwnClassInfo())
+      .setInnerDAO(dao)
+      .setEnableInterfaceDecorators(false)
+      .build();
+  """,
+  "client":
+  """
+  {
+    "of":"net.nanopay.support.SupportAccount"
+  }
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"supportBusinessDAO",
+  "serve":true,
+  "description":"Businesses for support",
+  "serviceScript":
+  """
+    dao = new foam.dao.CopyFromDAO.Builder(x)
+        .setDelegate(x.get("businessDAO"))
+        .setTo(net.nanopay.model.Business.getOwnClassInfo())
+        .setOf(net.nanopay.support.SupportBusiness.getOwnClassInfo())
+        .build();
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.support.SupportBusiness.getOwnClassInfo())
+      .setInnerDAO(dao)
+      .setEnableInterfaceDecorators(false)
+      .build();
+  """,
+  "client":
+  """
+  {
+    "of":"net.nanopay.support.SupportBusiness"
+  }
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"supportTransactionDAO",
+  "serve":true,
+  "description":"Transactions for support",
+  "serviceScript":
+  """
+    dao = new foam.dao.CopyFromDAO.Builder(x)
+        .setDelegate(x.get("summaryTransactionDAO"))
+        .setTo(net.nanopay.tx.SummaryTransaction.getOwnClassInfo())
+        .setOf(net.nanopay.support.SupportTransaction.getOwnClassInfo())
+        .build();
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.support.SupportTransaction.getOwnClassInfo())
+      .setInnerDAO(dao)
+      .setEnableInterfaceDecorators(false)
+      .build();
+  """,
+  "client":
+  """
+  {
+    "of":"net.nanopay.support.SupportTransaction"
+  }
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"supportUserDAO",
+  "serve":true,
+  "description":"Users for support",
+  "serviceScript":
+  """
+    dao = new foam.dao.CopyFromDAO.Builder(x)
+        .setDelegate(x.get("userUserDAO"))
+        .setTo(foam.nanos.auth.User.getOwnClassInfo())
+        .setOf(net.nanopay.support.SupportUser.getOwnClassInfo())
+        .build();
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.support.SupportUser.getOwnClassInfo())
+      .setInnerDAO(dao)
+      .setEnableInterfaceDecorators(false)
+      .build();
+  """,
+  "client":
+  """
+  {
+    "of":"net.nanopay.support.SupportUser"
+  }
+  """
+})

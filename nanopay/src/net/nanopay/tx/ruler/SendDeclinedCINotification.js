@@ -132,7 +132,7 @@ foam.CLASS({
                 String bankAccountNumber = ((BankAccount) tx.findSourceAccount(x)).getAccountNumber();
                 args.put("amount", currency.format(tx.getAmount()));
                 args.put("name", receiver.getFirstName());
-                args.put("account", bankAccountNumber.substring(bankAccountNumber.length()-4, bankAccountNumber.length()));
+                args.put("account", BankAccount.mask(bankAccountNumber));
                 args.put("link",    config.getUrl());
 
                 notification.setEmailArgs(args);

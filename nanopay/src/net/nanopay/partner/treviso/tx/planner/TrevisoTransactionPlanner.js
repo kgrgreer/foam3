@@ -28,6 +28,8 @@ foam.CLASS({
     'net.nanopay.fx.FXQuote',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.ExternalTransfer',
+    'net.nanopay.tx.InvoicedFeeLineItem',
+    'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
@@ -112,7 +114,7 @@ foam.CLASS({
       /* quote.addExternalTransfer(quote.getDestinationAccount().getId(), trevisoTxn.getDestinationAmount());
       quote.addExternalTransfer(quote.getSourceAccount().getId(), - trevisoTxn.getAmount());*/
       ExternalTransfer[] exT = new ExternalTransfer[1];
-      exT[0] = new ExternalTransfer(trevisoTxn.getDestinationAmount(), quote.getDestinationAccount().getId());
+      exT[0] = new ExternalTransfer(quote.getDestinationAccount().getId(), trevisoTxn.getDestinationAmount());
       trevisoTxn.setTransfers( exT );
 
       return txn;
@@ -156,13 +158,19 @@ foam.CLASS({
           transaction.setLineItems(root.getLineItems());
           
           // Add transfer for source amount
-          ExternalTransfer ext = new ExternalTransfer(- root.getAmount(), transaction.getSourceAccount());
+          ExternalTransfer ext = new ExternalTransfer(transaction.getSourceAccount(), -root.getAmount());
           Transfer[] transfers = (Transfer[]) ArrayUtils.add(transaction.getTransfers(), ext);
+
+          // Update the amount
+          transaction.setAmount(root.getAmount());
 
           // Add transfers for fees from summary
           transfers =  (Transfer[]) ArrayUtils.addAll(transfers, root.getTransfers());
           transaction.setTransfers(transfers);
           root.setTransfers(null);
+        } else if ( txn instanceof ExchangeLimitTransaction ) {
+          ExchangeLimitTransaction exchange = (ExchangeLimitTransaction) txn;
+          exchange.setAmount(root.getAmount());
         }
         return super.postPlanning(x,txn,root);
       `
@@ -198,6 +206,22 @@ foam.CLASS({
         }
         txn.addLineItems( new TransactionLineItem[] { natureCode } );
 
+        return txn;
+      `
+    },
+    {
+      name: 'createFeeTransfers',
+      javaCode: `
+        TransactionLineItem [] ls = txn.getLineItems();
+        for ( TransactionLineItem li : ls ) {
+          if ( li instanceof FeeLineItem && ! (li instanceof InvoicedFeeLineItem) ) {
+            FeeLineItem feeLineItem = (FeeLineItem) li;
+            ExternalTransfer ext = new ExternalTransfer(feeLineItem.getSourceAccount(), -feeLineItem.getAmount());
+            ExternalTransfer ext2 = new ExternalTransfer(feeLineItem.getDestinationAccount(), feeLineItem.getAmount());
+            Transfer[] transfers = { ext, ext2 };
+            txn.add(transfers);
+          }
+        }
         return txn;
       `
     },

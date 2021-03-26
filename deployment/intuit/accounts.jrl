@@ -1,2 +1,10 @@
 // Intuit Trust Account
-p({"class":"net.nanopay.account.TrustAccount", "id":11, "owner":8034, "denomination":"CAD", "name":"Intuit Trust Account CAD","lifecycleState":1})
+
+p({"class":"net.nanopay.account.TrustAccount", "id":"7951ef93-42d3-4896-a9ad-f3f0773f649d", "reserveAccount":"73ee9d92-fc0b-471c-8e9b-0fc0d85e318c", "owner":8034, "denomination":"CAD", "name":"Intuit Trust","lifecycleState":1})
+
+// Receiving Fee accounts
+p({"class":"net.nanopay.account.DigitalAccount", "id":"ab590614-f5bd-476a-84e0-6037607397b5", "trustAccount":"7951ef93-42d3-4896-a9ad-f3f0773f649d", "owner":101, "denomination":"CAD", "name":"Nanopay Fee Receiving Account","lifecycleState":1,"liquiditySetting":"374d8b4a-b04e-4ed6-b9b1-78b306236343"})
+p({"class":"net.nanopay.account.DigitalAccount", "id":"93f3fa36-7429-4b20-a223-f5b50a6d9872", "trustAccount":"7951ef93-42d3-4896-a9ad-f3f0773f649d", "owner":8034, "denomination":"CAD", "name":"Intuit Fee Receiving Account","lifecycleState":1,"liquiditySetting":"54775380-c641-48a7-9145-064724a23d59"})
+
+// Intuit "bank" account
+p({"class":"net.nanopay.bank.CABankAccount","branch":41,"accountNumber":"7654323","randomDepositAmount":77,"address":{"class":"foam.nanos.auth.Address","countryId":"CA","regionId":"BC","streetNumber":"905","streetName":"gs","city":"Toronto","postalCode":"M6K 3G9"},"institution":10,"id":"fc4b152f-d1d5-47cb-9da6-ba537d5dc4c6","name":"Intuit Bank account","isDefault":true,"status":1,"compliance":2,"created":"2019-07-15T18:55:15.220Z","createdBy":101,"lastModified":"2019-07-15T18:55:15.220Z","lastModifiedBy":101,"owner":8034,"lifecycleState":1})

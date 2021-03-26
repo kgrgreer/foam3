@@ -37,14 +37,16 @@ foam.CLASS({
     'foam.nanos.auth.ruler.EnsurePropertyOnCreateRule',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.CapabilityCapabilityJunction',
+    'foam.nanos.notification.EmailSetting',
+    'foam.nanos.notification.NotificationSetting',
+    'foam.nanos.notification.SlackSetting',
+    'foam.nanos.notification.sms.SMSSetting',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.ThemeDomain',
     'foam.nanos.ruler.Rule',
+    'foam.nanos.notification.email.EmailConfig',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.auth.ServiceProviderURL',
-    'net.nanopay.auth.UserCreateServiceProviderURLRule',
-    'net.nanopay.auth.UserCreateServiceProviderURLRuleAction',
     'net.nanopay.tx.fee.TransactionFeeRule',
     'java.util.Arrays',
     'java.util.ArrayList',
@@ -90,6 +92,7 @@ foam.CLASS({
         DAO themeDAO = (DAO) x.get("themeDAO");
         DAO themeDomainDAO = (DAO) x.get("themeDomainDAO");
         DAO ruleDAO = (DAO) x.get("localRuleDAO");
+        DAO notificationSettingDefaultsDAO = (DAO) x.get("notificationSettingDefaultsDAO");
 
         // Add spid prerequisites
         addSpidPrerequisites(x, spid, mspInfo.getMenuPermissions(), "menuCapability");
@@ -98,7 +101,16 @@ foam.CLASS({
         addSpidPrerequisites(x, spid, mspInfo.getCorridorPermissions(), "corridorCapability");
         addSpidPrerequisites(x, spid, mspInfo.getPlannerPermissions(), "plannerCapability");
 
+        // Add spid business menu capability
+        getLocalCapabilityDAO().put(
+          new Capability.Builder(x)
+            .setId(spid + "BusinessMenuCapability")
+            .setPermissionsGranted(mspInfo.getBusinessMenuPermissions())
+            .build()
+        );
+
         // Add theme for the client side - not for back-office
+        // MSPInfo referenced theme will be used as a template for a new theme associated to the created spid
         Theme clientTheme = (Theme) themeDAO.find(mspInfo.getTheme());
         clientTheme = clientTheme == null ? new Theme() : (Theme) clientTheme.fclone();
         clientTheme.clearId();
@@ -117,12 +129,18 @@ foam.CLASS({
           themeDomainDAO.put(themeDomain);
         }
 
+        // add notificationSettingDefaults for spid
+        notificationSettingDefaultsDAO.put(new NotificationSetting.Builder(x).setSpid(spid).build());
+        notificationSettingDefaultsDAO.put(new EmailSetting.Builder(x).setSpid(spid).build());
+        notificationSettingDefaultsDAO.put(new SlackSetting.Builder(x).setSpid(spid).build());
+        notificationSettingDefaultsDAO.put(new SMSSetting.Builder(x).setSpid(spid).build());
+
         // Create spid-admin group
         Group adminGroup = new Group();
         adminGroup.setId(mspInfo.getSpid() + "-admin");
         adminGroup.setParent("msp-admin");
-        adminGroup.setDefaultMenu("users");
         adminGroup.setDescription(mspInfo.getSpid() +" admin");
+        adminGroup.setUrl(mspInfo.getBackofficeGroupUrl());
         groupDAO.put(adminGroup);
 
         // Create spid-admin user
@@ -155,48 +173,20 @@ foam.CLASS({
           groupPermissionJunctionDAO.put(junction);
         }
 
-        // Create new serviceProviderURL
-        ServiceProviderURL serviceProviderURL = new ServiceProviderURL();
-        serviceProviderURL.setSpid(mspInfo.getSpid());
-        serviceProviderURL.setUrls(mspInfo.getDomain());
-
-        ServiceProviderURL[] configList = new ServiceProviderURL[1];
-        configList[0] = serviceProviderURL;
-
-        // find the UserCreateServiceProviderURLRule and update the configList
-        UserCreateServiceProviderURLRule rule =
-          (UserCreateServiceProviderURLRule) ruleDAO.find(this.getSpidUrlRule());
-        rule.setConfig((ServiceProviderURL[]) ArrayUtils.addAll(configList, rule.getConfig()));
-        ruleDAO.put(rule);
-
-        // Create spid-admin's default digital account
-        var digitalAccount = DigitalAccount.findDefault(x, adminUser, mspInfo.getDenomination());
-
-        // Create rule to auto-fill feeAccount for TransactionFeeRule created in the spid
-        var ensureFeeAccountRule = new EnsurePropertyOnCreateRule();
-        ensureFeeAccountRule.setName("Auto-fill feeAccount for TransactionFeeRule - " + spid);
-        ensureFeeAccountRule.setDaoKey("localRuleDAO");
-        ensureFeeAccountRule.setRuleGroup("TransactionFeeRule");
-        ensureFeeAccountRule.setTargetClass(TransactionFeeRule.getOwnClassInfo());
-        ensureFeeAccountRule.setPropName("feeAccount");
-        ensureFeeAccountRule.setPropValue(digitalAccount.getId());
-        ensureFeeAccountRule.setSpid(spid);
-        ruleDAO.put(ensureFeeAccountRule);
-
         // Create spid-fraud-ops group
         Group fraudOpsGroup = new Group();
         fraudOpsGroup.setId(mspInfo.getSpid() + "-fraud-ops");
         fraudOpsGroup.setParent("fraud-ops");
-        fraudOpsGroup.setDefaultMenu("accounts");
         fraudOpsGroup.setDescription(mspInfo.getSpid() + " fraud-ops group");
+        fraudOpsGroup.setUrl(mspInfo.getBackofficeGroupUrl());
         groupDAO.put(fraudOpsGroup);
 
         // Create spid-payment-ops group
         Group paymentOpsGroup = new Group();
         paymentOpsGroup.setId(mspInfo.getSpid() + "-payment-ops");
         paymentOpsGroup.setParent("payment-ops");
-        paymentOpsGroup.setDefaultMenu("accounts");
         paymentOpsGroup.setDescription(mspInfo.getSpid() + " payment-ops group");
+        paymentOpsGroup.setUrl(mspInfo.getBackofficeGroupUrl());
         groupDAO.put(paymentOpsGroup);
 
         List<String> fraudPermissionArray = new ArrayList<>();
@@ -214,9 +204,28 @@ foam.CLASS({
         Group supportGroup = new Group();
         supportGroup.setId(mspInfo.getSpid() + "-support");
         supportGroup.setParent("support");
-        supportGroup.setDefaultMenu("contacts");
         supportGroup.setDescription(mspInfo.getSpid() + " support group");
+        supportGroup.setUrl(mspInfo.getBackofficeGroupUrl());
         groupDAO.put(supportGroup);
+
+        // Create spid-sme group
+        Group smeGroup = new Group();
+        smeGroup.setId(mspInfo.getSpid() + "-sme");
+        smeGroup.setParent("sme");
+        smeGroup.setDescription(mspInfo.getSpid() + " sme group");
+        smeGroup.setUrl(mspInfo.getSmeGroupUrl());
+        groupDAO.put(smeGroup);
+
+        // Create emailConfig
+        DAO emailConfigDAO = (DAO) x.get("emailConfigDAO");
+        EmailConfig emailConfig = (EmailConfig) emailConfigDAO.find(mspInfo.getSpid());
+        if ( emailConfig == null ) {
+          emailConfig = new EmailConfig();
+          emailConfig.setSpid(mspInfo.getSpid());
+          emailConfig.setDisplayName(foam.util.StringUtil.capitalize(mspInfo.getSpid()));
+          emailConfig.setFrom("noreply@"+mspInfo.getSpid()+".com");
+          emailConfig.setReplyTo("noreply@"+mspInfo.getSpid()+".com");
+        }
 
         return mspInfo;
       `

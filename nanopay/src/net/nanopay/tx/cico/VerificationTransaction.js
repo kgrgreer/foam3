@@ -47,17 +47,11 @@ foam.CLASS({
       class: 'DateTime',
       name: 'estimatedCompletionDate',
       createVisibility: 'HIDDEN',
-      readVisibility: function(processDate) {
-        return processDate ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      },
-      updateVisibility: function(processDate) {
-        return processDate ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      },
-      section: 'basicInfo',
+      readVisibility: 'RO',
+      updateVisibility: 'RO',
+      section: 'transactionInformation',
+      order: 410,
+      gridColumns: 6,
       createVisibility: 'HIDDEN',
       tableWidth: 172
     },
@@ -66,16 +60,8 @@ foam.CLASS({
       name: 'processDate',
       storageTransient: true,
       createVisibility: 'HIDDEN',
-      readVisibility: function(processDate) {
-       return processDate ?
-         foam.u2.DisplayMode.RO :
-         foam.u2.DisplayMode.HIDDEN;
-      },
-      updateVisibility: function(processDate) {
-       return processDate ?
-         foam.u2.DisplayMode.RO :
-         foam.u2.DisplayMode.HIDDEN;
-      }
+      readVisibility: 'RO',
+      updateVisibility: 'RO'
     },
     {
       name: 'statusChoices',

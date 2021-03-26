@@ -60,7 +60,6 @@ foam.CLASS({
 
     ^ .foam-nanos-menu-VerticalMenu .side-nav-view {
       margin-top: 56px;
-      margin-left: -50px;
     }
 
     ^ .imageMenuStyle {
@@ -87,29 +86,27 @@ foam.CLASS({
   `,
 
   listeners: [
-    function setViewDimentions(event) {
+    function setViewDimensions(event) {
       var coll = document.getElementsByClassName('foam-u2-stack-StackView');
       var i;
       var value;
       for ( i = 0; i < coll.length; i++ ) {
-        value = this.isMenuOpen ? 250 : 0;
+        value = this.isMenuOpen ? 264 : 0;
         coll[i].style.paddingLeft = `${value}px`;
         coll[i].style.maxWidth = `${window.innerWidth - value}px`;
       }
     },
     function toggleMenu(event) {
       this.isMenuOpen = ! this.isMenuOpen;
-
-      window.localStorage.setItem('isMenuOpen', this.isMenuOpen);
-      this.setViewDimentions();
     }
   ],
   methods: [
     function init() {
-      this.setViewDimentions();
+      this.isMenuOpen$.sub(this.setViewDimensions);
+      this.setViewDimensions();
     },
     function initE() {
-      window.onresize = this.setViewDimentions;
+      window.onresize = this.setViewDimensions;
       var self = this;
       // Sets currentMenu and listeners on search selections and subMenu scroll on load.
       if ( window.location.hash != null ) this.menuListener(window.location.hash.replace('#', ''));
@@ -123,7 +120,8 @@ foam.CLASS({
           .start('img')
             .addClass('imageMenuStyle')
             .attr('src', '/images/menu/threeBars.svg')
-            .on('click', function() { self.toggleMenu(); } )
+            .attr('alt', 'toggle menu open')
+        .on('click', function() { self.toggleMenu(); } )
           .end()
           .start()
             .show(this.isMenuOpen$)

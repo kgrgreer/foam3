@@ -34,22 +34,26 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.mlang.MLang',
+
     'foam.core.FObject',
     'foam.core.PropertyInfo',
-    'static foam.mlang.MLang.AND',
-    'static foam.mlang.MLang.EQ',
-    'static foam.mlang.MLang.INSTANCE_OF',
-    'static foam.mlang.MLang.NOT',
+    'foam.mlang.MLang',
 
     'java.util.List',
     'java.util.regex.Pattern',
-    'javax.mail.internet.InternetAddress',
     'javax.mail.internet.AddressException',
-    'net.nanopay.contacts.Contact'
+    'javax.mail.internet.InternetAddress',
+    'javax.mail.internet.InternetAddress',
+
+    'net.nanopay.contacts.Contact',
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.INSTANCE_OF',
+    'static foam.mlang.MLang.NOT'
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.model.PersonalIdentification',
     'net.nanopay.onboarding.model.Questionnaire'
   ],
@@ -82,80 +86,98 @@ foam.CLASS({
     'email',
   ],
 
-  sections: [
-    {
-      name: 'personal',
-      title: 'User Information',
-      order: 1
-    },
-    {
-      name: 'business',
-      title: 'Business Information',
-      order: 2
-    },
-    {
-      name: 'administrative',
-      help: 'Properties that are used internally by the system.',
-      permissionRequired: true,
-      order: 3
-    }
-  ],
-
   messages: [
-    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History' },
-    { name: 'PAYABLES_MSG', message: 'Payables' },
-    { name: 'RECEIVABLES_MSG', message: 'Receivables' }
+    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History for' },
+    { name: 'PAYABLES_MSG', message: 'Payables for' },
+    { name: 'RECEIVABLES_MSG', message: 'Receivables for' },
+    { name: 'FOR_MSG', message: 'for' },
+    { name: 'TWO_FACTOR_SUCCESS', message: 'Two factor authentication successfully disabled' },
+    { name: 'TWO_FACTOR_INFO', message: 'Two factor authentication already disabled' },
+    { name: 'RESET_LOGIN_SUCCESS', message: 'Login attempts successfully reset' },
+    { name: 'RESET_LOGIN_INFO', message: 'Login attempts already reset' }
   ],
 
   properties: [
     {
-      class: 'String',
-      name: 'firstName',
-      section: 'personal'
-    },
-    {
-      class: 'String',
-      name: 'lastName',
-      section: 'personal'
-    },
-    {
-      class: 'EMail',
-      name: 'email',
-      section: 'personal'
-    },
-    {
-      class: 'Boolean',
-      name: 'invited',
-      value: false,
-      documentation: `Determines whether the User was invited to the platform by
-        an invitation email.`,
-      section: 'administrative'
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'invitedBy',
-      documentation: 'The ID of the person who invited the User to the platform.',
-      section: 'administrative'
-    },
-    {
-      class: 'foam.core.Enum',
-      of: 'net.nanopay.admin.model.AccountStatus',
-      name: 'previousStatus',
-      documentation: `Tracks the previous status of the User.`,
-      section: 'administrative',
-      externalTransient: true
-    },
-    {
-      class: 'Boolean',
-      name: 'enabled',
-      documentation: 'Determines whether the User is permitted certain actions.',
-      javaGetter: `
-        return net.nanopay.admin.model.AccountStatus.DISABLED != getStatus();
+      class: 'FObjectProperty',
+      name: 'identification',
+      of: 'net.nanopay.model.PersonalIdentification',
+      documentation: `A placeholder for the photo identification image, such as a
+        passport, of the individual person, or real user.
       `,
-      // NOTE: '_enabled_ is deprecated; use _status_ instead.',
-      hidden: true,
-      section: 'administrative'
+      createVisibility: 'HIDDEN',
+      section: 'userInformation',
+      order: 110,
+      gridColumns: 6
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'address',
+      factory: function() {
+        return this.Address.create();
+      },
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.sme.ui.AddressView'
+        };
+      },
+      section: 'userInformation',
+      order: 180
+    },
+    {
+      class: 'foam.nanos.fs.FileProperty',
+      name: 'profilePicture',
+      createVisibility: 'HIDDEN',
+      section: 'userInformation',
+      order: 230,
+      gridColumns: 6
+    },
+    {
+      class: 'String',
+      name: 'organization',
+      label: 'Company Name',
+      section: 'businessInformation',
+      order: 10,
+      gridColumns: 6
+    },
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'additionalDocuments',
+      documentation: 'A stored copy of additional documents for compliance verification.',
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
+          documents$: X.data.additionalDocuments$
+        };
+      },
+      createVisibility: 'HIDDEN',
+      section: 'businessInformation',
+      order: 60,
+      gridColumns: 6
+    },
+    {
+      class: 'Boolean',
+      name: 'PEPHIORelated',
+      documentation: `Determines whether the user is a domestic or foreign _Politically
+        Exposed Person (PEP), Head of an International Organization (HIO)_, or
+        related to any such person.
+      `,
+      createVisibility: 'HIDDEN',
+      section: 'complianceInformation',
+      order: 10,
+      gridColumns: 6
+    },
+    {
+      class: 'Boolean',
+      name: 'thirdParty',
+      documentation: `Determines whether the User is taking instructions from and/or acting
+        on behalf of a 3rd party.
+      `,
+      createVisibility: 'HIDDEN',
+      section: 'complianceInformation',
+      order: 20,
+      gridColumns: 6
     },
     {
       class: 'foam.core.Enum',
@@ -189,51 +211,19 @@ foam.CLASS({
           .end();
         }
       },
-      section: 'administrative',
+      section: 'operationsInformation',
+      order: 10,
+      gridColumns: 6,
       sheetsOutput: true
     },
     {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.onboarding.model.Questionnaire',
-      name: 'questionnaire',
-      documentation: `Returns the response from the User to a questionnaire from the
-        Questionnaire model.`,
-      section: 'administrative'
-    },
-    {
-      class: 'foam.nanos.fs.FileArray',
-      name: 'additionalDocuments',
-      documentation: 'A stored copy of additional documents for compliance verification.',
-      view: function(_, X) {
-        return {
-          class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
-          documents$: X.data.additionalDocuments$
-        };
-      },
-      createVisibility: 'HIDDEN',
-      section: 'business'
-    },
-    {
-      class: 'String',
-      name: 'jobTitle',
-      label: 'Job Title',
-      documentation: 'The job title of the individual person, or real user.',
-      section: 'business'
-    },
-    {
-      class: 'Boolean',
-      name: 'welcomeEmailSent',
-      documentation: 'Determines whether a welcome email has been sent to the User.',
-      value: true,
-      section: 'administrative',
-      externalTransient: true
-    },
-    {
-      class: 'Boolean',
-      name: 'portalAdminCreated',
-      documentation: 'Determines whether a User was created by an admin user.',
-      section: 'administrative',
-      value: false,
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.admin.model.AccountStatus',
+      name: 'previousStatus',
+      documentation: `Tracks the previous status of the User.`,
+      section: 'operationsInformation',
+      order: 20,
+      gridColumns: 6,
       externalTransient: true
     },
     {
@@ -242,7 +232,39 @@ foam.CLASS({
       value: false,
       documentation: `Determines whether the User is using its own unique password or one
         that was system-generated.`,
-      section: 'administrative',
+      section: 'operationsInformation',
+      gridColumns: 6,
+      order: 30,
+      externalTransient: true
+    },
+    {
+      class: 'FObjectArray',
+      name: 'approvalRequests',
+      section: 'operationsInformation',
+      order: 40,
+      of: 'foam.nanos.approval.ApprovalRequest',
+      view: { class: 'foam.u2.view.DAOtoFObjectArrayView' },
+      visibility: 'RO',
+      storageTransient: true
+    },
+    {
+      class: 'Boolean',
+      name: 'portalAdminCreated',
+      documentation: 'Determines whether a User was created by an admin user.',
+      section: 'operationsInformation',
+      order: 50,
+      gridColumns: 6,
+      value: false,
+      externalTransient: true
+    },
+    {
+      class: 'Boolean',
+      name: 'welcomeEmailSent',
+      documentation: 'Determines whether a welcome email has been sent to the User.',
+      value: true,
+      section: 'operationsInformation',
+      gridColumns: 6,
+      order: 90,
       externalTransient: true
     },
     {
@@ -250,41 +272,39 @@ foam.CLASS({
       name: 'inviteAttempts',
       value: 0,
       documentation: 'Defines the number of attempts to invite the user.',
-      section: 'administrative',
+      section: 'operationsInformation',
+      order: 120,
+      gridColumns: 6,
       externalTransient: true
     },
     {
       class: 'Boolean',
-      name: 'thirdParty',
-      documentation: `Determines whether the User is taking instructions from and/or acting
-        on behalf of a 3rd party.
-      `,
-      createVisibility: 'HIDDEN',
-      section: 'business'
+      name: 'invited',
+      value: false,
+      documentation: `Determines whether the User was invited to the platform by
+        an invitation email.`,
+      section: 'operationsInformation',
+      order: 130,
+      gridColumns: 6
+      
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'invitedBy',
+      documentation: 'The ID of the person who invited the User to the platform.',
+      section: 'operationsInformation',
+      order: 140,
+      gridColumns: 6
     },
     {
       class: 'FObjectProperty',
-      name: 'identification',
-      of: 'net.nanopay.model.PersonalIdentification',
-      documentation: `A placeholder for the photo identification image, such as a
-        passport, of the individual person, or real user.
-      `,
-      createVisibility: 'HIDDEN',
-      factory: function() {
-        return this.PersonalIdentification.create();
-      },
-      view: { class: 'foam.u2.detail.VerticalDetailView' },
-      section: 'personal'
-    },
-    {
-      class: 'Boolean',
-      name: 'PEPHIORelated',
-      documentation: `Determines whether the user is a domestic or foreign _Politically
-        Exposed Person (PEP), Head of an International Organization (HIO)_, or
-        related to any such person.
-      `,
-      createVisibility: 'HIDDEN',
-      section: 'business'
+      of: 'net.nanopay.onboarding.model.Questionnaire',
+      name: 'questionnaire',
+      documentation: `Returns the response from the User to a questionnaire from the
+        Questionnaire model.`,
+      section: 'operationsInformation',
+      order: 150
     },
     {
       class: 'String',
@@ -296,8 +316,21 @@ foam.CLASS({
         backend to verify the email of the User and associate the User with the Contact
         that was created when inviting the User.
       `,
-      section: 'administrative',
+      section: 'operationsInformation',
+      order: 160,
+      gridColumns: 6,
       externalTransient: true
+    },    
+    {
+      class: 'foam.core.Enum',
+      of: 'foam.nanos.auth.LifecycleState',
+      name: 'lifecycleState',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
+      readVisibility: 'RO',
+      section: 'systemInformation',
+      order: 40,
+      gridColumns: 6,
     },
     {
       class: 'Boolean',
@@ -307,30 +340,20 @@ foam.CLASS({
       writePermissionRequired: true,
       visibility: 'RO',
       tableWidth: 85,
-      section: 'administrative',
+      section: 'deprecatedInformation',
+      order: 10,
+      gridColumns: 6,
       externalTransient: true
     },
     {
-      class: 'foam.nanos.fs.FileProperty',
-      name: 'profilePicture',
-      documentation: `The profile picture of the individual user, initially
-        defaulting to a placeholder picture.`,
-      view: {
-        class: 'foam.nanos.auth.ProfilePictureView',
-        placeholderImage: 'images/ic-placeholder.png'
-      },
-      createVisibility: 'HIDDEN',
-      section: 'personal'
-    },
-    {
-      class: 'foam.core.Enum',
-      of: 'foam.nanos.auth.LifecycleState',
-      name: 'lifecycleState',
-      value: foam.nanos.auth.LifecycleState.PENDING,
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
-      readVisibility: 'RO',
-      writePermissionRequired: true
+      class: 'Boolean',
+      name: 'enabled',
+      javaGetter: `
+        return net.nanopay.admin.model.AccountStatus.DISABLED != getStatus();
+      `,
+      // NOTE: '_enabled_ is deprecated; use _status_ instead.',
+      section: 'deprecatedInformation',
+      order: 30
     },
     {
       class: 'FObjectProperty',
@@ -341,26 +364,19 @@ foam.CLASS({
       externalTransient: true
     },
     {
-      class: 'String',
-      name: 'organization',
-      documentation: 'The organization/business associated with the User.',
-      displayWidth: 80,
-      width: 100,
-      tableWidth: 160,
-      section: 'business',
-      label: 'Company Name'
-    },
-    {
       name: 'checkerPredicate',
-      javaFactory: 'return foam.mlang.MLang.FALSE;'
+      javaFactory: 'return foam.mlang.MLang.FALSE;',
+      hidden: true
     },
     {
-      class: 'FObjectArray',
-      name: 'approvalRequests',
-      of: 'foam.nanos.approval.ApprovalRequest',
-      view: { class: 'foam.u2.view.DAOtoFObjectArrayView' },
-      visibility: 'RO',
-      storageTransient: true
+      class: 'String',
+      name: 'externalId',
+      visibility: 'HIDDEN'
+    },
+    {
+      class: 'Map',
+      name: 'externalData',
+      visibility: 'HIDDEN'
     }
   ],
 
@@ -372,6 +388,27 @@ foam.CLASS({
       ],
       type: 'Void',
       javaCode: `
+        boolean isValidEmail = true;
+        try {
+          InternetAddress emailAddr = new InternetAddress(this.getEmail());
+          emailAddr.validate();
+        } catch (AddressException ex) {
+          isValidEmail = false;
+        }
+
+        if ( this.getFirstName().length() > NAME_MAX_LENGTH ) {
+          throw new IllegalStateException("First name cannot exceed 70 characters.");
+        }
+        if ( this.getLastName().length() > NAME_MAX_LENGTH ) {
+          throw new IllegalStateException("Last name cannot exceed 70 characters.");
+        }
+        if ( SafetyUtil.isEmpty(this.getEmail()) ) {
+          throw new IllegalStateException("Email is required.");
+        }
+        if ( ! isValidEmail ) {
+          throw new IllegalStateException("Invalid email address.");
+        }
+
         List <PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
         for ( PropertyInfo prop : props ) {
           try {
@@ -390,16 +427,14 @@ foam.CLASS({
 
   actions: [
     {
-      name: 'viewComplianceHistory',
-      label: 'View Compliance History',
-      availablePermissions: ['service.complianceHistoryDAO', 'foam.nanos.auth.User.permission.viewComplianceHistory'],
+      name: 'viewPayables',
+      label: 'View Payables',
+      section: 'accountInformation',
+      order: 10,
+      availablePermissions: ['foam.nanos.auth.User.permission.viewPayables'],
       code: async function(X) {
-        var m = foam.mlang.ExpressionsSingleton.create({});
-        var dao = X.complianceHistoryDAO.where(m.AND(
-          m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id),
-          m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_DAO_KEY, 'localUserDAO')
-        ));
-        X.stack.push({
+        var dao = this.expenses;
+        this.__context__.stack.push({
           class: 'foam.comics.v2.DAOBrowseControllerView',
           data: dao,
           config: {
@@ -407,20 +442,20 @@ foam.CLASS({
             dao: dao,
             createPredicate: foam.mlang.predicate.False,
             editPredicate: foam.mlang.predicate.True,
-            browseTitle: `${this.toSummary()}'s ${this.COMPLIANCE_HISTORY_MSG}`
+            browseTitle: `${this.PAYABLES_MSG} ${this.toSummary()}`
           }
         });
       }
     },
     {
-      name: 'viewAccounts',
-      label: 'View Accounts',
-      tableWidth: 135,
-      availablePermissions: ['foam.nanos.auth.User.permission.viewAccounts'],
-      code: function(X) {
-        var m = foam.mlang.ExpressionsSingleton.create({});
-        var dao = X.accountDAO.where(m.EQ(net.nanopay.account.Account.OWNER, this.id));
-        X.stack.push({
+      name: 'viewReceivables',
+      label: 'View Receivables',
+      section: 'accountInformation',
+      order: 20,
+      availablePermissions: ['foam.nanos.auth.User.permission.viewReceivables'],
+      code: async function(X) {
+        var dao = this.sales;
+        this.__context__.stack.push({
           class: 'foam.comics.v2.DAOBrowseControllerView',
           data: dao,
           config: {
@@ -428,7 +463,7 @@ foam.CLASS({
             dao: dao,
             createPredicate: foam.mlang.predicate.False,
             editPredicate: foam.mlang.predicate.True,
-            browseTitle: `${this.toSummary()}'s ${dao.of.model_.plural}`
+            browseTitle: `${this.RECEIVABLES_MSG} ${this.toSummary()}`
           }
         });
       }
@@ -436,6 +471,8 @@ foam.CLASS({
     {
       name: 'viewTransactions',
       label: 'View Transactions',
+      section: 'accountInformation',
+      order: 30,
       tableWidth: 160,
       availablePermissions: ['foam.nanos.auth.User.permission.viewTransactions'],
       code: async function(X) {
@@ -458,47 +495,44 @@ foam.CLASS({
             dao: dao,
             createPredicate: foam.mlang.predicate.False,
             editPredicate: foam.mlang.predicate.True,
-            browseTitle: `${this.toSummary()}'s ${dao.of.model_.plural}`
+            browseTitle: `${dao.of.model_.plural} ${this.FOR_MSG} ${this.toSummary()}`
           }
         });
       }
     },
     {
-      name: 'viewPayables',
-      label: 'View Payables',
-      availablePermissions: ['foam.nanos.auth.User.permission.viewPayables'],
+      name: 'resetLoginAttempts',
+      section: 'userInformation',
+      order: 10,
       code: async function(X) {
-        var dao = this.expenses;
-        this.__context__.stack.push({
-          class: 'foam.comics.v2.DAOBrowseControllerView',
-          data: dao,
-          config: {
-            class: 'foam.comics.v2.DAOControllerConfig',
-            dao: dao,
-            createPredicate: foam.mlang.predicate.False,
-            editPredicate: foam.mlang.predicate.True,
-            browseTitle: `${this.toSummary()}'s ${this.PAYABLES_MSG}`
-          }
-        });
+        var loginAttempts = await X.loginAttemptsDAO.find(this.id);
+        if ( loginAttempts == undefined || loginAttempts.loginAttempts == 0 ) {
+          X.notify(this.RESET_LOGIN_INFO, '', this.LogLevel.WARN, true);
+        } else {
+          loginAttempts.loginAttempts = 0;
+          X.loginAttemptsDAO.put(loginAttempts)
+            .then(result => {
+              X.notify(this.RESET_LOGIN_SUCCESS, '', this.LogLevel.INFO, true);
+            });
+        }
       }
     },
     {
-      name: 'viewReceivables',
-      label: 'View Receivables',
-      availablePermissions: ['foam.nanos.auth.User.permission.viewReceivables'],
+      name: 'disableTwoFactor',
+      label: 'Disable TFA',
+      section: 'userInformation',
+      order: 20,
       code: async function(X) {
-        var dao = this.sales;
-        this.__context__.stack.push({
-          class: 'foam.comics.v2.DAOBrowseControllerView',
-          data: dao,
-          config: {
-            class: 'foam.comics.v2.DAOControllerConfig',
-            dao: dao,
-            createPredicate: foam.mlang.predicate.False,
-            editPredicate: foam.mlang.predicate.True,
-            browseTitle: `${this.toSummary()}'s ${this.RECEIVABLES_MSG}`
-          }
-        });
+        var user = await X.userDAO.find(this.id);
+        if ( ! user.twoFactorEnabled ) {
+          X.notify(this.TWO_FACTOR_INFO, '', this.LogLevel.WARN, true);
+        } else {
+          user.twoFactorEnabled = false;
+          X.userDAO.put(user)
+            .then(() => {
+              X.notify(this.TWO_FACTOR_SUCCCESS, '', this.LogLevel.INFO, true);
+            });
+        }
       }
     }
   ],
@@ -512,27 +546,39 @@ foam.CLASS({
               DAO contactDAO = (DAO) x.get("contactDAO");
               DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
               User user = null;
-              Contact contact = null;
-              try{
-                contact = (Contact) contactDAO.find(userId);
-                if ( contact != null && contact.getBusinessId() == 0 ) {
-                  user = (User) bareUserDAO.find(AND(
-                    EQ(User.EMAIL, contact.getEmail()),
-                    NOT(INSTANCE_OF(Contact.class)),
-                    EQ(User.DELETED, false)));
-                  if ( user == null ) { // when a real user is not present the the transaction is to an external user.
-                    user = contact;
-                  }
-                } else if ( contact != null && contact.getBusinessId() > 0 ){
-                  user = (User) localBusinessDAO.find(contact.getBusinessId());
-                } else {
-                  user = (User) bareUserDAO.find(userId);
+              try {
+                user = (User) contactDAO.find(userId);
+                if ( user != null && user instanceof Contact && ((Contact) user).getBusinessId() > 0 ) {
+                  return (User) localBusinessDAO.find(((Contact) user).getBusinessId());
                 }
-              } catch(Exception e) {}
+                if ( user == null ) {
+                  return (User) bareUserDAO.find(userId);
+                }
+              } catch(Exception e) {
+                ((foam.nanos.logger.Logger) x.get("logger")).warning("User", "findUser", userId, e);
+              }
               return user;
             }
         `);
       }
     }
   ]
+});
+
+foam.RELATIONSHIP({
+  cardinality: '1:*',
+  
+  forwardName: 'user',
+  targetModel: 'foam.nanos.auth.User',
+  targetDAOKey: 'localUserDAO',
+  targetProperty: {
+    hidden: true
+  },
+
+  inverseName: 'token',
+  sourceModel: 'net.nanopay.auth.openid.SSOToken',
+  sourceDAOKey: 'ssoTokenDAO',
+  sourceProperty: {
+    hidden: true
+  }
 });

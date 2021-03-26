@@ -11,49 +11,8 @@ p({
         "class":"net.nanopay.sme.ruler.OnboardingPaymentOperationNotification"
     },
     "enabled":true,
-    "saveHistory":true,
+    "saveHistory":false,
     "lifecycleState":1
-})
-p({
-  "class":"foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d67","name": "Send business compliance passed email",
-  "priority": 100,
-  "ruleGroup": "smeBusinessCompliance",
-  "documentation": "Send business compliance passed email to signing officer",
-  "daoKey": "localUserDAO",
-  "operation": 3,
-  "after": true,
-  "predicate": {
-    "class":"foam.mlang.predicate.And",
-    "args":[
-      {
-        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
-        "of":"net.nanopay.model.Business"
-      },
-      {
-        "class":"net.nanopay.crunch.predicate.CheckUserCountry",
-        "user":{"class":"foam.mlang.ContextObject","key":"NEW"},
-        "country":"CA"
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName":"compliance",
-        "propValue":{"class": "net.nanopay.admin.model.ComplianceStatus", "ordinal":2}
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
-        "propName":"compliance",
-        "propValue":{"class": "net.nanopay.admin.model.ComplianceStatus", "ordinal":2},
-        "isNew": false
-      }
-    ]
-  },
-  "action": {
-    "class": "net.nanopay.sme.ruler.BusinessCompliancePassedEmailRule"
-  },
-  "enabled":true,
-  "saveHistory":true,
-  "lifecycleState":1
 })
 
 p({
@@ -94,7 +53,7 @@ p({
     "class": "net.nanopay.sme.ruler.CheckUserNameAvailabilityRule"
   },
   "enabled":false,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -112,7 +71,7 @@ p({
     "class": "net.nanopay.sme.ruler.BusinessInvitationAndTokenCancelRule"
   },
   "enabled":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -130,7 +89,7 @@ p({
     "class": "net.nanopay.sme.ruler.InvitationAntiSpamCheckRule"
   },
   "enabled":true,
-  "saveHistory":true
+  "saveHistory":false
 })
 
 p({
@@ -156,6 +115,6 @@ p({
   },
   "enabled":true,
   "after":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })

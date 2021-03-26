@@ -38,14 +38,23 @@ foam.CLASS({
     'java.util.ArrayList',
     'foam.core.ContextAwareAgent',
     'foam.core.X',
+    'foam.util.SafetyUtil',
     'net.nanopay.tx.ComplianceTransaction',
     'net.nanopay.tx.Transfer',
-    'static foam.mlang.MLang.EQ',
+    'net.nanopay.tx.ExternalTransfer',
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.account.Account',
+    'static foam.mlang.MLang.*',
+    'net.nanopay.fx.FXSummaryTransaction',
+    'net.nanopay.tx.SummaryTransaction',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.InvoicedFeeLineItem',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
-    'org.apache.commons.lang.ArrayUtils'
+    'org.apache.commons.lang.ArrayUtils',
+    'net.nanopay.tx.TransactionException',
+    'net.nanopay.tx.PropertyCompare'
   ],
 
   tableColumns: [
@@ -65,6 +74,10 @@ foam.CLASS({
       documentation: 'true for planners which produce more then one plan',
       class: 'Boolean',
       value: false
+    },
+    {
+      name: 'enabled',
+      value: true
     },
     {
       name: 'willPlan',
@@ -104,13 +117,25 @@ foam.CLASS({
       value: false
     },
     {
+      name: 'upperLimit',
+      class: 'Long',
+      value: 0,
+      documentation: 'The planner will only plan txns with an amount below this limit. 0 means not set'
+    },
+    {
+      name: 'lowerLimit',
+      class: 'Long',
+      value: 0,
+      documentation: 'The planner will only plan txns with an amount above this limit'
+    },
+    {
       name: 'daoKey',
       value: 'transactionPlannerDAO',
       visibility: 'HIDDEN',
     },
     {
       class: 'Enum',
-      of: 'foam.nanos.ruler.Operations',
+      of: 'foam.nanos.dao.Operation',
       name: 'operation',
       value: 'CREATE',
       visibility: 'HIDDEN',
@@ -128,6 +153,39 @@ foam.CLASS({
       `
     },
     {
+      name: 'getPredicate',
+      type: 'foam.mlang.predicate.Predicate',
+      documentation: 'override predicate with transaction value limits (sender side)',
+      javaCode: `
+      // TODO: uncomment code block when MQL done
+        if ( getLowerLimit() > 0 ) {
+          if ( getUpperLimit() > 0 ) {
+          // both lower and upper limits active
+            return AND(
+              super.getPredicate(),
+              new PropertyCompare( "gte", "amount", getLowerLimit(), true ), //TODO: replace with MQL predicate
+              new PropertyCompare( "lt", "amount", getUpperLimit(), true ) //TODO: replace with MQL predicate
+            );
+          }
+          // lower limit active upper not
+          return AND(
+            super.getPredicate(),
+            new PropertyCompare( "gte", "amount", getLowerLimit(), true ) //TODO: replace with MQL predicate
+          );
+        }
+        if ( getUpperLimit() > 0 ) {
+          // upper limit active, lower not
+          return AND(
+            super.getPredicate(),
+            new PropertyCompare( "lt", "amount", getUpperLimit(), true ) //TODO: replace with MQL predicate
+          );
+        }
+        // limits not active
+
+        return super.getPredicate();
+      `
+    },
+    {
       name: 'getUser',
       javaCode: `
         return ((TransactionQuote) obj).getSourceAccount().findOwner(x);
@@ -142,7 +200,7 @@ foam.CLASS({
           public void execute(X x) {
           TransactionQuote q = (TransactionQuote) obj;
           Transaction t = q.getRequestTransaction();
-          save(getX(), plan(getX(), q, ((Transaction) t), agency), q);
+          save(x, plan(x, q, ((Transaction) t), agency), q);
         }
       },"AbstractTransaction Planner executing");
       `
@@ -192,7 +250,6 @@ foam.CLASS({
           //TODO: signing
           // add the planner id for validation
           txn.setPlanner(this.getId());
-          txn = createSummaryLineItems(x, txn);
           quote.addPlan(txn);
           if (getBestPlan()) {
             quote.setPlan(txn);
@@ -301,18 +358,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'createSummaryLineItems',
-      documentation: 'group up similar line items',
-      type: 'net.nanopay.tx.model.Transaction',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
-      ],
-      javaCode: `
-        return txn;
-        `
-    },
-    {
       name: 'applyFee',
       type: 'Transaction',
       documentation: `
@@ -351,15 +396,70 @@ foam.CLASS({
         }
         txnclone = (Transaction) ((DAO) x.get("localFeeEngineDAO")).put(txnclone);
 
-        // Copy lineItem transfers to transaction (fees + taxes that were added)
-        TransactionLineItem [] ls = txnclone.getLineItems();
+        txn.setLineItems(txnclone.getLineItems());
+        txn = createFeeTransfers(x, txn, quote);
+        return txn;
+      `
+    },
+    {
+      name: 'createFeeTransfers',
+      documentation: 'Creates transfers for fees, and adjusts other transfers if needed',
+      type: 'Transaction',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
+        { name: 'quote', type: 'net.nanopay.tx.TransactionQuote' },
+      ],
+      javaCode: `
+        TransactionLineItem [] ls = txn.getLineItems();
         for ( TransactionLineItem li : ls ) {
-          if ( li instanceof FeeLineItem && ((FeeLineItem)li).getTransfers() != null ) {
-            txn.add(((FeeLineItem)li).getTransfers());
-            ((FeeLineItem)li).setTransfers(null);
+          if ( li instanceof FeeLineItem && ! (li instanceof InvoicedFeeLineItem) && ! SafetyUtil.isEmpty(li.getSourceAccount()) ) {
+            FeeLineItem feeLineItem = (FeeLineItem) li;
+            Account acc = null;
+            if ( feeLineItem.getSourceAccount() == quote.getSourceAccount().getId() )
+              acc = quote.getSourceAccount();
+            if ( feeLineItem.getSourceAccount() == quote.getDestinationAccount().getId() )
+              acc = quote.getDestinationAccount();
+            if (acc == null)
+              acc = feeLineItem.findSourceAccount(x);
+            if ( acc instanceof DigitalAccount) {
+              Transfer tSend = new Transfer(acc.getId(), -feeLineItem.getAmount());
+              Transfer tReceive = new Transfer(feeLineItem.getDestinationAccount(), feeLineItem.getAmount());
+              Transfer[] transfers = { tSend, tReceive };
+              txn.add(transfers);
+            }
+            else {
+              Transfer tSend = new ExternalTransfer(acc.getId(), -feeLineItem.getAmount());
+              Transfer tReceive = new ExternalTransfer(feeLineItem.getDestinationAccount(), feeLineItem.getAmount());
+              Transfer[] transfers = { tSend, tReceive };
+              txn.add(transfers);
+            }
           }
         }
-        txn.setLineItems(ls);
+        return txn;
+      `
+    },
+    {
+      name: 'removeSummaryTransaction',
+      args: [
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      type: 'net.nanopay.tx.model.Transaction',
+      documentation: 'Remove the summary and or compliance transaction from this chain.',
+      javaCode: `
+        boolean removed = false;
+        if ( (txn != null) && (txn instanceof FXSummaryTransaction || txn instanceof SummaryTransaction) ) {
+          txn = txn.getNext()[0];
+          removed = true;
+        }
+        if ( (txn != null) && (txn instanceof ComplianceTransaction) ) {
+          txn = txn.getNext()[0];
+          removed = true;
+        }
+        if ( txn == null )
+          throw new TransactionException("Error: Summary removal called on bare summary transaction.");
+        if (removed)
+          txn.setStatus(txn.getInitialStatus());
         return txn;
       `
     }

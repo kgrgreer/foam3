@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'PKBankAccount',
-  label: 'Pakistan Bank',
+  label: 'Pakistan',
   extends: 'net.nanopay.bank.BankAccount',
 
     javaImports: [
@@ -65,13 +65,11 @@ foam.CLASS({
         name: 'denomination',
         value: 'PKR'
       },
-      { // REVIEW: remove
-        class: 'String',
+      {
         name: 'institutionNumber',
         hidden: true
       },
-      { // REVIEW: remove
-        class: 'String',
+      {
         name: 'branchId',
         hidden: true
       },
@@ -142,7 +140,7 @@ foam.CLASS({
         javaThrows: ['IllegalStateException'],
         javaCode: `
         String iban = this.getAccountNumber();
-  
+
         // is empty
         if ( SafetyUtil.isEmpty(iban) ) {
           throw new IllegalStateException("Please enter a IBAN.");

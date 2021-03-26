@@ -1,2 +1,24 @@
 p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d25","name":"Migrate Contacts - localAccountDAO","enabled":false,"priority":100,"ruleGroup":"MigrateContacts","documentation":"When a Business has passed compliance and added and verified a bank account, then we want to migrate all contacts that have the same email address as the business to refer to the business. We also update all invoices to refer to the business instead of the contact.","daoKey":"localAccountDAO","operation":3,"action":{"class":"net.nanopay.contacts.ContactMigrationRule","property":{"class":"__Property__","forClass_":"net.nanopay.account.Account","name":"owner"}},"lifecycleState":1})
 p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d26","name":"Migrate Contacts - businessDAO","enabled":false,"priority":100,"ruleGroup":"MigrateContacts","documentation":"When a Business has passed compliance and added and verified a bank account, then we want to migrate all contacts that have the same email address as the business to refer to the business. We also update all invoices to refer to the business instead of the contact.","daoKey":"localUserDAO","operation":1,"action":{"class":"net.nanopay.contacts.ContactMigrationRule","property":{"class":"__Property__","forClass_":"net.nanopay.model.Business","name":"id"}},"lifecycleState":1})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"afex-crunch-onboarding-rule-3",
+  "name":"Onboard Business Bank Account Owner to AFEX",
+  "documentation":"Rule to onboard bank account owner to AFEX if it is a business and has afex onboarding capability.",
+  "priority":1000,
+  "ruleGroup":"AFEXCrunchOnboarding",
+  "daoKey":"localContactDAO",
+  "operation":3,
+  "predicate": {
+    "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+    "propName":"bankAccount",
+    "propValue": ""
+  },
+  "action":{
+    "class":"net.nanopay.contacts.AFEXContactCapabilityRule"
+  },
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})

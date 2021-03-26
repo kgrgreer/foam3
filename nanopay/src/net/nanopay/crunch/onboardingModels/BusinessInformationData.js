@@ -28,11 +28,6 @@ foam.CLASS({
     'foam.core.Validatable'
   ],
 
-  requires: [
-    'foam.nanos.auth.User',
-    'net.nanopay.model.Business'
-  ],
-
   imports: [
     'businessTypeDAO',
     'subject'
@@ -49,7 +44,7 @@ foam.CLASS({
   sections: [
     {
       name: 'businessDetailsSection',
-      title: 'Business details'
+      title: 'Type of business and sector'
     }
   ],
 
@@ -96,7 +91,8 @@ foam.CLASS({
           },
           errorMessage: 'BUSINESS_TYPE_ERROR'
         }
-      ]
+      ],
+      gridColumns: 12
     }),
     {
       section: 'businessDetailsSection',
@@ -107,7 +103,13 @@ foam.CLASS({
       label: 'Business sector',
       view: function(_, X) {
         var c = X.data.subject.user.address.countryId;
-        return { class: 'net.nanopay.business.NatureOfBusiness', country:  c == 'BR' ? c : '' }
+        var d = X.data.businessSectorId;
+
+        return {
+          class: 'net.nanopay.business.NatureOfBusiness',
+          country:  c == 'BR' ? c : '',
+          data: d ? d : 0
+        };
       },
       validationPredicates: [
         {
@@ -154,7 +156,8 @@ foam.CLASS({
           },
           errorMessage: 'SOURCE_OF_FUNDS_ERROR'
         }
-      ]
+      ],
+      gridColumns: 12
     }),
     {
       section: 'businessDetailsSection',
@@ -216,7 +219,7 @@ foam.CLASS({
         User businessUser = (User) (userDAO.find(businessId)).fclone();
         Business business = (Business) businessUser;
         business.setBusinessTypeId(getBusinessTypeId());
-        userDAO.put(business);
+        userDAO.inX(x).put(business);
       `,
     }
   ]

@@ -1,0 +1,61 @@
+p({
+  "class":"foam.net.Host",
+  "id": "ca-central-1a-production-primary-mediator-1",
+  "address":"10.100.0.10"
+})
+p({
+  "class":"foam.net.Host",
+  "id": "ca-central-1b-production-primary-mediator-2",
+  "address":"10.100.1.10"
+})
+p({
+  "class":"foam.net.Host",
+  "id": "ca-central-1d-production-primary-mediator-3",
+  "address":"10.100.2.10"
+})
+
+p({
+  "class":"foam.net.Host",
+  "id": "ca-central-1a-production-primary-node-1",
+  "address":"10.100.0.11"
+})
+p({
+  "class":"foam.net.Host",
+  "id": "ca-central-1a-production-primary-node-2",
+  "address":"10.100.0.12"
+})
+p({
+  "class":"foam.net.Host",
+  "id": "ca-central-1a-production-primary-node-3",
+  "address":"10.100.0.13"
+})
+p({
+  "class":"foam.net.Host",
+  "id": "ca-central-1b-production-primary-node-4",
+  "address":"10.100.1.11"
+})
+p({
+  "class":"foam.net.Host",
+  "id": "ca-central-1b-production-primary-node-5",
+  "address":"10.100.1.12"
+})
+p({
+  "class":"foam.net.Host",
+  "id": "ca-central-1b-production-primary-node-6",
+  "address":"10.100.1.13"
+})
+p({
+  "class":"foam.net.Host",
+  "id": "ca-central-1d-production-primary-node-7",
+  "address":"10.100.2.11"
+})
+p({
+  "class":"foam.net.Host",
+  "id": "ca-central-1d-production-primary-node-8",
+  "address":"10.100.2.12"
+})
+p({
+  "class":"foam.net.Host",
+  "id": "ca-central-1d-production-primary-node-9",
+  "address":"10.100.2.13"
+})

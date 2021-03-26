@@ -74,7 +74,9 @@ foam.CLASS({
             incrClearingTime(transaction);
             if ( getDuration() < 0 ) {
               int totalClearingTime = ((ClearingTimesTrait) transaction)
-                .getClearingTimes().values().stream().reduce(0, Integer::sum);
+                .getClearingTimes().values().stream()
+                .map(Long::intValue)
+                .reduce(0, Integer::sum);
               if ( totalClearingTime < 0 ) {
                 String message = String.format(
                   "Rule %s (duration: %d) causes transaction %s total clearing time: %d.",

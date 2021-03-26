@@ -62,7 +62,7 @@ foam.CLASS({
             args.put("name", User.FIRST_NAME);
             args.put("institutionNumber", acc.getInstitutionNumber());
             args.put("institutionName", institutionName);
-            args.put("accountNumber", acc.getAccountNumber().substring(acc.getAccountNumber().length() - 4));
+            args.put("accountNumber", BankAccount.mask(acc.getAccountNumber()));
             args.put("userEmail", User.EMAIL);
             args.put("sendTo", User.EMAIL);
             args.put("link", config.getUrl());

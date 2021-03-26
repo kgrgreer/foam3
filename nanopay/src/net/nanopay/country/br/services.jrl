@@ -92,12 +92,51 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
+  "name": "paisDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.country.br.exchange.Pais.getOwnClassInfo())
+      .setSeqNo(true)
+      .setName("paisDAO")
+      .setJournalName("paises")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.country.br.exchange.Pais\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "moedaDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.country.br.exchange.Moeda.getOwnClassInfo())
+      .setSeqNo(true)
+      .setName("moedaDAO")
+      .setJournalName("moedas")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.country.br.exchange.Moeda\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
   "name": "exchangeClientValueDAO",
   "serve": true,
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("exchangeClientValueDAO")
+      .setName("exchangeClientValueDAO")
+      .setJournalName("exchangeClientValues")
       .setOf(net.nanopay.country.br.exchange.ExchangeClientValues.getOwnClassInfo())
       .build();
   """,
@@ -106,4 +145,70 @@ p({
       "of": "net.nanopay.country.br.exchange.ExchangeClientValues"
     }
   """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "cpfCacheDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.country.br.CPFCache.getOwnClassInfo())
+      .setName("cpfCacheDAO")
+      .setJournalName("cpfCache")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .setDecorator(
+        new net.nanopay.country.br.ExpiredValidationDAO.Builder(x)
+          .setValidityPeriod(30)
+          .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.country.br.CPFCache.getOwnClassInfo()).build())
+        .build())
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.country.br.CPFCache\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "cnpjCacheDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.country.br.CNPJCache.getOwnClassInfo())
+      .setName("cnpjCacheDAO")
+      .setJournalName("cnpjCache")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .setDecorator(
+        new net.nanopay.country.br.ExpiredValidationDAO.Builder(x)
+          .setValidityPeriod(30)
+          .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.country.br.CNPJCache.getOwnClassInfo()).build())
+        .build())
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.country.br.CNPJCache\"}"
+})
+
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "bancoConfigDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.country.br.exchange.BancoConfig.getOwnClassInfo())
+      .setSeqNo(true)
+      .setName("bancoConfigDAO")
+      .setJournalName("bancoConfigs")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.country.br.exchange.BancoConfig\"}"
 })

@@ -91,11 +91,11 @@ foam.CLASS({
       try {
         const [hasUMPermission, [hasIntegrationPermission], hasPrivacyPermission, hasPaymentcodePermission, hasTxnLimitPermission] = 
           await Promise.all([
-            this.auth.check(null, 'menu.read.sme.userManagement'),
+            this.auth.check(null, 'businesssetting.read.userManagement'),
             this.accountingIntegrationUtil.getPermission(),
-            this.auth.check(null, 'business.rw.ispublic'),
-            this.auth.check(null, 'menu.read.paymentcode'),
-            this.auth.check(null, 'menu.read.transactionlimit')
+            this.auth.check(null, 'businesssetting.read.businessvisibility'),
+            this.auth.check(null, 'businesssetting.read.paymentcode'),
+            this.auth.check(null, 'businesssetting.read.transactionlimit')
           ]);
 
         // display Company Profile tab

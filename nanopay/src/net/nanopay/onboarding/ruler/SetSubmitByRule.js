@@ -25,13 +25,10 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.ArraySink',
-    'foam.dao.DAO',
-    'foam.nanos.crunch.Capability',
-    'foam.nanos.crunch.CapabilityCapabilityJunction',
     'foam.nanos.crunch.CapabilityJunctionStatus',
+    'foam.nanos.crunch.CrunchService',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'net.nanopay.onboarding.model.BusinessOnboardingExtra',
+    'net.nanopay.onboarding.model.BusinessOnboardingExtra'
   ],
 
    methods: [
@@ -42,17 +39,11 @@ foam.CLASS({
           X systemX = ruler.getX();
           @Override
           public void execute(X x) {
-            DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
+            CrunchService crunchService = (CrunchService) x.get("crunchService");
             UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
             BusinessOnboardingExtra data = new BusinessOnboardingExtra.Builder(x).setSubmitBy(ucj.getSourceId()).build();
-            UserCapabilityJunction submitByUcj = new 
-                      UserCapabilityJunction.Builder(x)
-                        .setSourceId(ucj.getSourceId())
-                        .setTargetId("7bf54e2d-2bf0-41fe-bc25-31c8de030ffa")
-                        .setData(data)
-                        .setStatus(CapabilityJunctionStatus.GRANTED)
-                        .build();
-            ucjDAO.put(submitByUcj);
+
+            crunchService.updateUserJunction(systemX, ucj.getSubject(x), "7bf54e2d-2bf0-41fe-bc25-31c8de030ffa", data, CapabilityJunctionStatus.GRANTED);
           }
         }, "Set SubmitBy to indicate the user who submit the onboarding information");
       `

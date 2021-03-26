@@ -18,10 +18,30 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'NLBankAccount',
-  label: 'Netherlands Bank',
+  label: 'Netherlands',
   extends: 'net.nanopay.bank.EUBankAccount',
 
+  mixins: [ 'net.nanopay.bank.BankAccountValidationMixin' ],
+
   documentation: 'Netherlands bank account information.',
+
+  javaImports: [
+    'foam.core.ValidationException',
+    'foam.util.SafetyUtil'
+  ],
+
+  constants: [
+    {
+      name: 'INSTITUTION_NUMBER_PATTERN',
+      type: 'Regex',
+      value: /^[a-zA-Z]{4}$/
+    },
+    {
+      name: 'ACCOUNT_NUMBER_PATTERN',
+      type: 'Regex',
+      value: /^\d{10}$/
+    }
+  ],
 
   properties: [
     {
@@ -37,60 +57,22 @@ foam.CLASS({
     },
     {
       name: 'denomination',
-      section: 'accountDetails',
+      section: 'accountInformation',
       gridColumns: 12,
       value: 'EUR',
     },
     {
-      name: 'bankCode',
-      updateVisibility: 'RO',
-      validateObj: function(bankCode) {
-        var regex = /^[A-z0-9a-z]{4}$/;
-
-        if ( bankCode === '' ) {
-          return this.BANK_CODE_REQUIRED;
-        } else if ( ! regex.test(bankCode) ) {
-          return this.BANK_CODE_INVALID;
-        }
-      }
-    },
-    {
-      name: 'accountNumber',
-      updateVisibility: 'RO',
-      view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: '1234567890',
-        onKey: true
-      },
-      preSet: function(o, n) {
-        return /^\d*$/.test(n) ? n : o;
-      },
-      tableCellFormatter: function(str) {
-        if ( ! str ) return;
-        var displayAccountNumber = '***' + str.substring(str.length - 4, str.length)
-        this.start()
-          .add(displayAccountNumber);
-        this.tooltip = displayAccountNumber;
-      },
-      validateObj: function(accountNumber) {
-        var accNumberRegex = /^[0-9]{10}$/;
-
-        if ( accountNumber === '' ) {
-          return this.ACCOUNT_NUMBER_REQUIRED;
-        } else if ( ! accNumberRegex.test(accountNumber) ) {
-          return this.ACCOUNT_NUMBER_INVALID;
-        }
-      }
-    },
-    {
-      class: 'String',
-      name: 'BankName',
-      section: 'accountDetails',
-      updateVisibility: 'RO'
-    },
-    {
       name: 'desc',
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'bankRoutingCode',
+      javaPostSet: `
+        if ( val != null && INSTITUTION_NUMBER_PATTERN.matcher(val).matches() ) {
+          clearInstitution();
+          setInstitutionNumber(val);
+        }
+      `
     }
   ]
 });

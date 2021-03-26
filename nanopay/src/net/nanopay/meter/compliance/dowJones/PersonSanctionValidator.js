@@ -67,16 +67,18 @@ foam.CLASS({
             agency.submit(x, new ContextAgent() {
               @Override
               public void execute(X x) {
-                String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
+                String group = user.getSpid() + "-fraud-ops";
                 requestApproval(x,
                   new DowJonesApprovalRequest.Builder(x)
                     .setObjId(user.getId())
-                    .setDaoKey("localUserDAO")
+                    .setServerDaoKey("localUserDAO")
+                    .setDaoKey("userDAO")
                     .setCauseId(response.getId())
                     .setCauseDaoKey("dowJonesResponseDAO")
-                    .setClassification("Validate User Using Dow Jones")
+                    .setClassification("User Dow Jones R&C")
                     .setMatches(response.getResponseBody().getMatches())
                     .setGroup(group)
+                    .setCreatedFor(user.getId())
                     .build());
               }
             }, "Person Sanction Validator");

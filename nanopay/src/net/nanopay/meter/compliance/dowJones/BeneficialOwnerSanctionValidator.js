@@ -70,8 +70,9 @@ foam.CLASS({
                     .setDaoKey("beneficialOwnerDAO")
                     .setCauseId(response.getId())
                     .setCauseDaoKey("dowJonesResponseDAO")
-                    .setClassification("Validate Beneficial Owner Using Dow Jones")
+                    .setClassification("Beneficial Owner Dow Jones R&C")
                     .setMatches(response.getResponseBody().getMatches())
+                    .setCreatedFor(beneficialOwner.getId())
                     .build());
               }
             }, "Beneficial Owner Sanction Validator");

@@ -30,7 +30,7 @@ foam.CLASS({
   sections: [
     {
       name: 'transactionSection',
-      title: 'Transaction details',
+      title: 'Transactional Information',
       help: `Require details on the company's transactions.`,
       order: 1
     },
@@ -65,7 +65,8 @@ foam.CLASS({
           },
           errorMessage: 'NO_TARGET_CUSTOMERS_ERROR'
         }
-      ]
+      ],
+      gridColumns: 12
     }),
     net.nanopay.model.Business.SUGGESTED_USER_TRANSACTION_INFO.clone().copyFrom({
       label: '',
@@ -88,7 +89,8 @@ foam.CLASS({
           },
           errorMessage: 'NO_SUGGESTED_USER_TXN_INFO_ERROR'
         }
-      ]
+      ],
+      view: { class: 'foam.u2.detail.SectionedDetailView' }
     })
   ]
 });

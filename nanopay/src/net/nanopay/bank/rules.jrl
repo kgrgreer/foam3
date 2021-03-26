@@ -32,7 +32,7 @@ p({
     "class":"net.nanopay.bank.DefaultBankAccountRule"
   },
   "enabled":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -67,7 +67,7 @@ p({
     "class":"net.nanopay.bank.IsDefaultRule"
   },
   "enabled":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -106,7 +106,7 @@ p({
   },
   "enabled":true,
   "after":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -129,7 +129,7 @@ p({
     "class": "net.nanopay.bank.ruler.AccountDeletedNotificationRule"
   },
   "enabled":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -146,7 +146,7 @@ p({
   },
   "enabled":true,
   "after":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -162,7 +162,67 @@ p({
   "action": {
     "class": "net.nanopay.bank.ruler.CorridorAuthorizationRule"
   },
-  "enabled":false,
-  "saveHistory":true,
+  "enabled":true,
+  "saveHistory":false,
   "lifecycleState":1
+})
+
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": "E7E91F22-6806-4601-A942-E6999DC435F1-0",
+  "name": "SWIFT/BIC Code Translation On BankAccount Create",
+  "documentation": "Translate SWIFT/BIC code into bank info on create.",
+  "priority": 90,
+  "ruleGroup": "bankOperations",
+  "daoKey": "localAccountDAO",
+  "operation": 0,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.bank.BankAccount"
+      },
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyIsSetPredicate",
+        "propName": "swiftCode"
+      }
+    ]
+  },
+  "action": {
+    "class": "net.nanopay.bank.ruler.SwiftBicCodeTranslation"
+  },
+  "enabled": true,
+  "saveHistory": true,
+  "lifecycleState": 1
+})
+
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": "E7E91F22-6806-4601-A942-E6999DC435F1-1",
+  "name": "SWIFT/BIC Code Translation On BankAccount Update",
+  "documentation": "Translate SWIFT/BIC code into bank info on update.",
+  "priority": 90,
+  "ruleGroup": "bankOperations",
+  "daoKey": "localAccountDAO",
+  "operation": 1,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.bank.BankAccount"
+      },
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyChangePredicate",
+        "propName": "swiftCode"
+      }
+    ]
+  },
+  "action": {
+    "class": "net.nanopay.bank.ruler.SwiftBicCodeTranslation"
+  },
+  "enabled": true,
+  "saveHistory": true,
+  "lifecycleState": 1
 })

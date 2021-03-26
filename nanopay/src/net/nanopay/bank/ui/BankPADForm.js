@@ -166,7 +166,9 @@ foam.CLASS({
       class: 'String',
       name: 'companyName',
       factory: function() {
-        if ( this.viewData.user.businessName ) {
+        if ( this.viewData.user.organization ) {
+          return this.viewData.user.organization
+        } else if ( this.viewData.user.businessName ) {
           return this.viewData.user.businessName;
         }
         return this.viewData.padCompanyName;
@@ -179,7 +181,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'companyNameDisabled',
       factory: function() {
-        return this.viewData.user.businessName ?
+        return this.viewData.user.businessName || this.viewData.user.organization ?
           foam.u2.DisplayMode.DISABLED :
           foam.u2.DisplayMode.RW;
       }

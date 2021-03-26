@@ -125,7 +125,7 @@ foam.CLASS({
             if ( business.getCompliance() == ComplianceStatus.FAILED ) {
               ApprovalRequest ar = (ApprovalRequest) approvalRequestDAO.find(
                 MLang.AND(
-                  MLang.EQ(ApprovalRequest.DAO_KEY, "localUserDAO"),
+                  MLang.EQ(ApprovalRequest.SERVER_DAO_KEY, "localUserDAO"),
                   MLang.EQ(ApprovalRequest.OBJ_ID, business.getId()),
                   MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.REJECTED)
                 )
@@ -176,7 +176,7 @@ foam.CLASS({
           }
         });
 
-        return decoratedSink;
+        return sink;
       `
     }
   ]

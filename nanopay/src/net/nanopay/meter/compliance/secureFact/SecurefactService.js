@@ -23,8 +23,7 @@ foam.CLASS({
     for individual identity verification and business entity search.`,
 
   imports: [
-    'DAO securefactLEVDAO',
-    'DAO securefactSIDniDAO'
+    'DAO securefactResponseDAO?'
   ],
 
   javaImports: [
@@ -36,6 +35,7 @@ foam.CLASS({
     'foam.lib.PermissionedPropertyPredicate',
     'foam.lib.PropertyPredicate',
     'foam.nanos.logger.Logger',
+    'foam.nanos.pm.PM',
     'java.util.Arrays',
     'java.util.Base64',
     'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentDataResponse',
@@ -99,15 +99,23 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        SecurefactRequest request = SecurefactRequestGenerator.getSIDniRequest(x, user);
-        request.setUrl(getSidniUrl());
-        request.setAuthKey(getSidniApiKey());
+        var pm = new PM(SecurefactService.getOwnClassInfo().getId(), "sidniVerify");
+        try {
+          SecurefactRequest request = SecurefactRequestGenerator.getSIDniRequest(x, user);
+          request.setUrl(getSidniUrl());
+          request.setAuthKey(getSidniApiKey());
 
-        SIDniResponse response = (SIDniResponse) sendRequest(x, request, SIDniResponse.class);
-        response.setEntityName(user.getLegalName());
-        response.setEntityId(user.getId());
-        return (SIDniResponse)
-          ((DAO) getSecurefactSIDniDAO()).put(response);
+          SIDniResponse response = (SIDniResponse) sendRequest(x, request, SIDniResponse.class);
+          response.setEntityName(user.getLegalName());
+          response.setEntityId(user.getId());
+          return (SIDniResponse)
+            ((DAO) getSecurefactResponseDAO()).put(response);
+        } catch (Throwable t) {
+          pm.error(x, t.getMessage());
+          throw t;
+        } finally {
+          pm.log(x);
+        }
       `
     },
     {
@@ -124,22 +132,30 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        SecurefactRequest request = SecurefactRequestGenerator.getLEVRequest(x, business);
-        request.setUrl(getLevUrl());
-        request.setAuthKey(getLevApiKey());
-
-        LEVResponse response = (LEVResponse) sendRequest(x, request, LEVResponse.class);
-        response.setEntityName(business.getOrganization());
-        response.setEntityId(business.getId());
-        // Aggregate close matches
-        String region = business.getAddress().getRegionId();
-        LEVResult[] results = response.getResults();
-        long closeMatchCounter = Arrays.stream(results).filter(
-          o -> o.getCloseMatch() && o.getJurisdiction().equals(region)
-        ).count();
-        response.setCloseMatches(closeMatchCounter + "/" + results.length);
-        return (LEVResponse)
-          ((DAO) getSecurefactLEVDAO()).put(response);
+        var pm = new PM(SecurefactService.getOwnClassInfo().getId(), "levSearch");
+        try {
+          SecurefactRequest request = SecurefactRequestGenerator.getLEVRequest(x, business);
+          request.setUrl(getLevUrl());
+          request.setAuthKey(getLevApiKey());
+  
+          LEVResponse response = (LEVResponse) sendRequest(x, request, LEVResponse.class);
+          response.setEntityName(business.getOrganization());
+          response.setEntityId(business.getId());
+          // Aggregate close matches
+          String region = business.getAddress().getRegionId();
+          LEVResult[] results = response.getResults();
+          long closeMatchCounter = Arrays.stream(results).filter(
+            o -> o.getCloseMatch() && o.getJurisdiction().equals(region)
+          ).count();
+          response.setCloseMatches(closeMatchCounter + "/" + results.length);
+          return (LEVResponse)
+            ((DAO) getSecurefactResponseDAO()).put(response);
+        } catch (Throwable t) {
+          pm.error(x, t.getMessage());
+          throw t;
+        } finally {
+          pm.log(x);
+        }
       `
     },
     {
@@ -156,11 +172,20 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        SecurefactRequest request = SecurefactRequestGenerator.getLEVDocumentOrderRequest(resultId);
-        request.setUrl(getLevDocumentOrderUrl());
-        request.setAuthKey(getLevApiKey());
-        LEVDocumentOrderResponse response = (LEVDocumentOrderResponse) sendRequest(x, request, LEVDocumentOrderResponse.class);
-        return response;
+        var pm = new PM(SecurefactService.getOwnClassInfo().getId(), "levDocumentOrder");
+        try {
+          SecurefactRequest request = SecurefactRequestGenerator.getLEVDocumentOrderRequest(resultId);
+          request.setUrl(getLevDocumentOrderUrl());
+          request.setAuthKey(getLevApiKey());
+          LEVDocumentOrderResponse response = (LEVDocumentOrderResponse) sendRequest(x, request, LEVDocumentOrderResponse.class);
+          return (LEVDocumentOrderResponse)
+            ((DAO) getSecurefactResponseDAO()).put(response);
+        } catch (Throwable t) {
+          pm.error(x, t.getMessage());
+          throw t;
+        } finally {
+          pm.log(x);
+        }
       `
     },
     {
@@ -177,11 +202,20 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        SecurefactRequest request = SecurefactRequestGenerator.getLEVDocumentDataRequest(orderId);
-        request.setUrl(getLevDocumentDataUrl());
-        request.setAuthKey(getLevApiKey());
-        LEVDocumentDataResponse response = (LEVDocumentDataResponse) sendRequest(x, request, LEVDocumentDataResponse.class);
-        return response;
+        var pm = new PM(SecurefactService.getOwnClassInfo().getId(), "levDocumentData");
+        try {
+          SecurefactRequest request = SecurefactRequestGenerator.getLEVDocumentDataRequest(orderId);
+          request.setUrl(getLevDocumentDataUrl());
+          request.setAuthKey(getLevApiKey());
+          LEVDocumentDataResponse response = (LEVDocumentDataResponse) sendRequest(x, request, LEVDocumentDataResponse.class);
+          return (LEVDocumentDataResponse)
+            ((DAO) getSecurefactResponseDAO()).put(response);
+        } catch (Throwable t) {
+          pm.error(x, t.getMessage());
+          throw t;
+        } finally {
+          pm.log(x);
+        }
       `
     },
     {

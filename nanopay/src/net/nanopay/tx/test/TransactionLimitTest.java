@@ -8,7 +8,8 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.GUIDDAO;
 import foam.dao.MDAO;
-import foam.nanos.ruler.Operations;
+import foam.nanos.auth.User;
+import foam.nanos.dao.Operation;
 import foam.nanos.ruler.RuleGroup;
 import foam.nanos.ruler.RulerDAO;
 import foam.nanos.ruler.RulerProbe;
@@ -50,7 +51,7 @@ public class TransactionLimitTest extends Test {
     tx.setDestinationAccount(receiver_.getId());
     RulerProbe probe = new RulerProbe();
     probe.setObject(tx);
-    probe.setOperation(Operations.CREATE);
+    probe.setOperation(Operation.CREATE);
     probe = (RulerProbe) txDAO.cmd_(x, probe);
     TestedRule txRule = null;
     for ( TestedRule testedRule : probe.getAppliedRules() ) {
@@ -80,24 +81,15 @@ public class TransactionLimitTest extends Test {
   }
 
   public void createAccounts(X x) {
-    DigitalAccount sender = new DigitalAccount();
-    sender.setOwner(1L);
-    sender.setDenomination("CAD");
-    sender_ = (DigitalAccount) ((DAO) x.get("localAccountDAO")).put(sender);
+    User sender = TransactionTestUtil.createUser(x);
+    User receiver = TransactionTestUtil.createUser(x);
 
-    DigitalAccount receiver = new DigitalAccount();
-    receiver.setOwner(1L);
-    receiver.setDenomination("CAD");
-    receiver_ = (DigitalAccount) ((DAO) x.get("localAccountDAO")).put(receiver);
+    receiver_ = DigitalAccount.findDefault(x, receiver, "CAD");
+    sender_ = DigitalAccount.findDefault(x,sender, "CAD");
 
-    senderBank_ = (CABankAccount) ((DAO)x.get("localAccountDAO")).find(AND(EQ(CABankAccount.OWNER, 1L), INSTANCE_OF(CABankAccount.class)));
-    if ( senderBank_ == null ) {
-      senderBank_ = new CABankAccount();
-      senderBank_.setAccountNumber("2131412443534534");
-      senderBank_.setOwner(1L);
-    } else {
-      senderBank_ = (CABankAccount)senderBank_.fclone();
-    }
+    senderBank_ = new CABankAccount();
+    senderBank_.setAccountNumber("2131412443534534");
+    senderBank_.setOwner(sender.getId());
     senderBank_.setStatus(BankAccountStatus.VERIFIED);
     senderBank_ = (CABankAccount) ((DAO)x.get("localAccountDAO")).put_(x, senderBank_).fclone();
   }

@@ -8,10 +8,6 @@
 # Exit on first failure
 set -e
 
-function warning {
-    echo -e "\033[0;33mWARNING :: ${1}\033[0;0m"
-}
-
 function rmdir {
     if test -d "$1" ; then
         rm -rf "$1"
@@ -28,6 +24,15 @@ function quit {
   # Unset error on exit
   set +e
   exit $1
+}
+
+function warning {
+    echo -e "\033[0;33mWARNING :: ${1}\033[0;0m"
+}
+
+function error {
+    echo -e "\033[0;31mERROR :: ${1}\033[0;0m"
+    quit
 }
 
 function install {
@@ -136,6 +141,15 @@ function deploy_journals {
 
         if [[ $? -eq 1 ]]; then
             quit 1
+        fi
+    fi
+
+    if [ ! -z "${RESOURCES}" ]; then
+        echo "INFO :: Deploying Resources"
+        if [ "${RUN_JAR}" -eq 1 ]; then
+            cp -r deployment/${RESOURCES}/resources/* "${JOURNAL_OUT}/"
+        else
+            cp -r deployment/${RESOURCES}/resources/* "${JOURNAL_HOME}/"
         fi
     fi
 
@@ -273,7 +287,7 @@ function start_nanos {
             OPT_ARGS="${OPT_ARGS} -U${RUN_USER}"
         fi
 
-        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -S${DEBUG_SUSPEND} -P${DEBUG_PORT} -N${NANOPAY_HOME} -W${WEB_PORT} -H${HOST_NAME} -j${PROFILER} -J${PROFILER_PORT} ${OPT_ARGS}
+        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -S${DEBUG_SUSPEND} -P${DEBUG_PORT} -N${NANOPAY_HOME} -W${WEB_PORT} -C${CLUSTER} -H${HOST_NAME} -j${PROFILER} -J${PROFILER_PORT} -F${FS} ${OPT_ARGS}
     else
         cd "$PROJECT_HOME"
 
@@ -446,13 +460,13 @@ function setenv {
 
     if [[ -z $JAVA_HOME ]]; then
       if [[ $IS_MAC -eq 1 ]]; then
-        JAVA_HOME=$($(dirname $(readlink $(which javac)))/java_home)
+        warning "Java home isn't properly configured!"
       elif [[ $IS_LINUX -eq 1 ]]; then
         JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
       fi
     fi
 
-    if [ -z "$MODE" ] || [ "$MODE" == "DEVELOPMENT" ] || [ "$MODE" == "STAGING" ] || [ "$MODE" == "TEST" ]; then
+    if [ "$MODE" == "TEST" ]; then
         JAVA_OPTS="-enableassertions ${JAVA_OPTS}"
     fi
 
@@ -466,6 +480,7 @@ function usage {
     echo "Options are:"
     echo "  -b : Build but don't start nanos."
     echo "  -c : Clean generated code before building.  Required if generated classes have been removed."
+    echo "  -C <true | false> Enable Medusa clustering."
     echo "  -d : Run with JDPA debugging enabled on port 8000"
     echo "  -D PORT : JDPA debugging enabled on port PORT."
     echo "  -e : Skipping genJava task."
@@ -479,20 +494,20 @@ function usage {
     echo "  -J JOURNAL_CONFIG : additional journal configuration. See find.sh - deployment/CONFIG i.e. deployment/staging"
     echo "  -k : Package up a deployment tarball."
     echo "  -l : Delete runtime logs."
-    echo "  -M MODE: one of DEVELOPMENT, PRODUCTION, STAGING, TEST, DEMO"
-    echo "  -m : Run migration scripts."
+    echo "  -m : Enable Medusa clustering. Not required for 'nodes'. Same as -Ctrue"
+    # -M reserve for potential Medusa instance type: Mediator, Node, NERF,
     echo "  -N NAME : start another instance with given instance name. Deployed to /opt/nanopay_NAME."
-    echo "  -o : old maven build"
     echo "  -p : Enable profiling on default port"
     echo "  -P PORT : JProfiler connection on PORT"
     echo "  -r : Start nanos with whatever was last built."
+    echo "  -R deployment directories with resources to add to Jar file"
     echo "  -s : Stop a running daemonized nanos."
     echo "  -S : When debugging, start suspended."
     echo "  -t : Run All tests."
     echo "  -T testId1,testId2,... : Run listed tests."
     echo "  -u : Run from jar. Intented for Production deployments."
     echo "  -U : User to run as"
-    echo "  -v : java compile only (maven), no code generation."
+    echo "  -v : java compile only, no code generation."
     echo "  -V VERSION : Updates the project version in POM file to the given version in major.minor.path.hotfix format"
     echo "  -w : Disable liveScriptBundler service. (development only)"
     echo "  -W PORT : HTTP Port. NOTE: WebSocketServer will use PORT+1"
@@ -537,18 +552,18 @@ else
   echo -e "\033[34;1m \033[36;1m(c) nanopay Corporation \033[0m\033[34;1m|_|          |___/  \033[0m"
   echo ""
 fi
-
 ############################
 
+FS=rw
 JOURNAL_CONFIG=default
 JOURNAL_SPECIFIED=0
 INSTANCE=
 HOST_NAME=`hostname -s`
 VERSION=
 MODE=
-#MODE=DEVELOPMENT
 BUILD_ONLY=0
 CLEAN_BUILD=0
+CLUSTER=false
 DEBUG=0
 DEBUG_PORT=8000
 DEBUG_SUSPEND=n
@@ -559,7 +574,6 @@ PACKAGE=0
 PROFILER=0
 PROFILER_PORT=8849
 RUN_JAR=0
-RUN_MIGRATION=0
 RESTART_ONLY=0
 TEST=0
 IS_AWS=0
@@ -569,7 +583,6 @@ RESTART=0
 STATUS=0
 DELETE_RUNTIME_JOURNALS=0
 DELETE_RUNTIME_LOGS=0
-COMPILE_ONLY=0
 DISABLE_LIVESCRIPTBUNDLER=0
 WEB_PORT=8080
 VULNERABILITY_CHECK=0
@@ -577,11 +590,13 @@ GRADLE_FLAGS=
 LIQUID_DEMO=0
 RUNTIME_COMPILE=0
 RUN_USER=
+RESOURCES=
 
-while getopts "bcdD:E:efghijJ:klmM:N:opP:QrsStT:uU:vV:wW:xz" opt ; do
+while getopts "bcC:dD:E:efF:ghijJ:klmN:pP:QR:rsStT:uU:vV:wW:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
+        C) CLUSTER=${OPTARG} ;;
         d) DEBUG=1 ;;
         D) DEBUG=1
            DEBUG_PORT=$OPTARG
@@ -595,6 +610,7 @@ while getopts "bcdD:E:efghijJ:klmM:N:opP:QrsStT:uU:vV:wW:xz" opt ; do
                 GRADLE_FLAGS="$GRADLE_FLAGS $skipGenFlag"
            fi
            ;;
+        F) FS=$OPTARG;;
         f) RUNTIME_COMPILE=1;;
         g) STATUS=1 ;;
         h) usage ; quit 0 ;;
@@ -605,10 +621,7 @@ while getopts "bcdD:E:efghijJ:klmM:N:opP:QrsStT:uU:vV:wW:xz" opt ; do
         k) PACKAGE=1
            BUILD_ONLY=1 ;;
         l) DELETE_RUNTIME_LOGS=1 ;;
-        m) RUN_MIGRATION=1 ;;
-        M) MODE=$OPTARG
-           echo "MODE=${MODE}"
-           ;;
+        m) CLUSTER=true ;;
         N) INSTANCE=$OPTARG
            HOST_NAME=$OPTARG
            echo "INSTANCE=${INSTANCE}" ;;
@@ -635,10 +648,10 @@ while getopts "bcdD:E:efghijJ:klmM:N:opP:QrsStT:uU:vV:wW:xz" opt ; do
            echo -e "\033[41;1m GenericCIPlanner & GenericFXPlanDAO \033[0m"
            ;;
         r) RESTART_ONLY=1 ;;
+        R) RESOURCES=$OPTARG ;;
         s) STOP_ONLY=1 ;;
         t) TEST=1
            MODE=TEST
-           COMPILE_ONLY=0
            ;;
         T) TEST=1
            TESTS=$OPTARG
@@ -646,7 +659,8 @@ while getopts "bcdD:E:efghijJ:klmM:N:opP:QrsStT:uU:vV:wW:xz" opt ; do
            ;;
         u) RUN_JAR=1;;
         U) RUN_USER=${OPTARG};;
-        v) COMPILE_ONLY=1 ;;
+        v) gradle printVersions ;
+           quit 0 ;;
         V) VERSION=$OPTARG
            echo "VERSION=${VERSION}"
            if [ -z "${GRADLE_FLAGS}" ]; then
@@ -666,6 +680,7 @@ while getopts "bcdD:E:efghijJ:klmM:N:opP:QrsStT:uU:vV:wW:xz" opt ; do
 done
 
 if [ "${MODE}" == "TEST" ]; then
+    JAVA_OPTS="-enableassertions ${JAVA_OPTS}"
     if [ $JOURNAL_SPECIFIED -ne 1 ]; then
         echo "INFO :: Mode is TEST, setting JOURNAL_CONFIG to TEST"
         JOURNAL_CONFIG=test
@@ -674,8 +689,26 @@ if [ "${MODE}" == "TEST" ]; then
     fi
 fi
 
+if [ -z "${INSTANCE}" ]; then
+    HOST_NAME="localhost"
+fi
+
 if [ ${CLEAN_BUILD} -eq 1 ]; then
     GRADLE_FLAGS="${GRADLE_FLAGS} --rerun-tasks"
+fi
+
+
+if [ "${RUN_JAR}" -eq 1 ]; then
+    if [ -z "${JOURNAL_CONFIG}" ]; then
+        JOURNAL_CONFIG=u
+    else
+        JOURNAL_CONFIG="${JOURNAL_CONFIG},u"
+    fi
+    if [ -z "${RESOURCES}" ]; then
+        RESOURCES=u
+    else
+        RESOURCES="${RESOURCES},u"
+    fi
 fi
 
 echo "INFO :: Journal Config is ${JOURNAL_CONFIG}"
@@ -698,11 +731,6 @@ fi
 
 if [ "$STATUS" -eq 1 ]; then
     status_nanos
-    quit 0
-fi
-
-if [ "$RUN_MIGRATION" -eq 1 ]; then
-    migrate_journals
     quit 0
 fi
 

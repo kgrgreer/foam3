@@ -62,7 +62,7 @@ foam.CLASS({
       contact.setFirstName("Samus");
       contact.setLastName("Aran");
       contact.setOrganization("Retro Studios");
-      contact.setGroup("sme");
+      contact.setGroup(user.getSpid() + "-sme");
       Contact samus = (Contact) user.getContacts(x).put(contact);
 
       // Create a payable invoice with the contact as the payee.

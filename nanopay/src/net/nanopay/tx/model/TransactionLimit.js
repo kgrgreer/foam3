@@ -27,24 +27,28 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
-      documentation: 'Transaction limit name.'
-    },
-    {
-      class: 'foam.core.Enum',
-      of: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
-      name: 'timeFrame',
-      documentation: 'Transaction limit time frame. (Day, Week etc.)'
+      documentation: 'Transaction limit name.',
+      gridColumns: 6
     },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionLimitType',
       name: 'type',
-      documentation: 'Transaction limit type. (Send or Receive)'
+      documentation: 'Transaction limit type. (Send or Receive)',
+      gridColumns: 6
     },
     {
       class: 'UnitValue',
       name: 'amount',
-      documentation: 'Transaction limit amount.'
-    }
+      documentation: 'Transaction limit amount.',
+      gridColumns: 6
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
+      name: 'timeFrame',
+      documentation: 'Transaction limit time frame. (Day, Week etc.)',
+      gridColumns: 6
+    }    
   ]
 });

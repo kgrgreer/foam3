@@ -27,23 +27,20 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.i18n.TranslationService',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.Subject',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.RenewableData',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.nanos.notification.Notification',
     'java.util.Calendar',
     'java.util.Date',
     'java.util.HashMap',
     'java.util.List',
+    'net.nanopay.crunch.UCJExpiryReminderNotification',
+    'net.nanopay.model.Business',
     'static foam.mlang.MLang.*'
-  ],
-
-  messages: [
-    { name: 'NOTIFICATION_BODY_P1', message: 'Your Capability \"' },
-    { name: 'NOTIFICATION_BODY_P2', message: '\" will expire in ' },
-    { name: 'NOTIFICATION_BODY_P3', message: ' days.' }
   ],
 
   properties: [
@@ -85,36 +82,40 @@ foam.CLASS({
           .getArray();
         if ( activeJunctions.size() == 0 ) return;
 
-        DAO notificationDAO = (DAO) x.get("notificationDAO");
-
-        Notification notification = new Notification();
+        UCJExpiryReminderNotification notification = new UCJExpiryReminderNotification();
         notification.setNotificationType("Capability Expiry Reminder");
         notification.setCreated(today);
         notification.setEmailName("ucjExpiryReminder");
 
         HashMap<String, Object> args = new HashMap<>();
+        TranslationService ts = (TranslationService) x.get("translationService");
 
         for ( UserCapabilityJunction ucj : activeJunctions ) {
+          ucj = (UserCapabilityJunction) ucj.fclone();
           User user = (User) ucj.findSourceId(x);
           Capability capability = (Capability) ucj.findTargetId(x);
+          Subject subject = (Subject) x.get("subject");
+          String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
 
-          String body = new StringBuilder(NOTIFICATION_BODY_P1)
-            .append(capability.getName())
-            .append(NOTIFICATION_BODY_P2)
-            .append(getDaysBeforeNotification())
-            .append(NOTIFICATION_BODY_P3)
-            .toString();
-          args.put("body", body);
+          String capabilityName = ts.getTranslation(locale, capability.getId() + ".name", capability.getName());
+
+          notification.setCapabilityName(capabilityName);
+          notification.setCapabilitySource(capability.getId() + ".name");
+          notification.setDaysBeforeNotification(getDaysBeforeNotification());
+
+          args.put("capabilityName", capabilityName);
+          args.put("capabilityNameEn", capability.getName());
+          args.put("days", getDaysBeforeNotification());
           args.put("link", user.findGroup(x).getAppConfig(x).getUrl());
-          notification.setBody(body);
 
-          if ( user.getClass().equals(User.class) ) {
+          if ( ! user.getClass().equals(Business.class) ) {
+            String userName = user.getLegalName() != null && ! user.getLegalName().trim().isEmpty() ?
+              user.getLegalName() : user.getOrganization();
             notification.setUserId(user.getId());
-            args.put("userName", user.getLegalName());
-          }
-          else {
+            args.put("userName", userName);
+          } else {
             notification.setGroupId(user.getGroup());
-            args.put("userName", ((net.nanopay.model.Business) user).getBusinessName());
+            args.put("userName", ((Business) user).getBusinessName());
           }
 
           notification.setEmailArgs(args);
@@ -148,7 +149,7 @@ foam.CLASS({
         ucj.setIsInRenewablePeriod(true);
 
         userCapabilityJunctionDAO.put(ucj);
-        
+
       `
     }
   ]

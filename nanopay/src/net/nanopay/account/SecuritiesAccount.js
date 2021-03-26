@@ -25,7 +25,8 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'static foam.mlang.MLang.EQ',
-    'foam.nanos.auth.LifecycleState'
+    'foam.nanos.auth.LifecycleState',
+    'foam.util.SafetyUtil'
   ],
 
   searchColumns: [
@@ -49,7 +50,7 @@ foam.CLASS({
       name: 'denomination',
       documentation: 'The security that this account stores.',
       tableWidth: 127,
-      section: 'accountDetails',
+      section: 'accountInformation',
       value: 'USD',
       order: 3,
     }
@@ -77,7 +78,7 @@ foam.CLASS({
         synchronized ( lock ) {
           SecurityAccount sa = (SecurityAccount) accountDAO.find(EQ(
           SecurityAccount.DENOMINATION,unit));
-          if (sa == null || sa.getId() == 0)
+          if ( sa == null || SafetyUtil.isEmpty(sa.getId()) )
             return createSecurityAccount_(x,unit);
           return sa;
         }

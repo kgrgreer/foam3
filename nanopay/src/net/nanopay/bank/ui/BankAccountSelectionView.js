@@ -31,10 +31,14 @@ foam.CLASS({
     }
   `,
 
+  requires: [
+    'net.nanopay.bank.BankAccount'
+  ],
+
   messages: [
     {
       name: 'DEFAULT_LABEL',
-      message: 'Choose from bank accounts'
+      message: 'Select bank account'
     }
   ],
 
@@ -61,7 +65,7 @@ foam.CLASS({
                   .start('img')
                     .attrs({ src: account.flagImage })
                   .end()
-                  .add(`${account.name} ****${account.accountNumber.substring(account.accountNumber.length - 4)} - ${account.denomination}`);
+                  .add(`${account.name} ${this.BankAccount.mask(account.accountNumber)} - ${account.denomination}`);
               }
             }));
           },

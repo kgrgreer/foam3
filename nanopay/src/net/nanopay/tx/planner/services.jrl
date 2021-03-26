@@ -6,6 +6,7 @@ p({
   """
     foam.dao.DAO dao = new foam.dao.MDAO(net.nanopay.tx.planner.TransactionPlan.getOwnClassInfo());
     dao = new net.nanopay.tx.planner.PlanSavingDAO(x, dao);
+    dao = new net.nanopay.tx.planner.PartialPlanDAO(x, dao);
     dao = new net.nanopay.tx.planner.TransactionQuoteDAO(x, dao);
     dao = new net.nanopay.tx.planner.SummaryPopulatorDAO(x, dao);
     dao = new foam.nanos.ruler.RulerDAO(x, dao, "transactionPlannerDAO");
@@ -19,6 +20,7 @@ p({
       .setDecorator(dao)
       .setOf(net.nanopay.tx.planner.TransactionPlan.getOwnClassInfo())
       .setRuler(false)
+      .setCluster(false)
       .setPm(true)
       .setPipelinePm(true)
       .setAuthorize(false)
@@ -40,6 +42,7 @@ p({
       .setPm(true)
       .setPipelinePm(true)
       .setEnableInterfaceDecorators(false)
+      .setCluster(false)
       .build();
     """,
   "client":"{\"of\":\"net.nanopay.tx.planner.TransactionPlan\"}"

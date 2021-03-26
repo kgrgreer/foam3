@@ -27,10 +27,10 @@ foam.CLASS({
   `,
 
   implements: [
-    'foam.nanos.auth.Authorizable',
-    'foam.nanos.auth.HumanNameTrait',
+    'foam.core.Validatable',
     'foam.mlang.Expressions',
-    'foam.core.Validatable'
+    'foam.nanos.auth.Authorizable',
+    'foam.nanos.auth.ServiceProviderAware'
   ],
 
   requires: [
@@ -40,14 +40,13 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.ServiceProviderAwareSupport',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
-    'foam.util.SafetyUtil',
-    'net.nanopay.country.br.BrazilVerificationService',
+    'foam.util.SafetyUtil'
   ],
 
   imports: [
-    'brazilVerificationService',
     'complianceHistoryDAO'
   ],
 
@@ -65,9 +64,6 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'INVALID_CPF', message: 'Valid CPF number required' },
-    { name: 'INVALID_OWNER_NAME', message: 'Click to verify owner name' },
-    { name: 'INVALID_NATIONALITY', message: 'Nationality required' },
     { name: 'INVALID_FIRST_NAME', message: 'First name required' },
     { name: 'INVALID_LAST_NAME', message: 'Last name required' },
     { name: 'INVALID_JOB_TITLE', message: 'Job title required' },
@@ -78,7 +74,9 @@ foam.CLASS({
     { name: 'STREET_NUMBER_LABEL', message: 'Street number' },
     { name: 'STREET_NAME_LABEL', message: 'Street name' },
     { name: 'PLACEHOLDER', message: 'Select a country' },
-    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History' }
+    { name: 'PLEASE_SELECT', message: 'Please select...' },
+    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History for' },
+    { name: 'OTHER_KEY', message: 'Other' }
   ],
 
   properties: [
@@ -92,13 +90,6 @@ foam.CLASS({
       class: 'String',
       name: 'mode',
       documentation: 'Used to change visibility. ex) "percent" suggests all hidden but this.ownershipPercent.',
-      hidden: true,
-      externalTransient: true
-    },
-    {
-      class: 'String',
-      name: 'type',
-      documentation: 'Used to change visibility of various country specific properties.',
       hidden: true,
       externalTransient: true
     },
@@ -200,15 +191,7 @@ foam.CLASS({
           },
           errorMessage: 'OVER_AGE_LIMIT_ERROR'
         },
-      ],
-      postSet: function(_,n) {
-        this.cpfName = "";
-        if ( this.cpf.length == 11 ) {
-          this.getCpfName(this.cpf).then((v) => {
-            this.cpfName = v;
-          });
-        }
-      }
+      ]
     },
     {
       class: 'String',
@@ -221,13 +204,13 @@ foam.CLASS({
       view: function(_, X) {
         return {
           class: 'foam.u2.view.ChoiceWithOtherView',
-          otherKey: 'Other',
+          otherKey: X.data.OTHER_KEY,
           choiceView: {
             class: 'foam.u2.view.ChoiceView',
-            placeholder: 'Please select...',
+            placeholder: X.data.PLEASE_SELECT,
             dao: X.jobTitleDAO,
             objToChoice: function(a) {
-              return [a.name, a.label];
+              return [a.name, X.translationService.getTranslation(foam.locale, `${a.name}.label`, a.label)];
             }
           }
         };
@@ -262,12 +245,9 @@ foam.CLASS({
         {
           args: ['ownershipPercent', 'showValidation'],
           predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(net.nanopay.model.BeneficialOwner.SHOW_VALIDATION, false),
-              e.AND(
-                e.GTE(net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT, 25),
-                e.LTE(net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT, 100)
-              )
+            return e.AND(
+              e.GTE(net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT, 25),
+              e.LTE(net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT, 100)
             );
           },
           errorMessage: 'INVALID_OWNER_PERCENT'
@@ -287,7 +267,7 @@ foam.CLASS({
         let address = this.Address.create();
         address.streetName$.prop.label = this.STREET_NAME_LABEL;
         address.streetNumber$.prop.label = this.STREET_NUMBER_LABEL;
-        return address
+        return address;
       },
       view: function(_, X) {
         return {
@@ -300,193 +280,22 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      targetDAOKey: 'countryDAO',
-      name: 'nationality',
-      of: 'foam.nanos.auth.Country',
-      section: 'requiredSection',
-      documentation: `Defined nationality of beneficial owner.`,
-      view: function(_, X) {
-        return {
-          class: 'foam.u2.view.RichChoiceView',
-          search: true,
-          placeholder: X.data.PLACEHOLDER,
-          sections: [
-            {
-              heading: 'Countries',
-              dao: X.countryDAO
-            }
-          ]
-        };
-      },
-      validationPredicates: [
-        {
-          args: ['nationality', 'showValidation'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(net.nanopay.model.BeneficialOwner.SHOW_VALIDATION, false),
-              e.GT(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.model.BeneficialOwner.NATIONALITY
-                }), 0)
-            );
-          },
-          errorMessage: 'INVALID_NATIONALITY'
-        }
-      ]
-    },
-    {
-      class: 'String',
-      name: 'cpf',
-      label: 'Cadastro de Pessoas Físicas (CPF)',
-      section: 'requiredSection',
-      documentation: `CPF number of beneficial owner.`,
-      visibility: function(type, mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : type == 'BR' ?
-        foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
-      },
-      validationPredicates: [
-        {
-          args: ['type', 'cpfName'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(net.nanopay.model.BeneficialOwner.TYPE, 'BR'),
-              e.AND(
-                e.EQ(net.nanopay.model.BeneficialOwner.TYPE, 'BR'),
-                e.GT(net.nanopay.model.BeneficialOwner.CPF_NAME, 0)
-              )
-            );
-          },
-          errorMessage: 'INVALID_CPF'
-        }
-      ],
-      externalTransient: true,
-      tableCellFormatter: function(val) {
-        return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
-      },
-      postSet: function(_,n) {
-        this.cpfName = "";
-        if ( n.length == 11 ) {
-          this.getCpfName(n).then((v) => {
-            this.cpfName = v;
-          });
-        }
-      },
-      view: function(_, X) {
-        return foam.u2.FragmentedTextField.create({
-          delegates: [
-            {
-              class: 'foam.u2.TextField',
-              attributes: [ { name: 'maxlength', value: 3 } ],
-              onKey: true,
-              data: X.data.cpf.slice(0,3)
-            },
-            '.',
-            {
-              class: 'foam.u2.TextField',
-              attributes: [ { name: 'maxlength', value: 3 } ],
-              onKey: true,
-              data: X.data.cpf.slice(3,6)
-            },
-            '.',
-            {
-              class: 'foam.u2.TextField',
-              attributes: [ { name: 'maxlength', value: 3 } ],
-              onKey: true,
-              data: X.data.cpf.slice(6,9)
-            },
-            '-',
-            {
-              class: 'foam.u2.TextField',
-              attributes: [ { name: 'maxlength', value: 2 } ],
-              onKey: true,
-              data: X.data.cpf.slice(9,11)
-            }
-          ]
-        })
-      }
-    },
-    {
-      class: 'String',
-      name: 'cpfName',
-      label: '',
-      section: 'requiredSection',
-      hidden: true,
-      externalTransient: true
-    },
-    {
-      class: 'Boolean',
-      name: 'verifyName',
-      label: 'Please verify that name displayed below matches owner name.',
-      section: 'requiredSection',
-      visibility: function (type, cpfName, mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN :
-          type == 'BR' && cpfName.length > 0 ?
-            foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
-      },
-      view: function(n, X) {
-        var self = X.data$;
-        return foam.u2.CheckBox.create({
-          labelFormatter: function() {
-            this.start('span')
-              .add(self.dot('cpfName'))
-            .end();
-          }
-        });
-      },
-      validationPredicates: [
-        {
-          args: ['verifyName'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.AND(
-                e.EQ(net.nanopay.model.BeneficialOwner.VERIFY_NAME, true),
-                e.EQ(net.nanopay.model.BeneficialOwner.TYPE, 'BR')
-              ),
-              e.NEQ(net.nanopay.model.BeneficialOwner.TYPE, 'BR')
-            );
-          },
-          errorMessage: 'INVALID_OWNER_NAME'
-        }
-      ],
-      externalTransient: true
-    },
-    {
-      class: 'Boolean',
-      name: 'PEPHIORelated',
-      documentation: `Determines whether the user is a domestic or foreign _Politically
-        Exposed Person (PEP), Head of an International Organization (HIO)_, or
-        related to any such person.
-      `,
-      section: 'requiredSection',
-      label: 'The owner is a politically exposed person (PEP) or head of an international organization (HIO)',
-      help: `
-        A political exposed person (PEP) or the head of an international organization (HIO)
-        is a person entrusted with a prominent position that typically comes with the opportunity
-        to influence decisions and the ability to control resources
-      `,
-      value: false,
-      visibility: function (type, mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : type == 'BR' ?
-          foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
-      },
-      view: {
-        class: 'foam.u2.view.RadioView',
-        choices: [
-          [true, 'Yes'],
-          [false, 'No']
-        ],
-        isHorizontal: true
-      }
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid',
+      storageTransient: true,
+      javaFactory: `
+        var ownerSpidMap = new java.util.HashMap();
+        ownerSpidMap.put(
+          BeneficialOwner.class.getName(),
+          new foam.core.PropertyInfo[] { BeneficialOwner.BUSINESS }
+        );
+        return new ServiceProviderAwareSupport()
+          .findSpid(foam.core.XLocator.get(), ownerSpidMap, this);
+      `
     }
   ],
 
   methods: [
-    {
-      name: 'getCpfName',
-      code: async function(cpf,) {
-        return await this.brazilVerificationService.getCPFNameWithBirthDate(this.__subContext__, cpf, this.birthday);
-      }
-    },
     {
       name: 'authorizeOnCreate',
       args: [
@@ -575,24 +384,13 @@ foam.CLASS({
         return getFirstName() + " " + getLastName();
       `
     },
-    {
-      name: 'validate',
-      javaCode: `
-        if ( "BR".equals(getType()) ) {
-
-        if ( ! getVerifyName() )
-          throw new IllegalStateException("Must verify name attached to CPF is valid.");
-
-          try {
-            if ( ! ((BrazilVerificationService) x.get("brazilVerificationService")).validateCpf(x, getCpf(), getBirthday()) )
-              throw new RuntimeException(INVALID_CPF);
-          } catch(Throwable t) {
-            throw t;
-          }
-        }
-      `
+    function fromUser(u) {
+      var common = ['firstName', 'lastName', 'jobTitle', 'address', 'birthday'];
+      for ( let p of common ) this[p] = u[p];
+      return this;
     }
   ],
+
   actions: [
     {
       name: 'viewComplianceHistory',
@@ -612,7 +410,7 @@ foam.CLASS({
             dao: dao,
             createPredicate: foam.mlang.predicate.False,
             editPredicate: foam.mlang.predicate.True,
-            browseTitle:`${this.legalName}'s ${this.COMPLIANCE_HISTORY_MSG}`
+            browseTitle: `${this.COMPLIANCE_HISTORY_MSG} ${this.legalName}`
           }
         });
       }

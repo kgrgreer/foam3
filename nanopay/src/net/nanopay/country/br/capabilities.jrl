@@ -24,8 +24,8 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-3",
-  "name":"Bank Domicile Reasis",
-  "description":"Bank domicile for payment of Reasis",
+  "name":"Domicile bank for payments in reais",
+  "description":"Provide a document that shows your bank address for payment in reais",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
   "version":"0",
@@ -36,7 +36,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-4",
   "name":"Bank Domicile Foreign Currency",
-  "description":"Bank domicile for payment of Foreign Currency",
+  "description":"Provide bank domicile for payment of Foreign Currency",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
   "version":"0",
@@ -47,7 +47,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-5",
   "name":"Bill Of Lading",
-  "description":"BL, Airway Bill (AWB), CTR, Courier",
+  "description":"Provide BL, Airway Bill (AWB), CTR, Courier",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
   "version":"0",
@@ -89,7 +89,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-9",
   "name":"Contract",
-  "description":"Contract between the parties",
+  "description":"Provide contract between the parties",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
   "version":"0",
@@ -111,7 +111,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-11",
   "name":"Corporate act",
-  "description":"Corporate act deliberating on the investment",
+  "description":"Provide corporate act deliberating on the investment",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
   "version":"0",
@@ -345,7 +345,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-34",
   "name":"RDE-IED",
-  "description":"Updated RDE-IED",
+  "description":"Provide updated RDE-IED",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
   "version":"0",
@@ -356,7 +356,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-35",
   "name":"Simplified export declaration (DSE)",
-  "description":"Simplified export declaration / DSE (Declaração Simplificada de Exportação)",
+  "description":"Provide simplified export declaration / DSE (Declaração Simplificada de Exportação)",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
   "version":"0",
@@ -367,7 +367,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-36",
   "name":"Export Registration (RE)",
-  "description":"Export Registration / RE (registro-de-exportacao)",
+  "description":"Provide Export Registration / RE (registro-de-exportacao)",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
   "version":"0",
@@ -438,17 +438,55 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "name":"Unlock International Payments",
-  "description":"Unlock payments in Brazil",
+  "id":"05a663b8-2b48-11eb-adc1-0242ac120002",
+  "name":"Business Prerequisites for Brazil",
+  "description":"Business prerequisites for payments in Brazil",
   "icon":"/images/capabilityIcons/BrazilCap.svg",
   "version":"0",
-  "visible":true,
+  "enabled":true,
+  "requirementViewTitle":"Have your business documents ready. You can save your progress and come back later."
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"bf6a49d5-4027-4dac-a269-4d3ed070609e-4",
+  "name":"International payments",
+  "description":"International payments from Brazil",
+  "requirementViewTitle":"Register your business details of your company. We use payment corridors to streamline your operations, you will notice that much of the information needed to make conventional payments will not be necessary, once you are setup.",
+  "icon":"/images/capabilityIcons/BrazilCap.svg",
+  "version":"0",
+  "visibilityPredicate":  {
+    "class": "foam.nanos.crunch.predicate.CapabilityGranted",
+    "capabilityId": "777af38a-8225-87c8-dfdf-eeb15f71215f-123",
+    "subjectFromUCJ": false
+  },
+  "enabled":true,
+  "keywords":["featured"],
+  "availabilityPredicate": {
+    "class":"foam.mlang.predicate.And",
+    "args": [
+      { "class":"net.nanopay.crunch.predicate.IsBusiness" },
+      {
+        "class":"net.nanopay.crunch.predicate.CheckUserCountry",
+        "country":"BR"
+      }
+    ]
+  },
+  "associatedEntity":2
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D",
+  "name":"International payments onboarding",
+  "description":"International payments from Brazil",
+  "icon":"/images/capabilityIcons/BrazilCap.svg",
+  "version":"0",
   "enabled":true,
   "reviewRequired":true,
-  "keywords":["featured"],
   "permissionsGranted":[
-    "business.invoice.pay"
+    "business.invoice.pay",
+    "menu.read.capability.main.invoices.receivables"
   ],
   "permissionsIntercepted": [
     "business.invoice.pay"
@@ -463,11 +501,21 @@ p({
       }
     ]
   },
-  "wizardletConfig": {
+  "wizardConfig": {
     "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig",
     "allowSkipping": false
   },
-  "requirementViewTitle":"In this section, we ask for more business information to enable us to securely process payments on your behalf."
+  "requirementViewTitle":"Have your business documents ready. You can save your progress and come back later.",
+  "associatedEntity": 2
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "name":"Brazil onboarding",
+  "description":"Brazil onboarding",
+  "version":"0",
+  "enabled":true
 })
 
 p({
@@ -475,14 +523,13 @@ p({
   "id":"25F5C0CC-DD7E-4206-B392-46EAA9332870",
   "name":"Review Required (International Payments)",
   "icon":"/images/capabilityIcons/BrazilCap.svg",
-  // "keywords":["featured"],
   "availabilityPredicate": {
     "class":"foam.mlang.predicate.And",
     "args": [
       { "class":"net.nanopay.crunch.predicate.IsBusiness" },
       {
         "class":"foam.nanos.crunch.predicate.CapabilityGranted",
-        "capabilityId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49"
+        "capabilityId":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D"
       },
       {
         "class":"foam.nanos.crunch.predicate.CapabilityGranted",
@@ -490,13 +537,31 @@ p({
       }
     ]
   },
-  "wizardletConfig": {
-    "class": "foam.u2.wizard.StepWizardConfig",
+  "wizardConfig": {
+    "class": "foam.u2.crunch.EasyCrunchWizard",
     "allowSkipping": false
   },
-  "capabilityToReview": "554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "capabilityToReview": "0B2E7305-B898-43F2-9C1B-63FB2CE38B2D",
   "enabled":true,
-  "visible":true
+  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
+})
+
+p({
+  "class": "net.nanopay.payment.RegisterPaymentProviderCapability",
+  "id":"89cc91da-4bbd-458b-81d4-574815e455fa-4",
+  "name":"Registering with Payment Provider(BR International)",
+  "description":"Registering with Payment Provider(BR International)",
+  "version":"0",
+  "enabled":true,
+  "min": 1,
+  "permissionsGranted":[
+    "menu.read.mainmenu.invoices.payables"
+  ],
+  beforeWizardlet: {
+    class: "foam.nanos.crunch.ui.MinMaxCapabilityWizardlet",
+    consumePrerequisites: true,
+    hideChoiceView: true,
+  }
 })
 
 p({
@@ -505,8 +570,15 @@ p({
   "name":"User Invoice Capability",
   "icon":"/images/capabilityIcons/BrazilCap.svg",
   "enabled":true,
-  "visible":false,
-  "associatedEntity": 2
+  "associatedEntity":2
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"7b41a164-29bd-11eb-adc1-0242ac120002",
+  "name":"Bank Information",
+  "of":"net.nanopay.partner.treviso.onboarding.BRBankAccountData",
+  "enabled":true
 })
 
 p({
@@ -522,8 +594,8 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"9d4d667c-04c3-11eb-adc1-0242ac120002",
-  "name":"Business Capital and Equity",
-  "of":"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation",
+  "name":"Capital, Equity and Revenue",
+  "of":"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation",
   "version":"0",
   "enabled":true
 })
@@ -531,7 +603,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"af3d9c28-0674-11eb-adc1-0242ac120002",
   "name":"Business Account Information",
-  "of":"net.nanopay.crunch.onboardingModels.BusinessAccountData",
+  "of":"net.nanopay.partner.treviso.TrevisoBusinessAccountData",
   "version":"0",
   "enabled":true
 })
@@ -545,9 +617,25 @@ p({
 })
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"dfbe9220-ba4e-42d1-9bed-f4b4f8efcbb8",
-  "name":"Treviso Invoice Capability",
+  "id":"invoice.capable.treviso",
+  "name":"Invoice Requirements",
   "description":"The Capable-Specific Capability for Invoices on Treviso",
+  "version":"0",
+  "requirementViewTitle":"You will be asked to select a nature code for this transaction and provide the required document.",
+  "wizardConfig": {
+    "class": "foam.u2.crunch.EasyCrunchWizard",
+    "incrementalWizard": true,
+    "skipMode":1
+  },
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"1d72f804-4019-11eb-b378-0242ac130002",
+  "name":"What is the expected date of shipment?",
+  "description":"Expect Boarding Date",
+  "of":"net.nanopay.country.br.ExpectedBoardingDate",
   "version":"0",
   "enabled":true
 })

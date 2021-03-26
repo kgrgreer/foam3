@@ -45,6 +45,11 @@ foam.CLASS({
       }
     },
     {
+      class: 'String',
+      name: 'vendorId',
+      documentation: 'Vendor Id saved on AFEX.'
+    },
+    {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'owner',
@@ -92,6 +97,11 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedByAgent'
     }
   ]
 });

@@ -310,7 +310,33 @@
   </xs:complexType>
   <xs:complexType name="cotacaoTaxaCambioResponse">
     <xs:sequence>
-      <xs:element minOccurs="0" name="cotacaoTaxaCambioResult" nillable="true" type="q34:ResponseCotacaoTaxa" xmlns:q34="http://schemas.datacontract.org/2004/07/Exchange"/>
+      <xs:element minOccurs="0" name="cotacaoTaxaCambioResult" nillable="true" type="ResponseCotacaoTaxa" xmlns:q34="http://schemas.datacontract.org/2004/07/Exchange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ResponseCotacaoTaxa">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="TaxasCambio" nillable="true" type="tns:ArrayOfCotacaoTaxaCambio"/>
+      <xs:element minOccurs="0" name="serviceStatus" nillable="true" type="tns:ServiceStatus"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfCotacaoTaxaCambio">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="CotacaoTaxaCambio" nillable="true" type="tns:CotacaoTaxaCambio"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CotacaoTaxaCambio">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CLIENTEC" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="CLIENTEV" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="COMERCIALC" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="COMERCIALV" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="DATA" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="HORARIO" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="MOEDA" type="xs:int"/>
+      <xs:element minOccurs="0" name="PARIDADEC" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="PARIDADEV" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="TURISMOC" type="xs:decimal"/>
+      <xs:element minOccurs="0" name="TURISMOV" type="xs:decimal"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="cotacaoNaturezaTributos">
@@ -1607,6 +1633,14 @@
   <xs:complexType name="ArrayOfNatureza">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="Natureza" nillable="true" type="Natureza"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Moeda">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="moeda" nillable="true" type="xs:long"/>
+      <xs:element minOccurs="0" name="nomeP" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="paridade" nillable="true" type="xs:string"/>
+      <xs:element minOccurs="0" name="simbolo" nillable="true" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
 </xs:schema>

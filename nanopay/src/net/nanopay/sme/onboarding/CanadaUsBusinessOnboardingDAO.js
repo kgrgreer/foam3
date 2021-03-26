@@ -92,9 +92,9 @@ foam.CLASS({
           + business.getId() + " has completed the cross-border onboarding.");
         notification.setNotificationType("A cross-border business has been onboarded");
 
-        notification.setGroupId("fraud-ops");
+        notification.setGroupId(business.getSpid() + "-fraud-ops");
         localNotificationDAO.put(notification);
-        notification.setGroupId("payment-ops");
+        notification.setGroupId(business.getSpid() + "-payment-ops");
         localNotificationDAO.put(notification);
 
         return fObject;

@@ -1,0 +1,54 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "openid",
+  "authenticate": false,
+  "parameters": true,
+  "serviceScript":"""
+  // Intuit Client Secret FcX34gTSE04y927cVO32HZWTm5CqvNkVycLgVCleuUmcliwsBNcqrYGEp0qb2gW6
+  return new net.nanopay.auth.openid.OpenIDWebAgent(
+    "https://federatesys.intuit.com/as/authorization.oauth2",
+    "https://federatesys.intuit.com/as/token.oauth2",
+    "https://federatesys.intuit.com/pf/JWKS",
+    "https://integration.nanopay.net/service/openid",
+    "FcX34gTSE04y927cVO32HZWTm5CqvNkVycLgVCleuUmcliwsBNcqrYGEp0qb2gW6",
+    "Nanopay",
+    "intuit-support",
+    "intuit"
+  );
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "intuitWebhookOAP",
+  "authenticate": false,
+  "serve": false,
+  "serviceScript":"""
+  return new net.nanopay.partner.intuit.auth.WebhookOAuth(
+    "FHW2xGWdSgK5pTswlqR1adCPYmhDYXe2386lcigY3rKaNfezeR",
+    "Intuit.sandbox.sandbox.nanopaywebhookpprd"
+  );
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "intuitChargeDateService",
+  "lazy": false,
+  "serviceClass": "net.nanopay.partner.intuit.tx.billing.IntuitChargeDateService"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "chargeDateService",
+  "serve": "true",
+  "serviceScript": """
+    import foam.mlang.predicate.ContextUserPredicate;
+    import foam.nanos.auth.User;
+    import foam.mlang.MLang;
+    chargeDateService = new foam.nanos.boot.AltFactory("nanopayChargeDateService");
+    chargeDateService.addDelegate(new ContextUserPredicate(MLang.EQ(User.SPID, "nanopay")), "nanopayChargeDateService");
+    chargeDateService.addDelegate(new ContextUserPredicate(MLang.EQ(User.SPID, "intuit")), "intuitChargeDateService");
+    return chargeDateService;
+  """
+})

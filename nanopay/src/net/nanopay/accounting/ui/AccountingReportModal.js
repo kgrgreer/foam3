@@ -118,7 +118,7 @@ foam.CLASS({
     {name: 'WITH_EMAIL', message: ' with the email address : '},
     {name: 'USER_EXIST_1', message: 'A contact who is also an user already exists on '},
     {name: 'USER_EXIST_2', message: ' with the email : '},
-    {name: 'USER_EXIST_3', message: ' belongs to multiple businessness on '},
+    {name: 'USER_EXIST_3', message: ' belongs to multiple business on '},
     {name: 'CONTACT', message: ' contact : '},
     {name: 'ACC_SOFTWARE_CONTACT', message: 'Accounting software contact: '},
     {name: 'USER_ON', message: 'A user on '}
@@ -194,7 +194,7 @@ foam.CLASS({
       code: function(X) {
         X.closeDialog();
         if (this.redirect) {
-          this.pushMenu('capability.main.dashboard')
+          this.pushMenu('mainmenu.dashboard')
         }
       }
     },

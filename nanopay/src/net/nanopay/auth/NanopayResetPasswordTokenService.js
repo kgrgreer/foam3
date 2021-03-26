@@ -98,7 +98,7 @@ if ( user == null ) {
   throw new RuntimeException("User not found");
 }
 
-String url = (((Subject)x.get("subject")).getUser()).findGroup(x).getAppConfig(x).getUrl();
+String url = user.findGroup(x).getAppConfig(x).getUrl();
 
 Token token = new Token();
 token.setUserId(user.getId());

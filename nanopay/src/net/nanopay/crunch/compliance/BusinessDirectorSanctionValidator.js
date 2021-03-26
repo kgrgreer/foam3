@@ -9,6 +9,8 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.nanos.auth.User',
+    'foam.nanos.crunch.CapabilityJunctionStatus',
+    'foam.nanos.crunch.CrunchService',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
     'java.util.ArrayList',
@@ -40,9 +42,7 @@ foam.CLASS({
         BusinessDirectorsData data = (BusinessDirectorsData) ucj.getData();
 
         User user = (User) ucj.findSourceId(x);
-        String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
-
-        if ( data.getBusinessDirectors() == null || data.getBusinessDirectors().length == 0 ) return;
+        String group = user.getSpid() + "-fraud-ops";
 
         List<BusinessDirector> businessDirectors = new ArrayList<BusinessDirector>(Arrays.asList(data.getBusinessDirectors()));
 
@@ -57,6 +57,7 @@ foam.CLASS({
         calendar.add(Calendar.DATE, -1);
         Date dayBefore = calendar.getTime();
 
+        boolean autoValidated = true;
         for ( int i = 0 ; i < businessDirectors.size() ; i++ ) {
           
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
@@ -69,6 +70,7 @@ foam.CLASS({
           if ( status != ComplianceValidationStatus.VALIDATED ) {
             DowJonesResponse response = getResponse();
             rulerResult = ComplianceValidationStatus.PENDING;
+            autoValidated = false;
 
             String directorName = (new StringBuilder(director.getFirstName())
               .append(" ")
@@ -84,14 +86,23 @@ foam.CLASS({
                     .setDaoKey("userCapabilityJunctionDAO")
                     .setCauseId(response != null ? response.getId() : 0L)
                     .setCauseDaoKey("dowJonesResponseDAO")
-                    .setClassification("Validate Business Director: " + directorName + " Using Dow Jones")
+                    .setClassification("Business Director: " + directorName + " Dow Jones R&C")
                     .setMatches(response != null ? response.getResponseBody().getMatches() : null)
                     .setComments("Further investigation needed for director: " + directorName)
                     .setGroup(group)
+                    .setCreatedFor(user.getId())
                     .build());
               }
             }, "Business Director Sanction Validator");
           }
+        }
+        if ( autoValidated ) {
+          X userX = ruler.getX().put("subject", ucj.getSubject(x));
+          ((CrunchService) userX.get("crunchService")).updateJunction(
+            userX,
+            ucj.getTargetId(), 
+            null, 
+            CapabilityJunctionStatus.APPROVED);
         }
 
         ruler.putResult(rulerResult);

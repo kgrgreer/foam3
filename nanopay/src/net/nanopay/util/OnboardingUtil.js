@@ -39,6 +39,8 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.CapabilityAdaptAgent',
     'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
     'foam.u2.crunch.wizardflow.CreateWizardletsAgent',
+    'foam.u2.crunch.wizardflow.LoadWizardletsAgent',
+    'foam.u2.crunch.wizardflow.AutoSaveWizardletsAgent',
     'foam.u2.crunch.wizardflow.StepWizardAgent',
     'foam.u2.crunch.wizardflow.PutFinalJunctionsAgent',
     'foam.u2.crunch.wizardflow.FilterWizardletsAgent',
@@ -132,7 +134,7 @@ foam.CLASS({
           }
         });
     },
-    
+
     async function initUserRegistration(cap) {
       if ( ! cap ) {
         throw new TypeError('@OnboardingUtil.initUserRegistration(cap) = undefined');
@@ -147,18 +149,19 @@ foam.CLASS({
         .add(this.LoadCapabilitiesAgent)
         .add(this.CreateWizardletsAgent)
         .add(this.FilterWizardletsAgent)
-        .add(this.LoadTopConfig)
+        .add(this.LoadWizardletsAgent)
+        .add(this.AutoSaveWizardletsAgent)
         .add(this.StepWizardAgent, {
-          config: foam.u2.wizard.StepWizardConfig.create({ 
+          config: foam.u2.wizard.StepWizardConfig.create({
             allowBacktracking: false,
-            allowSkipping: false
-          }),
-          view: {
-            class: 'foam.u2.wizard.StepWizardletView',
-            fullScreen: true,
-            hideX: true,
-            backDisabled: true
-          }
+            allowSkipping: false,
+            wizardView: {
+              class: 'foam.u2.wizard.ScrollingStepWizardView',
+              fullScreen: true,
+              hideX: true,
+              backDisabled: true
+            }
+          })
         })
         .add(this.PutFinalJunctionsAgent)
         .execute().then(() => {

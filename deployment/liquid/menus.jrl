@@ -1,3 +1,24 @@
+// Remove the parent menu
+r({"class":"foam.nanos.menu.Menu", "id": "liquid" })
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "dashboard",
+  "parent": ""
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "rules",
+  "parent": ""
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "fileupload",
+  "parent": ""
+})
+
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "users",
@@ -20,13 +41,6 @@ p({
           "value": "liquidBasic"
         }
       },
-      "browseViews": [
-        {
-          "class": "foam.comics.v2.namedViews.NamedViewCollection",
-          "name": "Users",
-          "view": { "class": "foam.nanos.auth.UserDAOBrowserView" }
-        }
-      ],
       "CRUDEnabledActionsAuth": {
         "class": "foam.comics.v2.CRUDEnabledActionsAuth",
         "isEnabled": true,
@@ -223,12 +237,13 @@ p({
           }
         }
     },
-  "registrations":[]
+  "registrations":[],
+  "parent": ""
 })
 
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "transactions",
+  "id": "transactions-liquid",
   "label": "Transactions",
   "handler":
     {
@@ -280,7 +295,8 @@ p({
             "class": "net.nanopay.liquidity.ui.transaction.LiquidSourceAccountFilterBorder"
           }
         }
-    }
+    },
+  "parent": ""
 })
 
 p({
@@ -301,9 +317,10 @@ p({
           "class": "net.nanopay.liquidity.crunch.LiquidEnabledActionsAuth",
           "modelName": "liquiditysettings"
         }
-      },
+      }
     }
-  }
+  },
+  "parent": ""
 })
 
 p({
@@ -334,7 +351,7 @@ p({
           "class": "net.nanopay.liquidity.crunch.LiquidEnabledActionsAuth",
           "modelName": "rule"
         }
-      },
+      }
     }
   },
   "parent": "rules"

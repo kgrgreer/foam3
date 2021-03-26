@@ -29,7 +29,7 @@ foam.CLASS({
     'foam.mlang.order.Comparator',
     'foam.mlang.predicate.Predicate',
     'foam.nanos.auth.*',
-    'net.nanopay.contacts.Contact',
+    'net.nanopay.contacts.PersonalContact',
 
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.OR'
@@ -97,11 +97,11 @@ foam.CLASS({
 
         if ( isUpdate ) {
           boolean ownsAccount = newAccount.getOwner() == user.getId() && oldAccount.getOwner() == user.getId();
-          if ( ! isUpdateDefault(oldAccount, newAccount) ) {
-                  if (auth.check(x, GLOBAL_ACCOUNT_UPDATE)) {
-                    throw new AuthorizationException("User can update only isDefault property");
-                  }
-                }
+          // TODO: explicitly check for update on status, verifiedBy for admin
+          if ( ! isUpdateDefault(oldAccount, newAccount) &&
+               ! auth.check(x, GLOBAL_ACCOUNT_UPDATE) ) {
+            throw new AuthorizationException("User can update only isDefault property");
+          }
 
           if (
             ! ownsAccount &&
@@ -221,7 +221,7 @@ foam.CLASS({
       javaCode: `
         User user = ((Subject) x.get("subject")).getUser();
         User owner = account.findOwner(x);
-        return owner instanceof Contact && ((Contact) owner).getOwner() == user.getId();
+        return owner instanceof PersonalContact && ((PersonalContact) owner).getOwner() == user.getId();
       `
     },
     {
@@ -236,7 +236,7 @@ foam.CLASS({
         FObject nu = (FObject) newAccount.fclone();
         FObject old = (FObject) oldAccount.fclone();
         for ( String propName : ignore.split("\\\\s*,\\\\s*") ) {
-          PropertyInfo prop = (PropertyInfo) nu.getClassInfo().getAxiomByName("isDefault");
+          PropertyInfo prop = (PropertyInfo) nu.getClassInfo().getAxiomByName(propName);
           if (prop != null) {
             prop.clear(nu);
             prop.clear(old);

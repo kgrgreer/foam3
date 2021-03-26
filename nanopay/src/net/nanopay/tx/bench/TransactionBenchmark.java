@@ -18,24 +18,28 @@
 package net.nanopay.tx.bench;
 
 import java.util.*;
-
-import foam.core.FObject;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.sink.Count;
 import foam.nanos.boot.NSpec;
-import foam.nanos.app.AppConfig;
-import foam.nanos.auth.User;
+import foam.nanos.auth.*;
 import foam.nanos.bench.Benchmark;
+import foam.nanos.auth.LifecycleState;
+import foam.nanos.crunch.Capability;
+import foam.nanos.crunch.CapabilityJunctionStatus;
+import foam.nanos.crunch.UserCapabilityJunction;
 import foam.nanos.logger.Logger;
-import foam.nanos.ruler.Rule;
+import foam.nanos.pm.PM;
+import foam.nanos.session.Session;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
+import net.nanopay.account.TrustAccount;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
-import net.nanopay.tx.planner.AbstractTransactionPlanner;
+import net.nanopay.bank.CABankAccount;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.planner.PlannerGroup;
 
 import static foam.mlang.MLang.*;
@@ -66,28 +70,39 @@ public class TransactionBenchmark
   protected DAO ruleDAO_;
   protected DAO ruleGroupDAO_;
   protected DAO transactionDAO_;
+  protected DAO plannerDAO_;
   protected DAO userDAO_;
+  protected DAO groupDAO_;
+  protected DAO groupPermissionJunctionDAO_;
+  protected DAO sessionDAO_;
   protected Long MAX_USERS = 100L;
   protected Long STARTING_BALANCE = 100000L;
   protected String ADMIN_BANK_ACCOUNT_NUMBER = "2131412443534534";
-  protected Boolean purge_ = true;
-  protected Boolean disableRules_ = false;
-  protected List<String> plannerGroups_ = new ArrayList<>();
+  protected Boolean setupOnly_ = false;
+  protected String spid_ = "benchmark";
 
 
   public void setPurgePerRun(Boolean purge) {
-    purge_ = purge;
+    // nop - legacy script support
   }
 
   public void setDisableRules(Boolean rules) {
-    disableRules_ = rules;
+    // nop - legacy script support
+  }
+
+  public void setSetupOnly(Boolean value) {
+    setupOnly_ = value;
   }
 
   @Override
   public void teardown(X x, java.util.Map stats) {
     DAO dao = (DAO) x.get("localTransactionDAO");
     Count txns = (Count) dao.select(new Count());
-    stats.put("Transactions (M)", (txns.getValue() / 1000.0));
+    if ( txns.getValue() > 0 ) {
+      stats.put("Transactions (M)", String.format(".02%", (txns.getValue() / 1000000.0)));
+    } else {
+      stats.put("Transactions (M)", "0");
+    }
 
     // dump all dao sizes - looking for memory leak
     StringBuilder sb = new StringBuilder();
@@ -116,68 +131,134 @@ public class TransactionBenchmark
         // nop
       }
     }
-    logger_.info(this.getClass().getSimpleName(), "teardown", "counts", sb.toString());
-
-    if ( purge_ ) {
-      while ( dao != null &&
-              !  ( dao instanceof foam.dao.NullDAO ) ) {
-        if ( dao instanceof foam.dao.MDAO ) {
-          foam.dao.MDAO mdao = (foam.dao.MDAO) dao;
-          Count before = (Count) mdao.select(new Count());
-          mdao.removeAll();
-          Count after = (Count) mdao.select(new Count());
-          logger_.info(this.getClass().getSimpleName(), "teardown", "purge", (before.getValue() - after.getValue()));
-          break;
-        } else if ( dao instanceof foam.dao.ProxyDAO ) {
-          dao = ((foam.dao.ProxyDAO) dao).getDelegate();
-        } else {
-          logger_.info(this.getClass().getSimpleName(), "teardown", "purge", "FAILED");
-          break;
+    PlannerGroup planner = (PlannerGroup) ruleGroupDAO_.find_(x, "genericPlanner");
+    if ( planner != null ) {
+      if ( planner.getEnabled() ) {
+        planner = (PlannerGroup) planner.fclone();
+        planner.setEnabled(false);
+        try {
+          ruleGroupDAO_.put(planner);
+        } catch ( Exception e ) {
+          logger_.error("failed to disable planner group:", planner);
         }
       }
-    }
-    // clean up planners
-    PlannerGroup pg = (PlannerGroup) ruleGroupDAO_.find("benchmark").fclone();
-    pg.setEnabled(false);
-    ruleGroupDAO_.put(pg);
-    for (String groupName : plannerGroups_) {
-      PlannerGroup p = (PlannerGroup) (ruleGroupDAO_.find(groupName).fclone());
-      p.setEnabled(true);
-      ruleGroupDAO_.put(p);
     }
   }
 
   @Override
   public void setup(X x) {
-    AppConfig config = (AppConfig) x.get("appConfig");
-    if ( config.getMode() == foam.nanos.app.Mode.PRODUCTION ) return;
-
     logger_ = (Logger) x.get("logger");
-    logger_.info(this.getClass().getSimpleName(), "setup");
+
     System.gc();
     ruleDAO_ = (DAO) x.get("ruleDAO");
     ruleGroupDAO_ = (DAO) x.get("ruleGroupDAO");
     accountDAO_ = (DAO)x.get("localAccountDAO");
     transactionDAO_ = (DAO) x.get("localTransactionDAO");
+    plannerDAO_ = (DAO) x.get("localTransactionPlannerDAO");
     userDAO_ = (DAO) x.get("localUserDAO");
+    groupDAO_ = (DAO) x.get("groupDAO");
+    sessionDAO_ = (DAO) x.get("localSessionDAO");
 
-    User admin = (User) userDAO_.find(1L);
+    groupPermissionJunctionDAO_ = (DAO) x.get("groupPermissionJunctionDAO");
+    groupPermissionJunctionDAO_.put(new GroupPermissionJunction.Builder(x).setSourceId("api-base").setTargetId("digitalaccount.default.create").build());
+    groupPermissionJunctionDAO_.put(new GroupPermissionJunction.Builder(x).setSourceId("api-base").setTargetId("service.balanceDAO").build());
+    groupPermissionJunctionDAO_.put(new GroupPermissionJunction.Builder(x).setSourceId("api-base").setTargetId("balanceDAO").build());
+
+    DAO capDAO = (DAO) x.get("localCapabilityDAO");
+    Capability cap = (Capability) capDAO.find("SandBoxPlannerCapability");
+    if ( cap == null ) {
+      throw new RuntimeException("SandBoxPlannerCapability not found");
+    }
+
+    ServiceProvider sp = new ServiceProvider();
+    sp.setId(spid_);
+    sp.setDescription(spid_+" Spid");
+    ((DAO) x.get("serviceProviderDAO")).put_(x, sp);
+
+    Group group = new Group();
+    group.setId(spid_+"-payment-ops");
+    groupDAO_.put_(x, group);
+    group = new Group();
+    group.setId(spid_+"-fraud-ops");
+    groupDAO_.put_(x, group);
+
+    User admin = (User) userDAO_.find(EQ(User.EMAIL, "admin@nanopay.net"));
+    if ( admin == null ) {
+      throw new RuntimeException("Failed to find admin user");
+    }
+    admin = (User) admin.fclone();
+    admin.setId(14L);
+    admin.setSpid(spid_);
+    admin.setFirstName(spid_);
+    admin.setLastName(spid_);
+    admin.setUserName(spid_);
+    admin.setEmail(spid_+"@nanopay.net");
+    admin = (User) userDAO_.put_(x, admin);
+
+    CABankAccount ra = (CABankAccount) accountDAO_.find("b26ab514-e75c-4e94-9bd3-25b556bf5eef-benchmark");
+    if ( ra == null ) {
+      ra = new CABankAccount();
+      ra.setId("b26ab514-e75c-4e94-9bd3-25b556bf5eef-benchmark");
+      ra.setInstitutionNumber("943");
+      ra.setBranchId("59423");
+      ra.setAccountNumber("47689234");
+      Address raa = new Address();
+      raa.setCountryId("CA");
+      raa.setPostalCode("X1X 1X1");
+      raa.setRegionId("CA-ON");
+      raa.setCity("Toronto");
+      raa.setStreetName("1");
+      raa.setStreetNumber("1");
+      ra.setAddress(raa);
+      ra.setOwner(admin.getId());
+      ra.setSpid(spid_);
+      ra.setName("Benchmark reserveAccount");
+      ra.setLifecycleState(LifecycleState.ACTIVE);
+      ra.setStatus(BankAccountStatus.VERIFIED);
+      ra = (CABankAccount) accountDAO_.put_(x, ra);
+
+      if (ra == null) {
+        throw new RuntimeException("reserve account put has failed");
+      }
+
+    }
+    TrustAccount ta = (TrustAccount) accountDAO_.find("1c0d39f4-aeea-499b-b5fb-2f0bacc512c0-benchmark");
+    if ( ta == null ) {
+      ta = new TrustAccount();
+      ta.setId("1c0d39f4-aeea-499b-b5fb-2f0bacc512c0-benchmark");
+      ta.setReserveAccount(ra.getId());
+      ta.setOwner(admin.getId());
+      ta.setDenomination("CAD");
+      ta.setName("Benchmark trustAccount");
+      ta.setSpid(spid_);
+      ta = (TrustAccount) accountDAO_.put_(x, ta);
+
+      if (ta == null) {
+        throw new RuntimeException("trust account put has failed");
+      }
+    }
 
     DAO dao = accountDAO_.where(EQ(BankAccount.ACCOUNT_NUMBER,ADMIN_BANK_ACCOUNT_NUMBER)).limit(1);
     List banks = ((ArraySink) dao.select(new ArraySink())).getArray();
-    BankAccount bank = null;
+    BankAccount bank;
     if ( banks.size() == 1 ) {
       bank = (BankAccount) banks.get(0);
     } else {
-      bank = new BankAccount();
+      bank = new CABankAccount();
       bank.setName(ADMIN_BANK_ACCOUNT_NUMBER);
       bank.setDenomination("CAD");
       bank.setAccountNumber(ADMIN_BANK_ACCOUNT_NUMBER);
       bank.setOwner(admin.getId());
       bank.setStatus(BankAccountStatus.VERIFIED);
+      bank.setLifecycleState(LifecycleState.ACTIVE);
+      bank = ((BankAccount) accountDAO_.put_(x, bank));
+    }
+    if ( bank.getStatus() != BankAccountStatus.VERIFIED ) {
+      bank.setStatus(BankAccountStatus.VERIFIED);
       bank = ((BankAccount) accountDAO_.put_(x, bank));
     }
 
+    DAO ucj = (DAO) x.get("userCapabilityJunctionDAO");
     for ( long i = 1; i <= MAX_USERS; i++ ) {
       User user;
       long id = 10000 + i;
@@ -188,12 +269,41 @@ public class TransactionBenchmark
         String s = String.valueOf(id);
         user.setFirstName("Teddy");
         user.setLastName("Tester");
-        user.setEmail(s+"@nanopay.net");
+        user.setEmail(s+"@BenchmarkTest.net");
         user.setEmailVerified(true);
+        user.setSpid(spid_);
         // NOTE: use 'business' group so default digital account is created below.
-        user.setGroup("business");
-        userDAO_.put(user);
+        user.setGroup("api-base");
+        user = (User) userDAO_.put(user);
+        // add the ucj stuff for sandbox planners
+        UserCapabilityJunction userCap = new UserCapabilityJunction();
+        userCap.setTargetId("SandBoxPlannerCapability");
+        userCap.setSourceId(user.getId());
+        userCap.setStatus(CapabilityJunctionStatus.GRANTED);
+        ucj.put(userCap);
+
+        DigitalAccount da = new DigitalAccount();
+        da.setId(String.valueOf(user.getId()));
+        DigitalAccount a = (DigitalAccount) accountDAO_.find(da.getId());
+        if ( a == null ) {
+          da.setDenomination("CAD");
+          da.setOwner(user.getId());
+          da.setIsDefault(true);
+          da.setTrustAccount(ta.getId());
+          accountDAO_.put(da);
+        } else {
+          a.setTrustAccount(ta.getId());
+          accountDAO_.put(a);
+        }
       }
+      Session session = (Session) sessionDAO_.find(user.getId());
+      if ( session != null ) {
+        sessionDAO_.remove(session);
+      }
+      session = new Session();
+      session.setUserId(user.getId());
+      session.setId(String.valueOf(user.getId()));
+      sessionDAO_.put(session);
     }
 
     // If we don't use users with verfied emails, the transactions won't go
@@ -201,82 +311,52 @@ public class TransactionBenchmark
     userDAO_ = userDAO_.where(AND(EQ(User.EMAIL_VERIFIED, true), EQ(User.LAST_NAME,"Tester"), GT(User.ID, 10000)));
     users_ = ((ArraySink) userDAO_.select(new ArraySink())).getArray();
 
-    // optimize planners
-    boolean plannerFound = false;
-    List pgs = ((ArraySink) ruleGroupDAO_.where(INSTANCE_OF(PlannerGroup.class)).select(new ArraySink())).getArray();
-    for ( Object p : pgs ) {
-      PlannerGroup planner = (PlannerGroup) ((FObject)p).fclone();
-      if (planner.getEnabled() == true) {
-        plannerGroups_.add(planner.getId());
-        planner.setEnabled(false);
-      }
-      if (planner.getId() == "benchmark") {
-        plannerFound = true;
+    PlannerGroup planner = (PlannerGroup) ruleGroupDAO_.find_(x, "genericPlanner");
+    if ( planner != null ) {
+      if ( ! planner.getEnabled() ) {
+        planner = (PlannerGroup) planner.fclone();
         planner.setEnabled(true);
+        try {
+          ruleGroupDAO_.put(planner);
+        } catch ( Exception e ) {
+          logger_.error("failed to enable planner group:", planner);
+        }
       }
-      try {
-        ruleGroupDAO_.put(planner);
-      } catch ( Exception e ) {
-        logger_.error("failed to disable planner group:", p);
-      }
-    }
-    //add benchmark planners only if they don't already exist.
-    if (! plannerFound) {
-      PlannerGroup p = new PlannerGroup();
-      p.setId("benchmark");
-      p.setEnabled(true);
-      ruleGroupDAO_.put(p);
-      AbstractTransactionPlanner r1 = (AbstractTransactionPlanner) ruleDAO_.find(EQ(Rule.NAME, "Digital Transaction Planner")).fclone();
-      AbstractTransactionPlanner r2 = (AbstractTransactionPlanner) ruleDAO_.find(EQ(Rule.NAME, "Generic Cash In Planner")).fclone();
-      r1.setId(UUID.randomUUID().toString());
-      r2.setId(UUID.randomUUID().toString());
-      r1.setRuleGroup("benchmark");
-      r2.setRuleGroup("benchmark");
-      r1.setEnabled(true);
-      r2.setEnabled(true);
-      ruleDAO_.put(r1);
-      ruleDAO_.put(r2);
     }
 
     // distribute the funds to all user digital accounts
     for ( int i = 0 ; i < users_.size() ; i++ ) {
       User user = (User) users_.get(i);
-      //user = (User) user.fclone();
-      DigitalAccount account = DigitalAccount.findDefault(x, user, "CAD");
+      Account account = (Account) accountDAO_.find(user.getId());
+      // DigitalAccount account = DigitalAccount.findDefault(x, user, "CAD");
       accounts_.put(i, account);
       Transaction txn = new Transaction();
       txn.setSourceAccount(bank.getId());
       txn.setDestinationAccount(account.getId());
+      txn.setSpid(spid_);
       txn.setAmount(STARTING_BALANCE);
       transactionDAO_.put(txn);
       Long balance = account.findBalance(x);
       assert balance >= STARTING_BALANCE;
     }
-
-    // optionally disable all rules except for planners.
-    if ( disableRules_ ) {
-      List rules = ((ArraySink) ruleDAO_.where(EQ(INSTANCE_OF(AbstractTransactionPlanner.class),false)).select(new ArraySink())).getArray();
-      for ( Object r : rules ) {
-        foam.nanos.ruler.Rule rule = (foam.nanos.ruler.Rule) ((foam.core.FObject)r).fclone();
-        rule.setEnabled(false);
-        try {
-          ruleDAO_.put(rule);
-        } catch ( Exception e ) {
-          logger_.error("failed to disable rule:", rule);
-        }
-      }
-    }
   }
 
   @Override
   public void execute(X x) {
-    AppConfig config = (AppConfig) x.get("appConfig");
-    if ( config.getMode() == foam.nanos.app.Mode.PRODUCTION ) return;
+    if ( setupOnly_ ) {
+      return;
+    }
+    if ( users_.size() < 2 ) {
+      logger_.warning("execute", "insufficient users", users_.size());
+      return;
+    }
+    logger_.debug("execute", "start");
 
-    int fi = (int) (Math.random() * users_.size());
-    int ti = (int) (Math.random() * users_.size());
+    int fi = 0;
+    int ti = 0;
 
-    while(fi == ti){
+    while ( fi == ti ) {
+      fi = (int) (Math.random() * users_.size());
       ti = (int) (Math.random() * users_.size());
     }
 
@@ -290,17 +370,30 @@ public class TransactionBenchmark
     if ( payeeId != payerId ) {
       Transaction transaction = new Transaction();
       transaction.setPayeeId(payeeId);
+      transaction.setSpid(spid_);
       transaction.setPayerId(payerId);
       transaction.setAmount(amount);
       Account payerAccount = (DigitalAccount) accounts_.get(fi);
       Account payeeAccount = (DigitalAccount) accounts_.get(ti);
       transaction.setSourceAccount(payerAccount.getId());
       transaction.setDestinationAccount(payeeAccount.getId());
+      PM pm = new PM(this.getClass().getSimpleName(), "execute");
       try {
+        TransactionQuote quote = new TransactionQuote();
+        quote.setRequestTransaction(transaction);
+        PM quotePm = new PM(this.getClass().getSimpleName(), "quote");
+        quote = (TransactionQuote) plannerDAO_.put(quote);
+        transaction = quote.getPlan();
+        quotePm.log(x);
+        PM txnPm = new PM(this.getClass().getSimpleName(), "transaction");
         transactionDAO_.put(transaction);
-      } catch (RuntimeException e) {
-        System.out.println(e.getMessage());
-        logger_.warning(e.getMessage());
+        txnPm.log(x);
+      } catch (Throwable e) {
+        pm.error(x, e);
+        throw e;
+      } finally {
+        pm.log(x);
+        logger_.debug("execute", "end");
       }
     }
   }

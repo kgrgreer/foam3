@@ -30,7 +30,8 @@ foam.CLASS({
 Stores all Exchange Rate info.`,
 
   implements: [
-    'net.nanopay.tx.AcceptAware'
+    'net.nanopay.tx.AcceptAware',
+    'net.nanopay.tx.ValueMovementTransaction'
   ],
 
   javaImports: [
@@ -53,11 +54,10 @@ Stores all Exchange Rate info.`,
     {
       name: 'fxRate',
       class: 'Double',
-      section: 'amountSelection',
-      visibility: function(fxRate) {
-        if ( ! fxRate || fxRate == 1 ) return foam.u2.DisplayMode.HIDDEN;
-        return foam.u2.DisplayMode.RO;
-      },
+      section: 'transactionInformation',
+      order: 200,
+      gridColumns: 6,
+      visibility: 'RO',
       view: function (_, X) {
         return X.data.slot(function(fxRate) {
           return foam.u2.TextField.create({
@@ -68,26 +68,42 @@ Stores all Exchange Rate info.`,
       }
     },
     {
-      name: 'fxExpiry',
-      class: 'DateTime'
-    },
-    {
-      name: 'accepted',
-      class: 'Boolean',
-      value: false
-    },
-    {
-      name: 'fxQuoteId', // or fxQuoteCode
-      class: 'String'
+      name: 'fxQuoteId',
+      class: 'String',
+      aliases: [ 'fxQuoteCode' ],
+      section: 'transactionInformation',
+      order: 205,
+      gridColumns: 6
     },
     {
       name: 'fxFees',
       class: 'FObjectProperty',
-      of: 'net.nanopay.fx.FeesFields'
+      of: 'net.nanopay.fx.FeesFields',
+      section: 'transactionInformation',
+      order: 210,
+      gridColumns: 6
+    },
+    {
+      name: 'fxExpiry',
+      class: 'DateTime',
+      section: 'transactionInformation',
+      order: 220,
+      gridColumns: 6
+    },
+    {
+      name: 'accepted',
+      class: 'Boolean',
+      value: false,
+      section: 'transactionInformation',
+      order: 225,
+      gridColumns: 6
     },
     {
       name: 'paymentMethod',
-      class: 'String'
+      class: 'String',
+      section: 'transactionInformation',
+      order: 260,
+      gridColumns: 6
     }
   ],
 

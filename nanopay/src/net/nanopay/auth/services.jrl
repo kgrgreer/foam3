@@ -21,3 +21,51 @@ p({
   "authenticate": true,
   "serviceClass": "net.nanopay.auth.AuthenticationTokenWebAgent"
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "localLoginAttemptDAO",
+  "serve": false,
+  "description": "A database to keep track of login attempts made by users.",
+  "documentation":
+  """
+    When a user attempts a login, a LoginAttempt object is used to store its email, user id, and group. This
+    dao stores all such objects. The login attempt object also has a date field to describe when the login was
+    attempted so multiple such objects can safely refer to the same user.
+  """,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.auth.LoginAttempt.getOwnClassInfo())
+      .setSeqNo(true)
+      .setPermissionPrefix("loginAttempts")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("loginAttempts")
+      .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
+        .setComparator(foam.mlang.MLang.DESC(net.nanopay.auth.LoginAttempt.CREATED))
+        .setSize(10000)
+        .build())
+      .setIndex(new foam.core.PropertyInfo[] {net.nanopay.auth.LoginAttempt.CREATED})
+      .setRuler(false)
+      .build()
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "loginAttemptDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.auth.LoginAttempt.getOwnClassInfo())
+      .setInnerDAO(((foam.dao.DAO) x.get("localLoginAttemptDAO")))
+      .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(net.nanopay.auth.LoginAttempt.CREATED).build() })
+      .setRuler(false)
+      .build();
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.auth.LoginAttempt"
+    }
+  """
+})

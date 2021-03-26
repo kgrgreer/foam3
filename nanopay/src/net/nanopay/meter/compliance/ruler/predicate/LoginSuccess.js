@@ -25,6 +25,7 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.auth.LoginAttempt',
+    'foam.mlang.predicate.EndsWith',
     'static foam.mlang.MLang.*',
   ],
 
@@ -34,7 +35,10 @@ foam.CLASS({
       javaCode: `
         return AND(
           EQ(DOT(NEW_OBJ, LoginAttempt.LOGIN_SUCCESSFUL), true),
-          EQ(DOT(NEW_OBJ, LoginAttempt.GROUP), "sme"),
+          new EndsWith.Builder(getX())
+            .setArg1(DOT(NEW_OBJ, LoginAttempt.GROUP))
+            .setArg2(prepare("-sme"))
+            .build(),
           EQ(OLD_OBJ, null)
         ).f(obj);
       `

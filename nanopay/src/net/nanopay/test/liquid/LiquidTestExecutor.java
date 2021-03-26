@@ -12,7 +12,7 @@ import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserQueryService;
 import foam.nanos.logger.Logger;
-import foam.nanos.ruler.Operations;
+import foam.nanos.dao.Operation;
 import foam.nanos.test.Test;
 
 import java.util.ArrayList;

@@ -50,20 +50,22 @@ foam.CLASS({
             // as it is also used by beneficial owner KYC rule (id:1431).
             User user = (User) obj;
             IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
-            Map <String, Object> memoMap = fetchMemos(x, true, user.getId(), "Dow Jones User");
+            Map <String, Object> memoMap = identityMindService.fetchMemos(x, true, user.getId(), "Dow Jones User");
             IdentityMindResponse response = identityMindService.evaluateConsumer(x, obj, getStage(), memoMap);
             ComplianceValidationStatus status = response.getComplianceValidationStatus();
-
+            
             if ( obj instanceof User ) {
               requestApproval(x,
                 new ComplianceApprovalRequest.Builder(x)
                   .setObjId(obj.getProperty("id"))
-                  .setDaoKey("localUserDAO")
+                  .setDaoKey("userDAO")
+                  .setServerDaoKey("localUserDAO")
                   .setCauseId(response.getId())
                   .setCauseDaoKey("identityMindResponseDAO")
                   .setStatus(getApprovalStatus(status))
                   .setApprover(getApprover(status))
-                  .setClassification("Validate User Using IdentityMind")
+                  .setCreatedFor(user.getId())
+                  .setClassification("User IdentityMind Consumer KYC")
                   .build()
               );
             }

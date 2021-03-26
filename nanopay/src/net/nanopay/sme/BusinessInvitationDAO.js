@@ -44,10 +44,10 @@ foam.CLASS({
     'net.nanopay.model.Business',
     'net.nanopay.model.Invitation',
     'net.nanopay.model.InvitationStatus',
-    
+
     'java.net.URLEncoder',
     'java.util.*',
-    
+
     'static foam.mlang.MLang.*'
   ],
 
@@ -57,13 +57,6 @@ foam.CLASS({
     { name: 'ENCODING_ERROR_MSG', message: 'Error encoding the email or business name' }
   ],
 
-  properties: [
-    {
-      class: 'foam.dao.DAOProperty',
-      name: 'whitelistedEmailDAO'
-    }
-  ],
-
   axioms: [
     {
       name: 'javaExtras',
@@ -71,8 +64,7 @@ foam.CLASS({
         cls.extras.push(`
           public BusinessInvitationDAO(X x, DAO delegate) {
             super(x, delegate);
-            setWhitelistedEmailDAO((DAO) x.get("whitelistedEmailDAO"));
-          }    
+          }
         `
         );
       }
@@ -169,12 +161,6 @@ foam.CLASS({
           joinBusiness.generateTokenWithParameters(x, invitee, parameters);
         } else {
           // Inviting a user who's not on our platform to join a business.
-
-          // Add invited user to the email whitelist.
-          EmailWhitelistEntry entry = new EmailWhitelistEntry();
-          entry.setId(invite.getEmail());
-          getWhitelistedEmailDAO().inX(getX()).put(entry);
-
           sendInvitationEmail(x, business, invite);
         }
 
@@ -202,9 +188,9 @@ foam.CLASS({
         User agent = ((Subject) x.get("subject")).getRealUser();
         Logger logger = (Logger) getX().get("logger");
 
-        Group group = business.findGroup(x);
+        Group group = agent.findGroup(x);
         AppConfig appConfig = group.getAppConfig(x);
-        String url = appConfig.getUrl().replaceAll("/$", "");
+        String url = appConfig.getUrl();
 
         // Create the email message
         EmailMessage message = new EmailMessage.Builder(x)

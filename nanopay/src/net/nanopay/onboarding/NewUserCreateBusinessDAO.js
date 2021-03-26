@@ -62,23 +62,28 @@ foam.CLASS({
   properties: [
     {
       class: 'foam.dao.DAOProperty',
-      name: 'localBusinessDAO'
+      name: 'localBusinessDAO',
+      javaFactory: 'return (DAO) getX().get("localBusinessDAO");'
     },
     {
       class: 'foam.dao.DAOProperty',
-      name: 'agentJunctionDAO'
+      name: 'agentJunctionDAO',
+      javaFactory: 'return (DAO) getX().get("agentJunctionDAO");'
     },
     {
       class: 'foam.dao.DAOProperty',
-      name: 'signingOfficerJunctionDAO'
+      name: 'signingOfficerJunctionDAO',
+      javaFactory: 'return (DAO) getX().get("signingOfficerJunctionDAO");'
     },
     {
       class: 'foam.dao.DAOProperty',
-      name: 'tokenDAO'
+      name: 'tokenDAO',
+      javaFactory: 'return (DAO) getX().get("tokenDAO");'
     },
     {
       class: 'foam.dao.DAOProperty',
-      name: 'invitationDAO'
+      name: 'invitationDAO',
+      javaFactory: 'return (DAO) getX().get("invitationDAO");'
     }
   ],
 
@@ -226,7 +231,7 @@ foam.CLASS({
           .setEmailVerified(true)
           .build();
 
-          getLocalBusinessDAO().inX(userContext).put(business);
+        getLocalBusinessDAO().inX(userContext).put(business);
 
         return user;
       `

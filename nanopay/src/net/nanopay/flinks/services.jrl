@@ -26,18 +26,20 @@ p({
     "name":"flinksAccountsDetailResponseDAO",
     "serve":true,
     "serviceScript":"""
-        foam.dao.DAO hashingJDAO = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, net.nanopay.flinks.model.FlinksAccountsDetailResponse.getOwnClassInfo(), "flinksAccountsDetailResponse");
-        return new foam.nanos.auth.CreatedAwareDAO.Builder(x)
-            .setDelegate(new net.nanopay.flinks.MaskedFlinksAccountDAO.Builder(x)
-            .setDelegate(new net.nanopay.flinks.RefinedFlinksAccountDAO.Builder(x)
-            .setDelegate(new foam.dao.EasyDAO.Builder(x)
-                .setSeqNo(true)
-                .setInnerDAO(hashingJDAO)
-                .setName("flinksAccountsDetailResponse")
-                .setOf(net.nanopay.flinks.model.FlinksAccountsDetailResponse.getOwnClassInfo())
-                .build())
-            .build())
-            .build())
+      mdao = new foam.dao.MDAO(net.nanopay.flinks.model.FlinksAccountsDetailResponse.getOwnClassInfo());
+      inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "flinksAccountsDetailResponse", "true".equals(System.getProperty("CLUSTER")));
+      decorator = new net.nanopay.flinks.MaskedFlinksAccountDAO.Builder(x)
+        .setDelegate(new net.nanopay.flinks.RefinedFlinksAccountDAO.Builder(x)
+          .setDelegate(new foam.dao.NullDAO(x, net.nanopay.flinks.model.FlinksAccountsDetailResponse.getOwnClassInfo()))
+          .build())
+        .build();
+
+      return new foam.dao.EasyDAO.Builder(x)
+        .setOf(net.nanopay.flinks.model.FlinksAccountsDetailResponse.getOwnClassInfo())
+        .setSeqNo(true)
+        .setMdao(mdao)
+        .setInnerDAO(inner)
+        .setDecorator(decorator)
         .build();
     """, 
     "client":"""

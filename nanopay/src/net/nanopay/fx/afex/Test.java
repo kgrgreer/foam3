@@ -34,28 +34,28 @@ public class Test implements ContextAgent {
   }
 
   private void testOnboardCorporateClient(AFEXService afexService) {
-    OnboardCorporateClientRequest onboardCorporateClientRequest = new OnboardCorporateClientRequest();
-    onboardCorporateClientRequest.setAccountPrimaryIdentificationExpirationDate("01/01/2021");
-    onboardCorporateClientRequest.setAccountPrimaryIdentificationNumber("123456789");
-    onboardCorporateClientRequest.setAccountPrimaryIdentificationType("Passport");
-    onboardCorporateClientRequest.setBusinessAddress1("300 king st");
+    OnboardAFEXClientRequest onboardCorporateClientRequest = new OnboardAFEXClientRequest();
+    onboardCorporateClientRequest.setAccountEntityType(AccountEntityType.CORPORATE_CLIENT.getLabel());
+    onboardCorporateClientRequest.setIDExpirationDate("01/01/2021");
+    onboardCorporateClientRequest.setIDNo("123456789");
+    onboardCorporateClientRequest.setIDType("Passport");
+    onboardCorporateClientRequest.setBusinessAddress("300 king st");
     onboardCorporateClientRequest.setBusinessCity("Toronto");
-    onboardCorporateClientRequest.setBusinessCountryCode("CA");
-    onboardCorporateClientRequest.setBusinessName("Nanopay");
+    onboardCorporateClientRequest.setBusinessCountry("CA");
+    onboardCorporateClientRequest.setLegalCompanyName("Nanopay");
     onboardCorporateClientRequest.setBusinessZip("M2B1N7");
     onboardCorporateClientRequest.setCompanyType("Partnership");
-    onboardCorporateClientRequest.setContactBusinessPhone("1234567891");
-    onboardCorporateClientRequest.setDateOfIncorporation("01/01/2001");
+    onboardCorporateClientRequest.setBusinessTelephoneNo("1234567891");
+    onboardCorporateClientRequest.setDateOfFormation("01/01/2001");
     onboardCorporateClientRequest.setFirstName("Test");
-    onboardCorporateClientRequest.setGender("Male");
     onboardCorporateClientRequest.setLastName("Abc");
-    onboardCorporateClientRequest.setPrimaryEmailAddress("test@abc.com");
+    onboardCorporateClientRequest.setEmail("test@abc.com");
     onboardCorporateClientRequest.setTermsAndConditions("True");
 
-    OnboardCorporateClientResponse onboardCorporateClientResponse = afexService.onboardCorporateClient(onboardCorporateClientRequest,"");
-    System.out.println(onboardCorporateClientResponse.getAPIKey());
-    System.out.println(onboardCorporateClientResponse.getAccountNumber());
-    System.out.println(onboardCorporateClientResponse.getMessage());
+    OnboardAFEXClientResponse onboardAFEXClientResponse = afexService.onboardAFEXClient(onboardCorporateClientRequest, "", AccountEntityType.CORPORATE_CLIENT);
+    System.out.println(onboardAFEXClientResponse.getAPIKey());
+    System.out.println(onboardAFEXClientResponse.getAccountNumber());
+    System.out.println(onboardAFEXClientResponse.getMessage());
   }
 
   private void testGetClientAccountStatus(AFEXService afexService) {
@@ -64,31 +64,30 @@ public class Test implements ContextAgent {
   }
 
   private void testRetrieveClientAccountDetails(AFEXService afexService) {
-    RetrieveClientAccountDetailsResponse retrieveClientAccountDetailsResponse = afexService.retrieveClientAccountDetails("000058C9V464e2c3a-a796-e911-be2f-0050569b0074","");
+    RetrieveClientAccountDetailsResponse retrieveClientAccountDetailsResponse = afexService.retrieveClientAccountDetails("000058C9V464e2c3a-a796-e911-be2f-0050569b0074", "");
     System.out.println(retrieveClientAccountDetailsResponse.getAccountStatus());
     System.out.println(retrieveClientAccountDetailsResponse.getCitizenship());
-    System.out.println(retrieveClientAccountDetailsResponse.getContactCity());
-    System.out.println(retrieveClientAccountDetailsResponse.getContactAddress1());
-    System.out.println(retrieveClientAccountDetailsResponse.getContactAddress2());
-    System.out.println(retrieveClientAccountDetailsResponse.getContactAddress3());
-    System.out.println(retrieveClientAccountDetailsResponse.getContactCountryCode());
-    System.out.println(retrieveClientAccountDetailsResponse.getContactPrimaryIdentificationExpirationDate());
-    System.out.println(retrieveClientAccountDetailsResponse.getContactPrimaryIdentificationIssuingAgency());
-    System.out.println(retrieveClientAccountDetailsResponse.getContactPrimaryIdentificationNumber());
-    System.out.println(retrieveClientAccountDetailsResponse.getContactPrimaryIdentificationType());
-    System.out.println(retrieveClientAccountDetailsResponse.getContactStateRegion());
-    System.out.println(retrieveClientAccountDetailsResponse.getContactZip());
+    System.out.println(retrieveClientAccountDetailsResponse.getBusinessCity());
+    System.out.println(retrieveClientAccountDetailsResponse.getBusinessAddress());
+    System.out.println(retrieveClientAccountDetailsResponse.getBusinessCountry());
+    // not sure what these are supposed to be yet,
+    // not included in api accountfind response
+    // System.out.println(retrieveClientAccountDetailsResponse.getIDExpirationDate());
+    // System.out.println(retrieveClientAccountDetailsResponse.getIssueJurisdiction());
+    // System.out.println(retrieveClientAccountDetailsResponse.getIDNo());
+    // System.out.println(retrieveClientAccountDetailsResponse.getIDType());
+    System.out.println(retrieveClientAccountDetailsResponse.getBusinessState());
+    System.out.println(retrieveClientAccountDetailsResponse.getBusinessZip());
     System.out.println(retrieveClientAccountDetailsResponse.getDateOfBirth());
     System.out.println(retrieveClientAccountDetailsResponse.getExpectedMonthlyPayments());
     System.out.println(retrieveClientAccountDetailsResponse.getExpectedMonthlyVolume());
     System.out.println(retrieveClientAccountDetailsResponse.getFirstName());
-    System.out.println(retrieveClientAccountDetailsResponse.getGender());
     System.out.println(retrieveClientAccountDetailsResponse.getJobTitle());
     System.out.println(retrieveClientAccountDetailsResponse.getLastName());
     System.out.println(retrieveClientAccountDetailsResponse.getMiddleName());
-    System.out.println(retrieveClientAccountDetailsResponse.getPhoneNumber());
+    System.out.println(retrieveClientAccountDetailsResponse.getBusinessTelephoneNo());
     System.out.println(retrieveClientAccountDetailsResponse.getPrimaryEmailAddress());
-    System.out.println(retrieveClientAccountDetailsResponse.getTaxIdentificationNumber());
+    // System.out.println(retrieveClientAccountDetailsResponse.getTaxIdentificationNumber());
     System.out.println(retrieveClientAccountDetailsResponse.getTermsAndConditions());
   }
 

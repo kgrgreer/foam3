@@ -41,6 +41,7 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
     'net.nanopay.accounting.xero.model.XeroInvoice',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.bank.CanReceiveCurrency',
@@ -120,9 +121,8 @@ foam.CLASS({
       border-radius: 4px;
     }
     ^ .actions-wrapper {
-      padding: 23px 0px 34px;
       color: #8e9090;
-      margin-top: 2px;
+      margin: 17px 0px 17px 0px;
     }
     ^ .foam-u2-ActionView {
       width: 158px;
@@ -513,8 +513,8 @@ foam.CLASS({
                   .add(this.BACK)
                 .end()
                 .on('click', () => {
-                  var menuId = this.isPayable ? 'capability.main.invoices.payables'
-                    : 'capability.main.invoices.receivables';
+                  var menuId = this.isPayable ? 'mainmenu.invoices.payables'
+                    : 'mainmenu.invoices.receivables';
                   this.menuDAO
                     .find(menuId)
                     .then((menu) => menu.launch());
@@ -524,7 +524,7 @@ foam.CLASS({
                 .start()
                   .addClass(this.myClass('header-align-top'))
                   .addClass('x-large-header')
-                  .add('Invoice #' + this.invoice.invoiceNumber)
+                  .add(this.PART_ONE_SAVE + this.invoice.invoiceNumber)
                 .end()
                 // Dynamic create the primary action
                 .start()
@@ -632,47 +632,46 @@ foam.CLASS({
                     .start().add('--').hide(this.isProcessOrComplete$).end()
                   .end()
                 .end()
-                .start().addClass('invoice-row')
-                  .start().show(this.isProcessOrComplete$)
-                    .addClass('invoice-text')
-                    .start().show(this.isPaid$)
-                      .addClass('table-content')
-                      .add(this.DATE_CREDITED)
-                    .end()
-                    .start().show(this.isProcess$)
-                      .addClass('table-content')
-                      .add(this.ESTIMATED_CREDIT_DATE)
-                    .end()
-                    .start().show(this.relatedTransaction$)
-                      .add(this.slot(function(invoice$paymentDate) {
-                        if ( invoice$paymentDate ) {
-                          var creditDate =
-                            invoice$paymentDate.toISOString().substring(0, 10);
-                          return this.isPaid ? creditDate : `${creditDate} *`;
-                        } else {
-                          return '--';
-                        }
-                      }))
-                    .end()
-                  .end()
-                  .start().show(this.showBankAccount$).addClass('invoice-text')
-                    .start().addClass('table-content').add(this.bankAccountLabel).end()
-                    .add(this.bankAccount$.map((account) => {
-                      if ( account ) {
-                        return `${account.name} ` +
-                          `${'*'.repeat(account.accountNumber.length-4)}` +
-                          `${account.accountNumber.slice(-4)}`;
-                      } else {
-                        return '--';
-                      }
-                    }))
-                  .end()
-                .end()
-              .end()
-              .start().show(this.isProcess$)
-                .addClass(this.myClass('annotation'))
-                .add(this.ANNOTATION)
-              .end()
+                // NOTE: Temporarily hiding til we refactor invoice view
+//                .start().addClass('invoice-row')
+//                  .start().show(this.isProcessOrComplete$)
+//                    .addClass('invoice-text')
+//                    .start().show(this.isPaid$)
+//                      .addClass('table-content')
+//                      .add(this.DATE_CREDITED)
+//                    .end()
+                    // .start().show(this.isProcess$)
+                    //   .addClass('table-content')
+                    //   .add(this.ESTIMATED_CREDIT_DATE)
+                    // .end()
+                    // .start().show(this.relatedTransaction$)
+                    //   .add(this.slot(function(invoice$paymentDate) {
+                    //     if ( invoice$paymentDate ) {
+                    //       var creditDate =
+                    //         invoice$paymentDate.toLocaleDateString(foam.locale);
+                    //       return this.isPaid ? creditDate : `${creditDate} *`;
+                    //     } else {
+                    //       return '--';
+                    //     }
+                    //   }))
+                    // .end()
+                  //.end()
+                  // .start().show(this.showBankAccount$).addClass('invoice-text')
+                  //   .start().addClass('table-content').add(this.bankAccountLabel).end()
+                  //   .add(this.bankAccount$.map((account) => {
+                  //     if ( account ) {
+                  //       return `${account.name} ${self.BankAccount.mask(account.accountNumber)}`;
+                  //     } else {
+                  //       return '--';
+                  //     }
+                  //   }))
+                  // .end()
+                //.end()
+              //.end()
+              // .start().show(this.isProcess$)
+              //   .addClass(this.myClass('annotation'))
+              //   .add(this.ANNOTATION)
+              // .end()
             .end()
 
             .add(this.slot(function(transactionConfirmationPDF) {
@@ -808,6 +807,9 @@ foam.CLASS({
         // Always disabled the paid button
         return false;
       },
+      code: function() {
+        // Do nothing since it always disabled
+      }
     },
     {
       name: 'approve',

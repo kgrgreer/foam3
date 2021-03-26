@@ -19,6 +19,8 @@ foam.CLASS({
   package: 'net.nanopay.security.auth',
   name: 'LoginAttempts',
 
+  implements: [ 'foam.nanos.medusa.Clusterable' ],
+
   javaImports: [
     'java.util.Date'
   ],
@@ -33,15 +35,21 @@ foam.CLASS({
       class: 'Short',
       name: 'loginAttempts',
       createVisibility: 'HIDDEN',
-      section: 'administrative'
     },
     {
       class: 'DateTime',
       name: 'nextLoginAttemptAllowedAt',
       type: 'Date',
       javaFactory: 'return new Date();',
-      section: 'administrative',
       storageOptional: true
+    },
+    {
+      class: 'Boolean',
+      name: 'clusterable',
+      value: true,
+      visibility: 'HIDDEN',
+      storageTransient: true,
+      clusterTransient: true
     }
   ]
 });

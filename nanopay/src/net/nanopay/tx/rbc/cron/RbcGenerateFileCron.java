@@ -30,29 +30,46 @@ import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
 public class RbcGenerateFileCron implements ContextAgent {
+  String spid;
+  long eftLimit = 100000000;
+
+  public RbcGenerateFileCron(String spid) {
+    this.spid = spid;
+  }
+
+  public RbcGenerateFileCron(String spid, long eftLimit) {
+    this.spid = spid;
+    this.eftLimit = eftLimit;
+  }
 
   @Override
   public void execute(X x) {
-
     /**
      * get transactions
      */
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
 
     Predicate condition1 = MLang.OR(
-      MLang.INSTANCE_OF(RbcCITransaction.getOwnClassInfo()),
-      MLang.INSTANCE_OF(RbcCOTransaction.getOwnClassInfo()),
-      MLang.INSTANCE_OF(RbcVerificationTransaction.getOwnClassInfo())
+      MLang.AND(
+        MLang.INSTANCE_OF(RbcCITransaction.getOwnClassInfo()),
+        MLang.EQ(RbcCITransaction.SETTLED, false)
+      ),
+      MLang.AND(
+        MLang.INSTANCE_OF(RbcCOTransaction.getOwnClassInfo()),
+        MLang.EQ(RbcCOTransaction.SETTLED, false)
+      ),
+      MLang.AND(
+        MLang.INSTANCE_OF(RbcVerificationTransaction.getOwnClassInfo()),
+        MLang.EQ(RbcVerificationTransaction.SETTLED, false)
+      )
     );
 
     Predicate condition2 = MLang.EQ(
       Transaction.STATUS, TransactionStatus.PENDING
     );
 
-    Predicate condition3 = MLang.OR(
-      MLang.EQ(RbcCITransaction.SETTLED, false),
-      MLang.EQ(RbcCOTransaction.SETTLED, false),
-      MLang.EQ(RbcVerificationTransaction.SETTLED, false)
+    Predicate condition3 = MLang.EQ(
+      Transaction.SPID, spid
     );
 
     ArraySink sink = (ArraySink) transactionDAO.where(
@@ -61,15 +78,11 @@ public class RbcGenerateFileCron implements ContextAgent {
     ArrayList<Transaction> transactions = (ArrayList<Transaction>) sink.getArray();
 
     generate(x, transactions);
-
   }
 
   public void generate(X x, List<Transaction> transactions) {
-
     Logger logger = new PrefixLogger(new String[] {"RBC"}, (Logger) x.get("logger"));
-
     try {
-
       transactions = transactions.stream().map(transaction -> (Transaction)transaction.fclone()).collect(Collectors.toList());
 
       logger.info("Generating EFT file for CI transactions.");
@@ -78,7 +91,7 @@ public class RbcGenerateFileCron implements ContextAgent {
         .filter(transaction -> transaction instanceof CITransaction)
         .collect(Collectors.toList());
 
-      generateFile(x, ciTransactions);
+      generateFile(x, eftLimitTransactions(x, ciTransactions));
 
       logger.info("Generating EFT File for CO transactions.");
 
@@ -86,7 +99,7 @@ public class RbcGenerateFileCron implements ContextAgent {
         .filter(transaction -> (transaction instanceof COTransaction || transaction instanceof RbcVerificationTransaction))
         .collect(Collectors.toList());
 
-      generateFile(x, coTransactions);
+      generateFile(x, eftLimitTransactions(x, coTransactions));
 
     } catch ( Exception e ) {
       String msg = "RBC EFT File Generation Failed : " + e.getMessage();
@@ -97,7 +110,6 @@ public class RbcGenerateFileCron implements ContextAgent {
         .build();
       ((DAO) x.get("localNotificationDAO")).put(notification);
     }
-
   }
 
   protected void generateFile(X x, List<Transaction> transactions) {
@@ -105,8 +117,8 @@ public class RbcGenerateFileCron implements ContextAgent {
       return;
     }
 
-    Logger logger = new PrefixLogger(new String[] {"RBC"}, (Logger) x.get("logger"));
     RBCEFTFileGenerator fileGenerator = new RBCEFTFileGenerator(x);
+    Logger logger = new PrefixLogger(new String[] {"RBC"}, (Logger) x.get("logger"));
     try {
       EFTFile eftFile = (EFTFile) fileGenerator.generate(transactions);
       if ( eftFile == null ) throw new RuntimeException("Generated EFT File was null");
@@ -118,6 +130,7 @@ public class RbcGenerateFileCron implements ContextAgent {
         });
         updateTransaction(x, passedTransaction, eftFile);
         eftFile.setStatus(EFTFileStatus.GENERATED);
+        eftFile.setSpid(spid);
         ((DAO) x.get("eftFileDAO")).put(eftFile);
       } catch ( Exception e ) {
         logger.error("RBC Batch Error while updating transaction: " + e.getMessage(), e);
@@ -148,6 +161,23 @@ public class RbcGenerateFileCron implements ContextAgent {
         ((DAO) x.get("localNotificationDAO")).put(notification);
       }
     }
+  }
+
+  protected List<Transaction> eftLimitTransactions(X x, List<Transaction> transactions) {
+    List<Transaction> limitedTransactions = new ArrayList<>();
+    Logger logger = new PrefixLogger(new String[] {"RBC"}, (Logger) x.get("logger"));
+    long cumulativeAmount = 0;
+    for ( int i = 0; i < transactions.size(); i++ ) {
+      Transaction txn = (Transaction) transactions.get(i);
+      cumulativeAmount -= txn.getTotal(x, txn.getSourceAccount());
+      if ( cumulativeAmount >= eftLimit ) {
+        int leftoverTxns = transactions.size() - i;
+        logger.warning("RBC EFT limit of " + eftLimit + " was reached with " + leftoverTxns + " transactions remaining for next EFT file.");
+        break;
+      }
+      limitedTransactions.add(txn);
+    }
+    return limitedTransactions;
   }
 
 }

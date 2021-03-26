@@ -28,6 +28,10 @@ foam.CLASS({
     'branchDAO'
   ],
 
+  requires: [
+    'net.nanopay.bank.BankAccount'
+  ],
+
   axioms: [
     foam.u2.CSS.create({
       code: function CSS() {/*
@@ -200,7 +204,7 @@ foam.CLASS({
         this.address_ += ', ' + this.user.address.countryId;
 
         this.bankAccountDAO.find(this.user.id).then(function(account) {
-          self.accountNo_ = '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length);
+          self.accountNo_ = this.BankAccount.mask(account.accountNumber);
           self.branchDAO.find(account.branchId).then(function(bank){
             switch( self.user.address.countryId ) {
               case 'CA' :

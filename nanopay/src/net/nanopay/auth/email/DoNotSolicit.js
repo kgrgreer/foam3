@@ -27,7 +27,7 @@ foam.CLASS({
 
   documentation: 'Email CASTLe opt-out registry.',
 
-  // TODO: other services such as phone (sms), social media, ... 
+  // TODO: other services such as phone (sms), social media, ...
 
   implements: [
     'foam.nanos.auth.CreatedAware',
@@ -146,10 +146,24 @@ foam.CLASS({
       }
     },
     {
+      name: 'lastModifiedByAgent',
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj) {
+        obj.userDAO.find(value).then(function(user) {
+          if ( user ) {
+            if ( user.email ) {
+              this.add(user.email);
+            }
+          }
+        }.bind(this));
+      }
+    },
+    {
       name: 'spid',
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
-      value: foam.nanos.auth.ServiceProviderAware.GLOBAL_SPID,
       readPermissionRequired: true
     }
   ]

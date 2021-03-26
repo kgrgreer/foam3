@@ -41,7 +41,7 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'id', 
+      name: 'id',
       tableWidth: 125
     },
     {
@@ -71,7 +71,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'foam.nanos.ruler.Operations',
+      of: 'foam.nanos.dao.Operation',
       name: 'operation',
       value: 'CREATE_OR_UPDATE',
       visibility: 'RO',
@@ -163,6 +163,12 @@ foam.CLASS({
       visibility: 'RO',
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedByAgent',
+      visibility: 'RO'
+    },
+    {
       class: 'foam.core.Enum',
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
@@ -178,6 +184,10 @@ foam.CLASS({
       name: 'userFeedback',
       storageTransient: true,
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'spid',
+      value: ''
     }
   ],
 

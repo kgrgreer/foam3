@@ -1,5 +1,3 @@
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"business.compliance.blacklist","targetId":"invoice.create"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"business.compliance.blacklist","targetId":"business.invoice.pay"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"user.compliance.blacklist","targetId":"user.invoice.pay"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"menu.read.bankaccounts","targetId":"fraud-ops"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"menu.read.bankaccounts","targetId":"payment-ops"})

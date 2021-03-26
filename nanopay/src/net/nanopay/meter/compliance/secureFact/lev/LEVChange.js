@@ -22,15 +22,21 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'type'
+      name: 'type',
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: 'resultingName'
+      name: 'resultingName',
+      order: 20,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: 'resultingNumber'
+      name: 'resultingNumber',
+      order: 30,
+      gridColumns: 6
     }
   ]
   });

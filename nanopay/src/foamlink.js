@@ -1,5 +1,4 @@
 IGNORE('net/nanopay/merchant/merchant.js');
-IGNORE('net/nanopay/tx/TransactionView.js');
 IGNORE('net/nanopay/merchant/libs');
 
 BROKEN('net/nanopay/auth/ui/TwoAuthView.js');

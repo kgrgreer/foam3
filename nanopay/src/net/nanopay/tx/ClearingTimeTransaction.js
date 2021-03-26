@@ -56,7 +56,9 @@ foam.CLASS({
          foam.u2.DisplayMode.RO :
          foam.u2.DisplayMode.HIDDEN;
       },
-      section: 'basicInfo',
+      section: 'transactionInformation',
+      order: 410,
+      gridColumns: 6,
       createVisibility: 'HIDDEN',
       tableWidth: 172
     },

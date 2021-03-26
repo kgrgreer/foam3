@@ -46,7 +46,8 @@ foam.CLASS({
     'java.util.Date',
     'java.util.HashMap',
     'java.util.Map',
-    'java.util.UUID'
+    'java.util.UUID',
+    'foam.util.SafetyUtil'
   ],
 
   axioms: [
@@ -105,7 +106,7 @@ foam.CLASS({
               if ( business != null ) {
                 recipient.setSignUpStatus(ContactStatus.READY);
               }
-            } else if ( recipient.getBankAccount() != 0 ) {
+            } else if ( ! SafetyUtil.isEmpty(recipient.getBankAccount()) ) {
               recipient.setSignUpStatus(ContactStatus.READY);
             }
 
@@ -160,6 +161,7 @@ foam.CLASS({
         @param {User} currentUser The current user
       `,
       javaCode: `
+        User agent = ((Subject) x.get("subject")).getRealUser();
         AppConfig config = (AppConfig) x.get("appConfig");
         Logger logger = (Logger) getX().get("logger");
         EmailMessage message = new EmailMessage();
@@ -172,7 +174,7 @@ foam.CLASS({
             "partners-external-invite";
 
         // Populate the email template.
-        String url = currentUser.findGroup(x).getAppConfig(x).getUrl();
+        String url = agent.findGroup(x).getAppConfig(x).getUrl();
         String urlPath = invite.getInternal() ? "#notifications" : "#sign-up";
 
         if ( invite.getIsContact() ) {

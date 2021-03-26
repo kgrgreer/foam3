@@ -24,7 +24,8 @@ foam.CLASS({
 
   requires: [
     'foam.log.LogLevel',
-    'foam.u2.LoadingSpinner'
+    'foam.u2.LoadingSpinner',
+    'net.nanopay.bank.BankAccount'
   ],
 
   exports: [
@@ -168,7 +169,7 @@ foam.CLASS({
       }
 
       if ( isVerified ) {
-        var accountNumber = '***' + this.bank.accountNumber.slice(-4);
+        var accountNumber = this.BankAccount(this.bank.accountNumber);
         ctrl.notify(this.SUCCESS_ONE + ` ${accountNumber} ` + this.SUCCESS_TWO, '', this.LogLevel.INFO, true);
         if ( this.onComplete ) this.onComplete();
 

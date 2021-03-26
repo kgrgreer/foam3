@@ -26,43 +26,57 @@ foam.CLASS({
       class: 'String',
       name: 'apiVersion',
       visibility: 'RO',
-      documentation: 'Current Dow Jones API Version'
+      documentation: 'Current Dow Jones API Version',
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'String',
       name: 'backendVersion',
       visibility: 'RO',
-      documentation: 'Current Dow Jones Backend Version'
+      documentation: 'Current Dow Jones Backend Version',
+      order: 20,
+      gridColumns: 6
     },
     {
       class: 'Int',
       name: 'totalHits',
       visibility: 'RO',
-      documentation: 'The total number of records that matched the request'
+      documentation: 'The total number of records that matched the request',
+      order: 30,
+      gridColumns: 6
     },
     {
       class: 'Int',
       name: 'hitsFrom',
       visibility: 'RO',
-      documentation: 'The starting index of the records returned in this response'
+      documentation: 'The starting index of the records returned in this response',
+      order: 40,
+      gridColumns: 6
     },
     {
       class: 'Int',
       name: 'hitsTo',
       visibility: 'RO',
-      documentation: 'The ending index of the records returned in this response'
+      documentation: 'The ending index of the records returned in this response',
+      order: 50,
+      gridColumns: 6
     },
     {
       class: 'Boolean',
       name: 'truncated',
       visibility: 'RO',
-      documentation: 'Indicates whether it is a truncated search'
+      documentation: 'Indicates whether it is a truncated search',
+      order: 60,
+      gridColumns: 6
     },
     {
       class: 'String',
       name: 'cachedResultsId',
       visibility: 'RO',
-      documentation: 'ID pertaining to the cached results from the response'
+      documentation: 'ID pertaining to the cached results from the response',
+      order: 70,
+      gridColumns: 6
     }
   ]
 });

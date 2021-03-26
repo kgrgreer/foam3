@@ -3,7 +3,11 @@ p({
   "id":"2775abef-05d4-4460-bea8-7a70e9d544af",
   "name":"TrevisoSplitTransactionPlanner",
   "documentation":"Split Planner for BRL to destination currency via an intermediary Treviso owned AFEX account",
-  "intermediaryAccountId":{"USD":24,"GBP":25,"EUR":26},
+  "intermediaryAccountId":{
+    "USD":"6ceee60f-94f7-4e8e-a97e-5e9e211e2727",
+    "GBP":"b586e165-fe56-48e4-b249-8977b5718952",
+    "EUR":"e0b91985-fef0-4b07-a197-a5a0585604fa"
+  },
   "priority":90,
   "ruleGroup":"TrevisoPlanner",
   "enabled":true,

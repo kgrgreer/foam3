@@ -34,39 +34,60 @@ foam.CLASS({
     {
       class: 'String',
       name: 'userReference',
-      documentation: 'User reference id that was passed in.'
+      documentation: 'User reference id that was passed in.',
+      section: 'responseInformation',
+      order: 50,
+      gridColumns: 6
     },
     {
       class: 'String',
       name: 'orderId',
-      documentation: 'Unique secureFact id associated with the verify request'
+      documentation: 'Unique secureFact id associated with the verify request',
+      section: 'responseInformation',
+      order: 60,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: 'individualName'
+      name: 'individualName',
+      section: 'responseInformation',
+      order: 70,
+      gridColumns: 6
     },
     {
       class: 'Boolean',
-      name: 'verified'
+      name: 'verified',
+      section: 'responseInformation',
+      order: 80,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: 'reason'
+      name: 'reason',
+      section: 'responseInformation',
+      order: 90,
+      gridColumns: 6
     },
     {
       class: 'Array',
       of: 'String',
-      name: 'verifiedSources'
+      name: 'verifiedSources',
+      section: 'responseInformation',
+      order: 120
     },
     {
       class: 'FObjectArray',
       of: 'net.nanopay.meter.compliance.secureFact.sidni.SIDniDataSources',
-      name: 'dataSources'
+      name: 'dataSources',
+      section: 'responseInformation',
+      order: 130
     },
     {
       class: 'FObjectArray',
       of: 'net.nanopay.meter.compliance.secureFact.sidni.SIDniAdditionalMatchInfo',
-      name: 'additionalMatchInfo'
+      name: 'additionalMatchInfo',
+      section: 'responseInformation',
+      order: 140
     }
   ],
 

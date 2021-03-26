@@ -27,16 +27,20 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
+      name: 'status',
+      order: 10,
+      gridColumns: 6
+    },
+    {
       class: 'DateTime',
       name: 'timeStamp',
       visibility: 'RO',
-      documentation: 'Time at which status entry was created'
-    },
-    {
-      class: 'foam.core.Enum',
-      of: 'net.nanopay.tx.model.TransactionStatus',
-      name: 'status'
-    },
+      documentation: 'Time at which status entry was created',
+      order: 20,
+      gridColumns: 6
+    }
   ],
 
   methods: [

@@ -16,6 +16,8 @@ p({
     "spid":"intuit",
     "group":"intuit-api-session",
     "emailVerified":true,
+    "status":2,
+    "compliance":2,
     "lifecycleState":1
 })
 
@@ -38,6 +40,7 @@ p({
     createdBy:1,
     createdByAgent:1,
     status:2,
+    compliance:2,
     nextLoginAttemptAllowedAt:1596213443748
 })
 
@@ -59,6 +62,7 @@ p({
     createdBy:1,
     createdByAgent:1,
     status:2,
+    compliance:2,
     nextLoginAttemptAllowedAt:1596216443297
 })
 
@@ -68,7 +72,7 @@ p({
     spid:"intuit",
     firstName:"API",
     lastName:"Admin",
-    email:"dev@api.com",
+    email:"api-admin@intuit.com",
     emailVerified:true,
     password:"WsJlIJDGGGQ=:cnE+tRNtF/yhOheF2POyNuocgKTZDVyXia7dITQFUEVPS9hpuQqp8lVTTm2iQQXbYk/8cBUCOV/prsUkO793Sg==",
     passwordLastModified:1596216443346,
@@ -80,6 +84,30 @@ p({
     createdBy:1,
     createdByAgent:1,
     status:2,
+    compliance:2,
+    nextLoginAttemptAllowedAt:1596216443297
+})
+
+p({
+    class:"foam.nanos.auth.User",
+    id:7036,
+    spid:"intuit",
+    firstName:"Support",
+    lastName:"User",
+    email:"support@intuit.com",
+    emailVerified:true,
+    password:"WsJlIJDGGGQ=:cnE+tRNtF/yhOheF2POyNuocgKTZDVyXia7dITQFUEVPS9hpuQqp8lVTTm2iQQXbYk/8cBUCOV/prsUkO793Sg==",
+    passwordLastModified:1596216443346,
+    created:1596216443346,
+    lastModified:1596216443346,
+    lifecycleState:1,
+    lastModifiedBy:1,
+    group:"intuit-support",
+    createdBy:1,
+    createdByAgent:1,
+    status:2,
+    compliance:2,
+    enabled: true,
     nextLoginAttemptAllowedAt:1596216443297
 })
 
@@ -102,5 +130,29 @@ p({
     createdBy:1,
     createdByAgent:1,
     status:2,
+    compliance:2,
     nextLoginAttemptAllowedAt:1596213443748
+})
+
+p({
+    class:"foam.nanos.auth.User",
+    id:9200,
+    spid:"intuit",
+    firstName:"Reporting",
+    lastName:"User",
+    email:"reporting@intuit.com",
+    emailVerified:true,
+    password:"WsJlIJDGGGQ=:cnE+tRNtF/yhOheF2POyNuocgKTZDVyXia7dITQFUEVPS9hpuQqp8lVTTm2iQQXbYk/8cBUCOV/prsUkO793Sg==",
+    passwordLastModified:1596216443346,
+    created:1596216443346,
+    lastModified:1596216443346,
+    lifecycleState:1,
+    lastModifiedBy:1,
+    group:"intuit-reporting",
+    createdBy:1,
+    createdByAgent:1,
+    status:2,
+    compliance:2,
+    enabled: true,
+    nextLoginAttemptAllowedAt:1596216443297
 })

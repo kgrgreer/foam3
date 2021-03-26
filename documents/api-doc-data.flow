@@ -12,7 +12,6 @@
     <ul>
       <li><a href="#address">Address</a></li>
       <li><a href="#business-director">BusinessDirector</a></li>
-      <li><a href="#suggested-user-transaction-info">SuggestedUserTransactionInfo</a></li>
     </ul>
   </li>
   <li>
@@ -38,26 +37,23 @@
 
 <h2><a name="account">Account</a></h2>
 <p>An account is used to create and manage a bank account.</p>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.bank.CABankAccount" whitelist="['country', 'denomination', 'iban', 'bankCode', 'branchId', 'institutionNumber', 'accountNumber', 'status', 'address', 'bankAddress', 'name', 'compliance', 'type', 'id', 'isDefault', 'balance', 'homeBalance', 'created', 'createdBy', 'lastModified', 'lastModifiedBy', 'lifecycleState', 'owner', 'parent']" />
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.bank.CABankAccount" whitelist="['country', 'denomination', 'iban', 'bankCode', 'branchId', 'institutionNumber', 'accountNumber', 'status', 'address', 'bankAddress', 'name', 'compliance', 'type', 'id', 'isDefault', 'balance', 'homeBalance', 'created', 'createdBy', 'lastModified', 'lastModifiedBy', 'owner', 'parent']" />
 
 <h2><a name="business">Business</a></h2>
 <p>A business is an entity on behalf of which multiple users can act. A business is associated with the company name provided by the user who first creates it.</p>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.model.Business" whitelist="['businessName', 'operatingBusinessName', 'businessTypeId', 'created', 'businessSectorId', 'emailVerified', 'countryOfBusinessRegistration', 'phoneNumber', 'phoneNumberVerified', 'address', 'mailingAddress', 'holdingCompany', 'sourceOfFunds', 'targetCustomers', 'suggestedUserTransactionInfo', 'taxIdentificationNumber', 'id', 'enabled', 'organization', 'type', 'website', 'lifecycleState', 'lastModified', 'compliance', 'status', 'createdBy']" />
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.model.Business" whitelist="['businessName', 'operatingBusinessName', 'businessTypeId', 'created', 'businessSectorId', 'emailVerified', 'countryOfBusinessRegistration', 'phoneNumber', 'phoneNumberVerified', 'address', 'mailingAddress', 'holdingCompany', 'sourceOfFunds', 'targetCustomers', 'taxIdentificationNumber', 'id', 'enabled', 'organization', 'type', 'website', 'lastModified', 'compliance', 'status', 'createdBy']" />
 
 <h3>Supporting Data</h3>
 <h4><a name="business-director">BusinessDirector</a></h4>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.model.BusinessDirector" whitelist="['firstName', 'lastName', 'birthday', 'nationality']"/>
 
-<h4><a name="suggested-user-transaction-info">SuggestedUserTransactionInfo</a></h4>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo" whitelist="['annualRevenue', 'transactionPurpose', 'annualTransactionAmount', 'annualTransactionFrequency', 'annualVolume']"/>
-
 <h2><a name="contact">Contact</a></h2>
 <p>A contact is an entity known to a business or user. A contact can own bank accounts and be paid into those bank accounts.</p>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.contacts.Contact" whitelist="['organization', 'legalName', 'email', 'firstName', 'lastName', 'businessId', 'bankAccount', 'businessAddress', 'owner', 'id', 'enabled', 'jobTitle', 'type', 'birthday', 'address', 'businessName', 'created', 'lastModified', 'lifecycleState', 'compliance', 'status' ]"/>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.contacts.Contact" whitelist="['organization', 'legalName', 'email', 'firstName', 'lastName', 'businessId', 'bankAccount', 'businessAddress', 'owner', 'id', 'enabled', 'jobTitle', 'type', 'birthday', 'address', 'businessName', 'created', 'lastModified', 'compliance', 'status' ]"/>
 
 <h2><a name="transaction">Transaction</a></h2>
 <p>A "Transaction" on the platform is an transfer of value from a source account with a source currency to a destination account in the destination currency.</p>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.tx.SummaryTransaction" whitelist="['chainSummary', 'status', 'name', 'type', 'id', 'created', 'createdBy', 'lastModified', 'lastModifiedBy', 'referenceNumber', 'amount', 'summary', 'destinationAmount', 'sourceCurrency', 'destinationCurrency', 'statusHistory', 'lineItems', 'lifecycleState', 'destinationAccount', 'sourceAccount', 'parent', 'signatures']"/>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.tx.SummaryTransaction" whitelist="['chainSummary', 'status', 'name', 'type', 'id', 'payer', 'payerId', 'payee', 'payeeId', 'created', 'createdBy', 'lastModified', 'lastModifiedBy', 'invoiceId', 'externalId', 'externalInvoiceId', 'externalData', 'amount', 'destinationAmount', 'sourceCurrency', 'destinationCurrency', 'statusHistory', 'lineItems', 'destinationAccount', 'sourceAccount', 'spid', 'signatures' ]" />
 
 <h3>Supporting Data</h3>
 <h4><a name="chain-summary">ChainSummary</a></h4>

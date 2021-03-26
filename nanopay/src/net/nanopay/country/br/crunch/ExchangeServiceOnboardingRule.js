@@ -25,8 +25,11 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.notification.Notification',
     'net.nanopay.country.br.exchange.ExchangeService',
     'net.nanopay.model.Business'
   ],
@@ -40,15 +43,20 @@ foam.CLASS({
           public void execute(X x) {
             UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
             User user = (User) ucj.findSourceId(x);
-            Business business;
+            if ( ! (user instanceof Business) ) return;
 
             try {
-              business = (Business) user;
+              ((ExchangeService) x.get("exchangeService")).createExchangeCustomerDefault(user.getId());
             } catch (Exception e) {
-              return;
-            }
+              String msg = "Error onboarding business  to exchange " + user.getId();
+              ((Logger) x.get("logger")).error(msg, e);
 
-            ((ExchangeService) x.get("exchangeService")).createExchangeCustomerDefault(business.getId());
+              Notification notification = new Notification.Builder(x)
+                .setTemplate("NOC")
+                .setBody(msg + " " + e.getMessage())
+                .build();
+              ((DAO) x.get("localNotificationDAO")).put(notification);
+              }
           }
         }, "Onboards business to Brazil Exchange Service if onboarding ucj is passed.");
       `

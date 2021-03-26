@@ -20,6 +20,10 @@ foam.CLASS({
   name: 'COTransaction',
   extends: 'net.nanopay.tx.ClearingTimeTransaction',
 
+  implements: [
+    'net.nanopay.tx.ValueMovementTransaction'
+  ],
+
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.LifecycleState',
@@ -107,8 +111,8 @@ foam.CLASS({
         // Check destination account
         Account account = findDestinationAccount(x);
         if ( account instanceof BankAccount && BankAccountStatus.UNVERIFIED.equals(((BankAccount)findDestinationAccount(x)).getStatus())) {
-          logger.error("Bank account must be verified");
-          throw new RuntimeException("Bank account must be verified");
+          logger.error("Destination bank account must be verified");
+          throw new ValidationException("Destination bank account must be verified");
         }
 
         // Check transaction status and lifecycleState
@@ -119,8 +123,8 @@ foam.CLASS({
           && ! getStatus().equals(TransactionStatus.DECLINED)
           && oldTxn.getLifecycleState() != LifecycleState.PENDING
         ) {
-          logger.error("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
-          throw new ValidationException("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
+          logger.error("Unable to update COTransaction, if transaction status is completed or declined. Transaction id: " + getId());
+          throw new ValidationException("Unable to update COTransaction, if transaction status is completed or declined. Transaction id: " + getId());
         }
       `
     },
@@ -147,7 +151,7 @@ foam.CLASS({
         // New transaction, can transfer when
         // 1. COMPLETED
         // 2. PENDING and has no parent or parent is COMPLETED.
-        if ( oldTxn == null ) {
+        if ( oldTxn == null ) { // TODO rethink this as its not really correct.
           if ( getStatus() == TransactionStatus.COMPLETED ) return true;
           if ( getStatus() == TransactionStatus.PENDING ) {
             if ( SafetyUtil.isEmpty(getParent()) ) return true;

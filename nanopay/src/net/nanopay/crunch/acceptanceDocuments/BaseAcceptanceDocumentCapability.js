@@ -43,7 +43,7 @@ foam.CLASS({
   sections: [
     {
       name: 'reviewAgreementDocumentsSection',
-      title: 'Review and accept the terms of service',
+      title: 'Review and accept the terms and conditions',
       navTitle: 'Terms and Conditions',
       permissionRequired: true
     },
@@ -75,14 +75,13 @@ foam.CLASS({
           labelFormatter: function() {
             this.start('span')
               .translate(selfThis.forClass_+'.CHECKBOX_TEXT.value',self.dot('checkboxText'))
-              .start('a')
-                .addClass('link')
                 .translate(selfThis.forClass_+'.TITLE.value',self.dot('title'))
-                .attrs({
-                  href: self.dot('link'),
-                  target: '_blank'
-                })
               .end()
+            .end()
+            .start('div')
+              .add(foam.nanos.fs.AgreementView.create({
+                fileId: self.dot('fileId').value
+              }, X))
             .end();
           }
         }, X);
@@ -133,7 +132,7 @@ foam.CLASS({
       readVisibility: 'RO',
       updateVisibility: 'RO',
       tableCellFormatter: function(date) {
-        this.add(date ? date.toISOString().substring(0, 10) : '');
+        this.add(date ? date.toLocaleDateString(foam.locale) : '');
       },
       section: 'userAgreementDocumentsSection',
       externalTransient: true
@@ -156,7 +155,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'link',
+      name: 'fileId',
       value: 'n/a',
       readVisibility: 'RO',
       documentation: 'Link to the document ',
@@ -212,14 +211,16 @@ foam.CLASS({
         Logger logger = (Logger) x.get("logger");
         try {
           HttpServletRequest               request          = (HttpServletRequest) x.get(HttpServletRequest.class);
-          String                           ipAddress        = request.getRemoteAddr();
           User                             user             = ((Subject) x.get("subject")).getUser(); // potentially non-exiting
           long                             userId           = (((Subject) x.get("subject")).getRealUser()).getId();
           long                             businessId       = user != null ? user.getId() : 0;
 
           setUser(userId);
           setBusiness(businessId);
-          setIpAddress(request.getRemoteAddr());
+
+          if ( request != null ){
+            setIpAddress(request.getRemoteAddr());
+          }
         } catch (Exception e) {
           logger.warning("Some thing may have went wrong in saving properties to acceptance document.");
         }

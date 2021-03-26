@@ -29,6 +29,10 @@ foam.CLASS({
     'type'
   ],
 
+  requires: [
+    'net.nanopay.bank.BankAccount'
+  ],
+
   css: `
     ^ .userContainer {
       box-sizing: border-box;
@@ -204,7 +208,7 @@ foam.CLASS({
 
     function setBankInfo(account) {
       var self = this;
-      self.accountNo_ = '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length);
+      self.accountNo_ = this.bankAccount.mask(account.accountNumber);
       self.branchDAO.find(account.branchId).then(function(bank) {
         switch ( self.user.address.countryId ) {
           case 'CA':

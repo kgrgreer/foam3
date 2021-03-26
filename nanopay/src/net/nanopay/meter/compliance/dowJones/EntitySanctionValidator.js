@@ -70,11 +70,13 @@ foam.CLASS({
                 requestApproval(x,
                   new DowJonesApprovalRequest.Builder(x)
                     .setObjId(business.getId())
-                    .setDaoKey("localUserDAO")
+                    .setDaoKey("userDAO")
+                    .setServerDaoKey("localUserDAO")
                     .setCauseId(response.getId())
                     .setCauseDaoKey("dowJonesResponseDAO")
-                    .setClassification("Validate Entity Using Dow Jones")
+                    .setClassification("Business Dow Jones R&C")
                     .setMatches(response.getResponseBody().getMatches())
+                    .setCreatedFor(business.getId())
                     .build());
               }
             }, "Entity Sanction Validator");
@@ -105,11 +107,14 @@ foam.CLASS({
                     requestApproval(x,
                       new DowJonesApprovalRequest.Builder(x)
                         .setObjId(business.getId())
-                        .setDaoKey("localUserDAO")
+                        .setServerDaoKey("localUserDAO")
+                        .setDaoKey("userDAO")
                         .setCauseId(directorResponse.getId())
                         .setCauseDaoKey("dowJonesResponseDAO")
-                        .setClassification("Validate Business Director Using Dow Jones")
+                        .setReferenceSummary(businessDirector.toSummary())
+                        .setClassification("Business Director Dow Jones R&C")
                         .setMatches(directorResponse.getResponseBody().getMatches())
+                        .setCreatedFor(business.getId())
                         .build());
                   }
                 }, "Business Director Sanction Validator");

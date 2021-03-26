@@ -76,6 +76,16 @@ foam.CLASS({
       javaCode: `
         return false;
       `
+    },
+    {
+      name: 'calculateErrorCode',
+      javaCode: `
+        if ( getStatus() == TransactionStatus.DECLINED ) {
+          return 991l;
+        }
+
+        return 0;
+      `
     }
   ]
 });

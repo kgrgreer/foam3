@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'net.nanopay.crunch.wizardlet',
   name: 'UnlockPaymentsWizardConfig',
-  extends: 'foam.u2.wizard.StepWizardConfig',
+  extends: 'foam.u2.crunch.EasyCrunchWizard',
 
   implements: [
     'foam.core.ContextAware',

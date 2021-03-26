@@ -1,0 +1,51 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"flinksCredentials",
+  "lazy":false,
+  "service":{
+    "class":"net.nanopay.flinks.model.FlinksCredentials",
+    "url": "https://nanopay-api.private.fin.ag/v3",
+    "customerId": "efee890f-e706-4d1e-b18e-a24e89aafb08"
+  }
+})
+
+p({
+  class:"foam.nanos.boot.NSpec",
+  id:"dowjonesCredentials",
+  service:{
+    class:"net.nanopay.meter.compliance.dowJones.DowJonesCredentials",
+    namespace:"18",
+    username:"nanoAPI",
+    password:"4ZszDP3c51Va",
+    baseUrl:"https://djrc.api.dowjones.com/v1/search/"
+  }
+})
+
+p({
+  class:"foam.nanos.boot.NSpec",
+  id:"identityMindService",
+  service:{
+    class:"net.nanopay.meter.compliance.identityMind.IdentityMindService",
+    baseUrl:"https://edna.identitymind.com/im",
+    apiUser:"nanopay",
+    apiKey:"117568fcfb3d93aaccb196919b59339ce5e7e621",
+    hashingSalt:"54l73D47"
+  }
+})
+
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"securefactService",
+  "lazy":false,
+  "serve":true,
+  "service":{
+    "class":"net.nanopay.meter.compliance.secureFact.SecurefactService",
+    "sidniUrl":"https://sidni.securefact.com/rest/v3/verifyIndividual",
+    "sidniApiKey":"NTIyMDgwNTAyNzk1MDA2NjkxODkyMzE2MDkxMDI2MjM5Mzg5Njk2",
+    "levUrl":"https://lev3.securefact.com/rest/v1/lev/search",
+    "levDocumentOrderUrl":"https://lev3.securefact.com/rest/v1/document/order",
+    "levDocumentDataUrl":"https://lev3.securefact.com/rest/v1/document/data",
+    "levApiKey":"OTc0NTA2ODI1NjgwNDg4NzU2NDg0MDU4MDYzNzc3NDcwMzQ5MzEy"
+  }
+})

@@ -52,9 +52,9 @@ foam.CLASS({
       section: 'uiAgreementDocumentsSection'
     },
     {
-      name: 'link',
+      name: 'fileId',
       factory: function() {
-        return '/service/httpFileService/488eedba-b34a-4b61-9f6d-1c501f13dcc7?sessionId=' + localStorage['defaultSession'];
+        return '488eedba-b34a-4b61-9f6d-1c501f13dcc7';
       }
     },
     {
@@ -75,7 +75,6 @@ foam.CLASS({
           labelFormatter: function() {
             this.start('span')
               .start('a')
-                .addClass('link')
                 .add(self.dot('checkboxText'))
                 .attrs({
                   href: self.dot('link'),

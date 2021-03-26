@@ -89,7 +89,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
 
-      var formattedBirthday = this.viewData.birthday.toISOString().substring(0, 10);
+      var formattedBirthday = this.viewData.birthday.toLocaleDateString(foam.locale);
 
       this
         .addClass(this.myClass())

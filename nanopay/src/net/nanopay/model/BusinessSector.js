@@ -22,6 +22,10 @@ foam.CLASS({
   documentation: 'General section in the economy within' +
       ' which groups of companies can be categorized.',
 
+  tableColumns: [
+    'id', 'name', 'code', 'parent', 'countryId'
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -30,6 +34,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
+      tableWidth: 500,
       label: 'Business Sector',
       documentation: 'Name of business sector.'
     },

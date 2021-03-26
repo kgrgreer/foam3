@@ -27,7 +27,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.SummaryTransaction'
+    'net.nanopay.tx.SummarizingTransaction'
   ],
 
   methods: [
@@ -41,7 +41,7 @@ foam.CLASS({
           return getDelegate().put_(x, txn);
         }
         // If summary txn is root make it pending for the chain save.
-        if ( txn instanceof SummaryTransaction && txn.getStatus() != TransactionStatus.PENDING_PARENT_COMPLETED)
+        if ( txn instanceof SummarizingTransaction && txn.getStatus() != TransactionStatus.PENDING_PARENT_COMPLETED)
           txn.setStatus(TransactionStatus.PENDING);
 
         // Nullify next and save self
@@ -59,12 +59,15 @@ foam.CLASS({
         }
 
         // Save summary as completed once chain fully saved. but only if its not somewhere within a chain.
-        if ( txn instanceof SummaryTransaction && txn.getStatus().equals(TransactionStatus.PENDING) ) {
+        if ( txn instanceof SummarizingTransaction && txn.getStatus().equals(TransactionStatus.PENDING) ) {
+          txn = (Transaction) txn.fclone();
+
           // Auto complete summaryTransactions without an invoice
           if ( txn.getInvoiceId() == 0 ) {
             txn.setStatus(TransactionStatus.COMPLETED);
           }
-          return getDelegate().put_(x, txn.fclone());
+          
+          return getDelegate().put_(x, txn);
         }
 
         return txn;

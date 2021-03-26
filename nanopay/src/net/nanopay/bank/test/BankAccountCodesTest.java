@@ -20,7 +20,7 @@ public class BankAccountCodesTest
     String accountId = "99999";
     BankAccount b = new USBankAccount.Builder(x).setBranchId(branchId).setAccountNumber(accountId).setOwner(u.getId()).build();
     b = (BankAccount) d.put(b);
-    test(b.getBankCode().equals(""), "Invalid BankCode");
+    test(b.getInstitutionNumber().equals(""), "Invalid InstitutionNumber");
     test(b.getRoutingCode(x).equals(branchId), "Invalid RoutingCode");
     //test(b.getIban().equals(accountId), "Invalid IBAN/Account");
 
@@ -29,8 +29,8 @@ public class BankAccountCodesTest
     accountId = "99999";
     b = new CABankAccount.Builder(x).setInstitutionNumber(institutionNumber).setBranchId(branchId).setAccountNumber(accountId).setOwner(u.getId()).setStatus(BankAccountStatus.VERIFIED).build();
     b = (BankAccount) d.put(b);
-    test(b.getBankCode(x).equals(institutionNumber), "Invalid BankCode");
-    test(b.getRoutingCode(x).equals(branchId), "Invalid RoutingCode");
+    test(b.getBankCode(x).equals(institutionNumber), "Invalid InstitutionNumber");
+    test(b.getRoutingCode(x).equals("0" + branchId + b.getInstitutionNumber()), "Invalid RoutingCode");
     //test(b.getIban().equals(accountId), "Invalid IBAN/Account");
   }
 

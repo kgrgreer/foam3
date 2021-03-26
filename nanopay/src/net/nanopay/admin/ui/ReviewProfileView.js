@@ -143,7 +143,7 @@ foam.CLASS({
             .start('p').add(this.data.businessRegistrationAuthority$).end()
             .start('p').add(this.BusiRegDateLabel).addClass('wizardBoldLabel').end()
             .start('p').add(this.data.businessRegistrationDate$.map(function (date) {
-              return ( date ) ? date.toISOString().substring(0, 10) : '';
+              return ( date ) ? date.toLocaleDateString(foam.locale) : '';
             })).end()
             .start('p').add(this.BusiAddressLabel).addClass('wizardBoldLabel').end()
             .start('p').add(
@@ -186,7 +186,7 @@ foam.CLASS({
                       .start('p').add('Phone Number').addClass('wizardBoldLabel').end()
                       .start('p').add(data.phoneNumber).end()
                       .start('p').add('Date of Birth').addClass('wizardBoldLabel').end()
-                      .start('p').add(data.birthday.toISOString().substring(0,10)).end()
+                      .start('p').add(data.birthday.toLocaleDateString(foam.locale)).end()
                       .start('p').add('Residential Address').addClass('wizardBoldLabel').end()
                       .start('p').add(
                         (data.address.suite

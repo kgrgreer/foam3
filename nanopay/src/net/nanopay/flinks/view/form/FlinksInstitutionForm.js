@@ -33,7 +33,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      overflow-y: scroll;
+      overflow-y: auto;
     }
     ^ .optionSpacer {
       display: inline-block;

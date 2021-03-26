@@ -25,8 +25,8 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public OnboardCorporateClientResponse onboardCorporateClient(OnboardCorporateClientRequest request, String spid) {
-    OnboardCorporateClientResponse response = new OnboardCorporateClientResponse();
+  public OnboardAFEXClientResponse onboardAFEXClient(OnboardAFEXClientRequest request, String spid, AccountEntityType entityType) {
+    OnboardAFEXClientResponse response = new OnboardAFEXClientResponse();
     response.setAPIKey("API_KEY");
     response.setAccountNumber("00000122");
     return response;
@@ -46,7 +46,7 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   public CreateBeneficiaryResponse createBeneficiary(CreateBeneficiaryRequest request, String spid) {
     CreateBeneficiaryResponse response = new CreateBeneficiaryResponse();
     response.setCode(0);
-    response.setStatus("Active");
+    response.setStatus("Approved");
     return null;
   }
 
@@ -64,6 +64,7 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   public FindBeneficiaryResponse findBeneficiary(FindBeneficiaryRequest request, String spid) {
     FindBeneficiaryResponse response = new FindBeneficiaryResponse();
     response.setBeneficiaryName("Test Beneficiary");
+    response.setStatus("Approved");
     return response;
   }
 
@@ -83,7 +84,13 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public GetRateResponse getSpotRate(GetRateRequest request, String spid) { return null; }
+  public GetRateResponse getSpotRate(GetRateRequest request, String spid) {
+    GetRateResponse response = new GetRateResponse();
+    response.setRate(4.6134);
+    response.setInvertedRate(0.2168);
+    response.setTerms("A");
+    return response;
+  }
 
   @Override
   public Quote getQuote(GetQuoteRequest request, String spid) {
@@ -110,7 +117,9 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
 
   @Override
   public CreateTradeResponse createTrade(CreateTradeRequest request, String spid) {
-    return null;
+    CreateTradeResponse response = new CreateTradeResponse();
+    response.setTradeNumber(3);
+    return response;
   }
 
   @Override
@@ -120,12 +129,18 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
 
   @Override
   public net.nanopay.fx.afex.CreatePaymentResponse createPayment(CreatePaymentRequest request, String spid) {
-    return null;
+    CreatePaymentResponse response = new CreatePaymentResponse();
+    response.setReferenceNumber(1000001);
+    return response;
   }
 
   @Override
   public CheckPaymentStatusResponse checkPaymentStatus(CheckPaymentStatusRequest request, String spid) {
-    return null;
+    CheckPaymentStatusResponse response = new CheckPaymentStatusResponse();
+    response.setReferenceNumber("1000001");
+    response.setPaymentStatus("Approved");
+    response.setStatus("Approved");
+    return response;
   }
 
   @Override
@@ -150,7 +165,12 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
 
   @Override
   public CreateFundingBalanceResponse createFundingBalance(CreateFundingBalanceRequest createFundingBalanceRequest, String spid) {
-    return null;
+    CreateFundingBalanceResponse response = new CreateFundingBalanceResponse();
+    response.setIsSuccessful(true);
+    response.setMessage("Funding balance already exists.");
+    response.setAccountId(createFundingBalanceRequest.getAccountNumber());
+    response.setFundingBalanceId(createFundingBalanceRequest.getCurrency() + "839513155");
+    return response;
   }
 
   @Override
@@ -159,12 +179,21 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public CreateInstantBenefiaryResponse createInstantBenefiary(CreateInstantBenefiaryRequest createInstantBenefiaryRequest, String spid) {
-    return null;
+  public CreateInstantBeneficiaryResponse createInstantBeneficiary(CreateInstantBeneficiaryRequest request, String spid) {
+    CreateInstantBeneficiaryResponse response = new CreateInstantBeneficiaryResponse();
+    response.setCode(0);
+    return response;
   }
 
   @Override
   public ValidateInstantBenefiaryResponse validateInstantBenefiaryRequest(ValidateInstantBenefiaryRequest validateInstantBenefiary, String spid)  {
     return null;
+  }
+
+  @Override
+  public IsIbanResponse isiban(IsIbanRequest request, String spid) {
+    IsIbanResponse response = new IsIbanResponse();
+    response.setIsIban(true);
+    return response;
   }
 }

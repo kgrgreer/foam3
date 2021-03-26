@@ -58,9 +58,9 @@ foam.CLASS({
         Long debt = amount > balance ? amount - balance : 0L;
         d.setAmount(debt);
 
-        quote.addTransfer(creditorAccount.getId(), -d.getAmount());
-        quote.addTransfer(sourceAccount.getId(), d.getAmount());
-        quote.addTransfer(debtAccount.getId(), -d.getAmount());
+        quote.addTransfer(true, creditorAccount.getId(), -d.getAmount(), 0);
+        quote.addTransfer(true, sourceAccount.getId(), d.getAmount(), 0);
+        quote.addTransfer(true, debtAccount.getId(), -d.getAmount(), 0);
   
         return d;
       }

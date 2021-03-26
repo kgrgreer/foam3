@@ -54,13 +54,13 @@ foam.CLASS({
       name: 'denomination',
       documentation: 'The security that this account stores.',
       tableWidth: 127,
-      section: 'accountDetails',
+      section: 'accountInformation',
       order: 3
     },
     {
       name: 'balance',
       label: 'Balance (local)',
-      section: 'balanceDetails',
+      section: 'balanceInformation',
       documentation: 'A numeric value representing the available funds in the bank account.',
       storageTransient: true,
       visibility: 'RO',

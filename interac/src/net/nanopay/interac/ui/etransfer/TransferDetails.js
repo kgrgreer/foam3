@@ -48,7 +48,7 @@ foam.CLASS({
           box-sizing: border-box;
           width: 320px;
           height: 66px;
-          overflow-y: scroll;
+          overflow-y: auto;
           background-color: #ffffff;
           border: solid 1px rgba(164, 179, 184, 0.5);
           resize: vertical;
@@ -173,9 +173,10 @@ foam.CLASS({
         return foam.u2.view.ChoiceView.create({
           dao: X.data.bankAccountDAO.where(X.data.EQ(X.data.BankAccount.ID, 1)),
           objToChoice: function(account) {
-            return [account.id, 'Account No. ' +
-                                '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length)
-                    ]; // TODO: Grab amount and display
+            return [
+              account.id,
+              `Account No. ${X.BankAccount.mask(account.accountNumber)}`
+            ]; // TODO: Grab amount and display
           }
         });
       }

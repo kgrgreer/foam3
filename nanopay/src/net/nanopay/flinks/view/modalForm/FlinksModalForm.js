@@ -34,10 +34,6 @@ foam.CLASS({
   ],
 
   css: `
-    ^ {
-      min-width: 500px;
-    }
-
     ^ .field-label {
       font-size: 12px;
       font-weight: 600;
@@ -81,6 +77,7 @@ foam.CLASS({
       width: 100%;
     }
     ^ .net-nanopay-sme-ui-wizardModal-WizardModalNavigationBar .net-nanopay-sme-ui-wizardModal-WizardModalNavigationBar-container {
+      padding-top: 0;
       background-color: #0000;
     }
   `,

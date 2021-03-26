@@ -1,0 +1,87 @@
+p({
+  "class":"foam.nanos.theme.Theme",
+  "id":"18E4CEBB-2C91-4D14-AC5B-64D38103D524",
+  "name":"bepay",
+  "appName":"BePay",
+  "description":"BePay",
+  "navigationRootMenu":"",
+  "settingsRootMenu":"settings",
+  "logoRedirect":"view-accounts",
+  "admissionCapability": "",
+  "defaultMenu":"view-accounts",
+  "disableCurrencyChoice": true,
+  "loginImage": "images/bepay/bepay_sign_in.svg",
+  "logo":"images/bepay/bepay_logo.svg",
+  "largeLogo": "images/bepay/bepay_logo_color.png",
+  "headConfig": {
+    "customFavIcon" : [
+      "<link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/favicon/apple-touch-icon.png\">",
+      "<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon/bepay/favicon-32x32.svg\">",
+      "<link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/favicon/bepay/favicon-16x16.svg\">",
+      "<link rel=\"manifest\" href=\"/favicon/manifest.json\">",
+      "<link rel=\"mask-icon\" href=\"/favicon/safari-pinned-tab.svg\" color=\"#5bbad5\">",
+      "<link rel=\"shortcut icon\" href=\"/favicon/favicon.png\">",
+      "<meta name=\"msapplication-config\" content=\"/favicon/browserconfig.xml\">",
+      "<meta name=\"theme-color\" content=\"#ffffff\">"
+    ]
+  },
+  "logoBackgroundColour":"transparent",
+  "topNavigation":"net.nanopay.ui.TopSideNavigation",
+  "footerView":"net.nanopay.sme.ui.FooterView",
+  "supportConfig":{
+    class:"foam.nanos.app.SupportConfig",
+    supportEmail:"support@nanopay.com",
+    supportPhone:"+1.647.496.1526",
+    personalSupportUser:1030,
+  },
+  "font1":"Próxima Nova",
+  "primary1":"#0074BA",
+  "primary2":"#00A5E0",
+  "primary3":"#0074BA",
+  "primary4":"#937dff",
+  "primary5":"#e4e4f7",
+  "secondary1":"#4a33f4",
+  "secondary2":"#432de7",
+  "approval1":"#19402e",
+  "approval2":"#117a41",
+  "approval3":"#32bf5e",
+  "approval4":"#b8e5b3",
+  "approval5":"#e2f2dd",
+  "warning1":"#816819",
+  "warning2":"#c1ae12",
+  "warning3":"#eedc00",
+  "warning4":"#fbe88f",
+  "warning5":"#fdf8de",
+  "destructive1":"#631414",
+  "destructive2":"#a61414",
+  "destructive3":"#d9170e",
+  "destructive4":"#f79393",
+  "destructive5":"#fbedec",
+  "grey1":"#5e6061",
+  "grey2":"#9ba1a6",
+  "grey3":"#cbcfd4",
+  "grey4":"#e7eaec",
+  "grey5":"#f5f7fa",
+  "black":"#1e1f21",
+  "white":"#ffffff",
+  "inputHeight":"40px",
+  "inputVerticalPadding":"10px",
+  "inputHorizontalPadding":"8px",
+  "customCSS":"""
+    .net-nanopay-ui-Controller {
+      overflow: hidden;
+    }
+    .foam-comics-BrowserView {
+      margin-top: 30px;
+    }
+    .net-nanopay-sme-ui-FooterView {
+      background: black !important;
+      border-top: 1px solid /*%GREY4%*/ #e7eaec;
+      color: white !important;
+    }
+  """,
+  "createdBy":1,
+  "createdByAgent":1,
+  "created":"2020-04-29T22:32:52.685Z",
+  "spid":"bepay"
+})

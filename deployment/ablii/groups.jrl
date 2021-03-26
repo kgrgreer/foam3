@@ -1,0 +1,6 @@
+p({class:"foam.nanos.auth.Group",id:"ablii-admin",description:"ablii admin",parent:"msp-admin",defaultMenu:"users",url:"http://ablii:8080"})
+p({class:"foam.nanos.auth.Group",id:"ablii-fraud-ops",description:"ablii fraud-ops group",parent:"fraud-ops",defaultMenu:"accounts",url:"http://ablii:8080"})
+p({class:"foam.nanos.auth.Group",id:"ablii-payment-ops",description:"ablii payment-ops group",parent:"payment-ops",defaultMenu:"accounts",url:"http://ablii:8080"})
+p({class:"foam.nanos.auth.Group",id:"ablii-support",description:"ablii support group",parent:"support",defaultMenu:"contacts",url:"http://ablii:8080"})
+
+p({class:"foam.nanos.auth.Group",id:"ablii-sme",description:"ablii sme group",parent:"sme",url:"http://ablii:8080"})

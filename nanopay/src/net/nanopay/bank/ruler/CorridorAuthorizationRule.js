@@ -24,17 +24,10 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
-    'java.util.Arrays',
-    'java.util.List',
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.dao.ArraySink',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.User',
-    'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.nanos.crunch.CapabilityJunctionStatus',
-    'foam.nanos.notification.Notification',
-    'foam.util.SafetyUtil',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.model.Business',
     'net.nanopay.payment.PaymentProviderCorridor',
@@ -56,33 +49,29 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        DAO userCapability = (DAO) x.get("userCapabilityJunctionDAO");
         BankAccount acc = (BankAccount) obj;
-        User owner = (User) acc.findOwner(x);
-        User creator = (User) acc.findCreatedBy(x);
-        if ( ! (creator instanceof Business) ) {
-          throw new AuthorizationException(BUSINESS_REQUIRED);
-        }
+        
         String country =  acc.getCountry();
         String currency = acc.getDenomination();
 
-        DAO paymentProviderCorridorDAO = (DAO) x.get("paymentProviderCorridorDAO");
+        DAO sourceCorridorDAO = (DAO) x.get("sourceCorridorDAO");
+        DAO targetCorridorDAO = (DAO) x.get("targetCorridorDAO");
         PaymentProviderCorridor ppc;
 
-        //check if bank account is belong to a contact
-        if ( acc.getCreatedBy() != acc.getOwner() ) {
-          ppc = (PaymentProviderCorridor) paymentProviderCorridorDAO.find(
+        //check if bank account belongs to a contact
+        if ( acc.getForContact() ) {
+          ppc = (PaymentProviderCorridor) targetCorridorDAO.find(
             AND(
               EQ(PaymentProviderCorridor.TARGET_COUNTRY, country),
-              EQ(PaymentProviderCorridor.TARGET_CURRENCIES, currency)
+              IN(currency, PaymentProviderCorridor.TARGET_CURRENCIES)
             )
           );
           if ( ppc != null ) return;
         } else {
-          ppc = (PaymentProviderCorridor) paymentProviderCorridorDAO.find(
+          ppc = (PaymentProviderCorridor) sourceCorridorDAO.find(
             AND(
               EQ(PaymentProviderCorridor.SOURCE_COUNTRY, country),
-              EQ(PaymentProviderCorridor.SOURCE_CURRENCIES, currency)
+              IN(currency, PaymentProviderCorridor.SOURCE_CURRENCIES)
             )
           );
           if ( ppc != null ) return;

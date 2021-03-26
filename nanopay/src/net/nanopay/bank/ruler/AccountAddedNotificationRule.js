@@ -29,15 +29,15 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
-    'foam.nanos.notification.Notification',
     'java.util.HashMap',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.contacts.Contact',
+    'net.nanopay.bank.ruler.AccountAddedNotification',
+    'net.nanopay.contacts.PersonalContact',
     'net.nanopay.model.Branch',
     'net.nanopay.payment.Institution'
   ],
 
-   methods: [
+  methods: [
     {
       name: 'applyAction',
       javaCode: `
@@ -49,11 +49,12 @@ foam.CLASS({
             BankAccount account = (BankAccount) obj;
             //If bank account added using void check, don't send (micro-deposit-sent email gets sent instead).
             if( account.getRandomDepositAmount() != 0) return;
-            if( account.findOwner(x) instanceof Contact ) return;
-            User owner = (User) userDAO.find(account.getOwner());
-            Group       group      = owner.findGroup(x);
-            AppConfig   config     = group != null ? (AppConfig) group.getAppConfig(x) : (AppConfig) x.get("appConfig");
-            String accountNumber   = account.getAccountNumber() != null ? account.getAccountNumber().substring(account.getAccountNumber().length() - 4) : "";
+            if( account.findOwner(x) instanceof PersonalContact ) return;
+
+            String      accountNumber   = BankAccount.mask(account.getAccountNumber());
+            User        owner           = (User) userDAO.find(account.getOwner());
+            Group       group           = owner.findGroup(x);
+            AppConfig   config          = group != null ? (AppConfig) group.getAppConfig(x) : (AppConfig) x.get("appConfig");
 
             HashMap<String, Object> args = new HashMap<>();
             args.put("name",    User.FIRST_NAME);
@@ -62,8 +63,8 @@ foam.CLASS({
             args.put("link",    config.getUrl());
             args.put("business", owner.getOrganization());
 
-            Notification addedNotification = new Notification.Builder(x)
-                    .setBody(accountNumber + " has been added!")
+            AccountAddedNotification addedNotification = new AccountAddedNotification.Builder(x)
+                    .setAccountNumber(accountNumber)
                     .setNotificationType("Latest_Activity")
                     .setEmailArgs(args)
                     .setEmailName("addBank")

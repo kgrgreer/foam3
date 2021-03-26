@@ -54,9 +54,8 @@ foam.CLASS({
 
   methods: [
     function formatDate(timestamp) {
-      var locale = 'en-US';
-      return timestamp.toLocaleTimeString(locale, { hour12: false }) +
-        ' ' + timestamp.toLocaleString(locale, { month: 'short' }) +
+      return timestamp.toLocaleTimeString(foam.locale, { hour12: false }) +
+        ' ' + timestamp.toLocaleString(foam.locale, { month: 'short' }) +
         ' ' + timestamp.getDate() +
         ' ' + timestamp.getFullYear();
     },

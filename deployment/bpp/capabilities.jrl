@@ -1,1 +1,50 @@
-p({class:"foam.nanos.auth.ServiceProvider",id:"bpp",enabled:true,description:"BPP spid"})
+// BPP spid
+p({class:"foam.nanos.auth.ServiceProvider",id:"bpp",description:"bpp spid",enabled:true})
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "bppCorridorCapability",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "paymentprovidercorridor.read.afex",
+    "paymentprovidercorridor.read.bepay",
+    "paymentprovidercorridor.source.read.bepay",
+    "paymentprovidercorridor.target.read.2869DB5B-0AFE-4113-8EF7-5E5B6B8BB4AC",
+    "paymentprovidercorridor.target.read.5B9EE768-4B35-493C-A356-FEC306235AB7"
+  ]
+})
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "bppPlannerCapability",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.119fa381-d2a2-4369-b242-1dc8e2163bb9-bpp",
+    "rule.read.2fdd7d35-6704-47dc-9f0e-9419e0aa74ed",
+    "rule.read.77480e3b-fc7e-400c-bee6-dda5a22b982a"
+  ]
+})
+
+// Fees
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "bpp-tx-fees",
+  name: "Enable BPP Fees",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.454df571-f639-4506-8d59-98b4f39934e4-bpp",
+    "rule.read.9e7661a6-610b-47ad-b521-96b9c760fb16-bpp"
+  ]
+})
+
+// Reason codes
+p({
+  class:"foam.nanos.crunch.Capability",
+  id:"bpp-tx-reason-codes",
+  name:"Enable BPP reason codes",
+  permissionsGranted:[
+    "naturecode.read.4cfa9007-1d87-4bdd-b6e1-4e3c6fe78a2c",
+    "naturecode.read.f0224036-2a37-4fa9-8879-a413fe168f34"
+  ]
+})
+
+

@@ -52,7 +52,7 @@ foam.CLASS({
       box-sizing: border-box;
       width: 320px;
       height: 66px;
-      overflow-y: scroll;
+      overflow-y: auto;
       background-color: #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
       resize: vertical;
@@ -201,7 +201,7 @@ foam.CLASS({
             return [
               account.id,
               account.name + ' ' + '***' +
-                account.accountNumber.substring(length - 4, length)
+                account.accountNumber.substring(length - 3)
             ];
           }
         });
@@ -225,8 +225,8 @@ foam.CLASS({
           dao: X.data.publicUserDAO,
           objToChoice: function(payee) {
             var username = payee.firstName + ' ' + payee.lastName;
-            if ( X.data.invoiceMode && payee.businessName ) {
-              username = payee.businessName;
+            if ( X.data.invoiceMode && ( payee.organization || payee.businessName ) ) {
+              username = payee.organization || payee.businessName;
             }
             return [payee.id, username + ' - (' + payee.email + ')'];
           }

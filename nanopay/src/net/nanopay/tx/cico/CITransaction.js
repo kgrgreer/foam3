@@ -20,6 +20,10 @@ foam.CLASS({
   name: 'CITransaction',
   extends: 'net.nanopay.tx.ClearingTimeTransaction',
 
+  implements: [
+    'net.nanopay.tx.ValueMovementTransaction'
+  ],
+
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
@@ -34,6 +38,7 @@ foam.CLASS({
     'net.nanopay.tx.model.TransactionStatus',
     'foam.nanos.auth.LifecycleState'
   ],
+
   properties: [
     {
       name: 'name',
@@ -107,20 +112,20 @@ foam.CLASS({
 
         // Check source account
         if ( BankAccountStatus.UNVERIFIED.equals(((BankAccount)findSourceAccount(x)).getStatus())) {
-          logger.error("Bank account must be verified");
-          throw new RuntimeException("Bank account must be verified");
+          logger.error("Source bank account must be verified");
+          throw new ValidationException("Source bank account must be verified");
         }
 
         // Check transaction status and lifecycleState
         Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
         if ( oldTxn != null
-          && ( oldTxn.getStatus().equals(TransactionStatus.DECLINED)
-            || oldTxn.getStatus().equals(TransactionStatus.COMPLETED) )
-          && ! getStatus().equals(TransactionStatus.DECLINED)
+          && ( oldTxn.getStatus() == TransactionStatus.DECLINED
+            || oldTxn.getStatus() == TransactionStatus.COMPLETED )
+          && getStatus() != TransactionStatus.DECLINED
           && oldTxn.getLifecycleState() != LifecycleState.PENDING
         ) {
-          logger.error("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
-          throw new ValidationException("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
+          logger.error("Unable to update CITransaction, if transaction status is completed or declined. Transaction id: " + getId());
+          throw new ValidationException("Unable to update CITransaction, if transaction status is completed or declined. Transaction id: " + getId());
         }
       `
     }

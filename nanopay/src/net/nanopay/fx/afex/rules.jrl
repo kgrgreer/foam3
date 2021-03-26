@@ -33,7 +33,7 @@ p({
   "documentation":"Rule to add currency.read.FX_CURRENCY when a business is pushed to AFEX and AFEXBusiness is created.",
   "priority":100,
   "ruleGroup":"onboarding",
-  "daoKey":"afexBusinessDAO",
+  "daoKey":"afexUserDAO",
   "operation":3,
   "after":true,
   "predicate":{
@@ -42,44 +42,11 @@ p({
   "action":{
     "class":"net.nanopay.fx.afex.AFEXAddCurrencyPermissionRule"
   },
-  "enabled":true,
-  "saveHistory":true,
+  "enabled":false,
+  "saveHistory":false,
   "lifecycleState":1
 })
-p({
-  "class":"foam.nanos.ruler.Rule",
-  "id":"5d12a5bb-2952-44ed-a8eb-be3582de7ab1",
-  "name":"Grant AFEX Payable Menu Capability",
-  "documentation":"Grants AFEX Payable Menu Capability after Afex business is created and approved.",
-  "priority":100,
-  "ruleGroup":"onboarding",
-  "daoKey":"approvalRequestDAO",
-  "operation":1,
-  "after":true,
-  "predicate": {
-    "class":"foam.mlang.predicate.And",
-    "args":[
-      {
-        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
-        "of":"net.nanopay.fx.afex.AFEXBusinessApprovalRequest"
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName":"status",
-        "propValue":{
-          "class":"foam.nanos.approval.ApprovalStatus",
-          "ordinal":1
-        }
-      }
-    ]
-  },
-  "action":{
-    "class":"net.nanopay.fx.afex.AFEXPayableMenuCapabilityRule"
-  },
-  "enabled":true,
-  "saveHistory":true,
-  "lifecycleState":1
-})
+
 r({
   "class":"foam.nanos.ruler.Rule",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d8","name":"Send Operations Email Notification When AFEXBusiness is Created",
@@ -92,25 +59,7 @@ r({
   "class":"foam.nanos.ruler.Rule",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d10","name":"Remove FX Currency Permission When AFEXBusiness is Disabled"
 })
-p({
-  "class":"foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d11","name":"Create AFEXBusiness Approval Request",
-  "documentation":"Rule to create AFEXBusiness Approval Request.",
-  "priority":100,
-  "ruleGroup":"AFEXOnboarding",
-  "daoKey":"afexBusinessDAO",
-  "operation":0,
-  "after":true,
-  "predicate":{
-    "class":"net.nanopay.fx.afex.AFEXBusinessCreatedPredicate",
-  },
-  "action":{
-    "class":"net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule"
-  },
-  "enabled":true,
-  "saveHistory":true,
-  "lifecycleState":1
-})
+
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d12","name":"Onboard Business Bank Account Owner to AFEX",
@@ -140,38 +89,11 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d13","name":"Onboard Business to AFEX",
-  "documentation":"Rule to onboard business to AFEX if it has passed comliance and has a verified bank account.",
-  "priority":100,
-  "ruleGroup":"AFEXOnboarding",
-  "daoKey":"localUserDAO",
-  "operation":3,
-  "after":true,
-  "predicate": {
-    "class": "foam.mlang.predicate.And",
-    "args": [
-      {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessCompliancePassed"
-      },
-      {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessHasVerifiedBankAccount"
-      }
-    ]
-  },
-  "asyncAction":{
-    "class":"net.nanopay.fx.afex.AFEXBusinessOnboardingRule"
-  },
-  "enabled":false,
-  "saveHistory":true,
-  "lifecycleState":1
-})
-p({
-  "class":"foam.nanos.ruler.Rule",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d14","name":"Upload Business bank accounts to AFEX",
   "documentation":"Rule to upload business bank account information to AFEX",
   "priority":100,
   "ruleGroup":"AFEXOnboarding",
-  "daoKey":"afexBusinessDAO",
+  "daoKey":"afexUserDAO",
   "operation":0,
   "after":true,
   "asyncAction":{
@@ -218,7 +140,7 @@ p({
   "documentation":"Rule to add IN currency and strategizer Permission when a business is pushed to AFEX and AFEXBusiness is created.",
   "priority":100,
   "ruleGroup":"onboarding",
-  "daoKey":"afexBusinessDAO",
+  "daoKey":"afexUserDAO",
   "operation":3,
   "after":true,
   "predicate":{
@@ -236,7 +158,7 @@ p({
   "class":"foam.nanos.ruler.Rule",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d17","name":"AFEX Create Trade Rule",
   "documentation":"Rule to create trade on AFEX system when transaction is PENDING_PARENT_COMPLETED and trade not yet created.",
-  "priority":100,
+  "priority":3000,
   "ruleGroup":"AFEX",
   "daoKey":"localTransactionDAO",
   "operation":0,
@@ -249,6 +171,51 @@ p({
   },
   "enabled":true,
   "saveHistory":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"9a36be15-7ac9-4044-9905-47e4788889b3",
+  "name":"AFEX Get PDF Rule",
+  "documentation":"Rule to get pdf confirmation from AFEX",
+  "priority":10,
+  "ruleGroup":"AFEX",
+  "daoKey":"invoiceDAO",
+  "operation":1,
+  "after":true,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{
+          "class":"net.nanopay.invoice.model.InvoiceStatus",
+          "ordinal":6
+        },
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "isNew": false,
+        "propValue":{
+          "class":"net.nanopay.invoice.model.InvoiceStatus",
+          "ordinal":11
+        },
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"paymentId",
+        "propValue": ""
+      }
+    ]
+  },
+  "asyncAction":{
+    "class":"net.nanopay.fx.afex.AFEXGetPDFRule"
+  },
+  "enabled":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -279,7 +246,7 @@ p({
   "documentation":"Rule to push Business Beneficial Owner to AFEX after AFEX Business is created.",
   "priority":100,
   "ruleGroup":"AFEX",
-  "daoKey":"afexBusinessDAO",
+  "daoKey":"afexUserDAO",
   "operation":0,
   "after":true,
   "predicate":{
@@ -295,27 +262,9 @@ p({
   "lifecycleState":1
 })
 
-p({
+r({
   "class":"foam.nanos.ruler.Rule",
-  "id":"c1419029-a8fe-136e-a29e-eef5c17e60co",
-  "name":"AFEX Push Signing Officer",
-  "documentation":"Rule to push Signing Officers to AFEX after AFEX Business is created.",
-  "priority":100,
-  "ruleGroup":"AFEX",
-  "daoKey":"afexBusinessDAO",
-  "operation":0,
-  "after":true,
-  "predicate":{
-    "class": "foam.nanos.ruler.predicate.PropertyNEQValue",
-    "propName": "apiKey",
-    "propValue": null
-  },
-  "asyncAction":{
-    "class":"net.nanopay.fx.afex.AFEXSigningOfficerRule"
-  },
-  "enabled":true,
-  "saveHistory":true,
-  "lifecycleState":1
+  "id":"c1419029-a8fe-136e-a29e-eef5c17e60co"
 })
 
 p({
@@ -325,7 +274,7 @@ p({
   "documentation":"Rule to push Business Directors to AFEX after AFEX Business is created.",
   "priority":100,
   "ruleGroup":"AFEX",
-  "daoKey":"afexBusinessDAO",
+  "daoKey":"afexUserDAO",
   "operation":0,
   "after":true,
   "predicate":{
@@ -423,7 +372,7 @@ p({
     "class":"net.nanopay.fx.afex.TransactionInvalidBankAccountRule"
   },
   "enabled":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -458,7 +407,7 @@ p({
       }
     ]
   },
-  "asyncAction":{
+  "action":{
     "class":"net.nanopay.fx.afex.AFEXCreateFundingBalancesRule"
   },
   "enabled":true,
@@ -492,12 +441,12 @@ p({
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName":"referenceNumber",
+        "propName":"externalInvoiceId",
         "propValue": ""
       }
     ]
   },
-  "asyncAction":{
+  "action":{
     "class":"net.nanopay.fx.afex.AFEXSubmitFundingTxnRule"
   },
   "enabled":true,

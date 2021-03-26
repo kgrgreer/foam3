@@ -69,12 +69,12 @@ foam.CLASS({
       Currency ruleCurrency = (Currency) currencyDAO.find(txLimitRule.getDenomination());
 
       // Amount of the transaction in the transaction source currency
-      long amount = transaction.getAmount();
+      long amount = -transaction.getTotal(x, transaction.getSourceAccount());
       if ( !txLimitRule.getSend() && 
-         ( transaction.getDestinationAmount() > 0) && 
+         ( transaction.getTotal(x, transaction.getDestinationAccount()) > 0) && 
          ( transaction.getDestinationCurrency() != null ) )
       {
-        amount = transaction.getDestinationAmount();  
+        amount = transaction.getTotal(x, transaction.getDestinationAccount());  
         transactionCurrency = (Currency) currencyDAO.find(transaction.getDestinationCurrency());
       }
 

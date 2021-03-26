@@ -18,7 +18,9 @@ foam.CLASS({
 		},
 		{
 			class: "foam.core.String",
-			name: "AVISO2"
+			name: "AVISO2",
+			value: "OUR",
+			documentation: "sender(our) / receiver(beneficiary) / sha (shared) "
 		},
 		{
 			class: "foam.core.String",
@@ -612,7 +614,8 @@ foam.CLASS({
 		},
 		{
 			class: "foam.core.String",
-			name: "DR"
+			name: "DR",
+			documentation: "This amount refers to the Tariff charged to the customer for shipping operations"
 		},
 		{
 			class: "foam.core.String",
@@ -771,7 +774,9 @@ foam.CLASS({
 		},
 		{
 			class: "foam.core.String",
-			name: "FLUXOME"
+			name: "FLUXOME",
+			value: "S",
+			documentation: "Cash Flow Indicator: “N” - Inflow “S” - Outflow"
 		},
 		{
 			class: "foam.core.String",
@@ -779,7 +784,8 @@ foam.CLASS({
 		},
 		{
 			class: "foam.core.String",
-			name: "FORMAEN"
+			name: "FORMAEN",
+			value: "TED"
 		},
 		{
 			class: "foam.core.String",
@@ -846,7 +852,7 @@ foam.CLASS({
 			class: "foam.core.String",
 			name: "IMPRESSO",
 			value: "C",
-			documentation: "E-mail indicator: “T” - Client / Broker “C” - Client “R” - Broker “N” - No"
+			documentation: "E-mail indicator: “T” - Client / Broker, “C” - Client, “R” - Broker, “N” - No"
 		},
 		{
 			class: "foam.core.String",
@@ -956,7 +962,7 @@ foam.CLASS({
 			class: "foam.core.Int",
 			name: "MOEDA",
 			value: 220,
-			required: false
+			documentation: "Destination currency code: 220 - USD, 978  - EUR"
 		},
 		{
 			class: "foam.core.Int",
@@ -994,7 +1000,7 @@ foam.CLASS({
 			required: false
 		},
 		{
-			class: "foam.core.Double",
+			class: "foam.core.String",
 			name: "NATUREZA",
 			required: false
 		},
@@ -1084,7 +1090,8 @@ foam.CLASS({
 			class: "foam.core.Double",
 			name: "PARIDADE",
 			value: 1,
-			documentation: "Foreign currency parity",
+			documentation: `FX rate to be reported to exhange. The full flow of funds: 1 Treviso BRL > 2 Bank in Brazil BRL >
+			  3 Bank in US USD > 4 AFEX USD. PARIDADE is between 3 and 4`,
 			required: false
 		},
 		{
@@ -1235,7 +1242,8 @@ foam.CLASS({
 		{
 			class: "foam.core.String",
 			name: "STATUS",
-			documentation: 'Boleto Status: "R" - Pre-Boleto "F" - Closed "M" - Pending Payment "E" - Completed'
+			documentation: `R - Pre-Boleto - Used to reserve an operation. F - Closed - Closed operation awaiting verification by Treviso.
+			M - Pending Payment - Operation awaiting payment from the customer (already reviewed by BackOffice). E - Completed - Operation settled.`
 		},
 		{
 			class: "foam.core.String",
@@ -1285,9 +1293,8 @@ foam.CLASS({
 		{
 			class: "foam.core.Int",
 			name: "TIPO",
-			value: 3,
-			documentation: 'Operation type code: 01 - Export 02 - Import 03 - Financial Transfer Abroad 04 - Financial Transfer Abroad 05 - Banking Purchase 06 - Banking Sale',
-			required: false
+			value: 4,
+			documentation: "Operation type code: 01 - Export, 02 - Import, 03 - Financial Transfer Abroad, 04 - Financial Transfer Abroad, 05 - Banking Purchase, 06 - Banking Sale"
 		},
 		{
 			class: "foam.core.String",
@@ -1386,19 +1393,19 @@ foam.CLASS({
 			required: false
 		},
 		{
-			class: "foam.core.Long",
+			class: "foam.core.Double",
 			name: "VALORME",
 			documentation: 'TODO Foreign Currency Value',
 			required: false
 		},
 		{
-			class: "foam.core.Long",
+			class: "foam.core.Double",
 			name: "VALORMN",
 			documentation: 'TODO National Currency Value',
 			required: false
 		},
 		{
-			class: "foam.core.Long",
+			class: "foam.core.Double",
 			name: "VALORR",
 			required: false
 		},

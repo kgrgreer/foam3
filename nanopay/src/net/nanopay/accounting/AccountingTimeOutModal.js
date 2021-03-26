@@ -163,7 +163,7 @@ foam.CLASS({
       code: function(X) {
         X.closeDialog();
         if ( this.goDashboard ) {
-          this.pushMenu('capability.main.dashboard');
+          this.pushMenu('mainmenu.dashboard');
         }
       }
     },

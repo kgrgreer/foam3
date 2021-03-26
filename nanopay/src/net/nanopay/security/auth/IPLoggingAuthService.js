@@ -33,6 +33,8 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.Group',
+    'foam.nanos.auth.AuthService',
     'javax.servlet.http.HttpServletRequest',
     'net.nanopay.auth.LoginAttempt'
   ],
@@ -50,12 +52,16 @@ foam.CLASS({
       javaCode: `
         LoginAttempt loginAttempt = new LoginAttempt();
         HttpServletRequest request = x.get(HttpServletRequest.class);
+        AuthService auth = (AuthService) x.get("auth");
         String ipAddress = request.getRemoteAddr();
         loginAttempt.setIpAddress(ipAddress);
         loginAttempt.setLoginIdentifier(identifier);
 
         try {
           User user = super.login(x, identifier, password);
+          if ( auth.check(x, "loginAttempt.nocluster") ) {
+            loginAttempt.setClusterable(false);
+          }
           loginAttempt.setLoginAttemptedFor(user.getId());
           loginAttempt.setGroup(user.getGroup());
           loginAttempt.setLoginSuccessful(true);
@@ -63,7 +69,11 @@ foam.CLASS({
           return user;
         } catch (Throwable t) {
           loginAttempt.setLoginSuccessful(false);
-          ((DAO) getLoginAttemptDAO()).put(loginAttempt);
+          if ( "admin@nanopay.net".equals(identifier) ||
+               "admin".equals(identifier) ) {
+            loginAttempt.setClusterable(false);
+          }
+          ((DAO) getLoginAttemptDAO()).inX(getX()).put(loginAttempt);
           throw t;
         }
       `

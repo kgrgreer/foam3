@@ -197,3 +197,10 @@ p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"Other","description":
 p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"37004","description":"Maintenance","send":false, "country":"BR"})
 p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"67500","description":"Availability","send":false, "country":"BR"})
 p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"47142","description":"Consultoria","send":false, "country":"BR"})
+
+// AFEXBeneficiary
+p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"CCDNDR","description":"Charity Donation","send":false, "country":"CN"})
+p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"CCTFDR","description":"Send money to own account, family or friend","send":false, "country":"CN"})
+p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"CSTRDR","description":"Send money to pay a utility bill","send":false, "country":"CN"})
+p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"CGODDR","description":"Send money to pay a vendor","send":false, "country":"CN"})
+p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"COCADR","description":"Other","send":false, "country":"CN", "order":100})

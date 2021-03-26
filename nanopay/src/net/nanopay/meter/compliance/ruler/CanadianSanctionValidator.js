@@ -80,7 +80,7 @@ foam.CLASS({
               Notification notification = new Notification();
               notification.setBody(message);
               notification.setNotificationType("A SEMA/JVCFOA related user has signed up");
-              notification.setGroupId("fraud-ops");
+              notification.setGroupId(user.getSpid() + "-fraud-ops");
               localNotificationDAO.put(notification);
             }
           }, "Canadian Sanction Validator");

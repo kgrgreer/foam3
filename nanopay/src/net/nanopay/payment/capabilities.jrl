@@ -5,6 +5,7 @@ p({"class":"net.nanopay.payment.PaymentProvider","id":"AFEX","name":"AFEX", "ena
 p({"class":"net.nanopay.payment.PaymentProvider","id":"RBC","name":"Royal Bank of Canada", "enabled":true})
 p({"class":"net.nanopay.payment.PaymentProvider","id":"Kotak","name":"Kotak", "enabled":true})
 p({"class":"net.nanopay.payment.PaymentProvider","id":"Treviso","name":"Treviso", "enabled":true})
+p({"class":"net.nanopay.payment.PaymentProvider","id":"BePay","name":"BePay", "enabled":true})
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
   "id":"554af38a-8125-87c8-dfdf-eeb15fafexca-us",
@@ -39,7 +40,8 @@ p({
   "sourceCurrencies":["USD"],
   "targetCurrencies":["USD"],
   "description": "US to US corridor via AFEX",
-  "enabled":true
+  "enabled":true,
+  "ranking":1
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",

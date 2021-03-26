@@ -33,6 +33,7 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.dao.*',
     'static foam.mlang.MLang.EQ',
+    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'net.nanopay.bank.BankAccountStatus',
@@ -55,10 +56,24 @@ foam.CLASS({
           public BankAccountInstitutionDAO(X x, DAO delegate) {
             setX(x);
             setDelegate(delegate);
-          }  
+          }
         `
         );
       }
+    }
+  ],
+
+  properties: [
+    {
+      name: 'logger',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.logger.Logger',
+      visibility: 'HIDDEN',
+      javaFactory: `
+        return new PrefixLogger(new Object[] {
+          this.getClass().getSimpleName()
+        }, (Logger) getX().get("logger"));
+      `
     }
   ],
 
@@ -115,7 +130,7 @@ foam.CLASS({
               .build();
             new Transfer.Builder(x).build();
             ((DAO) x.get("localNotificationDAO")).put(notification);
-            ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
+            getLogger().warning(message);
           } else if (institutions.size() > 1) {
             String message = "Multiple Institutions found for institutionNumber: " + bankAccount.getInstitution() + ". Using " + institution.getId() + " on BankAccount: " + bankAccount.getId();
             Notification notification = new Notification.Builder(x)
@@ -123,8 +138,7 @@ foam.CLASS({
               .setBody(message)
               .build();
             ((DAO) x.get("localNotificationDAO")).put(notification);
-            ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
-            ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "institutions", institutions);
+            getLogger().warning( message);
           }
           return bankAccount;
         } else {
@@ -140,16 +154,20 @@ foam.CLASS({
         if ( fObject == null ) {
           return fObject;
         }
-        fObject = fObject.fclone();
 
-        if (fObject instanceof CABankAccount) {
-          CABankAccount caBankAccount = (CABankAccount) fObject;
-          Branch branch =  caBankAccount.findBranch(x);
+        if (fObject instanceof BankAccount) {
+          BankAccount bankAccount = (BankAccount) fObject;
+          Branch branch =  bankAccount.findBranch(x);
           if ( branch != null ) {
             Institution institution = branch.findInstitution(x);
-            if (institution != null)
-              caBankAccount.setInstitutionNumber(institution.getInstitutionNumber());
-            return caBankAccount;
+            if (institution != null) {
+              bankAccount = (BankAccount) bankAccount.fclone();
+              bankAccount.setInstitutionNumber(institution.getInstitutionNumber());
+              return bankAccount;
+            }
+            getLogger().debug("Institution not found", branch.getInstitution(), "account", bankAccount.getId());
+          } else {
+            getLogger().debug("Branch not found", bankAccount.getBranch(), "account", bankAccount.getId());
           }
         }
         return fObject;

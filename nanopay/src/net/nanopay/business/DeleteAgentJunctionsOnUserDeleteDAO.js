@@ -37,6 +37,7 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.dao.RemoveSink',
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserUserJunction',
     'static foam.mlang.MLang.EQ'
@@ -87,6 +88,12 @@ foam.CLASS({
         deleteJunctions(x, ((User) obj).getId());
 
         return result;
+      `
+    },
+    {
+      name: 'removeAll_',
+      javaCode: `
+        getDelegate().select_(x, new RemoveSink(x, this), skip, limit, order, predicate);
       `
     },
     {

@@ -27,6 +27,9 @@ foam.INTERFACE({
         {
           type: 'String',
           name: 'referenceNumber',
+          section: 'transactionInformation',
+          order: 370,
+          gridColumns: 6
         },
       ]
     },

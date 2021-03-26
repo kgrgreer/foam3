@@ -45,9 +45,7 @@ foam.CLASS({
           Business business = (Business) businessDAO.find(businessOwnerData.getBusinessId());
           if ( business != null ) {
             business.getBeneficialOwners(x).removeAll(); // To avoid duplicating on updates
-            for ( int i = 1; i <= businessOwnerData.getAmountOfOwners(); i++ ) {
-              BeneficialOwner bo = (BeneficialOwner) businessOwnerData.getProperty("owner"+i);
-              bo.setId(0); // To make sure all bo instances in beneficial owner dao have a unique id
+            for ( BeneficialOwner bo : businessOwnerData.getOwners() ) {
               business.getBeneficialOwners(x).put(bo);
             }
           }

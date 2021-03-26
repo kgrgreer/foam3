@@ -1,31 +1,136 @@
 p({
-    class:"net.nanopay.auth.UserCreateServiceProviderURLRule",
-    id:"6C751066-B628-4906-8461-093090E774BA",
-    name:"bppUserCreateServiceProviderURLRule",
-    priority:100,
-    documentation:"Set ServiceProvider on User Create based on AppConfig URL for BPP",
-    daoKey:"localUserDAO",
-    operation:0,
-    after:false,
-    action:{class:"net.nanopay.auth.UserCreateServiceProviderURLRuleAction"},
-    config:[
-        {
-            class:"net.nanopay.auth.ServiceProviderURL",
-            spid:"intuit",
-            urls:[
-                "api",
-                "bpp",
-                "bpp.demo.nanopay.net"
-            ]
+  "class":"net.nanopay.tx.planner.IntermediaryDestinationAccountSplitPlanner",
+  "id":"119fa381-d2a2-4369-b242-1dc8e2163bb9-bpp",
+  "intermediaryAccountId":{
+    "USD":"35931861-7dd4-4ddb-b3a0-5d091cc82fcf-bpp",
+    "GBP":"c1a4ac13-0046-4d12-b4e1-c14d32e69d94-bpp",
+    "EUR":"30724107-f0c9-49ef-a3c2-460b77e3dc1e-bpp",
+    "CAD":"c3d0b7b5-cd32-439e-b3bc-63c9f456ec80-bpp"
+  },
+  "priority":90,
+  "ruleGroup":"BePayPlanner",
+  "enabled":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"parent",
+        "propValue":null
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.BRBankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"sourceUnit",
+        "propValue":"BRL"
+      }
+    ]
+  },
+  "lifecycleState":1
+})
+
+p({
+  class: "net.nanopay.tx.fee.TransactionFeeRule",
+  id: "454df571-f639-4506-8d59-98b4f39934e4-bpp",
+  name: "BPP Fee",
+  documentation: "BPP transaction fee",
+  feeName: "BPP Fee",
+  feeAccount: "512360f6-ec67-4339-9fc4-9a677bc2bff7-bpp",
+  feeDenomination: "BRL",
+  feeClass: "net.nanopay.tx.FeeLineItem",
+  rateExpiry: {
+    class: "foam.nanos.cron.TimeHMS",
+    hour: 24
+  },
+  enabled: true,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of: "net.nanopay.fx.FXSummaryTransaction"
+      },
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "foam.mlang.expr.Dot",
+          arg1: {
+            class: "foam.mlang.ContextObject",
+            key: "NEW"
+          },
+          arg2: {
+            class: "foam.mlang.PredicatedExpr",
+            arg1: {
+              class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+              of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+              propName: "natureCode"
+            }
+          }
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: true
         }
-    ],
-    enabled:true,
-    saveHistory:false,
-    created:1594218436764,
-    createdBy:1,
-    createdByAgent:1,
-    lastModified:1594218436764,
-    lastModifiedBy:1,
-    lifecycleState:1,
-    ruleGroup:"UserCreate"
+      }
+    ]
+  },
+  lifecycleState:1
+})
+
+p({
+  class: "net.nanopay.tx.fee.TransactionFeeRule",
+  id: "9e7661a6-610b-47ad-b521-96b9c760fb16-bpp",
+  name: "IOF",
+  documentation: "IOF charge for BPP transactions.",
+  feeName: "IOF",
+  feeAccount: "512360f6-ec67-4339-9fc4-9a677bc2bff7-bpp",
+  ruleGroup: "TransactionFeeRule",
+  feeDenomination: "BRL",
+  feeClass: "net.nanopay.tx.FeeLineItem",
+  rateExpiry: {
+    class: "foam.nanos.cron.TimeHMS",
+    hour: 24
+  },
+  enabled: true,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of: "net.nanopay.fx.FXSummaryTransaction"
+      },
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "foam.mlang.expr.Dot",
+          arg1: {
+            class: "foam.mlang.ContextObject",
+            key: "NEW"
+          },
+          arg2: {
+            class: "foam.mlang.PredicatedExpr",
+            arg1: {
+              class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+              of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+              propName: "natureCode"
+            }
+          }
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: true
+        }
+      }
+    ]
+  },
+  lifecycleState:1
 })

@@ -74,7 +74,7 @@ foam.CLASS({
               sourceArgs.put("name", sourceAccountOwner.FIRST_NAME);
               sourceArgs.put("institutionNumber", sourceAccount.getInstitutionNumber());
               sourceArgs.put("institutionName", sourceAccountInstitutionName);
-              sourceArgs.put("accountNumber", sourceAccount.getAccountNumber().substring(sourceAccount.getAccountNumber().length() - 4));
+              sourceArgs.put("accountNumber", BankAccount.mask(sourceAccount.getAccountNumber()));
               sourceArgs.put("userEmail", sourceAccountOwner.EMAIL);
               sourceArgs.put("sendTo", sourceAccountOwner.EMAIL);
               sourceArgs.put("link", sourceConfig.getUrl());
@@ -105,10 +105,14 @@ foam.CLASS({
     
                 HashMap<String, Object> destinationArgs = new HashMap<>();
                 destinationArgs.put("contactBusiness", txn.getPayer());
-                destinationArgs.put("name", destinationAccountOwner.BUSINESS_NAME);
+                destinationArgs.put("name", 
+                  destinationAccountOwner.getOrganization() != null ? 
+                    destinationAccountOwner.getOrganization() : 
+                    destinationAccountOwner.getBusinessName()
+                );
                 destinationArgs.put("institutionNumber", destinationAccount.getInstitutionNumber());
                 destinationArgs.put("institutionName", destinationAccountInstitutionName);
-                destinationArgs.put("accountNumber", destinationAccount.getAccountNumber().substring(destinationAccount.getAccountNumber().length() - 4));
+                destinationArgs.put("accountNumber", BankAccount.mask(destinationAccount.getAccountNumber()));
                 destinationArgs.put("userEmail", destinationAccountOwner.EMAIL);
                 destinationArgs.put("sendTo", destinationAccountOwner.EMAIL);
                 destinationArgs.put("link", destinationConfig.getUrl());
@@ -149,7 +153,7 @@ foam.CLASS({
                   args.put("contactBusiness", contact.getOrganization());
                   args.put("institutionNumber", destinationAccount.getInstitutionNumber());
                   args.put("institutionName", institutionName);
-                  args.put("accountNumber", destinationAccount.getAccountNumber().substring(destinationAccount.getAccountNumber().length() - 4));
+                  args.put("accountNumber", BankAccount.mask(destinationAccount.getAccountNumber()));
                   args.put("userEmail", User.EMAIL);
                   args.put("sendTo", User.EMAIL);
                   args.put("link", config.getUrl());

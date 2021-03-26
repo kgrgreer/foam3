@@ -29,7 +29,6 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
-    'foam.nanos.crunch.AgentCapabilityJunction',
     'foam.nanos.crunch.UserCapabilityJunction',
     'java.lang.UnsupportedOperationException',
     'net.nanopay.admin.model.ComplianceStatus'
@@ -50,10 +49,10 @@ foam.CLASS({
               user.setCompliance(ComplianceStatus.PASSED);
               userDAO.put(user);
             } catch(Exception e) {
-              throw new UnsupportedOperationException("Signing Officer : " + user.getId() + " compliance not set - but UCJ granted" + " Errors: " + e);
+              throw new UnsupportedOperationException("User : " + user.getId() + " compliance not set - but UCJ granted" + " Errors: " + e);
             }
           }
-        }, "User(Signing Officer) Compliance Set");
+        }, "User Compliance Set");
       `
     }
   ]

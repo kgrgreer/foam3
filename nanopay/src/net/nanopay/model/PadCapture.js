@@ -28,6 +28,7 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.Address',
+    'net.nanopay.bank.BankAccount'
   ],
 
   tableColumns: [
@@ -92,9 +93,9 @@ foam.CLASS({
       documentation: 'Account associated with PAD capture.',
       visibility: 'DISABLED',
       gridColumns: 6,
-      tableCellFormatter: function(str) {
+      tableCellFormatter: function(str, obj) {
         this.start()
-          .add('***' + str.substring(str.length - 4, str.length));
+          .add(obj.BankAccount.mask(str));
       },
       validateObj: function(accountNumber) {
         var accNumberRegex = /^[0-9]{1,30}$/;
@@ -126,6 +127,16 @@ foam.CLASS({
       documentation: `
         Capable object requirements, defined by a subclass of PadCapture.
       `
+    },
+    {
+      class: 'StringArray',
+      name: 'capabilityIds',
+      visibility: 'HIDDEN',
+    },
+    {
+      class: 'String',
+      name: 'daoKey',
+      visibility: 'HIDDEN',
     }
   ],
 

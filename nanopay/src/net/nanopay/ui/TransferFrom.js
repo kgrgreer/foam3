@@ -54,7 +54,7 @@ foam.CLASS({
       box-sizing: border-box;
       width: 320px;
       height: 66px;
-      overflow-y: scroll;
+      overflow-y: auto;
       background-color: #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
       resize: vertical;
@@ -451,9 +451,8 @@ foam.CLASS({
       }
 
       if ( type.length >= 11 && type.substring(type.length - 11) == 'BankAccount')  {
-        view.choices = accounts.map(function(account) {
-          var numLength = account.accountNumber.length;
-          var choice = account.name + ' ' + '***' + account.accountNumber.substring(numLength - 4, numLength);
+        view.choices = accounts.map(account => {
+          var choice = `${account.name} ${this.BankAccount.mask(account.accountNumber)}`;
           return [account.id, choice];
         });
       }

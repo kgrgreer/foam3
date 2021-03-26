@@ -41,7 +41,7 @@ foam.CLASS({
         @Override
         public void execute(X x) {
 
-          AFEXFundingTransaction transaction = (AFEXFundingTransaction) obj;
+          AFEXFundingTransaction transaction = (AFEXFundingTransaction) obj.fclone();
           Logger logger = (Logger) x.get("logger");
           AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
           try {

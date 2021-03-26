@@ -31,7 +31,7 @@ foam.INTERFACE({
         },
         {
           name: 'parentId',
-          type: 'Long'
+          type: 'String'
         }
       ]
     },
@@ -83,7 +83,7 @@ foam.INTERFACE({
         },
         {
           name: 'rootAccountIds',
-          type: 'java.util.List<Long>'
+          type: 'java.util.List<String>'
         }
       ]
     },
@@ -100,7 +100,7 @@ foam.INTERFACE({
         },
         {
           name: 'accountId',
-          type: 'Long'
+          type: 'String'
         }
       ]
     }

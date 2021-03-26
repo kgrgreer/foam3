@@ -43,6 +43,10 @@ p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"5597214b-40
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"6af80d3a-4e65-4082-9384-eab196501f10", targetId:"5fdd9025-86e6-45a1-bed5-8962acdf5338-4" })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"6af80d3a-4e65-4082-9384-eab196501f10", targetId:"5fdd9025-86e6-45a1-bed5-8962acdf5338-3" })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"6af80d3a-4e65-4082-9384-eab196501f10", targetId:"5fdd9025-86e6-45a1-bed5-8962acdf5338-9" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"6af80d3a-4e65-4082-9384-eab196501f10", targetId:"5fdd9025-86e6-45a1-bed5-8962acdf5338-33" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"6af80d3a-4e65-4082-9384-eab196501f10", targetId:"5fdd9025-86e6-45a1-bed5-8962acdf5338-20" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"6af80d3a-4e65-4082-9384-eab196501f10", targetId:"5fdd9025-86e6-45a1-bed5-8962acdf5338-37" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"6af80d3a-4e65-4082-9384-eab196501f10", targetId:"5fdd9025-86e6-45a1-bed5-8962acdf5338-38" })
 
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode", targetId:"0fdd3f07-3b9b-46e3-9212-000bae2695aa", priority: 17 })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"0fdd3f07-3b9b-46e3-9212-000bae2695aa", targetId:"287d017b-c4f9-4b9a-a0e3-f13726997fbe", priority: 17 })
@@ -124,6 +128,8 @@ p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"cbb67837-54
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"efdc3a3f-6f12-4eba-acd1-6e909d6427a0", targetId:"df4f921d-035e-44dd-b510-24356d0a3113", priority: 17 })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"df4f921d-035e-44dd-b510-24356d0a3113", targetId:"5fdd9025-86e6-45a1-bed5-8962acdf5338-4" })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"df4f921d-035e-44dd-b510-24356d0a3113", targetId:"5fdd9025-86e6-45a1-bed5-8962acdf5338-3" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"df4f921d-035e-44dd-b510-24356d0a3113", targetId:"5fdd9025-86e6-45a1-bed5-8962acdf5338-38" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"df4f921d-035e-44dd-b510-24356d0a3113", targetId:"5fdd9025-86e6-45a1-bed5-8962acdf5338-20" })
 
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode", targetId:"f0224036-2a37-4fa9-8879-a413fe168f34", priority: 17 })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"f0224036-2a37-4fa9-8879-a413fe168f34", targetId:"0fb9d7fe-8ce5-4900-9ff9-8b6d7ea64ecd", priority: 17 })
@@ -202,3 +208,26 @@ p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"18ef6987-47
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"ab3fb392-4018-446d-83a5-6026ebe6c93d", targetId:"5fdd9025-86e6-45a1-bed5-8962acdf5338-4" })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"ab3fb392-4018-446d-83a5-6026ebe6c93d", targetId:"5fdd9025-86e6-45a1-bed5-8962acdf5338-3" })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"ab3fb392-4018-446d-83a5-6026ebe6c93d", targetId:"5fdd9025-86e6-45a1-bed5-8962acdf5338-20" })
+
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"49b77f74-124e-41a5-9c0c-da3e86102d0b", targetId:"1d72f804-4019-11eb-b378-0242ac130002",  priority: 18})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"ed4ca3a0-3c2a-4161-93db-48fe963f1729", targetId:"1d72f804-4019-11eb-b378-0242ac130002",  priority: 18})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"eecb85f8-66d4-43b9-8c26-a187a5a00b7a", targetId:"1d72f804-4019-11eb-b378-0242ac130002",  priority: 18})
+
+// Register Payment Provider Requirements for Brazil
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "bf6a49d5-4027-4dac-a269-4d3ed070609e-4",
+  targetId: "0B2E7305-B898-43F2-9C1B-63FB2CE38B2D",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "bf6a49d5-4027-4dac-a269-4d3ed070609e-4",
+  targetId: "89cc91da-4bbd-458b-81d4-574815e455fa-4",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "89cc91da-4bbd-458b-81d4-574815e455fa-4",
+  targetId: "1f6b2047-1eef-471d-82e7-d86bdf511375",
+})

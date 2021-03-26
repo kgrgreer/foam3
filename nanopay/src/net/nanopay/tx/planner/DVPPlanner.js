@@ -57,8 +57,7 @@ foam.CLASS({
         dt.setSourceAccount(tx.getSourcePaymentAccount());
         dt.setDestinationAccount(tx.getDestinationPaymentAccount());
         dt.setSourceCurrency(dt.findSourceAccount(x).getDenomination());
-        // may not be able to find destination account with user context so use getX();
-        dt.setDestinationCurrency(dt.findDestinationAccount(getX()).getDenomination());
+        dt.setDestinationCurrency(dt.findDestinationAccount(x).getDenomination());
 
         dt.setAmount(tx.getPaymentAmount());
         dt.setDestinationAmount(tx.getDestinationPaymentAmount());

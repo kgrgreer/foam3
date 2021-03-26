@@ -44,7 +44,7 @@ foam.CLASS({
     }
 
     ^title {
-      font-size: 24px;
+      font-size: 23px;
       font-weight: 800;
       color: /*%BLACK%*/ #1e1f21;
       margin: 0;
@@ -91,8 +91,8 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Are you sure?' },
-    { name: 'INSTRUCTIONS_1', message: 'Two-factor authentication provides an added layer of security against impersonation and prevents access to sensitive account information.' },
-    { name: 'INSTRUCTIONS_2', message: 'We highly recommend it.' },
+    { name: 'INSTRUCTIONS_1', message: 'Two-factor authentication provides an added layer of security against impersonation and prevents access to sensitive account information' },
+    { name: 'INSTRUCTIONS_2', message: 'We highly recommend it' },
     { name: 'FIELD_LABEL', message: 'Enter verification code' },
     { name: 'FIELD_PLACEHOLDER', message: 'Enter code' },
     { name: 'ERROR_NO_TOKEN', message: 'Please enter a verification token' },
@@ -142,25 +142,25 @@ foam.CLASS({
       code: function() {
         var self = this;
 
-        if ( ! this.validationCode ) {
-          this.ctrl.notify(this.ERROR_NO_TOKEN, '', this.LogLevel.ERROR, true);
+        if ( ! self.validationCode ) {
+          self.ctrl.notify(self.ERROR_NO_TOKEN, '', self.LogLevel.ERROR, true);
           return;
         }
 
-        this.twofactor.disable(null, this.validationCode)
+        this.twofactor.disable(null, self.validationCode)
           .then(function(result) {
             if ( ! result ) {
-              self.ctrl.notify(self.ERROR_DISABLE, '', this.LogLevel.ERROR, true);
+              self.ctrl.notify(self.ERROR_DISABLE, '', self.LogLevel.ERROR, true);
               return;
             }
 
             self.validationCode = '';
             self.subject.realUser.twoFactorEnabled = false;
-            self.ctrl.notify(self.SUCCESS, '', this.LogLevel.INFO, true);
+            self.ctrl.notify(self.SUCCESS, '', self.LogLevel.INFO, true);
             self.closeDialog();
           })
           .catch(function(err) {
-            self.ctrl.notify(self.ERROR_DISABLE, '', this.LogLevel.ERROR, true);
+            self.ctrl.notify(self.ERROR_DISABLE, '', self.LogLevel.ERROR, true);
           });
       }
     },

@@ -33,7 +33,7 @@ foam.CLASS({
     the user it was meant for.`,
 
   imports: [
-    'DAO tokenDAO'
+    'DAO tokenDAO?'
   ],
 
   javaImports: [

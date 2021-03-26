@@ -32,8 +32,9 @@ foam.CLASS({
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.fx.TotalRateLineItem',
     'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.ComplianceTransaction',
     'net.nanopay.tx.Transfer',
-
+    'java.util.Arrays',
     'java.util.ArrayList',
     'java.util.Calendar',
     'java.util.Date',
@@ -51,10 +52,10 @@ foam.CLASS({
         for ( Transaction t : quote.getPlans() ) {
           if ( t instanceof SummaryTransaction || t instanceof FXSummaryTransaction ) {
             List items = new ArrayList<TransactionLineItem>();
-            ArrayList eta = new  ArrayList<EtaSummaryTransactionLineItem>();
-            ArrayList fee = new  ArrayList<FeeSummaryTransactionLineItem>();
-            ArrayList fx = new  ArrayList<FxSummaryTransactionLineItem>();
-            ArrayList expiry = new ArrayList<ExpirySummaryTransactionLineItem>();
+            ArrayList eta = new  ArrayList<TransactionLineItem>();
+            ArrayList fee = new  ArrayList<TransactionLineItem>();
+            ArrayList fx = new  ArrayList<TransactionLineItem>();
+            ArrayList expiry = new ArrayList<TransactionLineItem>();
             Set<String> added = new HashSet<>();
 
             walk(t, eta, fee, fx, expiry, items, added);
@@ -79,10 +80,10 @@ foam.CLASS({
       name: 'walk',
       args: [
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
-        { name: 'eta', type: 'java.util.ArrayList' },
-        { name: 'fee', type: 'java.util.ArrayList' },
-        { name: 'fx', type: 'java.util.ArrayList' },
-        { name: 'expiry', type: 'java.util.ArrayList' },
+        { name: 'eta', type: 'java.util.ArrayList<TransactionLineItem>' },
+        { name: 'fee', type: 'java.util.ArrayList<TransactionLineItem>' },
+        { name: 'fx', type: 'java.util.ArrayList<TransactionLineItem>' },
+        { name: 'expiry', type: 'java.util.ArrayList<TransactionLineItem>' },
         { name: 'lineItems', type: 'List' },
         { name: 'added', type: 'Set' }
       ],
@@ -97,21 +98,21 @@ foam.CLASS({
         if ( a instanceof ETALineItem ) {
           eta.add(a);
         } else if ( a instanceof EtaSummaryTransactionLineItem ) {
-          eta.add(((EtaSummaryTransactionLineItem) a).getLineItems());
+          eta.addAll(Arrays.asList(((EtaSummaryTransactionLineItem) a).getLineItems()));
         } else if ( a instanceof FeeLineItem ) {
           fee.add(a);
         } else if ( a instanceof FeeSummaryTransactionLineItem ) {
-          fee.add(((FeeSummaryTransactionLineItem) a).getLineItems());
+          fee.addAll(Arrays.asList(((FeeSummaryTransactionLineItem) a).getLineItems()));
         } else if ( a instanceof FXLineItem ) {
           fx.add(a);
           expiry.add(a);
         } else if ( a instanceof FxSummaryTransactionLineItem ) {
-          fx.add(((FxSummaryTransactionLineItem) a).getLineItems());
-          expiry.add(((FxSummaryTransactionLineItem) a).getLineItems());
+          fx.addAll(Arrays.asList(((FxSummaryTransactionLineItem) a).getLineItems()));
+          expiry.addAll(Arrays.asList(((FxSummaryTransactionLineItem) a).getLineItems()));
         } else if ( a instanceof ExpiryLineItem ) {
           expiry.add(a);
         } else if ( a instanceof ExpirySummaryTransactionLineItem ) {
-          expiry.add(((ExpirySummaryTransactionLineItem) a).getLineItems());
+          expiry.addAll(Arrays.asList(((ExpirySummaryTransactionLineItem) a).getLineItems()));
         } else {
           lineItems.add(a);
         }
@@ -131,12 +132,12 @@ foam.CLASS({
       javaCode: `
       EtaSummaryTransactionLineItem etaSummary = new EtaSummaryTransactionLineItem();
 
-      if ( eta.size() > 0 ) {
-        ETALineItem[] etaArray = eta.toArray((new ETALineItem[eta.size()]));
+      if ( eta != null && eta.size() > 0 ) {
+        TransactionLineItem[] etaArray = eta.toArray((new TransactionLineItem[eta.size()]));
         etaSummary.setLineItems(etaArray);
         Long totalEta = 0l;
-        for ( ETALineItem etaLine: etaArray ) {
-          totalEta += etaLine.getEta();
+        for ( TransactionLineItem etaLine: etaArray ) {
+          totalEta += ((ETALineItem) etaLine).getEta();
         }
         etaSummary.setEta(totalEta);
         txn.addLineItems(new TransactionLineItem[]{etaSummary});
@@ -154,14 +155,16 @@ foam.CLASS({
       javaCode: `
       FeeSummaryTransactionLineItem feeSummary = new FeeSummaryTransactionLineItem();
 
-      if ( fee.size() > 0 ) {
-        FeeLineItem[] feeArray = fee.toArray((new FeeLineItem[fee.size()]));
+      if ( fee != null && fee.size() > 0 ) {
+        TransactionLineItem[] feeArray = fee.toArray((new TransactionLineItem[fee.size()]));
         feeSummary.setLineItems(feeArray);
         Long totalFee = 0l;
-        Currency currency = (Currency) ((DAO) getX().get("currencyDAO")).find(feeArray[0].getFeeCurrency());
-        for ( FeeLineItem feeLine: feeArray ) {
-          totalFee += feeLine.getAmount();
+        Currency currency = (Currency) ((DAO) getX().get("currencyDAO")).find(((FeeLineItem) feeArray[0]).getFeeCurrency());
+        for ( TransactionLineItem feeLine: feeArray ) {
+            totalFee += ((FeeLineItem) feeLine).getAmount();
         }
+        feeSummary.setAmount(totalFee);
+        feeSummary.setCurrency(currency.getId());
         feeSummary.setTotalFee(currency.format(totalFee) + " " + currency.getId());
         txn.addLineItems(new TransactionLineItem[]{feeSummary});
       }
@@ -179,9 +182,9 @@ foam.CLASS({
       javaCode: `
       FxSummaryTransactionLineItem fxSummary = new FxSummaryTransactionLineItem();
 
-      if ( fx.size() > 0 ) {
-        FXLineItem[] fxArray = (FXLineItem[]) getTotalRates(fx).orElse(fx).toArray(new FXLineItem[0]);
-        if ( fxArray.length > 0 ) fxSummary.setExpiry(fxArray[0].getExpiry());
+      if ( fx != null && fx.size() > 0 ) {
+        TransactionLineItem[] fxArray = (TransactionLineItem[]) getTotalRates(fx).orElse(fx).toArray(new TransactionLineItem[0]);
+        if ( fxArray.length > 0 ) fxSummary.setExpiry(((FXLineItem) fxArray[0]).getExpiry());
         fxSummary.setLineItems(fxArray);
 
         DAO      currencyDAO = (DAO) getX().get("currencyDAO");
@@ -190,12 +193,13 @@ foam.CLASS({
         Double        fxRate = 1.0;
 
         if ( fxArray.length == 1 ) {
-          fxRate = fxArray[0].getRate();
-          source =(Currency) currencyDAO.find(fxArray[0].getSourceCurrency());
-          destination = (Currency) currencyDAO.find(fxArray[0].getDestinationCurrency());
-          fxSummary.setExpiry(fxArray[0].getExpiry());
+          fxRate = ((FXLineItem) fxArray[0]).getRate();
+          source =(Currency) currencyDAO.find(((FXLineItem)fxArray[0]).getSourceCurrency());
+          destination = (Currency) currencyDAO.find(((FXLineItem) fxArray[0]).getDestinationCurrency());
+          fxSummary.setExpiry(((FXLineItem) fxArray[0]).getExpiry());
         } else {
-          for ( FXLineItem fxLine : fxArray ) {
+          for ( TransactionLineItem tli : fxArray ) {
+            FXLineItem fxLine = (FXLineItem) tli;
             fxRate *= fxLine.getRate();
             if ( fxLine.getExpiry().before(fxSummary.getExpiry()) ) {
               fxSummary.setExpiry(fxLine.getExpiry());
@@ -205,15 +209,21 @@ foam.CLASS({
           destination = (Currency) currencyDAO.find(quote.getDestinationUnit());
         }
         fxSummary.setRate(formatRate(fxRate, source, destination));
+        fxSummary.setInverseRate(formatRate(1.0 / fxRate, destination, source));
         txn.addLineItems(new TransactionLineItem[] { fxSummary });
 
-        // Update txn amount/destinationAmount based on the final fxRate
+        // Update txn amount/destinationAmount based on the final fxRate, if not already done so
         Transaction requestTxn = quote.getRequestTransaction();
-        if ( requestTxn.getAmount() == 0 ) {
+        if ( txn.getAmount() == 0 && requestTxn.getAmount() == 0) {
+          // NOTE ONLY APPROXIMATION ROUNDING ERRORS POSSIBLE
           txn.setAmount((long) (requestTxn.getDestinationAmount() / fxRate));
+          if (txn.getNext()[0] instanceof ComplianceTransaction && txn.getNext()[0].getAmount() == 0)
+            txn.getNext()[0].setAmount(txn.getAmount()); // if theres a compliance, update also.
         }
-        if ( requestTxn.getDestinationAmount() == 0 ) {
+        if ( txn.getDestinationAmount() == 0 && requestTxn.getDestinationAmount() == 0) {
           txn.setDestinationAmount((long) (requestTxn.getAmount() * fxRate));
+          if (txn.getNext()[0] instanceof ComplianceTransaction && txn.getNext()[0].getDestinationAmount() == 0)
+            txn.getNext()[0].setDestinationAmount(txn.getDestinationAmount()); // if theres a compliance, update also.
         }
       }
 
@@ -234,9 +244,10 @@ foam.CLASS({
       Date date = cal.getTime();
 
       if ( expiry.size() > 0 ) {
-        ExpiryLineItem[] expiryArray = (ExpiryLineItem[]) getTotalRates(expiry).orElse(expiry).toArray(new ExpiryLineItem[0]);
+        TransactionLineItem[] expiryArray = (TransactionLineItem[]) getTotalRates(expiry).orElse(expiry).toArray(new TransactionLineItem[0]);
         expirySummary.setLineItems(expiryArray);
-        for ( ExpiryLineItem exp: expiryArray ) {
+        for ( TransactionLineItem tli: expiryArray ) {
+        ExpiryLineItem exp = (ExpiryLineItem) tli;
           if ( exp.getExpiry() != null && date.after(exp.getExpiry()) ) {
             date = exp.getExpiry();
           }

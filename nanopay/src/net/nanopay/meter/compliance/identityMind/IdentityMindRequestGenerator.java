@@ -178,7 +178,7 @@ public class IdentityMindRequestGenerator {
 
     // External contact extra information
     if ( receiver instanceof Contact ) {
-      request.setMemo(receiver.getBusinessName());
+      request.setMemo(receiver.getOrganization());
       request.setDemail(receiver.getEmail());
       request.setSfn(prepareString(receiver.getFirstName()));
       request.setSln(prepareString(receiver.getLastName()));

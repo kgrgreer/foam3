@@ -49,7 +49,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'foam.nanos.ruler.Operations',
+      of: 'foam.nanos.dao.Operation',
       name: 'operation',
       value: 'CREATE',
       visibility: 'RO',
@@ -123,6 +123,10 @@ foam.CLASS({
     {
       name: 'predicate',
       transient: true
+    },
+    {
+      name: 'spid',
+      value: ''
     }
   ],
 

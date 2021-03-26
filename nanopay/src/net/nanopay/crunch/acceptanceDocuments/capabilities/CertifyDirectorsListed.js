@@ -22,9 +22,9 @@ foam.CLASS({
       }
     },
     {
-      name: 'link',
+      name: 'fileId',
       factory: function() {
-        return '/service/httpFileService/188eedba-b34a-4b61-9f6d-1c501f13dcc0?sessionId=' + localStorage['defaultSession'];
+        return '188eedba-b34a-4b61-9f6d-1c501f13dcc0';
       }
     },
     {

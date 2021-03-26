@@ -24,15 +24,18 @@ foam.ENUM({
   values: [
     {
       name: 'UNVERIFIED',
-      label: 'Unverified'
+      label: 'Unverified',
+      color: '#545d87'
     },
     {
       name: 'VERIFIED',
-      label: 'Verified'
+      label: 'Verified',
+      color: '#2cab70'
     },
     {
       name: 'DISABLED',
-      label: 'Disabled'
+      label: 'Disabled',
+      color: '#f91c1c'
     }
   ]
 });

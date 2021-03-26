@@ -43,7 +43,7 @@ foam.CLASS({
           DAO results = ((DAO) x.get("approvalRequestDAO"))
             .where(
               AND(
-                EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"),
+                EQ(ApprovalRequest.SERVER_DAO_KEY, "localTransactionDAO"),
                 EQ(ApprovalRequest.OBJ_ID, ct.getId())
               )
             );

@@ -1,0 +1,303 @@
+p({
+  "class":"net.nanopay.tx.planner.IntermediaryDestinationAccountSplitPlanner",
+  "id":"119fa381-d2a2-4369-b242-1dc8e2163bb9-bepay",
+  "intermediaryAccountId":{
+    "USD":"35931861-7dd4-4ddb-b3a0-5d091cc82fcf-bepay",
+    "CAD":"6135a985-206d-492f-86ba-6faefa8bd42c-bepay",
+    "GBP":"43cfa197-600e-4e97-8f77-6e3222dfedcf-bepay",
+    "EUR":"1dfec169-6cfb-4d60-a573-17235c2a5d7d-bepay"
+  },
+  "priority":90,
+  "ruleGroup":"BePayPlanner",
+  "enabled":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"parent",
+        "propValue":null
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.BRBankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"sourceUnit",
+        "propValue":"BRL"
+      }
+    ]
+  },
+  "lifecycleState":1
+})
+
+p({
+  "class":"net.nanopay.partner.bepay.tx.planner.BePayTransactionPlanner",
+  "id":"2fdd7d35-6704-47dc-9f0e-9419e0aa74ed",
+  "name":"BePayTransactionPlanner",
+  "documentation":"Planner for transaction from BRL to USD/EUR/GBP (leg 1)",
+  "termsAndConditions":"https://afex.com/unitedstates/global_terms_and_conditions.php",
+  "priority":80,
+  "ruleGroup":"BePayPlanner",
+  "enabled":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"parent",
+        "propValue": null
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.BRBankAccount"
+      },
+      {
+        class: "foam.mlang.predicate.Or",
+        args: [
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+            "propName":"destinationAccount",
+            "of":"net.nanopay.bank.USBankAccount"
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+            "propName":"destinationAccount",
+            "of":"net.nanopay.bank.CABankAccount"
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+            "propName":"destinationAccount",
+            "of":"net.nanopay.bank.EUBankAccount"
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+            "propName":"destinationAccount",
+            "of":"net.nanopay.bank.GBBankAccount"
+          }
+        ]
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"sourceUnit",
+        "propValue":"BRL"
+      },
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"BePay"
+      }
+    ]
+  },
+  "isFeeOnRootCorridors": true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"net.nanopay.tx.planner.AFEXTransactionPlanner",
+  "id":"77480e3b-fc7e-400c-bee6-dda5a22b982a",
+  "name":"AFEX Transaction Planner",
+  "ruleGroup":"BePayPlanner",
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.IsAccountOwnerAFEXUserPredicate",
+      },
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"AFEX"
+      }
+    ]
+  },
+  "lifecycleState":1
+})
+
+p({
+  class: "net.nanopay.tx.fee.TransactionFeeRule",
+  id: "454df571-f639-4506-8d59-98b4f39934e4-bepay",
+  name: "BePay Fee",
+  documentation: "BePay transaction fee",
+  feeName: "BePay Fee",
+  feeAccount: "512360f6-ec67-4339-9fc4-9a677bc2bff7-bepay",
+  feeDenomination: "BRL",
+  feeClass: "net.nanopay.tx.FeeLineItem",
+  rateExpiry: {
+    class: "foam.nanos.cron.TimeHMS",
+    hour: 24
+  },
+  enabled: true,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of: "net.nanopay.fx.FXSummaryTransaction"
+      },
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "foam.mlang.expr.Dot",
+          arg1: {
+            class: "foam.mlang.ContextObject",
+            key: "NEW"
+          },
+          arg2: {
+            class: "foam.mlang.PredicatedExpr",
+            arg1: {
+              class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+              of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+              propName: "natureCode"
+            }
+          }
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: true
+        }
+      }
+    ]
+  },
+  lifecycleState:1
+})
+
+p({
+  class: "net.nanopay.tx.fee.TransactionFeeRule",
+  id: "9e7661a6-610b-47ad-b521-96b9c760fb16-bepay",
+  name: "IOF",
+  documentation: "IOF charge for BePay transactions.",
+  feeName: "IOF",
+  feeAccount: "512360f6-ec67-4339-9fc4-9a677bc2bff7-bepay",
+  ruleGroup: "TransactionFeeRule",
+  feeDenomination: "BRL",
+  feeClass: "net.nanopay.tx.FeeLineItem",
+  rateExpiry: {
+    class: "foam.nanos.cron.TimeHMS",
+    hour: 24
+  },
+  enabled: true,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of: "net.nanopay.fx.FXSummaryTransaction"
+      },
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "foam.mlang.expr.Dot",
+          arg1: {
+            class: "foam.mlang.ContextObject",
+            key: "NEW"
+          },
+          arg2: {
+            class: "foam.mlang.PredicatedExpr",
+            arg1: {
+              class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+              of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+              propName: "natureCode"
+            }
+          }
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: true
+        }
+      }
+    ]
+  },
+  lifecycleState:1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"afex-crunch-user-onboarding-rule",
+  "name":"Onboard User to AFEX",
+  "documentation":"Rule to onboard user to AFEX after required afex onboarding capabilities are submitted.",
+  "priority":1,
+  "ruleGroup":"AFEXCrunchOnboarding",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+    "status":1,
+    "statusChanged":true,
+    "category":"AFEXUserOnboarding"
+  },
+  "action":{"class":"net.nanopay.partner.afex.crunch.AFEXUserOnboardingRule"},
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"bepay-user-compliance-passed-rule",
+  "name":"Set User Compliance",
+  "documentation":"Rule to set user compliance to passed after required onboarding capabilities are submitted.",
+  "priority":1,
+  "ruleGroup":"onboarding",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+    "status":1,
+    "statusChanged":true,
+    "category":"AFEXUserOnboarding"
+  },
+  "action":{"class":"net.nanopay.crunch.compliance.SetComplianceOnUser"},
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"16cebf5b-30b5-4a67-9fbe-d69c93c736e5",
+  "name":"Update transaction status based on approval",
+  "daoKey":"approvalRequestDAO",
+  "ruleGroup":"BePayCompliance",
+  "operation":1,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of:"net.nanopay.meter.compliance.ComplianceApprovalRequest"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"daoKey",
+        "propValue":"transactionDAO"
+      },
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyChangePredicate",
+        "propName": "status"
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.tx.ruler.UpdateTxOnApprovalRequestStatusChange",
+  },
+  "enabled":true,
+  "lifecycleState":1
+})

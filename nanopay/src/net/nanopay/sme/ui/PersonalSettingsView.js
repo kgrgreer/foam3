@@ -124,7 +124,7 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Personal settings' },
     { name: 'TWO_FACTOR_SUBTITLE', message: 'Two-factor authentication' },
-    { name: 'TWO_FACTOR_INSTR1', message: 'Two-factor authentication provides an added layer of security against impersonation and prevents access to sensitive account information.' },
+    { name: 'TWO_FACTOR_INSTR1', message: 'Two-factor authentication provides an added layer of security against impersonation and prevents access to sensitive account information' },
     { name: 'TWO_FACTOR_INSTR2', message: 'Step 1: On your mobile device, download the Google Authenticator ' },
     { name: 'TWO_FACTOR_INSTR3', message: 'Step 2: Scan the QR code, or type the 16-digit key into the Google Authenticator app' },
     { name: 'TWO_FACTOR_INSTR4', message: 'Step 3: The app will provide a verification code. Enter the code and select ‘Verify’' },

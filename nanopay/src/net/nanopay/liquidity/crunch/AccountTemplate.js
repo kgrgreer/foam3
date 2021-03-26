@@ -48,9 +48,9 @@ foam.CLASS({
     {
       name: 'accounts',
       class: 'List',
-      javaType: 'java.util.List<Long>',
+      javaType: 'java.util.List<String>',
       javaFactory: `
-        return new ArrayList<Long>();
+        return new ArrayList<String>();
       `,
       factory: function() {
         return [];
@@ -59,9 +59,9 @@ foam.CLASS({
     {
       name: 'roots',
       class: 'List',
-      javaType: 'java.util.List<Long>',
+      javaType: 'java.util.List<String>',
       javaFactory: `
-        return new ArrayList<Long>();
+        return new ArrayList<String>();
       `,
       factory: function() {
         return [];
@@ -90,12 +90,12 @@ foam.CLASS({
         if ( getTemplateName() == null ) 
           throw new IllegalStateException("Template name must be provided");
 
-        List<Long> accountsList = (List<Long>) getAccounts();
+        List<String> accountsList = (List<String>) getAccounts();
         if ( accountsList == null || accountsList.size() == 0 ) 
           throw new IllegalStateException("At least one account must be provided to create this template");
         
         DAO dao = (DAO) x.get("localAccountDAO");
-        for ( Long accountId : accountsList ) {
+        for ( String accountId : accountsList ) {
           if ( dao.find(accountId) == null ) 
             throw new IllegalStateException("One or more entries of this template contains an invalid value for account");
         }

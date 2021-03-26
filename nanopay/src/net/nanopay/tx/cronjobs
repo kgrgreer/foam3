@@ -187,60 +187,6 @@ p({
 
 p({
   "class": "foam.nanos.cron.Cron",
-  "enabled": false,
-  "schedule": {
-    "class": "foam.nanos.cron.CronSchedule",
-    "minute": 0,
-    "hour": -1,
-    "dayOfMonth": -1,
-    "month": -1,
-    "dayOfWeek": -1,
-    "second": -1
-  },
-  "id": "AFEX Funding cron",
-  "description": "This cron job sets AFEXFundingTransaction to sent if funding balance exists",
-  "code":
-  """
-  import foam.mlang.predicate.Predicate;
-  import foam.core.ContextAgent;
-  import foam.core.Detachable;
-  import foam.core.X;
-  import foam.dao.AbstractSink;
-  import foam.dao.DAO;
-  import net.nanopay.fx.afex.AFEXFundingTransaction;
-  import net.nanopay.fx.afex.AFEXFundingBalance;
-  import net.nanopay.fx.afex.AFEXServiceProvider;
-  import net.nanopay.tx.model.Transaction;
-  import net.nanopay.tx.model.TransactionStatus;
-  import static foam.mlang.MLang.*;
-
-  DAO transactionDAO = (DAO) x.get("localTransactionDAO");
-  AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
-  transactionDAO
-    .where(
-          AND(new Predicate[] {
-              EQ(Transaction.STATUS, TransactionStatus.PENDING),
-              INSTANCE_OF(AFEXFundingTransaction.class),
-              EQ(AFEXFundingTransaction.FUNDING_BALANCE_INITIATED, true)
-            })
-          )
-    .select( new AbstractSink() {
-
-    public void put(Object o, Detachable d) {
-      AFEXFundingTransaction txn = (AFEXFundingTransaction) o.fclone();
-
-      AFEXFundingBalance response = afexService.getFundingBalance(x, txn.findDestinationAccount(x).getOwner(), txn.getSourceCurrency());
-      txn.setAccountId(response.getAccountId());
-      txn.setFundingBalanceId(response.getFundingBalanceId());
-      txn.setStatus(TransactionStatus.SENT);
-      transactionDAO.put(txn);
-    }
-  });
-  print("done");
-  """
-})
-p({
-  "class": "foam.nanos.cron.Cron",
   "enabled": true,
   "schedule": {
     "class":"foam.nanos.cron.IntervalSchedule",
@@ -344,5 +290,28 @@ p({
       alarmDAO.put(alarm);
     }
     print("done");
+  """
+})
+
+p({
+  "class": "foam.nanos.cron.Cron",
+  "schedule":{
+    "class":"foam.nanos.cron.IntervalSchedule",
+    "duration":{
+      "class":"foam.nanos.cron.TimeHMS",
+      "hour":0,
+      "minute":5,
+      "second":0
+    }
+  },
+  "id":"IntuitTransactionSummaryAgent",
+  "description":"Creates Transaction Summary objects for all intuit summary transactions",
+  "enabled":true,
+  "code": """
+    String spid = "intuit";
+    import net.nanopay.partner.intuit.tx.IntuitTransactionSummaryAgent;
+    cron = new IntuitTransactionSummaryAgent(spid);
+    cron.execute(x);
+    print("Transaction Summary Agent run.");
   """
 })

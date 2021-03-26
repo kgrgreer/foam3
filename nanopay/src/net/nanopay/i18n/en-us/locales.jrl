@@ -1,36 +1,23 @@
-p({class:"foam.i18n.Locale",locale:"en",variant:"US",locale_variant:"en-US",source:"us.region.label",target:"State"})
-p({class:"foam.i18n.Locale",locale:"en",variant:"US",locale_variant:"en-US",source:"us.region.error",target:"State required"})
-p({class:"foam.i18n.Locale",locale:"en",variant:"US",locale_variant:"en-US",source:"ca.region.label",target:"Province"})
-p({class:"foam.i18n.Locale",locale:"en",variant:"US",locale_variant:"en-US",source:"ca.region.error",target:"Province required"})
-p({class:"foam.i18n.Locale",locale:"en",variant:"US",locale_variant:"en-US",source:"en-US.region.label",target:"Region"})
-p({class:"foam.i18n.Locale",locale:"en",variant:"US",locale_variant:"en-US",source:"en-US.region.error",target:"Region required"})
-
-p({class:"foam.i18n.Locale",locale:"en",variant:"US",locale_variant:"en-US",source:"us.postalCode.label",target:"ZIP Code"})
-p({class:"foam.i18n.Locale",locale:"en",variant:"US",locale_variant:"en-US",source:"us.postalCode.error",target:"ZIP Code required"})
-p({class:"foam.i18n.Locale",locale:"en",variant:"US",locale_variant:"en-US",source:"ca.postalCode.label",target:"Postal Code"})
-p({class:"foam.i18n.Locale",locale:"en",variant:"US",locale_variant:"en-US",source:"ca.postalCode.error",target:"Postal Code required"})
-p({class:"foam.i18n.Locale",locale:"en",variant:"US",locale_variant:"en-US",source:"en-US.postalCode.label",target:"Postal Code"})
-p({class:"foam.i18n.Locale",locale:"en",variant:"US",locale_variant:"en-US",source:"en-US.postalCode.error",target:"Postal Code required"})
-
 //Contact
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.FIRST_NAME.label",target:"First name"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.LAST_NAME.label",target:"Last name"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.ORGANIZATION.label",target:"Business name"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.CABankAccount.INSTITUTION_NUMBER.label",target:"Institution"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.CABankAccount.BRANCH_ID.label",target:"Transit"})
-p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.CABankAccount.ACCOUNT_NUMBER.label",target:"Account number"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.CABankAccount.ACCOUNT_NUMBER.label",target:"Account"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.model.CAPadCapture.INSTITUTION_NUMBER.label",target:"Institution"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.model.CAPadCapture.BRANCH_ID.label",target:"Transit"})
-p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.model.CAPadCapture.ACCOUNT_NUMBER.label",target:"Account number"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.model.CAPadCapture.ACCOUNT_NUMBER.label",target:"Account"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactWizardView.OPTION.label",target:"Save and close"})
 
 //BankAccount
-p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BankAccount.ACCOUNT_NUMBER.label",target:"Account number"})
-p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BankAccount.BANK_CODE.label",target:"Bank code"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BankAccount.ACCOUNT_NUMBER.label",target:"Account Number"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BankAccount.INSTITUTION_NUMBER.label",target:"Institution"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BankAccount.BRANCH_ID.label",target:"Branch"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_NUMBER.label",target:"Account number"})
-p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BRBankAccount.BANK_CODE.label",target:"Bank code"})
-p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BRBankAccount.BRANCH_CODE.label",target:"Branch code"})
-p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_TYPE.label",target:"Account type"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BRBankAccount.INSTITUTION_NUMBER.label",target:"Institution"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BRBankAccount.BRANCH_ID.label",target:"Branch"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_TYPE.label",target:"Account Type"})
 
 //PadCapture
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.model.PadCapture.ACCOUNT_NUMBER.label",target:"Account number"})
@@ -42,3 +29,5 @@ p({class:"foam.i18n.Locale",locale:"en",source:"foam.core.ClientRuntimeException
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.crunch.registration.UserRegistrationData.FIRST_NAME.label",target:"First name"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.crunch.registration.UserRegistrationData.LAST_NAME.label",target:"Last name"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.crunch.registration.UserRegistrationData.PHONE_NUMBER.label",target:"Phone number"})
+
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.sme.ui.SendRequestMoney.GO_NEXT.label",target:"Next"})

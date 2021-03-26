@@ -94,8 +94,14 @@ foam.CLASS({
         // txn does not exist in journal, check if plan exists
         if (txn.getIsValid() == false) {
           loadedTxn = (Transaction) ((DAO) x.get("localTransactionPlannerDAO")).inX(x).put_(x, txn); // here we do property updates.
-          if (loadedTxn == null) // validation has failed or txn plan not found or expired, need error handling maybe.
-            return txn; // return original transaction back to user.
+          if ( loadedTxn == null ) {
+            // validation has failed or txn plan not found or expired
+            return txn; // TODO: review if we still need to return txn.
+          }
+          if (  ! SafetyUtil.equals( loadedTxn.getId(), txn.getId()) ) {
+            // Transaction was replanned (completed partial or other reason)
+            return loadedTxn;
+          }
 
           return getDelegate().put_(x, loadedTxn); //recovered plan is put in.
         }

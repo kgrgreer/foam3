@@ -7,6 +7,7 @@ import foam.test.TestUtils;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.BankAccount;
+import foam.util.SafetyUtil;
 
 public class TransactionSetupTest 
   extends foam.nanos.test.Test {
@@ -23,11 +24,11 @@ public class TransactionSetupTest
       test(user.getEmailVerified(), "User " + user.getEmail() + " email verified.");
 
       BankAccount bankAccount = TransactionTestUtil.RetrieveBankAccount(x, user, currency);
-      test(bankAccount != null && bankAccount.getId() > 0, "Bank account found.");
+      test(bankAccount != null && ! SafetyUtil.isEmpty(bankAccount.getId()), "Bank account found.");
       test(bankAccount != null && bankAccount.getStatus() == BankAccountStatus.VERIFIED, "Bank account verified");
 
       DigitalAccount digitalAccount = TransactionTestUtil.RetrieveDigitalAccount(x, user, currency);
-      test(digitalAccount != null && digitalAccount.getId() > 0, "Digital account found.");
+      test(digitalAccount != null && ! SafetyUtil.isEmpty(digitalAccount.getId()), "Digital account found.");
       test(digitalAccount != null && (Long) digitalAccount.findBalance(x) > 0L, "Digital account has a positive balance.");
     }
   }

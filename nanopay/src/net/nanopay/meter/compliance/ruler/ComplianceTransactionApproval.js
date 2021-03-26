@@ -47,7 +47,7 @@ foam.CLASS({
             Transaction transaction = (Transaction) obj.fclone();
             DAO dao = ((DAO) x.get("approvalRequestDAO"))
               .where(AND(
-                EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"),
+                EQ(ApprovalRequest.SERVER_DAO_KEY, "localTransactionDAO"),
                 EQ(ApprovalRequest.OBJ_ID, transaction.getId())
               ));
 

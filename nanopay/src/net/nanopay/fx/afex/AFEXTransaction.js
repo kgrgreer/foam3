@@ -28,6 +28,7 @@ foam.CLASS({
   documentation: `Hold AFEX specific properties`,
 
   implements: [
+    'net.nanopay.meter.clearing.ClearingTimesTrait',
     'net.nanopay.tx.PartnerTransaction'
   ],
 
@@ -59,9 +60,27 @@ foam.CLASS({
       javaFactory: 'return TransactionStatus.PENDING;'
     },
     {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.fx.afex.AFEXPaymentStatus',
+      name: 'afexPaymentStatus',
+      section: 'transactionInformation',
+      order: 340,
+      gridColumns: 6,
+      value: 'PENDING'
+    },
+    {
       class: 'Long',
       name: 'afexTradeResponseNumber',
+      section: 'transactionInformation',
+      order: 350,
+      gridColumns: 6,
       documentation: 'id of the AFEX trade response'
+    },
+
+    {
+      class: 'DateTime',
+      name: 'completionDate',
+      storageTransient: false
     },
     {
       class: 'foam.core.Enum',
@@ -99,16 +118,15 @@ foam.CLASS({
       }
     },
     {
-      class: 'foam.core.Enum',
-      of: 'net.nanopay.fx.afex.AFEXPaymentStatus',
-      name: 'afexPaymentStatus',
-      value: 'PENDING'
+      name: 'clearingTimes',
+      javaFactory: 'return new java.util.HashMap<>();',
+      networkTransient: true,
+      hidden: true
     },
     {
-      class: 'DateTime',
-      name: 'completionDate',
-      storageTransient: false
-    }
+      name: 'estimatedCompletionDate',
+      javaFactory: 'return null;'
+    },
   ],
 
   methods: [

@@ -20,9 +20,9 @@ foam.CLASS({
 	name: "ResponseBoleto",
 	properties: [
 		{
-			class: "FObjectProperty",
+			class: "FObjectArray",
 			name: "Boletos",
-			of: "net.nanopay.country.br.exchange.ArrayOfBoleto"
+			of: "net.nanopay.country.br.exchange.Boleto"
 		},
 		{
 			class: "FObjectProperty",

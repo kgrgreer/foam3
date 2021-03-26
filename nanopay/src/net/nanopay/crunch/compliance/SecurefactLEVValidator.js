@@ -58,7 +58,7 @@ foam.CLASS({
         Business business = (Business) ucj.findSourceId(x);
 
         User user = (User) ucj.findSourceId(x);
-        String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
+        String group = user.getSpid() + "-fraud-ops";
 
         SecurefactService securefactService = (SecurefactService) x.get("securefactService");
         try {
@@ -79,6 +79,7 @@ foam.CLASS({
                     .setCauseId(response.getId())
                     .setClassification(getClassification())
                     .setCauseDaoKey("securefactLEVDAO")
+                    .setCreatedFor(business.getId())
                     .setGroup(group)
                     .build()
                 );
@@ -98,6 +99,7 @@ foam.CLASS({
               .setCauseId(response != null ? response.getId() : 0L)
               .setClassification(getClassification())
               .setCauseDaoKey("securefactLEVDAO")
+              .setCreatedFor(business.getId())
               .setGroup(group)
               .build()
           );

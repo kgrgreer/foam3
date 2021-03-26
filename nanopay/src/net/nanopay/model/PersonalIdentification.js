@@ -58,17 +58,9 @@ foam.CLASS({
         if ( ! identificationTypeId ) {
           return 'Identification type is required';
         }
-      }
-    },
-    {
-      class: 'String',
-      name: 'identificationNumber',
-      documentation: `Number associated to identification.`,
-      validateObj: function(identificationNumber) {
-        if ( ! identificationNumber || ! identificationNumber.trim() ) {
-          return 'Identification number is required';
-        }
-      }
+      },
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'Reference',
@@ -91,7 +83,9 @@ foam.CLASS({
           },
           placeholder: '- Please select -'
         }, X);
-      }
+      },
+      order: 20,
+      gridColumns: 6
     },
     {
       class: 'Reference',
@@ -122,12 +116,28 @@ foam.CLASS({
       visibility: function(identificationTypeId) {
         var isPassport = identificationTypeId === 3;
         return isPassport ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
-      }
+      },
+      order: 30,
+      gridColumns: 6
+    },
+    
+    {
+      class: 'String',
+      name: 'identificationNumber',
+      documentation: `Number associated to identification.`,
+      validateObj: function(identificationNumber) {
+        if ( ! identificationNumber || ! identificationNumber.trim() ) {
+          return 'Identification number is required';
+        }
+      },
+      order: 40,
+      gridColumns: 6
     },
     {
       class: 'Date',
       name: 'issueDate',
       label: 'Date Issued',
+      order: 50,
       gridColumns: 6,
       documentation: `Date identification was issued.`,
       validationPredicates: [
@@ -147,6 +157,7 @@ foam.CLASS({
       class: 'Date',
       name: 'expirationDate',
       label: 'Expiry Date',
+      order: 60,
       gridColumns: 6,
       documentation: `Date identification expires.`,
       validationPredicates: [

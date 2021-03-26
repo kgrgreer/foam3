@@ -20,6 +20,10 @@ foam.CLASS({
   name: 'DigitalTransaction',
   extends: 'net.nanopay.tx.model.Transaction',
 
+  implements: [
+    'net.nanopay.tx.ValueMovementTransaction'
+  ],
+
   javaImports: [
     'foam.core.ValidationException',
     'foam.dao.DAO',
@@ -40,7 +44,7 @@ foam.CLASS({
         return 'Digital Transfer';
       },
       javaFactory: `
-    return "Digital Transfer";
+        return "Digital Transfer";
       `,
     },
     {

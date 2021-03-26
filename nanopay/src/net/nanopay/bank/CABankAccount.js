@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'CABankAccount',
-  label: 'Canada Bank',
+  label: 'Canada',
   extends: 'net.nanopay.bank.BankAccount',
 
   imports: [
@@ -33,6 +33,8 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.nanos.iban.ValidationIBAN',
+    'foam.nanos.iban.IBANInfo',
     'foam.util.SafetyUtil',
     'java.util.regex.Pattern',
     'net.nanopay.model.Branch',
@@ -56,15 +58,68 @@ foam.CLASS({
       name: 'INSTITUTION_NUMBER_PATTERN',
       type: 'Regex',
       javaValue: 'Pattern.compile("^[0-9]{3}$")'
+    },
+    {
+      name: 'ROUTING_CODE_PATTERN',
+      type: 'Regex',
+      value: /^0(\d{3})(\d{5})$/
     }
   ],
 
   sections: [
     {
-      name: 'accountDetails',
-      title: function(forContact) {
-        return forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
+      name: 'clientAccountInformation',
+      title: function() {
+        return this.clientAccountInformationTitle;
       },
+      properties: [
+        {
+          name: 'denomination',
+          order: 10,
+          gridColumns: 12
+        },
+        {
+          name: 'name',
+          order: 20,
+          gridColumns: 12
+        },
+        {
+          name: 'flagImage',
+          order: 30,
+          gridColumns: 12
+        },
+        {
+          name: 'country',
+          order: 40,
+          gridColumns: 12
+        },
+        {
+          name: 'voidChequeImage',
+          order: 50,
+          gridColumns: 12
+        },
+        {
+          name: 'branchId',
+          order: 60,
+          gridColumns: 4
+        },
+        {
+          name: 'institutionNumber',
+          order: 70,
+          gridColumns: 3
+        },
+        {
+          name: 'accountNumber',
+          order: 80,
+          gridColumns: 5
+        },
+        {
+          name: 'swiftCode',
+          order: 90,
+          gridColumns: 12
+        }
+      ],
+      order: 110
     },
     {
       name: 'pad',
@@ -73,7 +128,8 @@ foam.CLASS({
           Please ensure your details are entered properly.`,
       isAvailable: function(forContact) {
         return ! forContact;
-      }
+      },
+      order: 120
     }
   ],
 
@@ -84,115 +140,81 @@ foam.CLASS({
     { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required' },
     { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be between 5 and 12 digits long' },
     { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution required' },
-    { name: 'INSTITUTION_NUMBER_THREE', message: 'Institution number must be 3 digits long' },
+    { name: 'INSTITUTION_NUMBER_THREE', message: 'Institution must be 3 digits long' },
     { name: 'ADD_SUCCESSFUL', message: 'Bank Account successfully added' },
-    { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' }
+    { name: 'REQUIRED', message: 'Required' }
   ],
 
   properties: [
     {
-      name: 'country',
-      value: 'CA',
-      section: 'accountDetails',
-      visibility: 'RO'
-    },
-    {
-      name: 'flagImage',
-      section: 'accountDetails',
-      label: '',
-      value: 'images/flags/cad.png',
-      visibility: 'RO'
-    },
-    {
-      name: 'denomination',
-      section: 'accountDetails',
-      gridColumns: 12,
-      value: 'CAD',
+      name: 'accountNumber',
+      label: 'Account',
+      updateVisibility: 'RO',
+      section: 'accountInformation',
+      order: 50,
+      gridColumns: 6,
+      view: {
+        class: 'foam.u2.tag.Input',
+        onKey: true
+      },
+      postSet: function(o, n) {
+        this.padCapture.accountNumber = n;
+      },
+      validateObj: function(accountNumber) {
+        if ( accountNumber === '' ) {
+          return this.REQUIRED;
+        }
+        var accNumberRegex = /^[0-9]{5,12}$/;
+        if ( ! accNumberRegex.test(accountNumber) ) {
+          return this.ACCOUNT_NUMBER_INVALID;
+        }
+      },
     },
     {
       name: 'iban',
       visibility: 'HIDDEN',
       required: false,
-      getter: function() {
-        return this.accountNumber;
+      validateObj: function(iban) {
       },
       javaGetter: `
-        return getAccountNumber();
+        StringBuilder iban = new StringBuilder();
+        iban.append(getInstitutionNumber());
+        iban.append(getAccountNumber());
+        iban.append(getBranchId());
+        return iban.toString();
       `
     },
     {
-      name: 'bankCode',
-      visibility: 'HIDDEN'
+      name: 'country',
+      value: 'CA',
+      visibility: 'RO'
     },
     {
-      name: 'voidChequeImage',
-      class: 'String',
+      name: 'flagImage',
+      section: 'accountInformation',
       label: '',
-      value: 'images/Canada-Check.png',
-      section: 'accountDetails',
-      visibility: 'RO',
-      transient: true,
-      view: function(_, X) {
-        return {
-          class: 'foam.u2.tag.Image'
-        };
-      },
+      value: 'images/flags/cad.png',
+      visibility: 'RO'
     },
     {
-      name: 'desc',
-      visibility: 'HIDDEN'
-    },
-    {
-      name: 'branchId',
-      type: 'String',
-      label: 'Transit',
-      section: 'accountDetails',
-      updateVisibility: 'RO',
-      gridColumns: 4,
-      view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: '12345',
-        onKey: true
-      },
-      preSet: function(o, n) {
-        if ( n === '' ) return n;
-        return /^\d+$/.test(n) ? n : o;
-      },
-      postSet: function(o, n) {
-        this.padCapture.branchId = n;
-      },
-      validateObj: function(branchId, branch) {
-        if ( branch ) {
-          return;
-        }
-        if ( branchId === '' ) {
-          return this.TRANSIT_NUMBER_REQUIRED;
-        } else if ( ! /^\d+$/.test(branchId) ) {
-          return this.TRANSIT_NUMBER_FORMAT;
-        } else if ( branchId.length !== 5 ) {
-          return this.TRANSIT_NUMBER_FIVE;
-        }
-      }
-    },
-    {
-      class: 'String',
       name: 'institutionNumber',
       label: 'Institution',
       documentation: `Provides backward compatibilty for mobile call flow.
           BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.`,
       updateVisibility: 'RO',
-      section: 'accountDetails',
+      createVisibility: 'RW',
+      section: 'accountInformation',
+      order: 120,
+      gridColumns: 6,
       storageTransient: true,
-      gridColumns: 3,
       view: {
         class: 'foam.u2.tag.Input',
-        placeholder: '123',
         maxLength: 3,
         onKey: true
       },
       validateObj: function(institutionNumber) {
         if ( institutionNumber === '' ) {
-          return this.INSTITUTION_NUMBER_REQUIRED;
+          return this.REQUIRED;
         }
         var instNumberRegex = /^[0-9]{3}$/;
         if ( ! instNumberRegex.test(institutionNumber) ) {
@@ -209,28 +231,55 @@ foam.CLASS({
       },
     },
     {
-      class: 'String',
-      name: 'accountNumber',
+      name: 'branchId',
+      type: 'String',
+      label: 'Transit',
+      section: 'accountInformation',
+      order: 130,
+      gridColumns: 6,
       updateVisibility: 'RO',
-      section: 'accountDetails',
-      gridColumns: 5,
+      createVisibility: 'RW',
       view: {
         class: 'foam.u2.tag.Input',
-        placeholder: '1234567',
         onKey: true
       },
+      preSet: function(o, n) {
+        if ( n === '' ) return n;
+        return /^\d+$/.test(n) ? n : o;
+      },
       postSet: function(o, n) {
-        this.padCapture.accountNumber = n;
+        this.padCapture.branchId = n;
       },
-      validateObj: function(accountNumber) {
-        if ( accountNumber === '' ) {
-          return this.ACCOUNT_NUMBER_REQUIRED;
+      validateObj: function(branchId, branch) {
+        if ( branch ) {
+          return;
         }
-        var accNumberRegex = /^[0-9]{5,12}$/;
-        if ( ! accNumberRegex.test(accountNumber) ) {
-          return this.ACCOUNT_NUMBER_INVALID;
+        if ( branchId === '' ) {
+          return this.REQUIRED;
+        } else if ( ! /^\d+$/.test(branchId) ) {
+          return this.TRANSIT_NUMBER_FORMAT;
+        } else if ( branchId.length !== 5 ) {
+          return this.TRANSIT_NUMBER_FIVE;
         }
-      },
+      }
+    },
+    {
+      name: 'swiftCode',
+      label: 'SWIFT/BIC',
+      updateVisibility: 'RO',
+      section: 'accountInformation',
+      order: 150,
+      gridColumns: 6,
+      validateObj: function(swiftCode) {
+      }
+    },
+    {
+      name: 'denomination',
+      value: 'CAD',
+    },
+    {
+      name: 'desc',
+      visibility: 'HIDDEN'
     },
     {
       class: 'String',
@@ -241,56 +290,76 @@ foam.CLASS({
         views of BankAccounts.
       `,
       tableCellFormatter: function(_, obj) {
-        this.start()
+        this.start().style({'display': 'flex'})
+          .add(obj.slot((accountNumber) => {
+              if ( accountNumber ) {
+                return this.E()
+                  .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' })
+                    .add(`${obj.cls_.getAxiomByName('accountNumber').label} `)
+                  .end()
+                  .start('span').add(`${obj.mask(accountNumber)} |`).end();
+              }
+          }))
+          .add(obj.slot((branch, branchDAO) => {
+            return branchDAO.find(branch).then((result) => {
+              if ( result ) {
+                return this.E()
+                  .start('span').style({ 'font-weight': '500', 'white-space': 'pre' })
+                    .add(` ${obj.cls_.getAxiomByName('branch').label} `)
+                  .end()
+                  .start('span').add(`${result.branchId} |`).end();
+              }
+              return this.E(); // Prevents infinitely trying to recreate it if null/undefined is returned
+            });
+          }))
           .add(obj.slot((institution, institutionDAO) => {
             return institutionDAO.find(institution).then((result) => {
               if ( result && ! net.nanopay.bank.USBankAccount.isInstance(obj) ) {
                 return this.E()
                   .start('span').style({ 'font-weight': '500', 'white-space': 'pre' })
-                    .add(`${obj.cls_.getAxiomByName('institution').label} `)
+                    .add(` ${obj.cls_.getAxiomByName('institution').label} `)
                   .end()
-                  .start('span').add(`${result.name} |`).end();
+                  .start('span').add(`${result.name}`).end();
               }
+              return this.E(); // Prevents infinitely trying to recreate it if null/undefined is returned
             });
-          }))
-        .end()
-        .start()
-          .add(obj.slot((branch, branchDAO) => {
-            return branchDAO.find(branch).then((result) => {
-              if ( result ) {
-                return this.E()
-                  .start('span').style({ 'font-weight': '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('branch').label}`).end()
-                  .start('span').add(` ${result.branchId} |`).end();
-              }
-            });
-          }))
-        .end()
-
-        .start()
-          .add(obj.slot((accountNumber) => {
-              if ( accountNumber ) {
-                return this.E()
-                  .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('accountNumber').label} `).end()
-                  .start('span').add(`*** ${accountNumber.substring(accountNumber.length - 4, accountNumber.length)}`).end();
-              }
           }))
         .end();
       }
+    },
+    {
+      name: 'voidChequeImage',
+      class: 'String',
+      label: '',
+      value: 'images/Canada-Check3.svg',
+      section: 'accountInformation',
+      order: 210,
+      createVisibility: 'RO',
+      updateVisibility: 'HIDDEN',
+      readVisibility: 'HIDDEN',
+      transient: true,
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.tag.Image',
+          displayWidth: '100%'
+        };
+      },
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.model.CAPadCapture',
       name: 'padCapture',
       section: 'pad',
-      storageTransient: true,
+      transient: true,
       label: '',
       updateVisibility: 'HIDDEN',
+      autoValidate: true,
       factory: function() {
         return net.nanopay.model.CAPadCapture.create({
           country: this.country,
           firstName: this.subject.realUser.firstName,
           lastName: this.subject.realUser.lastName,
-          companyName: this.subject.user.businessName,
+          companyName: this.subject.user.organization || this.subject.user.businessName,
           address: this.subject.user.address
         }, this);
       },
@@ -299,7 +368,8 @@ foam.CLASS({
           views: [
             {
               class: 'foam.u2.view.FObjectView',
-              of: 'net.nanopay.model.CAPadCapture'
+              of: 'net.nanopay.model.CAPadCapture',
+              classIsFinal: true
             },
             {
               // displays ca bank account capabilities
@@ -309,6 +379,24 @@ foam.CLASS({
           ]
         }, X);
       }
+    },
+    {
+      name: 'bankRoutingCode',
+      javaPostSet: `
+        if ( ! SafetyUtil.isEmpty(val) ) {
+          var matcher = ROUTING_CODE_PATTERN.matcher(val);
+          if ( matcher.find() ) {
+            var institutionNumber = matcher.group(1);
+            var branchId = matcher.group(2);
+
+            // Update institution and branch
+            clearInstitution();
+            clearBranch();
+            setInstitutionNumber(institutionNumber);
+            setBranchId(branchId);
+          }
+        }
+      `
     }
   ],
   methods: [
@@ -324,23 +412,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'getBankCode',
-      type: 'String',
-      args: [
-        {
-          name: 'x', type: 'Context'
-        }
-      ],
-      javaCode: `
-        StringBuilder code = new StringBuilder();
-        Institution institution = findInstitution(x);
-        if ( institution != null ) {
-          code.append(institution.getInstitutionNumber());
-        }
-        return code.toString();
-      `
-    },
-    {
       name: 'validate',
       args: [
         {
@@ -352,8 +423,10 @@ foam.CLASS({
       javaCode: `
         super.validate(x);
         validateAccountNumber();
-        validateInstitutionNumber(x);
-        validateBranchId(x);
+        if ( SafetyUtil.isEmpty(getSwiftCode()) ) {
+          validateInstitutionNumber(x);
+          validateBranchId(x);
+        }
       `
     },
     {
@@ -439,12 +512,12 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        StringBuilder code = new StringBuilder();
-        Branch branch = findBranch(x);
-        if ( branch != null ) {
-          code.append(branch.getBranchId());
-        }
-        return code.toString();
+        // REVIEW: CA routing code = "0" + branch(5 digits) + institution(3 digits)
+        var code = new StringBuilder();
+        code.append('0')
+            .append(getBranchCode(x))
+            .append(getBankCode(x));
+        return code.length() > 1 ? code.toString() : getBankRoutingCode();
       `
     }
   ]

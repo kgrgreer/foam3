@@ -1,8 +1,15 @@
-p({class:"foam.nanos.auth.Group",id:"treviso-admin",description:"treviso admin",parent:"msp-admin",defaultMenu:"users"})
-p({class:"foam.nanos.auth.Group",id:"treviso-fraud-ops",description:"treviso fraud-ops group",parent:"fraud-ops",defaultMenu:"accounts"})
-p({class:"foam.nanos.auth.Group",id:"treviso-payment-ops",description:"treviso payment-ops group",parent:"payment-ops",defaultMenu:"accounts"})
-p({class:"foam.nanos.auth.Group",id:"treviso-support",description:"treviso support group",parent:"support",defaultMenu:"contacts"})
-
-//
-p({class:"foam.nanos.auth.Group",id:"business2005.employee",parent:"sme",defaultMenu:"sme.accountProfile.switch-business",displayName:"Employee"})
-p({class:"foam.nanos.auth.Group",id:"business2005.admin",parent:"business2005.employee",defaultMenu:"sme.accountProfile.switch-business",displayName:"Admin"})
+// test group
+p({
+  class:"foam.nanos.auth.Group",
+  id:"business2005.employee",
+  parent:"sme",
+  defaultMenu:"sme.accountProfile.switch-business",
+  displayName:"Employee"
+})
+p({
+  class:"foam.nanos.auth.Group",
+  id:"business2005.admin",
+  parent:"business2005.employee",
+  defaultMenu:"sme.accountProfile.switch-business",
+  displayName:"Admin"
+})

@@ -20,6 +20,10 @@ foam.CLASS({
   name: 'DowJonesResponse',
   extends: 'net.nanopay.meter.compliance.dowJones.DowJonesCall',
 
+  implements: [
+    'foam.nanos.auth.ServiceProviderAware'
+  ],
+
   documentation: 'Base class model for a search response from the Dow Jones Risk Database.',
 
   tableColumns: [
@@ -45,72 +49,120 @@ foam.CLASS({
     { name: 'BUSINESS_INFO_MSG', message: 'Business Info' }
   ],
 
+  sections: [
+    {
+      name: 'responseInformation'
+    }
+  ],
+
   properties: [
     {
       class: 'Long',
       name: 'id',
-      visibility: 'RO'
+      visibility: 'RO',
+      section: 'responseInformation',
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'Long',
       name: 'userId',
-      visibility: 'RO'
+      visibility: 'RO',
+      section: 'responseInformation',
+      order: 20,
+      gridColumns: 6
     },
     {
       class: 'String',
       name: 'daoKey',
       visibility: 'RO',
-      documentation: 'Name of DAO that contains user (eg. beneficialOwnerDAO or userDAO)'
+      documentation: 'Name of DAO that contains user (eg. beneficialOwnerDAO or userDAO)',
+      section: 'responseInformation',
+      order: 30,
+      gridColumns: 6
     },
     {
       class: 'Date',
       name: 'searchDate',
-      visibility: 'RO'
+      visibility: 'RO',
+      section: 'responseInformation',
+      order: 40,
+      gridColumns: 6
     },
     {
       class: 'String',
       name: 'searchType',
-      visibility: 'RO'
+      visibility: 'RO',
+      section: 'responseInformation',
+      order: 50,
+      gridColumns: 6
     },
     {
       class: 'String',
       name: 'nameSearched',
-      visibility: 'RO'
+      visibility: 'RO',
+      section: 'responseInformation',
+      order: 60,
+      gridColumns: 6
     },
     {
       class: 'Int',
       name: 'totalMatches',
-      visibility: 'RO'
+      visibility: 'RO',
+      section: 'responseInformation',
+      order: 70,
+      gridColumns: 6
     },
     {
       class: 'Enum',
       of: 'foam.nanos.approval.ApprovalStatus',
-      name: 'status'
-    },
-    {
-      class: 'String',
-      name: 'comments',
-      view: { class: 'foam.u2.tag.TextArea', rows: 5, cols: 40 }
+      name: 'status',
+      section: 'responseInformation',
+      order: 80,
+      gridColumns: 6
     },
     {
       class: 'Int',
       name: 'httpStatusCode',
       visibility: 'RO',
-      documentation: 'HTTP Status Code retrieved from the HTTP GET request to the Dow Jones API'
+      documentation: 'HTTP Status Code retrieved from the HTTP GET request to the Dow Jones API',
+      section: 'responseInformation',
+      order: 90,
+      gridColumns: 6
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid',
+      visibility: 'RO',
+      section: 'responseInformation',
+      order: 100,
+      gridColumns: 6
+    },
+    {
+      class: 'String',
+      name: 'comments',
+      view: { class: 'foam.u2.tag.TextArea', rows: 3, cols: 60 },
+      section: 'responseInformation',
+      order: 110
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.meter.compliance.dowJones.MetadataSearchResponse',
       name: 'metadata',
       visibility: 'RO',
-      documentation: 'Metadata retrieved from the head response data'
+      documentation: 'Metadata retrieved from the head response data',
+      section: 'responseInformation',
+      order: 120
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.meter.compliance.dowJones.DowJonesResponseBody',
       name: 'responseBody',
       visibility: 'RO',
-      documentation: 'Body retreived from the body response data'
+      documentation: 'Body retreived from the body response data',
+      section: 'responseInformation',
+      order: 130
     }
   ],
 

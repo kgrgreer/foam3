@@ -792,7 +792,6 @@ try {
           UserUserJunction userUserJunction = (UserUserJunction) sink.getArray().get(0);
           Business business = (Business) businessDAO.find(userUserJunction.getTargetId());
           newContact.setOrganization(business.getOrganization());
-          newContact.setBusinessName(business.getBusinessName());
           newContact.setBusinessId(business.getId());
           newContact.setEmail(business.getEmail());
         }
@@ -803,7 +802,7 @@ try {
         }
 
         newContact.setType("Contact");
-        newContact.setGroup("sme");
+        newContact.setGroup(user.getSpid() + "-sme");
         newContact.setQuickId(customer.getId());
         newContact.setRealmId(tokenStorage.getRealmId());
         newContact.setOwner(user.getId());
@@ -861,7 +860,7 @@ try {
     newContact.setBusinessPhone(businessPhone);
     newContact.setMobileNumber(mobilePhone);
     newContact.setMobileNumberVerified(mobilePhoneVerified);
-    newContact.setGroup("sme");
+    newContact.setGroup(user.getSpid() + "-sme");
     newContact.setQuickId(customer.getId());
     newContact.setRealmId(tokenStorage.getRealmId());
     contactDAO.put(newContact);
@@ -1053,7 +1052,7 @@ try {
     QuickPostPayment payment = new QuickPostPayment();
     QuickQueryNameValue customer = new QuickQueryNameValue();
 
-    customer.setName(sUser.getBusinessName());
+    customer.setName(sUser.getOrganization());
     customer.setValue("" + sUser.getQuickId());
 
     QuickQueryNameValue bInfo = new QuickQueryNameValue();
@@ -1288,7 +1287,6 @@ if ( existContact == null ) {
       UserUserJunction userUserJunction = (UserUserJunction) sink.getArray().get(0);
       Business business = (Business) businessDAO.find(userUserJunction.getTargetId());
       newContact.setOrganization(business.getOrganization());
-      newContact.setBusinessName(business.getBusinessName());
       newContact.setBusinessId(business.getId());
       newContact.setEmail(business.getEmail());
     }
@@ -1299,11 +1297,10 @@ if ( existContact == null ) {
       newContact.setFirstName(existUser.getFirstName());
       newContact.setLastName(existUser.getLastName());
       newContact.setOrganization("TBD");
-      newContact.setBusinessName("TBD");
     }
 
     newContact.setType("Contact");
-    newContact.setGroup("sme");
+    newContact.setGroup(user.getSpid() + "-sme");
     newContact.setQuickId(importContact.getId());
     newContact.setRealmId(tokenStorage.getRealmId());
     newContact.setOwner(user.getId());
@@ -1362,7 +1359,7 @@ newContact.setBusinessPhoneNumber(businessPhone);
 newContact.setBusinessPhoneNumberVerified(businessPhoneNumberVerified);
 newContact.setMobileNumber(mobilePhone);
 newContact.setMobileNumberVerified(mobilePhoneVerified);
-newContact.setGroup("sme");
+newContact.setGroup(user.getSpid() + "-sme");
 newContact.setQuickId(importContact.getId());
 newContact.setRealmId(tokenStorage.getRealmId());
 contactDAO.put(newContact);

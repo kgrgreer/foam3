@@ -149,7 +149,7 @@ public class ReportTransaction {
             .append(user.getEmail()).append(COMMA_SEPARATOR)
             .append(user.getId()).append(COMMA_SEPARATOR)
             .append(transaction.getId()).append(COMMA_SEPARATOR)
-            .append(transaction.getReferenceNumber()).append(COMMA_SEPARATOR)
+            .append(transaction.getExternalInvoiceId()).append(COMMA_SEPARATOR)
             .append(transaction.getCreated()).append(COMMA_SEPARATOR)
             .append(transaction.getProcessDate()).append(COMMA_SEPARATOR)
             .append(transaction.getCompletionDate()).append(COMMA_SEPARATOR)
@@ -161,7 +161,7 @@ public class ReportTransaction {
             .append(receiver != null ? receiver.getId() : "").append(COMMA_SEPARATOR)
             .append(receiver != null ? receiver.toSummary() : "").append(COMMA_SEPARATOR)
             .append(receiver != null ? receiver.getEmail() : "").append(COMMA_SEPARATOR)
-            .append(transaction.getAmount()).append(COMMA_SEPARATOR)
+            .append(-transaction.getTotal(x, transaction.getSourceAccount())).append(COMMA_SEPARATOR)
             .append(System.getProperty("line.separator"));
 
           // Update aggregates

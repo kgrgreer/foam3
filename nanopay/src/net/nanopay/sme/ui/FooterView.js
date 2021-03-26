@@ -105,13 +105,15 @@ foam.CLASS({
           .end()
           .start().addClass('support-container')
             .start().add(this.CONTACT_SUPPORT).end()
-            .add(this.slot(theme => {
+            .add(this.slot(function(theme) {
               let supportConfig = theme.supportConfig;
               return this.E().addClass('appConfig-info')
-                .start('a')
-                  .attrs({ href: 'mailto:' + supportConfig.supportEmail })
-                  .add(supportConfig.supportEmail)
-                .end()
+                .callIf(supportConfig.supportEmail, function() {
+                  this.start('a')
+                    .attrs({ href: 'mailto:' + supportConfig.supportEmail })
+                    .add(supportConfig.supportEmail)
+                  .end();
+                })
                 .start().add(supportConfig.supportPhone).end();
             }))
           .end()

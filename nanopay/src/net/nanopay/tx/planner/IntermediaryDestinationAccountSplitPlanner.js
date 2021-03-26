@@ -28,6 +28,7 @@ foam.CLASS({
     currency.`,
 
   javaImports: [
+    'foam.core.FObject',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.MDAO',
@@ -37,6 +38,11 @@ foam.CLASS({
     'net.nanopay.payment.CorridorService',
     'net.nanopay.payment.PaymentProviderAware',
     'net.nanopay.payment.PaymentProviderCorridor',
+    'net.nanopay.tx.ExternalTransfer',
+    'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.InvoicedFeeLineItem',
+    'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.Transfer',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
@@ -51,7 +57,7 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'intermediaryAccountId',
-      javaFactory: `return new java.util.HashMap<String, Long>();`
+      javaFactory: `return new java.util.HashMap<String, String>();`
     },
     {
       class: 'Int',
@@ -86,7 +92,7 @@ foam.CLASS({
             for (int j=0;j<temp.getTargetCurrencies().length;j++) {
               List corridorPaymentProviders = cs.getCorridorPaymentProviders(x, temp.getTargetCountry(), ((BankAccount) requestTxn.findDestinationAccount(x)).getCountry(), temp.getTargetCurrencies()[j], requestTxn.getDestinationCurrency());
               for ( int k=0; k< corridorPaymentProviders.size(); k++ ) {
-                PaymentProviderCorridor temp2 = (PaymentProviderCorridor) corridorPaymentProviders.get(k);
+                PaymentProviderCorridor temp2 = (PaymentProviderCorridor) ((FObject) corridorPaymentProviders.get(k)).fclone();
                 temp2.setRanking(temp.getRanking()+temp2.getRanking());
                 temp2.setCurrency(temp.getTargetCurrencies()[j]);
                 ppcDAO.put(temp2);
@@ -99,7 +105,7 @@ foam.CLASS({
             for (int j=0;j<temp.getSourceCurrencies().length;j++) {
               List corridorPaymentProviders = cs.getCorridorPaymentProviders(x, ((BankAccount) requestTxn.findSourceAccount(x)).getCountry(), temp.getSourceCountry(), requestTxn.getSourceCurrency(), temp.getSourceCurrencies()[j]);
               for ( int k=0; k< corridorPaymentProviders.size(); k++ ) {
-                PaymentProviderCorridor temp2 = (PaymentProviderCorridor) corridorPaymentProviders.get(k);
+                PaymentProviderCorridor temp2 = (PaymentProviderCorridor) ((FObject) corridorPaymentProviders.get(k)).fclone();
                 temp2.setRanking(temp.getRanking() + temp2.getRanking());
                 temp2.setCurrency(temp.getSourceCurrencies()[j]);
                 ppcDAO.put(temp2);
@@ -160,11 +166,9 @@ foam.CLASS({
               fxSummary.setPaymentProvider(paymentProvider);
             }
 
-            Transaction l1 = leg1.getNext()[0].getNext()[0];
-            Transaction l2 = leg2.getNext()[0].getNext()[0];
+            Transaction l1 = removeSummaryTransaction(leg1);
+            Transaction l2 = removeSummaryTransaction(leg2);
             Transaction compliance = createComplianceTransaction(fxSummary);
-            l1.setStatus(TransactionStatus.PENDING);
-            l2.setStatus(TransactionStatus.PENDING);
             l1.addNext(l2);
             compliance.addNext(l1);
             fxSummary.addNext(compliance);
@@ -173,6 +177,22 @@ foam.CLASS({
         }
         return null;
       `
-    }
+    },
+    {
+      name: 'createFeeTransfers',
+      javaCode: `
+        TransactionLineItem [] ls = txn.getLineItems();
+        for ( TransactionLineItem li : ls ) {
+          if ( li instanceof FeeLineItem && ! (li instanceof InvoicedFeeLineItem) ) {
+            FeeLineItem feeLineItem = (FeeLineItem) li;
+            ExternalTransfer ext = new ExternalTransfer(feeLineItem.getSourceAccount(), -feeLineItem.getAmount());
+            ExternalTransfer ext2 = new ExternalTransfer(feeLineItem.getDestinationAccount(), feeLineItem.getAmount());
+            Transfer[] transfers = { ext, ext2 };
+            txn.add(transfers);
+          }
+        }
+        return txn;
+      `
+    },
   ]
 });

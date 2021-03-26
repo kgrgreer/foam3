@@ -34,29 +34,40 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'sourcePaymentAccount',
+      section: 'transactionInformation',
+      order: 35,
+      gridColumns: 6,
       required: true
     },
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'destinationPaymentAccount',
+      section: 'transactionInformation',
+      order: 75,
+      gridColumns: 6,
       required: true
     },
     {
       class: 'Long',
       name: 'paymentAmount',
-      required: true
+      required: true,
+      section: 'transactionInformation',
+      order: 55,
+      gridColumns: 6
     },
     {
       class: 'Long',
       name: 'destinationPaymentAmount',
-      required: true
+      required: true,
+      section: 'transactionInformation',
+      order: 95,
+      gridColumns: 6
     },
     {
       class: 'String',
       name: 'summary',
       createVisibility: 'HIDDEN',
-      section: 'basicInfo',
       visibility: function(summary) {
         return summary ?
           foam.u2.DisplayMode.RO :
@@ -76,7 +87,6 @@ foam.CLASS({
       class: 'UnitValue',
       name: 'destinationAmount',
       label: 'Destination Amount',
-      gridColumns: 7,
       help: `This is the amount to be transfered to payees account (destination account).`,
       view: function(_, X) {
         return {
@@ -88,7 +98,6 @@ foam.CLASS({
         };
       },
       documentation: 'Amount in Receiver Currency',
-      section: 'amountSelection',
       unitPropValueToString: async function(x, val, unitPropName) {
         var unitProp = await x.securitiesDAO.find(unitPropName);
         if ( unitProp )

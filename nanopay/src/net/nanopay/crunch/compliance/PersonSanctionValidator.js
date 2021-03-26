@@ -58,6 +58,14 @@ foam.CLASS({
 
         Capability capability = (Capability) ucj.findTargetId(x);
         User user = (User) ucj.saveDataToDAO(x, capability, false);
+        foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");     
+        logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - subject", x.get("subject"));
+        logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - user", ((foam.nanos.auth.Subject) x.get("subject")).getUser());
+        logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - realuser", ((foam.nanos.auth.Subject) x.get("subject")).getRealUser());
+        logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - capability", capability);
+        logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - ucj", ucj);
+        logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - data", ucj.getData());
+        logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - savedObj", user);
 
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {
@@ -92,7 +100,7 @@ foam.CLASS({
             agency.submit(x, new ContextAgent() {
               @Override
               public void execute(X x) {
-                String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
+                String group = user.getSpid() + "-fraud-ops";
                 requestApproval(x, 
                   new DowJonesApprovalRequest.Builder(x)
                     .setObjId(ucj.getId())
@@ -102,6 +110,7 @@ foam.CLASS({
                     .setClassification(getClassification())
                     .setMatches(response.getResponseBody().getMatches())
                     .setGroup(group)
+                    .setCreatedFor(user.getId())
                     .build());
               }
             }, "Person Sanction Validator");
@@ -110,7 +119,7 @@ foam.CLASS({
         } catch (Exception e) {
           ((Logger) x.get("logger")).warning("PersonSanctionValidator failed.", e);
           DowJonesResponse response = getResponse();
-          String group = SafetyUtil.isEmpty(user.getSpid()) || user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
+          String group = user.getSpid() + "-fraud-ops";
           requestApproval(x, 
             new DowJonesApprovalRequest.Builder(x)
               .setObjId(ucj.getId())
@@ -120,6 +129,7 @@ foam.CLASS({
               .setClassification(getClassification())
               .setMatches(response != null ? response.getResponseBody().getMatches() : null)
               .setGroup(group)
+              .setCreatedFor(user.getId())
               .build());
           ruler.putResult(ComplianceValidationStatus.PENDING);
         }

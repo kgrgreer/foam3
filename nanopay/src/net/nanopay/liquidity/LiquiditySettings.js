@@ -78,9 +78,8 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Long',
       name: 'id',
-      hidden: true
+      class: 'String'
     },
     {
       class: 'String',
@@ -351,6 +350,20 @@ foam.CLASS({
       name: 'lastModifiedBy',
       documentation: `The unique identifier of the individual person, or real user,
         who last modified this liquidity setting.`,
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subSubContext__.userDAO
+          .find(value)
+          .then((user) => this.add(user.toSummary()))
+          .catch((error) => {
+            this.add(value);
+          });
+      },
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedByAgent',
       visibility: 'RO',
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.userDAO

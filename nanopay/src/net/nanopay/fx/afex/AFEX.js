@@ -35,18 +35,22 @@ foam.INTERFACE({
       ]
     },
     {
-      name: 'onboardCorporateClient',
-      documentation: 'Create a new corporate client account',
+      name: 'onboardAFEXClient',
+      documentation: 'Create a new AFEX client account',
       async: true,
-      type: 'net.nanopay.fx.afex.OnboardCorporateClientResponse',
+      type: 'net.nanopay.fx.afex.OnboardAFEXClientResponse',
       args: [
         {
           name: 'request',
-          type: 'net.nanopay.fx.afex.OnboardCorporateClientRequest'
+          type: 'net.nanopay.fx.afex.OnboardAFEXClientRequest'
         },
         {
           name: 'spid',
           type: 'String'
+        },
+        {
+          name: 'requestType',
+          type: 'net.nanopay.fx.afex.AccountEntityType'
         }
       ]
     },
@@ -398,13 +402,13 @@ foam.INTERFACE({
       ]
     },
     {
-      name: 'createInstantBenefiary',
+      name: 'createInstantBeneficiary',
       documentation: 'This method is used to create an Instant Beneficiary',
       async: true,
-      type: 'net.nanopay.fx.afex.CreateInstantBenefiaryResponse',
+      type: 'net.nanopay.fx.afex.CreateInstantBeneficiaryResponse',
       args: [
         {
-          type: 'net.nanopay.fx.afex.CreateInstantBenefiaryRequest',
+          type: 'net.nanopay.fx.afex.CreateInstantBeneficiaryRequest',
           name: 'request'
         },
         {
@@ -429,5 +433,21 @@ foam.INTERFACE({
         }
       ]
     },
+    {
+      name: 'isiban',
+      documentation: 'This method is used to validate a given IBAN',
+      async: true,
+      type: 'net.nanopay.fx.afex.IsIbanResponse',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.IsIbanRequest',
+          name: 'isIbanRequest'
+        },
+        {
+          type: 'String',
+          name: 'spid'
+        }
+      ]
+    }
   ]
 });

@@ -117,11 +117,18 @@ foam.CLASS({
                         FlinksLoginId flinksLoginIdResult = (FlinksLoginId) flinksLoginIdDAO.inX(x).put(flinksLoginId);
                         flinksLoginIdAsync.setFlinksLoginIdResult(flinksLoginIdResult);
                         flinksLoginIdAsync.setStatus(AsyncStatus.COMPLETED.getLabel());
+                    } catch ( foam.core.FOAMException fe ) {
+                        ((Logger) x.get("logger")).error("Failure processing FlinksLoginId: " + flinksLoginId.getId(), fe);
+                        flinksLoginIdAsync.setStatus(AsyncStatus.FAILURE.getLabel());
+                        flinksLoginIdAsync.setErrorMessage(fe.getMessage());
+                        flinksLoginIdAsync.setException(fe);
                     } catch ( Throwable t ) {
+                        ((Logger) x.get("logger")).error("Unexpected failure processing FlinksLoginId: " + flinksLoginId.getId(), t);
                         flinksLoginIdAsync.setStatus(AsyncStatus.FAILURE.getLabel());
                         flinksLoginIdAsync.setErrorMessage(t.getMessage());
                     } finally {
-                        super.put_(x, flinksLoginIdAsync);
+                        // Ensure that the put_ operation runs through the RulerDAO so that any rules on the entity get fired (e.g. DUGRule)
+                        new foam.nanos.ruler.RulerDAO(x, getDelegate(), "flinksLoginIdAsyncDAO").put_(x, flinksLoginIdAsync);
                     }
                 } catch ( Throwable t ) {
                     ((Logger) x.get("logger")).error("Error saving async result: " + flinksLoginId.getId(), t);

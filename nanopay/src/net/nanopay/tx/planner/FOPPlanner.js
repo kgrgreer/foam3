@@ -37,8 +37,8 @@ foam.CLASS({
         secTx.setLineItems(requestTxn.getLineItems());
         secTx.setName("Digital Security Transaction");
         secTx.setDestinationAmount(secTx.getAmount());
-        quote.addTransfer(((SecuritiesAccount) quote.getSourceAccount()).getSecurityAccount(x, quote.getSourceUnit()).getId(), -secTx.getAmount());
-        quote.addTransfer(((SecuritiesAccount) quote.getDestinationAccount()).getSecurityAccount(x, quote.getDestinationUnit()).getId(), secTx.getAmount());
+        quote.addTransfer(true, ((SecuritiesAccount) quote.getSourceAccount()).getSecurityAccount(x, quote.getSourceUnit()).getId(), -secTx.getAmount(), 0);
+        quote.addTransfer(true, ((SecuritiesAccount) quote.getDestinationAccount()).getSecurityAccount(x, quote.getDestinationUnit()).getId(), secTx.getAmount(), 0);
         return secTx;
       `
     }

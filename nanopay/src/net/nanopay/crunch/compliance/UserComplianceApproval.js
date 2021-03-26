@@ -40,7 +40,21 @@ foam.CLASS({
     'foam.nanos.crunch.CrunchService',
     'foam.nanos.crunch.UserCapabilityJunction',
     'java.util.List',
+    'net.nanopay.admin.model.ComplianceStatus',
     'static foam.mlang.MLang.*'
+  ],
+
+  properties: [
+    {
+      name:  'clearDataOnRejection',
+      class: 'Boolean',
+      value: true
+    },
+    {
+      name: 'setComplianceStatusOnRejection',
+      class: 'Boolean',
+      value: false
+    }
   ],
 
   methods: [
@@ -55,22 +69,32 @@ foam.CLASS({
 
             ApprovalStatus approval = getApprovalState(x, ucj);
 
-            if ( approval == null || approval != ApprovalStatus.REQUESTED ) {
-              status = ApprovalStatus.REJECTED == approval ? CapabilityJunctionStatus.ACTION_REQUIRED : CapabilityJunctionStatus.APPROVED;
-              ucj.setStatus(status);
+            var isRequested = approval == null || approval == ApprovalStatus.REQUESTED;
 
-              if ( approval == ApprovalStatus.REJECTED ) clearData(x, ucj);
-
-              DAO userDAO = (DAO) x.get("localUserDAO");
-              User user = (User) userDAO.find(ucj.getSourceId());
-              Subject subject = new Subject.Builder(x).build();
-              subject.setUser(user);
-              if ( ucj instanceof AgentCapabilityJunction ) {
-                User effectiveUser = (User) userDAO.find(((AgentCapabilityJunction) ucj).getEffectiveUser());
-                subject.setUser(effectiveUser);
-              }
+            if ( ! isRequested ) {
+              Subject subject = ucj.getSubject(x);
               X ownerContext = x.put("subject", subject);
 
+              status = ApprovalStatus.REJECTED == approval ? CapabilityJunctionStatus.ACTION_REQUIRED : CapabilityJunctionStatus.APPROVED;          
+              if ( approval == ApprovalStatus.REJECTED ) {
+                if ( getSetComplianceStatusOnRejection() ) {
+                  User user = (User) ((DAO) x.get("localUserDAO")).find(ucj.getSourceId()).fclone();
+                  user.setCompliance(ComplianceStatus.FAILED);
+                  ((DAO) x.get("localUserDAO")).put(user);
+                }
+                return;
+              }
+              
+              ucj.setStatus(status);
+
+              foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");     
+              logger.debug(this.getClass().getSimpleName(), "ucjdao.inx.put(ucj) - subject", ownerContext.get("subject"));
+              logger.debug(this.getClass().getSimpleName(), "ucjdao.inx.put(ucj) - user", ((foam.nanos.auth.Subject) ownerContext.get("subject")).getUser());
+              logger.debug(this.getClass().getSimpleName(), "ucjdao.inx.put(ucj) - realuser", ((foam.nanos.auth.Subject) ownerContext.get("subject")).getRealUser());
+              logger.debug(this.getClass().getSimpleName(), "ucjdao.inx.put(ucj) - ucj", ucj);
+              logger.debug(this.getClass().getSimpleName(), "ucjdao.inx.put(ucj) - data", ucj.getData());
+
+              // Update junction
               ((DAO) x.get("userCapabilityJunctionDAO")).inX(ownerContext).put(ucj);
             }
             ruler.putResult(status);
@@ -111,7 +135,7 @@ foam.CLASS({
       javaCode: `
         Capability capability = (Capability) ucj.findTargetId(x);
         if ( capability.getOf() != null ) {
-          ucj.clearData();
+          ucj.getPayload().clearData();
           return;
         }
 
@@ -120,30 +144,22 @@ foam.CLASS({
 
         List<Capability> prereqs = (List<Capability>) crunchService.getCapabilityPath(x, ucj.getTargetId(), false);
 
-        User user = (User) ucj.findSourceId(x);
-        Subject subject = new Subject.Builder(x).build();
-        subject.setUser(user);
-        if ( ucj instanceof AgentCapabilityJunction ) {
-          User effectiveUser = (User) ((AgentCapabilityJunction) ucj).findEffectiveUser(x);
-          subject.setUser(effectiveUser);
-        }
-
         for ( Capability prereq : prereqs ) {
           // this is the business registration capability, onboarding seems to be dependent on this, 
           // but if this is cleared and the user is prompted to reapply - it will create new business,
           // and also this is not part of the "onboarding" data, so skip over 
           if ( prereq.getId().equals("554af38a-8225-87c8-dfdf-eeb15f71215f-76")) continue;
 
-          UserCapabilityJunction prereqUcj = crunchService.getJunctionForSubject(x, prereq.getId(), subject);
+          UserCapabilityJunction prereqUcj = crunchService.getJunction(x, prereq.getId());
           if ( prereqUcj.getStatus() == CapabilityJunctionStatus.AVAILABLE )
             continue;
           prereqUcj.setStatus(CapabilityJunctionStatus.ACTION_REQUIRED);
-          prereqUcj.clearData();
+          prereqUcj.getPayload().clearData();
           prereqUcj.clearGracePeriod();
           prereqUcj.clearExpiry();
           prereqUcj.resetRenewalStatus();
 
-          userCapabilityJunctionDAO.put(prereqUcj);
+          userCapabilityJunctionDAO.inX(x).put(prereqUcj);
         }
       `
     }

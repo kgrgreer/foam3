@@ -9,6 +9,7 @@ RC_FILE=~/.config/nanopay/remoterc
 REMOTE_USER=
 REMOTE_URL=
 SSH_KEY=
+BACKUP=true
 
 function quit {
     echo "ERROR :: Install Failed"
@@ -19,24 +20,30 @@ function usage {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "Options are:"
-    echo "  -C <filepath>       : remoterc file to load, default to ./config/nanopay/remoterc"
-    echo "  -h                  : Print usage information."
-    echo "  -i                  : Install only"
+    echo "  -B <true | false>  : backup"
+    echo "  -c                   : enable clustering, CLUSTER=true"
+    echo "  -C <true | false>  : clustering"
+    echo "  -h                   : Print usage information."
+    echo "  -i                    : Install only"
     echo "  -I <ssh-key>        : SSH Key to use to connect to remote server"
     echo "  -O <path>           : Remote Location to put tarball, default to /tmp"
+    echo "  -R <filepath>       : remoterc file to load, default to ./config/nanopay/remoterc"
     echo "  -T <tarball>        : Name of tarball, looks in target/package"
     echo "  -U <user>           : Remote user to connect to"
     echo "  -W <web-address>    : Remote url to connect to"
     echo ""
 }
 
-while getopts "C:hiI:O:T:U:W:" opt ; do
+while getopts "B:cC:hiI:O:R:T:U:W:" opt ; do
     case $opt in
-        C) RC_FILE=$OPTARG;;
+        B) BACKUP=${OPTARG};;
+        c) CLUSTER=true;;
+        C) CLUSTER=${OPTARG};;
         h) usage; exit 0;;
         i) INSTALL_ONLY=1;;
         I) SSH_KEY=${OPTARG};;
         O) NANOPAY_REMOTE_OUTPUT=${OPTARG};;
+        R) RC_FILE=$OPTARG;;
         T) NANOPAY_TARBALL_PATH=${OPTARG};;
         U) REMOTE_USER=${OPTARG};;
         W) REMOTE_URL=${OPTARG};;
@@ -79,19 +86,19 @@ if [ $INSTALL_ONLY -eq 0 ]; then
     scp ${SSH_KEY_OPT} ${NANOPAY_TARBALL_PATH} ${REMOTE}:${NANOPAY_REMOTE_OUTPUT}/${NANOPAY_TARBALL}
 
     if [ ! $? -eq 0 ]; then
-        echo "ERROR :: Failed copying tarball to remote server"
+        echo "ERROR :: Failed copying tarball to remote server ${REMOTE_URL}"
         quit
     else
-        echo "INFO :: Successfully copied tarball to remote server"
+        echo "INFO :: Successfully copied tarball to remote server ${REMOTE_URL}"
     fi
 fi
 
-ssh ${SSH_KEY_OPT} ${REMOTE} "sudo bash -s -- -I ${NANOPAY_REMOTE_OUTPUT}/${NANOPAY_TARBALL} -N ${NANOPAY_HOME}" < ./deploy/bin/install.sh
+ssh ${SSH_KEY_OPT} ${REMOTE} "sudo bash -s -- -I ${NANOPAY_REMOTE_OUTPUT}/${NANOPAY_TARBALL} -N ${NANOPAY_HOME} -C ${CLUSTER} -B ${BACKUP}" < ./deploy/bin/install.sh
 
 if [ ! $? -eq 0 ]; then
     quit;
 else
-    echo "INFO :: Remote install successful"
+    echo "INFO :: Remote install successful ${REMOTE_URL}"
 fi
 
 exit 0;

@@ -5,7 +5,6 @@ p({
   "name":"Digital Transaction Planner",
   "priority":200,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -31,6 +30,113 @@ p({
           "prop1": "sourceAccount",
           "prop2": "destinationAccount"
         }
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.HasSameReserveAccount"
+      }
+    ]
+  },
+  "lifecycleState":1
+})
+p({
+  "class":"net.nanopay.tx.planner.RbcInterTrustPlanner",
+  "id":"c4f3e4ae-01b6-4638-8a09-06e6b9f05f42",
+  "name":"RBC Digital Inter Trust Transaction Planner",
+  "priority":200,
+  "ruleGroup":"transactionPlanner",
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"RBC"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQProperty",
+        "prop1":"sourceUnit",
+        "prop2":"destinationUnit"
+      },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1": {
+          "class": "foam.nanos.ruler.predicate.PropertyEQProperty",
+          "prop1": "sourceAccount",
+          "prop2": "destinationAccount"
+        }
+      },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1":{
+          "class":"net.nanopay.tx.planner.predicate.HasSameReserveAccount"
+        }
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.CheckReserveAccountFor",
+        "source":true,
+        "bankProperty":"institution",
+        "bankValue":"10"
+      }
+    ]
+  },
+  "lifecycleState":1
+})
+p({
+  "class":"net.nanopay.tx.planner.BmoInterTrustPlanner",
+  "id":"884607ff-055e-41d4-9dbb-69433b2aa816",
+  "name":"BMO Digital Inter Trust Transaction Planner",
+  "priority":200,
+  "ruleGroup":"transactionPlanner",
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"BMO"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQProperty",
+        "prop1":"sourceUnit",
+        "prop2":"destinationUnit"
+      },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1": {
+          "class": "foam.nanos.ruler.predicate.PropertyEQProperty",
+          "prop1": "sourceAccount",
+          "prop2": "destinationAccount"
+        }
+      },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1":{
+          "class":"net.nanopay.tx.planner.predicate.HasSameReserveAccount"
+        }
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.CheckReserveAccountFor",
+        "source":true,
+        "bankProperty":"institution",
+        "bankValue":"2"
       }
     ]
   },
@@ -42,7 +148,6 @@ p({
   "name":"Generic Cash In Planner",
   "priority":100,
   "ruleGroup":"genericPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -66,7 +171,6 @@ p({
   "name":"Generic Cash Out Planner",
   "priority":101,
   "ruleGroup":"genericPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -90,7 +194,6 @@ p({
   "name":"Generic FX Planner",
   "priority": 95,
   "ruleGroup":"genericPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -122,10 +225,12 @@ p({
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d51",
   "priority":110,
   "ruleGroup":"SecurityPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
+      {
+        "class":"net.nanopay.tx.ruler.IsSecurityQuote"
+      },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQProperty",
         "prop1":"sourceUnit",
@@ -151,10 +256,12 @@ p({
   "name":"Generic Security CO planner",
   "priority":111,
   "ruleGroup":"SecurityPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
+      {
+        "class":"net.nanopay.tx.ruler.IsSecurityQuote"
+      },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQProperty",
         "prop1":"sourceUnit",
@@ -180,7 +287,6 @@ p({
   "name":"FOP Transaction Planner",
   "priority":100,
   "ruleGroup":"SecurityPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -209,7 +315,6 @@ p({
   "name":"DVP Transaction Planner",
   "priority":90,
   "ruleGroup":"SecurityPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
     "propName":"requestTransaction",
@@ -223,7 +328,6 @@ p({
   "name":"Bucket Transaction Planner",
   "priority":80,
   "ruleGroup":"SecurityPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
     "propName":"requestTransaction",
@@ -237,7 +341,6 @@ p({
   "name":"AFEX Transaction Planner",
   "priority":95,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -268,7 +371,6 @@ p({
   "name":"AscendantFx Transaction Planner",
   "priority":90,
   "ruleGroup":"transactionPlanner",
-  "enabled":false,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -300,7 +402,6 @@ p({
   "documentation":"Planner for transaction from CA Digital Account (CAD) to IN Bank Account (INR)",
   "priority":90,
   "ruleGroup":"KotakPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -339,7 +440,6 @@ p({
   "documentation":"Split CA bank to IN bank transactions",
   "priority":85,
   "ruleGroup":"KotakPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -368,7 +468,6 @@ p({
   "documentation":"Planner for INR Digital to INR bank account",
   "priority":70,
   "ruleGroup":"KotakPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -402,7 +501,6 @@ p({
   "documentation":"Planner for bank -> digital transaction where owners for both accounts are different",
   "priority":90,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -437,7 +535,6 @@ p({
   "documentation":"Planner for digital -> bank transaction where owners for both accounts are different",
   "priority":90,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -472,7 +569,6 @@ p({
   "documentation":"Planner for Bank -> bank transactions",
   "priority":95,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -497,7 +593,6 @@ p({
   "documentation":"Planner for Bank -> Bank Transactions for Intuit",
   "priority":95,
   "ruleGroup":"transactionPlanner",
-  "enabled":false,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -527,7 +622,6 @@ p({
   "priority":70,
   "verifierAccount":4,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -552,10 +646,13 @@ p({
   "documentation":"Alterna CI Transaction Planner",
   "priority":100,
   "ruleGroup":"AlternaPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"Alterna"
+      },
       {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
@@ -590,12 +687,13 @@ p({
   "documentation":"Alterna CO Transaction Planner",
   "priority":100,
   "ruleGroup":"AlternaPlanner",
-  
-  "enabled":true,
-
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"Alterna"
+      },
       {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
@@ -636,14 +734,16 @@ p({
   "id":"4763d336-e876-4611-a8b4-b0325b187d79",
   "name":"BMO CI Planner",
   "documentation":"BMO CI Transaction Planner",
+  "upperLimit":50000000,
   "priority":100,
   "ruleGroup":"BMOPlanner",
-  
-  "enabled":true,
-
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"BMO"
+      },
       {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
@@ -666,6 +766,12 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"destinationUnit",
         "propValue":"CAD"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.CheckReserveAccountFor",
+        "source":false,
+        "bankProperty":"institution",
+        "bankValue":"2"
       }
     ]
   },
@@ -678,12 +784,13 @@ p({
   "documentation":"BMO CO Transaction Planner",
   "priority":100,
   "ruleGroup":"BMOPlanner",
-  
-  "enabled":true,
-
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"BMO"
+      },
       {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
@@ -714,6 +821,12 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"destinationUnit",
         "propValue":"CAD"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.CheckReserveAccountFor",
+        "source":true,
+        "bankProperty":"institution",
+        "bankValue":"2"
       }
     ]
   },
@@ -726,7 +839,6 @@ p({
   "documentation":"Plans Fx transactions",
   "priority":85,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -759,7 +871,6 @@ p({
   "documentation":"Plans loan transactions",
   "priority":85,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.Or",
     "args":[
@@ -783,8 +894,7 @@ p({
   "id":"9522dba0-ea23-4249-b6a5-cfe5105cf12f",
   "name":"Detable Planner",
   "priority":85,
-  "ruleGroup":"transactionPlanner",
-  "enabled":false,
+  "ruleGroup":"LoanPlanner",
   "predicate":{
     "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
     "propName":"sourceAccount",
@@ -798,8 +908,7 @@ p({
   "id":"9124f118-f408-456b-813d-2ca92c95747e",
   "name":"Debt Repayment Planner",
   "priority":85,
-  "ruleGroup":"transactionPlanner",
-  "enabled":false,
+  "ruleGroup":"LoanPlanner",
   "predicate":{
     "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
     "propName":"destinationAccount",
@@ -815,10 +924,14 @@ p({
   "documentation":"RBC CI Transaction Planner",
   "priority":100,
   "ruleGroup":"RBCPlanner",
-  "enabled":true,
+  "upperLimit":25000000,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"RBC"
+      },
       {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
@@ -841,6 +954,12 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"destinationUnit",
         "propValue":"CAD"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.CheckReserveAccountFor",
+        "source":false,
+        "bankProperty":"institution",
+        "bankValue":"10"
       }
     ]
   },
@@ -853,10 +972,14 @@ p({
   "documentation":"RBC CO Transaction Planner",
   "priority":100,
   "ruleGroup":"RBCPlanner",
-  "enabled":true,
+  "upperLimit":25000000,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"RBC"
+      },
       {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
@@ -887,6 +1010,12 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"destinationUnit",
         "propValue":"CAD"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.CheckReserveAccountFor",
+        "source":true,
+        "bankProperty":"institution",
+        "bankValue":"10"
       }
     ]
   },

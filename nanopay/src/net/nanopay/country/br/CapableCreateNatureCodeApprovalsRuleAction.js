@@ -10,7 +10,8 @@ foam.CLASS({
   extends: 'foam.nanos.crunch.lite.ruler.CapableCreateApprovalsRuleAction',
 
   documentation: `
-    TODO:
+    To add a NatureCodeApprovalRequest decorator on ApprovalRequest instantiation in
+    CapableCreateApprovalsRuleAction
   `,
 
   javaImports: [
@@ -26,7 +27,7 @@ foam.CLASS({
     'foam.comics.v2.userfeedback.UserFeedback',
     'foam.comics.v2.userfeedback.UserFeedbackException',
     'foam.comics.v2.userfeedback.UserFeedbackStatus',
-    'foam.nanos.ruler.Operations',
+    'foam.nanos.dao.Operation',
     'foam.nanos.auth.Subject',
     'java.util.Map',
     'java.util.ArrayList',
@@ -34,7 +35,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.lite.Capable',
-    'foam.nanos.crunch.lite.CapablePayload',
+    'foam.nanos.crunch.CapabilityJunctionPayload',
     'foam.nanos.logger.Logger',
     'net.nanopay.country.br.NatureCode',
     'net.nanopay.country.br.NatureCodeApprovalRequest',
@@ -53,10 +54,10 @@ foam.CLASS({
         { name: 'x', type: 'Context' },
         { name: 'request', type: 'ApprovalRequest' },
         { name: 'capableObj', type: 'Capable' },
-        { name: 'capablePayloadObj', type: 'CapablePayload' }
+        { name: 'capablePayloadObj', type: 'CapabilityJunctionPayload' }
       ],
       javaCode: `
-        CapablePayload capablePayload = (CapablePayload) capablePayloadObj;
+        CapabilityJunctionPayload capablePayload = (CapabilityJunctionPayload) capablePayloadObj;
         DAO capabilityDAO = (DAO) x.get("capabilityDAO");
         Capability capability = (Capability) capabilityDAO.find(capablePayload.getCapability());
 
@@ -68,7 +69,7 @@ foam.CLASS({
           .setDaoKey(request.getDaoKey())
           .setObjId(request.getObjId())
           .setOperation(request.getOperation())
-          .setCreatedBy(request.getCreatedBy())
+          .setCreatedFor(request.getCreatedFor())
           .setGroup(request.getGroup())
           .setClassification(request.getClassification())
           .setStatus(request.getStatus())

@@ -102,6 +102,62 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
+  "name": "sourceCorridorDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(true)
+      .setAuthorizer(new net.nanopay.payment.DestinationCorridorAuthorizer.Builder(x).setPermissionPrefix("paymentprovidercorridor").setCorridorType("source").build())
+      .setInnerDAO(x.get("localCapabilityDAO"))
+      .setValidated(true)
+      .setDecorator(
+        new foam.dao.FilteredDAO.Builder(x)
+          .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.payment.PaymentProviderCorridor.class))
+          .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.payment.PaymentProviderCorridor.getOwnClassInfo()).build())
+        .build())
+      .setOf(net.nanopay.payment.PaymentProviderCorridor.getOwnClassInfo())
+      .build();
+  """,
+  "client":
+    """
+      {
+        "of":"net.nanopay.payment.PaymentProviderCorridor"
+      }
+    """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "targetCorridorDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(true)
+      .setAuthorizer(new net.nanopay.payment.DestinationCorridorAuthorizer.Builder(x).setPermissionPrefix("paymentprovidercorridor").setCorridorType("target").build())
+      .setInnerDAO(x.get("localCapabilityDAO"))
+      .setValidated(true)
+      .setDecorator(
+        new foam.dao.FilteredDAO.Builder(x)
+          .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.payment.PaymentProviderCorridor.class))
+          .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.payment.PaymentProviderCorridor.getOwnClassInfo()).build())
+        .build())
+      .setOf(net.nanopay.payment.PaymentProviderCorridor.getOwnClassInfo())
+      .build();
+  """,
+  "client":
+    """
+      {
+        "of":"net.nanopay.payment.PaymentProviderCorridor"
+      }
+    """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
   "name": "paymentMethods",
   "lazy": false,
   "serve": true,

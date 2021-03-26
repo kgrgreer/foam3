@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import net.nanopay.account.Account;
+import net.nanopay.account.DigitalAccount;
 import net.nanopay.account.TrustAccount;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.tx.TransactionQuote;
@@ -94,8 +95,11 @@ public class PaymentCorridorService implements CorridorService {
     if ( from instanceof BankAccount ) {
       sourceCountry = ((BankAccount) from).getCountry();
     } else {
-      BankAccount r = ((BankAccount) TrustAccount.find(x,from)
-        .findReserveAccount(x));
+      BankAccount r = null;
+      if ( from instanceof DigitalAccount )
+        r = ((BankAccount) ((DigitalAccount) from).findTrustAccount(x).findReserveAccount(x));
+      else
+        r = (BankAccount) TrustAccount.find(x,from).findReserveAccount(x);
       if (r != null)
         sourceCountry = r.getCountry();
     }
@@ -103,8 +107,11 @@ public class PaymentCorridorService implements CorridorService {
     if ( to instanceof BankAccount ) {
       targetCountry = ((BankAccount) to).getCountry();
     } else {
-      BankAccount r = ((BankAccount) TrustAccount.find(x,to)
-          .findReserveAccount(x));
+      BankAccount r = null;
+      if ( to instanceof DigitalAccount )
+        r = ((BankAccount) ((DigitalAccount) to).findTrustAccount(x).findReserveAccount(x));
+      else
+        r = (BankAccount) TrustAccount.find(x,to).findReserveAccount(x);
       if (r != null)
         targetCountry = r.getCountry();
     }

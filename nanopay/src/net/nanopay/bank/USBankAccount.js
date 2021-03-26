@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'USBankAccount',
-  label: 'United States Bank',
+  label: 'United States',
   extends: 'net.nanopay.bank.BankAccount',
 
   imports: [
@@ -34,6 +34,8 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.nanos.iban.IBANInfo',
+    'foam.nanos.iban.ValidationIBAN',
     'foam.util.SafetyUtil',
     'net.nanopay.model.Branch',
     'java.util.regex.Pattern'
@@ -43,16 +45,65 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'accountDetails',
-      title: function(forContact) {
-        return forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
-      }
+      name: 'clientAccountInformation',
+      title: function() {
+        return this.clientAccountInformationTitle;
+      },
+      properties: [
+        {
+          name: 'denomination',
+          order: 10,
+          gridColumns: 12
+        },
+        {
+          name: 'name',
+          order: 20,
+          gridColumns: 12
+        },
+        {
+          name: 'flagImage',
+          order: 30,
+          gridColumns: 12
+        },
+        {
+          name: 'country',
+          order: 40,
+          gridColumns: 12
+        },
+        {
+          name: 'voidChequeImage',
+          order: 50,
+          gridColumns: 12
+        },
+        {
+          name: 'branchId',
+          order: 60,
+          gridColumns: 6
+        },
+        {
+          name: 'accountNumber',
+          order: 70,
+          gridColumns: 6
+        },
+        {
+          name: 'supportingDocuments',
+          order: 80,
+          gridColumns: 12
+        }
+      ]
     },
     {
       name: 'pad',
-      title: `Connect using a void check`,
-      subTitle: `Connect to your account without signing in to online banking.
-          Please ensure your details are entered properly.`,
+      title: function() {
+        return this.plaidResponseItem ?
+          this.SECTION_DETAILS_TITLE_PLAID :
+          this.SECTION_DETAILS_TITLE_VOID;
+      },
+      subTitle: function() {
+        return this.plaidResponseItem ?
+          this.SECTION_DETAILS_SUBTITLE_PLAID :
+          this.SECTION_DETAILS_SUBTITLE_VOID;
+      },
       isAvailable: function(forContact) {
         return ! forContact;
       }
@@ -80,7 +131,10 @@ foam.CLASS({
     { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be between 6 and 17 digits long' },
     { name: 'IMAGE_REQUIRED', message: 'Please attach a void check or a 3 month bank statement' },
     { name: 'ADD_SUCCESSFUL', message: 'Bank Account successfully added' },
-    { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' }
+    { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' },
+    { name: 'SECTION_DETAILS_SUBTITLE_VOID', message: 'Connect to your account without signing in to online banking. Please ensure your details are entered properly.' },
+    { name: 'SECTION_DETAILS_TITLE_PLAID', message: 'Finish adding your bank account' },
+    { name: 'SECTION_DETAILS_SUBTITLE_PLAID', message: 'Please confirm some banking details to securely interact with your account.' }
   ],
 
   properties: [
@@ -107,19 +161,16 @@ foam.CLASS({
       name: 'iban',
       visibility: 'HIDDEN',
       required: false,
-      getter: function() {
-        return this.accountNumber;
+      validateObj: function(iban) {
       },
       javaGetter: `
-        return getAccountNumber();
+        StringBuilder iban = new StringBuilder();
+        iban.append(getBranchId());
+        iban.append(getAccountNumber());
+        return iban.toString();
       `
     },
     {
-      name: 'bankCode',
-      visibility: 'HIDDEN'
-    },
-    { // REVIEW: remove
-      class: 'String',
       name: 'institutionNumber',
       hidden: true
     },
@@ -128,12 +179,13 @@ foam.CLASS({
       class: 'String',
       label: '',
       value: 'images/USA-Check.png',
-      section: 'accountDetails',
+      section: 'accountInformation',
       visibility: 'RO',
       transient: true,
       view: function(_, X) {
         return {
-          class: 'foam.u2.tag.Image'
+          class: 'foam.u2.tag.Image',
+          displayWidth: '100%'
         };
       }
     },
@@ -141,17 +193,15 @@ foam.CLASS({
       class: 'foam.nanos.fs.FileProperty',
       name: 'voidCheckImage',
       documentation: 'void check image for this bank account',
+      visibility: function(forContact) {
+        return forContact ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      }
     },
     {
       name: 'branchId',
-      label: 'ACH Routing Number',
-      section: 'accountDetails',
+      label: 'Routing Number',
+      section: 'accountInformation',
       updateVisibility: 'RO',
-      view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: '123456789',
-        onKey: true
-      },
       gridColumns: 6,
       preSet: function(o, n) {
         if ( n === '' ) return n;
@@ -172,7 +222,8 @@ foam.CLASS({
     },
     {
       name: 'accountNumber',
-      label: 'ACH Account Number',
+      label: 'Account Number',
+      section: 'accountInformation',
       updateVisibility: 'RO',
       postSet: function(o, n) {
         this.padCapture.accountNumber = n;
@@ -214,7 +265,7 @@ foam.CLASS({
       class: 'String',
       name: 'wireRouting',
       documentation: 'The ACH wire routing number for the account, if available.',
-      section: 'accountDetails',
+      section: 'accountInformation',
       visibility: 'HIDDEN'
     },
     {
@@ -243,7 +294,7 @@ foam.CLASS({
               if ( accountNumber ) {
                 return this.E()
                   .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('accountNumber').label} `).end()
-                  .start('span').add(`*** ${accountNumber.substring(accountNumber.length - 4, accountNumber.length)}`).end();
+                  .start('span').add(obj.mask(accountNumber)).end();
               }
           }))
         .end();
@@ -254,7 +305,7 @@ foam.CLASS({
       name: 'supportingDocuments',
       label: `Please upload either an image of a void check or a bank statement from within
           the past 3 months to verify ownership of this bank account.`,
-      section: 'accountDetails',
+      section: 'accountInformation',
       documentation: 'Supporting documents to verify bank account',
       validateObj: function(supportingDocuments, plaidResponseItem, forContact) {
         if ( supportingDocuments.length === 0 && ! plaidResponseItem && ! forContact ) {
@@ -285,15 +336,16 @@ foam.CLASS({
       of: 'net.nanopay.model.USPadCapture',
       name: 'padCapture',
       section: 'pad',
-      storageTransient: true,
+      transient: true,
       label: '',
       updateVisibility: 'HIDDEN',
+      autoValidate: true,
       factory: function() {
         return net.nanopay.model.USPadCapture.create({
           country: this.country,
           firstName: this.subject.realUser.firstName,
           lastName: this.subject.realUser.lastName,
-          companyName: this.subject.user.businessName,
+          companyName: this.subject.user.organization || this.subject.user.businessName,
           address: this.subject.user.address
         }, this);
       },
@@ -302,7 +354,8 @@ foam.CLASS({
           views: [
             {
               class: 'foam.u2.view.FObjectView',
-              of: 'net.nanopay.model.USPadCapture'
+              of: 'net.nanopay.model.USPadCapture',
+              classIsFinal: true
             },
             {
               // displays us bank account capabilities
@@ -312,6 +365,22 @@ foam.CLASS({
           ]
         }, X);
       }
+    },
+    {
+      name: 'swiftCode',
+      visibility: 'HIDDEN',
+      required: false,
+      validateObj: function(swiftCode) {
+      }
+    },
+    {
+      name: 'bankRoutingCode',
+      javaPostSet: `
+        if ( val != null && BRANCH_ID_PATTERN.matcher(val).matches() ) {
+          clearBranch();
+          setBranchId(val);
+        }
+      `
     }
   ],
 
@@ -358,21 +427,23 @@ foam.CLASS({
       javaThrows: ['IllegalStateException'],
       javaCode: `
         super.validate(x);
-        String branchId = this.getBranchId();
         String accountNumber = this.getAccountNumber();
-
-        if ( SafetyUtil.isEmpty(branchId) ) {
-          throw new IllegalStateException(this.ROUTING_NUMBER_REQUIRED);
-        }
-        if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
-          throw new IllegalStateException(this.ROUTING_NUMBER_INVALID);
-        }
 
         if ( SafetyUtil.isEmpty(accountNumber) ) {
           throw new IllegalStateException(this.ACCOUNT_NUMBER_REQUIRED);
         }
         if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
           throw new IllegalStateException(this.ACCOUNT_NUMBER_INVALID);
+        }
+
+        if ( SafetyUtil.isEmpty(getSwiftCode()) ) {
+          String branchId = this.getBranchId();
+          if ( SafetyUtil.isEmpty(branchId) ) {
+            throw new IllegalStateException(this.ROUTING_NUMBER_REQUIRED);
+          }
+          if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
+            throw new IllegalStateException(this.ROUTING_NUMBER_INVALID);
+          }
         }
       `
     },
@@ -385,7 +456,8 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        return getBranchId();
+        var branchCode = getBranchCode(x);
+        return ! branchCode.isBlank() ? branchCode : getBankRoutingCode();
       `
     }
  ]

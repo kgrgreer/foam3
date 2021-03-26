@@ -203,7 +203,7 @@ foam.CLASS({
           amount: self.transaction.amount,
           deviceId: self.device.id,
           refundTransactionId: self.transaction.id,
-          notes: self.user.businessName
+          notes: self.user.organization || self.user.businessName
         }));
       })
       .then(function (result) {

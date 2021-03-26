@@ -25,7 +25,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'capabilityDAO',
+    'sourceCorridorDAO',
     'countryDAO',
     'ctrl',
     'notify',
@@ -57,7 +57,7 @@ foam.CLASS({
   }
   ^ .bank-currency-pick-height {
     height: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
   ^ .bank-pick-margin {
     width: 1046px;
@@ -191,11 +191,9 @@ foam.CLASS({
   ^ h1 {
     margin-bottom: 0px;
   }
-  ^ .foam-u2-view-RichChoiceView-selection-view {
-    width: 200px;
-  }
   ^ .property-selectedCountry {
     display: inline-block;
+    width: 200px;
   }
   ^ .DefaultRowView-row {
     height: 30px;
@@ -205,11 +203,12 @@ foam.CLASS({
     font-size: 16px;
   }
   ^ .net-nanopay-sme-ui-SMEModal-inner {
-    width: 515px;
     height: 500px;
   }
   ^ .net-nanopay-sme-ui-SMEModal-content {
-    overflow: scroll;
+    box-sizing: border-box;
+    width: 600px;
+    overflow-y: auto;
     padding: 30px;
   }
   `,
@@ -219,7 +218,9 @@ foam.CLASS({
     { name: 'SUB_TITLE', message: 'Connect through a banking partner below, or ' },
     { name: 'CONNECT_LABEL', message: 'connect with a void check' },
     { name: 'BANK_ADDED', message: 'Your bank account was successfully added' },
-    { name: 'CHOOSE_COUNTRY', message: 'Please select the originating country of the bank account you would like to add.' }
+    { name: 'CHOOSE_COUNTRY', message: 'Please select the originating country of the bank account you would like to add.' },
+    { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' },
+    { name: 'DOMICILED_BK_ACC_COUNTRY', message: 'Domiciled bank account country' }
   ],
 
   properties: [
@@ -227,18 +228,13 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'permittedCountries',
       factory: function() {
-        let predicate = this.subject.user.cls_ != net.nanopay.model.Business ?
-            this.INSTANCE_OF(this.PaymentProviderCorridor) :
-            this.AND(
-              this.INSTANCE_OF(this.PaymentProviderCorridor),
-              this.EQ(this.PaymentProviderCorridor.SOURCE_COUNTRY, this.subject.user.address.countryId)
-            );
-
         return this.PromisedDAO.create({
           of: 'foam.nanos.auth.Country',
-          promise: this.capabilityDAO.where(predicate)
+          promise: this.sourceCorridorDAO
             .select(this.MAP(this.PaymentProviderCorridor.SOURCE_COUNTRY))
             .then((sink) => {
+              let countries = sink.delegate.array ? sink.delegate.array : [];
+              countries.push(this.subject.user.address.countryId);
               return this.countryDAO.where(this.IN(this.Country.CODE, sink.delegate.array));
             })
         });
@@ -256,7 +252,7 @@ foam.CLASS({
           class: 'foam.u2.view.RichChoiceView',
           sections: [
             {
-              heading: 'Domiciled bank account country',
+              heading: x.data.DOMICILED_BK_ACC_COUNTRY,
               dao$: x.data.permittedCountries$
             }
           ]
@@ -270,7 +266,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'hasCompletedIntegration',
       value: false,
-      documentation: `Boolean to determine if the User has completed 
+      documentation: `Boolean to determine if the User has completed
                       the integration process before`
     },
     {
@@ -322,7 +318,8 @@ foam.CLASS({
                   this.add(this.SMEModal.create().tag({
                     class: 'net.nanopay.account.ui.BankAccountWizard',
                     data: this.bankAccount,
-                    useSections: ['accountDetails', 'pad']
+                    customTitle: this.SECTION_DETAILS_TITLE_VOID,
+                    useSections: ['clientAccountInformation', 'pad']
                   }));
                 })
               .end()
@@ -364,7 +361,7 @@ foam.CLASS({
     function createOnComplete() {
       var self = this;
       return function() {
-        var menuLocation = 'capability.main.banking';
+        var menuLocation = 'mainmenu.banking';
         window.location.hash.substr(1) != menuLocation ?
           self.pushMenu(menuLocation) : self.stack.back();
         return;

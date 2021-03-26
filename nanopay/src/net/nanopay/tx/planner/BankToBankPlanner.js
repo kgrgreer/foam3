@@ -30,7 +30,14 @@ foam.CLASS({
     'net.nanopay.tx.SummaryTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus'
+    'net.nanopay.tx.model.TransactionStatus',
+    'static foam.mlang.MLang.CLASS_OF',
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.EQ',
+    'java.util.ArrayList',
+    'java.util.List',
+    'foam.dao.ArraySink',
+    'foam.dao.DAO',
   ],
 
   properties: [
@@ -61,45 +68,42 @@ foam.CLASS({
 
         txn.setStatus(TransactionStatus.PENDING);
         txn.setInitialStatus(TransactionStatus.COMPLETED);
+        if ( txn.getDestinationAmount() != 0 ) {
+          txn.setAmount(txn.getDestinationAmount());
+        }
 
         Account sourceAccount = quote.getSourceAccount();
         Account destinationAccount = quote.getDestinationAccount();
-        DigitalAccount sourceDigitalAccount = DigitalAccount.findDefault(x, sourceAccount.findOwner(x), sourceAccount.getDenomination());
-        DigitalAccount destinationDigitalAccount = DigitalAccount.findDefault(x, destinationAccount.findOwner(x), destinationAccount.getDenomination());
+        DAO dao = (DAO) x.get("localAccountDAO");
 
-        // Split 1: ABank -> ADigital
-        Transaction t1 = new Transaction(x);
-        t1.copyFrom(txn);
-        // Get Payer Digital Account to fufil CASH-IN
-        t1.setDestinationAccount(sourceDigitalAccount.getId());
+        List digitals = ((ArraySink) dao.where(
+          AND(
+            EQ(Account.OWNER, sourceAccount.getOwner()),
+            CLASS_OF(DigitalAccount.class)
+          )).select(new ArraySink())).getArray();
 
-        // Split 2: ADigital -> BDigital
-        Transaction t2 = new Transaction(x);
-        t2.copyFrom(txn);
-        t2.setSourceAccount(sourceDigitalAccount.getId());
-        t2.setDestinationAccount(destinationDigitalAccount.getId());
+        for ( Object obj : digitals ) {
+          DigitalAccount sourceDigitalAccount = (DigitalAccount) obj;
 
-        // Split 3: BDigital -> BBankAccount
-        Transaction t3 = new Transaction(x);
-        t3.copyFrom(txn);
-        t3.setSourceAccount(destinationDigitalAccount.getId());
-        t3.setDestinationAccount(destinationAccount.getId());
+          // Split 1: ABank -> ADigital
+          Transaction t1 = new Transaction(x);
+          t1.copyFrom(txn);
+          t1.setDestinationAccount(sourceDigitalAccount.getId());
+          Transaction[] cashInPlans = multiQuoteTxn(x, t1, quote);
 
-        // Put chain transaction together
-        Transaction[] cashInPlans = multiQuoteTxn(x, t1, quote);
-        Transaction[] digitalPlans = multiQuoteTxn(x, t2, quote);
-        Transaction[] cashOutPlans = multiQuoteTxn(x, t3, quote);
+          for ( Transaction CIP : cashInPlans ) {
+            // Split 2: ADigital -> BBank
+            Transaction t2 = new Transaction(x);
+            t2.copyFrom(txn);
+            t2.setSourceAccount(sourceDigitalAccount.getId());
+            //Note: if CIP, does not have all the transfers for getTotal this wont work.
+            t2.setAmount(CIP.getTotal(x, sourceDigitalAccount.getId()));
+            Transaction[] cashOutPlans = multiQuoteTxn(x, t2, quote);
 
-        for ( Transaction CIP : cashInPlans ) {
-          for ( Transaction DP : digitalPlans ) {
             for ( Transaction COP : cashOutPlans ) {
               Transaction t = (Transaction) txn.fclone();
-              Transaction ci = (Transaction) CIP.fclone();
-              Transaction dp = (Transaction) DP.fclone();
-              Transaction co = (Transaction) COP.fclone();
-              dp.addNext(co);
-              ci.addNext(dp);
-              dp.setInitialStatus(TransactionStatus.COMPLETED);
+              Transaction ci = (Transaction) removeSummaryTransaction(CIP).fclone();
+              ci.addNext((Transaction) removeSummaryTransaction(COP).fclone());
               if (getCreateCompliance()) {
                 ComplianceTransaction ct = createComplianceTransaction(txn);
                 ct.addNext(ci);
@@ -108,10 +112,8 @@ foam.CLASS({
               else{
                 t.addNext(ci);
               }
-              t.addLineItems(CIP.getLineItems());
-              t.addLineItems(DP.getLineItems());
-              t.addLineItems(COP.getLineItems());
               t.setStatus(TransactionStatus.COMPLETED);
+              t.setPlanCost(t.getPlanCost() + CIP.getPlanCost() + COP.getPlanCost());
               quote.getAlternatePlans_().add(t);
             }
           }

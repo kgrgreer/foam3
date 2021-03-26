@@ -23,6 +23,7 @@ foam.CLASS({
   documentation: 'Rule for sending a transaction to FeeEngine when the transaction is put (CREATE) into feeEngineDAO.',
 
   javaImports: [
+    'net.nanopay.account.Account',
     'net.nanopay.tx.model.Transaction',
     'static foam.mlang.MLang.*'
   ],
@@ -127,8 +128,8 @@ foam.CLASS({
       name: 'feeAccount',
       section: 'basicInfo',
       documentation: 'Set fee account to create transfers for the fee line item added.',
-      readPermissionRequired: true,
-      writePermissionRequired: true
+      writePermissionRequired: true,
+      required: true
     },
     {
       name: 'priority',
@@ -175,6 +176,22 @@ foam.CLASS({
     {
       name: 'validity',
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'spid',
+      value: ''
+    }
+  ],
+
+  methods: [
+    {
+      name: 'getUser',
+      javaCode: `
+        Account sourceAccount = ((Transaction) obj).findSourceAccount(x);
+        return (sourceAccount != null) ?
+          sourceAccount.findOwner(x) :
+          null;
+      `
     }
   ],
 

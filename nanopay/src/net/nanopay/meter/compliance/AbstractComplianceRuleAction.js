@@ -58,6 +58,7 @@ foam.CLASS({
         if ( SafetyUtil.isEmpty(approvalRequest.getGroup()) ) {
           approvalRequest.setGroup(getApproverGroupId());
         }
+        // TODO: Investigate put with inX or put_
         ((DAO) x.get("approvalRequestDAO")).put(approvalRequest);
       `
     }

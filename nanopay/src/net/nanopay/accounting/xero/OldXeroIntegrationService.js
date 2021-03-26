@@ -264,14 +264,13 @@ try {
           UserUserJunction userUserJunction = (UserUserJunction) sink.getArray().get(0);
           Business business = (Business) businessDAO.find(userUserJunction.getTargetId());
           newContact.setOrganization(business.getOrganization());
-          newContact.setBusinessName(business.getBusinessName());
           newContact.setBusinessId(business.getId());
           newContact.setEmail(business.getEmail());
         } else {
 
         }
         newContact.setType("Contact");
-        newContact.setGroup("sme");
+        newContact.setGroup(user.getSpid() + "-sme");
         newContact.setOwner(user.getId());
         contactDAO.put(newContact);
         continue;
@@ -344,11 +343,10 @@ try {
     newContact.setXeroId(xeroContact.getContactID());
     newContact.setEmail(xeroContact.getEmailAddress());
     newContact.setOrganization(xeroContact.getName());
-    newContact.setBusinessName(xeroContact.getName());
     newContact.setFirstName(xeroContact.getFirstName());
     newContact.setLastName(xeroContact.getLastName());
     newContact.setOwner(user.getId());
-    newContact.setGroup("sme");
+    newContact.setGroup(user.getSpid() + "-sme");
     contactDAO.put(newContact);
   }
   return new ResultResponse(true, "All contacts have been synchronized");
