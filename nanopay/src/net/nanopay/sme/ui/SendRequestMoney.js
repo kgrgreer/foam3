@@ -336,7 +336,7 @@ foam.CLASS({
         }
       });
 
-      this.exitLabel = 'Cancel';
+      this.exitLabel = 'Delete';
       this.hasExitOption = true;
 
       Promise.all([this.auth.check(null, 'business.invoice.pay'), this.auth.check(null, 'user.invoice.pay')])
