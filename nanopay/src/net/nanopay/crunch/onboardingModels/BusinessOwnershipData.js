@@ -83,8 +83,10 @@ foam.CLASS({
     },
     {
       name: 'availableUsers',
-      expression: function (soUsersDAO) {
-        return soUsersDAO;
+      expression: function (soUsersDAO, owners) {
+        return soUsersDAO.where(this.NOT(this.IN(
+          this.ownerClass.ID, owners.map(owner => owner.id)
+        )));
       },
       hidden: true
     },
@@ -117,7 +119,12 @@ foam.CLASS({
           class: 'foam.u2.view.FObjectArrayView',
           of: X.data.ownerClass,
           defaultNewItem: X.data.ownerClass.create({ mode: 'blank' }, X),
-          enableAdding$: X.data.owners$.map(a => a.length < 4),
+          enableAdding$: X.data.owners$.map(a =>
+            // Maximum of 4 beneficial owners
+            a.length < 4 &&
+            // Last item, if present, must have a selection made
+            ( a.length == 0 || a[a.length-1].mode != 'blank' )
+          ),
           valueView: {
             class: 'net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView',
 
@@ -125,7 +132,10 @@ foam.CLASS({
             //      be imported instead of passed like this.
             soUsersDAO: X.data.soUsersDAO,
             choiceSections: [
-              { dao$: X.data.availableUsers$ },
+              {
+                dao$: X.data.soUsersDAO$,
+                filteredDAO$: X.data.availableUsers$
+              },
               { dao: otherChoiceDAO }
             ],
             beneficialOwnerSelectionUpdate: X.data.ownersUpdate
