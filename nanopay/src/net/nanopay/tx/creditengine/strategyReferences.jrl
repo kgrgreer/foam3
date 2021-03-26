@@ -14,5 +14,5 @@ p({
   "class":"foam.strategy.StrategyReference",
   "id":"6f4f1f58-ce03-4124-b5cb-0c1b8b86e7cc",
   "desiredModelId":"net.nanopay.tx.creditengine.CreditCodeAccount",
-  "strategy":"net.nanopay.tx.creditengine.PreviousFeeRefund"
+  "strategy":"net.nanopay.tx.creditengine.FeeRefund"
 })
