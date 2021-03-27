@@ -10,6 +10,7 @@ phases:
 
   pre_build:
     commands:
+      - echo DEPLOYMENT_GROUP_NAME $DEPLOYMENT_GROUP_NAME
       - add-apt-repository ppa:cwchien/gradle
       - apt-get update -y
       - apt upgrade -y gradle
