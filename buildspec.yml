@@ -6,11 +6,11 @@ phases:
     runtime-versions:
       java: corretto11
       nodejs: 12
-    # commands:
+    commands:
+      - echo CODEBUILD_BUILD_ID $CODEBUILD_BUILD_ID
 
   pre_build:
     commands:
-      - echo DEPLOYMENT_GROUP_NAME $DEPLOYMENT_GROUP_NAME
       - add-apt-repository ppa:cwchien/gradle
       - apt-get update -y
       - apt upgrade -y gradle
