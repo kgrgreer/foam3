@@ -51,6 +51,7 @@ foam.CLASS({
       {
           name: 'applyAction',
           javaCode: `
+          // covers both Contact and PersonalContact
           var contact = (PersonalContact) obj;
           
           BankAccount account = (BankAccount) contact.findBankAccount(x);
