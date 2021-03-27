@@ -54,5 +54,6 @@ artifacts:
     - $CODEBUILD_SRC_DIR_technology_operations_repository/codedeployAfterInstall.sh
     - $CODEBUILD_SRC_DIR_technology_operations_repository/codedeploySetJAVA_OPTS.sh
     - $CODEBUILD_SRC_DIR_technology_operations_repository/shrc.custom
+    - $CODEBUILD_SRC_DIR_technology_operations_repository/shrc.custom.medusa.mediator
     - $CODEBUILD_SRC_DIR_technology_operations_repository/codedeployApplicationStart.sh
   discard-paths: yes
