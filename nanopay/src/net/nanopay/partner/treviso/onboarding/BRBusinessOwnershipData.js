@@ -75,6 +75,7 @@ foam.CLASS({
           if ( cpf && values[0].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
             ['verifyName', 'cpfName'].forEach(
               name => capabilityValues[name] = cpf[name]);
+              capabilityValues['cpf'] = cpf.data;
           }
           if ( so && values[1].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
             ['hasSignedContratosDeCambio', 'pepHioRelated'].forEach(
