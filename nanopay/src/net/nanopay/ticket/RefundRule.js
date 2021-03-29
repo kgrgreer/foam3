@@ -39,6 +39,7 @@ foam.CLASS({
     'net.nanopay.tx.creditengine.FeeRefund',
     'net.nanopay.tx.creditengine.FeeWaiver',
     'net.nanopay.tx.CreditLineItem',
+    'net.nanopay.tx.DigitalTransaction',
     'net.nanopay.tx.FeeSummaryTransactionLineItem',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.InvoicedFeeLineItem',
@@ -80,6 +81,7 @@ foam.CLASS({
             feeRefund.setSpid(request.getSpid());
             feeRefund.setOwner(request.getOwner());
             feeRefund.setInitialQuantity(1);
+            feeRefund.setOfTxn(DigitalTransaction.getOwnClassInfo());
             feeRefund = (FeeRefund) creditCodeDAO.put(feeRefund);
             array.add(feeRefund.getId());
           }

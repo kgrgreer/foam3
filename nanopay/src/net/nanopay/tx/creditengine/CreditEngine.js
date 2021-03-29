@@ -84,6 +84,8 @@ foam.CLASS({
             txn.setCreditCodes((String []) codeHash.toArray(new String[codeHash.size()] ));
             txn.addLineItems((CreditLineItem[]) credits.toArray(new CreditLineItem[credits.size()] ));
             return txn;
+          } else {
+            return txn;
           }
         }
         throw new RuntimeException("incorrect input to creditEngine");
