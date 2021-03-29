@@ -102,3 +102,10 @@ p({
   "name": "Register Payment Provider",
   "visible": false
 })
+
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "intuitOnboarding",
+  "name": "Intuit Onboarding",
+  "visible": false
+})
