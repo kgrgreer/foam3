@@ -142,7 +142,7 @@ foam.CLASS({
       documentation: 'When the Credit code is consumed on final submission of transaction increment its usage count',
       javaCode: `
         CreditCodeTransaction counter = new CreditCodeTransaction();
-        counter.setAmount(1);
+        counter.setAmount(-1);
         counter.setName("Counter Incrementation for " + this.getId());
         counter.setSourceAccount(this.getId());
         counter.setDestinationAccount(this.getId());
@@ -164,12 +164,11 @@ foam.CLASS({
       javaCode: `
         if ( t.getStatus() == TransactionStatus.CANCELLED ) {
           CreditCodeTransaction counter = new CreditCodeTransaction();
-          counter.setAmount(-1);
+          counter.setAmount(1);
           counter.setName("Counter Incrementation for " + this.getId());
           counter.setSourceAccount(this.getId());
           counter.setDestinationAccount(this.getId());
           ((DAO) x.get("localTransactionDAO")).put(counter);
-
         }
       `,
       documentation: 'On a successful update to the transaction, '

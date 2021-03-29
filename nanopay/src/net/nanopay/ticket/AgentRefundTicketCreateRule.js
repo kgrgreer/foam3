@@ -35,8 +35,7 @@ foam.CLASS({
     'foam.nanos.notification.Notification',
     'foam.nanos.logger.Logger',
     'net.nanopay.ticket.RefundTicket',
-    'net.nanopay.tx.SummaryTransaction',
-    'net.nanopay.fx.FXSummaryTransaction',
+    'net.nanopay.tx.SummarizingTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
@@ -59,31 +58,43 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        RefundTicket ticket = (RefundTicket) obj;
-        ticket.setAgentInstructions(getTextToAgent());
+ RefundTicket ticket = (RefundTicket) obj;
         DAO txnDAO = (DAO) x.get("localTransactionDAO");
-        Transaction summary = (Transaction) txnDAO.find(ticket.getProblemTransaction());
-        if (! (summary instanceof SummaryTransaction || summary instanceof FXSummaryTransaction) ) {
-          summary = summary.findRoot(x);
+        final Transaction summary;
+        Transaction temp = (Transaction) txnDAO.find(ticket.getProblemTransaction());
+        if (! (temp instanceof SummarizingTransaction ) ) {
+          summary = temp.findRoot(x);
+        } else {
+          summary = temp;
         }
         Transaction problem = summary.getStateTxn(x);
-        ticket.setProblemTransaction(problem.getId());
-        try {
-          problem.setStatus(TransactionStatus.PAUSED);
-          txnDAO.put(problem);
-        }
-        catch ( Exception e ) {
+
+        agency.submit(x, agencyX -> {
+          Transaction problemClone = (Transaction) problem.fclone();
+          ticket.setProblemTransaction(problem.getId());
+          ticket.setRefundTransaction(summary.getId());
+          DAO txnDAO2 = (DAO) agencyX.get("localTransactionDAO");
           try {
-            List children = ((ArraySink) problem.getChildren(x).select(new ArraySink())).getArray();
-            for ( Object t : children) {
-              ((Transaction) t).setStatus(TransactionStatus.PAUSED);
-              txnDAO.put((Transaction) t);
+            problemClone.setStatus(TransactionStatus.PAUSED);
+            txnDAO2.put(problemClone);
+          }
+          catch ( Exception e ) {
+            try {
+              List children = ((ArraySink) problem.getChildren(x).select(new ArraySink())).getArray();
+              for ( Object t : children) {
+                t = (Transaction) ((Transaction) t).fclone();
+                ((Transaction) t).setStatus(TransactionStatus.PAUSED);
+                txnDAO2.put((Transaction) t);
+              }
+            }
+            catch ( Exception e2 ) {
+              Logger logger = (Logger) x.get("logger");
+              logger.error("we failed to pause the Transaction "+problem.getId());
             }
           }
-          catch ( Exception e2 ) {
-            // add note on ticket that the transaction was not paused.
-          }
-        }
+        }, "Reput transaction as paused");
+
+        ticket.setAgentInstructions(getTextToAgent());
 
         if ( ! SafetyUtil.isEmpty(getErrorCode())) {
           // look up error code fee. and create a fee line item for this.

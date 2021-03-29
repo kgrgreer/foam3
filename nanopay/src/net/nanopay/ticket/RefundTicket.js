@@ -144,7 +144,10 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.ticket.RefundStatus',
       name: 'refundStatus',
-      section: 'infoSection'
+      section: 'infoSection',
+      createVisibility: 'RO',
+      readVisibility: 'RO',
+      updateVisibility: 'RO'
     },
     {
       class: 'Boolean',

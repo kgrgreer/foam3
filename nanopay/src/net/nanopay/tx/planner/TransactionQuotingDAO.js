@@ -104,8 +104,8 @@ foam.CLASS({
           }
 
           // consume creditcodes
-          if ( ( ! (loadedTxn instanceof SummarizingTransaction) ) && loadedTxn.getCreditCodes() != null && loadedTxn.getCreditCodes().length > 0 ) {
-            DAO creditCodeDAO = (DAO) x.get("creditCodeDAO"); // TODO local or nah?
+          if ( ( (loadedTxn instanceof SummarizingTransaction) ) && loadedTxn.getCreditCodes() != null && loadedTxn.getCreditCodes().length > 0 ) {
+            DAO creditCodeDAO = (DAO) x.get("localCreditCodeDAO");
             for ( String code : loadedTxn.getCreditCodes() ) {
               CreditCodeAccount creditCode = (CreditCodeAccount) creditCodeDAO.find(code);
               if ( creditCode == null ) {
@@ -117,8 +117,8 @@ foam.CLASS({
           return getDelegate().put_(x, loadedTxn); //recovered plan is put in.
         }
         // consume creditcodes
-        if ( ( ! (txn instanceof SummarizingTransaction) ) && txn.getCreditCodes() != null && txn.getCreditCodes().length > 0 ) {
-          DAO creditCodeDAO = (DAO) x.get("creditCodeDAO"); // TODO local or nah?
+        if ( ( (txn instanceof SummarizingTransaction) ) && txn.getCreditCodes() != null && txn.getCreditCodes().length > 0 ) {
+          DAO creditCodeDAO = (DAO) x.get("localCreditCodeDAO");
           for ( String code : txn.getCreditCodes() ) {
             CreditCodeAccount creditCode = (CreditCodeAccount) creditCodeDAO.find(code);
             if ( creditCode == null ) {
