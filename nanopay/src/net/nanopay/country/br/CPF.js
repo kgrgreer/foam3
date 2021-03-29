@@ -39,6 +39,7 @@ foam.CLASS({
 
   messages: [
     { name: 'INVALID_CPF', message: 'Valid CPF number required' },
+    { name: 'INVALID_CPF_CHECKED', message: 'Unable to validate CPF number and birthdate combination. Please update and try again.' },
     { name: 'INVALID_NAME', message: 'Click to verify name' }
   ],
 
@@ -62,12 +63,26 @@ foam.CLASS({
         {
           args: ['data', 'cpfName'],
           predicateFactory: function(e) {
-            return e.AND(
-              e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.CPF.DATA }), 11),
-              e.GT(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.CPF.CPF_NAME }), 0)
-            );
+            return e.EQ(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.country.br.CPF.DATA
+                }), 11);
           },
           errorMessage: 'INVALID_CPF'
+        },
+        {
+          args: ['data', 'cpfName'],
+          predicateFactory: function(e) {
+            return e.AND(
+              e.GT(net.nanopay.country.br.CPF
+                .CPF_NAME, 0),
+              e.EQ(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.country.br.CPF.DATA
+                }), 11)
+              );
+          },
+          errorMessage: 'INVALID_CPF_CHECKED'
         }
       ],
       tableCellFormatter: function(val) {

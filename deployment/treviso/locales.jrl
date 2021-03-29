@@ -179,6 +179,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onbo
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBusinessDirector.YES",target:"Sim"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBusinessDirector.NO",target:"Não"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBusinessDirector.INVALID_CPF",target:"Número válido de CPF obrigatório"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBusinessDirector.INVALID_CPF_CHECKED",target:"Não foi possível validar a combinação do número do CPF e da data de nascimento. Por favor, verifique e tente novamente."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBusinessDirector.UNDER_AGE_LIMIT_ERROR",target:"Deve ter pelo menos 18 anos."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBusinessDirector.OVER_AGE_LIMIT_ERROR",target:"Deve ter menos de 125 anos."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBusinessDirector.INVALID_DIRECTOR_NAME",target:"Confirme o nome do seu administrador ou representante legal"})
