@@ -1305,3 +1305,17 @@ p({
     </include>
   """
 })
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-159",
+  "name": "onboarding-capability-compliance-notification",
+  "group": "fraud-ops",
+  "locale": "en",
+  "displayName": "Onboarding capability updated",
+  "subject": "Onboarding capability has been updated to {{status}} for user {{email}}",
+  "body": """
+    <include template = 'nanopay-email-base'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">{{description}}</p>
+    </include>
+  """
+})

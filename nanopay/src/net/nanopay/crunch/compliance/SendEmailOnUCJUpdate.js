@@ -51,14 +51,22 @@ foam.CLASS({
             EmailMessage message = new EmailMessage();
             Map<String, Object> args = new HashMap<>();
 
-            args.put("title", "Capability updated for user ID " + user.getId());
-            args.put("subTitle1", "Capability status update");
-            args.put("subTitle2", capability.getName() + " was updated for user ID " + user.getId() + " with status " + ucj.getStatus().getLabel());
-            args.put("userId", String.valueOf(user.getId()));
-            args.put("userEmail", user.getEmail());
+            StringBuilder sb = new StringBuilder();
+            sb.append("Capability: ");
+            sb.append(capability.getName());
+            sb.append(" was updated for user email: ");
+            sb.append(user.getEmail());
+            sb.append(", ID: ");
+            sb.append(String.valueOf(user.getId()));
+            sb.append(" with status ");
+            sb.append(ucj.getStatus().getLabel());
 
+            args.put("email", user.getEmail());
+            args.put("status", ucj.getStatus().getLabel());
+            args.put("description", sb.toString());
+            
             try {
-              EmailsUtility.sendEmailFromTemplate(x, user, message, "notification-to-onboarding-team", args);
+              EmailsUtility.sendEmailFromTemplate(x, user, message, "onboarding-capability-compliance-notification", args);
             } catch (Throwable t) {
               ((Logger) x.get("logger")).error("Error sending email for updated Capability: " + capability.getName(), t);
             }
