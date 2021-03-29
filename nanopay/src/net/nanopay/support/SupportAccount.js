@@ -33,7 +33,8 @@ foam.CLASS({
     'countryDAO',
     'institutionDAO',
     'paymentProviderCorridorDAO',
-    'supportTransactionDAO'
+    'supportTransactionDAO',
+    'userDAO'
   ],
 
   javaImports: [
@@ -41,9 +42,8 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'owner.businessName',
-    'owner.legalName',
     'summary',
+    'owner',
     'created'
   ],
 
@@ -69,7 +69,8 @@ foam.CLASS({
       label: 'Account Number',
       section: 'accountInformation',
       order: 20,
-      gridColumns: 6
+      gridColumns: 6,
+      tableWidth: 0
     }),
     net.nanopay.bank.BankAccount.ACCOUNT_NUMBER.clone().copyFrom({
       hidden: true,
@@ -81,7 +82,17 @@ foam.CLASS({
       gridColumns: 6,
       view: {
         class: 'foam.u2.view.ReferenceView'
-      }
+      },
+      tableWidth: 250,
+      tableCellFormatter: function(value, obj) {
+        obj.userDAO.find(value).then(function(u) {
+          if ( u && u.toSummary ) {
+            this.add(u.toSummary());
+          } else {
+            this.add(value);
+          }
+        }.bind(this));
+      },
     }),
     net.nanopay.bank.BankAccount.BRANCH.clone().copyFrom({
       label: 'Transit Number',
@@ -132,7 +143,8 @@ foam.CLASS({
     net.nanopay.account.Account.CREATED.clone().copyFrom({
       gridColumns:6,
       section: 'accountInformation',
-      order: 110
+      order: 110,
+      tableWidth: 200
     }),
     net.nanopay.account.Account.LAST_MODIFIED.clone().copyFrom({
       gridColumns:6,

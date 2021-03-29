@@ -61,7 +61,8 @@ foam.CLASS({
       label: 'Business ID',
       section: 'businessInformation',
       gridColumns:6,
-      order: 1
+      order: 1,
+      tableWidth: 150
     }),
     foam.nanos.auth.User.EXTERNAL_ID.clone().copyFrom({
       label: 'External ID',
@@ -74,7 +75,8 @@ foam.CLASS({
       gridColumns:6,
       visibility: 'RO',
       section: 'businessInformation',
-      order: 2
+      order: 2,
+      tableWidth: 0
     }),
     net.nanopay.model.Business.BUSINESS_TYPE_ID.clone().copyFrom({
       label: 'Business Type',
@@ -88,7 +90,8 @@ foam.CLASS({
     net.nanopay.model.Business.EMAIL.clone().copyFrom({
       gridColumns:6,
       section: 'businessInformation',
-      order: 4
+      order: 4,
+      tableWidth: 200
     }),
     net.nanopay.model.Business.PHONE_NUMBER.clone().copyFrom({
       gridColumns:6,
@@ -101,7 +104,8 @@ foam.CLASS({
     }),
     net.nanopay.model.Business.CREATED.clone().copyFrom({
       section: 'businessInformation',
-      order: 7
+      order: 7,
+      tableWidth: 150
     }),
     net.nanopay.model.Business.LAST_MODIFIED.clone().copyFrom({
       section: 'businessInformation',
@@ -125,7 +129,8 @@ foam.CLASS({
       label: 'Compliance Status',
       gridColumns: 6,
       section: 'businessInformation',
-      order: 11
+      order: 11,
+      tableWidth: 150
     }),
     foam.nanos.auth.User.STATUS.clone().copyFrom({
       label: 'Registration Status',
