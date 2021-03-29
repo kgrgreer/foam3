@@ -106,14 +106,7 @@ p({
           "createTitle": "Create a User",
           "createPredicate":{"class":"foam.mlang.predicate.False"},
           "editPredicate":{"class":"foam.mlang.predicate.False"},
-          "deletePredicate":{"class":"foam.mlang.predicate.False"},
-          "defaultColumns": [
-            "firstName",
-            "lastName",
-            "email",
-            "compliance",
-            "group"
-          ]
+          "deletePredicate":{"class":"foam.mlang.predicate.False"}
         }
     },
   "parent": "hidden"
