@@ -111,7 +111,18 @@ foam.CLASS({
     }),
     net.nanopay.account.Account.DESC.clone().copyFrom({
       section: 'accountInformation',
-      order: 80
+      order: 80,
+      readPermissionRequired: true
+    }),
+    net.nanopay.account.Account.CREATED.clone().copyFrom({
+      gridColumns:6,
+      section: 'accountInformation',
+      order: 90
+    }),
+    net.nanopay.account.Account.LAST_MODIFIED.clone().copyFrom({
+      gridColumns:6,
+      section: 'accountInformation',
+      order: 100
     }),
     net.nanopay.account.Account.CREATED_BY.clone().copyFrom({
       gridColumns:6,
@@ -119,7 +130,8 @@ foam.CLASS({
         class: 'foam.u2.view.ReferenceView'
       },
       section: 'accountInformation',
-      order: 90
+      order: 130,
+      readPermissionRequired: true
     }),
     net.nanopay.account.Account.LAST_MODIFIED_BY.clone().copyFrom({
       gridColumns:6,
@@ -127,17 +139,8 @@ foam.CLASS({
         class: 'foam.u2.view.ReferenceView'
       },
       section: 'accountInformation',
-      order: 100
-    }),
-    net.nanopay.account.Account.CREATED.clone().copyFrom({
-      gridColumns:6,
-      section: 'accountInformation',
-      order: 110
-    }),
-    net.nanopay.account.Account.LAST_MODIFIED.clone().copyFrom({
-      gridColumns:6,
-      section: 'accountInformation',
-      order: 120
+      order: 140,
+      readPermissionRequired: true
     }),
     net.nanopay.account.Account.CREDITS.clone().copyFrom({
       section: 'transactions'
