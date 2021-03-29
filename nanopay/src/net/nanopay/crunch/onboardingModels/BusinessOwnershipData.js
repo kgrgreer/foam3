@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
   name: 'BusinessOwnershipData',
@@ -18,15 +35,15 @@ foam.CLASS({
 
   messages: [
     { name: 'TOTAL_OWNERSHIP_ERROR', message: 'The total ownership should be less than 100%' },
-    { name: 'OTHER_MSG', message: 'Add another owner' }
+    { name: 'OTHER_MSG', message: 'Add another owner' },
+    { name: 'SIGNINGOFFICER_DATA_FETCHING_ERR', message: 'Failed to find this signing officer info' },
+    { name: 'ADD_MSG', message: 'add another owner' }
   ],
 
   sections: [
     {
       name: 'ownershipAmountSection',
-      // TODO: This is not a title.
       title: 'Enter the number of people who own 25% or more of the business either directly or indirectly.',
-      navTitle: 'Number of owners',
       help: `In accordance with banking laws, we need to document the percentage of ownership of any individual with a 25% + stake in the company.
       Please have owner address and date of birth ready.`,
     },
@@ -50,7 +67,6 @@ foam.CLASS({
       documentation: `this property converts SigningOfficer Users to BeneficialOwners,
       as a way of mini pre-processing for owner selections.`,
       factory: function() {
-        var self = this;
         var x = this.__subContext__;
         var daoSpec = { of: this.ownerClass };
         var adao = foam.dao.ArrayDAO.create(daoSpec);
@@ -104,9 +120,10 @@ foam.CLASS({
     },
     {
       name: 'owners',
+      label: 'Owner details',
       class: 'FObjectArray',
+      section: 'ownershipAmountSection',
       of: 'net.nanopay.model.BeneficialOwner',
-      autoValidate: true,
       validationStyleEnabled: false,
       view: function (_, X) {
         var otherChoiceDAO = foam.dao.MDAO.create({ of: X.data.ownerClass });
@@ -117,7 +134,7 @@ foam.CLASS({
         otherChoiceDAO.put(obj);
 
         return {
-          class: 'foam.u2.view.FObjectArrayView',
+          class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
           of: X.data.ownerClass,
           defaultNewItem: X.data.ownerClass.create({ mode: 'blank' }, X),
           enableAdding$: X.data.owners$.map(a =>
@@ -126,6 +143,7 @@ foam.CLASS({
             // Last item, if present, must have a selection made
             ( a.length == 0 || a[a.length-1].mode != 'blank' )
           ),
+          name: X.data.ADD_MSG,
           valueView: {
             class: 'net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView',
 
@@ -147,12 +165,11 @@ foam.CLASS({
     {
       name: 'totalOwnership',
       class: 'Long',
-
+      section: 'ownershipAmountSection',
       view: {
         class: 'foam.u2.view.ModeAltView',
         writeView: { class: 'foam.u2.view.ValueView' }
       },
-
       validationTextVisible: true,
       validationPredicates: [
         {
@@ -260,7 +277,7 @@ foam.CLASS({
           return self.E()
             .tag(self.choiceView, {
               fullObject_$: self.data$,
-              choosePlaceholder: this.PLEASE_SELECT_ONE,
+              choosePlaceholder: self.PLEASE_SELECT_ONE,
               sections: self.choiceSections
             })
         }))
