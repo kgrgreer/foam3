@@ -1724,7 +1724,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.Expi
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.ExpirableDocument.EXPIRY.label",target:"Data de validade"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureBusinessRelationship.BUSINESS_TYPE_INFO",target:"Natureza da relação comercial com uma bolsa de corretagem brasileira"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.NO_CNPJ",target:"Insira o número do Registro Nacional de Pessoas Jurídicas de 14 dígitos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.NO_CNPJ",target:"Número do Registro Nacional de Pessoas Jurídicas de 14 dígitos requerido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.CNPJ_INVALID",target:"CNPJ inválido, verifique o seu número CNPJ e tente novamente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.STATE_COMMERCIAL_IDENTIFICATION_NUMBER",target:"NIRE / número de Identificação do Registro de Empresas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.VERIFY_BUSINESS_NAME",target:"Confirme o nome da sua empresa"})
@@ -3443,4 +3443,3 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransac
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransaction.name",target:"Conformidade Transação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.FXSummaryTransaction.model_.label",target:"Câmbio Resumo Transação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.FXSummaryTransaction.name",target:"Câmbio Resumo Transação"})
-
