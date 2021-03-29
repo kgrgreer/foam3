@@ -986,7 +986,6 @@ foam.CLASS({
       code: function(X) {
         var refundTicket = net.nanopay.ticket.RefundTicket.create({
           problemTransaction: this.paymentId,
-          refundStatus: net.nanopay.ticket.RefundStatus.REQUESTED,
           title: 'Refund request for invoice: ' + this.id
         });
 
@@ -1008,7 +1007,6 @@ foam.CLASS({
       code: function(X) {
         var refundTicket = net.nanopay.ticket.RefundTicket.create({
           problemTransaction: this.paymentId,
-          refundStatus: net.nanopay.ticket.RefundStatus.REQUESTED,
           title: 'Refund request for invoice: ' + this.id
         });
 

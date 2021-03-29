@@ -22,9 +22,20 @@ foam.CLASS({
 
   documentation: `Transaction reversal request`,
 
+  imports: [
+    'subject',
+    'notify'
+  ],
+
   requires: [
     'net.nanopay.tx.CreditLineItem',
-    'net.nanopay.tx.FeeLineItem'
+    'net.nanopay.tx.FeeLineItem',
+    'foam.log.LogLevel'
+  ],
+
+  messages: [
+    { name: 'SUBMIT_FOR_APPROVAL', message: 'Sucessfully submitted.' },
+    { name: 'ASSIGN', message: 'Sucessfully assigned.' },
   ],
 
   properties: [
@@ -164,6 +175,47 @@ foam.CLASS({
 
           return [feeLineItem, feeLineItem.toSummary(), isFinal]
         })
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'assignedTo',
+      section: 'infoSection',
+      label: 'Assigned to',
+      visibility: 'RO'
+    },
+  ],
+
+  actions: [
+    {
+      name: 'assignToMe',
+      section: 'infoSection',
+      isAvailable: function(assignedTo) {
+        return assignedTo == 0;
+      },
+      code: function(X) {
+        this.assignedTo = this.subject.user.id;
+        this.ticketDAO.put(this).then(ticket => {
+          this.notify(this.SUBMIT_FOR_APPROVAL, '', foam.log.LogLevel.INFO, true);
+        }).catch(error => {
+          this.notify(error.message, '', this.LogLevel.ERROR, true);
+        });
+      }
+    },
+    {
+      name: 'submit',
+      section: 'infoSection',
+      isAvailable: function(assignedTo, refundStatus) {
+        return assignedTo == this.subject.user.id && refundStatus == net.nanopay.ticket.RefundStatus.AVAILABLE;
+      },
+      code: function(X) {
+        this.refundStatus = net.nanopay.ticket.RefundStatus.REQUESTED;
+        this.ticketDAO.put(this).then(ticket => {
+          this.notify(this.ASSIGN, '', foam.log.LogLevel.INFO, true);
+        }).catch(error => {
+          this.notify(error.message, '', this.LogLevel.ERROR, true);
+        });
       }
     }
   ]
