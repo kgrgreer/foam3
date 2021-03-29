@@ -447,7 +447,13 @@ foam.CLASS({
 
         String groupId = "external-sme";
         DAO groupDAO = (DAO) x.get("localGroupDAO");
-        Group group = (Group) groupDAO.find(subject.getRealUser().getSpid() + "-sme");
+        Group group = null;
+        if ( request.getType() == OnboardingType.BUSINESS ) {
+          group = (Group) groupDAO.find(subject.getRealUser().getSpid() + "-business-sme");
+        }
+        if ( group == null ) {
+          group = (Group) groupDAO.find(subject.getRealUser().getSpid() + "-sme");
+        }
         if ( group != null ) {
           groupId = group.getId();
         }
