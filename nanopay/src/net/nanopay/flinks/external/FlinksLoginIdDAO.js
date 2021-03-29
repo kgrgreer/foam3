@@ -430,30 +430,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'determineGroupId',
-      type: 'String',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'request', type: 'FlinksLoginId' },
-        { name: 'subject', type: 'Subject' }
-      ],
-      javaCode: `
-        String groupId = "external-sme";
-        DAO groupDAO = (DAO) x.get("localGroupDAO");
-        Group group = null;
-        if ( request.getType() == OnboardingType.BUSINESS ) {
-          group = (Group) groupDAO.find(subject.getRealUser().getSpid() + "-business-sme");
-        }
-        if ( group == null ) {
-          group = (Group) groupDAO.find(subject.getRealUser().getSpid() + "-sme");
-        }
-        if ( group != null ) {
-          groupId = group.getId();
-        }
-        return groupId;
-      `
-    },
-    {
       name: 'onboardUser',
       args: [
         { name: 'x', type: 'Context' },
@@ -594,6 +570,30 @@ foam.CLASS({
       `
     },
     {
+      name: 'determineGroupId',
+      type: 'String',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'request', type: 'FlinksLoginId' },
+        { name: 'subject', type: 'Subject' }
+      ],
+      javaCode: `
+        String groupId = "external-sme";
+        DAO groupDAO = (DAO) x.get("localGroupDAO");
+        Group group = null;
+        if ( request.getType() == OnboardingType.BUSINESS ) {
+          group = (Group) groupDAO.find(subject.getRealUser().getSpid() + "-business-sme");
+        }
+        if ( group == null ) {
+          group = (Group) groupDAO.find(subject.getRealUser().getSpid() + "-sme");
+        }
+        if ( group != null ) {
+          groupId = group.getId();
+        }
+        return groupId;
+      `
+    },
+    {
       name: 'onboardBusiness',
       args: [
         { name: 'x', type: 'Context' },
@@ -637,8 +637,6 @@ foam.CLASS({
         String externalId = overrides != null && !SafetyUtil.isEmpty(overrides.getExternalId()) ?
           overrides.getExternalId() : "";
 
-        String groupId = determineGroupId(x, request, newSubject);
-
         // Create business with minimal information
         Business business = new Business.Builder(x)
           .setBusinessName(businessName)
@@ -647,7 +645,6 @@ foam.CLASS({
           .setAddress(businessAddress)
           .setExternalId(externalId)
           .setSpid(user.getSpid())
-          .setGroup(groupId)
           .setStatus(net.nanopay.admin.model.AccountStatus.ACTIVE)
           .build();
         DAO localUserDAO = (DAO) subjectX.get("localUserDAO");
