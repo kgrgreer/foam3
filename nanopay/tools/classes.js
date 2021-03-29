@@ -1356,6 +1356,11 @@ var classes = [
   'net.nanopay.partner.treviso.report.TrevisoTransactionReport',
   'net.nanopay.partner.treviso.report.TrevisoTransactionReportDAO',
 
+  'net.nanopay.partner.br.businessSector.Sector',
+  'net.nanopay.partner.br.businessSector.Grupo',
+  'net.nanopay.partner.br.businessSector.Divisao',
+  'net.nanopay.partner.br.businessSector.Secao',
+
   // bepay
   'net.nanopay.partner.bepay.tx.BePayTransaction',
   'net.nanopay.partner.bepay.tx.planner.BePayTransactionPlanner',
