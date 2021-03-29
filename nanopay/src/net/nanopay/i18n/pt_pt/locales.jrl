@@ -82,25 +82,21 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.LABEL.label",target:"rótulo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.VIEW.label",target:"Visão"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.PRE_SET.label",target:"preSet"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.NO_AMOUNT_OF_OWNERS_SELECTED_ERROR",target:"Selecione vários proprietários."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.INVALID_OWNER_SELECTION_ERROR",target:"Uma ou mais seleções do proprietário são inválidas."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OWNER_NOT_SELECTED",target:"Por favor selecione uma das opções da lista suspensa."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OWNER_1_ERROR",target:"Proprietário 1 é inválido."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OWNER_2_ERROR",target:"Proprietário 2 é inválido."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OWNER_3_ERROR",target:"Proprietário 3 é inválido."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OWNER_4_ERROR",target:"Proprietário 4 é inválido."})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.TOTAL_OWNERSHIP_ERROR",target:"A propriedade total deve ser inferior a 100%."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.ID.label",target:"id"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.BUSINESS_ID.label",target:"id de negócios"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.INDEX.label",target:"índice"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.INDEX.value",target:"1"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.SO_USERS_DAO.label",target:"soUsersDAO"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.INDEX.label",target:"Índice"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.SO_USERS_DAO.label",target:"Agente de assinatura Usuário DAO"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.SO_USERS_DAO.documentation",target:"esta propriedade converte usuários oficiais de assinatura em proprietários benéficos, \n como uma forma de mini pré-processamento para seleções de proprietários."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.CHOSEN_OWNERS.label",target:"proprietários escolhidos"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OWNER_SELECTIONS_VALIDATED.label",target:"Seleções do proprietário validadas"})
-
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS.documentation",target:"Número de proprietários"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.SIGNINGOFFICER_DATA_FETCHING_ERR",target:"Falha ao encontrar as informações deste oficial de assinatura"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.TOTAL_OWNERSHIP.label",target:"Propriedade total"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.SECTION_OWNERSHIP_AMOUNT_SECTION.title",target:"Quantidade de cotistas que possuem participação superior a 25% das cotas de capital da empresa."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.SECTION_REVIEW_OWNERS_SECTION.title",target:"Reveja a lista de proprietários"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OWNERS.label",target:"Detalhes do proprietário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.ADD_MSG",target:"Outro Dono"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView.PLEASE_SELECT_ONE",target:"Selecione um dos seguintes ..."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OTHER_MSG",target:"Adicionar outro proprietário"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.IsPubliclyTradedQuestion.PUBLICLY_TRADED.label",target:"Esta é uma empresa de capital aberto"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.IsPubliclyTradedQuestion.PUBLICLY_TRADED.documentation",target:"Se esta é uma empresa de capital aberto."})
@@ -956,7 +952,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-7.name",target:"Propriedade de negócio"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired.name",target:"Sua empresa possui uma ou mais pessoas que possuem 25% ou mais do negócio, direta ou indiretamente?"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-7-noReview.name",target:"Sua empresa NÃO possui uma pessoa que detém 25% ou mais do negócio, direta ou indiretamente."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-7-br.name",target:"Informações de composição societária"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-7-br.name",target:"Propriedade de negócio"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-76.name",target:"Registro comercial"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-76.description",target:"Crie um negócio para acessar pagamentos e faturas na plataforma."})
@@ -1011,10 +1007,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.MAILING_ADDRESS.label",target:"endereço de correspondência"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.MAILING_ADDRESS.documentation",target:"Endereço postal comercial."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.SECTION_BUSINESS_REGISTRATION.title",target:"Dados básicos da Empresa"})
-
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.TOTAL_OWNERSHIP.label",target:"totalOwnership pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.SECTION_OWNERSHIP_AMOUNT_SECTION.title",target:"Insira o número de pessoas que possuem 25% ou mais da empresa, direta ou indiretamente."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.SECTION_REVIEW_OWNERS_SECTION.title",target:"Reveja a lista de proprietários"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.BUSINESS_INCORPORATION_DATE_ERROR",target:"Não pode ser datado de futuro."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.BUSINESS_INCORPORATION_DATE.label",target:"Data de Constituição da Empresa"})
@@ -1993,11 +1985,11 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirect
 
 p({class:"foam.i18n.Locale",target:"Adicionar detalhes para o proprietário #"})
 
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData.SO_USERS_DAO.label",target:"soUsersDAO"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData.SO_USERS_DAO.documentation",target:"esta propriedade converte usuários oficiais de assinatura em proprietários benéficos, \n como uma forma de mini pré-processamento para seleções de proprietários."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData.SECTION_OWNERSHIP_AMOUNT_SECTION.title",target:"Quantidade de cotistas que possuem participação superior a 25% das cotas de capital da empresa."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData.SECTION_REVIEW_OWNERS_SECTION.title",target:"Reveja a relação de cotistas"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData.OWNERS.label",target:"Detalhes do cotista"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.YES",target:"Sim"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.NO",target:"Não"})
@@ -2959,12 +2951,11 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactW
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.OF_MSG",target:"de"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"Add another owner",target:"Adicionar outro cotista"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.PLEASE_SELECT_ONE",target:"Selecione um dos seguintes ..."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.AddBankAccountAction.ACTION_LABEL",target:"Adicionar Conta"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.PayableDAOBrowser.SEND_MONEY.label",target:"Mande o pagamento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.ReceivableDAOBrowser.REQ_MONEY.label",target:"Solicitar pagamento"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.CANCEL",target:"Cancelar"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.DELETE",target:"Excluir"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"4c46cdb8-06b2-11eb-adc1-0242ac120002.name",target:"Natureza da relação comercial"})
 

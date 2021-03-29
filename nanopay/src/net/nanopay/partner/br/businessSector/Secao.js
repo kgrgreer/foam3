@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -15,25 +15,15 @@
  * from nanopay Corporation.
  */
 
-/**
- * @license
- * Copyright 2020 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
+foam.CLASS({
+  package: 'net.nanopay.partner.br.businessSector',
+  name: 'Secao',
+  documentation: 'the subclass of businessSector from API',
 
- foam.ENUM({
-   package: 'net.nanopay.liquidity.approvalRequest',
-   name: 'LiquidityApprovalStatus',
-   extends: 'foam.nanos.approval.ApprovalStatus',
-
-   values: [
+  properties: [
     {
-      name: 'REQUESTED',
-      label: 'Needs Approval',
-      ordinal: 0,
-      documentation: 'Request pending.',
-      color: '/*%WARNING1%*/ #865300',
-      background: '/*%WARNING4%*/ #FFF3C1',
-    },
-  ]
+      class: 'String',
+      name: 'id'
+    }
+  ],
 });

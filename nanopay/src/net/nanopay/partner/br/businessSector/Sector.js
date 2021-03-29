@@ -16,45 +16,25 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.partner.intuit.tx',
-  name: 'IntuitTransactionSummary',
-  extends: 'net.nanopay.tx.TransactionSummary',
-
-  tableColumns: [
-    'summary',
-    'category',
-    'status',
-    'externalId',
-    'created',
-    'errorCode'
-  ],
-
-  searchColumns: [
-    'id',
-    'summary',
-    'amount',
-    'status',
-    'category',
-    'errorCode',
-    'created',
-    'externalId',
-    'externalInvoiceId'
-  ],
+  package: 'net.nanopay.partner.br.businessSector',
+  name: 'Sector',
+  documentation: 'businessSector class of https://servicodados.ibge.gov.br/api/v2/cnae/classes',
 
   properties: [
     {
       class: 'String',
-      name: 'externalId',
-      section: 'transactionInformation',
-      order: 130,
-      gridColumns: 6
+      name: 'id'
     },
     {
       class: 'String',
-      name: 'externalInvoiceId',
-      section: 'transactionInformation',
-      order: 140,
-      gridColumns: 6
+      name: 'descricao',
+      documentation: 'name of businessSector'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.partner.br.businessSector.Grupo',
+      name: 'grupo',
+      documentation: 'businessSector group'
     }
-  ]
+  ],
 });

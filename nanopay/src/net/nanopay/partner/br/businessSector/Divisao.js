@@ -16,45 +16,25 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.partner.intuit.tx',
-  name: 'IntuitTransactionSummary',
-  extends: 'net.nanopay.tx.TransactionSummary',
-
-  tableColumns: [
-    'summary',
-    'category',
-    'status',
-    'externalId',
-    'created',
-    'errorCode'
-  ],
-
-  searchColumns: [
-    'id',
-    'summary',
-    'amount',
-    'status',
-    'category',
-    'errorCode',
-    'created',
-    'externalId',
-    'externalInvoiceId'
-  ],
+  package: 'net.nanopay.partner.br.businessSector',
+  name: 'Divisao',
+  documentation: 'the subclass of businessSector from API',
 
   properties: [
     {
       class: 'String',
-      name: 'externalId',
-      section: 'transactionInformation',
-      order: 130,
-      gridColumns: 6
+      name: 'id'
     },
     {
       class: 'String',
-      name: 'externalInvoiceId',
-      section: 'transactionInformation',
-      order: 140,
-      gridColumns: 6
+      name: 'descricao',
+      documentation: 'Name of businessSector Division'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.partner.br.businessSector.Secao',
+      name: 'secao',
+      documentation: 'businessSector section'
     }
-  ]
+  ],
 });
