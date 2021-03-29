@@ -58,6 +58,7 @@ foam.CLASS({
     'net.nanopay.crunch.registration.LimitedAmountCapability',
     'net.nanopay.crunch.registration.PersonalOnboardingTypeData',
     'net.nanopay.crunch.registration.SigningOfficerList',
+    'net.nanopay.crunch.registration.BusinessDirectorList',
     'net.nanopay.crunch.registration.UserRegistrationData',
     'net.nanopay.crunch.registration.UserDetailData',
     'net.nanopay.crunch.registration.UserDetailExpandedData',
@@ -70,8 +71,9 @@ foam.CLASS({
     'net.nanopay.flinks.model.LoginModel',
     'net.nanopay.flinks.model.HolderModel',
     'net.nanopay.meter.compliance.secureFact.SecurefactOnboardingService',
-    'net.nanopay.model.SigningOfficer',
     'net.nanopay.model.Business',
+    'net.nanopay.model.BusinessDirector',
+    'net.nanopay.model.SigningOfficer',
     'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
     'static foam.mlang.MLang.*'
   ],
@@ -691,13 +693,19 @@ foam.CLASS({
         // Fill the capability data objects from SecureFact LEV
         securefactOnboardingService.retrieveLEVCapabilityPayloads(subjectX, business, businessCapabilityDataObjects);
 
-        // Add current user as signing officer
+        // Add current user as signing officer and directors
         SigningOfficerList signingOfficerList = (SigningOfficerList) businessCapabilityDataObjects.get("Signing Officers");
         if ( signingOfficerList == null) {
           signingOfficerList = new SigningOfficerList.Builder(subjectX).setBusiness(business.getId()).build();
           businessCapabilityDataObjects.put("Signing Officers", signingOfficerList);
         }
         addSigningOfficerToList(subjectX, user, business, signingOfficerList);
+        BusinessDirectorList businessDirectorList = (BusinessDirectorList) businessCapabilityDataObjects.get("Business Directors");
+        if ( businessDirectorList == null ) {
+          businessDirectorList = new BusinessDirectorList.Builder(x).setBusiness(business.getId()).build();
+          businessCapabilityDataObjects.put("Business Directors", businessDirectorList);
+        }
+        addBusinessDirectorToList(subjectX, user, business, businessDirectorList);
 
         businessCapPayload = new CapabilityPayload.Builder(subjectX)
           .setId(capabilityId)
@@ -796,6 +804,31 @@ foam.CLASS({
 
         // Set the business
         signingOfficerList.setBusiness(business.getId());
+      `
+    },
+    {
+      name: 'addBusinessDirectorToList',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'user', type: 'User' },
+        { name: 'business', type: 'Business' },
+        { name: 'businessDirectorList', type: 'BusinessDirectorList' }
+      ],
+      javaCode: `
+        // Set the business
+        if ( business != null )
+          businessDirectorList.setBusiness(business.getId());
+
+        if ( businessDirectorList.getBusinessDirectors() != null && 
+             businessDirectorList.getBusinessDirectors().length > 0) {
+               return;
+             }
+        
+        BusinessDirector businessDirector = new BusinessDirector.Builder(x)
+             .setFirstName(user.getFirstName())
+             .setLastName(user.getLastName())
+             .build();
+        businessDirectorList.setBusinessDirectors(new BusinessDirector[] { businessDirector });
       `
     }
   ]
