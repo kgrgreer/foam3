@@ -40,7 +40,7 @@ foam.CLASS({
     { name: 'UNDER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old' },
     { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be less than 125 years old' },
     { name: 'INVALID_CPF', message: 'Valid CPF number required' },
-    { name: 'INVALID_CPF_CHECKED', message: 'Please confirm your birthday and CPF number' },
+    { name: 'INVALID_CPF_CHECKED', message: 'Unable to validate CPF number and birthdate combination.  Please verify and try again.' },
     { name: 'INVALID_DIRECTOR_NAME', message: 'Confirm your administrator\’s or legal representative name' },
     { name: 'FOREIGN_ID_ERROR', message: 'Identification Document required' },
     { name: 'NATIONALITY_ERROR', message: 'Nationality required' },
