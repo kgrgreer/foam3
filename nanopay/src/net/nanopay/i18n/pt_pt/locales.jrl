@@ -1681,6 +1681,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.CurrencyAmount
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions.ACKNOWLEDGE_BRAZIL_TC",target:"Para prosseguir, leia e aceite os Termos e Condições caso esteja de acordo."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions.TITLE.label",target:"título"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions.TITLE.value",target:"os termos e condições"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions.TITLE.AGREEMENT_FILE",target:"61ee89ca-19ec-d8fc-0306-380657a38949"})
 
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions.CHECKBOX_TEXT.label",target:"checkboxText pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions.CHECKBOX_TEXT.value",target:"Eu li, aceito e concordo com "})
