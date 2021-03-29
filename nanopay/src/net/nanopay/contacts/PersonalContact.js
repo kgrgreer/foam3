@@ -195,9 +195,6 @@ foam.CLASS({
       visibility: 'HIDDEN',
       label: 'Status',
       tableWidth: 100,
-      getter: function() {
-        return this.bankAccount ? this.ContactStatus.READY : this.ContactStatus.PENDING;
-      },
       tableCellFormatter: function(state, obj) {
         this.__subContext__.contactDAO.find(obj.id).then(contactObj => {
           this.start()
