@@ -52,7 +52,7 @@ foam.CLASS({
           return super.put_(x, obj);
         }
 
-        PersonalContact contact = (Contact) obj;
+        PersonalContact contact = (PersonalContact) obj;
 
         if (ContactStatus.CONNECTED.equals(contact.getSignUpStatus())) {
           return super.put_(x, contact);
