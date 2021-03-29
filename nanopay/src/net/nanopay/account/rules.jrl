@@ -180,6 +180,27 @@ p({
   "saveHistory":false,
   "lifecycleState":1
 })
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"b89a336d-6de5-454e-8162-fb8514b30d6c",
+  "name":"set contact's bank account",
+  "priority":100,
+  "ruleGroup":"ContactBankAccount",
+  "documentation":"If account's owner is Contact then set its bankAccount to be this bankaccount",
+  "daoKey":"localAccountDAO",
+  "operation":0,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.MQLExpr",
+    "query":"n(instanceof net.nanopay.bank.BankAccount)"
+  },
+  "action":{
+    "class":"net.nanopay.account.SetBankAccountOnContact"
+  },
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})
 
 
 
