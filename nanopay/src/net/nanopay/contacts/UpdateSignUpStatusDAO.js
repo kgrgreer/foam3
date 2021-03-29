@@ -25,10 +25,9 @@ foam.CLASS({
   `,
 
   javaImports: [
-    'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
-    'net.nanopay.model.Business'
+    'net.nanopay.account.Account'
   ],
 
   axioms: [
@@ -55,15 +54,17 @@ foam.CLASS({
 
         Contact contact = (Contact) obj;
 
-        if ( ContactStatus.READY.equals(contact.getSignUpStatus()) ) {
-          return super.put_(x, obj);
+        if ( ContactStatus.CONNECTED.equals(contact.getSignUpStatus()) ) {
+          return super.put_(x, contact);
         }
 
-        if ( contact.getBusinessId() != 0 ) {
-          Business business = (Business) getDelegate().inX(x).find(contact.getBusinessId());
-          if ( business != null ) {
-            contact.setSignUpStatus(ContactStatus.READY);
-          }
+        DAO accountDAO = (DAO)x.get("accountDAO");
+        Account account = (Account) accountDAO.find(contact.getBankAccount()); 
+
+        if (account == null) {
+          contact.setSignUpStatus(ContactStatus.PENDING);
+        } else {
+          contact.setSignUpStatus(ContactStatus.READY);
         }
 
         return super.put_(x, contact);
