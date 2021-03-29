@@ -24,9 +24,9 @@ foam.CLASS({
     'summary',
     'category',
     'status',
-    'errorCode',
     'externalId',
-    'created'
+    'created',
+    'errorCode'
   ],
 
   searchColumns: [

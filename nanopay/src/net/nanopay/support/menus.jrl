@@ -14,13 +14,7 @@ p({
         "createTitle": "Create an Account",
         "createPredicate":{"class":"foam.mlang.predicate.False"},
         "editPredicate":{"class":"foam.mlang.predicate.False"},
-        "deletePredicate":{"class":"foam.mlang.predicate.False"},
-        "defaultColumns": [
-          "id",
-          "owner",
-          "summary",
-          "name"
-        ]
+        "deletePredicate":{"class":"foam.mlang.predicate.False"}
       }
     },
   "parent": "hidden"
@@ -42,14 +36,7 @@ p({
         "createTitle": "Create a Business",
         "createPredicate":{"class":"foam.mlang.predicate.False"},
         "editPredicate":{"class":"foam.mlang.predicate.False"},
-        "deletePredicate":{"class":"foam.mlang.predicate.False"},
-        "defaultColumns": [
-          "id",
-          "businessName",
-          "email",
-          "phoneNumber",
-          "compliance"
-        ]
+        "deletePredicate":{"class":"foam.mlang.predicate.False"}
       }
     },
   "parent": "hidden"
@@ -119,17 +106,7 @@ p({
           "createTitle": "Create a User",
           "createPredicate":{"class":"foam.mlang.predicate.False"},
           "editPredicate":{"class":"foam.mlang.predicate.False"},
-          "deletePredicate":{"class":"foam.mlang.predicate.False"},
-          "defaultColumns": [
-            "id",
-            "firstName",
-            "lastName",
-            "email",
-            "phoneNumber",
-            "status",
-            "compliance",
-            "group"
-          ]
+          "deletePredicate":{"class":"foam.mlang.predicate.False"}
         }
     },
   "parent": "hidden"
