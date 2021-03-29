@@ -1429,7 +1429,7 @@ var classes = [
   'net.nanopay.crunch.compliance.BeneficialOwnerSanctionValidator',
   'net.nanopay.crunch.compliance.SecurefactSIDniValidator',
   'net.nanopay.crunch.compliance.SecurefactLEVValidator',
-  'net.nanopay.crunch.compliance.SendEmailOnUCJUpdate',
+  'net.nanopay.crunch.compliance.SendNotificationOnPut',
   'net.nanopay.crunch.compliance.UserComplianceApproval',
   'net.nanopay.crunch.compliance.SetFulfilledComplianceApprovalRequest',
   'net.nanopay.crunch.compliance.GenericSigningOfficerValidator',

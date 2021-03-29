@@ -105,7 +105,7 @@ p({
 
 p({
   "class": "foam.nanos.crunch.CapabilityCategory",
-  "id": "intuitOnboarding",
-  "name": "Intuit Onboarding",
+  "id": "apiCADOnboarding",
+  "name": "API CAD Onboarding",
   "visible": false
 })

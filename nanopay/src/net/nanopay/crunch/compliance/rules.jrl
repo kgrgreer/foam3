@@ -855,10 +855,18 @@ p({
   "after":true,
   "enabled":true,
   "predicate": {
-    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-    "category":"intuitOnboarding",
-    "status": 1
+    "class": "foam.mlang.predicate.OR",
+    "arg1": {
+      "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+      "category":"apiCADOnboarding",
+      "status": 1
+    },
+    "arg2": {
+      "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+      "category":"apiCADOnboarding",
+      "status": 6
+    }
   },
-  "action":{"class":"net.nanopay.crunch.compliance.SendEmailOnUCJUpdate"},
+  "action":{"class":"net.nanopay.crunch.compliance.SendNotificationOnPut"},
   "lifecycleState":1
 })

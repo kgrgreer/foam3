@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.crunch.compliance',
-  name: 'SendEmailOnUCJUpdate',
+  name: 'SendNotificationOnPut',
   implements: [
     'foam.nanos.ruler.RuleAction'
   ],
