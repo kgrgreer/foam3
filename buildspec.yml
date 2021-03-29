@@ -6,12 +6,10 @@ phases:
     runtime-versions:
       java: corretto11
       nodejs: 12
-    commands:
-      - echo phase install...
+    # commands:
 
   pre_build:
     commands:
-      - echo phase pre_build...
       - add-apt-repository ppa:cwchien/gradle
       - apt-get update -y
       - apt upgrade -y gradle
@@ -26,15 +24,16 @@ phases:
 
   build:
     commands:
-      - echo phase build...
       - cd $CODEBUILD_SRC_DIR
       - echo $CODEBUILD_SRC_DIR
       - echo $CODEBUILD_RESOLVED_SOURCE_VERSION
       - echo $CODEBUILD_SOURCE_VERSION
+      - git show --summary
       - cd $CODEBUILD_SRC_DIR_nanopay_foam
       - echo $CODEBUILD_SRC_DIR_nanopay_foam
       - echo $CODEBUILD_RESOLVED_SOURCE_VERSION_nanopay_foam
       - echo $CODEBUILD_SOURCE_VERSION_nanopay_foam
+      - git show --summary
       - cd $CODEBUILD_SRC_DIR_technology_operations_repository
       - echo $CODEBUILD_SRC_DIR_technology_operations_repository
       - echo $CODEBUILD_RESOLVED_SOURCE_VERSION_technology_operations_repository
@@ -42,9 +41,8 @@ phases:
       - cd $CODEBUILD_SRC_DIR
       - ./build.sh -uckJ$BUILD_JOURNALS
 
-  post_build:
-    commands:
-      - echo phase post_build...
+  # post_build:
+  #   commands:
 
 artifacts:
   files:
@@ -56,5 +54,6 @@ artifacts:
     - $CODEBUILD_SRC_DIR_technology_operations_repository/codedeployAfterInstall.sh
     - $CODEBUILD_SRC_DIR_technology_operations_repository/codedeploySetJAVA_OPTS.sh
     - $CODEBUILD_SRC_DIR_technology_operations_repository/shrc.custom
+    - $CODEBUILD_SRC_DIR_technology_operations_repository/shrc.custom.medusa.mediator
     - $CODEBUILD_SRC_DIR_technology_operations_repository/codedeployApplicationStart.sh
   discard-paths: yes
