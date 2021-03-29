@@ -54,7 +54,7 @@ foam.CLASS({
 
         Contact contact = (Contact) obj;
 
-        if ( ContactStatus.CONNECTED.equals(contact.getSignUpStatus()) ) {
+        if (ContactStatus.CONNECTED.equals(contact.getSignUpStatus())) {
           return super.put_(x, contact);
         }
 
