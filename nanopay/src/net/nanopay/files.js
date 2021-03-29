@@ -189,10 +189,6 @@ FOAM_FILES([
 
   { name: 'net/nanopay/model/CurrencyAmount' },
   { name: 'net/nanopay/model/BusinessSector' },
-  { name: 'net/nanopay/model/Sector' },
-  { name: 'net/nanopay/model/Grupo' },
-  { name: 'net/nanopay/model/Divisao' },
-  { name: 'net/nanopay/model/Secao' },
   { name: 'net/nanopay/model/BusinessType' },
   { name: 'net/nanopay/model/PadAccount' },
   { name: 'net/nanopay/model/PadCapture' },
@@ -1929,4 +1925,10 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/cron/OnboardingReminderNotification'},
   { name: 'net/nanopay/notification/PermissionedNotificationSettingRule'},
   { name: 'net/nanopay/sme/ruler/BusinessCompliancePassedEmailNotification'},
+
+  //br business sector
+  { name: 'net/nanopay/partner/br/businessSector/Sector' },
+  { name: 'net/nanopay/partner/br/businessSector/Grupo' },
+  { name: 'net/nanopay/partner/br/businessSector/Divisao' },
+  { name: 'net/nanopay/partner/br/businessSector/Secao' }
 ]);

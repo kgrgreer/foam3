@@ -165,10 +165,6 @@ var classes = [
   'net.nanopay.model.BeneficialOwner',
   'net.nanopay.model.BusinessDirector',
   'net.nanopay.model.BusinessSector',
-  'net.nanopay.model.Sector',
-  'net.nanopay.model.Grupo',
-  'net.nanopay.model.Divisao',
-  'net.nanopay.model.Secao',
   'net.nanopay.model.BusinessType',
   'net.nanopay.model.PadAccount',
   'net.nanopay.model.PadCapture',
@@ -1358,6 +1354,11 @@ var classes = [
   'net.nanopay.partner.treviso.invoice.TrevisoNotification',
   'net.nanopay.partner.treviso.report.TrevisoTransactionReport',
   'net.nanopay.partner.treviso.report.TrevisoTransactionReportDAO',
+
+  'net.nanopay.partner.br.businessSector.Sector',
+  'net.nanopay.partner.br.businessSector.Grupo',
+  'net.nanopay.partner.br.businessSector.Divisao',
+  'net.nanopay.partner.br.businessSector.Secao',
 
   // bepay
   'net.nanopay.partner.bepay.tx.BePayTransaction',

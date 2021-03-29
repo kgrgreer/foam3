@@ -16,14 +16,25 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.model',
-  name: 'Secao',
-  documentation: 'the subclass of businessSector from API',
+  package: 'net.nanopay.partner.br.businessSector',
+  name: 'Sector',
+  documentation: 'businessSector class of https://servicodados.ibge.gov.br/api/v2/cnae/classes',
 
   properties: [
     {
       class: 'String',
       name: 'id'
+    },
+    {
+      class: 'String',
+      name: 'descricao',
+      documentation: 'name of businessSector'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.partner.br.businessSector.Grupo',
+      name: 'grupo',
+      documentation: 'businessSector group'
     }
   ],
 });
