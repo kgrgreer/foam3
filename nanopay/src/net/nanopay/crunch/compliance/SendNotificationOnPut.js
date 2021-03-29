@@ -27,12 +27,12 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
-    'foam.nanos.notification.email.EmailMessage',
-    'foam.util.Emails.EmailsUtility',
+    'foam.nanos.notification.Notification',
     'java.util.HashMap',
     'java.util.Map'
   ],
@@ -48,7 +48,6 @@ foam.CLASS({
             User user = (User) ucj.findSourceId(x);
             Capability capability = (Capability) ucj.findTargetId(x);
             
-            EmailMessage message = new EmailMessage();
             Map<String, Object> args = new HashMap<>();
 
             StringBuilder sb = new StringBuilder();
@@ -61,17 +60,25 @@ foam.CLASS({
             sb.append(" with status ");
             sb.append(ucj.getStatus().getLabel());
 
+            String body = sb.toString();
+
             args.put("email", user.getEmail());
             args.put("status", ucj.getStatus().getLabel());
-            args.put("description", sb.toString());
+            args.put("description", body);
             
             try {
-              EmailsUtility.sendEmailFromTemplate(x, user, message, "onboarding-capability-compliance-notification", args);
+              Notification notification = new Notification.Builder(x)
+                .setEmailName("onboarding-capability-compliance-notification")
+                .setGroup("fraud-ops")
+                .setEmailArgs(args)
+                .setBody(body)
+                .build();
+              ((DAO) x.get("localNotificationDAO")).put(notification);
             } catch (Throwable t) {
-              ((Logger) x.get("logger")).error("Error sending email for updated Capability: " + capability.getName(), t);
+              ((Logger) x.get("logger")).error("Error sending notification for updated Capability: " + capability.getName(), t);
             }
           }
-        }, "SendEmailOnUCJGranted");
+        }, "SendNotificationOnPut");
       `
     }
   ]
