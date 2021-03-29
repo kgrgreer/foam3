@@ -21,7 +21,7 @@ foam.CLASS({
   extends: 'foam.dao.ProxyDAO',
   documentation: `
     The purpose of this DAO decorator is to set the signUpStatus property on a
-    contact to ACTIVE if the business it refers to has joined the platform.
+    contact based on whether or not a contact has a bank account.
   `,
 
   javaImports: [
@@ -72,4 +72,3 @@ foam.CLASS({
     }
   ]
 });
-
