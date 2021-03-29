@@ -48,11 +48,11 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        if ( ! (obj instanceof Contact) ) {
+        if ( ! (obj instanceof PersonalContact) ) {
           return super.put_(x, obj);
         }
 
-        Contact contact = (Contact) obj;
+        PersonalContact contact = (Contact) obj;
 
         if (ContactStatus.CONNECTED.equals(contact.getSignUpStatus())) {
           return super.put_(x, contact);
