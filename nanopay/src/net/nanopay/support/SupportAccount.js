@@ -130,7 +130,7 @@ foam.CLASS({
         class: 'foam.u2.view.ReferenceView'
       },
       section: 'accountInformation',
-      order: 130,
+      order: 110,
       readPermissionRequired: true
     }),
     net.nanopay.account.Account.LAST_MODIFIED_BY.clone().copyFrom({
@@ -139,7 +139,7 @@ foam.CLASS({
         class: 'foam.u2.view.ReferenceView'
       },
       section: 'accountInformation',
-      order: 140,
+      order: 120,
       readPermissionRequired: true
     }),
     net.nanopay.account.Account.CREDITS.clone().copyFrom({
