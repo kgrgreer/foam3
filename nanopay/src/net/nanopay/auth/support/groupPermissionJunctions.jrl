@@ -38,7 +38,6 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-base","
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-base","targetId":"service.contactDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-base","targetId":"service.currencyDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-base","targetId":"service.errorCodeDAO"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-base","targetId":"service.exportDriverRegistryDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-base","targetId":"service.groupDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-base","targetId":"service.groupPermissionJunctionDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-base","targetId":"service.institutionDAO"})
