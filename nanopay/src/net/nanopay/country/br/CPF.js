@@ -39,7 +39,7 @@ foam.CLASS({
 
   messages: [
     { name: 'INVALID_CPF', message: 'Valid CPF number required' },
-    { name: 'INVALID_CPF_CHECKED', message: 'Unable to validate CPF number and birthdate combination.  Please verify and try again.' },
+    { name: 'INVALID_CPF_CHECKED', message: 'Unable to validate CPF number and birthdate combination. Please update and try again.' },
     { name: 'INVALID_NAME', message: 'Click to verify name' }
   ],
 
