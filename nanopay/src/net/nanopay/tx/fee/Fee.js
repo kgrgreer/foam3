@@ -68,7 +68,9 @@ foam.CLASS({
       class: 'String',
       name: 'label',
       label: 'Display Name',
-      section: 'basicInfo'
+      section: 'basicInfo',
+      javaFactory: 'return getName();',
+      factory: function () { return this.name; }
     },
     {
       class: 'foam.core.Enum',

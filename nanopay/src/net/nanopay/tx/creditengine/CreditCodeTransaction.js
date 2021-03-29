@@ -28,7 +28,11 @@ foam.CLASS({
     'foam.core.ValidationException',
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
-],
+  ],
+
+  imports: [
+    'unitDAO'
+  ],
 
   properties: [
     {
@@ -50,6 +54,99 @@ foam.CLASS({
         ];
       }
     },
+    {
+      class: 'String',
+      name: 'sourceCurrency',
+      includeInDigest: true,
+      aliases: ['sourceDenomination'],
+      section: 'transactionInformation',
+      order: 60,
+      gridColumns: 6,
+      documentation: 'Source currency',
+      createVisibility: 'RO',
+      readVisibility: 'RO',
+      updateVisibility: 'RO',
+      javaFactory: `
+        return "use";
+      `,
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.unitDAO,
+          objToChoice: function(unit) {
+            return [unit.id, unit.id];
+          }
+        });
+      }
+    },
+        {
+          class: 'UnitValue',
+          name: 'amount',
+          unitPropName: 'sourceCurrency',
+          label: 'Payer Amount',
+          section: 'transactionInformation',
+          order: 50,
+          gridColumns: 6,
+          createVisibility: 'RO',
+          readVisibility: 'RO',
+          updateVisibility: 'RO',
+          documentation: `Amount withdrawn from the payer's account (source account) in the source currency.`,
+          help: `This is the amount withdrawn from the payer's chosen account (Source Account).`,
+          view: function(_, X) {
+            return {
+              class: 'net.nanopay.tx.ui.UnitFormatDisplayView',
+              linkCurrency$: X.data.destinationCurrency$,
+              currency$: X.data.sourceCurrency$,
+              linkAmount$: X.data.destinationAmount$
+            };
+          },
+          unitPropValueToString: async function(x, val, unitPropName) {
+            var unitProp = await x.unitDAO.find(unitPropName);
+            if ( unitProp )
+              return unitProp.format(val);
+            return val;
+          },
+          tableCellFormatter: function(value, obj) {
+            obj.unitDAO.find(obj.sourceCurrency).then(function(c) {
+              if ( c ) {
+                this.add(c.format(value));
+              }
+            }.bind(this));
+          },
+          javaToCSV: `
+            DAO currencyDAO = (DAO) x.get("unitDAO");
+            String srcCurrency = ((Transaction)obj).getSourceCurrency();
+            foam.core.Currency currency = (foam.core.Currency) currencyDAO.find(srcCurrency);
+
+            // Outputting two columns: "amount", "Currency"
+            outputter.outputValue(currency.formatPrecision(get_(obj)));
+            outputter.outputValue(srcCurrency);
+          `,
+          javaToCSVLabel: `
+            // Outputting two columns: "amount", "Currency"
+            outputter.outputValue("Source Amount");
+            outputter.outputValue("Source Currency");
+          `,
+          includeInDigest: true,
+          validationPredicates: [
+            {
+              args: ['amount'],
+              predicateFactory: function(e) {
+                return e.GTE(net.nanopay.tx.model.Transaction.AMOUNT, 0);
+              },
+              errorMessage: 'INVALID_AMOUNT'
+            },
+            {
+              args: ['amount', 'destinationAmount'],
+              predicateFactory: function(e) {
+                return e.NOT(e.AND(
+                  e.EQ(net.nanopay.tx.model.Transaction.AMOUNT, 0),
+                  e.EQ(net.nanopay.tx.model.Transaction.DESTINATION_AMOUNT, 0)
+                ));
+              },
+              errorMessage: 'BOTH_INVALID_AMOUNT'
+            }
+          ]
+        },
   ],
 
   methods: [

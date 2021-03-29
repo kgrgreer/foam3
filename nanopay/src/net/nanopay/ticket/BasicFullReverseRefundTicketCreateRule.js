@@ -113,6 +113,7 @@ foam.CLASS({
         agency.submit(x, agencyX -> {
           Transaction problemClone = (Transaction) problem.fclone();
           ticket.setProblemTransaction(problem.getId());
+          ticket.setRefundTransaction(summary.getId());
           DAO txnDAO2 = (DAO) agencyX.get("localTransactionDAO");
           try {
             problemClone.setStatus(TransactionStatus.PAUSED);

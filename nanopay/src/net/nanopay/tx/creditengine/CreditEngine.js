@@ -42,7 +42,8 @@ foam.CLASS({
     'java.util.HashSet',
     'net.nanopay.account.Account',
     'foam.mlang.sink.Count',
-    'net.nanopay.tx.creditengine.CreditCodeAccount'
+    'net.nanopay.tx.creditengine.CreditCodeAccount',
+    'net.nanopay.tx.ValueMovementTransaction'
   ],
 
   methods: [
@@ -59,31 +60,32 @@ foam.CLASS({
           if (txn instanceof SummarizingTransaction) {
             return txn;
           }
-          DAO creditCodeDAO = (DAO) x.get("localCreditCodeDAO");
-          // check if credit code exists, if so, only retain if not duplicate, and if applicable.
+          if ( txn instanceof ValueMovementTransaction ) {
+            DAO creditCodeDAO = (DAO) x.get("localCreditCodeDAO");
+            // check if credit code exists, if so, only retain if not duplicate, and if applicable.
 
-          ArrayList<CreditLineItem> credits = new ArrayList<CreditLineItem>();
-          HashSet<String> codeHash = new HashSet<String>(txn.getCreditCodes().length);
+            ArrayList<CreditLineItem> credits = new ArrayList<CreditLineItem>();
+            HashSet<String> codeHash = new HashSet<String>(txn.getCreditCodes().length);
 
-          for ( String code : txn.getCreditCodes()) {
-            CreditCodeAccount creditCode = (CreditCodeAccount) creditCodeDAO.find(code);
-            if ( creditCode != null ) {
-              CreditLineItem[] clis = creditCode.createLineItems(x,txn);
-              if ( clis != null && clis.length > 0 ) {
-                if ( codeHash.add(code) ) {
-                  for( CreditLineItem cli : clis ) {
-                    credits.add(cli);
+            for ( String code : txn.getCreditCodes()) {
+              CreditCodeAccount creditCode = (CreditCodeAccount) creditCodeDAO.find(code);
+              if ( creditCode != null ) {
+                CreditLineItem[] clis = creditCode.createLineItems(x,txn);
+                if ( clis != null && clis.length > 0 ) {
+                  if ( codeHash.add(code) ) {
+                    for( CreditLineItem cli : clis ) {
+                      credits.add(cli);
+                    }
                   }
                 }
               }
             }
+
+            txn.setCreditCodes((String []) codeHash.toArray(new String[codeHash.size()] ));
+            txn.addLineItems((CreditLineItem[]) credits.toArray(new CreditLineItem[credits.size()] ));
+            return txn;
           }
-
-          txn.setCreditCodes((String []) codeHash.toArray(new String[codeHash.size()] ));
-          txn.addLineItems((CreditLineItem[]) credits.toArray(new CreditLineItem[credits.size()] ));
-          return txn;
         }
-
         throw new RuntimeException("incorrect input to creditEngine");
       `
     }

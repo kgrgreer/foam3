@@ -1,18 +1,3 @@
-p({
-  "class":"foam.core.Unit",
-  "id":"use",
-  "name":"uses",
-  "precision":0
-})
-p({
-  "class":"foam.core.Unit",
-  "id":"stamp",
-  "name":"stamps",
-  "precision":0
-})
-p({
-  "class":"foam.core.Unit",
-  "id":"coupon",
-  "name":"coupons",
-  "precision":0
-})
+p({class:"foam.core.Unit",name:"coupons",id:"coupon",precision:1})
+p({class:"foam.core.Unit",name:"stamps",id:"stamp",precision:1})
+p({class:"foam.core.Unit",name:"uses",id:"use",precision:1})

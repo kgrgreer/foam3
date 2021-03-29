@@ -55,6 +55,9 @@ foam.CLASS({
       label: 'Description',
       order: 20,
       section: 'accountInformation',
+      createVisibility: 'RW',
+      updateVisibility: 'RO',
+      editVisibility: 'RO',
     },
     {
       class: 'Long',
@@ -120,7 +123,7 @@ foam.CLASS({
       name: 'balance',
       label: 'Balance',
       documentation: 'A numeric value representing the available funds in the account.',
-      section: 'balanceInformation',
+      section: 'accountInformation',
       order: 20,
       gridColumns: 6,
       storageTransient: true,
