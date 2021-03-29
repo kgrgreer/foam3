@@ -5,7 +5,7 @@ phases:
     #These depende on 'standard' Ubuntu image, v5.0
     runtime-versions:
       java: corretto11
-      nodejs: 12
+      nodejs: 14
     # commands:
 
   pre_build:
