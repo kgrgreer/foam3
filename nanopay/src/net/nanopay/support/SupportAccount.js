@@ -125,22 +125,22 @@ foam.CLASS({
       order: 100
     }),
     net.nanopay.account.Account.CREATED_BY.clone().copyFrom({
+      readPermissionRequired: true,
       gridColumns:6,
       view: {
         class: 'foam.u2.view.ReferenceView'
       },
       section: 'accountInformation',
-      order: 110,
-      readPermissionRequired: true
+      order: 110
     }),
     net.nanopay.account.Account.LAST_MODIFIED_BY.clone().copyFrom({
+      readPermissionRequired: true,
       gridColumns:6,
       view: {
         class: 'foam.u2.view.ReferenceView'
       },
       section: 'accountInformation',
-      order: 120,
-      readPermissionRequired: true
+      order: 120
     }),
     net.nanopay.account.Account.CREDITS.clone().copyFrom({
       section: 'transactions'
