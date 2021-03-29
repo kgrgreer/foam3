@@ -34,6 +34,15 @@ foam.CLASS({
     'foam.nanos.auth.Address'
   ],
 
+  tableColumns: [
+    'id',
+    'businessName',
+    'email',
+    'compliance',
+    'created',
+    'externalId'
+  ],
+
   sections: [
     {
       name: 'businessInformation'

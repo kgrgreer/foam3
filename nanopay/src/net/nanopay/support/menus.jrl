@@ -16,10 +16,10 @@ p({
         "editPredicate":{"class":"foam.mlang.predicate.False"},
         "deletePredicate":{"class":"foam.mlang.predicate.False"},
         "defaultColumns": [
-          "id",
-          "owner",
+          "owner.businessName",
+          "owner.legalName",
           "summary",
-          "name"
+          "created"
         ]
       }
     },
@@ -47,8 +47,9 @@ p({
           "id",
           "businessName",
           "email",
-          "phoneNumber",
-          "compliance"
+          "compliance",
+          "created",
+          "externalId"
         ]
       }
     },

@@ -41,10 +41,10 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'id',
-    'owner',
+    'owner.businessName',
+    'owner.legalName',
     'summary',
-    'name'
+    'created'
   ],
 
   sections: [
@@ -153,7 +153,7 @@ foam.CLASS({
 
   methods: [
     function toSummary() {
-      return `(${this.id}) ${this.name} ${this.summary}`;
+      return `${this.name} ${this.summary}`;
     },
 
     function getCredits() {
