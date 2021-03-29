@@ -46,6 +46,13 @@
       class: 'Reference',
       of: 'net.nanopay.ticket.RefundTicket',
       name: 'ticket'
+    },
+    {
+      class: 'Class',
+      name: 'ofTxn',
+      javaFactory: `
+        return net.nanopay.tx.model.Transaction.getOwnClassInfo();
+      `
     }
   ],
 
@@ -64,6 +71,9 @@
       ],
       type: 'net.nanopay.tx.CreditLineItem[]',
       javaCode: `
+      if ( ! (t.getClassInfo() == this.getOfTxn()) ) {
+        return null;
+      }
       RefundTicket ticket = (RefundTicket) ((DAO) x.get("localTicketDAO")).find(getTicket());
       ArrayList<CreditLineItem> array = new ArrayList<CreditLineItem>();
       for ( TransactionLineItem lineItem : ticket.getFeeLineItemsSelected() ) {
