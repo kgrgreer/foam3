@@ -112,8 +112,8 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.creditengine.CreditCodeAccount.getOwnClassInfo())
       .setPm(true)
-      .setAuthorize(false)
-      .setInnerDAO((x.get("accountDAO")).where(foam.mlang.MLang.INSTANCE_OF(net.nanopay.tx.creditengine.CreditCodeAccount.class)))
+      .setAuthorize(true)
+      .setInnerDAO((x.get("localAccountDAO")).where(foam.mlang.MLang.INSTANCE_OF(net.nanopay.tx.creditengine.CreditCodeAccount.class)))
       .setEnableInterfaceDecorators(false)
       .build();
   """,

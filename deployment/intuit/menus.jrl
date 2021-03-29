@@ -43,3 +43,12 @@ p({
   "activeIcon":"images/intuit/coupons-24px-active.svg",
   "parent": ""
 })
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "tickets-support",
+  "label": "Tickets",
+  "icon":"images/intuit/supportTickets-24px-resting.svg",
+  "activeIcon":"images/intuit/supportTickets-24px-active.svg",
+  "parent": ""
+})

@@ -27,6 +27,17 @@ foam.CLASS({
     'net.nanopay.tx.FeeLineItem'
   ],
 
+  sections: [
+    {
+      name: 'metaSection',
+      isAvailable: function(id) {
+        return id != 0;
+      },
+      title: 'Audit',
+      permissionRequired: true
+    },
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -79,17 +90,33 @@ foam.CLASS({
       hidden: true
     },
     {
+      class: 'String',
+      name: 'comment',
+      required: false,
+      storageTransient: true,
+      section: 'infoSection',
+      readVisibility: 'HIDDEN',
+    },
+    {
       class: 'Reference',
-      of: 'net.nanopay.tx.model.Transaction',
+      of: 'net.nanopay.tx.SummaryTransaction',
+      targetDAOkey: 'summaryTransactionDAO',
       name: 'refundTransaction',
-      documentation: `Id of the transaction requiring reversal`,
-      section: 'infoSection'
+      label: 'Transaction being Refunded',
+      documentation: `Id of the transaction requiring reversal (Summary)`,
+      section: 'infoSection',
+      createVisibility: 'RO',
+      updateVisibility: 'RO',
+      readVisibility: 'RO',
     },
     {
       class: 'String',
       name: 'creditAccount',
       documentation: `Id of the creditAccount`,
-      section: 'infoSection'
+      section: 'infoSection',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
+      readVisibility: 'RO'
     },
     {
       class: 'Reference',
@@ -100,9 +127,7 @@ foam.CLASS({
         return (problemTransaction == null) ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RO;
       },
       section: 'infoSection',
-      createVisibility: 'HIDDEN',
-      readVisibility: 'RO',
-      updateVisibility: 'RO'
+      hidden: true
     },
     {
       class: 'Enum',
@@ -119,6 +144,14 @@ foam.CLASS({
       name: 'agentInstructions',
       readVisibility: 'RO',
       updateVisibility: 'RO'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid',
+      includeInDigest: true,
+      section: 'systemInformation',
+      hidden: true
     },
     {
       class: 'FObjectArray',
@@ -161,7 +194,7 @@ foam.CLASS({
         return feeLineItemsAvaliable.map(feeLineItem => {
           // TODO: add condition if isFinal is implemented for fee line item
           var isFinal = false;
-
+          debugger;
           return [feeLineItem, feeLineItem.toSummary(), isFinal]
         })
       }

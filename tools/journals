@@ -24,6 +24,7 @@ capabilityCategories
 capabilityCategoryCapabilityJunction
 clearingTimes
 clusterConfig
+creditCodes
 complianceItems
 corridors
 countries
@@ -104,6 +105,7 @@ sugars
 tests
 themeDomains
 themes
+tickets
 ticketStatuses
 timezones
 transactionfees
@@ -114,6 +116,7 @@ txnProcessors
 userCapabilityJunctionHistory
 userCapabilityJunctions
 users
+units
 xeroConfig
 xeroToken
 zeroAccountUserAssociations

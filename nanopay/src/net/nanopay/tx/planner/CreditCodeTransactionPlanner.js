@@ -44,6 +44,8 @@ foam.CLASS({
       CreditCodeTransaction credit = new CreditCodeTransaction();
       credit.copyFrom(requestTxn);
       credit.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
+      credit.setSourceCurrency(quote.getSourceAccount().getDenomination());
+      credit.setDestinationCurrency(quote.getDestinationAccount().getDenomination());
 
       quote.addTransfer(false, credit.getSourceAccount(), credit.getAmount(), 0);
       // if a secondary credit account is specified fill that in too.
