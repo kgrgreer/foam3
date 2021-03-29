@@ -47,6 +47,14 @@ p({
 
 p({
     class:"foam.nanos.auth.Group",
+    id:"intuit-business-sme",
+    description:"Intuit QBO Business SME Group",
+    parent:"intuit-sme",
+    url:"http://intuit:8080"
+})
+
+p({
+    class:"foam.nanos.auth.Group",
     id:"intuit-reporting",
     description:"intuit Reporting group",
     parent:"intuit-support",
