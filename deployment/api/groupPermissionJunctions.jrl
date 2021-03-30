@@ -11,6 +11,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-suppor
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.summaryTransactionDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.creditCodeDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.accountDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.refundTicketDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.ticketDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.ticketStatusDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.ticketCommentDAO"})

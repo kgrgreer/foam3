@@ -117,7 +117,7 @@ foam.CLASS({
                 .setObjId(approvable.getId())
                 .setOperation(operation)
                 .setCreatedBy(user.getId())
-                .setGroup(getSpid()+"-"+getGroupToNotify())
+                .setGroup(user.getSpid()+"-"+getGroupToNotify())
                 .setClassification(
                   "Ticket:" +
                   oldRefundTicket.getId() +
