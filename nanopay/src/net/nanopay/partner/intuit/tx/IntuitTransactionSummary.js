@@ -62,7 +62,7 @@ foam.CLASS({
       of: 'net.nanopay.tx.FeeSummaryTransactionLineItem',
       section: 'transactionInformation',
       order: 150,
-      gridColumns: 6
+      gridColumns: 12
     }
   ]
 });
