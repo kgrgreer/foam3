@@ -28,12 +28,6 @@ p({
   priority:4
 })
 
-// cpf - extended user details
-p({
-  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"fb7d3ca2-62f2-4caf-a84c-860392e46bepay",
-  targetId:"fb7d3ca2-62f2-2131-a84c-8603dsrf2bepay"
-})
 // cpf - date of issue
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
