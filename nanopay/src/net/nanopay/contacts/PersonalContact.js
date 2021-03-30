@@ -35,6 +35,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.PropertyInfo',
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.AuthorizationException',
@@ -575,6 +576,28 @@ foam.CLASS({
           ! auth.check(x, "contact.remove." + this.getId())
         ) {
           throw new AuthorizationException();
+        }
+      `
+    },
+    {
+      name: 'validate',
+      javaCode: `
+        if ( this.getFirstName().length() > NAME_MAX_LENGTH ) {
+          throw new IllegalStateException("First name cannot exceed 70 characters.");
+        }
+        if ( this.getLastName().length() > NAME_MAX_LENGTH ) {
+          throw new IllegalStateException("Last name cannot exceed 70 characters.");
+        }
+
+        // NOTE: Cannot use FObject.super.validate(x) because the super class
+        // i.e, User class also overrides the method.
+        var props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
+        for ( var prop : props ) {
+          try {
+            prop.validateObj(x, this);
+          } catch ( IllegalStateException e ) {
+            throw e;
+          }
         }
       `
     }
