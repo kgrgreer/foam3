@@ -117,6 +117,7 @@ var classes = [
   'net.nanopay.account.SecuritiesAccount',
   'net.nanopay.account.SecurityAccount',
   'net.nanopay.account.SecuritiesTrustAccount',
+  'net.nanopay.account.SetBankAccountOnContact',
   'net.nanopay.account.BrokerAccount',
   'net.nanopay.account.CreateDefaultDigitalAccountOnUserCreateRule',
   'net.nanopay.bank.BankAccount',
@@ -1354,6 +1355,11 @@ var classes = [
   'net.nanopay.partner.treviso.invoice.TrevisoNotification',
   'net.nanopay.partner.treviso.report.TrevisoTransactionReport',
   'net.nanopay.partner.treviso.report.TrevisoTransactionReportDAO',
+
+  'net.nanopay.partner.br.businessSector.Sector',
+  'net.nanopay.partner.br.businessSector.Grupo',
+  'net.nanopay.partner.br.businessSector.Divisao',
+  'net.nanopay.partner.br.businessSector.Secao',
 
   // bepay
   'net.nanopay.partner.bepay.tx.BePayTransaction',

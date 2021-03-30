@@ -31,6 +31,7 @@ foam.CLASS({
   properties: [
     {
       name: 'owners',
+      label: 'Shareholder details',
       of: 'net.nanopay.partner.treviso.onboarding.BRBeneficialOwner'
     },
     {
@@ -38,7 +39,6 @@ foam.CLASS({
       // TODO: there may be a better way to do this without replacing the
       //       entire factory here.
       factory: function() {
-        var self = this;
         var x = this.__subContext__;
         var daoSpec = { of: this.ownerClass };
         var adao = foam.dao.ArrayDAO.create(daoSpec);
@@ -60,12 +60,9 @@ foam.CLASS({
           adao.put(obj);
         };
 
-        // set the hidden properties from capabilities
-        var hasSignedContratosDeCambio, pepHioRelated;
-        var cpf, verifyName, cpfName;
-        var documentsOfId = foam.nanos.fs.FileArray.create();
-        var documentsOfAddress = foam.nanos.fs.FileArray.create();
-
+        // TODO
+        // The below works only because we have one signing officer - and tbh makes more sense to be apart of the BeneficialOwner.fromUser()
+        // also the below will not work for checking the signing officer information of another user.
         Promise.all([
           this.crunchService.getJunction(x, 'fb7d3ca2-62f2-4caf-a84c-860392e4676b'),
           this.crunchService.getJunction(x, '777af38a-8225-87c8-dfdf-eeb15f71215f-123'),
@@ -78,6 +75,7 @@ foam.CLASS({
           if ( cpf && values[0].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
             ['verifyName', 'cpfName'].forEach(
               name => capabilityValues[name] = cpf[name]);
+              capabilityValues['cpf'] = cpf.data;
           }
           if ( so && values[1].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
             ['hasSignedContratosDeCambio', 'pepHioRelated'].forEach(

@@ -449,14 +449,6 @@ p({
   "targetId":"8ad3c898-db232-1ea-87d0-0242ac130z0"
 })
 
-// BR CPF to Birth date
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"fb7d3ca2-62f2-4caf-a84c-860392e4676b",
-  "targetId":"8bffdedc-5176-4843-97df-1b75ff6054fb",
-  "priority":1
-})
-
 // BR Signing Officer to CPF
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",

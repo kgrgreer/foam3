@@ -67,6 +67,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/DuplicateEntryRule' },
   { name: 'net/nanopay/account/DuplicateCABankAccountRule' },
   { name: 'net/nanopay/account/DuplicateUSBankAccountRule' },
+  { name: 'net/nanopay/account/SetBankAccountOnContact' },
   { name: 'net/nanopay/account/InsufficientBalanceException' },
   { name: 'net/nanopay/account/ui/BankAccountWizard' },
   { name: 'net/nanopay/account/ui/AccountSummaryView' },
@@ -1928,4 +1929,10 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/cron/OnboardingReminderNotification'},
   { name: 'net/nanopay/notification/PermissionedNotificationSettingRule'},
   { name: 'net/nanopay/sme/ruler/BusinessCompliancePassedEmailNotification'},
+
+  //br business sector
+  { name: 'net/nanopay/partner/br/businessSector/Sector' },
+  { name: 'net/nanopay/partner/br/businessSector/Grupo' },
+  { name: 'net/nanopay/partner/br/businessSector/Divisao' },
+  { name: 'net/nanopay/partner/br/businessSector/Secao' }
 ]);

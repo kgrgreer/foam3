@@ -195,9 +195,6 @@ foam.CLASS({
       visibility: 'HIDDEN',
       label: 'Status',
       tableWidth: 100,
-      expression: function(bankAccount) {
-        return bankAccount ? net.nanopay.contacts.ContactStatus.READY : net.nanopay.contacts.ContactStatus.PENDING;
-      },
       tableCellFormatter: function(state, obj) {
         this.__subContext__.contactDAO.find(obj.id).then(contactObj => {
           this.start()

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
   name: 'BusinessOwnershipData',
@@ -18,15 +35,15 @@ foam.CLASS({
 
   messages: [
     { name: 'TOTAL_OWNERSHIP_ERROR', message: 'The total ownership should be less than 100%' },
-    { name: 'OTHER_MSG', message: 'Add another owner' }
+    { name: 'OTHER_MSG', message: 'Add another owner' },
+    { name: 'SIGNINGOFFICER_DATA_FETCHING_ERR', message: 'Failed to find this signing officer info' },
+    { name: 'ADD_MSG', message: 'another owner' }
   ],
 
   sections: [
     {
       name: 'ownershipAmountSection',
-      // TODO: This is not a title.
       title: 'Enter the number of people who own 25% or more of the business either directly or indirectly.',
-      navTitle: 'Number of owners',
       help: `In accordance with banking laws, we need to document the percentage of ownership of any individual with a 25% + stake in the company.
       Please have owner address and date of birth ready.`,
     },
@@ -50,7 +67,6 @@ foam.CLASS({
       documentation: `this property converts SigningOfficer Users to BeneficialOwners,
       as a way of mini pre-processing for owner selections.`,
       factory: function() {
-        var self = this;
         var x = this.__subContext__;
         var daoSpec = { of: this.ownerClass };
         var adao = foam.dao.ArrayDAO.create(daoSpec);
@@ -104,20 +120,14 @@ foam.CLASS({
     },
     {
       name: 'owners',
+      label: 'Owner details',
       class: 'FObjectArray',
+      section: 'ownershipAmountSection',
       of: 'net.nanopay.model.BeneficialOwner',
-      autoValidate: true,
       validationStyleEnabled: false,
       view: function (_, X) {
-        var otherChoiceDAO = foam.dao.MDAO.create({ of: X.data.ownerClass });
-        var obj = X.data.ownerClass.create({
-          business: X.data.businessId
-        }, X);
-        obj.toSummary = () => X.data.OTHER_MSG;
-        otherChoiceDAO.put(obj);
-
         return {
-          class: 'foam.u2.view.FObjectArrayView',
+          class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
           of: X.data.ownerClass,
           defaultNewItem: X.data.ownerClass.create({ mode: 'blank' }, X),
           enableAdding$: X.data.owners$.map(a =>
@@ -126,7 +136,8 @@ foam.CLASS({
             // Last item, if present, must have a selection made
             ( a.length == 0 || a[a.length-1].mode != 'blank' )
           ),
-          valueView: {
+          name: X.data.ADD_MSG,
+          valueView: () => ({
             class: 'net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView',
 
             // ???: If this ViewSpec took the context of this model, these could
@@ -137,22 +148,30 @@ foam.CLASS({
                 dao$: X.data.soUsersDAO$,
                 filteredDAO$: X.data.availableUsers$
               },
-              { dao: otherChoiceDAO }
+              { dao: (() => {
+                var otherChoiceDAO = foam.dao.MDAO.create({ of: X.data.ownerClass });
+                var obj = X.data.ownerClass.create({
+                  business: X.data.businessId
+                }, X);
+                obj.toSummary = () => X.data.OTHER_MSG;
+                otherChoiceDAO.put(obj);
+
+                return otherChoiceDAO;
+              })() }
             ],
             beneficialOwnerSelectionUpdate: X.data.ownersUpdate
-          }
+          })
         }
       }
     },
     {
       name: 'totalOwnership',
       class: 'Long',
-
+      section: 'ownershipAmountSection',
       view: {
         class: 'foam.u2.view.ModeAltView',
         writeView: { class: 'foam.u2.view.ValueView' }
       },
-
       validationTextVisible: true,
       validationPredicates: [
         {
@@ -165,7 +184,12 @@ foam.CLASS({
           },
           errorMessage: 'TOTAL_OWNERSHIP_ERROR'
         }
-      ]
+      ],
+      visibility: function (totalOwnership) {
+        return Number(totalOwnership) > 100
+          ? foam.u2.DisplayMode.RW
+          : foam.u2.DisplayMode.HIDDEN ;
+      }
     },
     {
       name: 'ownerClass',
@@ -218,12 +242,13 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    // Card border is needed for clear separation between owners
-    'foam.u2.borders.CardBorder'
+    'foam.u2.borders.CardBorder',
+    'foam.u2.borders.Block'
   ],
 
   messages: [
     { name: 'PLEASE_SELECT_ONE', message: 'Please select one of the following...' },
+    { name: 'NEW_OWNER_MSG', message: 'New Owner' }
   ],
 
   properties: [
@@ -254,33 +279,44 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
+      const HEADER = 'h4';
       this.start(this.CardBorder)
         .add(this.slot(function (hasData_) {
           if ( hasData_ ) return self.E();
           return self.E()
-            .tag(self.choiceView, {
-              fullObject_$: self.data$,
-              choosePlaceholder: this.PLEASE_SELECT_ONE,
-              sections: self.choiceSections
-            })
+            .start(HEADER)
+              .add(self.NEW_OWNER_MSG)
+            .end()
+            .start(self.Block)
+              .tag(self.choiceView, {
+                fullObject_$: self.data$,
+                choosePlaceholder: self.PLEASE_SELECT_ONE,
+                sections: self.choiceSections
+              })
+            .end()
         }))
         .add(this.slot(function (hasData_) {
           if ( ! hasData_ ) return self.E();
           return self.E()
             // Display first and last if those fields aren't editable
             .add(self.slot(function (data$mode) {
-              if ( data$mode != 'percent' ) return self.E();
+              if ( data$mode != 'percent' ) return self.E()
+                .start(HEADER)
+                  .add(self.NEW_OWNER_MSG)
+                .end();
               return self.E()
-                .start('h4')
+                .start(HEADER)
                   .add(`${self.data.firstName} ${self.data.lastName}`)
-                .end()
+                .end();
             }))
             // Display owner fields for user to fill out
-            .tag({
-              class: 'foam.u2.detail.SectionView',
-              sectionName: 'requiredSection',
-              showTitle: false
-            }, { data$: self.data$ })
+            .start(self.Block)
+              .tag({
+                class: 'foam.u2.detail.SectionView',
+                sectionName: 'requiredSection',
+                showTitle: false
+              }, { data$: self.data$ })
+            .end()
         }))
     }
   ]
