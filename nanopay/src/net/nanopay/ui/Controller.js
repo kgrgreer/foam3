@@ -595,11 +595,6 @@ foam.CLASS({
       var view = { class: 'foam.u2.borders.BrowserSupportBorder', children: [
               { class: 'foam.u2.view.LoginView', mode_: 'SignIn' }
             ]};
-//            view.add("pidor");
-//    var view = foam.u2.borders.BrowserSupportBorder.create({}, ctrl);
-//    view.add("hello")
-//    view.add(foam.u2.view.LoginView.create({mode_: 'SignIn' }, ctrl));
-
       await this.themeInstalled;
 
       if ( locHash ) {
