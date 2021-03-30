@@ -79,7 +79,6 @@ p({
   "operation":3,
   "action":{
     "class":"net.nanopay.ticket.RefundTicketCreateApprovals",
-    "groupToNotify": "ablii-fraud-ops"
   },
   "predicate": {
     "class": "foam.mlang.predicate.And",

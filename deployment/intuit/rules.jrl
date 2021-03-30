@@ -79,7 +79,7 @@ p({
   },
   "action":{
     "class":"net.nanopay.ticket.BasicFullReverseRefundTicketCreateRule",
-    "textToAgent":"This transaction can be safely refunded, don't waive fees though",
+    "textToAgent":"Payor has cancelled the transaction, status: processing",
     "creditAccount":"64307927-db83-43a7-9787-c5cc89becc11"
   },
   "after":false,
@@ -207,7 +207,7 @@ p({
   },
   "action":{
     "class":"net.nanopay.ticket.AgentRefundTicketCreateRule",
-    "textToAgent":"waiting for ops to fill out Scenario 3",
+    "textToAgent":"Cash In has failed. No action required. Merchant to create new payment request",
   },
   "after":false,
   "enabled":true,
@@ -249,7 +249,7 @@ p({
   },
   "action":{
     "class":"net.nanopay.ticket.AgentRefundTicketCreateRule",
-    "textToAgent":"waiting for ops to fill out Scenario 5",
+    "textToAgent":"Payor has cancelled the transaction, status: complete",
   },
   "after":false,
   "enabled":true,
@@ -291,7 +291,7 @@ p({
   },
   "action":{
     "class":"net.nanopay.ticket.AgentRefundTicketCreateRule",
-    "textToAgent":"waiting for ops to fill out Scenario 6",
+    "textToAgent":"Cash Out has failed",
   },
   "after":false,
   "enabled":true,

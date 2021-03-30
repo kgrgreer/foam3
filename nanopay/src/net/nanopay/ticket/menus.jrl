@@ -12,17 +12,3 @@ p({
   },
   "parent":"admin"
 })
-p({
-  "class":"foam.nanos.menu.Menu",
-  "id":"admin.refundTicket",
-  "label":"Refund Tickets",
-  "handler":{
-    "class":"foam.nanos.menu.DAOMenu2",
-    "config":{
-      "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"refundTicketDAO",
-      "browseTitle":"RefundTickets"
-    }
-  },
-  "parent":"admin"
-})

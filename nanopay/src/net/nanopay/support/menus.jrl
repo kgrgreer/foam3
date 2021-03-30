@@ -319,11 +319,14 @@ p({
   "class":"foam.nanos.menu.Menu",
   "id":"tickets-support",
   "label":"Support Tickets",
-  "icon":"images/coupons-24px-resting.svg",
-  "activeIcon":"images/coupons-24px-active.svg",
   "handler":{
-    "class":"foam.nanos.menu.DAOMenu",
-    "daoKey":"ticketDAO"
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"refundTicketDAO",
+      "browseTitle":"SupportTickets"
+    }
   },
   "parent":"hidden"
 })
+

@@ -177,6 +177,7 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.tx.FeeLineItem',
       name: 'feeLineItemsSelected',
+      label: 'Choose Fees to refund',
       view: function(_, X) { 
         if ( X.controllerMode === foam.u2.ControllerMode.EDIT ){
           return {

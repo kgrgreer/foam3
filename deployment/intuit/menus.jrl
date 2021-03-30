@@ -47,7 +47,7 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "tickets-support",
-  "label": "Tickets",
+  "label": "Support Tickets",
   "icon":"images/intuit/supportTickets-24px-resting.svg",
   "activeIcon":"images/intuit/supportTickets-24px-active.svg",
   "parent": ""
