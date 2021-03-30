@@ -1,0 +1,131 @@
+p({class:"foam.nanos.script.Script",id:"Update BusinessSector Translation to match API",description:"update businessSector translation to match API",code:"import foam.lib.json.JSONParser;\nimport foam.core.FObject;\nimport foam.dao.DAO;\nimport foam.dao.ArraySink;\nimport foam.mlang.MLang;\nimport foam.mlang.predicate.Predicate;\nimport foam.i18n.TranslationService;\nimport foam.i18n.Locale;\nimport javax.ws.rs.core.UriBuilder;\nimport java.io.IOException;\nimport javax.security.auth.AuthPermission;\nimport java.util.List;\nimport net.nanopay.model.BusinessSector;\nimport net.nanopay.partner.br.businessSector.Sector;\nimport org.apache.http.client.methods.HttpGet;\nimport org.apache.http.client.methods.CloseableHttpResponse;\nimport org.apache.http.client.config.RequestConfig;\nimport org.apache.http.impl.client.HttpClientBuilder;\nimport org.apache.http.impl.NoConnectionReuseStrategy;\nimport org.apache.http.impl.client.CloseableHttpClient;\nimport org.apache.http.HttpResponse;\nimport org.apache.http.client.methods.HttpGet;\nimport org.apache.http.impl.client.HttpClientBuilder;\nimport org.apache.http.util.EntityUtils;\nimport org.apache.http.impl.client.BasicResponseHandler;\n\n    HttpGet httpget = new HttpGet(\"https://servicodados.ibge.gov.br/api/v2/cnae/classes\");\n    httpget.setHeader(\"Content-Type\", \"application/json\");\n    httpget.setHeader(\"Accept\", \"application/json\");\n    httpget.setHeader(\"Api-Version\", \"alpha\");\n    RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(5000).build();\n    CloseableHttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).setConnectionReuseStrategy(new NoConnectionReuseStrategy()).build();\n    CloseableHttpResponse httpResponse = httpClient.execute(httpget);\n    String response = new BasicResponseHandler().handleResponse(httpResponse);\n    Object[] obj = x.create(foam.lib.json.JSONParser.class).parseStringForArray(response,Sector.class);\n    DAO businessSectorDAO = (DAO) x.get(\"businessSectorDAO\");\n    DAO localeDAO = (DAO) x.get(\"localeDAO\");\n    List businessSectors = ((ArraySink) businessSectorDAO.where(foam.mlang.MLang.AND( new Predicate[] {MLang.GTE(BusinessSector.ID, 92813), MLang.LTE(BusinessSector.ID, 93485)})).select(new ArraySink())).getArray();\n    TranslationService ts = (TranslationService) x.get(\"translationService\");\n    for (int i = 0; i < businessSectors.size(); i++) {\n      BusinessSector businessSector = (BusinessSector) businessSectors.get(i);\n      String sectorName = businessSector.getName();\n      String businessSectorName_translated = ts.getTranslation(\"pt\", sectorName, sectorName);\n      String businessCode = businessSector.getCode();\n      String api_Id = ((Sector) obj[i]).getId() + ((Sector) obj[i]).getGrupo().getDivisao().getId();\n      String api_parent = ((Sector) obj[i]).getGrupo().getDivisao().getSecao().getId();\n      String api_name = ((Sector) obj[i]).getDescricao();\n      Character api_parent_char = api_parent.charAt(0);\n      int api_parent_long = (java.lang.Character.getNumericValue(api_parent_char) - 9);\n    Locale locale =  localeDAO.find(MLang.EQ(Locale.SOURCE, sectorName));\n    String text = ((Sector) obj[i]).getDescricao();\n    StringBuilder converted = new StringBuilder();\n    boolean convertNext = true;\n    if (text.equals(businessSectorName_translated.toUpperCase())) {\n        continue;\n}\n    System.out.println(sectorName + \"translation has updated\");\n    for (char ch : text.toCharArray()) {\n        if (Character.isSpaceChar(ch)) {\n            convertNext = true;\n        } else if (convertNext) {\n            ch = Character.toTitleCase(ch);\n            convertNext = false;\n        } else {\n            ch = Character.toLowerCase(ch);\n        }\n        converted.append(ch);\n    }\n    locale = locale.fclone();\n    locale.setTarget(converted.toString());\n    localeDAO.put(locale);\n}"})
+
+p({
+class:"foam.nanos.script.Script",
+id:"Update BusinessSector journals by BusinessSector API",
+description:"Update BusinessSector journals to match the API",
+language:1,
+code:"
+import foam.dao.DAO;
+import foam.dao.ArraySink;
+import foam.mlang.MLang;
+import foam.lib.json.JSONParser;
+import foam.core.FObject;
+import foam.i18n.TranslationService;
+import foam.mlang.predicate.Predicate;
+import java.io.IOException;
+import java.util.List;
+import javax.security.auth.AuthPermission;
+import javax.ws.rs.core.UriBuilder;
+import net.nanopay.model.BusinessSector;
+import net.nanopay.partner.br.businessSector.Sector;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.NoConnectionReuseStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
+import org.apache.http.impl.client.BasicResponseHandler;
+
+
+    HttpGet httpget = new HttpGet(\"https://servicodados.ibge.gov.br/api/v2/cnae/classes\");
+    httpget.setHeader(\"Content-Type\", \"application/json\");
+    httpget.setHeader(\"Accept\", \"application/json\");
+    httpget.setHeader(\"Api-Version\", \"alpha\");
+    RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(5000).build();
+    CloseableHttpClient httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).setConnectionReuseStrategy(new NoConnectionReuseStrategy()).build();
+    CloseableHttpResponse httpResponse = httpClient.execute(httpget);
+    String response = new BasicResponseHandler().handleResponse(httpResponse);
+    Object[] obj = x.create(foam.lib.json.JSONParser.class).parseStringForArray(response,Sector.class);
+    DAO businessSectorDAO = (DAO) x.get(\"businessSectorDAO\");
+    List businessSectors = ((ArraySink) businessSectorDAO.where(foam.mlang.MLang.AND( new Predicate[] {MLang.GTE(BusinessSector.ID, 92813), MLang.LTE(BusinessSector.ID, 93485)})).select(new ArraySink())).getArray();
+    TranslationService ts = (TranslationService) x.get(\"translationService\");
+    for (int i = 0; i < businessSectors.size(); i++) {
+      BusinessSector businessSector = (BusinessSector) businessSectors.get(i);
+      String sectorName = businessSector.getName();
+      String name_tr = ts.getTranslation(\"pt\", sectorName, sectorName);
+      String businessCode = businessSector.getCode();
+      String api_Id = ((Sector) obj[i]).getId() + ((Sector) obj[i]).getGrupo().getDivisao().getId();
+      String api_parent = ((Sector) obj[i]).getGrupo().getDivisao().getSecao().getId();
+      String api_name = ((Sector) obj[i]).getDescricao();
+      Character api_parent_char = api_parent.charAt(0);
+      int api_parent_long = (java.lang.Character.getNumericValue(api_parent_char) - 9);
+      businessSector = businessSector.fclone();
+      // check if they have same code, the order are same at least for this API version
+      if (! api_Id.equals(businessCode)) {
+        continue;
+      }
+      // check if English translation are same
+      if (! api_name.equals(name_tr.toUpperCase())) print(sectorName);
+      switch(api_parent) {
+        case \"B\" :
+            businessSector.setParent(93486);
+            break;
+        case \"C\" :
+            businessSector.setParent(93487);
+            break;
+        case \"D\" :
+            businessSector.setParent(3);
+            break;
+        case \"E\" :
+            businessSector.setParent(93488);
+            break;
+        case \"F\":
+            businessSector.setParent(4);
+            break;
+        case \"G\":
+            businessSector.setParent(93489);
+            break;        
+        case \"H\":
+            businessSector.setParent(93490);
+            break;
+        case \"I\":
+            businessSector.setParent(18);
+            break;
+        case \"J\":
+            businessSector.setParent(9);
+            break;
+        case \"K\":
+            businessSector.setParent(10);
+            break;
+        case \"L\":
+            businessSector.setParent(11);                       
+            break;
+        case \"M\":
+            businessSector.setParent(12);                       
+            break;
+        case \"N\":
+            businessSector.setParent(93491);                      
+            break;
+        case \"O\":
+            businessSector.setParent(93492);                       
+            break;
+        case \"P\":
+            businessSector.setParent(15);                      
+            break;
+        case \"Q\":
+            businessSector.setParent(16);                
+            break;
+        case \"R\":
+            businessSector.setParent(17);                    
+            break;
+        case \"S\":
+            businessSector.setParent(19);                    
+            break;
+        case \"T\":
+            businessSector.setParent(93493);                     
+            break;
+        case \"U\":
+            businessSector.setParent(93494);                       
+            break;
+        default :
+            businessSector.setParent(api_parent_long);
+      }
+       businessSectorDAO.put(businessSector);
+}
+"})
+

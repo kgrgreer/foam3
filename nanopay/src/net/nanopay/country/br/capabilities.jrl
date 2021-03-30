@@ -472,6 +472,10 @@ p({
       }
     ]
   },
+  "wizardConfig": {
+    "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig",
+    "allowSkipping": false
+  },
   "associatedEntity":2
 })
 
@@ -500,10 +504,6 @@ p({
         "country":"BR"
       }
     ]
-  },
-  "wizardConfig": {
-    "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig",
-    "allowSkipping": false
   },
   "requirementViewTitle":"Have your business documents ready. You can save your progress and come back later.",
   "associatedEntity": 2

@@ -342,8 +342,13 @@ foam.CLASS({
           date = format.parse(fxQuote.getValueDate());
         } catch ( Exception e) { /* throw dateParse Exception?*/ }
 
-        if ( date != null )
-          lines.add(new ETALineItem.Builder(x).setGroup("fx").setEta(date.getTime() - new  Date().getTime()).build()) ;
+        if ( date != null ) {
+          if (date.getTime() < new Date().getTime()) {
+            lines.add(new ETALineItem.Builder(x).setGroup("fx").setEta(0L).build());
+          } else {
+            lines.add(new ETALineItem.Builder(x).setGroup("fx").setEta(date.getTime() - new Date().getTime()).build());
+          }
+        }
 
         afexTransaction.addLineItems( lines.toArray(new TransactionLineItem[0]));
 

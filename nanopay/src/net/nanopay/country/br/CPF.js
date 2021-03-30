@@ -39,19 +39,54 @@ foam.CLASS({
 
   messages: [
     { name: 'INVALID_CPF', message: 'Valid CPF number required' },
-    { name: 'INVALID_NAME', message: 'Click to verify name' }
+    { name: 'INVALID_CPF_CHECKED', message: 'Unable to validate CPF number and birthdate combination. Please update and try again.' },
+    { name: 'INVALID_NAME', message: 'Click to verify name' },
+    { name: 'INVALID_DATE_ERROR', message: 'Valid date of birth required' },
+    { name: 'UNGER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old' },
+    { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be under the age of 125 years old' }
   ],
 
   sections: [
     {
       name: 'collectCpf',
-      title: 'Enter your Cadastro de Pessoas Físicas(CPF)',
+      title: 'Enter your Date of Birth and Cadastro de Pessoas Físicas(CPF)',
       navTitle: 'Signing officer\’s CPF number',
       help: 'Require your CPF'
     }
   ],
 
   properties: [
+    foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
+      section: 'collectCpf',
+      label: 'Date of birth',
+      validationPredicates: [
+        {
+          args: ['birthday'],
+          predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.country.br.CPF.BIRTHDAY, null);
+          },
+          errorMessage: 'INVALID_DATE_ERROR'
+        },
+        {
+          args: ['birthday'],
+          predicateFactory: function(e) {
+            var limit = new Date();
+            limit.setDate(limit.getDate() - ( 18 * 365 ));
+            return e.LT(net.nanopay.country.br.CPF.BIRTHDAY, limit);
+          },
+          errorMessage: 'UNGER_AGE_LIMIT_ERROR'
+        },
+        {
+          args: ['birthday'],
+          predicateFactory: function(e) {
+            var limit = new Date();
+            limit.setDate(limit.getDate() - ( 125 * 365 ));
+            return e.GT(net.nanopay.country.br.CPF.BIRTHDAY, limit);
+          },
+          errorMessage: 'OVER_AGE_LIMIT_ERROR'
+        }
+      ]
+    }),
     {
       class: 'String',
       name: 'data',
@@ -62,12 +97,26 @@ foam.CLASS({
         {
           args: ['data', 'cpfName'],
           predicateFactory: function(e) {
-            return e.AND(
-              e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.CPF.DATA }), 11),
-              e.GT(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.CPF.CPF_NAME }), 0)
-            );
+            return e.EQ(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.country.br.CPF.DATA
+                }), 11);
           },
           errorMessage: 'INVALID_CPF'
+        },
+        {
+          args: ['data', 'cpfName'],
+          predicateFactory: function(e) {
+            return e.AND(
+              e.GT(net.nanopay.country.br.CPF
+                .CPF_NAME, 0),
+              e.EQ(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.country.br.CPF.DATA
+                }), 11)
+              );
+          },
+          errorMessage: 'INVALID_CPF_CHECKED'
         }
       ],
       tableCellFormatter: function(val) {
@@ -105,15 +154,6 @@ foam.CLASS({
             })
           ]
         }, X)
-      }
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'user',
-      hidden: true,
-      factory: function() {
-        return this.subject.realUser;
       }
     },
     {
@@ -156,15 +196,25 @@ foam.CLASS({
   methods: [
     {
       name: 'getCpfName',
-      code:  async function(data) {
-        return await this.brazilVerificationService.getCPFName(this.__subContext__, data, this.user);
+      code: async function(cpf) {
+        return await this.brazilVerificationService
+          .getCPFNameWithBirthDate(this.__subContext__, cpf, this.birthday);
       }
     },
     {
       name: 'validate',
       javaCode: `
-        if ( ! getVerifyName() )
+      if ( ! getVerifyName() )
           throw new foam.core.ValidationException(INVALID_CPF);
+
+      java.util.List<foam.core.PropertyInfo> props = getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
+      for ( foam.core.PropertyInfo prop : props ) {
+        try {
+          prop.validateObj(x, this);
+        } catch ( IllegalStateException e ) {
+          throw e;
+        }
+      }
       `
     }
   ]

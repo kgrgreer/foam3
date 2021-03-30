@@ -67,6 +67,10 @@ foam.CLASS({
     {
       name: 'multiPlan_',
       value: true
+    },
+    {
+      class: 'String',
+      name: 'provider'
     }
   ],
 
@@ -82,7 +86,7 @@ foam.CLASS({
       javaCode: `
         // Figure out best intermediary
         CorridorService cs = (CorridorService) x.get("corridorService");
-        List srcCorridors = cs.getAllWithSrc(x, requestTxn.getSourceCurrency());
+        List srcCorridors = cs.getAllWithSrcForProvider(x, requestTxn.getSourceCurrency(), getProvider());
         List destCorridors = cs.getAllWithTarget(x, requestTxn.getDestinationCurrency());
         MDAO ppcDAO = new MDAO(PaymentProviderCorridor.getOwnClassInfo());
 

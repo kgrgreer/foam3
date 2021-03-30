@@ -189,7 +189,7 @@ foam.CLASS({
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           var cap = net.nanopay.country.br.CPF.create({
-            user: user.id,
+            birthday: new Date('1970-01-01'),
             data: '10786348070',
             cpfName: 'Mock Legal User',
             verifyName: true

@@ -50,13 +50,12 @@ public class BePayAFEXOnboardingTest extends foam.nanos.test.Test {
       .setAddress(address)
       .build();
     ExtendedUserDetailsData extendedDetails = new ExtendedUserDetailsData.Builder(x)
-      .setBirthday(new GregorianCalendar(2000, 1, 1).getTime())
       .setMothersMaidenName("maidenname")
       .build();
     CPF cpf = new CPF.Builder(x)
-      .setUser(user.getId())
       .setData("10786348070")
       .setCpfName("Mock Legal User")
+      .setBirthday(new GregorianCalendar(1970, 1, 1).getTime())
       .setVerifyName(true)
       .build();
     DateOfIssue dateOfIssue = new DateOfIssue.Builder(x)
