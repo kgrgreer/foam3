@@ -608,6 +608,8 @@ p({
   "name":"CPF number",
   "of":"net.nanopay.country.br.CPF",
   "version":"0",
+  "daoKey":"userDAO",
+  "contextDAOFindKey":"subject.realUser",
   "enabled":true,
   "associatedEntity": 1
 })

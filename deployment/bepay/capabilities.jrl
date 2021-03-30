@@ -77,6 +77,8 @@ p({
   id:"fb7d3ca2-62f2-4caf-a84c-860392e46bepay",
   name:"CPF Number",
   of:"net.nanopay.country.br.CPF",
+  "daoKey":"userDAO",
+  "contextDAOFindKey":"subject.realUser",
   enabled:true,
   associatedEntity:0
 })
