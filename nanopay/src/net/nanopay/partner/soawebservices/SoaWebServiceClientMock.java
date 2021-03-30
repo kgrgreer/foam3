@@ -31,7 +31,7 @@ public class SoaWebServiceClientMock extends ContextAwareSupport implements SoaW
 
   @Override
   public PessoaResponse pessoaFisicaNFe(PessoaFisicaNFe request) {
-    if ( "10786348070".equals(request.getDocumento()) ) {
+    if ( "10786348070".equals(request.getDocumento()) && "01/01/1970".equals(request.getDataNascimento()) ) {
       PessoaResponse res = new PessoaResponse();
       res.setNome("Mock Legal User");
       res.setStatus(true);
