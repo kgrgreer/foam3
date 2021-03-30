@@ -192,12 +192,24 @@ foam.CLASS({
         }
       ]
     },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'user',
+      hidden: true,
+      factory: function() {
+        return this.subject.realUser;
+      }
+      // depricated but leaving for data migration - script to do this needed - then delete
+    }
   ],
 
   methods: [
     {
       name: 'getCpfName',
       code: async function(cpf) {
+        if ( ! this.birthday ) // goes with user deprication
+          return await this.brazilVerificationService.getCPFName(this.__subContext__, cpf, this.user);
         return await this.brazilVerificationService
           .getCPFNameWithBirthDate(this.__subContext__, cpf, this.birthday);
       }
@@ -208,14 +220,7 @@ foam.CLASS({
       if ( ! getVerifyName() )
           throw new foam.core.ValidationException(INVALID_CPF);
 
-      java.util.List<foam.core.PropertyInfo> props = getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
-      for ( foam.core.PropertyInfo prop : props ) {
-        try {
-          prop.validateObj(x, this);
-        } catch ( IllegalStateException e ) {
-          throw e;
-        }
-      }
+      foam.core.FObject.super.validate(x);
       `
     }
   ]
