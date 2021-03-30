@@ -157,7 +157,8 @@ foam.CLASS({
       class: 'String',
       name: 'agentInstructions',
       readVisibility: 'RO',
-      updateVisibility: 'RO'
+      updateVisibility: 'RO',
+      createVisibility: 'RO'
     },
     {
       class: 'Reference',

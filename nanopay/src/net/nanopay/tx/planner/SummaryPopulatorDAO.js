@@ -54,11 +54,12 @@ foam.CLASS({
             List items = new ArrayList<TransactionLineItem>();
             ArrayList eta = new  ArrayList<TransactionLineItem>();
             ArrayList fee = new  ArrayList<TransactionLineItem>();
+            ArrayList credit = new  ArrayList<TransactionLineItem>();
             ArrayList fx = new  ArrayList<TransactionLineItem>();
             ArrayList expiry = new ArrayList<TransactionLineItem>();
             Set<String> added = new HashSet<>();
 
-            walk(t, eta, fee, fx, expiry, items, added);
+            walk(t, eta, fee, credit, fx, expiry, items, added);
 
             t.setLineItems((TransactionLineItem[]) items.toArray(new TransactionLineItem[0]));
 
@@ -66,6 +67,7 @@ foam.CLASS({
             t = addETA(t, eta);
             t = addFx(t, fx, quote);
             t = addFee(t, fee);
+            t = addCredit(t, credit);
             t = addExpiry(t, expiry);
 
             if ( quote.getPlan() != null && quote.getPlan().getId().equals(t.getId()) )
@@ -82,6 +84,7 @@ foam.CLASS({
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
         { name: 'eta', type: 'java.util.ArrayList<TransactionLineItem>' },
         { name: 'fee', type: 'java.util.ArrayList<TransactionLineItem>' },
+        { name: 'credit', type: 'java.util.ArrayList<TransactionLineItem>' },
         { name: 'fx', type: 'java.util.ArrayList<TransactionLineItem>' },
         { name: 'expiry', type: 'java.util.ArrayList<TransactionLineItem>' },
         { name: 'lineItems', type: 'List' },
@@ -103,6 +106,10 @@ foam.CLASS({
           fee.add(a);
         } else if ( a instanceof FeeSummaryTransactionLineItem ) {
           fee.addAll(Arrays.asList(((FeeSummaryTransactionLineItem) a).getLineItems()));
+        } else if ( a instanceof CreditLineItem ) {
+          credit.add(a);
+        } else if ( a instanceof CreditSummaryTransactionLineItem ) {
+          credit.addAll(Arrays.asList(((CreditSummaryTransactionLineItem) a).getLineItems()));
         } else if ( a instanceof FXLineItem ) {
           fx.add(a);
           expiry.add(a);
@@ -119,7 +126,7 @@ foam.CLASS({
       }
       if ( txn.getNext() != null && txn.getNext().length > 0)
         for ( Transaction t2 : txn.getNext() )
-          walk(t2, eta, fee, fx, expiry, lineItems, added);
+          walk(t2, eta, fee, credit, fx, expiry, lineItems, added);
       `
     },
     {
@@ -171,6 +178,32 @@ foam.CLASS({
       return txn;
       `
     },
+        {
+          name: 'addCredit',
+          type: 'Transaction',
+          args: [
+            { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
+            { name: 'credit', type: 'java.util.ArrayList<TransactionLineItem> ' }
+          ],
+          javaCode: `
+          CreditSummaryTransactionLineItem creditSummary = new CreditSummaryTransactionLineItem();
+
+          if ( credit != null && credit.size() > 0 ) {
+            TransactionLineItem[] creditArray = credit.toArray((new TransactionLineItem[credit.size()]));
+            creditSummary.setLineItems(creditArray);
+            Long totalCredit = 0l;
+            Currency currency = (Currency) ((DAO) getX().get("currencyDAO")).find(((CreditLineItem) creditArray[0]).getCreditCurrency());
+            for ( TransactionLineItem creditLine: creditArray ) {
+                totalCredit += ((CreditLineItem) creditLine).getAmount();
+            }
+            creditSummary.setAmount(totalCredit);
+            creditSummary.setCurrency(currency.getId());
+            creditSummary.setTotalCredit(currency.format(totalCredit) + " " + currency.getId());
+            txn.addLineItems(new TransactionLineItem[]{creditSummary});
+          }
+          return txn;
+          `
+        },
     {
       name: 'addFx',
       type: 'Transaction',

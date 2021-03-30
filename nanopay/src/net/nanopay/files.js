@@ -181,6 +181,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/LineItemCitationView' },
   { name: 'net/nanopay/tx/SummaryTransactionLineItem' },
   { name: 'net/nanopay/tx/FeeSummaryTransactionLineItem' },
+  { name: 'net/nanopay/tx/CreditSummaryTransactionLineItem' },
   { name: 'net/nanopay/tx/FxSummaryTransactionLineItem' },
   { name: 'net/nanopay/tx/EtaSummaryTransactionLineItem' },
   { name: 'net/nanopay/tx/ExpirySummaryTransactionLineItem' },

@@ -49,7 +49,8 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-suppor
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"feelineitem.update.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"feesummarytransactionlineitem.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"feesummarytransactionlineitem.rw.*"})
-
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"creditsummarytransactionlineitem.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"creditsummarytransactionlineitem.rw.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"net.nanopay.account.account.section.accountinformation"})
 
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"strategyreference.read.6f4f1f58-ce03-4124-b5cb-0c1b8b86e7cc"})

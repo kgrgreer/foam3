@@ -676,6 +676,7 @@ var classes = [
   'net.nanopay.tx.LabelLiquidSummaryAction',
   'net.nanopay.tx.SummaryTransactionLineItem',
   'net.nanopay.tx.FeeSummaryTransactionLineItem',
+  'net.nanopay.tx.CreditSummaryTransactionLineItem',
   'net.nanopay.tx.FxSummaryTransactionLineItem',
   'net.nanopay.tx.EtaSummaryTransactionLineItem',
   'net.nanopay.tx.UnsupportedDateException',
