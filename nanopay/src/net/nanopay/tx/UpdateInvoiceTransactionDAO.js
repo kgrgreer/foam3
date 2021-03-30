@@ -131,7 +131,7 @@ foam.CLASS({
           // With FastPay getState must be called on root to handle
           // composite transactions with CO and CI. Only COMPLETED
           // when both are COMPLETED, for example.
-          TransactionStatus state = ((Transaction) getRoot(x, transaction).fclone()).getState(getX());
+          TransactionStatus state = getRoot(x, transaction).getState(getX());
 
           if ( state != null &&
               state == TransactionStatus.COMPLETED &&

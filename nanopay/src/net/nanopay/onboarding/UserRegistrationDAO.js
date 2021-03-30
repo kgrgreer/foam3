@@ -134,10 +134,7 @@ foam.CLASS({
             throw new RuntimeException("Configuration error: Theme not found on user registration");
           }
         }
-
-        if ( SafetyUtil.isEmpty(user.getGroup()) ) {
-          user.setGroup(spid + "-" + getGroup());
-        }
+        user.setGroup(spid + "-" + getGroup());
 
         // We want the system user to be putting the User we're trying to create. If
         // we didn't do this, the user in the context's id would be 0 and many
@@ -166,7 +163,7 @@ foam.CLASS({
 
           Map<String, Object> params = (Map) token.getParameters();
 
-          // TODO: Why are we doing this here instead of letting PreventDuplicateEmailDAO catch this down the line?
+          // TODO: Why are we doing this here instead of letting PreventDuplicateEmailAction catch this down the line?
           // Check if user is internal ( already a registered user ), which will happen if adding a user to
           // a business.
           isInternal = params.containsKey("internal") && ((Boolean) params.get("internal"));

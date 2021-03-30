@@ -54,7 +54,7 @@ p({
               "class": "foam.comics.v2.BasicEnabledActionsAuth",
               "modelName": "account"
             }
-          },
+          }
         }
     },
   "registrations":[
@@ -118,7 +118,7 @@ p({
           "class": "foam.comics.v2.BasicEnabledActionsAuth",
           "modelName": "liquiditysettings"
         }
-      },
+      }
     }
   },
   "parent": "liquid"
@@ -134,7 +134,7 @@ p({
       "defaultColumns": [
         "classification",
         "operation",
-        "createdBy",
+        "createdFor",
         "approver.legalName",
         "status",
         "lastModified"
@@ -147,7 +147,14 @@ p({
       "editPredicate":{"class":"foam.mlang.predicate.False"},
       "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
-  }
+  },
+  "registrations":[
+    {
+      "class":"foam.nanos.menu.XRegistration",
+      "targetName":"foam.nanos.crunch.AgentCapabilityJunctionDAOSummaryView",
+      "className":"net.nanopay.approval.AgentCapabilityJunctionDAOSummaryView"
+    }
+  ]
 })
 
 // Business Rules
@@ -171,7 +178,7 @@ p({
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "accountTemplateDAO",
       "browseTitle": "Account Groups for Rules",
-      "createTitle": "Create a New Account Group for Rules",
+      "createTitle": "Create a New Account Group for Rules"
     }
   },
   "parent": "rules"
@@ -205,7 +212,7 @@ p({
           "class": "foam.comics.v2.BasicEnabledActionsAuth",
           "modelName": "rule"
         }
-      },
+      }
     }
   },
   "parent": "rules"

@@ -68,7 +68,7 @@ foam.CLASS({
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      factory: function() { return /^[0-9]{3,12}$/; }
+      factory: function() { return /^[0-9]{3,10}$/; }
     },
     {
       name: 'INSTITUTION_NUMBER_PATTERN',
@@ -142,6 +142,7 @@ foam.CLASS({
   properties: [
     {
       name: 'denomination',
+      readPermissionRequired: true,
       value: 'BRL',
       order: 1
     },
@@ -165,8 +166,6 @@ foam.CLASS({
       updateVisibility: 'RO',
       section: 'accountInformation',
       validateObj: function(institutionNumber) {
-        var regex = /^[A-z0-9a-z]{3,8}$/;
-
         if ( institutionNumber === '' ) {
           return this.INSTITUTION_NUMBER_REQUIRED;
         } else if ( ! this.INSTITUTION_NUMBER_PATTERN.test(institutionNumber) ) {
@@ -179,8 +178,6 @@ foam.CLASS({
       section: 'accountInformation',
       updateVisibility: 'RO',
       validateObj: function(branchId) {
-        var regex = /^[0-9]{1,6}$/;
-
         if ( branchId === '' ) {
           return this.BRANCH_ID_REQUIRED;
         } else if ( ! this.BRANCH_ID_PATTERN.test(branchId) ) {
@@ -203,8 +200,6 @@ foam.CLASS({
         this.tooltip = displayAccountNumber;
       },
       validateObj: function(accountNumber) {
-        var accNumberRegex = /^[0-9]{3,12}$/;
-
         if ( accountNumber === '' ) {
           return this.ACCOUNT_NUMBER_REQUIRED;
         } else if ( ! this.ACCOUNT_NUMBER_PATTERN.test(accountNumber) ) {
@@ -246,6 +241,9 @@ foam.CLASS({
       section: 'accountInformation',
       order: 20,
       gridColumns: 6,
+      factory: function() {
+        return this.HOLDER1;
+      },
       view: function(_, X) {
         return {
           class: 'foam.u2.view.ChoiceView',
@@ -279,8 +277,27 @@ foam.CLASS({
     {
       name: 'iban',
       visibility: 'HIDDEN',
-      validateObj: function(iban) {
-      }
+      validateObj: function(iban) {},
+      javaPostSet: `
+        ValidationIBAN vban = new ValidationIBAN(getX());
+        IBANInfo info = vban.parse(val);
+        if ( info != null ) {
+          setAccountNumber(info.getAccountNumber());
+          setBranchId(info.getBranch());
+          setInstitutionNumber(info.getBankCode());
+          setAccountType(info.getAccountType());
+          setAccountOwnerType(info.getOwnerAccountNumber());
+        }
+      `
+    },
+    {
+      name: 'bankRoutingCode',
+      javaPostSet: `
+        if ( val != null && INSTITUTION_NUMBER_PATTERN.matcher(val).matches() ) {
+          clearInstitution();
+          setInstitutionNumber(val);
+        }
+      `
     }
   ],
 
@@ -303,15 +320,20 @@ foam.CLASS({
       javaThrows: ['ValidationException'],
       javaCode: `
         super.validate(x);
-        validateInstitutionNumber();
-        validateBranchId();
+
         validateAccountNumber();
-        if ( SafetyUtil.isEmpty(this.getAccountType()) ) {
-          throw new ValidationException(this.ACCOUNT_TYPE_REQUIRED);
+
+        if ( SafetyUtil.isEmpty(getSwiftCode()) ) {
+          validateInstitutionNumber();
+          validateBranchId();
+          if ( SafetyUtil.isEmpty(this.getAccountType()) ) {
+            throw new ValidationException(this.ACCOUNT_TYPE_REQUIRED);
+          }
+          if ( SafetyUtil.isEmpty(this.getAccountOwnerType()) ) {
+            throw new ValidationException(this.ACCOUNT_HOLDER_REQUIRED);
+          }
         }
-        if ( SafetyUtil.isEmpty(this.getAccountOwnerType()) ) {
-          throw new ValidationException(this.ACCOUNT_HOLDER_REQUIRED);
-        }
+
         if ( getOwner() == 0 ) {
           setOwner(((foam.nanos.auth.Subject) x.get("subject")).getUser().getId());
         }

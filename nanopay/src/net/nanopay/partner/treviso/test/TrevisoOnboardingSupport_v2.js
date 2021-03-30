@@ -114,6 +114,19 @@ foam.CLASS({
       }
     },
     {
+      name: '_554af38a_8225_87c8_dfdf_eeb15f71215f_76.submit',
+      code: async function(x, user) {
+        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-76.submit';
+        var ucj = await this.crunchService.getJunction(x, id);
+        // note: !ucj not needed (anywhere)
+        if ( ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          let bHolder = foam.core.BooleanHolder.create({ value: true });
+          ucj = await this.crunchService.updateJunction(x, id, bHolder, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        }
+        return ucj;
+      }
+    },
+    {
       name: '_85cee1de_db32_11ea_87d0_0242ac130003',
       code: async function(x, user) {
         // UtilityBill - Signing Officer.

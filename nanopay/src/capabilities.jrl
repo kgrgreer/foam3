@@ -150,6 +150,10 @@ p({
   "version":"0",
   "enabled":true,
   "daoKey":"businessDAO",
+  "wizardlet": {
+    class: "net.nanopay.crunch.wizardlet.RerenderWizardlet",
+    rerenderList: ["554af38a-8225-87c8-dfdf-eeb15f71215f-6-5"]
+  },
   "contextDAOFindKey":"subject.user"
 })
 
@@ -162,6 +166,10 @@ p({
   "version":"0",
   "enabled":true,
   "daoKey":"businessDAO",
+  "wizardlet": {
+    class: "net.nanopay.crunch.wizardlet.RerenderWizardlet",
+    rerenderList: ["554af38a-8225-87c8-dfdf-eeb15f71215f-6-5"]
+  },
   "contextDAOFindKey":"subject.user"
 })
 
@@ -490,6 +498,15 @@ p({
   "menu.read.mainmenu.banking",
   "menu.read.mainmenu.contacts"
   ]
+})
+
+p({
+  id: "554af38a-8225-87c8-dfdf-eeb15f71215f-76.submit",
+  name: "Submit Business Information",
+  wizardlet: {
+    class: "foam.u2.wizard.SubmitWizardlet"
+  },
+  associatedEntity: 1
 })
 
 p({
@@ -846,14 +863,15 @@ p({
 })
 
 p({
-  "class":"foam.nanos.crunch.Capability",
+  "class":"net.nanopay.crunch.registration.LimitedAmountCapability",
   "id":"F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD",
   "name":"API CAD Personal Payments Under 1000CAD",
   "description":"Unlock capability for Canadian personal payments under $1000",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
-  "keywords":["intuit"]
+  "keywords":["intuit"],
+  "maximumAmount": 100000
 })
 
 p({
@@ -1048,5 +1066,7 @@ p({
   "name":"Additional information required",
   "requirementViewTitle":"To send a payment to a contact in this corridor you will need to provide more information",
   "of":"net.nanopay.contacts.AFEXCNBeneficiaryCapability",
-  "enabled":true
+  "enabled":true,
+  "icon":"/images/capabilityIcons/BeneficiaryCap.png"
 })
+p({class:"foam.nanos.auth.ServiceProvider",id:"nanopay.estimationaccount",description:"estimation account spid",enabled:true})

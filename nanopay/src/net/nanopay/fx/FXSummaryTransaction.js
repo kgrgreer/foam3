@@ -23,13 +23,20 @@ foam.CLASS({
   documentation: `Transaction used as a summary to for AFEX BMO transactions`,
 
   javaImports: [
+    'foam.dao.DAO',
+    'foam.dao.ArraySink',
+    'foam.util.SafetyUtil',
+    'java.util.List',
+    'net.nanopay.integration.ErrorCode',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.cico.CITransaction',
     'net.nanopay.tx.cico.COTransaction',
-    'net.nanopay.tx.PartnerTransaction',
+    'net.nanopay.tx.ChainSummary',
     'net.nanopay.tx.DigitalTransaction',
-    'net.nanopay.tx.ChainSummary'
+    'net.nanopay.tx.PartnerTransaction',
+    'net.nanopay.tx.ValueMovementTransaction',
+    'static foam.mlang.MLang.EQ'
   ],
 
   messages: [
@@ -54,6 +61,20 @@ foam.CLASS({
       name: 'chainSummary',
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.ChainSummary',
+      storageTransient: true,
+      visibility: 'RO',
+      section: 'transactionChainSummaryInformation'
+    },
+    {
+      name: 'depositAmount',
+      class: 'UnitValue',
+      storageTransient: true,
+      visibility: 'RO',
+      section: 'transactionChainSummaryInformation'
+    },
+    {
+      name: 'withdrawalAmount',
+      class: 'UnitValue',
       storageTransient: true,
       visibility: 'RO',
       section: 'transactionChainSummaryInformation'
@@ -128,23 +149,40 @@ foam.CLASS({
   },
   {
     documentation: 'Returns childrens status.',
-    name: 'getState',
+    name: 'calculateTransients',
     args: [
-      { name: 'x', type: 'Context' }
+      { name: 'x', type: 'Context' },
+      { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
     ],
-    type: 'net.nanopay.tx.model.TransactionStatus',
     javaCode: `
-
-      Transaction t = getStateTxn(x);
-      ChainSummary cs = new ChainSummary();
-      if (t.getStatus() == TransactionStatus.DECLINED) {
-        cs.setErrorCode(t.calculateErrorCode());
+      DAO dao = (DAO) x.get("localTransactionDAO");
+      List children = ((ArraySink) dao.where(EQ(Transaction.PARENT, txn.getId())).select(new ArraySink())).getArray();
+      for ( Object obj : children ) {
+        Transaction child = (Transaction) obj;
+        this.calculateTransients(x, child);
+        if ( ( ! depositAmountIsSet_) && (child instanceof ValueMovementTransaction) && (SafetyUtil.equals(this.getDestinationAccount(), child.getDestinationAccount())) ){
+          this.setDepositAmount(child.getTotal(x, child.getDestinationAccount()));
+        }
+        if ( ( ! withdrawalAmountIsSet_) && (child instanceof ValueMovementTransaction) && (SafetyUtil.equals(this.getSourceAccount(), child.getSourceAccount())) ){
+          this.setWithdrawalAmount(child.getTotal(x, child.getSourceAccount()));
+        }
       }
-      cs.setStatus(t.getStatus());
-      cs.setCategory(categorize_(t));
-      cs.setSummary(cs.toSummary());
-      this.setChainSummary(cs);
-      return t.getStatus();
+
+      if (SafetyUtil.equals(txn, this)) {
+        Transaction t = this.getStateTxn(x);
+        ChainSummary cs = new ChainSummary();
+        if (t.getStatus() != TransactionStatus.COMPLETED) {
+          cs.setErrorCode(t.calculateErrorCode());
+          ErrorCode errorCode = cs.findErrorCode(x);
+          if ( errorCode != null ) {
+            cs.setErrorInfo(errorCode.getSummary());
+          }
+        }
+        cs.setStatus(t.getStatus());
+        cs.setCategory(categorize_(t));
+        cs.setSummary(cs.toSummary());
+        this.setChainSummary(cs);
+      }
     `
   },
   {

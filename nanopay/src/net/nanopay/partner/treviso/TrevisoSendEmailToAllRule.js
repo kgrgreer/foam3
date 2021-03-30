@@ -174,7 +174,7 @@ foam.CLASS({
             .setNotificationType("Latest_Activity")
             .setUserId(recipient.getId())
             .setEmailArgs(args)
-            .setEmailName("compliance-notification-to-user")
+            .setEmailName("compliance-notification-to-non-user")
             .build();
           recipient.doNotify(x, notification);
         } catch (Throwable t) {

@@ -1,3 +1,6 @@
+# FOAM2 in release only
+foam2/
+
 # SSH Tunnel log
 ssh.log
 

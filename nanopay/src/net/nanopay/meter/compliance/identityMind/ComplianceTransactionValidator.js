@@ -43,11 +43,14 @@ foam.CLASS({
         public void execute(X x) {
           Transaction transaction = (Transaction) obj;
           ComplianceValidationStatus status = ComplianceValidationStatus.PENDING;
+          User owner = transaction.findSourceAccount(x).findOwner(x);
+
           ComplianceApprovalRequest approvalRequest =
             new ComplianceApprovalRequest.Builder(x)
               .setObjId(transaction.getId())
               .setServerDaoKey("localTransactionDAO")
               .setDaoKey("transactionDAO")
+              .setCreatedFor(owner.getId())
               .setClassification("Transaction IdentityMind Transfer")
               .build();
 

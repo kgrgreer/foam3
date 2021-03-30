@@ -32,7 +32,7 @@ foam.CLASS({
     {
       name: 'flagImage',
       label: '',
-      value: 'images/flags/china.svg',
+      value: 'images/flags/china.png',
       visibility: 'RO'
     },
     {

@@ -20,12 +20,16 @@ p({
   "priority": 1
 })
 
-// PRECONDITION: Signing officer privilages - Unlock payments
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId: "bf6a49d5-4027-4dac-a269-4d3ed070609e-4",
   targetId: "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
   precondition: true
+})
+
+p({
+  sourceId: "0B2E7305-B898-43F2-9C1B-63FB2CE38B2D",
+  targetId: "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5"
 })
 
 

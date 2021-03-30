@@ -114,6 +114,25 @@ foam.CLASS({
       },
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedByAgent',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
+      readVisibility: 'RO',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subContext__.userDAO
+          .find(value)
+          .then((user) => {
+            this.add(user.toSummary());
+          })
+          .catch((error) => {
+            console.log('user: ' + value +' error last mod capR: ' + error);
+            this.add(value);
+          });
+      },
+    },
+    {
       class: 'FObjectProperty',
       of: 'foam.comics.v2.userfeedback.UserFeedback',
       name: 'userFeedback',
@@ -148,7 +167,7 @@ foam.CLASS({
             AND(
               EQ(ApprovalRequest.DAO_KEY, "roleAssignmentDAO"),
               EQ(ApprovalRequest.OBJ_ID, getId()),
-              EQ(ApprovalRequest.OPERATION, foam.nanos.ruler.Operations.CREATE),
+              EQ(ApprovalRequest.OPERATION, foam.nanos.dao.Operation.CREATE),
               EQ(ApprovalRequest.IS_FULFILLED, false),
               EQ(ApprovalRequest.STATUS, ApprovalStatus.REJECTED)
             )
@@ -160,7 +179,7 @@ foam.CLASS({
         User user;
         for ( Long userId : getUsers() ) {
           user = (User) userDAO.find(userId);
-          if ( user == null || user.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE ) 
+          if ( user == null || user.getLifecycleState() != foam.nanos.auth.LifecycleState.ACTIVE )
             throw new IllegalStateException("One or more users being assigned this capability is no longer available");
         }
 

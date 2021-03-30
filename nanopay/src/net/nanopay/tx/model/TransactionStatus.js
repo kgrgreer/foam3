@@ -24,7 +24,7 @@ foam.ENUM({
   values: [
     {
       name: 'PENDING',
-      label: 'Pending',
+      label: { en: 'Pending', pt: 'Pendente'},
       documentation: 'CICO: as soon as cico transaction is created it takes PENDING status until it is sent to EFT.',
       ordinal: 0,
       color: '/*%GREY1%*/ #5e6061',
@@ -33,7 +33,7 @@ foam.ENUM({
     {
       // deprecated
       name: 'REVERSE',
-      label: 'Reverse',
+      label: { en: 'Reverse', pt: 'Marcha ré'},
       documentation: 'DEPRECATED. CICO: after transaction was marked as COMPLETED we might receive rejection file from EFT. We attempt to reverse balance - REVERSE status occurs when balance reverted successfully. Should never be set manully, the status is calculated.',
       ordinal: 1,
       color: '/*%WARNING1%*/ #816819',
@@ -42,7 +42,7 @@ foam.ENUM({
     {
       // deprecated
       name: 'REVERSE_FAIL',
-      label: 'ReverseFail',
+      label: { en: 'ReverseFail', pt: 'ReversaFalha'},
       documentation: 'DEPRECATED. CICO: after transaction was marked as COMPLETED we might receive rejection file from EFT. We attempt to reverse balance - REVERSE_FAIL status occurs when balance failed to revert. Should never be set manully, the status is calculated.',
       ordinal: 2,
       color: '/*%DESTRUCTIVE2%*/ #a61414',
@@ -50,7 +50,7 @@ foam.ENUM({
     },
     {
       name: 'SENT',
-      label: 'Sent',
+      label: { en: 'Sent', pt: 'Enviado'},
       documentation: 'CICO: transaction takes status SENT when automatically generated CSV file with transactions is sent to EFT.',
       ordinal: 3,
       color: '/*%WARNING1%*/ #816819',
@@ -58,7 +58,7 @@ foam.ENUM({
     },
     {
       name: 'DECLINED',
-      label: 'Declined',
+      label: { en: 'Declined', pt: 'Recusado'},
       documentation: 'CICO: transaction that was rejected by EFT.',
       ordinal: 4,
       color: '/*%DESTRUCTIVE2%*/ #a61414',
@@ -66,7 +66,7 @@ foam.ENUM({
     },
     {
       name: 'COMPLETED',
-      label: 'Completed',
+      label: { en: 'Completed', pt: 'Concluído'},
       documentation: 'Base transaction: status indicating that transaction was successfully proccessed. CICO: after waiting period(2days), we assume transaction was successfully proccessed.',
       ordinal: 5,
       color: '/*%APPROVAL2%*/ #117a41',
@@ -75,7 +75,7 @@ foam.ENUM({
     {
       // deprecated
       name: 'REFUNDED',
-      label: 'Refunded',
+      label: { en: 'Refunded', pt: 'Devolveu'},
       documentation: 'DEPRECATED. Retail transaction: status of a transaction that was refunded.',
       ordinal: 6,
       color: '/*%WARNING1%*/ #816819',
@@ -83,7 +83,7 @@ foam.ENUM({
     },
     {
       name: 'FAILED',
-      label: 'Failed',
+      label: { en: 'Failed', pt: 'Fracassado'},
       documentation: 'CICO: in case confirmation files indicates invalid transactions, those transactions take FAILED status.',
       ordinal: 9,
       color: '/*%DESTRUCTIVE2%*/ #a61414',
@@ -91,7 +91,7 @@ foam.ENUM({
     },
     {
       name: 'PAUSED',
-      label: 'Paused',
+      label: { en: 'Paused', pt: 'Pausa'},
       documentation: 'CICO: PAUSED transactions are being ignored by the system. Example: transaction was voided on EFT portal, the transaction should be marked as PAUSED within the system.', // REVIEW
       ordinal: 10,
       color: '/*%WARNING1%*/ #816819',
@@ -99,14 +99,14 @@ foam.ENUM({
     },
     {
       name: 'CANCELLED',
-      label: 'Cancelled',
+      label: { en: 'Cancelled', pt: 'Cancelado'},
       ordinal: 11,
       color: '/*%DESTRUCTIVE2%*/ #a61414',
       background: '/*%DESTRUCTIVE5%*/ #fbedec'
     },
     {
       name: 'PENDING_PARENT_COMPLETED',
-      label: 'Pending Parent Completed',
+      label: { en: 'Pending Parent Completed', pt: 'Pai pendente concluído'},
       documentation: 'Chained transaction: child transactions are in PENDING_PARENT_COMPLETED and being ignored by the system until all parents go to COMPLETED state.',
       ordinal: 12,
       color: '/*%GREY1%*/ #5e6061',
@@ -114,7 +114,7 @@ foam.ENUM({
     },
     {
       name: 'SCHEDULED',
-      label: 'Scheduled',
+      label: { en: 'Scheduled', pt: 'Scheduled'},
       documentation: 'Scheduled transaction specifies the time when transaction needs to be processsed.',
       ordinal: 13,
       color: '/*%GREY1%*/ #5e6061',

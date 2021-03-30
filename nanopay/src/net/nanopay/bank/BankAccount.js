@@ -266,7 +266,10 @@ foam.CLASS({
       gridColumns: 6,
       documentation: `Standard international numbering system developed to
           identify a bank account.`,
-      validateObj: function(iban, swiftCode, country) {
+      validateObj: function(iban, accountNumber, country) {
+        if ( this.ACCOUNT_NUMBER_PATTERN && this.ACCOUNT_NUMBER_PATTERN.test(accountNumber) )
+          return;
+
         if ( ! iban )
           return this.IBAN_REQUIRED;
 
@@ -378,7 +381,14 @@ foam.CLASS({
       section: 'accountInformation',
       order: 150,
       gridColumns: 6,
-      validateObj: function(swiftCode, iban) {
+      validateObj: function(swiftCode, iban, institutionNumber, branchId) {
+        if ( (this.INSTITUTION_NUMBER_PATTERN || this.BRANCH_ID_PATTERN)
+          && (! this.INSTITUTION_NUMBER_PATTERN || this.INSTITUTION_NUMBER_PATTERN.test(institutionNumber))
+          && (! this.BRANCH_ID_PATTERN || this.BRANCH_ID_PATTERN.test(branchId))
+        ) {
+          return;
+        }
+
         if ( iban )
           var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
@@ -792,7 +802,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'getInstitutionNumber',
+      name: 'getBankCode',
       type: 'String',
       args: [
         {
@@ -800,7 +810,29 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        return getInstitutionNumber();
+        var code = new StringBuilder();
+        var institution = findInstitution(x);
+        if ( institution != null ) {
+          code.append(institution.getInstitutionNumber());
+        }
+        return code.toString();
+      `
+    },
+    {
+      name: 'getBranchCode',
+      type: 'String',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      javaCode: `
+        var code = new StringBuilder();
+        var branch = findBranch(x);
+        if ( branch != null ) {
+          code.append(branch.getBranchId());
+        }
+        return code.toString();
       `
     },
     {
@@ -812,7 +844,14 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        return getBankRoutingCode();
+        if ( ! SafetyUtil.isEmpty(getBankRoutingCode()) ) {
+          return getBankRoutingCode();
+        }
+
+        var code = new StringBuilder();
+        code.append(getBankCode(x))
+            .append(getBranchCode(x));
+        return code.toString();
       `
     },
     function purgeCachedDAOs() {

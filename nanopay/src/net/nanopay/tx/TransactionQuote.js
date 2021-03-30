@@ -62,6 +62,18 @@ foam.CLASS({
       documentation: 'helper property to be used during planning in order to avoid overuse of transaction.findDestinationAccount'
     },
     {
+      class: 'Long',
+      name: 'amount',
+      networkTransient: true,
+      documentation: 'helper property to be used during planning'
+    },
+    {
+      class: 'Long',
+      name: 'destinationAmount',
+      networkTransient: true,
+      documentation: 'helper property to be used during planning'
+    },
+    {
       class: 'String',
       name: 'sourceUnit',
       networkTransient: true,

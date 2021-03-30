@@ -21,9 +21,12 @@ foam.CLASS({
   label: 'United Kingdom',
   extends: 'net.nanopay.bank.EUBankAccount',
 
+  mixins: [ 'net.nanopay.bank.BankAccountValidationMixin' ],
+
   documentation: 'United Kingdom/Great Britain bank account information.',
 
   javaImports: [
+    'foam.core.ValidationException',
     'foam.nanos.iban.IBANInfo',
     'foam.nanos.iban.ValidationIBAN',
     'foam.util.SafetyUtil'
@@ -40,11 +43,6 @@ foam.CLASS({
       type: 'Regex',
       factory: function() { return /^[0-9]{8}$/; }
     },
-    {
-      name: 'INSTITUTION_NUMBER_PATTERN',
-      type: 'Regex',
-      factory: function() { return /^[A-z0-9a-z]{4}$/; }
-    }
   ],
 
   properties: [
@@ -74,8 +72,7 @@ foam.CLASS({
       updateVisibility: 'RO',
       validateObj: function(iban, branchId, accountNumber, institutionNumber, country) {
         if ( ! ( (branchId && this.BRANCH_ID_PATTERN.test(branchId)) &&
-             (accountNumber && this.ACCOUNT_NUMBER_PATTERN.test(accountNumber)) &&
-             (institutionNumber && this.INSTITUTION_NUMBER_PATTERN.test(institutionNumber)) )
+             (accountNumber && this.ACCOUNT_NUMBER_PATTERN.test(accountNumber)) )
         ) {
           if ( ! iban )
             return this.IBAN_REQUIRED;
@@ -92,67 +89,8 @@ foam.CLASS({
       }
     },
     {
-      name: 'branchId',
-      section: 'accountInformation',
-      updateVisibility: 'RO',
-      validateObj: function(branchId, iban) {
-        if ( iban )
-          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
-
-        if ( ! iban || (iban && ibanMsg != 'passed') ) {
-          if ( branchId === '' ) {
-            return this.BRANCH_ID_REQUIRED;
-          } else if ( ! this.BRANCH_ID_PATTERN.test(branchId) ) {
-            return this.BRANCH_ID_INVALID;
-          }
-        }
-      }
-    },
-    {
-      name: 'accountNumber',
-      updateVisibility: 'RO',
-      preSet: function(o, n) {
-        return /^[\d\w]*$/.test(n) ? n : o;
-      },
-      tableCellFormatter: function(str, obj) {
-        if ( ! str ) return;
-        var displayAccountNumber = obj.mask(str);
-        this.start()
-          .add(displayAccountNumber);
-        this.tooltip = displayAccountNumber;
-      },
-      validateObj: function(accountNumber, iban) {
-        if ( iban )
-          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
-
-        if ( ! iban || (iban && ibanMsg != 'passed') ) {
-          if ( accountNumber === '' ) {
-            return this.ACCOUNT_NUMBER_REQUIRED;
-          } else if ( ! this.ACCOUNT_NUMBER_PATTERN.test(accountNumber) ) {
-            return this.ACCOUNT_NUMBER_INVALID;
-          }
-        }
-      }
-    },
-    {
       name: 'desc',
       visibility: 'HIDDEN'
-    },
-    {
-      name: 'institutionNumber',
-      updateVisibility: 'RO',
-      validateObj: function(institutionNumber, iban) {
-        if ( iban )
-          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
-
-        if ( ! iban || (iban && ibanMsg != 'passed') ) {
-          if ( institutionNumber === '' ) {
-            return this.INSTITUTION_NUMBER_REQUIRED;
-          } else if ( ! this.INSTITUTION_NUMBER_PATTERN.test(institutionNumber) ) {
-            return this.INSTITUTION_NUMBER_INVALID;
-          }
-        }
-      }
     },
     {
       name: 'bankRoutingCode',
@@ -167,16 +105,10 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'getRoutingCode',
-      javaCode: `
-        return getBranchId();
-      `
-    },
-    {
       name: 'getApiAccountNumber',
       javaCode: `
         return getAccountNumber();
       `
-    },
+    }
   ]
 });
