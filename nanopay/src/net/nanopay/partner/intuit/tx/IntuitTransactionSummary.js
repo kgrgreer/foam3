@@ -24,7 +24,6 @@ foam.CLASS({
     'summary',
     'category',
     'status',
-    'feeLineItem',
     'externalId',
     'created',
     'errorCode'
@@ -38,17 +37,11 @@ foam.CLASS({
     'category',
     'errorCode',
     'created',
-    'feeLineItem',
     'externalId',
     'externalInvoiceId'
   ],
 
   properties: [
-    {
-      class: 'FObjectProperty',
-      name: 'feeLineItem',
-      of: 'net.nanopay.tx.FeeLineItem'
-    },
     {
       class: 'String',
       name: 'externalId',
@@ -61,6 +54,14 @@ foam.CLASS({
       name: 'externalInvoiceId',
       section: 'transactionInformation',
       order: 140,
+      gridColumns: 6
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'feeLineItem',
+      of: 'net.nanopay.tx.FeeSummaryTransactionLineItem',
+      section: 'transactionInformation',
+      order: 150,
       gridColumns: 6
     }
   ]
