@@ -22,6 +22,7 @@ import foam.mlang.predicate.Predicate;
 import foam.nanos.cron.Cron;
 import java.util.*;
 import net.nanopay.tx.ChainSummary;
+import net.nanopay.tx.FeeLineItem;
 import net.nanopay.tx.SummarizingTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.cron.TransactionSummaryAgent;
@@ -42,6 +43,13 @@ public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
       SummarizingTransaction summarizingTransaction = (SummarizingTransaction) txn;
       ChainSummary chainSummary = summarizingTransaction.getChainSummary();
 
+      
+      List<FeeLineItem> list = new ArrayList<>();
+      for ( var li : txn.getLineItems() ) {
+        if ( li instanceof FeeLineItem ) list.add((FeeLineItem) li);
+      }
+      FeeLineItem[] feeLineItems = list.toArray(new FeeLineItem[0]);
+
       IntuitTransactionSummary intuitTxnSummary = new IntuitTransactionSummary.Builder(x)
         .setId(txn.getId())
         .setCurrency(txn.getSourceCurrency())
@@ -57,6 +65,7 @@ public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
         .build();
       if (txn.getPayer() != null) intuitTxnSummary.setPayer(txn.getPayer().getId());
       if (txn.getPayee() != null) intuitTxnSummary.setPayee(txn.getPayee().getId());
+      if (feeLineItems[0] != null) intuitTxnSummary.setFeeLineItem(feeLineItems[0]);
       intuitTxnSummary.setSummary(intuitTxnSummary.summarizeTransaction(x, txn));
       transactionSummaryDAO.put(intuitTxnSummary);
     }
