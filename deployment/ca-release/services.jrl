@@ -21,14 +21,15 @@ p({
   }
 })
 
+// Do not use IdentityMind production for release as it opens production tickets which are investigated by the support team
 p({
   class:"foam.nanos.boot.NSpec",
   id:"identityMindService",
   service:{
     class:"net.nanopay.meter.compliance.identityMind.IdentityMindService",
-    baseUrl:"https://edna.identitymind.com/im",
+    baseUrl:"https://staging.identitymind.com/im",
     apiUser:"nanopay",
-    apiKey:"117568fcfb3d93aaccb196919b59339ce5e7e621",
+    apiKey:"80c264cb0c381fbc995763982b35e965f37347eb",
     hashingSalt:"54l73D47"
   }
 })
