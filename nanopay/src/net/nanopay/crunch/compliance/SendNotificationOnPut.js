@@ -41,6 +41,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'group'
+    },
+    {
+      class: 'String',
+      name: 'template'
     }
   ],
 
@@ -57,15 +61,17 @@ foam.CLASS({
             
             Map<String, Object> args = new HashMap<>();
 
-            StringBuilder sb = new StringBuilder();
-            sb.append("Capability: ");
-            sb.append(capability.getName());
-            sb.append(" was updated for user email: ");
-            sb.append(user.getEmail());
-            sb.append(", ID: ");
-            sb.append(String.valueOf(user.getId()));
-            sb.append(" with status ");
-            sb.append(ucj.getStatus().getLabel());
+            StringBuilder sb = new StringBuilder()
+              .append("Capability: ")
+              .append(capability.getName())
+              .append(" was updated for user Email: ")
+              .append(user.getEmail())
+              .append(" - Username: ")
+              .append(user.getUserName())
+              .append(" - ID: ")
+              .append(String.valueOf(user.getId()))
+              .append(" with status ")
+              .append(ucj.getStatus().getLabel());
 
             String body = sb.toString();
 
@@ -75,7 +81,7 @@ foam.CLASS({
             
             try {
               Notification notification = new Notification.Builder(x)
-                .setEmailName("onboarding-capability-compliance-notification")
+                .setEmailName(getTemplate())
                 .setGroupId(getGroup())
                 .setEmailArgs(args)
                 .setBody(body)
