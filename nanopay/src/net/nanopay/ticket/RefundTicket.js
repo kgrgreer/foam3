@@ -222,6 +222,12 @@ foam.CLASS({
       label: 'Assigned to',
       visibility: 'RO'
     },
+    {
+      class: 'String',
+      name: 'postApprovalRuleId',
+      visibility: 'HIDDEN',
+      networkTransient: true
+    },
   ],
 
   actions: [

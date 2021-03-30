@@ -68,6 +68,12 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'feeAccount'
+    },
+    {
+      class: 'String',
+      name: 'postApprovalRuleId',
+      visibility: 'HIDDEN',
+      networkTransient: true
     }
   ],
 
@@ -162,6 +168,7 @@ foam.CLASS({
         
         ticket.setFeeLineItemsAvaliable(feeLineItemsAvaliable.toArray(FeeLineItem[]::new));
         ticket.setRequestTransaction(newRequest);
+        ticket.setPostApprovalRuleId(getPostApprovalRuleId());
         ticket.setAgentInstructions(getTextToAgent() + " The proposed transaction will move "+newRequest.getAmount()+
         " from account "+newRequest.getSourceAccount()+" to Account "+newRequest.getDestinationAccount());
 

@@ -80,7 +80,8 @@ p({
   "action":{
     "class":"net.nanopay.ticket.BasicFullReverseRefundTicketCreateRule",
     "textToAgent":"Payor has cancelled the transaction, status: processing",
-    "creditAccount":"64307927-db83-43a7-9787-c5cc89becc11"
+    "creditAccount":"64307927-db83-43a7-9787-c5cc89becc11",
+    "postApprovalRuleId": "b64905d0-289b-4371-92a5-f843e344109a"
   },
   "after":false,
   "enabled":true,
@@ -165,7 +166,8 @@ p({
   "action":{
     "class":"net.nanopay.ticket.BasicFullReverseRefundTicketCreateRule",
     "textToAgent":"User has cancelled transaction. No action required, Monitor cash in & transaction reversal",
-    "creditAccount":""
+    "creditAccount":"",
+    "postApprovalRuleId": "b64905d0-289b-4371-92a5-f843e344109a"
   },
   "after":false,
   "enabled":true,

@@ -61,6 +61,11 @@ p({
           "class":"net.nanopay.ticket.RefundStatus",
           "ordinal":2
         }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"postApprovalRuleId",
+        "propValue": "b64905d0-289b-4371-92a5-f843e344109a"
       }
     ]
   },

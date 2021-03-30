@@ -51,6 +51,12 @@ foam.CLASS({
       class: 'String',
       name: 'textToAgent',
       documentation: 'Description of the base resolution path'
+    },
+    {
+      class: 'String',
+      name: 'postApprovalRuleId',
+      visibility: 'HIDDEN',
+      networkTransient: true
     }
   ],
 
@@ -73,6 +79,7 @@ foam.CLASS({
           Transaction problemClone = (Transaction) problem.fclone();
           ticket.setProblemTransaction(problem.getId());
           ticket.setRefundTransaction(summary.getId());
+          ticket.setPostApprovalRuleId(getPostApprovalRuleId());
           DAO txnDAO2 = (DAO) agencyX.get("localTransactionDAO");
           try {
             problemClone.setStatus(TransactionStatus.PAUSED);
