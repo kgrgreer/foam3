@@ -60,7 +60,6 @@ foam.CLASS({
             Capability capability = (Capability) ucj.findTargetId(x);
             
             Map<String, Object> args = new HashMap<>();
-
             StringBuilder sb = new StringBuilder()
               .append("Capability: ")
               .append(capability.getName())
@@ -74,7 +73,6 @@ foam.CLASS({
               .append(ucj.getStatus().getLabel());
 
             String body = sb.toString();
-
             args.put("email", user.getEmail());
             args.put("status", ucj.getStatus().getLabel());
             args.put("description", body);
