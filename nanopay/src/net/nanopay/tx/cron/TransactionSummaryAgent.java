@@ -45,11 +45,15 @@ public class TransactionSummaryAgent implements ContextAgent {
     if ( lastRun != null ) {
       Predicate predicate = AND(
         GT(Transaction.LAST_MODIFIED, lastRun),
-        EQ(Transaction.SPID, spid)
+        EQ(Transaction.SPID, spid),
+        NOT(INSTANCE_OF(net.nanopay.tx.creditengine.CreditCodeTransaction.getOwnClassInfo()))
       );
       generateTransactionSummaries(x, predicate, transactionDAO);
     } else {
-      Predicate predicate = EQ(Transaction.SPID, spid);
+      Predicate predicate = AND(
+        EQ(Transaction.SPID, spid),
+        NOT(INSTANCE_OF(net.nanopay.tx.creditengine.CreditCodeTransaction.getOwnClassInfo()))
+      );
       generateTransactionSummaries(x, predicate, summaryTransactionDAO);
     }
   }

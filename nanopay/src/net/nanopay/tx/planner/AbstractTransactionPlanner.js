@@ -401,11 +401,11 @@ foam.CLASS({
         txnclone = (Transaction) ((DAO) x.get("localFeeEngineDAO")).put(txnclone);
 
         txn.setLineItems(txnclone.getLineItems());
-        txn = createFeeTransfers(x, txn, quote);
         // hit creditEngine
         if ( txn.getCreditCodes() != null && txn.getCreditCodes().length > 0 ) {
           txn = ((CreditEngine) x.get("creditEngine")).calculateCredits(x, txn);
         }
+        txn = createFeeTransfers(x, txn, quote);
         return txn;
       `
     },
