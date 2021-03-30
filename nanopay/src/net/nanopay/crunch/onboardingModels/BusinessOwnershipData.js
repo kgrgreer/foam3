@@ -126,13 +126,6 @@ foam.CLASS({
       of: 'net.nanopay.model.BeneficialOwner',
       validationStyleEnabled: false,
       view: function (_, X) {
-        var otherChoiceDAO = foam.dao.MDAO.create({ of: X.data.ownerClass });
-        var obj = X.data.ownerClass.create({
-          business: X.data.businessId
-        }, X);
-        obj.toSummary = () => X.data.OTHER_MSG;
-        otherChoiceDAO.put(obj);
-
         return {
           class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
           of: X.data.ownerClass,
@@ -144,7 +137,7 @@ foam.CLASS({
             ( a.length == 0 || a[a.length-1].mode != 'blank' )
           ),
           name: X.data.ADD_MSG,
-          valueView: {
+          valueView: () => ({
             class: 'net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView',
 
             // ???: If this ViewSpec took the context of this model, these could
@@ -155,10 +148,19 @@ foam.CLASS({
                 dao$: X.data.soUsersDAO$,
                 filteredDAO$: X.data.availableUsers$
               },
-              { dao: otherChoiceDAO }
+              { dao: (() => {
+                var otherChoiceDAO = foam.dao.MDAO.create({ of: X.data.ownerClass });
+                var obj = X.data.ownerClass.create({
+                  business: X.data.businessId
+                }, X);
+                obj.toSummary = () => X.data.OTHER_MSG;
+                otherChoiceDAO.put(obj);
+
+                return otherChoiceDAO;
+              })() }
             ],
             beneficialOwnerSelectionUpdate: X.data.ownersUpdate
-          }
+          })
         }
       }
     },
@@ -182,7 +184,12 @@ foam.CLASS({
           },
           errorMessage: 'TOTAL_OWNERSHIP_ERROR'
         }
-      ]
+      ],
+      visibility: function (totalOwnership) {
+        return Number(totalOwnership) > 100
+          ? foam.u2.DisplayMode.RW
+          : foam.u2.DisplayMode.HIDDEN ;
+      }
     },
     {
       name: 'ownerClass',
@@ -235,12 +242,13 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    // Card border is needed for clear separation between owners
-    'foam.u2.borders.CardBorder'
+    'foam.u2.borders.CardBorder',
+    'foam.u2.borders.Block'
   ],
 
   messages: [
     { name: 'PLEASE_SELECT_ONE', message: 'Please select one of the following...' },
+    { name: 'NEW_OWNER_MSG', message: 'New Owner' }
   ],
 
   properties: [
@@ -271,33 +279,44 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
+      const HEADER = 'h4';
       this.start(this.CardBorder)
         .add(this.slot(function (hasData_) {
           if ( hasData_ ) return self.E();
           return self.E()
-            .tag(self.choiceView, {
-              fullObject_$: self.data$,
-              choosePlaceholder: self.PLEASE_SELECT_ONE,
-              sections: self.choiceSections
-            })
+            .start(HEADER)
+              .add(self.NEW_OWNER_MSG)
+            .end()
+            .start(self.Block)
+              .tag(self.choiceView, {
+                fullObject_$: self.data$,
+                choosePlaceholder: self.PLEASE_SELECT_ONE,
+                sections: self.choiceSections
+              })
+            .end()
         }))
         .add(this.slot(function (hasData_) {
           if ( ! hasData_ ) return self.E();
           return self.E()
             // Display first and last if those fields aren't editable
             .add(self.slot(function (data$mode) {
-              if ( data$mode != 'percent' ) return self.E();
+              if ( data$mode != 'percent' ) return self.E()
+                .start(HEADER)
+                  .add(self.NEW_OWNER_MSG)
+                .end();
               return self.E()
-                .start('h4')
+                .start(HEADER)
                   .add(`${self.data.firstName} ${self.data.lastName}`)
-                .end()
+                .end();
             }))
             // Display owner fields for user to fill out
-            .tag({
-              class: 'foam.u2.detail.SectionView',
-              sectionName: 'requiredSection',
-              showTitle: false
-            }, { data$: self.data$ })
+            .start(self.Block)
+              .tag({
+                class: 'foam.u2.detail.SectionView',
+                sectionName: 'requiredSection',
+                showTitle: false
+              }, { data$: self.data$ })
+            .end()
         }))
     }
   ]
