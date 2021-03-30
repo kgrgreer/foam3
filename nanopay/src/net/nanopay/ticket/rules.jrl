@@ -28,7 +28,7 @@ p({
   "predicate": {
     "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
     "of": "net.nanopay.ticket.SudoTicket"
-  }
+  },
   "asyncAction":{
     "class":"net.nanopay.ticket.SudoTicketApprovalResponseAction"
   },
