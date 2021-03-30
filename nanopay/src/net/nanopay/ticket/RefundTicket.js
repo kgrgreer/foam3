@@ -233,7 +233,7 @@ foam.CLASS({
       code: function(X) {
         this.assignedTo = this.subject.user.id;
         this.ticketDAO.put(this).then(ticket => {
-          this.notify(this.SUBMIT_FOR_APPROVAL, '', foam.log.LogLevel.INFO, true);
+          this.notify(this.ASSIGN, '', foam.log.LogLevel.INFO, true);
         }).catch(error => {
           this.notify(error.message, '', this.LogLevel.ERROR, true);
         });
@@ -248,7 +248,7 @@ foam.CLASS({
       code: function(X) {
         this.refundStatus = net.nanopay.ticket.RefundStatus.REQUESTED;
         this.ticketDAO.put(this).then(ticket => {
-          this.notify(this.ASSIGN, '', foam.log.LogLevel.INFO, true);
+          this.notify(this.SUBMIT_FOR_APPROVAL, '', foam.log.LogLevel.INFO, true);
         }).catch(error => {
           this.notify(error.message, '', this.LogLevel.ERROR, true);
         });
