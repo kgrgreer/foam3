@@ -4,7 +4,6 @@ p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2021-bepayCorridorCapabi
 p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2021-bepayPlannerCapability",sourceId:2021,targetId:"bepayPlannerCapability",status:1})
 p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2021-bepay-tx-reason-codes",sourceId:2021,targetId:"bepay-tx-reason-codes",status:1})
 p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2021-bepay-tx-fees",sourceId:2021,targetId:"bepay-tx-fees",status:1})
-p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2021-estimationaccounts",sourceId:2021,targetId:"nanopay.estimationaccount",status:1})
 
 // bepay-admin
 p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2022-bepay",sourceId:2022,targetId:"bepay",status:1})
