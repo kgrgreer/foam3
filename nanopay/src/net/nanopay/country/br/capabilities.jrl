@@ -457,7 +457,7 @@ p({
   "version":"0",
   "visibilityPredicate":  {
     "class": "foam.nanos.crunch.predicate.CapabilityGranted",
-    "capabilityId": "777af38a-8225-87c8-dfdf-eeb15f71215f-123",
+    "capabilityId": "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
     "subjectFromUCJ": false
   },
   "enabled":true,
