@@ -1496,9 +1496,6 @@ var classes = [
   'net.nanopay.crunch.registration.businesstypes.SoleProprietorData',
   'net.nanopay.crunch.registration.businesstypes.TrustData',
 
-  // bepay crunch onboarding
-  'net.nanopay.crunch.bepay.ExtendedUserDetailsData',
-
   // crunch documents
   'net.nanopay.crunch.document.Document',
   'net.nanopay.crunch.document.ExpirableDocument',

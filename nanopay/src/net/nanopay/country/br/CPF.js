@@ -59,6 +59,7 @@ foam.CLASS({
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
       section: 'collectCpf',
       label: 'Date of birth',
+      visibility: 'RW',
       validationPredicates: [
         {
           args: ['birthday'],
