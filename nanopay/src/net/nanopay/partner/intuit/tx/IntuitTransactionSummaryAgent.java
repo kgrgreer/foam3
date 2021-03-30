@@ -65,7 +65,10 @@ public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
         .build();
       if (txn.getPayer() != null) intuitTxnSummary.setPayer(txn.getPayer().getId());
       if (txn.getPayee() != null) intuitTxnSummary.setPayee(txn.getPayee().getId());
-      if (feeLineItems.size() > 0) intuitTxnSummary.setFeeLineItem(feeLineItems.get(0));
+      if (feeLineItems.size() > 0) {
+        FeeSummaryTransactionLineItem lineItem = feeLineItems.get(0);
+        intuitTxnSummary.setFee(lineItem.getTotalFee());
+      }
       intuitTxnSummary.setSummary(intuitTxnSummary.summarizeTransaction(x, txn));
       transactionSummaryDAO.put(intuitTxnSummary);
     }

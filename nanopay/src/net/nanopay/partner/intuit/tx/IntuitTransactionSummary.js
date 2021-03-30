@@ -57,12 +57,11 @@ foam.CLASS({
       gridColumns: 6
     },
     {
-      class: 'FObjectProperty',
-      name: 'feeLineItem',
-      of: 'net.nanopay.tx.FeeSummaryTransactionLineItem',
+      class: 'String',
+      name: 'fee',
       section: 'transactionInformation',
       order: 150,
-      gridColumns: 12
+      gridColumns: 6
     }
   ]
 });
