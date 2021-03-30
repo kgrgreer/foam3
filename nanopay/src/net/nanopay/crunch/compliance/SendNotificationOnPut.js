@@ -37,6 +37,13 @@ foam.CLASS({
     'java.util.Map'
   ],
 
+  properties: [
+    {
+      class: 'String',
+      name: 'group'
+    }
+  ],
+
   methods: [
     {
       name: 'applyAction',
@@ -69,7 +76,7 @@ foam.CLASS({
             try {
               Notification notification = new Notification.Builder(x)
                 .setEmailName("onboarding-capability-compliance-notification")
-                .setGroup("fraud-ops")
+                .setGroupId(getGroup())
                 .setEmailArgs(args)
                 .setBody(body)
                 .build();

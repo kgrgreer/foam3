@@ -867,6 +867,9 @@ p({
       "status": 6
     }
   },
-  "action":{"class":"net.nanopay.crunch.compliance.SendNotificationOnPut"},
+  "action":{
+    "class":"net.nanopay.crunch.compliance.SendNotificationOnPut",
+    "group":"intuit-fraud-ops"
+    },
   "lifecycleState":1
 })
