@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -16,32 +16,45 @@
  */
 
 foam.CLASS({
-  package: "net.nanopay.fx.afex",
-  name: "CreateInstantBenefiaryRequest",
+  package: 'net.nanopay.partner.intuit.tx',
+  name: 'IntuitTransactionSummary',
+  extends: 'net.nanopay.tx.TransactionSummary',
+
+  tableColumns: [
+    'summary',
+    'category',
+    'status',
+    'externalId',
+    'created',
+    'errorCode'
+  ],
+
+  searchColumns: [
+    'id',
+    'summary',
+    'amount',
+    'status',
+    'category',
+    'errorCode',
+    'created',
+    'externalId',
+    'externalInvoiceId'
+  ],
+
   properties: [
     {
       class: 'String',
-      name: "clientAPIKey"
+      name: 'externalId',
+      section: 'transactionInformation',
+      order: 130,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: "AccountId"
-    },
-    {
-      class: 'String',
-      name: "FundingBalanceId"
-    },
-    {
-      class: 'String',
-      name: "NotificationId"
-    },
-    {
-      class: 'String',
-      name: "RemittanceLine4"
-    },
-    {
-      class: 'String',
-      name: "VendorId"
+      name: 'externalInvoiceId',
+      section: 'transactionInformation',
+      order: 140,
+      gridColumns: 6
     }
   ]
 });

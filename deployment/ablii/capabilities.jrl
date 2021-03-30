@@ -173,7 +173,9 @@ p({
     "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d31",
     "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d32",
     "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d94",
-    "rule.read.b3bc934e-39d3-4a50-afdf-1b631000eab3"
+    "rule.read.b3bc934e-39d3-4a50-afdf-1b631000eab3",
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d11",
+    "rule.read.5d12a5bb-2952-44ed-a8eb-be3582de7ab1"
   ]
 })
 
@@ -196,6 +198,7 @@ p({
   enabled: true,
   permissionsGranted: [
     "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d27",
-    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d115"
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d115",
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d67"
   ]
 })

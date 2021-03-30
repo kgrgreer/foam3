@@ -7,6 +7,7 @@ import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.ApprovalStatus;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.User;
+import foam.nanos.auth.Group;
 import foam.nanos.auth.ServiceProvider;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.crunch.AgentCapabilityJunction;
@@ -59,6 +60,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import foam.core.BooleanHolder;
+
 public class SigningOfficerInvoiceApprovalTest
   extends foam.nanos.test.Test
 {
@@ -78,6 +81,13 @@ DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
 DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
 DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
 DAO smeUserRegistrationDAO = (DAO) x.get("smeUserRegistrationDAO");
+DAO groupDAO = (DAO) x.get("groupDAO");
+
+Group group = new Group.Builder(x)
+  .setId("test-sme")
+  .setParent("sme")
+  .build();
+group = (Group) groupDAO.put(group);
 
 ((DAO) x.get("localServiceProviderDAO")).put(new ServiceProvider.Builder(x).setId("test").build());
 ((DAO) x.get("notificationSettingDefaultsDAO")).put(new NotificationSetting.Builder(x).setSpid("test").setEnabled(false).build());
@@ -108,13 +118,13 @@ User myAdmin = new User();
 myAdmin.setUserName("Admin123");
 myAdmin.setEmail("email@admin123.com");
 myAdmin.setDesiredPassword("password123!");
-myAdmin.setGroup("sme");
+myAdmin.setGroup("test-sme");
 myAdmin.setOrganization("testBusiness");
 myAdmin.setSpid("test");
 
 myAdmin = (User)  smeUserRegistrationDAO.put(myAdmin);
 myAdmin.setEmailVerified(true);
-myAdmin = (User) userDAO.put(myAdmin);
+myAdmin = (User) localUserDAO.put(myAdmin);
 
 // nanopay admission : 554af38a-8225-87c8-dfdf-eeb15f71215e-18
 
@@ -174,6 +184,15 @@ UserCapabilityJunction ucjBR = new UserCapabilityJunction();
 ucjBR.setSourceId(myAdmin.getId());
 ucjBR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-76");
 ucjBR.setData(br);
+
+userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBR);
+
+ucjBR = new UserCapabilityJunction();
+ucjBR.setSourceId(myAdmin.getId());
+ucjBR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-76.submit");
+ucjBR.setData(new BooleanHolder.Builder(myAdminContext)
+  .setValue(true)
+  .build());
 
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBR);
 
@@ -332,10 +351,7 @@ bo.setOwnershipPercent(30);
 int[] chosenOwners = {1};
 
 BusinessOwnershipData bod = new BusinessOwnershipData.Builder(myAdminContext)
-  .setOwnerSelectionsValidated(true)
-  .setAmountOfOwners(1)
-  .setOwner1(bo)
-  .setChosenOwners(Arrays.stream(chosenOwners).boxed().collect(Collectors.toList()))
+  .setOwners(new BeneficialOwner[]{bo})
   .build();
 MinMaxCapabilityData bodSelection = new MinMaxCapabilityData.Builder(x)
   .setSelectedData(new String[]{"554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired"})
@@ -528,7 +544,7 @@ for ( ApprovalRequest approvalRequest : approvalRequests ) {
   */
 
 Predicate ucjCDRPredicate = foam.mlang.MLang.AND(
-  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-14"), 
+  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-14"),
   foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId()));
 
 ucjCDR = UCJTestingUtility.fetchJunctionPeriodically(x, CapabilityJunctionStatus.GRANTED, ucjCDRPredicate, defaultLoops, defaultMillis, isDebuggingOn, "ucjCDR");
@@ -675,5 +691,6 @@ try {
   print("DEBUG: " + message);
 }
 test(! threw, "When an approver tries to pay an invoice, it works as expected.");
+groupDAO.remove(group);
   }
 }

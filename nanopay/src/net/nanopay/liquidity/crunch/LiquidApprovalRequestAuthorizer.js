@@ -75,17 +75,18 @@ foam.CLASS({
       name: 'authorizeOnUpdate',
       javaCode:  `
         Logger logger = (Logger) x.get("logger");
-        
+        AuthService auth = (AuthService) x.get("auth");
+        boolean canApprove = auth.check(x, "liquid.approvable.requests");
+
         User user = ((Subject) x.get("subject")).getUser();
-        Boolean isAdmin = user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system");
         if ( user != null &&
-             isAdmin &&
+             canApprove &&
              ((ApprovalRequest) newObj).getIsFulfilled() )
           return;
         ApprovalRequest request = (ApprovalRequest) oldObj;
         ApprovalRequest newRequest = (ApprovalRequest) newObj;
 
-        if ( user.getId() != request.getApprover() && ! isAdmin ) {
+        if ( user.getId() != request.getApprover() && ! canApprove ) {
           throw new AuthorizationException("You are not the approver of this request");
         }
 

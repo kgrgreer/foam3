@@ -15,7 +15,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.model.BusinessUserJunction'
+    'net.nanopay.model.BusinessUserJunction',
+    'foam.u2.crunch.wizardflow.SaveAllAgent'
   ],
 
   imports: [
@@ -23,6 +24,15 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      name: 'applyTo',
+      flags: ['web'],
+      code: function applyTo(sequence) {
+        this.SUPER(sequence);
+        sequence.add(this.SaveAllAgent);
+        sequence.remove('PutFinalPayloadsAgent');
+      }
+    },
     {
       name: 'execute',
       flags: ['web'],

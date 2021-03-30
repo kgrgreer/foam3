@@ -356,14 +356,6 @@ p({
   "priority":15
 })
 
-// BR Signing Officer to Residence Consumption Bill (Utility bills)
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
-  "targetId":"85cee1de-db32-11ea-87d0-0242ac130003",
-  "priority":2
-})
-
 // BR Signing Officer to User Identity (Identification)
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
@@ -376,14 +368,6 @@ p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"8ad3c898-db32-11ea-87d0-0242ac130003",
   "targetId":"8ad3c898-db232-1ea-87d0-0242ac130z0"
-})
-
-// BR CPF to Birth date
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"fb7d3ca2-62f2-4caf-a84c-860392e4676b",
-  "targetId":"8bffdedc-5176-4843-97df-1b75ff6054fb",
-  "priority":1
 })
 
 // BR Signing Officer to CPF
@@ -429,6 +413,13 @@ p({
   "sourceId":"B98D97EE-4A43-4B03-84C1-9DE2C0109E87",
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
   "priority":2
+})
+// Submit button
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76.submit",
+  "priority":3
 })
 
 // Prerequisites for apiDomesticPayments
@@ -514,13 +505,21 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"18DD6F03-998F-4A21-8938-358183151F96",
+  "targetId":"A285FDFA-3C6B-4150-A0F4-B72E664A3A9E",
+  "priority": 4
+})
+
+// Business Onboarding Details
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"EC535109-E9C0-4B5D-8D24-31282EF72F8F",
   "targetId":"A679CA67-93C2-4597-B92E-4BBA00797E96",
   "priority": 2
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"18DD6F03-998F-4A21-8938-358183151F96",
-  "targetId":"A285FDFA-3C6B-4150-A0F4-B72E664A3A9E",
+  "sourceId":"EC535109-E9C0-4B5D-8D24-31282EF72F8F",
+  "targetId":"7BE7F3EE-D887-42E9-8042-680C6BF1C6AE",
   "priority": 3
 })
 
@@ -692,6 +691,14 @@ p({
   "sourceId":"1F0B39AD-934E-462E-A608-D590D1081298",
   "targetId":"manual.compliance.identitymind.user",
   "priority": 4
+})
+
+// Expanded User Details
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"FB1C8CF2-34B9-40FE-A4AA-58CFA2FDBA15",
+  "targetId":"A62AC209-CD55-4755-9B93-2B9BAE885B85",
+  "priority": 1
 })
 
 //API CAD Personal Payments Under 1000CAD

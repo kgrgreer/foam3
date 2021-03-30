@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -15,25 +15,26 @@
  * from nanopay Corporation.
  */
 
-foam.ENUM({
-  package: 'net.nanopay.auth',
-  name: 'AgentJunctionStatus',
-  documentation: 'Describes the status between agent and entity on their junction.',
-   values: [
+foam.CLASS({
+  package: 'net.nanopay.partner.br.businessSector',
+  name: 'Sector',
+  documentation: 'businessSector class of https://servicodados.ibge.gov.br/api/v2/cnae/classes',
+
+  properties: [
     {
-      name: 'ACTIVE',
-      label: 'Active',
-      documentation: 'Junction is satisfied and agent may act as entity.'
+      class: 'String',
+      name: 'id'
     },
     {
-      name: 'DISABLED',
-      label: 'Disabled',
-      documentation: 'Junction is unsatisfied disabling agent from acting as entity.'
+      class: 'String',
+      name: 'descricao',
+      documentation: 'name of businessSector'
     },
     {
-      name: 'INVITED',
-      label: 'Invited',
-      documentation: 'The person has been invited to join the business.'
+      class: 'FObjectProperty',
+      of: 'net.nanopay.partner.br.businessSector.Grupo',
+      name: 'grupo',
+      documentation: 'businessSector group'
     }
-  ]
+  ],
 });

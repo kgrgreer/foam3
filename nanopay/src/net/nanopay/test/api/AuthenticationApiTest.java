@@ -24,7 +24,7 @@ public class AuthenticationApiTest extends ApiTestBase {
     try
     {
       // Enable the test user.
-      Subject subject = new Subject.Builder(x).setUser(new User.Builder(x).setId(1).build()).build();
+      Subject subject = new Subject.Builder(x).setUser(new User.Builder(x).setId(1).setGroup("admin").build()).build();
       X systemX = x.put("subject", subject);
       DAO localUserDAO = ((DAO) systemX.get("localUserDAO")).inX(systemX);
       User user = (User) (localUserDAO.find(EQ(User.EMAIL, TEST_USER_EMAIL_ADDRESS))).fclone();

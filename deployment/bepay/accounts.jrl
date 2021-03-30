@@ -1,50 +1,65 @@
-// REVIEW: investigate moving estimate accounts to nanopay?
-p({
-  "class":"net.nanopay.bank.EstimationAccount",
-  "id":"44fff2fc-62f8-4f0c-8e23-e70324c7fe05-bepay",
-  "owner":2022,
-  "denomination":"USD",
-  "country":"US",
-  "name":"US estimation account",
-  "lifecycleState":1
-})
-p({
-  "class":"net.nanopay.bank.EstimationAccount",
-  "id":"92e18fb8-ae57-4a41-834a-ec96984dfe11-bepay",
-  "owner":2022,
-  "denomination":"CAD",
-  "country":"CA",
-  "name":"Canadian estimation account",
-  "lifecycleState":1
-})
-p({
-  "class":"net.nanopay.bank.EstimationAccount",
-  "id":"dab4e0d5-eb1a-4af3-9f6e-3b0cc02119e9-bepay",
-  "owner":2022,
-  "denomination":"EUR",
-  "country":"PT",
-  "name":"Portugal estimation account",
-  "lifecycleState":1
-})
-p({
-  "class":"net.nanopay.bank.EstimationAccount",
-  "id":"09faf398-b203-4496-bbfc-f106bb3f3116-bepay",
-  "owner":2022,
-  "denomination":"GBP",
-  "country":"GB",
-  "name":"GB estimation account",
-  "lifecycleState":1
-})
-
 // intermediary accounts, each child spid of bepay would need it own account
 // with AFEX as the intermediary account
 p({
   "class":"net.nanopay.bank.USBankAccount",
-  "branchId":"111111111",
-  "accountNumber":"3333333",
+  "branchId":"123456789",
+  "accountNumber":"123456",
   "name":"BePay USD Bank",
   "status":1,
   "id":"35931861-7dd4-4ddb-b3a0-5d091cc82fcf-bepay",
+  "isDefault":true,
+  "created":"2020-04-28T17:20:41.561Z",
+  "createdBy":101,
+  "lastModified":"2020-04-28T17:20:41.561Z",
+  "lastModifiedBy":101,
+  "lifecycleState":1,
+  "owner":2022,
+  "enabled":true
+})
+
+p({
+  "class":"net.nanopay.bank.CABankAccount",
+  "branchId":"12345",
+  "institutionNumber": "123",
+  "accountNumber":"12345678",
+  "name":"BePay CAD Bank",
+  "status":1,
+  "id":"6135a985-206d-492f-86ba-6faefa8bd42c-bepay",
+  "isDefault":true,
+  "created":"2020-04-28T17:20:41.561Z",
+  "createdBy":101,
+  "lastModified":"2020-04-28T17:20:41.561Z",
+  "lastModifiedBy":101,
+  "lifecycleState":1,
+  "owner":2022,
+  "enabled":true
+})
+
+p({
+  "class":"net.nanopay.bank.GBBankAccount",
+  "branchId":"123456",
+  "accountNumber":"12345678",
+  "name":"BePay GBP Bank",
+  "status":1,
+  "id":"43cfa197-600e-4e97-8f77-6e3222dfedcf-bepay",
+  "isDefault":true,
+  "created":"2020-04-28T17:20:41.561Z",
+  "createdBy":101,
+  "lastModified":"2020-04-28T17:20:41.561Z",
+  "lastModifiedBy":101,
+  "lifecycleState":1,
+  "owner":2022,
+  "enabled":true
+})
+
+p({
+  "class":"net.nanopay.bank.EUBankAccount",
+  "branchId":"111111111",
+  "accountNumber":"3333333",
+  "name":"BePay EUR Bank",
+  "country":"PT",
+  "status":1,
+  "id":"1dfec169-6cfb-4d60-a573-17235c2a5d7d-bepay",
   "isDefault":true,
   "created":"2020-04-28T17:20:41.561Z",
   "createdBy":101,

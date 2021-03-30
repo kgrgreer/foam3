@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -16,32 +16,14 @@
  */
 
 foam.CLASS({
-  package: "net.nanopay.fx.afex",
-  name: "CreateInstantBenefiaryResponse",
+  package: 'net.nanopay.crunch.acceptanceDocuments.capabilities',
+  name: 'ThirdPartyVerificationAFEXTerms',
+  extends: 'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
+
   properties: [
     {
-      class: 'Int',
-      name: "Code"
-    },
-    {
-      class: 'String',
-      name: "Name"
-    },
-    {
-      class: 'String',
-      name: "FundingBalanceId"
-    },
-    {
-      class: 'String',
-      name: "InformationMessage"
-    },
-    {
-      class: 'Int',
-      name: "InformationCode"
-    },
-    {
-      class: 'String',
-      name: "Status"
+      name: 'title',
+      value: 'Third Party Verification AFEX Terms and Conditions'
     }
   ]
 });

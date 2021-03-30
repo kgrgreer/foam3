@@ -136,7 +136,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'organization',
-      order: 15,
       label: 'Company Name',
       section: 'businessInformation',
       order: 10,

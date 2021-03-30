@@ -34,7 +34,7 @@ foam.CLASS({
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.auth.AgentJunctionStatus',
+    'foam.nanos.auth.AgentJunctionStatus',
     'net.nanopay.model.Business'
   ],
 

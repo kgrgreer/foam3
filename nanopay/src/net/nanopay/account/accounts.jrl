@@ -1,5 +1,94 @@
-p({"class":"net.nanopay.bank.CABankAccount","branch":41,"accountNumber":"7654321","randomDepositAmount":77,"address":{"class":"foam.nanos.auth.Address","countryId":"CA","regionId":"BC","streetNumber":"905","streetName":"gs","city":"Toronto","postalCode":"M6K 3G9"},"institution":35,"id":"9c3d0e0e-7b5e-46da-9093-ceb1b0da2b0b","name":"Alterna Bank Account","isDefault":true,"created":"2019-07-15T18:55:15.220Z","createdBy":101,"lastModified":"2019-07-15T18:55:15.220Z","lastModifiedBy":101,"owner":101,"lifecycleState":1})
+p({
+  "class":"net.nanopay.bank.CABankAccount",
+  "id":"9c3d0e0e-7b5e-46da-9093-ceb1b0da2b0b",
+  "name":"Alterna Bank Account",
+  "branch":41,
+  "accountNumber":"7654321",
+  "randomDepositAmount":77,
+  "address":{"class":"foam.nanos.auth.Address","countryId":"CA","regionId":"BC","streetNumber":"905","streetName":"gs","city":"Toronto","postalCode":"M6K 3G9"},
+  "institution":35,
+  "isDefault":true,
+  "created":"2019-07-15T18:55:15.220Z",
+  "createdBy":101,
+  "lastModified":"2019-07-15T18:55:15.220Z",
+  "lastModifiedBy":101,
+  "owner":101,
+  "lifecycleState":1
+})
 
-p({"class":"net.nanopay.bank.CABankAccount","branch":41,"accountNumber":"7654321","randomDepositAmount":77,"address":{"class":"foam.nanos.auth.Address","countryId":"CA","regionId":"BC","streetNumber":"905","streetName":"gs","city":"Toronto","postalCode":"M6K 3G9"},"institution":2,"id":"9c34bfad-ec60-4abd-8fc3-fcd5681df5f8","name":"BMO Bank Account","isDefault":true,"created":"2019-07-15T18:55:15.220Z","createdBy":101,"lastModified":"2019-07-15T18:55:15.220Z","lastModifiedBy":101,"owner":101,"lifecycleState":1})
+p({
+  "class":"net.nanopay.bank.CABankAccount",
+  "id":"9c34bfad-ec60-4abd-8fc3-fcd5681df5f8",
+  "name":"BMO Bank Account",
+  "branch":41,
+  "accountNumber":"7654321",
+  "randomDepositAmount":77,
+  "address":{"class":"foam.nanos.auth.Address","countryId":"CA","regionId":"BC","streetNumber":"905","streetName":"gs","city":"Toronto","postalCode":"M6K 3G9"},
+  "institution":2,
+  "isDefault":true,
+  "created":"2019-07-15T18:55:15.220Z",
+  "createdBy":101,
+  "lastModified":"2019-07-15T18:55:15.220Z",
+  "lastModifiedBy":101,
+  "owner":101,
+  "lifecycleState":1
+})
 
-p({"class":"net.nanopay.bank.CABankAccount","branch":41,"accountNumber":"7654321","randomDepositAmount":77,"address":{"class":"foam.nanos.auth.Address","countryId":"CA","regionId":"BC","streetNumber":"905","streetName":"gs","city":"Toronto","postalCode":"M6K 3G9"},"institution":10,"id":"73ee9d92-fc0b-471c-8e9b-0fc0d85e318c","name":"RBC Bank Account","isDefault":true,"created":"2019-07-15T18:55:15.220Z","createdBy":101,"lastModified":"2019-07-15T18:55:15.220Z","lastModifiedBy":101,"owner":101,"lifecycleState":1})
+p({
+  "class":"net.nanopay.bank.CABankAccount",
+  "id":"73ee9d92-fc0b-471c-8e9b-0fc0d85e318c",
+  "name":"RBC Bank Account",
+  "branch":41,
+  "accountNumber":"7654321",
+  "randomDepositAmount":77,
+  "address":{"class":"foam.nanos.auth.Address","countryId":"CA","regionId":"BC","streetNumber":"905","streetName":"gs","city":"Toronto","postalCode":"M6K 3G9"},
+  "institution":10,
+  "isDefault":true,
+  "created":"2019-07-15T18:55:15.220Z",
+  "createdBy":101,
+  "lastModified":"2019-07-15T18:55:15.220Z",
+  "lastModifiedBy":101,
+  "owner":101,
+  "lifecycleState":1
+})
+
+p({
+  "class":"net.nanopay.bank.EstimationAccount",
+  "id":"44fff2fc-62f8-4f0c-8e23-e70324c7fe05",
+  "owner":101,
+  "denomination":"USD",
+  "country":"US",
+  "spid": "nanopay.estimationaccount",
+  "name":"US estimation account",
+  "lifecycleState":1
+})
+p({
+  "class":"net.nanopay.bank.EstimationAccount",
+  "id":"92e18fb8-ae57-4a41-834a-ec96984dfe11",
+  "owner":101,
+  "denomination":"CAD",
+  "country":"CA",
+  "spid": "nanopay.estimationaccount",
+  "name":"Canadian estimation account",
+  "lifecycleState":1
+})
+p({
+  "class":"net.nanopay.bank.EstimationAccount",
+  "id":"dab4e0d5-eb1a-4af3-9f6e-3b0cc02119e9",
+  "owner":101,
+  "denomination":"EUR",
+  "country":"PT",
+  "spid": "nanopay.estimationaccount",
+  "name":"Portugal estimation account",
+  "lifecycleState":1
+})
+p({
+  "class":"net.nanopay.bank.EstimationAccount",
+  "id":"09faf398-b203-4496-bbfc-f106bb3f3116",
+  "owner":101,
+  "denomination":"GBP",
+  "country":"GB",
+  "spid": "nanopay.estimationaccount",
+  "name":"GB estimation account",
+  "lifecycleState":1
+})

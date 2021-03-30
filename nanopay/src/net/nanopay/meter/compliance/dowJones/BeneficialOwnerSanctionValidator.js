@@ -72,6 +72,7 @@ foam.CLASS({
                     .setCauseDaoKey("dowJonesResponseDAO")
                     .setClassification("Beneficial Owner Dow Jones R&C")
                     .setMatches(response.getResponseBody().getMatches())
+                    .setCreatedFor(beneficialOwner.getId())
                     .build());
               }
             }, "Beneficial Owner Sanction Validator");

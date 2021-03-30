@@ -70,7 +70,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'net.nanopay.auth.AgentJunctionStatus',
+      of: 'foam.nanos.auth.AgentJunctionStatus',
       name: 'status',
       tableCellFormatter: function(state, obj) {
         this.start()

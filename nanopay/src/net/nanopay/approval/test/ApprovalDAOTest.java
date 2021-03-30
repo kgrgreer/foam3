@@ -17,7 +17,7 @@ import foam.mlang.sink.Count;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.auth.LifecycleState;
-import foam.nanos.ruler.Operations;
+import foam.nanos.dao.Operation;
 import foam.nanos.ruler.Rule;
 import foam.nanos.ruler.RuleAction;
 import foam.nanos.ruler.RuleGroup;
@@ -141,7 +141,7 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getI
     rgDAO.put(rg);
     rule.setRuleGroup("test approval_CREATE");
     rule.setDaoKey("testUserDAO");
-    rule.setOperation(Operations.CREATE);
+    rule.setOperation(Operation.CREATE);
     rule.setAfter(true);
     rule.setLifecycleState(LifecycleState.ACTIVE);
     Predicate predicate = EQ(DOT(NEW_OBJ, INSTANCE_OF(foam.nanos.auth.User.class)), true);
@@ -161,7 +161,7 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getI
     rgDAO.put(rg2);
     rule2.setRuleGroup("test approval_UPDATE");
     rule2.setDaoKey("testUserDAO");
-    rule2.setOperation(Operations.UPDATE);
+    rule2.setOperation(Operation.UPDATE);
     rule2.setAfter(false);
     rule2.setLifecycleState(LifecycleState.ACTIVE);
     Predicate predicate2 = EQ(DOT(NEW_OBJ, INSTANCE_OF(foam.nanos.auth.User.class)), true);

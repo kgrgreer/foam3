@@ -54,15 +54,14 @@ foam.CLASS({
         BusinessOwnershipData data = (BusinessOwnershipData) ucj.getData();
 
         ComplianceValidationStatus rulerResult = ComplianceValidationStatus.VALIDATED;
-        BeneficialOwner owner = null;
         User user = (User) ucj.findSourceId(x);
         String group = user.getSpid() + "-fraud-ops";
 
         boolean autoValidated = true;
-        for ( int i = 1 ; i <= data.getAmountOfOwners() ; i++ ) {
+        int i = 0;
+        for ( BeneficialOwner owner : data.getOwners() ) {
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           try {
-            owner = (BeneficialOwner) data.getProperty("owner"+i);
             status = checkOwnerCompliance(x, owner);
           } catch (Exception e) {
             status = ComplianceValidationStatus.PENDING;
@@ -86,17 +85,19 @@ foam.CLASS({
                     .setMatches(response != null ? response.getResponseBody().getMatches() : null)
                     .setComments("Further investigation needed for owner: " + index)
                     .setGroup(group)
+                    .setCreatedFor(user.getId())
                     .build());
               }
             }, "Beneficial Owner Sanction Validator");
           }
+          i++;
         }
         if ( autoValidated ) {
           X userX = ruler.getX().put("subject", ucj.getSubject(x));
           ((CrunchService) userX.get("crunchService")).updateJunction(
             userX,
-            ucj.getTargetId(), 
-            null, 
+            ucj.getTargetId(),
+            null,
             CapabilityJunctionStatus.APPROVED);
         }
         ruler.putResult(rulerResult);
@@ -111,7 +112,7 @@ foam.CLASS({
       javaType: 'net.nanopay.meter.compliance.ComplianceValidationStatus',
       javaCode: `
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
-      
+
         try {
           Date filterLRDFrom = fetchLastExecutionDate(x, beneficialOwner.getId(), "Dow Jones Beneficial Owner");
           String filterRegion = "";

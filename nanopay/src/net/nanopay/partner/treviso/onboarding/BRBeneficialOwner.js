@@ -46,6 +46,7 @@ foam.CLASS({
   messages: [
     { name: 'INVALID_NATIONALITY', message: 'Nationality required' },
     { name: 'INVALID_CPF', message: 'Valid CPF number required' },
+    { name: 'INVALID_CPF_CHECKED', message: 'Unable to validate CPF number and birthdate combination. Please update and try again.' },
     { name: 'INVALID_OWNER_NAME', message: 'Confirm the name of the business owner' },
     { name: 'YES', message: 'Yes' },
     { name: 'NO', message: 'No' },
@@ -126,14 +127,31 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['cpfName'],
+          args: ['cpf', 'cpfName'],
           predicateFactory: function(e) {
-            return e.GT(
-              net.nanopay.partner.treviso.onboarding.BRBeneficialOwner
-                .CPF_NAME,
-              0);
+            return e.EQ(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.partner.treviso.onboarding.BRBeneficialOwner
+                    .CPF
+                  }), 11);
           },
           errorMessage: 'INVALID_CPF'
+        },
+        {
+          args: ['cpf', 'cpfName'],
+          predicateFactory: function(e) {
+            return e.AND(
+              e.GT(
+              net.nanopay.partner.treviso.onboarding.BRBeneficialOwner
+                .CPF_NAME, 0),
+              e.EQ(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.partner.treviso.onboarding.BRBeneficialOwner
+                    .CPF
+                  }), 11)
+              );
+          },
+          errorMessage: 'INVALID_CPF_CHECKED'
         }
       ],
       externalTransient: true,
@@ -349,6 +367,14 @@ foam.CLASS({
 
         if ( ! getVerifyName() ) throw new IllegalStateException("Must verify name attached to CPF is valid.");
       `
+    },
+    function fromUser(u) {
+      var common = [
+        'firstName', 'lastName', 'jobTitle', 'address', 'birthday',
+        'email'
+      ];
+      for ( let p of common ) this[p] = u[p];
+      return this;
     }
   ]
 });

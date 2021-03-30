@@ -28,3 +28,13 @@ p({
     "class": "net.nanopay.partner.accuity.AccuityBankAccountValidationService"
   }
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"afexService",
+  "lazy":true,
+  "serve":false,
+  "serviceScript":"""
+    return new net.nanopay.fx.afex.AFEXService(x);
+  """
+})

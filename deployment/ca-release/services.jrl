@@ -17,10 +17,11 @@ p({
     namespace:"18",
     username:"nanoAPI",
     password:"4ZszDP3c51Va",
-    baseUrl:"https://djrc.api.test.dowjones.com/v1/search/"
+    baseUrl:"https://djrc.api.dowjones.com/v1/search/"
   }
 })
 
+// Do not use IdentityMind production for release as it opens production tickets which are investigated by the support team
 p({
   class:"foam.nanos.boot.NSpec",
   id:"identityMindService",
@@ -35,17 +36,17 @@ p({
 
 
 p({
-  "class":"foam.nanos.boot.NSpec", 
+  "class":"foam.nanos.boot.NSpec",
   "name":"securefactService",
   "lazy":false,
   "serve":true,
   "service":{
     "class":"net.nanopay.meter.compliance.secureFact.SecurefactService",
-    "sidniUrl":"https://qa2-sidni.securefact.com/rest/v3/verifyIndividual",
-    "sidniApiKey":"NTc5MDk0MDc5OTUyNzMxMDYwNzg1NDgxMTQ3OTkwNDI4MDkwMzY4",
-    "levUrl":"https://lev3uat.securefact.com/rest/v1/lev/search",
-    "levDocumentOrderUrl":"https://lev3uat.securefact.com/rest/v1/document/order",
-    "levDocumentDataUrl":"https://lev3uat.securefact.com/rest/v1/document/data",
-    "levApiKey":"ODA1NTMyNjA0MTAyNDg2NzIxMzg4NTk0MTQ4ODg0NTI1MDg4NzY4"
+    "sidniUrl":"https://sidni.securefact.com/rest/v3/verifyIndividual",
+    "sidniApiKey":"NTIyMDgwNTAyNzk1MDA2NjkxODkyMzE2MDkxMDI2MjM5Mzg5Njk2",
+    "levUrl":"https://lev3.securefact.com/rest/v1/lev/search",
+    "levDocumentOrderUrl":"https://lev3.securefact.com/rest/v1/document/order",
+    "levDocumentDataUrl":"https://lev3.securefact.com/rest/v1/document/data",
+    "levApiKey":"OTc0NTA2ODI1NjgwNDg4NzU2NDg0MDU4MDYzNzc3NDcwMzQ5MzEy"
   }
 })
