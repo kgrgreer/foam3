@@ -1738,6 +1738,10 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/TrevisoBusinessAccountData' },
   { name: 'net/nanopay/partner/treviso/TrevisoCurrencyAmountInformation' },
 
+
+  //Reporing
+  { name: 'net/nanopay/partner/intuit/ReconciliationReport' },
+
   { name: 'net/nanopay/payment/PayeeCurrencyService' },
   { name: 'net/nanopay/payment/PayeeCurrency' },
   { name: 'net/nanopay/payment/ClientPayeeCurrencyService' },
