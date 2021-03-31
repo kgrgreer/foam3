@@ -39,6 +39,7 @@ p({
         String response = new BasicResponseHandler().handleResponse(httpResponse);
         Object[] obj = x.create(foam.lib.json.JSONParser.class).parseStringForArray(response,Sector.class);
         DAO businessSectorDAO = (DAO) x.get(\"businessSectorDAO\");
+        businessSectorDAO = businessSectorDAO.getDelegate().getDelegate().getDelegate().getDelegate().getDelegate();
         DAO localeDAO = (DAO) x.get(\"localeDAO\");
         List businessSectors = ((ArraySink) businessSectorDAO.where(foam.mlang.MLang.AND( new Predicate[] {MLang.GTE(BusinessSector.ID, 92813), MLang.LTE(BusinessSector.ID, 93485)})).select(new ArraySink())).getArray();
         TranslationService ts = (TranslationService) x.get(\"translationService\");
