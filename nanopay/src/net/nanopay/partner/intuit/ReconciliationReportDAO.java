@@ -12,6 +12,7 @@ import foam.nanos.auth.User;
 import net.nanopay.account.Account;
 import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.FeeSummaryTransactionLineItem;
+import net.nanopay.tx.FxSummaryTransactionLineItem;
 import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.billing.Bill;
 import net.nanopay.tx.bmo.BmoFormatUtil;
@@ -80,7 +81,7 @@ public class ReconciliationReportDAO extends ProxyDAO {
     report.setDebitFileNumber(ciTransaction.getRbcReferenceNumber());
 
     var debitEFT = (EFTFile) eftFileDAO.find(report.getDebitFileNumber());
-    if ( debitEFT != null ) {
+    if ( debitEFT != null && ! debitEFT.getFileCreationTimeEDT().isEmpty() ) {
       report.setDebitFileDate(Date.from(BmoFormatUtil.parseDateTimeEDT(debitEFT.getFileCreationTimeEDT()).toInstant()));
     }
 
@@ -89,7 +90,7 @@ public class ReconciliationReportDAO extends ProxyDAO {
     report.setCreditFileNumber(coTransaction.getRbcReferenceNumber());
 
     var creditEFT = (EFTFile) eftFileDAO.find(report.getCreditFileNumber());
-    if ( creditEFT != null ) {
+    if ( creditEFT != null && ! creditEFT.getFileCreationTimeEDT().isEmpty() ) {
       report.setCreditFileDate(Date.from(BmoFormatUtil.parseDateTimeEDT(creditEFT.getFileCreationTimeEDT()).toInstant()));
     }
 
@@ -118,8 +119,6 @@ public class ReconciliationReportDAO extends ProxyDAO {
       report.setCreatorName(creator.getLegalName());
     }
 
-    // Client FX rate
-
     for ( var lineItem : lineItems ) {
       if ( lineItem instanceof FeeSummaryTransactionLineItem) {
         var fstLineItem = (FeeSummaryTransactionLineItem) lineItem;
@@ -133,7 +132,14 @@ public class ReconciliationReportDAO extends ProxyDAO {
           else if ( feeLineItem.getDestinationAccount().equals("ab590614-f5bd-476a-84e0-6037607397b5") )
             report.setNanopayRevenue(feeLineItem.getAmount());
         }
+      } else if ( lineItem instanceof FxSummaryTransactionLineItem ) {
+        var fxLineItem = (FxSummaryTransactionLineItem) lineItem;
+        report.setClientFXRate(fxLineItem.getRate());
       }
+    }
+
+    if ( report.getClientFXRate().isEmpty() ) {
+      report.setClientFXRate("1.0");
     }
 
     if ( coTransaction.getStatus() == TransactionStatus.COMPLETED ) {
