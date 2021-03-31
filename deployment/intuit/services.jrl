@@ -41,7 +41,7 @@ p({
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "chargeDateService",
-  "serve": "true",
+  "serve": true,
   "serviceScript": """
     import foam.mlang.predicate.ContextUserPredicate;
     import foam.nanos.auth.User;

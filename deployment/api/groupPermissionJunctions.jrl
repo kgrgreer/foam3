@@ -9,7 +9,6 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-suppor
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.agentJunctionDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.businessDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.summaryTransactionDAO"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.summaryTransactionDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.intuitTransactionSummaryDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.transactionSummaryDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"summarytransaction.read.*"})
