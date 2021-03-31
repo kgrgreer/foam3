@@ -762,6 +762,7 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/CicoBorder', flags: ['web'] },
 
   //credit engine
+  { name: 'net/nanopay/tx/creditengine/AllFeeWaiver' },
   { name: 'net/nanopay/tx/creditengine/FeeRefund' },
   { name: 'net/nanopay/tx/creditengine/CreditCodeAccount' },
   { name: 'net/nanopay/tx/creditengine/FeeWaiver' },

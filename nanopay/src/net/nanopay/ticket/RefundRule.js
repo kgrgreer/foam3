@@ -37,7 +37,7 @@ foam.CLASS({
     'net.nanopay.ticket.RefundTicket',
     'net.nanopay.ticket.RefundStatus',
     'net.nanopay.tx.creditengine.FeeRefund',
-    'net.nanopay.tx.creditengine.FeeWaiver',
+    'net.nanopay.tx.creditengine.AllFeeWaiver',
     'net.nanopay.tx.CreditLineItem',
     'net.nanopay.tx.DigitalTransaction',
     'net.nanopay.tx.FeeSummaryTransactionLineItem',
@@ -87,14 +87,14 @@ foam.CLASS({
           }
 
           if ( request.getWaiveCharges() ) {
-            FeeWaiver feeWaiver = new FeeWaiver();
+            AllFeeWaiver feeWaiver = new AllFeeWaiver();
             feeWaiver.setDiscountPercent(1);
             feeWaiver.setApplicableFees(new String[] {"Ablii Fee"});
             feeWaiver.setName("Fee waiver");
             feeWaiver.setSpid(reverse.getSpid());
             feeWaiver.setOwner(request.getOwner());
             feeWaiver.setInitialQuantity(1);
-            feeWaiver = (FeeWaiver) creditCodeDAO.put(feeWaiver);
+            feeWaiver = (AllFeeWaiver) creditCodeDAO.put(feeWaiver);
             array.add(feeWaiver.getId());
           }
 
