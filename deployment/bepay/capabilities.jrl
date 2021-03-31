@@ -74,20 +74,11 @@ p({
 
 p({
   class:"foam.nanos.crunch.Capability",
-  id:"fb7d3ca2-62f2-2131-a84c-8603dsrf2bepay",
-  name:"Extended User Details",
-  of:"net.nanopay.crunch.bepay.ExtendedUserDetailsData",
-  enabled:true,
-  daoKey:"userDAO",
-  contextDAOFindKey:"subject.user",
-  associatedEntity:0
-})
-
-p({
-  class:"foam.nanos.crunch.Capability",
   id:"fb7d3ca2-62f2-4caf-a84c-860392e46bepay",
   name:"CPF Number",
   of:"net.nanopay.country.br.CPF",
+  "daoKey":"userDAO",
+  "contextDAOFindKey":"subject.realUser",
   enabled:true,
   associatedEntity:0
 })

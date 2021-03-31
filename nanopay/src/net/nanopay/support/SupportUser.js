@@ -36,12 +36,9 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'id',
     'firstName',
     'lastName',
     'email',
-    'phoneNumber',
-    'status',
     'compliance',
     'group'
   ],

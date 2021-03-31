@@ -184,33 +184,6 @@ foam.CLASS({
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'status',
       documentation: `Tracks the type of status of the User.`,
-      tableCellFormatter: function(status) {
-        var bgColour = '#a4b3b8';
-        var borderColour = '#a4b3b8';
-        var textColour = '#ffffff';
-        if ( status.label == 'Submitted' ) {
-          bgColour = 'transparent';
-          borderColour = '#2cab70';
-          textColour = '#2cab70';
-        } else if ( status.label == 'Active' ) {
-          bgColour = '#2cab70';
-          borderColour = '#2cab70';
-          textColour = '#ffffff';
-        }
-        if ( status.label != '' ) {
-          this.start()
-            .add(status.label)
-            .style({
-              'color': textColour,
-              'border': '1px solid ' + borderColour,
-              'border-radius': '100px',
-              'background': bgColour,
-              'padding': '3px 10px 3px 10px',
-              'display': 'inline-block'
-            })
-          .end();
-        }
-      },
       section: 'operationsInformation',
       order: 10,
       gridColumns: 6,

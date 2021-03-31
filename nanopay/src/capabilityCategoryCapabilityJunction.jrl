@@ -204,3 +204,23 @@ p({
 "sourceId": "registerPaymentProvider",
 "targetId": "89cc91da-4bbd-458b-81d4-574815e455fa-4"
 })
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "apiCADOnboarding",
+"targetId": "56D2D946-6085-4EC3-8572-04A17225F86A"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "apiCADOnboarding",
+"targetId": "18DD6F03-998F-4A21-8938-358183151F96"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "apiCADOnboarding",
+"targetId": "1F0B39AD-934E-462E-A608-D590D1081298"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "apiCADOnboarding",
+"targetId": "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD"
+})

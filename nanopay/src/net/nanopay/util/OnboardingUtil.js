@@ -42,7 +42,7 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.LoadWizardletsAgent',
     'foam.u2.crunch.wizardflow.AutoSaveWizardletsAgent',
     'foam.u2.crunch.wizardflow.StepWizardAgent',
-    'foam.u2.crunch.wizardflow.PutFinalJunctionsAgent',
+    'foam.u2.crunch.wizardflow.SaveAllAgent',
     'foam.u2.crunch.wizardflow.FilterWizardletsAgent',
     'foam.u2.crunch.wizardflow.LoadTopConfig'
   ],
@@ -150,11 +150,11 @@ foam.CLASS({
         .add(this.CreateWizardletsAgent)
         .add(this.FilterWizardletsAgent)
         .add(this.LoadWizardletsAgent)
-        .add(this.AutoSaveWizardletsAgent)
         .add(this.StepWizardAgent, {
           config: foam.u2.wizard.StepWizardConfig.create({
             allowBacktracking: false,
             allowSkipping: false,
+            requireAll: true,
             wizardView: {
               class: 'foam.u2.wizard.ScrollingStepWizardView',
               fullScreen: true,
@@ -163,7 +163,7 @@ foam.CLASS({
             }
           })
         })
-        .add(this.PutFinalJunctionsAgent)
+        .add(this.SaveAllAgent)
         .execute().then(() => {
           this.pushMenu('sme.accountProfile.switch-business', true);
         });

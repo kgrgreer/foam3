@@ -300,8 +300,8 @@ p({
     "duration":{
       "class":"foam.nanos.cron.TimeHMS",
       "hour":0,
-      "minute":5,
-      "second":0
+      "minute":0,
+      "second":30
     }
   },
   "id":"IntuitTransactionSummaryAgent",

@@ -21,14 +21,13 @@ foam.CLASS({
   extends: 'foam.dao.ProxyDAO',
   documentation: `
     The purpose of this DAO decorator is to set the signUpStatus property on a
-    contact to ACTIVE if the business it refers to has joined the platform.
+    contact based on whether or not a contact has a bank account.
   `,
 
   javaImports: [
-    'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
-    'net.nanopay.model.Business'
+    'net.nanopay.account.Account'
   ],
 
   axioms: [
@@ -49,21 +48,23 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        if ( ! (obj instanceof Contact) ) {
+        if ( ! (obj instanceof PersonalContact) ) {
           return super.put_(x, obj);
         }
 
-        Contact contact = (Contact) obj;
+        PersonalContact contact = (PersonalContact) obj;
 
-        if ( ContactStatus.READY.equals(contact.getSignUpStatus()) ) {
-          return super.put_(x, obj);
+        if (ContactStatus.CONNECTED.equals(contact.getSignUpStatus())) {
+          return super.put_(x, contact);
         }
 
-        if ( contact.getBusinessId() != 0 ) {
-          Business business = (Business) getDelegate().inX(x).find(contact.getBusinessId());
-          if ( business != null ) {
-            contact.setSignUpStatus(ContactStatus.READY);
-          }
+        DAO accountDAO = (DAO)x.get("accountDAO");
+        Account account = (Account) accountDAO.find(contact.getBankAccount()); 
+
+        if (account == null) {
+          contact.setSignUpStatus(ContactStatus.PENDING);
+        } else {
+          contact.setSignUpStatus(ContactStatus.READY);
         }
 
         return super.put_(x, contact);
@@ -71,4 +72,3 @@ foam.CLASS({
     }
   ]
 });
-

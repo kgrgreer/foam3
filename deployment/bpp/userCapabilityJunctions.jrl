@@ -11,7 +11,6 @@ p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2025-bppCorridorCapabili
 p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2025-bppPlannerCapability",sourceId:2025,targetId:"bppPlannerCapability",status:1})
 p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2025-bpp-tx-reason-codes",sourceId:2025,targetId:"bpp-tx-reason-codes",status:1})
 p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2025-bpp-tx-fees",sourceId:2025,targetId:"bpp-tx-fees",status:1})
-p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2025-nanopay.estimationaccount",sourceId:2025,targetId:"nanopay.estimationaccount",status:1})
 
 // fraudops-bpp
 p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2027-bpp",sourceId:2027,targetId:"bpp",status:1})
