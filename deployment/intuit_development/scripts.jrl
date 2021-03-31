@@ -10,12 +10,14 @@ p({
     import foam.nanos.auth.User;
     import static foam.mlang.MLang.*;
 
-    print("starting ....");
+    print("Starting ....");
     print("");
 
     boolean dryRun = true;
     if ( dryRun ) {
-        print("Executing dry run");
+        print("EXECUTING DRY RUN");
+        print(" - Set dryRun to false to apply these changes");
+        print("");
     }
 
     // ====== CREATE INTUIT BILLING USER ====
@@ -42,7 +44,7 @@ p({
         if ( !dryRun ) {
             user = dao.put(user);
         }
-        print("Billing user: " + user;
+        print("Billing user: " + user);
         print("");
     } else {
         print("Billing user already exists: " + user.getId());
@@ -118,9 +120,7 @@ p({
     String intuitFeeBranchId = "<INTUIT_FEE_BRANCH_ID>";
     String intuitFeeInstitutionNumber = "<INTUIT_FEE_INSTITUTION>";
     bankAccount = (net.nanopay.bank.CABankAccount) accountDAO.find(intuitFeeAccountId);
-
-    boolean setIntuitBankAccount = false;
-    if ( bankAccount != null && setIntuitBankAccount ) {
+    if ( bankAccount != null  ) {
         bankAccount = bankAccount.fclone();
         bankAccount.setAccountNumber(intuitFeeAccountNumber);
         bankAccount.setBranchId(intuitFeeBranchId);
@@ -186,7 +186,7 @@ p({
         cron = new foam.nanos.cron.Cron.Builder(x)
             .setId(cronId)
             .setDescription("1st Script in RBC EFT Processing")
-            .setCode("spid = \"Intuit\";\nnew net.nanopay.tx.rbc.cron.RbcGenerateFileCron(spid).execute(x);\nprint(\"done for \" + spid);")
+            .setCode("new net.nanopay.tx.rbc.cron.RbcGenerateFileCron(\\\"intuit\\\").execute(x);")
             .setEnabled(false)
             .build();
         if ( !dryRun ) {
@@ -209,7 +209,7 @@ p({
         cron = new foam.nanos.cron.Cron.Builder(x)
             .setId(cronId)
             .setDescription("2nd Script in RBC EFT Processing")
-            .setCode("new net.nanopay.tx.rbc.cron.RbcSendFileCron().execute(x);\nprint(\"done\");")
+            .setCode("new net.nanopay.tx.rbc.cron.RbcSendFileCron().execute(x);")
             .setEnabled(false)
             .build();
         if ( !dryRun ) {
@@ -232,7 +232,7 @@ p({
         cron = new foam.nanos.cron.Cron.Builder(x)
             .setId(cronId)
             .setDescription("3rd Script in RBC EFT Processing")
-            .setCode("new net.nanopay.tx.rbc.cron.RbcVerifyFileAcceptedCron().execute(x);\nprint(\"done\");")
+            .setCode("new net.nanopay.tx.rbc.cron.RbcVerifyFileAcceptedCron().execute(x);")
             .setEnabled(false)
             .build();
         if ( !dryRun ) {
@@ -255,7 +255,7 @@ p({
         cron = new foam.nanos.cron.Cron.Builder(x)
             .setId(cronId)
             .setDescription("4th Script in RBC EFT Processing")
-            .setCode("new net.nanopay.tx.rbc.cron.RbcProcessReportCron().execute(x);\nprint(\"done\");")
+            .setCode("new net.nanopay.tx.rbc.cron.RbcProcessReportCron().execute(x);")
             .setEnabled(false)
             .build();
         if ( !dryRun ) {
@@ -278,7 +278,7 @@ p({
         cron = new foam.nanos.cron.Cron.Builder(x)
             .setId(cronId)
             .setDescription("5th Script in RBC EFT Processing")
-            .setCode("new net.nanopay.tx.rbc.cron.RbcCompleteCron().execute(x);\nprint(\"done\");")
+            .setCode("new net.nanopay.tx.rbc.cron.RbcCompleteCron().execute(x);")
             .setEnabled(false)
             .build();
         if ( !dryRun ) {
@@ -294,6 +294,6 @@ p({
         print("");
     }
 
-    print("done ...");
+    print("Done ...");
   """
 })
