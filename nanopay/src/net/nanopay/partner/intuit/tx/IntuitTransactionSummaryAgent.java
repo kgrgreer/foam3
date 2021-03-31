@@ -43,10 +43,13 @@ public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
       SummarizingTransaction summarizingTransaction = (SummarizingTransaction) txn;
       ChainSummary chainSummary = summarizingTransaction.getChainSummary();
 
-      List<FeeSummaryTransactionLineItem> feeLineItems = new ArrayList<>();
+      FeeSummaryTransactionLineItem feeLineItem = null;
       if ( txn.getLineItems().length > 0 ) {
         for ( var li : txn.getLineItems() ) {
-          if ( li instanceof FeeSummaryTransactionLineItem ) feeLineItems.add((FeeSummaryTransactionLineItem) li);
+          if ( li instanceof FeeSummaryTransactionLineItem ) {
+            feeLineItem = (FeeSummaryTransactionLineItem) li;
+            break;
+          } 
         }
       }
 
@@ -65,10 +68,7 @@ public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
         .build();
       if (txn.getPayer() != null) intuitTxnSummary.setPayer(txn.getPayer().getId());
       if (txn.getPayee() != null) intuitTxnSummary.setPayee(txn.getPayee().getId());
-      if (feeLineItems.size() > 0) {
-        FeeSummaryTransactionLineItem lineItem = feeLineItems.get(0);
-        intuitTxnSummary.setFee(lineItem.getTotalFee());
-      }
+      if (feeLineItem != null) intuitTxnSummary.setFee(feeLineItem.getTotalFee());
       intuitTxnSummary.setSummary(intuitTxnSummary.summarizeTransaction(x, txn));
       transactionSummaryDAO.put(intuitTxnSummary);
     }
