@@ -106,3 +106,45 @@ p({
   "enabled":true,
   "lifecycleState":1
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"e1470962-b96a-4572-ae56-f45715f9819b",
+  "name":"Default scenario",
+  "priority":1,
+  "ruleGroup":"refundTickets",
+  "documentation":"Default scenario runs only if no other scenario has been found.",
+  "daoKey":"localTicketDAO",
+  "operation":0,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue":{
+          "class":"net.nanopay.ticket.RefundStatus",
+          "ordinal":0
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"postApprovalRuleId",
+        "propValue":""
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.ticket.AgentRefundTicketCreateRule",
+    "textToAgent":"No scenario found.",
+  },
+  "after":false,
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})
+
