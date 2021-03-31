@@ -49,6 +49,7 @@ p({
         BusinessSector businessSector = (BusinessSector) businessSectorDAO.find(MLang.EQ(BusinessSector.CODE, api_Id));
         if ( businessSector == null ) {
             System.out.println(api_Id + \" not exist in journals, need add it in\");
+            print(api_Id + \" not exist in journals, need add it in\");
             continue;
         }
         String sectorName = businessSector.getName();
@@ -74,6 +75,7 @@ p({
             converted.append(ch);
         }
         System.out.println(businessSectorName_translated + \" translation has updated to \" + converted.toString());
+        print(businessSectorName_translated + \" translation has updated to \" + converted.toString());
         locale = locale.fclone();
         locale.setTarget(converted.toString());
         localeDAO.put(locale);
@@ -84,6 +86,7 @@ p({
 p({
     class:"foam.nanos.script.Script",
     id:"Update BusinessSector journals by BusinessSector API",
+    description:"add 9 more businessSector parent and update BusinessSector parent",
     code:"""
         import foam.dao.DAO;
         import foam.dao.ArraySink;
@@ -122,92 +125,110 @@ p({
         DAO businessSectorDAO = (DAO) x.get(\"businessSectorDAO\");
         List businessSectors = ((ArraySink) businessSectorDAO.where(foam.mlang.MLang.AND( new Predicate[] {MLang.GTE(BusinessSector.ID, 92813), MLang.LTE(BusinessSector.ID, 93485)})).select(new ArraySink())).getArray();
         TranslationService ts = (TranslationService) x.get(\"translationService\");
+        // use hashMap to match Char to id
+        parents = new HashMap();
+        String[] bs = {\"Extractive industries\", \"Transformation industries\", \"Water, sewage, waste management and decontamination activities\", \"Trade; repair of motor vehicles and motorcycles\", \"Transport, storage and mail\", \"Administrative activities and complementary services\",\"Administration public health, defense and social security\",\"Domestic services\", \"International organizations and other extraterritorial institutions\"};
+        String[] bs_parent_char = {\"B\", \"C\", \"E\", \"G\", \"H\", \"N\", \"O\", \"T\", \"U\"};
+        for (int i = 0; i < bs.length; i++) {
+          //Check if this parent exist, if not add them
+          BusinessSector businessSector_parent = (BusinessSector) businessSectorDAO.find(MLang.EQ(BusinessSector.NAME, bs[i]));
+          if ( businessSector_parent == null ) {
+              System.out.println(\"parent\" + bs[i] + \" is missing\");
+              print(\"parent \" + bs[i] + \" is missing\");
+              businessSector_parent = businessSectorDAO.put(new BusinessSector.Builder(x).setCountryId(\"BR\").setName(bs[i]).setParent(0).build());
+          }
+          parents.put(bs_parent_char[i], businessSector_parent.getId());
+        }
         for (int i = 0; i < obj.length; i++) {
-        String api_Id = ((Sector) obj[i]).getId() + ((Sector) obj[i]).getGrupo().getDivisao().getId();
-        String api_parent = ((Sector) obj[i]).getGrupo().getDivisao().getSecao().getId();
-        String api_name = ((Sector) obj[i]).getDescricao();
-        //find businessSector by code
-        BusinessSector businessSector = (BusinessSector) businessSectorDAO.find(MLang.EQ(BusinessSector.CODE, api_Id));
-        if ( businessSector == null ) {
-            System.out.print(\"id\" + api_Id + \" is missing\");
-            print(\"id \" + api_Id + \" is missing\");
-            businessSector = new BusinessSector.Builder(x).setCode(api_Id).setCountryId(\"BR\").setName(api_name).build();
+          String api_Id = ((Sector) obj[i]).getId() + ((Sector) obj[i]).getGrupo().getDivisao().getId();
+          String api_parent = ((Sector) obj[i]).getGrupo().getDivisao().getSecao().getId();
+          String api_name = ((Sector) obj[i]).getDescricao();
+          //find businessSector by api_Id(BusinessSector Code)
+          BusinessSector businessSector = (BusinessSector) businessSectorDAO.find(MLang.EQ(BusinessSector.CODE, api_Id));
+          //if businessSector not exist, create it
+          if ( businessSector == null ) {
+              System.out.println(\"id\" + api_Id + \" is missing\");
+              print(\"id \" + api_Id + \" is missing\");
+              businessSector = new BusinessSector.Builder(x).setCode(api_Id).setCountryId(\"BR\").setName(api_name).build();
+
+          }
+          String sectorName = businessSector.getName();
+          String name_tr = ts.getTranslation(\"pt\", sectorName, sectorName);
+          String businessCode = businessSector.getCode();
+          //convert char to number A:1, B:2, C:3 this part isn't nessary just to sure if there are more Char
+          Character api_parent_char = api_parent.charAt(0);
+          int api_parent_long = (java.lang.Character.getNumericValue(api_parent_char) - 9);
+          businessSector = businessSector.fclone();
+          switch(api_parent) {
+              case \"A\" :
+                  businessSector.setParent(1);
+                  break;
+              case \"B\" :
+                  businessSector.setParent(parents.get(\"B\"));
+                  break;
+              case \"C\" :
+                  businessSector.setParent(parents.get(\"C\"));
+                  break;
+              case \"D\" :
+                  businessSector.setParent(3);
+                  break;
+              case \"E\" :
+                  businessSector.setParent(parents.get(\"E\"));
+                  break;
+              case \"F\":
+                  businessSector.setParent(4);
+                  break;
+              case \"G\":
+                  businessSector.setParent(parents.get(\"G\"));
+                  break;        
+              case \"H\":
+                  businessSector.setParent(parents.get(\"H\"));
+                  break;
+              case \"I\":
+                  businessSector.setParent(18);
+                  break;
+              case \"J\":
+                  businessSector.setParent(9);
+                  break;
+              case \"K\":
+                  businessSector.setParent(10);
+                  break;
+              case \"L\":
+                  businessSector.setParent(11);                       
+                  break;
+              case \"M\":
+                  businessSector.setParent(12);                       
+                  break;
+              case \"N\":
+                  businessSector.setParent(parents.get(\"N\"));                      
+                  break;
+              case \"O\":
+                  businessSector.setParent(parents.get(\"O\"));                       
+                  break;
+              case \"P\":
+                  businessSector.setParent(15);                      
+                  break;
+              case \"Q\":
+                  businessSector.setParent(16);                
+                  break;
+              case \"R\":
+                  businessSector.setParent(17);                    
+                  break;
+              case \"S\":
+                  businessSector.setParent(19);                    
+                  break;
+              case \"T\":
+                  businessSector.setParent(parents.get(\"T\"));                     
+                  break;
+              case \"U\":
+                  businessSector.setParent(parents.get(\"U\"));                       
+                  break;
+              default :
+                  businessSector.setParent(api_parent_long);
+          }
+          businessSector = businessSectorDAO.put(businessSector);
+          print(businessSector.getId());
+          System.out.println(businessSector.getId());
         }
-        String sectorName = businessSector.getName();
-        String name_tr = ts.getTranslation(\"pt\", sectorName, sectorName);
-        String businessCode = businessSector.getCode();
-        Character api_parent_char = api_parent.charAt(0);
-        int api_parent_long = (java.lang.Character.getNumericValue(api_parent_char) - 9);
-        businessSector = businessSector.fclone();
-        switch(api_parent) {
-            case \"A\" :
-                businessSector.setParent(1);
-                break;
-            case \"B\" :
-                businessSector.setParent(93486);
-                break;
-            case \"C\" :
-                businessSector.setParent(93487);
-                break;
-            case \"D\" :
-                businessSector.setParent(3);
-                break;
-            case \"E\" :
-                businessSector.setParent(93488);
-                break;
-            case \"F\":
-                businessSector.setParent(4);
-                break;
-            case \"G\":
-                businessSector.setParent(93489);
-                break;        
-            case \"H\":
-                businessSector.setParent(93490);
-                break;
-            case \"I\":
-                businessSector.setParent(18);
-                break;
-            case \"J\":
-                businessSector.setParent(9);
-                break;
-            case \"K\":
-                businessSector.setParent(10);
-                break;
-            case \"L\":
-                businessSector.setParent(11);                       
-                break;
-            case \"M\":
-                businessSector.setParent(12);                       
-                break;
-            case \"N\":
-                businessSector.setParent(93491);                      
-                break;
-            case \"O\":
-                businessSector.setParent(93492);                       
-                break;
-            case \"P\":
-                businessSector.setParent(15);                      
-                break;
-            case \"Q\":
-                businessSector.setParent(16);                
-                break;
-            case \"R\":
-                businessSector.setParent(17);                    
-                break;
-            case \"S\":
-                businessSector.setParent(19);                    
-                break;
-            case \"T\":
-                businessSector.setParent(93493);                     
-                break;
-            case \"U\":
-                businessSector.setParent(93494);                       
-                break;
-            default :
-                businessSector.setParent(api_parent_long);
-        }
-        businessSector = businessSectorDAO.put(businessSector);
-        print(businessSector.getId());
-    }
     """
 })
