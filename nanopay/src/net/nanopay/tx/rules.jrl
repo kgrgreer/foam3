@@ -998,3 +998,41 @@ p({
   "saveHistory":false,
   "lifecycleState":1
 })
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"261bde03-998e-4aad-b812-42e28c653453",
+  "name":"Create Ticket on Decline",
+  "priority":100,
+  "ruleGroup":"billing",
+  "documentation":"Creates Ticket from Declined/Failed transactions",
+  "daoKey":"localTransactionDAO",
+  "operation":1,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.Or",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal":4
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal":9
+        }
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.ticket.CreateTicketRule"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})
