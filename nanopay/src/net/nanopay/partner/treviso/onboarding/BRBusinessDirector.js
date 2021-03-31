@@ -76,8 +76,7 @@ foam.CLASS({
           },
           errorMessage: 'FOREIGN_ID_ERROR'
         }
-      ],
-      externalTransient: true
+      ]
     },
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
       name: 'birthday',
@@ -119,7 +118,6 @@ foam.CLASS({
         }
       ],
       postSet: function(_, _) {
-        this.cpfName = '';
         if ( this.cpf.length == 11 ) {
           this.getCpfName(this.cpf).then(v => {
             this.cpfName = v;
@@ -161,13 +159,11 @@ foam.CLASS({
           errorMessage: 'INVALID_CPF_CHECKED'
         }
       ],
-      externalTransient: true,
       tableCellFormatter: function(val) {
         return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
       },
       postSet: function(_,n) {
-        if ( n.length == 11 && this.verifyName !== true ) {
-          this.cpfName = "";
+        if ( n.length === 11 && !this.verifyName ) {
           this.getCpfName(n).then(v => {
             this.cpfName = v;
           });
@@ -203,8 +199,7 @@ foam.CLASS({
       class: 'String',
       name: 'cpfName',
       label: '',
-      hidden: true,
-      externalTransient: true
+      hidden: true
     },
     {
       class: 'Boolean',
