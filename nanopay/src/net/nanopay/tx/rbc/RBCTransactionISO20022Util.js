@@ -243,10 +243,21 @@ foam.CLASS({
           // Creditor
           net.nanopay.iso20022.PartyIdentification32 creditor = new net.nanopay.iso20022.PartyIdentification32();
           creditor.setName(getName(payee));
-          if ( payeeAddress != null && payeeAddress.getStructured() ) {
+          if ( payeeAddress != null ) {
             net.nanopay.iso20022.PostalAddress6 pstlAdr2 = new net.nanopay.iso20022.PostalAddress6();
-            String streetName = payeeAddress.getStreetName() == null ? "" : payeeAddress.getStreetName();
-            String buildingNumber = payeeAddress.getStreetNumber() == null ? "" : payeeAddress.getStreetNumber();
+
+            String streetName = ""; ;
+            String buildingNumber = "";
+
+            if ( payeeAddress.getStructured() ) {
+              streetName = payeeAddress.getStreetName() == null ? "" : payeeAddress.getStreetName();
+              buildingNumber = payeeAddress.getStreetNumber() == null ? "" : payeeAddress.getStreetNumber();
+            } else {
+              var addr = AddressUtil.parseAddress(payeeAddress.getAddress1(), payeeAddress.getAddress2());
+              streetName = addr[1];
+              buildingNumber = addr[0];
+            }
+
             pstlAdr2.setStreetName(removeSpecialChars(streetName.substring(0, Math.min(streetName.length(), 25))));
             pstlAdr2.setBuildingNumber(removeSpecialChars(buildingNumber.substring(0, Math.min(buildingNumber.length(), 10))));
             pstlAdr2.setPostCode(payeeAddress.getPostalCode());
@@ -486,10 +497,20 @@ foam.CLASS({
           // Debitor
           net.nanopay.iso20022.PartyIdentification32 debtor = new net.nanopay.iso20022.PartyIdentification32();
           debtor.setName(getName(sender));
-          if ( senderAddress != null && senderAddress.getStructured() ) {
+          if ( senderAddress != null ) {
             net.nanopay.iso20022.PostalAddress6 pstlAdr3 = new net.nanopay.iso20022.PostalAddress6();
-            String streetName = senderAddress.getStreetName() == null ? "" : senderAddress.getStreetName();
-            String buildingNumber = senderAddress.getStreetNumber() == null ? "" : senderAddress.getStreetNumber();
+            String streetName = "";
+            String buildingNumber = "";
+
+            if ( senderAddress.getStructured() ) {
+              streetName = senderAddress.getStreetName() == null ? "" : senderAddress.getStreetName();
+              buildingNumber = senderAddress.getStreetNumber() == null ? "" : senderAddress.getStreetNumber();
+            } else {
+              var addr = AddressUtil.parseAddress(senderAddress.getAddress1(), senderAddress.getAddress2());
+              streetName = addr[1];
+              buildingNumber = addr[0];
+            }
+
             pstlAdr3.setStreetName(removeSpecialChars(streetName.substring(0, Math.min(streetName.length(), 25))));
             pstlAdr3.setBuildingNumber(removeSpecialChars(buildingNumber.substring(0, Math.min(buildingNumber.length(), 10))));
             pstlAdr3.setPostCode(senderAddress.getPostalCode());
