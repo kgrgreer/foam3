@@ -44,18 +44,6 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"SoaWebServiceCredientials",
-  "lazy":false,
-  "service": {
-    "class":"net.nanopay.partner.soawebservices.SoaCredenciais",
-    "Email":"suporte@trevisocc.com.br",
-    "Senha":"auFHK3STb",
-    "url":"http://www.soawebservices.com.br/restservices/producao/cdc/"
-  }
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
   "name":"soaWebService",
   "lazy":false,
   "serve":true,
