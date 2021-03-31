@@ -15,10 +15,12 @@
  * from nanopay Corporation.
  */
 
+
 foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
   name: 'BusinessOwnershipData',
   topics: ['ownersUpdate'],
+  mixins: ['foam.u2.wizard.AbstractWizardletAware'],
   implements: [
     'foam.core.Validatable',
     'foam.mlang.Expressions'
@@ -75,7 +77,7 @@ foam.CLASS({
         var index = 0;
         var sinkFn = so => {
           var obj = this.ownerClass.create({
-            id: ++index,
+            id: so.id,
             business: this.businessId,
             mode: 'percent'
           }, x).fromUser(so);
@@ -143,6 +145,9 @@ foam.CLASS({
             // ???: If this ViewSpec took the context of this model, these could
             //      be imported instead of passed like this.
             soUsersDAO: X.data.soUsersDAO,
+            choiceDAO$: X.data.availableUsers$,
+            ownerClass: X.data.ownerClass,
+            businessId: X.data.businessId,
             choiceSections: [
               {
                 dao$: X.data.soUsersDAO$,
@@ -208,6 +213,9 @@ foam.CLASS({
       this.ownersUpdate.sub(this.updateOwnersListeners);
       this.owners$.sub(this.updateOwnersListeners);
     },
+    function installInWizardlet(w) {
+      w.reloadAfterSave = false;
+    },
     {
       name: 'validate',
       javaCode: `
@@ -255,6 +263,8 @@ foam.CLASS({
     'beneficialOwnerSelectionUpdate',
     'soUsersDAO',
     'choiceSections',
+    'ownerClass',
+    'businessId',
     {
       class: 'foam.u2.ViewSpec',
       name: 'choiceView',
@@ -291,7 +301,22 @@ foam.CLASS({
               .tag(self.choiceView, {
                 fullObject_$: self.data$,
                 choosePlaceholder: self.PLEASE_SELECT_ONE,
-                sections: self.choiceSections
+                sections: [
+                  {
+                    dao$: this.soUsersDAO$,
+                    filteredDAO$: this.choiceDAO$
+                  },
+                  { dao: (() => {
+                    var otherChoiceDAO = foam.dao.MDAO.create({ of: self.ownerClass });
+                    var obj = self.ownerClass.create({
+                      business: self.businessId
+                    }, self.__subSubContext__);
+                    obj.toSummary = () => self.OTHER_MSG;
+                    otherChoiceDAO.put(obj);
+
+                    return otherChoiceDAO;
+                  })() }
+                ]
               })
             .end()
         }))
