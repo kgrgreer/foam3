@@ -52,3 +52,26 @@ p({
     return chargeDateService;
   """
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "reconciliationReportDAO",
+  "serve": true,
+  "serviceScript": """
+  dao = new net.nanopay.partner.intuit.ReconciliationReportDAO(
+    x,
+    new foam.dao.NullDAO(x, net.nanopay.partner.intuit.ReconciliationReport.getOwnClassInfo())
+  );
+
+  return new foam.dao.EasyDAO.Builder(x)
+    .setOf(net.nanopay.partner.intuit.ReconciliationReport.getOwnClassInfo())
+    .setDecorator(dao)
+    .setInnerDAO(x.get("summaryTransactionDAO"))
+    .build();
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.partner.intuit.ReconciliationReport"
+    }
+  """
+})

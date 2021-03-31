@@ -58,3 +58,14 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support"
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"menu.read.users-support"})
 
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"feesummarytransactionlineitem.read.*"})
+
+// ********** REPORTING *****************
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"menu.read.reconciliation-reports"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"menu.read.customer-onboarding-reports"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"group.read.intuit-reporting"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"summarytransaction.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"summarytransaction.rw.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"service.summaryTransactionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"eftfile.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"eftfile.rw.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"service.eftFileDAO"})
