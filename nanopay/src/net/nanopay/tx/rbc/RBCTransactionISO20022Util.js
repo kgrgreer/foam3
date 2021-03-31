@@ -169,6 +169,8 @@ foam.CLASS({
           insName = inst.getName();
           insNumber = padLeftWithZeros(inst.getInstitutionNumber(), 4);
         }
+      } else {
+        throw new RuntimeException("Could not find branch with id " + fundingAccount.getBranch());
       }
 
       StringBuilder memId = new StringBuilder();
