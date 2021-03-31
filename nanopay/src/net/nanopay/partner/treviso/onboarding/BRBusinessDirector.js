@@ -163,7 +163,7 @@ foam.CLASS({
         return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
       },
       postSet: function(_,n) {
-        if ( n.length == 11 && !this.verifyName ) {
+        if ( n.length === 11 && !this.verifyName ) {
           this.getCpfName(n).then(v => {
             this.cpfName = v;
           });
