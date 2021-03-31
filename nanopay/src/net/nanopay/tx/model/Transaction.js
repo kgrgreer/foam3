@@ -611,7 +611,8 @@ foam.CLASS({
       name: 'creditCodes',
       documentation: `The ids of the credit code to be applied to transaction.`,
       visibility: 'HIDDEN',
-      includeInDigest: true
+      includeInDigest: true,
+      section: 'transactionInformation'
     },
     {
       class: 'DateTime',

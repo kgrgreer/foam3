@@ -58,6 +58,8 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-op
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-ops","targetId":"ticket.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-ops","targetId":"ticket.rw.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-ops","targetId":"ticketcomment.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-ops","targetId":"ticketcomment.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-ops","targetId":"ticketcomment.rw.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-ops","targetId":"historyrecord.create"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-ops","targetId":"ticketstatus.create"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-ops","targetId":"ticketstatus.read.*"})

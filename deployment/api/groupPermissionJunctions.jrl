@@ -33,6 +33,8 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-suppor
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"ticket.update.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"ticket.rw.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"ticketcomment.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"ticketcomment.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"ticketcomment.rw.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"historyrecord.create"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"ticketstatus.create"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"ticketstatus.read.*"})
