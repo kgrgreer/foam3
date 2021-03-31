@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.nanos.notification.Notification',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
+    'foam.util.AddressUtil',
     'foam.util.SafetyUtil',
     'foam.core.ValidationException',
     'net.nanopay.account.Account',
