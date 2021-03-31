@@ -1,0 +1,299 @@
+p({
+  class:"foam.nanos.script.Script",
+  id:"Intuit Configuration",
+  description:"Intuit Configuration Script for Staging",
+  code:"""
+    import foam.core.X;
+    import foam.dao.DAO;
+    import foam.nanos.alarming.Alarm;
+    import foam.nanos.auth.Subject;
+    import foam.nanos.auth.User;
+    import static foam.mlang.MLang.*;
+
+    print("starting ....");
+    print("");
+
+    boolean dryRun = true;
+    if ( dryRun ) {
+        print("Executing dry run");
+    }
+
+    // ====== CREATE INTUIT BILLING USER ====
+    DAO dao = (DAO) x.get("localUserDAO");
+
+    // Check if the user already exists
+    String emailAddress = "billing-intuit@nanopay.com";
+    String firstName = "InuitBilling";
+    String lastName = "Admin";
+    String group = "intuit-admin";
+    String spid = "intuit";
+    User user = dao.find(EQ(User.EMAIL, emailAddress));
+    if ( user == null ) {
+        user = new User.Builder(x)
+            .setFirstName(firstName)
+            .setLastName(lastName)
+            .setEmail(emailAddress)
+            .setUserName(emailAddress)
+            .setEmailVerified(true)
+            .setGroup(group)
+            .setSpid(spid)
+            .build();
+
+        if ( !dryRun ) {
+            user = dao.put(user);
+        }
+        print("Billing user: " + user;
+        print("");
+    } else {
+        print("Billing user already exists: " + user.getId());
+        print("");
+    }
+
+    // ====== SET RBC FTPS CREDENTIALS ==========
+    String ftpUsername = "<USERNAME>";
+    String ftpPassword = "<PASSWORD>";
+    String ftpHost = "<HOST>";
+    String ftpNetworkGatewayId = "<GATEWAY_ID>";
+    String ftpNetworkGatewayClientId = "<GATEWAY_CLIENT_ID>";
+    net.nanopay.tx.rbc.ftps.RbcFTPSCredential credentials = (net.nanopay.tx.rbc.ftps.RbcFTPSCredential) x.get("rbcFTPSCredential");
+    credentials = credentials.fclone();
+    credentials.setEnable(true);
+    credentials.setSkipSendFile(false);
+    credentials.setUsername(ftpUsername);
+    credentials.setPassword(ftpPassword);
+    credentials.setHost(ftpHost);
+    credentials.setPort(21); // or 990?
+    credentials.setNetworkGatewayId(ftpNetworkGatewayId);
+    credentials.setNetworkGatewayClientId(ftpNetworkGatewayClientId);
+    if ( !dryRun ) {
+        x.put("rbcFTPSCredential", credentials);
+    }
+    print("Set RBC FTP Credentials: " + credentials);
+    print("");
+
+    // ====== SET RBC ASSIGNED CLIENT VALUES ======
+    String rbcReserveAccountId = "73ee9d92-fc0b-471c-8e9b-0fc0d85e318c";
+    String partyId = "<PARTY_ID>";
+    String pdsAccountNumber = "<PDS_ACCOUNT_NUMBER>";
+    String papAccountNumber = "<PAP_ACCOUNT_NUMBER>";
+    String defaultPadType = "SALA";
+    net.nanopay.tx.rbc.RbcAssignedClientValue clientValue = (net.nanopay.tx.rbc.RbcAssignedClientValue) x.get("rbcAssignedClientValue");
+    clientValue = clientValue.fclone();
+    clientValue.setInitiatingPartyId(partyId);
+    clientValue.setPDSAccountNumber(pdsAccountNumber);
+    clientValue.setPAPAccountNumber(papAccountNumber);
+    clientValue.setAccountId(rbcReserveAccountId);
+    clientValue.setDefaultPadType(defaultPadType);
+    if ( !dryRun ) {
+        x.put("rbcAssignedClientValue", clientValue);
+    }
+    print("Set RBC Assigned Client Values: " + clientValue);
+    print("");
+
+    // ======= SET RBC BANK ACCOUNT  =====
+    DAO accountDAO = (DAO) x.get("localAccountDAO");
+    String rbcReserveAccountNumber = "<ACCOUNT_NUMBER>";
+    String rbcReserveBranchId = "<BRANCH_ID>";
+    String rbcReserveInstitutionNumber = "<INSTITUTION>";
+    net.nanopay.bank.CABankAccount bankAccount = (net.nanopay.bank.CABankAccount) accountDAO.find(rbcReserveAccountId);
+    if ( bankAccount != null ) {
+        bankAccount = bankAccount.fclone();
+        bankAccount.setAccountNumber(rbcReserveAccountNumber);
+        bankAccount.setBranchId(rbcReserveBranchId);
+        bankAccount.setInstitutionNumber(rbcReserveInstitutionNumber);
+        // QUESTION: should we be setting the bank address?
+        if ( !dryRun ) {
+            bankAccount = accountDAO.put(bankAccount);
+        }
+        print("Set RBC Bank Account: " + bankAccount);
+        print("");
+    } else {
+        print("RBC Bank Account NOT FOUND: " + rbcReserveAccountId);
+        print("");
+    }
+
+    // ======= SET INTUIT BANK ACCOUNT ======
+    String intuitFeeAccountId = "fc4b152f-d1d5-47cb-9da6-ba537d5dc4c6";
+    String intuitFeeAccountNumber = "<INTUIT_FEE_ACCOUNT_NUMBER>";
+    String intuitFeeBranchId = "<INTUIT_FEE_BRANCH_ID>";
+    String intuitFeeInstitutionNumber = "<INTUIT_FEE_INSTITUTION>";
+    bankAccount = (net.nanopay.bank.CABankAccount) accountDAO.find(intuitFeeAccountId);
+
+    boolean setIntuitBankAccount = false;
+    if ( bankAccount != null && setIntuitBankAccount ) {
+        bankAccount = bankAccount.fclone();
+        bankAccount.setAccountNumber(intuitFeeAccountNumber);
+        bankAccount.setBranchId(intuitFeeBranchId);
+        bankAccount.setInstitutionNumber(intuitFeeInstitutionNumber);
+        // QUESTION: should we be setting the bank address?
+        if ( !dryRun ) {
+            bankAccount = accountDAO.put(bankAccount);
+        }
+        print("Set Intuit Fee Bank Account: " + bankAccount);
+        print("");
+    } else {
+        print("Intuit Bank Account NOT FOUND: " + intuitFeeAccountId);
+        print("");
+    }
+
+    // ======= Enable Billing Cron =========
+    DAO cronDAO = (DAO) x.get("cronDAO");
+    String cronId = "Intuit Billing Cron";
+    foam.nanos.cron.Cron cron = (foam.nanos.cron.Cron) cronDAO.find(cronId);
+    if ( cron == null ) {
+        print("");
+        print("!! Cron Missing !! - " + cronId);
+        print("");
+    } else if ( ! cron.getEnabled() ) {
+        cron = cron.fclone();
+        cron.setEnabled(true);
+        if ( !dryRun ) {
+            cronDAO.put(cron);
+        }
+        print("Enabled cron: " + cronId);
+        print("");
+    } else {
+        print("Cron checked: " + cronId);
+        print("");
+    }
+
+    // ======= Enable Transaction Summary Cron =========
+    cronId = "IntuitTransactionSummaryAgent";
+    cron = (foam.nanos.cron.Cron) cronDAO.find(cronId);
+    if ( cron == null ) {
+        print("");
+        print("!! Cron Missing !! - " + cronId);
+        print("");
+    } else if ( ! cron.getEnabled() ) {
+        cron = cron.fclone();
+        cron.setEnabled(true);
+        if ( !dryRun ) {
+            cronDAO.put(cron);
+        }
+        print("Enabled cron: " + cronId);
+        print("");
+    } else {
+        print("Cron checked: " + cronId);
+        print("");
+    }
+
+    // ======= Create EFT Crons =========
+
+    // 1. File Generation
+    cronId = "INTUIT_RBC_EFT_FILE_GENERATE";
+    cron = (foam.nanos.cron.Cron) cronDAO.find(cronId);
+    if ( cron == null ) {
+        cron = new foam.nanos.cron.Cron.Builder(x)
+            .setId(cronId)
+            .setDescription("1st Script in RBC EFT Processing")
+            .setCode("spid = \"Intuit\";\nnew net.nanopay.tx.rbc.cron.RbcGenerateFileCron(spid).execute(x);\nprint(\"done for \" + spid);")
+            .setEnabled(false)
+            .build();
+        if ( !dryRun ) {
+            cron = cronDAO.put(cron);
+        }
+        print("Created cron: " + cron.getId());
+        print("");
+    } else if ( ! cron.getEnabled() ) {
+        print("Cron exists and is disabled: " + cronId);
+        print("");
+    } else {
+        print("Cron exists and is enabled: " + cronId);
+        print("");
+    }
+
+    // 2. File Send
+    cronId = "INTUIT_RBC_EFT_SEND";
+    cron = (foam.nanos.cron.Cron) cronDAO.find(cronId);
+    if ( cron == null ) {
+        cron = new foam.nanos.cron.Cron.Builder(x)
+            .setId(cronId)
+            .setDescription("2nd Script in RBC EFT Processing")
+            .setCode("new net.nanopay.tx.rbc.cron.RbcSendFileCron().execute(x);\nprint(\"done\");")
+            .setEnabled(false)
+            .build();
+        if ( !dryRun ) {
+            cronDAO.put(cron);
+        }
+        print("Created cron: " + cron.getId());
+        print("");
+    } else if ( ! cron.getEnabled() ) {
+        print("Cron exists and is disabled: " + cronId);
+        print("");
+    } else {
+        print("Cron exists and is enabled: " + cronId);
+        print("");
+    }
+
+    // 3. Verify Receipt
+    cronId = "INTUIT_RBC_EFT_VERIFY_RECEIPT";
+    cron = (foam.nanos.cron.Cron) cronDAO.find(cronId);
+    if ( cron == null ) {
+        cron = new foam.nanos.cron.Cron.Builder(x)
+            .setId(cronId)
+            .setDescription("3rd Script in RBC EFT Processing")
+            .setCode("new net.nanopay.tx.rbc.cron.RbcVerifyFileAcceptedCron().execute(x);\nprint(\"done\");")
+            .setEnabled(false)
+            .build();
+        if ( !dryRun ) {
+            cronDAO.put(cron);
+        }
+        print("Created cron: " + cron.getId());
+        print("");
+    } else if ( ! cron.getEnabled() ) {
+        print("Cron exists and is disabled: " + cronId);
+        print("");
+    } else {
+        print("Cron exists and is enabled: " + cronId);
+        print("");
+    }
+
+    // 4. Report
+    cronId = "INTUIT_RBC_EFT_VERIFY_RECEIPT";
+    cron = (foam.nanos.cron.Cron) cronDAO.find(cronId);
+    if ( cron == null ) {
+        cron = new foam.nanos.cron.Cron.Builder(x)
+            .setId(cronId)
+            .setDescription("4th Script in RBC EFT Processing")
+            .setCode("new net.nanopay.tx.rbc.cron.RbcProcessReportCron().execute(x);\nprint(\"done\");")
+            .setEnabled(false)
+            .build();
+        if ( !dryRun ) {
+            cronDAO.put(cron);
+        }
+        print("Created cron: " + cron.getId());
+        print("");
+    } else if ( ! cron.getEnabled() ) {
+        print("Cron exists and is disabled: " + cronId);
+        print("");
+    } else {
+        print("Cron exists and is enabled: " + cronId);
+        print("");
+    }
+
+    // 5. Completion
+    cronId = "INTUIT_RBC_EFT_COMPLETION";
+    cron = (foam.nanos.cron.Cron) cronDAO.find(cronId);
+    if ( cron == null ) {
+        cron = new foam.nanos.cron.Cron.Builder(x)
+            .setId(cronId)
+            .setDescription("5th Script in RBC EFT Processing")
+            .setCode("new net.nanopay.tx.rbc.cron.RbcCompleteCron().execute(x);\nprint(\"done\");")
+            .setEnabled(false)
+            .build();
+        if ( !dryRun ) {
+            cronDAO.put(cron);
+        }
+        print("Created cron: " + cron.getId());
+        print("");
+    } else if ( ! cron.getEnabled() ) {
+        print("Cron exists and is disabled: " + cronId);
+        print("");
+    } else {
+        print("Cron exists and is enabled: " + cronId);
+        print("");
+    }
+
+    print("done ...");
+  """
+})
