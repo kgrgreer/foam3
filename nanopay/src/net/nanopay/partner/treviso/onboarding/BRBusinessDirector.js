@@ -192,8 +192,8 @@ foam.CLASS({
       name: 'cpfName',
       label: '',
       hidden: true,
-      postSet: function(oldCpfname, newCpfName) {
-        this.updateVerifyName(oldCpfname, newCpfName);
+      postSet: function(oldCpfName, newCpfName) {
+        this.updateVerifyName(oldCpfName, newCpfName);
       }
     },
     {
