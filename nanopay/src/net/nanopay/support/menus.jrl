@@ -46,8 +46,6 @@ p({
   "class":"foam.nanos.menu.Menu",
   "id":"transactions-support",
   "label":"Transaction Summary",
-  "icon":"images/transactions-24px-resting.svg",
-  "activeIcon":"images/transactions-24px-active.svg",
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
