@@ -2,7 +2,7 @@ p({
   "class":"foam.nanos.boot.NSpec",
   "name":"rbcFTPSCredential",
   "lazy":false,
-  service":{
+  "service":{
     "class":"net.nanopay.tx.rbc.ftps.RbcFTPSCredential"
   }
 })

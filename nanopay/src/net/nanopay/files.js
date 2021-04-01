@@ -1700,9 +1700,6 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/registration/businesstypes/SoleProprietorData' },
   { name: 'net/nanopay/crunch/registration/businesstypes/TrustData' },
 
-  // bepay crunch onboarding
-  { name: 'net/nanopay/crunch/bepay/ExtendedUserDetailsData' },
-
   // crunch predicates - todo move all predicates used in crunch here
   { name: 'net/nanopay/crunch/predicate/IsBusiness' },
   { name: 'net/nanopay/crunch/predicate/BusinessPassedCompliance' },
@@ -1759,6 +1756,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/compliance/BusinessDirectorSanctionValidator' },
   { name: 'net/nanopay/crunch/compliance/SecurefactSIDniValidator' },
   { name: 'net/nanopay/crunch/compliance/SecurefactLEVValidator' },
+  { name: 'net/nanopay/crunch/compliance/SendNotificationOnPut' },
   { name: 'net/nanopay/crunch/compliance/UserComplianceApproval' },
   { name: 'net/nanopay/crunch/compliance/SetFulfilledComplianceApprovalRequest' },
   { name: 'net/nanopay/crunch/compliance/SetComplianceOnUser' },
@@ -1934,5 +1932,8 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/br/businessSector/Sector' },
   { name: 'net/nanopay/partner/br/businessSector/Grupo' },
   { name: 'net/nanopay/partner/br/businessSector/Divisao' },
-  { name: 'net/nanopay/partner/br/businessSector/Secao' }
+  { name: 'net/nanopay/partner/br/businessSector/Secao' },
+
+  { name: 'net/nanopay/app/AppConfigRefines' }
+
 ]);

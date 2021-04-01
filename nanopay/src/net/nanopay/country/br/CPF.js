@@ -18,6 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.country.br',
   name: 'CPF',
+  mixins: ['foam.u2.wizard.AbstractWizardletAware'],
   documentation: `
     The Cadastro de Pessoas Físicas (CPF; Portuguese for "Natural Persons Register") is the Brazilian individual taxpayer registry identification, a permanent number attributed by the Brazilian Federal Revenue to both Brazilians and resident aliens who pay taxes or take part, directly or indirectly. It is canceled after some time after the person's death.
   `,
@@ -59,6 +60,7 @@ foam.CLASS({
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
       section: 'collectCpf',
       label: 'Date of birth',
+      visibility: 'RW',
       validationPredicates: [
         {
           args: ['birthday'],
@@ -191,12 +193,28 @@ foam.CLASS({
         }
       ]
     },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'user',
+      hidden: true,
+      factory: function() {
+        return this.subject.realUser;
+      }
+      // depricated but leaving for data migration - script to do this needed - then delete
+    }
   ],
 
   methods: [
+    function installInWizardlet(w) {
+      // CPF takes longer to save, so re-load may clear new inputs
+      w.reloadAfterSave = false;
+    },
     {
       name: 'getCpfName',
       code: async function(cpf) {
+        if ( ! this.birthday ) // goes with user deprication
+          return await this.brazilVerificationService.getCPFName(this.__subContext__, cpf, this.user);
         return await this.brazilVerificationService
           .getCPFNameWithBirthDate(this.__subContext__, cpf, this.birthday);
       }
@@ -207,14 +225,7 @@ foam.CLASS({
       if ( ! getVerifyName() )
           throw new foam.core.ValidationException(INVALID_CPF);
 
-      java.util.List<foam.core.PropertyInfo> props = getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
-      for ( foam.core.PropertyInfo prop : props ) {
-        try {
-          prop.validateObj(x, this);
-        } catch ( IllegalStateException e ) {
-          throw e;
-        }
-      }
+      foam.core.FObject.super.validate(x);
       `
     }
   ]

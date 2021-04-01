@@ -22,8 +22,8 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "accounts-support",
   "label": "Accounts",
-  "icon":"images/intuit/accounts-24px-resting.svg",
-  "activeIcon":"images/intuit/accounts-24px-active.svg",
+  "icon":"images/intuit/account-balance-resting-24px.svg",
+  "activeIcon":"images/intuit/account-balance-active-24px.svg",
   "parent": "",
   "order": 30
 })

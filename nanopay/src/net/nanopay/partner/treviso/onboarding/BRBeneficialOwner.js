@@ -66,6 +66,7 @@ foam.CLASS({
       }
     },
     {
+      class: "Date",
       name: 'birthday',
       postSet: function(_,n) {
         if ( this.cpf.length == 11 && this.verifyName !== true ) {

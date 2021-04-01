@@ -55,6 +55,13 @@ foam.CLASS({
       section: 'transactionInformation',
       order: 140,
       gridColumns: 6
+    },
+    {
+      class: 'String',
+      name: 'fee',
+      section: 'transactionInformation',
+      order: 150,
+      gridColumns: 6
     }
   ]
 });
