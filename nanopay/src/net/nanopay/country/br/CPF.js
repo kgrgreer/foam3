@@ -18,6 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.country.br',
   name: 'CPF',
+  mixins: ['foam.u2.wizard.AbstractWizardletAware'],
   documentation: `
     The Cadastro de Pessoas Físicas (CPF; Portuguese for "Natural Persons Register") is the Brazilian individual taxpayer registry identification, a permanent number attributed by the Brazilian Federal Revenue to both Brazilians and resident aliens who pay taxes or take part, directly or indirectly. It is canceled after some time after the person's death.
   `,
@@ -206,6 +207,10 @@ foam.CLASS({
   ],
 
   methods: [
+    function installInWizardlet(w) {
+      // CPF takes longer to save, so re-load may clear new inputs
+      w.reloadAfterSave = false;
+    },
     {
       name: 'getCpfName',
       code: async function(cpf) {

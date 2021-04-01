@@ -40,6 +40,7 @@ foam.CLASS({
     {
       name: 'init',
       code: function() {
+        this.SUPER();
         this.ADD_ROW.label = this.ADD_MSG + ' ' +this.name;
       }
     }
