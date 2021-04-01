@@ -66,8 +66,8 @@ foam.CLASS({
       }
     },
     {
+      class: "Date",
       name: 'birthday',
-      view: { class: 'foam.u2.view.date.DateView2' },
       postSet: function(_,n) {
         if ( this.cpf.length == 11 && this.verifyName !== true ) {
           this.cpfName = "";
