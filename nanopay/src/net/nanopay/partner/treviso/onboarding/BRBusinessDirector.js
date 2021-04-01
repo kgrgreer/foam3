@@ -117,12 +117,8 @@ foam.CLASS({
           errorMessage: 'OVER_AGE_LIMIT_ERROR'
         }
       ],
-      postSet: function(_, _) {
-        if ( this.cpf.length == 11 ) {
-          this.getCpfName(this.cpf).then(v => {
-            this.cpfName = v;
-          });
-        }
+      postSet: function() {
+        this.updateCPFName();
       }
     }),
     {
@@ -162,12 +158,8 @@ foam.CLASS({
       tableCellFormatter: function(val) {
         return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
       },
-      postSet: function(_,n) {
-        if ( n.length === 11 && !this.verifyName ) {
-          this.getCpfName(n).then(v => {
-            this.cpfName = v;
-          });
-        }
+      postSet: function() {
+        this.updateCPFName();
       },
       view: function(_, X) {
         return foam.u2.FragmentedTextField.create({
@@ -199,13 +191,16 @@ foam.CLASS({
       class: 'String',
       name: 'cpfName',
       label: '',
-      hidden: true
+      hidden: true,
+      postSet: function(oldCpfName, newCpfName) {
+        this.updateVerifyName(oldCpfName, newCpfName);
+      }
     },
     {
       class: 'Boolean',
       name: 'verifyName',
       visibility: function(cpfName) {
-        return cpfName.length > 0 ?
+        return cpfName ?
           foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       label: 'Is this your administrator or legal representative?',
@@ -346,10 +341,26 @@ foam.CLASS({
   ],
   methods: [
     {
-      name: 'getCpfName',
-      code: async function(cpf) {
-        return await this.brazilVerificationService
-          .getCPFNameWithBirthDate(this.__subContext__, cpf, this.birthday);
+      name: 'updateCPFName',
+      code: async function() {
+        // update cpfName if birthday and cpf are valid
+        if (this.birthday && this.cpf.length === 11) {
+          this.cpfName = await this.brazilVerificationService
+            .getCPFNameWithBirthDate(this.__subContext__, this.cpf, this.birthday);
+        }
+        // clear cpfName if birthday or cpf is invalid
+        else if (this.cpf) {
+          this.cpfName = '';
+        }
+      }
+    },
+    {
+      name: 'updateVerifyName',
+      documentation: 'uncheck verifyName if cpfName has been updated',
+      code: function(oldCpfName, newCpfName) {
+        if (oldCpfName !== newCpfName) {
+          this.verifyName = false;
+        }
       }
     }
   ]
