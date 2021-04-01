@@ -18,6 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.partner.treviso.onboarding',
   name: 'BusinessDirectorsData',
+  mixins: ['foam.u2.wizard.AbstractWizardletAware'],
 
   implements: [
     'foam.core.Validatable',
@@ -60,7 +61,7 @@ properties: [
         var self = this;
         this.businessDAO.find(this.subject.user.id).then((business) => {
           if ( ! business ) return;
-          
+
           self.businessTypeId = business.businessTypeId;
 
           // Clear directors if directors are not required for this business type
@@ -121,6 +122,10 @@ properties: [
   ],
 
   methods: [
+    function installInWizardlet(w) {
+      // Eliminate flicker from FObjectArray updates
+      w.reloadAfterSave = false;
+    },
     {
       name: 'validate',
       javaCode: `
