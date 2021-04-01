@@ -41,6 +41,13 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount'
   ],
 
+  searchColumns: [
+    'id',
+    'accountNumber',
+    'branch',
+    'owner'
+  ],
+
   tableColumns: [
     'summary',
     'owner',

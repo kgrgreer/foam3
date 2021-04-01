@@ -37,6 +37,8 @@ foam.CLASS({
     'category',
     'errorCode',
     'created',
+    'payer',
+    'payee',
     'externalId',
     'externalInvoiceId'
   ],
