@@ -45,7 +45,8 @@ foam.CLASS({
     'id',
     'accountNumber',
     'branch',
-    'owner'
+    'owner',
+    'created'
   ],
 
   tableColumns: [

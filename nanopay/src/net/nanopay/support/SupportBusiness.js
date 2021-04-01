@@ -40,6 +40,7 @@ foam.CLASS({
     'email',
     'phoneNumber',
     'address',
+    'created',
     'createdBy',
     'externalId'
   ],
