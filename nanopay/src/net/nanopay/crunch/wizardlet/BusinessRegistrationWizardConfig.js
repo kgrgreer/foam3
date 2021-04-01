@@ -26,6 +26,11 @@ foam.CLASS({
         this.SUPER(sequence);
         sequence.add(this.SaveAllAgent);
         sequence.remove('PutFinalPayloadsAgent');
+        let config = sequence.get('StepWizardAgent').args.config;
+        config.requireAll = true;
+        sequence.reconfigure('StepWizardAgent', {
+          config: config
+        });
       }
     },
     {

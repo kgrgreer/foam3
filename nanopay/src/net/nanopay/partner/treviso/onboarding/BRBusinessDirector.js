@@ -343,15 +343,22 @@ foam.CLASS({
     {
       name: 'updateCPFName',
       code: async function() {
-        // update cpfName if birthday and cpf are valid
-        if (this.birthday && this.cpf.length === 11) {
-          this.cpfName = await this.brazilVerificationService
-            .getCPFNameWithBirthDate(this.__subContext__, this.cpf, this.birthday);
-        }
-        // clear cpfName if birthday or cpf is invalid
-        else if (this.cpf) {
-          this.cpfName = '';
-        }
+          // update cpfName if birthday and cpf are valid
+          if (this.birthday && this.cpf.length === 11) {
+            try {
+              this.cpfName = await this.brazilVerificationService
+                .getCPFNameWithBirthDate(this.__subContext__, this.cpf, this.birthday);
+            } catch (e) {
+              // clear cpfName if a combination of birthday and cpf is invalid
+              if (this.cpfName) {
+                this.cpfName = '';
+              }
+            }
+          }
+          // clear cpfName if birthday or cpf is invalid
+          else if (this.cpfName) {
+            this.cpfName = '';
+          }
       }
     },
     {
