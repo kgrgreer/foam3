@@ -21,7 +21,9 @@ foam.CLASS({
   extends: 'net.nanopay.tx.TransactionSummary',
 
   tableColumns: [
-    'summary',
+    'amount',
+    'payer',
+    'payee',
     'category',
     'status',
     'externalId',
@@ -37,6 +39,8 @@ foam.CLASS({
     'category',
     'errorCode',
     'created',
+    'payer',
+    'payee',
     'externalId',
     'externalInvoiceId'
   ],
