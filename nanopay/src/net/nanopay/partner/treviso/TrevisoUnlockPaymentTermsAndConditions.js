@@ -26,7 +26,7 @@ foam.CLASS({
 
   messages: [
     { name: 'ACKNOWLEDGE_BRAZIL_TC', message: 'Must acknowledge the Terms and Conditions' },
-    { name: 'AGREEMENT_FILE', message: '01aafe67-d9c1-6181-ce7b-54ad2d1c791f'}
+    { name: 'AGREEMENT_FILE', message: '61ee89ca-19ec-d8fc-0306-380657a38949'}
   ],
 
   sections: [

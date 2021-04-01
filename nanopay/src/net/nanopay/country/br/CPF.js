@@ -60,6 +60,7 @@ foam.CLASS({
       section: 'collectCpf',
       label: 'Date of birth',
       visibility: 'RW',
+      view: { class: 'foam.u2.view.date.DateView2' },
       validationPredicates: [
         {
           args: ['birthday'],
