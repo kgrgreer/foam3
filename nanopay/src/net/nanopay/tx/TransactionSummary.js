@@ -42,7 +42,9 @@ foam.CLASS({
     'status',
     'category',
     'errorCode',
-    'created'
+    'created',
+    'payee',
+    'payer'
   ],
 
   sections: [
