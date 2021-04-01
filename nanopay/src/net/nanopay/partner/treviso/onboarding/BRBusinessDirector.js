@@ -349,7 +349,7 @@ foam.CLASS({
             .getCPFNameWithBirthDate(this.__subContext__, this.cpf, this.birthday);
         }
         // clear cpfName if birthday or cpf is invalid
-        else if (this.cpf) {
+        else if (this.cpfName) {
           this.cpfName = '';
         }
       }
