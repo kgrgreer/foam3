@@ -79,7 +79,6 @@ foam.CLASS({
       ]
     },
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
-      view: { class: 'foam.u2.view.date.DateView2' },
       name: 'birthday',
       label: 'Date of birth',
       validationPredicates: [
