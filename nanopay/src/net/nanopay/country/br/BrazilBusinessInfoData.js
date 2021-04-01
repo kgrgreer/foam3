@@ -18,6 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.country.br',
   name: 'BrazilBusinessInfoData',
+  mixins: ['foam.u2.wizard.AbstractWizardletAware'],
   documentation: `
     Additional business information required for brazilian business registration
   `,
@@ -197,6 +198,10 @@ foam.CLASS({
   ],
 
   methods: [
+    function installInWizardlet(w) {
+      // CNPJ takes longer to save, so re-load may clear new inputs
+      w.reloadAfterSave = false;
+    },
     {
       name: 'getCNPJBusinessName',
       code:  async function(cnpj) {
