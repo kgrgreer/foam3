@@ -1512,7 +1512,7 @@ foam.CLASS({
       name: 'requestCancellation',
       section: 'transactionInformation',
       isAvailable: function(status) {
-        return status === net.nanopay.tx.model.TransactionStatus.PENDING;
+        return ((status === net.nanopay.tx.model.TransactionStatus.PENDING) || (status === net.nanopay.tx.model.TransactionStatus.SENT) );
       },
       code: function(X) {
         var refundTicket = net.nanopay.ticket.RefundTicket.create({

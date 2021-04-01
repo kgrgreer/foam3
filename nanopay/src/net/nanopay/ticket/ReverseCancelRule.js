@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.ticket',
-  name: 'RefundRule',
+  name: 'ReverseCancelRule',
 
   implements: [
     'foam.nanos.ruler.RuleAction'
@@ -30,9 +30,9 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.fs.File',
-    'foam.dao.ArraySink',
     'foam.nanos.notification.Notification',
     'foam.nanos.logger.Logger',
+    'foam.dao.ArraySink',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.ticket.RefundTicket',
@@ -63,7 +63,7 @@ foam.CLASS({
       agency.submit(x, new ContextAgent() {
         @Override
         public void execute(X x) {
-          
+
           RefundTicket request = (RefundTicket) obj;
           DAO txnDAO = (DAO) x.get("localTransactionDAO");
           DAO creditCodeDAO = (DAO) x.get("creditCodeDAO");
@@ -75,32 +75,6 @@ foam.CLASS({
 
           Transaction summary = problemTxn.findRoot(x);
 
-          if ( request.getFeeLineItemsSelected() != null && request.getFeeLineItemsSelected().length > 0 ) {
-            FeeRefund feeRefund = new FeeRefund();
-            feeRefund.setTicket(request.getId());
-            feeRefund.setName("Fee Refund");
-            feeRefund.setSpid(request.getSpid());
-            feeRefund.setOwner(request.getOwner());
-            feeRefund.setInitialQuantity(1);
-            feeRefund.setOfTxn(DigitalTransaction.getOwnClassInfo());
-            feeRefund = (FeeRefund) creditCodeDAO.put(feeRefund);
-            array.add(feeRefund.getId());
-          }
-
-          if ( request.getWaiveCharges() ) {
-            AllFeeWaiver feeWaiver = new AllFeeWaiver();
-            feeWaiver.setDiscountPercent(1);
-            feeWaiver.setName("Fee waiver");
-            feeWaiver.setSpid(reverse.getSpid());
-            feeWaiver.setOwner(request.getOwner());
-            feeWaiver.setInitialQuantity(1);
-            feeWaiver = (AllFeeWaiver) creditCodeDAO.put(feeWaiver);
-            array.add(feeWaiver.getId());
-          }
-
-          if ( array.size() > 0 ) {
-            reverse.setCreditCodes(array.toArray(new String[array.size()]));
-          }
 
           try {
             problemTxn = (Transaction) problemTxn.fclone();
@@ -121,10 +95,11 @@ foam.CLASS({
           // if declined
           }
           txnDAO.inX(x).put(reverse);
+
           request.setRefundStatus(RefundStatus.PROCESSING);
         }
-     
-      }, "Rule to submit the reverse transaction.");
+
+      }, "Rule to submit Cancelation.");
       `
     }
   ]

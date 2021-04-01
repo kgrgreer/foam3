@@ -124,6 +124,7 @@ p({
   "action":{
     "class":"net.nanopay.ticket.AgentRefundTicketCreateRule",
     "textToAgent":"User has cancelled transaction. No action required",
+    "postApprovalRuleId": "c6c5c0b8-a24d-4dc7-8561-57e206ed1b45"
   },
   "after":false,
   "enabled":true,
@@ -210,6 +211,7 @@ p({
   "action":{
     "class":"net.nanopay.ticket.AgentRefundTicketCreateRule",
     "textToAgent":"Cash In has failed. No action required. Merchant to create new payment request",
+    "postApprovalRuleId": "c6c5c0b8-a24d-4dc7-8561-57e206ed1b45"
   },
   "after":false,
   "enabled":true,
@@ -252,6 +254,7 @@ p({
   "action":{
     "class":"net.nanopay.ticket.AgentRefundTicketCreateRule",
     "textToAgent":"Payor has cancelled the transaction, status: complete",
+    "postApprovalRuleId": "b64905d0-289b-4371-92a5-f843e344109a"
   },
   "after":false,
   "enabled":true,
@@ -294,6 +297,7 @@ p({
   "action":{
     "class":"net.nanopay.ticket.AgentRefundTicketCreateRule",
     "textToAgent":"Cash Out has failed",
+    "postApprovalRuleId": "c6c5c0b8-a24d-4dc7-8561-57e206ed1b45"
   },
   "after":false,
   "enabled":true,

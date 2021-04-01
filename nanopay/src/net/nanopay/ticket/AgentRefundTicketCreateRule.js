@@ -79,7 +79,6 @@ foam.CLASS({
           Transaction problemClone = (Transaction) problem.fclone();
           ticket.setProblemTransaction(problem.getId());
           ticket.setRefundTransaction(summary.getId());
-          ticket.setPostApprovalRuleId(getPostApprovalRuleId());
           DAO txnDAO2 = (DAO) agencyX.get("localTransactionDAO");
           try {
             problemClone.setStatus(TransactionStatus.PAUSED);
@@ -102,6 +101,7 @@ foam.CLASS({
         }, "Reput transaction as paused");
 
         ticket.setAgentInstructions(getTextToAgent());
+        ticket.setPostApprovalRuleId(getPostApprovalRuleId());
 
         if ( ! SafetyUtil.isEmpty(getErrorCode())) {
           // look up error code fee. and create a fee line item for this.
