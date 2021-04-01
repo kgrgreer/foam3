@@ -77,11 +77,15 @@ foam.CLASS({
           return foam.u2.DisplayMode.RW;
         }
       },
-      validateObj: function(businessName) {
-        if ( businessName.length === 0 ) {
-          return this.BUSINESS_NAME_REQUIRED;
+      validationPredicates: [
+        {
+          args: ['businessName'],
+          predicateFactory: function(e) {
+            return e.GT(e.STRING_LENGTH(net.nanopay.crunch.onboardingModels.InitialBusinessData.BUSINESS_NAME), 0);
+          },
+          errorMessage: 'BUSINESS_NAME_REQUIRED'
         }
-      },
+      ],
       factory: function() {
         return this.subject.user.businessName;
       }

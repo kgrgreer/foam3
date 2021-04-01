@@ -2436,16 +2436,21 @@ p({
     userCap =  new foam.nanos.crunch.UserCapabilityJunctionDAO.Builder(x).setDelegate(dao).build();
     return userCap;
   """,
-  "client":"{
-    \"of\":\"foam.nanos.crunch.UserCapabilityJunction\",
-    \"remoteListenerSupport\": false,
-    \"decorators\": [
-      {
-        \"class\":\"foam.nanos.fs.FileArrayDAODecorator\",
-        \"skipToData\": true
-      }
-    ]
-  }"
+  "client":"""
+    {
+      "of":"foam.nanos.crunch.UserCapabilityJunction",
+      "remoteListenerSupport": false,
+      "decorators": [
+        {
+          "class":"foam.nanos.fs.FileArrayDAODecorator",
+          "skipToData": true
+        },
+        {
+          "class":"foam.dao.LockDAO"
+        }
+      ]
+    }
+  """
 })
 
 p({

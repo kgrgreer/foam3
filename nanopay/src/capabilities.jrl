@@ -571,6 +571,7 @@ p({
   wizardlet: {
     class: "foam.u2.wizard.SubmitWizardlet"
   },
+  of: "foam.core.RequiredBooleanHolder",
   associatedEntity: 1
 })
 
