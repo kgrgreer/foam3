@@ -268,7 +268,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'hasSignedContratosDeCambio',
+      name: 'hasSignedContratosDeCambioDirector',
       label: 'Has this business director signed the foreign exchange contract?',
       help: `
         Foreign exchange contract (Contratos de câmbio) is a legal arrangement in which the
