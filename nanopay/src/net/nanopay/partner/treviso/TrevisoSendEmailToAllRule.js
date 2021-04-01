@@ -110,7 +110,7 @@ foam.CLASS({
             BRBusinessDirector directorUser = (BRBusinessDirector) directorList[i];
             if ( hasAlreadyBeenEmailed(uniqueEmails, directorUser.getEmail()) ) continue;
             else uniqueEmails.add(directorUser.getEmail());
-            if ( directorUser.getHasSignedContratosDeCambio() ){
+            if ( directorUser.getHasSignedContratosDeCambioDirector() ){
               sendEmailToNonUser(x, business, directorUser.getFirstName(), directorUser.getEmail());
             }
           }
