@@ -964,6 +964,16 @@ foam.CLASS({
           }
         }
       `
+    },
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function() {
+        return this.cls_.name;
+      },
+      javaCode: `
+        return this.getClass().getSimpleName();
+      `
     }
   ],
 

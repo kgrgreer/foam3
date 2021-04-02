@@ -95,7 +95,7 @@ p({
       "daoKey":"accountDAO",
       "of":"net.nanopay.bank.BankAccount",
       "browseTitle": "Bank accounts",
-      "browseSubtitle": "View all bank accounts",
+      "browseSubtitle": "View all Bank Accounts",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
       "editPredicate":{"class":"foam.mlang.predicate.False"},
       "searchMode": 2,

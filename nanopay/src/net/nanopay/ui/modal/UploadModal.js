@@ -167,7 +167,8 @@ foam.CLASS({
     { name: 'BoxText', message: 'Choose files to upload or Drag and Drop them here' },
     { name: 'FileRestrictText', message: '*jpg, jpeg, png, pdf, doc, docx, ppt, pptx, pps, ppsx, odt, xls, xlsx only, 10MB maximum' },
     { name: 'FileTypeError', message: 'Wrong file format' },
-    { name: 'FileSizeError', message: 'File size exceeds 10MB' }
+    { name: 'FileSizeError', message: 'File size exceeds 10MB' },
+    { name: 'CHOOSE_FILE', message: 'Choose File' }
   ],
 
   methods: [
@@ -180,7 +181,7 @@ foam.CLASS({
       .on('dragover', this.onDragOver)
       .on('drop', this.onDropOut)
       .tag(this.ModalHeader.create({
-        title: 'Choose File'
+        title: this.CHOOSE_FILE
       }))
       .addClass(this.myClass())
       .start()
