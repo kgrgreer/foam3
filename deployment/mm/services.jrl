@@ -1,16 +1,14 @@
 p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "clusterConfigSupport",
-  "serviceScript":"""
-    return new foam.nanos.medusa.ClusterConfigSupport.Builder(x)
-      .build();
-  """
+  "class":"foam.nanos.boot.NSpec",
+  "name":"clusterConfigSupport",
+  "lazy":false,
+  "serviceClass":"foam.nanos.medusa.ClusterConfigSupport"
 })
 
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"clusterConfigMonitor",
-  "lazy": false,
+  "lazy":false,
   "serviceClass":"foam.nanos.medusa.ClusterConfigMonitor"
 })
 
