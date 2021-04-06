@@ -15,7 +15,7 @@
  * from nanopay Corporation.
  */
 
-foam.CLASS({
+ foam.CLASS({
   package: 'net.nanopay.ticket',
   name: 'RefundRule',
 
@@ -90,6 +90,7 @@ foam.CLASS({
           if ( request.getWaiveCharges() ) {
             AllFeeWaiver feeWaiver = new AllFeeWaiver();
             feeWaiver.setDiscountPercent(1);
+            feeWaiver.setApplicableFees(new String[] {"Ablii Fee"});
             feeWaiver.setName("Fee waiver");
             feeWaiver.setSpid(reverse.getSpid());
             feeWaiver.setOwner(request.getOwner());
@@ -105,10 +106,12 @@ foam.CLASS({
           try {
             problemTxn = (Transaction) problemTxn.fclone();
             if ( problemTxn.getStatus() == TransactionStatus.PAUSED ) {
+              problemTxn.setStatus(problemTxn.getLastStatus());
+              problemTxn = (Transaction) txnDAO.inX(x).put(problemTxn);
+              problemTxn = (Transaction) problemTxn.fclone();
               problemTxn.setStatus(TransactionStatus.CANCELLED);
               txnDAO.inX(x).put(problemTxn);
-            }
-            else {
+            } else {
               problemTxn = (Transaction) ((ArraySink) problemTxn.getChildren(x).select(new ArraySink())).getArray().toArray()[0];
               if ( problemTxn.getStatus() == TransactionStatus.PAUSED ) {
                 problemTxn.setStatus(TransactionStatus.CANCELLED);
