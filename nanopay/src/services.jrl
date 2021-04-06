@@ -581,7 +581,6 @@ p({
     dao = new net.nanopay.auth.email.EmailVerificationDAO(x, dao);
     dao = new foam.nanos.geocode.GoogleMapsGeocodingDAO(x, "AIzaSyDIf0KB9lok7rg0HU9Q92uK2JuOXpXNnr0", foam.nanos.auth.User.ADDRESS, dao);
     dao = new net.nanopay.admin.AccountStatusUserDAO(x, dao);
-    dao = new net.nanopay.auth.email.PreventDuplicateEmailDAO(x, dao);
 
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.auth.User.getOwnClassInfo())
@@ -1644,10 +1643,6 @@ p({
     dao = new foam.nanos.auth.PermissionedPropertyDAO.Builder(x)
       .setDelegate(dao)
       .build();
-    dao = new net.nanopay.meter.SkipNullReferencedPropertyDAO.Builder(x)
-      .setProperty(foam.nanos.auth.UserUserJunction.TARGET_ID)
-      .setDelegate(dao)
-      .build();
 
     return new foam.dao.EasyDAO.Builder(x)
       .setAuthorizer(new foam.nanos.auth.AuthorizableAuthorizer("agentJunction"))
@@ -2441,16 +2436,21 @@ p({
     userCap =  new foam.nanos.crunch.UserCapabilityJunctionDAO.Builder(x).setDelegate(dao).build();
     return userCap;
   """,
-  "client":"{
-    \"of\":\"foam.nanos.crunch.UserCapabilityJunction\",
-    \"remoteListenerSupport\": false,
-    \"decorators\": [
-      {
-        \"class\":\"foam.nanos.fs.FileArrayDAODecorator\",
-        \"skipToData\": true
-      }
-    ]
-  }"
+  "client":"""
+    {
+      "of":"foam.nanos.crunch.UserCapabilityJunction",
+      "remoteListenerSupport": false,
+      "decorators": [
+        {
+          "class":"foam.nanos.fs.FileArrayDAODecorator",
+          "skipToData": true
+        },
+        {
+          "class":"foam.dao.LockDAO"
+        }
+      ]
+    }
+  """
 })
 
 p({

@@ -239,9 +239,9 @@ foam.CLASS({
       name: 'INVALID_TOKEN_ERROR_2',
       message: 'If you feel you’ve reached this message in error, please contact your Company Administrator.'
     },
-    { 
-      name: 'BUSINESS_LOGIN_FAILED', 
-      message: 'Error trying to log into business.' 
+    {
+      name: 'BUSINESS_LOGIN_FAILED',
+      message: 'Error trying to log into business.'
     }
   ],
 
@@ -389,10 +389,11 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isMenuOpen',
       factory: function() {
-        if ( window.localStorage.getItem('isMenuOpen') === 'false' )
-          return false;
-        else
-          return true;
+        return window.localStorage['isMenuOpen'] === 'true'
+         || ( window.localStorage['isMenuOpen'] = false );
+      },
+      postSet: function(_, n) {
+        window.localStorage['isMenuOpen'] = n;
       }
     },
     {
@@ -542,7 +543,9 @@ foam.CLASS({
     },
 
     function bannerizeTwoFactorAuth() {
-      if ( ! this.subject.user.twoFactorEnabled ) {
+      if ( this.appConfig.mode == foam.nanos.app.Mode.PRODUCTION &&
+           this.theme.twoFactorEnabled &&
+           ! this.subject.user.twoFactorEnabled ) {
         this.setBanner(this.BannerMode.NOTICE, 'Please enable Two-Factor Authentication in Personal Settings.');
       }
     },
@@ -589,8 +592,9 @@ foam.CLASS({
     async function requestLogin() {
       var self = this;
       var locHash = location.hash;
-      var view = { class: 'foam.u2.view.LoginView', mode_: 'SignIn' };
-
+      var view = { class: 'foam.u2.borders.BrowserSupportBorder', children: [
+              { class: 'foam.u2.view.LoginView', mode_: 'SignIn' }
+            ]};
       await this.themeInstalled;
 
       if ( locHash ) {
@@ -704,14 +708,15 @@ foam.CLASS({
     },
 
     /**
-     * This function is to check if the user enable the 2FA when the user
-     * have the permission to send a payable.
-     * It is only required for payables.
+     * This function is to check if 2FA is required and if so, is it
+     * enabled for the user. It is only required for payables.
      */
-    async function check2FAEnalbed() {
+    async function check2FA() {
       var canPayInvoice = await this.client.auth.check(null, 'business.invoice.pay') && await this.client.auth.check(null, 'user.invoice.pay');
 
-      if ( canPayInvoice && ! this.subject.realUser.twoFactorEnabled ) {
+      if ( canPayInvoice &&
+           ! this.subject.realUser.twoFactorEnabled &&
+           this.theme.twoFactorEnabled ) {
         var TwoFactorNotificationDOM = this.Element.create()
           .start().style({ 'display': 'inline-block' })
             .add(this.TWO_FACTOR_REQUIRED_ONE)
@@ -730,7 +735,8 @@ foam.CLASS({
            description: ''
          }));
 
-        if ( this.appConfig.mode != foam.nanos.app.Mode.PRODUCTION ) {
+        if ( this.appConfig.mode != foam.nanos.app.Mode.PRODUCTION ||
+             ! this.theme.twoFactorEnabled ) {
           return true;
         } else {
           return false;
@@ -742,7 +748,7 @@ foam.CLASS({
     async function checkAndNotifyAbilityToPay() {
       try {
         var result = await this.checkComplianceAndBanking();
-        return result ? await this.check2FAEnalbed() : result;
+        return result ? await this.check2FA() : result;
       } catch (err) {
         console.warn(`${this.ABILITY_TO_PAY_ERROR}: `, err);
         this.notify(`${this.ABILITY_TO_PAY_ERROR}.`, '', this.LogLevel.ERROR, true);
@@ -833,7 +839,7 @@ foam.CLASS({
       try {
         await this.client.agentAuth.actAs(this, business);
         this.initLayout.resolve();
-        this.pushDefaultMenu() 
+        this.pushDefaultMenu()
       } catch (err) {
         var msg = err != null && typeof err.message === 'string'
           ? err.message
@@ -844,8 +850,8 @@ foam.CLASS({
     },
     async function pushDefaultMenu() {
       //check if default menu is avaiable. if default menu is not permitted yet, direct to appStore
-      var menu = await this.client.menuDAO.find(this.theme.defaultMenu) ? 
-      this.theme.defaultMenu : 
+      var menu = await this.client.menuDAO.find(this.theme.defaultMenu) ?
+      this.theme.defaultMenu :
       'sme.main.appStore';
       this.pushMenu(menu);
     },
@@ -894,7 +900,7 @@ foam.CLASS({
                 await this.pushDefaultMenu();
                 return;
               }
-      
+
               if ( sink.array.length === 1 ) {
                 this.initLayout.resolve();
                 var junction = sink.array[0];
@@ -950,10 +956,7 @@ foam.CLASS({
       else {
         this.initLayout.resolve();
         this.SUPER();
-
-        if ( this.appConfig.mode == foam.nanos.app.Mode.PRODUCTION ) {
-          this.bannerizeTwoFactorAuth();
-        }
+        this.bannerizeTwoFactorAuth();
       }
     }
   ]

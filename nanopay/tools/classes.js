@@ -117,6 +117,7 @@ var classes = [
   'net.nanopay.account.SecuritiesAccount',
   'net.nanopay.account.SecurityAccount',
   'net.nanopay.account.SecuritiesTrustAccount',
+  'net.nanopay.account.SetBankAccountOnContact',
   'net.nanopay.account.BrokerAccount',
   'net.nanopay.account.CreateDefaultDigitalAccountOnUserCreateRule',
   'net.nanopay.bank.BankAccount',
@@ -236,6 +237,7 @@ var classes = [
   'net.nanopay.fx.afex.AFEXUser',
   'net.nanopay.fx.afex.AFEXUser',
   'net.nanopay.fx.afex.AFEXPayableMenuCapabilityRule',
+  'net.nanopay.fx.afex.GrantAFEXPaymentProviderCapRule',
   'net.nanopay.fx.afex.AFEXBusinessCreatedPredicate',
   'net.nanopay.fx.afex.AFEXBusinessDisabledPredicate',
   'net.nanopay.fx.afex.AFEXRemoveCurrencyPermissionRule',
@@ -593,6 +595,7 @@ var classes = [
   'net.nanopay.tx.PurposeCode',
   'net.nanopay.tx.PurposeCodeLineItem',
   'net.nanopay.tx.TransactionQuote',
+  'net.nanopay.tx.TransactionSummary',
   'net.nanopay.tx.RefundTransaction',
   'net.nanopay.tx.RetailTransaction',
   'net.nanopay.tx.model.TransactionLimit',
@@ -726,6 +729,9 @@ var classes = [
   'net.nanopay.auth.OneTimeAuthenticationTokenService',
   'net.nanopay.auth.PublicBusinessInfo',
   'net.nanopay.auth.ruler.LogoutUserAction',
+  'net.nanopay.auth.ruler.PreventDuplicateEmailAction',
+  'net.nanopay.auth.ruler.PreventDuplicateUsernameAction',
+  'net.nanopay.auth.ruler.SpidLimitedPermissionedUserRule',
   'net.nanopay.auth.ruler.predicate.IsUserInGroups',
   'net.nanopay.security.auth.IPLoggingAuthService',
   'net.nanopay.security.auth.LoginAttemptAuthService',
@@ -829,7 +835,6 @@ var classes = [
   'net.nanopay.invoice.model.InvoiceTest',
   'net.nanopay.auth.BusinessAgentAuthService',
   'net.nanopay.auth.email.DoNotSolicit',
-  'net.nanopay.auth.email.PreventDuplicateEmailDAO',
   'net.nanopay.auth.email.EmailWhitelistEntry',
 
   'net.nanopay.security.test.HashingJDAOTestModel',
@@ -1283,6 +1288,7 @@ var classes = [
   'net.nanopay.country.br.PTaxDollarRateResponse',
   'net.nanopay.country.br.tx.NatureCodeLineItem',
   'net.nanopay.partner.bmo.BMOPaymentProviderCapabilityRule',
+  'net.nanopay.partner.intuit.tx.IntuitTransactionSummary',
   'net.nanopay.partner.rbc.RBCPaymentProviderCapabilityRule',
   'net.nanopay.partner.soawebservices.PessoaFisicaNFe',
   'net.nanopay.partner.soawebservices.PessoaJuridicaNFe',
@@ -1350,6 +1356,11 @@ var classes = [
   'net.nanopay.partner.treviso.invoice.TrevisoNotification',
   'net.nanopay.partner.treviso.report.TrevisoTransactionReport',
   'net.nanopay.partner.treviso.report.TrevisoTransactionReportDAO',
+
+  'net.nanopay.partner.br.businessSector.Sector',
+  'net.nanopay.partner.br.businessSector.Grupo',
+  'net.nanopay.partner.br.businessSector.Divisao',
+  'net.nanopay.partner.br.businessSector.Secao',
 
   // bepay
   'net.nanopay.partner.bepay.tx.BePayTransaction',
@@ -1419,6 +1430,7 @@ var classes = [
   'net.nanopay.crunch.compliance.BeneficialOwnerSanctionValidator',
   'net.nanopay.crunch.compliance.SecurefactSIDniValidator',
   'net.nanopay.crunch.compliance.SecurefactLEVValidator',
+  'net.nanopay.crunch.compliance.SendNotificationOnPut',
   'net.nanopay.crunch.compliance.UserComplianceApproval',
   'net.nanopay.crunch.compliance.SetFulfilledComplianceApprovalRequest',
   'net.nanopay.crunch.compliance.GenericSigningOfficerValidator',
@@ -1486,9 +1498,6 @@ var classes = [
   'net.nanopay.crunch.registration.businesstypes.SoleProprietorData',
   'net.nanopay.crunch.registration.businesstypes.TrustData',
 
-  // bepay crunch onboarding
-  'net.nanopay.crunch.bepay.ExtendedUserDetailsData',
-
   // crunch documents
   'net.nanopay.crunch.document.Document',
   'net.nanopay.crunch.document.ExpirableDocument',
@@ -1498,6 +1507,7 @@ var classes = [
   'net.nanopay.crunch.wizardlet.SigningOfficerQuestionWizardlet',
   'net.nanopay.crunch.wizardlet.RefreshWizardlet',
   'net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig',
+  'net.nanopay.crunch.wizardlet.BusinessRegistrationWizardConfig',
 
   // Notification
   'net.nanopay.notification.PermissionedNotificationSettingRule',

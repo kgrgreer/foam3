@@ -2,11 +2,65 @@
 // with AFEX as the intermediary account
 p({
   "class":"net.nanopay.bank.USBankAccount",
-  "branchId":"111111111",
-  "accountNumber":"3333333",
+  "branchId":"123456789",
+  "accountNumber":"123456",
   "name":"BPP USD Bank",
   "status":1,
   "id":"35931861-7dd4-4ddb-b3a0-5d091cc82fcf-bpp",
+  "isDefault":true,
+  "created":"2020-04-28T17:20:41.561Z",
+  "createdBy":101,
+  "lastModified":"2020-04-28T17:20:41.561Z",
+  "lastModifiedBy":101,
+  "lifecycleState":1,
+  "owner":2024,
+  "enabled":true
+})
+
+
+p({
+  "class":"net.nanopay.bank.CABankAccount",
+  "branchId":"12345",
+  "institutionNumber": "123",
+  "accountNumber":"12345678",
+  "name":"BPP CAD Bank",
+  "status":1,
+  "id":"c3d0b7b5-cd32-439e-b3bc-63c9f456ec80-bpp",
+  "isDefault":true,
+  "created":"2020-04-28T17:20:41.561Z",
+  "createdBy":101,
+  "lastModified":"2020-04-28T17:20:41.561Z",
+  "lastModifiedBy":101,
+  "lifecycleState":1,
+  "owner":2024,
+  "enabled":true
+})
+
+p({
+  "class":"net.nanopay.bank.GBBankAccount",
+  "branchId":"123456",
+  "accountNumber":"12345678",
+  "name":"BPP GBP Bank",
+  "status":1,
+  "id":"c1a4ac13-0046-4d12-b4e1-c14d32e69d94-bpp",
+  "isDefault":true,
+  "created":"2020-04-28T17:20:41.561Z",
+  "createdBy":101,
+  "lastModified":"2020-04-28T17:20:41.561Z",
+  "lastModifiedBy":101,
+  "lifecycleState":1,
+  "owner":2024,
+  "enabled":true
+})
+
+p({
+  "class":"net.nanopay.bank.EUBankAccount",
+  "branchId":"111111111",
+  "accountNumber":"3333333",
+  "name":"BPP EUR Bank",
+  "country":"PT",
+  "status":1,
+  "id":"30724107-f0c9-49ef-a3c2-460b77e3dc1e-bpp",
   "isDefault":true,
   "created":"2020-04-28T17:20:41.561Z",
   "createdBy":101,

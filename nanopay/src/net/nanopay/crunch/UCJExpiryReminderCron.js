@@ -91,6 +91,7 @@ foam.CLASS({
         TranslationService ts = (TranslationService) x.get("translationService");
 
         for ( UserCapabilityJunction ucj : activeJunctions ) {
+          ucj = (UserCapabilityJunction) ucj.fclone();
           User user = (User) ucj.findSourceId(x);
           Capability capability = (Capability) ucj.findTargetId(x);
           Subject subject = (Subject) x.get("subject");

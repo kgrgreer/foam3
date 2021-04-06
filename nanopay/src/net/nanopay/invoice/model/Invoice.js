@@ -332,6 +332,13 @@ foam.CLASS({
         who last modified the Invoice.`,
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedByAgent',
+      includeInDigest: true,
+      section: 'invoiceInformation',
+    },
+    {
       class: 'DateTime',
       name: 'lastDateUpdated',
       includeInDigest: true,
@@ -956,6 +963,16 @@ foam.CLASS({
             throw new IllegalStateException("Payer user is disabled.");
           }
         }
+      `
+    },
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function() {
+        return this.cls_.name;
+      },
+      javaCode: `
+        return this.getClass().getSimpleName();
       `
     }
   ],

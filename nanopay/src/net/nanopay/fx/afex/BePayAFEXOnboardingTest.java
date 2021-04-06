@@ -14,7 +14,6 @@ import foam.nanos.crunch.connection.CapabilityPayload;
 import java.util.*;
 import net.nanopay.country.br.*;
 import net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms;
-import net.nanopay.crunch.bepay.*;
 import net.nanopay.crunch.registration.UserDetailData;
 import net.nanopay.fx.afex.*;
 import static foam.mlang.MLang.*;
@@ -49,14 +48,10 @@ public class BePayAFEXOnboardingTest extends foam.nanos.test.Test {
       .setPhoneNumber("1234567890")
       .setAddress(address)
       .build();
-    ExtendedUserDetailsData extendedDetails = new ExtendedUserDetailsData.Builder(x)
-      .setBirthday(new GregorianCalendar(2000, 1, 1).getTime())
-      .setMothersMaidenName("maidenname")
-      .build();
     CPF cpf = new CPF.Builder(x)
-      .setUser(user.getId())
       .setData("10786348070")
       .setCpfName("Mock Legal User")
+      .setBirthday(new GregorianCalendar(1970, 1, 1).getTime())
       .setVerifyName(true)
       .build();
     DateOfIssue dateOfIssue = new DateOfIssue.Builder(x)
@@ -67,7 +62,6 @@ public class BePayAFEXOnboardingTest extends foam.nanos.test.Test {
 
     HashMap dataMap = new HashMap<String, FObject>();
     dataMap.put("User Details", userDetails);
-    dataMap.put("Extended User Details", extendedDetails);
     dataMap.put("CPF Number", cpf);
     dataMap.put("Date of Issue", dateOfIssue);
     dataMap.put("AFEX Terms and Conditions", usdAfexTerms);

@@ -23,8 +23,7 @@ foam.CLASS({
     for individual identity verification and business entity search.`,
 
   imports: [
-    'DAO securefactLEVDAO?',
-    'DAO securefactSIDniDAO?'
+    'DAO securefactResponseDAO?'
   ],
 
   javaImports: [
@@ -110,7 +109,7 @@ foam.CLASS({
           response.setEntityName(user.getLegalName());
           response.setEntityId(user.getId());
           return (SIDniResponse)
-            ((DAO) getSecurefactSIDniDAO()).put(response);
+            ((DAO) getSecurefactResponseDAO()).put(response);
         } catch (Throwable t) {
           pm.error(x, t.getMessage());
           throw t;
@@ -150,7 +149,7 @@ foam.CLASS({
           ).count();
           response.setCloseMatches(closeMatchCounter + "/" + results.length);
           return (LEVResponse)
-            ((DAO) getSecurefactLEVDAO()).put(response);
+            ((DAO) getSecurefactResponseDAO()).put(response);
         } catch (Throwable t) {
           pm.error(x, t.getMessage());
           throw t;
@@ -179,7 +178,8 @@ foam.CLASS({
           request.setUrl(getLevDocumentOrderUrl());
           request.setAuthKey(getLevApiKey());
           LEVDocumentOrderResponse response = (LEVDocumentOrderResponse) sendRequest(x, request, LEVDocumentOrderResponse.class);
-          return response;
+          return (LEVDocumentOrderResponse)
+            ((DAO) getSecurefactResponseDAO()).put(response);
         } catch (Throwable t) {
           pm.error(x, t.getMessage());
           throw t;
@@ -208,7 +208,8 @@ foam.CLASS({
           request.setUrl(getLevDocumentDataUrl());
           request.setAuthKey(getLevApiKey());
           LEVDocumentDataResponse response = (LEVDocumentDataResponse) sendRequest(x, request, LEVDocumentDataResponse.class);
-          return response;
+          return (LEVDocumentDataResponse)
+            ((DAO) getSecurefactResponseDAO()).put(response);
         } catch (Throwable t) {
           pm.error(x, t.getMessage());
           throw t;

@@ -435,14 +435,6 @@ p({
   "priority":15
 })
 
-// BR Signing Officer to Residence Consumption Bill (Utility bills)
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
-  "targetId":"85cee1de-db32-11ea-87d0-0242ac130003",
-  "priority":2
-})
-
 // BR Signing Officer to User Identity (Identification)
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
@@ -455,14 +447,6 @@ p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"8ad3c898-db32-11ea-87d0-0242ac130003",
   "targetId":"8ad3c898-db232-1ea-87d0-0242ac130z0"
-})
-
-// BR CPF to Birth date
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"fb7d3ca2-62f2-4caf-a84c-860392e4676b",
-  "targetId":"8bffdedc-5176-4843-97df-1b75ff6054fb",
-  "priority":1
 })
 
 // BR Signing Officer to CPF

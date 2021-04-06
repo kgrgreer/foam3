@@ -67,6 +67,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/DuplicateEntryRule' },
   { name: 'net/nanopay/account/DuplicateCABankAccountRule' },
   { name: 'net/nanopay/account/DuplicateUSBankAccountRule' },
+  { name: 'net/nanopay/account/SetBankAccountOnContact' },
   { name: 'net/nanopay/account/InsufficientBalanceException' },
   { name: 'net/nanopay/account/ui/BankAccountWizard' },
   { name: 'net/nanopay/account/ui/AccountSummaryView' },
@@ -211,6 +212,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/IsDefaultRule' },
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
+  { name: 'net/nanopay/approval/AgentCapabilityJunctionDAOSummaryView' },
   { name: 'net/nanopay/bank/BankAccountValidationService' },
   { name: 'net/nanopay/bank/MockBankAccountValidationService' },
 
@@ -225,11 +227,13 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/NanopayUserAndGroupAuthService' },
   { name: 'net/nanopay/auth/OneTimeAuthenticationTokenService' },
   { name: 'net/nanopay/auth/email/EmailTokenService' },
-  { name: 'net/nanopay/auth/email/PreventDuplicateEmailDAO' },
   { name: 'net/nanopay/auth/email/EmailWhitelistEntry' },
   { name: 'net/nanopay/auth/email/DoNotSolicit' },
   { name: 'net/nanopay/auth/ExternalInvoiceTokenService' },
   { name: 'net/nanopay/auth/ruler/LogoutUserAction' },
+  { name: 'net/nanopay/auth/ruler/PreventDuplicateEmailAction' },
+  { name: 'net/nanopay/auth/ruler/PreventDuplicateUsernameAction' },
+  { name: 'net/nanopay/auth/ruler/SpidLimitedPermissionedUserRule' },
   { name: 'net/nanopay/auth/ruler/predicate/IsUserInGroups' },
   { name: 'net/nanopay/auth/sms/PhoneVerificationTokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/UserDetailView', flags: ['web'] },
@@ -240,6 +244,8 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/BusinessAgentAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/CheckCurrencyRule' },
   { name: 'net/nanopay/auth/ServiceProviderRefinement' },
+  { name: 'net/nanopay/auth/SwitchUserRowView', flags: ['web'] },
+  { name: 'net/nanopay/auth/SwitchUserView', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardOverview', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardSubView', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/ContactWizardDetailView', flags: ['web'] },
@@ -369,6 +375,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXBeneficiaryComplianceTransaction' },
   { name: 'net/nanopay/fx/afex/AFEXUser' },
   { name: 'net/nanopay/fx/afex/AFEXPayableMenuCapabilityRule' },
+  { name: 'net/nanopay/fx/afex/GrantAFEXPaymentProviderCapRule' },
   { name: 'net/nanopay/fx/afex/AFEXAddCurrencyPermissionRule' },
   { name: 'net/nanopay/fx/afex/AFEXBusinessCreatedPredicate' },
   { name: 'net/nanopay/fx/afex/AFEXBusinessCreatedNotificationRule' },
@@ -520,6 +527,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/AbliiTransaction' },
   { name: 'net/nanopay/tx/InterestTransaction' },
   { name: 'net/nanopay/tx/TransactionQuote' },
+  { name: 'net/nanopay/tx/TransactionSummary' },
   { name: 'net/nanopay/tx/JackieRuleOnCreate' },
   { name: 'net/nanopay/tx/JackieRuleOnPut' },
   { name: 'net/nanopay/tx/ClearingTimeTransaction' },
@@ -1118,7 +1126,6 @@ FOAM_FILES([
   { name: 'net/nanopay/contacts/ExternalContactToken' },
   { name: 'net/nanopay/contacts/ui/ContactTableView', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/DeleteContactView', flags: ['web'] },
-  { name: 'net/nanopay/contacts/ui/modal/EditContactView', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/InvitationWizardView', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/ContactWizardView', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/PaymentCodeSearchWizardView', flags: ['web'] },
@@ -1185,7 +1192,6 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/MenuRedirectSMEModalView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SuccessPasswordView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/IntegrationSettingsView', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/VerifyEmail', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/VerifyEmailView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/TopBarBackToAblii', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/PersonalSettingsView', flags: ['web'] },
@@ -1696,9 +1702,6 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/registration/businesstypes/SoleProprietorData' },
   { name: 'net/nanopay/crunch/registration/businesstypes/TrustData' },
 
-  // bepay crunch onboarding
-  { name: 'net/nanopay/crunch/bepay/ExtendedUserDetailsData' },
-
   // crunch predicates - todo move all predicates used in crunch here
   { name: 'net/nanopay/crunch/predicate/IsBusiness' },
   { name: 'net/nanopay/crunch/predicate/BusinessPassedCompliance' },
@@ -1755,6 +1758,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/compliance/BusinessDirectorSanctionValidator' },
   { name: 'net/nanopay/crunch/compliance/SecurefactSIDniValidator' },
   { name: 'net/nanopay/crunch/compliance/SecurefactLEVValidator' },
+  { name: 'net/nanopay/crunch/compliance/SendNotificationOnPut' },
   { name: 'net/nanopay/crunch/compliance/UserComplianceApproval' },
   { name: 'net/nanopay/crunch/compliance/SetFulfilledComplianceApprovalRequest' },
   { name: 'net/nanopay/crunch/compliance/SetComplianceOnUser' },
@@ -1777,6 +1781,7 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/afex/crunch/AFEXBusinessOnboardingRule' },
   { name: 'net/nanopay/partner/afex/crunch/AFEXUserOnboardingRule' },
   { name: 'net/nanopay/partner/afex/crunch/BankAccountOwnerIsBusiness' },
+  { name: 'net/nanopay/partner/intuit/tx/IntuitTransactionSummary' },
 
   { name: 'net/nanopay/partner/bmo/BMOPaymentProviderCapabilityRule' },
   { name: 'net/nanopay/partner/rbc/RBCPaymentProviderCapabilityRule' },
@@ -1818,8 +1823,10 @@ FOAM_FILES([
 
   // wizardlets
   { name: 'net/nanopay/crunch/wizardlet/RefreshWizardlet' },
+  { name: 'net/nanopay/crunch/wizardlet/RerenderWizardlet' },
   { name: 'net/nanopay/crunch/wizardlet/SigningOfficerQuestionWizardlet' },
   { name: 'net/nanopay/crunch/wizardlet/UnlockPaymentsWizardConfig' },
+  { name: 'net/nanopay/crunch/wizardlet/BusinessRegistrationWizardConfig' },
 
   // msp
   { name: 'net/nanopay/msp/MspInfo' },
@@ -1922,4 +1929,13 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/cron/OnboardingReminderNotification'},
   { name: 'net/nanopay/notification/PermissionedNotificationSettingRule'},
   { name: 'net/nanopay/sme/ruler/BusinessCompliancePassedEmailNotification'},
+
+  //br business sector
+  { name: 'net/nanopay/partner/br/businessSector/Sector' },
+  { name: 'net/nanopay/partner/br/businessSector/Grupo' },
+  { name: 'net/nanopay/partner/br/businessSector/Divisao' },
+  { name: 'net/nanopay/partner/br/businessSector/Secao' },
+
+  { name: 'net/nanopay/app/AppConfigRefines' }
+
 ]);

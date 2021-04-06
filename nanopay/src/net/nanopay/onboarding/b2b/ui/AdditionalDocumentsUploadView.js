@@ -43,7 +43,7 @@ foam.CLASS({
     }
     ^ .foam-u2-ActionView-uploadButton span {
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 14px;
+      font-size: 12px;
       font-weight: normal;
       font-style: normal;
       font-stretch: normal;
@@ -112,6 +112,10 @@ foam.CLASS({
     {
       name: 'UploadFailure',
       message: 'Failed to upload documents.\nPlease try again later.'
+    },
+    {
+      name: 'MAXIMUM_SIZE',
+      message: 'Maximum size 10MB'
     }
   ],
 
@@ -121,7 +125,7 @@ foam.CLASS({
         .addClass(this.myClass())
           .start(this.UPLOAD_BUTTON).end()
         .start().addClass('maxSize')
-          .add('Maximum size 10MB')
+          .add(this.MAXIMUM_SIZE)
         .end()
         .add(this.slot(function(docs) {
           if ( docs.length <= 0 ) return;

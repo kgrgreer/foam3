@@ -27,16 +27,23 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.i18n.TranslationService',
     'static foam.mlang.MLang.*',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.Subject',
     'foam.nanos.approval.ApprovalRequest',
     'foam.nanos.approval.ApprovalStatus',
   ],
 
+  messages: [
+   { name: 'DESCRIPTION', message: 'Approve AFEX business to enable international payments' },
+   { name: 'CLASSIFICATION', message: 'AFEX Business' }
+ ],
+
    methods: [
     {
       name: 'applyAction',
-      javaCode: ` 
+      javaCode: `
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
@@ -45,12 +52,19 @@ foam.CLASS({
             User user = afexUser.findUser(x);
             String spid = user.getSpid();
             String group = spid + "-payment-ops";
+
+            TranslationService ts = (TranslationService) x.get("translationService");
+            Subject subject = (Subject) x.get("subject");
+            String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
+            String classification = ts.getTranslation(locale, getClassInfo().getId() + ".CLASSIFICATION", CLASSIFICATION);
+            String description = ts.getTranslation(locale, getClassInfo().getId() + ".DESCRIPTION", DESCRIPTION);
+
             approvalRequestDAO.put_(x,
               new AFEXBusinessApprovalRequest.Builder(x)
                 .setDaoKey("afexUserDAO")
                 .setObjId(afexUser.getId())
-                .setClassification("AFEX Business")
-                .setDescription("Approve AFEX business to enable the international payments.")
+                .setClassification(classification)
+                .setDescription(description)
                 .setGroup(group)
                 .setCreatedFor(user.getId())
                 .setStatus(ApprovalStatus.REQUESTED).build());

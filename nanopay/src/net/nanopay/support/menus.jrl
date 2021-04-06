@@ -14,28 +14,7 @@ p({
         "createTitle": "Create an Account",
         "createPredicate":{"class":"foam.mlang.predicate.False"},
         "editPredicate":{"class":"foam.mlang.predicate.False"},
-        "deletePredicate":{"class":"foam.mlang.predicate.False"},
-        "defaultColumns": [
-          "id",
-          "owner",
-          "summary",
-          "name"
-        ],
-        "filterExportPredicate": {
-          "class": "foam.mlang.predicate.Or",
-          "args": [
-            {
-              "class": "foam.mlang.predicate.Eq",
-              "arg1": { "class": "__Property__", "forClass_": "foam.nanos.export.ExportDriverRegistry", "name": "id" },
-              "arg2": { "class": "foam.mlang.Constant", "value": "CSV" }
-            },
-            {
-              "class": "foam.mlang.predicate.Eq",
-              "arg1": { "class": "__Property__", "forClass_": "foam.nanos.export.ExportDriverRegistry", "name": "id" },
-              "arg2": { "class": "foam.mlang.Constant", "value": "JSON" }
-            }
-          ]
-        }
+        "deletePredicate":{"class":"foam.mlang.predicate.False"}
       }
     },
   "parent": "hidden"
@@ -57,29 +36,7 @@ p({
         "createTitle": "Create a Business",
         "createPredicate":{"class":"foam.mlang.predicate.False"},
         "editPredicate":{"class":"foam.mlang.predicate.False"},
-        "deletePredicate":{"class":"foam.mlang.predicate.False"},
-        "defaultColumns": [
-          "id",
-          "businessName",
-          "email",
-          "phoneNumber",
-          "compliance"
-        ],
-        "filterExportPredicate": {
-          "class": "foam.mlang.predicate.Or",
-          "args": [
-            {
-              "class": "foam.mlang.predicate.Eq",
-              "arg1": { "class": "__Property__", "forClass_": "foam.nanos.export.ExportDriverRegistry", "name": "id" },
-              "arg2": { "class": "foam.mlang.Constant", "value": "CSV" }
-            },
-            {
-              "class": "foam.mlang.predicate.Eq",
-              "arg1": { "class": "__Property__", "forClass_": "foam.nanos.export.ExportDriverRegistry", "name": "id" },
-              "arg2": { "class": "foam.mlang.Constant", "value": "JSON" }
-            }
-          ]
-        }
+        "deletePredicate":{"class":"foam.mlang.predicate.False"}
       }
     },
   "parent": "hidden"
@@ -88,9 +45,7 @@ p({
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"transactions-support",
-  "label":"Transactions",
-  "icon":"images/transactions-24px-resting.svg",
-  "activeIcon":"images/transactions-24px-active.svg",
+  "label":"Transaction Summary",
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
@@ -108,22 +63,26 @@ p({
         "chainSummary.summary",
         "chainSummary.status",
         "chainSummary.errorCode"
-      ],
-      "filterExportPredicate": {
-        "class": "foam.mlang.predicate.Or",
-        "args": [
-          {
-            "class": "foam.mlang.predicate.Eq",
-            "arg1": { "class": "__Property__", "forClass_": "foam.nanos.export.ExportDriverRegistry", "name": "id" },
-            "arg2": { "class": "foam.mlang.Constant", "value": "CSV" }
-          },
-          {
-            "class": "foam.mlang.predicate.Eq",
-            "arg1": { "class": "__Property__", "forClass_": "foam.nanos.export.ExportDriverRegistry", "name": "id" },
-            "arg2": { "class": "foam.mlang.Constant", "value": "JSON" }
-          }
-        ]
-      }
+      ]
+    }
+  }
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"transactions-summary",
+  "label":"Transactions",
+  "icon":"images/transactions-24px-resting.svg",
+  "activeIcon":"images/transactions-24px-active.svg",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"intuitTransactionSummaryDAO",
+      "browseTitle": "Transactions",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   }
 })
@@ -145,32 +104,7 @@ p({
           "createTitle": "Create a User",
           "createPredicate":{"class":"foam.mlang.predicate.False"},
           "editPredicate":{"class":"foam.mlang.predicate.False"},
-          "deletePredicate":{"class":"foam.mlang.predicate.False"},
-          "defaultColumns": [
-            "id",
-            "firstName",
-            "lastName",
-            "email",
-            "phoneNumber",
-            "status",
-            "compliance",
-            "group"
-          ],
-          "filterExportPredicate": {
-            "class": "foam.mlang.predicate.Or",
-            "args": [
-              {
-                "class": "foam.mlang.predicate.Eq",
-                "arg1": { "class": "__Property__", "forClass_": "foam.nanos.export.ExportDriverRegistry", "name": "id" },
-                "arg2": { "class": "foam.mlang.Constant", "value": "CSV" }
-              },
-              {
-                "class": "foam.mlang.predicate.Eq",
-                "arg1": { "class": "__Property__", "forClass_": "foam.nanos.export.ExportDriverRegistry", "name": "id" },
-                "arg2": { "class": "foam.mlang.Constant", "value": "JSON" }
-              }
-            ]
-          }
+          "deletePredicate":{"class":"foam.mlang.predicate.False"}
         }
     },
   "parent": "hidden"

@@ -40,6 +40,7 @@ foam.CLASS({
     { name: 'UNDER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old' },
     { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be less than 125 years old' },
     { name: 'INVALID_CPF', message: 'Valid CPF number required' },
+    { name: 'INVALID_CPF_CHECKED', message: 'Unable to validate CPF number and birthdate combination. Please update and try again.' },
     { name: 'INVALID_DIRECTOR_NAME', message: 'Confirm your administrator\’s or legal representative name' },
     { name: 'FOREIGN_ID_ERROR', message: 'Identification Document required' },
     { name: 'NATIONALITY_ERROR', message: 'Nationality required' },
@@ -75,8 +76,7 @@ foam.CLASS({
           },
           errorMessage: 'FOREIGN_ID_ERROR'
         }
-      ],
-      externalTransient: true
+      ]
     },
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
       name: 'birthday',
@@ -117,13 +117,8 @@ foam.CLASS({
           errorMessage: 'OVER_AGE_LIMIT_ERROR'
         }
       ],
-      postSet: function(_, _) {
-        this.cpfName = '';
-        if ( this.cpf.length == 11 ) {
-          this.getCpfName(this.cpf).then(v => {
-            this.cpfName = v;
-          });
-        }
+      postSet: function() {
+        this.updateCPFName();
       }
     }),
     {
@@ -133,26 +128,38 @@ foam.CLASS({
       required: true,
       validationPredicates: [
         {
-          args: ['cpfName'],
+          args: ['cpfName', 'cpf'],
           predicateFactory: function(e) {
-            return e.GT(foam.mlang.StringLength.create({
-              arg1: net.nanopay.partner.treviso.onboarding.BRBusinessDirector.CPF_NAME
-            }), 0);
+            return e.EQ(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.partner.treviso.onboarding.BRBusinessDirector
+                    .CPF
+                  }), 11);
           },
           errorMessage: 'INVALID_CPF'
+        },
+        {
+          args: ['cpf', 'cpfName'],
+          predicateFactory: function(e) {
+            return e.AND(
+              e.GT(
+                net.nanopay.partner.treviso.onboarding.BRBusinessDirector
+                  .CPF_NAME, 0),
+              e.EQ(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.partner.treviso.onboarding.BRBusinessDirector
+                    .CPF
+                  }), 11)
+              );
+          },
+          errorMessage: 'INVALID_CPF_CHECKED'
         }
       ],
-      externalTransient: true,
       tableCellFormatter: function(val) {
         return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
       },
-      postSet: function(_,n) {
-        if ( n.length == 11 && this.verifyName !== true ) {
-          this.cpfName = "";
-          this.getCpfName(n).then(v => {
-            this.cpfName = v;
-          });
-        }
+      postSet: function() {
+        this.updateCPFName();
       },
       view: function(_, X) {
         return foam.u2.FragmentedTextField.create({
@@ -185,13 +192,15 @@ foam.CLASS({
       name: 'cpfName',
       label: '',
       hidden: true,
-      externalTransient: true
+      postSet: function(oldCpfName, newCpfName) {
+        this.updateVerifyName(oldCpfName, newCpfName);
+      }
     },
     {
       class: 'Boolean',
       name: 'verifyName',
       visibility: function(cpfName) {
-        return cpfName.length > 0 ?
+        return cpfName ?
           foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       label: 'Is this your administrator or legal representative?',
@@ -253,7 +262,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'hasSignedContratosDeCambio',
+      name: 'hasSignedContratosDeCambioDirector',
       label: 'Has this business director signed the foreign exchange contract?',
       help: `
         Foreign exchange contract (Contratos de câmbio) is a legal arrangement in which the
@@ -332,10 +341,33 @@ foam.CLASS({
   ],
   methods: [
     {
-      name: 'getCpfName',
-      code: async function(cpf) {
-        return await this.brazilVerificationService
-          .getCPFNameWithBirthDate(this.__subContext__, cpf, this.birthday);
+      name: 'updateCPFName',
+      code: async function() {
+          // update cpfName if birthday and cpf are valid
+          if (this.birthday && this.cpf.length === 11) {
+            try {
+              this.cpfName = await this.brazilVerificationService
+                .getCPFNameWithBirthDate(this.__subContext__, this.cpf, this.birthday);
+            } catch (e) {
+              // clear cpfName if a combination of birthday and cpf is invalid
+              if (this.cpfName) {
+                this.cpfName = '';
+              }
+            }
+          }
+          // clear cpfName if birthday or cpf is invalid
+          else if (this.cpfName) {
+            this.cpfName = '';
+          }
+      }
+    },
+    {
+      name: 'updateVerifyName',
+      documentation: 'uncheck verifyName if cpfName has been updated',
+      code: function(oldCpfName, newCpfName) {
+        if (oldCpfName !== newCpfName) {
+          this.verifyName = false;
+        }
       }
     }
   ]

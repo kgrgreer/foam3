@@ -1105,15 +1105,15 @@ p({
   "group": "sme",
   "locale": "pt",
   "displayName": "{{appName}}",
-  "subject": "Verifique seu e-mail para ativar sua conta do {{appName}}",
+  "subject": "Verifique seu Email para ativar sua conta do {{appName}}",
   "body": """
     <include template = 'treviso-email-base_2'>
-      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">Verifique o seu endereço de email</p>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;">Verifique o seu endereço de Email</p>
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Olá {{name}},</p>
       <br>
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Bem vindo ao portal self-service de pagamentos e remessas internacionais da {{appName}}. Nós estamos feliz por ter você a bordo! </p>
       <br>
-      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Por favor, verifique seu e-mail para ativar sua conta.</p>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;">Por favor, verifique seu Email para ativar sua conta.</p>
       <a href="{{link}}" style="text-decoration: none;">
         <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
           <p style = "padding: 14px 0 0; margin: 0;">Verificar email</p>
@@ -1546,7 +1546,7 @@ p({
   "class": "foam.nanos.notification.email.EmailTemplate",
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-115",
   "name": "compliance-notification-to-user",
-  "group": "sme",
+  "group": "treviso-sme",
   "locale": "en",
   "displayName": "{{appName}}",
   "subject": "{{business}} is ready to send payments with {{appName}}",

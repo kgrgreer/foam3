@@ -29,8 +29,9 @@ foam.CLASS({
     'foam.nanos.auth.*',
     'foam.util.SafetyUtil',
     'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalStatus',
     
-    'static foam.mlang.MLang.EQ'
+    'static foam.mlang.MLang.*'
   ],
 
   constants: [
@@ -86,10 +87,17 @@ foam.CLASS({
       javaCode: `
         ApprovalRequest ret = (ApprovalRequest) super.find_(x, id);
         if ( ret != null ) {
-          long currentUserId = ((Subject) x.get("subject")).getUser().getId();
+          User currentUser = ((Subject) x.get("subject")).getUser();
           AuthService authService = (AuthService) x.get("auth");
 
-          if ( ! authService.check(x, GLOBAL_APPROVAL_READ) && ! SafetyUtil.equals(currentUserId, ret.getApprover()) ) {
+          if ( 
+            ! authService.check(x, GLOBAL_APPROVAL_READ) 
+            && ! SafetyUtil.equals(currentUser.getId(), ret.getApprover()) 
+            && ! (
+              ! SafetyUtil.equals(ApprovalStatus.REQUESTED, ret.getStatus())
+              && SafetyUtil.equals(currentUser.getGroup(), ret.getGroup())
+            )
+          ) {
             throw new AuthorizationException();
           }
         }
@@ -108,7 +116,19 @@ foam.CLASS({
         }
 
         boolean global = auth.check(x, GLOBAL_APPROVAL_READ);
-        DAO dao = global ? getDelegate() : getDelegate().where(EQ(ApprovalRequest.APPROVER, user.getId()));
+        DAO dao = global 
+          ? getDelegate() 
+          : getDelegate().where(
+              OR(
+                EQ(ApprovalRequest.APPROVER, user.getId()),
+                AND(
+                  NOT(
+                    EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)
+                  ),
+                  EQ(ApprovalRequest.GROUP, user.getGroup())
+                )
+              )
+            );
         return dao.select_(x, sink, skip, limit, order, predicate);
       `
     },

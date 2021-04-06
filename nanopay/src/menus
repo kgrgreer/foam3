@@ -51,3 +51,16 @@ p({
   },
   "parent": "dashboard-backoffice"
 })
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"switch-user",
+  "label":"Switch User",
+  "description":"",
+  "handler":{
+    "class":"foam.nanos.menu.ViewMenu",
+    "view":{"class":"net.nanopay.auth.SwitchUserView"}
+  },
+  "order":40,
+  "parent":"settings"
+})

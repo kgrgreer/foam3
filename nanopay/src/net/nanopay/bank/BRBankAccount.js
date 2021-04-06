@@ -142,6 +142,7 @@ foam.CLASS({
   properties: [
     {
       name: 'denomination',
+      readPermissionRequired: true,
       value: 'BRL',
       order: 1
     },
@@ -240,6 +241,9 @@ foam.CLASS({
       section: 'accountInformation',
       order: 20,
       gridColumns: 6,
+      factory: function() {
+        return this.HOLDER1;
+      },
       view: function(_, X) {
         return {
           class: 'foam.u2.view.ChoiceView',
