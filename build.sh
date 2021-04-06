@@ -39,7 +39,7 @@ function install {
     MACOS='darwin*'
 
     cd "$PROJECT_HOME"
-    if [ IS_AWS -eq 0 ]; then
+    if [ $IS_AWS -eq 0 ]; then
         submoduleout=$(git submodule)
         if [ -z "${submoduleout}" ]; then
             git submodule add https://github.com/kgrgreer/foam3.git
