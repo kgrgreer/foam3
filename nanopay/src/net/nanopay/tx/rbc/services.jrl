@@ -1,5 +1,19 @@
-p({"class":"foam.nanos.boot.NSpec", "name":"rbcFTPSCredential",               "lazy":false,  "service":{"class":"net.nanopay.tx.rbc.ftps.RbcFTPSCredential"}})
-p({"class":"foam.nanos.boot.NSpec", "name":"rbcAssignedClientValue",          "lazy":false,  "service":{"class":"net.nanopay.tx.rbc.RbcAssignedClientValue"}})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"rbcFTPSCredential",
+  "lazy":false,
+  "service":{
+    "class":"net.nanopay.tx.rbc.ftps.RbcFTPSCredential"
+  }
+})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"rbcAssignedClientValue",
+  "lazy":false,
+  "service":{
+    "class":"net.nanopay.tx.rbc.RbcAssignedClientValue"
+  }
+})
 
 p({
   "class": "foam.nanos.boot.NSpec", 

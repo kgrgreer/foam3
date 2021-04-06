@@ -99,7 +99,7 @@ public class TransactionBenchmark
     DAO dao = (DAO) x.get("localTransactionDAO");
     Count txns = (Count) dao.select(new Count());
     if ( txns.getValue() > 0 ) {
-      stats.put("Transactions (M)", String.format(".02%", (txns.getValue() / 1000000.0)));
+      stats.put("Transactions (M)", String.format("%.02", (txns.getValue() / 1000000.0)));
     } else {
       stats.put("Transactions (M)", "0");
     }

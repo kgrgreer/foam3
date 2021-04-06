@@ -18,6 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.country.br',
   name: 'BrazilBusinessInfoData',
+  mixins: ['foam.u2.wizard.AbstractWizardletAware'],
   documentation: `
     Additional business information required for brazilian business registration
   `,
@@ -28,6 +29,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.logger.Logger',
+    'foam.util.SafetyUtil'
   ],
 
   imports: [
@@ -44,7 +46,8 @@ foam.CLASS({
 
   messages: [
     { name: 'NO_CNPJ', message: '14-digit National Registry of Legal Entities Number required' },
-    { name: 'CNPJ_INVALID', message: 'CNPJ required' },
+    { name: 'CNPJ_INVALID', message: 'CNPJ invalid, please check your CNPJ number and try again' },
+    { name: 'NO_NIRE', message: 'NIRE required' },
     { name: 'VERIFY_BUSINESS_NAME', message: 'Confirm your business name' }
   ],
 
@@ -61,18 +64,31 @@ foam.CLASS({
       section: 'businessInformation',
       validationPredicates: [
         {
-          args: ['cnpj'],
+          args: ['cnpj', 'cnpjName'],
           predicateFactory: function(e) {
-            return e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.CNPJ }), 14)          },
-            errorMessage: 'NO_CNPJ'
+            return e.EQ(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.country.br.BrazilBusinessInfoData.CNPJ
+                  }), 14);
+          },
+          errorMessage: 'NO_CNPJ'
         },
         {
-          args: ['cnpjName'],
+          args: ['cnpj', 'cnpjName'],
           predicateFactory: function(e) {
-            return e.GT(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.CNPJ_NAME }), 0)
+            return e.AND(
+              e.GT(
+                net.nanopay.country.br.BrazilBusinessInfoData
+                .CNPJ_NAME, 0),
+              e.EQ(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.country.br.BrazilBusinessInfoData
+                    .CNPJ
+                  }), 14)
+              );
           },
           errorMessage: 'CNPJ_INVALID'
-        },
+        }
       ],
       tableCellFormatter: function(val) {
         return foam.String.applyFormat(val, 'xx.xxx.xxx/xxxx-xx');
@@ -83,6 +99,10 @@ foam.CLASS({
           this.getCNPJBusinessName(n).then((v) => {
             this.cnpjName = v;
           });
+        }
+        else {
+          this.cnpjName = "";
+          this.verifyName = false;
         }
       },
       view: function(_, X) {
@@ -113,7 +133,7 @@ foam.CLASS({
               maxLength: 2
             })
           ]
-        });
+        }, X);
       }
     },
     {
@@ -178,6 +198,10 @@ foam.CLASS({
   ],
 
   methods: [
+    function installInWizardlet(w) {
+      // CNPJ takes longer to save, so re-load may clear new inputs
+      w.reloadAfterSave = false;
+    },
     {
       name: 'getCNPJBusinessName',
       code:  async function(cnpj) {
@@ -187,8 +211,13 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
-        if ( ! getVerifyName() )
+        if ( ! getVerifyName() ) {
           throw new foam.core.ValidationException(CNPJ_INVALID);
+        }
+
+        if ( SafetyUtil.isEmpty(getNire()) ) {
+          throw new foam.core.ValidationException(NO_NIRE);
+        }
       `
     }
   ]

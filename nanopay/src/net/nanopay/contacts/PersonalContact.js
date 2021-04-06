@@ -35,6 +35,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.PropertyInfo',
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.AuthorizationException',
@@ -194,25 +195,17 @@ foam.CLASS({
       includeInDigest: true,
       visibility: 'HIDDEN',
       label: 'Status',
-      tableWidth: 170,
-      expression: function(bankAccount) {
-        return bankAccount ? net.nanopay.contacts.ContactStatus.READY : net.nanopay.contacts.ContactStatus.PENDING;
-      },
+      tableWidth: 100,
       tableCellFormatter: function(state, obj) {
-        var color = state.color;
-
-        this.__subContext__.contactDAO.find(obj.id).then(contactObj=> {
-          var format = contactObj.bankAccount ? net.nanopay.contacts.ContactStatus.READY : net.nanopay.contacts.ContactStatus.PENDING;
-          var label = state == net.nanopay.contacts.ContactStatus.CONNECTED ? state.label.replace(/\s+/g, '') : format.label.replace(/\s+/g, '');
-
+        this.__subContext__.contactDAO.find(obj.id).then(contactObj => {
           this.start()
             .start('img')
-              .show(state == net.nanopay.contacts.ContactStatus.CONNECTED)
+              .show(state === net.nanopay.contacts.ContactStatus.CONNECTED)
               .attrs({ src: this.__subContext__.theme.logo })
               .style({ 'width': '15px', 'position': 'relative', 'top': '3px', 'right': '4px' })
             .end()
-            .start().style({ color : color })
-              .add(label)
+            .start().style({ color: state.color })
+              .add(state.label)
             .end()
           .end();
         });
@@ -583,6 +576,28 @@ foam.CLASS({
           ! auth.check(x, "contact.remove." + this.getId())
         ) {
           throw new AuthorizationException();
+        }
+      `
+    },
+    {
+      name: 'validate',
+      javaCode: `
+        if ( this.getFirstName().length() > NAME_MAX_LENGTH ) {
+          throw new IllegalStateException("First name cannot exceed 70 characters.");
+        }
+        if ( this.getLastName().length() > NAME_MAX_LENGTH ) {
+          throw new IllegalStateException("Last name cannot exceed 70 characters.");
+        }
+
+        // NOTE: Cannot use FObject.super.validate(x) because the super class
+        // i.e, User class also overrides the method.
+        var props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
+        for ( var prop : props ) {
+          try {
+            prop.validateObj(x, this);
+          } catch ( IllegalStateException e ) {
+            throw e;
+          }
         }
       `
     }

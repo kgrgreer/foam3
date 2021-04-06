@@ -506,7 +506,6 @@ function usage {
     echo "  -m : Enable Medusa clustering. Not required for 'nodes'. Same as -Ctrue"
     # -M reserve for potential Medusa instance type: Mediator, Node, NERF,
     echo "  -N NAME : start another instance with given instance name. Deployed to /opt/nanopay_NAME."
-    echo "  -o : old maven build"
     echo "  -p : Enable profiling on default port"
     echo "  -P PORT : JProfiler connection on PORT"
     echo "  -r : Start nanos with whatever was last built."
@@ -517,7 +516,7 @@ function usage {
     echo "  -T testId1,testId2,... : Run listed tests."
     echo "  -u : Run from jar. Intented for Production deployments."
     echo "  -U : User to run as"
-    echo "  -v : java compile only (maven), no code generation."
+    echo "  -v : java compile only, no code generation."
     echo "  -V VERSION : Updates the project version in POM file to the given version in major.minor.path.hotfix format"
     echo "  -w : Disable liveScriptBundler service. (development only)"
     echo "  -W PORT : HTTP Port. NOTE: WebSocketServer will use PORT+1"
@@ -602,7 +601,7 @@ RUNTIME_COMPILE=0
 RUN_USER=
 RESOURCES=
 
-while getopts "bcC:dD:E:efF:ghijJ:klmN:opP:QR:rsStT:uU:vV:wW:xz" opt ; do
+while getopts "bcC:dD:E:efF:ghijJ:klmN:pP:QR:rsStT:uU:vV:wW:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;

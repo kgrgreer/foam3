@@ -27,6 +27,10 @@ foam.CLASS({
     {
       name: 'country',
       visibility: 'RO'
+    },
+    {
+      name: 'denomination',
+      value: 'EUR'
     }
   ],
 

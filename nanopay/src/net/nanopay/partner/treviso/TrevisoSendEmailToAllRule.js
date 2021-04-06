@@ -90,8 +90,7 @@ foam.CLASS({
             EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED)
           ));
           BRBusinessOwnershipData ownerData = (BRBusinessOwnershipData) ownerUCJ.getData();
-          for ( int i = 1; i <= ownerData.getAmountOfOwners(); i++ ) {
-            BRBeneficialOwner beneficialOwnerUser = (BRBeneficialOwner) ownerData.getProperty("owner"+i);
+          for ( BRBeneficialOwner beneficialOwnerUser : ownerData.getOwners() ) {
             if ( hasAlreadyBeenEmailed(uniqueEmails, beneficialOwnerUser.getEmail()) ) continue;
             else uniqueEmails.add(beneficialOwnerUser.getEmail());
             if ( beneficialOwnerUser.getHasSignedContratosDeCambio() ){
@@ -111,7 +110,7 @@ foam.CLASS({
             BRBusinessDirector directorUser = (BRBusinessDirector) directorList[i];
             if ( hasAlreadyBeenEmailed(uniqueEmails, directorUser.getEmail()) ) continue;
             else uniqueEmails.add(directorUser.getEmail());
-            if ( directorUser.getHasSignedContratosDeCambio() ){
+            if ( directorUser.getHasSignedContratosDeCambioDirector() ){
               sendEmailToNonUser(x, business, directorUser.getFirstName(), directorUser.getEmail());
             }
           }

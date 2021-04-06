@@ -22,7 +22,10 @@ foam.CLASS({
 
   requires: ['net.nanopay.model.Business'],
 
-  javaImports: ['foam.nanos.auth.User'],
+  javaImports: [
+    'foam.nanos.auth.User',
+    'foam.util.SafetyUtil'
+  ],
 
   properties: [
     {
@@ -45,7 +48,11 @@ foam.CLASS({
       name: 'fullName',
       expression: function(firstName, lastName) {
         return `${firstName} ${lastName}`.trim();
-      }
+      },
+      javaFactory: `
+        String name = getFirstName() + " " + getLastName();
+        return SafetyUtil.isEmpty(name) ? name : name.trim();
+      `
     },
     {
       class: 'String',
@@ -60,7 +67,14 @@ foam.CLASS({
           name = this.fullName.trim();
         }
         return name;
-      }
+      },
+      javaGetter: `
+        String name = getBusinessName();
+        if ( SafetyUtil.isEmpty(name) ) {
+          name = getFullName();
+        }
+        return SafetyUtil.isEmpty(name) ? name : name.trim();
+      `
     },
     {
       class: 'String',

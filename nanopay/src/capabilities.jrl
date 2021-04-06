@@ -219,6 +219,10 @@ p({
   "version":"0",
   "enabled":true,
   "daoKey":"businessDAO",
+  "wizardlet": {
+    class: "net.nanopay.crunch.wizardlet.RerenderWizardlet",
+    rerenderList: ["554af38a-8225-87c8-dfdf-eeb15f71215f-6-5"]
+  },
   "contextDAOFindKey":"subject.user"
 })
 
@@ -231,6 +235,10 @@ p({
   "version":"0",
   "enabled":true,
   "daoKey":"businessDAO",
+  "wizardlet": {
+    class: "net.nanopay.crunch.wizardlet.RerenderWizardlet",
+    rerenderList: ["554af38a-8225-87c8-dfdf-eeb15f71215f-6-5"]
+  },
   "contextDAOFindKey":"subject.user"
 })
 
@@ -511,11 +519,7 @@ p({
     "class":"net.nanopay.crunch.IsSpid",
     "spid": "treviso"
   },
-  "associatedEntity": 1,
-  "wizardConfig": {
-    "class": "foam.u2.crunch.EasyCrunchWizard",
-    "allowSkipping": false
-  }
+  "associatedEntity": 1
 })
 
 p({
@@ -550,7 +554,7 @@ p({
     "class": "net.nanopay.crunch.wizardlet.RefreshWizardlet"
   },
   "wizardConfig": {
-    "class": "foam.u2.crunch.EasyCrunchWizard",
+    "class": "net.nanopay.crunch.wizardlet.BusinessRegistrationWizardConfig",
     "allowSkipping": false
   },
   "requirementViewTitle":"Have your business documents ready. You can save your progress and come back later.",
@@ -566,7 +570,9 @@ p({
   name: "Submit Business Information",
   wizardlet: {
     class: "foam.u2.wizard.SubmitWizardlet"
-  }
+  },
+  of: "foam.core.RequiredBooleanHolder",
+  associatedEntity: 1
 })
 
 p({
@@ -603,6 +609,8 @@ p({
   "name":"CPF number",
   "of":"net.nanopay.country.br.CPF",
   "version":"0",
+  "daoKey":"userDAO",
+  "contextDAOFindKey":"subject.realUser",
   "enabled":true,
   "associatedEntity": 1
 })
@@ -1121,6 +1129,13 @@ p({
   "name":"Additional information required",
   "requirementViewTitle":"To send a payment to a contact in this corridor you will need to provide more information",
   "of":"net.nanopay.contacts.AFEXCNBeneficiaryCapability",
-  "enabled":true
+  "enabled":true,
+  "icon":"/images/capabilityIcons/BeneficiaryCap.png",
+  "wizardConfig": {
+    "class": "foam.u2.crunch.EasyCrunchWizard",
+    "incrementalWizard": true,
+    "skipMode":1
+  }
 })
+
 p({class:"foam.nanos.auth.ServiceProvider",id:"nanopay.estimationaccount",description:"estimation account spid",enabled:true})

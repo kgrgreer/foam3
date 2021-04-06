@@ -14,18 +14,18 @@ p({
     import static foam.mlang.MLang.*;
 
     // Retrieve or create the billing user for Intuit
-    emailAddress = "billing@intuit.com";
+    emailAddress = "billing-intuit@nanopay.com";
     localUserDAO = x.get("localUserDAO");
     user = localUserDAO.find(EQ(User.EMAIL, emailAddress));
     if ( user == null ) {
-      String name = "Unable to find user billing intuit user: billing@intuit.com";
+      String name = "Unable to find user billing intuit user: " + emailAddress;
       DAO alarmDAO = (DAO) x.get("alarmDAO");
       Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, name));
       if ( alarm != null && alarm.getIsActive() ) { return; }
       alarm = new Alarm.Builder(x)
                   .setName(name)
                   .setIsActive(true)
-                  .setNote("billing@intuit.com user does not exist")
+                  .setNote(emailAddress + " user does not exist")
                   .build();
       alarmDAO.put(alarm);
       throw new RuntimeException("Intuit Billing Cron error: Intuit billing user does exist");

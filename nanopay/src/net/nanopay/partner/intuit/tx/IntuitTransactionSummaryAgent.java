@@ -22,6 +22,7 @@ import foam.mlang.predicate.Predicate;
 import foam.nanos.cron.Cron;
 import java.util.*;
 import net.nanopay.tx.ChainSummary;
+import net.nanopay.tx.FeeSummaryTransactionLineItem;
 import net.nanopay.tx.SummarizingTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.cron.TransactionSummaryAgent;
@@ -42,11 +43,20 @@ public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
       SummarizingTransaction summarizingTransaction = (SummarizingTransaction) txn;
       ChainSummary chainSummary = summarizingTransaction.getChainSummary();
 
+      FeeSummaryTransactionLineItem feeLineItem = null;
+      if ( txn.getLineItems().length > 0 ) {
+        for ( var li : txn.getLineItems() ) {
+          if ( li instanceof FeeSummaryTransactionLineItem ) {
+            feeLineItem = (FeeSummaryTransactionLineItem) li;
+            break;
+          } 
+        }
+      }
+
       IntuitTransactionSummary intuitTxnSummary = new IntuitTransactionSummary.Builder(x)
         .setId(txn.getId())
         .setCurrency(txn.getSourceCurrency())
         .setAmount(txn.getAmount())
-        .setSummary(chainSummary.getSummary())
         .setStatus(chainSummary.getStatus())
         .setCategory(chainSummary.getCategory())
         .setErrorCode(chainSummary.getErrorCode())
@@ -56,6 +66,10 @@ public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
         .setExternalId(txn.getExternalId() != null ? txn.getExternalId() : "")
         .setExternalInvoiceId(txn.getExternalInvoiceId() != null ? txn.getExternalInvoiceId() : "")
         .build();
+      if (txn.getPayer() != null) intuitTxnSummary.setPayer(txn.getPayer().getId());
+      if (txn.getPayee() != null) intuitTxnSummary.setPayee(txn.getPayee().getId());
+      if (feeLineItem != null) intuitTxnSummary.setFee(feeLineItem.getTotalFee());
+      intuitTxnSummary.setSummary(intuitTxnSummary.summarizeTransaction(x, txn));
       transactionSummaryDAO.put(intuitTxnSummary);
     }
   }

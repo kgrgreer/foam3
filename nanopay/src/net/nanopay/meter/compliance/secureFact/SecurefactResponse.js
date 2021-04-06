@@ -49,6 +49,14 @@ foam.CLASS({
       gridColumns: 6
     },
     {
+      class: 'String',
+      name: 'type',
+      factory: function() {
+        return this.cls_.name;
+      },
+      javaFactory: `return getClass().getSimpleName();`
+    },
+    {
       class: 'Int',
       name: 'statusCode',
       section: 'responseInformation',

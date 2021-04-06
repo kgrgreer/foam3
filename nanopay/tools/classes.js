@@ -117,6 +117,7 @@ var classes = [
   'net.nanopay.account.SecuritiesAccount',
   'net.nanopay.account.SecurityAccount',
   'net.nanopay.account.SecuritiesTrustAccount',
+  'net.nanopay.account.SetBankAccountOnContact',
   'net.nanopay.account.BrokerAccount',
   'net.nanopay.account.CreateDefaultDigitalAccountOnUserCreateRule',
   'net.nanopay.bank.BankAccount',
@@ -1355,6 +1356,11 @@ var classes = [
   'net.nanopay.partner.treviso.report.TrevisoTransactionReport',
   'net.nanopay.partner.treviso.report.TrevisoTransactionReportDAO',
 
+  'net.nanopay.partner.br.businessSector.Sector',
+  'net.nanopay.partner.br.businessSector.Grupo',
+  'net.nanopay.partner.br.businessSector.Divisao',
+  'net.nanopay.partner.br.businessSector.Secao',
+
   // bepay
   'net.nanopay.partner.bepay.tx.BePayTransaction',
   'net.nanopay.partner.bepay.tx.planner.BePayTransactionPlanner',
@@ -1423,6 +1429,7 @@ var classes = [
   'net.nanopay.crunch.compliance.BeneficialOwnerSanctionValidator',
   'net.nanopay.crunch.compliance.SecurefactSIDniValidator',
   'net.nanopay.crunch.compliance.SecurefactLEVValidator',
+  'net.nanopay.crunch.compliance.SendNotificationOnPut',
   'net.nanopay.crunch.compliance.UserComplianceApproval',
   'net.nanopay.crunch.compliance.SetFulfilledComplianceApprovalRequest',
   'net.nanopay.crunch.compliance.GenericSigningOfficerValidator',
@@ -1490,9 +1497,6 @@ var classes = [
   'net.nanopay.crunch.registration.businesstypes.SoleProprietorData',
   'net.nanopay.crunch.registration.businesstypes.TrustData',
 
-  // bepay crunch onboarding
-  'net.nanopay.crunch.bepay.ExtendedUserDetailsData',
-
   // crunch documents
   'net.nanopay.crunch.document.Document',
   'net.nanopay.crunch.document.ExpirableDocument',
@@ -1502,6 +1506,7 @@ var classes = [
   'net.nanopay.crunch.wizardlet.SigningOfficerQuestionWizardlet',
   'net.nanopay.crunch.wizardlet.RefreshWizardlet',
   'net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig',
+  'net.nanopay.crunch.wizardlet.BusinessRegistrationWizardConfig',
 
   // Notification
   'net.nanopay.notification.PermissionedNotificationSettingRule',
