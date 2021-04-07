@@ -18,6 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.test',
   name: 'AbliiOnboardingSupport_v2',
+  extends: 'foam.nanos.crunch.test.CrunchTestSupport',
   documentation: `Helper methods for client side onboarding tests`,
 
   requires: [
@@ -33,11 +34,11 @@ foam.CLASS({
     'sessionID',
     'crunchService'
   ],
-  
+
   exports: [
     'subject'
   ],
-  
+
   properties: [
     {
       documentation: 'Unique identifier for this Test instance',
@@ -123,7 +124,7 @@ foam.CLASS({
       }
     },
     {
-      // TODO/REVIEW: This should be a spid-admin, not * admin. 
+      // TODO/REVIEW: This should be a spid-admin, not * admin.
       documentation: `Become spid-admin`,
       name: 'sudoAdmin',
       args: [
@@ -333,6 +334,7 @@ foam.CLASS({
             throw 'User not created ('+userName+')';
           }
         }
+        this.user = u;
         return u;
       }
     },
