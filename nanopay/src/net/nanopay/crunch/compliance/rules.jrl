@@ -853,7 +853,7 @@ p({
   "daoKey":"userCapabilityJunctionDAO",
   "operation":3,
   "after":true,
-  "enabled":true,
+  "enabled":false,
   "predicate": {
     "class": "foam.mlang.predicate.Or",
     "arg1": {
