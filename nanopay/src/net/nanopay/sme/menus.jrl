@@ -94,19 +94,25 @@ p({
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"contactDAO",
+
+      "of": "net.nanopay.contacts.Contact",
       "browseTitle": "Contacts",
-      "createTitle": "Create contact",
+      "createLabel":"Add contact",
+
+      "createTitle": "Create contact2",
       "createPredicate":{"class":"foam.mlang.predicate.True"},
       "editPredicate":{"class":"foam.mlang.predicate.False"},
       "deletePredicate":{"class":"foam.mlang.predicate.False"},
       "searchMode":0,
-      "of": "net.nanopay.contacts.Contact",
-      "DAOCreateView":false,
+
+      "XXXDAOCreateView":false,
+      "DAOCreateView":"true",
 
       "primaryAction": {"class":"net.nanopay.ui.AddPrimaryAction"},
+      "XXXprimaryAction": {"class":"net.nanopay.bank.AddBankAccountAction"},
       "viewBorder":{class:"foam.u2.borders.NullBorder"},
 
-      "menu": "mainmenu.contacts2",
+      "XXXmenu": "mainmenu.contacts",
 
       "wizardDetailView":{"class":"net.nanopay.ui.wizard.ContactWizardDetailView"},
       "detailView":{"class":"net.nanopay.contacts.ui.ContactWizardView"},
@@ -212,7 +218,6 @@ p({
         }
       ],
 
-      "menu": "mainmenu.banking2",
       "detailView":{"class":"net.nanopay.account.ui.BankAccountWizard"},
 
       "exportEnabled":false,
