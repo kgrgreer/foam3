@@ -8,6 +8,7 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import net.nanopay.account.Account;
 import net.nanopay.tx.DigitalTransaction;
@@ -173,14 +174,16 @@ public class ReconciliationReportDAO extends ProxyDAO {
   }
 
   String getRoot(X x, Transaction transaction) {
-    var root = transaction.findRoot(x);
-    while ( root != null && ! (root instanceof SummaryTransaction) )
-      root = root.findRoot(x);
+    var superX = x.put("subject", new Subject.Builder(x).setUser(new User.Builder(x).setId(1).build()).build());
 
-    if ( root == null )
+    while( transaction != null && ! (transaction instanceof SummaryTransaction) ) {
+      transaction = transaction.findRoot(superX);
+    }
+
+    if ( transaction == null )
       throw new RuntimeException("CI/CO/Digital Transaction missing SummaryTransaction root");
 
-    return root.getId();
+    return transaction.getId();
   }
 
   void refreshMaps(X x) {
@@ -209,7 +212,7 @@ public class ReconciliationReportDAO extends ProxyDAO {
 
   @Override
   public FObject find_(X x, Object id) {
-    var st = (SummaryTransaction) super.find_(x, id);
+    var st = (SummaryTransaction) getDelegate().find_(x, id);
     if ( st == null ) {
       throw new RuntimeException("Couldn't find matching Summary Transaction for Reconciliation Report " + id.toString());
     }
