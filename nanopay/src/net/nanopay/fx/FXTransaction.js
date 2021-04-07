@@ -62,7 +62,7 @@ Stores all Exchange Rate info.`,
         return {
           class: 'foam.u2.TextField',
           mode: foam.u2.DisplayMode.RO,
-          data$: this.fxRate.map(fx => { return fx !== 1 ? 'Rate: ' + fx : 'No Fx'; })
+          data$: X.data.fxRate$.map(fx => { return fx !== 1 ? 'Rate: ' + fx : 'No Fx'; })
         };
       }
     },
