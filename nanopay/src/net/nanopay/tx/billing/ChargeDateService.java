@@ -34,7 +34,7 @@ public class ChargeDateService implements ChargeDateServiceInterface {
     next.clear();
     next.set(YEAR, created.get(YEAR));
     next.set(MONTH, created.get(MONTH) + 1);
-    next.set(DAY_OF_MONTH, 1);
+    next.set(DAY_OF_MONTH, 5);
     return next.getTime();
   }
 }
