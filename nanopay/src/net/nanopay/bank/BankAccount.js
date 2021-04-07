@@ -867,6 +867,9 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
+        User owner = findOwner(x);
+        if ( owner == null ) throw new RuntimeException("Owner with id " + getOwner() + " doesn't exist");
+
         String name = this.getName();
         if ( ((DAO)x.get("currencyDAO")).find(this.getDenomination()) == null ) {
           throw new RuntimeException("Please select a Currency");
