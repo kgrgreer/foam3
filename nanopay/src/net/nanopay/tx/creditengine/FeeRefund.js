@@ -20,7 +20,8 @@
   name: 'FeeRefund',
   extends: 'net.nanopay.tx.creditengine.FeeWaiver',
 
-  documentation: `Gives a credit for each lineItem at the discount percentage specified `,
+  documentation: `Gives a credit for each lineItem at the discount percentage specified, credit is deposited into the
+  transaction destination account regardless of who was charged`,
 
   javaImports: [
     'net.nanopay.tx.model.Transaction',
@@ -80,7 +81,7 @@
         if (lineItem instanceof InvoicedFeeLineItem) {
           InvoicedCreditLineItem invoicedFeeRefund = new InvoicedCreditLineItem();
           invoicedFeeRefund.setSourceAccount(lineItem.getDestinationAccount());
-          invoicedFeeRefund.setDestinationAccount(lineItem.getSourceAccount());
+          invoicedFeeRefund.setDestinationAccount(t.getDestinationAccount());
           invoicedFeeRefund.setCreditCurrency(lineItem.getCurrency());
           invoicedFeeRefund.setAmount(lineItem.getAmount());
           array.add(invoicedFeeRefund);
@@ -88,7 +89,7 @@
           CreditLineItem feeRefund = new CreditLineItem();
           feeRefund.setCreditCurrency(lineItem.getCurrency());
           feeRefund.setSourceAccount(lineItem.getDestinationAccount());
-          feeRefund.setDestinationAccount(lineItem.getSourceAccount());
+          feeRefund.setDestinationAccount(t.getDestinationAccount());
           feeRefund.setAmount(lineItem.getAmount());
           array.add(feeRefund);
         }

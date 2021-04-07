@@ -230,7 +230,7 @@ p({
     "postApprovalRuleId": "b64905d0-289b-4371-92a5-f843e344109a"
   },
   "after":false,
-  "enabled":true,
+  "enabled":false,
   "saveHistory":false,
   "lifecycleState":1,
   "spid": "ablii"
