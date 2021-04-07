@@ -125,10 +125,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.TwoFactorSign
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.TITLE",target:"Verifique seu Email"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.NO_EMAIL_LINK",target:"Não recebeu o Email?"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.RESEND_EMAIL_LINK",target:"Reenviar o Email"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.NO_EMAIL_INSTRUCTIONS_1",target:"Caso não tenha recebido nosso email, pedimos que verifique sua caixa de Spam, se não localizá-lo solicite o reenvio."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.NO_EMAIL_INSTRUCTIONS_1",target:"\u2022 Caso não tenha recebido nosso email, pedimos que verifique sua caixa de Spam, se não localizá-lo solicite o reenvio."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.INSTRUCTIONS1",target:"Enviamos um email para "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.INSTRUCTIONS2",target:" com um link para ativar sua conta."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.NO_EMAIL_INSTRUCTIONS_2",target:""})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.NO_EMAIL_INSTRUCTIONS_2",target:"\u2022 Verifique se o endereço de e-mail acima está correto"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.EMAIL.label",target:"email pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.NO_EMAIL_TOGGLE.label",target:"noEmailToggle pt"})
@@ -301,7 +301,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMo
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.GO_BACK.label",target:"goBack pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.OTHER_OPTION.label",target:"otherOption pt"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.CANCEL_SUCCESS",target:"Fatura cancelada com sucesso"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.DELETE_SUCCESS",target:"Fatura excluída com sucesso"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.ConfirmDisable2FAModal.TITLE",target:"Desativar a autenticação de dois fatores?"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.ConfirmDisable2FAModal.INSTRUCTIONS_1",target:"A autenticação de dois fatores fornece uma camada adicional de segurança contra falsificação de identidade e impede o acesso a informações confidenciais da conta"})
