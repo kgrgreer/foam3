@@ -596,17 +596,17 @@ foam.CLASS({
 
           .start().addClass('choice')
             .start('div').addClass('confirmationContainer')
-              .tag({ class: 'foam.u2.md.CheckBox', data$: this.accountCheck$ })
+              .tag({ class: 'foam.u2.CheckBox', data$: this.accountCheck$ })
               .start('p').addClass('confirmationLabel').add('Transfer to payee account').end()
             .end()
             .start('div').addClass('confirmationContainer')
-              .tag({ class: 'foam.u2.md.CheckBox', data$: this.partnerCheck$ })
+              .tag({ class: 'foam.u2.CheckBox', data$: this.partnerCheck$ })
               .start('p').addClass('confirmationLabel').add('Transfer to payee partner account').end()
             .end()
             .start('div').addClass('confirmationContainer').show(this.slot(function(hasContactPermission, invoiceMode) {
               return hasContactPermission && ! invoiceMode;
             }))
-              .tag({ class: 'foam.u2.md.CheckBox', data$: this.contactCheck$ })
+              .tag({ class: 'foam.u2.CheckBox', data$: this.contactCheck$ })
               .start('p').addClass('confirmationLabel').add('Transfer to my contact').end()
             .end()
           .end()

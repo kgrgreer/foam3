@@ -111,7 +111,7 @@ foam.CLASS({
     }
 
     input:focus {
-      border: solid 1px #604aff;
+      border: solid 2px #604aff;
     }
 
     /* Modal windows */
@@ -595,23 +595,7 @@ foam.CLASS({
       -webkit-border-start-width: 8px;
       -webkit-border-after-width: 8px;
     }
-
-    input[type='checkbox']:checked:after {
-      width: 12px;
-      height: 14px;
-      margin-right: 2px;
-      padding-left: 2px;
-      left: -4px;
-      top: -2px;
-      background-color: white;
-      content: '\\2713';
-      display: inline-block;
-      visibility: visible;
-      color: #604aff;
-      border-radius: 2px;
-      box-shadow: inset 0 1px 1px 0 rgba(32, 46, 120, 0.54);
-    }
-
+    
     .label {
       font-size: 12px !important;
       font-weight: 700 !important;

@@ -855,7 +855,7 @@ p({
   "after":true,
   "enabled":false,
   "predicate": {
-    "class": "foam.mlang.predicate.OR",
+    "class": "foam.mlang.predicate.Or",
     "arg1": {
       "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
       "category":"apiCADOnboarding",

@@ -81,8 +81,14 @@ public class TrevisoServiceTest
       user = new User();
       user.setFirstName("Treviso");
       user.setLastName("Treviso");
-      Address address = new Address.Builder(x).setCountryId("CA")
-        .setRegionId("CA-ON").setCity("Toronto").build();
+      Address address = new Address.Builder(x)
+        .setStructured(false)
+        .setAddress1("905 King St W")
+        .setCity("Toronto")
+        .setRegionId("CA-ON")
+        .setPostalCode("M6K 3G9")
+        .setCountryId("CA")
+        .build();
       user.setAddress(address);
       user.setSpid("test");
       user.setEmail("trevisouser@nanopay.net");
