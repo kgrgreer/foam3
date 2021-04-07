@@ -311,7 +311,7 @@ p({
     "documentation":"Screens payer and payee in Dow Jones",
     "daoKey":"localTransactionDAO",
     "operation":1,
-    "action":{
+    "asyncAction":{
       "class":"net.nanopay.partner.bepay.tx.ScreenUsersOnTransactionCreate"
     },
     "predicate": {
