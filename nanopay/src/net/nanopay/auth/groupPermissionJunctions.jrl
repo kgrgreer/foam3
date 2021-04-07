@@ -196,6 +196,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"net.nanopay.bank.cabankaccount.section.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"net.nanopay.bank.inbankaccount.section.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"net.nanopay.bank.usbankaccount.section.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"net.nanopay.crunch.onboardingmodels.businessownershipdata.viewownersdetails"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"net.nanopay.sme.onboarding.businessonboarding.section.adminReferenceSection"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"net.nanopay.sme.onboarding.canadausbusinessonboarding.section.adminReferenceSection"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"net.nanopay.sme.onboarding.usbusinessonboarding.section.adminReferenceSection"})
