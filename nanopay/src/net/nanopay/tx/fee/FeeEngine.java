@@ -178,12 +178,12 @@ public class FeeEngine {
 
     if ( ! loadedFees_.isEmpty() ) {
 
-      for (Map.Entry<String, Fee> f : loadedFees_.entrySet()) {
+      for ( var f : loadedFees_.values() )  {
         try {
-          TransactionLineItem lineItem = newLineItem(x, f.getValue(), transaction);
+          TransactionLineItem lineItem = newLineItem(x, f, transaction);
           if (lineItem != null) lineItems.add(lineItem);
         } catch (Exception e) {
-          throw new RuntimeException("Could not create line item for fee  " + f.getValue().getName() + " to transaction id:" + transaction.getId(), e);
+          throw new RuntimeException("Could not create line item for fee  " + f.getName() + " to transaction id:" + transaction.getId(), e);
         }
       }
     }
