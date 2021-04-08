@@ -946,7 +946,10 @@ foam.CLASS({
       name: 'toSummary',
       type: 'String',
       code: function() {
-        return this.type;
+        if ( !this.id )
+          return this.type;
+
+        return this.type + ' ' + this.id.substring(0, Math.min(this.id.length, 8));
       }
     },
     {
