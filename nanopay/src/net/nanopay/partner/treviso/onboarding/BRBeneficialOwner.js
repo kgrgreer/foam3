@@ -66,18 +66,6 @@ foam.CLASS({
       }
     },
     {
-      class: "Date",
-      name: 'birthday',
-      postSet: function(_,n) {
-        if ( this.cpf.length == 11 && this.verifyName !== true ) {
-          this.cpfName = "";
-          this.getCpfName(this.cpf).then(v => {
-            this.cpfName = v;
-          });
-        }
-      }
-    },
-    {
       class: 'Reference',
       targetDAOKey: 'countryDAO',
       name: 'nationality',
@@ -118,122 +106,9 @@ foam.CLASS({
       ]
     },
     {
-      class: 'String',
-      name: 'cpf',
-      label: 'Cadastro de Pessoas Físicas (CPF)',
-      section: 'requiredSection',
-      documentation: `CPF number of beneficial owner.`,
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
-      },
-      validationPredicates: [
-        {
-          args: ['cpf', 'cpfName'],
-          predicateFactory: function(e) {
-            return e.EQ(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.partner.treviso.onboarding.BRBeneficialOwner
-                    .CPF
-                  }), 11);
-          },
-          errorMessage: 'INVALID_CPF'
-        },
-        {
-          args: ['cpf', 'cpfName'],
-          predicateFactory: function(e) {
-            return e.AND(
-              e.GT(
-              net.nanopay.partner.treviso.onboarding.BRBeneficialOwner
-                .CPF_NAME, 0),
-              e.EQ(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.partner.treviso.onboarding.BRBeneficialOwner
-                    .CPF
-                  }), 11)
-              );
-          },
-          errorMessage: 'INVALID_CPF_CHECKED'
-        }
-      ],
-      externalTransient: true,
-      tableCellFormatter: function(val) {
-        return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
-      },
-      postSet: function(_, n) {
-        this.cpfName = '';
-        if ( n.length == 11 ) {
-          this.getCpfName(n).then(v => {
-            this.cpfName = v;
-          });
-        }
-      },
-      view: function(_, X) {
-        return foam.u2.FragmentedTextField.create({
-          delegates: [
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cpf.slice(0, 3),
-              maxLength: 3
-            }),
-            '.',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cpf.slice(3, 6),
-              maxLength: 3
-            }),
-            '.',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cpf.slice(6, 9),
-              maxLength: 3
-            }),
-            '-',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cpf.slice(9, 11),
-              maxLength: 2
-            })
-          ]
-        });
-      }
-    },
-    {
-      class: 'String',
-      name: 'cpfName',
-      label: '',
-      section: 'requiredSection',
-      hidden: true,
-      externalTransient: true
-    },
-    {
-      class: 'Boolean',
-      name: 'verifyName',
-      label: 'Is this the business owner?',
-      section: 'requiredSection',
-      visibility: function(cpfName, mode) {
-        return mode === 'percent' ?
-          foam.u2.DisplayMode.HIDDEN : cpfName.length > 0 ?
-            foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
-      },
-      view: function(_, X) {
-        var self = X.data$;
-        return foam.u2.CheckBox.create({
-          labelFormatter: function() {
-            this.start('span')
-              .add(self.dot('cpfName'))
-            .end();
-          }
-        });
-      },
-      validationPredicates: [
-        {
-          args: ['verifyName'],
-          predicateFactory: function(e) {
-            return e.EQ(
-              net.nanopay.partner.treviso.onboarding.BRBeneficialOwner
-                .VERIFY_NAME,
-              true);
-          },
-          errorMessage: 'INVALID_OWNER_NAME'
-        }
-      ],
-      externalTransient: true
+      class: 'FObject',
+      of: 'net.nanopay.country.br.CPF',
+      section: 'requiredSection'
     },
     {
       class: 'Boolean',
@@ -354,13 +229,6 @@ foam.CLASS({
   ],
 
   methods: [
-    {
-      name: 'getCpfName',
-      code: async function(cpf) {
-        return await this.brazilVerificationService
-          .getCPFNameWithBirthDate(this.__subContext__, cpf, this.birthday);
-      }
-    },
     {
       name: 'validate',
       javaCode: `

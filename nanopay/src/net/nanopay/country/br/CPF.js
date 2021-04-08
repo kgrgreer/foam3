@@ -61,6 +61,10 @@ foam.CLASS({
       section: 'collectCpf',
       label: 'Date of birth',
       visibility: 'RW',
+      postSet: function() {
+        this.clearFields();
+        this.updateCPFName();
+      },
       validationPredicates: [
         {
           args: ['birthday'],
@@ -94,15 +98,14 @@ foam.CLASS({
       name: 'data',
       label: 'Cadastro de Pessoas Físicas (CPF)',
       section: 'collectCpf',
-      help: `The CPF (Cadastro de Pessoas Físicas or Natural Persons Register) is a number assigned by the Brazilian revenue agency to both Brazilians and resident aliens who are subject to taxes in Brazil.`,
       validationPredicates: [
         {
-          args: ['data', 'cpfName'],
+          args: ['data'],
           predicateFactory: function(e) {
             return e.EQ(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.country.br.CPF.DATA
-                }), 11);
+              foam.mlang.StringLength.create({
+                arg1: net.nanopay.country.br.CPF.DATA
+              }), 11);
           },
           errorMessage: 'INVALID_CPF'
         },
@@ -124,38 +127,34 @@ foam.CLASS({
       tableCellFormatter: function(val) {
         return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
       },
-      postSet: function(_,n) {
-        if ( n.length == 11 && this.verifyName !== true ) {
-          this.cpfName = "";
-          this.getCpfName(n).then((v) => {
-            this.cpfName = v;
-          });
-        }
+      postSet: function() {
+        this.clearFields();
+        this.updateCPFName();
       },
       view: function(_, X) {
         return foam.u2.FragmentedTextField.create({
           delegates: [
             foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(0,3),
+              data: X.data.data.slice(0, 3),
               maxLength: 3
             }),
             '.',
             foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(3,6),
+              data: X.data.data.slice(3, 6),
               maxLength: 3
             }),
             '.',
             foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(6,9),
+              data: X.data.data.slice(6, 9),
               maxLength: 3
             }),
             '-',
             foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(9,11),
+              data: X.data.data.slice(9, 11),
               maxLength: 2
             })
           ]
-        }, X)
+        }, X);
       }
     },
     {
@@ -168,7 +167,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'verifyName',
-      label: 'Is this you?',
+      label: 'Is this the name of the person who owns this cpf?', // todo - add ttranslation
       section: 'collectCpf',
       view: function(n, X) {
         var self = X.data$;
@@ -211,12 +210,25 @@ foam.CLASS({
       w.reloadAfterSave = false;
     },
     {
-      name: 'getCpfName',
-      code: async function(cpf) {
-        if ( ! this.birthday ) // goes with user deprication
-          return await this.brazilVerificationService.getCPFName(this.__subContext__, cpf, this.user);
-        return await this.brazilVerificationService
-          .getCPFNameWithBirthDate(this.__subContext__, cpf, this.birthday);
+      name: 'clearFields',
+      code: function() {
+        this.cpfName = '';
+        this.verifyName = false;
+      }
+    },
+    {
+      name: 'updateCPFName',
+      code: async function() {
+        // goes with user deprication
+        if ( ! this.birthday && ! this.verifyName && n.length == 11 ) {
+          this.cpfName = await this.brazilVerificationService
+            .getCPFName(this.__subContext__, cpf, this.user);
+        }
+        // update cpfName if birthday and cpf are valid
+        if ( this.birthday && ! this.verifyName && n.length == 11 ) {
+          this.cpfName = await this.brazilVerificationService
+            .getCPFNameWithBirthDate(this.__subContext__, this.cpf, this.birthday);
+        }
       }
     },
     {
