@@ -140,7 +140,16 @@ foam.CLASS({
       section: 'billInformation',
       order: 60,
       gridColumns: 6,
-      readPermissionRequired: true
+      readPermissionRequired: true,
+      tableCellFormatter: function(value, obj) {
+        obj.userDAO.find(value).then(function(u) {
+          if ( u && u.toSummary ) {
+            this.add(u.toSummary());
+          } else {
+            this.add(value);
+          }
+        }.bind(this));
+      }
     },
     {
       class: 'Date',
