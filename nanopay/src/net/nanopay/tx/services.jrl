@@ -618,23 +618,10 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "nanopayChargeDateService",
-  "lazy": false,
-  "serviceClass": "net.nanopay.tx.billing.ChargeDateService"
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
   "name": "chargeDateService",
   "lazy": false,
   "serviceScript": """
-    import foam.mlang.predicate.ContextUserPredicate;
-    import foam.nanos.auth.User;
-    import foam.mlang.MLang;
-    chargeDateService = new foam.nanos.boot.AltFactory("nanopayChargeDateService");
-    chargeDateService.addDelegate(new ContextUserPredicate(MLang.EQ(User.SPID, "nanopay")), "nanopayChargeDateService");
-    chargeDateService.addDelegate(new ContextUserPredicate(MLang.EQ(User.SPID, "intuit")), "intuitChargeDateService");
-    return chargeDateService;
+    return new net.nanopay.tx.billing.ChargeDateService(5);
   """
 })
 

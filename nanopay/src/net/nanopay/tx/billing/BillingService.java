@@ -97,9 +97,9 @@ public class BillingService implements BillingServiceInterface {
         bill.setOriginatingSummaryTransaction(originatingSummaryTxn.getId());
       }
       if ( chargedTo.equals(ChargedTo.PAYER) ) {
-        setupChargeToUser(x, transaction.getSourceAccount(), bill);
+        setupChargeToUser(x, originatingSummaryTxn.getSourceAccount(), bill);
       } else {
-        setupChargeToUser(x, transaction.getDestinationAccount(), bill);
+        setupChargeToUser(x, originatingSummaryTxn.getDestinationAccount(), bill);
       }
       billDAO.put(bill);
     }
