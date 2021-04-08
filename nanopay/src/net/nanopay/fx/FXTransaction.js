@@ -59,12 +59,11 @@ Stores all Exchange Rate info.`,
       gridColumns: 6,
       visibility: 'RO',
       view: function (_, X) {
-        return X.data.slot(function(fxRate) {
-          return foam.u2.TextField.create({
-            mode: foam.u2.DisplayMode.RO,
-            data: fxRate != 1 ? `Rate: ${fxRate.toString()}` : 'No Fx'
-          });
-        });
+        return {
+          class: 'foam.u2.TextField',
+          mode: foam.u2.DisplayMode.RO,
+          data$: X.data.fxRate$.map(fx => { return fx !== 1 ? 'Rate: ' + fx : 'No Fx'; })
+        };
       }
     },
     {

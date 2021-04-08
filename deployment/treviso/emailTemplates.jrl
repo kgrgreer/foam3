@@ -1,7 +1,7 @@
-// id convention: if the template exists in nanopay/src/emailTemplates or foam2/src/emailTemplates
+// id convention: if the template exists in nanopay/src/emailTemplates or foam3/src/emailTemplates
 // use that id, else append treviso-n at the end where n is a number
 
-// The following 1 entry was copied from "foam2/src/emailTemplates"
+// The following 1 entry was copied from "foam3/src/emailTemplates"
 p({
   "class":"foam.nanos.notification.email.EmailTemplate",
   "id":"4f45c745-1c93-4380-b275-2d2fea091d1e-1",

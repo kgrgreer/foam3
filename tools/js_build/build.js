@@ -15,9 +15,9 @@ global.FOAM_FLAGS = {
   debug: true,
 };
 
-require(npRoot + 'foam2/src/foam.js');
-require(npRoot + 'foam2/src/foam/nanos/nanos.js');
-require(npRoot + 'foam2/src/foam/support/support.js');
+require(npRoot + 'foam3/src/foam.js');
+require(npRoot + 'foam3/src/foam/nanos/nanos.js');
+require(npRoot + 'foam3/src/foam/support/support.js');
 
 var classloader = foam.__context__.classloader;
 [

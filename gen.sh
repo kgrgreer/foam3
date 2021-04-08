@@ -21,4 +21,4 @@ node tools/xsd/index.js net.nanopay.kotak.model.reversal KotakReversal.xsd
 
 # node tools/xsd/index.js net.nanopay.partner.treviso.api.exchange TrevisoExchangeService/Exchange.xsd
 
-node --stack_trace_limit=200 foam2/tools/genjava.js $1 $2 $PWD "$3"
+node --stack_trace_limit=200 foam3/tools/genjava.js $1 $2 $PWD "$3"

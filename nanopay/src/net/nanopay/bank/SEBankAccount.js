@@ -34,7 +34,7 @@ foam.CLASS({
     {
       name: 'INSTITUTION_NUMBER_PATTERN',
       type: 'Regex',
-      value: /^\d{3}$/
+      value: /^\d{3,4}$/
     },
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
