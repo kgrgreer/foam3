@@ -35,5 +35,7 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "chargeDateService",
   "serve": true,
-  "serviceClass": "net.nanopay.tx.billing.ChargeDateService"
+  "serviceScript": """
+    return new net.nanopay.tx.billing.ChargeDateService(5);
+  """
 })

@@ -36,7 +36,7 @@ public class ChargeDateServiceTest extends Test {
   }
 
   private void testChargeDate(X x) {
-    chargeDateService = new ChargeDateService();
+    chargeDateService = new ChargeDateService(5);
     Calendar now = getInstance();
     now.setTime(new Date());
     Calendar next = getInstance();
