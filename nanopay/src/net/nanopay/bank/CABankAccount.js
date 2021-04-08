@@ -512,11 +512,10 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        // REVIEW: CA routing code = "0" + branch(5 digits) + institution(3 digits)
         var code = new StringBuilder();
         code.append('0')
-            .append(getBranchCode(x))
-            .append(getBankCode(x));
+            .append(getBankCode(x))
+            .append(getBranchCode(x));
         return code.length() > 1 ? code.toString() : getBankRoutingCode();
       `
     }
