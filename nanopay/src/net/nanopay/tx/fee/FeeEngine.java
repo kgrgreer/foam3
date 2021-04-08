@@ -178,16 +178,14 @@ public class FeeEngine {
 
     if ( ! loadedFees_.isEmpty() ) {
 
-      loadedFees_.entrySet().stream()
-        .forEach(f -> {
-          try {
-            TransactionLineItem lineItem = newLineItem(x,f.getValue(), transaction);
-            if ( lineItem != null )
-              lineItems.add(lineItem);
-          } catch ( Exception e) {
-            throw new RuntimeException("Could not create line item for fee  " + f.getValue().getName() + " to transaction id:" + transaction.getId(), e);
-          }
-        });
+      for (Map.Entry<String, Fee> f : loadedFees_.entrySet()) {
+        try {
+          TransactionLineItem lineItem = newLineItem(x, f.getValue(), transaction);
+          if (lineItem != null) lineItems.add(lineItem);
+        } catch (Exception e) {
+          throw new RuntimeException("Could not create line item for fee  " + f.getValue().getName() + " to transaction id:" + transaction.getId(), e);
+        }
+      }
     }
 
     return lineItems.toArray(new TransactionLineItem[lineItems.size()]);
@@ -208,7 +206,8 @@ public class FeeEngine {
     result.setGroup(getFeeGroup());
     result.setName(fee.getName());
     result.setAmount(feeAmount);
-    result.setCurrency(getCurrency(x, transaction).getId());
+    Currency currency = getCurrency(x, transaction);
+    result.setCurrency(currency.getId());
 
     if ( ! SafetyUtil.isEmpty(fee.getFeeAccount()) ) {
 
@@ -223,7 +222,7 @@ public class FeeEngine {
 
     // Review the need to set rates later
     if ( result instanceof FeeLineItem ) {
-      ((FeeLineItem)result).setFeeCurrency(getCurrency(x, transaction).getId());
+      ((FeeLineItem)result).setFeeCurrency(currency.getId());
       ((FeeLineItem)result).setRates(
         loadedFees_.values().stream()
           .map(Rate::new)
