@@ -1359,6 +1359,9 @@ var classes = [
   'net.nanopay.partner.br.businessSector.Divisao',
   'net.nanopay.partner.br.businessSector.Secao',
 
+  // Reporting
+  'net.nanopay.reporting.ReconciliationReport',
+
   // bepay
   'net.nanopay.partner.bepay.tx.BePayTransaction',
   'net.nanopay.partner.bepay.tx.planner.BePayTransactionPlanner',

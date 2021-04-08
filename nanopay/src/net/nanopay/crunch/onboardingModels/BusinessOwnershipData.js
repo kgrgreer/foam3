@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.core.Validatable'
   ],
   imports: [
+    'auth',
     'businessEmployeeDAO',
     'signingOfficerJunctionDAO',
     'subject'
@@ -208,7 +209,12 @@ foam.CLASS({
   ],
 
   methods: [
-    function init() {
+    async function init() {
+      if ( await this.auth.check(null, 'net.nanopay.crunch.onboardingmodels.businessownershipdata.viewownersdetails') ) {
+        this.owners.map((o) => {
+          o.mode = 'visible';
+        });
+      }
       this.ownersUpdate.sub(this.updateOwnersListeners);
       this.owners$.sub(this.updateOwnersListeners);
     },

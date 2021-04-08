@@ -60,8 +60,8 @@ p({class:"foam.i18n.Locale",locale:"en",source:"mainmenu.contacts.handler.title"
 p({class:"foam.i18n.Locale",locale:"en",source:"mainmenu.contacts.handler.createLabel",target:"Add Beneficiary"})
 p({class:"foam.i18n.Locale",locale:"en",source:"mainmenu.contacts.handler.createControllerView.view.title",target:"Add Beneficiary"})
 
-p({class:"foam.i18n.Locale",locale:"en",source:"mainmenu.banking.label",target:"Bank Account for Receipt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"mainmenu.banking.label",target:"Conta Bancária para Recebimento"})
+p({class:"foam.i18n.Locale",locale:"en",source:"mainmenu.banking.label",target:"Bank Account"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"mainmenu.banking.label",target:"Contas Bancárias da sua Empresa"})
 
 p({class:"foam.i18n.Locale",locale:"en",source:"contacts.label",target:"Beneficiaries"})
 
@@ -197,7 +197,7 @@ p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.model.BeneficialOwne
 p({class:"foam.i18n.Locale",locale:"pt",source:"7e2739cc-db32-11ea-87d0-0242ac130003.name",target:"Demonstrativos Financeiros (balanço, faturamento, defis, etc)"})
 p({class:"foam.i18n.Locale",locale:"en",source:"7e2739cc-db32-11ea-87d0-0242ac130003.name",target:"Financial Statements (balance sheet, billing, defis, etc.)"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"7e2739cc-db32-11ea-87d0-0242ac130003.description",target:"Demonstrações financeiras: Empresas optantes pelo regime de Lucro Real ou Presumido: Balanço e DRE (extraídos do SPED) e declaração de faturamento dos últimos 12 meses. Empresas optantes pelo regime do Simples: Extrato do simples nacional, DEFIS e declaração de faturamento dos últimos 12 meses."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"7e2739cc-db32-11ea-87d0-0242ac130003.description",target:"Demonstrações financeiras:\nEmpresas optantes pelo regime de Lucro Real ou Presumido: Balanço e DRE (extraídos do SPED) e declaração de faturamento dos últimos 12 meses.\nEmpresas optantes pelo regime do Simples: Extrato do simples nacional, DEFIS e declaração de faturamento dos últimos 12 meses."})
 p({class:"foam.i18n.Locale",locale:"en",source:"7e2739cc-db32-11ea-87d0-0242ac130003.description",target:"Financial statements: Companies opting for the Real or Presumed Profit regime: Balance sheet and Income Statement (extracted from SPED) and billing statement for the last 12 months. Companies opting for the Simples regime: Extract from the national simple, DEFIS and billing statement for the last 12 months."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"26d32e86-db11-11ea-87d0-0242ac130003.description",target:"Cópia do Contrato Social e da Última Alteração ou Consolidação e, para empresas sociedade anônima, cópia do Estatuto Social e da ata."})

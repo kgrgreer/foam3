@@ -286,7 +286,7 @@ foam.CLASS({
     { name: 'DUE_DATE_ERROR', message: 'Invalid Due Date' },
     { name: 'ISSUE_DATE_ERROR', message: 'Invalid Issue Date' },
     { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully' },
-    { name: 'CANCEL_SUCCESS', message: 'Invoice cancelled successfully' },
+    { name: 'DELETE_SUCCESS', message: 'Invoice deleted successfully' },
     { name: 'COMPLIANCE_ERROR', message: 'Business must pass compliance to make a payment' },
     { name: 'CONTACT_NOT_FOUND', message: 'Contact not found' },
     { name: 'INVOICE_AMOUNT_ERROR', message: 'This amount exceeds your sending limit' },
@@ -672,7 +672,7 @@ foam.CLASS({
           this.invoiceDAO.remove(this.invoice);
         }
 
-        this.notify(this.CANCEL_SUCCESS,'', this.LogLevel.INFO, true);
+        this.notify(this.DELETE_SUCCESS,'', this.LogLevel.INFO, true);
         this.pushMenu(this.isPayable
           ? 'mainmenu.invoices.payables'
           : 'mainmenu.invoices.receivables');

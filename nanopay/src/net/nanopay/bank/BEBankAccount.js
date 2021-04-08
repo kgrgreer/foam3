@@ -39,7 +39,7 @@ foam.CLASS({
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      value: /^\d{7}$/
+      value: /^\d{9}$/
     }
   ],
 

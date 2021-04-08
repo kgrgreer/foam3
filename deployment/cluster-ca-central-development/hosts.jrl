@@ -1,34 +1,34 @@
 p({
   "class":"foam.net.Host",
-  "id":"ca-central-development-mediator-1",
+  "id":"mediator-1",
   "address":"192.168.2.71"
 })
 p({
   "class":"foam.net.Host",
-  "id":"ca-central-development-mediator-2",
+  "id":"mediator-2",
   "address":"192.168.2.72"
 })
 
 p({
   "class":"foam.net.Host",
-  "id":"ca-central-development-node-1",
+  "id":"node-1",
   "address":"192.168.2.73"
 })
 
 p({
   "class":"foam.net.Host",
-  "id":"ca-central-development-node-2",
+  "id":"node-2",
   "address":"192.168.2.74"
 })
 
 p({
   "class":"foam.net.Host",
-  "id":"ca-central-development-node-3",
+  "id":"node-3",
   "address":"192.168.2.75"
 })
 
 p({
   "class":"foam.net.Host",
-  "id":"ca-central-development-node-4",
-  "address":"192.168.2.75"
+  "id":"node-4",
+  "address":"192.168.2.76"
 })

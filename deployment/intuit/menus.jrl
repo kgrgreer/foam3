@@ -37,3 +37,20 @@ p({
   "parent": "",
   "order": 40
 })
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "reconciliation-reports",
+  "label": "Reconciliation Reports",
+  "handler": {
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"reconciliationReportDAO",
+      "browseTitle": "Reconciliation Reports",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  }
+})

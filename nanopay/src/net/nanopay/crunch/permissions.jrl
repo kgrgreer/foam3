@@ -20,6 +20,7 @@ p({"class":"foam.nanos.auth.Permission","id":"net.nanopay.crunch.acceptancedocum
 p({"class":"foam.nanos.auth.Permission","id":"net.nanopay.crunch.acceptancedocuments.capabilities.abliitermsandconditions.section.reviewAgreementDocumentsSection","description":"Permission to section reviewAgreementDocumentsSection for acceptanceDoc capability"})
 p({"class":"foam.nanos.auth.Permission","id":"net.nanopay.crunch.acceptancedocuments.capabilities.abliiprivacypolicy.section.reviewAgreementDocumentsSection","description":"Permission to section reviewAgreementDocumentsSection for acceptanceDoc capability"})
 p({"class":"foam.nanos.auth.Permission","id":"net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection","description":"Permission to section reviewAgreementDocumentsSection for acceptanceDoc capability"})
+p({"class":"foam.nanos.auth.Permission","id":"net.nanopay.crunch.onboardingmodels.businessownershipdata.viewownersdetails","description":"Permission to view business owners' details"})
 p({"class":"foam.nanos.auth.Permission","id":"certifydatareviewed.rw.reviewed","description":"Permission to acknowledge data has been reviewed."})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.submenu.contact.invitation","description":"Permission to read invitation menu"})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.submenu.contact.search","description":"Permission to read search menu"})

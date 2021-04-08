@@ -20,7 +20,8 @@ p({
   permissionsGranted: [
     "rule.read.119fa381-d2a2-4369-b242-1dc8e2163bb9-bpp",
     "rule.read.2fdd7d35-6704-47dc-9f0e-9419e0aa74ed",
-    "rule.read.77480e3b-fc7e-400c-bee6-dda5a22b982a"
+    "rule.read.77480e3b-fc7e-400c-bee6-dda5a22b982a",
+    "rule.read.f2c694e4-ca5c-4fc7-bbf0-747f8aa794db"
   ]
 })
 

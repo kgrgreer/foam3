@@ -102,7 +102,7 @@ sourceSets {
     main {
         java {
             srcDirs = [
-                    "$rootDir/foam2/src",
+                    "$rootDir/foam3/src",
                     "$rootDir/nanopay/src",
                     "$rootDir/${project.genJavaDir}"
             ]
@@ -192,7 +192,7 @@ class IncrementalFindTask extends IncrementalTask {
 }
 
 task incrementalGenTask(type: IncrementalGenTask) {
-    includeFiles = (fileTree(dir: "nanopay/src") + fileTree(dir: "foam2/src")).matching{include "**/*.js"}.getFiles()
+    includeFiles = (fileTree(dir: "nanopay/src") + fileTree(dir: "foam3/src")).matching{include "**/*.js"}.getFiles()
     classFiles.add(file("nanopay/tools/classes.js"))
     outputDir = file(project.genJavaDir)
     onlyIf {
@@ -215,7 +215,7 @@ def getNanopayGitHash = { ->
 def getFOAMGitHash = { ->
     def stdout = new ByteArrayOutputStream()
     exec {
-        workingDir 'foam2/'
+        workingDir 'foam3/'
         commandLine 'git', 'rev-parse', '--short', 'HEAD'
         standardOutput = stdout
     }
@@ -234,7 +234,7 @@ task runFoamlink(type: Exec) {
         !project.hasProperty('foamoptions.skipgenjava')
     }
     doFirst {
-        commandLine 'node', 'foam2/tools/foamlink/foamlink.js', '.foam/foamlinkoutput.json'
+        commandLine 'node', 'foam3/tools/foamlink/foamlink.js', '.foam/foamlinkoutput.json'
     }
 }
 
@@ -279,7 +279,7 @@ task packageFoam(type: NodeTask) {
 }
 
 task foamNodeModulesCopy(type: Copy) {
-    from "$rootDir/foam2/node_modules/ace-builds/src-min-noconflict", "$rootDir/nanopay/src/net/nanopay/merchant/libs", "$rootDir/nanopay/src/net/nanopay/merchant/libs/qrcode"
+    from "$rootDir/foam3/node_modules/ace-builds/src-min-noconflict", "$rootDir/nanopay/src/net/nanopay/merchant/libs", "$rootDir/nanopay/src/net/nanopay/merchant/libs/qrcode"
     into "${project.targetDir}/classes/webroot"
     include "*.js"
 }
@@ -306,7 +306,7 @@ task copyLib(type: Copy) {
 
 task copyResources(type: Copy) {
     from "$rootDir/nanopay/src/resources"
-    from "$rootDir/foam2/src/resources"
+    from "$rootDir/foam3/src/resources"
     into "${project.targetDir}/classes"
     filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [VERSION:project.version])
 }
@@ -317,9 +317,9 @@ task copyJournals(type: Copy) {
 }
 
 task copyImages(type: Copy) {
-    from "$rootDir/foam2/src/foam/u2"
-    from "$rootDir/foam2/src/foam/nanos"
-    from "$rootDir/foam2/src/foam/support"
+    from "$rootDir/foam3/src/foam/u2"
+    from "$rootDir/foam3/src/foam/nanos"
+    from "$rootDir/foam3/src/foam/support"
     from "$rootDir/nanopay/src/net/nanopay"
     from "$rootDir/nanopay/src/net/nanopay/merchant"
     into "${project.targetDir}/classes"

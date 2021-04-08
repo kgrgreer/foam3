@@ -216,7 +216,7 @@ foam.CLASS({
         // Put the user so that it gets an id.
         // Remove business address collected from signup form.
         Address businessAddress = user.getAddress();
-        user.setAddress(null);
+        user.clearAddress();
         user = (User) super.put_(sysContext, obj).fclone();
 
         assert user.getId() != 0;

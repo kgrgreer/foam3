@@ -66,7 +66,7 @@ foam.CLASS({
         return hasBankAccount ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       factory: function() {
-        return net.nanopay.bank.BRBankAccount.create({ clientAccountInformationTitle: '' }, this);
+        return net.nanopay.bank.BRBankAccount.create({ clientAccountInformationTitle: '', owner: this.subject.user.id }, this);
       },
       validateObj: function(bankAccount$errors_, hasBankAccount) {
         if ( ! hasBankAccount && bankAccount$errors_ && bankAccount$errors_.length ) {

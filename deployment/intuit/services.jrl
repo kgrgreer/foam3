@@ -33,9 +33,38 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
+  "name": "rbcReconciliationReportGenerator",
+  "serviceScript": """return new net.nanopay.partner.intuit.IntuitRBCReconciliationReportGenerator("93f3fa36-7429-4b20-a223-f5b50a6d9872", "ab590614-f5bd-476a-84e0-6037607397b5");"""
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
   "name": "chargeDateService",
   "serve": true,
   "serviceScript": """
     return new net.nanopay.tx.billing.ChargeDateService(5);
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "reconciliationReportDAO",
+  "serve": true,
+  "serviceScript": """
+  dao = new net.nanopay.partner.rbc.RBCReconciliationReportDAO(
+    x,
+    new foam.dao.NullDAO(x, net.nanopay.reporting.ReconciliationReport.getOwnClassInfo())
+  );
+
+  return new foam.dao.EasyDAO.Builder(x)
+    .setOf(net.nanopay.reporting.ReconciliationReport.getOwnClassInfo())
+    .setDecorator(dao)
+    .setInnerDAO(x.get("summaryTransactionDAO"))
+    .build();
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.reporting.ReconciliationReport"
+    }
   """
 })
