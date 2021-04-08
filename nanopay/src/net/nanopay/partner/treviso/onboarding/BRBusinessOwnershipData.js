@@ -123,6 +123,6 @@ foam.CLASS({
 
   messages: [
     { name: 'OTHER_MSG', message: 'Add another shareholder' },
-    { name: 'NEW_OWNER_MSG', message: 'New Shareholder' }
+    { name: 'NEW_OWNER_MSG', message: 'Add Shareholder' }
   ]
 })

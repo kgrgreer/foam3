@@ -96,8 +96,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OWNERS.label",target:"Detalhes do proprietário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.ADD_MSG",target:"Outro Dono"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView.PLEASE_SELECT_ONE",target:"Selecione um dos seguintes ..."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView.OTHER_MSG",target:"Adicionar outro acionista"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView.NEW_OWNER_MSG",target:"Novo acionista"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView.OTHER_MSG",target:"Adicionar outro proprietário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView.NEW_OWNER_MSG",target:"Adicionar proprietário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BRBeneficialOwnerSelectionView.OTHER_MSG",target:"Adicionar outro acionista"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BRBeneficialOwnerSelectionView.NEW_OWNER_MSG",target:"Adicionar acionista"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.IsPubliclyTradedQuestion.PUBLICLY_TRADED.label",target:"Esta é uma empresa de capital aberto"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.IsPubliclyTradedQuestion.PUBLICLY_TRADED.documentation",target:"Se esta é uma empresa de capital aberto."})

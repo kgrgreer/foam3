@@ -269,7 +269,7 @@ foam.CLASS({
   messages: [
     { name: 'PLEASE_SELECT_ONE', message: 'Please select one of the following...' },
     { name: 'OTHER_MSG', message: 'Add another owner' },
-    { name: 'NEW_OWNER_MSG', message: 'New Owner' }
+    { name: 'NEW_OWNER_MSG', message: 'Add Owner' }
   ],
 
   properties: [
