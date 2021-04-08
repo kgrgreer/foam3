@@ -170,28 +170,6 @@ public class FeeEngine {
     return transactionFeeRule_.getFees(x);
   }
 
-//  private FeeLineItem newFeeLineItem(X x, String name, long amount, Currency currency, String sourceAccount)
-//    throws InstantiationException, IllegalAccessException
-//  {
-//    var result = (FeeLineItem) transactionFeeRule_.getFeeClass().newInstance();
-//    result.setGroup(getFeeGroup());
-//    result.setName(name);
-//    result.setAmount(amount);
-//    result.setFeeCurrency(currency.getId());
-//    if ( ! loadedFees_.isEmpty() ) {
-//      result.setRates(
-//        loadedFees_.values().stream()
-//          .map(Rate::new)
-//          .toArray(Rate[]::new)
-//      );
-//    }
-//    if ( ! SafetyUtil.isEmpty(transactionFeeRule_.getFeeAccount()) ) {
-//      result.setSourceAccount(sourceAccount);
-//      result.setDestinationAccount(transactionFeeRule_.getFeeAccount());
-//    }
-//    return result;
-//  }
-
   private TransactionLineItem[] newLineItems(X x, Fee fee, Transaction transaction)
     throws InstantiationException, IllegalAccessException
   {
@@ -218,7 +196,7 @@ public class FeeEngine {
   private TransactionLineItem newLineItem(X x, Fee fee, Transaction transaction)
     throws InstantiationException, IllegalAccessException
   {
-    if ( fee == null || transactionFeeRule_.getFeeClass() == null ) return null;
+    if ( fee == null || fee.getFeeClass() == null ) return null;
 
     var feeAmount = fee.getFee(transaction);
     if ( feeAmount <= 0 ) {
@@ -226,15 +204,13 @@ public class FeeEngine {
       logger.debug("Fee amount is (" + feeAmount + ")", fee.toString(), transaction);
     }
 
-    var result = (TransactionLineItem) transactionFeeRule_.getFeeClass().newInstance();
+    var result = (TransactionLineItem) fee.getFeeClass().newInstance();
     result.setGroup(getFeeGroup());
     result.setName(fee.getName());
     result.setAmount(feeAmount);
     result.setCurrency(getCurrency(x, transaction).getId());
-    if ( result instanceof FeeLineItem )
-      ((FeeLineItem)result).setFeeCurrency(getCurrency(x, transaction).getId());
 
-    if ( ! SafetyUtil.isEmpty(transactionFeeRule_.getFeeAccount()) ) {
+    if ( ! SafetyUtil.isEmpty(fee.getFeeAccount()) ) {
 
       if (fee.getChargedTo() == ChargedTo.PAYER)
         result.setSourceAccount(transaction.getSourceAccount());
@@ -242,7 +218,17 @@ public class FeeEngine {
       if (fee.getChargedTo() == ChargedTo.PAYEE)
         result.setSourceAccount(transaction.getDestinationAccount());
 
-      result.setDestinationAccount(transactionFeeRule_.getFeeAccount());
+      result.setDestinationAccount(fee.getFeeAccount());
+    }
+
+    // Review the need to set rates later
+    if ( result instanceof FeeLineItem ) {
+      ((FeeLineItem)result).setFeeCurrency(getCurrency(x, transaction).getId());
+      ((FeeLineItem)result).setRates(
+        loadedFees_.values().stream()
+          .map(Rate::new)
+          .toArray(Rate[]::new)
+      );
     }
 
     return result;
