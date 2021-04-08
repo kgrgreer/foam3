@@ -15,7 +15,7 @@
  * from nanopay Corporation.
  */
 
-package net.nanopay.partner.intuit;
+package net.nanopay.reporting;
 
 import foam.core.FObject;
 import foam.core.X;
@@ -27,7 +27,6 @@ import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
-import net.nanopay.reporting.ReconciliationReportGenerator;
 import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.cico.CITransaction;
@@ -37,14 +36,15 @@ import net.nanopay.tx.model.Transaction;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ReconciliationReportDAO extends ProxyDAO {
-
-  static final String GENERATOR = "rbcReconciliationReportGenerator";
+public abstract class ReconciliationReportDAO extends ProxyDAO {
 
   protected Map<String, CITransaction> ciMap = new HashMap<>();
   protected Map<String, COTransaction> coMap = new HashMap<>();
   protected Map<String, DigitalTransaction> dtMap = new HashMap<>();
   protected Map<String, ReconciliationReport> rrCache = new HashMap<>();
+
+  abstract protected String getGenerator();
+  abstract protected void refreshMaps(X x);
 
   protected String getRoot(X x, Transaction transaction) {
     var superX = x.put("subject", new Subject.Builder(x).setUser(new User.Builder(x).setId(1).build()).build());
@@ -57,20 +57,6 @@ public class ReconciliationReportDAO extends ProxyDAO {
       throw new RuntimeException("CI/CO/Digital Transaction missing SummaryTransaction root");
 
     return transaction.getId();
-  }
-
-  protected void refreshMaps(X x) {
-    var transactionDAO = (DAO) x.get("localTransactionDAO");
-    var transactions = (ArraySink) transactionDAO.select(new ArraySink());
-    for ( var obj : transactions.getArray() ) {
-      var transaction = (Transaction) obj;
-      if ( transaction instanceof CITransaction )
-        ciMap.put(getRoot(x, transaction), (CITransaction) transaction);
-      else if ( transaction instanceof COTransaction )
-        coMap.put(getRoot(x, transaction), (COTransaction) transaction);
-      else if ( transaction instanceof DigitalTransaction)
-        dtMap.put(getRoot(x, transaction), (DigitalTransaction) transaction);
-    }
   }
 
   @Override
@@ -106,7 +92,7 @@ public class ReconciliationReportDAO extends ProxyDAO {
       dt = dtMap.get(st.getId());
     }
 
-    var generator = (ReconciliationReportGenerator) x.get(GENERATOR);
+    var generator = (ReconciliationReportGenerator) x.get(getGenerator());
 
     var report = generator.generateReport(x, st, cit, cot, dt);
     rrCache.put(st.getId(), report);
@@ -117,7 +103,7 @@ public class ReconciliationReportDAO extends ProxyDAO {
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
     refreshMaps(x);
 
-    var nSink = new ReconciliationReportSink(x, GENERATOR, decorateSink(x, sink, skip, limit, order, predicate), ciMap, coMap, dtMap, rrCache);
+    var nSink = new ReconciliationReportSink(x, getGenerator(), decorateSink(x, sink, skip, limit, order, predicate), ciMap, coMap, dtMap, rrCache);
     getDelegate().select(nSink);
     return sink;
   }

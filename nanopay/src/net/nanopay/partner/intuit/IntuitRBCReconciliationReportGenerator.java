@@ -15,7 +15,7 @@
  * from nanopay Corporation.
  */
 
-package net.nanopay.partner.rbc;
+package net.nanopay.partner.intuit;
 
 import foam.core.X;
 import foam.dao.ArraySink;
@@ -23,7 +23,7 @@ import foam.dao.DAO;
 import foam.nanos.NanoService;
 import foam.nanos.auth.User;
 import net.nanopay.account.Account;
-import net.nanopay.partner.intuit.ReconciliationReport;
+import net.nanopay.reporting.ReconciliationReport;
 import net.nanopay.reporting.ReconciliationReportGenerator;
 import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.FeeSummaryTransactionLineItem;
@@ -47,7 +47,15 @@ import static foam.mlang.MLang.EQ;
 import static java.util.Calendar.*;
 import static java.util.Calendar.SUNDAY;
 
-public class RBCReconciliationReportGenerator implements ReconciliationReportGenerator, NanoService {
+public class IntuitRBCReconciliationReportGenerator implements ReconciliationReportGenerator, NanoService {
+
+  protected String intuitRevenueAccount;
+  protected String nanopayRevenueAccount;
+
+  public IntuitRBCReconciliationReportGenerator(String intuitRevenueAccount, String nanopayRevenueAccount) {
+    this.intuitRevenueAccount = intuitRevenueAccount;
+    this.nanopayRevenueAccount = nanopayRevenueAccount;
+  }
 
   @Override
   public void start() throws Exception {
@@ -150,9 +158,9 @@ public class RBCReconciliationReportGenerator implements ReconciliationReportGen
 
         var feeLineItems = fstLineItem.getLineItems();
         for ( var feeLineItem : feeLineItems ) {
-          if ( feeLineItem.getDestinationAccount().equals("93f3fa36-7429-4b20-a223-f5b50a6d9872") )
+          if ( feeLineItem.getDestinationAccount().equals(intuitRevenueAccount) )
             report.setIntuitRevenue(feeLineItem.getAmount());
-          else if ( feeLineItem.getDestinationAccount().equals("ab590614-f5bd-476a-84e0-6037607397b5") )
+          else if ( feeLineItem.getDestinationAccount().equals(nanopayRevenueAccount) )
             report.setNanopayRevenue(feeLineItem.getAmount());
         }
       } else if ( lineItem instanceof FxSummaryTransactionLineItem) {

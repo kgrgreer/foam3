@@ -15,13 +15,12 @@
  * from nanopay Corporation.
  */
 
-package net.nanopay.partner.intuit;
+package net.nanopay.reporting;
 
 import foam.core.Detachable;
 import foam.core.X;
 import foam.dao.ProxySink;
 import foam.dao.Sink;
-import net.nanopay.reporting.ReconciliationReportGenerator;
 import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.cico.CITransaction;

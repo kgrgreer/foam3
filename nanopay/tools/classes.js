@@ -1362,7 +1362,7 @@ var classes = [
   'net.nanopay.partner.br.businessSector.Secao',
 
   // Reporting
-  'net.nanopay.partner.intuit.ReconciliationReport',
+  'net.nanopay.reporting.ReconciliationReport',
 
   // bepay
   'net.nanopay.partner.bepay.tx.BePayTransaction',

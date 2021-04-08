@@ -20,7 +20,7 @@ package net.nanopay.partner.rbc;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
-import net.nanopay.partner.intuit.ReconciliationReportDAO;
+import net.nanopay.reporting.ReconciliationReportDAO;
 import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.rbc.RbcCITransaction;
@@ -30,6 +30,11 @@ public class RBCReconciliationReportDAO extends ReconciliationReportDAO {
 
   public RBCReconciliationReportDAO(X x, DAO delegate) {
     super(x, delegate);
+  }
+
+  @Override
+  protected String getGenerator() {
+    return "rbcReconciliationReportGenerator";
   }
 
   @Override

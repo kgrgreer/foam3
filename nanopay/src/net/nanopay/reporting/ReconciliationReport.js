@@ -16,7 +16,7 @@
 */
 
 foam.CLASS({
-  package: 'net.nanopay.partner.intuit',
+  package: 'net.nanopay.reporting',
   name: 'ReconciliationReport',
 
   implements: [

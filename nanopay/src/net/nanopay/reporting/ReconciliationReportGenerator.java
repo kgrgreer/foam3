@@ -18,7 +18,6 @@
 package net.nanopay.reporting;
 
 import foam.core.X;
-import net.nanopay.partner.intuit.ReconciliationReport;
 import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.cico.CITransaction;
