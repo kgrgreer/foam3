@@ -87,19 +87,8 @@ public class FeeEngine {
     Fee fee = null;
     try {
       fee = loadFee(x, feeName, transaction);
-      if ( fee != null ) {
-        var feeAmount = fee.getFee(transaction);
-        if ( feeAmount <= 0 ) {
-          var logger = (Logger) x.get("logger");
-          logger.debug("Fee amount is (" + feeAmount + ")", fee.toString(), transaction);
-        }
-        FeeLineItem fli = null;
-          if (fee.getChargedTo() == ChargedTo.PAYER)
-            fli = newFeeLineItem(x, fee.getLabel(), feeAmount, getCurrency(x, transaction), transaction.getSourceAccount());
-          if (fee.getChargedTo() == ChargedTo.PAYEE)
-            fli = newFeeLineItem(x, fee.getLabel(), feeAmount, getCurrency(x, transaction), transaction.getDestinationAccount());
-        if (fli != null) transaction.addLineItems(new TransactionLineItem[] {fli});
-      }
+      if ( fee != null )
+        transaction.addLineItems(newLineItems(x, fee, transaction));
     } catch ( Exception e ) {
       var feeInfo = fee != null ? fee.toString() : "Fee name:" + feeName;
       throw new RuntimeException("Could not apply " + feeInfo + " to transaction id:" + transaction.getId(), e);
@@ -181,25 +170,81 @@ public class FeeEngine {
     return transactionFeeRule_.getFees(x);
   }
 
-  private FeeLineItem newFeeLineItem(X x, String name, long amount, Currency currency, String sourceAccount)
+//  private FeeLineItem newFeeLineItem(X x, String name, long amount, Currency currency, String sourceAccount)
+//    throws InstantiationException, IllegalAccessException
+//  {
+//    var result = (FeeLineItem) transactionFeeRule_.getFeeClass().newInstance();
+//    result.setGroup(getFeeGroup());
+//    result.setName(name);
+//    result.setAmount(amount);
+//    result.setFeeCurrency(currency.getId());
+//    if ( ! loadedFees_.isEmpty() ) {
+//      result.setRates(
+//        loadedFees_.values().stream()
+//          .map(Rate::new)
+//          .toArray(Rate[]::new)
+//      );
+//    }
+//    if ( ! SafetyUtil.isEmpty(transactionFeeRule_.getFeeAccount()) ) {
+//      result.setSourceAccount(sourceAccount);
+//      result.setDestinationAccount(transactionFeeRule_.getFeeAccount());
+//    }
+//    return result;
+//  }
+
+  private TransactionLineItem[] newLineItems(X x, Fee fee, Transaction transaction)
     throws InstantiationException, IllegalAccessException
   {
-    var result = (FeeLineItem) transactionFeeRule_.getFeeClass().newInstance();
-    result.setGroup(getFeeGroup());
-    result.setName(name);
-    result.setAmount(amount);
-    result.setFeeCurrency(currency.getId());
+    List<TransactionLineItem> lineItems = new ArrayList<>();
+    lineItems.add(newLineItem(x, fee, transaction));
+
     if ( ! loadedFees_.isEmpty() ) {
-      result.setRates(
-        loadedFees_.values().stream()
-          .map(Rate::new)
-          .toArray(Rate[]::new)
-      );
+
+      loadedFees_.entrySet().stream()
+        .forEach(f -> {
+          try {
+            TransactionLineItem lineItem = newLineItem(x,f.getValue(), transaction);
+            if ( lineItem != null )
+              lineItems.add(lineItem);
+          } catch ( Exception e) {
+            throw new RuntimeException("Could not create line item for fee  " + f.getValue().getName() + " to transaction id:" + transaction.getId(), e);
+          }
+        });
     }
+
+    return lineItems.toArray(new TransactionLineItem[lineItems.size()]);
+  }
+
+  private TransactionLineItem newLineItem(X x, Fee fee, Transaction transaction)
+    throws InstantiationException, IllegalAccessException
+  {
+    if ( fee == null || transactionFeeRule_.getFeeClass() == null ) return null;
+
+    var feeAmount = fee.getFee(transaction);
+    if ( feeAmount <= 0 ) {
+      var logger = (Logger) x.get("logger");
+      logger.debug("Fee amount is (" + feeAmount + ")", fee.toString(), transaction);
+    }
+
+    var result = (TransactionLineItem) transactionFeeRule_.getFeeClass().newInstance();
+    result.setGroup(getFeeGroup());
+    result.setName(fee.getName());
+    result.setAmount(feeAmount);
+    result.setCurrency(getCurrency(x, transaction).getId());
+    if ( result instanceof FeeLineItem )
+      ((FeeLineItem)result).setFeeCurrency(getCurrency(x, transaction).getId());
+
     if ( ! SafetyUtil.isEmpty(transactionFeeRule_.getFeeAccount()) ) {
-      result.setSourceAccount(sourceAccount);
-      result.setDestinationAccount(transactionFeeRule_.getFeeAccount());  
+
+      if (fee.getChargedTo() == ChargedTo.PAYER)
+        result.setSourceAccount(transaction.getSourceAccount());
+
+      if (fee.getChargedTo() == ChargedTo.PAYEE)
+        result.setSourceAccount(transaction.getDestinationAccount());
+
+      result.setDestinationAccount(transactionFeeRule_.getFeeAccount());
     }
+
     return result;
   }
 
