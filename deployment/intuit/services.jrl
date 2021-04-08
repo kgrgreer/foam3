@@ -40,6 +40,12 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
+  "name": "rbcReconciliationReportGenerator",
+  "serviceClass": "net.nanopay.partner.rbc.RBCReconciliationReportGenerator"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
   "name": "chargeDateService",
   "serve": true,
   "serviceScript": """
@@ -58,7 +64,7 @@ p({
   "name": "reconciliationReportDAO",
   "serve": true,
   "serviceScript": """
-  dao = new net.nanopay.partner.intuit.ReconciliationReportDAO(
+  dao = new net.nanopay.partner.rbc.RBCReconciliationReportDAO(
     x,
     new foam.dao.NullDAO(x, net.nanopay.partner.intuit.ReconciliationReport.getOwnClassInfo())
   );
