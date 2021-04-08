@@ -127,6 +127,9 @@ foam.CLASS({
           logger.error("Unable to update COTransaction, if transaction status is completed or declined. Transaction id: " + getId());
           throw new ValidationException("Unable to update COTransaction, if transaction status is completed or declined. Transaction id: " + getId());
         }
+
+        if ( ( oldTxn != null && oldTxn.getStatus() == TransactionStatus.SENT) && (getStatus() == TransactionStatus.PAUSED))
+                            throw new ValidationException("Unable to pause COTransaction, it is already in Sent Status! Transaction id: " + getId());
       `
     },
     {

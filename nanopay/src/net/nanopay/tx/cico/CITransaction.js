@@ -129,7 +129,7 @@ foam.CLASS({
         }
 
         if ( ( oldTxn != null && oldTxn.getStatus() == TransactionStatus.SENT) && (getStatus() == TransactionStatus.PAUSED))
-                    throw new ValidationException("Unable to pause CITransaction, iIt is already in Sent Status! Transaction id: " + getId());
+                    throw new ValidationException("Unable to pause CITransaction, it is already in Sent Status! Transaction id: " + getId());
 
       `
     },
