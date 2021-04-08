@@ -73,13 +73,11 @@ foam.CLASS({
           let doc1 = values[2] ? values[2].data : '';
 
           if ( cpf && values[0].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-            ['verifyName', 'cpfName'].forEach(
-              name => capabilityValues[name] = cpf[name]);
-              capabilityValues['cpf'] = cpf.data;
+            capabilityValues['cpf'] = cpf;
           }
           if ( so && values[1].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
             ['hasSignedContratosDeCambio', 'pepHioRelated'].forEach(
-              name => capabilityValues[name] = cpf[name]);
+              name => capabilityValues[name] = so[name]);
           }
           if ( doc1 && values[2].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
             // Treviso removed the requirement for the address doc

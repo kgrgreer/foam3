@@ -45,9 +45,9 @@ foam.CLASS({
 
   messages: [
     { name: 'INVALID_NATIONALITY', message: 'Nationality required' },
-    { name: 'INVALID_CPF', message: 'Valid CPF number required' },
-    { name: 'INVALID_CPF_CHECKED', message: 'Unable to validate CPF number and birthdate combination. Please update and try again.' },
-    { name: 'INVALID_OWNER_NAME', message: 'Confirm the name of the business owner' },
+    // { name: 'INVALID_CPF', message: 'Valid CPF number required' },
+   //  { name: 'INVALID_CPF_CHECKED', message: 'Unable to validate CPF number and birthdate combination. Please update and try again.' },
+    // { name: 'INVALID_OWNER_NAME', message: 'Confirm the name of the business owner' },
     { name: 'YES', message: 'Yes' },
     { name: 'NO', message: 'No' },
     { name: 'RICHCHOICE_SELECTION_TITLE', message: 'Countries' },
@@ -107,6 +107,7 @@ foam.CLASS({
     },
     {
       class: 'FObject',
+      name: 'cpf',
       of: 'net.nanopay.country.br.CPF',
       section: 'requiredSection'
     },
@@ -229,17 +230,9 @@ foam.CLASS({
   ],
 
   methods: [
-    {
-      name: 'validate',
-      javaCode: `
-        super.validate(x);
-
-        if ( ! getVerifyName() ) throw new IllegalStateException("Must verify name attached to CPF is valid.");
-      `
-    },
     function fromUser(u) {
       var common = [
-        'firstName', 'lastName', 'jobTitle', 'address', 'birthday',
+        'firstName', 'lastName', 'jobTitle', 'address',
         'email'
       ];
       for ( let p of common ) this[p] = u[p];
