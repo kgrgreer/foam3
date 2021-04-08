@@ -40,6 +40,16 @@ p({
 
 p({
   "class": "foam.nanos.menu.Menu",
+  "id": "bills-support",
+  "label": "Charges",
+  "icon":"images/intuit/charges-24px-resting.svg",
+  "activeIcon":"images/intuit/charges-24px-active.svg",
+  "parent": "",
+  "order": 50
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
   "id": "reconciliation-reports",
   "label": "Reconciliation Reports",
   "handler": {

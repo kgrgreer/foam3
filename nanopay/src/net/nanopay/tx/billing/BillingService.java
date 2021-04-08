@@ -22,6 +22,7 @@ import foam.core.FOAMException;
 import foam.core.FObject;
 import foam.core.X;
 import foam.nanos.auth.User;
+import foam.util.SafetyUtil;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
@@ -93,6 +94,15 @@ public class BillingService implements BillingServiceInterface {
       bill.setStatus(TransactionStatus.PENDING);
       bill.setSpid(transaction.getSpid());
 
+      for ( BillingFee billingFee : billingFeeList ) {
+        if ( SafetyUtil.isEmpty(bill.getCurrency()) ) {
+          bill.setCurrency(billingFee.getCurrency());
+        } else if ( !SafetyUtil.equals(bill.getCurrency(), billingFee.getCurrency())) {
+          continue; // Do not add fees with different currencies
+        }
+
+        bill.setTotalAmount(bill.getTotalAmount() + billingFee.getAmount());
+      }
       if ( originatingSummaryTxn instanceof SummaryTransaction ) {
         bill.setOriginatingSummaryTransaction(originatingSummaryTxn.getId());
       }

@@ -93,11 +93,9 @@ p({
   "label": "Users (Support)",
   "icon":"images/users-24px-resting.svg",
   "activeIcon":"images/users-24px-active.svg",
-  "handler":
-    {
+  "handler":{
       "class": "foam.nanos.menu.DAOMenu2",
-      "config":
-        {
+      "config":{
           "class": "foam.comics.v2.DAOControllerConfig",
           "daoKey": "supportUserDAO",
           "browseTitle": "Users",
@@ -108,6 +106,27 @@ p({
         }
     },
   "parent": "hidden"
+})
+
+p({
+   "class":"foam.nanos.menu.Menu",
+   "id": "bills-support",
+   "label":"Billed Charges",
+   "icon":"images/charges-24px-resting.svg",
+   "activeIcon":"images/charges-24px-active.svg",
+   "handler":{
+      "class":"foam.nanos.menu.DAOMenu2",
+      "config":{
+         "class":"foam.comics.v2.DAOControllerConfig",
+         "daoKey":"billDAO",
+         "browseTitle": "Charges",
+         "createTitle": "Create a Change",
+         "createPredicate":{"class":"foam.mlang.predicate.False"},
+         "editPredicate":{"class":"foam.mlang.predicate.False"},
+         "deletePredicate":{"class":"foam.mlang.predicate.False"}
+      }
+   },
+   "parent":"hidden"
 })
 
 p({"class":"foam.nanos.menu.Menu","id":"integration.overview","label":"Overview","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"overview","daoKey":"nanopayDocumentDAO"},"parent":"integration"})
