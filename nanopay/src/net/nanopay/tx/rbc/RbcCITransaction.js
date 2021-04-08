@@ -67,6 +67,11 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'getReferenceNumber',
+      type: 'String',
+      javaCode: 'return getRbcReferenceNumber();'
+    },
+    {
       name: 'limitedCopyFrom',
       args: [
         {
