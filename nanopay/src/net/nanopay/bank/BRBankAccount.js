@@ -333,10 +333,6 @@ foam.CLASS({
             throw new ValidationException(this.ACCOUNT_HOLDER_REQUIRED);
           }
         }
-
-        if ( getOwner() == 0 ) {
-          setOwner(((foam.nanos.auth.Subject) x.get("subject")).getUser().getId());
-        }
       `
     },
     {
