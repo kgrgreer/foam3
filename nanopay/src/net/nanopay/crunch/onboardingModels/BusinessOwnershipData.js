@@ -121,6 +121,13 @@ foam.CLASS({
       hidden: true
     },
     {
+      name: 'selectionView',
+      factory: function() {
+        return 'net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView';
+      },
+      visibility: 'HIDDEN'
+    },
+    {
       name: 'owners',
       label: 'Owner details',
       class: 'FObjectArray',
@@ -140,7 +147,7 @@ foam.CLASS({
           ),
           name: X.data.ADD_MSG,
           valueView: () => ({
-            class: 'net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView',
+            class: X.data.selectionView,
 
             // ???: If this ViewSpec took the context of this model, these could
             //      be imported instead of passed like this.
@@ -261,8 +268,8 @@ foam.CLASS({
 
   messages: [
     { name: 'PLEASE_SELECT_ONE', message: 'Please select one of the following...' },
-    { name: 'OTHER_MSG', message: 'Add another shareholder' },
-    { name: 'NEW_OWNER_MSG', message: 'New Shareholder' }
+    { name: 'OTHER_MSG', message: 'Add another owner' },
+    { name: 'NEW_OWNER_MSG', message: 'New Owner' }
   ],
 
   properties: [
