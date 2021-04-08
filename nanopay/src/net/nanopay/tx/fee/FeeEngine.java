@@ -88,7 +88,7 @@ public class FeeEngine {
     try {
       fee = loadFee(x, feeName, transaction);
       if ( fee != null )
-        transaction.addLineItems(newLineItems(x, fee, transaction));
+        transaction.addLineItems(loadLineItems(x, fee, transaction));
     } catch ( Exception e ) {
       var feeInfo = fee != null ? fee.toString() : "Fee name:" + feeName;
       throw new RuntimeException("Could not apply " + feeInfo + " to transaction id:" + transaction.getId(), e);
@@ -170,7 +170,7 @@ public class FeeEngine {
     return transactionFeeRule_.getFees(x);
   }
 
-  private TransactionLineItem[] newLineItems(X x, Fee fee, Transaction transaction)
+  private TransactionLineItem[] loadLineItems(X x, Fee fee, Transaction transaction)
     throws InstantiationException, IllegalAccessException
   {
     List<TransactionLineItem> lineItems = new ArrayList<>();
