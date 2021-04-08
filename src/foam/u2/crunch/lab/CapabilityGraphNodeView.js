@@ -146,7 +146,7 @@ foam.CLASS({
       var dao = this.__context__[daoName];
       var of = dao && dao.of;
 
-      var count = 5;//as there one memento for controller view, one for search, one for scroll record and one for table columns and the next memento is "free"
+      var count = 5;//as there is one memento for controller view, one for search, one for scroll record and one for table columns and the next memento is "free"
 
       //number of filters calculation
       if ( of ) {
