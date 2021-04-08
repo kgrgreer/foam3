@@ -80,8 +80,9 @@ foam.CLASS({
     },
     
     {
-      class: 'FObject',
+      class: 'FObjectProperty',
       name: 'cpf',
+      label: '',
       of: 'net.nanopay.country.br.CPF'
     },
     {

@@ -20,7 +20,13 @@ foam.CLASS({
   name: 'CPF',
   mixins: ['foam.u2.wizard.AbstractWizardletAware'],
   documentation: `
-    The Cadastro de Pessoas Físicas (CPF; Portuguese for "Natural Persons Register") is the Brazilian individual taxpayer registry identification, a permanent number attributed by the Brazilian Federal Revenue to both Brazilians and resident aliens who pay taxes or take part, directly or indirectly. It is canceled after some time after the person's death.
+  NOTE : post and pr sets of data and birthday property set to minimize calls to api
+
+    The Cadastro de Pessoas Físicas (CPF; Portuguese for "Natural Persons Register")
+    is the Brazilian individual taxpayer registry identification, a permanent number
+    attributed by the Brazilian Federal Revenue to both Brazilians and resident aliens
+    who pay taxes or take part, directly or indirectly.
+    It is canceled after some time after the person's death.
   `,
 
   implements: [
@@ -61,8 +67,11 @@ foam.CLASS({
       section: 'collectCpf',
       label: 'Date of birth',
       visibility: 'RW',
+      // preSet: function(o, n) {
+      //   if ( o !== n && ! this.cpfName ) this.clearFields();
+      //   return n;
+      // },
       postSet: function() {
-        this.clearFields();
         this.updateCPFName();
       },
       validationPredicates: [
@@ -127,8 +136,11 @@ foam.CLASS({
       tableCellFormatter: function(val) {
         return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
       },
+      // preSet: function(o, n) {
+      //   if ( o !== n ) this.clearFields();
+      //   return n;
+      // },
       postSet: function() {
-        this.clearFields();
         this.updateCPFName();
       },
       view: function(_, X) {
@@ -180,7 +192,7 @@ foam.CLASS({
         });
       },
       visibility: function(cpfName) {
-        return cpfName.length > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+        return cpfName ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -219,16 +231,24 @@ foam.CLASS({
     {
       name: 'updateCPFName',
       code: async function() {
-        // goes with user deprication
-        if ( ! this.birthday && ! this.verifyName && n.length == 11 ) {
-          this.cpfName = await this.brazilVerificationService
-            .getCPFName(this.__subContext__, cpf, this.user);
+        try {
+          // goes with user deprication
+          if ( ! this.birthday && ! this.verifyName && this.data.length == 11 ) {
+            this.cpfName = await this.brazilVerificationService
+              .getCPFName(this.__subContext__, this.data, this.user);
+          }
+          // update cpfName if birthday and cpf are valid
+          // hack - when clearing the birthday property the date defaults to max `Fri Sep 12 275760' ... so this.birthday < new Date() is the check for an iputted date
+          if ( this.birthday < new Date() && ! this.verifyName && this.data.length == 11 ) {
+            this.cpfName = await this.brazilVerificationService
+              .getCPFNameWithBirthDate(this.__subContext__, this.data, this.birthday);
+          } else {
+            this.clearFields();
+          }
+        } catch (e) {
+          console.error(e);
         }
-        // update cpfName if birthday and cpf are valid
-        if ( this.birthday && ! this.verifyName && n.length == 11 ) {
-          this.cpfName = await this.brazilVerificationService
-            .getCPFNameWithBirthDate(this.__subContext__, this.cpf, this.birthday);
-        }
+        
       }
     },
     {
