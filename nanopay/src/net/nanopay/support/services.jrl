@@ -99,20 +99,6 @@ p({
         .setOf(net.nanopay.support.SupportUser.getOwnClassInfo())
         .build();
 
-    decorator = new foam.dao.FilteredDAO.Builder(x)
-          .setPredicate(foam.mlang.MLang.AND( 
-            new foam.mlang.predicate.Predicate[] {
-              foam.mlang.MLang.OR(
-                new foam.mlang.predicate.Predicate[] {
-                  foam.mlang.MLang.EQ(foam.nanos.auth.User.GROUP, "intuit-sme"),
-                  foam.mlang.MLang.EQ(foam.nanos.auth.User.GROUP, "intuit-business-sme")
-                }
-              ),
-              foam.mlang.MLang.EQ(foam.nanos.auth.User.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE)
-          }))
-          .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build())
-        .build()
-
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.support.SupportUser.getOwnClassInfo())
       .setInnerDAO(dao)
