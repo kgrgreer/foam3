@@ -25,7 +25,7 @@ p({
     DAO dao = (DAO) x.get("localUserDAO");
 
     // Check if the user already exists
-    String emailAddress = "billing-intuit@nanopay.com";
+    String emailAddress = "billing-intuit@nanopay.net";
     String firstName = "InuitBilling";
     String lastName = "Admin";
     String group = "intuit-admin";
