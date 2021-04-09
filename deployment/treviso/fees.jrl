@@ -2090,11 +2090,11 @@ p({
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
 
-// Effective IRS Value = Transaction Destination Amount * Effective IRS Rate
+// IRS Tax = Transaction Destination Amount * Effective IRS Rate
 p({
   class: "net.nanopay.tx.fee.Fee",
   id: "221b7ca6-a4c4-4655-b9bf-3fbfe39e32dd",
-  name: "Effective IRS Value",
+  name: "IRS Tax",
   feeClass: "net.nanopay.tx.TaxLineItem",
   formula: {
     class: "foam.mlang.expr.Multiply",
@@ -2135,11 +2135,11 @@ p({
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
 
-// Effective FTT Value = Transaction Destination Amount * Effective FTT Rate
+// FTT Tax = Transaction Destination Amount * Effective FTT Rate
 p({
   class: "net.nanopay.tx.fee.Fee",
   id: "f422f565-357c-49a0-9d89-3bde9b1035b9",
-  name: "Effective FTT Value",
+  name: "FTT Tax",
   feeClass: "net.nanopay.tx.TaxLineItem",
   formula: {
     class: "foam.mlang.expr.Multiply",
@@ -2162,7 +2162,6 @@ p({
 p({
   class: "net.nanopay.tx.fee.Fee",
   id: "ff1122ca-e32a-4c8c-8a7e-c367b6066077",
-  feeClass: "net.nanopay.tx.FeeLineItem",
   name: "Fee Due",
   formula: {
     class: "foam.mlang.expr.Multiply",
@@ -2208,11 +2207,11 @@ p({
     args: [
       {
         class: "net.nanopay.tx.fee.FeeExpr",
-        feeName: "Effective IRS Value"
+        feeName: "IRS Tax"
       },
       {
         class: "net.nanopay.tx.fee.FeeExpr",
-        feeName: "Effective FTT Value"
+        feeName: "FTT Tax"
       },
       {
         class: "foam.mlang.expr.Multiply",
