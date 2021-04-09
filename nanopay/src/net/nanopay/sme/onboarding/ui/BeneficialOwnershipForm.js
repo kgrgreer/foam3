@@ -322,7 +322,7 @@ css: `
     }
 
     ^ .boxedField {
-      border: 1px solid;  
+      border: 1px solid;
       border-radius: 5px;
       padding: 24px;
     }
@@ -491,7 +491,7 @@ properties: [
     class: 'FObjectProperty',
     name: 'addressField',
     factory: function() {
-      return this.Address.create({});
+      return this.Address.create();
     },
     view: { class: 'net.nanopay.sme.ui.AddressView' },
     postSet: function(o, n) {

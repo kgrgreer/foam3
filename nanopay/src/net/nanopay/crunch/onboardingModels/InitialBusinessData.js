@@ -115,13 +115,15 @@ foam.CLASS({
       section: 'businessAddress',
       documentation: 'Business address.',
       label: '',
+      factory: function() {
+        return this.Address.create({structured: false});
+      },
       view: function(_, X) {
         var m = foam.mlang.Expressions.create();
         var countryId = X.data ? X.data.countryId : null;
         var dao = countryId ?
           X.permittedCountryDAO.where(m.EQ(foam.nanos.auth.Country.ID, countryId)) :
           X.permittedCountryDAO;
-
         return {
           class: 'net.nanopay.sme.ui.AddressView',
           customCountryDAO: dao,
