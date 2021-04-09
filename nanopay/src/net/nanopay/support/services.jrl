@@ -102,7 +102,6 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.support.SupportUser.getOwnClassInfo())
       .setInnerDAO(dao)
-      .setDecorator(decorator)
       .setEnableInterfaceDecorators(false)
       .build();
   """,
