@@ -467,6 +467,9 @@ foam.CLASS({
         assert txFeeRule.getEnabled() && txFeeRule.getLifecycleState() == LifecycleState.ACTIVE
           : "Tx fee rule is enabled: " + txFeeRule.getEnabled() + ", and active: " + txFeeRule.getLifecycleState();
 
+        // set fee class
+        fee.setFeeClass(FeeLineItem.getOwnClassInfo());
+
         // create fee
         setupTestFee(x, fee, txFeeRule);
 
@@ -503,6 +506,7 @@ foam.CLASS({
       javaCode: `
         List<FeeLineItem> list = new ArrayList<>();
         for ( var li : transaction.getLineItems() ) {
+        System.out.println(transaction.getClass().getSimpleName());
           if ( li instanceof FeeLineItem ) list.add((FeeLineItem) li);
         }
         return list.toArray(new FeeLineItem[0]);
