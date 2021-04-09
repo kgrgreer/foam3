@@ -179,7 +179,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'verifyName',
-      label: 'Is this the name of the person who owns this cpf?', // todo - add ttranslation
+      label: 'Is this the name of the person who owns this cpf?',
       section: 'collectCpf',
       view: function(n, X) {
         var self = X.data$;
