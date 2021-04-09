@@ -28,6 +28,8 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.mlang.MLang',
+    'foam.mlang.predicate.And',
     'foam.util.SafetyUtil',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
@@ -45,15 +47,32 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
 
-        agency.submit(x, agencyX -> {
-          DAO ticketDAO = (DAO) agencyX.get("ticketDAO");
-          RefundTicket ticket = new RefundTicket();
-          ticket.setProblemTransaction( ((Transaction) obj).getId() );
-          ticket.setSpid(((Transaction) obj).getSpid());
-          ticket.setTitle("Failure Notification for "+((Transaction) obj).getId() );
-          ticketDAO.put(ticket);
-        }, "create a ticket on a declined or failed transaction");
+      agency.submit(x, agencyX -> {
+        DAO ticketDAO = (DAO) agencyX.get("ticketDAO");
+        ArraySink arraySink = new ArraySink();
+        
+        ticketDAO.where(MLang.AND(
+          MLang.INSTANCE_OF(RefundTicket.class),
+          MLang.EQ(RefundTicket.PROBLEM_TRANSACTION, ((Transaction) obj).getId())
+        )).select(arraySink);
+        List array = arraySink.getArray();
 
+        if ( array.size() == 0 ) {
+          RefundTicket ticket = new RefundTicket();
+          ticket.setProblemTransaction(((Transaction) obj).getId());
+          ticket.setSpid(((Transaction) obj).getSpid());
+          ticket.setTitle("Failure Notification for " + ((Transaction) obj).getId());
+          ticketDAO.put(ticket);
+        } else {
+          RefundTicket ticket = (RefundTicket) array.get(0);
+          ticket.clearPostApprovalRuleId();
+          ticket.clearFeeLineItemsSelected();
+          ticket.clearSelectedFeeLineItemsIsValid();
+          ticket.clearWaiveCharges();
+          ticket.setRefundStatus(RefundStatus.AVAILABLE);
+          ticketDAO.put(ticket);
+        }
+      }, "create a ticket on a declined or failed transaction");
       `
     }
   ]
