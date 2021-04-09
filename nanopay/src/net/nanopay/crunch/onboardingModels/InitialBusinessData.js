@@ -124,7 +124,7 @@ foam.CLASS({
         var dao = countryId ?
           X.permittedCountryDAO.where(m.EQ(foam.nanos.auth.Country.ID, countryId)) :
           X.permittedCountryDAO;
-          
+
         return {
           class: 'net.nanopay.sme.ui.AddressView',
           customCountryDAO: dao,

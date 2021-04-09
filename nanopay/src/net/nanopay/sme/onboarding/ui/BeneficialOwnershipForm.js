@@ -491,7 +491,7 @@ properties: [
     class: 'FObjectProperty',
     name: 'addressField',
     factory: function() {
-      return this.Address.create();
+      return this.Address.create({});
     },
     view: { class: 'net.nanopay.sme.ui.AddressView' },
     postSet: function(o, n) {
@@ -783,7 +783,7 @@ methods: [
     this.jobTitleField = '';
     this.birthdayField = null;
 
-    this.addressField = this.Address.create();
+    this.addressField = this.Address.create({});
     this.isDisplayMode = false;
     if ( scrollToTop ) {
       this.scrollToTop();
