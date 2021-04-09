@@ -174,7 +174,9 @@ public class FeeEngine {
     throws InstantiationException, IllegalAccessException
   {
     List<TransactionLineItem> lineItems = new ArrayList<>();
-    lineItems.add(newLineItem(x, fee, transaction));
+    TransactionLineItem mainFeeLineItem = newLineItem(x, fee, transaction);
+    if ( mainFeeLineItem != null )
+      lineItems.add(newLineItem(x, fee, transaction));
 
     if ( ! loadedFees_.isEmpty() ) {
 
