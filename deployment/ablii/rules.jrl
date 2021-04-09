@@ -200,13 +200,21 @@ p({
   "ruleGroup":"refundTickets",
   "documentation":"Scenario 4: user presses cancel on pending cashout",
   "daoKey":"localTicketDAO",
-  "operation":0,
+  "operation":3,
   "predicate":{
       "class":"foam.mlang.predicate.And",
       "args":[
         {
           class: "foam.nanos.ruler.predicate.IsInstancePredicate",   
           "of": "net.nanopay.ticket.RefundTicket"
+        },
+        {
+          "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+          "propName":"refundStatus",
+          "propValue": {
+            "class": "net.nanopay.ticket.RefundStatus",
+            "ordinal":0
+          }
         },
         {
           "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",

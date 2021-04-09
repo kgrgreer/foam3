@@ -154,7 +154,7 @@ p({
   "ruleGroup":"refundTickets",
   "documentation":"Default scenario runs only if no other scenario has been found.",
   "daoKey":"localTicketDAO",
-  "operation":0,
+  "operation":3,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
