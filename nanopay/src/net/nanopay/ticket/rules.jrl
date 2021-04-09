@@ -77,14 +77,14 @@ p({
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"c6c5c0b8-a24d-4dc7-8561-57e206ed1b45",
-  "name":"Reverse Cancel Rule",
+  "name":"Cancel Transaction Post Rule",
   "priority":100,
   "ruleGroup":"Ticket",
   "documentation":"Handle transaction cancelation",
   "daoKey":"localTicketDAO",
   "operation":3,
   "action":{
-    "class":"net.nanopay.ticket.ReverseCancelRule"
+    "class":"net.nanopay.ticket.CancelTransactionPostRule"
   },
   "predicate": {
     "class": "foam.mlang.predicate.And",
