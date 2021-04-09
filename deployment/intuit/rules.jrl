@@ -54,13 +54,21 @@ p({
   "ruleGroup":"refundTickets",
   "documentation":"Scenario 4: user presses cancel on pending cashout",
   "daoKey":"localTicketDAO",
-  "operation":0,
+  "operation":3,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
       {
         "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
         "of": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue": {
+          "class": "net.nanopay.ticket.RefundStatus",
+          "ordinal":0
+        }
       },
       {
         "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
@@ -99,13 +107,21 @@ p({
   "ruleGroup":"refundTickets",
   "documentation":"Scenario 1: CashIn txn, status pending, sender needs to cancel",
   "daoKey":"localTicketDAO",
-  "operation":0,
+  "operation":3,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
       {
         "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
         "of": "net.nanopay.ticket.RefundTicket"
+      },
+      { 
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue": {
+          "class": "net.nanopay.ticket.RefundStatus",
+          "ordinal":0
+        }
       },
       {
         "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
@@ -143,13 +159,21 @@ p({
   "ruleGroup":"refundTickets",
   "documentation":"Scenario 2: CashIn txn, status Sent. user clicks cancel",
   "daoKey":"localTicketDAO",
-  "operation":0,
+  "operation":3,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
       {
         "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
         "of": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue": {
+          "class": "net.nanopay.ticket.RefundStatus",
+          "ordinal":0
+        }
       },
       {
         "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
@@ -188,13 +212,21 @@ p({
   "ruleGroup":"refundTickets",
   "documentation":"Scenario 3: CashIn txn is declined",
   "daoKey":"localTicketDAO",
-  "operation":0,
+  "operation":3,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
       {
         "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
         "of": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue": {
+          "class": "net.nanopay.ticket.RefundStatus",
+          "ordinal":0
+        }
       },
       {
         "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
@@ -232,13 +264,21 @@ p({
   "ruleGroup":"refundTickets",
   "documentation":"Scenario 5: Payor cancels CO while status sent",
   "daoKey":"localTicketDAO",
-  "operation":0,
+  "operation":3,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
       {
         "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
         "of": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue": {
+          "class": "net.nanopay.ticket.RefundStatus",
+          "ordinal":0
+        }
       },
       {
         "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
@@ -276,13 +316,21 @@ p({
   "ruleGroup":"refundTickets",
   "documentation":"Scenario 6: Cash out failed due to dest. acct error",
   "daoKey":"localTicketDAO",
-  "operation":0,
+  "operation":3,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
       {
         "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
         "of": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue": {
+          "class": "net.nanopay.ticket.RefundStatus",
+          "ordinal":0
+        }
       },
       {
         "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
