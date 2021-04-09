@@ -115,6 +115,9 @@ foam.CLASS({
       section: 'businessAddress',
       documentation: 'Business address.',
       label: '',
+      factory: function() {
+        return this.Address.create({structured: false});
+      },
       view: function(_, X) {
         var m = foam.mlang.Expressions.create();
         var countryId = X.data ? X.data.countryId : null;

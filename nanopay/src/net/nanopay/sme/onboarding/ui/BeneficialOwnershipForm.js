@@ -322,7 +322,7 @@ css: `
     }
 
     ^ .boxedField {
-      border: 1px solid;  
+      border: 1px solid;
       border-radius: 5px;
       padding: 24px;
     }
