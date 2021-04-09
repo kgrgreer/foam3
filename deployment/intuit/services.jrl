@@ -89,7 +89,7 @@ p({
               }
             ))
           .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.support.SupportUser.getOwnClassInfo()).build())
-        .build()
+        .build();
 
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.support.SupportUser.getOwnClassInfo())
