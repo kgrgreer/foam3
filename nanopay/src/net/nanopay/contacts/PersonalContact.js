@@ -595,7 +595,7 @@ foam.CLASS({
         for ( var prop : props ) {
           try {
             prop.validateObj(x, this);
-          } catch ( IllegalStateException e ) {
+          } catch ( RuntimeException e ) {
             throw e;
           }
         }

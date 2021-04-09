@@ -35,6 +35,12 @@ foam.CLASS({
       of: 'net.nanopay.partner.treviso.onboarding.BRBeneficialOwner'
     },
     {
+      name: 'selectionView',
+      factory: function() {
+        return 'net.nanopay.partner.treviso.onboarding.BRBeneficialOwnerSelectionView';
+      }
+    },
+    {
       name: 'soUsersDAO',
       // TODO: there may be a better way to do this without replacing the
       //       entire factory here.
@@ -107,3 +113,14 @@ foam.CLASS({
     },
   ]
 });
+
+foam.CLASS({
+  package: 'net.nanopay.partner.treviso.onboarding',
+  name: 'BRBeneficialOwnerSelectionView',
+  extends: 'net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView',
+
+  messages: [
+    { name: 'OTHER_MSG', message: 'Add another shareholder' },
+    { name: 'NEW_OWNER_MSG', message: 'Add Shareholder' }
+  ]
+})
