@@ -107,7 +107,10 @@ foam.CLASS({
       name: 'cpf',
       label: '',
       of: 'net.nanopay.country.br.CPF',
-      section: 'requiredSection'
+      section: 'requiredSection',
+      visibility: function(mode) {
+        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      }
     },
     {
       class: 'Boolean',
