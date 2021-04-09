@@ -28,6 +28,12 @@ foam.CLASS({
     'crunchService'
   ],
 
+  messages: [
+    { name: 'ADD_MSG', message: 'another shareholder' },
+    { name: 'HAVE_NO_OWNER_MSG', message: 'I declare that all shareholders have less than 25% shares each' },
+    { name: 'NO_OWNER_INFO_ERR', message: 'Shareholder information required' }
+  ],
+
   properties: [
     {
       name: 'owners',
