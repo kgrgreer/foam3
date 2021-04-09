@@ -65,7 +65,6 @@ foam.CLASS({
     'ctrl',
     'currencyDAO',
     'email',
-    'formatCurrency',
     'invoiceDAO',
     'invitationDAO',
     'notificationDAO',
@@ -75,6 +74,7 @@ foam.CLASS({
     'notify',
     'stack',
     'transactionDAO',
+    'translationService',
     'user',
     'userDAO'
   ],
@@ -634,7 +634,9 @@ foam.CLASS({
                   .forEach(this.taxItems$, function(t) {
                     this
                       .start().addClass('invoice-text')
-                        .start().addClass('table-content').add(t.name).end()
+                        .start().addClass('table-content')
+                          .add(self.translationService.getTranslation(foam.locale, 'net.nanopay.tx.TaxLineItem.NAME.' + t.name, t.name))
+                        .end()
                         .add(this.PromiseSlot.create({
                           promise: self.currencyDAO.find(t.currency).then((currency) => {
                             return currency.format(t.amount);
