@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.ticket',
-  name: 'ReverseCancelRule',
+  name: 'CancelTransactionPostRule',
 
   implements: [
     'foam.nanos.ruler.RuleAction'
@@ -29,31 +29,12 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.nanos.fs.File',
-    'foam.nanos.notification.Notification',
     'foam.nanos.logger.Logger',
     'foam.dao.ArraySink',
-    'net.nanopay.account.Account',
-    'net.nanopay.account.DigitalAccount',
     'net.nanopay.ticket.RefundTicket',
     'net.nanopay.ticket.RefundStatus',
-    'net.nanopay.tx.creditengine.FeeRefund',
-    'net.nanopay.tx.creditengine.AllFeeWaiver',
-    'net.nanopay.tx.CreditLineItem',
-    'net.nanopay.tx.DigitalTransaction',
-    'net.nanopay.tx.FeeSummaryTransactionLineItem',
-    'net.nanopay.tx.FeeLineItem',
-    'net.nanopay.tx.InvoicedFeeLineItem',
-    'net.nanopay.tx.InvoicedCreditLineItem',
-    'net.nanopay.tx.SummaryTransaction',
-    'net.nanopay.fx.FXSummaryTransaction',
-    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus',
-    'java.util.ArrayList',
-    'static foam.mlang.MLang.AND',
-    'static foam.mlang.MLang.CLASS_OF',
-    'static foam.mlang.MLang.EQ'
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   methods: [
@@ -66,40 +47,36 @@ foam.CLASS({
 
           RefundTicket request = (RefundTicket) obj;
           DAO txnDAO = (DAO) x.get("localTransactionDAO");
-          DAO creditCodeDAO = (DAO) x.get("creditCodeDAO");
-
-          Transaction reverse = request.getRequestTransaction();
-
-          Transaction problemTxn = (Transaction) txnDAO.inX(x).find(request.getProblemTransaction()).fclone();
-          ArrayList<String> array = new ArrayList<String>();
-
-          Transaction summary = problemTxn.findRoot(x);
-
+          request.setRefundStatus(RefundStatus.PROCESSING);
 
           try {
-            problemTxn = (Transaction) problemTxn.fclone();
+            Transaction problemTxn = (Transaction) txnDAO.inX(x).find(request.getProblemTransaction()).fclone();
             if ( problemTxn.getStatus() == TransactionStatus.PAUSED ) {
               problemTxn.setStatus(TransactionStatus.CANCELLED);
               txnDAO.inX(x).put(problemTxn);
             }
             else {
               problemTxn = (Transaction) ((ArraySink) problemTxn.getChildren(x).select(new ArraySink())).getArray().toArray()[0];
-              if ( problemTxn.getStatus() == TransactionStatus.PAUSED ) {
+              if ( problemTxn.getStatus() == TransactionStatus.PAUSED ) { // do we want 1 level checking or full walk?
                 problemTxn.setStatus(TransactionStatus.CANCELLED);
                 txnDAO.inX(x).put(problemTxn);
+              }
+              else {
+                Logger logger = (Logger) x.get("logger");
+                logger.warning("CancelTransactionPostRule, running on ticket "+request.getId()+" No paused transaction to cancel. Rule ran but did nothing!");
+                request.setRefundStatus(RefundStatus.FAILED);
               }
             }
           }
           catch (Exception e) {
           // transaction was not set to cancelled.
-          // if declined
+            Logger logger = (Logger) x.get("logger");
+            logger.warning("CancelTransactionPostRule, running on ticket "+request.getId()+" encountered problem cancelling transaction: "+e);
+            request.setRefundStatus(RefundStatus.FAILED);
           }
-          txnDAO.inX(x).put(reverse);
-
-          request.setRefundStatus(RefundStatus.PROCESSING);
         }
 
-      }, "Rule to submit Cancelation.");
+      }, "Post Rule to Submit Problem Transaction Cancellation.");
       `
     }
   ]

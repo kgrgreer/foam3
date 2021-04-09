@@ -65,6 +65,14 @@ foam.ENUM({
         A status that indicates that the RefundTicket has been rejected either
         by the system or approving user
       `
+    },
+    {
+      name: 'FAILED',
+      label: 'Failed',
+      documentation: `
+        A status that indicates that the RefundTicket has failed to do what it
+        was supposed to do, and manual inspection may be required
+      `
     }
   ]
 });
