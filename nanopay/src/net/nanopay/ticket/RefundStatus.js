@@ -73,6 +73,14 @@ foam.ENUM({
         A status that indicates that the RefundTicket has failed to do what it
         was supposed to do, and manual inspection may be required
       `
+    },
+    {
+      name: 'WAITING',
+      label: 'Waiting',
+      documentation: `
+        A status that indicates that the RefundTicket is waiting for a
+        transaction to go into an interactable state.
+      `
     }
   ]
 });

@@ -147,7 +147,7 @@ foam.CLASS({
       section: 'infoSection',
       createVisibility: 'RO',
       readVisibility: 'RO',
-      updateVisibility: 'RW'
+      updateVisibility: 'RO'
     },
     {
       class: 'Boolean',
