@@ -30,3 +30,41 @@ for ( t : a ) {
 }
   """
 })
+
+p({
+  "class": "foam.nanos.cron.Cron",
+  "schedule": {
+    "class": "foam.nanos.cron.CronSchedule",
+    "minute": 35,
+    "hour": -1,
+    "dayOfMonth": -1,
+    "month": -1,
+    "dayOfWeek": -1,
+    "second": 0
+  },
+  "id": "UpdateWaitingRefundTickets",
+  "description": "Check all waiting tickets and update if their related transaction has been updated.",
+  "code":
+  """
+    import foam.mlang.MLang;
+    import net.nanopay.ticket.RefundTicket;
+    import net.nanopay.ticket.RefundStatus;
+    import net.nanopay.tx.model.TransactionStatus;
+
+    dao = x.get("refundTicketDAO");
+    txnDAO = x.get("localTransactionDAO");
+    tickets = dao.where(MLang.EQ(RefundTicket.REFUND_STATUS, RefundStatus.WAITING)).select().array;
+    for ( t : tickets ) {
+      txn = txnDAO.find(t.getProblemTransaction());
+      if ( txn.getStatus() != TransactionStatus.SENT ) {
+        t = t.fclone();
+        t.clearPostApprovalRuleId();
+        t.clearFeeLineItemsSelected();
+        t.clearSelectedFeeLineItemsIsValid();
+        t.clearWaiveCharges();
+        t.setRefundStatus(RefundStatus.AVAILABLE);
+        dao.put(t);
+      }
+    }
+  """
+})
