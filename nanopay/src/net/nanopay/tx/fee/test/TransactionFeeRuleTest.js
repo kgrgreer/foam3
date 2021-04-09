@@ -506,7 +506,6 @@ foam.CLASS({
       javaCode: `
         List<FeeLineItem> list = new ArrayList<>();
         for ( var li : transaction.getLineItems() ) {
-        System.out.println(transaction.getClass().getSimpleName());
           if ( li instanceof FeeLineItem ) list.add((FeeLineItem) li);
         }
         return list.toArray(new FeeLineItem[0]);
