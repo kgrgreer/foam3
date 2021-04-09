@@ -115,7 +115,7 @@ foam.CLASS({
 
         // send back to agent for fee/credit entering and approval.
         // scenario has crafted the request transaction.
-        // agent presses. approve. then we hit refundRUle.
+        // agent presses. approve. then we hit PostRule.
         // refund rule does a plan with the specified request transaction to the txn Dao for immidiete execution.
         // transaction is put.. this updates the ticket.
       `

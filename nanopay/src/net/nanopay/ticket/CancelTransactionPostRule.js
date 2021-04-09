@@ -63,7 +63,7 @@ foam.CLASS({
               }
               else {
                 Logger logger = (Logger) x.get("logger");
-                logger.warning("CancelTransactionPostRule: "+this.getId()+" running on ticket "+request.getId()+" No paused transaction to cancel. Rule ran but did nothing!");
+                logger.warning("CancelTransactionPostRule, running on ticket "+request.getId()+" No paused transaction to cancel. Rule ran but did nothing!");
                 request.setRefundStatus(RefundStatus.FAILED);
               }
             }
@@ -71,7 +71,7 @@ foam.CLASS({
           catch (Exception e) {
           // transaction was not set to cancelled.
             Logger logger = (Logger) x.get("logger");
-            logger.warning("CancelTransactionPostRule: "+this.getId()+" running on ticket "+request.getId()+" encountered problem cancelling transaction: "+e);
+            logger.warning("CancelTransactionPostRule, running on ticket "+request.getId()+" encountered problem cancelling transaction: "+e);
             request.setRefundStatus(RefundStatus.FAILED);
           }
         }

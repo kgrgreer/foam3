@@ -1132,7 +1132,7 @@ var classes = [
   'net.nanopay.ticket.SudoTicketApprovalResponseRule',
   'net.nanopay.ticket.SudoTicketApprovalResponseAction',
   'net.nanopay.ticket.test.SudoTicketTest',
-  'net.nanopay.ticket.RefundRule',
+  'net.nanopay.ticket.RefundTransactionPostRule',
   'net.nanopay.ticket.RefundTicketCreateApprovals',
   'net.nanopay.ticket.RefundTicket',
   'net.nanopay.ticket.RefundStatus',

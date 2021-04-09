@@ -1594,7 +1594,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ticket/SudoTicketApprovalResponseRule' },
   { name: 'net/nanopay/ticket/SudoTicketApprovalResponseAction' },
   { name: 'net/nanopay/ticket/test/SudoTicketTest' },
-  { name: 'net/nanopay/ticket/RefundRule' },
+  { name: 'net/nanopay/ticket/RefundTransactionPostRule' },
   { name: 'net/nanopay/ticket/RefundTicket' },
   { name: 'net/nanopay/ticket/RefundTicketCreateApprovals' },
   { name: 'net/nanopay/ticket/RefundStatus' },

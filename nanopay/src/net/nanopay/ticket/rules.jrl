@@ -45,7 +45,7 @@ p({
   "daoKey":"localTicketDAO",
   "operation":3,
   "action":{
-    "class":"net.nanopay.ticket.RefundRule"
+    "class":"net.nanopay.ticket.RefundTransactionPostRule"
   },
   "predicate": {
     "class": "foam.mlang.predicate.And",
