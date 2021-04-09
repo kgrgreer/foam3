@@ -67,6 +67,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+
       if ( this.data$.dot('structured').value ) {
         // StructuredAddressView
         this.addClass(this.myClass())

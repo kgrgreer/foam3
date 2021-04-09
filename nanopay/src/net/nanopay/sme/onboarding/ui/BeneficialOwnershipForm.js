@@ -783,7 +783,7 @@ methods: [
     this.jobTitleField = '';
     this.birthdayField = null;
 
-    this.addressField = this.Address.create({});
+    this.addressField = this.Address.create();
     this.isDisplayMode = false;
     if ( scrollToTop ) {
       this.scrollToTop();
