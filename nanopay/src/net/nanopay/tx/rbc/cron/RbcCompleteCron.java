@@ -38,6 +38,7 @@ public class RbcCompleteCron implements ContextAgent {
     for ( Transaction rbcTransaction : transactions ) {
 
       try {
+        rbcTransaction = (Transaction) rbcTransaction.fclone();
         // if the transaction is not settled, do nothing
         if ( ! ((RbcTransaction)rbcTransaction).getSettled() ) continue;
 
