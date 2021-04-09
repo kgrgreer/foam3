@@ -74,6 +74,12 @@ foam.CLASS({
       name: 'postApprovalRuleId',
       visibility: 'HIDDEN',
       networkTransient: true
+    },
+    {
+      class: 'Boolean',
+      name: 'autoApprove',
+      visibility: 'HIDDEN',
+      networkTransient: true
     }
   ],
 
@@ -169,6 +175,7 @@ foam.CLASS({
         ticket.setFeeLineItemsAvaliable(feeLineItemsAvaliable.toArray(FeeLineItem[]::new));
         ticket.setRequestTransaction(newRequest);
         ticket.setPostApprovalRuleId(getPostApprovalRuleId());
+        ticket.setAutoApprove(getAutoApprove());
         ticket.setAgentInstructions(getTextToAgent() + " The proposed transaction will move "+newRequest.getAmount()+
         " from account "+newRequest.getSourceAccount()+" to Account "+newRequest.getDestinationAccount());
 

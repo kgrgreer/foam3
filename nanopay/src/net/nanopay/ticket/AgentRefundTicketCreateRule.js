@@ -57,6 +57,12 @@ foam.CLASS({
       name: 'postApprovalRuleId',
       visibility: 'HIDDEN',
       networkTransient: true
+    },
+    {
+      class: 'Boolean',
+      name: 'autoApprove',
+      visibility: 'HIDDEN',
+      networkTransient: true
     }
   ],
 
@@ -102,6 +108,7 @@ foam.CLASS({
 
         ticket.setAgentInstructions(getTextToAgent());
         ticket.setPostApprovalRuleId(getPostApprovalRuleId());
+        ticket.setAutoApprove(getAutoApprove());
 
         if ( ! SafetyUtil.isEmpty(getErrorCode())) {
           // look up error code fee. and create a fee line item for this.

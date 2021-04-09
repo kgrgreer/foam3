@@ -74,6 +74,12 @@ foam.CLASS({
             DAO approvalRequestDAO = (DAO) getX().get("approvalRequestDAO");
             DAO approvableDAO = (DAO) getX().get("approvableDAO");
 
+            if ( newRefundTicket.getAutoApprove() ) {
+              newRefundTicket.setRefundStatus(RefundStatus.APPROVED);
+              ((DAO) getX().get("ticketDAO")).put(newRefundTicket);
+              return;
+            }
+      
             Operation operation = Operation.UPDATE;
 
             String hashedId = new StringBuilder("d")

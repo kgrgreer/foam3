@@ -227,7 +227,8 @@ p({
     "class":"net.nanopay.ticket.BasicFullReverseRefundTicketCreateRule",
     "textToAgent":"This transaction can be safely refunded, don't waive fees though",
     "creditAccount":"6028f910-9f66-4cc3-a4cd-f5790ca3eafa",
-    "postApprovalRuleId": "b64905d0-289b-4371-92a5-f843e344109a"
+    "postApprovalRuleId": "b64905d0-289b-4371-92a5-f843e344109a",
+    "autoApprove":false
   },
   "after":false,
   "enabled":false,

@@ -229,6 +229,12 @@ foam.CLASS({
       visibility: 'HIDDEN',
       networkTransient: true
     },
+    {
+      class: 'Boolean',
+      name: 'autoApprove',
+      visibility: 'HIDDEN',
+      networkTransient: true
+    }
   ],
 
   actions: [
