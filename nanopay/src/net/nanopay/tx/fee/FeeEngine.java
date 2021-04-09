@@ -174,12 +174,15 @@ public class FeeEngine {
     throws InstantiationException, IllegalAccessException
   {
     List<TransactionLineItem> lineItems = new ArrayList<>();
-    TransactionLineItem mainFeeLineItem = newLineItem(x, fee, transaction);
-    if ( mainFeeLineItem != null )
-      lineItems.add(newLineItem(x, fee, transaction));
+
+    try {
+      TransactionLineItem mainFeeLineItem = newLineItem(x, fee, transaction);
+      if ( mainFeeLineItem != null ) lineItems.add(mainFeeLineItem);
+    } catch (Exception e) {
+      throw new RuntimeException("Could not create line item for fee  " + fee.getName() + " to transaction id:" + transaction.getId(), e);
+    }
 
     if ( ! loadedFees_.isEmpty() ) {
-
       for ( var f : loadedFees_.values() )  {
         try {
           TransactionLineItem lineItem = newLineItem(x, f, transaction);
