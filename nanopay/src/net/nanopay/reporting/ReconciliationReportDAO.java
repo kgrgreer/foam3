@@ -133,7 +133,7 @@ public abstract class ReconciliationReportDAO extends ProxyDAO {
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
     refreshMaps(x);
 
-    var nSink = new ReconciliationReportSink(x, getGenerator(), decorateSink(x, sink, skip, limit, null, null), ciMap, coMap, dtMap, rrCache);
+    var nSink = new ReconciliationReportSink(x, getGenerator(), decorateSink(x, sink, skip, limit, order, null), ciMap, coMap, dtMap, rrCache);
     getDelegate().select(decorateSink(x, nSink, 0, MAX_SAFE_INTEGER, null, adaptPredicate(predicate)));
     return sink;
   }
