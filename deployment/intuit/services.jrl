@@ -68,3 +68,34 @@ p({
     }
   """
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"supportUserDAO",
+  "serviceScript":
+  """
+    dao = new foam.dao.CopyFromDAO.Builder(x)
+        .setDelegate(x.get("userUserDAO"))
+        .setTo(foam.nanos.auth.User.getOwnClassInfo())
+        .setOf(net.nanopay.support.SupportUser.getOwnClassInfo())
+        .build();
+
+    decorator = new foam.dao.FilteredDAO.Builder(x)
+          .setPredicate(
+            foam.mlang.MLang.OR(
+              new foam.mlang.predicate.Predicate[] {
+                foam.mlang.MLang.EQ(net.nanopay.support.SupportUser.GROUP, "intuit-sme"),
+                foam.mlang.MLang.EQ(net.nanopay.support.SupportUser.GROUP, "intuit-business-sme")
+              }
+            ))
+          .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.support.SupportUser.getOwnClassInfo()).build())
+        .build();
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.support.SupportUser.getOwnClassInfo())
+      .setInnerDAO(dao)
+      .setDecorator(decorator)
+      .setEnableInterfaceDecorators(false)
+      .build();
+  """
+})
