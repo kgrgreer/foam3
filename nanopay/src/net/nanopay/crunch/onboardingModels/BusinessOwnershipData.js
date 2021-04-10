@@ -202,7 +202,7 @@ foam.CLASS({
                 var obj = X.data.ownerClass.create({
                   business: X.data.businessId
                 }, X);
-                obj.toSummary = () => X.data.OTHER_MSG;
+                obj.toSummary = () => foam.lookup(X.data.selectionView).NEW_OWNER_MSG;
                 otherChoiceDAO.put(obj);
 
                 return otherChoiceDAO;
