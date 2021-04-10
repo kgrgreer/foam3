@@ -67,16 +67,6 @@ foam.CLASS({
       section: 'collectCpf',
       label: 'Date of birth',
       visibility: 'RW',
-      // preSet: function(o, n) {
-      //   if ( o !== n && ! this.cpfName ) this.clearFields();
-      //   return n;
-      // },
-      postSet: function() {
-        //if ( this.birthday < new Date() && ! this.verifyName ) {
-          // this.clearFields();
-          this.updateCPFName();
-        // }
-      },
       validationPredicates: [
         {
           args: ['birthday'],
@@ -139,10 +129,6 @@ foam.CLASS({
       ],
       tableCellFormatter: function(val) {
         return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
-      },
-      postSet: function() {
-        // this.clearFields();
-        this.updateCPFName();
       },
       view: function(_, X) {
         return foam.u2.FragmentedTextField.create({
@@ -214,14 +200,14 @@ foam.CLASS({
         return this.subject.realUser;
       }
       // depricated but leaving for data migration - script to do this needed - then delete
-    },
-    {
-      class: 'Boolean',
-      name: 'feeedBack'
     }
   ],
 
   methods: [
+    function init() {
+      this.onDetach(this.data$.sub(this.updateCPFName));
+      this.onDetach(this.birthday$.sub(this.updateCPFName));
+    },
     function installInWizardlet(w) {
       // CPF takes longer to save, so re-load may clear new inputs
       w.reloadAfterSave = false;
@@ -234,34 +220,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'updateCPFName',
-      code: async function(o, n) {
-        try {
-          // goes with user deprication
-          if ( ! this.birthday && ! this.verifyName && this.data.length == 11 ) {
-            this.cpfName = await this.brazilVerificationService
-              .getCPFName(this.__subContext__, this.data, this.user);
-          }
-          if ( o !== undefined && ! foam.util.equals(o, n) ) this.feedBack = false;
-          // update cpfName if birthday and cpf are valid
-          // hack - this.birthday < new Date() == Null check
-          // when clearing the birthday property the date defaults to max `Fri Sep 12 275760' ... so this.birthday < new Date() is the check for an iputted date
-          if ( this.birthday < new Date() && ! this.verifyName && this.data.length == 11 ) {
-            if ( this.feedBack ) return;
-            this.feedBack = true;
-            this.cpfName = await this.brazilVerificationService
-                .getCPFNameWithBirthDate(this.__subContext__, this.data, this.birthday);
-          } else {
-            this.clearFields();
-            this.feedBack = false;
-          }
-        } catch (e) {
-          console.error(e || 'failed Cpf update');
-        }
-        
-      }
-    },
-    {
       name: 'validate',
       javaCode: `
       if ( ! getVerifyName() )
@@ -269,6 +227,37 @@ foam.CLASS({
 
       foam.core.FObject.super.validate(x);
       `
+    }
+  ],
+
+  listeners: [
+    // CURRENT ISSUE: the api is getting called too many times
+    // we want the api to only get called if the birthday and data properties are set and valid
+    // initiallizing / cloning this model will trigger the copy of properties AND if the properties are set this will trigger a api call
+    // now if the cpfName is set we can avoid the api call - but a property change needs to reset the cpfName
+    // SO - listeners used in place of a property postSet to avoid initial call ... HMM 
+    {
+      name: 'updateCPFName',
+      mergeDelay: 100, // only run every 100ms, otherwise trigger too many calls
+      code: async function(o, n) {
+        try {
+          // goes with user deprication
+          if ( ! this.birthday && ! this.verifyName && this.data.length == 11 ) {
+            this.cpfName = await this.brazilVerificationService
+              .getCPFName(this.__subContext__, this.data, this.user);
+          }
+          // update cpfName if birthday and cpf are valid
+          if ( ! this.BIRTHDAY.validateObj[1].call(this) && ! this.verifyName && ! this.DATA.validateObj[1].call(this) ) {
+            this.cpfName = await this.brazilVerificationService
+                .getCPFNameWithBirthDate(this.__subContext__, this.data, this.birthday);
+            if ( ! this.cpfName ) this.clearFields();
+          } else {
+            this.clearFields();
+          }
+        } catch (e) {
+          console.error(e || 'failed Cpf update');
+        }
+      }
     }
   ]
 });
