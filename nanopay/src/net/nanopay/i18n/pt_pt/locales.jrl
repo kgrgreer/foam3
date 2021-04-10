@@ -98,13 +98,11 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.HAVE_NO_OWNER_MSG",target:"Declaro que todos os cotistas tem participacao inferir a 25%"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.NO_OWNER_INFO_ERR",target:"Informações do proprietário necessárias"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView.PLEASE_SELECT_ONE",target:"Selecione um dos seguintes ..."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView.OTHER_MSG",target:"Adicionar outro proprietário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView.NEW_OWNER_MSG",target:"Adicionar Proprietário"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData.ADD_MSG",target:"proprietário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData.HAVE_NO_OWNER_MSG",target:"Declaro que todos os cotistas tem participacao inferir a 25%"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData.NO_OWNER_INFO_ERR",target:"Informações do proprietário necessárias"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBeneficialOwnerSelectionView.OTHER_MSG",target:"Adicionar outro proprietário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBeneficialOwnerSelectionView.NEW_OWNER_MSG",target:"Adicionar Proprietário"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.IsPubliclyTradedQuestion.PUBLICLY_TRADED.label",target:"Esta é uma empresa de capital aberto"})

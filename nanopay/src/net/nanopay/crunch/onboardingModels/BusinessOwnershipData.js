@@ -306,7 +306,6 @@ foam.CLASS({
 
   messages: [
     { name: 'PLEASE_SELECT_ONE', message: 'Please select one of the following...' },
-    { name: 'OTHER_MSG', message: 'Add another owner' },
     { name: 'NEW_OWNER_MSG', message: 'Add Owner' }
   ],
 
@@ -362,7 +361,7 @@ foam.CLASS({
                     var obj = self.ownerClass.create({
                       business: self.businessId
                     }, self.__subSubContext__);
-                    obj.toSummary = () => self.OTHER_MSG;
+                    obj.toSummary = () => self.NEW_OWNER_MSG;
                     otherChoiceDAO.put(obj);
 
                     return otherChoiceDAO;

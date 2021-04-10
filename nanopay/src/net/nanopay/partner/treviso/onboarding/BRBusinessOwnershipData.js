@@ -128,7 +128,6 @@ foam.CLASS({
   extends: 'net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView',
 
   messages: [
-    { name: 'OTHER_MSG', message: 'Add another shareholder' },
     { name: 'NEW_OWNER_MSG', message: 'Add Shareholder' }
   ]
 })
