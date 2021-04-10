@@ -72,7 +72,10 @@ foam.CLASS({
       //   return n;
       // },
       postSet: function() {
-        this.updateCPFName();
+        //if ( this.birthday < new Date() && ! this.verifyName ) {
+          // this.clearFields();
+          this.updateCPFName();
+        // }
       },
       validationPredicates: [
         {
@@ -105,6 +108,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'data',
+      help: `The CPF (Cadastro de Pessoas Físicas or Natural Persons Register) is a number assigned by the Brazilian revenue agency to both Brazilians and resident aliens who are subject to taxes in Brazil.`,
       label: 'Cadastro de Pessoas Físicas (CPF)',
       section: 'collectCpf',
       validationPredicates: [
@@ -136,11 +140,8 @@ foam.CLASS({
       tableCellFormatter: function(val) {
         return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
       },
-      // preSet: function(o, n) {
-      //   if ( o !== n ) this.clearFields();
-      //   return n;
-      // },
       postSet: function() {
+        // this.clearFields();
         this.updateCPFName();
       },
       view: function(_, X) {
@@ -213,6 +214,10 @@ foam.CLASS({
         return this.subject.realUser;
       }
       // depricated but leaving for data migration - script to do this needed - then delete
+    },
+    {
+      class: 'Boolean',
+      name: 'feeedBack'
     }
   ],
 
@@ -230,23 +235,28 @@ foam.CLASS({
     },
     {
       name: 'updateCPFName',
-      code: async function() {
+      code: async function(o, n) {
         try {
           // goes with user deprication
           if ( ! this.birthday && ! this.verifyName && this.data.length == 11 ) {
             this.cpfName = await this.brazilVerificationService
               .getCPFName(this.__subContext__, this.data, this.user);
           }
+          if ( o !== undefined && ! foam.util.equals(o, n) ) this.feedBack = false;
           // update cpfName if birthday and cpf are valid
-          // hack - when clearing the birthday property the date defaults to max `Fri Sep 12 275760' ... so this.birthday < new Date() is the check for an iputted date
+          // hack - this.birthday < new Date() == Null check
+          // when clearing the birthday property the date defaults to max `Fri Sep 12 275760' ... so this.birthday < new Date() is the check for an iputted date
           if ( this.birthday < new Date() && ! this.verifyName && this.data.length == 11 ) {
+            if ( this.feedBack ) return;
+            this.feedBack = true;
             this.cpfName = await this.brazilVerificationService
-              .getCPFNameWithBirthDate(this.__subContext__, this.data, this.birthday);
+                .getCPFNameWithBirthDate(this.__subContext__, this.data, this.birthday);
           } else {
             this.clearFields();
+            this.feedBack = false;
           }
         } catch (e) {
-          console.error(e);
+          console.error(e || 'failed Cpf update');
         }
         
       }
