@@ -39,7 +39,7 @@ foam.CLASS({
   messages: [
     { name: 'TOTAL_OWNERSHIP_ERROR', message: 'The total ownership should be less than 100%' },
     { name: 'SIGNINGOFFICER_DATA_FETCHING_ERR', message: 'Failed to find this signing officer info' },
-    { name: 'ADD_MSG', message: 'another owner' },
+    { name: 'ADD_MSG', message: 'owner' },
     { name: 'HAVE_NO_OWNER_MSG', message: 'I declare that all owners have less than 25% shares each' },
     { name: 'NO_OWNER_INFO_ERR', message: 'Owner information required' }
   ],
