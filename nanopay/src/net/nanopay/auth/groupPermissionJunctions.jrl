@@ -862,8 +862,3 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","t
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"exportdriverregistry.read.JSON"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"exportdriverregistry.read.JSON/J"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"exportdriverregistry.read.XML"})
-
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-base","targetId":"exportdriverregistry.read.CSV"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-base","targetId":"exportdriverregistry.read.JSON"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-base","targetId":"exportdriverregistry.read.JSON/J"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-base","targetId":"exportdriverregistry.read.XML"})

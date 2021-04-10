@@ -467,6 +467,9 @@ foam.CLASS({
         assert txFeeRule.getEnabled() && txFeeRule.getLifecycleState() == LifecycleState.ACTIVE
           : "Tx fee rule is enabled: " + txFeeRule.getEnabled() + ", and active: " + txFeeRule.getLifecycleState();
 
+        // set fee class
+        fee.setFeeClass(FeeLineItem.getOwnClassInfo());
+
         // create fee
         setupTestFee(x, fee, txFeeRule);
 

@@ -57,14 +57,7 @@ Stores all Exchange Rate info.`,
       section: 'transactionInformation',
       order: 200,
       gridColumns: 6,
-      visibility: 'RO',
-      view: function (_, X) {
-        return {
-          class: 'foam.u2.TextField',
-          mode: foam.u2.DisplayMode.RO,
-          data$: X.data.fxRate$.map(fx => { return fx !== 1 ? 'Rate: ' + fx : 'No Fx'; })
-        };
-      }
+      visibility: 'RO'
     },
     {
       name: 'fxQuoteId',
