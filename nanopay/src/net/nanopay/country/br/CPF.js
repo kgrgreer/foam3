@@ -255,6 +255,7 @@ foam.CLASS({
             this.clearFields();
           }
         } catch (e) {
+          this.clearFields();
           console.error(e || 'failed Cpf update');
         }
       }
