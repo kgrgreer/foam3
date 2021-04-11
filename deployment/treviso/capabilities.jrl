@@ -264,7 +264,7 @@ p({
     }
   },
   "wizardConfig": {
-    "class": "foam.u2.crunch.EasyCrunchWizard",
+    "class": "net.nanopay.crunch.wizardlet.SigningOfficerWizardConfig",
     "allowSkipping": false
   },
   "requirementViewTitle":"Have your signing officer documents ready. You can save your progress and come back later."
