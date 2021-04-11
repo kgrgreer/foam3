@@ -247,7 +247,7 @@ foam.CLASS({
               .getCPFName(this.__subContext__, this.data, this.user);
           }
           // update cpfName if birthday and cpf are valid
-          if ( ! this.BIRTHDAY.validateObj[1].call(this) && ! this.verifyName && ! this.DATA.validateObj[1].call(this) ) {
+          if ( ! this.BIRTHDAY.validateObj[1].call(this) && ! this.verifyName && this.data.length == 11 ) {
             this.cpfName = await this.brazilVerificationService
                 .getCPFNameWithBirthDate(this.__subContext__, this.data, this.birthday);
             if ( ! this.cpfName ) this.clearFields();
@@ -255,6 +255,7 @@ foam.CLASS({
             this.clearFields();
           }
         } catch (e) {
+          this.clearFields();
           console.error(e || 'failed Cpf update');
         }
       }
