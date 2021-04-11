@@ -44,6 +44,10 @@ foam.CLASS({
     'subject'
   ],
 
+  constants: {
+    CPF_LENGTH: 11
+  },
+
   messages: [
     { name: 'INVALID_CPF', message: 'Valid CPF number required' },
     { name: 'INVALID_CPF_CHECKED', message: 'Unable to validate CPF number and birthdate combination. Please update and try again.' },
@@ -247,7 +251,7 @@ foam.CLASS({
               .getCPFName(this.__subContext__, this.data, this.user);
           }
           // update cpfName if birthday and cpf are valid
-          if ( ! this.BIRTHDAY.validateObj[1].call(this) && ! this.verifyName && this.data.length == 11 ) {
+          if ( ! this.BIRTHDAY.validateObj[1].call(this) && ! this.verifyName && this.data.length == this.CPF_LENGTH ) {
             this.cpfName = await this.brazilVerificationService
                 .getCPFNameWithBirthDate(this.__subContext__, this.data, this.birthday);
             if ( ! this.cpfName ) this.clearFields();
