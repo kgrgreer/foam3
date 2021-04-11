@@ -39,7 +39,9 @@ foam.CLASS({
   messages: [
     { name: 'TOTAL_OWNERSHIP_ERROR', message: 'The total ownership should be less than 100%' },
     { name: 'SIGNINGOFFICER_DATA_FETCHING_ERR', message: 'Failed to find this signing officer info' },
-    { name: 'ADD_MSG', message: 'another owner' }
+    { name: 'ADD_MSG', message: 'owner' },
+    { name: 'HAVE_NO_OWNER_MSG', message: 'I declare that all owners have less than 25% shares each' },
+    { name: 'NO_OWNER_INFO_ERR', message: 'Owner information required' }
   ],
 
   sections: [
@@ -128,12 +130,47 @@ foam.CLASS({
       visibility: 'HIDDEN'
     },
     {
+      class: 'Boolean',
+      name: 'haveLowShares',
+      documentation: 'true if all the owners/shareholders have less than 25% shares each and false otherwise',
+      label: '',
+      section: 'ownershipAmountSection',
+      order: 10,
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.CheckBox',
+          label: X.data.HAVE_NO_OWNER_MSG
+        }
+      },
+      postSet: function(_, newVal) {
+        if (newVal) {
+          this.owners = [];
+        }
+      }
+    },
+    {
       name: 'owners',
       label: 'Owner details',
       class: 'FObjectArray',
       section: 'ownershipAmountSection',
+      order: 20,
       of: 'net.nanopay.model.BeneficialOwner',
       validationStyleEnabled: false,
+      visibility: function(haveLowShares) {
+        return haveLowShares ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      },
+      validationPredicates: [
+        {
+          args: ['owners', 'haveLowShares'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.HAVE_LOW_SHARES, true),
+              e.HAS(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OWNERS)
+            );
+          },
+          errorMessage: 'NO_OWNER_INFO_ERR'
+        }
+      ],
       view: function (_, X) {
         return {
           class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
@@ -165,7 +202,7 @@ foam.CLASS({
                 var obj = X.data.ownerClass.create({
                   business: X.data.businessId
                 }, X);
-                obj.toSummary = () => X.data.OTHER_MSG;
+                obj.toSummary = () => foam.lookup(X.data.selectionView).NEW_OWNER_MSG;
                 otherChoiceDAO.put(obj);
 
                 return otherChoiceDAO;
@@ -180,6 +217,7 @@ foam.CLASS({
       name: 'totalOwnership',
       class: 'Long',
       section: 'ownershipAmountSection',
+      order: 30,
       view: {
         class: 'foam.u2.view.ModeAltView',
         writeView: { class: 'foam.u2.view.ValueView' }
@@ -268,7 +306,6 @@ foam.CLASS({
 
   messages: [
     { name: 'PLEASE_SELECT_ONE', message: 'Please select one of the following...' },
-    { name: 'OTHER_MSG', message: 'Add another owner' },
     { name: 'NEW_OWNER_MSG', message: 'Add Owner' }
   ],
 
@@ -324,7 +361,7 @@ foam.CLASS({
                     var obj = self.ownerClass.create({
                       business: self.businessId
                     }, self.__subSubContext__);
-                    obj.toSummary = () => self.OTHER_MSG;
+                    obj.toSummary = () => self.NEW_OWNER_MSG;
                     otherChoiceDAO.put(obj);
 
                     return otherChoiceDAO;
