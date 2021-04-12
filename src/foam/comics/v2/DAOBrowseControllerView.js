@@ -22,7 +22,8 @@ foam.CLASS({
   ],
 
   exports: [
-    'memento'
+    'memento',
+    'config'
   ],
 
   requires: [
@@ -168,7 +169,7 @@ foam.CLASS({
                     .addClass(self.myClass('browse-title'))
                     .translate(menuId + ".browseTitle", config$browseTitle)
                   .end()
-                  .startContext({ data: self }).tag(self.CREATE).endContext()
+                  // .startContext({ data: self }).tag(self.CREATE).endContext()
                   .callIf(config$primaryAction, function() {
                     this.startContext({ data: self }).tag(config$primaryAction, { size: 'LARGE' }).endContext();
                   })
@@ -201,9 +202,12 @@ foam.CLASS({
                       .addClass(self.myClass('altview-container'))
                     .end();
                 })
-                .add(self.slot(function(browseView) {
-                  return self.E().tag(browseView, { data: data, config: config });
-                }))
+                .call(function(){
+                  var e = this;
+                  this.add(self.slot(function(browseView) {
+                    return self.E().tag(browseView, { config$: e.__subContext__.config$ });
+                  }))
+                })
               .end()
             .end()
           .end();
