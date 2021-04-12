@@ -103,6 +103,7 @@ foam.CLASS({
       class: 'String',
       name: 'firstName',
       section: 'requiredSection',
+      order: 1,
       visibility: function(mode) {
         return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
@@ -125,6 +126,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'lastName',
+      order: 2,
       section: 'requiredSection',
       visibility: function(mode) {
         return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;

@@ -136,6 +136,9 @@ foam.CLASS({
       label: '',
       section: 'ownershipAmountSection',
       order: 10,
+      visibility: function(owners) {
+        return owners.length > 0 ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      },
       view: function(_, X) {
         return {
           class: 'foam.u2.CheckBox',
