@@ -110,6 +110,14 @@ foam.CLASS({
       ],
 
       methods: [
+        function init() {
+          this.onload.sub(function(s) {
+            self.memento.tail.parentFeedback_ = false;
+            self.memento.feedback_ = true;
+            self.memento.changeIndicator = ! self.memento.changeIndicator;
+            self.memento.feedback_ = false;
+          });
+        },
         function initE() {
           this.SUPER();
 
@@ -220,6 +228,7 @@ foam.CLASS({
   ],
 
   methods: [
+    
     function initE() {
       this.SUPER();
 
@@ -297,8 +306,10 @@ foam.CLASS({
               .attrs({title: spec.description})
               .on('click', function() {
                 if ( self.memento ) {
-                  var tail = self.Memento.create({ head: spec.id, tail: self.Memento.create() });
+                  self.memento.feedback_ = true;
+                  var tail = self.Memento.create({ head: spec.id, tail: self.Memento.create(), parentFeedback_: true });
                   self.memento.tail$.set(tail);
+                  // self.memento.tail.parentFeedback_ = true;
                 }
               });
 
@@ -332,9 +343,10 @@ foam.CLASS({
 
   listeners: [
     function mementoChange(isInitializing) {
+      self = this;
       var m = this.memento;
 
-      if ( ! m || ! m.tail || m.tail.head.length == 0 ) {
+      if ( ! m || ! m.tail || m.tail.feedback_  || m.tail.head.length == 0 ) {// || self.memento.feedback_ 
         if ( ! isInitializing && ! m.tail ) this.stack.back();
         return;
       }
@@ -344,6 +356,36 @@ foam.CLASS({
       x.register(this.CustomDAOSummaryView,    'foam.comics.v2.DAOSummaryView');
       x.register(this.CustomDAOUpdateView,     'foam.comics.v2.DAOUpdateView');
       x.register(foam.u2.DetailView,           'foam.u2.DetailView');
+
+
+      
+      this.memento.parentFeedback_ = true;
+      // var view = foam.u2.ViewSpec.createView({
+      //   class: this.BackBorder,
+      //   title: m.tail.head,
+      //   inner: {
+      //     class: 'foam.u2.view.AltView',
+      //     data: this.__context__[m.tail.head],
+      //     views: [
+      //       [
+      //         {
+      //           class: this.BrowserView,
+      //           stack: this.stack
+      //         },
+      //         this.CONTROLLER1
+      //       ],
+      //       [
+      //         {
+      //           class: this.DAOBrowseControllerView,
+      //           stack: this.stack
+      //         },
+      //         this.CONTROLLER2
+      //       ]
+      //     ]
+      //   }
+      // }, x);
+
+      
 
       this.stack.push({
         class: this.BackBorder,

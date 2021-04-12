@@ -69,12 +69,17 @@ foam.CLASS({
       name: 'changeIndicator',
       postSet: function() {
         this.value                    = this.combine();
-        if ( this.parent ) {
+        if ( ! this.parentFeedback_ && this.parent ) {
           this.parent.feedback_       = true;
           this.parent.changeIndicator = ! this.parent.changeIndicator;
           this.parent.feedback_       = false;
         }
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'parentFeedback_',
+      documentation: 'Internal flag to prevent parent\'s update'
     }
   ],
 

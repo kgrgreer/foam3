@@ -508,6 +508,8 @@ foam.CLASS({
             var canObjBeBuildFromProjection = true;
 
             for ( var p of view.props ) {
+              if ( ! p )
+                continue;
               if ( p.property.tableCellFormatter && ! p.property.cls_.hasOwnProperty('tableCellFormatter') ) {
                 canObjBeBuildFromProjection = false;
                 break;
