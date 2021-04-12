@@ -1487,28 +1487,6 @@ foam.CLASS({
 
   actions: [
     {
-      name: 'requestRefund',
-      section: 'transactionInformation',
-      isAvailable: function(status){
-        return status === net.nanopay.tx.model.TransactionStatus.COMPLETED;
-      },
-      code: function(X) {
-        var refundTicket = net.nanopay.ticket.RefundTicket.create({
-          problemTransaction: this.id,
-          title: 'Refund request for transaction: ' + this.id
-        });
-
-        this.ticketDAO.put(refundTicket).then(ticket => {
-          this.finished.pub();
-          this.notify(this.REQUEST_REFUND_SUCCESS, '', foam.log.LogLevel.INFO, true);
-          X.stack.back();
-        }).catch(error => {
-          this.throwError.pub(error);
-          this.notify(error.message, '', foam.log.LogLevel.ERROR, true);
-        })
-      }
-    },
-    {
       name: 'requestCancellation',
       section: 'transactionInformation',
       isAvailable: function(status) {
