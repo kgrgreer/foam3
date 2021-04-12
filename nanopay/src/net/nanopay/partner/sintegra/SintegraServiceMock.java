@@ -35,7 +35,7 @@ public class SintegraServiceMock extends ContextAwareSupport implements Sintegra
   }
 
   public CNPJResponseData getCNPJData(String cnpj, String token) {
-    if ( getAppconfig().getMode() != foam.nanos.app.Mode.PRODUCTION  ) {
+    if ( getAppConfig().getMode() != foam.nanos.app.Mode.PRODUCTION  ) {
       if ( "06990590000123".equals(cnpj) ) {
         CNPJResponseData response = new CNPJResponseData();
         response.setCode("0");
@@ -47,7 +47,7 @@ public class SintegraServiceMock extends ContextAwareSupport implements Sintegra
         CNPJResponseData response = new CNPJResponseData();
         response.setCode("0");
         response.setStatus("OK");
-        response.setSituacao("ATIVA");
+        response.setSituacao("");
         response.setNome("");
         return response;
       }
@@ -58,7 +58,7 @@ public class SintegraServiceMock extends ContextAwareSupport implements Sintegra
   }
 
   public CPFResponseData getCPFData(String cpf, String dateOfBirth, String token) {
-    if ( getAppconfig().getMode() != foam.nanos.app.Mode.PRODUCTION  ) {
+    if ( getAppConfig().getMode() != foam.nanos.app.Mode.PRODUCTION  ) {
       if ( "10786348070".equals(cpf) ) {
         CPFResponseData response = new CPFResponseData();
         response.setCode("0");
@@ -70,7 +70,7 @@ public class SintegraServiceMock extends ContextAwareSupport implements Sintegra
         CPFResponseData response = new CPFResponseData();
         response.setCode("0");
         response.setStatus("OK");
-        response.setSituacaoCadastral("REGULAR");
+        response.setSituacaoCadastral("");
         response.setNome("");
         return response;
       }

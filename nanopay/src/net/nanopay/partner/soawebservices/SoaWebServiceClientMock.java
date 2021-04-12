@@ -34,7 +34,7 @@ public class SoaWebServiceClientMock extends ContextAwareSupport implements SoaW
 
   @Override
   public PessoaResponse pessoaFisicaNFe(PessoaFisicaNFe request) {
-    if ( getAppconfig().getMode() != foam.nanos.app.Mode.PRODUCTION ) {
+    if ( getAppConfig().getMode() != foam.nanos.app.Mode.PRODUCTION ) {
       if ( "10786348070".equals(request.getDocumento()) && "01/01/1970".equals(request.getDataNascimento()) ) {
         PessoaResponse res = new PessoaResponse();
         res.setNome("Mock Legal User");
@@ -61,7 +61,7 @@ public class SoaWebServiceClientMock extends ContextAwareSupport implements SoaW
 
   @Override
   public PessoaResponse pessoaJuridicaNFe(PessoaJuridicaNFe request) {
-    if ( getAppconfig().getMode() != foam.nanos.app.Mode.PRODUCTION  ) {
+    if ( getAppConfig().getMode() != foam.nanos.app.Mode.PRODUCTION  ) {
       if ( "06990590000123".equals(request.getDocumento()) ) {
         PessoaResponse res = new PessoaResponse();
         res.setNome("Mock Legal User");
