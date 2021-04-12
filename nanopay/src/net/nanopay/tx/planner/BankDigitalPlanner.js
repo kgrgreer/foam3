@@ -34,6 +34,8 @@ foam.CLASS({
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
     'java.util.List',
+    'foam.util.SafetyUtil',
+    'net.nanopay.fx.FXSummaryTransaction',
   ],
 
   properties: [
@@ -48,12 +50,13 @@ foam.CLASS({
       name: 'plan',
       javaCode: `
         Transaction txn;
-        if ( requestTxn.getType().equals("Transaction") ) {
+        if ( SafetyUtil.equals(quote.getDestinationAccount.getDenomination(), quote.getSourceAccount.getDenomination() )) {
           txn = new SummaryTransaction(x);
-          txn.copyFrom(requestTxn);
-        } else {
-          txn = (Transaction) requestTxn.fclone();
         }
+        else {
+          txn = new FXSummaryTransaction(x);
+        }
+        txn.copyFrom(requestTxn);
 
         txn.setStatus(TransactionStatus.PENDING);
         txn.setInitialStatus(TransactionStatus.COMPLETED);

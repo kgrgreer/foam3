@@ -38,6 +38,8 @@ foam.CLASS({
     'java.util.List',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.util.SafetyUtil',
+    'net.nanopay.fx.FXSummaryTransaction',
   ],
 
   properties: [
@@ -57,14 +59,13 @@ foam.CLASS({
       name: 'plan',
       javaCode: `
         Transaction txn;
-        // create summary transaction when the request transaction is the base Transaction,
-        // otherwise conserve the type of the transaction.
-        if ( requestTxn.getType().equals("Transaction") ) {
+        if ( SafetyUtil.equals(quote.getDestinationAccount.getDenomination(), quote.getSourceAccount.getDenomination() )) {
           txn = new SummaryTransaction(x);
-          txn.copyFrom(requestTxn);
-        } else {
-          txn = (Transaction) requestTxn.fclone();
         }
+        else {
+          txn = new FXSummaryTransaction(x);
+        }
+        txn.copyFrom(requestTxn);
 
         txn.setStatus(TransactionStatus.PENDING);
         txn.setInitialStatus(TransactionStatus.COMPLETED);
