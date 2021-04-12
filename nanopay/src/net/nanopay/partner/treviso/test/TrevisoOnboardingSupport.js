@@ -516,7 +516,8 @@ foam.CLASS({
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           var cap = net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData.create({
             ownersSelectionsValidated: true,
-            amountOfOwners: 0
+            amountOfOwners: 0,
+            haveLowShares: true
           });
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
         }
