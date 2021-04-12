@@ -3078,6 +3078,8 @@ p({class:"foam.i18n.Locale",locale:"pt","source":"5fdd9025-86e6-45a1-bed5-8962ac
 p({class:"foam.i18n.Locale",locale:"pt","source":"5fdd9025-86e6-45a1-bed5-8962acdf5338-41.description","target":"Fatura proforma assinada (contendo a data de envio prevista)"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode","target":"Requisito do código da natureza"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"Nature Code Requirement","target":"Propósito do Pagamento"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode.name","target":"Requisito do código da natureza"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode.description","target":"Requisito do código da natureza"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"05a663b8-2b48-11eb-adc1-0242ac120002.name","target":"Ativar pagamentos internacionais"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"05a663b8-2b48-11eb-adc1-0242ac120002.description","target":"Habilitar pagamentos internacionais no Brasil"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"05a663b8-2b48-11eb-adc1-0242ac120002.requirementViewTitle","target":"Preparar seus documentos comerciais. Você pode salvar seu progresso e voltar mais tarde"})
