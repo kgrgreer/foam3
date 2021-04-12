@@ -100,12 +100,20 @@ foam.CLASS({
       externalTransient: true
     },
     {
+      class: 'Boolean',
+      name: 'showFullOwnerDetails',
+      documentation: 'Used to display all owner properties without overwriting the mode.',
+      value: false,
+      hidden: true,
+      storageTransient: true
+    },
+    {
       class: 'String',
       name: 'firstName',
       section: 'requiredSection',
       order: 1,
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       validationPredicates: [
         {
@@ -128,8 +136,8 @@ foam.CLASS({
       name: 'lastName',
       order: 2,
       section: 'requiredSection',
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       validationPredicates: [
         {
@@ -155,8 +163,8 @@ foam.CLASS({
       label: 'Date of birth',
       section: 'requiredSection',
       documentation: 'The birthday of the beneficial owner',
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       validationPredicates: [
         {
@@ -200,8 +208,8 @@ foam.CLASS({
       name: 'jobTitle',
       section: 'requiredSection',
       documentation: 'The job title of the beneficial owner',
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       view: function(_, X) {
         return {
@@ -262,8 +270,8 @@ foam.CLASS({
       name: 'address',
       section: 'requiredSection',
       documentation: 'The address of the beneficial owner',
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       factory: function() {
         let address = this.Address.create();

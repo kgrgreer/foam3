@@ -63,8 +63,8 @@ foam.CLASS({
       name: 'email',
       section: 'requiredSection',
       required: true,
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       }
     },
     {
@@ -113,8 +113,8 @@ foam.CLASS({
       label: '',
       of: 'net.nanopay.country.br.CPF',
       section: 'requiredSection',
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       }
     },
     {
@@ -137,8 +137,8 @@ foam.CLASS({
 
       `,
       value: false,
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       view: function(_, X) {
         return {
@@ -161,8 +161,8 @@ foam.CLASS({
         parties agree to transfer between them a certain amount of foreign exchange at a
         predetermined rate of exchange, and as of a predetermined date.
       `,
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       view: function(_, X) {
         return {
@@ -200,8 +200,8 @@ foam.CLASS({
           return this.PROOF_OF_ADDRESS;
         }
       },
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       }
     },
     {
@@ -229,9 +229,9 @@ foam.CLASS({
           return this.PROOF_OF_IDENTIFICATION;
         }
       },
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
-      }
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      },
     }
   ],
 
