@@ -141,15 +141,11 @@ foam.CLASS({
       name: 'verifyName',
       label: 'Is this your business?',
       section: 'businessInformation',
-      view: function(n, X) {
-        var self = X.data$;
-        return foam.u2.CheckBox.create({
-          labelFormatter: function() {
-            this.start('span')
-              .add(self.dot('cnpjName'))
-            .end();
-          }
-        });
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.CheckBox',
+          label$: X.data$.dot('cnpjName')
+        };
       },
       visibility: function(cnpjName) {
         return cnpjName.length > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;

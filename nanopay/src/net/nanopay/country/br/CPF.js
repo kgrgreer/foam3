@@ -171,15 +171,11 @@ foam.CLASS({
       name: 'verifyName',
       label: 'Is this the name of the person who owns this cpf?',
       section: 'collectCpf',
-      view: function(n, X) {
-        var self = X.data$;
-        return foam.u2.CheckBox.create({
-          labelFormatter: function() {
-            this.start('span')
-              .add(self.dot('cpfName'))
-            .end();
-          }
-        });
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.CheckBox',
+          label$: X.data$.dot('cpfName')
+        };
       },
       visibility: function(cpfName) {
         return cpfName ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
