@@ -100,12 +100,20 @@ foam.CLASS({
       externalTransient: true
     },
     {
+      class: 'Boolean',
+      name: 'showFullOwnerDetails',
+      documentation: 'Used to display all owner properties without overwriting the mode.',
+      hidden: true,
+      storageTransient: true,
+      networkTransient: true
+    },
+    {
       class: 'String',
       name: 'firstName',
       section: 'requiredSection',
       order: 1,
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : mode === 'percent' && showFullOwnerDetails ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.RW;
       },
       validationPredicates: [
         {
@@ -128,8 +136,8 @@ foam.CLASS({
       name: 'lastName',
       order: 2,
       section: 'requiredSection',
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : mode === 'percent' && showFullOwnerDetails ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.RW;
       },
       validationPredicates: [
         {
@@ -155,8 +163,8 @@ foam.CLASS({
       label: 'Date of birth',
       section: 'requiredSection',
       documentation: 'The birthday of the beneficial owner',
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       validationPredicates: [
         {
@@ -200,12 +208,13 @@ foam.CLASS({
       name: 'jobTitle',
       section: 'requiredSection',
       documentation: 'The job title of the beneficial owner',
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       view: function(_, X) {
-        return {
-          class: 'foam.u2.view.ChoiceWithOtherView',
+        let forceIntoRO = X.data.mode === 'percent' && X.data.showFullOwnerDetails;
+        var x = forceIntoRO ? X.createSubContext({ controllerMode: foam.u2.ControllerMode.VIEW }) : X;
+        return foam.u2.view.ChoiceWithOtherView.create({
           otherKey: X.data.OTHER_KEY,
           choiceView: {
             class: 'foam.u2.view.ChoiceView',
@@ -215,7 +224,7 @@ foam.CLASS({
               return [a.name, X.translationService.getTranslation(foam.locale, `${a.name}.label`, a.label)];
             }
           }
-        };
+        }, x);
       },
       validationPredicates: [
         {
@@ -262,8 +271,8 @@ foam.CLASS({
       name: 'address',
       section: 'requiredSection',
       documentation: 'The address of the beneficial owner',
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       factory: function() {
         let address = this.Address.create();
@@ -272,11 +281,12 @@ foam.CLASS({
         return address;
       },
       view: function(_, X) {
-        return {
-          class: 'net.nanopay.sme.ui.UnstructuredAddressView',
+        let forceIntoRO = X.data.mode === 'percent' && X.data.showFullOwnerDetails;
+        var x = forceIntoRO ? X.createSubContext({ controllerMode: foam.u2.ControllerMode.VIEW }) : X;
+        return net.nanopay.sme.ui.UnstructuredAddressView.create({
           customCountryDAO: X.countryDAO,
           showValidation: X.data.showValidation
-        };
+        }, x);
       },
       autoValidate: true
     },

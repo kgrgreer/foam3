@@ -43,7 +43,7 @@ foam.CLASS({
       name: 'viewView',
       factory: function() {
         let onSave = async (isValid, ucj) => {
-          if ( isValid ) {
+          if ( isValid && ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED ) {
             this.notify(this.SUCCESS_UPDATED, '', this.LogLevel.INFO, true);
             this.stack.back();
           }

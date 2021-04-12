@@ -260,7 +260,7 @@ foam.CLASS({
     async function init() {
       if ( await this.auth.check(null, 'net.nanopay.crunch.onboardingmodels.businessownershipdata.viewownersdetails') ) {
         this.owners.map((o) => {
-          o.mode = 'visible';
+          o.showFullOwnerDetails = true;
         });
       }
       this.ownersUpdate.sub(this.updateOwnersListeners);
