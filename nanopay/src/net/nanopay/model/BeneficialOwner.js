@@ -105,7 +105,8 @@ foam.CLASS({
       documentation: 'Used to display all owner properties without overwriting the mode.',
       value: false,
       hidden: true,
-      storageTransient: true
+      storageTransient: true,
+      networkTransient: true
     },
     {
       class: 'String',
@@ -113,7 +114,7 @@ foam.CLASS({
       section: 'requiredSection',
       order: 1,
       visibility: function(mode, showFullOwnerDetails) {
-        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : mode === 'percent' && showFullOwnerDetails ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.RW;
       },
       validationPredicates: [
         {
@@ -137,7 +138,7 @@ foam.CLASS({
       order: 2,
       section: 'requiredSection',
       visibility: function(mode, showFullOwnerDetails) {
-        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : mode === 'percent' && showFullOwnerDetails ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.RW;
       },
       validationPredicates: [
         {
@@ -212,8 +213,9 @@ foam.CLASS({
         return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       view: function(_, X) {
-        return {
-          class: 'foam.u2.view.ChoiceWithOtherView',
+        let forceIntoRO = X.data.mode === 'percent' && X.data.showFullOwnerDetails;
+        var x = forceIntoRO ? X.createSubContext({ controllerMode: foam.u2.ControllerMode.VIEW }) : X;
+        return foam.u2.view.ChoiceWithOtherView.create({
           otherKey: X.data.OTHER_KEY,
           choiceView: {
             class: 'foam.u2.view.ChoiceView',
@@ -223,7 +225,7 @@ foam.CLASS({
               return [a.name, X.translationService.getTranslation(foam.locale, `${a.name}.label`, a.label)];
             }
           }
-        };
+        }, x);
       },
       validationPredicates: [
         {
@@ -280,11 +282,12 @@ foam.CLASS({
         return address;
       },
       view: function(_, X) {
-        return {
-          class: 'net.nanopay.sme.ui.UnstructuredAddressView',
+        let forceIntoRO = X.data.mode === 'percent' && X.data.showFullOwnerDetails;
+        var x = forceIntoRO ? X.createSubContext({ controllerMode: foam.u2.ControllerMode.VIEW }) : X;
+        return net.nanopay.sme.ui.UnstructuredAddressView.create({
           customCountryDAO: X.countryDAO,
           showValidation: X.data.showValidation
-        };
+        }, x);
       },
       autoValidate: true
     },
