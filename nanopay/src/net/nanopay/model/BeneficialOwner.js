@@ -103,7 +103,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showFullOwnerDetails',
       documentation: 'Used to display all owner properties without overwriting the mode.',
-      value: false,
       hidden: true,
       storageTransient: true,
       networkTransient: true
