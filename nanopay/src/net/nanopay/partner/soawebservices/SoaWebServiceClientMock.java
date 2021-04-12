@@ -61,7 +61,7 @@ public class SoaWebServiceClientMock extends ContextAwareSupport implements SoaW
 
   @Override
   public PessoaResponse pessoaJuridicaNFe(PessoaJuridicaNFe request) {
-    if ( getAppconfig().getMode() !== 'deployment' ) {
+    if ( getAppconfig().getMode() != foam.nanos.app.Mode.PRODUCTION  ) {
       if ( "06990590000123".equals(request.getDocumento()) ) {
         PessoaResponse res = new PessoaResponse();
         res.setNome("Mock Legal User");
