@@ -54,6 +54,11 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'birthday',
+      validationPredicates: [],
+      hidden: true
+    },
+    {
       class: 'EMail',
       name: 'email',
       section: 'requiredSection',
