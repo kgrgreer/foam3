@@ -631,6 +631,7 @@ p({
   "subject": "Notification from {{appName}}",
   "body": """
     <include template = 'treviso-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"/>
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> {{body}} </p>
       <br>
     </include>
@@ -645,6 +646,7 @@ p({
   "subject": "Notificação de {{appName}}",
   "body": """
     <include template = 'treviso-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> {{body}} </p>
       <br>
     </include>
@@ -1574,7 +1576,7 @@ p({
     <include template = 'treviso-email-base_2'>
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"> Great news! </p>
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">{{business}} is all set to send payments on {{appName}}.</p>
-      <a href="{{link}}" style="text-decoration: none;">
+      <a href="{{appLink}}" style="text-decoration: none;">
         <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
           <p style = "padding: 14px 0 0; margin: 0;">Sign in</p>
         </div>
@@ -1596,7 +1598,7 @@ p({
     <include template = 'treviso-email-base_2'>
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"> Boas notícias ! </p>
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">{{business}} está pronto para enviar pagamentos!</p>
-      <a href="{{link}}" style="text-decoration: none;">
+      <a href="{{appLink}}" style="text-decoration: none;">
         <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
           <p style = "padding: 14px 0 0; margin: 0;">Assinar em</p>
         </div>
@@ -2618,7 +2620,7 @@ p({
     <include template = 'treviso-email-base_2'>
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"> {{type}} </p>
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">You received {{body}} </p>
-      <a href="{{link}}" style="text-decoration: none;">
+      <a href="{{appLink}}" style="text-decoration: none;">
         <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
           <p style = "padding: 14px 0 0; margin: 0;">Go to {{appName}}</p>
         </div>
@@ -2638,7 +2640,7 @@ p({
     <include template = 'treviso-email-base_2'>
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"> {{type}} </p>
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> Você recebeu {{body}} </p>
-      <a href="{{link}}" style="text-decoration: none;">
+      <a href="{{appLink}}" style="text-decoration: none;">
         <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
           <p style = "padding: 14px 0 0; margin: 0;">Vá para {{appName}}</p>
         </div>
@@ -2657,7 +2659,7 @@ p({
     <include template = 'treviso-email-base_2'>
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"/>
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> our {{classification}} approval request has been rejected by {{rejectedBy}}. {{memo}} </p>
-      <a href="{{link}}" style="text-decoration: none;">
+      <a href="{{appLink}}" style="text-decoration: none;">
         <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
           <p style = "padding: 14px 0 0; margin: 0;">Go to {{appName}}</p>
         </div>
@@ -2676,7 +2678,7 @@ p({
     <include template = 'treviso-email-base_2'>
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"/>
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> Seu {{classification}} o pedido de aprovação foi rejeitado por {{rejectedBy}}. {{memo}}</p>
-      <a href="{{link}}" style="text-decoration: none;">
+      <a href="{{appLink}}" style="text-decoration: none;">
         <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
           <p style = "padding: 14px 0 0; margin: 0;">Vá para {{appName}}</p>
         </div>
