@@ -3637,3 +3637,15 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXFundingB
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXFundingBalance.FUNDIONG_BALANCE_ID",target:"Financiamento Saldo Id"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXFundingTransaction.FUNDIONG_BALANCE_INITIATED",target:"Financiamento Saldo Iniciado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXFundingTransaction.VALUE_DATE",target:"Validade Data"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.approval.ApprovalRequestNotificationDAO.APPROVAL_REQUEST",target:"Pedido de aprovação para novo "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.approval.ApprovalRequestNotificationDAO.WITH_ID",target:" com id: "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.approval.ApprovalRequestNotificationDAO.REASON",target:", razão: "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.approval.ApprovalRequestNotificationDAO.APPROVED",target:", razão: "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.approval.ApprovalRequestNotificationDAO.REQUEST_FOR",target:" request for "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.approval.ApprovalRequestNotificationDAO.FROM",target:"a partir de "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.approval.ApprovalRequestNotificationDAO.MEMO",target:"Eles forneceram o seguinte memorando junto com sua rejeição: "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.approval.ApprovalRequestNotificationDAO.YOUR",target:"Seu "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.approval.ApprovalRequestNotificationDAO.REJECTED",target:" o pedido de aprovação foi rejeitado por "})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.compliance.ComplianceApprovalRequest.CLASSIFICATION",target:"Validador Genérico de Negócios"})
