@@ -47,13 +47,18 @@ foam.CLASS({
       this.setNodeName('div');
       this.addClass(this.myClass());
 
+      this.data.top$.sub(function() {
+        console.log('top changed');
+      });
+
       if ( this.showActions ) {
         this.start('actions')
           .add(this.data.cls_.getAxiomsByClass(foam.core.Action))
         .end();
       }
 
-      this.add(this.slot(function(s) {
+      this.add(this.slot(function(data$top) {
+        var s = data$top;
         if ( ! s ) return this.E('span');
 
         var view   = s[0];
@@ -100,7 +105,7 @@ foam.CLASS({
         }
         return v;
 
-      }, this.data$.dot('top')));
+      }));
     },
 
     function shouldMementoValueBeChanged(mementoValue, mementoHead) {

@@ -577,6 +577,8 @@ foam.CLASS({
     },
 
     function pushMenu(menu, opt_forceReload) {
+      this.memento.feedback_ = true;
+
       if ( menu.id ) {
         menu.launch(this);
         menu = menu.id;
@@ -584,6 +586,7 @@ foam.CLASS({
       /** Use to load a specific menu. **/
       // Do it this way so as to not reset mementoTail if set
       if ( this.memento.head !== menu || opt_forceReload ) {
+        this.memento.head = menu;
         this.memento.value = menu;
       }
     },

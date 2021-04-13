@@ -137,9 +137,17 @@ foam.CLASS({
 
   methods: [
     function initE() {
+    var self = this;
     this.SUPER();
 
-    var self = this;
+    this.onload.sub(
+      function() {
+        self.memento.changeIndicator = ! self.memento.changeIndicator;
+        self.memento.feedback_ = false;
+        // self.memento.parseValueFlag = false;
+      }
+    );
+
     var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
     this.addClass(this.myClass())
       .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$browseSubtitle, config$primaryAction) {
