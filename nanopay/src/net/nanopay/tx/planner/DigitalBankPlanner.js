@@ -51,7 +51,7 @@ foam.CLASS({
       name: 'plan',
       javaCode: `
         Transaction txn;
-        if ( SafetyUtil.equals(quote.getDestinationAccount.getDenomination(), quote.getSourceAccount.getDenomination() )) {
+        if ( SafetyUtil.equals(quote.getDestinationAccount().getDenomination(), quote.getSourceAccount().getDenomination() )) {
           txn = new SummaryTransaction(x);
         }
         else {
