@@ -29,25 +29,26 @@ foam.CLASS({
   ],
 
   imports: [
-    'subject',
     'appConfig',
     'auth',
     'checkAndNotifyAbilityToPay',
     'checkAndNotifyAbilityToReceive',
-    'contactDAO',
+    'crunchController',
     'crunchService',
+    'contactDAO',
     'ctrl',
     'fxService',
     'menuDAO',
     'notify',
     'pushMenu',
-    'stack',
-    'transactionDAO',
-    'userDAO',
-    'transactionPlannerDAO',
     'quickbooksService',
+    'stack',
+    'subject',
+    'theme',
+    'transactionDAO',
+    'transactionPlannerDAO',
+    'userDAO',
     'xeroService',
-    'crunchController'
   ],
 
   exports: [
@@ -631,9 +632,12 @@ foam.CLASS({
         switch ( currentViewId ) {
           case this.DETAILS_VIEW_ID:
             if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
-            if ( ! this.subject.realUser.twoFactorEnabled && this.isPayable && this.permitToPay ) {
+            if ( this.theme.twoFactorEnabled &&
+                 ! this.subject.realUser.twoFactorEnabled &&
+                 this.isPayable &&
+                 this.permitToPay ) {
               if ( this.appConfig.mode === this.Mode.PRODUCTION ||
-                  this.appConfig.mode === this.Mode.DEMO ) {
+                   this.appConfig.mode === this.Mode.DEMO ) {
                 this.notify(this.TWO_FACTOR_REQUIRED, '', this.LogLevel.ERROR, true);
                 return;
               } else {

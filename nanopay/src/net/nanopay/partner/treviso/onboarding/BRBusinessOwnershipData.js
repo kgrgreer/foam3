@@ -28,6 +28,12 @@ foam.CLASS({
     'crunchService'
   ],
 
+  messages: [
+    { name: 'ADD_MSG', message: 'shareholder' },
+    { name: 'HAVE_NO_OWNER_MSG', message: 'I declare that all shareholders have less than 25% shares each' },
+    { name: 'NO_OWNER_INFO_ERR', message: 'Shareholder information required' }
+  ],
+
   properties: [
     {
       name: 'owners',
@@ -79,13 +85,11 @@ foam.CLASS({
           let doc1 = values[2] ? values[2].data : '';
 
           if ( cpf && values[0].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-            ['verifyName', 'cpfName'].forEach(
-              name => capabilityValues[name] = cpf[name]);
-              capabilityValues['cpf'] = cpf.data;
+            capabilityValues['cpf'] = cpf;
           }
           if ( so && values[1].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
             ['hasSignedContratosDeCambio', 'pepHioRelated'].forEach(
-              name => capabilityValues[name] = cpf[name]);
+              name => capabilityValues[name] = so[name]);
           }
           if ( doc1 && values[2].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
             // Treviso removed the requirement for the address doc
@@ -122,7 +126,6 @@ foam.CLASS({
   extends: 'net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView',
 
   messages: [
-    { name: 'OTHER_MSG', message: 'Add another shareholder' },
     { name: 'NEW_OWNER_MSG', message: 'Add Shareholder' }
   ]
 })

@@ -35,6 +35,7 @@ foam.CLASS({
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
+    'foam.util.SafetyUtil',
     'static foam.mlang.MLang.EQ',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.model.Branch',
@@ -100,7 +101,9 @@ foam.CLASS({
 
         if ( institution == null ) {
           //if branch isn't null, we do not have to store it again
-          if ( bankAccount.getCountry() == "US" && branch == null ) {
+          if ( ! SafetyUtil.isEmpty(bankAccount.getBranchId())
+            && ( branch == null || branch.getBranchId().equals(bankAccount.getBranchId()) )
+          ) {
             DAO branchDAO = (DAO) x.get("branchDAO");
             branch = (Branch) branchDAO.find(
               EQ(Branch.BRANCH_ID,bankAccount.getBranchId())
@@ -115,13 +118,17 @@ foam.CLASS({
             bankAccount.setBranch(branch.getId());
           }
           bankAccount = (BankAccount) super.put_(x, obj);
+          // REVIEW: Should only log error when the type of bank account require
+          // institution but wasn't provided?
           String message = INST_NOT_SET_ERROR_MSG + bankAccount.getId();
           // flaging the account that doesn't have an institution!
           ((Logger) x.get("logger")).error(this.getClass().getSimpleName(), message);
           return bankAccount;
         }
 
-        if ( branch == null && ! foam.util.SafetyUtil.isEmpty(bankAccount.getBranchId()) ) {
+        if ( ! SafetyUtil.isEmpty(bankAccount.getBranchId())
+          && ( branch == null || ! branch.getBranchId().equals(bankAccount.getBranchId()) )
+        ) {
           // add branch.
           addBranch(x, institution, bankAccount);
         }

@@ -18,8 +18,8 @@
 package net.nanopay.reporting;
 
 import foam.core.FObject;
+import foam.core.PropertyInfo;
 import foam.core.X;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
@@ -57,6 +57,36 @@ public abstract class ReconciliationReportDAO extends ProxyDAO {
       throw new RuntimeException("CI/CO/Digital Transaction missing SummaryTransaction root");
 
     return transaction.getId();
+  }
+
+  protected Predicate adaptPredicate(Predicate predicate) {
+    if ( !( predicate instanceof FObject ) )
+      return predicate;
+
+    FObject obj = (FObject) predicate;
+    String[] propertiesToCheck = new String[] { "args", "arg1", "arg2" };
+    for ( var propertyToCheck : propertiesToCheck ) {
+      if ( obj.isPropertySet(propertyToCheck)) {
+        Object arg = obj.getProperty(propertyToCheck);
+        if ( arg != null ) {
+          if ( arg instanceof Predicate ) {
+            arg = adaptPredicate((Predicate) arg);
+          } else if ( arg instanceof PropertyInfo ) {
+            PropertyInfo outerProperty = (PropertyInfo) arg;
+            PropertyInfo innerProperty = (PropertyInfo) getDelegate().getOf().getAxiomByName(outerProperty.getName());
+            arg = ( innerProperty != null ) ? innerProperty : outerProperty;
+          } else if ( arg instanceof Predicate[] ) {
+            Predicate[] array = (Predicate[]) arg;
+            for ( int i = 0; i < array.length; i++ ) {
+              array[i] = adaptPredicate(array[i]);
+            }
+          }
+          obj.setProperty(propertyToCheck, arg);
+        }
+      }
+    }
+
+    return predicate;
   }
 
   @Override
@@ -103,8 +133,8 @@ public abstract class ReconciliationReportDAO extends ProxyDAO {
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
     refreshMaps(x);
 
-    var nSink = new ReconciliationReportSink(x, getGenerator(), decorateSink(x, sink, skip, limit, order, predicate), ciMap, coMap, dtMap, rrCache);
-    getDelegate().select(nSink);
+    var nSink = new ReconciliationReportSink(x, getGenerator(), decorateSink(x, sink, skip, limit, order, null), ciMap, coMap, dtMap, rrCache);
+    getDelegate().select(decorateSink(x, nSink, 0, MAX_SAFE_INTEGER, null, adaptPredicate(predicate)));
     return sink;
   }
 

@@ -1508,6 +1508,8 @@ var classes = [
   'net.nanopay.crunch.wizardlet.RefreshWizardlet',
   'net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig',
   'net.nanopay.crunch.wizardlet.BusinessRegistrationWizardConfig',
+  'net.nanopay.crunch.wizardlet.SigningOfficerWizardConfig',
+
 
   // Notification
   'net.nanopay.notification.PermissionedNotificationSettingRule',

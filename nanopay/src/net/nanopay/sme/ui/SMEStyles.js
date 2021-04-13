@@ -577,25 +577,6 @@ foam.CLASS({
       border-right: 2px solid #604aff;
     }
 
-    /*  Radio buttons */
-    input[type='radio']:checked:after {
-      width: 3px;
-      height: 3px;
-      border-radius: 15px;
-      top: -1px;
-      left: -2px;
-      position: relative;
-      background-color: white;
-      content: '';
-      display: inline-block;
-      visibility: visible;
-      border: 6px solid #604aff;
-      -webkit-border-before-width: 8px;
-      -webkit-border-end-width: 8px;
-      -webkit-border-start-width: 8px;
-      -webkit-border-after-width: 8px;
-    }
-    
     .label {
       font-size: 12px !important;
       font-weight: 700 !important;

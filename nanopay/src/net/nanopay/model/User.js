@@ -43,7 +43,6 @@ foam.CLASS({
     'java.util.regex.Pattern',
     'javax.mail.internet.AddressException',
     'javax.mail.internet.InternetAddress',
-    'javax.mail.internet.InternetAddress',
 
     'net.nanopay.contacts.Contact',
     'static foam.mlang.MLang.AND',

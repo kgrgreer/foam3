@@ -1826,6 +1826,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/wizardlet/SigningOfficerQuestionWizardlet' },
   { name: 'net/nanopay/crunch/wizardlet/UnlockPaymentsWizardConfig' },
   { name: 'net/nanopay/crunch/wizardlet/BusinessRegistrationWizardConfig' },
+  { name: 'net/nanopay/crunch/wizardlet/SigningOfficerWizardConfig' },
 
   // msp
   { name: 'net/nanopay/msp/MspInfo' },
@@ -1933,8 +1934,6 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/br/businessSector/Sector' },
   { name: 'net/nanopay/partner/br/businessSector/Grupo' },
   { name: 'net/nanopay/partner/br/businessSector/Divisao' },
-  { name: 'net/nanopay/partner/br/businessSector/Secao' },
-
-  { name: 'net/nanopay/app/AppConfigRefines' }
+  { name: 'net/nanopay/partner/br/businessSector/Secao' }
 
 ]);

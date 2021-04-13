@@ -20,7 +20,13 @@ foam.CLASS({
   name: 'CPF',
   mixins: ['foam.u2.wizard.AbstractWizardletAware'],
   documentation: `
-    The Cadastro de Pessoas Físicas (CPF; Portuguese for "Natural Persons Register") is the Brazilian individual taxpayer registry identification, a permanent number attributed by the Brazilian Federal Revenue to both Brazilians and resident aliens who pay taxes or take part, directly or indirectly. It is canceled after some time after the person's death.
+  NOTE : post and pr sets of data and birthday property set to minimize calls to api
+
+    The Cadastro de Pessoas Físicas (CPF; Portuguese for "Natural Persons Register")
+    is the Brazilian individual taxpayer registry identification, a permanent number
+    attributed by the Brazilian Federal Revenue to both Brazilians and resident aliens
+    who pay taxes or take part, directly or indirectly.
+    It is canceled after some time after the person's death.
   `,
 
   implements: [
@@ -37,6 +43,10 @@ foam.CLASS({
     'brazilVerificationService',
     'subject'
   ],
+
+  constants: {
+    CPF_LENGTH: 11
+  },
 
   messages: [
     { name: 'INVALID_CPF', message: 'Valid CPF number required' },
@@ -60,7 +70,6 @@ foam.CLASS({
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
       section: 'collectCpf',
       label: 'Date of birth',
-      visibility: 'RW',
       validationPredicates: [
         {
           args: ['birthday'],
@@ -92,17 +101,17 @@ foam.CLASS({
     {
       class: 'String',
       name: 'data',
+      help: `The CPF (Cadastro de Pessoas Físicas or Natural Persons Register) is a number assigned by the Brazilian revenue agency to both Brazilians and resident aliens who are subject to taxes in Brazil.`,
       label: 'Cadastro de Pessoas Físicas (CPF)',
       section: 'collectCpf',
-      help: `The CPF (Cadastro de Pessoas Físicas or Natural Persons Register) is a number assigned by the Brazilian revenue agency to both Brazilians and resident aliens who are subject to taxes in Brazil.`,
       validationPredicates: [
         {
-          args: ['data', 'cpfName'],
+          args: ['data'],
           predicateFactory: function(e) {
             return e.EQ(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.country.br.CPF.DATA
-                }), 11);
+              foam.mlang.StringLength.create({
+                arg1: net.nanopay.country.br.CPF.DATA
+              }), 11);
           },
           errorMessage: 'INVALID_CPF'
         },
@@ -124,38 +133,30 @@ foam.CLASS({
       tableCellFormatter: function(val) {
         return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
       },
-      postSet: function(_,n) {
-        if ( n.length == 11 && this.verifyName !== true ) {
-          this.cpfName = "";
-          this.getCpfName(n).then((v) => {
-            this.cpfName = v;
-          });
-        }
-      },
       view: function(_, X) {
         return foam.u2.FragmentedTextField.create({
           delegates: [
             foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(0,3),
+              data: X.data.data.slice(0, 3),
               maxLength: 3
             }),
             '.',
             foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(3,6),
+              data: X.data.data.slice(3, 6),
               maxLength: 3
             }),
             '.',
             foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(6,9),
+              data: X.data.data.slice(6, 9),
               maxLength: 3
             }),
             '-',
             foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(9,11),
+              data: X.data.data.slice(9, 11),
               maxLength: 2
             })
           ]
-        }, X)
+        }, X);
       }
     },
     {
@@ -168,20 +169,16 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'verifyName',
-      label: 'Is this you?',
+      label: 'Is this the name of the person who owns this cpf?',
       section: 'collectCpf',
-      view: function(n, X) {
-        var self = X.data$;
-        return foam.u2.CheckBox.create({
-          labelFormatter: function() {
-            this.start('span')
-              .add(self.dot('cpfName'))
-            .end();
-          }
-        });
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.CheckBox',
+          label$: X.data$.dot('cpfName')
+        };
       },
       visibility: function(cpfName) {
-        return cpfName.length > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+        return cpfName ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -206,17 +203,19 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      this.onDetach(this.data$.sub(this.updateCPFName));
+      this.onDetach(this.birthday$.sub(this.updateCPFName));
+    },
     function installInWizardlet(w) {
       // CPF takes longer to save, so re-load may clear new inputs
       w.reloadAfterSave = false;
     },
     {
-      name: 'getCpfName',
-      code: async function(cpf) {
-        if ( ! this.birthday ) // goes with user deprication
-          return await this.brazilVerificationService.getCPFName(this.__subContext__, cpf, this.user);
-        return await this.brazilVerificationService
-          .getCPFNameWithBirthDate(this.__subContext__, cpf, this.birthday);
+      name: 'clearFields',
+      code: function() {
+        this.cpfName = '';
+        this.verifyName = false;
       }
     },
     {
@@ -227,6 +226,38 @@ foam.CLASS({
 
       foam.core.FObject.super.validate(x);
       `
+    }
+  ],
+
+  listeners: [
+    // CURRENT ISSUE: the api is getting called too many times
+    // we want the api to only get called if the birthday and data properties are set and valid
+    // initiallizing / cloning this model will trigger the copy of properties AND if the properties are set this will trigger a api call
+    // now if the cpfName is set we can avoid the api call - but a property change needs to reset the cpfName
+    // SO - listeners used in place of a property postSet to avoid initial call ... HMM 
+    {
+      name: 'updateCPFName',
+      mergeDelay: 100, // only run every 100ms, otherwise trigger too many calls
+      code: async function(o, n) {
+        try {
+          // goes with user deprication
+          if ( ! this.birthday && ! this.verifyName && this.data.length == 11 ) {
+            this.cpfName = await this.brazilVerificationService
+              .getCPFName(this.__subContext__, this.data, this.user);
+          }
+          // update cpfName if birthday and cpf are valid
+          if ( ! this.BIRTHDAY.validateObj[1].call(this) && ! this.verifyName && this.data.length == this.CPF_LENGTH ) {
+            this.cpfName = await this.brazilVerificationService
+                .getCPFNameWithBirthDate(this.__subContext__, this.data, this.birthday);
+            if ( ! this.cpfName ) this.clearFields();
+          } else {
+            this.clearFields();
+          }
+        } catch (e) {
+          this.clearFields();
+          console.error(e || 'failed Cpf update');
+        }
+      }
     }
   ]
 });

@@ -47,7 +47,7 @@ foam.CLASS({
         },
         {
           name: 'id',
-          type: 'long[]'
+          type: 'String[]'
         }
       ],
       type: 'long[]',
@@ -92,7 +92,7 @@ foam.CLASS({
         },
         {
           name: 'id',
-          type: 'long'
+          type: 'String'
         }
       ],
       type: 'long',
