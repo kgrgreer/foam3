@@ -1934,8 +1934,6 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/br/businessSector/Sector' },
   { name: 'net/nanopay/partner/br/businessSector/Grupo' },
   { name: 'net/nanopay/partner/br/businessSector/Divisao' },
-  { name: 'net/nanopay/partner/br/businessSector/Secao' },
-
-  { name: 'net/nanopay/app/AppConfigRefines' }
+  { name: 'net/nanopay/partner/br/businessSector/Secao' }
 
 ]);
