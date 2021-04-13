@@ -22,8 +22,8 @@ foam.CLASS({
   ],
 
   exports: [
+    'config',
     'memento',
-    'config'
   ],
 
   requires: [
