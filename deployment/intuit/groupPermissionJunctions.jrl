@@ -64,7 +64,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support"
 
 // ********** REPORTING *****************
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"menu.read.reconciliation-reports"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"menu.read.customer-onboarding-reports"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"menu.read.user-onboarding-reports"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"group.read.intuit-reporting"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"group.update.intuit-reporting"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"exportdriverregistry.read.GoogleSheets"})

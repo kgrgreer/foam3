@@ -33,17 +33,17 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "rbcReconciliationReportGenerator",
-  "serviceScript": """return new net.nanopay.partner.intuit.IntuitRBCReconciliationReportGenerator("93f3fa36-7429-4b20-a223-f5b50a6d9872", "ab590614-f5bd-476a-84e0-6037607397b5");"""
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
   "name": "chargeDateService",
   "serve": true,
   "serviceScript": """
     return new net.nanopay.tx.billing.ChargeDateService(5);
   """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "rbcReconciliationReportGenerator",
+  "serviceScript": """return new net.nanopay.partner.intuit.IntuitRBCReconciliationReportGenerator("93f3fa36-7429-4b20-a223-f5b50a6d9872", "ab590614-f5bd-476a-84e0-6037607397b5");"""
 })
 
 p({
@@ -68,6 +68,36 @@ p({
     }
   """
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "intuitUserOnboardingReportGenerator",
+  "serviceScript": """return new net.nanopay.partner.intuit.IntuitUserOnboardingReportGenerator();"""
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "userOnboardingReportDAO",
+  "serve": true,
+  "serviceScript": """
+  dao = new net.nanopay.partner.intuit.IntuitUserOnboardingReportDAO(
+    x,
+    new foam.dao.NullDAO(x, net.nanopay.reporting.UserOnboardingReport.getOwnClassInfo())
+  );
+
+  return new foam.dao.EasyDAO.Builder(x)
+    .setOf(net.nanopay.reporting.UserOnboardingReport.getOwnClassInfo())
+    .setDecorator(dao)
+    .setInnerDAO(x.get("localUserDAO"))
+    .build();
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.reporting.UserOnboardingReport"
+    }
+  """
+}) 
+
 
 p({
   "class":"foam.nanos.boot.NSpec",

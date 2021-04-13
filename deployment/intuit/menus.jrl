@@ -64,3 +64,20 @@ p({
     }
   }
 })
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "user-onboarding-reports",
+  "label": "User Onboarding Reports",
+  "handler": {
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"userOnboardingReportDAO",
+      "browseTitle": "User Onboarding Reports",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  }
+})
