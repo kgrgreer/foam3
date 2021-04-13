@@ -357,13 +357,16 @@ foam.CLASS({
         rows: 8, cols: 80,
       }
     },
+    /*
     {
       class: 'Date',
       name: 'defaultDate'
     },
+    */
     {
       class: 'Date',
       name: 'dateRWAndRO',
+      factory: function() { return new Date(); },
       view: {
         class: 'foam.u2.MultiView',
         views: [
@@ -586,12 +589,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'defaultBooleanWithLabel',
       view: { class: 'foam.u2.CheckBox', label: "Label goes here"}
-    },
-    {
-      class: 'Boolean',
-      name: 'mdCheckboxBoolean',
-      label: 'MD CheckBox',
-      view: { class: 'foam.u2.md.CheckBox' }
     },
     {
       class: 'String',
