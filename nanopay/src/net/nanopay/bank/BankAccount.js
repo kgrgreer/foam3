@@ -234,7 +234,8 @@ foam.CLASS({
       order: 50,
       gridColumns: 6,
       view: {
-          class: 'foam.u2.view.StringView'
+        class: 'foam.u2.tag.Input',
+        onKey: true
       },
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
@@ -362,7 +363,14 @@ foam.CLASS({
       gridColumns: 6,
       documentation: `International bank code that identifies banks worldwide. BIC/SWIFT`,
       updateVisibility: 'RO',
-      storageTransient: true
+      storageTransient: true,
+      view: {
+        class: 'foam.u2.tag.Input',
+        onKey: true
+      },
+      preSet: function(o, n) {
+        return /^\d*$/.test(n) ? n : o;
+      },
     },
     {
       class: 'String',
@@ -371,7 +379,14 @@ foam.CLASS({
       section: 'accountInformation',
       order: 130,
       gridColumns: 6,
-      storageTransient: true
+      storageTransient: true,
+      view: {
+        class: 'foam.u2.tag.Input',
+        onKey: true
+      },
+      preSet: function(o, n) {
+        return /^\d*$/.test(n) ? n : o;
+      },
     },
     {
       class: 'String',

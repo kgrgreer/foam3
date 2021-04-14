@@ -189,9 +189,6 @@ foam.CLASS({
       name: 'accountNumber',
       section: 'accountInformation',
       updateVisibility: 'RO',
-      preSet: function(o, n) {
-        return /^[\d\w]*$/.test(n) ? n : o;
-      },
       tableCellFormatter: function(str, obj) {
         if ( ! str ) return;
         var displayAccountNumber = obj.mask(str);
