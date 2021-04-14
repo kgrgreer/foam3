@@ -64,10 +64,10 @@ properties: [
 
           self.businessTypeId = business.businessTypeId;
 
-          // Clear directors if directors are not required for this business type
-          if ( self.businessTypeId < 4 ) {
-            self.businessDirectors = [];
-          }
+          // // Clear directors if directors are not required for this business type
+          // if ( self.businessTypeId < 4 ) {
+          //   self.businessDirectors = [];
+          // }
         });
       }
     },
@@ -86,9 +86,9 @@ properties: [
       getter: function() {
         return this.NO_DIR_NEEDED;
       },
-      visibility: function(businessTypeId, needDirector) {
-        return businessTypeId < 4 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
-      }
+      // visibility: function(businessTypeId, needDirector) {
+      //   return businessTypeId < 4 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
+      // }
     },
     {
       class: 'FObjectArray',
@@ -107,13 +107,13 @@ properties: [
           name: x.data.ADD_NAME
         };
       },
-      visibility: function(businessTypeId, needDirector) {
-        return businessTypeId < 4 ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
-      },
+      // visibility: function(businessTypeId, needDirector) {
+      //   return businessTypeId < 4 ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      // },
       validateObj: function(businessTypeId, businessDirectors, businessDirectors$errors) {
-        if ( businessTypeId < 4 ) return;
-        if ( ! businessDirectors || businessDirectors.length == 0 )
-          return this.NO_DIRECTOR_INFO;
+        // if ( businessTypeId < 4 ) return;
+        // if ( ! businessDirectors || businessDirectors.length == 0 )
+        //   return this.NO_DIRECTOR_INFO;
         if ( businessDirectors$errors && businessDirectors$errors.length )
           return this.DIRECTOR_INFO_NOT_VALID;
       },
@@ -129,13 +129,16 @@ properties: [
     {
       name: 'validate',
       javaCode: `
-        if (getBusinessTypeId() < 4) return;
+        // if (getBusinessTypeId() < 4) return;
 
-        // validate directors
-        if (getBusinessDirectors() == null || getBusinessDirectors().length == 0) {
-          throw new IllegalStateException(NO_DIRECTOR_INFO);
+        // // validate directors
+        // if (getBusinessDirectors() == null || getBusinessDirectors().length == 0) {
+        //   throw new IllegalStateException(NO_DIRECTOR_INFO);
+        // }
+
+        if ( getBusinessDirectors() == null ) {
+          return;
         }
-
         for (BRBusinessDirector director : getBusinessDirectors()) {
           try {
             director.validate(x);
