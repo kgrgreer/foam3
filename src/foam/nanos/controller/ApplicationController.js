@@ -346,7 +346,7 @@ foam.CLASS({
       this.WindowHash.create({value$: this.memento.value$});
 
       this.onDetach(this.memento.changeIndicator$.sub(function () {
-        if ( this.parentFeedback_ ) return;
+        if ( self.memento.parentFeedback_ ) return;
         
         self.memento.value = self.memento.combine();
 
@@ -355,7 +355,7 @@ foam.CLASS({
       }));
 
       this.onDetach(this.memento.value$.sub(function () {
-        if ( this.parentFeedback_ ) return;
+        if ( self.memento.parentFeedback_ ) return;
         self.memento.parseValue();
 
         if ( ! self.memento.feedback_ )
@@ -591,7 +591,7 @@ foam.CLASS({
       // Do it this way so as to not reset mementoTail if set
       if ( this.memento.head !== menu || opt_forceReload ) {
         this.memento.head = menu;
-        this.memento.value = menu;
+        // this.memento.value = menu;
       }
     },
 
