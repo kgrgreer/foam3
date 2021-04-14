@@ -68,3 +68,10 @@ p({
   targetId: "intuit-tx-fees",
   priority: 10
 })
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "intuit",
+  targetId: "intuit-tx-reversal-rules",
+  priority: 11
+})

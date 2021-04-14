@@ -1607,6 +1607,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ticket/BasicRetryTicketRule' },
   { name: 'net/nanopay/ticket/AgentRefundTicketCreateRule' },
   { name: 'net/nanopay/ticket/WaitingRefundTicketCreateRule' },
+  { name: 'net/nanopay/ticket/Scenario' },
 
 
   // planners
