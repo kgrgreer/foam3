@@ -265,6 +265,14 @@ foam.CLASS({
       this.onDetach(this.cannedPredicate$.sub(() => {
         this.searchPredicate = foam.mlang.predicate.True.create();
       }));
+
+      this.onload.sub(
+        function() {
+          self.memento.parentFeedback_ = false;
+          self.memento.changeIndicator = ! self.memento.changeIndicator;
+          self.memento.feedback_ = false;
+        }
+      );
     },
     function click(obj, id) {
       if ( ! this.stack ) return;
