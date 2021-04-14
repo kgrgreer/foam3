@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.ticket',
   name: 'FullReverseScenarioAction',
-  extends: 'ScenarioAction',
+  extends: 'net.nanopay.ticket.ScenarioAction',
 
   documentation: `Scenario Action which tries to create a full reverse transaction`,
 
@@ -87,10 +87,8 @@ foam.CLASS({
     {
       name: 'remediate',
       javaCode: `
-        DAO txnDAO = (DAO) x.get("localTransactionDAO");
         ticket.setCreditAccount(getCreditAccount());
 
-        agency.submit(x, agencyX -> {
         Transaction newRequest = new Transaction();
         newRequest.setAmount(problem.getAmount());
         newRequest.setDestinationAccount(summary.getSourceAccount());

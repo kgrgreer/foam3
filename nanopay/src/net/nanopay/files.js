@@ -1603,12 +1603,12 @@ FOAM_FILES([
   { name: 'net/nanopay/ticket/RefundTicketPropertyPredicate' },
   { name: 'net/nanopay/ticket/RefundTicketInstanceOfPredicate' },
   { name: 'net/nanopay/ticket/RefundTicketClassOfPredicate' },
+  { name: 'net/nanopay/ticket/AgentRefundTicketCreateRule' },
+  { name: 'net/nanopay/ticket/Scenario' },
+  { name: 'net/nanopay/ticket/ScenarioAction' },
   { name: 'net/nanopay/ticket/FullReverseScenarioAction' },
   { name: 'net/nanopay/ticket/RetryScenarioAction' },
-  { name: 'net/nanopay/ticket/AgentRefundTicketCreateRule' },
   { name: 'net/nanopay/ticket/WaitingScenarioAction' },
-  { name: 'net/nanopay/ticket/Scenario' },
-
 
   // planners
   { name: 'net/nanopay/tx/planner/PlannerGroup' },

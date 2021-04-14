@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.ticket',
   name: 'RetryScenarioAction',
-  extends: 'ScenarioAction',
+  extends: 'net.nanopay.ticket.ScenarioAction',
 
   documentation: `Rule to create a retry transaction. tries to send the current funds to the summary destination again`,
 

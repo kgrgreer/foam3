@@ -1138,14 +1138,16 @@ var classes = [
   'net.nanopay.ticket.RefundStatus',
   'net.nanopay.ticket.CreateTicketRule',
   'net.nanopay.ticket.CancelTransactionPostRule',
-  'net.nanopay.ticket.FullReverseScenarioAction',
-  'net.nanopay.ticket.RetryScenarioAction',
   'net.nanopay.ticket.AgentRefundTicketCreateRule',
   'net.nanopay.ticket.RefundTicketPropertyPredicate',
   'net.nanopay.ticket.RefundTicketInstanceOfPredicate',
   'net.nanopay.ticket.RefundTicketClassOfPredicate',
-  'net.nanopay.ticket.WaitingScenarioAction',
   'net.nanopay.ticket.Scenario',
+  'net.nanopay.ticket.ScenarioAction',
+  'net.nanopay.ticket.FullReverseScenarioAction',
+  'net.nanopay.ticket.RetryScenarioAction',
+  'net.nanopay.ticket.WaitingScenarioAction',
+
 
   // Planners
   'net.nanopay.tx.planner.PlannerGroup',
