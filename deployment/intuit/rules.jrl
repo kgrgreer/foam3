@@ -47,7 +47,7 @@ p({
   "spid": "intuit"
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.ticket.Scenario",
   "id":"379c1084-ebec-4f3b-8627-964146c6f06b",
   "name":"RefundTicket - cancel CO on pending",
   "priority":100,
@@ -100,7 +100,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.ticket.Scenario",
   "id":"6bd4ba7d-c432-4391-9541-77760c851629",
   "name":"RefundTicket - cancel CI on pending",
   "priority":100,
@@ -152,7 +152,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.ticket.Scenario",
   "id":"ed46c99d-cbe7-4863-8775-211b993030b3",
   "name":"RefundTicket - cancel CI on Sent",
   "priority":100,
@@ -204,7 +204,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.ticket.Scenario",
   "id":"88b99a28-50ae-4cde-a7dc-cbcc099de17d",
   "name":"RefundTicket - CI goes to Declined",
   "priority":100,
@@ -256,7 +256,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.ticket.Scenario",
   "id":"77e68cc9-c7f4-4b97-a600-8cd24eead84d",
   "name":"RefundTicket - Cancel CO when Sent",
   "priority":100,
@@ -308,7 +308,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.ticket.Scenario",
   "id":"224de998-1f08-4f92-b516-2cc7dca6c476",
   "name":"RefundTicket - CO on Declined",
   "priority":100,

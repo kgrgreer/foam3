@@ -193,7 +193,7 @@ p({
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.ticket.Scenario",
   "id":"bd485714-b0c1-458e-acba-2804d6765ff3",
   "name":"RefundTicket - cancel CO on pending",
   "priority":100,
@@ -239,7 +239,7 @@ p({
     "autoApprove":false
   },
   "after":false,
-  "enabled":false,
+  "enabled":true,
   "saveHistory":false,
   "lifecycleState":1,
   "spid": "ablii"
