@@ -86,7 +86,7 @@ p({
     ]
   },
   "action":{
-    "class":"net.nanopay.ticket.BasicFullReverseRefundTicketCreateRule",
+    "class":"net.nanopay.ticket.FullReverseScenarioAction",
     "textToAgent":"Payor has cancelled the transaction, status: pending. Nanopay will process the return",
     "creditAccount":"64307927-db83-43a7-9787-c5cc89becc11",
     "postApprovalRuleId": "b64905d0-289b-4371-92a5-f843e344109a",
@@ -191,7 +191,7 @@ p({
     ]
   },
   "action":{
-    "class":"net.nanopay.ticket.BasicFullReverseRefundTicketCreateRule",
+    "class":"net.nanopay.ticket.FullReverseScenarioAction",
     "textToAgent":"User has cancelled transaction. No action required, Monitor cash in & transaction reversal",
     "creditAccount":"",
     "postApprovalRuleId": "b64905d0-289b-4371-92a5-f843e344109a",
@@ -348,7 +348,7 @@ p({
     ]
   },
   "action":{
-    "class":"net.nanopay.ticket.BasicFullReverseRefundTicketCreateRule",
+    "class":"net.nanopay.ticket.FullReverseScenarioAction",
     "textToAgent":"Cash Out has failed",
     "postApprovalRuleId": "b64905d0-289b-4371-92a5-f843e344109a",
     "autoApprove":false
