@@ -47,11 +47,7 @@ foam.CLASS({
       this.setNodeName('div');
       this.addClass(this.myClass());
       this.addClass('foam-u2-stack-StackView');
-
-      this.data.top$.sub(function() {
-        console.log('top changed');
-      });
-
+      
       if ( this.showActions ) {
         this.start('actions')
           .add(this.data.cls_.getAxiomsByClass(foam.core.Action))
