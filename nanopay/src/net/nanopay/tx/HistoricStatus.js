@@ -31,7 +31,10 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
       order: 10,
-      gridColumns: 6
+      gridColumns: 6,
+      createVisibility: 'HIDDEN',
+      readVisibility: 'RO',
+      updateVisibility: 'RO'
     },
     {
       class: 'DateTime',
