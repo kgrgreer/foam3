@@ -111,7 +111,10 @@ foam.CLASS({
 
       methods: [
         function init() {
+          var self = this;
+          
           this.onload.sub(function(s) {
+            self.memento.parentFeedback_ = false;
             self.memento.tail.parentFeedback_ = false;
             self.memento.feedback_ = true;
             self.memento.changeIndicator = ! self.memento.changeIndicator;

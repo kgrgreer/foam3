@@ -142,6 +142,7 @@ foam.CLASS({
 
     this.onload.sub(
       function() {
+        self.memento.parentFeedback_ = false;
         self.memento.changeIndicator = ! self.memento.changeIndicator;
         self.memento.feedback_ = false;
         // self.memento.parseValueFlag = false;

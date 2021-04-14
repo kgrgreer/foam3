@@ -346,6 +346,8 @@ foam.CLASS({
       this.WindowHash.create({value$: this.memento.value$});
 
       this.onDetach(this.memento.changeIndicator$.sub(function () {
+        if ( this.parentFeedback_ ) return;
+        
         self.memento.value = self.memento.combine();
 
         if ( ! self.memento.feedback_ )
@@ -353,6 +355,7 @@ foam.CLASS({
       }));
 
       this.onDetach(this.memento.value$.sub(function () {
+        if ( this.parentFeedback_ ) return;
         self.memento.parseValue();
 
         if ( ! self.memento.feedback_ )
@@ -578,6 +581,7 @@ foam.CLASS({
 
     function pushMenu(menu, opt_forceReload) {
       this.memento.feedback_ = true;
+      this.memento.parentFeedback_ = true;
 
       if ( menu.id ) {
         menu.launch(this);
