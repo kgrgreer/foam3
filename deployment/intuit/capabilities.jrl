@@ -83,3 +83,19 @@ p({
     "rule.read.d2a9b4b5-3c84-4742-84cc-6bb11928ed82"
   ]
 })
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "intuit-tx-reversal-rules",
+  name: "Enable Intuit Transaction Reversal Rules",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.379c1084-ebec-4f3b-8627-964146c6f06b",
+    "rule.read.6bd4ba7d-c432-4391-9541-77760c851629",
+    "rule.read.ed46c99d-cbe7-4863-8775-211b993030b3",
+    "rule.read.88b99a28-50ae-4cde-a7dc-cbcc099de17d",    
+    "rule.read.77e68cc9-c7f4-4b97-a600-8cd24eead84d",
+    "rule.read.224de998-1f08-4f92-b516-2cc7dca6c476"
+  ]
+})
