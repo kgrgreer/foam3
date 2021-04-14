@@ -41,7 +41,8 @@ foam.CLASS({
     'filteredTableColumns?',
     'memento',
     'selection? as importSelection',
-    'stack?'
+    'stack?',
+    'auth'
   ],
 
   constants: [
@@ -95,16 +96,7 @@ foam.CLASS({
       },
     },
     {
-      name: 'allColumns',
-      expression: function(of) {
-        return ! of ? [] : [].concat(
-          of.getAxiomsByClass(foam.core.Property)
-            .filter(p => ! p.hidden )
-            .map(a => a.name),
-          of.getAxiomsByClass(foam.core.Action)
-            .map(a => a.name)
-        );
-      }
+      name: 'allColumns'
     },
     {
       name: 'selectedColumnNames',
@@ -319,7 +311,12 @@ foam.CLASS({
 
     async function initE() {
       var view = this;
-
+      const asyncRes = await this.filterUnpermited(view.of.getAxiomsByClass(foam.core.Property));
+      this.allColumns = ! view.of ? [] : [].concat(
+        asyncRes.map(a => a.name),
+        view.of.getAxiomsByClass(foam.core.Action)
+        .map(a => a.name)
+      );
       this.currentMemento_ = null;
 
 
@@ -729,11 +726,13 @@ foam.CLASS({
       },
       function returnMementoColumnNameDisregardSorting(c) {
         return c && this.shouldColumnBeSorted(c) ? c.substr(0, c.length - 1) : c;
+      },
+      async function filterUnpermited(arr) {
+        const results = await Promise.all(arr.map( async p => p.hidden? false: ! p.readPermissionRequired || await this.auth.check(this.of.name + ".ro." + p.name)));
+        return arr.filter((_v, index) => results[index]);
       }
   ]
 });
-
-
 foam.CLASS({
   package: 'foam.u2.view',
   name: 'PropertyColumnMapping',
