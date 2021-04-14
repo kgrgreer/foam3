@@ -591,6 +591,7 @@ foam.CLASS({
       // Do it this way so as to not reset mementoTail if set
       if ( this.memento.head !== menu || opt_forceReload ) {
         this.memento.head = menu;
+        this.memento.tail = null;
         // this.memento.value = menu;
       }
     },
