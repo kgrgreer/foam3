@@ -150,7 +150,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_100000",target:"R$ 100.001 a R$ 500.000"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_500000",target:"R$ 500.001 a R$ 2.000.000"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_1000000",target:"R$ 2.000.001 a R$ 5.000.000"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.OVER_THEN_1000000",target:"Sobre R$ 5.000.001"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.OVER_THEN_1000000",target:"Acima de R$ 5.000.001"})
 
 p({class:"foam.i18n.Locale",locale:"pt","source":"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5.name","target":"Informações dos Administradores e Representantes Legais"})
 
