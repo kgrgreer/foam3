@@ -126,7 +126,8 @@ foam.CLASS({
     },
     {
       name: 'views',
-      expression: function(columns) {
+      expression: async function(columns) {
+        var columns = await columns;
         var arr = [];
         for ( var i = 0 ; i < columns.length ; i++ ) {
           arr.push(this.RootColumnConfigPropView.create({
@@ -155,9 +156,10 @@ foam.CLASS({
 
       },
       value: '',
-      postSet: function() {
-        for ( var i = 0 ; i < this.columns.length ; i++ ) {
-          this.columns[i].updateOnSearch(this.menuSearch);
+      postSet: async function() {
+        var columns = await this.columns;
+        for ( var i = 0 ; i < columns.length ; i++ ) {
+          columns[i].updateOnSearch(this.menuSearch);
         }
       }
     },
@@ -181,7 +183,6 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      await this.columns;
 
       this
       .on('click', this.stopPropagation)
@@ -192,7 +193,8 @@ foam.CLASS({
             .addClass(this.myClass('search'))
           .end()
           .start()
-          .add(this.slot(function(views) {
+          .add(this.slot(async function(views) {
+            var views = await views;
             var i = 0;
             return this.E()
               .style({'overflow': 'auto', 'padding-bottom': '20px', 'max-height': window.innerHeight - 300 > 0 ? window.innerHeight - 300 : window.innerHeight + 'px'})
@@ -211,9 +213,10 @@ foam.CLASS({
     function stopPropagation(e) {
       e.stopPropagation();
     },
-    function onClose() {
+    async function onClose() {
       this.menuSearch = '';
-      this.columns.forEach(c => c.onClose());
+      var columns = await this.columns;
+      columns.forEach(c => c.onClose());
     },
     function onTopLevelPropertiesDragAndDrop(targetIndex, draggableIndex) {
       this.onDragAndDrop(this.views, targetIndex, draggableIndex);
