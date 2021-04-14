@@ -195,22 +195,6 @@ foam.CLASS({
             choiceDAO$: X.data.availableUsers$,
             ownerClass: X.data.ownerClass,
             businessId: X.data.businessId,
-            choiceSections: [
-              {
-                dao$: X.data.soUsersDAO$,
-                filteredDAO$: X.data.availableUsers$
-              },
-              { dao: (() => {
-                var otherChoiceDAO = foam.dao.MDAO.create({ of: X.data.ownerClass });
-                var obj = X.data.ownerClass.create({
-                  business: X.data.businessId
-                }, X);
-                obj.toSummary = () => foam.lookup(X.data.selectionView).NEW_OWNER_MSG;
-                otherChoiceDAO.put(obj);
-
-                return otherChoiceDAO;
-              })() }
-            ],
             beneficialOwnerSelectionUpdate: X.data.ownersUpdate
           })
         }
@@ -354,6 +338,7 @@ foam.CLASS({
               .tag(self.choiceView, {
                 fullObject_$: self.data$,
                 choosePlaceholder: self.PLEASE_SELECT_ONE,
+                clearOnReopen: false,
                 sections: [
                   {
                     dao$: this.soUsersDAO$,
