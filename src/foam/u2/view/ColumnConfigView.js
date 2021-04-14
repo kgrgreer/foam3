@@ -31,7 +31,10 @@ foam.CLASS({
     'data',
     {
       name: 'columns',
-      expression: function(data) {
+      expression: async function(data) {
+        debugger;
+        await this.sleep(1000);
+
         var arr = [];
         var notSelectedColumns = [];
         //selectedColumnNames misleading name cause it may contain objects
@@ -168,9 +171,17 @@ foam.CLASS({
     }
   ],
   methods: [
-    function initE() {
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    },
+    async function initE() {
+      debugger;
+
+
       this.SUPER();
       var self = this;
+
+      await this.columns;
 
       this
       .on('click', this.stopPropagation)
