@@ -20,10 +20,6 @@ foam.CLASS({
   name: 'FullReverseScenarioAction',
   extends: 'ScenarioAction',
 
-  implements: [
-    'foam.nanos.ruler.RuleAction'
-  ],
-
   documentation: `Scenario Action which tries to create a full reverse transaction`,
 
   javaImports: [

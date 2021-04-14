@@ -20,10 +20,6 @@ foam.CLASS({
   name: 'RetryScenarioAction',
   extends: 'ScenarioAction',
 
-  implements: [
-    'foam.nanos.ruler.RuleAction'
-  ],
-
   documentation: `Rule to create a retry transaction. tries to send the current funds to the summary destination again`,
 
   javaImports: [

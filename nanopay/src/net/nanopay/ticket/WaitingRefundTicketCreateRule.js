@@ -17,98 +17,32 @@
 
  foam.CLASS({
   package: 'net.nanopay.ticket',
-  name: 'WaitingRefundTicketCreateRule',
+  name: 'WaitingScenarioAction',
+  extends: 'net.nanopay.ticket.ScenarioAction',
 
-  implements: [
-    'foam.nanos.ruler.RuleAction'
-  ],
-
-  documentation: `Rule to determine if the transaction can be refunded`,
+  documentation: `Scenario Action to hold the ticket in a waiting status while a transaction progresses`,
 
   javaImports: [
-    'foam.core.ContextAgent',
-    'foam.core.X',
-    'foam.dao.ArraySink',
-    'foam.dao.DAO',
-    'java.util.List',
-    'foam.nanos.fs.File',
-    'foam.nanos.notification.Notification',
-    'foam.nanos.logger.Logger',
     'net.nanopay.ticket.RefundTicket',
-    'net.nanopay.tx.SummarizingTransaction',
-    'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus',
-    'foam.util.SafetyUtil',
+    'net.nanopay.ticket.RefundStatus',
   ],
 
   properties: [
     {
       class: 'String',
-      name: 'errorCode'
-    },
-    {
-      class: 'String',
-      name: 'textToAgent',
-      documentation: 'Description of the base resolution path'
-    },
-    {
-      class: 'String',
       name: 'postApprovalRuleId',
-      visibility: 'HIDDEN',
-      networkTransient: true
-    },
-    {
-      class: 'Boolean',
-      name: 'autoApprove',
-      visibility: 'HIDDEN',
-      networkTransient: true
+      value: 'waiting'
     }
   ],
 
   methods: [
-    {
-      name: 'applyAction',
+  {
+      name: 'setUpTicket',
+      documentation: 'Puts the refund status into waiting',
       javaCode: `
-        RefundTicket ticket = (RefundTicket) obj;
-        DAO txnDAO = (DAO) x.get("localTransactionDAO");
-        final Transaction summary;
-        Transaction temp = (Transaction) txnDAO.find(ticket.getProblemTransaction());
-        if (! (temp instanceof SummarizingTransaction ) ) {
-          summary = temp.findRoot(x);
-        } else {
-          summary = temp;
-        }
-        Transaction problem = summary.getStateTxn(x);
-
-        agency.submit(x, agencyX -> {
-          Transaction problemClone = (Transaction) problem.fclone();
-          ticket.setProblemTransaction(problem.getId());
-          ticket.setRefundTransaction(summary.getId());
-          DAO txnDAO2 = (DAO) agencyX.get("localTransactionDAO");
-          try {
-            problemClone.setStatus(TransactionStatus.PAUSED);
-            txnDAO2.put(problemClone);
-          }
-          catch ( Exception e ) {
-            try {
-              List children = ((ArraySink) problem.getChildren(x).select(new ArraySink())).getArray();
-              for ( Object t : children) {
-                t = (Transaction) ((Transaction) t).fclone();
-                ((Transaction) t).setStatus(TransactionStatus.PAUSED);
-                txnDAO2.put((Transaction) t);
-              }
-            }
-            catch ( Exception e2 ) {
-              Logger logger = (Logger) x.get("logger");
-              logger.error("we failed to pause the Transaction "+problem.getId());
-            }
-          }
-        }, "Reput transaction as paused");
-
-        ticket.setAgentInstructions(getTextToAgent());
-        ticket.setAutoApprove(getAutoApprove());
+        ticket = super.setUpTicket(x, ticket);
         ticket.setRefundStatus(RefundStatus.WAITING);
+        return ticket;
       `
     }
   ]

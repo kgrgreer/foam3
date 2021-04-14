@@ -1144,7 +1144,7 @@ var classes = [
   'net.nanopay.ticket.RefundTicketPropertyPredicate',
   'net.nanopay.ticket.RefundTicketInstanceOfPredicate',
   'net.nanopay.ticket.RefundTicketClassOfPredicate',
-  'net.nanopay.ticket.WaitingRefundTicketCreateRule',
+  'net.nanopay.ticket.WaitingScenarioAction',
   'net.nanopay.ticket.Scenario',
 
   // Planners

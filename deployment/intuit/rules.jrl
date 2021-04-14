@@ -191,7 +191,7 @@ p({
     ]
   },
   "action":{
-    "class":"net.nanopay.ticket.WaitingRefundTicketCreateRule",
+    "class":"net.nanopay.ticket.WaitingScenarioAction",
     "textToAgent":"Waiting for transaction to enter interactable state.",
     "postApprovalRuleId": "waiting",
     "autoApprove":false
@@ -295,7 +295,7 @@ p({
     ]
   },
   "action":{
-    "class":"net.nanopay.ticket.WaitingRefundTicketCreateRule",
+    "class":"net.nanopay.ticket.WaitingScenarioAction",
     "textToAgent":"Waiting for transaction to enter interactable state.",
     "postApprovalRuleId": "waiting",
     "autoApprove":false
