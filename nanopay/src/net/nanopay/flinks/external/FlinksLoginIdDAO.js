@@ -137,6 +137,9 @@ foam.CLASS({
             logger.warning("Unexpected behaviour - No login section found in FlinksResponse for loginId: " + flinksLoginId.getLoginId());
           }
 
+          // TESTING !! REMOVE THIS !!
+          loginDetail.setType("Business");
+
           // Onboarding
           if ( user == null ) {
             // Create the user when they do not exist
@@ -529,10 +532,11 @@ foam.CLASS({
             .setPostalCode(holderAddress.getPostalCode())
             .build();
 
-        String fullName = holder.getName();
+        Boolean isBusinessBankAccount = SafetyUtil.equals(loginDetail.getType(), "Business");
+        String fullName = isBusinessBankAccount ? "" : holder.getName();
         String nameSplit[] = fullName.split(" ", 2);
         String first = nameSplit.length > 0 ? nameSplit[0] : fullName;
-        String last  = nameSplit.length > 1 ? nameSplit[1] : null;
+        String last  = nameSplit.length > 1 ? nameSplit[1] : "";
         String firstName = overrides != null && !SafetyUtil.isEmpty(overrides.getFirstName()) ? overrides.getFirstName() : first;
         String lastName = overrides != null && !SafetyUtil.isEmpty(overrides.getLastName()) ? overrides.getLastName() : last;
         String phoneNumber = overrides != null && !SafetyUtil.isEmpty(overrides.getPhoneNumber()) ? overrides.getPhoneNumber() : holder.getPhoneNumber().replaceAll("[^0-9]", "");
@@ -621,11 +625,15 @@ foam.CLASS({
           .setPostalCode(holderAddress.getPostalCode())
           .build();
 
+        // Business name
+        Boolean isBusinessBankAccount = SafetyUtil.equals(loginDetail.getType(), "Business");
+        String name = isBusinessBankAccount ? "" : holder.getName();
+
         // Check for overrides
         BusinessOverrideData overrides = null;
         if ( request.getFlinksOverrides() != null ) overrides = request.getFlinksOverrides().getBusinessOverrides();
         String businessName = overrides != null && !SafetyUtil.isEmpty(overrides.getBusinessName()) ?
-          overrides.getBusinessName() : holder.getName();
+          overrides.getBusinessName() : name;
         String businessEmail = overrides != null && !SafetyUtil.isEmpty(overrides.getEmail()) ?
           overrides.getEmail() : holder.getEmail();
         Address businessAddress = overrides != null && overrides.getAddress() != null ?
@@ -647,6 +655,11 @@ foam.CLASS({
           .setSpid(user.getSpid())
           .setStatus(net.nanopay.admin.model.AccountStatus.ACTIVE)
           .build();
+
+        if ( SafetyUtil.isEmpty(businessName) ) {
+          business.getExternalData().put("FlinksName", holder.getName());
+        }
+
         DAO localUserDAO = (DAO) subjectX.get("localUserDAO");
         business = (Business) localUserDAO.inX(subjectX).put(business);
 
