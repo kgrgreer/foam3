@@ -725,7 +725,7 @@ foam.CLASS({
         return obj.columnConfigToPropertyConverter.returnPropertyColumnMappings(obj.of, propertyNamesToQuery);
       },
       async function returnAuthoruzidProperties(arr) {
-        const results = await Promise.all(arr.map( async p => p.property.hidden? false: ! p.property.readPermissionRequired || await this.auth.check(this.of.name + ".ro." + p.property.name)));
+        const results = await Promise.all(arr.map( async p => p.property.hidden? false: ! p.property.readPermissionRequired || await this.auth.check(null,this.of.name.toLowerCase() + ".ro." + p.property.name)));
         return arr.filter((_v, index) => results[index]);
       },
       function shouldColumnBeSorted(c) {
@@ -735,7 +735,7 @@ foam.CLASS({
         return c && this.shouldColumnBeSorted(c) ? c.substr(0, c.length - 1) : c;
       },
       async function filterUnpermited(arr) {
-        const results = await Promise.all(arr.map( async p => p.hidden? false: ! p.readPermissionRequired || await this.auth.check(this.of.name + ".ro." + p.name)));
+        const results = await Promise.all(arr.map( async p => p.hidden? false: ! p.readPermissionRequired || await this.auth.check(null,this.of.name.toLowerCase() + ".ro." + p.name)));
         return arr.filter((_v, index) => results[index]);
       }
   ]
