@@ -28,6 +28,11 @@ foam.CLASS({
     'crunchService'
   ],
 
+  javaImports: [
+    'foam.core.XLocator',
+    'foam.nanos.auth.Subject'
+  ],
+
   messages: [
     { name: 'ADD_MSG', message: 'shareholder' },
     { name: 'HAVE_NO_OWNER_MSG', message: 'I declare that all shareholders have less than 25% shares each' },
@@ -35,6 +40,7 @@ foam.CLASS({
   ],
 
   properties: [
+    'businessId',
     {
       name: 'owners',
       label: 'Shareholder details',

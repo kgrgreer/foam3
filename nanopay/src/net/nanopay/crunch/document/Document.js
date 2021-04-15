@@ -86,7 +86,8 @@ foam.CLASS({
       documentation: 'Used by section subTitle and help',
       factory: function() {
         return this.Capability.create();
-      }
+      },
+      javaCompare: 'return 0;'
     },
     {
       class: 'Boolean',

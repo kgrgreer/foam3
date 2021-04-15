@@ -106,33 +106,8 @@ foam.CLASS({
         }
       },
       view: function(_, X) {
-        return foam.u2.FragmentedTextField.create({
-          delegates: [
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cnpj.slice(0,2),
-              maxLength: 2
-            }),
-            '.',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cnpj.slice(2,5),
-              maxLength: 3
-            }),
-            '.',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cnpj.slice(5,8),
-              maxLength: 3
-            }),
-            '/',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cnpj.slice(8,12),
-              maxLength: 4
-            }),
-            '-',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cnpj.slice(12,14),
-              maxLength: 2
-            })
-          ]
+        return foam.u2.FormattedTextField.create({ 
+          formatter: [2, '.', 3, '.', 3, '/', 4, '-', 2] 
         }, X);
       }
     },
