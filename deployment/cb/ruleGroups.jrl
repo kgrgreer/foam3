@@ -1,0 +1,5 @@
+p({
+  "class":"net.nanopay.settlement.Settlement",
+  "id":"cb_settlement",
+  "enabled":true
+})
