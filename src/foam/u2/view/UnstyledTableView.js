@@ -19,7 +19,7 @@ foam.CLASS({
     'foam.nanos.column.ColumnConfigToPropertyConverter',
     'foam.nanos.column.CommonColumnHandler',
     'foam.nanos.column.TableColumnOutputter',
-    'foam.u2.md.CheckBox',
+    'foam.u2.CheckBox',
     'foam.u2.md.OverlayDropdown',
     'foam.u2.tag.Image',
     'foam.u2.view.EditColumnsView',
@@ -30,7 +30,6 @@ foam.CLASS({
     'columns',
     'hoverSelection',
     'selection',
-    'subStack as stack',
     'memento'
   ],
 
@@ -262,12 +261,6 @@ foam.CLASS({
         return this.__context__.columnConfigToPropertyConverter;
       }
     },
-    {
-      name: 'subStack',
-      factory: function() {
-        return foam.nanos.approval.NoBackStack.create({delegate: this.stack});
-      },
-    },
     'currentMemento_'
   ],
 
@@ -473,7 +466,7 @@ foam.CLASS({
     },
     {
       name: 'rowsFrom',
-      code: function(dao) {
+      code: function(dao, top) {
         /**
          * Given a DAO, add a tbody containing the data from the DAO to the
          * table and return a reference to the tbody.
@@ -501,8 +494,9 @@ foam.CLASS({
           var slot = this.slot(function(data, data$delegate, order, updateValues) {
             // Make sure the DAO set here responds to ordering when a user clicks
             // on a table column header to sort by that column.
-            if ( this.order ) dao = dao.orderBy(this.order);
             var proxy = view.ProxyDAO.create({ delegate: dao });
+            if ( this.order ) proxy = proxy.orderBy(this.order);
+            
 
             var canObjBeBuildFromProjection = true;
 
@@ -522,7 +516,11 @@ foam.CLASS({
             var nastedPropertyNamesAndItsIndexes = view.columnHandler.buildArrayOfNestedPropertyNamesAndCorrespondingIndexesInArray(propertyNamesToQuery);
 
             var tbodyElement = this.E();
-            tbodyElement.
+            tbodyElement.style({
+                position: 'absolute',
+                width: '100%',
+                top: top + 'px'
+              }).
               addClass(view.myClass('tbody'));
               valPromises.then(function(values) {
 

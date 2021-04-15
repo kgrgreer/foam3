@@ -23,6 +23,7 @@ foam.CLASS({
 
   methods: [
     async function save(wizardlet) {
+      if ( wizardlet.loading ) return;
       if ( ! wizardlet.isAvailable ) return;
       var wData = wizardlet.data ? wizardlet.data.clone() : null;
       wizardlet.loading = true;
@@ -34,7 +35,8 @@ foam.CLASS({
       return this.capable.getCapablePayloadDAO().put(
         this.makePayload(wizardlet)
       ).then(payload => {
-        this.load_(wizardlet, payload);
+        if ( wizardlet.reloadAfterSave ) this.load_(wizardlet, payload);
+        else wizardlet.loading = false;
         if ( wizardlet.isValid ) {
           wizardlet.status = this.CapabilityJunctionStatus.ACTION_REQUIRED;
         }
@@ -62,7 +64,10 @@ foam.CLASS({
       if ( payload ) wizardlet.status = payload.status;
 
       // No 'of'? No problem
-      if ( ! wizardlet.of ) return;
+      if ( ! wizardlet.of ) {
+        wizardlet.loading = false;
+        return;
+      }
 
       // Load CapablePayload data to wizardlet
       var loadedData = wizardlet.of.create({}, wizardlet);

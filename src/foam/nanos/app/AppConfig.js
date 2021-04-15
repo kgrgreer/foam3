@@ -21,8 +21,23 @@ foam.CLASS({
       name: 'name'
     },
     {
+      documentation: 'Set at startup in bootscript.',
       class: 'String',
-      name: 'version'
+      name: 'version',
+      javaSetter: `
+      // Explicitly set in bootscript from jar manifest or services.0.
+      // Ignore updates from runtime journals.  If updates are not
+      // supressed, then on next upgrade the VirtualHostRoutingServlet
+      // will craft an index.html with references to a, now, non-existant
+      // foam-bin-x.y.z.js file.
+      synchronized ( this ) {
+        version_ = foam.nanos.app.AppConfig.class.getPackage().getImplementationVersion();
+        if ( foam.util.SafetyUtil.isEmpty(version_) ) {
+          version_ = val;
+        }
+        versionIsSet_ = true;
+      }
+      `
     },
     {
       class: 'String',
@@ -38,6 +53,7 @@ foam.CLASS({
       name: 'copyright'
     },
     {
+      documentation: 'Set by Theme',
       class: 'String',
       name: 'url',
       value: 'http://localhost:8080/'
@@ -64,17 +80,14 @@ foam.CLASS({
     {
       class: 'String',
       name: 'appLink',
-      value: 'https://www.apple.com/lae/ios/app-store/'
+      value: 'https://www.apple.com/lae/ios/app-store/',
+      visibility: 'HIDDEN'
     },
     {
       class: 'String',
       name: 'playLink',
-      value: 'https://play.google.com/store?hl=en'
-    },
-    {
-      class: 'Boolean',
-      name: 'forceHttps',
-      value: false
+      value: 'https://play.google.com/store?hl=en',
+      visibility: 'HIDDEN'
     },
     {
       class: 'String',

@@ -121,6 +121,10 @@
     }
   ],
 
+  messages: [
+    { name: 'BACK_LABEL', message: 'Back' }
+  ],
+
   properties: [
     {
       // TODO: True fix will be with ReferenceView
@@ -293,7 +297,9 @@
           });
         } catch (x) {}
       },
-      visibility: 'RO'
+      readVisibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'HIDDEN'
     },
     {
       class: 'String',
@@ -798,7 +804,7 @@
                     deletePredicate: foam.mlang.predicate.False.create()
                   }),
                   mementoHead: null,
-                  backLabel: 'Back'
+                  backLabel: self.BACK_LABEL
                 });
               } else {
                 of = obj.of;
@@ -830,7 +836,7 @@
                 deletePredicate: foam.mlang.predicate.False.create()
               }),
               mementoHead: null,
-              backLabel: 'Back'
+              backLabel: self.BACK_LABEL
             }, X);
           })
           .catch(err => {

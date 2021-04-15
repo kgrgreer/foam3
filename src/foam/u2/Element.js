@@ -41,12 +41,10 @@ foam.ENUM({
   values: [
     {
       name: 'CREATE',
-      label: 'Create',
       modePropertyName: 'createVisibility'
     },
     {
       name: 'VIEW',
-      label: 'View',
       modePropertyName: 'readVisibility',
       restrictDisplayMode: function(mode) {
         return mode == foam.u2.DisplayMode.RW ? foam.u2.DisplayMode.RO : mode;
@@ -54,7 +52,6 @@ foam.ENUM({
     },
     {
       name: 'EDIT',
-      label: 'Edit',
       modePropertyName: 'updateVisibility'
     }
   ]
@@ -75,10 +72,10 @@ foam.ENUM({
   ],
 
   values: [
-    { name: 'RW',       label: 'Read-Write' },
-    { name: 'DISABLED', label: 'Disabled' },
-    { name: 'RO',       label: 'Read-Only' },
-    { name: 'HIDDEN',   label: 'Hidden', restrictDisplayMode: function() { return foam.u2.DisplayMode.HIDDEN; } }
+    { name: 'RW', label: 'Read-Write' },
+    { name: 'DISABLED' },
+    { name: 'RO', label: 'Read-Only' },
+    { name: 'HIDDEN', restrictDisplayMode: function() { return foam.u2.DisplayMode.HIDDEN; } }
   ]
 });
 
@@ -717,7 +714,7 @@ foam.CLASS({
       `,
       name: 'PSEDO_ATTRIBUTES',
       value: {
-        value: true,
+        value:   true,
         checked: true
       }
     },
@@ -1198,7 +1195,7 @@ foam.CLASS({
     },
 
     function myCls(opt_extra) {
-      console.warn('Deprecated use of Element.myCls(). Use myClass() instead.');
+      console.error('Deprecated use of Element.myCls(). Use myClass() instead.');
       return this.myClass(opt_extra);
     },
 
@@ -1514,7 +1511,7 @@ foam.CLASS({
 
     // TODO: remove
     function enableCls(cls, enabled, opt_negate) {
-      console.warn('Deprecated use of Element.enableCls(). Use enableClass() instead.');
+      console.error('Deprecated use of Element.enableCls(). Use enableClass() instead.');
       return this.enableClass(cls, enabled, opt_negate);
     },
 
@@ -1542,7 +1539,7 @@ foam.CLASS({
 
     // TODO: remove
     function removeCls(cls) {
-      console.warn('Deprecated use of Element.removeCls(). Use removeClass() instead.');
+      console.error('Deprecated use of Element.removeCls(). Use removeClass() instead.');
       return this.removeClass(cls);
     },
 
@@ -2142,8 +2139,9 @@ foam.CLASS({
           var value = attr.value;
 
           if ( value !== false ) {
-            out(' ', name);
-            out('="', foam.String.isInstance(value) ? value.replace(/"/g, '&quot;') : value, '"');
+            out(' ', name, '="');
+            out(foam.String.isInstance(value) ? value.replace(/"/g, '&quot;') : value);
+            out('"');
           }
         }
       }
@@ -2475,19 +2473,9 @@ foam.CLASS({
   package: 'foam.u2',
   name: 'DateViewRefinement',
   refines: 'foam.core.Date',
-  requires: [ 'foam.u2.view.DateView', 'foam.u2.view.date.DateTimePicker' ],
+  requires: [ 'foam.u2.view.DateView' ],
   properties: [
-    [ 'view', function() {
-      // Detect if the browser has date support. If it does use the browsers default
-      // date picker, otherwise use the foam date picker.
-      let e = document.createElement('input');
-      e.setAttribute('type', 'date');
-      // If a browser doesn't support date, the type  will default to text
-      if ( e.type !== 'text' ) {
-        return { class: 'foam.u2.view.DateView' };
-      }
-      return { class: 'foam.u2.view.date.DateTimePicker' };
-    } ]
+    [ 'view', { class: 'foam.u2.view.DateView' } ]
   ]
 });
 
@@ -2561,7 +2549,7 @@ foam.CLASS({
       expression: function(label, labelFormatter) {
         return {
           class: 'foam.u2.CheckBox',
-          label: label,
+          label: this.help,
           labelFormatter: labelFormatter
         };
       }
@@ -2961,7 +2949,7 @@ foam.CLASS({
       `,
       name: 'tableProperties',
       setter: function(_, ps) {
-        console.warn("Deprecated use of tableProperties. Use 'tableColumns' instead.");
+        console.error("Deprecated use of tableProperties. Use 'tableColumns' instead.");
         this.tableColumns = ps;
       }
     },

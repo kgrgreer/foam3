@@ -28,7 +28,6 @@ foam.CLASS({
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.u2.crunch.Style',
     'foam.u2.Tooltip',
-    'foam.u2.view.EnumBadgeView',
     'foam.u2.view.ReadOnlyEnumView'
   ],
 
@@ -41,8 +40,16 @@ foam.CLASS({
       position: relative;
     }
 
+    ^badge {
+      position: absolute;
+      bottom: 12px; 
+    }
+
     ^badge > * {
-      border-radius: 0px 11.2px 11.2px 0px
+      border-radius: 0px 11.2px 11.2px 0px !important;
+      border-style: none !important;
+      height: 24px;
+      width: 79px;
     }
 
     ^ .foam-u2-crunch-Style-renewable-description {
@@ -110,16 +117,9 @@ foam.CLASS({
           .add(this.slot(function(cjStatus) {
             if ( ! cjStatus ) return;
             return this.E()
-              .addClass(style.myClass('tooltip'))
-              .start('span')
-                .addClass(style.myClass('tooltiptext'))
-                .addClass(style.myClass('tooltip-bottom'))
-                .enableClass(style.myClass('tooltipDisabled'), self.tooltipEnabled, true)
-                .add(cjStatus.documentation)
-              .end()
-              .start()
+              .start('', { tooltip: cjStatus.documentation })
                 .addClass(this.myClass('badge'))
-                .add(foam.u2.view.EnumBadgeView.create({ data: cjStatus }))
+                .add(foam.u2.view.ReadOnlyEnumView.create({ data: cjStatus }))
               .end();
           }))
           .add(this.slot(function(isRenewable) {
@@ -183,7 +183,7 @@ foam.CLASS({
     {
       name: 'statusUpdate',
       isMerged: true,
-      mergeDelay: 100,
+      mergeDelay: 2000,
       code: function() {
         if ( this.cjStatus != this.CapabilityJunctionStatus.PENDING &&
               this.cjStatus != this.CapabilityJunctionStatus.PENDING_REVIEW ) {
@@ -194,6 +194,9 @@ foam.CLASS({
             this.auth.cache = {};
             this.crunchService.pub('grantedJunction');
             this.cjStatus = this.CapabilityJunctionStatus.GRANTED;
+          }
+          else if ( ucj && ucj.status === this.CapabilityJunctionStatus.ACTION_REQUIRED ) {
+            this.crunchService.pub('grantedJunction');
           } else {
             this.statusUpdate();
           }

@@ -7,6 +7,7 @@
 foam.CLASS({
   package: 'foam.util.async',
   name: 'Sequence',
+  extends: 'foam.core.Fluent',
 
   implements: [
     'foam.core.ContextAgent',
@@ -87,6 +88,13 @@ foam.CLASS({
         }
       }
       return false;
+    },
+    function get(name) {
+      for ( let ca of this.contextAgentSpecs ) {
+        if ( name == ca.name ) {
+          return ca;
+        }
+      }
     },
     function remove(name) {
       this.contextAgentSpecs$replace(this.EQ(

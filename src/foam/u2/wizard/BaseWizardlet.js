@@ -14,14 +14,27 @@ foam.CLASS({
     'foam.u2.wizard.Wizardlet'
   ],
 
+  imports: [
+    'wizardCloseSub'
+  ],
+
   requires: [
+    'foam.core.SimpleSlot',
     'foam.u2.detail.AbstractSectionedDetailView',
     'foam.u2.wizard.WizardletAware',
     'foam.u2.wizard.WizardletIndicator',
     'foam.u2.wizard.WizardletSection',
     'foam.u2.wizard.WAO',
+    'foam.u2.wizard.ProxyWAO',
     'foam.u2.wizard.internal.FObjectRecursionSlot',
     'foam.u2.wizard.internal.WizardletAutoSaveSlot'
+  ],
+
+  constants: [
+    {
+      name: 'SAVE_DELAY',
+      value: 1200
+    }
   ],
 
   properties: [
@@ -35,6 +48,14 @@ foam.CLASS({
     {
       name: 'of',
       class: 'Class'
+    },
+    {
+      name: 'data',
+      postSet: function (_, n) {
+        if ( this.of && this.WizardletAware.isInstance(n) ) {
+          n.installInWizardlet(this);
+        }
+      }
     },
     {
       name: 'title',
@@ -70,6 +91,11 @@ foam.CLASS({
     },
     { name: 'atLeastOneSectionVisible_', class: 'Boolean', value: true },
     {
+      name: 'reloadAfterSave',
+      class: 'Boolean',
+      value: true
+    },
+    {
       name: 'loading',
       class: 'Boolean'
     },
@@ -103,7 +129,7 @@ foam.CLASS({
       of: 'foam.u2.wizard.WAO',
       flags: ['web'],
       factory: function () {
-        this.WAO.create();
+        this.ProxyWAO.create();
       }
     },
     {
@@ -153,26 +179,24 @@ foam.CLASS({
         This is useful for checking if a wizardlet has unsaved changes.
       `,
       code: function () {
-        var self = this;
         var filter = foam.u2.wizard.Slot.filter;
-        if ( this.of && this.WizardletAware.isSubClass(this.of) ) {
-          var s = foam.core.FObject.create();
-          this.data$
-            .map(data => {
-              var updateSlot = data.getUpdateSlot();
-              return this.WizardletAutoSaveSlot.create({
-                other: filter(updateSlot, v => v && ! self.loading),
-                delay: 700 // TODO: constant
-              });
-            })
-            .valueSub(() => { if ( ! self.loading ) s.pub(true); });
-          return s;
-        }
-        var sl = this.FObjectRecursionSlot.create({ obj$: this.data$ });
-        return filter(this.WizardletAutoSaveSlot.create({
-          other: filter(sl, () => ! self.loading),
-          delay: 700
-        }), () => ! self.loading);
+        var s = this.SimpleSlot.create();
+        var slotSlot = this.data$
+          .map(data => {
+            var updateSlot = (
+              this.WizardletAware.isInstance(data) &&
+              data.customUpdateSlot
+            ) ? data.getUpdateSlot()
+              : this.FObjectRecursionSlot.create({ obj: data });
+            return this.WizardletAutoSaveSlot.create({
+              other: filter(updateSlot, () => ! this.loading),
+              delay: this.SAVE_DELAY
+            });
+          });
+        slotSlot.valueSub(() => { s.set(slotSlot.get().get()); });
+        this.wizardCloseSub.onDetach(s);
+        this.wizardCloseSub.onDetach(slotSlot);
+        return s;
       }
     }
   ],

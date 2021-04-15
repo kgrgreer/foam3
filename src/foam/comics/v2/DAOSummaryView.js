@@ -56,6 +56,7 @@ foam.CLASS({
 
   imports: [
     'auth',
+    'currentMenu?',
     'memento',
     'stack',
     'translationService'
@@ -117,7 +118,9 @@ foam.CLASS({
       name: 'backLabel',
       expression: function(config$browseTitle) {
         var allMsg = ctrl.__subContext__.translationService.getTranslation(foam.locale, 'foam.comics.v2.DAOSummaryView.ALL', this.ALL);
-        return allMsg + config$browseTitle;
+        var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
+        var title = ctrl.__subContext__.translationService.getTranslation(foam.locale, menuId + '.browseTitle', config$browseTitle);
+        return allMsg + title;
       }
     },
     {
@@ -130,8 +133,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'mementoHead',
-      getter: function() {
+      factory: function() {
         if ( ! this.memento || ! this.memento.tail || this.memento.tail.head != 'edit' ) {
+          if ( ! this.idOfRecord )
+            return '::';
           var id = '' + this.idOfRecord;
           if ( id && foam.core.MultiPartID.isInstance(this.config.of.ID) ) {
             id = id.substr(1, id.length - 2).replaceAll(':', '=');
@@ -140,7 +145,12 @@ foam.CLASS({
         }
       }
     },
-    'idOfRecord'
+    {
+      name: 'idOfRecord',
+      factory: function() {
+        return this.data ? this.data.id : null;
+      }
+    }
   ],
 
   actions: [
@@ -266,7 +276,6 @@ foam.CLASS({
           m = m.tail;
           counter++;
         }
-        this.currentMemento_ = m;
       }
 
       var promise = this.data ? Promise.resolve(this.data) : this.config.unfilteredDAO.inX(this.__subContext__).find(this.idOfRecord);

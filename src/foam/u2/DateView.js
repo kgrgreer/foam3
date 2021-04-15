@@ -1,22 +1,13 @@
 /**
  * @license
- * Copyright 2015 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2015 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 
 // TODO: Add datalist support.
 
+// Should be promoted to just 'DateView' when Safari supports
+// proper date fields.
 foam.CLASS({
   package: 'foam.u2',
   name: 'DateView',
@@ -30,52 +21,65 @@ foam.CLASS({
     { class: 'foam.u2.TextInputCSS' }
   ],
 
-  properties: [
-    [ 'placeholder', 'yyyy-mm-dd' ]
-  ],
-
-  listeners: [
-    {
-      name: 'onBlur',
-      isFramed: true,
-      code: function() {
-        if ( ! this.el() || ! this.data ) return;
-        this.el().value = this.dataToInput(this.data);
-      }
-    }
+  messages: [
+    { name: 'DATE_FORMAT', message: 'yyyy-mm-dd' }
   ],
 
   methods: [
     function initE() {
-      this.SUPER();
       this.setAttribute('type', 'date');
       this.setAttribute('max', '9999-12-31');
-      this.setAttribute('placeholder', 'yyyy/mm/dd');
-      this.on('blur', this.onBlur);
+      this.setAttribute('placeholder', this.DATE_FORMAT);
+
+      this.SUPER();
+
+      // Scroll listener needed because DateView generates scroll event
+      // in some foreign locales which conflicts with ScrollWizard.
+      this.on('scroll', e => { e.preventDefault(); e.stopPropagation(); });
+
+/*
+      this.on('focus',  e => { console.log('focus', e); });
+      this.on('blur',   e => { console.log('blur', e); });
+      this.on('input',  e => { console.log('input', e); });
+      this.on('change', e => { console.log('change', e); });
+      this.on('beforeinput', e => { console.log('beforeinput', e); });
+      */
     },
 
     function link() {
-      this.data$.relateTo(
-        this.attrSlot(null, this.onKey ? 'input' : null),
-        d => this.dataToInput(d),
-        d => this.inputToData(d)
-      );
-    },
+      if ( this.linked ) return;
+      this.linked = true;
+      var self    = this;
+      var focused = false;
+      var slot    = this.attrSlot(); //null, this.onKey ? 'input' : null);
 
-    function inputToData(input) {
-      var d = new Date(input);
-      return isNaN(d.getTime()) ? null : d;
-    },
+      function updateSlot() {
+        var date = self.data;
+        if ( focused ) return;
+        if ( foam.Number.isInstance(date) ) date = new Date(date);
+        if ( ! date ) {
+          slot.set('');
+        } else {
+          slot.set(date ? date.toISOString().substring(0,10) : '');
+        }
+      }
 
-    function dataToInput(data) {
-      if ( ! data ) return data;
+      function updateData() {
+        var value = slot.get();
+        self.data = value ? Date.parse(value) : undefined;
+      }
 
-      // Using our own formatter to keep the date in the format (yyyy-mm-dd) while maintaining the locale date
-      const year  = data.getFullYear();
-      const month = (data.getMonth() + 1).toString().padStart(2, '0');
-      const day   = data.getDate().toString().padStart(2, '0');
+      if ( this.onKey ) {
+        var focused = false;
+        this.on('focus', () => { focused = true; });
+        this.on('blur',  () => { focused = false; });
+        this.on('change', updateData);
+      } else {
+        this.on('blur', updateData);
+      }
 
-      return `${year}-${month}-${day}`;
+      updateSlot();
+      this.onDetach(this.data$.sub(updateSlot));
     }
   ]
 });

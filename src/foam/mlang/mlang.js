@@ -2083,6 +2083,12 @@ return !FOAM_utils.equals(v1, v2)
     {
       name: 'createStatement',
       javaCode: 'return " " + getArg1().createStatement() + " <> " + getArg2().createStatement() + " ";'
+    },
+    function toMQL() {
+      var arg2 = this.arg2ToMQL();
+      if ( ! arg2 )
+        return null;
+      return '-' + this.arg1.name + '=' + arg2;
     }
   ]
 });
@@ -2267,7 +2273,7 @@ foam.CLASS({
   package: 'foam.mlang.predicate',
   name: 'Not',
   extends: 'foam.mlang.predicate.AbstractPredicate',
-  implements: [ 'foam.core.Serializable' ],
+  implements: [ 'foam.core.Serializable', { path: 'foam.mlang.Expressions', flags: ['js'], java: false } ],
 
   documentation: 'Unary Predicate which negates the value of its argument.',
 
@@ -2294,7 +2300,40 @@ foam.CLASS({
     },
     {
       name: 'partialEval',
-      code: function() { return this; },
+      code: function() {
+        if ( this.arg1 && this.arg1.partialEval ) {
+          this.arg1 = this.arg1.partialEval();
+        }
+        if ( this.Not.isInstance(this.arg1) ) {
+          this.arg1 = this.arg1.partialEval();
+          if ( ! this.arg2 ) {
+            return this.arg1;
+          }
+        } else if ( this.Eq.isInstance(this.arg1) ) {
+          return this.Neq.create({arg1: this.arg1.arg1, arg2: this.arg1.arg2});
+        } else if (this.Neq.isInstance(this.arg1)) {
+          return this.Eq.create({arg1: this.arg1.arg1, arg2: this.arg1.arg2});
+        } else if (this.Lt.isInstance(this.arg1)) {
+          return this.Gte.create({arg1: this.arg1.arg1, arg2: this.arg1.arg2});
+        } else if (this.Gte.isInstance(this.arg1)) {
+          return this.Lt.create({arg1: this.arg1.arg1, arg2: this.arg1.arg2});
+        } else if (this.Gt.isInstance(this.arg1)) {
+          return this.Lte.create({arg1: this.arg1.arg1, arg2: this.arg1.arg22});
+        } else if (this.Lte.isInstance(this.arg1)) {
+          return this.Gt.create({arg1: this.arg1.arg1, arg2: this.arg1.arg2});
+        } else if (this.And.isInstance(this.arg1)) {
+          for ( var i = 0; i < this.arg1.args.length; i++ ) {
+            this.arg1.args[i] = this.Not.create(this.arg1.args[i]);
+          }
+          return this.Or.create({args: this.arg1.args[i]});
+        } else if (this.Or.isInstance(this.arg1)) {
+          for ( var i = 0; i < this.arg1.args.length; i++ ) {
+            this.arg1.args[i] = this.Not.create(this.arg1.args[i]);
+          }
+          return this.And.create({args: this.arg1.args[i]});
+        }
+        return this;
+      },
       javaCode:
       `Not predicate = (Not) this.fclone();
     if ( this.arg1_ instanceof Not )
@@ -2369,7 +2408,7 @@ return this;`
 
 
     /*
-      TODO: this isn't ported to FOAM2 yet.
+      TODO: this isn't ported to FOAM2/FOAM3 yet.
     function partialEval() {
       return this;
       var newArg = this.arg1.partialEval();
@@ -3745,6 +3784,7 @@ foam.CLASS({
     'foam.mlang.sink.Sequence',
     'foam.mlang.sink.Sum',
     'foam.mlang.sink.Unique',
+    'foam.mlang.StringLength',
     'foam.mlang.Absolute',
     'foam.mlang.sink.Average',
     'foam.mlang.Mux',
@@ -3839,7 +3879,8 @@ foam.CLASS({
 
     function INSTANCE_OF(cls) { return this.IsInstanceOf.create({ targetClass: cls }); },
     function CLASS_OF(cls) { return this.IsClassOf.create({ targetClass: cls }); },
-    function MQL(mql) { return this.MQLExpr.create({query: mql}); }
+    function MQL(mql) { return this.MQLExpr.create({query: mql}); },
+    function STRING_LENGTH(a) { return this._unary_("StringLength", a); }
   ]
 });
 
@@ -3997,8 +4038,130 @@ foam.CLASS({
         return ((foam.mlang.predicate.Nary) ps.value()).partialEval();
       `
     },
+    {
+      name: 'toString',
+      code: function toString() {
+        return '(' + this.query + ')';
+      },
+      javaCode: `
+        return "(" + getQuery() + ")";
+      `
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.mlang.predicate',
+  name: 'NamedProperty',
+  extends: 'foam.mlang.AbstractExpr',
+  implements: [ 'foam.core.Serializable' ],
+
+  documentation: `Stores propName as a property and returns property when f() is called.`,
+
+  javaImports: [
+    'foam.core.ClassInfo',
+    'foam.core.FObject',
+    'foam.core.PropertyInfo',
+    'foam.mlang.Expr',
+    'java.util.List',
+    'java.util.Map',
+    'java.util.concurrent.ConcurrentHashMap'
+  ],
+
+  axioms: [
+    foam.pattern.Multiton.create({property: 'propName'}),
+    {
+      name: 'javaExtras',
+      buildJavaClass: function(cls) {
+        cls.extras.push(
+          `
+  protected final static Map map__ = new ConcurrentHashMap();
+  public static NamedProperty create(String propName) {
+    NamedProperty p = (NamedProperty) map__.get(propName);
+
+    if ( p == null ) {
+      p = new NamedProperty();
+      p.setPropName(propName);
+      map__.put(propName, p);
+    }
+
+    return p;
+  }
+ `
+        );
+      }
+    }
+  ],
+
+  properties: [
+    {
+      class: 'Map',
+      name: 'specializations_',
+      factory: function() { return {}; },
+      javaFactory: 'return new java.util.concurrent.ConcurrentHashMap<ClassInfo, Expr>();'
+    },
+    {
+      class: 'String',
+      name: 'propName'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'f',
+      code: function(o) {
+        return this.specialization(o.model_);
+      },
+      javaCode: `
+        if ( ! ( obj instanceof FObject ) )
+          return false;
+
+        return specialization(((FObject)obj).getClassInfo());
+      `
+    },
+    {
+      name: 'specialization',
+      args: [ { name: 'model', type: 'ClassInfo' } ],
+      type: 'Expr',
+      code: function(model) {
+        return this.specializations_[model.name] ||
+          ( this.specializations_[model.name] = this.specialize(model) );
+      },
+      javaCode: `
+        if ( getSpecializations_().get(model) == null ) {
+          Expr prop = specialize(model);
+          if ( prop != null ) getSpecializations_().put(model, specialize(model));
+        }
+        return (Expr) getSpecializations_().get(model);
+      `
+    },
+    {
+      name: 'specialize',
+      args: [ { name: 'model', type: 'ClassInfo' } ],
+      type: 'Expr',
+      code: function(model) {
+        for ( var i = 0; i < model.properties.length; i++  ) {
+          var prop = model.properties[i];
+          if ( this.propName == prop.name || this.propName == prop.shortName || prop.aliases.includes(this.propName) ) return prop;
+        }
+        return;
+      },
+      javaCode: `
+        List<PropertyInfo> properties  = model.getAxiomsByClass(PropertyInfo.class);
+
+        for ( PropertyInfo prop : properties ) {
+          if ( prop.getName().equals(getPropName()) || prop.getShortName() != null && prop.getShortName().equals(getPropName()) ) return prop;
+
+          for ( int i = 0; i < prop.getAliases().length; i++) {
+            if ( getPropName().equals(prop.getAliases()[i]) ) return prop;
+          }
+        }
+
+        return null;
+      `
+    },
     function toString() {
-      return '(' + this.query + ')';
+      return this.propName;
     }
   ]
 });
