@@ -34,6 +34,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.XLocator',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
@@ -201,7 +202,10 @@ foam.CLASS({
       hidden: true,
       factory: function() {
         return this.subject.realUser;
-      }
+      },
+      javaFactory: `
+        return ((Subject) XLocator.get().get("subject")).getRealUser().getId();
+      `
       // depricated but leaving for data migration - script to do this needed - then delete
     }
   ],

@@ -27,7 +27,9 @@ foam.CLASS({
   ],
   javaImports: [
     'foam.core.FObject',
-    'foam.core.Validatable'
+    'foam.core.Validatable',
+    'foam.core.XLocator',
+    'foam.nanos.auth.Subject'
   ],
   imports: [
     'auth',
@@ -64,6 +66,9 @@ foam.CLASS({
       factory: function() {
         return this.subject.user.id;
       },
+      javaFactory: `
+        return ((Subject) XLocator.get().get("subject")).getUser().getId();
+      `,
       hidden: true
     },
     {
