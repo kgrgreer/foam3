@@ -137,8 +137,12 @@ foam.CLASS({
             logger.warning("Unexpected behaviour - No login section found in FlinksResponse for loginId: " + flinksLoginId.getLoginId());
           }
 
-          // TESTING !! REMOVE THIS !!
-          loginDetail.setType("Business");
+          // Override the Flink login details type
+          if ( flinksLoginId.getFlinksOverrides() != null && 
+               !SafetyUtil.isEmpty(flinksLoginId.getFlinksOverrides().getType()))
+          {
+            loginDetail.setType(flinksLoginId.getFlinksOverrides().getType()); 
+          }
 
           // Onboarding
           if ( user == null ) {
@@ -288,6 +292,8 @@ foam.CLASS({
 
           // Business CAD payments capability
           capabilityId = "18DD6F03-998F-4A21-8938-358183151F96";
+
+          // TODO: should be looking up either this or the payor cap
         }
         X subjectX = x.put("subject", subject);
 
@@ -428,7 +434,7 @@ foam.CLASS({
 
         onboardUser(x, request, accountDetail, loginDetail, onboardingType);
         if ( onboardingType == OnboardingType.BUSINESS ) {
-          onboardBusiness(x, request, accountDetail);
+          onboardBusiness(x, request, accountDetail, loginDetail);
         }
       `
     },
@@ -602,7 +608,8 @@ foam.CLASS({
       args: [
         { name: 'x', type: 'Context' },
         { name: 'request', type: 'FlinksLoginId' },
-        { name: 'accountDetail', type: 'AccountWithDetailModel' }
+        { name: 'accountDetail', type: 'AccountWithDetailModel' },
+        { name: 'loginDetail', type: 'LoginModel' }
       ],
       javaCode: `
         User user = request.findUser(x);
@@ -657,6 +664,7 @@ foam.CLASS({
           .build();
 
         if ( SafetyUtil.isEmpty(businessName) ) {
+          business.setBusinessName(holder.getName());
           business.getExternalData().put("FlinksName", holder.getName());
         }
 

@@ -32,6 +32,11 @@ foam.CLASS({
       of: 'net.nanopay.flinks.external.BusinessOverrideData',
       name: 'businessOverrides',
       documentation: 'Overrides for the business'
+    },
+    {
+      class: 'String',
+      name: 'type',
+      externalTransient: true
     }
   ]
 });

@@ -21,9 +21,40 @@ foam.CLASS({
 
   documentation: `This model represents the basic info of a User that must be collect for onboarding.`,
 
+  messages: [
+    { name: 'FIRST_NAME_REQUIRED', message: 'First name required' },
+    { name: 'LAST_NAME_REQUIRED', message: 'First name required' }
+  ],
+
   properties: [
-    foam.nanos.auth.User.FIRST_NAME.clone().copyFrom(),
-    foam.nanos.auth.User.LAST_NAME.clone().copyFrom(),
+    foam.nanos.auth.User.FIRST_NAME.clone().copyFrom({
+      validationPredicates: [
+        {
+          args: ['firstName'],
+          predicateFactory: function(e) {
+            return e.AND(
+              e.NEQ(net.nanopay.crunch.registration.UserDetailData.FIRST_NAME, null),
+              e.NEQ(net.nanopay.crunch.registration.UserDetailData.FIRST_NAME, ""));
+          },
+          errorString: 'First name required.',
+          errorMessage: 'FIRST_NAME_REQUIRED'
+        }
+      ]
+    }),
+    foam.nanos.auth.User.LAST_NAME.clone().copyFrom({
+      validationPredicates: [
+        {
+          args: ['lastName'],
+          predicateFactory: function(e) {
+            return e.AND(
+              e.NEQ(net.nanopay.crunch.registration.UserDetailData.LAST_NAME, null),
+              e.NEQ(net.nanopay.crunch.registration.UserDetailData.LAST_NAME, ""));
+          },
+          errorString: 'Last name required.',
+          errorMessage: 'LAST_NAME_REQUIRED'
+        }
+      ]
+    }),
     foam.nanos.auth.User.PHONE_NUMBER.clone().copyFrom(),
     foam.nanos.auth.User.ADDRESS.clone().copyFrom()
 
