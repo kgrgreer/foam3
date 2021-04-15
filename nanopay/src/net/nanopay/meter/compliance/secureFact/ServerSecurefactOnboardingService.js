@@ -260,7 +260,7 @@
           throw new RuntimeException("Capability for business type cannot be found");
         }
 
-        List<String> prerequisites = ((CrunchService) x.get("crunchService")).getPrereqs(x, capability.getId());
+        List<String> prerequisites = ((CrunchService) x.get("crunchService")).getPrereqs(x, capability.getId(), null);
         Boolean hasPrerequisites = prerequisites.size() > 0;
 
         return new BusinessTypeDescriptor.Builder(x)
