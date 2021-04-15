@@ -47,7 +47,7 @@ foam.CLASS({
       width: 330px !important;
       height: 194px !important
     }
-    
+
     ^ .headerTitle {
       width: 214px;
       height: 36px;
@@ -61,7 +61,7 @@ foam.CLASS({
       line-height: 1.5;
       letter-spacing: normal;
     }
-    
+
     ^ .content {
       margin-left:24px;
       margin-top: 8px;
@@ -95,6 +95,12 @@ foam.CLASS({
     }
   `,
 
+  messages: [
+    { name: 'MESSAGE_BODY_1', message: 'Your session is about to expire.  You will be automatically signed out in ' },
+    { name: 'MESSAGE_BODY_2', message: 's.  To continue your session, select Stay Signed In.' },
+    { name: 'HEADER_TITLE', message: 'Session Timeout' },
+  ],
+
   properties: [
     {
       name: 'countDownValue',
@@ -118,11 +124,11 @@ foam.CLASS({
       this
         .start().addClass(this.myClass())
         .start().addClass('Container')
-          .start().addClass('headerTitle').add('Session Timeout').end()
+          .start().addClass('headerTitle').add(this.HEADER_TITLE).end()
           .start().addClass('content')
-            .add('Your session is about to expire.  You will be automatically signed out in ')
+            .add(this.MESSAGE_BODY_1)
             .add(this.countDownValue$)
-            .add('s.  To continue your session, select Stay Signed In.')
+            .add(this.MESSAGE_BODY_2)
           .end()
           .start().addClass('actions')
             .add(this.SIGN_OUT)
