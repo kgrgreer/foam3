@@ -139,28 +139,8 @@ foam.CLASS({
         return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
       },
       view: function(_, X) {
-        return foam.u2.FragmentedTextField.create({
-          delegates: [
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(0, 3),
-              maxLength: 3
-            }),
-            '.',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(3, 6),
-              maxLength: 3
-            }),
-            '.',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(6, 9),
-              maxLength: 3
-            }),
-            '-',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(9, 11),
-              maxLength: 2
-            })
-          ]
+        return foam.u2.FormattedTextField.create({ 
+          formatter: [3, '.', 3, '.', 3, '-', 2] 
         }, X);
       }
     },
