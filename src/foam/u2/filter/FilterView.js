@@ -292,9 +292,6 @@ foam.CLASS({
       var self = this;
 
       var counter = 0;
-      counter = this.updateCurrentMementoAndReturnCounter(counter);
-
-      counter = this.filters.length;
       //memento which will be exported to table view
       if ( self.currentMemento_ ) self.currentMemento_ = self.currentMemento_.tail;
       

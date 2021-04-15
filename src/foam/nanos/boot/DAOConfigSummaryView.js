@@ -133,7 +133,7 @@ foam.CLASS({
               addClass(this.myClass('title')).
               start('a').
                 add('Data Management').on('click', () => {
-                  this.memento.tail$.set(null);
+                  this.memento.tail$.set(foam.nanos.controller.Memento.create({parentFeedback_: true}));
                   this.stack.back();
                 }).
               end().
