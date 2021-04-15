@@ -47,7 +47,7 @@ foam.CLASS({
       this.setNodeName('div');
       this.addClass(this.myClass());
       this.addClass('foam-u2-stack-StackView');
-      
+
       if ( this.showActions ) {
         this.start('actions')
           .add(this.data.cls_.getAxiomsByClass(foam.core.Action))
@@ -83,7 +83,7 @@ foam.CLASS({
             var m = this.Memento.create();
 
             m.value = v.mementoHead;
-            currMemento.tail = m;
+            X.memento.tail = m;
           }
         }
       }

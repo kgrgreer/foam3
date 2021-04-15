@@ -266,11 +266,16 @@ foam.CLASS({
         this.searchPredicate = foam.mlang.predicate.True.create();
       }));
 
+      var self = this;
+
       this.onload.sub(
         function() {
-          self.memento.parentFeedback_ = false;
-          self.memento.changeIndicator = ! self.memento.changeIndicator;
-          self.memento.feedback_ = false;
+          if ( self.memento ) {
+            self.memento.parentFeedback_ = false;
+            self.memento.changeIndicator = ! self.memento.changeIndicator;
+            self.memento.feedback_ = false;
+            if ( self.memento.tail ) self.memento.tail.parentFeedback_ = false;
+          }
         }
       );
     },
@@ -289,7 +294,7 @@ foam.CLASS({
       var simpleSearch;
 
       if ( this.memento && ! this.memento.tail ) {
-        this.memento.tail = foam.nanos.controller.Memento.create({parentFeedback_: true});
+        this.memento.tail$.set(foam.nanos.controller.Memento.create({parentFeedback_: true}));
       }
 
       this.addClass(this.myClass());

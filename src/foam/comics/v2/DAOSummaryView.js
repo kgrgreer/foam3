@@ -65,7 +65,7 @@ foam.CLASS({
   exports: [
     'controllerMode',
     'as objectSummaryView',
-    'currentMemento_ as memento'
+    // 'currentMemento_ as memento'
   ],
 
   messages: [
@@ -179,7 +179,7 @@ foam.CLASS({
           return false;
         }
       },
-      code: function() {
+      code: function(X) {
         if ( ! this.stack ) return;
 
         if ( this.memento.tail )
@@ -276,6 +276,7 @@ foam.CLASS({
           m = m.tail;
           counter++;
         }
+        // this.currentMemento_ = m;
       }
 
       var promise = this.data ? Promise.resolve(this.data) : this.config.unfilteredDAO.inX(this.__subContext__).find(this.idOfRecord);
@@ -290,6 +291,7 @@ foam.CLASS({
           this
           .addClass(this.myClass())
           .add(self.slot(function(data, config$viewBorder, viewView) {
+            var view = foam.u2.ViewSpec.createView(viewView, { data }, this, self.__context__.createSubContext({ memento: null }));
             return self.E()
               .start(self.Rows)
                 .start(self.Rows)
@@ -330,7 +332,10 @@ foam.CLASS({
                   .end()
                 .end()
                 .start(config$viewBorder)
-                  .start(viewView, { data }).addClass(self.myClass('view-container')).end()
+                  .start()
+                      .add(view)
+                    .addClass(self.myClass('view-container'))
+                  .end()
                 .end()
               .end();
           }));

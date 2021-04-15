@@ -114,11 +114,12 @@ foam.CLASS({
           var self = this;
           
           this.onload.sub(function(s) {
-            self.memento.parentFeedback_ = false;
-            self.memento.tail.parentFeedback_ = false;
-            self.memento.feedback_ = true;
-            self.memento.changeIndicator = ! self.memento.changeIndicator;
-            self.memento.feedback_ = false;
+            if ( self.memento ) {
+              self.memento.parentFeedback_ = false;
+              self.memento.changeIndicator = ! self.memento.changeIndicator;
+              self.memento.feedback_ = false;
+              if ( self.memento.tail ) self.memento.tail.parentFeedback_ = false;
+            }
           });
         },
         function initE() {

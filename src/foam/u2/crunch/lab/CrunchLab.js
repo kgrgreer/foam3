@@ -168,11 +168,15 @@ foam.CLASS({
 
   methods: [
     function init() {
+      var self = this;
       this.onload.sub(
         function() {
-          self.memento.parentFeedback_ = false;
-          self.memento.changeIndicator = ! self.memento.changeIndicator;
-          self.memento.feedback_ = false;
+          if ( self.memento ) {
+            self.memento.parentFeedback_ = false;
+            self.memento.changeIndicator = ! self.memento.changeIndicator;
+            self.memento.feedback_ = false;
+            if ( self.memento.tail ) self.memento.tail.parentFeedback_ = false;
+          }
         }
       );
     },

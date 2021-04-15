@@ -30,7 +30,7 @@ foam.CLASS({
     'columns',
     'hoverSelection',
     'selection',
-    'memento'
+    // 'memento'
   ],
 
   imports: [
@@ -261,7 +261,6 @@ foam.CLASS({
         return this.__context__.columnConfigToPropertyConverter;
       }
     },
-    'currentMemento_'
   ],
 
   methods: [
@@ -312,9 +311,6 @@ foam.CLASS({
 
     async function initE() {
       var view = this;
-
-      this.currentMemento_ = null;
-
 
       //set memento's selected columns
       if ( this.memento ) {
