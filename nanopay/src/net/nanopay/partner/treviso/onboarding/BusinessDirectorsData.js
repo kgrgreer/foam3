@@ -53,7 +53,7 @@ properties: [
     {
       class: 'Boolean',
       name: 'skipDirectors',
-      documentation: 'Make adding directors optional if set to true',
+      documentation: 'Make directors optional if set to true',
       label: '',
       section: 'directorsInfoSection',
       visibility: function(businessDirectors) {
