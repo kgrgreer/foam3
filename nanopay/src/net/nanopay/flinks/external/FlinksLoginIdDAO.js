@@ -161,7 +161,8 @@ foam.CLASS({
           }
 
           // Override the Flink login details type
-          if ( flinksLoginId.getFlinksOverrides() != null && 
+          if ( !isProduction(x) &&
+               flinksLoginId.getFlinksOverrides() != null && 
                !SafetyUtil.isEmpty(flinksLoginId.getFlinksOverrides().getType()))
           {
             loginDetail.setType(flinksLoginId.getFlinksOverrides().getType()); 
@@ -256,14 +257,24 @@ foam.CLASS({
       `
     },
     {
+      name: 'isProduction',
+      type: 'Boolean',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      javaCode: `
+        AppConfig config = (AppConfig) x.get("appConfig");
+        return ( config != null && config.getMode() == Mode.PRODUCTION );
+      `
+    },
+    {
       name: 'resolveUserEmailOverride',      
       args: [
         { name: 'x', type: 'Context' },
         { name: 'request', type: 'FlinksLoginId' }
       ],
       javaCode: `
-        AppConfig config = (AppConfig) x.get("appConfig");
-        if ( config != null && config.getMode() == Mode.PRODUCTION ) {
+        if ( isProduction(x) ) {
           // Skipping user email lookup in PRODUCTION
           return;
         }
