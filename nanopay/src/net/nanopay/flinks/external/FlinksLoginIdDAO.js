@@ -78,6 +78,29 @@ foam.CLASS({
     'static foam.mlang.MLang.*'
   ],
 
+  constants: [
+    {
+      name: 'BUSINESS_RECEIVING_CAPABILITY_ID',
+      type: 'String',
+      value: '18DD6F03-998F-4A21-8938-358183151F96'
+    },
+    {
+      name: 'BUSINESS_SENDING_CAPABILITY_ID',
+      type: 'String',
+      value: '56D2D946-6085-4EC3-8572-04A17225F86A'
+    },
+    {
+      name: 'PERSONAL_SENDING_CAPABILITY_ID',
+      type: 'String',
+      value: '1F0B39AD-934E-462E-A608-D590D1081298'
+    },
+    {
+      name: 'PERSONAL_SENDING_UNDER_1000_CAPABILITY_ID',
+      type: 'String',
+      value: 'F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD'
+    }
+  ],
+
   methods: [
     {
       name: 'put_',
@@ -291,7 +314,7 @@ foam.CLASS({
           subject.setUser(business);
 
           // Business CAD payments capability
-          capabilityId = "18DD6F03-998F-4A21-8938-358183151F96";
+          capabilityId = getBusinessCapabilityId(x, request);
 
           // TODO: should be looking up either this or the payor cap
         }
@@ -722,7 +745,7 @@ foam.CLASS({
         }
 
         // Business CAD payments capability
-        String capabilityId = "18DD6F03-998F-4A21-8938-358183151F96";
+        String capabilityId = getBusinessCapabilityId(x, request);
         CapabilityPayload missingPayloads = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId);
         businessCapabilityDataObjects = missingPayloads.getCapabilityDataObjects();
 
@@ -789,13 +812,30 @@ foam.CLASS({
         var amount = request != null ? request.getAmount() : 0;
 
         DAO dao = (DAO) x.get("localCapabilityDAO");
-        Capability fullUserCapability = (Capability) dao.find("1F0B39AD-934E-462E-A608-D590D1081298");
-        LimitedAmountCapability minimalUserCapability = (LimitedAmountCapability) dao.find("F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD");
+        Capability fullUserCapability = (Capability) dao.find(PERSONAL_SENDING_CAPABILITY_ID);
+        LimitedAmountCapability minimalUserCapability = (LimitedAmountCapability) dao.find(PERSONAL_SENDING_UNDER_1000_CAPABILITY_ID);
 
         // Return the capability ID
         return amount <= minimalUserCapability.getMaximumAmount() ?
           minimalUserCapability.getId() :
           fullUserCapability.getId();
+      `
+    },
+    {
+      name: 'getBusinessCapabilityId',
+      type: 'String',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'request', type: 'FlinksLoginId' }
+      ],
+      javaCode: `
+        String capabilityId = BUSINESS_RECEIVING_CAPABILITY_ID;
+
+        if ( request.getType() != OnboardingType.BUSINESS ) {
+          capabilityId = BUSINESS_SENDING_CAPABILITY_ID;
+        }
+
+        return capabilityId;
       `
     },
     {
