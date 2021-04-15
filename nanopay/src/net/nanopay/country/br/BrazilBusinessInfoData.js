@@ -35,6 +35,13 @@ foam.CLASS({
   imports: [
     'brazilVerificationService'
   ],
+  constants: [
+    {
+      name: 'CNPJ_LENGTH',
+      value: 11,
+      javaType: 'int'
+    }
+  ],
 
   sections: [
     {
@@ -94,8 +101,8 @@ foam.CLASS({
         return foam.String.applyFormat(val, 'xx.xxx.xxx/xxxx-xx');
       },
       view: function(_, X) {
-        return foam.u2.FormattedTextField.create({ 
-          formatter: [2, '.', 3, '.', 3, '/', 4, '-', 2] 
+        return foam.u2.FormattedTextField.create({
+          formatter: [2, '.', 3, '.', 3, '/', 4, '-', 2]
         }, X);
       }
     },
@@ -164,7 +171,7 @@ foam.CLASS({
 
         // This should be valid before making API call
         try {
-          if ( getCnpj() == null || getCnpj().length() != 14 ) {
+          if ( getCnpj() == null || getCnpj().length() != this.CNPJ_LENGTH ) {
             throw new foam.core.ValidationException(NO_CNPJ);
           }
         } catch ( foam.core.ValidationException e ) {
