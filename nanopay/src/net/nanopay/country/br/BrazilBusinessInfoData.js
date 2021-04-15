@@ -38,7 +38,7 @@ foam.CLASS({
   constants: [
     {
       name: 'CNPJ_LENGTH',
-      value: 11,
+      value: 14,
       javaType: 'int'
     }
   ],
