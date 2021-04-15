@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import javax.xml.stream.XMLStreamException;
 
 import net.nanopay.tx.cico.EFTFile;
@@ -63,15 +64,25 @@ public class RbcReportProcessor {
   }
 
   /**
+   * Download specific Level 1(Receipts) EFT files
+   */
+  public void downloadReceipts(List<EFTFile> files) {
+    for ( EFTFile eftFile : files ) {
+      try {
+        String fileNameFilter = eftFile.getSpid() + eftFile.getId() + "_A1";
+        rbcFTPSClient.batchDownload(RbcFTPSClient.PAIN_FOLDER, fileNameFilter);
+      } catch (Exception e) {
+        this.logger.error("Error downloading status reports from RBC ", e);
+      }
+    }
+  }
+
+  /**
    * Process the report to check file was accepted and valid
    */
-  public void processReceipts() {
+  public void processReceipts(List<EFTFile> files) {
     /* Download status report files from RBC */
-    try {
-      rbcFTPSClient.batchDownload();
-    } catch (Exception e) {
-      this.logger.error("Error downloading status reports from RBC ", e);
-    }
+    downloadReceipts(files);
 
     /* Decrypt file status report files */
     try{
