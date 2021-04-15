@@ -278,7 +278,7 @@
             data: null,
             config: this.config,
             idOfRecord: id
-          }, this.__subContext__.createSubContext({ memento$: this.table_.memento$ }));
+          }, this.__subContext__.createSubContext({ memento: this.table_.memento }));
         }
       }
       

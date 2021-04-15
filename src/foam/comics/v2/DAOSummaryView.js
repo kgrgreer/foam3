@@ -64,8 +64,7 @@ foam.CLASS({
 
   exports: [
     'controllerMode',
-    'as objectSummaryView',
-    // 'currentMemento_ as memento'
+    'as objectSummaryView'
   ],
 
   messages: [
@@ -276,7 +275,6 @@ foam.CLASS({
           m = m.tail;
           counter++;
         }
-        // this.currentMemento_ = m;
       }
 
       var promise = this.data ? Promise.resolve(this.data) : this.config.unfilteredDAO.inX(this.__subContext__).find(this.idOfRecord);

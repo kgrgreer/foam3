@@ -133,7 +133,7 @@ foam.CLASS({
               addClass(this.myClass('title')).
               start('a').
                 add('Data Management').on('click', () => {
-                  this.memento.tail$.set(foam.nanos.controller.Memento.create({parentFeedback_: true}));
+                  this.memento.tail = foam.nanos.controller.Memento.create({parentFeedback_: true});
                   this.stack.back();
                 }).
               end().
@@ -313,7 +313,6 @@ foam.CLASS({
                   self.memento.feedback_ = true;
                   var tail = self.Memento.create({ head: spec.id, tail: self.Memento.create(), parentFeedback_: true });
                   self.memento.tail$.set(tail);
-                  // self.memento.tail.parentFeedback_ = true;
                 }
               });
 
@@ -350,7 +349,7 @@ foam.CLASS({
       self = this;
       var m = this.memento;
 
-      if ( ! m || ! m.tail || m.tail.feedback_  || m.tail.head.length == 0 ) {// || self.memento.feedback_ 
+      if ( ! m || ! m.tail || m.tail.feedback_  || m.tail.head.length == 0 ) {
         if ( ! isInitializing && ! m.tail ) this.stack.back();
         return;
       }
@@ -364,32 +363,6 @@ foam.CLASS({
 
       
       this.memento.parentFeedback_ = true;
-      // var view = foam.u2.ViewSpec.createView({
-      //   class: this.BackBorder,
-      //   title: m.tail.head,
-      //   inner: {
-      //     class: 'foam.u2.view.AltView',
-      //     data: this.__context__[m.tail.head],
-      //     views: [
-      //       [
-      //         {
-      //           class: this.BrowserView,
-      //           stack: this.stack
-      //         },
-      //         this.CONTROLLER1
-      //       ],
-      //       [
-      //         {
-      //           class: this.DAOBrowseControllerView,
-      //           stack: this.stack
-      //         },
-      //         this.CONTROLLER2
-      //       ]
-      //     ]
-      //   }
-      // }, x);
-
-      
 
       this.stack.push({
         class: this.BackBorder,
