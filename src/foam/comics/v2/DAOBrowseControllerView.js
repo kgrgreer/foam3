@@ -140,17 +140,6 @@ foam.CLASS({
     var self = this;
     this.SUPER();
 
-    this.onload.sub(
-      function() {
-        if ( self.memento ) {
-          self.memento.parentFeedback_ = false;
-          self.memento.changeIndicator = ! self.memento.changeIndicator;
-          self.memento.feedback_ = false;
-          if ( self.memento.tail ) self.memento.tail.parentFeedback_ = false;
-        }
-      }
-    );
-
     var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
     this.addClass(this.myClass())
       .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$browseSubtitle, config$primaryAction) {
