@@ -158,12 +158,6 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'getCNPJBusinessName',
-      code:  async function(cnpj) {
-        return await this.brazilVerificationService.getCNPJName(this.__subContext__, cnpj);
-      }
-    },
-    {
       name: 'validate',
       javaCode: `
         // IMPORTANT: Any fix here may also apply to CPF.js
