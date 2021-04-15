@@ -34,6 +34,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.XLocator',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
@@ -138,28 +139,8 @@ foam.CLASS({
         return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
       },
       view: function(_, X) {
-        return foam.u2.FragmentedTextField.create({
-          delegates: [
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(0, 3),
-              maxLength: 3
-            }),
-            '.',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(3, 6),
-              maxLength: 3
-            }),
-            '.',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(6, 9),
-              maxLength: 3
-            }),
-            '-',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(9, 11),
-              maxLength: 2
-            })
-          ]
+        return foam.u2.FormattedTextField.create({ 
+          formatter: [3, '.', 3, '.', 3, '-', 2] 
         }, X);
       }
     },
@@ -201,7 +182,10 @@ foam.CLASS({
       hidden: true,
       factory: function() {
         return this.subject.realUser;
-      }
+      },
+      javaFactory: `
+        return ((Subject) XLocator.get().get("subject")).getRealUser().getId();
+      `
       // depricated but leaving for data migration - script to do this needed - then delete
     }
   ],
