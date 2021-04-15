@@ -311,6 +311,7 @@ foam.CLASS({
 
     async function initE() {
       var view = this;
+      //check properties which readPermissionRequired is true, and return authoruzid properties
       const asyncRes = await this.filterUnpermited(view.of.getAxiomsByClass(foam.core.Property));
       this.allColumns = ! view.of ? [] : [].concat(
         asyncRes.map(a => a.name),
@@ -344,8 +345,10 @@ foam.CLASS({
           addClass(this.myClass('thead')).
           style({ 'min-width': this.tableWidth_$ }).
           show(this.showHeader$).
-          add(this.slot(function(columns_) {
+          add(this.slot(async function(columns_) {
             view.props = this.returnPropertiesForColumns(view, columns_);
+            //check permission for properties
+            view.props = await this.returnAuthoruzidProperties(view.props)
             view.updateValues = ! view.updateValues;
 
             return this.E().
@@ -390,7 +393,7 @@ foam.CLASS({
                 var found = view.props.find(p => p.fullPropertyName === view.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(col));
                 var prop = found ? found.property : view.of.getAxiomByName(view.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(col));
                 var isFirstLevelProperty = view.columnHandler.canColumnBeTreatedAsAnAxiom(col) ? true : col.indexOf('.') === -1;
-
+                
                 if ( ! prop )
                   return;
 
@@ -721,6 +724,10 @@ foam.CLASS({
         var propertyNamesToQuery = columns_.length === 0 ? columns_ : [ 'id' ].concat(obj.filterColumnsThatAllColumnsDoesNotIncludeForArrayOfColumns(obj, columns_).filter(c => ! foam.core.Action.isInstance(obj.of.getAxiomByName(obj.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c)))).map(c => obj.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c)));
         return obj.columnConfigToPropertyConverter.returnPropertyColumnMappings(obj.of, propertyNamesToQuery);
       },
+      async function returnAuthoruzidProperties(arr) {
+        const results = await Promise.all(arr.map( async p => p.property.hidden? false: ! p.property.readPermissionRequired || await this.auth.check(this.of.name + ".ro." + p.property.name)));
+        return arr.filter((_v, index) => results[index]);
+      },
       function shouldColumnBeSorted(c) {
         return c[c.length - 1] === this.DESCENDING_ORDER_CHAR || c[c.length - 1] === this.ASCENDING_ORDER_CHAR;
       },
@@ -733,6 +740,8 @@ foam.CLASS({
       }
   ]
 });
+
+
 foam.CLASS({
   package: 'foam.u2.view',
   name: 'PropertyColumnMapping',
