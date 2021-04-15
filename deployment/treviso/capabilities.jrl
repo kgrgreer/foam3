@@ -190,6 +190,7 @@ p({
       "subjectFromUCJ":false
     }
   },
+  "reviewRequired":false,
   "wizardConfig": {
     "class": "net.nanopay.crunch.wizardlet.SigningOfficerWizardConfig",
     "allowSkipping": false
