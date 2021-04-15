@@ -29,8 +29,7 @@ foam.CLASS({
   exports: [
     'columns',
     'hoverSelection',
-    'selection',
-    // 'memento'
+    'selection'
   ],
 
   imports: [
