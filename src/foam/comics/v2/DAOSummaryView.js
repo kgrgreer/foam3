@@ -331,7 +331,7 @@ foam.CLASS({
                 .end()
                 .start(config$viewBorder)
                   .start()
-                      .add(view)
+                    .add(view)
                     .addClass(self.myClass('view-container'))
                   .end()
                 .end()
