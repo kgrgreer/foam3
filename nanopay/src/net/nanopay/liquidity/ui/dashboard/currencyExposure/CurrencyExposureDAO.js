@@ -30,6 +30,8 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
   imports: [
+    'fxService',
+    'filteredAccountDAO?',
     'accountDAO',
     'balanceDAO',
     'homeDenomination',
@@ -40,19 +42,9 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'delegate',
-      expression: function(homeDenomination, exchangeRateService, user, accountDAO) {
-        var accountDenominationGroupBy = accountDAO.where(
-          this.OR(
-            this.AND(
-              foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' }),
-              this.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
-              this.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
-            ),
-            this.AND(
-              foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.ShadowAccount' }),
-              this.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE)
-            )
-          ))
+      expression: function(homeDenomination, fxService, exchangeRateService, user, filteredAccountDAO, accountDAO) {
+        var daoToUse = filteredAccountDAO ? filteredAccountDAO : accountDAO;
+        var accountDenominationGroupBy = daoToUse
           .select(
             this.GROUP_BY(
               this.Account.DENOMINATION,

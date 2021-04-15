@@ -1,0 +1,77 @@
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"ee716eed-0f0c-4486-b37a-141c5ceca7de",
+  "name":"Central Bank Bilateral Settlement",
+  "priority":100,
+  "ruleGroup":"cb_settlement",
+  "daoKey":"settlementDAO",
+  "operation":0,
+  "after":false,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+    "propName":"type",
+    "propValue":{
+      "class":"net.nanopay.settlement.SettlementType",
+      "ordinal":0
+    }
+  },
+  "action":{
+    "class":"foam.nanos.approval.ApprovableApprovalRequestsRule"
+  },
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid":"cb"
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"a61e7f06-0e39-425c-9d94-5591c8cc7957",
+  "name":"Central Bank Multilateral Settlement",
+  "priority":100,
+  "ruleGroup":"cb_settlement",
+  "daoKey":"settlementDAO",
+  "operation":0,
+  "after":false,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+    "propName":"type",
+    "propValue":{
+      "class":"net.nanopay.settlement.SettlementType",
+      "ordinal":1
+    }
+  },
+  "action":{
+    "class":"foam.nanos.approval.ApprovableApprovalRequestsRule"
+  },
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid":"cb"
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"b5038f3b-91df-4f2b-9aea-94b59a10b38a",
+  "name":"Central Bank Bilateral Net Settlement",
+  "priority":100,
+  "ruleGroup":"cb_settlement",
+  "daoKey":"settlementDAO",
+  "operation":0,
+  "after":false,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+    "propName":"type",
+    "propValue":{
+      "class":"net.nanopay.settlement.SettlementType",
+      "ordinal":2
+    }
+  },
+  "action":{
+    "class":"foam.nanos.approval.ApprovableApprovalRequestsRule"
+  },
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid":"cb"
+})

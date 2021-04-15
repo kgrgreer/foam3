@@ -1,0 +1,125 @@
+p({
+  "class":"foam.nanos.cron.Cron",
+  "id":"GenerateTransactionsForSettlement",
+  "code":"import foam.nanos.auth.User;\nimport foam.mlang.MLang;\nimport foam.mlang.predicate.Predicate;\nimport net.nanopay.account.Account;\nimport net.nanopay.settlement.GroupingAccount;\nimport net.nanopay.settlement.ReserveAccount;\nimport net.nanopay.settlement.BankPlayAccount;\nimport net.nanopay.settlement.BiLateralAccount;\nimport net.nanopay.account.TrustAccount;\nimport net.nanopay.settlement.SettlementAccount;\nimport net.nanopay.settlement.SettlementTransaction;\n\n// Attempt to generate at least this many transactions per second. \ntps = 50000;\nwindow = 50000;\n\nuserDAO = x.get(\"localUserDAO\");\naccountDAO = x.get(\"localAccountDAO\");\ntransactionDAO = x.get(\"localTransactionDAO\");\ncurrency = \"CAD\";\nrandom = new java.util.Random();\n\nbanks = new ArrayList();\naccounts = accountDAO.where(MLang.INSTANCE_OF(SettlementAccount.class)).select().array;\nfor ( a : accounts ) {\n  banks.add(a.findOwner(x));\n}\n\nreserves = accountDAO.where(MLang.INSTANCE_OF(ReserveAccount.class)).select().array;\nreservesToBalance = new HashMap();\n\nfor ( Account account : reserves ){\n  reservesToBalance.put(account.getId(), account.findBalance(x));\n}\n\nusers = userDAO.where(MLang.AND(new Predicate[] { MLang.GTE(User.ID, 800), MLang.LTE(User.ID, 899) }))\n               .select().array;\nprint(users.size());\n\nbankBankAccounts = new HashMap();\nfor ( u : users ) {\n  accounts = accountDAO.where(\n               MLang.AND(new Predicate[] {\n                 MLang.EQ(Account.OWNER, u.getId()),\n                 MLang.NOT(MLang.EQ(Account.ID, 15)),\n                 MLang.AND(new Predicate[] {\n                   MLang.NOT(MLang.INSTANCE_OF(SettlementAccount.class)),\nMLang.NOT(MLang.INSTANCE_OF(BiLateralAccount.class)),\n                   MLang.NOT(MLang.INSTANCE_OF(TrustAccount.class)),\n                   MLang.NOT(MLang.INSTANCE_OF(BankPlayAccount.class)),\n                   MLang.NOT(MLang.INSTANCE_OF(ReserveAccount.class)),\n                   MLang.NOT(MLang.INSTANCE_OF(GroupingAccount.class))                 })\n               })).select().array;\n  if ( accounts.size() > 0 ) {\n    bankBankAccounts.put(u.getId(), accounts);\n    print(u.getId()+\" \"+accounts.size());\n  } else {\n    //users.remove(u);\n  }\n}\n\n\n\nstart = System.currentTimeMillis();\nend = System.currentTimeMillis();\ncount = 0;\ncreated = 0;\n\ndo {\nstart = System.currentTimeMillis();\ncount++;\n\n// select two random banks\n// select random account from each \n// create transaction between\nu = users.get(random.nextInt(users.size()));\nif ( u == null ) {\n  continue;\n}\naccounts = bankBankAccounts.get(u.getId());\nif ( accounts == null ) {\n  continue;\n}\na1 = accounts.get(random.nextInt(accounts.size()));\nif ( a1 == null ) {\n  continue;\n}\nu2 = users.get(random.nextInt(users.size()));\nif ( u2 == null ) {\n  continue;\n}\naccounts = bankBankAccounts.get(u2.getId());\nif ( accounts == null ) {\n  continue;\n}\na2 = accounts.get(random.nextInt(accounts.size()));\nif ( a2 == null ) {\n  continue;\n}\n\nt = new SettlementTransaction();\nt.setSourceCurrency(currency);\nt.setSourceAccount(a1.getId());\nt.setDestinationAccount(a2.getId());\namount1 = a1.findBalance(x) > Integer.MAX_VALUE ? Integer.MAX_VALUE : a1.findBalance(x);\namount2 = reservesToBalance.get(u.getId()-740)/window;\namount = 1;\nif (amount1 > amount2) {\n  amount = amount2;\n}\nelse {\n  amount = amount1;\n}\nt.setAmount(amount);\n\nt = transactionDAO.put(t);\ncreated++;\nend = System.currentTimeMillis();\n\n} while ( end - start < window && count < tps );\n\nprint(\"generated \" +created+\" transactions\");",
+  "output":""
+})
+p({
+  "class":"foam.nanos.cron.Cron",
+  "id":"CENTRAL BANK Bi-Lateral Settlement",
+  "code":
+  """
+  import foam.core.X;
+  import foam.dao.DAO;
+  import foam.dao.ArraySink;
+  import net.nanopay.settlement.SettlementAccount;
+  import net.nanopay.account.TrustAccount;
+  import net.nanopay.settlement.BiLateralAccount;
+  import net.nanopay.tx.DigitalTransaction;
+  import net.nanopay.settlement.SettlementAccountBalanceComparator;
+  import net.nanopay.tx.model.TransactionStatus;
+  import java.util.Collections;
+  import net.nanopay.account.Account;
+  import foam.nanos.script.Script;
+  import static foam.mlang.MLang.*;
+
+  loop = 0;
+  isCompleted = false;
+
+  while ( ! isCompleted && loop < 20 ){
+    loop++;
+    try {
+      // Keep track of the number of settlements
+      count = 0;
+
+      // Retrieve DAOs
+      localTransactionDAO = (DAO) x.get("localTransactionDAO");
+      localAccountDAO = (DAO) x.get("localAccountDAO").where(EQ(Account.DENOMINATION,"CAD"));
+
+      // Lookup the trust and settlement accounts
+      trustAccounts = localAccountDAO.where(INSTANCE_OF(TrustAccount.getOwnClassInfo()));
+      settlementAccounts = localAccountDAO.where(INSTANCE_OF(SettlementAccount.getOwnClassInfo()));
+
+      // Lookup the bilateral accounts
+      biLatDAO = localAccountDAO.where(INSTANCE_OF(BiLateralAccount.getOwnClassInfo()));
+      biLateralAccounts = ((ArraySink) localAccountDAO
+        .where(INSTANCE_OF(BiLateralAccount.getOwnClassInfo()))
+        .select(new ArraySink()))
+        .getArray();
+
+      // Transfer between bilateral accounts
+      if(biLateralAccounts.size() > 0) {
+        for ( Account account : biLateralAccounts ) {
+          bal = account.findBalance(x);
+          
+          // Only transfer if the balance in the bilateral account is positive
+          if(bal > 0) {
+
+            // Find the destination for the money to be transferred to
+            t = trustAccounts.find(account.getSendToAccount());
+            dest1DAO = biLatDAO.where(EQ(BiLateralAccount.OWNER,t.getOwner()));
+            dest1 = dest1DAO.find(EQ(BiLateralAccount.SEND_TO_ACCOUNT,TrustAccount.find(x,account).getId()));
+
+            // Create the transactions to transfer the money
+            // TX 1 - Source bilateral account to destination trust account
+            // TX 2 - Source settlement account to destination settlement account
+            // TX 3 - Source trust account to destination bilateral account
+
+            // TX 1
+            tx = new DigitalTransaction();
+            tx.setAmount(bal);
+            tx.setSourceAccount(account.getId());
+            tx.setDestinationAccount(dest1.getId());
+            tx.setDestinationCurrency("CAD");
+            tx.setSourceCurrency("CAD");
+            tx.setName("Settlement of Bilaterals");
+
+            // TX 2
+            tx2 = tx.fclone();
+            tx3 = tx.fclone();
+            tx4 = tx.fclone();
+
+            tx2.setSourceAccount(account.getSettlementAccount());
+            tx2.setDestinationAccount(dest1.getSettlementAccount());
+            tx2.setName("Settlement of Settlement Accounts");
+            
+            // TX 3 - maybe switch this .. it is equivalent though so works either way
+            tx3.setSourceAccount(TrustAccount.find(x,account).getId());
+            tx3.setDestinationAccount(account.getSendToAccount());
+            tx3.setName("Settlement of Trust Accounts");
+
+            // TX 4 - +30 adjusts for reserve accounts
+            tx4.setDestinationAccount(account.getSettlementAccount()  + 30);
+            tx4.setSourceAccount(dest1.getSettlementAccount() + 30);
+            tx4.setName("Real Money Movement");
+
+            // Put the transactions
+            localTransactionDAO.put(tx);
+            localTransactionDAO.put(tx2);
+            localTransactionDAO.put(tx3);
+            localTransactionDAO.put(tx4);
+
+            // Increment the count of settlements
+            count++;
+          }
+        }
+      }
+
+      isCompleted = true;
+    } catch (Throwable T){
+      print("hit failure on loop " + loop);
+    }
+  }
+
+  print("Loops to complete: " + loop);
+  print("Settlement operations have completed: " + count);
+
+  // print("Initializing Top Up Reserves Script");
+  // scriptDAO = (DAO) x.get("scriptDAO");
+
+  // topUpScript = (Script) scriptDAO.find("Top up Reserves");
+  // topUpScript.runScript(x);
+  print("Finished");
+  """,
+  "output":""
+})

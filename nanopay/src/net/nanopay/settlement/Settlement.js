@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -15,32 +15,23 @@
  * from nanopay Corporation.
  */
 
-/**
- * @license
- * Copyright 2020 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
+// TODO: add created, createdBy, maybe a status? - can be for now boolean just isSucceeded
 
-foam.CLASS({
-  package: 'net.nanopay.sme.onboarding',
-  name: 'BusinessDirectorArrayView',
-  extends: 'foam.u2.view.FObjectArrayView',
+ foam.CLASS({
+  package: 'net.nanopay.settlement',
+  name: 'Settlement',
 
-  messages: [
-    { name: 'ADD_MSG', message: '+ Add' }
-  ],
+  documentation: 'The base model for Settlements in regards to Central Bank.',
 
   properties: [
-    'name'
-  ],
-
-  methods: [
     {
-      name: 'init',
-      code: function() {
-        this.SUPER();
-        this.ADD_ROW.label = this.ADD_MSG + ' ' +this.name;
-      }
+      class: 'String',
+      name: 'id'
+    },
+    {
+      class: 'Enum',
+      of: 'net.nanopay.settlement.SettlementTypes',
+      name: 'type'
     }
-  ],
+  ]
 });

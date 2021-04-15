@@ -558,6 +558,19 @@ FOAM_FILES([
   //integration
   { name: 'net/nanopay/integration/ErrorCode' },
 
+  //Central Bank
+  { name: 'net/nanopay/settlement/MaldivianPlanner' },
+  { name: 'net/nanopay/settlement/SettlementTransaction' },
+  { name: 'net/nanopay/settlement/SettlementAccount' },
+  { name: 'net/nanopay/settlement/ReserveAccount' },
+  { name: 'net/nanopay/settlement/BankPlayAccount' },
+  { name: 'net/nanopay/settlement/GroupingAccount' },
+  { name: 'net/nanopay/settlement/BiLateralAccount' },
+  { name: 'net/nanopay/settlement/SettlementAccountBalanceComparator' },
+  { name: 'net/nanopay/settlement/SettlementDashboard' },
+  { name: 'net/nanopay/settlement/Settlement' },
+  { name: 'net/nanopay/settlement/SettlementTypes' },
+
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
 
@@ -1929,6 +1942,11 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/cron/OnboardingReminderNotification'},
   { name: 'net/nanopay/notification/PermissionedNotificationSettingRule'},
   { name: 'net/nanopay/sme/ruler/BusinessCompliancePassedEmailNotification'},
+  
+  // central bank
+  { name: 'net/nanopay/cb/commercial/Dashboard'},
+  { name: 'net/nanopay/cb/central/Dashboard'},
+  { name: 'net/nanopay/cb/BusinessDetailView', flags: ['web'] },
 
   //br business sector
   { name: 'net/nanopay/partner/br/businessSector/Sector' },

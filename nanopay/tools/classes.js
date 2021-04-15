@@ -680,6 +680,18 @@ var classes = [
   'net.nanopay.tx.ExpiredTransactionException',
   'net.nanopay.tx.ruler.UpdateTxOnApprovalRequestStatusChange',
 
+  // TODO: From Maldives To Be ReWorked
+  'net.nanopay.settlement.GroupingAccount',
+  'net.nanopay.settlement.ReserveAccount',
+  'net.nanopay.settlement.BankPlayAccount',
+  'net.nanopay.settlement.SettlementAccount',
+  'net.nanopay.settlement.SettlementTransaction',
+  'net.nanopay.settlement.MaldivianPlanner',
+  'net.nanopay.settlement.BiLateralAccount',
+  'net.nanopay.settlement.SettlementAccountBalanceComparator',
+  'net.nanopay.settlement.Settlement',
+  'net.nanopay.settlement.SettlementTypes',
+
   'net.nanopay.fx.FXService',
   'net.nanopay.fx.client.ClientFXService',
   'net.nanopay.fx.FXAccepted',

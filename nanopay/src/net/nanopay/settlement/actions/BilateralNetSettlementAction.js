@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -15,32 +15,25 @@
  * from nanopay Corporation.
  */
 
-/**
- * @license
- * Copyright 2020 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
+ foam.CLASS({
+  package: 'net.nanopay.settlement.actions',
+  name: 'BilateralNetSettlementAction',
 
-foam.CLASS({
-  package: 'net.nanopay.sme.onboarding',
-  name: 'BusinessDirectorArrayView',
-  extends: 'foam.u2.view.FObjectArrayView',
+  documentation: `
+    Under CB, to settle the balances of direct clearers using a Bilateral Net method. 
+    
+    Bilateral netting is when two parties combine all their balances into one 
+    master balance, creating one net payment, instead of many, between the parties.
+  `,
 
-  messages: [
-    { name: 'ADD_MSG', message: '+ Add' }
-  ],
-
-  properties: [
-    'name'
-  ],
+  implements: ['foam.nanos.ruler.RuleAction'],
 
   methods: [
     {
-      name: 'init',
-      code: function() {
-        this.SUPER();
-        this.ADD_ROW.label = this.ADD_MSG + ' ' +this.name;
-      }
+      name: 'applyAction',
+      javaCode: `
+        TODO: Going to rework transactions for CB
+      `
     }
-  ],
+  ]
 });

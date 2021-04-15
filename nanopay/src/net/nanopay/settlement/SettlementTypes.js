@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -15,32 +15,13 @@
  * from nanopay Corporation.
  */
 
-/**
- * @license
- * Copyright 2020 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
+ foam.ENUM({
+  package: 'net.nanopay.settlement',
+  name: 'SettlementTypes',
 
-foam.CLASS({
-  package: 'net.nanopay.sme.onboarding',
-  name: 'BusinessDirectorArrayView',
-  extends: 'foam.u2.view.FObjectArrayView',
-
-  messages: [
-    { name: 'ADD_MSG', message: '+ Add' }
-  ],
-
-  properties: [
-    'name'
-  ],
-
-  methods: [
-    {
-      name: 'init',
-      code: function() {
-        this.SUPER();
-        this.ADD_ROW.label = this.ADD_MSG + ' ' +this.name;
-      }
-    }
-  ],
+  values: [
+      { name: 'BILATERAL', label: 'Bilateral' },
+      { name: 'MULTILATERAL', label: 'Multilateral' },
+      { name: 'BILATERAL_NET', label: 'Bilateral Net' },
+  ]
 });
