@@ -201,6 +201,8 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
+      // IMPORTANT: Any fix here may also apply to BrazilBusinessInfoData.js
+
       // These should be valid before making API call
       try {
         this.BIRTHDAY.validateObj(x, this);
