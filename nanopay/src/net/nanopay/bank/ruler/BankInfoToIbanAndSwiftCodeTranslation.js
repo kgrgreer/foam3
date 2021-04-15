@@ -17,9 +17,9 @@
 
 foam.CLASS({
   package: 'net.nanopay.bank.ruler',
-  name: 'SwiftBicCodeTranslation',
+  name: 'BankInfoToIbanAndSwiftCodeTranslation',
 
-  documentation: 'Convert SWIFT/BIC code into bank info.',
+  documentation: 'Convert domestic bank info to Iban and SWIFT/BIC code.',
 
   implements: [ 'foam.nanos.ruler.RuleAction' ],
 
@@ -30,25 +30,23 @@ foam.CLASS({
     'net.nanopay.bank.BankAccountValidationService'
   ],
 
+  messages: [
+    { name: 'BANK_ACCOUNT_VALIDATION_FAILED', message: 'Bank Account Validation Failed' }
+  ],
+
   methods: [
     {
       name: 'applyAction',
       javaCode: `
-        BankAccount account = (BankAccount) obj;
-        if ( ! SafetyUtil.isEmpty(account.getSwiftCode()) ) {
-          var bankAccountValidationService = (BankAccountValidationService) x.get("bankAccountValidationService");
-          try {
-            var routingCode = bankAccountValidationService.convertToRoutingCode(x,
-              account.getCountry(), account.getSwiftCode());
-
-            if ( ! SafetyUtil.isEmpty(routingCode) ) {
-              account.setBankRoutingCode(routingCode);
-            } else {
-              throw new ValidationException(BankAccount.SWIFT_CODE_INVALID);
-            }
-          } catch ( RuntimeException e ) {
-            throw new ValidationException(BankAccount.SWIFT_CODE_INVALID, e);
-          }
+        var account = (BankAccount) obj;
+        var bankAccountValidationService = (BankAccountValidationService) x.get("bankAccountValidationService");
+        try {
+          var ret = bankAccountValidationService.convertToIbanAndSwiftCode(x,
+            account.getCountry(), account.getRoutingCode_(), account.getAccountNumber());
+          account.setIban(ret[0]);
+          account.setSwiftCode(ret[1]);
+        } catch ( RuntimeException e ) {
+          throw new ValidationException(BANK_ACCOUNT_VALIDATION_FAILED, e);
         }
       `
     }

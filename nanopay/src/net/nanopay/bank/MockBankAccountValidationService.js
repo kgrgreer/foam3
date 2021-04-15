@@ -27,6 +27,10 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'stubRoutingCodeMap'
+    },
+    {
+      class: 'Map',
+      name: 'stubIbanMap'
     }
   ],
 
@@ -35,6 +39,21 @@ foam.CLASS({
       name: 'convertToRoutingCode',
       javaCode: `
         return (String) getStubRoutingCodeMap().get(countryCode);
+      `
+    },
+    {
+      name: 'convertToSwiftCode',
+      javaCode: `
+        return "ABCDEFGH";
+      `
+    },
+    {
+      name: 'convertToIbanAndSwiftCode',
+      javaCode: `
+        return new String[] {
+          (String) getStubIbanMap().get(countryCode),
+          "ABCDEFGH",
+        };
       `
     }
   ]

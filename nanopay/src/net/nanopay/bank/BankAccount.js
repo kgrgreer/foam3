@@ -176,6 +176,7 @@ foam.CLASS({
     { name: 'BRANCH_ID_INVALID', message: 'Branch invalid' },
     { name: 'SWIFT_CODE_REQUIRED', message: 'SWIFT/BIC code required' },
     { name: 'SWIFT_CODE_INVALID', message: 'SWIFT/BIC code invalid' },
+    { name: 'SWIFT_CODE_VALIDATION_FAILED', message: 'SWIFT/BIC code validation failed' },
     { name: 'IBAN_REQUIRED', message: 'IBAN required' },
     { name: 'IBAN_INVALID', message: 'IBAN invalid' },
     { name: 'IBAN_INVALIDATION_FAILED', message: 'IBAN validation failed' },
@@ -858,6 +859,7 @@ foam.CLASS({
           name: 'x', type: 'Context'
         }
       ],
+      documentation: 'Get routing code from bank and branch codes. Only applicable when the bank account is saved. Otherwise, use getRoutingCode_() instead.',
       javaCode: `
         // Use bank and branch codes if present and fallback to bankRoutingCode.
         // The bankRoutingCode could be of the bank head office instead of the
@@ -865,6 +867,17 @@ foam.CLASS({
         var code = new StringBuilder();
         code.append(getBankCode(x))
             .append(getBranchCode(x));
+        return code.length() > 0 ? code.toString() : getBankRoutingCode();
+      `
+    },
+    {
+      name: 'getRoutingCode_',
+      type: 'String',
+      documentation: 'Get routing code from transient bank and branch codes before the bank account is saved.',
+      javaCode: `
+        var code = new StringBuilder();
+        code.append(getInstitutionNumber())
+            .append(getBranchId());
         return code.length() > 0 ? code.toString() : getBankRoutingCode();
       `
     },
