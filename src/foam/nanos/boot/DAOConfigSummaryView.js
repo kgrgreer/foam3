@@ -359,8 +359,6 @@ foam.CLASS({
       x.register(this.CustomDAOSummaryView,    'foam.comics.v2.DAOSummaryView');
       x.register(this.CustomDAOUpdateView,     'foam.comics.v2.DAOUpdateView');
       x.register(foam.u2.DetailView,           'foam.u2.DetailView');
-
-
       
       this.memento.parentFeedback_ = true;
 
