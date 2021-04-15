@@ -319,7 +319,9 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ruler/CorridorAuthorizationRule' },
   { name: 'net/nanopay/bank/ruler/VerifyBankRule' },
   { name: 'net/nanopay/bank/ruler/CapabilityAddBankAccountRule' },
-  { name: 'net/nanopay/bank/ruler/SwiftBicCodeTranslation' },
+  { name: 'net/nanopay/bank/ruler/BankInfoToIbanAndSwiftCodeTranslation' },
+  { name: 'net/nanopay/bank/ruler/IbanToSwiftCodeTranslation' },
+  { name: 'net/nanopay/bank/ruler/SwiftCodeToBankRoutingCodeTranslation' },
   { name: 'net/nanopay/country/br/ruler/BRBankAccountCapabilityOnGrantRule' },
 
   // fx
