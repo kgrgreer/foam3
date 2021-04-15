@@ -9,6 +9,6 @@ p({
     "copyright":"Copyright © 2017-@{currentYear} nanopay Corp. All rights reserved.",
     "termsAndCondLink":"/service/file/1f406b9b-bde4-58ff-f171-657627581f61",
     "url":"https://treviso.nanopay.net",
-    "mode":0
+    "mode":2
   }
 })

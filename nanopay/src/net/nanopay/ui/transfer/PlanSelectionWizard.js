@@ -179,7 +179,7 @@ foam.CLASS({
                 self.currency = await self.currencyDAO.find(q.plans[i].sourceCurrency);
                 self.formattedAmount = self.currency.format(plan.amount);
               });
-              let checkBox = foam.u2.md.CheckBox.create({ id: i, data: i === 0 });
+              let checkBox = foam.u2.CheckBox.create({ id: i, data: i === 0 });
               checkBox.data$.sub(function() {
                 if ( checkBox.data ) {
                   self.checkedPlan = checkBox.id;

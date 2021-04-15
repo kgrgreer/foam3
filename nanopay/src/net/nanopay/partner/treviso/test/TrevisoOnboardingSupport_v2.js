@@ -24,6 +24,10 @@ foam.CLASS({
   var functonIdNameParser= function(id) { let st = id.replaceAll('-','_'); return '_'+st; }
   `,
 
+  imports: [
+    'crunchService'
+  ],
+
   methods: [
     {
       name: 'createUser',
@@ -81,6 +85,7 @@ foam.CLASS({
             throw 'User not created ('+userName+')';
           }
         }
+        this.user = u;
         return u;
       }
     },
@@ -120,7 +125,7 @@ foam.CLASS({
         var ucj = await this.crunchService.getJunction(x, id);
         // note: !ucj not needed (anywhere)
         if ( ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          let bHolder = foam.core.BooleanHolder.create({ value: true });
+          let bHolder = foam.core.RequiredBooleanHolder.create({ value: true });
           ucj = await this.crunchService.updateJunction(x, id, bHolder, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
         }
         return ucj;

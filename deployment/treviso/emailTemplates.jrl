@@ -1,7 +1,7 @@
-// id convention: if the template exists in nanopay/src/emailTemplates or foam2/src/emailTemplates
+// id convention: if the template exists in nanopay/src/emailTemplates or foam3/src/emailTemplates
 // use that id, else append treviso-n at the end where n is a number
 
-// The following 1 entry was copied from "foam2/src/emailTemplates"
+// The following 1 entry was copied from "foam3/src/emailTemplates"
 p({
   "class":"foam.nanos.notification.email.EmailTemplate",
   "id":"4f45c745-1c93-4380-b275-2d2fea091d1e-1",
@@ -627,8 +627,30 @@ p({
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-81",
   "name": "notification",
   "group": "*",
+  "locale": "en",
   "subject": "Notification from {{appName}}",
-  "body": "\n\n<include template = 'nanopay-email-base'>\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n<div style=\" display: block; margin-top: 20.8px; \"><p style=\"margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\">Hi, you received new {{type}} notification </p></div>\n<div style=\" display: block; margin-top: 20px; margin-bottom: 20px\"><p style=\"font-size:12px;  margin: 0px 0px; color:#777777\">Learn more at <a href=\"http://www.nanopay.net\" style=\"color:#59a5d5\">nanopay.net</a></p></div>\n\n</td> \n</tr>\n\n</include>"
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"/>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> {{body}} </p>
+      <br>
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-81-pt",
+  "name": "notification",
+  "group": "*",
+  "locale": "pt",
+  "subject": "Notificação de {{appName}}",
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> {{body}} </p>
+      <br>
+    </include>
+  """
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
@@ -1554,7 +1576,7 @@ p({
     <include template = 'treviso-email-base_2'>
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"> Great news! </p>
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">{{business}} is all set to send payments on {{appName}}.</p>
-      <a href="{{link}}" style="text-decoration: none;">
+      <a href="{{appLink}}" style="text-decoration: none;">
         <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
           <p style = "padding: 14px 0 0; margin: 0;">Sign in</p>
         </div>
@@ -1576,7 +1598,7 @@ p({
     <include template = 'treviso-email-base_2'>
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"> Boas notícias ! </p>
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">{{business}} está pronto para enviar pagamentos!</p>
-      <a href="{{link}}" style="text-decoration: none;">
+      <a href="{{appLink}}" style="text-decoration: none;">
         <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
           <p style = "padding: 14px 0 0; margin: 0;">Assinar em</p>
         </div>
@@ -2582,6 +2604,85 @@ p({
       <strong>
       O não envio dos fundos causará o cancelamento automático desta transação.
       </strong>
+    </include>
+  """
+})
+
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-157",
+  "name": "approvalRequestNotification",
+  "group": "fraud-ops",
+  "locale": "en",
+  "displayName": "{{appName}}",
+  "subject": "Notification from {{appName}}",
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"> {{type}} </p>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">You received {{body}} </p>
+      <a href="{{appLink}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Go to {{appName}}</p>
+        </div>
+      </a>
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-157-pt",
+  "name": "approvalRequestNotification",
+  "group": "fraud-ops",
+  "locale": "pt",
+  "displayName": "{{appName}}",
+  "subject": "Notificação de solicitação de aprovação de {{appName}}",
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"> {{type}} </p>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> Você recebeu {{body}} </p>
+      <a href="{{appLink}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Vá para {{appName}}</p>
+        </div>
+      </a>
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-158",
+  "name": "rejectApprovalRequestNotification",
+  "group": "treviso-fraud-ops",
+  "locale": 'en',
+  "subject": "Approval Request Rejected Notification from {{appName}}",
+  "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"/>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> our {{classification}} approval request has been rejected by {{rejectedBy}}. {{memo}} </p>
+      <a href="{{appLink}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Go to {{appName}}</p>
+        </div>
+      </a>
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-158-pt",
+  "name": "rejectApprovalRequestNotification",
+  "group": "treviso-fraud-ops",
+  "locale": 'pt',
+  "subject": "Notificação de solicitação de aprovação rejeitada de {{appName}}",
+    "body": """
+    <include template = 'treviso-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"/>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> Seu {{classification}} o pedido de aprovação foi rejeitado por {{rejectedBy}}. {{memo}}</p>
+      <a href="{{appLink}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Vá para {{appName}}</p>
+        </div>
+      </a>
     </include>
   """
 })

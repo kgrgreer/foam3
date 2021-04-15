@@ -3,24 +3,21 @@ package net.nanopay.tx.cico;
 import foam.blob.Blob;
 import foam.blob.BlobService;
 import foam.blob.FileBlob;
-import foam.blob.IdentifiedBlob;
 import foam.blob.InputStreamBlob;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.alarming.Alarm;
-import foam.nanos.alarming.AlarmReason;
 import foam.nanos.fs.File;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 
-import java.io.ByteArrayInputStream;
+
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.Base64;
-
+import org.apache.commons.io.FilenameUtils;
 
 public class EFTFileUtil {
 
@@ -72,13 +69,10 @@ public class EFTFileUtil {
       throw new foam.core.FOAMException(new IOException("File not found"));
     } else {
       try {
-        InputStreamBlob blob = (InputStreamBlob) file.getData();
-        InputStream inputStream = (ByteArrayInputStream) blob.getInputStream();
-        byte[] byteArray = new byte[inputStream.available()];
-        inputStream.read(byteArray);
-        java.io.File tempFile = java.io.File.createTempFile(file.getFilename(), file.getMimeType());
+        java.io.File tempFile = java.io.File.createTempFile(FilenameUtils.getBaseName(file.getFilename()),
+          FilenameUtils.getExtension(file.getFilename()));
         FileOutputStream fos = new FileOutputStream(tempFile);
-        fos.write(byteArray);
+        fos.write(file.getText().getBytes());
         return tempFile;
       } catch(IOException t) {
         Logger logger = (Logger) x.get("logger");

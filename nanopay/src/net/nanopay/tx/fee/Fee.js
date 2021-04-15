@@ -80,6 +80,18 @@ foam.CLASS({
       visibility: 'HIDDEN'    // not being used in FeeEngine
     },
     {
+      class: 'Class',
+      name: 'feeClass',
+      section: 'basicInfo'
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'feeAccount',
+      section: 'basicInfo',
+      documentation: 'Set fee account to create transfers for the fee line item added.'
+    },
+    {
       name: 'isPassThroughFee',
       class: 'Boolean',
       value: false,

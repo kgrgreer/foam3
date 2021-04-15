@@ -178,21 +178,6 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'rootAccounts',
-      documentation: 'Array of root accounts viewable by user',
-      factory: function() {
-        return [];
-      },
-      preSet: function(_, n) {
-        // pre processes the [Account] into [[Account, String]] for choice view
-        var accounts = [];
-        n.forEach((root) => {
-          accounts.push([root, root.toSummary()]);
-        });
-        return accounts;
-      }
-    },
-    {
       name: 'childAccounts',
       documentation: 'array for ChoiceView choices',
       factory: function() {
@@ -224,14 +209,21 @@ foam.CLASS({
       }));
 
       var self = this;
-      this.accountHierarchyService.getViewableRootAccounts(this.__subContext__, this.user.id).then((roots) => {
-        this.rootAccounts = roots;
-      });
       // sub to selected root
       this.onDetach(this.selectedRoot$.sub(this.rootChanged));
 
       this.addClass(this.myClass());
       this
+        .add(this.accountHierarchyService.getViewableRootAccounts(this.__subContext__, this.user.id).then(roots => {          
+          var rootChoices = [];
+
+          roots.forEach((root) => {
+            rootChoices.push([root.id, root.toSummary()]);
+          });
+
+          this.selectedRoot =  rootChoices[0][0];
+
+          return self.E()
         .start(this.Cols).addClass(this.myClass('header'))
           .start().addClass(this.myClass('title'))
             .add(this.VIEW_HEADER)
@@ -242,7 +234,7 @@ foam.CLASS({
             .start().addClass(this.myClass('selector'))
               .start({
                 class: 'foam.u2.view.ChoiceView',
-                choices$: this.rootAccounts$,
+                choices: rootChoices,
                 data$: this.selectedRoot$,
                 placeholder: 'Select Base Account'
               }).end()
@@ -284,7 +276,7 @@ foam.CLASS({
           .end()
         .endContext()
         .start('div', null, this.canvasContainer$).addClass(this.myClass('canvas-container'))
-          .add(this.slot((selectedRoot) => this.accountDAO.find(selectedRoot).then((a) => {
+          .add(this.slot(selectedRoot => this.accountDAO.find(selectedRoot).then(a => {
             if ( ! a ) {
               return self.E()
                 .start().addClass(self.myClass('container-message'))
@@ -308,6 +300,7 @@ foam.CLASS({
           }))
         )
         .end()
+      }))
     },
 
     function scrollToAccount(accountId){

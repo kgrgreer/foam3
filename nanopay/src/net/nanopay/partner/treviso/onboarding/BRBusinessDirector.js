@@ -36,12 +36,6 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'INVALID_DATE_ERROR', message: 'Valid date of birth required' },
-    { name: 'UNDER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old' },
-    { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be less than 125 years old' },
-    { name: 'INVALID_CPF', message: 'Valid CPF number required' },
-    { name: 'INVALID_CPF_CHECKED', message: 'Unable to validate CPF number and birthdate combination. Please update and try again.' },
-    { name: 'INVALID_DIRECTOR_NAME', message: 'Confirm your administrator\’s or legal representative name' },
     { name: 'FOREIGN_ID_ERROR', message: 'Identification Document required' },
     { name: 'NATIONALITY_ERROR', message: 'Nationality required' },
     { name: 'YES', message: 'Yes' },
@@ -76,166 +70,14 @@ foam.CLASS({
           },
           errorMessage: 'FOREIGN_ID_ERROR'
         }
-      ],
-      externalTransient: true
-    },
-    foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
-      name: 'birthday',
-      label: 'Date of birth',
-      validationPredicates: [
-        {
-          args: ['birthday'],
-          predicateFactory: function(e) {
-            return e.NEQ(
-              net.nanopay.partner.treviso.onboarding.BRBusinessDirector
-                .BIRTHDAY,
-              null);
-          },
-          errorMessage: 'INVALID_DATE_ERROR'
-        },
-        {
-          args: ['birthday'],
-          predicateFactory: function(e) {
-            var limit = new Date();
-            limit.setDate(limit.getDate() - ( 18 * 365 ));
-            return e.LT(
-              net.nanopay.partner.treviso.onboarding.BRBusinessDirector
-                .BIRTHDAY,
-              limit);
-          },
-          errorMessage: 'UNDER_AGE_LIMIT_ERROR'
-        },
-        {
-          args: ['birthday'],
-          predicateFactory: function(e) {
-            var limit = new Date();
-            limit.setDate(limit.getDate() - ( 125 * 365 ));
-            return e.GT(
-              net.nanopay.partner.treviso.onboarding.BRBusinessDirector
-                .BIRTHDAY,
-              limit);
-          },
-          errorMessage: 'OVER_AGE_LIMIT_ERROR'
-        }
-      ],
-      postSet: function(_, _) {
-        this.cpfName = '';
-        if ( this.cpf.length == 11 ) {
-          this.getCpfName(this.cpf).then(v => {
-            this.cpfName = v;
-          });
-        }
-      }
-    }),
-    {
-      class: 'String',
-      name: 'cpf',
-      label: 'Cadastro de Pessoas Físicas (CPF)',
-      required: true,
-      validationPredicates: [
-        {
-          args: ['cpfName', 'cpf'],
-          predicateFactory: function(e) {
-            return e.EQ(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.partner.treviso.onboarding.BRBusinessDirector
-                    .CPF
-                  }), 11);
-          },
-          errorMessage: 'INVALID_CPF'
-        },
-        {
-          args: ['cpf', 'cpfName'],
-          predicateFactory: function(e) {
-            return e.AND(
-              e.GT(
-                net.nanopay.partner.treviso.onboarding.BRBusinessDirector
-                  .CPF_NAME, 0),
-              e.EQ(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.partner.treviso.onboarding.BRBusinessDirector
-                    .CPF
-                  }), 11)
-              );
-          },
-          errorMessage: 'INVALID_CPF_CHECKED'
-        }
-      ],
-      externalTransient: true,
-      tableCellFormatter: function(val) {
-        return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
-      },
-      postSet: function(_,n) {
-        if ( n.length == 11 && this.verifyName !== true ) {
-          this.cpfName = "";
-          this.getCpfName(n).then(v => {
-            this.cpfName = v;
-          });
-        }
-      },
-      view: function(_, X) {
-        return foam.u2.FragmentedTextField.create({
-          delegates: [
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cpf.slice(0, 3),
-              maxLength: 3
-            }),
-            '.',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cpf.slice(3, 6),
-              maxLength: 3
-            }),
-            '.',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cpf.slice(6, 9),
-              maxLength: 3
-            }),
-            '-',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cpf.slice(9, 11),
-              maxLength: 2
-            })
-          ]
-        });
-      }
-    },
-    {
-      class: 'String',
-      name: 'cpfName',
-      label: '',
-      hidden: true,
-      externalTransient: true
-    },
-    {
-      class: 'Boolean',
-      name: 'verifyName',
-      visibility: function(cpfName) {
-        return cpfName.length > 0 ?
-          foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
-      },
-      label: 'Is this your administrator or legal representative?',
-      view: function(n, X) {
-        var self = X.data$;
-        return foam.u2.CheckBox.create({
-          labelFormatter: function() {
-            this.start('span')
-              .add(self.dot('cpfName'))
-            .end();
-          }
-        });
-      },
-      validationPredicates: [
-        {
-          args: ['verifyName'],
-          predicateFactory: function(e) {
-            return e.EQ(
-              net.nanopay.partner.treviso.onboarding.BRBusinessDirector
-                .VERIFY_NAME,
-              true);
-          },
-          errorMessage: 'INVALID_DIRECTOR_NAME'
-        }
       ]
+    },
+    
+    {
+      class: 'FObjectProperty',
+      name: 'cpf',
+      label: '',
+      of: 'net.nanopay.country.br.CPF'
     },
     {
       class: 'Reference',
@@ -272,7 +114,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'hasSignedContratosDeCambio',
+      name: 'hasSignedContratosDeCambioDirector',
       label: 'Has this business director signed the foreign exchange contract?',
       help: `
         Foreign exchange contract (Contratos de câmbio) is a legal arrangement in which the
@@ -347,15 +189,6 @@ foam.CLASS({
           errorMessage: 'PROOF_OF_IDENTIFICATION'
         }
       ]
-    }
-  ],
-  methods: [
-    {
-      name: 'getCpfName',
-      code: async function(cpf) {
-        return await this.brazilVerificationService
-          .getCPFNameWithBirthDate(this.__subContext__, cpf, this.birthday);
-      }
     }
   ]
 });

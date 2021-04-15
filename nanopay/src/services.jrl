@@ -84,7 +84,7 @@ p({
       "className": "foam.nanos.servlet.ImageServlet",
       "pathSpec": "/images/*",
       "initParameters": {
-        "paths": "images:merchant/src/net/nanopay/merchant/images:nanopay/src/net/nanopay/images:foam2/src/foam/support/images:foam2/src/foam/u2/images"
+        "paths": "images:merchant/src/net/nanopay/merchant/images:nanopay/src/net/nanopay/images:foam3/src/foam/support/images:foam3/src/foam/u2/images"
       }
     }, {
       "class": "foam.nanos.servlet.ServletMapping",
@@ -2436,28 +2436,36 @@ p({
     userCap =  new foam.nanos.crunch.UserCapabilityJunctionDAO.Builder(x).setDelegate(dao).build();
     return userCap;
   """,
-  "client":"{
-    \"of\":\"foam.nanos.crunch.UserCapabilityJunction\",
-    \"remoteListenerSupport\": false,
-    \"decorators\": [
-      {
-        \"class\":\"foam.nanos.fs.FileArrayDAODecorator\",
-        \"skipToData\": true
-      }
-    ]
-  }"
+  "client":"""
+    {
+      "of":"foam.nanos.crunch.UserCapabilityJunction",
+      "remoteListenerSupport": false,
+      "decorators": [
+        {
+          "class":"foam.nanos.fs.FileArrayDAODecorator",
+          "skipToData": true
+        },
+        {
+          "class":"foam.dao.LockDAO"
+        }
+      ]
+    }
+  """
 })
 
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"bareUserCapabilityJunctionDAO",
   "serviceScript":"""
+    decorator = new foam.dao.history.HistoryDAO(x, "userCapabilityJunctionHistoryDAO", new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo()).build());
+    decorator.setPutPredicate(new foam.nanos.crunch.predicate.IsAgentUpdate());
     mdao = new foam.dao.MDAO(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo());
     mdao.addIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID, foam.nanos.crunch.UserCapabilityJunction.TARGET_ID });
     mdao.addIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID });
     inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "userCapabilityJunctions", "true".equals(System.getProperty("CLUSTER")));
     dao = new foam.dao.EasyDAO.Builder(x)
       .setMdao(mdao)
+      .setDecorator(decorator)
       .setAuthorize(false)
       .setGuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
@@ -2521,5 +2529,27 @@ p({
     "of":"foam.nanos.auth.Country",
     "cache": false
   }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "settlementDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.settlement.Settlement.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("settlements")
+      .setValidated(true)
+      .setGuid(true)
+      .build();
+  """,
+  "client":
+  """
+    {
+      "of": "net.nanopay.settlement.Settlement"
+    }
   """
 })

@@ -52,7 +52,8 @@ foam.CLASS({
     'net.nanopay.model.Invitation',
     'net.nanopay.tx.ConfirmationFileLineItem',
     'net.nanopay.tx.FxSummaryTransactionLineItem',
-    'net.nanopay.tx.FeeSummaryTransactionLineItem'
+    'net.nanopay.tx.FeeSummaryTransactionLineItem',
+    'net.nanopay.tx.TaxLineItem'
   ],
 
   imports: [
@@ -73,6 +74,7 @@ foam.CLASS({
     'notify',
     'stack',
     'transactionDAO',
+    'translationService',
     'user',
     'userDAO'
   ],
@@ -313,6 +315,14 @@ foam.CLASS({
       name: 'exchangeRateInfo'
     },
     {
+      class: 'FObjectArray',
+      of: 'net.nanopay.tx.TaxLineItem',
+      name: 'taxItems',
+      factory: function() {
+        return [];
+      }
+    },
+    {
       class: 'String',
       name: 'fee'
     },
@@ -449,13 +459,17 @@ foam.CLASS({
 
             // Find FXLineItems and FeeLineItems
             let lineItems = transaction.lineItems;
+            let taxes = [];
             for ( i=0; i < lineItems.length; i++ ) {
               if ( this.FxSummaryTransactionLineItem.isInstance(lineItems[i]) ) {
                 this.exchangeRateInfo = lineItems[i].rate;
               } else if ( this.FeeSummaryTransactionLineItem.isInstance(lineItems[i]) ) {
                 this.fee = lineItems[i].totalFee;
+              } else if ( this.TaxLineItem.isInstance(lineItems[i]) ) {
+                taxes.push(lineItems[i]);
               }
             }
+            this.taxItems = taxes;
 
           } else if ( transaction.type === 'AbliiTransaction' ) {
             this.currencyDAO.find(transaction.sourceCurrency)
@@ -617,6 +631,22 @@ foam.CLASS({
                   .end()
                 .end()
                 .start().addClass('invoice-row')
+                  .forEach(this.taxItems$, function(t) {
+                    this
+                      .start().addClass('invoice-text')
+                        .start().addClass('table-content')
+                          .add(self.translationService.getTranslation(foam.locale, 'net.nanopay.tx.TaxLineItem.NAME.' + t.name, t.name))
+                        .end()
+                        .add(this.PromiseSlot.create({
+                          promise: self.currencyDAO.find(t.currency).then((currency) => {
+                            return currency.format(t.amount);
+                          }),
+                          value: '--',
+                        }))
+                      .end()
+                  })
+                .end()
+                .start().addClass('invoice-row')
                   .start().addClass('invoice-text')
                     .start().addClass('table-content').add(this.AMOUNT_DUE).end()
                     .add(this.PromiseSlot.create({
@@ -632,6 +662,7 @@ foam.CLASS({
                     .start().add('--').hide(this.isProcessOrComplete$).end()
                   .end()
                 .end()
+
                 // NOTE: Temporarily hiding til we refactor invoice view
 //                .start().addClass('invoice-row')
 //                  .start().show(this.isProcessOrComplete$)
@@ -722,7 +753,7 @@ foam.CLASS({
       }).catch((err) => {
         this.notify(this.RECONCILED_ERROR, '', this.LogLevel.ERROR, true);
       });
-    }
+    },
   ],
 
   actions: [
