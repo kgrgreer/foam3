@@ -347,7 +347,6 @@ foam.CLASS({
 
       this.onDetach(this.memento.changeIndicator$.sub(function () {
         if ( self.memento.parentFeedback_ ) return;
-        
         self.memento.value = self.memento.combine();
 
         if ( ! self.memento.feedback_ )
