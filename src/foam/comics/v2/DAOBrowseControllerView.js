@@ -138,7 +138,7 @@ foam.CLASS({
   methods: [
     function initE() {
     this.SUPER();
-    
+
     var self = this;
     var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
     this.addClass(this.myClass())
