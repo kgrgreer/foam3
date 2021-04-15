@@ -156,7 +156,6 @@ p({class:"foam.i18n.Locale",locale:"pt","source":"554af38a-8225-87c8-dfdf-eeb15f
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.SECTION_DIRECTORS_INFO_SECTION.title",target:"Informações dos Administradores e Representantes Legais"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.ADD_NAME",target:"Administradores ou Representantes Legais"})
-// p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.NEED_DIRECTOR.label",target:"precisam de administradores e representantes legais"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.NO_DIRECTOR_INFO",target:"São necessárias informações de administradores e representantes legais"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.DIRECTOR_INFO_NOT_VALID",target:"As informações de administradores e representantes legais não são válidas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.BUSINESS_DIRECTORS.documentation",target:"Conjunto de administradores e representantes legais"})
