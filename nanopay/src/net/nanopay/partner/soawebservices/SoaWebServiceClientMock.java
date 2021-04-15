@@ -18,28 +18,42 @@ package net.nanopay.partner.soawebservices;
 
 import foam.core.ContextAwareSupport;
 import foam.core.X;
+import foam.nanos.app.AppConfig;
 import foam.nanos.logger.Logger;
 
 public class SoaWebServiceClientMock extends ContextAwareSupport implements SoaWebService {
 
   private Logger logger;
+  private AppConfig appConfig;
 
   public SoaWebServiceClientMock(X x) {
     setX(x);
     logger = (Logger) x.get("logger");
+    appConfig = (AppConfig) x.get("appConfig");
   }
 
   @Override
   public PessoaResponse pessoaFisicaNFe(PessoaFisicaNFe request) {
-    if ( "10786348070".equals(request.getDocumento()) && "01/01/1970".equals(request.getDataNascimento()) ) {
-      PessoaResponse res = new PessoaResponse();
-      res.setNome("Mock Legal User");
-      res.setStatus(true);
-      res.setSituacaoRFB("REGULAR");
-      res.setMensagemObito("");
-      res.setAnoObito("0000");
-      res.setResponseString("Response string here");
-      return res;
+    if ( appConfig.getMode() != foam.nanos.app.Mode.PRODUCTION ) {
+      if ( "10786348070".equals(request.getDocumento()) && "01/01/1970".equals(request.getDataNascimento()) ) {
+        PessoaResponse res = new PessoaResponse();
+        res.setNome("Mock Legal User");
+        res.setStatus(true);
+        res.setSituacaoRFB("REGULAR");
+        res.setMensagemObito("");
+        res.setAnoObito("0000");
+        res.setResponseString("Response string here");
+        return res;
+      } else {
+        PessoaResponse res = new PessoaResponse();
+        res.setNome("");
+        res.setStatus(true);
+        res.setSituacaoRFB("REGULAR");
+        res.setMensagemObito("");
+        res.setAnoObito("0000");
+        res.setResponseString("Response string here");
+        return res;
+      }
     } else {
       return new SoaWebServiceClient(getX()).pessoaFisicaNFe(request);
     }
@@ -47,14 +61,24 @@ public class SoaWebServiceClientMock extends ContextAwareSupport implements SoaW
 
   @Override
   public PessoaResponse pessoaJuridicaNFe(PessoaJuridicaNFe request) {
-    if ( "06990590000123".equals(request.getDocumento()) ) {
-      PessoaResponse res = new PessoaResponse();
-      res.setNome("Mock Legal User");
-      res.setSituacaoRFB("ativa");
-      res.setResponseString("Response string here");
-      res.setRazaoSocial("Mock Legal User");
-      res.setStatus(true);
-      return res;
+    if ( appConfig.getMode() != foam.nanos.app.Mode.PRODUCTION  ) {
+      if ( "06990590000123".equals(request.getDocumento()) ) {
+        PessoaResponse res = new PessoaResponse();
+        res.setNome("Mock Legal User");
+        res.setSituacaoRFB("ativa");
+        res.setResponseString("Response string here");
+        res.setRazaoSocial("Mock Legal User");
+        res.setStatus(true);
+        return res;
+      } else {
+        PessoaResponse res = new PessoaResponse();
+        res.setNome("");
+        res.setSituacaoRFB("ativa");
+        res.setResponseString("Response string here");
+        res.setRazaoSocial("");
+        res.setStatus(true);
+        return res;
+      }
     } else {
       return new SoaWebServiceClient(getX()).pessoaJuridicaNFe(request);
     }

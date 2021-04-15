@@ -640,16 +640,6 @@ foam.CLASS({
           size: 8
         }
       },
-      tableCellFormatter: function(state, obj, rel) {
-        var name = state.name;
-        var label = state.label;
-        var color = state.color;
-        if ( state === net.nanopay.invoice.model.InvoiceStatus.SCHEDULED ) {
-          label = label + ' ' + obj.paymentDate.toLocaleDateString(foam.locale);
-        }
-
-        this.start().style({ color : color }).add(label).end();
-      },
       tableWidth: 130
     },
     {
@@ -963,6 +953,16 @@ foam.CLASS({
             throw new IllegalStateException("Payer user is disabled.");
           }
         }
+      `
+    },
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function() {
+        return this.cls_.name;
+      },
+      javaCode: `
+        return this.getClass().getSimpleName();
       `
     }
   ],

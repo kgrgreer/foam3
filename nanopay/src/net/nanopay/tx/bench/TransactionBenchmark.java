@@ -65,6 +65,7 @@ public class TransactionBenchmark
 {
   protected List users_ = null;
   protected Map accounts_ = new HashMap();
+  protected Map balances_;
   protected Logger logger_;
   protected DAO accountDAO_;
   protected DAO ruleDAO_;
@@ -75,23 +76,37 @@ public class TransactionBenchmark
   protected DAO groupDAO_;
   protected DAO groupPermissionJunctionDAO_;
   protected DAO sessionDAO_;
-  protected Long MAX_USERS = 100L;
+  protected Long MAX_USERS = 10000L;
   protected Long STARTING_BALANCE = 100000L;
+  protected Long USER_START_ID = 10000L;
   protected String ADMIN_BANK_ACCOUNT_NUMBER = "2131412443534534";
-  protected Boolean setupOnly_ = false;
   protected String spid_ = "benchmark";
 
-
-  public void setPurgePerRun(Boolean purge) {
-    // nop - legacy script support
-  }
-
-  public void setDisableRules(Boolean rules) {
-    // nop - legacy script support
-  }
-
+  // setupOnly - when true just run setup and teardown
+  protected Boolean setupOnly_ = false;
   public void setSetupOnly(Boolean value) {
     setupOnly_ = value;
+  }
+  public Boolean getSetupOnly() {
+    return setupOnly_;
+  }
+
+  // topUp - when true perform an initial CI for each user.
+  protected Boolean topUp_ = true;
+  public void setTopUp(Boolean value) {
+    topUp_ = value;
+  }
+  public Boolean getTopUp() {
+    return topUp_;
+  }
+
+  // validateBalances - when true locally keep track of payments and validate balances at end
+  protected Boolean validateBalances_ = false;
+  public void setValidateBalances(Boolean value) {
+    validateBalances_ = value;
+  }
+  public Boolean getValidateBalances() {
+    return validateBalances_;
   }
 
   @Override
@@ -99,9 +114,26 @@ public class TransactionBenchmark
     DAO dao = (DAO) x.get("localTransactionDAO");
     Count txns = (Count) dao.select(new Count());
     if ( txns.getValue() > 0 ) {
-      stats.put("Transactions (M)", String.format("%.02", (txns.getValue() / 1000000.0)));
+      stats.put("Transactions (M)", String.format("%.02f", (txns.getValue() / 1000000.0)));
     } else {
       stats.put("Transactions (M)", "0");
+    }
+
+    if ( getValidateBalances() ) {
+      // validate balances
+      long count = 0L;
+      for ( long i = 1; i <= MAX_USERS; i++ ) {
+        long id = USER_START_ID + i;
+        User user = (User) userDAO_.find(id);
+        Account account = (Account) accountDAO_.find(user.getId());
+        long balance = account.findBalance(x);
+        long b = (long) balances_.get(user.getId());
+        if ( balance != b ) {
+          logger_.warning("validate balance", user.getId(), b, "!=", balance);
+          count++;
+        }
+      }
+      stats.put("Balances invalid", count);
     }
 
     // dump all dao sizes - looking for memory leak
@@ -150,6 +182,7 @@ public class TransactionBenchmark
     logger_ = (Logger) x.get("logger");
 
     System.gc();
+    balances_ = new HashMap();
     ruleDAO_ = (DAO) x.get("ruleDAO");
     ruleGroupDAO_ = (DAO) x.get("ruleGroupDAO");
     accountDAO_ = (DAO)x.get("localAccountDAO");
@@ -261,7 +294,7 @@ public class TransactionBenchmark
     DAO ucj = (DAO) x.get("userCapabilityJunctionDAO");
     for ( long i = 1; i <= MAX_USERS; i++ ) {
       User user;
-      long id = 10000 + i;
+      long id = USER_START_ID + i;
       user = (User) userDAO_.find(id);
       if ( user == null ) {
         user = new User();
@@ -308,7 +341,7 @@ public class TransactionBenchmark
 
     // If we don't use users with verfied emails, the transactions won't go
     // through for those users.
-    userDAO_ = userDAO_.where(AND(EQ(User.EMAIL_VERIFIED, true), EQ(User.LAST_NAME,"Tester"), GT(User.ID, 10000)));
+    userDAO_ = userDAO_.where(AND(EQ(User.EMAIL_VERIFIED, true), EQ(User.LAST_NAME,"Tester"), GT(User.ID, USER_START_ID)));
     users_ = ((ArraySink) userDAO_.select(new ArraySink())).getArray();
 
     PlannerGroup planner = (PlannerGroup) ruleGroupDAO_.find_(x, "genericPlanner");
@@ -330,14 +363,27 @@ public class TransactionBenchmark
       Account account = (Account) accountDAO_.find(user.getId());
       // DigitalAccount account = DigitalAccount.findDefault(x, user, "CAD");
       accounts_.put(i, account);
-      Transaction txn = new Transaction();
-      txn.setSourceAccount(bank.getId());
-      txn.setDestinationAccount(account.getId());
-      txn.setSpid(spid_);
-      txn.setAmount(STARTING_BALANCE);
-      transactionDAO_.put(txn);
+      if ( account.findBalance(x) < STARTING_BALANCE &&
+           getTopUp() ) {
+        Transaction txn = new Transaction();
+        txn.setSourceAccount(bank.getId());
+        txn.setDestinationAccount(account.getId());
+        txn.setSpid(spid_);
+        txn.setAmount(STARTING_BALANCE);
+        logger_.info("setup", "user", user.getId(), "amount", STARTING_BALANCE, "source", bank.getId(), "destination", account.getId());
+        try {
+          txn = (Transaction) transactionDAO_.put(txn);
+        } catch (foam.core.FOAMException e) {
+          txn = (Transaction) txn.fclone();
+          txn.setStatus(net.nanopay.tx.model.TransactionStatus.DECLINED);
+          transactionDAO_.put(txn);
+          throw e;
+        }
+      }
       Long balance = account.findBalance(x);
-      assert balance >= STARTING_BALANCE;
+      assert balance != 0;
+      balances_.put(user.getId(), balance);
+      logger_.info("setup", "user", user.getId(), "starting balance", balance);
     }
   }
 
@@ -386,8 +432,19 @@ public class TransactionBenchmark
         transaction = quote.getPlan();
         quotePm.log(x);
         PM txnPm = new PM(this.getClass().getSimpleName(), "transaction");
+        // logger_.info("execute", "payer", payerId, "amount", amount, "payee", payeeId);
         transactionDAO_.put(transaction);
         txnPm.log(x);
+        if ( getValidateBalances() ) {
+          synchronized ( balances_ ) {
+            Long payerBalance = (Long) balances_.get(payerId);
+            payerBalance -= amount;
+            balances_.put(payerId, payerBalance);
+            Long payeeBalance = (Long) balances_.get(payeeId);
+            payeeBalance += amount;
+            balances_.put(payeeId, payeeBalance);
+          }
+        }
       } catch (Throwable e) {
         pm.error(x, e);
         throw e;

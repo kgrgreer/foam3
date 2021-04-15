@@ -1,0 +1,4 @@
+p({class:"foam.nanos.notification.NotificationSetting",id:"aaa01f78-264c-f38e-ce51-b5d33b80b013",spid:"cb"})
+p({class:"foam.nanos.notification.EmailSetting",id:"82e66c54-ab81-f084-624b-88f1245180b6",spid:"cb"})
+p({class:"foam.nanos.notification.SlackSetting",id:"a641423e-73aa-040c-c09e-38b41ba58f80",spid:"cb"})
+p({class:"foam.nanos.notification.sms.SMSSetting",id:"60c0afce-0951-e484-0099-c6c0a8d5f8b4",spid:"cb"})

@@ -22,8 +22,8 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "accounts-support",
   "label": "Accounts",
-  "icon":"images/intuit/accounts-24px-resting.svg",
-  "activeIcon":"images/intuit/accounts-24px-active.svg",
+  "icon":"images/intuit/account-balance-resting-24px.svg",
+  "activeIcon":"images/intuit/account-balance-active-24px.svg",
   "parent": "",
   "order": 30
 })
@@ -36,4 +36,31 @@ p({
   "activeIcon":"images/intuit/users-24px-active.svg",
   "parent": "",
   "order": 40
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "bills-support",
+  "label": "Charges",
+  "icon":"images/intuit/charges-24px-resting.svg",
+  "activeIcon":"images/intuit/charges-24px-active.svg",
+  "parent": "",
+  "order": 50
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "reconciliation-reports",
+  "label": "Reconciliation Reports",
+  "handler": {
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"reconciliationReportDAO",
+      "browseTitle": "Reconciliation Reports",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  }
 })

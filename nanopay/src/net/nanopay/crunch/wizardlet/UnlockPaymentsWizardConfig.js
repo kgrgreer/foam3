@@ -29,8 +29,8 @@ foam.CLASS({
       flags: ['web'],
       code: function applyTo(sequence) {
         this.SUPER(sequence);
-        sequence.add(this.SaveAllAgent);
         sequence.remove('PutFinalPayloadsAgent');
+        sequence.addBefore('CapabilityStoreAgent', this.SaveAllAgent);
       }
     },
     {

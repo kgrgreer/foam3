@@ -34,6 +34,17 @@ foam.CLASS({
     'foam.nanos.auth.Address'
   ],
 
+  searchColumns: [
+    'id',
+    'businessName',
+    'email',
+    'phoneNumber',
+    'address',
+    'created',
+    'createdBy',
+    'externalId'
+  ],
+
   tableColumns: [
     'id',
     'businessName',

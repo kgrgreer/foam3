@@ -93,5 +93,6 @@ p({
     "supportEmail":"suportetech@trevisocc.com.br",
     "supportPhone":"55 11 21411777"
   },
-  "spid":"treviso"
+  "spid":"treviso",
+  "defaultLocaleLanguage":"pt-BR"
 })

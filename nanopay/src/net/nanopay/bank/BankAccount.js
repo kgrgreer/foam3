@@ -234,7 +234,8 @@ foam.CLASS({
       order: 50,
       gridColumns: 6,
       view: {
-          class: 'foam.u2.view.StringView'
+        class: 'foam.u2.tag.Input',
+        onKey: true
       },
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
@@ -362,7 +363,14 @@ foam.CLASS({
       gridColumns: 6,
       documentation: `International bank code that identifies banks worldwide. BIC/SWIFT`,
       updateVisibility: 'RO',
-      storageTransient: true
+      storageTransient: true,
+      view: {
+        class: 'foam.u2.tag.Input',
+        onKey: true
+      },
+      preSet: function(o, n) {
+        return /^\d*$/.test(n) ? n : o;
+      },
     },
     {
       class: 'String',
@@ -371,7 +379,14 @@ foam.CLASS({
       section: 'accountInformation',
       order: 130,
       gridColumns: 6,
-      storageTransient: true
+      storageTransient: true,
+      view: {
+        class: 'foam.u2.tag.Input',
+        onKey: true
+      },
+      preSet: function(o, n) {
+        return /^\d*$/.test(n) ? n : o;
+      },
     },
     {
       class: 'String',
@@ -683,7 +698,7 @@ foam.CLASS({
       name: 'mask',
       documentation: `
         Use this method instead of obfusicate if specific mask format is required.
-        Currently formats str using ***### format. Update this method or 
+        Currently formats str using ***### format. Update this method or
         use obfusicate if format changes.
       `,
       code: function(str) {
@@ -844,14 +859,13 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        if ( ! SafetyUtil.isEmpty(getBankRoutingCode()) ) {
-          return getBankRoutingCode();
-        }
-
+        // Use bank and branch codes if present and fallback to bankRoutingCode.
+        // The bankRoutingCode could be of the bank head office instead of the
+        // specific branch especially when it was converted from a SWIFT/BIC.
         var code = new StringBuilder();
         code.append(getBankCode(x))
             .append(getBranchCode(x));
-        return code.toString();
+        return code.length() > 0 ? code.toString() : getBankRoutingCode();
       `
     },
     function purgeCachedDAOs() {
@@ -867,6 +881,9 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
+        User owner = findOwner(x);
+        if ( owner == null ) throw new RuntimeException("Owner with id " + getOwner() + " doesn't exist");
+
         String name = this.getName();
         if ( ((DAO)x.get("currencyDAO")).find(this.getDenomination()) == null ) {
           throw new RuntimeException("Please select a Currency");

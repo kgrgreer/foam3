@@ -571,6 +571,7 @@ p({
   wizardlet: {
     class: "foam.u2.wizard.SubmitWizardlet"
   },
+  of: "foam.core.RequiredBooleanHolder",
   associatedEntity: 1
 })
 
@@ -608,6 +609,8 @@ p({
   "name":"CPF number",
   "of":"net.nanopay.country.br.CPF",
   "version":"0",
+  "daoKey":"userDAO",
+  "contextDAOFindKey":"subject.realUser",
   "enabled":true,
   "associatedEntity": 1
 })

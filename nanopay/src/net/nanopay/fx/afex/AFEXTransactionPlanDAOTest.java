@@ -70,7 +70,11 @@ public class AFEXTransactionPlanDAOTest
     localUserDAO = (DAO) x_.get("localUserDAO");
     localAccountDAO = (DAO) x_.get("localAccountDAO");
     Address businessAddress = new Address();
+    businessAddress.setStructured(false);
+    businessAddress.setAddress1("905 King St W");
     businessAddress.setCity("Toronto");
+    businessAddress.setRegionId("CA-ON");
+    businessAddress.setPostalCode("M6K 3G9");
     businessAddress.setCountryId("CA");
 
     Group businessGroup = (Group) groupDAO_.find("business");

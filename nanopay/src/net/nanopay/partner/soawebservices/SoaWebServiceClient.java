@@ -19,9 +19,12 @@ package net.nanopay.partner.soawebservices;
 import foam.core.ContextAwareSupport;
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.DAO;
 import foam.lib.NetworkPropertyPredicate;
 import foam.lib.json.JSONParser;
 import foam.lib.json.Outputter;
+import foam.nanos.alarming.Alarm;
+import foam.nanos.alarming.AlarmReason;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.om.OMLogger;
@@ -70,6 +73,18 @@ public class SoaWebServiceClient extends ContextAwareSupport implements SoaWebSe
       String responseString = parseHttpResponse(httpResponse, endpoint);
       PessoaResponse response = (PessoaResponse) jsonParser.parseString(responseString, PessoaResponse.class);
       if ( response != null ) response.setResponseString(responseString);
+      if ( response.getTransacao() != null
+        && response.getTransacao().getCodigoStatusDescricao() != null
+        && response.getTransacao().getCodigoStatusDescricao().contains("Credenciais de Acesso") ) {
+        Alarm alarm = new Alarm.Builder(getX())
+          .setName(this.getClass().getSimpleName())
+          .setSeverity(foam.log.LogLevel.ERROR)
+          .setReason(AlarmReason.CREDENTIALS)
+          .setNote(response.getTransacao().getCodigoStatusDescricao())
+          .build();
+        ((DAO) getX().get("alarmDAO")).put(alarm);
+        throw new RuntimeException("Invalid Crediential in service configuration.");
+      }
       return response;
     } catch (Exception e) {
       logger.error(e);

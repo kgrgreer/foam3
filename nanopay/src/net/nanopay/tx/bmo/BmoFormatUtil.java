@@ -31,9 +31,16 @@ public class BmoFormatUtil {
       + addLeftZeros(est.getDayOfYear(), 3);
   }
 
+  public static DateTimeFormatter getDateTimeFormat() {
+    return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.of("America/Toronto"));
+  }
+
   public static String getCurrentDateTimeEDT() {
-    ZonedDateTime est = ZonedDateTime.now(ZoneId.of("America/Toronto"));
-    return est.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    return ZonedDateTime.now().format(getDateTimeFormat());
+  }
+
+  public static ZonedDateTime parseDateTimeEDT(String date) {
+    return ZonedDateTime.parse(date, getDateTimeFormat());
   }
 
   public static String addLeftZeros(long number, int size) {

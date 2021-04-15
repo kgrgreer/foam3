@@ -2097,8 +2097,25 @@ p({
     String rbcPublicKeyFile = "/tmp/rbc_pub_0x5439C0FD.asc.txt";
     String paraphrase = "nanopay";
 
+    tmp = x.get("privateKeyDAO").getDelegate();
+    PrivateKeyDAO privateKeyDAO = null;
+    while ( tmp != null ) {
+      if ( tmp instanceof PrivateKeyDAO ) {
+        privateKeyDAO = (PrivateKeyDAO) tmp;
+        break;
+      }
+
+      if ( tmp instanceof ProxyDAO ) {
+        tmp = tmp.getDelegate();
+      } else { tmp = null; }
+    }
+
+    if ( privateKeyDAO == null ) {
+      print("PrivateKeyDAO is unavailable.");
+      return;
+    }
+
     DAO keyPairDAO = (DAO) x.get("keyPairDAO");
-    PrivateKeyDAO privateKeyDAO = (PrivateKeyDAO) x.get("privateKeyDAO");
     KeyPairEntry keyPair = (KeyPairEntry) keyPairDAO.find(foam.mlang.MLang.EQ(KeyPairEntry.ALIAS, NANOPAY_RBC_ALIAS));
     if ( keyPair == null ) {
       try{

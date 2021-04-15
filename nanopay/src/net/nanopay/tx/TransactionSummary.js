@@ -27,6 +27,10 @@ foam.CLASS({
     'foam.util.SafetyUtil'
   ],
 
+  imports: [
+    'userDAO'
+  ],
+
   tableColumns: [
     'summary',
     'category',
@@ -42,7 +46,9 @@ foam.CLASS({
     'status',
     'category',
     'errorCode',
-    'created'
+    'created',
+    'payee',
+    'payer'
   ],
 
   sections: [
@@ -149,6 +155,16 @@ foam.CLASS({
       gridColumns: 6,
       view: {
         class: 'foam.u2.view.ReferenceView'
+      },
+      tableWidth: 200,
+      tableCellFormatter: function(value, obj) {
+        obj.userDAO.find(value).then(function(u) {
+          if ( u && u.toSummary ) {
+            this.add(u.toSummary());
+          } else {
+            this.add(value);
+          }
+        }.bind(this));
       }
     },
     {
@@ -161,6 +177,16 @@ foam.CLASS({
       gridColumns: 6,
       view: {
         class: 'foam.u2.view.ReferenceView'
+      },
+      tableWidth: 250,
+      tableCellFormatter: function(value, obj) {
+        obj.userDAO.find(value).then(function(u) {
+          if ( u && u.toSummary ) {
+            this.add(u.toSummary());
+          } else {
+            this.add(value);
+          }
+        }.bind(this));
       }
     }
   ],

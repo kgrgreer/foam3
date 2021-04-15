@@ -53,6 +53,7 @@ foam.CLASS({
           InputStream pubKeyIs = new ByteArrayInputStream(decodedBytes);
           PGPPublicKey PGPPublicKey = PGPKeyUtil.publicKeyParse(decodedBytes);
           PgpPublicKeyWrapper publicKey = new PgpPublicKeyWrapper(PGPPublicKey);
+          entry = (PublicKeyEntry) entry.fclone();
           entry.setPublicKey(publicKey);
           return entry;
         } catch ( Throwable t ) {

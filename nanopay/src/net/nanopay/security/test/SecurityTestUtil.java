@@ -66,8 +66,8 @@ class SecurityTestUtil {
    */
   static X CreateSecurityTestContext(X x) {
     return CreateSecurityTestContext(x, new PKCS12KeyStoreManager.Builder(x)
-      .setKeyStorePath(System.getenv("NANOPAY_HOME") + "/var/keys/keystore.p12")
-      .setPassphrasePath(System.getenv("NANOPAY_HOME") + "/var/keys/passphrase")
+      .setKeyStorePath(System.getProperty("NANOPAY_HOME") + "/var/keys/keystore.p12")
+      .setPassphrasePath(System.getProperty("NANOPAY_HOME") + "/var/keys/passphrase")
       .build());
   }
 

@@ -43,7 +43,7 @@ foam.CLASS({
       name: 'viewView',
       factory: function() {
         let onSave = async (isValid, ucj) => {
-          if ( isValid ) {
+          if ( isValid && ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED ) {
             this.notify(this.SUCCESS_UPDATED, '', this.LogLevel.INFO, true);
             this.stack.back();
           }
@@ -52,7 +52,10 @@ foam.CLASS({
             let approvals = await this.approvalRequestDAO.where(this.AND(
                 this.EQ(this.ApprovalRequest.OBJ_ID, ucj.id),
                 this.EQ(this.ApprovalRequest.DAO_KEY, "userCapabilityJunctionDAO"),
-                this.EQ(this.ApprovalRequest.CLASSIFICATION, "Generic Business Validator"), 
+                this.OR(
+                  this.EQ(this.ApprovalRequest.CLASSIFICATION, "Generic Business Validator"),
+                  this.EQ(this.ApprovalRequest.CLASSIFICATION, "Validador Genérico de Negócios")
+                ),
                 this.EQ(this.ApprovalRequest.STATUS, this.ApprovalStatus.REQUESTED)
               )).limit(1).select();
             let approval = approvals.array[0];

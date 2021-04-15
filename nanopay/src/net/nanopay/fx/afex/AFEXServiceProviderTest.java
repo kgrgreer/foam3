@@ -2,6 +2,9 @@ package net.nanopay.fx.afex;
 
 import static foam.mlang.MLang.EQ;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 
@@ -115,8 +118,11 @@ public class AFEXServiceProviderTest
       user1.setBusinessName("Test Company");
       user1.setBirthday(new Date());
       user1.setAddress(address);
+
+      var now = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant();
       PersonalIdentification identification = new PersonalIdentification();
-      identification.setExpirationDate(new Date());
+      identification.setIssueDate(Date.from(now.minus(1, ChronoUnit.DAYS)));
+      identification.setExpirationDate(Date.from(now.plus(1, ChronoUnit.DAYS)));
       user1.setIdentification(identification);
       user1.setPhoneNumber("1234567890");
       user1 = (User) smeBusinessRegistrationDAO.put(user1).fclone();
@@ -217,7 +223,7 @@ public class AFEXServiceProviderTest
     address.setCountryId("US");
     address.setStreetName("Avenue Rd");
     address.setStreetNumber("123");
-    address.setPostalCode("M1M1M1");
+    address.setPostalCode("12345");
     address.setCity("Toronto");
     address.setRegionId(((Region)regionDAO.find("US-DE")).getCode());
     return address;

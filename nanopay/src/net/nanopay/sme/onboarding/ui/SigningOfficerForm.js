@@ -588,15 +588,15 @@ foam.CLASS({
             //   .end()
             // .end()
             // .start().addClass('checkBoxes').show(this.isCanadian$)
-            //   .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.canadianScrollBoxOne$ }).add(this.triPartyAgreementCad$.dot('checkboxText')).end()
+            //   .start({ class: 'foam.u2.CheckBox', label: '', data$: this.canadianScrollBoxOne$ }).add(this.triPartyAgreementCad$.dot('checkboxText')).end()
             // .end()
             .start().addClass('checkBoxes').show(this.isCanadian$)
-              .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.canadianScrollBoxTwo$ }).add(this.dualPartyAgreementCad$.dot('checkboxText')).end()
+              .start({ class: 'foam.u2.CheckBox', label: '', data$: this.canadianScrollBoxTwo$ }).add(this.dualPartyAgreementCad$.dot('checkboxText')).end()
             .end()
             // NOTE: AFX RELATED, REMOVING FOR MVP RELEASE
             //
             // .start().addClass('checkBoxes').hide(this.isCanadian$)
-            //   .start({ class: 'foam.u2.md.CheckBox', label: '', data$: this.americanScrollBox$ }).add(this.triPartyAgreementUsd$.dot('checkboxText')).end()
+            //   .start({ class: 'foam.u2.CheckBox', label: '', data$: this.americanScrollBox$ }).add(this.triPartyAgreementUsd$.dot('checkboxText')).end()
             // .end()
           // End of Terms and Services and Compliance stuff
           // .start().addClass('medium-header').add(this.SUPPORTING_TITLE).end()

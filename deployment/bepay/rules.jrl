@@ -137,9 +137,7 @@ p({
   name: "BePay Fee",
   documentation: "BePay transaction fee",
   feeName: "BePay Fee",
-  feeAccount: "512360f6-ec67-4339-9fc4-9a677bc2bff7-bepay",
   feeDenomination: "BRL",
-  feeClass: "net.nanopay.tx.FeeLineItem",
   rateExpiry: {
     class: "foam.nanos.cron.TimeHMS",
     hour: 24
@@ -185,7 +183,6 @@ p({
   name: "IOF",
   documentation: "IOF charge for BePay transactions.",
   feeName: "IOF",
-  feeAccount: "512360f6-ec67-4339-9fc4-9a677bc2bff7-bepay",
   ruleGroup: "TransactionFeeRule",
   feeDenomination: "BRL",
   feeClass: "net.nanopay.tx.FeeLineItem",
@@ -301,4 +298,32 @@ p({
   },
   "enabled":true,
   "lifecycleState":1
+})
+
+p({
+    "class": "net.nanopay.tx.ruler.PermissionedTransactionRule",
+    "id":"f2c694e4-ca5c-4fc7-bbf0-747f8aa794db",
+    "name":"Screen User On Transaction Create Rule",
+    "ruleGroup":"BePayCompliance",
+    "documentation":"Screens payer and payee in Dow Jones",
+    "daoKey":"localTransactionDAO",
+    "operation":1,
+    "asyncAction":{
+      "class":"net.nanopay.partner.bepay.tx.ScreenUsersOnTransactionCreate"
+    },
+    "predicate": {
+      "class": "foam.mlang.predicate.And",
+      "args": [
+        {
+          class: "foam.nanos.ruler.predicate.IsClassPredicate",
+          of:"net.nanopay.tx.ComplianceTransaction"
+        },
+        {
+          "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+          "propName":"status",
+          "propValue":{"class":"net.nanopay.tx.model.TransactionStatus","ordinal":0}
+        }
+      ]
+    },
+    "lifecycleState":1
 })

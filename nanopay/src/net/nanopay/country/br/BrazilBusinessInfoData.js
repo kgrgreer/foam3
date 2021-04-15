@@ -18,6 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.country.br',
   name: 'BrazilBusinessInfoData',
+  mixins: ['foam.u2.wizard.AbstractWizardletAware'],
   documentation: `
     Additional business information required for brazilian business registration
   `,
@@ -140,15 +141,11 @@ foam.CLASS({
       name: 'verifyName',
       label: 'Is this your business?',
       section: 'businessInformation',
-      view: function(n, X) {
-        var self = X.data$;
-        return foam.u2.CheckBox.create({
-          labelFormatter: function() {
-            this.start('span')
-              .add(self.dot('cnpjName'))
-            .end();
-          }
-        });
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.CheckBox',
+          label$: X.data$.dot('cnpjName')
+        };
       },
       visibility: function(cnpjName) {
         return cnpjName.length > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
@@ -197,6 +194,10 @@ foam.CLASS({
   ],
 
   methods: [
+    function installInWizardlet(w) {
+      // CNPJ takes longer to save, so re-load may clear new inputs
+      w.reloadAfterSave = false;
+    },
     {
       name: 'getCNPJBusinessName',
       code:  async function(cnpj) {

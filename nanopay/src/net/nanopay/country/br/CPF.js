@@ -18,8 +18,15 @@
 foam.CLASS({
   package: 'net.nanopay.country.br',
   name: 'CPF',
+  mixins: ['foam.u2.wizard.AbstractWizardletAware'],
   documentation: `
-    The Cadastro de Pessoas Físicas (CPF; Portuguese for "Natural Persons Register") is the Brazilian individual taxpayer registry identification, a permanent number attributed by the Brazilian Federal Revenue to both Brazilians and resident aliens who pay taxes or take part, directly or indirectly. It is canceled after some time after the person's death.
+  NOTE : post and pr sets of data and birthday property set to minimize calls to api
+
+    The Cadastro de Pessoas Físicas (CPF; Portuguese for "Natural Persons Register")
+    is the Brazilian individual taxpayer registry identification, a permanent number
+    attributed by the Brazilian Federal Revenue to both Brazilians and resident aliens
+    who pay taxes or take part, directly or indirectly.
+    It is canceled after some time after the person's death.
   `,
 
   implements: [
@@ -30,12 +37,18 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'foam.util.SafetyUtil',
+    'net.nanopay.country.br.BrazilVerificationServiceInterface'
   ],
 
   imports: [
     'brazilVerificationService',
     'subject'
   ],
+
+  constants: {
+    CPF_LENGTH: 11
+  },
 
   messages: [
     { name: 'INVALID_CPF', message: 'Valid CPF number required' },
@@ -90,17 +103,17 @@ foam.CLASS({
     {
       class: 'String',
       name: 'data',
+      help: `The CPF (Cadastro de Pessoas Físicas or Natural Persons Register) is a number assigned by the Brazilian revenue agency to both Brazilians and resident aliens who are subject to taxes in Brazil.`,
       label: 'Cadastro de Pessoas Físicas (CPF)',
       section: 'collectCpf',
-      help: `The CPF (Cadastro de Pessoas Físicas or Natural Persons Register) is a number assigned by the Brazilian revenue agency to both Brazilians and resident aliens who are subject to taxes in Brazil.`,
       validationPredicates: [
         {
-          args: ['data', 'cpfName'],
+          args: ['data'],
           predicateFactory: function(e) {
             return e.EQ(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.country.br.CPF.DATA
-                }), 11);
+              foam.mlang.StringLength.create({
+                arg1: net.nanopay.country.br.CPF.DATA
+              }), 11);
           },
           errorMessage: 'INVALID_CPF'
         },
@@ -108,13 +121,15 @@ foam.CLASS({
           args: ['data', 'cpfName'],
           predicateFactory: function(e) {
             return e.AND(
-              e.GT(net.nanopay.country.br.CPF
-                .CPF_NAME, 0),
+              e.GT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.country.br.CPF.CPF_NAME
+                }), 0),
               e.EQ(
                 foam.mlang.StringLength.create({
                   arg1: net.nanopay.country.br.CPF.DATA
                 }), 11)
-              );
+            );
           },
           errorMessage: 'INVALID_CPF_CHECKED'
         }
@@ -122,38 +137,30 @@ foam.CLASS({
       tableCellFormatter: function(val) {
         return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
       },
-      postSet: function(_,n) {
-        if ( n.length == 11 && this.verifyName !== true ) {
-          this.cpfName = "";
-          this.getCpfName(n).then((v) => {
-            this.cpfName = v;
-          });
-        }
-      },
       view: function(_, X) {
         return foam.u2.FragmentedTextField.create({
           delegates: [
             foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(0,3),
+              data: X.data.data.slice(0, 3),
               maxLength: 3
             }),
             '.',
             foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(3,6),
+              data: X.data.data.slice(3, 6),
               maxLength: 3
             }),
             '.',
             foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(6,9),
+              data: X.data.data.slice(6, 9),
               maxLength: 3
             }),
             '-',
             foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(9,11),
+              data: X.data.data.slice(9, 11),
               maxLength: 2
             })
           ]
-        }, X)
+        }, X);
       }
     },
     {
@@ -166,20 +173,16 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'verifyName',
-      label: 'Is this you?',
+      label: 'Is this the name of the person who owns this cpf?',
       section: 'collectCpf',
-      view: function(n, X) {
-        var self = X.data$;
-        return foam.u2.CheckBox.create({
-          labelFormatter: function() {
-            this.start('span')
-              .add(self.dot('cpfName'))
-            .end();
-          }
-        });
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.CheckBox',
+          label$: X.data$.dot('cpfName')
+        };
       },
       visibility: function(cpfName) {
-        return cpfName.length > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+        return cpfName ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -191,30 +194,60 @@ foam.CLASS({
         }
       ]
     },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'user',
+      hidden: true,
+      factory: function() {
+        return this.subject.realUser;
+      }
+      // depricated but leaving for data migration - script to do this needed - then delete
+    }
   ],
 
   methods: [
     {
-      name: 'getCpfName',
-      code: async function(cpf) {
-        return await this.brazilVerificationService
-          .getCPFNameWithBirthDate(this.__subContext__, cpf, this.birthday);
+      name: 'clearFields',
+      code: function() {
+        this.cpfName = '';
+        this.verifyName = false;
       }
     },
     {
       name: 'validate',
       javaCode: `
-      if ( ! getVerifyName() )
+      // These should be valid before making API call
+      try {
+        this.BIRTHDAY.validateObj(x, this);
+        if ( getData() == null || getData().length() != 11 ) {
           throw new foam.core.ValidationException(INVALID_CPF);
-
-      java.util.List<foam.core.PropertyInfo> props = getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
-      for ( foam.core.PropertyInfo prop : props ) {
-        try {
-          prop.validateObj(x, this);
-        } catch ( IllegalStateException e ) {
-          throw e;
         }
+      } catch ( foam.core.ValidationException e ) {
+        this.setCpfName("");
+        throw e;
       }
+
+      var brazilVerificationService = (BrazilVerificationServiceInterface)
+        x.get("brazilVerificationService");
+
+      var name = brazilVerificationService.getCPFNameWithBirthDate(
+        x, getData(), getBirthday());
+
+      if ( SafetyUtil.isEmpty(name) ) {
+        setCpfName("");
+        throw new foam.core.ValidationException(INVALID_CPF_CHECKED);
+      }
+
+      if ( ! SafetyUtil.equals(name, getCpfName()) ) {
+        setCpfName(name);
+        setVerifyName(false);
+      }
+
+      if ( ! getVerifyName() )
+          throw new foam.core.ValidationException(INVALID_NAME);
+
+      foam.core.FObject.super.validate(x);
       `
     }
   ]

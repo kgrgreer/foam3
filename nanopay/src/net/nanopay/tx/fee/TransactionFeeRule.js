@@ -84,26 +84,6 @@ foam.CLASS({
       section: 'basicInfo'
     },
     {
-      class: 'Class',
-      name: 'feeClass',
-      value: 'net.nanopay.tx.FeeLineItem',
-      javaValue: 'net.nanopay.tx.FeeLineItem.getOwnClassInfo()',
-      view: {
-        class: 'foam.u2.view.StrategizerChoiceView',
-        desiredModelId: 'net.nanopay.tx.FeeLineItem'
-      },
-      validationPredicates: [
-        {
-          args: ['feeClass'],
-          predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.tx.fee.TransactionFeeRule.FEE_CLASS, null);
-          },
-          errorString: 'Please select fee class.'
-        }
-      ],
-      section: 'basicInfo'
-    },
-    {
       class: 'String',
       name: 'rateName',
       section: 'basicInfo',
@@ -121,15 +101,6 @@ foam.CLASS({
       of: 'foam.nanos.cron.TimeHMS',
       section: 'basicInfo',
       documentation: 'Expiry duration of the generated TotalRateLineItem'
-    },
-    {
-      class: 'Reference',
-      of: 'net.nanopay.account.Account',
-      name: 'feeAccount',
-      section: 'basicInfo',
-      documentation: 'Set fee account to create transfers for the fee line item added.',
-      writePermissionRequired: true,
-      required: true
     },
     {
       name: 'priority',

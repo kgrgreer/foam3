@@ -784,7 +784,7 @@ foam.CLASS({
           .start('p').add(this.BasicInfoLabel).addClass('sectionTitle').style({ 'margin-top': '0' }).end()
 
           .start('div').addClass('checkBoxContainer')
-            .start({ class: 'foam.u2.md.CheckBox', label: 'Same as Admin', data$: this.isSameAsAdmin$ }).end()
+            .start({ class: 'foam.u2.CheckBox', label: 'Same as Admin', data$: this.isSameAsAdmin$ }).end()
           .end()
 
           .start('div').addClass('animationContainer')

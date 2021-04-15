@@ -15,17 +15,25 @@
  * from nanopay Corporation.
  */
 
-foam.CLASS({
-  package: 'net.nanopay.crunch.bepay',
-  name: 'ExtendedUserDetailsData',
+ foam.CLASS({
+  package: 'net.nanopay.settlement.actions',
+  name: 'BilateralNetSettlementAction',
 
-  documentation: `This model represents the expanded info of a User that must be collect for BePay onboarding.`,
+  documentation: `
+    Under CB, to settle the balances of direct clearers using a Bilateral Net method. 
+    
+    Bilateral netting is when two parties combine all their balances into one 
+    master balance, creating one net payment, instead of many, between the parties.
+  `,
 
-  properties: [
+  implements: ['foam.nanos.ruler.RuleAction'],
+
+  methods: [
     {
-      class: 'String',
-      name: 'mothersMaidenName',
-      label: 'mother\'s maiden name'
+      name: 'applyAction',
+      javaCode: `
+        TODO: Going to rework transactions for CB
+      `
     }
   ]
 });

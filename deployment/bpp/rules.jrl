@@ -45,9 +45,7 @@ p({
   name: "BPP Fee",
   documentation: "BPP transaction fee",
   feeName: "BPP Fee",
-  feeAccount: "512360f6-ec67-4339-9fc4-9a677bc2bff7-bpp",
   feeDenomination: "BRL",
-  feeClass: "net.nanopay.tx.FeeLineItem",
   rateExpiry: {
     class: "foam.nanos.cron.TimeHMS",
     hour: 24
@@ -93,10 +91,8 @@ p({
   name: "IOF",
   documentation: "IOF charge for BPP transactions.",
   feeName: "IOF",
-  feeAccount: "512360f6-ec67-4339-9fc4-9a677bc2bff7-bpp",
   ruleGroup: "TransactionFeeRule",
   feeDenomination: "BRL",
-  feeClass: "net.nanopay.tx.FeeLineItem",
   rateExpiry: {
     class: "foam.nanos.cron.TimeHMS",
     hour: 24
