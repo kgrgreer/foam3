@@ -159,12 +159,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onbo
 // p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.NEED_DIRECTOR.label",target:"precisam de administradores e representantes legais"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.NO_DIRECTOR_INFO",target:"São necessárias informações de administradores e representantes legais"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.DIRECTOR_INFO_NOT_VALID",target:"As informações de administradores e representantes legais não são válidas"})
-// p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.BUSINESS_TYPE_ID.label",target:"id de tipo de negócio"})
-// p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.NO_DIRECTORS_NEEDED.label",target:"não são necessários administradores e representantes legais"})
-// p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.NO_DIRECTORS_NEEDED.value",target:"Não são necessários administradores e representantes legais para este tipo de negócio. Prossiga para o próximo passo."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.BUSINESS_DIRECTORS.documentation",target:"Conjunto de administradores e representantes legais"})
-// p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.NO_DIRECTOR_INFO_PROCEED_NEXT",target:"Não são necessários administradores e representantes legais para este tipo de negócio. Prossiga para o próximo passo."})
-// p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.NO_DIR_NEEDED",target:"Não são necessários administradores e representantes legais para este tipo de negócio. Prossiga para o próximo passo."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.SKIP_DIRECTORS_MSG",target:"Pular esta etapa"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBusinessDirector.EMAIL.label",target:"email"})
