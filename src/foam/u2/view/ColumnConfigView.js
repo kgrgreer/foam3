@@ -434,7 +434,7 @@ foam.CLASS({
     }
   ],
   methods: [
-    function initE() {
+    async function initE() {
       var self = this;
       this.SUPER();
       this
@@ -575,13 +575,18 @@ foam.CLASS({
   package: 'foam.u2.view',
   name: 'SubColumnSelectConfig',
   extends: 'foam.u2.View',
+
+  imports: [
+    'auth'
+  ],
+
   properties: [
     'index',
     'of',
     {
       name: 'hasSubProperties',
       class: 'Boolean',
-      expression: function(subProperties) {
+      expression:function(subProperties) {
         if ( subProperties.length === 0 )
           return false;
         return true;
@@ -599,13 +604,14 @@ foam.CLASS({
     },
     {
       name: 'subProperties',
-      expression: function(prop) {
-        if ( ! this.of || ! this.of.getAxiomByName )
-          return [];
-        if ( prop && prop.cls_ && ( foam.core.FObjectProperty.isInstance(prop) || foam.core.Reference.isInstance(prop) ) )
-          return prop.of.getAxiomsByClass(foam.core.Property).map(p => [p.name, this.columnHandler.returnAxiomHeader(p)]);
-        return [];
-      }
+      // expression: function(prop) {
+      //   if ( ! this.of || ! this.of.getAxiomByName )
+      //   return [];
+      //   if ( prop && prop.cls_ && ( foam.core.FObjectProperty.isInstance(prop) || foam.core.Reference.isInstance(prop) ) ) {
+      //     return prop.of.getAxiomsByClass(foam.core.Property).map(p => [p.name, this.columnHandler.returnAxiomHeader(p)]);
+      //   }
+      //   return [];
+      // }
     },
     {
       name: 'subColumnSelectConfig',
@@ -645,7 +651,8 @@ foam.CLASS({
       class: 'Boolean',
       value: false,
       postSet: function() {
-        if ( this.subColumnSelectConfig.length == 0 ) 
+        var s = this.subColumnSelectConfig;
+        if ( s.length == 0 ) 
           this.subColumnSelectConfig = this.returnSubColumnSelectConfig(this.subProperties, this.level, this.expanded);
       }
     },
@@ -664,6 +671,10 @@ foam.CLASS({
     }
   ],
   methods: [
+    function init() {
+      this.prop$.sub(this.setSubPropertys.bind(this))
+      this.setSubPropertys()
+    },
     function onClose() {
       this.subColumnSelectConfig.forEach(c => c.onClose());
       this.expanded = false;
@@ -761,5 +772,27 @@ foam.CLASS({
 
         return arr;
     }
+  ],
+  listeners: [
+    function setSubPropertys() {
+      var prop = this.prop
+      if ( ! this.of || ! this.of.getAxiomByName ) {
+        this.subProperties =  [];
+        return
+      }
+      if ( ! (prop && prop.cls_ && ( foam.core.FObjectProperty.isInstance(prop) || foam.core.Reference.isInstance(prop) ))  ) {
+        this.subProperties =  [];
+        return
+      }
+      // let s = await this.filterUnpermited(prop.of.getAxiomsByClass(foam.core.Property), prop.of)
+      let props = prop.of.getAxiomsByClass(foam.core.Property)
+      let slotProps = props.map( p => p.createPermissionFor( this.__subContext__, prop.of));
+      foam.core.ArraySlot.create({
+        slots: slotProps
+      }).map( visibilities => {
+        this.subProperties = props.filter(( p, i ) => visibilities[i] != foam.u2.DisplayMode.HIDDEN).map(p => [p.name, this.columnHandler.returnAxiomHeader(p)])
+      })
+      this.subProperties = props.filter(( p, i ) => slotProps[i].get() != foam.u2.DisplayMode.HIDDEN ).map(p => [p.name, this.columnHandler.returnAxiomHeader(p)])
+    },
   ]
 });

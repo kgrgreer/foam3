@@ -2325,6 +2325,11 @@ foam.CLASS({
         The order to render the property in if rendering multiple properties.
       `,
       value: Number.MAX_SAFE_INTEGER
+    },
+    {
+      class: 'Boolean',
+      name: 'visibilityPermissionRequired',
+      value: false
     }
   ],
 
@@ -2429,6 +2434,24 @@ foam.CLASS({
         // a promise will generate an intermediate null value.
         return arr[0].restrictDisplayMode(arr[1] || DisplayMode.HIDDEN)
       });
+    },
+
+    function createPermissionFor(x, cls) {
+      const DisplayMode = foam.u2.DisplayMode;
+      if ( ! this.readPermissionRequired && ! this.writePermissionRequired && ! visibilityPermissionRequired ) return foam.core.SimpleSlot.create({value: DisplayMode.RW});
+      var propName = this.name.toLowerCase();
+      var clsName  = cls.name.toLowerCase();
+      var canRead  = this.readPermissionRequired === false;
+      return foam.core.PromiseSlot.create({
+        value: DisplayMode.HIDDEN,
+        promise: x.auth.check(null, `${clsName}.visibility.rw.${propName}`)
+          .then(function(rw) {
+            if ( rw      ) return DisplayMode.RW;
+            if ( canRead ) return DisplayMode.RO;
+            return x.auth.check(null, `${clsName}.visibility.ro.${propName}`)
+              .then((ro) => ro ? DisplayMode.RO : DisplayMode.HIDDEN);
+          })
+      })
     }
   ]
 });
