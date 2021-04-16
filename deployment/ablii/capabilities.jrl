@@ -53,7 +53,8 @@ p({
   id:"abliiCorridorCapability",
   permissionsGranted: [
     "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15f7rbcca-ca",
-    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca"
+    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
+    "invoice.ro.payer"
   ]
 })
 
