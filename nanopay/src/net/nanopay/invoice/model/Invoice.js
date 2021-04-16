@@ -1127,6 +1127,8 @@ foam.RELATIONSHIP({
     `
   },
 });
+
+
 foam.RELATIONSHIP({
   sourceModel: 'foam.nanos.auth.User',
   targetModel: 'net.nanopay.invoice.model.Invoice',
