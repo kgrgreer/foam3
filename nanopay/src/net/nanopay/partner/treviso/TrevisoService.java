@@ -86,6 +86,7 @@ import net.nanopay.country.br.exchange.ServiceStatus;
 import net.nanopay.country.br.exchange.Titular;
 import net.nanopay.country.br.exchange.UpdateTitular;
 import net.nanopay.country.br.exchange.UpdateTitularResponse;
+import net.nanopay.partner.treviso.fx.TrevisoFXService;
 import net.nanopay.payment.Institution;
 import net.nanopay.tx.FeeLineItem;
 import net.nanopay.tx.FeeSummaryTransactionLineItem;
@@ -275,8 +276,11 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
   }
 
   public double getFXSpotRate(String sourceCurrency, String targetCurrency, long userId) throws RuntimeException {
-    // Get FX SPOT rate from AFEX
-    return ((AFEXServiceProvider) getX().get("afexServiceProvider")).getFXSpotRate(sourceCurrency, targetCurrency, userId);
+    if ( sourceCurrency.equals("BRL") ) {
+      return ((TrevisoFXService) getX().get("trevisoFXService")).getFXSpotRate(sourceCurrency, targetCurrency, userId);
+    } else {
+      return ((AFEXServiceProvider) getX().get("afexServiceProvider")).getFXSpotRate(sourceCurrency, targetCurrency, userId);
+    }
   }
 
   public boolean acceptFXRate(String quoteId, long user) throws RuntimeException {
