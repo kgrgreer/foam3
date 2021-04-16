@@ -49,7 +49,7 @@ public class BePayAFEXOnboardingTest extends foam.nanos.test.Test {
       .setAddress(address)
       .build();
     CPF cpf = new CPF.Builder(x)
-      .setData("10786348070")
+      .setData("107.863.480-70")
       .setCpfName("Mock Legal User")
       .setBirthday(new GregorianCalendar(1970, 1, 1).getTime())
       .setVerifyName(true)
