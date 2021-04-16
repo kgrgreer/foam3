@@ -34,6 +34,7 @@ foam.CLASS({
     {
       class: 'StringArray',
       name: 'capabilityIds',
+      readPermissionRequired: true,
       section: 'capabilityInformation',
       visibility: 'HIDDEN'
     },
