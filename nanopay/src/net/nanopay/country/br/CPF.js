@@ -30,7 +30,8 @@ foam.CLASS({
   `,
 
   implements: [
-    'foam.core.Validatable'
+    'foam.core.Validatable',
+    'foam.mlang.Expressions'
   ],
 
   javaImports: [
@@ -39,20 +40,13 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
+    'java.util.regex.Pattern',
     'net.nanopay.country.br.BrazilVerificationServiceInterface'
   ],
 
   imports: [
     'brazilVerificationService',
     'subject'
-  ],
-
-  constants: [
-    {
-      name: 'CPF_LENGTH',
-      value: 11,
-      javaType: 'int'
-    }
   ],
 
   messages: [
@@ -115,10 +109,7 @@ foam.CLASS({
         {
           args: ['data'],
           predicateFactory: function(e) {
-            return e.EQ(
-              foam.mlang.StringLength.create({
-                arg1: net.nanopay.country.br.CPF.DATA
-              }), 11);
+            return e.REG_EXP(net.nanopay.country.br.CPF.DATA, /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/);
           },
           errorMessage: 'INVALID_CPF'
         },
@@ -130,10 +121,7 @@ foam.CLASS({
                 foam.mlang.StringLength.create({
                   arg1: net.nanopay.country.br.CPF.CPF_NAME
                 }), 0),
-              e.EQ(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.country.br.CPF.DATA
-                }), 11)
+              e.REG_EXP(net.nanopay.country.br.CPF.DATA, /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/)
             );
           },
           errorMessage: 'INVALID_CPF_CHECKED'
@@ -144,7 +132,8 @@ foam.CLASS({
       },
       view: function(_, X) {
         return foam.u2.FormattedTextField.create({
-          formatter: [3, '.', 3, '.', 3, '-', 2]
+          formatter: [3, '.', 3, '.', 3, '-', 2],
+          returnFormatted: true
         }, X);
       }
     },
@@ -210,7 +199,9 @@ foam.CLASS({
       // These should be valid before making API call
       try {
         this.BIRTHDAY.validateObj(x, this);
-        if ( getData() == null || getData().length() != this.CPF_LENGTH ) {
+
+        Pattern format = Pattern.compile("^\\\\d{3}\\\\.\\\\d{3}\\\\.\\\\d{3}\\\\-\\\\d{2}$");
+        if ( getData() == null || ! format.matcher(getData()).matches() ) {
           throw new foam.core.ValidationException(INVALID_CPF);
         }
       } catch ( foam.core.ValidationException e ) {

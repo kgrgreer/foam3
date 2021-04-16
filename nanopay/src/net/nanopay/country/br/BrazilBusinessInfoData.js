@@ -24,23 +24,18 @@ foam.CLASS({
   `,
 
   implements: [
-    'foam.core.Validatable'
+    'foam.core.Validatable',
+    'foam.mlang.Expressions'
   ],
 
   javaImports: [
     'foam.nanos.logger.Logger',
-    'foam.util.SafetyUtil'
+    'foam.util.SafetyUtil',
+    'java.util.regex.Pattern'
   ],
 
   imports: [
     'brazilVerificationService'
-  ],
-  constants: [
-    {
-      name: 'CNPJ_LENGTH',
-      value: 14,
-      javaType: 'int'
-    }
   ],
 
   sections: [
@@ -73,10 +68,7 @@ foam.CLASS({
         {
           args: ['cnpj', 'cnpjName'],
           predicateFactory: function(e) {
-            return e.EQ(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.country.br.BrazilBusinessInfoData.CNPJ
-                  }), 14);
+            return e.REG_EXP(net.nanopay.country.br.BrazilBusinessInfoData.CNPJ, /^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/);
           },
           errorMessage: 'NO_CNPJ'
         },
@@ -87,12 +79,8 @@ foam.CLASS({
               e.GT(
                 net.nanopay.country.br.BrazilBusinessInfoData
                 .CNPJ_NAME, 0),
-              e.EQ(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.country.br.BrazilBusinessInfoData
-                    .CNPJ
-                  }), 14)
-              );
+              e.REG_EXP(net.nanopay.country.br.BrazilBusinessInfoData.CNPJ, /^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/)
+            );
           },
           errorMessage: 'CNPJ_INVALID'
         }
@@ -102,7 +90,8 @@ foam.CLASS({
       },
       view: function(_, X) {
         return foam.u2.FormattedTextField.create({
-          formatter: [2, '.', 3, '.', 3, '/', 4, '-', 2]
+          formatter: [2, '.', 3, '.', 3, '/', 4, '-', 2],
+          returnFormatted: true
         }, X);
       }
     },
@@ -171,7 +160,8 @@ foam.CLASS({
 
         // This should be valid before making API call
         try {
-          if ( getCnpj() == null || getCnpj().length() != this.CNPJ_LENGTH ) {
+          Pattern format = Pattern.compile("^\\\\d{2}\\\\.\\\\d{3}\\\\.\\\\d{3}\\\\/\\\\d{4}\\\\-\\\\d{2}$");
+          if ( getCnpj() == null || ! format.matcher(getCnpj()).matches() ) {
             throw new foam.core.ValidationException(NO_CNPJ);
           }
         } catch ( foam.core.ValidationException e ) {
