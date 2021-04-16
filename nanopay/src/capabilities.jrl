@@ -111,21 +111,7 @@ p({
     "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
   ],
   "interceptIf": { "class":"net.nanopay.crunch.predicate.SigningOfficerCapabilityInterceptPredicate" },
-  "availabilityPredicate":
-  {
-    "class":"foam.mlang.predicate.And",
-    "args": [
-      { "class":"net.nanopay.crunch.predicate.SigningOfficerPrivilegesRequested" },
-      {
-        "class":"foam.mlang.predicate.Or",
-        "args": [
-          { "class":"net.nanopay.crunch.predicate.CheckUserCountry", "country":"BR" },
-          { "class":"net.nanopay.crunch.predicate.CheckUserCountry", "country":"CA" },
-          { "class":"net.nanopay.crunch.predicate.CheckUserCountry", "country":"US" }
-        ]
-      }
-    ]
-  },
+  "availabilityPredicate": { "class":"net.nanopay.crunch.predicate.SigningOfficerPrivilegesRequested" },
   "wizardConfig": {
     "class": "foam.u2.crunch.EasyCrunchWizard",
     "allowSkipping": false
