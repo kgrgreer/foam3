@@ -133,8 +133,14 @@ public abstract class ReconciliationReportDAO extends ProxyDAO {
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
     refreshMaps(x);
 
-    var nSink = new ReconciliationReportSink(x, getGenerator(), decorateSink(x, sink, skip, limit, order, null), ciMap, coMap, dtMap, rrCache);
-    getDelegate().select(decorateSink(x, nSink, 0, MAX_SAFE_INTEGER, null, adaptPredicate(predicate)));
+    // This sink is used to filter the generated reconciliation reports
+    var rrSink = decorateSink(x, sink, skip, limit, order, null);
+    var nSink = new ReconciliationReportSink(x, getGenerator(), rrSink, ciMap, coMap, dtMap, rrCache);
+
+    // This sink is used to filter the underlying SummaryTransaction dao
+    var stSink = decorateSink(x, nSink, 0, MAX_SAFE_INTEGER, null, adaptPredicate(predicate));
+    getDelegate().select(stSink);
+
     return sink;
   }
 

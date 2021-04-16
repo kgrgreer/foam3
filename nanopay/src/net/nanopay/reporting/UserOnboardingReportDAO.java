@@ -62,7 +62,8 @@ public abstract class UserOnboardingReportDAO extends ProxyDAO {
   @Override
   public FObject find_(X x, Object id) {
     var user = (User) getDelegate().find_(x, id);
-
+    if ( user == null )
+      return null;
 
     var uor = uorCache.get(user.getId());
     if ( uor != null && ! uor.getLastModified().before(user.getLastModified()) ) {

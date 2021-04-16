@@ -67,6 +67,23 @@ p({
 
 p({
   "class": "foam.nanos.menu.Menu",
+  "id": "service-fees-reports",
+  "label": "Service Fees Reports",
+  "handler": {
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"serviceFeesReportDAO",
+      "browseTitle": "Service Fees Reports",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  }
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
   "id": "user-onboarding-reports",
   "label": "User Onboarding Reports",
   "handler": {

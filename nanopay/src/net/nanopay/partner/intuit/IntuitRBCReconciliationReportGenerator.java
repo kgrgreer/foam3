@@ -90,12 +90,13 @@ public class IntuitRBCReconciliationReportGenerator implements ReconciliationRep
       report.setBillingId(bill.getId());
     }
 
-    report.setCreated(rbcCiTransaction.getCreated());
+    report.setCreated(Calendar.getInstance().getTime());
     report.setLastModified(Calendar.getInstance().getTime());
 
     report.setMerchantId(transaction.getExternalId());
 
     report.setPaymentId(transaction.getId());
+    report.setPaymentCreatedDate(transaction.getCreated());
     report.setPaymentStartDate(rbcCiTransaction.getCreated());
     report.setPaymentStatusCategory(transaction.getChainSummary().getCategory());
     report.setPaymentStatus(transaction.getChainSummary().getStatus());

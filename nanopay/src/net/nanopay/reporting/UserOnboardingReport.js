@@ -34,48 +34,52 @@ foam.CLASS({
       class: 'Long'
     },
     {
-      name: 'lastName',
-      class: 'String'
-    },
-    {
       name: 'firstName',
       class: 'String'
     },
     {
-      name: 'onboardingDate',
-      class: 'Date'
-    },
-    {
-      name: 'status',
+      name: 'lastName',
       class: 'String'
     },
     {
-      name: 'numberOfTransactionProcessed',
-      class: 'UnitValue'
-    },
-    {
-      name: 'currencyOfTransactionsProcessed',
+      name: 'business',
       class: 'String'
     },
     {
-      name: 'valueOfTransactionsProcessed',
-      class: 'UnitValue'
+      name: 'businessSending',
+      class: 'Boolean'
     },
     {
-      name: 'currencyOfFeeRevenue',
+      name: 'businessReceiving',
+      class: 'Boolean'
+    },
+    {
+      name: 'userSendingOver1000',
+      class: 'Boolean'
+    },
+    {
+      name: 'userSendingUnder1000',
+      class: 'Boolean'
+    },
+    {
+      name: 'onboardingSubmissionDate',
+      class: 'DateTime'
+    },
+    {
+      name: 'complianceStatus',
       class: 'String'
     },
     {
-      name: 'feeRevenue',
-      class: 'UnitValue'
+      name: 'approvalDate',
+      class: 'DateTime'
     },
     {
-      name: 'nanopayRevenue',
-      class: 'UnitValue'
+      name: 'firstPaymentDate',
+      class: 'DateTime'
     },
     {
-      name: 'intuitRevenue',
-      class: 'UnitValue'
+      name: 'City',
+      class: 'String'
     },
     {
       name: 'created',

@@ -71,6 +71,29 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
+  "name": "serviceFeesReportDAO",
+  "serve": true,
+  "serviceScript": """
+  dao = new net.nanopay.reporting.ServiceFeesReportDAO(
+    x,
+    new foam.dao.NullDAO(x, net.nanopay.reporting.ServiceFeesReport.getOwnClassInfo())
+  );
+
+  return new foam.dao.EasyDAO.Builder(x)
+    .setOf(net.nanopay.reporting.ServiceFeesReport.getOwnClassInfo())
+    .setDecorator(dao)
+    .setInnerDAO(x.get("reconciliationReportDAO"))
+    .build();
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.reporting.ServiceFeesReport"
+    }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
   "name": "intuitUserOnboardingReportGenerator",
   "serviceScript": """return new net.nanopay.partner.intuit.IntuitUserOnboardingReportGenerator();"""
 })

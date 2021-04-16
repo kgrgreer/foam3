@@ -1757,8 +1757,9 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/TrevisoCurrencyAmountInformation' },
 
   //Reporing
-  { name: 'net/nanopay/reporting/UserOnboardingReport' },
   { name: 'net/nanopay/reporting/ReconciliationReport' },
+  { name: 'net/nanopay/reporting/ServiceFeesReport' },
+  { name: 'net/nanopay/reporting/UserOnboardingReport' },
 
   { name: 'net/nanopay/payment/PayeeCurrencyService' },
   { name: 'net/nanopay/payment/PayeeCurrency' },
