@@ -556,7 +556,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'approvedBy',
-      // readPermissionRequired: true,
+      readPermissionRequired: true,
       includeInDigest: true,
       section: 'invoiceInformation',
       documentation: 'the ID of the user that approved this invoice within the business.',
