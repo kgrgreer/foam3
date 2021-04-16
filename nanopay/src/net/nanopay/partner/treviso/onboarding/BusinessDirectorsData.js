@@ -65,7 +65,7 @@ properties: [
           label: X.data.SKIP_DIRECTORS_MSG
         }
       },
-      postSet(_, newVal) {
+      postSet: function (_, newVal) {
         if (newVal) {
           this.businessDirectors = [];
         }
@@ -113,7 +113,7 @@ properties: [
       name: 'validate',
       javaCode: `
         if ( getSkipDirectors() ) return;
-        
+
         // validate directors
         if (getBusinessDirectors() == null || getBusinessDirectors().length == 0) {
           throw new IllegalStateException(NO_DIRECTOR_INFO);
