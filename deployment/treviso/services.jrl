@@ -90,3 +90,14 @@ p({
     }
   """
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"trevisoFXService",
+  "lazy":false,
+  "serve":false,
+  "serviceScript":"""
+
+    return new net.nanopay.partner.fx.TrevisoFXService("Treviso","Cambio2019",["USD","CAD"]);
+  """
+})
