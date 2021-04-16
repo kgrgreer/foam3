@@ -234,7 +234,7 @@
         Cotacoes cotacoes = (Cotacoes) jsonParser.parseString(response.body(), Cotacoes.class);
         for ( EnfoqueResponse i: cotacoes.getCotacoes() ) {
           if ( i.getCod().equals(targetCurrency + sourceCurrency) ) {
-            return Double.valueOf(i.getOvd());
+            return 1.0 / Double.valueOf(i.getOvd());
           }
         }
       } catch (IOException | URISyntaxException | InterruptedException e) {
