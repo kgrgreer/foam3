@@ -1062,3 +1062,10 @@ p({
   """,
   "client": "{\"of\":\"foam.counter.Counter\"}"
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "nullService",
+  "serve": false,
+  "serviceClass": "foam.core.NullService"
+})
