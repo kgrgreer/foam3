@@ -18,6 +18,7 @@
  foam.CLASS({
   package: 'net.nanopay.partner.treviso.fx',
   name: 'Cotacoes',
+  documentation: 'modeled response from treviso getRates api call',
   properties: [
     {
       class: 'FObjectArray',

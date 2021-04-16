@@ -18,7 +18,9 @@
 foam.CLASS({
   package: 'net.nanopay.partner.treviso.fx',
   name: 'TrevisoFXService',
-  implements: 'net.nanopay.fx.FXService',
+  implements: [
+    'net.nanopay.fx.FXService'
+  ],
 
   documentation: 'Treviso service for fetching the fx rate from treviso',
 
@@ -29,7 +31,12 @@ foam.CLASS({
     'foam.mlang.MLang',
     'foam.util.SafetyUtil',
     'foam.core.Detachable',
-    'net.nanopay.fx.FXQuote'
+    'foam.nanos.app.AppConfig',
+    'foam.nanos.dig.exception.UnsupportException',
+    'net.nanopay.partner.treviso.fx.Cotacoes',
+    'net.nanopay.partner.treviso.fx.EnfoqueResponse',
+    'foam.nanos.app.Mode',
+    'java.util.Arrays'
   ],
 
   properties: [
@@ -93,7 +100,7 @@ foam.CLASS({
       documentation: 'Not supported in the treviso fx service',
       javaCode: `
         // not supported.
-        return null;
+        throw new UnsupportException("getFXRate method not supported");
       `
     },
     {
@@ -114,7 +121,7 @@ foam.CLASS({
       documentation: 'Not supported in the treviso fx service',
       javaCode: `
         // not supported.
-        return null;
+        throw new UnsupportException("acceptFXRate method not supported");
       `
     },
     {
@@ -139,18 +146,20 @@ foam.CLASS({
       documentation: 'Returns the BRL -> USD rate from treviso',
       javaCode: `
         if ( ! SafetyUtil.equals("BRL", sourceCurrency) ) {
-          throw new RuntimeException("We only support BRL source currency.");
+          throw new UnsupportException("We only support BRL source currency.");
         }
         if ( ! Arrays.asList(getCurrencies()).contains(targetCurrency) ) {
-          throw new RuntimeException(targetCurrency+" is not a supported target currency");
+          throw new UnsupportException(targetCurrency+" is not a supported target currency");
         }
 
         Double rate = 0.5d;
+        AppConfig config = (AppConfig) getX().get("appConfig");
 
-        // api call goes here.
-
-
-
+        if ( config.getMode() == Mode.PRODUCTION ) {
+          // call neel api method
+          // return rate
+        }
+        // in dev and elsewhere return "mock" service
         return rate;
       `
     }

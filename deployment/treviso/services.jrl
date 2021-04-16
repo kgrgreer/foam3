@@ -98,6 +98,7 @@ p({
   "serve":false,
   "serviceScript":"""
 
-    return new net.nanopay.partner.fx.TrevisoFXService("Treviso","Cambio2019",["USD","CAD"]);
+    return new net.nanopay.partner.fx.TrevisoFXService("Treviso","Cambio2019",["USD","CAD","EUR","GBP","CNY","CLP","ARS","JPY","CHF","AUD"]);
+
   """
 })

@@ -18,6 +18,7 @@
  foam.CLASS({
   package: 'net.nanopay.partner.treviso.fx',
   name: 'EnfoqueResponse',
+  documentation: 'individual fx quote returned by treviso',
   properties: [
     {
       class: 'String',

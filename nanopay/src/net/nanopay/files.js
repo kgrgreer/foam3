@@ -1918,6 +1918,10 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/invoice/TrevisoNotification' },
   { name: 'net/nanopay/partner/treviso/fx/EnfoqueResponse' },
   { name: 'net/nanopay/partner/treviso/fx/Cotacoes' },
+  { name: 'net/nanopay/partner/treviso/fx/TrevisoFXService' },
+
+
+
 
   // bepay
   { name: 'net/nanopay/partner/bepay/tx/BePayTransaction' },
