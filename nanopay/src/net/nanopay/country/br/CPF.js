@@ -47,9 +47,13 @@ foam.CLASS({
     'subject'
   ],
 
-  constants: {
-    CPF_LENGTH: 11
-  },
+  constants: [
+    {
+      name: 'CPF_LENGTH',
+      value: 11,
+      javaType: 'int'
+    }
+  ],
 
   messages: [
     { name: 'INVALID_CPF', message: 'Valid CPF number required' },
@@ -139,8 +143,8 @@ foam.CLASS({
         return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
       },
       view: function(_, X) {
-        return foam.u2.FormattedTextField.create({ 
-          formatter: [3, '.', 3, '.', 3, '-', 2] 
+        return foam.u2.FormattedTextField.create({
+          formatter: [3, '.', 3, '.', 3, '-', 2]
         }, X);
       }
     },
@@ -201,10 +205,12 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
+      // IMPORTANT: Any fix here may also apply to BrazilBusinessInfoData.js
+
       // These should be valid before making API call
       try {
         this.BIRTHDAY.validateObj(x, this);
-        if ( getData() == null || getData().length() != 11 ) {
+        if ( getData() == null || getData().length() != this.CPF_LENGTH ) {
           throw new foam.core.ValidationException(INVALID_CPF);
         }
       } catch ( foam.core.ValidationException e ) {

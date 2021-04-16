@@ -1246,12 +1246,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.Address.LONGITUD
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.Address.PROPERTY_TYPE.documentation",target:"Define o tipo de propriedade do endereço."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.BASE_CURRENCY.label",target:"moeda base"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.PLACE_HOLDER",target:"Por favor selecione..."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.BASE_CURRENCY.documentation",target:"Moeda com base no endereço comercial."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_REVENUE.documentation",target:"Receita anual estimada para usuário ou empresa."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE.label",target:"Objetivo principal das transações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_REVENUE.label",target:"Vendas anuais brutas estimadas"})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE.documentation",target:"Finalidades gerais da transação."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_AMOUNT.label",target:"Valor de transação anual"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_FREQUENCY.label",target:"Número estimado de transações anuais"})
@@ -1259,7 +1257,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_FREQUENCY.documentation",target:"Frequência anual estimada de transações que o usuário ou empresa realiza."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_VOLUME.label",target:"volume anual"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_VOLUME.documentation",target:"Volume anual estimado em dólares do usuário ou empresa. BaseCurrency deste campo que é definido quando o usuário confirma que faz transferências internacionais, é o oposto (CAD - USD) da moeda base definida neste modelo. Propriedade herdada - em abril de 2020"})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.FIRST_TRADE_DATE.label",target:"primeira data de negociação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.FIRST_TRADE_DATE.documentation",target:"Data do primeiro pagamento antecipado. Propriedade herdada - em abril de 2020"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_DOMESTIC_TRANSACTION_AMOUNT.value",target:"N/A pt"})
@@ -1267,9 +1264,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_DOMESTIC_VOLUME.label",target:"Previsão de movimentação anual?"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.FIRST_TRADE_DATE_DOMESTIC.documentation",target:"Data do primeiro pagamento antecipado. Empresa sediada nos Estados Unidos (as informações referem-se às transações domésticas, pois serão processadas por meio da AFX) Propriedade herdada - em abril de 2020"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_DOMESTIC_VOLUME.documentation",target:"Volume anual estimado em dólares do usuário ou empresa. baseCurrency deste modelo. Empresa sediada nos Estados Unidos (as informações pertencem às suas transações domésticas, pois serão processadas por meio da AFX)"})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_DOMESTIC_TRANSACTION_AMOUNT.documentation",target:"Número anual estimado de transações que o usuário ou a empresa realiza. baseCurrency deste modelo. Empresa sediada nos Estados Unidos (as informações referem-se às transações domésticas, pois serão processadas por meio da AFX) Propriedade herdada - em abril de 2020"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.FIRST_TRADE_DATE_DOMESTIC.label",target:"Primeira Data de Negociação Doméstica"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.OTHER_TRANSACTION_PURPOSE.label",target:"Por favor especifique"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.BANK_ACCOUNT_LABEL",target:"Conta bancária"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.ACCOUNT_NUMBER_REQUIRED",target:"Número da conta obrigatório"})
@@ -2978,26 +2975,28 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMo
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.AVAILABLE_CURRENCIES_MSG",target:"Moedas Disponíveis"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.PAYABLES_PRODUCTS_SERVICES",target:"Contas a pagar por produtos e / ou serviços"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.WORKING_CAPITAL",target:"Capital de giro"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.BILL_PAYMENTS",target:"Pagamento de contas"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.TransactionsPurposeEnum.PLACE_HOLDER.label",target:"Por favor selecione..."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.TransactionsPurposeEnum.PAYABLES_PRODUCTS_SERVICES.label",target:"Contas a pagar por produtos e / ou serviços"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.TransactionsPurposeEnum.WORKING_CAPITAL.label",target:"Capital de giro"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.TransactionsPurposeEnum.BILL_PAYMENTS.label",target:"Pagamento de contas"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.TransactionsPurposeEnum.INTRACOMPANY_BANK_TRANSFERS.label",target:"Transferências bancárias intra-empresa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.TransactionsPurposeEnum.GOVERNMENT_FEE_TAXES.label",target:"Taxas e impostos governamentais"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.TransactionsPurposeEnum.OTHER.label",target:"De outros"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.INTRACOMPANY_BANK_TRANSFERS",target:"Transferências bancárias intra-empresa"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.GOVERNMENT_FEE_TAXES",target:"Taxas e impostos governamentais"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.OTHER",target:"De outros"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.AnnualRevenueEnum.PLACE_HOLDER.label",target:"Por favor selecione..."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.AnnualRevenueEnum.LESS_THAN_10000.label",target:"USD 0 a USD 10.000"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.AnnualRevenueEnum.LESS_THAN_50000.label",target:"USD 10.001 a USD 50.000"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.AnnualRevenueEnum.LESS_THAN_100000.label",target:"USD 50.001 a USD 100.000"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.AnnualRevenueEnum.LESS_THAN_500000.label",target:"USD 100.001 a USD 500.000"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.AnnualRevenueEnum.LESS_THAN_1000000.label",target:"USD 500.001 a USD 1.000.000"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.AnnualRevenueEnum.OVER_THAN_1000000.label",target:"Acima de USD 1.000.000"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_10000",target:"USD 0 a USD 10.000"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_50000",target:"USD 10.001 a USD 50.000"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_100000",target:"USD 50.001 a USD 100.000"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_500000",target:"USD 100.001 a USD 500.000"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_1000000",target:"USD 500.001 a USD 1.000.000"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.OVER_THEN_1000000",target:"Acima de USD 1.000.000"})
-
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_100",target:"1 a 99"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_200",target:"100 a 199"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_500",target:"200 a 499"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_1000",target:"500 a 999"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.OVER_THEN_1000",target:"Acima de 1000"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.AnnualTxnFrequencyEnum.PLACE_HOLDER.label",target:"Por favor selecione..."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.AnnualTxnFrequencyEnum.LESS_THAN_100.label",target:"1 a 99"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.AnnualTxnFrequencyEnum.LESS_THAN_200.label",target:"100 a 199"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.AnnualTxnFrequencyEnum.LESS_THAN_500.label",target:"200 a 499"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.AnnualTxnFrequencyEnum.LESS_THAN_1000.label",target:"500 a 999"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.AnnualTxnFrequencyEnum.OVER_THAN_1000.label",target:"Acima de 1000"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.AVAILABLE_CURRENCIES",target:"Moedas Disponíveis"})
 

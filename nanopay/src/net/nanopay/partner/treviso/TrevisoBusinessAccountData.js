@@ -22,7 +22,15 @@ foam.CLASS({
   documentation: `Business account information, such as customer or supplier detail and taxes date`,
 
   javaImports: [
-    'net.nanopay.crunch.onboardingModels.CustomerBasicInformation'
+    'foam.util.SafetyUtil',
+    'net.nanopay.crunch.onboardingModels.CustomerBasicInformation',
+    'net.nanopay.partner.treviso.BusinessFundingEnum',
+    'net.nanopay.partner.treviso.PrimaryCapitalSourceEnum'
+  ],
+
+  requires: [
+    'net.nanopay.partner.treviso.BusinessFundingEnum',
+    'net.nanopay.partner.treviso.PrimaryCapitalSourceEnum'
   ],
 
   sections: [
@@ -36,14 +44,7 @@ foam.CLASS({
     { name: 'INVALID_DATE_ERROR', message: 'Valid date required' },
     { name: 'MAX_DATE_ERROR', message: 'Cannot be a future date' },
     { name: 'YES', message: 'Yes' },
-    { name: 'NO', message: 'No' },
-    { name: 'FOREIGN', message: 'Foreign' },
-    { name: 'NATIONAL', message: 'National' },
-    { name: 'MIXED', message: 'Mixed' },
-    { name: 'STATE', message: 'State' },
-    { name: 'PRIVATE', message: 'Private' },
-    { name: 'NO_CAPITAL_SOURCE', message: 'Source of capital required' },
-    { name: 'NO_CAPITAL_TYPE', message: 'Capital type required' }
+    { name: 'NO', message: 'No' }
   ],
 
   properties: [
@@ -170,58 +171,96 @@ foam.CLASS({
       name: 'capitalSource',
       label: 'What is the primary source of capital for your business?',
       class: 'String',
+      storageTransient: true,
+      hidden: true,
+      javaSetter: `
+        // for legacy property(capitalSource_) migration
+        // setting val since called but only setting enum value if default
+        // otherwise respecting changes in enum value
+        capitalSource_ = val;
+        if ( ! SafetyUtil.isEmpty(capitalSource_)  ) {
+          capitalSourceIsSet_ = true;
+          if ( ! capitalSourceEnumIsSet_ ) {
+            setCapitalSourceEnum(PrimaryCapitalSourceEnum.forLabel(capitalSource_));
+          }
+        }
+      `,
+      javaGetter: `
+        // api's use this property,
+        // returning enum val to legacy propery(capitalSource)
+        if ( capitalSourceEnumIsSet_ ) {
+          return getCapitalSourceEnum().getLabel();
+        }
+        return capitalSource_;
+      `,
+    },
+    {
+      section: 'accountingSection',
+      name: 'capitalSourceEnum',
+      label: 'What is the primary source of capital for your business?',
+      class: 'Enum',
+      of: 'net.nanopay.partner.treviso.PrimaryCapitalSourceEnum',
       view: function(_, X) {
+        var choices = X.data.slot(() => {
+          return this.of.VALUES.map(v => [v, v.label]);
+        });
         return {
           class: 'foam.u2.view.RadioView',
-          choices: [
-            X.data.FOREIGN,
-            X.data.NATIONAL,
-            X.data.MIXED
-          ],
+          choices$: choices,
           isHorizontal: true
         };
       },
       factory: function() {
-        return this.NATIONAL;
-      },
-      validationPredicates: [
-        {
-          errorMessage: 'NO_CAPITAL_SOURCE',
-          args: ['capitalSource'],
-          predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.partner.treviso.TrevisoBusinessAccountData.CAPITAL_SOURCE, null);
-          }
-        }
-      ]
+        return this.PrimaryCapitalSourceEnum.NATIONAL;
+      }
     },
     {
       section: 'accountingSection',
       name: 'capitalType',
       label: 'How is your business funded?',
       class: 'String',
+      storageTransient: true,
+      hidden: true,
+      javaSetter: `
+        // for legacy property(capitalType_) migration
+        // setting val since called but only setting enum value if default
+        // otherwise respecting changes in enum value
+        capitalType_ = val;
+        if ( ! SafetyUtil.isEmpty(capitalType_) ) {
+          capitalTypeIsSet_ = true;
+          if ( ! capitalTypeEnumIsSet_) {
+            setCapitalTypeEnum(BusinessFundingEnum.forLabel(capitalType_));
+          }
+        }
+      `,
+      javaGetter: `
+        // api's use this property,
+        // returning enum val to legacy propery(capitalType)
+        if ( capitalTypeEnumIsSet_ ) {
+          return getCapitalTypeEnum().getLabel();
+        }
+        return capitalType_;
+      `,
+    },
+    {
+      section: 'accountingSection',
+      name: 'capitalTypeEnum',
+      label: 'How is your business funded?',
+      class: 'Enum',
+      of: 'net.nanopay.partner.treviso.BusinessFundingEnum',
       view: function(_, X) {
+        var choices = X.data.slot(() => {
+          return this.of.VALUES.map(v => [v, v.label]);
+        });
         return {
           class: 'foam.u2.view.RadioView',
-          choices: [
-            X.data.STATE,
-            X.data.PRIVATE,
-            X.data.MIXED
-          ],
+          choices$: choices,
           isHorizontal: true
         };
       },
       factory: function() {
-        return this.PRIVATE;
-      },
-      validationPredicates: [
-        {
-          errorMessage: 'NO_CAPITAL_TYPE',
-          args: ['capitalType'],
-          predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.partner.treviso.TrevisoBusinessAccountData.CAPITAL_TYPE, null);
-          }
-        }
-      ]
+        return this.BusinessFundingEnum.PRIVATE;
+      }
     }
   ],
 

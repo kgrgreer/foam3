@@ -360,6 +360,9 @@ var classes = [
   'net.nanopay.sme.onboarding.ReceiveOnlyOnboardingDAO',
   'net.nanopay.sme.onboarding.USBusinessOnboardingDAO',
   'net.nanopay.sme.OnboardingPaymentOpsNotification',
+  'net.nanopay.sme.onboarding.model.AnnualRevenueEnum',
+  'net.nanopay.sme.onboarding.model.AnnualTxnFrequencyEnum',
+  'net.nanopay.sme.onboarding.model.TransactionsPurposeEnum',
   'net.nanopay.sme.ruler.OnboardingPaymentOperationNotification',
   'net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO',
   'net.nanopay.onboarding.email.NewUserOnboardedEmailDAO',
@@ -1421,6 +1424,8 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData',
   'net.nanopay.crunch.onboardingModels.TaxIdNumberData',
   'net.nanopay.partner.treviso.TrevisoBusinessAccountData',
+  'net.nanopay.partner.treviso.BusinessFundingEnum',
+  'net.nanopay.partner.treviso.PrimaryCapitalSourceEnum',
   'net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation',
   'net.nanopay.crunch.onboardingModels.CustomerBasicInformation',
 

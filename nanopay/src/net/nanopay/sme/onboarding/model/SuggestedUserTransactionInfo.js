@@ -27,30 +27,18 @@ foam.CLASS({
       adjustmented to at least AdcendantFXReportsWebAgent.
       Can't test for awhile so leaving for future.
   `,
+  javaImports: [
+    'foam.util.SafetyUtil',
+    'net.nanopay.sme.onboarding.model.AnnualRevenueEnum',
+    'net.nanopay.sme.onboarding.model.AnnualTxnFrequencyEnum',
+    'net.nanopay.sme.onboarding.model.TransactionsPurposeEnum'
+  ],
 
   messages: [
-    { name: 'PLACE_HOLDER', message: 'Please select...' },
     { name: 'GROSS_ANNUAL_SALES_ERROR', message: 'Gross annual sales required' },
     { name: 'TRANSACTION_PURPOSE_ERROR', message: 'Transaction purpose required' },
     { name: 'ANNUAL_NUMBER_ERROR', message: 'Annual number of transactions required' },
-    { name: 'ANNUAL_VOLUME_ERROR', message: 'Annual volume required' },
-    { name: 'PAYABLES_PRODUCTS_SERVICES', message: 'Payables for products and/or services' },
-    { name: 'WORKING_CAPITAL', message: 'Working capital' },
-    { name: 'BILL_PAYMENTS', message: 'Bill payments' },
-    { name: 'INTRACOMPANY_BANK_TRANSFERS', message: 'Intracompany bank transfers' },
-    { name: 'GOVERNMENT_FEE_TAXES', message: 'Government fee and taxes' },
-    { name: 'OTHER', message: 'Other' },
-    { name: 'LESS_THEN_10000', message: '$0 to $10,000' },
-    { name: 'LESS_THEN_50000', message: '$10,001 to $50,000' },
-    { name: 'LESS_THEN_100000', message: '$50,001 to $100,000' },
-    { name: 'LESS_THEN_500000', message: '$100,001 to $500,000' },
-    { name: 'LESS_THEN_1000000', message: '$500,001 to $1,000,000' },
-    { name: 'OVER_THEN_1000000', message: 'Over $1,000,000' },
-    { name: 'LESS_THEN_100', message: '1 to 99' },
-    { name: 'LESS_THEN_200', message: '100 to 199' },
-    { name: 'LESS_THEN_500', message: '200 to 499' },
-    { name: 'LESS_THEN_1000', message: '500 to 999' },
-    { name: 'OVER_THEN_1000', message: 'Over 1000' }
+    { name: 'ANNUAL_VOLUME_ERROR', message: 'Annual volume required' }
   ],
 
   sections: [
@@ -64,19 +52,23 @@ foam.CLASS({
       title: '',
       properties: [
         {
-          name: 'annualRevenue',
+          name: 'annualRevenueEnum',
           gridColumns: 12
         },
         {
-          name: 'transactionPurpose',
+          name: 'transactionPurposeEnum',
           gridColumns: 12
         },
         {
-          name: 'annualTransactionFrequency',
+          name: 'otherTransactionPurpose',
           gridColumns: 12
         },
         {
-          name: 'annualDomesticVolume',
+          name: 'annualTransactionFrequencyEnum',
+          gridColumns: 12
+        },
+        {
+          name: 'annualDomesticVolumeEnum',
           gridColumns: 12
         },
       ]
@@ -97,30 +89,56 @@ foam.CLASS({
       section: 'backOfficeSuggestedUserTransactionInfo',
       label: 'Estimated gross annual sales',
       documentation: `Estimated annual revenue for user or business.`,
+      storageTransient: true,
+      javaSetter: `
+        // for legacy property(annualRevenue_) migration
+        // setting val since called but only setting enum value if default
+        // otherwise respecting changes in enum value
+        annualRevenue_ = val;
+        if ( ! SafetyUtil.isEmpty(annualRevenue_) ) {
+          annualRevenueIsSet_ = true;
+          if ( ! annualRevenueEnumIsSet_) {
+            setAnnualRevenueEnum(AnnualRevenueEnum.forLabel(annualRevenue_));
+          }
+        }
+      `,
+      javaGetter: `
+        // api's use this property,
+        // returning enum val to legacy  propery(annualRevenue)
+        if ( annualRevenueEnumIsSet_ ) {
+          return getAnnualRevenueEnum().getLabel();
+        }
+        return annualRevenue_;
+      `,
+      hidden: true
+    },
+    {
+      class: 'Enum',
+      of: 'net.nanopay.sme.onboarding.model.AnnualRevenueEnum',
+      name: 'annualRevenueEnum',
+      section: 'backOfficeSuggestedUserTransactionInfo',
+      label: 'Estimated gross annual sales',
+      documentation: `Estimated annual revenue for user or business.`,
       view: function(_, X) {
+        var choices = X.data.slot(() => {
+          return this.of.VALUES.map(v => [v, v.label]);
+        });
         return {
           class: 'foam.u2.view.ChoiceView',
-          placeholder: X.data.PLACE_HOLDER,
-          choices: [
-            X.data.LESS_THEN_10000,
-            X.data.LESS_THEN_50000,
-            X.data.LESS_THEN_100000,
-            X.data.LESS_THEN_500000,
-            X.data.LESS_THEN_1000000,
-            X.data.OVER_THEN_1000000
-          ]
+          choices$: choices
         };
       },
+      gridColumns: 6,
       validationPredicates: [
         {
-          args: ['annualRevenue'],
+          args: ['annualRevenueEnum'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_REVENUE, null);
+            return e.NEQ(net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_REVENUE_ENUM,
+              net.nanopay.sme.onboarding.model.AnnualRevenueEnum.PLACE_HOLDER);
           },
           errorMessage: 'GROSS_ANNUAL_SALES_ERROR'
         }
-      ],
-      gridColumns: 6
+      ]
     },
     {
       class: 'String',
@@ -128,34 +146,91 @@ foam.CLASS({
       section: 'backOfficeSuggestedUserTransactionInfo',
       label: 'Main purpose of transactions',
       documentation: `General transaction purposes.`,
-      view: function(_, X) {
-        return {
-          class: 'foam.u2.view.ChoiceWithOtherView',
-          otherKey: 'Other',
-          choiceView: {
-            class: 'foam.u2.view.ChoiceView',
-            placeholder: X.data.PLACE_HOLDER,
-            choices: [
-              X.data.PAYABLES_PRODUCTS_SERVICES,
-              X.data.WORKING_CAPITAL,
-              X.data.BILL_PAYMENTS,
-              X.data.INTRACOMPANY_BANK_TRANSFERS,
-              X.data.GOVERNMENT_FEE_TAXES,
-              X.data.OTHER,
-            ]
+      storageTransient: true,
+      javaSetter: `
+        // for legacy property(transactionPurpose_) migration
+        // setting val since called but only setting enum value if default
+        // otherwise respecting changes in enum value
+        transactionPurpose_ = val;
+        if ( ! SafetyUtil.isEmpty(transactionPurpose_) ) {
+          transactionPurposeIsSet_ = true;
+          if ( ! transactionPurposeEnumIsSet_ ) {
+            var checkingIfNotOtherSelection = TransactionsPurposeEnum.forLabel(transactionPurpose_);
+            if ( checkingIfNotOtherSelection == null ) setTransactionPurposeEnum(TransactionsPurposeEnum.OTHER);
+            else setTransactionPurposeEnum(checkingIfNotOtherSelection);
           }
+        }
+      `,
+      javaGetter: `
+        // api's use this property,
+        // returning enum val to legacy propery(transactionPurpose)
+        if ( transactionPurposeEnumIsSet_ ) {
+          if ( otherTransactionPurposeIsSet_ ) return getOtherTransactionPurpose();
+          return getTransactionPurposeEnum().getLabel();
+        }
+        return transactionPurpose_;
+      `,
+      hidden: true
+    },
+    {
+      class: 'Enum',
+      of: 'net.nanopay.sme.onboarding.model.TransactionsPurposeEnum',
+      name: 'transactionPurposeEnum',
+      section: 'backOfficeSuggestedUserTransactionInfo',
+      label: 'Main purpose of transactions',
+      documentation: `General transaction purposes.`,
+      view: function(_, X) {
+        var choices = X.data.slot(() => {
+          return this.of.VALUES.map(v => [v, v.label]);
+        });
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          choices$: choices
         };
       },
+      gridColumns: 6,
       validationPredicates: [
         {
-          args: ['transactionPurpose'],
+          args: ['transactionPurposeEnum'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE, null);
+            return e.NEQ(net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE_ENUM, 
+              net.nanopay.sme.onboarding.model.TransactionsPurposeEnum.PLACE_HOLDER);
           },
           errorMessage: 'TRANSACTION_PURPOSE_ERROR'
         }
-      ],
-      gridColumns: 6
+      ]
+    },
+    {
+      class: 'String',
+      name: 'otherTransactionPurpose',
+      section: 'backOfficeSuggestedUserTransactionInfo',
+      label: 'Please Specify',
+      visibility: function(transactionPurposeEnum) {
+        return transactionPurposeEnum == net.nanopay.sme.onboarding.model.TransactionsPurposeEnum.OTHER 
+          ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      },
+      gridColumns: 6,
+      validationPredicates: [
+        {
+          args: ['transactionPurposeEnum', 'otherTransactionPurpose'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.NEQ(net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE_ENUM, 
+                net.nanopay.sme.onboarding.model.TransactionsPurposeEnum.OTHER),
+              e.AND(
+                e.EQ(net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE_ENUM, 
+                  net.nanopay.sme.onboarding.model.TransactionsPurposeEnum.OTHER),
+                e.GT(
+                  foam.mlang.StringLength.create({
+                    arg1: net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo
+                      .OTHER_TRANSACTION_PURPOSE
+                  }), 0)
+              )
+            );
+          },
+          errorMessage: 'TRANSACTION_PURPOSE_ERROR'
+        }
+      ]
     },
     {
       class: 'String',
@@ -173,29 +248,56 @@ foam.CLASS({
       section: 'backOfficeSuggestedUserTransactionInfo',
       label: 'Estimated annual number of transactions',
       documentation: `Estimated annual frequency of transactions the user or business conducts.`,
-        view: function(_, X) {
+      storageTransient: true,
+      javaSetter: `
+        // for legacy property(annualTransactionFrequency_) migration
+        // setting val since called but only setting enum value if default
+        // otherwise respecting changes in enum value
+        annualTransactionFrequency_ = val;
+        if ( ! SafetyUtil.isEmpty(annualTransactionFrequency_) ) {
+          annualTransactionFrequencyIsSet_ = true;
+          if ( ! annualTransactionFrequencyEnumIsSet_) {
+            setAnnualTransactionFrequencyEnum(AnnualTxnFrequencyEnum.forLabel(annualTransactionFrequency_));
+          }
+        }
+      `,
+      javaGetter: `
+        // api's use this property,
+        // returning enum val to legacy propery(annualTransactionFrequency)
+        if ( annualTransactionFrequencyEnumIsSet_ ) {
+          return getAnnualTransactionFrequencyEnum().getLabel();
+        }
+        return annualTransactionFrequency_;
+      `,
+      hidden: true
+    },
+    {
+      class: 'Enum',
+      of: 'net.nanopay.sme.onboarding.model.AnnualTxnFrequencyEnum',
+      name: 'annualTransactionFrequencyEnum',
+      section: 'backOfficeSuggestedUserTransactionInfo',
+      label: 'Estimated annual number of transactions',
+      documentation: `Estimated annual frequency of transactions the user or business conducts.`,
+      view: function(_, X) {
+        var choices = X.data.slot(() => {
+          return this.of.VALUES.map(v => [v, v.label]);
+        });
         return {
           class: 'foam.u2.view.ChoiceView',
-          placeholder: X.data.PLACE_HOLDER,
-          choices: [
-            X.data.LESS_THEN_100,
-            X.data.LESS_THEN_200,
-            X.data.LESS_THEN_500,
-            X.data.LESS_THEN_1000,
-            X.data.OVER_THEN_1000
-          ]
+          choices$: choices
         };
       },
+      gridColumns: 6,
       validationPredicates: [
         {
-          args: ['annualTransactionFrequency'],
+          args: ['annualTransactionFrequencyEnum'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_FREQUENCY, '');
+            return e.NEQ(net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_FREQUENCY_ENUM,
+              net.nanopay.sme.onboarding.model.AnnualTxnFrequencyEnum.PLACE_HOLDER);
           },
           errorMessage: 'ANNUAL_NUMBER_ERROR'
         }
-      ],
-      gridColumns: 6
+      ]
     },
     {
       class: 'String',
@@ -232,30 +334,57 @@ foam.CLASS({
       label: 'Estimated annual volume',
       documentation: `Estimated annual volume in USD of user or business. baseCurrency of this model.
       US-based company (the information pertains to their domestic transactions, as they will be processed through AFX)`,
+      storageTransient: true,
+      javaSetter: `
+        // for legacy property(annualDomesticVolume_) migration
+        // setting val since called but only setting enum value if default
+        // otherwise respecting changes in enum value
+        annualDomesticVolume_ = val;
+        if ( ! SafetyUtil.isEmpty(annualDomesticVolume_) ) {
+          annualDomesticVolumeIsSet_ = true;
+          if ( ! annualDomesticVolumeEnumIsSet_) {
+            setAnnualDomesticVolumeEnum(AnnualRevenueEnum.forLabel(annualDomesticVolume_));
+          }
+        }
+      `,
+      javaGetter: `
+        // api's use this property,
+        // returning enum val to legacy propery(annualDomesticVolume)
+        if ( annualDomesticVolumeEnumIsSet_ ) {
+          return getAnnualDomesticVolumeEnum().getLabel();
+        }
+        return annualDomesticVolume_;
+      `,
+      hidden: true
+    },
+    {
+      class: 'Enum',
+      of: 'net.nanopay.sme.onboarding.model.AnnualRevenueEnum',
+      name: 'annualDomesticVolumeEnum',
+      section: 'backOfficeSuggestedUserTransactionInfo',
+      label: 'Estimated annual volume',
+      documentation: `Estimated annual volume in USD of user or business. baseCurrency of this model.
+      US-based company (the information pertains to their domestic transactions, as they will be processed through AFX)`,
       view: function(_, X) {
+        var choices = X.data.slot(() => {
+          return this.of.VALUES.map(v => [v, v.label]);
+        });
         return {
           class: 'foam.u2.view.ChoiceView',
-          placeholder: X.data.PLACE_HOLDER,
-          choices: [
-            X.data.LESS_THEN_10000,
-            X.data.LESS_THEN_50000,
-            X.data.LESS_THEN_100000,
-            X.data.LESS_THEN_500000,
-            X.data.LESS_THEN_1000000,
-            X.data.OVER_THEN_1000000
-          ]
+          choices$: choices
         };
       },
+      gridColumns: 6,
       validationPredicates: [
         {
-          args: ['annualDomesticVolume'],
+          args: ['annualDomesticVolumeEnum'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_DOMESTIC_VOLUME, null);
+            return e.NEQ(net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_DOMESTIC_VOLUME_ENUM,
+              net.nanopay.sme.onboarding.model.AnnualRevenueEnum.PLACE_HOLDER);
           },
           errorMessage: 'ANNUAL_VOLUME_ERROR'
         }
       ],
-      gridColumns: 6
     },
     {
       class: 'Date',
