@@ -28,13 +28,8 @@ import net.nanopay.tx.rbc.RbcCOTransaction;
 
 public class RBCReconciliationReportDAO extends ReconciliationReportDAO {
 
-  public RBCReconciliationReportDAO(X x, DAO delegate) {
-    super(x, delegate);
-  }
-
-  @Override
-  protected String getGenerator() {
-    return "rbcReconciliationReportGenerator";
+  public RBCReconciliationReportDAO(X x, DAO delegate, String generator) {
+    super(x, delegate, generator);
   }
 
   @Override

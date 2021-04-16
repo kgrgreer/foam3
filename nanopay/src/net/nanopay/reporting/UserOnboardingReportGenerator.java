@@ -1,10 +1,15 @@
 package net.nanopay.reporting;
 
-import foam.core.X;
 import foam.nanos.auth.User;
 
-public interface UserOnboardingReportGenerator {
+import javax.annotation.Nonnull;
 
-  UserOnboardingReport generateReport(X x, User user);
+public abstract class UserOnboardingReportGenerator extends ReportGenerator {
+
+  @Override
+  protected Object getSourceId(@Nonnull Object src) {
+    var user = (User) src;
+    return user.getId();
+  }
 
 }

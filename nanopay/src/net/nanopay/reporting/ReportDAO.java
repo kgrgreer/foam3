@@ -1,24 +1,21 @@
 package net.nanopay.reporting;
 
+import foam.core.Detachable;
 import foam.core.FObject;
 import foam.core.PropertyInfo;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.dao.ProxySink;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
-import foam.nanos.auth.User;
+import foam.nanos.auth.LastModifiedAware;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public abstract class UserOnboardingReportDAO extends ProxyDAO {
-
-  protected Map<Long, UserOnboardingReport> uorCache = new HashMap<>();
+public class ReportDAO extends ProxyDAO {
 
   protected Predicate adaptPredicate(Predicate predicate) {
-    if ( !( predicate instanceof FObject ) )
+    if ( !( predicate instanceof FObject) )
       return predicate;
 
     FObject obj = (FObject) predicate;
@@ -47,7 +44,7 @@ public abstract class UserOnboardingReportDAO extends ProxyDAO {
     return predicate;
   }
 
-  abstract protected String getGenerator();
+  protected String generator;
 
   @Override
   public FObject remove_(X x, FObject obj) {
@@ -61,29 +58,26 @@ public abstract class UserOnboardingReportDAO extends ProxyDAO {
 
   @Override
   public FObject find_(X x, Object id) {
-    var user = (User) getDelegate().find_(x, id);
-    if ( user == null )
-      return null;
-
-    var uor = uorCache.get(user.getId());
-    if ( uor != null && ! uor.getLastModified().before(user.getLastModified()) ) {
-      return uor;
-    }
-
-    var generator = (UserOnboardingReportGenerator) x.get(getGenerator());
-    var report = generator.generateReport(x, (User) getDelegate().find_(x, id));
-    uorCache.put(user.getId(), report);
-    return report;
+    var g = (ReportGenerator) x.get(generator);
+    return (FObject) g.generateReport(x, (LastModifiedAware) getDelegate().find_(x, id), new Object[0]);
   }
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    var nSink = new UserOnboardingReportSink(x, getGenerator(), decorateSink(x, sink, skip, limit, order, null), uorCache);
-    getDelegate().select(decorateSink(x, nSink, 0, MAX_SAFE_INTEGER, null, adaptPredicate(predicate)));
+    var generatorSink = new ProxySink(x, decorateSink(x, sink, skip, limit, order, null)) {
+      @Override
+      public void put(Object obj, Detachable sub) {
+        var g = (ReportGenerator) x.get(generator);
+        super.put(g.generateReport(x, (LastModifiedAware) obj, new Object[0]), sub);
+      }
+    };
+    getDelegate().select(decorateSink(x, generatorSink, 0, MAX_SAFE_INTEGER, null, adaptPredicate(predicate)));
     return sink;
   }
 
-  public UserOnboardingReportDAO(X x, DAO delegate) {
+  public ReportDAO(X x, DAO delegate, String generator) {
     super(x, delegate);
+    this.generator = generator;
   }
+
 }

@@ -53,7 +53,8 @@ p({
   "serviceScript": """
   dao = new net.nanopay.partner.rbc.RBCReconciliationReportDAO(
     x,
-    new foam.dao.NullDAO(x, net.nanopay.reporting.ReconciliationReport.getOwnClassInfo())
+    new foam.dao.NullDAO(x, net.nanopay.reporting.ReconciliationReport.getOwnClassInfo()),
+    "rbcReconciliationReportGenerator"
   );
 
   return new foam.dao.EasyDAO.Builder(x)
@@ -71,12 +72,19 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
+  "name": "serviceFeesReportGenerator",
+  "serviceScript": """return new net.nanopay.reporting.ServiceFeesReportGenerator();"""
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
   "name": "serviceFeesReportDAO",
   "serve": true,
   "serviceScript": """
-  dao = new net.nanopay.reporting.ServiceFeesReportDAO(
+  dao = new net.nanopay.reporting.ReportDAO(
     x,
-    new foam.dao.NullDAO(x, net.nanopay.reporting.ServiceFeesReport.getOwnClassInfo())
+    new foam.dao.NullDAO(x, net.nanopay.reporting.ServiceFeesReport.getOwnClassInfo()),
+    "serviceFeesReportGenerator"
   );
 
   return new foam.dao.EasyDAO.Builder(x)
@@ -103,15 +111,16 @@ p({
   "name": "userOnboardingReportDAO",
   "serve": true,
   "serviceScript": """
-  dao = new net.nanopay.partner.intuit.IntuitUserOnboardingReportDAO(
+  dao = new net.nanopay.reporting.ReportDAO(
     x,
-    new foam.dao.NullDAO(x, net.nanopay.reporting.UserOnboardingReport.getOwnClassInfo())
+    new foam.dao.NullDAO(x, net.nanopay.reporting.UserOnboardingReport.getOwnClassInfo()),
+    "intuitUserOnboardingReportGenerator"
   );
 
   return new foam.dao.EasyDAO.Builder(x)
     .setOf(net.nanopay.reporting.UserOnboardingReport.getOwnClassInfo())
     .setDecorator(dao)
-    .setInnerDAO(x.get("localUserDAO"))
+    .setInnerDAO(x.get("userDAO"))
     .build();
   """,
   "client": """
