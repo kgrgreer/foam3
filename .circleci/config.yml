@@ -39,13 +39,13 @@ jobs:
             - gradle-repo-v1-{{ .Branch }}-
             - gradle-repo-v1-
 
-      - run: ./build.sh -ct
+      # - run: ./build.sh -ct
 
       - run: npm install -g newman
 
       - run: ./build.sh -cjzJablii,ablii_development,ca-development,bepay,api,intuit,intuit_development,intuit_dev
 
-      - run: newman run https://www.getpostman.com/collections/867ff545082b1d881c62 -e environments/intuit-enviornment.json
+      - run: newman run https://www.getpostman.com/collections/867ff545082b1d881c62 -e environments/intuit-environment.json
       
       - save_cache:
           paths:
