@@ -83,7 +83,7 @@ foam.CLASS({
         // also the below will not work for checking the signing officer information of another user.
         Promise.all([
           this.crunchService.getJunction(x, 'fb7d3ca2-62f2-4caf-a84c-860392e4676b'),
-          this.crunchService.getJunction(x, '777af38a-8225-87c8-dfdf-eeb15f71215f-123'),
+          this.crunchService.getJunction(x, '554af38a-8225-87c8-dfdf-eeb15f71215f-1a5'),
           this.crunchService.getJunction(x, '8ad3c898-db32-11ea-87d0-0242ac130003')
         ]).then(values => {
           let cpf  = values[0] ? values[0].data : '';

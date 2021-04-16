@@ -117,81 +117,12 @@ p({
     "args": [
       { "class":"net.nanopay.crunch.predicate.SigningOfficerPrivilegesRequested" },
       {
-        "class":"net.nanopay.crunch.predicate.CheckUserCountry",
-        "country":"CA"
-      }
-    ]
-  },
-  "wizardConfig": {
-    "class": "foam.u2.crunch.EasyCrunchWizard",
-    "allowSkipping": false
-  }
-})
-
-p({
-  "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5-us",
-  "name":"Complete your signing officer information",
-  "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData",
-  "description":"Authorization to sign on behalf of the business",
-  "version":"0",
-  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
-  "enabled":true,
-  "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
-  "daoKey":"userDAO",
-  "contextDAOFindKey":"subject.realuser",
-  "reviewRequired":true,
-  "associatedEntity":2,
-  "keywords":["featured"],
-  "permissionsGranted":[
-    "certifydatareviewed.rw.reviewed",
-    "user.invoice.pay",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementcad.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.usdafexterms.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.nanopayinternationalpaymentscustomeragreement.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxmassachusettsdisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxnewyorkdisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxwashingtondisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcaliforniadisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxarizonadisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementusd.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcoloradodisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.abliitermsandconditions.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.abliiprivacypolicy.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
-  ],
-  "permissionsIntercepted": [
-    "certifydatareviewed.rw.reviewed",
-    "user.invoice.pay",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementcad.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.usdafexterms.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.nanopayinternationalpaymentscustomeragreement.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxmassachusettsdisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxnewyorkdisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxwashingtondisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcaliforniadisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxarizonadisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementusd.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcoloradodisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.abliitermsandconditions.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.abliiprivacypolicy.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
-  ],
-  "interceptIf": { "class":"net.nanopay.crunch.predicate.SigningOfficerCapabilityInterceptPredicate" },
-  "availabilityPredicate":
-  {
-    "class":"foam.mlang.predicate.And",
-    "args": [
-      { "class":"net.nanopay.crunch.predicate.SigningOfficerPrivilegesRequested" },
-      {
-        "class":"net.nanopay.crunch.predicate.CheckUserCountry",
-        "country":"US"
+        "class":"foam.mlang.predicate.Or",
+        "args": [
+          { "class":"net.nanopay.crunch.predicate.CheckUserCountry", "country":"BR" },
+          { "class":"net.nanopay.crunch.predicate.CheckUserCountry", "country":"CA" },
+          { "class":"net.nanopay.crunch.predicate.CheckUserCountry", "country":"US" }
+        ]
       }
     ]
   },
@@ -663,11 +594,15 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"8ad3c898-db32-11ea-87d0-0242ac130003",
   "name":"Identification",
-  "description":"Provide a copy of a piece of government issued identification which shows your full name, picture, and CPF number.",
+  "description":"Provide a copy of a piece of government issued identification which shows your full name, picture, and Identification number.",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
-  "associatedEntity": 1
+  "associatedEntity": 1,
+  "wizardlet": {
+    class: "foam.u2.crunch.FlatteningCapabilityWizardlet",
+    before: true
+  }
 })
 
 p({
@@ -1031,6 +966,7 @@ p({
 })
 
 p({
+  "class":"foam.nanos.crunch.Capability",
   "id":"8bffdedc-5176-4843-97df-1b75ff6054fb",
   "name":"Date of birth",
   "of":"net.nanopay.crunch.onboardingModels.UserBirthDateData",
@@ -1041,7 +977,7 @@ p({
   "associatedEntity": 1,
   "wizardlet": {
     "class": "foam.nanos.crunch.ui.CapabilityWizardlet"
-  },
+  }
 })
 
 p({
