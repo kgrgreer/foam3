@@ -17,7 +17,7 @@ p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"service.natureCodeDataDAO"})
 
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.0B2E7305-B898-43F2-9C1B-63FB2CE38B2D"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.777af38a-8225-87c8-dfdf-eeb15f71215f-123"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.554af38a-8225-87c8-dfdf-eeb15f71215f-1a5"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.554af38a-8225-87c8-dfdf-eeb15f71215e-10"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.554af38a-8225-87c8-dfdf-eeb15f71215f-49"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.520a4120-3bc6-cef9-6635-c32af8219a6a"})

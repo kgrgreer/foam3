@@ -941,7 +941,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-18.name",target:"Número de identificação fiscal"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-18.description",target:"Número de identificação fiscal"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-19.name",target:"Data da última Alteração Contratual ou Ata"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5-us.name",target:"Preencha suas informações de oficial de assinatura"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessRegistrationDateData.BUSINESS_REGISTRATION_DATE.label",target:"Data de entrada do primeiro registro da empresa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.BUSINESS_REGISTRATION_DATE.label",target:"Data de Constituição da Empresa"})
@@ -966,8 +965,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"63049307-8db4-2437-5c02-b71d6878263c.name",target:"Capacidade do país de destino BR"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"688cb7c6-7316-4bbf-8483-fb79f8fdeaaf.name",target:"Identificação da Empresa – Registros"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"777af38a-8225-87c8-dfdf-eeb15f71215f-123.name",target:"Informações do Operador do sistema"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"777af38a-8225-87c8-dfdf-eeb15f71215f-123.description",target:"Autorização para assinar em nome da empresa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5.name",target:"Informações do Operador do sistema"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5.description",target:"Autorização para assinar em nome da empresa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"7e2739cc-db32-11ea-87d0-0242ac130003.name",target:"Demonstrativos Financeiros Anuais"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"7e2739cc-db32-11ea-87d0-0242ac130003.description",target:"Demonstrações financeiras formais que são publicadas anualmente e enviadas aos acionistas da empresa e várias outras partes interessadas."})
 
@@ -1985,7 +1984,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDoc
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-13.requirementViewTitle",target:"Nesta seção, pedimos mais informações comerciais para que possamos processar os pagamentos com segurança em seu nome."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-76.requirementViewTitle",target:"Nesta seção, pedimos que você insira alguns detalhes relacionados ao seu negócio."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"777af38a-8225-87c8-dfdf-eeb15f71215f-123.requirementViewTitle",target:"Tenha seus documentos de identificação (Ex: RG, CNH, OAB, RNE) e comprovante de endereço (Conta de Energia, Telefone, TV a Cabo, IPTU ou extrato bancário - no máximo 3 meses) prontos para anexar ao cadastro. Você poderá salvar seu progresso e retornar mais tarde."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5.requirementViewTitle",target:"Tenha seus documentos de identificação (Ex: RG, CNH, OAB, RNE) e comprovante de endereço (Conta de Energia, Telefone, TV a Cabo, IPTU ou extrato bancário - no máximo 3 meses) prontos para anexar ao cadastro. Você poderá salvar seu progresso e retornar mais tarde."})
 p({class:"foam.i18n.Locale",target:"Forneça 3 meses de contas de consumo de residência. Podem ser contas de luz, água, telefone, TV a cabo ou IPTU. Extratos bancários também funcionam."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"05a663b8-2b48-11eb-adc1-0242ac120002.requirementViewTitle",target:"preparar seus documentos comerciais. Você pode salvar seu progresso e voltar mais tarde."})
@@ -2974,8 +2973,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.PayableDA
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.ReceivableDAOBrowser.REQ_MONEY.label",target:"Solicitar pagamento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.DELETE",target:"Excluir"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"4c46cdb8-06b2-11eb-adc1-0242ac120002.name",target:"Natureza da relação comercial"})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.AVAILABLE_CURRENCIES_MSG",target:"Moedas Disponíveis"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.TransactionsPurposeEnum.PLACE_HOLDER.label",target:"Por favor selecione..."})
@@ -3091,7 +3088,6 @@ p({class:"foam.i18n.Locale",locale:"pt","source":"7b41a164-29bd-11eb-adc1-0242ac
 p({class:"foam.i18n.Locale",locale:"pt","source":"554af38a-8225-87c8-dfdf-eeb15f71215e-25.name","target":"Termos e Condições"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"9d4d667c-04c3-11eb-adc1-0242ac120002.name","target":"Capital Social e Patrimônio Líquido e Faturamento"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"af3d9c28-0674-11eb-adc1-0242ac120002.name","target":"Informações Complementares"})
-p({class:"foam.i18n.Locale",locale:"pt","source":"4c46cdb8-06b2-11eb-adc1-0242ac120002.name","target":"Natureza da relação comercial"})
 
 p({class:"foam.i18n.Locale",locale:"pt","source":"invoice.capable.treviso.name","target":"Requisitos de fatura"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"invoice.capable.treviso.description","target":"A capacidade específica capaz para faturas em Treviso"})
