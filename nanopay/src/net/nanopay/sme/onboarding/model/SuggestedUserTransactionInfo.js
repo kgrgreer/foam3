@@ -52,7 +52,7 @@ foam.CLASS({
       title: '',
       properties: [
         {
-          name: 'annualRevenueEnum',
+          name: 'annualRevEnum',
           gridColumns: 12
         },
         {
@@ -97,16 +97,16 @@ foam.CLASS({
         annualRevenue_ = val;
         if ( ! SafetyUtil.isEmpty(annualRevenue_) ) {
           annualRevenueIsSet_ = true;
-          if ( ! annualRevenueEnumIsSet_) {
-            setAnnualRevenueEnum(AnnualRevenueEnum.forLabel(annualRevenue_));
+          if ( ! annualRevEnumIsSet_ ) {
+            setAnnualRevEnum(AnnualRevenueEnum.forLabel(annualRevenue_));
           }
         }
       `,
       javaGetter: `
         // api's use this property,
         // returning enum val to legacy  propery(annualRevenue)
-        if ( annualRevenueEnumIsSet_ ) {
-          return getAnnualRevenueEnum().getLabel();
+        if ( annualRevEnumIsSet_ ) {
+          return getAnnualRevEnum().getLabel();
         }
         return annualRevenue_;
       `,
@@ -115,7 +115,7 @@ foam.CLASS({
     {
       class: 'Enum',
       of: 'net.nanopay.sme.onboarding.model.AnnualRevenueEnum',
-      name: 'annualRevenueEnum',
+      name: 'annualRevEnum',
       section: 'backOfficeSuggestedUserTransactionInfo',
       label: 'Estimated gross annual sales',
       documentation: `Estimated annual revenue for user or business.`,
@@ -131,9 +131,9 @@ foam.CLASS({
       gridColumns: 6,
       validationPredicates: [
         {
-          args: ['annualRevenueEnum'],
+          args: ['annualRevEnum'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_REVENUE_ENUM,
+            return e.NEQ(net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_REV_ENUM,
               net.nanopay.sme.onboarding.model.AnnualRevenueEnum.PLACE_HOLDER);
           },
           errorMessage: 'GROSS_ANNUAL_SALES_ERROR'
