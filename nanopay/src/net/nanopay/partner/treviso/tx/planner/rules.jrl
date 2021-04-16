@@ -8,6 +8,7 @@ p({
     "GBP":"b586e165-fe56-48e4-b249-8977b5718952",
     "EUR":"e0b91985-fef0-4b07-a197-a5a0585604fa"
   },
+  "provider":"Treviso",
   "priority":90,
   "ruleGroup":"TrevisoPlanner",
   "enabled":true,

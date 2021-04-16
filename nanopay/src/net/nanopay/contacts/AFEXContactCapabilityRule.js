@@ -51,7 +51,8 @@ foam.CLASS({
       {
           name: 'applyAction',
           javaCode: `
-          var contact = (Contact) obj;
+          // covers both Contact and PersonalContact
+          var contact = (PersonalContact) obj;
           
           BankAccount account = (BankAccount) contact.findBankAccount(x);
           if ( ! account.getDenomination().equals("CNY") ) {

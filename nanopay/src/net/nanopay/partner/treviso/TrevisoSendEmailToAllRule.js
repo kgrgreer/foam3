@@ -90,8 +90,7 @@ foam.CLASS({
             EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED)
           ));
           BRBusinessOwnershipData ownerData = (BRBusinessOwnershipData) ownerUCJ.getData();
-          for ( int i = 1; i <= ownerData.getAmountOfOwners(); i++ ) {
-            BRBeneficialOwner beneficialOwnerUser = (BRBeneficialOwner) ownerData.getProperty("owner"+i);
+          for ( BRBeneficialOwner beneficialOwnerUser : ownerData.getOwners() ) {
             if ( hasAlreadyBeenEmailed(uniqueEmails, beneficialOwnerUser.getEmail()) ) continue;
             else uniqueEmails.add(beneficialOwnerUser.getEmail());
             if ( beneficialOwnerUser.getHasSignedContratosDeCambio() ){
@@ -111,7 +110,7 @@ foam.CLASS({
             BRBusinessDirector directorUser = (BRBusinessDirector) directorList[i];
             if ( hasAlreadyBeenEmailed(uniqueEmails, directorUser.getEmail()) ) continue;
             else uniqueEmails.add(directorUser.getEmail());
-            if ( directorUser.getHasSignedContratosDeCambio() ){
+            if ( directorUser.getHasSignedContratosDeCambioDirector() ){
               sendEmailToNonUser(x, business, directorUser.getFirstName(), directorUser.getEmail());
             }
           }
@@ -174,7 +173,7 @@ foam.CLASS({
             .setNotificationType("Latest_Activity")
             .setUserId(recipient.getId())
             .setEmailArgs(args)
-            .setEmailName("compliance-notification-to-non-user")
+            .setEmailName("compliance-notification-to-user")
             .build();
           recipient.doNotify(x, notification);
         } catch (Throwable t) {
@@ -219,7 +218,7 @@ foam.CLASS({
         message.setTo(new String[]{email});
 
         try {
-          EmailsUtility.sendEmailFromTemplate(x, business, message, "compliance-notification-to-user", args);
+          EmailsUtility.sendEmailFromTemplate(x, business, message, "compliance-notification-to-non-user", args);
         } catch (Throwable t) {
           String msg = String.format("Email meant for business Error: Business (id = %1$s) has been enabled for international payments.", business.getId());
           ((Logger) x.get("logger")).error(msg, t);

@@ -159,7 +159,7 @@ p({
         foam.mlang.MLang.INSTANCE_OF(net.nanopay.tx.SummaryTransaction.class),
         foam.mlang.MLang.INSTANCE_OF(net.nanopay.fx.FXSummaryTransaction.class)
       }))
-      .setDelegate(x.get("transactionDAO"))
+      .setDelegate(x.get("tableViewTransactionDAO"))
       .setPrimaryKey(net.nanopay.tx.model.Transaction.ID)
       .build();
 
@@ -618,23 +618,10 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "nanopayChargeDateService",
-  "lazy": false,
-  "serviceClass": "net.nanopay.tx.billing.ChargeDateService"
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
   "name": "chargeDateService",
   "lazy": false,
   "serviceScript": """
-    import foam.mlang.predicate.ContextUserPredicate;
-    import foam.nanos.auth.User;
-    import foam.mlang.MLang;
-    chargeDateService = new foam.nanos.boot.AltFactory("nanopayChargeDateService");
-    chargeDateService.addDelegate(new ContextUserPredicate(MLang.EQ(User.SPID, "nanopay")), "nanopayChargeDateService");
-    chargeDateService.addDelegate(new ContextUserPredicate(MLang.EQ(User.SPID, "intuit")), "intuitChargeDateService");
-    return chargeDateService;
+    return new net.nanopay.tx.billing.ChargeDateService(5);
   """
 })
 
@@ -731,6 +718,24 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
+  "name":"localIntuitTransactionSummaryDAO",
+  "lazy":false,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setInnerDAO(x.get("localTransactionSummaryDAO"))
+      .setOf(net.nanopay.partner.intuit.tx.IntuitTransactionSummary.getOwnClassInfo())
+      .setRuler(false)
+      .setCluster(false)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setAuthorize(false)
+      .build();
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
   "name":"transactionSummaryDAO",
   "lazy":false,
   "serve":true,
@@ -747,4 +752,24 @@ p({
       .build();
     """,
   "client":"{\"of\":\"net.nanopay.tx.TransactionSummary\"}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"intuitTransactionSummaryDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setInnerDAO(x.get("localIntuitTransactionSummaryDAO"))
+      .setOf(net.nanopay.partner.intuit.tx.IntuitTransactionSummary.getOwnClassInfo())
+      .setRuler(false)
+      .setAuthorize(true)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setEnableInterfaceDecorators(false)
+      .setCluster(false)
+      .build();
+    """,
+  "client":"{\"of\":\"net.nanopay.partner.intuit.tx.IntuitTransactionSummary\"}"
 })

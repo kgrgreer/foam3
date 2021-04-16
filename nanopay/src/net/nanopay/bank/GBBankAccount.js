@@ -105,6 +105,13 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'getRoutingCode',
+      javaCode: `
+        var branchCode = getBranchCode(x);
+        return ! branchCode.isBlank() ? branchCode : getBankRoutingCode();
+      `
+    },
+    {
       name: 'getApiAccountNumber',
       javaCode: `
         return getAccountNumber();

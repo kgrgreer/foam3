@@ -472,6 +472,10 @@ p({
       }
     ]
   },
+  "wizardConfig": {
+    "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig",
+    "allowSkipping": false
+  },
   "associatedEntity":2
 })
 
@@ -500,10 +504,6 @@ p({
         "country":"BR"
       }
     ]
-  },
-  "wizardConfig": {
-    "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig",
-    "allowSkipping": false
   },
   "requirementViewTitle":"Have your business documents ready. You can save your progress and come back later.",
   "associatedEntity": 2
@@ -619,7 +619,8 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"invoice.capable.treviso",
   "name":"Invoice Requirements",
-  "description":"The Capable-Specific Capability for Invoices on Treviso",
+  "description":"The Capable-Specific Capability for Invoices in Brazil",
+  "icon":"/images/capabilityIcons/InvoiceCap.svg",
   "version":"0",
   "requirementViewTitle":"You will be asked to select a nature code for this transaction and provide the required document.",
   "wizardConfig": {

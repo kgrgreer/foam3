@@ -52,7 +52,7 @@ p({
          "class":"foam.comics.v2.DAOControllerConfig",
          "daoKey":"billDAO",
          "createPredicate":{"class":"foam.mlang.predicate.False"},
-         "editPredicate":{"class":"foam.mlang.predicate.False"},
+         "editPredicate":{"class":"foam.mlang.predicate.True"},
          "deletePredicate":{"class":"foam.mlang.predicate.False"}
       }
    },

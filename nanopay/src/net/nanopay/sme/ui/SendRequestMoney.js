@@ -29,25 +29,26 @@ foam.CLASS({
   ],
 
   imports: [
-    'subject',
     'appConfig',
     'auth',
     'checkAndNotifyAbilityToPay',
     'checkAndNotifyAbilityToReceive',
-    'contactDAO',
+    'crunchController',
     'crunchService',
+    'contactDAO',
     'ctrl',
     'fxService',
     'menuDAO',
     'notify',
     'pushMenu',
-    'stack',
-    'transactionDAO',
-    'userDAO',
-    'transactionPlannerDAO',
     'quickbooksService',
+    'stack',
+    'subject',
+    'theme',
+    'transactionDAO',
+    'transactionPlannerDAO',
+    'userDAO',
     'xeroService',
-    'crunchController'
   ],
 
   exports: [
@@ -286,7 +287,7 @@ foam.CLASS({
     { name: 'DUE_DATE_ERROR', message: 'Invalid Due Date' },
     { name: 'ISSUE_DATE_ERROR', message: 'Invalid Issue Date' },
     { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully' },
-    { name: 'CANCEL_SUCCESS', message: 'Invoice cancelled successfully' },
+    { name: 'DELETE_SUCCESS', message: 'Invoice deleted successfully' },
     { name: 'COMPLIANCE_ERROR', message: 'Business must pass compliance to make a payment' },
     { name: 'CONTACT_NOT_FOUND', message: 'Contact not found' },
     { name: 'INVOICE_AMOUNT_ERROR', message: 'This amount exceeds your sending limit' },
@@ -306,7 +307,7 @@ foam.CLASS({
     { name: 'SELECT_PAYABLE', message: 'Select payable' },
     { name: 'REVIEW_MSG', message: 'Review' },
     { name: 'REVIEW_PAYMENT', message: 'Review payment'},
-    { name: 'CANCEL', message: 'Cancel'},
+    { name: 'DELETE', message: 'Delete'},
     { name: 'VOID', message: 'Void'}
   ],
 
@@ -347,7 +348,7 @@ foam.CLASS({
         }
       });
 
-      this.exitLabel = this.CANCEL;
+      this.exitLabel = this.DELETE;
       this.optionLabel = this.VOID;
       this.hasExitOption = true;
 
@@ -631,9 +632,12 @@ foam.CLASS({
         switch ( currentViewId ) {
           case this.DETAILS_VIEW_ID:
             if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
-            if ( ! this.subject.realUser.twoFactorEnabled && this.isPayable && this.permitToPay ) {
+            if ( this.theme.twoFactorEnabled &&
+                 ! this.subject.realUser.twoFactorEnabled &&
+                 this.isPayable &&
+                 this.permitToPay ) {
               if ( this.appConfig.mode === this.Mode.PRODUCTION ||
-                  this.appConfig.mode === this.Mode.DEMO ) {
+                   this.appConfig.mode === this.Mode.DEMO ) {
                 this.notify(this.TWO_FACTOR_REQUIRED, '', this.LogLevel.ERROR, true);
                 return;
               } else {
@@ -672,7 +676,7 @@ foam.CLASS({
           this.invoiceDAO.remove(this.invoice);
         }
 
-        this.notify(this.CANCEL_SUCCESS,'', this.LogLevel.INFO, true);
+        this.notify(this.DELETE_SUCCESS,'', this.LogLevel.INFO, true);
         this.pushMenu(this.isPayable
           ? 'mainmenu.invoices.payables'
           : 'mainmenu.invoices.receivables');

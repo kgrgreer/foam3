@@ -31,15 +31,14 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-     name: 'name'
-    }
+    'name'
   ],
 
   methods: [
     {
       name: 'init',
       code: function() {
+        this.SUPER();
         this.ADD_ROW.label = this.ADD_MSG + ' ' +this.name;
       }
     }

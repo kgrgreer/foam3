@@ -96,6 +96,24 @@ foam.CLASS({
               }
             }
             transactionDAO.put(paymentTransaction);
+
+            Transaction compliance = (Transaction) ((ArraySink) (paymentTransaction.getChildren(x).select(new ArraySink()))).getArray().get(0);
+            Transaction exchange = (Transaction) ((ArraySink) (compliance.getChildren(x).select(new ArraySink()))).getArray().get(0);
+            Transaction treviso = (Transaction) ((ArraySink) (exchange.getChildren(x).select(new ArraySink()))).getArray().get(0);
+
+            for (TransactionLineItem lineItem : treviso.getLineItems() ) {
+              if ( lineItem instanceof NatureCodeLineItem ) {
+                NatureCodeLineItem natureCodeLineItem = (NatureCodeLineItem) lineItem;
+
+                if ( SafetyUtil.isEmpty(natureCodeLineItem.getNatureCode()) ) {
+                  natureCodeLineItem.setNatureCode(natureCode.getOperationType());
+                }
+
+                natureCodeLineItem.setNatureCodeData(natureCodeDataToAdd);
+                break;
+              }
+            }
+            transactionDAO.put(treviso);
           }
 
         }, "Added NatureCodeData to Payment Transaction line item and capable payload after an approved NatureCodeApprovalRequest");

@@ -39,11 +39,20 @@ function install {
     MACOS='darwin*'
 
     cd "$PROJECT_HOME"
-
-    git submodule init
-    git submodule update
+    if [ $IS_AWS -eq 0 ]; then
+        submoduleout=$(git submodule)
+        if [ -z "${submoduleout}" ]; then
+            git submodule add https://github.com/kgrgreer/foam3.git
+        else
+            git submodule init
+            git submodule update
+        fi
+    fi
 
     npm install
+    cd foam3
+    npm install
+    cd ..
 
     if [[ $IS_MAC -eq 1 ]]; then
         mkdir -p "$NANOPAY_HOME/journals"
@@ -62,13 +71,13 @@ function deploy_documents {
     cd "$PROJECT_HOME"
 
     declare -a sources=(
-        "foam2/src"
+        "foam3/src"
         "nanopay/src"
         "documents"
     )
 
     declare -a exclude=(
-        "foam2/src/com/google/flow"
+        "foam3/src/com/google/flow"
     )
 
     for dir in "${sources[@]}"; do
@@ -337,9 +346,9 @@ function start_nanos {
         elif [ "$RUNTIME_COMPILE" -eq 1 ]; then
           gradle genJava
           gradle copyLib
-          CLASSPATH="$CLASSPATH":foam2/src:build/src/java:nanopay/src
-          JAVA_SOURCES="{sources:[\"nanopay/src\",\"foam2/src\",\"build/src/java\"],\"output\":\"build/classes/java/main\"}"
-          javac -cp "$CLASSPATH" -d build/classes/java/main foam2/src/foam/nanos/ccl/CCLoader.java
+          CLASSPATH="$CLASSPATH":foam3/src:build/src/java:nanopay/src
+          JAVA_SOURCES="{sources:[\"nanopay/src\",\"foam3/src\",\"build/src/java\"],\"output\":\"build/classes/java/main\"}"
+          javac -cp "$CLASSPATH" -d build/classes/java/main foam3/src/foam/nanos/ccl/CCLoader.java
           exec java -cp "$CLASSPATH" -DJAVA_SOURCES=$JAVA_SOURCES -Djava.system.class.loader=foam.nanos.ccl.CCLoader foam.nanos.boot.Boot
         elif [ "$DAEMONIZE" -eq 0 ]; then
             exec java -cp "$CLASSPATH" foam.nanos.boot.Boot
@@ -456,7 +465,6 @@ function setenv {
     JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=$NANOPAY_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=$JOURNAL_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DDOCUMENT_HOME=$DOCUMENT_HOME"
-    JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$LOG_HOME"
 
     if [[ -z $JAVA_HOME ]]; then
       if [[ $IS_MAC -eq 1 ]]; then
@@ -497,7 +505,6 @@ function usage {
     echo "  -m : Enable Medusa clustering. Not required for 'nodes'. Same as -Ctrue"
     # -M reserve for potential Medusa instance type: Mediator, Node, NERF,
     echo "  -N NAME : start another instance with given instance name. Deployed to /opt/nanopay_NAME."
-    echo "  -o : old maven build"
     echo "  -p : Enable profiling on default port"
     echo "  -P PORT : JProfiler connection on PORT"
     echo "  -r : Start nanos with whatever was last built."
@@ -508,7 +515,7 @@ function usage {
     echo "  -T testId1,testId2,... : Run listed tests."
     echo "  -u : Run from jar. Intented for Production deployments."
     echo "  -U : User to run as"
-    echo "  -v : java compile only (maven), no code generation."
+    echo "  -v : java compile only, no code generation."
     echo "  -V VERSION : Updates the project version in POM file to the given version in major.minor.path.hotfix format"
     echo "  -w : Disable liveScriptBundler service. (development only)"
     echo "  -W PORT : HTTP Port. NOTE: WebSocketServer will use PORT+1"
@@ -593,7 +600,7 @@ RUNTIME_COMPILE=0
 RUN_USER=
 RESOURCES=
 
-while getopts "bcC:dD:E:efF:ghijJ:klmN:opP:QR:rsStT:uU:vV:wW:xz" opt ; do
+while getopts "bcC:dD:E:efF:ghijJ:klmN:pP:QR:rsStT:uU:vV:wW:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;

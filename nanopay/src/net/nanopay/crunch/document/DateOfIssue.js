@@ -18,12 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.crunch.document',
   name: 'DateOfIssue',
-  implements: [
-    {
-      path: 'foam.u2.wizard.WizardletAware',
-      flags: ['web']
-    }
-  ],
+  mixins: ['foam.u2.wizard.AbstractWizardletAware'],
 
   messages: [
     { name: 'FUTURE_DATE_ERROR', message: 'Date of issue cannot be a future date' },
@@ -39,6 +34,7 @@ foam.CLASS({
   ],
 
   properties: [
+    ['customUpdateSlot', true],
     {
       class: 'Date',
       name: 'dateOfIssue',

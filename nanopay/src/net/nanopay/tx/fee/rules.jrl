@@ -6,7 +6,6 @@ p({
   documentation: "Add fee line item for Ablii transactions.",
   feeName: "Ablii Fee",
   sourceCurrencyAsFeeDenomination: true,
-  feeClass: "net.nanopay.tx.InvoicedFeeLineItem",
   enabled: true,
   predicate: {
     class: "foam.mlang.predicate.Or",
@@ -32,7 +31,6 @@ p({
   documentation: "Add fee line item to GD transactions.",
   feeName: "GD Fee",
   feeDenomination: "CAD",
-  feeClass: "net.nanopay.tx.InvoicedFeeLineItem",
   enabled: false,
   predicate: {
     class: "foam.nanos.ruler.predicate.IsInstancePredicate",

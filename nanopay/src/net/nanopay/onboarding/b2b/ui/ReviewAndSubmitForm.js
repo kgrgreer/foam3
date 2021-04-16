@@ -305,7 +305,7 @@ foam.CLASS({
               .tag({ class: 'foam.u2.tag.Image', data: 'images/ic-print.svg' })
             .end()
             .start().addClass('checkBoxDiv')
-              .start({ class: 'foam.u2.md.CheckBox' },
+              .start({ class: 'foam.u2.CheckBox' },
                   { mode: foam.u2.DisplayMode.DISABLED,
                   data$: this.checkBox$ })
               .end()

@@ -1,7 +1,31 @@
-p({class:"foam.nanos.auth.Group",id:"intuit-admin",description:"intuit admin",parent:"msp-admin",defaultMenu:"users"})
-p({class:"foam.nanos.auth.Group",id:"intuit-api",description:"intuit api group",parent:"external-api",defaultMenu:"view-accounts"})
-p({class:"foam.nanos.auth.Group",id:"intuit-api-session",description:"intuit api session group",parent:"external-api-session",defaultMenu:"view-users"})
-p({class:"foam.nanos.auth.Group",id:"intuit-dev",description:"intuit dev group",parent:"external-dev",defaultMenu:"view-accounts"})
+p({
+    class:"foam.nanos.auth.Group",
+    id:"intuit-admin",
+    description:"intuit admin",
+    parent:"msp-admin",
+    defaultMenu:"users"
+})
+p({
+    class:"foam.nanos.auth.Group",
+    id:"intuit-api",
+    description:"intuit api group",
+    parent:"external-api",
+    defaultMenu:"view-accounts"
+})
+p({
+    class:"foam.nanos.auth.Group",
+    id:"intuit-api-session",
+    description:"intuit api session group",
+    parent:"external-api-session",
+    defaultMenu:"view-users"
+})
+p({
+    class:"foam.nanos.auth.Group",
+    id:"intuit-dev",
+    description:"intuit dev group",
+    parent:"external-dev",
+    defaultMenu:"view-accounts"
+})
 p({
     class:"foam.nanos.auth.Group",
     id:"intuit-fraud-ops",
@@ -42,6 +66,14 @@ p({
     id:"intuit-sme",
     description:"intuit sme group",
     parent:"external-sme",
+    url:"http://intuit:8080"
+})
+
+p({
+    class:"foam.nanos.auth.Group",
+    id:"intuit-business-sme",
+    description:"Intuit QBO Business SME Group",
+    parent:"intuit-sme",
     url:"http://intuit:8080"
 })
 

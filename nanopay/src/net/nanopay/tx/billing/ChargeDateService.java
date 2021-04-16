@@ -26,6 +26,12 @@ import net.nanopay.tx.model.Transaction;
 import static java.util.Calendar.*;
 
 public class ChargeDateService implements ChargeDateServiceInterface {
+  int dayOfMonth;
+
+  public ChargeDateService(int dayOfMonth) {
+    this.dayOfMonth = dayOfMonth;
+  }
+
   @Override
   public Date findChargeDate(Date transactionDate) {
     Calendar created = getInstance();
@@ -34,7 +40,7 @@ public class ChargeDateService implements ChargeDateServiceInterface {
     next.clear();
     next.set(YEAR, created.get(YEAR));
     next.set(MONTH, created.get(MONTH) + 1);
-    next.set(DAY_OF_MONTH, 1);
+    next.set(DAY_OF_MONTH, dayOfMonth);
     return next.getTime();
   }
 }

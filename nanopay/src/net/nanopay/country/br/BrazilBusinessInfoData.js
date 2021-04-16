@@ -18,6 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.country.br',
   name: 'BrazilBusinessInfoData',
+  mixins: ['foam.u2.wizard.AbstractWizardletAware'],
   documentation: `
     Additional business information required for brazilian business registration
   `,
@@ -45,7 +46,7 @@ foam.CLASS({
 
   messages: [
     { name: 'NO_CNPJ', message: '14-digit National Registry of Legal Entities Number required' },
-    { name: 'CNPJ_INVALID', message: 'CNPJ required' },
+    { name: 'CNPJ_INVALID', message: 'CNPJ invalid, please check your CNPJ number and try again' },
     { name: 'NO_NIRE', message: 'NIRE required' },
     { name: 'VERIFY_BUSINESS_NAME', message: 'Confirm your business name' }
   ],
@@ -63,18 +64,31 @@ foam.CLASS({
       section: 'businessInformation',
       validationPredicates: [
         {
-          args: ['cnpj'],
+          args: ['cnpj', 'cnpjName'],
           predicateFactory: function(e) {
-            return e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.CNPJ }), 14)          },
-            errorMessage: 'NO_CNPJ'
+            return e.EQ(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.country.br.BrazilBusinessInfoData.CNPJ
+                  }), 14);
+          },
+          errorMessage: 'NO_CNPJ'
         },
         {
-          args: ['cnpjName'],
+          args: ['cnpj', 'cnpjName'],
           predicateFactory: function(e) {
-            return e.GT(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.CNPJ_NAME }), 0)
+            return e.AND(
+              e.GT(
+                net.nanopay.country.br.BrazilBusinessInfoData
+                .CNPJ_NAME, 0),
+              e.EQ(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.country.br.BrazilBusinessInfoData
+                    .CNPJ
+                  }), 14)
+              );
           },
           errorMessage: 'CNPJ_INVALID'
-        },
+        }
       ],
       tableCellFormatter: function(val) {
         return foam.String.applyFormat(val, 'xx.xxx.xxx/xxxx-xx');
@@ -92,33 +106,8 @@ foam.CLASS({
         }
       },
       view: function(_, X) {
-        return foam.u2.FragmentedTextField.create({
-          delegates: [
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cnpj.slice(0,2),
-              maxLength: 2
-            }),
-            '.',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cnpj.slice(2,5),
-              maxLength: 3
-            }),
-            '.',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cnpj.slice(5,8),
-              maxLength: 3
-            }),
-            '/',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cnpj.slice(8,12),
-              maxLength: 4
-            }),
-            '-',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cnpj.slice(12,14),
-              maxLength: 2
-            })
-          ]
+        return foam.u2.FormattedTextField.create({ 
+          formatter: [2, '.', 3, '.', 3, '/', 4, '-', 2] 
         }, X);
       }
     },
@@ -127,15 +116,11 @@ foam.CLASS({
       name: 'verifyName',
       label: 'Is this your business?',
       section: 'businessInformation',
-      view: function(n, X) {
-        var self = X.data$;
-        return foam.u2.CheckBox.create({
-          labelFormatter: function() {
-            this.start('span')
-              .add(self.dot('cnpjName'))
-            .end();
-          }
-        });
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.CheckBox',
+          label$: X.data$.dot('cnpjName')
+        };
       },
       visibility: function(cnpjName) {
         return cnpjName.length > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
@@ -184,6 +169,10 @@ foam.CLASS({
   ],
 
   methods: [
+    function installInWizardlet(w) {
+      // CNPJ takes longer to save, so re-load may clear new inputs
+      w.reloadAfterSave = false;
+    },
     {
       name: 'getCNPJBusinessName',
       code:  async function(cnpj) {

@@ -10,14 +10,12 @@ p({
   `,
   feeName: "Total Fee Due",
   feeDenomination: "BRL",
-  feeClass: "net.nanopay.tx.FeeLineItem",
   rateName: "Total Rate",
   isInvertedRate: true,
   rateExpiry: {
     class: "foam.nanos.cron.TimeHMS",
     hour: 24
   },
-  feeAccount: "707911f9-5129-4916-a27a-6a6c469668ce",
   enabled: true,
   predicate: {
     class: "foam.mlang.predicate.And",

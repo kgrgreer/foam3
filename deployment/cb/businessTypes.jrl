@@ -1,0 +1,2 @@
+p({"class":"net.nanopay.model.BusinessType","id":10,"name":"AIP","description":"Application Interface Provider"})
+p({"class":"net.nanopay.model.BusinessType","id":11,"name":"PSP","description":"Payment Service Provider"})

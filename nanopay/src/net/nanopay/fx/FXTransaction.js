@@ -57,15 +57,7 @@ Stores all Exchange Rate info.`,
       section: 'transactionInformation',
       order: 200,
       gridColumns: 6,
-      visibility: 'RO',
-      view: function (_, X) {
-        return X.data.slot(function(fxRate) {
-          return foam.u2.TextField.create({
-            mode: foam.u2.DisplayMode.RO,
-            data: fxRate != 1 ? `Rate: ${fxRate.toString()}` : 'No Fx'
-          });
-        });
-      }
+      visibility: 'RO'
     },
     {
       name: 'fxQuoteId',

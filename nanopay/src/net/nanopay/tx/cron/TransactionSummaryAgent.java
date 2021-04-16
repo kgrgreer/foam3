@@ -72,7 +72,6 @@ public class TransactionSummaryAgent implements ContextAgent {
         .setId(txn.getId())
         .setCurrency(txn.getSourceCurrency())
         .setAmount(txn.getAmount())
-        .setSummary(chainSummary.getSummary())
         .setStatus(chainSummary.getStatus())
         .setCategory(chainSummary.getCategory())
         .setErrorCode(chainSummary.getErrorCode())
@@ -80,12 +79,15 @@ public class TransactionSummaryAgent implements ContextAgent {
         .setCreated(txn.getCreated())
         .setLastModified(txn.getLastModified())
         .build();
+      if (txn.getPayer() != null) txnSummary.setPayer(txn.getPayer().getId());
+      if (txn.getPayee() != null) txnSummary.setPayee(txn.getPayee().getId());
+      txnSummary.setSummary(txnSummary.summarizeTransaction(x, txn));
       transactionSummaryDAO.put(txnSummary);
     }
   }
 
   public List<Transaction> setupTxnListFromSet(X x, HashSet<String> txnIdSet) {
-    DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+    DAO transactionDAO = (DAO) x.get("tableViewTransactionDAO");
     List<Transaction> txnList = new ArrayList<>();
     for ( String id : txnIdSet ) {
       Transaction txn = (Transaction) transactionDAO.find(id);

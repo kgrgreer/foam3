@@ -26,11 +26,17 @@ foam.CLASS({
     'foam.nanos.auth.ServiceProviderAware'
   ],
 
+  imports: [
+    'currencyDAO',
+    'summaryTransactionDAO',
+    'userDAO'
+  ],
+
   tableColumns: [
-    'originatingTransaction',
+    'originatingSummaryTransaction',
     'errorCode',
-    'chargeToUser',
     'chargeToBusiness',
+    'totalAmount',
     'chargeDate',
     'status'
   ],
@@ -43,6 +49,10 @@ foam.CLASS({
       name: 'systemInformation',
       permissionRequired: true
     }
+  ],
+
+  messages: [
+    { name: 'CHARGE', message: 'Charge' }
   ],
 
   properties: [
@@ -61,7 +71,8 @@ foam.CLASS({
       documentation: 'Error code associated to transaction error',
       section: 'billInformation',
       order: 20,
-      gridColumns: 6
+      gridColumns: 6,
+      tableWidth: 150
     },
     {
       class: 'FObjectArray',
@@ -71,21 +82,35 @@ foam.CLASS({
       order: 30
     },
     {
+      class: 'UnitValue',
+      name: 'totalAmount',
+      documentation: 'Amount being charged',
+      unitPropName: 'currency',
+      unitPropValueToString: async function(x, val, unitPropName) {
+        var unitProp = await x.currencyDAO.find(unitPropName);
+        if ( unitProp )
+          return unitProp.format(val);
+        return val;
+      },
+      section: 'billInformation',
+      order: 35,
+      gridColumns: 6
+    },
+    {
+      class: 'String',
+      name: 'currency',
+      documentation: 'Currency of amount being charged',
+      section: 'billInformation',
+      order: 36,
+      gridColumns: 6
+    },
+    {
       class: 'net.nanopay.tx.model.TransactionReference',
       name: 'originatingTransaction',
       section: 'billInformation',
-      order: 40,
+      order: 45,
       gridColumns: 6,
-    },
-    {
-      class: 'Reference',
-      targetDAOKey: 'userDAO',
-      name: 'chargeToUser',
-      of: 'foam.nanos.auth.User',
-      documentation: 'User paying the fee',
-      section: 'billInformation',
-      order: 50,
-      gridColumns: 6
+      readPermissionRequired: true
     },
     {
       class: 'Reference',
@@ -94,8 +119,37 @@ foam.CLASS({
       of: 'net.nanopay.model.Business',
       documentation: 'Business paying the fee',
       section: 'billInformation',
+      order: 50,
+      gridColumns: 6,
+      tableCellFormatter: function(value, obj) {
+        obj.userDAO.find(value).then(function(u) {
+          if ( u && u.toSummary ) {
+            this.add(u.toSummary());
+          } else {
+            this.add(value);
+          }
+        }.bind(this));
+      }
+    },
+    {
+      class: 'Reference',
+      targetDAOKey: 'userDAO',
+      name: 'chargeToUser',
+      of: 'foam.nanos.auth.User',
+      documentation: 'User paying the fee',
+      section: 'billInformation',
       order: 60,
-      gridColumns: 6
+      gridColumns: 6,
+      readPermissionRequired: true,
+      tableCellFormatter: function(value, obj) {
+        obj.userDAO.find(value).then(function(u) {
+          if ( u && u.toSummary ) {
+            this.add(u.toSummary());
+          } else {
+            this.add(value);
+          }
+        }.bind(this));
+      }
     },
     {
       class: 'Date',
@@ -103,7 +157,8 @@ foam.CLASS({
       documentation: 'Calculated date of when the fees will be charged',
       section: 'billInformation',
       order: 70,
-      gridColumns: 6
+      gridColumns: 6,
+      tableWidth: 150
     },
     {
       class: 'DateTime',
@@ -111,7 +166,8 @@ foam.CLASS({
       visibility: 'RO',
       section: 'billInformation',
       order: 80,
-      gridColumns: 6
+      gridColumns: 6,
+      tableWidth: 150
     },
     {
       class: 'foam.core.Enum',
@@ -119,7 +175,8 @@ foam.CLASS({
       name: 'status',
       section: 'billInformation',
       order: 100,
-      gridColumns: 6
+      gridColumns: 6,
+      tableWidth: 200
     },
     {
       class: 'Enum',
@@ -137,6 +194,18 @@ foam.CLASS({
       section: 'systemInformation',
       order: 20,
       gridColumns: 6
+    }
+  ],
+
+  methods: [
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function() {
+        return this.totalAmount && this.currency
+          ? this.currencyDAO.find(this.currency).then(c => c ? c.format(this.totalAmount) + ' ' + this.CHARGE : this.totalAmount + ' ' + this.currency + ' ' + this.CHARGE)
+          : this.CHARGE;
+      }
     }
   ]
 });

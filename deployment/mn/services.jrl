@@ -1,17 +1,19 @@
 p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "clusterConfigSupport",
-  "serviceScript":"""
-    return new foam.nanos.medusa.ClusterConfigSupport.Builder(x)
-      .build();
+  "class":"foam.nanos.boot.NSpec",
+  "name":"clusterConfigSupport",
+  "lazy":false,
+  "serviceScript": """
+    return new foam.nanos.medusa.ClusterConfigSupport(x);
   """
 })
 
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"clusterConfigMonitor",
-  "lazy": false,
-  "serviceClass":"foam.nanos.medusa.ClusterConfigMonitor"
+  "lazy":false,
+  "serviceScript": """
+    return new foam.nanos.medusa.ClusterConfigMonitor(x);
+  """
 })
 
 p({

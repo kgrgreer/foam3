@@ -16,15 +16,26 @@ p({
   "service": {
     "class": "net.nanopay.partner.accuity.AccuityCredentials",
     "baseUrl": "https://apps.applyfinancial.co.uk",
-    "username": "nadir@nanopay.net",
+    "username": "paymentops@nanopay.net",
     "password": "NaPa0212!"
   }
 })
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "bankAccountValidationService",
+  "name": "bepay.bankAccountValidationService",
+  "description": "Bank account validation service for BePay spid.",
   "service": {
     "class": "net.nanopay.partner.accuity.AccuityBankAccountValidationService"
   }
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"afexService",
+  "lazy":true,
+  "serve":false,
+  "serviceScript":"""
+    return new net.nanopay.fx.afex.AFEXService(x);
+  """
 })

@@ -2,7 +2,6 @@ p({
   class: "net.nanopay.tx.fee.TransactionFeeRule",
   name:"Nanopay0.4PercentFee",
   id: "d2a9b4b5-3c84-4742-84cc-6bb11928ed82",
-  feeAccount:"ab590614-f5bd-476a-84e0-6037607397b5",
   feeName:"Nanopay Transaction Fee",
   sourceCurrencyAsFeeDenomination: true,
   predicate:{
@@ -17,7 +16,6 @@ p({
   class: "net.nanopay.tx.fee.TransactionFeeRule",
   name:"Intuit0.6PercentFee",
   id: "b57ad1a4-d907-4d6a-adf2-bdf9e51fe905",
-  feeAccount:"93f3fa36-7429-4b20-a223-f5b50a6d9872",
   feeName:"Intuit Transaction Fee",
   sourceCurrencyAsFeeDenomination: true,
   predicate:{

@@ -77,11 +77,15 @@ foam.CLASS({
           return foam.u2.DisplayMode.RW;
         }
       },
-      validateObj: function(businessName) {
-        if ( businessName.length === 0 ) {
-          return this.BUSINESS_NAME_REQUIRED;
+      validationPredicates: [
+        {
+          args: ['businessName'],
+          predicateFactory: function(e) {
+            return e.GT(e.STRING_LENGTH(net.nanopay.crunch.onboardingModels.InitialBusinessData.BUSINESS_NAME), 0);
+          },
+          errorMessage: 'BUSINESS_NAME_REQUIRED'
         }
-      },
+      ],
       factory: function() {
         return this.subject.user.businessName;
       }
@@ -111,6 +115,9 @@ foam.CLASS({
       section: 'businessAddress',
       documentation: 'Business address.',
       label: '',
+      factory: function() {
+        return this.Address.create({structured: false});
+      },
       view: function(_, X) {
         var m = foam.mlang.Expressions.create();
         var countryId = X.data ? X.data.countryId : null;

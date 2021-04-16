@@ -29,7 +29,7 @@ foam.CLASS({
   implements: [
     'foam.core.Validatable'
   ],
-
+  requires: ['foam.nanos.crunch.Capability'],
   messages: [
     { name: 'UPLOAD_REQUEST_MSG', message: 'Provide' },
     { name: 'IMAGE_REQUIRED', message: 'Document(s) required' },
@@ -85,8 +85,9 @@ foam.CLASS({
       hidden: true,
       documentation: 'Used by section subTitle and help',
       factory: function() {
-        return foam.nanos.crunch.Capability.create();
-      }
+        return this.Capability.create();
+      },
+      javaCompare: 'return 0;'
     },
     {
       class: 'Boolean',

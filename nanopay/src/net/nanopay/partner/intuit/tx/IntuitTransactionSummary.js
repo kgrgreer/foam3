@@ -20,14 +20,52 @@ foam.CLASS({
   name: 'IntuitTransactionSummary',
   extends: 'net.nanopay.tx.TransactionSummary',
 
+  tableColumns: [
+    'amount',
+    'payer',
+    'payee',
+    'category',
+    'status',
+    'externalId',
+    'created',
+    'errorCode'
+  ],
+
+  searchColumns: [
+    'id',
+    'summary',
+    'amount',
+    'status',
+    'category',
+    'errorCode',
+    'created',
+    'payer',
+    'payee',
+    'externalId',
+    'externalInvoiceId'
+  ],
+
   properties: [
     {
       class: 'String',
-      name: 'externalId'
+      name: 'externalId',
+      section: 'transactionInformation',
+      order: 130,
+      gridColumns: 6
     },
     {
       class: 'String',
-      name: 'externalInvoiceId'
+      name: 'externalInvoiceId',
+      section: 'transactionInformation',
+      order: 140,
+      gridColumns: 6
+    },
+    {
+      class: 'String',
+      name: 'fee',
+      section: 'transactionInformation',
+      order: 150,
+      gridColumns: 6
     }
   ]
 });

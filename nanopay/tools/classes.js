@@ -34,8 +34,6 @@ var classes = [
   'net.nanopay.tx.alterna.AlternaCOTransaction',
   'net.nanopay.tx.alterna.AlternaCITransaction',
   'net.nanopay.tx.alterna.AlternaVerificationTransaction',
-  'net.nanopay.tx.bench.TransactionBenchmarkClient',
-  'net.nanopay.tx.bench.TransactionPlannerBenchmarkClient',
   'net.nanopay.tx.stripe.StripeTransaction',
   'net.nanopay.tx.stripe.StripeCustomer',
   'net.nanopay.tx.realex.RealexTransaction',
@@ -117,6 +115,7 @@ var classes = [
   'net.nanopay.account.SecuritiesAccount',
   'net.nanopay.account.SecurityAccount',
   'net.nanopay.account.SecuritiesTrustAccount',
+  'net.nanopay.account.SetBankAccountOnContact',
   'net.nanopay.account.BrokerAccount',
   'net.nanopay.account.CreateDefaultDigitalAccountOnUserCreateRule',
   'net.nanopay.bank.BankAccount',
@@ -189,7 +188,9 @@ var classes = [
   'net.nanopay.bank.ruler.AccountDeletedNotificationRule',
   'net.nanopay.bank.ruler.AccountAddedNotificationRule',
   'net.nanopay.bank.ruler.CorridorAuthorizationRule',
-  'net.nanopay.bank.ruler.SwiftBicCodeTranslation',
+  'net.nanopay.bank.ruler.BankInfoToIbanAndSwiftCodeTranslation',
+  'net.nanopay.bank.ruler.IbanToSwiftCodeTranslation',
+  'net.nanopay.bank.ruler.SwiftCodeToBankRoutingCodeTranslation',
   'net.nanopay.plaid.PlaidAccountDetailTest',
   'net.nanopay.plaid.PlaidResultReportAuthorizer',
   'net.nanopay.plaid.PlaidResultReportAuthorizerTest',
@@ -682,6 +683,19 @@ var classes = [
   'net.nanopay.tx.UnsupportedDateException',
   'net.nanopay.tx.ExpiredTransactionException',
   'net.nanopay.tx.ruler.UpdateTxOnApprovalRequestStatusChange',
+
+  // TODO: From Maldives To Be ReWorked
+  'net.nanopay.settlement.GroupingAccount',
+  'net.nanopay.settlement.ReserveAccount',
+  'net.nanopay.settlement.BankPlayAccount',
+  'net.nanopay.settlement.SettlementAccount',
+  'net.nanopay.settlement.SettlementTransaction',
+  'net.nanopay.settlement.MaldivianPlanner',
+  'net.nanopay.settlement.BiLateralAccount',
+  'net.nanopay.settlement.SettlementAccountBalanceComparator',
+  'net.nanopay.settlement.Settlement',
+  'net.nanopay.settlement.SettlementTypes',
+
   'net.nanopay.fx.FXService',
   'net.nanopay.fx.client.ClientFXService',
   'net.nanopay.fx.FXAccepted',
@@ -1381,6 +1395,14 @@ var classes = [
   'net.nanopay.partner.treviso.report.TrevisoTransactionReport',
   'net.nanopay.partner.treviso.report.TrevisoTransactionReportDAO',
 
+  'net.nanopay.partner.br.businessSector.Sector',
+  'net.nanopay.partner.br.businessSector.Grupo',
+  'net.nanopay.partner.br.businessSector.Divisao',
+  'net.nanopay.partner.br.businessSector.Secao',
+
+  // Reporting
+  'net.nanopay.reporting.ReconciliationReport',
+
   // bepay
   'net.nanopay.partner.bepay.tx.BePayTransaction',
   'net.nanopay.partner.bepay.tx.planner.BePayTransactionPlanner',
@@ -1449,6 +1471,7 @@ var classes = [
   'net.nanopay.crunch.compliance.BeneficialOwnerSanctionValidator',
   'net.nanopay.crunch.compliance.SecurefactSIDniValidator',
   'net.nanopay.crunch.compliance.SecurefactLEVValidator',
+  'net.nanopay.crunch.compliance.SendNotificationOnPut',
   'net.nanopay.crunch.compliance.UserComplianceApproval',
   'net.nanopay.crunch.compliance.SetFulfilledComplianceApprovalRequest',
   'net.nanopay.crunch.compliance.GenericSigningOfficerValidator',
@@ -1516,9 +1539,6 @@ var classes = [
   'net.nanopay.crunch.registration.businesstypes.SoleProprietorData',
   'net.nanopay.crunch.registration.businesstypes.TrustData',
 
-  // bepay crunch onboarding
-  'net.nanopay.crunch.bepay.ExtendedUserDetailsData',
-
   // crunch documents
   'net.nanopay.crunch.document.Document',
   'net.nanopay.crunch.document.ExpirableDocument',
@@ -1528,6 +1548,9 @@ var classes = [
   'net.nanopay.crunch.wizardlet.SigningOfficerQuestionWizardlet',
   'net.nanopay.crunch.wizardlet.RefreshWizardlet',
   'net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig',
+  'net.nanopay.crunch.wizardlet.BusinessRegistrationWizardConfig',
+  'net.nanopay.crunch.wizardlet.SigningOfficerWizardConfig',
+
 
   // Notification
   'net.nanopay.notification.PermissionedNotificationSettingRule',

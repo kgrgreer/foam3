@@ -2,8 +2,12 @@ p({
   "class":"net.nanopay.tx.planner.IntermediaryDestinationAccountSplitPlanner",
   "id":"119fa381-d2a2-4369-b242-1dc8e2163bb9-bepay",
   "intermediaryAccountId":{
-    "USD":"35931861-7dd4-4ddb-b3a0-5d091cc82fcf-bepay"
+    "USD":"35931861-7dd4-4ddb-b3a0-5d091cc82fcf-bepay",
+    "CAD":"6135a985-206d-492f-86ba-6faefa8bd42c-bepay",
+    "GBP":"43cfa197-600e-4e97-8f77-6e3222dfedcf-bepay",
+    "EUR":"1dfec169-6cfb-4d60-a573-17235c2a5d7d-bepay"
   },
+  "provider": "BePay",
   "priority":90,
   "ruleGroup":"BePayPlanner",
   "enabled":true,
@@ -133,9 +137,7 @@ p({
   name: "BePay Fee",
   documentation: "BePay transaction fee",
   feeName: "BePay Fee",
-  feeAccount: "512360f6-ec67-4339-9fc4-9a677bc2bff7-bepay",
   feeDenomination: "BRL",
-  feeClass: "net.nanopay.tx.FeeLineItem",
   rateExpiry: {
     class: "foam.nanos.cron.TimeHMS",
     hour: 24
@@ -181,7 +183,6 @@ p({
   name: "IOF",
   documentation: "IOF charge for BePay transactions.",
   feeName: "IOF",
-  feeAccount: "512360f6-ec67-4339-9fc4-9a677bc2bff7-bepay",
   ruleGroup: "TransactionFeeRule",
   feeDenomination: "BRL",
   feeClass: "net.nanopay.tx.FeeLineItem",
@@ -297,4 +298,32 @@ p({
   },
   "enabled":true,
   "lifecycleState":1
+})
+
+p({
+    "class": "net.nanopay.tx.ruler.PermissionedTransactionRule",
+    "id":"f2c694e4-ca5c-4fc7-bbf0-747f8aa794db",
+    "name":"Screen User On Transaction Create Rule",
+    "ruleGroup":"BePayCompliance",
+    "documentation":"Screens payer and payee in Dow Jones",
+    "daoKey":"localTransactionDAO",
+    "operation":1,
+    "asyncAction":{
+      "class":"net.nanopay.partner.bepay.tx.ScreenUsersOnTransactionCreate"
+    },
+    "predicate": {
+      "class": "foam.mlang.predicate.And",
+      "args": [
+        {
+          class: "foam.nanos.ruler.predicate.IsClassPredicate",
+          of:"net.nanopay.tx.ComplianceTransaction"
+        },
+        {
+          "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+          "propName":"status",
+          "propValue":{"class":"net.nanopay.tx.model.TransactionStatus","ordinal":0}
+        }
+      ]
+    },
+    "lifecycleState":1
 })

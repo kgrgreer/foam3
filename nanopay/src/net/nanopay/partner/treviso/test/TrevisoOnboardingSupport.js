@@ -175,12 +175,12 @@ foam.CLASS({
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          var cap = net.nanopay.country.br.CPF.create({
-            user: user.id,
-            data: '10786348070',
-            cpfName: 'Mock Legal User',
-            verifyName: true
-          });
+            var cap = net.nanopay.country.br.CPF.create({
+              birthday: new Date('1970-01-01'),
+              data: '10786348070',
+              cpfName: 'Mock Legal User',
+              verifyName: true
+            });
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
         }
         return ucj;
@@ -516,7 +516,8 @@ foam.CLASS({
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           var cap = net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData.create({
             ownersSelectionsValidated: true,
-            amountOfOwners: 0
+            amountOfOwners: 0,
+            haveLowShares: true
           });
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
         }

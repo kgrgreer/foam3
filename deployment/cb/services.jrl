@@ -1,0 +1,43 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"localTransactionQuotePlanDAO",
+  "serviceScript":
+  """
+    d = new foam.dao.NullDAO.Builder(x)
+      .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
+      .build();
+    d = new net.nanopay.tx.SplitTransactionPlanDAO.Builder(x)
+      .setDelegate(d)
+      .build();
+    d = new net.nanopay.tx.NanopayLineItemFeeDAO.Builder(x)
+      .setDelegate(d)
+      .build();
+    d = new net.nanopay.tx.NanopayLineItemTaxDAO.Builder(x)
+      .setDelegate(d)
+      .build();
+    d = new net.nanopay.tx.TransactionQuoteDAO.Builder(x)
+      .setDelegate(d)
+      .build();
+    d = new net.nanopay.tx.DigitalTransactionPlanDAO(x, d);
+    d = new net.nanopay.settlement.MaldivianPlanner.Builder(x)
+      .setDelegate(d)
+      .setEnabled(true)
+      .build();
+    d = new net.nanopay.tx.GenericCIPlanner.Builder(x)
+      .setDelegate(d)
+      .setEnabled(true)
+      .build();
+    d = new net.nanopay.tx.RetailTransactionPlanDAO(x, d);
+    d = new foam.dao.ValidatingDAO(x, d, new net.nanopay.tx.RequestTransactionValidator());
+    d = new net.nanopay.tx.PayeeTransactionDAO.Builder(x)
+      .setDelegate(d)
+      .build();
+    d = new net.nanopay.tx.PayerTransactionDAO.Builder(x)
+      .setDelegate(d)
+      .build();
+    d = new net.nanopay.tx.BulkTransactionPlanDAO.Builder(x)
+      .setDelegate(d)
+      .build();
+    return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, d));
+  """
+})

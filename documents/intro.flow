@@ -34,6 +34,6 @@ Because the document is stored as regular file in the repository, you can just a
 
 <p>The parser does its best to report where it failed parsing and what it was expecting to encounter.  The error reporting is not perfect however, the actual error may be earlier in the document then indicated.</p>
 
-<p>To understand the supported tags you can view the grammar used to parse the document in <a href="/foam2/src/foam/flow/Document.js">foam2/src/foam/flow/Document.js</a> line 30.</p>
+<p>To understand the supported tags you can view the grammar used to parse the document in <a href="/foam3/src/foam/flow/Document.js">foam3/src/foam/flow/Document.js</a> line 30.</p>
 
 <p>If you still can't determine why your document won't parse, or its missing support for your favourite HTML element, reach out to @adamvy on Slack.</p>

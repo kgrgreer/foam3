@@ -39,17 +39,17 @@ foam.CLASS({
     {
       name: 'BRANCH_ID_PATTERN',
       type: 'Regex',
-      value: /^\d{4}$/
+      value: /^\d{4,5}$/
     },
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      value: /^\d{10}$/
+      value: /^\d{10,11}$/
     },
     {
       name: 'ROUTING_CODE_PATTERN',
       type: 'Regex',
-      value: /^(\d{4})(\d{4})$/
+      value: /^(\d{4})(\d{4,5})$/
     }
   ],
 

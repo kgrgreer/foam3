@@ -165,4 +165,18 @@ public class PaymentCorridorService implements CorridorService {
     return junctions;
   }
 
+  public List getAllWithSrcForProvider(X x, String sourceCurrency, String provider) {
+    List junctions = new ArrayList<>();
+    if ( SafetyUtil.isEmpty(sourceCurrency) ) return junctions;
+
+    junctions =  ((ArraySink) ((DAO) x.get("paymentProviderCorridorDAO")).where(
+      AND(
+        CONTAINS_IC(PaymentProviderCorridor.SOURCE_CURRENCIES, sourceCurrency),
+        EQ(PaymentProviderCorridor.PROVIDER, provider)
+      )
+    ).orderBy(PaymentProviderCorridor.RANKING).select(new ArraySink())).getArray();
+
+    return junctions;
+  }
+
 }
