@@ -72,12 +72,13 @@ foam.CLASS({
         }
       ]
     },
-    
+
     {
       class: 'FObjectProperty',
       name: 'cpf',
       label: '',
-      of: 'net.nanopay.country.br.CPF'
+      of: 'net.nanopay.country.br.CPF',
+      required: true
     },
     {
       class: 'Reference',
