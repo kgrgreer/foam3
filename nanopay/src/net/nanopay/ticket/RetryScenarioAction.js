@@ -50,16 +50,11 @@ foam.CLASS({
     {
       name: 'remediate',
       javaCode: `
-        RefundTicket ticket = (RefundTicket) obj;
-        DAO txnDAO = (DAO) x.get("localTransactionDAO");
-        ticket.setCreditAccount(getCreditAccount());
-        Transaction summary = (Transaction) txnDAO.find(ticket.getProblemTransaction());
-        if (! (summary instanceof SummarizingTransaction ) ) {
-          summary = summary.findRoot(x);
-        }
-        Transaction problem = summary.getStateTxn(x);
 
-        agency.submit(x, agencyX -> {
+        DAO txnDAO = (DAO) x.get("localTransactionDAO");
+        Transaction problem = (Transaction) txnDAO.find(ticket.getProblemTransaction());
+        Transaction summary = (Transaction) txnDAO.find(ticket.getRefundTransaction());
+        ticket.setCreditAccount(getCreditAccount());
 
         Transaction newRequest = new Transaction();
         newRequest.setAmount(problem.getAmount());
@@ -67,10 +62,6 @@ foam.CLASS({
         newRequest.setSourceAccount(problem.getSourceAccount());
         newRequest.setSourceCurrency(problem.getSourceCurrency());
         newRequest.setDestinationCurrency(summary.getDestinationCurrency());
-
-        if ( ! SafetyUtil.isEmpty(getErrorCode()) ) {
-          // TODO: look up error code fee. and create a fee line item for this.
-        }
 
         ticket.setRequestTransaction(newRequest);
         ticket.setAgentInstructions(getTextToAgent() + " The proposed transaction will move "+newRequest.getAmount()+

@@ -78,14 +78,15 @@ foam.CLASS({
         ticket = setUpTicket(x, ticket);
 
         // Task 2. Maybe Pause Txn.
-        if ( pauseProblem() ) {
+        if ( getPauseProblem() ) {
+          final RefundTicket ticket2 = ticket;
           agency.submit(x, agencyX -> {
-            pauseTransaction(ticket);
+            pauseTransaction(x, ticket2);
           }, "Pause Transaction from Scenario");
         }
 
         // Task 3. Remediate Problem.
-        remediate(ticket);
+        remediate(x, ticket);
       `
     },
     {
@@ -99,8 +100,8 @@ foam.CLASS({
       javaCode: `
         DAO txnDAO = (DAO) x.get("localTransactionDAO");
         Transaction problem = (Transaction) txnDAO.find(ticket.getProblemTransaction());
-        Transaction summary = temp.findRoot(x);
-        Transaction problem = summary.getStateTxn(x); // gets the currently executing txn
+        Transaction summary = problem.findRoot(x);
+        problem = summary.getStateTxn(x); // gets the currently executing txn
 
         ticket.setProblemTransaction(problem.getId());
         ticket.setRefundTransaction(summary.getId());
@@ -115,29 +116,31 @@ foam.CLASS({
     {
       name: 'pauseTransaction',
       args: [
-        { name: 'ticket', type: 'net.nanopay.tx.model.Transaction'}
+        { name: 'x', type: 'Context'},
+        { name: 'ticket', type: 'net.nanopay.ticket.RefundTicket'}
       ],
       documentation: 'Pause the current transaction Chain if possible',
       javaCode: `
+        DAO txnDAO = (DAO) x.get("localTransactionDAO");
 
-        Transaction problemClone = (Transaction) problem.fclone();
-        DAO txnDAO2 = (DAO) agencyX.get("localTransactionDAO");
+        Transaction problemClone = (Transaction) txnDAO.find(ticket.getProblemTransaction()).fclone();
+
         try {
           problemClone.setStatus(TransactionStatus.PAUSED);
-          txnDAO2.put(problemClone);
+          txnDAO.put(problemClone);
         }
         catch ( Exception e ) {
           try {
-            List children = ((ArraySink) problem.getChildren(x).select(new ArraySink())).getArray();
+            List children = ((ArraySink) problemClone.getChildren(x).select(new ArraySink())).getArray();
             for ( Object t : children) {
               t = (Transaction) ((Transaction) t).fclone();
               ((Transaction) t).setStatus(TransactionStatus.PAUSED);
-              txnDAO2.put((Transaction) t);
+              txnDAO.put((Transaction) t);
             }
           }
           catch ( Exception e2 ) {
             Logger logger = (Logger) x.get("logger");
-            logger.error("we failed to pause the Transaction "+problem.getId());
+            logger.error("we failed to pause the Transaction "+problemClone.getId());
           }
         }
 

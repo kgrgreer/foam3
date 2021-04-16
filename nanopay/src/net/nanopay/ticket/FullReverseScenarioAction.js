@@ -90,15 +90,19 @@ foam.CLASS({
         ticket.setCreditAccount(getCreditAccount());
 
         Transaction newRequest = new Transaction();
+        DAO txnDAO = (DAO) x.get("localTransactionDAO");
+        Transaction problem = (Transaction) txnDAO.find(ticket.getProblemTransaction());
+        Transaction summary = (Transaction) txnDAO.find(ticket.getRefundTransaction());
+
         newRequest.setAmount(problem.getAmount());
         newRequest.setDestinationAccount(summary.getSourceAccount());
         newRequest.setSourceAccount(problem.getSourceAccount());
         newRequest.setSourceCurrency(problem.getSourceCurrency());
         newRequest.setDestinationCurrency(summary.getSourceCurrency());
 
-        if ( ! SafetyUtil.isEmpty(getErrorCode()) ) {
+        /*if ( ! SafetyUtil.isEmpty(summary.getChainSummary().getErrorCode()) ) {
           DAO errorFeeDAO = (DAO) x.get("localErrorFeeDAO");
-          ErrorFee error = (ErrorFee) errorFeeDAO.find(getErrorCode());
+          ErrorFee error = (ErrorFee) errorFeeDAO.find(summary.getChainSummary().getErrorCode());
           if ( error != null ) {
             FeeLineItem fee = new FeeLineItem();
             fee.setAmount(error.getAmount());
@@ -107,7 +111,7 @@ foam.CLASS({
             fee.setSourceAccount(newRequest.getSourceAccount());
             newRequest.addLineItems(new TransactionLineItem[]{fee});
           }
-        }
+        }*/
 
         List<FeeLineItem> feeLineItemsAvaliable = findFeeLineItems(Arrays.asList(summary.getLineItems()));
         ticket.setFeeLineItemsAvaliable(feeLineItemsAvaliable.toArray(FeeLineItem[]::new));
