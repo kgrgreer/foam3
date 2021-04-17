@@ -205,33 +205,35 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
-      // IMPORTANT: Any fix here may also apply to BrazilBusinessInfoData.js
-
-      // These should be valid before making API call
-      try {
-        this.BIRTHDAY.validateObj(x, this);
-        if ( getData() == null || getData().length() != this.CPF_LENGTH ) {
-          throw new foam.core.ValidationException(INVALID_CPF);
-        }
-      } catch ( foam.core.ValidationException e ) {
-        this.setCpfName("");
-        throw e;
-      }
-
       var brazilVerificationService = (BrazilVerificationServiceInterface)
         x.get("brazilVerificationService");
 
-      var name = brazilVerificationService.getCPFNameWithBirthDate(
-        x, getData(), getBirthday());
+      if ( ! ( brazilVerificationService instanceof NullBrazilVerificationService ) ) {
+        // IMPORTANT: Any fix here may also apply to BrazilBusinessInfoData.js
 
-      if ( SafetyUtil.isEmpty(name) ) {
-        setCpfName("");
-        throw new foam.core.ValidationException(INVALID_CPF_CHECKED);
-      }
+        // These should be valid before making API call
+        try {
+          this.BIRTHDAY.validateObj(x, this);
+          if ( getData() == null || getData().length() != this.CPF_LENGTH ) {
+            throw new foam.core.ValidationException(INVALID_CPF);
+          }
+        } catch ( foam.core.ValidationException e ) {
+          this.setCpfName("");
+          throw e;
+        }
 
-      if ( ! SafetyUtil.equals(name, getCpfName()) ) {
-        setCpfName(name);
-        setVerifyName(false);
+        var name = brazilVerificationService.getCPFNameWithBirthDate(
+          x, getData(), getBirthday());
+
+        if ( SafetyUtil.isEmpty(name) ) {
+          setCpfName("");
+          throw new foam.core.ValidationException(INVALID_CPF_CHECKED);
+        }
+
+        if ( ! SafetyUtil.equals(name, getCpfName()) ) {
+          setCpfName(name);
+          setVerifyName(false);
+        }
       }
 
       if ( ! getVerifyName() )
