@@ -276,7 +276,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
   }
 
   public double getFXSpotRate(String sourceCurrency, String targetCurrency, long userId) throws RuntimeException {
-    if ( sourceCurrency.equals("BRL") ) {
+    if ( sourceCurrency.equals("BRL") && ! targetCurrency.equals("HKD") ) {
       return ((TrevisoFXService) getX().get("trevisoFXService")).getFXSpotRate(sourceCurrency, targetCurrency, userId);
     } else {
       return ((AFEXServiceProvider) getX().get("afexServiceProvider")).getFXSpotRate(sourceCurrency, targetCurrency, userId);
