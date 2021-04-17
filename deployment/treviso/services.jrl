@@ -91,3 +91,12 @@ p({
   """
 })
 
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"trevisoFXService",
+  "lazy":false,
+  "serve":false,
+  "serviceScript":"""
+    return new net.nanopay.partner.treviso.fx.TrevisoFXServiceMock(x, "test", "test", new String[] {"USD","CAD","EUR","GBP","CNY","CLP","ARS","JPY","CHF","AUD"}, null);
+  """
+})
