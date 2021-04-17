@@ -238,12 +238,6 @@ foam.CLASS({
       },
       gridColumns: 6
     },
-    {
-      name: 'branch',
-      //visibility: 'HIDDEN'
-      updateVisibility: 'RO',
-      label: 'Routing No.',
-    },
     // {
     //   name: 'institution',
     //   visibility: 'HIDDEN'
@@ -381,6 +375,14 @@ foam.CLASS({
           setBranchId(val);
         }
       `
+    },
+    // NOTE: branch property needs to be after bankRoutingCode to prevent it
+    // from being cleared when bankRoutingCode is set.
+    {
+      name: 'branch',
+      //visibility: 'HIDDEN'
+      updateVisibility: 'RO',
+      label: 'Routing No.',
     }
   ],
 
