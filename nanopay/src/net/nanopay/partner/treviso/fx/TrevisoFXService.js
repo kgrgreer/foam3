@@ -171,7 +171,7 @@
           throw new UnsupportException("Unsupported source currency: BRL");
         }
         if ( ! Arrays.asList(getCurrencies()).contains(targetCurrency) ) {
-          throw new UnsupportException(targetCurrency+" is not a supported target currency");
+          throw new UnsupportException("Unsupported target currency: "+targetCurrency);
         }
 
         Double rate = 0.5d;
