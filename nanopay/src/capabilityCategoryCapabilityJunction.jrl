@@ -48,17 +48,6 @@ p({
 "targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5"
 })
 
-p({
-"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
-"sourceId": "signingOfficerOnboarding",
-"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5-us"
-})
-
-p({
-"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
-"sourceId": "signingOfficerOnboarding",
-"targetId": "777af38a-8225-87c8-dfdf-eeb15f71215f-123"
-})
 
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
@@ -104,17 +93,7 @@ p({
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "complianceSetting",
-"targetId": "777af38a-8225-87c8-dfdf-eeb15f71215f-123"
-})
-p({
-"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
-"sourceId": "complianceSetting",
 "targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5"
-})
-p({
-"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
-"sourceId": "complianceSetting",
-"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5-us"
 })
 
 p({

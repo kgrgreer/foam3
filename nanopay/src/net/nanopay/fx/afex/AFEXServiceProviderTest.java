@@ -169,7 +169,7 @@ public class AFEXServiceProviderTest
       SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
       suggestedUserTransactionInfo.setBaseCurrency("CAD");
       suggestedUserTransactionInfo.setAnnualDomesticTransactionAmount("N/A");
-      suggestedUserTransactionInfo.setAnnualRevenueEnum(AnnualRevenueEnum.LESS_THAN_10000);
+      suggestedUserTransactionInfo.setAnnualRevEnum(AnnualRevenueEnum.LESS_THAN_10000);
       suggestedUserTransactionInfo.setTransactionPurposeEnum(TransactionsPurposeEnum.PAYABLES_PRODUCTS_SERVICES);
       suggestedUserTransactionInfo.setAnnualTransactionFrequencyEnum(AnnualTxnFrequencyEnum.LESS_THAN_100);
       suggestedUserTransactionInfo.setAnnualDomesticVolumeEnum(AnnualRevenueEnum.LESS_THAN_10000);

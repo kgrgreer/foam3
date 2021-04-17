@@ -298,7 +298,7 @@ foam.CLASS({
         Double destinationPrecision = Math.pow(10, destinationCurrency.getPrecision()) * rate;
         return sourceCurrency.format(sourcePrecision.longValue())
           + " " + sourceCurrency.getId()
-          + " : " + destinationCurrency.format(destinationPrecision.longValue())
+          + " : " + destinationCurrency.format(destinationPrecision.longValue()+extraPrecision)
           + " " + destinationCurrency.getId();
       `
     }
