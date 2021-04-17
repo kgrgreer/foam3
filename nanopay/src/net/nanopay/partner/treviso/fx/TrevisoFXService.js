@@ -168,7 +168,7 @@
       documentation: 'Returns the BRL -> USD rate from treviso',
       javaCode: `
         if ( ! SafetyUtil.equals("BRL", sourceCurrency) ) {
-          throw new UnsupportException("We only support BRL source currency.");
+          throw new UnsupportException("Unsupported source currency: BRL");
         }
         if ( ! Arrays.asList(getCurrencies()).contains(targetCurrency) ) {
           throw new UnsupportException(targetCurrency+" is not a supported target currency");
