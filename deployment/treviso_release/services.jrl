@@ -64,3 +64,13 @@ p({
 
 p({"class":"foam.nanos.boot.NSpec", "name":"exchangeCredential", "lazy":false, "service":{"class":"net.nanopay.country.br.exchange.ExchangeCredential",exchangeUrl:"http://10.11.9.148:8383/Exchange.svc",exchangeAgencia:1,exchangeUsername:"1204",exchangePassword:"102030"}})
 p({"class":"foam.nanos.boot.NSpec", "name":"trevisoCredientials", "lazy":false, "service":{"class":"net.nanopay.partner.treviso.TrevisoCredientials",fepWebUsername:"trevisocc",fepWebPassword:"Treviso4321#@!",fepWebApi:"https://client-uat.fepweb.com.br/fepwebws/api/",fepWebCode:"100001",fepWebCodeName:"Treviso Matriz - Nanopay"}})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"trevisoFXService",
+  "lazy":false,
+  "serve":false,
+  "serviceScript":"""
+    return new net.nanopay.partner.treviso.fx.TrevisoFXServiceMock(x, "test", "test", new String[] {"USD","CAD","EUR","GBP","CNY","CLP","ARS","JPY","CHF","AUD"}, null);
+  """
+})

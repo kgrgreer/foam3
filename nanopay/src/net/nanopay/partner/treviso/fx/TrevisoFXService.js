@@ -37,7 +37,6 @@
     'foam.nanos.om.OMLogger',
     'foam.util.SafetyUtil',
     'foam.core.Detachable',
-    'foam.nanos.app.AppConfig',
     'foam.nanos.dig.exception.UnsupportException',
     'net.nanopay.partner.treviso.fx.Cotacoes',
     'net.nanopay.partner.treviso.fx.EnfoqueResponse',
@@ -174,13 +173,7 @@
           throw new UnsupportException("Unsupported target currency: "+targetCurrency);
         }
 
-        Double rate = 0.5d;
-        AppConfig config = (AppConfig) getX().get("appConfig");
-        if ( config.getMode() == Mode.PRODUCTION ) {
-          return getRate(sourceCurrency,targetCurrency);
-        }
-        // in dev and elsewhere return "mock" service
-        return rate;
+        return getRate(sourceCurrency,targetCurrency);
       `
     },
     {
