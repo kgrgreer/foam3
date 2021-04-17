@@ -167,32 +167,36 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
-        // IMPORTANT: Any fix here may also apply to CPF.js
 
-        // This should be valid before making API call
-        try {
-          if ( getCnpj() == null || getCnpj().length() != this.CNPJ_LENGTH ) {
-            throw new foam.core.ValidationException(NO_CNPJ);
-          }
-        } catch ( foam.core.ValidationException e ) {
-          this.setCnpjName("");
-          throw e;
-        }
 
         var brazilVerificationService = (BrazilVerificationServiceInterface)
           x.get("brazilVerificationService");
 
-        var name = brazilVerificationService.getCNPJName(
-          x, getCnpj());
+        if ( ! ( brazilVerificationService instanceof NullBrazilVerificationService ) ) {
+          // IMPORTANT: Any fix here may also apply to CPF.js
 
-        if ( SafetyUtil.isEmpty(name) ) {
-          setCnpjName("");
-          throw new foam.core.ValidationException(CNPJ_INVALID);
-        }
+          // This should be valid before making API call
+          try {
+            if ( getCnpj() == null || getCnpj().length() != this.CNPJ_LENGTH ) {
+              throw new foam.core.ValidationException(NO_CNPJ);
+            }
+          } catch ( foam.core.ValidationException e ) {
+            this.setCnpjName("");
+            throw e;
+          }
 
-        if ( ! SafetyUtil.equals(name, getCnpjName()) ) {
-          setCnpjName(name);
-          setVerifyName(false);
+          var name = brazilVerificationService.getCNPJName(
+            x, getCnpj());
+
+          if ( SafetyUtil.isEmpty(name) ) {
+            setCnpjName("");
+            throw new foam.core.ValidationException(CNPJ_INVALID);
+          }
+
+          if ( ! SafetyUtil.equals(name, getCnpjName()) ) {
+            setCnpjName(name);
+            setVerifyName(false);
+          }
         }
 
         if ( ! getVerifyName() ) {
