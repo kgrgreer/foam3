@@ -69,7 +69,7 @@ public class RbcFTPSClient {
   /**
    * Download only files in the provided list
    */
-  public List<File> batchDownload(String folder, String fileNameFilter) throws IOException {
+  public List<File> batchDownload(String folder, List<String> fileNameFilters) throws IOException {
     if ( ! this.credential.getEnable() ) {
       return new ArrayList<>();
     }
@@ -81,7 +81,8 @@ public class RbcFTPSClient {
     FTPFile[] ftpFiles = this.ls(folder);
 
     for (FTPFile ftpFile : ftpFiles) {
-      if ( ! ftpFile.getName().contains(fileNameFilter.toUpperCase())
+
+      if ( ! fileNameFilters.stream().anyMatch(ftpFile.getName()::contains)
         || ftpFile.getName().contains("downloaded%FTPS")
         || ftpFile.getName().contains(".cp") ) continue;
 
