@@ -352,7 +352,11 @@ foam.CLASS({
         };
       },
       tableCellFormatter: function(value, obj, axiom) {
-        this.start('img').attr('src', value).end();
+        this.start('img')
+          .attr('src', value)
+          .attr('width', 34)
+          .attr('height', 20)
+        .end();
       }
     },
     {

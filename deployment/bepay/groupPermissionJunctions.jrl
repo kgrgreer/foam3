@@ -7,9 +7,11 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-sessi
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-session","targetId":"business.rw.compliance"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-session","targetId":"business.rw.status"})
 
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-session","targetId":"service.afexBeneficiaryDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-session","targetId":"afexbeneficiary.read.*"})
+
 // Allow BePay users to see contacts menu
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","targetId":"menu.read.view-contacts"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","targetId":"menu.read.switch-user"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","targetId":"service.read.contactDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","targetId":"service.contactDAO"})
 
@@ -20,3 +22,10 @@ r({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","
 // BePay Fraud Ops
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bepay-fraud-ops",targetId:"group.update.bepay-fraud-ops"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bepay-fraud-ops",targetId:"group.update.bepay-payment-ops"})
+
+// Switch user menus
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-session","targetId":"menu.read.switch-user"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","targetId":"menu.read.switch-user"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-fraud-ops","targetId":"menu.read.switch-user"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-payment-ops","targetId":"menu.read.switch-user"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-support","targetId":"menu.read.switch-user"})
