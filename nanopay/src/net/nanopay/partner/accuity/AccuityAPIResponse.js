@@ -26,10 +26,18 @@ foam.CLASS({
     'java.util.Map'
   ],
 
+  tableColumns: [ 'id', 'status', 'request', 'expirationDate' ],
+
   properties: [
     {
       class: 'String',
       name: 'id'
+    },
+    {
+      class: 'String',
+      name: 'status',
+      javaFactory: 'return get("status");',
+      storageTransient: true
     },
     {
       class: 'Map',
