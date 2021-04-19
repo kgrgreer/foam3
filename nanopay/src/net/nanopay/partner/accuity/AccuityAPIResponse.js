@@ -26,10 +26,18 @@ foam.CLASS({
     'java.util.Map'
   ],
 
+  tableColumns: [ 'id', 'status', 'request', 'expirationDate' ],
+
   properties: [
     {
       class: 'String',
       name: 'id'
+    },
+    {
+      class: 'String',
+      name: 'status',
+      javaFactory: 'return get("status");',
+      storageTransient: true
     },
     {
       class: 'Map',
@@ -42,7 +50,7 @@ foam.CLASS({
       required: true
     },
     {
-      class: 'Date',
+      class: 'DateTime',
       name: 'expirationDate',
       documentation: 'The expiration date of the cached response data.',
       javaFactory: 'return new Date();'

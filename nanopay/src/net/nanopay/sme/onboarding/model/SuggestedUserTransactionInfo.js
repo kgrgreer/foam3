@@ -98,7 +98,11 @@ foam.CLASS({
         if ( ! SafetyUtil.isEmpty(annualRevenue_) ) {
           annualRevenueIsSet_ = true;
           if ( ! annualRevEnumIsSet_ ) {
-            setAnnualRevEnum(AnnualRevenueEnum.forLabel(annualRevenue_));
+            // TODO: explicit mapping of legacy translated text
+            AnnualRevenueEnum e = AnnualRevenueEnum.forLabel(annualRevenue_);
+            if ( e != null ) {
+              setAnnualRevEnum(e);
+            }
           }
         }
       `,
@@ -106,7 +110,9 @@ foam.CLASS({
         // api's use this property,
         // returning enum val to legacy  propery(annualRevenue)
         if ( annualRevEnumIsSet_ ) {
-          return getAnnualRevEnum().getLabel();
+          if ( getAnnualRevEnum() != null ) {
+            return getAnnualRevEnum().getLabel();
+          }
         }
         return annualRevenue_;
       `,
@@ -256,8 +262,11 @@ foam.CLASS({
         annualTransactionFrequency_ = val;
         if ( ! SafetyUtil.isEmpty(annualTransactionFrequency_) ) {
           annualTransactionFrequencyIsSet_ = true;
-          if ( ! annualTransactionFrequencyEnumIsSet_) {
-            setAnnualTransactionFrequencyEnum(AnnualTxnFrequencyEnum.forLabel(annualTransactionFrequency_));
+          if ( ! annualTransactionFrequencyEnumIsSet_ ) {
+            var e = AnnualTxnFrequencyEnum.forLabel(annualTransactionFrequency_);
+            if ( e != null ) {
+              setAnnualTransactionFrequencyEnum(e);
+            }
           }
         }
       `,
@@ -342,8 +351,11 @@ foam.CLASS({
         annualDomesticVolume_ = val;
         if ( ! SafetyUtil.isEmpty(annualDomesticVolume_) ) {
           annualDomesticVolumeIsSet_ = true;
-          if ( ! annualDomesticVolumeEnumIsSet_) {
-            setAnnualDomesticVolumeEnum(AnnualRevenueEnum.forLabel(annualDomesticVolume_));
+          if ( ! annualDomesticVolumeEnumIsSet_ ) {
+            var e = AnnualRevenueEnum.forLabel(annualDomesticVolume_);
+            if ( e != null ) {
+              setAnnualDomesticVolumeEnum(e);
+            }
           }
         }
       `,

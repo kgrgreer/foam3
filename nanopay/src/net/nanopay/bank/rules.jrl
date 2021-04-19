@@ -260,7 +260,7 @@ p({
   "operation": 0,
   "predicate": {
     "class": "foam.mlang.predicate.MQLExpr",
-    "query": "n(instanceof net.nanopay.bank.BankAccount) AND n(denomination=EUR) AND n(-has:iban) AND n(-has:swiftCode)"
+    "query": "n(instanceof net.nanopay.bank.BankAccount) AND n(denomination=EUR) AND n(-has:iban)"
   },
   "action": {
     "class": "net.nanopay.bank.ruler.BankInfoToIbanAndSwiftCodeTranslation"
@@ -281,7 +281,7 @@ p({
   "operation": 1,
   "predicate": {
     "class": "foam.mlang.predicate.MQLExpr",
-    "query": "n(instanceof net.nanopay.bank.BankAccount) AND n(denomination=EUR) AND diff:institution,branch,accountNumber"
+    "query": "n(instanceof net.nanopay.bank.BankAccount) AND n(denomination=EUR) AND diff:institution,branch,accountNumber,swiftCode"
   },
   "action": {
     "class": "net.nanopay.bank.ruler.BankInfoToIbanAndSwiftCodeTranslation"

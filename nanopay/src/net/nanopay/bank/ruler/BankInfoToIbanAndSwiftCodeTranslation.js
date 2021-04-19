@@ -41,8 +41,13 @@ foam.CLASS({
         var account = (BankAccount) obj;
         var bankAccountValidationService = (BankAccountValidationService) x.get("bankAccountValidationService");
         try {
+          var nationalId = account.getRoutingCode_();
+          if ( SafetyUtil.isEmpty(nationalId) ) {
+            nationalId = account.getSwiftCode();
+          }
+
           var ret = bankAccountValidationService.convertToIbanAndSwiftCode(x,
-            account.getCountry(), account.getRoutingCode_(), account.getAccountNumber());
+            account.getCountry(), nationalId, account.getAccountNumber());
           account.setIban(ret[0]);
           account.setSwiftCode(ret[1]);
         } catch ( RuntimeException e ) {

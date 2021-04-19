@@ -100,6 +100,18 @@ foam.CLASS({
       tableCellFormatter: function(val) {
         return foam.String.applyFormat(val, 'xx.xxx.xxx/xxxx-xx');
       },
+      postSet: function(_,n) {
+        if ( n.length == 14 && this.verifyName !== true ) {
+          this.cnpjName = '';
+          this.getCNPJBusinessName(n).then((v) => {
+            this.cnpjName = v;
+          });
+        }
+        else {
+          this.cnpjName = '';
+          this.verifyName = false;
+        }
+      },
       view: function(_, X) {
         return foam.u2.FormattedTextField.create({
           formatter: [2, '.', 3, '.', 3, '/', 4, '-', 2]
@@ -164,35 +176,49 @@ foam.CLASS({
   ],
 
   methods: [
+    function installInWizardlet(w) {
+      // CNPJ takes longer to save, so re-load may clear new inputs
+      w.reloadAfterSave = false;
+    },
+    {
+      name: 'getCNPJBusinessName',
+      code:  async function(cnpj) {
+        return await this.brazilVerificationService.getCNPJName(this.__subContext__, cnpj);
+      }
+    },
     {
       name: 'validate',
       javaCode: `
-        // IMPORTANT: Any fix here may also apply to CPF.js
 
-        // This should be valid before making API call
-        try {
-          if ( getCnpj() == null || getCnpj().length() != this.CNPJ_LENGTH ) {
-            throw new foam.core.ValidationException(NO_CNPJ);
-          }
-        } catch ( foam.core.ValidationException e ) {
-          this.setCnpjName("");
-          throw e;
-        }
 
         var brazilVerificationService = (BrazilVerificationServiceInterface)
           x.get("brazilVerificationService");
 
-        var name = brazilVerificationService.getCNPJName(
-          x, getCnpj());
+        if ( ! ( brazilVerificationService instanceof NullBrazilVerificationService ) ) {
+          // IMPORTANT: Any fix here may also apply to CPF.js
 
-        if ( SafetyUtil.isEmpty(name) ) {
-          setCnpjName("");
-          throw new foam.core.ValidationException(CNPJ_INVALID);
-        }
+          // This should be valid before making API call
+          try {
+            if ( getCnpj() == null || getCnpj().length() != this.CNPJ_LENGTH ) {
+              throw new foam.core.ValidationException(NO_CNPJ);
+            }
+          } catch ( foam.core.ValidationException e ) {
+            this.setCnpjName("");
+            throw e;
+          }
 
-        if ( ! SafetyUtil.equals(name, getCnpjName()) ) {
-          setCnpjName(name);
-          setVerifyName(false);
+          var name = brazilVerificationService.getCNPJName(
+            x, getCnpj());
+
+          if ( SafetyUtil.isEmpty(name) ) {
+            setCnpjName("");
+            throw new foam.core.ValidationException(CNPJ_INVALID);
+          }
+
+          if ( ! SafetyUtil.equals(name, getCnpjName()) ) {
+            setCnpjName(name);
+            setVerifyName(false);
+          }
         }
 
         if ( ! getVerifyName() ) {

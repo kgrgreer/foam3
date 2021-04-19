@@ -1370,6 +1370,10 @@ var classes = [
   'net.nanopay.partner.treviso.invoice.TrevisoNotification',
   'net.nanopay.partner.treviso.report.TrevisoTransactionReport',
   'net.nanopay.partner.treviso.report.TrevisoTransactionReportDAO',
+  'net.nanopay.partner.treviso.fx.Cotacoes',
+  'net.nanopay.partner.treviso.fx.EnfoqueResponse',
+  'net.nanopay.partner.treviso.fx.TrevisoFXService',
+  'net.nanopay.partner.treviso.fx.TrevisoFXServiceMock',
 
   'net.nanopay.partner.br.businessSector.Sector',
   'net.nanopay.partner.br.businessSector.Grupo',
