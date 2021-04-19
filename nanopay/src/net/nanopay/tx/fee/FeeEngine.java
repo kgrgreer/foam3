@@ -227,6 +227,7 @@ public class FeeEngine {
 
     // Review the need to set rates later
     if ( result instanceof FeeLineItem ) {
+      ((FeeLineItem)result).setFeeId(fee.getId());
       ((FeeLineItem)result).setFeeCurrency(currency.getId());
       ((FeeLineItem)result).setRates(
         loadedFees_.values().stream()

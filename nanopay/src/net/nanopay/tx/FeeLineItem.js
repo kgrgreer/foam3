@@ -77,6 +77,14 @@ foam.CLASS({
       gridColumns: 6
     },
     {
+      name: 'feeId',
+      class: 'Reference',
+      of: 'net.nanopay.tx.fee.Fee',
+      targetDAOKey: 'feeDAO',
+      label: 'Fee Id',
+      hidden: false,
+    },
+    {
       class: 'FObjectArray',
       of: 'net.nanopay.tx.Transfer',
       name: 'Transfers',
