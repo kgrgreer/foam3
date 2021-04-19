@@ -552,9 +552,6 @@ foam.CLASS({
       return {
         detach: function() { subs.forEach(s => s.detach()); }
       };
-    },
-    function map(f) {
-      this.sub( () => {f(this.get())} )
     }
   ]
 });
