@@ -81,7 +81,7 @@ foam.CLASS({
         if ( getPauseProblem() ) {
           final RefundTicket ticket2 = ticket;
           agency.submit(x, agencyX -> {
-            pauseTransaction(x, ticket2);
+            pauseTransaction(agencyX, ticket2);
           }, "Pause Transaction from Scenario");
         }
 
