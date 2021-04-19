@@ -55,7 +55,7 @@ p({
 // office consumption
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"crunch.onboarding.document.officer-consumption",
+  sourceId:"crunch.onboarding.document.office-consumption",
   targetId:"crunch.onboarding.certify-data-reviewed"
 })
 // business identification numbers

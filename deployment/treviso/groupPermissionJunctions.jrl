@@ -31,7 +31,7 @@ p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.payment.target.country.br"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.9d4d667c-04c3-11eb-adc1-0242ac120002"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.af3d9c28-0674-11eb-adc1-0242ac120002"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.document.officer-consumption"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.document.office-consumption"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.document.annual-financial-statements"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.br.business-identification"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.document.articles-of-incorporation"})

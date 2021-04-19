@@ -81,7 +81,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"crunch.onboarding.document.officer-consumption",
+  "id":"crunch.onboarding.document.office-consumption",
   "name":"Proof of Company Address",
   "description":"Provide three months of bills, such as water, electricity, telephone, cable TV, internet, or property tax. Alternatively, you can provide bank statements.",
   "of":"net.nanopay.crunch.document.Document",

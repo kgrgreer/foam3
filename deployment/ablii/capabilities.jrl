@@ -81,7 +81,7 @@ p({
 
 p({
   "class": "net.nanopay.payment.RegisterPaymentProviderCapability",
-  "id":"89cc91da-4bbd-458b-81d4-574815e455fa-1",
+  "id":"crunch.onboarding.registering-ca-payment-provider",
   "name":"Registering with Payment Provider(CA Domestic)",
   "description":"Registering with Payment Provider(CA Domestic)",
   "version":"0",
@@ -99,7 +99,7 @@ p({
 
 p({
   "class": "foam.nanos.crunch.Capability",
-  "id":"1f6b2047-1eef-471d-82e7-d86bdf511375-2",
+  "id":"payment.provider.bmo",
   "name":"BMO Payment Provider Capability",
   "description":"BMO Payment Provider Capability",
   "permissionsGranted":[
@@ -114,7 +114,7 @@ p({
 
 p({
   "class": "foam.nanos.crunch.Capability",
-  "id":"1f6b2047-1eef-471d-82e7-d86bdf511375-3",
+  "id":"payment.provider.rbc",
   "name":"RBC Payment Provider Capability",
   "description":"RBC Payment Provider Capability",
   "permissionsGranted":[
@@ -129,7 +129,7 @@ p({
 
 p({
   "class": "net.nanopay.payment.RegisterPaymentProviderCapability",
-  "id":"89cc91da-4bbd-458b-81d4-574815e455fa-2",
+  "id":"crunch.onboarding.registering-international-payment-provider",
   "name":"Registering with Payment Provider(International)",
   "description":"Registering with Payment Provider(International)",
   "version":"0",
@@ -147,7 +147,7 @@ p({
 
 p({
   "class": "net.nanopay.payment.RegisterPaymentProviderCapability",
-  "id":"89cc91da-4bbd-458b-81d4-574815e455fa-3",
+  "id":"crunch.onboarding.registering-us-international-payment-provider",
   "name":"Registering with Payment Provider(US Domestic/International)",
   "description":"Registering with Payment Provider(US Domestic/International)",
   "version":"0",

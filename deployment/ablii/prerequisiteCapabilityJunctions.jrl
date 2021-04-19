@@ -97,14 +97,14 @@ p({
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "89cc91da-4bbd-458b-81d4-574815e455fa-1",
-  targetId: "1f6b2047-1eef-471d-82e7-d86bdf511375-2",
+  sourceId: "crunch.onboarding.registering-ca-payment-provider",
+  targetId: "payment.provider.bmo",
 })
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "89cc91da-4bbd-458b-81d4-574815e455fa-1",
-  targetId: "1f6b2047-1eef-471d-82e7-d86bdf511375-3",
+  sourceId: "crunch.onboarding.registering-ca-payment-provider",
+  targetId: "payment.provider.rbc",
 })
 
 p({
@@ -116,7 +116,7 @@ p({
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId: "crunch.onboarding.parent.unlock-ca-ca-payments",
-  targetId: "89cc91da-4bbd-458b-81d4-574815e455fa-1",
+  targetId: "crunch.onboarding.registering-ca-payment-provider",
 })
 
 p({
@@ -128,7 +128,7 @@ p({
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId: "crunch.onboarding.parent.unlock-ca-international-payments",
-  targetId: "89cc91da-4bbd-458b-81d4-574815e455fa-2",
+  targetId: "crunch.onboarding.registering-international-payment-provider",
 })
 
 p({
@@ -140,17 +140,17 @@ p({
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId: "crunch.onboarding.parent.unlock-us-payments",
-  targetId: "89cc91da-4bbd-458b-81d4-574815e455fa-3",
+  targetId: "crunch.onboarding.registering-us-international-payment-provider",
 })
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "89cc91da-4bbd-458b-81d4-574815e455fa-2",
+  sourceId: "crunch.onboarding.registering-international-payment-provider",
   targetId: "payment.provider.afex",
 })
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "89cc91da-4bbd-458b-81d4-574815e455fa-3",
+  sourceId: "crunch.onboarding.registering-us-international-payment-provider",
   targetId: "payment.provider.afex",
 })

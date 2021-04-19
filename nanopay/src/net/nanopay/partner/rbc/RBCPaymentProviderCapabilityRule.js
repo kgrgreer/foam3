@@ -52,7 +52,7 @@ foam.CLASS({
           var subject = new Subject(x);
           subject.setUser(business);
           var subjectX = x.put("subject", subject);
-          String rbcPaymentMenuCapId = "1f6b2047-1eef-471d-82e7-d86bdf511375-3";
+          String rbcPaymentMenuCapId = "payment.provider.rbc";
           crunchService.updateJunction(subjectX, rbcPaymentMenuCapId, null, CapabilityJunctionStatus.GRANTED);
         }
 

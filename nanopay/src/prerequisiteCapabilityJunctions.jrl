@@ -352,7 +352,7 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"payment.target.country.br",
-  "targetId":"crunch.onboarding.document.officer-consumption",
+  "targetId":"crunch.onboarding.document.office-consumption",
   "priority":15
 })
 

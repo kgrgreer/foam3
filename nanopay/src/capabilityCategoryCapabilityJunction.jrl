@@ -166,17 +166,17 @@ p({
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "registerPaymentProvider",
-"targetId": "89cc91da-4bbd-458b-81d4-574815e455fa-1"
+"targetId": "crunch.onboarding.registering-ca-payment-provider"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "registerPaymentProvider",
-"targetId": "89cc91da-4bbd-458b-81d4-574815e455fa-2"
+"targetId": "crunch.onboarding.registering-international-payment-provider"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "registerPaymentProvider",
-"targetId": "89cc91da-4bbd-458b-81d4-574815e455fa-3"
+"targetId": "crunch.onboarding.registering-us-international-payment-provider"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",

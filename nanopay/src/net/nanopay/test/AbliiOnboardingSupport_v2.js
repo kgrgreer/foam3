@@ -588,7 +588,7 @@ foam.CLASS({
     {
       name: '_b5f2b020_db0f_11ea_87d0_0242ac130003',
       code: async function(x, business) {
-        var id = 'crunch.onboarding.document.officer-consumption';
+        var id = 'crunch.onboarding.document.office-consumption';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {

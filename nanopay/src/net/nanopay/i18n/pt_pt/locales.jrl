@@ -984,8 +984,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"BMO.name",target:"Banco de Montr
 p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.api.unlock-ca-ca-payments.name",target:"API Onboarding Domestic Business Payments (CAD to CAD) pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.api.unlock-ca-ca-payments.description",target:"Desbloqueie pagamentos domésticos por meio da API para uma empresa."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"RBC.name",target:"Royal Bank of Canada pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.document.officer-consumption.name",target:"Comprovante de Endereço da Empresa"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.document.officer-consumption.description",target:"Comprovante em nome da própria empresa: Conta de Energia, Telefone, TV a Cabo, IPTU ou Extrato Bancário atual (no máximo 3 meses)."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.document.office-consumption.name",target:"Comprovante de Endereço da Empresa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.document.office-consumption.description",target:"Comprovante em nome da própria empresa: Conta de Energia, Telefone, TV a Cabo, IPTU ou Extrato Bancário atual (no máximo 3 meses)."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.document.date-of-issue.name",target:"Data de emissão"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.document.date-of-issue.description",target:"Data de emissão de um documento de identificação"})
