@@ -53,9 +53,9 @@ foam.CLASS({
           User payer = tx.findSourceAccount(x).findOwner(x);
           User payee = tx.findDestinationAccount(x).findOwner(x);
           DowJonesService dowJones = (DowJonesService) x.get("dowJonesService");
-          boolean payerSuccess = screenUser(x, payer, dowJones);
-          boolean payeeSuccess = screenUser(x, payee, dowJones);
           try {
+            boolean payerSuccess = screenUser(x, payer, dowJones);
+            boolean payeeSuccess = screenUser(x, payee, dowJones);
             if ( payerSuccess && payeeSuccess ) {
               tx.setStatus(TransactionStatus.COMPLETED);
             } else {
@@ -77,6 +77,7 @@ foam.CLASS({
               ((DAO) x.get("approvalRequestDAO")).put(approvalRequest);
             }
           } catch (Exception e) {
+            tx.setStatus(TransactionStatus.COMPLETED);
             Logger logger = (Logger) x.get("logger");
             logger.error("ScreenUsersOnTransactionCreate Error: ", e);
           }
