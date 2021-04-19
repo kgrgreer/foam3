@@ -199,8 +199,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.tx.T
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.TaxLineItem.NAME.FTT Tax",target:"Imposto FTT"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.TaxLineItem.NAME.IRS Tax",target:"Imposto IRS"})
 
-p({class:"foam.i18n.Locale",locale:"en",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-7-br.name",target:"Corporate Composition Information"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-7-br.name",target:"Informações de Composição Societária"})
+p({class:"foam.i18n.Locale",locale:"en",source:"crunch.onboarding.br.business-ownership.name",target:"Corporate Composition Information"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.br.business-ownership.name",target:"Informações de Composição Societária"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.ADD_MSG",target:"outro acionista"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OTHER_MSG",target:"Add another shareholder"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OTHER_MSG",target:"Adicionar outro cotista"})

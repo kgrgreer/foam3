@@ -958,7 +958,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.minmax.business-ownership.name",target:"Propriedade de negócio"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.business-ownership.name",target:"Sua empresa possui uma ou mais pessoas que possuem 25% ou mais do negócio, direta ou indiretamente?"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.publicly-traded.name",target:"Sua empresa NÃO possui uma pessoa que detém 25% ou mais do negócio, direta ou indiretamente."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-7-br.name",target:"Propriedade de negócio"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.br.business-ownership.name",target:"Propriedade de negócio"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.register-business.name",target:"Registro comercial"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.register-business.description",target:"Crie um negócio para acessar pagamentos e faturas na plataforma."})

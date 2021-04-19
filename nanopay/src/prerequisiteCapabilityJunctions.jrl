@@ -299,7 +299,7 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7-br",
+  "targetId":"crunch.onboarding.br.business-ownership",
   "priority":8
 })
 p({

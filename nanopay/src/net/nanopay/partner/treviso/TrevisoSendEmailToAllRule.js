@@ -65,7 +65,7 @@ foam.CLASS({
           Business business = (Business) ucj.findSourceId(x);
           List<String> uniqueEmails = new ArrayList<String>();
           String soCapId = "crunch.onboarding.signing-officer-information";
-          String ownerCapId = "554af38a-8225-87c8-dfdf-eeb15f71215f-7-br";
+          String ownerCapId = "crunch.onboarding.br.business-ownership";
           String directorCapId = "crunch.onboarding.business-directors";
 
           // find all signingofficers of the business and send email to signing officers whose hasSignedContratosDeCambio is true

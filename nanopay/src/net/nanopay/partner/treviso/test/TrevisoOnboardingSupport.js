@@ -422,7 +422,7 @@ foam.CLASS({
     {
       name: 'corridor',
       code: async function(x) {
-        var id = 'f9c7ce45-c076-4f55-93d2-867c011ee6ca';
+        var id = 'paymentprovidercorridor.treviso.br-us';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -510,7 +510,7 @@ foam.CLASS({
     {
       name: 'businessOwnershipData',
       code: async function(x, business) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-7-br';
+        var id = 'crunch.onboarding.br.business-ownership';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
