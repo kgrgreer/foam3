@@ -177,7 +177,7 @@ foam.CLASS({
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
             var cap = net.nanopay.country.br.CPF.create({
               birthday: new Date('1970-01-01'),
-              data: '107.863.480-70',
+              data: '10786348070',
               cpfName: 'Mock Legal User',
               verifyName: true
             });
@@ -242,7 +242,7 @@ foam.CLASS({
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           var cap = net.nanopay.country.br.BrazilBusinessInfoData.create({
             nire: '12345678901234',
-            cnpj: '06.990.590/0001-23',
+            cnpj: '06990590000123',
             verifyName: true
           });
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
