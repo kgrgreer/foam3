@@ -86,7 +86,7 @@ p({
 
 p({
   class:"foam.nanos.crunch.Capability",
-  id:"8ad3c898-db232-1ea-87d0-0242ac130z0-bepay",
+  id:"crunch.onboarding.document.bepay.date-of-issue",
   name:"Date of Issue",
   description:"Date of issue of an identification document",
   of:"net.nanopay.crunch.document.DateOfIssue",
@@ -96,7 +96,7 @@ p({
 
 p({
   class:"foam.nanos.crunch.Capability",
-  id:"D423CDC6-6BDA-4A84-B5AE-71B4C503AD30",
+  id:"crunch.onboarding.afex.third-party-terms-and-conditions",
   name:"Third Party Verification AFEX Terms and Conditions",
   of:"net.nanopay.crunch.acceptanceDocuments.capabilities.ThirdPartyVerificationAFEXTerms",
   enabled:true

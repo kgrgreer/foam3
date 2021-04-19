@@ -109,48 +109,48 @@ p({
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "bf6a49d5-4027-4dac-a269-4d3ed070609e-1",
-  targetId: "554af38a-8225-87c8-dfdf-eeb15f71215f-11",
+  sourceId: "crunch.onboarding.parent.unlock-ca-ca-payments",
+  targetId: "crunch.onboarding.unlock-ca-ca-payments",
 })
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "bf6a49d5-4027-4dac-a269-4d3ed070609e-1",
+  sourceId: "crunch.onboarding.parent.unlock-ca-ca-payments",
   targetId: "89cc91da-4bbd-458b-81d4-574815e455fa-1",
 })
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "bf6a49d5-4027-4dac-a269-4d3ed070609e-2",
-  targetId: "554af38a-8225-87c8-dfdf-eeb15f71215f-12",
+  sourceId: "crunch.onboarding.parent.unlock-ca-international-payments",
+  targetId: "crunch.onboarding.unlock-ca-international-payments",
 })
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "bf6a49d5-4027-4dac-a269-4d3ed070609e-2",
+  sourceId: "crunch.onboarding.parent.unlock-ca-international-payments",
   targetId: "89cc91da-4bbd-458b-81d4-574815e455fa-2",
 })
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "bf6a49d5-4027-4dac-a269-4d3ed070609e-3",
-  targetId: "554af38a-8225-87c8-dfdf-eeb15f71215f-13",
+  sourceId: "crunch.onboarding.parent.unlock-us-payments",
+  targetId: "crunch.onboarding.unlock-us-payments",
 })
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "bf6a49d5-4027-4dac-a269-4d3ed070609e-3",
+  sourceId: "crunch.onboarding.parent.unlock-us-payments",
   targetId: "89cc91da-4bbd-458b-81d4-574815e455fa-3",
 })
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId: "89cc91da-4bbd-458b-81d4-574815e455fa-2",
-  targetId: "1f6b2047-1eef-471d-82e7-d86bdf511375",
+  targetId: "payment.provider.afex",
 })
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId: "89cc91da-4bbd-458b-81d4-574815e455fa-3",
-  targetId: "1f6b2047-1eef-471d-82e7-d86bdf511375",
+  targetId: "payment.provider.afex",
 })

@@ -109,7 +109,7 @@ foam.CLASS({
       name: '_242B00F8_C775_4899_AEBA_F287EC54E901',
       code: async function(x, user) {
         // GeneralAdmission-Treviso
-        var id = '242B00F8-C775-4899-AEBA-F287EC54E901';
+        var id = 'crunch.onboarding.treviso.general-admission';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -121,7 +121,7 @@ foam.CLASS({
     {
       name: '_554af38a_8225_87c8_dfdf_eeb15f71215f_76.submit',
       code: async function(x, user) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-76.submit';
+        var id = 'crunch.onboarding.register-business.submit';
         var ucj = await this.crunchService.getJunction(x, id);
         // note: !ucj not needed (anywhere)
         if ( ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -135,7 +135,7 @@ foam.CLASS({
       name: '_85cee1de_db32_11ea_87d0_0242ac130003',
       code: async function(x, user) {
         // UtilityBill - Signing Officer.
-        var id = '85cee1de-db32-11ea-87d0-0242ac130003';
+        var id = 'crunch.onboarding.document.utility-bills';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -154,7 +154,7 @@ foam.CLASS({
       name: '_8ad3c898_db32_11ea_87d0_0242ac130003',
       code: async function(x, user) {
         // Identification
-        var id = '8ad3c898-db32-11ea-87d0-0242ac130003';
+        var id = 'crunch.onboarding.document.identification';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -171,7 +171,7 @@ foam.CLASS({
       name: '_8ad3c898_db232_1ea_87d0_0242ac130z0',
       code: async function(x, user) {
         // Date of Issue
-        var id = '8ad3c898-db232-1ea-87d0-0242ac130z0';
+        var id = 'crunch.onboarding.document.date-of-issue';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -189,7 +189,7 @@ foam.CLASS({
       name: '_fb7d3ca2_62f2_4caf_a84c_860392e4676b',
       code: async function(x, user) {
         // CPF
-        var id = 'fb7d3ca2-62f2-4caf-a84c-860392e4676b';
+        var id = 'crunch.onboarding.br.cpf';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -208,7 +208,7 @@ foam.CLASS({
       name: '_554af38a_8225_87c8_dfdf_eeb15f71215f_0',
       code: async function(x, user) {
         // SigningOfficerPrivilegesRequested
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-0';
+        var id = 'crunch.onboarding.signing-officer-question';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -225,7 +225,7 @@ foam.CLASS({
     {
       name: '_777af38a_8225_87c8_dfdf_eeb15f71215f_123',
       code: async function(x, business) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-1a5';
+        var id = 'crunch.onboarding.signing-officer-information';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -254,7 +254,7 @@ foam.CLASS({
     {
       name: '_688cb7c6_7316_4bbf_8483_fb79f8fdeaaf',
       code: async function(x, business) {
-        var id = '688cb7c6-7316-4bbf-8483-fb79f8fdeaaf';
+        var id = 'crunch.onboarding.br.business-identification';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -271,7 +271,7 @@ foam.CLASS({
     {
       name: '_b5f2b020_db0f_11ea_87d0_0242ac130003',
       code: async function(x, business) {
-        var id = 'b5f2b020-db0f-11ea-87d0-0242ac130003';
+        var id = 'crunch.onboarding.document.officer-consumption';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -305,7 +305,7 @@ foam.CLASS({
     {
       name: '_7e2739cc_db32_11ea_87d0_0242ac130003',
       code: async function(x, business) {
-        var id = '7e2739cc-db32-11ea-87d0-0242ac130003';
+        var id = 'crunch.onboarding.document.annual-financial-statements';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -323,7 +323,7 @@ foam.CLASS({
     {
       name: '_63049307_8db4_2437_5c02_b71d6878263c',
       code: async function(x, business) {
-        var id = '63049307-8db4-2437-5c02-b71d6878263c';
+        var id = 'payment.target.country.br';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -336,7 +336,7 @@ foam.CLASS({
       name: '_554af38a_8225_87c8_dfdf_eebsdf3225y_4',
       code: async function(x, business) {
         // cap name: Business Details
-        var id = '554af38a-8225-87c8-dfdf-eebsdf3225y-4';
+        var id = 'crunch.onboarding.business-type-sector';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -415,7 +415,7 @@ foam.CLASS({
       code: async function(x) {
         // cap name: Source Country Capability BR
         // cap type: CountryCapability
-        var id = '520a4120-3bc6-cef9-6635-c32af8219a6a';
+        var id = 'payment.source.country.br';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -524,7 +524,7 @@ foam.CLASS({
       name: '_554af38a_8225_87c8_dfdf_eeb15f71215f_6_5',
       code: async function(x, business) {
         // cap name: Information from Administrators and Legal Representatives
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-6-5';
+        var id = 'crunch.onboarding.business-directors';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -572,7 +572,7 @@ foam.CLASS({
       name: '_1f6b2047_1eef_471d_82e7_d86bdf511375',
       code: async function(x, business) {
         // cap name: Business Prerequisites for Brazil
-        var id = '1f6b2047-1eef-471d-82e7-d86bdf511375';
+        var id = 'payment.provider.afex';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {

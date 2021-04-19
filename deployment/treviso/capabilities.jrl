@@ -73,7 +73,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "id":"crunch.onboarding.certify-data-reviewed",
   "name":"Certify Data Reviewed",
   "of":"net.nanopay.crunch.onboardingModels.CertifyDataReviewed",
   "description":"Certify all data submitted has been reviewed",
@@ -90,7 +90,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"8ad3c898-db232-1ea-87d0-0242ac130z0",
+  "id":"crunch.onboarding.document.date-of-issue",
   "name":"Date of Issue",
   "description":"Date of issue of an identification document",
   "of":"net.nanopay.crunch.document.DateOfIssue",
@@ -114,7 +114,7 @@ p({
 })
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5",
+  "id":"crunch.onboarding.business-directors",
   "name":"Information from Administrators and Legal Representatives",
   "of":"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData",
   "reviewRequired":false
@@ -179,14 +179,14 @@ p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:3,provider:"Trevi
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
+  "id":"crunch.onboarding.signing-officer-information",
   "name":"Complete your signing officer information",
   "of":"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso",
   "visibilityPredicate": {
     "class":"foam.mlang.predicate.Not",
     "arg1": {
       "class":"foam.nanos.crunch.predicate.CapabilityGranted",
-      "capabilityId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
+      "capabilityId":"crunch.onboarding.signing-officer-information",
       "subjectFromUCJ":false
     }
   },

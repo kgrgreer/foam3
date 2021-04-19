@@ -221,7 +221,7 @@ foam.CLASS({
                 CrunchService crunchService = (CrunchService) x.get("crunchService");
                 Subject subject = new Subject(user);
                 subject.setUser(business);
-                crunchService.updateUserJunction(sysContext, subject, "554af38a-8225-87c8-dfdf-eeb15f71215f-0", soq, CapabilityJunctionStatus.GRANTED);
+                crunchService.updateUserJunction(sysContext, subject, "crunch.onboarding.signing-officer-question", soq, CapabilityJunctionStatus.GRANTED);
               }
 
               Invitation invitation = (Invitation) getInvitationDAO()

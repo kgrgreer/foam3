@@ -64,7 +64,7 @@ p({class:"foam.nanos.crunch.MinMaxCapability", id:"ab3fb392-4018-446d-83a5-6026e
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "id":"crunch.onboarding.certify-data-reviewed",
   "name":"Certify Data Reviewed",
   "of":"net.nanopay.crunch.onboardingModels.CertifyDataReviewed",
   "description":"Certify all data submitted has been reviewed",
@@ -81,7 +81,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"b5f2b020-db0f-11ea-87d0-0242ac130003",
+  "id":"crunch.onboarding.document.officer-consumption",
   "name":"Proof of Company Address",
   "description":"Provide three months of bills, such as water, electricity, telephone, cable TV, internet, or property tax. Alternatively, you can provide bank statements.",
   "of":"net.nanopay.crunch.document.Document",
@@ -95,7 +95,7 @@ p({
 // update description to say cpf instead of identification
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"8ad3c898-db32-11ea-87d0-0242ac130003",
+  "id":"crunch.onboarding.document.identification",
   "name":"Identification",
   "description":"""
     Provide a copy of a piece of government issued identification which shows your full name, picture, and CPF number.

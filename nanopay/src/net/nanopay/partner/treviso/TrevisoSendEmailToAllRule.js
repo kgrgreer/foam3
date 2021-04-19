@@ -64,9 +64,9 @@ foam.CLASS({
           UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
           Business business = (Business) ucj.findSourceId(x);
           List<String> uniqueEmails = new ArrayList<String>();
-          String soCapId = "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5";
+          String soCapId = "crunch.onboarding.signing-officer-information";
           String ownerCapId = "554af38a-8225-87c8-dfdf-eeb15f71215f-7-br";
-          String directorCapId = "554af38a-8225-87c8-dfdf-eeb15f71215f-6-5";
+          String directorCapId = "crunch.onboarding.business-directors";
 
           // find all signingofficers of the business and send email to signing officers whose hasSignedContratosDeCambio is true
           List<UserCapabilityJunction> sopJunctions = ((ArraySink) userCapabilityJunctionDAO.where(AND(

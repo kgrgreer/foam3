@@ -457,7 +457,7 @@ p({
   "version":"0",
   "visibilityPredicate":  {
     "class": "foam.nanos.crunch.predicate.CapabilityGranted",
-    "capabilityId": "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
+    "capabilityId": "crunch.onboarding.signing-officer-information",
     "subjectFromUCJ": false
   },
   "enabled":true,
@@ -533,7 +533,7 @@ p({
       },
       {
         "class":"foam.nanos.crunch.predicate.CapabilityGranted",
-        "capabilityId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5"
+        "capabilityId":"crunch.onboarding.signing-officer-information"
       }
     ]
   },

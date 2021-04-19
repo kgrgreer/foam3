@@ -126,7 +126,7 @@ myAdmin = (User)  smeUserRegistrationDAO.put(myAdmin);
 myAdmin.setEmailVerified(true);
 myAdmin = (User) localUserDAO.put(myAdmin);
 
-// nanopay admission : 554af38a-8225-87c8-dfdf-eeb15f71215e-18
+// nanopay admission : crunch.onboarding.general-admission
 
 AbliiTermsAndConditions tc1 = new AbliiTermsAndConditions();
 tc1.setAgreement(true);
@@ -148,19 +148,19 @@ tc3.setLastName("Filth"); //64
 tc3.setPhoneNumber("123123123");
 UserCapabilityJunction ucjURD = new UserCapabilityJunction();
 ucjURD.setSourceId(myAdmin.getId());
-ucjURD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215e-19");
+ucjURD.setTargetId("crunch.onboarding.user-registration");
 ucjURD.setData(tc3);
 
 UserCapabilityJunction ucjAC = new UserCapabilityJunction();
 ucjAC.setSourceId(myAdmin.getId());
-ucjAC.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215e-18"); // use 242B00F8-C775-4899-AEBA-F287EC54E901 for treviso
+ucjAC.setTargetId("crunch.onboarding.general-admission"); // use crunch.onboarding.treviso.general-admission for treviso
 
 userCapabilityJunctionDAO.put(ucjATAC);
 userCapabilityJunctionDAO.put(ucjAPP);
 userCapabilityJunctionDAO.put(ucjURD);
 userCapabilityJunctionDAO.put(ucjAC);
 
-// Business Registration : 554af38a-8225-87c8-dfdf-eeb15f71215f-76
+// Business Registration : crunch.onboarding.register-business
 X myAdminContext = Auth.sudo(x, myAdmin);
 Session sessionAdmin = myAdminContext.get(Session.class);
 sessionAdmin.setAgentId(myAdmin.getId());
@@ -182,14 +182,14 @@ br.setAddress(address);
 br.setMailingAddress(address);
 UserCapabilityJunction ucjBR = new UserCapabilityJunction();
 ucjBR.setSourceId(myAdmin.getId());
-ucjBR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-76");
+ucjBR.setTargetId("crunch.onboarding.register-business");
 ucjBR.setData(br);
 
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBR);
 
 ucjBR = new UserCapabilityJunction();
 ucjBR.setSourceId(myAdmin.getId());
-ucjBR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-76.submit");
+ucjBR.setTargetId("crunch.onboarding.register-business.submit");
 ucjBR.setData(new BooleanHolder.Builder(myAdminContext)
   .setValue(true)
   .build());
@@ -251,13 +251,13 @@ myEmployeeContext = sessionEmployee.applyTo(myEmployeeContext);
 
 // Grant Approver Signing Officer Privileges Capability
 
-// Signing Officer Question : 554af38a-8225-87c8-dfdf-eeb15f71215f-0
+// Signing Officer Question : crunch.onboarding.signing-officer-question
 SigningOfficerQuestion soq = new SigningOfficerQuestion();
 soq.setIsSigningOfficer(true);
 AgentCapabilityJunction ucjSOQ = new AgentCapabilityJunction();
 ucjSOQ.setSourceId(myApprover.getId());
 ucjSOQ.setEffectiveUser(myBusiness.getId());
-ucjSOQ.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-0");
+ucjSOQ.setTargetId("crunch.onboarding.signing-officer-question");
 ucjSOQ.setData(soq);
 userCapabilityJunctionDAO.put(ucjSOQ);
 
@@ -269,7 +269,7 @@ ucjPPD.setTargetId("testCorridorCapability");
 ucjPPD.setStatus(CapabilityJunctionStatus.GRANTED);
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjPPD);
 
-// Signing Officer Privileges : 554af38a-8225-87c8-dfdf-eeb15f71215f-1a5
+// Signing Officer Privileges : crunch.onboarding.signing-officer-information
 UserBirthDateData so1 = new UserBirthDateData();
 so1.setBirthday(birthday);
 AgentCapabilityJunction ucjSODOB = new AgentCapabilityJunction();
@@ -284,7 +284,7 @@ so.setPhoneNumber("2899998989");
 AgentCapabilityJunction ucjSOP = new AgentCapabilityJunction();
 ucjSOP.setSourceId(myApprover.getId());
 ucjSOP.setEffectiveUser(myBusiness.getId());
-ucjSOP.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-1a5");
+ucjSOP.setTargetId("crunch.onboarding.signing-officer-information");
 ucjSOP.setData(so);
 userCapabilityJunctionDAO.inX(myApproverContext).put(ucjSODOB);
 userCapabilityJunctionDAO.inX(myApproverContext).put(ucjSOP);
@@ -296,10 +296,10 @@ sessionAdmin = myAdminContext.get(Session.class);
 sessionAdmin.setUserId(myBusiness.getId());
 myAdminContext = sessionAdmin.applyTo(myAdminContext);
 
-// Unlock Domestic Payments and Invoicing : 554af38a-8225-87c8-dfdf-eeb15f71215f-11
+// Unlock Domestic Payments and Invoicing : crunch.onboarding.unlock-ca-ca-payments
 UserCapabilityJunction ucjUDPAI = new UserCapabilityJunction();
 ucjUDPAI.setSourceId(myBusiness.getId());
-ucjUDPAI.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-11");
+ucjUDPAI.setTargetId("crunch.onboarding.unlock-ca-ca-payments");
 // removed line below
 // setting this to Granted manually will cause ucj to bypass setUCJStatusOnPut rule
 // which finds the ucjs status as a result of its chainedStatus
@@ -307,7 +307,7 @@ ucjUDPAI.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-11");
 // ucjUDPAI.setStatus(CapabilityJunctionStatus.GRANTED);
 userCapabilityJunctionDAO.inX(x).put(ucjUDPAI);
 
-// Business Details : 554af38a-8225-87c8-dfdf-eeb15f71215f-4
+// Business Details : crunch.onboarding.business-information
 BusinessInformationData bid = new BusinessInformationData();
 bid.setBusinessTypeId(3);
 bid.setBusinessSectorId(21211);
@@ -316,11 +316,11 @@ bid.setOperatingUnderDifferentName(false);
 
 UserCapabilityJunction ucjBD = new UserCapabilityJunction();
 ucjBD.setSourceId(myBusiness.getId());
-ucjBD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-4");
+ucjBD.setTargetId("crunch.onboarding.business-information");
 ucjBD.setData(bid);
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBD);
 
-// Transaction Details : 554af38a-8225-87c8-dfdf-eeb15f71215f-6
+// Transaction Details : crunch.onboarding.transaction-details
 SuggestedUserTransactionInfo suti = new SuggestedUserTransactionInfo();
 suti.setBaseCurrency("CAD");
 suti.setAnnualRevenue("$0 to $10,000");
@@ -334,11 +334,11 @@ tdd.setSuggestedUserTransactionInfo(suti);
 
 UserCapabilityJunction ucjTD = new UserCapabilityJunction();
 ucjTD.setSourceId(myBusiness.getId());
-ucjTD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-6");
+ucjTD.setTargetId("crunch.onboarding.transaction-details");
 ucjTD.setData(tdd);
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjTD);
 
-// Business ownership : 554af38a-8225-87c8-dfdf-eeb15f71215f-7
+// Business ownership : crunch.onboarding.minmax.business-ownership
 BeneficialOwner bo = new BeneficialOwner();
 bo.setFirstName("Francis");
 bo.setLastName("Filth");
@@ -354,17 +354,17 @@ BusinessOwnershipData bod = new BusinessOwnershipData.Builder(myAdminContext)
   .setOwners(new BeneficialOwner[]{bo})
   .build();
 MinMaxCapabilityData bodSelection = new MinMaxCapabilityData.Builder(x)
-  .setSelectedData(new String[]{"554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired"})
+  .setSelectedData(new String[]{"crunch.onboarding.business-ownership"})
   .build();
 
 UserCapabilityJunction ucjBODRR = new UserCapabilityJunction();
 ucjBODRR.setSourceId(myBusiness.getId());
-ucjBODRR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired");
+ucjBODRR.setTargetId("crunch.onboarding.business-ownership");
 ucjBODRR.setData(bod);
 ucjBODRR = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBODRR);
 UserCapabilityJunction ucjBOD = new UserCapabilityJunction();
 ucjBOD.setSourceId(myBusiness.getId());
-ucjBOD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-7");
+ucjBOD.setTargetId("crunch.onboarding.minmax.business-ownership");
 ucjBOD.setData(bodSelection);
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBOD);
 
@@ -378,7 +378,7 @@ ucjCOP.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215e-12");
 ucjCOP.setData(cop);
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCOP);
 
-// Business Directors Data : 554af38a-8225-87c8-dfdf-eeb15f71215f-6-5
+// Business Directors Data : crunch.onboarding.business-directors
   BusinessDirector bd = new BusinessDirector();
   bd.setFirstName("Francis");
   bd.setLastName("Filth");
@@ -390,7 +390,7 @@ userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCOP);
 
   UserCapabilityJunction ucjBDD = new UserCapabilityJunction();
   ucjBDD.setSourceId(myBusiness.getId());
-  ucjBDD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-6-5");
+  ucjBDD.setTargetId("crunch.onboarding.business-directors");
   ucjBDD.setData(bdd);
   ucjBDD = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBDD);
 
@@ -414,13 +414,13 @@ ucjDPAC.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215e-3");
 ucjDPAC.setData(dpac);
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjDPAC);
 
-// Certify Data Reviewed : 554af38a-8225-87c8-dfdf-eeb15f71215f-14
+// Certify Data Reviewed : crunch.onboarding.certify-data-reviewed
 CertifyDataReviewed cdr = new CertifyDataReviewed();
 cdr.setReviewed(true);
 
 UserCapabilityJunction ucjCDR = new UserCapabilityJunction();
 ucjCDR.setSourceId(myBusiness.getId());
-ucjCDR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-14");
+ucjCDR.setTargetId("crunch.onboarding.certify-data-reviewed");
 ucjCDR.setData(cdr);
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCDR);
 
@@ -495,21 +495,21 @@ for ( ApprovalRequest approvalRequest : approvalRequests ) {
 }
 
 Predicate ucjBDDPredicate = foam.mlang.MLang.AND(
-  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-6-5"),
+  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "crunch.onboarding.business-directors"),
   foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())
 );
 
 ucjBDD = UCJTestingUtility.fetchJunctionPeriodically(x, CapabilityJunctionStatus.GRANTED, ucjBDDPredicate, 5, defaultMillis, isDebuggingOn, "ucjBDD");
 
 Predicate ucjBODRRPredicate = foam.mlang.MLang.AND(
-  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID,"554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired"),
+  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID,"crunch.onboarding.business-ownership"),
   foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())
 );
 
 ucjBODRR = UCJTestingUtility.fetchJunctionPeriodically(x, CapabilityJunctionStatus.GRANTED, ucjBODRRPredicate, 5, defaultMillis, isDebuggingOn, "ucjBODRR");
 
 Predicate ucjSOPPredicate = foam.mlang.MLang.AND(
-  foam.mlang.MLang.EQ(AgentCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5"),
+  foam.mlang.MLang.EQ(AgentCapabilityJunction.TARGET_ID, "crunch.onboarding.signing-officer-information"),
   foam.mlang.MLang.EQ(AgentCapabilityJunction.SOURCE_ID, myApprover.getId()),
   foam.mlang.MLang.EQ(AgentCapabilityJunction.EFFECTIVE_USER, myBusiness.getId())
 );
@@ -544,7 +544,7 @@ for ( ApprovalRequest approvalRequest : approvalRequests ) {
   */
 
 Predicate ucjCDRPredicate = foam.mlang.MLang.AND(
-  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-14"),
+  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "crunch.onboarding.certify-data-reviewed"),
   foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId()));
 
 ucjCDR = UCJTestingUtility.fetchJunctionPeriodically(x, CapabilityJunctionStatus.GRANTED, ucjCDRPredicate, defaultLoops, defaultMillis, isDebuggingOn, "ucjCDR");
@@ -563,21 +563,21 @@ Predicate ucjCDLPredicate = foam.mlang.MLang.AND(
 ucjCDL = UCJTestingUtility.fetchJunctionPeriodically(x, CapabilityJunctionStatus.GRANTED, ucjCDLPredicate, defaultLoops, defaultMillis, isDebuggingOn, "ucjCDL");
 
 Predicate ucjBDPredicate = foam.mlang.MLang.AND(
-  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-4"),
+  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "crunch.onboarding.business-information"),
   foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())
 );
 
 ucjBD = UCJTestingUtility.fetchJunctionPeriodically(x, CapabilityJunctionStatus.GRANTED, ucjBDPredicate, defaultLoops, defaultMillis, isDebuggingOn, "ucjBD");
 
 Predicate ucjTDPredicate = foam.mlang.MLang.AND(
-  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-6"),
+  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "crunch.onboarding.transaction-details"),
   foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())
 );
 
 ucjTD = UCJTestingUtility.fetchJunctionPeriodically(x, CapabilityJunctionStatus.GRANTED, ucjTDPredicate, defaultLoops, defaultMillis, isDebuggingOn, "ucjTD");
 
 Predicate ucjBODPredicate = foam.mlang.MLang.AND(
-  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-7"),
+  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "crunch.onboarding.minmax.business-ownership"),
   foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())
 );
 
@@ -598,7 +598,7 @@ Predicate ucjABAPredicate = foam.mlang.MLang.AND(
 ucjABA = UCJTestingUtility.fetchJunctionPeriodically(x, CapabilityJunctionStatus.GRANTED, ucjABAPredicate, defaultLoops, defaultMillis, isDebuggingOn, "ucjABA");
 
 Predicate ucjUDPAIPredicate = foam.mlang.MLang.AND(
-  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-11"),
+  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "crunch.onboarding.unlock-ca-ca-payments"),
   foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())
 );
 
