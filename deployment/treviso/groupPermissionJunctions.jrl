@@ -18,10 +18,10 @@ p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",
 
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.br.international-payments"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.signing-officer-information"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.554af38a-8225-87c8-dfdf-eeb15f71215e-10"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.acceptance-document.afex-terms-and-conditions"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.br.brazil-onboarding"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.payment.source.country.br"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.554af38a-8225-87c8-dfdf-eeb15f71215e-10"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.acceptance-document.afex-terms-and-conditions"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.document.date-of-issue"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.user-birth-date"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.transaction-details"})

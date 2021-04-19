@@ -873,7 +873,7 @@ foam.CLASS({
     {
       name: '_554af38a_8225_87c8_dfdf_eeb15f71215e_8',
       code: async function(x, user) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215e-8';
+        var id = 'crunch.acceptance-document.ablii-privacy-policy';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -889,7 +889,7 @@ foam.CLASS({
     {
       name: '_554af38a_8225_87c8_dfdf_eeb15f71215e_7',
       code: async function(x, user) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215e-7';
+        var id = 'crunch.acceptance-document.ablii-terms-and-conditions';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -1055,7 +1055,7 @@ foam.CLASS({
     {
       name: '_554af38a_8225_87c8_dfdf_eeb15f71215e_17',
       code: async function(x, business) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215e-17';
+        var id = 'crunch.acceptance-document.certify-directors-list';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -1088,7 +1088,7 @@ foam.CLASS({
     {
       name: '_554af38a_8225_87c8_dfdf_eeb15f71215e_12',
       code: async function(x, business) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215e-12';
+        var id = 'crunch.acceptance-document.certify-owners-percent';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -1119,7 +1119,7 @@ foam.CLASS({
     {
       name: '_554af38a_8225_87c8_dfdf_eeb15f71215e_10',
       code: async function(x) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215e-10';
+        var id = 'crunch.acceptance-document.afex-terms-and-conditions';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {

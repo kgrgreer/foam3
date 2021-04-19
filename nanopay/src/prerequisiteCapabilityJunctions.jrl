@@ -28,7 +28,7 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"crunch.onboarding.unlock-ca-ca-payments",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-12",
+  "targetId":"crunch.acceptance-document.certify-owners-percent",
   "priority":6
 })
 p({
@@ -40,13 +40,13 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"crunch.onboarding.unlock-ca-ca-payments",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-17",
+  "targetId":"crunch.acceptance-document.certify-directors-list",
   "priority":8
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"crunch.onboarding.unlock-ca-ca-payments",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-3",
+  "targetId":"crunch.acceptance-document.dual-party-agreement-cad",
   "priority":9
 })
 p({
@@ -57,7 +57,7 @@ p({
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215e-12",
+  "sourceId":"crunch.acceptance-document.certify-owners-percent",
   "targetId":"crunch.onboarding.minmax.business-ownership"
 })
 
@@ -74,7 +74,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215e-17",
+  "sourceId":"crunch.acceptance-document.certify-directors-list",
   "targetId":"crunch.onboarding.business-directors"
 })
 
@@ -100,7 +100,7 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"crunch.onboarding.unlock-us-payments",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-17",
+  "targetId":"crunch.acceptance-document.certify-directors-list",
   "priority":7
 })
 p({
@@ -112,19 +112,19 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"crunch.onboarding.unlock-us-payments",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-12",
+  "targetId":"crunch.acceptance-document.certify-owners-percent",
   "priority":9
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"crunch.onboarding.unlock-us-payments",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-10",
+  "targetId":"crunch.acceptance-document.afex-terms-and-conditions",
   "priority":10
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"crunch.onboarding.unlock-us-payments",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-11",
+  "targetId":"crunch.acceptance-document.international-payments-agreement",
   "priority":11
 })
 p({
@@ -145,13 +145,13 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"crunch.onboarding.unlock-ca-international-payments",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-11",
+  "targetId":"crunch.acceptance-document.international-payments-agreement",
   "priority":3
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"crunch.onboarding.unlock-ca-international-payments",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-9",
+  "targetId":"crunch.acceptance-document.cad-afex-terms",
   "priority":4
 })
 p({
@@ -182,7 +182,7 @@ p({
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215e-17",
+  "sourceId":"crunch.acceptance-document.certify-directors-list",
   "targetId":"crunch.onboarding.certify-data-reviewed",
   "priority":6
 })
@@ -198,44 +198,44 @@ p({
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215e-12",
+  "sourceId":"crunch.acceptance-document.certify-owners-percent",
   "targetId":"crunch.onboarding.certify-data-reviewed",
   "priority":7
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215e-3",
+  "sourceId":"crunch.acceptance-document.dual-party-agreement-cad",
   "targetId":"crunch.onboarding.certify-data-reviewed",
   "priority":8
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215e-9",
+  "sourceId":"crunch.acceptance-document.cad-afex-terms",
   "targetId":"crunch.onboarding.certify-data-reviewed",
   "priority":9
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215e-10",
+  "sourceId":"crunch.acceptance-document.afex-terms-and-conditions",
   "targetId":"crunch.onboarding.certify-data-reviewed",
   "priority":10
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215e-11",
+  "sourceId":"crunch.acceptance-document.international-payments-agreement",
   "targetId":"crunch.onboarding.certify-data-reviewed",
   "priority":11
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"crunch.onboarding.general-admission",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-7",
+  "targetId":"crunch.acceptance-document.ablii-terms-and-conditions",
   "priority":1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"crunch.onboarding.general-admission",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-8",
+  "targetId":"crunch.acceptance-document.ablii-privacy-policy",
   "priority":2
 })
 p({
@@ -305,7 +305,7 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"crunch.onboarding.br.brazil-onboarding",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-10",
+  "targetId":"crunch.acceptance-document.afex-terms-and-conditions",
   "priority":10
 })
 p({
@@ -735,19 +735,19 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"crunch.onboarding.parent.api.simple-user-onboarding",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-8",
+  "targetId":"crunch.acceptance-document.ablii-privacy-policy",
   "priority": 2
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"crunch.onboarding.parent.api.simple-user-onboarding",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-7",
+  "targetId":"crunch.acceptance-document.ablii-terms-and-conditions",
   "priority": 2
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"crunch.onboarding.parent.api.simple-user-onboarding",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-20",
+  "targetId":"crunch.acceptance-document.ca-account-authorization-agreement",
   "priority": 3
 })
 
@@ -873,42 +873,42 @@ p({
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"67d9a3c7-6243-4b80-a8a9-9fe0c05db6d0",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-13",
+  "sourceId":"crunch.acceptance-document.ca-pad-capture",
+  "targetId":"crunch.acceptance-document.certify-account-ownership",
   "priority":6
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"67d9a3c7-6243-4b80-a8a9-9fe0c05db6d0",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-20",
+  "sourceId":"crunch.acceptance-document.ca-pad-capture",
+  "targetId":"crunch.acceptance-document.ca-account-authorization-agreement",
   "priority":6
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"67d9a3c7-6243-4b80-a8a9-9fe0c05db6d0",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-21",
+  "sourceId":"crunch.acceptance-document.ca-pad-capture",
+  "targetId":"crunch.acceptance-document.recourse-agreement",
   "priority":6
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"67d9a3c7-6243-4b80-a8a9-9fe0c05db6d0",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-22",
+  "sourceId":"crunch.acceptance-document.ca-pad-capture",
+  "targetId":"crunch.acceptance-document.ca-cancellation-agreement",
   "priority":6
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"e9e1567f-ef12-4c4e-b8c2-fa614a177adb",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-23",
+  "sourceId":"crunch.acceptance-document.us-pad-capture",
+  "targetId":"crunch.acceptance-document.us-account-authorization-agreement",
   "priority":6
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"e9e1567f-ef12-4c4e-b8c2-fa614a177adb",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-24",
+  "sourceId":"crunch.acceptance-document.us-pad-capture",
+  "targetId":"crunch.acceptance-document.us-cancellation-agreement",
   "priority":6
 })

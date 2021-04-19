@@ -132,14 +132,14 @@ AbliiTermsAndConditions tc1 = new AbliiTermsAndConditions();
 tc1.setAgreement(true);
 UserCapabilityJunction ucjATAC = new UserCapabilityJunction();
 ucjATAC.setSourceId(myAdmin.getId());
-ucjATAC.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215e-7");
+ucjATAC.setTargetId("crunch.acceptance-document.ablii-terms-and-conditions");
 ucjATAC.setData(tc1);
 
 AbliiPrivacyPolicy tc2 = new AbliiPrivacyPolicy();
 tc2.setAgreement(true);
 UserCapabilityJunction ucjAPP = new UserCapabilityJunction();
 ucjAPP.setSourceId(myAdmin.getId());
-ucjAPP.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215e-8");
+ucjAPP.setTargetId("crunch.acceptance-document.ablii-privacy-policy");
 ucjAPP.setData(tc2);
 
 UserRegistrationData tc3 = new UserRegistrationData();
@@ -368,13 +368,13 @@ ucjBOD.setTargetId("crunch.onboarding.minmax.business-ownership");
 ucjBOD.setData(bodSelection);
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBOD);
 
-// Certify Owners Percent : 554af38a-8225-87c8-dfdf-eeb15f71215e-12
+// Certify Owners Percent : crunch.acceptance-document.certify-owners-percent
 CertifyOwnersPercent cop = new CertifyOwnersPercent();
 cop.setAgreement(true);
 
 UserCapabilityJunction ucjCOP = new UserCapabilityJunction();
 ucjCOP.setSourceId(myBusiness.getId());
-ucjCOP.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215e-12");
+ucjCOP.setTargetId("crunch.acceptance-document.certify-owners-percent");
 ucjCOP.setData(cop);
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCOP);
 
@@ -394,23 +394,23 @@ userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCOP);
   ucjBDD.setData(bdd);
   ucjBDD = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBDD);
 
-// Certify Directors Listed : 554af38a-8225-87c8-dfdf-eeb15f71215e-17
+// Certify Directors Listed : crunch.acceptance-document.certify-directors-list
 CertifyDirectorsListed cdl = new CertifyDirectorsListed();
 cdl.setAgreement(true);
 
 UserCapabilityJunction ucjCDL = new UserCapabilityJunction();
 ucjCDL.setSourceId(myBusiness.getId());
-ucjCDL.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215e-17");
+ucjCDL.setTargetId("crunch.acceptance-document.certify-directors-list");
 ucjCDL.setData(cdl);
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCDL);
 
-// Dual Party Agreement CAD : 554af38a-8225-87c8-dfdf-eeb15f71215e-3
+// Dual Party Agreement CAD : crunch.acceptance-document.dual-party-agreement-cad
 DualPartyAgreementCAD dpac = new DualPartyAgreementCAD();
 dpac.setAgreement(true);
 
 UserCapabilityJunction ucjDPAC = new UserCapabilityJunction();
 ucjDPAC.setSourceId(myBusiness.getId());
-ucjDPAC.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215e-3");
+ucjDPAC.setTargetId("crunch.acceptance-document.dual-party-agreement-cad");
 ucjDPAC.setData(dpac);
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjDPAC);
 
@@ -550,13 +550,13 @@ Predicate ucjCDRPredicate = foam.mlang.MLang.AND(
 ucjCDR = UCJTestingUtility.fetchJunctionPeriodically(x, CapabilityJunctionStatus.GRANTED, ucjCDRPredicate, defaultLoops, defaultMillis, isDebuggingOn, "ucjCDR");
 
 Predicate ucjCOPPredicate = foam.mlang.MLang.AND(
-  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215e-12"),
+  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "crunch.acceptance-document.certify-owners-percent"),
   foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId()));
 
 ucjCOP = UCJTestingUtility.fetchJunctionPeriodically(x, CapabilityJunctionStatus.GRANTED, ucjCOPPredicate, defaultLoops, defaultMillis, isDebuggingOn, "ucjCOP");
 
 Predicate ucjCDLPredicate = foam.mlang.MLang.AND(
-  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215e-17"),
+  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "crunch.acceptance-document.certify-directors-list"),
   foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())
 );
 
@@ -584,7 +584,7 @@ Predicate ucjBODPredicate = foam.mlang.MLang.AND(
 ucjBOD = UCJTestingUtility.fetchJunctionPeriodically(x, CapabilityJunctionStatus.GRANTED, ucjBODPredicate, defaultLoops, defaultMillis, isDebuggingOn, "ucjBOD");
 
 Predicate ucjDPACPredicate = foam.mlang.MLang.AND(
-  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215e-3"),
+  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "crunch.acceptance-document.dual-party-agreement-cad"),
   foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())
 );
 

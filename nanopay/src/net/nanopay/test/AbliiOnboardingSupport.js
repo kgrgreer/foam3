@@ -860,7 +860,7 @@ foam.CLASS({
     {
       name: 'abliiPrivacyPolicy',
       code: async function(x, user) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215e-8';
+        var id = 'crunch.acceptance-document.ablii-privacy-policy';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -876,7 +876,7 @@ foam.CLASS({
     {
       name: 'abliiTermsAndConditions',
       code: async function(x, user) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215e-7';
+        var id = 'crunch.acceptance-document.ablii-terms-and-conditions';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -1053,7 +1053,7 @@ foam.CLASS({
       code: async function(x, business) {
         var id;
         var ucj;
-        id = '554af38a-8225-87c8-dfdf-eeb15f71215e-17';
+        id = 'crunch.acceptance-document.certify-directors-list';
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -1088,7 +1088,7 @@ foam.CLASS({
       code: async function(x, business) {
         var id;
         var ucj;
-        id = '554af38a-8225-87c8-dfdf-eeb15f71215e-12';
+        id = 'crunch.acceptance-document.certify-owners-percent';
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -1123,7 +1123,7 @@ foam.CLASS({
       code: async function(x) {
         var id;
         var ucj;
-        id = '554af38a-8225-87c8-dfdf-eeb15f71215e-10';
+        id = 'crunch.acceptance-document.afex-terms-and-conditions';
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
