@@ -434,7 +434,7 @@ foam.CLASS({
     }
   ],
   methods: [
-    async function initE() {
+    function initE() {
       var self = this;
       this.SUPER();
       this
@@ -586,7 +586,7 @@ foam.CLASS({
     {
       name: 'hasSubProperties',
       class: 'Boolean',
-      expression:function(subProperties) {
+      expression: function(subProperties) {
         if ( subProperties.length === 0 )
           return false;
         return true;
@@ -643,8 +643,7 @@ foam.CLASS({
       class: 'Boolean',
       value: false,
       postSet: function() {
-        var s = this.subColumnSelectConfig;
-        if ( s.length == 0 ) 
+        if ( this.subColumnSelectConfig.length == 0 ) 
           this.subColumnSelectConfig = this.returnSubColumnSelectConfig(this.subProperties, this.level, this.expanded);
       }
     },

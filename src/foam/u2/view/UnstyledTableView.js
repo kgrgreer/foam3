@@ -345,7 +345,7 @@ foam.CLASS({
           addClass(this.myClass('thead')).
           style({ 'min-width': this.tableWidth_$ }).
           show(this.showHeader$).
-          add(this.slot(async function(columns_) {
+          add(this.slot(function(columns_) {
             view.props = this.returnPropertiesForColumns(view, columns_);
             //check permission for properties
             view.props = this.returnAuthoruzidProperties(view.props)
@@ -725,9 +725,6 @@ foam.CLASS({
         return obj.columnConfigToPropertyConverter.returnPropertyColumnMappings(obj.of, propertyNamesToQuery);
       },
       function returnAuthoruzidProperties(arr) {
-        // const results = await Promise.all(arr.map( async p => p.property.hidden? false: ! p.property.readPermissionRequired || await this.auth.check(null,this.of.name.toLowerCase() + ".ro." + p.property.name)));
-        // return arr.filter((_v, index) => results[index]);
-
         let slotProps = arr.map( p => p.property.createPermissionFor(this.__subContext__, p.property));
         foam.core.ArraySlot.create({
           slots: slotProps
