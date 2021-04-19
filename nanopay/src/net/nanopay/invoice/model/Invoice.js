@@ -361,7 +361,6 @@ foam.CLASS({
       name: 'payee',
       label: 'Beneficiary',
       includeInDigest: true,
-      visibilityPermissionRequired: true,
       section: 'invoiceInformation',
       documentation: `Returns the name of the party receiving the payment from the
         Public User Info model.`,
