@@ -71,7 +71,7 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"supportUserDAO",
+  "name":"intuit.supportUserDAO",
   "serviceScript":
   """
     delegate = new foam.dao.FilteredDAO.Builder(x)
