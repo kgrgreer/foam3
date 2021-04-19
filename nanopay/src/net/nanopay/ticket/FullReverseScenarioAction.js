@@ -100,19 +100,6 @@ foam.CLASS({
         newRequest.setSourceCurrency(problem.getSourceCurrency());
         newRequest.setDestinationCurrency(summary.getSourceCurrency());
 
-        /*if ( ! SafetyUtil.isEmpty(summary.getChainSummary().getErrorCode()) ) {
-          DAO errorFeeDAO = (DAO) x.get("localErrorFeeDAO");
-          ErrorFee error = (ErrorFee) errorFeeDAO.find(summary.getChainSummary().getErrorCode());
-          if ( error != null ) {
-            FeeLineItem fee = new FeeLineItem();
-            fee.setAmount(error.getAmount());
-            fee.setFeeCurrency(error.getCurrency());
-            fee.setDestinationAccount(getFeeAccount());
-            fee.setSourceAccount(newRequest.getSourceAccount());
-            newRequest.addLineItems(new TransactionLineItem[]{fee});
-          }
-        }*/
-
         List<FeeLineItem> feeLineItemsAvaliable = findFeeLineItems(Arrays.asList(summary.getLineItems()));
         ticket.setFeeLineItemsAvaliable(feeLineItemsAvaliable.toArray(FeeLineItem[]::new));
 
