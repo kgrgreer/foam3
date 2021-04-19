@@ -226,85 +226,6 @@ p({
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
   "priority":11
 })
-
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"78dd1e83-c9ce-dd72-0a96-452cbaf6aec6",
-  "targetId":"afexf5c1-96f4-4192-917e-1c56937f9c42",
-  "priority":1
-})
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"6ee853b0-d5c1-08ee-579b-93d5af9cdb4c",
-  "targetId":"afexf5c1-96f4-4192-917e-1c56937f9c42",
-  "priority":1
-})
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"471a30a6-9d3c-bc9a-5dde-abebc7d79391",
-  "targetId":"afexf5c1-96f4-4192-917e-1c56937f9c42",
-  "priority":1
-})
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"916608ec-b11c-bc1c-e35c-c186d7590ec3",
-  "targetId":"alternaf-44c9-bf3c-3f5d-6b16762e2cdc",
-  "priority":1
-})
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"0b234c11-2ce3-fda7-1ff7-b113ca71bd77",
-  "targetId":"afx9f9c5-946e-701c-6dfc-4c9158b0ac06",
-  "priority":1
-})
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"0d357032-5f7b-94da-305d-ff1dbd158823",
-  "targetId":"afx9f9c5-946e-701c-6dfc-4c9158b0ac06",
-  "priority":1
-})
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"faa0d761-27e0-7a64-4c65-32a1a14264ea",
-  "targetId":"afx9f9c5-946e-701c-6dfc-4c9158b0ac06",
-  "priority":1
-})
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"8487ea7e-6f55-5324-879a-e2ff658fdbe7",
-  "targetId":"bmo9ea03-07c4-0499-8589-80c7691fe724",
-  "priority":1
-})
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"f2e80b24-c289-166f-4d51-31bd50badb73",
-  "targetId":"kotak9c3-4bf3-96d8-1368-b29e7de218ef",
-  "priority":1
-})
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"32a41e94-c603-2790-8654-1be498c662f4",
-  "targetId":"rbc0b7e5-b683-03cd-330a-b2f68a3bbb34",
-  "priority":1
-})
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"23d4e8bf-decb-01a4-b86e-fcfd53447653",
-  "targetId":"treviso48-9274-76d3-af1f-e800ea6945f6",
-  "priority":1
-})
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"dedb3ee4-6328-f436-3220-b9a31ac80d9b",
-  "targetId":"treviso48-9274-76d3-af1f-e800ea6945f6",
-  "priority":1
-})
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"dedb3ee4-6328-f436-3220-b9a31ac80d9b",
-  "targetId":"treviso48-9274-76d3-af1f-e800ea6945f6",
-  "priority":1
-})
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215e-18",
@@ -435,11 +356,27 @@ p({
   "priority":15
 })
 
-// BR Signing Officer to User Identity (Identification)
+// BR Signing Officer to Residence Consumption Bill (Utility bills)
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
+  "targetId":"85cee1de-db32-11ea-87d0-0242ac130003",
+  "predicate":{ "class":"net.nanopay.crunch.predicate.CheckUserCountry","country":"BR" },
+  "priority":2
+})
+
+// BR/US Signing Officer to User Identity (Identification)
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
   "targetId":"8ad3c898-db32-11ea-87d0-0242ac130003",
+  "predicate":{ 
+    "class":"foam.mlang.predicate.Or",
+    "args":[
+      { "class":"net.nanopay.crunch.predicate.CheckUserCountry","country":"BR" },
+      { "class":"net.nanopay.crunch.predicate.CheckUserCountry","country":"US" }
+    ]
+  },
   "priority":3
 })
 
@@ -452,8 +389,9 @@ p({
 // BR Signing Officer to CPF
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
   "targetId":"fb7d3ca2-62f2-4caf-a84c-860392e4676b",
+  "predicate":{ "class":"net.nanopay.crunch.predicate.CheckUserCountry","country":"BR" },
   "priority":1
 })
 
@@ -462,22 +400,14 @@ p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
   "targetId":"8bffdedc-5176-4843-97df-1b75ff6054fb",
+  "predicate":{ 
+    "class":"foam.mlang.predicate.Or",
+    "args":[
+      { "class":"net.nanopay.crunch.predicate.CheckUserCountry","country":"CA" },
+      { "class":"net.nanopay.crunch.predicate.CheckUserCountry","country":"US" }
+    ]
+  },
   "priority":5
-})
-
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5-us",
-  "targetId":"8bffdedc-5176-4843-97df-1b75ff6054fb",
-  "priority":5
-})
-
-// US sigining officer to User Identity (Identification)
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5-us",
-  "targetId":"8ad3c898-db32-11ea-87d0-0242ac130003",
-  "priority":3
 })
 
 // Prerequisites for apiUserBusinessOnboarding

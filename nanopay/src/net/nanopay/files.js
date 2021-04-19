@@ -1285,6 +1285,9 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/onboarding/ui/BeneficialOwnershipForm', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/UserTransactionEstimateForm', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/model/SuggestedUserTransactionInfo' },
+  { name: 'net/nanopay/sme/onboarding/model/AnnualRevenueEnum' },
+  { name: 'net/nanopay/sme/onboarding/model/AnnualTxnFrequencyEnum' },
+  { name: 'net/nanopay/sme/onboarding/model/TransactionsPurposeEnum' },
   { name: 'net/nanopay/sme/onboarding/BusinessOnboarding' },
   { name: 'net/nanopay/sme/onboarding/CanadaUsBusinessOnboarding' },
   { name: 'net/nanopay/sme/onboarding/USBusinessOnboarding' },
@@ -1777,6 +1780,8 @@ FOAM_FILES([
 
   // crunch onboarding only for treviso
   { name: 'net/nanopay/partner/treviso/TrevisoBusinessAccountData' },
+  { name: 'net/nanopay/partner/treviso/BusinessFundingEnum' },
+  { name: 'net/nanopay/partner/treviso/PrimaryCapitalSourceEnum' },
   { name: 'net/nanopay/partner/treviso/TrevisoCurrencyAmountInformation' },
 
   //Reporing
@@ -1939,6 +1944,10 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllRule' },
   { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllNotification' },
   { name: 'net/nanopay/partner/treviso/invoice/TrevisoNotification' },
+  { name: 'net/nanopay/partner/treviso/fx/EnfoqueResponse' },
+  { name: 'net/nanopay/partner/treviso/fx/Cotacoes' },
+  { name: 'net/nanopay/partner/treviso/fx/TrevisoFXService' },
+  { name: 'net/nanopay/partner/treviso/fx/TrevisoFXServiceMock' },
 
   // bepay
   { name: 'net/nanopay/partner/bepay/tx/BePayTransaction' },

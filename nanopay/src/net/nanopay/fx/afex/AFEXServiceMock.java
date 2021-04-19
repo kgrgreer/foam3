@@ -111,6 +111,9 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
     } else if ( request.getCurrencyPair().equals("USDCAD") ) {
       quote.setTerms("A");
       quote.setRate(1.34);
+    } else {
+      quote.setTerms("A");
+      quote.setRate(1.0);
     }
     return quote;
   }

@@ -182,7 +182,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         .uri(new URI(credentials.getPartnerApi() + "api/v1/AccountCreate"))
         .POST(HttpRequest.BodyPublishers.ofString(requestJson.toString()))
         .header("Content-Type", "application/json")
-        .headers("Authorization", "bearer " + getToken(spid).getAccess_token())
+        .header("Authorization", "bearer " + getToken(spid).getAccess_token())
         .header("API-Key", credentials.getApiKey())
         .build();
       logMessage(credentials.getApiKey(), requestLabel, requestJson, false);

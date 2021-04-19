@@ -31,6 +31,9 @@ import net.nanopay.model.Business;
 import net.nanopay.model.PersonalIdentification;
 import net.nanopay.payment.Institution;
 import net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo;
+import net.nanopay.sme.onboarding.model.AnnualRevenueEnum;
+import net.nanopay.sme.onboarding.model.TransactionsPurposeEnum;
+import net.nanopay.sme.onboarding.model.AnnualTxnFrequencyEnum;
 import foam.nanos.auth.LanguageId;
 
 public class AFEXServiceProviderTest
@@ -165,8 +168,11 @@ public class AFEXServiceProviderTest
       business.setBusinessTypeId(1);
       SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
       suggestedUserTransactionInfo.setBaseCurrency("CAD");
-      suggestedUserTransactionInfo.setAnnualDomesticVolume("$2000");
       suggestedUserTransactionInfo.setAnnualDomesticTransactionAmount("N/A");
+      suggestedUserTransactionInfo.setAnnualRevEnum(AnnualRevenueEnum.LESS_THAN_10000);
+      suggestedUserTransactionInfo.setTransactionPurposeEnum(TransactionsPurposeEnum.PAYABLES_PRODUCTS_SERVICES);
+      suggestedUserTransactionInfo.setAnnualTransactionFrequencyEnum(AnnualTxnFrequencyEnum.LESS_THAN_100);
+      suggestedUserTransactionInfo.setAnnualDomesticVolumeEnum(AnnualRevenueEnum.LESS_THAN_10000);
       business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
       business.setBusinessSectorId(81141);
 

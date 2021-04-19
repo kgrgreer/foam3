@@ -632,7 +632,7 @@ p({
 
       support.testSection = "SIGNING OFFICER DATA CAP";
       try {
-        await support.grantAll(x, '777af38a-8225-87c8-dfdf-eeb15f71215f-123', test);
+        await support.grantAll(x, '554af38a-8225-87c8-dfdf-eeb15f71215f-1a5', test);
       } catch(e){
         test(false, support.testSection+": "+e);
         print(e);
