@@ -35,6 +35,13 @@ foam.CLASS({
   imports: [
     'brazilVerificationService'
   ],
+  constants: [
+    {
+      name: 'CNPJ_LENGTH',
+      value: 14,
+      javaType: 'int'
+    }
+  ],
 
   sections: [
     {
@@ -93,46 +100,9 @@ foam.CLASS({
       tableCellFormatter: function(val) {
         return foam.String.applyFormat(val, 'xx.xxx.xxx/xxxx-xx');
       },
-      postSet: function(_,n) {
-        if ( n.length == 14 && this.verifyName !== true ) {
-          this.cnpjName = "";
-          this.getCNPJBusinessName(n).then((v) => {
-            this.cnpjName = v;
-          });
-        }
-        else {
-          this.cnpjName = "";
-          this.verifyName = false;
-        }
-      },
       view: function(_, X) {
-        return foam.u2.FragmentedTextField.create({
-          delegates: [
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cnpj.slice(0,2),
-              maxLength: 2
-            }),
-            '.',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cnpj.slice(2,5),
-              maxLength: 3
-            }),
-            '.',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cnpj.slice(5,8),
-              maxLength: 3
-            }),
-            '/',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cnpj.slice(8,12),
-              maxLength: 4
-            }),
-            '-',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cnpj.slice(12,14),
-              maxLength: 2
-            })
-          ]
+        return foam.u2.FormattedTextField.create({
+          formatter: [2, '.', 3, '.', 3, '/', 4, '-', 2]
         }, X);
       }
     },
@@ -194,19 +164,41 @@ foam.CLASS({
   ],
 
   methods: [
-    function installInWizardlet(w) {
-      // CNPJ takes longer to save, so re-load may clear new inputs
-      w.reloadAfterSave = false;
-    },
-    {
-      name: 'getCNPJBusinessName',
-      code:  async function(cnpj) {
-        return await this.brazilVerificationService.getCNPJName(this.__subContext__, cnpj);
-      }
-    },
     {
       name: 'validate',
       javaCode: `
+
+
+        var brazilVerificationService = (BrazilVerificationServiceInterface)
+          x.get("brazilVerificationService");
+
+        if ( ! ( brazilVerificationService instanceof NullBrazilVerificationService ) ) {
+          // IMPORTANT: Any fix here may also apply to CPF.js
+
+          // This should be valid before making API call
+          try {
+            if ( getCnpj() == null || getCnpj().length() != this.CNPJ_LENGTH ) {
+              throw new foam.core.ValidationException(NO_CNPJ);
+            }
+          } catch ( foam.core.ValidationException e ) {
+            this.setCnpjName("");
+            throw e;
+          }
+
+          var name = brazilVerificationService.getCNPJName(
+            x, getCnpj());
+
+          if ( SafetyUtil.isEmpty(name) ) {
+            setCnpjName("");
+            throw new foam.core.ValidationException(CNPJ_INVALID);
+          }
+
+          if ( ! SafetyUtil.equals(name, getCnpjName()) ) {
+            setCnpjName(name);
+            setVerifyName(false);
+          }
+        }
+
         if ( ! getVerifyName() ) {
           throw new foam.core.ValidationException(CNPJ_INVALID);
         }
@@ -214,6 +206,8 @@ foam.CLASS({
         if ( SafetyUtil.isEmpty(getNire()) ) {
           throw new foam.core.ValidationException(NO_NIRE);
         }
+
+        foam.core.FObject.super.validate(x);
       `
     }
   ]

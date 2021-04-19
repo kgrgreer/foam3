@@ -176,6 +176,7 @@ foam.CLASS({
     { name: 'BRANCH_ID_INVALID', message: 'Branch invalid' },
     { name: 'SWIFT_CODE_REQUIRED', message: 'SWIFT/BIC code required' },
     { name: 'SWIFT_CODE_INVALID', message: 'SWIFT/BIC code invalid' },
+    { name: 'SWIFT_CODE_VALIDATION_FAILED', message: 'SWIFT/BIC code validation failed' },
     { name: 'IBAN_REQUIRED', message: 'IBAN required' },
     { name: 'IBAN_INVALID', message: 'IBAN invalid' },
     { name: 'IBAN_INVALIDATION_FAILED', message: 'IBAN validation failed' },
@@ -234,7 +235,8 @@ foam.CLASS({
       order: 50,
       gridColumns: 6,
       view: {
-          class: 'foam.u2.view.StringView'
+        class: 'foam.u2.tag.Input',
+        onKey: true
       },
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
@@ -350,7 +352,11 @@ foam.CLASS({
         };
       },
       tableCellFormatter: function(value, obj, axiom) {
-        this.start('img').attr('src', value).end();
+        this.start('img')
+          .attr('src', value)
+          .attr('width', 34)
+          .attr('height', 20)
+        .end();
       }
     },
     {
@@ -362,7 +368,14 @@ foam.CLASS({
       gridColumns: 6,
       documentation: `International bank code that identifies banks worldwide. BIC/SWIFT`,
       updateVisibility: 'RO',
-      storageTransient: true
+      storageTransient: true,
+      view: {
+        class: 'foam.u2.tag.Input',
+        onKey: true
+      },
+      preSet: function(o, n) {
+        return /^\d*$/.test(n) ? n : o;
+      },
     },
     {
       class: 'String',
@@ -371,7 +384,14 @@ foam.CLASS({
       section: 'accountInformation',
       order: 130,
       gridColumns: 6,
-      storageTransient: true
+      storageTransient: true,
+      view: {
+        class: 'foam.u2.tag.Input',
+        onKey: true
+      },
+      preSet: function(o, n) {
+        return /^\d*$/.test(n) ? n : o;
+      },
     },
     {
       class: 'String',
@@ -843,6 +863,7 @@ foam.CLASS({
           name: 'x', type: 'Context'
         }
       ],
+      documentation: 'Get routing code from bank and branch codes. Only applicable when the bank account is saved. Otherwise, use getRoutingCode_() instead.',
       javaCode: `
         // Use bank and branch codes if present and fallback to bankRoutingCode.
         // The bankRoutingCode could be of the bank head office instead of the
@@ -850,6 +871,17 @@ foam.CLASS({
         var code = new StringBuilder();
         code.append(getBankCode(x))
             .append(getBranchCode(x));
+        return code.length() > 0 ? code.toString() : getBankRoutingCode();
+      `
+    },
+    {
+      name: 'getRoutingCode_',
+      type: 'String',
+      documentation: 'Get routing code from transient bank and branch codes before the bank account is saved.',
+      javaCode: `
+        var code = new StringBuilder();
+        code.append(getInstitutionNumber())
+            .append(getBranchId());
         return code.length() > 0 ? code.toString() : getBankRoutingCode();
       `
     },

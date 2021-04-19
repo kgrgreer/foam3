@@ -42,7 +42,7 @@ foam.CLASS({
         int numberGranted = 0;
 
         // Get list of prerequisite capability ids
-        List<String> prereqCapabilityIds = crunchService.getPrereqs(getId());
+        List<String> prereqCapabilityIds = crunchService.getPrereqs(x, getId(), ucj);
 
         // this is under the assumption that minmaxCapabilities should always have prerequisites
         // and that min is never less than 1

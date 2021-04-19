@@ -16,7 +16,7 @@ p({
   "service": {
     "class": "net.nanopay.partner.accuity.AccuityCredentials",
     "baseUrl": "https://apps.applyfinancial.co.uk",
-    "username": "nadir@nanopay.net",
+    "username": "paymentops@nanopay.net",
     "password": "NaPa0212!"
   }
 })

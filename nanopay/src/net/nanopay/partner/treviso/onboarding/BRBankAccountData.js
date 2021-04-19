@@ -20,13 +20,25 @@ foam.CLASS({
   name: 'BRBankAccountData',
 
   imports: [
-    'subject'
+    'subject',
+    'userDAO'
   ],
 
   requires: [
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.BRBankAccount'
+  ],
+
+  javaImports: [
+    'foam.core.X',
+    'foam.core.XLocator',
+    'foam.mlang.sink.Count',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+    'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.bank.BRBankAccount',
+    'static foam.mlang.MLang.*'
   ],
 
   implements: [
@@ -54,7 +66,20 @@ foam.CLASS({
       class: 'Boolean',
       name: 'hasBankAccount',
       visibility: 'HIDDEN',
-      value: false
+      value: false,
+      transient: true,
+      javaCloneProperty: '//noop',
+      javaGetter: `
+        X x = XLocator.get();
+        User owner = this.getBankAccount() != null ? this.getBankAccount().findOwner(x) :
+          ((Subject) x.get("subject")).getUser();
+
+        long verifiedAccounts = ((Count) owner.getAccounts(x).where(AND(
+            INSTANCE_OF(BRBankAccount.class),
+            EQ(BRBankAccount.STATUS, BankAccountStatus.VERIFIED)
+          )).select(new Count())).getValue();
+        return verifiedAccounts > 0;
+      `
     },
     {
       class: 'FObjectProperty',
@@ -89,15 +114,15 @@ foam.CLASS({
   ],
   methods: [
     async function init() {
-      var accounts = await this.subject.user.accounts
+      var user = ( await this.userDAO.find(this.bankAccount.owner) ) || this.subject.user;
+      var accounts = await user.accounts
           .where(this.AND(
             this.INSTANCE_OF(this.BRBankAccount),
             this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED),
           ))
           .select();
-      if ( accounts.array.length > 0 ) {
-        this.hasBankAccount = true;
-      }
+        this.hasBankAccount = accounts.array.length > 0;
+
       if ( this.bankAccount ) {
         this.bankAccount.copyFrom({ clientAccountInformationTitle: '' });
       }

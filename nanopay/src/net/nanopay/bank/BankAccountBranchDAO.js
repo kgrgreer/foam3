@@ -117,7 +117,7 @@ foam.CLASS({
             }
             bankAccount.setBranch(branch.getId());
           }
-          bankAccount = (BankAccount) super.put_(x, obj);
+          bankAccount = (BankAccount) super.put_(x, bankAccount);
           // REVIEW: Should only log error when the type of bank account require
           // institution but wasn't provided?
           String message = INST_NOT_SET_ERROR_MSG + bankAccount.getId();

@@ -34,9 +34,12 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.XLocator',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'foam.util.SafetyUtil',
+    'net.nanopay.country.br.BrazilVerificationServiceInterface'
   ],
 
   imports: [
@@ -44,9 +47,13 @@ foam.CLASS({
     'subject'
   ],
 
-  constants: {
-    CPF_LENGTH: 11
-  },
+  constants: [
+    {
+      name: 'CPF_LENGTH',
+      value: 11,
+      javaType: 'int'
+    }
+  ],
 
   messages: [
     { name: 'INVALID_CPF', message: 'Valid CPF number required' },
@@ -119,13 +126,15 @@ foam.CLASS({
           args: ['data', 'cpfName'],
           predicateFactory: function(e) {
             return e.AND(
-              e.GT(net.nanopay.country.br.CPF
-                .CPF_NAME, 0),
+              e.GT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.country.br.CPF.CPF_NAME
+                }), 0),
               e.EQ(
                 foam.mlang.StringLength.create({
                   arg1: net.nanopay.country.br.CPF.DATA
                 }), 11)
-              );
+            );
           },
           errorMessage: 'INVALID_CPF_CHECKED'
         }
@@ -134,28 +143,8 @@ foam.CLASS({
         return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
       },
       view: function(_, X) {
-        return foam.u2.FragmentedTextField.create({
-          delegates: [
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(0, 3),
-              maxLength: 3
-            }),
-            '.',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(3, 6),
-              maxLength: 3
-            }),
-            '.',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(6, 9),
-              maxLength: 3
-            }),
-            '-',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.data.slice(9, 11),
-              maxLength: 2
-            })
-          ]
+        return foam.u2.FormattedTextField.create({
+          formatter: [3, '.', 3, '.', 3, '-', 2]
         }, X);
       }
     },
@@ -197,20 +186,15 @@ foam.CLASS({
       hidden: true,
       factory: function() {
         return this.subject.realUser;
-      }
+      },
+      javaFactory: `
+        return ((Subject) XLocator.get().get("subject")).getRealUser().getId();
+      `
       // depricated but leaving for data migration - script to do this needed - then delete
     }
   ],
 
   methods: [
-    function init() {
-      this.onDetach(this.data$.sub(this.updateCPFName));
-      this.onDetach(this.birthday$.sub(this.updateCPFName));
-    },
-    function installInWizardlet(w) {
-      // CPF takes longer to save, so re-load may clear new inputs
-      w.reloadAfterSave = false;
-    },
     {
       name: 'clearFields',
       code: function() {
@@ -221,43 +205,42 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
+      var brazilVerificationService = (BrazilVerificationServiceInterface)
+        x.get("brazilVerificationService");
+
+      if ( ! ( brazilVerificationService instanceof NullBrazilVerificationService ) ) {
+        // IMPORTANT: Any fix here may also apply to BrazilBusinessInfoData.js
+
+        // These should be valid before making API call
+        try {
+          this.BIRTHDAY.validateObj(x, this);
+          if ( getData() == null || getData().length() != this.CPF_LENGTH ) {
+            throw new foam.core.ValidationException(INVALID_CPF);
+          }
+        } catch ( foam.core.ValidationException e ) {
+          this.setCpfName("");
+          throw e;
+        }
+
+        var name = brazilVerificationService.getCPFNameWithBirthDate(
+          x, getData(), getBirthday());
+
+        if ( SafetyUtil.isEmpty(name) ) {
+          setCpfName("");
+          throw new foam.core.ValidationException(INVALID_CPF_CHECKED);
+        }
+
+        if ( ! SafetyUtil.equals(name, getCpfName()) ) {
+          setCpfName(name);
+          setVerifyName(false);
+        }
+      }
+
       if ( ! getVerifyName() )
-          throw new foam.core.ValidationException(INVALID_CPF);
+          throw new foam.core.ValidationException(INVALID_NAME);
 
       foam.core.FObject.super.validate(x);
       `
-    }
-  ],
-
-  listeners: [
-    // CURRENT ISSUE: the api is getting called too many times
-    // we want the api to only get called if the birthday and data properties are set and valid
-    // initiallizing / cloning this model will trigger the copy of properties AND if the properties are set this will trigger a api call
-    // now if the cpfName is set we can avoid the api call - but a property change needs to reset the cpfName
-    // SO - listeners used in place of a property postSet to avoid initial call ... HMM 
-    {
-      name: 'updateCPFName',
-      mergeDelay: 100, // only run every 100ms, otherwise trigger too many calls
-      code: async function(o, n) {
-        try {
-          // goes with user deprication
-          if ( ! this.birthday && ! this.verifyName && this.data.length == 11 ) {
-            this.cpfName = await this.brazilVerificationService
-              .getCPFName(this.__subContext__, this.data, this.user);
-          }
-          // update cpfName if birthday and cpf are valid
-          if ( ! this.BIRTHDAY.validateObj[1].call(this) && ! this.verifyName && this.data.length == this.CPF_LENGTH ) {
-            this.cpfName = await this.brazilVerificationService
-                .getCPFNameWithBirthDate(this.__subContext__, this.data, this.birthday);
-            if ( ! this.cpfName ) this.clearFields();
-          } else {
-            this.clearFields();
-          }
-        } catch (e) {
-          this.clearFields();
-          console.error(e || 'failed Cpf update');
-        }
-      }
     }
   ]
 });

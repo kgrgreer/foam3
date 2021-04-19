@@ -17,9 +17,9 @@
 
 foam.CLASS({
   package: 'net.nanopay.bank.ruler',
-  name: 'SwiftBicCodeTranslation',
+  name: 'IbanToSwiftCodeTranslation',
 
-  documentation: 'Convert SWIFT/BIC code into bank info.',
+  documentation: 'Convert Iban to SWIFT/BIC code.',
 
   implements: [ 'foam.nanos.ruler.RuleAction' ],
 
@@ -34,21 +34,15 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        BankAccount account = (BankAccount) obj;
-        if ( ! SafetyUtil.isEmpty(account.getSwiftCode()) ) {
-          var bankAccountValidationService = (BankAccountValidationService) x.get("bankAccountValidationService");
-          try {
-            var routingCode = bankAccountValidationService.convertToRoutingCode(x,
-              account.getCountry(), account.getSwiftCode());
-
-            if ( ! SafetyUtil.isEmpty(routingCode) ) {
-              account.setBankRoutingCode(routingCode);
-            } else {
-              throw new ValidationException(BankAccount.SWIFT_CODE_INVALID);
-            }
-          } catch ( RuntimeException e ) {
-            throw new ValidationException(BankAccount.SWIFT_CODE_INVALID, e);
-          }
+        var account = (BankAccount) obj;
+        var bankAccountValidationService = (BankAccountValidationService) x.get("bankAccountValidationService");
+        try {
+          account.setSwiftCode(
+            bankAccountValidationService.convertToSwiftCode(x,
+              account.getCountry(), account.getIban())
+          );
+        } catch ( RuntimeException e ) {
+          throw new ValidationException(BankAccount.IBAN_INVALIDATION_FAILED, e);
         }
       `
     }

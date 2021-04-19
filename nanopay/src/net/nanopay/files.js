@@ -319,7 +319,9 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ruler/CorridorAuthorizationRule' },
   { name: 'net/nanopay/bank/ruler/VerifyBankRule' },
   { name: 'net/nanopay/bank/ruler/CapabilityAddBankAccountRule' },
-  { name: 'net/nanopay/bank/ruler/SwiftBicCodeTranslation' },
+  { name: 'net/nanopay/bank/ruler/BankInfoToIbanAndSwiftCodeTranslation' },
+  { name: 'net/nanopay/bank/ruler/IbanToSwiftCodeTranslation' },
+  { name: 'net/nanopay/bank/ruler/SwiftCodeToBankRoutingCodeTranslation' },
   { name: 'net/nanopay/country/br/ruler/BRBankAccountCapabilityOnGrantRule' },
 
   // fx
@@ -557,6 +559,19 @@ FOAM_FILES([
 
   //integration
   { name: 'net/nanopay/integration/ErrorCode' },
+
+  //Central Bank
+  { name: 'net/nanopay/settlement/MaldivianPlanner' },
+  { name: 'net/nanopay/settlement/SettlementTransaction' },
+  { name: 'net/nanopay/settlement/SettlementAccount' },
+  { name: 'net/nanopay/settlement/ReserveAccount' },
+  { name: 'net/nanopay/settlement/BankPlayAccount' },
+  { name: 'net/nanopay/settlement/GroupingAccount' },
+  { name: 'net/nanopay/settlement/BiLateralAccount' },
+  { name: 'net/nanopay/settlement/SettlementAccountBalanceComparator' },
+  { name: 'net/nanopay/settlement/SettlementDashboard' },
+  { name: 'net/nanopay/settlement/Settlement' },
+  { name: 'net/nanopay/settlement/SettlementTypes' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -1258,6 +1273,9 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/onboarding/ui/BeneficialOwnershipForm', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/ui/UserTransactionEstimateForm', flags: ['web'] },
   { name: 'net/nanopay/sme/onboarding/model/SuggestedUserTransactionInfo' },
+  { name: 'net/nanopay/sme/onboarding/model/AnnualRevenueEnum' },
+  { name: 'net/nanopay/sme/onboarding/model/AnnualTxnFrequencyEnum' },
+  { name: 'net/nanopay/sme/onboarding/model/TransactionsPurposeEnum' },
   { name: 'net/nanopay/sme/onboarding/BusinessOnboarding' },
   { name: 'net/nanopay/sme/onboarding/CanadaUsBusinessOnboarding' },
   { name: 'net/nanopay/sme/onboarding/USBusinessOnboarding' },
@@ -1734,6 +1752,8 @@ FOAM_FILES([
 
   // crunch onboarding only for treviso
   { name: 'net/nanopay/partner/treviso/TrevisoBusinessAccountData' },
+  { name: 'net/nanopay/partner/treviso/BusinessFundingEnum' },
+  { name: 'net/nanopay/partner/treviso/PrimaryCapitalSourceEnum' },
   { name: 'net/nanopay/partner/treviso/TrevisoCurrencyAmountInformation' },
 
   //Reporing
@@ -1896,6 +1916,10 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllRule' },
   { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllNotification' },
   { name: 'net/nanopay/partner/treviso/invoice/TrevisoNotification' },
+  { name: 'net/nanopay/partner/treviso/fx/EnfoqueResponse' },
+  { name: 'net/nanopay/partner/treviso/fx/Cotacoes' },
+  { name: 'net/nanopay/partner/treviso/fx/TrevisoFXService' },
+  { name: 'net/nanopay/partner/treviso/fx/TrevisoFXServiceMock' },
 
   // bepay
   { name: 'net/nanopay/partner/bepay/tx/BePayTransaction' },
@@ -1929,6 +1953,11 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/cron/OnboardingReminderNotification'},
   { name: 'net/nanopay/notification/PermissionedNotificationSettingRule'},
   { name: 'net/nanopay/sme/ruler/BusinessCompliancePassedEmailNotification'},
+  
+  // central bank
+  { name: 'net/nanopay/cb/commercial/Dashboard'},
+  { name: 'net/nanopay/cb/central/Dashboard'},
+  { name: 'net/nanopay/cb/BusinessDetailView', flags: ['web'] },
 
   //br business sector
   { name: 'net/nanopay/partner/br/businessSector/Sector' },

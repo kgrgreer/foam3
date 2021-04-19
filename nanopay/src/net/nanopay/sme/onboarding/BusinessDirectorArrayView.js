@@ -31,9 +31,7 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-     name: 'name'
-    }
+    'name'
   ],
 
   methods: [

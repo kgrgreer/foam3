@@ -22,11 +22,25 @@ foam.CLASS({
   documentation: `This model represents the basic info of a Business that must be collect for onboarding.`,
 
   messages: [
-    { name: 'INVALID_ADDRESS_ERROR', message: 'Invalid address' }
+    { name: 'INVALID_ADDRESS_ERROR', message: 'Invalid address' },
+    { name: 'BUSINESS_NAME_REQUIRED', message: 'Business name required' }
   ],
 
   properties: [
-    net.nanopay.model.Business.BUSINESS_NAME.clone().copyFrom(),
+    net.nanopay.model.Business.BUSINESS_NAME.clone().copyFrom({
+      validationPredicates: [
+        {
+          args: ['businessName'],
+          predicateFactory: function(e) {
+            return e.AND(
+              e.NEQ(net.nanopay.crunch.registration.BusinessDetailData.BUSINESS_NAME, null),
+              e.NEQ(net.nanopay.crunch.registration.BusinessDetailData.BUSINESS_NAME, ""));
+          },
+          errorString: 'Business name required.',
+          errorMessage: 'BUSINESS_NAME_REQUIRED'
+        }
+      ]
+    }),
     net.nanopay.model.Business.PHONE_NUMBER.clone().copyFrom(),
     net.nanopay.model.Business.ADDRESS.clone().copyFrom({
       autoValidate: false,

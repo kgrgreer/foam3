@@ -44,6 +44,14 @@ foam.CLASS({
     'java.util.Set'
   ],
 
+  constants: [
+    {
+      name: 'PRECISION',
+      type: 'int',
+      value: 4
+    }
+  ],
+
   methods: [
     {
       name: 'put_',
@@ -208,8 +216,8 @@ foam.CLASS({
           source = (Currency) currencyDAO.find(quote.getSourceUnit());
           destination = (Currency) currencyDAO.find(quote.getDestinationUnit());
         }
-        fxSummary.setRate(formatRate(fxRate, source, destination));
-        fxSummary.setInverseRate(formatRate(1.0 / fxRate, destination, source));
+        fxSummary.setRate(formatRate(fxRate, source, destination, PRECISION));
+        fxSummary.setInverseRate(formatRate(1.0 / fxRate, destination, source, PRECISION));
         txn.addLineItems(new TransactionLineItem[] { fxSummary });
 
         // Update txn amount/destinationAmount based on the final fxRate, if not already done so
@@ -280,14 +288,17 @@ foam.CLASS({
       args: [
         { name: 'rate', type: 'Double' },
         { name: 'sourceCurrency', type: 'Currency' },
-        { name: 'destinationCurrency', type: 'Currency' }
+        { name: 'destinationCurrency', type: 'Currency' },
+        { name: 'extraPrecision', type: 'int' }
       ],
       javaCode: `
         Double sourcePrecision = Math.pow(10, sourceCurrency.getPrecision());
+        destinationCurrency = (Currency)destinationCurrency.fclone();
+        destinationCurrency.setPrecision(destinationCurrency.getPrecision()+extraPrecision);
         Double destinationPrecision = Math.pow(10, destinationCurrency.getPrecision()) * rate;
         return sourceCurrency.format(sourcePrecision.longValue())
           + " " + sourceCurrency.getId()
-          + " : " + destinationCurrency.format(destinationPrecision.longValue())
+          + " : " + destinationCurrency.format(destinationPrecision.longValue()+extraPrecision)
           + " " + destinationCurrency.getId();
       `
     }
