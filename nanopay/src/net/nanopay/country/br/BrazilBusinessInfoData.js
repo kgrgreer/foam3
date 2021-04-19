@@ -100,6 +100,18 @@ foam.CLASS({
       tableCellFormatter: function(val) {
         return foam.String.applyFormat(val, 'xx.xxx.xxx/xxxx-xx');
       },
+      postSet: function(_,n) {
+        if ( n.length == 14 && this.verifyName !== true ) {
+          this.cnpjName = '';
+          this.getCNPJBusinessName(n).then((v) => {
+            this.cnpjName = v;
+          });
+        }
+        else {
+          this.cnpjName = '';
+          this.verifyName = false;
+        }
+      },
       view: function(_, X) {
         return foam.u2.FormattedTextField.create({
           formatter: [2, '.', 3, '.', 3, '/', 4, '-', 2]
@@ -164,6 +176,16 @@ foam.CLASS({
   ],
 
   methods: [
+    function installInWizardlet(w) {
+      // CNPJ takes longer to save, so re-load may clear new inputs
+      w.reloadAfterSave = false;
+    },
+    {
+      name: 'getCNPJBusinessName',
+      code:  async function(cnpj) {
+        return await this.brazilVerificationService.getCNPJName(this.__subContext__, cnpj);
+      }
+    },
     {
       name: 'validate',
       javaCode: `
