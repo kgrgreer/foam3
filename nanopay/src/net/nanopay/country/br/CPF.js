@@ -263,7 +263,7 @@ foam.CLASS({
       mergeDelay: 100, // only run every 100ms, otherwise trigger too many calls
       code: async function(o, n) {
         try {
-          var validCPF = this.DATA.validationPredicates[0].predicateFactory(this).f(this);
+          var validCPF = this.DATA.validationPredicates[0].predicate.f(this);
           // goes with user deprication
           if ( ! this.birthday && ! this.verifyName && validCPF ) {
             this.cpfName = await this.brazilVerificationService
