@@ -100,7 +100,7 @@ foam.CLASS({
         return foam.String.applyFormat(val, 'xx.xxx.xxx/xxxx-xx');
       },
       postSet: function(_,n) {
-        if ( n.length == 14 && this.verifyName !== true ) {
+        if ( this.CNPJ.validationPredicates[0].predicate.f(this) && this.verifyName !== true ) {
           this.cnpjName = '';
           this.getCNPJBusinessName(n).then((v) => {
             this.cnpjName = v;
