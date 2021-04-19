@@ -2,7 +2,7 @@ p({
   "class": "net.nanopay.country.br.exchange.BancoConfig",
   "id": 1,
   "currency": "USD",
-  "code": "999980147",
+  "code": "999983038",
   "spid": "treviso"
 })
 
@@ -10,7 +10,7 @@ p({
   "class": "net.nanopay.country.br.exchange.BancoConfig",
   "id": 2,
   "currency": "EUR",
-  "code": "999980148",
+  "code": "999983039",
   "spid": "treviso"
 })
 
@@ -18,6 +18,6 @@ p({
   "class": "net.nanopay.country.br.exchange.BancoConfig",
   "id": 3,
   "currency": "GBP",
-  "code": "999980149",
+  "code": "999983040",
   "spid": "treviso"
 })

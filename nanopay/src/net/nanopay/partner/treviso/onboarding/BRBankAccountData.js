@@ -68,11 +68,12 @@ foam.CLASS({
       visibility: 'HIDDEN',
       value: false,
       transient: true,
+      javaCloneProperty: '//noop',
       javaGetter: `
         X x = XLocator.get();
         User owner = this.getBankAccount() != null ? this.getBankAccount().findOwner(x) :
           ((Subject) x.get("subject")).getUser();
-        
+
         long verifiedAccounts = ((Count) owner.getAccounts(x).where(AND(
             INSTANCE_OF(BRBankAccount.class),
             EQ(BRBankAccount.STATUS, BankAccountStatus.VERIFIED)

@@ -181,7 +181,10 @@ foam.CLASS({
         if ( ! SafetyUtil.isEmpty(capitalSource_)  ) {
           capitalSourceIsSet_ = true;
           if ( ! capitalSourceEnumIsSet_ ) {
-            setCapitalSourceEnum(PrimaryCapitalSourceEnum.forLabel(capitalSource_));
+            var e = PrimaryCapitalSourceEnum.forLabel(capitalSource_);
+            if ( e != null ) {
+              setCapitalSourceEnum(e);
+            }
           }
         }
       `,
@@ -229,7 +232,10 @@ foam.CLASS({
         if ( ! SafetyUtil.isEmpty(capitalType_) ) {
           capitalTypeIsSet_ = true;
           if ( ! capitalTypeEnumIsSet_) {
-            setCapitalTypeEnum(BusinessFundingEnum.forLabel(capitalType_));
+            var e = BusinessFundingEnum.forLabel(capitalType_);
+            if ( e != null ) {
+              setCapitalTypeEnum(e);
+            }
           }
         }
       `,
