@@ -56,7 +56,6 @@ p({
     "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
     "invoice.ro.payer",
     "invoice.visibility,ro,payer"
-    p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"invoice.ro.*"})
   ]
 })
 
