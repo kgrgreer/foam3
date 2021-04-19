@@ -59,7 +59,7 @@ p({
           {
             "class":"foam.nanos.ruler.predicate.PropertyEQValue",
             "propName":"targetId",
-            "propValue":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D",
+            "propValue":"crunch.onboarding.br.international-payments",
           },
           {
             "class":"foam.nanos.ruler.predicate.PropertyEQValue",

@@ -1,42 +1,42 @@
 //Unlock International & Domestic Payments and Invoicing for Brazil
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "targetId":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode",
+  "targetId":"naturecode.br.requirement",
   "sourceId":"invoice.capable.treviso",
   "priority": 17
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "sourceId":"2910C2C9-3597-42A3-BF85-CFBC8F0E1388",
+  "targetId":"crunch.onboarding.br.brazil-onboarding",
+  "sourceId":"crunch.user-invoice",
   "priority": 2
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "targetId":"crunch.onboarding.br.cpf",
-  "sourceId":"2910C2C9-3597-42A3-BF85-CFBC8F0E1388",
+  "sourceId":"crunch.user-invoice",
   "priority": 1
 })
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "bf6a49d5-4027-4dac-a269-4d3ed070609e-4",
+  sourceId: "crunch.onboarding.br.parent.international-payments",
   targetId: "crunch.onboarding.signing-officer-information",
   precondition: true
 })
 
 p({
-  sourceId: "0B2E7305-B898-43F2-9C1B-63FB2CE38B2D",
+  sourceId: "crunch.onboarding.br.international-payments",
   targetId: "crunch.onboarding.signing-officer-information"
 })
 
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "0B2E7305-B898-43F2-9C1B-63FB2CE38B2D",
-  targetId: "05a663b8-2b48-11eb-adc1-0242ac120002"
+  sourceId: "crunch.onboarding.br.international-payments",
+  targetId: "crunch.onboarding.br.business-prerequisites"
 })
 
 // add prereq capability junctions needed for br unlock payments flow
@@ -88,7 +88,7 @@ p({
 // brazil onboarding
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
   "targetId":"crunch.onboarding.business-type-sector",
   "priority":3
 })

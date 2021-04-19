@@ -84,7 +84,7 @@ foam.CLASS({
     {
       name: 'trevisoTermsAndConditions',
       code: async function(x, user) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215e-25';
+        var id = 'crunch.onboarding.br.treviso-unlock-payments-terms';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -278,7 +278,7 @@ foam.CLASS({
         var id;
         var ucj;
 
-        id = '4c46cdb8-06b2-11eb-adc1-0242ac120002';
+        id = 'crunch.onboarding.br.nature-of-business';
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -349,7 +349,7 @@ foam.CLASS({
         var id;
         var ucj;
 
-        id = '9d4d667c-04c3-11eb-adc1-0242ac120002';
+        id = 'crunch.onboarding.br.currency-amount-information';
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -380,7 +380,7 @@ foam.CLASS({
       code: async function(x, business) {
         var id;
         var ucj;
-        id = 'af3d9c28-0674-11eb-adc1-0242ac120002';
+        id = 'crunch.onboarding.br.business-account';
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -466,7 +466,7 @@ foam.CLASS({
             let cap = net.nanopay.partner.treviso.onboarding.BRBankAccountData.create({
               hasBankAccount: true
             });
-            await this.crunchService.updateJunction(x, '7b41a164-29bd-11eb-adc1-0242ac120002', cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+            await this.crunchService.updateJunction(x, 'crunch.onboarding.br.add-bank-account', cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
           } catch (e) {
             this.sudoRestore(x);
             throw e;
@@ -481,7 +481,7 @@ foam.CLASS({
         var id;
         var ucj;
 
-        id = '554af38a-8225-87c8-dfdf-eeb15f71215f-49';
+        id = 'crunch.onboarding.br.brazil-onboarding';
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {

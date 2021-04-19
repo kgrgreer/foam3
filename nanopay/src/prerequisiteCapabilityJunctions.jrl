@@ -253,77 +253,77 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"crunch.onboarding.treviso.general-admission",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-25",
+  "targetId":"crunch.onboarding.br.treviso-unlock-payments-terms",
   "priority":3
 })
 
 // top-level Brazil Onboarding prerequisites
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"05a663b8-2b48-11eb-adc1-0242ac120002",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "sourceId":"crunch.onboarding.br.business-prerequisites",
+  "targetId":"crunch.onboarding.br.brazil-onboarding",
   "priority":3
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"05a663b8-2b48-11eb-adc1-0242ac120002",
-  "targetId":"7b41a164-29bd-11eb-adc1-0242ac120002",
+  "sourceId":"crunch.onboarding.br.business-prerequisites",
+  "targetId":"crunch.onboarding.br.add-bank-account",
   "priority":3
 })
 
 // prerequisites for Brazil Initial Onboarding
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
   "targetId":"crunch.onboarding.business-type-sector",
   "priority":3
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
   "targetId":"crunch.onboarding.transaction-details",
   "priority":5
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
   "targetId":"crunch.onboarding.business-directors",
   "priority":6
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
   "targetId":"crunch.onboarding.business-directors",
   "priority":7
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
   "targetId":"crunch.onboarding.br.business-ownership",
   "priority":8
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-10",
   "priority":10
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
   "targetId":"crunch.onboarding.certify-data-reviewed",
   "priority":12
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
   "targetId":"payment.source.country.br",
   "priority":12
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
   "targetId":"payment.target.country.br",
   "priority":13
 })
@@ -769,14 +769,14 @@ p({
 //brBusinessOnboarding
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
   "targetId":"crunch.onboarding.last-business-registration-date",
   "priority":3
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
   "targetId":"crunch.onboarding.business-incorporation-date",
   "priority":2
 })
@@ -784,29 +784,29 @@ p({
 //treviso extra
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  targetId: "9d4d667c-04c3-11eb-adc1-0242ac120002",
+  sourceId: "crunch.onboarding.br.brazil-onboarding",
+  targetId: "crunch.onboarding.br.currency-amount-information",
   priority: 3
 })
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  targetId: "af3d9c28-0674-11eb-adc1-0242ac120002",
+  sourceId: "crunch.onboarding.br.brazil-onboarding",
+  targetId: "crunch.onboarding.br.business-account",
   priority: 4
 })
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "9d4d667c-04c3-11eb-adc1-0242ac120002",
+  sourceId: "crunch.onboarding.br.currency-amount-information",
   targetId: "crunch.onboarding.certify-data-reviewed",
 })
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "af3d9c28-0674-11eb-adc1-0242ac120002",
+  sourceId: "crunch.onboarding.br.business-account",
   targetId: "crunch.onboarding.certify-data-reviewed",
 })
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "4c46cdb8-06b2-11eb-adc1-0242ac120002",
+  sourceId: "crunch.onboarding.br.nature-of-business",
   targetId: "crunch.onboarding.certify-data-reviewed",
 })
 

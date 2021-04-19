@@ -45,7 +45,7 @@ foam.CLASS({
         {
             name: 'NATURE_CODE_ID',
             type: 'String',
-            value: 'cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode'
+            value: 'naturecode.br.requirement'
         }
     ],
   
