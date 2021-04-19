@@ -210,7 +210,7 @@ public class RbcReportProcessor {
         processFailedReport(pain.getCstmrPmtStsRpt());
       } else if ( TransactionGroupStatus3Code.ACSP == grpInfo.getGroupStatus() ) {
         fileStatus = EFTFileStatus.PROCESSED;
-        processFailedReport(pain.getCstmrPmtStsRpt());
+        processPaymentReport(pain.getCstmrPmtStsRpt());
       }
 
       // Store report file processed
@@ -223,24 +223,6 @@ public class RbcReportProcessor {
       throw e;
     }
   }
-
-//  protected void updateEFTFileReport(File file, long fileNumber) {
-//    try {
-//      // Save Report File
-//      foam.nanos.fs.File f = EFTFileUtil.storeEFTFile(this.x, file, fileNumber + "_report.txt", "text/plain");
-//      DAO eftFileDAO = ((DAO) x.get("eftFileDAO")).inX(x);
-//      EFTFile eftFile = (EFTFile) eftFileDAO.find(fileNumber);
-//      if ( eftFile != null ) {
-//        eftFile = (EFTFile) eftFile.fclone();
-//        eftFile.setReport(f.getId());
-//        eftFileDAO.put(eftFile);
-//        FileUtils.deleteQuietly(file);
-//      }
-//    } catch ( Exception e ) {
-//      this.logger.error("Error while saving and updating EFT Report File with filecreation number: . " + fileNumber, e.getMessage(), e);
-//      BmoFormatUtil.sendEmail(x, "Error while saving and updating EFT Report File with filecreation number: . " + fileNumber, e);
-//    }
-//  }
 
   /**
    * Process failed reports
