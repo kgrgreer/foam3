@@ -67,7 +67,7 @@ public class BePayAFEXOnboardingTest extends foam.nanos.test.Test {
     dataMap.put("AFEX Terms and Conditions", usdAfexTerms);
 
     CapabilityPayload userCapabilityData = new CapabilityPayload.Builder(x)
-      .setId("BF58A50D-70F5-45CB-A79A-AF18C1D6F685")
+      .setId("crunch.onboarding.bepay.personal-international-payments")
       .setCapabilityDataObjects(dataMap)
       .build();
 
@@ -87,7 +87,7 @@ public class BePayAFEXOnboardingTest extends foam.nanos.test.Test {
     // test if onboarding ucj is granted
     UserCapabilityJunction ucj = (UserCapabilityJunction) userCapabilityJunctionDAO.find(AND(
       EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),
-      EQ(UserCapabilityJunction.TARGET_ID, "BF58A50D-70F5-45CB-A79A-AF18C1D6F685")
+      EQ(UserCapabilityJunction.TARGET_ID, "crunch.onboarding.bepay.personal-international-payments")
     ));
     test(ucj != null && ucj.getStatus() == CapabilityJunctionStatus.GRANTED, "onboarding ucj is granted");
 

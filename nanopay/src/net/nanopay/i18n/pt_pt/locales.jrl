@@ -3292,7 +3292,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.flinks.view.modalFor
 p({class:"foam.i18n.Locale",locale:"pt",source:"submenu.contact.title",target:"Adicionar contato"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f712bepay-10.name",target:"Termos e Condições AFEX"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"fb7d3ca2-62f2-4caf-a84c-860392e46bepay.name",target:"Número CPF"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.bepay.cpf.name",target:"Número CPF"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.br.ExtendedUserDetailsData.MOTHERS_MAIDEN_NAME.label",target:"nome de solteira da mãe"})
 

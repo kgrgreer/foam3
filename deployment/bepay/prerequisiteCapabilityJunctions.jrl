@@ -9,21 +9,21 @@ p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bepay",targe
 // user details
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
+  sourceId:"crunch.onboarding.bepay.personal-international-payments",
   targetId:"crunch.onboarding.user-details",
   priority:1
 })
 // cpf number
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
-  targetId:"fb7d3ca2-62f2-4caf-a84c-860392e46bepay",
+  sourceId:"crunch.onboarding.bepay.personal-international-payments",
+  targetId:"crunch.onboarding.bepay.cpf",
   priority:2
 })
 // AFEX Terms and Conditions
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
+  sourceId:"crunch.onboarding.bepay.personal-international-payments",
   targetId:"crunch.onboarding.afex.third-party-terms-and-conditions",
   priority:4
 })
@@ -31,6 +31,6 @@ p({
 // cpf - date of issue
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"fb7d3ca2-62f2-4caf-a84c-860392e46bepay",
+  sourceId:"crunch.onboarding.bepay.cpf",
   targetId:"crunch.onboarding.document.bepay.date-of-issue"
 })
