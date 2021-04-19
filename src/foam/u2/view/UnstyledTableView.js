@@ -41,7 +41,7 @@ foam.CLASS({
     'memento',
     'selection? as importSelection',
     'stack?',
-    'auth'
+    'auth?'
   ],
 
   constants: [
@@ -399,7 +399,6 @@ foam.CLASS({
                 var found = view.props.find(p => p.fullPropertyName === view.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(col));
                 var prop = found ? found.property : view.of.getAxiomByName(view.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(col));
                 var isFirstLevelProperty = view.columnHandler.canColumnBeTreatedAsAnAxiom(col) ? true : col.indexOf('.') === -1;
-                
                 if ( ! prop )
                   return;
 

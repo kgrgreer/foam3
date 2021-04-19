@@ -577,7 +577,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   imports: [
-    'auth'
+    'auth?'
   ],
 
   properties: [
