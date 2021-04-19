@@ -35,8 +35,12 @@
     {
       name: 'getUser',
       javaCode: `
+      if ( obj instanceof RefundTicket ) {
         Transaction txn = ((RefundTicket) obj).findProblemTransaction(x);
         return txn.findSourceAccount(x).findOwner(x);
+      } else {
+        return null;
+      }
       `
     }
   ]
