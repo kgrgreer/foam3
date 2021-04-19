@@ -312,9 +312,8 @@ foam.CLASS({
     function initE() {
       var view = this;
       //check properties which readPermissionRequired is true, and return authoruzid properties
-      const asyncRes = this.filterUnpermited(view.of.getAxiomsByClass(foam.core.Property));
       this.allColumns = ! view.of ? [] : [].concat(
-        asyncRes.map(a => a.name),
+        this.filterUnpermited(view.of.getAxiomsByClass(foam.core.Property)).map(a => a.name),
         view.of.getAxiomsByClass(foam.core.Action)
         .map(a => a.name)
       );
@@ -346,9 +345,8 @@ foam.CLASS({
           style({ 'min-width': this.tableWidth_$ }).
           show(this.showHeader$).
           add(this.slot(function(columns_) {
+            //modified function to also check permission for properties
             view.props = this.returnPropertiesForColumns(view, columns_);
-            //check permission for properties
-            view.props = this.returnAuthoruzidProperties(view.props)
             view.updateValues = ! view.updateValues;
 
             return this.E().
@@ -722,10 +720,8 @@ foam.CLASS({
       },
       function returnPropertiesForColumns(obj, columns_) {
         var propertyNamesToQuery = columns_.length === 0 ? columns_ : [ 'id' ].concat(obj.filterColumnsThatAllColumnsDoesNotIncludeForArrayOfColumns(obj, columns_).filter(c => ! foam.core.Action.isInstance(obj.of.getAxiomByName(obj.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c)))).map(c => obj.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c)));
-        return obj.columnConfigToPropertyConverter.returnPropertyColumnMappings(obj.of, propertyNamesToQuery);
-      },
-      function returnAuthoruzidProperties(arr) {
-        let slotProps = arr.map( p => p.property.createPermissionFor(this.__subContext__, p.property));
+        var arr = obj.columnConfigToPropertyConverter.returnPropertyColumnMappings(obj.of, propertyNamesToQuery);
+        var slotProps = arr.map( p => p.property.createPermissionFor(this.__subContext__, p.property));
         foam.core.ArraySlot.create({
           slots: slotProps
         }).map( visibilities => {
