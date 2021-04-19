@@ -101,6 +101,11 @@ foam.CLASS({
         return foam.String.applyFormat(val, 'xx.xxx.xxx/xxxx-xx');
       },
       postSet: function(_,n) {
+        if ( n.length != this.CNPJ_LENGTH ) {
+          this.cnpjName = '';
+          this.verifyName = false;
+        }
+        return;
         if ( n.length == 14 && this.verifyName !== true ) {
           this.cnpjName = '';
           this.getCNPJBusinessName(n).then((v) => {
@@ -177,8 +182,14 @@ foam.CLASS({
 
   methods: [
     function installInWizardlet(w) {
-      // CNPJ takes longer to save, so re-load may clear new inputs
-      w.reloadAfterSave = false;
+      this.onDetach(this.cnpj$.sub(() => {
+        if ( this.cnpj.length == this.CNPJ_LENGTH && this.verifyName !== true ) {
+          w.save();
+        } else {
+          this.cnpjName = '';
+          this.verifyName = false;
+        }
+      }));
     },
     {
       name: 'getCNPJBusinessName',

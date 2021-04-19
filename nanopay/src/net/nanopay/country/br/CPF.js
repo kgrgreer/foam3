@@ -195,13 +195,9 @@ foam.CLASS({
   ],
 
   methods: [
-    function init() {
-      this.onDetach(this.data$.sub(this.updateCPFName));
-      this.onDetach(this.birthday$.sub(this.updateCPFName));
-    },
     function installInWizardlet(w) {
-      // CPF takes longer to save, so re-load may clear new inputs
-      w.reloadAfterSave = false;
+      this.onDetach(this.data$.sub(() => this.maybeSave(w)));
+      this.onDetach(this.birthday$.sub(() => this.maybeSave(w)));
     },
     {
       name: 'clearFields',
@@ -259,27 +255,14 @@ foam.CLASS({
     // now if the cpfName is set we can avoid the api call - but a property change needs to reset the cpfName
     // SO - listeners used in place of a property postSet to avoid initial call ... HMM
     {
-      name: 'updateCPFName',
+      name: 'maybeSave',
       mergeDelay: 100, // only run every 100ms, otherwise trigger too many calls
-      code: async function(o, n) {
-        try {
-          // goes with user deprication
-          if ( ! this.birthday && ! this.verifyName && this.data.length == 11 ) {
-            this.cpfName = await this.brazilVerificationService
-              .getCPFName(this.__subContext__, this.data, this.user);
-          }
-          // update cpfName if birthday and cpf are valid
-          if ( ! this.BIRTHDAY.validateObj[1].call(this) && ! this.verifyName && this.data.length == this.CPF_LENGTH ) {
-            this.cpfName = await this.brazilVerificationService
-                .getCPFNameWithBirthDate(this.__subContext__, this.data, this.birthday);
-            if ( ! this.cpfName ) this.clearFields();
-          } else {
-            this.clearFields();
-          }
-        } catch (e) {
-          this.clearFields();
-          console.error(e || 'failed Cpf update');
-        }
+      code: async function(w) {
+        var validEnough = ( ! this.BIRTHDAY.validateObj[1].call(this) ) &&
+          this.data.length == this.CPF_LENGTH &&
+          this.verifyName !== true;
+        if ( validEnough ) w.save();
+        else this.clearFields();
       }
     }
   ]
