@@ -3527,7 +3527,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-summary.browseSubti
 p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-support.label",target:"Transações Resumo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-support.browseTitle",target:"Transações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-support.browseSubtitle",target:"Ver tudo Transações"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-support.createTitle":"Criar uma Transação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-support.createTitle",target:"Criar uma Transação"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"operation.bills.label",target:"Contas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"operation.bills.browseTitle",target:"Contas"})
