@@ -100,7 +100,7 @@ public class RbcFileProcessor {
       logger.error("RBC Encrypting file : " + e.getMessage(), e);
       ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
         .setName("RBC File Encryption")
-        .setReason(AlarmReason.EFT)
+        .setReason(AlarmReason.MANUAL)
         .setNote(e.getMessage())
         .build());
       throw new RbcEftFileException("RBC Encrypting file", e);

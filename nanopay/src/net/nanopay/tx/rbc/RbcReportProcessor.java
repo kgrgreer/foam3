@@ -65,7 +65,7 @@ public class RbcReportProcessor {
         this.logger.error("Error decrypting file: " + file.getName(), e);
         ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
           .setName("RBC File Decryption")
-          .setReason(AlarmReason.EFT)
+          .setReason(AlarmReason.MANUAL)
           .setNote(e.getMessage())
           .build());
         BmoFormatUtil.sendEmail(x, "RBC error while decrypting file: " + file.getName(), e);
