@@ -4,6 +4,8 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.mlang.predicate.Predicate;
+import foam.nanos.alarming.Alarm;
+import foam.nanos.alarming.AlarmReason;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.notification.Notification;
@@ -61,6 +63,11 @@ public class RbcReportProcessor {
         if ( null != RbcPGPUtil.decrypt(x, file) ) FileUtils.deleteQuietly(file);
       } catch (Exception e) {
         this.logger.error("Error decrypting file: " + file.getName(), e);
+        ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
+          .setName("RBC File Decryption")
+          .setReason(AlarmReason.EFT)
+          .setNote(e.getMessage())
+          .build());
         BmoFormatUtil.sendEmail(x, "RBC error while decrypting file: " + file.getName(), e);
       }
     }
