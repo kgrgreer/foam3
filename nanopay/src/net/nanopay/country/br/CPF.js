@@ -49,6 +49,11 @@ foam.CLASS({
     'subject'
   ],
 
+  constants: [
+    { name: 'FORMATTED_CPF_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{3}\\\\.\\\\d{3}\\\\.\\\\d{3}\\\\-\\\\d{2}$")' },
+    { name: 'UNFORMATTED_CPF_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{11}$")' }
+  ],
+
   messages: [
     { name: 'INVALID_CPF', message: 'Valid CPF number required' },
     { name: 'INVALID_CPF_CHECKED', message: 'Unable to validate CPF number and birthdate combination. Please update and try again.' },
@@ -109,7 +114,10 @@ foam.CLASS({
         {
           args: ['data'],
           predicateFactory: function(e) {
-            return e.REG_EXP(net.nanopay.country.br.CPF.DATA, /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/);
+            return e.OR(
+              e.REG_EXP(net.nanopay.country.br.CPF.DATA, /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/),
+              e.REG_EXP(net.nanopay.country.br.CPF.DATA, /^\d{11}$/)
+            );
           },
           errorMessage: 'INVALID_CPF'
         },
@@ -121,8 +129,10 @@ foam.CLASS({
                 foam.mlang.StringLength.create({
                   arg1: net.nanopay.country.br.CPF.CPF_NAME
                 }), 0),
-              e.REG_EXP(net.nanopay.country.br.CPF.DATA, /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/)
-            );
+              e.OR(
+                e.REG_EXP(net.nanopay.country.br.CPF.DATA, /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/),
+                e.REG_EXP(net.nanopay.country.br.CPF.DATA, /^\d{11}$/)
+              ));
           },
           errorMessage: 'INVALID_CPF_CHECKED'
         }
@@ -211,7 +221,8 @@ foam.CLASS({
         // These should be valid before making API call
         try {
           this.BIRTHDAY.validateObj(x, this);
-          if ( getData() == null || getData().length() != this.CPF_LENGTH ) {
+          if ( getData() == null ||
+            ( ! UNFORMATTED_CPF_PATTERN.matcher(getData()).matches() && ! FORMATTED_CPF_PATTERN.matcher(getData()).matches() ) ) {
             throw new foam.core.ValidationException(INVALID_CPF);
           }
         } catch ( foam.core.ValidationException e ) {

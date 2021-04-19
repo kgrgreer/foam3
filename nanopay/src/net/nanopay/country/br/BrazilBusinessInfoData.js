@@ -38,6 +38,11 @@ foam.CLASS({
     'brazilVerificationService'
   ],
 
+  constants: [
+    { name: 'FORMATTED_CNPJ_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{2}\\\\.\\\\d{3}\\\\.\\\\d{3}\\\\/\\\\d{4}\\\\-\\\\d{2}$")' },
+    { name: 'UNFORMATTED_CNPJ_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{14}$")' }
+  ],
+
   sections: [
     {
       name: 'businessInformation',
@@ -68,7 +73,10 @@ foam.CLASS({
         {
           args: ['cnpj', 'cnpjName'],
           predicateFactory: function(e) {
-            return e.REG_EXP(net.nanopay.country.br.BrazilBusinessInfoData.CNPJ, /^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/);
+            return e.OR(
+              e.REG_EXP(net.nanopay.country.br.BrazilBusinessInfoData.CNPJ, /^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/),
+              e.REG_EXP(net.nanopay.country.br.BrazilBusinessInfoData.CNPJ, /^\d{14}$/)
+            );
           },
           errorMessage: 'NO_CNPJ'
         },
@@ -79,7 +87,10 @@ foam.CLASS({
               e.GT(
                 net.nanopay.country.br.BrazilBusinessInfoData
                 .CNPJ_NAME, 0),
-              e.REG_EXP(net.nanopay.country.br.BrazilBusinessInfoData.CNPJ, /^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/)
+              e.OR(
+                e.REG_EXP(net.nanopay.country.br.BrazilBusinessInfoData.CNPJ, /^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/),
+                e.REG_EXP(net.nanopay.country.br.BrazilBusinessInfoData.CNPJ, /^\d{14}$/)
+              )
             );
           },
           errorMessage: 'CNPJ_INVALID'
@@ -178,8 +189,6 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
-
-
         var brazilVerificationService = (BrazilVerificationServiceInterface)
           x.get("brazilVerificationService");
 
@@ -188,7 +197,8 @@ foam.CLASS({
 
           // This should be valid before making API call
           try {
-            if ( getCnpj() == null || getCnpj().length() != this.CNPJ_LENGTH ) {
+            if ( getCnpj() == null ||
+              ( ! UNFORMATTED_CNPJ_PATTERN.matcher(getCnpj()).matches() && ! FORMATTED_CNPJ_PATTERN.matcher(getCnpj()).matches() ) ) {
               throw new foam.core.ValidationException(NO_CNPJ);
             }
           } catch ( foam.core.ValidationException e ) {
