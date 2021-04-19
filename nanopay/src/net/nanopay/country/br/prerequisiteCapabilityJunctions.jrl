@@ -43,13 +43,13 @@ p({
 // business registration date
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"554af38a-8225-87c8-dfdf-eeb15f71215f-16",
+  sourceId:"crunch.onboarding.business-registration-date",
   targetId:"crunch.onboarding.certify-data-reviewed"
 })
 // business Incorporated Date
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"554af38a-8225-87c8-dfdf-eeb15f71215f-17",
+  sourceId:"crunch.onboarding.business-incorporation-date",
   targetId:"crunch.onboarding.certify-data-reviewed"
 })
 // office consumption

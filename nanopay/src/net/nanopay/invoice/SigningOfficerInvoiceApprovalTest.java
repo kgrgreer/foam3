@@ -275,7 +275,7 @@ so1.setBirthday(birthday);
 AgentCapabilityJunction ucjSODOB = new AgentCapabilityJunction();
 ucjSODOB.setSourceId(myApprover.getId());
 ucjSODOB.setEffectiveUser(myBusiness.getId());
-ucjSODOB.setTargetId("8bffdedc-5176-4843-97df-1b75ff6054fb");
+ucjSODOB.setTargetId("crunch.onboarding.user-birth-date");
 ucjSODOB.setData(so1);
 SigningOfficerPersonalData so = new SigningOfficerPersonalData();
 so.setAddress(address);
@@ -441,7 +441,7 @@ StrategizedBankAccount sba = new StrategizedBankAccount.Builder(x)
   .build();
 UserCapabilityJunction ucjABA = new UserCapabilityJunction.Builder(x)
   .setSourceId(myBusiness.getId())
-  .setTargetId("24602528-34c1-11eb-adc1-0242ac120002")
+  .setTargetId("crunch.onboarding.add-bank-account")
   .setData(sba)
   .build();
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjABA);
@@ -591,7 +591,7 @@ Predicate ucjDPACPredicate = foam.mlang.MLang.AND(
 ucjDPAC = UCJTestingUtility.fetchJunctionPeriodically(x, CapabilityJunctionStatus.GRANTED, ucjDPACPredicate, defaultLoops, defaultMillis, isDebuggingOn, "ucjDPAC");
 
 Predicate ucjABAPredicate = foam.mlang.MLang.AND(
-  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "24602528-34c1-11eb-adc1-0242ac120002"),
+  foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "crunch.onboarding.add-bank-account"),
   foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())
 );
 

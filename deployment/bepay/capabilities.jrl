@@ -67,7 +67,7 @@ p({
 // prerequisites of onboard afex user capability
 p({
   class:"foam.nanos.crunch.Capability",
-  id:"0ED5DD86-AA1A-452B-BA7D-E7A2D0542135",
+  id:"crunch.onboarding.user-details",
   name:"User Details",
   contextDAOFindKey:"subject.user",
   associatedEntity:0

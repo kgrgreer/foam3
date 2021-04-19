@@ -92,12 +92,12 @@ foam.CLASS({
     {
       name: 'PERSONAL_SENDING_CAPABILITY_ID',
       type: 'String',
-      value: '1F0B39AD-934E-462E-A608-D590D1081298'
+      value: 'crunch.onboarding.api.unlock-ca-payments'
     },
     {
       name: 'PERSONAL_SENDING_UNDER_1000_CAPABILITY_ID',
       type: 'String',
-      value: 'F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD'
+      value: 'crunch.onboarding.api.unlock-ca-payments-under-1000'
     }
   ],
 

@@ -40,12 +40,12 @@
     </thead>
     <tbody>
       <tr>
-        <td>F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD</td>
+        <td>crunch.onboarding.api.unlock-ca-payments-under-1000</td>
         <td>API CAD Personal Payments Under 1000CAD</td>
         <td>Unlock capability for Canadian personal payments under $1000</td>
       </tr>
       <tr>
-        <td>1F0B39AD-934E-462E-A608-D590D1081298</td>
+        <td>crunch.onboarding.api.unlock-ca-payments</td>
         <td>API CAD Personal Payments</td>
         <td>Unlock capability for Canadian personal payments</td>
       </tr>
@@ -87,7 +87,7 @@
   Here is an example of a response from a query for the API CAD Personal Payments capability:
 <code>{
     "class": "foam.nanos.crunch.connection.CapabilityPayload",
-    "id": "1F0B39AD-934E-462E-A608-D590D1081298",
+    "id": "crunch.onboarding.api.unlock-ca-payments",
     "capabilityDataObjects": {
         "Ablii Privacy Policy": {
             "class": "net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy",

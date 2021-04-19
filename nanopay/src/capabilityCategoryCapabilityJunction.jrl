@@ -130,12 +130,12 @@ p({
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "compliancePassed",
-"targetId": "1F0B39AD-934E-462E-A608-D590D1081298"
+"targetId": "crunch.onboarding.api.unlock-ca-payments"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "compliancePassed",
-"targetId": "25D9499A-36D3-436A-9C87-3CA41B5FC08F"
+"targetId": "crunch.onboarding.user-is-signing-officer"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
@@ -196,10 +196,10 @@ p({
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "apiCADOnboarding",
-"targetId": "1F0B39AD-934E-462E-A608-D590D1081298"
+"targetId": "crunch.onboarding.api.unlock-ca-payments"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "apiCADOnboarding",
-"targetId": "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD"
+"targetId": "crunch.onboarding.api.unlock-ca-payments-under-1000"
 })

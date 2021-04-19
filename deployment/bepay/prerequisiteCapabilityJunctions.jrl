@@ -10,7 +10,7 @@ p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bepay",targe
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
-  targetId:"0ED5DD86-AA1A-452B-BA7D-E7A2D0542135",
+  targetId:"crunch.onboarding.user-details",
   priority:1
 })
 // cpf number

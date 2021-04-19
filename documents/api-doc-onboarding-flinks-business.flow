@@ -109,7 +109,7 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
     "capabilityPayloads": [
         {
             "class": "foam.nanos.crunch.connection.CapabilityPayload",
-            "id": "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD",
+            "id": "crunch.onboarding.api.unlock-ca-payments-under-1000",
             "capabilityDataObjects": {
                 "Ablii Privacy Policy": {
                     "class": "net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy",

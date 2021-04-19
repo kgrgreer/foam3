@@ -609,10 +609,10 @@ p({
     ]
   },
   "lifecycleState":1,
-  "sourceCapabilityList": ["56D2D946-6085-4EC3-8572-04A17225F86A", "1F0B39AD-934E-462E-A608-D590D1081298"],
+  "sourceCapabilityList": ["56D2D946-6085-4EC3-8572-04A17225F86A", "crunch.onboarding.api.unlock-ca-payments"],
   "sourceCapabilityExceptionListUpperLimit": 100000,
-  "sourceCapabilityExceptionList": ["F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD"],
-  "destinationCapabilityList": ["18DD6F03-998F-4A21-8938-358183151F96", "1F0B39AD-934E-462E-A608-D590D1081298"]
+  "sourceCapabilityExceptionList": ["crunch.onboarding.api.unlock-ca-payments-under-1000"],
+  "destinationCapabilityList": ["18DD6F03-998F-4A21-8938-358183151F96", "crunch.onboarding.api.unlock-ca-payments"]
 })
 p({
   "class":"net.nanopay.tx.planner.VerificationPlanner",
