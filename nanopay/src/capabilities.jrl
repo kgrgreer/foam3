@@ -387,15 +387,15 @@ p({
   "enabled":true,
   "grantMode": 1,
   "permissionsGranted":[
-    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
-    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
-    "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
-    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
-    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
-    "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
-    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
-    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
-    "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us"
+    "paymentprovidercorridor.read.paymentprovidercorridor.afex.ca-us",
+    "paymentprovidercorridor.source.read.paymentprovidercorridor.afex.ca-us",
+    "paymentprovidercorridor.target.read.paymentprovidercorridor.afex.ca-us",
+    "paymentprovidercorridor.read.paymentprovidercorridor.afex.us-ca",
+    "paymentprovidercorridor.source.read.paymentprovidercorridor.afex.us-ca",
+    "paymentprovidercorridor.target.read.paymentprovidercorridor.afex.us-ca",
+    "paymentprovidercorridor.read.paymentprovidercorridor.afex.us-us",
+    "paymentprovidercorridor.source.read.paymentprovidercorridor.afex.us-us",
+    "paymentprovidercorridor.target.read.paymentprovidercorridor.afex.us-us"
   ]
 })
 
