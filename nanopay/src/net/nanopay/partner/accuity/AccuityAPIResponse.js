@@ -50,7 +50,7 @@ foam.CLASS({
       required: true
     },
     {
-      class: 'Date',
+      class: 'DateTime',
       name: 'expirationDate',
       documentation: 'The expiration date of the cached response data.',
       javaFactory: 'return new Date();'
