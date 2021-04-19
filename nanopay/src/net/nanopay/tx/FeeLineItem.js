@@ -81,7 +81,6 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.tx.fee.Fee',
       targetDAOKey: 'feeDAO',
-      label: 'Fee Id',
     },
     {
       class: 'FObjectArray',
