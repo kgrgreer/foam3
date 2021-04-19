@@ -285,6 +285,12 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'clearOnReopen',
+      documentation: 'clear filter on dropdown reopen if set to true',
+      value: true
+    },
+    {
+      class: 'Boolean',
       name: 'isOpen_',
       documentation: `
         An internal property used to determine whether the options list is
@@ -292,7 +298,7 @@ foam.CLASS({
       `,
       postSet: function(_, nv) {
         if ( nv && ! this.hasBeenOpenedYet_ ) this.hasBeenOpenedYet_ = true;
-        if ( ! nv ) {
+        if ( ! nv && this.clearOnReopen ) {
           this.clearProperty('filter_');
           this.sections.forEach((section) => {
             section.clearProperty('filteredDAO');
@@ -651,13 +657,6 @@ foam.CLASS({
         }
       `,
 
-      properties: [
-        {
-          name: 'data',
-          documentation: 'The selected object.'
-        }
-      ],
-
       methods: [
         function initE() {
           var summary = this.data.toSummary();
@@ -719,13 +718,9 @@ foam.CLASS({
             'text-overflow': 'ellipsis'
           });
 
-          var summary = this.fullObject$.map(o => {
-            return ( o && o.toSummary() ) || this.defaultSelection;
-          });
-          var summaryWithoutSlot = this.fullObject && this.fullObject.toSummary()
-            ? this.fullObject.toSummary()
-            : this.defaultSelectionPrompt;
-          return this.translate(summaryWithoutSlot, summary);
+          return this.add(this.fullObject$.map(o => {
+            return ( o && o.toSummary() ) || this.defaultSelectionPrompt;
+          }));
         }
       ]
     },
