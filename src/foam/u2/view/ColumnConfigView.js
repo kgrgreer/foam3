@@ -604,14 +604,6 @@ foam.CLASS({
     },
     {
       name: 'subProperties',
-      // expression: function(prop) {
-      //   if ( ! this.of || ! this.of.getAxiomByName )
-      //   return [];
-      //   if ( prop && prop.cls_ && ( foam.core.FObjectProperty.isInstance(prop) || foam.core.Reference.isInstance(prop) ) ) {
-      //     return prop.of.getAxiomsByClass(foam.core.Property).map(p => [p.name, this.columnHandler.returnAxiomHeader(p)]);
-      //   }
-      //   return [];
-      // }
     },
     {
       name: 'subColumnSelectConfig',
@@ -784,7 +776,6 @@ foam.CLASS({
         this.subProperties =  [];
         return
       }
-      // let s = await this.filterUnpermited(prop.of.getAxiomsByClass(foam.core.Property), prop.of)
       let props = prop.of.getAxiomsByClass(foam.core.Property)
       let slotProps = props.map( p => p.createPermissionFor( this.__subContext__, prop.of));
       foam.core.ArraySlot.create({

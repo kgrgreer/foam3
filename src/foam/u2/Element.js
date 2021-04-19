@@ -2438,18 +2438,19 @@ foam.CLASS({
 
     function createPermissionFor(x, cls) {
       const DisplayMode = foam.u2.DisplayMode;
-      if ( ! this.readPermissionRequired && ! this.writePermissionRequired && ! visibilityPermissionRequired ) return foam.core.SimpleSlot.create({value: DisplayMode.RW});
+      if ( ! this.readPermissionRequired && ! this.writePermissionRequired && ! this.visibilityPermissionRequired ) return foam.core.SimpleSlot.create({value: DisplayMode.RW});
       var propName = this.name.toLowerCase();
       var clsName  = cls.name.toLowerCase();
       var canRead  = this.readPermissionRequired === false;
+      var visibilityRequired  = this.visibilityPermissionRequired === false;
       return foam.core.PromiseSlot.create({
         value: DisplayMode.HIDDEN,
-        promise: x.auth.check(null, `${clsName}.visibility.rw.${propName}`)
+        promise: x.auth.check(null, `${clsName}.rw.${propName}`)
           .then(function(rw) {
-            if ( rw      ) return DisplayMode.RW;
-            if ( canRead ) return DisplayMode.RO;
-            return x.auth.check(null, `${clsName}.visibility.ro.${propName}`)
-              .then((ro) => ro ? DisplayMode.RO : DisplayMode.HIDDEN);
+            if ( rw ) return DisplayMode.RW;
+            if ( canRead ) return visibilityRequired ? DisplayMode.RO : x.auth.check(null, `${clsName}.visibility.ro.${propName}`).then((ro) => ro ? DisplayMode.RO : DisplayMode.HIDDEN);
+            return x.auth.check(null, `${clsName}.ro.${propName}`)
+              .then((ro) => ro ? visibilityRequired ? DisplayMode.RO :  x.auth.check(null, `${clsName}.visibility.ro.${propName}`).then((ro) => ro ? DisplayMode.RO : DisplayMode.HIDDEN) : DisplayMode.HIDDEN) ;
           })
       })
     }

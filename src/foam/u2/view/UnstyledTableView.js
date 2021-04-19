@@ -309,10 +309,10 @@ foam.CLASS({
       this.isColumnChanged = ! this.isColumnChanged;
     },
 
-    async function initE() {
+    function initE() {
       var view = this;
       //check properties which readPermissionRequired is true, and return authoruzid properties
-      const asyncRes = await this.filterUnpermited(view.of.getAxiomsByClass(foam.core.Property));
+      const asyncRes = this.filterUnpermited(view.of.getAxiomsByClass(foam.core.Property));
       this.allColumns = ! view.of ? [] : [].concat(
         asyncRes.map(a => a.name),
         view.of.getAxiomsByClass(foam.core.Action)
@@ -348,7 +348,7 @@ foam.CLASS({
           add(this.slot(async function(columns_) {
             view.props = this.returnPropertiesForColumns(view, columns_);
             //check permission for properties
-            view.props = await this.returnAuthoruzidProperties(view.props)
+            view.props = this.returnAuthoruzidProperties(view.props)
             view.updateValues = ! view.updateValues;
 
             return this.E().
@@ -724,9 +724,17 @@ foam.CLASS({
         var propertyNamesToQuery = columns_.length === 0 ? columns_ : [ 'id' ].concat(obj.filterColumnsThatAllColumnsDoesNotIncludeForArrayOfColumns(obj, columns_).filter(c => ! foam.core.Action.isInstance(obj.of.getAxiomByName(obj.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c)))).map(c => obj.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c)));
         return obj.columnConfigToPropertyConverter.returnPropertyColumnMappings(obj.of, propertyNamesToQuery);
       },
-      async function returnAuthoruzidProperties(arr) {
-        const results = await Promise.all(arr.map( async p => p.property.hidden? false: ! p.property.readPermissionRequired || await this.auth.check(null,this.of.name.toLowerCase() + ".ro." + p.property.name)));
-        return arr.filter((_v, index) => results[index]);
+      function returnAuthoruzidProperties(arr) {
+        // const results = await Promise.all(arr.map( async p => p.property.hidden? false: ! p.property.readPermissionRequired || await this.auth.check(null,this.of.name.toLowerCase() + ".ro." + p.property.name)));
+        // return arr.filter((_v, index) => results[index]);
+
+        let slotProps = arr.map( p => p.property.createPermissionFor(this.__subContext__, p.property));
+        foam.core.ArraySlot.create({
+          slots: slotProps
+        }).map( visibilities => {
+          return arr.filter(( p, i ) => visibilities[i] != foam.u2.DisplayMode.HIDDEN);
+        })
+        return arr.filter(( p, i ) => slotProps[i].get() != foam.u2.DisplayMode.HIDDEN );
       },
       function shouldColumnBeSorted(c) {
         return c[c.length - 1] === this.DESCENDING_ORDER_CHAR || c[c.length - 1] === this.ASCENDING_ORDER_CHAR;
@@ -734,9 +742,14 @@ foam.CLASS({
       function returnMementoColumnNameDisregardSorting(c) {
         return c && this.shouldColumnBeSorted(c) ? c.substr(0, c.length - 1) : c;
       },
-      async function filterUnpermited(arr) {
-        const results = await Promise.all(arr.map( async p => p.hidden? false: ! p.readPermissionRequired || await this.auth.check(null,this.of.name.toLowerCase() + ".ro." + p.name)));
-        return arr.filter((_v, index) => results[index]);
+      function filterUnpermited(arr) {
+        let slotProps = arr.map( p => p.createPermissionFor(this.__subContext__, p));
+        foam.core.ArraySlot.create({
+          slots: slotProps
+        }).map( visibilities => {
+          return arr.filter(( p, i ) => visibilities[i] != foam.u2.DisplayMode.HIDDEN);
+        })
+        return arr.filter(( p, i ) => slotProps[i].get() != foam.u2.DisplayMode.HIDDEN );
       }
   ]
 });

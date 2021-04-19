@@ -15,13 +15,13 @@ foam.CLASS({
       // javaType: 'java.util.List<foam.nanos.crunch.crunchlite.CapablePayload>',
       of: 'foam.nanos.crunch.CapabilityJunctionPayload',
       section: 'capabilityInformation',
-      readPermissionRequired: true,
+      visibilityPermissionRequired: true,
       autoValidate: true
     },
     {
       name: 'userCapabilityRequirements',
       class: 'StringArray',
-      readPermissionRequired: true,
+      visibilityPermissionRequired: true,
       section: 'capabilityInformation'
     },
     {
@@ -34,7 +34,7 @@ foam.CLASS({
     {
       class: 'StringArray',
       name: 'capabilityIds',
-      readPermissionRequired: true,
+      visibilityPermissionRequired: true,
       section: 'capabilityInformation',
       visibility: 'HIDDEN'
     },
@@ -42,7 +42,7 @@ foam.CLASS({
       class: 'String',
       name: 'DAOKey',
       section: 'capabilityInformation',
-      readPermissionRequired: true,
+      visibilityPermissionRequired: true,
       visibility: 'HIDDEN'
     }
   ],
