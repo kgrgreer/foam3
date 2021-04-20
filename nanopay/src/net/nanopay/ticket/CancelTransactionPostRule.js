@@ -56,15 +56,19 @@ foam.CLASS({
               txnDAO.inX(x).put(problemTxn);
             }
             else {
-              problemTxn = (Transaction) ((ArraySink) problemTxn.getChildren(x).select(new ArraySink())).getArray().toArray()[0];
-              if ( problemTxn.getStatus() == TransactionStatus.PAUSED ) { // do we want 1 level checking or full walk?
-                problemTxn.setStatus(TransactionStatus.CANCELLED);
-                txnDAO.inX(x).put(problemTxn);
-              }
-              else {
-                Logger logger = (Logger) x.get("logger");
-                logger.warning("CancelTransactionPostRule, running on ticket "+request.getId()+" No paused transaction to cancel. Rule ran but did nothing!");
-                request.setRefundStatus(RefundStatus.FAILED);
+              Object [] tobePaused = ((ArraySink) problemTxn.getChildren(x).select(new ArraySink())).getArray().toArray();
+              if ( tobePaused.length > 0 ) {
+                problemTxn = (Transaction) toboPaused[0];
+                if ( problemTxn.getStatus() == TransactionStatus.PAUSED ) {
+                //TODO: we want full walk of children
+                  problemTxn.setStatus(TransactionStatus.CANCELLED);
+                  txnDAO.inX(x).put(problemTxn);
+                }
+                else {
+                  Logger logger = (Logger) x.get("logger");
+                  logger.warning("CancelTransactionPostRule, running on ticket "+request.getId()+" No paused transaction to cancel. Rule ran but did nothing!");
+                  request.setRefundStatus(RefundStatus.FAILED);
+                }
               }
             }
           }

@@ -178,7 +178,7 @@ p({
     ]
   },
   "action":{
-    "class":"net.nanopay.ticket.AgentRefundTicketCreateRule",
+    "class":"net.nanopay.ticket.ScenarioAction",
     "textToAgent":"No scenario found.",
   },
   "after":false,
