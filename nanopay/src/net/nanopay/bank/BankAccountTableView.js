@@ -84,6 +84,7 @@ foam.CLASS({
 
     async function dblclick() {
       if ( this.selection) {
+        this.__subContext__.accountDAO.cmd_(this, foam.dao.PurgeRecordCmd.create({ id: this.selection.id }));
         var account = await this.__subContext__.accountDAO.find(this.selection.id);
         var popupView = account.status === net.nanopay.bank.BankAccountStatus.UNVERIFIED && net.nanopay.bank.CABankAccount.isInstance(account) ?
           foam.u2.dialog.Popup.create({}, this).tag({
