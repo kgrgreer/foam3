@@ -86,6 +86,25 @@
             if ( array.size() > 0 ) {
               reverse.setCreditCodes(array.toArray(new String[array.size()]));
             }
+            // Cancel paused transaction
+            Transaction problemTxn = (Transaction) txnDAO.inX(x).find(request.getProblemTransaction()).fclone();
+            if ( problemTxn.getStatus() == TransactionStatus.PAUSED ) {
+              problemTxn.setStatus(problemTxn.getLastStatus());
+              txnDAO.inX(x).put(problemTxn);
+              problemTxn.setStatus(TransactionStatus.CANCELLED);
+              txnDAO.inX(x).put(problemTxn);
+            } else {
+              problemTxn = (Transaction) ((ArraySink) problemTxn.getChildren(x).select(new ArraySink())).getArray().toArray()[0];
+              if ( problemTxn.getStatus() == TransactionStatus.PAUSED ) { // do we want 1 level checking or full walk?
+                problemTxn.setStatus(TransactionStatus.CANCELLED);
+                txnDAO.inX(x).put(problemTxn);
+              }
+              else {
+                Logger logger = (Logger) x.get("logger");
+                logger.warning("RefundTransactionPostRule, running on ticket "+request.getId()+" No paused transaction to cancel. Rule ran but did not cancel old transaction!");
+                request.setRefundStatus(RefundStatus.FAILED);
+              }
+            }
             txnDAO.put(reverse);
           }
           catch(Exception e) {
@@ -94,34 +113,6 @@
             request.setRefundStatus(RefundStatus.FAILED);
           }
 
-          // Cancel paused transaction
-          if ( ! (request.getRefundStatus() == RefundStatus.FAILED) ) {
-            try {
-              Transaction problemTxn = (Transaction) txnDAO.inX(x).find(request.getProblemTransaction()).fclone();
-              if ( problemTxn.getStatus() == TransactionStatus.PAUSED ) {
-                problemTxn.setStatus(TransactionStatus.CANCELLED);
-                txnDAO.inX(x).put(problemTxn);
-              }
-              else {
-                problemTxn = (Transaction) ((ArraySink) problemTxn.getChildren(x).select(new ArraySink())).getArray().toArray()[0];
-                if ( problemTxn.getStatus() == TransactionStatus.PAUSED ) { // do we want 1 level checking or full walk?
-                  problemTxn.setStatus(TransactionStatus.CANCELLED);
-                  txnDAO.inX(x).put(problemTxn);
-                }
-                else {
-                  Logger logger = (Logger) x.get("logger");
-                  logger.warning("RefundTransactionPostRule, running on ticket "+request.getId()+" No paused transaction to cancel. Rule ran but did not cancel old transaction!");
-                  request.setRefundStatus(RefundStatus.FAILED);
-                }
-              }
-            }
-            catch (Exception e) {
-            // transaction was not set to cancelled.
-              Logger logger = (Logger) x.get("logger");
-              logger.warning("RefundTransactionPostRule, running on ticket "+request.getId()+" encountered problem cancelling transaction: "+e);
-              request.setRefundStatus(RefundStatus.FAILED);
-            }
-          }
         }
      
       }, "Post Rule to submit the refunding reverse transaction and cancel old txn.");
