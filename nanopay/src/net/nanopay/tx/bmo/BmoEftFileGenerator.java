@@ -61,7 +61,7 @@ public class BmoEftFileGenerator implements EFTFileGenerator {
   public X getX() {
     return x;
   }
-  
+
   public BmoEftFileGenerator(X x) {
     this.x = x;
     this.currencyDAO    = (DAO) x.get("currencyDAO");
@@ -76,13 +76,13 @@ public class BmoEftFileGenerator implements EFTFileGenerator {
     }
     return clientValue;
   }
-  
+
   /**
-   * Create the real file object and save it into the disk.		
+   * Create the real file object and save it into the disk.
    * @param transactions a list of transactins to be sent
    * @return an EFTFile model
    */
-  public EFTFile generate(List<Transaction> transactions) {
+  public EFTFile generate(List<Transaction> transactions, String spid) {
     try {
       BmoEftFile bmoFile = initFile(transactions);
       bmoFile.setFile(createEftFile(bmoFile).getId());

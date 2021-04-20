@@ -4,6 +4,8 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.mlang.predicate.Predicate;
+import foam.nanos.alarming.Alarm;
+import foam.nanos.alarming.AlarmReason;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.util.SafetyUtil;
@@ -96,6 +98,11 @@ public class RbcFileProcessor {
       encrypted = new RBCEFTFileGenerator(x).createEncryptedFile(file);
     } catch ( Exception e ) {
       logger.error("RBC Encrypting file : " + e.getMessage(), e);
+      ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
+        .setName("RBC File Encryption")
+        .setReason(AlarmReason.MANUAL)
+        .setNote(e.getMessage())
+        .build());
       throw new RbcEftFileException("RBC Encrypting file", e);
     }
     return encrypted;
