@@ -265,7 +265,7 @@ foam.CLASS({
         try {
           var validCPF = this.DATA.validationPredicates[0].predicate.f(this);
           // do not update if the data is equivalent
-          if ( validCPF && obj.src.oldValue.replace(/\D/g,'') === this.data.replace(/\D/g,'') ) return;
+          if ( validCPF && obj.src.prop.name === 'data' && obj.src.oldValue.replace(/\D/g,'') === this.data.replace(/\D/g,'') ) return;
           // goes with user deprication
           if ( ! this.birthday && ! this.verifyName && validCPF ) {
             this.cpfName = await this.brazilVerificationService
