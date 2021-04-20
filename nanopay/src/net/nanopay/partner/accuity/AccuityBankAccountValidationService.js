@@ -135,7 +135,7 @@ foam.CLASS({
         var swiftCode = response.get("recommendedBIC");
 
         if ( SafetyUtil.isEmpty(iban) || SafetyUtil.isEmpty(swiftCode) ||
-          ! "PASS".equals(response.get("status"))
+          ! "PASS".equals(response.get("status")) && ! "CAUTION".equals(response.get("status"))
         ) {
           throw new RuntimeException("Failed Accuity Validation: " + String.valueOf(response.get("comment")));
         }

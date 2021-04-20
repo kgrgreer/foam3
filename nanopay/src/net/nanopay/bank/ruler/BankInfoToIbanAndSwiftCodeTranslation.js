@@ -47,7 +47,7 @@ foam.CLASS({
           }
 
           var ret = bankAccountValidationService.convertToIbanAndSwiftCode(x,
-            account.getCountry(), nationalId, account.getAccountNumber());
+            account.getCountry(), nationalId, account.getCheckDigitNumber());
           account.setIban(ret[0]);
           account.setSwiftCode(ret[1]);
         } catch ( RuntimeException e ) {
