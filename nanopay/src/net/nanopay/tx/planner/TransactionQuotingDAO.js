@@ -154,7 +154,6 @@ foam.CLASS({
         { name: 'x', type: 'Context' },
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction'}
       ],
-      type: 'net.nanopay.tx.model.Transaction',
       documentation: 'consumes the credit code',
       javaCode: `
         if ( ( (txn instanceof SummarizingTransaction) ) && txn.getCreditCodes() != null && txn.getCreditCodes().length > 0 ) {
