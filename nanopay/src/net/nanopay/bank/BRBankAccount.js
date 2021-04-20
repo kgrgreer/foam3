@@ -59,7 +59,7 @@ foam.CLASS({
     { name: 'BRANCH_ID_REQUIRED', message: 'Branch required' },
     { name: 'HOLDER1', message: 'Individual' },
     { name: 'HOLDER2', message: 'Joint' },
-    { name: 'CURRENT', message: 'Checking' },
+    { name: 'CURRENT', message: 'Chequing' },
     { name: 'SAVINGS', message: 'Savings' },
     { name: 'PLEASE_SELECT', message: 'Please select' }
   ],

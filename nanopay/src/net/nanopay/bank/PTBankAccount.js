@@ -27,7 +27,8 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.ValidationException',
-    'foam.util.SafetyUtil'
+    'foam.util.SafetyUtil',
+    'java.util.Arrays'
   ],
 
   constants: [
@@ -44,7 +45,7 @@ foam.CLASS({
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      value: /^\d{13}$/
+      value: /^\d{11,13}$/
     },
     {
       name: 'ROUTING_CODE_PATTERN',
@@ -91,6 +92,27 @@ foam.CLASS({
             setBranchId(branchId);
           }
         }
+      `
+    },
+    {
+      class: 'String',
+      name: 'checkDigitNumber',
+      javaFactory: `
+        if ( getAccountNumber().length() == 13 ) return getAccountNumber();
+
+        if ( getInstitutionNumber() == "" || getBranchId() == "" ) return getAccountNumber() + "00";
+
+        String accNumber = getAccountNumber().substring(0, 11);
+        int[] factorList = new int[] { 73, 17, 89, 38, 62, 45, 53, 15, 50, 5, 49, 34, 81, 76, 27, 90, 9, 30, 3 };
+        String bankDataConcat = getInstitutionNumber().concat(getBranchId()).concat(accNumber);
+        int[] bankDataArr = Arrays.stream(bankDataConcat.split("")).mapToInt(Integer::parseInt).toArray();
+        int sum = 0;
+        for ( int i = 0; i < factorList.length; i++ ) {
+          sum += factorList[i] * bankDataArr[i];
+        }
+        int temp = sum/97;
+        int checkDigit = 98 - ( sum - temp * 97 );
+        return accNumber.concat(Integer.toString(checkDigit));
       `
     }
   ]
