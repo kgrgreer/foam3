@@ -70,32 +70,35 @@ foam.CLASS({
           )).select(new ArraySink())).getArray();
 
         for ( Object obj : digitalList ) {
-          Account digital = (DigitalAccount) obj;
+          // Failing a digital plan for 1 account shouldn't fail planning
+          try {
+            Account digital = (DigitalAccount) obj;
 
+            // Split 1: ABank -> ADigital
+            Transaction t1 = new Transaction(x);
+            t1.copyFrom(requestTxn);
+            t1.setDestinationAccount(digital.getId());
+            Transaction[] CIs = multiQuoteTxn(x, t1, quote);
 
-          // Split 1: ABank -> ADigital
-          Transaction t1 = new Transaction(x);
-          t1.copyFrom(requestTxn);
-          t1.setDestinationAccount(digital.getId());
-          Transaction[] CIs = multiQuoteTxn(x, t1, quote);
+            for ( Transaction ci : CIs ) {
+              // ADigital -> BDigital
+              Transaction t2 = new Transaction(x);
+              t2.copyFrom(requestTxn);
+              t2.setSourceAccount(digital.getId());
+              //Note: if ci, does not have all the transfers for getTotal this wont work.
+              t2.setAmount(ci.getTotal(x, digital.getId()));
+              Transaction[] digitals = multiQuoteTxn(x, t2, quote);
 
-          for ( Transaction ci : CIs ) {
-            // ADigital -> BDigital
-            Transaction t2 = new Transaction(x);
-            t2.copyFrom(requestTxn);
-            t2.setSourceAccount(digital.getId());
-            //Note: if ci, does not have all the transfers for getTotal this wont work.
-            t2.setAmount(ci.getTotal(x, digital.getId()));
-            Transaction[] digitals = multiQuoteTxn(x, t2, quote);
-
-              for ( Transaction d : digitals ) {
-                Transaction CI = (Transaction) removeSummaryTransaction(ci).fclone();
-                CI.addNext((Transaction) removeSummaryTransaction(d).fclone());
-                Transaction t = (Transaction) txn.fclone();
-                t.setPlanCost(ci.getPlanCost() + d.getPlanCost());
-                t.addNext(CI);
-                quote.getAlternatePlans_().add(t);
-              }
+                for ( Transaction d : digitals ) {
+                  Transaction CI = (Transaction) removeSummaryTransaction(ci).fclone();
+                  CI.addNext((Transaction) removeSummaryTransaction(d).fclone());
+                  Transaction t = (Transaction) txn.fclone();
+                  t.setPlanCost(ci.getPlanCost() + d.getPlanCost());
+                  t.addNext(CI);
+                  quote.getAlternatePlans_().add(t);
+                }
+            }
+          } catch (Exception e) {
           }
         }
         return null;
