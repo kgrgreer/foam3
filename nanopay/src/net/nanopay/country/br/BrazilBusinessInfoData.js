@@ -24,23 +24,23 @@ foam.CLASS({
   `,
 
   implements: [
-    'foam.core.Validatable'
+    'foam.core.Validatable',
+    'foam.mlang.Expressions'
   ],
 
   javaImports: [
     'foam.nanos.logger.Logger',
-    'foam.util.SafetyUtil'
+    'foam.util.SafetyUtil',
+    'java.util.regex.Pattern'
   ],
 
   imports: [
     'brazilVerificationService'
   ],
+
   constants: [
-    {
-      name: 'CNPJ_LENGTH',
-      value: 14,
-      javaType: 'int'
-    }
+    { name: 'FORMATTED_CNPJ_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{2}\\\\.\\\\d{3}\\\\.\\\\d{3}\\\\/\\\\d{4}\\\\-\\\\d{2}$")' },
+    { name: 'UNFORMATTED_CNPJ_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{14}$")' }
   ],
 
   sections: [
@@ -73,10 +73,10 @@ foam.CLASS({
         {
           args: ['cnpj', 'cnpjName'],
           predicateFactory: function(e) {
-            return e.EQ(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.country.br.BrazilBusinessInfoData.CNPJ
-                  }), 14);
+            return e.OR(
+              e.REG_EXP(net.nanopay.country.br.BrazilBusinessInfoData.CNPJ, /^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/),
+              e.REG_EXP(net.nanopay.country.br.BrazilBusinessInfoData.CNPJ, /^\d{14}$/)
+            );
           },
           errorMessage: 'NO_CNPJ'
         },
@@ -87,12 +87,11 @@ foam.CLASS({
               e.GT(
                 net.nanopay.country.br.BrazilBusinessInfoData
                 .CNPJ_NAME, 0),
-              e.EQ(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.country.br.BrazilBusinessInfoData
-                    .CNPJ
-                  }), 14)
-              );
+              e.OR(
+                e.REG_EXP(net.nanopay.country.br.BrazilBusinessInfoData.CNPJ, /^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/),
+                e.REG_EXP(net.nanopay.country.br.BrazilBusinessInfoData.CNPJ, /^\d{14}$/)
+              )
+            );
           },
           errorMessage: 'CNPJ_INVALID'
         }
@@ -101,7 +100,7 @@ foam.CLASS({
         return foam.String.applyFormat(val, 'xx.xxx.xxx/xxxx-xx');
       },
       postSet: function(_,n) {
-        if ( n.length == 14 && this.verifyName !== true ) {
+        if ( this.CNPJ.validationPredicates[0].predicate.f(this) && this.verifyName !== true ) {
           this.cnpjName = '';
           this.getCNPJBusinessName(n).then((v) => {
             this.cnpjName = v;
@@ -114,7 +113,8 @@ foam.CLASS({
       },
       view: function(_, X) {
         return foam.u2.FormattedTextField.create({
-          formatter: [2, '.', 3, '.', 3, '/', 4, '-', 2]
+          formatter: [2, '.', 3, '.', 3, '/', 4, '-', 2],
+          returnFormatted: true
         }, X);
       }
     },
@@ -189,8 +189,6 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
-
-
         var brazilVerificationService = (BrazilVerificationServiceInterface)
           x.get("brazilVerificationService");
 
@@ -199,7 +197,8 @@ foam.CLASS({
 
           // This should be valid before making API call
           try {
-            if ( getCnpj() == null || getCnpj().length() != this.CNPJ_LENGTH ) {
+            if ( getCnpj() == null ||
+              ( ! UNFORMATTED_CNPJ_PATTERN.matcher(getCnpj()).matches() && ! FORMATTED_CNPJ_PATTERN.matcher(getCnpj()).matches() ) ) {
               throw new foam.core.ValidationException(NO_CNPJ);
             }
           } catch ( foam.core.ValidationException e ) {
