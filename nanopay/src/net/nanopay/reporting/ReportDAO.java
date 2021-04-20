@@ -1,3 +1,21 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+
 package net.nanopay.reporting;
 
 import foam.core.Detachable;
@@ -59,7 +77,7 @@ public class ReportDAO extends ProxyDAO {
   @Override
   public FObject find_(X x, Object id) {
     var g = (ReportGenerator) x.get(generator);
-    return (FObject) g.generateReport(x, (LastModifiedAware) getDelegate().find_(x, id), new Object[0]);
+    return (FObject) g.generateReport(x, (LastModifiedAware) getDelegate().find_(x, id));
   }
 
   @Override
@@ -68,7 +86,7 @@ public class ReportDAO extends ProxyDAO {
       @Override
       public void put(Object obj, Detachable sub) {
         var g = (ReportGenerator) x.get(generator);
-        super.put(g.generateReport(x, (LastModifiedAware) obj, new Object[0]), sub);
+        super.put(g.generateReport(x, (LastModifiedAware) obj), sub);
       }
     };
     getDelegate().select(decorateSink(x, generatorSink, 0, MAX_SAFE_INTEGER, null, adaptPredicate(predicate)));

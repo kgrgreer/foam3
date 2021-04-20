@@ -21,21 +21,16 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.LastModifiedAware;
-import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import net.nanopay.account.Account;
+import net.nanopay.partner.rbc.RBCReconciliationReportGenerator;
 import net.nanopay.reporting.ReconciliationReport;
-import net.nanopay.reporting.ReportGenerator;
-import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.FeeSummaryTransactionLineItem;
 import net.nanopay.tx.FxSummaryTransactionLineItem;
 import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.billing.Bill;
 import net.nanopay.tx.bmo.BmoFormatUtil;
-import net.nanopay.tx.cico.CITransaction;
-import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.cico.EFTFile;
-import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.rbc.RbcCITransaction;
 import net.nanopay.tx.rbc.RbcCOTransaction;
@@ -45,61 +40,22 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import static foam.mlang.MLang.EQ;
 import static java.util.Calendar.*;
-import static java.util.Calendar.SUNDAY;
 
-public class IntuitRBCReconciliationReportGenerator extends ReportGenerator {
+public class IntuitReconciliationReportGenerator extends RBCReconciliationReportGenerator {
 
   protected String intuitRevenueAccount;
   protected String nanopayRevenueAccount;
 
-  protected Map<String, CITransaction> ciMap = new HashMap<>();
-  protected Map<String, COTransaction> coMap = new HashMap<>();
-  protected Map<String, DigitalTransaction> dtMap = new HashMap<>();
-
-  public IntuitRBCReconciliationReportGenerator(String intuitRevenueAccount, String nanopayRevenueAccount) {
+  public IntuitReconciliationReportGenerator(String intuitRevenueAccount, String nanopayRevenueAccount) {
     this.intuitRevenueAccount = intuitRevenueAccount;
     this.nanopayRevenueAccount = nanopayRevenueAccount;
   }
 
-  protected void refreshMaps(X x) {
-    var transactionDAO = (DAO) x.get("localTransactionDAO");
-    var transactions = (ArraySink) transactionDAO.select(new ArraySink());
-    for ( var obj : transactions.getArray() ) {
-      var transaction = (Transaction) obj;
-      if ( transaction instanceof RbcCITransaction)
-        ciMap.put(getRoot(x, transaction), (RbcCITransaction) transaction);
-      else if ( transaction instanceof RbcCOTransaction)
-        coMap.put(getRoot(x, transaction), (RbcCOTransaction) transaction);
-      else if ( transaction instanceof DigitalTransaction)
-        dtMap.put(getRoot(x, transaction), (DigitalTransaction) transaction);
-    }
-  }
-
-  protected String getRoot(X x, Transaction transaction) {
-    var superX = x.put("subject", new Subject.Builder(x).setUser(new User.Builder(x).setId(1).build()).build());
-
-    while( transaction != null && ! (transaction instanceof SummaryTransaction) ) {
-      transaction = transaction.findRoot(superX);
-    }
-
-    if ( transaction == null )
-      throw new RuntimeException("CI/CO/Digital Transaction missing SummaryTransaction root");
-
-    return transaction.getId();
-  }
-
   @Override
-  protected Object getSourceId(@Nonnull Object object) {
-    return ((SummaryTransaction) object).getId();
-  }
-
-  @Override
-  protected LastModifiedAware generate(X x, @Nonnull Object src, Object[] args) {
+  protected LastModifiedAware generate(X x, @Nonnull Object src) {
     var transaction = (SummaryTransaction) src;
     var ciTransaction = ciMap.get(transaction.getId());
     var coTransaction = coMap.get(transaction.getId());

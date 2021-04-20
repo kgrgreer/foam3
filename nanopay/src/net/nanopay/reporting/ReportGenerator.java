@@ -1,3 +1,21 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+
 package net.nanopay.reporting;
 
 import foam.core.X;
@@ -24,9 +42,9 @@ public abstract class ReportGenerator {
 
   protected abstract Object getSourceId(@Nonnull Object object);
 
-  protected abstract LastModifiedAware generate(X x, @Nonnull Object src, Object[] args);
+  protected abstract LastModifiedAware generate(X x, @Nonnull Object src);
 
-  public Object generateReport(X x, LastModifiedAware src, Object[] args) {
+  public Object generateReport(X x, LastModifiedAware src) {
     if ( src == null ) return null;
     var id = getSourceId(src);
 
@@ -34,7 +52,7 @@ public abstract class ReportGenerator {
     if ( report != null )
       return report;
 
-    report = generate(x, src, args);
+    report = generate(x, src);
 
     cacheMap.put(id, report);
     return report;
