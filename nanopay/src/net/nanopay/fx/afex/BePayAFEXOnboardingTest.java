@@ -51,7 +51,7 @@ public class BePayAFEXOnboardingTest extends foam.nanos.test.Test {
     CPF cpf = new CPF.Builder(x)
       .setData("10786348070")
       .setCpfName("Mock Legal User")
-      .setBirthday(new GregorianCalendar(1970, 1, 1).getTime())
+      .setBirthday(new GregorianCalendar(1970, Calendar.JANUARY, 1).getTime())
       .setVerifyName(true)
       .build();
     DateOfIssue dateOfIssue = new DateOfIssue.Builder(x)
