@@ -49,6 +49,19 @@ p({
 })
 
 p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"intuit-reports",
+  "label":"Reports",
+  "icon":"images/intuit/reports-24px-resting.svg",
+  "activeIcon":"images/intuit/reports-24px-active.svg",
+  "handler":{
+    "class":"foam.nanos.menu.SubMenu"
+  },
+  "parent":""
+})
+
+
+p({
   "class": "foam.nanos.menu.Menu",
   "id": "reconciliation-reports",
   "label": "Reconciliation Reports",
@@ -62,7 +75,8 @@ p({
       "editPredicate":{"class":"foam.mlang.predicate.False"},
       "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
-  }
+  },
+  "parent":"intuit-reports"
 })
 
 p({
@@ -79,7 +93,8 @@ p({
       "editPredicate":{"class":"foam.mlang.predicate.False"},
       "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
-  }
+  },
+  "parent":"intuit-reports"
 })
 
 p({
@@ -96,5 +111,6 @@ p({
       "editPredicate":{"class":"foam.mlang.predicate.False"},
       "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
-  }
+  },
+  "parent":"intuit-reports"
 })
