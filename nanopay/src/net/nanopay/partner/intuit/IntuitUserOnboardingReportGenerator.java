@@ -19,7 +19,6 @@
 package net.nanopay.partner.intuit;
 
 import foam.core.X;
-import foam.dao.EasyDAO;
 import foam.nanos.auth.User;
 import foam.nanos.crunch.CapabilityJunctionStatus;
 import foam.nanos.crunch.CrunchService;
@@ -58,12 +57,12 @@ public class IntuitUserOnboardingReportGenerator extends UserOnboardingReportGen
     cor.setUserSendingUnder1000(crunchService.getJunctionFor(x, "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD", user, user).getStatus() == CapabilityJunctionStatus.GRANTED);
     cor.setUserSendingOver1000(crunchService.getJunctionFor(x, "1F0B39AD-934E-462E-A608-D590D1081298", user, user).getStatus() == CapabilityJunctionStatus.GRANTED);
 
-    // Onboarding Submission Date
+    cor.setOnboardingSubmissionDate(user.getCreated());
 
     cor.setComplianceStatus(user.getCompliance().toString());
     cor.setApprovalDate(user.getDateCompliancePassed());
 
-    // Date of First Paymnet
+    // Date of First Payment
 
     if ( user.getAddress() != null )
       cor.setCity(user.getAddress().getCity());
