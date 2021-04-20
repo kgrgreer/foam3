@@ -102,6 +102,7 @@ p({
   version: "0",
   enabled: true,
   permissionsGranted: [
+    "service.languageDAO",
     "language.read.en"
   ]
 })
