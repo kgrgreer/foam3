@@ -50,12 +50,12 @@
         <td>Unlock capability for Canadian personal payments</td>
       </tr>
       <tr>
-        <td>56D2D946-6085-4EC3-8572-04A17225F86A</td>
+        <td>crunch.onboarding.api.ca-business-send-payments</td>
         <td>API CAD Business Payments Sending</td>
         <td>Unlock capability for sending Canadian payments as a business</td>
       </tr>
       <tr>
-        <td>18DD6F03-998F-4A21-8938-358183151F96</td>
+        <td>crunch.onboarding.api.ca-business-receive-payments</td>
         <td>API CAD Business Payments Receiving</td>
         <td>Unlock capability for receiving Canadian payments as a business</td>
       </tr>

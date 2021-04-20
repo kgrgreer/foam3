@@ -606,7 +606,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"B98D97EE-4A43-4B03-84C1-9DE2C0109E87",
+  "id":"crunch.onboarding.api.onboarding-user-and-business",
   "name":"API Onboarding User and Business",
   "description":"Unlock onboarding for a given user by provisioning a business",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
@@ -617,7 +617,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"56D2D946-6085-4EC3-8572-04A17225F86A",
+  "id":"crunch.onboarding.api.ca-business-send-payments",
   "name":"API CAD Business Payments Sending",
   "description":"Unlock capability for sending Canadian payments as a business",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
@@ -628,7 +628,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"9C6D8CFE-50B8-4507-A595-78DD9E08EA2D",
+  "id":"crunch.onboarding.api.expanded-business-details",
   "name":"Expanded Business Onboarding Details",
   "description": "Extra properties needed to onboarding a business for sending payments",
   "of":"net.nanopay.crunch.registration.BusinessDetailExpandedData",
@@ -640,7 +640,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"18DD6F03-998F-4A21-8938-358183151F96",
+  "id":"crunch.onboarding.api.ca-business-receive-payments",
   "name":"API CAD Business Payments Receiving",
   "description":"Unlock capability for receiving Canadian payments as a business",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
@@ -683,7 +683,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"EC535109-E9C0-4B5D-8D24-31282EF72F8F",
+  "id":"crunch.onboarding.api.business-details",
   "name":"Business Onboarding Details",
   "of":"net.nanopay.crunch.registration.BusinessDetailData",
   "version":"0",
@@ -694,7 +694,7 @@ p({
 
 p({
   "class": "foam.nanos.crunch.MinMaxCapability",
-  "id":"A679CA67-93C2-4597-B92E-4BBA00797E96",
+  "id":"crunch.onboarding.api.minmax.business-type",
   "name":"Business Type",
   "version":"0",
   "enabled":true,

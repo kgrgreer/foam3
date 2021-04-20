@@ -978,8 +978,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.user-birth-dat
 p({class:"foam.i18n.Locale",locale:"pt",source:"Alterna.name",target:"Alterna Savings and Credit Union pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"AscendantFX.name",target:"AscendantFX pt"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"B98D97EE-4A43-4B03-84C1-9DE2C0109E87.name",target:"API Onboarding User and Business pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"B98D97EE-4A43-4B03-84C1-9DE2C0109E87.description",target:"Desbloqueie a integração para um determinado usuário provisionando uma empresa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.api.onboarding-user-and-business.name",target:"API Onboarding User and Business pt"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.api.onboarding-user-and-business.description",target:"Desbloqueie a integração para um determinado usuário provisionando uma empresa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"BMO.name",target:"Banco de Montreal"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.api.unlock-ca-ca-payments.name",target:"API Onboarding Domestic Business Payments (CAD to CAD) pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.api.unlock-ca-ca-payments.description",target:"Desbloqueie pagamentos domésticos por meio da API para uma empresa."})

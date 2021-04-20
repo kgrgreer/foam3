@@ -140,7 +140,7 @@ p({
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "compliancePassed",
-"targetId": "18DD6F03-998F-4A21-8938-358183151F96"
+"targetId": "crunch.onboarding.api.ca-business-receive-payments"
 })
 
 p({
@@ -186,12 +186,12 @@ p({
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "apiCADOnboarding",
-"targetId": "56D2D946-6085-4EC3-8572-04A17225F86A"
+"targetId": "crunch.onboarding.api.ca-business-send-payments"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "apiCADOnboarding",
-"targetId": "18DD6F03-998F-4A21-8938-358183151F96"
+"targetId": "crunch.onboarding.api.ca-business-receive-payments"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",

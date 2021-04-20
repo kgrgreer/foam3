@@ -440,7 +440,7 @@ foam.CLASS({
     {
       name: 'businessDetailExpandedData',
       code: async function(x, business) {
-        var id = '9C6D8CFE-50B8-4507-A595-78DD9E08EA2D';
+        var id = 'crunch.onboarding.api.expanded-business-details';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -455,7 +455,7 @@ foam.CLASS({
     {
       name: 'businessTypeData',
       code: async function(x, business) {
-        var id = 'A679CA67-93C2-4597-B92E-4BBA00797E96';
+        var id = 'crunch.onboarding.api.minmax.business-type';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {

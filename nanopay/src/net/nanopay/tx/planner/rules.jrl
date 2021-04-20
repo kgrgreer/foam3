@@ -609,10 +609,10 @@ p({
     ]
   },
   "lifecycleState":1,
-  "sourceCapabilityList": ["56D2D946-6085-4EC3-8572-04A17225F86A", "crunch.onboarding.api.unlock-ca-payments"],
+  "sourceCapabilityList": ["crunch.onboarding.api.ca-business-send-payments", "crunch.onboarding.api.unlock-ca-payments"],
   "sourceCapabilityExceptionListUpperLimit": 100000,
   "sourceCapabilityExceptionList": ["crunch.onboarding.api.unlock-ca-payments-under-1000"],
-  "destinationCapabilityList": ["18DD6F03-998F-4A21-8938-358183151F96", "crunch.onboarding.api.unlock-ca-payments"]
+  "destinationCapabilityList": ["crunch.onboarding.api.ca-business-receive-payments", "crunch.onboarding.api.unlock-ca-payments"]
 })
 p({
   "class":"net.nanopay.tx.planner.VerificationPlanner",
