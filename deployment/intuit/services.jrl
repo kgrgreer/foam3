@@ -51,7 +51,7 @@ p({
   "name": "reconciliationReportDAO",
   "serve": true,
   "serviceScript": """
-  dao = new net.nanopay.partner.rbc.RBCReconciliationReportDAO(
+  dao = new net.nanopay.reporting.ReportDAO(
     x,
     new foam.dao.NullDAO(x, net.nanopay.reporting.ReconciliationReport.getOwnClassInfo()),
     "rbcReconciliationReportGenerator"
@@ -128,7 +128,7 @@ p({
       "of": "net.nanopay.reporting.UserOnboardingReport"
     }
   """
-}) 
+})
 
 
 p({
