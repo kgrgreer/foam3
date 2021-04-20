@@ -86,7 +86,9 @@ public class ReportDAO extends ProxyDAO {
       @Override
       public void put(Object obj, Detachable sub) {
         var g = (ReportGenerator) x.get(generator);
-        super.put(g.generateReport(x, (LastModifiedAware) obj), sub);
+        var report = g.generateReport(x, (LastModifiedAware) obj);
+        if ( report != null )
+          super.put(report, sub);
       }
     };
     getDelegate().select(decorateSink(x, generatorSink, 0, MAX_SAFE_INTEGER, null, adaptPredicate(predicate)));

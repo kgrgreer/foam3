@@ -19,9 +19,11 @@
 package net.nanopay.partner.intuit;
 
 import foam.core.X;
+import foam.dao.EasyDAO;
 import foam.nanos.auth.User;
 import foam.nanos.crunch.CapabilityJunctionStatus;
 import foam.nanos.crunch.CrunchService;
+import net.nanopay.model.Business;
 import net.nanopay.reporting.UserOnboardingReport;
 import net.nanopay.reporting.UserOnboardingReportGenerator;
 
@@ -33,6 +35,11 @@ public class IntuitUserOnboardingReportGenerator extends UserOnboardingReportGen
   @Override
   public UserOnboardingReport generate(X x, @Nonnull Object src) {
     var user = (User) src;
+
+    var group = user.getGroup();
+    if ( ! ( user instanceof Business) && ( ! group.equals("intuit-sme") && ! group.equals("intuit-business-sme") ) )
+      return null;
+
     var crunchService = (CrunchService) x.get("crunchService");
 
     var cor = new UserOnboardingReport();
@@ -46,18 +53,18 @@ public class IntuitUserOnboardingReportGenerator extends UserOnboardingReportGen
     cor.setUserId(user.getId());
     cor.setBusiness(user.getBusinessName());
 
-    // Only use these
-    // all businesses, intuit-sme, intuit-business-sme
-
     cor.setBusinessReceiving(crunchService.getJunctionFor(x, "18DD6F03-998F-4A21-8938-358183151F96", user, user ).getStatus() == CapabilityJunctionStatus.GRANTED);
     cor.setBusinessSending(crunchService.getJunctionFor(x, "56D2D946-6085-4EC3-8572-04A17225F86A", user, user ).getStatus() == CapabilityJunctionStatus.GRANTED);
     cor.setUserSendingUnder1000(crunchService.getJunctionFor(x, "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD", user, user).getStatus() == CapabilityJunctionStatus.GRANTED);
     cor.setUserSendingOver1000(crunchService.getJunctionFor(x, "1F0B39AD-934E-462E-A608-D590D1081298", user, user).getStatus() == CapabilityJunctionStatus.GRANTED);
 
     // Onboarding Submission Date
-    // Compliance Date
 
+    cor.setComplianceStatus(user.getCompliance().toString());
     cor.setApprovalDate(user.getDateCompliancePassed());
+
+    // Date of First Paymnet
+
     if ( user.getAddress() != null )
       cor.setCity(user.getAddress().getCity());
 
