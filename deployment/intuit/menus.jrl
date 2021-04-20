@@ -67,15 +67,6 @@ p({
 
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "credits-support",
-  "label": "CreditCodes",
-  "icon":"images/intuit/coupons-24px-resting.svg",
-  "activeIcon":"images/intuit/coupons-24px-active.svg",
-  "parent": ""
-})
-
-p({
-  "class": "foam.nanos.menu.Menu",
   "id": "tickets-support",
   "label": "Support Tickets",
   "icon":"images/intuit/supportTickets-24px-resting.svg",

@@ -103,30 +103,10 @@ foam.CLASS({
             return loadedTxn;
           }
 
-          // consume creditcodes
-          if ( ( (loadedTxn instanceof SummarizingTransaction) ) && loadedTxn.getCreditCodes() != null && loadedTxn.getCreditCodes().length > 0 ) {
-            DAO creditCodeDAO = (DAO) x.get("localCreditCodeDAO");
-            for ( String code : loadedTxn.getCreditCodes() ) {
-              CreditCodeAccount creditCode = (CreditCodeAccount) creditCodeDAO.find(code);
-              if ( creditCode == null ) {
-                throw new RuntimeException("cant find error code");
-              }
-              creditCode.consume(x, loadedTxn);
-            }
-          }
+          consumeCreditCode(x, loadedTxn);
           return getDelegate().put_(x, loadedTxn); //recovered plan is put in.
         }
-        // consume creditcodes
-        if ( ( (txn instanceof SummarizingTransaction) ) && txn.getCreditCodes() != null && txn.getCreditCodes().length > 0 ) {
-          DAO creditCodeDAO = (DAO) x.get("localCreditCodeDAO");
-          for ( String code : txn.getCreditCodes() ) {
-            CreditCodeAccount creditCode = (CreditCodeAccount) creditCodeDAO.find(code);
-            if ( creditCode == null ) {
-              throw new RuntimeException("cant find error code");
-            }
-            creditCode.consume(x, txn);
-          }
-        }
+        consumeCreditCode(x, txn);
         return getDelegate().put_(x, txn); // txn being saved as part of chain here.
       `
     },
@@ -164,6 +144,27 @@ foam.CLASS({
           // value at that point.
           if ( ! ( account instanceof ZeroAccount ) ) {
             account.validateAmount(x, (Balance) balanceDAO.find(account.getId()), transfer.getAmount());
+          }
+        }
+      `
+    },
+    {
+      name: 'consumeCreditCode',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction'}
+      ],
+      type: 'net.nanopay.tx.model.Transaction',
+      documentation: 'consumes the credit code',
+      javaCode: `
+        if ( ( (txn instanceof SummarizingTransaction) ) && txn.getCreditCodes() != null && txn.getCreditCodes().length > 0 ) {
+          DAO creditCodeDAO = (DAO) x.get("localCreditCodeDAO");
+          for ( String code : txn.getCreditCodes() ) {
+            CreditCodeAccount creditCode = (CreditCodeAccount) creditCodeDAO.find(code);
+            if ( creditCode == null ) {
+              throw new RuntimeException("cant find error code");
+            }
+            creditCode.consume(x, txn);
           }
         }
       `
