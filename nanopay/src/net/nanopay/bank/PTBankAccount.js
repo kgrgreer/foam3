@@ -98,9 +98,9 @@ foam.CLASS({
       class: 'String',
       name: 'checkDigitNumber',
       javaFactory: `
-        if ( getInstitutionNumber() == "" || getBranchId() == "" ) {
-          return getAccountNumber().length() == 13 ? getAccountNumber() : getAccountNumber() + "00";
-        }
+        if ( getAccountNumber().length() == 13 ) return getAccountNumber();
+
+        if ( getInstitutionNumber() == "" || getBranchId() == "" ) return getAccountNumber() + "00";
 
         String accNumber = getAccountNumber().substring(0, 11);
         int[] factorList = new int[] { 73, 17, 89, 38, 62, 45, 53, 15, 50, 5, 49, 34, 81, 76, 27, 90, 9, 30, 3 };
