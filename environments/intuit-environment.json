@@ -841,7 +841,13 @@
 			"key": "long_timeout",
 			"value": "2500",
 			"enabled": true
+		},
+		{
+			"key": "retry_count",
+			"value": "0",
+			"enabled": true
 		}
+		
 	],
 	"_postman_variable_scope": "environment",
 	"_postman_exported_at": "2021-04-19T18:31:30.796Z",
