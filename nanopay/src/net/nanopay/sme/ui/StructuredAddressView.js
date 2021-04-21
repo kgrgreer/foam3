@@ -129,18 +129,6 @@ foam.CLASS({
       class: 'String',
       name: 'defaultPostalCodeLabel'
     },
-    {
-      name: 'addressConfig',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.auth.AddressConfig',
-      expression: function(data$countryId) {
-        var self = this;
-        return this.AddressConfigDAO.find(data$countryId).then(result => {
-          if ( ! result ) return self.AddressConfig.create({ streetNumber: 0, streetName: 1, suite: 2 });
-          return result;
-        });
-      }
-    },
     'order'
   ],
 
@@ -171,7 +159,11 @@ foam.CLASS({
       });
 
       var updateOrder = async () => {
-        this.order = await this.addressConfig;
+        var self = this;
+        this.order = await this.AddressConfigDAO.find(self.data.countryId).then(result => {
+          if ( ! result ) return self.AddressConfig.create({ streetNumber: 0, streetName: 1, suite: 2 });
+          return result;
+        });
       };
 
       this.data$.dot('countryId').sub(updateOrder);
