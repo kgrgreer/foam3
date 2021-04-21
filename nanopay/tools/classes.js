@@ -600,6 +600,7 @@ var classes = [
   'net.nanopay.tx.TransactionSummary',
   'net.nanopay.tx.RefundTransaction',
   'net.nanopay.tx.RetailTransaction',
+  'net.nanopay.tx.model.CurrentLimit',
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.ruler.TransactionLimitProbeInfo',
   'net.nanopay.tx.ruler.TransactionLimitRule',

@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -17,12 +17,12 @@
 
 foam.CLASS({
   package: 'net.nanopay.tx.model',
-  name: 'TransactionLimit',
+  name: 'CurrentLimit',
 
-  documentation: 'Pre-defined limit for transactions.',
+  documentation: 'Current limits in place for spids or users/businesses',
 
   implements: [
-    'foam.nanos.auth.ServiceProviderAware'
+    'foam.nanos.auth.LastModifiedAware'
   ],
 
   properties: [
@@ -32,15 +32,11 @@ foam.CLASS({
       gridColumns: 6
     },
     {
-      class: 'String',
-      name: 'name',
-      documentation: 'Transaction limit name.',
-      gridColumns: 6
-    },
-    {
       class: 'Reference',
-      of: 'foam.nanos.auth.ServiceProvider',
-      name: 'spid',
+      targetDAOKey: 'transactionLimitDAO',
+      name: 'txLimit',
+      of: 'net.nanopay.tx.model.TransactionLimit',
+      documentation: 'TransactionLimit associated',
       gridColumns: 6
     },
     {
@@ -64,26 +60,27 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionLimitType',
       name: 'type',
-      documentation: 'Transaction limit type. (Send or Receive)',
-      gridColumns: 6
-    },
-    {
-      class: 'UnitValue',
-      name: 'amount',
-      documentation: 'Transaction limit amount.',
-      gridColumns: 6
-    },
-    {
-      class: 'Reference',
-      name: 'currency',
-      of: 'foam.core.Currency',
+      documentation: 'Current limit type. (Send or Receive)',
       gridColumns: 6
     },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
       name: 'timeFrame',
-      documentation: 'Transaction limit time frame. (Day, Week etc.)',
+      documentation: 'Current limit time frame. (Day, Week etc.)',
+      gridColumns: 6
+    },
+    {
+      class: 'UnitValue',
+      name: 'currentRunningValue',
+      documentation: 'amount associated to current limit',
+      gridColumns: 6
+    },
+    {
+      class: 'DateTime',
+      name: 'lastModified',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       gridColumns: 6
     }
   ]
