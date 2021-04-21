@@ -136,7 +136,6 @@ foam.CLASS({
       expression: function(data$countryId) {
         var self = this;
         return this.AddressConfigDAO.find(data$countryId).then(result => {
-          debugger;
           if ( ! result ) return self.AddressConfig.create({ streetNumber: 0, streetName: 1, suite: 2 });
           return result;
         });
