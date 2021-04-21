@@ -1,4 +1,13 @@
-p({class:"foam.nanos.auth.ServiceProvider",id:"intuit",enabled:true,description:"intuit spid"})
+p({
+  class:"foam.nanos.auth.ServiceProvider",
+  id:"intuit",
+  enabled:true,
+  description:"intuit spid",
+  permissionsGranted: [
+    "language.read.en-",
+    "language.read.en-US"
+  ]
+})
 
 p({
   class: "foam.nanos.crunch.Capability",
@@ -92,17 +101,5 @@ p({
   enabled: true,
   permissionsGranted: [
     "rule.read.84e2c846-e51e-4002-90b2-157bfed60241"
-  ]
-})
-
-p({
-  class: "foam.nanos.crunch.Capability",
-  id: "intuit-languages",
-  name: "Enable Intuit Languages",
-  version: "0",
-  enabled: true,
-  permissionsGranted: [
-    "language.read.en-",
-    "language.read.en-US"
   ]
 })

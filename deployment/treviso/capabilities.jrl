@@ -4,7 +4,8 @@ p({
   id: "treviso",
   description: "treviso",
   permissionsGranted: [
-    "net.nanopay.partner.treviso.trevisounlockpaymenttermsandconditions.section.reviewAgreementDocumentsSection"
+    "net.nanopay.partner.treviso.trevisounlockpaymenttermsandconditions.section.reviewAgreementDocumentsSection",
+    "language.read.*'
   ]
 })
 p({
