@@ -39,7 +39,9 @@ foam.CLASS({
   imports: [
     'currencyDAO',
     'notify',
-    'subject'
+    'subject',
+    'regionDAO',
+    'countryDAO'
   ],
 
   css: `
@@ -316,7 +318,10 @@ foam.CLASS({
                       return self.E()
                         .start().add(payer.toSummary()).end()
                         .start().add(self.formatStreetAddress(address)).end()
-                        .start().add(self.formatRegionAddress(address)).end()
+                        .start().add(self.PromiseSlot.create({
+                          promise: self.formatRegionAddress(address),
+                          value: '',
+                        })).end()
                         .start().add(address != undefined ? address.postalCode : '').end();
                       }
                   });
@@ -535,18 +540,21 @@ foam.CLASS({
       }
       return formattedAddress;
     },
-
-    function formatRegionAddress(address) {
+    async function formatRegionAddress(address) {
       var formattedAddress = '';
       if ( ! address ) return '';
       if ( address.city ) formattedAddress += address.city;
       if ( address.regionId ) {
-        formattedAddress ? formattedAddress += ', ' + address.regionId
-            : formattedAddress += address.regionId;
+        let region = await this.regionDAO.find(address.regionId);
+        let regionName = ( ! region ) ? address.regionId : region.name;
+        formattedAddress ? formattedAddress += ', ' + regionName
+            : formattedAddress += regionName;
       }
       if ( address.countryId ) {
-        formattedAddress ? formattedAddress += ', ' + address.countryId
-            : formattedAddress += address.countryId;
+        let country = await this.countryDAO.find(address.countryId);
+        let countryName = ( ! country ) ? address.countryId : country.nativeName;
+        formattedAddress ? formattedAddress += ', ' + countryName
+            : formattedAddress += countryName;
       }
       return formattedAddress;
     }

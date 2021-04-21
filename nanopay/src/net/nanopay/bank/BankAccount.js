@@ -615,6 +615,15 @@ foam.CLASS({
       name: 'bankRoutingCode',
       documentation: 'Bank routing code aka. national ID used to clear funds and/or route payments domestically.',
       visibility: 'HIDDEN'
+    },
+    {
+      class: 'String',
+      name: 'checkDigitNumber',
+      documentation: `check digit is to be used in IBAN translation and calculated based on account number,
+        institution and branchId. Different countries specify different rules => to be overwritten in subclass.
+        This is NOT check digit only, this property returns the final formatted number. E.g. for some countries its
+        branch + accountNumber + checkDigit, for others its accountNumber + checkDigit.`,
+      javaFactory: `return getAccountNumber();`
     }
   ],
 
