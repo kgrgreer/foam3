@@ -129,13 +129,6 @@ foam.CLASS({
       class: 'String',
       name: 'defaultPostalCodeLabel'
     },
-    // {
-    //   name: 'addressOrder',
-    //   expression: function(data$countryId) {
-    //     var self = this;
-    //     return  this.AddressConfigDAO.find(data$countryId)
-    //   }
-    // },
     {
       name: 'addressConfig',
       class: 'FObjectProperty',
@@ -177,25 +170,14 @@ foam.CLASS({
       var choices = this.data$.dot('countryId').map(function(countryId) {
         return self.regionDAO.where(self.EQ(self.Region.COUNTRY_ID, countryId || ''));
       });
-      // debugger;
-      // var updateOrder = async () => {
-      //   this.order = await self.addressOrder.find().then(function(obj) {
-      //     debugger;
-      //     if ( obj.array.length == 1 ) {
-      //       let arr = obj.array[0];
-      //       return {
-      //         streetName: arr.streetName,
-      //         streetNumber: arr.streetNumber,
-      //         suite: arr.suite
-      //       };
-      //     }
-      //     return { streetNumber: '0', streetName: '1', suite: '2' };
-      //   });
-      // };
 
-      // this.data$.dot('countryId').sub(updateOrder);
+      var updateOrder = async () => {
+        this.order = await this.addressConfig;
+      };
 
-      // updateOrder();
+      this.data$.dot('countryId').sub(updateOrder);
+
+      updateOrder();
 
       this
         .addClass(this.myClass())
@@ -223,8 +205,7 @@ foam.CLASS({
         .start().addClass(this.myClass('container'))
           .start().addClass('three-five-two-column')
             .start().addClass('label-input')
-            // .style({ 'order': this.order$.map(order => order && order.streetNumber ), 'grid-column-end': 'span 3' })
-            .style({ 'order': this.addressConfig$.map(addressConfig => addressConfig && addressConfig.streetNumber ), 'grid-column-end': 'span 3' })
+            .style({ 'order': this.order$.map(order => order && order.streetNumber ), 'grid-column-end': 'span 3' })
               .tag(this.SectionedDetailPropertyView, {
                 data$: this.data$,
                 prop: this.Address.STREET_NUMBER.clone().copyFrom({
@@ -233,8 +214,7 @@ foam.CLASS({
               })
             .end()
             .start().addClass('label-input')
-            // .style({ 'order': this.order$.map(order => order && order.streetName ), 'grid-column-end': 'span 6' })
-            .style({ 'order': this.addressConfig$.map(addressConfig => addressConfig && addressConfig.streetName ), 'grid-column-end': 'span 3' })
+            .style({ 'order': this.order$.map(order => order && order.streetName ), 'grid-column-end': 'span 6' })
               .tag(this.SectionedDetailPropertyView, {
                 data$: this.data$,
                 prop: this.Address.STREET_NAME.clone().copyFrom({
@@ -243,8 +223,7 @@ foam.CLASS({
               })
             .end()
             .start().addClass('label-input')
-            // .style({ 'order': this.order$.map(order => order && order.suite ), 'grid-column-end': 'span 3' })
-            .style({ 'order': this.addressConfig$.map(addressConfig => addressConfig && addressConfig.suite ), 'grid-column-end': 'span 3' })
+            .style({ 'order': this.order$.map(order => order && order.suite ), 'grid-column-end': 'span 3' })
               .tag(this.SectionedDetailPropertyView, {
                 data$: this.data$,
                 prop: this.Address.SUITE.clone().copyFrom({
