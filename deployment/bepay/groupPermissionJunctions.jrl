@@ -15,7 +15,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","targetId":"service.read.contactDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","targetId":"service.contactDAO"})
 
-// Allow BePay users to see alarm menu
+// Allow BePay fraud-ops to see alarm menu
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-fraud-ops","targetId":"menu.read.admin.alarm"})
 
 
