@@ -58,7 +58,7 @@ foam.CLASS({
             else {
               Object [] tobePaused = ((ArraySink) problemTxn.getChildren(x).select(new ArraySink())).getArray().toArray();
               if ( tobePaused.length > 0 ) {
-                problemTxn = (Transaction) toboPaused[0];
+                problemTxn = (Transaction) tobePaused[0];
                 if ( problemTxn.getStatus() == TransactionStatus.PAUSED ) {
                 //TODO: we want full walk of children
                   problemTxn.setStatus(TransactionStatus.CANCELLED);

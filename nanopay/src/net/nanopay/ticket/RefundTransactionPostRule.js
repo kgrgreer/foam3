@@ -97,7 +97,7 @@
               Object [] tobePaused = ((ArraySink) problemTxn.getChildren(x).select(new ArraySink())).getArray().toArray();
               if ( tobePaused.length > 0 ) {
               //TODO: iterate through all children.
-                problemTxn = (Transaction) toboPaused[0];
+                problemTxn = (Transaction) tobePaused[0];
                 if ( problemTxn.getStatus() == TransactionStatus.PAUSED ) { // do we want 1 level checking or full walk?
                   problemTxn.setStatus(TransactionStatus.CANCELLED);
                   txnDAO.inX(x).put(problemTxn);
