@@ -1762,6 +1762,8 @@ FOAM_FILES([
 
   //Reporing
   { name: 'net/nanopay/reporting/ReconciliationReport' },
+  { name: 'net/nanopay/reporting/ServiceFeesReport' },
+  { name: 'net/nanopay/reporting/UserOnboardingReport' },
 
   { name: 'net/nanopay/payment/PayeeCurrencyService' },
   { name: 'net/nanopay/payment/PayeeCurrency' },

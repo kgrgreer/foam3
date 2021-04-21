@@ -17,27 +17,26 @@
 
 package net.nanopay.partner.intuit;
 
+import foam.core.FObject;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.nanos.NanoService;
+import foam.nanos.auth.LastModifiedAware;
 import foam.nanos.auth.User;
 import net.nanopay.account.Account;
+import net.nanopay.partner.rbc.RBCReconciliationReportGenerator;
 import net.nanopay.reporting.ReconciliationReport;
-import net.nanopay.reporting.ReconciliationReportGenerator;
-import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.FeeSummaryTransactionLineItem;
 import net.nanopay.tx.FxSummaryTransactionLineItem;
 import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.billing.Bill;
 import net.nanopay.tx.bmo.BmoFormatUtil;
-import net.nanopay.tx.cico.CITransaction;
-import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.cico.EFTFile;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.rbc.RbcCITransaction;
 import net.nanopay.tx.rbc.RbcCOTransaction;
 
+import javax.annotation.Nonnull;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
@@ -45,25 +44,32 @@ import java.util.Date;
 
 import static foam.mlang.MLang.EQ;
 import static java.util.Calendar.*;
-import static java.util.Calendar.SUNDAY;
 
-public class IntuitRBCReconciliationReportGenerator implements ReconciliationReportGenerator, NanoService {
+public class IntuitReconciliationReportGenerator extends RBCReconciliationReportGenerator {
 
   protected String intuitRevenueAccount;
   protected String nanopayRevenueAccount;
 
-  public IntuitRBCReconciliationReportGenerator(String intuitRevenueAccount, String nanopayRevenueAccount) {
+  public IntuitReconciliationReportGenerator(String intuitRevenueAccount, String nanopayRevenueAccount) {
     this.intuitRevenueAccount = intuitRevenueAccount;
     this.nanopayRevenueAccount = nanopayRevenueAccount;
   }
 
   @Override
-  public void start() throws Exception {
+  protected LastModifiedAware generate(X x, @Nonnull FObject src) {
+    var transaction = (SummaryTransaction) src;
+    var ciTransaction = ciMap.get(transaction.getId());
+    var coTransaction = coMap.get(transaction.getId());
+    var dt = dtMap.get(transaction.getId());
 
-  }
+    // I think this could be done better
+    if ( ciTransaction == null || coTransaction == null || dt == null ) {
+      refreshMaps(x);
+      ciTransaction = ciMap.get(transaction.getId());
+      coTransaction = coMap.get(transaction.getId());
+      dt = dtMap.get(transaction.getId());
+    }
 
-  @Override
-  public ReconciliationReport generateReport(X x, SummaryTransaction transaction, CITransaction ciTransaction, COTransaction coTransaction, DigitalTransaction dt) {
     if ( ciTransaction == null || coTransaction == null || dt == null ) {
       throw new RuntimeException("Missing required entries to generate Reconciliation Report from " + transaction.getId());
     }
@@ -90,12 +96,13 @@ public class IntuitRBCReconciliationReportGenerator implements ReconciliationRep
       report.setBillingId(bill.getId());
     }
 
-    report.setCreated(rbcCiTransaction.getCreated());
+    report.setCreated(Calendar.getInstance().getTime());
     report.setLastModified(Calendar.getInstance().getTime());
 
     report.setMerchantId(transaction.getExternalId());
 
     report.setPaymentId(transaction.getId());
+    report.setPaymentCreatedDate(transaction.getCreated());
     report.setPaymentStartDate(rbcCiTransaction.getCreated());
     report.setPaymentStatusCategory(transaction.getChainSummary().getCategory());
     report.setPaymentStatus(transaction.getChainSummary().getStatus());
