@@ -23,7 +23,6 @@ foam.CLASS({
   documentation: `Scenario Action which tries to create a full reverse transaction`,
 
   javaImports: [
-    'foam.core.ContextAgent',
     'foam.core.X',
     'foam.util.SafetyUtil',
     'foam.dao.ArraySink',
@@ -31,14 +30,11 @@ foam.CLASS({
     'java.util.List',
     'java.util.Arrays',
     'java.util.ArrayList',
-    'foam.nanos.logger.Logger',
     'net.nanopay.ticket.RefundTicket',
+    'static foam.mlang.MLang.EQ',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.SummarizingTransaction',
     'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.tx.FeeLineItem',
-    'net.nanopay.tx.SummaryTransactionLineItem',
-    'net.nanopay.tx.billing.ErrorFee',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus'  
   ],
@@ -62,22 +58,39 @@ foam.CLASS({
       name: 'findFeeLineItems',
       args: [
         {
-          name: 'lineItems',
-          type: 'List<TransactionLineItem>'
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'summary',
+          type: 'net.nanopay.tx.model.Transaction'
         }
       ],
       javaType: 'List<FeeLineItem>',
       javaCode: `
         List<FeeLineItem> feeLineItemsAvaliable = new ArrayList<>();
 
-        for ( TransactionLineItem lineItem : lineItems ){
-          if ( lineItem instanceof FeeLineItem ){
+        if ( summary.getStatus() != TransactionStatus.COMPLETED ) {
+          return feeLineItemsAvaliable;
+        }
+
+        DAO dao = (DAO) x.get("localTransactionDAO");
+        List children = ((ArraySink) dao.where(EQ(Transaction.PARENT, summary.getId())).select(new ArraySink())).getArray();
+        for ( Object obj : children ) {
+          Transaction child = (Transaction) obj;
+          List<FeeLineItem> lineItems = findFeeLineItems(x, child);
+          for ( TransactionLineItem lineItem : lineItems ){
             feeLineItemsAvaliable.add((FeeLineItem) lineItem);
           }
+        }
 
-          if ( lineItem instanceof SummaryTransactionLineItem ){
-            SummaryTransactionLineItem summaryTransactionLineItem = (SummaryTransactionLineItem) lineItem;
-            feeLineItemsAvaliable.addAll(findFeeLineItems(Arrays.asList(summaryTransactionLineItem.getLineItems())));
+        if ( summary instanceof SummarizingTransaction ) {
+          return feeLineItemsAvaliable;
+        }
+
+        for ( TransactionLineItem lineItem : summary.getLineItems() ){
+          if ( lineItem instanceof FeeLineItem ){
+            feeLineItemsAvaliable.add((FeeLineItem) lineItem);
           }
         }
 
@@ -100,7 +113,7 @@ foam.CLASS({
         newRequest.setSourceCurrency(problem.getSourceCurrency());
         newRequest.setDestinationCurrency(summary.getSourceCurrency());
 
-        List<FeeLineItem> feeLineItemsAvaliable = findFeeLineItems(Arrays.asList(summary.getLineItems()));
+        List<FeeLineItem> feeLineItemsAvaliable = findFeeLineItems(x, summary);
         ticket.setFeeLineItemsAvaliable(feeLineItemsAvaliable.toArray(FeeLineItem[]::new));
 
         ticket.setRequestTransaction(newRequest);
