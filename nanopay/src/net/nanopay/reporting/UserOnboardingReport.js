@@ -46,6 +46,10 @@ foam.CLASS({
       class: 'String'
     },
     {
+      name: 'merchantId',
+      class: 'String'
+    },
+    {
       name: 'businessSending',
       class: 'Boolean'
     },

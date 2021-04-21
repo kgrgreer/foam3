@@ -51,6 +51,7 @@ public class IntuitUserOnboardingReportGenerator extends UserOnboardingReportGen
     cor.setLastName(user.getLastName());
     cor.setUserId(user.getId());
     cor.setBusiness(user.getBusinessName());
+    cor.setMerchantId(user.getExternalId());
 
     cor.setBusinessReceiving(crunchService.getJunctionFor(x, "18DD6F03-998F-4A21-8938-358183151F96", user, user ).getStatus() == CapabilityJunctionStatus.GRANTED);
     cor.setBusinessSending(crunchService.getJunctionFor(x, "56D2D946-6085-4EC3-8572-04A17225F86A", user, user ).getStatus() == CapabilityJunctionStatus.GRANTED);
