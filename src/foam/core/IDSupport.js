@@ -143,11 +143,11 @@ foam.CLASS({
           {
             name: 'toString',
             code: function() {
-              var arr = [];
+              var str = '';
               for ( var prop in this.instance_ ) {
-                arr.push( this[prop] ? this[prop].toString() : '' );
+                str += ( this[prop] ? this[prop].toString() : '' ) + '-';
               }
-              return arr.join('-');
+              return str;
             },
             javaCode: javaToStringMethod
           }
