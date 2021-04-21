@@ -2124,9 +2124,9 @@ foam.CLASS({
         for ( var i = 0 ; i < this.propNames.length ; i++ ) {
           var name = foam.String.capitalize(this.propNames[i]);
 
-          arr.push(`val.get${name}())`);
+          arr.push(`String.valueOf(get${name}())`);
         }
-        return 'return ' + arr.join(' + "-" + ') + ';';
+        return 'return String.join("-", ' + arr.join(', ') + ');';
       }
     }
   ]

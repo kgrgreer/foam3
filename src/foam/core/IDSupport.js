@@ -126,9 +126,9 @@ foam.CLASS({
       var arr = [];
       for ( var i = 0 ; i < this.propNames.length ; i++ ) {
         var name = foam.String.capitalize(this.propNames[i]);
-        arr.push(`get${name}()`);
+        arr.push(`String.valueOf(get${name}())`);
       }
-      var javaToStringMethod = 'return ' + arr.join(' + "-" + ') + ';';
+      var javaToStringMethod = 'return String.join("-", ' + arr.join(', ') + ');';
 
       foam.CLASS({
         package: c.package,
