@@ -31,6 +31,10 @@ foam.INTERFACE({
         {
           name: 'transactions',
           javaType: 'List<net.nanopay.tx.model.Transaction>',
+        },
+        {
+          name: 'spid',
+          javaType: 'String',
         }
       ]
     }

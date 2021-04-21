@@ -358,6 +358,9 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"service.crunchService.unsafeSetStatus"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"brbankaccount.ro.denomination"})
 
+// Fraud Ops Line Item Permissions
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"naturecodelineitem.read.*"})
+
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"identityMind","targetId":"service.approvalRequestDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"identityMind","targetId":"service.identityMindResponseDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"identityMind","targetId":"service.notificationDAO"})

@@ -38,10 +38,10 @@ public class RbcVerifyFileAcceptedCron implements ContextAgent {
 
     if (  files.size() > 0 ) {
       try {
-        new RbcReportProcessor(x).processReceipts();
+        new RbcReportProcessor(x).processReceipts(files);
       } catch ( Exception e ) {
         logger.error("RBC send file failed.", e);
-      } 
+      }
     }
   }
 }

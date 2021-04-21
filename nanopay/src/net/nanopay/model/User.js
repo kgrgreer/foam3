@@ -215,14 +215,16 @@ foam.CLASS({
       section: 'operationsInformation',
       order: 40,
       of: 'foam.nanos.approval.ApprovalRequest',
-        view: function(_, X) {
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'HIDDEN',
+      readVisibility: 'RO',
+      view: function(_, X) {
         var E = foam.mlang.Expressions.create();
         return {
           class: 'foam.u2.view.DAOtoFObjectArrayView',
           dao: X.approvalRequestDAO.where(E.EQ(foam.nanos.approval.ApprovalRequest.CREATED_FOR, X.data.id))
         };
       },
-      visibility: 'RO',
       storageTransient: true
     },
     {
