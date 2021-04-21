@@ -99,8 +99,11 @@ foam.CLASS({
       tableCellFormatter: function(val) {
         return foam.String.applyFormat(val, 'xx.xxx.xxx/xxxx-xx');
       },
-      postSet: function(_,n) {
-        if ( this.CNPJ.validationPredicates[0].predicate.f(this) && this.verifyName !== true ) {
+      postSet: function(o,n) { 
+        var validCnpj = this.CNPJ.validationPredicates[0].predicate.f(this);
+        // do not uppdate for equivalent data
+        if ( validCnpj && o.replace(/\D/g,'') === n.replace(/\D/g,'') ) return;
+        if ( validCnpj && this.verifyName !== true ) {
           this.cnpjName = '';
           this.getCNPJBusinessName(n).then((v) => {
             this.cnpjName = v;
