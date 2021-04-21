@@ -5,7 +5,7 @@ p({
   description: "treviso",
   permissionsGranted: [
     "net.nanopay.partner.treviso.trevisounlockpaymenttermsandconditions.section.reviewAgreementDocumentsSection",
-    "language.read.*'
+    "language.read.*"
   ]
 })
 p({
