@@ -1665,6 +1665,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/exceptions/PlannerValidationException' },
   { name: 'net/nanopay/tx/planner/exceptions/PlannerCapabilityIncompleteException' },
   { name: 'net/nanopay/tx/planner/exceptions/PlannerComplianceFailureException' },
+  { name: 'net/nanopay/tx/planner/exceptions/PlannerStatusInactiveException' },
 
   // Billing
   { name: 'net/nanopay/tx/billing/Bill' },

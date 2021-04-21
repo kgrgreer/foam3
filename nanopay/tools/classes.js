@@ -1201,6 +1201,7 @@ var classes = [
   'net.nanopay.tx.planner.exceptions.PlannerValidationException',
   'net.nanopay.tx.planner.exceptions.PlannerCapabilityIncompleteException',
   'net.nanopay.tx.planner.exceptions.PlannerComplianceFailureException',
+  'net.nanopay.tx.planner.exceptions.PlannerStatusInactiveException',
 
   // Billing
   'net.nanopay.tx.billing.Bill',
