@@ -24,7 +24,7 @@ p({
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId:"crunch.onboarding.bepay.personal-international-payments",
-  targetId:"crunch.onboarding.afex.third-party-terms-and-conditions",
+  targetId:"crunch.onboarding.document.afex.third-party-terms-and-conditions",
   priority:4
 })
 

@@ -1,7 +1,7 @@
 //Unlock International & Domestic Payments and Invoicing for Brazil
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "targetId":"naturecode.br.requirement",
+  "targetId":"naturecode.br.minmax.requirement",
   "sourceId":"invoice.capable.treviso",
   "priority": 17
 })

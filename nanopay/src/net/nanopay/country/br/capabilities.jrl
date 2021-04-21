@@ -428,7 +428,7 @@ p({
 
 p({
   "class": "foam.nanos.crunch.MinMaxCapability",
-  "id":"naturecode.br.requirement",
+  "id":"naturecode.br.minmax.requirement",
   "name":"Nature Code Requirement",
   "min": 1,
   "max": 1,

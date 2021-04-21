@@ -144,7 +144,7 @@ p({
 
 p({
   class:"foam.nanos.crunch.Capability",
-  id:"crunch.onboarding.afex.third-party-terms-and-conditions",
+  id:"crunch.onboarding.document.afex.third-party-terms-and-conditions",
   name:"Third Party Verification AFEX Terms and Conditions",
   of:"net.nanopay.crunch.acceptanceDocuments.capabilities.ThirdPartyVerificationAFEXTerms",
   enabled:true
