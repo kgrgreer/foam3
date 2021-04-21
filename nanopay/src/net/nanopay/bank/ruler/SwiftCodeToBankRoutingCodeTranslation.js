@@ -36,6 +36,9 @@ foam.CLASS({
       javaCode: `
         BankAccount account = (BankAccount) obj;
         var bankAccountValidationService = (BankAccountValidationService) x.get("bankAccountValidationService");
+        System.out.println("***************** Validation service: " + bankAccountValidationService);
+        System.out.println("***************** account country: " + account.getCountry());
+        System.out.println("***************** account swiftCode: " + account.getSwiftCode());
         try {
           account.setBankRoutingCode(
             bankAccountValidationService.convertToRoutingCode(x,
