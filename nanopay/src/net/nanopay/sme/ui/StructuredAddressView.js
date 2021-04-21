@@ -28,15 +28,15 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.Address',
-    'foam.nanos.auth.Region',
     'foam.nanos.auth.AddressConfig',
+    'foam.nanos.auth.Region',
     'foam.u2.detail.SectionedDetailPropertyView'
   ],
 
   imports: [
+    'addressConfigDAO',
     'countryDAO',
     'regionDAO',
-    'AddressConfigDAO',
     'translationService'
   ],
 
@@ -160,13 +160,13 @@ foam.CLASS({
 
       var updateOrder = async () => {
         var self = this;
-        this.order = await this.AddressConfigDAO.find(self.data.countryId).then(result => {
+        this.order = await this.addressConfigDAO.find(self.data.countryId).then(result => {
           if ( ! result ) return self.AddressConfig.create({ streetNumber: 0, streetName: 1, suite: 2 });
           return result;
         });
       };
 
-      this.data$.dot('countryId').sub(updateOrder);
+      this.onDetach(this.data$.dot('countryId').sub(updateOrder));
 
       updateOrder();
 
