@@ -540,7 +540,6 @@ p({"class":"foam.nanos.auth.Permission","id":"user.ro.complianceHistories","desc
 p({"class":"foam.nanos.auth.Permission","id":"user.ro.approvalRequests","description":"Permission to read to the compliance approval requests table in users"})
 p({"class":"foam.nanos.auth.Permission","id":"user.ro.paymentCards","description":"Permission to read the payment cards table in users"})
 p({"class":"foam.nanos.auth.Permission","id":"service.businessTypeDAO","description":"Permission to access businessTypeDAO"})
-p({"class":"foam.nanos.auth.Permission})
 p({"class":"foam.nanos.auth.Permission","id":"strategyreference.read.5ce586f7-5e50-c03b-4303-d6fb5172d82a","description":"Permission to see CA bank account in strategizer view."})
 p({"class":"foam.nanos.auth.Permission","id":"strategyreference.read.a5b4d08c-c1c1-d09d-1f2c-12fe04f7cb6b","description":"Permission to see IN bank account in strategizer view."})
 p({"class":"foam.nanos.auth.Permission","id":"strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d","description":"Permission to see US bank account in strategizer view."})
