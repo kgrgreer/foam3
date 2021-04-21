@@ -30,10 +30,11 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.Subject',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
 
-    'java.util.Date',
+    'java.util.*',
 
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.dowJones.DowJonesResponse',
@@ -80,10 +81,16 @@ foam.CLASS({
           } catch (Exception e) {
             Logger logger = (Logger) x.get("logger");
             tx.setStatus(TransactionStatus.COMPLETED);
+            User user = ((Subject) x.get("subject")).getUser();
+            Map<String, Object> args = new HashMap<>();
+            args.put("email", user.getEmail());
+            args.put("txId", tx.getId());
+
             Notification notification = new Notification();
             notification.setGroupId(group);
-            notification.setBody("Failed to run Dow Jones check against payer and payee for transaction id: " + tx.getId());
-            notification.setNotificationType("Failed to call DJ service.");
+            notification.setEmailName("failed-dow-jones-call");
+            notification.setEmailArgs(args);
+            notification.setBody("Dow Jones compliance service failed.");
             try {
               ((DAO)x.get("localNotificationDAO")).put_(x, notification);
             }
