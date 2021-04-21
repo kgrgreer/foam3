@@ -27,11 +27,26 @@ foam.CLASS({
     'foam.core.ValidationException',
     'foam.util.SafetyUtil',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.BankAccountValidationService'
+    'net.nanopay.bank.BankAccountValidationService',
+    'java.util.*'
   ],
 
   messages: [
     { name: 'BANK_ACCOUNT_VALIDATION_FAILED', message: 'Bank Account Validation Failed' }
+  ],
+
+  properties: [
+    {
+      class: 'List',
+      name: 'allowedCodes',
+      javaFactory: `
+        ArrayList arr = new ArrayList();
+        arr.add("02ba");
+        return arr;
+      `,
+      documentation: `the codes returned from services such as Accuity with status other than PASSED that
+        pass bank validaiton despite the status`,
+    }
   ],
 
   methods: [
@@ -47,7 +62,7 @@ foam.CLASS({
           }
 
           var ret = bankAccountValidationService.convertToIbanAndSwiftCode(x,
-            account.getCountry(), nationalId, account.getCheckDigitNumber());
+            account.getCountry(), nationalId, account.getCheckDigitNumber(), getAllowedCodes());
           account.setIban(ret[0]);
           account.setSwiftCode(ret[1]);
         } catch ( RuntimeException e ) {
