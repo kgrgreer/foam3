@@ -23,14 +23,7 @@ import foam.nanos.auth.User;
 import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.model.Transaction;
 
-import javax.annotation.Nonnull;
-
 public abstract class ReconciliationReportGenerator extends ReportGenerator {
-
-  @Override
-  protected Object getSourceId(@Nonnull Object object) {
-    return ((SummaryTransaction) object).getId();
-  }
 
   protected String getRoot(X x, Transaction transaction) {
     var superX = x.put("subject", new Subject.Builder(x).setUser(new User.Builder(x).setId(1).build()).build());

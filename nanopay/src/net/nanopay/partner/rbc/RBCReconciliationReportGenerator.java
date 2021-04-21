@@ -22,6 +22,7 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import net.nanopay.reporting.ReconciliationReportGenerator;
+import net.nanopay.reporting.ReportGenerator;
 import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;

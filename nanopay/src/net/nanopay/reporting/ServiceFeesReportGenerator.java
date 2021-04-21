@@ -18,19 +18,16 @@
 
 package net.nanopay.reporting;
 
+import foam.core.FObject;
 import foam.core.X;
 
 import javax.annotation.Nonnull;
 import java.util.Calendar;
 
 public class ServiceFeesReportGenerator extends ReportGenerator {
-  @Override
-  protected Object getSourceId(@Nonnull Object object) {
-    return ((ReconciliationReport) object).getId();
-  }
 
   @Override
-  protected ServiceFeesReport generate(X x, @Nonnull Object src) {
+  protected ServiceFeesReport generate(X x, @Nonnull FObject src) {
     var rr = (ReconciliationReport) src;
     var sfr = new ServiceFeesReport();
 
@@ -50,4 +47,5 @@ public class ServiceFeesReportGenerator extends ReportGenerator {
 
     return sfr;
   }
+
 }

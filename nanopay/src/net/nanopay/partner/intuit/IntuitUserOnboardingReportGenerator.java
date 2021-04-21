@@ -18,21 +18,22 @@
 
 package net.nanopay.partner.intuit;
 
+import foam.core.FObject;
 import foam.core.X;
 import foam.nanos.auth.User;
 import foam.nanos.crunch.CapabilityJunctionStatus;
 import foam.nanos.crunch.CrunchService;
 import net.nanopay.model.Business;
+import net.nanopay.reporting.ReportGenerator;
 import net.nanopay.reporting.UserOnboardingReport;
-import net.nanopay.reporting.UserOnboardingReportGenerator;
 
 import javax.annotation.Nonnull;
 import java.util.Calendar;
 
-public class IntuitUserOnboardingReportGenerator extends UserOnboardingReportGenerator {
+public class IntuitUserOnboardingReportGenerator extends ReportGenerator {
 
   @Override
-  public UserOnboardingReport generate(X x, @Nonnull Object src) {
+  public UserOnboardingReport generate(X x, @Nonnull FObject src) {
     var user = (User) src;
 
     var group = user.getGroup();

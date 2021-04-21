@@ -17,6 +17,7 @@
 
 package net.nanopay.partner.intuit;
 
+import foam.core.FObject;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
@@ -55,7 +56,7 @@ public class IntuitReconciliationReportGenerator extends RBCReconciliationReport
   }
 
   @Override
-  protected LastModifiedAware generate(X x, @Nonnull Object src) {
+  protected LastModifiedAware generate(X x, @Nonnull FObject src) {
     var transaction = (SummaryTransaction) src;
     var ciTransaction = ciMap.get(transaction.getId());
     var coTransaction = coMap.get(transaction.getId());
