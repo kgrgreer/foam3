@@ -31,6 +31,7 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'foam.nanos.notification.Notification',
 
     'java.util.Date',
 
@@ -53,14 +54,14 @@ foam.CLASS({
           User payer = tx.findSourceAccount(x).findOwner(x);
           User payee = tx.findDestinationAccount(x).findOwner(x);
           DowJonesService dowJones = (DowJonesService) x.get("dowJonesService");
+          String spid = tx.getSpid();
+          String group = spid + "-fraud-ops";
           try {
             boolean payerSuccess = screenUser(x, payer, dowJones);
             boolean payeeSuccess = screenUser(x, payee, dowJones);
             if ( payerSuccess && payeeSuccess ) {
               tx.setStatus(TransactionStatus.COMPLETED);
             } else {
-              String spid = tx.getSpid();
-              String group = spid + "-fraud-ops";
               StringBuilder description = new StringBuilder("Compliance check failed for users: ");
               if ( ! payerSuccess ) description.append("payer - id(").append(payer.getId()).append("),");
               if ( ! payeeSuccess ) description.append("payee - id(").append(payee.getId()).append(")");
@@ -77,8 +78,18 @@ foam.CLASS({
               ((DAO) x.get("approvalRequestDAO")).put(approvalRequest);
             }
           } catch (Exception e) {
-            tx.setStatus(TransactionStatus.COMPLETED);
             Logger logger = (Logger) x.get("logger");
+            tx.setStatus(TransactionStatus.COMPLETED);
+            Notification notification = new Notification();
+            notification.setGroupId(group);
+            notification.setBody("Failed to run Dow Jones check against payer and payee for transaction id: " + tx.getId());
+            notification.setNotificationType("Failed to call DJ service.");
+            try {
+              ((DAO)x.get("localNotificationDAO")).put_(x, notification);
+            }
+            catch (Exception ex) {
+              logger.error("Failed to put Failed JS compliance notification. " + ex);
+            };
             logger.error("ScreenUsersOnTransactionCreate Error: ", e);
           }
         }
