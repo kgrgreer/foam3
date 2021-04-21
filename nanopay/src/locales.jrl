@@ -733,9 +733,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Limited Liability Company",targe
 p({class:"foam.i18n.Locale",locale:"pt",source:"Publicly Traded Corporation",target:"Corporação de capital aberto"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Trust",target:"Confiar em"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"Assigned",target:"Designados"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Requested",target:"Requeridos"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"Approved",target:"Aprovado"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"Pending",target:"Pendente"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Approved",target:"Aprovados"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Pending",target:"Pendentes"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"All",target:"Todo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Rejected",target:"Rejeitado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Completed",target:"Concluído"})
