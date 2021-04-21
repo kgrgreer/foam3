@@ -1,6 +1,7 @@
 acceptanceDocuments
 accounts
 accountTemplates
+addressConfig
 afexBusinessSectors
 afexUsers
 afexCredentialDAO
