@@ -1974,12 +1974,16 @@ p({
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
 
-// USD Spot Rate, used in FeeRateExpr predicates
+// USD Spot Rate, used in converting USD Fee to BRL
 p({
   class: "net.nanopay.tx.fee.SpotRate",
   id: "AE2DA308-0144-40AB-95E3-EFECCA4A4632",
   name: "USD Spot Rate",
   sourceCurrencyExpr: {
+    class: "foam.mlang.Constant",
+    value: "BRL"
+  },
+  destinationCurrencyExpr: {
     class: "foam.mlang.Constant",
     value: "USD"
   },
@@ -2173,10 +2177,6 @@ p({
       {
         class: "net.nanopay.tx.fee.FeeExpr",
         feeName: "USD Spot Rate"
-      },
-      {
-        class: "net.nanopay.tx.fee.FeeExpr",
-        feeName: "Total Rate"
       }
     ]
   },
