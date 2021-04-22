@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -27,11 +27,10 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.core.ContextAwareAgent',
     'foam.core.X',
     'net.nanopay.tx.creditengine.CreditCodeAccount',
-    'net.nanopay.tx.creditengine.CreditCodeTransaction',
-    'foam.core.ContextAwareAgent',
-
+    'net.nanopay.tx.creditengine.CreditCodeTransaction'
   ],
 
   methods: [

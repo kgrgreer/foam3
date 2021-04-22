@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -28,9 +28,9 @@
      'net.nanopay.tx.FeeLineItem',
      'net.nanopay.tx.InvoicedCreditLineItem',
      'net.nanopay.tx.InvoicedFeeLineItem',
-     'net.nanopay.tx.TransactionLineItem',
      'net.nanopay.tx.model.Transaction',
-     'java.util.ArrayList',
+     'net.nanopay.tx.TransactionLineItem',
+     'java.util.ArrayList'
   ],
 
   methods: [
@@ -69,6 +69,6 @@
       return array.toArray(new CreditLineItem[array.size()]);
       `,
       documentation: 'Create a credit line item based on the transaction as a whole'
-    },
+    }
   ]
 });

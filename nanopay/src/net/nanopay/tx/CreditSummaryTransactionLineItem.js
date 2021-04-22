@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -27,9 +27,9 @@ foam.CLASS({
   extends: 'net.nanopay.tx.SummaryTransactionLineItem',
 
   javaImports: [
-    'net.nanopay.tx.Transfer',
+    'foam.dao.DAO',
     'net.nanopay.tx.model.Transaction',
-    'foam.dao.DAO'
+    'net.nanopay.tx.Transfer'
   ],
 
   properties: [

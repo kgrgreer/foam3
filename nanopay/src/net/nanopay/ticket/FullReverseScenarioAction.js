@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -25,22 +25,20 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.util.SafetyUtil',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.util.SafetyUtil',
     'java.util.List',
     'java.util.Arrays',
     'java.util.ArrayList',
     'foam.nanos.logger.Logger',
     'net.nanopay.ticket.RefundTicket',
-    'net.nanopay.tx.FeeLineItem',
-    'net.nanopay.tx.SummarizingTransaction',
-    'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.tx.FeeLineItem',
-    'net.nanopay.tx.SummaryTransactionLineItem',
     'net.nanopay.tx.billing.ErrorFee',
+    'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus'  
+    'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.tx.SummarizingTransaction',
+    'net.nanopay.tx.TransactionLineItem'
   ],
 
   properties: [

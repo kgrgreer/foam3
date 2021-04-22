@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -24,25 +24,25 @@ foam.CLASS({
   `,
 
   javaImports: [
-    'foam.nanos.logger.Logger',
-    'foam.nanos.auth.User',
+    'foam.core.ValidationException',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.mlang.sink.Count',
     'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.SummarizingTransaction',
-    'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.tx.CreditLineItem',
-    'net.nanopay.tx.FeeLineItem',
-    'foam.core.ValidationException',
     'net.nanopay.tx.Transfer',
     'java.util.ArrayList',
     'java.util.List',
     'java.util.HashSet',
     'net.nanopay.account.Account',
-    'foam.mlang.sink.Count',
     'net.nanopay.tx.creditengine.CreditCodeAccount',
+    'net.nanopay.tx.CreditLineItem',
+    'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.SummarizingTransaction',
+    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.ValueMovementTransaction'
   ],
 

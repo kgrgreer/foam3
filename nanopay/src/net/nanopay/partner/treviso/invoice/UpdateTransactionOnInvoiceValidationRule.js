@@ -73,7 +73,7 @@ foam.CLASS({
                         SafetyUtil.validate(agencyX, invoice);
                         var crunchService = (CrunchService) agencyX.get("crunchService");
 
-                        Boolean isRejected = invoice.checkRequirementsStatusNoThrow(x, new String[]{getRequiredCapabilityId()}, CapabilityJunctionStatus.REJECTED);
+                        boolean isRejected = invoice.checkRequirementsStatusNoThrow(x, new String[]{getRequiredCapabilityId()}, CapabilityJunctionStatus.REJECTED);
 
                         if ( isRejected ){
                             var transactionDAO = (DAO) agencyX.get("transactionDAO");

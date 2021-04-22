@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -23,8 +23,8 @@
   documentation: `Scenario Action to hold the ticket in a waiting status while a transaction progresses`,
 
   javaImports: [
-    'net.nanopay.ticket.RefundTicket',
     'net.nanopay.ticket.RefundStatus',
+    'net.nanopay.ticket.RefundTicket'
   ],
 
   properties: [

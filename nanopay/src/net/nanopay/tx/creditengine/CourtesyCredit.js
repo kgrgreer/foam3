@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -25,14 +25,14 @@ foam.CLASS({
   //maybe give this a life cycle and generate an approval or something
 
   javaImports: [
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.InvoicedCreditLineItem',
-    'java.util.ArrayList',
     'foam.nanos.logger.Logger',
-    'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.tx.CreditLineItem',
     'foam.util.SafetyUtil',
-   'net.nanopay.tx.model.TransactionStatus',
+    'java.util.ArrayList',
+    'net.nanopay.tx.CreditLineItem',
+    'net.nanopay.tx.InvoicedCreditLineItem',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.tx.TransactionLineItem',
     'foam.dao.DAO',
   ],
 
@@ -75,7 +75,7 @@ foam.CLASS({
       label: 'Reason For Courtesy Credit',
       documentation: 'purpose of credit, or note from agent.',
       section: 'accountInformation'
-    },
+    }   
   ],
 
   methods: [
@@ -154,7 +154,6 @@ foam.CLASS({
         ((DAO) x.get("localTransactionDAO")).put(counter);
       `,
       documentation: 'When the courtesy credit is applied on final submission of transaction mark it as used'
-    },
-
+    }
   ]
 });

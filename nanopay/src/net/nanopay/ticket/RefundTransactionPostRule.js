@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -28,13 +28,13 @@
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.DAO',
     'foam.dao.ArraySink',
+    'foam.dao.DAO',
     'foam.nanos.logger.Logger',
-    'net.nanopay.ticket.RefundTicket',
     'net.nanopay.ticket.RefundStatus',
-    'net.nanopay.tx.creditengine.FeeRefund',
+    'net.nanopay.ticket.RefundTicket',
     'net.nanopay.tx.creditengine.AllFeeWaiver',
+    'net.nanopay.tx.creditengine.FeeRefund',
     'net.nanopay.tx.DigitalTransaction',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.model.Transaction',

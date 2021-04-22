@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -28,9 +28,9 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
-    'foam.dao.ArraySink',
     'net.nanopay.ticket.RefundTicket',
     'net.nanopay.ticket.RefundStatus',
     'net.nanopay.tx.model.Transaction',
