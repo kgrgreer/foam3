@@ -1411,6 +1411,8 @@ var classes = [
 
   // Reporting
   'net.nanopay.reporting.ReconciliationReport',
+  'net.nanopay.reporting.ServiceFeesReport',
+  'net.nanopay.reporting.UserOnboardingReport',
 
   // bepay
   'net.nanopay.partner.bepay.tx.BePayTransaction',

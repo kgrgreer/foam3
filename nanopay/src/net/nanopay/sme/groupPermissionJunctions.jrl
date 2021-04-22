@@ -143,6 +143,8 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId"
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.fileTypeDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.contactService"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"transactionplan.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.addressConfigDAO"})
+
 
 // Transaction Line Items
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"accountrelationshiplineitem.read.*"})
