@@ -524,7 +524,7 @@ foam.CLASS({
                 action: this.ADD_CONTACT,
                 actionData: this,
                 search: true,
-                searchPlaceholder: this.START_SEARCH,
+                searchPlaceholder: "",
                 mode: displayMode
               })
                 .enableClass('invalid', this.slot(

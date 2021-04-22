@@ -19,6 +19,10 @@ foam.CLASS({
     package: 'net.nanopay.partner.treviso.invoice',
     name: 'TrevisoCapabilityValidateRule',
 
+    implements: [
+        'foam.nanos.ruler.RuleAction'
+    ],
+
     documentation: `When an submit ready invoice is created, this will submit the transaction.`,
 
     javaExtends: [

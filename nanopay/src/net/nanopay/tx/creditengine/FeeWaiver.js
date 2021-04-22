@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -23,17 +23,17 @@ foam.CLASS({
   documentation: `give a credit for each fee id on the transaction at the discount percentage specified `,
 
   javaImports: [
-    'net.nanopay.tx.model.Transaction',
-    'java.util.ArrayList',
+    'foam.dao.DAO',
     'foam.nanos.logger.Logger',
-    'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.tx.model.TransactionStatus',
+    'foam.util.SafetyUtil',
+    'java.util.ArrayList',
     'net.nanopay.tx.CreditLineItem',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.InvoicedFeeLineItem',
     'net.nanopay.tx.InvoicedCreditLineItem',
-    'foam.util.SafetyUtil',
-    'foam.dao.DAO',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.tx.TransactionLineItem'
   ],
 
   implements: [

@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -24,7 +24,7 @@ foam.CLASS({
 
   messages: [
     { name: 'DESCRIPTION', message: 'Invoice Credit' },
-    { name: 'NOTE_MESSAGE', message: 'Credit will be applied at the end of billing period.' },
+    { name: 'NOTE_MESSAGE', message: 'Credit will be applied at the end of billing period.' }
   ],
   properties: [
     {

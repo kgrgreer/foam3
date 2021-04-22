@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -24,18 +24,18 @@
   transaction destination account regardless of who was charged`,
 
   javaImports: [
-    'net.nanopay.tx.model.Transaction',
-    'java.util.ArrayList',
+    'foam.dao.DAO',
+    'foam.util.SafetyUtil',
     'foam.nanos.logger.Logger',
-    'net.nanopay.ticket.RefundTicket',
-    'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.tx.model.TransactionStatus',
+    'java.util.ArrayList',
     'net.nanopay.tx.CreditLineItem',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.InvoicedFeeLineItem',
     'net.nanopay.tx.InvoicedCreditLineItem',
-    'foam.util.SafetyUtil',
-    'foam.dao.DAO',
+    'net.nanopay.ticket.RefundTicket',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.tx.TransactionLineItem'
   ],
 
   implements: [

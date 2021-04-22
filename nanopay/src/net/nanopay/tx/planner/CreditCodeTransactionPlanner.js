@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -23,17 +23,17 @@ foam.CLASS({
   documentation: 'Planner for adding transfers to creditcode Transactions',
 
   javaImports: [
+    'foam.util.SafetyUtil',
     'net.nanopay.account.Account',
     'net.nanopay.tx.creditengine.CreditCodeTransaction',
-    'net.nanopay.tx.creditengine.CreditCodeAccount',
-    'foam.util.SafetyUtil',
+    'net.nanopay.tx.creditengine.CreditCodeAccount'
   ],
 
   properties: [
     {
       name: 'bestPlan',
       value: true
-    },
+    }
   ],
 
   methods: [
