@@ -29,7 +29,6 @@ foam.CLASS({
     }
     ^ .foam-u2-tag-Select {
       width: 100%;
-      height: 35px;
       margin-bottom: 10px;
     }
     ^ .label {
@@ -41,7 +40,6 @@ foam.CLASS({
     }
     ^ .foam-u2-TextField {
       width: 100%;
-      height: 35px;
       margin-bottom: 10px;
       padding-left: 5px;
     }

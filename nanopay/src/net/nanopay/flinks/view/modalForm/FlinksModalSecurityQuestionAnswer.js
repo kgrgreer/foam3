@@ -133,7 +133,6 @@ foam.CLASS({
     }
     ^ .foam-u2-tag-Select {
       width: 100%;
-      height: 40px;
     }
   `,
 
