@@ -54,7 +54,7 @@ jobs:
               newman run https://www.getpostman.com/collections/617cdc82fb6affdc071b -e environments/intuit-environment.json
 
       - run:
-          name: Run Postman tests for Intuit
+          name: Run Postman tests for Bepay
           command: |
             ./build.sh -cjzJapi,br,bepay,bepay_development,bpp,bpp_development,sa-development
             newman run https://www.getpostman.com/collections/617cdc82fb6affdc071b -e environments/bepay_environment.json
