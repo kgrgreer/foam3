@@ -41,9 +41,6 @@ jobs:
             - gradle-repo-v1-{{ .Branch }}-
             - gradle-repo-v1-
 
-      # unit tests
-      - run: ./build.sh -ct
-      - run: ./build.sh -cjQt
 
       # postman tests
       - run: npm install -g newman
@@ -52,7 +49,7 @@ jobs:
           name: Run Postman tests for Bepay
           command: |
             ./build.sh -cjzJapi,br,bepay,bepay_development,bpp,bpp_development,sa-development
-            newman run https://www.getpostman.com/collections/aeab34fbb3030c4dbdeb -e environments/bepay_environment.json
+            newman run https://www.getpostman.com/collections/aeab34fbb3030c4dbdeb --timeout-request 150000 -e environments/bepay_environment.json
 
 
       - run:
