@@ -192,19 +192,7 @@ foam.CLASS({
       view: function(_, X) {
         let forceIntoRO = X.data.mode === 'percent' && X.data.showFullOwnerDetails;
         var x = forceIntoRO ? X.createSubContext({ controllerMode: foam.u2.ControllerMode.VIEW }) : X;
-        let selectSlot = foam.core.SimpleSlot.create({ value: 0 });
-        return foam.u2.MultiView.create({
-        views: [
-          foam.nanos.fs.fileDropZone.FileDropZone.create({
-            files$: X.data.documentsOfAddress$,
-            selected$: selectSlot
-          }, x),
-          foam.nanos.fs.fileDropZone.FilePreview.create({
-            data$: X.data.documentsOfAddress$,
-            selected$: selectSlot
-          }, x)
-        ]
-        });
+        return foam.u2.view.DocumentUploadView.create({ data$: X.data.documentsOfAddress$ }, x);
       },
       validateObj: function(documentsOfAddress) {
         if ( documentsOfAddress.length === 0 ) {
@@ -223,19 +211,7 @@ foam.CLASS({
       view: function(_, X) {
         let forceIntoRO = X.data.mode === 'percent' && X.data.showFullOwnerDetails;
         var x = forceIntoRO ? X.createSubContext({ controllerMode: foam.u2.ControllerMode.VIEW }) : X;
-        let selectSlot = foam.core.SimpleSlot.create({ value: 0 });
-        return foam.u2.MultiView.create({
-        views: [
-          foam.nanos.fs.fileDropZone.FileDropZone.create({
-            files$: X.data.documentsOfId$,
-            selected$: selectSlot
-          }, x),
-          foam.nanos.fs.fileDropZone.FilePreview.create({
-            data$: X.data.documentsOfId$,
-            selected$: selectSlot
-          }, x)
-        ]
-        });
+        return foam.u2.view.DocumentUploadView.create({ data$: X.data.documentsOfId$ }, x);
       },
       validateObj: function(documentsOfId) {
         if ( documentsOfId.length === 0 ) {
