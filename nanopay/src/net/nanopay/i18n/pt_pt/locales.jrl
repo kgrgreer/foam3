@@ -3466,7 +3466,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.admin.model.AccountS
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.admin.model.AccountStatus.DISABLED.label",target:"Desabilitado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.admin.model.AccountStatus.REVOKED.label",target:"Revogado"})
 
-// Payment Report
+/** Payment Report **/
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentReport.INVOICE_ID.label",target:"ID da fatura"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentReport.STATUS.label",target:"Status"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentReport.STATE.label",target:"Estado"})
