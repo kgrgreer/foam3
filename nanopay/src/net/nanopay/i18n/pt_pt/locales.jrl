@@ -2894,36 +2894,31 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBus
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.IE.label",target:"Inscrição Estadual"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerSection.OWNER_DETAILS",target:"Detalhes do cotista "})
 
+/** Job Titles **/
 p({class:"foam.i18n.Locale",locale:"pt",source:"Accountant.label",target:"Contador"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Accounts Manager.label",target:"Gerente de contas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Accounts Payable Clerk.label",target:"Escriturário de contas a pagar"})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"Accounts Payable Manager.label",target:"Gerente de contas a pagar"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Accounts Receivable Clerk.label",target:"Escriturário de contas a receber"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Accounts Receivable Manager.label",target:"Gerente de Contas a Receber"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Cash Manager.label",target:"Gerente de Caixa"})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"CEO.label",target:"CEO"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"CFO.label",target:"CFO"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"Chairman.label",target:"Chairman"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Chairman.label",target:"Presidente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Company Secretary.label",target:"Secretária da companhia"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Comptroller.label",target:"Controladoria"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Controller.label",target:"Controladoria"})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"COO.label",target:"COO"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"Director.label",target:"Director"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Director.label",target:"Diretor"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Finance Manager.label",target:"Gerente de finanças"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Finance Officer.label",target:"Oficial de Finanças"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Financial Controller.label",target:"Controlador financeiro"})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"Financial Director.label",target:"Diretor financeiro"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"General Manager.label",target:"Director Geral"})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"Group Finance Director.label",target:"Diretor Financeiro do Grupo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Group Treasury Manager.label",target:"Gerente de Tesouraria do Grupo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Head of Finance.label",target:"Chefe de finanças"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Head of Treasury.label",target:"Chefe do tesouro"})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"Managing Director.label",target:"Diretor Geral"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Office Manager.label",target:"Gerente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Other.label",target:"De outros"})
