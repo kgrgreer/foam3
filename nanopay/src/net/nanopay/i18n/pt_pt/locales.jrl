@@ -1239,7 +1239,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_DOMESTIC_TRANSACTION_AMOUNT.documentation",target:"Número anual estimado de transações que o usuário ou a empresa realiza. baseCurrency deste modelo. Empresa sediada nos Estados Unidos (as informações referem-se às transações domésticas, pois serão processadas por meio da AFX) Propriedade herdada - em abril de 2020"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.FIRST_TRADE_DATE_DOMESTIC.label",target:"Primeira Data de Negociação Doméstica"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.OTHER_TRANSACTION_PURPOSE.label",target:"Por favor especifique"})
-//Suggested User Transaction Info Enums
+
+/** Suggested User Transaction Info Enums **/
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_REV_ENUM.label",target:"Vendas anuais brutas estimadas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE_ENUM.label",target:"Objetivo principal das transações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_FREQUENCY_ENUM.label",target:"Número estimado de transações anuais"})
@@ -3674,7 +3675,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.modal.SessionTime
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.modal.SessionTimeoutModal.STAY_SIGN_IN.label",target:"Fique conectado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.GrandTotalLineItem.GRAND_TOTAL",target:"Geral Total"})
 
-// Business Summary Report
+/** Business Summary Report **/
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.BusinessSummaryReport.TYPE_DATE.label",target:"Digite a data"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.BusinessSummaryReport.DAILY.label",target:"Diariamente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.BusinessSummaryReport.YESTERDAY.label",target:"Ontem"})
@@ -3684,7 +3685,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.Busines
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.BusinessSummaryReport.YEAR_TO_DATE.label",target:"No acumulado do ano"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.BusinessSummaryReport.TOTAL.label",target:"Total"})
 
-// Rejected Transaction Report
+/** Rejected Transaction Report **/
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.RejectedTransactionReport.ID.label",target:"ID"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.RejectedTransactionReport.CREATED.label",target:"Criado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.RejectedTransactionReport.STATUS.label",target:"Status"})
@@ -3699,7 +3700,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.Rejecte
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.RejectedTransactionReport.DESTINATION_AMOUNT.label",target:"Quantidade de destino"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.RejectedTransactionReport.DESTINATION_CURRENCY.label",target:"Moeda de destino"})
 
-// User Compliance Summary Report
+/** User Compliance Summary Report **/
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.ROW_ACTION.label",target:"Ação de linha"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.ID.label",target:"ID"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.CASE_NAME.label",target:"Nome do caso"})
