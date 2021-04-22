@@ -30,7 +30,8 @@ foam.CLASS({
   `,
 
   implements: [
-    'foam.core.Validatable'
+    'foam.core.Validatable',
+    'foam.mlang.Expressions'
   ],
 
   javaImports: [
@@ -39,6 +40,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
+    'java.util.regex.Pattern',
     'net.nanopay.country.br.BrazilVerificationServiceInterface'
   ],
 
@@ -48,11 +50,8 @@ foam.CLASS({
   ],
 
   constants: [
-    {
-      name: 'CPF_LENGTH',
-      value: 11,
-      javaType: 'int'
-    }
+    { name: 'FORMATTED_CPF_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{3}\\\\.\\\\d{3}\\\\.\\\\d{3}\\\\-\\\\d{2}$")' },
+    { name: 'UNFORMATTED_CPF_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{11}$")' }
   ],
 
   messages: [
@@ -115,10 +114,10 @@ foam.CLASS({
         {
           args: ['data'],
           predicateFactory: function(e) {
-            return e.EQ(
-              foam.mlang.StringLength.create({
-                arg1: net.nanopay.country.br.CPF.DATA
-              }), 11);
+            return e.OR(
+              e.REG_EXP(net.nanopay.country.br.CPF.DATA, /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/),
+              e.REG_EXP(net.nanopay.country.br.CPF.DATA, /^\d{11}$/)
+            );
           },
           errorMessage: 'INVALID_CPF'
         },
@@ -130,11 +129,10 @@ foam.CLASS({
                 foam.mlang.StringLength.create({
                   arg1: net.nanopay.country.br.CPF.CPF_NAME
                 }), 0),
-              e.EQ(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.country.br.CPF.DATA
-                }), 11)
-            );
+              e.OR(
+                e.REG_EXP(net.nanopay.country.br.CPF.DATA, /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/),
+                e.REG_EXP(net.nanopay.country.br.CPF.DATA, /^\d{11}$/)
+              ));
           },
           errorMessage: 'INVALID_CPF_CHECKED'
         }
@@ -144,7 +142,8 @@ foam.CLASS({
       },
       view: function(_, X) {
         return foam.u2.FormattedTextField.create({
-          formatter: [3, '.', 3, '.', 3, '-', 2]
+          formatter: [3, '.', 3, '.', 3, '-', 2],
+          returnFormatted: true
         }, X);
       }
     },
@@ -218,7 +217,8 @@ foam.CLASS({
         // These should be valid before making API call
         try {
           this.BIRTHDAY.validateObj(x, this);
-          if ( getData() == null || getData().length() != this.CPF_LENGTH ) {
+          if ( getData() == null ||
+            ( ! UNFORMATTED_CPF_PATTERN.matcher(getData()).matches() && ! FORMATTED_CPF_PATTERN.matcher(getData()).matches() ) ) {
             throw new foam.core.ValidationException(INVALID_CPF);
           }
         } catch ( foam.core.ValidationException e ) {

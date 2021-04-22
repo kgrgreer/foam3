@@ -1201,6 +1201,7 @@ var classes = [
   'net.nanopay.tx.planner.exceptions.PlannerValidationException',
   'net.nanopay.tx.planner.exceptions.PlannerCapabilityIncompleteException',
   'net.nanopay.tx.planner.exceptions.PlannerComplianceFailureException',
+  'net.nanopay.tx.planner.exceptions.PlannerStatusInactiveException',
 
   // Billing
   'net.nanopay.tx.billing.Bill',
@@ -1382,6 +1383,8 @@ var classes = [
 
   // Reporting
   'net.nanopay.reporting.ReconciliationReport',
+  'net.nanopay.reporting.ServiceFeesReport',
+  'net.nanopay.reporting.UserOnboardingReport',
 
   // bepay
   'net.nanopay.partner.bepay.tx.BePayTransaction',

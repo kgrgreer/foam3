@@ -283,7 +283,7 @@ foam.CLASS({
       view: function(_, X) {
         let forceIntoRO = X.data.mode === 'percent' && X.data.showFullOwnerDetails;
         var x = forceIntoRO ? X.createSubContext({ controllerMode: foam.u2.ControllerMode.VIEW }) : X;
-        return net.nanopay.sme.ui.UnstructuredAddressView.create({
+        return net.nanopay.sme.ui.StructuredAddressView.create({
           customCountryDAO: X.countryDAO,
           showValidation: X.data.showValidation
         }, x);

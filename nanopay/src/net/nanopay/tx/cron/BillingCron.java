@@ -58,7 +58,7 @@ public class BillingCron implements ContextAgent {
     Map<Long, List<Bill>> billingMap = new HashMap<>();
     for ( int i = 0; i < bills.getArray().size(); i++ ) {
       Bill bill = (Bill) bills.getArray().get(i);
-      Long id = (Long) bill.getChargeToUser() != null ? bill.getChargeToUser() : bill.getChargeToBusiness();
+      Long id = (Long) bill.getChargeToUser() != 0 ? bill.getChargeToUser() : bill.getChargeToBusiness();
       if ( ! billingMap.containsKey(id) ) {
           billingMap.put(id, new ArrayList<Bill>());
       }

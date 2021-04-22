@@ -1,4 +1,13 @@
-p({class:"foam.nanos.auth.ServiceProvider",id:"intuit",enabled:true,description:"intuit spid"})
+p({
+  class:"foam.nanos.auth.ServiceProvider",
+  id:"intuit",
+  enabled:true,
+  description:"intuit spid",
+  permissionsGranted: [
+    "language.read.en-",
+    "language.read.en-US"
+  ]
+})
 
 p({
   class: "foam.nanos.crunch.Capability",

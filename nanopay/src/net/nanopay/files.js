@@ -1385,6 +1385,7 @@ FOAM_FILES([
 
   // ruler
   { name: 'net/nanopay/meter/compliance/ruler/CanadianSanctionValidator' },
+  { name: 'net/nanopay/meter/compliance/ruler/CreateScreeningResponse' },
   { name: 'net/nanopay/meter/compliance/ruler/ComplianceTransactionApproval' },
   { name: 'net/nanopay/meter/compliance/ruler/PruneApprovalRequests' },
   { name: 'net/nanopay/meter/compliance/ruler/RequestBeneficialOwnersCompliance' },
@@ -1664,6 +1665,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/exceptions/PlannerValidationException' },
   { name: 'net/nanopay/tx/planner/exceptions/PlannerCapabilityIncompleteException' },
   { name: 'net/nanopay/tx/planner/exceptions/PlannerComplianceFailureException' },
+  { name: 'net/nanopay/tx/planner/exceptions/PlannerStatusInactiveException' },
 
   // Billing
   { name: 'net/nanopay/tx/billing/Bill' },
@@ -1731,6 +1733,8 @@ FOAM_FILES([
   // crunch onboarding
   { name: 'net/nanopay/crunch/onboardingModels/InitialBusinessData' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerPersonalData' },
+  { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerPersonalDataOnPut' },
+  { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerQuestionOnPut' },
   { name: 'net/nanopay/partner/treviso/SigningOfficerPersonalDataTreviso' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerQuestion' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerByDefaultRule' },
@@ -1758,6 +1762,8 @@ FOAM_FILES([
 
   //Reporing
   { name: 'net/nanopay/reporting/ReconciliationReport' },
+  { name: 'net/nanopay/reporting/ServiceFeesReport' },
+  { name: 'net/nanopay/reporting/UserOnboardingReport' },
 
   { name: 'net/nanopay/payment/PayeeCurrencyService' },
   { name: 'net/nanopay/payment/PayeeCurrency' },
@@ -1953,7 +1959,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/cron/OnboardingReminderNotification'},
   { name: 'net/nanopay/notification/PermissionedNotificationSettingRule'},
   { name: 'net/nanopay/sme/ruler/BusinessCompliancePassedEmailNotification'},
-  
+
   // central bank
   { name: 'net/nanopay/cb/commercial/Dashboard'},
   { name: 'net/nanopay/cb/central/Dashboard'},

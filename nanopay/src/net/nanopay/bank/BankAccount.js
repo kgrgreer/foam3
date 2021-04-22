@@ -29,6 +29,7 @@ foam.CLASS({
   requires: [
     'foam.core.Currency',
     'foam.dao.PromisedDAO',
+    'foam.dao.PurgeRecordCmd',
     'foam.nanos.auth.Address',
     'foam.nanos.iban.ValidationIBAN',
     'foam.u2.ControllerMode',
@@ -614,6 +615,16 @@ foam.CLASS({
       name: 'bankRoutingCode',
       documentation: 'Bank routing code aka. national ID used to clear funds and/or route payments domestically.',
       visibility: 'HIDDEN'
+    },
+    {
+      class: 'String',
+      name: 'checkDigitNumber',
+      visibility: 'HIDDEN',
+      documentation: `check digit is to be used in IBAN translation and calculated based on account number,
+        institution and branchId. Different countries specify different rules => to be overwritten in subclass.
+        This is NOT check digit only, this property returns the final formatted number. E.g. for some countries its
+        branch + accountNumber + checkDigit, for others its accountNumber + checkDigit.`,
+      javaFactory: `return getAccountNumber();`
     }
   ],
 
@@ -642,6 +653,7 @@ foam.CLASS({
       },
       code: async function(X) {
         var self = this.__subContext__;
+        self.accountDAO.cmd_(this, this.PurgeRecordCmd.create({ id: this.id }));
         var account = await self.accountDAO.find(this.id);
         self.ctrl.add(this.SMEModal.create().addClass('bank-account-popup')
           .startContext({ controllerMode: this.ControllerMode.EDIT })

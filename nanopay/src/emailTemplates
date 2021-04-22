@@ -1319,3 +1319,17 @@ p({
     </include>
   """
 })
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "e23bdd4d-0db8-4d47-abcb-e8271242dd26",
+  "name": "failed-dow-jones-call",
+  "group": "fraud-ops",
+  "locale": "pt",
+  "displayName": "Dow Jones failed",
+  "subject": "Dow Jones service failed to screen users on compliance transaction",
+  "body": """
+    <include template = 'nanopay-email-base'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">Failed to run Dow Jones check against payer and payee for transaction id: {{txId}}</p>
+    </include>
+  """
+})
