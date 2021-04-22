@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2021] nanopay Corporation
+ * [2020] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -18,7 +18,6 @@
 
 package net.nanopay.reporting;
 
-import foam.core.ClassInfo;
 import foam.core.FObject;
 import foam.core.X;
 import foam.nanos.auth.LastModifiedAware;
@@ -31,7 +30,6 @@ import java.util.Map;
 public abstract class ReportGenerator {
 
   protected Map<Object, LastModifiedAware> cacheMap = new HashMap<>();
-  protected ClassInfo of;
 
   protected LastModifiedAware getCachedElement(Object elementId, Date lastModified) {
     var cached = cacheMap.get(elementId);
