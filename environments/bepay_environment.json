@@ -259,7 +259,7 @@
 		},
 		{
 			"key": "bpp_url",
-			"value": "bpp:8080",
+			"value": "http://bpp:8080",
 			"enabled": true
 		},
 		{
