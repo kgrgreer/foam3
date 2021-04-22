@@ -380,7 +380,7 @@ p({
 
 p({
   "class": "foam.nanos.crunch.Capability",
-  "id":"payment.provider.afex",
+  "id":"AFEX",
   "name":"AFEX Payment Provider Capability",
   "description":"AFEXPayment Provider Capability",
   "version":"0",

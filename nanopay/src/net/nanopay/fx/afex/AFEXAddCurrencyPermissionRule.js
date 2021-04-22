@@ -80,7 +80,7 @@ foam.CLASS({
                 // TODO check and remove if currency.read permissions still need to be given here and update rule name
 
                 CrunchService crunchService = (CrunchService) x.get("crunchService");
-                String afexPaymentMenuCapId = "payment.provider.afex";
+                String afexPaymentMenuCapId = "AFEX";
                 Subject subject = new Subject(business);
                 crunchService.updateUserJunction(x, subject, afexPaymentMenuCapId, null, CapabilityJunctionStatus.GRANTED);
                 

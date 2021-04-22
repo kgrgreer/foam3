@@ -98,13 +98,13 @@ p({
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId: "crunch.onboarding.registering-ca-payment-provider",
-  targetId: "payment.provider.bmo",
+  targetId: "BMO",
 })
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId: "crunch.onboarding.registering-ca-payment-provider",
-  targetId: "payment.provider.rbc",
+  targetId: "RBC",
 })
 
 p({
@@ -146,11 +146,11 @@ p({
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId: "crunch.onboarding.registering-international-payment-provider",
-  targetId: "payment.provider.afex",
+  targetId: "AFEX",
 })
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId: "crunch.onboarding.registering-us-international-payment-provider",
-  targetId: "payment.provider.afex",
+  targetId: "AFEX",
 })

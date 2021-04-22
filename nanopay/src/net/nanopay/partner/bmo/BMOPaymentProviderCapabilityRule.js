@@ -52,7 +52,7 @@ foam.CLASS({
           var subject = new Subject(x);
           subject.setUser(business);
           var subjectX = x.put("subject", subject);
-          String bmoPaymentMenuCapId = "payment.provider.bmo";
+          String bmoPaymentMenuCapId = "AFEX";
           crunchService.updateJunction(subjectX, bmoPaymentMenuCapId, null, CapabilityJunctionStatus.GRANTED);
         }
 

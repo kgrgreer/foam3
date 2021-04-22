@@ -572,7 +572,7 @@ foam.CLASS({
       name: '_1f6b2047_1eef_471d_82e7_d86bdf511375',
       code: async function(x, business) {
         // cap name: Business Prerequisites for Brazil
-        var id = 'payment.provider.afex';
+        var id = 'AFEX';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {

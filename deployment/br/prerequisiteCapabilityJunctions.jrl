@@ -229,5 +229,5 @@ p({
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId: "crunch.onboarding.br.registering-payment-provider",
-  targetId: "payment.provider.afex",
+  targetId: "AFEX",
 })

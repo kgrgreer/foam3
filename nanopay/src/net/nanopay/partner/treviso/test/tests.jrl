@@ -645,7 +645,7 @@ p({
         'crunch.onboarding.br.international-payments',
         'crunch.onboarding.br.parent.international-payments'
       );
-      //support.ignore('payment.provider.afex','crunch.onboarding.br.registering-payment-provider'); // Payment Provider caps
+      //support.ignore('AFEX','crunch.onboarding.br.registering-payment-provider'); // Payment Provider caps
       try {
         await support.grantAll(x, 'crunch.onboarding.br.parent.international-payments', test);
       } catch(e){

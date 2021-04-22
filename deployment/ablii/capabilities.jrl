@@ -99,7 +99,7 @@ p({
 
 p({
   "class": "foam.nanos.crunch.Capability",
-  "id":"payment.provider.bmo",
+  "id":"BMO",
   "name":"BMO Payment Provider Capability",
   "description":"BMO Payment Provider Capability",
   "permissionsGranted":[
@@ -114,7 +114,7 @@ p({
 
 p({
   "class": "foam.nanos.crunch.Capability",
-  "id":"payment.provider.rbc",
+  "id":"RBC",
   "name":"RBC Payment Provider Capability",
   "description":"RBC Payment Provider Capability",
   "permissionsGranted":[

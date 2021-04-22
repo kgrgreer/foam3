@@ -80,7 +80,7 @@ foam.CLASS({
             subject.setUser(business);
 
             var subjectX = x.put("subject", subject);
-            String afexPaymentMenuCapId = "payment.provider.afex";
+            String afexPaymentMenuCapId = "AFEX";
             crunchService.updateJunction(subjectX, afexPaymentMenuCapId, null, CapabilityJunctionStatus.GRANTED);
           }
         }
