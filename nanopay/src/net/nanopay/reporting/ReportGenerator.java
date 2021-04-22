@@ -18,6 +18,7 @@
 
 package net.nanopay.reporting;
 
+import foam.core.ClassInfo;
 import foam.core.FObject;
 import foam.core.X;
 import foam.nanos.auth.LastModifiedAware;
@@ -27,9 +28,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class ReportGenerator {
+public class ReportGenerator {
 
   protected Map<Object, LastModifiedAware> cacheMap = new HashMap<>();
+  protected ClassInfo of;
 
   protected LastModifiedAware getCachedElement(Object elementId, Date lastModified) {
     var cached = cacheMap.get(elementId);
@@ -45,7 +47,14 @@ public abstract class ReportGenerator {
     return object.getProperty("id");
   }
 
-  protected abstract LastModifiedAware generate(X x, @Nonnull FObject src);
+  protected LastModifiedAware generate(X x, @Nonnull FObject src) {
+    try {
+      return (LastModifiedAware) ((FObject) of.newInstance()).copyFrom(src);
+    } catch (IllegalAccessException | InstantiationException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
 
   public FObject generateReport(X x, LastModifiedAware src) {
     if ( src == null ) return null;
@@ -59,6 +68,10 @@ public abstract class ReportGenerator {
 
     cacheMap.put(id, report);
     return (FObject) report;
+  }
+
+  public ReportGenerator(ClassInfo of) {
+    this.of = of;
   }
 
 }
