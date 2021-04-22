@@ -1114,6 +1114,18 @@ foam.CLASS({
       ],
       type: 'Void',
       javaCode: `
+      Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
+
+      // We don't allow pausing any transaction in status: complete, sent, failed, Declined
+      if ( (oldTxn != null) && (getStatus() == TransactionStatus.PAUSED)
+        && ( (oldTxn.getStatus() == TransactionStatus.COMPLETED ) ||
+        (oldTxn.getStatus() == TransactionStatus.SENT ) ||
+        (oldTxn.getStatus() == TransactionStatus.FAILED ) ||
+        (oldTxn.getStatus() == TransactionStatus.DECLINED )
+        )
+      ) {
+        throw new ValidationException("Unable to pause this transaction");
+      }
 
       AppConfig appConfig = (AppConfig) x.get("appConfig");
       DAO userDAO = (DAO) x.get("bareUserDAO");
