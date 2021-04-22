@@ -41,6 +41,10 @@ jobs:
             - gradle-repo-v1-{{ .Branch }}-
             - gradle-repo-v1-
 
+      # unit tests
+      - run: ./build.sh -ct
+      - run: ./build.sh -cjQt
+
 
       # postman tests
       - run: npm install -g newman
