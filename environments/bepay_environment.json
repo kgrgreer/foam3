@@ -1,0 +1,334 @@
+{
+	"id": "0502fb22-f93b-41f6-8f4c-fcaa4ab918ec",
+	"name": "local-api",
+	"values": [
+		{
+			"key": "url",
+			"value": "http://intuit:8080",
+			"enabled": false
+		},
+		{
+			"key": "bearer_token",
+			"value": "2c2d88af-cba8-9549-05e9-18be400a0aed",
+			"enabled": false
+		},
+		{
+			"key": "business_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "business_bearer_token",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "api_bearer_token",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "user_bearer_token",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "challenge",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "request_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "challenge_answer",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "login_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "account_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "institution",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "flinks_account_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "tx_user_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "flinks_customer_id",
+			"value": "efee890f-e706-4d1e-b18e-a24e89aafb08",
+			"enabled": false
+		},
+		{
+			"key": "flinks_company",
+			"value": "nanopay",
+			"enabled": false
+		},
+		{
+			"key": "result_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "order_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "result_id_prod",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "order_id_prod",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "nanopay_request_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "bus_user_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "b_o_user_id",
+			"value": null,
+			"enabled": false
+		},
+		{
+			"key": "b_o_business_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "bpp_business_bearer_token",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "b_o_account_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "b_o_contact_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "b_o_dest_account_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "flow_b_nanopay_request_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "flow_b_account_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "flow_b_business_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "flow_b_user_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "flow_b_business_bearer_token",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "flow_u_account_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "flow_u_business_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "flow_u_user_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "flow_u_user_bearer_token",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "flow_transaction_amount",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "flow_transaction_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "intuit_customer_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "intuit_invoice_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "flow_approval_request_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "account_number",
+			"value": "000983694",
+			"enabled": false
+		},
+		{
+			"key": "test01_user_number",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "test01_u_account_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "test01_u_user_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "test01_u_business_id",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"enabled": false
+		},
+		{
+			"key": "user_number",
+			"value": 983694,
+			"enabled": true
+		},
+		{
+			"key": "bpp_bearer_token",
+			"value": "E50DCA40-3B75-4617-9C0C-92E6E8AAE93B",
+			"enabled": true
+		},
+		{
+			"key": "bpp_url",
+			"value": "bpp:8080",
+			"enabled": true
+		},
+		{
+			"key": "bpp_user_bearer_token",
+			"value": "c5d605d0-de5c-6785-2d14-f45252cf6dda",
+			"enabled": true
+		},
+		{
+			"key": "u_o_user_id",
+			"value": 8024,
+			"enabled": true
+		},
+		{
+			"key": "u_o_account_id",
+			"value": "5a5469b8-6103-9f5c-5d27-4fea5f764f37",
+			"enabled": true
+		},
+		{
+			"key": "u_o_contact_id",
+			"value": 8025,
+			"enabled": true
+		},
+		{
+			"key": "u_o_dest_account_id",
+			"value": "c080f998-26cd-70a8-1660-725cd4d5bef2",
+			"enabled": true
+		},
+		{
+			"key": "user_number",
+			"value": 53251,
+			"enabled": true
+		},
+		{
+			"key": "destination_currency",
+			"value": "USD",
+			"enabled": true
+		},
+		{
+			"key": "spid",
+			"value": "bepay",
+			"enabled": true
+		},
+		{
+			"key": "sme_group",
+			"value": "{{spid}}-sme",
+			"enabled": true
+		},
+		{
+			"key": "account_number",
+			"value": 4916399965593,
+			"enabled": true
+		},
+		{
+			"key": "institution_number",
+			"value": "0018",
+			"enabled": true
+		},
+		{
+			"key": "branch_id",
+			"value": "0003",
+			"enabled": true
+		},
+		{
+			"key": "swift_code",
+			"value": "CAGLPTPL",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2021-04-22T03:26:09.611Z",
+	"_postman_exported_using": "Postman/8.0.7"
+}

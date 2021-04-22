@@ -15,6 +15,7 @@ jobs:
       - run: echo "127.0.0.1  ablii" >> /etc/hosts
       - run: echo "127.0.0.1  liquid" >> /etc/hosts
       - run: echo "127.0.0.1  intuit" >> /etc/hosts
+      - run: echo "127.0.0.1  bpp" >> /etc/hosts
       - run: echo `node --version`
       - run: git submodule sync
       - run: git submodule update --init
@@ -51,6 +52,12 @@ jobs:
           command: |
               ./build.sh -cjzJablii,ablii_development,ca-development,bepay,api,intuit,intuit_development,intuit_dev
               newman run https://www.getpostman.com/collections/617cdc82fb6affdc071b -e environments/intuit-environment.json
+
+      - run:
+          name: Run Postman tests for Intuit
+          command: |
+            ./build.sh -cjzJapi,br,bepay,bepay_development,bpp,bpp_development,sa-development
+            newman run https://www.getpostman.com/collections/617cdc82fb6affdc071b -e environments/bepay_environment.json
 
       - save_cache:
           paths:
