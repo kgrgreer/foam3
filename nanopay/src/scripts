@@ -3117,19 +3117,8 @@ ucjDAO.select(new AbstractSink() {
 contactDAO = x.get("localContactDAO");
 contactDAO.select(referenceSink(contactDAO));
 
-// Disable affecting rule Capable Payload Status Adjust Approvals
-// Complained if the mapping of old payload capability ids didn’t match up with the new ones.
-// It's logic isn’t required in this update and was preventing capability references from being updated.
-ruleDAO = x.get("localRuleDAO");
-rule = ruleDAO.find("ad5a192e-72c5-4037-9149-d9f9e5a433a2");
-rule.setEnabled(false);
-rule = ruleDAO.put(rule);
-
-invoiceDAO = x.get("invoiceDAO");
+invoiceDAO = x.get("localInvoiceDAO");
 invoiceDAO.select(referenceSink(invoiceDAO));
-rule.setEnabled(true);
-ruleDAO.put(rule);
-
 
 padCaptureDAO = x.get("padCaptureDAO");
 padCaptureDAO.select(referenceSink(padCaptureDAO));
