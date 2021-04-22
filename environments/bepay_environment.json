@@ -1,6 +1,6 @@
 {
 	"id": "0502fb22-f93b-41f6-8f4c-fcaa4ab918ec",
-	"name": "local-api",
+	"name": "bepay_localhost",
 	"values": [
 		{
 			"key": "url",
@@ -264,32 +264,32 @@
 		},
 		{
 			"key": "bpp_user_bearer_token",
-			"value": "c5d605d0-de5c-6785-2d14-f45252cf6dda",
+			"value": "2492c768-29c2-bee3-c46a-d8d04fed5a30",
 			"enabled": true
 		},
 		{
 			"key": "u_o_user_id",
-			"value": 8024,
+			"value": 8027,
 			"enabled": true
 		},
 		{
 			"key": "u_o_account_id",
-			"value": "5a5469b8-6103-9f5c-5d27-4fea5f764f37",
+			"value": "65b1e2a1-55b5-983e-6abf-61f32fce389e",
 			"enabled": true
 		},
 		{
 			"key": "u_o_contact_id",
-			"value": 8025,
+			"value": 8028,
 			"enabled": true
 		},
 		{
 			"key": "u_o_dest_account_id",
-			"value": "c080f998-26cd-70a8-1660-725cd4d5bef2",
+			"value": "9ba152f5-25fc-e0b0-d848-96dddb7492e5",
 			"enabled": true
 		},
 		{
 			"key": "user_number",
-			"value": 53251,
+			"value": 591440,
 			"enabled": true
 		},
 		{
@@ -304,12 +304,12 @@
 		},
 		{
 			"key": "sme_group",
-			"value": "{{spid}}-sme",
+			"value": "bepay-sme",
 			"enabled": true
 		},
 		{
 			"key": "account_number",
-			"value": 4916399965593,
+			"value": 6474617731984,
 			"enabled": true
 		},
 		{
@@ -329,6 +329,6 @@
 		}
 	],
 	"_postman_variable_scope": "environment",
-	"_postman_exported_at": "2021-04-22T03:26:09.611Z",
+	"_postman_exported_at": "2021-04-22T04:19:52.398Z",
 	"_postman_exported_using": "Postman/8.0.7"
 }
