@@ -38,7 +38,6 @@ foam.CLASS({
     }
     ^ .foam-u2-tag-Select {
       width: 218px;
-      height: 40px;
       margin-top: 8px;
       border-radius: 0;
       -webkit-appearance: none;

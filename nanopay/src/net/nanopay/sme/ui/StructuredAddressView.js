@@ -42,7 +42,6 @@ foam.CLASS({
 
   css: `
     ^ .foam-u2-tag-Select {
-      height: 40px;
       width: 100%;
     }
     ^ .label {

@@ -113,7 +113,6 @@ foam.CLASS({
     }
     ^ .foam-u2-tag-Select {
       width: 228px;
-      height: 40px;
       margin-top: 10px;
     }
     ^ .grey-button{

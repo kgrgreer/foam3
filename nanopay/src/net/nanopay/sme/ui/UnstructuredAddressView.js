@@ -38,9 +38,6 @@ foam.CLASS({
   ],
 
   css: `
-    ^ .foam-u2-tag-Select {
-      height: 40px;
-    }
     ^ .one-two-column {
       display: grid;
       grid-template-columns: 1fr 1fr;
