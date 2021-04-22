@@ -41,8 +41,8 @@ p({
   id:"bepay-tx-reason-codes",
   name:"Enable BePay reason codes",
   permissionsGranted:[
-    "naturecode.read.4cfa9007-1d87-4bdd-b6e1-4e3c6fe78a2c",
-    "naturecode.read.f0224036-2a37-4fa9-8879-a413fe168f34"
+    "naturecode.read.naturecode.br.funds-abroad",
+    "naturecode.read.naturecode.br.resident-maintenance"
   ]
 })
 

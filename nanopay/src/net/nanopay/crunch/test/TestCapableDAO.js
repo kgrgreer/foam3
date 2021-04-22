@@ -28,7 +28,7 @@ foam.CLASS({
         capable.setRequirements(x, new String[]{
           // Test an arbitrary nature code;
           // TODO: replace with nature code selection when ready
-          "125215a0-b0aa-4bb4-ac26-bc5d4a7a05d1"
+          "naturecode.br.computer-programs"
         });
         
         return (foam.core.FObject) capable;
