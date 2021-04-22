@@ -566,6 +566,7 @@ var classes = [
   'net.nanopay.tx.FeeTransfer',
   'net.nanopay.tx.InfoLineItem',
   'net.nanopay.tx.TaxLineItem',
+  'net.nanopay.tx.LimitTransaction',
   'net.nanopay.tx.LineItemType',
   'net.nanopay.tx.LineItemTypeAccount',
   'net.nanopay.tx.LineItemAmountType',

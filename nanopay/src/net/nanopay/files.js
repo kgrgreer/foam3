@@ -724,6 +724,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/LineItemTypeAccount' },
   { name: 'net/nanopay/tx/LineItemFee' },
   { name: 'net/nanopay/tax/LineItemTax' },
+  { name: 'net/nanopay/tx/LimitTransaction' },
   { name: 'net/nanopay/tx/LineItemAmountType' },
   { name: 'net/nanopay/tx/LineItemAmount' },
   { name: 'net/nanopay/tx/ETALineItem' },
