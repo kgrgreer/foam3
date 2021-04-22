@@ -136,6 +136,7 @@ p({
         "operation",
         "createdFor",
         "approver.legalName",
+        "assignedTo.legalName",
         "status",
         "lastModified"
       ],

@@ -5,7 +5,9 @@ p({
   enabled:true,
   permissionsGranted:[
     "business.rw.ispublic",
-    "service.quickbooksService"
+    "service.quickbooksService",
+    "language.read.en-",
+    "language.read.en-US"
   ]
 })
 

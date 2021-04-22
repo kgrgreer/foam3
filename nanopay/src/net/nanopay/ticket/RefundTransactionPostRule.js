@@ -89,8 +89,10 @@
             // Cancel paused transaction
             Transaction problemTxn = (Transaction) txnDAO.inX(x).find(request.getProblemTransaction()).fclone();
             if ( problemTxn.getStatus() == TransactionStatus.PAUSED ) {
-              problemTxn.setStatus(problemTxn.getLastStatus());
-              txnDAO.inX(x).put(problemTxn);
+              if ( ! ( problemTxn instanceof DigitalTransaction ) ) {
+                problemTxn.setStatus(problemTxn.getLastStatus());
+                txnDAO.inX(x).put(problemTxn);
+              }
               problemTxn.setStatus(TransactionStatus.CANCELLED);
               txnDAO.inX(x).put(problemTxn);
             } else {

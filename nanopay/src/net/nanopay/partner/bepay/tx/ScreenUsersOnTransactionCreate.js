@@ -30,9 +30,11 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.Subject',
     'foam.nanos.logger.Logger',
+    'foam.nanos.notification.Notification',
 
-    'java.util.Date',
+    'java.util.*',
 
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.dowJones.DowJonesResponse',
@@ -53,14 +55,14 @@ foam.CLASS({
           User payer = tx.findSourceAccount(x).findOwner(x);
           User payee = tx.findDestinationAccount(x).findOwner(x);
           DowJonesService dowJones = (DowJonesService) x.get("dowJonesService");
-          boolean payerSuccess = screenUser(x, payer, dowJones);
-          boolean payeeSuccess = screenUser(x, payee, dowJones);
+          String spid = tx.getSpid();
+          String group = spid + "-fraud-ops";
           try {
+            boolean payerSuccess = screenUser(x, payer, dowJones);
+            boolean payeeSuccess = screenUser(x, payee, dowJones);
             if ( payerSuccess && payeeSuccess ) {
               tx.setStatus(TransactionStatus.COMPLETED);
             } else {
-              String spid = tx.getSpid();
-              String group = spid + "-fraud-ops";
               StringBuilder description = new StringBuilder("Compliance check failed for users: ");
               if ( ! payerSuccess ) description.append("payer - id(").append(payer.getId()).append("),");
               if ( ! payeeSuccess ) description.append("payee - id(").append(payee.getId()).append(")");
@@ -78,6 +80,23 @@ foam.CLASS({
             }
           } catch (Exception e) {
             Logger logger = (Logger) x.get("logger");
+            tx.setStatus(TransactionStatus.COMPLETED);
+            User user = ((Subject) x.get("subject")).getUser();
+            Map<String, Object> args = new HashMap<>();
+            args.put("email", user.getEmail());
+            args.put("txId", tx.getId());
+
+            Notification notification = new Notification();
+            notification.setGroupId(group);
+            notification.setEmailName("failed-dow-jones-call");
+            notification.setEmailArgs(args);
+            notification.setBody("Dow Jones compliance service failed.");
+            try {
+              ((DAO)x.get("localNotificationDAO")).put_(x, notification);
+            }
+            catch (Exception ex) {
+              logger.error("Failed to put Failed JS compliance notification. " + ex);
+            };
             logger.error("ScreenUsersOnTransactionCreate Error: ", e);
           }
         }

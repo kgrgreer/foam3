@@ -282,12 +282,12 @@ p({
         "txnValue":
         {
           "class":"net.nanopay.tx.model.TransactionStatus",
-          "ordinal":10
+          "ordinal":5
         }
       },
       {
         "class":"net.nanopay.ticket.RefundTicketInstanceOfPredicate",
-        "instanceOf":"net.nanopay.tx.DigitalTransaction"
+        "instanceOf":"net.nanopay.tx.cico.CITransaction"
       }
     ]
   },
@@ -345,7 +345,8 @@ p({
   },
   "action":{
     "class":"net.nanopay.ticket.ScenarioAction",
-    "textToAgent":"Cash In has completed. No action required. txn being cancelled",
+    "textToAgent":"Cash Out has completed. No action required. txn can't be cancelled",
+    "autoApprove":false,
     "postApprovalRuleId": "none",
   },
   "after":false,
