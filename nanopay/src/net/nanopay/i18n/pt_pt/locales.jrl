@@ -560,8 +560,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.BusinessInfor
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.BusinessInformationView.BUSINESS_NAME_LABEL",target:"Nome"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.BusinessInformationView.PHONE_LABEL",target:"Número de telefone"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.BusinessInformationView.ADDRESS_LABEL",target:"Endereço"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.BusinessInformationView.WEBSITE_LABEL",target:"Website"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.BusinessInformationView.EMAIL_LABEL",target:"email"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.BusinessInformationView.WEBSITE_LABEL",target:"Local na rede Internet"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.BusinessInformationView.EMAIL_LABEL",target:"E-mail"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.PaymentCodeView.TITLE",target:"Código de pagamento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.PaymentCodeView.PAYMENT_CODE_LABEL",target:"Teste é o seu código personalizado para receber pagamentos de outros empresas."})
