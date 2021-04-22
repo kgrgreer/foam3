@@ -28,7 +28,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ReportGenerator {
+public abstract class ReportGenerator {
 
   protected Map<Object, LastModifiedAware> cacheMap = new HashMap<>();
   protected ClassInfo of;
@@ -47,14 +47,7 @@ public class ReportGenerator {
     return object.getProperty("id");
   }
 
-  protected LastModifiedAware generate(X x, @Nonnull FObject src) {
-    try {
-      return (LastModifiedAware) ((FObject) of.newInstance()).copyFrom(src);
-    } catch (IllegalAccessException | InstantiationException e) {
-      e.printStackTrace();
-      return null;
-    }
-  }
+  protected abstract LastModifiedAware generate(X x, @Nonnull FObject src);
 
   public FObject generateReport(X x, LastModifiedAware src) {
     if ( src == null ) return null;
@@ -68,10 +61,6 @@ public class ReportGenerator {
 
     cacheMap.put(id, report);
     return (FObject) report;
-  }
-
-  public ReportGenerator(ClassInfo of) {
-    this.of = of;
   }
 
 }

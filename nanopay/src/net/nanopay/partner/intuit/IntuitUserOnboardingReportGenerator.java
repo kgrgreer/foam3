@@ -72,8 +72,4 @@ public class IntuitUserOnboardingReportGenerator extends ReportGenerator {
     return cor;
   }
 
-  public IntuitUserOnboardingReportGenerator() {
-    super(UserOnboardingReport.getOwnClassInfo());
-  }
-
 }

@@ -38,8 +38,4 @@ public abstract class ReconciliationReportGenerator extends ReportGenerator {
     return transaction.getId();
   }
 
-  public ReconciliationReportGenerator() {
-    super(ReconciliationReport.getOwnClassInfo());
-  }
-
 }

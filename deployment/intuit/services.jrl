@@ -73,7 +73,7 @@ p({
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "serviceFeesReportGenerator",
-  "serviceScript": "return new net.nanopay.reporting.ReportGenerator(net.nanopay.reporting.ServiceFeesReport.getOwnClassInfo());"
+  "serviceScript": "return new net.nanopay.reporting.CopyReportGenerator(net.nanopay.reporting.ServiceFeesReport.getOwnClassInfo());"
 })
 
 p({
