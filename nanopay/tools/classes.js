@@ -1614,6 +1614,8 @@ var classes = [
   'net.nanopay.tx.ruler.MicroDepositSentNotification',
   'net.nanopay.sme.cron.OnboardingReminderNotification',
   'net.nanopay.sme.ruler.BusinessCompliancePassedEmailNotification',
+
+  'net.nanopay.contacts.facade.FacadeContact'
 ];
 
 var abstractClasses = [

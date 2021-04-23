@@ -174,3 +174,8 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId"
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"taxlineitem.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"transactionlineitem.read.*"})
 
+// Facade
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.facadeContactDAO"})
+//p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"facadecontact.read.*"})
+//p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"facadecontact.update.*"})
+//p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"contact.update.*"})
