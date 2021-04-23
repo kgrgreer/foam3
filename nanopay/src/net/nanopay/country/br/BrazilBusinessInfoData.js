@@ -40,7 +40,8 @@ foam.CLASS({
 
   constants: [
     { name: 'FORMATTED_CNPJ_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{2}\\\\.\\\\d{3}\\\\.\\\\d{3}\\\\/\\\\d{4}\\\\-\\\\d{2}$")' },
-    { name: 'UNFORMATTED_CNPJ_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{14}$")' }
+    { name: 'UNFORMATTED_CNPJ_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{14}$")' },
+    { name: 'CNPJ_LENGTH', javaType: 'int', value: 14 }
   ],
 
   sections: [
@@ -172,7 +173,7 @@ foam.CLASS({
   methods: [
     function installInWizardlet(w) {
       this.onDetach(this.cnpj$.sub(() => {
-        if ( this.cnpj.length == this.CNPJ_LENGTH && this.verifyName !== true ) {
+        if ( this.cnpj.replace(/\D/g,'').length == this.CNPJ_LENGTH && this.verifyName !== true ) {
           w.save();
         } else {
           this.cnpjName = '';

@@ -51,7 +51,8 @@ foam.CLASS({
 
   constants: [
     { name: 'FORMATTED_CPF_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{3}\\\\.\\\\d{3}\\\\.\\\\d{3}\\\\-\\\\d{2}$")' },
-    { name: 'UNFORMATTED_CPF_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{11}$")' }
+    { name: 'UNFORMATTED_CPF_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{11}$")' },
+    { name: 'CPF_LENGTH', javaType: 'int', value: 11 }
   ],
 
   messages: [
@@ -259,7 +260,7 @@ foam.CLASS({
       mergeDelay: 100, // only run every 100ms, otherwise trigger too many calls
       code: async function(w) {
         var validEnough = ( ! this.BIRTHDAY.validateObj[1].call(this) ) &&
-          this.data.length == this.CPF_LENGTH &&
+          this.data.replace(/\D/g,'').length == this.CPF_LENGTH &&
           this.verifyName !== true;
         if ( validEnough ) w.save();
         else this.clearFields();
