@@ -66,9 +66,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'hasBankAccount',
       visibility: 'HIDDEN',
-      value: false,
-      javaCloneProperty: '//noop',
-      storageTransient: true
+      value: false
     },
     {
       class: 'FObjectProperty',
