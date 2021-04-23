@@ -30,6 +30,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"service.smsMessageDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"service.run.httpBlobService"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"service.run.httpFileService"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"service.addressConfigDAO"})
 
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"business","targetId":"cico.ci"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"business","targetId":"invoice.create"})
@@ -357,6 +358,10 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"service.reportTemplateDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"service.crunchService.unsafeSetStatus"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"brbankaccount.ro.denomination"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"approvable.read.*"})
+
+// Fraud Ops Line Item Permissions
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"naturecodelineitem.read.*"})
 
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"identityMind","targetId":"service.approvalRequestDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"identityMind","targetId":"service.identityMindResponseDAO"})
@@ -832,6 +837,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"menu.read.admin.users-2"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"menu.read.dashboard-backoffice"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"menu.read.dashboard-backoffice.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"menu.read.approvals"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"notificationsettingdefaults.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"notificationsettingdefaults.create.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"notificationsettingdefaults.update.*"})
@@ -852,6 +858,12 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"user.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"user.remove.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"user.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"approval.assign.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"approval.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"approval.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"service.approvableDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"approvable.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"service.natureCodeDataDAO"})
 
 //export drivers
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"fraud-ops","targetId":"exportdriverregistry.read.CSV"})

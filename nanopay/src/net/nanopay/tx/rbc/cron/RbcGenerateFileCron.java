@@ -77,10 +77,10 @@ public class RbcGenerateFileCron implements ContextAgent {
     ).select(new ArraySink());
     ArrayList<Transaction> transactions = (ArrayList<Transaction>) sink.getArray();
 
-    generate(x, transactions);
+    generate(x, transactions, spid);
   }
 
-  public void generate(X x, List<Transaction> transactions) {
+  public void generate(X x, List<Transaction> transactions, String spid) {
     Logger logger = new PrefixLogger(new String[] {"RBC"}, (Logger) x.get("logger"));
     try {
       transactions = transactions.stream().map(transaction -> (Transaction)transaction.fclone()).collect(Collectors.toList());
@@ -91,7 +91,7 @@ public class RbcGenerateFileCron implements ContextAgent {
         .filter(transaction -> transaction instanceof CITransaction)
         .collect(Collectors.toList());
 
-      generateFile(x, eftLimitTransactions(x, ciTransactions));
+      generateFile(x, eftLimitTransactions(x, ciTransactions), spid);
 
       logger.info("Generating EFT File for CO transactions.");
 
@@ -99,7 +99,7 @@ public class RbcGenerateFileCron implements ContextAgent {
         .filter(transaction -> (transaction instanceof COTransaction || transaction instanceof RbcVerificationTransaction))
         .collect(Collectors.toList());
 
-      generateFile(x, eftLimitTransactions(x, coTransactions));
+      generateFile(x, eftLimitTransactions(x, coTransactions), spid);
 
     } catch ( Exception e ) {
       String msg = "RBC EFT File Generation Failed : " + e.getMessage();
@@ -112,7 +112,7 @@ public class RbcGenerateFileCron implements ContextAgent {
     }
   }
 
-  protected void generateFile(X x, List<Transaction> transactions) {
+  protected void generateFile(X x, List<Transaction> transactions, String spid) {
     if ( transactions == null || transactions.isEmpty() ) {
       return;
     }
@@ -120,7 +120,7 @@ public class RbcGenerateFileCron implements ContextAgent {
     RBCEFTFileGenerator fileGenerator = new RBCEFTFileGenerator(x);
     Logger logger = new PrefixLogger(new String[] {"RBC"}, (Logger) x.get("logger"));
     try {
-      EFTFile eftFile = (EFTFile) fileGenerator.generate(transactions);
+      EFTFile eftFile = (EFTFile) fileGenerator.generate(transactions, spid);
       if ( eftFile == null ) throw new RuntimeException("Generated EFT File was null");
       ArrayList<Transaction> passedTransaction  = fileGenerator.getPassedTransactions();
 

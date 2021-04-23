@@ -73,11 +73,11 @@ public class BmoGenerateFileCron implements ContextAgent {
     ).select(new ArraySink());
     ArrayList<Transaction> transactions = (ArrayList<Transaction>) sink.getArray();
 
-    generate(x, transactions);
+    generate(x, transactions, spid);
 
   }
 
-  public void generate(X x, List<Transaction> transactions) {
+  public void generate(X x, List<Transaction> transactions, String spid) {
 
     Logger logger = new PrefixLogger(new String[] {"BMO"}, (Logger) x.get("logger"));
 
@@ -91,7 +91,7 @@ public class BmoGenerateFileCron implements ContextAgent {
         .filter(transaction -> transaction instanceof CITransaction)
         .collect(Collectors.toList());
 
-      generateFile(x, ciTransactions);
+      generateFile(x, ciTransactions, spid);
 
       logger.info("Generating EFT File for CO transactions.");
 
@@ -99,7 +99,7 @@ public class BmoGenerateFileCron implements ContextAgent {
         .filter(transaction -> (transaction instanceof COTransaction || transaction instanceof BmoVerificationTransaction))
         .collect(Collectors.toList());
 
-      generateFile(x, coTransactions);
+      generateFile(x, coTransactions, spid);
 
     } catch ( Exception e ) {
       String msg = "BMO EFT File Generation Failed : " + e.getMessage();
@@ -114,7 +114,7 @@ public class BmoGenerateFileCron implements ContextAgent {
 
   }
 
-  protected void generateFile(X x, List<Transaction> transactions) {
+  protected void generateFile(X x, List<Transaction> transactions, String spid) {
     if ( transactions == null || transactions.isEmpty() ) {
       return;
     }
@@ -122,7 +122,7 @@ public class BmoGenerateFileCron implements ContextAgent {
     Logger logger = new PrefixLogger(new String[] {"BMO"}, (Logger) x.get("logger"));
     BmoEftFileGenerator fileGenerator = new BmoEftFileGenerator(x);
     try {
-      BmoEftFile eftFile = (BmoEftFile) fileGenerator.generate(transactions);
+      BmoEftFile eftFile = (BmoEftFile) fileGenerator.generate(transactions, spid);
       if ( eftFile == null ) throw new RuntimeException("Generated EFT File was null");
       ArrayList<Transaction> passedTransaction  = fileGenerator.getPassedTransactions();
 

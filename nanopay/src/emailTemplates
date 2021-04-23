@@ -769,9 +769,9 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-102",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-102-ablii",
   "name": "verifyEmail",
-  "group": "sme",
+  "group": "ablii-sme",
   "displayName": "{{appName}}",
   "subject": "Verify your email to activate your {{appName}} account",
   "body": "\n\n<include template = 'ablii-email-base_2'>\n<p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">Verify your email address</p>\n<p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">Hello {{name}},</p>\n<br>\n<p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">Welcome to {{appName}}, the self-service online payment platform for businesses. We are happy to have you on board! </p>\n<br>\n<p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">Please verify your email to activate your account.</p>\n<a href=\"{{link}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n<p style = \"padding: 14px 0 0; margin: 0;\">Verify email</p>\n</div></a>\n</include>"
@@ -1316,6 +1316,99 @@ p({
   "body": """
     <include template = 'nanopay-email-base'>
       <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">{{description}}</p>
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "e23bdd4d-0db8-4d47-abcb-e8271242dd26",
+  "name": "failed-dow-jones-call",
+  "group": "fraud-ops",
+  "locale": "pt",
+  "displayName": "Dow Jones failed",
+  "subject": "Dow Jones service failed to screen users on compliance transaction",
+  "body": """
+    <include template = 'nanopay-email-base'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">Failed to run Dow Jones check against payer and payee for transaction id: {{txId}}</p>
+    </include>
+  """
+})
+
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-160",
+  "name": "approvalRequestNotification",
+  "group": "fraud-ops",
+  "locale": "en",
+  "displayName": "{{appName}}",
+  "subject": "Notification from {{appName}}",
+  "body": """
+    <include template = 'ablii-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"> {{type}} </p>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;">You received {{body}} </p>
+      <a href="{{appLink}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Go to {{appName}}</p>
+        </div>
+      </a>
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-161-pt",
+  "name": "approvalRequestNotification",
+  "group": "fraud-ops",
+  "locale": "pt",
+  "displayName": "{{appName}}",
+  "subject": "Notificação de solicitação de aprovação de {{appName}}",
+  "body": """
+    <include template = 'ablii-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"> {{type}} </p>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> Você recebeu {{body}} </p>
+      <a href="{{appLink}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Vá para {{appName}}</p>
+        </div>
+      </a>
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-162",
+  "name": "rejectApprovalRequestNotification",
+  "group": "treviso-fraud-ops",
+  "locale": 'en',
+  "subject": "Approval Request Rejected Notification from {{appName}}",
+  "body": """
+    <include template = 'ablii-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"/>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> our {{classification}} approval request has been rejected by {{rejectedBy}}. {{memo}} </p>
+      <a href="{{appLink}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Go to {{appName}}</p>
+        </div>
+      </a>
+    </include>
+  """
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-162-pt",
+  "name": "rejectApprovalRequestNotification",
+  "group": "treviso-fraud-ops",
+  "locale": 'pt',
+  "subject": "Notificação de solicitação de aprovação rejeitada de {{appName}}",
+    "body": """
+    <include template = 'ablii-email-base_2'>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;"/>
+      <p style="font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px;  line-height: 1.5; margin: 0;"> Seu {{classification}} o pedido de aprovação foi rejeitado por {{rejectedBy}}. {{memo}}</p>
+      <a href="{{appLink}}" style="text-decoration: none;">
+        <div style="width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;">
+          <p style = "padding: 14px 0 0; margin: 0;">Vá para {{appName}}</p>
+        </div>
+      </a>
     </include>
   """
 })

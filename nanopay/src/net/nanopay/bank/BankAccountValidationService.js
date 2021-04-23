@@ -50,7 +50,8 @@ foam.INTERFACE({
         { name: 'x', type: 'Context' },
         { name: 'countryCode', type: 'String' },
         { name: 'nationalId', type: 'String' },
-        { name: 'accountNumber', type: 'String' }
+        { name: 'accountNumber', type: 'String' },
+        { name: 'allowedCodes', type: 'List' }
       ]
     }
   ]

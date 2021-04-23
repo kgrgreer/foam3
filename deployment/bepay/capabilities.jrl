@@ -1,4 +1,12 @@
-p({class:"foam.nanos.auth.ServiceProvider",id:"bepay",enabled:true,description:"bepay spid"})
+p({
+  class:"foam.nanos.auth.ServiceProvider",
+  id:"bepay",
+  enabled:true,
+  description:"bepay spid",
+  permissionsGranted: [
+    "language.read.*"
+  ]
+})
 p({
   class: "foam.nanos.crunch.Capability",
   id: "bepayCorridorCapability",

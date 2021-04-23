@@ -138,19 +138,7 @@ foam.CLASS({
       name: 'documentsOfAddress',
       label: 'Please upload proof of address',
       view: function(_, X) {
-        let selectSlot = foam.core.SimpleSlot.create({ value: 0 });
-        return foam.u2.MultiView.create({
-          views: [
-            foam.nanos.fs.fileDropZone.FileDropZone.create({
-              files$: X.data.documentsOfAddress$,
-              selected$: selectSlot
-            }, X),
-            foam.nanos.fs.fileDropZone.FilePreview.create({
-              data$: X.data.documentsOfAddress$,
-              selected$: selectSlot
-            })
-          ]
-        });
+        return foam.u2.view.DocumentUploadView.create({ data$: X.data.documentsOfAddress$ }, X);
       },
       validationPredicates: [
         {
@@ -167,19 +155,7 @@ foam.CLASS({
       name: 'documentsOfId',
       label: 'Please upload proof of identification',
       view: function(_, X) {
-        let selectSlot = foam.core.SimpleSlot.create({ value: 0 });
-        return foam.u2.MultiView.create({
-        views: [
-          foam.nanos.fs.fileDropZone.FileDropZone.create({
-            files$: X.data.documentsOfId$,
-            selected$: selectSlot
-          }, X),
-          foam.nanos.fs.fileDropZone.FilePreview.create({
-            data$: X.data.documentsOfId$,
-            selected$: selectSlot
-          })
-        ]
-        });
+        return foam.u2.view.DocumentUploadView.create({ data$: X.data.documentsOfId$ }, X);
       },
       validationPredicates: [
         {

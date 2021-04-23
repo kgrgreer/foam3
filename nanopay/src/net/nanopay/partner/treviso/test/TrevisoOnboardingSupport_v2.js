@@ -223,7 +223,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_777af38a_8225_87c8_dfdf_eeb15f71215f_123',
+      name: '_554af38a_8225_87c8_dfdf_eeb15f71215f_1a5',
       code: async function(x, business) {
         var id = 'crunch.onboarding.signing-officer-information';
         var ucj = await this.crunchService.getJunction(x, id);
@@ -260,9 +260,10 @@ foam.CLASS({
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           var cap = net.nanopay.country.br.BrazilBusinessInfoData.create({
             nire: '12345678901234',
-            cnpj: '06990590000123',
-            verifyName: true
+            cnpj: '06990590000123'
           }, x);
+          await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+          cap.verifyName = true;
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
         }
         return ucj;
@@ -529,9 +530,8 @@ foam.CLASS({
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           var cap = net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.create({
-            //needDirector: false,
-            businessTypeId: 3,
-            businessDirectors: []
+            skipDirectors: true,
+            businessTypeId: 3
           });
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
         }
@@ -548,7 +548,8 @@ foam.CLASS({
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           var cap = net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData.create({
             ownersSelectionsValidated: true,
-            amountOfOwners: 0
+            amountOfOwners: 0,
+            haveLowShares: true
           });
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
         }

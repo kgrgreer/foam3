@@ -52,5 +52,17 @@ foam.ENUM({
       documentation: 'EFT/AFT File was rejected or not accepted.',
       ordinal: 4
     },
+    {
+      name: 'PENDING',
+      label: 'Pending',
+      documentation: 'EFT/AFT File is pending.',
+      ordinal: 5
+    },
+    {
+      name: 'PROCESSED',
+      label: 'Processed',
+      documentation: 'EFT/AFT File has been processed successfully..',
+      ordinal: 6
+    },
   ]
 });

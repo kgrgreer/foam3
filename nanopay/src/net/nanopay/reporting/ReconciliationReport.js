@@ -43,10 +43,6 @@ foam.CLASS({
       class: 'String'
     },
     {
-      name: 'clientName',
-      class: 'String'
-    },
-    {
       name: 'paymentId',
       class: 'String'
     },
