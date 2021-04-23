@@ -676,24 +676,6 @@ foam.CLASS({
       text-overflow: ellipsis;
     }
 
-    .foam-u2-md-overlaydropdown {
-      border-radius: 3px;
-      padding: 8px 0px;
-      box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15) !important;
-      width: 200px;
-    }
-
-    .foam-u2-md-overlaydropdown::before {
-      content: ' ';
-      position: absolute;
-      height: 0;
-      width: 0;
-      border: 8px solid transparent;
-      border-bottom-color: black;
-      -ms-transform: translate(110px, -16px);
-      transform: translate(50px, -202px);
-    }
-
     .foam-u2-view-SimpleSearch p {
       opacity: 0;
       margin: 0px;

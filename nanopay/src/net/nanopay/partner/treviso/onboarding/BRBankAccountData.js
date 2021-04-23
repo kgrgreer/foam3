@@ -58,6 +58,14 @@ foam.CLASS({
       value: false
     },
     {
+      class: 'Boolean',
+      name: 'loading_',
+      visibility: 'HIDDEN',
+      value: false,
+      transient: true,
+      javaCloneProperty: '//noop',
+    },
+    {
       class: 'FObjectProperty',
       of: 'net.nanopay.bank.BRBankAccount',
       name: 'bankAccount',
@@ -69,8 +77,8 @@ foam.CLASS({
       factory: function() {
         return net.nanopay.bank.BRBankAccount.create({ clientAccountInformationTitle: '', owner: this.subject.user.id }, this);
       },
-      validateObj: function(bankAccount$errors_, hasBankAccount) {
-        if ( ! hasBankAccount && bankAccount$errors_ && bankAccount$errors_.length ) {
+      validateObj: function(bankAccount$errors_, hasBankAccount, loading_) {
+        if ( ! loading_ && ! hasBankAccount && bankAccount$errors_ && bankAccount$errors_.length ) {
           return this.INVALID_BANK;
         }
       }
@@ -91,6 +99,7 @@ foam.CLASS({
   methods: [
     async function init() {
       if ( ! this.hasBankAccount ) {
+        this.loading_ = true;
         var user = ( await this.userDAO.find(this.bankAccount.owner) ) || this.subject.user;
         var accounts = await user.accounts
             .where(this.AND(
@@ -98,7 +107,8 @@ foam.CLASS({
               this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED),
             ))
             .select();
-          this.hasBankAccount = accounts.array.length > 0;
+        this.hasBankAccount = accounts.array.length > 0;
+        this.loading_ = false;
       }
       if ( this.bankAccount ) {
         this.bankAccount.copyFrom({ clientAccountInformationTitle: '' });
