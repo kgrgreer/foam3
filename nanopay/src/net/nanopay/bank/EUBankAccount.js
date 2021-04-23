@@ -41,7 +41,7 @@ foam.CLASS({
     {
       name: 'flagImage',
       label: '',
-      value: 'images/flags/EuropeanUnion.svg',
+      value: 'images/flags/europeanUnion.svg',
       visibility: 'RO'
     }
   ],
