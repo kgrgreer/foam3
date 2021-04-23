@@ -263,7 +263,9 @@ foam.CLASS({
     {
       name: 'deleteButton',
       label: 'Delete',
-      confirmationRequired: true,
+      confirmationRequired: function() {
+        return true;
+      },
       code: function(X) {
         // bankAccountDAO
         X.accountDAO.remove(X.selectedAccount).then(function(response) {
