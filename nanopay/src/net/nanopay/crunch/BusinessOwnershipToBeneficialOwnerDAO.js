@@ -46,7 +46,7 @@ foam.CLASS({
           if ( business != null ) {
             business.getBeneficialOwners(x).removeAll(); // To avoid duplicating on updates
             for ( BeneficialOwner bo : businessOwnerData.getOwners() ) {
-              business.getBeneficialOwners(x).put(bo);
+              business.getBeneficialOwners(getX()).put(bo);
             }
           }
         }
