@@ -2839,7 +2839,6 @@ put("2869DB5B-0AFE-4113-8EF7-5E5B6B8BB4AC","paymentprovidercorridor.bepay.br-us"
 put("5B9EE768-4B35-493C-A356-FEC306235AB7","paymentprovidercorridor.bepay.br-ca");
 put("2DCB6488-A880-49F5-9973-CABDDDDD017A","paymentprovidercorridor.bepay.br-gb");
 put("E55A5CFE-6EA1-40EC-929A-E6E374349A79","paymentprovidercorridor.bepay.br-pt");
-put("BF58A50D-70F5-45CB-A79A-AF18C1D6F685","crunch.onboarding.bepay.personal-international-payments");
 put("Fb7d3ca2-62f2-4caf-a84c-860392e46bepay","crunch.onboarding.bepay.cpf");
 put("554af38a-8225-87c8-dfdf-eeb15f71215f-7-br","crunch.onboarding.br.business-ownership");
 put("F9c7ce45-c076-4f55-93d2-867c011ee6ca","paymentprovidercorridor.treviso.br-us");

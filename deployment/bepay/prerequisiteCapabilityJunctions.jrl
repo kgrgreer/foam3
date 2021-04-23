@@ -9,21 +9,21 @@ p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bepay",targe
 // user details
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"crunch.onboarding.bepay.personal-international-payments",
+  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
   targetId:"crunch.onboarding.user-details",
   priority:1
 })
 // cpf number
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"crunch.onboarding.bepay.personal-international-payments",
+  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
   targetId:"crunch.onboarding.bepay.cpf",
   priority:2
 })
 // AFEX Terms and Conditions
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"crunch.onboarding.bepay.personal-international-payments",
+  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
   targetId:"crunch.onboarding.document.afex.third-party-terms-and-conditions",
   priority:4
 })
