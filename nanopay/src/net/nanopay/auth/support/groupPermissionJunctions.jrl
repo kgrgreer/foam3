@@ -13,7 +13,6 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-base","
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-base","targetId":"errorcode.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-base","targetId":"group.read.support-base"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-base","targetId":"institution.read.*"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-base","targetId":"language.read.*"})
 
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-base","targetId":"menu.read.currency"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-base","targetId":"menu.read.notifications"})

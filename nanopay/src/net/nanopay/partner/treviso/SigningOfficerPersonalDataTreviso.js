@@ -58,12 +58,10 @@ foam.CLASS({
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
       section: 'signingOfficerPersonalInformationSection',
       label: '',
-      factory: function() {
-        return this.Address.create({structured: false});
-      },
       view: function(_, X) {
         return {
           class: 'net.nanopay.sme.ui.AddressView',
+          structured: true,
           customCountryDAO: X.countryDAO,
           showValidation: true
         };

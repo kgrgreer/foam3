@@ -1,7 +1,7 @@
 /**
 * NANOPAY CONFIDENTIAL
 *
-* [2020] nanopay Corporation
+* [2021] nanopay Corporation
 * All Rights Reserved.
 *
 * NOTICE:  All information contained herein is, and remains
@@ -38,10 +38,6 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      name: 'clientName',
-      class: 'String'
-    },
     {
       name: 'clientName',
       class: 'String'

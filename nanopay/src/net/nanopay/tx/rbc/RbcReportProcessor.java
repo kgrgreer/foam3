@@ -79,7 +79,7 @@ public class RbcReportProcessor {
   public void downloadReceipts(List<EFTFile> files) {
     for ( EFTFile eftFile : files ) {
       try {
-        String level1Filter = eftFile.getSpid() + eftFile.getId() + "_A2";
+        String level1Filter = eftFile.getSpid() + eftFile.getId() + "_A1";
         List<String> nameFilters = Arrays.asList(level1Filter.toUpperCase());
         rbcFTPSClient.batchDownload(RbcFTPSClient.PAIN_FOLDER, nameFilters);
       } catch (Exception e) {

@@ -28,11 +28,13 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.Address',
+    'foam.nanos.auth.AddressConfig',
     'foam.nanos.auth.Region',
     'foam.u2.detail.SectionedDetailPropertyView'
   ],
 
   imports: [
+    'addressConfigDAO',
     'countryDAO',
     'regionDAO',
     'translationService'
@@ -40,7 +42,6 @@ foam.CLASS({
 
   css: `
     ^ .foam-u2-tag-Select {
-      height: 40px;
       width: 100%;
     }
     ^ .label {
@@ -79,7 +80,7 @@ foam.CLASS({
     }
     ^ .three-five-two-column {
       display: grid;
-      grid-template-columns: 1.5fr 2.5fr 1fr;
+      grid-template-columns: repeat(12, 1fr);
       grid-gap: 16px;
     }
     ^ .region-postal-code-column {
@@ -126,6 +127,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'defaultPostalCodeLabel'
+    },
+    {
+      name: 'order',
+      value: { streetNumber: 0, streetName: 1, suite: 2 }
     }
   ],
 
@@ -155,6 +160,18 @@ foam.CLASS({
         return self.regionDAO.where(self.EQ(self.Region.COUNTRY_ID, countryId || ''));
       });
 
+      var updateOrder = async () => {
+        var self = this;
+        this.order = await this.addressConfigDAO.find(self.data.countryId).then(result => {
+          if ( ! result ) return self.AddressConfig.create({ streetNumber: 0, streetName: 1, suite: 2 });
+          return result;
+        });
+      };
+
+      this.onDetach(this.data$.dot('countryId').sub(updateOrder));
+
+      updateOrder();
+
       this
         .addClass(this.myClass())
         .callIf( ! this.withoutCountrySelection, () => {
@@ -178,33 +195,23 @@ foam.CLASS({
             .end()
           .end();
         })
-        .start().addClass(this.myClass('container'))
-          .start().addClass('three-five-two-column')
-            .start().addClass('label-input')
-              .tag(this.SectionedDetailPropertyView, {
-                data$: this.data$,
-                prop: this.Address.STREET_NUMBER.clone().copyFrom({
-                  validationTextVisible: this.showValidation
+        .start().addClass(this.myClass('container'))  
+        .add(this.slot(function(order) {
+          var arr = [self.Address.STREET_NUMBER, self.Address.STREET_NAME, self.Address.SUITE].sort((a, b) => order[a.name] - order[b.name]);
+          var a = this.E().addClass('three-five-two-column');
+          for ( let prop of arr ) {
+            a.start().addClass('label-input')
+              .style({ 'grid-column-end': prop.name == 'streetName' ? 'span 6' : 'span 3' })
+              .tag(self.SectionedDetailPropertyView, {
+                data$: self.data$,
+                prop: prop.clone().copyFrom({
+                  validationTextVisible: self.showValidation
                 })
               })
-            .end()
-            .start().addClass('label-input')
-              .tag(this.SectionedDetailPropertyView, {
-                data$: this.data$,
-                prop: this.Address.STREET_NAME.clone().copyFrom({
-                  validationTextVisible: this.showValidation
-                })
-              })
-            .end()
-            .start().addClass('label-input')
-              .tag(this.SectionedDetailPropertyView, {
-                data$: this.data$,
-                prop: this.Address.SUITE.clone().copyFrom({
-                  validationTextVisible: this.showValidation
-                })
-              })
-            .end()
-          .end()
+            .end();
+          }
+          return a;
+        }))
         .end()
         .start().addClass(this.myClass('container'))
           .start().addClass('label-input')

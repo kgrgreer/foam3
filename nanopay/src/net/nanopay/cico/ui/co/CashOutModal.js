@@ -95,7 +95,6 @@ foam.CLASS({
       margin-left: 20px;
     }
     ^ .foam-u2-tag-Select{
-      height: 40px;
       width: 408px;
       background: white;
       border: solid 1px rgba(164, 179, 184, 0.5);
