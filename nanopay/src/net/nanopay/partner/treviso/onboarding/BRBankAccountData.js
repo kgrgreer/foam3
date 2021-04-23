@@ -30,15 +30,6 @@ foam.CLASS({
     'net.nanopay.bank.BRBankAccount'
   ],
 
-  javaImports: [
-    'foam.mlang.sink.Count',
-    'foam.nanos.auth.Subject',
-    'foam.nanos.auth.User',
-    'net.nanopay.bank.BankAccountStatus',
-    'net.nanopay.bank.BRBankAccount',
-    'static foam.mlang.MLang.*'
-  ],
-
   implements: [
     'foam.core.Validatable',
     'foam.mlang.Expressions'
