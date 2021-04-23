@@ -22,6 +22,7 @@ import foam.core.ClassInfo;
 import foam.core.FObject;
 import foam.core.X;
 import foam.nanos.auth.LastModifiedAware;
+import foam.nanos.logger.Logger;
 
 import javax.annotation.Nonnull;
 import java.util.Date;
@@ -36,6 +37,8 @@ public class CopyReportGenerator extends ReportGenerator {
     try {
       return (LastModifiedAware) ((FObject) of.newInstance()).copyFrom(src);
     } catch (IllegalAccessException | InstantiationException e) {
+      var logger = (Logger) x.get("logger");
+      logger.error(e.getMessage());
       e.printStackTrace();
       return null;
     }
