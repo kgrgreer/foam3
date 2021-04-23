@@ -25,10 +25,15 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
+    'foam.core.ContextAwareAgent',
+    'foam.core.X',
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
     'foam.nanos.logger.Logger',
     'static foam.mlang.MLang.*',
+    'foam.nanos.alarming.Alarm',
+    'foam.nanos.alarming.AlarmReason',
+    'foam.core.ClientRuntimeException',
     'foam.nanos.approval.ApprovalRequest',
     'foam.nanos.approval.ApprovalStatus',
     'net.nanopay.tx.model.TransactionStatus'
@@ -38,29 +43,42 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        ComplianceTransaction ct = (ComplianceTransaction) obj;
-        // ((Logger) x.get("logger")).debug("JackieRuleOnPut status IN", ct.getStatus());
-          DAO results = ((DAO) x.get("approvalRequestDAO"))
-            .where(
-              AND(
-                EQ(ApprovalRequest.SERVER_DAO_KEY, "localTransactionDAO"),
-                EQ(ApprovalRequest.OBJ_ID, ct.getId())
-              )
-            );
-
-          if ( ( (Count) results.select(new Count()) ).getValue()  == 0 ) {
-            ((Logger) x.get("logger")).error(this.getClass().getSimpleName(), "No approval was created on put (create).");
-            throw new RuntimeException("No approval request was created on put.");
-          } else if ( ( (Count) results.where(
-            EQ(ApprovalRequest.STATUS,ApprovalStatus.REJECTED) ).select(new Count()) ).getValue() > 0 ) {
-            //We have received a Rejection and should decline.
-            ct.setStatus(TransactionStatus.DECLINED);
-          } else if ( ( (Count) results.where(
-            EQ(ApprovalRequest.STATUS,ApprovalStatus.APPROVED) ).select(new Count()) ).getValue() > 0 ) {
-            //We have received an Approval and can continue.
-            ct.setStatus(TransactionStatus.COMPLETED);
+        agency.submit(x, new ContextAwareAgent() {
+          @Override
+          public void execute(X x) {
+            ComplianceTransaction ct = (ComplianceTransaction) obj;
+            // ((Logger) x.get("logger")).debug("JackieRuleOnPut status IN", ct.getStatus());
+              DAO results = ((DAO) getX().get("approvalRequestDAO"))
+                .where(
+                  AND(
+                    EQ(ApprovalRequest.SERVER_DAO_KEY, "localTransactionDAO"),
+                    EQ(ApprovalRequest.OBJ_ID, ct.getId())
+                  )
+                );
+    
+              if ( ( (Count) results.select(new Count()) ).getValue()  == 0 ) {
+                DAO alarmDAO = (DAO) getX().get("alarmDAO");
+                
+                Alarm alarm = new Alarm();
+                alarm.setName("JackieRuleOnPut - Approvals");
+                alarm.setReason(AlarmReason.UNSPECIFIED);
+                alarm.setNote(
+                  "Could not find an approval request for the ComplianceTransaction: " + ct.getId()
+                );
+                
+                throw new ClientRuntimeException("Could not find an approval request for the ComplianceTransaction");
+              } else if ( ( (Count) results.where(
+                EQ(ApprovalRequest.STATUS,ApprovalStatus.REJECTED) ).select(new Count()) ).getValue() > 0 ) {
+                //We have received a Rejection and should decline.
+                ct.setStatus(TransactionStatus.DECLINED);
+              } else if ( ( (Count) results.where(
+                EQ(ApprovalRequest.STATUS,ApprovalStatus.APPROVED) ).select(new Count()) ).getValue() > 0 ) {
+                //We have received an Approval and can continue.
+                ct.setStatus(TransactionStatus.COMPLETED);
+              }
+            // ((Logger) x.get("logger")).debug("JackieRuleOnPut status OUT", ct.getStatus());
           }
-        // ((Logger) x.get("logger")).debug("JackieRuleOnPut status OUT", ct.getStatus());
+        }, "Jackie Rule On Put");
       `
     }
   ]
