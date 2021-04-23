@@ -31,8 +31,6 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.core.X',
-    'foam.core.XLocator',
     'foam.mlang.sink.Count',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
@@ -101,15 +99,16 @@ foam.CLASS({
   ],
   methods: [
     async function init() {
-      var user = ( await this.userDAO.find(this.bankAccount.owner) ) || this.subject.user;
-      var accounts = await user.accounts
-          .where(this.AND(
-            this.INSTANCE_OF(this.BRBankAccount),
-            this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED),
-          ))
-          .select();
-        this.hasBankAccount = accounts.array.length > 0;
-
+      if ( ! this.hasBankAccount ) {
+        var user = ( await this.userDAO.find(this.bankAccount.owner) ) || this.subject.user;
+        var accounts = await user.accounts
+            .where(this.AND(
+              this.INSTANCE_OF(this.BRBankAccount),
+              this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED),
+            ))
+            .select();
+          this.hasBankAccount = accounts.array.length > 0;
+      }
       if ( this.bankAccount ) {
         this.bankAccount.copyFrom({ clientAccountInformationTitle: '' });
       }
