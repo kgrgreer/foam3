@@ -147,7 +147,9 @@ foam.CLASS({
     {
       name: 'deleteButton',
       label: 'Delete',
-      confirmationRequired: true,
+      confirmationRequired: function() {
+        return true;
+      },
       code: function(X) {
         var self = this;
 
