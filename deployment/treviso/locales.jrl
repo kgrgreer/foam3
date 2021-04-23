@@ -18,6 +18,8 @@ p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.sme.ui.NewInvoiceFor
 
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.sme.ui.SendRequestMoney.CONTACT_ERROR",target:"Need to choose a beneficiary"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.sme.ui.SendRequestMoney.CONTACT_NOT_FOUND",target:"Beneficiary not found"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.RATE_REFRESH",target:"Sua taxa expirou. A nova taxa é válida pelos próximos 5 minutos."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.sme.ui.SendRequestMoney.RATE_REFRESH",target:"Your rate has expired. The new rate is valid for the next 5 min."})
 
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.sme.ui.MoneyFlowSuccessView.BODY_REC",target:"Your request has been sent to your beneficiary and is now pending payment."})
 

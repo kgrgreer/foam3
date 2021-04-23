@@ -23,10 +23,13 @@ foam.CLASS({
 
   javaImports: [
     'foam.util.SafetyUtil',
+    'java.time.LocalDateTime',
+    'java.util.Date',
     'java.util.UUID',
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXQuote',
     'net.nanopay.fx.FXSummaryTransaction',
+    'net.nanopay.tx.ExpiryLineItem',
     'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.tx.InvoicedFeeLineItem',
     'net.nanopay.tx.FeeLineItem',
@@ -45,6 +48,11 @@ foam.CLASS({
     {
       name: 'bestPlan',
       value: true
+    },
+    {
+      class: 'Long',
+      name: 'expiryMinutes',
+      value: 1
     }
   ],
 
@@ -108,6 +116,14 @@ foam.CLASS({
       trevisoTxn.setPlanner(this.getId());
       trevisoTxn = addNatureCodeLineItems(x, trevisoTxn, requestTxn);
 
+      // Expire transaction plan after x minutes 
+      ExpiryLineItem exp = new ExpiryLineItem();
+      LocalDateTime expiry = LocalDateTime.now();
+      expiry = expiry.plusMinutes(getExpiryMinutes());
+      Date date = java.util.Date.from(expiry.atZone(java.time.ZoneId.systemDefault()).toInstant());
+      exp.setExpiry(date);
+      exp.setName("Treviso FX Expiry");
+      trevisoTxn.addLineItems( new TransactionLineItem[] { exp } );
       txn.addNext(trevisoTxn);
       
       // TODO: evaluate helper methods on the intended transaction instead of the head.
