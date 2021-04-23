@@ -549,7 +549,7 @@ foam.CLASS({
           this.invoice.quote = null;
           this.invoice.plan = null;
           this.invoice = await this.invoiceDAO.put(this.invoice);
-          this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), '', this.LogLevel.WARN, true);
+          this.notify(this.RATE_REFRESH, '', this.LogLevel.WARN, true);
           this.isLoading = false;
           return;
         }
