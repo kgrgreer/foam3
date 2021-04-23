@@ -52,7 +52,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'expiryMinutes',
-      value: 1
+      value: 5
     }
   ],
 
