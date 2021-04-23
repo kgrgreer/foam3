@@ -38,8 +38,7 @@ public class CopyReportGenerator extends ReportGenerator {
       return (LastModifiedAware) ((FObject) of.newInstance()).copyFrom(src);
     } catch (IllegalAccessException | InstantiationException e) {
       var logger = (Logger) x.get("logger");
-      logger.error(e.getMessage());
-      e.printStackTrace();
+      logger.error(e);
       return null;
     }
   }
