@@ -44,9 +44,9 @@ foam.CLASS({
           DAO businessDAO = (DAO) getX().get("businessDAO");
           Business business = (Business) businessDAO.find(businessOwnerData.getBusinessId());
           if ( business != null ) {
-            business.getBeneficialOwners(x).removeAll(); // To avoid duplicating on updates
+            business.getBeneficialOwners(getX()).removeAll(); // To avoid duplicating on updates
             for ( BeneficialOwner bo : businessOwnerData.getOwners() ) {
-              business.getBeneficialOwners(x).put(bo);
+              business.getBeneficialOwners(getX()).put(bo);
             }
           }
         }
