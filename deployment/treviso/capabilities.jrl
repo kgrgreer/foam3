@@ -111,7 +111,7 @@ p({
   of:"net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData",
   reviewRequired:false,
   enabled:true,
-  daokey:"convertOwnerObjectDAO"
+  daoKey:"convertOwnerObjectDAO"
 })
 p({
   "class":"foam.nanos.crunch.Capability",
