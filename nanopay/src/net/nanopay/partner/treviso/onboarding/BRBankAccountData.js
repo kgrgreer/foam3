@@ -30,6 +30,15 @@ foam.CLASS({
     'net.nanopay.bank.BRBankAccount'
   ],
 
+  javaImports: [
+    'foam.mlang.sink.Count',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+    'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.bank.BRBankAccount',
+    'static foam.mlang.MLang.*'
+  ],
+
   implements: [
     'foam.core.Validatable',
     'foam.mlang.Expressions'
@@ -38,7 +47,7 @@ foam.CLASS({
   messages: [
     { name: 'NO_BANK_NEEDED', message: 'No Bank Account information needed. Please proceed to next step.' },
     { name: 'ADD_ACCOUNT_TITLE', message: 'Add account' },
-    { name: 'INVALID_BANK', message: 'Invalid Bank Account' },
+    { name: 'INVALID_BANK', message: 'Invalid Bank Account' }
   ],
 
   sections: [
@@ -107,8 +116,18 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
+        // if hasbankaccount has been set to true, verify this by checking user accounts
+        // if no account found, sethasbankaccount to false continue
         if ( getHasBankAccount() ) {
-          return;
+          User owner = ((Subject) x.get("subject")).getUser();
+          long verifiedAccounts = ((Count) owner.getAccounts(x).where(AND(
+              INSTANCE_OF(BRBankAccount.class),
+              EQ(BRBankAccount.STATUS, BankAccountStatus.VERIFIED)
+            )).select(new Count())).getValue();
+          if ( verifiedAccounts > 0 ) return;
+          else {
+            setHasBankAccount(false);
+          }
         }
         try {
           getBankAccount().validate(x);
