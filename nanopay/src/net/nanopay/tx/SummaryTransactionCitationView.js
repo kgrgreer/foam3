@@ -36,6 +36,7 @@ foam.CLASS({
     'net.nanopay.tx.FeeSummaryTransactionLineItem',
     'net.nanopay.tx.GrandTotalLineItem',
     'net.nanopay.tx.SummaryTransactionLineItem',
+    'net.nanopay.tx.FxSummaryTransactionLineItem'
   ],
 
   messages: [
@@ -47,23 +48,26 @@ foam.CLASS({
     {
       name: 'prop',
       expression: function(data) {
-        var of = this.data.cls_;
-        var props = of.getAxiomsByClass(foam.core.Property);
-        var candidates = [ 'amount', 'destinationAmount', 'sourceAccount' ];
-        var newProps = [];
+        let of = this.data.cls_;
+        let rateLineItem = this.data.lineItems.find(e => this.FxSummaryTransactionLineItem.isInstance(e))
+        let of_rateLineItem = rateLineItem.cls_;
+        let props = of.getAxiomsByClass(foam.core.Property);
+        let props_rateLineItem = of_rateLineItem.getAxiomsByClass(foam.core.Property);
+        let candidates = [ 'destinationAmount', 'inverseRate', 'amount'];
+        let newProps = new Array(candidates.length);
 
-        for ( var i = 0; i < props.length; i++ ) {
-          var p = props[i];
-
-          // filter unnecessary properties
-
-          for ( var j = 0; j < candidates.length; j++ ) {
-            if ( p.name === candidates[j] ) {
-              newProps.push(p);
-            }
+        for ( const p of props ) {
+          if ( candidates.includes(p.name) ) {
+            newProps[candidates.indexOf(p.name)] = {prop: p, value: p.get(this.data)};
           }
         }
-        console.log('newProps', newProps);
+
+        for ( const p of props_rateLineItem ) {
+          if ( p.name != 'amount' && candidates.includes(p.name) ) {
+            newProps[candidates.indexOf(p.name)] = {prop: p, value: p.get(rateLineItem)};
+          }
+        }
+
         return newProps;
       }
     }
@@ -80,11 +84,12 @@ foam.CLASS({
         .start('h2').add(this.TITLE).end()
         .start('h3').add(this.data.toSummary()).end()
         .forEach(self.prop, function(p) {
-            if ( p.label && ! p.hidden && ! p.visibility ) {
-              p.label = self.toSentenceCase(p.label);
+            if ( !p ) return;
+            if ( p.prop.label && ! p.prop.hidden && ! p.prop.visibility ) {
+              let label = self.toSentenceCase(p.prop.label);
               self.start(self.Cols)
-                .add(p.label)
-                .start(p, { mode: foam.u2.DisplayMode.RO }).end()
+                .add(label)
+                .start(p.prop, { mode: foam.u2.DisplayMode.RO, data: p.value }).end()
               .end();
             }
           })
