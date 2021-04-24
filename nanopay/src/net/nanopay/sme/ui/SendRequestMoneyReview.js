@@ -112,6 +112,7 @@ foam.CLASS({
           .start()
             .add(this.slot(txnQuote => {
               if ( ! txnQuote ) return;
+              console.log("txnQuote", this.txnQuote);
               return this.E()
                 .start({
                   class: 'net.nanopay.tx.SummaryTransactionCitationView',

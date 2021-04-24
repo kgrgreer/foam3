@@ -39,7 +39,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TITLE', message: 'Review invoice details' }
+    { name: 'TITLE', message: 'Review Remittance Details' }
   ],
 
   properties: [
@@ -63,7 +63,7 @@ foam.CLASS({
             }
           }
         }
-
+        console.log('newProps', newProps);
         return newProps;
       }
     }
@@ -71,6 +71,9 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      console.log("this.data", this.data);
+      console.log("this.data.toSummary", this.data.toSummary);
+      console.log("this.data.toSummary()", this.data.toSummary());
       this.SUPER();
       var self = this;
       this.start().addClass(this.myClass())

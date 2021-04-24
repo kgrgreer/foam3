@@ -2301,8 +2301,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.SKBankAccount.m
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.model_.label",target:"Estados Unidos"})
 
 // Review Invoice Details
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.TITLE",target:"Revise os detalhes da fatura"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.FXSummaryTransaction.DESCRIPTION",target:"Resumo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.TITLE",target:"Revise os Detalhes da Remessa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.FXSummaryTransaction.DESCRIPTION",target:"Detalhes do Pagamento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.AMOUNT.label",target:"Quantidade de fonte"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.DESTINATION_AMOUNT.label",target:"Conta de destino"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT.label",target:"Conta de origem"})
@@ -2484,8 +2484,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetail
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.NO_NOTES_PROVIDED",target:"Nenhuma nota fornecida"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.history.InvoiceCreatedHistoryItemView.INVOICE_CREATED",target:"A fatura foi criada"})
-
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.FXSummaryTransaction.DESCRIPTION",target:"Resumo"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.model_.label",target:"Fatura"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.name",target:"Fatura"})
