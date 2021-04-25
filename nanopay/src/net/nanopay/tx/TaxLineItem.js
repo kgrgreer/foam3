@@ -24,7 +24,7 @@ foam.CLASS({
     {
       name: 'rate',
       class: 'Double',
-      value: 7.777
+      value: 0.0
     },
     {
       name: 'amount',
