@@ -18,5 +18,33 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'TaxLineItem',
-  extends: 'net.nanopay.tx.TransactionLineItem'
+  extends: 'net.nanopay.tx.TransactionLineItem',
+
+  properties: [
+    {
+      name: 'rate',
+      class: 'Double',
+      value: 7.777
+    },
+    {
+      name: 'amount',
+      class: 'UnitValue',
+      unitPropName: 'currency',
+      view: { class: 'net.nanopay.liquidity.ui.LiquidCurrencyView' },
+      unitPropValueToString: async function(x, val, unitPropName) {
+        var unitProp = await x.currencyDAO.find(unitPropName);
+        if ( unitProp )
+          return unitProp.format(val);
+        return val;
+      },
+      tableCellFormatter: function(value, obj) {
+
+        obj.currencyDAO.find(obj.currency).then(function(c) {
+          if ( c ) {
+            this.add(`(${obj.rate.toFixed(2)}%) ` + c.format(value));
+          }
+        }.bind(this));
+      },
+    },
+  ]
 });

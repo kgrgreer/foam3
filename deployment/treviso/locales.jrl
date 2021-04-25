@@ -200,6 +200,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.SignIn.
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.tx.TrevisoTransaction.model_.name",target:"TrevisoTransação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.TaxLineItem.NAME.FTT Tax",target:"Imposto FTT"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.TaxLineItem.NAME.IRS Tax",target:"Imposto IRS"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.TaxLineItem.IRS Tax",target:"Valor Imposto"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.TaxLineItem.FTT Tax",target:"Valor IOF"})
 
 p({class:"foam.i18n.Locale",locale:"en",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-7-br.name",target:"Corporate Composition Information"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-7-br.name",target:"Informações de Composição Societária"})

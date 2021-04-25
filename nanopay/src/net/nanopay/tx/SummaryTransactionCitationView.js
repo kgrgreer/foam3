@@ -36,7 +36,8 @@ foam.CLASS({
     'net.nanopay.tx.FeeSummaryTransactionLineItem',
     'net.nanopay.tx.GrandTotalLineItem',
     'net.nanopay.tx.SummaryTransactionLineItem',
-    'net.nanopay.tx.FxSummaryTransactionLineItem'
+    'net.nanopay.tx.FxSummaryTransactionLineItem',
+    'net.nanopay.tx.TaxLineItem'
   ],
 
   messages: [
@@ -94,6 +95,7 @@ foam.CLASS({
             }
           })
         .end()
+        .br()
         .start()
           .add(
             this.slot( function(data) {
@@ -103,17 +105,24 @@ foam.CLASS({
 
               for ( i=0; i < data.lineItems.length; i++ ) {
                 if ( ! data.lineItems[i].requiresUserInput
-                  && (data.showAllLineItems || this.SummaryTransactionLineItem.isInstance(data.lineItems[i]))
+                  && (data.showAllLineItems || 
+                    this.FeeSummaryTransactionLineItem.isInstance(data.lineItems[i]) ||
+                    this.TaxLineItem.isInstance(data.lineItems[i])
+                    )
                   && data.lineItems[i].showLineItem() ) {
 
-                  const curItemLabel = data.lineItems[i].toSummary();
-                  data.lineItems[i].toSummary = function(s) {
-                    return this.toSentenceCase(s);
-                  }.bind(this, curItemLabel);
+                  if ( ! this.TaxLineItem.isInstance(data.lineItems[i]) ) {
+                    const curItemLabel = data.lineItems[i].toSummary();
+                    data.lineItems[i].toSummary = function(s) {
+                      return this.toSentenceCase(s);
+                    }.bind(this, curItemLabel);
+                  }
+
                   e.start({
                     class: 'net.nanopay.tx.LineItemCitationView',
                     data: data.lineItems[i],
-                    hideInnerLineItems: true
+                    hideInnerLineItems: true,
+                    inline:true
                   });
 
                   // Calculate totalFee
