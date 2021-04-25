@@ -110,7 +110,7 @@ foam.CLASS({
                                                                   this.TaxLineItem.isInstance(lineItem)
                                                                 )
                                                                 && lineItem.showLineItem() )
-              
+              // tax.
               lineItems
                 .filter( lineItem => this.TaxLineItem.isInstance(lineItem) )
                 .forEach( (taxLineItem) => {
@@ -122,6 +122,7 @@ foam.CLASS({
                   });
                 });
               
+              // fee.
               lineItems
                 .filter( lineItem => this.FeeSummaryTransactionLineItem.isInstance(lineItem) )
                 .forEach( (feeSummaryLineItem) => {
