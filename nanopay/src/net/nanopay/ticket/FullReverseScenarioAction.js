@@ -119,8 +119,6 @@ foam.CLASS({
         ticket.setFeeLineItemsAvaliable(feeLineItemsAvaliable.toArray(FeeLineItem[]::new));
 
         ticket.setRequestTransaction(newRequest);
-        ticket.setAgentInstructions(getTextToAgent() + " The proposed transaction will move "+newRequest.getAmount()+
-        " from account "+newRequest.getSourceAccount()+" to Account "+newRequest.getDestinationAccount());
       `
     }
   ]
