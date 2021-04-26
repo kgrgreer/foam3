@@ -72,9 +72,6 @@ foam.CLASS({
       name: 'status',
       visibility: 'RO',
       tableWidth: 100,
-      tableCellFormatter: function(state) {
-        this.add(state.label)
-      },
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("");
       }
