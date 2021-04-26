@@ -3470,6 +3470,14 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.admin.model.AccountS
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.ReportStatus.IN_PROCESS.label",target:"Em processo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.ReportStatus.COMPLETED.label",target:"Concluído"})
 
+/** Business Summary Report Status **/
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.reports.RowOfBusSumReports.ACTIVE.label",target:"Ativo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.reports.RowOfBusSumReports.APPLICATION_SUBMITTED.label",target:"Aplicação submetida"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.reports.RowOfBusSumReports.APPROVED.label",target:"Aprovado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.reports.RowOfBusSumReports.DECLINED.label",target:"Recusado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.reports.RowOfBusSumReports.LOCKED.label",target:"Trancado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.reports.RowOfBusSumReports.REGISTRATION.label",target:"Cadastro"})
+
 /** Payment Report **/
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentReport.INVOICE_ID.label",target:"ID da fatura"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentReport.STATUS.label",target:"Status"})
@@ -3515,7 +3523,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.Payment
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.compliance.ComplianceApprovalRequest.SECTION_COMPLIANCE_INFORMATION.title",target:"Conformidade Informação"})
 
-//menus
+/** Menus **/
 p({class:"foam.i18n.Locale",locale:"pt",source:"Users",target:"Usuários"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"admin.users-2.label",target:"Usuários"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"admin.users-2.browseTitle",target:"Usuários"})

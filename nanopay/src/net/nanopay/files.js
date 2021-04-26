@@ -1357,6 +1357,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/report/RejectedTransactionReportDAO' },
   { name: 'net/nanopay/meter/report/RejectedTransactionReport' },
   { name: 'net/nanopay/meter/report/ReportStatus' },
+  { name: 'net/nanopay/meter/reports/RowOfBusSumReports' },
 
   // clearing
   { name: 'net/nanopay/meter/clearing/ClearingTimeService' },
