@@ -38,7 +38,8 @@ foam.CLASS({
     'net.nanopay.tx.SummaryTransactionLineItem',
     'net.nanopay.tx.FxSummaryTransactionLineItem',
     'net.nanopay.tx.TaxLineItem',
-    'net.nanopay.tx.FeeLineItem'
+    'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.fx.TotalRateLineItem'
   ],
 
   messages: [
@@ -88,9 +89,6 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      console.log("this.data", this.data);
-      console.log("this.data.toSummary", this.data.toSummary);
-      console.log("this.data.toSummary()", this.data.toSummary());
       this.SUPER();
       var self = this;
       this.start().addClass(this.myClass())
@@ -113,17 +111,20 @@ foam.CLASS({
               if ( ! data ) return;
               let e = this.E();
               let totalFee = 0;
+              let totalTax = 0;
 
               let lineItems = data.lineItems.filter( lineItem => ! lineItem.requiresUserInput
                                                                 && (data.showAllLineItem || 
                                                                   this.FeeSummaryTransactionLineItem.isInstance(lineItem) ||
-                                                                  this.TaxLineItem.isInstance(lineItem)
+                                                                  this.TaxLineItem.isInstance(lineItem) ||
+                                                                  this.net.nanopay.TotalRateLineItem.isInstance(lineItem)
                                                                 )
                                                                 && lineItem.showLineItem() )
               // tax.
               lineItems
                 .filter( lineItem => this.TaxLineItem.isInstance(lineItem) )
                 .forEach( (taxLineItem) => {
+                  totalTax += taxLineItem.amount;
                   e.start({
                     class: 'net.nanopay.tx.LineItemCitationView',
                     data: taxLineItem,
@@ -151,18 +152,30 @@ foam.CLASS({
                   });
                 });
               
-              //TODO: grandTotal and VET.
-
-              // Show grand total
+              // TODO: grandTotal lineItem
               e.br().start({
                 class: 'net.nanopay.tx.LineItemCitationView',
                 data: this.GrandTotalLineItem.create({
-                  amount: data.amount + totalFee,
+                  amount: data.amount + totalFee + totalTax,
                   currency: data.sourceCurrency
                 }),
                 inline:true,
                 highlightInlineTitle: true
               });
+
+              lineItems
+                .filter( lineItem => this.net.nanopay.TotalRateLineItem.isInstance(lineItem) )
+                .forEach( (feeSummaryLineItem) => {
+                  feeSummaryLineItem.lineItems.forEach( (totalRateLineItem) => {
+                    e.start({
+                      class: 'net.nanopay.tx.LineItemCitationView',
+                      data: totalRateLineItem,
+                      hideInnerLineItems: true,
+                      inline:true
+                    });
+                  });
+                });
+
 
               return e;
             })
