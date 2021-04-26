@@ -37,6 +37,11 @@ foam.CLASS({
     'static foam.mlang.MLang.*',
   ],
 
+  messages: [
+    { name: 'ENTITY_MSG', message: 'Entity' },
+    { name: 'INDIVIDUAL_MSG', message: 'Individual' }
+  ],
+
   methods: [
     {
       name: 'select_',
@@ -58,7 +63,7 @@ foam.CLASS({
             UserComplianceSummaryReport pr = new UserComplianceSummaryReport.Builder(x)
               .setId("User : " + user.getId())
               .setCaseName(user.getOrganization())
-              .setRelationshipType(user instanceof Business ? "Entity" : "Individual")
+              .setRelationshipType(user instanceof Business ? ENTITY_MSG : INDIVIDUAL_MSG)
               .setRelationshipId("User : " + user.getId())
               .setRelationshipName(user.getOrganization())
               .setFirstName(user.getFirstName())

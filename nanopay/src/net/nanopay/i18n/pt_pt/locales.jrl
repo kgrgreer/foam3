@@ -3722,6 +3722,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.Rejecte
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.RejectedTransactionReport.DATE_RANGE.label",target:"Intervalo de datas"})
 
 /** User Compliance Summary Report **/
+// property labels
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.ROW_ACTION.label",target:"Ação de linha"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.ID.label",target:"ID"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.CASE_NAME.label",target:"Nome do caso"})
@@ -3760,3 +3761,13 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserCom
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.POSTAL_CODE.label",target:"Código postal"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.SERVICE_DJRC.label",target:"Serviço DJRC"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.SERVICE_DJNEWS.label",target:"Notícias de DJ de serviço"})
+//messages
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.INSERT_MSG",target:"Inserir"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.MEDIUM_MSG",target:"Médio"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.NANOPAY_DEFAULT_MSG",target:"nanopay_padrão"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.SUBMITTED_MSG",target:"Submetido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.YES_MSG",target:"Sim"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.NO_MSG",target:"Não"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReportDAO.ENTITY_MSG",target:"Entidade"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReportDAO.INDIVIDUAL_MSG",target:"Individual"})
+
