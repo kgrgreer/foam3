@@ -31,6 +31,8 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
+    'foam.util.SafetyUtil',
+    'net.nanopay.integration.ErrorCode',
     'java.util.List',
     'net.nanopay.ticket.RefundTicket',
     'net.nanopay.tx.TransactionLineItem',
@@ -106,7 +108,22 @@ foam.CLASS({
         ticket.setProblemTransaction(problem.getId());
         ticket.setRefundTransaction(summary.getId());
 
-        ticket.setAgentInstructions(getTextToAgent());
+        // set agent message according to errorcode if it exists.
+        try {
+          ticket.setAgentInstructions(getTextToAgent());
+          long errorCode = problem.calculateErrorCode();
+          if ( ! SafetyUtil.equals(errorCode, 0l )) {
+            DAO errorDAO = (DAO) x.get("errorCodeDAO");
+            ErrorCode code = (ErrorCode) errorDAO.inX(x).find(errorCode);
+            ticket.setAgentInstructions(ticket.getAgentInstructions() + " Error "+errorCode+ ". " + code.getAgentMessage());
+          }
+        }
+        catch (Exception e) {
+          ticket.setAgentInstructions(getTextToAgent());
+          Logger logger = (Logger) x.get("logger");
+          logger.warning("Scenario Action, running on ticket "+ticket.getId()+" unable to calculate error code and set agent message.");
+        }
+
         ticket.setPostApprovalRuleId(getPostApprovalRuleId());
         ticket.setAutoApprove(getAutoApprove());
 
