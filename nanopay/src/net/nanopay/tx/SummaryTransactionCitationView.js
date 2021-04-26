@@ -82,6 +82,12 @@ foam.CLASS({
       }
     },
     {
+      name: 'transactionProp',
+      expression: function(data) {
+        
+      }
+    },
+    {
       name: 'grandTotal',
       expression: function(data) {
         return data;
