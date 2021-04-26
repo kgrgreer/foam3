@@ -3489,6 +3489,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.Payment
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentReport.SOURCE_CURRENCY.label",target:"Moeda de origem"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentReport.DESTINATION_AMOUNT.label",target:"Quantidade de destino"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentReport.DESTINATION_CURRENCY.label",target:"Moeda de destino"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentReport.DATE_RANGE.label",target:"Intervalo de datas"})
 
 /** Payment Summary Report **/
 // property labels
