@@ -103,7 +103,7 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
     "capabilityPayloads": [
         {
             "class": "foam.nanos.crunch.connection.CapabilityPayload",
-            "id": "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD",
+            "id": "crunch.onboarding.api.unlock-ca-payments-under-1000",
             "capabilityDataObjects": {
                 "Ablii Privacy Policy": {
                     "class": "net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy",
@@ -203,8 +203,8 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
 <p>
     Depending on your use case, the following capabilities will be the top level capabilities for the given use case:
     <ol>
-        <li>Personal Payments Under 1000CAD - Capability ID: <pre>F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD</pre></li>
-        <li>Full Personal Payments - Capability ID: <pre>1F0B39AD-934E-462E-A608-D590D1081298</pre></li>
+        <li>Personal Payments Under 1000CAD - Capability ID: <pre>crunch.onboarding.api.unlock-ca-payments-under-1000</pre></li>
+        <li>Full Personal Payments - Capability ID: <pre>crunch.onboarding.api.unlock-ca-payments</pre></li>
     </ol>
     As stated above in the <a href="#user-onboarding">user onboarding</a> section, the payloads necessary are all objects listed. 
     These objects will be mapped by easily understandable keys in the capabilityDataObjects map.

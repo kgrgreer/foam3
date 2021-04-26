@@ -218,7 +218,7 @@ foam.CLASS({
         this.formattedAmount_ = currency.format(this.invoice.amount);
       });
 
-      this.crunchService.getJunction(null,"688cb7c6-7316-4bbf-8483-fb79f8fdeaaf")
+      this.crunchService.getJunction(null,"crunch.onboarding.br.business-identification")
         .then((ucj) => {
           this.cnpj = ucj.data.cnpj;
       });

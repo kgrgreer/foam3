@@ -48,7 +48,7 @@ foam.CLASS({
         User agent = ((Subject) x.get("subject")).getRealUser();
         User user = ((Subject) x.get("subject")).getUser();
         if ( agent == null || user == null || ! ( agent instanceof User ) || ! ( user instanceof Business ) ) return false;
-        UserCapabilityJunction acj = crunchService.getJunction(x, "554af38a-8225-87c8-dfdf-eeb15f71215f-0");
+        UserCapabilityJunction acj = crunchService.getJunction(x, "crunch.onboarding.signing-officer-question");
         if ( acj == null || acj.getStatus() != CapabilityJunctionStatus.GRANTED ) {
           return false;
         }
