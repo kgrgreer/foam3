@@ -53,7 +53,7 @@ jobs:
           name: Run Postman tests for Bepay
           command: |
             ./build.sh -cjzJapi,br,bepay,bepay_development,bpp,bpp_development,sa-development
-            newman run https://www.getpostman.com/collections/17fb13b842b8259d439e --timeout-request 150000 -e environments/bepay_environment.json
+            newman run https://www.getpostman.com/collections/47a64efeb3c701bc4071 --timeout-request 150000 -e environments/bepay_environment.json
 
 
       - run:
