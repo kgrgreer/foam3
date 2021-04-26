@@ -33,8 +33,8 @@ foam.CLASS({
     {
       flags: ['web'],
       name: 'save',
-      code: async function() {
-        await this.SUPER();
+      code: async function(...args) {
+        await this.SUPER(...args);
         this.crunchController.purgeCachedCapabilityDAOs();
         this.auth.check(null, 'certifydatareviewed.rw.reviewed');
         var isInvite = this.data && ! this.data.isSigningOfficer;

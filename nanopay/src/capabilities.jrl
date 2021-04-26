@@ -23,7 +23,7 @@ p({"class":"foam.nanos.auth.ServiceProvider","id":"intuit","enabled":true,"descr
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-0",
+  "id":"crunch.onboarding.signing-officer-question",
   "name":"Signing Officer",
   "of":"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion",
   "description":"Are you a Signing Officer?",
@@ -64,7 +64,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
+  "id":"crunch.onboarding.signing-officer-information",
   "name":"Complete your signing officer information",
   "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData",
   "description":"Authorization to sign on behalf of the business",
@@ -127,7 +127,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "id":"crunch.onboarding.certify-data-reviewed",
   "name":"Certify Data Reviewed",
   "of":"net.nanopay.crunch.onboardingModels.CertifyDataReviewed",
   "description":"Certify all data submitted has been reviewed",
@@ -137,7 +137,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-4",
+  "id":"crunch.onboarding.business-information",
   "name":"Business Details",
   "of":"net.nanopay.crunch.onboardingModels.BusinessInformationData",
   "version":"0",
@@ -145,14 +145,14 @@ p({
   "daoKey":"businessDAO",
   "wizardlet": {
     class: "net.nanopay.crunch.wizardlet.RerenderWizardlet",
-    rerenderList: ["554af38a-8225-87c8-dfdf-eeb15f71215f-6-5"]
+    rerenderList: ["crunch.onboarding.business-directors"]
   },
   "contextDAOFindKey":"subject.user"
 })
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eebsdf3225y-4",
+  "id":"crunch.onboarding.business-type-sector",
   "name":"Business Details",
   "documentation":"A simplified version of Business Details containing only Business Type and Business Sector",
   "of":"net.nanopay.crunch.onboardingModels.BusinessTypeAndSector",
@@ -161,14 +161,14 @@ p({
   "daoKey":"businessDAO",
   "wizardlet": {
     class: "net.nanopay.crunch.wizardlet.RerenderWizardlet",
-    rerenderList: ["554af38a-8225-87c8-dfdf-eeb15f71215f-6-5"]
+    rerenderList: ["crunch.onboarding.business-directors"]
   },
   "contextDAOFindKey":"subject.user"
 })
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-6",
+  "id":"crunch.onboarding.transaction-details",
   "name":"Transaction Details",
   "of":"net.nanopay.crunch.onboardingModels.TransactionDetailsData",
   "version":"0",
@@ -179,7 +179,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5",
+  "id":"crunch.onboarding.business-directors",
   "name":"Business Directors Data",
   "of":"net.nanopay.crunch.onboardingModels.BusinessDirectorsData",
   "version":"0",
@@ -192,7 +192,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired",
+  "id":"crunch.onboarding.business-ownership",
   "name":"Does your company have one or more people who own 25% or more of the business either directly or indirectly?",
   "of":"net.nanopay.crunch.onboardingModels.BusinessOwnershipData",
   "version":"0",
@@ -202,7 +202,7 @@ p({
 })
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-7-noReview",
+  "id":"crunch.onboarding.publicly-traded",
   "name":"Your company does NOT have a person who own 25% or more of the business either directly or indirectly.",
   "of":"net.nanopay.crunch.onboardingModels.IsPubliclyTradedQuestion",
   "version":"0",
@@ -214,7 +214,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.MinMaxCapability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-7",
+  "id":"crunch.onboarding.minmax.business-ownership",
   "name":"Business Ownership",
   "min":1,
   "max":1,
@@ -224,7 +224,7 @@ p({
 
 p({
   "class": "foam.nanos.crunch.Capability",
-  "id":"bf6a49d5-4027-4dac-a269-4d3ed070609e-1",
+  "id":"crunch.onboarding.parent.unlock-ca-ca-payments",
   "name":"Unlock Domestic Payments and Invoicing",
   "description":"Unlock payments and invoicing to Canada (CAD to CAD)",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
@@ -254,7 +254,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
+  "id":"crunch.onboarding.unlock-ca-ca-payments",
   "name":"Unlock Domestic Payments and Invoicing",
   "description":"Unlock payments and invoicing to Canada (CAD to CAD)",
   "version":"0",
@@ -279,7 +279,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"bf6a49d5-4027-4dac-a269-4d3ed070609e-2",
+  "id":"crunch.onboarding.parent.unlock-ca-international-payments",
   "name":"International payments",
   "description":"International payments",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
@@ -301,7 +301,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-12",
+  "id":"crunch.onboarding.unlock-ca-international-payments",
   "name":"International payments onboarding",
   "description":"International payments onboarding",
   "version":"0",
@@ -324,7 +324,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"bf6a49d5-4027-4dac-a269-4d3ed070609e-3",
+  "id":"crunch.onboarding.parent.unlock-us-payments",
   "name":"Unlock International & Domestic Payments and Invoicing",
   "description":"Unlock payments",
   "icon":"/images/capabilityIcons/USDOnboardCap.svg",
@@ -363,7 +363,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
+  "id":"crunch.onboarding.unlock-us-payments",
   "name":"International & Domestic Payments Onboarding",
   "description":"International & Domestic Payments Onboarding",
   "version":"0",
@@ -387,28 +387,28 @@ p({
 
 p({
   "class": "foam.nanos.crunch.Capability",
-  "id":"1f6b2047-1eef-471d-82e7-d86bdf511375",
+  "id":"AFEX",
   "name":"AFEX Payment Provider Capability",
   "description":"AFEXPayment Provider Capability",
   "version":"0",
   "enabled":true,
   "grantMode": 1,
   "permissionsGranted":[
-    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
-    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
-    "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
-    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
-    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
-    "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
-    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
-    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
-    "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us"
+    "paymentprovidercorridor.read.paymentprovidercorridor.afex.ca-us",
+    "paymentprovidercorridor.source.read.paymentprovidercorridor.afex.ca-us",
+    "paymentprovidercorridor.target.read.paymentprovidercorridor.afex.ca-us",
+    "paymentprovidercorridor.read.paymentprovidercorridor.afex.us-ca",
+    "paymentprovidercorridor.source.read.paymentprovidercorridor.afex.us-ca",
+    "paymentprovidercorridor.target.read.paymentprovidercorridor.afex.us-ca",
+    "paymentprovidercorridor.read.paymentprovidercorridor.afex.us-us",
+    "paymentprovidercorridor.source.read.paymentprovidercorridor.afex.us-us",
+    "paymentprovidercorridor.target.read.paymentprovidercorridor.afex.us-us"
   ]
 })
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-18",
+  "id":"crunch.onboarding.general-admission",
   "name":"General Admission",
   "description": "User registration",
   "version":"0",
@@ -432,7 +432,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"242B00F8-C775-4899-AEBA-F287EC54E901",
+  "id":"crunch.onboarding.treviso.general-admission",
   "name":"General Admission",
   "description": "User registration",
   "version":"0",
@@ -448,7 +448,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-19",
+  "id":"crunch.onboarding.user-registration",
   "name":"User Registration",
   "of":"net.nanopay.crunch.registration.UserRegistrationData",
   "version":"0",
@@ -460,7 +460,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
+  "id":"crunch.onboarding.register-business",
   "name":"Register your business",
   "description":"Access payments and invoices",
   "icon":"/images/capabilityIcons/BusinessRegistrationCap.svg",
@@ -490,7 +490,7 @@ p({
 })
 
 p({
-  id: "554af38a-8225-87c8-dfdf-eeb15f71215f-76.submit",
+  id: "crunch.onboarding.register-business.submit",
   name: "Submit Business Information",
   wizardlet: {
     class: "foam.u2.wizard.SubmitWizardlet"
@@ -501,25 +501,25 @@ p({
 
 p({
   class:"net.nanopay.payment.CountryCapability",
+  id:"payment.source.country.br",
   country:"BR",
   type:0,
-  id:"520a4120-3bc6-cef9-6635-c32af8219a6a",
   name:"Source Country Capability BR",
   enabled:true
 })
 
 p({
   class:"net.nanopay.payment.CountryCapability",
+  id:"payment.target.country.br",
   country:"BR",
   type:1,
-  id:"63049307-8db4-2437-5c02-b71d6878263c",
   name:"Target Country Capability BR",
   enabled:true
 })
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"688cb7c6-7316-4bbf-8483-fb79f8fdeaaf",
+  "id":"crunch.onboarding.br.business-identification",
   "name":"Business Identification Numbers",
   "of":"net.nanopay.country.br.BrazilBusinessInfoData",
   "version":"0",
@@ -529,7 +529,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"fb7d3ca2-62f2-4caf-a84c-860392e4676b",
+  "id":"crunch.onboarding.br.cpf",
   "name":"CPF number",
   "of":"net.nanopay.country.br.CPF",
   "version":"0",
@@ -541,7 +541,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"b5f2b020-db0f-11ea-87d0-0242ac130003",
+  "id":"crunch.onboarding.document.office-consumption",
   "name":"Office Consumption",
   "description":"Provide three months of bills, such as water, electricity, telephone, cable TV, internet, or property tax. Alternatively, you can provide bank statements.",
   "of":"net.nanopay.crunch.document.Document",
@@ -552,7 +552,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"26d32e86-db11-11ea-87d0-0242ac130003",
+  "id":"crunch.onboarding.document.articles-of-incorporation",
   "name":"Articles Of Incorporation",
   "description":"Provide the articles of incorporation for your business.",
   "of":"net.nanopay.crunch.document.Document",
@@ -563,7 +563,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"7e2739cc-db32-11ea-87d0-0242ac130003",
+  "id":"crunch.onboarding.document.annual-financial-statements",
   "name":"Annual Financial Statements",
   "description":"Formal financial statements that are published annually and sent to the company's shareholders and several other stakeholders.",
   "of":"net.nanopay.crunch.document.Document",
@@ -574,7 +574,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"85cee1de-db32-11ea-87d0-0242ac130003",
+  "id":"crunch.onboarding.document.utility-bills",
   "name":"Utility bills",
   "description":"Provide three months of bills, such as water, electricity, telephone, cable TV, internet, or property tax. Alternatively, you can provide bank statements.",
   "of":"net.nanopay.crunch.document.Document",
@@ -585,7 +585,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"8ad3c898-db32-11ea-87d0-0242ac130003",
+  "id":"crunch.onboarding.document.identification",
   "name":"Identification",
   "description":"Provide a copy of a piece of government issued identification which shows your full name, picture, and Identification number.",
   "of":"net.nanopay.crunch.document.Document",
@@ -600,7 +600,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"8ad3c898-db232-1ea-87d0-0242ac130z0",
+  "id":"crunch.onboarding.document.date-of-issue",
   "name":"Date of Issue",
   "description":"Date of issue of an identification document",
   "of":"net.nanopay.crunch.document.DateOfIssue",
@@ -613,7 +613,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"B98D97EE-4A43-4B03-84C1-9DE2C0109E87",
+  "id":"crunch.onboarding.api.onboarding-user-and-business",
   "name":"API Onboarding User and Business",
   "description":"Unlock onboarding for a given user by provisioning a business",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
@@ -624,7 +624,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"56D2D946-6085-4EC3-8572-04A17225F86A",
+  "id":"crunch.onboarding.api.ca-business-send-payments",
   "name":"API CAD Business Payments Sending",
   "description":"Unlock capability for sending Canadian payments as a business",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
@@ -635,7 +635,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"9C6D8CFE-50B8-4507-A595-78DD9E08EA2D",
+  "id":"crunch.onboarding.api.expanded-business-details",
   "name":"Expanded Business Onboarding Details",
   "description": "Extra properties needed to onboarding a business for sending payments",
   "of":"net.nanopay.crunch.registration.BusinessDetailExpandedData",
@@ -647,7 +647,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"18DD6F03-998F-4A21-8938-358183151F96",
+  "id":"crunch.onboarding.api.ca-business-receive-payments",
   "name":"API CAD Business Payments Receiving",
   "description":"Unlock capability for receiving Canadian payments as a business",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
@@ -690,7 +690,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"EC535109-E9C0-4B5D-8D24-31282EF72F8F",
+  "id":"crunch.onboarding.api.business-details",
   "name":"Business Onboarding Details",
   "of":"net.nanopay.crunch.registration.BusinessDetailData",
   "version":"0",
@@ -701,7 +701,7 @@ p({
 
 p({
   "class": "foam.nanos.crunch.MinMaxCapability",
-  "id":"A679CA67-93C2-4597-B92E-4BBA00797E96",
+  "id":"crunch.onboarding.api.minmax.business-type",
   "name":"Business Type",
   "version":"0",
   "enabled":true,
@@ -798,7 +798,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"F1359801-7D71-4F30-8D36-531B4A674981",
+  "id":"crunch.onboarding.business-director-list",
   "name":"Business Directors",
   "of":"net.nanopay.crunch.registration.BusinessDirectorList",
   "version":"0",
@@ -807,7 +807,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"6DD8D005-7514-432D-BC32-9C5D569A0462",
+  "id":"crunch.onboarding.business-owner-list",
   "name":"Business Owners",
   "of":"net.nanopay.crunch.registration.BusinessOwnerList",
   "version":"0",
@@ -816,7 +816,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"A285FDFA-3C6B-4150-A0F4-B72E664A3A9E",
+  "id":"crunch.onboarding.business-has-signing-officer",
   "name":"Business Signing Officer",
   "description":"Business has a signing officer",
   "version":"0",
@@ -825,7 +825,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"7BE7F3EE-D887-42E9-8042-680C6BF1C6AE",
+  "id":"crunch.onboarding.signing-officer-list",
   "name":"Signing Officers",
   "of":"net.nanopay.crunch.registration.SigningOfficerList",
   "version":"0",
@@ -834,7 +834,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"25D9499A-36D3-436A-9C87-3CA41B5FC08F",
+  "id":"crunch.onboarding.user-is-signing-officer",
   "name":"User Signing Officer Capability",
   "description":"User is a signing officer",
   "version":"0",
@@ -845,7 +845,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"1F0B39AD-934E-462E-A608-D590D1081298",
+  "id":"crunch.onboarding.api.unlock-ca-payments",
   "name":"API CAD Personal Payments",
   "description":"Unlock capability for Canadian personal payments",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
@@ -856,7 +856,7 @@ p({
 
 p({
   "class":"net.nanopay.crunch.registration.LimitedAmountCapability",
-  "id":"F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD",
+  "id":"crunch.onboarding.api.unlock-ca-payments-under-1000",
   "name":"API CAD Personal Payments Under 1000CAD",
   "description":"Unlock capability for Canadian personal payments under $1000",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
@@ -868,7 +868,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"7B440CC7-C64D-4FDC-B394-052846CB7049",
+  "id":"crunch.onboarding.api.onboarding-type",
   "name":"Personal Onboarding Type",
   "of":"net.nanopay.crunch.registration.PersonalOnboardingTypeData",
   "version":"0",
@@ -877,7 +877,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"A62AC209-CD55-4755-9B93-2B9BAE885B85",
+  "id":"crunch.onboarding.parent.api.simple-user-onboarding",
   "name":"Simple User Onboarding",
   "description":"Basic information for user onboarding",
   "version":"0",
@@ -886,7 +886,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"0ED5DD86-AA1A-452B-BA7D-E7A2D0542135",
+  "id":"crunch.onboarding.user-details",
   "name":"User Details",
   "of":"net.nanopay.crunch.registration.UserDetailData",
   "version":"0",
@@ -937,7 +937,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"FB1C8CF2-34B9-40FE-A4AA-58CFA2FDBA15",
+  "id":"crunch.onboarding.expanded-user-details",
   "name":"Expanded User Details",
   "description":"Advanced information for expanded user onboarding",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
@@ -951,7 +951,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"CD499238-7854-4125-A04D-7CE7EE15BC74",
+  "id":"crunch.onboarding.api.unlock-ca-ca-payments",
   "name":"API Onboarding Domestic Business Payments (CAD to CAD)",
   "description":"Unlock domestic payments through the API for a business.",
   "version":"0",
@@ -960,7 +960,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"8bffdedc-5176-4843-97df-1b75ff6054fb",
+  "id":"crunch.onboarding.user-birth-date",
   "name":"Date of birth",
   "of":"net.nanopay.crunch.onboardingModels.UserBirthDateData",
   "daoKey":"userDAO",
@@ -975,7 +975,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-16",
+  "id":"crunch.onboarding.business-registration-date",
   "name":"When was your business created?",
   "of":"net.nanopay.crunch.onboardingModels.BusinessRegistrationDateData",
   "description":"Business Registration Date",
@@ -987,7 +987,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-19",
+  "id":"crunch.onboarding.last-business-registration-date",
   "name":"Date of the last Contractual Amendment or Minutes",
   "of":"net.nanopay.crunch.onboardingModels.BusinessLastRegistrationDateData",
   "description":"Business Last Registration Date",
@@ -999,8 +999,8 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-17",
-  "name":"Business Incorporationn",
+  "id":"crunch.onboarding.business-incorporation-date",
+  "name":"Business Incorporation",
   "of":"net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData",
   "description":"Date of incorporation of the business",
   "daoKey": "businessDAO",
@@ -1011,7 +1011,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-18",
+  "id":"crunch.onboarding.tax-id-number",
   "name":"Tax Id Number",
   "of":"net.nanopay.crunch.onboardingModels.TaxIdNumberData",
   "description":"Tax Id Number",
@@ -1023,7 +1023,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"7bf54e2d-2bf0-41fe-bc25-31c8de030ffa",
+  "id":"crunch.onboarding.submitted-by",
   "name":"Business Onboarding Addition Infor",
   "of":"net.nanopay.onboarding.model.BusinessOnboardingExtra",
   "version":"0",
@@ -1043,7 +1043,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"24602528-34c1-11eb-adc1-0242ac120002",
+  "id":"crunch.onboarding.add-bank-account",
   "name":"Add Bank Acccount",
   "of":"net.nanopay.bank.StrategizedBankAccount",
   "enabled":true,

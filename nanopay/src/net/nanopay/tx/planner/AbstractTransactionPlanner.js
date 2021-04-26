@@ -47,6 +47,7 @@ foam.CLASS({
     'static foam.mlang.MLang.*',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.SummaryTransaction',
+    'net.nanopay.tx.TaxLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.InvoicedFeeLineItem',
@@ -398,6 +399,7 @@ foam.CLASS({
 
         txn.setLineItems(txnclone.getLineItems());
         txn = createFeeTransfers(x, txn, quote);
+        txn = createTaxTransfers(x, txn, quote);
         return txn;
       `
     },
@@ -431,6 +433,44 @@ foam.CLASS({
             else {
               Transfer tSend = new ExternalTransfer(acc.getId(), -feeLineItem.getAmount());
               Transfer tReceive = new ExternalTransfer(feeLineItem.getDestinationAccount(), feeLineItem.getAmount());
+              Transfer[] transfers = { tSend, tReceive };
+              txn.add(transfers);
+            }
+          }
+        }
+        return txn;
+      `
+    },
+    {
+      name: 'createTaxTransfers',
+      documentation: 'Creates transfers for taxes',
+      type: 'Transaction',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
+        { name: 'quote', type: 'net.nanopay.tx.TransactionQuote' },
+      ],
+      javaCode: `
+        TransactionLineItem [] ls = txn.getLineItems();
+        for ( TransactionLineItem li : ls ) {
+          if ( li instanceof TaxLineItem && ! SafetyUtil.isEmpty(li.getSourceAccount()) ) {
+            TaxLineItem taxLineItem = (TaxLineItem) li;
+            Account acc = null;
+            if ( taxLineItem.getSourceAccount() == quote.getSourceAccount().getId() )
+              acc = quote.getSourceAccount();
+            if ( taxLineItem.getSourceAccount() == quote.getDestinationAccount().getId() )
+              acc = quote.getDestinationAccount();
+            if (acc == null)
+              acc = taxLineItem.findSourceAccount(x);
+            if ( acc instanceof DigitalAccount) {
+              Transfer tSend = new Transfer(acc.getId(), -taxLineItem.getAmount());
+              Transfer tReceive = new Transfer(taxLineItem.getDestinationAccount(), taxLineItem.getAmount());
+              Transfer[] transfers = { tSend, tReceive };
+              txn.add(transfers);
+            }
+            else {
+              Transfer tSend = new ExternalTransfer(acc.getId(), -taxLineItem.getAmount());
+              Transfer tReceive = new ExternalTransfer(taxLineItem.getDestinationAccount(), taxLineItem.getAmount());
               Transfer[] transfers = { tSend, tReceive };
               txn.add(transfers);
             }

@@ -14,6 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from nanopay Corporation.
  */
+
 foam.CLASS({
   package: 'net.nanopay.partner.bepay.tx.planner',
   name: 'BePayTransactionPlanner',
@@ -22,42 +23,39 @@ foam.CLASS({
   documentation: 'Plans BRL to intermediary currencies e.g. USD, CAD, EUR, and GBP',
 
   javaImports: [
+    'foam.core.ValidationException',
     'foam.dao.DAO',
     'foam.util.SafetyUtil',
     'java.util.Calendar',
     'java.util.Date',
     'java.util.UUID',
-    'net.nanopay.country.br.tx.NatureCodeLineItem',
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXSummaryTransaction',
+    'net.nanopay.partner.bepay.tx.BePayLineItem',
     'net.nanopay.partner.bepay.tx.BePayTransaction',
     'net.nanopay.tx.ExternalTransfer',
-    'net.nanopay.tx.InfoLineItem',
     'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.InfoLineItem',
     'net.nanopay.tx.InvoicedFeeLineItem',
+    'net.nanopay.tx.SummaryTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'static foam.mlang.MLang.*',
+    'static foam.mlang.MLang.*'
+  ],
+
+  messages: [
+    {
+      name: 'MISSING_LINEITEM',
+      message: 'Missing BePayLineItem'
+    }
   ],
 
   properties: [
     {
       name: 'bestPlan',
       value: true
-    },
-    {
-      name: 'termsAndConditions',
-      class: 'String',
-      documentation: 'Terms and conditions added to the bepay transaction'
-    }
-  ],
-
-  messages: [
-    {
-      name: 'INVALID_NATURE_CODE',
-      message: 'Invalid nature code',
     }
   ],
 
@@ -86,6 +84,7 @@ foam.CLASS({
       bTx.setName("BePay transaction");
       bTx.setPaymentProvider(PAYMENT_PROVIDER);
       bTx.setPlanner(this.getId());
+      addBePayLineItem(x, bTx, requestTxn);
       txn.addNext(bTx);
       ExternalTransfer[] exT = new ExternalTransfer[2];
       exT[0] = new ExternalTransfer(quote.getDestinationAccount().getId(), bTx.getDestinationAmount());
@@ -95,10 +94,53 @@ foam.CLASS({
     `
     },
     {
-      name: 'postPlanning',
+      name: 'validatePlan',
+      type: 'boolean',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
       javaCode: `
-        return super.postPlanning(x,txn,root);
+        if ( ! ( txn instanceof BePayTransaction ) ) {
+          return true;
+        }
+        BePayTransaction transaction = (BePayTransaction) txn;
+
+        for ( TransactionLineItem lineItem: txn.getLineItems() ) {
+          if ( lineItem instanceof BePayLineItem ) {
+            return true;
+          }
+        }
+        throw new ValidationException("[Transaction Validation error] "+ this.MISSING_LINEITEM);
       `
+    },
+    {
+      name: 'addBePayLineItem',
+      javaType: 'BePayTransaction',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'txn',
+          type: 'BePayTransaction',
+        },
+        {
+          name: 'requestTxn',
+          type: 'Transaction'
+        }
+      ],
+      javaCode: `
+      // Review: we can stop execution here if no BePayLineItem provided but exception would be "Unable to plan"
+      for (TransactionLineItem lineItem: requestTxn.getLineItems() ) {
+        if ( lineItem instanceof BePayLineItem ) {
+          txn.addLineItems( new TransactionLineItem[] { lineItem } );
+          break;
+        }
+      }
+      return txn;
+    `
     },
     {
       name: 'createFeeTransfers',

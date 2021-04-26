@@ -148,7 +148,7 @@ foam.CLASS({
           // this is the business registration capability, onboarding seems to be dependent on this, 
           // but if this is cleared and the user is prompted to reapply - it will create new business,
           // and also this is not part of the "onboarding" data, so skip over 
-          if ( prereq.getId().equals("554af38a-8225-87c8-dfdf-eeb15f71215f-76")) continue;
+          if ( prereq.getId().equals("crunch.onboarding.register-business")) continue;
 
           UserCapabilityJunction prereqUcj = crunchService.getJunction(x, prereq.getId());
           if ( prereqUcj.getStatus() == CapabilityJunctionStatus.AVAILABLE )

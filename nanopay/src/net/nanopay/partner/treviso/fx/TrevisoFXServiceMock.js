@@ -37,7 +37,7 @@
         throw new UnsupportException("Unsupported target currency: "+targetCurrency);
       }
 
-      switch (sourceCurrency) {
+      switch (targetCurrency) {
         case "USD" : return 0.18;
         case "CAD" : return 0.22;
         case "CNY" : return 1.17;
@@ -45,7 +45,7 @@
         case "GBP" : return 0.13;
         default: return 1;
       }
-   
+
       `
     }
   ]

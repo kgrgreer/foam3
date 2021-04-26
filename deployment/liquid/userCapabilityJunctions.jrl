@@ -24,7 +24,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-1",
   "sourceId": 8006,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -37,7 +37,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-2",
   "sourceId": 8007,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -50,7 +50,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-3",
   "sourceId": 8015,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -63,7 +63,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-4",
   "sourceId": 8016,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -76,7 +76,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-5",
   "sourceId": 8017,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -89,7 +89,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-6",
   "sourceId": 8018,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -102,7 +102,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-7",
   "sourceId": 8019,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -115,7 +115,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-8",
   "sourceId": 8020,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -128,7 +128,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-9",
   "sourceId": 8021,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -141,7 +141,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-10",
   "sourceId": 8022,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -154,7 +154,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-11",
   "sourceId": 8023,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -167,7 +167,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-12",
   "sourceId": 8024,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -181,7 +181,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-13",
   "sourceId": 8006,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.make-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -194,7 +194,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-14",
   "sourceId": 8015,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.make-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -207,7 +207,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-15",
   "sourceId": 8016,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.make-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -220,7 +220,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-16",
   "sourceId": 8017,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.make-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -233,7 +233,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-17",
   "sourceId": 8019,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.make-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -246,7 +246,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-18",
   "sourceId": 8020,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.make-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -259,7 +259,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-19",
   "sourceId": 8021,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.make-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -272,7 +272,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-20",
   "sourceId": 8022,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.make-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -285,7 +285,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-21",
   "sourceId": 8023,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.make-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -298,7 +298,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-22",
   "sourceId": 8024,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.make-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -312,7 +312,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-23",
   "sourceId": 8006,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.approve-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -325,7 +325,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-24",
   "sourceId": 8015,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.approve-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -338,7 +338,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-25",
   "sourceId": 8016,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.approve-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -351,7 +351,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-26",
   "sourceId": 8017,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.approve-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -364,7 +364,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-27",
   "sourceId": 8019,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.approve-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -377,7 +377,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-28",
   "sourceId": 8020,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.approve-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -390,7 +390,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-29",
   "sourceId": 8021,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.approve-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -403,7 +403,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-30",
   "sourceId": 8022,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.approve-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -416,7 +416,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-31",
   "sourceId": 8023,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.approve-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -429,7 +429,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-32",
   "sourceId": 8024,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.approve-account",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -443,7 +443,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-33",
   "sourceId": 8006,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -456,7 +456,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-34",
   "sourceId": 8007,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -469,7 +469,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-35",
   "sourceId": 8015,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -482,7 +482,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-36",
   "sourceId": 8016,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -495,7 +495,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-37",
   "sourceId": 8017,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -508,7 +508,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-38",
   "sourceId": 8018,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -521,7 +521,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-39",
   "sourceId": 8019,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -534,7 +534,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-40",
   "sourceId": 8020,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -547,7 +547,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-41",
   "sourceId": 8021,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -560,7 +560,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-42",
   "sourceId": 8022,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -573,7 +573,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-43",
   "sourceId": 8023,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -586,7 +586,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-44",
   "sourceId": 8024,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -600,7 +600,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-45",
   "sourceId": 8006,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
+  "targetId": "crunch.liquid.make-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -613,7 +613,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-46",
   "sourceId": 8007,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
+  "targetId": "crunch.liquid.make-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -626,7 +626,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-47",
   "sourceId": 8015,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
+  "targetId": "crunch.liquid.make-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -639,7 +639,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-48",
   "sourceId": 8016,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
+  "targetId": "crunch.liquid.make-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -652,7 +652,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-49",
   "sourceId": 8017,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
+  "targetId": "crunch.liquid.make-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -665,7 +665,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-50",
   "sourceId": 8018,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
+  "targetId": "crunch.liquid.make-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -678,7 +678,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-51",
   "sourceId": 8019,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
+  "targetId": "crunch.liquid.make-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -691,7 +691,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-52",
   "sourceId": 8020,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
+  "targetId": "crunch.liquid.make-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -704,7 +704,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-53",
   "sourceId": 8021,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
+  "targetId": "crunch.liquid.make-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -717,7 +717,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-54",
   "sourceId": 8022,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
+  "targetId": "crunch.liquid.make-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -730,7 +730,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-55",
   "sourceId": 8023,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
+  "targetId": "crunch.liquid.make-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -743,7 +743,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-56",
   "sourceId": 8024,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
+  "targetId": "crunch.liquid.make-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -757,7 +757,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-57",
   "sourceId": 8006,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
+  "targetId": "crunch.liquid.approve-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -770,7 +770,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-58",
   "sourceId": 8007,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
+  "targetId": "crunch.liquid.approve-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -783,7 +783,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-59",
   "sourceId": 8015,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
+  "targetId": "crunch.liquid.approve-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -796,7 +796,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-60",
   "sourceId": 8016,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
+  "targetId": "crunch.liquid.approve-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -809,7 +809,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-61",
   "sourceId": 8017,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
+  "targetId": "crunch.liquid.approve-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -822,7 +822,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-62",
   "sourceId": 8018,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
+  "targetId": "crunch.liquid.approve-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -835,7 +835,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-63",
   "sourceId": 8019,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
+  "targetId": "crunch.liquid.approve-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -848,7 +848,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-64",
   "sourceId": 8020,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
+  "targetId": "crunch.liquid.approve-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -861,7 +861,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-65",
   "sourceId": 8021,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
+  "targetId": "crunch.liquid.approve-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -874,7 +874,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-66",
   "sourceId": 8022,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
+  "targetId": "crunch.liquid.approve-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -887,7 +887,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-67",
   "sourceId": 8023,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
+  "targetId": "crunch.liquid.approve-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -900,7 +900,7 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-68",
   "sourceId": 8024,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
+  "targetId": "crunch.liquid.approve-transaction",
   "status": 1,
   "data": {
     "class": "foam.core.NumberSet",
@@ -914,14 +914,14 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-69",
   "sourceId": 8006,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-70",
   "sourceId": 8007,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-user",
   "status": 1
   }
 })
@@ -929,70 +929,70 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-71",
   "sourceId": 8015,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-72",
   "sourceId": 8016,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-73",
   "sourceId": 8017,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-74",
   "sourceId": 8018,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-75",
   "sourceId": 8019,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-76",
   "sourceId": 8020,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-77",
   "sourceId": 8021,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-78",
   "sourceId": 8022,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-79",
   "sourceId": 8023,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-80",
   "sourceId": 8024,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-user",
   "status": 1
 })
 // makeUser
@@ -1000,70 +1000,70 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-81",
   "sourceId": 8006,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-8",
+  "targetId": "crunch.liquid.make-user",
   "status": 1,
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-82",
   "sourceId": 8015,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-8",
+  "targetId": "crunch.liquid.make-user",
   "status": 1,
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-83",
   "sourceId": 8016,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-8",
+  "targetId": "crunch.liquid.make-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-84",
   "sourceId": 8017,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-8",
+  "targetId": "crunch.liquid.make-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-85",
   "sourceId": 8019,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-8",
+  "targetId": "crunch.liquid.make-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-86",
   "sourceId": 8020,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-8",
+  "targetId": "crunch.liquid.make-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-87",
   "sourceId": 8021,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-8",
+  "targetId": "crunch.liquid.make-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-88",
   "sourceId": 8022,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-8",
+  "targetId": "crunch.liquid.make-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-89",
   "sourceId": 8023,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-8",
+  "targetId": "crunch.liquid.make-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-90",
   "sourceId": 8024,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-8",
+  "targetId": "crunch.liquid.make-user",
   "status": 1
 })
 // approveUser
@@ -1071,70 +1071,70 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-91",
   "sourceId": 8006,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-9",
+  "targetId": "crunch.liquid.approve-user",
   "status": 1,
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-92",
   "sourceId": 8015,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-9",
+  "targetId": "crunch.liquid.approve-user",
   "status": 1,
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-93",
   "sourceId": 8016,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-9",
+  "targetId": "crunch.liquid.approve-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-94",
   "sourceId": 8017,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-9",
+  "targetId": "crunch.liquid.approve-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-95",
   "sourceId": 8019,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-9",
+  "targetId": "crunch.liquid.approve-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-96",
   "sourceId": 8020,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-9",
+  "targetId": "crunch.liquid.approve-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-97",
   "sourceId": 8021,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-9",
+  "targetId": "crunch.liquid.approve-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-98",
   "sourceId": 8022,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-9",
+  "targetId": "crunch.liquid.approve-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-99",
   "sourceId": 8023,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-9",
+  "targetId": "crunch.liquid.approve-user",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-100",
   "sourceId": 8024,
-  "targetId": "8b36b11a-93c6-b40c-d9c8-f8effefb31cc-9",
+  "targetId": "crunch.liquid.approve-user",
   "status": 1
 })
 // viewLiquiditysettings
@@ -1142,14 +1142,14 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-101",
   "sourceId": 8006,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-102",
   "sourceId": 8007,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-liquidity-settings",
   "status": 1
   }
 })
@@ -1157,70 +1157,70 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-103",
   "sourceId": 8015,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-104",
   "sourceId": 8016,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-105",
   "sourceId": 8017,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-106",
   "sourceId": 8018,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-107",
   "sourceId": 8019,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-108",
   "sourceId": 8020,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-109",
   "sourceId": 8021,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-110",
   "sourceId": 8022,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-111",
   "sourceId": 8023,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-112",
   "sourceId": 8024,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-liquidity-settings",
   "status": 1
 })
 // makeLiquiditysettings
@@ -1228,70 +1228,70 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-113",
   "sourceId": 8006,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.make-liquidity-settings",
   "status": 1,
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-114",
   "sourceId": 8015,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.make-liquidity-settings",
   "status": 1,
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-115",
   "sourceId": 8016,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.make-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-116",
   "sourceId": 8017,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.make-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-117",
   "sourceId": 8019,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.make-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-118",
   "sourceId": 8020,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.make-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-119",
   "sourceId": 8021,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.make-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-120",
   "sourceId": 8022,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.make-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-121",
   "sourceId": 8023,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.make-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-122",
   "sourceId": 8024,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.make-liquidity-settings",
   "status": 1
 })
 // approveLiquiditysettings
@@ -1299,70 +1299,70 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-123",
   "sourceId": 8006,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.approve-liquidity-settings",
   "status": 1,
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-124",
   "sourceId": 8015,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.approve-liquidity-settings",
   "status": 1,
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-125",
   "sourceId": 8016,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.approve-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-126",
   "sourceId": 8017,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.approve-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-127",
   "sourceId": 8019,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.approve-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-128",
   "sourceId": 8020,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.approve-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-129",
   "sourceId": 8021,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.approve-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-130",
   "sourceId": 8022,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.approve-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-131",
   "sourceId": 8023,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.approve-liquidity-settings",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-132",
   "sourceId": 8024,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.approve-liquidity-settings",
   "status": 1
 })
 // viewRule
@@ -1370,14 +1370,14 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-133",
   "sourceId": 8006,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-134",
   "sourceId": 8007,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-rule",
   "status": 1
   }
 })
@@ -1385,70 +1385,70 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-135",
   "sourceId": 8015,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-136",
   "sourceId": 8016,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-137",
   "sourceId": 8017,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-138",
   "sourceId": 8018,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-139",
   "sourceId": 8019,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-140",
   "sourceId": 8020,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-141",
   "sourceId": 8021,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-142",
   "sourceId": 8022,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-143",
   "sourceId": 8023,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-144",
   "sourceId": 8024,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
+  "targetId": "crunch.liquid.view-rule",
   "status": 1
 })
 // makeRule
@@ -1456,70 +1456,70 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-145",
   "sourceId": 8006,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
+  "targetId": "crunch.liquid.make-rule",
   "status": 1,
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-146",
   "sourceId": 8015,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
+  "targetId": "crunch.liquid.make-rule",
   "status": 1,
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-147",
   "sourceId": 8016,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
+  "targetId": "crunch.liquid.make-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-148",
   "sourceId": 8017,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
+  "targetId": "crunch.liquid.make-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-149",
   "sourceId": 8019,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
+  "targetId": "crunch.liquid.make-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-150",
   "sourceId": 8020,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
+  "targetId": "crunch.liquid.make-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-151",
   "sourceId": 8021,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
+  "targetId": "crunch.liquid.make-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-152",
   "sourceId": 8022,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
+  "targetId": "crunch.liquid.make-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-153",
   "sourceId": 8023,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
+  "targetId": "crunch.liquid.make-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-154",
   "sourceId": 8024,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
+  "targetId": "crunch.liquid.make-rule",
   "status": 1
 })
 // approveRule
@@ -1527,70 +1527,70 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-155",
   "sourceId": 8006,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
+  "targetId": "crunch.liquid.approve-rule",
   "status": 1,
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-156",
   "sourceId": 8015,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
+  "targetId": "crunch.liquid.approve-rule",
   "status": 1,
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-157",
   "sourceId": 8016,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
+  "targetId": "crunch.liquid.approve-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-158",
   "sourceId": 8017,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
+  "targetId": "crunch.liquid.approve-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-159",
   "sourceId": 8019,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
+  "targetId": "crunch.liquid.approve-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-160",
   "sourceId": 8020,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
+  "targetId": "crunch.liquid.approve-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-161",
   "sourceId": 8021,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
+  "targetId": "crunch.liquid.approve-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-162",
   "sourceId": 8022,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
+  "targetId": "crunch.liquid.approve-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-163",
   "sourceId": 8023,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
+  "targetId": "crunch.liquid.approve-rule",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-164",
   "sourceId": 8024,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
+  "targetId": "crunch.liquid.approve-rule",
   "status": 1
 })
 // viewRoles
@@ -1598,14 +1598,14 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-165",
   "sourceId": 8006,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-166",
   "sourceId": 8007,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-role-assignments",
   "status": 1
   }
 })
@@ -1613,70 +1613,70 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-167",
   "sourceId": 8015,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-168",
   "sourceId": 8016,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-169",
   "sourceId": 8017,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-170",
   "sourceId": 8018,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-171",
   "sourceId": 8019,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-172",
   "sourceId": 8020,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-173",
   "sourceId": 8021,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-174",
   "sourceId": 8022,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-175",
   "sourceId": 8023,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-176",
   "sourceId": 8024,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
+  "targetId": "crunch.liquid.view-role-assignments",
   "status": 1
 })
 // makeRoles
@@ -1684,70 +1684,70 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-177",
   "sourceId": 8006,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-8",
+  "targetId": "crunch.liquid.make-role-assignments",
   "status": 1,
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-178",
   "sourceId": 8015,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-8",
+  "targetId": "crunch.liquid.make-role-assignments",
   "status": 1,
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-179",
   "sourceId": 8016,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-8",
+  "targetId": "crunch.liquid.make-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-180",
   "sourceId": 8017,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-8",
+  "targetId": "crunch.liquid.make-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-181",
   "sourceId": 8019,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-8",
+  "targetId": "crunch.liquid.make-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-182",
   "sourceId": 8020,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-8",
+  "targetId": "crunch.liquid.make-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-183",
   "sourceId": 8021,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-8",
+  "targetId": "crunch.liquid.make-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-184",
   "sourceId": 8022,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-8",
+  "targetId": "crunch.liquid.make-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-185",
   "sourceId": 8023,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-8",
+  "targetId": "crunch.liquid.make-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-186",
   "sourceId": 8024,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-8",
+  "targetId": "crunch.liquid.make-role-assignments",
   "status": 1
 })
 // approveRoles
@@ -1755,70 +1755,70 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-187",
   "sourceId": 8006,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-9",
+  "targetId": "crunch.liquid.approve-role-assignments",
   "status": 1,
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-188",
   "sourceId": 8015,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-9",
+  "targetId": "crunch.liquid.approve-role-assignments",
   "status": 1,
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-189",
   "sourceId": 8016,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-9",
+  "targetId": "crunch.liquid.approve-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-190",
   "sourceId": 8017,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-9",
+  "targetId": "crunch.liquid.approve-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-191",
   "sourceId": 8019,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-9",
+  "targetId": "crunch.liquid.approve-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-192",
   "sourceId": 8020,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-9",
+  "targetId": "crunch.liquid.approve-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-193",
   "sourceId": 8021,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-9",
+  "targetId": "crunch.liquid.approve-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-194",
   "sourceId": 8022,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-9",
+  "targetId": "crunch.liquid.approve-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-195",
   "sourceId": 8023,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-9",
+  "targetId": "crunch.liquid.approve-role-assignments",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-196",
   "sourceId": 8024,
-  "targetId": "1b36b11a-93c6-b40c-d9c8-f8effefb31cc-9",
+  "targetId": "crunch.liquid.approve-role-assignments",
   "status": 1
 })
 // viewDashboard
@@ -1826,70 +1826,70 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-197",
   "sourceId": 8006,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-dashboard",
   "status": 1,
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-198",
   "sourceId": 8015,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-dashboard",
   "status": 1,
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-199",
   "sourceId": 8016,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-dashboard",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-200",
   "sourceId": 8017,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-dashboard",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-201",
   "sourceId": 8019,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-dashboard",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-202",
   "sourceId": 8020,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-dashboard",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-203",
   "sourceId": 8021,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-dashboard",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-204",
   "sourceId": 8022,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-dashboard",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-205",
   "sourceId": 8023,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-dashboard",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-206",
   "sourceId": 8024,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
+  "targetId": "crunch.liquid.view-dashboard",
   "status": 1
 })
 // ingestFile
@@ -1897,70 +1897,70 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-207",
   "sourceId": 8006,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.ingest-file",
   "status": 1,
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-208",
   "sourceId": 8015,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.ingest-file",
   "status": 1,
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-209",
   "sourceId": 8016,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.ingest-file",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-210",
   "sourceId": 8017,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.ingest-file",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-211",
   "sourceId": 8019,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.ingest-file",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-212",
   "sourceId": 8020,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.ingest-file",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-213",
   "sourceId": 8021,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.ingest-file",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-214",
   "sourceId": 8022,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.ingest-file",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-215",
   "sourceId": 8023,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.ingest-file",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-216",
   "sourceId": 8024,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
+  "targetId": "crunch.liquid.ingest-file",
   "status": 1
 })
 // level2TransactionApprover
@@ -1968,20 +1968,20 @@ p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-217",
   "sourceId": 8020,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.l2-transaction-approver",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-218",
   "sourceId": 8015,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.l2-transaction-approver",
   "status": 1
 })
 p({
   "class": "foam.nanos.crunch.UserCapabilityJunction",
   "id":"6e5d623d-d92c-6524-bfdf-8a1edb-liquid-219",
   "sourceId": 8016,
-  "targetId": "2b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "targetId": "crunch.liquid.l2-transaction-approver",
   "status": 1
 })

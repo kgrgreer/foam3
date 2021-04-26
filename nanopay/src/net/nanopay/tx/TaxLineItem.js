@@ -44,7 +44,7 @@ foam.CLASS({
             this.add(`(${obj.rate.toFixed(2)}%) ` + c.format(value));
           }
         }.bind(this));
-      },
-    },
+      }
+    }
   ]
 });

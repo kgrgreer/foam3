@@ -109,7 +109,7 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
     "capabilityPayloads": [
         {
             "class": "foam.nanos.crunch.connection.CapabilityPayload",
-            "id": "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD",
+            "id": "crunch.onboarding.api.unlock-ca-payments-under-1000",
             "capabilityDataObjects": {
                 "Ablii Privacy Policy": {
                     "class": "net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy",
@@ -240,8 +240,8 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
 <p>
     Depending on your use case, the following capabilities will be the top level capabilities for the given use case:
     <ol>
-        <li>CAD Receiving Business Payments - Capability ID: <pre>18DD6F03-998F-4A21-8938-358183151F96</pre></li>
-        <li>CAD Sending Business Payments - Capability ID: <pre>56D2D946-6085-4EC3-8572-04A17225F86A</pre></li>
+        <li>CAD Receiving Business Payments - Capability ID: <pre>crunch.onboarding.api.ca-business-receive-payments</pre></li>
+        <li>CAD Sending Business Payments - Capability ID: <pre>crunch.onboarding.api.ca-business-send-payments</pre></li>
     </ol>
     As stated above in the <a href="#business-onboarding">business onboarding</a> section, the payloads necessary are all objects listed. 
     These objects will be mapped by easily understandable keys in the capabilityDataObjects map.

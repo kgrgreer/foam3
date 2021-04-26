@@ -77,7 +77,7 @@ public class ReportDAO extends ProxyDAO {
   @Override
   public FObject find_(X x, Object id) {
     var g = (ReportGenerator) x.get(generator);
-    return (FObject) g.generateReport(x, (LastModifiedAware) getDelegate().find_(x, id));
+    return g.generateReport(x, getDelegate().find_(x, id));
   }
 
   @Override
@@ -86,7 +86,7 @@ public class ReportDAO extends ProxyDAO {
       @Override
       public void put(Object obj, Detachable sub) {
         var g = (ReportGenerator) x.get(generator);
-        var report = g.generateReport(x, (LastModifiedAware) obj);
+        var report = g.generateReport(x, obj);
         if ( report != null )
           super.put(report, sub);
       }

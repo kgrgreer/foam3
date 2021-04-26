@@ -2,7 +2,7 @@ p({
   "class":"foam.nanos.theme.Theme",
   "id":"85d018c3-ec75-028e-523e-23d0c89c243b",
   "name":"treviso",
-  "admissionCapability":"242B00F8-C775-4899-AEBA-F287EC54E901",
+  "admissionCapability":"crunch.onboarding.treviso.general-admission",
   "appName":"Treviso",
   "loginImage":"images/treviso/treviso_black_logo.svg",
   "domains":[
