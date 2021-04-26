@@ -274,3 +274,35 @@ p({
     "emailVerified":true,
     "lifecycleState":1
 })
+
+p({
+    "class":"foam.nanos.auth.User",
+    "id":8165,
+    "firstName":"Ian",
+    "lastName":"Visser",
+    "jobTitle":"Support",
+    "organization":"Intuit Support",
+    "email":"ian_visser@intuit.com",
+    "password":"N4cD1yLjUZU=:TbeiB+VujXTIsZBp0kyZMl8MkJoUYoYq6FL4qqy70bS3VyTD24VM0pngoGTXEcVh6jl7xGMvSrD183syOIR9cA==",
+    "passwordLastModified":"2019-10-11T20:18:57.186Z",
+    "spid":"intuit",
+    "group":"intuit-support",
+    "emailVerified":true,
+    "lifecycleState":1
+})
+
+p({
+    "class":"foam.nanos.auth.User",
+    "id":8166,
+    "firstName":"Celena",
+    "lastName":"Glanville",
+    "jobTitle":"Support",
+    "organization":"Intuit Support",
+    "email":"celena_glanville@intuit.com",
+    "password":"N4cD1yLjUZU=:TbeiB+VujXTIsZBp0kyZMl8MkJoUYoYq6FL4qqy70bS3VyTD24VM0pngoGTXEcVh6jl7xGMvSrD183syOIR9cA==",
+    "passwordLastModified":"2019-10-11T20:18:57.186Z",
+    "spid":"intuit",
+    "group":"intuit-support",
+    "emailVerified":true,
+    "lifecycleState":1
+})
