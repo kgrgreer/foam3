@@ -236,8 +236,8 @@ foam.CLASS({
       }
 
       // Add Effective Rate LineItem based on sourceAmount/destination amount
-      Double sourceAmount = (txn.getAmount() / 100) + (txn.getAmount() % 100) / 100.0;
-      Double destAmount = (txn.getDestinationAmount() / 100) + (txn.getDestinationAmount() % 100) / 100.0;
+      Double sourceAmount = txn.getAmount() / 100.0;
+      Double destAmount = txn.getDestinationAmount() / 100.0;
       txn.addLineItems(new TransactionLineItem[] {
         new TotalRateLineItem.Builder(getX())
             .setName("Effective Rate(VET)")
