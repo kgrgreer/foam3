@@ -90,7 +90,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_554af38a_8225_87c8_dfdf_eeb15f71215e_25',
+      name: 'crunch_onboarding_br_treviso_unlock_payments_terms',
       code: async function(x, user) {
         var id = 'crunch.onboarding.br.treviso-unlock-payments-terms';
         var ucj = await this.crunchService.getJunction(x, id);
@@ -106,7 +106,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_242B00F8_C775_4899_AEBA_F287EC54E901',
+      name: 'crunch_onboarding_treviso_general_admission',
       code: async function(x, user) {
         // GeneralAdmission-Treviso
         var id = 'crunch.onboarding.treviso.general-admission';
