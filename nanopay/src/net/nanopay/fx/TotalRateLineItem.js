@@ -22,15 +22,7 @@ foam.CLASS({
 
   documentation: `Total rate line item produced by the FeeEngine when
     applying fee and rate to override the raw quoted FX rates.`,
-
-  properties: [
-    {
-      name: 'amount',
-      factory: function() {
-        return this.rate.toFixed(4);
-      }
-    }
-  ],
+  
   
   methods: [
     function toSummary() {

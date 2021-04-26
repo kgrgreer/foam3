@@ -84,7 +84,7 @@ foam.CLASS({
     {
       name: 'transactionProp',
       expression: function(data) {
-        
+
       }
     },
     {
@@ -174,12 +174,16 @@ foam.CLASS({
               lineItems
                 .filter( lineItem => this.TotalRateLineItem.isInstance(lineItem) )
                 .forEach( (totalRateLineItem) => {
-                  e.start({
-                    class: 'net.nanopay.tx.LineItemCitationView',
-                    data: totalRateLineItem,
-                    hideInnerLineItems: true,
-                    inline:true
-                  });
+                  // e.start({
+                  //   class: 'net.nanopay.tx.LineItemCitationView',
+                  //   data: totalRateLineItem,
+                  //   hideInnerLineItems: true,
+                  //   inline:true
+                  // });
+                  self.start(self.Cols)
+                    .add(totalRateLineItem.name)
+                    .start().add(totalRateLineItem.rate.toFixed(4)).end()
+                  .end();
                 });
 
 
