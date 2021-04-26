@@ -67,10 +67,14 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.meter.report.ReportStatus',
       name: 'status',
       visibility: 'RO',
       tableWidth: 100,
+      tableCellFormatter: function(state) {
+        this.add(state.label)
+      },
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("");
       }
