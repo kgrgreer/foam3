@@ -45,7 +45,8 @@ foam.CLASS({
     { name: 'TITLE', message: 'Review Remittance Details' },
     { name: 'AMOUNT', message: 'Amount' },
     { name: 'AMOUNT_IN', message: 'Amount in' },
-    { name: 'INVERT_RATE', message: 'Rate'}
+    { name: 'RATE', message: 'Rate'},
+    { name: 'GRAND_TOTAL', message: 'Total Due' }
   ],
 
   properties: [
@@ -59,18 +60,18 @@ foam.CLASS({
         let props = of.getAxiomsByClass(foam.core.Property);
         let props_rateLineItem = of_rateLineItem.getAxiomsByClass(foam.core.Property);
         let candidates = [ 'destinationAmount', 'inverseRate', 'amount'];
-        let labels = [this.AMOUNT, this.INVERT_Rate, this.AMOUNT_IN];
+        let labels = [this.AMOUNT, this.RATE, this.AMOUNT_IN];
         let newProps = new Array(candidates.length);
 
         for ( const p of props ) {
           if ( candidates.includes(p.name) ) {
-            newProps[candidates.indexOf(p.name)] = {prop: p, value: p.get(this.data), label: labels[candidates.indexOf(p.name)]};
+            newProps[candidates.indexOf(p.name)] = {prop: p, value: p.get(this.data), label: labels[candidates.indexOf(p.name)] + (p.name === 'amount' ? ` (${data.sourceCurrency})`: '')};
           }
         }
 
         for ( const p of props_rateLineItem ) {
           if ( p.name != 'amount' && candidates.includes(p.name) ) {
-            newProps[candidates.indexOf(p.name)] = {prop: p, value: p.get(rateLineItem), label: labels[candidates.indexOf(p.name)]+`(${data.sourceCurrency})`};
+            newProps[candidates.indexOf(p.name)] = {prop: p, value: p.get(rateLineItem), label: labels[candidates.indexOf(p.name)]};
           }
         }
 
@@ -98,9 +99,8 @@ foam.CLASS({
         .forEach(self.prop, function(p) {
             if ( !p ) return;
             if ( p.prop.label && ! p.prop.hidden && ! p.prop.visibility ) {
-              let label = self.toSentenceCase(p.prop.label);
               self.start(self.Cols)
-                .add(label)
+                .add(p.label)
                 .start(p.prop, { mode: foam.u2.DisplayMode.RO, data: p.value }).end()
               .end();
             }
@@ -154,12 +154,14 @@ foam.CLASS({
               //TODO: grandTotal and VET.
 
               // Show grand total
-              e.start({
+              e.br().start({
                 class: 'net.nanopay.tx.LineItemCitationView',
                 data: this.GrandTotalLineItem.create({
                   amount: data.amount + totalFee,
                   currency: data.sourceCurrency
-                })
+                }),
+                inline:true,
+                highlightInlineTitle: true
               });
 
               return e;

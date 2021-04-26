@@ -39,6 +39,12 @@ foam.CLASS({
     'translationService'
   ],
 
+  css: `
+    ^highlight-title {
+      font-weight: 600;
+    }
+  `,
+
   properties: [
     'data',
     {
@@ -79,6 +85,11 @@ foam.CLASS({
       class: 'Boolean',
       name: 'inline',
       value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'highlightInlineTitle',
+      value: false
     }
   ],
 
@@ -101,10 +112,18 @@ foam.CLASS({
       })
       .callIf(this.inline && this.amountProp, () => {
         console.log(`${this.data.cls_.package}.${this.data.cls_.name}.${this.data.toSummary()}`)
-        this.start(this.Cols)
-          .add(this.translationService.getTranslation(foam.locale,`${this.data.cls_.package}.${this.data.cls_.name}.${this.data.toSummary()}`, this.data.toSummary()))
-          .start(this.amountProp, { mode: this.data.requiresUserInput && this.amountProp.required ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.RO }).end()
-        .end()
+        this.callIf(this.highlightInlineTitle, () => {
+          this.start(this.Cols)
+            .start().addClass(this.myClass('highlight-title')).add(this.translationService.getTranslation(foam.locale,`${this.data.cls_.package}.${this.data.cls_.name}.${this.data.toSummary()}`, this.data.toSummary())).end()
+            .start(this.amountProp, { mode: this.data.requiresUserInput && this.amountProp.required ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.RO }).end()
+          .end()
+        })
+        .callIf(!this.highlightInlineTitle, () => {
+          this.start(this.Cols)
+            .add(this.translationService.getTranslation(foam.locale,`${this.data.cls_.package}.${this.data.cls_.name}.${this.data.toSummary()}`, this.data.toSummary()))
+            .start(this.amountProp, { mode: this.data.requiresUserInput && this.amountProp.required ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.RO }).end()
+          .end()
+        })
       })
     }
   ]
