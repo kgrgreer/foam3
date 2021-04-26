@@ -117,7 +117,7 @@ foam.CLASS({
                                                                 && (data.showAllLineItem || 
                                                                   this.FeeSummaryTransactionLineItem.isInstance(lineItem) ||
                                                                   this.TaxLineItem.isInstance(lineItem) ||
-                                                                  this.net.nanopay.TotalRateLineItem.isInstance(lineItem)
+                                                                  this.TotalRateLineItem.isInstance(lineItem)
                                                                 )
                                                                 && lineItem.showLineItem() )
               // tax.
@@ -164,15 +164,13 @@ foam.CLASS({
               });
 
               lineItems
-                .filter( lineItem => this.net.nanopay.TotalRateLineItem.isInstance(lineItem) )
-                .forEach( (feeSummaryLineItem) => {
-                  feeSummaryLineItem.lineItems.forEach( (totalRateLineItem) => {
-                    e.start({
-                      class: 'net.nanopay.tx.LineItemCitationView',
-                      data: totalRateLineItem,
-                      hideInnerLineItems: true,
-                      inline:true
-                    });
+                .filter( lineItem => this.TotalRateLineItem.isInstance(lineItem) )
+                .forEach( (totalRateLineItem) => {
+                  e.start({
+                    class: 'net.nanopay.tx.LineItemCitationView',
+                    data: feeSummaryLineItem,
+                    hideInnerLineItems: true,
+                    inline:true
                   });
                 });
 
