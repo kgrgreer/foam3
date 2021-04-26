@@ -184,7 +184,7 @@ foam.CLASS({
               e.br().start({
                 class: 'net.nanopay.tx.LineItemCitationView',
                 data: this.GrandTotalLineItem.create({
-                  amount: data.amount + totalFee + totalTax,
+                  amount: totalAmount,
                   currency: data.sourceCurrency
                 }),
                 inline:true,
