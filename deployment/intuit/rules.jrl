@@ -85,7 +85,7 @@ p({
   },
   "action":{
     "class":"net.nanopay.ticket.FullReverseScenarioAction",
-    "textToAgent":"Payor has cancelled the transaction, status: pending. Nanopay will process the return",
+    "textToAgent":"Payor has cancelled the transaction. Cancellation in progress",
     "creditAccount":"64307927-db83-43a7-9787-c5cc89becc11",
     "postApprovalRuleId": "b64905d0-289b-4371-92a5-f843e344109a",
     "autoApprove":false
@@ -138,7 +138,7 @@ p({
   },
   "action":{
     "class":"net.nanopay.ticket.ScenarioAction",
-    "textToAgent":"User has cancelled transaction. No action required",
+    "textToAgent":"Transaction Cancelled",
     "postApprovalRuleId": "c6c5c0b8-a24d-4dc7-8561-57e206ed1b45",
     "autoApprove": true
   },
@@ -190,7 +190,7 @@ p({
   },
   "action":{
     "class":"net.nanopay.ticket.WaitingScenarioAction",
-    "textToAgent":"Waiting for transaction to enter interactable state.",
+    "textToAgent":"Payor has cancelled the transaction. Cancellation in progress.",
     "postApprovalRuleId": "waiting",
     "autoApprove":false
   },
@@ -241,7 +241,7 @@ p({
   },
   "action":{
     "class":"net.nanopay.ticket.ScenarioAction",
-    "textToAgent":"Cash In has failed. No action required. Merchant to create new payment request",
+    "textToAgent":"The payment has failed due to:",
     "postApprovalRuleId": "c6c5c0b8-a24d-4dc7-8561-57e206ed1b45",
     "autoApprove": true
   },
@@ -293,7 +293,7 @@ p({
   },
   "action":{
     "class":"net.nanopay.ticket.FullReverseScenarioAction",
-    "textToAgent":"Cash In has completed. No action required. txn being cancelled",
+    "textToAgent":"Payor has cancelled the transaction. Cancellation in progress",
     "postApprovalRuleId": "b64905d0-289b-4371-92a5-f843e344109a",
     "autoApprove": true
   },
@@ -350,7 +350,7 @@ p({
     "postApprovalRuleId": "none",
   },
   "after":false,
-  "enabled":true,
+  "enabled":false,
   "saveHistory":false,
   "lifecycleState":1,
   "spid": "intuit"
@@ -414,7 +414,7 @@ p({
   "name":"RefundTicket - CO on Declined",
   "priority":100,
   "ruleGroup":"refundTickets",
-  "documentation":"Scenario 6: Cash out failed due to dest. acct error",
+  "documentation":"Scenario 6: Cash out failed due to destination account error",
   "daoKey":"localTicketDAO",
   "operation":3,
   "predicate":{
@@ -449,7 +449,7 @@ p({
   },
   "action":{
     "class":"net.nanopay.ticket.FullReverseScenarioAction",
-    "textToAgent":"Cash Out has failed",
+    "textToAgent":"The payment has failed due to:",
     "postApprovalRuleId": "b64905d0-289b-4371-92a5-f843e344109a",
     "autoApprove":false
   },
