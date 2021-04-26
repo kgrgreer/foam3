@@ -47,7 +47,9 @@ foam.CLASS({
     { name: 'AMOUNT', message: 'Amount' },
     { name: 'AMOUNT_IN', message: 'Amount in' },
     { name: 'RATE', message: 'Rate'},
-    { name: 'GRAND_TOTAL', message: 'Total Due' }
+    { name: 'GRAND_TOTAL', message: 'Total Due' },
+    { name: 'TRANSACTION_DATA', message: 'Transaction Data' },
+    { name: 'TRANSACTION_REFERENCE', message: 'Transaction Reference' }
   ],
 
   properties: [
