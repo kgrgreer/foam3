@@ -316,6 +316,7 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setSeqNo(true)
       .setAuthorize(false)
+      .setEnableInterfaceDecorators(false)
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.invoice.model.Invoice\"}"
@@ -1347,8 +1348,8 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "padCaptureDAO",
-  "serve": true,
+  "name": "localPadCaptureDAO",
+  "serve": false,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
@@ -1356,10 +1357,26 @@ p({
       .setPm(true)
       .setPipelinePm(true)
       .setSeqNo(true)
-      .setValidated(true)
       .setRuler(false)
       .setJournalName("padCapture")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .build();
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "padCaptureDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.model.PadCapture.getOwnClassInfo())
+      .setInnerDAO(x.get("localPadCaptureDAO"))
+      .setPm(true)
+      .setPipelinePm(true)
+      .setValidated(true)
+      .setRuler(false)
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.model.PadCapture\"}"
