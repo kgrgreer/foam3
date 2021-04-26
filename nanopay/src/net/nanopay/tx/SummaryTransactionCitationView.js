@@ -168,7 +168,7 @@ foam.CLASS({
                 .forEach( (totalRateLineItem) => {
                   e.start({
                     class: 'net.nanopay.tx.LineItemCitationView',
-                    data: feeSummaryLineItem,
+                    data: totalRateLineItem,
                     hideInnerLineItems: true,
                     inline:true
                   });
