@@ -79,6 +79,7 @@ p({
   "keywords":["featured"],
   "permissionsGranted":[
     "certifydatareviewed.rw.reviewed",
+    "net.nanopay.crunch.onboardingmodels.certifydatareviewed.section.reviewDataSection",
     "user.invoice.pay",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
