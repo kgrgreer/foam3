@@ -41,7 +41,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      label: 'Rate',
       name: 'inverseRate'
     },
     {
