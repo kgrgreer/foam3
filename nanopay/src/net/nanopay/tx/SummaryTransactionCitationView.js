@@ -42,7 +42,10 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TITLE', message: 'Review Remittance Details' }
+    { name: 'TITLE', message: 'Review Remittance Details' },
+    { name: 'AMOUNT', message: 'Amount' },
+    { name: 'AMOUNT_IN', message: 'Amount in' },
+    { name: 'INVERT_RATE', message: 'Rate'}
   ],
 
   properties: [
@@ -56,21 +59,28 @@ foam.CLASS({
         let props = of.getAxiomsByClass(foam.core.Property);
         let props_rateLineItem = of_rateLineItem.getAxiomsByClass(foam.core.Property);
         let candidates = [ 'destinationAmount', 'inverseRate', 'amount'];
+        let labels = [this.AMOUNT, this.INVERT_Rate, this.AMOUNT_IN];
         let newProps = new Array(candidates.length);
 
         for ( const p of props ) {
           if ( candidates.includes(p.name) ) {
-            newProps[candidates.indexOf(p.name)] = {prop: p, value: p.get(this.data)};
+            newProps[candidates.indexOf(p.name)] = {prop: p, value: p.get(this.data), label: labels[candidates.indexOf(p.name)]};
           }
         }
 
         for ( const p of props_rateLineItem ) {
           if ( p.name != 'amount' && candidates.includes(p.name) ) {
-            newProps[candidates.indexOf(p.name)] = {prop: p, value: p.get(rateLineItem)};
+            newProps[candidates.indexOf(p.name)] = {prop: p, value: p.get(rateLineItem), label: labels[candidates.indexOf(p.name)]+`(${data.sourceCurrency})`};
           }
         }
 
         return newProps;
+      }
+    },
+    {
+      name: 'grandTotal',
+      expression: function(data) {
+        return data;
       }
     }
   ],

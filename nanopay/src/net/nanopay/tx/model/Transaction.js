@@ -290,7 +290,7 @@ foam.CLASS({
       class: 'UnitValue',
       name: 'amount',
       unitPropName: 'sourceCurrency',
-      label: 'Amount in',
+      label: 'Payer Amount',
       section: 'transactionInformation',
       order: 50,
       gridColumns: 6,
@@ -423,7 +423,7 @@ foam.CLASS({
     {
       class: 'UnitValue',
       name: 'destinationAmount',
-      label: 'Amount',
+      label: 'Payee Amount',
       includeInDigest: true,
       documentation: `Amount received in the payee's account (desintation account) in the destination currency.`,
       help: `This is the amount sent to payee's account (destination account).`,
