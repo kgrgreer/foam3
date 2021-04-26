@@ -25,7 +25,7 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'value',
+      name: 'amount',
       factory: function() {
         return this.rate.toFixed(4);
       }
