@@ -109,7 +109,7 @@ foam.CLASS({
       view: function(_, X) {
         return foam.u2.FormattedTextField.create({
           formatter: [2, '.', 3, '.', 3, '/', 4, '-', 2],
-          returnFormatted: true
+          returnFormatted: false
         }, X);
       }
     },
