@@ -2303,13 +2303,13 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.m
 // Review Invoice Details
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.TITLE",target:"Revise os Detalhes da Remessa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.FXSummaryTransaction.DESCRIPTION",target:"Detalhes do Pagamento"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.AMOUNT.label",target:"Valor em"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.DESTINATION_AMOUNT.label",target:"Quantidade"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.AMOUNT.label",target:"Quantidade de fonte"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.DESTINATION_AMOUNT.label",target:"Conta de destino"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT.label",target:"Conta de origem"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.EtaSummaryTransactionLineItem.ETA_MESSAGE",target:"Tempo estimado até o pagamento ser recebido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.EtaSummaryTransactionLineItem.ETA.label",target:"Tempo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.FxSummaryTransactionLineItem.FX",target:"Informação Cambial"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.FxSummaryTransactionLineItem.INVERSE_RATE.label",target:"Taxa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.FxSummaryTransactionLineItem.RATE.label",target:"Taxa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.FeeSummaryTransactionLineItem.FEE",target:"Taxas de serviço"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.FeeSummaryTransactionLineItem.TOTAL_FEE.label",target:"Total"})
 
@@ -2429,12 +2429,12 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.PAYER_ID.label",target:"Pagador Id"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.PAYER_ID.documentation",target:"ID of the payer."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.AMOUNT.help",target:"This is the amount withdrawn from the payer's chosen account (Source Account)."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.AMOUNT.label",target:"Valor em"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.AMOUNT.label",target:"Pagador Valor"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.AMOUNT.documentation",target:"Amount withdrawn from the payer's account (source account) in the source currency."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.SUMMARY.label",target:"Resumo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.SUMMARY.documentation",target:"\n        Used to display a lot of information in a visually compact way in table\n        views of Transactions.\n      "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.DESTINATION_AMOUNT.help",target:"This is the amount sent to payee's account (destination account)."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.DESTINATION_AMOUNT.label",target:"Quantidade"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.DESTINATION_AMOUNT.label",target:"Beneficiário Valor"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.DESTINATION_AMOUNT.documentation",target:"Amount received in the payee's account (desintation account) in the destination currency."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.PROCESS_DATE.label",target:"Processo Data"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.COMPLETION_DATE.label",target:"Conclusão Data"})
@@ -2484,6 +2484,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetail
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.NO_NOTES_PROVIDED",target:"Nenhuma nota fornecida"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.history.InvoiceCreatedHistoryItemView.INVOICE_CREATED",target:"A fatura foi criada"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.FXSummaryTransaction.DESCRIPTION",target:"Resumo"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.model_.label",target:"Fatura"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.name",target:"Fatura"})
