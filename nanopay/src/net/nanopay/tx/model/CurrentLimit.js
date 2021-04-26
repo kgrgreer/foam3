@@ -71,9 +71,9 @@ foam.CLASS({
       gridColumns: 6
     },
     {
-      class: 'UnitValue',
+      class: 'Long',
       name: 'currentRunningValue',
-      documentation: 'amount associated to current limit',
+      documentation: 'accumulative amount associated to associated transaction limit',
       gridColumns: 6
     },
     {

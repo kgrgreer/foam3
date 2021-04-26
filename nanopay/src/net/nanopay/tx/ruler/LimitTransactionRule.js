@@ -28,7 +28,18 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.DAO'
+    'foam.dao.ArraySink',
+    'foam.dao.DAO',
+    'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalStatus',
+    'foam.nanos.auth.User',
+    'foam.nanos.auth.Subject',
+    'java.util.List',
+    'net.nanopay.account.Account',
+    'net.nanopay.tx.model.CurrentLimit',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionLimit',
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -38,11 +49,114 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            Transaction tx = (Transaction) obj;
-            DAO txnLimitDAO = (DAO) x.get("transactionLimitDAO");
+            Transaction txn = (Transaction) obj;
+            DAO accountDAO = (DAO) x.get("localAccountDAO");
             DAO currentLimitDAO = (DAO) x.get("currentLimitDAO");
+            DAO transactionLimitDAO = (DAO) x.get("transactionLimitDAO");
+            DAO userDAO = (DAO) x.get("localUserDAO");
+            
+            User user = ((Subject) x.get("subject")).getUser();
+            User realUser = ((Subject) x.get("subject")).getRealUser();
+
+            List<TransactionLimit> userLimits = ((ArraySink) transactionLimitDAO.where(
+              EQ(TransactionLimit.USER_ID, realUser.getId())
+            ).select(new ArraySink())).getArray();
+
+            List<TransactionLimit> realUserLimits = ((ArraySink) transactionLimitDAO.where(
+              EQ(TransactionLimit.USER_ID, user.getId())
+            ).select(new ArraySink())).getArray();
+
+            if ( userLimits.size() > 0 ) {
+              // limits exist on user
+
+            } else if ( realUserLimits.size() > 0 ) {
+              // limits exist on realUser
+
+            } else {
+              // check spid limits
+              Account sourceAccount = (Account) accountDAO.find(txn.getSourceAccount());
+              User sourceOwner = (User) userDAO.find(sourceAccount.getOwner());
+              List<TransactionLimit> spidLimits = ((ArraySink) transactionLimitDAO.where(
+                EQ(TransactionLimit.SPID, sourceOwner.getSpid())
+              ).select(new ArraySink())).getArray();
+
+              if ( spidLimits.size() > 0 ) {
+                // limits exist on source owner spid
+                for ( TransactionLimit limit : spidLimits ) {
+                  List<CurrentLimit> currentLimits = ((ArraySink) currentLimitDAO.where(
+                    EQ(CurrentLimit.TX_LIMIT, limit.getId())
+                  ).select(new ArraySink())).getArray();
+
+                  if ( txn.getAmount() > limit.getAmount() ) {
+                    // txn already exceeds spid limit, generate approval request
+                    generateApprovalRequest(x, txn, limit, sourceOwner);
+                    return;
+                  }
+                  
+                  if ( currentLimits.size() > 0 ) {
+                    // check if currentLimit currentRunningValue exceeds limit amount
+                    // if doesnt exceed update currentRunningValue with transaction amount
+                    // if it does exceed create approval request
+
+                    CurrentLimit currentLimit = (CurrentLimit) currentLimits.get(0);
+                    Long runningValue = currentLimit.getCurrentRunningValue();
+                    Long totalAfterTxn = runningValue + txn.getAmount();
+                    if ( totalAfterTxn > limit.getAmount() ) {
+                      generateApprovalRequest(x, txn, limit, sourceOwner);
+                    } else {
+                      currentLimit.setCurrentRunningValue(totalAfterTxn);
+                      currentLimitDAO.put(currentLimit);
+                    }
+                  } else {
+                    // create currentLimit with data from transaction limit
+
+                    CurrentLimit currentLimit = new CurrentLimit.Builder(x)
+                      .setTxLimit(limit.getId())
+                      .setType(limit.getType())
+                      .setTimeFrame(limit.getTimeFrame())
+                      .setCurrentRunningValue(txn.getAmount())
+                      .build();
+                    currentLimitDAO.put(currentLimit);
+                  }
+                }
+              }
+            }
           }
-        })
+        }, "LimitTransactionRule");
+      `
+    },
+    {
+      name: 'generateApprovalRequest',
+      type: 'Void',
+      args: [
+        {
+          type: 'Context',
+          name: 'x',
+        },
+        {
+          type: 'net.nanopay.tx.model.Transaction',
+          name: 'txn'
+        },
+        {
+          type: 'net.nanopay.tx.model.TransactionLimit',
+          name: 'limit'
+        },
+        {
+          type: 'foam.nanos.auth.User',
+          name: 'sourceOwner'
+        }
+      ],
+      javaCode: `
+        ApprovalRequest req = new ApprovalRequest.Builder(x)
+          .setClassification("Transaction Limit Exceeded")
+          .setDescription("Transaction ID: " + txn.getId() + " has exceeded " + limit.getTimeFrame().getLabel() + " limit of " + limit.getAmount())
+          .setDaoKey("transactionDAO")
+          .setServerDaoKey("localTransactionDAO")
+          .setObjId(txn.getId())
+          .setGroup(sourceOwner.getGroup())
+          .setCreatedFor(sourceOwner.getId())
+          .setStatus(ApprovalStatus.REQUESTED).build();
+        ((DAO) x.get("approvalRequestDAO")).put(req);
       `
     }
   ]
