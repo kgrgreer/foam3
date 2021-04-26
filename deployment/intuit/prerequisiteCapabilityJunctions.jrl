@@ -9,7 +9,7 @@ p({
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId: "intuit",
-  targetId: "2EFEFD46-967D-43B3-A464-2ACDC3B2D032",
+  targetId: "crunch.integration.spid-base",
   priority: 2
 })
 

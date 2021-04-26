@@ -268,7 +268,9 @@ foam.CLASS({
       Date date = cal.getTime();
 
       if ( expiry.size() > 0 ) {
-        TransactionLineItem[] expiryArray = (TransactionLineItem[]) getTotalRates(expiry).orElse(expiry).toArray(new TransactionLineItem[0]);
+        // TODO Review why we did this
+        // TransactionLineItem[] expiryArray = (TransactionLineItem[]) getTotalRates(expiry).orElse(expiry).toArray(new TransactionLineItem[0]);
+        TransactionLineItem[] expiryArray = expiry.toArray(new TransactionLineItem[expiry.size()]);
         expirySummary.setLineItems(expiryArray);
         for ( TransactionLineItem tli: expiryArray ) {
         ExpiryLineItem exp = (ExpiryLineItem) tli;

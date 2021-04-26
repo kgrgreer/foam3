@@ -9,128 +9,128 @@ p({
 // Prerequisites for canadianBusinessOnboardedWithDomesticPayments
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-4",
+  "sourceId":"crunch.onboarding.unlock-ca-ca-payments",
+  "targetId":"crunch.onboarding.business-information",
   "priority":2
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-6",
+  "sourceId":"crunch.onboarding.unlock-ca-ca-payments",
+  "targetId":"crunch.onboarding.transaction-details",
   "priority":4
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7",
+  "sourceId":"crunch.onboarding.unlock-ca-ca-payments",
+  "targetId":"crunch.onboarding.minmax.business-ownership",
   "priority":5
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-12",
+  "sourceId":"crunch.onboarding.unlock-ca-ca-payments",
+  "targetId":"crunch.acceptance-document.certify-owners-percent",
   "priority":6
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5",
+  "sourceId":"crunch.onboarding.unlock-ca-ca-payments",
+  "targetId":"crunch.onboarding.business-directors",
   "priority":7
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-17",
+  "sourceId":"crunch.onboarding.unlock-ca-ca-payments",
+  "targetId":"crunch.acceptance-document.certify-directors-list",
   "priority":8
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-3",
+  "sourceId":"crunch.onboarding.unlock-ca-ca-payments",
+  "targetId":"crunch.acceptance-document.dual-party-agreement-cad",
   "priority":9
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "sourceId":"crunch.onboarding.unlock-ca-ca-payments",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
   "priority":10
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215e-12",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7"
+  "sourceId":"crunch.acceptance-document.certify-owners-percent",
+  "targetId":"crunch.onboarding.minmax.business-ownership"
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired"
+  "sourceId":"crunch.onboarding.minmax.business-ownership",
+  "targetId":"crunch.onboarding.business-ownership"
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7-noReview"
+  "sourceId":"crunch.onboarding.minmax.business-ownership",
+  "targetId":"crunch.onboarding.publicly-traded"
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215e-17",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5"
+  "sourceId":"crunch.acceptance-document.certify-directors-list",
+  "targetId":"crunch.onboarding.business-directors"
 })
 
 // prerequisites for usBusinessOnboardedWithDomesticPayments
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-4",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.onboarding.business-information",
   "priority":3
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-6",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.onboarding.transaction-details",
   "priority":5
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.onboarding.business-directors",
   "priority":6
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-17",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.acceptance-document.certify-directors-list",
   "priority":7
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.onboarding.minmax.business-ownership",
   "priority":8
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-12",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.acceptance-document.certify-owners-percent",
   "priority":9
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-10",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.acceptance-document.afex-terms-and-conditions",
   "priority":10
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-11",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.acceptance-document.international-payments-agreement",
   "priority":11
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
   "priority":12
 })
 
@@ -138,229 +138,229 @@ p({
 // prerequisites for internationalBusinessOnboarded
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-12",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
+  "sourceId":"crunch.onboarding.unlock-ca-international-payments",
+  "targetId":"crunch.onboarding.unlock-ca-ca-payments",
   "priority":1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-12",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-11",
+  "sourceId":"crunch.onboarding.unlock-ca-international-payments",
+  "targetId":"crunch.acceptance-document.international-payments-agreement",
   "priority":3
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-12",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-9",
+  "sourceId":"crunch.onboarding.unlock-ca-international-payments",
+  "targetId":"crunch.acceptance-document.cad-afex-terms",
   "priority":4
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-12",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "sourceId":"crunch.onboarding.unlock-ca-international-payments",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
   "priority":5
 })
 
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-4",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "sourceId":"crunch.onboarding.business-information",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
   "priority":1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-6",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "sourceId":"crunch.onboarding.transaction-details",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
   "priority":4
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "sourceId":"crunch.onboarding.business-directors",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
   "priority":5
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215e-17",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "sourceId":"crunch.acceptance-document.certify-directors-list",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
   "priority":6
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7-noReview",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14"
+  "sourceId":"crunch.onboarding.publicly-traded",
+  "targetId":"crunch.onboarding.certify-data-reviewed"
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14"
+  "sourceId":"crunch.onboarding.business-ownership",
+  "targetId":"crunch.onboarding.certify-data-reviewed"
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215e-12",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "sourceId":"crunch.acceptance-document.certify-owners-percent",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
   "priority":7
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215e-3",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "sourceId":"crunch.acceptance-document.dual-party-agreement-cad",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
   "priority":8
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215e-9",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "sourceId":"crunch.acceptance-document.cad-afex-terms",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
   "priority":9
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215e-10",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "sourceId":"crunch.acceptance-document.afex-terms-and-conditions",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
   "priority":10
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215e-11",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "sourceId":"crunch.acceptance-document.international-payments-agreement",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
   "priority":11
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215e-18",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-7",
+  "sourceId":"crunch.onboarding.general-admission",
+  "targetId":"crunch.acceptance-document.ablii-terms-and-conditions",
   "priority":1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215e-18",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-8",
+  "sourceId":"crunch.onboarding.general-admission",
+  "targetId":"crunch.acceptance-document.ablii-privacy-policy",
   "priority":2
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215e-18",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-19",
+  "sourceId":"crunch.onboarding.general-admission",
+  "targetId":"crunch.onboarding.user-registration",
   "priority":3
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"242B00F8-C775-4899-AEBA-F287EC54E901",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-19",
+  "sourceId":"crunch.onboarding.treviso.general-admission",
+  "targetId":"crunch.onboarding.user-registration",
   "priority":3
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"242B00F8-C775-4899-AEBA-F287EC54E901",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-25",
+  "sourceId":"crunch.onboarding.treviso.general-admission",
+  "targetId":"crunch.onboarding.br.treviso-unlock-payments-terms",
   "priority":3
 })
 
 // top-level Brazil Onboarding prerequisites
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"05a663b8-2b48-11eb-adc1-0242ac120002",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "sourceId":"crunch.onboarding.br.business-prerequisites",
+  "targetId":"crunch.onboarding.br.brazil-onboarding",
   "priority":3
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"05a663b8-2b48-11eb-adc1-0242ac120002",
-  "targetId":"7b41a164-29bd-11eb-adc1-0242ac120002",
+  "sourceId":"crunch.onboarding.br.business-prerequisites",
+  "targetId":"crunch.onboarding.br.add-bank-account",
   "priority":3
 })
 
 // prerequisites for Brazil Initial Onboarding
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "targetId":"554af38a-8225-87c8-dfdf-eebsdf3225y-4",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"crunch.onboarding.business-type-sector",
   "priority":3
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-6",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"crunch.onboarding.transaction-details",
   "priority":5
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"crunch.onboarding.business-directors",
   "priority":6
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"crunch.onboarding.business-directors",
   "priority":7
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7-br",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"crunch.onboarding.br.business-ownership",
   "priority":8
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-10",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"crunch.acceptance-document.afex-terms-and-conditions",
   "priority":10
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
   "priority":12
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "targetId":"520a4120-3bc6-cef9-6635-c32af8219a6a",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"payment.source.country.br",
   "priority":12
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "targetId":"63049307-8db4-2437-5c02-b71d6878263c",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"payment.target.country.br",
   "priority":13
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"63049307-8db4-2437-5c02-b71d6878263c",
-  "targetId":"688cb7c6-7316-4bbf-8483-fb79f8fdeaaf",
+  "sourceId":"payment.target.country.br",
+  "targetId":"crunch.onboarding.br.business-identification",
   "priority":12
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"63049307-8db4-2437-5c02-b71d6878263c",
-  "targetId":"7e2739cc-db32-11ea-87d0-0242ac130003",
+  "sourceId":"payment.target.country.br",
+  "targetId":"crunch.onboarding.document.annual-financial-statements",
   "priority":13
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"63049307-8db4-2437-5c02-b71d6878263c",
-  "targetId":"26d32e86-db11-11ea-87d0-0242ac130003",
+  "sourceId":"payment.target.country.br",
+  "targetId":"crunch.onboarding.document.articles-of-incorporation",
   "priority":14
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"63049307-8db4-2437-5c02-b71d6878263c",
-  "targetId":"b5f2b020-db0f-11ea-87d0-0242ac130003",
+  "sourceId":"payment.target.country.br",
+  "targetId":"crunch.onboarding.document.office-consumption",
   "priority":15
 })
 
 // BR Signing Officer to Residence Consumption Bill (Utility bills)
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
-  "targetId":"85cee1de-db32-11ea-87d0-0242ac130003",
+  "sourceId":"crunch.onboarding.signing-officer-information",
+  "targetId":"crunch.onboarding.document.utility-bills",
   "predicate":{ "class":"net.nanopay.crunch.predicate.CheckUserCountry","country":"BR" },
   "priority":2
 })
@@ -368,8 +368,8 @@ p({
 // BR/US Signing Officer to User Identity (Identification)
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
-  "targetId":"8ad3c898-db32-11ea-87d0-0242ac130003",
+  "sourceId":"crunch.onboarding.signing-officer-information",
+  "targetId":"crunch.onboarding.document.identification",
   "predicate":{ 
     "class":"foam.mlang.predicate.Or",
     "args":[
@@ -382,15 +382,15 @@ p({
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"8ad3c898-db32-11ea-87d0-0242ac130003",
-  "targetId":"8ad3c898-db232-1ea-87d0-0242ac130z0"
+  "sourceId":"crunch.onboarding.document.identification",
+  "targetId":"crunch.onboarding.document.date-of-issue"
 })
 
 // BR Signing Officer to CPF
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
-  "targetId":"fb7d3ca2-62f2-4caf-a84c-860392e4676b",
+  "sourceId":"crunch.onboarding.signing-officer-information",
+  "targetId":"crunch.onboarding.br.cpf",
   "predicate":{ "class":"net.nanopay.crunch.predicate.CheckUserCountry","country":"BR" },
   "priority":1
 })
@@ -398,8 +398,8 @@ p({
 // Not BR Signing Officer to Birth date
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
-  "targetId":"8bffdedc-5176-4843-97df-1b75ff6054fb",
+  "sourceId":"crunch.onboarding.signing-officer-information",
+  "targetId":"crunch.onboarding.user-birth-date",
   "predicate":{ 
     "class":"foam.mlang.predicate.Or",
     "args":[
@@ -413,63 +413,63 @@ p({
 // Prerequisites for apiUserBusinessOnboarding
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"B98D97EE-4A43-4B03-84C1-9DE2C0109E87",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-18",
+  "sourceId":"crunch.onboarding.api.onboarding-user-and-business",
+  "targetId":"crunch.onboarding.general-admission",
   "priority":1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"B98D97EE-4A43-4B03-84C1-9DE2C0109E87",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
+  "sourceId":"crunch.onboarding.api.onboarding-user-and-business",
+  "targetId":"crunch.onboarding.register-business",
   "priority":2
 })
 // Submit button
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76.submit",
+  "sourceId":"crunch.onboarding.register-business",
+  "targetId":"crunch.onboarding.register-business.submit",
   "priority":3
 })
 
 // Prerequisites for apiDomesticPayments
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"CD499238-7854-4125-A04D-7CE7EE15BC74",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-0",
+  "sourceId":"crunch.onboarding.api.unlock-ca-ca-payments",
+  "targetId":"crunch.onboarding.signing-officer-question",
   "priority":1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"CD499238-7854-4125-A04D-7CE7EE15BC74",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
+  "sourceId":"crunch.onboarding.api.unlock-ca-ca-payments",
+  "targetId":"crunch.onboarding.signing-officer-information",
   "priority":2
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"CD499238-7854-4125-A04D-7CE7EE15BC74",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
+  "sourceId":"crunch.onboarding.api.unlock-ca-ca-payments",
+  "targetId":"crunch.onboarding.unlock-ca-ca-payments",
   "priority":3
 })
 
 //API Onboarding Domestic Business Payments (CAD to CAD)
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"CD499238-7854-4125-A04D-7CE7EE15BC74",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
+  "sourceId":"crunch.onboarding.api.unlock-ca-ca-payments",
+  "targetId":"crunch.onboarding.register-business",
   "priority": 16
 })
 
 //API CAD Business Payments Sending
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"56D2D946-6085-4EC3-8572-04A17225F86A",
-  "targetId":"18DD6F03-998F-4A21-8938-358183151F96",
+  "sourceId":"crunch.onboarding.api.ca-business-send-payments",
+  "targetId":"crunch.onboarding.api.ca-business-receive-payments",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"56D2D946-6085-4EC3-8572-04A17225F86A",
-  "targetId":"9C6D8CFE-50B8-4507-A595-78DD9E08EA2D",
+  "sourceId":"crunch.onboarding.api.ca-business-send-payments",
+  "targetId":"crunch.onboarding.api.expanded-business-details",
   "priority": 2
 })
 
@@ -477,101 +477,101 @@ p({
 //API CAD Business Payments Receiving
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"18DD6F03-998F-4A21-8938-358183151F96",
+  "sourceId":"crunch.onboarding.api.ca-business-receive-payments",
   "targetId":"manual.compliance.securefact.business",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"18DD6F03-998F-4A21-8938-358183151F96",
+  "sourceId":"crunch.onboarding.api.ca-business-receive-payments",
   "targetId":"manual.compliance.dowjones.business",
   "priority": 2
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"18DD6F03-998F-4A21-8938-358183151F96",
+  "sourceId":"crunch.onboarding.api.ca-business-receive-payments",
   "targetId":"manual.compliance.identitymind.business",
   "priority": 3
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"manual.compliance.securefact.business",
-  "targetId":"EC535109-E9C0-4B5D-8D24-31282EF72F8F",
+  "targetId":"crunch.onboarding.api.business-details",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"manual.compliance.dowjones.business",
-  "targetId":"EC535109-E9C0-4B5D-8D24-31282EF72F8F",
+  "targetId":"crunch.onboarding.api.business-details",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"manual.compliance.identitymind.business",
-  "targetId":"EC535109-E9C0-4B5D-8D24-31282EF72F8F",
+  "targetId":"crunch.onboarding.api.business-details",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"18DD6F03-998F-4A21-8938-358183151F96",
-  "targetId":"A285FDFA-3C6B-4150-A0F4-B72E664A3A9E",
+  "sourceId":"crunch.onboarding.api.ca-business-receive-payments",
+  "targetId":"crunch.onboarding.business-has-signing-officer",
   "priority": 4
 })
 
 // Business Onboarding Details
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"EC535109-E9C0-4B5D-8D24-31282EF72F8F",
-  "targetId":"A679CA67-93C2-4597-B92E-4BBA00797E96",
+  "sourceId":"crunch.onboarding.api.business-details",
+  "targetId":"crunch.onboarding.api.minmax.business-type",
   "priority": 2
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"EC535109-E9C0-4B5D-8D24-31282EF72F8F",
-  "targetId":"7BE7F3EE-D887-42E9-8042-680C6BF1C6AE",
+  "sourceId":"crunch.onboarding.api.business-details",
+  "targetId":"crunch.onboarding.signing-officer-list",
   "priority": 3
 })
 
 //Business Type
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"A679CA67-93C2-4597-B92E-4BBA00797E96",
+  "sourceId":"crunch.onboarding.api.minmax.business-type",
   "targetId":"business-type-sole-proprietorship",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"A679CA67-93C2-4597-B92E-4BBA00797E96",
+  "sourceId":"crunch.onboarding.api.minmax.business-type",
   "targetId":"business-type-partnership",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"A679CA67-93C2-4597-B92E-4BBA00797E96",
+  "sourceId":"crunch.onboarding.api.minmax.business-type",
   "targetId":"business-type-corporation",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"A679CA67-93C2-4597-B92E-4BBA00797E96",
+  "sourceId":"crunch.onboarding.api.minmax.business-type",
   "targetId":"business-type-nonprofit",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"A679CA67-93C2-4597-B92E-4BBA00797E96",
+  "sourceId":"crunch.onboarding.api.minmax.business-type",
   "targetId":"business-type-limited-liability",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"A679CA67-93C2-4597-B92E-4BBA00797E96",
+  "sourceId":"crunch.onboarding.api.minmax.business-type",
   "targetId":"business-type-publicly-traded",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"A679CA67-93C2-4597-B92E-4BBA00797E96",
+  "sourceId":"crunch.onboarding.api.minmax.business-type",
   "targetId":"business-type-trust",
   "priority": 1
 })
@@ -580,13 +580,13 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"business-type-corporation",
-  "targetId":"F1359801-7D71-4F30-8D36-531B4A674981",
+  "targetId":"crunch.onboarding.business-director-list",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"business-type-corporation",
-  "targetId":"6DD8D005-7514-432D-BC32-9C5D569A0462",
+  "targetId":"crunch.onboarding.business-owner-list",
   "priority": 2
 })
 
@@ -594,13 +594,13 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"business-type-limited-liability",
-  "targetId":"F1359801-7D71-4F30-8D36-531B4A674981",
+  "targetId":"crunch.onboarding.business-director-list",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"business-type-limited-liability",
-  "targetId":"6DD8D005-7514-432D-BC32-9C5D569A0462",
+  "targetId":"crunch.onboarding.business-owner-list",
   "priority": 2
 })
 
@@ -608,96 +608,96 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"business-type-publicly-traded",
-  "targetId":"F1359801-7D71-4F30-8D36-531B4A674981",
+  "targetId":"crunch.onboarding.business-director-list",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"business-type-publicly-traded",
-  "targetId":"6DD8D005-7514-432D-BC32-9C5D569A0462",
+  "targetId":"crunch.onboarding.business-owner-list",
   "priority": 2
 })
 
 //Signing Officers
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"A285FDFA-3C6B-4150-A0F4-B72E664A3A9E",
-  "targetId":"7BE7F3EE-D887-42E9-8042-680C6BF1C6AE",
+  "sourceId":"crunch.onboarding.business-has-signing-officer",
+  "targetId":"crunch.onboarding.signing-officer-list",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"A285FDFA-3C6B-4150-A0F4-B72E664A3A9E",
-  "targetId":"25D9499A-36D3-436A-9C87-3CA41B5FC08F",
+  "sourceId":"crunch.onboarding.business-has-signing-officer",
+  "targetId":"crunch.onboarding.user-is-signing-officer",
   "priority": 2
 })
 
 //User Signing Officer Capability
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"25D9499A-36D3-436A-9C87-3CA41B5FC08F",
+  "sourceId":"crunch.onboarding.user-is-signing-officer",
   "targetId":"manual.compliance.securefact.user",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"25D9499A-36D3-436A-9C87-3CA41B5FC08F",
+  "sourceId":"crunch.onboarding.user-is-signing-officer",
   "targetId":"manual.compliance.dowjones.user",
   "priority": 2
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"25D9499A-36D3-436A-9C87-3CA41B5FC08F",
+  "sourceId":"crunch.onboarding.user-is-signing-officer",
   "targetId":"manual.compliance.identitymind.user",
   "priority": 3
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"manual.compliance.securefact.user",
-  "targetId":"FB1C8CF2-34B9-40FE-A4AA-58CFA2FDBA15",
+  "targetId":"crunch.onboarding.expanded-user-details",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"manual.compliance.dowjones.user",
-  "targetId":"FB1C8CF2-34B9-40FE-A4AA-58CFA2FDBA15",
+  "targetId":"crunch.onboarding.expanded-user-details",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"manual.compliance.identitymind.user",
-  "targetId":"FB1C8CF2-34B9-40FE-A4AA-58CFA2FDBA15",
+  "targetId":"crunch.onboarding.expanded-user-details",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"25D9499A-36D3-436A-9C87-3CA41B5FC08F",
-  "targetId":"A62AC209-CD55-4755-9B93-2B9BAE885B85",
+  "sourceId":"crunch.onboarding.user-is-signing-officer",
+  "targetId":"crunch.onboarding.parent.api.simple-user-onboarding",
   "priority": 2
 })
 
 //API CAD Personal Payments
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"1F0B39AD-934E-462E-A608-D590D1081298",
-  "targetId":"F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD",
+  "sourceId":"crunch.onboarding.api.unlock-ca-payments",
+  "targetId":"crunch.onboarding.api.unlock-ca-payments-under-1000",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"1F0B39AD-934E-462E-A608-D590D1081298",
+  "sourceId":"crunch.onboarding.api.unlock-ca-payments",
   "targetId":"manual.compliance.securefact.user",
   "priority": 2
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"1F0B39AD-934E-462E-A608-D590D1081298",
+  "sourceId":"crunch.onboarding.api.unlock-ca-payments",
   "targetId":"manual.compliance.dowjones.user",
   "priority": 3
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"1F0B39AD-934E-462E-A608-D590D1081298",
+  "sourceId":"crunch.onboarding.api.unlock-ca-payments",
   "targetId":"manual.compliance.identitymind.user",
   "priority": 4
 })
@@ -705,116 +705,116 @@ p({
 // Expanded User Details
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"FB1C8CF2-34B9-40FE-A4AA-58CFA2FDBA15",
-  "targetId":"A62AC209-CD55-4755-9B93-2B9BAE885B85",
+  "sourceId":"crunch.onboarding.expanded-user-details",
+  "targetId":"crunch.onboarding.parent.api.simple-user-onboarding",
   "priority": 1
 })
 
 //API CAD Personal Payments Under 1000CAD
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD",
-  "targetId":"A62AC209-CD55-4755-9B93-2B9BAE885B85",
+  "sourceId":"crunch.onboarding.api.unlock-ca-payments-under-1000",
+  "targetId":"crunch.onboarding.parent.api.simple-user-onboarding",
   "priority": 1
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD",
-  "targetId":"7B440CC7-C64D-4FDC-B394-052846CB7049",
+  "sourceId":"crunch.onboarding.api.unlock-ca-payments-under-1000",
+  "targetId":"crunch.onboarding.api.onboarding-type",
   "priority": 2
 })
 
 //Simple User Onboarding
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"A62AC209-CD55-4755-9B93-2B9BAE885B85",
-  "targetId":"0ED5DD86-AA1A-452B-BA7D-E7A2D0542135",
+  "sourceId":"crunch.onboarding.parent.api.simple-user-onboarding",
+  "targetId":"crunch.onboarding.user-details",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"A62AC209-CD55-4755-9B93-2B9BAE885B85",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-8",
+  "sourceId":"crunch.onboarding.parent.api.simple-user-onboarding",
+  "targetId":"crunch.acceptance-document.ablii-privacy-policy",
   "priority": 2
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"A62AC209-CD55-4755-9B93-2B9BAE885B85",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-7",
+  "sourceId":"crunch.onboarding.parent.api.simple-user-onboarding",
+  "targetId":"crunch.acceptance-document.ablii-terms-and-conditions",
   "priority": 2
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"A62AC209-CD55-4755-9B93-2B9BAE885B85",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-20",
+  "sourceId":"crunch.onboarding.parent.api.simple-user-onboarding",
+  "targetId":"crunch.acceptance-document.ca-account-authorization-agreement",
   "priority": 3
 })
 
 //usBusinessOnboarding
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-16",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.onboarding.business-registration-date",
   "priority":1
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-18",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.onboarding.tax-id-number",
   "priority":2
 })
 
 //brBusinessOnboarding
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-19",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"crunch.onboarding.last-business-registration-date",
   "priority":3
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-17",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"crunch.onboarding.business-incorporation-date",
   "priority":2
 })
 
 //treviso extra
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  targetId: "9d4d667c-04c3-11eb-adc1-0242ac120002",
+  sourceId: "crunch.onboarding.br.brazil-onboarding",
+  targetId: "crunch.onboarding.br.currency-amount-information",
   priority: 3
 })
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  targetId: "af3d9c28-0674-11eb-adc1-0242ac120002",
+  sourceId: "crunch.onboarding.br.brazil-onboarding",
+  targetId: "crunch.onboarding.br.business-account",
   priority: 4
 })
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "9d4d667c-04c3-11eb-adc1-0242ac120002",
-  targetId: "554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  sourceId: "crunch.onboarding.br.currency-amount-information",
+  targetId: "crunch.onboarding.certify-data-reviewed",
 })
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "af3d9c28-0674-11eb-adc1-0242ac120002",
-  targetId: "554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  sourceId: "crunch.onboarding.br.business-account",
+  targetId: "crunch.onboarding.certify-data-reviewed",
 })
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "4c46cdb8-06b2-11eb-adc1-0242ac120002",
-  targetId: "554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  sourceId: "crunch.onboarding.br.nature-of-business",
+  targetId: "crunch.onboarding.certify-data-reviewed",
 })
 
 //default
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-12",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-16",
+  "sourceId":"crunch.onboarding.unlock-ca-international-payments",
+  "targetId":"crunch.onboarding.business-registration-date",
   "priority":1
 })
 
@@ -852,63 +852,63 @@ p({
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
-  "targetId":"24602528-34c1-11eb-adc1-0242ac120002",
+  "sourceId":"crunch.onboarding.unlock-ca-ca-payments",
+  "targetId":"crunch.onboarding.add-bank-account",
   "priority":3
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"24602528-34c1-11eb-adc1-0242ac120002",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "sourceId":"crunch.onboarding.add-bank-account",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
   "priority":5
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
-  "targetId":"24602528-34c1-11eb-adc1-0242ac120002",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.onboarding.add-bank-account",
   "priority":6
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"67d9a3c7-6243-4b80-a8a9-9fe0c05db6d0",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-13",
+  "sourceId":"crunch.acceptance-document.ca-pad-capture",
+  "targetId":"crunch.acceptance-document.certify-account-ownership",
   "priority":6
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"67d9a3c7-6243-4b80-a8a9-9fe0c05db6d0",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-20",
+  "sourceId":"crunch.acceptance-document.ca-pad-capture",
+  "targetId":"crunch.acceptance-document.ca-account-authorization-agreement",
   "priority":6
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"67d9a3c7-6243-4b80-a8a9-9fe0c05db6d0",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-21",
+  "sourceId":"crunch.acceptance-document.ca-pad-capture",
+  "targetId":"crunch.acceptance-document.recourse-agreement",
   "priority":6
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"67d9a3c7-6243-4b80-a8a9-9fe0c05db6d0",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-22",
+  "sourceId":"crunch.acceptance-document.ca-pad-capture",
+  "targetId":"crunch.acceptance-document.ca-cancellation-agreement",
   "priority":6
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"e9e1567f-ef12-4c4e-b8c2-fa614a177adb",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-23",
+  "sourceId":"crunch.acceptance-document.us-pad-capture",
+  "targetId":"crunch.acceptance-document.us-account-authorization-agreement",
   "priority":6
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"e9e1567f-ef12-4c4e-b8c2-fa614a177adb",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-24",
+  "sourceId":"crunch.acceptance-document.us-pad-capture",
+  "targetId":"crunch.acceptance-document.us-cancellation-agreement",
   "priority":6
 })

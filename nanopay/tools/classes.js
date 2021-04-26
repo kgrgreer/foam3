@@ -1383,11 +1383,13 @@ var classes = [
 
   // Reporting
   'net.nanopay.reporting.ReconciliationReport',
+  'net.nanopay.reporting.ReducedReconciliationReport',
   'net.nanopay.reporting.ServiceFeesReport',
   'net.nanopay.reporting.UserOnboardingReport',
 
   // bepay
   'net.nanopay.partner.bepay.tx.BePayTransaction',
+  'net.nanopay.partner.bepay.tx.BePayLineItem',
   'net.nanopay.partner.bepay.tx.planner.BePayTransactionPlanner',
   'net.nanopay.partner.bepay.tx.ScreenUsersOnTransactionCreate',
 

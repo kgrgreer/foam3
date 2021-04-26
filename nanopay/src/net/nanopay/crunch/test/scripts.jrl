@@ -181,7 +181,7 @@ p({
     for ( Capability natureCode : natureCodes ) {
       CapabilityCapabilityJunction prerequisiteJunction =
         new CapabilityCapabilityJunction.Builder(x)
-          .setSourceId("cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode")
+          .setSourceId("naturecode.br.minmax.requirement")
           .setTargetId(natureCode.getId())
           .build();
       prerequisiteDAO.put(prerequisiteJunction);

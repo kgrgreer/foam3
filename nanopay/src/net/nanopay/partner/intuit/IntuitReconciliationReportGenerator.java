@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -21,6 +21,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.nanos.auth.CreatedAware;
 import foam.nanos.auth.LastModifiedAware;
 import foam.nanos.auth.User;
 import net.nanopay.account.Account;
@@ -56,7 +57,7 @@ public class IntuitReconciliationReportGenerator extends RBCReconciliationReport
   }
 
   @Override
-  protected LastModifiedAware generate(X x, @Nonnull FObject src) {
+  protected ReconciliationReport generate(X x, @Nonnull FObject src) {
     var transaction = (SummaryTransaction) src;
     var ciTransaction = ciMap.get(transaction.getId());
     var coTransaction = coMap.get(transaction.getId());
@@ -95,9 +96,6 @@ public class IntuitReconciliationReportGenerator extends RBCReconciliationReport
       var bill = (Bill) sink.getArray().get(0);
       report.setBillingId(bill.getId());
     }
-
-    report.setCreated(Calendar.getInstance().getTime());
-    report.setLastModified(Calendar.getInstance().getTime());
 
     report.setMerchantId(transaction.getExternalId());
 

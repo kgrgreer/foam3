@@ -60,7 +60,7 @@ jobs:
           name: Run Postman tests for Intuit
           command: |
               ./build.sh -cjzJablii,ablii_development,ca-development,bepay,api,intuit,intuit_development,intuit_dev
-              newman run https://www.getpostman.com/collections/617cdc82fb6affdc071b -e environments/intuit-environment.json
+              newman run https://www.getpostman.com/collections/52e3a13894b3e1b294f0 -e environments/intuit-environment.json
 
 
       - save_cache:

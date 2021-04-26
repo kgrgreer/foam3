@@ -12,9 +12,9 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"testCorridorCapability",
   permissionsGranted: [
-  "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15f7rbcca-ca",
-  "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
-  "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15f7rbcca-ca",
-  "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca"
+  "paymentprovidercorridor.source.read.paymentprovidercorridor.rbc.ca-ca",
+  "paymentprovidercorridor.source.read.paymentprovidercorridor.afex.us-ca",
+  "paymentprovidercorridor.target.read.paymentprovidercorridor.rbc.ca-ca",
+  "paymentprovidercorridor.target.read.paymentprovidercorridor.afex.us-ca"
   ]
 })

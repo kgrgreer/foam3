@@ -607,14 +607,14 @@ p({
 
       support.testSection = "GENERAL ADMISSION";
       try {
-        await support.grantAll(x, '242B00F8-C775-4899-AEBA-F287EC54E901', test);
+        await support.grantAll(x, 'crunch.onboarding.treviso.general-admission', test);
       } catch(e){
         test(false, support.testSection+": "+e);
         print(e);
       }
       support.testSection = "BUSINESS REGITSTRATION";
       try {
-        await support.grantAll(x, '554af38a-8225-87c8-dfdf-eeb15f71215f-76', test);
+        await support.grantAll(x, 'crunch.onboarding.register-business', test);
         // find and setup business
         support.testSection = 'TEST BUSINESS CREATED';
         business = await support.findBusiness(x, u);
@@ -632,7 +632,7 @@ p({
 
       support.testSection = "SIGNING OFFICER DATA CAP";
       try {
-        await support.grantAll(x, '554af38a-8225-87c8-dfdf-eeb15f71215f-1a5', test);
+        await support.grantAll(x, 'crunch.onboarding.signing-officer-information', test);
       } catch(e){
         test(false, support.testSection+": "+e);
         print(e);
@@ -640,14 +640,14 @@ p({
 
       support.testSection = "BRAZIL ONBOARDING";
       support.addPending(
-        '554af38a-8225-87c8-dfdf-eeb15f71215f-49',
-        '05a663b8-2b48-11eb-adc1-0242ac120002',
-        '0B2E7305-B898-43F2-9C1B-63FB2CE38B2D',
-        'bf6a49d5-4027-4dac-a269-4d3ed070609e-4'
+        'crunch.onboarding.br.brazil-onboarding',
+        'crunch.onboarding.br.business-prerequisites',
+        'crunch.onboarding.br.international-payments',
+        'crunch.onboarding.br.parent.international-payments'
       );
-      //support.ignore('1f6b2047-1eef-471d-82e7-d86bdf511375','89cc91da-4bbd-458b-81d4-574815e455fa-4'); // Payment Provider caps
+      //support.ignore('AFEX','crunch.onboarding.br.registering-payment-provider'); // Payment Provider caps
       try {
-        await support.grantAll(x, 'bf6a49d5-4027-4dac-a269-4d3ed070609e-4', test);
+        await support.grantAll(x, 'crunch.onboarding.br.parent.international-payments', test);
       } catch(e){
         test(false, support.testSection+": "+e);
         print(e);

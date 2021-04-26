@@ -18,6 +18,8 @@ p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.sme.ui.NewInvoiceFor
 
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.sme.ui.SendRequestMoney.CONTACT_ERROR",target:"Need to choose a beneficiary"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.sme.ui.SendRequestMoney.CONTACT_NOT_FOUND",target:"Beneficiary not found"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.RATE_REFRESH",target:"Sua taxa expirou. A nova taxa é válida pelos próximos 5 minutos."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.sme.ui.SendRequestMoney.RATE_REFRESH",target:"Your rate has expired. The new rate is valid for the next 5 min."})
 
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.sme.ui.MoneyFlowSuccessView.BODY_REC",target:"Your request has been sent to your beneficiary and is now pending payment."})
 
@@ -153,7 +155,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.AnnualRevenueEnum.LESS_THAN_1000000.label",target:"R$ 2.000.001 a R$ 5.000.000"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.AnnualRevenueEnum.OVER_THAN_1000000.label",target:"Acima de R$ 5.000.001"})
 
-p({class:"foam.i18n.Locale",locale:"pt","source":"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5.name","target":"Informações dos Administradores e Representantes Legais"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"crunch.onboarding.business-directors.name","target":"Informações dos Administradores e Representantes Legais"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.SECTION_DIRECTORS_INFO_SECTION.title",target:"Informações dos Administradores e Representantes Legais"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.ADD_NAME",target:"Administradores ou Representantes Legais"})
@@ -180,14 +182,14 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onbo
 
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.model.BeneficialOwner.STREET_NAME_LABEL",target:"Number"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"7e2739cc-db32-11ea-87d0-0242ac130003.name",target:"Demonstrativos Financeiros (balanço, faturamento, defis, etc)"})
-p({class:"foam.i18n.Locale",locale:"en",source:"7e2739cc-db32-11ea-87d0-0242ac130003.name",target:"Financial Statements (balance sheet, billing, defis, etc.)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.document.annual-financial-statements.name",target:"Demonstrativos Financeiros (balanço, faturamento, defis, etc)"})
+p({class:"foam.i18n.Locale",locale:"en",source:"crunch.onboarding.document.annual-financial-statements.name",target:"Financial Statements (balance sheet, billing, defis, etc.)"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"7e2739cc-db32-11ea-87d0-0242ac130003.description",target:"Demonstrações financeiras:\nEmpresas optantes pelo regime de Lucro Real ou Presumido: Balanço e DRE (extraídos do SPED) e declaração de faturamento dos últimos 12 meses.\nEmpresas optantes pelo regime do Simples: Extrato do simples nacional, DEFIS e declaração de faturamento dos últimos 12 meses."})
-p({class:"foam.i18n.Locale",locale:"en",source:"7e2739cc-db32-11ea-87d0-0242ac130003.description",target:"Financial statements: Companies opting for the Real or Presumed Profit regime: Balance sheet and Income Statement (extracted from SPED) and billing statement for the last 12 months. Companies opting for the Simples regime: Extract from the national simple, DEFIS and billing statement for the last 12 months."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.document.annual-financial-statements.description",target:"Demonstrações financeiras:\nEmpresas optantes pelo regime de Lucro Real ou Presumido: Balanço e DRE (extraídos do SPED) e declaração de faturamento dos últimos 12 meses.\nEmpresas optantes pelo regime do Simples: Extrato do simples nacional, DEFIS e declaração de faturamento dos últimos 12 meses."})
+p({class:"foam.i18n.Locale",locale:"en",source:"crunch.onboarding.document.annual-financial-statements.description",target:"Financial statements: Companies opting for the Real or Presumed Profit regime: Balance sheet and Income Statement (extracted from SPED) and billing statement for the last 12 months. Companies opting for the Simples regime: Extract from the national simple, DEFIS and billing statement for the last 12 months."})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"26d32e86-db11-11ea-87d0-0242ac130003.description",target:"Cópia do Contrato Social e da Última Alteração ou Consolidação e, para empresas sociedade anônima, cópia do Estatuto Social e da ata."})
-p({class:"foam.i18n.Locale",locale:"en",source:"26d32e86-db11-11ea-87d0-0242ac130003.description",target:"Copy of Articles of Incorporation and the Last Amendment or Consolidation and, for corporations, a copy of the Bylaws and the minutes."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.document.articles-of-incorporation.description",target:"Cópia do Contrato Social e da Última Alteração ou Consolidação e, para empresas sociedade anônima, cópia do Estatuto Social e da ata."})
+p({class:"foam.i18n.Locale",locale:"en",source:"crunch.onboarding.document.articles-of-incorporation.description",target:"Copy of Articles of Incorporation and the Last Amendment or Consolidation and, for corporations, a copy of the Bylaws and the minutes."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.CONTACT_PHONE.label",target:"Número de telefone do beneficiário"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.AFEXCNBeneficiaryCapability.CONTACT_PHONE.label",target:"Beneficiary phone number"})
@@ -199,8 +201,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.tx.T
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.TaxLineItem.NAME.FTT Tax",target:"Imposto FTT"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.TaxLineItem.NAME.IRS Tax",target:"Imposto IRS"})
 
-p({class:"foam.i18n.Locale",locale:"en",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-7-br.name",target:"Corporate Composition Information"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-7-br.name",target:"Informações de Composição Societária"})
+p({class:"foam.i18n.Locale",locale:"en",source:"crunch.onboarding.br.business-ownership.name",target:"Corporate Composition Information"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.br.business-ownership.name",target:"Informações de Composição Societária"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.ADD_MSG",target:"outro acionista"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OTHER_MSG",target:"Add another shareholder"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OTHER_MSG",target:"Adicionar outro cotista"})
