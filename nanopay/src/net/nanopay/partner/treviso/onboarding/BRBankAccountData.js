@@ -31,8 +31,6 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.core.X',
-    'foam.core.XLocator',
     'foam.mlang.sink.Count',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
@@ -49,7 +47,7 @@ foam.CLASS({
   messages: [
     { name: 'NO_BANK_NEEDED', message: 'No Bank Account information needed. Please proceed to next step.' },
     { name: 'ADD_ACCOUNT_TITLE', message: 'Add account' },
-    { name: 'INVALID_BANK', message: 'Invalid Bank Account' },
+    { name: 'INVALID_BANK', message: 'Invalid Bank Account' }
   ],
 
   sections: [
@@ -66,20 +64,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'hasBankAccount',
       visibility: 'HIDDEN',
-      value: false,
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaGetter: `
-        X x = XLocator.get();
-        User owner = this.getBankAccount() != null ? this.getBankAccount().findOwner(x) :
-          ((Subject) x.get("subject")).getUser();
-
-        long verifiedAccounts = ((Count) owner.getAccounts(x).where(AND(
-            INSTANCE_OF(BRBankAccount.class),
-            EQ(BRBankAccount.STATUS, BankAccountStatus.VERIFIED)
-          )).select(new Count())).getValue();
-        return verifiedAccounts > 0;
-      `
+      value: false
     },
     {
       class: 'Boolean',
@@ -122,17 +107,18 @@ foam.CLASS({
   ],
   methods: [
     async function init() {
-      this.loading_ = true;
-      var user = ( await this.userDAO.find(this.bankAccount.owner) ) || this.subject.user;
-      var accounts = await user.accounts
-          .where(this.AND(
-            this.INSTANCE_OF(this.BRBankAccount),
-            this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED),
-          ))
-          .select();
-      this.hasBankAccount = accounts.array.length > 0;
-      this.loading_ = false;
-
+      if ( ! this.hasBankAccount ) {
+        this.loading_ = true;
+        var user = ( await this.userDAO.find(this.bankAccount.owner) ) || this.subject.user;
+        var accounts = await user.accounts
+            .where(this.AND(
+              this.INSTANCE_OF(this.BRBankAccount),
+              this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED),
+            ))
+            .select();
+        this.hasBankAccount = accounts.array.length > 0;
+        this.loading_ = false;
+      }
       if ( this.bankAccount ) {
         this.bankAccount.copyFrom({ clientAccountInformationTitle: '' });
       }
@@ -140,8 +126,18 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
+        // if hasbankaccount has been set to true, verify this by checking user accounts
+        // if no account found, sethasbankaccount to false continue
         if ( getHasBankAccount() ) {
-          return;
+          User owner = ((Subject) x.get("subject")).getUser();
+          long verifiedAccounts = ((Count) owner.getAccounts(x).where(AND(
+              INSTANCE_OF(BRBankAccount.class),
+              EQ(BRBankAccount.STATUS, BankAccountStatus.VERIFIED)
+            )).select(new Count())).getValue();
+          if ( verifiedAccounts > 0 ) return;
+          else {
+            setHasBankAccount(false);
+          }
         }
         try {
           getBankAccount().validate(x);
