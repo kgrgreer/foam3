@@ -2162,7 +2162,7 @@ p({
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
 
-// Treviso Fee Conversion Rate = USD Spot Rate * Bank Fee * Spread Rate
+// Treviso Fee Conversion Rate = (1 + Bank Fee) * (1 + Spread Rate) * USD Spot Rate
 p({
   class: "net.nanopay.tx.fee.Fee",
   id: "e8d0f908-896c-4f5e-81bc-50c0ef0311b2",
