@@ -23,7 +23,7 @@ foam.CLASS({
   properties: [
     {
       name: 'rate',
-      class: 'Double',
-    },
+      class: 'Double'
+    }
   ]
 });
