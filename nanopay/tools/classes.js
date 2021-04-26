@@ -1383,6 +1383,7 @@ var classes = [
 
   // Reporting
   'net.nanopay.reporting.ReconciliationReport',
+  'net.nanopay.reporting.ReducedReconciliationReport',
   'net.nanopay.reporting.ServiceFeesReport',
   'net.nanopay.reporting.UserOnboardingReport',
 

@@ -1762,6 +1762,7 @@ FOAM_FILES([
 
   //Reporing
   { name: 'net/nanopay/reporting/ReconciliationReport' },
+  { name: 'net/nanopay/reporting/ReducedReconciliationReport' },
   { name: 'net/nanopay/reporting/ServiceFeesReport' },
   { name: 'net/nanopay/reporting/UserOnboardingReport' },
 
