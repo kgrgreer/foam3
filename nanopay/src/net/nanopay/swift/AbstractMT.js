@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -16,14 +16,11 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.tx',
-  name: 'TaxLineItem',
-  extends: 'net.nanopay.tx.TransactionLineItem',
+  package: 'net.nanopay.swift.mt',
+  name: 'AbstractMT',
 
-  properties: [
-    {
-      name: 'rate',
-      class: 'Double'
-    }
+  methods: [
+    function toSwift() {},
+    function parseSwift() {} 
   ]
 });

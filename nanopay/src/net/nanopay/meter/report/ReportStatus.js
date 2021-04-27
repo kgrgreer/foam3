@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -15,15 +15,22 @@
  * from nanopay Corporation.
  */
 
-foam.CLASS({
-  package: 'net.nanopay.tx',
-  name: 'TaxLineItem',
-  extends: 'net.nanopay.tx.TransactionLineItem',
+foam.ENUM({
+  package: 'net.nanopay.meter.report',
+  name: 'ReportStatus',
 
-  properties: [
+  values: [
     {
-      name: 'rate',
-      class: 'Double'
+      name: 'IN_PROCESS',
+      ordinal: 0,
+      color: '/*%WARNING1%*/ #865400',
+      background: '/*%WARNING4%*/ #FFF3C1'
+    },
+    {
+      name: 'COMPLETED',
+      ordinal: 1,
+      color: '/*%APPROVAL1%*/ #04612E',
+      background: '/*%APPROVAL5%*/ #EEF7ED'
     }
   ]
 });

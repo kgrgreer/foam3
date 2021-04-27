@@ -25,6 +25,7 @@ import foam.nanos.auth.LastModifiedAware;
 import foam.nanos.logger.Logger;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,13 +34,15 @@ public class CopyReportGenerator extends ReportGenerator {
 
   protected ClassInfo of;
 
-  protected FObject generate(X x, @Nonnull FObject src) {
+  protected FObject generate(X x, @Nonnull FObject src, @Nullable FObject dst) {
     try {
-      return ((FObject) of.newInstance()).copyFrom(src);
+      if ( dst == null )
+        return ((FObject) of.newInstance()).copyFrom(src);
+      return super.generate(x, src, dst.copyFrom(src));
     } catch (IllegalAccessException | InstantiationException e) {
       var logger = (Logger) x.get("logger");
       logger.error(e);
-      return null;
+      return super.generate(x, src, null);
     }
   }
 

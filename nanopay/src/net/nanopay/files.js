@@ -1356,6 +1356,8 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/report/UserComplianceSummaryReportDAO' },
   { name: 'net/nanopay/meter/report/RejectedTransactionReportDAO' },
   { name: 'net/nanopay/meter/report/RejectedTransactionReport' },
+  { name: 'net/nanopay/meter/report/ReportStatus' },
+  { name: 'net/nanopay/meter/reports/RowOfBusSumReports' },
 
   // clearing
   { name: 'net/nanopay/meter/clearing/ClearingTimeService' },
@@ -1971,6 +1973,10 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/br/businessSector/Sector' },
   { name: 'net/nanopay/partner/br/businessSector/Grupo' },
   { name: 'net/nanopay/partner/br/businessSector/Divisao' },
-  { name: 'net/nanopay/partner/br/businessSector/Secao' }
+  { name: 'net/nanopay/partner/br/businessSector/Secao' },
 
+  //SWIFT
+  { name: 'net/nanopay/swift/AbstractMT' },
+  { name: 'net/nanopay/swift/Properties' },
+  { name: 'net/nanopay/swift/SCHEMA' },
 ]);

@@ -27,6 +27,7 @@ import foam.mlang.Formula;
 import foam.nanos.logger.Logger;
 import net.nanopay.fx.TotalRateLineItem;
 import net.nanopay.tx.FeeLineItem;
+import net.nanopay.tx.TaxLineItem;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.ChargedTo;
@@ -223,6 +224,15 @@ public class FeeEngine {
         result.setSourceAccount(transaction.getDestinationAccount());
 
       result.setDestinationAccount(fee.getFeeAccount());
+    }
+
+    // Set Rate for TaxLineItem.
+    if ( ! SafetyUtil.isEmpty(fee.getRateName()) && result instanceof TaxLineItem ) {
+      var feeRate = loadedFees_.get(fee.getRateName());
+      if ( feeRate != null ){
+        var rate = new Rate(feeRate).getValue(transaction);
+        ((TaxLineItem)result).setRate(rate);
+      }
     }
 
     // Review the need to set rates later
