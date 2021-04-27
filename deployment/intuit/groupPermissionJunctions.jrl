@@ -85,6 +85,8 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-op
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-ops","targetId":"creditsummarytransactionlineitem.rw.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-ops","targetId":"net.nanopay.account.account.section.accountinformation"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-ops","targetId":"net.nanopay.ticket.refundticket.section.metasection"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-ops","targetId":"net.nanopay.ticket.refundTicket.viewAssignToMe"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-ops","targetId":"menu.read.tickets-support"})
 
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-ops","targetId":"strategyreference.read.6f4f1f58-ce03-4124-b5cb-0c1b8b86e7cc"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-ops","targetId":"strategyreference.read.6246258d-a62e-4388-a3e4-c08d73998ab6"})
@@ -112,7 +114,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support"
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"menu.read.transactions-summary"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"menu.read.users-support"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"menu.read.credits-support"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"menu.read.tickets-support"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"menu.read.refundtickets-support"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"creditsummarytransactionlineitem.read.*"})
 
 
