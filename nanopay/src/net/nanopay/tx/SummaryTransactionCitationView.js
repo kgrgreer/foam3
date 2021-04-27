@@ -107,6 +107,14 @@ foam.CLASS({
       name: 'processingDate'
     },
     {
+      class: 'String',
+      name: 'dataString',
+      factory: function() {
+        if ( ! this.processingDate ) return '';
+        return this.processingDate.toLocaleDateString(foam.locale)
+      }
+    },
+    {
       name: 'transactionId',
       factory: function() {
         return this.data.id.split('-', 1)[0];
@@ -132,7 +140,7 @@ foam.CLASS({
         .start().show(this.showTransactionDetail$)
           .start(this.Cols)
             .add(this.TRANSACTION_DATE)
-            .start().add(this.processingDate.toLocaleDateString(foam.locale)).end()
+            .start().add(this.dataString).end()
           .end()
           .start(this.Cols)
             .add(this.TRANSACTION_REFERENCE)
