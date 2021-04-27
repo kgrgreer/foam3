@@ -2802,7 +2802,7 @@ put("554af38a-8225-87c8-dfdf-eeb15f71215f-76.submit","crunch.onboarding.register
 put("520a4120-3bc6-cef9-6635-c32af8219a6a","payment.source.country.br");
 put("63049307-8db4-2437-5c02-b71d6878263c","payment.target.country.br");
 put("688cb7c6-7316-4bbf-8483-fb79f8fdeaaf","crunch.onboarding.br.business-identification");
-put("Fb7d3ca2-62f2-4caf-a84c-860392e4676b","crunch.onboarding.br.cpf");
+put("fb7d3ca2-62f2-4caf-a84c-860392e4676b","crunch.onboarding.br.cpf");
 put("b5f2b020-db0f-11ea-87d0-0242ac130003","crunch.onboarding.document.office-consumption");
 put("26d32e86-db11-11ea-87d0-0242ac130003","crunch.onboarding.document.articles-of-incorporation");
 put("7e2739cc-db32-11ea-87d0-0242ac130003","crunch.onboarding.document.annual-financial-statements");
@@ -2839,7 +2839,7 @@ put("2869DB5B-0AFE-4113-8EF7-5E5B6B8BB4AC","paymentprovidercorridor.bepay.br-us"
 put("5B9EE768-4B35-493C-A356-FEC306235AB7","paymentprovidercorridor.bepay.br-ca");
 put("2DCB6488-A880-49F5-9973-CABDDDDD017A","paymentprovidercorridor.bepay.br-gb");
 put("E55A5CFE-6EA1-40EC-929A-E6E374349A79","paymentprovidercorridor.bepay.br-pt");
-put("Fb7d3ca2-62f2-4caf-a84c-860392e46bepay","crunch.onboarding.bepay.cpf");
+put("fb7d3ca2-62f2-4caf-a84c-860392e46bepay","crunch.onboarding.bepay.cpf");
 put("554af38a-8225-87c8-dfdf-eeb15f71215f-7-br","crunch.onboarding.br.business-ownership");
 put("F9c7ce45-c076-4f55-93d2-867c011ee6ca","paymentprovidercorridor.treviso.br-us");
 put("Ddcdada6-90de-4729-aa22-94a60b629faf","paymentprovidercorridor.treviso.br-de");
@@ -2887,7 +2887,7 @@ put("5fdd9025-86e6-45a1-bed5-8962acdf5338-40","crunch.onboarding.document.br.wil
 put("5fdd9025-86e6-45a1-bed5-8962acdf5338-41","crunch.onboarding.document.br.signed-proforma-invoice");
 put("cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode","naturecode.br.minmax.requirement");
 put("05a663b8-2b48-11eb-adc1-0242ac120002","crunch.onboarding.br.business-prerequisites");
-put("Bf6a49d5-4027-4dac-a269-4d3ed070609e-4","crunch.onboarding.br.parent.international-payments");
+put("bf6a49d5-4027-4dac-a269-4d3ed070609e-4","crunch.onboarding.br.parent.international-payments");
 put("0B2E7305-B898-43F2-9C1B-63FB2CE38B2D","crunch.onboarding.br.international-payments");
 put("554af38a-8225-87c8-dfdf-eeb15f71215f-49","crunch.onboarding.br.brazil-onboarding");
 put("25F5C0CC-DD7E-4206-B392-46EAA9332870","crunch.onboarding.br.review-required");
@@ -2896,7 +2896,7 @@ put("2910C2C9-3597-42A3-BF85-CFBC8F0E1388","crunch.user-invoice");
 put("7b41a164-29bd-11eb-adc1-0242ac120002","crunch.onboarding.br.add-bank-account");
 put("554af38a-8225-87c8-dfdf-eeb15f71215e-25","crunch.onboarding.br.treviso-unlock-payments-terms");
 put("9d4d667c-04c3-11eb-adc1-0242ac120002","crunch.onboarding.br.currency-amount-information");
-put("Af3d9c28-0674-11eb-adc1-0242ac120002","crunch.onboarding.br.business-account");
+put("af3d9c28-0674-11eb-adc1-0242ac120002","crunch.onboarding.br.business-account");
 put("4c46cdb8-06b2-11eb-adc1-0242ac120002","crunch.onboarding.br.nature-of-business");
 put("1d72f804-4019-11eb-b378-0242ac130002","crunch.onboarding.br.expected-shipment-date");
 put("2EFEFD46-967D-43B3-A464-2ACDC3B2D032","crunch.integration.spid-base");
@@ -3094,7 +3094,7 @@ referenceSink(dao){
 // END OF HELPER METHODS
 
 // Updates references of targetIds and user capability junction MinMaxData
-ucjDAO = x.get("userCapabilityJunctionDAO");
+ucjDAO = x.get("bareUserCapabilityJunctionDAO");
 
 ucjDAO.select(new AbstractSink() {
  public void put(Object obj, Detachable sub) {
@@ -3119,7 +3119,7 @@ contactDAO.select(referenceSink(contactDAO));
 invoiceDAO = x.get("localInvoiceDAO");
 invoiceDAO.select(referenceSink(invoiceDAO));
 
-padCaptureDAO = x.get("padCaptureDAO");
+padCaptureDAO = x.get("localPadCaptureDAO");
 padCaptureDAO.select(referenceSink(padCaptureDAO));
 
 print("finished");
