@@ -61,7 +61,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
+      class: 'FormattedString',
       name: 'cnpj',
       label: 'National Registry of Legal Entities(CNPJ)',
       required: true,
@@ -97,9 +97,7 @@ foam.CLASS({
           errorMessage: 'CNPJ_INVALID'
         }
       ],
-      tableCellFormatter: function(val) {
-        return foam.String.applyFormat(val, 'xx.xxx.xxx/xxxx-xx');
-      },
+      formatter: [2, '.', 3, '.', 3, '/', 4, '-', 2],
       postSet: function(o, n) {
         var validCnpj = this.CNPJ.validationPredicates[0].predicate.f(this);
         if ( validCnpj && o.replace(/\D/g,'') === n.replace(/\D/g,'') ) return;
@@ -108,7 +106,7 @@ foam.CLASS({
       },
       view: function(_, X) {
         return foam.u2.FormattedTextField.create({
-          formatter: [2, '.', 3, '.', 3, '/', 4, '-', 2],
+          formatter: this.formatter,
           returnFormatted: false
         }, X);
       }
