@@ -3771,3 +3771,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserCom
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReportDAO.ENTITY_MSG",target:"Entidade"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReportDAO.INDIVIDUAL_MSG",target:"Individual"})
 
+/* SectionedDetailPropertyView */
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.detail.SectionedDetailPropertyView.HELP",target:"Ajuda"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.detail.SectionedDetailPropertyView.LEARN_MORE",target:"Clique para aprender mais"})

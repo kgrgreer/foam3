@@ -1,7 +1,7 @@
 /**
 * NANOPAY CONFIDENTIAL
 *
-* [2021] nanopay Corporation
+* [2020] nanopay Corporation
 * All Rights Reserved.
 *
 * NOTICE:  All information contained herein is, and remains
@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.reporting',
-  name: 'ServiceFeesReport',
+  name: 'ReducedReconciliationReport',
 
   mixins: [
     'foam.nanos.auth.CreatedAwareMixin',
@@ -38,11 +38,11 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'paymentId',
+      name: 'clientName',
       class: 'String'
     },
     {
-      name: 'clientName',
+      name: 'paymentId',
       class: 'String'
     },
     {
@@ -50,8 +50,8 @@ foam.CLASS({
       class: 'String'
     },
     {
-      name: 'debitCurrency',
-      class: 'String'
+      name: 'paymentStartDate',
+      class: 'DateTime'
     },
     {
       name: 'debitAmount',
@@ -73,8 +73,12 @@ foam.CLASS({
       }
     },
     {
-      name: 'creditCurrency',
+      name: 'debitCurrency',
       class: 'String'
+    },
+    {
+      name: 'debitFileDate',
+      class: 'DateTime'
     },
     {
       name: 'creditAmount',
@@ -96,16 +100,21 @@ foam.CLASS({
       }
     },
     {
-      name: 'paymentStartDate',
+      name: 'creditCurrency',
+      class: 'String'
+    },
+    {
+      name: 'creditFileDate',
       class: 'DateTime'
     },
     {
-      name: 'paymentReturnCode',
-      class: 'Long'
+      name: 'paymentStatusCategory',
+      class: 'String'
     },
     {
-      name: 'billingId',
-      class: 'String'
+      name: 'paymentStatus',
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
     }
   ]
 })

@@ -45,9 +45,6 @@ public class IntuitUserOnboardingReportGenerator extends ReportGenerator {
     var cor = new UserOnboardingReport();
     cor = new UserOnboardingReport();
 
-    cor.setCreated(Calendar.getInstance().getTime());
-    cor.setLastModified(Calendar.getInstance().getTime());
-
     cor.setFirstName(user.getFirstName());
     cor.setLastName(user.getLastName());
     cor.setUserId(user.getId());
