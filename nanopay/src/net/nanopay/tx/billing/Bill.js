@@ -113,6 +113,13 @@ foam.CLASS({
       readPermissionRequired: true
     },
     {
+      class: 'String',
+      name: 'externalId',
+      section: 'billInformation',
+      gridColumns: 6,
+      order: 110
+    },
+    {
       class: 'Reference',
       targetDAOKey: 'businessDAO',
       name: 'chargeToBusiness',
