@@ -62,12 +62,23 @@ foam.CLASS({
     * Service - DJ News
   `,
 
+  messages: [
+    { name: 'INSERT_MSG', message: 'Insert' },
+    { name: 'MEDIUM_MSG', message: 'Medium' },
+    { name: 'NANOPAY_DEFAULT_MSG', message: 'nanopay_default' },
+    { name: 'SUBMITTED_MSG', message: 'Submitted' },
+    { name: 'YES_MSG', message: 'Yes' },
+    { name: 'No_MSG', message: 'No' }
+  ],
+
   properties: [
     {
       class: 'String',
       name: 'rowAction',
       visibility: 'RO',
-      value: 'Insert',
+      factory: function() {
+        return this.INSERT_MSG;
+      },
       tableWidth: 60
     },
     {
@@ -118,7 +129,9 @@ foam.CLASS({
       name: 'priorityLevel',
       visibility: 'RO',
       tableWidth: 80,
-      value: 'Medium',
+      factory: function() {
+        return this.MEDIUM_MSG;
+      },
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Priority");
       }
@@ -128,7 +141,9 @@ foam.CLASS({
       name: 'segment',
       visibility: 'RO',
       tableWidth: 80,
-      value: 'nanopay - Default'
+      factory: function() {
+        return this.NANOPAY_DEFAULT_MSG;
+      }
     },
     {
       class: 'String',
@@ -141,7 +156,9 @@ foam.CLASS({
       name: 'caseStatus',
       visibility: 'RO',
       tableWidth: 80,
-      value: 'Submitted'
+      factory: function() {
+        return this.SUBMITTED_MSG;
+      }
     },
     {
       class: 'String',
@@ -310,7 +327,9 @@ foam.CLASS({
       name: 'serviceDJRC',
       visibility: 'RO',
       tableWidth: 80,
-      value: 'yes',
+      factory: function() {
+        return this.YES_MSG;
+      },
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Service - DJ R&C");
       }
@@ -320,7 +339,9 @@ foam.CLASS({
       name: 'serviceDJNews',
       visibility: 'RO',
       tableWidth: 80,
-      value: 'no',
+      factory: function() {
+        return this.NO_MSG;
+      },
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Service - DJ News");
       }

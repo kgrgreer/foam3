@@ -3466,6 +3466,18 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.admin.model.AccountS
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.admin.model.AccountStatus.DISABLED.label",target:"Desabilitado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.admin.model.AccountStatus.REVOKED.label",target:"Revogado"})
 
+/** Report Status **/
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.ReportStatus.IN_PROCESS.label",target:"Em processo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.ReportStatus.COMPLETED.label",target:"Concluído"})
+
+/** Business Summary Report Status **/
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.reports.RowOfBusSumReports.ACTIVE.label",target:"Ativo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.reports.RowOfBusSumReports.APPLICATION_SUBMITTED.label",target:"Aplicação submetida"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.reports.RowOfBusSumReports.APPROVED.label",target:"Aprovado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.reports.RowOfBusSumReports.DECLINED.label",target:"Recusado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.reports.RowOfBusSumReports.LOCKED.label",target:"Trancado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.reports.RowOfBusSumReports.REGISTRATION.label",target:"Cadastro"})
+
 /** Payment Report **/
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentReport.INVOICE_ID.label",target:"ID da fatura"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentReport.STATUS.label",target:"Status"})
@@ -3485,7 +3497,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.Payment
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentReport.SOURCE_CURRENCY.label",target:"Moeda de origem"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentReport.DESTINATION_AMOUNT.label",target:"Quantidade de destino"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentReport.DESTINATION_CURRENCY.label",target:"Moeda de destino"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentReport.DATE_RANGE.label",target:"Intervalo de datas"})
 
+/** Payment Summary Report **/
+// property labels
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentSummaryReport.TYPE_DATE.label",target:"Tipo Date"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentSummaryReport.DAILY.label",target:"Diariamente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentSummaryReport.DAILY_AMOUNT.label",target:"Quantidade Diária"})
@@ -3501,9 +3516,14 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.Payment
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentSummaryReport.YEAR_TO_DATE_AMOUNT.label",target:"Valor Do Ano Até Data"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentSummaryReport.TOTAL.label",target:"Total"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentSummaryReport.TOTAL_AMOUNT.label",target:"Valor total"})
+// messages
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentSummaryReportDAO.DOMESTIC_CANADA_MSG",target:"Canadá doméstico"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentSummaryReportDAO.DOMESTIC_USA_MSG",target:"EUA doméstico"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentSummaryReportDAO.INTERNATIONAL_MSG",target:"Internacional"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.compliance.ComplianceApprovalRequest.SECTION_COMPLIANCE_INFORMATION.title",target:"Conformidade Informação"})
 
-//menus
+/** Menus **/
 p({class:"foam.i18n.Locale",locale:"pt",source:"Users",target:"Usuários"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"admin.users-2.label",target:"Usuários"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"admin.users-2.browseTitle",target:"Usuários"})
@@ -3699,8 +3719,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.Rejecte
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.RejectedTransactionReport.SOURCE_CURRENCY.label",target:"Moeda de origem"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.RejectedTransactionReport.DESTINATION_AMOUNT.label",target:"Quantidade de destino"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.RejectedTransactionReport.DESTINATION_CURRENCY.label",target:"Moeda de destino"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.RejectedTransactionReport.DATE_RANGE.label",target:"Intervalo de datas"})
 
 /** User Compliance Summary Report **/
+// property labels
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.ROW_ACTION.label",target:"Ação de linha"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.ID.label",target:"ID"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.CASE_NAME.label",target:"Nome do caso"})
@@ -3739,6 +3761,15 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserCom
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.POSTAL_CODE.label",target:"Código postal"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.SERVICE_DJRC.label",target:"Serviço DJRC"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.SERVICE_DJNEWS.label",target:"Notícias de DJ de serviço"})
+//messages
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.INSERT_MSG",target:"Inserir"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.MEDIUM_MSG",target:"Médio"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.NANOPAY_DEFAULT_MSG",target:"nanopay_padrão"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.SUBMITTED_MSG",target:"Submetido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.YES_MSG",target:"Sim"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.NO_MSG",target:"Não"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReportDAO.ENTITY_MSG",target:"Entidade"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReportDAO.INDIVIDUAL_MSG",target:"Individual"})
 
 /* SectionedDetailPropertyView */
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.detail.SectionedDetailPropertyView.HELP",target:"Ajuda"})
