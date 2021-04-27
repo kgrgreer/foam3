@@ -21,5 +21,12 @@ foam.CLASS({
   extends: 'net.nanopay.fx.FXLineItem',
 
   documentation: `Total rate line item produced by the FeeEngine when
-    applying fee and rate to override the raw quoted FX rates.`
+    applying fee and rate to override the raw quoted FX rates.`,
+  
+  
+  methods: [
+    function toSummary() {
+      return this.name;
+    }
+  ]
 });

@@ -21,7 +21,7 @@ foam.CLASS({
   extends: 'net.nanopay.tx.InfoLineItem',
 
   messages: [
-    { name: 'GRAND_TOTAL', message: 'Grand total' }
+    { name: 'GRAND_TOTAL', message: 'Total Due' }
   ],
 
   properties: [
