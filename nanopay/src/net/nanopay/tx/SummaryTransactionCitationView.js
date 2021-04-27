@@ -51,7 +51,8 @@ foam.CLASS({
     { name: 'RATE', message: 'Rate'},
     { name: 'GRAND_TOTAL', message: 'Total Due' },
     { name: 'TRANSACTION_DATE', message: 'Payment date' },
-    { name: 'TRANSACTION_REFERENCE', message: 'Reference' }
+    { name: 'TRANSACTION_REFERENCE', message: 'Reference' },
+    { name: 'VET_TITLE', message: 'Effective Rate(VET)' }
   ],
 
   imports: [
@@ -133,6 +134,12 @@ foam.CLASS({
       name: 'grandTotal',
       expression: function(data) {
         return data;
+      }
+    },
+    {
+      name: 'showVET',
+      expression: function(data) {
+        return data.sourceCurrency != data.destinationCurrency;
       }
     }
   ],
@@ -227,16 +234,11 @@ foam.CLASS({
                 highlightInlineTitle: true
               });
 
-              //VET
-              lineItems
-                .filter( lineItem => this.TotalRateLineItem.isInstance(lineItem) )
-                .forEach( (totalRateLineItem) => {
-                  self.start(self.Cols)
-                    .add(this.translationService.getTranslation(foam.locale, `net.nanopay.tx.TotalRateLineItem.${totalRateLineItem.name}`, totalRateLineItem.name))
-                    .start().add(this.formatRate(destinationCurrencyFormat, 100, sourceCurrencyFormat, (1/totalRateLineItem.rate)*1000000)).end()
-                  .end();
-                });
-
+              let vet = totalAmount / data.destinationAmount;
+              e.start(self.Cols).show(this.showVET$)
+                .add(this.VET_TITLE)
+                .start().add(this.formatRate(destinationCurrencyFormat, 100, sourceCurrencyFormat, vet*1000000)).end()
+              .end();
 
               return e;
             })
