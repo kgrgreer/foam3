@@ -151,7 +151,7 @@ foam.CLASS({
           Transaction t = this.getStateTxn(x);
           ChainSummary cs = new ChainSummary();
           if (t.getStatus() != TransactionStatus.COMPLETED) {
-            cs.setErrorCode(t.calculateErrorCode());
+            cs.setErrorCode(t.getErrorCode());
             ErrorCode errorCode = cs.findErrorCode(x);
             if ( errorCode != null ) {
               cs.setErrorInfo(errorCode.getSummary());

@@ -23,7 +23,15 @@
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: `Rule to refund transaction`,
+  documentation: 'Post rule to cancel and refund transaction',
+
+  properties: [
+    {
+      class: 'Long',
+      name: 'errorCode',
+      value: 0
+    }
+  ],
 
   javaImports: [
     'foam.core.ContextAgent',
@@ -94,6 +102,7 @@
                 txnDAO.inX(x).put(problemTxn);
               }
               problemTxn.setStatus(TransactionStatus.CANCELLED);
+              problemTxn.setErrorCode(getErrorCode());
               txnDAO.inX(x).put(problemTxn);
             } else {
               Object [] tobePaused = ((ArraySink) problemTxn.getChildren(x).select(new ArraySink())).getArray().toArray();
@@ -102,6 +111,7 @@
                 problemTxn = (Transaction) tobePaused[0];
                 if ( problemTxn.getStatus() == TransactionStatus.PAUSED ) { // do we want 1 level checking or full walk?
                   problemTxn.setStatus(TransactionStatus.CANCELLED);
+                  problemTxn.setErrorCode(getErrorCode());
                   txnDAO.inX(x).put(problemTxn);
                 }
                 else {

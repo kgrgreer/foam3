@@ -111,7 +111,7 @@ foam.CLASS({
         // set agent message according to errorcode if it exists.
         try {
           ticket.setAgentInstructions(getTextToAgent());
-          long errorCode = problem.calculateErrorCode();
+          long errorCode = problem.getErrorCode();
           if ( ! SafetyUtil.equals(errorCode, 0l )) {
             DAO errorDAO = (DAO) x.get("errorCodeDAO");
             ErrorCode code = (ErrorCode) errorDAO.inX(x).find(errorCode);

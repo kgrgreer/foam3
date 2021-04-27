@@ -21,3 +21,4 @@ p({"class":"net.nanopay.tx.billing.ErrorFee","id":"customer-initiated-return-922
 p({"class":"net.nanopay.tx.billing.ErrorFee","id":"invalid-institution-923","errorCode":923,"amount":500,"currency":"CAD","chargedTo":1,"spid":"intuit"})
 p({"class":"net.nanopay.tx.billing.ErrorFee","id":"institution-in-default-990","errorCode":990,"amount":0,"currency":"CAD","chargedTo":1,"spid":"intuit"})
 p({"class":"net.nanopay.tx.billing.ErrorFee","id":"investigation-991","errorCode":991,"amount":0,"currency":"CAD","chargedTo":1,"spid":"intuit"})
+p({"class":"net.nanopay.tx.billing.ErrorFee","id":"requested-cancelation-CAD-10001","errorCode":10001,"amount":500,"currency":"CAD","chargedTo":1,"spid":"intuit"})
