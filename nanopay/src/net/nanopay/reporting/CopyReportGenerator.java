@@ -33,9 +33,9 @@ public class CopyReportGenerator extends ReportGenerator {
 
   protected ClassInfo of;
 
-  protected LastModifiedAware generate(X x, @Nonnull FObject src) {
+  protected FObject generate(X x, @Nonnull FObject src) {
     try {
-      return (LastModifiedAware) ((FObject) of.newInstance()).copyFrom(src);
+      return ((FObject) of.newInstance()).copyFrom(src);
     } catch (IllegalAccessException | InstantiationException e) {
       var logger = (Logger) x.get("logger");
       logger.error(e);
