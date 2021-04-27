@@ -33,9 +33,6 @@ foam.CLASS({
     .sme-inputContainer {
       margin-top: 1%;
     }
-    body {
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    }
     .stack-wrapper {
       height: 100vh;
       padding: 0;
@@ -241,17 +238,6 @@ foam.CLASS({
       color: #bdbdbd;
       font-size: 17px;
       padding-left: 8px;
-    }
-
-    h1 {
-      font-weight: 900;
-      font-size: 32px;
-    }
-
-    h2 {
-      font-weight: 700;
-      font-size: 24px;
-      line-height: 36px;
     }
 
     /* Containers */
