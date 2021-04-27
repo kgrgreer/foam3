@@ -197,7 +197,7 @@ foam.CLASS({
         javaCode: `
           BusinessSummaryReport bst = new BusinessSummaryReport.Builder(x)
             .setId(row.ordinal())
-            .setTypeDate(row.getLabel())
+            .setTypeDate(row)
             .setDaily(countDaily(businesses))
             .setYesterday(countYesterday(businesses))
             .setWeekly(countWeekly(businesses))

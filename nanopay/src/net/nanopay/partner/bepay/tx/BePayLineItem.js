@@ -74,8 +74,8 @@ foam.CLASS({
       name: 'IOFRate'
     },
     {
-      class: 'Long',
-      name: 'VETAmount'
+      class: 'Double',
+      name: 'VET'
     },
     {
       class: 'Reference',
@@ -105,7 +105,7 @@ foam.CLASS({
 
       if ( getIOFCurrency() == "" ) throw new ValidationException("IOFCurrency is missing on BePayLineItem");
 
-      if ( getVETAmount() == 0 ) throw new ValidationException("VET is missing on BePayLineItem");
+      if ( getVET() == 0 ) throw new ValidationException("VET is missing on BePayLineItem");
       `
     }
   ]

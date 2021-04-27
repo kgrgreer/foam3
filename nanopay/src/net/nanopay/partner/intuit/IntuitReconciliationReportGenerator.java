@@ -184,7 +184,11 @@ public class IntuitReconciliationReportGenerator extends RBCReconciliationReport
 
     if ( dt.getStatus() == TransactionStatus.COMPLETED ) {
       Calendar created = getInstance();
-      created.setTime(dt.getCompletionDate());
+      if (dt.getCompletionDate() != null) {
+        created.setTime(dt.getCompletionDate());
+      } else {
+        created.setTime(dt.getLastModified());
+      }
       Calendar next = getInstance();
       next.clear();
       next.set(YEAR, created.get(YEAR));
