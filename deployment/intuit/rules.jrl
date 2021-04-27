@@ -88,7 +88,7 @@ p({
     "textToAgent":"Payor has cancelled the transaction. Cancellation in progress",
     "creditAccount":"64307927-db83-43a7-9787-c5cc89becc11",
     "postApprovalRuleId": "b64905d0-289b-4371-92a5-f843e344109a",
-    "autoApprove":false
+    "autoApprove": true
   },
   "after":false,
   "enabled":true,
@@ -451,7 +451,7 @@ p({
     "class":"net.nanopay.ticket.FullReverseScenarioAction",
     "textToAgent":"The payment has failed due to:",
     "postApprovalRuleId": "b64905d0-289b-4371-92a5-f843e344109a",
-    "autoApprove":false
+    "autoApprove": true
   },
   "after":false,
   "enabled":true,
