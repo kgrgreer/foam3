@@ -142,7 +142,7 @@ foam.CLASS({
       view: function(_, X) {
         return foam.u2.FormattedTextField.create({
           formatter: this.formatter,
-          returnFormatted: true
+          returnFormatted: false
         }, X);
       }
     },
