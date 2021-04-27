@@ -21,3 +21,6 @@ p({"class":"net.nanopay.integration.ErrorCode","id":922,"category":"Customer Ini
 p({"class":"net.nanopay.integration.ErrorCode","id":923,"category":"Returned/Dishonoured Items","fullText":"Invalid/Incorrect Institution No.","abbreviation":"INV/INS"})
 p({"class":"net.nanopay.integration.ErrorCode","id":990,"category":"Default","fullText":"Institution in Default","abbreviation":"DEF/DEF"})
 p({"class":"net.nanopay.integration.ErrorCode","id":991,"category":"Default","fullText":"Investigation","abbreviation":"DEF/INV"})
+p({"class":"net.nanopay.integration.ErrorCode","id":10000,"category":"Nanopay Specific","fullText":"Customer Cancelled Transaction","abbreviation":"CCT"})
+p({"class":"net.nanopay.integration.ErrorCode","id":10001,"category":"Nanopay Specific","fullText":"Customer Cancelled Transaction Derogatory","abbreviation":"CCTD"})
+p({"class":"net.nanopay.integration.ErrorCode","id":10002,"category":"Nanopay Specific","fullText":"nanopay Cancelled Transaction","abbreviation":"NCT"})

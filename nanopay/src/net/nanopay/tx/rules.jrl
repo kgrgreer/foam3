@@ -916,7 +916,7 @@ p({
   "name":"Create bills from failed transactions",
   "priority":100,
   "ruleGroup":"billing",
-  "documentation":"Creates bills from failed transactions",
+  "documentation":"Creates bills from failed, cancelled and declined transactions",
   "daoKey":"localTransactionDAO",
   "operation":1,
   "after":true,
@@ -929,14 +929,6 @@ p({
         "propValue": {
           "class": "net.nanopay.tx.model.TransactionStatus",
           "ordinal":4
-        }
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName":"status",
-        "propValue": {
-          "class": "net.nanopay.tx.model.TransactionStatus",
-          "ordinal":6
         }
       },
       {

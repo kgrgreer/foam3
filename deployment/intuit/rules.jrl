@@ -139,7 +139,7 @@ p({
   "action":{
     "class":"net.nanopay.ticket.ScenarioAction",
     "textToAgent":"Transaction Cancelled",
-    "postApprovalRuleId": "c6c5c0b8-a24d-4dc7-8561-57e206ed1b45",
+    "postApprovalRuleId": "20b9d32c-8d89-4cf1-aa70-3a759e604fb4",
     "autoApprove": true
   },
   "after":false,

@@ -23,7 +23,15 @@ foam.CLASS({
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: `Rule to refund transaction`,
+  documentation: 'Post rule to cancel transaction',
+
+  properties: [
+    {
+      class: 'Long',
+      name: 'errorCode',
+      value: 0
+    }
+  ],
 
   javaImports: [
     'foam.core.ContextAgent',
@@ -53,6 +61,7 @@ foam.CLASS({
             Transaction problemTxn = (Transaction) txnDAO.inX(x).find(request.getProblemTransaction()).fclone();
             if ( problemTxn.getStatus() == TransactionStatus.PAUSED ) {
               problemTxn.setStatus(TransactionStatus.CANCELLED);
+              problemTxn.setErrorCode(getErrorCode());
               txnDAO.inX(x).put(problemTxn);
             }
             else {
@@ -62,6 +71,7 @@ foam.CLASS({
                 if ( problemTxn.getStatus() == TransactionStatus.PAUSED ) {
                 //TODO: we want full walk of children
                   problemTxn.setStatus(TransactionStatus.CANCELLED);
+                  problemTxn.setErrorCode(getErrorCode());
                   txnDAO.inX(x).put(problemTxn);
                 }
                 else {
