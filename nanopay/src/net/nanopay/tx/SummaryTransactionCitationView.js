@@ -224,7 +224,7 @@ foam.CLASS({
                 .forEach( (totalRateLineItem) => {
                   self.start(self.Cols)
                     .add(this.translationService.getTranslation(foam.locale, `net.nanopay.tx.TotalRateLineItem.${totalRateLineItem.name}`, totalRateLineItem.name))
-                    .start().add(this.formatRate(destinationCurrencyFormat, 100, sourceCurrencyFormat, (1/totalRateLineItem.rate)*100)).end()
+                    .start().add(this.formatRate(destinationCurrencyFormat, 100, sourceCurrencyFormat, (1/totalRateLineItem.rate)*1000000)).end()
                   .end();
                 });
 
@@ -245,7 +245,9 @@ foam.CLASS({
     },
 
     function formatRate(currency_a, ammount_a, currency_b, ammount_b) {
-      return `${currency_a.format(ammount_a)} : ${currency_b.format(ammount_b)}`;
+      let c_currency_b = currency_b.clone()
+      c_currency_b.precision = 6
+      return `${currency_a.format(ammount_a)} : ${c_currency_b.format(ammount_b)}`;
     }
   ]
 });
