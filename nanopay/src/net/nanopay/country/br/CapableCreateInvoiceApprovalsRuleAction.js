@@ -6,12 +6,12 @@
 
 foam.CLASS({
   package: 'net.nanopay.country.br',
-  name: 'CapableCreateNatureCodeApprovalsRuleAction',
+  name: 'CapableCreateInvoiceApprovalsRuleAction',
   extends: 'foam.nanos.crunch.lite.ruler.CapableCreateApprovalsRuleAction',
 
   documentation: `
-    To add a NatureCodeApprovalRequest decorator on ApprovalRequest instantiation in
-    CapableCreateApprovalsRuleAction
+    To add a NatureCodeApprovalRequest and TransactionApprovalRequest decorator 
+    on ApprovalRequest instantiation for Invoices
   `,
 
   javaImports: [
@@ -39,6 +39,8 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'net.nanopay.country.br.NatureCode',
     'net.nanopay.country.br.NatureCodeApprovalRequest',
+    'net.nanopay.tx.TransactionApprovalRequest',
+    'net.nanopay.invoice.model.Invoice'
   ],
 
   implements: ['foam.nanos.ruler.RuleAction'],
@@ -53,19 +55,33 @@ foam.CLASS({
       args: [
         { name: 'x', type: 'Context' },
         { name: 'request', type: 'ApprovalRequest' },
-        { name: 'capableObj', type: 'Capable' },
+        { name: 'obj', type: 'FObject' },
         { name: 'capablePayloadObj', type: 'CapabilityJunctionPayload' }
       ],
       javaCode: `
         CapabilityJunctionPayload capablePayload = (CapabilityJunctionPayload) capablePayloadObj;
         DAO capabilityDAO = (DAO) x.get("capabilityDAO");
         Capability capability = (Capability) capabilityDAO.find(capablePayload.getCapability());
+        
+        // TODO: consider making referenceAware if we need paymentId elsewhere
+        Invoice invoice = (Invoice) obj;
 
-        if ( ! ( capability instanceof NatureCode ) ){
-          return request;
+        if ( capability instanceof NatureCode ){
+          NatureCodeApprovalRequest  natureCodeApprovalRequest = new NatureCodeApprovalRequest.Builder(getX())
+            .setDaoKey(request.getDaoKey())
+            .setObjId(request.getObjId())
+            .setOperation(request.getOperation())
+            .setCreatedFor(request.getCreatedFor())
+            .setGroup(request.getGroup())
+            .setClassification(request.getClassification())
+            .setStatus(request.getStatus())
+            .setPaymentId(invoice.getPaymentId())
+            .setNatureCode(capability.getId()).build();
+
+          return natureCodeApprovalRequest;
         }
 
-        NatureCodeApprovalRequest  natureCodeApprovalRequest = new NatureCodeApprovalRequest.Builder(getX())
+        TransactionApprovalRequest  transactionApprovalRequest = new TransactionApprovalRequest.Builder(getX())
           .setDaoKey(request.getDaoKey())
           .setObjId(request.getObjId())
           .setOperation(request.getOperation())
@@ -73,9 +89,9 @@ foam.CLASS({
           .setGroup(request.getGroup())
           .setClassification(request.getClassification())
           .setStatus(request.getStatus())
-          .setNatureCode(capability.getId()).build();
+          .setPaymentId(invoice.getPaymentId()).build();
 
-        return natureCodeApprovalRequest;
+        return transactionApprovalRequest;
       `
     }
   ]
