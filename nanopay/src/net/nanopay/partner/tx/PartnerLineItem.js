@@ -17,8 +17,8 @@
 
 
 foam.CLASS({
-  package: 'net.nanopay.partner.bepay.tx',
-  name: 'BePayLineItem',
+  package: 'net.nanopay.partner.tx',
+  name: 'PartnerLineItem',
   extends: 'net.nanopay.tx.InfoLineItem',
   documentation: 'Line item to carry information about the transaction details happening outside of nanopay',
 
@@ -30,12 +30,12 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'fxRate',
-      documentation: 'rate BePay uses for BRL -> destination conversion'
+      documentation: 'rate partner uses for BRL -> destination conversion'
     },
     {
       class: 'Double',
       name: 'fxSpread',
-      documentation: 'the spread BePay applies'
+      documentation: 'the spread partner applies'
     },
     {
       class: 'Double',
@@ -136,21 +136,21 @@ foam.CLASS({
       name: 'validate',
       type: 'Void',
       javaCode: `
-      if ( getFxRate() == 0 ) throw new ValidationException("fxRate is missing on BePayLineItem");
+      if ( getFxRate() == 0 ) throw new ValidationException("fxRate is missing on PartnerLineItem");
 
-      if ( getFxSpread() == 0 ) throw new ValidationException("fxSpread is missing on BePayLineItem");
+      if ( getFxSpread() == 0 ) throw new ValidationException("fxSpread is missing on PartnerLineItem");
 
-      if ( getFeeAmount() == 0 ) throw new ValidationException("feeAmount is missing on BePayLineItem");
+      if ( getFeeAmount() == 0 ) throw new ValidationException("feeAmount is missing on PartnerLineItem");
 
-      if ( getFeeCurrency() == "" ) throw new ValidationException("feeCurrency is missing on BePayLineItem");
+      if ( getFeeCurrency() == "" ) throw new ValidationException("feeCurrency is missing on PartnerLineItem");
 
-      if ( getIOF() == 0 ) throw new ValidationException("IOF is missing on BePayLineItem");
+      if ( getIOF() == 0 ) throw new ValidationException("IOF is missing on PartnerLineItem");
 
-      if ( getIOFRate() == 0 ) throw new ValidationException("IOFRate is missing on BePayLineItem");
+      if ( getIOFRate() == 0 ) throw new ValidationException("IOFRate is missing on PartnerLineItem");
 
-      if ( getIOFCurrency() == "" ) throw new ValidationException("IOFCurrency is missing on BePayLineItem");
+      if ( getIOFCurrency() == "" ) throw new ValidationException("IOFCurrency is missing on PartnerLineItem");
 
-      if ( getVET() == 0 ) throw new ValidationException("VET is missing on BePayLineItem");
+      if ( getVET() == 0 ) throw new ValidationException("VET is missing on PartnerLineItem");
       `
     }
   ]

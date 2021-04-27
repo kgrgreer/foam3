@@ -2301,8 +2301,18 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.SKBankAccount.m
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.model_.label",target:"Estados Unidos"})
 
 // Review Invoice Details
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.TITLE",target:"Revise os detalhes da fatura"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.FXSummaryTransaction.DESCRIPTION",target:"Resumo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.TITLE",target:"Revise os Detalhes da Remessa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.POST_TITLE",target:"Detalhes da Remessa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.PRE_TITLE",target:"Revise os Detalhes da Remessa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.AMOUNT",target:"Quantidade"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.AMOUNT_IN",target:"Valor em"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.RATE",target:"Taxa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.GRAND_TOTAL",target:"Total a Pagar"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.TRANSACTION_DATE",target:"Data da Transaçao"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.TRANSACTION_REFERENCE",target:"Referência"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.VET_TITLE",target:"Valor Efetivo Total (VET)"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.FXSummaryTransaction.DESCRIPTION",target:"Detalhes do Pagamento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.AMOUNT.label",target:"Quantidade de fonte"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.DESTINATION_AMOUNT.label",target:"Conta de destino"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT.label",target:"Conta de origem"})
@@ -3693,7 +3703,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.modal.SessionTime
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.modal.SessionTimeoutModal.HEADER_TITLE",target:"Sessão expirada"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.modal.SessionTimeoutModal.SIGN_OUT.label",target:"Sair"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.modal.SessionTimeoutModal.STAY_SIGN_IN.label",target:"Fique conectado"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.GrandTotalLineItem.GRAND_TOTAL",target:"Geral Total"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.GrandTotalLineItem.GRAND_TOTAL",target:"Total a Pagar"})
 
 /** Business Summary Report **/
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.BusinessSummaryReport.TYPE_DATE.label",target:"Digite a data"})

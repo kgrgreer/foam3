@@ -40,7 +40,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'DESCRIPTION', message: 'Summary' },
+    { name: 'DESCRIPTION', message: 'Payment Details' },
   ],
 
   implements: [

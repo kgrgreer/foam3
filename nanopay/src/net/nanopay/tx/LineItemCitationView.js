@@ -35,6 +35,16 @@ foam.CLASS({
     'foam.u2.layout.Rows'
   ],
 
+  imports: [
+    'translationService'
+  ],
+
+  css: `
+    ^highlight-title {
+      font-weight: 600;
+    }
+  `,
+
   properties: [
     'data',
     {
@@ -57,8 +67,29 @@ foam.CLASS({
       }
     },
     {
+      name: 'amountProp',
+      expression: function(data) {
+        var of = this.data.cls_;
+        var props = of.getAxiomsByClass(foam.core.Property);
+        for ( const p of props ) {
+          if ( p.name === 'amount' ) return p;
+        }
+        return undefined;
+      }
+    },
+    {
       class: 'Boolean',
       name: 'hideInnerLineItems'
+    },
+    {
+      class: 'Boolean',
+      name: 'inline',
+      value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'highlightInlineTitle',
+      value: false
     }
   ],
 
@@ -67,8 +98,9 @@ foam.CLASS({
       var self = this;
       this.addClass(this.myClass());
       this.start()
+      .callIf(!this.inline, () => {
         this.start('h3').add(this.data.toSummary()).end()
-        this.forEach(self.prop, function(p) {
+        this.forEach(this.prop, (p) => {
           if ( p.label && ! p.hidden && p.visibility !== foam.u2.DisplayMode.HIDDEN ) {
              self.start(self.Cols)
                .add(p.label)
@@ -77,6 +109,21 @@ foam.CLASS({
           }
         })
       .end()
+      })
+      .callIf(this.inline && this.amountProp, () => {
+        this.callIf(this.highlightInlineTitle, () => {
+          this.start(this.Cols)
+            .start().addClass(this.myClass('highlight-title')).add(this.translationService.getTranslation(foam.locale,`${this.data.cls_.package}.${this.data.cls_.name}.${this.data.toSummary()}`, this.data.toSummary())).end()
+            .start(this.amountProp, { mode: this.data.requiresUserInput && this.amountProp.required ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.RO }).end()
+          .end()
+        })
+        .callIf(!this.highlightInlineTitle, () => {
+          this.start(this.Cols)
+            .add(this.translationService.getTranslation(foam.locale,`${this.data.cls_.package}.${this.data.cls_.name}.${this.data.toSummary()}`, this.data.toSummary()))
+            .start(this.amountProp, { mode: this.data.requiresUserInput && this.amountProp.required ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.RO }).end()
+          .end()
+        })
+      })
     }
   ]
 });
