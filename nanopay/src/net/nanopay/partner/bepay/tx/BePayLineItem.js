@@ -83,6 +83,51 @@ foam.CLASS({
       name: 'VETCurrency',
       targetDAOKey: 'currencyDAO',
       value: 'BRL'
+    },
+    {
+      class: 'Long',
+      name: 'fee2Amount',
+      documentation: 'additional amount charged by the partner'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.core.Currency',
+      name: 'fee2Currency',
+      targetDAOKey: 'currencyDAO'
+    },
+    {
+      class: 'Long',
+      name: 'discountAmount',
+      documentation: 'discount given by the partner'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.core.Currency',
+      name: 'discountCurrency',
+      targetDAOKey: 'currencyDAO',
+      documentation: 'currency of discount given by partner'
+    },
+    {
+      class: 'String',
+      name: 'discountCode'
+    },
+    {
+      class: 'Long',
+      name: 'tax2'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.core.Currency',
+      name: 'tax2Currency',
+      targetDAOKey: 'currencyDAO'
+    },
+    {
+      class: 'Double',
+      name: 'tax2Rate'
+    },
+    {
+      class: 'String',
+      name: 'natureCode'
     }
   ],
 
