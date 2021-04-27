@@ -64,9 +64,11 @@ p({
       .build();
 
     return new foam.dao.EasyDAO.Builder(x)
-      //.setOf(net.nanopay.contacts.PersonalContact.getOwnClassInfo())//w
-      .setOf(net.nanopay.contacts.facade.FacadeContact.getOwnClassInfo())//d
+      //.setOf(net.nanopay.contacts.PersonalContact.getOwnClassInfo())
+      .setOf(net.nanopay.contacts.facade.FacadeContact.getOwnClassInfo())
       .setDelegate(dao)
+      .setInnerDAO(dao)
+      .setAuthorize(false)
       .setEnableInterfaceDecorators(false)
       .build();
   """,
