@@ -99,9 +99,9 @@ foam.CLASS({
       }
     },
     {
-      name: 'transactionProp',
+      name: 'transactionProps',
       expression: function(data) {
-
+        let of = this.data.cls_;
       }
     },
     {
@@ -198,7 +198,7 @@ foam.CLASS({
                     .add(this.translationService.getTranslation(foam.locale, `net.nanopay.tx.TotalRateLineItem.${totalRateLineItem.name}`, totalRateLineItem.name))
                     //.start().add((1/totalRateLineItem.rate).toFixed(2)).end()
                     //TODO: replace by above code.
-                    .start().add(currencyFormat.format((totalAmount/this.transactionDestinationAmount).toFixed(2))).end()
+                    .start().add(currencyFormat.format(((totalAmount/this.transactionDestinationAmount)*100).toFixed(2))).end()
                   .end();
                 });
 

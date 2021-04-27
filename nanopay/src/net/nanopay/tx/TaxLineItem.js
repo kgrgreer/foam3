@@ -41,7 +41,7 @@ foam.CLASS({
 
         obj.currencyDAO.find(obj.currency).then(function(c) {
           if ( c ) {
-            this.add(`(${obj.rate.toFixed(2)}%) ` + c.format(value));
+            this.add((`(${obj.rate.toFixed(2)}%) `).replace('.', ',') + c.format(value));
           }
         }.bind(this));
       }
