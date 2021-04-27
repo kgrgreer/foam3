@@ -49,7 +49,7 @@ foam.CLASS({
     { name: 'RATE', message: 'Rate'},
     { name: 'GRAND_TOTAL', message: 'Total Due' },
     { name: 'TRANSACTION_DATE', message: 'Payment date' },
-    { name: 'TRANSACTION_REFERENCE', message: 'Transaction Reference' }
+    { name: 'TRANSACTION_REFERENCE', message: 'Reference' }
   ],
 
   imports: [
