@@ -40,7 +40,8 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'reviewDataSection'
+      name: 'reviewDataSection',
+      permissionRequired: true
     }
   ],
 

@@ -40,11 +40,17 @@ foam.CLASS({
         rate_ = val;
         rateIsSet_ = true;
         calculateView_();
+        calculateInverseRateView_();
       `
     },
     {
       name: 'rateView',
       label: 'Rate',
+      class: 'String'
+    },
+    {
+      name: 'inverseRateView',
+      label: 'Inverse Rate',
       class: 'String'
     },
     {
@@ -105,6 +111,23 @@ foam.CLASS({
           }
         }
         setRateView(""+getRate());
+      `
+    },
+    {
+      name: 'calculateInverseRateView_',
+      javaCode: `
+        DAO currDAO = (DAO) getX().get("currencyDAO");
+        Double inverseRate = 1.0 / getRate();
+        if ( currDAO != null ) {
+          Currency src = (Currency) currDAO.find(getSourceCurrency());
+          Currency dst = (Currency) currDAO.find(getDestinationCurrency());
+          // format both sides of ':' to 1 of major unit of source currency.
+          if ( src != null && dst != null ) {
+            setInverseRateView(src.format((long) Math.pow(10, src.getPrecision())) + " : " + dst.format((long) (inverseRate * Math.pow(10, src.getPrecision()))));
+            return;
+          }
+        }
+        setInverseRateView(""+inverseRate);
       `
     },
     function toSummary() {
