@@ -93,6 +93,12 @@ foam.CLASS({
       }
     },
     {
+      name: 'destinationCurrency',
+      factory: function() {
+        return this.data.destinationCurrency;
+      }
+    },
+    {
       name: 'transactionDestinationAmount',
       factory: function() {
         return this.data.destinationAmount;
@@ -116,7 +122,8 @@ foam.CLASS({
     async function initE() {
       this.SUPER();
       var self = this;
-      let currencyFormat = await this.getCurrencyFormat(this.sourceCurrency);
+      let sourceCurrencyFormat = await this.getCurrencyFormat(this.sourceCurrency);
+      let destinationCurrencyFormat = await this.getCurrencyFormat(this.destinationCurrency);
 
       this.start().addClass(this.myClass())
         .start('h2').add(this.TITLE).end()
@@ -198,7 +205,7 @@ foam.CLASS({
                     .add(this.translationService.getTranslation(foam.locale, `net.nanopay.tx.TotalRateLineItem.${totalRateLineItem.name}`, totalRateLineItem.name))
                     //.start().add((1/totalRateLineItem.rate).toFixed(2)).end()
                     //TODO: replace by above code.
-                    .start().add(currencyFormat.format(((totalAmount/this.transactionDestinationAmount)*100).toFixed(2))).end()
+                    .start().add(sourceCurrencyFormat.format(((totalAmount/this.transactionDestinationAmount)*100).toFixed(2))).end()
                   .end();
                 });
 
@@ -216,6 +223,10 @@ foam.CLASS({
 
     async function getCurrencyFormat(currency) {
       return await this.currencyDAO.find(currency);
+    },
+
+    function formatRate(sourceCurrency, sourceAmount, destinationCurrency, destinationAmount) {
+      return `${sourceCurrency.format(sourceAmount)} : ${destinationCurrency.format(destinationAmount)}`;
     }
   ]
 });
