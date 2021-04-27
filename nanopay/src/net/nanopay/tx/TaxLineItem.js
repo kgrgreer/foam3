@@ -18,5 +18,12 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'TaxLineItem',
-  extends: 'net.nanopay.tx.TransactionLineItem'
+  extends: 'net.nanopay.tx.TransactionLineItem',
+
+  properties: [
+    {
+      name: 'rate',
+      class: 'Double'
+    }
+  ]
 });

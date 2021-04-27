@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -21,6 +21,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.nanos.auth.CreatedAware;
 import foam.nanos.auth.LastModifiedAware;
 import foam.nanos.auth.User;
 import net.nanopay.account.Account;
@@ -37,6 +38,7 @@ import net.nanopay.tx.rbc.RbcCITransaction;
 import net.nanopay.tx.rbc.RbcCOTransaction;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
@@ -56,7 +58,7 @@ public class IntuitReconciliationReportGenerator extends RBCReconciliationReport
   }
 
   @Override
-  protected LastModifiedAware generate(X x, @Nonnull FObject src) {
+  protected ReconciliationReport generate(X x, @Nonnull FObject src, @Nullable FObject dst) {
     var transaction = (SummaryTransaction) src;
     var ciTransaction = ciMap.get(transaction.getId());
     var coTransaction = coMap.get(transaction.getId());
@@ -83,7 +85,7 @@ public class IntuitReconciliationReportGenerator extends RBCReconciliationReport
 
     BmoFormatUtil.getCurrentDateTimeEDT();
 
-    var report = new ReconciliationReport();
+    var report = dst == null ? new ReconciliationReport() : (ReconciliationReport) dst;
     var userDAO = (DAO) x.get("localUserDAO");
     var accountDAO = (DAO) x.get("localAccountDAO");
     var eftFileDAO = (DAO) x.get("eftFileDAO");
@@ -95,9 +97,6 @@ public class IntuitReconciliationReportGenerator extends RBCReconciliationReport
       var bill = (Bill) sink.getArray().get(0);
       report.setBillingId(bill.getId());
     }
-
-    report.setCreated(Calendar.getInstance().getTime());
-    report.setLastModified(Calendar.getInstance().getTime());
 
     report.setMerchantId(transaction.getExternalId());
 
@@ -186,7 +185,11 @@ public class IntuitReconciliationReportGenerator extends RBCReconciliationReport
 
     if ( dt.getStatus() == TransactionStatus.COMPLETED ) {
       Calendar created = getInstance();
-      created.setTime(dt.getCompletionDate());
+      if (dt.getCompletionDate() != null) {
+        created.setTime(dt.getCompletionDate());
+      } else {
+        created.setTime(dt.getLastModified());
+      }
       Calendar next = getInstance();
       next.clear();
       next.set(YEAR, created.get(YEAR));
@@ -207,7 +210,7 @@ public class IntuitReconciliationReportGenerator extends RBCReconciliationReport
       report.setRevenuePaymentDate(Date.from(nextMonth.atStartOfDay(ZoneId.systemDefault()).toInstant()));
     }
 
-    return report;
+    return (ReconciliationReport) super.generate(x, src, report);
   }
 
 }

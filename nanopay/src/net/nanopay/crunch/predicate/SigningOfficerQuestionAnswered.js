@@ -47,7 +47,7 @@ foam.CLASS({
         if ( agent == null || user == null || ! ( agent instanceof User ) || ! ( user instanceof Business ) ) return false;
 
         // Skip intercept if signing officer question answer with No
-        UserCapabilityJunction soqJunction = crunchService.getJunction(x, "554af38a-8225-87c8-dfdf-eeb15f71215f-0");
+        UserCapabilityJunction soqJunction = crunchService.getJunction(x, "crunch.onboarding.signing-officer-question");
         return soqJunction != null && soqJunction.getStatus() == CapabilityJunctionStatus.GRANTED;
       `
     }

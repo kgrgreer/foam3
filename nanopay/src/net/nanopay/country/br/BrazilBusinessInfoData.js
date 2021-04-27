@@ -40,7 +40,8 @@ foam.CLASS({
 
   constants: [
     { name: 'FORMATTED_CNPJ_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{2}\\\\.\\\\d{3}\\\\.\\\\d{3}\\\\/\\\\d{4}\\\\-\\\\d{2}$")' },
-    { name: 'UNFORMATTED_CNPJ_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{14}$")' }
+    { name: 'UNFORMATTED_CNPJ_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{14}$")' },
+    { name: 'CNPJ_LENGTH', javaType: 'int', value: 14 }
   ],
 
   sections: [
@@ -99,25 +100,16 @@ foam.CLASS({
       tableCellFormatter: function(val) {
         return foam.String.applyFormat(val, 'xx.xxx.xxx/xxxx-xx');
       },
-      postSet: function(o,n) { 
+      postSet: function(o, n) {
         var validCnpj = this.CNPJ.validationPredicates[0].predicate.f(this);
-        // do not uppdate for equivalent data
         if ( validCnpj && o.replace(/\D/g,'') === n.replace(/\D/g,'') ) return;
-        if ( validCnpj && this.verifyName !== true ) {
-          this.cnpjName = '';
-          this.getCNPJBusinessName(n).then((v) => {
-            this.cnpjName = v;
-          });
-        }
-        else {
-          this.cnpjName = '';
-          this.verifyName = false;
-        }
+        this.cnpjName = '';
+        this.verifyName = false;
       },
       view: function(_, X) {
         return foam.u2.FormattedTextField.create({
           formatter: [2, '.', 3, '.', 3, '/', 4, '-', 2],
-          returnFormatted: true
+          returnFormatted: false
         }, X);
       }
     },
@@ -180,8 +172,14 @@ foam.CLASS({
 
   methods: [
     function installInWizardlet(w) {
-      // CNPJ takes longer to save, so re-load may clear new inputs
-      w.reloadAfterSave = false;
+      this.onDetach(this.cnpj$.sub(() => {
+        if ( this.cnpj.replace(/\D/g,'').length == this.CNPJ_LENGTH && this.verifyName !== true ) {
+          w.save();
+        } else {
+          this.cnpjName = '';
+          this.verifyName = false;
+        }
+      }));
     },
     {
       name: 'getCNPJBusinessName',

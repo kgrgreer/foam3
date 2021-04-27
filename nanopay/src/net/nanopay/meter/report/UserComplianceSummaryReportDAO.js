@@ -28,6 +28,8 @@ foam.CLASS({
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'foam.dao.Sink',
+    'foam.i18n.TranslationService',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Address',
     'net.nanopay.admin.model.ComplianceStatus',
@@ -35,6 +37,11 @@ foam.CLASS({
     'net.nanopay.meter.report.UserComplianceSummaryReport',
 
     'static foam.mlang.MLang.*',
+  ],
+
+  messages: [
+    { name: 'ENTITY_MSG', message: 'Entity' },
+    { name: 'INDIVIDUAL_MSG', message: 'Individual' }
   ],
 
   methods: [
@@ -49,16 +56,26 @@ foam.CLASS({
         // Retrieve the DAO
         DAO userDAO = (DAO) x.get("localUserDAO");
 
+        String className = getClassInfo().getId();
+
         userDAO.where(EQ(User.COMPLIANCE, ComplianceStatus.PASSED)).select(new AbstractSink() {
           public void put(Object obj, Detachable sub) {
             User user = (User) obj;
 
             Address address = user.getAddress();
 
+            Subject subject = (Subject) x.get("subject");
+            String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
+            TranslationService ts = (TranslationService) x.get("translationService");
+
+            String relationshipType = user instanceof Business ?
+              ts.getTranslation(locale, className + ".ENTITY_MSG", ENTITY_MSG) :
+              ts.getTranslation(locale, className + ".INDIVIDUAL_MSG", INDIVIDUAL_MSG);
+            
             UserComplianceSummaryReport pr = new UserComplianceSummaryReport.Builder(x)
               .setId("User : " + user.getId())
               .setCaseName(user.getOrganization())
-              .setRelationshipType(user instanceof Business ? "Entity" : "Individual")
+              .setRelationshipType(relationshipType)
               .setRelationshipId("User : " + user.getId())
               .setRelationshipName(user.getOrganization())
               .setFirstName(user.getFirstName())

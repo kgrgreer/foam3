@@ -6,6 +6,8 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-sess
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"group.update.intuit-sme"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"group.read.intuit-business-sme"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"group.update.intuit-business-sme"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"service.billDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"bill.read.*"})
 
 // ********** ADMIN ***************
 
@@ -79,6 +81,10 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reportin
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"menu.read.reconciliation-reports"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"service.reconciliationReportDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"reconciliationreport.read.*"})
+
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"menu.read.reduced-reconciliation-reports"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"service.reducedReconciliationReportDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"reducedreconciliationreport.read.*"})
 
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"menu.read.user-onboarding-reports"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"service.userOnboardingReportDAO"})

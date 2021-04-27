@@ -78,7 +78,7 @@ foam.CLASS({
       section: 'capabilityInformation',
       factory: () => {
         return [
-          "e9e1567f-ef12-4c4e-b8c2-fa614a177adb"
+          "crunch.acceptance-document.us-pad-capture"
         ];
       }
     },

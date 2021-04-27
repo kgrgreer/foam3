@@ -235,6 +235,22 @@ foam.CLASS({
         }
       }
 
+      // Add Effective Rate LineItem based on sourceAmount/destination amount
+      DAO currDAO = (DAO) getX().get("currencyDAO");
+      Currency src = (Currency) currDAO.find(txn.getSourceCurrency());
+      Currency dst = (Currency) currDAO.find(txn.getDestinationCurrency());
+      Double sourceAmount = txn.getAmount() / Math.pow(10, src.getPrecision());
+      Double destAmount = txn.getDestinationAmount() / Math.pow(10, dst.getPrecision());
+
+      txn.addLineItems(new TransactionLineItem[] {
+        new TotalRateLineItem.Builder(getX())
+            .setName("Effective Rate(VET)")
+            .setRate(1.0 / (sourceAmount / destAmount) ) // Inverse Rate
+            .setSourceCurrency(txn.getSourceCurrency())
+            .setDestinationCurrency(txn.getDestinationCurrency())
+            .build()
+        });
+
       return txn;
       `
     },
@@ -252,7 +268,9 @@ foam.CLASS({
       Date date = cal.getTime();
 
       if ( expiry.size() > 0 ) {
-        TransactionLineItem[] expiryArray = (TransactionLineItem[]) getTotalRates(expiry).orElse(expiry).toArray(new TransactionLineItem[0]);
+        // TODO Review why we did this
+        // TransactionLineItem[] expiryArray = (TransactionLineItem[]) getTotalRates(expiry).orElse(expiry).toArray(new TransactionLineItem[0]);
+        TransactionLineItem[] expiryArray = expiry.toArray(new TransactionLineItem[expiry.size()]);
         expirySummary.setLineItems(expiryArray);
         for ( TransactionLineItem tli: expiryArray ) {
         ExpiryLineItem exp = (ExpiryLineItem) tli;

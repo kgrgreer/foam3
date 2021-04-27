@@ -63,10 +63,7 @@ foam.CLASS({
           DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
           UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
           Business business = (Business) ucj.findSourceId(x);
-          List<String> uniqueEmails = new ArrayList<String>();
-          String soCapId = "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5";
-          String ownerCapId = "554af38a-8225-87c8-dfdf-eeb15f71215f-7-br";
-          String directorCapId = "554af38a-8225-87c8-dfdf-eeb15f71215f-6-5";
+          String soCapId = "crunch.onboarding.signing-officer-information";
 
           // find all signingofficers of the business and send email to signing officers whose hasSignedContratosDeCambio is true
           List<UserCapabilityJunction> sopJunctions = ((ArraySink) userCapabilityJunctionDAO.where(AND(
@@ -77,66 +74,11 @@ foam.CLASS({
             .select(new ArraySink()))
             .getArray();
           for ( UserCapabilityJunction sopJunction : sopJunctions ) {
-            SigningOfficerPersonalDataTreviso soData = (SigningOfficerPersonalDataTreviso) sopJunction.getData();
             User so = sopJunction.findSourceId(x);
-            uniqueEmails.add(so.getEmail());
-            if ( soData.getHasSignedContratosDeCambio() ) sendNotificationToUser(x, business, so);
-          }
-
-          // send email to beneficial owners whose hasSignedContratosDeCambio is true
-          UserCapabilityJunction ownerUCJ = (UserCapabilityJunction) userCapabilityJunctionDAO.find(AND(
-            EQ(UserCapabilityJunction.SOURCE_ID, business.getId()),
-            EQ(UserCapabilityJunction.TARGET_ID, ownerCapId),
-            EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED)
-          ));
-          BRBusinessOwnershipData ownerData = (BRBusinessOwnershipData) ownerUCJ.getData();
-          for ( BRBeneficialOwner beneficialOwnerUser : ownerData.getOwners() ) {
-            if ( hasAlreadyBeenEmailed(uniqueEmails, beneficialOwnerUser.getEmail()) ) continue;
-            else uniqueEmails.add(beneficialOwnerUser.getEmail());
-            if ( beneficialOwnerUser.getHasSignedContratosDeCambio() ){
-              sendEmailToNonUser(x, business, beneficialOwnerUser.getFirstName(), beneficialOwnerUser.getEmail());
-            }
-          }
-
-          // send email to business directors whose hasSignedContratosDeCambio is true
-          UserCapabilityJunction directorUCJ = (UserCapabilityJunction) userCapabilityJunctionDAO.find(AND(
-            EQ(UserCapabilityJunction.SOURCE_ID, business.getId()),
-            EQ(UserCapabilityJunction.TARGET_ID, directorCapId),
-            EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED)
-          ));
-          BusinessDirectorsData directorData = (BusinessDirectorsData) directorUCJ.getData();
-          BRBusinessDirector[] directorList = (BRBusinessDirector[]) directorData.getBusinessDirectors();
-          for ( int i = 0; i < directorList.length; i++ ) {
-            BRBusinessDirector directorUser = (BRBusinessDirector) directorList[i];
-            if ( hasAlreadyBeenEmailed(uniqueEmails, directorUser.getEmail()) ) continue;
-            else uniqueEmails.add(directorUser.getEmail());
-            if ( directorUser.getHasSignedContratosDeCambioDirector() ){
-              sendEmailToNonUser(x, business, directorUser.getFirstName(), directorUser.getEmail());
-            }
+            sendNotificationToUser(x, business, so);
           }
         }
-      }, "When the business account is approved, send emails to all directors, signing officers who have signed contratos de câmbio.");
-      `
-    },
-    {
-      name: 'hasAlreadyBeenEmailed',
-      args: [
-        {
-          name: 'uniqueEmails',
-          type: 'List'
-        },
-        {
-          name: 'userEmail',
-          type: 'String'
-        }
-      ],
-      description: `function checks if a user has already been emailed, if so it doesn't email the person again.`,
-      type: 'Boolean',
-      javaCode: `
-        for( Object email : uniqueEmails ) {
-          if ( email.toString().equals(userEmail) ) return true;
-        }
-        return false;
+      }, "When the business account is approved, send emails to signing officers.");
       `
     },
     {
@@ -176,49 +118,6 @@ foam.CLASS({
             .setEmailName("compliance-notification-to-user")
             .build();
           recipient.doNotify(x, notification);
-        } catch (Throwable t) {
-          String msg = String.format("Email meant for business Error: Business (id = %1$s) has been enabled for international payments.", business.getId());
-          ((Logger) x.get("logger")).error(msg, t);
-        }
-      `
-    },
-    {
-      name: 'sendEmailToNonUser',
-      args: [
-        {
-          name: 'x',
-          type: 'Context',
-        },
-        {
-          name: 'business',
-          type: 'net.nanopay.model.Business'
-        },
-        {
-          name: 'firstName',
-          type: 'String'
-        },
-        {
-          name: 'email',
-          type: 'String'
-        }
-      ],
-      javaCode: `
-        Map<String, Object>  args           = new HashMap<>();
-        Group                group          = business.findGroup(x);
-        AppConfig            config         = group != null ? group.getAppConfig(x) : (AppConfig) x.get("appConfig");
-
-        String toCountry = business.getAddress().findCountryId(x).getName();
-        args.put("business", business.toSummary());
-        args.put("toCountry", toCountry);
-        args.put("link", config.getUrl());
-        args.put("sendTo", email);
-        args.put("name", firstName);
-
-        EmailMessage message = new EmailMessage();
-        message.setTo(new String[]{email});
-
-        try {
-          EmailsUtility.sendEmailFromTemplate(x, business, message, "compliance-notification-to-non-user", args);
         } catch (Throwable t) {
           String msg = String.format("Email meant for business Error: Business (id = %1$s) has been enabled for international payments.", business.getId());
           ((Logger) x.get("logger")).error(msg, t);

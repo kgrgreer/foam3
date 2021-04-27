@@ -51,7 +51,8 @@ foam.CLASS({
 
   constants: [
     { name: 'FORMATTED_CPF_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{3}\\\\.\\\\d{3}\\\\.\\\\d{3}\\\\-\\\\d{2}$")' },
-    { name: 'UNFORMATTED_CPF_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{11}$")' }
+    { name: 'UNFORMATTED_CPF_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{11}$")' },
+    { name: 'CPF_LENGTH', javaType: 'int', value: 11 }
   ],
 
   messages: [
@@ -143,7 +144,7 @@ foam.CLASS({
       view: function(_, X) {
         return foam.u2.FormattedTextField.create({
           formatter: [3, '.', 3, '.', 3, '-', 2],
-          returnFormatted: true
+          returnFormatted: false
         }, X);
       }
     },
@@ -194,13 +195,9 @@ foam.CLASS({
   ],
 
   methods: [
-    function init() {
-      this.onDetach(this.data$.sub(this.updateCPFName));
-      this.onDetach(this.birthday$.sub(this.updateCPFName));
-    },
     function installInWizardlet(w) {
-      // CPF takes longer to save, so re-load may clear new inputs
-      w.reloadAfterSave = false;
+      this.onDetach(this.data$.sub(() => this.maybeSave(w)));
+      this.onDetach(this.birthday$.sub(() => this.maybeSave(w)));
     },
     {
       name: 'clearFields',
@@ -259,30 +256,14 @@ foam.CLASS({
     // now if the cpfName is set we can avoid the api call - but a property change needs to reset the cpfName
     // SO - listeners used in place of a property postSet to avoid initial call ... HMM
     {
-      name: 'updateCPFName',
+      name: 'maybeSave',
       mergeDelay: 100, // only run every 100ms, otherwise trigger too many calls
-      code: async function(obj) {
-        try {
-          var validCPF = this.DATA.validationPredicates[0].predicate.f(this);
-          // do not update if the data is equivalent
-          if ( validCPF && obj.src.prop.name === 'data' && obj.src.oldValue.replace(/\D/g,'') === this.data.replace(/\D/g,'') ) return;
-          // goes with user deprication
-          if ( ! this.birthday && ! this.verifyName && validCPF ) {
-            this.cpfName = await this.brazilVerificationService
-              .getCPFName(this.__subContext__, this.data, this.user);
-          }
-          // update cpfName if birthday and cpf are valid
-          if ( ! this.BIRTHDAY.validateObj[1].call(this) && ! this.verifyName && validCPF ) {
-            this.cpfName = await this.brazilVerificationService
-                .getCPFNameWithBirthDate(this.__subContext__, this.data, this.birthday);
-            if ( ! this.cpfName ) this.clearFields();
-          } else {
-            this.clearFields();
-          }
-        } catch (e) {
-          this.clearFields();
-          console.error(e || 'failed Cpf update');
-        }
+      code: async function(w) {
+        var validEnough = ( ! this.BIRTHDAY.validateObj[1].call(this) ) &&
+          this.data.replace(/\D/g,'').length == this.CPF_LENGTH &&
+          this.verifyName !== true;
+        if ( validEnough ) w.save();
+        else this.clearFields();
       }
     }
   ]
