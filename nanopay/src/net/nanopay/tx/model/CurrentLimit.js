@@ -29,6 +29,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'id',
+      storageTransient: true,
       gridColumns: 6
     },
     {
@@ -36,6 +37,7 @@ foam.CLASS({
       targetDAOKey: 'transactionLimitDAO',
       name: 'txLimit',
       of: 'net.nanopay.tx.model.TransactionLimit',
+      storageTransient: true,
       documentation: 'TransactionLimit associated',
       gridColumns: 6
     },
@@ -44,6 +46,7 @@ foam.CLASS({
       targetDAOKey: 'userDAO',
       name: 'userId',
       of: 'foam.nanos.auth.User',
+      storageTransient: true,
       documentation: 'User limit is applied to',
       gridColumns: 6,
       tableCellFormatter: function(value, obj) {
@@ -60,6 +63,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionLimitType',
       name: 'type',
+      storageTransient: true,
       documentation: 'Current limit type. (Send or Receive)',
       gridColumns: 6
     },
@@ -67,18 +71,21 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
       name: 'timeFrame',
+      storageTransient: true,
       documentation: 'Current limit time frame. (Day, Week etc.)',
       gridColumns: 6
     },
     {
       class: 'Long',
       name: 'currentRunningValue',
+      storageTransient: true,
       documentation: 'accumulative amount associated to associated transaction limit',
       gridColumns: 6
     },
     {
       class: 'DateTime',
       name: 'lastModified',
+      storageTransient: true,
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       gridColumns: 6
