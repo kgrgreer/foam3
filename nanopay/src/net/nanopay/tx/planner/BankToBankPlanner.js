@@ -54,7 +54,7 @@ foam.CLASS({
     {
       name: 'createLimit',
       class: 'Boolean',
-      value: true
+      value: false
     }
   ],
 
@@ -112,6 +112,7 @@ foam.CLASS({
               ci.addNext((Transaction) removeSummaryTransaction(COP).fclone());
               if ( getCreateLimit() ) {
                 LimitTransaction lt = createLimitTransaction(txn);
+                lt.addNext(ci);
                 t.addNext(lt);
               }
               if ( getCreateCompliance() ) {

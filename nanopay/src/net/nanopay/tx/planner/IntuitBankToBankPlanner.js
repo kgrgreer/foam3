@@ -69,6 +69,10 @@ foam.CLASS({
     {
       class: 'StringArray',
       name: 'destinationCapabilityList'
+    },
+    {
+      name: 'createLimit',
+      value: true
     }
   ],
 
