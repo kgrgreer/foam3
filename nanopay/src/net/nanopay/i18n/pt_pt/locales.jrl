@@ -3739,3 +3739,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserCom
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.POSTAL_CODE.label",target:"Código postal"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.SERVICE_DJRC.label",target:"Serviço DJRC"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.SERVICE_DJNEWS.label",target:"Notícias de DJ de serviço"})
+
+/* SectionedDetailPropertyView */
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.detail.SectionedDetailPropertyView.HELP",target:"Ajuda"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.detail.SectionedDetailPropertyView.LEARN_MORE",target:"Clique para aprender mais"})
