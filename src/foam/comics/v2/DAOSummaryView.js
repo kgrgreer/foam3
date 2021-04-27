@@ -217,7 +217,7 @@ foam.CLASS({
         if ( ! this.stack ) return;
         let newRecord = this.data.clone();
         // Clear PK so DAO can generate a new unique one
-        newRecord.id = undefined;
+        newRecord.instance_.id = undefined;
         this.stack.push({
           class: 'foam.comics.v2.DAOCreateView',
           data: newRecord,
