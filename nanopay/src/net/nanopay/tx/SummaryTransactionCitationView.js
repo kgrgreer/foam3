@@ -198,14 +198,13 @@ foam.CLASS({
                 highlightInlineTitle: true
               });
 
+              //VET
               lineItems
                 .filter( lineItem => this.TotalRateLineItem.isInstance(lineItem) )
                 .forEach( (totalRateLineItem) => {
                   self.start(self.Cols)
                     .add(this.translationService.getTranslation(foam.locale, `net.nanopay.tx.TotalRateLineItem.${totalRateLineItem.name}`, totalRateLineItem.name))
-                    //.start().add((1/totalRateLineItem.rate).toFixed(2)).end()
-                    //TODO: replace by above code.
-                    .start().add(sourceCurrencyFormat.format(((totalAmount/this.transactionDestinationAmount)*100).toFixed(2))).end()
+                    .start().add(this.formatRate(destinationCurrencyFormat, 100, sourceCurrencyFormat, (1/totalRateLineItem.rate)*100)).end()
                   .end();
                 });
 
@@ -225,8 +224,8 @@ foam.CLASS({
       return await this.currencyDAO.find(currency);
     },
 
-    function formatRate(sourceCurrency, sourceAmount, destinationCurrency, destinationAmount) {
-      return `${sourceCurrency.format(sourceAmount)} : ${destinationCurrency.format(destinationAmount)}`;
+    function formatRate(currency_a, ammount_a, currency_b, ammount_b) {
+      return `${currency_a.format(ammount_a)} : ${currency_b.format(ammount_b)}`;
     }
   ]
 });
