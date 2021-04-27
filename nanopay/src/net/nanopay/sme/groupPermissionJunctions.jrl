@@ -176,6 +176,4 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId"
 
 // Facade
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.facadeContactDAO"})
-//p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"facadecontact.read.*"})
-//p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"facadecontact.update.*"})
-//p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"contact.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"contact.update.*"})
