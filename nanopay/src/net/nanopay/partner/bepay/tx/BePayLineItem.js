@@ -86,13 +86,13 @@ foam.CLASS({
     },
     {
       class: 'Long',
-      name: 'feeAmount2',
+      name: 'fee2Amount',
       documentation: 'additional amount charged by the partner'
     },
     {
       class: 'Reference',
       of: 'foam.core.Currency',
-      name: 'feeCurrency2',
+      name: 'fee2Currency',
       targetDAOKey: 'currencyDAO'
     },
     {
@@ -118,12 +118,12 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'foam.core.Currency',
-      name: 'IOFCurrency2',
+      name: 'IOF2Currency',
       targetDAOKey: 'currencyDAO'
     },
     {
       class: 'Double',
-      name: 'IOFRate2'
+      name: 'IOF2Rate'
     },
     {
       class: 'String',
