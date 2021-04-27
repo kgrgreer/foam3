@@ -113,17 +113,17 @@ foam.CLASS({
     },
     {
       class: 'Long',
-      name: 'IOF2'
+      name: 'tax2'
     },
     {
       class: 'Reference',
       of: 'foam.core.Currency',
-      name: 'IOF2Currency',
+      name: 'tax2Currency',
       targetDAOKey: 'currencyDAO'
     },
     {
       class: 'Double',
-      name: 'IOF2Rate'
+      name: 'tax2Rate'
     },
     {
       class: 'String',
