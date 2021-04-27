@@ -611,99 +611,111 @@ foam.CLASS({
           .end()
           .start()
             .addClass('right-block')
-            .start()
-              .addClass('payment-content')
-              .start()
-                .addClass('subheading')
-                .add(this.PAYMENT_DETAILS)
+              .start().addClass('payment-content')
+                .add(this.slot((relatedTransaction) => {
+                  if ( ! relatedTransaction ) return;
+                  return this.E()
+                    .start({
+                      class: 'net.nanopay.tx.SummaryTransactionCitationView',
+                      data: relatedTransaction,
+                      processingDate: this.invoice.processingDate,
+                      showTransactionDetail: true
+                    });
+                }))
               .end()
+//             .start()
+//               .addClass('payment-content')
+//               .start()
+//                 .addClass('subheading')
+//                 .add(this.PAYMENT_DETAILS)
+//               .end()
 
-              .start()
-                .start().show(this.showTran$).addClass('invoice-row')
-                  .start().addClass('invoice-text').show(this.isCrossBorder$)
-                    .start().addClass('table-content').add(this.EXCHANGE_RATE).end()
-                    .add(this.exchangeRateInfo$)
-                  .end()
-                  // Only show fee when it is a payable and not a billing invoice
-                  .start().addClass('invoice-text').show(this.isPayable && ! isBillingInvoice)
-                    .start().addClass('table-content').add(this.PAYMENT_FEE).end()
-                    .add(this.fee$)
-                  .end()
-                .end()
-                .start().addClass('invoice-row')
-                  .forEach(this.taxItems$, function(t) {
-                    this
-                      .start().addClass('invoice-text')
-                        .start().addClass('table-content')
-                          .add(self.translationService.getTranslation(foam.locale, 'net.nanopay.tx.TaxLineItem.NAME.' + t.name, t.name))
-                        .end()
-                        .add(this.PromiseSlot.create({
-                          promise: self.currencyDAO.find(t.currency).then((currency) => {
-                            return currency.format(t.amount);
-                          }),
-                          value: '--',
-                        }))
-                      .end()
-                  })
-                .end()
-                .start().addClass('invoice-row')
-                  .start().addClass('invoice-text')
-                    .start().addClass('table-content').add(this.AMOUNT_DUE).end()
-                    .add(this.PromiseSlot.create({
-                      promise$: this.formattedAmountDue$,
-                      value: '--',
-                    }))
-                  .end()
-                  .start().addClass('invoice-text')
-                    .start().addClass('table-content').add(this.AMOUNT_PAID).end()
-                    .start().show(this.isProcessOrComplete$)
-                      .add(this.formattedAmountPaid$)
-                    .end()
-                    .start().add('--').hide(this.isProcessOrComplete$).end()
-                  .end()
-                .end()
+//               .start()
+//                 .start().show(this.showTran$).addClass('invoice-row')
+//                   .start().addClass('invoice-text').show(this.isCrossBorder$)
+//                     .start().addClass('table-content').add(this.EXCHANGE_RATE).end()
+//                     .add(this.exchangeRateInfo$)
+//                   .end()
+//                   // Only show fee when it is a payable and not a billing invoice
+//                   .start().addClass('invoice-text').show(this.isPayable && ! isBillingInvoice)
+//                     .start().addClass('table-content').add(this.PAYMENT_FEE).end()
+//                     .add(this.fee$)
+//                   .end()
+//                 .end()
+//                 .start().addClass('invoice-row')
+//                   .forEach(this.taxItems$, function(t) {
+//                     this
+//                       .start().addClass('invoice-text')
+//                         .start().addClass('table-content')
+//                           .add(self.translationService.getTranslation(foam.locale, 'net.nanopay.tx.TaxLineItem.NAME.' + t.name, t.name))
+//                         .end()
+//                         .add(this.PromiseSlot.create({
+//                           promise: self.currencyDAO.find(t.currency).then((currency) => {
+//                             return currency.format(t.amount);
+//                           }),
+//                           value: '--',
+//                         }))
+//                       .end()
+//                   })
+//                 .end()
+//                 .start().addClass('invoice-row')
+//                   .start().addClass('invoice-text')
+//                     .start().addClass('table-content').add(this.AMOUNT_DUE).end()
+//                     .add(this.PromiseSlot.create({
+//                       promise$: this.formattedAmountDue$,
+//                       value: '--',
+//                     }))
+//                   .end()
+//                   .start().addClass('invoice-text')
+//                     .start().addClass('table-content').add(this.AMOUNT_PAID).end()
+//                     .start().show(this.isProcessOrComplete$)
+//                       .add(this.formattedAmountPaid$)
+//                     .end()
+//                     .start().add('--').hide(this.isProcessOrComplete$).end()
+//                   .end()
+//                 .end()
 
-                // NOTE: Temporarily hiding til we refactor invoice view
-//                .start().addClass('invoice-row')
-//                  .start().show(this.isProcessOrComplete$)
-//                    .addClass('invoice-text')
-//                    .start().show(this.isPaid$)
-//                      .addClass('table-content')
-//                      .add(this.DATE_CREDITED)
-//                    .end()
-                    // .start().show(this.isProcess$)
-                    //   .addClass('table-content')
-                    //   .add(this.ESTIMATED_CREDIT_DATE)
-                    // .end()
-                    // .start().show(this.relatedTransaction$)
-                    //   .add(this.slot(function(invoice$paymentDate) {
-                    //     if ( invoice$paymentDate ) {
-                    //       var creditDate =
-                    //         invoice$paymentDate.toLocaleDateString(foam.locale);
-                    //       return this.isPaid ? creditDate : `${creditDate} *`;
-                    //     } else {
-                    //       return '--';
-                    //     }
-                    //   }))
-                    // .end()
-                  //.end()
-                  // .start().show(this.showBankAccount$).addClass('invoice-text')
-                  //   .start().addClass('table-content').add(this.bankAccountLabel).end()
-                  //   .add(this.bankAccount$.map((account) => {
-                  //     if ( account ) {
-                  //       return `${account.name} ${self.BankAccount.mask(account.accountNumber)}`;
-                  //     } else {
-                  //       return '--';
-                  //     }
-                  //   }))
-                  // .end()
-                //.end()
-              //.end()
-              // .start().show(this.isProcess$)
-              //   .addClass(this.myClass('annotation'))
-              //   .add(this.ANNOTATION)
-              // .end()
-            .end()
+//                 // NOTE: Temporarily hiding til we refactor invoice view
+// //                .start().addClass('invoice-row')
+// //                  .start().show(this.isProcessOrComplete$)
+// //                    .addClass('invoice-text')
+// //                    .start().show(this.isPaid$)
+// //                      .addClass('table-content')
+// //                      .add(this.DATE_CREDITED)
+// //                    .end()
+//                     // .start().show(this.isProcess$)
+//                     //   .addClass('table-content')
+//                     //   .add(this.ESTIMATED_CREDIT_DATE)
+//                     // .end()
+//                     // .start().show(this.relatedTransaction$)
+//                     //   .add(this.slot(function(invoice$paymentDate) {
+//                     //     if ( invoice$paymentDate ) {
+//                     //       var creditDate =
+//                     //         invoice$paymentDate.toLocaleDateString(foam.locale);
+//                     //       return this.isPaid ? creditDate : `${creditDate} *`;
+//                     //     } else {
+//                     //       return '--';
+//                     //     }
+//                     //   }))
+//                     // .end()
+//                   //.end()
+//                   // .start().show(this.showBankAccount$).addClass('invoice-text')
+//                   //   .start().addClass('table-content').add(this.bankAccountLabel).end()
+//                   //   .add(this.bankAccount$.map((account) => {
+//                   //     if ( account ) {
+//                   //       return `${account.name} ${self.BankAccount.mask(account.accountNumber)}`;
+//                   //     } else {
+//                   //       return '--';
+//                   //     }
+//                   //   }))
+//                   // .end()
+//                 //.end()
+//               //.end()
+//               // .start().show(this.isProcess$)
+//               //   .addClass(this.myClass('annotation'))
+//               //   .add(this.ANNOTATION)
+//               // .end()
+//             .end()
 
             .add(this.slot(function(transactionConfirmationPDF) {
               if ( transactionConfirmationPDF != null ) {

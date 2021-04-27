@@ -48,7 +48,7 @@ foam.CLASS({
     { name: 'AMOUNT_IN', message: 'Amount in' },
     { name: 'RATE', message: 'Rate'},
     { name: 'GRAND_TOTAL', message: 'Total Due' },
-    { name: 'TRANSACTION_DATA', message: 'Transaction Data' },
+    { name: 'TRANSACTION_DATE', message: 'Payment date' },
     { name: 'TRANSACTION_REFERENCE', message: 'Transaction Reference' }
   ],
 
@@ -99,15 +99,17 @@ foam.CLASS({
       }
     },
     {
-      name: 'transactionDestinationAmount',
-      factory: function() {
-        return this.data.destinationAmount;
-      }
+      name: 'showTransactionDetail',
+      value: false
     },
     {
-      name: 'transactionProps',
-      expression: function(data) {
-        let of = this.data.cls_;
+      class: 'Date',
+      name: 'processingDate'
+    },
+    {
+      name: 'transactionId',
+      factory: function() {
+        return this.data.id.split('-', 1)[0];
       }
     },
     {
@@ -127,6 +129,16 @@ foam.CLASS({
 
       this.start().addClass(this.myClass())
         .start('h2').add(this.TITLE).end()
+        .start().show(this.showTransactionDetail$)
+          .start(this.Cols)
+            .add(this.TRANSACTION_DATE)
+            .start().add(this.processingDate.toLocaleDateString(foam.locale)).end()
+          .end()
+          .start(this.Cols)
+            .add(this.TRANSACTION_REFERENCE)
+            .start().add(this.transactionId).end()
+          .end()
+        .end()
         .start('h3').add(this.data.toSummary()).end()
         .forEach(self.prop, function(p) {
             if ( !p ) return;

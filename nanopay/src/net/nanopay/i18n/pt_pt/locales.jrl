@@ -2306,6 +2306,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactio
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.AMOUNT_IN",target:"Valor em"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.RATE",target:"Taxa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.GRAND_TOTAL",target:"Total a Pagar"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.TRANSACTION_DATE",target:"Data da Transaçao"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.TRANSACTION_REFERENCE",target:"Referencia"})
 
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.FXSummaryTransaction.DESCRIPTION",target:"Detalhes do Pagamento"})

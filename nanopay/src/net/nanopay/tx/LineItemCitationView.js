@@ -111,7 +111,6 @@ foam.CLASS({
       .end()
       })
       .callIf(this.inline && this.amountProp, () => {
-        console.log(`${this.data.cls_.package}.${this.data.cls_.name}.${this.data.toSummary()}`)
         this.callIf(this.highlightInlineTitle, () => {
           this.start(this.Cols)
             .start().addClass(this.myClass('highlight-title')).add(this.translationService.getTranslation(foam.locale,`${this.data.cls_.package}.${this.data.cls_.name}.${this.data.toSummary()}`, this.data.toSummary())).end()
