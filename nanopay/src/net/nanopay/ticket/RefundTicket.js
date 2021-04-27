@@ -45,7 +45,17 @@ foam.CLASS({
         return id != 0;
       },
       title: 'Audit',
-      permissionRequired: true
+      permissionRequired: true,
+      order: 100
+    },
+    {
+      name: 'infoSection',
+      title: 'Ticket',
+      order: 10
+    },
+    {
+      name: '_defaultSection',
+      order: 50
     },
   ],
 
@@ -241,6 +251,7 @@ foam.CLASS({
     {
       name: 'assignToMe',
       section: 'infoSection',
+      availablePermissions: ['net.nanopay.ticket.refundTicket.viewAssignToMe'],
       isAvailable: function(assignedTo) {
         return assignedTo == 0;
       },
@@ -263,6 +274,7 @@ foam.CLASS({
         this.refundStatus = net.nanopay.ticket.RefundStatus.REQUESTED;
         this.ticketDAO.put(this).then(ticket => {
           this.notify(this.SUBMIT_FOR_APPROVAL, '', foam.log.LogLevel.INFO, true);
+          X.stack.back();
         }).catch(error => {
           this.notify(error.message, '', this.LogLevel.ERROR, true);
         });
