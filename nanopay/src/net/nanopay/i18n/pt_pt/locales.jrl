@@ -2302,6 +2302,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.m
 
 // Review Invoice Details
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.TITLE",target:"Revise os Detalhes da Remessa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.POST_TITLE",target:"Detalhes da Remessa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.PRE_TITLE",target:"Revise os Detalhes da Remessa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.AMOUNT",target:"Quantidade"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.AMOUNT_IN",target:"Valor em"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.RATE",target:"Taxa"})

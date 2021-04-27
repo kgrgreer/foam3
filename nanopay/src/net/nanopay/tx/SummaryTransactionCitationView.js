@@ -44,6 +44,8 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Review Remittance Details' },
+    { name: 'POST_TITLE', message: 'Remittance Details' },
+    { name: 'PRE_TITLE', message: 'Review Remittance Details' },
     { name: 'AMOUNT', message: 'Amount' },
     { name: 'AMOUNT_IN', message: 'Amount in' },
     { name: 'RATE', message: 'Rate'},
@@ -108,6 +110,13 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'showingTitle',
+      factory: function() {
+        return this.showTransactionDetail ? this.POST_TITLE : this.PRE_TITLE;
+      }
+    },
+    {
+      class: 'String',
       name: 'dataString',
       factory: function() {
         if ( ! this.processingDate ) return '';
@@ -136,7 +145,7 @@ foam.CLASS({
       let destinationCurrencyFormat = await this.getCurrencyFormat(this.destinationCurrency);
 
       this.start().addClass(this.myClass())
-        .start('h2').add(this.TITLE).end()
+        .start('h2').add(this.showingTitle).end()
         .start().show(this.showTransactionDetail$)
           .start(this.Cols)
             .add(this.TRANSACTION_DATE)
