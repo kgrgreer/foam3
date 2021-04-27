@@ -38,6 +38,7 @@ import net.nanopay.tx.rbc.RbcCITransaction;
 import net.nanopay.tx.rbc.RbcCOTransaction;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
@@ -57,7 +58,7 @@ public class IntuitReconciliationReportGenerator extends RBCReconciliationReport
   }
 
   @Override
-  protected ReconciliationReport generate(X x, @Nonnull FObject src) {
+  protected ReconciliationReport generate(X x, @Nonnull FObject src, @Nullable FObject dst) {
     var transaction = (SummaryTransaction) src;
     var ciTransaction = ciMap.get(transaction.getId());
     var coTransaction = coMap.get(transaction.getId());
@@ -84,7 +85,7 @@ public class IntuitReconciliationReportGenerator extends RBCReconciliationReport
 
     BmoFormatUtil.getCurrentDateTimeEDT();
 
-    var report = new ReconciliationReport();
+    var report = dst == null ? new ReconciliationReport() : (ReconciliationReport) dst;
     var userDAO = (DAO) x.get("localUserDAO");
     var accountDAO = (DAO) x.get("localAccountDAO");
     var eftFileDAO = (DAO) x.get("eftFileDAO");
@@ -209,7 +210,7 @@ public class IntuitReconciliationReportGenerator extends RBCReconciliationReport
       report.setRevenuePaymentDate(Date.from(nextMonth.atStartOfDay(ZoneId.systemDefault()).toInstant()));
     }
 
-    return report;
+    return (ReconciliationReport) super.generate(x, src, report);
   }
 
 }

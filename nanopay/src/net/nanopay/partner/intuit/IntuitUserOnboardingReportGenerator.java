@@ -28,12 +28,12 @@ import net.nanopay.reporting.ReportGenerator;
 import net.nanopay.reporting.UserOnboardingReport;
 
 import javax.annotation.Nonnull;
-import java.util.Calendar;
+import javax.annotation.Nullable;
 
 public class IntuitUserOnboardingReportGenerator extends ReportGenerator {
 
   @Override
-  public UserOnboardingReport generate(X x, @Nonnull FObject src) {
+  public UserOnboardingReport generate(X x, @Nonnull FObject src, @Nullable FObject dst) {
     var user = (User) src;
 
     var group = user.getGroup();
@@ -42,7 +42,7 @@ public class IntuitUserOnboardingReportGenerator extends ReportGenerator {
 
     var crunchService = (CrunchService) x.get("crunchService");
 
-    var cor = new UserOnboardingReport();
+    var cor = dst == null ? new UserOnboardingReport() : (UserOnboardingReport) dst;
     cor = new UserOnboardingReport();
 
     cor.setFirstName(user.getFirstName());
@@ -66,7 +66,7 @@ public class IntuitUserOnboardingReportGenerator extends ReportGenerator {
     if ( user.getAddress() != null )
       cor.setCity(user.getAddress().getCity());
 
-    return cor;
+    return (UserOnboardingReport) super.generate(x, src, cor);
   }
 
 }
