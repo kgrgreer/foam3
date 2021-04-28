@@ -18,14 +18,19 @@ package net.nanopay.partner.intuit.tx;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.mlang.MLang;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.cron.Cron;
 import java.util.*;
+
+import net.nanopay.ticket.RefundStatus;
+import net.nanopay.ticket.RefundTicket;
 import net.nanopay.tx.ChainSummary;
 import net.nanopay.tx.FeeSummaryTransactionLineItem;
 import net.nanopay.tx.SummarizingTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.cron.TransactionSummaryAgent;
+import net.nanopay.tx.model.TransactionStatus;
 
 public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
   public IntuitTransactionSummaryAgent(String spid) {
@@ -70,6 +75,18 @@ public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
       if (txn.getPayee() != null) intuitTxnSummary.setPayee(txn.getPayee().getId());
       if (feeLineItem != null) intuitTxnSummary.setFee(feeLineItem.getTotalFee());
       intuitTxnSummary.setSummary(intuitTxnSummary.summarizeTransaction(x, txn));
+
+      // Update status to paused if there is a ticket that is waiting for a sent transaction to complete
+      DAO ticketDAO = (DAO) x.get("refundTicketDAO");
+      ArraySink sink = new ArraySink();
+      ticketDAO.where(MLang.AND(
+        MLang.EQ(RefundTicket.REFUND_STATUS, RefundStatus.WAITING),
+        MLang.EQ(RefundTicket.REFUND_TRANSACTION, txn.getId())
+      )).select(sink);
+      if ( sink.getArray().size() > 0 ) {
+        intuitTxnSummary.setStatus(TransactionStatus.PAUSED);
+      }
+
       transactionSummaryDAO.put(intuitTxnSummary);
     }
   }
