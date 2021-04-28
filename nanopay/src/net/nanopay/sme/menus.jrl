@@ -193,27 +193,16 @@ p({
       "primaryAction": {"class":"net.nanopay.bank.AddBankAccountAction"},
       "viewBorder":{class:"foam.u2.borders.NullBorder"},
       "browseBorder":{class:"net.nanopay.bank.CustomBankAccountsBorder"},
-      "XXXbrowseBorder":{class:"foam.u2.borders.NullBorder"},
 
       "wizardDetailView":{class:"net.nanopay.ui.wizard.ContactWizardDetailView"},
       "detailView":{class:"net.nanopay.account.ui.BankAccountWizard"},
 
       "DAOCreateView":"true",
-      "XXXbrowseViews": [
-        {
-          "class": "foam.comics.v2.namedViews.NamedViewCollection",
-          "name": "BankAccountTableView",
-          "view": { "class":"net.nanopay.bank.BankAccountTableView" }
-        }
-      ],
-
-      "XXXdetailView":{"class":"net.nanopay.account.ui.BankAccountWizard"},
 
       "exportEnabled":false,
       "createEnabled":true,
       "editEnabled":true,
 
-      "XXXsummaryView":{ "class":"net.nanopay.bank.BankAccountTableView" },
       "createLabel":"Add contact",
 
       "defaultColumns":[

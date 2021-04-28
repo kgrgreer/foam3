@@ -94,15 +94,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isEdit',
       documentation: 'isEdit property to be passed to the WizardView'
-    },
-//     {
-//       class: 'String',
-//       name: 'detailView'
-//     },
-//     {
-//       class: 'String',
-//       name: 'menu'
-//     }
+    }
   ],
 
   methods: [

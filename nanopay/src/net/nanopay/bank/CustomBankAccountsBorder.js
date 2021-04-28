@@ -28,7 +28,6 @@ foam.CLASS({
 
   imports: [
     'config as oldConfig',
-    //'subject',
     'user'
   ],
   exports: [ 'config' ],

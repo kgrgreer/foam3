@@ -51,7 +51,6 @@ foam.CLASS({
     }),
     net.nanopay.contacts.Contact.FIRST_NAME.clone().copyFrom({
       gridColumns:6,
-       // label: 'Fn',
       section: 'userInformation',
       order: 20
     }),
