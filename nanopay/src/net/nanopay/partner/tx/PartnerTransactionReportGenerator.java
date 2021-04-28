@@ -70,7 +70,7 @@ public class PartnerTransactionReportGenerator extends ReconciliationReportGener
     cor.setBeneficiaryId(receiver.getId());
     cor.setTransactionId(tx.getId());
     cor.setPrincipleAmount(tx.getAmount());
-    cor.setPrincipalCurrency(tx.getSourceCurrency());
+    cor.setPrincipleCurrency(tx.getSourceCurrency());
     cor.setDestinationAmount(tx.getDestinationAmount());
     cor.setDestinationCurrency(tx.getDestinationCurrency());
 

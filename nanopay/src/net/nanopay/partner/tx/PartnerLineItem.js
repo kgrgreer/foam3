@@ -46,8 +46,9 @@ foam.CLASS({
       javaFactory: 'return getFxSpread() + getFxRate();'
     },
     {
-      class: 'Long',
+      class: 'UnitValue',
       name: 'feeAmount',
+      unitPropName: 'feeCurrency',
       documentation: 'amount charged by the partner'
     },
     {
@@ -58,8 +59,9 @@ foam.CLASS({
       documentation: 'currency of fee charged by partner'
     },
     {
-      class: 'Long',
+      class: 'UnitValue',
       name: 'IOF',
+      unitPropName: 'IOFCurrency',
       documentation: 'tax charged by the partner'
     },
     {
@@ -67,11 +69,13 @@ foam.CLASS({
       of: 'foam.core.Currency',
       name: 'IOFCurrency',
       targetDAOKey: 'currencyDAO',
+      label: 'IOF Currency',
       documentation: 'currency of tax charged by partner'
     },
     {
       class: 'Double',
-      name: 'IOFRate'
+      name: 'IOFRate',
+      label: 'IOF Rate'
     },
     {
       class: 'Double',
@@ -81,23 +85,28 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.core.Currency',
       name: 'VETCurrency',
+      label: 'VET Currency',
       targetDAOKey: 'currencyDAO',
       value: 'BRL'
     },
     {
-      class: 'Long',
+      class: 'UnitValue',
       name: 'fee2Amount',
+      label: 'Fee2 Amount',
+      unitPropName: 'fee2Currency',
       documentation: 'additional amount charged by the partner'
     },
     {
       class: 'Reference',
       of: 'foam.core.Currency',
       name: 'fee2Currency',
+      label: 'Fee2 Currency',
       targetDAOKey: 'currencyDAO'
     },
     {
-      class: 'Long',
+      class: 'UnitValue',
       name: 'discountAmount',
+      unitPropName: 'discountCurrency',
       documentation: 'discount given by the partner'
     },
     {
@@ -112,18 +121,21 @@ foam.CLASS({
       name: 'discountCode'
     },
     {
-      class: 'Long',
-      name: 'tax2'
+      class: 'UnitValue',
+      name: 'tax2',
+      unitPropName: 'tax2Currency'
     },
     {
       class: 'Reference',
       of: 'foam.core.Currency',
       name: 'tax2Currency',
+      label: 'Tax2 Currency',
       targetDAOKey: 'currencyDAO'
     },
     {
       class: 'Double',
-      name: 'tax2Rate'
+      name: 'tax2Rate',
+      label: 'Tax2 Rate'
     },
     {
       class: 'String',
