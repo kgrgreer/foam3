@@ -18,10 +18,9 @@
 
 package net.nanopay.partner.tx;
 
-import foam.core.Detachable;
 import foam.core.FObject;
 import foam.core.X;
-import foam.dao.AbstractSink;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import net.nanopay.fx.afex.AFEXTransaction;
 import net.nanopay.reporting.ReconciliationReportGenerator;
@@ -32,13 +31,10 @@ import net.nanopay.tx.model.TransactionStatus;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
 
 import static foam.mlang.MLang.*;
 
 public class PartnerTransactionReportGenerator extends ReconciliationReportGenerator {
-  protected Map<String, AFEXTransaction> afexMap = new HashMap<>();
 
   @Override
   public PartnerLineItem generate(X x, @Nonnull FObject src, @Nullable FObject dst) {
@@ -56,8 +52,8 @@ public class PartnerTransactionReportGenerator extends ReconciliationReportGener
     }
     cor.copyFrom(lineitem);
 
-    HistoricStatus[] historyStatus = afexTx.getStatusHistory();
-    for ( HistoricStatus status : historyStatus ) {
+    HistoricStatus[] statusHistory = afexTx.getStatusHistory();
+    for ( HistoricStatus status : statusHistory ) {
       if ( status.getStatus().equals(TransactionStatus.PENDING) ) cor.setTradeDate(status.getTimeStamp());
     }
     var sender = tx.findSourceAccount(x).findOwner(x);
@@ -80,19 +76,14 @@ public class PartnerTransactionReportGenerator extends ReconciliationReportGener
   }
 
   protected AFEXTransaction getAFEXTransaction(X x, Transaction tx) {
-    if ( afexMap.get(tx.getId()) != null ) return afexMap.get(tx.getId());
-
-    ((DAO) x.get("localTransactionDAO")).where(CLASS_OF(AFEXTransaction.class)).select(new AbstractSink() {
-
-      @Override
-      public void put(Object obj, Detachable sub) {
-        var afexTx = (AFEXTransaction) obj;
-        afexMap.put(getRoot(x, afexTx), afexTx);
-      }
-
-    });
-
-    return afexMap.get(tx.getId());
+    var txArr = ((ArraySink) ((DAO) x.get("localTransactionDAO")).where(CLASS_OF(AFEXTransaction.class))
+      .select(new ArraySink())).getArray();
+    for ( int i = 0; i < txArr.size(); i++ ) {
+      AFEXTransaction afexTx = (AFEXTransaction) txArr.get(i);
+      var rootId = getRoot(x, afexTx);
+      if ( rootId.equals(tx.getId()) ) return afexTx;
+    }
+    throw new RuntimeException("No AFEXTransaction found for transaction id: " + tx.getId());
   }
 
 }
