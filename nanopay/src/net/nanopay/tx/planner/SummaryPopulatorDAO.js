@@ -235,22 +235,6 @@ foam.CLASS({
         }
       }
 
-      // Add Effective Rate LineItem based on sourceAmount/destination amount
-      DAO currDAO = (DAO) getX().get("currencyDAO");
-      Currency src = (Currency) currDAO.find(txn.getSourceCurrency());
-      Currency dst = (Currency) currDAO.find(txn.getDestinationCurrency());
-      Double sourceAmount = txn.getAmount() / Math.pow(10, src.getPrecision());
-      Double destAmount = txn.getDestinationAmount() / Math.pow(10, dst.getPrecision());
-
-      txn.addLineItems(new TransactionLineItem[] {
-        new TotalRateLineItem.Builder(getX())
-            .setName("Effective Rate(VET)")
-            .setRate(1.0 / (sourceAmount / destAmount) ) // Inverse Rate
-            .setSourceCurrency(txn.getSourceCurrency())
-            .setDestinationCurrency(txn.getDestinationCurrency())
-            .build()
-        });
-
       return txn;
       `
     },
@@ -316,7 +300,7 @@ foam.CLASS({
         Double destinationPrecision = Math.pow(10, destinationCurrency.getPrecision()) * rate;
         return sourceCurrency.format(sourcePrecision.longValue())
           + " " + sourceCurrency.getId()
-          + " : " + destinationCurrency.format(destinationPrecision.longValue()+extraPrecision)
+          + " : " + destinationCurrency.format(destinationPrecision.longValue())
           + " " + destinationCurrency.getId();
       `
     }

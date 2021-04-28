@@ -44,7 +44,7 @@ p({
       margin-top: 30px;
     }
   """,
-  "font1":"IBM Plex Sans",
+  "font1":"'IBM Plex Sans', sans-serif",
   "primary1":"#2e2379",
   "primary2":"#4434b4",
   "primary3":"#604aff",

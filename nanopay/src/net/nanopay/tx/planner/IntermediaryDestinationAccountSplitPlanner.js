@@ -151,27 +151,29 @@ foam.CLASS({
             if ( leg2 == null ) {
               return null;
             }
-
+            Transaction l2 = removeSummaryTransaction(leg2);
+            l2.setAmount(leg2.getAmount());
+            //TODO: this should be getTotal on the appropriate txn. however we dont know which is appropriate in a generic planner. unless the key is to always have correct amount on summary inclusive of fees.
             // plan src to intermediary currency (leg1)
             var t2 = (Transaction) requestTxn.fclone();
             t2.setDestinationAccount(intermediaryAccount.getId());
             t2.setDestinationCurrency(intermediaryAccount.getDenomination());
-            t2.setDestinationAmount(leg2.getAmount());
+            t2.setDestinationAmount(l2.getAmount());
             var leg1 = quoteTxn(x, t2, quote, false);
+            Transaction l1 = removeSummaryTransaction(leg1);
+            l1.setAmount(l1.getTotal(x, l1.getSourceAccount()));
 
             var fxSummary = new FXSummaryTransaction();
             fxSummary.copyFrom(requestTxn);
             fxSummary.setStatus(TransactionStatus.PENDING);
-            fxSummary.setAmount(leg1.getAmount());
-            fxSummary.setIntermediateAmount(leg2.getAmount());
+            fxSummary.setAmount(l1.getAmount());
+            fxSummary.setIntermediateAmount(l2.getAmount());
             fxSummary.setIntermediateCurrency(intermediaryAccount.getDenomination());
             if ( leg1 instanceof PaymentProviderAware ) {
               var paymentProvider = ((PaymentProviderAware) leg1).getPaymentProvider();
               fxSummary.setPaymentProvider(paymentProvider);
             }
 
-            Transaction l1 = removeSummaryTransaction(leg1);
-            Transaction l2 = removeSummaryTransaction(leg2);
             Transaction compliance = createComplianceTransaction(fxSummary);
             l1.addNext(l2);
             compliance.addNext(l1);
