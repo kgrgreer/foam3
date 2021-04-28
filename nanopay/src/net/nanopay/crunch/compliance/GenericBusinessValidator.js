@@ -31,6 +31,7 @@ foam.CLASS({
     'foam.nanos.crunch.AgentCapabilityJunction',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
@@ -45,10 +46,6 @@ foam.CLASS({
     }
   ],
 
-  messages: [
-    { name: 'CLASSIFICATION_MSG', message: 'Generic Business Validator' }
-  ],
-
   methods: [
     {
       name: 'applyAction',
@@ -60,19 +57,19 @@ foam.CLASS({
             DAO                approvalRequestDAO = (DAO)                x.get("approvalRequestDAO");
             Subject            subject            = (Subject)            x.get("subject");
             TranslationService ts                 = (TranslationService) x.get("translationService");
-            
+
             UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
             Business business = (Business) userDAO.find(((AgentCapabilityJunction) ucj).getEffectiveUser());
 
             String group = business.getSpid() + "-fraud-ops";
 
-            String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
-            String classification = ts.getTranslation(locale, getClassInfo().getId() + ".CLASSIFICATION_MSG", CLASSIFICATION_MSG);
+            //String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
+            //String classification = ts.getTranslation(locale, getClassInfo().getId() + ".CLASSIFICATION_MSG", CLASSIFICATION_MSG);
 
             Long count = (Long) ((Count) approvalRequestDAO.where(AND(
               EQ(ComplianceApprovalRequest.OBJ_ID, ucj.getId()),
               EQ(ComplianceApprovalRequest.DAO_KEY, "userCapabilityJunctionDAO"),
-              EQ(ComplianceApprovalRequest.CLASSIFICATION, classification),
+              EQ(ComplianceApprovalRequest.CLASSIFICATION_ENUM, ApprovalRequestClassificationEnum.GENERIC_BUSINESS_VALIDATOR),
               EQ(ComplianceApprovalRequest.STATUS, foam.nanos.approval.ApprovalStatus.REQUESTED)
             )).select(COUNT())).getValue();
 
@@ -85,7 +82,7 @@ foam.CLASS({
                 .setRefObjId(ucj.getId())
                 .setRefDaoKey("userCapabilityJunctionDAO")
                 .setCreatedFor(business.getId())
-                .setClassification(classification)
+                .setClassificationEnum(ApprovalRequestClassificationEnum.GENERIC_BUSINESS_VALIDATOR)
                 .setGroup(group)
                 .build()
             );

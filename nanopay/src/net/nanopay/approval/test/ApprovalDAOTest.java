@@ -126,7 +126,7 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getI
     initialRequest = new ApprovalRequest();
     initialRequest.setGroup(group.getId());
     initialRequest.setRequiredPoints(3);
-    initialRequest.setClassification("testing approval system");
+    initialRequest.setClassificationEnum(foam.nanos.approval.ApprovalRequestClassificationEnum.TESTING_APPROVAL_SYSTEM);
     initialRequest.setServerDaoKey("localUserDAO");
     initialRequest.setDaoKey("userDAO");
   }

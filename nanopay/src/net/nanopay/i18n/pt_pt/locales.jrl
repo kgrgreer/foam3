@@ -3364,11 +3364,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.ManualFxApprovalR
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.ManualFxApprovalRequest.REQUEST_UPDATED",target:"Pedido de aprovação atualizado com sucesso"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.ManualFxApprovalRequest.UPDATE_DEAL_ID.label",target:"AtualizarNegócioId"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.ManualFxApprovalRequest.UPDATE_DEAL_ID.label",target:"AtualizarCâmbioTaxa"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.compliance.GenericBusinessValidator.CLASSIFICATION_MSG",target:"Validador Genérico de Negócios"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.lite.ruler.CapableCreateApprovalsRuleAction.REQUEST_SEND_MSG",target:"Um pedido de aprovação foi enviado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.lite.ruler.CapableCreateApprovalsRuleAction.FOR",target:" pra "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule.DESCRIPTION",target:"Aprovar negócios AFEX para permitir os pagamentos internacionais"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule.CLASSIFICATION",target:"AFEX Business"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.JackieRuleOnCreate.COMPLIANCE_TRANSACTION",target:"Transação de Conformidade"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.JackieRuleOnCreate.SUMMARY_TRANSACTION",target:" Resumida transação Id: "})

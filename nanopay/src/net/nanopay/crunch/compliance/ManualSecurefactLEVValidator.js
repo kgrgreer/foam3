@@ -24,6 +24,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.crunch.UserCapabilityJunction',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
@@ -59,7 +60,7 @@ foam.CLASS({
           .setRefObjId(business.getId())
           .setRefDaoKey("businessDAO")
           .setCauseId(levResponse != null ? levResponse.getId() : 0L)
-          .setClassification(getClassification())
+          .setClassificationEnum(ApprovalRequestClassificationEnum.forLabel(getClassification()))
           .setCauseDaoKey("securefactLEVDAO")
           .setCreatedFor(business.getId())
           .setGroup(group)

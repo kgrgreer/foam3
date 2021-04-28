@@ -25,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.model.BeneficialOwner',
@@ -70,7 +71,7 @@ foam.CLASS({
                     .setDaoKey("beneficialOwnerDAO")
                     .setCauseId(response.getId())
                     .setCauseDaoKey("dowJonesResponseDAO")
-                    .setClassification("Beneficial Owner Dow Jones R&C")
+                    .setClassificationEnum(ApprovalRequestClassificationEnum.BENEFICIAL_OWNER_DOW_JONES)
                     .setMatches(response.getResponseBody().getMatches())
                     .setCreatedFor(beneficialOwner.getId())
                     .build());

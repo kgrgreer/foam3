@@ -25,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.dao.DAO',
@@ -77,7 +78,7 @@ foam.CLASS({
                     .setRefObjId(business.getId())
                     .setRefDaoKey("businessDAO")
                     .setCauseId(response.getId())
-                    .setClassification(getClassification())
+                    .setClassificationEnum(ApprovalRequestClassificationEnum.forLabel(getClassification()))
                     .setCauseDaoKey("securefactLEVDAO")
                     .setCreatedFor(business.getId())
                     .setGroup(group)
@@ -97,7 +98,7 @@ foam.CLASS({
               .setRefObjId(business.getId())
               .setRefDaoKey("businessDAO")
               .setCauseId(response != null ? response.getId() : 0L)
-              .setClassification(getClassification())
+              .setClassificationEnum(ApprovalRequestClassificationEnum.forLabel(getClassification()))
               .setCauseDaoKey("securefactLEVDAO")
               .setCreatedFor(business.getId())
               .setGroup(group)

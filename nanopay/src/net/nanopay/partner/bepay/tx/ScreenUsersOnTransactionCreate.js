@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
@@ -73,7 +74,7 @@ foam.CLASS({
                 .setGroup(group)
                 .setCreatedFor(payer.getId())
                 .setDescription(description.toString())
-                .setClassification("Payee/Payer Dow Jones Transaction")
+                .setClassificationEnum(ApprovalRequestClassificationEnum.PAYEE_PAYER_DOW_JONES_TRANSACTION)
                 .build();
 
               ((DAO) x.get("approvalRequestDAO")).put(approvalRequest);

@@ -25,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
@@ -39,7 +40,7 @@ foam.CLASS({
       javaCode: `
         User user = (User) ucj.findSourceId(x);
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
-        
+
         String filterRegion = "";
         Date filterLRDFrom = fetchLastExecutionDate(x, user.getId(), "Dow Jones User");
         if ( user.getAddress().getCountryId() != null ) {
@@ -49,7 +50,7 @@ foam.CLASS({
             filterRegion = "United States,USA,US";
           }
         }
-        
+
         PersonNameSearchData searchData = new PersonNameSearchData.Builder(x)
           .setSearchId(user.getId())
           .setFirstName(user.getFirstName())
@@ -85,7 +86,7 @@ foam.CLASS({
           .setRefDaoKey("userDAO")
           .setCauseId(dowJonesResponse != null ? dowJonesResponse.getId() : 0L)
           .setCauseDaoKey("dowJonesResponseDAO")
-          .setClassification(getClassification())
+          .setClassificationEnum(ApprovalRequestClassificationEnum.forLabel(getClassification()))
           .setMatches(dowJonesResponse != null ? dowJonesResponse.getResponseBody().getMatches() : null)
           .setGroup(group)
           .setCreatedFor(user.getId())

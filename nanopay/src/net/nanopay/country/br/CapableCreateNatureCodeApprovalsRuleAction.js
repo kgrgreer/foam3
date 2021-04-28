@@ -23,6 +23,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.approval.Approvable',
     'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.approval.ApprovalStatus',
     'foam.comics.v2.userfeedback.UserFeedback',
     'foam.comics.v2.userfeedback.UserFeedbackException',
@@ -71,7 +72,7 @@ foam.CLASS({
           .setOperation(request.getOperation())
           .setCreatedFor(request.getCreatedFor())
           .setGroup(request.getGroup())
-          .setClassification(request.getClassification())
+          .setClassificationEnum(ApprovalRequestClassificationEnum.forLabel(request.getClassification()))
           .setStatus(request.getStatus())
           .setNatureCode(capability.getId()).build();
 

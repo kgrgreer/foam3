@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.i18n.TranslationService',
     'foam.util.SafetyUtil',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
@@ -67,7 +68,7 @@ foam.CLASS({
           .setGroup(group)
           .setCreatedFor(owner.getId())
           .setDescription(headTx.getSummary() + summaryTx + headTx.getId())
-          .setClassification(complianceTx)
+          .setClassificationEnum(ApprovalRequestClassificationEnum.forLabel(complianceTx))
           .build();
 
         agency.submit(x, new ContextAgent() {

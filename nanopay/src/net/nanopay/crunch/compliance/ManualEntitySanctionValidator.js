@@ -25,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
@@ -42,7 +43,7 @@ foam.CLASS({
       javaCode: `
         Business business = (Business) ucj.findSourceId(x);
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
-        
+
         String filterRegion = "";
         Date filterLRDFrom = fetchLastExecutionDate(x, business.getId(), "Dow Jones Entity");
         if ( business.getAddress().getCountryId() != null ) {
@@ -52,7 +53,7 @@ foam.CLASS({
             filterRegion = "United States,USA,US";
           }
         }
-        
+
         EntityNameSearchData searchData = new EntityNameSearchData.Builder(x)
           .setSearchId(business.getId())
           .setEntityName(business.getOrganization())
@@ -86,7 +87,7 @@ foam.CLASS({
           .setRefDaoKey("businessDAO")
           .setCauseId(dowJonesResponse != null ? dowJonesResponse.getId() : 0L)
           .setCauseDaoKey("dowJonesResponseDAO")
-          .setClassification(getClassification())
+          .setClassificationEnum(ApprovalRequestClassificationEnum.forLabel(getClassification()))
           .setMatches(dowJonesResponse != null ? dowJonesResponse.getResponseBody().getMatches() : null)
           .setGroup(group)
           .setCreatedFor(business.getId())
