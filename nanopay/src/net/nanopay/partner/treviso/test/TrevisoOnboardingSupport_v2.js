@@ -119,7 +119,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'crunch_onboarding_register_business',
+      name: 'crunch_onboarding_register_business_submit',
       code: async function(x, user) {
         var id = 'crunch.onboarding.register-business.submit';
         var ucj = await this.crunchService.getJunction(x, id);
@@ -260,10 +260,10 @@ foam.CLASS({
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           var cap = net.nanopay.country.br.BrazilBusinessInfoData.create({
             nire: '12345678901234',
-            cnpj: '06990590000123'
+            cnpj: '06990590000123',
+            cnpjName: 'Mock Legal User',
+            verifyName: true
           }, x);
-          await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
-          cap.verifyName = true;
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
         }
         return ucj;
