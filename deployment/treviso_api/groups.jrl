@@ -3,7 +3,7 @@ p({class:"foam.nanos.auth.Group",id:"trevisoAPI-admin",description:"trevisoAPI a
 p({class:"foam.nanos.auth.Group",id:"trevisoAPI-fraud-ops",description:"trevisoAPI fraud-ops group",parent:"fraud-ops"})
 p({class:"foam.nanos.auth.Group",id:"trevisoAPI-payment-ops",description:"trevisoAPI payment-ops group",parent:"payment-ops"})
 p({class:"foam.nanos.auth.Group",id:"trevisoAPI-support",description:"trevisoAPI support group",parent:"support"})
-p({class:"foam.nanos.auth.Group",id:"trevisoAPI-sme",description:"trevisoAPI sme group",parent:"sme"})
+p({class:"foam.nanos.auth.Group",id:"trevisoAPI-sme",description:"trevisoAPI sme group",parent:"external-sme"})
 
 
 p({class:"foam.nanos.auth.Group",id:"trevisoAPI-api-session",description:"trevisoAPI session group",parent:"external-api-session",defaultMenu:"view-users"})

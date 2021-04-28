@@ -30,7 +30,9 @@ p({
     "paymentprovidercorridor.read.trevisoapi",
     "paymentprovidercorridor.source.read.trevisoapi",
     "paymentprovidercorridor.target.read.paymentprovidercorridor.trevisoapi.br-us",
-    "paymentprovidercorridor.target.read.paymentprovidercorridor.trevisoapi.br-ca"
+    "paymentprovidercorridor.target.read.paymentprovidercorridor.trevisoapi.br-ca",
+    "paymentprovidercorridor.target.read.paymentprovidercorridor.trevisoapi.br-gb",
+    "paymentprovidercorridor.target.read.paymentprovidercorridor.trevisoapi.br-pt"
   ]
 })
 
