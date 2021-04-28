@@ -18,10 +18,13 @@
 
 package net.nanopay.partner.tx;
 
+import foam.core.Detachable;
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.AbstractSink;
+import foam.dao.DAO;
 import net.nanopay.fx.afex.AFEXTransaction;
-import net.nanopay.reporting.ReportGenerator;
+import net.nanopay.reporting.ReconciliationReportGenerator;
 import net.nanopay.tx.HistoricStatus;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
@@ -29,14 +32,19 @@ import net.nanopay.tx.model.TransactionStatus;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
 
-public class PartnerTransactionReportGenerator extends ReportGenerator {
+import static foam.mlang.MLang.*;
+
+public class PartnerTransactionReportGenerator extends ReconciliationReportGenerator {
+  protected Map<String, AFEXTransaction> afexMap = new HashMap<>();
 
   @Override
   public PartnerLineItem generate(X x, @Nonnull FObject src, @Nullable FObject dst) {
     var tx = (Transaction) src;
     var cor = new PartnerReport();
-    var afexTx = getAFEXTransaction(tx);
+    var afexTx = getAFEXTransaction(x, tx);
 
     PartnerLineItem lineitem = new PartnerLineItem();
 
@@ -71,13 +79,20 @@ public class PartnerTransactionReportGenerator extends ReportGenerator {
     return (PartnerLineItem) super.generate(x, src, cor);
   }
 
-  protected AFEXTransaction getAFEXTransaction(Transaction tx) {
-    for ( Transaction txn : tx.getNext() ) {
-      if ( txn instanceof AFEXTransaction ) return (AFEXTransaction) txn;
-      AFEXTransaction temp = getAFEXTransaction(txn);
-      if ( temp != null ) return temp;
-    }
-    return new AFEXTransaction();
+  protected AFEXTransaction getAFEXTransaction(X x, Transaction tx) {
+    if ( afexMap.get(tx.getId()) != null ) return afexMap.get(tx.getId());
+
+    ((DAO) x.get("localTransactionDAO")).where(CLASS_OF(AFEXTransaction.class)).select(new AbstractSink() {
+
+      @Override
+      public void put(Object obj, Detachable sub) {
+        var afexTx = (AFEXTransaction) obj;
+        afexMap.put(getRoot(x, afexTx), afexTx);
+      }
+
+    });
+
+    return afexMap.get(tx.getId());
   }
 
 }

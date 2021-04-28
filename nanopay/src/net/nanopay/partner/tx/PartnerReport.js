@@ -56,8 +56,8 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'foam.core.Currency',
-      name: 'principalCurrency',
-      label: 'Principal Currency',
+      name: 'principleCurrency',
+      label: 'Principle Currency',
       targetDAOKey: 'currencyDAO'
     },
     {
