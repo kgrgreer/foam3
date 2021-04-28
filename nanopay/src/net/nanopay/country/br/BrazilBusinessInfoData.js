@@ -103,12 +103,6 @@ foam.CLASS({
         if ( validCnpj && o.replace(/\D/g,'') === n.replace(/\D/g,'') ) return;
         this.cnpjName = '';
         this.verifyName = false;
-      },
-      view: function(_, X) {
-        return foam.u2.FormattedTextField.create({
-          formatter: this.formatter,
-          returnFormatted: false
-        }, X);
       }
     },
     {

@@ -138,13 +138,7 @@ foam.CLASS({
           errorMessage: 'INVALID_CPF_CHECKED'
         }
       ],
-      formatter: [3, '.', 3, '.', 3, '-', 2],
-      view: function(_, X) {
-        return foam.u2.FormattedTextField.create({
-          formatter: this.formatter,
-          returnFormatted: false
-        }, X);
-      }
+      formatter: [3, '.', 3, '.', 3, '-', 2]
     },
     {
       class: 'String',
