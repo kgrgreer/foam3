@@ -25,11 +25,14 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedAware'
   ],
 
+  javaImports: [
+    'net.nanopay.tx.ruler.TransactionLimitState'
+  ],
+
   properties: [
     {
       class: 'Long',
       name: 'id',
-      storageTransient: true,
       gridColumns: 6
     },
     {
@@ -69,17 +72,20 @@ foam.CLASS({
     },
     {
       class: 'foam.core.Enum',
-      of: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
-      name: 'timeFrame',
+      of: 'net.nanopay.util.Frequency',
+      name: 'period',
       storageTransient: true,
-      documentation: 'Current limit time frame. (Day, Week etc.)',
+      documentation: 'Current limit period. (Daily, Weekly, Monthly, Per Transaction)',
       gridColumns: 6
     },
     {
-      class: 'Long',
-      name: 'currentRunningValue',
+      class: 'Map',
+      name: 'currentLimits',
+      javaFactory: `
+        return new java.util.HashMap<String, TransactionLimitState>();
+      `,
       storageTransient: true,
-      documentation: 'accumulative amount associated to associated transaction limit',
+      documentation: 'Stores map of objects and current running limits',
       gridColumns: 6
     },
     {

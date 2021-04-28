@@ -959,7 +959,7 @@ p({
   "ruleGroup":"txLimits",
   "documentation":"Checks current transaction limits",
   "daoKey":"localTransactionDAO",
-  "operation":0,
+  "operation":3,
   "after":false,
   "predicate": {
     "class": "foam.mlang.predicate.And",

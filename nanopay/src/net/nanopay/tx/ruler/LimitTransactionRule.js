@@ -39,6 +39,7 @@ foam.CLASS({
     'net.nanopay.tx.model.CurrentLimit',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionLimit',
+    'net.nanopay.tx.ruler.TransactionLimitState',
     'static foam.mlang.MLang.*'
   ],
 
@@ -118,7 +119,7 @@ foam.CLASS({
       javaCode: `
         ApprovalRequest req = new ApprovalRequest.Builder(x)
           .setClassification("Transaction Limit Exceeded")
-          .setDescription("Transaction ID: " + txn.getId() + " has exceeded " + limit.getTimeFrame().getLabel() + " limit of " + limit.getAmount())
+          .setDescription("Transaction ID: " + txn.getId() + " has exceeded " + limit.getPeriod().getLabel() + " limit of " + limit.getAmount())
           .setDaoKey("transactionDAO")
           .setServerDaoKey("localTransactionDAO")
           .setObjId(txn.getId())
@@ -151,41 +152,71 @@ foam.CLASS({
       ],
       javaCode: `
         DAO currentLimitDAO = (DAO) x.get("currentLimitDAO");
-        List<CurrentLimit> currentLimits = ((ArraySink) currentLimitDAO.where(
-          EQ(CurrentLimit.TX_LIMIT, limit.getId())
-        ).select(new ArraySink())).getArray();
 
         if ( txn.getAmount() > limit.getAmount() ) {
-          // txn already exceeds spid limit, generate approval request
+          // txn already exceeds limit, generate approval request
           generateApprovalRequest(x, txn, limit, user);
           return;
         }
+
+        List<CurrentLimit> currentLimits = ((ArraySink) currentLimitDAO.where(
+          EQ(CurrentLimit.TX_LIMIT, limit.getId())
+        ).select(new ArraySink())).getArray();
         
         if ( currentLimits.size() > 0 ) {
-          // check if currentLimit currentRunningValue exceeds limit amount
-          // if doesnt exceed update currentRunningValue with transaction amount
-          // if it does exceed create approval request
-
           CurrentLimit currentLimit = (CurrentLimit) currentLimits.get(0);
-          Long runningValue = currentLimit.getCurrentRunningValue();
-          Long totalAfterTxn = runningValue + txn.getAmount();
-          if ( totalAfterTxn > limit.getAmount() ) {
+          String key = getKey(user, currentLimit);
+          TransactionLimitState limitState = (TransactionLimitState) currentLimit.getCurrentLimits().get(key);
+          if ( ! limitState.check(limit.getAmount(), currentLimit.getPeriod(), txn.getAmount())) {
             generateApprovalRequest(x, txn, limit, user);
           } else {
-            currentLimit.setCurrentRunningValue(totalAfterTxn);
+            Long updatedSpent = limitState.getSpent() + txn.getAmount();
+            limitState.setSpent(updatedSpent);
+            limitState.update(limit.getAmount(), currentLimit.getPeriod());
+            currentLimit.getCurrentLimits().put(key, limitState);
             currentLimitDAO.put(currentLimit);
           }
         } else {
-          // create currentLimit with data from transaction limit
-
           CurrentLimit currentLimit = new CurrentLimit.Builder(x)
             .setTxLimit(limit.getId())
             .setType(limit.getType())
-            .setTimeFrame(limit.getTimeFrame())
-            .setCurrentRunningValue(txn.getAmount())
+            .setPeriod(limit.getPeriod())
             .build();
+          
+          String key = getKey(user, currentLimit);
+          TransactionLimitState limitState = new TransactionLimitState();
+          limitState.setSpent(txn.getAmount());
+          currentLimit.getCurrentLimits().put(key, limitState);
           currentLimitDAO.put(currentLimit);
         }
+
+        // query approvalRequestDAO to check for request
+        // need another rule for approval request approval cancel txn on rejection
+      `
+    },
+    {
+      name: 'getKey',
+      type: 'String',
+      args: [
+        {
+          name: 'user',
+          type: 'foam.nanos.auth.User'
+        },
+        {
+          name: 'currentLimit',
+          type: 'net.nanopay.tx.model.CurrentLimit'
+        }
+      ],
+      javaCode: `
+        // Build the transaction limit state key from the limit configuration
+        StringBuilder sb = new StringBuilder();
+        sb.append("currentLimit:")
+          .append(user.getId())
+          .append(":")
+          .append(currentLimit.getPeriod())
+          .append(":")
+          .append(currentLimit.getType());
+        return sb.toString();
       `
     }
   ]
