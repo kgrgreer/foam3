@@ -1,0 +1,40 @@
+p({
+  "class":"foam.nanos.auth.User",
+  "id":2028,
+  "firstName":"Admin",
+  "lastName":"TrevisoAPI",
+  "email":"admin-trevisoAPI@nanopay.net",
+  "emailVerified":true,
+  "password":"mk7f99xdVVw=:3uehDHKyUB9aPhEyHeJFKInwKILMJlVXZSHykGN4+3gtffTYFLaBC2Zy2P/YDomdPnHY5hKr1GIuEA3Ij6/1YA==",
+  "group":"trevisoAPI-admin",
+  "status":2,
+  "spid":"trevisoAPI",
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.auth.User",
+  "id":2029,
+  "firstName":"API",
+  "lastName":"TrevisoAPI",
+  "organization":"Treviso",
+  "email":"api-trevisoAPI@nanopay.net",
+  "password":"rjS7gfPL5Aw=:oRLD/6/Hqj4bniLQBcwxCJGavlq7h6eBqf0awzXT/GdOu+JEiQnyIp0tIqWL8xya17z+Ug3w6E4TTcsJilmV9Q==",
+  "spid":"trevisoAPI",
+  "group":"trevisoAPI-api-session",
+  "emailVerified":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.auth.User",
+  "id":2030,
+  "firstName":"FraudOps",
+  "lastName":"trevisoAPI",
+  "email":"fraudops-trevisoAPI@nanopay.net",
+  "password":"qdJjMcVeNnQ=:+aDHTFQsuBCvFibd0sUpuE8p/jnnkB7AaruuYAiza/IhPbew2PzBu+NDcIPh46EIi6iBGytVWlhVWOOgJkXdbw==",
+  "emailVerified":true,
+  "status":2,
+  "group":"trevisoAPI-fraud-ops",
+  "spid":"trevisoAPI",
+  "lifecycleState":1
+})
+

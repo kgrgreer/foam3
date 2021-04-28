@@ -1,0 +1,114 @@
+// TREVISO API spid
+p({
+  class:"foam.nanos.auth.ServiceProvider",
+  id:"trevisoAPI",
+  description:"trevisoAPI spid",
+  enabled:true,
+  permissionsGranted: [
+    "language.read.*"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoAPIPlannerCapability",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.d34ff33f-7d1e-43e9-beba-8069cf5f6546",
+    "rule.read.3556a7fa-e0b1-4c7a-b625-6eb901e73a87",
+    "rule.read.deb8f125-b74a-4178-8ffe-45fc45df407b"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoAPICorridorCapability",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "paymentprovidercorridor.read.afex",
+    "paymentprovidercorridor.read.trevisoapi",
+    "paymentprovidercorridor.source.read.trevisoapi",
+    "paymentprovidercorridor.target.read.paymentprovidercorridor.trevisoapi.br-us",
+    "paymentprovidercorridor.target.read.paymentprovidercorridor.trevisoapi.br-ca"
+  ]
+})
+
+// Fees
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoAPI-tx-fees",
+  name: "Enable trevisoAPI Fees",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.63a792b6-d46b-4d48-afa3-42481645ed46",
+    "rule.read.c6729717-1da2-4cb5-b8c4-53f5830223f6"
+  ]
+})
+
+// Reason codes
+p({
+  class:"foam.nanos.crunch.Capability",
+  id:"trevisoAPI-tx-reason-codes",
+  name:"Enable trevisoAPI reason codes",
+  permissionsGranted:[
+    "naturecode.read.naturecode.br.funds-abroad",
+    "naturecode.read.naturecode.br.resident-maintenance"
+  ]
+})
+
+// PaymentProviderCorridors
+p({
+  class:"net.nanopay.payment.PaymentProviderCorridor",
+  id:"paymentprovidercorridor.trevisoapi.br-us",
+  name:"BR-USD Corridor - TrevisoAPI",
+  ranking:1,
+  provider:"TrevisoAPI",
+  sourceCountry:"BR",
+  targetCountry:"US",
+  sourceCurrencies:["BRL"],
+  targetCurrencies:["USD"],
+  enabled:true,
+  "visibilityPredicate": { class: "foam.mlang.predicate.True" }
+})
+p({
+  class:"net.nanopay.payment.PaymentProviderCorridor",
+  id:"paymentprovidercorridor.trevisoapi.br-ca",
+  name:"BR-CAD Corridor - TrevisoAPI",
+  ranking:1,
+  provider:"TrevisoAPI",
+  sourceCountry:"BR",
+  targetCountry:"CA",
+  sourceCurrencies:["BRL"],
+  targetCurrencies:["CAD"],
+  enabled:true,
+  "visibilityPredicate": { class: "foam.mlang.predicate.True" }
+})
+p({
+  class:"net.nanopay.payment.PaymentProviderCorridor",
+  id:"paymentprovidercorridor.trevisoapi.br-gb",
+  name:"BR-GBP Corridor - TrevisoAPI",
+  ranking:1,
+  provider:"TrevisoAPI",
+  sourceCountry:"BR",
+  targetCountry:"GB",
+  sourceCurrencies:["BRL"],
+  targetCurrencies:["GBP"],
+  enabled:true,
+  "visibilityPredicate": { class: "foam.mlang.predicate.True" }
+})
+p({
+  class:"net.nanopay.payment.PaymentProviderCorridor",
+  id:"paymentprovidercorridor.trevisoapi.br-pt",
+  name:"BR-EUR Corridor - TrevisoAPI",
+  ranking:1,
+  provider:"TrevisoAPI",
+  sourceCountry:"BR",
+  targetCountry:"PT",
+  sourceCurrencies:["BRL"],
+  targetCurrencies:["EUR"],
+  enabled:true,
+  "visibilityPredicate": { class: "foam.mlang.predicate.True" }
+})
+
+
