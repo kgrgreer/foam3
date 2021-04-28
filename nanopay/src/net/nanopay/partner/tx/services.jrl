@@ -11,19 +11,19 @@ p({
   "serviceScript": """
   dao = new net.nanopay.reporting.ReportDAO(
     x,
-    new foam.dao.NullDAO(x, net.nanopay.partner.tx.PartnerLineItem.getOwnClassInfo()),
+    new foam.dao.NullDAO(x, net.nanopay.partner.tx.PartnerReport.getOwnClassInfo()),
     "partnerTransactionReportGenerator"
   );
 
   return new foam.dao.EasyDAO.Builder(x)
-    .setOf(net.nanopay.partner.tx.PartnerLineItem.getOwnClassInfo())
+    .setOf(net.nanopay.partner.tx.PartnerReport.getOwnClassInfo())
     .setDecorator(dao)
     .setInnerDAO(x.get("summaryTransactionDAO"))
     .build();
   """,
   "client": """
     {
-      "of": "net.nanopay.partner.tx.PartnerLineItem"
+      "of": "net.nanopay.partner.tx.PartnerReport"
     }
   """
 })

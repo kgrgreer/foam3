@@ -139,7 +139,7 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'tax2Rate',
-      label: 'Tax3 Rate'
+      label: 'Tax2 Rate'
     },
     {
       class: 'String',

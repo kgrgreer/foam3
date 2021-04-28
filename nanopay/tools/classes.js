@@ -1391,6 +1391,7 @@ var classes = [
   // bepay
   'net.nanopay.partner.bepay.tx.BePayTransaction',
   'net.nanopay.partner.tx.PartnerLineItem',
+  'net.nanopay.partner.tx.PartnerReport',
   'net.nanopay.partner.bepay.tx.planner.BePayTransactionPlanner',
   'net.nanopay.partner.bepay.tx.ScreenUsersOnTransactionCreate',
 
