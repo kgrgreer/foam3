@@ -30,13 +30,11 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'fxRate',
-      documentation: 'rate partner uses for BRL -> destination conversion',
-      label: 'Fx Rate'
+      documentation: 'rate partner uses for BRL -> destination conversion'
     },
     {
       class: 'Double',
       name: 'fxSpread',
-      label: 'Fx Spread',
       documentation: 'the spread partner applies'
     },
     {
@@ -45,13 +43,11 @@ foam.CLASS({
       factory: function() {
         return this.fxSpread + this.fxRate;
       },
-      label: 'Effective Rate',
       javaFactory: 'return getFxSpread() + getFxRate();'
     },
     {
       class: 'Long',
       name: 'feeAmount',
-      label: 'Fee Amount',
       documentation: 'amount charged by the partner'
     },
     {
@@ -59,7 +55,6 @@ foam.CLASS({
       of: 'foam.core.Currency',
       name: 'feeCurrency',
       targetDAOKey: 'currencyDAO',
-      label: 'Fee Currency',
       documentation: 'currency of fee charged by partner'
     },
     {
@@ -72,13 +67,11 @@ foam.CLASS({
       of: 'foam.core.Currency',
       name: 'IOFCurrency',
       targetDAOKey: 'currencyDAO',
-      label: 'IOF Currency',
       documentation: 'currency of tax charged by partner'
     },
     {
       class: 'Double',
-      name: 'IOFRate',
-      label: 'IOF Rate',
+      name: 'IOFRate'
     },
     {
       class: 'Double',
@@ -89,26 +82,22 @@ foam.CLASS({
       of: 'foam.core.Currency',
       name: 'VETCurrency',
       targetDAOKey: 'currencyDAO',
-      value: 'BRL',
-      label: 'VET Currency'
+      value: 'BRL'
     },
     {
       class: 'Long',
       name: 'fee2Amount',
-      label: 'Fee2 Amount',
       documentation: 'additional amount charged by the partner'
     },
     {
       class: 'Reference',
       of: 'foam.core.Currency',
       name: 'fee2Currency',
-      targetDAOKey: 'currencyDAO',
-      label: 'Fee2 Currency'
+      targetDAOKey: 'currencyDAO'
     },
     {
       class: 'Long',
       name: 'discountAmount',
-      label: 'Discount Amount',
       documentation: 'discount given by the partner'
     },
     {
@@ -116,35 +105,29 @@ foam.CLASS({
       of: 'foam.core.Currency',
       name: 'discountCurrency',
       targetDAOKey: 'currencyDAO',
-      label: 'Discount Currency',
       documentation: 'currency of discount given by partner'
     },
     {
       class: 'String',
-      name: 'discountCode',
-      label: 'Discount Code'
+      name: 'discountCode'
     },
     {
       class: 'Long',
-      name: 'tax2',
-      label: 'Tax2 Amount'
+      name: 'tax2'
     },
     {
       class: 'Reference',
       of: 'foam.core.Currency',
       name: 'tax2Currency',
-      label: 'Tax2 Currency',
       targetDAOKey: 'currencyDAO'
     },
     {
       class: 'Double',
-      name: 'tax2Rate',
-      label: 'Tax2 Rate'
+      name: 'tax2Rate'
     },
     {
       class: 'String',
-      name: 'natureCode',
-      label: 'Nature Code'
+      name: 'natureCode'
     }
   ],
 
@@ -154,19 +137,12 @@ foam.CLASS({
       type: 'Void',
       javaCode: `
       if ( getFxRate() == 0 ) throw new ValidationException("fxRate is missing on PartnerLineItem");
-
       if ( getFxSpread() == 0 ) throw new ValidationException("fxSpread is missing on PartnerLineItem");
-
       if ( getFeeAmount() == 0 ) throw new ValidationException("feeAmount is missing on PartnerLineItem");
-
       if ( getFeeCurrency() == "" ) throw new ValidationException("feeCurrency is missing on PartnerLineItem");
-
       if ( getIOF() == 0 ) throw new ValidationException("IOF is missing on PartnerLineItem");
-
       if ( getIOFRate() == 0 ) throw new ValidationException("IOFRate is missing on PartnerLineItem");
-
       if ( getIOFCurrency() == "" ) throw new ValidationException("IOFCurrency is missing on PartnerLineItem");
-
       if ( getVET() == 0 ) throw new ValidationException("VET is missing on PartnerLineItem");
       `
     }
