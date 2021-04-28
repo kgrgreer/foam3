@@ -39,6 +39,7 @@ foam.CLASS({
     'net.nanopay.tx.model.CurrentLimit',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionLimit',
+    'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.ruler.TransactionLimitState',
     'static foam.mlang.MLang.*'
   ],
@@ -117,6 +118,25 @@ foam.CLASS({
         }
       ],
       javaCode: `
+        DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
+        DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+        List<ApprovalRequest> existingRequests = ((ArraySink) approvalRequestDAO.where(
+          AND(
+            EQ(ApprovalRequest.CLASSIFICATION, "Transaction Limit Exceeded"),
+            EQ(ApprovalRequest.DAO_KEY, "transactionDAO"),
+            EQ(ApprovalRequest.OBJ_ID, txn.getId()),
+            EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED)
+          )
+        ).select(new ArraySink())).getArray();
+
+        if ( existingRequests.size() > 0 ) {
+          // Complete transaction if approved request exists
+          txn = (Transaction) txn.fclone();
+          txn.setStatus(TransactionStatus.COMPLETED);
+          transactionDAO.put(txn);
+          return;
+        }
+
         ApprovalRequest req = new ApprovalRequest.Builder(x)
           .setClassification("Transaction Limit Exceeded")
           .setDescription("Transaction ID: " + txn.getId() + " has exceeded " + limit.getPeriod().getLabel() + " limit of " + limit.getAmount())
@@ -126,7 +146,7 @@ foam.CLASS({
           .setGroup(user.getGroup())
           .setCreatedFor(user.getId())
           .setStatus(ApprovalStatus.REQUESTED).build();
-        ((DAO) x.get("approvalRequestDAO")).put(req);
+        approvalRequestDAO.put(req);
       `
     },
     {
