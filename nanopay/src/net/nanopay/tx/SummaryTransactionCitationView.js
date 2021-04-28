@@ -174,6 +174,18 @@ foam.CLASS({
       }
     },
     {
+      name: 'currencyRateView',
+      factory: function() {
+        let lineItems = this.data.lineItems;
+        for ( const lineItem of lineItems ) {
+          if ( this.FxSummaryTransactionLineItem.isInstance(lineItem) ) {
+            return lineItem.inverseRate;
+          }
+        }
+        return '';
+      }
+    },
+    {
       name: 'txAmounIn',
       factory: function() {
         return this.data.amount;
@@ -185,6 +197,12 @@ foam.CLASS({
       name: 'showVET',
       expression: function(data) {
         return data.sourceCurrency != data.destinationCurrency;
+      }
+    },
+    {
+      name: 'totalAmount',
+      factory: function() {
+        return this.data.amount;
       }
     }
   ],
@@ -215,7 +233,7 @@ foam.CLASS({
         .end()
         .start(this.Cols)
           .add(this.RATE)
-          .start().add(this.formatRate(destinationCurrencyFormat, 100, sourceCurrencyFormat, (1/this.currencyRate)*1000000)).end()
+          .start().add(this.currencyRateView).end()
         .end()
         .start(this.Cols)
         .add(this.AMOUNT_IN).add(` (${this.sourceCurrency})`)
@@ -270,18 +288,18 @@ foam.CLASS({
                 });
 
               // TODO: grandTotal lineItem
-              let totalAmount = data.amount + totalFee + totalTax;
+              this.txAmounIn = this.totalAmount - totalFee - totalTax;
               e.br().start({
                 class: 'net.nanopay.tx.LineItemCitationView',
                 data: this.GrandTotalLineItem.create({
-                  amount: totalAmount,
+                  amount: this.totalAmount,
                   currency: data.sourceCurrency
                 }),
                 inline:true,
                 highlightInlineTitle: true
               });
 
-              let vet = totalAmount / data.destinationAmount;
+              let vet = this.totalAmount / data.destinationAmount;
               e.start(self.Cols).show(this.showVET$)
                 .add(this.VET_TITLE)
                 .start().add(this.formatRate(destinationCurrencyFormat, 100, sourceCurrencyFormat, vet*1000000)).end()
