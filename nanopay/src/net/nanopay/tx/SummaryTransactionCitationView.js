@@ -137,6 +137,51 @@ foam.CLASS({
       }
     },
     {
+      name: 'dataProps',
+      expression: function(data) {
+        let ret = {};
+        let of = this.data.cls_;
+        let props = of.getAxiomsByClass(foam.core.Property);
+        let candidates = [ 'destinationAmount', 'inverseRate', 'amount'];
+        for ( const p of props ) {
+          if ( candidates.includes(p.name) ) {
+            ret[p.name] = p;
+          }
+        }
+        return ret;
+      }
+    },
+    {
+      name: 'txAmount',
+      factory: function() {
+        return this.data.destinationAmount;
+      }
+    },
+    {
+      name: 'currencyRate',
+      factory: function() {
+        let lineItems = this.data.lineItems;
+        for ( const lineItem of lineItems ) {
+          if ( this.FxSummaryTransactionLineItem.isInstance(lineItem) ) {
+            //get rate from lineItem[0] in FxSummaryTransactionLineItem.
+            let totalRateLineItem = lineItem.lineItems[0];
+            if ( this.TotalRateLineItem.isInstance(totalRateLineItem) ) {
+              return totalRateLineItem.rate;
+            }
+          }
+        }
+        return 0;
+      }
+    },
+    {
+      name: 'txAmounIn',
+      factory: function() {
+        return this.data.amount;
+      }
+    },
+    'sourceCurrencyFormat',
+    'destinationCurrencyFormat',
+    {
       name: 'showVET',
       expression: function(data) {
         return data.sourceCurrency != data.destinationCurrency;
@@ -164,16 +209,18 @@ foam.CLASS({
           .end()
         .end()
         .start('h3').add(this.data.toSummary()).end()
-        .forEach(self.prop, function(p) {
-            if ( !p ) return;
-            if ( p.prop.label && ! p.prop.hidden && ! p.prop.visibility ) {
-              self.start(self.Cols)
-                .add(p.label)
-                .start(p.prop, { mode: foam.u2.DisplayMode.RO, data: p.value }).end()
-              .end();
-            }
-          })
+        .start(this.Cols)
+          .add(this.AMOUNT)
+          .start().add(destinationCurrencyFormat.format(this.txAmount)).end()
         .end()
+        .start(this.Cols)
+          .add(this.RATE)
+          .start().add(this.formatRate(destinationCurrencyFormat, 100, sourceCurrencyFormat, (1/this.currencyRate)*1000000)).end()
+        .end()
+        .start(this.Cols)
+        .add(this.AMOUNT_IN).add(` (${this.sourceCurrency})`)
+        .start(this.dataProps['amount'], { mode: foam.u2.DisplayMode.RO, data$: this.txAmounIn$ }).end()
+      .end()
         .br()
         .start()
           .add(
