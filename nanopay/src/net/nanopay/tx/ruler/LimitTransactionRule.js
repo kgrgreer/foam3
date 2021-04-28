@@ -124,17 +124,24 @@ foam.CLASS({
           AND(
             EQ(ApprovalRequest.CLASSIFICATION, "Transaction Limit Exceeded"),
             EQ(ApprovalRequest.DAO_KEY, "transactionDAO"),
-            EQ(ApprovalRequest.OBJ_ID, txn.getId()),
-            EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED)
+            EQ(ApprovalRequest.OBJ_ID, txn.getId())
           )
         ).select(new ArraySink())).getArray();
 
         if ( existingRequests.size() > 0 ) {
-          // Complete transaction if approved request exists
-          txn = (Transaction) txn.fclone();
-          txn.setStatus(TransactionStatus.COMPLETED);
-          transactionDAO.put(txn);
-          return;
+          // complete or cancel transaction if request is approved or rejected
+          ApprovalRequest req = (ApprovalRequest) existingRequests.get(0);
+          if ( req.getStatus().equals(ApprovalStatus.APPROVED) ) {
+            txn = (Transaction) txn.fclone();
+            txn.setStatus(TransactionStatus.COMPLETED);
+            transactionDAO.put(txn);
+            return;
+          } else if ( req.getStatus().equals(ApprovalStatus.REJECTED) ) {
+            txn = (Transaction) txn.fclone();
+            txn.setStatus(TransactionStatus.CANCELLED);
+            transactionDAO.put(txn);
+            return;
+          }
         }
 
         ApprovalRequest req = new ApprovalRequest.Builder(x)
@@ -172,18 +179,19 @@ foam.CLASS({
       ],
       javaCode: `
         DAO currentLimitDAO = (DAO) x.get("currentLimitDAO");
-
         if ( txn.getAmount() > limit.getAmount() ) {
           // txn already exceeds limit, generate approval request
           generateApprovalRequest(x, txn, limit, user);
           return;
         }
 
+        // check for current limits related to transaction limit
         List<CurrentLimit> currentLimits = ((ArraySink) currentLimitDAO.where(
           EQ(CurrentLimit.TX_LIMIT, limit.getId())
         ).select(new ArraySink())).getArray();
         
         if ( currentLimits.size() > 0 ) {
+          // if current limits exist fetch transaction limit state and check limit
           CurrentLimit currentLimit = (CurrentLimit) currentLimits.get(0);
           String key = getKey(user, currentLimit);
           TransactionLimitState limitState = (TransactionLimitState) currentLimit.getCurrentLimits().get(key);
@@ -209,9 +217,6 @@ foam.CLASS({
           currentLimit.getCurrentLimits().put(key, limitState);
           currentLimitDAO.put(currentLimit);
         }
-
-        // query approvalRequestDAO to check for request
-        // need another rule for approval request approval cancel txn on rejection
       `
     },
     {
