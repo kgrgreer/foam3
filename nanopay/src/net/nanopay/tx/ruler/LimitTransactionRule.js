@@ -144,6 +144,7 @@ foam.CLASS({
           }
         }
 
+        // create new approval request if none exist
         ApprovalRequest req = new ApprovalRequest.Builder(x)
           .setClassification("Transaction Limit Exceeded")
           .setDescription("Transaction ID: " + txn.getId() + " has exceeded " + limit.getPeriod().getLabel() + " limit of " + limit.getAmount())
@@ -196,8 +197,10 @@ foam.CLASS({
           String key = getKey(user, currentLimit);
           TransactionLimitState limitState = (TransactionLimitState) currentLimit.getCurrentLimits().get(key);
           if ( ! limitState.check(limit.getAmount(), currentLimit.getPeriod(), txn.getAmount())) {
+            // transaction exceeds limit generate approval request
             generateApprovalRequest(x, txn, limit, user);
           } else {
+            // if transaction doesnt exceed limit update limitState and currentLimit
             Long updatedSpent = limitState.getSpent() + txn.getAmount();
             limitState.setSpent(updatedSpent);
             limitState.update(limit.getAmount(), currentLimit.getPeriod());
@@ -205,6 +208,7 @@ foam.CLASS({
             currentLimitDAO.put(currentLimit);
           }
         } else {
+          // create new CurrentLimit if none exist
           CurrentLimit currentLimit = new CurrentLimit.Builder(x)
             .setTxLimit(limit.getId())
             .setType(limit.getType())
@@ -233,7 +237,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        // Build the transaction limit state key from the limit configuration
+        // Build the transaction limit state key from the currentLimit configuration
         StringBuilder sb = new StringBuilder();
         sb.append("currentLimit:")
           .append(user.getId())
