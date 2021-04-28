@@ -90,7 +90,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_554af38a_8225_87c8_dfdf_eeb15f71215e_25',
+      name: 'crunch_onboarding_br_treviso_unlock_payments_terms',
       code: async function(x, user) {
         var id = 'crunch.onboarding.br.treviso-unlock-payments-terms';
         var ucj = await this.crunchService.getJunction(x, id);
@@ -106,7 +106,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_242B00F8_C775_4899_AEBA_F287EC54E901',
+      name: 'crunch_onboarding_treviso_general_admission',
       code: async function(x, user) {
         // GeneralAdmission-Treviso
         var id = 'crunch.onboarding.treviso.general-admission';
@@ -119,7 +119,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_554af38a_8225_87c8_dfdf_eeb15f71215f_76.submit',
+      name: 'crunch_onboarding_register_business',
       code: async function(x, user) {
         var id = 'crunch.onboarding.register-business.submit';
         var ucj = await this.crunchService.getJunction(x, id);
@@ -132,7 +132,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_85cee1de_db32_11ea_87d0_0242ac130003',
+      name: 'crunch_onboarding_document_utility_bills',
       code: async function(x, user) {
         // UtilityBill - Signing Officer.
         var id = 'crunch.onboarding.document.utility-bills';
@@ -151,7 +151,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_8ad3c898_db32_11ea_87d0_0242ac130003',
+      name: 'crunch_onboarding_document_identification',
       code: async function(x, user) {
         // Identification
         var id = 'crunch.onboarding.document.identification';
@@ -168,7 +168,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_8ad3c898_db232_1ea_87d0_0242ac130z0',
+      name: 'crunch_onboarding_document_date_of_issue',
       code: async function(x, user) {
         // Date of Issue
         var id = 'crunch.onboarding.document.date-of-issue';
@@ -186,7 +186,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_fb7d3ca2_62f2_4caf_a84c_860392e4676b',
+      name: 'crunch_onboarding_br_cpf',
       code: async function(x, user) {
         // CPF
         var id = 'crunch.onboarding.br.cpf';
@@ -205,7 +205,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_554af38a_8225_87c8_dfdf_eeb15f71215f_0',
+      name: 'crunch_onboarding_signing_officer_question',
       code: async function(x, user) {
         // SigningOfficerPrivilegesRequested
         var id = 'crunch.onboarding.signing-officer-question';
@@ -223,7 +223,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_554af38a_8225_87c8_dfdf_eeb15f71215f_1a5',
+      name: 'crunch_onboarding_signing_officer_information',
       code: async function(x, business) {
         var id = 'crunch.onboarding.signing-officer-information';
         var ucj = await this.crunchService.getJunction(x, id);
@@ -252,7 +252,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_688cb7c6_7316_4bbf_8483_fb79f8fdeaaf',
+      name: 'crunch_onboarding_br_business_identification',
       code: async function(x, business) {
         var id = 'crunch.onboarding.br.business-identification';
         var ucj = await this.crunchService.getJunction(x, id);
@@ -270,7 +270,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_b5f2b020_db0f_11ea_87d0_0242ac130003',
+      name: 'crunch_onboarding_document_office_consumption',
       code: async function(x, business) {
         var id = 'crunch.onboarding.document.office-consumption';
         var ucj = await this.crunchService.getJunction(x, id);
@@ -289,7 +289,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_4c46cdb8_06b2_11eb_adc1_0242ac120002',
+      name: 'crunch_onboarding_br_nature_of_business',
       code: async function(x, business) {
         var id = 'crunch.onboarding.br.nature-of-business';
         var ucj = await this.crunchService.getJunction(x, id);
@@ -304,7 +304,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_7e2739cc_db32_11ea_87d0_0242ac130003',
+      name: 'crunch_onboarding_document_annual_financial_statements',
       code: async function(x, business) {
         var id = 'crunch.onboarding.document.annual-financial-statements';
         var ucj = await this.crunchService.getJunction(x, id);
@@ -322,7 +322,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_63049307_8db4_2437_5c02_b71d6878263c',
+      name: 'payment_target_country_br',
       code: async function(x, business) {
         var id = 'payment.target.country.br';
         var ucj = await this.crunchService.getJunction(x, id);
@@ -334,7 +334,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_554af38a_8225_87c8_dfdf_eebsdf3225y_4',
+      name: 'crunch_onboarding_business_type_sector',
       code: async function(x, business) {
         // cap name: Business Details
         var id = 'crunch.onboarding.business-type-sector';
@@ -351,7 +351,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_9d4d667c_04c3_11eb_adc1_0242ac120002',
+      name: 'crunch_onboarding_br_currency_amount_information',
       code: async function(x, business) {
         // cap name: Capital, Equity and Revenue
         var id = 'crunch.onboarding.br.currency-amount-information';
@@ -381,7 +381,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_af3d9c28_0674_11eb_adc1_0242ac120002',
+      name: 'crunch_onboarding_br_business_account',
       code: async function(x, business) {
         // cap name: Business Account Information
         var id = 'crunch.onboarding.br.business-account';
@@ -412,7 +412,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_520a4120_3bc6_cef9_6635_c32af8219a6a',
+      name: 'payment_source_country_br',
       code: async function(x) {
         // cap name: Source Country Capability BR
         // cap type: CountryCapability
@@ -426,7 +426,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_f9c7ce45_c076_4f55_93d2_867c011ee6ca',
+      name: 'paymentprovidercorridor_treviso_br_us',
       code: async function(x) {
         // cap name: BR-USD Corridor - Treviso
         // cap type: PaymentProviderCorridor
@@ -484,7 +484,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_7b41a164_29bd_11eb_adc1_0242ac120002',
+      name: 'crunch_onboarding_br_add_bank_account',
       code: async function(x, user) {
         // cap name: Brazil Bank Account
         var id = 'crunch.onboarding.br.add-bank-account';
@@ -509,7 +509,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_554af38a_8225_87c8_dfdf_eeb15f71215f_49',
+      name: 'crunch_onboarding_br_brazil_onboarding',
       code: async function(x, user) {
         // cap name: Brazil Onboarding
         var id = 'crunch.onboarding.br.brazil-onboarding';
@@ -522,7 +522,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_554af38a_8225_87c8_dfdf_eeb15f71215f_6_5',
+      name: 'crunch_onboarding_business_directors',
       code: async function(x, business) {
         // cap name: Information from Administrators and Legal Representatives
         var id = 'crunch.onboarding.business-directors';
@@ -539,7 +539,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_554af38a_8225_87c8_dfdf_eeb15f71215f_7_br',
+      name: 'crunch_onboarding_br_business_ownership',
       code: async function(x, business) {
         // cap name: Business ownership
         var id = 'crunch.onboarding.br.business-ownership';
@@ -557,7 +557,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_05a663b8_2b48_11eb_adc1_0242ac120002',
+      name: 'crunch_onboarding_br_business_prerequisites',
       code: async function(x, business) {
         // cap name: Business Prerequisites for Brazil
         var id = 'crunch.onboarding.br.business-prerequisites';
@@ -570,7 +570,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_1f6b2047_1eef_471d_82e7_d86bdf511375',
+      name: 'afex',
       code: async function(x, business) {
         // cap name: Business Prerequisites for Brazil
         var id = 'AFEX';
@@ -583,7 +583,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_0B2E7305_B898_43F2_9C1B_63FB2CE38B2D',
+      name: 'crunch_onboarding_br_international_payments',
       code: async function(x, business) {
         // cap name: International payments onboarding
         var id = 'crunch.onboarding.br.international-payments';
@@ -597,7 +597,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_bf6a49d5_4027_4dac_a269_4d3ed070609e_4',
+      name: 'crunch_onboarding_br_parent_international_payments',
       code: async function(x, business) {
         // cap name: International payments
         var id = 'crunch.onboarding.br.parent.international-payments';
@@ -611,7 +611,7 @@ foam.CLASS({
       }
     },
     {
-      name: '_89cc91da_4bbd_458b_81d4_574815e455fa_4',
+      name: 'crunch_onboarding_br_registering_payment_provider',
       code: async function(x, business) {
         // cap name: Registering with Payment Provider(BR International)
         var id = 'crunch.onboarding.br.registering-payment-provider';
