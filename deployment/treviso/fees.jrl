@@ -1974,7 +1974,7 @@ p({
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
 
-// USD Spot Rate, used in FeeRateExpr predicates
+// USD Spot Rate, used in FeeRateExpr predicates. Used in spread rate conversion
 p({
   class: "net.nanopay.tx.fee.SpotRate",
   id: "AE2DA308-0144-40AB-95E3-EFECCA4A4632",
