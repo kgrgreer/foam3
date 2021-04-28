@@ -43,9 +43,9 @@ public class PartnerTransactionReportGenerator extends ReconciliationReportGener
   protected Map<String, String> afexMap = new HashMap<>();
 
   @Override
-  public PartnerLineItem generate(X x, @Nonnull FObject src, @Nullable FObject dst) {
+  public PartnerReport generate(X x, @Nonnull FObject src, @Nullable FObject dst) {
     var tx = (Transaction) src;
-    var cor = new PartnerReport();
+    var report = dst == null ? new PartnerReport() : (PartnerReport) dst;
     var afexTx = getAFEXTransaction(x, tx);
 
     PartnerLineItem lineitem = new PartnerLineItem();
@@ -56,29 +56,29 @@ public class PartnerTransactionReportGenerator extends ReconciliationReportGener
         break;
       }
     }
-    cor.copyFrom(lineitem);
+    report.copyFrom(lineitem);
 
     HistoricStatus[] statusHistory = afexTx.getStatusHistory();
     for ( HistoricStatus status : statusHistory ) {
-      if ( status.getStatus().equals(TransactionStatus.PENDING) ) cor.setTradeDate(status.getTimeStamp());
+      if ( status.getStatus().equals(TransactionStatus.PENDING) ) report.setTradeDate(status.getTimeStamp());
     }
     var sender = tx.findSourceAccount(x).findOwner(x);
     var receiver = tx.findDestinationAccount(x).findOwner(x);
 
-    cor.setSpid(tx.getSpid());
-    cor.setClientName(sender.getLegalName());
-    cor.setClientId(sender.getId());
-    cor.setBeneficiaryName(receiver.getLegalName());
-    cor.setBeneficiaryId(receiver.getId());
-    cor.setTransactionId(tx.getId());
-    cor.setPrincipleAmount(tx.getAmount());
-    cor.setPrincipleCurrency(tx.getSourceCurrency());
-    cor.setDestinationAmount(tx.getDestinationAmount());
-    cor.setDestinationCurrency(tx.getDestinationCurrency());
+    report.setSpid(tx.getSpid());
+    report.setClientName(sender.getLegalName());
+    report.setClientId(sender.getId());
+    report.setBeneficiaryName(receiver.getLegalName());
+    report.setBeneficiaryId(receiver.getId());
+    report.setTransactionId(tx.getId());
+    report.setPrincipleAmount(tx.getAmount());
+    report.setPrincipleCurrency(tx.getSourceCurrency());
+    report.setDestinationAmount(tx.getDestinationAmount());
+    report.setDestinationCurrency(tx.getDestinationCurrency());
 
-    cor.setTradeNumber(afexTx.getAfexTradeResponseNumber());
-    cor.setValueDate(afexTx.getCompletionDate());
-    return (PartnerLineItem) super.generate(x, src, cor);
+    report.setTradeNumber(afexTx.getAfexTradeResponseNumber());
+    report.setValueDate(afexTx.getCompletionDate());
+    return (PartnerReport) super.generate(x, src, report);
   }
 
   protected AFEXTransaction getAFEXTransaction(X x, Transaction tx) {
