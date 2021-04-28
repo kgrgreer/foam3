@@ -965,7 +965,8 @@ p({
     "class": "foam.mlang.predicate.And",
     "args": [
       {
-        "class": "net.nanopay.tx.ruler.IsLimitTransaction"
+        "class": "foam.mlang.predicate.IsClassOf",
+        "targetClass": "net.nanopay.tx.LimitTransaction"
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",

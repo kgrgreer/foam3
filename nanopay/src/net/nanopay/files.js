@@ -513,7 +513,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/SendDeclinedCINotification' },
   { name: 'net/nanopay/tx/ruler/AddStatusHistoryAction' },
   { name: 'net/nanopay/tx/ruler/CascadingCancelAction' },
-  { name: 'net/nanopay/tx/ruler/IsLimitTransaction' },
   { name: 'net/nanopay/tx/ruler/IsSecurityQuote' },
   { name: 'net/nanopay/tx/ruler/LimitTransactionRule' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
