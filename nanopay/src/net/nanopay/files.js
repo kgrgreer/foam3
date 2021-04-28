@@ -480,6 +480,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sps/SPSCredentials' },
 
   // tx
+  { name: 'net/nanopay/tx/CurrentLimit' },
   { name: 'net/nanopay/tx/TransactionValidator' },
   { name: 'net/nanopay/tx/TransactionLimitServiceInterface' },
   { name: 'net/nanopay/tx/client/ClientTransactionLimitService' },
@@ -501,7 +502,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/RefundTransaction' },
   { name: 'net/nanopay/tx/RetailTransaction' },
   { name: 'net/nanopay/tx/ruler/SendCompleteRetailTransactionNotificationRule' },
-  { name: 'net/nanopay/tx/model/CurrentLimit' },
   { name: 'net/nanopay/tx/model/TransactionLimit' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitProbeInfo' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitRule' },

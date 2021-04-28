@@ -36,7 +36,7 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'java.util.List',
     'net.nanopay.account.Account',
-    'net.nanopay.tx.model.CurrentLimit',
+    'net.nanopay.tx.CurrentLimit',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionLimit',
     'net.nanopay.tx.model.TransactionStatus',
@@ -233,7 +233,7 @@ foam.CLASS({
         },
         {
           name: 'currentLimit',
-          type: 'net.nanopay.tx.model.CurrentLimit'
+          type: 'net.nanopay.tx.CurrentLimit'
         }
       ],
       javaCode: `

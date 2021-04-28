@@ -16,7 +16,7 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.tx.model',
+  package: 'net.nanopay.tx',
   name: 'CurrentLimit',
 
   documentation: 'Current limits in place for spids or users/businesses',

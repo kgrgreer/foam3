@@ -266,7 +266,7 @@ p({
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.tx.model.CurrentLimit.getOwnClassInfo())
+      .setOf(net.nanopay.tx.CurrentLimit.getOwnClassInfo())
       .setAuthorize(false)
       .setPm(true)
       .setPipelinePm(true)
@@ -276,7 +276,7 @@ p({
   """,
   "client": """
     {
-      "of": "net.nanopay.tx.model.CurrentLimit"
+      "of": "net.nanopay.tx.CurrentLimit"
     }
   """
 })
