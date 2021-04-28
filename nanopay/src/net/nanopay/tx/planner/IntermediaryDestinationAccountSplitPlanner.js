@@ -152,8 +152,8 @@ foam.CLASS({
               return null;
             }
             Transaction l2 = removeSummaryTransaction(leg2);
-            l2.setAmount(l2.getTotal(x, l2.getSourceAccount()));
-
+            l2.setAmount(leg2.getAmount());
+            //TODO: this should be getTotal on the appropriate txn. however we dont know which is appropriate in a generic planner. unless the key is to always have correct amount on summary inclusive of fees.
             // plan src to intermediary currency (leg1)
             var t2 = (Transaction) requestTxn.fclone();
             t2.setDestinationAccount(intermediaryAccount.getId());
