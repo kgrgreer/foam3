@@ -83,8 +83,6 @@ foam.CLASS({
       margin: 0;
     }
     p.large {
-      font-style: normal;
-      font-weight: normal;
       font-size: 18px;
       line-height: 32px;
       margin: 0;
@@ -92,15 +90,11 @@ foam.CLASS({
     p.semiBold{
       font-style: normal;
       font-weight: 600;
-      font-size: 14px;
-      line-height: 24px;
       margin: 0;
     }
     p.bold{
       font-style: normal;
       font-weight: 700;
-      font-size: 14px;
-      line-height: 24px;
     }
     p.legalText{
       font-style: normal;
