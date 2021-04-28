@@ -71,13 +71,6 @@ foam.CLASS({
       order: 40,
       updateVisibility: 'RO'
     }),
-    net.nanopay.account.Account.OWNER.clone().copyFrom({
-      gridColumns:6,
-      section: 'userInformation',
-      order: 40,
-      updateVisibility: 'RO',
-      hidden: true
-    }),
     foam.nanos.auth.User.GROUP.clone().copyFrom({
       gridColumns:6,
       section: 'userInformation',
