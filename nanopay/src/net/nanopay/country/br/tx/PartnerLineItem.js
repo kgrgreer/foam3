@@ -95,8 +95,8 @@ foam.CLASS({
     },
     {
       class: 'UnitValue',
-      name: 'transactionFeeAmount',
-      label: 'Transaction Fee Amount',
+      name: 'transactionFee',
+      label: 'Transaction Fee',
       unitPropName: 'transactionFeeCurrency',
       documentation: 'additional amount charged by the partner'
     },
@@ -150,7 +150,7 @@ foam.CLASS({
       javaCode: `
       if ( getFxRate() == 0 ) throw new ValidationException("fxRate is missing on PartnerLineItem");
       if ( getFxSpread() == 0 ) throw new ValidationException("fxSpread is missing on PartnerLineItem");
-      if ( getTransactionFeeAmount() == 0 ) throw new ValidationException("transactionFeeAmount is missing on PartnerLineItem");
+      if ( getTransactionFee() == 0 ) throw new ValidationException("transactionFee is missing on PartnerLineItem");
       if ( getTransactionFeeCurrency() == "" ) throw new ValidationException("transactionFeeCurrency is missing on PartnerLineItem");
       if ( getIOF() == 0 ) throw new ValidationException("IOF is missing on PartnerLineItem");
       if ( getIOFRate() == 0 ) throw new ValidationException("IOFRate is missing on PartnerLineItem");
