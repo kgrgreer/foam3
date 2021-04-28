@@ -216,6 +216,7 @@ foam.CLASS({
 
       this.start().addClass(this.myClass())
         .start('h2').add(this.showingTitle).end()
+        .br()
         .start().show(this.showTransactionDetail$)
           .start(this.Cols)
             .add(this.TRANSACTION_DATE)
@@ -225,8 +226,10 @@ foam.CLASS({
             .add(this.TRANSACTION_REFERENCE)
             .start().add(this.transactionId).end()
           .end()
+          .br()
         .end()
         .start('h3').add(this.data.toSummary()).end()
+        .br()
         .start(this.Cols)
           .add(this.AMOUNT)
           .start().add(destinationCurrencyFormat.format(this.txAmount)).end()
@@ -300,7 +303,7 @@ foam.CLASS({
               });
 
               let vet = this.totalAmount / data.destinationAmount;
-              e.start(self.Cols).show(this.showVET$)
+              e.br().start(self.Cols).show(this.showVET$)
                 .add(this.VET_TITLE)
                 .start().add(this.formatRate(destinationCurrencyFormat, 100, sourceCurrencyFormat, vet*1000000)).end()
               .end();
