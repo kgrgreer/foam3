@@ -30,11 +30,13 @@ foam.CLASS({
     {
       class: 'Double',
       name: 'fxRate',
-      documentation: 'rate partner uses for BRL -> destination conversion'
+      documentation: 'rate partner uses for BRL -> destination conversion',
+      label: 'Fx Rate'
     },
     {
       class: 'Double',
       name: 'fxSpread',
+      label: 'Fx Spread',
       documentation: 'the spread partner applies'
     },
     {
@@ -43,11 +45,13 @@ foam.CLASS({
       factory: function() {
         return this.fxSpread + this.fxRate;
       },
+      label: 'Effective Rate',
       javaFactory: 'return getFxSpread() + getFxRate();'
     },
     {
       class: 'Long',
       name: 'feeAmount',
+      label: 'Fee Amount',
       documentation: 'amount charged by the partner'
     },
     {
@@ -55,6 +59,7 @@ foam.CLASS({
       of: 'foam.core.Currency',
       name: 'feeCurrency',
       targetDAOKey: 'currencyDAO',
+      label: 'Fee Currency',
       documentation: 'currency of fee charged by partner'
     },
     {
@@ -67,11 +72,13 @@ foam.CLASS({
       of: 'foam.core.Currency',
       name: 'IOFCurrency',
       targetDAOKey: 'currencyDAO',
+      label: 'IOF Currency',
       documentation: 'currency of tax charged by partner'
     },
     {
       class: 'Double',
-      name: 'IOFRate'
+      name: 'IOFRate',
+      label: 'IOF Rate',
     },
     {
       class: 'Double',
@@ -82,22 +89,26 @@ foam.CLASS({
       of: 'foam.core.Currency',
       name: 'VETCurrency',
       targetDAOKey: 'currencyDAO',
-      value: 'BRL'
+      value: 'BRL',
+      label: 'VET Currency'
     },
     {
       class: 'Long',
       name: 'fee2Amount',
+      label: 'Fee2 Amount',
       documentation: 'additional amount charged by the partner'
     },
     {
       class: 'Reference',
       of: 'foam.core.Currency',
       name: 'fee2Currency',
-      targetDAOKey: 'currencyDAO'
+      targetDAOKey: 'currencyDAO',
+      label: 'Fee2 Currency'
     },
     {
       class: 'Long',
       name: 'discountAmount',
+      label: 'Discount Amount',
       documentation: 'discount given by the partner'
     },
     {
@@ -105,29 +116,35 @@ foam.CLASS({
       of: 'foam.core.Currency',
       name: 'discountCurrency',
       targetDAOKey: 'currencyDAO',
+      label: 'Discount Currency',
       documentation: 'currency of discount given by partner'
     },
     {
       class: 'String',
-      name: 'discountCode'
+      name: 'discountCode',
+      label: 'Discount Code'
     },
     {
       class: 'Long',
-      name: 'tax2'
+      name: 'tax2',
+      label: 'Tax2 Amount'
     },
     {
       class: 'Reference',
       of: 'foam.core.Currency',
       name: 'tax2Currency',
+      label: 'Tax2 Currency',
       targetDAOKey: 'currencyDAO'
     },
     {
       class: 'Double',
-      name: 'tax2Rate'
+      name: 'tax2Rate',
+      label: 'Tax3 Rate'
     },
     {
       class: 'String',
-      name: 'natureCode'
+      name: 'natureCode',
+      label: 'Nature Code'
     }
   ],
 
