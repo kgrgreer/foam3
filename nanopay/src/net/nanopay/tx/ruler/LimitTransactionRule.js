@@ -196,6 +196,10 @@ foam.CLASS({
           CurrentLimit currentLimit = (CurrentLimit) currentLimits.get(0);
           String key = getKey(user, currentLimit);
           TransactionLimitState limitState = (TransactionLimitState) currentLimit.getCurrentLimits().get(key);
+          if ( limitState == null ) {
+            limitState = new TransactionLimitState();
+            currentLimit.getCurrentLimits().put(key, limitState);
+          }
           if ( ! limitState.check(limit.getAmount(), currentLimit.getPeriod(), txn.getAmount())) {
             // transaction exceeds limit generate approval request
             generateApprovalRequest(x, txn, limit, user);
