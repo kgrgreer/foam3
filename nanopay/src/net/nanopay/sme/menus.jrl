@@ -192,7 +192,7 @@ p({
 
       "primaryAction": {"class":"net.nanopay.bank.AddBankAccountAction"},
       "viewBorder":{class:"foam.u2.borders.NullBorder"},
-      "browseBorder":{class:"net.nanopay.bank.CustomBankAccountsBorder"},
+      "browseBorder":{class:"net.nanopay.bank.MyBankAccountsBorder"},
 
       "wizardDetailView":{class:"net.nanopay.ui.wizard.ContactWizardDetailView"},
       "detailView":{class:"net.nanopay.account.ui.BankAccountWizard"},
