@@ -23,7 +23,28 @@ foam.CLASS({
   properties: [
     {
       name: 'rate',
-      class: 'Double'
+      class: 'Double',
+      value: 0.0
+    },
+    {
+      name: 'amount',
+      class: 'UnitValue',
+      unitPropName: 'currency',
+      view: { class: 'net.nanopay.liquidity.ui.LiquidCurrencyView' },
+      unitPropValueToString: async function(x, val, unitPropName) {
+        var unitProp = await x.currencyDAO.find(unitPropName);
+        if ( unitProp )
+          return unitProp.format(val);
+        return val;
+      },
+      tableCellFormatter: function(value, obj) {
+
+        obj.currencyDAO.find(obj.currency).then(function(c) {
+          if ( c ) {
+            this.add((`(${obj.rate.toFixed(6)}%) `).replace('.', ',') + c.format(value));
+          }
+        }.bind(this));
+      }
     }
   ]
 });

@@ -180,7 +180,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'cnpj'
+      name: 'invoiceReference'
     }
   ],
 
@@ -217,15 +217,11 @@ foam.CLASS({
         .then((currency) => {
         this.formattedAmount_ = currency.format(this.invoice.amount);
       });
-
-      this.crunchService.getJunction(null,"crunch.onboarding.br.business-identification")
-        .then((ucj) => {
-          this.cnpj = ucj.data.cnpj;
-      });
     },
     function init() {
       this.transactionDAO.find(this.invoice.paymentId).then((transaction) => {
         if ( transaction ) {
+          this.invoiceReference = transaction.id.split('-', 1)[0];
           for ( var i = 0; i < transaction.lineItems.length; i++ ) {
             if ( this.ConfirmationFileLineItem.isInstance( transaction.lineItems[i] ) ) {
               this.transactionConfirmationPDF = transaction.lineItems[i].file;
@@ -297,7 +293,7 @@ foam.CLASS({
           .start().add(this.BODY_SEND_TREVISO_7).end()
           .start()
             .add(this.BODY_SEND_TREVISO_8)
-            .add(this.cnpj$)
+            .add(this.invoiceReference$)
           .end()
           .start('b')
             .add(this.BODY_SEND_TREVISO_9_0 + this.invoice.totalSourceAmount + this.BODY_SEND_TREVISO_9_1 +
