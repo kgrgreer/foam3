@@ -23,7 +23,7 @@ foam.CLASS({
   documentation: 'SME CSS that is used through out',
 
   css: `
-    .label, .infoLabel {
+    .infoLabel {
       font-size: 12px !important;
       color: /*%BLACK%*/ #1e1f21 !important;
       padding-bottom: 6px !important;
@@ -561,12 +561,6 @@ foam.CLASS({
       width: 14px;
       border-bottom: 2px solid #604aff;
       border-right: 2px solid #604aff;
-    }
-
-    .label {
-      font-size: 12px !important;
-      font-weight: 700 !important;
-      line-height: 15px !important;
     }
 
     .foam-comics-DAOControllerView .actions .foam-u2-ActionView img + span {
