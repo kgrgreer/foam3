@@ -17,7 +17,7 @@
 
 
 foam.CLASS({
-  package: 'net.nanopay.partner.tx',
+  package: 'net.nanopay.country.br.tx',
   name: 'PartnerLineItem',
   extends: 'net.nanopay.tx.InfoLineItem',
   documentation: 'Line item to carry information about the transaction details happening outside of nanopay',
@@ -47,19 +47,6 @@ foam.CLASS({
     },
     {
       class: 'UnitValue',
-      name: 'feeAmount',
-      unitPropName: 'feeCurrency',
-      documentation: 'amount charged by the partner'
-    },
-    {
-      class: 'Reference',
-      of: 'foam.core.Currency',
-      name: 'feeCurrency',
-      targetDAOKey: 'currencyDAO',
-      documentation: 'currency of fee charged by partner'
-    },
-    {
-      class: 'UnitValue',
       name: 'IOF',
       unitPropName: 'IOFCurrency',
       documentation: 'tax charged by the partner'
@@ -78,6 +65,23 @@ foam.CLASS({
       label: 'IOF Rate'
     },
     {
+      class: 'UnitValue',
+      name: 'IRS',
+      unitPropName: 'IRSCurrency'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.core.Currency',
+      name: 'IRSCurrency',
+      label: 'IRS Currency',
+      targetDAOKey: 'currencyDAO'
+    },
+    {
+      class: 'Double',
+      name: 'IRSRate',
+      label: 'IRS Rate'
+    },
+    {
       class: 'Double',
       name: 'VET'
     },
@@ -91,17 +95,30 @@ foam.CLASS({
     },
     {
       class: 'UnitValue',
-      name: 'fee2Amount',
-      label: 'Fee2 Amount',
-      unitPropName: 'fee2Currency',
+      name: 'transactionFeeAmount',
+      label: 'Transaction Fee Amount',
+      unitPropName: 'transactionFeeCurrency',
       documentation: 'additional amount charged by the partner'
     },
     {
       class: 'Reference',
       of: 'foam.core.Currency',
-      name: 'fee2Currency',
-      label: 'Fee2 Currency',
+      name: 'transactionFeeCurrency',
+      label: 'Transaction Fee Currency',
       targetDAOKey: 'currencyDAO'
+    },
+    {
+      class: 'UnitValue',
+      name: 'additionalFee',
+      unitPropName: 'additionalFeeCurrency',
+      documentation: 'amount charged by the partner'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.core.Currency',
+      name: 'additionalFeeCurrency',
+      targetDAOKey: 'currencyDAO',
+      documentation: 'currency of fee charged by partner'
     },
     {
       class: 'UnitValue',
@@ -121,23 +138,6 @@ foam.CLASS({
       name: 'discountCode'
     },
     {
-      class: 'UnitValue',
-      name: 'tax2',
-      unitPropName: 'tax2Currency'
-    },
-    {
-      class: 'Reference',
-      of: 'foam.core.Currency',
-      name: 'tax2Currency',
-      label: 'Tax2 Currency',
-      targetDAOKey: 'currencyDAO'
-    },
-    {
-      class: 'Double',
-      name: 'tax2Rate',
-      label: 'Tax2 Rate'
-    },
-    {
       class: 'String',
       name: 'natureCode'
     }
@@ -150,8 +150,8 @@ foam.CLASS({
       javaCode: `
       if ( getFxRate() == 0 ) throw new ValidationException("fxRate is missing on PartnerLineItem");
       if ( getFxSpread() == 0 ) throw new ValidationException("fxSpread is missing on PartnerLineItem");
-      if ( getFeeAmount() == 0 ) throw new ValidationException("feeAmount is missing on PartnerLineItem");
-      if ( getFeeCurrency() == "" ) throw new ValidationException("feeCurrency is missing on PartnerLineItem");
+      if ( getTransactionFeeAmount() == 0 ) throw new ValidationException("feeAmount is missing on PartnerLineItem");
+      if ( getTransactionFeeCurrency() == "" ) throw new ValidationException("feeCurrency is missing on PartnerLineItem");
       if ( getIOF() == 0 ) throw new ValidationException("IOF is missing on PartnerLineItem");
       if ( getIOFRate() == 0 ) throw new ValidationException("IOFRate is missing on PartnerLineItem");
       if ( getIOFCurrency() == "" ) throw new ValidationException("IOFCurrency is missing on PartnerLineItem");

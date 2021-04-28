@@ -31,7 +31,7 @@ foam.CLASS({
     'java.util.UUID',
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXSummaryTransaction',
-    'net.nanopay.partner.tx.PartnerLineItem',
+    'net.nanopay.country.br.tx.PartnerLineItem',
     'net.nanopay.partner.bepay.tx.BePayTransaction',
     'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.tx.FeeLineItem',

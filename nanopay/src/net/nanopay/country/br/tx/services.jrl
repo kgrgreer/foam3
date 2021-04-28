@@ -1,7 +1,7 @@
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "partnerTransactionReportGenerator",
-  "serviceScript": """return new net.nanopay.partner.tx.PartnerTransactionReportGenerator();"""
+  "serviceScript": """return new net.nanopay.country.br.tx.PartnerTransactionReportGenerator();"""
 })
 
 p({
@@ -11,19 +11,19 @@ p({
   "serviceScript": """
   dao = new net.nanopay.reporting.ReportDAO(
     x,
-    new foam.dao.NullDAO(x, net.nanopay.partner.tx.PartnerReport.getOwnClassInfo()),
+    new foam.dao.NullDAO(x, net.nanopay.country.br.tx.PartnerReport.getOwnClassInfo()),
     "partnerTransactionReportGenerator"
   );
 
   return new foam.dao.EasyDAO.Builder(x)
-    .setOf(net.nanopay.partner.tx.PartnerReport.getOwnClassInfo())
+    .setOf(net.nanopay.country.br.tx.PartnerReport.getOwnClassInfo())
     .setDecorator(dao)
     .setInnerDAO(x.get("summaryTransactionDAO"))
     .build();
   """,
   "client": """
     {
-      "of": "net.nanopay.partner.tx.PartnerReport"
+      "of": "net.nanopay.country.br.tx.PartnerReport"
     }
   """
 })

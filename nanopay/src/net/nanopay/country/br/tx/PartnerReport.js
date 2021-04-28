@@ -17,9 +17,9 @@
 
 
 foam.CLASS({
-  package: 'net.nanopay.partner.tx',
+  package: 'net.nanopay.country.br.tx',
   name: 'PartnerReport',
-  extends: 'net.nanopay.partner.tx.PartnerLineItem',
+  extends: 'net.nanopay.country.br.tx.PartnerLineItem',
   documentation: 'Report model',
 
   properties: [

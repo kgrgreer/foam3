@@ -16,7 +16,7 @@
  */
 
 
-package net.nanopay.partner.tx;
+package net.nanopay.country.br.tx;
 
 import foam.core.Detachable;
 import foam.core.FObject;
