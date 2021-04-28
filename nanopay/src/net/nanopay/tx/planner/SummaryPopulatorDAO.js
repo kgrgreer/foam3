@@ -76,8 +76,10 @@ foam.CLASS({
             t = addFee(t, fee);
             t = addExpiry(t, expiry);
 
-            if ( quote.getPlan() != null && quote.getPlan().getId().equals(t.getId()) )
+            t.setAmount(t.getAmount() -t.getTotal(x,t.getSourceAccount()));
+            if ( quote.getPlan() != null && quote.getPlan().getId().equals(t.getId()) ) {
               quote.setPlan(t);
+            }
           }
         }
 
@@ -300,7 +302,7 @@ foam.CLASS({
         Double destinationPrecision = Math.pow(10, destinationCurrency.getPrecision()) * rate;
         return sourceCurrency.format(sourcePrecision.longValue())
           + " " + sourceCurrency.getId()
-          + " : " + destinationCurrency.format(destinationPrecision.longValue())
+          + " : " + destinationCurrency.format(Math.round(destinationPrecision))
           + " " + destinationCurrency.getId();
       `
     }
