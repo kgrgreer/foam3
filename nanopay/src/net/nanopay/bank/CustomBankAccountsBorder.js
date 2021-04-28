@@ -20,7 +20,7 @@ foam.CLASS({
   name: 'CustomBankAccountsBorder',
   extends: 'foam.u2.Element',
   documentation: `
-    A border which restricts bankAccountDAO to only custom bank accounts.
+    A border which restricts bankAccountDAO to those owned by the session user.
   `,
   requires: [
     'net.nanopay.bank.BankAccount'
