@@ -60,8 +60,8 @@ foam.CLASS({
     'targetCorridorDAO',
     'pushMenu',
     'subject',
-    'user',
-    'stack'
+    'stack',
+    'user'
   ],
 
   requires: [

@@ -59,8 +59,8 @@ foam.CLASS({
     'publicBusinessDAO',
     'pushMenu',
     'subject',
-    'user',
-    'stack'
+    'stack',
+    'user'
   ],
 
   requires: [
