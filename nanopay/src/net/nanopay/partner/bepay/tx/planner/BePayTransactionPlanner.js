@@ -31,7 +31,7 @@ foam.CLASS({
     'java.util.UUID',
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXSummaryTransaction',
-    'net.nanopay.partner.bepay.tx.BePayLineItem',
+    'net.nanopay.country.br.tx.PartnerLineItem',
     'net.nanopay.partner.bepay.tx.BePayTransaction',
     'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.tx.FeeLineItem',
@@ -48,7 +48,7 @@ foam.CLASS({
   messages: [
     {
       name: 'MISSING_LINEITEM',
-      message: 'Missing BePayLineItem'
+      message: 'Missing PartnerLineItem'
     }
   ],
 
@@ -84,7 +84,7 @@ foam.CLASS({
       bTx.setName("BePay transaction");
       bTx.setPaymentProvider(PAYMENT_PROVIDER);
       bTx.setPlanner(this.getId());
-      addBePayLineItem(x, bTx, requestTxn);
+      addPartnerLineItem(x, bTx, requestTxn);
       txn.addNext(bTx);
       ExternalTransfer[] exT = new ExternalTransfer[2];
       exT[0] = new ExternalTransfer(quote.getDestinationAccount().getId(), bTx.getDestinationAmount());
@@ -107,7 +107,7 @@ foam.CLASS({
         BePayTransaction transaction = (BePayTransaction) txn;
 
         for ( TransactionLineItem lineItem: txn.getLineItems() ) {
-          if ( lineItem instanceof BePayLineItem ) {
+          if ( lineItem instanceof PartnerLineItem ) {
             return true;
           }
         }
@@ -115,7 +115,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'addBePayLineItem',
+      name: 'addPartnerLineItem',
       javaType: 'BePayTransaction',
       args: [
         {
@@ -132,9 +132,9 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      // Review: we can stop execution here if no BePayLineItem provided but exception would be "Unable to plan"
+      // Review: we can stop execution here if no PartnerLineItem provided but exception would be "Unable to plan"
       for (TransactionLineItem lineItem: requestTxn.getLineItems() ) {
-        if ( lineItem instanceof BePayLineItem ) {
+        if ( lineItem instanceof PartnerLineItem ) {
           txn.addLineItems( new TransactionLineItem[] { lineItem } );
           break;
         }

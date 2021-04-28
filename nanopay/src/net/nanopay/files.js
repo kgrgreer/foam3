@@ -1932,7 +1932,8 @@ FOAM_FILES([
 
   // bepay
   { name: 'net/nanopay/partner/bepay/tx/BePayTransaction' },
-  { name: 'net/nanopay/partner/bepay/tx/BePayLineItem' },
+  { name: 'net/nanopay/country/br/tx/PartnerLineItem' },
+  { name: 'net/nanopay/country/br/tx/PartnerReport' },
   { name: 'net/nanopay/partner/bepay/tx/planner/BePayTransactionPlanner' },
 
   // Reports for Treviso
@@ -1973,6 +1974,10 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/br/businessSector/Sector' },
   { name: 'net/nanopay/partner/br/businessSector/Grupo' },
   { name: 'net/nanopay/partner/br/businessSector/Divisao' },
-  { name: 'net/nanopay/partner/br/businessSector/Secao' }
+  { name: 'net/nanopay/partner/br/businessSector/Secao' },
 
+  //SWIFT
+  { name: 'net/nanopay/swift/AbstractMT' },
+  { name: 'net/nanopay/swift/Properties' },
+  { name: 'net/nanopay/swift/SCHEMA' },
 ]);

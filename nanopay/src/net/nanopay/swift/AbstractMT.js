@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -16,25 +16,11 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.tx',
-  name: 'GrandTotalLineItem',
-  extends: 'net.nanopay.tx.InfoLineItem',
-
-  messages: [
-    { name: 'GRAND_TOTAL', message: 'Total Due' }
-  ],
-
-  properties: [
-    {
-      name: 'amount',
-      label: 'Total',
-      visibility: 'RO'
-    }
-  ],
+  package: 'net.nanopay.swift.mt',
+  name: 'AbstractMT',
 
   methods: [
-    function toSummary() {
-      return this.GRAND_TOTAL;
-    }
+    function toSwift() {},
+    function parseSwift() {} 
   ]
 });

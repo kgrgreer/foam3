@@ -24,6 +24,7 @@ import foam.nanos.auth.CreatedAware;
 import foam.nanos.auth.LastModifiedAware;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -47,7 +48,9 @@ public abstract class ReportGenerator {
     return object.getProperty("id");
   }
 
-  protected abstract FObject generate(X x, @Nonnull FObject src);
+  protected FObject generate(X x, @Nonnull FObject src, @Nullable FObject dst) {
+    return dst;
+  }
 
   public FObject generateReport(X x, Object src) {
     if ( src == null ) return null;
@@ -60,7 +63,7 @@ public abstract class ReportGenerator {
       if ( report != null )
         return (FObject) report;
 
-      report = generate(x, (FObject) src);
+      report = generate(x, (FObject) src, null);
 
       if ( report instanceof CreatedAware ) {
         var ca = (CreatedAware) report;
@@ -70,7 +73,7 @@ public abstract class ReportGenerator {
 
       return (FObject) report;
     } else {
-      return generate(x, (FObject) src);
+      return generate(x, (FObject) src, null);
     }
   }
 

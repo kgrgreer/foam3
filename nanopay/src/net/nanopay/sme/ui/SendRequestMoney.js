@@ -124,9 +124,12 @@ foam.CLASS({
       line-height: 1.5;
       margin-top: 35px;
     }
-    ^ .foam-u2-LoadingSpinner img{
-      width: 150px;
-      margin: 200px;
+    ^ .foam-u2-LoadingSpinner{
+      width: 32px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      position: absolute;
     }
     ^ .stackColumn .foam-u2-stack-StackView {
       padding-left: 0 !important;
