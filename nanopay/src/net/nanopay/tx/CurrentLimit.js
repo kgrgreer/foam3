@@ -64,14 +64,6 @@ foam.CLASS({
     },
     {
       class: 'foam.core.Enum',
-      of: 'net.nanopay.tx.model.TransactionLimitType',
-      name: 'type',
-      storageTransient: true,
-      documentation: 'Current limit type. (Send or Receive)',
-      gridColumns: 6
-    },
-    {
-      class: 'foam.core.Enum',
       of: 'net.nanopay.util.Frequency',
       name: 'period',
       storageTransient: true,

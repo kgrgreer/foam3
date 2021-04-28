@@ -215,7 +215,6 @@ foam.CLASS({
           // create new CurrentLimit if none exist
           CurrentLimit currentLimit = new CurrentLimit.Builder(x)
             .setTxLimit(limit.getId())
-            .setType(limit.getType())
             .setPeriod(limit.getPeriod())
             .build();
           
@@ -246,9 +245,7 @@ foam.CLASS({
         sb.append("currentLimit:")
           .append(user.getId())
           .append(":")
-          .append(currentLimit.getPeriod())
-          .append(":")
-          .append(currentLimit.getType());
+          .append(currentLimit.getPeriod());
         return sb.toString();
       `
     }
