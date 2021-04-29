@@ -34,7 +34,9 @@ foam.CLASS({
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
+    'java.util.HashMap',
     'java.util.List',
+    'java.util.Map',
     'net.nanopay.account.Account',
     'net.nanopay.tx.CurrentLimit',
     'net.nanopay.tx.model.Transaction',
@@ -216,15 +218,16 @@ foam.CLASS({
           }
         } else {
           // create new CurrentLimit if none exist
-          CurrentLimit currentLimit = new CurrentLimit.Builder(x)
-          .setTxLimit(limit.getId())
-          .setPeriod(limit.getPeriod())
-          .build();
+          CurrentLimit currentLimit = new CurrentLimit();
+          currentLimit.setTxLimit(limit.getId());
+          currentLimit.setPeriod(limit.getPeriod());
         
           String key = getKey(user, currentLimit);
           TransactionLimitState limitState = new TransactionLimitState();
           limitState.updateSpent(txn.getAmount(), limit.getPeriod());
-          currentLimit.getCurrentLimits().put(key, limitState);
+          Map<String, TransactionLimitState> limitStateMap = new HashMap<>();
+          limitStateMap.put(key, limitState);
+          currentLimit.setCurrentLimits(limitStateMap);
           currentLimitDAO.put(currentLimit);
         }
         return false;

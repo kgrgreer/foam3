@@ -21,10 +21,6 @@ foam.CLASS({
 
   documentation: 'Current limits in place for spids or users/businesses',
 
-  implements: [
-    'foam.nanos.auth.LastModifiedAware'
-  ],
-
   javaImports: [
     'net.nanopay.tx.ruler.TransactionLimitState'
   ],
@@ -32,8 +28,7 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'id',
-      gridColumns: 6
+      name: 'id'
     },
     {
       class: 'Reference',
@@ -41,52 +36,20 @@ foam.CLASS({
       name: 'txLimit',
       of: 'net.nanopay.tx.model.TransactionLimit',
       storageTransient: true,
-      documentation: 'TransactionLimit associated',
-      gridColumns: 6
-    },
-    {
-      class: 'Reference',
-      targetDAOKey: 'userDAO',
-      name: 'userId',
-      of: 'foam.nanos.auth.User',
-      storageTransient: true,
-      documentation: 'User limit is applied to',
-      gridColumns: 6,
-      tableCellFormatter: function(value, obj) {
-        obj.userDAO.find(value).then(function(u) {
-          if ( u && u.toSummary ) {
-            this.add(u.toSummary());
-          } else {
-            this.add(value);
-          }
-        }.bind(this));
-      }
+      documentation: 'TransactionLimit associated'
     },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.util.Frequency',
       name: 'period',
       storageTransient: true,
-      documentation: 'Current limit period. (Daily, Weekly, Monthly, Per Transaction)',
-      gridColumns: 6
+      documentation: 'Current limit period. (Daily, Weekly, Monthly, Per Transaction)'
     },
     {
       class: 'Map',
       name: 'currentLimits',
-      javaFactory: `
-        return new java.util.HashMap<String, TransactionLimitState>();
-      `,
       storageTransient: true,
-      documentation: 'Stores map of objects and current running limits',
-      gridColumns: 6
-    },
-    {
-      class: 'DateTime',
-      name: 'lastModified',
-      storageTransient: true,
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
-      gridColumns: 6
+      documentation: 'Stores map of objects and current running limits'
     }
   ]
 });
