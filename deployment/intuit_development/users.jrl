@@ -95,7 +95,7 @@ p({
     "class":"foam.nanos.auth.User",
     "id":8153,
     "firstName":"Brittany",
-    "middleName": "Decker"
+    "middleName": "Decker",
     "lastName":"White",
     "jobTitle":"Support",
     "organization":"Intuit Support",

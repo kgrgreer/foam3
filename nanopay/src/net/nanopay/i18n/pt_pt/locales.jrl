@@ -1240,7 +1240,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.FIRST_TRADE_DATE_DOMESTIC.label",target:"Primeira Data de Negociação Doméstica"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.OTHER_TRANSACTION_PURPOSE.label",target:"Por favor especifique"})
 
-/** Suggested User Transaction Info Enums **/
+/* Suggested User Transaction Info Enums */
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_REV_ENUM.label",target:"Vendas anuais brutas estimadas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE_ENUM.label",target:"Objetivo principal das transações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_FREQUENCY_ENUM.label",target:"Número estimado de transações anuais"})
@@ -1271,27 +1271,27 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.STA
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.INSTITUTION_NUMBER.label",target:"Nº do Banco"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.INSTITUTION_NUMBER.documentation",target:"Código bancário internacional que identifica bancos em todo o mundo. BIC / SWIFT"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.BRANCH_ID.label",target:"Agência"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.RANDOM_DEPOSIT_AMOUNT.label",target:"randomDepositAmount"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.RANDOM_DEPOSIT_AMOUNT.label",target:"Montante de depósito aleatório"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.RANDOM_DEPOSIT_AMOUNT.documentation",target:"Uma pequena quantia financeira depositada em uma conta bancária para testar a integração em nosso sistema."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.VERIFICATION_ATTEMPTS.label",target:"verificationAttempts"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.VERIFICATION_ATTEMPTS.label",target:"Tentativas de verificação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.VERIFICATION_ATTEMPTS.documentation",target:"Define o número de vezes que é feita uma tentativa de verificar a propriedade da conta bancária"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.MICRO_VERIFICATION_TIMESTAMP.label",target:"microVerificationTimestamp"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.MICRO_VERIFICATION_TIMESTAMP.label",target:"Carimbo de data e hora da microverificação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.MICRO_VERIFICATION_TIMESTAMP.documentation",target:"A data e a hora em que a propriedade da conta bancária é verificada"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.COUNTRY.label",target:"País"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.COUNTRY.documentation",target:"O nome do país associado à conta bancária. Isso deve ser definido pela classe filha.\n"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.FLAG_IMAGE.label",target:"País"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.FLAG_IMAGE.documentation",target:"Um link de URL para uma imagem da bandeira do país. Usado para fins de exibição. Isso deve ser definido pela classe filha.\n"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.INTEGRATION_ID.label",target:"integrationId"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.INTEGRATION_ID.label",target:"ID de integração"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.INTEGRATION_ID.documentation",target:"Um identificador exclusivo para uma conta bancária no software de contabilidade do cliente"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.ADDRESS.label",target:"Endereço"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.ADDRESS.documentation",target:"Endereço de autorização do teclado do usuário"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.BANK_ADDRESS.label",target:"BankAddress"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.BANK_ADDRESS.label",target:"Endereço do banco"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.BANK_ADDRESS.documentation",target:"Retorna o endereço da conta bancária do modelo de endereço"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.AVAILABLE_CURRENCIES.label",target:"AvailableCurrencies"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.AVAILABLE_CURRENCIES.documentation",target:"Contém uma lista de moedas disponíveis para receber ou enviar no país da conta selecionada"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.FOR_CONTACT.label",target:"forBeneficiário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.FOR_CONTACT.label",target:"Para beneficiário"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.FOR_CONTACT.documentation",target:"Sinalizar se a conta bancária pertence a um beneficiário. Obrigatório para expressões de propriedade de visibilidade"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.NAME.label",target:"Nome de Referência"})
@@ -1302,12 +1302,50 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IBA
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.DENOMINATION.label",target:"Moeda"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.SECURITY_PROMOTE_INFO.label",target:"segurança Promova informações"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.VERIFIED_BY.label",target:"verifiedBy"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.VERIFIED_BY.label",target:"Verificado por"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.VERIFY_ACCOUNT.label",target:"Verificar Conta"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.EDIT.label",target:"Editar"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.SET_AS_DEFAULT.label",target:"Definir Como Padrão"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.DELETE.label",target:"Excluir"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.AVAILABLE_CURRENCIES.label",target:"Moedas disponíveis"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.HOME_BALANCE.label",target:"Saldo (doméstico)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.BALANCE.label",target:"Saldo (local)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.BANK_ROUTING_CODE.label",target:"Código de roteamento do banco"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.CHECK_DIGIT_NUMBER.label",target:"Verifique o número do dígito"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.CHECKER_PREDICATE.label",target:"Predicado verificador"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.CHILDREN.label",target:"Crianças"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.CLIENT_ACCOUNT_INFORMATION_TITLE.label",target:"Título de informações da conta do cliente"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.COMPLIANCE.label",target:"Conformidade"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.CREATED.label",target:"Criado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.CREATED_BY.label",target:"Criado por"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.CREATED_BY_AGENT.label",target:"Criado pelo agente"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.CREDITS.label",target:"Créditos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.DEBITS.label",target:"Débitos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.DELETED.label",target:"Excluído"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.EXTERNAL_DATA.label",target:"Dados externos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.EXTERNAL_ID.label",target:"ID Externo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.FLINKS_RESPONSES.label",target:"Resposta Flinks"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.ID.label",target:"ID"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.INSTITUTION.label",target:"Instituição"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IBAN.label",target:"IBAN (Número da conta do banco internacional)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.KEYS.label",target:"Chaves"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.LAST_MODIFIED.label",target:"Última modificação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.LAST_MODIFIED_BY.label",target:"Modificado pela última vez por"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.LAST_MODIFIED_BY_AGENT.label",target:"Última modificação por agente"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.LIFECYCLE_STATE.label",target:"Estado do ciclo de vida"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.DESC.label",target:"Memorando"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.PARENT.label",target:"Conta pai"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.PLAID_ACCOUNT.label",target:"Conta Plaid"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.PLAID_RESPONSES.label",target:"Respostas Plaid"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.SECURITIES_ACCOUNT.label",target:"Conta de títulos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.SUB_ACCOUNTS.label",target:"Subcontas"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.TRANSFER_IN.label",target:"Transferir em"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.TRANSFER_OUT.label",target:"Transferir para fora"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.BRANCH.label",target:"Número de trânsito"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.TYPE.label",target:"Modelo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.USER_FEEDBACK.label",target:"Feedback do usuário"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CanReceiveCurrency.USER_ID.label",target:"userId pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CanReceiveCurrency.USER_ID.documentation",target:"\n        Defina isso como um id de usuário. O DAO verificará se este usuário pode receber dinheiro na moeda com id currencyId.\n      "})
@@ -2905,7 +2943,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBus
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.IE.label",target:"Inscrição Estadual"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerSection.OWNER_DETAILS",target:"Detalhes do cotista "})
 
-/** Job Titles **/
+/* Job Titles */
 p({class:"foam.i18n.Locale",locale:"pt",source:"Accountant.label",target:"Contador"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Accounts Manager.label",target:"Gerente de contas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Accounts Payable Clerk.label",target:"Escriturário de contas a pagar"})
@@ -2983,8 +3021,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.AnnualTxnFrequencyEnum.LESS_THAN_500.label",target:"200 a 499"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.AnnualTxnFrequencyEnum.LESS_THAN_1000.label",target:"500 a 999"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.AnnualTxnFrequencyEnum.OVER_THAN_1000.label",target:"Acima de 1000"})
-
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.AVAILABLE_CURRENCIES",target:"Moedas Disponíveis"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.CPF.DATA.help",target:"O CPF (Cadastro de Pessoas Físicas ou Cadastro de Pessoas Físicas) é um número atribuído pelo órgão tributário brasileiro tanto a brasileiros quanto a estrangeiros residentes que estão sujeitos a impostos no Brasil."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.ExpirableDocument.EXPIRY.help",target:"Forneça a data de validade conforme mostrado em sua identificação. Este documento de identificação terá validade até a data de vencimento, em até dez anos."})
@@ -3475,11 +3511,11 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.admin.model.AccountS
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.admin.model.AccountStatus.DISABLED.label",target:"Desabilitado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.admin.model.AccountStatus.REVOKED.label",target:"Revogado"})
 
-/** Report Status **/
+/* Report Status */
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.ReportStatus.IN_PROCESS.label",target:"Em processo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.ReportStatus.COMPLETED.label",target:"Concluído"})
 
-/** Business Summary Report Status **/
+/* Business Summary Report Status */
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.reports.RowOfBusSumReports.ACTIVE.label",target:"Ativo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.reports.RowOfBusSumReports.APPLICATION_SUBMITTED.label",target:"Aplicação submetida"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.reports.RowOfBusSumReports.APPROVED.label",target:"Aprovado"})
@@ -3487,7 +3523,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.reports.RowOfB
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.reports.RowOfBusSumReports.LOCKED.label",target:"Trancado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.reports.RowOfBusSumReports.REGISTRATION.label",target:"Cadastro"})
 
-/** Payment Report **/
+/* Payment Report */
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentReport.INVOICE_ID.label",target:"ID da fatura"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentReport.STATUS.label",target:"Status"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentReport.STATE.label",target:"Estado"})
@@ -3508,7 +3544,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.Payment
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentReport.DESTINATION_CURRENCY.label",target:"Moeda de destino"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentReport.DATE_RANGE.label",target:"Intervalo de datas"})
 
-/** Payment Summary Report **/
+/* Payment Summary Report */
 // property labels
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentSummaryReport.TYPE_DATE.label",target:"Tipo Date"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.PaymentSummaryReport.DAILY.label",target:"Diariamente"})
@@ -3532,7 +3568,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.Payment
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.compliance.ComplianceApprovalRequest.SECTION_COMPLIANCE_INFORMATION.title",target:"Conformidade Informação"})
 
-/** Menus **/
+/* Menus */
 p({class:"foam.i18n.Locale",locale:"pt",source:"Users",target:"Usuários"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"admin.users-2.label",target:"Usuários"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"admin.users-2.browseTitle",target:"Usuários"})
@@ -3704,7 +3740,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.modal.SessionTime
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.modal.SessionTimeoutModal.STAY_SIGN_IN.label",target:"Fique conectado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.GrandTotalLineItem.GRAND_TOTAL",target:"Total a Pagar"})
 
-/** Business Summary Report **/
+/* Business Summary Report */
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.BusinessSummaryReport.TYPE_DATE.label",target:"Digite a data"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.BusinessSummaryReport.DAILY.label",target:"Diariamente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.BusinessSummaryReport.YESTERDAY.label",target:"Ontem"})
@@ -3714,7 +3750,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.Busines
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.BusinessSummaryReport.YEAR_TO_DATE.label",target:"No acumulado do ano"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.BusinessSummaryReport.TOTAL.label",target:"Total"})
 
-/** Rejected Transaction Report **/
+/* Rejected Transaction Report */
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.RejectedTransactionReport.ID.label",target:"ID"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.RejectedTransactionReport.CREATED.label",target:"Criado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.RejectedTransactionReport.STATUS.label",target:"Status"})
@@ -3730,7 +3766,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.Rejecte
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.RejectedTransactionReport.DESTINATION_CURRENCY.label",target:"Moeda de destino"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.RejectedTransactionReport.DATE_RANGE.label",target:"Intervalo de datas"})
 
-/** User Compliance Summary Report **/
+/* User Compliance Summary Report */
 // property labels
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.ROW_ACTION.label",target:"Ação de linha"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.ID.label",target:"ID"})
@@ -3779,6 +3815,56 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserCom
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReport.NO_MSG",target:"Não"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReportDAO.ENTITY_MSG",target:"Entidade"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.UserComplianceSummaryReportDAO.INDIVIDUAL_MSG",target:"Individual"})
+
+/* Transaction Status */
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.TransactionStatus.PENDING.label",target:"Pendente"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.TransactionStatus.REVERSE.label",target:"Reversa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.TransactionStatus.REVERSE_FAIL.label",target:"Falha reversa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.TransactionStatus.SENT.label",target:"Enviei"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.TransactionStatus.DECLINED.label",target:"Recusado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.TransactionStatus.COMPLETED.label",target:"Concluído"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.TransactionStatus.REFUNDED.label",target:"Devolveu"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.TransactionStatus.FAILED.label",target:"Fracassado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.TransactionStatus.PAUSED.label",target:"Em pausa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.TransactionStatus.CANCELLED.label",target:"Cancelado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.TransactionStatus.PENDING_PARENT_COMPLETED.label",target:"Pai pendente concluído"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.TransactionStatus.SCHEDULED.label",target:"Agendado"})
+
+/* Chain Summary */
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ChainSummary.SUMMARY.label",target:"Resumo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ChainSummary.STATUS.label",target:"Status"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ChainSummary.CATEGORY.label",target:"Categoria"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ChainSummary.ERROR_CODE.label",target:"Erro de código"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ChainSummary.ERROR_INFO.label",target:"Informação de erro"})
+
+/* Chain Summary Category */
+p({class:"foam.i18n.Locale",locale:"pt",source:"CashIn",target:"Dinheiro em"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"CashOut",target:"Sacar"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Partner",target:"Parceiro"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Digital",target:"Digital"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Approval",target:"Aprovação"})
+
+/* Report (Script) */
+// property labels
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.reports.Report.NAME.label",target:"Nome"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.reports.Report.DAO_KEY.label",target:"Chave DAO"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.reports.Report.DOWNLOAD_CSV.label",target:"Baixar CSV"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.reports.Report.OUTPUT.label",target:"Resultado"})
+// report script names
+p({class:"foam.i18n.Locale",locale:"pt",source:"Report-NetPosition.name",target:"Posição líquida"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Report-TxSummary-Daily.name",target:"Resumo de transações diárias"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Report-TxSummary-Monthly.name",target:"Resumo de transação mensal"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Report-TxSummary-Range.name",target:"Resumo de transação (intervalo)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Report-PaymentSummary-Daily.name",target:"Resumo de pagamento diário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Report-PaymentSummary-Monthly.name",target:"Resumo de pagamento mensal"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Report-PaymentSummary-Range.name",target:"Resumo de pagamento (intervalo)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Report-Payment-Summary-for-Leadership.name",target:"Resumo de pagamento de liderança"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Report-User-Compliance-Summary.name",target:"Resumo de conformidade do usuário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Report-RejectedTransactions-Daily.name",target:"Transações rejeitadas diariamente"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Report-RejectedTransactions-Monthly.name",target:"Transações rejeitadas mensais"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Report-RejectedTransactions-Range.name",target:"Transações rejeitadas (intervalo)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Report-Business-Summary-for-Leadership.name",target:"Resumo de negócios de liderança"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Report-Business-Information-for-Marketing.name",target:"Informações comerciais de marketing"})
 
 /* SectionedDetailPropertyView */
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.detail.SectionedDetailPropertyView.HELP",target:"Ajuda"})

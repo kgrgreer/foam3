@@ -20,7 +20,24 @@ foam.CLASS({
   name: 'Report',
   extends: 'foam.nanos.script.Script',
 
+  tableColumns: [
+    'id',
+    'name',
+    'description',
+    'lastDuration',
+    'lastRun',
+    'status'
+  ],
+
   properties: [
+    {
+      class: 'String',
+      name: 'name',
+      tableWidth: 300,
+      tableCellFormatter: function(val, obj) {
+        this.translate(`${obj.id}.name`, val);
+      }
+    },
     {
       name: 'output',
       preSet: function(_, newVal) {
@@ -40,7 +57,7 @@ foam.CLASS({
   actions: [
       {
         name: 'downloadCSV',
-        label: 'DownloadCSV',  //Download CSV file for export OUTPUT data
+        label: 'Download CSV',  //Download CSV file for export OUTPUT data
         code: async function() {
           if ( this.output == "" )
             alert("Empty Output");
