@@ -86,18 +86,21 @@ foam.CLASS({
     {
       name: 'calculateErrorCode',
       javaCode: `
+
+        if ( getErrorCode() != 0 ) return getErrorCode();
         String reason = getRejectReason();
         if ( SafetyUtil.isEmpty(reason) ) return 0;
 
         if ( reason.contains("BE16") || reason.contains("RR03") ) {
-          return 912l;
+          setErrorCode(912l);
         } else if ( reason.contains("BE08")  || reason.contains("BE22") ) {
-          return 914l;
+          setErrorCode(914l);
         } else if ( reason.contains("RC09") || reason.contains("RC10")  ) {
-          return 923l;
+          setErrorCode(923l);
         } else {
-          return 991l;
+          setErrorCode(991l);
         }
+        return getErrorCode();
       `
     }
   ]

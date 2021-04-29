@@ -52,7 +52,6 @@ foam.CLASS({
         CompositeTransaction comp = createCompositeTransaction(requestTxn);
 
         BankAccount source = (BankAccount) requestTxn.findSourceAccount(x);
-        DigitalAccount sourceDigital = null;
         ArrayList<Transaction> feeTransactions = new ArrayList<Transaction>();
 
         // create all the digital fee transactions
@@ -61,7 +60,7 @@ foam.CLASS({
             IndependantTransactionFeeLineItem itli = ((IndependantTransactionFeeLineItem) tli);
             Transaction leg2 = new Transaction();
             leg2.setDestinationAccount(itli.getDestinationAccount());
-            leg2.setSourceAccount(sourceDigital.getId());
+            leg2.setSourceAccount(requestTxn.getDestinationAccount());
             leg2.setAmount(itli.getAmount());
             leg2.setDestinationAmount(itli.getAmount());
             leg2.setSourceCurrency(requestTxn.getSourceCurrency());

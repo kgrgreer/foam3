@@ -59,9 +59,8 @@ foam.CLASS({
       ],
       type: 'Long',
       javaCode: `
-        return ((Double)
-          (this.getPercentage()/100.0 * getAmount(obj))
-        ).longValue();
+        return
+          Math.round(this.getPercentage()/100.0 * getAmount(obj));
       `,
       // swiftCode: ' return Int(floorf(percentage / 100.0 * Float(transactionAmount)))',
       code: function(obj) {

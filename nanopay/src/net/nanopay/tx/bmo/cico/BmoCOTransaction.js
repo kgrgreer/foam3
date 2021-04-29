@@ -77,22 +77,24 @@ foam.CLASS({
     {
       name: 'calculateErrorCode',
       javaCode: `
+        if ( getErrorCode() != 0 ) return getErrorCode();
         String reason = getRejectReason();
         if ( reason.contains("EFT File Rejected") ) {
-          return 991;
+          setErrorCode(991l);
         } else if ( reason.contains("INST. ID INVALID") ) {
-          return 923l;
+          setErrorCode(923l);
         } else if ( reason.contains("ACCOUNT NO. INVALID") ) {
-          return 912l;
+          setErrorCode(912l);
         } else if ( reason.contains("PAYEE PAYOR NAME INVALID") ) {
-          return 914l;
+          setErrorCode(914l);
         } else if ( reason.contains("DEST. INST. NOT DEFINED ON FIF") ) {
-          return 923l;
+          setErrorCode(923l);
         } else if ( reason.contains("DEST. ACCT. NO. INVALID") ) {
-          return 912l;
+          setErrorCode(912l);
         } else {
-          return 991l;
+          setErrorCode(991l);
         }
+        return getErrorCode();
       `
     }
   ]
