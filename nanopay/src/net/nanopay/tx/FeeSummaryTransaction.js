@@ -17,9 +17,13 @@
 
  foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'IndependantTransactionFeeLineItem',
-  extends: 'net.nanopay.tx.InfoLineItem',
+  name: 'FeeSummaryTransaction',
+  extends: 'net.nanopay.tx.SummaryTransaction',
 
-  properties: [
-  ]
+  implements: [
+    'net.nanopay.tx.SummarizingTransaction'
+  ],
+
+  documentation: 'Used solely for fee only transactions',
+
 });
