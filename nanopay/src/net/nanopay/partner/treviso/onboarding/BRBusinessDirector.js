@@ -78,7 +78,10 @@ foam.CLASS({
       name: 'cpf',
       label: '',
       of: 'net.nanopay.country.br.CPF',
-      required: true
+      required: true,
+      factory: function() {
+        return net.nanopay.country.br.CPF.create({}, this.__subContext__);
+      }
     },
     {
       class: 'Reference',
@@ -166,6 +169,12 @@ foam.CLASS({
           errorMessage: 'PROOF_OF_IDENTIFICATION'
         }
       ]
+    }
+  ],
+
+  methods: [
+    function installInWizardlet(w) {
+      this.cpf.installInWizardlet(w);
     }
   ]
 });

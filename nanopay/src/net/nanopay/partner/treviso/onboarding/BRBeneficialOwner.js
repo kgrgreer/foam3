@@ -225,6 +225,10 @@ foam.CLASS({
   ],
 
   methods: [
+    function installInWizardlet(w) {
+      this.cpf.installInWizardlet(w);
+    },
+
     function fromUser(u) {
       var common = [
         'firstName', 'lastName', 'jobTitle', 'address',
