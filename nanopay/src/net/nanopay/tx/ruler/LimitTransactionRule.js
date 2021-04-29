@@ -146,7 +146,7 @@ foam.CLASS({
             txn = (Transaction) txn.fclone();
             txn.setStatus(TransactionStatus.CANCELLED);
             transactionDAO.put(txn);
-            return;
+            return true;
           }
         }
 
