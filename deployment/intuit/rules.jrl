@@ -487,7 +487,7 @@ p({
     ]
   },
   "action":{
-    "class":"net.nanopay.partner.tx.IndependantFeePlanningRule"
+    "class":"net.nanopay.tx.IndependantFeePlanningRule"
   },
   "after":false,
   "enabled":true,

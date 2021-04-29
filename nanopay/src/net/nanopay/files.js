@@ -1691,6 +1691,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/BmoInterTrustPlanner' },
   { name: 'net/nanopay/tx/planner/PartialPlanDAO' },
   { name: 'net/nanopay/tx/planner/CreditCodeTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/BankDigitalCompositeFeePlanner' },
   { name: 'net/nanopay/tx/PropertyCompare' },
 
   // Planner Exceptions

@@ -59,6 +59,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'foam.nanos.logger.Logger',
     'net.nanopay.tx.PropertyCompare',
+    'net.nanopay.tx.CompositeTransaction',
     'net.nanopay.tx.creditengine.CreditEngine'
   ],
 
@@ -327,6 +328,26 @@ foam.CLASS({
         ct.copyFrom(txn);
         ct.setStatus(net.nanopay.tx.model.TransactionStatus.PENDING);
         ct.setName("Compliance Transaction");
+        ct.clearTransfers();
+        ct.clearLineItems();
+        ct.setPlanner(getId());
+        ct.clearNext();
+        ct.setId(UUID.randomUUID().toString());
+        return ct;
+      `
+    },
+    {
+      name: 'createCompositeTransaction',
+      documentation: 'Creates a composite transaction and returns it',
+      args: [
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      type: 'net.nanopay.tx.CompositeTransaction',
+      javaCode: `
+        CompositeTransaction ct = new CompositeTransaction();
+        ct.copyFrom(txn);
+        ct.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
+        ct.setName("Composite Transaction");
         ct.clearTransfers();
         ct.clearLineItems();
         ct.setPlanner(getId());

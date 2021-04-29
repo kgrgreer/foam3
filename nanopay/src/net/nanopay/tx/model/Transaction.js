@@ -981,13 +981,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.integration.ErrorCode',
       hidden: true,
-      javaGetter: `
-      // if errorcode not 0 return it, else try to calculate it.
-        if ( errorCode_ == 0 ) {
-          this.setErrorCode(calculateErrorCode());
-        }
-        return errorCode_;
-      `,
+      value: 0,
       documentation: 'used for negative flows'
     }
   ],
@@ -1476,7 +1470,7 @@ foam.CLASS({
       name: 'calculateErrorCode',
       type: 'Long',
       javaCode: `
-      return 0l;
+      return getErrorCode();
     `
     },
     {

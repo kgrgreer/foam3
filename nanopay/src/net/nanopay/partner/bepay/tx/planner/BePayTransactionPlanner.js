@@ -85,6 +85,7 @@ foam.CLASS({
       bTx.setPaymentProvider(PAYMENT_PROVIDER);
       bTx.setPlanner(this.getId());
       addPartnerLineItem(x, bTx, requestTxn);
+
       txn.addNext(bTx);
       return txn;
     `
