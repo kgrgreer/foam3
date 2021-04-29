@@ -49,7 +49,7 @@ foam.CLASS({
     }
   ],
 
-properties: [
+  properties: [
     {
       class: 'Boolean',
       name: 'skipDirectors',
@@ -106,8 +106,16 @@ properties: [
 
   methods: [
     function installInWizardlet(w) {
-      // Eliminate flicker from FObjectArray updates
-      w.reloadAfterSave = false;
+      var directorsInstalled = [];
+      var installDirector = () => {
+        this.businessDirectors.forEach(director => {
+          if ( directorsInstalled.includes(director) ) return;
+          directorsInstalled.push(director);
+          director.installInWizardlet(w);
+        })
+      }
+      installDirector();
+      this.businessDirectors$.sub(installDirector);
     },
     {
       name: 'validate',
