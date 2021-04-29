@@ -1,6 +1,6 @@
 p({
   class: "foam.nanos.crunch.Capability",
-  id: "2EFEFD46-967D-43B3-A464-2ACDC3B2D032",
+  id: "crunch.integration.spid-base",
   name: "Integration Base Capability for Service Providers",
   version: "0",
   enabled: true,
@@ -8,7 +8,7 @@ p({
 
 p({
   class: "foam.nanos.crunch.Capability",
-  id: "03EA45D2-BC17-4D7D-B1FD-00A69AF1FFDD",
+  id: "crunch.integration.planners",
   name: "Enable Integration Planners",
   version: "0",
   enabled: true,
@@ -19,7 +19,7 @@ p({
 
 p({
   class: "foam.nanos.crunch.Capability",
-  id: "7566B8D4-BB9A-4B85-BABA-C61094D9A743",
+  id: "crunch.integration.countries",
   name: "Enable Integration Countries",
   version: "0",
   enabled: true,

@@ -23,10 +23,13 @@ foam.CLASS({
 
   javaImports: [
     'foam.util.SafetyUtil',
+    'java.time.LocalDateTime',
+    'java.util.Date',
     'java.util.UUID',
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXQuote',
     'net.nanopay.fx.FXSummaryTransaction',
+    'net.nanopay.tx.ExpiryLineItem',
     'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.tx.InvoicedFeeLineItem',
     'net.nanopay.tx.FeeLineItem',
@@ -45,6 +48,11 @@ foam.CLASS({
     {
       name: 'bestPlan',
       value: true
+    },
+    {
+      class: 'Long',
+      name: 'expiryMinutes',
+      value: 5
     }
   ],
 
@@ -108,6 +116,14 @@ foam.CLASS({
       trevisoTxn.setPlanner(this.getId());
       trevisoTxn = addNatureCodeLineItems(x, trevisoTxn, requestTxn);
 
+      // Expire transaction plan after x minutes 
+      ExpiryLineItem exp = new ExpiryLineItem();
+      LocalDateTime expiry = LocalDateTime.now();
+      expiry = expiry.plusMinutes(getExpiryMinutes());
+      Date date = java.util.Date.from(expiry.atZone(java.time.ZoneId.systemDefault()).toInstant());
+      exp.setExpiry(date);
+      exp.setName("Treviso FX Expiry");
+      trevisoTxn.addLineItems( new TransactionLineItem[] { exp } );
       txn.addNext(trevisoTxn);
       
       // TODO: evaluate helper methods on the intended transaction instead of the head.
@@ -156,18 +172,20 @@ foam.CLASS({
 
           // -- Copy line items
           transaction.setLineItems(root.getLineItems());
+          long amount = root.getAmount() + root.getTotal(x, root.getSourceAccount());
           
           // Add transfer for source amount
-          ExternalTransfer ext = new ExternalTransfer(transaction.getSourceAccount(), -root.getAmount());
+          ExternalTransfer ext = new ExternalTransfer(transaction.getSourceAccount(), -amount);
           Transfer[] transfers = (Transfer[]) ArrayUtils.add(transaction.getTransfers(), ext);
-
-          // Update the amount
-          transaction.setAmount(root.getAmount());
 
           // Add transfers for fees from summary
           transfers =  (Transfer[]) ArrayUtils.addAll(transfers, root.getTransfers());
           transaction.setTransfers(transfers);
           root.setTransfers(null);
+          root.getNext()[0].setAmount(root.getAmount());
+
+          // Update the amount
+          transaction.setAmount(-transaction.getTotal(x, transaction.getSourceAccount()));
         } else if ( txn instanceof ExchangeLimitTransaction ) {
           ExchangeLimitTransaction exchange = (ExchangeLimitTransaction) txn;
           exchange.setAmount(root.getAmount());

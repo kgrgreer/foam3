@@ -32,15 +32,18 @@ foam.CLASS({
     'foam.core.X',
     'foam.core.FObject',
     'foam.dao.*',
-    'static foam.mlang.MLang.EQ',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
+    'foam.util.SafetyUtil',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.model.Branch',
     'net.nanopay.payment.Institution',
     'net.nanopay.tx.Transfer',
-    'java.util.List'
+    'java.util.List',
+
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.EQ'
   ],
 
   messages: [
@@ -96,18 +99,22 @@ foam.CLASS({
             institution = bankAccount.findInstitution(x);
           }
         }
-        if (institution == null && !foam.util.SafetyUtil.isEmpty(bankAccount.getInstitutionNumber())) {
+        if ( ! SafetyUtil.isEmpty(bankAccount.getInstitutionNumber())
+          && ( institution == null || ! institution.getInstitutionNumber().equals(bankAccount.getInstitutionNumber()) )
+        ) {
           DAO institutionDAO = (DAO) x.get("institutionDAO");
           List institutions = ((ArraySink) institutionDAO
-            .where(
-              EQ(Institution.INSTITUTION_NUMBER, bankAccount.getInstitutionNumber())
-            )
+            .where(AND(
+              EQ(Institution.INSTITUTION_NUMBER, bankAccount.getInstitutionNumber()),
+              EQ(Institution.COUNTRY_ID, bankAccount.getCountry())
+            ))
             .select(new ArraySink())).getArray();
 
           if (institutions.size() == 0) {
             institution = new Institution();
             institution.setName(bankAccount.getInstitutionNumber());
             institution.setInstitutionNumber(bankAccount.getInstitutionNumber());
+            institution.setCountryId(bankAccount.getCountry());
             institution = (Institution) institutionDAO.put(institution);
           } else {
             institution = (Institution) institutions.get(0);

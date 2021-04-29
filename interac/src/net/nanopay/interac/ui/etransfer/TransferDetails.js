@@ -63,7 +63,6 @@ foam.CLASS({
 
         ^ .foam-u2-tag-Select {
           width: 320px;
-          height: 40px;
           border-radius: 0;
 
           -webkit-appearance: none;
@@ -301,7 +300,7 @@ foam.CLASS({
           .start('p').add(this.NoteLabel).end()
           .tag(this.NOTES, { onKey: true })
           .start('div').addClass('confirmationContainer').enableClass('hidden', this.invoiceMode$)
-            .tag({ class: 'foam.u2.md.CheckBox', data$: this.notThirdParty$ })
+            .tag({ class: 'foam.u2.CheckBox', data$: this.notThirdParty$ })
             .start('p').addClass('confirmationLabel').add(this.NotThirdParty)
               .on('click', function() {
                 self.notThirdParty = ! self.notThirdParty;

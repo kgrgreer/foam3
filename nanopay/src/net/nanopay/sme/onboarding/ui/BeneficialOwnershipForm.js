@@ -322,7 +322,7 @@ css: `
     }
 
     ^ .boxedField {
-      border: 1px solid;  
+      border: 1px solid;
       border-radius: 5px;
       padding: 24px;
     }
@@ -643,10 +643,10 @@ methods: [
       .start().addClass('medium-header').add(this.TITLE).end()
       .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.ADVISORY_NOTE })
       .start().addClass('beneficialOwnersCheckBox')
-        .start({ class: 'foam.u2.md.CheckBox', label: this.NO_BENEFICIAL_OWNERS, data$: this.noBeneficialOwners$ }).end()
+        .start({ class: 'foam.u2.CheckBox', label: this.NO_BENEFICIAL_OWNERS, data$: this.noBeneficialOwners$ }).end()
       .end()
       .start().addClass('beneficialOwnersCheckBox')
-        .start({ class: 'foam.u2.md.CheckBox', label: this.PUBLICLY_TRADED_ENTITY, data$: this.publiclyTradedEntity$ }).end()
+        .start({ class: 'foam.u2.CheckBox', label: this.PUBLICLY_TRADED_ENTITY, data$: this.publiclyTradedEntity$ }).end()
       .end()
       .start().show(this.showAddingBeneficalOwner$)
         .start().addClass('boxedField')
@@ -658,7 +658,7 @@ methods: [
             .end()
             .start().add(this.OWNER_LABEL, ' ', this.beneficialOwnersCount$.map(function(p) { return p + 1; })).addClass('medium-header').end()
             .start().show(this.showSameAsAdminOption$).addClass('checkBoxContainer')
-              .start({ class: 'foam.u2.md.CheckBox', label: this.SAME_AS_SIGNING, data$: this.isSameAsAdmin$ }).end()
+              .start({ class: 'foam.u2.CheckBox', label: this.SAME_AS_SIGNING, data$: this.isSameAsAdmin$ }).end()
             .end()
             .start().addClass('owner-percent-container')
               .start(this.OWNERSHIP_PERCENT).addClass('intTextBox').end()
@@ -771,7 +771,7 @@ methods: [
         // .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_4).end()
       .end()
       .start().addClass('principalOwnersCheckBox')
-        .start({ class: 'foam.u2.md.CheckBox', label: this.NO_ADDITIONAL_OWNERS, data$: this.noAdditionalBeneficialOwners$ }).end()
+        .start({ class: 'foam.u2.CheckBox', label: this.NO_ADDITIONAL_OWNERS, data$: this.noAdditionalBeneficialOwners$ }).end()
       .end();
   },
 

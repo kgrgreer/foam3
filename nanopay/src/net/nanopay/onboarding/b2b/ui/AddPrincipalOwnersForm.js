@@ -447,7 +447,6 @@ foam.CLASS({
     }
 
     ^ .foam-u2-TextField, ^ .foam-u2-DateView, ^ .foam-u2-tag-Select {
-      height: 40px;
 
       background-color: #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
@@ -784,7 +783,7 @@ foam.CLASS({
           .start('p').add(this.BasicInfoLabel).addClass('sectionTitle').style({ 'margin-top': '0' }).end()
 
           .start('div').addClass('checkBoxContainer')
-            .start({ class: 'foam.u2.md.CheckBox', label: 'Same as Admin', data$: this.isSameAsAdmin$ }).end()
+            .start({ class: 'foam.u2.CheckBox', label: 'Same as Admin', data$: this.isSameAsAdmin$ }).end()
           .end()
 
           .start('div').addClass('animationContainer')

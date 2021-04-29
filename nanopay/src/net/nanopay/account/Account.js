@@ -303,6 +303,12 @@ foam.CLASS({
       `,
       tableWidth: 175,
       tableCellFormatter: function(value, obj, axiom) {
+        if (
+          net.nanopay.account.TrustAccount.isInstance(obj) 
+          && value < 0 
+        ){
+          value *= -1;
+        }
         this.add(value);
       }
     },
@@ -339,6 +345,12 @@ foam.CLASS({
         this.add(obj.slot(function(denomination) {
           return self.E().add(foam.core.PromiseSlot.create({
             promise: this.currencyDAO.find(denomination).then((result) => {
+              if (
+                net.nanopay.account.TrustAccount.isInstance(obj) 
+                && value < 0 
+              ){
+                value *= -1;
+              }
               return self.E().add(result.format(value));
             })
           }));

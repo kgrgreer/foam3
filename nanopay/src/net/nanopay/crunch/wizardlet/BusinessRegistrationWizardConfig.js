@@ -14,18 +14,12 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
-  requires: [
-    'foam.u2.crunch.wizardflow.SaveAllAgent'
-  ],
-
   methods: [
     {
       name: 'applyTo',
       flags: ['web'],
       code: function applyTo(sequence) {
         this.SUPER(sequence);
-        sequence.add(this.SaveAllAgent);
-        sequence.remove('PutFinalPayloadsAgent');
         let config = sequence.get('StepWizardAgent').args.config;
         config.requireAll = true;
         sequence.reconfigure('StepWizardAgent', {
@@ -37,7 +31,7 @@ foam.CLASS({
       name: 'execute',
       flags: ['web'],
       code: async function execute() {
-        
+
       }
     }
   ]

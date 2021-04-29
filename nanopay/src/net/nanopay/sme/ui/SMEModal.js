@@ -30,7 +30,7 @@ foam.CLASS({
 
     ^inner {
       position: relative;
-      max-height: 60vw;
+      max-height: 85vh;
     }
 
     ^X:hover {
@@ -41,7 +41,6 @@ foam.CLASS({
       background-color: white;
       box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
       border-radius: 3px;
-      overflow: hidden;
     }
 
     ^ {
@@ -80,6 +79,13 @@ foam.CLASS({
 
   `,
 
+  properties: [
+    {
+      name: 'isStyled',
+      value: true
+    }
+  ],
+
   methods: [
     function init() {
       var content;
@@ -100,7 +106,7 @@ foam.CLASS({
             .end()
           .endContext()
           .start()
-            .addClass(this.myClass('content'))
+            .enableClass(this.myClass('content'), this.isStyled$)
             .call(function() { content = this; })
           .end()
         .end()

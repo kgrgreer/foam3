@@ -1,0 +1,13 @@
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"cb-admin",targetId:"group.update.cb-admin"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"cb-admin",targetId:"group.update.cb-fraud-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"cb-admin",targetId:"group.update.cb-payment-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"cb-admin",targetId:"group.update.cb-support"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"cb-admin",targetId:"group.read.cb-admin"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"cb-admin",targetId:"group.read.cb-fraud-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"cb-admin",targetId:"group.read.cb-payment-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"cb-admin",targetId:"group.read.cb-support"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"cb-fraud-ops",targetId:"group.update.cb-fraud-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"cb-fraud-ops",targetId:"group.update.cb-payment-ops"})
+
+r({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"menu.read.dashboard-backoffice"})
+r({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"menu.read.dashboard-backoffice.*"})

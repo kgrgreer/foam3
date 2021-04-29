@@ -95,7 +95,7 @@ p({
     "class":"foam.nanos.auth.User",
     "id":8153,
     "firstName":"Brittany",
-    "middleName": "Decker"
+    "middleName": "Decker",
     "lastName":"White",
     "jobTitle":"Support",
     "organization":"Intuit Support",
@@ -234,7 +234,71 @@ p({
     "lastName":"Mall-Tegally",
     "jobTitle":"Support",
     "organization":"Intuit Support",
-    "email":"Firdosh_Malltegally@intuit.com",
+    "email":"firdosh_malltegally@intuit.com",
+    "password":"N4cD1yLjUZU=:TbeiB+VujXTIsZBp0kyZMl8MkJoUYoYq6FL4qqy70bS3VyTD24VM0pngoGTXEcVh6jl7xGMvSrD183syOIR9cA==",
+    "passwordLastModified":"2019-10-11T20:18:57.186Z",
+    "spid":"intuit",
+    "group":"intuit-support",
+    "emailVerified":true,
+    "lifecycleState":1
+})
+
+p({
+    "class":"foam.nanos.auth.User",
+    "id":8163,
+    "firstName":"Allie",
+    "lastName":"Chong",
+    "jobTitle":"Support",
+    "organization":"Intuit Support",
+    "email":"allie_chong@intuit.com",
+    "password":"N4cD1yLjUZU=:TbeiB+VujXTIsZBp0kyZMl8MkJoUYoYq6FL4qqy70bS3VyTD24VM0pngoGTXEcVh6jl7xGMvSrD183syOIR9cA==",
+    "passwordLastModified":"2019-10-11T20:18:57.186Z",
+    "spid":"intuit",
+    "group":"intuit-support",
+    "emailVerified":true,
+    "lifecycleState":1
+})
+
+p({
+    "class":"foam.nanos.auth.User",
+    "id":8164,
+    "firstName":"Debbie",
+    "lastName":"Cole",
+    "jobTitle":"Support",
+    "organization":"Intuit Support",
+    "email":"debbie_cole2@intuit.com",
+    "password":"N4cD1yLjUZU=:TbeiB+VujXTIsZBp0kyZMl8MkJoUYoYq6FL4qqy70bS3VyTD24VM0pngoGTXEcVh6jl7xGMvSrD183syOIR9cA==",
+    "passwordLastModified":"2019-10-11T20:18:57.186Z",
+    "spid":"intuit",
+    "group":"intuit-support",
+    "emailVerified":true,
+    "lifecycleState":1
+})
+
+p({
+    "class":"foam.nanos.auth.User",
+    "id":8165,
+    "firstName":"Ian",
+    "lastName":"Visser",
+    "jobTitle":"Support",
+    "organization":"Intuit Support",
+    "email":"ian_visser@intuit.com",
+    "password":"N4cD1yLjUZU=:TbeiB+VujXTIsZBp0kyZMl8MkJoUYoYq6FL4qqy70bS3VyTD24VM0pngoGTXEcVh6jl7xGMvSrD183syOIR9cA==",
+    "passwordLastModified":"2019-10-11T20:18:57.186Z",
+    "spid":"intuit",
+    "group":"intuit-support",
+    "emailVerified":true,
+    "lifecycleState":1
+})
+
+p({
+    "class":"foam.nanos.auth.User",
+    "id":8166,
+    "firstName":"Celena",
+    "lastName":"Glanville",
+    "jobTitle":"Support",
+    "organization":"Intuit Support",
+    "email":"celena_glanville@intuit.com",
     "password":"N4cD1yLjUZU=:TbeiB+VujXTIsZBp0kyZMl8MkJoUYoYq6FL4qqy70bS3VyTD24VM0pngoGTXEcVh6jl7xGMvSrD183syOIR9cA==",
     "passwordLastModified":"2019-10-11T20:18:57.186Z",
     "spid":"intuit",

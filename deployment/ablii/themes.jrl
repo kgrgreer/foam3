@@ -8,7 +8,7 @@ p({
   "navigationRootMenu":"smeNavigation",
   "settingsRootMenu":"smeSettings",
   "logoRedirect":"sme.main.appStore",
-  "admissionCapability": "554af38a-8225-87c8-dfdf-eeb15f71215e-18",
+  "admissionCapability": "crunch.onboarding.general-admission",
   "defaultMenu":"sme.main.appStore",
   "disableCurrencyChoice": true,
   "loginImage": "images/sign_in_illustration.png",

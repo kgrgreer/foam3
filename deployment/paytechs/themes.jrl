@@ -11,7 +11,7 @@ p({
   "logoBackgroundColour":"#202341",
   "largeLogoEnabled": true,
   "largeLogo": "images/nanopay_blue_white_206x42.png",
-  "supportEmail":"support@nanopay.com",
+  "supportEmail":"support@nanopay.net",
   "supportPhone":"+1.647.496.1526",
   "headConfig": {
     "customFavIcon" : [

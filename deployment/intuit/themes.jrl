@@ -30,11 +30,11 @@ p({
   "footerView":"net.nanopay.sme.ui.FooterView",
   "supportConfig":{
     class:"foam.nanos.app.SupportConfig",
-    supportEmail:"support@nanopay.com",
+    supportEmail:"intuit@nanopay.net",
     supportPhone:"+1.647.496.1526",
     personalSupportUser:1030,
   },
-  "font1":"IBM Plex Sans",
+  "font1":"'IBM Plex Sans', sans-serif",
   "primary1":"#000000",
   "primary2":"#2CA01C",
   "primary3":"#53B700",

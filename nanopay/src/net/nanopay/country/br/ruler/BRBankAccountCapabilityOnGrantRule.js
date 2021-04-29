@@ -55,7 +55,11 @@ foam.CLASS({
             if ( data.getHasBankAccount() ) {
               return;
             }
-            accountDAO.put_(x, account);
+            account = (BRBankAccount) accountDAO.put_(x, account);
+            if ( account.getStatus() == net.nanopay.bank.BankAccountStatus.VERIFIED ) {
+              data.setHasBankAccount(true);
+              n.setData(data);
+            }
          }
         }, "Creates bank account when BRBankAccount capability is granted.");
       `

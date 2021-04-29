@@ -48,7 +48,7 @@ foam.CLASS({
         {
             name: 'USER_CAPABILITY_ID',
             type: 'String',
-            value: '2910C2C9-3597-42A3-BF85-CFBC8F0E1388',
+            value: 'crunch.user-invoice',
             documentation: `
               The user requires this capability to submit an invoice.
             `

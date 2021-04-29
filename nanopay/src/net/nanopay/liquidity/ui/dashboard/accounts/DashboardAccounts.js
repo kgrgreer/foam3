@@ -139,14 +139,18 @@ foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.Digita
                     .end()
                     .start().addClass(this.myClass('balance'))
                       .add(
-                        currency.select().then(denomBalances => {
-                          let baseTotal = 0;
-                          denomBalances.array.forEach(denomBalance => {
-                            baseTotal += denomBalance.total;
-                          })
-                          return self.__subSubContext__.currencyDAO.find(homeDenomination).then(curr => baseTotal != null ?  curr.format(baseTotal) : 0);
-                        })
-                      )
+                            currency.select().then(denomBalances => {
+                              let baseTotal = 0;
+                              denomBalances.array.forEach(denomBalance => {
+                                baseTotal += denomBalance.total;
+                              })
+
+                              // for inversing sign because of trusts temp fix
+                              if ( baseTotal < 0) baseTotal *= -1;
+
+                              return self.__subSubContext__.currencyDAO.find(homeDenomination).then(curr => baseTotal != null ?  curr.format(baseTotal) : 0);
+                            })
+                          )
                     .end()
                     .start().addClass(this.myClass('balance-note'))
                       .add(self.BALANCE_NOTE)

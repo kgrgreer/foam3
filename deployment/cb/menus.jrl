@@ -1,0 +1,229 @@
+// Payment Operation Views
+r({"class":"foam.nanos.menu.Menu","id":"operation.contacts"})
+r({"class":"foam.nanos.menu.Menu","id":"operation.invoices"})
+r({"class":"foam.nanos.menu.Menu","id":"operation.flinksResponses"})
+r({"class":"foam.nanos.menu.Menu","id":"operation.plaidResultReport"})
+r({"class":"foam.nanos.menu.Menu","id":"operation.ipHistories"})
+p({"class":"foam.nanos.menu.Menu","id":"dashboard","label":"Dashboard","order":1,"parent":"","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.cb.central.Dashboard"}}})
+r({"class":"foam.nanos.menu.Menu","id":"operation.approvalRequests"})
+p({"class":"foam.nanos.menu.Menu","id":"settlement","label":"Settlement","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settlement.SettlementDashboard"}},"order":1105,"parent":""})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"accounts",
+  "label":"Accounts",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"tableViewAccountDAO",
+      "cannedQueries":[
+        {
+          "class":"foam.comics.v2.CannedQuery",
+          "label":"Trust",
+          "predicate":{
+            "class":"foam.mlang.predicate.And",
+            "args":[
+              {
+                "class": "foam.mlang.predicate.IsInstanceOf",
+                "targetClass":"net.nanopay.account.TrustAccount"
+              },
+              {
+                "class":"foam.mlang.predicate.Eq",
+                "arg1":{
+                  "class":"__Property__",
+                  "forClass_":"net.nanopay.account.Account",
+                  "name":"denomination"
+                },
+                "arg2":{
+                  "class":"foam.mlang.Constant",
+                  "value":"CAD"
+                }
+              },
+              {
+                "class": "foam.mlang.predicate.Not",
+                "arg1": {
+                  "class":"foam.mlang.predicate.Eq",
+                  "arg1":{
+                    "class":"__Property__",
+                    "forClass_":"net.nanopay.account.Account",
+                    "name":"id"
+                  },
+                  "arg2":{
+                    "class":"foam.mlang.Constant",
+                    "value":99999
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "class":"foam.comics.v2.CannedQuery",
+          "label":"Settlement",
+          "predicate":{
+            "class": "foam.mlang.predicate.IsInstanceOf",
+            "targetClass": "net.nanopay.settlement.SettlementAccount"
+          }
+        },
+        {
+          "class":"foam.comics.v2.CannedQuery",
+          "label":"Reserve",
+          "predicate":{
+            "class": "foam.mlang.predicate.IsInstanceOf",
+            "targetClass": "net.nanopay.settlement.ReserveAccount"
+          }
+        },
+        {
+          "class":"foam.comics.v2.CannedQuery",
+          "label":"Bank Play",
+          "predicate":{
+            "class": "foam.mlang.predicate.IsInstanceOf",
+            "targetClass": "net.nanopay.settlement.BankPlayAccount"
+          }
+        },
+        {
+          "class":"foam.comics.v2.CannedQuery",
+          "label":"Common Pool",
+          "predicate":{
+            "class":"foam.mlang.predicate.Eq",
+            "arg1":{
+              "class":"__Property__",
+              "forClass_":"net.nanopay.account.Account",
+              "name":"id"
+            },
+            "arg2":{
+              "class":"foam.mlang.Constant",
+              "value": 15
+            }
+          }
+        }
+      ],
+      "defaultColumns":[
+        "name",
+        "balance"
+      ]
+    }
+  }
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "operation.userHistory",
+  "label": "User History",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu",
+    "daoKey": "userHistoryDAO",
+    "createEnabled": false,
+    "editEnabled": false,
+    "title": "Audit Trail - User History"
+  },
+  "order": 1710,
+  "parent": "operation"
+})
+
+// Payment Operations Functionality
+r({"class":"foam.nanos.menu.Menu","id":"operation.tickets"})
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "operation.bus_limits",
+  "label": "Transaction Limits",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "daoKey": "ruleDAO",
+      "predicate": {
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.tx.ruler.BusinessLimit"
+      },
+      "of": "net.nanopay.tx.ruler.BusinessLimit",
+      "browseTitle": "Transaction Limits"
+    }
+  }
+})
+r({"class": "foam.nanos.menu.Menu","id": "operation.clearingTimes"})
+
+// Payment Operation Reports
+r({"class":"foam.nanos.menu.Menu","id":"operation.ascendantFXUsers"})
+r({"class":"foam.nanos.menu.Menu","id":"operation.ascendantuser"})
+r({"class":"foam.nanos.menu.Menu","id":"operation.alterna-eft"})
+
+// Email Operations Functionality
+r({"class":"foam.nanos.menu.Menu","id":"operation.whitelistedemail"})
+r({"class":"foam.nanos.menu.Menu","id":"operation.donotsolicit"})
+r({"class":"foam.nanos.menu.Menu","id":"operation.emailmessage"})
+
+// Extra Menu Items
+r({"class":"foam.nanos.menu.Menu","id":"operation.spids"})
+
+// Business Onboarding
+r({"class":"foam.nanos.menu.Menu","id":"operation.CAD_BusinessOnboarding"})
+r({"class":"foam.nanos.menu.Menu","id":"operation.US_BusinessOnboarding"})
+r({"class":"foam.nanos.menu.Menu","id":"operation.CAD-US_BusinessOnboarding"})
+r({"class":"foam.nanos.menu.Menu","id":"operation.UserAcceptanceDoc"})
+
+// ComplianceItem
+r({"class":"foam.nanos.menu.Menu","id":"operation.complianceItem"})
+
+// Business Detail
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"operation.businesses",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu",
+    "daoKey":"businessDAO",
+    "detailView":"net.nanopay.cb.BusinessDetailView",
+    "createEnabled":false,
+    "editEnabled":true
+  }
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"liquidity",
+  "label":"Liquidity Settings",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"liquiditySettingsDAO",
+      "browseTitle":"Liquidity Settings"
+    }
+  },
+  "order":7000,
+  "parent":""
+})
+
+// Development Portal
+p({"class":"foam.nanos.menu.Menu","id":"doc","order":10000})
+r({"class":"foam.nanos.menu.Menu","id":"doc.overview"})
+r({"class":"foam.nanos.menu.Menu","id":"doc.uml-doc"})
+
+// Ablii
+r({"class":"foam.nanos.menu.Menu","id":"sme"})
+
+// Invoices
+r({"class":"foam.nanos.menu.Menu","id":"invoices"})
+
+// Devices
+r({"class":"foam.nanos.menu.Menu","id":"devices"})
+
+// Member
+r({"class":"foam.nanos.menu.Menu","id":"members"})
+
+// Partner
+r({"class":"foam.nanos.menu.Menu","id":"partners"})
+
+// Transfer
+r({"class":"foam.nanos.menu.Menu","id":"transfer"})
+
+// Admin - Removals
+r({"class":"foam.nanos.menu.Menu","id":"allAccounts"})
+r({"class":"foam.nanos.menu.Menu","id":"allUsers"})
+r({"class":"foam.nanos.menu.Menu","id":"allTransactions"})
+r({"class":"foam.nanos.menu.Menu","id":"allInvoices"})
+r({"class":"foam.nanos.menu.Menu","id":"admin.o1m"})
+r({"class":"foam.nanos.menu.Menu","id":"admin.o1h"})
+r({"class":"foam.nanos.menu.Menu","id":"admin.o1d"})
+r({"class":"foam.nanos.menu.Menu","id":"PII-download"})
+r({"class":"foam.nanos.menu.Menu","id":"account-balance"})

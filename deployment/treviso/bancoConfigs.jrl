@@ -16,7 +16,7 @@ p({
 
 p({
   "class": "net.nanopay.country.br.exchange.BancoConfig",
-  "id": 2,
+  "id": 3,
   "currency": "GBP",
   "code": "999980149",
   "spid": "treviso"

@@ -28,11 +28,29 @@ foam.CLASS({
     'crunchService'
   ],
 
+  javaImports: [
+    'foam.core.XLocator',
+    'foam.nanos.auth.Subject'
+  ],
+
+  messages: [
+    { name: 'ADD_MSG', message: 'shareholder' },
+    { name: 'HAVE_NO_OWNER_MSG', message: 'I declare that all shareholders have less than 25% shares each' },
+    { name: 'NO_OWNER_INFO_ERR', message: 'Shareholder information required' }
+  ],
+
   properties: [
+    'businessId',
     {
       name: 'owners',
       label: 'Shareholder details',
       of: 'net.nanopay.partner.treviso.onboarding.BRBeneficialOwner'
+    },
+    {
+      name: 'selectionView',
+      factory: function() {
+        return 'net.nanopay.partner.treviso.onboarding.BRBeneficialOwnerSelectionView';
+      }
     },
     {
       name: 'soUsersDAO',
@@ -64,22 +82,20 @@ foam.CLASS({
         // The below works only because we have one signing officer - and tbh makes more sense to be apart of the BeneficialOwner.fromUser()
         // also the below will not work for checking the signing officer information of another user.
         Promise.all([
-          this.crunchService.getJunction(x, 'fb7d3ca2-62f2-4caf-a84c-860392e4676b'),
-          this.crunchService.getJunction(x, '777af38a-8225-87c8-dfdf-eeb15f71215f-123'),
-          this.crunchService.getJunction(x, '8ad3c898-db32-11ea-87d0-0242ac130003')
+          this.crunchService.getJunction(x, 'crunch.onboarding.br.cpf'),
+          this.crunchService.getJunction(x, 'crunch.onboarding.signing-officer-information'),
+          this.crunchService.getJunction(x, 'crunch.onboarding.document.identification')
         ]).then(values => {
           let cpf  = values[0] ? values[0].data : '';
           let so   = values[1] ? values[1].data : '';
           let doc1 = values[2] ? values[2].data : '';
 
           if ( cpf && values[0].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-            ['verifyName', 'cpfName'].forEach(
-              name => capabilityValues[name] = cpf[name]);
-              capabilityValues['cpf'] = cpf.data;
+            capabilityValues['cpf'] = cpf;
           }
           if ( so && values[1].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
             ['hasSignedContratosDeCambio', 'pepHioRelated'].forEach(
-              name => capabilityValues[name] = cpf[name]);
+              name => capabilityValues[name] = so[name]);
           }
           if ( doc1 && values[2].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
             // Treviso removed the requirement for the address doc
@@ -109,3 +125,13 @@ foam.CLASS({
     },
   ]
 });
+
+foam.CLASS({
+  package: 'net.nanopay.partner.treviso.onboarding',
+  name: 'BRBeneficialOwnerSelectionView',
+  extends: 'net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView',
+
+  messages: [
+    { name: 'NEW_OWNER_MSG', message: 'Add Shareholder' }
+  ]
+})

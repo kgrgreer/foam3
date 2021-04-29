@@ -14,7 +14,7 @@ p({
     import static foam.mlang.MLang.*;
 
     // Retrieve or create the billing user for Intuit
-    emailAddress = "billing-intuit@nanopay.com";
+    emailAddress = "billing-intuit@nanopay.net";
     localUserDAO = x.get("localUserDAO");
     user = localUserDAO.find(EQ(User.EMAIL, emailAddress));
     if ( user == null ) {

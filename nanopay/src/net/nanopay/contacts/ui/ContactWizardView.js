@@ -303,8 +303,7 @@ foam.CLASS({
       var bankAccount = this.data.createBankAccount;
       bankAccount.owner = contact.id;
       try {
-        var result = await this.bankAccountDAO.put(bankAccount);
-        await this.updateContactBankInfo(contact, result.id);
+        await this.bankAccountDAO.put(bankAccount);
       } catch (err) {
         var msg = err.message || this.ACCOUNT_CREATION_ERROR;
         this.ctrl.notify(msg, '', this.LogLevel.ERROR, true);
@@ -312,16 +311,6 @@ foam.CLASS({
       }
       this.isConnecting = false;
       return true;
-    },
-    /** Sets the reference from the Contact to the Bank Account.  */
-    async function updateContactBankInfo(contact, bankAccountId) {
-      try {
-        contact.bankAccount = bankAccountId;
-        await this.subject.user.contacts.put(contact);
-      } catch (err) {
-        var msg = err.message || this.GENERIC_PUT_FAILED;
-        this.ctrl.notify(msg, '', this.LogLevel.ERROR, true);
-      }
     }
   ],
 

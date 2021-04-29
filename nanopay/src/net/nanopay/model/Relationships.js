@@ -1110,12 +1110,22 @@ foam.RELATIONSHIP({
     section: 'systemInformation'
   },
   targetProperty: {
+    label: 'Transaction Reference',
     view: {
       class: 'foam.u2.view.ReferencePropertyView',
       readView: 'net.nanopay.tx.model.TransactionReadReferenceView'
     },
+    tableCellFormatter: function(value, obj) {
+      obj.summaryTransactionDAO.find(value).then(function(tx) {
+        if ( tx && tx.toSummary ) {
+          this.add(tx.toSummary());
+        } else {
+          this.add(value);
+        }
+      }.bind(this));
+    },
     section: 'billInformation',
-    order: 45,
+    order: 40,
     gridColumns: 6
   }
 });
