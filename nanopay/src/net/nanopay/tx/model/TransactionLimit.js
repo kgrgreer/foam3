@@ -45,16 +45,7 @@ foam.CLASS({
       name: 'userId',
       of: 'foam.nanos.auth.User',
       documentation: 'User limit is applied to',
-      gridColumns: 6,
-      tableCellFormatter: function(value, obj) {
-        obj.userDAO.find(value).then(function(u) {
-          if ( u && u.toSummary ) {
-            this.add(u.toSummary());
-          } else {
-            this.add(value);
-          }
-        }.bind(this));
-      }
+      gridColumns: 6
     },
     {
       class: 'foam.core.Enum',
