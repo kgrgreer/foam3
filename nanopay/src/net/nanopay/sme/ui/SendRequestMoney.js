@@ -124,9 +124,12 @@ foam.CLASS({
       line-height: 1.5;
       margin-top: 35px;
     }
-    ^ .foam-u2-LoadingSpinner img{
-      width: 150px;
-      margin: 200px;
+    ^ .foam-u2-LoadingSpinner{
+      width: 32px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      position: absolute;
     }
     ^ .stackColumn .foam-u2-stack-StackView {
       padding-left: 0 !important;
@@ -549,7 +552,7 @@ foam.CLASS({
           this.invoice.quote = null;
           this.invoice.plan = null;
           this.invoice = await this.invoiceDAO.put(this.invoice);
-          this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), '', this.LogLevel.WARN, true);
+          this.notify(this.RATE_REFRESH, '', this.LogLevel.WARN, true);
           this.isLoading = false;
           return;
         }

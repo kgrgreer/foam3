@@ -82,22 +82,22 @@ foam.CLASS({
     {
       name: 'BUSINESS_RECEIVING_CAPABILITY_ID',
       type: 'String',
-      value: '18DD6F03-998F-4A21-8938-358183151F96'
+      value: 'crunch.onboarding.api.ca-business-receive-payments'
     },
     {
       name: 'BUSINESS_SENDING_CAPABILITY_ID',
       type: 'String',
-      value: '56D2D946-6085-4EC3-8572-04A17225F86A'
+      value: 'crunch.onboarding.api.ca-business-send-payments'
     },
     {
       name: 'PERSONAL_SENDING_CAPABILITY_ID',
       type: 'String',
-      value: '1F0B39AD-934E-462E-A608-D590D1081298'
+      value: 'crunch.onboarding.api.unlock-ca-payments'
     },
     {
       name: 'PERSONAL_SENDING_UNDER_1000_CAPABILITY_ID',
       type: 'String',
-      value: 'F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD'
+      value: 'crunch.onboarding.api.unlock-ca-payments-under-1000'
     }
   ],
 
@@ -743,7 +743,7 @@ foam.CLASS({
 
         // Business creation capability
         CapabilityPayload businessCapPayload = new CapabilityPayload.Builder(subjectX)
-          .setId("EC535109-E9C0-4B5D-8D24-31282EF72F8F")
+          .setId("crunch.onboarding.api.business-details")
           .setCapabilityDataObjects(new HashMap<String,FObject>(businessCapabilityDataObjects))
           .build();
         DAO capabilityPayloadDAO = (DAO) subjectX.get("capabilityPayloadDAO");

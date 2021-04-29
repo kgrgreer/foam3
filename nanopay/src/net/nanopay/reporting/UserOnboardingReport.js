@@ -1,7 +1,7 @@
 /**
 * NANOPAY CONFIDENTIAL
 *
-* [2020] nanopay Corporation
+* [2021] nanopay Corporation
 * All Rights Reserved.
 *
 * NOTICE:  All information contained herein is, and remains
@@ -19,9 +19,8 @@ foam.CLASS({
   package: 'net.nanopay.reporting',
   name: 'UserOnboardingReport',
 
-  implements: [
-    'foam.nanos.auth.CreatedAware',
-    'foam.nanos.auth.LastModifiedAware'
+  mixins: [
+    'foam.nanos.auth.CreatedAwareMixin',
   ],
 
   ids: [
@@ -84,16 +83,6 @@ foam.CLASS({
     {
       name: 'City',
       class: 'String'
-    },
-    {
-      name: 'created',
-      class: 'DateTime'
-    },
-    {
-      class: 'DateTime',
-      name: 'lastModified',
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO'
     }
   ]
 })

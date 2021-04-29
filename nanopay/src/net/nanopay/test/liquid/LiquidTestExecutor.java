@@ -151,7 +151,7 @@ public abstract class LiquidTestExecutor extends Test {
     RoleAssignment RoleAssignment = new RoleAssignment.Builder(this.getSystemX())
       .setRoleTemplate("ddbabe1a-dea2-d4e3-09af-70aac6201ed5")
       .setUsers(userList)
-      .setAccountTemplate("554af38a-8225-87c8-dfdf-eeb15f71215f-0")
+      .setAccountTemplate("crunch.onboarding.signing-officer-question")
       .setLifecycleState(LifecycleState.ACTIVE)
       .build();
     this.getLocalRoleAssignmentDAO(x).inX(this.getSystemX()).put(RoleAssignment);

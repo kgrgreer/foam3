@@ -1,7 +1,7 @@
 /**
 * NANOPAY CONFIDENTIAL
 *
-* [2020] nanopay Corporation
+* [2021] nanopay Corporation
 * All Rights Reserved.
 *
 * NOTICE:  All information contained herein is, and remains
@@ -19,9 +19,8 @@ foam.CLASS({
   package: 'net.nanopay.reporting',
   name: 'ReconciliationReport',
 
-  implements: [
-    'foam.nanos.auth.CreatedAware',
-    'foam.nanos.auth.LastModifiedAware'
+  mixins: [
+    'foam.nanos.auth.CreatedAwareMixin'
   ],
 
   imports: [
@@ -242,16 +241,6 @@ foam.CLASS({
     {
       name: 'revenuePaymentDate',
       class: 'DateTime'
-    },
-    {
-      name: 'created',
-      class: 'DateTime'
-    },
-    {
-      class: 'DateTime',
-      name: 'lastModified',
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO'
     }
   ]
 })

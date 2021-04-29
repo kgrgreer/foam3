@@ -447,7 +447,6 @@ foam.CLASS({
     }
 
     ^ .foam-u2-TextField, ^ .foam-u2-DateView, ^ .foam-u2-tag-Select {
-      height: 40px;
 
       background-color: #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);

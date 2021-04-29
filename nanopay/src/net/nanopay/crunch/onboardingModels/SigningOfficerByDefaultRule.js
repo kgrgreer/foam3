@@ -34,12 +34,12 @@ foam.CLASS({
           // Signing officer question
           crunchService.updateUserJunction(
             ruler.getX(),
-            subject, "554af38a-8225-87c8-dfdf-eeb15f71215f-0", data, GRANTED);
+            subject, "crunch.onboarding.signing-officer-question", data, GRANTED);
 
           // Certify data reviewed
           crunchService.updateUserJunction(
             ruler.getX(),
-            subject, "554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+            subject, "crunch.onboarding.certify-data-reviewed",
             new CertifyDataReviewed.Builder(subjectX)
               .setReviewed(true)
               .setSigningOfficer(realUser.getId())

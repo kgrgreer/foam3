@@ -1974,11 +1974,24 @@ p({
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
 
-// USD Spot Rate, used in converting USD Fee to BRL
+// USD Spot Rate, used in FeeRateExpr predicates. Used in spread rate conversion
 p({
   class: "net.nanopay.tx.fee.SpotRate",
   id: "AE2DA308-0144-40AB-95E3-EFECCA4A4632",
   name: "USD Spot Rate",
+  sourceCurrencyExpr: {
+    class: "foam.mlang.Constant",
+    value: "USD"
+  },
+  useInvertedRate: true,
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Fee USD Spot Rate, used in converting USD Fee to BRL
+p({
+  class: "net.nanopay.tx.fee.SpotRate",
+  id: "40f9aae3-a358-4a6d-8149-8f0baf708637",
+  name: "Fee USD Spot Rate",
   sourceCurrencyExpr: {
     class: "foam.mlang.Constant",
     value: "BRL"
@@ -2100,6 +2113,8 @@ p({
   id: "221b7ca6-a4c4-4655-b9bf-3fbfe39e32dd",
   name: "IRS Tax",
   feeClass: "net.nanopay.tx.TaxLineItem",
+  rateName: "Effective IRS Rate",
+  feeAccount: "707911f9-5129-4916-a27a-6a6c469668ce",
   formula: {
     class: "foam.mlang.expr.Multiply",
     args: [
@@ -2145,6 +2160,8 @@ p({
   id: "f422f565-357c-49a0-9d89-3bde9b1035b9",
   name: "FTT Tax",
   feeClass: "net.nanopay.tx.TaxLineItem",
+  feeAccount: "707911f9-5129-4916-a27a-6a6c469668ce",
+  rateName: "Effective FTT Rate",
   formula: {
     class: "foam.mlang.expr.Multiply",
     args: [
@@ -2162,11 +2179,56 @@ p({
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
 
-// Fee Due = Treviso Fee * USD Spot Rate * Total Rate
+// Treviso Fee Conversion Rate = (1 + Bank Fee) * (1 + Spread Rate) * USD Spot Rate
+p({
+  class: "net.nanopay.tx.fee.Fee",
+  id: "e8d0f908-896c-4f5e-81bc-50c0ef0311b2",
+  name: "Treviso Fee Conversion Rate",
+  formula: {
+    class: "foam.mlang.expr.Multiply",
+    args: [
+      {
+        class: "foam.mlang.expr.Add",
+        args: [
+          {
+            class: "foam.mlang.Constant",
+            value: 1
+          },
+          {
+            class: "net.nanopay.tx.fee.FeeExpr",
+            feeName: "Bank Fee"
+          }
+        ]
+      },
+      {
+        class: "foam.mlang.expr.Add",
+        args: [
+          {
+            class: "foam.mlang.Constant",
+            value: 1
+          },
+          {
+            class: "net.nanopay.tx.fee.FeeExpr",
+            feeName: "Spread Rate"
+          }
+        ]
+      },
+      {
+        class: "net.nanopay.tx.fee.FeeExpr",
+        feeName: "Fee USD Spot Rate"
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Transaction Fee = Treviso Fee * Treviso Fee Conversion Rate
 p({
   class: "net.nanopay.tx.fee.Fee",
   id: "ff1122ca-e32a-4c8c-8a7e-c367b6066077",
-  name: "Fee Due",
+  name: "Transaction Fee",
+  feeClass: "net.nanopay.tx.FeeLineItem",
+  feeAccount: "707911f9-5129-4916-a27a-6a6c469668ce",
   formula: {
     class: "foam.mlang.expr.Multiply",
     args: [
@@ -2176,7 +2238,7 @@ p({
       },
       {
         class: "net.nanopay.tx.fee.FeeExpr",
-        feeName: "USD Spot Rate"
+        feeName: "Treviso Fee Conversion Rate"
       }
     ]
   },
@@ -2195,12 +2257,12 @@ p({
 // Total Fee Due = (amount * Effective IRS Rate)
 //                 + (amount * Effective FTT Rate)
 //                 + (IntermediateAmount * Payment Processor Rate * Intermediary Spot Rate * Total Rate)
-//                 + Fee Due
+//                 + Transaction Fee
 p({
   class: "net.nanopay.tx.fee.Fee",
   id: "23574c63-0e6a-487f-8bbf-e2464b605c7b",
   name: "Total Fee Due",
-  feeClass: "net.nanopay.tx.FeeLineItem",
+  feeClass: "net.nanopay.tx.TransactionLineItem",
   feeAccount: "707911f9-5129-4916-a27a-6a6c469668ce",
   formula: {
     class: "foam.mlang.expr.Add",
@@ -2237,13 +2299,12 @@ p({
       },
       {
         class: "net.nanopay.tx.fee.FeeExpr",
-        feeName: "Fee Due"
+        feeName: "Transaction Fee"
       }
     ]
   },
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
-
 
 // Temporary fees since not all fees are configured
 

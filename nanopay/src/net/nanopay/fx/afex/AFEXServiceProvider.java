@@ -225,7 +225,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
   protected String findCNPJ(long userId) {
     UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) this.x.get("bareUserCapabilityJunctionDAO")).find(AND(
-      EQ(UserCapabilityJunction.TARGET_ID, "688cb7c6-7316-4bbf-8483-fb79f8fdeaaf"),
+      EQ(UserCapabilityJunction.TARGET_ID, "crunch.onboarding.br.business-identification"),
       EQ(UserCapabilityJunction.SOURCE_ID, userId)
     ));
 
@@ -234,7 +234,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
   protected String findCPF(long userId) {
     UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) this.x.get("bareUserCapabilityJunctionDAO")).find(AND(
-      EQ(UserCapabilityJunction.TARGET_ID, "fb7d3ca2-62f2-4caf-a84c-860392e4676b"),
+      EQ(UserCapabilityJunction.TARGET_ID, "crunch.onboarding.br.cpf"),
       EQ(UserCapabilityJunction.SOURCE_ID, userId)
     ));
 
