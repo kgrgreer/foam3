@@ -106,7 +106,7 @@ foam.CLASS({
       ]
     }),
     {
-      class: 'String',
+      class: 'FormattedString',
       name: 'data',
       help: `The CPF (Cadastro de Pessoas Físicas or Natural Persons Register) is a number assigned by the Brazilian revenue agency to both Brazilians and resident aliens who are subject to taxes in Brazil.`,
       label: 'Cadastro de Pessoas Físicas (CPF)',
@@ -138,15 +138,7 @@ foam.CLASS({
           errorMessage: 'INVALID_CPF_CHECKED'
         }
       ],
-      tableCellFormatter: function(val) {
-        return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
-      },
-      view: function(_, X) {
-        return foam.u2.FormattedTextField.create({
-          formatter: [3, '.', 3, '.', 3, '-', 2],
-          returnFormatted: false
-        }, X);
-      }
+      formatter: [3, '.', 3, '.', 3, '-', 2]
     },
     {
       class: 'String',

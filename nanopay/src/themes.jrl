@@ -25,7 +25,7 @@ p({
   "largeLogo": "images/nanopay_blue_white_206x42.png",
   "logoBackgroundColour":"#202341",
   "logo":"images/nanopay_logo_blue.png",
-  "font1":"IBM Plex Sans",
+  "font1":"'IBM Plex Sans', sans-serif",
   "primary1":"#202341",
   "primary2":"#144794",
   "primary3":"#406dea",

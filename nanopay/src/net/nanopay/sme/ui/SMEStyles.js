@@ -23,7 +23,7 @@ foam.CLASS({
   documentation: 'SME CSS that is used through out',
 
   css: `
-    .label, .infoLabel {
+    .infoLabel {
       font-size: 12px !important;
       color: /*%BLACK%*/ #1e1f21 !important;
       padding-bottom: 6px !important;
@@ -32,9 +32,6 @@ foam.CLASS({
     }
     .sme-inputContainer {
       margin-top: 1%;
-    }
-    body {
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     .stack-wrapper {
       height: 100vh;
@@ -241,17 +238,6 @@ foam.CLASS({
       color: #bdbdbd;
       font-size: 17px;
       padding-left: 8px;
-    }
-
-    h1 {
-      font-weight: 900;
-      font-size: 32px;
-    }
-
-    h2 {
-      font-weight: 700;
-      font-size: 24px;
-      line-height: 36px;
     }
 
     /* Containers */
@@ -575,12 +561,6 @@ foam.CLASS({
       width: 14px;
       border-bottom: 2px solid #604aff;
       border-right: 2px solid #604aff;
-    }
-
-    .label {
-      font-size: 12px !important;
-      font-weight: 700 !important;
-      line-height: 15px !important;
     }
 
     .foam-comics-DAOControllerView .actions .foam-u2-ActionView img + span {

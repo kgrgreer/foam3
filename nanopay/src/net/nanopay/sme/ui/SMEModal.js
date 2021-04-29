@@ -44,6 +44,13 @@ foam.CLASS({
     }
   `,
 
+  properties: [
+    {
+      name: 'isStyled',
+      value: true
+    }
+  ],
+
   methods: [
     function init() {
       var content;
@@ -64,7 +71,7 @@ foam.CLASS({
             .end()
           .endContext()
           .start()
-            .addClass(this.myClass('content'))
+            .enableClass(this.myClass('content'), this.isStyled$)
             .call(function() { content = this; })
           .end()
         .end()
