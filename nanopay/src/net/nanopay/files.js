@@ -192,6 +192,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TransactionUnPauseRule' },
   { name: 'net/nanopay/tx/IndependantTransactionFeeLineItem' },
   { name: 'net/nanopay/tx/FeeSummaryTransaction' },
+  { name: 'net/nanopay/tx/IndependantFeePlanningRule' },
 
   { name: 'net/nanopay/model/CurrencyAmount' },
   { name: 'net/nanopay/model/BusinessSector' },

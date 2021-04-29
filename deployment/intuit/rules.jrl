@@ -459,3 +459,39 @@ p({
   "lifecycleState":1,
   "spid": "intuit"
 })
+
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id":"cec1ed4f-7563-49a3-9036-3e07cd668b5c",
+  "name":"Create fee transaction",
+  "priority":100,
+  "ruleGroup":"refundTickets",
+  "documentation":"Create fee transaction when digital completes and has the line item",
+  "daoKey":"localTransactionDAO",
+  "operation":1,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.tx.DigitalTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal":5
+        }
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.partner.tx.IndependantFeePlanningRule"
+  },
+  "after":false,
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid": "intuit"
+})

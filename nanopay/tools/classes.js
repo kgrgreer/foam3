@@ -688,6 +688,7 @@ var classes = [
   'net.nanopay.tx.ruler.UpdateTxOnApprovalRequestStatusChange',
   'net.nanopay.tx.IndependantTransactionFeeLineItem',
   'net.nanopay.tx.FeeSummaryTransaction',
+  'net.nanopay.tx.IndependantFeePlanningRule',
 
   // TODO: From Maldives To Be ReWorked
   'net.nanopay.settlement.GroupingAccount',
