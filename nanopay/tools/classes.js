@@ -1227,6 +1227,7 @@ var classes = [
   'net.nanopay.tx.planner.BmoInterTrustPlanner',
   'net.nanopay.tx.planner.PartialPlanDAO',
   'net.nanopay.tx.planner.CreditCodeTransactionPlanner',
+  'net.nanopay.tx.planner.BankDigitalCompositeFeePlanner',
 
   // Planner Exceptions
   'net.nanopay.tx.planner.exceptions.PlannerValidationException',

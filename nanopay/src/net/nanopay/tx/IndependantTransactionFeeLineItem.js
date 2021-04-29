@@ -18,8 +18,7 @@
  foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'IndependantTransactionFeeLineItem',
-  extends: 'net.nanopay.tx.InfoLineItem',
+  extends: 'net.nanopay.tx.InvoicedFeeLineItem',
+  documentation: 'marker class for invoiced fee line items which create a txn off a rule'
 
-  properties: [
-  ]
 });

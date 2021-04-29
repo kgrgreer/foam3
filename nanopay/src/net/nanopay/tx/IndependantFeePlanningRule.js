@@ -20,7 +20,9 @@
   name: 'IndependantFeePlanningRule',
   implements: ['foam.nanos.ruler.RuleAction'],
 
-   documentation: `Create fee transaction for independantTransactionFeeLineitems`,
+   documentation: `Create fee transaction for independantTransactionFeeLineitems
+   CURRENTLY ONLY SUPPORTS DIGITAL ACCOUNTS AS THE FEE ACCOUNT
+   `,
 
    javaImports: [
     'foam.core.ContextAgent',
@@ -28,7 +30,12 @@
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
     'net.nanopay.tx.model.Transaction',
-    'java.util.ArrayList'
+    'java.util.ArrayList',
+    'net.nanopay.account.Account',
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.bank.BankAccount',
+    'foam.nanos.auth.User'
+
   ],
 
    methods: [
@@ -41,36 +48,54 @@
           @Override
           public void execute(X x) {
 
+            long feeTotal = 0;
+            DigitalAccount sourceDigital = null;
+
             Transaction txn = (Transaction) obj;
+            Transaction root = txn.findRoot(x);
+            Account dest = root.findDestinationAccount(x);
             FeeSummaryTransaction feeTxn = new FeeSummaryTransaction();
+
             ArrayList<IndependantTransactionFeeLineItem> lineItems = new ArrayList();
             for ( TransactionLineItem li : txn.getLineItems() ) {
               if ( li instanceof IndependantTransactionFeeLineItem ) {
                 lineItems.add((IndependantTransactionFeeLineItem) li);
+                feeTotal += li.getAmount();
+                if (sourceDigital == null) {
+                  DigitalAccount feeDest = (DigitalAccount) li.findDestinationAccount(x);
+                  User owner = dest.findOwner(x);
+                  sourceDigital = DigitalAccount.findDefault(x, owner, ((IndependantTransactionFeeLineItem)li).getFeeCurrency(), feeDest.getTrustAccount());
+                }
               }
             }
             feeTxn.setLineItems(lineItems.toArray(new IndependantTransactionFeeLineItem[lineItems.size()]));
 
             TransactionQuote quote = new TransactionQuote();
-            Transaction root = txn.findRoot(x);
+
             DAO transactionPlannerDAO = (DAO) x.get("localTransactionPlannerDAO");
             DAO transactionDAO = (DAO) x.get("localTransactionDAO");
             quote.setRequestTransaction(feeTxn);
 
-            feeTxn.setSourceAccount(root.getDestinationAccount());
-            feeTxn.setSourceCurrency(root.findDestinationAccount(x).getDenomination());
-            feeTxn.setPayerId(root.findDestinationAccount(x).getOwner());
-            
+            feeTxn.setSourceAccount(dest.getId());
+            feeTxn.setDestinationAccount(sourceDigital.getId());
+            feeTxn.setAmount(feeTotal);
+            feeTxn.setDestinationAmount(feeTotal);
+            feeTxn.setSourceCurrency(dest.getDenomination());
+            feeTxn.setDestinationCurrency(dest.getDenomination());
+            feeTxn.setPayerId(dest.getOwner());
+            feeTxn.setPayeeId(dest.getOwner());
+
             try {
               quote = (TransactionQuote) transactionPlannerDAO.put(quote);
+              Transaction feeTxn2 = quote.getPlan();
+              feeTxn2.setAssociateTransaction(txn.getId());
+              feeTxn2 = (Transaction) transactionDAO.put(quote.getPlan());
+              txn.setAssociateTransaction(feeTxn2.getId());
             } catch(RuntimeException error){
-              // todo
+              // TODO:
             }
 
-            Transaction feeTxn2 = quote.getPlan();
-            feeTxn2.setAssociateTransaction(txn.getId());
-            feeTxn2 = (Transaction) transactionDAO.put(quote.getPlan());
-            txn.setAssociateTransaction(feeTxn2.getId());
+
           }
         }, "Create fee transaction for independantTransactionFeeLineitems");
       `
