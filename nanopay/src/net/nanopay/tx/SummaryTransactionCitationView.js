@@ -49,7 +49,6 @@ foam.CLASS({
     { name: 'AMOUNT', message: 'Amount' },
     { name: 'AMOUNT_IN', message: 'Amount in' },
     { name: 'RATE', message: 'Rate'},
-    { name: 'GRAND_TOTAL', message: 'Total Due' },
     { name: 'TRANSACTION_DATE', message: 'Payment date' },
     { name: 'TRANSACTION_REFERENCE', message: 'Reference' },
     { name: 'VET_TITLE', message: 'Effective Rate(VET)' }
@@ -128,12 +127,6 @@ foam.CLASS({
       name: 'transactionId',
       factory: function() {
         return this.data.id.split('-', 1)[0];
-      }
-    },
-    {
-      name: 'grandTotal',
-      expression: function(data) {
-        return data;
       }
     },
     {
