@@ -314,7 +314,7 @@ foam.CLASS({
         return val;
       },
       tableCellFormatter: function(value, obj) {
-        obj.currencyDAO.find(obj.sourceCurrency).then(function(c) {
+        this.__context__.currencyDAO.find(obj.sourceCurrency).then(function(c) {
           if ( c ) {
             this.add(c.format(value));
           }
@@ -444,7 +444,7 @@ foam.CLASS({
         return unitProp.format(val);
       },
       tableCellFormatter: function(value, obj) {
-        obj.currencyDAO.find(obj.destinationCurrency).then(function(c) {
+        this.__context__.currencyDAO.find(obj.destinationCurrency).then(function(c) {
           if ( c ) {
             this.add(c.format(value));
           }

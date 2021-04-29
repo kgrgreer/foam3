@@ -52,7 +52,7 @@ foam.CLASS({
     { name: 'GRAND_TOTAL', message: 'Total Due' },
     { name: 'TRANSACTION_DATE', message: 'Payment date' },
     { name: 'TRANSACTION_REFERENCE', message: 'Reference' },
-    { name: 'VET_TITLE', message: 'Effective Rate(VET)' }
+    { name: 'VET_TITLE', message: 'Effective Rate (VET)' }
   ],
 
   imports: [
