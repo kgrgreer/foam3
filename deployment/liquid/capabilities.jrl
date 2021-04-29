@@ -1,121 +1,123 @@
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
+  "id":"crunch.liquid.view-account",
+  "name": "viewAccount",
   "permissionsGranted":[
     "roletemplate.rw.viewaccount"
   ],
-  "id":"8b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
-  "isAccountBased": true, 
-  "name": "viewAccount"
+  "isAccountBased": true,
 })
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
+  "id":"crunch.liquid.make-account",
+  "name": "makeAccount",
   "permissionsGranted":[
     "roletemplate.rw.makeaccount",
     "account.make"
   ],
-  "id":"8b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
-  "isAccountBased": true, 
-  "name": "makeAccount"
+  "isAccountBased": true
 })
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
+  "id":"crunch.liquid.approve-account",
+  "name": "approveAccount",
   "permissionsGranted":[
     "roletemplate.rw.approveaccount",
     "menu.read.approvals"
   ],
-  "id":"8b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
-  "isAccountBased": true, 
-  "name": "approveAccount"
+  "isAccountBased": true
 })
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
+  "id":"crunch.liquid.view-transaction",
+  "name": "viewTransaction",
   "permissionsGranted":[
     "roletemplate.rw.viewtransaction",
     "menu.read.transactions"
   ],
-  "id":"8b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
-  "isAccountBased": true, 
-  "name": "viewTransaction"
+  "isAccountBased": true
 })
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
+  "id":"crunch.liquid.make-transaction",
+  "name": "makeTransaction",
   "permissionsGranted":[
     "roletemplate.rw.maketransaction",
     "transaction.make"
   ],
-  "id":"8b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
-  "isAccountBased": true, 
-  "name": "makeTransaction"
+  "isAccountBased": true
 })
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
+  "id":"crunch.liquid.approve-transaction",
+  "name": "approveTransaction",
   "permissionsGranted":[
     "roletemplate.rw.approvetransaction",
     "menu.read.approvals"
   ],
-  "id":"8b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
-  "isAccountBased": true, 
-  "name": "approveTransaction"
+  "isAccountBased": true
 })
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
+  "id":"crunch.liquid.view-user",
+  "name": "viewUser",
   "permissionsGranted":[
     "roletemplate.rw.viewuser",
     "menu.read.users"
-  ],
-  "id":"8b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
-  "name": "viewUser"
+  ]
 })
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
+  "id":"crunch.liquid.make-user",
+  "name": "makeUser",
   "permissionsGranted":[
     "user.make",
     "user.make.*",
     "roletemplate.rw.makeuser",
     "foam.nanos.auth.user.section.administrative"
-  ],
-  "id":"8b36b11a-93c6-b40c-d9c8-f8effefb31cc-8",
-  "name": "makeUser"
+  ]
 })
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
+  "id":"crunch.liquid.approve-user",
+  "name": "approveUser",
   "permissionsGranted":[
     "menu.read.approvals",
     "roletemplate.rw.approveuser"
-  ],
-  "id":"8b36b11a-93c6-b40c-d9c8-f8effefb31cc-9",
-  "name": "approveUser"
+  ]
 })
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
+  "id":"crunch.liquid.view-liquidity-settings",
+  "name": "viewLiquiditysettings",
   "permissionsGranted":[
     "menu.read.liquidity",
     "roletemplate.rw.viewliquiditysettings"
-  ],
-  "id":"1b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
-  "name": "viewLiquiditysettings"
+  ]
 })
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
+  "id":"crunch.liquid.make-liquidity-settings",
+  "name": "makeLiquiditysettings",
   "permissionsGranted":[
     "liquiditysettings.make",
     "liquiditysettings.make.*",
     "roletemplate.rw.makeliquiditysettings"
-  ],
-  "id":"1b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
-  "name": "makeLiquiditysettings"
+  ]
 })
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
+  "id":"crunch.liquid.approve-liquidity-settings",
+  "name": "approveLiquiditySettings",
   "permissionsGranted":[
     "menu.read.approvals",
     "roletemplate.rw.approveliquiditysettings"
-  ],
-  "id":"1b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
-  "name": "approveLiquiditySettings"
+  ]
 })
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
+  "id":"crunch.liquid.view-rule",
+  "name": "viewRule",
   "permissionsGranted":[
     "menu.read.operation",
     "menu.read.operation.txlimitrules",
@@ -123,42 +125,42 @@ p({
     "menu.read.rules.restrictaccountsrules",
     "menu.read.rules.txapprovalrules",
     "roletemplate.rw.viewliquiditysettings"
-  ],
-  "id":"1b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",
-  "name": "viewRule"
+  ]
 })
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
+  "id":"crunch.liquid.make-rule",
+  "name": "makeRule",
   "permissionsGranted":[
     "rule.make",
     "rule.make.*",
     "roletemplate.rw.makerule"
-  ],
-  "id":"1b36b11a-93c6-b40c-d9c8-f8effefb31cc-5",
-  "name": "makeRule"
+  ]
 })
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
+  "id":"crunch.liquid.approve-rule",
+  "name": "approveRule",
   "permissionsGranted":[
     "menu.read.approvals",
     "roletemplate.rw.approverule"
-  ],
-  "id":"1b36b11a-93c6-b40c-d9c8-f8effefb31cc-6",
-  "name": "approveRule"
+  ]
 })
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
+  "id":"crunch.liquid.view-role-assignments",
+  "name": "viewRoleAssignment",
   "permissionsGranted":[
     "menu.read.roles.*",
     "accounttemplate.read.*",
     "roletemplate.read.*",
     "roletemplate.rw.viewroleassignment"
-  ],
-  "id":"1b36b11a-93c6-b40c-d9c8-f8effefb31cc-7",
-  "name": "viewRoleAssignment"
+  ]
 })
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
+  "id":"crunch.liquid.make-role-assignments",
+  "name": "makeRoleAssignment",
   "permissionsGranted":[
     "roleassignment.make",
     "roleassignment.make.*",
@@ -169,41 +171,39 @@ p({
     "accounttemplate.remove.*",
     "roletemplate.remove.*",
     "roletemplate.rw.makeroleassignment"
-  ],
-  "id":"1b36b11a-93c6-b40c-d9c8-f8effefb31cc-8",
-  "name": "makeRoleAssignment"
+  ]
 })
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
+  "id":"crunch.liquid.approve-role-assignments",
+  "name": "approveRoleAssignment",
   "permissionsGranted":[
     "menu.read.approvals",
     "roletemplate.rw.approveroleassignment"
-  ],
-  "id":"1b36b11a-93c6-b40c-d9c8-f8effefb31cc-9",
-  "name": "approveRoleAssignment"
+  ]
 })
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
+  "id":"crunch.liquid.view-dashboard",
+  "name": "viewDashboard",
   "permissionsGranted":[
     "menu.read.dashboard",
     "shadowaccount.view",
     "roletemplate.rw.viewdashboard"
-  ],
-  "id":"2b36b11a-93c6-b40c-d9c8-f8effefb31cc-1",
-  "name": "viewDashboard"
+  ]
 })
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
+  "id":"crunch.liquid.ingest-file",
+  "name": "ingestFile",
   "permissionsGranted":[
     "menu.read.fileupload",
     "file.create",
     "roletemplate.rw.ingestfile"
-  ],
-  "id":"2b36b11a-93c6-b40c-d9c8-f8effefb31cc-2",
-  "name": "ingestFile"
+  ]
 })
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
-  "id":"2b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
+  "id":"crunch.liquid.l2-transaction-approver",
   "name": "level2TransactionApprover"
 })

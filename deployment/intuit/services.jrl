@@ -43,7 +43,7 @@ p({
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "rbcReconciliationReportGenerator",
-  "serviceScript": """return new net.nanopay.partner.intuit.IntuitReconciliationReportGenerator("93f3fa36-7429-4b20-a223-f5b50a6d9872", "ab590614-f5bd-476a-84e0-6037607397b5");"""
+  "serviceScript": """return new net.nanopay.partner.intuit.IntuitReconciliationReportGenerator("intuit", "93f3fa36-7429-4b20-a223-f5b50a6d9872", "ab590614-f5bd-476a-84e0-6037607397b5");"""
 })
 
 p({
@@ -72,8 +72,38 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
+  "name": "reducedReconciliationReportGenerator",
+  "serviceScript": "return new net.nanopay.reporting.CopyReportGenerator(net.nanopay.reporting.ReducedReconciliationReport.getOwnClassInfo());"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "reducedReconciliationReportDAO",
+  "serve": true,
+  "serviceScript": """
+  dao = new net.nanopay.reporting.ReportDAO(
+    x,
+    new foam.dao.NullDAO(x, net.nanopay.reporting.ReducedReconciliationReport.getOwnClassInfo()),
+    "reducedReconciliationReportGenerator"
+  );
+
+  return new foam.dao.EasyDAO.Builder(x)
+    .setOf(net.nanopay.reporting.ReducedReconciliationReport.getOwnClassInfo())
+    .setDecorator(dao)
+    .setInnerDAO(x.get("reconciliationReportDAO"))
+    .build();
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.reporting.ReducedReconciliationReport"
+    }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
   "name": "serviceFeesReportGenerator",
-  "serviceScript": """return new net.nanopay.reporting.ServiceFeesReportGenerator();"""
+  "serviceScript": "return new net.nanopay.reporting.CopyReportGenerator(net.nanopay.reporting.ServiceFeesReport.getOwnClassInfo());"
 })
 
 p({
@@ -103,7 +133,7 @@ p({
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "intuitUserOnboardingReportGenerator",
-  "serviceScript": """return new net.nanopay.partner.intuit.IntuitUserOnboardingReportGenerator();"""
+  "serviceScript": """return new net.nanopay.partner.intuit.IntuitUserOnboardingReportGenerator("intuit");"""
 })
 
 p({

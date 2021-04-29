@@ -75,6 +75,7 @@ foam.CLASS({
 
             if ( sourceCountryCapability == null ) {
               sourceCountryCapability = new CountryCapability();
+              sourceCountryCapability.setId("payment.source.country." + sourceCountry.toLowerCase());
               sourceCountryCapability.setCountry(sourceCountry);
               sourceCountryCapability.setType(SourceTargetType.SOURCE);
               sourceCountryCapability.setName("Source Country Capability " + sourceCountry);
@@ -89,6 +90,7 @@ foam.CLASS({
 
             if ( targetCountryCapability == null ) {
               targetCountryCapability = new CountryCapability();
+              targetCountryCapability.setId("payment.target.country." + targetCountry.toLowerCase());
               targetCountryCapability.setCountry(targetCountry);
               targetCountryCapability.setType(SourceTargetType.TARGET);
               targetCountryCapability.setName("Target Country Capability " + targetCountry);

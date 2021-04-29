@@ -23,7 +23,7 @@ foam.CLASS({
   documentation: 'SME CSS that is used through out',
 
   css: `
-    .label, .infoLabel {
+    .infoLabel {
       font-size: 12px !important;
       color: /*%BLACK%*/ #1e1f21 !important;
       padding-bottom: 6px !important;
@@ -32,9 +32,6 @@ foam.CLASS({
     }
     .sme-inputContainer {
       margin-top: 1%;
-    }
-    body {
-      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     .stack-wrapper {
       height: 100vh;
@@ -241,17 +238,6 @@ foam.CLASS({
       color: #bdbdbd;
       font-size: 17px;
       padding-left: 8px;
-    }
-
-    h1 {
-      font-weight: 900;
-      font-size: 32px;
-    }
-
-    h2 {
-      font-weight: 700;
-      font-size: 24px;
-      line-height: 36px;
     }
 
     /* Containers */
@@ -577,12 +563,6 @@ foam.CLASS({
       border-right: 2px solid #604aff;
     }
 
-    .label {
-      font-size: 12px !important;
-      font-weight: 700 !important;
-      line-height: 15px !important;
-    }
-
     .foam-comics-DAOControllerView .actions .foam-u2-ActionView img + span {
       margin-left: 12px;
     }
@@ -674,24 +654,6 @@ foam.CLASS({
       white-space: nowrap;
       max-width: 280px;
       text-overflow: ellipsis;
-    }
-
-    .foam-u2-md-overlaydropdown {
-      border-radius: 3px;
-      padding: 8px 0px;
-      box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15) !important;
-      width: 200px;
-    }
-
-    .foam-u2-md-overlaydropdown::before {
-      content: ' ';
-      position: absolute;
-      height: 0;
-      width: 0;
-      border: 8px solid transparent;
-      border-bottom-color: black;
-      -ms-transform: translate(110px, -16px);
-      transform: translate(50px, -202px);
     }
 
     .foam-u2-view-SimpleSearch p {

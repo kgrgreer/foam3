@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -51,6 +51,14 @@ public abstract class RBCReconciliationReportGenerator extends ReconciliationRep
       else if ( transaction instanceof DigitalTransaction)
         dtMap.put(getRoot(x, transaction), (DigitalTransaction) transaction);
     }
+  }
+
+  protected RBCReconciliationReportGenerator() {
+    super();
+  }
+
+  protected RBCReconciliationReportGenerator(String spid) {
+    super(spid);
   }
 
 }

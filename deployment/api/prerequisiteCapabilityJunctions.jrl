@@ -1,35 +1,35 @@
 // Prerequisites for gd spid capability
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "2EFEFD46-967D-43B3-A464-2ACDC3B2D032",
+  sourceId: "crunch.integration.spid-base",
   targetId: "serviceProviderCapability",
   priority: 1
 })
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "2EFEFD46-967D-43B3-A464-2ACDC3B2D032",
-  targetId: "03EA45D2-BC17-4D7D-B1FD-00A69AF1FFDD",
+  sourceId: "crunch.integration.spid-base",
+  targetId: "crunch.integration.planners",
   priority: 2
 })
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "2EFEFD46-967D-43B3-A464-2ACDC3B2D032",
-  targetId: "7566B8D4-BB9A-4B85-BABA-C61094D9A743",
+  sourceId: "crunch.integration.spid-base",
+  targetId: "crunch.integration.countries",
   priority: 3
 })
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "2EFEFD46-967D-43B3-A464-2ACDC3B2D032",
+  sourceId: "crunch.integration.spid-base",
   targetId: "0BF6DADD-2B55-4CCE-BEF7-FC01656DC57B",
   priority: 4
 })
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "2EFEFD46-967D-43B3-A464-2ACDC3B2D032",
+  sourceId: "crunch.integration.spid-base",
   targetId: "D11F2F3D-2E83-4392-86B3-3EEFFFA31344",
   priority: 5
 })

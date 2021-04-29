@@ -42,7 +42,6 @@ foam.CLASS({
 
   css: `
     ^ .foam-u2-tag-Select {
-      height: 40px;
       width: 100%;
     }
     ^ .label {
@@ -129,7 +128,10 @@ foam.CLASS({
       class: 'String',
       name: 'defaultPostalCodeLabel'
     },
-    'order'
+    {
+      name: 'order',
+      value: { streetNumber: 0, streetName: 1, suite: 2 }
+    }
   ],
 
   messages: [
@@ -193,36 +195,23 @@ foam.CLASS({
             .end()
           .end();
         })
-        .start().addClass(this.myClass('container'))
-          .start().addClass('three-five-two-column')
-            .start().addClass('label-input')
-            .style({ 'order': this.order$.map(order => order && order.streetNumber ), 'grid-column-end': 'span 3' })
-              .tag(this.SectionedDetailPropertyView, {
-                data$: this.data$,
-                prop: this.Address.STREET_NUMBER.clone().copyFrom({
-                  validationTextVisible: this.showValidation
+        .start().addClass(this.myClass('container'))  
+        .add(this.slot(function(order) {
+          var arr = [self.Address.STREET_NUMBER, self.Address.STREET_NAME, self.Address.SUITE].sort((a, b) => order[a.name] - order[b.name]);
+          var a = this.E().addClass('three-five-two-column');
+          for ( let prop of arr ) {
+            a.start().addClass('label-input')
+              .style({ 'grid-column-end': prop.name == 'streetName' ? 'span 6' : 'span 3' })
+              .tag(self.SectionedDetailPropertyView, {
+                data$: self.data$,
+                prop: prop.clone().copyFrom({
+                  validationTextVisible: self.showValidation
                 })
               })
-            .end()
-            .start().addClass('label-input')
-            .style({ 'order': this.order$.map(order => order && order.streetName ), 'grid-column-end': 'span 6' })
-              .tag(this.SectionedDetailPropertyView, {
-                data$: this.data$,
-                prop: this.Address.STREET_NAME.clone().copyFrom({
-                  validationTextVisible: this.showValidation
-                })
-              })
-            .end()
-            .start().addClass('label-input')
-            .style({ 'order': this.order$.map(order => order && order.suite ), 'grid-column-end': 'span 3' })
-              .tag(this.SectionedDetailPropertyView, {
-                data$: this.data$,
-                prop: this.Address.SUITE.clone().copyFrom({
-                  validationTextVisible: this.showValidation
-                })
-              })
-            .end()
-          .end()
+            .end();
+          }
+          return a;
+        }))
         .end()
         .start().addClass(this.myClass('container'))
           .start().addClass('label-input')

@@ -218,7 +218,7 @@ public class BrazilVerificationService
 
   protected Date findUserBirthDate(long userId) {
     UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) getX().get("userCapabilityJunctionDAO")).find(AND(
-      EQ(UserCapabilityJunction.TARGET_ID, "8bffdedc-5176-4843-97df-1b75ff6054fb"),
+      EQ(UserCapabilityJunction.TARGET_ID, "crunch.onboarding.user-birth-date"),
       EQ(UserCapabilityJunction.SOURCE_ID, userId)
     ));
     return (ucj != null && ucj.getData() != null) ? (Date) ((foam.core.FObject) ucj.getData()).getProperty("birthday") : null;

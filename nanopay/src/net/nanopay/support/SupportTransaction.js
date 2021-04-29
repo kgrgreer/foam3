@@ -47,7 +47,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.HistoricStatus',
-   ],
+  ],
 
   javaImports: [
     'java.util.Date'

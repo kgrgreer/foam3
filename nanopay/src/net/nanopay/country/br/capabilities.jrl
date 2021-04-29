@@ -1,7 +1,7 @@
 // Document upload display capabilities
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-1",
+  "id":"crunch.onboarding.document.br.balance-sheet",
   "name":"Balance Sheet",
   "description":"Balance sheet for the relevant period",
   "of":"net.nanopay.crunch.document.Document",
@@ -12,7 +12,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-2",
+  "id":"crunch.onboarding.document.br.income-statement",
   "name":"Income Statement",
   "description":"Income statement for the relevant period",
   "of":"net.nanopay.crunch.document.Document",
@@ -23,7 +23,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-3",
+  "id":"crunch.onboarding.document.br.bank-address-payment-reais",
   "name":"Domicile bank for payments in reais",
   "description":"Provide a document that shows your bank address for payment in reais",
   "of":"net.nanopay.crunch.document.Document",
@@ -34,7 +34,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-4",
+  "id":"crunch.onboarding.document.br.bank-payment-foreign-currency",
   "name":"Bank Domicile Foreign Currency",
   "description":"Provide bank domicile for payment of Foreign Currency",
   "of":"net.nanopay.crunch.document.Document",
@@ -45,7 +45,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-5",
+  "id":"crunch.onboarding.document.br.bill-of-landing",
   "name":"Bill Of Lading",
   "description":"Provide BL, Airway Bill (AWB), CTR, Courier",
   "of":"net.nanopay.crunch.document.Document",
@@ -56,7 +56,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-6",
+  "id":"crunch.onboarding.document.br.board-authorization-closing",
   "name":"Board authorization for closing",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -66,7 +66,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-7",
+  "id":"crunch.onboarding.document.br.company-incorporation-document",
   "name":"Company incorporation document",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -76,7 +76,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-8",
+  "id":"crunch.onboarding.document.br.company-report",
   "name":"Company report",
   "description":"Company report with bills of lading numbers.",
   "of":"net.nanopay.crunch.document.Document",
@@ -87,7 +87,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-9",
+  "id":"crunch.onboarding.document.br.contract",
   "name":"Contract",
   "description":"Provide contract between the parties",
   "of":"net.nanopay.crunch.document.Document",
@@ -98,7 +98,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-10",
+  "id":"crunch.onboarding.document.br.social-contract",
   "name":"Contract",
   "description":"Social Contract",
   "of":"net.nanopay.crunch.document.Document",
@@ -109,7 +109,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-11",
+  "id":"crunch.onboarding.document.br.corporate-act",
   "name":"Corporate act",
   "description":"Provide corporate act deliberating on the investment",
   "of":"net.nanopay.crunch.document.Document",
@@ -120,7 +120,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-12",
+  "id":"crunch.onboarding.document.br.letter-of-authorization",
   "name":"Letter of authorization",
   "description":"Letter of authorization from the foreign company to receive the investment",
   "of":"net.nanopay.crunch.document.Document",
@@ -131,7 +131,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-13",
+  "id":"crunch.onboarding.document.br.courier-voucher",
   "name":"Courier voucher",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -141,7 +141,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-14",
+  "id":"crunch.onboarding.document.br.debit-note",
   "name":"Debit Note",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -151,7 +151,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-15",
+  "id":"crunch.onboarding.document.br.deed-of-property",
   "name":"Deed of the Property",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -161,7 +161,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-16",
+  "id":"crunch.onboarding.document.br.proof-of-kinship",
   "name":"Document of proof of kinship",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -171,7 +171,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-17",
+  "id":"crunch.onboarding.document.br.operation-details",
   "name":"Document proving the operation",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -181,7 +181,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-18",
+  "id":"crunch.onboarding.document.br.import-declaration",
   "name":"Import Declaration",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -191,7 +191,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-19",
+  "id":"crunch.onboarding.document.br.insurance-note",
   "name":"Insurance note",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -201,7 +201,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-20",
+  "id":"crunch.onboarding.document.br.invoice-payment-details",
   "name":"Invoice with payment details",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -211,7 +211,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-21",
+  "id":"crunch.onboarding.document.br.lease-agreement",
   "name":"Lease Agreement",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -221,7 +221,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-22",
+  "id":"crunch.onboarding.document.br.loan-agreement",
   "name":"Loan Agreement",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -231,7 +231,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-23",
+  "id":"crunch.onboarding.document.br.minutes-of-profit-distribution",
   "name":"Minutes of Profit Distribution of the company",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -241,7 +241,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-24",
+  "id":"crunch.onboarding.document.br.policy",
   "name":"Policy",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -251,7 +251,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-25",
+  "id":"crunch.onboarding.document.br.proof-of-investment-abroad",
   "name":"Proof of investment abroad",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -261,7 +261,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-26",
+  "id":"crunch.onboarding.document.br.proof-of-order-received-abroad",
   "name":"Proof of order received from abroad",
   "description":"Proof of order received from abroad (SWIFT / CCME)",
   "of":"net.nanopay.crunch.document.Document",
@@ -272,7 +272,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-27",
+  "id":"crunch.onboarding.document.br.proof-of-payment-taxes",
   "name":"Proof of payment of taxes",
   "description":"Proof of payment of taxes on gifts and inheritances",
   "of":"net.nanopay.crunch.document.Document",
@@ -283,7 +283,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-28",
+  "id":"crunch.onboarding.document.br.property-purchase-agreement",
   "name":"Property purchase agreement",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -293,7 +293,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-29",
+  "id":"crunch.onboarding.document.br.property-sale-agreement",
   "name":"Property Sale Agreement",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -303,7 +303,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-30",
+  "id":"crunch.onboarding.document.br.property-rental-agreement",
   "name":"Property Rental Agreement",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -313,7 +313,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-31",
+  "id":"crunch.onboarding.document.br.rde-rof",
   "name":"RDE-ROF",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -323,7 +323,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-32",
+  "id":"crunch.onboarding.document.br.payment-scheme",
   "name":"Payment scheme",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -333,7 +333,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-33",
+  "id":"crunch.onboarding.document.br.rof",
   "name":"ROF",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -343,7 +343,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-34",
+  "id":"crunch.onboarding.document.br.rde-ied",
   "name":"RDE-IED",
   "description":"Provide updated RDE-IED",
   "of":"net.nanopay.crunch.document.Document",
@@ -354,7 +354,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-35",
+  "id":"crunch.onboarding.document.br.simplified-export-declaration",
   "name":"Simplified export declaration (DSE)",
   "description":"Provide simplified export declaration / DSE (Declaração Simplificada de Exportação)",
   "of":"net.nanopay.crunch.document.Document",
@@ -365,7 +365,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-36",
+  "id":"crunch.onboarding.document.br.export-registration",
   "name":"Export Registration (RE)",
   "description":"Provide Export Registration / RE (registro-de-exportacao)",
   "of":"net.nanopay.crunch.document.Document",
@@ -376,7 +376,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-37",
+  "id":"crunch.onboarding.document.br.sales-statement",
   "name":"Sales statement for the period",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -386,7 +386,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-38",
+  "id":"crunch.onboarding.document.br.service-provision",
   "name":"Service Provision Agreement",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -396,7 +396,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-39",
+  "id":"crunch.onboarding.document.br.signed-commercial-invoice",
   "name":"Signed Commercial Invoice",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
@@ -406,7 +406,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-40",
+  "id":"crunch.onboarding.document.br.wills-inventory",
   "name":"Wills Inventory",
   "description":"Document containing the Wills inventory",
   "of":"net.nanopay.crunch.document.Document",
@@ -417,7 +417,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-41",
+  "id":"crunch.onboarding.document.br.signed-proforma-invoice",
   "name":"Signed Proforma Invoice",
   "description":"Signed Proforma Invoice (containing expected shipping date)",
   "of":"net.nanopay.crunch.document.Document",
@@ -428,7 +428,7 @@ p({
 
 p({
   "class": "foam.nanos.crunch.MinMaxCapability",
-  "id":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode",
+  "id":"naturecode.br.minmax.requirement",
   "name":"Nature Code Requirement",
   "min": 1,
   "max": 1,
@@ -438,7 +438,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"05a663b8-2b48-11eb-adc1-0242ac120002",
+  "id":"crunch.onboarding.br.business-prerequisites",
   "name":"Business Prerequisites for Brazil",
   "description":"Business prerequisites for payments in Brazil",
   "icon":"/images/capabilityIcons/BrazilCap.svg",
@@ -449,7 +449,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"bf6a49d5-4027-4dac-a269-4d3ed070609e-4",
+  "id":"crunch.onboarding.br.parent.international-payments",
   "name":"International payments",
   "description":"International payments from Brazil",
   "requirementViewTitle":"Register your business details of your company. We use payment corridors to streamline your operations, you will notice that much of the information needed to make conventional payments will not be necessary, once you are setup.",
@@ -457,7 +457,7 @@ p({
   "version":"0",
   "visibilityPredicate":  {
     "class": "foam.nanos.crunch.predicate.CapabilityGranted",
-    "capabilityId": "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
+    "capabilityId": "crunch.onboarding.signing-officer-information",
     "subjectFromUCJ": false
   },
   "enabled":true,
@@ -481,7 +481,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D",
+  "id":"crunch.onboarding.br.international-payments",
   "name":"International payments onboarding",
   "description":"International payments from Brazil",
   "icon":"/images/capabilityIcons/BrazilCap.svg",
@@ -511,7 +511,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "id":"crunch.onboarding.br.brazil-onboarding",
   "name":"Brazil onboarding",
   "description":"Brazil onboarding",
   "version":"0",
@@ -520,7 +520,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.extra.ReviewWizard",
-  "id":"25F5C0CC-DD7E-4206-B392-46EAA9332870",
+  "id":"crunch.onboarding.br.review-required",
   "name":"Review Required (International Payments)",
   "icon":"/images/capabilityIcons/BrazilCap.svg",
   "availabilityPredicate": {
@@ -529,11 +529,11 @@ p({
       { "class":"net.nanopay.crunch.predicate.IsBusiness" },
       {
         "class":"foam.nanos.crunch.predicate.CapabilityGranted",
-        "capabilityId":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D"
+        "capabilityId":"crunch.onboarding.br.international-payments"
       },
       {
         "class":"foam.nanos.crunch.predicate.CapabilityGranted",
-        "capabilityId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5"
+        "capabilityId":"crunch.onboarding.signing-officer-information"
       }
     ]
   },
@@ -541,14 +541,14 @@ p({
     "class": "foam.u2.crunch.EasyCrunchWizard",
     "allowSkipping": false
   },
-  "capabilityToReview": "0B2E7305-B898-43F2-9C1B-63FB2CE38B2D",
+  "capabilityToReview": "crunch.onboarding.br.international-payments",
   "enabled":true,
   "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
 })
 
 p({
   "class": "net.nanopay.payment.RegisterPaymentProviderCapability",
-  "id":"89cc91da-4bbd-458b-81d4-574815e455fa-4",
+  "id":"crunch.onboarding.br.registering-payment-provider",
   "name":"Registering with Payment Provider(BR International)",
   "description":"Registering with Payment Provider(BR International)",
   "version":"0",
@@ -566,7 +566,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"2910C2C9-3597-42A3-BF85-CFBC8F0E1388",
+  "id":"crunch.user-invoice",
   "name":"User Invoice Capability",
   "icon":"/images/capabilityIcons/BrazilCap.svg",
   "enabled":true,
@@ -575,7 +575,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"7b41a164-29bd-11eb-adc1-0242ac120002",
+  "id":"crunch.onboarding.br.add-bank-account",
   "name":"Bank Information",
   "of":"net.nanopay.partner.treviso.onboarding.BRBankAccountData",
   "enabled":true
@@ -583,7 +583,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-25",
+  "id":"crunch.onboarding.br.treviso-unlock-payments-terms",
   "name":"Terms and Conditions",
   "of":"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions",
   "version":"0",
@@ -593,7 +593,7 @@ p({
 //addition Requirements unlock Brazil payment
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"9d4d667c-04c3-11eb-adc1-0242ac120002",
+  "id":"crunch.onboarding.br.currency-amount-information",
   "name":"Capital, Equity and Revenue",
   "of":"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation",
   "version":"0",
@@ -601,7 +601,7 @@ p({
 })
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"af3d9c28-0674-11eb-adc1-0242ac120002",
+  "id":"crunch.onboarding.br.business-account",
   "name":"Business Account Information",
   "of":"net.nanopay.partner.treviso.TrevisoBusinessAccountData",
   "version":"0",
@@ -609,7 +609,7 @@ p({
 })
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"4c46cdb8-06b2-11eb-adc1-0242ac120002",
+  "id":"crunch.onboarding.br.nature-of-business",
   "name":"Nature of Business Relationship",
   "of": "net.nanopay.country.br.NatureBusinessRelationship",
   "version":"0",
@@ -633,7 +633,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"1d72f804-4019-11eb-b378-0242ac130002",
+  "id":"crunch.onboarding.br.expected-shipment-date",
   "name":"What is the expected date of shipment?",
   "description":"Expect Boarding Date",
   "of":"net.nanopay.country.br.ExpectedBoardingDate",
