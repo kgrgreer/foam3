@@ -315,7 +315,14 @@ public interface FObject
           if ( prop instanceof AbstractFObjectPropertyInfo &&
                from != null &&
                to != null ) {
-            from = ((FObject) to).fclone().copyFrom((FObject) from);
+            if ( ((FObject) to).getClassInfo() != ((FObject)from).getClassInfo() ) {
+              FObject nestedOldDiff = ((FObject) from).fclone();
+              nestedOldDiff.copyFrom((FObject)to);
+              // have to explicitly set the value because nestedOldDiff is a clone
+              prop.set(to, nestedOldDiff.copyFrom((FObject)from));
+            } else {
+              from = ((FObject) to).fclone().copyFrom((FObject) from);
+            }
           }
         } catch (ClassCastException e1) {
           System.out.println("copyFrom: "+e1.getMessage());
