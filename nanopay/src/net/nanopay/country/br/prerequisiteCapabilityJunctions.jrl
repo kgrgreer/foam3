@@ -1,94 +1,94 @@
 //Unlock International & Domestic Payments and Invoicing for Brazil
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "targetId":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode",
+  "targetId":"naturecode.br.minmax.requirement",
   "sourceId":"invoice.capable.treviso",
   "priority": 17
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "sourceId":"2910C2C9-3597-42A3-BF85-CFBC8F0E1388",
+  "targetId":"crunch.onboarding.br.brazil-onboarding",
+  "sourceId":"crunch.user-invoice",
   "priority": 2
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "targetId":"fb7d3ca2-62f2-4caf-a84c-860392e4676b",
-  "sourceId":"2910C2C9-3597-42A3-BF85-CFBC8F0E1388",
+  "targetId":"crunch.onboarding.br.cpf",
+  "sourceId":"crunch.user-invoice",
   "priority": 1
 })
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "bf6a49d5-4027-4dac-a269-4d3ed070609e-4",
-  targetId: "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
+  sourceId: "crunch.onboarding.br.parent.international-payments",
+  targetId: "crunch.onboarding.signing-officer-information",
   precondition: true
 })
 
 p({
-  sourceId: "0B2E7305-B898-43F2-9C1B-63FB2CE38B2D",
-  targetId: "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5"
+  sourceId: "crunch.onboarding.br.international-payments",
+  targetId: "crunch.onboarding.signing-officer-information"
 })
 
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "0B2E7305-B898-43F2-9C1B-63FB2CE38B2D",
-  targetId: "05a663b8-2b48-11eb-adc1-0242ac120002"
+  sourceId: "crunch.onboarding.br.international-payments",
+  targetId: "crunch.onboarding.br.business-prerequisites"
 })
 
 // add prereq capability junctions needed for br unlock payments flow
 // business registration date
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"554af38a-8225-87c8-dfdf-eeb15f71215f-16",
-  targetId:"554af38a-8225-87c8-dfdf-eeb15f71215f-14"
+  sourceId:"crunch.onboarding.business-registration-date",
+  targetId:"crunch.onboarding.certify-data-reviewed"
 })
 // business Incorporated Date
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"554af38a-8225-87c8-dfdf-eeb15f71215f-17",
-  targetId:"554af38a-8225-87c8-dfdf-eeb15f71215f-14"
+  sourceId:"crunch.onboarding.business-incorporation-date",
+  targetId:"crunch.onboarding.certify-data-reviewed"
 })
 // office consumption
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"b5f2b020-db0f-11ea-87d0-0242ac130003",
-  targetId:"554af38a-8225-87c8-dfdf-eeb15f71215f-14"
+  sourceId:"crunch.onboarding.document.office-consumption",
+  targetId:"crunch.onboarding.certify-data-reviewed"
 })
 // business identification numbers
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"688cb7c6-7316-4bbf-8483-fb79f8fdeaaf",
-  targetId:"554af38a-8225-87c8-dfdf-eeb15f71215f-14"
+  sourceId:"crunch.onboarding.br.business-identification",
+  targetId:"crunch.onboarding.certify-data-reviewed"
 })
 // business latest annual report
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"7e2739cc-db32-11ea-87d0-0242ac130003",
-  targetId:"554af38a-8225-87c8-dfdf-eeb15f71215f-14"
+  sourceId:"crunch.onboarding.document.annual-financial-statements",
+  targetId:"crunch.onboarding.certify-data-reviewed"
 })
 // articles of incorporation
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"26d32e86-db11-11ea-87d0-0242ac130003",
-  targetId:"554af38a-8225-87c8-dfdf-eeb15f71215f-14"
+  sourceId:"crunch.onboarding.document.articles-of-incorporation",
+  targetId:"crunch.onboarding.certify-data-reviewed"
 })
 
 // replace businessdetails prereq with businesstypeandsector for brazil
 // certify data reviewed
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eebsdf3225y-4",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "sourceId":"crunch.onboarding.business-type-sector",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
   "priority":1
 })
 // brazil onboarding
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "targetId":"554af38a-8225-87c8-dfdf-eebsdf3225y-4",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"crunch.onboarding.business-type-sector",
   "priority":3
 })

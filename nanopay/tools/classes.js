@@ -890,6 +890,7 @@ var classes = [
   'net.nanopay.meter.report.UserComplianceSummaryReportDAO',
   'net.nanopay.meter.report.RejectedTransactionReport',
   'net.nanopay.meter.report.RejectedTransactionReportDAO',
+  'net.nanopay.meter.report.ReportStatus',
 
   // clearing
   'net.nanopay.meter.clearing.ClearingTimeService',
@@ -1204,6 +1205,7 @@ var classes = [
   'net.nanopay.tx.planner.exceptions.PlannerValidationException',
   'net.nanopay.tx.planner.exceptions.PlannerCapabilityIncompleteException',
   'net.nanopay.tx.planner.exceptions.PlannerComplianceFailureException',
+  'net.nanopay.tx.planner.exceptions.PlannerStatusInactiveException',
 
   // Billing
   'net.nanopay.tx.billing.Bill',
@@ -1385,9 +1387,14 @@ var classes = [
 
   // Reporting
   'net.nanopay.reporting.ReconciliationReport',
+  'net.nanopay.reporting.ReducedReconciliationReport',
+  'net.nanopay.reporting.ServiceFeesReport',
+  'net.nanopay.reporting.UserOnboardingReport',
 
   // bepay
   'net.nanopay.partner.bepay.tx.BePayTransaction',
+  'net.nanopay.country.br.tx.PartnerLineItem',
+  'net.nanopay.country.br.tx.PartnerReport',
   'net.nanopay.partner.bepay.tx.planner.BePayTransactionPlanner',
   'net.nanopay.partner.bepay.tx.ScreenUsersOnTransactionCreate',
 

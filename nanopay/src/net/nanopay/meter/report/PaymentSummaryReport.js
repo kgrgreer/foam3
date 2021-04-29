@@ -67,7 +67,8 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.meter.report.ReportStatus',
       name: 'status',
       visibility: 'RO',
       tableWidth: 100,

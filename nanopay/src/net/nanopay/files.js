@@ -1359,6 +1359,8 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/report/UserComplianceSummaryReportDAO' },
   { name: 'net/nanopay/meter/report/RejectedTransactionReportDAO' },
   { name: 'net/nanopay/meter/report/RejectedTransactionReport' },
+  { name: 'net/nanopay/meter/report/ReportStatus' },
+  { name: 'net/nanopay/meter/reports/RowOfBusSumReports' },
 
   // clearing
   { name: 'net/nanopay/meter/clearing/ClearingTimeService' },
@@ -1668,6 +1670,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/exceptions/PlannerValidationException' },
   { name: 'net/nanopay/tx/planner/exceptions/PlannerCapabilityIncompleteException' },
   { name: 'net/nanopay/tx/planner/exceptions/PlannerComplianceFailureException' },
+  { name: 'net/nanopay/tx/planner/exceptions/PlannerStatusInactiveException' },
 
   // Billing
   { name: 'net/nanopay/tx/billing/Bill' },
@@ -1764,6 +1767,9 @@ FOAM_FILES([
 
   //Reporing
   { name: 'net/nanopay/reporting/ReconciliationReport' },
+  { name: 'net/nanopay/reporting/ReducedReconciliationReport' },
+  { name: 'net/nanopay/reporting/ServiceFeesReport' },
+  { name: 'net/nanopay/reporting/UserOnboardingReport' },
 
   { name: 'net/nanopay/payment/PayeeCurrencyService' },
   { name: 'net/nanopay/payment/PayeeCurrency' },
@@ -1929,6 +1935,8 @@ FOAM_FILES([
 
   // bepay
   { name: 'net/nanopay/partner/bepay/tx/BePayTransaction' },
+  { name: 'net/nanopay/country/br/tx/PartnerLineItem' },
+  { name: 'net/nanopay/country/br/tx/PartnerReport' },
   { name: 'net/nanopay/partner/bepay/tx/planner/BePayTransactionPlanner' },
 
   // Reports for Treviso
@@ -1969,6 +1977,10 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/br/businessSector/Sector' },
   { name: 'net/nanopay/partner/br/businessSector/Grupo' },
   { name: 'net/nanopay/partner/br/businessSector/Divisao' },
-  { name: 'net/nanopay/partner/br/businessSector/Secao' }
+  { name: 'net/nanopay/partner/br/businessSector/Secao' },
 
+  //SWIFT
+  { name: 'net/nanopay/swift/AbstractMT' },
+  { name: 'net/nanopay/swift/Properties' },
+  { name: 'net/nanopay/swift/SCHEMA' },
 ]);

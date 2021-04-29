@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -18,13 +18,25 @@
 package net.nanopay.reporting;
 
 import foam.core.X;
-import net.nanopay.tx.DigitalTransaction;
+import foam.nanos.auth.Subject;
+import foam.nanos.auth.User;
+import net.nanopay.tx.SummarizingTransaction;
 import net.nanopay.tx.SummaryTransaction;
-import net.nanopay.tx.cico.CITransaction;
-import net.nanopay.tx.cico.COTransaction;
+import net.nanopay.tx.model.Transaction;
 
-public interface ReconciliationReportGenerator {
+public abstract class ReconciliationReportGenerator extends ReportGenerator {
 
-  ReconciliationReport generateReport(X x, SummaryTransaction transaction, CITransaction ciTransaction, COTransaction coTransaction, DigitalTransaction dt);
+  protected String getRoot(X x, Transaction transaction) {
+    var superX = x.put("subject", new Subject.Builder(x).setUser(new User.Builder(x).setId(1).build()).build());
+
+    while( transaction != null && ! (transaction instanceof SummarizingTransaction) ) {
+      transaction = transaction.findRoot(superX);
+    }
+
+    if ( transaction == null )
+      throw new RuntimeException("Transaction missing SummaryTransaction root");
+
+    return transaction.getId();
+  }
 
 }

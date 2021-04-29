@@ -37,7 +37,8 @@ foam.CLASS({
     'java.util.List',
 
     'static foam.mlang.MLang.EQ',
-    'static foam.mlang.MLang.AND'
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.INSTANCE_OF'
   ],
 
   constants: [
@@ -249,12 +250,14 @@ foam.CLASS({
         boolean isPayee = invoice.getPayeeId() == id;
         boolean isPayer = invoice.getPayerId() == id;
         List<Contact> contacts = getContactsWithEmail(x, user.getEmail());
-        for ( Contact contact : contacts ) {
-          if ( invoice.getPayeeId() == contact.getId() ) {
-            isPayee = true;
-          }
-          if ( invoice.getPayerId() == contact.getId() ) {
-            isPayer = true;
+        if ( contacts != null ) {
+          for ( Contact contact : contacts ) {
+            if ( invoice.getPayeeId() == contact.getId() ) {
+              isPayee = true;
+            }
+            if ( invoice.getPayerId() == contact.getId() ) {
+              isPayer = true;
+            }
           }
         }
         return  isPayee || isPayer;
@@ -269,9 +272,12 @@ foam.CLASS({
         { type: 'String', name: 'emailAddress' }
       ],
       javaCode: `
+        if ( SafetyUtil.isEmpty(emailAddress) ) return null;
         DAO contactDAO = (DAO) x.get("localContactDAO");
         ArraySink contactsWithMatchingEmail = (ArraySink) contactDAO
-          .where(EQ(Contact.EMAIL, emailAddress))
+          .where(AND(
+            EQ(Contact.EMAIL, emailAddress),
+            INSTANCE_OF(Contact.class)))
           .select(new ArraySink());
         return contactsWithMatchingEmail.getArray();
       `

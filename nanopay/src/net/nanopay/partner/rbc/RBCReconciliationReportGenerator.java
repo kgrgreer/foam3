@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -15,29 +15,30 @@
  * from nanopay Corporation.
  */
 
+
 package net.nanopay.partner.rbc;
 
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
-import net.nanopay.reporting.ReconciliationReportDAO;
+import net.nanopay.reporting.ReconciliationReportGenerator;
+import net.nanopay.reporting.ReportGenerator;
 import net.nanopay.tx.DigitalTransaction;
+import net.nanopay.tx.cico.CITransaction;
+import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.rbc.RbcCITransaction;
 import net.nanopay.tx.rbc.RbcCOTransaction;
 
-public class RBCReconciliationReportDAO extends ReconciliationReportDAO {
+import java.util.HashMap;
+import java.util.Map;
 
-  public RBCReconciliationReportDAO(X x, DAO delegate) {
-    super(x, delegate);
-  }
+public abstract class RBCReconciliationReportGenerator extends ReconciliationReportGenerator {
 
-  @Override
-  protected String getGenerator() {
-    return "rbcReconciliationReportGenerator";
-  }
+  protected Map<String, CITransaction> ciMap = new HashMap<>();
+  protected Map<String, COTransaction> coMap = new HashMap<>();
+  protected Map<String, DigitalTransaction> dtMap = new HashMap<>();
 
-  @Override
   protected void refreshMaps(X x) {
     var transactionDAO = (DAO) x.get("localTransactionDAO");
     var transactions = (ArraySink) transactionDAO.select(new ArraySink());
