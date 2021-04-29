@@ -67,15 +67,17 @@ foam.CLASS({
               EQ(TransactionLimit.USER_ID, realUser.getId())
             ).select(new ArraySink())).getArray();
 
+            boolean limitHit = false;
+
             if ( userLimits.size() > 0 ) {
               // check transaction limits on user
               for ( TransactionLimit limit : userLimits ) {
-                checkLimit(x, txn, limit, user);
+                limitHit = checkLimit(x, txn, limit, user);
               }
             } else if ( realUserLimits.size() > 0 ) {
               // check transaction limits on realUser
               for ( TransactionLimit limit : realUserLimits ) {
-                checkLimit(x, txn, limit, realUser);
+                limitHit = checkLimit(x, txn, limit, realUser);
               }
             } else {
               // check transaction limits on spid
@@ -88,17 +90,25 @@ foam.CLASS({
 
               if ( spidLimits.size() > 0 ) {
                 for ( TransactionLimit limit : spidLimits ) {
-                  checkLimit(x, txn, limit, sourceOwner);
+                  // make check limit return a boolean
+                  limitHit = checkLimit(x, txn, limit, sourceOwner);
                 }
               }
             }
+
+            if ( ! limitHit ) {
+              txn = (Transaction) txn.fclone();
+              txn.setStatus(TransactionStatus.COMPLETED);
+              ((DAO) x.get("transactionDAO")).put(txn);
+            }
+
           }
         }, "LimitTransactionRule");
       `
     },
     {
       name: 'generateApprovalRequest',
-      type: 'Void',
+      type: 'Boolean',
       args: [
         {
           type: 'Context',
@@ -135,12 +145,12 @@ foam.CLASS({
             txn = (Transaction) txn.fclone();
             txn.setStatus(TransactionStatus.COMPLETED);
             transactionDAO.put(txn);
-            return;
+            return false;
           } else if ( req.getStatus().equals(ApprovalStatus.REJECTED) ) {
             txn = (Transaction) txn.fclone();
             txn.setStatus(TransactionStatus.CANCELLED);
             transactionDAO.put(txn);
-            return;
+            return false;
           }
         }
 
@@ -155,11 +165,12 @@ foam.CLASS({
           .setCreatedFor(user.getId())
           .setStatus(ApprovalStatus.REQUESTED).build();
         approvalRequestDAO.put(req);
+        return true;
       `
     },
     {
       name: 'checkLimit',
-      type: 'Void',
+      type: 'Boolean',
       args: [
         {
           type: 'Context',
@@ -182,8 +193,7 @@ foam.CLASS({
         DAO currentLimitDAO = (DAO) x.get("currentLimitDAO");
         if ( txn.getAmount() > limit.getAmount() ) {
           // txn already exceeds limit, generate approval request
-          generateApprovalRequest(x, txn, limit, user);
-          return;
+          return generateApprovalRequest(x, txn, limit, user);
         }
 
         // check for current limits related to transaction limit
@@ -202,12 +212,10 @@ foam.CLASS({
           }
           if ( ! limitState.check(limit.getAmount(), currentLimit.getPeriod(), txn.getAmount())) {
             // transaction exceeds limit generate approval request
-            generateApprovalRequest(x, txn, limit, user);
+            return generateApprovalRequest(x, txn, limit, user);
           } else {
             // if transaction doesnt exceed limit update limitState and currentLimit
-            Long updatedSpent = limitState.getSpent() + txn.getAmount();
-            limitState.setSpent(updatedSpent);
-            limitState.update(limit.getAmount(), currentLimit.getPeriod());
+            limitState.updateSpent(txn.getAmount(), currentLimit.getPeriod());
             currentLimit.getCurrentLimits().put(key, limitState);
             currentLimitDAO.put(currentLimit);
           }
@@ -220,10 +228,11 @@ foam.CLASS({
           
           String key = getKey(user, currentLimit);
           TransactionLimitState limitState = new TransactionLimitState();
-          limitState.setSpent(txn.getAmount());
+          limitState.updateSpent(txn.getAmount(), limit.getPeriod());
           currentLimit.getCurrentLimits().put(key, limitState);
           currentLimitDAO.put(currentLimit);
         }
+        return false;
       `
     },
     {

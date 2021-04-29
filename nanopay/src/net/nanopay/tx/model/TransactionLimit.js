@@ -21,10 +21,6 @@ foam.CLASS({
 
   documentation: 'Pre-defined limit for transactions.',
 
-  implements: [
-    'foam.nanos.auth.ServiceProviderAware'
-  ],
-
   properties: [
     {
       class: 'Long',
