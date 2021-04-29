@@ -382,7 +382,7 @@ foam.CLASS({
         try {
           var y = this.sudoAdmin(x);
           var cap = await this.client(y, 'capabilityPayloadDAO', foam.nanos.crunch.connection.CapabilityPayload).put_(y, foam.nanos.crunch.connection.CapabilityPayload.create({
-            'id': '1F0B39AD-934E-462E-A608-D590D1081298',
+            'id': 'crunch.onboarding.api.unlock-ca-payments',
             'capabilityDataObjects': {
               'Personal Onboarding Type': {
                 'class': 'net.nanopay.crunch.registration.PersonalOnboardingTypeData',
@@ -425,7 +425,7 @@ foam.CLASS({
       type: 'foam.nanos.crunch.UserCapabilityJunction',
       code: async function(x, user) {
         
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-76';
+        var id = 'crunch.onboarding.register-business';
         var cap = net.nanopay.crunch.onboardingModels.InitialBusinessData.create({
           businessName: 'b-'+user.userName,
           companyPhone: user.phoneNumber,
@@ -440,7 +440,7 @@ foam.CLASS({
     {
       name: 'businessDetailExpandedData',
       code: async function(x, business) {
-        var id = '9C6D8CFE-50B8-4507-A595-78DD9E08EA2D';
+        var id = 'crunch.onboarding.api.expanded-business-details';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -455,7 +455,7 @@ foam.CLASS({
     {
       name: 'businessTypeData',
       code: async function(x, business) {
-        var id = 'A679CA67-93C2-4597-B92E-4BBA00797E96';
+        var id = 'crunch.onboarding.api.minmax.business-type';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -500,7 +500,7 @@ foam.CLASS({
     {
       name: 'businessOwners',
       code: async function(x, business) {
-        var id = '6DD8D005-7514-432D-BC32-9C5D569A0462';
+        var id = 'crunch.onboarding.business-owner-list';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -515,7 +515,7 @@ foam.CLASS({
     {
       name: 'businessRegistrationDate',
       code: async function(x, business) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-16';
+        var id = 'crunch.onboarding.business-registration-date';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -530,7 +530,7 @@ foam.CLASS({
     {
       name: 'businessLastRegistrationDate',
       code: async function(x, business) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-19'; // this is br/treviso capability
+        var id = 'crunch.onboarding.last-business-registration-date'; // this is br/treviso capability
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -545,7 +545,7 @@ foam.CLASS({
     {
       name: 'businessIncorporationDate',
       code: async function(x, business) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-17';
+        var id = 'crunch.onboarding.business-incorporation-date';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -560,7 +560,7 @@ foam.CLASS({
     {
       name: 'businessTaxIdNumber',
       code: async function(x, business) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-18';
+        var id = 'crunch.onboarding.tax-id-number';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -575,7 +575,7 @@ foam.CLASS({
     {
       name: 'businessOfficeConsumptionDocument',
       code: async function(x, business) {
-        var id = 'b5f2b020-db0f-11ea-87d0-0242ac130003';
+        var id = 'crunch.onboarding.document.office-consumption';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -593,7 +593,7 @@ foam.CLASS({
     {
       name: 'businessArticleOfIncorporation',
       code: async function(x, business) {
-        var id = '26d32e86-db11-11ea-87d0-0242ac130003';
+        var id = 'crunch.onboarding.document.articles-of-incorporation';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -611,7 +611,7 @@ foam.CLASS({
     {
       name: 'businessTypeAndSector',
       code: async function(x, business) {
-        var id = '554af38a-8225-87c8-dfdf-eebsdf3225y-4';
+        var id = 'crunch.onboarding.business-type-sector';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -831,7 +831,7 @@ foam.CLASS({
     {
       name: 'userRegistrationData',
       code: async function(x, user) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215e-19';
+        var id = 'crunch.onboarding.user-registration';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -848,7 +848,7 @@ foam.CLASS({
     // {
     //   name: 'userGeneralAdmission',
     //   code: async function(x, user) {
-    //     var id = '242B00F8-C775-4899-AEBA-F287EC54E901';
+    //     var id = 'crunch.onboarding.treviso.general-admission';
     //     var ucj = await this.crunchService.getJunction(x, id);
     //     if ( ! ucj ||
     //          ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -860,7 +860,7 @@ foam.CLASS({
     {
       name: 'abliiPrivacyPolicy',
       code: async function(x, user) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215e-8';
+        var id = 'crunch.acceptance-document.ablii-privacy-policy';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -876,7 +876,7 @@ foam.CLASS({
     {
       name: 'abliiTermsAndConditions',
       code: async function(x, user) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215e-7';
+        var id = 'crunch.acceptance-document.ablii-terms-and-conditions';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -892,7 +892,7 @@ foam.CLASS({
     {
       name: 'generalAdmission',
       code: async function(x, user) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215e-18';
+        var id = 'crunch.onboarding.general-admission';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -904,7 +904,7 @@ foam.CLASS({
     {
       name: 'userDetails',
       code: async function(x, user) {
-        var id = '0ED5DD86-AA1A-452B-BA7D-E7A2D0542135';
+        var id = 'crunch.onboarding.user-details';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -922,7 +922,7 @@ foam.CLASS({
     {
       name: 'userDetailExpandedData',
       code: async function(x, user) {
-        var id = 'FB1C8CF2-34B9-40FE-A4AA-58CFA2FDBA15';
+        var id = 'crunch.onboarding.expanded-user-details';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -941,7 +941,7 @@ foam.CLASS({
       name: 'userDateOfBirth',
       code: async function(x, user) {
         // Date of birth
-        var id = '8bffdedc-5176-4843-97df-1b75ff6054fb';
+        var id = 'crunch.onboarding.user-birth-date';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -960,7 +960,7 @@ foam.CLASS({
         var ucj;
 
         // SigningOfficerPrivilegesRequested
-        id = '554af38a-8225-87c8-dfdf-eeb15f71215f-0';
+        id = 'crunch.onboarding.signing-officer-question';
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -980,7 +980,7 @@ foam.CLASS({
         var id;
         var ucj;
 
-        id = '554af38a-8225-87c8-dfdf-eeb15f71215f-1a5';
+        id = 'crunch.onboarding.signing-officer-information';
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -1003,7 +1003,7 @@ foam.CLASS({
         var id;
         var ucj;
 
-        id = '554af38a-8225-87c8-dfdf-eeb15f71215f-6';
+        id = 'crunch.onboarding.transaction-details';
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -1034,7 +1034,7 @@ foam.CLASS({
           firstName:'userFirst',
           lastName:'userLast'
         });
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-6-5';
+        var id = 'crunch.onboarding.business-directors';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -1053,7 +1053,7 @@ foam.CLASS({
       code: async function(x, business) {
         var id;
         var ucj;
-        id = '554af38a-8225-87c8-dfdf-eeb15f71215e-17';
+        id = 'crunch.acceptance-document.certify-directors-list';
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -1068,13 +1068,13 @@ foam.CLASS({
     {
       name: 'businessOwnershipData',
       code: async function(x, business) {
-        var prereqId = '554af38a-8225-87c8-dfdf-eeb15f71215f-7-noReview';
+        var prereqId = 'crunch.onboarding.publicly-traded';
         var ucj = await this.crunchService.getJunction(x, prereqId);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           ucj = await this.crunchService.updateJunction(x, prereqId, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
         }
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-7';
+        var id = 'crunch.onboarding.minmax.business-ownership';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -1088,7 +1088,7 @@ foam.CLASS({
       code: async function(x, business) {
         var id;
         var ucj;
-        id = '554af38a-8225-87c8-dfdf-eeb15f71215e-12';
+        id = 'crunch.acceptance-document.certify-owners-percent';
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -1105,7 +1105,7 @@ foam.CLASS({
       code: async function(x, user) {
         var id;
         var ucj;
-        id = '554af38a-8225-87c8-dfdf-eeb15f71215f-14';
+        id = 'crunch.onboarding.certify-data-reviewed';
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -1123,7 +1123,7 @@ foam.CLASS({
       code: async function(x) {
         var id;
         var ucj;
-        id = '554af38a-8225-87c8-dfdf-eeb15f71215e-10';
+        id = 'crunch.acceptance-document.afex-terms-and-conditions';
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
@@ -1138,25 +1138,25 @@ foam.CLASS({
     {
       name: 'explicitInternationalOnboardingCaps',
       code: async function(x, business) {
-        var id = '05a663b8-2b48-11eb-adc1-0242ac120002';
+        var id = 'crunch.onboarding.br.business-prerequisites';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
         }
-        id = '0B2E7305-B898-43F2-9C1B-63FB2CE38B2D';
+        id = 'crunch.onboarding.br.international-payments';
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
         }
-        id = 'bf6a49d5-4027-4dac-a269-4d3ed070609e-4'; 
+        id = 'crunch.onboarding.br.parent.international-payments'; 
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
         }
-        id = '89cc91da-4bbd-458b-81d4-574815e455fa-4'; 
+        id = 'crunch.onboarding.br.registering-payment-provider'; 
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {

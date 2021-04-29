@@ -44,7 +44,7 @@ foam.CLASS({
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      value: /^[a-zA-Z0-9]{11}$/
+      value: /^[a-zA-Z0-9]{13}$/
     },
     {
       name: 'ROUTING_CODE_PATTERN',

@@ -116,6 +116,10 @@ foam.CLASS({
       of: 'net.nanopay.flinks.external.FlinksOverrides',
       name: 'flinksOverrides',
       documentation: 'Data that will override the data retrieved from Flinks.'
+    },
+    {
+      class: 'Map',
+      name: 'externalData'
     }
   ]
 });

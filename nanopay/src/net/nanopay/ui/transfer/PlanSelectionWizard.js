@@ -52,7 +52,6 @@ foam.CLASS({
   css: `
     ^ .foam-u2-tag-Select {
       width: 320px;
-      height: 40px;
       border-radius: 0;
 
       -webkit-appearance: none;
@@ -179,7 +178,7 @@ foam.CLASS({
                 self.currency = await self.currencyDAO.find(q.plans[i].sourceCurrency);
                 self.formattedAmount = self.currency.format(plan.amount);
               });
-              let checkBox = foam.u2.md.CheckBox.create({ id: i, data: i === 0 });
+              let checkBox = foam.u2.CheckBox.create({ id: i, data: i === 0 });
               checkBox.data$.sub(function() {
                 if ( checkBox.data ) {
                   self.checkedPlan = checkBox.id;

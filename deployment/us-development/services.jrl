@@ -1,5 +1,19 @@
 p({
   "class":"foam.nanos.boot.NSpec",
+  "name":"appConfig",
+  "lazy":false,
+  "parameters":false,
+  "service": {
+    "class":"foam.nanos.app.AppConfig",
+    "privacyUrl":"/service/file/d6a408c6-587d-b00f-6e04-6a4b933f7495",
+    "copyright":"Copyright © 2017-@{currentYear} nanopay Corp. All rights reserved.",
+    "termsAndCondLink":"/service/file/1f406b9b-bde4-58ff-f171-657627581f61",
+    "mode":1
+  }
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
   "name":"flinksCredentials",
   "lazy":false,
   "service":{

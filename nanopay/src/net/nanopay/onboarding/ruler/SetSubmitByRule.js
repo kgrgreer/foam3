@@ -43,7 +43,7 @@ foam.CLASS({
             UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
             BusinessOnboardingExtra data = new BusinessOnboardingExtra.Builder(x).setSubmitBy(ucj.getSourceId()).build();
 
-            crunchService.updateUserJunction(systemX, ucj.getSubject(x), "7bf54e2d-2bf0-41fe-bc25-31c8de030ffa", data, CapabilityJunctionStatus.GRANTED);
+            crunchService.updateUserJunction(systemX, ucj.getSubject(x), "crunch.onboarding.submitted-by", data, CapabilityJunctionStatus.GRANTED);
           }
         }, "Set SubmitBy to indicate the user who submit the onboarding information");
       `

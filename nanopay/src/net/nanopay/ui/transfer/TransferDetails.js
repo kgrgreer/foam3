@@ -67,7 +67,6 @@ foam.CLASS({
 
     ^ .foam-u2-tag-Select {
       width: 320px;
-      height: 40px;
       border-radius: 0;
 
       -webkit-appearance: none;
@@ -352,12 +351,12 @@ foam.CLASS({
            .start('p').add(self.AccountLabel).end()
           .start().addClass('choice')
             .start('div').addClass('confirmationContainer')
-              .tag({ class: 'foam.u2.md.CheckBox', data$: this.digitalCash$ })
+              .tag({ class: 'foam.u2.CheckBox', data$: this.digitalCash$ })
                .start('p').addClass('confirmationLabel').add('Digital Balance: ', this.formattedBalance$)
                .end()
             .end()
             .start('div').addClass('confirmationContainer')
-              .tag({ class: 'foam.u2.md.CheckBox', data$: this.accountCheck$ })
+              .tag({ class: 'foam.u2.CheckBox', data$: this.accountCheck$ })
               .start('p').addClass('confirmationLabel').add('Pay from account')
               .end()
             .end()
@@ -385,7 +384,7 @@ foam.CLASS({
           .tag(this.NOTES, { onKey: true })
           .start('div').addClass('confirmationContainer').enableClass('hidden', this.invoiceMode$)
             .callIf(this.type == 'foreign', function() {
-              this.tag({ class: 'foam.u2.md.CheckBox', data$: self.notThirdParty$ })
+              this.tag({ class: 'foam.u2.CheckBox', data$: self.notThirdParty$ })
               .start('p').addClass('confirmationLabel').add(self.NotThirdParty)
                 .on('click', function() {
                   self.notThirdParty = ! self.notThirdParty;

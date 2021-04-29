@@ -225,7 +225,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
   protected String findCNPJ(long userId) {
     UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) this.x.get("bareUserCapabilityJunctionDAO")).find(AND(
-      EQ(UserCapabilityJunction.TARGET_ID, "688cb7c6-7316-4bbf-8483-fb79f8fdeaaf"),
+      EQ(UserCapabilityJunction.TARGET_ID, "crunch.onboarding.br.business-identification"),
       EQ(UserCapabilityJunction.SOURCE_ID, userId)
     ));
 
@@ -234,7 +234,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
   protected String findCPF(long userId) {
     UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) this.x.get("bareUserCapabilityJunctionDAO")).find(AND(
-      EQ(UserCapabilityJunction.TARGET_ID, "fb7d3ca2-62f2-4caf-a84c-860392e4676b"),
+      EQ(UserCapabilityJunction.TARGET_ID, "crunch.onboarding.br.cpf"),
       EQ(UserCapabilityJunction.SOURCE_ID, userId)
     ));
 
@@ -620,7 +620,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     FindBeneficiaryResponse beneficiaryResponse = findBeneficiary(userId,afexUser.getApiKey(), user.getSpid());
     if ( null == beneficiaryResponse ) {
       String allowedChars = "[^a-zA-Z0-9,.+()?/:‘\\s-]";
-      String beneficiaryName = SafetyUtil.isEmpty(user.getOrganization()) ? user.getBusinessName() : user.getOrganization();
+      String beneficiaryName = user.toSummary();
+      if ( user instanceof Contact ) {
+        beneficiaryName = SafetyUtil.isEmpty(user.getOrganization()) ? user.getBusinessName() : user.getOrganization();
+      }
       beneficiaryName = beneficiaryName != null ? beneficiaryName.replaceAll(allowedChars,"") : "";
       String bankName = bankInformation != null ? bankInformation.getInstitutionName() : bankAccount.getName();
       CreateBeneficiaryRequest createBeneficiaryRequest = new CreateBeneficiaryRequest();

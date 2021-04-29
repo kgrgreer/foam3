@@ -1,4 +1,13 @@
-p({class:"foam.nanos.auth.ServiceProvider",id:"intuit",enabled:true,description:"intuit spid"})
+p({
+  class:"foam.nanos.auth.ServiceProvider",
+  id:"intuit",
+  enabled:true,
+  description:"intuit spid",
+  permissionsGranted: [
+    "language.read.en-",
+    "language.read.en-US"
+  ]
+})
 
 p({
   class: "foam.nanos.crunch.Capability",
@@ -50,9 +59,9 @@ p({
   version: "0",
   enabled: true,
   permissionsGranted: [
-    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7rbcca-ca",
-    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15f7rbcca-ca",
-    "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15f7rbcca-ca"
+    "paymentprovidercorridor.read.paymentprovidercorridor.rbc.ca-ca",
+    "paymentprovidercorridor.source.read.paymentprovidercorridor.rbc.ca-ca",
+    "paymentprovidercorridor.target.read.paymentprovidercorridor.rbc.ca-ca"
   ]
 })
 
@@ -81,5 +90,16 @@ p({
   permissionsGranted: [
     "rule.read.b57ad1a4-d907-4d6a-adf2-bdf9e51fe905",
     "rule.read.d2a9b4b5-3c84-4742-84cc-6bb11928ed82"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "intuit-onboarding-rules",
+  name: "Enable Intuit Onboarding Rules",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.84e2c846-e51e-4002-90b2-157bfed60241"
   ]
 })

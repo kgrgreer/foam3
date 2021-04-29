@@ -50,10 +50,14 @@ foam.CLASS({
       visibility: 'HIDDEN'
     },
     {
-      class: 'String',
+      class: 'Enum',
+      of: 'net.nanopay.meter.reports.RowOfBusSumReports',
       name: 'typeDate',
       visibility: 'RO',
       tableWidth: 200,
+      tableCellFormatter: function(state) {
+        this.add(state.label);
+      },
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("[TYPE\\DATE]");
       }

@@ -86,6 +86,7 @@ import net.nanopay.country.br.exchange.ServiceStatus;
 import net.nanopay.country.br.exchange.Titular;
 import net.nanopay.country.br.exchange.UpdateTitular;
 import net.nanopay.country.br.exchange.UpdateTitularResponse;
+import net.nanopay.partner.treviso.fx.TrevisoFXService;
 import net.nanopay.payment.Institution;
 import net.nanopay.tx.FeeLineItem;
 import net.nanopay.tx.FeeSummaryTransactionLineItem;
@@ -247,7 +248,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
 
   protected String findCNPJ(long userId) {
     UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) getX().get("userCapabilityJunctionDAO")).find(AND(
-      EQ(UserCapabilityJunction.TARGET_ID, "688cb7c6-7316-4bbf-8483-fb79f8fdeaaf"),
+      EQ(UserCapabilityJunction.TARGET_ID, "crunch.onboarding.br.business-identification"),
       EQ(UserCapabilityJunction.SOURCE_ID, userId)
     ));
 
@@ -258,7 +259,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
 
   protected String findCPF(long userId) {
     UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) getX().get("userCapabilityJunctionDAO")).find(AND(
-      EQ(UserCapabilityJunction.TARGET_ID, "fb7d3ca2-62f2-4caf-a84c-860392e4676b"),
+      EQ(UserCapabilityJunction.TARGET_ID, "crunch.onboarding.br.cpf"),
       EQ(UserCapabilityJunction.SOURCE_ID, userId)
     ));
 
@@ -275,8 +276,11 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
   }
 
   public double getFXSpotRate(String sourceCurrency, String targetCurrency, long userId) throws RuntimeException {
-    // Get FX SPOT rate from AFEX
-    return ((AFEXServiceProvider) getX().get("afexServiceProvider")).getFXSpotRate(sourceCurrency, targetCurrency, userId);
+    if ( sourceCurrency.equals("BRL") && ! targetCurrency.equals("HKD") ) {
+      return ((TrevisoFXService) getX().get("trevisoFXService")).getFXSpotRate(sourceCurrency, targetCurrency, userId);
+    } else {
+      return ((AFEXServiceProvider) getX().get("afexServiceProvider")).getFXSpotRate(sourceCurrency, targetCurrency, userId);
+    }
   }
 
   public boolean acceptFXRate(String quoteId, long user) throws RuntimeException {

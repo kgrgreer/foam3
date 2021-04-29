@@ -221,11 +221,6 @@ foam.CLASS({
           return this.INSTITUTION_NUMBER_THREE;
         }
       },
-      preSet: function(o, n) {
-        if ( n === '' ) return n;
-        var reg = /^\d+$/;
-        return reg.test(n) ? n : o;
-      },
       postSet: function(o, n) {
         this.padCapture.institutionNumber = n;
       },
@@ -242,10 +237,6 @@ foam.CLASS({
       view: {
         class: 'foam.u2.tag.Input',
         onKey: true
-      },
-      preSet: function(o, n) {
-        if ( n === '' ) return n;
-        return /^\d+$/.test(n) ? n : o;
       },
       postSet: function(o, n) {
         this.padCapture.branchId = n;
@@ -512,11 +503,10 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        // REVIEW: CA routing code = "0" + branch(5 digits) + institution(3 digits)
         var code = new StringBuilder();
         code.append('0')
-            .append(getBranchCode(x))
-            .append(getBankCode(x));
+            .append(getBankCode(x))
+            .append(getBranchCode(x));
         return code.length() > 1 ? code.toString() : getBankRoutingCode();
       `
     }

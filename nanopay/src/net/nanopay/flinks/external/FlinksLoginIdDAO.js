@@ -78,6 +78,29 @@ foam.CLASS({
     'static foam.mlang.MLang.*'
   ],
 
+  constants: [
+    {
+      name: 'BUSINESS_RECEIVING_CAPABILITY_ID',
+      type: 'String',
+      value: 'crunch.onboarding.api.ca-business-receive-payments'
+    },
+    {
+      name: 'BUSINESS_SENDING_CAPABILITY_ID',
+      type: 'String',
+      value: 'crunch.onboarding.api.ca-business-send-payments'
+    },
+    {
+      name: 'PERSONAL_SENDING_CAPABILITY_ID',
+      type: 'String',
+      value: 'crunch.onboarding.api.unlock-ca-payments'
+    },
+    {
+      name: 'PERSONAL_SENDING_UNDER_1000_CAPABILITY_ID',
+      type: 'String',
+      value: 'crunch.onboarding.api.unlock-ca-payments-under-1000'
+    }
+  ],
+
   methods: [
     {
       name: 'put_',
@@ -135,6 +158,14 @@ foam.CLASS({
           LoginModel loginDetail = flinksDetailResponse.getLogin();
           if ( loginDetail == null ) {
             logger.warning("Unexpected behaviour - No login section found in FlinksResponse for loginId: " + flinksLoginId.getLoginId());
+          }
+
+          // Override the Flink login details type
+          if ( !isProduction(x) &&
+               flinksLoginId.getFlinksOverrides() != null && 
+               !SafetyUtil.isEmpty(flinksLoginId.getFlinksOverrides().getType()))
+          {
+            loginDetail.setType(flinksLoginId.getFlinksOverrides().getType()); 
           }
 
           // Onboarding
@@ -226,14 +257,24 @@ foam.CLASS({
       `
     },
     {
+      name: 'isProduction',
+      type: 'Boolean',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      javaCode: `
+        AppConfig config = (AppConfig) x.get("appConfig");
+        return ( config != null && config.getMode() == Mode.PRODUCTION );
+      `
+    },
+    {
       name: 'resolveUserEmailOverride',      
       args: [
         { name: 'x', type: 'Context' },
         { name: 'request', type: 'FlinksLoginId' }
       ],
       javaCode: `
-        AppConfig config = (AppConfig) x.get("appConfig");
-        if ( config != null && config.getMode() == Mode.PRODUCTION ) {
+        if ( isProduction(x) ) {
           // Skipping user email lookup in PRODUCTION
           return;
         }
@@ -284,7 +325,9 @@ foam.CLASS({
           subject.setUser(business);
 
           // Business CAD payments capability
-          capabilityId = "18DD6F03-998F-4A21-8938-358183151F96";
+          capabilityId = getBusinessCapabilityId(x, request);
+
+          // TODO: should be looking up either this or the payor cap
         }
         X subjectX = x.put("subject", subject);
 
@@ -425,7 +468,7 @@ foam.CLASS({
 
         onboardUser(x, request, accountDetail, loginDetail, onboardingType);
         if ( onboardingType == OnboardingType.BUSINESS ) {
-          onboardBusiness(x, request, accountDetail);
+          onboardBusiness(x, request, accountDetail, loginDetail);
         }
       `
     },
@@ -529,10 +572,11 @@ foam.CLASS({
             .setPostalCode(holderAddress.getPostalCode())
             .build();
 
-        String fullName = holder.getName();
+        Boolean isBusinessBankAccount = SafetyUtil.equals(loginDetail.getType(), "Business");
+        String fullName = isBusinessBankAccount ? "" : holder.getName();
         String nameSplit[] = fullName.split(" ", 2);
         String first = nameSplit.length > 0 ? nameSplit[0] : fullName;
-        String last  = nameSplit.length > 1 ? nameSplit[1] : null;
+        String last  = nameSplit.length > 1 ? nameSplit[1] : "";
         String firstName = overrides != null && !SafetyUtil.isEmpty(overrides.getFirstName()) ? overrides.getFirstName() : first;
         String lastName = overrides != null && !SafetyUtil.isEmpty(overrides.getLastName()) ? overrides.getLastName() : last;
         String phoneNumber = overrides != null && !SafetyUtil.isEmpty(overrides.getPhoneNumber()) ? overrides.getPhoneNumber() : holder.getPhoneNumber().replaceAll("[^0-9]", "");
@@ -598,7 +642,8 @@ foam.CLASS({
       args: [
         { name: 'x', type: 'Context' },
         { name: 'request', type: 'FlinksLoginId' },
-        { name: 'accountDetail', type: 'AccountWithDetailModel' }
+        { name: 'accountDetail', type: 'AccountWithDetailModel' },
+        { name: 'loginDetail', type: 'LoginModel' }
       ],
       javaCode: `
         User user = request.findUser(x);
@@ -621,11 +666,15 @@ foam.CLASS({
           .setPostalCode(holderAddress.getPostalCode())
           .build();
 
+        // Business name
+        Boolean isBusinessBankAccount = SafetyUtil.equals(loginDetail.getType(), "Business");
+        String name = isBusinessBankAccount ? "" : holder.getName();
+
         // Check for overrides
         BusinessOverrideData overrides = null;
         if ( request.getFlinksOverrides() != null ) overrides = request.getFlinksOverrides().getBusinessOverrides();
         String businessName = overrides != null && !SafetyUtil.isEmpty(overrides.getBusinessName()) ?
-          overrides.getBusinessName() : holder.getName();
+          overrides.getBusinessName() : name;
         String businessEmail = overrides != null && !SafetyUtil.isEmpty(overrides.getEmail()) ?
           overrides.getEmail() : holder.getEmail();
         Address businessAddress = overrides != null && overrides.getAddress() != null ?
@@ -647,6 +696,12 @@ foam.CLASS({
           .setSpid(user.getSpid())
           .setStatus(net.nanopay.admin.model.AccountStatus.ACTIVE)
           .build();
+
+        if ( SafetyUtil.isEmpty(businessName) ) {
+          business.setBusinessName(holder.getName());
+          business.getExternalData().put("FlinksName", holder.getName());
+        }
+
         DAO localUserDAO = (DAO) subjectX.get("localUserDAO");
         business = (Business) localUserDAO.inX(subjectX).put(business);
 
@@ -688,7 +743,7 @@ foam.CLASS({
 
         // Business creation capability
         CapabilityPayload businessCapPayload = new CapabilityPayload.Builder(subjectX)
-          .setId("EC535109-E9C0-4B5D-8D24-31282EF72F8F")
+          .setId("crunch.onboarding.api.business-details")
           .setCapabilityDataObjects(new HashMap<String,FObject>(businessCapabilityDataObjects))
           .build();
         DAO capabilityPayloadDAO = (DAO) subjectX.get("capabilityPayloadDAO");
@@ -701,7 +756,7 @@ foam.CLASS({
         }
 
         // Business CAD payments capability
-        String capabilityId = "18DD6F03-998F-4A21-8938-358183151F96";
+        String capabilityId = getBusinessCapabilityId(x, request);
         CapabilityPayload missingPayloads = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId);
         businessCapabilityDataObjects = missingPayloads.getCapabilityDataObjects();
 
@@ -768,13 +823,30 @@ foam.CLASS({
         var amount = request != null ? request.getAmount() : 0;
 
         DAO dao = (DAO) x.get("localCapabilityDAO");
-        Capability fullUserCapability = (Capability) dao.find("1F0B39AD-934E-462E-A608-D590D1081298");
-        LimitedAmountCapability minimalUserCapability = (LimitedAmountCapability) dao.find("F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD");
+        Capability fullUserCapability = (Capability) dao.find(PERSONAL_SENDING_CAPABILITY_ID);
+        LimitedAmountCapability minimalUserCapability = (LimitedAmountCapability) dao.find(PERSONAL_SENDING_UNDER_1000_CAPABILITY_ID);
 
         // Return the capability ID
         return amount <= minimalUserCapability.getMaximumAmount() ?
           minimalUserCapability.getId() :
           fullUserCapability.getId();
+      `
+    },
+    {
+      name: 'getBusinessCapabilityId',
+      type: 'String',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'request', type: 'FlinksLoginId' }
+      ],
+      javaCode: `
+        String capabilityId = BUSINESS_RECEIVING_CAPABILITY_ID;
+
+        if ( request.getType() != OnboardingType.BUSINESS ) {
+          capabilityId = BUSINESS_SENDING_CAPABILITY_ID;
+        }
+
+        return capabilityId;
       `
     },
     {

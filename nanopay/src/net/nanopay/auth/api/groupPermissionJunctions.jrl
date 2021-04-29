@@ -29,7 +29,6 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targ
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"menu.read.settings"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"menu.read.sign-in"})
 
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"language.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"document.create"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"document.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"document.update.*"})

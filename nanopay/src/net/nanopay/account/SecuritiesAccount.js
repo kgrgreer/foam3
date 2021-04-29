@@ -105,6 +105,7 @@ foam.CLASS({
         sa.setName(unit + " subAccount for " + getId());
         sa.setSecuritiesAccount(this.getId());
         sa.setLifecycleState(LifecycleState.ACTIVE);
+        sa.setOwner(getOwner());
         DAO accountDAO = (DAO) x.get("localAccountDAO");
         sa = (SecurityAccount) accountDAO.put(sa);
         return sa;

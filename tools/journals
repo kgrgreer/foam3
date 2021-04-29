@@ -1,6 +1,7 @@
 acceptanceDocuments
 accounts
 accountTemplates
+addressConfig
 afexBusinessSectors
 afexUsers
 afexCredentialDAO
@@ -118,3 +119,4 @@ xeroConfig
 xeroToken
 zeroAccountUserAssociations
 commonPasswords
+wizardStates

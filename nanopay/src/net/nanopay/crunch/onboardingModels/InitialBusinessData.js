@@ -124,6 +124,7 @@ foam.CLASS({
 
         return {
           class: 'net.nanopay.sme.ui.AddressView',
+          structured: true,
           customCountryDAO: dao,
           showValidation: true
         };

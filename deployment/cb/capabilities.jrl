@@ -1,0 +1,87 @@
+p({class:"foam.nanos.auth.ServiceProvider",id:"cb",paymentIssuerTag:"cb",description:"cb spid",enabled:true,lastModified:1617726528356,lastModifiedBy:1})
+p({
+  class:"foam.nanos.crunch.Capability",
+  id:"cbMenuCapability",
+  permissionsGranted:[
+    "menu.read.transactions",
+    "menu.read.accounts",
+    "menu.read.dashboard",
+    "menu.read.liquidity",
+    "menu.read.settlement"
+  ],
+  lastModified:1617726528479,
+  lastModifiedBy:1
+})
+p({class:"foam.nanos.crunch.Capability",id:"cbCountryCapability",permissionsGranted:["country.read.CA"],lastModified:1617726528480,lastModifiedBy:1})
+p({class:"foam.nanos.crunch.Capability",id:"cbCurrencyCapability",permissionsGranted:["currency.read.CAD"],lastModified:1617726528481,lastModifiedBy:1})
+p({class:"foam.nanos.crunch.Capability",id:"cbCorridorCapability",lastModified:1617726528482,lastModifiedBy:1})
+p({class:"foam.nanos.crunch.Capability",id:"cbPlannerCapability",lastModified:1617726528482,lastModifiedBy:1})
+p({
+  class:"foam.nanos.crunch.Capability",id:"cbBankMenuCapability",
+  permissionsGranted:[
+    "menu.read.transactions",
+    "menu.read.accounts",
+    "menu.read.dashboard"
+  ],
+  lastModified:1617726528483,
+  lastModifiedBy:1
+})
+p({
+  class:"foam.nanos.crunch.Capability",
+  id:"cbAdminCapability",
+  permissionsGranted:[
+    "account.read.*",
+    "account.update.*",
+    "account.create",
+    "transaction.read.*",
+    "transaction.update.*",
+    "transaction.create",
+    "net.nanopay.account.account.section.*",
+    "strategyreference.read.eca7cf8e-82d7-42a7-9061-26a01cce4dc7",
+    "strategyreference.read.d697a9e8-9a12-479b-be76-6c0bdb594b8d",
+    "strategyreference.read.b6080453-e4af-4057-a158-7231f3fef8f8",
+    "strategyreference.read.f1a53d59-d94a-426d-9a8d-156d089ac306",
+    "strategyreference.read.830d149d-f6e9-4381-95d3-833130900839",
+    "strategyreference.read.80e6ea778-91fb-4942-9d63-72ff658c8b3d",
+    "service.settlementDAO",
+    "settlement.create",
+    "settlement.read.*",
+    "settlement.update.*"
+  ],
+  lastModified:1617726528483,
+  lastModifiedBy:1
+})
+p({
+  class:"foam.nanos.crunch.Capability",
+  id:"cbBaseCapability",
+  permissionsGranted:[
+    "account.ro.parent",
+    "service.tableViewAccountDAO",
+    "service.tableViewTransactionDAO",
+    "service.exportDriverRegistryDAO",
+    "service.agentJunctionDAO",
+    "service.balanceService",
+    "service.balanceDAO",
+    "service.currencyDAO",
+    "service.counterDAO",
+    "service.digitalAccount",
+    "service.groupDAO",
+    "service.logMessageDAO",
+    "service.menuDAO",
+    "service.notificationDAO",
+    "service.notificationSettingDefaultsDAO",
+    "service.accountDAO",
+    "service.accountHierarchyService",
+    "service.liquiditySettingsDAO",
+    "service.exchangeRateService",
+    "service.exchangeRateDAO",
+    "service.accountBalanceWeeklyCandlestickDAO",
+    "service.accountBalanceMonthlyCandlestickDAO",
+    "service.accountBalanceQuarterlyCandlestickDAO",
+    "service.accountBalanceAnnuallyCandlestickDAO",
+    "service.accountBalanceHourlyCandlestickDAO",
+    "service.accountBalanceDailyCandlestickDAO"
+  ],
+  lastModified:1617726528483,
+  lastModifiedBy:1
+})

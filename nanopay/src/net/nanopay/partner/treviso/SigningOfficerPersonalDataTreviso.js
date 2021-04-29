@@ -61,6 +61,7 @@ foam.CLASS({
       view: function(_, X) {
         return {
           class: 'net.nanopay.sme.ui.AddressView',
+          structured: true,
           customCountryDAO: X.countryDAO,
           showValidation: true
         };
@@ -204,6 +205,8 @@ foam.CLASS({
         parties agree to transfer between them a certain amount of foreign exchange at a
         predetermined rate of exchange, and as of a predetermined date.
       `,
+      value: true,
+      visibility: 'HIDDEN',
       view: function(_, X) {
         return {
           class: 'foam.u2.view.RadioView',

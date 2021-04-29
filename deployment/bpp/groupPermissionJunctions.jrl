@@ -14,3 +14,15 @@ p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-fraud-ops",targ
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bpp-api-session","targetId":"session.create.bpp"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bpp-api-session","targetId":"group.read.bpp-sme"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bpp-api-session","targetId":"group.update.bpp-sme"})
+
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bpp-api-session","targetId":"service.afexBeneficiaryDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bpp-api-session","targetId":"afexbeneficiary.read.*"})
+
+// Switch user menus
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bpp-api-session","targetId":"menu.read.switch-user"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bpp-fraud-ops","targetId":"menu.read.switch-user"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bpp-payment-ops","targetId":"menu.read.switch-user"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bpp-support","targetId":"menu.read.switch-user"})
+
+// Allow bpp fraud-ops to see alarm menu
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bpp-fraud-ops","targetId":"menu.read.admin.alarm"})
