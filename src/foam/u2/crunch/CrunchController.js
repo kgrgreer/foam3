@@ -54,6 +54,10 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.ShowPreexistingAgent',
     'foam.u2.crunch.wizardflow.SaveAllAgent',
     'foam.u2.crunch.wizardflow.CapabilityStoreAgent',
+    'foam.u2.crunch.wizardflow.DebugContextInterceptAgent',
+    'foam.u2.crunch.wizardflow.SpinnerAgent',
+    'foam.u2.crunch.wizardflow.DetachSpinnerAgent',
+    'foam.u2.crunch.wizardflow.DebugAgent',
     'foam.util.async.Sequence',
     'foam.u2.borders.MarginBorder',
     'foam.u2.crunch.CapabilityInterceptView',
@@ -84,6 +88,13 @@ foam.CLASS({
         return new Map();
       }
     },
+    {
+      class: 'Boolean',
+      name: 'debugMode',
+      factory: function () {
+        return this.ctrl.appConfig.mode == foam.nanos.app.Mode.DEVELOPMENT;
+      }
+    }
   ],
 
   methods: [
@@ -95,6 +106,7 @@ foam.CLASS({
       `,
       code: function createWizardSequence(capabilityOrId, x) {
         if ( ! x ) x = this.__subContext__;
+        var self = this;
         return this.Sequence.create(null, x.createSubContext({
           rootCapability: capabilityOrId
         }))
@@ -113,9 +125,14 @@ foam.CLASS({
           .add(this.SkipGrantedAgent)
           .add(this.RequirementsPreviewAgent)
           .add(this.AutoSaveWizardletsAgent)
+          .callIf(this.debugMode, function () {
+            this.add(self.DebugAgent)
+          })
           .add(this.StepWizardAgent)
-          .add(this.PutFinalPayloadsAgent)
           .add(this.DetachAgent)
+          .add(this.SpinnerAgent)
+          .add(this.SaveAllAgent)
+          .add(this.DetachSpinnerAgent)
           .add(this.CapabilityStoreAgent)
           // .add(this.TestAgent)
           ;

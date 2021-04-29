@@ -4,6 +4,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.notification.email.EmailConfig;
+import foam.nanos.alarming.Alarm;
 import foam.nanos.app.SupportConfig;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
@@ -111,7 +112,8 @@ public class EmailsUtility {
       }
 
       String url = appConfig.getUrl().replaceAll("/$", "");
-      templateArgs.put("logo", theme.getLogo());
+      templateArgs.put("logo", (url + "/" + theme.getLogo()));
+      templateArgs.put("largeLogo", (url + "/" + theme.getLargeLogo()));
       templateArgs.put("appLink", url);
       templateArgs.put("appName", (theme.getAppName()));
 
@@ -137,7 +139,11 @@ public class EmailsUtility {
     try {
       cts.apply(userX, group, emailMessage, templateArgs);
     } catch (Exception e) {
-      logger.error(e);
+      Alarm alarm = new Alarm("EmailTemplate");
+      alarm.setNote(templateName +": " + e.getMessage());
+      ((DAO) x.get("alarmDAO")).put(alarm);
+
+      logger.error("Problem with template: " + templateName, e);
       return;
     }
 

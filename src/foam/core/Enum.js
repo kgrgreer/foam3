@@ -307,7 +307,7 @@ foam.CLASS({
       name: 'label',
       transient: true,
       factory: function() {
-        return this.name.toUpperCase() == this.name ? this.name.split('_').map(l => foam.String.labelize(l.toLowerCase())).join(' ') : name;
+        return this.name.toUpperCase() == this.name ? this.name.split('_').map(l => foam.String.labelize(l.toLowerCase())).join(' ') : this.name;
       }
     },
     {
@@ -330,6 +330,10 @@ foam.CLASS({
       class: 'StringArray',
       name: 'extraClasses',
       generateJava: false
+    },
+    {
+      class: 'GlyphProperty',
+      name: 'glyph'
     }
   ],
 

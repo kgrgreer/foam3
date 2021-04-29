@@ -13,7 +13,7 @@ foam.CLASS({
     [ 'autoRepaint', true ],
     [ 'width', 800 ],
     [ 'height', 600 ],
-    [ 'color', '#f3f3f3' ],
+    [ 'color', '#f3f3f3' ]
   ]
 });
 
@@ -96,6 +96,7 @@ foam.CLASS({
       }
     }
   ],
+
   actions: [
     {
       name: 'deleteRow',
@@ -155,7 +156,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'com.google.dxf.ui.DXFDiagram',
+//    'com.google.dxf.ui.DXFDiagram',
     'com.google.flow.Canvas',
     'com.google.flow.Circle',
     'com.google.flow.Ellipse',
@@ -163,7 +164,7 @@ foam.CLASS({
     'com.google.flow.Halo',
     'com.google.flow.Property',
     'com.google.flow.FLOW',
-    'com.google.foam.demos.sevenguis.Cells',
+    'foam.demos.sevenguis.Cells',
     'foam.dao.EasyDAO',
     'foam.graphics.Box',
     'foam.graphics.CView',
@@ -341,7 +342,7 @@ foam.CLASS({
         dao.put(com.google.flow.Mushroom.model_);
         dao.put(com.google.flow.Turtle.model_);
         dao.put(com.google.flow.Turtle3D.model_);
-        dao.put(com.google.foam.demos.robot.Robot.model_);
+        dao.put(foam.demos.robot.Robot.model_);
         dao.put(com.google.flow.Desk.model_);
         dao.put(com.google.flow.DuplexDesk.model_);
         dao.put(com.google.flow.Desks.model_);
@@ -353,7 +354,7 @@ foam.CLASS({
         dao.put(com.google.flow.Cursor.model_);
         dao.put(com.google.flow.Script.model_);
         dao.put(foam.core.Model.model_);
-        dao.put(com.google.dxf.ui.DXFDiagram.model_);
+        // dao.put(com.google.dxf.ui.DXFDiagram.model_);
         return dao;
       }
     },
@@ -387,7 +388,7 @@ foam.CLASS({
       view: function(args, x) {
         return {
           class: 'com.google.flow.TreeView',
-          relationship: com.gogle.flow.PropertyPropertyRelationship,
+          relationship: com.google.flow.PropertyPropertyChildrenRelationship,
           startExpanded: true,
           formatter: function() {
             var X = this.__subSubContext__;
@@ -603,7 +604,7 @@ foam.CLASS({
   ],
 
   listeners: [
-    function onPropertyPut(_, __, p) {
+    function onPropertyPut(_, __, ___, p) {
       var o = p.value;
 
       this.scope[p.name] = p.value;

@@ -133,8 +133,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'mementoHead',
-      getter: function() {
+      factory: function() {
         if ( ! this.memento || ! this.memento.tail || this.memento.tail.head != 'edit' ) {
+          if ( ! this.idOfRecord )
+            return '::';
           var id = '' + this.idOfRecord;
           if ( id && foam.core.MultiPartID.isInstance(this.config.of.ID) ) {
             id = id.substr(1, id.length - 2).replaceAll(':', '=');
@@ -143,7 +145,12 @@ foam.CLASS({
         }
       }
     },
-    'idOfRecord'
+    {
+      name: 'idOfRecord',
+      factory: function() {
+        return this.data ? this.data.id : null;
+      }
+    }
   ],
 
   actions: [
@@ -175,7 +182,7 @@ foam.CLASS({
       code: function() {
         if ( ! this.stack ) return;
 
-        if ( this.memento.tail )
+        if ( this.memento && this.memento.tail )
           this.memento.tail.head = 'edit';
         this.stack.push({
           class:  'foam.comics.v2.DAOUpdateView',
@@ -255,9 +262,10 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    async function initE() {
       var self = this;
       this.SUPER();
+      this.data = await this.config.dao.find(this.data);
       if ( this.memento ) {
         var m = this.memento;
         var counter = 0;
@@ -269,7 +277,6 @@ foam.CLASS({
           m = m.tail;
           counter++;
         }
-        this.currentMemento_ = m;
       }
 
       var promise = this.data ? Promise.resolve(this.data) : this.config.unfilteredDAO.inX(this.__subContext__).find(this.idOfRecord);
