@@ -70,6 +70,14 @@ foam.CLASS({
       order: 40,
       updateVisibility: 'RO'
     }),
+    //TODO delete
+    net.nanopay.account.Account.OWNER.clone().copyFrom({
+      gridColumns:6,
+      section: 'userInformation',
+      order: 40,
+      updateVisibility: 'RO',
+      hidden: true
+    }),
     foam.nanos.auth.User.GROUP.clone().copyFrom({
       gridColumns:6,
       section: 'userInformation',
@@ -90,12 +98,14 @@ foam.CLASS({
       updateVisibility: 'RO',
       hidden: true
     }),
+    //TODO delete
     net.nanopay.contacts.Contact.PASSWORD_HISTORY.clone().copyFrom({
       gridColumns:6,
       section: 'userInformation',
       order: 40,
       updateVisibility: 'RO'
     }),
+    //TODO delete
     net.nanopay.contacts.Contact.PASSWORD.clone().copyFrom({
       gridColumns:6,
       section: 'userInformation',
@@ -113,6 +123,35 @@ foam.CLASS({
       gridColumns:6,
       section: 'userInformation',
       order: 110
-    })
+    }),
+    net.nanopay.contacts.Contact.COUNTRIES.clone().copyFrom({
+      label: 'Registration Status',
+      gridColumns:6,
+      section: 'userInformation',
+      order: 110
+    }),
+//     net.nanopay.contacts.PersonalContact.CREATE_BANK_ACCOUNT.clone().copyFrom({
+//       label: 'Registration Status',
+//       gridColumns:6,
+//       section: 'userInformation',
+//       order: 110
+//     }),
+    {
+      class: 'Boolean',
+      name: 'isEdit',
+      documentation: `Set to true when editing a contact from
+      contact controller.`,
+      value: false
+    },
+    {
+      // REVIEW: this should be storageTransient - believe it's just used for
+      // capability input.
+      class: 'Boolean',
+      name: 'confirm',
+      documentation: `True if the user confirms their relationship with the contact.`,
+      includeInDigest: false,
+      section: 'userInformation',
+      gridColumns: 6
+    },
   ]
 });
