@@ -687,6 +687,7 @@ var classes = [
   'net.nanopay.tx.ExpiredTransactionException',
   'net.nanopay.tx.ruler.UpdateTxOnApprovalRequestStatusChange',
   'net.nanopay.tx.IndependantTransactionFeeLineItem',
+  'net.nanopay.tx.FeeSummaryTransaction',
 
   // TODO: From Maldives To Be ReWorked
   'net.nanopay.settlement.GroupingAccount',
