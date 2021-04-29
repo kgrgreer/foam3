@@ -90,7 +90,6 @@ foam.CLASS({
 
               if ( spidLimits.size() > 0 ) {
                 for ( TransactionLimit limit : spidLimits ) {
-                  // make check limit return a boolean
                   limitHit = checkLimit(x, txn, limit, sourceOwner);
                 }
               }
@@ -142,15 +141,12 @@ foam.CLASS({
           // complete or cancel transaction if request is approved or rejected
           ApprovalRequest req = (ApprovalRequest) existingRequests.get(0);
           if ( req.getStatus().equals(ApprovalStatus.APPROVED) ) {
-            txn = (Transaction) txn.fclone();
-            txn.setStatus(TransactionStatus.COMPLETED);
-            transactionDAO.put(txn);
             return false;
           } else if ( req.getStatus().equals(ApprovalStatus.REJECTED) ) {
             txn = (Transaction) txn.fclone();
             txn.setStatus(TransactionStatus.CANCELLED);
             transactionDAO.put(txn);
-            return false;
+            return;
           }
         }
 
