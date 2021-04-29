@@ -1978,7 +1978,7 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/br/businessSector/Divisao' },
   { name: 'net/nanopay/partner/br/businessSector/Secao' },
 
-  { name: 'net/nanopay/app/AppConfigRefines' },
+  // { name: 'net/nanopay/app/AppConfigRefines' },
 
   { name: 'net/nanopay/contacts/facade/FacadeContact' },
 
