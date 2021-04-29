@@ -951,12 +951,12 @@ p({
   "spid":"intuit"
 })
 
-({
+p({
   "class":"foam.nanos.ruler.Rule",
   "id":"limit-transaction-rule",
   "name":"Checks current transaction limits",
   "priority":100,
-  "ruleGroup":"txLimits",
+  "ruleGroup":"limitTxn",
   "documentation":"Checks current transaction limits",
   "daoKey":"localTransactionDAO",
   "operation":3,
@@ -965,8 +965,8 @@ p({
     "class": "foam.mlang.predicate.And",
     "args": [
       {
-        "class": "foam.mlang.predicate.IsClassOf",
-        "targetClass": "net.nanopay.tx.LimitTransaction"
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of: "net.nanopay.tx.LimitTransaction"
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
@@ -979,7 +979,7 @@ p({
     ]
   },
   "action":{
-    "class":"net.nanopay.tx.LimitTransactionRule"
+    "class":"net.nanopay.tx.ruler.LimitTransactionRule"
   },
   "enabled":true,
   "saveHistory":true,

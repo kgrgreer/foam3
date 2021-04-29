@@ -261,24 +261,33 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
+  "name": "localCurrentLimitDAO",
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.tx.CurrentLimit.getOwnClassInfo())
+      .setGuid(true)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setJournalName("currentLimits")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(false)
+      .build();
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
   "name": "currentLimitDAO",
   "serve": true,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.CurrentLimit.getOwnClassInfo())
-      .setAuthorize(false)
-      .setPm(true)
-      .setPipelinePm(true)
-      .setJournalName("currentLimits")
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setInnerDAO(x.get("localCurrentLimitDAO"))
       .build();
   """,
-  "client": """
-    {
-      "of": "net.nanopay.tx.CurrentLimit"
-    }
-  """
+  "client": "{\"of\":\"net.nanopay.tx.CurrentLimit\"}"
 })
 
 p({

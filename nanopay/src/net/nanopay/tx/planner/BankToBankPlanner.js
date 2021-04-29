@@ -112,7 +112,6 @@ foam.CLASS({
               ci.addNext((Transaction) removeSummaryTransaction(COP).fclone());
               if ( getCreateLimit() ) {
                 LimitTransaction lt = createLimitTransaction(txn);
-                lt.addNext(ci);
                 t.addNext(lt);
               }
               if ( getCreateCompliance() ) {

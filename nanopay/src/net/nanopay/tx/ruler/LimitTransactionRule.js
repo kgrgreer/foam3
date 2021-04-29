@@ -41,6 +41,7 @@ foam.CLASS({
     'net.nanopay.tx.model.TransactionLimit',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.ruler.TransactionLimitState',
+    'net.nanopay.util.Frequency',
     'static foam.mlang.MLang.*'
   ],
 
@@ -96,9 +97,8 @@ foam.CLASS({
             }
 
             if ( ! limitHit ) {
-              txn = (Transaction) txn.fclone();
               txn.setStatus(TransactionStatus.COMPLETED);
-              ((DAO) x.get("transactionDAO")).put(txn);
+              ((DAO) x.get("localTransactionDAO")).put(txn);
             }
 
           }
@@ -143,7 +143,6 @@ foam.CLASS({
           if ( req.getStatus().equals(ApprovalStatus.APPROVED) ) {
             return false;
           } else if ( req.getStatus().equals(ApprovalStatus.REJECTED) ) {
-            txn = (Transaction) txn.fclone();
             txn.setStatus(TransactionStatus.CANCELLED);
             transactionDAO.put(txn);
             return true;
@@ -186,7 +185,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        DAO currentLimitDAO = (DAO) x.get("currentLimitDAO");
+        DAO currentLimitDAO = (DAO) x.get("localCurrentLimitDAO");
         if ( txn.getAmount() > limit.getAmount() ) {
           // txn already exceeds limit, generate approval request
           return generateApprovalRequest(x, txn, limit, user);
@@ -218,10 +217,10 @@ foam.CLASS({
         } else {
           // create new CurrentLimit if none exist
           CurrentLimit currentLimit = new CurrentLimit.Builder(x)
-            .setTxLimit(limit.getId())
-            .setPeriod(limit.getPeriod())
-            .build();
-          
+          .setTxLimit(limit.getId())
+          .setPeriod(limit.getPeriod())
+          .build();
+        
           String key = getKey(user, currentLimit);
           TransactionLimitState limitState = new TransactionLimitState();
           limitState.updateSpent(txn.getAmount(), limit.getPeriod());
