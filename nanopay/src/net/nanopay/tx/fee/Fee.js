@@ -167,7 +167,7 @@ foam.CLASS({
         if ( getFormula() != null ) {
           var result = getFormula().f(obj);
           if ( result instanceof Number ) {
-            return ((Number) result).longValue();
+            return Math.round(((Number) result).doubleValue());
           }
         }
         return 0l;
