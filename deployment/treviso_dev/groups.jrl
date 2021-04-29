@@ -13,3 +13,10 @@ p({
   defaultMenu:"sme.accountProfile.switch-business",
   displayName:"Admin"
 })
+p({
+  class:"foam.nanos.auth.Group",
+  id:"treviso-sme",
+  description:"treviso sme group",
+  parent:"sme",
+  url:"http://treviso:8080"
+})
