@@ -120,7 +120,7 @@ foam.CLASS({
 
         if ( this.config.createController.class === 'foam.comics.v2.DAOCreateView'){
           this.stack.push({
-            class: this.config.createController.class,//'foam.comics.v2.DAOCreateView',
+            class: this.config.createController.class,
             data: ((this.config.factory && this.config.factory$cls) ||  this.data.of).create({ mode: 'create'}, this),
             config$: this.config$,
             of: this.data.of
