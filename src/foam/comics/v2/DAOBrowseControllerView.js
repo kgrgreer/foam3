@@ -126,15 +126,16 @@ foam.CLASS({
             of: this.data.of
           }, this.__subContext__);
         } else {
-          this.stack.push(
-            eval(this.config.wizardDetailView.class).create({
-              model: this.data.of.id || this.config.of.id,
-              data: this.selection,
-              detailView: this.config.detailView.class,
-              menu: this.config.menu,
-              controllerMode: foam.u2.ControllerMode.CREATE,
-              isEdit: true
-          }, this.__subContext__));
+          this.stack.push({
+            class: this.config.wizardDetailView.class,
+            config$: this.config$,
+            of: this.data.of,
+            data: this.selection,
+            detailView: this.config.detailView.class,
+            menu: this.config.menu,
+            controllerMode: foam.u2.ControllerMode.CREATE,
+            isEdit: true
+          }, this.__subContext__);
         }
       }
     }
