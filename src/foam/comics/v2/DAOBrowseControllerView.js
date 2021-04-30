@@ -162,7 +162,12 @@ foam.CLASS({
                     .translate(menuId + ".browseTitle", config$browseTitle)
                   .end()
                   // .startContext({ data: self }).tag(self.CREATE).endContext()
-                  .callIf(config$primaryAction, function() {
+                  .callIf( ! config.detailView, function() {
+                    this.startContext({ data: self })
+                      .tag(self.CREATE, { label: config$createTitle })
+                    .endContext()
+                  })
+                  .callIf( config.detailView && config$primaryAction, function() {
                     this.startContext({ data: self }).tag(config$primaryAction, { size: 'LARGE' }).endContext();
                   })
                 .end()
