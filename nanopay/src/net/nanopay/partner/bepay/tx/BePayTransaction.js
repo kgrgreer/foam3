@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.partner.bepay.tx',
   name: 'BePayTransaction',
-  extends: 'net.nanopay.fx.FXTransaction',
+  extends: 'net.nanopay.country.br.tx.BRPartnerTransaction',
 
   documentation: `model to support legacy transaction on bepay`
 });
