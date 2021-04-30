@@ -63,7 +63,7 @@ foam.CLASS({
     {
       name: 'PAYMENT_PROVIDER',
       type: 'String',
-      value: 'BePay'
+      value: 'TrevisoAPI'
     }
   ],
 
