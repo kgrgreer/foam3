@@ -28,6 +28,7 @@ import net.nanopay.ticket.RefundTicket;
 import net.nanopay.tx.ChainSummary;
 import net.nanopay.tx.FeeSummaryTransactionLineItem;
 import net.nanopay.tx.SummarizingTransaction;
+import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.cron.TransactionSummaryAgent;
 import net.nanopay.tx.model.TransactionStatus;
@@ -38,6 +39,7 @@ public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
   String spid;
   public IntuitTransactionSummaryAgent(String spid) {
     super(spid);
+    this.spid = spid;
   }
 
   @Override
@@ -51,28 +53,32 @@ public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
         GT(Transaction.LAST_MODIFIED, lastRun),
         EQ(Transaction.SPID, spid),
         NOT(INSTANCE_OF(net.nanopay.tx.creditengine.CreditCodeTransaction.getOwnClassInfo())),
-        NOT(INSTANCE_OF(net.nanopay.tx.FeeSummaryTransaction.getOwnClassInfo()))
+        NOT(INSTANCE_OF(net.nanopay.tx.FeeSummaryTransaction.getOwnClassInfo())),
+        NOT(INSTANCE_OF(BmoVerificationTransaction.getOwnClassInfo()))
       );
       generateTransactionSummaries(x, predicate, transactionDAO, false);
 
       predicate = AND(
         EQ(Transaction.SPID, spid),
         NOT(INSTANCE_OF(net.nanopay.tx.creditengine.CreditCodeTransaction.getOwnClassInfo())),
-        NOT(INSTANCE_OF(net.nanopay.tx.SummaryTransaction.getOwnClassInfo()))
+        NOT(INSTANCE_OF(net.nanopay.tx.SummaryTransaction.getOwnClassInfo())),
+        NOT(INSTANCE_OF(BmoVerificationTransaction.getOwnClassInfo()))
       );
       generateTransactionSummaries(x, predicate, summaryTransactionDAO, true);
     } else {
       Predicate predicate = AND(
         EQ(Transaction.SPID, spid),
         NOT(INSTANCE_OF(net.nanopay.tx.creditengine.CreditCodeTransaction.getOwnClassInfo())),
-        NOT(INSTANCE_OF(net.nanopay.tx.FeeSummaryTransaction.getOwnClassInfo()))
+        NOT(INSTANCE_OF(net.nanopay.tx.FeeSummaryTransaction.getOwnClassInfo())),
+        NOT(INSTANCE_OF(BmoVerificationTransaction.getOwnClassInfo()))
       );
       generateTransactionSummaries(x, predicate, summaryTransactionDAO, false);
 
       predicate = AND(
         EQ(Transaction.SPID, spid),
         NOT(INSTANCE_OF(net.nanopay.tx.creditengine.CreditCodeTransaction.getOwnClassInfo())),
-        NOT(INSTANCE_OF(net.nanopay.tx.SummaryTransaction.getOwnClassInfo()))
+        NOT(INSTANCE_OF(net.nanopay.tx.SummaryTransaction.getOwnClassInfo())),
+        NOT(INSTANCE_OF(BmoVerificationTransaction.getOwnClassInfo()))
       );
       generateTransactionSummaries(x, predicate, summaryTransactionDAO, true);
     }
