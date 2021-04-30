@@ -184,6 +184,14 @@ foam.CLASS({
       class: 'String'
     },
     {
+      name: 'feeFileNumber',
+      class: 'String'
+    },
+    {
+      name: 'feeFileDate',
+      class: 'DateTime'
+    },
+    {
       name: 'paymentStatusCategory',
       class: 'String'
     },

@@ -24,9 +24,11 @@ import foam.dao.DAO;
 import foam.nanos.auth.CreatedAware;
 import foam.nanos.auth.LastModifiedAware;
 import foam.nanos.auth.User;
+import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.partner.rbc.RBCReconciliationReportGenerator;
 import net.nanopay.reporting.ReconciliationReport;
+import net.nanopay.tx.FeeSummaryTransaction;
 import net.nanopay.tx.FeeSummaryTransactionLineItem;
 import net.nanopay.tx.FxSummaryTransactionLineItem;
 import net.nanopay.tx.SummaryTransaction;
@@ -60,28 +62,35 @@ public class IntuitReconciliationReportGenerator extends RBCReconciliationReport
 
   @Override
   protected ReconciliationReport generate(X x, @Nonnull FObject src, @Nullable FObject dst) {
+    if ( src instanceof FeeSummaryTransaction )
+      return null;
+
     var transaction = (SummaryTransaction) src;
     var ciTransaction = ciMap.get(transaction.getId());
     var coTransaction = coMap.get(transaction.getId());
+    var feeCiTransaction = ciMap.get(transaction.getAssociateTransaction());
     var dt = dtMap.get(transaction.getId());
 
     // I think this could be done better
-    if ( ciTransaction == null || coTransaction == null || dt == null ) {
+    if ( ciTransaction == null || coTransaction == null || dt == null || ( ! SafetyUtil.isEmpty(transaction.getAssociateTransaction()) && feeCiTransaction == null ) ) {
       refreshMaps(x);
       ciTransaction = ciMap.get(transaction.getId());
       coTransaction = coMap.get(transaction.getId());
+      feeCiTransaction = ciMap.get(transaction.getAssociateTransaction());
       dt = dtMap.get(transaction.getId());
     }
 
-    if ( ciTransaction == null || coTransaction == null || dt == null ) {
+    if ( ciTransaction == null || coTransaction == null || dt == null )
       throw new RuntimeException("Missing required entries to generate Reconciliation Report from " + transaction.getId());
-    }
 
-    if ( ! (ciTransaction instanceof RbcCITransaction) || ! (coTransaction instanceof RbcCOTransaction) ) {
+    if ( ! (ciTransaction instanceof RbcCITransaction) || ! (coTransaction instanceof RbcCOTransaction) )
       throw new IllegalArgumentException("CI & CO Transactions must be RbcCI/RbcCO Transactions");
-    }
+
+    if ( feeCiTransaction != null && ! (feeCiTransaction instanceof RbcCITransaction) )
+      throw new IllegalArgumentException("Fee CI Transaction must be null or an RbcCiTransaction");
 
     var rbcCiTransaction = (RbcCITransaction) ciTransaction;
+    var rbcFeeCiTransaction = (RbcCITransaction) feeCiTransaction;
     var rbcCoTransaction = (RbcCOTransaction) coTransaction;
 
     BmoFormatUtil.getCurrentDateTimeEDT();
@@ -119,17 +128,23 @@ public class IntuitReconciliationReportGenerator extends RBCReconciliationReport
     report.setDebitFileNumber(rbcCiTransaction.getRbcReferenceNumber());
 
     var debitEFT = (EFTFile) eftFileDAO.find(report.getDebitFileNumber());
-    if ( debitEFT != null && ! debitEFT.getFileCreationTimeEDT().isEmpty() ) {
+    if ( debitEFT != null && ! debitEFT.getFileCreationTimeEDT().isEmpty() )
       report.setDebitFileDate(Date.from(BmoFormatUtil.parseDateTimeEDT(debitEFT.getFileCreationTimeEDT()).toInstant()));
-    }
 
     report.setCreditAmount(rbcCoTransaction.getAmount());
     report.setCreditCurrency(rbcCoTransaction.getDestinationCurrency());
     report.setCreditFileNumber(rbcCoTransaction.getRbcReferenceNumber());
 
     var creditEFT = (EFTFile) eftFileDAO.find(report.getCreditFileNumber());
-    if ( creditEFT != null && ! creditEFT.getFileCreationTimeEDT().isEmpty() ) {
+    if ( creditEFT != null && ! creditEFT.getFileCreationTimeEDT().isEmpty() )
       report.setCreditFileDate(Date.from(BmoFormatUtil.parseDateTimeEDT(creditEFT.getFileCreationTimeEDT()).toInstant()));
+
+    if ( rbcFeeCiTransaction != null ) {
+      report.setFeeFileNumber(rbcFeeCiTransaction.getRbcReferenceNumber());
+
+      var feeEFT = (EFTFile) eftFileDAO.find(report.getFeeFileNumber());
+      if ( feeEFT != null && ! feeEFT.getFileCreationTimeEDT().isEmpty() )
+        report.setFeeFileDate(Date.from(BmoFormatUtil.parseDateTimeEDT(feeEFT.getFileCreationTimeEDT()).toInstant()));
     }
 
     var srcAccount = (Account) accountDAO.find(rbcCiTransaction.getSourceAccount());
@@ -153,9 +168,8 @@ public class IntuitReconciliationReportGenerator extends RBCReconciliationReport
     report.setCreatorName(report.getClientName());
 
     var creator = (User) userDAO.find(transaction.getCreatedBy());
-    if ( creator != null ) {
+    if ( creator != null )
       report.setCreatorName(creator.getLegalName());
-    }
 
     for ( var lineItem : lineItems ) {
       if ( lineItem instanceof FeeSummaryTransactionLineItem) {
@@ -176,21 +190,18 @@ public class IntuitReconciliationReportGenerator extends RBCReconciliationReport
       }
     }
 
-    if ( report.getClientFXRate().isEmpty() ) {
+    if ( report.getClientFXRate().isEmpty() )
       report.setClientFXRate("1.0");
-    }
 
-    if ( rbcCoTransaction.getStatus() == TransactionStatus.COMPLETED ) {
+    if ( rbcCoTransaction.getStatus() == TransactionStatus.COMPLETED )
       report.setCompletionDate(transaction.getCompletionDate());
-    }
 
     if ( dt.getStatus() == TransactionStatus.COMPLETED ) {
       Calendar created = getInstance();
-      if (dt.getCompletionDate() != null) {
+      if (dt.getCompletionDate() != null)
         created.setTime(dt.getCompletionDate());
-      } else {
+      else
         created.setTime(dt.getLastModified());
-      }
       Calendar next = getInstance();
       next.clear();
       next.set(YEAR, created.get(YEAR));
