@@ -47,7 +47,7 @@ foam.CLASS({
 
             if ( capability.getGrantMode() != CapabilityGrantMode.AUTOMATIC ) {
               if ( ucj.getStatus() == CapabilityJunctionStatus.ACTION_REQUIRED ){
-                ucj.setStatus(CapabilityJunctionStatus.ACTION_REQUIRED);
+                ucj.setStatus(CapabilityJunctionStatus.PENDING);
               }
               return;
             }
