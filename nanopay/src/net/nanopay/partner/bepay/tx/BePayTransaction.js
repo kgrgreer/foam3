@@ -16,30 +16,9 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.country.br.tx',
-  name: 'BRPartnerTransaction',
-  extends: 'net.nanopay.partner.bepay.tx.BePayTransaction',
+  package: 'net.nanopay.partner.bepay.tx',
+  name: 'BePayTransaction',
+  extends: 'net.nanopay.fx.FXTransaction',
 
-  documentation: `BR Partner Transaction`,
-
-
-  properties: [
-    {
-      name: 'clearingTimes',
-      javaFactory: 'return new java.util.HashMap<>();'
-    },
-    {
-      name: 'estimatedCompletionDate',
-      javaFactory: 'return null;'
-    },
-    {
-      name: 'processDate',
-      javaFactory: 'return null;'
-    },
-    {
-      class: 'DateTime',
-      name: 'completionDate',
-      storageTransient: false
-    }
-  ]
+  documentation: `model to support legacy transaction on bepay`
 });

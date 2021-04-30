@@ -1394,6 +1394,7 @@ var classes = [
   'net.nanopay.country.br.tx.PartnerReport',
   'net.nanopay.country.br.tx.PartnerTransactionPlanner',
   'net.nanopay.country.br.tx.ScreenUsersOnTransactionCreate',
+  'net.nanopay.partner.bepay.tx.BePayTransaction',
 
   // accuity
   'net.nanopay.partner.accuity.AccuityCredentials',
