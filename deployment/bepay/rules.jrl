@@ -310,7 +310,7 @@ p({
     "daoKey":"localTransactionDAO",
     "operation":1,
     "asyncAction":{
-      "class":"net.nanopay.partner.bepay.tx.ScreenUsersOnTransactionCreate"
+      "class":"net.nanopay.country.br.tx.ScreenUsersOnTransactionCreate"
     },
     "predicate": {
       "class": "foam.mlang.predicate.And",

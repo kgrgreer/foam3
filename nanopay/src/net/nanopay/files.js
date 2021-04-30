@@ -1941,7 +1941,7 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/report/TrevisoTransactionReportDAO' },
 
   // bepay
-  { name: 'net/nanopay/partner/bepay/tx/ScreenUsersOnTransactionCreate' },
+  { name: 'net/nanopay/country/br/tx/ScreenUsersOnTransactionCreate' },
 
   // accuity
   { name: 'net/nanopay/partner/accuity/AccuityCredentials' },

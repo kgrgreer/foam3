@@ -16,7 +16,7 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.partner.bepay.tx',
+  package: 'net.nanopay.country.br.tx',
   name: 'ScreenUsersOnTransactionCreate',
   extends: 'net.nanopay.meter.compliance.dowJones.AbstractDowJonesComplianceRuleAction',
 
