@@ -1974,11 +1974,24 @@ p({
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
 
-// USD Spot Rate, used in converting USD Fee to BRL
+// USD Spot Rate, used in FeeRateExpr predicates. Used in spread rate conversion
 p({
   class: "net.nanopay.tx.fee.SpotRate",
   id: "AE2DA308-0144-40AB-95E3-EFECCA4A4632",
   name: "USD Spot Rate",
+  sourceCurrencyExpr: {
+    class: "foam.mlang.Constant",
+    value: "USD"
+  },
+  useInvertedRate: true,
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Fee USD Spot Rate, used in converting USD Fee to BRL
+p({
+  class: "net.nanopay.tx.fee.SpotRate",
+  id: "40f9aae3-a358-4a6d-8149-8f0baf708637",
+  name: "Fee USD Spot Rate",
   sourceCurrencyExpr: {
     class: "foam.mlang.Constant",
     value: "BRL"
@@ -2100,7 +2113,8 @@ p({
   id: "221b7ca6-a4c4-4655-b9bf-3fbfe39e32dd",
   name: "IRS Tax",
   feeClass: "net.nanopay.tx.TaxLineItem",
-  rateName: "Effective IRS Rate",
+  rateName: "IRS Rate",
+  feeAccount: "707911f9-5129-4916-a27a-6a6c469668ce",
   formula: {
     class: "foam.mlang.expr.Multiply",
     args: [
@@ -2146,7 +2160,8 @@ p({
   id: "f422f565-357c-49a0-9d89-3bde9b1035b9",
   name: "FTT Tax",
   feeClass: "net.nanopay.tx.TaxLineItem",
-  rateName: "Effective FTT Rate",
+  feeAccount: "707911f9-5129-4916-a27a-6a6c469668ce",
+  rateName: "FTT Rate",
   formula: {
     class: "foam.mlang.expr.Multiply",
     args: [
@@ -2200,7 +2215,7 @@ p({
       },
       {
         class: "net.nanopay.tx.fee.FeeExpr",
-        feeName: "USD Spot Rate"
+        feeName: "Fee USD Spot Rate"
       }
     ]
   },
@@ -2213,6 +2228,7 @@ p({
   id: "ff1122ca-e32a-4c8c-8a7e-c367b6066077",
   name: "Transaction Fee",
   feeClass: "net.nanopay.tx.FeeLineItem",
+  feeAccount: "707911f9-5129-4916-a27a-6a6c469668ce",
   formula: {
     class: "foam.mlang.expr.Multiply",
     args: [

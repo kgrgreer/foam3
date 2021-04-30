@@ -34,7 +34,7 @@ p({
     supportPhone:"+1.647.496.1526",
     personalSupportUser:1030,
   },
-  "font1":"Próxima Nova",
+  "font1":"'Próxima Nova', 'IBM Plex Sans', sans-serif",
   "primary1":"#0074BA",
   "primary2":"#00A5E0",
   "primary3":"#0074BA",

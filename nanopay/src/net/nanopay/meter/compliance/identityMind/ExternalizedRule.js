@@ -23,7 +23,7 @@ foam.CLASS({
   ],
   properties: [
     {
-      class: 'Int',
+      class: 'Long',
       name: 'ruleId',
       documentation: `The unique rule identifier.`,
       order: 10,

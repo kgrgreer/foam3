@@ -231,7 +231,7 @@ public class FeeEngine {
       var feeRate = loadedFees_.get(fee.getRateName());
       if ( feeRate != null ){
         var rate = new Rate(feeRate).getValue(transaction);
-        ((TaxLineItem)result).setRate(rate);
+        ((TaxLineItem)result).setRate(rate * 100.0);
       }
     }
 
