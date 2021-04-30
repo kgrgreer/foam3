@@ -232,7 +232,7 @@ foam.CLASS({
       javaCode: `
         NumTotal nt = new NumTotal();
         nt.num = ((Count) transactions.inX(x).select(new Count())).getValue();
-        nt.total = ((Double) ((Sum) transactions.inX(x).select(SUM(Transaction.AMOUNT))).getValue()).longValue();
+        nt.total = Math.round((Double) ((Sum) transactions.inX(x).select(SUM(Transaction.AMOUNT))).getValue());
         return nt;
       `
     },
