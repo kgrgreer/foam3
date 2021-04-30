@@ -64,7 +64,7 @@ p({
   "grey5":"#f5f7fa",
   "black":"#1e1f21",
   "white":"#ffffff",
-  "inputHeight":"40px",
+  "inputHeight":"34px",
   "inputVerticalPadding":"10px",
   "inputHorizontalPadding":"8px",
   "customCSS":"""
