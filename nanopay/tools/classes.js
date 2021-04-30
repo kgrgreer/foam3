@@ -684,6 +684,7 @@ var classes = [
   'net.nanopay.tx.UnsupportedDateException',
   'net.nanopay.tx.ExpiredTransactionException',
   'net.nanopay.tx.ruler.UpdateTxOnApprovalRequestStatusChange',
+  'net.nanopay.tx.TransactionApprovalRequest',
 
   // TODO: From Maldives To Be ReWorked
   'net.nanopay.settlement.GroupingAccount',
@@ -1238,7 +1239,7 @@ var classes = [
   'net.nanopay.country.br.NatureCodeData',
   'net.nanopay.country.br.NatureCodeApprovalRequest',
   'net.nanopay.country.br.ApprovedNatureCodeApprovalRequestRuleAction',
-  'net.nanopay.country.br.CapableCreateNatureCodeApprovalsRuleAction',
+  'net.nanopay.country.br.CapableCreateInvoiceApprovalsRuleAction',
   'net.nanopay.country.br.BrazilBusinessInfoData',
   'net.nanopay.country.br.BrazilVerificationServiceInterface',
   'net.nanopay.country.br.ClientBrazilVerificationService',

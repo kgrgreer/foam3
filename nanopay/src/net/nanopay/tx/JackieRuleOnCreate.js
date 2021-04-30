@@ -32,8 +32,8 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
-    'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.TransactionApprovalRequest'
   ],
 
   messages: [
@@ -60,7 +60,7 @@ foam.CLASS({
         String complianceTx = ts.getTranslation(locale, getClassInfo().getId() + ".COMPLIANCE_TRANSACTION", COMPLIANCE_TRANSACTION);
         String summaryTx = ts.getTranslation(locale, getClassInfo().getId() + ".SUMMARY_TRANSACTION", SUMMARY_TRANSACTION);
 
-        ComplianceApprovalRequest req = new ComplianceApprovalRequest.Builder(x)
+        TransactionApprovalRequest req = new TransactionApprovalRequest.Builder(x)
           .setDaoKey("transactionDAO")
           .setServerDaoKey("localTransactionDAO")
           .setObjId(ct.getId())
@@ -68,6 +68,7 @@ foam.CLASS({
           .setCreatedFor(owner.getId())
           .setDescription(headTx.getSummary() + summaryTx + headTx.getId())
           .setClassification(complianceTx)
+          .setPaymentId(headTx.getId())
           .build();
 
         agency.submit(x, new ContextAgent() {
