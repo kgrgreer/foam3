@@ -24,7 +24,7 @@ foam.CLASS({
   `,
 
   javaImports: [
-    'net.nanopay.tx.SummaryTransaction',
+    'net.nanopay.tx.FeeSummaryTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.IndependantTransactionFeeLineItem',
@@ -46,7 +46,7 @@ foam.CLASS({
       name: 'plan',
       javaCode: `
 
-        SummaryTransaction summary = new SummaryTransaction();
+        FeeSummaryTransaction summary = new FeeSummaryTransaction();
         summary.copyFrom(requestTxn);
 
         CompositeTransaction comp = createCompositeTransaction(requestTxn);
