@@ -161,7 +161,7 @@ foam.CLASS({
             t2.setDestinationAmount(l2.getAmount());
             var leg1 = quoteTxn(x, t2, quote, false);
             Transaction l1 = removeSummaryTransaction(leg1);
-            l1.setAmount(l1.getTotal(x, l1.getSourceAccount()));
+            l1.setAmount(-l1.getTotal(x, l1.getSourceAccount()));
 
             var fxSummary = new FXSummaryTransaction();
             fxSummary.copyFrom(requestTxn);
