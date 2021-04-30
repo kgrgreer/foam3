@@ -1931,10 +1931,10 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/fx/TrevisoFXServiceMock' },
 
   // bepay
-  { name: 'net/nanopay/partner/bepay/tx/BePayTransaction' },
+  { name: 'net/nanopay/country/br/tx/PartnerTransaction' },
   { name: 'net/nanopay/country/br/tx/PartnerLineItem' },
   { name: 'net/nanopay/country/br/tx/PartnerReport' },
-  { name: 'net/nanopay/partner/bepay/tx/planner/BePayTransactionPlanner' },
+  { name: 'net/nanopay/country/br/tx/PartnerTransactionPlanner' },
 
   // Reports for Treviso
   { name: 'net/nanopay/partner/treviso/report/TrevisoTransactionReport' },

@@ -16,8 +16,8 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.partner.bepay.tx.planner',
-  name: 'BePayTransactionPlanner',
+  package: 'net.nanopay.country.br.tx',
+  name: 'PartnerTransactionPlanner',
   extends: 'net.nanopay.tx.planner.AbstractTransactionPlanner',
 
   documentation: 'Plans BRL to intermediary currencies e.g. USD, CAD, EUR, and GBP',
@@ -32,7 +32,7 @@ foam.CLASS({
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.country.br.tx.PartnerLineItem',
-    'net.nanopay.partner.bepay.tx.BePayTransaction',
+    'net.nanopay.country.br.tx.PartnerTransaction',
     'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.InfoLineItem',
@@ -76,7 +76,7 @@ foam.CLASS({
       txn.setPaymentProvider(PAYMENT_PROVIDER);
       txn.setStatus(TransactionStatus.COMPLETED);
       txn.clearLineItems();
-      BePayTransaction bTx = new BePayTransaction();
+      PartnerTransaction bTx = new PartnerTransaction();
       bTx.setLineItems(requestTxn.getLineItems());
       bTx.copyFrom(requestTxn);
       bTx.setId(UUID.randomUUID().toString());
@@ -101,10 +101,10 @@ foam.CLASS({
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
-        if ( ! ( txn instanceof BePayTransaction ) ) {
+        if ( ! ( txn instanceof PartnerTransaction ) ) {
           return true;
         }
-        BePayTransaction transaction = (BePayTransaction) txn;
+        PartnerTransaction transaction = (PartnerTransaction) txn;
 
         for ( TransactionLineItem lineItem: txn.getLineItems() ) {
           if ( lineItem instanceof PartnerLineItem ) {
@@ -116,7 +116,7 @@ foam.CLASS({
     },
     {
       name: 'addPartnerLineItem',
-      javaType: 'BePayTransaction',
+      javaType: 'PartnerTransaction',
       args: [
         {
           name: 'x',
@@ -124,7 +124,7 @@ foam.CLASS({
         },
         {
           name: 'txn',
-          type: 'BePayTransaction',
+          type: 'PartnerTransaction',
         },
         {
           name: 'requestTxn',

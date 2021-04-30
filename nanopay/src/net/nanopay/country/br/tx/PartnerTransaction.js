@@ -16,11 +16,11 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.partner.bepay.tx',
-  name: 'BePayTransaction',
+  package: 'net.nanopay.country.br.tx',
+  name: 'PartnerTransaction',
   extends: 'net.nanopay.fx.FXTransaction',
 
-  documentation: `BePay Transaction`,
+  documentation: `Partner Transaction`,
 
 
   properties: [

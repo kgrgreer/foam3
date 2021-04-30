@@ -1389,10 +1389,10 @@ var classes = [
   'net.nanopay.reporting.UserOnboardingReport',
 
   // bepay
-  'net.nanopay.partner.bepay.tx.BePayTransaction',
+  'net.nanopay.country.br.tx.PartnerTransaction',
   'net.nanopay.country.br.tx.PartnerLineItem',
   'net.nanopay.country.br.tx.PartnerReport',
-  'net.nanopay.partner.bepay.tx.planner.BePayTransactionPlanner',
+  'net.nanopay.country.br.tx.PartnerTransactionPlanner',
   'net.nanopay.partner.bepay.tx.ScreenUsersOnTransactionCreate',
 
   // accuity
