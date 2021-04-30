@@ -127,24 +127,30 @@ public class IntuitReconciliationReportGenerator extends RBCReconciliationReport
     report.setDebitCurrency(rbcCiTransaction.getSourceCurrency());
     report.setDebitFileNumber(rbcCiTransaction.getRbcReferenceNumber());
 
-    var debitEFT = (EFTFile) eftFileDAO.find(report.getDebitFileNumber());
-    if ( debitEFT != null && ! debitEFT.getFileCreationTimeEDT().isEmpty() )
-      report.setDebitFileDate(Date.from(BmoFormatUtil.parseDateTimeEDT(debitEFT.getFileCreationTimeEDT()).toInstant()));
+    if ( ! SafetyUtil.isEmpty(report.getDebitFileNumber() ) ) {
+      var debitEFT = (EFTFile) eftFileDAO.find(report.getDebitFileNumber());
+      if (debitEFT != null && !debitEFT.getFileCreationTimeEDT().isEmpty())
+        report.setDebitFileDate(Date.from(BmoFormatUtil.parseDateTimeEDT(debitEFT.getFileCreationTimeEDT()).toInstant()));
+    }
 
     report.setCreditAmount(rbcCoTransaction.getAmount());
     report.setCreditCurrency(rbcCoTransaction.getDestinationCurrency());
     report.setCreditFileNumber(rbcCoTransaction.getRbcReferenceNumber());
 
-    var creditEFT = (EFTFile) eftFileDAO.find(report.getCreditFileNumber());
-    if ( creditEFT != null && ! creditEFT.getFileCreationTimeEDT().isEmpty() )
-      report.setCreditFileDate(Date.from(BmoFormatUtil.parseDateTimeEDT(creditEFT.getFileCreationTimeEDT()).toInstant()));
+    if ( ! SafetyUtil.isEmpty(report.getCreditFileNumber()) ) {
+      var creditEFT = (EFTFile) eftFileDAO.find(report.getCreditFileNumber());
+      if ( creditEFT != null && ! creditEFT.getFileCreationTimeEDT().isEmpty() )
+        report.setCreditFileDate(Date.from(BmoFormatUtil.parseDateTimeEDT(creditEFT.getFileCreationTimeEDT()).toInstant()));
+    }
 
     if ( rbcFeeCiTransaction != null ) {
       report.setFeeFileNumber(rbcFeeCiTransaction.getRbcReferenceNumber());
 
-      var feeEFT = (EFTFile) eftFileDAO.find(report.getFeeFileNumber());
-      if ( feeEFT != null && ! feeEFT.getFileCreationTimeEDT().isEmpty() )
-        report.setFeeFileDate(Date.from(BmoFormatUtil.parseDateTimeEDT(feeEFT.getFileCreationTimeEDT()).toInstant()));
+      if ( ! SafetyUtil.isEmpty(report.getFeeFileNumber()) ) {
+        var feeEFT = (EFTFile) eftFileDAO.find(report.getFeeFileNumber());
+        if (feeEFT != null && !feeEFT.getFileCreationTimeEDT().isEmpty())
+          report.setFeeFileDate(Date.from(BmoFormatUtil.parseDateTimeEDT(feeEFT.getFileCreationTimeEDT()).toInstant()));
+      }
     }
 
     var srcAccount = (Account) accountDAO.find(rbcCiTransaction.getSourceAccount());
