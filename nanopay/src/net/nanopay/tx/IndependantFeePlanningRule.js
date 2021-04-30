@@ -84,15 +84,17 @@
             feeTxn.setDestinationCurrency(dest.getDenomination());
             feeTxn.setPayerId(dest.getOwner());
             feeTxn.setPayeeId(dest.getOwner());
+            feeTxn.setName("Fee Transaction for: "+root.getId());
 
             try {
               quote = (TransactionQuote) transactionPlannerDAO.put(quote);
               Transaction feeTxn2 = quote.getPlan();
-              feeTxn2.setAssociateTransaction(txn.getId());
               feeTxn2 = (Transaction) transactionDAO.put(quote.getPlan());
-              txn.setAssociateTransaction(feeTxn2.getId());
+              root = root.fclone()
+              root.setAssociateTransaction(feeTxn2.getId());
+              transactionDAO.put(root);
             } catch(RuntimeException error){
-              // TODO:
+              // TODO: create a ticket for fee creation failure
             }
 
 
