@@ -48,6 +48,7 @@ p({
   "priority":80,
   "ruleGroup":"BePayPlanner",
   "enabled":true,
+  "paymentProvider":"BePay",
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[

@@ -56,14 +56,10 @@ foam.CLASS({
     {
       name: 'bestPlan',
       value: true
-    }
-  ],
-
-  constants: [
+    },
     {
-      name: 'PAYMENT_PROVIDER',
-      type: 'String',
-      value: 'BePay'
+      name: 'paymentProvider',
+      class: 'String'
     }
   ],
 
@@ -73,7 +69,7 @@ foam.CLASS({
       javaCode: `
       FXSummaryTransaction txn = new FXSummaryTransaction();
       txn.copyFrom(requestTxn);
-      txn.setPaymentProvider(PAYMENT_PROVIDER);
+      txn.setPaymentProvider(getPaymentProvider());
       txn.setStatus(TransactionStatus.COMPLETED);
       txn.clearLineItems();
       PartnerTransaction bTx = new PartnerTransaction();
@@ -81,8 +77,8 @@ foam.CLASS({
       bTx.copyFrom(requestTxn);
       bTx.setId(UUID.randomUUID().toString());
       bTx.setAmount(txn.getAmount());
-      bTx.setName("BePay transaction");
-      bTx.setPaymentProvider(PAYMENT_PROVIDER);
+      bTx.setName("Partner transaction");
+      bTx.setPaymentProvider(getPaymentProvider());
       bTx.setPlanner(this.getId());
       addPartnerLineItem(x, bTx, requestTxn);
       txn.addNext(bTx);
