@@ -723,7 +723,7 @@ p({
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
-      .setInnerDAO(x.get("localTransactionSummaryDAO"))
+      .setInnerDAO(x.get("localTransactionSummaryDAO").where(foam.mlang.MLang.CLASS_OF(net.nanopay.partner.intuit.tx.IntuitTransactionSummary.class)))
       .setOf(net.nanopay.partner.intuit.tx.IntuitTransactionSummary.getOwnClassInfo())
       .setRuler(false)
       .setCluster(false)
@@ -741,7 +741,7 @@ p({
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
-      .setInnerDAO(x.get("localTransactionSummaryDAO"))
+      .setInnerDAO(x.get("localTransactionSummaryDAO").where(foam.mlang.MLang.CLASS_OF(net.nanopay.partner.intuit.tx.IntuitFeeTransactionSummary.class)))
       .setOf(net.nanopay.partner.intuit.tx.IntuitFeeTransactionSummary.getOwnClassInfo())
       .setRuler(false)
       .setCluster(false)
