@@ -20,6 +20,12 @@
   name: 'IntuitFeeTransactionSummary',
   extends: 'net.nanopay.partner.intuit.tx.IntuitTransactionSummary',
 
+  javaImports: [
+    'foam.core.Currency',
+    'foam.dao.DAO',
+    'foam.util.SafetyUtil'
+  ],
+
   tableColumns: [
       'summary',
       'amount',
@@ -54,9 +60,10 @@
       class: 'String',
       name: 'fee',
       hidden: true
+     },
     {
       name: 'associate',
-      label: 'Principal Transaction'
+      label: 'Principal Transaction',
       class: 'String',
       section: 'transactionInformation',
       order: 160,

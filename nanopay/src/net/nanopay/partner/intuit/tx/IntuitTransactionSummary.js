@@ -69,7 +69,7 @@ foam.CLASS({
     },
     {
       name: 'associate',
-      label: 'Fee Transaction'
+      label: 'Fee Transaction',
       class: 'String',
       section: 'transactionInformation',
       order: 160,
