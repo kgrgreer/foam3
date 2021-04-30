@@ -80,8 +80,11 @@ foam.CLASS({
       ],
       javaCode: `
         var prop = obj.getProperty(getAmountPropName());
+        if ( prop instanceof Double ) {
+          return Math.round((Double) prop);
+        }
         if ( prop instanceof Number ) {
-          return Math.round((Number) prop);
+          return ((Number) prop).longValue();
         }
         return 0l;
       `
