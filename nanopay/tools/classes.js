@@ -1389,11 +1389,12 @@ var classes = [
   'net.nanopay.reporting.UserOnboardingReport',
 
   // bepay
-  'net.nanopay.partner.bepay.tx.BePayTransaction',
+  'net.nanopay.country.br.tx.BRPartnerTransaction',
   'net.nanopay.country.br.tx.PartnerLineItem',
   'net.nanopay.country.br.tx.PartnerReport',
-  'net.nanopay.partner.bepay.tx.planner.BePayTransactionPlanner',
-  'net.nanopay.partner.bepay.tx.ScreenUsersOnTransactionCreate',
+  'net.nanopay.country.br.tx.PartnerTransactionPlanner',
+  'net.nanopay.country.br.tx.ScreenUsersOnTransactionCreate',
+  'net.nanopay.partner.bepay.tx.BePayTransaction',
 
   // accuity
   'net.nanopay.partner.accuity.AccuityCredentials',
