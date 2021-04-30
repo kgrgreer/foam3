@@ -21,8 +21,6 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.nanos.auth.CreatedAware;
-import foam.nanos.auth.LastModifiedAware;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
@@ -34,6 +32,7 @@ import net.nanopay.tx.FxSummaryTransactionLineItem;
 import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.billing.Bill;
 import net.nanopay.tx.bmo.BmoFormatUtil;
+import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.EFTFile;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.rbc.RbcCITransaction;
@@ -68,15 +67,25 @@ public class IntuitReconciliationReportGenerator extends RBCReconciliationReport
     var transaction = (SummaryTransaction) src;
     var ciTransaction = ciMap.get(transaction.getId());
     var coTransaction = coMap.get(transaction.getId());
-    var feeCiTransaction = ciMap.get(transaction.getAssociateTransaction());
     var dt = dtMap.get(transaction.getId());
 
+    FeeSummaryTransaction fst = null;
+    var associatedTransactions = (ArraySink) transaction.getAssociatedTransactions(x).select(new ArraySink());
+    for ( var tx : associatedTransactions.getArray() )
+      if ( tx instanceof FeeSummaryTransaction )
+        fst = (FeeSummaryTransaction) tx;
+
+    CITransaction feeCiTransaction = null;
+    if ( fst != null )
+      feeCiTransaction = ciMap.get(fst.getId());
+
     // I think this could be done better
-    if ( ciTransaction == null || coTransaction == null || dt == null || ( ! SafetyUtil.isEmpty(transaction.getAssociateTransaction()) && feeCiTransaction == null ) ) {
+    if ( ciTransaction == null || coTransaction == null || dt == null || ( fst != null && feeCiTransaction == null ) ) {
       refreshMaps(x);
       ciTransaction = ciMap.get(transaction.getId());
       coTransaction = coMap.get(transaction.getId());
-      feeCiTransaction = ciMap.get(transaction.getAssociateTransaction());
+      if ( fst != null )
+        feeCiTransaction = ciMap.get(fst.getId());
       dt = dtMap.get(transaction.getId());
     }
 
