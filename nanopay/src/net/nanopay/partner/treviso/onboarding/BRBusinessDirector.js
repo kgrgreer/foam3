@@ -42,7 +42,8 @@ foam.CLASS({
     { name: 'NO', message: 'No' },
     { name: 'PROOF_OF_ADDRESS', message: 'Proof of address documents required' },
     { name: 'PROOF_OF_IDENTIFICATION', message: 'Proof of identication documents required' },
-    { name: 'RICHCHOICE_SELECTION_TITLE', message: 'Countries' }
+    { name: 'RICHCHOICE_SELECTION_TITLE', message: 'Countries' },
+    { name: 'INVALID_CPF', message: 'Valid CPF number required' }
   ],
 
   properties: [
@@ -81,7 +82,18 @@ foam.CLASS({
       required: true,
       factory: function() {
         return net.nanopay.country.br.CPF.create({}, this.__subContext__);
-      }
+      },
+      validationPredicates: [
+        {
+          args: ['cpf', 'cpf$errors_'],
+          predicateFactory: function(e) {
+            return e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.partner.treviso.onboarding.BRBusinessDirector.CPF
+              }), true);
+          },
+          errorMessage: 'INVALID_CPF'
+        }
+      ]
     },
     {
       class: 'Reference',
