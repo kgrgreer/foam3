@@ -93,7 +93,7 @@ p({
       },
       {
         "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
-        "provider":"TrevsioAPI"
+        "provider":"TrevisoAPI"
       }
     ]
   },
