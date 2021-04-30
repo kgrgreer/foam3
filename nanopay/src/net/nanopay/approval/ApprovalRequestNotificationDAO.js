@@ -26,6 +26,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.i18n.TranslationService',
     'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.approval.ApprovalRequestNotification',
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.auth.Subject',
@@ -82,7 +83,8 @@ foam.CLASS({
         String locale = notifyUser != null ? notifyUser.getLanguage().getCode() :
                           ((User) subject.getRealUser()).getLanguage().getCode().toString();
 
-        String classification = ret.getClassificationEnum().getLabel();
+        String classification = ts.getTranslation(locale, "foam.nanos.approval.ApprovalRequestClassificationEnum." + ret.getClassificationEnum().toString() + ".label", ret.getClassificationEnum().getLabel());
+
         if ( SafetyUtil.isEmpty(classification) ) {
           classification = "reference";
         }
@@ -183,12 +185,6 @@ foam.CLASS({
                     ));
         if ( fulfilled == null ) return ret;
 
-        String notificationType = fulfilled.getClass().getSimpleName()+"."+fulfilled.getStatus().getLabel()+"."+fulfilled.getOperation().getLabel();
-        String classification = fulfilled.getClassificationEnum().getLabel();
-        if ( SafetyUtil.isEmpty(classification) ) {
-          classification = "reference";
-        }
-
         DAO userDAO = (DAO) x.get("localUserDAO");
         User requester = (User) userDAO.find(fulfilled.getCreatedBy());
         User approvedBy = (User) userDAO.find(fulfilled.getLastModifiedBy());
@@ -198,6 +194,13 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         String locale = approver != null ? approver.getLanguage().getCode() :
                           ((User) subject.getRealUser()).getLanguage().getCode().toString();
+
+        String notificationType = fulfilled.getClass().getSimpleName()+"."+fulfilled.getStatus().getLabel()+"."+fulfilled.getOperation().getLabel();
+        String classification = ts.getTranslation(locale, "foam.nanos.approval.ApprovalRequestClassificationEnum." + fulfilled.getClassificationEnum().toString() + ".label", fulfilled.getClassificationEnum().getLabel());
+
+        if ( SafetyUtil.isEmpty(classification) ) {
+          classification = "reference";
+        }
 
         String msgBody1 = ts.getTranslation(locale, getClassInfo().getId() + ".APPROVED", APPROVED);
         String msgBody2 = ts.getTranslation(locale, getClassInfo().getId() + ".REQUEST_FOR", REQUEST_FOR);
