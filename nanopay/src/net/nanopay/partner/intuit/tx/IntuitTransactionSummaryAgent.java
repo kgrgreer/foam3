@@ -26,6 +26,7 @@ import java.util.*;
 import net.nanopay.ticket.RefundStatus;
 import net.nanopay.ticket.RefundTicket;
 import net.nanopay.tx.ChainSummary;
+import net.nanopay.tx.FeeSummaryTransaction;
 import net.nanopay.tx.FeeSummaryTransactionLineItem;
 import net.nanopay.tx.SummarizingTransaction;
 import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
@@ -56,15 +57,8 @@ public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
         NOT(INSTANCE_OF(net.nanopay.tx.FeeSummaryTransaction.getOwnClassInfo())),
         NOT(INSTANCE_OF(BmoVerificationTransaction.getOwnClassInfo()))
       );
-      generateTransactionSummaries(x, predicate, transactionDAO, false);
+      generateTransactionSummaries(x, predicate, transactionDAO);
 
-      predicate = AND(
-        EQ(Transaction.SPID, spid),
-        NOT(INSTANCE_OF(net.nanopay.tx.creditengine.CreditCodeTransaction.getOwnClassInfo())),
-        NOT(INSTANCE_OF(net.nanopay.tx.SummaryTransaction.getOwnClassInfo())),
-        NOT(INSTANCE_OF(BmoVerificationTransaction.getOwnClassInfo()))
-      );
-      generateTransactionSummaries(x, predicate, summaryTransactionDAO, true);
     } else {
       Predicate predicate = AND(
         EQ(Transaction.SPID, spid),
@@ -72,29 +66,17 @@ public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
         NOT(INSTANCE_OF(net.nanopay.tx.FeeSummaryTransaction.getOwnClassInfo())),
         NOT(INSTANCE_OF(BmoVerificationTransaction.getOwnClassInfo()))
       );
-      generateTransactionSummaries(x, predicate, summaryTransactionDAO, false);
+      generateTransactionSummaries(x, predicate, summaryTransactionDAO);
 
-      predicate = AND(
-        EQ(Transaction.SPID, spid),
-        NOT(INSTANCE_OF(net.nanopay.tx.creditengine.CreditCodeTransaction.getOwnClassInfo())),
-        NOT(INSTANCE_OF(net.nanopay.tx.SummaryTransaction.getOwnClassInfo())),
-        NOT(INSTANCE_OF(BmoVerificationTransaction.getOwnClassInfo()))
-      );
-      generateTransactionSummaries(x, predicate, summaryTransactionDAO, true);
     }
   }
 
-  public void generateTransactionSummaries(X x, Predicate predicate, DAO dao, boolean isFeeSummary) {
+  public void generateTransactionSummaries(X x, Predicate predicate, DAO dao) {
     ArraySink txnSink = (ArraySink) dao.where(predicate).select(new ArraySink());
     HashSet<String> summaryTxnIds = setupTxnIdSet(x, txnSink.getArray());
     List<Transaction> txns = setupTxnListFromSet(x, summaryTxnIds);
-    DAO transactionSummaryDAO;
-    if ( isFeeSummary ) {
-      transactionSummaryDAO = (DAO) x.get("localIntuitFeeTransactionSummaryDAO");
+    DAO transactionSummaryDAO = (DAO) x.get("localTransactionSummaryDAO");
 
-    } else {
-      transactionSummaryDAO = (DAO) x.get("localTransactionSummaryDAO");
-    }
     for ( int i = 0; i < txns.size(); i++ ) {
       Transaction txn = txns.get(i);
       SummarizingTransaction summarizingTransaction = (SummarizingTransaction) txn;
@@ -111,10 +93,13 @@ public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
       }
 
       IntuitTransactionSummary intuitTxnSummary;
-      if ( isFeeSummary ) {
+      if ( txn instanceof FeeSummaryTransaction ) {
         intuitTxnSummary = new IntuitFeeTransactionSummary();
+        intuitTxnSummary.setAssociate(txn.getAssociateTransaction());
       } else {
         intuitTxnSummary = new IntuitTransactionSummary();
+        if ( (((ArraySink) txn.getAssociatedTransactions(x).select(new ArraySink())).getArray()).size() > 0 )
+          intuitTxnSummary.setAssociate(((Transaction) ((((ArraySink) txn.getAssociatedTransactions(x).select(new ArraySink())).getArray()).get(0))).getId());
       }
       intuitTxnSummary.setId(txn.getId());
       intuitTxnSummary.setCurrency(txn.getSourceCurrency());

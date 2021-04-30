@@ -84,7 +84,7 @@
         Currency sourceCurrency = (Currency) currencyDAO.find(transaction.getSourceCurrency());
         Currency destinationCurrency = (Currency) currencyDAO.find(transaction.getDestinationCurrency());
         StringBuilder summary = new StringBuilder();
-        summary.append("Transaction Fee of");
+        summary.append("Transaction Fee of ");
         if ( transaction.getAmount() > 0 ) {
           if ( SafetyUtil.isEmpty(transaction.getSourceCurrency()) ) {
             summary.append(transaction.getAmount());
