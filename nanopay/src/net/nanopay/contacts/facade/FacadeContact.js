@@ -141,7 +141,8 @@ foam.CLASS({
       name: 'isEdit',
       documentation: `Set to true when editing a contact from
       contact controller.`,
-      value: false
+      value: false,
+      visibility: 'HIDDEN'
     },
     {
       // REVIEW: this should be storageTransient - believe it's just used for
@@ -151,7 +152,8 @@ foam.CLASS({
       documentation: `True if the user confirms their relationship with the contact.`,
       includeInDigest: false,
       section: 'userInformation',
-      gridColumns: 6
+      gridColumns: 6,
+      visibility: 'HIDDEN'
     },
   ]
 });
