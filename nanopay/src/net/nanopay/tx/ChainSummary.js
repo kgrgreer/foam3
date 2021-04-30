@@ -20,9 +20,16 @@ foam.CLASS({
   name: 'ChainSummary',
 
   javaImports: [
-    'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.integration.ErrorCode',
     'foam.dao.DAO',
+    'foam.i18n.TranslationService',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+    'net.nanopay.integration.ErrorCode',
+    'net.nanopay.tx.model.TransactionStatus',
+  ],
+
+  messages: [
+    { name: 'TRANSACTION_STATUS_PATH', message: 'net.nanopay.tx.model.TransactionStatus' }
   ],
 
   properties: [
@@ -74,11 +81,20 @@ foam.CLASS({
         return this.category + ' ' + this.status.name;
       },
       javaCode: `
-        if ( getCategory() != null && getCategory().length() > 0) {
-          return getCategory() + ' ' + getStatus().getName();
+        Subject subject = (Subject) foam.core.XLocator.get().get("subject");
+        String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
+        TranslationService ts = (TranslationService) foam.core.XLocator.get().get("translationService");
+
+        String category = ts.getTranslation(locale, getCategory(), getCategory());
+        
+        String statusName = getStatus().getName();
+        statusName = ts.getTranslation(locale, TRANSACTION_STATUS_PATH + '.' + statusName + ".label", statusName);
+        
+        if ( category != null && category.length() > 0 ) {
+          return category + ' ' + statusName;
         }
         
-        return getStatus().getName();
+        return statusName;
       `
     }
   ]

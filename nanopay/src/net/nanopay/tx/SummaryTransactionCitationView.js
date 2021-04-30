@@ -49,7 +49,6 @@ foam.CLASS({
     { name: 'AMOUNT', message: 'Amount' },
     { name: 'AMOUNT_IN', message: 'Amount in' },
     { name: 'RATE', message: 'Rate'},
-    { name: 'GRAND_TOTAL', message: 'Total Due' },
     { name: 'TRANSACTION_DATE', message: 'Payment date' },
     { name: 'TRANSACTION_REFERENCE', message: 'Reference' },
     { name: 'VET_TITLE', message: 'Effective Rate(VET)' }
@@ -131,15 +130,72 @@ foam.CLASS({
       }
     },
     {
-      name: 'grandTotal',
+      name: 'dataProps',
       expression: function(data) {
-        return data;
+        let ret = {};
+        let of = this.data.cls_;
+        let props = of.getAxiomsByClass(foam.core.Property);
+        let candidates = [ 'destinationAmount', 'inverseRate', 'amount'];
+        for ( const p of props ) {
+          if ( candidates.includes(p.name) ) {
+            ret[p.name] = p;
+          }
+        }
+        return ret;
       }
     },
+    {
+      name: 'txAmount',
+      factory: function() {
+        return this.data.destinationAmount;
+      }
+    },
+    {
+      name: 'currencyRate',
+      factory: function() {
+        let lineItems = this.data.lineItems;
+        for ( const lineItem of lineItems ) {
+          if ( this.FxSummaryTransactionLineItem.isInstance(lineItem) ) {
+            //get rate from lineItem[0] in FxSummaryTransactionLineItem.
+            let totalRateLineItem = lineItem.lineItems[0];
+            if ( this.TotalRateLineItem.isInstance(totalRateLineItem) ) {
+              return totalRateLineItem.rate;
+            }
+          }
+        }
+        return 0;
+      }
+    },
+    {
+      name: 'currencyRateView',
+      factory: function() {
+        let lineItems = this.data.lineItems;
+        for ( const lineItem of lineItems ) {
+          if ( this.FxSummaryTransactionLineItem.isInstance(lineItem) ) {
+            return lineItem.inverseRate;
+          }
+        }
+        return '';
+      }
+    },
+    {
+      name: 'txAmounIn',
+      factory: function() {
+        return this.data.amount;
+      }
+    },
+    'sourceCurrencyFormat',
+    'destinationCurrencyFormat',
     {
       name: 'showVET',
       expression: function(data) {
         return data.sourceCurrency != data.destinationCurrency;
+      }
+    },
+    {
+      name: 'totalAmount',
+      factory: function() {
+        return this.data.amount;
       }
     }
   ],
@@ -153,6 +209,7 @@ foam.CLASS({
 
       this.start().addClass(this.myClass())
         .start('h2').add(this.showingTitle).end()
+        .br()
         .start().show(this.showTransactionDetail$)
           .start(this.Cols)
             .add(this.TRANSACTION_DATE)
@@ -162,18 +219,22 @@ foam.CLASS({
             .add(this.TRANSACTION_REFERENCE)
             .start().add(this.transactionId).end()
           .end()
+          .br()
         .end()
         .start('h3').add(this.data.toSummary()).end()
-        .forEach(self.prop, function(p) {
-            if ( !p ) return;
-            if ( p.prop.label && ! p.prop.hidden && ! p.prop.visibility ) {
-              self.start(self.Cols)
-                .add(p.label)
-                .start(p.prop, { mode: foam.u2.DisplayMode.RO, data: p.value }).end()
-              .end();
-            }
-          })
+        .br()
+        .start(this.Cols)
+          .add(this.AMOUNT)
+          .start().add(destinationCurrencyFormat.format(this.txAmount)).end()
         .end()
+        .start(this.Cols)
+          .add(this.RATE)
+          .start().add(this.currencyRateView).end()
+        .end()
+        .start(this.Cols)
+        .add(this.AMOUNT_IN).add(` (${this.sourceCurrency})`)
+        .start(this.dataProps['amount'], { mode: foam.u2.DisplayMode.RO, data$: this.txAmounIn$ }).end()
+      .end()
         .br()
         .start()
           .add(
@@ -223,19 +284,19 @@ foam.CLASS({
                 });
 
               // TODO: grandTotal lineItem
-              let totalAmount = data.amount + totalFee + totalTax;
+              this.txAmounIn = this.totalAmount - totalFee - totalTax;
               e.br().start({
                 class: 'net.nanopay.tx.LineItemCitationView',
                 data: this.GrandTotalLineItem.create({
-                  amount: totalAmount,
+                  amount: this.totalAmount,
                   currency: data.sourceCurrency
                 }),
                 inline:true,
                 highlightInlineTitle: true
               });
 
-              let vet = totalAmount / data.destinationAmount;
-              e.start(self.Cols).show(this.showVET$)
+              let vet = this.totalAmount / data.destinationAmount;
+              e.br().start(self.Cols).show(this.showVET$)
                 .add(this.VET_TITLE)
                 .start().add(this.formatRate(destinationCurrencyFormat, 100, sourceCurrencyFormat, vet*1000000)).end()
               .end();

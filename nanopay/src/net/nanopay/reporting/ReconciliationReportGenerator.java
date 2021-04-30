@@ -39,4 +39,12 @@ public abstract class ReconciliationReportGenerator extends ReportGenerator {
     return transaction.getId();
   }
 
+  protected ReconciliationReportGenerator() {
+    super();
+  }
+
+  protected ReconciliationReportGenerator(String spid) {
+    super(spid);
+  }
+
 }
