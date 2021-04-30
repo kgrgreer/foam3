@@ -107,12 +107,10 @@ p({
       "editEnabled":true,
       "searchMode":0,
 
-      "DAOCreateView":"true",
-
       "primaryAction": {"class":"net.nanopay.ui.AddPrimaryAction"},
       "viewBorder":{class:"foam.u2.borders.NullBorder"},
 
-      "wizardDetailView":{"class":"net.nanopay.ui.wizard.ContactWizardDetailView"},
+      "XXXcreateController":{"class":"net.nanopay.ui.wizard.ContactWizardDetailView"},
       "XXXdetailView":{"class":"net.nanopay.contacts.ui.ContactWizardView"},
 
       "exportEnabled":false,
@@ -194,10 +192,8 @@ p({
       "viewBorder":{class:"foam.u2.borders.NullBorder"},
       "browseBorder":{class:"net.nanopay.bank.MyBankAccountsBorder"},
 
-      "wizardDetailView":{class:"net.nanopay.ui.wizard.ContactWizardDetailView"},
+      "createController":{class:"net.nanopay.ui.wizard.ContactWizardDetailView"},
       "detailView":{class:"net.nanopay.account.ui.BankAccountWizard"},
-
-      "DAOCreateView":"true",
 
       "exportEnabled":false,
       "createEnabled":true,
