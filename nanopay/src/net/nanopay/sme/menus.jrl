@@ -113,7 +113,7 @@ p({
       "viewBorder":{class:"foam.u2.borders.NullBorder"},
 
       "wizardDetailView":{"class":"net.nanopay.ui.wizard.ContactWizardDetailView"},
-      "detailView":{"class":"net.nanopay.contacts.ui.ContactWizardView"},
+      "XXXdetailView":{"class":"net.nanopay.contacts.ui.ContactWizardView"},
 
       "exportEnabled":false,
       "createEnabled":true,
