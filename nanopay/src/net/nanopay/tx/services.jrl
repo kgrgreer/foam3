@@ -736,6 +736,44 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
+  "name":"localIntuitFeeTransactionSummaryDAO",
+  "lazy":false,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setInnerDAO(x.get("localTransactionSummaryDAO"))
+      .setOf(net.nanopay.partner.intuit.tx.IntuitFeeTransactionSummary.getOwnClassInfo())
+      .setRuler(false)
+      .setCluster(false)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setAuthorize(false)
+      .build();
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"intuitFeeTransactionSummaryDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setInnerDAO(x.get("localIntuitFeeTransactionSummaryDAO"))
+      .setOf(net.nanopay.partner.intuit.tx.IntuitFeeTransactionSummary.getOwnClassInfo())
+      .setRuler(false)
+      .setAuthorize(true)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setEnableInterfaceDecorators(false)
+      .setCluster(false)
+      .build();
+    """,
+  "client":"{\"of\":\"net.nanopay.partner.intuit.tx.IntuitFeeTransactionSummary\"}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
   "name":"transactionSummaryDAO",
   "lazy":false,
   "serve":true,

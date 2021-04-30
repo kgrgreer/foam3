@@ -67,7 +67,7 @@ p({
     }
   }
 })
-
+// Review.. should these not be in treviso deployment?
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"transactions-summary",
@@ -78,6 +78,23 @@ p({
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"intuitTransactionSummaryDAO",
       "browseTitle": "Transactions",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  }
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"transactions-fee-summary",
+  "label":"Fee Transactions",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"intuitFeeTransactionSummaryDAO",
+      "browseTitle": "Fee Transactions",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
       "editPredicate":{"class":"foam.mlang.predicate.False"},
       "deletePredicate":{"class":"foam.mlang.predicate.False"}

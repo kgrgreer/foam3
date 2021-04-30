@@ -53,11 +53,13 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-suppor
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"strategyreference.read.dda26266-147d-4f40-81e4-4427b224ef3d"})
 
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.intuitTransactionSummaryDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.intuitFeeTransactionSummaryDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.transactionSummaryDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"summarytransaction.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"summarytransaction.rw.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"transactionsummary.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"intuittransactionsummary.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"intuitfeetransactionsummary.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"transaction.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"transaction.rw.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"user.read.*"})
