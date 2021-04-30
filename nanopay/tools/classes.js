@@ -1337,6 +1337,7 @@ var classes = [
   'net.nanopay.country.br.tx.NatureCodeLineItem',
   'net.nanopay.partner.bmo.BMOPaymentProviderCapabilityRule',
   'net.nanopay.partner.intuit.tx.IntuitTransactionSummary',
+  'net.nanopay.partner.intuit.tx.IntuitFeeTransactionSummary',
   'net.nanopay.partner.rbc.RBCPaymentProviderCapabilityRule',
   'net.nanopay.partner.soawebservices.PessoaFisicaNFe',
   'net.nanopay.partner.soawebservices.PessoaJuridicaNFe',

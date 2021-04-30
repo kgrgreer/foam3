@@ -1841,6 +1841,7 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/afex/crunch/AFEXUserOnboardingRule' },
   { name: 'net/nanopay/partner/afex/crunch/BankAccountOwnerIsBusiness' },
   { name: 'net/nanopay/partner/intuit/tx/IntuitTransactionSummary' },
+  { name: 'net/nanopay/partner/intuit/tx/IntuitFeeTransactionSummary' },
 
   { name: 'net/nanopay/partner/bmo/BMOPaymentProviderCapabilityRule' },
   { name: 'net/nanopay/partner/rbc/RBCPaymentProviderCapabilityRule' },
