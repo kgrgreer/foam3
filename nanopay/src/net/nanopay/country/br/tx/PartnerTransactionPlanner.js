@@ -112,7 +112,7 @@ foam.CLASS({
     },
     {
       name: 'addPartnerLineItem',
-      javaType: 'BRPartnerTransaction',
+      type: 'BRPartnerTransaction',
       args: [
         {
           name: 'x',
