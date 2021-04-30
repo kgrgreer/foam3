@@ -105,8 +105,7 @@ foam.CLASS({
           }
         }
         Double percent = getServiceCompleted()/100.0;
-        value = value * Math.round(percent);
-        return value;
+        return Math.round(value * percent);
       `,
       unitPropValueToString: async function(x, val, unitPropName) {
         var formattedAmount = val / 100;

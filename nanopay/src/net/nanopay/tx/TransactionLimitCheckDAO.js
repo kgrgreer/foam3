@@ -179,7 +179,7 @@ foam.CLASS({
                 EQ(type,      TransactionLimit.TYPE),
                 EQ(timeFrame, TransactionLimit.TIME_FRAME)));
 
-            userLimitValue = Math.round((Double)(((Sum) sumLimitDAO.select(SUM(TransactionLimit.AMOUNT))).getValue()));
+            userLimitValue = Math.round(((Sum) sumLimitDAO.select(SUM(TransactionLimit.AMOUNT))).getValue());
           }
           if ( isOverTimeFrameLimit(x,transaction, user, timeFrame, userLimitValue, isPayer) ) {
             return false;
@@ -239,7 +239,7 @@ foam.CLASS({
             GTE(Transaction.CREATED, firstDate ),
             LTE(Transaction.CREATED, lastDate )));
 
-        return Math.round((Double)(((Sum) list.select(SUM(Transaction.AMOUNT))).getValue()));
+        return Math.round(((Sum) list.select(SUM(Transaction.AMOUNT))).getValue());
       `
     },
     {
