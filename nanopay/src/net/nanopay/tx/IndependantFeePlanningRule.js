@@ -90,7 +90,7 @@
               quote = (TransactionQuote) transactionPlannerDAO.put(quote);
               Transaction feeTxn2 = quote.getPlan();
               feeTxn2 = (Transaction) transactionDAO.put(quote.getPlan());
-              root = root.fclone()
+              root = (Transaction) root.fclone();
               root.setAssociateTransaction(feeTxn2.getId());
               transactionDAO.put(root);
             } catch(RuntimeException error){
