@@ -32,7 +32,7 @@ foam.CLASS({
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.country.br.tx.PartnerLineItem',
-    'net.nanopay.country.br.tx.PartnerTransaction',
+    'net.nanopay.country.br.tx.BRPartnerTransaction',
     'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.InfoLineItem',
@@ -72,7 +72,7 @@ foam.CLASS({
       txn.setPaymentProvider(getPaymentProvider());
       txn.setStatus(TransactionStatus.COMPLETED);
       txn.clearLineItems();
-      PartnerTransaction bTx = new PartnerTransaction();
+      BRPartnerTransaction bTx = new BRPartnerTransaction();
       bTx.setLineItems(requestTxn.getLineItems());
       bTx.copyFrom(requestTxn);
       bTx.setId(UUID.randomUUID().toString());
@@ -97,10 +97,10 @@ foam.CLASS({
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
-        if ( ! ( txn instanceof PartnerTransaction ) ) {
+        if ( ! ( txn instanceof BRPartnerTransaction ) ) {
           return true;
         }
-        PartnerTransaction transaction = (PartnerTransaction) txn;
+        BRPartnerTransaction transaction = (BRPartnerTransaction) txn;
 
         for ( TransactionLineItem lineItem: txn.getLineItems() ) {
           if ( lineItem instanceof PartnerLineItem ) {
@@ -112,7 +112,7 @@ foam.CLASS({
     },
     {
       name: 'addPartnerLineItem',
-      javaType: 'PartnerTransaction',
+      javaType: 'BRPartnerTransaction',
       args: [
         {
           name: 'x',
@@ -120,7 +120,7 @@ foam.CLASS({
         },
         {
           name: 'txn',
-          type: 'PartnerTransaction',
+          type: 'BRPartnerTransaction',
         },
         {
           name: 'requestTxn',

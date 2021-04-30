@@ -17,10 +17,10 @@
 
 foam.CLASS({
   package: 'net.nanopay.country.br.tx',
-  name: 'PartnerTransaction',
+  name: 'BRPartnerTransaction',
   extends: 'net.nanopay.fx.FXTransaction',
 
-  documentation: `Partner Transaction`,
+  documentation: `BR Partner Transaction`,
 
 
   properties: [

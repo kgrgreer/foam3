@@ -1931,7 +1931,7 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/fx/TrevisoFXServiceMock' },
 
   // bepay
-  { name: 'net/nanopay/country/br/tx/PartnerTransaction' },
+  { name: 'net/nanopay/country/br/tx/BRPartnerTransaction' },
   { name: 'net/nanopay/country/br/tx/PartnerLineItem' },
   { name: 'net/nanopay/country/br/tx/PartnerReport' },
   { name: 'net/nanopay/country/br/tx/PartnerTransactionPlanner' },

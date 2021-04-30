@@ -1389,7 +1389,7 @@ var classes = [
   'net.nanopay.reporting.UserOnboardingReport',
 
   // bepay
-  'net.nanopay.country.br.tx.PartnerTransaction',
+  'net.nanopay.country.br.tx.BRPartnerTransaction',
   'net.nanopay.country.br.tx.PartnerLineItem',
   'net.nanopay.country.br.tx.PartnerReport',
   'net.nanopay.country.br.tx.PartnerTransactionPlanner',
