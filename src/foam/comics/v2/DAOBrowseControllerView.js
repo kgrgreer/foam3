@@ -118,16 +118,16 @@ foam.CLASS({
       code: function() {
         if ( ! this.stack ) return;
 
-        if ( this.config.DAOCreateView ){
+        if ( this.config.createController.class === 'foam.comics.v2.DAOCreateView'){
           this.stack.push({
-            class: 'foam.comics.v2.DAOCreateView',
+            class: this.config.createController.class,//'foam.comics.v2.DAOCreateView',
             data: ((this.config.factory && this.config.factory$cls) ||  this.data.of).create({ mode: 'create'}, this),
             config$: this.config$,
             of: this.data.of
           }, this.__subContext__);
         } else {
           this.stack.push({
-            class: this.config.wizardDetailView.class,
+            class: this.config.createController.class,
             config$: this.config$,
             of: this.data.of,
             data: this.selection,

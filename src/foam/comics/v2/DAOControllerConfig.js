@@ -232,14 +232,12 @@ foam.CLASS({
       name: 'hideQueryBar'
     },
     {
-      class: 'Boolean',
-      name: 'DAOCreateView',
-      documentation: 'True to use the DAOCreateView else it will use the WizardController.'
-    },
-    {
       class: 'foam.u2.ViewSpec',
-      name: 'wizardDetailView',
-      documentation: 'class of WizardDetailView.'
+      name: 'createController',
+      documentation: 'class of createController.',
+      factory: function() {
+        return { class: 'foam.comics.v2.DAOCreateView' };
+      }
     },
     {
       class: 'foam.u2.ViewSpec',
