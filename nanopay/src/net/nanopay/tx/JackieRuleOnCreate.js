@@ -68,7 +68,7 @@ foam.CLASS({
           .setGroup(group)
           .setCreatedFor(owner.getId())
           .setDescription(headTx.getSummary() + summaryTx + headTx.getId())
-          .setClassificationEnum(ApprovalRequestClassificationEnum.forLabel(complianceTx))
+          .setClassificationEnum(ApprovalRequestClassificationEnum.COMPLIANCE_TRANSACTION)
           .build();
 
         agency.submit(x, new ContextAgent() {

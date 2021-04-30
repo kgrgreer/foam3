@@ -13,6 +13,7 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.nanos.approval.ApprovalRequest;
+import foam.nanos.approval.ApprovalRequestClassificationEnum;
 import foam.nanos.approval.ApprovalRequestUtil;
 import foam.nanos.approval.ApprovalStatus;
 import net.nanopay.fx.afex.AFEXUser;
@@ -39,7 +40,7 @@ public class AFEXBusinessApprovalRequestCron implements ContextAgent {
     DAO afexUserDAO = (DAO) x.get("afexUserDAO");
     for (Object obj : pendinApprovals) {
       AFEXBusinessApprovalRequest request = (AFEXBusinessApprovalRequest) obj;
-      if ( ApprovalRequestUtil.getStatus(x, request.getObjId(), request.getClassification()) == ApprovalStatus.REQUESTED ) {
+      if ( ApprovalRequestUtil.getStatus(x, request.getObjId(), request.getClassificationEnum()) == ApprovalStatus.REQUESTED ) {
         AFEXUser afexUser = (AFEXUser) afexUserDAO.find(request.getObjId());
         AFEXCredentials credentials = (AFEXCredentials) credentialDAO.find(MLang.EQ(AFEXCredentials.SPID, afexUser.findUser(x).getSpid()));
         boolean bufferElapsed = false;
@@ -53,11 +54,11 @@ public class AFEXBusinessApprovalRequestCron implements ContextAgent {
           request.setStatus(ApprovalStatus.APPROVED);
           approvalRequestDAO.put(request);
         }
-      } else if ( ApprovalRequestUtil.getStatus(x, request.getObjId(), request.getClassification()) == ApprovalStatus.APPROVED ) {
+      } else if ( ApprovalRequestUtil.getStatus(x, request.getObjId(), request.getClassificationEnum()) == ApprovalStatus.APPROVED ) {
         approvalRequestDAO.where(AND(
           EQ(ApprovalRequest.DAO_KEY, request.getDaoKey()),
           EQ(ApprovalRequest.OBJ_ID, request.getObjId()),
-          EQ(ApprovalRequest.CLASSIFICATION, request.getClassification()),
+          EQ(ApprovalRequest.CLASSIFICATION_ENUM, ApprovalRequestClassificationEnum.AFEX_BUSINESS),
           EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)))
         .removeAll();
       }

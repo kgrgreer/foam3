@@ -60,7 +60,7 @@ foam.CLASS({
           .setRefObjId(business.getId())
           .setRefDaoKey("businessDAO")
           .setCauseId(levResponse != null ? levResponse.getId() : 0L)
-          .setClassificationEnum(ApprovalRequestClassificationEnum.forLabel(getClassification()))
+          .setClassificationEnum(ApprovalRequestClassificationEnum.BUSINESS_SECUREFACT_LEV)
           .setCauseDaoKey("securefactLEVDAO")
           .setCreatedFor(business.getId())
           .setGroup(group)

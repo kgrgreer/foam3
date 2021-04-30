@@ -134,7 +134,7 @@ foam.CLASS({
             EQ(ApprovalRequest.OBJ_ID, objId),
             EQ(ApprovalRequest.DAO_KEY, daoKey),
             getIsFinal()
-              ? TRUE : EQ(ApprovalRequest.CLASSIFICATION, classification)
+              ? TRUE : EQ(ApprovalRequest.CLASSIFICATION_ENUM, ApprovalRequestClassificationEnum.ACCOUNT_ROLE_APPROVAL)
           ))
         );
 
@@ -168,7 +168,7 @@ foam.CLASS({
           X initiatingUserX = x.put("subject", subject);
 
           ApprovalRequest approvalRequest = new AccountRoleApprovalRequest.Builder(x)
-            .setClassificationEnum(ApprovalRequestClassificationEnum.forLabel(classification))
+            .setClassificationEnum(ApprovalRequestClassificationEnum.ACCOUNT_ROLE_APPROVAL)
             .setObjId(objId)
             .setDaoKey(daoKey)
             .setOperation(Operation.CREATE)

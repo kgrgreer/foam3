@@ -72,7 +72,7 @@ foam.CLASS({
           .setOperation(request.getOperation())
           .setCreatedFor(request.getCreatedFor())
           .setGroup(request.getGroup())
-          .setClassificationEnum(ApprovalRequestClassificationEnum.forLabel(request.getClassification()))
+          .setClassificationEnum(ApprovalRequestClassificationEnum.NATURE_CODE_APPROVAL)
           .setStatus(request.getStatus())
           .setNatureCode(capability.getId()).build();
 

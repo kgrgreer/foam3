@@ -60,7 +60,7 @@ foam.CLASS({
           .setRefObjId(user.getId())
           .setRefDaoKey("userDAO")
           .setCauseId(sidniResponse != null ? sidniResponse.getId() : 0L)
-          .setClassificationEnum(ApprovalRequestClassificationEnum.forLabel(getClassification()))
+          .setClassificationEnum(ApprovalRequestClassificationEnum.MANUAL_USER_SECUREFACT_SIDNI)
           .setCauseDaoKey("securefactSIDniDAO")
           .setCreatedFor(user.getId())
           .setGroup(group)

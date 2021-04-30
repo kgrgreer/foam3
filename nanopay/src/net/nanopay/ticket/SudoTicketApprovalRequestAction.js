@@ -73,7 +73,7 @@ foam.CLASS({
               return;
             }
             SudoTicket ticket = (SudoTicket) obj; //.fclone();
-            DAO approvalDAO = ApprovalRequestUtil.getAllRequests(x, ticket.getId(), getClassification());
+            DAO approvalDAO = ApprovalRequestUtil.getAllRequests(x, ticket.getId(), ApprovalRequestClassificationEnum.SUDO_TICKET_APPROVAL);
 
             ApprovalStatus status = ApprovalRequestUtil.getState(approvalDAO);
             logger.debug("ApprovalStatus", status);
@@ -84,8 +84,8 @@ foam.CLASS({
               ApprovalRequest approval = new ApprovalRequest.Builder(x)
                 .setObjId(ticket.getId())
                 .setDaoKey(getDaoKey())
-                .setClassificationEnum(ApprovalRequestClassificationEnum.forLabel(getClassification()))
-                .setDescription(owner.getLegalName()+" request access to "+as.getLegalName())
+                .setClassificationEnum(ApprovalRequestClassificationEnum.SUDO_TICKET_APPROVAL)
+                .setDescription(owner.getLegalName() + " request access to " + as.getLegalName())
                 .setCreatedFor(owner.getId())
                 .build();
               for ( Long approverId : myRule.getApprovers() ) {

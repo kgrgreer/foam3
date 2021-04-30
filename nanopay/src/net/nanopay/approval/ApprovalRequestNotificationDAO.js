@@ -82,7 +82,7 @@ foam.CLASS({
         String locale = notifyUser != null ? notifyUser.getLanguage().getCode() :
                           ((User) subject.getRealUser()).getLanguage().getCode().toString();
 
-        String classification = ts.getTranslation(locale, ret.getClassInfo().getId() + ".CLASSIFICATION", ret.getClassification());
+        String classification = ret.getClassificationEnum().getLabel();
         if ( SafetyUtil.isEmpty(classification) ) {
           classification = "reference";
         }
@@ -184,7 +184,7 @@ foam.CLASS({
         if ( fulfilled == null ) return ret;
 
         String notificationType = fulfilled.getClass().getSimpleName()+"."+fulfilled.getStatus().getLabel()+"."+fulfilled.getOperation().getLabel();
-        String classification = fulfilled.getClassification();
+        String classification = fulfilled.getClassificationEnum().getLabel();
         if ( SafetyUtil.isEmpty(classification) ) {
           classification = "reference";
         }

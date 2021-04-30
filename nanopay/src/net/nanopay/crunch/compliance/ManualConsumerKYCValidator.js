@@ -90,7 +90,7 @@ foam.CLASS({
           .setCreatedFor(user.getId())
           .setCauseId(identityMindResponse != null ? identityMindResponse.getId() : 0L)
           .setCauseDaoKey("identityMindResponseDAO")
-          .setClassificationEnum(ApprovalRequestClassificationEnum.forLabel(getClassification()))
+          .setClassificationEnum(ApprovalRequestClassificationEnum.MANUAL_USER_IDENTITYMIND)
           .build();
 
         if ( status == ComplianceValidationStatus.REJECTED ) {

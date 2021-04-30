@@ -87,7 +87,7 @@ foam.CLASS({
           .setRefDaoKey("businessDAO")
           .setCauseId(dowJonesResponse != null ? dowJonesResponse.getId() : 0L)
           .setCauseDaoKey("dowJonesResponseDAO")
-          .setClassificationEnum(ApprovalRequestClassificationEnum.forLabel(getClassification()))
+          .setClassificationEnum(ApprovalRequestClassificationEnum.MANUAL_BUSINESS_DOW_JONES)
           .setMatches(dowJonesResponse != null ? dowJonesResponse.getResponseBody().getMatches() : null)
           .setGroup(group)
           .setCreatedFor(business.getId())

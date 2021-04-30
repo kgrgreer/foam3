@@ -63,9 +63,6 @@ foam.CLASS({
 
             String group = business.getSpid() + "-fraud-ops";
 
-            //String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
-            //String classification = ts.getTranslation(locale, getClassInfo().getId() + ".CLASSIFICATION_MSG", CLASSIFICATION_MSG);
-
             Long count = (Long) ((Count) approvalRequestDAO.where(AND(
               EQ(ComplianceApprovalRequest.OBJ_ID, ucj.getId()),
               EQ(ComplianceApprovalRequest.DAO_KEY, "userCapabilityJunctionDAO"),

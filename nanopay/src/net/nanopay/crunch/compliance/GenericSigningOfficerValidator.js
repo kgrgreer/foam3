@@ -63,7 +63,7 @@ foam.CLASS({
 
             requestApproval(x,
               new ApprovalRequest.Builder(x)
-                .setClassificationEnum(ApprovalRequestClassificationEnum.forLabel(getClassification()))
+                .setClassificationEnum(ApprovalRequestClassificationEnum.GENERIC_SIGNING_OFFICER_VALIDATION)
                 .setDescription("A user wishes to be a signing officer " +
                   "Please review whether they should be given this capability ")
                 .setDaoKey("userCapabilityJunctionDAO")

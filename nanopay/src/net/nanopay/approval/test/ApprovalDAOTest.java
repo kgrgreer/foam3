@@ -76,7 +76,7 @@ extends Test {
 
     test(numberOfRequests == 5, "Expected: 5 requests were created, one for each user in the group. Actual: " + numberOfRequests);
     test(userToTest.getFirstName().equals("Pending"), "Expected: Tested user's first name is 'Pending' at the start of the test. Actual: " + userToTest.getFirstName());
-DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getId(), initialRequest.getClassification()).where(NEQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED));
+DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getId(), initialRequest.getClassificationEnum()).where(NEQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED));
     unapprovedRequestDAO.limit(2).select(new AbstractSink() {
       @Override
       public void put(Object obj, Detachable sub) {
@@ -168,7 +168,7 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getI
     rule.setPredicate(predicate2);
     RuleAction action2 = (RuleAction) (x, obj, oldObj, ruler, r2, agency) -> {
       User user = (User) obj;
-      long points = ApprovalRequestUtil.getApprovedPoints(ctx, userToTest.getId(), initialRequest.getClassification());
+      long points = ApprovalRequestUtil.getApprovedPoints(ctx, userToTest.getId(), initialRequest.getClassificationEnum());
 
       if ( points >= initialRequest.getRequiredPoints() ) {
         user.setFirstName("Approved");
