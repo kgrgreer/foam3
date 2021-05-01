@@ -243,6 +243,8 @@ foam.CLASS({
               let e = this.E();
               let totalFee = 0;
               let totalTax = 0;
+              //TODO: use fee engine as it is treviso only.
+              let irsTax = 0;
 
               let lineItems = data.lineItems.filter( lineItem => ! lineItem.requiresUserInput
                                                                 && (data.showAllLineItem || 
@@ -255,6 +257,11 @@ foam.CLASS({
               lineItems
                 .filter( lineItem => this.TaxLineItem.isInstance(lineItem) )
                 .forEach( (taxLineItem) => {
+                  //TODO: use fee engine as it is treviso only.
+                  if ( taxLineItem.name === "IRS Tax" ) {
+                    irsTax += taxLineItem.amount;
+                    console.log('aaa', irsTax);
+                  }
                   totalTax += taxLineItem.amount;
                   e.start({
                     class: 'net.nanopay.tx.LineItemCitationView',
@@ -295,7 +302,8 @@ foam.CLASS({
                 highlightInlineTitle: true
               });
 
-              let vet = this.totalAmount / data.destinationAmount;
+              //TODO: use fee engine as it is treviso only.
+              let vet = (this.totalAmount - irsTax) / data.destinationAmount;
               e.br().start(self.Cols).show(this.showVET$)
                 .add(this.VET_TITLE)
                 .start().add(this.formatRate(destinationCurrencyFormat, 100, sourceCurrencyFormat, vet*1000000)).end()
