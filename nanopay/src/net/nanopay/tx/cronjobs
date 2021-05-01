@@ -307,6 +307,7 @@ p({
   "id":"IntuitTransactionSummaryAgent",
   "description":"Creates Transaction Summary objects for all intuit summary transactions",
   "enabled":true,
+  "clusterable":false,
   "code": """
     String spid = "intuit";
     import net.nanopay.partner.intuit.tx.IntuitTransactionSummaryAgent;
