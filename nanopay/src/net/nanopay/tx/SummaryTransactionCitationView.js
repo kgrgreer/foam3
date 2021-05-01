@@ -260,7 +260,6 @@ foam.CLASS({
                   //TODO: use fee engine as it is treviso only.
                   if ( taxLineItem.name === "IRS Tax" ) {
                     irsTax += taxLineItem.amount;
-                    console.log('aaa', irsTax);
                   }
                   totalTax += taxLineItem.amount;
                   e.start({
