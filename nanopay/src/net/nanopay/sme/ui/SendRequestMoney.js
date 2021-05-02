@@ -125,7 +125,6 @@ foam.CLASS({
       margin-top: 35px;
     }
     ^ .foam-u2-LoadingSpinner{
-      width: 32px;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
@@ -220,7 +219,7 @@ foam.CLASS({
     {
       name: 'loadingSpin',
       factory: function() {
-        return this.LoadingSpinner.create();
+        return this.LoadingSpinner.create({ size: 32 });
       }
     },
     {
@@ -318,7 +317,8 @@ foam.CLASS({
     function init() {
       this.isLoading = false;
       this.loadingSpin.onDetach(() => {
-        this.loadingSpin = this.LoadingSpinner.create({ isHidden: true });
+        this.loadingSpin = undefined;
+        this.loadingSpin;
       });
       if ( this.isApproving ) {
         this.title = 'Approve payment';
@@ -649,7 +649,7 @@ foam.CLASS({
               }
             }
             this.populatePayerIdOrPayeeId().then(() => {
-              this.subStack.push({ class: 'foam.u2.LoadingSpinner' });
+              this.subStack.push({ class: 'foam.u2.LoadingSpinner', size: 32 });
               this.position = this.subStack.pos - 1;
               this.setTransactionPlanAndQuote().then(
                 () => {

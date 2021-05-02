@@ -255,9 +255,6 @@ foam.CLASS({
       this.ownersUpdate.sub(this.updateOwnersListeners);
       this.owners$.sub(this.updateOwnersListeners);
     },
-    function installInWizardlet(w) {
-      w.reloadAfterSave = false;
-    },
     {
       name: 'validate',
       javaCode: `

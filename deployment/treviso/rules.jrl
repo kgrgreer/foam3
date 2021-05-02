@@ -277,7 +277,7 @@ p({
     ]
   },
   "action":{
-    "class":"net.nanopay.country.br.CapableCreateNatureCodeApprovalsRuleAction",
+    "class":"net.nanopay.country.br.CapableCreateInvoiceApprovalsRuleAction",
     "daoToReput":"invoiceDAO",
     "groupToNotify":"treviso-fraud-ops"
   },

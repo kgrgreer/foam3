@@ -20,8 +20,8 @@ package net.nanopay.reporting;
 
 import foam.core.FObject;
 import foam.core.X;
-import foam.nanos.auth.CreatedAware;
-import foam.nanos.auth.LastModifiedAware;
+import foam.nanos.auth.*;
+import foam.util.SafetyUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,6 +33,7 @@ import java.util.Map;
 public abstract class ReportGenerator {
 
   protected Map<Object, CreatedAware> cacheMap = new HashMap<>();
+  protected String spid;
 
   protected Object getCachedElement(Object elementId, Date lastModified) {
     var cached = cacheMap.get(elementId);
@@ -55,6 +56,15 @@ public abstract class ReportGenerator {
   public FObject generateReport(X x, Object src) {
     if ( src == null ) return null;
 
+    if ( ! SafetyUtil.isEmpty(spid) ) {
+      if ( src instanceof ServiceProviderAware ) {
+        if ( ! ((ServiceProviderAware) src).getSpid().equals(spid) )
+          return null;
+      } else {
+        throw new RuntimeException("SPID Aware ReportGenerator attempted to generate from non-SPID aware source model");
+      }
+    }
+
     // We can cache if the source model is LastModifiedAware
     if ( src instanceof LastModifiedAware ) {
       var id = getSourceId((FObject) src);
@@ -75,6 +85,14 @@ public abstract class ReportGenerator {
     } else {
       return generate(x, (FObject) src, null);
     }
+  }
+
+  public ReportGenerator(String spid) {
+    this.spid = spid;
+  }
+
+  public ReportGenerator() {
+    this.spid = "";
   }
 
 }

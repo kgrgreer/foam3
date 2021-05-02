@@ -121,6 +121,7 @@ p({
         bankAccount.setAccountNumber(rbcReserveAccountNumber);
         bankAccount.setBranchId(rbcReserveBranchId);
         bankAccount.setInstitutionNumber(rbcReserveInstitutionNumber);
+        bankAccount.setSpid("nanopay");
         // QUESTION: should we be setting the bank address?
         if ( !dryRun ) {
             Subject subject = new Subject.Builder(x).setUser(new User.Builder(x).setId(1).setSpid("nanopay").build()).build();

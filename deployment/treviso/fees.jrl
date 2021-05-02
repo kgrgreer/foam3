@@ -2113,7 +2113,7 @@ p({
   id: "221b7ca6-a4c4-4655-b9bf-3fbfe39e32dd",
   name: "IRS Tax",
   feeClass: "net.nanopay.tx.TaxLineItem",
-  rateName: "Effective IRS Rate",
+  rateName: "IRS Rate",
   feeAccount: "707911f9-5129-4916-a27a-6a6c469668ce",
   formula: {
     class: "foam.mlang.expr.Multiply",
@@ -2161,7 +2161,7 @@ p({
   name: "FTT Tax",
   feeClass: "net.nanopay.tx.TaxLineItem",
   feeAccount: "707911f9-5129-4916-a27a-6a6c469668ce",
-  rateName: "Effective FTT Rate",
+  rateName: "FTT Rate",
   formula: {
     class: "foam.mlang.expr.Multiply",
     args: [

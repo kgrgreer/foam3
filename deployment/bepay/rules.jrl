@@ -40,14 +40,15 @@ p({
 })
 
 p({
-  "class":"net.nanopay.partner.bepay.tx.planner.BePayTransactionPlanner",
+  "class":"net.nanopay.country.br.tx.PartnerTransactionPlanner",
   "id":"2fdd7d35-6704-47dc-9f0e-9419e0aa74ed",
-  "name":"BePayTransactionPlanner",
+  "name":"PartnerTransactionPlanner",
   "documentation":"Planner for transaction from BRL to USD/EUR/GBP (leg 1)",
   "termsAndConditions":"https://afex.com/unitedstates/global_terms_and_conditions.php",
   "priority":80,
   "ruleGroup":"BePayPlanner",
   "enabled":true,
+  "paymentProvider":"BePay",
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -309,7 +310,7 @@ p({
     "daoKey":"localTransactionDAO",
     "operation":1,
     "asyncAction":{
-      "class":"net.nanopay.partner.bepay.tx.ScreenUsersOnTransactionCreate"
+      "class":"net.nanopay.country.br.tx.ScreenUsersOnTransactionCreate"
     },
     "predicate": {
       "class": "foam.mlang.predicate.And",
