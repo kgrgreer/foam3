@@ -16,7 +16,8 @@ p({
   permissionsGranted: [
     "rule.read.d34ff33f-7d1e-43e9-beba-8069cf5f6546",
     "rule.read.3556a7fa-e0b1-4c7a-b625-6eb901e73a87",
-    "rule.read.deb8f125-b74a-4178-8ffe-45fc45df407b"
+    "rule.read.deb8f125-b74a-4178-8ffe-45fc45df407b",
+    "rule.read.51897c99-30bc-4148-950e-a54860c2b487"
   ]
 })
 
