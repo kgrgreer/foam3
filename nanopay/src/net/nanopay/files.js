@@ -1979,7 +1979,10 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/br/businessSector/Secao' },
 
   //SWIFT
-  { name: 'net/nanopay/swift/AbstractMT' },
-  { name: 'net/nanopay/swift/Properties' },
   { name: 'net/nanopay/swift/SCHEMA' },
+  { name: 'net/nanopay/swift/Properties' },
+  
+  { name: 'net/nanopay/swift/AbstractMT' },
+  { name: 'net/nanopay/swift/MT103' },
+  { name: 'net/nanopay/swift/MT205' }
 ]);

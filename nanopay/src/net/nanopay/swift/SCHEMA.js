@@ -17,6 +17,7 @@
 
 foam.LIB({
   name: 'net.nanopay.swift',
+
   methods: [
     function SCHEMA(schema) {
       var properties = [];
@@ -25,7 +26,7 @@ foam.LIB({
         // for each schema.properties convert to a FOAM property
         var prop = net.nanopay.swift.swiftToFOAMProperty(p);
         if ( prop )
-          properties.push(prop);
+          properties.push(prop.create());
       });
 
       var model = {
@@ -39,6 +40,24 @@ foam.LIB({
    },
    function swiftToFOAMProperty(p) {  
     return foam.lookup('net.nanopay.swift.fields.FieldTag' + p[1]);
-   }
+   },
+   function MT_TO_SWIFT_SCHEMA(mt) {
+    var fieldTagLength = 8;
+    var mtLength = 2;
+    var mandatoryFieldLabel = 'M';
+    var optionalFieldLabel = 'O';
+
+    var id = mt.name.length > mtLength ? mt.name.slice(mtLength) : '';
+    var clsProperties = mt.getAxiomsByClass(foam.core.Property);
+    var shemaProperties = [];
+
+    for ( var i = 0 ; i < clsProperties.length ; i++ ) {
+      var prop = clsProperties[i];
+      if ( prop.cls_.name.length > fieldTagLength )
+        shemaProperties.push([i + 1, prop.cls_.name.slice(fieldTagLength), prop.required ? mandatoryFieldLabel : optionalFieldLabel, prop.name, prop.label]);
+    }
+
+    return {id: id, properties: shemaProperties};
+  }
 ]
 });
