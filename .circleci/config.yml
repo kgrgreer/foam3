@@ -52,10 +52,10 @@ jobs:
       - run: sudo npm install -g newman
 
       - run:
-        command: /
-          sudo rm -rf /opt/nanopay
-          sudo mkdir -p /opt/nanopay
-          sudo chmod 777 /opt/nanopay
+          command: /
+            sudo rm -rf /opt/nanopay
+            sudo mkdir -p /opt/nanopay
+            sudo chmod 777 /opt/nanopay
 
       - run:
           name: Run Postman tests for Bepay
