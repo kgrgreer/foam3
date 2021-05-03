@@ -70,14 +70,6 @@ foam.CLASS({
       order: 40,
       updateVisibility: 'RO'
     }),
-    //TODO delete
-    net.nanopay.account.Account.OWNER.clone().copyFrom({
-      gridColumns:6,
-      section: 'userInformation',
-      order: 40,
-      updateVisibility: 'RO',
-      hidden: true
-    }),
     foam.nanos.auth.User.GROUP.clone().copyFrom({
       gridColumns:6,
       section: 'userInformation',
@@ -97,20 +89,6 @@ foam.CLASS({
       order: 40,
       updateVisibility: 'RO',
       hidden: true
-    }),
-    //TODO delete
-    net.nanopay.contacts.Contact.PASSWORD_HISTORY.clone().copyFrom({
-      gridColumns:6,
-      section: 'userInformation',
-      order: 40,
-      updateVisibility: 'RO'
-    }),
-    //TODO delete
-    net.nanopay.contacts.Contact.PASSWORD.clone().copyFrom({
-      gridColumns:6,
-      section: 'userInformation',
-      order: 40,
-      updateVisibility: 'RO'
     }),
     net.nanopay.contacts.Contact.BUSINESS_ADDRESS.clone().copyFrom({
       gridColumns:12,
