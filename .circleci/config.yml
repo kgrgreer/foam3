@@ -13,10 +13,10 @@ jobs:
     steps:
       - checkout
       - run: mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
-      - run: echo "127.0.0.1  ablii" | sudo tee /etc/hosts
-      - run: echo "127.0.0.1  liquid" | sudo tee /etc/hosts
-      - run: echo "127.0.0.1  intuit" | sudo tee /etc/hosts
-      - run: echo "127.0.0.1  bpp" | sudo tee /etc/hosts
+      - run: echo "127.0.0.1  ablii" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1  liquid" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1  intuit" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1  bpp" | sudo tee -a /etc/hosts
       - run: echo `node --version`
       - run: git submodule sync
       - run: git submodule update --init
@@ -49,7 +49,13 @@ jobs:
 
 
       # postman tests
-      - run: npm install -g newman
+      - run: sudo npm install -g newman
+
+      - run:
+          command: |
+            sudo rm -rf /opt/nanopay
+            sudo mkdir -p /opt/nanopay
+            sudo chmod 777 /opt/nanopay
 
       - run:
           name: Run Postman tests for Bepay
@@ -68,7 +74,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-          key: gradle-repo-v1-{{ .Branch }}-{{ checksum "build.gradle" }}
+          key: gradle-repo-v2-{{ .Branch }}-{{ checksum "build.gradle" }}
 workflows:
   version: 2
   build_and_test:
