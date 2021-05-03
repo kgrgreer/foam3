@@ -4,7 +4,7 @@ p({
   name: "Intuit Transaction Fee",
   percentage: 0.6,
   chargedTo: 1,
-  feeClass: "net.nanopay.tx.IndependantTransactionFeeLineItem",
+  feeClass: "net.nanopay.tx.IndependentTransactionFeeLineItem",
   feeAccount:"93f3fa36-7429-4b20-a223-f5b50a6d9872",
   predicate: {
     class: "foam.mlang.predicate.Eq",
