@@ -228,49 +228,6 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"afex-crunch-user-onboarding-rule",
-  "name":"Onboard User to AFEX",
-  "documentation":"Rule to onboard user to AFEX after required afex onboarding capabilities are submitted.",
-  "priority":1,
-  "ruleGroup":"AFEXCrunchOnboarding",
-  "daoKey":"userCapabilityJunctionDAO",
-  "operation":3,
-  "after":true,
-  "predicate":{
-    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-    "status":1,
-    "statusChanged":true,
-    "category":"AFEXUserOnboarding"
-  },
-  "action":{"class":"net.nanopay.partner.afex.crunch.AFEXUserOnboardingRule"},
-  "enabled":true,
-  "saveHistory":true,
-  "lifecycleState":1
-})
-
-p({
-  "class":"foam.nanos.ruler.Rule",
-  "id":"bepay-user-compliance-passed-rule",
-  "name":"Set User Compliance",
-  "documentation":"Rule to set user compliance to passed after required onboarding capabilities are submitted.",
-  "priority":1,
-  "ruleGroup":"onboarding",
-  "daoKey":"userCapabilityJunctionDAO",
-  "operation":3,
-  "after":true,
-  "predicate":{
-    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-    "status":1,
-    "statusChanged":true,
-    "category":"AFEXUserOnboarding"
-  },
-  "action":{"class":"net.nanopay.crunch.compliance.SetComplianceOnUser"},
-  "enabled":true,
-  "saveHistory":true,
-  "lifecycleState":1
-})
-p({
-  "class":"foam.nanos.ruler.Rule",
   "id":"16cebf5b-30b5-4a67-9fbe-d69c93c736e5",
   "name":"Update transaction status based on approval",
   "daoKey":"approvalRequestDAO",
