@@ -33,12 +33,11 @@ foam.CLASS({
     'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
-    'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.TransactionApprovalRequest'
   ],
 
   messages: [
-    { name: 'COMPLIANCE_TRANSACTION', message: 'Compliance Transaction' },
     { name: 'SUMMARY_TRANSACTION', message: '  Summary Transaction Id: ' }
   ],
 
@@ -58,17 +57,17 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
         TranslationService ts = (TranslationService) x.get("translationService");
-        String complianceTx = ts.getTranslation(locale, getClassInfo().getId() + ".COMPLIANCE_TRANSACTION", COMPLIANCE_TRANSACTION);
         String summaryTx = ts.getTranslation(locale, getClassInfo().getId() + ".SUMMARY_TRANSACTION", SUMMARY_TRANSACTION);
 
-        ComplianceApprovalRequest req = new ComplianceApprovalRequest.Builder(x)
+        TransactionApprovalRequest req = new TransactionApprovalRequest.Builder(x)
           .setDaoKey("transactionDAO")
           .setServerDaoKey("localTransactionDAO")
           .setObjId(ct.getId())
           .setGroup(group)
           .setCreatedFor(owner.getId())
           .setDescription(headTx.getSummary() + summaryTx + headTx.getId())
-          .setClassificationEnum(ApprovalRequestClassificationEnum.COMPLIANCE_TRANSACTION)
+          .setClassificationEnum(ApprovalRequestClassificationEnum.TRANSACTION_REQUEST)
+          .setPaymentId(headTx.getId())
           .build();
 
         agency.submit(x, new ContextAgent() {

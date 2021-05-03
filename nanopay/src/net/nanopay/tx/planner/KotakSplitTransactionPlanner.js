@@ -105,7 +105,7 @@ foam.CLASS({
       Unit denomination = sourceAccount.findDenomination(x);
       Double currencyPrecision = Math.pow(10, denomination.getPrecision());
       Double amount =  Math.ceil(requestTxn.getDestinationAmount()/currencyPrecision/fxQuote.getRate()*currencyPrecision);
-      requestTxn.setAmount(amount.longValue());
+      requestTxn.setAmount(Math.round(amount));
 
       FXSummaryTransaction txn = new FXSummaryTransaction.Builder(x).build();
       txn.copyFrom(requestTxn);

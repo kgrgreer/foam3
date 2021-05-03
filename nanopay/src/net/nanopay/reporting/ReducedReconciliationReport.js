@@ -68,6 +68,8 @@ foam.CLASS({
         obj.currencyDAO.find(obj.debitCurrency).then(function(c) {
           if ( c ) {
             this.add(c.format(value));
+          } else {
+            this.add(value);
           }
         }.bind(this));
       }
@@ -95,6 +97,8 @@ foam.CLASS({
         obj.currencyDAO.find(obj.creditCurrency).then(function(c) {
           if ( c ) {
             this.add(c.format(value));
+          } else {
+            this.add(value);
           }
         }.bind(this));
       }
@@ -115,6 +119,52 @@ foam.CLASS({
       name: 'paymentStatus',
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
+    },
+    {
+      name: 'feeRevenueCurrency',
+      class: 'String'
+    },
+    {
+      name: 'nanopayRevenue',
+      class: 'UnitValue',
+      unitPropName: 'feeRevenueCurrency',
+      view: { class: 'net.nanopay.liquidity.ui.LiquidCurrencyView' },
+      unitPropValueToString: async function(x, val, unitPropName) {
+        var unitProp = await x.currencyDAO.find(unitPropName);
+        if ( unitProp )
+          return unitProp.format(val);
+        return val;
+      },
+      tableCellFormatter: function(value, obj) {
+        obj.currencyDAO.find(obj.feeRevenueCurrency).then(function(c) {
+          if ( c ) {
+            this.add(c.format(value));
+          } else {
+            this.add(value);
+          }
+        }.bind(this));
+      }
+    },
+    {
+      name: 'vendorRevenue',
+      class: 'UnitValue',
+      unitPropName: 'feeRevenueCurrency',
+      view: { class: 'net.nanopay.liquidity.ui.LiquidCurrencyView' },
+      unitPropValueToString: async function(x, val, unitPropName) {
+        var unitProp = await x.currencyDAO.find(unitPropName);
+        if ( unitProp )
+          return unitProp.format(val);
+        return val;
+      },
+      tableCellFormatter: function(value, obj) {
+        obj.currencyDAO.find(obj.feeRevenueCurrency).then(function(c) {
+          if ( c ) {
+            this.add(c.format(value));
+          } else {
+            this.add(value);
+          }
+        }.bind(this));
+      }
     }
   ]
 })

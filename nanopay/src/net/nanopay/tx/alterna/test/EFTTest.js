@@ -481,7 +481,7 @@ logger.info("num transfers: ", transfers.length);
 for (int i = 0; i < transfers.length; i++) {
   logger.info("transfer[", i, "]", transfers[i]);
 }
-test( trustBalanceAfter.longValue() != trustBalanceBefore.longValue(), "Trust Balance has changed");
+test( Math.round(trustBalanceAfter) != Math.round(trustBalanceBefore), "Trust Balance has changed");
 logger.info("trustBalanceBefore - trustBalanceAfter", trustBalanceBefore - trustBalanceAfter);
 test( trustBalanceBefore - trustBalanceAfter == txn.getAmount(), "Trust balance validated");
     `
