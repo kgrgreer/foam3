@@ -70,7 +70,7 @@
           type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      type: 'net.nanopay.tx.CreditLineItem[]',
+      type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
       if ( ! (t.getClassInfo() == this.getOfTxn()) ) {
         return null;
@@ -94,7 +94,8 @@
           array.add(feeRefund);
         }
       }
-      return array.toArray(new CreditLineItem[array.size()]);
+      t.addLineItems(array.toArray(new CreditLineItem[array.size()]));
+      return t;
       `,
       documentation: 'Create a credit line items based on the lineItems'
     },

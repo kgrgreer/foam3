@@ -91,7 +91,7 @@ foam.CLASS({
           type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      type: 'net.nanopay.tx.CreditLineItem[]',
+      type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
         ArrayList<CreditLineItem> credits = new ArrayList<CreditLineItem>();
         if ( ! getInvoiced() ) {
@@ -115,7 +115,8 @@ foam.CLASS({
         invoiceCredit.setSourceAccount(getCreditAccount());
         invoiceCredit.setDestinationAccount(t.getDestinationAccount());
         credits.add(invoiceCredit);
-        return (CreditLineItem[]) credits.toArray(new CreditLineItem[credits.size()] );
+        t.addLineItems((CreditLineItem[]) credits.toArray(new CreditLineItem[credits.size()] ));
+        return t;
       `,
       documentation: 'Create a credit line item array based on the transaction as a whole'
     },

@@ -93,7 +93,7 @@ foam.CLASS({
           type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      type: 'net.nanopay.tx.CreditLineItem[]',
+      type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
       ArrayList<CreditLineItem> credits = new ArrayList<CreditLineItem>();
       for (TransactionLineItem tli : t.getLineItems()) {
@@ -125,7 +125,8 @@ foam.CLASS({
           }
         }
       }
-      return (CreditLineItem[]) credits.toArray(new CreditLineItem[credits.size()] );
+      t.addLineItems((CreditLineItem[]) credits.toArray(new CreditLineItem[credits.size()] ));
+      return t;
       `,
       documentation: 'Create a credit line item for each matching fee on the transaction'
     },
