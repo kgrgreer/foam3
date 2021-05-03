@@ -41,7 +41,7 @@
     'foam.nanos.logger.Logger',
     'net.nanopay.ticket.RefundStatus',
     'net.nanopay.ticket.RefundTicket',
-    'net.nanopay.tx.creditengine.AllFeeWaiver',
+    'net.nanopay.tx.creditengine.CancelIndependentFees',
     'net.nanopay.tx.creditengine.FeeRefund',
     'net.nanopay.tx.DigitalTransaction',
     'net.nanopay.tx.FeeLineItem',
@@ -81,13 +81,13 @@
             }
 
             if ( request.getWaiveCharges() ) {
-              AllFeeWaiver feeWaiver = new AllFeeWaiver();
+              CancelIndependentFees feeWaiver = new CancelIndependentFees();
               feeWaiver.setDiscountPercent(1);
-              feeWaiver.setName("Fee waiver");
+              feeWaiver.setName("Fee not applicable");
               feeWaiver.setSpid(reverse.getSpid());
               feeWaiver.setOwner(request.getOwner());
               feeWaiver.setInitialQuantity(1);
-              feeWaiver = (AllFeeWaiver) creditCodeDAO.put(feeWaiver);
+              feeWaiver = (CancelIndependentFees) creditCodeDAO.put(feeWaiver);
               array.add(feeWaiver.getId());
             }
 

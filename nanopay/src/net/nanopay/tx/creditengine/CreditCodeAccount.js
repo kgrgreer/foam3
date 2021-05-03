@@ -241,7 +241,7 @@ foam.CLASS({
           type: 'net.nanopay.tx.model.Transaction'
         }
       ],
-      type: 'net.nanopay.tx.CreditLineItem[]',
+      type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
         /* can be overwritten by extending class */
         return null;

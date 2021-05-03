@@ -17,10 +17,10 @@
 
  foam.CLASS({
   package: 'net.nanopay.tx.creditengine',
-  name: 'AllFeeWaiver',
+  name: 'CancelIndependentFees',
   extends: 'net.nanopay.tx.creditengine.FeeWaiver',
 
-  documentation: `give a credit for each fee id on the transaction at the discount percentage specified `,
+  documentation: `Removes all independent fee line items `,
 
   javaImports: [
      'foam.core.X',
@@ -30,7 +30,8 @@
      'net.nanopay.tx.InvoicedFeeLineItem',
      'net.nanopay.tx.model.Transaction',
      'net.nanopay.tx.TransactionLineItem',
-     'java.util.ArrayList'
+     'java.util.ArrayList',
+     'net.nanopay.tx.IndependentTransactionFeeLineItem'
   ],
 
   methods: [
@@ -48,28 +49,16 @@
       ],
       type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
-      ArrayList<CreditLineItem> array = new ArrayList<CreditLineItem>();
+      ArrayList<TransactionLineItem> array = new ArrayList<TransactionLineItem>();
       for ( TransactionLineItem lineItem : t.getLineItems() ) {
-        if (lineItem instanceof InvoicedFeeLineItem) {
-          InvoicedCreditLineItem invoicedFeeRefund = new InvoicedCreditLineItem();
-          invoicedFeeRefund.setSourceAccount(lineItem.getDestinationAccount());
-          invoicedFeeRefund.setDestinationAccount(lineItem.getSourceAccount());
-          invoicedFeeRefund.setCreditCurrency(lineItem.getCurrency());
-          invoicedFeeRefund.setAmount(lineItem.getAmount());
-          array.add(invoicedFeeRefund);
-        } else if (lineItem instanceof FeeLineItem) {
-          CreditLineItem feeRefund = new CreditLineItem();
-          feeRefund.setCreditCurrency(lineItem.getCurrency());
-          feeRefund.setSourceAccount(lineItem.getDestinationAccount());
-          feeRefund.setDestinationAccount(lineItem.getSourceAccount());
-          feeRefund.setAmount(lineItem.getAmount());
-          array.add(feeRefund);
+        if ( ! (lineItem instanceof IndependantTransactionFeeLineItem) ) {
+          array.add(lineItem);
         }
       }
-      t.addLineItems(array.toArray(new CreditLineItem[array.size()]));
+      t.setLineItems(array.toArray(new TransactionLineItem[array.size()]));
       return t;
       `,
-      documentation: 'Create a credit line item based on the transaction as a whole'
+      documentation: 'Remove independentTransactionFee line items from transaction'
     }
   ]
 });

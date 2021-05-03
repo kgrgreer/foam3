@@ -67,6 +67,21 @@ foam.CLASS({
             ArrayList<CreditLineItem> credits = new ArrayList<CreditLineItem>();
             HashSet<String> codeHash = new HashSet<String>(txn.getCreditCodes().length);
 
+          // this implementation applies codes sequentially.  TODO review for completeness.
+            for ( String code : txn.getCreditCodes()) {
+              CreditCodeAccount creditCode = (CreditCodeAccount) creditCodeDAO.find(code);
+              if ( creditCode != null ) {
+                Transaction newTxn = creditCode.createLineItems(x,txn);
+                if ( ! SafetyUtil.equals(txn, newTxn) ) {
+                  if ( codeHash.add(code) ) {
+                    txn = newTxn;
+                  }
+                }
+              }
+            }
+
+ /*  keep as alternate implementation if we decide to switch. applies all codes at once.
+
             for ( String code : txn.getCreditCodes()) {
               CreditCodeAccount creditCode = (CreditCodeAccount) creditCodeDAO.find(code);
               if ( creditCode != null ) {
@@ -80,9 +95,9 @@ foam.CLASS({
                 }
               }
             }
-
-            txn.setCreditCodes((String []) codeHash.toArray(new String[codeHash.size()] ));
             txn.addLineItems((CreditLineItem[]) credits.toArray(new CreditLineItem[credits.size()] ));
+*/
+            txn.setCreditCodes((String []) codeHash.toArray(new String[codeHash.size()] ));
             return txn;
           } else {
             return txn;
