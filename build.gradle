@@ -392,12 +392,6 @@ clean {
     }
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
-    }
-}
-
 compileJava {
     dependsOn tasks.genJava
     dependsOn tasks.copyLib
@@ -405,6 +399,7 @@ compileJava {
 
     options.incremental = true
     options.compilerArgs += ["-parameters"]
+    options.release = 11
 }
 
 task buildJar(type: Jar) {
