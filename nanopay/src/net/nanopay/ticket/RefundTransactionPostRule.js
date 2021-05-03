@@ -80,16 +80,14 @@
               array.add(feeRefund.getId());
             }
 
-            if ( request.getWaiveCharges() ) {
-              CancelIndependentFees feeWaiver = new CancelIndependentFees();
-              feeWaiver.setDiscountPercent(1);
-              feeWaiver.setName("Fee not applicable");
-              feeWaiver.setSpid(reverse.getSpid());
-              feeWaiver.setOwner(request.getOwner());
-              feeWaiver.setInitialQuantity(1);
-              feeWaiver = (CancelIndependentFees) creditCodeDAO.put(feeWaiver);
-              array.add(feeWaiver.getId());
-            }
+            CancelIndependentFees feeWaiver = new CancelIndependentFees();
+            feeWaiver.setDiscountPercent(1);
+            feeWaiver.setName("Fee not applicable");
+            feeWaiver.setSpid(reverse.getSpid());
+            feeWaiver.setOwner(request.getOwner());
+            feeWaiver.setInitialQuantity(1);
+            feeWaiver = (CancelIndependentFees) creditCodeDAO.put(feeWaiver);
+            array.add(feeWaiver.getId());
 
             if ( array.size() > 0 ) {
               reverse.setCreditCodes(array.toArray(new String[array.size()]));

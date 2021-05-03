@@ -52,11 +52,7 @@ foam.CLASS({
       name: 'infoSection',
       title: 'Ticket',
       order: 10
-    },
-    {
-      name: '_defaultSection',
-      order: 50
-    },
+    }
   ],
 
   properties: [

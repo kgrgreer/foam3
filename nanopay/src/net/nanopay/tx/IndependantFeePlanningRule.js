@@ -68,6 +68,11 @@
                 }
               }
             }
+
+            if ( sourceDigital == null ) {
+              return;
+            }
+
             feeTxn.setLineItems(lineItems.toArray(new IndependentTransactionFeeLineItem[lineItems.size()]));
 
             TransactionQuote quote = new TransactionQuote();
