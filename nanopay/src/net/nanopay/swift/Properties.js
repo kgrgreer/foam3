@@ -395,7 +395,7 @@ foam.CLASS({
   properties: [
     {
       name: 'name',
-      value: 'orderingInst'
+      value: 'senderCorrespondent'
     },
     {
       name: 'label',
@@ -701,7 +701,7 @@ foam.CLASS({
   properties: [
     {
       name: 'name',
-      value: 'senderToRecieverInfo'
+      value: 'regReporting'
     },
     {
       name: 'label',
