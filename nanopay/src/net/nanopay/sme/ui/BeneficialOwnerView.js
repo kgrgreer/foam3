@@ -61,7 +61,7 @@ foam.CLASS({
     function initE() {
       // TODO: Allow users to edit the beneficial owners.
       this.subject.user.beneficialOwners.select().then(owners => {
-        if (owners.length == 0) return
+        if (owners.array.length == 0) return
         this.addClass(this.myClass()).addClass('card')
           .start().addClass('sub-heading').add(this.TITLE).end()
         .forEach(owners.array, owner => {
