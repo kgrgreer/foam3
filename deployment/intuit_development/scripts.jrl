@@ -299,7 +299,7 @@ p({
     }
 
     // 4. Report
-    cronId = "INTUIT_RBC_EFT_VERIFY_RECEIPT";
+    cronId = "INTUIT_RBC_EFT_PROCESSING";
     cron = (foam.nanos.cron.Cron) cronDAO.find(cronId);
     if ( cron == null ) {
         cron = new foam.nanos.cron.Cron.Builder(x)
