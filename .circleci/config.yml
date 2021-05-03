@@ -20,9 +20,9 @@ jobs:
       - run: echo `node --version`
       - run: git submodule sync
       - run: git submodule update --init
-      - run: ls -la
       - run: whoami
       - run: mkdir node_modules
+      - run: ls -la
 
       # Download and cache dependencies
       - restore_cache:
