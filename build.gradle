@@ -280,14 +280,14 @@ task packageFoam(type: NodeTask) {
 }
 
 task foamNodeModulesCopy(type: Copy) {
-    duplicatesStrategy = DuplicatesStrategy.WARN
+    duplicatesStrategy = DuplicatesStrategy.FAIL
     from "$rootDir/foam3/node_modules/ace-builds/src-min-noconflict", "$rootDir/nanopay/src/net/nanopay/merchant/libs", "$rootDir/nanopay/src/net/nanopay/merchant/libs/qrcode"
     into "${project.targetDir}/classes/webroot"
     include "*.js"
 }
 
 task nanopayNodeModulesCopy(type: Copy) {
-    duplicatesStrategy = DuplicatesStrategy.WARN
+    duplicatesStrategy = DuplicatesStrategy.FAIL
     from "$rootDir/node_modules/html2canvas/dist/html2canvas.min.js", "node_modules/jspdf/dist/jspdf.min.js", "node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.min.js"
     into "${project.targetDir}/classes/webroot"
 }
@@ -298,13 +298,13 @@ task foamCopy(type: Copy) {
     dependsOn tasks.foamNodeModulesCopy
     dependsOn tasks.nanopayNodeModulesCopy
 
-    duplicatesStrategy = DuplicatesStrategy.WARN
+    duplicatesStrategy = DuplicatesStrategy.FAIL
     from "tools/js_build/foam-bin-${project.version}.js"
     into "${project.targetDir}/classes/webroot"
 }
 
 task copyLib(type: Copy) {
-    duplicatesStrategy = DuplicatesStrategy.WARN
+    duplicatesStrategy = DuplicatesStrategy.FAIL
     from configurations.runtimeClasspath
     into "${project.targetDir}/lib"
 }
