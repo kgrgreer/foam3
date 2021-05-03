@@ -218,7 +218,7 @@ public class BillingInvoicesCron implements ContextAgent {
               .setGroup("Discount")
               .setDescription(String.format("%s → $%.2f %s",
                 formatTransaction(x, transaction),
-                amount / currency.getPrecision(),
+                (float)(amount / currency.getPrecision()),
                 lineItem.getCurrency()))
               .setAmount(amount)
               .setCurrency(lineItem.getCurrency())
@@ -227,13 +227,13 @@ public class BillingInvoicesCron implements ContextAgent {
             invoice.setAmount(invoice.getAmount() - amount);
           } else if ( lineItem instanceof InvoicedFeeLineItem ) {
             long amount = check90DaysPromotion(payer, isAscendantFXUser, transaction) ? 0L : lineItem.getAmount();
-            Currency currency = ((InvoicedFeeLineItem) lineItem).findFeeCurrency(x);
+            Currency currency = ((InvoicedFeeLineItem) lineItem).findCurrency(x);
             InvoiceLineItem invoiceLineItem = new InvoiceLineItem.Builder(x)
               .setTransaction(transaction.getId())
               .setGroup(isDomestic(transaction) ? "Domestic Payment Fee" : "International Payment Fee")
               .setDescription(String.format("%s → $%.2f %s",
                 formatTransaction(x, transaction),
-                amount / currency.getPrecision(),
+                (float)(amount / currency.getPrecision()),
                 lineItem.getCurrency()))
               .setAmount(amount)
               .setCurrency(lineItem.getCurrency())
