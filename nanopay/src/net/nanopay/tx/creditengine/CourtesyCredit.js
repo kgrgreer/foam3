@@ -104,7 +104,8 @@ foam.CLASS({
           credit.setSourceAccount(getCreditAccount());
           credit.setDestinationAccount(t.getDestinationAccount());
           credits.add(credit);
-          return (CreditLineItem[]) credits.toArray(new CreditLineItem[credits.size()] );
+          t.addLineItems((CreditLineItem[]) credits.toArray(new CreditLineItem[credits.size()] ));
+          return t;
         }
         InvoicedCreditLineItem invoiceCredit = new InvoicedCreditLineItem();
         invoiceCredit.setAmount(getAmount());

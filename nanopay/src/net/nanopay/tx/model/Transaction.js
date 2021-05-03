@@ -1519,8 +1519,10 @@ foam.CLASS({
       },
       code: async function(X) {
         // check if ticket exists already
-        var refundTicket = await this.refundTicketDAO.where(
+        var refundTicket = await this.refundTicketDAO.where(this.AND(
           this.EQ(net.nanopay.ticket.RefundTicket.PROBLEM_TRANSACTION, this.id),
+          this.EQ(net.nanopay.ticket.RefundTicket.STATUS, "OPEN")
+        )
         ).select();
 
         if ( refundTicket.array.length == 0 ) {

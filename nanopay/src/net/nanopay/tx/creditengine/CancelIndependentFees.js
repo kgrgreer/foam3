@@ -51,7 +51,7 @@
       javaCode: `
       ArrayList<TransactionLineItem> array = new ArrayList<TransactionLineItem>();
       for ( TransactionLineItem lineItem : t.getLineItems() ) {
-        if ( ! (lineItem instanceof IndependantTransactionFeeLineItem) ) {
+        if ( ! (lineItem instanceof IndependentTransactionFeeLineItem) ) {
           array.add(lineItem);
         }
       }
