@@ -76,7 +76,8 @@ foam.CLASS({
     { name: 'PLACEHOLDER', message: 'Select a country' },
     { name: 'PLEASE_SELECT', message: 'Please select...' },
     { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History for' },
-    { name: 'OTHER_KEY', message: 'Other' }
+    { name: 'OTHER_KEY', message: 'Other' },
+    { name: 'INVALID_ADDRESS_ERROR', message: 'Invalid address' }
   ],
 
   properties: [
@@ -288,7 +289,17 @@ foam.CLASS({
           showValidation: X.data.showValidation
         }, x);
       },
-      autoValidate: true
+      validationPredicates: [
+        {
+          args: ['address', 'address$errors_'],
+          predicateFactory: function(e) {
+            return e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.model.BeneficialOwner.ADDRESS
+              }), true);
+          },
+          errorMessage: 'INVALID_ADDRESS_ERROR'
+        }
+      ]
     },
     {
       class: 'Reference',
