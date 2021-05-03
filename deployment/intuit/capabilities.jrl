@@ -112,7 +112,8 @@ p({
   ]
 })
 
-P({
+p({
+  class: "foam.nanos.crunch.Capability",
   id: "intuit-onboarding-rules",
   name: "Enable Intuit Onboarding Rules",
   version: "0",

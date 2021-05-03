@@ -69,7 +69,8 @@ p({
   priority: 10
 })
 
-P({
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
   targetId: "intuit-onboarding-rules",
   priority: 11
 })
