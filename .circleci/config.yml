@@ -74,7 +74,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-          key: gradle-repo-v1-{{ .Branch }}-{{ checksum "build.gradle" }}
+          key: gradle-repo-v2-{{ .Branch }}-{{ checksum "build.gradle" }}
 workflows:
   version: 2
   build_and_test:
