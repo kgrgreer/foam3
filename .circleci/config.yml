@@ -49,7 +49,7 @@ jobs:
 
 
       # postman tests
-      - run: npm install -g newman
+      - run: sudo npm install -g newman
 
       - run:
           name: Run Postman tests for Bepay
