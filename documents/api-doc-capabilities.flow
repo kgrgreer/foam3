@@ -1,6 +1,6 @@
 <title>API Capabilities</title>
 
-<h1>Capabilities</h1>
+<h2>Capabilities</h2>
 <p>
     Functionality within the system is controlled by granting capabilities. Capabilities are individual bits of functionality
     combined with the requirements to gain that functionality within the product. Several aspects of capabilities are described here.
@@ -12,7 +12,7 @@
     </ul>
 </p>
 
-<h2>Top Level Capabilities</h2>
+<h4>Top Level Capabilities</h4>
 <p>
   There are many levels of capabilities in the system. For the purposes of gaining access to a complete functionality unit,
   instead of understanding the full hierarchy of the capabilities and how they are related, all that is necessary is to use
@@ -63,7 +63,7 @@
   </table>
 </p>
 
-<h2>Capability Payloads</h2>
+<h4>Capability Payloads</h4>
 <p>
     All functionality is enabled by requesting capabilities. The mechanism provided to request capabilities
     through the API is by sending CapabilityPayload objects to the capabilityPayloadDAO in DIG. A request sent to the capabilityPayloadDAO 
@@ -72,10 +72,10 @@
     by providing the ID of the top level capability, and a map of payloads for all of the necessary sub-capabilities keyed by the name of 
     those capabilities. The following table describes the structure of the CapabilityPayload object.
 </p>
-<h4><a name="capability-payload">CapabilityPayload</a></h4>
+<h5><a name="capability-payload">CapabilityPayload</a></h5>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="foam.nanos.crunch.connection.CapabilityPayload" />
 
-<h2>Checking for a Capability</h2>
+<h4>Checking for a Capability</h4>
 <p>
   In order to determine whether a given user or business has a top level capability, it is necessary to query the capabilityPayloadDAO
   with the ID of the capability. Performing this request will return a map of all the missing sub-capabilities within the payload map keyed
@@ -109,7 +109,7 @@
 }</code>
 </p>
 
-<h2>Requesting a Capability</h2>
+<h4>Requesting a Capability</h4>
 <p>
   The process of requesting a capability starts by querying for that capability with a user transaciton session or 
   a business transaction session to see which payloads of the capability are necessary to fulfill the requirements
@@ -252,55 +252,55 @@
   </tbody>
 </table>
 
-<h3><a name="capability-payload-classes">Capability Payload Classes</a></h3>
+<h4><a name="capability-payload-classes">Capability Payload Classes</a></h4>
 
-<h4><a name="ablii-terms-and-conditions">AbliiTermsAndConditions</a></h4>
+<h5><a name="ablii-terms-and-conditions">AbliiTermsAndConditions</a></h5>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions" whitelist="['title', 'agreement', 'version']" />
 
-<h4><a name="ablii-privacy-policy">AbliiPrivacyPolicy</a></h4>
+<h5><a name="ablii-privacy-policy">AbliiPrivacyPolicy</a></h5>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy" whitelist="['title', 'agreement', 'version']" />
 
-<h4><a name="user-detail-data">UserDetailData</a></h4>
+<h5><a name="user-detail-data">UserDetailData</a></h5>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.UserDetailData" />
 
-<h4><a name="user-detail-expanded-data">UserDetailExpandedData</a></h4>
+<h5><a name="user-detail-expanded-data">UserDetailExpandedData</a></h5>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.UserDetailExpandedData" />
 
-<h4><a name="personal-onboarding-type-data">PersonalOnboardingTypeData</a></h4>
+<h5><a name="personal-onboarding-type-data">PersonalOnboardingTypeData</a></h5>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.PersonalOnboardingTypeData" />
 
-<h4><a name="business-address-data">BusinessDetailData</a></h4>
+<h5><a name="business-address-data">BusinessDetailData</a></h5>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.BusinessDetailData" />
 
-<h4><a name="business-detail-expanded-data">BusinessDetailExpandedData</a></h4>
+<h5><a name="business-detail-expanded-data">BusinessDetailExpandedData</a></h5>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.BusinessDetailExpandedData" />
 
-<h4><a name="suggested-user-transaction-info">SuggestedUserTransactionInfo</a></h4>
+<h5><a name="suggested-user-transaction-info">SuggestedUserTransactionInfo</a></h5>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo" whitelist="['annualRevenue', 'transactionPurpose', 'annualTransactionAmount', 'annualTransactionFrequency']" />
 
-<h4><a name="business-type-data">BusinessTypeData</a></h4>
+<h5><a name="business-type-data">BusinessTypeData</a></h5>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.BusinessTypeData" />
 
-<h4><a name="is-selected-data">IsSelectedData</a></h4>
+<h5><a name="is-selected-data">IsSelectedData</a></h5>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.IsSelectedData" />
 
-<h4><a name="business-director-list">BusinessDirectorList</a></h4>
+<h5><a name="business-director-list">BusinessDirectorList</a></h5>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.BusinessDirectorList" />
 
-<h4><a name="business-director">BusinessDirector</a></h4>
+<h5><a name="business-director">BusinessDirector</a></h5>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.model.BusinessDirector" whitelist="['firstName', 'lastName', 'birthday', 'nationality']" />
 
-<h4><a name="business-owner-list">BusinessOwnerList</a></h4>
+<h5><a name="business-owner-list">BusinessOwnerList</a></h5>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.BusinessOwnerList" />
 
-<h4><a name="beneficial-owner">BeneficialOwner</a></h4>
+<h5><a name="beneficial-owner">BeneficialOwner</a></h5>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.model.BeneficialOwner"  whitelist="['firstName', 'lastName', 'jobTitle', 'ownershipPercentage', 'address', 'nationality', 'PEPHIORelated']" />
 
-<h4><a name="dual-party-agreement-cad">DualPartyAgreementCAD</a></h4>
+<h5><a name="dual-party-agreement-cad">DualPartyAgreementCAD</a></h5>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.acceptanceDocuments.capabilities.DualPartyAgreementCAD" whitelist="['title', 'agreement', 'version']" />
 
-<h4><a name="signing-officer-list">SigningOfficerList</a></h4>
+<h5><a name="signing-officer-list">SigningOfficerList</a></h5>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.SigningOfficerList" />
 
-<h4><a name="signing-officer">SigningOfficer</a></h4>
+<h5><a name="signing-officer">SigningOfficer</a></h5>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.model.SigningOfficer" />
