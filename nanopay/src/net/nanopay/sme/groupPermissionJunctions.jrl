@@ -178,7 +178,8 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId"
 
 // Facade
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.facadeContactDAO"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"contact.update.*"})
+//p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"contact.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"contact.create"})
 
 // Data export drivers
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"exportdriverregistry.read.CSV"})
