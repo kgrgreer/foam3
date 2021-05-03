@@ -50,12 +50,12 @@ import static java.util.Calendar.*;
 
 public class IntuitReconciliationReportGenerator extends RBCReconciliationReportGenerator {
 
-  protected String intuitRevenueAccount;
+  protected String vendorRevenueAccount;
   protected String nanopayRevenueAccount;
 
-  public IntuitReconciliationReportGenerator(String spid, String intuitRevenueAccount, String nanopayRevenueAccount) {
+  public IntuitReconciliationReportGenerator(String spid, String vendorRevenueAccount, String nanopayRevenueAccount) {
     super(spid);
-    this.intuitRevenueAccount = intuitRevenueAccount;
+    this.vendorRevenueAccount = vendorRevenueAccount;
     this.nanopayRevenueAccount = nanopayRevenueAccount;
   }
 
@@ -194,8 +194,8 @@ public class IntuitReconciliationReportGenerator extends RBCReconciliationReport
 
         var feeLineItems = fstLineItem.getLineItems();
         for ( var feeLineItem : feeLineItems ) {
-          if ( feeLineItem.getDestinationAccount().equals(intuitRevenueAccount) )
-            report.setIntuitRevenue(feeLineItem.getAmount());
+          if ( feeLineItem.getDestinationAccount().equals(vendorRevenueAccount) )
+            report.setVendorRevenue(feeLineItem.getAmount());
           else if ( feeLineItem.getDestinationAccount().equals(nanopayRevenueAccount) )
             report.setNanopayRevenue(feeLineItem.getAmount());
         }

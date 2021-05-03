@@ -59,8 +59,7 @@ foam.CLASS({
       ],
       type: 'Long',
       javaCode: `
-        return
-          Math.round(this.getPercentage()/100.0 * getAmount(obj));
+        return Math.round( this.getPercentage() / 100.0 * getAmount(obj) );
       `,
       // swiftCode: ' return Int(floorf(percentage / 100.0 * Float(transactionAmount)))',
       code: function(obj) {
@@ -80,7 +79,7 @@ foam.CLASS({
       javaCode: `
         var prop = obj.getProperty(getAmountPropName());
         if ( prop instanceof Number ) {
-          return ((Number) prop).longValue();
+          return Math.round( ((Number) prop).doubleValue() );
         }
         return 0l;
       `

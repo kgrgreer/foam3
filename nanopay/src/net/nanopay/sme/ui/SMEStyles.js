@@ -219,7 +219,6 @@ foam.CLASS({
     }
 
     .net-nanopay-ui-Controller .foam-u2-view-RichChoiceView-selection-view {
-      min-height: 40px;
       width: 100%;
       border-radius: 4px;
       background-color: #ffffff;

@@ -122,7 +122,22 @@ foam.CLASS({
 
         return pdao;
       }
-    },
+    }
+  ],
+
+  methods: [
+    function installInWizardlet(w) {
+      var ownersInstalled = [];
+      var installOwner = () => {
+        this.owners.forEach(owner => {
+          if ( ownersInstalled.includes(owner) ) return;
+          ownersInstalled.push(owner);
+          owner.installInWizardlet(w);
+        })
+      }
+      installOwner();
+      this.owners$.sub(installOwner);
+    }
   ]
 });
 

@@ -640,12 +640,15 @@ p({
 
       support.testSection = "BRAZIL ONBOARDING";
       support.addPending(
-        'crunch.onboarding.br.brazil-onboarding',
-        'crunch.onboarding.br.business-prerequisites',
         'crunch.onboarding.br.international-payments',
-        'crunch.onboarding.br.parent.international-payments'
+        'crunch.onboarding.br.parent.international-payments',
+        'crunch.onboarding.br.registering-payment-provider'
       );
-      //support.ignore('AFEX','crunch.onboarding.br.registering-payment-provider'); // Payment Provider caps
+
+      support.addActionRequired(
+        'AFEX'
+      )
+
       try {
         await support.grantAll(x, 'crunch.onboarding.br.parent.international-payments', test);
       } catch(e){

@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'net.nanopay.country.br',
   name: 'NatureCodeApprovalRequest',
-  extends: 'foam.nanos.approval.ApprovalRequest',
+  extends: 'net.nanopay.tx.TransactionApprovalRequest',
 
   documentation: `
     NatureCodeApprovalRequest links NatureCodeData for an approval request that

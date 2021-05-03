@@ -15,10 +15,24 @@
  * from nanopay Corporation.
  */
 
-foam.CLASS({
-  package: 'net.nanopay.partner.bepay.tx',
-  name: 'BePayTransaction',
-  extends: 'net.nanopay.country.br.tx.BRPartnerTransaction',
+ foam.CLASS({
+  package: 'net.nanopay.tx',
+  name: 'TransactionApprovalRequest',
+  extends: 'foam.nanos.approval.ApprovalRequest',
 
-  documentation: `model to support legacy transaction on bepay`
+  documentation: `
+    TransactionApprovalRequest links a transactionId to an approval request
+  `,
+
+  properties: [
+    {
+      class: 'Reference',
+      of: 'net.nanopay.tx.model.Transaction',
+      name: 'paymentId',
+      label: 'Reference',
+      section: 'approvalRequestInformation',
+      order: 25,
+      gridColumns: 6
+    }
+  ]
 });

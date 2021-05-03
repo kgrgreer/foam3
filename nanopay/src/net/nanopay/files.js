@@ -498,6 +498,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionDAOCreateView' },
   { name: 'net/nanopay/tx/model/TransactionReadReferenceView' },
   { name: 'net/nanopay/tx/model/TransactionReference' },
+  { name: 'net/nanopay/tx/TransactionApprovalRequest' },
   { name: 'net/nanopay/tx/ComplianceTransaction' },
   { name: 'net/nanopay/tx/GreenfenceTransaction' },
   { name: 'net/nanopay/tx/InvoiceTransaction' },
@@ -1916,7 +1917,7 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/NatureCodeRate' },
   { name: 'net/nanopay/country/br/NatureCodeApprovalRequest' },
   { name: 'net/nanopay/country/br/exchange/Pais' },
-  { name: 'net/nanopay/country/br/CapableCreateNatureCodeApprovalsRuleAction' },
+  { name: 'net/nanopay/country/br/CapableCreateInvoiceApprovalsRuleAction' },
   { name: 'net/nanopay/country/br/ApprovedNatureCodeApprovalRequestRuleAction' },
   { name: 'net/nanopay/country/br/ExpectedBoardingDate' },
   { name: 'net/nanopay/country/br/NatureCodePaymentProviderJunctionRefinement' },
@@ -1963,17 +1964,18 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/fx/TrevisoFXServiceMock' },
 
   // bepay
-  { name: 'net/nanopay/partner/bepay/tx/BePayTransaction' },
+  { name: 'net/nanopay/country/br/tx/BRPartnerTransaction' },
   { name: 'net/nanopay/country/br/tx/PartnerLineItem' },
   { name: 'net/nanopay/country/br/tx/PartnerReport' },
-  { name: 'net/nanopay/partner/bepay/tx/planner/BePayTransactionPlanner' },
+  { name: 'net/nanopay/country/br/tx/PartnerTransactionPlanner' },
+  { name: 'net/nanopay/partner/bepay/tx/BePayTransaction' },
 
   // Reports for Treviso
   { name: 'net/nanopay/partner/treviso/report/TrevisoTransactionReport' },
   { name: 'net/nanopay/partner/treviso/report/TrevisoTransactionReportDAO' },
 
   // bepay
-  { name: 'net/nanopay/partner/bepay/tx/ScreenUsersOnTransactionCreate' },
+  { name: 'net/nanopay/country/br/tx/ScreenUsersOnTransactionCreate' },
 
   // accuity
   { name: 'net/nanopay/partner/accuity/AccuityCredentials' },
@@ -2009,7 +2011,10 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/br/businessSector/Secao' },
 
   //SWIFT
-  { name: 'net/nanopay/swift/AbstractMT' },
-  { name: 'net/nanopay/swift/Properties' },
   { name: 'net/nanopay/swift/SCHEMA' },
+  { name: 'net/nanopay/swift/Properties' },
+  
+  { name: 'net/nanopay/swift/AbstractMT' },
+  { name: 'net/nanopay/swift/MT103' },
+  { name: 'net/nanopay/swift/MT205' }
 ]);

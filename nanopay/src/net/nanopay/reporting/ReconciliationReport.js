@@ -109,6 +109,8 @@ foam.CLASS({
         obj.currencyDAO.find(obj.debitCurrency).then(function(c) {
           if ( c ) {
             this.add(c.format(value));
+          } else {
+            this.add(value);
           }
         }.bind(this));
       }
@@ -140,6 +142,8 @@ foam.CLASS({
         obj.currencyDAO.find(obj.creditCurrency).then(function(c) {
           if ( c ) {
             this.add(c.format(value));
+          } else {
+            this.add(value);
           }
         }.bind(this));
       }
@@ -175,6 +179,8 @@ foam.CLASS({
         obj.currencyDAO.find(obj.feeRevenueCurrency).then(function(c) {
           if ( c ) {
             this.add(c.format(value));
+          } else {
+            this.add(value);
           }
         }.bind(this));
       }
@@ -223,12 +229,14 @@ foam.CLASS({
         obj.currencyDAO.find(obj.feeRevenueCurrency).then(function(c) {
           if ( c ) {
             this.add(c.format(value));
+          } else {
+            this.add(value);
           }
         }.bind(this));
       }
     },
     {
-      name: 'intuitRevenue',
+      name: 'vendorRevenue',
       class: 'UnitValue',
       unitPropName: 'feeRevenueCurrency',
       view: { class: 'net.nanopay.liquidity.ui.LiquidCurrencyView' },
@@ -242,6 +250,8 @@ foam.CLASS({
         obj.currencyDAO.find(obj.feeRevenueCurrency).then(function(c) {
           if ( c ) {
             this.add(c.format(value));
+          } else {
+            this.add(value);
           }
         }.bind(this));
       }

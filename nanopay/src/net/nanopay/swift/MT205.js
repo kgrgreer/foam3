@@ -15,10 +15,21 @@
  * from nanopay Corporation.
  */
 
-foam.CLASS({
-  package: 'net.nanopay.partner.bepay.tx',
-  name: 'BePayTransaction',
-  extends: 'net.nanopay.country.br.tx.BRPartnerTransaction',
-
-  documentation: `model to support legacy transaction on bepay`
+ net.nanopay.swift.SCHEMA({
+  id: '205',
+  properties: [
+    [1, '20'],
+    [2, '21'],
+    [3, '13C'],
+    [4, '32A'],
+    [5, '52a'],
+    [6, '53a'],
+    [7, '56a'],
+    [8, '57a'],
+    [9, '72'],
+    [10, '50a'],
+    [12, '59a'],
+    [13, '70'],
+    [14, '33B']
+  ]
 });

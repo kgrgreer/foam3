@@ -4,6 +4,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-sessi
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-session","targetId":"group.read.bepay-sme"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-session","targetId":"group.update.bepay-sme"})
 
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-session","targetId":"user.rw.loginenabled"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-session","targetId":"business.rw.compliance"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-session","targetId":"business.rw.status"})
 

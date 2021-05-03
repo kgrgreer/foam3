@@ -118,7 +118,7 @@ public class DowJonesResponseMsg
           Node title = payload.getElementsByTagName("title").item(0);
           Node subsidiary = payload.getElementsByTagName("subsidiary").item(0).getFirstChild();
           Element matchedName = (Element) payload.getElementsByTagName("matched-name").item(0);
-          String nameType = matchedName.getAttribute("name-type");
+          String nameType = matchedName != null ? matchedName.getAttribute("name-type") : "";
           Node matchedDateOfBirth = payload.getElementsByTagName("matched-date-of-birth").item(0);
 
           Element datesOfBirth = (Element) payload.getElementsByTagName("dates-of-birth").item(0);
