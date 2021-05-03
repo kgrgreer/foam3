@@ -52,7 +52,7 @@ jobs:
       - run: sudo npm install -g newman
 
       - run:
-          command: /
+          command: |
             sudo rm -rf /opt/nanopay
             sudo mkdir -p /opt/nanopay
             sudo chmod 777 /opt/nanopay
