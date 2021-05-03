@@ -81,10 +81,9 @@ foam.CLASS({
       name: 'calculateErrorCode',
       javaCode: `
         if ( getStatus() == TransactionStatus.DECLINED ) {
-          return 991l;
+          setErrorCode(991l);
         }
-
-        return 0;
+        return getErrorCode();
       `
     }
   ]
