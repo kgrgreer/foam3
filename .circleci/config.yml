@@ -8,7 +8,7 @@ jobs:
   build:
     docker:
       # - image: 132252763429.dkr.ecr.us-east-1.amazonaws.com/nanopay/node:latest
-      - image: cimg/openjdk:11.0.0-node
+      - image: cimg/openjdk:11.0.10-node
     working_directory: ~/NANOPAY
     steps:
       - checkout
