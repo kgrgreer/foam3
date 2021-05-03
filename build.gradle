@@ -392,6 +392,12 @@ clean {
     }
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
+
 compileJava {
     dependsOn tasks.genJava
     dependsOn tasks.copyLib
