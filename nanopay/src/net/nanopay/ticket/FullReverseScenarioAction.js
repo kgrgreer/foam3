@@ -43,7 +43,8 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'net.nanopay.account.DigitalAccount',
       name: 'creditAccount',
       documentation: 'The default credit account to be used in this scenario'
       // add validator make sure not empty

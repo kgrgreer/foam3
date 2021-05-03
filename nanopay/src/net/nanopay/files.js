@@ -190,7 +190,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/UnsupportedTransactionException' },
   { name: 'net/nanopay/tx/GrandTotalLineItem' },
   { name: 'net/nanopay/tx/TransactionUnPauseRule' },
-  { name: 'net/nanopay/tx/IndependantTransactionFeeLineItem' },
+  { name: 'net/nanopay/tx/IndependentTransactionFeeLineItem' },
   { name: 'net/nanopay/tx/FeeSummaryTransaction' },
   { name: 'net/nanopay/tx/IndependantFeePlanningRule' },
 

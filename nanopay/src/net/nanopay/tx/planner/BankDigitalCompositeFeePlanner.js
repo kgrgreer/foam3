@@ -27,7 +27,7 @@ foam.CLASS({
     'net.nanopay.tx.FeeSummaryTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.IndependantTransactionFeeLineItem',
+    'net.nanopay.tx.IndependentTransactionFeeLineItem',
     'net.nanopay.tx.CompositeTransaction',
     'java.util.ArrayList',
     'net.nanopay.account.DigitalAccount',
@@ -56,8 +56,8 @@ foam.CLASS({
 
         // create all the digital fee transactions
         for ( TransactionLineItem tli : requestTxn.getLineItems() ) {
-          if ( tli instanceof IndependantTransactionFeeLineItem ) {
-            IndependantTransactionFeeLineItem itli = ((IndependantTransactionFeeLineItem) tli);
+          if ( tli instanceof IndependentTransactionFeeLineItem ) {
+            IndependentTransactionFeeLineItem itli = ((IndependentTransactionFeeLineItem) tli);
             Transaction leg2 = new Transaction();
             leg2.setDestinationAccount(itli.getDestinationAccount());
             leg2.setSourceAccount(requestTxn.getDestinationAccount());

@@ -686,7 +686,7 @@ var classes = [
   'net.nanopay.tx.UnsupportedDateException',
   'net.nanopay.tx.ExpiredTransactionException',
   'net.nanopay.tx.ruler.UpdateTxOnApprovalRequestStatusChange',
-  'net.nanopay.tx.IndependantTransactionFeeLineItem',
+  'net.nanopay.tx.IndependentTransactionFeeLineItem',
   'net.nanopay.tx.FeeSummaryTransaction',
   'net.nanopay.tx.IndependantFeePlanningRule',
 

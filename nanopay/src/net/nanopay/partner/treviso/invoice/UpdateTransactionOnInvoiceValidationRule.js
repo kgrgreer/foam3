@@ -68,49 +68,41 @@ foam.CLASS({
                 }
 
                 if ( ! SafetyUtil.isEmpty(getRequiredCapabilityId()) ){
-                    try {
-                        // If invoice is valid & capabilities are granted, change the summaryTransaction status to completed
-                        SafetyUtil.validate(agencyX, invoice);
-                        var crunchService = (CrunchService) agencyX.get("crunchService");
+                    // If invoice is valid & capabilities are granted, change the summaryTransaction status to completed
+                    SafetyUtil.validate(agencyX, invoice);
+                    var crunchService = (CrunchService) agencyX.get("crunchService");
 
-                        boolean isRejected = invoice.checkRequirementsStatusNoThrow(x, new String[]{getRequiredCapabilityId()}, CapabilityJunctionStatus.REJECTED);
+                    boolean isRejected = invoice.checkRequirementsStatusNoThrow(x, new String[]{getRequiredCapabilityId()}, CapabilityJunctionStatus.REJECTED);
 
-                        if ( isRejected ){
-                            var transactionDAO = (DAO) agencyX.get("transactionDAO");
-                            var transaction = (Transaction) transactionDAO.find(invoice.getPaymentId());
-                            if (transaction != null) {
-                                transaction = (Transaction) transaction.fclone();
-                                transaction.setStatus(TransactionStatus.CANCELLED);
-                                transactionDAO.put(transaction);
-                            }
-                            
-                            var invoiceDAO = (DAO) agencyX.get("invoiceDAO");
+                    if ( isRejected ){
+                        var transactionDAO = (DAO) agencyX.get("transactionDAO");
+                        var transaction = (Transaction) transactionDAO.find(invoice.getPaymentId());
+                        if (transaction != null) {
+                            transaction = (Transaction) transaction.fclone();
+                            transaction.setStatus(TransactionStatus.CANCELLED);
+                            transactionDAO.put(transaction);
+                        }
                         
-                            invoice.setPaymentMethod(PaymentStatus.REJECTED);
+                        var invoiceDAO = (DAO) agencyX.get("invoiceDAO");
+                    
+                        invoice.setPaymentMethod(PaymentStatus.REJECTED);
 
-                            invoiceDAO.put(invoice);
-                            return;
-                        }
-                        try {
-                            invoice.verifyRequirements(x, new String[]{ getRequiredCapabilityId() });
-                        } catch (IllegalStateException e) {
-                            return;
-                        }
+                        invoiceDAO.put(invoice);
+                        return;
+                    }
+                    try {
+                        invoice.verifyRequirements(x, new String[]{ getRequiredCapabilityId() });
                     } catch (IllegalStateException e) {
-                        throw e;
+                        return;
                     }
                 }
 
-                try{
-                    var transactionDAO = (DAO) agencyX.get("transactionDAO");
-                    var transaction = (Transaction) transactionDAO.find(invoice.getPaymentId());
-                    if (transaction != null) {
-                        transaction = (Transaction) transaction.fclone();
-                        transaction.setStatus(TransactionStatus.COMPLETED);
-                        transactionDAO.put(transaction);
-                    }
-                } catch (IllegalStateException e) {
-                    throw e;
+                var transactionDAO = (DAO) agencyX.get("transactionDAO");
+                var transaction = (Transaction) transactionDAO.find(invoice.getPaymentId());
+                if (transaction != null) {
+                    transaction = (Transaction) transaction.fclone();
+                    transaction.setStatus(TransactionStatus.COMPLETED);
+                    transactionDAO.put(transaction);
                 }
             }, "Updates transaction to completed when all capables are approved for the user");
             `

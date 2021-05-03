@@ -26,7 +26,7 @@ p({
   name: "Nanopay Transaction Fee",
   percentage: 0.4,
   chargedTo: 1,
-  feeClass: "net.nanopay.tx.IndependantTransactionFeeLineItem",
+  feeClass: "net.nanopay.tx.IndependentTransactionFeeLineItem",
   feeAccount:"ab590614-f5bd-476a-84e0-6037607397b5",
   predicate: {
     class: "foam.mlang.predicate.Eq",

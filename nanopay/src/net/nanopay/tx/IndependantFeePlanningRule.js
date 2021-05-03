@@ -20,7 +20,7 @@
   name: 'IndependantFeePlanningRule',
   implements: ['foam.nanos.ruler.RuleAction'],
 
-   documentation: `Create fee transaction for independantTransactionFeeLineitems
+   documentation: `Create fee transaction for IndependentTransactionFeeLineItem
    CURRENTLY ONLY SUPPORTS DIGITAL ACCOUNTS AS THE FEE ACCOUNT
    `,
 
@@ -56,19 +56,19 @@
             Account dest = root.findDestinationAccount(x);
             FeeSummaryTransaction feeTxn = new FeeSummaryTransaction();
 
-            ArrayList<IndependantTransactionFeeLineItem> lineItems = new ArrayList();
+            ArrayList<IndependentTransactionFeeLineItem> lineItems = new ArrayList();
             for ( TransactionLineItem li : txn.getLineItems() ) {
-              if ( li instanceof IndependantTransactionFeeLineItem ) {
-                lineItems.add((IndependantTransactionFeeLineItem) li);
+              if ( li instanceof IndependentTransactionFeeLineItem ) {
+                lineItems.add((IndependentTransactionFeeLineItem) li);
                 feeTotal += li.getAmount();
                 if (sourceDigital == null) {
                   DigitalAccount feeDest = (DigitalAccount) li.findDestinationAccount(x);
                   User owner = dest.findOwner(x);
-                  sourceDigital = DigitalAccount.findDefault(x, owner, ((IndependantTransactionFeeLineItem)li).getFeeCurrency(), feeDest.getTrustAccount());
+                  sourceDigital = DigitalAccount.findDefault(x, owner, ((IndependentTransactionFeeLineItem)li).getFeeCurrency(), feeDest.getTrustAccount());
                 }
               }
             }
-            feeTxn.setLineItems(lineItems.toArray(new IndependantTransactionFeeLineItem[lineItems.size()]));
+            feeTxn.setLineItems(lineItems.toArray(new IndependentTransactionFeeLineItem[lineItems.size()]));
 
             TransactionQuote quote = new TransactionQuote();
 
@@ -100,7 +100,7 @@
 
 
           }
-        }, "Create fee transaction for independantTransactionFeeLineitems");
+        }, "Create fee transaction for IndependentTransactionFeeLineItem");
       `
     }
   ]

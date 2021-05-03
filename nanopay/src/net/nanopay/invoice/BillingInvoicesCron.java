@@ -1,6 +1,7 @@
 package net.nanopay.invoice;
 
 import foam.core.ContextAgent;
+import foam.core.Currency;
 import foam.core.Detachable;
 import foam.core.X;
 import foam.dao.AbstractSink;
@@ -157,7 +158,7 @@ public class BillingInvoicesCron implements ContextAgent {
           INSTANCE_OF(ComplianceTransaction.class)
         ));
         if ( ct != null && ct.getStatus() != TransactionStatus.COMPLETED ) {
-          return; 
+          return;
         }
 
         Account sourceAccount = transaction.findSourceAccount(x);
@@ -211,12 +212,13 @@ public class BillingInvoicesCron implements ContextAgent {
         for (TransactionLineItem lineItem : transaction.getLineItems()) {
           if ( lineItem instanceof InvoicedCreditLineItem ) {
             long amount = lineItem.getAmount();
+            Currency currency = ((InvoicedCreditLineItem) lineItem).findCreditCurrency(x);
             InvoiceLineItem invoiceLineItem = new InvoiceLineItem.Builder(x)
               .setTransaction(transaction.getId())
               .setGroup("Discount")
               .setDescription(String.format("%s → $%.2f %s",
                 formatTransaction(x, transaction),
-                amount / 100.0,
+                amount / currency.getPrecision(),
                 lineItem.getCurrency()))
               .setAmount(amount)
               .setCurrency(lineItem.getCurrency())
@@ -225,12 +227,13 @@ public class BillingInvoicesCron implements ContextAgent {
             invoice.setAmount(invoice.getAmount() - amount);
           } else if ( lineItem instanceof InvoicedFeeLineItem ) {
             long amount = check90DaysPromotion(payer, isAscendantFXUser, transaction) ? 0L : lineItem.getAmount();
+            Currency currency = ((InvoicedFeeLineItem) lineItem).findFeeCurrency(x);
             InvoiceLineItem invoiceLineItem = new InvoiceLineItem.Builder(x)
               .setTransaction(transaction.getId())
               .setGroup(isDomestic(transaction) ? "Domestic Payment Fee" : "International Payment Fee")
               .setDescription(String.format("%s → $%.2f %s",
                 formatTransaction(x, transaction),
-                amount / 100.0,
+                amount / currency.getPrecision(),
                 lineItem.getCurrency()))
               .setAmount(amount)
               .setCurrency(lineItem.getCurrency())
