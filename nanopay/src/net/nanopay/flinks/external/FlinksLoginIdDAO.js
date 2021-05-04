@@ -23,10 +23,12 @@ foam.CLASS({
   documentation: `Decorating DAO for processing FlinksLoginId requests.`,
 
   javaImports: [
+    'foam.core.Agency',
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.nanos.alarming.Alarm',
     'foam.nanos.app.AppConfig',
     'foam.nanos.app.Mode',
     'foam.nanos.auth.Address',
@@ -40,6 +42,7 @@ foam.CLASS({
     'foam.nanos.dig.exception.GeneralException',
     'foam.nanos.dig.exception.UnknownIdException',
     'foam.nanos.logger.Logger',
+    'foam.nanos.logger.PrefixLogger',
     'foam.nanos.notification.NotificationSetting',
     'foam.nanos.notification.EmailSetting',
     'foam.nanos.notification.sms.SMSSetting',
@@ -101,6 +104,20 @@ foam.CLASS({
     }
   ],
 
+  properties: [
+    {
+      name: 'logger',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.logger.Logger',
+      visibility: 'HIDDEN',
+      javaFactory: `
+        return new PrefixLogger(new Object[] {
+          this.getClass().getSimpleName()
+        }, (Logger) getX().get("logger"));
+      `
+    }
+  ],
+
   methods: [
     {
       name: 'put_',
@@ -108,8 +125,6 @@ foam.CLASS({
       var pm = new PM(FlinksLoginIdDAO.getOwnClassInfo().getId(), "put");
 
       try {
-
-        Logger logger = (Logger) x.get("logger");
         Subject subject = (Subject) x.get("subject");
 
         FlinksLoginId flinksLoginId = (FlinksLoginId) obj;
@@ -157,7 +172,19 @@ foam.CLASS({
 
           LoginModel loginDetail = flinksDetailResponse.getLogin();
           if ( loginDetail == null ) {
-            logger.warning("Unexpected behaviour - No login section found in FlinksResponse for loginId: " + flinksLoginId.getLoginId());
+            String name = "Unexpected behaviour - No login section found in FlinksDetailResponse for loginId: " + flinksLoginId.getLoginId();
+            DAO alarmDAO = (DAO) x.get("alarmDAO");
+            Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, name));
+            if ( alarm == null || !alarm.getIsActive() ) {
+              alarm = new Alarm.Builder(x)
+                          .setName(name)
+                          .setIsActive(true)
+                          .setNote("FlinksLoginId: " + flinksLoginId + "\\nFlinksDetailResponse: " + flinksDetailResponse)
+                          .build();
+              alarmDAO.put(alarm);
+            }
+            getLogger().warning(name + ". FlinksDetailResponse: " + flinksDetailResponse);
+            throw new ExternalAPIException("Flinks failed to provide login detials for " + flinksLoginId.getLoginId());
           }
 
           // Override the Flink login details type
@@ -165,7 +192,8 @@ foam.CLASS({
                flinksLoginId.getFlinksOverrides() != null && 
                !SafetyUtil.isEmpty(flinksLoginId.getFlinksOverrides().getType()))
           {
-            loginDetail.setType(flinksLoginId.getFlinksOverrides().getType()); 
+            getLogger().info("Overwriting loginDetail type property from " + loginDetail.getType() + " to " + flinksLoginId.getFlinksOverrides().getType() + " for request: " + flinksLoginId.getLoginId());
+            loginDetail.setType(flinksLoginId.getFlinksOverrides().getType());
           }
 
           // Onboarding
@@ -253,6 +281,7 @@ foam.CLASS({
           FlinksLoginId previousFlinksLoginId = (FlinksLoginId) oldRecords.get(0);
           request.setUser(previousFlinksLoginId.getUser());
           request.setBusiness(previousFlinksLoginId.getBusiness());
+          getLogger().debug("Found previous FlinksLoginId request with user: " + request.getUser() + ", and business: " + request.getBusiness());
         }
       `
     },
@@ -288,6 +317,9 @@ foam.CLASS({
         // Do not resolve email when in guest mode
         if ( request.getGuestMode() ) return;
 
+        // Do not resolve email for business onboarding
+        if ( request.getType() == OnboardingType.BUSINESS ) return;
+
         // Check whether an email was provided
         if ( 
           request.getFlinksOverrides() == null ||
@@ -303,6 +335,7 @@ foam.CLASS({
         if ( user == null ) return;
 
         request.setUser(user.getId());
+        getLogger().info("Found previous user " + user.getId() + " from email: " + request.getFlinksOverrides().getUserOverrides().getEmail());
       `
     },
     {
@@ -408,7 +441,9 @@ foam.CLASS({
         bankAccount.getExternalData().put("FlinksLoginUsername", loginDetail.getUsername());
         bankAccount.getExternalData().put("FlinksLoginType", loginDetail.getType());
 
-        return (BankAccount) accountDAO.put(bankAccount);
+        bankAccount  = (CABankAccount) accountDAO.put(bankAccount);
+        getLogger().debug(request.getLoginId() + " - Created bank account: " + bankAccount);
+        return bankAccount;
       `
     },
     {
@@ -510,6 +545,7 @@ foam.CLASS({
           .setExternalId(externalId)
           .build();
         user = (User) userDAO.put(user);
+        getLogger().debug(request.getLoginId() + " - Created user: " + user);
 
         // Update or create notification settings and disable them
         ArraySink notificationSettings = (ArraySink) user.getNotificationSettings(x).where(CLASS_OF(NotificationSetting.class)).select(new ArraySink());
@@ -704,6 +740,7 @@ foam.CLASS({
 
         DAO localUserDAO = (DAO) subjectX.get("localUserDAO");
         business = (Business) localUserDAO.inX(subjectX).put(business);
+        getLogger().debug(request.getLoginId() + " - " + user.getId() + " Created business: " + business);
 
         // Update or create notification settings and disable them
         ArraySink notificationSettings = (ArraySink) business.getNotificationSettings(x).where(CLASS_OF(NotificationSetting.class)).select(new ArraySink());
@@ -760,33 +797,96 @@ foam.CLASS({
         CapabilityPayload missingPayloads = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId);
         businessCapabilityDataObjects = missingPayloads.getCapabilityDataObjects();
 
-        SecurefactOnboardingService securefactOnboardingService = (SecurefactOnboardingService) subjectX.get("securefactOnboardingService");
-        if ( securefactOnboardingService == null ) {
-          throw new GeneralException("Cannot find securefactOnboardingService");
-        }
+        // Expanded onboarding for business type data from SecureFact
+        executeExpandedBusinessOnboarding(subjectX, user, business, request, businessCapabilityDataObjects);
 
-        // Fill the capability data objects from SecureFact LEV
-        securefactOnboardingService.retrieveLEVCapabilityPayloads(subjectX, business, businessCapabilityDataObjects);
-
-        // Add current user as signing officer and directors
-        SigningOfficerList signingOfficerList = (SigningOfficerList) businessCapabilityDataObjects.get("Signing Officers");
-        if ( signingOfficerList == null) {
-          signingOfficerList = new SigningOfficerList.Builder(subjectX).setBusiness(business.getId()).build();
-          businessCapabilityDataObjects.put("Signing Officers", signingOfficerList);
-        }
-        addSigningOfficerToList(subjectX, user, business, signingOfficerList);
-        BusinessDirectorList businessDirectorList = (BusinessDirectorList) businessCapabilityDataObjects.get("Business Directors");
-        if ( businessDirectorList == null ) {
-          businessDirectorList = new BusinessDirectorList.Builder(x).setBusiness(business.getId()).build();
-          businessCapabilityDataObjects.put("Business Directors", businessDirectorList);
-        }
-        addBusinessDirectorToList(subjectX, user, business, businessDirectorList);
-
+        // Put all data objects to capability payload DAO
         businessCapPayload = new CapabilityPayload.Builder(subjectX)
           .setId(capabilityId)
           .setCapabilityDataObjects(new HashMap<String,FObject>(businessCapabilityDataObjects))
           .build();
         businessCapPayload = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).put(businessCapPayload);
+      `
+    },
+    {
+      name: 'executeExpandedBusinessOnboarding',
+      args: [
+        { name: 'callingX', type: 'Context' },
+        { name: 'user', type: 'User' },
+        { name: 'business', type: 'Business' },
+        { name: 'request', type: 'FlinksLoginId' },
+        { name: 'businessCapabilityDataObjects', type: 'Map<String,FObject>' },
+      ],
+      javaCode: `
+
+        // When onboarding as a merchant execute expanded business onboarding immediately so the results
+        // are included in the initial FlinksLoginId response
+        if ( request.getType() == OnboardingType.BUSINESS ) {
+          expandedBusinessOnboarding(callingX, user, business, businessCapabilityDataObjects);
+          return;
+        }
+
+        // When onboarding as a payor (i.e. type != 2), the expanded business onboarding needs to be executed asynchronously
+        // so that the response can be sent back immediately instead of waiting for secure fact to respond
+        
+        getLogger().debug(request.getLoginId() + " - Starting async expandedBusinessOnboarding for business: " + business.getId() + " - " + business.getBusinessName());
+
+        // Start async call
+        ((Agency) callingX.get("threadPool")).submit(callingX, x -> {
+            try {
+              // Create the capabilities data map
+              Map<String,FObject> dataObjects = new HashMap<>();
+
+              String capabilityId = getBusinessCapabilityId(x, request);
+              DAO capabilityPayloadDAO = (DAO) x.get("capabilityPayloadDAO");
+              CapabilityPayload missingPayloads = (CapabilityPayload) capabilityPayloadDAO.inX(x).find(capabilityId);
+              dataObjects = missingPayloads.getCapabilityDataObjects();
+
+              // perform expanded business onboarding
+              expandedBusinessOnboarding(x, user, business, dataObjects);
+
+              CapabilityPayload businessCapPayload = new CapabilityPayload.Builder(x)
+                .setId(capabilityId)
+                .setCapabilityDataObjects(new HashMap<String,FObject>(dataObjects))
+                .build();
+              businessCapPayload = (CapabilityPayload) capabilityPayloadDAO.inX(x).put(businessCapPayload);
+              ((Logger) x.get("logger")).info("Expanded business onboarding update for capability " + capabilityId + " on business " + business.getId() + ": " + businessCapPayload.getCapabilityValidationErrors());
+            } catch ( Throwable t ) {
+                ((Logger) x.get("logger")).error("Error in expanded business onboarding for result: " + request.getId(), t);
+            }
+        }, "ExpandedBusinessOnboarding FlinksLoginId: " + request.getId());
+      `
+    },
+    {
+      name: 'expandedBusinessOnboarding',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'user', type: 'User' },
+        { name: 'business', type: 'Business' },
+        { name: 'businessCapabilityDataObjects', type: 'Map<String,FObject>' },
+      ],
+      javaCode: `
+        SecurefactOnboardingService securefactOnboardingService = (SecurefactOnboardingService) x.get("securefactOnboardingService");
+        if ( securefactOnboardingService == null ) {
+          throw new GeneralException("Cannot find securefactOnboardingService");
+        }
+
+        // Fill the capability data objects from SecureFact LEV
+        securefactOnboardingService.retrieveLEVCapabilityPayloads(x, business, businessCapabilityDataObjects);
+
+        // Add current user as signing officer and directors
+        SigningOfficerList signingOfficerList = (SigningOfficerList) businessCapabilityDataObjects.get("Signing Officers");
+        if ( signingOfficerList == null) {
+          signingOfficerList = new SigningOfficerList.Builder(x).setBusiness(business.getId()).build();
+          businessCapabilityDataObjects.put("Signing Officers", signingOfficerList);
+        }
+        addSigningOfficerToList(x, user, business, signingOfficerList);
+        BusinessDirectorList businessDirectorList = (BusinessDirectorList) businessCapabilityDataObjects.get("Business Directors");
+        if ( businessDirectorList == null ) {
+          businessDirectorList = new BusinessDirectorList.Builder(x).setBusiness(business.getId()).build();
+          businessCapabilityDataObjects.put("Business Directors", businessDirectorList);
+        }
+        addBusinessDirectorToList(x, user, business, businessDirectorList);
       `
     },
     {

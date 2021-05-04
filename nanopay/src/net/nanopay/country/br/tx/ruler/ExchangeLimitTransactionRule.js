@@ -34,6 +34,7 @@ foam.CLASS({
     'foam.nanos.alarming.Alarm',
     'foam.nanos.alarming.AlarmReason',
     'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.approval.ApprovalRequestUtil',
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.auth.User',
@@ -90,7 +91,7 @@ foam.CLASS({
                 if ( approval == null ) {
                   approvalRequestDAO.put(
                     new ApprovalRequest.Builder(x)
-                      .setClassification("Exchange Limit Exceeded")
+                      .setClassificationEnum(ApprovalRequestClassificationEnum.EXCHAGE_LIMIT_EXCEEDED)
                       .setDescription(senderSummary + " has initiated a transaction that exceeds the allowed limit. " +
                         "Please review the transaction. ")
                       .setDaoKey("transactionDAO")
@@ -125,7 +126,7 @@ foam.CLASS({
                   // Resent approval request as the limit check remains fail
                   approvalRequestDAO.put(
                     new ApprovalRequest.Builder(x)
-                      .setClassification("Exchange Limit Exceeded")
+                      .setClassificationEnum(ApprovalRequestClassificationEnum.EXCHAGE_LIMIT_EXCEEDED)
                       .setDescription("A transaction for " + senderSummary
                         + " was approved but the amount exceeded the allowed limit again. Please review the transaction. ")
                       .setDaoKey("transactionDAO")

@@ -81,6 +81,8 @@ paymentMethods
 payoutOptions
 permissions
 prerequisiteCapabilityJunctions
+privateKeys
+publicKeys
 purposeCodes
 purposeGroups
 questionnaires

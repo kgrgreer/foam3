@@ -77,7 +77,7 @@ public class ReportDAO extends ProxyDAO {
   @Override
   public FObject find_(X x, Object id) {
     var g = (ReportGenerator) x.get(generator);
-    return g.generateReport(x, getDelegate().find_(x, id));
+    return g.generateReport(x, super.find_(x, id instanceof FObject ? ((FObject) id).getProperty("id") : id));
   }
 
   @Override

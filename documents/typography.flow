@@ -1,0 +1,93 @@
+<title> hello </title>
+
+<h2>Typography</h2>
+
+<h4>Design System link</h4>
+<p> most up-to-date designs and styles can be found<a href="https://www.figma.com/file/vpoMa8gzuLauauRWeMCLwS/Core-Design-System?node-id=1%3A77" target="_blank"> here </a></p>
+
+<h4>Font stack</h4>
+
+<div style="background: #F5F7FA; display: grid; grid-gap:24px 12px; grid-template: inherit;">
+<h1>H1 Main Title</h1>
+<h2>H2 Second Title</h2>
+<h3>H3 Third Title</h3>
+<h4>H4 Fourth Title</h4>
+<h5>H5 Fifth Title</h5>
+<h6>H6 Sixth Title</h6>
+
+<p class="label">Form Label</p>
+<p class="large">Paragraph - Large</p>
+<p>Paragraph - Base</p>
+<p class="semiBold">Paragraph - Base(semi-Bold)</p>
+<p class="bold">Paragraph - Base(Bold)</p>
+</div>
+
+<h3>Usage</h3>
+
+<h5>Design</h5>
+<p> All style definitions can be found in <a href="https://github.com/kgrgreer/foam3/blob/development/src/foam/nanos/controller/AppStyles.js">foam3/src/foam/nanos/controller/AppStyles.js</a></p>
+<table>
+  <tr>
+    <th>Font Type</th>
+    <th>Use for </th>
+  </tr>
+  <tr>
+    <td>H1</td>
+    <td>Oversized tiles. Use in moderation. Max 1 per page</td>
+  </tr>
+  <tr>
+    <td>H2</td>
+    <td>Main feature highlighting/Top level headers</td>
+  </tr>
+  <tr>
+    <td>H3</td>
+    <td>Main title/Large section header</td>
+  </tr>
+  <tr>
+    <td>H4</td>
+    <td>Most commonly used section headers</td>
+  </tr>
+  <tr>
+    <td>H4</td>
+    <td>Sub-section headers/Group headings</td>
+  </tr>
+  <tr>
+    <td>H5</td>
+    <td>Sub-section headers/Group headings, often used in upper case to ensure visual heirarchy</td>
+  </tr>
+  <tr>
+    <td>H6</td>
+    <td>Large labels/RO property labels/Button Labels</td>
+  </tr>
+  <tr>
+    <td>Form Label</td>
+    <td>Read-Write form labels</td>
+  </tr>
+  <tr>
+    <td>Paragraph Large</td>
+    <td>Use sparingly, mainly to create visual heirarchy</td>
+  </tr>
+  <tr>
+    <td>Paragraph Base</td>
+    <td>Most commonly used. Make sure to wrap all text in this</td>
+  </tr>
+  <tr>
+    <td>Paragraph SemiBold</td>
+    <td>Large labels/empasis text</td>
+  </tr>
+  <tr>
+    <td>Paragraph Bold</td>
+    <td>Large labels/empasis text</td>
+  </tr>
+  <tr>
+    <td>Paragraph legalText</td>
+    <td>Error messages or other fine text</td>
+  </tr>
+</table>
+
+<h5>Code</h5>
+<p>Usage for headings and base paragraphs. Make sure there is sufficient margins and padding around these elemets </p>
+<code>this.start('h2').add(someText).end()</code>
+
+<p>Usage for paragraph modifiers</p>
+<code>this.start('p').addClass('label').add(someText).end()</code>

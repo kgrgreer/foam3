@@ -570,7 +570,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'afex',
+      name: 'AFEX',
       code: async function(x, business) {
         // cap name: Business Prerequisites for Brazil
         var id = 'AFEX';

@@ -9,3 +9,13 @@ p({
     baseUrl:"https://djrc.api.test.dowjones.com/v1/search/"
   }
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"afexService",
+  "lazy":true,
+  "serve":false,
+  "serviceScript":"""
+    return new net.nanopay.fx.afex.AFEXService(x);
+  """
+})

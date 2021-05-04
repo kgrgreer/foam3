@@ -83,6 +83,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.VIEW.label",target:"Visão"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.PRE_SET.label",target:"preSet"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.INVALID_OWNER_INFO",target:"As informações do proprietário são inválidas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.TOTAL_OWNERSHIP_ERROR",target:"A propriedade total deve ser inferior a 100%."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.ID.label",target:"id"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.BUSINESS_ID.label",target:"id de negócios"})
@@ -2037,10 +2038,12 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onbo
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.DOCUMENTS_OF_ID.label",target:"Carregue um comprovante de identificação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.PROOF_OF_ADDRESS",target:"Documentos comprovativos de endereço necessários"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.PROOF_OF_IDENTIFICATION",target:"Comprovante de documentos de identificação necessários"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.INVALID_CPF",target:"Número válido de CPF obrigatório"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBankAccountData.NO_BANK_NEEDED",target:"Nenhuma informação de conta bancária necessária. Prossiga para a próxima etapa."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBankAccountData.ADD_ACCOUNT_TITLE",target:"Adicionar Conta"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.INVALID_ADDRESS_ERROR",target:"Endereço inválido."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.INVALID_DATE_ERROR",target:"Data de nascimento válida exigida"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.UNGER_AGE_LIMIT_ERROR",target:"Deve ter pelo menos 18 anos."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.OVER_AGE_LIMIT_ERROR",target:"Deve ter menos de 125 anos."})
@@ -2300,8 +2303,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.ui.BankAccou
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.ui.BankAccountWizard.EDIT_TITLE",target:"Editar Conta Bancária"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.BankPickCurrencyView.SECTION_DETAILS_TITLE_VOID",target:"Conecte usando uma verificação de vazio"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.BusinessDirectorArrayView.ADD_MSG",target:"+ Adicionar"})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.model_.label",target:"Canadá"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ATBankAccount.model_.label",target:"Áustria"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BEBankAccount.model_.label",target:"Bélgica"})
@@ -2345,7 +2346,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactio
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.AMOUNT",target:"Quantidade"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.AMOUNT_IN",target:"Valor em"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.RATE",target:"Taxa"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.GRAND_TOTAL",target:"Total a Pagar"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.TRANSACTION_DATE",target:"Data da Transaçao"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.TRANSACTION_REFERENCE",target:"Referência"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.VET_TITLE",target:"Valor Efetivo Total (VET)"})
@@ -3410,14 +3410,12 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.ManualFxApprovalR
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.ManualFxApprovalRequest.REQUEST_UPDATED",target:"Pedido de aprovação atualizado com sucesso"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.ManualFxApprovalRequest.UPDATE_DEAL_ID.label",target:"AtualizarNegócioId"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.ManualFxApprovalRequest.UPDATE_DEAL_ID.label",target:"AtualizarCâmbioTaxa"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.compliance.GenericBusinessValidator.CLASSIFICATION_MSG",target:"Validador Genérico de Negócios"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.lite.ruler.CapableCreateApprovalsRuleAction.REQUEST_SEND_MSG",target:"Um pedido de aprovação foi enviado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.lite.ruler.CapableCreateApprovalsRuleAction.FOR",target:" pra "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule.DESCRIPTION",target:"Aprovar negócios AFEX para permitir os pagamentos internacionais"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule.CLASSIFICATION",target:"AFEX Business"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.JackieRuleOnCreate.COMPLIANCE_TRANSACTION",target:"Transação de Conformidade"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.JackieRuleOnCreate.SUMMARY_TRANSACTION",target:" Resumida transação Id: "})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.model_.name",target:"Transação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.model_.plural",target:"Transações"})

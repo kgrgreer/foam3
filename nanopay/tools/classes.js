@@ -687,6 +687,7 @@ var classes = [
   'net.nanopay.tx.UnsupportedDateException',
   'net.nanopay.tx.ExpiredTransactionException',
   'net.nanopay.tx.ruler.UpdateTxOnApprovalRequestStatusChange',
+  'net.nanopay.tx.TransactionApprovalRequest',
 
   // TODO: From Maldives To Be ReWorked
   'net.nanopay.settlement.GroupingAccount',
@@ -1241,7 +1242,7 @@ var classes = [
   'net.nanopay.country.br.NatureCodeData',
   'net.nanopay.country.br.NatureCodeApprovalRequest',
   'net.nanopay.country.br.ApprovedNatureCodeApprovalRequestRuleAction',
-  'net.nanopay.country.br.CapableCreateNatureCodeApprovalsRuleAction',
+  'net.nanopay.country.br.CapableCreateInvoiceApprovalsRuleAction',
   'net.nanopay.country.br.BrazilBusinessInfoData',
   'net.nanopay.country.br.BrazilVerificationServiceInterface',
   'net.nanopay.country.br.ClientBrazilVerificationService',
@@ -1392,11 +1393,12 @@ var classes = [
   'net.nanopay.reporting.UserOnboardingReport',
 
   // bepay
-  'net.nanopay.partner.bepay.tx.BePayTransaction',
+  'net.nanopay.country.br.tx.BRPartnerTransaction',
   'net.nanopay.country.br.tx.PartnerLineItem',
   'net.nanopay.country.br.tx.PartnerReport',
-  'net.nanopay.partner.bepay.tx.planner.BePayTransactionPlanner',
-  'net.nanopay.partner.bepay.tx.ScreenUsersOnTransactionCreate',
+  'net.nanopay.country.br.tx.PartnerTransactionPlanner',
+  'net.nanopay.country.br.tx.ScreenUsersOnTransactionCreate',
+  'net.nanopay.partner.bepay.tx.BePayTransaction',
 
   // accuity
   'net.nanopay.partner.accuity.AccuityCredentials',

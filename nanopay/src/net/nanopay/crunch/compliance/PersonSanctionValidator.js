@@ -26,6 +26,7 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.UserCapabilityJunction',
@@ -58,7 +59,7 @@ foam.CLASS({
 
         Capability capability = (Capability) ucj.findTargetId(x);
         User user = (User) ucj.saveDataToDAO(x, capability, false);
-        foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");     
+        foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
         logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - subject", x.get("subject"));
         logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - user", ((foam.nanos.auth.Subject) x.get("subject")).getUser());
         logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - realuser", ((foam.nanos.auth.Subject) x.get("subject")).getRealUser());
@@ -78,7 +79,7 @@ foam.CLASS({
               filterRegion = "United States,USA,US";
             }
           }
-          
+
           PersonNameSearchData searchData = new PersonNameSearchData.Builder(x)
             .setSearchId(user.getId())
             .setFirstName(user.getFirstName())
@@ -101,13 +102,13 @@ foam.CLASS({
               @Override
               public void execute(X x) {
                 String group = user.getSpid() + "-fraud-ops";
-                requestApproval(x, 
+                requestApproval(x,
                   new DowJonesApprovalRequest.Builder(x)
                     .setObjId(ucj.getId())
                     .setDaoKey("userCapabilityJunctionDAO")
                     .setCauseId(response.getId())
                     .setCauseDaoKey("dowJonesResponseDAO")
-                    .setClassification(getClassification())
+                    .setClassificationEnum(ApprovalRequestClassificationEnum.SIGNING_OFFICER_DOW_JONES)
                     .setMatches(response.getResponseBody().getMatches())
                     .setGroup(group)
                     .setCreatedFor(user.getId())
@@ -120,13 +121,13 @@ foam.CLASS({
           ((Logger) x.get("logger")).warning("PersonSanctionValidator failed.", e);
           DowJonesResponse response = getResponse();
           String group = user.getSpid() + "-fraud-ops";
-          requestApproval(x, 
+          requestApproval(x,
             new DowJonesApprovalRequest.Builder(x)
               .setObjId(ucj.getId())
               .setDaoKey("userCapabilityJunctionDAO")
               .setCauseId(response != null ? response.getId() : 0L)
               .setCauseDaoKey("dowJonesResponseDAO")
-              .setClassification(getClassification())
+              .setClassificationEnum(ApprovalRequestClassificationEnum.SIGNING_OFFICER_DOW_JONES)
               .setMatches(response != null ? response.getResponseBody().getMatches() : null)
               .setGroup(group)
               .setCreatedFor(user.getId())
