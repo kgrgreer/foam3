@@ -300,7 +300,7 @@ foam.CLASS({
         destinationCurrency = (Currency)destinationCurrency.fclone();
         destinationCurrency.setPrecision(destinationCurrency.getPrecision()+extraPrecision);
         Double destinationPrecision = Math.pow(10, destinationCurrency.getPrecision()) * rate;
-        return sourceCurrency.format(sourcePrecision.longValue())
+        return sourceCurrency.format(Math.round(sourcePrecision))
           + " " + sourceCurrency.getId()
           + " : " + destinationCurrency.format(Math.round(destinationPrecision))
           + " " + destinationCurrency.getId();

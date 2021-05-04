@@ -43,7 +43,8 @@ foam.CLASS({
     { name: 'SIGNINGOFFICER_DATA_FETCHING_ERR', message: 'Failed to find this signing officer info' },
     { name: 'ADD_MSG', message: 'owner' },
     { name: 'HAVE_NO_OWNER_MSG', message: 'I declare that all owners have less than 25% shares each' },
-    { name: 'NO_OWNER_INFO_ERR', message: 'Owner information required' }
+    { name: 'NO_OWNER_INFO_ERR', message: 'Owner information required' },
+    { name: 'INVALID_OWNER_INFO', message: 'Owner information is invalid'}
   ],
 
   sections: [
@@ -167,18 +168,15 @@ foam.CLASS({
       visibility: function(haveLowShares) {
         return haveLowShares ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
-      validationPredicates: [
-        {
-          args: ['owners', 'haveLowShares'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.HAVE_LOW_SHARES, true),
-              e.HAS(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OWNERS)
-            );
-          },
-          errorMessage: 'NO_OWNER_INFO_ERR'
-        }
-      ],
+      validateObj: function(haveLowShares, owners, owners$errors) {
+        if ( haveLowShares ) return;
+
+        if ( ! owners || owners.length === 0 )
+          return this.NO_OWNER_INFO_ERR;
+
+        if ( owners$errors && owners$errors.length )
+          return this.INVALID_OWNER_INFO;
+      },
       view: function (_, X) {
         return {
           class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',

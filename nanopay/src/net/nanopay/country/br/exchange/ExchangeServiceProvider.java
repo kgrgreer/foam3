@@ -366,32 +366,38 @@ public class ExchangeServiceProvider implements ExchangeService {
       if ( sourcePais != null ) dadosBoleto.setPAIS(sourcePais.getPais());
     }
 
-    double sourceAmount = toDecimal(summaryTransaction.getAmount());
-    double destinationAmount = toDecimal(summaryTransaction.getDestinationAmount());
-    Double ftt = extractRate(summaryTransaction, "FTT Rate");
-    if ( ftt != null ) {
-      double rate = ftt.doubleValue() * 100;
-      dadosBoleto.setIOFTAXA(rate);
-      dadosBoleto.setIOFVALOR((destinationAmount * rate)/100);
-      dadosBoleto.setIOFBASE(destinationAmount);
-      dadosBoleto.setESP2(getESP("IOF: ", String.valueOf(rate), " RS ", String.valueOf(dadosBoleto.getIOFVALOR())));
-    }
 
     dadosBoleto.setESP3(getESP("PAG./REC. NO EXT.: ", getName(receiver),
       " - PAIS: ", userCountry == null  ? " " : userCountry.getName(), " - RELACAO"));
     Double taxaop = extractRate(summaryTransaction, "Total Rate");
-    if ( taxaop != null ) dadosBoleto.setTAXAOP(taxaop);
+    taxaop = null == taxaop ? 0.0 : taxaop;
+    dadosBoleto.setTAXAOP(taxaop);
     Double taxanv = extractRate(summaryTransaction, "Currency Value Rate");
-    if ( taxaop != null ) dadosBoleto.setTAXANV(taxanv);
-    Double totalFeeBRL = extractRate(summaryTransaction, "Fee Due");
-    if ( totalFeeBRL != null )
-      dadosBoleto.setVALORR(totalFeeBRL/100);
-
+    if ( taxanv != null ) dadosBoleto.setTAXANV(taxanv);
+    Double totalFeeBRL = extractRate(summaryTransaction, "Transaction Fee");
+    totalFeeBRL = totalFeeBRL == null ? 0.0 : totalFeeBRL/100;
+    dadosBoleto.setVALORR(totalFeeBRL);
     dadosBoleto.setPARIDADE(dadosBoleto.getPARIDADE());
     dadosBoleto.setVINCULO(getContactRelationship(payer, receiver));
-    dadosBoleto.setYIELD(sourceAmount/destinationAmount);
+
+    //double sourceAmount = toDecimal(summaryTransaction.getAmount());
+    double destinationAmount = toDecimal(summaryTransaction.getDestinationAmount());
+    Double valormn = destinationAmount * taxaop;
+    Double ftt = extractRate(summaryTransaction, "FTT Rate");
+    Double iofValor = 0.0;
+    if ( ftt != null ) {
+      double rate = ftt.doubleValue() * 100;
+      dadosBoleto.setIOFTAXA(rate);
+      iofValor = (valormn * rate)/100;
+      dadosBoleto.setIOFVALOR(iofValor);
+      dadosBoleto.setIOFBASE(valormn);
+      dadosBoleto.setESP2(getESP("IOF: ", String.valueOf(rate), " RS ", String.valueOf(dadosBoleto.getIOFVALOR())));
+    }
+
+    Double vet = (valormn + iofValor + totalFeeBRL) / destinationAmount;
+    dadosBoleto.setYIELD(vet);
     dadosBoleto.setVALORME(destinationAmount);
-    dadosBoleto.setVALORMN(sourceAmount);
+    dadosBoleto.setVALORMN(valormn);
     request.setDadosBoleto(dadosBoleto);
     InsertBoletoResponse response = exchangeClient.insertBoleto(request);
     if ( response == null || response.getInsertBoletoResult() == null )

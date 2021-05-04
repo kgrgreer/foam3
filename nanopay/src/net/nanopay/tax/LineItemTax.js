@@ -142,7 +142,7 @@ foam.CLASS({
       ],
       type: 'Long',
       javaCode: `
-      return ((Double) (this.getRate()/100.0 * transactionAmount)).longValue();
+      return Math.round(this.getRate() / 100.0 * transactionAmount);
       `,
       code: function() {
         return this.rate/100 * transactionAmount;
