@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.i18n.TranslationService',
     'foam.util.SafetyUtil',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'net.nanopay.tx.model.Transaction',
@@ -37,7 +38,6 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'COMPLIANCE_TRANSACTION', message: 'Compliance Transaction' },
     { name: 'SUMMARY_TRANSACTION', message: '  Summary Transaction Id: ' }
   ],
 
@@ -57,7 +57,6 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
         TranslationService ts = (TranslationService) x.get("translationService");
-        String complianceTx = ts.getTranslation(locale, getClassInfo().getId() + ".COMPLIANCE_TRANSACTION", COMPLIANCE_TRANSACTION);
         String summaryTx = ts.getTranslation(locale, getClassInfo().getId() + ".SUMMARY_TRANSACTION", SUMMARY_TRANSACTION);
 
         TransactionApprovalRequest req = new TransactionApprovalRequest.Builder(x)
@@ -67,7 +66,7 @@ foam.CLASS({
           .setGroup(group)
           .setCreatedFor(owner.getId())
           .setDescription(headTx.getSummary() + summaryTx + headTx.getId())
-          .setClassification(complianceTx)
+          .setClassificationEnum(ApprovalRequestClassificationEnum.TRANSACTION_REQUEST)
           .setPaymentId(headTx.getId())
           .build();
 

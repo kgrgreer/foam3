@@ -35,6 +35,7 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
@@ -57,7 +58,7 @@ foam.CLASS({
       value: 'SudoTicket'
     }
   ],
-  
+
   methods: [
     {
       name: 'applyAction',
@@ -72,7 +73,7 @@ foam.CLASS({
               return;
             }
             SudoTicket ticket = (SudoTicket) obj; //.fclone();
-            DAO approvalDAO = ApprovalRequestUtil.getAllRequests(x, ticket.getId(), getClassification());
+            DAO approvalDAO = ApprovalRequestUtil.getAllRequests(x, ticket.getId(), ApprovalRequestClassificationEnum.SUDO_TICKET_APPROVAL);
 
             ApprovalStatus status = ApprovalRequestUtil.getState(approvalDAO);
             logger.debug("ApprovalStatus", status);
@@ -83,8 +84,8 @@ foam.CLASS({
               ApprovalRequest approval = new ApprovalRequest.Builder(x)
                 .setObjId(ticket.getId())
                 .setDaoKey(getDaoKey())
-                .setClassification(getClassification())
-                .setDescription(owner.getLegalName()+" request access to "+as.getLegalName())
+                .setClassificationEnum(ApprovalRequestClassificationEnum.SUDO_TICKET_APPROVAL)
+                .setDescription(owner.getLegalName() + " request access to " + as.getLegalName())
                 .setCreatedFor(owner.getId())
                 .build();
               for ( Long approverId : myRule.getApprovers() ) {
