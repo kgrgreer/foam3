@@ -1,8 +1,8 @@
 <title>API User Cases</title>
-<h1>API Use Cases</h1>
+<h2>API Use Cases</h2>
 
 <a name="make-payment"></a>
-<h2>Making a Payment</h2>
+<h4>Making a Payment</h4>
 <p>One of the primary function of the nanopay system is to send payments. Whether it is sending money between two digital accounts, 
    between two bank accounts, across currencies or a combination of all these, the system is optimized to make these operations as 
    easy as possible. This section describes the different ways that a payment can be accomplished.</p>
@@ -10,7 +10,7 @@
 <p><i>Describe the flow from user to partner</i></p>
 
 <a name="payable-invoice"></a>
-<h3>Creating a Payable Invoice</h3>
+<h4>Creating a Payable Invoice</h4>
 <p>Now that we have seen how to make payments, let's change focus a bit and talk about how to keep track of those payments using 
    invoices. The payable invoice can be thought of as either an invoice that you receive from another user requesting money, or 
    one that you create yourself to track a payment that you need to make to a vendor. The invoice moves through stages and helps 
@@ -23,18 +23,18 @@
 <p><i>Link after transaction</i></p>
 
 <a name="receive-payment"></a>
-<h2>Receiving a Payment</h2>
+<h4>Receiving a Payment</h4>
 <p><i>How is a payment received?</i></p>
 
 <a name="receivable-invoice"></a>
-<h3>Creating and Sending a Receivable Invoice</h3>
+<h4>Creating and Sending a Receivable Invoice</h4>
 <p><i>Describe the invoice entity</i></p>
 <p><i>Create and send a receivable invoice</i></p>
 <p><i>Create and link a receivable invoice</i></p>
 
 <a name="case-users-groups"></a>
-<h2>Working with Users and Groups</h2>
-<h3>Retrieving Your Own User Record</h3>
+<h4>Working with Users and Groups</h4>
+<h4>Retrieving Your Own User Record</h4>
 <p>In order to do most operations in the system, you will need to provide your user ID. In order to get this you will have to perform
    a select query against the User DAO to retrieve your user record and extract your user ID.
    </p>
@@ -63,14 +63,14 @@
 <p><i>Adding a user to a group</i></p>
 
 <a name="case-contacts-partners"></a>
-<h2>Working with Contacts and Partners</h3>
+<h4>Working with Contacts and Partners</h4>
 <p><i>Difference between partners and contacts</i></p>
 <p><i>Creating a contact</i></p>
 <p><i>Finding a partner</i></p>
 
 <a name="case-accounts"></a>
-<h2>Working with Accounts</h2>
-<h3>Adding Your First Bank Account</h3>
+<h4>Working with Accounts</h4>
+<h4>Adding Your First Bank Account</h4>
 <p>In order to do anything in the nanopay system, you will need to add money to your account. In order to get money into your 
    account you will need to "cash in". One way to do this is by adding a bank account and then transfering funds from the bank
    account into your digital account. So let us start this process by creating a bank account.
