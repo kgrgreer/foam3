@@ -1,8 +1,8 @@
 <title>API Reference</title>
 
-<h1>Reference</h1>
+<h2>Reference</h2>
 
-<h2>Core Concept - Query Parameters</h2>
+<h4>Core Concept - Query Parameters</h4>
 <p>
     This is the API query syntax that determines what entities to retrieve and filter within a DAO. 
     The DAO gives access to source data through a generic interface. Any existing field can be queried.
@@ -55,7 +55,7 @@
     </ol>
 </p>
 
-<h2>Reference - DIG Error Codes</h2>
+<h4>Reference - DIG Error Codes</h4>
 <p>
     DIG returns error codes in specific scenarios. The following table outlines the errors that are returned and 
     the corresponding error codes that are included in the responses.
