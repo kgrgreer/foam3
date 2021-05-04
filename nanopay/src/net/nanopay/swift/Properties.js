@@ -25,6 +25,10 @@ foam.CLASS({
   ],
   properties: [
     {
+      name: 'messageField',
+      class: 'Int'
+    },
+    {
       name: 'value',
       class: 'String'
     },
