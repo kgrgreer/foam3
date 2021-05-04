@@ -107,8 +107,22 @@ p({
       "editEnabled":true,
       "searchMode":0,
 
-      "primaryAction": {"class":"net.nanopay.ui.AddPrimaryAction"},
-      "viewBorder":{class:"foam.u2.borders.NullBorder"},
+      "WWWprimaryAction": {"class":"net.nanopay.ui.AddPrimaryAction"},
+      "WWWviewBorder":{class:"foam.u2.borders.NullBorder"},
+
+      "createController":{class:"net.nanopay.ui.wizard.ContactWizardDetailView"},
+      "detailView":{class:"net.nanopay.account.ui.BankAccountWizard"},
+
+      "createControllerView":{
+        "class":"net.nanopay.sme.ui.MenuRedirectSMEModalView",
+        "menu":"mainmenu.contacts2",
+        "view":{
+          "class":"foam.nanos.menu.MenuToolBar",
+          "classification":"submenu.contact",
+          "parent":"sme",
+          "title":"Add contact"
+        }
+      },
 
       "XXXcreateController":{"class":"net.nanopay.ui.wizard.ContactWizardDetailView"},
       "XXXdetailView":{"class":"net.nanopay.contacts.ui.ContactWizardView"},
