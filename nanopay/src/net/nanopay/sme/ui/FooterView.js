@@ -30,7 +30,7 @@ foam.CLASS({
   css: `
     ^ {
       width: 100vw;
-      height: 65px;
+      height: 48px;
       margin: auto;
       color: white;
       display: flex;
