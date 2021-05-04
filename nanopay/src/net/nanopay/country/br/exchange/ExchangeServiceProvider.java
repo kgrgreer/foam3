@@ -370,7 +370,8 @@ public class ExchangeServiceProvider implements ExchangeService {
     dadosBoleto.setESP3(getESP("PAG./REC. NO EXT.: ", getName(receiver),
       " - PAIS: ", userCountry == null  ? " " : userCountry.getName(), " - RELACAO"));
     Double taxaop = extractRate(summaryTransaction, "Total Rate");
-    if ( taxaop != null ) dadosBoleto.setTAXAOP(taxaop);
+    taxaop = null == taxaop ? 0.0 : taxaop;
+    dadosBoleto.setTAXAOP(taxaop);
     Double taxanv = extractRate(summaryTransaction, "Currency Value Rate");
     if ( taxanv != null ) dadosBoleto.setTAXANV(taxanv);
     Double totalFeeBRL = extractRate(summaryTransaction, "Transaction Fee");

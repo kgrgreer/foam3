@@ -83,6 +83,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.VIEW.label",target:"Visão"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.PRE_SET.label",target:"preSet"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.INVALID_OWNER_INFO",target:"As informações do proprietário são inválidas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.TOTAL_OWNERSHIP_ERROR",target:"A propriedade total deve ser inferior a 100%."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.ID.label",target:"id"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.BUSINESS_ID.label",target:"id de negócios"})
@@ -2037,10 +2038,12 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onbo
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.DOCUMENTS_OF_ID.label",target:"Carregue um comprovante de identificação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.PROOF_OF_ADDRESS",target:"Documentos comprovativos de endereço necessários"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.PROOF_OF_IDENTIFICATION",target:"Comprovante de documentos de identificação necessários"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.INVALID_CPF",target:"Número válido de CPF obrigatório"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBankAccountData.NO_BANK_NEEDED",target:"Nenhuma informação de conta bancária necessária. Prossiga para a próxima etapa."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBankAccountData.ADD_ACCOUNT_TITLE",target:"Adicionar Conta"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.INVALID_ADDRESS_ERROR",target:"Endereço inválido."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.INVALID_DATE_ERROR",target:"Data de nascimento válida exigida"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.UNGER_AGE_LIMIT_ERROR",target:"Deve ter pelo menos 18 anos."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.OVER_AGE_LIMIT_ERROR",target:"Deve ter menos de 125 anos."})
