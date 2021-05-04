@@ -70,3 +70,11 @@ p({
   }
 })
 
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "trevisoAPI.bankAccountValidationService",
+  "description": "Bank account validation service for BePay spid.",
+  "service": {
+    "class": "net.nanopay.partner.accuity.AccuityBankAccountValidationService"
+  }
+})
