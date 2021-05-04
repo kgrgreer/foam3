@@ -89,6 +89,7 @@ foam.CLASS({
       class: 'UnitValue',
       name: 'nanopayFee',
       label: 'Fee Nanopay',
+      value: 499,
       unitPropName: 'nanopayFeeCurrency'
     },
     {

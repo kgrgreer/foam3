@@ -83,12 +83,10 @@ public class PartnerTransactionReportGenerator extends ReconciliationReportGener
     report.setTradeNumber(afexTx.getAfexTradeResponseNumber());
     report.setValueDate(afexTx.getCompletionDate());
 
-    // to support legacy transactions that dont have the lineitem
+    // to support legacy data, transactions that dont have the lineitem would get default values
     if ( nanoLineItem != null ) {
       report.setNanopayFee(nanoLineItem.getAmount());
       report.setNanopayFeeCurrency(nanoLineItem.getCurrency());
-    } else {
-      report.setNanopayFee(499);
     }
     return (PartnerReport) super.generate(x, src, report);
   }
