@@ -2303,8 +2303,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.ui.BankAccou
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.ui.BankAccountWizard.EDIT_TITLE",target:"Editar Conta Bancária"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.BankPickCurrencyView.SECTION_DETAILS_TITLE_VOID",target:"Conecte usando uma verificação de vazio"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.BusinessDirectorArrayView.ADD_MSG",target:"+ Adicionar"})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.model_.label",target:"Canadá"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ATBankAccount.model_.label",target:"Áustria"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BEBankAccount.model_.label",target:"Bélgica"})
