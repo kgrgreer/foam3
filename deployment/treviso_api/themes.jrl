@@ -1,14 +1,14 @@
 p({
   "class":"foam.nanos.theme.Theme",
-  "id":"18E4CEBB-2C91-4D14-AC5B-64D38103D524",
+  "id":"aba0f4b8-26fb-477f-9122-6a847741ef9d",
   "name":"trevisoAPI",
   "appName":"treviso",
   "description":"treviso",
   "navigationRootMenu":"",
   "settingsRootMenu":"settings",
-  "logoRedirect":"view-accounts",
+  "logoRedirect":"view-users",
   "admissionCapability": "",
-  "defaultMenu":"view-accounts",
+  "defaultMenu":"view-users",
   "disableCurrencyChoice": true,
   "headConfig":{
     "customFavIcon":[
@@ -72,6 +72,11 @@ p({
     }
     .foam-comics-BrowserView {
       margin-top: 30px;
+    }
+    .net-nanopay-sme-ui-FooterView {
+      background: /*%PRIMARY1%*/ #2e2379 !important;
+      border-top: 1px solid /*%GREY4%*/ #e7eaec;
+      color: white !important;
     }
   """,
   "createdBy":1,
