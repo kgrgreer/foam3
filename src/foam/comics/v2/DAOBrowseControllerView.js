@@ -125,6 +125,8 @@ foam.CLASS({
             config$: this.config$,
             of: this.data.of
           }, this.__subContext__);
+        } else if (this.config.createControllerView) {
+          this.stack.push(this.config.createControllerView, this.__subContext__);
         } else {
           this.stack.push({
             class: this.config.createController.class,
@@ -149,7 +151,7 @@ foam.CLASS({
     var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
     this.addClass(this.myClass())
 
-      .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$browseSubtitle, config$primaryAction, config$createTitle) {
+      .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$browseSubtitle, config$primaryAction, config$createTitle, config$createControllerView) {
         return self.E()
           .start(self.Rows)
             .addClass(self.myClass('container'))
@@ -165,7 +167,12 @@ foam.CLASS({
                       .tag(self.CREATE, { label: config$createTitle })
                     .endContext()
                   })
-                  .callIf( config.detailView && config$primaryAction, function() {
+                  .callIf( config.createControllerView, function() {
+                    this.startContext({ data: self })
+                      .tag(self.CREATE, { label: config$createControllerView.view.title })
+                    .endContext()
+                  })
+                  .callIf( config$primaryAction, function() {
                     this.startContext({ data: self }).tag(config$primaryAction, { size: 'LARGE' }).endContext();
                   })
                 .end()
