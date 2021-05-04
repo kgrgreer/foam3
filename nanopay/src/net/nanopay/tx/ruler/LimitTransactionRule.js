@@ -31,6 +31,7 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
@@ -100,7 +101,6 @@ foam.CLASS({
 
             if ( ! limitHit ) {
               txn.setStatus(TransactionStatus.COMPLETED);
-              ((DAO) x.get("localTransactionDAO")).put(txn);
             }
 
           }
@@ -130,10 +130,9 @@ foam.CLASS({
       ],
       javaCode: `
         DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
-        DAO transactionDAO = (DAO) x.get("localTransactionDAO");
         List<ApprovalRequest> existingRequests = ((ArraySink) approvalRequestDAO.where(
           AND(
-            EQ(ApprovalRequest.CLASSIFICATION, "Transaction Limit Exceeded"),
+            EQ(ApprovalRequest.CLASSIFICATION_ENUM, ApprovalRequestClassificationEnum.TRANSACTION_LIMIT_EXCEEDED),
             EQ(ApprovalRequest.DAO_KEY, "transactionDAO"),
             EQ(ApprovalRequest.OBJ_ID, txn.getId())
           )
@@ -146,14 +145,13 @@ foam.CLASS({
             return false;
           } else if ( req.getStatus().equals(ApprovalStatus.REJECTED) ) {
             txn.setStatus(TransactionStatus.CANCELLED);
-            transactionDAO.put(txn);
             return true;
           }
         }
 
         // create new approval request if none exist
         ApprovalRequest req = new ApprovalRequest.Builder(x)
-          .setClassification("Transaction Limit Exceeded")
+          .setClassificationEnum(ApprovalRequestClassificationEnum.TRANSACTION_LIMIT_EXCEEDED)
           .setDescription("Transaction ID: " + txn.getId() + " has exceeded " + limit.getPeriod().getLabel() + " limit of " + limit.getAmount())
           .setDaoKey("transactionDAO")
           .setServerDaoKey("localTransactionDAO")
