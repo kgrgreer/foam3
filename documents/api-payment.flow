@@ -1,26 +1,26 @@
 <title>Payment - API Reference</title>
-<h1>API Reference - Payment</h1>
+<h2>API Reference - Payment</h2>
 
-<h2>Create a Payment</h2>
+<h4>Create a Payment</h4>
 <p><i>Describe the entity</i></p>
 
-<h2>Submit a Payment</h2>
+<h4>Submit a Payment</h4>
 <p><i>Describe the entity</i></p>
 
-<h2>Check Payment Status</h2>
+<h4>Check Payment Status</h4>
 <p><i>Describe the entity</i></p>
 
-<h2>List Payments</h2>
+<h4>List Payments</h4>
 <p><i>Describe the entity</i></p>
 
-<h2>Approve a Payment</h2>
+<h4>Approve a Payment</h4>
 <p><i>Describe the entity</i></p>
 
-<h2>List Payments Pending Approval</h2>
+<h4>List Payments Pending Approval</h4>
 <p><i>Describe the entity</i></p>
 
-<h2>Retrieve Payment Limits for User</h2>
+<h4>Retrieve Payment Limits for User</h4>
 <p><i>Describe the entity</i></p>
 
-<h2>Cancel a Payment</h2>
+<h4>Cancel a Payment</h4>
 <p><i>Describe the entity</i></p>
