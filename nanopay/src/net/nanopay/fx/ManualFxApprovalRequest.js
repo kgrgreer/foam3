@@ -33,6 +33,11 @@ foam.CLASS({
     'objectSummaryView?'
   ],
 
+  javaImports: [
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
+    'foam.util.SafetyUtil'
+  ],
+
   messages: [
     { name: 'REQUEST_UPDATED', message: 'Approval request successfully updated' }
   ],
@@ -67,7 +72,7 @@ foam.CLASS({
       gridColumns: 6
     }
   ],
-  
+
   actions: [
     {
       name: 'updateDealId',

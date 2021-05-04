@@ -25,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
@@ -53,7 +54,7 @@ foam.CLASS({
                     .setDaoKey("userDAO")
                     .setServerDaoKey("localUserDAO")
                     .setCauseId(response.getId())
-                    .setClassification("Business SecureFact LEV, Response ID: " + response.getId())
+                    .setClassificationEnum(ApprovalRequestClassificationEnum.BUSINESS_SECUREFACT_LEV)
                     .setCreatedFor(business.getId())
                     .setCauseDaoKey("securefactLEVDAO")
                     .build()

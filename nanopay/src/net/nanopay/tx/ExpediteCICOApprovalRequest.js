@@ -22,6 +22,11 @@ foam.CLASS({
 
   documentation: 'Approval request subclass for expediting cico transactions',
 
+  javaImports: [
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
+    'foam.util.SafetyUtil'
+  ],
+
   properties: [
     {
       name: 'classification',

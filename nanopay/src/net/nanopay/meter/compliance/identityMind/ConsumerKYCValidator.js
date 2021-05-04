@@ -25,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.User',
     'java.util.Map',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
@@ -53,7 +54,7 @@ foam.CLASS({
             Map <String, Object> memoMap = identityMindService.fetchMemos(x, true, user.getId(), "Dow Jones User");
             IdentityMindResponse response = identityMindService.evaluateConsumer(x, obj, getStage(), memoMap);
             ComplianceValidationStatus status = response.getComplianceValidationStatus();
-            
+
             if ( obj instanceof User ) {
               requestApproval(x,
                 new ComplianceApprovalRequest.Builder(x)
@@ -65,7 +66,7 @@ foam.CLASS({
                   .setStatus(getApprovalStatus(status))
                   .setApprover(getApprover(status))
                   .setCreatedFor(user.getId())
-                  .setClassification("User IdentityMind Consumer KYC")
+                  .setClassificationEnum(ApprovalRequestClassificationEnum.USER_IDENTITYMIND_CONSUMER_KYC)
                   .build()
               );
             }
