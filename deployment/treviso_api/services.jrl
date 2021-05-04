@@ -1,6 +1,6 @@
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "brazilVerificationService",
-  "documentation": "Nullify brazilVerificationService on bepay SPID",
+  "name": "trevisoAPI.brazilVerificationService",
+  "documentation": "Nullify brazilVerificationService on trevisoAPI SPID",
   "serviceClass": "net.nanopay.country.br.NullBrazilVerificationService"
 })

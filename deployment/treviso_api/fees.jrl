@@ -1,7 +1,7 @@
 p({
   class: "net.nanopay.tx.fee.FixedFee",
   id: "b0a7ab7c-bfab-4735-a69b-a04afb836355",
-  name: "BPP Fee",
+  name: "Treviso API Fee",
   fixedFee: 3000,
   feeRule: "63a792b6-d46b-4d48-afa3-42481645ed46"
 })

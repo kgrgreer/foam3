@@ -1,5 +1,4 @@
-// intermediary accounts, each child spid of bepay would need it own account
-// with AFEX as the intermediary account
+// intermediary accounts
 p({
   "class":"net.nanopay.bank.USBankAccount",
   "branchId":"123456789",
