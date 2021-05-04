@@ -44,7 +44,7 @@ foam.CLASS({
         @Override
         public void execute(X x) {
           ApprovalRequest request = (ApprovalRequest) obj;
-          if ( ApprovalRequestUtil.getStatus(x, request.getObjId(), request.getClassification()) == ApprovalStatus.REJECTED ) {
+          if ( ApprovalRequestUtil.getStatus(x, request.getObjId(), request.getClassificationEnum()) == ApprovalStatus.REJECTED ) {
             // remove all requested compliance approval requests for this specific object
             ((DAO)x.get("approvalRequestDAO")).where(
               AND(

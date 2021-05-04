@@ -23,6 +23,11 @@ foam.CLASS({
 
   extends: 'foam.nanos.approval.ApprovalRequest',
 
+  javaImports: [
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
+    'foam.util.SafetyUtil'
+  ],
+
   properties: [
     {
       class: 'String',

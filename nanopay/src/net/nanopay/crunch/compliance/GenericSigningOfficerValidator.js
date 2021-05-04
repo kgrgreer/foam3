@@ -25,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.UserCapabilityJunction',
@@ -50,7 +51,7 @@ foam.CLASS({
             Capability capability = (Capability) ucj.findTargetId(x);
             User user = (User) ucj.saveDataToDAO(x, capability, false);
 
-            foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");            
+            foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
             logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", true). - subject", x.get("subject"));
             logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", true). - user", ((foam.nanos.auth.Subject) x.get("subject")).getUser());
             logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", true). - realuser", ((foam.nanos.auth.Subject) x.get("subject")).getRealUser());
@@ -62,7 +63,7 @@ foam.CLASS({
 
             requestApproval(x,
               new ApprovalRequest.Builder(x)
-                .setClassification(getClassification())
+                .setClassificationEnum(ApprovalRequestClassificationEnum.GENERIC_SIGNING_OFFICER_VALIDATION)
                 .setDescription("A user wishes to be a signing officer " +
                   "Please review whether they should be given this capability ")
                 .setDaoKey("userCapabilityJunctionDAO")

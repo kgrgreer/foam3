@@ -26,6 +26,7 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.UserCapabilityJunction',
@@ -58,7 +59,7 @@ foam.CLASS({
 
         Capability capability = (Capability) ucj.findTargetId(x);
         User user = (User) ucj.saveDataToDAO(x, capability, false);
-        foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");     
+        foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
         logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - subject", x.get("subject"));
         logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - user", ((foam.nanos.auth.Subject) x.get("subject")).getUser());
         logger.debug(this.getClass().getSimpleName(), "ucj.saveDataToDAO(x, "+capability.getId()+", false). - realuser", ((foam.nanos.auth.Subject) x.get("subject")).getRealUser());
@@ -82,7 +83,7 @@ foam.CLASS({
                     .setObjId(ucj.getId())
                     .setDaoKey("userCapabilityJunctionDAO")
                     .setCauseId(getResponse().getId())
-                    .setClassification(getClassification())
+                    .setClassificationEnum(ApprovalRequestClassificationEnum.SIGNING_OFFICER_SECUREFACT_SIDNI)
                     .setCauseDaoKey("securefactSIDniDAO")
                     .setCreatedFor(user.getId())
                     .setGroup(group)
@@ -101,7 +102,7 @@ foam.CLASS({
             .setObjId(ucj.getId())
             .setDaoKey("userCapabilityJunctionDAO")
             .setCauseId(response == null ? 0L : getResponse().getId())
-            .setClassification(getClassification())
+            .setClassificationEnum(ApprovalRequestClassificationEnum.SIGNING_OFFICER_SECUREFACT_SIDNI)
             .setCauseDaoKey("securefactSIDniDAO")
             .setCreatedFor(user.getId())
             .setGroup(group)
