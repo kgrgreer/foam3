@@ -96,12 +96,12 @@ foam.CLASS({
       section: 'directorsInfoSection',
       view: function(_, x) {
         return {
-          class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
+          class: 'foam.u2.view.TitledArrayView',
           mode: 'RW',
           enableAdding: true,
           enableRemoving: true,
           defaultNewItem: net.nanopay.model.BusinessDirector.create({}, x),
-          name: 'director'
+          title: 'Director'
         };
       },
       visibility: function(businessTypeId, needDirector) {

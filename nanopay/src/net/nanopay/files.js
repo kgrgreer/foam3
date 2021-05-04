@@ -939,9 +939,6 @@ FOAM_FILES([
   // sme WizardModal NavigationBar
   { name: 'net/nanopay/sme/ui/wizardModal/WizardModalNavigationBar', flags: ['web'] },
 
-  //onboarding
-  { name: 'net/nanopay/sme/onboarding/BusinessDirectorArrayView', flags: ['web'] },
-
   // snapshot
   { name: 'net/nanopay/security/snapshooter/RollingJournal' },
   { name: 'net/nanopay/security/snapshooter/RollingJDAO' },
