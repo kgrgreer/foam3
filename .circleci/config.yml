@@ -7,39 +7,41 @@ version: 2
 jobs:
   build:
     docker:
-      - image: 132252763429.dkr.ecr.us-east-1.amazonaws.com/nanopay/node:latest
+      # - image: 132252763429.dkr.ecr.us-east-1.amazonaws.com/nanopay/node:latest
+      - image: cimg/openjdk:11.0.10-node
     working_directory: ~/NANOPAY
     steps:
       - checkout
       - run: mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
-      - run: echo "127.0.0.1  ablii" >> /etc/hosts
-      - run: echo "127.0.0.1  liquid" >> /etc/hosts
-      - run: echo "127.0.0.1  intuit" >> /etc/hosts
-      - run: echo "127.0.0.1  bpp" >> /etc/hosts
+      - run: echo "127.0.0.1  ablii" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1  liquid" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1  intuit" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1  bpp" | sudo tee -a /etc/hosts
       - run: echo `node --version`
       - run: git submodule sync
       - run: git submodule update --init
+      - run: gradle -v
 
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
-            - node-v1-{{ .Branch }}-
-            - node-v1-
+            - node-v2-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            - node-v2-{{ .Branch }}-
+            - node-v2-
 
       - run: npm install
 
       - save_cache:
           paths:
             - node_modules
-          key: node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          key: node-v2-{{ .Branch }}-{{ checksum "package-lock.json" }}
 
       # cache gradle repositories
       - restore_cache:
           keys:
-            - gradle-repo-v1-{{ .Branch }}-{{ checksum "build.gradle" }}
-            - gradle-repo-v1-{{ .Branch }}-
-            - gradle-repo-v1-
+            - gradle-repo-v2-{{ .Branch }}-{{ checksum "build.gradle" }}
+            - gradle-repo-v2-{{ .Branch }}-
+            - gradle-repo-v2-
 
       # unit tests
       - run: ./build.sh -ct
@@ -47,12 +49,18 @@ jobs:
 
 
       # postman tests
-      - run: npm install -g newman
+      - run: sudo npm install -g newman
+
+      - run:
+          command: |
+            sudo rm -rf /opt/nanopay
+            sudo mkdir -p /opt/nanopay
+            sudo chmod 777 /opt/nanopay
 
       - run:
           name: Run Postman tests for Bepay
           command: |
-            ./build.sh -cjzJapi,br,bepay,bepay_development,bpp,bpp_development,sa-development
+            ./build.sh -cjzJapi,br,bepay,bepay_development,bpp,bpp_development
             newman run https://www.getpostman.com/collections/a5eae2dfbf56f16b3b6f --timeout-request 150000 -e environments/bepay_environment.json
 
 
@@ -66,7 +74,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-          key: gradle-repo-v1-{{ .Branch }}-{{ checksum "build.gradle" }}
+          key: gradle-repo-v2-{{ .Branch }}-{{ checksum "build.gradle" }}
 workflows:
   version: 2
   build_and_test:

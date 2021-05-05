@@ -1,11 +1,11 @@
 <title>API Webhooks</title>
 
-<h1>Webhooks</h1>
+<h2>Webhooks</h2>
 <p>
     The Data Update Gateway (DUG) is used to configure webhooks. DUG enables users to configure webhooks to listen for operations on a given DAO, such as the userDAO or the transactionDAO.
 </p>
 
-<h4>Webhook Retry Behaviour</h4>
+<h5>Webhook Retry Behaviour</h5>
 <p>
     Webhooks are sent after an operation has completed on a DAO for a given entity, so that 
     the result of the webhook does not affect the operation itself. If the 
@@ -14,7 +14,7 @@
     retried again.
 </p>
 
-<h2>Transaction Webhook</h2>
+<h4>Transaction Webhook</h4>
 <p>
     DUG can be configured to send transaction operations through a webhook. In order to 
     subscribe to transaction operations, create a new DUG entry and configure the DAO as
@@ -22,7 +22,7 @@
     save the DUG rule. It will be active immediately and start sending transaction operations
     to the configured URL.
 </p>
-<h3>Message Payload</h3>
+<h4>Message Payload</h4>
 <p>
     The payload of the transaction webhook is a serialization of the transaction entry. See the 
     API data decription of the Transaction for field level descriptions.
@@ -99,14 +99,14 @@
 </code>
 </p>
 
-<h2>User Webhook</h2>
+<h4>User Webhook</h4>
 <p>
   DUG can be configured to send user changes through a webhook. In order to subscribe to user changes, 
   create a DUG entry and configure the DAO as the userDAO, set the URL and the bearer token and the format,
   then save the DUG rule. It will be active immediately and start sending any changes to users to the configured
   URL.
 </p>
-<h3>Message Payload</h3>
+<h4>Message Payload</h4>
 <p>
   The payload of the user webhook is a serialization of the user entity. See the API data description of the 
   User for field level descriptions.
@@ -142,7 +142,7 @@
     "streetNumber": "",
     "streetName": "",
     "city": "Montréal",
-    "postalCode": "H3B 5E8",
+    "postalCode": "h4B 5E8",
     "latitude": 0,
     "longitude": 0,
     "propertyType": 0
@@ -178,14 +178,14 @@
 }
 </code>
 
-<h2>Business Webhook</h2>
+<h4>Business Webhook</h4>
 <p>
   DUG can be configured to send business changes through a webhook. In order to subscribe to business changes, 
   create a DUG entry and configure the DAO as the businessDAO, set the URL and the bearer token and the format,
   then save the DUG rule. It will be active immediately and start sending any changes to businesses to the configured
   URL.
 </p>
-<h3>Message Payload</h3>
+<h4>Message Payload</h4>
 <p>
   The payload of the business webhook is a serialization of the business entity. See the API data description of the 
   Business for field level descriptions.
@@ -290,19 +290,19 @@
 }
 </code>
 
-<h2>Asynchronous FlinksLoginId Webhooks</h2>
+<h4>Asynchronous FlinksLoginId Webhooks</h4>
 <p>
   DUG can be configured to send updates for asynchronous Flinks onboarding calls through a webhook. In order to
   subscribe to FlinksLoginIdAsync updates, create a DUG entry and configure the DAO as the FlinksLoginIdAsyncDAO,
   set the URL and the bearer token and the format, then save the DUG rule. It will be active immediately and start 
   sending any changes to Flinks onboarding calls to the configured URL.
 </p>
-<h3>Message Payloads</h3>
+<h4>Message Payloads</h4>
 <p>
   The payload of the asynchronous Flinks onboarding calls is a serialization of the FlinksLoginIdAsync entity. The
   first payload is an asynchronous call that is in progress, while the second one is a complete call.
 </p>
-<h4>In Progress Flinks Onboarding Call</h4>
+<h5>In Progress Flinks Onboarding Call</h5>
 <code> 
 {
   "class": "net.nanopay.flinks.external.FlinksLoginIdAsync",
@@ -314,7 +314,7 @@
   "createdByAgent": 8023
 }
 </code>
-<h4>Complete Flinks Onboardin Call</h4>
+<h5>Complete Flinks Onboardin Call</h5>
 <code>
 {
   "class": "net.nanopay.flinks.external.FlinksLoginIdAsync",

@@ -90,7 +90,7 @@ foam.CLASS({
       if ( this.getAmount().getType() == LineItemAmountType.TOTAL ) {
         return this.getAmount().getValue();
       } else {
-        return ((Double) (this.getAmount().getValue()/100.0 * transactionAmount)).longValue();
+        return Math.round(this.getAmount().getValue() / 100.0 * transactionAmount);
       }
       `,
       // swiftCode: ' return fixedFee ',

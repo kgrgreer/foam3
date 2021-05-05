@@ -1,20 +1,20 @@
 <title>Administration - API Reference</title>
-<h1>API Reference - Administration</h1>
+<h2>API Reference - Administration</h2>
 
-<h2>Users</h2>
+<h4>Users</h4>
 <p><i>Describe the entity</i></p>
 
-<h2>Groups</h2>
+<h4>Groups</h4>
 <p><i>Describe the entity</i></p>
 
-<h2>Service Providers</h2>
+<h4>Service Providers</h4>
 <p><i>Describe the entity</i></p>
 
-<h2>Accounts</h2>
+<h4>Accounts</h4>
 <p><i>Describe the entity</i></p>
 
-<h2>Contacts</h2>
+<h4>Contacts</h4>
 <p><i>Describe the entity</i></p>
 
-<h2>Partners</h2>
+<h4>Partners</h4>
 <p><i>Describe the entity</i></p>

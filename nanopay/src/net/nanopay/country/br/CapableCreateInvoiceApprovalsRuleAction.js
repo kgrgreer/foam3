@@ -1,17 +1,28 @@
 /**
- * @license
- * Copyright 2020 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2021] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
  */
 
 foam.CLASS({
   package: 'net.nanopay.country.br',
-  name: 'CapableCreateNatureCodeApprovalsRuleAction',
+  name: 'CapableCreateInvoiceApprovalsRuleAction',
   extends: 'foam.nanos.crunch.lite.ruler.CapableCreateApprovalsRuleAction',
 
   documentation: `
-    To add a NatureCodeApprovalRequest decorator on ApprovalRequest instantiation in
-    CapableCreateApprovalsRuleAction
+    To add a NatureCodeApprovalRequest and TransactionApprovalRequest decorator
+    on ApprovalRequest instantiation for Invoices
   `,
 
   javaImports: [
@@ -23,6 +34,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.approval.Approvable',
     'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.approval.ApprovalStatus',
     'foam.comics.v2.userfeedback.UserFeedback',
     'foam.comics.v2.userfeedback.UserFeedbackException',
@@ -39,6 +51,8 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'net.nanopay.country.br.NatureCode',
     'net.nanopay.country.br.NatureCodeApprovalRequest',
+    'net.nanopay.tx.TransactionApprovalRequest',
+    'net.nanopay.invoice.model.Invoice'
   ],
 
   implements: ['foam.nanos.ruler.RuleAction'],
@@ -53,7 +67,7 @@ foam.CLASS({
       args: [
         { name: 'x', type: 'Context' },
         { name: 'request', type: 'ApprovalRequest' },
-        { name: 'capableObj', type: 'Capable' },
+        { name: 'obj', type: 'FObject' },
         { name: 'capablePayloadObj', type: 'CapabilityJunctionPayload' }
       ],
       javaCode: `
@@ -61,21 +75,35 @@ foam.CLASS({
         DAO capabilityDAO = (DAO) x.get("capabilityDAO");
         Capability capability = (Capability) capabilityDAO.find(capablePayload.getCapability());
 
-        if ( ! ( capability instanceof NatureCode ) ){
-          return request;
+        // TODO: consider making referenceAware if we need paymentId elsewhere
+        Invoice invoice = (Invoice) obj;
+
+        if ( capability instanceof NatureCode ){
+          NatureCodeApprovalRequest  natureCodeApprovalRequest = new NatureCodeApprovalRequest.Builder(getX())
+            .setDaoKey(request.getDaoKey())
+            .setObjId(request.getObjId())
+            .setOperation(request.getOperation())
+            .setCreatedFor(request.getCreatedFor())
+            .setGroup(request.getGroup())
+            .setClassificationEnum(ApprovalRequestClassificationEnum.NATURE_CODE_APPROVAL)
+            .setStatus(request.getStatus())
+            .setPaymentId(invoice.getPaymentId())
+            .setNatureCode(capability.getId()).build();
+
+          return natureCodeApprovalRequest;
         }
 
-        NatureCodeApprovalRequest  natureCodeApprovalRequest = new NatureCodeApprovalRequest.Builder(getX())
+        TransactionApprovalRequest  transactionApprovalRequest = new TransactionApprovalRequest.Builder(getX())
           .setDaoKey(request.getDaoKey())
           .setObjId(request.getObjId())
           .setOperation(request.getOperation())
           .setCreatedFor(request.getCreatedFor())
           .setGroup(request.getGroup())
-          .setClassification(request.getClassification())
+          .setClassificationEnum(ApprovalRequestClassificationEnum.TRANSACTION_REQUEST)
           .setStatus(request.getStatus())
-          .setNatureCode(capability.getId()).build();
+          .setPaymentId(invoice.getPaymentId()).build();
 
-        return natureCodeApprovalRequest;
+        return transactionApprovalRequest;
       `
     }
   ]

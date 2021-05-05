@@ -532,7 +532,7 @@ foam.CLASS({
 
         if (
           user.getId() != this.getOwner() &&
-          ! auth.check(x, "contact.create." + this.getId())
+          ! auth.check(x, "contact.create")
         ) {
           throw new AuthorizationException();
         }

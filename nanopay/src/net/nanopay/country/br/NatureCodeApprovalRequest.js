@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'net.nanopay.country.br',
   name: 'NatureCodeApprovalRequest',
-  extends: 'foam.nanos.approval.ApprovalRequest',
+  extends: 'net.nanopay.tx.TransactionApprovalRequest',
 
   documentation: `
     NatureCodeApprovalRequest links NatureCodeData for an approval request that
@@ -26,11 +26,13 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.*',
     'foam.nanos.logger.Logger',
     'foam.nanos.dao.Operation',
     'java.util.ArrayList',
     'java.util.List',
+    'foam.util.SafetyUtil',
     'static foam.mlang.MLang.*'
   ],
 
@@ -163,7 +165,7 @@ foam.CLASS({
           this.notify(this.SUCCESS_APPROVED, '', this.LogLevel.INFO, true);
 
           if (
-            X.stack.top && 
+            X.stack.top &&
             ( X.currentMenu.id !== X.stack.top[2] )
           ) {
             X.stack.back();

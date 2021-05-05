@@ -16,8 +16,8 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.partner.bepay.tx.planner',
-  name: 'BePayTransactionPlanner',
+  package: 'net.nanopay.country.br.tx',
+  name: 'PartnerTransactionPlanner',
   extends: 'net.nanopay.tx.planner.AbstractTransactionPlanner',
 
   documentation: 'Plans BRL to intermediary currencies e.g. USD, CAD, EUR, and GBP',
@@ -32,7 +32,7 @@ foam.CLASS({
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.country.br.tx.PartnerLineItem',
-    'net.nanopay.partner.bepay.tx.BePayTransaction',
+    'net.nanopay.country.br.tx.BRPartnerTransaction',
     'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.InfoLineItem',
@@ -56,14 +56,10 @@ foam.CLASS({
     {
       name: 'bestPlan',
       value: true
-    }
-  ],
-
-  constants: [
+    },
     {
-      name: 'PAYMENT_PROVIDER',
-      type: 'String',
-      value: 'BePay'
+      name: 'paymentProvider',
+      class: 'String'
     }
   ],
 
@@ -73,16 +69,16 @@ foam.CLASS({
       javaCode: `
       FXSummaryTransaction txn = new FXSummaryTransaction();
       txn.copyFrom(requestTxn);
-      txn.setPaymentProvider(PAYMENT_PROVIDER);
+      txn.setPaymentProvider(getPaymentProvider());
       txn.setStatus(TransactionStatus.COMPLETED);
       txn.clearLineItems();
-      BePayTransaction bTx = new BePayTransaction();
+      BRPartnerTransaction bTx = new BRPartnerTransaction();
       bTx.setLineItems(requestTxn.getLineItems());
       bTx.copyFrom(requestTxn);
       bTx.setId(UUID.randomUUID().toString());
       bTx.setAmount(txn.getAmount());
-      bTx.setName("BePay transaction");
-      bTx.setPaymentProvider(PAYMENT_PROVIDER);
+      bTx.setName("Partner transaction");
+      bTx.setPaymentProvider(getPaymentProvider());
       bTx.setPlanner(this.getId());
       addPartnerLineItem(x, bTx, requestTxn);
       txn.addNext(bTx);
@@ -101,10 +97,10 @@ foam.CLASS({
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
-        if ( ! ( txn instanceof BePayTransaction ) ) {
+        if ( ! ( txn instanceof BRPartnerTransaction ) ) {
           return true;
         }
-        BePayTransaction transaction = (BePayTransaction) txn;
+        BRPartnerTransaction transaction = (BRPartnerTransaction) txn;
 
         for ( TransactionLineItem lineItem: txn.getLineItems() ) {
           if ( lineItem instanceof PartnerLineItem ) {
@@ -116,7 +112,7 @@ foam.CLASS({
     },
     {
       name: 'addPartnerLineItem',
-      javaType: 'BePayTransaction',
+      type: 'BRPartnerTransaction',
       args: [
         {
           name: 'x',
@@ -124,7 +120,7 @@ foam.CLASS({
         },
         {
           name: 'txn',
-          type: 'BePayTransaction',
+          type: 'BRPartnerTransaction',
         },
         {
           name: 'requestTxn',

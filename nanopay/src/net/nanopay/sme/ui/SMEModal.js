@@ -101,7 +101,7 @@ foam.CLASS({
         .start()
           .addClass(this.myClass('inner'))
           .startContext({ data: this })
-            .start(this.CLOSE_MODAL).show(this.closeable$)
+            .start(this.CLOSE_MODAL, { buttonStyle: 'TERTIARY' }).show(this.closeable$)
               .addClass(this.myClass('X'))
             .end()
           .endContext()

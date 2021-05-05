@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -15,32 +15,18 @@
  * from nanopay Corporation.
  */
 
-/**
- * @license
- * Copyright 2020 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
-
-foam.CLASS({
-  package: 'net.nanopay.sme.onboarding',
-  name: 'BusinessDirectorArrayView',
-  extends: 'foam.u2.view.FObjectArrayView',
-
-  messages: [
-    { name: 'ADD_MSG', message: '+ Add' }
-  ],
-
+ net.nanopay.swift.SCHEMA({
+  id: '205',
   properties: [
-    'name'
-  ],
-
-  methods: [
-    {
-      name: 'init',
-      code: function() {
-        this.SUPER();
-        this.ADD_ROW.label = this.ADD_MSG + ' ' +this.name;
-      }
-    }
-  ],
+    [1, '20', 'M'],
+    [2, '21', 'M'],
+    [3, '13C'],
+    [4, '32A', 'M'],
+    [5, '52a', 'M'],
+    [6, '53a'],
+    [7, '56a'],
+    [8, '57a'],
+    [9, '58a', 'M'],
+    [10, '72']
+  ]
 });

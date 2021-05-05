@@ -69,4 +69,8 @@ public class IntuitUserOnboardingReportGenerator extends ReportGenerator {
     return (UserOnboardingReport) super.generate(x, src, cor);
   }
 
+  public IntuitUserOnboardingReportGenerator(String spid) {
+    super(spid);
+  }
+
 }

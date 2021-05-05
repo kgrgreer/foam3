@@ -53,4 +53,12 @@ public abstract class RBCReconciliationReportGenerator extends ReconciliationRep
     }
   }
 
+  protected RBCReconciliationReportGenerator() {
+    super();
+  }
+
+  protected RBCReconciliationReportGenerator(String spid) {
+    super(spid);
+  }
+
 }

@@ -24,6 +24,7 @@ foam.CLASS({
     'foam.dao.AbstractDAO',
     'foam.log.LogLevel',
     'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.approval.ApprovalStatus'
   ],
 
@@ -53,8 +54,7 @@ foam.CLASS({
                 this.EQ(this.ApprovalRequest.OBJ_ID, ucj.id),
                 this.EQ(this.ApprovalRequest.DAO_KEY, "userCapabilityJunctionDAO"),
                 this.OR(
-                  this.EQ(this.ApprovalRequest.CLASSIFICATION, "Generic Business Validator"),
-                  this.EQ(this.ApprovalRequest.CLASSIFICATION, "Validador Genérico de Negócios")
+                  this.EQ(this.ApprovalRequest.CLASSIFICATION_ENUM, ApprovalRequestClassificationEnum.GENERIC_BUSINESS_VALIDATOR)
                 ),
                 this.EQ(this.ApprovalRequest.STATUS, this.ApprovalStatus.REQUESTED)
               )).limit(1).select();

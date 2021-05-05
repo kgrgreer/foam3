@@ -35,7 +35,7 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.AgentJunctionStatus',
-    'foam.nanos.theme.Glyph'
+    'foam.core.Glyph'
   ],
 
   css: `
@@ -140,17 +140,17 @@ foam.CLASS({
     {
       name: 'arrow',
       class: 'FObjectProperty',
-      of: 'foam.nanos.theme.Glyph',
+      of: 'foam.core.Glyph',
       factory: function () {
         return this.Glyph.create({
           template: `
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
   <g fill="none">
     <g transform="translate(-836 -333)translate(388 308)translate(448 25)">
-      <circle cx="16" cy="16" r="16" fill="%FILL%"/>
+      <circle cx="16" cy="16" r="16" fill="/*%FILL%*/ #E2E2E3"/>
       <g transform="translate(16 16)scale(-1 1)translate(-16 -16)translate(4 4)">
         <polygon points="0 0 24 0 24 24 0 24"/>
-        <polygon points="20 11 7.8 11 13.4 5.4 12 4 4 12 12 20 13.4 18.6 7.8 13 20 13" fill="#FFF"/>
+        <polygon points="20 11 7.8 11 13.4 5.4 12 4 4 12 12 20 13.4 18.6 7.8 13 20 13" fill="#FFFFFF"/>
       </g>
     </g>
   </g>

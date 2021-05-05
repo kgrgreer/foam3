@@ -25,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
@@ -53,7 +54,7 @@ foam.CLASS({
                     .setDaoKey("userDAO")
                     .setServerDaoKey("localUserDAO")
                     .setCauseId(response.getId())
-                    .setClassification("User SecureFact SIDni")
+                    .setClassificationEnum(ApprovalRequestClassificationEnum.USER_SECUREFACT_SIDNI)
                     .setCreatedFor(user.getId())
                     .setCauseDaoKey("securefactSIDniDAO")
                     .build()
