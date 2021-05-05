@@ -138,6 +138,22 @@ foam.CLASS({
     {
       class: 'String',
       name: 'natureCode'
+    },
+    {
+      class: 'Double',
+      name: 'bankFee'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.core.Currency',
+      name: 'bankCurrency',
+      targetDAOKey: 'currencyDAO',
+      label: 'Bank Currency'
+    },
+    {
+      class: 'Double',
+      name: 'bankRate',
+      label: 'bank Rate'
     }
   ],
 
@@ -154,6 +170,9 @@ foam.CLASS({
       if ( getIOFRate() == 0 ) throw new ValidationException("IOFRate is missing on PartnerLineItem");
       if ( getIOFCurrency() == "" ) throw new ValidationException("IOFCurrency is missing on PartnerLineItem");
       if ( getVET() == 0 ) throw new ValidationException("VET is missing on PartnerLineItem");
+      if ( getBankFee() == 0 ) throw new ValidationException("bankFee is missing on PartnerLineItem");
+      if ( getBankRate() == 0 ) throw new ValidationException("bankRate is missing on PartnerLineItem");
+      if ( getBankCurrency() == "" ) throw new ValidationException("bankCurrency is missing on PartnerLineItem");
       `
     }
   ]
