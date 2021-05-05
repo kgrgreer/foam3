@@ -214,7 +214,7 @@ foam.CLASS({
       updateVisibility: 'RO',
       value: 'UNSCHEDULED',
       javaValue: 'ScriptStatus.UNSCHEDULED',
-      tableWidth: 100,
+      tableWidth: 120,
       storageTransient: true
     },
     {
@@ -283,7 +283,7 @@ foam.CLASS({
       value: 'scriptDAO',
       transient: true,
       visibility: 'HIDDEN',
-      documentation: `Name of dao to store script itself. To set from inheritor just change property value`
+      documentation: 'Name of dao to store script itself. To set from inheritor just change property value'
     },
     {
       class: 'String',
@@ -291,7 +291,8 @@ foam.CLASS({
       value: 'scriptEventDAO',
       transient: true,
       visibility: 'HIDDEN',
-      documentation: `Name of dao to store script run/event report. To set from inheritor just change property value`
+      documentation: 'Name of dao to store script run/event report. To set from inheritor just change property value',
+      tableWidth: 120
     },
     {
       name: 'logger',
@@ -352,23 +353,6 @@ foam.CLASS({
       ],
       type: 'Boolean',
       javaCode: `
-        // Run on all instances if:
-        // - startup "main" script, or
-        // - not-clusterable, or
-        // - a suitable cluster configuration
-
-        String startScript = System.getProperty("foam.main", "main");
-        if ( this instanceof foam.nanos.cron.Cron &&
-             getStatus() == ScriptStatus.SCHEDULED &&
-             ! getId().equals(startScript) &&
-             getClusterable() ) {
-          foam.nanos.medusa.ClusterConfigSupport support = (foam.nanos.medusa.ClusterConfigSupport) x.get("clusterConfigSupport");
-          if ( support != null &&
-               ! support.cronEnabled(x) ) {
-            ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), "execution disabled.", getId(), getDescription());
-            throw new ClientRuntimeException(this.getClass().getSimpleName() + " " + EXECUTION_DISABLED);
-          }
-        }
         return true;
       `
     },

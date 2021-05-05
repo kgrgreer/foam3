@@ -559,6 +559,7 @@ FOAM_FILES([
   { name: "foam/u2/view/ReadManyToManyRelationshipPropertyView", flags: ['web'] },
   { name: "foam/u2/view/ReferenceArrayView", flags: ['web'] },
   { name: "foam/u2/view/DraftDetailView", flags: ['web'] },
+  { name: "foam/u2/view/TitledArrayView", flags: ['web'] },
   { name: "foam/u2/view/FObjectArrayView", flags: ['web'] },
   { name: "foam/u2/view/ChoiceView", flags: ['web'] },
   { name: "foam/u2/view/UnstyledChooseNView", flags: ['web'] },
@@ -829,8 +830,10 @@ FOAM_FILES([
   { name: "foam/flow/widgets/AxiomShortSummary" },
   { name: "foam/flow/widgets/MethodShortSummary" },
   { name: "foam/flow/widgets/PropertyShortSummary" },
+  { name: "foam/flow/widgets/SequenceSummary" },
   { name: "foam/flow/widgets/ModelSummary" },
   { name: "foam/flow/widgets/EnumSummary" },
+  { name: "foam/flow/widgets/TabbedModelDocumentation" },
   { name: "foam/flow/widgets/DocumentationIncomplete" },
   { name: "foam/flow/widgets/TryItSnippet" },
 
