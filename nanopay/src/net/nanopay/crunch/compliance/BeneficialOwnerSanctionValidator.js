@@ -25,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.CrunchService',
@@ -81,7 +82,7 @@ foam.CLASS({
                     .setDaoKey("userCapabilityJunctionDAO")
                     .setCauseId(response != null ? response.getId() : 0L)
                     .setCauseDaoKey("dowJonesResponseDAO")
-                    .setClassification("Beneficial Owner " + index + " Dow Jones R&C")
+                    .setClassificationEnum(ApprovalRequestClassificationEnum.BENEFICIAL_OWNER_DOW_JONES)
                     .setMatches(response != null ? response.getResponseBody().getMatches() : null)
                     .setComments("Further investigation needed for owner: " + index)
                     .setGroup(group)

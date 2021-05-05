@@ -25,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'java.util.Map',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
@@ -54,7 +55,7 @@ foam.CLASS({
                 .setStatus(getApprovalStatus(status))
                 .setApprover(getApprover(status))
                 .setCreatedFor(business.getId())
-                .setClassification("Business IdentityMind Merchant KYC, Response ID: " + response.getId())
+                .setClassificationEnum(ApprovalRequestClassificationEnum.BUSINESS_IDENTITYMIND_MERCHANT_KYC)
                 .build()
             );
             ruler.putResult(status);

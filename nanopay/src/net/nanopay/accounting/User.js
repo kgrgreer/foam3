@@ -30,7 +30,8 @@ foam.CLASS({
       label: 'Accounting Integration',
       section: 'systemInformation',
       order: 10,
-      gridColumns: 6
+      gridColumns: 6,
+      tableWidth: 120
     },
     {
       class: 'Boolean',
