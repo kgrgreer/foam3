@@ -520,7 +520,7 @@ foam.CLASS({
               .addClass('icon').addClass('hover')
               .addClass(this.myClass('align-top'))
               .attr('src', this.EXPORT_ICON_HOVER)
-              .on('click', () => this.exportAsPDF())
+              .on('click', this.exportAsPDF)
             .end()
           .end()
         .end()
@@ -557,38 +557,86 @@ foam.CLASS({
             : formattedAddress += countryName;
       }
       return formattedAddress;
+    },
+
+    function addPDFStyle(invoiceNodes) {
+      const {
+        invoiceNode,
+        actionBtnContainerNode,
+        appLogoContainerNode
+      } = invoiceNodes;
+
+      // remove print and download PDF buttons
+      actionBtnContainerNode.classList.add('hide');
+
+      // add app logo to invoice 
+      appLogoContainerNode.classList.remove('hide');
+
+      // add styles
+      invoiceNode.style.backgroundColor = '#fff';
+      invoiceNode.style.margin = '350px 50px 250px 50px';
+      invoiceNode.style.padding = '350px 50px 250px 50px';
+      invoiceNode.offsetParent.style.margin = '120px 40px 120px 40px';
+      invoiceNode.offsetParent.style.zoom = '60%';
+      invoiceNode.offsetParent.style.width = invoiceNode.scrollWidth + invoiceNode.offsetParent.scrollWidth + 'px';
+      invoiceNode.offsetParent.style.height = invoiceNode.scrollHeight + invoiceNode.offsetParent.scrollHeight + 'px';
+    },
+    
+    function removePDFStyle(invoiceNodes) {
+      const {
+        invoiceNode,
+        actionBtnContainerNode,
+        appLogoContainerNode
+      } = invoiceNodes;
+
+      // add print and download PDF buttons
+      actionBtnContainerNode.classList.remove('hide');
+
+      // remove app logo from invoice
+      appLogoContainerNode.classList.add('hide');
+
+      // undo styles
+      invoiceNode.style.backgroundColor = '';
+      invoiceNode.offsetParent.style.zoom = '1.0';
+      invoiceNode.style.margin = '';
+      invoiceNode.style.padding = '';
+      invoiceNode.offsetParent.style.margin = '';
+      invoiceNode.offsetParent.style.width = '';
+      invoiceNode.offsetParent.style.height = ''
     }
   ],
 
   listeners: [
     function exportAsPDF() {
+      const invoiceNode = ctrl.document.querySelector('.full-invoice');
+      const actionBtnContainerNode = invoiceNode.querySelector(`.${this.cls_.id.replaceAll('.', '-')}-print-wrapper`);
+      const appLogoContainerNode = invoiceNode.querySelector('.pdf-app-logo-container');
+
       try {
         window.scrollTo(0,0);
-        var className = '.full-invoice';
-        var downloadContent = ctrl.document.querySelector(className);
-        downloadContent.style.backgroundColor = '#fff';
-        downloadContent.style.margin = '350px 50px 250px 50px';
-        downloadContent.style.padding = '350px 50px 250px 50px';
-        downloadContent.offsetParent.style.margin = '120px 40px 120px 40px';
-        downloadContent.offsetParent.style.zoom = '60%';
+        const doc = new jsPDF('p', 'pt');
 
-        downloadContent.offsetParent.style.width = downloadContent.scrollWidth + downloadContent.offsetParent.scrollWidth + 'px';
-        downloadContent.offsetParent.style.height = downloadContent.scrollHeight + downloadContent.offsetParent.scrollHeight + 'px';
-
-        var doc = new jsPDF('p', 'pt');
-
-        doc.addHTML(downloadContent, () => {
-           doc.save(`invoice-${this.invoice.referenceId}.pdf`);
+        this.addPDFStyle({
+          invoiceNode,
+          actionBtnContainerNode,
+          appLogoContainerNode,
         });
 
-        downloadContent.style.backgroundColor = '#f9fbff';
-        downloadContent.offsetParent.style.zoom = '1.0';
-        downloadContent.style.margin = '';
-        downloadContent.style.padding = '';
-        downloadContent.offsetParent.style.margin = '';
-        downloadContent.offsetParent.style.width = '';
-        downloadContent.offsetParent.style.height = ''
+        doc.addHTML(invoiceNode, () => {
+          doc.save(`invoice-${this.invoice.referenceId}.pdf`);
+        });
+
+        this.removePDFStyle({
+          invoiceNode,
+          actionBtnContainerNode,
+          appLogoContainerNode
+        });
       } catch (e) {
+        this.removePDFStyle({
+          invoiceNode,
+          actionBtnContainerNode,
+          appLogoContainerNode
+        });
         this.notify(this.SAVE_AS_PDF_FAIL, '', this.LogLevel.ERROR, true);
         throw e;
       }
