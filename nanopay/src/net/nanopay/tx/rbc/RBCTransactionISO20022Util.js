@@ -599,7 +599,9 @@ foam.CLASS({
       ],
       javaCode:`
         int MAX_LEN = 15; // Max characters accepted
-        String ref = transaction.getSpid() + transaction.getId();
+        int MAX_SPID_LEN = 7; // Max characters accepted
+        String spid = transaction.getSpid().substring(0, Math.min(transaction.getSpid().length(), MAX_SPID_LEN));
+        String ref = spid + transaction.getId();
         return ref.replaceAll("[^a-zA-Z0-9]", "")
           .substring(0, Math.min(ref.length(), MAX_LEN)).toUpperCase();
       `
