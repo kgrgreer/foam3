@@ -219,6 +219,7 @@ FOAM_FILES([
   { name: 'net/nanopay/model/User' },
   { name: 'net/nanopay/ui/wizard/WizardCssAxiom', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
+  { name: 'net/nanopay/ui/wizard/WizardController', flags: ['web'] },
   { name: 'net/nanopay/ui/wizardModal/WizardModal', flags: ['web'] },
   { name: 'net/nanopay/ui/wizardModal/WizardModalSubView', flags: ['web'] },
   { name: 'net/nanopay/ui/wizardModal/example/ExampleWizardModal', flags: ['web'] },
@@ -1984,7 +1985,7 @@ FOAM_FILES([
   //SWIFT
   { name: 'net/nanopay/swift/SCHEMA' },
   { name: 'net/nanopay/swift/Properties' },
-  
+
   { name: 'net/nanopay/swift/AbstractMT' },
   { name: 'net/nanopay/swift/MT103' },
   { name: 'net/nanopay/swift/MT205' }
