@@ -137,7 +137,7 @@ p({
   id: "454df571-f639-4506-8d59-98b4f39934e4-bepay",
   name: "Nanopay Transaction Fee",
   documentation: "BePay transaction fee",
-  feeName: "Nanopay fee for BePay",
+  feeName: "Nanopay Transaction Fee",
   rateExpiry: {
     class: "foam.nanos.cron.TimeHMS",
     hour: 24
