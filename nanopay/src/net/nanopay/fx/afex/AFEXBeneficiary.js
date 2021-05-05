@@ -102,6 +102,11 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedByAgent'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.core.Currency',
+      name: 'currency'
     }
   ]
 });
