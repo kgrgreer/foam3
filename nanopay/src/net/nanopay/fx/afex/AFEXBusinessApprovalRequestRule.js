@@ -32,12 +32,12 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
     'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.approval.ApprovalStatus',
   ],
 
   messages: [
-   { name: 'DESCRIPTION', message: 'Approve AFEX business to enable international payments' },
-   { name: 'CLASSIFICATION', message: 'AFEX Business' }
+   { name: 'DESCRIPTION', message: 'Approve AFEX business to enable international payments' }
  ],
 
    methods: [
@@ -56,14 +56,13 @@ foam.CLASS({
             TranslationService ts = (TranslationService) x.get("translationService");
             Subject subject = (Subject) x.get("subject");
             String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
-            String classification = ts.getTranslation(locale, getClassInfo().getId() + ".CLASSIFICATION", CLASSIFICATION);
             String description = ts.getTranslation(locale, getClassInfo().getId() + ".DESCRIPTION", DESCRIPTION);
 
             approvalRequestDAO.put_(x,
               new AFEXBusinessApprovalRequest.Builder(x)
                 .setDaoKey("afexUserDAO")
                 .setObjId(afexUser.getId())
-                .setClassification(classification)
+                .setClassificationEnum(ApprovalRequestClassificationEnum.AFEX_BUSINESS)
                 .setDescription(description)
                 .setGroup(group)
                 .setCreatedFor(user.getId())

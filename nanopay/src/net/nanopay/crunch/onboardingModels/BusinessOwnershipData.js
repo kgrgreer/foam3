@@ -179,7 +179,7 @@ foam.CLASS({
       },
       view: function (_, X) {
         return {
-          class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
+          class: 'foam.u2.view.TitledArrayView',
           of: X.data.ownerClass,
           defaultNewItem: X.data.ownerClass.create({ mode: 'blank' }, X),
           enableAdding$: X.data.owners$.map(a =>
@@ -188,7 +188,7 @@ foam.CLASS({
             // Last item, if present, must have a selection made
             ( a.length == 0 || a[a.length-1].mode != 'blank' )
           ),
-          name: X.data.ADD_MSG,
+          title: X.data.ADD_MSG,
           valueView: () => ({
             class: X.data.selectionView,
 

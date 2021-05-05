@@ -46,15 +46,15 @@ foam.CLASS({
       javaFactory: 'return getFxSpread() + getFxRate();'
     },
     {
-      class: 'Double',
+      class: 'UnitValue',
       name: 'IOF',
+      unitPropName: 'IOFCurrency',
       documentation: 'tax charged by the partner'
     },
     {
-      class: 'Reference',
+      class: 'FObjectProperty',
       of: 'foam.core.Currency',
       name: 'IOFCurrency',
-      targetDAOKey: 'currencyDAO',
       label: 'IOF Currency',
       documentation: 'currency of tax charged by partner'
     },
@@ -64,15 +64,15 @@ foam.CLASS({
       label: 'IOF Rate'
     },
     {
-      class: 'Double',
-      name: 'IRS'
+      class: 'UnitValue',
+      name: 'IRS',
+      unitPropName: 'IRSCurrency'
     },
     {
-      class: 'Reference',
+      class: 'FObjectProperty',
       of: 'foam.core.Currency',
       name: 'IRSCurrency',
-      label: 'IRS Currency',
-      targetDAOKey: 'currencyDAO'
+      label: 'IRS Currency'
     },
     {
       class: 'Double',
@@ -168,7 +168,7 @@ foam.CLASS({
       if ( getTransactionFeeCurrency() == "" ) throw new ValidationException("transactionFeeCurrency is missing on PartnerLineItem");
       if ( getIOF() == 0 ) throw new ValidationException("IOF is missing on PartnerLineItem");
       if ( getIOFRate() == 0 ) throw new ValidationException("IOFRate is missing on PartnerLineItem");
-      if ( getIOFCurrency() == "" ) throw new ValidationException("IOFCurrency is missing on PartnerLineItem");
+      if ( getIOFCurrency() == null ) throw new ValidationException("IOFCurrency is missing on PartnerLineItem");
       if ( getVET() == 0 ) throw new ValidationException("VET is missing on PartnerLineItem");
       if ( getBankFee() == 0 ) throw new ValidationException("bankFee is missing on PartnerLineItem");
       if ( getBankRate() == 0 ) throw new ValidationException("bankRate is missing on PartnerLineItem");

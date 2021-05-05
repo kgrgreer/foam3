@@ -25,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
@@ -75,7 +76,7 @@ foam.CLASS({
                     .setDaoKey("userDAO")
                     .setCauseId(response.getId())
                     .setCauseDaoKey("dowJonesResponseDAO")
-                    .setClassification("User Dow Jones R&C")
+                    .setClassificationEnum(ApprovalRequestClassificationEnum.USER_DOW_JONES)
                     .setMatches(response.getResponseBody().getMatches())
                     .setGroup(group)
                     .setCreatedFor(user.getId())
