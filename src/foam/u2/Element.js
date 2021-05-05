@@ -76,6 +76,30 @@ foam.ENUM({
 });
 
 
+foam.ENUM({
+  package: 'foam.u2',
+  name: 'InputUpdateMode',
+
+  documentation: 'Different ways an input can update a property.',
+
+  values: [
+    {
+      name: 'ON_KEY',
+      label: 'Create',
+      modePropertyName: 'createVisibility'
+    },
+    {
+      name: 'ON_BLUR',
+      label: 'View',
+      modePropertyName: 'readVisibility',
+      restrictDisplayMode: function(mode) {
+        return mode == foam.u2.DisplayMode.RW ? foam.u2.DisplayMode.RO : mode;
+      }
+    }
+  ]
+});
+
+
 foam.CLASS({
   package: 'foam.u2',
   name: 'Entity',
@@ -861,7 +885,13 @@ foam.CLASS({
       class: 'Object',
       name: 'id',
       transient: true,
-      factory: function() { return this.NEXT_ID(); }
+      // factory: function() { return this.NEXT_ID(); }
+      factory: function() {
+        var id = this.NEXT_ID();
+        if ( ! window.idToE ) window.idToE = {};
+        window.idToE[id] = this;
+        return id;
+      }
     },
     {
       class: 'Enum',

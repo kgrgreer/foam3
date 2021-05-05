@@ -20,6 +20,10 @@ foam.CLASS({
   name: 'Input',
   extends: 'foam.u2.View',
 
+  imports: [
+    'inputUpdateMode?'
+  ],
+
   css: `
     /* Still show outline when focused as read-only to help accessibility *
     ^:read-only:focus { outline: 1px solid rgb(238, 238, 238); }
@@ -47,6 +51,10 @@ foam.CLASS({
       name: 'onKey',
       attribute: true,
       // documentation: 'When true, $$DOC{ref:".data"} is updated on every keystroke, rather than on blur.'
+      factory: function () {
+        if ( ! this.inputUpdateMode ) return false;
+        return this.inputUpdateMode == this.InputUpdateMode.ON_KEY;
+      }
     },
     {
       class: 'Boolean',
