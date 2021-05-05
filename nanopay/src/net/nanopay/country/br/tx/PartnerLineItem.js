@@ -46,8 +46,9 @@ foam.CLASS({
       javaFactory: 'return getFxSpread() + getFxRate();'
     },
     {
-      class: 'Double',
+      class: 'UnitValue',
       name: 'IOF',
+      unitPropName: 'IOFCurrency',
       documentation: 'tax charged by the partner'
     },
     {
@@ -64,8 +65,9 @@ foam.CLASS({
       label: 'IOF Rate'
     },
     {
-      class: 'Double',
-      name: 'IRS'
+      class: 'UnitValue',
+      name: 'IRS',
+      unitPropName: 'IRSCurrency'
     },
     {
       class: 'Reference',
