@@ -199,7 +199,7 @@ foam.CLASS({
 
           net.nanopay.iso20022.CreditTransferTransactionInformation10 cdtTrfTxInf = new net.nanopay.iso20022.CreditTransferTransactionInformation10();
           net.nanopay.iso20022.PaymentIdentification1 pmtId = new net.nanopay.iso20022.PaymentIdentification1();
-          String refNumber = String.valueOf(getRefNumber(x, txn));
+          String refNumber = String.valueOf(getRefNumber(txn));
           pmtId.setEndToEndIdentification(refNumber);
           ((RbcTransaction)txn).setRbcReferenceNumber(refNumber);
           cdtTrfTxInf.setPaymentIdentification(pmtId);
@@ -445,7 +445,7 @@ foam.CLASS({
 
           net.nanopay.iso20022.DirectDebitTransactionInformation9 drctDbtTxInf = new net.nanopay.iso20022.DirectDebitTransactionInformation9();
           net.nanopay.iso20022.PaymentIdentification1 pmtId = new net.nanopay.iso20022.PaymentIdentification1();
-          String refNumber = String.valueOf(getRefNumber(x, txn));
+          String refNumber = String.valueOf(getRefNumber(txn));
           pmtId.setEndToEndIdentification(refNumber);
           ((RbcTransaction)txn).setRbcReferenceNumber(refNumber);
           drctDbtTxInf.setPaymentIdentification(pmtId);
@@ -590,25 +590,18 @@ foam.CLASS({
     },
     {
       name: 'getRefNumber',
-      type: 'Long',
+      type: 'String',
       args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
         {
           name: 'transaction',
           type: 'net.nanopay.tx.model.Transaction'
         },
       ],
       javaCode:`
-      DAO refDAO = (DAO) x.get("rbcRefDAO");
-
-      RbcReferenceNumber referenceNumber = new RbcReferenceNumber();
-      referenceNumber.setTransactionId(transaction.getId());
-      referenceNumber = (RbcReferenceNumber) refDAO.inX(x).put(referenceNumber);
-
-      return referenceNumber.getId();
+        int MAX_LEN = 15; // Max characters accepted
+        String ref = transaction.getSpid() + transaction.getId();
+        return ref.replaceAll("[^a-zA-Z0-9]", "")
+          .substring(0, Math.min(ref.length(), MAX_LEN)).toUpperCase();
       `
     },
     {
