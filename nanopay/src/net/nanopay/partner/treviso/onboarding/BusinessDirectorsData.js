@@ -80,12 +80,12 @@ foam.CLASS({
       section: 'directorsInfoSection',
       view: function(_, x) {
         return {
-          class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
+          class: 'foam.u2.view.TitledArrayView',
           mode: 'RW',
           enableAdding: true,
           enableRemoving: true,
           defaultNewItem: net.nanopay.partner.treviso.onboarding.BRBusinessDirector.create({}, x),
-          name: x.data.ADD_NAME
+          title: x.data.ADD_NAME
         };
       },
       visibility: function(skipDirectors) {

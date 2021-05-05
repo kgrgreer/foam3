@@ -25,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.model.Business',
@@ -74,7 +75,7 @@ foam.CLASS({
                     .setServerDaoKey("localUserDAO")
                     .setCauseId(response.getId())
                     .setCauseDaoKey("dowJonesResponseDAO")
-                    .setClassification("Business Dow Jones R&C")
+                    .setClassificationEnum(ApprovalRequestClassificationEnum.BUSINESS_DOW_JONES)
                     .setMatches(response.getResponseBody().getMatches())
                     .setCreatedFor(business.getId())
                     .build());
@@ -112,7 +113,7 @@ foam.CLASS({
                         .setCauseId(directorResponse.getId())
                         .setCauseDaoKey("dowJonesResponseDAO")
                         .setReferenceSummary(businessDirector.toSummary())
-                        .setClassification("Business Director Dow Jones R&C")
+                        .setClassificationEnum(ApprovalRequestClassificationEnum.BUSINESS_DIRECTOR_DOW_JONES)
                         .setMatches(directorResponse.getResponseBody().getMatches())
                         .setCreatedFor(business.getId())
                         .build());

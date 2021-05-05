@@ -8,6 +8,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.CrunchService',
@@ -51,7 +52,7 @@ foam.CLASS({
 
         String filterRegion = "";
         Date filterLRDFrom = fetchLastExecutionDate(x, ucj.getSourceId(), "Dow Jones Entity");
-        
+
         Calendar calendar = Calendar.getInstance();
         if ( filterLRDFrom != null ) calendar.setTime(filterLRDFrom);
         calendar.add(Calendar.DATE, -1);
@@ -59,7 +60,7 @@ foam.CLASS({
 
         boolean autoValidated = true;
         for ( int i = 0 ; i < businessDirectors.size() ; i++ ) {
-          
+
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           try {
             director = (BusinessDirector) businessDirectors.get(i);
@@ -86,7 +87,7 @@ foam.CLASS({
                     .setDaoKey("userCapabilityJunctionDAO")
                     .setCauseId(response != null ? response.getId() : 0L)
                     .setCauseDaoKey("dowJonesResponseDAO")
-                    .setClassification("Business Director: " + directorName + " Dow Jones R&C")
+                    .setClassificationEnum(ApprovalRequestClassificationEnum.BUSINESS_DIRECTOR_DOW_JONES)
                     .setMatches(response != null ? response.getResponseBody().getMatches() : null)
                     .setComments("Further investigation needed for director: " + directorName)
                     .setGroup(group)
@@ -100,8 +101,8 @@ foam.CLASS({
           X userX = ruler.getX().put("subject", ucj.getSubject(x));
           ((CrunchService) userX.get("crunchService")).updateJunction(
             userX,
-            ucj.getTargetId(), 
-            null, 
+            ucj.getTargetId(),
+            null,
             CapabilityJunctionStatus.APPROVED);
         }
 
@@ -118,7 +119,7 @@ foam.CLASS({
       javaType: 'net.nanopay.meter.compliance.ComplianceValidationStatus',
       javaCode: `
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
-      
+
         try {
           String firstName = businessDirector.getFirstName();
           String lastName = businessDirector.getLastName();

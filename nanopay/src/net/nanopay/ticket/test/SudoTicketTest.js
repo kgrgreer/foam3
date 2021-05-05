@@ -32,6 +32,7 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.approval.ApprovalRequestUtil',
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.auth.Group',
@@ -130,7 +131,7 @@ foam.CLASS({
    X y = x.put("subject", subject);
    ticket = (SudoTicket) ticketDAO.inX(y).put(ticket).fclone();
 
-   String classification = SudoTicket.class.getSimpleName();
+   ApprovalRequestClassificationEnum classification = ApprovalRequestClassificationEnum.SUDO_TICKET_APPROVAL;
    DAO approvalRequestDAO = ApprovalRequestUtil.getAllRequests(x, ticket.getId(), classification);
    ApprovalStatus status = ApprovalRequestUtil.getState(approvalRequestDAO);
    test(status != null, "ApprovalRequest found.");

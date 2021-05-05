@@ -6,6 +6,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
@@ -75,7 +76,7 @@ public class DowJonesResponseMsg
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         DocumentBuilder db = dbf.newDocumentBuilder();
-        Document document = db.parse(new ByteArrayInputStream(getXml().getBytes()));
+        Document document = db.parse(new InputSource(new ByteArrayInputStream(getXml().getBytes("UTF-8"))));
 
         Element head = (Element) document.getElementsByTagName("head").item(0);
         Element body = (Element) document.getElementsByTagName("body").item(0);
