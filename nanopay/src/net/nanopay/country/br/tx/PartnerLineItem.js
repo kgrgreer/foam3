@@ -140,8 +140,9 @@ foam.CLASS({
       name: 'natureCode'
     },
     {
-      class: 'Double',
-      name: 'bankFee'
+      class: 'UnitValue',
+      name: 'bankFee',
+      unitPropName: 'bankCurrency'
     },
     {
       class: 'Reference',
