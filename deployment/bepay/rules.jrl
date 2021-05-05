@@ -135,7 +135,7 @@ p({
 p({
   class: "net.nanopay.tx.fee.TransactionFeeRule",
   id: "454df571-f639-4506-8d59-98b4f39934e4-bepay",
-  name: "Nanopay fee for BePay",
+  name: "Nanopay Transaction Fee",
   documentation: "BePay transaction fee",
   feeName: "Nanopay fee for BePay",
   rateExpiry: {
