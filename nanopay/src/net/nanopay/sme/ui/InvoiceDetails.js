@@ -553,7 +553,7 @@ foam.CLASS({
       // remove print and download PDF buttons
       actionBtnContainerNode.classList.add('hide');
 
-      // add app logo to invoice 
+      // add app logo
       appLogoContainerNode.classList.remove('hide');
 
       // add styles
@@ -576,7 +576,7 @@ foam.CLASS({
       // add print and download PDF buttons
       actionBtnContainerNode.classList.remove('hide');
 
-      // remove app logo from invoice
+      // remove app logo
       appLogoContainerNode.classList.add('hide');
 
       // undo styles
