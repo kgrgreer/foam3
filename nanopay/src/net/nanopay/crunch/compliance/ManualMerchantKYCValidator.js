@@ -25,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.UserCapabilityJunction',
@@ -84,7 +85,7 @@ foam.CLASS({
           .setCreatedFor(business.getId())
           .setCauseId(identityMindResponse != null ? identityMindResponse.getId() : 0L)
           .setCauseDaoKey("identityMindResponseDAO")
-          .setClassification(getClassification())
+          .setClassificationEnum(ApprovalRequestClassificationEnum.BUSINESS_IDENTITYMIND_KYC)
           .build();
 
         if ( status == ComplianceValidationStatus.REJECTED ) {

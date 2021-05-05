@@ -27,6 +27,7 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.User',
     'static foam.mlang.MLang.*',
     'foam.nanos.approval.ApprovalStatus',
@@ -37,7 +38,7 @@ foam.CLASS({
    methods: [
     {
       name: 'applyAction',
-      javaCode: ` 
+      javaCode: `
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
@@ -48,7 +49,7 @@ foam.CLASS({
 
             approvalRequestDAO.put_(x,
               new ManualFxApprovalRequest.Builder(x)
-                .setClassification("Kotak Manual FX Transaction Completion")
+                .setClassificationEnum(ApprovalRequestClassificationEnum.KOTAK_MANUAL_FX_COMPLETED)
                 .setDescription("Kotak Manul FX transfer is comlpeted")
                 .setDaoKey("transactionDAO")
                 .setObjId(kotakFxTransaction.getId())

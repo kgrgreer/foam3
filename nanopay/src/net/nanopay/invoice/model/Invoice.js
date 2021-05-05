@@ -766,7 +766,7 @@ foam.CLASS({
       includeInDigest: false,
       visibility: 'RO',
       view: {
-        class: 'foam.u2.view.FObjectArrayView',
+        class: 'foam.u2.view.TitledArrayView',
         valueView: 'foam.u2.CitationView'
       }
     },
