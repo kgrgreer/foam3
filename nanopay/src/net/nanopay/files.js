@@ -1633,6 +1633,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ticket/FullReverseScenarioAction' },
   { name: 'net/nanopay/ticket/RetryScenarioAction' },
   { name: 'net/nanopay/ticket/WaitingScenarioAction' },
+  { name: 'net/nanopay/ticket/RetryTransactionPostRule' },
 
   // planners
   { name: 'net/nanopay/tx/planner/PlannerGroup' },

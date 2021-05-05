@@ -81,6 +81,21 @@ foam.ENUM({
         A status that indicates that the RefundTicket is waiting for a
         transaction to go into an interactable state.
       `
+    },
+    {
+      name: 'QUEUED',
+      label: 'Queued for return',
+      documentation: `
+        A status that indicates that the RefundTicket is waiting for a
+        for the return date or retry the transaction to a different account.
+      `
+    },
+    {
+      name: 'RETRY',
+      label: 'Retry',
+      documentation: `
+        A status that indicates that the RefundTicket is retrying.
+      `
     }
   ]
 });

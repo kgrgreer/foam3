@@ -27,10 +27,11 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.util.SafetyUtil',
-    'java.util.List',
+    'java.time.LocalDateTime',
     'java.util.Arrays',
     'java.util.ArrayList',
-    'static foam.mlang.MLang.EQ',
+    'java.util.List',
+    'java.util.Date',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
@@ -38,7 +39,8 @@ foam.CLASS({
     'net.nanopay.tx.SummaryTransactionLineItem',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus'
+    'net.nanopay.tx.model.TransactionStatus',
+    'static foam.mlang.MLang.EQ'
   ],
 
   properties: [
@@ -54,6 +56,11 @@ foam.CLASS({
       of: 'net.nanopay.account.Account',
       name: 'feeAccount'
     },
+    {
+      class: 'Int',
+      name: 'autoRefundDays',
+      value: 0
+    }
   ],
 
   methods: [
@@ -120,6 +127,14 @@ foam.CLASS({
         ticket.setFeeLineItemsAvaliable(feeLineItemsAvaliable.toArray(FeeLineItem[]::new));
 
         ticket.setRequestTransaction(newRequest);
+
+        if ( getAutoRefundDays() != 0 ) {
+          ticket.setRefundStatus(RefundStatus.QUEUED);
+          LocalDateTime expiry = LocalDateTime.now();
+          expiry.plusDays(getAutoRefundDays());
+          Date date = Date.from(expiry.atZone(java.time.ZoneId.systemDefault()).toInstant());
+          ticket.setAutoRefundDate(date);
+        }
       `
     }
   ]

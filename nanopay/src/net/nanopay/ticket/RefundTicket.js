@@ -240,6 +240,22 @@ foam.CLASS({
       name: 'autoApprove',
       visibility: 'HIDDEN',
       networkTransient: true
+    },
+    {
+      class: 'String',
+      name: 'retryAccount',
+      label: 'Retry Account ID',
+      visibility: function(refundStatus) {
+        return refundStatus == net.nanopay.ticket.RefundStatus.QUEUED ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      }
+    },
+    {
+      class: 'DateTime',
+      name: 'autoRefundDate',
+      label: 'Automatic Refund Date',
+      visibility: function(refundStatus) {
+        return refundStatus == net.nanopay.ticket.RefundStatus.QUEUED ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      }
     }
   ],
 
@@ -268,6 +284,22 @@ foam.CLASS({
       },
       code: function(X) {
         this.refundStatus = net.nanopay.ticket.RefundStatus.REQUESTED;
+        this.ticketDAO.put(this).then(ticket => {
+          this.notify(this.SUBMIT_FOR_APPROVAL, '', foam.log.LogLevel.INFO, true);
+          X.stack.back();
+        }).catch(error => {
+          this.notify(error.message, '', this.LogLevel.ERROR, true);
+        });
+      }
+    },
+    {
+      name: 'retry',
+      section: 'infoSection',
+      isAvailable: function(assignedTo, refundStatus) {
+        return assignedTo == this.subject.user.id && refundStatus == net.nanopay.ticket.RefundStatus.QUEUED;
+      },
+      code: function(X) {
+        this.refundStatus = net.nanopay.ticket.RefundStatus.RETRY;
         this.ticketDAO.put(this).then(ticket => {
           this.notify(this.SUBMIT_FOR_APPROVAL, '', foam.log.LogLevel.INFO, true);
           X.stack.back();
