@@ -146,7 +146,7 @@ p({
   enabled: true,
   predicate: {
     class: "foam.nanos.ruler.predicate.IsInstancePredicate",
-    of: "net.nanopay.fx.FXSummaryTransaction"
+    of: "net.nanopay.country.br.tx.BRPartnerTransaction"
   },
   lifecycleState:1
 })
