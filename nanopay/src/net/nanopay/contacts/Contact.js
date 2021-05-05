@@ -227,8 +227,6 @@ foam.CLASS({
 
   actions: [
     {
-<<<<<<< Upstream, based on development
-=======
       name: 'addBankAccount',
       isAvailable: function() {
         return this.signUpStatus !== this.ContactStatus.READY && ! this.bankAccount;
@@ -244,7 +242,6 @@ foam.CLASS({
       }
     },
     {
->>>>>>> 43725d4 update WizardController references
       name: 'edit',
       label: 'Edit Details',
       isAvailable: function() {
