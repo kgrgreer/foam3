@@ -2761,6 +2761,20 @@ p({
   """
 })
 
+p({
+"class":"foam.nanos.script.Script",
+"id":"AFEX Beneficiary Migration",
+"description":"Adds currency to existing AFEX Beneficiaries",
+"lastRun":"2021-05-05T21:30:32.216Z",
+"lastDuration":1272,
+"status":1,
+"code":
+"""import foam.dao.DAO;\u000Aimport foam.dao.ArraySink;\u000Aimport net.nanopay.fx.afex.AFEXBeneficiary;\u000Aimport foam.nanos.auth.User;\u000Aimport net.nanopay.bank.BankAccount;\u000Aimport net.nanopay.fx.afex.AFEXService;\u000Aimport net.nanopay.fx.afex.FindBeneficiaryRequest;\u000Aimport net.nanopay.fx.afex.FindBeneficiaryResponse;\u000A\u000AafexBeneficiaryDAO = (DAO) x.get("afexBeneficiaryDAO");\u000AaccountDAO = (DAO) x.get("localAccountDAO");\u000AuserDAO = (DAO) x.get("localUserDAO");\u000AafexService = (AFEXService) x.get("afexService");\u000A\u000AinstantPaymentCredential = "";\u000AafexBeneficiaries = (afexBeneficiaryDAO.select(new ArraySink())).getArray();\u000A\u000Afor( AFEXBeneficiary afexBeneficiary : afexBeneficiaries ) {\u000A  if ( ! afexBeneficiary.getIsInstantBeneficiary() ) {\u000A    user = (User) userDAO.find(afexBeneficiary.getVendorId());\u000A    account = (BankAccount) user.findBankAccount(x);\u000A    afexBeneficiary = afexBeneficiary.fclone();\u000A    afexBeneficiary.setCurrency(account.getDenomination());\u000A    afexBeneficiaryDAO.put(afexBeneficiary);\u000A  }\u000A  else {\u000A    user = (User) userDAO.find(afexBeneficiary.getOwner());\u000A    findBeneficiaryRequest = new FindBeneficiaryRequest();\u000A    findBeneficiaryRequest.setVendorId(afexBeneficiary.getVendorId());\u000A    findBeneficiaryRequest.setClientAPIKey(instantPaymentCredential);\u000A    FindBeneficiaryResponse beneficiaryResponse = null;\u000A    try {\u000A      beneficiaryResponse = afexService.findBeneficiary(findBeneficiaryRequest, user.getSpid());\u000A      afexBeneficiary = afexBeneficiary.fclone();\u000A      afexBeneficiary.setCurrency(beneficiaryResponse.getCurrency());\u000A      afexBeneficiaryDAO.put(afexBeneficiary);\u000A    } catch(Throwable t) {\u000A      print("A beneficiary does not exist for: " + afexBeneficiary.getId());\u000A    }\u000A  }\u000A}\u000Aprint("done");\u000A""",
+"output":
+"""done\u000A""",
+"lastModifiedBy":1348,
+"lastModified":"2021-05-05T21:30:30.941Z"
+})
 
 p({
   class:"foam.nanos.script.Script",
@@ -3126,4 +3140,3 @@ print("finished");
 """
 });
 
-p({class:"foam.nanos.script.Script",id:"AFEX Beneficiary Migration",description:"Adds currency to existing AFEX Beneficiaries",code:"import foam.dao.DAO;\nimport foam.dao.ArraySink;\nimport net.nanopay.fx.afex.AFEXBeneficiary;\nimport foam.nanos.auth.User;\nimport net.nanopay.bank.BankAccount;\nimport net.nanopay.fx.afex.AFEXService;\nimport net.nanopay.fx.afex.FindBeneficiaryRequest;\nimport net.nanopay.fx.afex.FindBeneficiaryResponse;\n\nafexBeneficiaryDAO = (DAO) x.get(\"afexBeneficiaryDAO\");\naccountDAO = (DAO) x.get(\"localAccountDAO\");\nuserDAO = (DAO) x.get(\"localUserDAO\");\nafexService = (AFEXService) x.get(\"afexService\");\n\ninstantPaymentCredential = \"000067E7Vbbc60fa6-58e2-ea11-99ab-0050569b0074\";\n\n\nafexBeneficiaries = (ArraySink)(afexBeneficiaryDAO.select(new ArraySink())).getArray();\n\nfor( AFEXBeneficiary afexBeneficiary : afexBeneficiaries ) {\n  user = (User) userDAO.find(afexBeneficiary.getVendorId());\n  if ( ! afexBeneficiary.getIsInstantBeneficiary() ) {\n    account = (BankAccount) accountDAO.findBankAccount(x);\n    afexBeneficiary = afexBeneficiary.fclone();\n    afexBeneficiary.setCurrency(account.getDenomination());\n    afexBeneficiaryDAO.put(afexBeneficiary);\n  }\n  else {\n    findBeneficiaryRequest = new FindBeneficiaryRequest();\n    findBeneficiaryRequest.setVendorId(String.valueOf(afexBeneficiary.getVendorId()));\n    findBeneficiaryRequest.setClientAPIKey(instantPaymentCredential);\n    FindBeneficiaryResponse beneficiaryResponse = null;\n    try {\n      beneficiaryResponse = afexService.findBeneficiary(findBeneficiaryRequest, user.getSpid());\n      afexBeneficiary = afexBeneficiary.fclone();\n      afexBeneficiary.setCurrency(beneficiaryResponse.getCurrency());\n      afexBeneficiaryDAO.put(afexBeneficiary);\n    } catch(Throwable t) {\n      print(\"A beneficiary does not exist for: \" + afexBeneficiary.getId());\n    }\n  }\n}\nprint(\"done\");\n",lastModifiedBy:1348,lastModified:1620246393541})
