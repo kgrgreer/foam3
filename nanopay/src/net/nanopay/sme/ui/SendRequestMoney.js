@@ -619,6 +619,7 @@ foam.CLASS({
     },
     {
       name: 'goNext',
+      buttonStyle: 'PRIMARY',
       isEnabled: function(errors, isLoading) {
         return ! errors && ! isLoading;
         // if ( this.subject.user.address.countryId === 'CA' ) {
