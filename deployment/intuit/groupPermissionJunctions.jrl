@@ -127,6 +127,12 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support"
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"bill.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"feesummarytransactionlineitem.read.*"})
 
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"service.intuitTransactionSummaryDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"intuittransactionsummary.read.*"})
+
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"service.intuitFeeTransactionSummaryDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"intuitfeetransactionsummary.read.*"})
+
 // ********** REPORTING *****************
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"group.read.intuit-reporting"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"group.update.intuit-reporting"})
