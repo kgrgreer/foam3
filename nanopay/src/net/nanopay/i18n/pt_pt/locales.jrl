@@ -3868,3 +3868,15 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Report-Business-Information-for-
 /* SectionedDetailPropertyView */
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.detail.SectionedDetailPropertyView.HELP",target:"Ajuda"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.detail.SectionedDetailPropertyView.LEARN_MORE",target:"Clique para aprender mais"})
+
+// ComplianceTransactionApprovalRequestController
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.SUCCESS_BATCH_APPROVED",target:"Você aprovou com sucesso essas pedidos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.REFRESH_MSG",target:"Atualização solicitada ..."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.BATCH_TITLE",target:"Pedidos De Transação Em Lote"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.CURRENCY_TITLE",target:"Lote por moeda"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.REQUESTED_TITLE",target:"Requeridos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.RECEIVED_TITLE",target:"Recebidos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.SHOW_ASSIGNED_TITLE",target:"Mostra Designado Para Mim"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.REFRESH_TABLE.label",target:"Adiciona um memorando"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.APPROVE_ALL.label",target:"Refresca a tabela"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"approvals.transactions.label",target:"Pedidos De Transação Em Lote"})
