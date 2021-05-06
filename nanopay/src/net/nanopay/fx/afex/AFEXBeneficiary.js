@@ -26,6 +26,11 @@ foam.CLASS({
     'foam.nanos.auth.LastModifiedByAware'
   ],
 
+  messages: [
+    { name: 'APPROVED_MSG', message: 'Approved' },
+    { name: 'PENDING_MSG', messages: 'Pending' }
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -68,7 +73,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'status',
-      documentation: 'Beneficiary status on AFEX system.'
+      documentation: 'Beneficiary status on AFEX system.',
+      tableCellFormatter: function(val, obj) {
+        this.add(val === 'Pending' ? obj.PENDING_MSG : obj.APPROVED_MSG);
+      }
     },
     {
       class: 'DateTime',

@@ -2573,7 +2573,13 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoic
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.InvoiceStatus.REJECTED.label",target:"Rejeitado"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.BankAccountSelectionView.DEFAULT_LABEL",target:"Selecione a conta bancária"})
+
+/* AFEX User */
+// messages
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXUser.BENEFICIARIES_MSG",target:"Beneficiários para"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXUser.APPROVED_MSG",target:"Aprovado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXUser.PENDING_MSG",target:"Pendente"})
+// property labels
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXUser.ENABLED.label",target:"Ativado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXUser.USER.label",target:"Usuário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXUser.API_KEY.label",target:"API Chave"})
@@ -3661,7 +3667,11 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"report.summaryUserComplianceRepo
 p({class:"foam.i18n.Locale",locale:"pt",source:"report.summaryRejectedTransactionReport.browseTitle",target:"Relatório de transação rejeitada"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"report.summaryRejectedTransactionReport.browseSubtitle",target:"Ver tudo Relatório de transação rejeitada"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBeneficiary.BENEFICIARIES_MSG",target:"Beneficiários para"})
+/* AFEX Benficiary */
+// messages
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBeneficiary.APPROVED_MSG",target:"Aprovado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBeneficiary.PENDING_MSG",target:"Pendente"})
+// property labels
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBeneficiary.CONTACT.label",target:"Contato"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBeneficiary.VENDOR_ID.label",target:"Vendedor Id"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBeneficiary.OWNER.label",target:"Proprietário"})
@@ -3675,6 +3685,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBenefici
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBeneficiary.LAST_MODIFIED_BY_AGENT.label",target:"Última Modificação Por Agente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBeneficiary.VIEW_BENEFICIARIES.label",target:"Ver Beneficiários"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBeneficiary.CURRENCY.label",target:"Moeda"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.TransactionReportView.EXPORT_TXN_REPORT.label",target:"Baixar relatório de transação"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.PersonalContact.SECTION_CONTACT_INFORMATION.title",target:"Contatos"})

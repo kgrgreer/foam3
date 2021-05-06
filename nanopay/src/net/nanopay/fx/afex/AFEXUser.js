@@ -34,7 +34,9 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'BENEFICIARIES_MSG', message: 'Beneficiaries for' }
+    { name: 'APPROVED_MSG', message: 'Approved' },
+    { name: 'BENEFICIARIES_MSG', message: 'Beneficiaries for' },
+    { name: 'PENDING_MSG', messages: 'Pending' }
   ],
 
   properties: [
@@ -74,7 +76,10 @@ foam.CLASS({
       class: 'String',
       name: 'status',
       value: 'Pending',
-      documentation: 'Beneficiary status on AFEX system.'
+      documentation: 'Beneficiary status on AFEX system.',
+      tableCellFormatter: function(val, obj) {
+        this.add(val === 'Pending' ? obj.PENDING_MSG : obj.APPROVED_MSG);
+      }
     },
     {
       class: 'DateTime',
