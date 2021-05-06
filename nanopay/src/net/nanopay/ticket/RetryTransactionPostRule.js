@@ -23,15 +23,17 @@
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: 'Post rule to cancel transaction',
+  documentation: 'Post rule to update transaction',
 
   javaImports: [
+    'foam.core.ClientRuntimeException',
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
     'net.nanopay.tx.DigitalTransaction',
+    'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'java.util.ArrayList',
@@ -90,10 +92,22 @@
             }
 
             // Retry problemTransaction
-            Transaction retry = (Transaction) problemTransaction.fclone();
-            retry.setStatus(TransactionStatus.PENDING);
+            Transaction retry = new Transaction();
             retry.setDestinationAccount(request.getRetryAccount());
-            retry.setId(UUID.randomUUID().toString());
+            retry.setSourceAccount(problemTransaction.getSourceAccount());
+            retry.setSourceCurrency(problemTransaction.getSourceCurrency());
+            retry.setDestinationCurrency(problemTransaction.getDestinationCurrency());
+            retry.setAmount(problemTransaction.getTotal(x, problemTransaction.getDestinationAccount()));
+            retry.setDestinationAmount(problemTransaction.getTotal(x, problemTransaction.getDestinationAccount()));
+            retry.setPayeeId(problemTransaction.findSourceAccount(x).getOwner());
+            retry.setPayerId(problemTransaction.findDestinationAccount(x).getOwner());
+
+            TransactionQuote quote = new TransactionQuote();
+            DAO transactionPlannerDAO = (DAO) x.get("localTransactionPlannerDAO");
+            quote.setRequestTransaction(retry);
+            quote = (TransactionQuote) transactionPlannerDAO.put(quote);
+            
+            retry = quote.getPlan();
             retry.setParent(problemTransaction.getId());
             txnDAO.put(retry);
           }
