@@ -114,10 +114,10 @@ foam.CLASS({
               .endContext();
           }
           return self.MenuRedirectSMEModalView.create({
-            menu: 'mainmenu.contacts',//self.menu,
+            menu: 'mainmenu.contacts', //self.menu,
             view: {
-              data: (foam.lookup('net.nanopay.contacts.Contact')).create({}, this),//self.model_
-              class:`net.nanopay.contacts.ui.${self.modelName}WizardView`,//'net.nanopay.contacts.ui.ContactWizardView'
+              data: (foam.lookup('net.nanopay.contacts.Contact')).create({}, this), //self.model_
+              class:`net.nanopay.contacts.ui.${self.modelName}WizardView`, //'net.nanopay.contacts.ui.ContactWizardView'
             }
           });
         }))
