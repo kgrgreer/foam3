@@ -36,6 +36,7 @@ foam.CLASS({
   messages: [
     { name: 'SUBMIT_FOR_APPROVAL', message: 'Sucessfully submitted.' },
     { name: 'ASSIGN', message: 'Sucessfully assigned.' },
+    { name: 'SET_ACCOUNT_ID', message: 'Please set the retry account ID.' }
   ],
 
   sections: [
@@ -156,6 +157,15 @@ foam.CLASS({
       updateVisibility: 'RO'
     },
     {
+      class: 'DateTime',
+      name: 'autoRefundDate',
+      label: 'Automatic Refund Date',
+      section: 'infoSection',
+      visibility: function(refundStatus) {
+        return refundStatus == net.nanopay.ticket.RefundStatus.QUEUED ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      }
+    },
+    {
       class: 'Boolean',
       name: 'waiveCharges'
     },
@@ -245,14 +255,7 @@ foam.CLASS({
       class: 'String',
       name: 'retryAccount',
       label: 'Retry Account ID',
-      visibility: function(refundStatus) {
-        return refundStatus == net.nanopay.ticket.RefundStatus.QUEUED ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
-      }
-    },
-    {
-      class: 'DateTime',
-      name: 'autoRefundDate',
-      label: 'Automatic Refund Date',
+      section: 'infoSection',
       visibility: function(refundStatus) {
         return refundStatus == net.nanopay.ticket.RefundStatus.QUEUED ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       }
@@ -299,6 +302,10 @@ foam.CLASS({
         return assignedTo == this.subject.user.id && refundStatus == net.nanopay.ticket.RefundStatus.QUEUED;
       },
       code: function(X) {
+        if ( this.retryAccount == "" ) {
+          this.notify(this.SET_ACCOUNT_ID, '', foam.log.LogLevel.INFO, true);
+          return;
+        }
         this.refundStatus = net.nanopay.ticket.RefundStatus.RETRY;
         this.ticketDAO.put(this).then(ticket => {
           this.notify(this.SUBMIT_FOR_APPROVAL, '', foam.log.LogLevel.INFO, true);

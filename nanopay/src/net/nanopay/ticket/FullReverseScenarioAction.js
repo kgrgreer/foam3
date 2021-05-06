@@ -131,7 +131,7 @@ foam.CLASS({
         if ( getAutoRefundDays() != 0 ) {
           ticket.setRefundStatus(RefundStatus.QUEUED);
           LocalDateTime expiry = LocalDateTime.now();
-          expiry.plusDays(getAutoRefundDays());
+          expiry = expiry.plusDays(getAutoRefundDays());
           Date date = Date.from(expiry.atZone(java.time.ZoneId.systemDefault()).toInstant());
           ticket.setAutoRefundDate(date);
         }
