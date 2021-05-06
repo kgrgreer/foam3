@@ -66,7 +66,7 @@ foam.CLASS({
           .setGroup(group)
           .setCreatedFor(owner.getId())
           .setDescription(headTx.getSummary() + summaryTx + headTx.getId())
-          .setClassificationEnum(ApprovalRequestClassificationEnum.TRANSACTION_REQUEST)
+          .setClassificationEnum(ApprovalRequestClassificationEnum.COMPLIANCE_TRANSACTION)
           .setPaymentId(headTx.getId())
           .build();
 
