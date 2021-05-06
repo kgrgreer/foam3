@@ -480,6 +480,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sps/SPSCredentials' },
 
   // tx
+  { name: 'net/nanopay/tx/CurrentLimit' },
   { name: 'net/nanopay/tx/TransactionValidator' },
   { name: 'net/nanopay/tx/TransactionLimitServiceInterface' },
   { name: 'net/nanopay/tx/client/ClientTransactionLimitService' },
@@ -514,6 +515,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/AddStatusHistoryAction' },
   { name: 'net/nanopay/tx/ruler/CascadingCancelAction' },
   { name: 'net/nanopay/tx/ruler/IsSecurityQuote' },
+  { name: 'net/nanopay/tx/ruler/LimitTransactionRule' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
   { name: 'net/nanopay/tx/ruler/MicroDepositSuccessed' },
   { name: 'net/nanopay/tx/ruler/MicroDepositFailed' },
@@ -724,6 +726,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/LineItemTypeAccount' },
   { name: 'net/nanopay/tx/LineItemFee' },
   { name: 'net/nanopay/tax/LineItemTax' },
+  { name: 'net/nanopay/tx/LimitTransaction' },
   { name: 'net/nanopay/tx/LineItemAmountType' },
   { name: 'net/nanopay/tx/LineItemAmount' },
   { name: 'net/nanopay/tx/ETALineItem' },

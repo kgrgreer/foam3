@@ -27,6 +27,7 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.tx.ComplianceTransaction',
+    'net.nanopay.tx.LimitTransaction',
     'net.nanopay.tx.SummaryTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
@@ -49,6 +50,11 @@ foam.CLASS({
       name: 'createCompliance',
       class: 'Boolean',
       value: true
+    },
+    {
+      name: 'createLimit',
+      class: 'Boolean',
+      value: false
     }
   ],
 
@@ -104,12 +110,15 @@ foam.CLASS({
               Transaction t = (Transaction) txn.fclone();
               Transaction ci = (Transaction) removeSummaryTransaction(CIP).fclone();
               ci.addNext((Transaction) removeSummaryTransaction(COP).fclone());
-              if (getCreateCompliance()) {
+              if ( getCreateLimit() ) {
+                LimitTransaction lt = createLimitTransaction(txn);
+                t.addNext(lt);
+              }
+              if ( getCreateCompliance() ) {
                 ComplianceTransaction ct = createComplianceTransaction(txn);
                 ct.addNext(ci);
                 t.addNext(ct);
-              }
-              else{
+              } else {
                 t.addNext(ci);
               }
               t.setStatus(TransactionStatus.COMPLETED);
