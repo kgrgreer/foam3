@@ -643,6 +643,7 @@ var classes = [
   'net.nanopay.tx.ruler.ComplianceTransactionPlanner',
   'net.nanopay.tx.TransactionException',
   'net.nanopay.tx.UnsupportedTransactionException',
+  'net.nanopay.tx.MatchCurrency',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
