@@ -3664,6 +3664,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBenefici
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBeneficiary.LAST_MODIFIED_BY.label",target:"Última Modificação Por"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBeneficiary.LAST_MODIFIED_BY_AGENT.label",target:"Última Modificação Por Agente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBeneficiary.VIEW_BENEFICIARIES.label",target:"Ver Beneficiários"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBeneficiary.CURRENCY.label",target:"Moeda"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.report.TransactionReportView.EXPORT_TXN_REPORT.label",target:"Baixar relatório de transação"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.PersonalContact.SECTION_CONTACT_INFORMATION.title",target:"Contatos"})
