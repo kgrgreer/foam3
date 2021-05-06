@@ -251,8 +251,6 @@
   actions: [
     {
       name: 'refreshTable',
-      label: 'Refresh ',
-      toolTip: 'Refresh Table',
       code: function(X) {
         this.filteredDAO.cmd_(X, foam.dao.CachingDAO.PURGE);
         this.filteredDAO.cmd_(X, foam.dao.AbstractDAO.RESET_CMD);

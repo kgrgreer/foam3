@@ -3877,6 +3877,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransac
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.REQUESTED_TITLE",target:"Requeridos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.RECEIVED_TITLE",target:"Recebidos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.SHOW_ASSIGNED_TITLE",target:"Mostra Designado Para Mim"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.REFRESH_TABLE.label",target:"Adiciona um memorando"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.APPROVE_ALL.label",target:"Refresca a tabela"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.REFRESH_TABLE.label",target:"Refresca a tabela"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.APPROVE_ALL.label",target:"Aprova tudo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"approvals.transactions.label",target:"Pedidos De Transação Em Lote"})
