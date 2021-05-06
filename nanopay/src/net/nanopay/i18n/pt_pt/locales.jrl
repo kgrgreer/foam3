@@ -2561,7 +2561,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoic
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.InvoiceStatus.PENDING_ACCEPTANCE.documentation",target:"Um status que indica que a fatura foi paga movendo dinheiro para a conta de depósito de propriedade do Pagador (conta digital padrão) e está aguardando a aceitação da transferência pelo Beneficiário."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.InvoiceStatus.DEPOSITING_MONEY.label",target:"Depositando dinheiro"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.InvoiceStatus.DEPOSITING_MONEY.documentation",target:"Um status que indica que a fatura foi paga movendo dinheiro para a conta de depósito de propriedade do Pagador (conta digital padrão) e agora está sendo movida para a conta bancária do beneficiário."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.InvoiceStatus.DRAFT.label",target:"Draft"})//TODO
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.InvoiceStatus.DRAFT.label",target:"Rascunho"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.InvoiceStatus.DRAFT.documentation",target:"Um status que indica que a fatura é um rascunho."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.InvoiceStatus.PENDING_APPROVAL.label",target:"Aprovação pendente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.InvoiceStatus.PENDING_APPROVAL.documentation",target:"Um status que indica que a fatura ainda precisa ser aprovada e paga."})
