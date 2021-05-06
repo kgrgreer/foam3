@@ -76,7 +76,6 @@ foam.CLASS({
       bTx.setPaymentProvider(getPaymentProvider());
       bTx.setPlanner(this.getId());
       addPartnerLineItem(x, bTx, requestTxn);
-      ExternalTransfer[] exT = new ExternalTransfer[2];
       quote.addTransfer(false, quote.getDestinationAccount().getId(), bTx.getDestinationAmount(), 0);
       quote.addTransfer(false, quote.getSourceAccount().getId(), -bTx.getAmount(), 0);
       return bTx;
