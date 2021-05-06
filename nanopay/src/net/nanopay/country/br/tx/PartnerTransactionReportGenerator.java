@@ -25,7 +25,9 @@ import foam.dao.AbstractSink;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import net.nanopay.fx.afex.AFEXTransaction;
+import net.nanopay.partner.treviso.tx.TrevisoTransaction;
 import net.nanopay.reporting.ReconciliationReportGenerator;
+import net.nanopay.tx.FeeSummaryTransactionLineItem;
 import net.nanopay.tx.HistoricStatus;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
@@ -47,6 +49,8 @@ public class PartnerTransactionReportGenerator extends ReconciliationReportGener
     var tx = (Transaction) src;
     var report = dst == null ? new PartnerReport() : (PartnerReport) dst;
     var afexTx = getAFEXTransaction(x, tx);
+
+    TransactionLineItem nanoLineItem = getNanopayFeeLineItem(tx);
 
     PartnerLineItem lineitem = new PartnerLineItem();
 
@@ -78,6 +82,12 @@ public class PartnerTransactionReportGenerator extends ReconciliationReportGener
 
     report.setTradeNumber(afexTx.getAfexTradeResponseNumber());
     report.setValueDate(afexTx.getCompletionDate());
+
+    // to support legacy data, transactions that dont have the lineitem would get default values
+    if ( nanoLineItem != null ) {
+      report.setNanopayFee(nanoLineItem.getAmount());
+      report.setNanopayFeeCurrency(nanoLineItem.getCurrency());
+    }
     return (PartnerReport) super.generate(x, src, report);
   }
 
@@ -97,6 +107,14 @@ public class PartnerTransactionReportGenerator extends ReconciliationReportGener
     });
 
     return (AFEXTransaction) txDAO.find(afexMap.get(tx.getId()));
+  }
+
+  protected TransactionLineItem getNanopayFeeLineItem(Transaction tx) {
+
+    for (TransactionLineItem lineItem: tx.getLineItems() ) {
+      if ( lineItem instanceof FeeSummaryTransactionLineItem) return lineItem;
+    }
+    return null;
   }
 
 }
