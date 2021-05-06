@@ -129,12 +129,6 @@ foam.CLASS({
       section: 'userInformation',
       order: 110
     }),
-//     net.nanopay.contacts.PersonalContact.CREATE_BANK_ACCOUNT.clone().copyFrom({
-//       label: 'Registration Status',
-//       gridColumns:6,
-//       section: 'userInformation',
-//       order: 110
-//     }),
     {
       class: 'Boolean',
       name: 'isEdit',
