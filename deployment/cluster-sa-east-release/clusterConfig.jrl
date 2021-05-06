@@ -1,6 +1,6 @@
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id": "mediator-1",
+  "id": "bepay-mediator-1",
   "name":"mediator-1",
   "enabled":true,
   "realm":"nanopay",
@@ -15,7 +15,7 @@ p({
 })
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id": "mediator-2",
+  "id": "bepay-mediator-2",
   "name":"mediator-2",
   "enabled":true,
   "realm":"nanopay",
@@ -31,7 +31,7 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"node-1",
+  "id":"bepay-node-1",
   "name":"node-1",
   "enabled":true,
   "realm":"nanopay",
@@ -46,7 +46,7 @@ p({
 })
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"node-2",
+  "id":"bepay-node-2",
   "name":"node-2",
   "enabled":true,
   "realm":"nanopay",
