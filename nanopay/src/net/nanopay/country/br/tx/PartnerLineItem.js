@@ -41,9 +41,9 @@ foam.CLASS({
       class: 'Double',
       name: 'effectiveRate',
       factory: function() {
-        return this.fxSpread + this.fxRate;
+        return this.fxSpread + this.fxRate + this.bankFeeRate;
       },
-      javaFactory: 'return getFxSpread() + getFxRate();'
+      javaFactory: 'return getFxSpread() + getFxRate() + getBankFeeRate();'
     },
     {
       class: 'UnitValue',
