@@ -59,6 +59,13 @@ foam.CLASS({
       name: 'natureCode',
       section: 'approvalRequestInformation',
       order: 25,
+      view: {
+        class: 'foam.u2.view.ReferencePropertyView',
+        readView: {
+          class: 'foam.u2.view.ReadReferenceView',
+          enableLink: false
+        }
+      },
       gridColumns: 6
     },
     {
