@@ -125,7 +125,9 @@ foam.CLASS({
         ) {
           return false;
         }
-        return ! isTrackingRequest && (subject.realUser.id === assignedTo);
+        if ( assignedTo !== 0 && subject.realUser.id !== assignedTo ) return false;
+
+        return ! isTrackingRequest;
       },
       code: function(X) {
         let titleSlot = foam.core.SimpleSlot.create();
@@ -157,7 +159,9 @@ foam.CLASS({
         ) {
           return false;
         }
-        return ! isTrackingRequest && (subject.realUser.id === assignedTo);
+        if ( assignedTo !== 0 && subject.realUser.id !== assignedTo ) return false;
+
+        return ! isTrackingRequest;
       },
       code: function(X) {
         var objToAdd = X.objectSummaryView ? X.objectSummaryView : X.summaryView;
