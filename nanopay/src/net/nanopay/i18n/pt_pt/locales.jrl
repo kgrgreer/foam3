@@ -2953,7 +2953,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Accounts Receivable Manager.labe
 p({class:"foam.i18n.Locale",locale:"pt",source:"Cash Manager.label",target:"Gerente de caixa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"CEO.label",target:"Diretor presidente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"CFO.label",target:"Diretor financeiro"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"Chairman.label",target:"Presidente (porta-voz)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Chairman.label",target:"Chairman"}) // not using 'presidente' to make distinction from 'president' which also translates to 'presidente'
 p({class:"foam.i18n.Locale",locale:"pt",source:"Company Secretary.label",target:"Secretária da companhia"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Comptroller.label",target:"Controladoria"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Controller.label",target:"Controladoria"})
