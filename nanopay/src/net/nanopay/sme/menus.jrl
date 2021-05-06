@@ -78,7 +78,7 @@ p({
       "Exemple_primaryAction": {"class":"net.nanopay.ui.AddPrimaryAction"},
       "Exemple_viewBorder":{class:"foam.u2.borders.NullBorder"},
 
-      "createController":{class:"net.nanopay.ui.wizard.ContactWizardDetailView"},
+      "createController":{class:"net.nanopay.ui.wizard.WizardController"},
       "detailView":{class:"net.nanopay.account.ui.BankAccountWizard"},
 
       "createControllerView":{
@@ -139,7 +139,7 @@ p({
       "viewBorder":{class:"foam.u2.borders.NullBorder"},
       "browseBorder":{class:"net.nanopay.bank.MyBankAccountsBorder"},
 
-      "createController":{class:"net.nanopay.ui.wizard.ContactWizardDetailView"},
+      "createController":{class:"net.nanopay.ui.wizard.WizardController"},
       "detailView":{class:"net.nanopay.account.ui.BankAccountWizard"},
 
       "exportEnabled":false,

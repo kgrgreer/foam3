@@ -249,7 +249,6 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/SwitchUserView', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardOverview', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardSubView', flags: ['web'] },
-  { name: 'net/nanopay/ui/wizard/ContactWizardDetailView', flags: ['web'] },
   { name: 'net/nanopay/ui/NotificationActionCard', flags: ['web'] },
   { name: 'net/nanopay/ui/ContentCard', flags: ['web'] },
   { name: 'net/nanopay/ui/BusinessCard', flags: ['web'] },
