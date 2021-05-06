@@ -870,7 +870,7 @@ p({
   "class": "foam.nanos.notification.email.EmailTemplate",
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-98",
   "name": "treviso-email-base",
-  "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"> \n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title>{{appName}}</title>\n<link href=\"https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i\" rel=\"stylesheet\">\n<style type=\"text/css\"> \n\n</style>\n</head>\n<body style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #f2f2f2;\">\n<div style=\"max-width: 420px; margin: auto; padding: 40px\">\n<div style=\"width: 100%; background: #fff; border-radius: 5px; padding: 20px; text-align: center\">\n<a href=\"#\" title=\"Email logo\" target=\"_blank\" style=\"cursor: default\">\n<img src= {{largeLogo}}alt=\"\" style=\"width: 135px; height: 80px; padding: 24px; float: left; padding-right: 100%\"/>\n</a><content></content>\n</div>\n<div style=\"width: 100%; background: #fff; border-radius: 5px; padding: 20px; text-align: center; margin-top: 10px\">\n<div style=\"font-size: 14px; color: #444; line-height: 20px\">\n{{supportAddress}}\n</div>\n</div>\n</div>\n</body>\n</html>"
+  "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"> \n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title>{{appName}}</title>\n<link href=\"https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i\" rel=\"stylesheet\">\n<style type=\"text/css\"> \n\n</style>\n</head>\n<body style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #f2f2f2;\">\n<div style=\"max-width: 420px; margin: auto; padding: 40px\">\n<div style=\"width: 100%; background: #fff; border-radius: 5px; padding: 20px; text-align: center\">\n<a href=\"#\" title=\"Email logo\" target=\"_blank\" style=\"cursor: default\">\n<img src= {{largeLogo}} alt=\"\" style=\"width: 135px; height: 80px; padding: 24px; float: left; padding-right: 100%\"/>\n</a><content></content>\n</div>\n<div style=\"width: 100%; background: #fff; border-radius: 5px; padding: 20px; text-align: center; margin-top: 10px\">\n<div style=\"font-size: 14px; color: #444; line-height: 20px\">\n{{supportAddress}}\n</div>\n</div>\n</div>\n</body>\n</html>"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
@@ -2548,7 +2548,7 @@ p({
   "locale": "en",
   "subject": "Complete your Transaction",
   "body": """
-    <include template = 'treviso-email-base'>
+    <include template = 'treviso-email-base_2'>
       <h3 style="margin-top: 25px">
         Attention : This transaction is not complete yet!
       </h3>
@@ -2582,7 +2582,7 @@ p({
   "locale": "pt",
   "subject": "Conclua sua transação",
   "body": """
-    <include template = 'treviso-email-base'>
+    <include template = 'treviso-email-base_2'>
       <h3 style="margin-top: 25px">
         ATENÇÃO : Esta transação ainda não foi enviada!
       </h3>
