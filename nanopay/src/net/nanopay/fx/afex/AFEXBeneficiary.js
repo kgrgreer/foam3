@@ -23,7 +23,8 @@ foam.CLASS({
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware'
+    'foam.nanos.auth.LastModifiedByAware',
+    'foam.nanos.auth.ServiceProviderAware'
   ],
 
   properties: [
@@ -107,6 +108,11 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.core.Currency',
       name: 'currency'
-    }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid'
+    },
   ]
 });

@@ -3069,7 +3069,7 @@ referenceSink(dao){
   return new AbstractSink() {
     public void put(Object obj, Detachable sub) {
       object = obj.fclone();
-      
+
       // Replaces capable object capability id's with new capability id's from above mapping
       capabilityIds = object.getCapabilityIds();
       for ( int i = 0; i < capabilityIds.length; i++) {
@@ -3077,7 +3077,7 @@ referenceSink(dao){
           capabilityIds[i] = capabilityMap.get(capabilityIds[i]);
         }
       }
-      
+
       // Replace capable object userCapabilityRequirements with new capability id's from above mapping
       userCapabilityIds = object.getUserCapabilityRequirements();
       for ( int i = 0; i < userCapabilityIds.length; i++) {
@@ -3139,4 +3139,45 @@ padCaptureDAO.select(referenceSink(padCaptureDAO));
 print("finished");
 """
 });
+
+p({
+  class:"foam.nanos.script.Script",
+  id:"Set SPID on AFEXUser/AFEXBeneficiary",
+  description:"Set SPID on AFEXUser/AFEXBeneficiary",
+  code:"""
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import foam.nanos.auth.User;
+    import foam.util.SafetyUtil;
+    import net.nanopay.fx.afex.AFEXBeneficiary;
+    import net.nanopay.fx.afex.AFEXUser;
+
+    afexUserDAO = x.get("afexUserDAO");
+    afexBeneficiaryDAO = x.get("afexBeneficiaryDAO");
+    userDAO = (DAO) x.get("localUserDAO");
+
+    afexUsers = (afexUserDAO.select(new ArraySink())).getArray();
+
+    for ( AFEXUser au: afexUsers ) {
+      if ( SafetyUtil.isEmpty(au.getSpid()) ) {
+        au = (AFEXUser)au.fclone();
+        User u = userDAO.find(au.getUser());
+        au.setSpid(u.getSpid());
+        afexUserDAO.put(au);
+      }
+    }
+
+    afexBeneficiaries = (afexBeneficiaryDAO.select(new ArraySink())).getArray();
+    for ( AFEXBeneficiary b: afexBeneficiaries ) {
+      if ( SafetyUtil.isEmpty(b.getSpid()) ) {
+        b = (AFEXBeneficiary)b.fclone();
+        User u = userDAO.find(b.getOwner());
+        b.setSpid(u.getSpid());
+        afexBeneficiaryDAO.put(b);
+      }
+    }
+
+    print("DONE");
+  """
+})
 
