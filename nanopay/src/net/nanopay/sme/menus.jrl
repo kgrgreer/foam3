@@ -50,42 +50,10 @@ p({
 })
 
 p({"class":"foam.nanos.menu.Menu","id":"mainmenu.dashboard","label":"Dashboard","icon":"images/ablii/dashboard-icon-resting.svg","activeIcon":"images/ablii/dashboard-icon-active.svg","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.dashboard.Dashboard"}},"order":500,"parent":"smeNavigation"})
-p({
-  "class":"foam.nanos.menu.Menu",
-  "id":"mainmenu.contacts",
-  "label":"Contacts",
-  "icon":"images/ablii/contacts-icon-resting.svg",
-  "activeIcon":"images/ablii/contacts-icon-active.svg",
-  "handler":{
-    "class":"foam.nanos.menu.DAOMenu",
-    "daoKey":"contactDAO",
-    "title":"Contacts",
-    "searchMode":0,
-    "editPredicate":{"class":"foam.mlang.predicate.False"},
-    "createPredicate":{"class":"foam.mlang.predicate.True"},
-    "exportEnabled":false,
-    "createEnabled":true,
-    "editEnabled":false,
-    "summaryView":{ "class":"net.nanopay.contacts.ui.ContactTableView" },
-    "createLabel":"Add contact",
-    "createControllerView":{
-      "class":"net.nanopay.sme.ui.MenuRedirectSMEModalView",
-      "menu":"mainmenu.contacts",
-      "view":{
-        "class":"foam.nanos.menu.MenuToolBar",
-        "classification":"submenu.contact",
-        "parent":"sme",
-        "title":"Add contact"
-      }
-    }
-  },
-  "order":503,
-  "parent":"smeNavigation"
-})
 
 p({
   "class":"foam.nanos.menu.Menu",
-  "id":"mainmenu.contacts2",
+  "id":"mainmenu.contacts",
   "label":"Contacts DAOMenu2",
   "icon":"images/ablii/contacts-icon-resting.svg",
   "activeIcon":"images/ablii/contacts-icon-active.svg",
@@ -115,7 +83,7 @@ p({
 
       "createControllerView":{
         "class":"net.nanopay.sme.ui.MenuRedirectSMEModalView",
-        "menu":"mainmenu.contacts2",
+        "menu":"mainmenu.contacts",
         "view":{
           "class":"foam.nanos.menu.MenuToolBar",
           "classification":"submenu.contact",
@@ -151,38 +119,6 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "mainmenu.banking",
-  "label": "Bank accounts",
-  "icon": "images/ablii/bankaccount-icon-resting.svg",
-  "activeIcon": "images/ablii/bankaccount-icon-active.svg",
-  "handler": {
-    "class": "foam.nanos.menu.DAOMenu2",
-    "config":{
-      "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"accountDAO",
-      "of":"net.nanopay.bank.BankAccount",
-      "browseTitle": "Bank accounts",
-      "browseSubtitle": "View all Bank Accounts",
-      "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"},
-      "searchMode": 2,
-      "primaryAction": {"class":"net.nanopay.bank.AddBankAccountAction"},
-      "browseViews": [
-        {
-          "class": "foam.comics.v2.namedViews.NamedViewCollection",
-          "name": "BankAccountTableView",
-          "view": { "class":"net.nanopay.bank.BankAccountTableView" }
-        }
-      ]
-    }
-  },
-  "order": 504,
-  "parent": "smeNavigation"
-})
-
-
-p({
-  "class": "foam.nanos.menu.Menu",
-  "id": "mainmenu.banking2",
   "label": "Bank accounts DAOMenu2",
   "icon": "images/ablii/bankaccount-icon-resting.svg",
   "activeIcon": "images/ablii/bankaccount-icon-active.svg",
