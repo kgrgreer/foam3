@@ -15,10 +15,11 @@ p({
   enabled: true,
   permissionsGranted: [
     "paymentprovidercorridor.read.afex",
-    "paymentprovidercorridor.read.bepay",
+    "paymentprovidercorridor.read.paymentprovidercorridor.bepay.br-us",
+    "paymentprovidercorridor.read.paymentprovidercorridor.bepay.br-ca",
     "paymentprovidercorridor.source.read.bepay",
     "paymentprovidercorridor.target.read.paymentprovidercorridor.bepay.br-us",
-    "paymentprovidercorridor.target.read.5B9EE768-4B35-493C-A356-FEC306235AB7"
+    "paymentprovidercorridor.target.read.paymentprovidercorridor.bepay.br-ca"
   ]
 })
 p({
