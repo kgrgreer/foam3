@@ -8,7 +8,7 @@ p({
     class: "net.nanopay.tx.fee.predicate.PaymentCorridorPredicate",
     paymentProvider: "BePay",
     sourceCountry: "BR",
-    targetCountryList: [ "PT", "US", "CA", "GB" ]
+    targetCountryList: [ "US", "CA" ]
   },
   feeRule: "454df571-f639-4506-8d59-98b4f39934e4-bpp"
 })
