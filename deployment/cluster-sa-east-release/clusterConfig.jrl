@@ -1,0 +1,61 @@
+p({
+  "class":"foam.nanos.medusa.ClusterConfig",
+  "id": "mediator-1",
+  "name":"mediator-1",
+  "enabled":true,
+  "realm":"nanopay",
+  "region":"release",
+  "regionStatus":1,
+  "zone":0,
+  "port":8080,
+  "sessionId":"C4E7ABBE-8C5A-4BED-98EA-197715A44DE3",
+  "type":0,
+  "created":"2020-12-15T14:57:12.959Z",
+  "createdBy":2
+})
+p({
+  "class":"foam.nanos.medusa.ClusterConfig",
+  "id": "mediator-2",
+  "name":"mediator-2",
+  "enabled":true,
+  "realm":"nanopay",
+  "region":"release",
+  "regionStatus":1,
+  "zone":0,
+  "port":8080,
+  "sessionId":"CA24DC07-EAD2-4BB6-96C3-F07D81343BB2",
+  "type":0,
+  "created":"2020-12-15T14:57:12.959Z",
+  "createdBy":2
+})
+
+p({
+  "class":"foam.nanos.medusa.ClusterConfig",
+  "id":"node-1",
+  "name":"node-1",
+  "enabled":true,
+  "realm":"nanopay",
+  "region":"release",
+  "regionStatus":1,
+  "zone":0,
+  "port":8080,
+  "sessionId":"31E39D87-5624-4D53-BCA4-D89ED859B745",
+  "type":1,
+  "created":"2020-11-10T14:57:12.959Z",
+  "createdBy":2
+})
+p({
+  "class":"foam.nanos.medusa.ClusterConfig",
+  "id":"node-2",
+  "name":"node-2",
+  "enabled":true,
+  "realm":"nanopay",
+  "region":"release",
+  "regionStatus":1,
+  "zone":0,
+  "port":8080,
+  "sessionId":"91170448-B78B-40E2-BE6E-0FF94C2DFBF8",
+  "type":1,
+  "created":"2020-11-10T14:57:12.959Z",
+  "createdBy":2
+})
