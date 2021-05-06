@@ -59,7 +59,7 @@ foam.CLASS({
          * 'Signing officer: revoked from <email address>'
          */
 
-        // replacing with messages for translations
+        // replacing with messages for translation
         val = val.replace('Signing officer', obj.SIGNING_OFFICER_MSG);
         val = val.replace('assigned to', obj.SIGNING_OFFICER_MSG);
         val = val.replace('revoked from', obj.REVOKED_FROM_MSG);
