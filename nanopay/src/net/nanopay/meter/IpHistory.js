@@ -54,16 +54,14 @@ foam.CLASS({
       visibility: 'RO',
       tableCellFormatter: function(val, obj) {
         /** 
-         * description has a pattern of 
+         * description has a form of 
          * 'Signing officer: assgined to <email address>' or
          * 'Signing officer: revoked from <email address>'
          */
-        const [_, __, verb, ___, email] = val.split(' ');
-        const action = verb === 'assigned' ?
-          obj.ASSIGNED_TO_MSG :
-          obj.REVOKED_FROM_MSG;
-
-        this.add(`${obj.SIGNING_OFFICER_MSG}: ${action} ${email}`);
+        val = val.replace('Signing officer', obj.SIGNING_OFFICER_MSG);
+        val = val.replace('assigned to', obj.SIGNING_OFFICER_MSG);
+        val = val.replace('revoked from', obj.REVOKED_FROM_MSG);
+        this.add(val);
       }
     },
     {
