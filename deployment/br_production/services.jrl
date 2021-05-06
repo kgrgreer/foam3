@@ -1,0 +1,23 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"exchangeCredential",
+  "lazy":false,
+  "service":
+    {
+      "class":"net.nanopay.country.br.exchange.ExchangeCredential",
+      exchangeUrl:"http://10.11.9.148:8283/Exchange.svc",
+      exchangeAgencia:51,
+      exchangeUsername:"username",
+      exchangePassword:"password"
+    }
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"exchange",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.country.br.exchange.ExchangeClient(x);
+  """
+})
