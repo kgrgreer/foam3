@@ -3494,11 +3494,21 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ContactStat
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ContactStatus.CONNECTED.label",target:"Conectado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ContactStatus.READY.label",target:"Pronto"})
 
+/* IP HISTORY */
+// property labels
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.IpHistory.IP_ADDRESS.label",target:"IP Endereço"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.IpHistory.DESCRIPTION.label",target:"Descrição"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.IpHistory.CREATED.label",target:"Criado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.IpHistory.BUSINESS.label",target:"Negócio"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.IpHistory.USER.label",target:"Usuário"})
+// menus
+p({class:"foam.i18n.Locale",locale:"pt",source:"operation.ipHistories.browseTitle",target:"Histórias de IP"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"operation.ipHistories.browseSubtitle",target:"Histórias de IP"})
+// messages
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.IpHistory.SIGNING_OFFICER_MSG",target:"Oficial de assinatura"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.IpHistory.ASSIGNED_TO_MSG",target:"atribuído a"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.IpHistory.REVOKED_FROM_MSG",target:"revogado de"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.PersonalContact.SECTION_USER_INFORMATION.title.label",target:"Contato Informações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.PersonalContact.SECTION_BUSINESS_INFORMATION.title.label",target:"Negócios informação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView.UPLOAD_BUTTON.label",target:"Escolher arquivo"})

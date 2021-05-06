@@ -30,6 +30,12 @@ foam.CLASS({
     'userDAO'
   ],
 
+  messages: [
+    { name: 'SIGNING_OFFICER_MSG', message: 'Signing officer' },
+    { name: 'ASSIGNED_TO_MSG', message: 'assigned to' },
+    { name: 'REVOKED_FROM_MSG', message: 'revoked from' }
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -45,7 +51,20 @@ foam.CLASS({
     {
       class: 'String',
       name: 'description',
-      visibility: 'RO'
+      visibility: 'RO',
+      tableCellFormatter: function(val, obj) {
+        /** 
+         * description has a pattern of 
+         * 'Signing officer: assgined to <email address>' or
+         * 'Signing officer: revoked from <email address>'
+         */
+        const [_, __, verb, ___, email] = val.split(' ');
+        const action = verb === 'assigned' ?
+          obj.ASSIGNED_TO_MSG :
+          obj.REVOKED_FROM_MSG;
+
+        this.add(`${obj.SIGNING_OFFICER_MSG}: ${action} ${email}`);
+      }
     },
     {
       class: 'DateTime',
