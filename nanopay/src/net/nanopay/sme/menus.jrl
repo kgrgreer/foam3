@@ -75,8 +75,8 @@ p({
       "editEnabled":true,
       "searchMode":0,
 
-      "WWWprimaryAction": {"class":"net.nanopay.ui.AddPrimaryAction"},
-      "WWWviewBorder":{class:"foam.u2.borders.NullBorder"},
+      "Exemple_primaryAction": {"class":"net.nanopay.ui.AddPrimaryAction"},
+      "Exemple_viewBorder":{class:"foam.u2.borders.NullBorder"},
 
       "createController":{class:"net.nanopay.ui.wizard.ContactWizardDetailView"},
       "detailView":{class:"net.nanopay.account.ui.BankAccountWizard"},
@@ -91,9 +91,6 @@ p({
           "title":"Add contact"
         }
       },
-
-      "XXXcreateController":{"class":"net.nanopay.ui.wizard.ContactWizardDetailView"},
-      "XXXdetailView":{"class":"net.nanopay.contacts.ui.ContactWizardView"},
 
       "exportEnabled":false,
       "createEnabled":true,
