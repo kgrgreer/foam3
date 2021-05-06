@@ -174,7 +174,7 @@ foam.CLASS({
       javaCode: `
         AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
         try {
-          new Thread(() -> afexServiceProvider.addPayee(beneficiaryId, bankAccountId,  beneficiaryOwnerId)).start();
+          afexServiceProvider.addPayee(beneficiaryId, bankAccountId,  beneficiaryOwnerId);
         } catch(Throwable t) {
           ((Logger) x.get("logger")).error(CREATE_AFEX_BENF_ERROR_MSG, t);
         } 
