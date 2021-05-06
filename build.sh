@@ -62,6 +62,12 @@ function install {
     # git hooks
     git config core.hooksPath .githooks
     git config submodule.recurse true
+
+    # install pkcs12
+    if [[ $IS_MAC -eq 1 ]]; then
+        ./tools/cert/copy-pkcs12.sh
+    fi
+
 }
 
 function deploy_documents {

@@ -39,6 +39,10 @@ p({
   "lifecycleState":1
 })
 
+// REVIEW: Condition for checking destinationAccount should not be needed as it
+// 1. would require change when opening more corridors for bepay
+// 2. would prevent configure bepay and bpp corridors differently
+// 3. should be controlled via permissions
 p({
   "class":"net.nanopay.country.br.tx.PartnerTransactionPlanner",
   "id":"2fdd7d35-6704-47dc-9f0e-9419e0aa74ed",
@@ -135,93 +139,18 @@ p({
 p({
   class: "net.nanopay.tx.fee.TransactionFeeRule",
   id: "454df571-f639-4506-8d59-98b4f39934e4-bepay",
-  name: "BePay Fee",
-  documentation: "BePay transaction fee",
-  feeName: "BePay Fee",
-  feeDenomination: "BRL",
+  name: "Nanopay Transaction Fee",
+  documentation: "Nanopay transaction fee",
+  feeName: "Nanopay Transaction Fee",
   rateExpiry: {
     class: "foam.nanos.cron.TimeHMS",
     hour: 24
   },
+  feeDenomination: "USD",
   enabled: true,
   predicate: {
-    class: "foam.mlang.predicate.And",
-    args: [
-      {
-        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
-        of: "net.nanopay.fx.FXSummaryTransaction"
-      },
-      {
-        class: "foam.mlang.predicate.Eq",
-        arg1: {
-          class: "foam.mlang.expr.Dot",
-          arg1: {
-            class: "foam.mlang.ContextObject",
-            key: "NEW"
-          },
-          arg2: {
-            class: "foam.mlang.PredicatedExpr",
-            arg1: {
-              class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
-              of: "net.nanopay.country.br.tx.NatureCodeLineItem",
-              propName: "natureCode"
-            }
-          }
-        },
-        arg2: {
-          class: "foam.mlang.Constant",
-          value: true
-        }
-      }
-    ]
-  },
-  lifecycleState:1
-})
-
-p({
-  class: "net.nanopay.tx.fee.TransactionFeeRule",
-  id: "9e7661a6-610b-47ad-b521-96b9c760fb16-bepay",
-  name: "IOF",
-  documentation: "IOF charge for BePay transactions.",
-  feeName: "IOF",
-  ruleGroup: "TransactionFeeRule",
-  feeDenomination: "BRL",
-  feeClass: "net.nanopay.tx.FeeLineItem",
-  rateExpiry: {
-    class: "foam.nanos.cron.TimeHMS",
-    hour: 24
-  },
-  enabled: true,
-  predicate: {
-    class: "foam.mlang.predicate.And",
-    args: [
-      {
-        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
-        of: "net.nanopay.fx.FXSummaryTransaction"
-      },
-      {
-        class: "foam.mlang.predicate.Eq",
-        arg1: {
-          class: "foam.mlang.expr.Dot",
-          arg1: {
-            class: "foam.mlang.ContextObject",
-            key: "NEW"
-          },
-          arg2: {
-            class: "foam.mlang.PredicatedExpr",
-            arg1: {
-              class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
-              of: "net.nanopay.country.br.tx.NatureCodeLineItem",
-              propName: "natureCode"
-            }
-          }
-        },
-        arg2: {
-          class: "foam.mlang.Constant",
-          value: true
-        }
-      }
-    ]
+    class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+    of: "net.nanopay.country.br.tx.BRPartnerTransaction"
   },
   lifecycleState:1
 })
