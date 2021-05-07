@@ -144,9 +144,6 @@ foam.CLASS({
     }
     `
   },
-  function toSummary() {
-    return this.DESCRIPTION;
-  },
   {
     documentation: 'Returns childrens status.',
     name: 'calculateTransients',
