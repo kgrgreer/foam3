@@ -21,9 +21,7 @@ foam.CLASS({
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: [ 'foam.core.Serializable' ],
 
-  documentation: `
-    TODO: 
-  `,
+  documentation: 'Filter TransactionApprovalRequest by the Destination currency of the associated Transaction',
 
   requires: [
     'foam.mlang.expr.PropertyExpr'
@@ -31,10 +29,10 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
-    "net.nanopay.tx.TransactionApprovalRequest",
-    "net.nanopay.tx.model.Transaction",
-    "foam.util.SafetyUtil",
-    "foam.dao.DAO"
+    'foam.dao.DAO',
+    'foam.util.SafetyUtil',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.TransactionApprovalRequest'
   ],
 
   properties: [
