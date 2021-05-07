@@ -58,6 +58,7 @@ foam.CLASS({
       name: 'permittedCountries',
       visibility: 'HIDDEN',
       factory: function() {
+        /* ignoreWarning */
         return this.PromisedDAO.create({
           of: 'foam.nanos.auth.Country',
           promise: this.sourceCorridorDAO

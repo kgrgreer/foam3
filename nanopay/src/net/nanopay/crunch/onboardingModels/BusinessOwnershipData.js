@@ -77,6 +77,7 @@ foam.CLASS({
       documentation: `this property converts SigningOfficer Users to BeneficialOwners,
       as a way of mini pre-processing for owner selections.`,
       factory: function() {
+        /* ignoreWarning */
         var x = this.__subContext__;
         var daoSpec = { of: this.ownerClass };
         var adao = foam.dao.ArrayDAO.create(daoSpec);

@@ -51,6 +51,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.InvoicedFeeLineItem',
+    'net.nanopay.tx.LimitTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
     'org.apache.commons.lang.ArrayUtils',
@@ -329,6 +330,26 @@ foam.CLASS({
         ct.clearNext();
         ct.setId(UUID.randomUUID().toString());
         return ct;
+      `
+    },
+    {
+      name: 'createLimitTransaction',
+      documentation: 'Creates a limit transaction and returns it',
+      args: [
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      type: 'net.nanopay.tx.LimitTransaction',
+      javaCode: `
+        LimitTransaction lt = new LimitTransaction();
+        lt.copyFrom(txn);
+        lt.setStatus(net.nanopay.tx.model.TransactionStatus.PENDING);
+        lt.setName("Limit Transaction");
+        lt.clearTransfers();
+        lt.clearLineItems();
+        lt.setPlanner(getId());
+        lt.clearNext();
+        lt.setId(UUID.randomUUID().toString());
+        return lt;
       `
     },
     {

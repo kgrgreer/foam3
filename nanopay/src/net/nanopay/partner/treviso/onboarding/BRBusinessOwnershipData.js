@@ -57,6 +57,7 @@ foam.CLASS({
       // TODO: there may be a better way to do this without replacing the
       //       entire factory here.
       factory: function() {
+        /* ignoreWarning */
         var x = this.__subContext__;
         var daoSpec = { of: this.ownerClass };
         var adao = foam.dao.ArrayDAO.create(daoSpec);
