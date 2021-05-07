@@ -42,6 +42,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.approval.ApprovableAware',
     'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.approval.ApprovalRequestUtil',
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.auth.CreatedByAware',
@@ -133,7 +134,7 @@ foam.CLASS({
             EQ(ApprovalRequest.OBJ_ID, objId),
             EQ(ApprovalRequest.DAO_KEY, daoKey),
             getIsFinal()
-              ? TRUE : EQ(ApprovalRequest.CLASSIFICATION, classification)
+              ? TRUE : EQ(ApprovalRequest.CLASSIFICATION_ENUM, ApprovalRequestClassificationEnum.ACCOUNT_ROLE_APPROVAL)
           ))
         );
 
@@ -167,7 +168,7 @@ foam.CLASS({
           X initiatingUserX = x.put("subject", subject);
 
           ApprovalRequest approvalRequest = new AccountRoleApprovalRequest.Builder(x)
-            .setClassification(classification)
+            .setClassificationEnum(ApprovalRequestClassificationEnum.ACCOUNT_ROLE_APPROVAL)
             .setObjId(objId)
             .setDaoKey(daoKey)
             .setOperation(Operation.CREATE)

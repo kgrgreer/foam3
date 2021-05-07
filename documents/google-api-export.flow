@@ -1,11 +1,11 @@
 <title>Google Api</title>
-<h1>Google Api</h1>
-<h2>Authorization</h2>
+<h2>Google Api</h2>
+<h4>Authorization</h4>
 <p>In order to be able to use Google API we need to register our app with Google Developers Console, enable APIs which we would like to use and create OAuth Client ID.</p>
 <p>We are using Google OAuth Client Library, which helps us authorize our API calls (send request to retrieve permissions from user, retrieve access token and store it).</p>
-<h2>Google Sheets API</h2>
+<h4>Google Sheets API</h4>
 <p>In order to create/update Google Sheets we need to make calls to Google Sheets API. For our GoogleSheets and PDFGoogleSheets export we send "create sheet" request and then send a batch of requests for adding data, formatting and styling it.</p>
-<h2>Google Sheets Export</h2>
+<h4>Google Sheets Export</h4>
 <p>Our GoogleSheetsExportDriver uses GoogleSheetsOutputter to format data and gather information related to columns and their formatting. After that, GoogleSheetsExportDriver makes call to GoogleSheetsApiService.</p>
 <p>GoogleSheetsApiService uses GoogleApiAuthService for authorization, creates Google Sheet and returns sheet's id which is used for creating url to GoogleSheetsExportDriver. ExportModal opens returned url.</p>
 <p>The same procedure is used for PDFGoogleSheetsExportDriver.</p>

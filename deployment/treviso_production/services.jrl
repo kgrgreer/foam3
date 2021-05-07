@@ -1,13 +1,43 @@
 p({
   "class":"foam.nanos.boot.NSpec",
+  "name":"exchange",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.country.br.exchange.ExchangeClient(x);
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"fepWebService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.treviso.api.FepWebService(x);
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
   "name":"SoaWebServiceCredientials",
   "lazy":false,
   "service": {
     "class":"net.nanopay.partner.soawebservices.SoaCredenciais",
     "Email":"suporte@trevisocc.com.br",
-    "Senha":"auFHK3STb",
+    "Senha":"password",
     "url":"http://www.soawebservices.com.br/restservices/producao/cdc/"
   }
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"soaWebService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.soawebservices.SoaWebServiceClient(x);
+  """
 })
 
 p({
@@ -17,5 +47,15 @@ p({
   "serve":false,
   "serviceScript":"""
     return new net.nanopay.partner.treviso.fx.TrevisoFXService(x, "Treviso", "Cambio2019", new String[] {"USD","CAD","EUR","GBP","CNY","CLP","ARS","JPY","CHF","AUD"}, null);
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"openDataService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.country.br.OpenDataService(x);
   """
 })

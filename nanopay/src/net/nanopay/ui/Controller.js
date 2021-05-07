@@ -151,37 +151,22 @@ foam.CLASS({
       font-weight: 500;
       -webkit-font-smoothing: antialiased;
     }
-    .foam-flow-Document h1 {
-      font-weight: 400;
-      font-size: 24px;
-      line-height: 32px;
-    }
-    .foam-flow-Document h2 {
-      font-weight: 500;
-      font-size: 18px;
-      line-height: 26px;
-    }
-    .foam-flow-Document h3 {
-      font-weight: 500;
-      font-size: 16px;
-      line-height: 22px;
-    }
     .foam-flow-Document h1,
     .foam-flow-Document h2,
     .foam-flow-Document h3,
     .foam-flow-Document h4,
     .foam-flow-Document h5 {
-      margin: 12px 0 0 0;
-      color: #292e31;
+      margin: 12px 0 12px 0;
     }
     .foam-flow-Document p {
-      margin-bottom: 0;
-      margin-top: 20px;
+      margin-bottom: 10px;
+      margin-top: 10px;
     }
     .foam-flow-Document .code {
       background-color: black;
       color: white;
       padding: 20px;
+      overflow: auto;
     }
     .foam-flow-Document a {
       color: rgb(0, 153, 229);
@@ -861,23 +846,6 @@ foam.CLASS({
     function onUserAgentAndGroupLoaded() {
       var self = this;
       this.loginSuccess = true;
-      // Listener to check for new toast notifications
-      var userNotificationQueryId = this.subject.realUser.id;
-      this.__subSubContext__.notificationDAO.where(
-        this.EQ(this.Notification.USER_ID, userNotificationQueryId)
-      ).on.put.sub((sub, on, put, obj) => {
-        if ( obj.toastState == this.ToastState.REQUESTED ) {
-          obj.toastMessage = this.__subContext__.translationService.getTranslation(foam.locale, obj.toastMessage, obj.toastMessage);
-          this.add(this.NotificationMessage.create({
-            message: obj.toastMessage,
-            type: obj.severity,
-            description: obj.toastSubMessage
-          }));
-          var clonedNotification = obj.clone();
-          clonedNotification.toastState = this.ToastState.DISPLAYED;
-          this.__subSubContext__.notificationDAO.put(clonedNotification);
-        }
-      });
 
       if ( this.sme ) {
         window.onpopstate = async event => {

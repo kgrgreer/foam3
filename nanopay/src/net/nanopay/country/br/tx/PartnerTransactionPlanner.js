@@ -67,16 +67,11 @@ foam.CLASS({
     {
       name: 'plan',
       javaCode: `
-      FXSummaryTransaction txn = new FXSummaryTransaction();
-      txn.copyFrom(requestTxn);
-      txn.setPaymentProvider(getPaymentProvider());
-      txn.setStatus(TransactionStatus.COMPLETED);
-      txn.clearLineItems();
       BRPartnerTransaction bTx = new BRPartnerTransaction();
       bTx.setLineItems(requestTxn.getLineItems());
       bTx.copyFrom(requestTxn);
       bTx.setId(UUID.randomUUID().toString());
-      bTx.setAmount(txn.getAmount());
+      bTx.setAmount(requestTxn.getAmount());
       bTx.setName("Partner transaction");
       bTx.setPaymentProvider(getPaymentProvider());
       bTx.setPlanner(this.getId());

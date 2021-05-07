@@ -73,6 +73,7 @@ foam.CLASS({
     'menuDAO',
     'notify',
     'stack',
+    'theme',
     'transactionDAO',
     'translationService',
     'user',
@@ -194,6 +195,13 @@ foam.CLASS({
     }
     ^ .net-nanopay-invoice-ui-modal-RecordPaymentModal {
       overflow: auto;
+    }
+    ^ .pdf-app-logo {
+      height: 100px;
+      display: block;
+    }
+    ^ .hide {
+      display: none;
     }
   `,
 
@@ -375,7 +383,7 @@ foam.CLASS({
       name: 'canReconcile',
       documentation: `This boolean is a check for invoice ability to reconcile.`,
       expression: function(invoice$payeeReconciled, invoice$payerReconciled, invoice$status, isPayable) {
-       return invoice$status === this.InvoiceStatus.PAID &&
+        return invoice$status === this.InvoiceStatus.PAID &&
           (( ! invoice$payerReconciled && isPayable ) ||
           ( ! invoice$payeeReconciled && ! isPayable ));
       }
@@ -386,7 +394,7 @@ foam.CLASS({
       documentation: `This boolean is a check for receivable invoices that are completed from a user's perspective but money is yet to be fully transfered.
       Depspite the current requirements requiring this, the current(Jan 2019) implementation does not have this scenerio possible.`,
       expression: function(invoice$status, isPayable) {
-       return ! isPayable &&
+        return ! isPayable &&
         ( invoice$status === this.InvoiceStatus.PENDING_APPROVAL ||
           invoice$status === this.InvoiceStatus.SCHEDULED ||
           invoice$status === this.InvoiceStatus.UNPAID ||
@@ -508,6 +516,8 @@ foam.CLASS({
     function initE() {
       var self = this;
       var isBillingInvoice = net.nanopay.invoice.model.BillingInvoice.isInstance(this.invoice);
+      // png app logo image
+      const appLogo = [this.theme.largeLogo, this.theme.logo].find(logo => logo.search(/.png$/) > -1);
 
       this
         .addClass(this.myClass())
@@ -604,6 +614,16 @@ foam.CLASS({
         .end()
 
         .start().addClass('full-invoice')
+          // logo only visible when invoice details are exported to pdf and viewed from there
+          .callIf(appLogo, function() {
+            this.start().addClass('pdf-app-logo-container')
+              .addClass('hide')
+              .start('img')
+                .addClass('pdf-app-logo')
+                .attr('src', appLogo)
+              .end()
+            .end()
+          })
           .start()
             .addClass('left-block')
             .addClass('invoice-content')

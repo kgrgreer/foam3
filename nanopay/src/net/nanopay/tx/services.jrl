@@ -78,7 +78,6 @@ p({
     dao = new foam.nanos.ruler.RulerDAO(x, dao, "localTransactionDAO");
     dao = new foam.dao.ValidatingDAO(x, dao, new net.nanopay.tx.TransactionValidator());
     dao = new net.nanopay.tx.planner.TransactionQuotingDAO(x, dao);
-    dao = new net.nanopay.tx.SummaryTransactionDAO(x, dao);
 
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
@@ -162,7 +161,7 @@ p({
       .setDelegate(x.get("tableViewTransactionDAO"))
       .setPrimaryKey(net.nanopay.tx.model.Transaction.ID)
       .build();
-
+    dao = new net.nanopay.tx.SummaryTransactionDAO(x, dao);
     dao = new net.nanopay.tx.SummaryTransactionInnerDAO.Builder(x)
       .setDelegate(dao)
       .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
@@ -257,6 +256,37 @@ p({
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.tx.model.TransactionLimit\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "localCurrentLimitDAO",
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.tx.CurrentLimit.getOwnClassInfo())
+      .setGuid(true)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setJournalName("currentLimits")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(false)
+      .build();
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "currentLimitDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.tx.CurrentLimit.getOwnClassInfo())
+      .setInnerDAO(x.get("localCurrentLimitDAO"))
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.tx.CurrentLimit\"}"
 })
 
 p({

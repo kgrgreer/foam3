@@ -79,7 +79,7 @@ foam.CLASS({
       factory: function() {
         return this.INSERT_MSG;
       },
-      tableWidth: 60
+      tableWidth: 100
     },
     {
       class: 'String',
@@ -94,41 +94,41 @@ foam.CLASS({
       class: 'String',
       name: 'caseName',
       visibility: 'RO',
-      tableWidth: 80
+      tableWidth: 120
     },
     {
       class: 'String',
       name: 'caseOwner',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 120,
       value: 'Sam Wiltshire'
     },
     {
       class: 'String',
       name: 'requestor',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 120,
       value: 'S Wiltshire'
     },
     {
       class: 'String',
       name: 'phone',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 120,
       value: '416 900 1111'
     },
     {
       class: 'String',
       name: 'email',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 120,
       value: 'sam@nanopay.net'
     },
     {
       class: 'String',
       name: 'priorityLevel',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 120,
       factory: function() {
         return this.MEDIUM_MSG;
       },
@@ -140,7 +140,7 @@ foam.CLASS({
       class: 'String',
       name: 'segment',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 120,
       factory: function() {
         return this.NANOPAY_DEFAULT_MSG;
       }
@@ -149,13 +149,13 @@ foam.CLASS({
       class: 'String',
       name: 'comment',
       visibility: 'RO',
-      tableWidth: 80
+      tableWidth: 120
     },
     {
       class: 'String',
       name: 'caseStatus',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 120,
       factory: function() {
         return this.SUBMITTED_MSG;
       }
@@ -164,19 +164,19 @@ foam.CLASS({
       class: 'String',
       name: 'matchRelationship',
       visibility: 'RO',
-      tableWidth: 60
+      tableWidth: 120
     },
     {
       class: 'String',
       name: 'relationshipType',
       visibility: 'RO',
-      tableWidth: 100
+      tableWidth: 120
     },
     {
       class: 'String',
       name: 'relationshipId',
       visibility: 'RO',
-      tableWidth: 60,
+      tableWidth: 120,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Relationship ID");
       }
@@ -191,55 +191,55 @@ foam.CLASS({
       class: 'String',
       name: 'firstName',
       visibility: 'RO',
-      tableWidth: 80
+      tableWidth: 120
     },
     {
       class: 'String',
       name: 'middleName',
       visibility: 'RO',
-      tableWidth: 80
+      tableWidth: 120
     },
     {
       class: 'String',
       name: 'surname',
       visibility: 'RO',
-      tableWidth: 80
+      tableWidth: 120
     },
     {
       class: 'Date',
       name: 'birthday',
       visibility: 'RO',
-      tableWidth: 80
+      tableWidth: 120
     },
     {
       class: 'String',
       name: 'alternativeName',
       visibility: 'RO',
-      tableWidth: 80
+      tableWidth: 120
     },
     {
       class: 'String',
       name: 'occupation',
       visibility: 'RO',
-      tableWidth: 80
+      tableWidth: 120
     },
     {
       class: 'String',
       name: 'identificationType',
       visibility: 'RO',
-      tableWidth: 80
+      tableWidth: 120
     },
     {
       class: 'String',
       name: 'identificationValue',
       visibility: 'RO',
-      tableWidth: 80
+      tableWidth: 120
     },
     {
       class: 'String',
       name: 'notes1',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 120,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Notes 1");
       }
@@ -248,7 +248,7 @@ foam.CLASS({
       class: 'String',
       name: 'notes2',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 120,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Notes 2");
       }
@@ -257,43 +257,43 @@ foam.CLASS({
       class: 'String',
       name: 'associationType',
       visibility: 'RO',
-      tableWidth: 80
+      tableWidth: 120
     },
     {
       class: 'String',
       name: 'industrySector',
       visibility: 'RO',
-      tableWidth: 80
+      tableWidth: 120
     },
     {
       class: 'String',
       name: 'screening',
       visibility: 'RO',
-      tableWidth: 80
+      tableWidth: 120
     },
     {
       class: 'String',
       name: 'documentLinks',
       visibility: 'RO',
-      tableWidth: 80
+      tableWidth: 120
     },
     {
       class: 'String',
       name: 'country',
       visibility: 'RO',
-      tableWidth: 80
+      tableWidth: 120
     },
     {
       class: 'String',
       name: 'addressLine',
       visibility: 'RO',
-      tableWidth: 80
+      tableWidth: 120
     },
     {
       class: 'String',
       name: 'addressUrl',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 120,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Address URL");
       }
@@ -302,31 +302,31 @@ foam.CLASS({
       class: 'String',
       name: 'phoneNumber',
       visibility: 'RO',
-      tableWidth: 80
+      tableWidth: 120
     },
     {
       class: 'String',
       name: 'city',
       visibility: 'RO',
-      tableWidth: 80
+      tableWidth: 120
     },
     {
       class: 'String',
       name: 'state',
       visibility: 'RO',
-      tableWidth: 80
+      tableWidth: 120
     },
     {
       class: 'String',
       name: 'postalCode',
       visibility: 'RO',
-      tableWidth: 80
+      tableWidth: 120
     },
     {
       class: 'String',
       name: 'serviceDJRC',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 120,
       factory: function() {
         return this.YES_MSG;
       },
@@ -338,7 +338,7 @@ foam.CLASS({
       class: 'String',
       name: 'serviceDJNews',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 120,
       factory: function() {
         return this.NO_MSG;
       },
