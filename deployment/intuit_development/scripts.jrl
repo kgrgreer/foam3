@@ -233,6 +233,17 @@ p({
             .setCode("new net.nanopay.tx.rbc.cron.RbcGenerateFileCron(\\\"intuit\\\").execute(x);")
             .setEnabled(false)
             .build();
+        
+        // Create and set the schedule
+        schedule = new foam.nanos.cron.OrSchedule.Builder(x)
+            .setDelegates(new foam.nanos.cron.Schedule[] {
+                new foam.nanos.cron.TimeOfDaySchedule.Builder(x).setTime(new foam.nanos.cron.TimeHMS.Builder(x).setHour(5).setMinute(30).setSecond(0).build()).build(),
+                new foam.nanos.cron.TimeOfDaySchedule.Builder(x).setTime(new foam.nanos.cron.TimeHMS.Builder(x).setHour(14).setMinute(30).setSecond(0).build()).build(),
+                new foam.nanos.cron.TimeOfDaySchedule.Builder(x).setTime(new foam.nanos.cron.TimeHMS.Builder(x).setHour(19).setMinute(0).setSecond(0).build()).build(),
+            })
+            .build();
+        cron.setSchedule(schedule);
+
         if ( !dryRun ) {
             cron = cronDAO.put(cron);
             print("Created cron: " + cron.getId());
@@ -258,6 +269,17 @@ p({
             .setCode("new net.nanopay.tx.rbc.cron.RbcSendFileCron().execute(x);")
             .setEnabled(false)
             .build();
+
+        // Create and set the schedule
+        schedule = new foam.nanos.cron.OrSchedule.Builder(x)
+            .setDelegates(new foam.nanos.cron.Schedule[] {
+                new foam.nanos.cron.TimeOfDaySchedule.Builder(x).setTime(new foam.nanos.cron.TimeHMS.Builder(x).setHour(5).setMinute(35).setSecond(0).build()).build(),
+                new foam.nanos.cron.TimeOfDaySchedule.Builder(x).setTime(new foam.nanos.cron.TimeHMS.Builder(x).setHour(14).setMinute(35).setSecond(0).build()).build(),
+                new foam.nanos.cron.TimeOfDaySchedule.Builder(x).setTime(new foam.nanos.cron.TimeHMS.Builder(x).setHour(19).setMinute(5).setSecond(0).build()).build(),
+            })
+            .build();
+        cron.setSchedule(schedule);
+
         if ( !dryRun ) {
             cronDAO.put(cron);
             print("Created cron: " + cron.getId());
@@ -283,6 +305,17 @@ p({
             .setCode("new net.nanopay.tx.rbc.cron.RbcVerifyFileAcceptedCron().execute(x);")
             .setEnabled(false)
             .build();
+        
+        // Create and set the schedule
+        schedule = new foam.nanos.cron.OrSchedule.Builder(x)
+            .setDelegates(new foam.nanos.cron.Schedule[] {
+                new foam.nanos.cron.TimeOfDaySchedule.Builder(x).setTime(new foam.nanos.cron.TimeHMS.Builder(x).setHour(5).setMinute(40).setSecond(0).build()).build(),
+                new foam.nanos.cron.TimeOfDaySchedule.Builder(x).setTime(new foam.nanos.cron.TimeHMS.Builder(x).setHour(14).setMinute(40).setSecond(0).build()).build(),
+                new foam.nanos.cron.TimeOfDaySchedule.Builder(x).setTime(new foam.nanos.cron.TimeHMS.Builder(x).setHour(19).setMinute(10).setSecond(0).build()).build(),
+            })
+            .build();
+        cron.setSchedule(schedule);
+
         if ( !dryRun ) {
             cronDAO.put(cron);
             print("Created cron: " + cron.getId());
@@ -309,6 +342,11 @@ p({
             .setCode("new net.nanopay.tx.rbc.cron.RbcProcessReportCron().execute(x);")
             .setEnabled(false)
             .build();
+
+        // Create and set the schedule
+        schedule = new foam.nanos.cron.IntervalSchedule.Builder(x).setDuration(new foam.nanos.cron.TimeHMS.Builder(x).setHour(1).setMinute(0).setSecond(0).build()).build();
+        cron.setSchedule(schedule);
+
         if ( !dryRun ) {
             cronDAO.put(cron);
             print("Created cron: " + cron.getId());
@@ -335,6 +373,11 @@ p({
             .setCode("new net.nanopay.tx.rbc.cron.RbcCompleteCron().execute(x);")
             .setEnabled(false)
             .build();
+        
+        // Create and set the schedule
+        schedule = new foam.nanos.cron.IntervalSchedule.Builder(x).setDuration(new foam.nanos.cron.TimeHMS.Builder(x).setHour(1).setMinute(0).setSecond(0).build()).build();
+        cron.setSchedule(schedule);
+
         if ( !dryRun ) {
             cronDAO.put(cron);
             print("Created cron: " + cron.getId());
