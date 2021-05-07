@@ -26,14 +26,9 @@ foam.CLASS({
   ],
 
   imports: [
+    'translationService',
     'publicBusinessDAO',
     'userDAO'
-  ],
-
-  messages: [
-    { name: 'SIGNING_OFFICER_MSG', message: 'Signing officer' },
-    { name: 'ASSIGNED_TO_MSG', message: 'assigned to' },
-    { name: 'REVOKED_FROM_MSG', message: 'revoked from' }
   ],
 
   properties: [
@@ -53,17 +48,31 @@ foam.CLASS({
       name: 'description',
       visibility: 'RO',
       tableCellFormatter: function(val, obj) {
-        /** 
-         * description has a form of 
-         * 'Signing officer: assgined to <email address>' or
-         * 'Signing officer: revoked from <email address>'
+        /* 
+         * description has a form of <User type>: <action> <email address>
+         * e.g., Signing officer: assgined to <email address>
          */
 
-        // replacing with messages for translation
-        val = val.replace('Signing officer', obj.SIGNING_OFFICER_MSG);
-        val = val.replace('assigned to', obj.SIGNING_OFFICER_MSG);
-        val = val.replace('revoked from', obj.REVOKED_FROM_MSG);
-        this.add(val);
+        let [userType, remainder] = val.split(':');
+        
+        const remainderList = remainder.trim().split(' ');
+
+        let email = remainderList.pop();
+        let action = remainderList.join(' ');
+
+        userType = obj.translationService.getTranslation(
+          foam.locale,
+          userType,
+          userType
+        );
+
+        action = obj.translationService.getTranslation(
+          foam.locale,
+          action,
+          action
+        );
+
+        this.add(`${userType}: ${action} ${email}`);
       }
     },
     {

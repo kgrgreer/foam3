@@ -34,11 +34,9 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'APPROVED_MSG', message: 'Approved' },
-    { name: 'BENEFICIARIES_MSG', message: 'Beneficiaries for' },
-    { name: 'PENDING_MSG', messages: 'Pending' }
+    { name: 'BENEFICIARIES_MSG', message: 'Beneficiaries for' }
   ],
-
+  
   properties: [
     {
       class: 'Boolean',
@@ -77,9 +75,8 @@ foam.CLASS({
       name: 'status',
       value: 'Pending',
       documentation: 'Beneficiary status on AFEX system.',
-      tableCellFormatter: function(val, obj) {
-        // for translation
-        this.add(val === 'Pending' ? obj.PENDING_MSG : obj.APPROVED_MSG);
+      tableCellFormatter: function(val) {
+        this.translate(val);
       }
     },
     {

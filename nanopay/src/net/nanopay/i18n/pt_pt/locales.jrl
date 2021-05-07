@@ -3510,10 +3510,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.IpHistory.USER
 // menus
 p({class:"foam.i18n.Locale",locale:"pt",source:"operation.ipHistories.browseTitle",target:"Histórias de IP"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"operation.ipHistories.browseSubtitle",target:"Histórias de IP"})
-// messages
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.IpHistory.SIGNING_OFFICER_MSG",target:"Oficial de assinatura"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.IpHistory.ASSIGNED_TO_MSG",target:"atribuído a"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.meter.IpHistory.REVOKED_FROM_MSG",target:"revogado de"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.PersonalContact.SECTION_USER_INFORMATION.title.label",target:"Contato Informações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.PersonalContact.SECTION_BUSINESS_INFORMATION.title.label",target:"Negócios informação"})
@@ -3667,10 +3663,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"report.summaryUserComplianceRepo
 p({class:"foam.i18n.Locale",locale:"pt",source:"report.summaryRejectedTransactionReport.browseTitle",target:"Relatório de transação rejeitada"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"report.summaryRejectedTransactionReport.browseSubtitle",target:"Ver tudo Relatório de transação rejeitada"})
 
-/* AFEX Benficiary */
-// messages
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBeneficiary.APPROVED_MSG",target:"Aprovado"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBeneficiary.PENDING_MSG",target:"Pendente"})
+/* AFEX Beneficiary */
 // property labels
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBeneficiary.CONTACT.label",target:"Contato"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBeneficiary.VENDOR_ID.label",target:"Vendedor Id"})
@@ -3890,3 +3883,4 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Report-Business-Information-for-
 /* SectionedDetailPropertyView */
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.detail.SectionedDetailPropertyView.HELP",target:"Ajuda"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.detail.SectionedDetailPropertyView.LEARN_MORE",target:"Clique para aprender mais"})
+
