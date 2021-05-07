@@ -158,6 +158,18 @@ p({
   ]
 })
 
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "approvals.transactions",
+  "label": "Batch Transaction Requests",
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "net.nanopay.tx.ComplianceTransactionApprovalRequestController"
+    }
+  }
+})
+
 // Business Rules
 p({
   "class": "foam.nanos.menu.Menu",

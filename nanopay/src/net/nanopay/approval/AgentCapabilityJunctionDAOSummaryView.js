@@ -54,7 +54,7 @@ foam.CLASS({
                 this.EQ(this.ApprovalRequest.OBJ_ID, ucj.id),
                 this.EQ(this.ApprovalRequest.DAO_KEY, "userCapabilityJunctionDAO"),
                 this.OR(
-                  this.EQ(this.ApprovalRequest.CLASSIFICATION_ENUM, ApprovalRequestClassificationEnum.GENERIC_BUSINESS_VALIDATOR)
+                  this.EQ(this.ApprovalRequest.CLASSIFICATION_ENUM, this.ApprovalRequestClassificationEnum.GENERIC_BUSINESS_VALIDATOR)
                 ),
                 this.EQ(this.ApprovalRequest.STATUS, this.ApprovalStatus.REQUESTED)
               )).limit(1).select();
