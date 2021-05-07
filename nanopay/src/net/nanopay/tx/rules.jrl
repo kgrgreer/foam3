@@ -1064,3 +1064,83 @@ p({
   "lifecycleState":1,
   "spid":"intuit"
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"user-compliance-transaction-check-rule",
+  "name":"UserComplianceTransaction Check Rule",
+  "priority":100,
+  "ruleGroup":"compliance",
+  "documentation":"Before saving a UserComplianceTransaction, check the owners compliance status.",
+  "daoKey":"localTransactionDAO",
+  "operation":3,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.tx.UserComplianceTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal":0
+        }
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.tx.ruler.UserComplianceTransactionAction",
+    "sourceCapabilityList": ["crunch.onboarding.api.ca-business-send-payments", "crunch.onboarding.api.unlock-ca-payments"],
+    "sourceCapabilityExceptionListUpperLimit": 100000,
+    "sourceCapabilityExceptionList": ["crunch.onboarding.api.unlock-ca-payments-under-1000"],
+    "destinationCapabilityList": ["crunch.onboarding.api.ca-business-receive-payments", "crunch.onboarding.api.unlock-ca-payments"]
+  },
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid":"intuit"
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"user-compliance-reput-user-compliance-tx-rule",
+  "name":"User Compliance Reput UserComplianceTransaction Rule",
+  "priority":100,
+  "ruleGroup":"compliance",
+  "documentation":"When compliance changes for a user, all associated UserComplianceTransactions are resubmitted.",
+  "daoKey":"localUserDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.Or",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"compliance",
+        "propValue": {
+          "class": "net.nanopay.admin.model.ComplianceStatus",
+          "ordinal":2
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"compliance",
+        "propValue": {
+          "class": "net.nanopay.admin.model.ComplianceStatus",
+          "ordinal":3
+        }
+      }
+    ]
+  },
+  "asyncAction":{
+    "class":"net.nanopay.tx.ruler.UserComplianceTransactionReputAction"
+  },
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid":"intuit"
+})

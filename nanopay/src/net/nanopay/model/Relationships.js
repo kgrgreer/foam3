@@ -1112,8 +1112,7 @@ foam.RELATIONSHIP({
   targetProperty: {
     label: 'Transaction Reference',
     view: {
-      class: 'foam.u2.view.ReferencePropertyView',
-      readView: 'net.nanopay.tx.model.TransactionReadReferenceView'
+      class: 'foam.u2.view.ReferenceView'
     },
     tableCellFormatter: function(value, obj) {
       obj.summaryTransactionDAO.find(value).then(function(tx) {

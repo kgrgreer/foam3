@@ -224,7 +224,7 @@ p({
     // ======= Create EFT Crons =========
 
     // 1. File Generation
-    cronId = "INTUIT_RBC_EFT_FILE_GENERATE";
+    cronId = "1_INTUIT_RBC_EFT_FILE_GENERATE";
     cron = (foam.nanos.cron.Cron) cronDAO.find(cronId);
     if ( cron == null ) {
         cron = new foam.nanos.cron.Cron.Builder(x)
@@ -233,6 +233,17 @@ p({
             .setCode("new net.nanopay.tx.rbc.cron.RbcGenerateFileCron(\\\"intuit\\\").execute(x);")
             .setEnabled(false)
             .build();
+        
+        // Create and set the schedule
+        schedule = new foam.nanos.cron.OrSchedule.Builder(x)
+            .setDelegates(new foam.nanos.cron.Schedule[] {
+                new foam.nanos.cron.TimeOfDaySchedule.Builder(x).setTime(new foam.nanos.cron.TimeHMS.Builder(x).setHour(5).setMinute(30).setSecond(0).build()).build(),
+                new foam.nanos.cron.TimeOfDaySchedule.Builder(x).setTime(new foam.nanos.cron.TimeHMS.Builder(x).setHour(14).setMinute(30).setSecond(0).build()).build(),
+                new foam.nanos.cron.TimeOfDaySchedule.Builder(x).setTime(new foam.nanos.cron.TimeHMS.Builder(x).setHour(19).setMinute(0).setSecond(0).build()).build(),
+            })
+            .build();
+        cron.setSchedule(schedule);
+
         if ( !dryRun ) {
             cron = cronDAO.put(cron);
             print("Created cron: " + cron.getId());
@@ -249,7 +260,7 @@ p({
     }
 
     // 2. File Send
-    cronId = "INTUIT_RBC_EFT_SEND";
+    cronId = "2_INTUIT_RBC_EFT_SEND";
     cron = (foam.nanos.cron.Cron) cronDAO.find(cronId);
     if ( cron == null ) {
         cron = new foam.nanos.cron.Cron.Builder(x)
@@ -258,6 +269,17 @@ p({
             .setCode("new net.nanopay.tx.rbc.cron.RbcSendFileCron().execute(x);")
             .setEnabled(false)
             .build();
+
+        // Create and set the schedule
+        schedule = new foam.nanos.cron.OrSchedule.Builder(x)
+            .setDelegates(new foam.nanos.cron.Schedule[] {
+                new foam.nanos.cron.TimeOfDaySchedule.Builder(x).setTime(new foam.nanos.cron.TimeHMS.Builder(x).setHour(5).setMinute(35).setSecond(0).build()).build(),
+                new foam.nanos.cron.TimeOfDaySchedule.Builder(x).setTime(new foam.nanos.cron.TimeHMS.Builder(x).setHour(14).setMinute(35).setSecond(0).build()).build(),
+                new foam.nanos.cron.TimeOfDaySchedule.Builder(x).setTime(new foam.nanos.cron.TimeHMS.Builder(x).setHour(19).setMinute(5).setSecond(0).build()).build(),
+            })
+            .build();
+        cron.setSchedule(schedule);
+
         if ( !dryRun ) {
             cronDAO.put(cron);
             print("Created cron: " + cron.getId());
@@ -274,7 +296,7 @@ p({
     }
 
     // 3. Verify Receipt
-    cronId = "INTUIT_RBC_EFT_VERIFY_RECEIPT";
+    cronId = "3_INTUIT_RBC_EFT_VERIFY_RECEIPT";
     cron = (foam.nanos.cron.Cron) cronDAO.find(cronId);
     if ( cron == null ) {
         cron = new foam.nanos.cron.Cron.Builder(x)
@@ -283,6 +305,17 @@ p({
             .setCode("new net.nanopay.tx.rbc.cron.RbcVerifyFileAcceptedCron().execute(x);")
             .setEnabled(false)
             .build();
+        
+        // Create and set the schedule
+        schedule = new foam.nanos.cron.OrSchedule.Builder(x)
+            .setDelegates(new foam.nanos.cron.Schedule[] {
+                new foam.nanos.cron.TimeOfDaySchedule.Builder(x).setTime(new foam.nanos.cron.TimeHMS.Builder(x).setHour(5).setMinute(40).setSecond(0).build()).build(),
+                new foam.nanos.cron.TimeOfDaySchedule.Builder(x).setTime(new foam.nanos.cron.TimeHMS.Builder(x).setHour(14).setMinute(40).setSecond(0).build()).build(),
+                new foam.nanos.cron.TimeOfDaySchedule.Builder(x).setTime(new foam.nanos.cron.TimeHMS.Builder(x).setHour(19).setMinute(10).setSecond(0).build()).build(),
+            })
+            .build();
+        cron.setSchedule(schedule);
+
         if ( !dryRun ) {
             cronDAO.put(cron);
             print("Created cron: " + cron.getId());
@@ -299,7 +332,8 @@ p({
     }
 
     // 4. Report
-    cronId = "INTUIT_RBC_EFT_PROCESSING";
+    // In Ablii this is scheduled every 30 minutes
+    cronId = "4_INTUIT_RBC_EFT_PROCESSING";
     cron = (foam.nanos.cron.Cron) cronDAO.find(cronId);
     if ( cron == null ) {
         cron = new foam.nanos.cron.Cron.Builder(x)
@@ -308,6 +342,11 @@ p({
             .setCode("new net.nanopay.tx.rbc.cron.RbcProcessReportCron().execute(x);")
             .setEnabled(false)
             .build();
+
+        // Create and set the schedule
+        schedule = new foam.nanos.cron.IntervalSchedule.Builder(x).setDuration(new foam.nanos.cron.TimeHMS.Builder(x).setHour(1).setMinute(0).setSecond(0).build()).build();
+        cron.setSchedule(schedule);
+
         if ( !dryRun ) {
             cronDAO.put(cron);
             print("Created cron: " + cron.getId());
@@ -324,7 +363,8 @@ p({
     }
 
     // 5. Completion
-    cronId = "INTUIT_RBC_EFT_COMPLETION";
+    // In Ablii this is scheduled every 40 minutes
+    cronId = "5_INTUIT_RBC_EFT_COMPLETION";
     cron = (foam.nanos.cron.Cron) cronDAO.find(cronId);
     if ( cron == null ) {
         cron = new foam.nanos.cron.Cron.Builder(x)
@@ -333,6 +373,11 @@ p({
             .setCode("new net.nanopay.tx.rbc.cron.RbcCompleteCron().execute(x);")
             .setEnabled(false)
             .build();
+        
+        // Create and set the schedule
+        schedule = new foam.nanos.cron.IntervalSchedule.Builder(x).setDuration(new foam.nanos.cron.TimeHMS.Builder(x).setHour(1).setMinute(0).setSecond(0).build()).build();
+        cron.setSchedule(schedule);
+
         if ( !dryRun ) {
             cronDAO.put(cron);
             print("Created cron: " + cron.getId());
