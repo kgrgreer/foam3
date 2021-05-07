@@ -31,7 +31,7 @@ foam.CLASS({
   ],
 
   css: `
-    h2 { color: #aaa; }
+    h2 { color: #aaa; margin-bottom: 10px;}
     h3 {
       color: #444;
       font-size: 1.75em;

@@ -48,8 +48,8 @@ foam.CLASS({
     function initE() {
       var data = this.data;
       this.SUPER();
-      var color = this.returnExpandedCSS(this.data.color);
-      var background = this.returnExpandedCSS(this.data.background);
+      var color = this.theme ? this.returnExpandedCSS(this.data.color): data.color;
+      var background = this.theme ? this.returnExpandedCSS(this.data.background): data.background;
       var isPill = this.isFancy(this.data.VALUES);
       this
         .enableClass(this.myClass('pill'), isPill)

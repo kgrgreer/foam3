@@ -146,7 +146,7 @@ foam.CLASS({
               'padding-bottom': '24px'
             }).
             tag('hr').
-            start('h3').
+            start('h4').
               add(this.Example.ID, ' ', this.Example.TITLE).
             end().
             br().
