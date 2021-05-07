@@ -1173,6 +1173,7 @@ var classes = [
   'net.nanopay.ticket.FullReverseScenarioAction',
   'net.nanopay.ticket.RetryScenarioAction',
   'net.nanopay.ticket.WaitingScenarioAction',
+  'net.nanopay.ticket.RetryTransactionPostRule',
 
 
   // Planners

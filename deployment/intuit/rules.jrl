@@ -451,7 +451,8 @@ p({
     "class":"net.nanopay.ticket.FullReverseScenarioAction",
     "textToAgent":"The payment has failed due to:",
     "postApprovalRuleId": "b64905d0-289b-4371-92a5-f843e344109a",
-    "autoApprove": true
+    "autoApprove": true,
+    "autoRefundDays": 30
   },
   "after":false,
   "enabled":true,

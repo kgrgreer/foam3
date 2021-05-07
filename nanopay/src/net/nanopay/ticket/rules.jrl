@@ -231,3 +231,36 @@ p({
   "lifecycleState":1
 })
 
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"0bf00402-ce7e-4f7c-92fd-4fa6bbc45ae8",
+  "name":"Retry a Transaction",
+  "priority":100,
+  "ruleGroup":"Ticket",
+  "documentation":"Retry transaction",
+  "daoKey":"localTicketDAO",
+  "operation":3,
+  "action":{
+    "class":"net.nanopay.ticket.RetryTransactionPostRule"
+  },
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue":{
+          "class":"net.nanopay.ticket.RefundStatus",
+          "ordinal":9
+        }
+      }
+    ]
+  },
+  "after":false,
+  "enabled":true,
+  "lifecycleState":1
+})

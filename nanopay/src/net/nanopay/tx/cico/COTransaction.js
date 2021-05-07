@@ -35,6 +35,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.tx.Transfer',
     'foam.util.SafetyUtil'
   ],
   properties: [
@@ -193,6 +194,23 @@ foam.CLASS({
         }
         return 0;
       `,
-    }
+    },
+    {
+      name: 'getTotal',
+      type: 'Long',
+      documentation: 'Sum of transfers on this transaction for a given account',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'accountId', type: 'String' }
+      ],
+      javaCode: `
+        Long sum = 0l;
+        //Sum transfers that affect account
+        for ( Transfer t : getTransfers() )
+          if ( SafetyUtil.equals(t.getAccount(), accountId) && t.getStage() != 2 )
+            sum += t.getAmount();
+        return sum;
+      `
+    },
  ]
 });

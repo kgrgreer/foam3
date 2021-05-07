@@ -68,3 +68,25 @@ p({
     }
   """
 })
+
+p({
+  "class": "foam.nanos.cron.Cron",
+  "schedule": {
+    "class": "foam.nanos.cron.CronSchedule",
+    "minute": 35,
+    "hour": 0,
+    "dayOfMonth": -1,
+    "month": -1,
+    "dayOfWeek": -1,
+    "second": 0
+  },
+  "id": "autoRefundAfterTimeout",
+  "description": "Automatically refund tickets that have passed the retry timeout window.",
+  "code":
+  """
+    import net.nanopay.ticket.AutoTimeoutRefundCron;
+    AutoTimeoutRefundCron cron = new AutoTimeoutRefundCron();
+    cron.execute(x);
+    print("done");
+  """
+})
