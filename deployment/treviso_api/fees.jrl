@@ -1,15 +1,14 @@
 p({
   class: "net.nanopay.tx.fee.FixedFee",
   id: "b0a7ab7c-bfab-4735-a69b-a04afb836355",
-  name: "Treviso API Fee",
-  fixedFee: 3000,
+  name: "Nanopay Transaction Fee",
+  fixedFee: 499,
+  feeClass: "net.nanopay.tx.InvoicedFeeLineItem",
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.PaymentCorridorPredicate",
+    paymentProvider: "TrevisoAPI",
+    sourceCountry: "BR",
+    targetCountryList: [ "PT", "US", "CA", "GB" ]
+  },
   feeRule: "63a792b6-d46b-4d48-afa3-42481645ed46"
-})
-
-p({
-  class: "net.nanopay.tx.fee.PercentageFee",
-  id: "c71ce236-bc22-4fb5-a159-a3c4baf08581",
-  name: "IOF",
-  percentage: 0.38,
-  feeRule: "c6729717-1da2-4cb5-b8c4-53f5830223f6"
 })

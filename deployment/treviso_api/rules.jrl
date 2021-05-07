@@ -135,92 +135,18 @@ p({
 p({
   class: "net.nanopay.tx.fee.TransactionFeeRule",
   id: "63a792b6-d46b-4d48-afa3-42481645ed46",
-  name: "Treviso API Fee",
-  documentation: "Treviso API transaction fee",
-  feeName: "Treviso API Fee",
-  feeDenomination: "BRL",
+  name: "Nanopay Transaction Fee",
+  documentation: "Nanopay transaction fee",
+  feeName: "Nanopay Transaction Fee",
   rateExpiry: {
     class: "foam.nanos.cron.TimeHMS",
     hour: 24
   },
   enabled: true,
+  feeDenomination: "USD",
   predicate: {
-    class: "foam.mlang.predicate.And",
-    args: [
-      {
-        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
-        of: "net.nanopay.fx.FXSummaryTransaction"
-      },
-      {
-        class: "foam.mlang.predicate.Eq",
-        arg1: {
-          class: "foam.mlang.expr.Dot",
-          arg1: {
-            class: "foam.mlang.ContextObject",
-            key: "NEW"
-          },
-          arg2: {
-            class: "foam.mlang.PredicatedExpr",
-            arg1: {
-              class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
-              of: "net.nanopay.country.br.tx.NatureCodeLineItem",
-              propName: "natureCode"
-            }
-          }
-        },
-        arg2: {
-          class: "foam.mlang.Constant",
-          value: true
-        }
-      }
-    ]
-  },
-  lifecycleState:1
-})
-
-p({
-  class: "net.nanopay.tx.fee.TransactionFeeRule",
-  id: "c6729717-1da2-4cb5-b8c4-53f5830223f6",
-  name: "IOF",
-  documentation: "IOF charge for Treviso API transactions.",
-  feeName: "IOF",
-  ruleGroup: "TransactionFeeRule",
-  feeDenomination: "BRL",
-  rateExpiry: {
-    class: "foam.nanos.cron.TimeHMS",
-    hour: 24
-  },
-  enabled: true,
-  predicate: {
-    class: "foam.mlang.predicate.And",
-    args: [
-      {
-        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
-        of: "net.nanopay.fx.FXSummaryTransaction"
-      },
-      {
-        class: "foam.mlang.predicate.Eq",
-        arg1: {
-          class: "foam.mlang.expr.Dot",
-          arg1: {
-            class: "foam.mlang.ContextObject",
-            key: "NEW"
-          },
-          arg2: {
-            class: "foam.mlang.PredicatedExpr",
-            arg1: {
-              class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
-              of: "net.nanopay.country.br.tx.NatureCodeLineItem",
-              propName: "natureCode"
-            }
-          }
-        },
-        arg2: {
-          class: "foam.mlang.Constant",
-          value: true
-        }
-      }
-    ]
+    class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+    of: "net.nanopay.country.br.tx.BRPartnerTransaction"
   },
   lifecycleState:1
 })
