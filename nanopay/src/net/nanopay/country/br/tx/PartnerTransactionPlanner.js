@@ -76,13 +76,9 @@ foam.CLASS({
       bTx.setPaymentProvider(getPaymentProvider());
       bTx.setPlanner(this.getId());
       addPartnerLineItem(x, bTx, requestTxn);
-
-      txn.addNext(bTx);
-      ExternalTransfer[] exT = new ExternalTransfer[2];
-      exT[0] = new ExternalTransfer(quote.getDestinationAccount().getId(), bTx.getDestinationAmount());
-      exT[1] = new ExternalTransfer(quote.getSourceAccount().getId(), -bTx.getAmount());
-      bTx.setTransfers( exT );
-      return txn;
+      quote.addTransfer(false, quote.getDestinationAccount().getId(), bTx.getDestinationAmount(), 0);
+      quote.addTransfer(false, quote.getSourceAccount().getId(), -bTx.getAmount(), 0);
+      return bTx;
     `
     },
     {
