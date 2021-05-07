@@ -70,7 +70,7 @@ foam.CLASS({
       name: 'status',
       documentation: 'Beneficiary status on AFEX system.',
       tableCellFormatter: function(val) {
-        this.translate(val);
+        this.translate(val, val);
       }
     },
     {

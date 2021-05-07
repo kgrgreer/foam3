@@ -76,7 +76,7 @@ foam.CLASS({
       value: 'Pending',
       documentation: 'Beneficiary status on AFEX system.',
       tableCellFormatter: function(val) {
-        this.translate(val);
+        this.translate(val, val);
       }
     },
     {
