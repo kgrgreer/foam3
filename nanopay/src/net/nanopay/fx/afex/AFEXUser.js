@@ -78,6 +78,7 @@ foam.CLASS({
       value: 'Pending',
       documentation: 'Beneficiary status on AFEX system.',
       tableCellFormatter: function(val, obj) {
+        // for translation
         this.add(val === 'Pending' ? obj.PENDING_MSG : obj.APPROVED_MSG);
       }
     },
