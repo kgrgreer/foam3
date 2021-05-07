@@ -25,3 +25,9 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"trevisoAPI-api-
 
 // Allow trevisoAPI fraud-ops to see alarm menu
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"trevisoAPI-fraud-ops","targetId":"menu.read.admin.alarm"})
+
+// Switch user menus
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"trevisoAPI-api-session","targetId":"menu.read.switch-user"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"trevisoAPI-fraud-ops","targetId":"menu.read.switch-user"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"trevisoAPI-payment-ops","targetId":"menu.read.switch-user"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"trevisoAPI-support","targetId":"menu.read.switch-user"})
