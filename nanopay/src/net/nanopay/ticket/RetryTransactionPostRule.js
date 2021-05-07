@@ -97,7 +97,7 @@
             retry.setSourceAccount(problemTransaction.getSourceAccount());
             retry.setSourceCurrency(problemTransaction.getSourceCurrency());
             retry.setDestinationCurrency(problemTransaction.getDestinationCurrency());
-            retry.setAmount(problemTransaction.getTotal(x, problemTransaction.getDestinationAccount()));
+            retry.setAmount(-problemTransaction.getTotal(x, problemTransaction.getSourceAccount()));
             retry.setDestinationAmount(problemTransaction.getTotal(x, problemTransaction.getDestinationAccount()));
             retry.setPayeeId(problemTransaction.findSourceAccount(x).getOwner());
             retry.setPayerId(problemTransaction.findDestinationAccount(x).getOwner());
