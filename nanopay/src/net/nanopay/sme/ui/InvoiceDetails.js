@@ -558,10 +558,7 @@ foam.CLASS({
 
       // add styles
       invoiceNode.style.backgroundColor = '#fff';
-      invoiceNode.style.margin = '350px 50px 250px 50px';
-      invoiceNode.style.padding = '350px 50px 250px 50px';
-      invoiceNode.offsetParent.style.margin = '120px 40px 120px 40px';
-      invoiceNode.offsetParent.style.zoom = '60%';
+      invoiceNode.style.padding = '100px 50px';
       invoiceNode.offsetParent.style.width = invoiceNode.scrollWidth + invoiceNode.offsetParent.scrollWidth + 'px';
       invoiceNode.offsetParent.style.height = invoiceNode.scrollHeight + invoiceNode.offsetParent.scrollHeight + 'px';
     },
@@ -581,10 +578,7 @@ foam.CLASS({
 
       // undo styles
       invoiceNode.style.backgroundColor = '';
-      invoiceNode.offsetParent.style.zoom = '1.0';
-      invoiceNode.style.margin = '';
       invoiceNode.style.padding = '';
-      invoiceNode.offsetParent.style.margin = '';
       invoiceNode.offsetParent.style.width = '';
       invoiceNode.offsetParent.style.height = ''
     }
