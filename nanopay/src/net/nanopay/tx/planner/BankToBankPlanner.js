@@ -54,6 +54,11 @@ foam.CLASS({
       value: true
     },
     {
+      name: 'createUserCompliance',
+      class: 'Boolean',
+      value: false
+    },
+    {
       name: 'createLimit',
       class: 'Boolean',
       value: false
@@ -110,21 +115,29 @@ foam.CLASS({
               Transaction[] cashOutPlans = multiQuoteTxn(x, t2, quote);
 
               for ( Transaction COP : cashOutPlans ) {
+                List<Transaction> chain = new ArrayList<Transaction>();
+                
+                // Transactions are added to chain in reverse execution order
+                chain.add((Transaction) removeSummaryTransaction(COP).fclone());
+                chain.add((Transaction) removeSummaryTransaction(CIP).fclone());
+ 
+                // Optional transactions
+                if (getCreateCompliance())
+                  chain.add(createComplianceTransaction(txn));
+                if ( getCreateUserCompliance() )
+                  chain.add(createUserComplianceTransaction(txn));
+                if ( getCreateLimit() )
+                  chain.add(createLimitTransaction(txn));
+
+                // Buld the tx chain in reverse order
                 Transaction t = (Transaction) txn.fclone();
-                Transaction ci = (Transaction) removeSummaryTransaction(CIP).fclone();
-                ci.addNext((Transaction) removeSummaryTransaction(COP).fclone());
-                if ( getCreateLimit() ) {
-                  LimitTransaction lt = createLimitTransaction(txn);
-                  t.addNext(lt);
+                Transaction last = t;
+                for (int i = chain.size() - 1; i >= 0; i--) {
+                  Transaction next = chain.get(i);
+                  last.addNext(next);
+                  last = next;
                 }
-                if (getCreateCompliance()) {
-                  ComplianceTransaction ct = createComplianceTransaction(txn);
-                  ct.addNext(ci);
-                  t.addNext(ct);
-                }
-                else{
-                  t.addNext(ci);
-                }
+
                 t.setStatus(TransactionStatus.COMPLETED);
                 t.setPlanCost(t.getPlanCost() + CIP.getPlanCost() + COP.getPlanCost());
                 quote.getAlternatePlans_().add(t);

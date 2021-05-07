@@ -33,35 +33,36 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.nanos.logger.Logger',
     'java.util.UUID',
     'java.util.List',
     'java.util.ArrayList',
     'foam.core.ContextAwareAgent',
     'foam.core.X',
     'foam.util.SafetyUtil',
-    'net.nanopay.tx.ComplianceTransaction',
-    'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.Account',
-    'static foam.mlang.MLang.*',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.tx.ComplianceTransaction',
+    'net.nanopay.tx.CompositeTransaction',
+    'net.nanopay.tx.CreditLineItem',
+    'net.nanopay.tx.ExternalTransfer',
+    'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.InvoicedCreditLineItem',
+    'net.nanopay.tx.InvoicedFeeLineItem',
+    'net.nanopay.tx.PropertyCompare',
     'net.nanopay.tx.SummarizingTransaction',
     'net.nanopay.tx.TaxLineItem',
-    'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.FeeLineItem',
-    'net.nanopay.tx.CreditLineItem',
-    'net.nanopay.tx.InvoicedFeeLineItem',
-    'net.nanopay.tx.InvoicedCreditLineItem',
+    'net.nanopay.tx.TransactionException',
     'net.nanopay.tx.LimitTransaction',
     'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.TransactionQuote',
+    'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.UserComplianceTransaction',
+    'net.nanopay.tx.creditengine.CreditEngine',
     'net.nanopay.tx.model.Transaction',
     'org.apache.commons.lang.ArrayUtils',
-    'net.nanopay.tx.TransactionException',
-    'net.nanopay.bank.BankAccount',
-    'foam.nanos.logger.Logger',
-    'net.nanopay.tx.PropertyCompare',
-    'net.nanopay.tx.CompositeTransaction',
-    'net.nanopay.tx.creditengine.CreditEngine'
+    'static foam.mlang.MLang.*'
   ],
 
   tableColumns: [
@@ -315,6 +316,26 @@ foam.CLASS({
           quote.getRequestTransaction().clearLineItems();
         }
         return (TransactionQuote) dao.put(quote);
+      `
+    },
+    {
+      name: 'createUserComplianceTransaction',
+      documentation: 'Creates a user compliance transaction and returns it',
+      args: [
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      type: 'net.nanopay.tx.UserComplianceTransaction',
+      javaCode: `
+        UserComplianceTransaction ct = new UserComplianceTransaction();
+        ct.copyFrom(txn);
+        ct.setStatus(net.nanopay.tx.model.TransactionStatus.PENDING);
+        ct.setName("User Compliance Transaction");
+        ct.clearTransfers();
+        ct.clearLineItems();
+        ct.setPlanner(getId());
+        ct.clearNext();
+        ct.setId(UUID.randomUUID().toString());
+        return ct;
       `
     },
     {
