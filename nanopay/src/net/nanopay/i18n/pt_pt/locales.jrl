@@ -2303,8 +2303,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.ui.BankAccou
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.ui.BankAccountWizard.EDIT_TITLE",target:"Editar Conta Bancária"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.BankPickCurrencyView.SECTION_DETAILS_TITLE_VOID",target:"Conecte usando uma verificação de vazio"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.BusinessDirectorArrayView.ADD_MSG",target:"+ Adicionar"})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.model_.label",target:"Canadá"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ATBankAccount.model_.label",target:"Áustria"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BEBankAccount.model_.label",target:"Bélgica"})
@@ -3412,14 +3410,12 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.ManualFxApprovalR
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.ManualFxApprovalRequest.REQUEST_UPDATED",target:"Pedido de aprovação atualizado com sucesso"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.ManualFxApprovalRequest.UPDATE_DEAL_ID.label",target:"AtualizarNegócioId"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.ManualFxApprovalRequest.UPDATE_DEAL_ID.label",target:"AtualizarCâmbioTaxa"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.compliance.GenericBusinessValidator.CLASSIFICATION_MSG",target:"Validador Genérico de Negócios"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.lite.ruler.CapableCreateApprovalsRuleAction.REQUEST_SEND_MSG",target:"Um pedido de aprovação foi enviado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.lite.ruler.CapableCreateApprovalsRuleAction.FOR",target:" pra "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule.DESCRIPTION",target:"Aprovar negócios AFEX para permitir os pagamentos internacionais"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule.CLASSIFICATION",target:"AFEX Business"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.JackieRuleOnCreate.COMPLIANCE_TRANSACTION",target:"Transação de Conformidade"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.JackieRuleOnCreate.SUMMARY_TRANSACTION",target:" Resumida transação Id: "})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.model_.name",target:"Transação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.model_.plural",target:"Transações"})
@@ -3875,3 +3871,20 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Report-Business-Information-for-
 /* SectionedDetailPropertyView */
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.detail.SectionedDetailPropertyView.HELP",target:"Ajuda"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.detail.SectionedDetailPropertyView.LEARN_MORE",target:"Clique para aprender mais"})
+
+// ComplianceTransactionApprovalRequestController
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.SUCCESS_BATCH_APPROVED",target:"Você aprovou com sucesso essas pedidos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.REFRESH_MSG",target:"Atualização solicitada ..."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.BATCH_TITLE",target:"Pedidos De Transação Em Lote"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.CURRENCY_TITLE",target:"Lote por moeda"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.REQUESTED_TITLE",target:"Requeridos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.RECEIVED_TITLE",target:"Recebidos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.SHOW_ASSIGNED_TITLE",target:"Mostra Designado Para Mim"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.REFRESH_TABLE.label",target:"Refresca a tabela"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ComplianceTransactionApprovalRequestController.APPROVE_ALL.label",target:"Aprova tudo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"approvals.transactions.label",target:"Pedidos De Transação Em Lote"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeApprovalRequest.APPROVE.label",target:"Aprovar"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeApprovalRequest.REJECT.label",target:"Rejeitar"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.TransactionApprovalRequest.PAYMENT_ID.label",target:"Referência"})

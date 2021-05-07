@@ -67,27 +67,18 @@ foam.CLASS({
     {
       name: 'plan',
       javaCode: `
-      FXSummaryTransaction txn = new FXSummaryTransaction();
-      txn.copyFrom(requestTxn);
-      txn.setPaymentProvider(getPaymentProvider());
-      txn.setStatus(TransactionStatus.COMPLETED);
-      txn.clearLineItems();
       BRPartnerTransaction bTx = new BRPartnerTransaction();
       bTx.setLineItems(requestTxn.getLineItems());
       bTx.copyFrom(requestTxn);
       bTx.setId(UUID.randomUUID().toString());
-      bTx.setAmount(txn.getAmount());
+      bTx.setAmount(requestTxn.getAmount());
       bTx.setName("Partner transaction");
       bTx.setPaymentProvider(getPaymentProvider());
       bTx.setPlanner(this.getId());
       addPartnerLineItem(x, bTx, requestTxn);
-
-      txn.addNext(bTx);
-      ExternalTransfer[] exT = new ExternalTransfer[2];
-      exT[0] = new ExternalTransfer(quote.getDestinationAccount().getId(), bTx.getDestinationAmount());
-      exT[1] = new ExternalTransfer(quote.getSourceAccount().getId(), -bTx.getAmount());
-      bTx.setTransfers( exT );
-      return txn;
+      quote.addTransfer(false, quote.getDestinationAccount().getId(), bTx.getDestinationAmount(), 0);
+      quote.addTransfer(false, quote.getSourceAccount().getId(), -bTx.getAmount(), 0);
+      return bTx;
     `
     },
     {

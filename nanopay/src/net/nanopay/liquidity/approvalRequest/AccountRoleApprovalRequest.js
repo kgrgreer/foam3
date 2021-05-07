@@ -20,6 +20,11 @@ foam.CLASS({
   name: 'AccountRoleApprovalRequest',
   extends: 'foam.nanos.approval.ApprovalRequest',
 
+  javaImports: [
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
+    'foam.util.SafetyUtil'
+  ],
+
   tableColumns: [
     'classification',
     'operation',

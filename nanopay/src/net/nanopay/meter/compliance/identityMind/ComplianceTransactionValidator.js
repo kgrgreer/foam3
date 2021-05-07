@@ -25,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
     'net.nanopay.account.Account',
@@ -51,7 +52,7 @@ foam.CLASS({
               .setServerDaoKey("localTransactionDAO")
               .setDaoKey("transactionDAO")
               .setCreatedFor(owner.getId())
-              .setClassification("Transaction IdentityMind Transfer")
+              .setClassificationEnum(ApprovalRequestClassificationEnum.TRANSACTION_IDENTITYMIND_TRANSFER)
               .build();
 
           IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");

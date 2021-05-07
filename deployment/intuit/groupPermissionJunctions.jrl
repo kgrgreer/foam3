@@ -7,6 +7,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-sess
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"group.update.intuit-sme"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"group.read.intuit-business-sme"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"group.update.intuit-business-sme"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"service.read.billDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"service.billDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"bill.read.*"})
 
@@ -125,6 +126,12 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support"
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"service.billDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"bill.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"feesummarytransactionlineitem.read.*"})
+
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"service.intuitTransactionSummaryDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"intuittransactionsummary.read.*"})
+
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"service.intuitFeeTransactionSummaryDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"intuitfeetransactionsummary.read.*"})
 
 // ********** REPORTING *****************
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"group.read.intuit-reporting"})
