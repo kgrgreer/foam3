@@ -33,12 +33,12 @@ p({
     supportPhone:"+1.647.496.1526",
     personalSupportUser:1030,
   },
-  "font1":"IBM Plex Sans",
-  "primary1":"#2e2379",
-  "primary2":"#4434b4",
-  "primary3":"#604aff",
-  "primary4":"#937dff",
-  "primary5":"#e4e4f7",
+  "font1":"'IBM Plex Sans', sans-serif",
+  "primary1":"#1B365D",
+  "primary2":"#1F4F9D",
+  "primary3":"#406DEA",
+  "primary4":"#A7BEFF",
+  "primary5":"#E5F1FC",
   "secondary1":"#4a33f4",
   "secondary2":"#432de7",
   "approval1":"#04612E",
@@ -74,7 +74,7 @@ p({
       margin-top: 30px;
     }
     .net-nanopay-sme-ui-FooterView {
-      background: /*%PRIMARY1%*/ #2e2379 !important;
+      background: /*%PRIMARY1%*/ #1B365D !important;
       border-top: 1px solid /*%GREY4%*/ #e7eaec;
       color: white !important;
     }
@@ -82,5 +82,6 @@ p({
   "createdBy":1,
   "createdByAgent":1,
   "created":"2020-04-29T22:32:52.685Z",
-  "spid":"trevisoAPI"
+  "spid":"trevisoAPI",
+  "defaultLocaleLanguage":"pt-BR"
 })
