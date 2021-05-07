@@ -145,7 +145,7 @@ public class TrevisoService
   }
 
   protected FepWeb getFepWebService(X x) {
-    return (FepWeb) x.get("fepWebService");
+    return (FepWeb) x.get(getFepWebServiceContextKey());
   }
 
   protected ExchangeService getExchangeService(X x) {
