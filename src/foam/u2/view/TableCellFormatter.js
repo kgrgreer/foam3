@@ -57,7 +57,7 @@ foam.CLASS({
     {
       name: 'tableHeader',
       value: function() {
-        return this.label || foam.String.labelize(this.name);
+        return this.columnLabel || this.label || foam.String.labelize(this.name);
       }
     },
     {
@@ -75,6 +75,11 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'tableWidth'
+    },
+    {
+      class: 'String',
+      documentation: 'Column label that overrides the label property in table headers',
+      name: 'columnLabel'
     }
   ]
 });

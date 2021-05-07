@@ -64,7 +64,8 @@ foam.CLASS({
       code: function(of, propName) {
         var cls = of;
         var axiom;
-        var columnHeader = [];
+        var columnPath = []; // array with full path to column header
+        var colLabel = ''; // Returns columnLabel property if applicable
 
         if ( foam.String.isInstance(propName) ) {
           var propNames = propName.split('.');
@@ -72,25 +73,28 @@ foam.CLASS({
             axiom = cls.getAxiomByName(this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(propNames[i]));
             if ( ! axiom )
               return '';
-            columnHeader.push(axiom.tableHeader ? axiom.tableHeader() : axiom.label || foam.String.labelize(axiom.name) );
+            columnPath.push( axiom.label || foam.String.labelize(axiom.name) );
+            if ( i == propNames.length -1 ) {
+              colLabel = axiom.tableHeader();
+            }
             cls = axiom.of;
-          }
+          } 
         } else {
           if ( propName.label )
-            columnHeader.push(propName.label);
+            columnPath.push(propName.label);
           else {
             if ( ! propName.name )
-              columnHeader.push('-');
+              columnPath.push('-');
             else {
               axiom = cls.getAxiomByName(propName.name);
               if ( axiom )
-                columnHeader.push(axiom.tableHeader());
+                columnPath.push(axiom.tableHeader());
               else
-                columnHeader.push('-');
+                columnPath.push('-');
             }
           }
         }
-        return columnHeader;
+        return { columnPath, colLabel };
       }
     },
     {
