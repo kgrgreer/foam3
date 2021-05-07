@@ -110,11 +110,18 @@ public class PartnerTransactionReportGenerator extends ReconciliationReportGener
   }
 
   protected TransactionLineItem getNanopayFeeLineItem(Transaction tx) {
-
-    for (TransactionLineItem lineItem: tx.getLineItems() ) {
-      if ( lineItem instanceof FeeSummaryTransactionLineItem) return lineItem;
+    for ( TransactionLineItem lineItem : tx.getLineItems() ) {
+      if ( lineItem instanceof FeeSummaryTransactionLineItem ) return lineItem;
     }
     return null;
+  }
+
+  PartnerTransactionReportGenerator(String spid, boolean cached) {
+    super(spid, cached);
+  }
+
+  PartnerTransactionReportGenerator(String spid) {
+    super(spid);
   }
 
 }
