@@ -29,6 +29,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'auth',
     'ctrl',
     'stack'
   ],
@@ -39,6 +40,8 @@ foam.CLASS({
       code: function() {
         var self = this;
         this.SUPER();
+        this.permissionEnableLinkCheck();
+        this.onDetach(this.prop$.sub(this.permissionEnableLinkCheck));
         this
           .add(this.obj$.map(obj => {
             if ( ! obj ) return '';
@@ -74,6 +77,15 @@ foam.CLASS({
       var dao = this.ctrl.__subContext__[prop.targetDAOKey];
       if ( dao )
         dao.find(this.data).then((o) => this.obj = o);
+    }
+  ],
+  listeners: [
+    function permissionEnableLinkCheck() {
+      console.log(`${this.prop.of.id}.${this.prop.name}.disableRefLink`);
+      let permission = `${this.prop.of.id}.${this.prop.name}.disableRefLink`;
+      this.auth.check(this.__subContext__, permission).then( check => {
+        this.enableLink = ! check;
+      })
     }
   ]
 });
