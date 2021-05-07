@@ -2577,8 +2577,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.BankAccountS
 /* AFEX User */
 // messages
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXUser.BENEFICIARIES_MSG",target:"Beneficiários para"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXUser.APPROVED_MSG",target:"Aprovado"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXUser.PENDING_MSG",target:"Pendente"})
 // property labels
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXUser.ENABLED.label",target:"Ativado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXUser.USER.label",target:"Usuário"})

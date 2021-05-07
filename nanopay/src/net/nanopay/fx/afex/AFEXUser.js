@@ -36,7 +36,7 @@ foam.CLASS({
   messages: [
     { name: 'BENEFICIARIES_MSG', message: 'Beneficiaries for' }
   ],
-  
+
   properties: [
     {
       class: 'Boolean',
