@@ -59,11 +59,9 @@
 
   tableColumns: [
     'id',
-    'description',
+    'referenceSummary',
     'classificationEnum',
-    'objId',
     'createdFor',
-    'approver.legalName',
     'assignedTo.legalName',
     'status',
     'memo'
@@ -152,7 +150,7 @@
       order: 21,
       gridColumns: 6,
       transient: true,
-      tableWidth: 200,
+      tableWidth: 250,
       visibility: 'RO',
       tableCellFormatter: function(_,obj) {
         let self = this;
@@ -366,11 +364,7 @@
       order: 90,
       gridColumns: 6,
       includeInDigest: true,
-      tableWidth: 450,
-      view: { class: 'foam.u2.EnumView' },
-      tableCellFormatter: function(value, obj) {
-        this.add(value.label);
-      }
+      tableWidth: 450
     },
     {
       class: 'DateTime',
@@ -637,6 +631,10 @@
       message: 'You have successfully approved this request'
     },
     {
+      name: 'SUCCESS_MEMO',
+      message: 'You have successfully added a memo'
+    },
+    {
       name: 'SUCCESS_REJECTED',
       message: 'You have successfully rejected this request'
     },
@@ -707,8 +705,9 @@
     {
       name: 'approve',
       section: 'approvalRequestInformation',
-      isAvailable: function(isTrackingRequest, status) {
+      isAvailable: function(isTrackingRequest, status, subject, assignedTo) {
         if ( status !== this.ApprovalStatus.REQUESTED ) return false;
+        if ( assignedTo !== 0 && subject.realUser.id !== assignedTo ) return false;
         return ! isTrackingRequest;
       },
       code: function(X) {
@@ -735,8 +734,9 @@
     {
       name: 'approveWithMemo',
       section: 'approvalRequestInformation',
-      isAvailable: function(isTrackingRequest, status) {
+      isAvailable: function(isTrackingRequest, status, subject, assignedTo) {
         if ( status !== this.ApprovalStatus.REQUESTED ) return false;
+        if ( assignedTo !== 0 && subject.realUser.id !== assignedTo ) return false;
         return ! isTrackingRequest;
       },
       code: function(X) {
@@ -749,10 +749,28 @@
       }
     },
     {
-      name: 'reject',
+      name: 'addMemo',
       section: 'approvalRequestInformation',
       isAvailable: function(isTrackingRequest, status) {
         if ( status !== this.ApprovalStatus.REQUESTED ) return false;
+        return ! isTrackingRequest;
+      },
+      code: function(X) {
+        var objToAdd = X.objectSummaryView ?
+          X.objectSummaryView : X.summaryView;
+        objToAdd.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
+          class: 'foam.u2.MemoModal',
+          isMemoRequired: true,
+          onExecute: this.addMemoL.bind(this, X)
+        }));
+      }
+    },
+    {
+      name: 'reject',
+      section: 'approvalRequestInformation',
+      isAvailable: function(isTrackingRequest, status, subject, assignedTo) {
+        if ( status !== this.ApprovalStatus.REQUESTED ) return false;
+        if ( assignedTo !== 0 && subject.realUser.id !== assignedTo ) return false;
         return ! isTrackingRequest;
       },
       code: function(X) {
@@ -769,8 +787,9 @@
     {
       name: 'cancel',
       section: 'approvalRequestInformation',
-      isAvailable: function(isTrackingRequest, status) {
+      isAvailable: function(isTrackingRequest, status, subject, assignedTo) {
         if ( status !== this.ApprovalStatus.REQUESTED ) return false;
+        if ( assignedTo !== 0 && subject.realUser.id !== assignedTo ) return false;
         return isTrackingRequest;
       },
       code: function(X) {
@@ -1026,6 +1045,29 @@
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
           this.notify(this.SUCCESS_APPROVED, '', this.LogLevel.INFO, true);
+
+          if (
+            X.stack.top &&
+            ( X.currentMenu.id !== X.stack.top[2] )
+          ) {
+            X.stack.back();
+          }
+        }, e => {
+          this.throwError.pub(e);
+          this.notify(e.message, '', this.LogLevel.ERROR, true);
+        });
+      }
+    },
+    {
+      name: 'addMemoL',
+      code: function(X, memo) {
+        var newMemoRequest = this.clone();
+        newMemoRequest.memo = memo;
+
+        this.approvalRequestDAO.put(newMemoRequest).then(req => {
+          this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
+          this.finished.pub();
+          this.notify(this.SUCCESS_MEMO, '', this.LogLevel.INFO, true);
 
           if (
             X.stack.top &&

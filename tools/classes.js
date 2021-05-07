@@ -738,6 +738,7 @@ var classes = [
   'foam.nanos.dig.exception.ExternalAPIException',
   'foam.nanos.dig.exception.EmptyParameterException',
   'foam.nanos.dig.exception.GeneralException',
+  'foam.nanos.dig.exception.TemporaryExternalAPIException',
 
   'foam.nanos.app.SupportConfig',
 
@@ -895,6 +896,7 @@ var classes = [
   'foam.nanos.approval.AuthenticatedApprovalDAOAuthorizer',
   'foam.nanos.approval.PopulateApprovalRequestsDAO',
   'foam.nanos.approval.ApprovalRequestAssignedToRule',
+  'foam.nanos.approval.ApprovalRequestMemoRule',
   'foam.nanos.approval.ApprovalRequestClassificationEnum',
 
   'foam.core.NumberSet',
