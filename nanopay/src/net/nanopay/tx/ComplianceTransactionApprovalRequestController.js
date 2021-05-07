@@ -23,13 +23,14 @@
   implements: [ 'foam.mlang.Expressions' ],
 
   imports: [
-    'complianceTransactionApprovalRequestDAO',
-    'transactionDAO',
     'approvalRequestDAO',
+    'complianceTransactionApprovalRequestDAO',
     'currencyDAO',
     'notify',
-    'subject'
+    'subject',
+    'transactionDAO'
   ],
+
   exports: [
     'filteredDAO as complianceTransactionApprovalRequestDAO'
   ],
@@ -72,11 +73,11 @@
 
   requires: [
     'foam.dao.AbstractDAO',
-    'foam.u2.dialog.Popup',
     'foam.log.LogLevel',
-    'net.nanopay.tx.MatchCurrency',
+    'foam.u2.dialog.Popup',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
+    'net.nanopay.tx.MatchCurrency'
   ],
 
   messages: [
@@ -94,19 +95,19 @@
     },
     {
       name: 'CURRENCY_TITLE',
-      message: "Batch by currency"
+      message: 'Batch by currency'
     },
     {
       name: 'REQUESTED_TITLE',
-      message: "Requested"
+      message: 'Requested'
     },
     {
       name: 'RECEIVED_TITLE',
-      message: "Received"
+      message: 'Received'
     },
     {
       name: 'SHOW_ASSIGNED_TITLE',
-      message: "Show Assigned To Me"
+      message: 'Show Assigned To Me'
     }
   ],
 
@@ -174,28 +175,28 @@
   methods: [
     {
       name: 'initE',
-      code: function(){
+      code: function() {
         var self = this;
 
         this.SUPER();
         this.start().addClass(this.myClass())
-          .start(this.Rows).addClass(this.myClass("container"))
+          .start(this.Rows).addClass(this.myClass('container'))
             .start('h1')
               .addClass(this.myClass('browse-title'))
               .add(this.BATCH_TITLE)
             .end()
-            .start().addClass(this.myClass("currency"))
+            .start().addClass(this.myClass('currency'))
               .start('h6')
                 .add(this.CURRENCY_TITLE)
               .end()
               .tag(this.CURRENCY)
             .end()
-            .start().addClass(this.myClass("amounts"))
+            .start().addClass(this.myClass('amounts'))
               .add(this.slot(function(requested, received, currency, currencyDAO) {
                 return currencyDAO.find(currency).then(currency => {
                   return self.E()
                     .start(self.Cols)
-                      .start().addClass(self.myClass("requested"))
+                      .start().addClass(self.myClass('requested'))
                         .start('h5')
                           .add(this.REQUESTED_TITLE)
                         .end()
@@ -203,7 +204,7 @@
                           .add(currency.format(requested))
                         .end()
                       .end()
-                      .start().addClass(self.myClass("received"))
+                      .start().addClass(self.myClass('received'))
                         .start('h5')
                           .add(this.RECEIVED_TITLE)
                         .end()
@@ -213,19 +214,19 @@
                       .end()
                     .end()
                   .start()
-                .end()
-                })
+                .end();
+                });
               }))
             .end()
-            .start(this.Cols).addClass(this.myClass("table-tools"))
-              .start(this.Cols).style({'align-items':'center'})
-                .addClass(this.myClass("show-assigned"))
+            .start(this.Cols).addClass(this.myClass('table-tools'))
+              .start(this.Cols).style({ 'align-items': 'center' })
+                .addClass(this.myClass('show-assigned'))
                 .start('h7')
                   .add(this.SHOW_ASSIGNED_TITLE)
                 .end()
                 .tag(this.SHOW_ASSIGNED)
               .end()
-              .start(this.Cols).addClass(this.myClass("table-buttons"))
+              .start(this.Cols).addClass(this.myClass('table-buttons'))
                 .start()
                   .add(this.REFRESH_TABLE)
                 .end()
@@ -238,16 +239,16 @@
               .add(this.FILTERED_DAO)
             .end()
           .end()
-        .end()
-        
+        .end();
+
         this.currency$.sub(this.updateBalances);
-        this.showAssigned$.sub(this.updateAssigned)
+        this.showAssigned$.sub(this.updateAssigned);
 
         this.updateBalances();
       }
-    },
+    }
   ],
-  
+
   actions: [
     {
       name: 'refreshTable',
@@ -260,10 +261,10 @@
     },
     {
       name: 'approveAll',
-      isAvailable: function(showAssigned){
+      isAvailable: function(showAssigned) {
         return showAssigned;
       },
-      code: function(X){
+      code: function(X) {
         this.filteredDAO.select(request => {
           request.status = foam.nanos.approval.ApprovalStatus.APPROVED;
           return this.approvalRequestDAO.put(request);
