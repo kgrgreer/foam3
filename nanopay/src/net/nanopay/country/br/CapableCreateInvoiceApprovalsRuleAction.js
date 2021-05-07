@@ -99,7 +99,7 @@ foam.CLASS({
           .setOperation(request.getOperation())
           .setCreatedFor(request.getCreatedFor())
           .setGroup(request.getGroup())
-          .setClassificationEnum(ApprovalRequestClassificationEnum.TRANSACTION_REQUEST)
+          .setClassificationEnum(ApprovalRequestClassificationEnum.NATURE_CODE_DOCUMENT_APPROVAL)
           .setStatus(request.getStatus())
           .setPaymentId(invoice.getPaymentId()).build();
 
