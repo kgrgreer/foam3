@@ -146,7 +146,7 @@
         editColumnsEnabled: false,
         columns: [
           'id',
-          'assignedTo.legalName',
+          'assignedTo',
           'paymentId',
           'createdFor',
           'status',
