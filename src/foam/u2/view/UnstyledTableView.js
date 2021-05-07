@@ -417,8 +417,8 @@ foam.CLASS({
 
                 var tableWidth = view.columnHandler.returnPropertyForColumn(view.props, view.of, [ col, overrides], 'tableWidth');
                 var colData = view.columnConfigToPropertyConverter.returnColumnHeader(view.of, col);
-                var colHeader = ( colData.columnPath.length > 1 ? '../'  : '' ) + ( colData.colLabel || colData.columnPath.slice(-1)[0] );
-                var colTooltip = colData.columnPath.join( '/' );
+                var colHeader = ( colData.colPath.length > 1 ? '../'  : '' ) + ( colData.colLabel || colData.colPath.slice(-1)[0] );
+                var colTooltip = colData.colPath.join( '/' );
 
                 this.start().
                   addClass(view.myClass('th')).
