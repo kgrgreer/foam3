@@ -23,7 +23,7 @@ foam.CLASS({
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: `Rule to create a ticket for a failed or declined txn`,
+  documentation: 'Rule to create a ticket for a failed or declined transaction',
 
   javaImports: [
     'foam.core.ContextAgent',

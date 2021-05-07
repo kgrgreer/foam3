@@ -41,15 +41,6 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'metaSection',
-      isAvailable: function(id) {
-        return id != 0;
-      },
-      title: 'Audit',
-      permissionRequired: true,
-      order: 100
-    },
-    {
       name: 'infoSection',
       title: 'Ticket',
       order: 10
@@ -133,8 +124,16 @@ foam.CLASS({
       documentation: `Id of the creditAccount`,
       section: 'infoSection',
       createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
-      readVisibility: 'RO'
+      updateVisibility: 'HIDDEN',
+      readVisibility: 'HIDDEN'
+    },
+    {
+      name: 'createdBy',
+      section: 'metaSection'
+    },
+    {
+      name: 'type',
+      hidden: true
     },
     {
       class: 'Reference',
@@ -167,14 +166,16 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'waiveCharges'
+      name: 'waiveCharges',
+      hidden: true
     },
     {
       class: 'String',
       name: 'agentInstructions',
       readVisibility: 'RO',
       updateVisibility: 'RO',
-      createVisibility: 'RO'
+      createVisibility: 'RO',
+      section: 'infoSection'
     },
     {
       class: 'Reference',
@@ -193,6 +194,7 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       of: 'net.nanopay.tx.FeeLineItem',
+      hidden: true,
       name: 'feeLineItemsSelected',
       label: 'Choose Fees to refund',
       view: function(_, X) { 
@@ -303,7 +305,7 @@ foam.CLASS({
       },
       code: function(X) {
         if ( this.retryAccount == "" ) {
-          this.notify(this.SET_ACCOUNT_ID, '', foam.log.LogLevel.INFO, true);
+          this.notify(this.SET_ACCOUNT_ID, '', foam.log.LogLevel.ERROR, true);
           return;
         }
         this.refundStatus = net.nanopay.ticket.RefundStatus.RETRY;
