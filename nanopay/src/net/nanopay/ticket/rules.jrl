@@ -119,6 +119,45 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
+  "id":"69bafee2-9f5f-4ecb-8aaa-8db8ab9d1adb",
+  "name":"Cancel Transaction Post Rule - cancel code not set happens after decline",
+  "priority":100,
+  "ruleGroup":"Ticket",
+  "documentation":"Handle transaction declines where u need to cancel tail. ",
+  "daoKey":"localTicketDAO",
+  "operation":3,
+  "action":{
+    "class":"net.nanopay.ticket.CancelTransactionPostRule",
+  },
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue":{
+          "class":"net.nanopay.ticket.RefundStatus",
+          "ordinal":2
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"postApprovalRuleId",
+        "propValue": "69bafee2-9f5f-4ecb-8aaa-8db8ab9d1adb"
+      }
+    ]
+  },
+  "after":false,
+  "enabled":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
   "id":"20b9d32c-8d89-4cf1-aa70-3a759e604fb4",
   "name":"Cancel Transaction Post Rule - cancel code 10000",
   "priority":100,

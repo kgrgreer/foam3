@@ -242,7 +242,7 @@ p({
   "action":{
     "class":"net.nanopay.ticket.ScenarioAction",
     "textToAgent":"The payment has failed due to:",
-    "postApprovalRuleId": "c6c5c0b8-a24d-4dc7-8561-57e206ed1b45",
+    "postApprovalRuleId": "69bafee2-9f5f-4ecb-8aaa-8db8ab9d1adb",
     "autoApprove": true
   },
   "after":false,

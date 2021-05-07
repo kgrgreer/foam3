@@ -61,7 +61,8 @@ foam.CLASS({
             Transaction problemTxn = (Transaction) txnDAO.inX(x).find(request.getProblemTransaction()).fclone();
             if ( problemTxn.getStatus() == TransactionStatus.PAUSED ) {
               problemTxn.setStatus(TransactionStatus.CANCELLED);
-              problemTxn.setErrorCode(getErrorCode());
+              if ( getErrorCode() != 0 )
+                problemTxn.setErrorCode(getErrorCode());
               txnDAO.inX(x).put(problemTxn);
             }
             else {
@@ -71,7 +72,8 @@ foam.CLASS({
                 if ( problemTxn.getStatus() == TransactionStatus.PAUSED ) {
                 //TODO: we want full walk of children
                   problemTxn.setStatus(TransactionStatus.CANCELLED);
-                  problemTxn.setErrorCode(getErrorCode());
+                  if ( getErrorCode() != 0 )
+                    problemTxn.setErrorCode(getErrorCode());
                   txnDAO.inX(x).put(problemTxn);
                 }
                 else {
