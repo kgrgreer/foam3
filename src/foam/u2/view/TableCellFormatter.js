@@ -57,7 +57,7 @@ foam.CLASS({
     {
       name: 'tableHeader',
       value: function() {
-        return this.columnLabel || this.label || foam.String.labelize(this.name);
+        return this.columnLabel;
       }
     },
     {
@@ -79,7 +79,9 @@ foam.CLASS({
     {
       class: 'String',
       documentation: 'Column label that overrides the label property in table headers',
-      name: 'columnLabel'
+      name: 'columnLabel',
+      // return the label if columnLabel is not set
+      expression: function(label) { return label; }
     }
   ]
 });
