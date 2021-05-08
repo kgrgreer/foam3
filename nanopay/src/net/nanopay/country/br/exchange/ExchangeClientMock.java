@@ -35,7 +35,7 @@ public class ExchangeClientMock extends ContextAwareSupport implements Exchange 
   }
 
   @Override
-  public InsertBoletoResponse insertBoleto(InsertBoleto request) {
+  public InsertBoletoResponse insertBoleto(InsertBoleto request, String spid) {
     InsertBoletoResponse response = new InsertBoletoResponse();
     ServiceStatus result = new ServiceStatus();
     result.setCODRETORNO(0);
@@ -45,7 +45,7 @@ public class ExchangeClientMock extends ContextAwareSupport implements Exchange 
   }
 
   @Override
-  public SearchBoletoResponse searchBoleto(SearchBoleto request) {
+  public SearchBoletoResponse searchBoleto(SearchBoleto request, String spid) {
     SearchBoletoResponse response = new SearchBoletoResponse();
     ResponseBoleto responseBoleto = new ResponseBoleto();
     ServiceStatus status = new ServiceStatus();
@@ -56,7 +56,7 @@ public class ExchangeClientMock extends ContextAwareSupport implements Exchange 
   }
 
   @Override
-  public BoletoStatusResponse getBoletoStatus(GetBoletoStatus request) {
+  public BoletoStatusResponse getBoletoStatus(GetBoletoStatus request, String spid) {
     BoletoStatusResponse response = new BoletoStatusResponse();
     BoletoStatusResult result = new BoletoStatusResult();
     Boleto boleto = new Boleto();
@@ -67,29 +67,29 @@ public class ExchangeClientMock extends ContextAwareSupport implements Exchange 
   }
 
   @Override
-  public SearchTitularResponse searchTitular(SearchTitular request) {
+  public SearchTitularResponse searchTitular(SearchTitular request, String spid) {
     return getStubSearchTitular();
   }
 
   @Override
-  public SearchTitularCapFinResponse searchTitularCapFin(SearchTitularCapFin request) {
+  public SearchTitularCapFinResponse searchTitularCapFin(SearchTitularCapFin request, String spid) {
     return getStubSearchTitularCapFin();
   }
 
   @Override
-  public InsertTitularResponse insertTitular(InsertTitular request) {
+  public InsertTitularResponse insertTitular(InsertTitular request, String spid) {
     InsertTitularResponse response = new InsertTitularResponse();
     return response;
   }
 
   @Override
-  public UpdateTitularResponse updateTitular(UpdateTitular request) {
+  public UpdateTitularResponse updateTitular(UpdateTitular request, String spid) {
     UpdateTitularResponse response = new UpdateTitularResponse();
     return response;
   }
 
   @Override
-  public SearchNaturezaResponse searchNatureza(SearchNatureza request) {
+  public SearchNaturezaResponse searchNatureza(SearchNatureza request, String spid) {
     SearchNaturezaResponse response = new SearchNaturezaResponse();
     ResponseNatureza res = new ResponseNatureza();
     ServiceStatus status = new ServiceStatus();
@@ -100,13 +100,13 @@ public class ExchangeClientMock extends ContextAwareSupport implements Exchange 
   }
 
   @Override
-  public SearchMoedaResponse searchMoeda(SearchMoeda request)  { return new SearchMoedaResponse(); }
+  public SearchMoedaResponse searchMoeda(SearchMoeda request, String spid)  { return new SearchMoedaResponse(); }
 
   @Override
-  public SearchPaisResponse searchPais(SearchPais request) { return new SearchPaisResponse(); }
+  public SearchPaisResponse searchPais(SearchPais request, String spid) { return new SearchPaisResponse(); }
 
   @Override
-  public CotacaoTaxaCambioResponse cotacaoTaxaCambio(GetCotacaoTaxaCambio request) { return new CotacaoTaxaCambioResponse(); }
+  public CotacaoTaxaCambioResponse cotacaoTaxaCambio(GetCotacaoTaxaCambio request, String spid) { return new CotacaoTaxaCambioResponse(); }
 
   public SearchTitularResponse getStubSearchTitular() {
     return this.stubSearchTitular;

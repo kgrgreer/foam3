@@ -17,6 +17,7 @@
 package net.nanopay.country.br.exchange;
 
 import foam.core.*;
+import foam.dao.DAO;
 import foam.util.SafetyUtil;
 
 import javax.xml.bind.DatatypeConverter;
@@ -25,6 +26,8 @@ import javax.xml.soap.*;
 import java.util.*;
 import java.io.*;
 import foam.nanos.logger.Logger;
+
+import static foam.mlang.MLang.EQ;
 
 public class ExchangeClient
   extends ContextAwareSupport
@@ -37,8 +40,9 @@ public class ExchangeClient
     logger = (Logger) x.get("logger");
   }
 
-  protected ExchangeCredential getCredentials() {
-    ExchangeCredential credentials = (ExchangeCredential) getX().get("exchangeCredential");
+  protected ExchangeCredential getCredentials(String spid) {
+    DAO exchangeCredentialDAO = (DAO) getX().get("exchangeCredentialDAO");
+    ExchangeCredential credentials = (ExchangeCredential) exchangeCredentialDAO.find(EQ(ExchangeCredential.SPID, spid));
     if ( credentials == null ||
          SafetyUtil.isEmpty(credentials.getExchangeUsername()) ||
          SafetyUtil.isEmpty(credentials.getExchangePassword()) ||
@@ -50,11 +54,11 @@ public class ExchangeClient
   }
 
   @Override
-  public InsertBoletoResponse insertBoleto(InsertBoleto request) {
+  public InsertBoletoResponse insertBoleto(InsertBoleto request, String spid) {
     try {
-      SOAPMessage message = createSOAPMessage("insertBoleto", request);
+      SOAPMessage message = createSOAPMessage("insertBoleto", request, spid);
       long startTime = logRequest(message);
-      SOAPMessage response = sendMessage("insertBoleto", message);
+      SOAPMessage response = sendMessage("insertBoleto", message, spid);
       logResponse(response, startTime);
       return (InsertBoletoResponse) parseMessage(response, InsertBoletoResponse.class);
     } catch (Throwable t) {
@@ -63,11 +67,11 @@ public class ExchangeClient
   }
 
   @Override
-  public SearchBoletoResponse searchBoleto(SearchBoleto request) {
+  public SearchBoletoResponse searchBoleto(SearchBoleto request, String spid) {
     try {
-      SOAPMessage message = createSOAPMessage("searchBoleto", request);
+      SOAPMessage message = createSOAPMessage("searchBoleto", request, spid);
       long startTime = logRequest(message);
-      SOAPMessage response = sendMessage("searchBoleto", message);
+      SOAPMessage response = sendMessage("searchBoleto", message, spid);
       logResponse(response, startTime);
       return (SearchBoletoResponse) parseMessage(response, SearchBoletoResponse.class);
     } catch (Throwable t) {
@@ -76,11 +80,11 @@ public class ExchangeClient
   }
 
   @Override
-  public BoletoStatusResponse getBoletoStatus(GetBoletoStatus request) {
+  public BoletoStatusResponse getBoletoStatus(GetBoletoStatus request, String spid) {
     try {
-      SOAPMessage message = createSOAPMessage("BoletoStatus", request);
+      SOAPMessage message = createSOAPMessage("BoletoStatus", request, spid);
       long startTime = logRequest(message);
-      SOAPMessage response = sendMessage("BoletoStatus", message);
+      SOAPMessage response = sendMessage("BoletoStatus", message, spid);
       logResponse(response, startTime);
       return (BoletoStatusResponse) parseMessage(response, BoletoStatusResponse.class);
     } catch (Throwable t) {
@@ -89,11 +93,11 @@ public class ExchangeClient
   }
 
   @Override
-  public SearchTitularResponse searchTitular(SearchTitular request) {
+  public SearchTitularResponse searchTitular(SearchTitular request, String spid) {
     try {
-      SOAPMessage message = createSOAPMessage("searchTitular", request);
+      SOAPMessage message = createSOAPMessage("searchTitular", request, spid);
       long startTime = logRequest(message);
-      SOAPMessage response = sendMessage("searchTitular", message);
+      SOAPMessage response = sendMessage("searchTitular", message, spid);
       logResponse(response, startTime);
       return (SearchTitularResponse) parseMessage(response, SearchTitularResponse.class);
     } catch (Throwable t) {
@@ -102,11 +106,11 @@ public class ExchangeClient
   }
 
   @Override
-  public SearchTitularCapFinResponse searchTitularCapFin(SearchTitularCapFin request) {
+  public SearchTitularCapFinResponse searchTitularCapFin(SearchTitularCapFin request, String spid) {
     try {
-      SOAPMessage message = createSOAPMessage("searchTitularCapFin", request);
+      SOAPMessage message = createSOAPMessage("searchTitularCapFin", request, spid);
       long startTime = logRequest(message);
-      SOAPMessage response = sendMessage("searchTitularCapFin", message);
+      SOAPMessage response = sendMessage("searchTitularCapFin", message, spid);
       logResponse(response, startTime);
       return (SearchTitularCapFinResponse) parseMessage(response, SearchTitularCapFinResponse.class);
     } catch (Throwable t) {
@@ -115,11 +119,11 @@ public class ExchangeClient
   }
 
   @Override
-  public InsertTitularResponse insertTitular(InsertTitular request) {
+  public InsertTitularResponse insertTitular(InsertTitular request, String spid) {
     try {
-      SOAPMessage message = createSOAPMessage("insertTitular", request);
+      SOAPMessage message = createSOAPMessage("insertTitular", request, spid);
       long startTime = logRequest(message);
-      SOAPMessage response = sendMessage("insertTitular", message);
+      SOAPMessage response = sendMessage("insertTitular", message, spid);
       logResponse(response, startTime);
       return (InsertTitularResponse) parseMessage(response, InsertTitularResponse.class);
     } catch (Throwable t) {
@@ -128,11 +132,11 @@ public class ExchangeClient
   }
 
   @Override
-  public UpdateTitularResponse updateTitular(UpdateTitular request) {
+  public UpdateTitularResponse updateTitular(UpdateTitular request, String spid) {
     try {
-      SOAPMessage message = createSOAPMessage("updateTitular", request);
+      SOAPMessage message = createSOAPMessage("updateTitular", request, spid);
       long startTime = logRequest(message);
-      SOAPMessage response = sendMessage("updateTitular", message);
+      SOAPMessage response = sendMessage("updateTitular", message, spid);
       logResponse(response, startTime);
       return (UpdateTitularResponse) parseMessage(response, UpdateTitularResponse.class);
     } catch (Throwable t) {
@@ -141,11 +145,11 @@ public class ExchangeClient
   }
 
   @Override
-  public SearchNaturezaResponse searchNatureza(SearchNatureza request) {
+  public SearchNaturezaResponse searchNatureza(SearchNatureza request, String spid) {
     try {
-      SOAPMessage message = createSOAPMessage("searchNatureza", request);
+      SOAPMessage message = createSOAPMessage("searchNatureza", request, spid);
       long startTime = logRequest(message);
-      SOAPMessage response = sendMessage("searchNatureza", message);
+      SOAPMessage response = sendMessage("searchNatureza", message, spid);
       logResponse(response, startTime);
       return (SearchNaturezaResponse) parseMessage(response, SearchNaturezaResponse.class);
     } catch (Throwable t) {
@@ -154,11 +158,11 @@ public class ExchangeClient
   }
 
   @Override
-  public SearchMoedaResponse searchMoeda(SearchMoeda request) {
+  public SearchMoedaResponse searchMoeda(SearchMoeda request, String spid) {
     try {
-      SOAPMessage message = createSOAPMessage("searchMoeda", request);
+      SOAPMessage message = createSOAPMessage("searchMoeda", request, spid);
       long startTime = logRequest(message);
-      SOAPMessage response = sendMessage("searchMoeda", message);
+      SOAPMessage response = sendMessage("searchMoeda", message, spid);
       logResponse(response, startTime);
       return (SearchMoedaResponse) parseMessage(response, SearchMoedaResponse.class);
     } catch (Throwable t) {
@@ -167,11 +171,11 @@ public class ExchangeClient
   }
 
   @Override
-  public SearchPaisResponse searchPais(SearchPais request) {
+  public SearchPaisResponse searchPais(SearchPais request, String spid) {
     try {
-      SOAPMessage message = createSOAPMessage("searchPais", request);
+      SOAPMessage message = createSOAPMessage("searchPais", request, spid);
       long startTime = logRequest(message);
-      SOAPMessage response = sendMessage("searchPais", message);
+      SOAPMessage response = sendMessage("searchPais", message, spid);
       logResponse(response, startTime);
       return (SearchPaisResponse) parseMessage(response, SearchPaisResponse.class);
     } catch (Throwable t) {
@@ -180,11 +184,11 @@ public class ExchangeClient
   }
 
   @Override
-  public CotacaoTaxaCambioResponse cotacaoTaxaCambio(GetCotacaoTaxaCambio request) {
+  public CotacaoTaxaCambioResponse cotacaoTaxaCambio(GetCotacaoTaxaCambio request, String spid) {
     try {
-      SOAPMessage message = createSOAPMessage("cotacaoTaxaCambio", request);
+      SOAPMessage message = createSOAPMessage("cotacaoTaxaCambio", request, spid);
       long startTime = logRequest(message);
-      SOAPMessage response = sendMessage("cotacaoTaxaCambio", message);
+      SOAPMessage response = sendMessage("cotacaoTaxaCambio", message, spid);
       logResponse(response, startTime);
       return (CotacaoTaxaCambioResponse) parseMessage(response, CotacaoTaxaCambioResponse.class);
     } catch (Throwable t) {
@@ -230,9 +234,9 @@ public class ExchangeClient
    * @param method method to use
    * @return newly initialized SOAPMessage
    */
-  protected SOAPMessage createSOAPMessage(String method, FObject object) {
+  protected SOAPMessage createSOAPMessage(String method, FObject object, String spid) {
     try {
-      ExchangeCredential credentials = getCredentials();
+      ExchangeCredential credentials = getCredentials(spid);
       SOAPMessage message = MessageFactory.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL).createMessage();
       SOAPPart part = message.getSOAPPart();
 
@@ -306,9 +310,9 @@ public class ExchangeClient
    * @param message SOAP message to send
    * @return SOAP message response
    */
-  protected SOAPMessage sendMessage(String method, SOAPMessage message) {
+  protected SOAPMessage sendMessage(String method, SOAPMessage message, String spid) {
     SOAPConnection conn = null;
-    ExchangeCredential credentials = getCredentials();
+    ExchangeCredential credentials = getCredentials(spid);
 
     try {
       conn = SOAPConnectionFactory.newInstance().createConnection();

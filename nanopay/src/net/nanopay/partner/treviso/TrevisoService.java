@@ -312,8 +312,8 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     return exchangeService.updateTransactionStatus(transaction);
   }
 
-  public List searchNatureCode(String natureCode) throws RuntimeException {
-    return exchangeService.searchNatureCode(natureCode);
+  public List searchNatureCode(long userId, String natureCode) throws RuntimeException {
+    return exchangeService.searchNatureCode(userId, natureCode);
   }
 
 }

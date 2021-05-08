@@ -98,7 +98,11 @@ public class ExchangeServiceProvider implements ExchangeService {
   }
 
   public ExchangeCustomer createExchangeCustomerDefault(long userId) throws RuntimeException {
-    ExchangeCredential credential = (ExchangeCredential) x.get("exchangeCredential");
+    User user = (User) ((DAO) this.x.get("localUserDAO")).find(userId);
+    if ( user == null ) throw new RuntimeException("User not found: " + userId);
+
+    ExchangeCredential credential = (ExchangeCredential) ((DAO) (DAO) this.x.get("exchangeCredentialDAO"))
+      .find(EQ(ExchangeCredential.SPID, user.getSpid()));
     return createExchangeCustomer(userId, credential.getDefaultLimit());
   }
 
@@ -116,7 +120,7 @@ public class ExchangeServiceProvider implements ExchangeService {
     InsertTitular request = new InsertTitular();
     request.setDadosTitular(getTitularRequest(user, amount));
     try {
-      InsertTitularResponse response = exchangeClient.insertTitular(request);
+      InsertTitularResponse response = exchangeClient.insertTitular(request, user.getSpid());
       if ( response == null || response.getInsertTitularResult() == null )
         throw new RuntimeException("Unable to get a valid response from Exchange while calling insertTitular");
 
@@ -157,10 +161,13 @@ public class ExchangeServiceProvider implements ExchangeService {
   }
 
   public Titular getExchangeCustomer(long userId) throws RuntimeException {
+    User user = (User) ((DAO) this.x.get("localUserDAO")).find(userId);
+    if ( user == null ) throw new RuntimeException("User not found: " + userId);
+
     SearchTitular request = new SearchTitular();
     String formattedcpfCnpj = findCpfCnpj(userId).replaceAll("[^0-9]", "");
     request.setCODIGO(formattedcpfCnpj);
-    SearchTitularResponse response = exchangeClient.searchTitular(request);
+    SearchTitularResponse response = exchangeClient.searchTitular(request, user.getSpid());
     if ( response == null || response.getSearchTitularResult() == null ) {
       logger_.warning("Unable to retrieve customer from exchange.");
       return null;
@@ -177,10 +184,13 @@ public class ExchangeServiceProvider implements ExchangeService {
   }
 
   public Titular getExchangeCustomerLimit(long userId) throws RuntimeException {
+    User user = (User) ((DAO) this.x.get("localUserDAO")).find(userId);
+    if ( user == null ) throw new RuntimeException("User not found: " + userId);
+
     SearchTitularCapFin request = new SearchTitularCapFin();
     String formattedcpfCnpj = findCpfCnpj(userId).replaceAll("[^0-9]", "");
     request.setCODIGO(formattedcpfCnpj);
-    SearchTitularCapFinResponse response = exchangeClient.searchTitularCapFin(request);
+    SearchTitularCapFinResponse response = exchangeClient.searchTitularCapFin(request, user.getSpid());
     if ( response == null || response.getSearchTitularCapFinResult() == null )
       throw new RuntimeException("Unable to get a valid response from Exchange while calling SearchTitularCapFin");
 
@@ -206,7 +216,7 @@ public class ExchangeServiceProvider implements ExchangeService {
     Titular titular = getTitularRequest(user, amount);
     request.setDadosTitular(titular);
     try {
-      UpdateTitularResponse response = exchangeClient.updateTitular(request);
+      UpdateTitularResponse response = exchangeClient.updateTitular(request, user.getSpid());
       if ( response == null || response.getUpdateTitularResult() == null )
         throw new RuntimeException("Unable to get a valid response from Exchange while calling updateTitular");
 
@@ -344,7 +354,7 @@ public class ExchangeServiceProvider implements ExchangeService {
     dadosBoleto.setSTATUS(exchangeClientValues.getInitialStatus());
     String  natureCode = extractNatureCode(summaryTransaction);
     dadosBoleto.setNATUREZA(natureCode);
-    List<Natureza> natureza = searchNatureCode(natureCode);
+    List<Natureza> natureza = searchNatureCode(payer.getId(), natureCode);
     if ( natureza != null && natureza.size() > 0 ) {
       dadosBoleto.setCLAUSULA01(natureza.get(0).getCpClausula1());
     }
@@ -399,7 +409,7 @@ public class ExchangeServiceProvider implements ExchangeService {
     dadosBoleto.setVALORME(destinationAmount);
     dadosBoleto.setVALORMN(valormn);
     request.setDadosBoleto(dadosBoleto);
-    InsertBoletoResponse response = exchangeClient.insertBoleto(request);
+    InsertBoletoResponse response = exchangeClient.insertBoleto(request, payer.getSpid());
     if ( response == null || response.getInsertBoletoResult() == null )
       throw new RuntimeException("Unable to get a valid response from Exchange while calling insertBoleto");
 
@@ -528,10 +538,15 @@ public class ExchangeServiceProvider implements ExchangeService {
   public Transaction updateTransactionStatus(Transaction transaction) throws RuntimeException {
     if ( SafetyUtil.isEmpty(transaction.getExternalInvoiceId()) ) return transaction;
 
+    BankAccount srcBankAccount = (BankAccount)transaction.findSourceAccount(this.x);
+    if ( null == srcBankAccount ) throw new RuntimeException("Invalid source bank account " + transaction.getId());
+    User payer = srcBankAccount.findOwner(x);
+    if ( payer == null ) throw new RuntimeException("Source user not found: " + srcBankAccount.getOwner());
+
     SearchBoleto request = new SearchBoleto();
     request.setNrBoleto(transaction.getExternalInvoiceId());
     try {
-      SearchBoletoResponse response = exchangeClient.searchBoleto(request);
+      SearchBoletoResponse response = exchangeClient.searchBoleto(request, payer.getSpid());
       if ( response == null || response.getSearchBoletoResult() == null )
         throw new RuntimeException("Unable to get a valid response from Exchange while calling SearchBoletoResponse");
 
@@ -564,12 +579,15 @@ public class ExchangeServiceProvider implements ExchangeService {
     }
   }
 
-  public List searchNatureCode(String natureCode) throws RuntimeException {
+  public List searchNatureCode(long userId, String natureCode) throws RuntimeException {
+    User user = (User) ((DAO) this.x.get("localUserDAO")).find(userId);
+    if ( user == null ) throw new RuntimeException("User not found: " + userId);
+
     List<Natureza> natureCodes = new ArrayList<>();
     SearchNatureza request  = new SearchNatureza();
     request.setCD_NATUREZA(natureCode);
     try {
-      SearchNaturezaResponse response = exchangeClient.searchNatureza(request);
+      SearchNaturezaResponse response = exchangeClient.searchNatureza(request, user.getSpid());
       if ( response == null || response.getSearchNaturezaResult() == null )
         throw new RuntimeException("Unable to get a valid response from Exchange while calling searchNatureza");
 
