@@ -1239,6 +1239,7 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/ExternalInvoiceTokenTest' },
   { name: 'net/nanopay/invoice/AuthenticatedInvoiceDAOTest' },
   { name: 'net/nanopay/invoice/test/invoiceHistoryAuthorizerTest' },
+  { name: 'net/nanopay/invoice/test/SigningOfficerInvoiceApprovalTest_v2' },
   { name: 'net/nanopay/invoice/model/InvoiceTest' },
   { name: 'net/nanopay/test/TestsReporter' },
   { name: 'net/nanopay/test/TestReport' },
@@ -1978,7 +1979,7 @@ FOAM_FILES([
   //SWIFT
   { name: 'net/nanopay/swift/SCHEMA' },
   { name: 'net/nanopay/swift/Properties' },
-  
+
   { name: 'net/nanopay/swift/AbstractMT' },
   { name: 'net/nanopay/swift/MT103' },
   { name: 'net/nanopay/swift/MT205' }
