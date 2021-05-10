@@ -297,7 +297,7 @@ foam.CLASS({
                   .startContext({ onBack: self.onBack })
                     .tag(self.BACK, {
                       buttonStyle: foam.u2.ButtonStyle.LINK,
-                      icon: 'images/back-icon.svg',
+                      themeIcon: 'back',
                       label: self.backLabel
                     })
                   .endContext()
@@ -316,15 +316,15 @@ foam.CLASS({
                     .startContext({ data: self })
                       .tag(self.EDIT, {
                         buttonStyle: foam.u2.ButtonStyle.LINK,
-                        icon: 'images/edit-icon.svg'
+                        themeIcon: 'edit'
                       })
                       .tag(self.COPY, {
                         buttonStyle: foam.u2.ButtonStyle.LINK,
-                        icon: 'images/copy-icon.svg'
+                        themeIcon: 'copy'
                       })
                       .tag(self.DELETE, {
                         buttonStyle: foam.u2.ButtonStyle.LINK,
-                        icon: 'images/delete-icon.svg'
+                        themeIcon: 'trash'
                       })
                     .endContext()
                   .end()
