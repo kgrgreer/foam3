@@ -32,7 +32,7 @@ import static foam.mlang.MLang.*;
 
 public class RbcGenerateFileCron implements ContextAgent {
   String spid;
-  long eftLimit = 100000000;
+  long eftLimit = 1000000;
   boolean createDebits = true;
   boolean createCredits = true;
 
