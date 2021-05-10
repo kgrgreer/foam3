@@ -75,7 +75,7 @@ foam.CLASS({
               return '';
             colPath.push( axiom.label || foam.String.labelize(axiom.name) );
             if ( i == propNames.length -1 ) {
-              colLabel = axiom.tableHeader();
+              colLabel = axiom.columnLabel;
             }
             cls = axiom.of;
           } 
@@ -88,7 +88,7 @@ foam.CLASS({
             else {
               axiom = cls.getAxiomByName(propName.name);
               if ( axiom )
-                colPath.push(axiom.tableHeader());
+                colPath.push(axiom.columnLabel);
               else
                 colPath.push('-');
             }

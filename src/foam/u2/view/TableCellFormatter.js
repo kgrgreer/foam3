@@ -55,12 +55,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'tableHeader',
-      value: function() {
-        return this.columnLabel;
-      }
-    },
-    {
       class: 'foam.u2.view.TableCellFormatter',
       name: 'tableCellFormatter',
       factory: function() {
@@ -95,7 +89,7 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'tableHeader',
+      name: 'columnLabel',
       value: function() {
         return this.label || foam.String.labelize(this.name);
       }
