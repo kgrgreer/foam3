@@ -367,7 +367,6 @@ public class ExchangeServiceProvider
     dadosBoleto.setPLATBMF(exchangeClientValues.getPLATBMF());
     dadosBoleto.setRSISB(exchangeClientValues.getRSISB());
     dadosBoleto.setSEGMENTO(dadosBoleto.getSEGMENTO());
-    dadosBoleto.setTIPO(exchangeClientValues.getTIPO());
     dadosBoleto.setTIPOCT("");
     dadosBoleto.setTPADTO("%");
 
@@ -382,6 +381,14 @@ public class ExchangeServiceProvider
     if ( natureza != null && natureza.size() > 0 ) {
       dadosBoleto.setCLAUSULA01(natureza.get(0).getCpClausula1());
     }
+
+
+    if ( natureCode != null ) {
+      NatureCode nCode = (NatureCode) ((DAO) getX().get("natureCodeDAO"))
+        .find(EQ(NatureCode.OPERATION_TYPE, natureCode.substring(0, Math.min(natureCode.length(), 5))));
+      dadosBoleto.setTIPO(nCode == null ? dadosBoleto.getTIPO() : nCode.getTipo());
+    }
+
     dadosBoleto.setOBSERVACAO("");
     dadosBoleto.setPAGADOR(getName(receiver));
     dadosBoleto.setPAGADORC("/" + bankAccount.getIban());
