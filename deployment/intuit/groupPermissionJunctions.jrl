@@ -119,7 +119,6 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support"
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"menu.read.transactions-fee-summary"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"menu.read.users-support"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"menu.read.credits-support"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"menu.read.refundtickets-support"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support","targetId":"creditsummarytransactionlineitem.read.*"})
 
 
