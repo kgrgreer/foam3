@@ -39,6 +39,10 @@ p({
   "lifecycleState":1
 })
 
+// REVIEW: Condition for checking destinationAccount should not be needed as it
+// 1. would require change when opening more corridors for bepay
+// 2. would prevent configure bepay and bpp corridors differently
+// 3. should be controlled via permissions
 p({
   "class":"net.nanopay.country.br.tx.PartnerTransactionPlanner",
   "id":"3556a7fa-e0b1-4c7a-b625-6eb901e73a87",

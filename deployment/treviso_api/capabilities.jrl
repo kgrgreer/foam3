@@ -44,8 +44,7 @@ p({
   name: "Enable trevisoAPI Fees",
   enabled: true,
   permissionsGranted: [
-    "rule.read.63a792b6-d46b-4d48-afa3-42481645ed46",
-    "rule.read.c6729717-1da2-4cb5-b8c4-53f5830223f6"
+    "rule.read.63a792b6-d46b-4d48-afa3-42481645ed46"
   ]
 })
 
