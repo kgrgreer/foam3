@@ -316,15 +316,18 @@ foam.CLASS({
                     .startContext({ data: self })
                       .tag(self.EDIT, {
                         buttonStyle: foam.u2.ButtonStyle.LINK,
-                        themeIcon: 'edit'
+                        themeIcon: 'edit',
+                        icon: 'images/edit-icon.svg'
                       })
                       .tag(self.COPY, {
                         buttonStyle: foam.u2.ButtonStyle.LINK,
-                        themeIcon: 'copy'
+                        themeIcon: 'copy',
+                        icon: 'images/copy-icon.svg'
                       })
                       .tag(self.DELETE, {
                         buttonStyle: foam.u2.ButtonStyle.LINK,
-                        themeIcon: 'trash'
+                        themeIcon: 'trash',
+                        icon: 'images/delete-icon.svg'
                       })
                     .endContext()
                   .end()
