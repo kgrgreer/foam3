@@ -32,7 +32,7 @@
     ^ {
       overflow: auto;
       padding-bottom: 20px;
-      max-height: 100%;
+      height: 100%;
     }
     ^table {
       position: relative;
