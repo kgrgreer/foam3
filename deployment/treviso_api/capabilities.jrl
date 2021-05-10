@@ -1,53 +1,58 @@
+// TREVISO API spid
 p({
   class:"foam.nanos.auth.ServiceProvider",
-  id:"bepay",
+  id:"trevisoAPI",
+  description:"trevisoAPI spid",
   enabled:true,
-  description:"bepay spid",
   permissionsGranted: [
     "language.read.*"
   ]
 })
+
 p({
   class: "foam.nanos.crunch.Capability",
-  id: "bepayCorridorCapability",
+  id: "trevisoAPIPlannerCapability",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.d34ff33f-7d1e-43e9-beba-8069cf5f6546",
+    "rule.read.3556a7fa-e0b1-4c7a-b625-6eb901e73a87",
+    "rule.read.deb8f125-b74a-4178-8ffe-45fc45df407b",
+    "rule.read.51897c99-30bc-4148-950e-a54860c2b487"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoAPICorridorCapability",
   version: "0",
   enabled: true,
   permissionsGranted: [
     "paymentprovidercorridor.read.afex",
-    "paymentprovidercorridor.read.bepay",
-    "paymentprovidercorridor.source.read.bepay",
-    "paymentprovidercorridor.target.read.bepay"
-  ]
-})
-p({
-  class: "foam.nanos.crunch.Capability",
-  id: "bepayPlannerCapability",
-  enabled: true,
-  permissionsGranted: [
-    "rule.read.119fa381-d2a2-4369-b242-1dc8e2163bb9-bepay",
-    "rule.read.2fdd7d35-6704-47dc-9f0e-9419e0aa74ed",
-    "rule.read.77480e3b-fc7e-400c-bee6-dda5a22b982a",
-    "rule.read.f2c694e4-ca5c-4fc7-bbf0-747f8aa794db"
+    "paymentprovidercorridor.read.trevisoapi",
+    "paymentprovidercorridor.source.read.trevisoapi",
+    "paymentprovidercorridor.target.read.paymentprovidercorridor.trevisoapi.br-us",
+    "paymentprovidercorridor.target.read.paymentprovidercorridor.trevisoapi.br-ca",
+    "paymentprovidercorridor.target.read.paymentprovidercorridor.trevisoapi.br-gb",
+    "paymentprovidercorridor.target.read.paymentprovidercorridor.trevisoapi.br-pt"
   ]
 })
 
 // Fees
 p({
   class: "foam.nanos.crunch.Capability",
-  id: "bepay-tx-fees",
-  name: "Enable BePay Fees",
+  id: "trevisoAPI-tx-fees",
+  name: "Enable trevisoAPI Fees",
   enabled: true,
   permissionsGranted: [
-    "rule.read.454df571-f639-4506-8d59-98b4f39934e4-bepay",
-    "rule.read.9e7661a6-610b-47ad-b521-96b9c760fb16-bepay"
+    "rule.read.63a792b6-d46b-4d48-afa3-42481645ed46"
   ]
 })
 
 // Reason codes
 p({
   class:"foam.nanos.crunch.Capability",
-  id:"bepay-tx-reason-codes",
-  name:"Enable BePay reason codes",
+  id:"trevisoAPI-tx-reason-codes",
+  name:"Enable trevisoAPI reason codes",
   permissionsGranted:[
     "naturecode.read.naturecode.br.funds-abroad",
     "naturecode.read.naturecode.br.resident-maintenance"
@@ -57,10 +62,10 @@ p({
 // PaymentProviderCorridors
 p({
   class:"net.nanopay.payment.PaymentProviderCorridor",
-  id:"paymentprovidercorridor.bepay.br-us",
-  name:"BR-USD Corridor - BePay",
+  id:"paymentprovidercorridor.trevisoapi.br-us",
+  name:"BR-USD Corridor - TrevisoAPI",
   ranking:1,
-  provider:"BePay",
+  provider:"TrevisoAPI",
   sourceCountry:"BR",
   targetCountry:"US",
   sourceCurrencies:["BRL"],
@@ -70,10 +75,10 @@ p({
 })
 p({
   class:"net.nanopay.payment.PaymentProviderCorridor",
-  id:"paymentprovidercorridor.bepay.br-ca",
-  name:"BR-CAD Corridor - BePay",
+  id:"paymentprovidercorridor.trevisoapi.br-ca",
+  name:"BR-CAD Corridor - TrevisoAPI",
   ranking:1,
-  provider:"BePay",
+  provider:"TrevisoAPI",
   sourceCountry:"BR",
   targetCountry:"CA",
   sourceCurrencies:["BRL"],
@@ -83,10 +88,10 @@ p({
 })
 p({
   class:"net.nanopay.payment.PaymentProviderCorridor",
-  id:"paymentprovidercorridor.bepay.br-gb",
-  name:"BR-GBP Corridor - BePay",
+  id:"paymentprovidercorridor.trevisoapi.br-gb",
+  name:"BR-GBP Corridor - TrevisoAPI",
   ranking:1,
-  provider:"BePay",
+  provider:"TrevisoAPI",
   sourceCountry:"BR",
   targetCountry:"GB",
   sourceCurrencies:["BRL"],
@@ -96,10 +101,10 @@ p({
 })
 p({
   class:"net.nanopay.payment.PaymentProviderCorridor",
-  id:"paymentprovidercorridor.bepay.br-pt",
-  name:"BR-EUR Corridor - BePay",
+  id:"paymentprovidercorridor.trevisoapi.br-pt",
+  name:"BR-EUR Corridor - TrevisoAPI",
   ranking:1,
-  provider:"BePay",
+  provider:"TrevisoAPI",
   sourceCountry:"BR",
   targetCountry:"PT",
   sourceCurrencies:["BRL"],
@@ -107,3 +112,5 @@ p({
   enabled:true,
   "visibilityPredicate": { class: "foam.mlang.predicate.True" }
 })
+
+

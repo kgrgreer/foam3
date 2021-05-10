@@ -68,3 +68,33 @@ p({
   sourceId: "crunch.onboarding.br.registering-payment-provider",
   targetId: "AFEX",
 })
+
+// Prerequisites for "BR Personal International Payments"
+// user details
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
+  targetId:"crunch.onboarding.user-details",
+  priority:1
+})
+// cpf number
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
+  targetId:"crunch.onboarding.br.cpf",
+  priority:2
+})
+// AFEX Terms and Conditions
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
+  targetId:"crunch.onboarding.document.afex.third-party-terms-and-conditions",
+  priority:4
+})
+
+// cpf - date of issue
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"crunch.onboarding.br.cpf",
+  targetId:"crunch.onboarding.document.br.date-of-issue"
+})

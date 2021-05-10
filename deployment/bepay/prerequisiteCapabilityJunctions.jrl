@@ -4,33 +4,3 @@ p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bepay",targe
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bepay",targetId:"bepayPlannerCapability"})
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bepay",targetId:"bepay-tx-reason-codes"})
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bepay",targetId:"bepay-tx-fees"})
-
-// Prerequisites for "BePay Personal International Payments"
-// user details
-p({
-  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
-  targetId:"crunch.onboarding.user-details",
-  priority:1
-})
-// cpf number
-p({
-  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
-  targetId:"crunch.onboarding.bepay.cpf",
-  priority:2
-})
-// AFEX Terms and Conditions
-p({
-  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
-  targetId:"crunch.onboarding.document.afex.third-party-terms-and-conditions",
-  priority:4
-})
-
-// cpf - date of issue
-p({
-  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"crunch.onboarding.bepay.cpf",
-  targetId:"crunch.onboarding.document.bepay.date-of-issue"
-})
