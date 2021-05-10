@@ -86,17 +86,11 @@ foam.CLASS({
     {
       name: 'toString',
       code: function() {
-        return `${this.PAYER_TYPE.label}: ${this.payerType} 
-          ${this.APPROVAL_TYPE.label}: ${this.approvalType} 
-          ${this.PAYEE_TYPE.label}: ${this.payeeType} 
-          ${this.GROUP_CODE.label}: ${this.groupCode}
+        return `${this.payerType} ${this.approvalType} ${this.payeeType} ${this.groupCode}
         `;
       },
       javaCode: `
-        return PAYER_TYPE.getName() + ": " + getPayerType() + 
-               APPROVAL_TYPE.getName() + ": " + getApprovalType() + 
-               PAYEE_TYPE.getName() + ": " + getPayeeType() + 
-               GROUP_CODE.getName() + ": " + getGroupCode();
+        return getPayerType() + " " + getApprovalType() + " " + getPayeeType() + " " + getGroupCode();
       `
     },
     {
