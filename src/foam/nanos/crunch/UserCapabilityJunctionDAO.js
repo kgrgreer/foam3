@@ -81,7 +81,7 @@ foam.CLASS({
       User realUser = (User) subject.getRealUser();
 
       AuthService auth = (AuthService) x.get("auth");
-      if ( auth.check(x, "*") ) return getDelegate();
+      if ( auth.check(x, "service.userCapabilityJunctionDAO.admin") ) return getDelegate();
       return getDelegate().where(
         OR(
           EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),

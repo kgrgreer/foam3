@@ -475,6 +475,7 @@ FOAM_FILES([
   { name: "foam/nanos/crunch/CapabilityCapabilityJunctionRefine" },
   { name: "foam/nanos/crunch/CapabilityCategoryCapabilityJunctionRefine" },
   { name: "foam/nanos/crunch/RenewableData" },
+  { name: "foam/nanos/crunch/UCJProperty" },
   { name: "foam/nanos/crunch/connection/CapabilityPayload" },
   { name: "foam/nanos/crunch/connection/GrantPathNode" },
   //daos
