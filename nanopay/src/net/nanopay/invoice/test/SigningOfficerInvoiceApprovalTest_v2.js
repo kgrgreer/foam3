@@ -19,8 +19,8 @@ foam.CLASS({
   package: 'net.nanopay.invoice.test',
   name: 'SigningOfficerInvoiceApprovalTest_v2',
   extends: 'foam.nanos.test.Test',
+
   javaImports: [
-    'foam.nanos.crunch.test.CrunchTestSupport',
     'foam.nanos.auth.User',
     'static foam.mlang.MLang.*',
     'foam.dao.DAO',
@@ -43,7 +43,16 @@ foam.CLASS({
     'foam.core.RequiredBooleanHolder',
     'foam.util.Auth',
     'foam.core.X',
-    'foam.nanos.session.Session'
+    'foam.nanos.session.Session',
+    'net.nanopay.model.Business',
+    'net.nanopay.country.br.CPF',
+    'net.nanopay.crunch.document.DateOfIssue',
+    'net.nanopay.crunch.document.Document',
+    'net.nanopay.crunch.onboardingModels.UserBirthDateData',
+    'net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso',
+    'java.util.Calendar',
+    'java.util.GregorianCalendar'
+
   ],
 
   properties: [
@@ -63,18 +72,19 @@ foam.CLASS({
       javaCode: `
         // Create user
         DAO groupDAO = (DAO) x.get("groupDAO");
-        Group group = (Group) groupDAO.find("treviso-sme");
-        CrunchTestSupport crunchTestSupport = new CrunchTestSupport();
         User user = createUser(x, "vasya", "password", "treviso-sme");
         user = (User) ((DAO) x.get("localUserDAO")).put(user);
-
+        // General admission
         crunch_onboarding_treviso_general_admission_test(x, user);
 
+        // Business registration
         X adminContext = Auth.sudo(x, user);
-//        Session sessionAdmin = adminContext.get(Session.class);
-//        sessionAdmin.setAgentId(user.getId());
-//        adminContext = sessionAdmin.applyTo(adminContext);
         crunch_onboarding_register_business_test(adminContext, user);
+
+        // Signing officer
+        crunch_onboarding_signing_officer_information_test(x, user);
+        int a = 8;
+
       `
     },
     {
@@ -118,7 +128,7 @@ foam.CLASS({
             .setGroup(group)
             .setEmailVerified(true)
             .setPhoneNumber("9055551212")
-            .setBirthday(new Date(1970, 01, 01))
+            .setBirthday(new GregorianCalendar(1970, Calendar.JANUARY, 01).getTime())
             .setAddress( new Address.Builder(x)
               .setStructured(true)
               .setCountryId("BR")
@@ -225,6 +235,24 @@ foam.CLASS({
             break;
           case "crunch.onboarding.register-business.submit":
             crunch_onboarding_register_business_submit(x, user);
+            break;
+          case "crunch.onboarding.br.cpf":
+            crunch_onboarding_br_cpf(x, user);
+            break;
+          case "crunch.onboarding.document.utility-bills":
+            crunch_onboarding_document_utility_bills(x, user);
+            break;
+          case "crunch.onboarding.document.date-of-issue":
+            crunch_onboarding_document_date_of_issue(x, user);
+            break;
+          case "crunch.onboarding.document.identification":
+            crunch_onboarding_document_identification(x, user);
+            break;
+          case "crunch.onboarding.user-birth-date":
+            crunch_onboarding_user_birth_date(x, user);
+            break;
+          case "crunch.onboarding.signing-officer-information":
+            crunch_onboarding_signing_officer_information(x, user);
             break;
         }
       `
@@ -419,7 +447,7 @@ foam.CLASS({
         grantAll(x, id, user);
         UserCapabilityJunction ucj = ((ServerCrunchService) x.get("crunchService")).getJunction(x, "crunch.onboarding.treviso.general-admission");
 
-        test(ucj.getStatus() == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, id);
+        test(ucj.getStatus() == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, id + " granted");
       `
     },
     {
@@ -458,8 +486,7 @@ foam.CLASS({
                                           .setMailingAddress(address)
                                           .build();
 
-          UserCapabilityJunction ucjj = crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
-          int a = 8;
+          crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
         }
       `
     },
@@ -482,7 +509,206 @@ foam.CLASS({
         grantAll(x, id, user);
         UserCapabilityJunction ucj = ((ServerCrunchService) x.get("crunchService")).getJunction(x, id);
 
-        test(ucj.getStatus() == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, "crunch.onboarding.register-business capability granted");
+//        test(ucj.getStatus() == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, "crunch.onboarding.register-business capability granted");
+      `
+    },
+    {
+      name: 'crunch_onboarding_signing_officer_information_test',
+      type: 'Void',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'user',
+          type: 'foam.nanos.auth.User'
+        }
+      ],
+      javaCode:`
+        String id = "crunch.onboarding.signing-officer-information";
+
+        grantAll(x, id, user);
+        UserCapabilityJunction ucj = ((ServerCrunchService) x.get("crunchService")).getJunction(x, id);
+
+        test(ucj.getStatus() == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, id + "capability granted");
+      `
+    },
+    {
+      name: 'crunch_onboarding_br_cpf',
+      type: 'Void',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'user',
+          type: 'foam.nanos.auth.User'
+        }
+      ],
+      javaCode: `
+        String id = "crunch.onboarding.br.cpf";
+        CrunchService crunchService = (ServerCrunchService) x.get("crunchService");
+        UserCapabilityJunction ucj = crunchService.getJunction(x, id);
+
+        if ( ucj.getStatus() != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          CPF cap = new CPF.Builder(x)
+                          .setBirthday(new GregorianCalendar(1970, Calendar.JANUARY, 01).getTime())
+                          .setData("10786348070")
+                          .setCpfName("Mock Legal User")
+                          .setVerifyName(true)
+                          .setUser(user.getId())
+                          .build();
+
+          crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        }
+      `
+    },
+    {
+      name: 'crunch_onboarding_document_utility_bills',
+      type: 'Void',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'user',
+          type: 'foam.nanos.auth.User'
+        }
+      ],
+      javaCode: `
+        String id = "crunch.onboarding.document.utility-bills";
+        CrunchService crunchService = (ServerCrunchService) x.get("crunchService");
+        UserCapabilityJunction ucj = crunchService.getJunction(x, id);
+
+        if ( ucj.getStatus() != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          Date today = new Date();
+          Date date = new Date(today.getTime() + (1000 * 60 * 60 * 24 * 5));
+          Document cap = new Document.Builder(x)
+                          .setIsRequired(false)
+                          .setExpiry(date)
+                          .build();
+
+          crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        }
+      `
+    },
+    {
+      name: 'crunch_onboarding_document_date_of_issue',
+      type: 'Void',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'user',
+          type: 'foam.nanos.auth.User'
+        }
+      ],
+      javaCode: `
+        String id = "crunch.onboarding.document.date-of-issue";
+        CrunchService crunchService = (ServerCrunchService) x.get("crunchService");
+        UserCapabilityJunction ucj = crunchService.getJunction(x, id);
+
+        if ( ucj.getStatus() != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          Date today = new Date();
+          Date date = new Date(today.getTime() - (1000 * 60 * 60 * 24 * 5));
+          DateOfIssue cap = new DateOfIssue.Builder(x)
+                          .setDateOfIssue(date)
+                          .build();
+
+          crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        }
+      `
+    },
+    {
+      name: 'crunch_onboarding_document_identification',
+      type: 'Void',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'user',
+          type: 'foam.nanos.auth.User'
+        }
+      ],
+      javaCode: `
+        String id = "crunch.onboarding.document.identification";
+        CrunchService crunchService = (ServerCrunchService) x.get("crunchService");
+        UserCapabilityJunction ucj = crunchService.getJunction(x, id);
+
+        if ( ucj.getStatus() != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          Document cap = new Document.Builder(x)
+                          .setReviewed(true)
+                          .setIsRequired(false)
+                          .build();
+
+          crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        }
+      `
+    },
+    {
+      name: 'crunch_onboarding_user_birth_date',
+      type: 'Void',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'user',
+          type: 'foam.nanos.auth.User'
+        }
+      ],
+      javaCode: `
+        String id = "crunch.onboarding.user-birth-date";
+        CrunchService crunchService = (ServerCrunchService) x.get("crunchService");
+        UserCapabilityJunction ucj = crunchService.getJunction(x, id);
+
+        if ( ucj.getStatus() != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          UserBirthDateData cap = new UserBirthDateData.Builder(x)
+                          .setBirthday(user.getBirthday())
+                          .build();
+
+          crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        }
+      `
+    },
+    {
+      name: 'crunch_onboarding_signing_officer_information',
+      type: 'Void',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'user',
+          type: 'foam.nanos.auth.User'
+        }
+      ],
+      javaCode: `
+        String id = "crunch.onboarding.signing-officer-information";
+        CrunchService crunchService = (ServerCrunchService) x.get("crunchService");
+        UserCapabilityJunction ucj = crunchService.getJunction(x, id);
+
+        if ( ucj.getStatus() != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          SigningOfficerPersonalDataTreviso cap = new SigningOfficerPersonalDataTreviso.Builder(x)
+                          .setAddress(user.getAddress())
+                          .setJobTitle("Treasury Manager")
+                          .setPhoneNumber(user.getPhoneNumber())
+                          .setFatca(true)
+                          .setHasSignedContratosDeCambio(true)
+                          .setBusinessId(user.getId() + 1)
+                          .build();
+
+          crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        }
       `
     }
   ]
