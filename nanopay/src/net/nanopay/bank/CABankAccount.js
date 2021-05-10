@@ -179,8 +179,8 @@ foam.CLASS({
       javaGetter: `
         StringBuilder iban = new StringBuilder();
         iban.append(getInstitutionNumber());
-        iban.append(getAccountNumber());
         iban.append(getBranchId());
+        iban.append(getAccountNumber());
         return iban.toString();
       `
     },
