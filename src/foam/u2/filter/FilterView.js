@@ -511,6 +511,6 @@ foam.CLASS({
           dao$: this.dao$
         }));
       }
-    },
+    }
   ]
 });
