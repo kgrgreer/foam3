@@ -89,10 +89,9 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'String',
       name: 'columnLabel',
-      value: function() {
-        return this.label || foam.String.labelize(this.name);
-      }
+      expression: function(label) { return label; }
     }
   ]
 });
