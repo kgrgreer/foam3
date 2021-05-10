@@ -437,7 +437,7 @@ foam.CLASS({
             self.start(this.HTMLView, { data: x }).attrs({ role: 'presentation' }).style(iconStyle).end();
           });
         } else {
-          this.start('img').style(iconStyle).attrs({ 'src': this.icon$, role: 'presentation' }).end();
+          this.start('img').style(iconStyle).attrs({ src: this.icon$, role: 'presentation' }).end();
         }
       } else if ( this.iconFontName ) {
         this.nodeName = 'i';
