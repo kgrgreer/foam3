@@ -40,6 +40,9 @@ p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",t
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.onboarding"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.onboarding.*"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.operation.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.bankaccounts"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.integration"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.transactions"})
 
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-ops","targetId":"service.creditCodeDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-ops","targetId":"service.accountDAO"})

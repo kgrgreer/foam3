@@ -60,6 +60,15 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'toSummary',
+      type: 'String',
+      code: function() {
+        return this.findRoot(this.__subContext__).then(obj => {
+          return obj ? obj.toSummary() : this.toSummary();
+        });
+      }
+    },
+    {
       documentation: `return true when status change is such that normal (forward) Transfers should be executed (applied)`,
       name: 'canTransfer',
       args: [

@@ -40,10 +40,6 @@ foam.CLASS({
       hidden: true
     },
     {
-      name: 'reversable',
-      hidden: true
-    },
-    {
       name: 'note',
       hidden: true
     },

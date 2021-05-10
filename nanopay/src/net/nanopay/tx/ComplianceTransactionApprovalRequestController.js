@@ -145,9 +145,8 @@
         enableDynamicTableHeight: true,
         editColumnsEnabled: false,
         columns: [
-          'id',
-          'assignedTo',
-          'paymentId',
+          'referenceSummary',
+          'assignedTo.legalName',
           'createdFor',
           'status',
           'memo'

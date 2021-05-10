@@ -53,10 +53,14 @@ public class IntuitReconciliationReportGenerator extends RBCReconciliationReport
   protected String vendorRevenueAccount;
   protected String nanopayRevenueAccount;
 
-  public IntuitReconciliationReportGenerator(String spid, String vendorRevenueAccount, String nanopayRevenueAccount) {
-    super(spid);
+  public IntuitReconciliationReportGenerator(String spid, boolean cached, String vendorRevenueAccount, String nanopayRevenueAccount) {
+    super(spid, cached);
     this.vendorRevenueAccount = vendorRevenueAccount;
     this.nanopayRevenueAccount = nanopayRevenueAccount;
+  }
+
+  public IntuitReconciliationReportGenerator(String spid, String vendorRevenueAccount, String nanopayRevenueAccount) {
+    this(spid, true, vendorRevenueAccount, nanopayRevenueAccount);
   }
 
   @Override

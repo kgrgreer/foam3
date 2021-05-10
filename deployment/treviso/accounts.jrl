@@ -1,6 +1,7 @@
 p({"class":"net.nanopay.bank.USBankAccount","branchId":"111111111","accountNumber":"3333333","branch":44,"name":"Treviso USD Bank","status":1,"id":"6ceee60f-94f7-4e8e-a97e-5e9e211e2727","isDefault":true,"created":"2020-04-28T17:20:41.561Z","createdBy":101,"lastModified":"2020-04-28T17:20:41.561Z","lastModifiedBy":101,"lifecycleState":1,"owner":2001,"enabled":true})
 p({"class":"net.nanopay.bank.GBBankAccount","branchId":"111111111","accountNumber":"3333333","branch":44,"name":"Treviso GBP Bank","status":1,"id":"b586e165-fe56-48e4-b249-8977b5718952","isDefault":true,"created":"2020-04-28T17:20:41.561Z","createdBy":101,"lastModified":"2020-04-28T17:20:41.561Z","lastModifiedBy":101,"lifecycleState":1,"owner":2001,"enabled":true,"denomination":"GBP"})
 p({"class":"net.nanopay.bank.EUBankAccount","branchId":"111111111","accountNumber":"3333333","branch":44,"name":"Treviso EUR Bank","status":1,"id":"e0b91985-fef0-4b07-a197-a5a0585604fa","isDefault":true,"created":"2020-04-28T17:20:41.561Z","createdBy":101,"lastModified":"2020-04-28T17:20:41.561Z","lastModifiedBy":101,"lifecycleState":1,"owner":2001,"enabled":true,"denomination":"EUR","country":"DE"})
+p({"class":"net.nanopay.bank.CABankAccount","branchId":"111111111","accountNumber":"3333333","branch":44,"name":"Treviso CAD Bank","status":1,"id":"e61b7131-d60a-4c6c-8f18-36f4ba3edf59","isDefault":true,"created":"2020-04-28T17:20:41.561Z","createdBy":101,"lastModified":"2020-04-28T17:20:41.561Z","lastModifiedBy":101,"lifecycleState":1,"owner":2001,"enabled":true})
 
 // Treviso Fee Account
 p({

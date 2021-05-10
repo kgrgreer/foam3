@@ -23,8 +23,12 @@ foam.CLASS({
     'foam.nanos.auth.CreatedAwareMixin'
   ],
 
+  implements: [
+    'foam.nanos.auth.ServiceProviderAware'
+  ],
+
   imports: [
-    'currencyDAO'
+    'currencyDAO',
   ],
 
   searchColumns: [
@@ -259,6 +263,22 @@ foam.CLASS({
     {
       name: 'revenuePaymentDate',
       class: 'DateTime'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'findSpid',
+      documentation: `Using Relationship findFoo(x), traverse relationships,
+        returning the spid or context users spid matches the current object.`,
+      type: 'foam.nanos.auth.ServiceProvider',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      javaCode: `return (foam.nanos.auth.ServiceProvider)((foam.dao.DAO) x.get("serviceProviderDAO")).find_(x, (Object) getSpid());`
     }
   ]
 })

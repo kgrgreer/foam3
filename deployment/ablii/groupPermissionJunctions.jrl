@@ -26,6 +26,9 @@ p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"ablii-fraud-ops",ta
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"ablii-fraud-ops",targetId:"menu.read.operation.*"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"ablii-fraud-ops",targetId:"menu.read.report.abliibusinessreport"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"ablii-fraud-ops",targetId:"service.abliiBusinessReportDAO"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"ablii-fraud-ops",targetId:"menu.read.bankaccounts"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"ablii-fraud-ops",targetId:"menu.read.integration"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"ablii-fraud-ops",targetId:"menu.read.transactions"})
 
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"ablii-payment-ops",targetId:"afexbeneficiary.update.*"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"ablii-payment-ops",targetId:"afexuser.update.*"})
