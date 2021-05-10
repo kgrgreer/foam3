@@ -551,7 +551,7 @@ foam.CLASS({
 
       const invoiceNode = document.querySelector('.full-invoice').cloneNode(deep=true);
 
-      // allows invoice children nodes to use InvoiceOverview css
+      // allows InvoiceOverview css to be applied to invoice and its childeren nodes
       invoiceNode.classList.add('net-nanopay-sme-ui-InvoiceOverview');
 
       // add app logo to invoice details
