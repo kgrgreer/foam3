@@ -19,6 +19,10 @@ foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
   name: 'InitialBusinessData',
 
+  implements: [
+    'foam.core.Validatable'
+  ],
+
   requires: [
     'foam.nanos.auth.Address',
     'net.nanopay.model.Business'
@@ -53,7 +57,8 @@ foam.CLASS({
     { name: 'QUEBEC_NOT_SUPPORTED_ERROR', message: 'This application does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.' },
     { name: 'INVALID_ADDRESS_ERROR', message: 'Invalid address' },
     { name: 'SAME_AS_BUSINESS_ADDRESS_LABEL', message: 'Mailing address is same as business address' },
-    { name: 'INVALID_FAX_ERROR', message: 'Valid fax number required' }
+    { name: 'INVALID_FAX_ERROR', message: 'Valid fax number required' },
+    { name: 'NOT_SUBMITTED', message: 'Business registration needs to be submitted before being valid' }
   ],
 
   properties: [
@@ -61,6 +66,11 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.model.Business',
       name: 'businessId',
+      visibility: 'HIDDEN'
+    },
+    {
+      class: 'Boolean',
+      name: 'submitted',
       visibility: 'HIDDEN'
     },
     {
@@ -196,5 +206,18 @@ foam.CLASS({
         }
       ]
     })
+  ],
+
+  methods: [
+    {
+      name: 'validate',
+      javaCode: `
+        // Initial Business Data will not be fully validated and granted until user
+        // explicitly submits the client side wizardlet form.
+        if ( ! getSubmitted() ) {
+          throw new IllegalStateException(NOT_SUBMITTED);
+        }
+      `
+    }
   ]
 });

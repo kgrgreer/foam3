@@ -2812,7 +2812,6 @@ put("554af38a-8225-87c8-dfdf-eeb15f71215e-18","crunch.onboarding.general-admissi
 put("242B00F8-C775-4899-AEBA-F287EC54E901","crunch.onboarding.treviso.general-admission");
 put("554af38a-8225-87c8-dfdf-eeb15f71215e-19","crunch.onboarding.user-registration");
 put("554af38a-8225-87c8-dfdf-eeb15f71215f-76","crunch.onboarding.register-business");
-put("554af38a-8225-87c8-dfdf-eeb15f71215f-76.submit","crunch.onboarding.register-business.submit");
 put("520a4120-3bc6-cef9-6635-c32af8219a6a","payment.source.country.br");
 put("63049307-8db4-2437-5c02-b71d6878263c","payment.target.country.br");
 put("688cb7c6-7316-4bbf-8483-fb79f8fdeaaf","crunch.onboarding.br.business-identification");

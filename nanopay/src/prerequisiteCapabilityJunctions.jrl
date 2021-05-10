@@ -423,13 +423,6 @@ p({
   "targetId":"crunch.onboarding.register-business",
   "priority":2
 })
-// Submit button
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"crunch.onboarding.register-business",
-  "targetId":"crunch.onboarding.register-business.submit",
-  "priority":3
-})
 
 // Prerequisites for apiDomesticPayments
 p({
