@@ -70,7 +70,7 @@ foam.CLASS({
 
     /* Unstyled */
     ^unstyled {
-      background-color: none;
+      background: none;
       border: none;
       color: inherit;
     }
@@ -143,7 +143,7 @@ foam.CLASS({
     ^secondary-destructive {
       background-color: white;
       border: 1px solid /*%GREY3%*/ #B2B6BD;
-      color: /*%DESTRUCTIVE2%*/ #d9170e;
+      color: /*%DESTRUCTIVE2%*/ #a61414;
     }
 
     ^secondary-destructive:hover {
@@ -188,7 +188,7 @@ foam.CLASS({
     ^tertiary-destructive {
       background-color: transparent;
       border-color: transparent;
-      color: /*%DESTRUCTIVE5%*/ #5E6061;
+      color: /*%DESTRUCTIVE2%*/ #a61414;
     }
 
     ^tertiary-destructive:hover:not(:disabled) {
@@ -417,7 +417,7 @@ foam.CLASS({
       }
 
       if ( this.label ) {
-        if ( this.buttonStyle == this.buttonStyle.LINK ) {
+        if ( this.buttonStyle == 'LINK' || this.buttonStyle == 'UNSTYLED' ) {
           this.start('p').add(this.label$).end();
         } else {
           this.start('h6').add(this.label$).end();

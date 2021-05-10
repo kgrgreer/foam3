@@ -326,14 +326,11 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.TopLevelCapabi
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.EMail.EMAIL_REQUIRED",target:"Endereço de email necessário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.EMail.VALID_EMAIL_REQUIRED",target:"Endereço de email válido necessário"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.FilterView.LABEL_CLEAR",target:"Limpe o filtro"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.FilterView.LINK_ADVANCED",target:"Filtros avançados"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.FilterView.LINK_SIMPLE",target:"Filtros simples"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.FilterView.LABEL_FILTER",target:"Filtros"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.FilterView.LABEL_RESULTS",target:"Resultados do filtro"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.FilterView.MESSAGE_ADVANCEDMODE",target:"Usando filtros avançados"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.FilterView.MESSAGE_VIEWADVANCED",target:"Usando filtros simples"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.properties.BooleanFilterView.BOOL_T.label",target:"Verdadeiro"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.properties.BooleanFilterView.BOOL_F.label",target:"Falso"})
@@ -817,3 +814,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.MemoModal.OK.label",targ
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.MemoModal.CANCEL.label",target:"Cancelar"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.MemoModal.NOTE_REQUIRED",target:"Forneça uma nota (obrigatório)"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.MemoModal.NOTE_OPTIONAL",target:"Forneça uma nota (opcional)"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.FilterView.CLEAR_ALL.label",target:"Limpe o filtro"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.FilterView.OPEN_ADVANCED.label",target:"Usando filtros simples"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.FilterView.TOGGLE_DRAWER.label",target:"Filtros"})

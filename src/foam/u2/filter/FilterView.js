@@ -104,11 +104,6 @@ foam.CLASS({
       align-items: center;
     }
 
-    ^handle-title {
-      flex: 1;
-      margin: 0;
-      text-align: center;
-    }
 
     ^container-handle:hover {
       cursor: pointer;
@@ -184,13 +179,10 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'LABEL_FILTER', message: 'Filters'},
     { name: 'LABEL_RESULTS', message: 'Filter results: '},
-    { name: 'LABEL_CLEAR', message: 'Clear filters'},
     { name: 'LINK_ADVANCED', message: 'Advanced filters'},
     { name: 'LINK_SIMPLE', message: 'Switch to simple filters'},
     { name: 'MESSAGE_ADVANCEDMODE', message: 'Advanced filters are currently being used.'},
-    { name: 'MESSAGE_VIEWADVANCED', message: 'View filters'},
     { name: 'LABEL_SEARCH', message: 'Search'},
     { name: 'SELECTED', message: 'selected'},
   ],
@@ -323,8 +315,9 @@ foam.CLASS({
           e.onDetach(self.filterController);
           e.start().addClass(self.myClass('container-search'))
             .start().addClass(self.myClass('container-handle'))
-              .on('click', self.toggleDrawer)
-              .start('p').addClass(self.myClass('handle-title')).add(self.LABEL_FILTER).end()
+            .startContext({ data: self })
+              .tag(self.TOGGLE_DRAWER, { buttonStyle: 'UNSTYLED'})
+            .endContext()
             .end()
             .start()
               .add(self.generalSearchField)
@@ -374,16 +367,21 @@ foam.CLASS({
                   .start('p')
                     .show(self.filterController$.dot('isAdvanced'))
                     .addClass(self.myClass('message-view'))
-                    .on('click', self.openAdvanced)
-                    .add(self.MESSAGE_VIEWADVANCED)
+                    .startContext({ data: self })
+                      .tag(self.OPEN_ADVANCED, { buttonStyle: 'TERTIARY' })
+                    .endContext()
                   .end()
                 .end()
                 .start('p')
                   .hide(self.filterController$.dot('isAdvanced'))
                   .addClass(self.myClass('link-mode'))
                   .addClass('clear')
-                  .on('click', self.clearAll)
-                  .add(self.LABEL_CLEAR)
+                  .startContext({ data: self })
+                    .tag(self.CLEAR_ALL, {
+                      isDestructive: true,
+                      buttonStyle: 'TERTIARY'                  
+                    })
+                  .endContext()
                 .end()
 
             .end()
@@ -428,21 +426,6 @@ foam.CLASS({
 
   listeners: [
     {
-      name: 'toggleDrawer',
-      code: function() {
-        this.isOpen = ! this.isOpen;
-      }
-    },
-    {
-      name: 'clearAll',
-      code: function() {
-        // clear all filters
-        if ( this.filterController.isAdvanced ) return;
-        this.filterController.clearAll();
-        this.generalSearchField.view.data = '';
-      }
-    },
-    {
       name: 'toggleMode',
       code: function() {
         if ( this.filterController.isAdvanced ) {
@@ -452,15 +435,6 @@ foam.CLASS({
         }
         this.filterController.switchToPreview();
         this.openAdvanced();
-      }
-    },
-    {
-      name: 'openAdvanced',
-      code: function() {
-        this.add(this.Popup.create().tag({
-          class: 'foam.u2.filter.advanced.AdvancedFilterView',
-          dao$: this.dao$
-        }));
       }
     },
     {
@@ -508,5 +482,35 @@ foam.CLASS({
       }
       return counter;
     }
+  ],
+  
+  actions: [
+    {
+      name: 'clearAll',
+      label: 'Clear all',
+      code: function() {
+        // clear all filters
+        if ( this.filterController.isAdvanced ) return;
+        this.filterController.clearAll();
+        this.generalSearchField.view.data = '';
+      }
+    },
+    {
+      name: 'toggleDrawer',
+      label: 'Filters',
+      code: function() {
+        this.isOpen = ! this.isOpen;
+      }
+    },
+    {
+      name: 'openAdvanced',
+      label: 'View filters',
+      code: function() {
+        this.add(this.Popup.create().tag({
+          class: 'foam.u2.filter.advanced.AdvancedFilterView',
+          dao$: this.dao$
+        }));
+      }
+    },
   ]
 });
