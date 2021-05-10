@@ -21,7 +21,7 @@ p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.import-goods-anticipated", priority: 17 })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.import-goods-anticipated", targetId:"naturecode.br.minmax.import-goods-anticipated", priority: 17 })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods-anticipated", targetId:"crunch.onboarding.document.br.sales-statement" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods-anticipated", targetId:"crunch.onboarding.document.br.bill-of-landing" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods-anticipated", targetId:"crunch.onboarding.document.br.signed-commercial-invoice" })
 
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.juridic-services", priority: 17 })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.juridic-services", targetId:"naturecode.br.minmax.juridic-services", priority: 17 })
