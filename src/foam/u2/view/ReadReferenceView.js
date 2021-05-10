@@ -29,7 +29,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'auth',
+    'auth?',
     'ctrl',
     'stack'
   ],
@@ -81,6 +81,7 @@ foam.CLASS({
   ],
   listeners: [
     function permissionEnableLinkCheck() {
+      if ( ! this.auth ) return;
       let permission = `${this.prop.of.id}.${this.prop.name}.disableRefLink`;
       this.auth.check(this.__subContext__, permission).then( check => {
         this.enableLink = ! check;
