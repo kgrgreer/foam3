@@ -3,3 +3,4 @@ r({
   "class":"net.nanopay.invoice.SigningOfficerInvoiceApprovalTest",
   "id":"SigningOfficerInvoiceApprovalTest",
 })
+p({"class":"net.nanopay.invoice.test.SigningOfficerInvoiceApprovalTest_v2", "id":"SigningOfficerInvoiceApprovalTest_v2"})
