@@ -382,10 +382,11 @@ public class ExchangeServiceProvider
       dadosBoleto.setCLAUSULA01(natureza.get(0).getCpClausula1());
     }
 
+
     if ( natureCode != null ) {
       NatureCode nCode = (NatureCode) ((DAO) getX().get("natureCodeDAO"))
         .find(EQ(NatureCode.OPERATION_TYPE, natureCode.substring(0, Math.min(natureCode.length(), 5))));
-      dadosBoleto.setTIPO(nCode.getTipo());
+      dadosBoleto.setTIPO(nCode == null ? dadosBoleto.getTIPO() : nCode.getTipo());
     }
 
     dadosBoleto.setOBSERVACAO("");
