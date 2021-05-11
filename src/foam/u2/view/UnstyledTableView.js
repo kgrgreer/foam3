@@ -265,8 +265,7 @@ foam.CLASS({
         // but if such an action is called from TableView we stay on the TableView screen
         return foam.nanos.approval.NoBackStack.create({delegate: this.stack});
       },
-    },
-    'currentMemento_'
+    }
   ],
 
   methods: [
@@ -317,8 +316,6 @@ foam.CLASS({
 
     async function initE() {
       var view = this;
-
-      this.currentMemento_ = null;
 
       this.columns$.sub(this.updateColumns_);
       this.of$.sub(this.updateColumns_);
