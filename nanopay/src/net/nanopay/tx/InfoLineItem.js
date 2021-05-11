@@ -38,15 +38,18 @@ foam.CLASS({
   {
     name: 'group',
     class: 'String',
-    visibility: 'HIDDEN'
+    visibility: 'HIDDEN',
+    transient: true
   },
   {
     name: 'sourceAccount',
-    visibility: 'HIDDEN'
+    visibility: 'HIDDEN',
+    transient: true
   },
   {
     name: 'destinationAccount',
-    visibility: 'HIDDEN'
+    visibility: 'HIDDEN',
+    transient: true
   },
   {
     documentation: 'By default, show Transaction Line Item class name - to distinguish sub-classes.',
@@ -73,20 +76,19 @@ foam.CLASS({
   },
   {
     visibility: 'HIDDEN',
-    name: 'type'
+    name: 'type',
+    transient: true
   },
   {
     name: 'amount',
     class: 'UnitValue',
-    visibility: 'HIDDEN'
+    visibility: 'HIDDEN',
+    transient: true
   },
   {
     name: 'currency',
-    visibility: 'HIDDEN'
-  },
-  {
-    name: 'reversable',
     visibility: 'HIDDEN',
+    transient: true
   },
   {
     name: 'transaction',

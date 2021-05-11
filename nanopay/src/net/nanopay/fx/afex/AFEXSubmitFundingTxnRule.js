@@ -49,21 +49,18 @@ foam.CLASS({
           AFEXFundingTransaction transaction = (AFEXFundingTransaction) obj;
           AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
 
-          AFEXBeneficiary afexBeneficiary = afexService.getAFEXBeneficiary(x, transaction.findDestinationAccount(x).getOwner(), transaction.findDestinationAccount(x).getOwner(),true);
-          if ( afexBeneficiary == null ) {
-            try {
-              afexBeneficiary = afexService.createInstantBeneficiary(x,transaction);
-              transaction.getTransactionEvents(x).put_(x, new TransactionEvent("Instant beneficiary created."));
-            } catch (Throwable t) {
-              String msg = "Error creating instant beneficiary " + transaction.getId();
-              logger.error(msg, t);
-              Notification notification = new Notification.Builder(x)
-                .setTemplate("NOC")
-                .setBody(msg + " " + t.getMessage())
-                .build();
-              ((DAO) x.get("localNotificationDAO")).put(notification);
-              return;
-            }
+          try {
+            AFEXBeneficiary afexBeneficiary = afexService.createInstantBeneficiary(x,transaction);
+            transaction.getTransactionEvents(x).put_(x, new TransactionEvent("Instant beneficiary created."));
+          } catch (Throwable t) {
+            String msg = "Error creating instant beneficiary " + transaction.getId();
+            logger.error(msg, t);
+            Notification notification = new Notification.Builder(x)
+              .setTemplate("NOC")
+              .setBody(msg + " " + t.getMessage())
+              .build();
+            ((DAO) x.get("localNotificationDAO")).put(notification);
+            return;
           }
 
           try {

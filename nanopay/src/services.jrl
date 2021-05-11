@@ -2585,3 +2585,38 @@ p({
     }
   """
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "complianceTransactionApprovalRequestDAO",
+  "serve": true,
+  "description": "filtered DAO for Transaction Approval Requests",
+  "serviceScript":
+  """
+    // TODO: enum predicate does not work here
+    foam.mlang.predicate.Predicate predicate = foam.mlang.MLang.EQ(net.nanopay.tx.TransactionApprovalRequest.DAO_KEY, "transactionDAO");
+
+    dao = x.get("approvalRequestDAO").where(predicate);
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setInnerDAO(dao)
+      .setEnableInterfaceDecorators(false)
+      .setOf(net.nanopay.tx.TransactionApprovalRequest.getOwnClassInfo())
+      .build();
+  """,
+  "client":
+  """
+  {
+    "cache": false,
+    "of": "net.nanopay.tx.TransactionApprovalRequest",
+    "decorators": [
+      {
+        "class":"foam.nanos.fs.FileDAODecorator"
+      },
+      {
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
+      }
+    ]
+  }
+  """
+})

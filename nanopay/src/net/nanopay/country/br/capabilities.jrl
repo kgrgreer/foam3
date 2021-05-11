@@ -132,7 +132,7 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"crunch.onboarding.document.br.courier-voucher",
-  "name":"Courier voucher",
+  "name":"Currier Voucher or Mail",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
   "version":"0",
@@ -182,7 +182,7 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"crunch.onboarding.document.br.import-declaration",
-  "name":"Import Declaration",
+  "name":"Import License",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
   "version":"0",
@@ -355,8 +355,7 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"crunch.onboarding.document.br.simplified-export-declaration",
-  "name":"Simplified export declaration (DSE)",
-  "description":"Provide simplified export declaration / DSE (Declaração Simplificada de Exportação)",
+  "name":"Import Declaration",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
   "version":"0",
@@ -377,7 +376,7 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"crunch.onboarding.document.br.sales-statement",
-  "name":"Sales statement for the period",
+  "name":"Standard document, form or financial statement",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
   "version":"0",
@@ -397,7 +396,7 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"crunch.onboarding.document.br.signed-commercial-invoice",
-  "name":"Signed Commercial Invoice",
+  "name":"Commercial Invoice",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
   "version":"0",

@@ -8,6 +8,9 @@ p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"cb-admin",targetId:
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"cb-admin",targetId:"group.read.cb-support"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"cb-fraud-ops",targetId:"group.update.cb-fraud-ops"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"cb-fraud-ops",targetId:"group.update.cb-payment-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"cb-fraud-ops",targetId:"menu.read.bankaccounts"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"cb-fraud-ops",targetId:"menu.read.integration"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"cb-fraud-ops",targetId:"menu.read.transactions"})
 
 r({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"menu.read.dashboard-backoffice"})
 r({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"menu.read.dashboard-backoffice.*"})

@@ -45,6 +45,7 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Review Remittance Details' },
     { name: 'POST_TITLE', message: 'Remittance Details' },
+    { name: 'PAYMENT_TITLE', message: 'Payment Details' },
     { name: 'PRE_TITLE', message: 'Review Remittance Details' },
     { name: 'AMOUNT', message: 'Amount' },
     { name: 'AMOUNT_IN', message: 'Amount in' },
@@ -221,7 +222,7 @@ foam.CLASS({
           .end()
           .br()
         .end()
-        .start('h3').add(this.data.toSummary()).end()
+        .start('h3').add(this.PAYMENT_TITLE).end()
         .br()
         .start(this.Cols)
           .add(this.AMOUNT)
