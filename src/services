@@ -765,7 +765,7 @@ p({
   "serve": false,
   "serviceScript":
   """
-    return new foam.dao.EasyDAO.Builder(x)
+    dao =  new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.core.Currency.getOwnClassInfo())
       .setName("currency")
       .setPm(true)
@@ -774,6 +774,9 @@ p({
       .setJournalName("currencies")
       .setIndex(new foam.core.PropertyInfo[] {foam.core.Currency.COUNTRY})
       .build();
+
+    return new foam.core.DynamicCurrencyDAO(x, dao);
+
   """
 })
 

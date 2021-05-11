@@ -870,6 +870,7 @@ var classes = [
   //Unit
   'foam.core.Unit',
   'foam.core.Currency',
+  'foam.core.DynamicCurrencyDAO',
   // Strategy
   'foam.strategy.StrategyReference',
   'foam.strategy.StrategizerService',
