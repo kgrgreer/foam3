@@ -9,7 +9,7 @@
   name: 'UCJApprovableValidateAction',
 
   documentation: `
-    Handles calling validate on a UCJ approvable
+    Handles calling the Validatable.validate(X) on a UCJ approvable
   `,
 
   javaImports: [
@@ -47,7 +47,7 @@
                 objectWithDiff.setProperty(propNameString,propsToUpdate.get(propNameString));
               }
 
-              // validate object with diff
+              // validate the diff'd object so that the validators can update properties
               UserCapabilityJunction ucjWithDiff = (UserCapabilityJunction) objectWithDiff;
               ucjWithDiff.getData().validate(x);
 
