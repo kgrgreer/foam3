@@ -22,10 +22,10 @@ import foam.core.Detachable;
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.AbstractSink;
-import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.nanos.auth.CreatedAware;
+import foam.nanos.auth.LastModifiedAware;
 import net.nanopay.fx.afex.AFEXTransaction;
-import net.nanopay.partner.treviso.tx.TrevisoTransaction;
 import net.nanopay.reporting.ReconciliationReportGenerator;
 import net.nanopay.tx.FeeSummaryTransactionLineItem;
 import net.nanopay.tx.HistoricStatus;
@@ -38,11 +38,12 @@ import javax.annotation.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static foam.mlang.MLang.*;
 
 public class PartnerTransactionReportGenerator extends ReconciliationReportGenerator {
-  protected Map<String, String> afexMap = new HashMap<>();
+  protected ConcurrentHashMap<String, String> afexMap = new ConcurrentHashMap<>();
 
   @Override
   public PartnerReport generate(X x, @Nonnull FObject src, @Nullable FObject dst) {
@@ -114,6 +115,20 @@ public class PartnerTransactionReportGenerator extends ReconciliationReportGener
       if ( lineItem instanceof FeeSummaryTransactionLineItem ) return lineItem;
     }
     return null;
+  }
+
+  @Override
+  protected FObject getCachedElement(X x, Object elementId, Object src) throws IllegalArgumentException {
+    if ( ! (src instanceof LastModifiedAware) ) throw new IllegalArgumentException("src model must be LastModifiedAware");
+    var tx = (Transaction) src;
+
+    if ( cacheMap.get(elementId) == null ) return null;
+    var cached = (CreatedAware) cacheMap.get(elementId);
+    if ( cached.getCreated() == null || cached.getCreated().before(getAFEXTransaction(x, tx).getLastModified()) || cached.getCreated().before(tx.getLastModified()) ) {
+      cacheMap.remove(elementId);
+    return null;
+    }
+    return (FObject) cached;
   }
 
   PartnerTransactionReportGenerator(String spid, boolean cached) {
