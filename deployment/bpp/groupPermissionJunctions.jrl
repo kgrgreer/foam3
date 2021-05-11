@@ -26,3 +26,8 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bpp-support","t
 
 // Allow bpp fraud-ops to see alarm menu
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bpp-fraud-ops","targetId":"menu.read.admin.alarm"})
+
+// See Menus - moved off parent
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-fraud-ops",targetId:"menu.read.bankaccounts"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-fraud-ops",targetId:"menu.read.integration"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-fraud-ops",targetId:"menu.read.transactions"})

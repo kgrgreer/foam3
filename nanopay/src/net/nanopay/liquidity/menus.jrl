@@ -131,15 +131,6 @@ p({
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
-      "defaultColumns": [
-        "classification",
-        "operation",
-        "createdFor",
-        "approver.legalName",
-        "assignedTo.legalName",
-        "status",
-        "lastModified"
-      ],
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "approvalRequestDAO",
       "browseTitle": "Approval Requests",
