@@ -156,12 +156,12 @@ foam.CLASS({
     .foam-flow-Document h3,
     .foam-flow-Document h4,
     .foam-flow-Document h5 {
-      margin: 12px 0 0 0;
+      margin: 12px 0 12px 0;
       color: #292e31;
     }
     .foam-flow-Document p {
-      margin-bottom: 0;
-      margin-top: 20px;
+      margin-bottom: 10px;
+      margin-top: 10px;
     }
     .foam-flow-Document .code {
       background-color: black;
