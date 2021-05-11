@@ -75,7 +75,7 @@ foam.CLASS({
       StringPStream ps = new StringPStream();
       ps.setString((String) id);
       getCurrencyGrammar().parse(ps, parserX, "markup");
-      return getDelegate().find(id);
+      return getDelegate().find_(x, id);
       `
     },
     {
