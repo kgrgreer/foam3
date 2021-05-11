@@ -119,19 +119,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'crunch_onboarding_register_business_submit',
-      code: async function(x, user) {
-        var id = 'crunch.onboarding.register-business.submit';
-        var ucj = await this.crunchService.getJunction(x, id);
-        // note: !ucj not needed (anywhere)
-        if ( ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          let bHolder = foam.core.RequiredBooleanHolder.create({ value: true });
-          ucj = await this.crunchService.updateJunction(x, id, bHolder, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
-        }
-        return ucj;
-      }
-    },
-    {
       name: 'crunch_onboarding_document_utility_bills',
       code: async function(x, user) {
         // UtilityBill - Signing Officer.

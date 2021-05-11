@@ -187,15 +187,6 @@ ucjBR.setData(br);
 
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBR);
 
-ucjBR = new UserCapabilityJunction();
-ucjBR.setSourceId(myAdmin.getId());
-ucjBR.setTargetId("crunch.onboarding.register-business.submit");
-ucjBR.setData(new BooleanHolder.Builder(myAdminContext)
-  .setValue(true)
-  .build());
-
-userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBR);
-
 // Get MyBusiness
 ArraySink sink = (foam.dao.ArraySink) agentJunctionDAO.where(foam.mlang.MLang.EQ(UserUserJunction.SOURCE_ID, myAdmin.getId())).select(new foam.dao.ArraySink());
 UserUserJunction agentJunction = (UserUserJunction) sink.getArray().get(0);
