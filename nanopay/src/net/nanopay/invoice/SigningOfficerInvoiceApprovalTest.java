@@ -1,6 +1,5 @@
 package net.nanopay.invoice;
 
-import foam.core.RequiredBooleanHolder;
 import foam.dao.*;
 
 import foam.mlang.predicate.Predicate;
@@ -115,39 +114,16 @@ externalBusiness.setSpid("test");
 externalBusiness = (Business) localBusinessDAO.put(externalBusiness);
 
 // Setup Admin User
-User myAdmin =
-  new User.Builder(x)
-    .setSpid("treviso")
-    .setEmail("email@admin123.com")
-    .setUserName("Admin123")
-    .setFirstName("Admin123")
-    .setLastName("Admin123")
-    .setDesiredPassword("password123!")
-    .setGroup("treviso-sme")
-    .setEmailVerified(true)
-    .setPhoneNumber("9055551212")
-    .setBirthday(new Date(1970, 01, 01))
-    .setAddress( new Address.Builder(x)
-      .setStructured(true)
-      .setCountryId("BR")
-      .setRegionId("BR-SP")
-      .setStreetNumber("1")
-      .setStreetName("Grand")
-      .setCity("Sao Paulo")
-      .setPostalCode("01310000")
-      .build()
-    ).build();
+User myAdmin = new User();
+myAdmin.setUserName("Admin123");
+myAdmin.setEmail("email@admin123.com");
+myAdmin.setDesiredPassword("password123!");
+myAdmin.setGroup("test-sme");
+myAdmin.setOrganization("testBusiness");
+myAdmin.setSpid("test");
 
-//  new User();
-//myAdmin.setUserName("Admin123");
-//myAdmin.setEmail("email@admin123.com");
-//myAdmin.setDesiredPassword("password123!");
-//myAdmin.setGroup("treviso-sme");
-//myAdmin.setSpid("treviso");
-//myAdmin.setOrganization("testBusiness");
-//
-//myAdmin = (User)  smeUserRegistrationDAO.put(myAdmin);
-//myAdmin.setEmailVerified(true);
+myAdmin = (User)  smeUserRegistrationDAO.put(myAdmin);
+myAdmin.setEmailVerified(true);
 myAdmin = (User) localUserDAO.put(myAdmin);
 
 // nanopay admission : crunch.onboarding.general-admission
@@ -214,7 +190,7 @@ userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBR);
 ucjBR = new UserCapabilityJunction();
 ucjBR.setSourceId(myAdmin.getId());
 ucjBR.setTargetId("crunch.onboarding.register-business.submit");
-ucjBR.setData(new RequiredBooleanHolder.Builder(myAdminContext)
+ucjBR.setData(new BooleanHolder.Builder(myAdminContext)
   .setValue(true)
   .build());
 

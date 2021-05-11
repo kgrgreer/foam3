@@ -183,7 +183,6 @@ foam.CLASS({
             });
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
         }
-        debugger;
         return ucj;
       }
     },
