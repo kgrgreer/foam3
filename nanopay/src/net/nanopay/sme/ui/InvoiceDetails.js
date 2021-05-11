@@ -599,9 +599,9 @@ foam.CLASS({
       try {
         window.scrollTo(0,0);
 
-        const invoiceNodeClone = this.createInvoice4PDF();
+        const invoice4pdf = this.createInvoice4PDF();
 
-        html2pdf().from(invoiceNodeClone).set({
+        html2pdf().from(invoice4pdf).set({
           margin: [0, 30],
           filename: `invoice-${this.invoice.referenceId}.pdf`,
           pagebreak: { mode: 'avoid-all', before: '.right-block' }
