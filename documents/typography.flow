@@ -1,11 +1,11 @@
 <title> hello </title>
 
-<h2>Typography</h2>
+<h2 class="h200">Typography</h2>
 
-<h4>Design System link</h4>
+<h4 class="h400">Design System link</h4>
 <p> most up-to-date designs and styles can be found<a href="https://www.figma.com/file/vpoMa8gzuLauauRWeMCLwS/Core-Design-System?node-id=1%3A77" target="_blank"> here </a></p>
 
-<h4>Font stack</h4>
+<h4 class="h400">Font stack</h4>
 
 <div style="background: #F5F7FA; display: grid; grid-gap:24px 12px; grid-template: inherit;">
 <h1 class="h100">H1 Main Title</h1>
@@ -23,10 +23,10 @@
 <p class="p-legal">Paragraph - Legal text</p>
 </div>
 
-<h3>Usage</h3>
+<h3 class="h300">Usage</h3>
 
-<h5>Design</h5>
-<p> All style definitions can be found in <a href="https://github.com/kgrgreer/foam3/blob/development/src/foam/nanos/controller/AppStyles.js">foam3/src/foam/nanos/controller/AppStyles.js</a></p>
+<h5 class="h500">Design</h5>
+<p class="p"> All style definitions can be found in <a href="https://github.com/kgrgreer/foam3/blob/development/src/foam/nanos/controller/AppStyles.js">foam3/src/foam/nanos/controller/AppStyles.js</a></p>
 <table>
   <tr>
     <th>Font Type(CSS Class Name)</th>
@@ -82,7 +82,7 @@
   </tr>
 </table>
 
-<h5>Code</h5>
-<p>Make sure there is sufficient margins and padding around these elements </p>
+<h5 class="h500">Code</h5>
+<p class="p">Make sure there is sufficient margins and padding around these elements </p>
 <code>this.start().addClass('h100').add(someText).end()</code>
 
