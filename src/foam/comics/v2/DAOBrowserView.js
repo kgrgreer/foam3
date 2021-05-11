@@ -35,30 +35,7 @@ foam.CLASS({
 
   css: `
     ^export {
-      background-image: linear-gradient(to bottom, #ffffff, #e7eaec);
-      border: 1px solid /*%GREY3%*/ #CBCFD4;
       margin-left: 16px;
-    }
-
-    ^export:hover {
-      border: 1px solid /*%BLACK%*/ #1E1F21;
-    }
-
-    ^export:focus:not(:hover) {
-      border: 1px solid /*%GREY3%*/ #CBCFD4;
-    }
-
-    ^refresh {
-      background-image: linear-gradient(to bottom, #ffffff, #e7eaec);
-      border: 1px solid /*%GREY3%*/ #CBCFD4;
-    }
-
-    ^refresh:hover {
-      border: 1px solid /*%BLACK%*/ #1E1F21;
-    }
-
-    ^refresh:focus:not(:hover) {
-      border: 1px solid /*%GREY3%*/ #CBCFD4;
     }
 
     ^export img {
@@ -119,7 +96,7 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'REFRESH_MSG', message: 'Refresh Requested ... ' }
+    { name: 'REFRESH_MSG', message: 'Refresh Requested... ' }
   ],
 
   imports: [
@@ -244,7 +221,7 @@ foam.CLASS({
       code: function(X) {
         this.config.dao.cmd_(X, foam.dao.CachingDAO.PURGE);
         this.config.dao.cmd_(X, foam.dao.AbstractDAO.RESET_CMD);
-        this.ctrl.notify(this.REFRESH_MSG, '', this.LogLevel.INFO, true);
+        this.ctrl.notify(this.REFRESH_MSG, '', this.LogLevel.INFO, true, '/images/Progress.svg');
       }
     },
     {

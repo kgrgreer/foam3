@@ -164,16 +164,16 @@ foam.CLASS({
                   .end()
                   .callIf( ! config.detailView, function() {
                     this.startContext({ data: self })
-                      .tag(self.CREATE, { label: config$createTitle })
+                      .tag(self.CREATE, { label: config$createTitle, buttonStyle: foam.u2.ButtonStyle.PRIMARY })
                     .endContext()
                   })
                   .callIf( config.createControllerView, function() {
                     this.startContext({ data: self })
-                      .tag(self.CREATE, { label: config$createControllerView.view.title })
+                      .tag(self.CREATE, { label: config$createControllerView.view.title, buttonStyle: foam.u2.ButtonStyle.PRIMARY })
                     .endContext()
                   })
                   .callIf( config$primaryAction, function() {
-                    this.startContext({ data: self }).tag(config$primaryAction, { size: 'LARGE' }).endContext();
+                    this.startContext({ data: self }).tag(config$primaryAction, { size: 'LARGE', buttonStyle: 'PRIMARY' }).endContext();
                   })
                 .end()
                 .callIf(config$browseSubtitle.length > 0, function() {

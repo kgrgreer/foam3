@@ -178,6 +178,16 @@
       name: 'TRANSACTION_REQUEST',
       label: 'Transaction Approval Request',
       ordinal: 33
+    },
+    {
+      name: 'TRANSACTION_LIMIT_EXCEEDED',
+      label: 'Transaction Limit Exceeded',
+      ordinal: 34
+    },
+    {
+      name: 'NATURE_CODE_DOCUMENT_APPROVAL',
+      label: 'Nature Code Document Approval',
+      ordinal: 35
     }
   ]
 });
