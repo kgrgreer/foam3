@@ -20,6 +20,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView'
   ],
@@ -47,7 +48,7 @@ foam.CLASS({
           data: this.localStack,
           showActions: false
         }));
-        
+
       var ucj = (
         await this.userCapabilityJunctionDAO.where(this.data).select()
       ).array[0];
@@ -56,9 +57,11 @@ foam.CLASS({
         stack: this.localStack,
         subject: subject
       });
+      
       this.crunchController.createWizardSequence(ucj.targetId, x)
         .reconfigure('LoadCapabilitiesAgent', {
-          subject: subject
+          subject: subject,
+          waoSetting: this.LoadCapabilitiesAgent.WAOSetting.APPROVAL
         })
         .reconfigure('ConfigureFlowAgent', {
           popupMode: false
