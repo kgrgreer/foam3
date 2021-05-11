@@ -491,16 +491,6 @@ p({
 })
 
 p({
-  id: "crunch.onboarding.register-business.submit",
-  name: "Submit Business Information",
-  wizardlet: {
-    class: "foam.u2.wizard.SubmitWizardlet"
-  },
-  of: "foam.core.RequiredBooleanHolder",
-  associatedEntity: 1
-})
-
-p({
   class:"net.nanopay.payment.CountryCapability",
   id:"payment.source.country.br",
   country:"BR",

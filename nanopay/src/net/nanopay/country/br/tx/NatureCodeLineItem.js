@@ -118,12 +118,6 @@ foam.CLASS({
       transient: true
     },
     {
-      name: 'reversable',
-      createVisibility: 'HIDDEN',
-      readVisibility: 'HIDDEN',
-      transient: true
-    },
-    {
       name: 'requiresUserInput',
       value: true
     },

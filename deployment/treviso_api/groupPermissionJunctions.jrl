@@ -1,0 +1,33 @@
+// From MSP setup
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"trevisoAPI-admin",targetId:"group.update.trevisoAPI-admin"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"trevisoAPI-admin",targetId:"group.update.trevisoAPI-fraud-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"trevisoAPI-admin",targetId:"group.update.trevisoAPI-payment-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"trevisoAPI-admin",targetId:"group.update.trevisoAPI-support"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"trevisoAPI-admin",targetId:"group.read.trevisoAPI-admin"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"trevisoAPI-admin",targetId:"group.read.trevisoAPI-fraud-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"trevisoAPI-admin",targetId:"group.read.trevisoAPI-payment-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"trevisoAPI-admin",targetId:"group.read.trevisoAPI-support"})
+
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"trevisoAPI-fraud-ops",targetId:"group.update.trevisoAPI-fraud-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"trevisoAPI-fraud-ops",targetId:"group.update.trevisoAPI-payment-ops"})
+
+// permissions to create session and user on trevisoAPI-sme group
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"trevisoAPI-api-session",targetId:"serviceprovider.read.trevisoAPI"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"trevisoAPI-api-session",targetId:"service.run.dig"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"trevisoAPI-api-session",targetId:"group.read.trevisoAPI-sme"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"trevisoAPI-api-session",targetId:"group.update.trevisoAPI-sme"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"trevisoAPI-api-session",targetId:"service.run.sugar"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"trevisoAPI-api-session",targetId:"service.sessionService"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"trevisoAPI-api-session",targetId:"session.create.trevisoAPI"})
+
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"trevisoAPI-api-session","targetId":"service.afexBeneficiaryDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"trevisoAPI-api-session","targetId":"afexbeneficiary.read.*"})
+
+// Allow trevisoAPI fraud-ops to see alarm menu
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"trevisoAPI-fraud-ops","targetId":"menu.read.admin.alarm"})
+
+// Switch user menus
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"trevisoAPI-api-session","targetId":"menu.read.switch-user"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"trevisoAPI-fraud-ops","targetId":"menu.read.switch-user"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"trevisoAPI-payment-ops","targetId":"menu.read.switch-user"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"trevisoAPI-support","targetId":"menu.read.switch-user"})

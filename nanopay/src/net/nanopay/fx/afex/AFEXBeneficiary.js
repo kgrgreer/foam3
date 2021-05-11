@@ -68,7 +68,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'status',
-      documentation: 'Beneficiary status on AFEX system.'
+      documentation: 'Beneficiary status on AFEX system.',
+      tableCellFormatter: function(val) {
+        this.translate(val, val);
+      }
     },
     {
       class: 'DateTime',

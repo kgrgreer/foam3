@@ -744,3 +744,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Completed",target:"Concluído"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Administrative activities and complementary services",target:"Atividades administrativas e serviços complementares"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"International organizations and other extraterritorial institutions",target:"Organismos internacionais e outras instituições extraterritoriais"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Domestic services",target:"Serviços domésticos"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"Signing officer",target:"Oficial de assinatura"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"assigned to",target:"atribuído a"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"revoked from",target:"revogado de"})
+

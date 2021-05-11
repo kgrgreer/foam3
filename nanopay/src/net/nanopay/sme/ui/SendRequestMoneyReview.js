@@ -114,7 +114,7 @@ foam.CLASS({
               if ( ! txnQuote ) return;
               return this.E()
                 .start({
-                  class: 'net.nanopay.tx.SummaryTransactionCitationView',
+                  class: 'net.nanopay.tx.InvoiceSummaryTransactionCitationView',
                   data: txnQuote
                 });
             }))

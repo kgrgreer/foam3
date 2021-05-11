@@ -159,6 +159,7 @@ foam.CLASS({
     },
     {
       name: 'staySignIn',
+      buttonStyle: 'PRIMARY',
       label: 'Stay Signed in',
       code: async function (X) {
         clearInterval(this.timer);
