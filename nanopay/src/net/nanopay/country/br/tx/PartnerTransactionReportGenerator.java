@@ -131,11 +131,11 @@ public class PartnerTransactionReportGenerator extends ReconciliationReportGener
     return (FObject) cached;
   }
 
-  PartnerTransactionReportGenerator(String spid, boolean cached) {
+  public PartnerTransactionReportGenerator(String spid, boolean cached) {
     super(spid, cached);
   }
 
-  PartnerTransactionReportGenerator(String spid) {
+  public PartnerTransactionReportGenerator(String spid) {
     super(spid);
   }
 
