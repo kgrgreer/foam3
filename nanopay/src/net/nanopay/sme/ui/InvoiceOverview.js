@@ -635,7 +635,7 @@ foam.CLASS({
                 if ( ! relatedTransaction ) return;
                 return this.E()
                   .start({
-                    class: 'net.nanopay.tx.SummaryTransactionCitationView',
+                    class: 'net.nanopay.tx.InvoiceSummaryTransactionCitationView',
                     data: relatedTransaction,
                     processingDate: this.invoice.processingDate,
                     showTransactionDetail: true
