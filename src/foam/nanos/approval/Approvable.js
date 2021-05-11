@@ -108,14 +108,7 @@ foam.CLASS({
             ? `${modelString}: ${obj.toSummary()}`
             :  `(${modelString}:${this.objId}) UPDATE`
         });
-      },
-      javaCode: `
-        // TODO: update after crunch time
-        if ( foam.util.SafetyUtil.isEmpty(getDaoKey()) || getObjId() == null )
-          return "";
-        String modelString = getDaoKey().replace("local", "").replace("DAO", "");
-        return "(" + modelString + ":" + getObjId() + ") UPDATE";
-      `
+      }
     }
   ]
 });

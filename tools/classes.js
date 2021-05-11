@@ -900,6 +900,9 @@ var classes = [
   'foam.nanos.approval.ApprovalRequestAssignedToRule',
   'foam.nanos.approval.ApprovalRequestMemoRule',
   'foam.nanos.approval.ApprovalRequestClassificationEnum',
+  'foam.nanos.approval.CompositeApprovable',
+  'foam.nanos.approval.FulfilledCompositeApprovableRule',
+
 
   'foam.core.NumberSet',
 
