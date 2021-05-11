@@ -87,7 +87,7 @@ foam.CLASS({
     }
     .p-bold{
       font-style: normal;
-      font-weight: bold;
+      font-weight: 700;
       font-size: 14px;
       line-height: 24px;
       margin: 0;
