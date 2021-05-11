@@ -1,19 +1,19 @@
-<h2 id="receiptgeneration">Receipt Generation</h2>
-<h4 id="overview">Overview</h4>
+<h1 id="receiptgeneration">Receipt Generation</h1>
+<h2 id="overview">Overview</h2>
 <p>A key requirement to the security design of the nanopay system is that the transaction ledger should be immutable.
   This can be addressed be using digital signatures to sign the contents of the ledger. A transaction is considered
   committed if and only if it is part of the signed ledger. In order to solve this issue, transactions are added to the
   ledger in batches, the state of the ledger is then signed, and that signature is then written out to the ledger. The
   signature that is written out to the ledger is considered the receipt that the transaction has been committed.#</p>
-<h4 id="receiptgenerator">ReceiptGenerator</h4>
-<h4 id="overview-1">Overview</h4>
+<h2 id="receiptgenerator">ReceiptGenerator</h2>
+<h3 id="overview-1">Overview</h3>
 <p>ReceiptGenerator is an interface to be used in conjunction with the ReceiptGeneratingDAO. An implementation of the
   ReceiptGenerator must implement the following methods: add, build, and generate. The add method will add the FObject
   to the next block of receipts to be generated. The build method will take all of the FObject's in the receipt block
   and build a receipt for each one. The generate method will return a receipt object given an FObject. An FObject added
   to the ReceiptGenerator will be able to receive a receipt by calling generate after the build method has finished
   executing. The generate method should block until a receipt for a given object has been generated.</p>
-<h4 id="methods">Methods</h4>
+<h3 id="methods">Methods</h3>
 <dl>
   <dt>add</dt>
   <dd>Adds an FObject to the receipt generator. An FObject added here will be able to have a receipt generated for it
@@ -24,8 +24,8 @@
   <dt>generate</dt>
   <dd>Generates a receipt given an FObject.</dd>
 </dl>
-<h4 id="implementations">Implementations</h4>
-<h5 id="timebasedreceiptgenerator">TimeBasedReceiptGenerator</h5>
+<h3 id="implementations">Implementations</h3>
+<h4 id="timebasedreceiptgenerator">TimeBasedReceiptGenerator</h4>
 <h5 id="overview-2">Overview</h5>
 <p>TimeBasedReceiptGenerator is an implementation of ReceiptGenerator that generates receipts periodically given an
   interval (in ms).</p>
@@ -45,11 +45,11 @@
   .setAlias("Test")
   .build();
 </code>
-<h4 id="receiptgeneratingdao">ReceiptGeneratingDAO</h4>
-<h4 id="overview-3">Overview</h4>
+<h2 id="receiptgeneratingdao">ReceiptGeneratingDAO</h2>
+<h2 id="overview-3">Overview</h2>
 <p>The ReceiptGeneratingDAO creates receipts for every object that passes through the DAO. Every Receipt that is
   generated is stored in the receiptDAO.</p>
-<h4 id="usage-1">Usage</h4>
+<h2 id="usage-1">Usage</h2>
 <code>import net.nanopay.security.receipt.ReceiptGenerator;
   import net.nanopay.security.receipt.ReceiptGeneratingDAO;
   import net.nanopay.security.receipt.TimeBasedReceiptGenerator;
