@@ -151,21 +151,6 @@ foam.CLASS({
       font-weight: 500;
       -webkit-font-smoothing: antialiased;
     }
-    .foam-flow-Document h1 {
-      font-weight: 400;
-      font-size: 24px;
-      line-height: 32px;
-    }
-    .foam-flow-Document h2 {
-      font-weight: 500;
-      font-size: 18px;
-      line-height: 26px;
-    }
-    .foam-flow-Document h3 {
-      font-weight: 500;
-      font-size: 16px;
-      line-height: 22px;
-    }
     .foam-flow-Document h1,
     .foam-flow-Document h2,
     .foam-flow-Document h3,
