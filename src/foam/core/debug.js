@@ -142,11 +142,11 @@ foam.CLASS({
           var axiom = cls.getAxiomByName(name);
 
           foam.assert(
-              axiom,
-              'Unknown argument ', name, ' in ', pName, expression);
+            axiom,
+            'Unknown argument ', name, ' in ', pName, expression);
           foam.assert(
-              axiom.toSlot,
-              'Non-Slot argument ', name, ' in ', pName, expression);
+            axiom.toSlot,
+            'Non-Slot argument ', name, ' in ', pName, expression);
         }
       }
     }
