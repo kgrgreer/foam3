@@ -247,7 +247,7 @@ foam.CLASS({
       class: "String",
       name: 'accountSummary',
       expression: async function(subject,invoice$contactId) {
-        if( invoice$contactId ) return;
+        if( ! invoice$contactId ) return;
         var contact = await subject.user.contacts.find(invoice$contactId);
         var acc = await contact.accounts.find(contact.bankAccount);
         return acc.summary;
