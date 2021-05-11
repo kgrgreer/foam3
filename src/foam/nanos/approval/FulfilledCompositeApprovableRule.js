@@ -9,8 +9,8 @@
   name: 'FulfilledCompositeApprovableRule',
 
   documentation: `
-    A rule which will auto approve the sub approvables of the 
-    composite approvable
+    A rule which will cascade the CompositeApprovable's status to
+    it's sub approvables
   `,
 
   javaImports: [
@@ -21,7 +21,6 @@
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'foam.nanos.approval.Approvable',
-    'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.approval.CompositeApprovable',
     'foam.mlang.MLang',
     'java.util.ArrayList'
@@ -49,12 +48,12 @@
               @Override
               public void put(Object obj, Detachable sub) {
                 Approvable approvable = (Approvable) obj;
-                approvable.setStatus(ApprovalStatus.APPROVED);
+                approvable.setStatus(compositeApprovable.getStatus());
                 approvableDAO.put_(getX(), approvable);
               }
             });
           }
-        }, "Approve the all of the composite's sub approvals");
+        }, "Cascaded CompositeApprovable status to sub approvables");
       `
     }
   ]
