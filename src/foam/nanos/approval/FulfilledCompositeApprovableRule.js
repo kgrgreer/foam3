@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2020 The FOAM Authors. All Rights Reserved.
+ * Copyright 2021 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -9,8 +9,8 @@
   name: 'FulfilledCompositeApprovableRule',
 
   documentation: `
-    A rule to determine what to do with an approvable once the 
-    approval request has been APPROVED
+    A rule which will auto approve the sub approvables of the 
+    composite approvable
   `,
 
   javaImports: [

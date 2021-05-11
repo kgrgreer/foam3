@@ -10,8 +10,7 @@
   extends: 'foam.nanos.approval.Approvable',
 
   documentation: `
-    An approvable that once approved, will automatically approve all of it's
-    sub approvables
+    An approvable that consists of sub approvables
   `,
 
   properties: [
