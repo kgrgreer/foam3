@@ -4,6 +4,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-sessi
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-session","targetId":"group.read.bepay-sme"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-session","targetId":"group.update.bepay-sme"})
 
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-session","targetId":"user.rw.loginenabled"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-session","targetId":"business.rw.compliance"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-session","targetId":"business.rw.status"})
 
@@ -14,6 +15,10 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-api-sessi
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","targetId":"menu.read.view-contacts"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","targetId":"service.read.contactDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","targetId":"service.contactDAO"})
+
+// Allow BePay fraud-ops to see alarm menu
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-fraud-ops","targetId":"menu.read.admin.alarm"})
+
 
 // Removing documentation around flinks
 r({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.api-doc-45-onboarding-flinks-business"})
@@ -29,3 +34,8 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-fraud-ops","targetId":"menu.read.switch-user"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-payment-ops","targetId":"menu.read.switch-user"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-support","targetId":"menu.read.switch-user"})
+
+// See Menus - moved off parent
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bepay-fraud-ops",targetId:"menu.read.bankaccounts"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bepay-fraud-ops",targetId:"menu.read.integration"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bepay-fraud-ops",targetId:"menu.read.transactions"})

@@ -27,6 +27,7 @@ import foam.nanos.auth.User;
 import foam.nanos.crunch.Capability;
 import foam.nanos.crunch.UserCapabilityJunction;
 import foam.nanos.logger.Logger;
+import foam.nanos.logger.PrefixLogger;
 import foam.nanos.NanoService;
 import foam.util.SafetyUtil;
 
@@ -99,17 +100,59 @@ import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.INSTANCE_OF;
 
-public class TrevisoService extends ContextAwareSupport implements TrevisoServiceInterface, FXService, ExchangeService {
+public class TrevisoService
+  extends ContextAwareSupport
+  implements TrevisoServiceInterface,
+             FXService,
+             ExchangeService {
 
-  private FepWeb fepWebService;
-  private ExchangeService exchangeService;
+  String fepWebServiceContextKey_ = "fepWebService";
+  public void setFepWebServiceContextKey(String fepWebServiceContextKey) {
+    fepWebServiceContextKey_ = fepWebServiceContextKey;
+  }
+
+  public String getFepWebServiceContextKey() {
+    return fepWebServiceContextKey_;
+  }
+
+  String exchangeClientContextKey_ = "exchange";
+  public void setExchangeClientContextKey(String exchangeClientContextKey) {
+    exchangeClientContextKey_ = exchangeClientContextKey;
+  }
+
+  public String getExchangeClientContextKey() {
+    return exchangeClientContextKey_;
+  }
+
+  protected ExchangeService exchangeService_;
+
   private final Logger logger_;
 
-  public TrevisoService(X x, final FepWeb fepWebService, final Exchange exchangeClient) {
-    this.fepWebService = fepWebService;
-    this.exchangeService = new ExchangeServiceProvider(x, exchangeClient);
+  public TrevisoService(X x) {
     setX(x);
-    this.logger_ = (Logger) x.get("logger");
+    this.logger_ = new PrefixLogger(new Object[] {
+        this.getClass().getSimpleName()
+      }, (Logger) x.get("logger"));
+  }
+
+  public TrevisoService(X x, String fepWebServiceContextKey, String exchangeClientContextKey) {
+    setX(x);
+    this.logger_ = new PrefixLogger(new Object[] {
+        this.getClass().getSimpleName()
+      }, (Logger) x.get("logger"));
+    setFepWebServiceContextKey(fepWebServiceContextKey);
+    setExchangeClientContextKey(exchangeClientContextKey);
+  }
+
+  protected FepWeb getFepWebService(X x) {
+    return (FepWeb) x.get(getFepWebServiceContextKey());
+  }
+
+  protected ExchangeService getExchangeService(X x) {
+    if ( this.exchangeService_ == null ) {
+      this.exchangeService_ = new ExchangeServiceProvider(x, getExchangeClientContextKey());
+    }
+    return this.exchangeService_;
   }
 
   public FepWebClient createEntity(X x, long userId) {
@@ -122,7 +165,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
 
     try {
       SaveEntityRequest request = buildSaveEntityRequest(x, user, findCpfCnpj(userId));
-      FepWebResponse res = fepWebService.saveEntity(request);
+      FepWebResponse res = getFepWebService(x).saveEntity(request);
       if ( res == null ) throw new RuntimeException("Unable to get a valid response from FepWeb.");
       if ( res.getCode() != 0 )
         throw new RuntimeException("Error onboarding Treviso client to FepWeb. " + res.getMessage());
@@ -141,7 +184,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
 
     try {
       SaveEntityRequest request = buildSaveEntityRequest(x, user, findCpfCnpj(userId));
-      FepWebResponse res = fepWebService.saveEntity(request);
+      FepWebResponse res = getFepWebService(x).saveEntity(request);
       if ( res == null )
         throw new RuntimeException("Update failed. No response from FepWeb.");
       if ( res != null && res.getCode() != 0 )
@@ -160,7 +203,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     try {
       SearchCustomerRequest request = new SearchCustomerRequest();
       request.setExtCode(user.getId());
-      SearchCustomerResponse res = fepWebService.searchCustomer(request);
+      SearchCustomerResponse res = getFepWebService(x).searchCustomer(request);
       if ( res != null && res.getEntityDTOList() != null && res.getEntityDTOList().length > 0  ) {
         Entity entity = (Entity) res.getEntityDTOList()[0];
         return saveFepWebClient(user.getId(), entity.getStatus());
@@ -248,7 +291,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
 
   protected String findCNPJ(long userId) {
     UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) getX().get("userCapabilityJunctionDAO")).find(AND(
-      EQ(UserCapabilityJunction.TARGET_ID, "688cb7c6-7316-4bbf-8483-fb79f8fdeaaf"),
+      EQ(UserCapabilityJunction.TARGET_ID, "crunch.onboarding.br.business-identification"),
       EQ(UserCapabilityJunction.SOURCE_ID, userId)
     ));
 
@@ -259,7 +302,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
 
   protected String findCPF(long userId) {
     UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) getX().get("userCapabilityJunctionDAO")).find(AND(
-      EQ(UserCapabilityJunction.TARGET_ID, "fb7d3ca2-62f2-4caf-a84c-860392e4676b"),
+      EQ(UserCapabilityJunction.TARGET_ID, "crunch.onboarding.br.cpf"),
       EQ(UserCapabilityJunction.SOURCE_ID, userId)
     ));
 
@@ -289,31 +332,31 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
   }
 
   public ExchangeCustomer createExchangeCustomerDefault(long userId) throws RuntimeException {
-    return exchangeService.createExchangeCustomerDefault(userId);
+    return getExchangeService(getX()).createExchangeCustomerDefault(userId);
   }
 
   public ExchangeCustomer createExchangeCustomer(long userId, long amount) throws RuntimeException {
-    return exchangeService.createExchangeCustomer(userId, amount);
+    return getExchangeService(getX()).createExchangeCustomer(userId, amount);
   }
 
   public long getTransactionLimit(long userId) throws RuntimeException {
-    return exchangeService.getTransactionLimit(userId);
+    return getExchangeService(getX()).getTransactionLimit(userId);
   }
 
   public void updateTransactionLimit(long userId, long amount) throws RuntimeException {
-    exchangeService.updateTransactionLimit(userId, amount);
+    getExchangeService(getX()).updateTransactionLimit(userId, amount);
   }
 
   public Transaction createTransaction(Transaction transaction) throws RuntimeException {
-    return exchangeService.createTransaction(transaction);
+    return getExchangeService(getX()).createTransaction(transaction);
   }
 
   public Transaction updateTransactionStatus(Transaction transaction) throws RuntimeException {
-    return exchangeService.updateTransactionStatus(transaction);
+    return getExchangeService(getX()).updateTransactionStatus(transaction);
   }
 
   public List searchNatureCode(String natureCode) throws RuntimeException {
-    return exchangeService.searchNatureCode(natureCode);
+    return getExchangeService(getX()).searchNatureCode(natureCode);
   }
 
 }

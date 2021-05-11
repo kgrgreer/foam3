@@ -18,11 +18,11 @@ p({
         },
         {
             class:"foam.net.CIDR",
-            notation:"142.112.172.124/32",
-            startAddress:"142.112.172.124",
-            endAddress:"142.112.172.124",
-            high:2389748860,
-            low:2389748860
+            notation:"76.70.94.252/32",
+            startAddress:"76.70.94.252",
+            endAddress:"76.70.94.252",
+            high:1279680252,
+            low:1279680252
         },
         {
             class:"foam.net.CIDR",

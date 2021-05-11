@@ -950,3 +950,39 @@ p({
   "lifecycleState":1,
   "spid":"intuit"
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"limit-transaction-rule",
+  "name":"Checks current transaction limits",
+  "priority":100,
+  "ruleGroup":"limitTxn",
+  "documentation":"Checks current transaction limits",
+  "daoKey":"localTransactionDAO",
+  "operation":3,
+  "after":false,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of: "net.nanopay.tx.LimitTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal":0
+        }
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.tx.ruler.LimitTransactionRule"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1,
+  "spid":"intuit"
+})

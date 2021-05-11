@@ -76,8 +76,10 @@ foam.CLASS({
             t = addFee(t, fee);
             t = addExpiry(t, expiry);
 
-            if ( quote.getPlan() != null && quote.getPlan().getId().equals(t.getId()) )
+            t.setAmount(t.getAmount() -t.getTotal(x,t.getSourceAccount()));
+            if ( quote.getPlan() != null && quote.getPlan().getId().equals(t.getId()) ) {
               quote.setPlan(t);
+            }
           }
         }
 
@@ -252,7 +254,9 @@ foam.CLASS({
       Date date = cal.getTime();
 
       if ( expiry.size() > 0 ) {
-        TransactionLineItem[] expiryArray = (TransactionLineItem[]) getTotalRates(expiry).orElse(expiry).toArray(new TransactionLineItem[0]);
+        // TODO Review why we did this
+        // TransactionLineItem[] expiryArray = (TransactionLineItem[]) getTotalRates(expiry).orElse(expiry).toArray(new TransactionLineItem[0]);
+        TransactionLineItem[] expiryArray = expiry.toArray(new TransactionLineItem[expiry.size()]);
         expirySummary.setLineItems(expiryArray);
         for ( TransactionLineItem tli: expiryArray ) {
         ExpiryLineItem exp = (ExpiryLineItem) tli;
@@ -296,9 +300,9 @@ foam.CLASS({
         destinationCurrency = (Currency)destinationCurrency.fclone();
         destinationCurrency.setPrecision(destinationCurrency.getPrecision()+extraPrecision);
         Double destinationPrecision = Math.pow(10, destinationCurrency.getPrecision()) * rate;
-        return sourceCurrency.format(sourcePrecision.longValue())
+        return sourceCurrency.format(Math.round(sourcePrecision))
           + " " + sourceCurrency.getId()
-          + " : " + destinationCurrency.format(destinationPrecision.longValue()+extraPrecision)
+          + " : " + destinationCurrency.format(Math.round(destinationPrecision))
           + " " + destinationCurrency.getId();
       `
     }

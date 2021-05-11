@@ -1,99 +1,99 @@
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "app",
-"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-11"
+"targetId": "crunch.onboarding.unlock-ca-ca-payments"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "onboarding",
-"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-11"
+"targetId": "crunch.onboarding.unlock-ca-ca-payments"
 })
 
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "app",
-"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-12"
+"targetId": "crunch.onboarding.unlock-ca-international-payments"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "onboarding",
-"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-12"
+"targetId": "crunch.onboarding.unlock-ca-international-payments"
 })
 
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "app",
-"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-13"
+"targetId": "crunch.onboarding.unlock-us-payments"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "onboarding",
-"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-13"
+"targetId": "crunch.onboarding.unlock-us-payments"
 })
 
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "app",
-"targetId": "0B2E7305-B898-43F2-9C1B-63FB2CE38B2D"
+"targetId": "crunch.onboarding.br.international-payments"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "onboarding",
-"targetId": "0B2E7305-B898-43F2-9C1B-63FB2CE38B2D"
+"targetId": "crunch.onboarding.br.international-payments"
 })
 
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "signingOfficerOnboarding",
-"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5"
+"targetId": "crunch.onboarding.signing-officer-information"
 })
 
 
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "signingOfficerOnboarding",
-"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-0"
+"targetId": "crunch.onboarding.signing-officer-question"
 })
 
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "beneficialOwnerOnboarding",
-"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired"
+"targetId": "crunch.onboarding.business-ownership"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "businessDirectorOnboarding",
-"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-6-5"
+"targetId": "crunch.onboarding.business-directors"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "app",
-"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215e-18"
+"targetId": "crunch.onboarding.general-admission"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "app",
-"targetId": "242B00F8-C775-4899-AEBA-F287EC54E901"
+"targetId": "crunch.onboarding.treviso.general-admission"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "AFEXOnboarding",
-"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-12"
+"targetId": "crunch.onboarding.unlock-ca-international-payments"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "AFEXOnboarding",
-"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-13"
+"targetId": "crunch.onboarding.unlock-us-payments"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "AFEXOnboarding",
-"targetId": "0B2E7305-B898-43F2-9C1B-63FB2CE38B2D"
+"targetId": "crunch.onboarding.br.international-payments"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "complianceSetting",
-"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5"
+"targetId": "crunch.onboarding.signing-officer-information"
 })
 
 p({
@@ -130,76 +130,76 @@ p({
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "compliancePassed",
-"targetId": "1F0B39AD-934E-462E-A608-D590D1081298"
+"targetId": "crunch.onboarding.api.unlock-ca-payments"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "compliancePassed",
-"targetId": "25D9499A-36D3-436A-9C87-3CA41B5FC08F"
+"targetId": "crunch.onboarding.user-is-signing-officer"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "compliancePassed",
-"targetId": "18DD6F03-998F-4A21-8938-358183151F96"
+"targetId": "crunch.onboarding.api.ca-business-receive-payments"
 })
 
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "toplevelonboarding",
-"targetId": "bf6a49d5-4027-4dac-a269-4d3ed070609e-1"
+"targetId": "crunch.onboarding.parent.unlock-ca-ca-payments"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "toplevelonboarding",
-"targetId": "bf6a49d5-4027-4dac-a269-4d3ed070609e-2"
+"targetId": "crunch.onboarding.parent.unlock-ca-international-payments"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "toplevelonboarding",
-"targetId": "bf6a49d5-4027-4dac-a269-4d3ed070609e-3"
+"targetId": "crunch.onboarding.parent.unlock-us-payments"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "toplevelonboarding",
-"targetId": "bf6a49d5-4027-4dac-a269-4d3ed070609e-4"
+"targetId": "crunch.onboarding.br.parent.international-payments"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "registerPaymentProvider",
-"targetId": "89cc91da-4bbd-458b-81d4-574815e455fa-1"
+"targetId": "crunch.onboarding.registering-ca-payment-provider"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "registerPaymentProvider",
-"targetId": "89cc91da-4bbd-458b-81d4-574815e455fa-2"
+"targetId": "crunch.onboarding.registering-international-payment-provider"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "registerPaymentProvider",
-"targetId": "89cc91da-4bbd-458b-81d4-574815e455fa-3"
+"targetId": "crunch.onboarding.registering-us-international-payment-provider"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "registerPaymentProvider",
-"targetId": "89cc91da-4bbd-458b-81d4-574815e455fa-4"
+"targetId": "crunch.onboarding.br.registering-payment-provider"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "apiCADOnboarding",
-"targetId": "56D2D946-6085-4EC3-8572-04A17225F86A"
+"targetId": "crunch.onboarding.api.ca-business-send-payments"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "apiCADOnboarding",
-"targetId": "18DD6F03-998F-4A21-8938-358183151F96"
+"targetId": "crunch.onboarding.api.ca-business-receive-payments"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "apiCADOnboarding",
-"targetId": "1F0B39AD-934E-462E-A608-D590D1081298"
+"targetId": "crunch.onboarding.api.unlock-ca-payments"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "apiCADOnboarding",
-"targetId": "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD"
+"targetId": "crunch.onboarding.api.unlock-ca-payments-under-1000"
 })

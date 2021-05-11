@@ -51,6 +51,7 @@ foam.CLASS({
     'java.time.ZoneId',
     'java.util.Date',
     'java.util.Map',
+    'java.util.regex.*',
 
     'static foam.mlang.MLang.*'
   ],
@@ -133,9 +134,17 @@ foam.CLASS({
           "countryCode", countryCode, "nationalId", nationalId, "accountNumber", accountNumber);
         var iban = response.get("recommendedAcct");
         var swiftCode = response.get("recommendedBIC");
+        Pattern pattern = Pattern.compile("\\\\((.+)\\\\)");
+        Matcher matcher = pattern.matcher(response.get("comment"));
+        boolean codeAllowed;
+        if ( matcher.find() ) {
+          codeAllowed = allowedCodes.contains(matcher.group(1));
+        } else {
+          codeAllowed = true;
+        }
 
         if ( SafetyUtil.isEmpty(iban) || SafetyUtil.isEmpty(swiftCode) ||
-          ! "PASS".equals(response.get("status"))
+          ! "PASS".equals(response.get("status")) && ! ( "CAUTION".equals(response.get("status")) && codeAllowed )
         ) {
           throw new RuntimeException("Failed Accuity Validation: " + String.valueOf(response.get("comment")));
         }

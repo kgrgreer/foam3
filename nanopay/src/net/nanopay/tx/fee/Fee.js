@@ -85,6 +85,18 @@ foam.CLASS({
       section: 'basicInfo'
     },
     {
+      class: 'String',
+      name: 'rateName',
+      section: 'basicInfo',
+      documentation: 'Name of a fee entry used by FeeEngine to generate a Rate'
+    },
+    {
+      class: 'Boolean',
+      name: 'isInvertedRate',
+      section: 'basicInfo',
+      documentation: 'Set to true if the "rateName" is the inverted rate (converting from destination currency to source currency).'
+    },
+    {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'feeAccount',
@@ -155,7 +167,7 @@ foam.CLASS({
         if ( getFormula() != null ) {
           var result = getFormula().f(obj);
           if ( result instanceof Number ) {
-            return ((Number) result).longValue();
+            return Math.round(((Number) result).doubleValue());
           }
         }
         return 0l;

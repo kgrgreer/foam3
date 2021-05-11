@@ -59,7 +59,7 @@ foam.CLASS({
         var self = this;
         this.businessDAO.find(this.subject.user.id).then((business) => {
           if ( ! business ) return;
-          
+
           self.businessTypeId = business.businessTypeId;
 
           // Clear directors if directors are not required for this business type
@@ -96,12 +96,12 @@ foam.CLASS({
       section: 'directorsInfoSection',
       view: function(_, x) {
         return {
-          class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
+          class: 'foam.u2.view.TitledArrayView',
           mode: 'RW',
           enableAdding: true,
           enableRemoving: true,
           defaultNewItem: net.nanopay.model.BusinessDirector.create({}, x),
-          name: 'director'
+          title: 'Director'
         };
       },
       visibility: function(businessTypeId, needDirector) {
@@ -118,27 +118,27 @@ foam.CLASS({
     }
   ],
 
-    methods: [
-      {
-        name: 'validate',
-        javaCode: `
-          // TODO: avoid using hard coded business type ids 
-          int[] businessTypesWithDirectors = {3, 5, 6};
-          if (!Arrays.asList(businessTypesWithDirectors).contains(getBusinessTypeId())) return;
+  methods: [
+    {
+      name: 'validate',
+      javaCode: `
+        // TODO: avoid using hard coded business type ids
+        int[] businessTypesWithDirectors = {3, 5, 6};
+        if (!Arrays.asList(businessTypesWithDirectors).contains(getBusinessTypeId())) return;
 
-          // validate directors
-          if (getBusinessDirectors() == null || getBusinessDirectors().length == 0) {
-            throw new IllegalStateException(NO_DIRECTOR_INFO);
-          }
+        // validate directors
+        if (getBusinessDirectors() == null || getBusinessDirectors().length == 0) {
+          throw new IllegalStateException(NO_DIRECTOR_INFO);
+        }
 
-          for (BusinessDirector director : getBusinessDirectors()) {
-            try {
-              director.validate(x);
-            } catch (RuntimeException e) {
-              throw new IllegalStateException(DIRECTOR_INFO_NOT_VALID);
-            }
+        for (BusinessDirector director : getBusinessDirectors()) {
+          try {
+            director.validate(x);
+          } catch (RuntimeException e) {
+            throw new IllegalStateException(DIRECTOR_INFO_NOT_VALID);
           }
-        `
-      }
-    ]
-  });
+        }
+      `
+    }
+  ]
+});

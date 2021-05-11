@@ -1,15 +1,15 @@
 <title>Getting Started With FX Service(Exchange Rate Service)</title>
 
-<h1>Introduction</h1>
+<h2>Introduction</h2>
 
 <p>FX Service(Exchange Rate Service) provides exchange rate service for multiple currency combinations. FX Service typically gets exchange rates from different FX providers depending on your use case. There are currently two FX providers available for now; Nanopay FX Provider and AscendantFX. The Nanopay FX Provider retrieves rates from our ExchangeRateDAO which is updated by a cron. The Cron fetches rates from http://api.exchangeratesapi.io/ using CAD as the base Currency. So technically Nanopay FX Provider can only exchange rate from CAD to any other supported currencies at the moment. AscendantFX provides exchange rate from multiple currency and also provides payment services between bank accounts.</p>
 
-<h2>Architecture</h2>
+<h4>Architecture</h4>
 
-<h3>FXService Interface</h3>
+<h4>FXService Interface</h4>
 FXService currently has two methods;
 
-<h4>GetFXRate</h4>
+<h5>GetFXRate</h5>
 <p>GetFXRate simply returns exchange rate for the given currency pair. GetFXRate takes the following parameter;</p>
 
 <ul>
@@ -22,7 +22,7 @@ FXService currently has two methods;
 <li>FX Provider (Optional) </li>
 </ul>
 
-<h4>AcceptFXRate</h4>
+<h5>AcceptFXRate</h5>
 <p>AcceptFXRate simply books and reserves the FX Quote. AcceptFXRate takes the following parameter;</p>
 
 <ul>
@@ -31,10 +31,10 @@ FXService currently has two methods;
 </ul>
 
 
-<h3>PaymentService Interface</h3>
+<h4>PaymentService Interface</h4>
 <p>FX Providers like AscendantFX also provide payment services.</p>
 
-<h4>SubmitPayment</h4>
+<h5>SubmitPayment</h5>
 <p>SubmitPayment simply submits a deal/payment to a payment provider. Only AscendantFX is currently supported. SubmitPayment takes the following parameter;</p>
 
 <ul>
@@ -42,10 +42,10 @@ FXService currently has two methods;
 </ul>
 
 
-<h2>Usage</h2>
+<h4>Usage</h4>
 <p>FX Service can be used either independently or via Transaction Plans.</p>
 
-<h3>Transaction Plans</h3>
+<h4>Transaction Plans</h4>
 <p>To use FX Service with Transaction Plans, follow these steps;</p>
 
 <ul>
@@ -69,7 +69,7 @@ Transaction t2 = (Transaction) ((DAO) x_.get("localTransactionDAO")).put_(x_, re
 </code>
 
 
-<h3>Independently</h3>
+<h4>Independently</h4>
 <p>To use FX Service independently, follow these steps;</p>
 
 <code>
@@ -86,7 +86,7 @@ PaymentService ascendantPaymentService = new AscendantFXServiceProvider(x, ascen
 ascendantPaymentService.submitPayment(transaction);
 </code>
 
-<h3>Use in View</h3>
+<h4>Use in View</h4>
 An AscendantFX plan DAO would handle to below code and apply the necessary FX rates, if the currency pair is well configured.
 <code>
 this.quote = self.transactionQuotePlanDAO.put(

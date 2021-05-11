@@ -14,7 +14,7 @@ p({
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"targetId",
-        "propValue":"7b41a164-29bd-11eb-adc1-0242ac120002",
+        "propValue":"crunch.onboarding.br.add-bank-account",
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",

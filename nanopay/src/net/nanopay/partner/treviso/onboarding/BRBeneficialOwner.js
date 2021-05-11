@@ -49,7 +49,8 @@ foam.CLASS({
     { name: 'NO', message: 'No' },
     { name: 'RICHCHOICE_SELECTION_TITLE', message: 'Countries' },
     { name: 'PROOF_OF_ADDRESS', message: 'Proof of address documents required' },
-    { name: 'PROOF_OF_IDENTIFICATION', message: 'Proof of identication documents required' }
+    { name: 'PROOF_OF_IDENTIFICATION', message: 'Proof of identication documents required' },
+    { name: 'INVALID_CPF', message: 'Valid CPF number required' }
   ],
 
   properties: [
@@ -124,7 +125,18 @@ foam.CLASS({
         let forceIntoRO = X.data.mode === 'percent' && X.data.showFullOwnerDetails;
         var x = forceIntoRO ? X.createSubContext({ controllerMode: foam.u2.ControllerMode.VIEW }) : X;
         return foam.u2.view.FObjectView.create({ classIsFinal: true }, x);
-      }
+      },
+      validationPredicates: [
+        {
+          args: ['cpf', 'cpf$errors_'],
+          predicateFactory: function(e) {
+            return e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.CPF
+              }), true);
+          },
+          errorMessage: 'INVALID_CPF'
+        }
+      ]
     },
     {
       class: 'Boolean',
@@ -192,19 +204,7 @@ foam.CLASS({
       view: function(_, X) {
         let forceIntoRO = X.data.mode === 'percent' && X.data.showFullOwnerDetails;
         var x = forceIntoRO ? X.createSubContext({ controllerMode: foam.u2.ControllerMode.VIEW }) : X;
-        let selectSlot = foam.core.SimpleSlot.create({ value: 0 });
-        return foam.u2.MultiView.create({
-        views: [
-          foam.nanos.fs.fileDropZone.FileDropZone.create({
-            files$: X.data.documentsOfAddress$,
-            selected$: selectSlot
-          }, x),
-          foam.nanos.fs.fileDropZone.FilePreview.create({
-            data$: X.data.documentsOfAddress$,
-            selected$: selectSlot
-          }, x)
-        ]
-        });
+        return foam.u2.view.DocumentUploadView.create({ data$: X.data.documentsOfAddress$ }, x);
       },
       validateObj: function(documentsOfAddress) {
         if ( documentsOfAddress.length === 0 ) {
@@ -223,19 +223,7 @@ foam.CLASS({
       view: function(_, X) {
         let forceIntoRO = X.data.mode === 'percent' && X.data.showFullOwnerDetails;
         var x = forceIntoRO ? X.createSubContext({ controllerMode: foam.u2.ControllerMode.VIEW }) : X;
-        let selectSlot = foam.core.SimpleSlot.create({ value: 0 });
-        return foam.u2.MultiView.create({
-        views: [
-          foam.nanos.fs.fileDropZone.FileDropZone.create({
-            files$: X.data.documentsOfId$,
-            selected$: selectSlot
-          }, x),
-          foam.nanos.fs.fileDropZone.FilePreview.create({
-            data$: X.data.documentsOfId$,
-            selected$: selectSlot
-          }, x)
-        ]
-        });
+        return foam.u2.view.DocumentUploadView.create({ data$: X.data.documentsOfId$ }, x);
       },
       validateObj: function(documentsOfId) {
         if ( documentsOfId.length === 0 ) {
@@ -249,6 +237,10 @@ foam.CLASS({
   ],
 
   methods: [
+    function installInWizardlet(w) {
+      this.cpf.installInWizardlet(w);
+    },
+
     function fromUser(u) {
       var common = [
         'firstName', 'lastName', 'jobTitle', 'address',

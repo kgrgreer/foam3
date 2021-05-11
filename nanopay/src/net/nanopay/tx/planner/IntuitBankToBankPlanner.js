@@ -35,18 +35,22 @@ foam.CLASS({
     'java.util.List',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
+    'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.tx.ComplianceTransaction',
     'net.nanopay.tx.SummaryTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.tx.planner.exceptions.PlannerCapabilityIncompleteException',
     'net.nanopay.tx.planner.exceptions.PlannerComplianceFailureException',
+    'net.nanopay.tx.planner.exceptions.PlannerStatusInactiveException'
   ],
 
   messages: [
+    { name: 'SOURCE_OWNER_INACTIVE', message: 'Invalid source account owner status: ' },
+    { name: 'DESTINATION_OWNER_INACTIVE', message: 'Invalid destination account owner status: ' },
     { name: 'SOURCE_OWNER_COMPLIANCE_FAILED', message: 'Compliance failed for source account owner' },
     { name: 'DESTINATION_OWNER_COMPLIANCE_FAILED', message: 'Compliance failed for destination account owner' },
     { name: 'SOURCE_OWNER_INSUFFICIENT_CAPABILITIES', message: 'Insufficient capabilities for source account owner' },
@@ -69,6 +73,10 @@ foam.CLASS({
     {
       class: 'StringArray',
       name: 'destinationCapabilityList'
+    },
+    {
+      name: 'createLimit',
+      value: true
     }
   ],
 
@@ -92,14 +100,26 @@ foam.CLASS({
 
         // Check source account owner compliance
         User sourceOwner = txn.findSourceAccount(x).findOwner(x);
-        if ( ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED) &&
+        if ( ! sourceOwner.getStatus().equals(AccountStatus.ACTIVE) ) {
+          Logger logger = (Logger) x.get("logger");
+          logger.warning(txn.getId() + " planner validation failure on source account owner. (" + sourceOwner.getId() + ") " + sourceOwner.toSummary() + " - " + sourceOwner.getStatus());
+          
+          PlannerStatusInactiveException exception = new PlannerStatusInactiveException(SOURCE_OWNER_INACTIVE + sourceOwner.getStatus());
+          exception.setTransactionId(txn.getId());
+          exception.setEntityId(sourceOwner.getId());
+          exception.setEntityClass(sourceOwner.getClass().getName());
+          exception.setStatus(sourceOwner.getStatus());
+          throw exception;
+        } else if ( 
+             ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED) &&
              ! grantedOneOfCapabilitySet(x, sourceOwner, sourceCapabilityList)) {
           Logger logger = (Logger) x.get("logger");
           logger.warning(txn.getId() + " planner validation failure on source account owner. (" + sourceOwner.getId() + ") " + sourceOwner.toSummary());
           
-          PlannerCapabilityIncompleteException exception = ( sourceOwner.getCompliance().equals(ComplianceStatus.FAILED) ) ?
-            new PlannerComplianceFailureException(SOURCE_OWNER_COMPLIANCE_FAILED) :
-            new PlannerCapabilityIncompleteException(SOURCE_OWNER_INSUFFICIENT_CAPABILITIES);
+          PlannerCapabilityIncompleteException exception = 
+            ( sourceOwner.getCompliance().equals(ComplianceStatus.FAILED) ) ?
+              new PlannerComplianceFailureException(SOURCE_OWNER_COMPLIANCE_FAILED) :
+              new PlannerCapabilityIncompleteException(SOURCE_OWNER_INSUFFICIENT_CAPABILITIES);
           exception.setTransactionId(txn.getId());
           exception.setEntityId(sourceOwner.getId());
           exception.setEntityClass(sourceOwner.getClass().getName());
@@ -109,14 +129,26 @@ foam.CLASS({
         // Check destination account owner compliance
         List destinationCapabilityList = new ArrayList(Arrays.asList(getDestinationCapabilityList()));
         User destinationOwner = txn.findDestinationAccount(x).findOwner(x);
-        if ( ! destinationOwner.getCompliance().equals(ComplianceStatus.PASSED) &&
+        if ( ! destinationOwner.getStatus().equals(AccountStatus.ACTIVE) ) {
+          Logger logger = (Logger) x.get("logger");
+          logger.warning(txn.getId() + " planner validation failure on destination account owner. (" + destinationOwner.getId() + ") " + destinationOwner.toSummary() + " - " + destinationOwner.getStatus());
+
+          PlannerStatusInactiveException exception = new PlannerStatusInactiveException(DESTINATION_OWNER_INACTIVE + destinationOwner.getStatus());
+          exception.setTransactionId(txn.getId());
+          exception.setEntityId(destinationOwner.getId());
+          exception.setEntityClass(destinationOwner.getClass().getName());
+          exception.setStatus(destinationOwner.getStatus());
+          throw exception;
+        } else if ( 
+             ! destinationOwner.getCompliance().equals(ComplianceStatus.PASSED) &&
              ! grantedOneOfCapabilitySet(x, destinationOwner, destinationCapabilityList) ) {
           Logger logger = (Logger) x.get("logger");
           logger.warning(txn.getId() + " planner validation failure on destination account owner. (" + destinationOwner.getId() + ") " + destinationOwner.toSummary());
 
-          PlannerCapabilityIncompleteException exception = ( destinationOwner.getCompliance().equals(ComplianceStatus.FAILED) ) ?
-            new PlannerComplianceFailureException(DESTINATION_OWNER_COMPLIANCE_FAILED) :
-            new PlannerCapabilityIncompleteException(DESTINATION_OWNER_INSUFFICIENT_CAPABILITIES);
+          PlannerCapabilityIncompleteException exception = 
+            ( destinationOwner.getCompliance().equals(ComplianceStatus.FAILED) ) ?
+              new PlannerComplianceFailureException(DESTINATION_OWNER_COMPLIANCE_FAILED) :
+              new PlannerCapabilityIncompleteException(DESTINATION_OWNER_INSUFFICIENT_CAPABILITIES);
           exception.setTransactionId(txn.getId());
           exception.setEntityId(destinationOwner.getId());
           exception.setEntityClass(destinationOwner.getClass().getName());

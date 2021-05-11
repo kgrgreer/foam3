@@ -121,6 +121,7 @@ p({
         bankAccount.setAccountNumber(rbcReserveAccountNumber);
         bankAccount.setBranchId(rbcReserveBranchId);
         bankAccount.setInstitutionNumber(rbcReserveInstitutionNumber);
+        bankAccount.setSpid("nanopay");
         // QUESTION: should we be setting the bank address?
         if ( !dryRun ) {
             Subject subject = new Subject.Builder(x).setUser(new User.Builder(x).setId(1).setSpid("nanopay").build()).build();
@@ -161,6 +162,20 @@ p({
         print("");
     }
 
+    // ======= SET PAYMENT ISSUER TAG ======
+    String paymentIssuerTag = "INTUIT NANOPAY";
+    spidDAO = x.get("localServiceProviderDAO");
+    serviceProvider = spidDAO.find("intuit");
+    serviceProvider = serviceProvider.fclone();
+    serviceProvider.setPaymentIssuerTag(paymentIssuerTag);
+    if ( !dryRun ) {
+        serviceProvider = spidDAO.put(serviceProvider);
+        print("Updated SPID payment issuer tag to: " + serviceProvider.getPaymentIssuerTag());
+    } else {
+        print("DRY RUN - Skipping Set PaymentIssuerTag: " + serviceProvider.getPaymentIssuerTag());
+    }
+    print("");
+
     // ======= Enable Billing Cron =========
     DAO cronDAO = (DAO) x.get("cronDAO");
     String cronId = "Intuit Billing Cron";
@@ -176,7 +191,7 @@ p({
             cronDAO.put(cron);
             print("Enabled cron: " + cronId);
         } else {
-            print("DRY RUN - SKipping enabling cron: " + cronId);
+            print("DRY RUN - Skipping enabling cron: " + cronId);
         }
         print("");
     } else {
@@ -198,7 +213,7 @@ p({
             cronDAO.put(cron);
             print("Enabled cron: " + cronId);
         } else {
-            print("DRY RUN - SKipping enabling cron: " + cronId);
+            print("DRY RUN - Skipping enabling cron: " + cronId);
         }
         print("");
     } else {
@@ -222,7 +237,7 @@ p({
             cron = cronDAO.put(cron);
             print("Created cron: " + cron.getId());
         } else {
-            print("DRY RUN - SKipping creating cron: " + cron.getId());
+            print("DRY RUN - Skipping creating cron: " + cron.getId());
         }
         print("");
     } else if ( ! cron.getEnabled() ) {
@@ -247,7 +262,7 @@ p({
             cronDAO.put(cron);
             print("Created cron: " + cron.getId());
         } else {
-            print("DRY RUN - SKipping creating cron: " + cron.getId());
+            print("DRY RUN - Skipping creating cron: " + cron.getId());
         }
         print("");
     } else if ( ! cron.getEnabled() ) {
@@ -272,7 +287,7 @@ p({
             cronDAO.put(cron);
             print("Created cron: " + cron.getId());
         } else {
-            print("DRY RUN - SKipping creating cron: " + cron.getId());
+            print("DRY RUN - Skipping creating cron: " + cron.getId());
         }
         print("");
     } else if ( ! cron.getEnabled() ) {
@@ -297,7 +312,7 @@ p({
             cronDAO.put(cron);
             print("Created cron: " + cron.getId());
         } else {
-            print("DRY RUN - SKipping creating cron: " + cron.getId());
+            print("DRY RUN - Skipping creating cron: " + cron.getId());
         }
         print("");
     } else if ( ! cron.getEnabled() ) {
@@ -322,7 +337,7 @@ p({
             cronDAO.put(cron);
             print("Created cron: " + cron.getId());
         } else {
-            print("DRY RUN - SKipping creating cron: " + cron.getId());
+            print("DRY RUN - Skipping creating cron: " + cron.getId());
         }
         print("");
     } else if ( ! cron.getEnabled() ) {

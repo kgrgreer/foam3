@@ -1,6 +1,7 @@
 acceptanceDocuments
 accounts
 accountTemplates
+addressConfig
 afexBusinessSectors
 afexUsers
 afexCredentialDAO
@@ -80,6 +81,8 @@ paymentMethods
 payoutOptions
 permissions
 prerequisiteCapabilityJunctions
+privateKeys
+publicKeys
 purposeCodes
 purposeGroups
 questionnaires
@@ -118,3 +121,4 @@ xeroConfig
 xeroToken
 zeroAccountUserAssociations
 commonPasswords
+wizardStates

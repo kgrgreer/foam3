@@ -51,8 +51,10 @@ public class TrevisoServiceTest
 
   @Override
   public void runTest(X x) {
-    this.x = x;
-    trevisoService = new TrevisoService(x, new FepWebServiceMock(x), new ExchangeClientMock(x));
+    X y = x.put("fepWebService", new FepWebServiceMock(x));
+    y = y.put("exchange", new ExchangeClientMock(y));
+    this.x = y;
+    trevisoService = new TrevisoService(y, "fepWebService", "exchange");
     setUpTest();
     testSaveEntity();
     testSearchCustomer();

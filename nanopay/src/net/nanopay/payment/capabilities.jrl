@@ -6,9 +6,10 @@ p({"class":"net.nanopay.payment.PaymentProvider","id":"RBC","name":"Royal Bank o
 p({"class":"net.nanopay.payment.PaymentProvider","id":"Kotak","name":"Kotak", "enabled":true})
 p({"class":"net.nanopay.payment.PaymentProvider","id":"Treviso","name":"Treviso", "enabled":true})
 p({"class":"net.nanopay.payment.PaymentProvider","id":"BePay","name":"BePay", "enabled":true})
+p({"class":"net.nanopay.payment.PaymentProvider","id":"TrevisoAPI","name":"TrevisoAPI", "enabled":true})
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
-  "id":"554af38a-8125-87c8-dfdf-eeb15fafexca-us",
+  "id":"paymentprovidercorridor.afex.ca-us",
   "name":"CA-US (AFEX Corridor)",
   "provider": "AFEX",
   "sourceCountry":"CA",
@@ -20,7 +21,7 @@ p({
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
-  "id":"554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
+  "id":"paymentprovidercorridor.afex.us-ca",
   "name":"US-CA (AFEX Corridor)",
   "provider": "AFEX",
   "sourceCountry":"US",
@@ -32,7 +33,7 @@ p({
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
-  "id":"554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
+  "id":"paymentprovidercorridor.afex.us-us",
   "name":"US-US (AFEX Corridor)",
   "provider": "AFEX",
   "sourceCountry":"US",
@@ -45,7 +46,7 @@ p({
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
-  "id":"554af38a-8125-87c8-dfdf-eeb15f7afxca-us",
+  "id":"paymentprovidercorridor.afx.ca-us",
   "name":"CA-US (AscendantFX Corridor)",
   "provider": "AscendantFX",
   "sourceCountry":"CA",
@@ -57,7 +58,7 @@ p({
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
-  "id":"554af38a-8125-87c8-dfdf-eeb15f7afxus-ca",
+  "id":"paymentprovidercorridor.afx.us-ca",
   "name":"US-CA (AscendantFX Corridor)",
   "provider": "AscendantFX",
   "sourceCountry":"US",
@@ -69,7 +70,7 @@ p({
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
-  "id":"554af38a-8125-87c8-dfdf-eeb15f7afxus-us",
+  "id":"paymentprovidercorridor.afx.us-us",
   "name":"US-US (AscendantFX Corridor)",
   "provider": "AscendantFX",
   "sourceCountry":"US",
@@ -81,7 +82,7 @@ p({
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
-  "id":"554af38a-8125-87c8-dfdf-eeb15f7altca-ca",
+  "id":"paymentprovidercorridor.alterna.ca-ca",
   "name":"CA-CA (Alterna Corridor)",
   "provider": "Alterna",
   "sourceCountry":"CA",
@@ -93,7 +94,7 @@ p({
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
-  "id":"554af38a-8125-87c8-dfdf-eeb15f7bmoca-ca",
+  "id":"paymentprovidercorridor.bmo.ca-ca",
   "name":"CA-CA (BMO Corridor)",
   "provider": "BMO",
   "sourceCountry":"CA",
@@ -105,7 +106,7 @@ p({
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
-  "id":"554af38a-8125-87c8-dfdf-eeb15f7rbcca-ca",
+  "id":"paymentprovidercorridor.rbc.ca-ca",
   "name":"CA-CA (RBC Corridor)",
   "provider": "RBC",
   "sourceCountry":"CA",
@@ -117,7 +118,7 @@ p({
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
-  "id":"554af38a-8125-87c8-dfdf-eeb15kotakca-in",
+  "id":"paymentprovidercorridor.kotak.ca-in",
   "name":"CA-IN (Kotak Corridor)",
   "provider": "Kotak",
   "sourceCountry":"CA",

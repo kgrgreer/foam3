@@ -34,7 +34,7 @@ p({
     supportPhone:"+1.647.496.1526",
     personalSupportUser:1030,
   },
-  "font1":"IBM Plex Sans",
+  "font1":"'IBM Plex Sans', sans-serif",
   "primary1":"#000000",
   "primary2":"#2CA01C",
   "primary3":"#53B700",
@@ -64,7 +64,7 @@ p({
   "grey5":"#f5f7fa",
   "black":"#1e1f21",
   "white":"#ffffff",
-  "inputHeight":"40px",
+  "inputHeight":"34px",
   "inputVerticalPadding":"10px",
   "inputHorizontalPadding":"8px",
   "customCSS":"""

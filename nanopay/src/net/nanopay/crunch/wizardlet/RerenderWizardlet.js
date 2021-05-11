@@ -27,8 +27,8 @@ foam.CLASS({
     {
       flags: ['web'],
       name: 'save',
-      code: async function() {
-        var ucj = await this.SUPER();
+      code: async function(...args) {
+        var ucj = await this.SUPER(...args);
         for ( let id of this.rerenderList ) {
           let w = this.getWizardletById(id);
           if ( ! w ) continue;

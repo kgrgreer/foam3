@@ -30,7 +30,8 @@ foam.CLASS({
   `,
 
   implements: [
-    'foam.core.Validatable'
+    'foam.core.Validatable',
+    'foam.mlang.Expressions'
   ],
 
   javaImports: [
@@ -39,6 +40,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
+    'java.util.regex.Pattern',
     'net.nanopay.country.br.BrazilVerificationServiceInterface'
   ],
 
@@ -48,11 +50,9 @@ foam.CLASS({
   ],
 
   constants: [
-    {
-      name: 'CPF_LENGTH',
-      value: 11,
-      javaType: 'int'
-    }
+    { name: 'FORMATTED_CPF_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{3}\\\\.\\\\d{3}\\\\.\\\\d{3}\\\\-\\\\d{2}$")' },
+    { name: 'UNFORMATTED_CPF_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{11}$")' },
+    { name: 'CPF_LENGTH', javaType: 'int', value: 11 }
   ],
 
   messages: [
@@ -106,7 +106,7 @@ foam.CLASS({
       ]
     }),
     {
-      class: 'String',
+      class: 'FormattedString',
       name: 'data',
       help: `The CPF (Cadastro de Pessoas Físicas or Natural Persons Register) is a number assigned by the Brazilian revenue agency to both Brazilians and resident aliens who are subject to taxes in Brazil.`,
       label: 'Cadastro de Pessoas Físicas (CPF)',
@@ -115,10 +115,10 @@ foam.CLASS({
         {
           args: ['data'],
           predicateFactory: function(e) {
-            return e.EQ(
-              foam.mlang.StringLength.create({
-                arg1: net.nanopay.country.br.CPF.DATA
-              }), 11);
+            return e.OR(
+              e.REG_EXP(net.nanopay.country.br.CPF.DATA, /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/),
+              e.REG_EXP(net.nanopay.country.br.CPF.DATA, /^\d{11}$/)
+            );
           },
           errorMessage: 'INVALID_CPF'
         },
@@ -130,23 +130,15 @@ foam.CLASS({
                 foam.mlang.StringLength.create({
                   arg1: net.nanopay.country.br.CPF.CPF_NAME
                 }), 0),
-              e.EQ(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.country.br.CPF.DATA
-                }), 11)
-            );
+              e.OR(
+                e.REG_EXP(net.nanopay.country.br.CPF.DATA, /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/),
+                e.REG_EXP(net.nanopay.country.br.CPF.DATA, /^\d{11}$/)
+              ));
           },
           errorMessage: 'INVALID_CPF_CHECKED'
         }
       ],
-      tableCellFormatter: function(val) {
-        return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
-      },
-      view: function(_, X) {
-        return foam.u2.FormattedTextField.create({
-          formatter: [3, '.', 3, '.', 3, '-', 2]
-        }, X);
-      }
+      formatter: [3, '.', 3, '.', 3, '-', 2]
     },
     {
       class: 'String',
@@ -195,6 +187,10 @@ foam.CLASS({
   ],
 
   methods: [
+    function installInWizardlet(w) {
+      this.onDetach(this.data$.sub(() => this.maybeSave(w)));
+      this.onDetach(this.birthday$.sub(() => this.maybeSave(w)));
+    },
     {
       name: 'clearFields',
       code: function() {
@@ -214,7 +210,8 @@ foam.CLASS({
         // These should be valid before making API call
         try {
           this.BIRTHDAY.validateObj(x, this);
-          if ( getData() == null || getData().length() != this.CPF_LENGTH ) {
+          if ( getData() == null ||
+            ( ! UNFORMATTED_CPF_PATTERN.matcher(getData()).matches() && ! FORMATTED_CPF_PATTERN.matcher(getData()).matches() ) ) {
             throw new foam.core.ValidationException(INVALID_CPF);
           }
         } catch ( foam.core.ValidationException e ) {
@@ -241,6 +238,25 @@ foam.CLASS({
 
       foam.core.FObject.super.validate(x);
       `
+    }
+  ],
+
+  listeners: [
+    // CURRENT ISSUE: the api is getting called too many times
+    // we want the api to only get called if the birthday and data properties are set and valid
+    // initiallizing / cloning this model will trigger the copy of properties AND if the properties are set this will trigger a api call
+    // now if the cpfName is set we can avoid the api call - but a property change needs to reset the cpfName
+    // SO - listeners used in place of a property postSet to avoid initial call ... HMM
+    {
+      name: 'maybeSave',
+      mergeDelay: 100, // only run every 100ms, otherwise trigger too many calls
+      code: async function(w) {
+        var validEnough = ( ! this.BIRTHDAY.validateObj[1].call(this) ) &&
+          this.data.replace(/\D/g,'').length == this.CPF_LENGTH &&
+          this.verifyName !== true;
+        if ( validEnough ) w.save();
+        else this.clearFields();
+      }
     }
   ]
 });

@@ -33,6 +33,8 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'java.util.Calendar',
+    'java.util.TimeZone',
     'javax.servlet.http.HttpServletRequest'
   ],
 
@@ -196,6 +198,13 @@ foam.CLASS({
       view: { class: 'net.nanopay.documents.ui.AcceptanceDocumentView' },
       section: 'uiAgreementDocumentsSection',
       externalTransient: true
+    },
+    {
+      class: 'DateTime',
+      name: 'agreementDate',
+      documentation: 'Date of agreement',
+      storageOptional: true,
+      hidden: true
     }
   ],
 
@@ -217,6 +226,10 @@ foam.CLASS({
 
           setUser(userId);
           setBusiness(businessId);
+
+          if ( getAgreementDate() == null ) {
+            setAgreementDate(Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime());
+          }
 
           if ( request != null ){
             setIpAddress(request.getRemoteAddr());

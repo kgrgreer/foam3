@@ -1,7 +1,7 @@
 /**
 * NANOPAY CONFIDENTIAL
 *
-* [2020] nanopay Corporation
+* [2021] nanopay Corporation
 * All Rights Reserved.
 *
 * NOTICE:  All information contained herein is, and remains
@@ -19,13 +19,16 @@ foam.CLASS({
   package: 'net.nanopay.reporting',
   name: 'ReconciliationReport',
 
+  mixins: [
+    'foam.nanos.auth.CreatedAwareMixin'
+  ],
+
   implements: [
-    'foam.nanos.auth.CreatedAware',
-    'foam.nanos.auth.LastModifiedAware'
+    'foam.nanos.auth.ServiceProviderAware'
   ],
 
   imports: [
-    'currencyDAO'
+    'currencyDAO',
   ],
 
   searchColumns: [
@@ -38,10 +41,6 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      name: 'clientName',
-      class: 'String'
-    },
     {
       name: 'clientName',
       class: 'String'
@@ -114,6 +113,8 @@ foam.CLASS({
         obj.currencyDAO.find(obj.debitCurrency).then(function(c) {
           if ( c ) {
             this.add(c.format(value));
+          } else {
+            this.add(value);
           }
         }.bind(this));
       }
@@ -145,6 +146,8 @@ foam.CLASS({
         obj.currencyDAO.find(obj.creditCurrency).then(function(c) {
           if ( c ) {
             this.add(c.format(value));
+          } else {
+            this.add(value);
           }
         }.bind(this));
       }
@@ -180,6 +183,8 @@ foam.CLASS({
         obj.currencyDAO.find(obj.feeRevenueCurrency).then(function(c) {
           if ( c ) {
             this.add(c.format(value));
+          } else {
+            this.add(value);
           }
         }.bind(this));
       }
@@ -220,12 +225,14 @@ foam.CLASS({
         obj.currencyDAO.find(obj.feeRevenueCurrency).then(function(c) {
           if ( c ) {
             this.add(c.format(value));
+          } else {
+            this.add(value);
           }
         }.bind(this));
       }
     },
     {
-      name: 'intuitRevenue',
+      name: 'vendorRevenue',
       class: 'UnitValue',
       unitPropName: 'feeRevenueCurrency',
       view: { class: 'net.nanopay.liquidity.ui.LiquidCurrencyView' },
@@ -239,6 +246,8 @@ foam.CLASS({
         obj.currencyDAO.find(obj.feeRevenueCurrency).then(function(c) {
           if ( c ) {
             this.add(c.format(value));
+          } else {
+            this.add(value);
           }
         }.bind(this));
       }
@@ -246,16 +255,22 @@ foam.CLASS({
     {
       name: 'revenuePaymentDate',
       class: 'DateTime'
-    },
+    }
+  ],
+
+  methods: [
     {
-      name: 'created',
-      class: 'DateTime'
-    },
-    {
-      class: 'DateTime',
-      name: 'lastModified',
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO'
+      name: 'findSpid',
+      documentation: `Using Relationship findFoo(x), traverse relationships,
+        returning the spid or context users spid matches the current object.`,
+      type: 'foam.nanos.auth.ServiceProvider',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      javaCode: `return (foam.nanos.auth.ServiceProvider)((foam.dao.DAO) x.get("serviceProviderDAO")).find_(x, (Object) getSpid());`
     }
   ]
 })

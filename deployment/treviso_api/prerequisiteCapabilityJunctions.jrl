@@ -1,0 +1,6 @@
+// Prerequisites for trevisoAPI spid capability
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"trevisoAPI",targetId:"serviceProviderCapability"})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"trevisoAPI",targetId:"trevisoAPICorridorCapability"})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"trevisoAPI",targetId:"trevisoAPIPlannerCapability"})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"trevisoAPI",targetId:"trevisoAPI-tx-reason-codes"})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"trevisoAPI",targetId:"trevisoAPI-tx-fees"})

@@ -15,11 +15,6 @@
  * from nanopay Corporation.
  */
 
-/**
- * @license
- * Copyright 2018 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
 
 foam.CLASS({
   package: 'net.nanopay.tx',
@@ -109,19 +104,7 @@ foam.CLASS({
       documentation: 'Used to format amount',
       name: 'currency',
       class: 'String',
-      value: 'CAD',
       hidden: true
-    },
-    {
-      name: 'reversable',
-      label: 'Refundable',
-      class: 'Boolean',
-      createVisibility: 'RO',
-      readVisibility: 'RO',
-      updateVisibility: 'RO',
-      value: true,
-      view: { class: 'foam.u2.CheckBox', showLabel: false },
-      externalTransient: true
     },
     {
       name: 'requiresUserInput',

@@ -30,7 +30,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'user'
+    'subject'
   ],
 
   css: `
@@ -59,11 +59,13 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.addClass(this.myClass()).addClass('card')
-        .start().addClass('sub-heading').add(this.TITLE).end()
-        // TODO: Allow users to edit the beneficial owners.
-        .select(this.user.beneficialOwners, (owner) => {
-          return this.E().start()
+      // TODO: Allow users to edit the beneficial owners.
+      this.subject.user.beneficialOwners.select().then(owners => {
+        if (owners.array.length == 0) return
+        this.addClass(this.myClass()).addClass('card')
+          .start().addClass('sub-heading').add(this.TITLE).end()
+        .forEach(owners.array, owner => {
+          this.start()
             .start().addClass('info-container')
               .start().addClass('table-content').add(this.LEGAL_NAME_LABEL).end()
               .start().addClass('table-content').addClass('subdued-text').add(owner.firstName, ' ', owner.lastName).end()
@@ -81,7 +83,8 @@ foam.CLASS({
               .start().addClass('table-content').addClass('subdued-text').add(owner.birthday ? owner.birthday.toLocaleDateString(foam.locale) : '').end()
             .end()
           .end();
-      });
+        })
+      })
     }
   ]
 });

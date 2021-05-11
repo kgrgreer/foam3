@@ -57,6 +57,7 @@ foam.CLASS({
       // TODO: there may be a better way to do this without replacing the
       //       entire factory here.
       factory: function() {
+        /* ignoreWarning */
         var x = this.__subContext__;
         var daoSpec = { of: this.ownerClass };
         var adao = foam.dao.ArrayDAO.create(daoSpec);
@@ -82,9 +83,9 @@ foam.CLASS({
         // The below works only because we have one signing officer - and tbh makes more sense to be apart of the BeneficialOwner.fromUser()
         // also the below will not work for checking the signing officer information of another user.
         Promise.all([
-          this.crunchService.getJunction(x, 'fb7d3ca2-62f2-4caf-a84c-860392e4676b'),
-          this.crunchService.getJunction(x, '554af38a-8225-87c8-dfdf-eeb15f71215f-1a5'),
-          this.crunchService.getJunction(x, '8ad3c898-db32-11ea-87d0-0242ac130003')
+          this.crunchService.getJunction(x, 'crunch.onboarding.br.cpf'),
+          this.crunchService.getJunction(x, 'crunch.onboarding.signing-officer-information'),
+          this.crunchService.getJunction(x, 'crunch.onboarding.document.identification')
         ]).then(values => {
           let cpf  = values[0] ? values[0].data : '';
           let so   = values[1] ? values[1].data : '';
@@ -122,7 +123,22 @@ foam.CLASS({
 
         return pdao;
       }
-    },
+    }
+  ],
+
+  methods: [
+    function installInWizardlet(w) {
+      var ownersInstalled = [];
+      var installOwner = () => {
+        this.owners.forEach(owner => {
+          if ( ownersInstalled.includes(owner) ) return;
+          ownersInstalled.push(owner);
+          owner.installInWizardlet(w);
+        })
+      }
+      installOwner();
+      this.owners$.sub(installOwner);
+    }
   ]
 });
 

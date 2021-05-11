@@ -538,6 +538,7 @@ var classes = [
   'net.nanopay.fx.CurrencyFXService',
   'net.nanopay.fx.FXUserStatus',
   'net.nanopay.fx.KotakFxTransaction',
+  'net.nanopay.tx.CurrentLimit',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.client.ClientUserTransactionLimitService',
   'net.nanopay.retail.model.DeviceType',
@@ -566,6 +567,7 @@ var classes = [
   'net.nanopay.tx.FeeTransfer',
   'net.nanopay.tx.InfoLineItem',
   'net.nanopay.tx.TaxLineItem',
+  'net.nanopay.tx.LimitTransaction',
   'net.nanopay.tx.LineItemType',
   'net.nanopay.tx.LineItemTypeAccount',
   'net.nanopay.tx.LineItemAmountType',
@@ -582,6 +584,7 @@ var classes = [
   'net.nanopay.tx.DigitalTransaction',
   'net.nanopay.tx.SecurityTransaction',
   'net.nanopay.tx.ruler.IsSecurityQuote',
+  'net.nanopay.tx.ruler.LimitTransactionRule',
   'net.nanopay.tx.SaveChainedTransactionDAO',
   'net.nanopay.tx.SummarizingTransaction',
   'net.nanopay.tx.ValueMovementTransaction',
@@ -640,6 +643,7 @@ var classes = [
   'net.nanopay.tx.ruler.ComplianceTransactionPlanner',
   'net.nanopay.tx.TransactionException',
   'net.nanopay.tx.UnsupportedTransactionException',
+  'net.nanopay.tx.MatchCurrency',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
@@ -684,6 +688,7 @@ var classes = [
   'net.nanopay.tx.UnsupportedDateException',
   'net.nanopay.tx.ExpiredTransactionException',
   'net.nanopay.tx.ruler.UpdateTxOnApprovalRequestStatusChange',
+  'net.nanopay.tx.TransactionApprovalRequest',
 
   // TODO: From Maldives To Be ReWorked
   'net.nanopay.settlement.GroupingAccount',
@@ -887,6 +892,7 @@ var classes = [
   'net.nanopay.meter.report.UserComplianceSummaryReportDAO',
   'net.nanopay.meter.report.RejectedTransactionReport',
   'net.nanopay.meter.report.RejectedTransactionReportDAO',
+  'net.nanopay.meter.report.ReportStatus',
 
   // clearing
   'net.nanopay.meter.clearing.ClearingTimeService',
@@ -1201,6 +1207,7 @@ var classes = [
   'net.nanopay.tx.planner.exceptions.PlannerValidationException',
   'net.nanopay.tx.planner.exceptions.PlannerCapabilityIncompleteException',
   'net.nanopay.tx.planner.exceptions.PlannerComplianceFailureException',
+  'net.nanopay.tx.planner.exceptions.PlannerStatusInactiveException',
 
   // Billing
   'net.nanopay.tx.billing.Bill',
@@ -1236,7 +1243,7 @@ var classes = [
   'net.nanopay.country.br.NatureCodeData',
   'net.nanopay.country.br.NatureCodeApprovalRequest',
   'net.nanopay.country.br.ApprovedNatureCodeApprovalRequestRuleAction',
-  'net.nanopay.country.br.CapableCreateNatureCodeApprovalsRuleAction',
+  'net.nanopay.country.br.CapableCreateInvoiceApprovalsRuleAction',
   'net.nanopay.country.br.BrazilBusinessInfoData',
   'net.nanopay.country.br.BrazilVerificationServiceInterface',
   'net.nanopay.country.br.ClientBrazilVerificationService',
@@ -1382,11 +1389,17 @@ var classes = [
 
   // Reporting
   'net.nanopay.reporting.ReconciliationReport',
+  'net.nanopay.reporting.ReducedReconciliationReport',
+  'net.nanopay.reporting.ServiceFeesReport',
+  'net.nanopay.reporting.UserOnboardingReport',
 
   // bepay
+  'net.nanopay.country.br.tx.BRPartnerTransaction',
+  'net.nanopay.country.br.tx.PartnerLineItem',
+  'net.nanopay.country.br.tx.PartnerReport',
+  'net.nanopay.country.br.tx.PartnerTransactionPlanner',
+  'net.nanopay.country.br.tx.ScreenUsersOnTransactionCreate',
   'net.nanopay.partner.bepay.tx.BePayTransaction',
-  'net.nanopay.partner.bepay.tx.planner.BePayTransactionPlanner',
-  'net.nanopay.partner.bepay.tx.ScreenUsersOnTransactionCreate',
 
   // accuity
   'net.nanopay.partner.accuity.AccuityCredentials',

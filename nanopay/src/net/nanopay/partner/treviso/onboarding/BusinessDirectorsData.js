@@ -49,7 +49,7 @@ foam.CLASS({
     }
   ],
 
-properties: [
+  properties: [
     {
       class: 'Boolean',
       name: 'skipDirectors',
@@ -80,12 +80,12 @@ properties: [
       section: 'directorsInfoSection',
       view: function(_, x) {
         return {
-          class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
+          class: 'foam.u2.view.TitledArrayView',
           mode: 'RW',
           enableAdding: true,
           enableRemoving: true,
           defaultNewItem: net.nanopay.partner.treviso.onboarding.BRBusinessDirector.create({}, x),
-          name: x.data.ADD_NAME
+          title: x.data.ADD_NAME
         };
       },
       visibility: function(skipDirectors) {
@@ -106,8 +106,16 @@ properties: [
 
   methods: [
     function installInWizardlet(w) {
-      // Eliminate flicker from FObjectArray updates
-      w.reloadAfterSave = false;
+      var directorsInstalled = [];
+      var installDirector = () => {
+        this.businessDirectors.forEach(director => {
+          if ( directorsInstalled.includes(director) ) return;
+          directorsInstalled.push(director);
+          director.installInWizardlet(w);
+        })
+      }
+      installDirector();
+      this.businessDirectors$.sub(installDirector);
     },
     {
       name: 'validate',

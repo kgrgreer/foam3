@@ -37,6 +37,12 @@ foam.CLASS({
       preSet: function(o, n) {
         return n;
       }
+    },
+    {
+      name: 'flagImage',
+      label: '',
+      value: 'images/flags/europeanUnion.svg',
+      visibility: 'RO'
     }
   ],
 

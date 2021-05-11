@@ -1,0 +1,216 @@
+p({
+  "class":"net.nanopay.tx.planner.IntermediaryDestinationAccountSplitPlanner",
+  "id":"d34ff33f-7d1e-43e9-beba-8069cf5f6546",
+  "intermediaryAccountId":{
+    "USD":"17edd25c-476c-472f-be6e-9b6ab0607b4a",
+    "GBP":"040acd32-eca3-48fc-b17d-4c0440aef019",
+    "EUR":"d4c61be5-170f-435e-a655-dc56671f167b",
+    "CAD":"a28da5bf-3f37-472c-b4ac-726f65d45293"
+  },
+  "provider": "TrevisoAPI",
+  "priority":90,
+  "ruleGroup":"TrevisoAPIPlanner",
+  "enabled":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"parent",
+        "propValue":null
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.BRBankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"sourceUnit",
+        "propValue":"BRL"
+      }
+    ]
+  },
+  "lifecycleState":1
+})
+
+// REVIEW: Condition for checking destinationAccount should not be needed as it
+// 1. would require change when opening more corridors for bepay
+// 2. would prevent configure bepay and bpp corridors differently
+// 3. should be controlled via permissions
+p({
+  "class":"net.nanopay.country.br.tx.PartnerTransactionPlanner",
+  "id":"3556a7fa-e0b1-4c7a-b625-6eb901e73a87",
+  "name":"TrevisoAPITransactionPlanner",
+  "documentation":"Planner for transaction from BRL to USD/EUR/GBP (leg 1)",
+  "termsAndConditions":"https://afex.com/unitedstates/global_terms_and_conditions.php",
+  "priority":80,
+  "ruleGroup":"TrevisoAPIPlanner",
+  "enabled":true,
+  "paymentProvider":"TrevisoAPI",
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"parent",
+        "propValue": null
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.BRBankAccount"
+      },
+      {
+        class: "foam.mlang.predicate.Or",
+        args: [
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+            "propName":"destinationAccount",
+            "of":"net.nanopay.bank.USBankAccount"
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+            "propName":"destinationAccount",
+            "of":"net.nanopay.bank.CABankAccount"
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+            "propName":"destinationAccount",
+            "of":"net.nanopay.bank.EUBankAccount"
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+            "propName":"destinationAccount",
+            "of":"net.nanopay.bank.GBBankAccount"
+          }
+        ]
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"sourceUnit",
+        "propValue":"BRL"
+      },
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"TrevisoAPI"
+      }
+    ]
+  },
+  "isFeeOnRootCorridors": true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"net.nanopay.tx.planner.AFEXTransactionPlanner",
+  "id":"deb8f125-b74a-4178-8ffe-45fc45df407b",
+  "name":"AFEX Transaction Planner",
+  "ruleGroup":"TrevisoAPIPlanner",
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.IsAccountOwnerAFEXUserPredicate",
+      },
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"AFEX"
+      }
+    ]
+  },
+  "lifecycleState":1
+})
+
+p({
+  class: "net.nanopay.tx.fee.TransactionFeeRule",
+  id: "63a792b6-d46b-4d48-afa3-42481645ed46",
+  name: "Nanopay Transaction Fee",
+  documentation: "Nanopay transaction fee",
+  feeName: "Nanopay Transaction Fee",
+  rateExpiry: {
+    class: "foam.nanos.cron.TimeHMS",
+    hour: 24
+  },
+  enabled: true,
+  feeDenomination: "USD",
+  predicate: {
+    class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+    of: "net.nanopay.country.br.tx.BRPartnerTransaction"
+  },
+  lifecycleState:1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"21a2f182-4edf-41aa-a6c9-8526fde63825",
+  "name":"Update transaction status based on approval",
+  "daoKey":"approvalRequestDAO",
+  "ruleGroup":"TrevisoAPICompliance",
+  "operation":1,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of:"net.nanopay.meter.compliance.ComplianceApprovalRequest"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"daoKey",
+        "propValue":"transactionDAO"
+      },
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyChangePredicate",
+        "propName": "status"
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.tx.ruler.UpdateTxOnApprovalRequestStatusChange",
+  },
+  "enabled":true,
+  "lifecycleState":1
+})
+
+p({
+    "class": "net.nanopay.tx.ruler.PermissionedTransactionRule",
+    "id":"51897c99-30bc-4148-950e-a54860c2b487",
+    "name":"Screen User On Transaction Create Rule",
+    "ruleGroup":"TrevisoAPICompliance",
+    "documentation":"Screens payer and payee in Dow Jones",
+    "daoKey":"localTransactionDAO",
+    "operation":1,
+    "asyncAction":{
+      "class":"net.nanopay.country.br.tx.ScreenUsersOnTransactionCreate"
+    },
+    "predicate": {
+      "class": "foam.mlang.predicate.And",
+      "args": [
+        {
+          class: "foam.nanos.ruler.predicate.IsClassPredicate",
+          of:"net.nanopay.tx.ComplianceTransaction"
+        },
+        {
+          "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+          "propName":"status",
+          "propValue":{"class":"net.nanopay.tx.model.TransactionStatus","ordinal":0}
+        }
+      ]
+    },
+    "lifecycleState":1
+})

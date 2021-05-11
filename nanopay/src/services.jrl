@@ -127,7 +127,7 @@ p({
           prefetch-src 'self' https://cdn.plaid.com/link/;
           report-uri /service/CSPReportWebAgent;
           script-src 'self' https://cdn.plaid.com/link/v2/stable/link-initialize.js 'unsafe-eval' 'sha256-HY1JzEwuxkis4xx0ggY23gbYY/MCEAE1T6+OQnWS2vA=' 'sha256-NiNrLgJ8wbIXIi5saiR3XTd1Mxm4k0nju66GJsw4b9U=' 'sha256-FLYDXBkz4oo/H5jEfYXqAGYUwERY44OO1yznaMCdMiU=' 'sha256-G3UfiJBy6rwOk3glkBQuQDFA7IoCtiOT56gTh+IfNF0=';
-          style-src 'self' https://fonts.googleapis.com/css https://fonts.googleapis.com/icon data: chrome-extension-resource: 'unsafe-inline';
+          style-src 'self' https://fonts.googleapis.com/css https://fonts.googleapis.com/css2 https://fonts.googleapis.com/icon data: chrome-extension-resource: 'unsafe-inline';
           worker-src 'self';
           """
       }
@@ -305,6 +305,24 @@ p({
 })
 
 p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"localInvoiceDAO",
+  "serve":false,
+  "lazy":false,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.invoice.model.Invoice.getOwnClassInfo())
+      .setJournalName("invoices")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setSeqNo(true)
+      .setAuthorize(false)
+      .setEnableInterfaceDecorators(false)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.invoice.model.Invoice\"}"
+})
+
+p({
   "class": "foam.nanos.boot.NSpec",
   "name": "invoiceDAO",
   "serve": true,
@@ -349,9 +367,8 @@ p({
       .setDecorator(dao)
       .setValidated(true)
       .setSeqNo(true)
-      .setJournalName("invoices")
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setAuthorize(false)
+      .setInnerDAO(x.get("localInvoiceDAO"))
       .setEnableInterfaceDecorators(true)
       .build()
       .orderBy(foam.mlang.MLang.DESC(net.nanopay.invoice.model.Invoice.CREATED));
@@ -747,7 +764,6 @@ p({
   """
     foam.mlang.predicate.Predicate predicate = foam.mlang.MLang.INSTANCE_OF(net.nanopay.model.Business.class);
     dao = x.get("localUserDAO").where(predicate);
-    dao = new net.nanopay.onboarding.email.NewUserOnboardedEmailDAO.Builder(x).setDelegate(dao).build();
     return new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(false)
       .setInnerDAO(dao)
@@ -1332,8 +1348,8 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "padCaptureDAO",
-  "serve": true,
+  "name": "localPadCaptureDAO",
+  "serve": false,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
@@ -1341,10 +1357,26 @@ p({
       .setPm(true)
       .setPipelinePm(true)
       .setSeqNo(true)
-      .setValidated(true)
       .setRuler(false)
       .setJournalName("padCapture")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .build();
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "padCaptureDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.model.PadCapture.getOwnClassInfo())
+      .setInnerDAO(x.get("localPadCaptureDAO"))
+      .setPm(true)
+      .setPipelinePm(true)
+      .setValidated(true)
+      .setRuler(false)
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.model.PadCapture\"}"
@@ -2551,5 +2583,40 @@ p({
     {
       "of": "net.nanopay.settlement.Settlement"
     }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "complianceTransactionApprovalRequestDAO",
+  "serve": true,
+  "description": "filtered DAO for Transaction Approval Requests",
+  "serviceScript":
+  """
+    // TODO: enum predicate does not work here
+    foam.mlang.predicate.Predicate predicate = foam.mlang.MLang.EQ(net.nanopay.tx.TransactionApprovalRequest.DAO_KEY, "transactionDAO");
+
+    dao = x.get("approvalRequestDAO").where(predicate);
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setInnerDAO(dao)
+      .setEnableInterfaceDecorators(false)
+      .setOf(net.nanopay.tx.TransactionApprovalRequest.getOwnClassInfo())
+      .build();
+  """,
+  "client":
+  """
+  {
+    "cache": false,
+    "of": "net.nanopay.tx.TransactionApprovalRequest",
+    "decorators": [
+      {
+        "class":"foam.nanos.fs.FileDAODecorator"
+      },
+      {
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
+      }
+    ]
+  }
   """
 })

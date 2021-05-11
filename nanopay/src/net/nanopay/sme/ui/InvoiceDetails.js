@@ -39,7 +39,9 @@ foam.CLASS({
   imports: [
     'currencyDAO',
     'notify',
-    'subject'
+    'subject',
+    'regionDAO',
+    'countryDAO'
   ],
 
   css: `
@@ -316,7 +318,10 @@ foam.CLASS({
                       return self.E()
                         .start().add(payer.toSummary()).end()
                         .start().add(self.formatStreetAddress(address)).end()
-                        .start().add(self.formatRegionAddress(address)).end()
+                        .start().add(self.PromiseSlot.create({
+                          promise: self.formatRegionAddress(address),
+                          value: '',
+                        })).end()
                         .start().add(address != undefined ? address.postalCode : '').end();
                       }
                   });
@@ -493,29 +498,13 @@ foam.CLASS({
             .start('img')
               .addClass('icon')
               .addClass(this.myClass('align-top'))
-              .attr('src', this.PRINT_ICON)
-            .end()
-            .start('img')
-              .addClass('icon').addClass('hover')
-              .addClass(this.myClass('align-top'))
-              .attr('src', this.PRINT_ICON_HOVER)
-              .on('click', () => window.print())
-            .end()
-          .end()
-
-          .start()
-            .addClass('sme').addClass('link-button')
-            .addClass(this.myClass('link-icon'))
-            .start('img')
-              .addClass('icon')
-              .addClass(this.myClass('align-top'))
               .attr('src', this.EXPORT_ICON)
             .end()
             .start('img')
               .addClass('icon').addClass('hover')
               .addClass(this.myClass('align-top'))
               .attr('src', this.EXPORT_ICON_HOVER)
-              .on('click', () => this.exportAsPDF())
+              .on('click', this.exportAsPDF)
             .end()
           .end()
         .end()
@@ -535,52 +524,97 @@ foam.CLASS({
       }
       return formattedAddress;
     },
-
-    function formatRegionAddress(address) {
+    async function formatRegionAddress(address) {
       var formattedAddress = '';
       if ( ! address ) return '';
       if ( address.city ) formattedAddress += address.city;
       if ( address.regionId ) {
-        formattedAddress ? formattedAddress += ', ' + address.regionId
-            : formattedAddress += address.regionId;
+        let region = await this.regionDAO.find(address.regionId);
+        let regionName = ( ! region ) ? address.regionId : region.name;
+        formattedAddress ? formattedAddress += ', ' + regionName
+            : formattedAddress += regionName;
       }
       if ( address.countryId ) {
-        formattedAddress ? formattedAddress += ', ' + address.countryId
-            : formattedAddress += address.countryId;
+        let country = await this.countryDAO.find(address.countryId);
+        let countryName = ( ! country ) ? address.countryId : country.nativeName;
+        formattedAddress ? formattedAddress += ', ' + countryName
+            : formattedAddress += countryName;
       }
       return formattedAddress;
+    },
+
+    function addPDFStyle(invoiceNodes) {
+      const {
+        invoiceNode,
+        actionBtnContainerNode,
+        appLogoContainerNode
+      } = invoiceNodes;
+
+      // remove print and download PDF buttons
+      actionBtnContainerNode.classList.add('hide');
+
+      // add app logo
+      appLogoContainerNode.classList.remove('hide');
+
+      // add styles
+      invoiceNode.style.backgroundColor = '#fff';
+      invoiceNode.style.padding = '100px 50px';
+      invoiceNode.offsetParent.style.width = invoiceNode.scrollWidth + invoiceNode.offsetParent.scrollWidth + 'px';
+      invoiceNode.offsetParent.style.height = invoiceNode.scrollHeight + invoiceNode.offsetParent.scrollHeight + 'px';
+    },
+    
+    function removePDFStyle(invoiceNodes) {
+      const {
+        invoiceNode,
+        actionBtnContainerNode,
+        appLogoContainerNode
+      } = invoiceNodes;
+
+      // add print and download PDF buttons
+      actionBtnContainerNode.classList.remove('hide');
+
+      // remove app logo
+      appLogoContainerNode.classList.add('hide');
+
+      // undo styles
+      invoiceNode.style.backgroundColor = '';
+      invoiceNode.style.padding = '';
+      invoiceNode.offsetParent.style.width = '';
+      invoiceNode.offsetParent.style.height = ''
     }
   ],
 
   listeners: [
     function exportAsPDF() {
+      const invoiceNode = ctrl.document.querySelector('.full-invoice');
+      const actionBtnContainerNode = invoiceNode.querySelector(`.${this.cls_.id.replaceAll('.', '-')}-print-wrapper`);
+      const appLogoContainerNode = invoiceNode.querySelector('.pdf-app-logo-container');
+
       try {
         window.scrollTo(0,0);
-        var className = '.full-invoice';
-        var downloadContent = ctrl.document.querySelector(className);
-        downloadContent.style.backgroundColor = '#fff';
-        downloadContent.style.margin = '350px 50px 250px 50px';
-        downloadContent.style.padding = '350px 50px 250px 50px';
-        downloadContent.offsetParent.style.margin = '120px 40px 120px 40px';
-        downloadContent.offsetParent.style.zoom = '60%';
+        const doc = new jsPDF('p', 'pt');
 
-        downloadContent.offsetParent.style.width = downloadContent.scrollWidth + downloadContent.offsetParent.scrollWidth + 'px';
-        downloadContent.offsetParent.style.height = downloadContent.scrollHeight + downloadContent.offsetParent.scrollHeight + 'px';
-
-        var doc = new jsPDF('p', 'pt');
-
-        doc.addHTML(downloadContent, () => {
-           doc.save(`invoice-${this.invoice.referenceId}.pdf`);
+        this.addPDFStyle({
+          invoiceNode,
+          actionBtnContainerNode,
+          appLogoContainerNode,
         });
 
-        downloadContent.style.backgroundColor = '#f9fbff';
-        downloadContent.offsetParent.style.zoom = '1.0';
-        downloadContent.style.margin = '';
-        downloadContent.style.padding = '';
-        downloadContent.offsetParent.style.margin = '';
-        downloadContent.offsetParent.style.width = '';
-        downloadContent.offsetParent.style.height = ''
+        doc.addHTML(invoiceNode, () => {
+          doc.save(`invoice-${this.invoice.referenceId}.pdf`);
+        });
+
+        this.removePDFStyle({
+          invoiceNode,
+          actionBtnContainerNode,
+          appLogoContainerNode
+        });
       } catch (e) {
+        this.removePDFStyle({
+          invoiceNode,
+          actionBtnContainerNode,
+          appLogoContainerNode
+        });
         this.notify(this.SAVE_AS_PDF_FAIL, '', this.LogLevel.ERROR, true);
         throw e;
       }

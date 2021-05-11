@@ -98,7 +98,7 @@ foam.CLASS({
             .start(self.Cols).addClass(this.myClass('footer'))
               .add(this.PREV)
               .add(this.NEXT)
-              .add(this.SUBMIT)
+              .tag(this.SUBMIT, { buttonStyle: 'PRIMARY' })
             .end()
           .endContext()
         .end();
