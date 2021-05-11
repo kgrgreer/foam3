@@ -1,22 +1,21 @@
-p({"class":"foam.nanos.boot.NSpec", "name":"exchangeCredential", "lazy":false, "service":{"class":"net.nanopay.country.br.exchange.ExchangeCredential"}})
 
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "exchangeCredentialDAO",
+  "lazy": false,
   "serve": true,
-  "serviceScript": """
+  "serviceScript":
+  """
     return new foam.dao.EasyDAO.Builder(x)
-      .setGuid(true)
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("exchangeCredentialDAO")
       .setOf(net.nanopay.country.br.exchange.ExchangeCredential.getOwnClassInfo())
+      .setGuid(true)
+      .setName("exchangeCredentialDAO")
+      .setJournalName("exchangeCredentials")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
       .build();
   """,
-  "client": """
-    {
-      "of": "net.nanopay.country.br.exchange.ExchangeCredential"
-    }
-  """
+  "client": "{\"of\":\"net.nanopay.country.br.exchange.ExchangeCredential\"}"
 })
 
 p({
