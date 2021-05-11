@@ -1265,7 +1265,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-157",
+  "id": "5FBF827D-1D2B-44CC-AE07-1CBCD2D47974",
   "name": "NOC",
   "group": "*",
   "displayName": "{{appName}}",

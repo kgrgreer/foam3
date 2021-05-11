@@ -1,0 +1,7 @@
+p({
+  "class":"foam.nanos.notification.email.EmailConfig",
+  "spid":"trevisoAPI",
+  "from":"noreply@nanopay.net",
+  "displayName":"nanopay",
+  "replyTo":"noreply@nanopay.net"
+})

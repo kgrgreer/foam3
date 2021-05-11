@@ -37,13 +37,12 @@ foam.CLASS({
   ],
 
   imports: [
+    'countryDAO',
     'currencyDAO',
     'notify',
-    'subject',
     'regionDAO',
-    'countryDAO',
-    'accountDAO',
-    'findAccount'
+    'subject',
+    'theme'
   ],
 
   css: `
@@ -533,29 +532,13 @@ foam.CLASS({
             .start('img')
               .addClass('icon')
               .addClass(this.myClass('align-top'))
-              .attr('src', this.PRINT_ICON)
-            .end()
-            .start('img')
-              .addClass('icon').addClass('hover')
-              .addClass(this.myClass('align-top'))
-              .attr('src', this.PRINT_ICON_HOVER)
-              .on('click', () => window.print())
-            .end()
-          .end()
-
-          .start()
-            .addClass('sme').addClass('link-button')
-            .addClass(this.myClass('link-icon'))
-            .start('img')
-              .addClass('icon')
-              .addClass(this.myClass('align-top'))
               .attr('src', this.EXPORT_ICON)
             .end()
             .start('img')
               .addClass('icon').addClass('hover')
               .addClass(this.myClass('align-top'))
               .attr('src', this.EXPORT_ICON_HOVER)
-              .on('click', () => this.exportAsPDF())
+              .on('click', this.exportAsPDF)
             .end()
           .end()
         .end()
@@ -592,6 +575,55 @@ foam.CLASS({
             : formattedAddress += countryName;
       }
       return formattedAddress;
+    },
+
+    function createInvoice4PDF() {
+      /*
+       * create invoice html to be rendered in pdf
+       */
+
+      const invoiceNode = document.querySelector('.full-invoice').cloneNode(deep=true);
+
+      // allows InvoiceOverview css to be applied to invoice and its childeren nodes
+      invoiceNode.classList.add('net-nanopay-sme-ui-InvoiceOverview');
+
+      // add app logo to invoice details
+      const appLogoImage = [  // png app logo image
+        this.theme.largeLogo,
+        this.theme.logo
+      ].find(logo => logo.search(/.png$/) > -1);
+
+      const appLogoNode = document.createElement('img');
+      appLogoNode.setAttribute('src', appLogoImage);
+      appLogoNode.style.display = 'block';
+      appLogoNode.style.height = '100px';
+      
+      invoiceNode.prepend(appLogoNode);
+
+      // get invoice status (handle html2pdf glitch where some text is not visible)
+      const invoiceStatusNode = invoiceNode.querySelector('.foam-u2-view-ReadOnlyEnumView');
+      invoiceStatusNode.classList.remove('foam-u2-view-ReadOnlyEnumView-pill');
+      invoiceStatusNode.style.backgroundColor = '#fff';
+
+      // style invoice content (left block of the invoice details)
+      const invoiceContent = invoiceNode.querySelector('.left-block');
+      invoiceContent.style.display = 'block';
+      invoiceContent.style.width = '50%';
+      invoiceContent.style.padding = '0';
+      invoiceContent.style.margin = '0';
+
+      // style payment and history content (right block of the invoice details)
+      const paymentContent = invoiceNode.querySelector('.right-block');
+      paymentContent.style.display = 'block';
+      paymentContent.style.width = '50%';
+      paymentContent.style.padding = '100px 0 0 0';
+      paymentContent.style.margin = '0';
+
+      // remove print and download icons
+      const actionContainerNode = invoiceContent.querySelector(`.${this.cls_.id.replaceAll('.', '-')}-print-wrapper`);
+      actionContainerNode.parentNode.removeChild(actionContainerNode);
+      
+      return invoiceNode;
     }
   ],
 
@@ -599,30 +631,15 @@ foam.CLASS({
     function exportAsPDF() {
       try {
         window.scrollTo(0,0);
-        var className = '.full-invoice';
-        var downloadContent = ctrl.document.querySelector(className);
-        downloadContent.style.backgroundColor = '#fff';
-        downloadContent.style.margin = '350px 50px 250px 50px';
-        downloadContent.style.padding = '350px 50px 250px 50px';
-        downloadContent.offsetParent.style.margin = '120px 40px 120px 40px';
-        downloadContent.offsetParent.style.zoom = '60%';
 
-        downloadContent.offsetParent.style.width = downloadContent.scrollWidth + downloadContent.offsetParent.scrollWidth + 'px';
-        downloadContent.offsetParent.style.height = downloadContent.scrollHeight + downloadContent.offsetParent.scrollHeight + 'px';
+        const invoice4pdf = this.createInvoice4PDF();
 
-        var doc = new jsPDF('p', 'pt');
+        html2pdf().from(invoice4pdf).set({
+          margin: [0, 30],
+          filename: `invoice-${this.invoice.referenceId}.pdf`,
+          pagebreak: { mode: 'avoid-all', before: '.right-block' }
+        }).save();
 
-        doc.addHTML(downloadContent, () => {
-           doc.save(`invoice-${this.invoice.referenceId}.pdf`);
-        });
-
-        downloadContent.style.backgroundColor = '#f9fbff';
-        downloadContent.offsetParent.style.zoom = '1.0';
-        downloadContent.style.margin = '';
-        downloadContent.style.padding = '';
-        downloadContent.offsetParent.style.margin = '';
-        downloadContent.offsetParent.style.width = '';
-        downloadContent.offsetParent.style.height = ''
       } catch (e) {
         this.notify(this.SAVE_AS_PDF_FAIL, '', this.LogLevel.ERROR, true);
         throw e;

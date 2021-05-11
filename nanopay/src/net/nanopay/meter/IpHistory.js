@@ -26,6 +26,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'translationService',
     'publicBusinessDAO',
     'userDAO'
   ],
@@ -45,7 +46,34 @@ foam.CLASS({
     {
       class: 'String',
       name: 'description',
-      visibility: 'RO'
+      visibility: 'RO',
+      tableCellFormatter: function(val, obj) {
+        /* 
+         * description has a form of <User type>: <action> <email address>
+         * e.g., Signing officer: assgined to <email address>
+         */
+
+        let [userType, remainder] = val.split(':');
+        
+        const remainderList = remainder.trim().split(' ');
+
+        let email = remainderList.pop();
+        let action = remainderList.join(' ');
+
+        userType = obj.translationService.getTranslation(
+          foam.locale,
+          userType,
+          userType
+        );
+
+        action = obj.translationService.getTranslation(
+          foam.locale,
+          action,
+          action
+        );
+
+        this.add(`${userType}: ${action} ${email}`);
+      }
     },
     {
       class: 'DateTime',

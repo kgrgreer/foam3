@@ -44,6 +44,13 @@ foam.CLASS({
       section: 'basicInfo'
     },
     {
+      class: 'Int',
+      name: 'tipo',
+      description: 'Mapped property that gets sent to the property to exchange',
+      value: 4,
+      hidden: true
+    },
+    {
       name: 'icon',
       hidden: true
     },

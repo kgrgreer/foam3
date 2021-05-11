@@ -21,7 +21,6 @@ import foam.core.X;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import net.nanopay.tx.SummarizingTransaction;
-import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.model.Transaction;
 
 public abstract class ReconciliationReportGenerator extends ReportGenerator {
@@ -39,8 +38,8 @@ public abstract class ReconciliationReportGenerator extends ReportGenerator {
     return transaction.getId();
   }
 
-  protected ReconciliationReportGenerator() {
-    super();
+  protected ReconciliationReportGenerator(String spid, boolean cached) {
+    super(spid, cached);
   }
 
   protected ReconciliationReportGenerator(String spid) {

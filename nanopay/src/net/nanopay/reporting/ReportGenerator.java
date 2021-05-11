@@ -20,29 +20,37 @@ package net.nanopay.reporting;
 
 import foam.core.FObject;
 import foam.core.X;
-import foam.nanos.auth.*;
+import foam.nanos.auth.CreatedAware;
+import foam.nanos.auth.LastModifiedAware;
+import foam.nanos.auth.ServiceProviderAware;
 import foam.util.SafetyUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class ReportGenerator {
 
-  protected Map<Object, CreatedAware> cacheMap = new HashMap<>();
+  protected Map<Object, FObject> cacheMap = new ConcurrentHashMap<>();
   protected String spid;
+  protected boolean cached;
 
-  protected Object getCachedElement(Object elementId, Date lastModified) {
-    var cached = cacheMap.get(elementId);
-    if ( cached == null ) return null;
-    if ( lastModified == null || cached.getCreated() == null || cached.getCreated().before(lastModified) ) {
+  protected FObject getCachedElement(Object elementId, Object src) throws IllegalArgumentException {
+    if ( ! (src instanceof LastModifiedAware) ) throw new IllegalArgumentException("src model must be LastModifiedAware");
+    var lastModified = (LastModifiedAware) src;
+
+    var cachedfo = cacheMap.get(elementId);
+    if ( cachedfo == null ) return null;
+
+    var cached = (CreatedAware) cachedfo;
+    if ( cached.getCreated() == null || cached.getCreated().before(lastModified.getLastModified()) ) {
       cacheMap.remove(elementId);
       return null;
     }
-    return cached;
+
+    return cachedfo;
   }
 
   protected Object getSourceId(@Nonnull FObject object) {
@@ -65,34 +73,40 @@ public abstract class ReportGenerator {
       }
     }
 
-    // We can cache if the source model is LastModifiedAware
-    if ( src instanceof LastModifiedAware ) {
+    if ( cached ) {
       var id = getSourceId((FObject) src);
+      try {
+        var report = getCachedElement(id, src);
+        if ( report != null )
+          return report;
 
-      var report = getCachedElement(id, ((LastModifiedAware) src).getLastModified());
-      if ( report != null )
-        return (FObject) report;
+        report = generate(x, (FObject) src, null);
+        if ( report instanceof ServiceProviderAware )
+          ((ServiceProviderAware) report).setSpid(spid);
 
-      report = generate(x, (FObject) src, null);
+        if ( report instanceof CreatedAware ) {
+          ((CreatedAware) report).setCreated(Calendar.getInstance().getTime());
+          cacheMap.put(id, report);
+        }
 
-      if ( report instanceof CreatedAware ) {
-        var ca = (CreatedAware) report;
-        ca.setCreated(Calendar.getInstance().getTime());
-        cacheMap.put(id, ca);
-      }
-
-      return (FObject) report;
-    } else {
-      return generate(x, (FObject) src, null);
+        return report;
+      } catch(IllegalArgumentException ignored) {}
     }
+
+    var report = generate(x, (FObject) src, null);
+    if ( report instanceof ServiceProviderAware )
+      ((ServiceProviderAware) report).setSpid(spid);
+
+    return report;
   }
 
-  public ReportGenerator(String spid) {
+  public ReportGenerator(String spid, boolean cached) {
+    this.cached = cached;
     this.spid = spid;
   }
 
-  public ReportGenerator() {
-    this.spid = "";
+  public ReportGenerator(String spid) {
+    this(spid, true);
   }
 
 }

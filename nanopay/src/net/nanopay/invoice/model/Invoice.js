@@ -766,7 +766,7 @@ foam.CLASS({
       includeInDigest: false,
       visibility: 'RO',
       view: {
-        class: 'foam.u2.view.FObjectArrayView',
+        class: 'foam.u2.view.TitledArrayView',
         valueView: 'foam.u2.CitationView'
       }
     },
@@ -959,7 +959,7 @@ foam.CLASS({
       name: 'toSummary',
       type: 'String',
       code: function() {
-        return this.cls_.name;
+        return this.paymentId.split('-', 1)[0];
       },
       javaCode: `
         return this.getClass().getSimpleName();

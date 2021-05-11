@@ -104,19 +104,7 @@ foam.CLASS({
       documentation: 'Used to format amount',
       name: 'currency',
       class: 'String',
-      value: 'CAD',
       hidden: true
-    },
-    {
-      name: 'reversable',
-      label: 'Refundable',
-      class: 'Boolean',
-      createVisibility: 'RO',
-      readVisibility: 'RO',
-      updateVisibility: 'RO',
-      value: true,
-      view: { class: 'foam.u2.CheckBox', showLabel: false },
-      externalTransient: true
     },
     {
       name: 'requiresUserInput',

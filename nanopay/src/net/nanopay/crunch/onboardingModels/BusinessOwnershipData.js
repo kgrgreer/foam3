@@ -77,6 +77,7 @@ foam.CLASS({
       documentation: `this property converts SigningOfficer Users to BeneficialOwners,
       as a way of mini pre-processing for owner selections.`,
       factory: function() {
+        /* ignoreWarning */
         var x = this.__subContext__;
         var daoSpec = { of: this.ownerClass };
         var adao = foam.dao.ArrayDAO.create(daoSpec);
@@ -179,7 +180,7 @@ foam.CLASS({
       },
       view: function (_, X) {
         return {
-          class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
+          class: 'foam.u2.view.TitledArrayView',
           of: X.data.ownerClass,
           defaultNewItem: X.data.ownerClass.create({ mode: 'blank' }, X),
           enableAdding$: X.data.owners$.map(a =>
@@ -188,7 +189,7 @@ foam.CLASS({
             // Last item, if present, must have a selection made
             ( a.length == 0 || a[a.length-1].mode != 'blank' )
           ),
-          name: X.data.ADD_MSG,
+          title: X.data.ADD_MSG,
           valueView: () => ({
             class: X.data.selectionView,
 

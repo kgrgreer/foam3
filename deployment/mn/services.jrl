@@ -32,7 +32,8 @@ p({
     dao = new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
       .setMdao(mdao)
-      .setInnerDAO(new net.nanopay.security.HashingJDAO(x, "SHA-256", true, true, mdao, "ledger"))
+      .setInnerDAO(new foam.nanos.medusa.MedusaNodeJDAO(x,
+        new net.nanopay.security.HashingJDAO(x, "SHA-256", true, true, mdao, "ledger")))
       .setRuler(false)
       .setCluster(false)
       .setPm(true)

@@ -106,10 +106,11 @@ foam.CLASS({
       padding-left: 5px;
       background: #ffffff;
       display: inline-block;
-      height: 38px;
+      height: 34px;
       vertical-align: top;
       border: 1px solid /*%GREY3%*/ #cbcfd4;
       border-radius: 3px;
+      box-sizing: border-box;
     }
     ^ .validation-failure-container {
       font-size: 10px;
@@ -561,7 +562,7 @@ foam.CLASS({
                         return isInvalid && type === 'payable' && ! showAddBank;
                       }))
                     .on('click', () => {
-                      this.invoice.destinationCurrency = this.currencyType.id;
+                      this.invoice.destinationCurrency = this.currencyType;
                     })
                   .end()
                 .endContext()

@@ -21,7 +21,7 @@ foam.CLASS({
   extends: 'foam.nanos.crunch.lite.ruler.CapableCreateApprovalsRuleAction',
 
   documentation: `
-    To add a NatureCodeApprovalRequest and TransactionApprovalRequest decorator 
+    To add a NatureCodeApprovalRequest and TransactionApprovalRequest decorator
     on ApprovalRequest instantiation for Invoices
   `,
 
@@ -34,6 +34,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.approval.Approvable',
     'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.approval.ApprovalStatus',
     'foam.comics.v2.userfeedback.UserFeedback',
     'foam.comics.v2.userfeedback.UserFeedbackException',
@@ -73,7 +74,7 @@ foam.CLASS({
         CapabilityJunctionPayload capablePayload = (CapabilityJunctionPayload) capablePayloadObj;
         DAO capabilityDAO = (DAO) x.get("capabilityDAO");
         Capability capability = (Capability) capabilityDAO.find(capablePayload.getCapability());
-        
+
         // TODO: consider making referenceAware if we need paymentId elsewhere
         Invoice invoice = (Invoice) obj;
 
@@ -84,7 +85,7 @@ foam.CLASS({
             .setOperation(request.getOperation())
             .setCreatedFor(request.getCreatedFor())
             .setGroup(request.getGroup())
-            .setClassification(request.getClassification())
+            .setClassificationEnum(ApprovalRequestClassificationEnum.NATURE_CODE_APPROVAL)
             .setStatus(request.getStatus())
             .setPaymentId(invoice.getPaymentId())
             .setNatureCode(capability.getId()).build();
@@ -98,7 +99,7 @@ foam.CLASS({
           .setOperation(request.getOperation())
           .setCreatedFor(request.getCreatedFor())
           .setGroup(request.getGroup())
-          .setClassification(request.getClassification())
+          .setClassificationEnum(ApprovalRequestClassificationEnum.NATURE_CODE_DOCUMENT_APPROVAL)
           .setStatus(request.getStatus())
           .setPaymentId(invoice.getPaymentId()).build();
 
