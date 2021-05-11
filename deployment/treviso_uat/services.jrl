@@ -32,7 +32,7 @@ p({
       fepWebUsername:"trevisocc",
       fepWebPassword:"Treviso4321#@!",
       fepWebApi:"https://client-uat.fepweb.com.br/fepwebws/api/",
-      fepWebCode:"100001",6
+      fepWebCode:"100001",
       fepWebCodeName:"Treviso Matriz - Nanopay"
     }
 })
