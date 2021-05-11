@@ -2533,6 +2533,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.EtaSummaryTransac
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.NO_ATTACHEMENT_PROVIDED",target:"Nenhum anexo fornecido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.NO_NOTES_PROVIDED",target:"Nenhuma nota fornecida"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.DESTINATION_ACCOUNT",target:"Conta de Destino"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.CURRENCY",target:"Moeda: "})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.history.InvoiceCreatedHistoryItemView.INVOICE_CREATED",target:"A fatura foi criada"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.FXSummaryTransaction.DESCRIPTION",target:"Resumo"})

@@ -41,7 +41,9 @@ foam.CLASS({
     'notify',
     'subject',
     'regionDAO',
-    'countryDAO'
+    'countryDAO',
+    'accountDAO',
+    'findAccount'
   ],
 
   css: `
@@ -241,6 +243,15 @@ foam.CLASS({
           return Promise.resolve(invoice$payee);
         }
       },
+    },
+    {
+      class: "String",
+      name: 'accountSummary',
+      expression: async function(subject,invoice$contactId) {
+        var contact = await subject.user.contacts.find(invoice$contactId);
+        var acc = await contact.accounts.find(contact.bankAccount);
+        return acc.summary;
+      }
     }
   ],
 
@@ -261,6 +272,8 @@ foam.CLASS({
     { name: 'SAVE_AS_PDF_FAIL', message: 'There was an unexpected error when creating the PDF. Please contact support.' },
     { name: 'NO_ATTACHEMENT_PROVIDED', message: 'No attachments provided'},
     { name: 'NO_NOTES_PROVIDED', message: 'No notes provided'},
+    { name: 'DESTINATION_ACCOUNT', message: 'Destination Account'},
+    { name: 'CURRENCY', message: 'Currency: '},
   ],
 
   methods: [
@@ -339,7 +352,9 @@ foam.CLASS({
                   return payee.then(function(payee) {
                     if ( payee != null ) {
                       return self.E()
-                        .start().add(payee.toSummary()).end();
+                        .start().add(payee.toSummary()).end()
+                        .start().add(payee.email).end()
+                        .start().add(self.CURRENCY + self.invoice.destinationCurrency).end()
                     }
                   });
                 }))
@@ -349,14 +364,34 @@ foam.CLASS({
           .start()
             .addClass('invoice-row')
             .start()
-              .addClass('bold-label')
-              .add(this.AMOUNT_LABEL)
+              .addClass(this.myClass('invoice-content-block'))
+              .start()
+                .addClass('bold-label')
+                .add(this.AMOUNT_LABEL)
+              .end()
+              .start().addClass(this.myClass('invoice-content-text'))
+                .add(this.PromiseSlot.create({
+                  promise$: this.formattedAmount$,
+                  value: '--',
+                }))
+              .end()
             .end()
-            .start().addClass(this.myClass('invoice-content-text'))
-              .add(this.PromiseSlot.create({
-                promise$: this.formattedAmount$,
-                value: '--',
-              }))
+            .start()
+            .addClass(self.myClass('invoice-content-block'))
+            .callIf( !!this.invoice.contactId, function() {
+              this.start()
+                .addClass('bold-label')
+                .add(self.DESTINATION_ACCOUNT)
+              .end()
+              .start().addClass(this.myClass('invoice-content-text'))
+                .add(self.slot( function(accountSummary) {
+                  if ( ! ! accountSummary ) {
+                    return self.E()
+                      .start().add(accountSummary).end();
+                  }
+                }))
+              .end()
+            })
             .end()
           .end()
           .start()
