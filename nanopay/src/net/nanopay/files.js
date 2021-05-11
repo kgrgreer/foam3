@@ -16,6 +16,8 @@ FOAM_FILES([
   { name: 'net/nanopay/liquidity/approvalRequest/LiquidityApprovalStatus' },
 
   // Payment
+  { name: 'net/nanopay/tx/ComplianceTransactionApprovalRequestController', flags: ['web'] },
+  { name: 'net/nanopay/tx/MatchCurrency' },
   { name: 'net/nanopay/tx/ui/UnitFormatDisplayView', flags: ['web'] },
   { name: 'net/nanopay/tx/TxnProcessor' },
   { name: 'net/nanopay/tx/FeeTransfer' },
@@ -177,7 +179,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ui/AddINBankAccountView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/AddPKBankAccountView', flags: ['web'] },
   { name: 'net/nanopay/bank/test/BankAccountIBANTest' },
-  { name: 'net/nanopay/tx/SummaryTransactionCitationView' },
+  { name: 'net/nanopay/tx/InvoiceSummaryTransactionCitationView' },
   { name: 'net/nanopay/tx/LineItemCitationView' },
   { name: 'net/nanopay/tx/SummaryTransactionLineItem' },
   { name: 'net/nanopay/tx/FeeSummaryTransactionLineItem' },
@@ -480,6 +482,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sps/SPSCredentials' },
 
   // tx
+  { name: 'net/nanopay/tx/CurrentLimit' },
   { name: 'net/nanopay/tx/TransactionValidator' },
   { name: 'net/nanopay/tx/TransactionLimitServiceInterface' },
   { name: 'net/nanopay/tx/client/ClientTransactionLimitService' },
@@ -514,6 +517,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/AddStatusHistoryAction' },
   { name: 'net/nanopay/tx/ruler/CascadingCancelAction' },
   { name: 'net/nanopay/tx/ruler/IsSecurityQuote' },
+  { name: 'net/nanopay/tx/ruler/LimitTransactionRule' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
   { name: 'net/nanopay/tx/ruler/MicroDepositSuccessed' },
   { name: 'net/nanopay/tx/ruler/MicroDepositFailed' },
@@ -724,6 +728,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/LineItemTypeAccount' },
   { name: 'net/nanopay/tx/LineItemFee' },
   { name: 'net/nanopay/tax/LineItemTax' },
+  { name: 'net/nanopay/tx/LimitTransaction' },
   { name: 'net/nanopay/tx/LineItemAmountType' },
   { name: 'net/nanopay/tx/LineItemAmount' },
   { name: 'net/nanopay/tx/ETALineItem' },

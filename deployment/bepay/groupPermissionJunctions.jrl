@@ -34,3 +34,8 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-dev","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-fraud-ops","targetId":"menu.read.switch-user"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-payment-ops","targetId":"menu.read.switch-user"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-support","targetId":"menu.read.switch-user"})
+
+// See Menus - moved off parent
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bepay-fraud-ops",targetId:"menu.read.bankaccounts"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bepay-fraud-ops",targetId:"menu.read.integration"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bepay-fraud-ops",targetId:"menu.read.transactions"})

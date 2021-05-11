@@ -1,217 +1,54 @@
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.computer-programs", priority: 17 })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.computer-programs", targetId:"naturecode.br.minmax.assignment-use-computer-programs", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.assignment-use-computer-programs", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.assignment-use-computer-programs", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.assignment-use-computer-programs", targetId:"crunch.onboarding.document.br.signed-commercial-invoice" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.assignment-use-computer-programs", targetId:"crunch.onboarding.document.br.sales-statement" })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.assignment-use-computer-programs", targetId:"crunch.onboarding.document.br.contract" })
 
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.funds-abroad", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.funds-abroad", targetId:"naturecode.br.minmax.availability-abroad", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.availability-abroad", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.availability-abroad", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.abroad-non-profit", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.abroad-non-profit", targetId:"naturecode.br.minmax.availability-abroad-non-profit-organizations", priority: 17 })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.availability-abroad-non-profit-organizations", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.availability-abroad-non-profit-organizations", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
 
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.consultancy-public-relations", priority: 17 })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.consultancy-public-relations", targetId:"naturecode.br.minmax.consultancy-public-relations", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.consultancy-public-relations", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.consultancy-public-relations", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.consultancy-public-relations", targetId:"crunch.onboarding.document.br.service-provision" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.consultancy-public-relations", targetId:"crunch.onboarding.document.br.invoice-payment-details" })
-
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.real-estate-abroad", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.real-estate-abroad", targetId:"naturecode.br.minmax.purchase-sale-property-abroad", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.purchase-sale-property-abroad", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.purchase-sale-property-abroad", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.purchase-sale-property-abroad", targetId:"crunch.onboarding.document.br.property-purchase-agreement" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.purchase-sale-property-abroad", targetId:"crunch.onboarding.document.br.property-sale-agreement" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.purchase-sale-property-abroad", targetId:"crunch.onboarding.document.br.deed-of-property" })
-
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.capital-increase-reduction", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.capital-increase-reduction", targetId:"naturecode.br.minmax.capital-increase-reduction", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.capital-increase-reduction", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.capital-increase-reduction", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.capital-increase-reduction", targetId:"crunch.onboarding.document.br.corporate-act" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.capital-increase-reduction", targetId:"crunch.onboarding.document.br.contract" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.capital-increase-reduction", targetId:"crunch.onboarding.document.br.company-incorporation-document" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.capital-increase-reduction", targetId:"crunch.onboarding.document.br.rde-ied" })
-
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.computer-services", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.computer-services", targetId:"naturecode.br.minmax.computer-services", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.computer-services", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.computer-services", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.computer-services", targetId:"crunch.onboarding.document.br.contract" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.computer-services", targetId:"crunch.onboarding.document.br.rof" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.computer-services", targetId:"crunch.onboarding.document.br.invoice-payment-details" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.computer-services", targetId:"crunch.onboarding.document.br.sales-statement" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.computer-services", targetId:"crunch.onboarding.document.br.service-provision" })
-
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.education-services", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.education-services", targetId:"naturecode.br.minmax.education-services", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.education-services", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.education-services", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.education-services", targetId:"crunch.onboarding.document.br.invoice-payment-details" })
-
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.wu-estrangeiro", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.wu-estrangeiro", targetId:"naturecode.br.minmax.wu-estrangeiro", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.wu-estrangeiro", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.wu-estrangeiro", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.consultancy-public-relations", targetId:"crunch.onboarding.document.br.contract" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.consultancy-public-relations", targetId:"crunch.onboarding.document.br.sales-statement" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.consultancy-public-relations", targetId:"crunch.onboarding.document.br.signed-commercial-invoice" })
 
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.import-goods", priority: 17 })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.import-goods", targetId:"naturecode.br.minmax.import-goods", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods", targetId:"crunch.onboarding.document.br.bill-of-landing" })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods", targetId:"crunch.onboarding.document.br.signed-commercial-invoice" })
 
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.import-goods-draw-back", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.import-goods-draw-back", targetId:"naturecode.br.minmax.import-goods-draw-back", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods-draw-back", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods-draw-back", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods-draw-back", targetId:"crunch.onboarding.document.br.bill-of-landing" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods-draw-back", targetId:"crunch.onboarding.document.br.signed-commercial-invoice" })
-
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.import-goods-anticipated", priority: 17 })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.import-goods-anticipated", targetId:"naturecode.br.minmax.import-goods-anticipated", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods-anticipated", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods-anticipated", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods-anticipated", targetId:"crunch.onboarding.document.br.bill-of-landing" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods-anticipated", targetId:"crunch.onboarding.document.br.sales-statement" })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods-anticipated", targetId:"crunch.onboarding.document.br.signed-commercial-invoice" })
-
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.international-orders", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.international-orders", targetId:"naturecode.br.minmax.international-orders", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.international-orders", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.international-orders", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.international-orders", targetId:"crunch.onboarding.document.br.bill-of-landing" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.international-orders", targetId:"crunch.onboarding.document.br.simplified-export-declaration" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.international-orders", targetId:"crunch.onboarding.document.br.export-registration" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.international-orders", targetId:"crunch.onboarding.document.br.signed-commercial-invoice" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.international-orders", targetId:"crunch.onboarding.document.br.courier-voucher" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.international-orders", targetId:"crunch.onboarding.document.br.invoice-payment-details" })
 
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.juridic-services", priority: 17 })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.juridic-services", targetId:"naturecode.br.minmax.juridic-services", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.juridic-services", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.juridic-services", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.juridic-services", targetId:"crunch.onboarding.document.br.service-provision" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.juridic-services", targetId:"crunch.onboarding.document.br.invoice-payment-details" })
-
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.maintain-residents-abroad", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.maintain-residents-abroad", targetId:"naturecode.br.minmax.maintain-residents-abroad", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.maintain-residents-abroad", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.maintain-residents-abroad", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.maintain-residents-abroad", targetId:"crunch.onboarding.document.br.proof-of-kinship" })
-
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.other.serv-tec-professional-adminstrative", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.other.serv-tec-professional-adminstrative", targetId:"naturecode.br.minmax.serv-tec-professional-adminstrative", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.serv-tec-professional-adminstrative", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.serv-tec-professional-adminstrative", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.serv-tec-professional-adminstrative", targetId:"crunch.onboarding.document.br.service-provision" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.serv-tec-professional-adminstrative", targetId:"crunch.onboarding.document.br.invoice-payment-details" })
-
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.other.technical-professional-adminstrative-services", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.other.technical-professional-adminstrative-services", targetId:"naturecode.br.minmax.technical-professional-adminstrative-services", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-professional-adminstrative-services", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-professional-adminstrative-services", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-professional-adminstrative-services", targetId:"crunch.onboarding.document.br.service-provision" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-professional-adminstrative-services", targetId:"crunch.onboarding.document.br.invoice-payment-details" })
-
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.other.rental-real-estate", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.other.rental-real-estate", targetId:"naturecode.br.minmax.real-estate-rental", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.real-estate-rental", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.real-estate-rental", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.real-estate-rental", targetId:"crunch.onboarding.document.br.property-rental-agreement" })
-
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.public-research-opinion-part-fair-exp", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.public-research-opinion-part-fair-exp", targetId:"naturecode.br.minmax.public-research-opinion-part-fair-exp", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.public-research-opinion-part-fair-exp", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.public-research-opinion-part-fair-exp", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.public-research-opinion-part-fair-exp", targetId:"crunch.onboarding.document.br.service-provision" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.public-research-opinion-part-fair-exp", targetId:"crunch.onboarding.document.br.invoice-payment-details" })
-
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.resident-maintenance", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.resident-maintenance", targetId:"naturecode.br.minmax.resident-maintenance", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.resident-maintenance", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.resident-maintenance", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.resident-maintenance", targetId:"crunch.onboarding.document.br.proof-of-kinship" })
-
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.rollback-availability", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.rollback-availability", targetId:"naturecode.br.minmax.rollback-availability", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.rollback-availability", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.rollback-availability", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.shipping-wu", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.shipping-wu", targetId:"naturecode.br.minmax.shipping-wu", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.shipping-wu", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.shipping-wu", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.juridic-services", targetId:"crunch.onboarding.document.br.contract" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.juridic-services", targetId:"crunch.onboarding.document.br.sales-statement" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.juridic-services", targetId:"crunch.onboarding.document.br.signed-commercial-invoice" })
 
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.small-orders", priority: 17 })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.small-orders", targetId:"naturecode.br.minmax.small-orders", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.small-orders", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.small-orders", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.small-orders", targetId:"crunch.onboarding.document.br.bill-of-landing" })
-
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.small-orders-international", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.small-orders-international", targetId:"naturecode.br.minmax.small-orders-international", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.small-orders-international", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.small-orders-international", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.small-orders-international", targetId:"crunch.onboarding.document.br.bill-of-landing" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.small-orders-international", targetId:"crunch.onboarding.document.br.invoice-payment-details" })
-
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.student-maintenance", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.student-maintenance", targetId:"naturecode.br.minmax.student-maintenance", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.student-maintenance", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.student-maintenance", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.student-maintenance", targetId:"crunch.onboarding.document.br.proof-of-kinship" })
-
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.student-maintenance-devolution", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.student-maintenance-devolution", targetId:"naturecode.br.minmax.student-maintenance-devolution", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.student-maintenance-devolution", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.student-maintenance-devolution", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.student-maintenance-devolution", targetId:"crunch.onboarding.document.br.proof-of-kinship" })
-
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.technical-services-computer-services", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.technical-services-computer-services", targetId:"naturecode.br.minmax.technical-services-computer-services", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-services-computer-services", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-services-computer-services", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-services-computer-services", targetId:"crunch.onboarding.document.br.contract" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-services-computer-services", targetId:"crunch.onboarding.document.br.rof" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-services-computer-services", targetId:"crunch.onboarding.document.br.invoice-payment-details" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-services-computer-services", targetId:"crunch.onboarding.document.br.sales-statement" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-services-computer-services", targetId:"crunch.onboarding.document.br.service-provision" })
-
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.technical-services-legal-services", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.technical-services-legal-services", targetId:"naturecode.br.minmax.technical-services-legal-services", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-services-legal-services", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-services-legal-services", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-services-legal-services", targetId:"crunch.onboarding.document.br.service-provision" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-services-legal-services", targetId:"crunch.onboarding.document.br.invoice-payment-details" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.small-orders", targetId:"crunch.onboarding.document.br.signed-commercial-invoice" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.small-orders", targetId:"crunch.onboarding.document.br.courier-voucher" })
 
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.technical-services", priority: 17 })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.technical-services", targetId:"naturecode.br.minmax.technical-services", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-services", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-services", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-services", targetId:"crunch.onboarding.document.br.service-provision" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-services", targetId:"crunch.onboarding.document.br.invoice-payment-details" })
-
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.technical-professional-repatriation-services", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.technical-professional-repatriation-services", targetId:"naturecode.br.minmax.technical-professional-repatriation-services", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-professional-repatriation-services", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-professional-repatriation-services", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-professional-repatriation-services", targetId:"crunch.onboarding.document.br.service-provision" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-professional-repatriation-services", targetId:"crunch.onboarding.document.br.invoice-payment-details" })
-
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.travel-education-services", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.travel-education-services", targetId:"naturecode.br.minmax.travel-education-services", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.travel-education-services", targetId:"crunch.onboarding.document.br.bank-payment-foreign-currency" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.travel-education-services", targetId:"crunch.onboarding.document.br.bank-address-payment-reais" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.travel-education-services", targetId:"crunch.onboarding.document.br.invoice-payment-details" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-services", targetId:"crunch.onboarding.document.br.contract" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-services", targetId:"crunch.onboarding.document.br.signed-commercial-invoice" })
 
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.import-goods", targetId:"crunch.onboarding.br.expected-shipment-date",  priority: 18})
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.import-goods-draw-back", targetId:"crunch.onboarding.br.expected-shipment-date",  priority: 18})
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.import-goods-anticipated", targetId:"crunch.onboarding.br.expected-shipment-date",  priority: 18})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.import-goods-prazo", targetId:"crunch.onboarding.br.expected-shipment-date",  priority: 18})
+
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.import-goods-prazo", priority: 17 })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.import-goods-prazo", targetId:"naturecode.br.minmax.import-goods-prazo", priority: 17 })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods-prazo", targetId:"crunch.onboarding.document.br.simplified-export-declaration" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods-prazo", targetId:"crunch.onboarding.document.br.signed-commercial-invoice" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods-prazo", targetId:"crunch.onboarding.document.br.bill-of-landing" })
 
 // Register Payment Provider Requirements for Brazil
 p({
@@ -230,4 +67,34 @@ p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId: "crunch.onboarding.br.registering-payment-provider",
   targetId: "AFEX",
+})
+
+// Prerequisites for "BR Personal International Payments"
+// user details
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
+  targetId:"crunch.onboarding.user-details",
+  priority:1
+})
+// cpf number
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
+  targetId:"crunch.onboarding.br.cpf",
+  priority:2
+})
+// AFEX Terms and Conditions
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
+  targetId:"crunch.onboarding.document.afex.third-party-terms-and-conditions",
+  priority:4
+})
+
+// cpf - date of issue
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"crunch.onboarding.br.cpf",
+  targetId:"crunch.onboarding.document.br.date-of-issue"
 })

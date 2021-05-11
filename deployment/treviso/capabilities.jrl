@@ -218,6 +218,22 @@ p({
 })
 
 p({
+  class:"net.nanopay.payment.PaymentProviderCorridor",
+  id:"paymentprovidercorridor.treviso.br-cad",
+  name:"BR-CAD Corridor - Treviso",
+  ranking:1,
+  provider:"Treviso",
+  sourceCountry:"BR",
+  targetCountry:"CA",
+  sourceCurrencies:["BRL"],
+  targetCurrencies:["CAD"],
+  enabled:true,
+  "visibilityPredicate": { class: "foam.mlang.predicate.True" },
+  lastModified:1602783690373,
+  lastModifiedBy:1
+})
+
+p({
   "class":"foam.nanos.crunch.Capability",
   "id":"crunch.onboarding.signing-officer-information",
   "name":"Complete your signing officer information",

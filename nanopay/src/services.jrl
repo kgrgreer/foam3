@@ -126,7 +126,7 @@ p({
           object-src 'self' data: blob: filesystem:;
           prefetch-src 'self' https://cdn.plaid.com/link/;
           report-uri /service/CSPReportWebAgent;
-          script-src 'self' https://cdn.plaid.com/link/v2/stable/link-initialize.js 'unsafe-eval' 'sha256-HY1JzEwuxkis4xx0ggY23gbYY/MCEAE1T6+OQnWS2vA=' 'sha256-NiNrLgJ8wbIXIi5saiR3XTd1Mxm4k0nju66GJsw4b9U=' 'sha256-FLYDXBkz4oo/H5jEfYXqAGYUwERY44OO1yznaMCdMiU=' 'sha256-G3UfiJBy6rwOk3glkBQuQDFA7IoCtiOT56gTh+IfNF0=';
+          script-src 'self' https://cdn.plaid.com/link/v2/stable/link-initialize.js https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js 'unsafe-eval' 'sha256-HY1JzEwuxkis4xx0ggY23gbYY/MCEAE1T6+OQnWS2vA=' 'sha256-NiNrLgJ8wbIXIi5saiR3XTd1Mxm4k0nju66GJsw4b9U=' 'sha256-FLYDXBkz4oo/H5jEfYXqAGYUwERY44OO1yznaMCdMiU=' 'sha256-G3UfiJBy6rwOk3glkBQuQDFA7IoCtiOT56gTh+IfNF0=';
           style-src 'self' https://fonts.googleapis.com/css https://fonts.googleapis.com/css2 https://fonts.googleapis.com/icon data: chrome-extension-resource: 'unsafe-inline';
           worker-src 'self';
           """
@@ -2583,5 +2583,40 @@ p({
     {
       "of": "net.nanopay.settlement.Settlement"
     }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "complianceTransactionApprovalRequestDAO",
+  "serve": true,
+  "description": "filtered DAO for Transaction Approval Requests",
+  "serviceScript":
+  """
+    // TODO: enum predicate does not work here
+    foam.mlang.predicate.Predicate predicate = foam.mlang.MLang.EQ(net.nanopay.tx.TransactionApprovalRequest.DAO_KEY, "transactionDAO");
+
+    dao = x.get("approvalRequestDAO").where(predicate);
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setInnerDAO(dao)
+      .setEnableInterfaceDecorators(false)
+      .setOf(net.nanopay.tx.TransactionApprovalRequest.getOwnClassInfo())
+      .build();
+  """,
+  "client":
+  """
+  {
+    "cache": false,
+    "of": "net.nanopay.tx.TransactionApprovalRequest",
+    "decorators": [
+      {
+        "class":"foam.nanos.fs.FileDAODecorator"
+      },
+      {
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
+      }
+    ]
+  }
   """
 })

@@ -15,14 +15,13 @@
  * from nanopay Corporation.
  */
 
-
 package net.nanopay.partner.rbc;
 
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.nanos.logger.Logger;
 import net.nanopay.reporting.ReconciliationReportGenerator;
-import net.nanopay.reporting.ReportGenerator;
 import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
@@ -43,18 +42,23 @@ public abstract class RBCReconciliationReportGenerator extends ReconciliationRep
     var transactionDAO = (DAO) x.get("localTransactionDAO");
     var transactions = (ArraySink) transactionDAO.select(new ArraySink());
     for ( var obj : transactions.getArray() ) {
-      var transaction = (Transaction) obj;
-      if ( transaction instanceof RbcCITransaction)
-        ciMap.put(getRoot(x, transaction), (RbcCITransaction) transaction);
-      else if ( transaction instanceof RbcCOTransaction)
-        coMap.put(getRoot(x, transaction), (RbcCOTransaction) transaction);
-      else if ( transaction instanceof DigitalTransaction)
-        dtMap.put(getRoot(x, transaction), (DigitalTransaction) transaction);
+      try {
+        var transaction = (Transaction) obj;
+        if ( transaction instanceof RbcCITransaction)
+          ciMap.put(getRoot(x, transaction), (RbcCITransaction) transaction);
+        else if ( transaction instanceof RbcCOTransaction)
+          coMap.put(getRoot(x, transaction), (RbcCOTransaction) transaction);
+        else if ( transaction instanceof DigitalTransaction)
+          dtMap.put(getRoot(x, transaction), (DigitalTransaction) transaction);
+      } catch(RuntimeException e) {
+        var logger = (Logger) x.get("logger");
+        if ( logger != null ) logger.warning(e);
+      }
     }
   }
 
-  protected RBCReconciliationReportGenerator() {
-    super();
+  protected RBCReconciliationReportGenerator(String spid, boolean cached) {
+    super(spid, cached);
   }
 
   protected RBCReconciliationReportGenerator(String spid) {

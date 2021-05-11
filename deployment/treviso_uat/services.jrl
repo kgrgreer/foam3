@@ -43,7 +43,7 @@ p({
   "lazy":false,
   "serve":true,
   "serviceScript":"""
-    return new net.nanopay.partner.treviso.TrevisoService(x, x.get("fepWebService"), x.get("exchange"));
+    return new net.nanopay.partner.treviso.TrevisoService(x);
   """
 })
 

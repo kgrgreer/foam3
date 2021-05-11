@@ -37,11 +37,12 @@ foam.CLASS({
   ],
 
   imports: [
+    'countryDAO',
     'currencyDAO',
     'notify',
-    'subject',
     'regionDAO',
-    'countryDAO'
+    'subject',
+    'theme'
   ],
 
   css: `
@@ -543,84 +544,70 @@ foam.CLASS({
       return formattedAddress;
     },
 
-    function addPDFStyle(invoiceNodes) {
-      const {
-        invoiceNode,
-        actionBtnContainerNode,
-        appLogoContainerNode
-      } = invoiceNodes;
+    function createInvoice4PDF() {
+      /*
+       * create invoice html to be rendered in pdf
+       */
 
-      // remove print and download PDF buttons
-      actionBtnContainerNode.classList.add('hide');
+      const invoiceNode = document.querySelector('.full-invoice').cloneNode(deep=true);
 
-      // add app logo
-      appLogoContainerNode.classList.remove('hide');
+      // allows InvoiceOverview css to be applied to invoice and its childeren nodes
+      invoiceNode.classList.add('net-nanopay-sme-ui-InvoiceOverview');
 
-      // add styles
-      invoiceNode.style.backgroundColor = '#fff';
-      invoiceNode.style.margin = '350px 50px 250px 50px';
-      invoiceNode.style.padding = '350px 50px 250px 50px';
-      invoiceNode.offsetParent.style.margin = '120px 40px 120px 40px';
-      invoiceNode.offsetParent.style.zoom = '60%';
-      invoiceNode.offsetParent.style.width = invoiceNode.scrollWidth + invoiceNode.offsetParent.scrollWidth + 'px';
-      invoiceNode.offsetParent.style.height = invoiceNode.scrollHeight + invoiceNode.offsetParent.scrollHeight + 'px';
-    },
-    
-    function removePDFStyle(invoiceNodes) {
-      const {
-        invoiceNode,
-        actionBtnContainerNode,
-        appLogoContainerNode
-      } = invoiceNodes;
+      // add app logo to invoice details
+      const appLogoImage = [  // png app logo image
+        this.theme.largeLogo,
+        this.theme.logo
+      ].find(logo => logo.search(/.png$/) > -1);
 
-      // add print and download PDF buttons
-      actionBtnContainerNode.classList.remove('hide');
+      const appLogoNode = document.createElement('img');
+      appLogoNode.setAttribute('src', appLogoImage);
+      appLogoNode.style.display = 'block';
+      appLogoNode.style.height = '100px';
+      
+      invoiceNode.prepend(appLogoNode);
 
-      // remove app logo
-      appLogoContainerNode.classList.add('hide');
+      // get invoice status (handle html2pdf glitch where some text is not visible)
+      const invoiceStatusNode = invoiceNode.querySelector('.foam-u2-view-ReadOnlyEnumView');
+      invoiceStatusNode.classList.remove('foam-u2-view-ReadOnlyEnumView-pill');
+      invoiceStatusNode.style.backgroundColor = '#fff';
 
-      // undo styles
-      invoiceNode.style.backgroundColor = '';
-      invoiceNode.offsetParent.style.zoom = '1.0';
-      invoiceNode.style.margin = '';
-      invoiceNode.style.padding = '';
-      invoiceNode.offsetParent.style.margin = '';
-      invoiceNode.offsetParent.style.width = '';
-      invoiceNode.offsetParent.style.height = ''
+      // style invoice content (left block of the invoice details)
+      const invoiceContent = invoiceNode.querySelector('.left-block');
+      invoiceContent.style.display = 'block';
+      invoiceContent.style.width = '50%';
+      invoiceContent.style.padding = '0';
+      invoiceContent.style.margin = '0';
+
+      // style payment and history content (right block of the invoice details)
+      const paymentContent = invoiceNode.querySelector('.right-block');
+      paymentContent.style.display = 'block';
+      paymentContent.style.width = '50%';
+      paymentContent.style.padding = '100px 0 0 0';
+      paymentContent.style.margin = '0';
+
+      // remove print and download icons
+      const actionContainerNode = invoiceContent.querySelector(`.${this.cls_.id.replaceAll('.', '-')}-print-wrapper`);
+      actionContainerNode.parentNode.removeChild(actionContainerNode);
+      
+      return invoiceNode;
     }
   ],
 
   listeners: [
     function exportAsPDF() {
-      const invoiceNode = ctrl.document.querySelector('.full-invoice');
-      const actionBtnContainerNode = invoiceNode.querySelector(`.${this.cls_.id.replaceAll('.', '-')}-print-wrapper`);
-      const appLogoContainerNode = invoiceNode.querySelector('.pdf-app-logo-container');
-
       try {
         window.scrollTo(0,0);
-        const doc = new jsPDF('p', 'pt');
 
-        this.addPDFStyle({
-          invoiceNode,
-          actionBtnContainerNode,
-          appLogoContainerNode,
-        });
+        const invoice4pdf = this.createInvoice4PDF();
 
-        doc.addHTML(invoiceNode, () => {
-          doc.save(`invoice-${this.invoice.referenceId}.pdf`);
-        });
+        html2pdf().from(invoice4pdf).set({
+          margin: [0, 30],
+          filename: `invoice-${this.invoice.referenceId}.pdf`,
+          pagebreak: { mode: 'avoid-all', before: '.right-block' }
+        }).save();
 
-        this.removePDFStyle({
-          invoiceNode,
-          actionBtnContainerNode,
-          appLogoContainerNode
-        });
       } catch (e) {
-        this.removePDFStyle({
-          invoiceNode,
-          actionBtnContainerNode,
-          appLogoContainerNode
-        });
         this.notify(this.SAVE_AS_PDF_FAIL, '', this.LogLevel.ERROR, true);
         throw e;
       }
