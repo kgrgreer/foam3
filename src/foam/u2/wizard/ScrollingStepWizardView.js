@@ -288,7 +288,8 @@ foam.CLASS({
                 ))
                 .end()
             }))
-            .start('h3')
+            .start()
+              .addClass('h300')
               .translate(wizardlet.capability.id+'.name', wizardlet.capability.name)
             .end();
         }));
