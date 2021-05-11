@@ -1,21 +1,21 @@
 <title>Getting Started Writing Documentation</title>
 
-<h2>Getting Started Writing Documentation</h2>
+<h1>Getting Started Writing Documentation</h1>
 
 NANOPAY documentation will be written in <a href="#intro-to-flow">FLOW</a>
 
-<h4>Adding a new document</h4>
+<h2>Adding a new document</h2>
 
-<h4>1. Add the file to NANOPAY</h4>
+<h3>1. Add the file to NANOPAY</h3>
 
 The first step in adding a new document is to add your file to the NANOPAY repository.  Create a file under documents/your-document.flow and put some text in there.
 
-<h5>Filename Requirements</h5>
+<h4>Filename Requirements</h4>
 
 There are some restrictions put on the filename that your document must have.  The filename can only contain lowercase letters, uppercase letters, numbers, underscores and hyphens and with ".flow" as a file extension.  In other words it must match the regular expression "^[a-zA-Z0-9_-]+\.flow$"
 
 
-<h4>2. Add your content and iterate</h4>
+<h3>2. Add your content and iterate</h3>
 After you've completed these you're ready to test and finish your document.
 
 <ol>
@@ -26,11 +26,11 @@ After you've completed these you're ready to test and finish your document.
 
 <p>You should see your newly written document, or an error message if the document failed to parse. To see newly edited changes you will need to rebuild.</p>
 
-<h4>3. Committing changes</h4>
+<h3>3. Committing changes</h3>
 
 Because the document is stored as regular file in the repository, you can just add it to the git repository with "$ git add documents/your-document.flow"  Commit, push, and create a PR like you would for any other code change.
 
-<h4>4. Dealing with parsing errors</h4>
+<h3>4. Dealing with parsing errors</h3>
 
 <p>The parser does its best to report where it failed parsing and what it was expecting to encounter.  The error reporting is not perfect however, the actual error may be earlier in the document then indicated.</p>
 
