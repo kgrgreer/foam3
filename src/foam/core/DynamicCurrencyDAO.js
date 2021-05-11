@@ -40,7 +40,7 @@ foam.CLASS({
           DAO curDAO = (DAO) x.get("currencyDAO");
           Currency foundCur = (Currency) curDAO.find(iso);
 
-          if ( foundCur == null ) throw new RuntimeException("Currency " + iso + " doesn't exist");
+          if ( foundCur == null ) throw new FOAMException("Currency not found. " + iso);
 
           int precision;
           try {
