@@ -91,10 +91,3 @@ p({
   targetId:"crunch.onboarding.document.afex.third-party-terms-and-conditions",
   priority:4
 })
-
-// cpf - date of issue
-p({
-  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"crunch.onboarding.br.cpf",
-  targetId:"crunch.onboarding.document.br.date-of-issue"
-})
