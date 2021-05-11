@@ -247,6 +247,7 @@ foam.CLASS({
       class: "String",
       name: 'accountSummary',
       expression: async function(subject,invoice$contactId) {
+        if( invoice$contactId ) return;
         var contact = await subject.user.contacts.find(invoice$contactId);
         var acc = await contact.accounts.find(contact.bankAccount);
         return acc.summary;
@@ -377,7 +378,7 @@ foam.CLASS({
             .end()
             .start()
             .addClass(self.myClass('invoice-content-block'))
-            .callIf( !!this.invoice.contactId, function() {
+            .callIf( !! this.invoice.contactId, function() {
               this.start()
                 .addClass('bold-label')
                 .add(self.DESTINATION_ACCOUNT)
