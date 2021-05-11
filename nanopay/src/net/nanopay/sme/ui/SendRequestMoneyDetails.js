@@ -100,6 +100,7 @@ foam.CLASS({
     }
     ^ .invoice-h2 {
       margin-top: 0;
+      margin-bottom: 16px;
     }
     ^ .isApproving {
       display: none;
@@ -108,7 +109,7 @@ foam.CLASS({
       margin-bottom: 0;
     }
     ^ .selectionContainer {
-      margin-bottom: 36px;
+      margin-bottom: 24px;
     }
     ^ .white-radio {
       width: 244px !important;
