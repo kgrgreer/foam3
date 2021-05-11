@@ -602,3 +602,4 @@ p({"class":"foam.nanos.auth.Permission","id":"counter.read.*","description":"abl
 p({"class":"foam.nanos.auth.Permission","id":"brbankaccount.ro.denomination","description":"to adjust visibility of property when necessary"})
 p({"class":"foam.nanos.auth.Permission","id":"loginattempts.notclustered","description":"Disables clustering on login attempts for user"})
 p({"class":"foam.nanos.auth.Permission","id":"loginattempts.lock.time","description":"Enables time freeze windows to be set on login attempts"})
+p({"class":"foam.nanos.auth.Permission","id":"net.nanopay.country.br.naturecode.naturecode.disablereflink","description":"Permission that will disable the link to details of on any NatureCode reference"})
