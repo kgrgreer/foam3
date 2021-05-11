@@ -220,8 +220,8 @@ foam.CLASS({
             .start()
               .start(self.Rows)
                 .callIf(prop$label, function() {
-                  this.start('p')
-                    .addClass('semiBold')
+                  this.start()
+                    .addClass('p-semiBold')
                     .add(prop.label)
                     .style({ 'line-height': '2' })
                   .end();
