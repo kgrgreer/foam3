@@ -169,7 +169,7 @@ p({
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"68afcf0c-c718-98f8-0841-75e9-ucjdao-3",
-  "name":"Configure UCJ Expiry On Granted - Create",
+  "name":"Configure UCJ Expiry On Granted",
   "priority":700,
   "ruleGroup":"ucjDAO",
   "daoKey":"userCapabilityJunctionDAO",
@@ -190,7 +190,7 @@ p({
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"68afcf0c-c718-98f8-0841-75e9-ucjdao-4",
-  "name":"Save UCJ Data On Granted - Create",
+  "name":"Save UCJ Data On Granted",
   "priority":600,
   "ruleGroup":"ucjDAO",
   "daoKey":"userCapabilityJunctionDAO",
