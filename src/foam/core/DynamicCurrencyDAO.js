@@ -46,7 +46,7 @@ foam.CLASS({
           try {
             precision = Integer.parseInt(compactToString(((Object[])value)[1]));
           } catch (java.lang.Exception e) {
-            throw new RuntimeException("Wrong currency format");
+            throw new FOAMException("Invalid currency format");
           }
 
           Currency cur = (Currency) foundCur.fclone();
