@@ -35,7 +35,9 @@ foam.CLASS({
 
   css: `
     ^container {
-      padding: 32px;
+      padding: 24px 32px 16px 32px;
+      height: 100%;
+      box-sizing: border-box;
     }
 
     ^header-container {
@@ -58,6 +60,8 @@ foam.CLASS({
       padding: 0px;
       border-radius: 6px;
       box-shadow: 0px 1px 3px 0px #E7E7E7;
+      height: -webkit-fill-available;
+      height: fill-available;
       -webkit-box-shadow: 0px 1px 3px 0px #E7E7E7;
       -moz-box-shadow: 0px 1px 3px 0px #E7E7E7;
     }

@@ -64,7 +64,7 @@
     {
       type: 'Integer',
       name: 'TABLE_HEAD_HEIGHT',
-      value: 51
+      value: 52
     }
   ],
 
@@ -362,22 +362,6 @@
         if ( this.currentMemento_ ) {
           this.currentMemento_.head = this.scrollPos_ >= this.rowHeight && this.scrollPos_ < this.scrollHeight ? Math.floor( this.scrollPos_  / this.rowHeight) : 0;
         }
-      }
-    },
-    {
-      name: 'updateTableHeight',
-      code: function() {
-        // Find the distance from the top of the table to the top of the screen.
-        var distanceFromTop = this.el().getBoundingClientRect().y;
-
-        // Calculate the remaining space we have to make use of.
-        var remainingSpace = window.innerHeight - distanceFromTop;
-
-        // TODO: Do we want to do this?
-        // Leave space for the footer.
-        remainingSpace -= 44;
-
-        this.style({ height: `${remainingSpace}px` });
       }
     },
     function dblclick(obj, id) {
