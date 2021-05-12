@@ -1,6 +1,2 @@
 p({"class":"net.nanopay.invoice.AuthenticatedInvoiceDAOTest","id":"AuthenticatedInvoiceDAOTest"})
-r({
-  "class":"net.nanopay.invoice.SigningOfficerInvoiceApprovalTest",
-  "id":"SigningOfficerInvoiceApprovalTest",
-})
-p({"class":"net.nanopay.invoice.test.SigningOfficerInvoiceApprovalTest_v2", "id":"SigningOfficerInvoiceApprovalTest_v2"})
+p({"class":"net.nanopay.invoice.test.SigningOfficerInvoiceApprovalTest", "id":"SigningOfficerInvoiceApprovalTest"})

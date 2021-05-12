@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.invoice.test',
-  name: 'SigningOfficerInvoiceApprovalTest_v2',
+  name: 'SigningOfficerInvoiceApprovalTest',
   extends: 'foam.nanos.test.Test',
 
   javaImports: [

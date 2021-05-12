@@ -1239,7 +1239,7 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/ExternalInvoiceTokenTest' },
   { name: 'net/nanopay/invoice/AuthenticatedInvoiceDAOTest' },
   { name: 'net/nanopay/invoice/test/invoiceHistoryAuthorizerTest' },
-  { name: 'net/nanopay/invoice/test/SigningOfficerInvoiceApprovalTest_v2' },
+  { name: 'net/nanopay/invoice/test/SigningOfficerInvoiceApprovalTest' },
   { name: 'net/nanopay/invoice/model/InvoiceTest' },
   { name: 'net/nanopay/test/TestsReporter' },
   { name: 'net/nanopay/test/TestReport' },

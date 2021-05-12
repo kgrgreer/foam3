@@ -405,7 +405,7 @@ var classes = [
   'net.nanopay.invoice.ruler.SetPaymentSentDateRule',
   'net.nanopay.invoice.ruler.TransactionNatureCodeUpdateRule',
   'net.nanopay.invoice.test.invoiceHistoryAuthorizerTest',
-  'net.nanopay.invoice.test.SigningOfficerInvoiceApprovalTest_v2',
+  'net.nanopay.invoice.test.SigningOfficerInvoiceApprovalTest',
   'net.nanopay.invoice.InvoiceHistoryAuthorizer',
   'net.nanopay.invoice.ruler.InvoiceQuotingRule',
   'net.nanopay.invoice.ruler.InvoiceTransactionSubmitRule',
