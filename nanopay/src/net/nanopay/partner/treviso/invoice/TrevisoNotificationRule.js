@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.i18n.TranslationService',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
@@ -43,22 +44,15 @@ foam.CLASS({
 
   messages: [
     {
-      name: "INVOICE_NOTE_MSG",
-      message: `ATTENTION: This transaction has not yet been sent!
-
-        To complete, send a TED of (`
-    },
-    {
-      name: "INVOICE_NOTE2_MSG",
-      message: `) to:
-
-        Treviso Corretora de Câmbio S.A
-        CNPJ: 02.992.317/0001-87
-        Banco SC Treviso (143)
-        Agencia: 0001
-        Conta: 1-1
-
-        In case that payment has not been done, the transaction will be canceled automatically.`
+      name: "TED_TEXT_MSG",
+      message: 'ATTENTION: This transaction has not yet been sent!\n\n' + 
+        'To complete, send a TED of ({amount}) to:\n\n' +
+        'Treviso Corretora de Câmbio S.A\n' +
+        'CNPJ: 02.992.317/0001-87\n' +
+        'Banco SC Treviso (143)\n' +
+        'Agencia: 0001\n' +
+        'Conta: 1-1\n\n' +
+        'In case that payment has not been done, the transaction will be canceled automatically.'
     }
   ],
 
@@ -94,13 +88,27 @@ foam.CLASS({
               .setEmailArgs(args)
               .build();
             user.doNotify(x, notify);
+            
+            Subject subject = (Subject) foam.core.XLocator.get().get("subject");
+            String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
+            TranslationService ts = (TranslationService) x.get("translationService");
+            
+            // set TED text in English, and translate it on the client side when necessary
+            String tedText;
+            if (locale.equals("en")) {
+              tedText = TED_TEXT_MSG;
+            } else {
+              tedText = ts.getTranslation(
+                "en",
+                "net.nanopay.partner.treviso.invoice.TrevisoNotificationRule.TED_TEXT_MSG",
+                ""
+              );
+            }
 
-            String note = SafetyUtil.isEmpty(invoice.getNote()) ? "" : invoice.getNote() + "\\n";
-            invoice.setNote(note + INVOICE_NOTE_MSG + amount + INVOICE_NOTE2_MSG);
+            invoice.setTedText(tedText.replace("{amount}", amount + ""));
             invoice.setTotalSourceAmount(amount);
-
           }
-        }, "Adds send a TED text to invoice note and create a notification");
+        }, "Sets a TED text to invoice and create a notification");
       `
     }
   ]

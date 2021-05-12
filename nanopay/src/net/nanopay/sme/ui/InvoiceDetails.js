@@ -33,7 +33,8 @@ foam.CLASS({
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
-    'net.nanopay.invoice.model.PaymentStatus'
+    'net.nanopay.invoice.model.PaymentStatus',
+    'net.nanopay.partner.treviso.invoice.TrevisoNotificationRule'
   ],
 
   imports: [
@@ -167,11 +168,6 @@ foam.CLASS({
       type: 'String',
       name: 'EXPORT_ICON_HOVER',
       value: 'images/export-icon-hover.svg'
-    },
-    {
-      type: 'String',
-      name: 'TED_TEXT_START',
-      value: 'ATTENTION: This transaction has not yet been sent!'
     }
   ],
 
@@ -473,13 +469,18 @@ foam.CLASS({
             .addClass(this.myClass('invoice-content'))
             .addClass(this.myClass('invoice-content-text'))
             .addClass('invoice-note')
-            .add(this.slot(function(invoice$note) {
-              if ( invoice$note ) {
-                const translatedInvoiceNote = self.getInvoiceNoteTranslation();
+            .add(this.slot(function(invoice$note, invoice$tedText) {
+              if ( invoice$note || invoice$tedText ) {
+                if ( invoice$tedText ) {
+                  invoice$tedText = self.translateTEDText(invoice$tedText);
+                }
+
+                const invoiceNoteWithTed = `${invoice$note}\n\n${invoice$tedText}`.trim();
+
                 return self.E()
                   .start()
                   .addClass('note')
-                    .add(translatedInvoiceNote)
+                    .add(invoiceNoteWithTed)
                   .end();
               } else {
                 return self.E()
@@ -551,19 +552,16 @@ foam.CLASS({
       return formattedAddress;
     },
 
-    function getInvoiceNoteTranslation() {
-      // get custom invoice note and ted text from invoice note
-      const tedTextStart = this.invoice.note.lastIndexOf(this.TED_TEXT_START);
-      const customNote = this.invoice.note.slice(0, tedTextStart);
-      const tedText = this.invoice.note.slice(tedTextStart);
+    function translateTEDText(tedText) {
+      
+      if (foam.locale === 'en') return tedText;
 
-      // translate TED text
-      tedText = this.translationService.getTranslation(foam.locale, tedText, tedText);
+      const amount = tedText.search(/\(([.]+)\)/); // value inside the first bracket from ted text
 
-      // subsitute invoice amount for amount placeholder in the translation
-      tedText.replace('{amount}', this.invoice.amount);
+      tedText = `${this.TrevisoNotificationRule.TED_TEXT_MSG}`;
+      tedText = tedText.replace('{amount}', amount);
 
-      return `${customNote}${tedText}`;
+      return tedText;
     },
 
     function createInvoice4PDF() {

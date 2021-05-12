@@ -403,6 +403,12 @@ foam.CLASS({
       view: 'foam.u2.tag.TextArea'
     },
     {
+      class: 'String',
+      name: 'tedText',
+      documentation: `TED notification text`,
+      hidden: true,
+    },
+    {
       class: 'UnitValue',
       name: 'chequeAmount',
       includeInDigest: true,
