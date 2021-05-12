@@ -131,7 +131,7 @@ foam.CLASS({
         var columnConfig = x.columnConfigToPropertyConverter;
         var columnHeaders = [];
         for ( var propName of  arrOfPropNames ) {
-          columnHeaders.push(columnConfig.returnColumnHeader(of, propName).colPath);
+          columnHeaders.push(columnConfig.returnColumnHeader(of, propName).colPath.join('/'));
         }
         return columnHeaders;
       }
