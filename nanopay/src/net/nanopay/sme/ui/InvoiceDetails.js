@@ -244,14 +244,7 @@ foam.CLASS({
       },
     },
     {
-      class: "String",
-      name: 'accountSummary',
-      expression: async function(subject,invoice$contactId) {
-        if( ! invoice$contactId ) return;
-        var contact = await subject.user.contacts.find(invoice$contactId);
-        var acc = await contact.accounts.find(contact.bankAccount);
-        return acc.summary;
-      }
+      name: 'accountSummary'
     }
   ],
 
@@ -280,6 +273,15 @@ foam.CLASS({
     function initE() {
       var self = this;
       var isBillingInvoice = net.nanopay.invoice.model.BillingInvoice.isInstance(this.invoice);
+
+      var updateAccountSummary = async () => {
+        if( ! self.invoice.contactId ) return;
+        var contact = await self.subject.user.contacts.find(self.invoice.contactId);
+        var acc = await contact.accounts.find(contact.bankAccount);
+        self.accountSummary = acc.summary;
+      };
+
+      updateAccountSummary();
 
       this
         .addClass(this.myClass())
@@ -383,7 +385,7 @@ foam.CLASS({
                 .addClass('bold-label')
                 .add(self.DESTINATION_ACCOUNT)
               .end()
-              .start().addClass(this.myClass('invoice-content-text'))
+              .start().addClass(self.myClass('invoice-content-text'))
                 .add(self.slot( function(accountSummary) {
                   if ( ! ! accountSummary ) {
                     return self.E()
