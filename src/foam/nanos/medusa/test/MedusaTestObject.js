@@ -42,6 +42,14 @@
        class: 'String',
        name: 'networkTransientData',
        networkTransient: true
+     },
+     {
+       name: 'fobject',
+       class: 'FObjectProperty',
+       of: 'foam.nanos.medusa.ClusterCommand',
+       factory: function() {
+         return foam.nanos.medusa.ClusterCommand.create();
+       }
      }
    ]
  });
