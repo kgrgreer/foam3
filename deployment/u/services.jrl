@@ -4,7 +4,7 @@ p({
   "lazy": false,
   "service": {
     "class": "foam.nanos.jetty.HttpServer",
-    "enableHttp": true,
+    "enableHttp": false,
     "port": 8080,
     "enableHttps": true,
     "httpsPort": 8443,
