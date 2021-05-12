@@ -279,20 +279,6 @@
           }, this.__subContext__.createSubContext({ memento: this.table_.memento }));
         }
       }
-      
-
-      /*
-        to be used in cases where we don't want the whole table to
-        take the whole page (i.e. we need multiple tables)
-        and enableDynamicTableHeight can be switched off
-      */
-      if ( this.enableDynamicTableHeight ) {
-        this.onDetach(this.onload.sub(this.updateTableHeight));
-        window.addEventListener('resize', this.updateTableHeight);
-        this.onDetach(() => {
-          window.removeEventListener('resize', this.updateTableHeight);
-        });
-      }
 
       this.onDetach(this.table_$.sub(this.updateRenderedPages_));
     }
