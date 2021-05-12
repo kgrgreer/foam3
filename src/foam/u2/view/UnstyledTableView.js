@@ -255,8 +255,7 @@ foam.CLASS({
         // but if such an action is called from TableView we stay on the TableView screen
         return foam.nanos.approval.NoBackStack.create({delegate: this.stack});
       },
-    },
-    'currentMemento_'
+    }
   ],
 
   methods: [
@@ -426,7 +425,8 @@ foam.CLASS({
                     'justify-content': 'start',
                     'word-wrap': 'break-word'
                   })
-                  .start('h6', { tooltip: colTitle.join('/') })
+                  .start('', { tooltip: colTitle.join('/') })
+                    .addClass('h600')
                     .style({
                       overflow: 'hidden',
                       'text-overflow': 'ellipsis'

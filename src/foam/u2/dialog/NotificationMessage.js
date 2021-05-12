@@ -39,6 +39,9 @@ foam.CLASS({
       display: flex;
       justify-content: center;
       position: fixed;
+      /* TODO: reduce max width when notification messages are updated */
+      max-width: max(30vw, 480px);
+      min-width: max(20vw, 300px);
       right: 32px;
       top: 24px;
       z-index: 15000;
@@ -54,9 +57,8 @@ foam.CLASS({
       display: flex;
       justify-content: space-between;
       margin: auto;
-      max-width: max(30vw, 400px);
-      min-width: max(20vw, 300px);
       padding: 12px 16px;
+      width: -webkit-fill-available;
     }
     @keyframes fade {
       0% { opacity: 0; transform: translateX(300px);}
@@ -67,18 +69,19 @@ foam.CLASS({
     ^outer-content{
       align-items: center;
       display: flex;
+      margin-right: 1em;
       width: -webkit-fill-available;
     }
     ^status-icon {
       align-items: center;
       height: 32px;
       justify-content: center;
-      margin-right: 1em;
+      padding-right: 1em; 
       max-width: max(10%, 32px);
       width: 32px;
     }
     ^content {
-      max-width: 80%;
+      max-width: 90%;
       vertical-align: middle;
       white-space: nowrap;
       word-wrap: break-word;
@@ -164,11 +167,12 @@ foam.CLASS({
         .start().addClass(this.myClass('inner'))
           .start()
             .addClass(this.myClass('outer-content'))
-            .start(this.CircleIndicator, indicator)
+            .start()
               .addClass(this.myClass('status-icon'))
+              .tag(this.CircleIndicator, indicator)
             .end()
             .start().addClass(this.myClass('content'))
-              .start('h6').addClass(this.myClass('title'))
+              .start().addClasses(['h600', this.myClass('title')])
                 .callIfElse(foam.String.isInstance(this.message), function() {
                   this.add(self.message);
                   console.log(self.message);
@@ -177,7 +181,7 @@ foam.CLASS({
                   console.log(self.message);
                 })
               .end()
-              .start('p').addClass(this.myClass('description'))
+              .start().addClasses(['p', this.myClass('description')])
                 .callIfElse(foam.String.isInstance(this.description), function() {
                   this.add(self.description);
                   console.log(self.description);

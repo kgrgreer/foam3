@@ -177,7 +177,7 @@ foam.CLASS({
         })
         .start().addClass(this.myClass('instruction-container')).enableClass('selection', this.files$.map((v) => { return v.length > 0; }))
           .start().addClass(this.myClass('browse-container'))
-            .start('p').addClass('semiBold').add(this.title || this.LABEL_DEFAULT_TITLE).end()
+            .start('p').addClass('p-semiBold').add(this.title || this.LABEL_DEFAULT_TITLE).end()
               .start('p').addClass(this.myClass('or')).add(this.LABEL_OR).end()
               .start('label').addClass(this.myClass('link'))
                 .add(this.LABEL_BROWSE)
