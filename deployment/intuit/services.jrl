@@ -190,3 +190,18 @@ p({
       .build();
   """
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"intuitBusinessDAO",
+  "serviceScript":
+  """
+    dao = new net.nanopay.partner.intuit.BusinessUpdaterDAO();
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.model.Business.getOwnClassInfo())
+      .setDecorator(dao)
+      .setInnerDAO(x.get("businessDAO"))
+      .build();
+  """
+})
