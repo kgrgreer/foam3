@@ -59,7 +59,7 @@ foam.CLASS({
       return this.returnAxiomHeader(this.returnNElementIfArray(rootProperty, 0));
     },
     function returnAxiomHeader(axiom) {
-      return axiom.tableHeader  ? axiom.tableHeader() : axiom.label;
+      return axiom.columnLabel;
     },
     function getClassForNestedPropertyObject(cls, propNames) {
       var of_ = cls;
