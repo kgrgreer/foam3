@@ -2435,7 +2435,7 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.u2',
-  name: 'StringDisplayWidthRefinement',
+  name: 'StringViewRefinement',
   refines: 'foam.core.String',
   requires: [ 'foam.u2.view.StringView' ],
   properties: [
@@ -2443,6 +2443,10 @@ foam.CLASS({
       class: 'Int',
       name: 'displayWidth',
       expression: function(width) { return width; }
+    },
+    {
+      class: 'Int',
+      name: 'maxLength'
     },
     [ 'view', { class: 'foam.u2.view.StringView' } ]
   ]
