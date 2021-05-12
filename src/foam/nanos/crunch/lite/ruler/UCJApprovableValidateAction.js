@@ -14,6 +14,7 @@
 
   javaImports: [
     'foam.core.ContextAwareAgent',
+    'foam.core.FOAMException',
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
@@ -58,7 +59,7 @@
                 approvableDAO.put_(getX(), approvable);
               }
             } catch (Exception e){
-              throw new RuntimeException(e);
+              throw new FOAMException(e);
             }
           }
         }, "Update approvable data with validate diff");
