@@ -548,6 +548,8 @@ FOAM_FILES([
   { name: 'foam/nanos/approval/ApprovalRequestAssignedToRule' },
   { name: 'foam/nanos/approval/ApprovalRequestMemoRule' },
   { name: 'foam/nanos/approval/ApprovalRequestClassificationEnum' },
+  { name: 'foam/nanos/approval/CompositeApprovable' },
+  { name: 'foam/nanos/approval/FulfilledCompositeApprovableRule' },
 
   //authservice
   { name: "foam/nanos/auth/CapabilityAuthService" },
