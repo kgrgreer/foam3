@@ -558,7 +558,8 @@ foam.CLASS({
 
       const amount = tedText.search(/\(([.]+)\)/); // value inside the first bracket from ted text
 
-      tedText = `${this.TrevisoNotificationRule.TED_TEXT_MSG}`;
+      // use message to translate the text
+      tedText = this.TrevisoNotificationRule.TED_TEXT_MSG;
       tedText = tedText.replace('{amount}', amount);
 
       return tedText;
