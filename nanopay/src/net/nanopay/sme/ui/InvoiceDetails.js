@@ -42,7 +42,8 @@ foam.CLASS({
     'notify',
     'regionDAO',
     'subject',
-    'theme'
+    'theme',
+    'translationService'
   ],
 
   css: `
@@ -166,6 +167,11 @@ foam.CLASS({
       type: 'String',
       name: 'EXPORT_ICON_HOVER',
       value: 'images/export-icon-hover.svg'
+    },
+    {
+      type: 'String',
+      name: 'TED_TEXT_START',
+      value: 'ATTENTION: This transaction has not yet been sent!'
     }
   ],
 
@@ -469,10 +475,11 @@ foam.CLASS({
             .addClass('invoice-note')
             .add(this.slot(function(invoice$note) {
               if ( invoice$note ) {
+                const translatedInvoiceNote = self.getInvoiceNoteTranslation();
                 return self.E()
                   .start()
                   .addClass('note')
-                    .add(invoice$note)
+                    .add(translatedInvoiceNote)
                   .end();
               } else {
                 return self.E()
@@ -542,6 +549,21 @@ foam.CLASS({
             : formattedAddress += countryName;
       }
       return formattedAddress;
+    },
+
+    function getInvoiceNoteTranslation() {
+      // get custom invoice note and ted text from invoice note
+      const tedTextStart = this.invoice.note.lastIndexOf(this.TED_TEXT_START);
+      const customNote = this.invoice.note.slice(0, tedTextStart);
+      const tedText = this.invoice.note.slice(tedTextStart);
+
+      // translate TED text
+      tedText = this.translationService.getTranslation(foam.locale, tedText, tedText);
+
+      // subsitute invoice amount for amount placeholder in the translation
+      tedText.replace('{amount}', this.invoice.amount);
+
+      return `${customNote}${tedText}`;
     },
 
     function createInvoice4PDF() {

@@ -249,4 +249,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.Sign
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.SECTION_SIGNING_OFFICER_ADDRESS_SECTION.title",target:"Endereço do Operador"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.SECTION_SIGNING_OFFICER_ADDRESS_SECTION.subTitle",target:"Informe seu endereço residencial"})
 
+/* INVOICE DETAILS */
+// ted text
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.invoice.TrevisoNotificationRule.INOVICE_NOTE_MSG",target:"ATENÇÃO: Esta transação ainda não foi enviada!\n\nPara completar, envie um TED de {amount} para:\n\nTreviso Corretora de Câmbio S.A\nCNPJ: 02.992.317/0001-87\nBanco SC Treviso (143)\nAgencia: 0001\nConta: 1-1\n\nO não envio dos fundos causará o cancelamento automático desta transação."})
+// p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.invoice.TrevisoNotificationRule.INOVICE_NOTE2_MSG",target:""})
+
 
