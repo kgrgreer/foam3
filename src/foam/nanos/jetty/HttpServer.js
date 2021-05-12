@@ -60,7 +60,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'httpsPort',
-      value: 443
+      value: 8443
     },
     {
       name: 'keystoreFileName',
@@ -133,6 +133,7 @@ foam.CLASS({
         int port = getPort();
         String portStr = System.getProperty("http.port");
         if ( portStr != null && ! portStr.isEmpty() ) {
+getLogger().info("getProperty(http.port) ", portStr);
           try {
             port = Integer.parseInt(portStr);
             setPort(port);
@@ -140,8 +141,10 @@ foam.CLASS({
             getLogger().error("invalid port", portStr);
             port = getPort();
           }
+        } else {
+getLogger().info("setProperty(http.port)", port);
+          System.setProperty("http.port", String.valueOf(port));
         }
-        getLogger().info("Starting Jetty http server on port", port);
 
         JettyThreadPoolConfig jettyThreadPoolConfig = (JettyThreadPoolConfig) getX().get("jettyThreadPoolConfig");
         QueuedThreadPool threadPool = new QueuedThreadPool();
@@ -155,6 +158,7 @@ foam.CLASS({
           new org.eclipse.jetty.server.Server(threadPool);
 
         if ( getEnableHttp() ) {
+          getLogger().info("Starting Jetty http server on port", port);
           ServerConnector connector = new ServerConnector(server);
           connector.setPort(port);
           connector.addBean(stats);
@@ -317,7 +321,7 @@ foam.CLASS({
       if ( this.getEnableHttps() ) {
         int port = getHttpsPort();
         String portStr = System.getProperty("https.port");
-        if ( portStr != null && ! portStr.isEmpty() ) {
+        if ( ! foam.util.SafetyUtil.isEmpty(portStr) ) {
           try {
             port = Integer.parseInt(portStr);
             setPort(port);
@@ -325,8 +329,10 @@ foam.CLASS({
             getLogger().error("invalid port", portStr);
             port = getHttpsPort();
           }
+        } else {
+          System.setProperty("https.port", String.valueOf(port));
+System.out.println("HttpServer,setProperty(https.port),"+port);
         }
-        getLogger().info("Starting Jetty https server on port", port);
 
         ByteArrayOutputStream baos = null;
         ByteArrayInputStream bais = null;
@@ -381,6 +387,7 @@ foam.CLASS({
           // sslContextFactory.setWantClientAuth(true);
           // sslContextFactory.setNeedClientAuth(true);
 
+          getLogger().info("Starting Jetty https server on port", port);
           ServerConnector sslConnector = new ServerConnector(server,
             new SslConnectionFactory(sslContextFactory, "http/1.1"),
             new HttpConnectionFactory(https));

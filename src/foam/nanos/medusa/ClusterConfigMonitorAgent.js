@@ -147,7 +147,8 @@ foam.CLASS({
           return;
         }
         // getLogger().debug("execute");
-        DAO client = support.getHTTPClientDAO(x, "clusterConfigDAO", myConfig, config);
+        // DAO client = support.getHTTPClientDAO(x, "clusterConfigDAO", myConfig, config);
+        DAO client = support.getClientDAO(x, "clusterConfigDAO", myConfig, config);
         PM pm = new PM(this.getClass().getSimpleName(), config.getId());
         try {
           ClusterConfig cfg = (ClusterConfig) client.find_(x, config.getId());
@@ -174,7 +175,8 @@ foam.CLASS({
         }
 
         java.util.Date now = new java.util.Date();
-        client = support.getHTTPClientDAO(x, "alarmDAO", myConfig, config);
+        // client = support.getHTTPClientDAO(x, "alarmDAO", myConfig, config);
+        client = support.getClientDAO(x, "alarmDAO", myConfig, config);
         client = client.where(
           AND(
             EQ(Alarm.SEVERITY, LogLevel.ERROR),
@@ -198,6 +200,7 @@ foam.CLASS({
              ! ( cause instanceof java.io.IOException ) &&
              config.getStatus() != Status.OFFLINE ) {
           getLogger().debug(config.getId(), t.getClass().getSimpleName(), t.getMessage(), t);
+t.printStackTrace();
         }
       } finally {
         schedule(x);
