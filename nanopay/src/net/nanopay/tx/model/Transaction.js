@@ -853,23 +853,24 @@ foam.CLASS({
       documentation: `The scheduled date when transaction should be processed.`
     },
     {
-      // TODO: DELETE... DEPRECATED
-      // REVIEW: processDate and completionDate are Alterna specific?
       class: 'DateTime',
       name: 'processDate',
-      section: 'deprecatedInformation',
+      section: 'systemInformation',
+      order: 80,
+      gridColumns: 6,
       storageTransient: true,
-      createVisibility: 'RO',
+      createVisibility: 'HIDDEN',
       readVisibility: 'RO',
       updateVisibility: 'RO'
     },
     {
-      //TODO: DELETE ... DEPRECATED
       class: 'DateTime',
       name: 'completionDate',
       storageTransient: true,
-      section: 'deprecatedInformation',
-      createVisibility: 'RO',
+      section: 'systemInformation',
+      order: 95,
+      gridColumns: 6,
+      createVisibility: 'HIDDEN',
       readVisibility: 'RO',
       updateVisibility: 'RO',
       tableWidth: 172

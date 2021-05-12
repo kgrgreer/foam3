@@ -52,7 +52,9 @@ foam.CLASS({
     {
       name: 'institutionNumber',
       class: 'String',
-      visibility: 'Hidden'
+      section: 'systemInformation',
+      order: 120,
+      gridColumns: 6
     },
     {
       name: 'statusChoices',
