@@ -111,12 +111,11 @@ foam.CLASS({
       name: 'summaryView',
       expression: function(defaultColumns) {
         return {
-          class: 'foam.u2.view.ScrollTableView',
-          enableDynamicTableHeight: true,
+          class: 'foam.u2.view.ScrollTableView'
           columns: defaultColumns,
           css: {
             width: '100%',
-            'min-height': '424px'
+            'min-height': this.minHeight + 'px'
           }
         };
       }
@@ -229,6 +228,12 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'hideQueryBar'
+    },
+    {
+      class: 'Int',
+      name: 'minHeight',
+      documentation: 'minimum height for the table',
+      value: 424
     }
   ]
 });

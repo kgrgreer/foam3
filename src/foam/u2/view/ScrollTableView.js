@@ -119,11 +119,6 @@
       documentation: 'The number of items in each "page". There are three pages.'
     },
     {
-      type: 'Boolean',
-      name: 'enableDynamicTableHeight',
-      value: true
-    },
-    {
       class: 'Boolean',
       name: 'multiSelectEnabled',
       documentation: 'Pass through to UnstyledTableView.'
