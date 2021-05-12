@@ -34,8 +34,7 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'defaultSummaryView_',
       value: {
-        class: 'foam.u2.view.ScrollTableView',
-        enableDynamicTableHeight: false
+        class: 'foam.u2.view.ScrollTableView'
       }
     }
   ],

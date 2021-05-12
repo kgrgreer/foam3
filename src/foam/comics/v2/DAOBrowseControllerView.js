@@ -170,7 +170,7 @@ foam.CLASS({
                 })
               .end()
             .start(self.CardBorder)
-              .style({ position: 'relative', 'min-height': '424px' })
+              .style({ position: 'relative', 'min-height': config.minHeight })
               .start(config$browseBorder)
                 .callIf(config$browseViews.length > 1 && config.cannedQueries.length > 0, function() {
                   this

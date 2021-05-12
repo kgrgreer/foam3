@@ -38,7 +38,6 @@ foam.CLASS({
 
       var view = foam.u2.ViewSpec.createView(this.ScrollTableView, {
         data: this.data.dao,
-        enableDynamicTableHeight: false,
         config: this.config
       },
       this,
