@@ -43,7 +43,7 @@
         return this.__subContext__[this.daoKey].find(firstApprovable.id).then(obj => {
           return obj 
             ? `${obj.toSummary()},...`
-            :  `${obj.id},...`
+            :  `${this.id},...`
         });
       }
     }
