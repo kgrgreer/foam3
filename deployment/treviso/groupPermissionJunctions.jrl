@@ -49,4 +49,14 @@ p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"service.crunchService.getJunctionFor"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"service.crunchService.updateJunctionFor"})
 
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"net.nanopay.country.br.naturecode.naturecode.disablereflink"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"foam.nanos.auth.group.group.disablereflink"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"foam.nanos.crunch.capability.capability.disablereflink"})
+
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-payment-ops",targetId:"service.trevisoTransactionReportDAO"})
+
+// Switch user menus
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"treviso-api-session","targetId":"menu.read.switch-user"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"treviso-fraud-ops","targetId":"menu.read.switch-user"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"treviso-payment-ops","targetId":"menu.read.switch-user"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"treviso-support","targetId":"menu.read.switch-user"})

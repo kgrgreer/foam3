@@ -15,14 +15,13 @@ p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.
 
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.import-goods", priority: 17 })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.import-goods", targetId:"naturecode.br.minmax.import-goods", priority: 17 })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods", targetId:"crunch.onboarding.document.br.simplified-export-declaration" })
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods", targetId:"crunch.onboarding.document.br.import-declaration" })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods", targetId:"crunch.onboarding.document.br.bill-of-landing" })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods", targetId:"crunch.onboarding.document.br.signed-commercial-invoice" })
 
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.import-goods-anticipated", priority: 17 })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.import-goods-anticipated", targetId:"naturecode.br.minmax.import-goods-anticipated", priority: 17 })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods-anticipated", targetId:"crunch.onboarding.document.br.sales-statement" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods-anticipated", targetId:"crunch.onboarding.document.br.signed-commercial-invoice" })
 
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.juridic-services", priority: 17 })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.juridic-services", targetId:"naturecode.br.minmax.juridic-services", priority: 17 })
@@ -40,9 +39,13 @@ p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-services", targetId:"crunch.onboarding.document.br.contract" })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-services", targetId:"crunch.onboarding.document.br.signed-commercial-invoice" })
 
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.import-goods", targetId:"crunch.onboarding.br.expected-shipment-date",  priority: 18})
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.import-goods-draw-back", targetId:"crunch.onboarding.br.expected-shipment-date",  priority: 18})
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.import-goods-anticipated", targetId:"crunch.onboarding.br.expected-shipment-date",  priority: 18})
+
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.import-goods-prazo", priority: 17 })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.import-goods-prazo", targetId:"naturecode.br.minmax.import-goods-prazo", priority: 17 })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods-prazo", targetId:"crunch.onboarding.document.br.simplified-export-declaration" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods-prazo", targetId:"crunch.onboarding.document.br.signed-commercial-invoice" })
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.import-goods-prazo", targetId:"crunch.onboarding.document.br.bill-of-landing" })
 
 // Register Payment Provider Requirements for Brazil
 p({
@@ -61,4 +64,27 @@ p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId: "crunch.onboarding.br.registering-payment-provider",
   targetId: "AFEX",
+})
+
+// Prerequisites for "BR Personal International Payments"
+// user details
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
+  targetId:"crunch.onboarding.user-details",
+  priority:1
+})
+// cpf number
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
+  targetId:"crunch.onboarding.br.cpf",
+  priority:2
+})
+// AFEX Terms and Conditions
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
+  targetId:"crunch.onboarding.document.afex.third-party-terms-and-conditions",
+  priority:4
 })

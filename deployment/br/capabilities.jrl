@@ -1,15 +1,16 @@
-p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.computer-programs", operationType:"47575", name:"Cessão ou uso de programas de computador",reviewRequired:true})
+p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.computer-programs", operationType:"47575", name:"Programas de computador - Cessão ou Uso",reviewRequired:true})
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.funds-abroad", operationType:"67500", name:"Disponibilidades no exterior",reviewRequired:true})
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.abroad-non-profit", operationType:"67500", name:"Disponibilidade no exterior organizações sem fins lucrativos",reviewRequired:true})
-p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.consultancy-public-relations", operationType:"47142", name:"Consultoria de negocios",reviewRequired:true})
+p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.consultancy-public-relations", operationType:"47142", name:"Serviços consultoria de negocios",reviewRequired:true})
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.real-estate-abroad", operationType:"67940", name:"Compra e venda de imoves no exterior",reviewRequired:true})
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.capital-increase-reduction", operationType:"67407", name:"Aumento/ Reducao de capital",reviewRequired:true})
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.computer-services", operationType:"47025", name:"Servicos de computacao",reviewRequired:true})
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.education-services", operationType:"47702", name:"Servicos de educacao",reviewRequired:true})
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.wu-estrangeiro", operationType:"37004", name:"Wu estrangeiro",reviewRequired:true})
-p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.import-goods", operationType:"12012", name:"Importacao de mercadorias a vista ou financiado",reviewRequired:true})
-p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.import-goods-draw-back", operationType:"12012", name:"Importacao de mercadorias - draw back",reviewRequired:true})
-p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.import-goods-anticipated", operationType:"12012", name:"Importacao de mercadorias - antecipado",reviewRequired:true})
+p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.import-goods", operationType:"12012", name:"Importacao de mercadorias a vista",reviewRequired:true, tipo:2})
+p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.import-goods-draw-back", operationType:"12012", name:"Importacao de mercadorias - draw back",reviewRequired:true, tipo:2})
+p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.import-goods-anticipated", operationType:"12012", name:"Importacao de mercadorias - antecipado",reviewRequired:true, tipo:2})
+p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.import-goods-prazo", operationType:"12012", name:"Importacao de mercadorias - a prazo",reviewRequired:true, tipo:2})
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.international-orders", operationType:"12036", name:"Encomendas internacionais",reviewRequired:true})
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.juridic-services", operationType:"47128", name:"Serviços jurídicos",reviewRequired:true})
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.maintain-residents-abroad", operationType:"37004", name:"Manutencao de residentes no exterior",reviewRequired:true})
@@ -20,7 +21,7 @@ p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.public-research-
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.resident-maintenance", operationType:"37004", name:"Manutenção de residente",reviewRequired:true})
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.rollback-availability", operationType:"67500", name:"Disponibilidade reversão",reviewRequired:true})
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.shipping-wu", operationType:"37004", name:"Remessa - wu",reviewRequired:true})
-p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.small-orders", operationType:"12036", name:"Pequenas encomendas",reviewRequired:true})
+p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.small-orders", operationType:"12036", name:"Pequenas encomendas - Até 3.000,00 USD",reviewRequired:true})
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.small-orders-international", operationType:"12036", name:"Pequenas encomendas - internacionais",reviewRequired:true})
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.student-maintenance", operationType:"37011", name:"Manutencao de estudantes",reviewRequired:true})
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.student-maintenance-devolution", operationType:"37011", name:"Manutencao de estudantes - devolucao",reviewRequired:true})
@@ -30,20 +31,20 @@ p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.technical-servic
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.technical-professional-repatriation-services", operationType:"47197", name:"Serviços tecnicos, profissionais e adm repatriação",reviewRequired:true})
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.travel-education-services", operationType:"47702", name:"Servicos de educacao em viagem",reviewRequired:true})
 
-p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.assignment-use-computer-programs", name:"Cessão ou uso de programas de computador requerimento", min:1, max:3, version:"0", enabled:true })
+p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.assignment-use-computer-programs", name:"Programas de computador requerimento", min:1, max:3, version:"0", enabled:true })
 p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.availability-abroad", name:"Disponibilidades no exterior requerimento", min:1, max:2, version:"0", enabled:true })
 p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.availability-abroad-non-profit-organizations", name:"Disponibilidade no exterior organizações sem fins lucrativos requerimento", min:1, max:2, version:"0", enabled:true })
-p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.consultancy-public-relations", name:"Consultoria de negocios e relacoes publicas requerimento", min:1, max:4, version:"0", enabled:true })
+p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.consultancy-public-relations", name:"Serviços Consultoria de Negocios requerimento", min:1, max:3, version:"0", enabled:true })
 p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.purchase-sale-property-abroad", name:"Compra e venda de imoves no exterior requerimento", min:1, max:5, version:"0", enabled:true })
 p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.capital-increase-reduction", name:"Aumento/ Reducao de capital requerimento", min:1, max:6, version:"0", enabled:true })
 p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.computer-services", name:"Servicos de computacao requerimento", min:1, max:3, version:"0", enabled:true })
 p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.education-services", name:"Servicos de educacao requerimento", min:1, max:3, version:"0", enabled:true })
 p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.wu-estrangeiro", name:"Wu estrangeiro requerimento", min:1, max:2, version:"0", enabled:true })
-p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.import-goods", name:"Importacao de mercadorias requerimento", min:1, max:4, version:"0", enabled:true })
+p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.import-goods", name:"Importacao de mercadorias requerimento", min:1, max:2, version:"0", enabled:true })
 p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.import-goods-draw-back", name:"Importacao de mercadorias - draw back requerimento", min:1, max:4, version:"0", enabled:true })
-p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.import-goods-anticipated", name:"Importacao de mercadorias - antecipado requerimento", min:1, max:4, version:"0", enabled:true })
+p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.import-goods-anticipated", name:"Importacao de mercadorias - antecipado requerimento", min:1, max:2, version:"0", enabled:true })
 p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.international-orders", name:"Encomendas internacionais requerimento", min:1, max:8, version:"0", enabled:true })
-p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.juridic-services", name:"Serviços jurídicos requerimento", min:1, max:4, version:"0", enabled:true })
+p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.juridic-services", name:"Serviços jurídicos requerimento", min:1, max:3, version:"0", enabled:true })
 p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.maintain-residents-abroad", name:"Manutencao de residentes no exterior requerimento", min:1, max:3, version:"0", enabled:true })
 p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.serv-tec-professional-adminstrative", name:"Outros serv.tec. profissionais e administrativo requerimento", min:1, max:4, version:"0", enabled:true })
 p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.technical-professional-adminstrative-services", name:"Outros servicos tecnicos, profissionais e administrativos requerimento", min:1, max:4, version:"0", enabled:true })
@@ -52,15 +53,66 @@ p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.public-r
 p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.resident-maintenance", name:"Manutenção de residente requerimento", min:1, max:3, version:"0", enabled:true })
 p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.rollback-availability", name:"Disponibilidade reversão requerimento", min:1, max:2, version:"0", enabled:true })
 p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.shipping-wu", name:"Remessa - wu requerimento", min:1, max:2, version:"0", enabled:true })
-p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.small-orders", name:"Pequenas encomendas requerimento", min:1, max:3, version:"0", enabled:true })
+p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.small-orders", name:"Pequenas encomendas requerimento", min:1, max:2, version:"0", enabled:true })
 p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.small-orders-international", name:"Pequenas encomendas - internacionais requerimento", min:1, max:4, version:"0", enabled:true })
 p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.student-maintenance", name:"Manutencao de estudantes requerimento", min:1, max:3, version:"0", enabled:true })
 p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.student-maintenance-devolution", name:"Manutencao de estudantes - devolucao requerimento", min:1, max:3, version:"0", enabled:true })
 p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.technical-services-computer-services", name:"Serviços técnicos e profissionais - serviços de computação requerimento", min:1, max:7, version:"0", enabled:true })
 p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.technical-services-legal-services", name:"Serviços técnicos e profissionais - serviços jurídicos requerimento", min:1, max:4, version:"0", enabled:true })
-p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.technical-services", name:"Servicos tecnicos requerimento", min:1, max:4, version:"0", enabled:true })
+p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.technical-services", name:"Servicos tecnicos requerimento", min:1, max:2, version:"0", enabled:true })
 p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.technical-professional-repatriation-services", name:"Serviços tecnicos, profissionais e adm repatriação requerimento", min:1, max:4, version:"0", enabled:true })
 p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.travel-education-services", name:"Servicos de educacao em viagem requerimento", min:1, max:3, version:"0", enabled:true })
+p({class:"foam.nanos.crunch.MinMaxCapability", id:"naturecode.br.minmax.import-goods-prazo", name:"Importacao de mercadorias - a prazo requerimento", min:1, max:3, version:"0", enabled:true })
+
+// top level capability to onboard afex user
+p({
+  class:"foam.nanos.crunch.Capability",
+  id:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
+  name:"BR Personal International Payments",
+  description:"submit a request to AFEX to create a privateClient account",
+  enabled:true,
+  associatedEntity:1,
+  keywords:["br"],
+  permissionsGranted: []
+})
+
+// prerequisites of onboard afex user capability
+p({
+  class:"foam.nanos.crunch.Capability",
+  id:"crunch.onboarding.user-details",
+  name:"User Details",
+  contextDAOFindKey:"subject.user",
+  associatedEntity:0
+})
+
+p({
+  class:"foam.nanos.crunch.Capability",
+  id:"crunch.onboarding.br.cpf",
+  name:"CPF Number",
+  of:"net.nanopay.country.br.CPF",
+  "daoKey":"userDAO",
+  "contextDAOFindKey":"subject.realUser",
+  enabled:true,
+  associatedEntity:0
+})
+
+p({
+  class:"foam.nanos.crunch.Capability",
+  id:"crunch.onboarding.document.br.date-of-issue",
+  name:"Date of Issue",
+  description:"Date of issue of an identification document",
+  of:"net.nanopay.crunch.document.DateOfIssue",
+  enabled:true,
+  associatedEntity:0
+})
+
+p({
+  class:"foam.nanos.crunch.Capability",
+  id:"crunch.onboarding.document.afex.third-party-terms-and-conditions",
+  name:"Third Party Verification AFEX Terms and Conditions",
+  of:"net.nanopay.crunch.acceptanceDocuments.capabilities.ThirdPartyVerificationAFEXTerms",
+  enabled:true
+})
 
 p({
   "class":"foam.nanos.crunch.Capability",

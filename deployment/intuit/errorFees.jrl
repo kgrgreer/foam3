@@ -1,4 +1,4 @@
-p({"class":"net.nanopay.tx.billing.ErrorFee","id":"rejected-900","errorCode":900,"amount":0,"currency":"CAD","chargedTo":1,"spid":"intuit"})
+p({"class":"net.nanopay.tx.billing.ErrorFee","id":"rejected-900","errorCode":900,"amount":200,"currency":"CAD","chargedTo":1,"spid":"intuit"})
 p({"class":"net.nanopay.tx.billing.ErrorFee","id":"nsf-901","errorCode":901,"amount":3000,"currency":"CAD","chargedTo":1,"spid":"intuit"})
 p({"class":"net.nanopay.tx.billing.ErrorFee","id":"account-not-found-902","errorCode":902,"amount":200,"currency":"CAD","chargedTo":1,"spid":"intuit"})
 p({"class":"net.nanopay.tx.billing.ErrorFee","id":"payment-stopped-903","errorCode":903,"amount":3000,"currency":"CAD","chargedTo":1,"spid":"intuit"})

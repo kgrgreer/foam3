@@ -23,7 +23,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'SummaryTransactionCitationView',
+  name: 'InvoiceSummaryTransactionCitationView',
   extends: 'foam.u2.View',
 
   axioms: [
@@ -43,7 +43,6 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TITLE', message: 'Review Remittance Details' },
     { name: 'POST_TITLE', message: 'Remittance Details' },
     { name: 'PAYMENT_TITLE', message: 'Payment Details' },
     { name: 'PRE_TITLE', message: 'Review Remittance Details' },
@@ -62,33 +61,6 @@ foam.CLASS({
 
   properties: [
     'data',
-    {
-      name: 'prop',
-      expression: function(data) {
-        let of = this.data.cls_;
-        let rateLineItem = this.data.lineItems.find(e => this.FxSummaryTransactionLineItem.isInstance(e))
-        let of_rateLineItem = rateLineItem.cls_;
-        let props = of.getAxiomsByClass(foam.core.Property);
-        let props_rateLineItem = of_rateLineItem.getAxiomsByClass(foam.core.Property);
-        let candidates = [ 'destinationAmount', 'inverseRate', 'amount'];
-        let labels = [this.AMOUNT, this.RATE, this.AMOUNT_IN];
-        let newProps = new Array(candidates.length);
-
-        for ( const p of props ) {
-          if ( candidates.includes(p.name) ) {
-            newProps[candidates.indexOf(p.name)] = {prop: p, value: p.get(this.data), label: labels[candidates.indexOf(p.name)] + (p.name === 'amount' ? ` (${data.sourceCurrency})`: '')};
-          }
-        }
-
-        for ( const p of props_rateLineItem ) {
-          if ( p.name != 'amount' && candidates.includes(p.name) ) {
-            newProps[candidates.indexOf(p.name)] = {prop: p, value: p.get(rateLineItem), label: labels[candidates.indexOf(p.name)]};
-          }
-        }
-
-        return newProps;
-      }
-    },
     {
       name: 'sourceCurrency',
       factory: function() {
@@ -149,22 +121,6 @@ foam.CLASS({
       name: 'txAmount',
       factory: function() {
         return this.data.destinationAmount;
-      }
-    },
-    {
-      name: 'currencyRate',
-      factory: function() {
-        let lineItems = this.data.lineItems;
-        for ( const lineItem of lineItems ) {
-          if ( this.FxSummaryTransactionLineItem.isInstance(lineItem) ) {
-            //get rate from lineItem[0] in FxSummaryTransactionLineItem.
-            let totalRateLineItem = lineItem.lineItems[0];
-            if ( this.TotalRateLineItem.isInstance(totalRateLineItem) ) {
-              return totalRateLineItem.rate;
-            }
-          }
-        }
-        return 0;
       }
     },
     {

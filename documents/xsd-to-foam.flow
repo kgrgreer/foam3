@@ -1,9 +1,9 @@
-<h2 id="xsdtofoam">XSD to FOAM</h2>
-<h4 id="overview">Overview</h4>
+<h1 id="xsdtofoam">XSD to FOAM</h1>
+<h3 id="overview">Overview</h3>
 <p>Through the use of scripts, we have the ability to parse XSD schema files to generate FOAM models. This greatly
   reduces the pain of having to model each message by hand which would otherwise be a very tedious property.
   The scripts are also able to add any property level validation that may be contained in the schema.</p>
-<h4 id="dependencies">Dependencies</h4>
+<h3 id="dependencies">Dependencies</h3>
 <p>The XSD parser &amp; model generator script use node.js and require the following packages:</p>
 <ul>
   <li>json-stringify-pretty-compact: ^1.0.4</li>
@@ -11,7 +11,7 @@
   <li>underscore: ^1.8.3</li>
   <li>xmldom : ^0.1.27</li>
 </ul>
-<h4 id="usage">Usage</h4>
+<h3 id="usage">Usage</h3>
 <p>To generate FOAM models from an XSD file by invoking the following command in the top level project directory
   (NANOPAY/):</p>
 <code>node tools/xsd/index.js
@@ -37,7 +37,7 @@
 <p>The above script will generate all of the models (as well as classes.js and files.js) in the following directory:</p>
 <code>NANOPAY/nanopay/src/net/nanopay/iso20022
 </code>
-<h4 id="namespaces">Namespaces</h4>
+<h3 id="namespaces">Namespaces</h3>
 <p>The script is currently only able to parse XSD files that use the namespace <code>xs</code>. For example:</p>
 <code>
   <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
@@ -46,7 +46,7 @@
 </code>
 <p>An XSD file using any other namespace (for example <code>xsd</code>) must be modified to use <code>xs</code> for the
   parser to work.</p>
-<h4 id="parsingwsdlfiles">Parsing WSDL files</h4>
+<h3 id="parsingwsdlfiles">Parsing WSDL files</h3>
 <p>While the scripts themselves are not able to parse WSDL files directly, we can extract XSD files from the file to be
   able to more easily generate models. As outlined <a href="https://www.w3schools.com/xml/xml_wsdl.asp">here</a>, WSDL
   files contain a type section. This type section defines an XSD schema which, if extracted into a separate file, can be

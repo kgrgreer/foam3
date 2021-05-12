@@ -2340,16 +2340,15 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.SKBankAccount.m
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.model_.label",target:"Estados Unidos"})
 
 // Review Invoice Details
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.TITLE",target:"Revise os Detalhes da Remessa"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.POST_TITLE",target:"Detalhes da Remessa"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.PRE_TITLE",target:"Revise os Detalhes da Remessa"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.PAYMENT_TITLE",target:"Detalhes do Pagamento"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.AMOUNT",target:"Quantidade"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.AMOUNT_IN",target:"Valor em"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.RATE",target:"Taxa"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.TRANSACTION_DATE",target:"Data da Transaçao"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.TRANSACTION_REFERENCE",target:"Referência"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.VET_TITLE",target:"Valor Efetivo Total (VET)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.InvoiceSummaryTransactionCitationView.POST_TITLE",target:"Detalhes da Remessa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.InvoiceSummaryTransactionCitationView.PRE_TITLE",target:"Revise os Detalhes da Remessa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.InvoiceSummaryTransactionCitationView.PAYMENT_TITLE",target:"Detalhes do Pagamento"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.InvoiceSummaryTransactionCitationView.AMOUNT",target:"Quantidade"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.InvoiceSummaryTransactionCitationView.AMOUNT_IN",target:"Valor em"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.InvoiceSummaryTransactionCitationView.RATE",target:"Taxa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.InvoiceSummaryTransactionCitationView.TRANSACTION_DATE",target:"Data da Transaçao"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.InvoiceSummaryTransactionCitationView.TRANSACTION_REFERENCE",target:"Referência"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.InvoiceSummaryTransactionCitationView.VET_TITLE",target:"Valor Efetivo Total (VET)"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.FXSummaryTransaction.DESCRIPTION",target:"Detalhes do Pagamento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.AMOUNT.label",target:"Quantidade de fonte"})
@@ -3318,15 +3317,15 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.flinks.view.modalFor
 p({class:"foam.i18n.Locale",locale:"pt",source:"submenu.contact.title",target:"Adicionar contato"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f712bepay-10.name",target:"Termos e Condições AFEX"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.bepay.cpf.name",target:"Número CPF"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.br.cpf.name",target:"Número CPF"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.br.ExtendedUserDetailsData.MOTHERS_MAIDEN_NAME.label",target:"nome de solteira da mãe"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AccountEntityType.PRIVATE_CLIENT.label",target:"cliente privado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AccountEntityType.CORPORATE_CLIENT.label",target:"cliente corporativo"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.document.bepay.date-of-issue.name",target:"Data de emissão"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.document.bepay.date-of-issue.description",target:"Data de emissão de um documento de identificação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.document.br.date-of-issue.name",target:"Data de emissão"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"crunch.onboarding.document.br.date-of-issue.description",target:"Data de emissão de um documento de identificação"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.wizardlet.SigningOfficerQuestionWizardlet.SUCCESS_SIGNING_OFFICER_QUESTION",target:"Obrigado! Preencha os detalhes adicionais necessários para assinar os privilégios de dirigente."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.wizardlet.SigningOfficerQuestionWizardlet.SUCCESS_SIGNING_OFFICER_INVITED",target:"Obrigado! Conclua o desbloqueio de pagamentos e faturas internacionais e nacionais para aprovação do oficial de assinatura."})

@@ -605,3 +605,4 @@ p({"class":"foam.nanos.auth.Permission","id":"loginattempts.notclustered","descr
 p({"class":"foam.nanos.auth.Permission","id":"loginattempts.lock.time","description":"Enables time freeze windows to be set on login attempts"})
 p({"class":"foam.nanos.auth.Permission","id":"strategyreference.read.96b52369-946a-4bf2-8e17-1832acf8922e","description":"Permission to see Credit Code."})
 p({"class":"foam.nanos.auth.Permission","id":"strategyreference.read.6246258d-a62e-4388-a3e4-c08d73998ab6","description":"Permission to see Fee Waiver"})
+p({"class":"foam.nanos.auth.Permission","id":"net.nanopay.country.br.naturecode.naturecode.disablereflink","description":"Permission that will disable the link to details of on any NatureCode reference"})

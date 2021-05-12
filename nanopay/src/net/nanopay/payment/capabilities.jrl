@@ -6,6 +6,7 @@ p({"class":"net.nanopay.payment.PaymentProvider","id":"RBC","name":"Royal Bank o
 p({"class":"net.nanopay.payment.PaymentProvider","id":"Kotak","name":"Kotak", "enabled":true})
 p({"class":"net.nanopay.payment.PaymentProvider","id":"Treviso","name":"Treviso", "enabled":true})
 p({"class":"net.nanopay.payment.PaymentProvider","id":"BePay","name":"BePay", "enabled":true})
+p({"class":"net.nanopay.payment.PaymentProvider","id":"TrevisoAPI","name":"TrevisoAPI", "enabled":true})
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
   "id":"paymentprovidercorridor.afex.ca-us",

@@ -1,20 +1,20 @@
 <title>Invoice - API Reference</title>
-<h2>API Reference - Invoice</h2>
+<h1>API Reference - Invoice</h1>
 
-<h4>Create a Payable Invoice</h4>
+<h2>Create a Payable Invoice</h2>
 <p><i>Describe the entity</i></p>
 
-<h4>Create a Receivable Invoice</h4>
+<h2>Create a Receivable Invoice</h2>
 <p><i>Describe the entity</i></p>
 
-<h4>Send a Receivable Invoice</h4>
+<h2>Send a Receivable Invoice</h2>
 <p><i>Describe the entity</i></p>
 
-<h4>Edit Invoice / Update Status</h4>
+<h2>Edit Invoice / Update Status</h2>
 <p><i>Describe the entity</i></p>
 
-<h4>List Invoices</h4>
+<h2>List Invoices</h2>
 <p><i>Describe the entity</i></p>
 
-<h4>Remove Invoices</h4>
+<h2>Remove Invoices</h2>
 <p><i>Describe the entity</i></p>
