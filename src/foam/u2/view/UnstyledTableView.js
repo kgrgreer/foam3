@@ -426,7 +426,8 @@ foam.CLASS({
                     'justify-content': 'start',
                     'word-wrap': 'break-word'
                   })
-                  .start('h6', { tooltip: colTitle.join('/') })
+                  .start('', { tooltip: colTitle.join('/') })
+                    .addClass('h600')
                     .style({
                       overflow: 'hidden',
                       'text-overflow': 'ellipsis'

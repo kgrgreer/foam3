@@ -418,9 +418,9 @@ foam.CLASS({
 
       if ( this.label ) {
         if ( this.buttonStyle == 'LINK' || this.buttonStyle == 'UNSTYLED' ) {
-          this.start('p').add(this.label$).end();
+          this.start().addClass('p').add(this.label$).end();
         } else {
-          this.start('h6').add(this.label$).end();
+          this.start().addClass('h600').add(this.label$).end();
         }
       }
     }

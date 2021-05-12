@@ -129,10 +129,10 @@ foam.CLASS({
                   code: section.title
                 });
                 if ( slot$.value ) {
-                  this.start('h5').add(slot$.value.toUpperCase()).addClass(self.myClass('section-title')).end();
+                  this.start().add(slot$.value.toUpperCase()).addClasses(['h500', self.myClass('section-title')]).end();
                 }
               } else {
-                this.start('h5').add(section.title.toUpperCase()).addClass(self.myClass('section-title')).end();
+                this.start('h5').add(section.title.toUpperCase()).addClasses(['h500', self.myClass('section-title')]).end();
               }
             })
             .callIf(section$subTitle, function() {
@@ -143,10 +143,10 @@ foam.CLASS({
                   code: section.subTitle
                 });
                 if ( slot$.value ) {
-                  this.start('p').addClass('subtitle').add(slot$.value).end();
+                  this.start().addClasses(['p', 'subtitle']).add(slot$.value).end();
                 }
               } else {
-                this.start('p').addClass('subtitle').add(section.subTitle).end();
+                this.start().addClasses(['p', 'subtitle']).add(section.subTitle).end();
               }
             })
             .add(this.slot(function(loadLatch) {

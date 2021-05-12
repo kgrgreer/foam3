@@ -221,7 +221,7 @@ foam.CLASS({
           .addClass(this.myClass('flexer'))
           .add( // TODO isDoaFetched and simpSlot0 aren't used should be clean up
             this.isDaoFetched$.map(isDaoFetched => {
-              var toRender = this.choices.map((choice, index) => {
+              var toRender = this.choices.sort().map((choice, index) => {
                 var valueSimpSlot = this.mustSlot(choice[0]);
                 var labelSimpSlot = this.mustSlot(choice[1]);
 
