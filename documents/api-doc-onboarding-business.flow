@@ -1,13 +1,13 @@
 <title>API Business Onboarding</title>
 
-<h2>Business Onboarding</h2>
+<h1>Business Onboarding</h1>
 <p>
     Onboarding is a key part of the nanopay experience. Users, businesses and account all have to be setup 
     and the process of creating these entities within the system is called onboarding. Once a business has been
     setup within the system, they can then participate in a transaction.
 </p>
 
-<h4>Onboarding Process for a Business</h4>
+<h2>Onboarding Process for a Business</h2>
 <p>
     There are several steps to completing onboarding for a business so that it can send transactions.
     <ol>
@@ -21,7 +21,7 @@
     </ol>
 </p>
 
-<h4><a name="create-user">Create User</a></h4>
+<h3><a name="create-user">Create User</a></h3>
 <p>
     Creating a user is necessary in order to start the onboarding process. A user entity is required to create a transaction session
     in which other API calls are authenticated against that user. Using this session will also associate the objects created
@@ -42,7 +42,7 @@
 <i><b>Session Authentication:</b> Authentication for user creation should be done with the administrative session.</i>
 </p>
 
-<h4><a name="create-business">Create Business</a></h4>
+<h3><a name="create-business">Create Business</a></h3>
 <p>
     Once the user has been created, a business can be created which is associated with the user. Businesses are higher level
     entities in the system which can be associated to more than one user. Businesses also require more scrutiny by 
@@ -64,7 +64,7 @@
   with the userId and agentId set to the ID of the newly created user.</i>
 </p>
 
-<h4><a name="onboarding-request">Onboarding Request</a></h4>
+<h3><a name="onboarding-request">Onboarding Request</a></h3>
 <p>
     Once the user and business have been created, an onboarded request can be made to enable sending payments from the business. The 
     onboarding request will provide acceptance of user documents, user details, business details, business type, owner details, 
@@ -92,7 +92,7 @@
 <i><b>Session Authentication:</b> Authentication for business onboarding should be done with a transaction session that was created with the userId set the businessId of the business and agentId set to the ID of the user.</i>
 </p>
 
-<h4><a name="create-account">Bank Account Creation</a></h4>
+<h3><a name="create-account">Bank Account Creation</a></h3>
 <p>
   After setting up a user and a business, the next step necessary to perform is creating a bank account for the sending
   of funds in a transaction. The bank account API call is a DIG API call to the accountDAO with the following payload.
@@ -114,7 +114,7 @@
 <i><b>Session Authentication:</b> Authentication for bank account creation must be done with an administrative session in order to set the status properly.</i>
 </p>
 
-<h4><a name="create-contact">Contact Creation</a></h4>
+<h3><a name="create-contact">Contact Creation</a></h3>
 <p>
   The next step is setting up the destination for the transaction. There are two parts to this setup, the first being the creation of a contact and the second
   being the creation of a bank account owned by that contact. Once this is done, a transaction from the originating bank account setup in the previos step can 
@@ -134,7 +134,7 @@
 <i><b>Session Authentication:</b> Authentication for contact creation must be done with a transaction session that was created with the userId set the businessId of the business and agentId set to the ID of the user.</i>
 </p>
 
-<h4><a name="create-contact-account">Contact Bank Account Creation</a></h4>
+<h3><a name="create-contact-account">Contact Bank Account Creation</a></h3>
 <p>
   With the contact created, a bank account has to be created for that contact which will receive funds in the transaction. Creating the contact
   bank account is almost the same as the previous account creation API call, except that the owner must be changed to be the contact instead of being
@@ -157,7 +157,7 @@
 <i><b>Session Authentication:</b> Authentication for bank account creation must be done with an administrative session in order to set the status properly.</i>
 </p>
 
-<h4><a name="create-transaction">Transaction Creation</a></h4>
+<h3><a name="create-transaction">Transaction Creation</a></h3>
 <p>
   Now that we have all the pieces necessary, we can create a transaction to transfer money from the source to the destination. The source here will be the business's
   bank account and the destination will be the contact's bank account. Creating a transaction is a simple matter of setting the source and destination accounts, the 

@@ -308,17 +308,30 @@ public class ExchangeServiceProvider
     if ( bancoConfig != null ) dadosBoleto.setBANCO(bancoConfig.getCode());
     dadosBoleto.setBANCOBEN0(StringUtils.leftPad(exchangeClientValues.getBeneficiaryType(), 1, " "));
     dadosBoleto.setCONTA(exchangeClientValues.getCONTA());
-    dadosBoleto.setBANCOBEN1(StringUtils.leftPad(bankAccount.getSwiftCode(), 35, " "));
-    dadosBoleto.setBANCOBEN4(StringUtils.leftPad(bankAccount.getRoutingCode(getX()), 35, " "));
-    dadosBoleto.setBANCOBEN5(StringUtils.leftPad("", 20, " "));
+    String bancoBen1 = StringUtils.leftPad(bankAccount.getSwiftCode(), 35, " ");
+    bancoBen1 = bancoBen1.substring(0, Math.min(bancoBen1.length(), 35));
+    dadosBoleto.setBANCOBEN1(bancoBen1);
+
+    String bancoBen4 = StringUtils.leftPad(bankAccount.getRoutingCode(getX()), 35, " ");
+    bancoBen4 = bancoBen4.substring(0, Math.min(bancoBen4.length(), 35));
+    dadosBoleto.setBANCOBEN4(bancoBen4);
+
+    String bancoBen5 = StringUtils.leftPad("", 20, " ");
+    dadosBoleto.setBANCOBEN5(bancoBen5);
+
     dadosBoleto.setPAGADORS(bankAccount.getSwiftCode());
     dadosBoleto.setESP5(getESP("SWIFT CODE: ", bankAccount.getSwiftCode(),
       " - IBAN:  ", bankAccount.getIban(), " - DETAILS OF CHARGE: "));
 
     FindBankByNationalIDResponse bankInfo = getBankInformation(bankAccount, payer.getSpid());
-    if ( bankInfo != null )
-      dadosBoleto.setBANCOBEN2(StringUtils.leftPad(bankInfo.getInstitutionName(), 35, " "));
-    dadosBoleto.setBANCOBEN3(StringUtils.leftPad(getBancoBen3(bankInfo, bankAccount), 35, " "));
+    String bankInstitutionName = null == bankInfo ? "" : bankInfo.getInstitutionName();
+    String bancoBen2 = StringUtils.leftPad(bankInstitutionName, 35, " ");
+    bancoBen2 = bancoBen2.substring(0, Math.min(bancoBen2.length(), 35));
+    dadosBoleto.setBANCOBEN2(bancoBen2);
+
+    String bancoBen3 = StringUtils.leftPad(getBancoBen3(bankInfo, bankAccount), 35, " ");
+    bancoBen3 = bancoBen3.substring(0, Math.min(bancoBen3.length(), 35));
+    dadosBoleto.setBANCOBEN3(bancoBen3);
 
     dadosBoleto.setCLAUSULAXX(false);
     String formattedCpfCnpj = findCpfCnpj(payer.getId()).replaceAll("[^0-9]", "");
@@ -354,7 +367,6 @@ public class ExchangeServiceProvider
     dadosBoleto.setPLATBMF(exchangeClientValues.getPLATBMF());
     dadosBoleto.setRSISB(exchangeClientValues.getRSISB());
     dadosBoleto.setSEGMENTO(dadosBoleto.getSEGMENTO());
-    dadosBoleto.setTIPO(exchangeClientValues.getTIPO());
     dadosBoleto.setTIPOCT("");
     dadosBoleto.setTPADTO("%");
 
@@ -369,6 +381,14 @@ public class ExchangeServiceProvider
     if ( natureza != null && natureza.size() > 0 ) {
       dadosBoleto.setCLAUSULA01(natureza.get(0).getCpClausula1());
     }
+
+
+    if ( natureCode != null ) {
+      NatureCode nCode = (NatureCode) ((DAO) getX().get("natureCodeDAO"))
+        .find(EQ(NatureCode.OPERATION_TYPE, natureCode.substring(0, Math.min(natureCode.length(), 5))));
+      dadosBoleto.setTIPO(nCode == null ? dadosBoleto.getTIPO() : nCode.getTipo());
+    }
+
     dadosBoleto.setOBSERVACAO("");
     dadosBoleto.setPAGADOR(getName(receiver));
     dadosBoleto.setPAGADORC("/" + bankAccount.getIban());

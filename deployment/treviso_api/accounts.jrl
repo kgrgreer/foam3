@@ -1,0 +1,90 @@
+// intermediary accounts
+p({
+  "class":"net.nanopay.bank.USBankAccount",
+  "branchId":"123456789",
+  "accountNumber":"123456",
+  "name":"TrevisoAPI USD Bank",
+  "status":1,
+  "id":"17edd25c-476c-472f-be6e-9b6ab0607b4a",
+  "isDefault":true,
+  "created":"2020-04-28T17:20:41.561Z",
+  "createdBy":101,
+  "lastModified":"2020-04-28T17:20:41.561Z",
+  "lastModifiedBy":101,
+  "lifecycleState":1,
+  "owner":2028,
+  "enabled":true
+})
+
+
+p({
+  "class":"net.nanopay.bank.CABankAccount",
+  "branchId":"12345",
+  "institutionNumber": "123",
+  "accountNumber":"12345678",
+  "name":"TrevisoAPI CAD Bank",
+  "status":1,
+  "id":"a28da5bf-3f37-472c-b4ac-726f65d45293",
+  "isDefault":true,
+  "created":"2020-04-28T17:20:41.561Z",
+  "createdBy":101,
+  "lastModified":"2020-04-28T17:20:41.561Z",
+  "lastModifiedBy":101,
+  "lifecycleState":1,
+  "owner":2028,
+  "enabled":true
+})
+
+p({
+  "class":"net.nanopay.bank.GBBankAccount",
+  "branchId":"123456",
+  "accountNumber":"12345678",
+  "name":"TrevisoAPI GBP Bank",
+  "status":1,
+  "id":"040acd32-eca3-48fc-b17d-4c0440aef019",
+  "isDefault":true,
+  "created":"2020-04-28T17:20:41.561Z",
+  "createdBy":101,
+  "lastModified":"2020-04-28T17:20:41.561Z",
+  "lastModifiedBy":101,
+  "lifecycleState":1,
+  "owner":2028,
+  "enabled":true
+})
+
+p({
+  "class":"net.nanopay.bank.EUBankAccount",
+  "branchId":"111111111",
+  "accountNumber":"3333333",
+  "name":"TrevisoAPI EUR Bank",
+  "country":"PT",
+  "status":1,
+  "id":"d4c61be5-170f-435e-a655-dc56671f167b",
+  "isDefault":true,
+  "created":"2020-04-28T17:20:41.561Z",
+  "createdBy":101,
+  "lastModified":"2020-04-28T17:20:41.561Z",
+  "lastModifiedBy":101,
+  "lifecycleState":1,
+  "owner":2028,
+  "enabled":true
+})
+
+// fee account
+p({
+  "class":"net.nanopay.bank.BRBankAccount",
+  "accountNumber":"1234567890",
+  "status":1,
+  "name":"Bank BRL",
+  "denomination":"BRL",
+  "id":"614d18f5-dd83-4033-b049-ad385e069fec",
+  "name":"FeeAccount-TrevisoAPI",
+  "isDefault":true,
+  "owner":2028,
+  "created":1601392287945,
+  "createdBy":1,
+  "createdByAgent":1,
+  "lastModified":1601392287945,
+  "lastModifiedBy":1,
+  "lifecycleState":1
+})

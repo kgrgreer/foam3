@@ -1,22 +1,22 @@
 <title>Quickstart Guide</title>
-<h2>Quickstart Guide for API</h2>
+<h1>Quickstart Guide for API</h1>
 
-<h4><a name="send-contact-payment">Send a Payment to a Contact</a></h4>
+<h2><a name="send-contact-payment">Send a Payment to a Contact</a></h2>
 <p>In this quickstart tutorial, you will attempt to send money from your default digital account into one of your contact's accounts.
 For this to work, you will have to be setup as a user within the nanopay system and have a bank account linked and verified,
 and then fund your account with some money. Once you have this setup, you can proceed with the following example using the API.</p>
 
-<h4>Create a Contact</h4>
+<h3>Create a Contact</h3>
 <p>In order to send someone money to another individual using the nanopay platform, the other party must to be setup in the system 
 as one of your contacts. The process of setting up a contact is easily accomplished by providing their name and some identifiable
 information.</p>
 <foam class="foam.doc.DigPutView" data="contactDAO" samplepayload="{ 'name'='my_name', 'email'='my_email' }" />
 
-<h4>Retrieve a Contact</h4>
+<h3>Retrieve a Contact</h3>
 <p>Once you have created a new contact, you need to retrieve the user ID, which will be required for executing a transaction.</p>
 <foam class="foam.doc.DigSelectView" data="contactDAO" samplequery="email=my_email" />
 
-<h4>Retrieve Source Account</h4>
+<h3>Retrieve Source Account</h3>
 <p>nanopay works best when users add and keep currencies in digital format within our system. Once a bank account has been
    attached and money has been added through the process of cashing in, users then have money in digital format that they can use to 
    perform digital transactions quickly, efficiently and at a scale which was previously very difficult. This is made possibly through the 
@@ -26,19 +26,19 @@ information.</p>
    the correct currency.</p>
 <foam class"foam.doc.DigSelectView" data="accountDAO" samplequery="default=true" />
 
-<h4>Retrieve Destination Account</h4>
+<h3>Retrieve Destination Account</h3>
 <p>After you know where the currency is coming from, you need to know where you are sending it. This is done by selecting the destination
    account of the user  you want to send it. Only users which have registered with our system will have accounts.</p>
 <p><i> ... add code snippet ... </i></p>
 
-<h4>Send Transaction Between Accounts</h4>
+<h3>Send Transaction Between Accounts</h3>
 <p> ... discuss transaction entity ... </p>
 <p><i> ... add code snippet ... </i></p>
 
-<h4>Retrieve Transaction Status</h4>
+<h3>Retrieve Transaction Status</h3>
 <p> ... why retrieve the status ... </p>
 <p><i> ... add code snippet ... </i></p>
 
-<h4>Retrieve Transaction History</h4>
+<h3>Retrieve Transaction History</h3>
 <p> ... why retrieve the history ... </p>
 <p><i> ... add code snippet ... </i></p>

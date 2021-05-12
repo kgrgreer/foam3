@@ -37,7 +37,7 @@ public abstract class ReportGenerator {
   protected String spid;
   protected boolean cached;
 
-  protected FObject getCachedElement(Object elementId, Object src) throws IllegalArgumentException {
+  protected FObject getCachedElement(X x, Object elementId, Object src) throws IllegalArgumentException {
     if ( ! (src instanceof LastModifiedAware) ) throw new IllegalArgumentException("src model must be LastModifiedAware");
     var lastModified = (LastModifiedAware) src;
 
@@ -76,7 +76,7 @@ public abstract class ReportGenerator {
     if ( cached ) {
       var id = getSourceId((FObject) src);
       try {
-        var report = getCachedElement(id, src);
+        var report = getCachedElement(x, id, src);
         if ( report != null )
           return report;
 

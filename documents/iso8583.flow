@@ -1,20 +1,20 @@
-<h2 id="iso8583">ISO 8583</h2>
-<h4 id="overview">Overview</h4>
+<h1 id="iso8583">ISO 8583</h1>
+<h2 id="overview">Overview</h2>
 <p>ISO 8583 is an international standard for financial transaction card originated interchange messaging. It is the
   International Organization for Standardization standard for systems that exchange electronic transactions initiated by
   cardholders using payment cards. ISO 8583 defines a message format and a communication flow so that different systems
   can exchange these transaction requests and responses.</p>
-<h4 id="messageformat">Message Format</h4>
+<h2 id="messageformat">Message Format</h2>
 <p>An ISO 8583 message is made of the following parts:</p>
 <ul>
   <li>Message type indicator (MTI)</li>
   <li>One or more bitmaps, indicating which data elements are present</li>
   <li>Data elements, the actual information fields of the message</li>
 </ul>
-<h4 id="messagetypeindicator">Message Type Indicator</h4>
+<h3 id="messagetypeindicator">Message Type Indicator</h3>
 <p>The Message Type Indicator is a four digit numeric field that represents the following: the ISO 8583 version, the
   message class, the message function, and the message origin.</p>
-<h5 id="iso8583version">ISO 8583 Version</h5>
+<h4 id="iso8583version">ISO 8583 Version</h4>
 <p>This field defines the version of the ISO 8583 message.</p>
 <table>
   <thead>
@@ -66,7 +66,7 @@
   </tr>
   </tbody>
 </table>
-<h5 id="messageclass">Message Class</h5>
+<h4 id="messageclass">Message Class</h4>
 <p>This field defines the overall purpose of the message.</p>
 <table>
   <thead>
@@ -135,7 +135,7 @@
   </tr>
   </tbody>
 </table>
-<h5 id="messagefunction">Message Function</h5>
+<h4 id="messagefunction">Message Function</h4>
 <p>This field defines how the message should flow within the system.</p>
 <table>
   <thead>
@@ -198,7 +198,7 @@
   </tr>
   </tbody>
 </table>
-<h5 id="messageorigin">Message Origin</h5>
+<h4 id="messageorigin">Message Origin</h4>
 <p>This field defines the location of the message source within the payment chain.</p>
 <table>
   <thead>
@@ -250,24 +250,24 @@
   </tr>
   </tbody>
 </table>
-<h4 id="bitmap">Bitmap</h4>
+<h3 id="bitmap">Bitmap</h3>
 <p>In ISO 8583, a bitmap is a field or subfield within a message, which indicates whether other data elements or data
   element subfields are present elsewhere in the message.</p>
-<h4 id="dataelements">Data Elements</h4>
+<h3 id="dataelements">Data Elements</h3>
 <p>Data elements are the individual fields carrying the transaction information. There are up to 128 data elements
   specified in the original ISO 8583:1987 standard, and up to 192 data elements in later releases. The 1993 revision
   added new definitions, deleted some, while leaving the message format itself unchanged.</p>
 <p>While each data element has a specified meaning and format, the standard also includes some general purpose data
   elements and system- or country-specific data elements which vary enormously in use and form from implementation to
   implementation.</p>
-<h4 id="implementation">Implementation</h4>
-<h4 id="isomessage">ISOMessage</h4>
+<h2 id="implementation">Implementation</h2>
+<h3 id="isomessage">ISOMessage</h3>
 <p>The ISOMessage class is used construct an ISO 8583 message. Using this class one is able to set data elements for
   their message and then pack them into the ISO 8583 message format. To package each data element a packager class must
   be specified. ISO 8583 is a very generic message format and does not provide much information in the way of how a
   specific field must be packaged. To get around this we use a packager interface which determines how to pack specific
   fields.</p>
-<h5 id="usage">Usage</h5>
+<h4 id="usage">Usage</h4>
 <p>To set string data elements on an ISOMessage:</p>
 <code>// create an ISO 8583:1987 message
 foam.core.X x = foam.core.EmptyX.instance();
@@ -316,7 +316,7 @@ message.unpack(bais);
 
 // print out unpacked message
 System.out.println(new foam.lib.json.Outputter(foam.lib.json.OutputterMode.STORAGE).stringify(message););</code>
-<h4 id="packagers">Packagers</h4>
+<h3 id="packagers">Packagers</h3>
 <p>Every ISOMessage class must have a packager so that it will be able to pack/unpack each data element. The following
   packages are available for use:</p>
 <ul>
