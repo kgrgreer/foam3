@@ -805,6 +805,7 @@ var classes = [
   'foam.nanos.crunch.lite.ruler.SetCapablePayloadStatusOnPut',
   'foam.nanos.crunch.lite.ruler.CapablePayloadApprovableRuleAction',
   'foam.nanos.crunch.lite.ruler.CapableStatusChangeAdjustApprovalsRuleAction',
+  'foam.nanos.crunch.lite.ruler.UCJApprovableValidateAction',
 
   'foam.nanos.crunch.CapabilityCategory',
   'foam.nanos.crunch.CapabilityCategoryCapabilityJunction',
