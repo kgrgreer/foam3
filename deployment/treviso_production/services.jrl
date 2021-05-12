@@ -1,5 +1,25 @@
 p({
   "class":"foam.nanos.boot.NSpec",
+  "name":"exchange",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.country.br.exchange.ExchangeClient(x);
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"fepWebService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.treviso.api.FepWebService(x);
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
   "name":"SoaWebServiceCredientials",
   "lazy":false,
   "service": {
@@ -12,6 +32,16 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
+  "name":"soaWebService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.soawebservices.SoaWebServiceClient(x);
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
   "name":"trevisoFXService",
   "lazy":false,
   "serve":false,
@@ -20,47 +50,6 @@ p({
   """
 })
 
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"trevisoCredientials",
-  "lazy":false,
-  "service":
-    {
-      "class":"net.nanopay.partner.treviso.TrevisoCredientials",
-      fepWebUsername:"username",
-      fepWebPassword:"password",
-      fepWebApi:"https://client-uat.fepweb.com.br/fepwebws/api/",
-      fepWebCode:"100001",
-      fepWebCodeName:"Treviso Matriz - Nanopay"
-    }
-})
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"trevisoService",
-  "lazy":false,
-  "serve":true,
-  "serviceScript":"""
-    return new net.nanopay.partner.treviso.TrevisoService(x, x.get("fepWebService"), x.get("exchange"));
-  """
-})
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"soaWebService",
-  "lazy":false,
-  "serve":true,
-  "serviceScript":"""
-    return new net.nanopay.partner.soawebservices.SoaWebServiceClient(x);
-  """
-})
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"fepWebService",
-  "lazy":false,
-  "serve":true,
-  "serviceScript":"""
-    return new net.nanopay.partner.treviso.api.FepWebService(x);
-  """
-})
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"openDataService",

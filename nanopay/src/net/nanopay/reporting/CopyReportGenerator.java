@@ -46,8 +46,13 @@ public class CopyReportGenerator extends ReportGenerator {
     }
   }
 
-  public CopyReportGenerator(ClassInfo of) {
+  public CopyReportGenerator(String spid, boolean cached, ClassInfo of) {
+    super(spid, cached);
     this.of = of;
+  }
+
+  public CopyReportGenerator(String spid, ClassInfo of) {
+    this(spid, true, of);
   }
 
 }

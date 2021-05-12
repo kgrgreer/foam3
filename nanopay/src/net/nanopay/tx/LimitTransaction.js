@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -17,15 +17,12 @@
 
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'ComplianceTransaction',
+  name: 'LimitTransaction',
   extends: 'net.nanopay.tx.model.Transaction',
 
-  documentation: `Transaction to be created specifically for compliance purposes. stays in pending until compliance is passed`,
+  documentation: 'Transaction to be created for checking transaction limits.',
 
   javaImports: [
-    'foam.dao.DAO',
-    'foam.nanos.notification.Notification',
-    'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus'
   ],
 
@@ -55,46 +52,6 @@ foam.CLASS({
         }
        return ['No status to choose'];
       }
-    }
-  ],
-
-  methods: [
-    {
-      name: 'toSummary',
-      type: 'String',
-      code: function() {
-        return this.findRoot(this.__subContext__).then(obj => {
-          return obj ? obj.toSummary() : this.toSummary();
-        });
-      }
-    },
-    {
-      documentation: `return true when status change is such that normal (forward) Transfers should be executed (applied)`,
-      name: 'canTransfer',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'Boolean',
-      javaCode: `
-        return false;
-      `
-    },
-    {
-      name: 'calculateErrorCode',
-      javaCode: `
-        if ( getStatus() == TransactionStatus.DECLINED ) {
-          return 991l;
-        }
-
-        return 0;
-      `
     }
   ]
 });

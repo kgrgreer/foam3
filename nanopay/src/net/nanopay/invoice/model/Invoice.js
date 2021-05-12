@@ -959,7 +959,7 @@ foam.CLASS({
       name: 'toSummary',
       type: 'String',
       code: function() {
-        return this.cls_.name;
+        return this.paymentId.split('-', 1)[0];
       },
       javaCode: `
         return this.getClass().getSimpleName();
