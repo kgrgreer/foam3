@@ -140,13 +140,13 @@ foam.CLASS({
               .start()
                 .addClass(self.myClass('header-container'))
                 .start(self.Cols)
-                  .start('h1')
-                    .addClass(self.myClass('browse-title'))
+                  .start()
+                    .addClasses(['h100',self.myClass('browse-title')])
                     .translate(menuId + ".browseTitle", config$browseTitle)
                   .end()
-                  .startContext({ data: self }).tag(self.CREATE).endContext()
+                  .startContext({ data: self }).tag(self.CREATE, { buttonStyle: foam.u2.ButtonStyle.PRIMARY }).endContext()
                   .callIf(config$primaryAction, function() {
-                    this.startContext({ data: self }).tag(config$primaryAction, { size: 'LARGE' }).endContext();
+                    this.startContext({ data: self }).tag(config$primaryAction, { size: 'LARGE', buttonStyle: 'PRIMARY' }).endContext();
                   })
                 .end()
                 .callIf(config$browseSubtitle.length > 0, function() {

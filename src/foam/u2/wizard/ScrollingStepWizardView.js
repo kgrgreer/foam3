@@ -240,7 +240,8 @@ foam.CLASS({
                     if ( hasAction ) return this.ACTION_LABEL;
                     if ( willSave ) return this.SAVE_LABEL;
                     return this.NO_ACTION_LABEL;
-                  })
+                  }),
+                  buttonStyle: 'PRIMARY'
                 })
               .endContext()
             .end()
@@ -287,7 +288,8 @@ foam.CLASS({
                 ))
                 .end()
             }))
-            .start('h3')
+            .start()
+              .addClass('h300')
               .translate(wizardlet.capability.id+'.name', wizardlet.capability.name)
             .end();
         }));

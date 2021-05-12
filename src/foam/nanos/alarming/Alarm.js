@@ -48,6 +48,11 @@ foam.CLASS({
     this(name, true);
   }
 
+  public Alarm(String name, String note) {
+    setName(name);
+    setNote(note);
+  }
+
   public Alarm(String name, boolean isActive) {
     setName(name);
     setIsActive(isActive);

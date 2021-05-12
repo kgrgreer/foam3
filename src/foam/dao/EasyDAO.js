@@ -107,7 +107,7 @@ foam.CLASS({
       class: 'String',
       name: 'name',
       factory: function() {
-        return this.nSpec && this.nSpec.name || this.of.id;
+        return this.nSpec && this.nSpec.name || (this.of && this.of.id);
       },
       javaFactory: `
       if ( getNSpec() != null ) {

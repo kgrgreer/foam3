@@ -72,17 +72,11 @@ foam.CLASS({
         var currMemento = this.data.findCurrentMemento();
         //we need to check if memento is already set
         //for example when we copy-paste url
-
-        if ( currMemento.value == '' )
-          currMemento.value = v.mementoHead;
-        else {
-          //X.memento.head is parent view head
-          //so the v view mementoHead is X.memento.tail.head
-
-          if ( this.shouldMementoValueBeChanged(X.ctrl.memento.value, v.mementoHead) ) {
-            var m = this.Memento.create();
-
-            m.value = v.mementoHead;
+        if ( currMemento ) {
+          var m = this.Memento.create();
+          m.value = v.mementoHead;
+  
+          if ( currMemento.value == '' || this.shouldMementoValueBeChanged(X.ctrl.memento.value, v.mementoHead) ) {
             currMemento.tail = m;
           }
         }

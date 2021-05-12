@@ -35,13 +35,7 @@ foam.CLASS({
         closeable: false,
         isStyled: false
       })
-        .start(this.LoadingSpinner)
-          .style({
-            display: 'flex',
-            width: '80px',
-            height: '80px'
-          })
-        .end();
+        .tag(this.LoadingSpinner, { size: 56 });
       this.ctrl.add(popup);
       this.onDetach(popup.close.bind(popup));
     }
