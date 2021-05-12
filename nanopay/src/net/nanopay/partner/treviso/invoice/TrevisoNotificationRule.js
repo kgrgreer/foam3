@@ -20,9 +20,9 @@ foam.CLASS({
   name: 'TrevisoNotificationRule',
   implements: ['foam.nanos.ruler.RuleAction'],
 
-   documentation: `Adds send a TED text to invoice notes and create a notification.`,
+  documentation: `Adds send a TED text to invoice notes and create a notification.`,
 
-   javaImports: [
+  javaImports: [
     'foam.core.ContextAgent',
     'foam.core.Currency',
     'foam.core.X',
@@ -41,32 +41,28 @@ foam.CLASS({
     'java.util.*'
   ],
 
-  constants: [
+  messages: [
     {
-      type: 'String',
-      name: 'TEXT',
-      value: `
-      ATENÇÃO : Esta transação ainda não foi enviada!
+      name: "INVOICE_NOTE_MSG",
+      message: `ATTENTION: This transaction has not yet been sent!
 
-      Para completar, envie um TED de (`
+        To complete, send a TED of (`
     },
     {
-      type: 'String',
-      name: 'TEXT2',
-      value: `) para :
+      name: "INVOICE_NOTE2_MSG",
+      message: `) to:
 
-      Treviso Corretora de Câmbio S.A
-      CNPJ: 02.992.317/0001-87
-      Banco SC Treviso (143)
-      Agencia: 0001
-      Conta: 1-1
+        Treviso Corretora de Câmbio S.A
+        CNPJ: 02.992.317/0001-87
+        Banco SC Treviso (143)
+        Agencia: 0001
+        Conta: 1-1
 
-      O não envio dos fundos causará o cancelamento automático desta transação.
-      `
+        In case that payment has not been done, the transaction will be canceled automatically.`
     }
   ],
 
-   methods: [
+  methods: [
     {
       name: 'applyAction',
       javaCode: `
@@ -100,7 +96,7 @@ foam.CLASS({
             user.doNotify(x, notify);
 
             String note = SafetyUtil.isEmpty(invoice.getNote()) ? "" : invoice.getNote() + "\\n";
-            invoice.setNote(note + TEXT + amount + TEXT2);
+            invoice.setNote(note + INVOICE_NOTE_MSG + amount + INVOICE_NOTE2_MSG);
             invoice.setTotalSourceAmount(amount);
 
           }
@@ -108,4 +104,4 @@ foam.CLASS({
       `
     }
   ]
- });
+});
