@@ -8,6 +8,12 @@ foam.CLASS({
   package: 'foam.nanos.crunch',
   name: 'UCJProperty',
   extends: 'foam.mlang.predicate.PredicateProperty',
+  documentation: `
+    UCJProperty references a UCJ via a predicate. This property can be used to
+    associate a UCJ with an instance either by UUID or by a subject and
+    capability id.
+    UCJProperty properties will render in an inline CRUNCH wizard.`
+  `,
 
   imports: [
     'crunchService'
