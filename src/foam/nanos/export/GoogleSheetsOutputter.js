@@ -86,7 +86,7 @@ foam.CLASS({
 
           return this.GoogleSheetsPropertyMetadata.create({
             columnName: prop.name,
-            columnLabel: columnConfig.returnColumnHeader(of, propName).colPath,
+            columnLabel: columnConfig.returnColumnHeader(of, propName).colPath.join('/'),
             columnWidth: prop.tableWidth ? prop.tableWidth : 0,
             cellType: cellType,
             pattern: pattern,
