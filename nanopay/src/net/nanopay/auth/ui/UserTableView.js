@@ -46,7 +46,6 @@ foam.CLASS({
         .start().addClass(this.myClass())
           .start({
             class: 'foam.u2.view.ScrollTableView',
-            enableDynamicTableHeight: false,
             data$: this.data$
           }).end()
         .end();
