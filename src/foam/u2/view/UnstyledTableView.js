@@ -724,8 +724,11 @@ foam.CLASS({
         return c && this.shouldColumnBeSorted(c) ? c.substr(0, c.length - 1) : c;
       },
       async function filterUnpermited(arr) {
-        const results = await Promise.all(arr.map( async p => p.hidden? false: ! p.columnPermissionRequired || await this.auth.check(null, `${this.of.name}.column.${p.name}`)));
-        return arr.filter((_v, index) => results[index]);
+        if ( this.auth ) {
+          const results = await Promise.all(arr.map( async p => p.hidden? false: ! p.columnPermissionRequired || await this.auth.check(null, `${this.of.name}.column.${p.name}`)));
+          return arr.filter((_v, index) => results[index]);
+        }
+        return arr
       },
       {
         name: 'getActionsForRow',
