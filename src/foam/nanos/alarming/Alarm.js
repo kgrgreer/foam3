@@ -53,6 +53,12 @@ foam.CLASS({
     setNote(note);
   }
 
+  public Alarm(String name, String note, foam.log.LogLevel severity) {
+    setName(name);
+    setNote(note);
+    setSeverity(severity);
+  }
+
   public Alarm(String name, boolean isActive) {
     setName(name);
     setIsActive(isActive);
