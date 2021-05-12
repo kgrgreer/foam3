@@ -20,7 +20,7 @@ foam.CLASS({
   name: 'TrevisoNotificationRule',
   implements: ['foam.nanos.ruler.RuleAction'],
 
-  documentation: `Sets a TED text to invoice notes and creates a notification.`,
+  documentation: `Sets a TED text to an invoice and creates a notification.`,
 
   javaImports: [
     'foam.core.ContextAgent',
