@@ -55,12 +55,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'tableHeader',
-      value: function() {
-        return this.label || foam.String.labelize(this.name);
-      }
-    },
-    {
       class: 'foam.u2.view.TableCellFormatter',
       name: 'tableCellFormatter',
       factory: function() {
@@ -75,6 +69,13 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'tableWidth'
+    },
+    {
+      class: 'String',
+      documentation: 'Column label that overrides the label property in table headers',
+      name: 'columnLabel',
+      // return the label if columnLabel is not set
+      expression: function(label) { return label; }
     }
   ]
 });
@@ -88,10 +89,9 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'tableHeader',
-      value: function() {
-        return this.label || foam.String.labelize(this.name);
-      }
+      class: 'String',
+      name: 'columnLabel',
+      expression: function(label) { return label; }
     }
   ]
 });

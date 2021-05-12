@@ -469,6 +469,7 @@ FOAM_FILES([
   { name: "foam/nanos/crunch/lite/ruler/CapableCreateApprovalsRuleAction" },
   { name: "foam/nanos/crunch/lite/ruler/SetCapablePayloadStatusOnPut" },
   { name: "foam/nanos/crunch/lite/ruler/ReputDependantPayloads" },
+  { name: "foam/nanos/crunch/lite/ruler/UCJApprovableValidateAction" },
 
   // crunch capability categories
   { name: "foam/nanos/crunch/CapabilityCategory" },
@@ -547,6 +548,8 @@ FOAM_FILES([
   { name: 'foam/nanos/approval/ApprovalRequestAssignedToRule' },
   { name: 'foam/nanos/approval/ApprovalRequestMemoRule' },
   { name: 'foam/nanos/approval/ApprovalRequestClassificationEnum' },
+  { name: 'foam/nanos/approval/CompositeApprovable' },
+  { name: 'foam/nanos/approval/FulfilledCompositeApprovableRule' },
 
   //authservice
   { name: "foam/nanos/auth/CapabilityAuthService" },
