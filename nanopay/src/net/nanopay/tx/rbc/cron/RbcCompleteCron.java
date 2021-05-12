@@ -45,7 +45,7 @@ public class RbcCompleteCron implements ContextAgent {
 
         ClearingTimesTrait traits = (ClearingTimesTrait) rbcTransaction;
         if ( traits.getProcessDate() != null && traits.getEstimatedCompletionDate() != null ) {
-          // currently, the estimated completion date calculated based on the process date in the clearingTimeService,
+          // currently, the estimated completion date is calculated based on the process date in the clearingTimeService,
           // we set the estimated completion date and process date when we submit the transaction to rbc (i.e. status = SENT)
           LocalDate expectedCompletionDate = traits.getEstimatedCompletionDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
