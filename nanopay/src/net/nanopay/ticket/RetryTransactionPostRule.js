@@ -102,13 +102,18 @@
             retry.setPayeeId(problemTransaction.findSourceAccount(x).getOwner());
             retry.setPayerId(problemTransaction.findDestinationAccount(x).getOwner());
 
+
             TransactionQuote quote = new TransactionQuote();
             DAO transactionPlannerDAO = (DAO) x.get("localTransactionPlannerDAO");
             quote.setRequestTransaction(retry);
             quote = (TransactionQuote) transactionPlannerDAO.put(quote);
             
             retry = quote.getPlan();
-            retry.setParent(problemTransaction.getId());
+            retry = (Transaction) txnDAO.put(retry);
+            // create ticket txn and inject, and add this to child
+            retry.setExternalId(problemTxn.getExternalId());
+            retry.setExternalInvoiceId(problemTxn.getExternalInvoiceId());
+            retry.setAssociateTransaction(problemTxn.getId());
             txnDAO.put(retry);
           }
           catch(Exception e) {
