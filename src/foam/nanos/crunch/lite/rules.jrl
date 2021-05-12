@@ -187,3 +187,25 @@ p({
   "saveHistory":true,
   "lifecycleState":1
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"29e17cb0-e909-4ab4-8d8a-22bcdecb32ae",
+  "name":"UCJ Approvable Call Validate",
+  "priority":100,
+  "daoKey":"approvableDAO",
+  "ruleGroup":"approvables",
+  "operation":3,
+  "after":false,
+  "predicate": {
+    "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+    "propName":"daoKey",
+    "propValue":"userCapabilityJunctionDAO"
+  },
+  "action":{
+    "class":"foam.nanos.crunch.lite.ruler.UCJApprovableValidateAction"
+  },
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})
