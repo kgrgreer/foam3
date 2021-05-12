@@ -16,6 +16,7 @@
  */
 package net.nanopay.country.br.exchange;
 
+import foam.nanos.auth.Subject;
 import org.apache.commons.lang3.StringUtils;
 import foam.core.ContextAwareSupport;
 import foam.core.X;
@@ -142,7 +143,8 @@ public class ExchangeServiceProvider
     request.setDadosTitular(getTitularRequest(user, amount));
     try {
 
-      InsertTitularResponse response = getExchangeServiceProvider(getX()).insertTitular(request, user.getSpid());
+      X userX = getX().put("subject", new Subject.Builder(getX()).setUser(user).build());
+      InsertTitularResponse response = getExchangeServiceProvider(getX()).insertTitular(userX, request);
       if ( response == null || response.getInsertTitularResult() == null )
         throw new RuntimeException("Unable to get a valid response from Exchange while calling insertTitular");
 
@@ -189,7 +191,9 @@ public class ExchangeServiceProvider
     SearchTitular request = new SearchTitular();
     String formattedcpfCnpj = findCpfCnpj(userId).replaceAll("[^0-9]", "");
     request.setCODIGO(formattedcpfCnpj);
-    SearchTitularResponse response = getExchangeServiceProvider(getX()).searchTitular(request, user.getSpid());
+
+    X userX = getX().put("subject", new Subject.Builder(getX()).setUser(user).build());
+    SearchTitularResponse response = getExchangeServiceProvider(getX()).searchTitular(userX, request);
     if ( response == null || response.getSearchTitularResult() == null ) {
       logger_.warning("Unable to retrieve customer from exchange.");
       return null;
@@ -212,7 +216,9 @@ public class ExchangeServiceProvider
     SearchTitularCapFin request = new SearchTitularCapFin();
     String formattedcpfCnpj = findCpfCnpj(userId).replaceAll("[^0-9]", "");
     request.setCODIGO(formattedcpfCnpj);
-    SearchTitularCapFinResponse response = getExchangeServiceProvider(getX()).searchTitularCapFin(request, user.getSpid());
+
+    X userX = getX().put("subject", new Subject.Builder(getX()).setUser(user).build());
+    SearchTitularCapFinResponse response = getExchangeServiceProvider(getX()).searchTitularCapFin(userX, request);
     if ( response == null || response.getSearchTitularCapFinResult() == null )
       throw new RuntimeException("Unable to get a valid response from Exchange while calling SearchTitularCapFin");
 
@@ -238,7 +244,8 @@ public class ExchangeServiceProvider
     Titular titular = getTitularRequest(user, amount);
     request.setDadosTitular(titular);
     try {
-      UpdateTitularResponse response = getExchangeServiceProvider(getX()).updateTitular(request, user.getSpid());
+      X userX = getX().put("subject", new Subject.Builder(getX()).setUser(user).build());
+      UpdateTitularResponse response = getExchangeServiceProvider(getX()).updateTitular(userX, request);
       if ( response == null || response.getUpdateTitularResult() == null )
         throw new RuntimeException("Unable to get a valid response from Exchange while calling updateTitular");
 
@@ -452,7 +459,8 @@ public class ExchangeServiceProvider
     dadosBoleto.setVALORMN(valormn);
     request.setDadosBoleto(dadosBoleto);
 
-    InsertBoletoResponse response = getExchangeServiceProvider(getX()).insertBoleto(request, payer.getSpid());
+    X userX = getX().put("subject", new Subject.Builder(getX()).setUser(payer).build());
+    InsertBoletoResponse response = getExchangeServiceProvider(getX()).insertBoleto(userX, request);
     if ( response == null || response.getInsertBoletoResult() == null )
       throw new RuntimeException("Unable to get a valid response from Exchange while calling insertBoleto");
 
@@ -589,7 +597,8 @@ public class ExchangeServiceProvider
     SearchBoleto request = new SearchBoleto();
     request.setNrBoleto(transaction.getExternalInvoiceId());
     try {
-      SearchBoletoResponse response = getExchangeServiceProvider(getX()).searchBoleto(request, payer.getSpid());
+      X userX = getX().put("subject", new Subject.Builder(getX()).setUser(payer).build());
+      SearchBoletoResponse response = getExchangeServiceProvider(getX()).searchBoleto(userX, request);
       if ( response == null || response.getSearchBoletoResult() == null )
         throw new RuntimeException("Unable to get a valid response from Exchange while calling SearchBoletoResponse");
 
@@ -630,7 +639,8 @@ public class ExchangeServiceProvider
     SearchNatureza request  = new SearchNatureza();
     request.setCD_NATUREZA(natureCode);
     try {
-      SearchNaturezaResponse response = getExchangeServiceProvider(getX()).searchNatureza(request, user.getSpid());
+      X userX = getX().put("subject", new Subject.Builder(getX()).setUser(user).build());
+      SearchNaturezaResponse response = getExchangeServiceProvider(getX()).searchNatureza(userX, request);
       if ( response == null || response.getSearchNaturezaResult() == null )
         throw new RuntimeException("Unable to get a valid response from Exchange while calling searchNatureza");
 
