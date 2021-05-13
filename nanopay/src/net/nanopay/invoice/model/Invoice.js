@@ -406,7 +406,7 @@ foam.CLASS({
       class: 'String',
       name: 'tedText',
       documentation: `TED notification text`,
-      hidden: true,
+      section: 'invoiceInformation'
     },
     {
       class: 'UnitValue',
