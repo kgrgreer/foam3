@@ -34,11 +34,13 @@ foam.CLASS({
       name: 'adapt',
       value: function (_, o) {
         const e = foam.mlang.Expressions.create();
-        if ( typeof o === 'string' ) {
+        if ( foam.String.isInstance(o) ) {
           return e.EQ(foam.nanos.crunch.UserCapabilityJunction.ID, o);
         }
-        if ( typeof o !== 'object' ) throw new Error('invalid value');
-        o = Array.isArray(o) ? { sourceId: o[0], targetId: o[1] } : o;
+        if ( ! foam.Object.isInstance(o) && ! foam.Array.isInstance(o) ) {
+          throw new Error('valid UCJProperty values are: string, object, array');
+        }
+        o = foam.Array.isInstance(o) ? { sourceId: o[0], targetId: o[1] } : o;
         return e.AND(
           e.EQ(
             foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID,
