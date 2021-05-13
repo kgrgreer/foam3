@@ -173,7 +173,6 @@ foam.CLASS({
           return box;
         } catch ( java.net.ConnectException |
                    java.net.NoRouteToHostException e ) {
-) {
           remove(box);
           getLogger().warning(host, port, e.getClass().getSimpleName(), e.getMessage());
           throw new RuntimeException(e);
