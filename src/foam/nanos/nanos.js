@@ -477,6 +477,7 @@ FOAM_FILES([
   { name: "foam/nanos/crunch/CapabilityCapabilityJunctionRefine" },
   { name: "foam/nanos/crunch/CapabilityCategoryCapabilityJunctionRefine" },
   { name: "foam/nanos/crunch/RenewableData" },
+  { name: "foam/nanos/crunch/UCJProperty" },
   { name: "foam/nanos/crunch/connection/CapabilityPayload" },
   { name: "foam/nanos/crunch/connection/GrantPathNode" },
   //daos
@@ -509,6 +510,7 @@ FOAM_FILES([
   { name: "foam/nanos/crunch/ruler/SaveUCJDataOnGranted" },
   //views
   { name: "foam/nanos/crunch/ui/WizardState" },
+  { name: "foam/nanos/crunch/ui/ApprovableUserCapabilityJunctionWAO" },
   { name: "foam/nanos/crunch/ui/UserCapabilityJunctionWAO" },
   { name: "foam/nanos/crunch/ui/CapableWAO" },
   { name: "foam/nanos/crunch/ui/CapabilityWizardlet" },

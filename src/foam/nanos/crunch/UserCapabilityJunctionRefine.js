@@ -25,6 +25,16 @@ foam.CLASS({
     'static foam.nanos.crunch.AssociatedEntity.*'
   ],
 
+  imports: [
+    'capabilityDAO',
+    'subject',
+    'userDAO'
+  ],
+
+  requires: [
+    'foam.nanos.crunch.AgentCapabilityJunction'
+  ],
+
   tableColumns: [
     'sourceId',
     'targetId',
@@ -354,7 +364,30 @@ foam.CLASS({
         subject.setUser((User) userDAO.find(ucj.getSourceId()));
         subject.setUser((User) userDAO.find(ucj.getSourceId()));
         return subject;
-      `
+      `,
+      code: async function () {
+        // TODO: Why is 'this' missing some imports and requires?
+
+        if ( foam.nanos.crunch.AgentCapabilityJunction.isInstance(this) ) {
+          let user = await this.userDAO.find(this.effectiveUser);
+          let realUser = await this.userDAO.find(this.sourceId);
+          return foam.nanos.auth.Subject.create(
+            { user: user, realUser: realUser }, this.__subContext__);
+        }
+
+        var cap = await this.capabilityDAO.find(this.targetId);
+        if ( ! cap ) throw new Error(
+          'Tried to call getSubject() on UCJ with unrecognized capability');
+
+        if ( this.sourceId == this.__subContext__.subject.user.id )
+          return this.subject;
+
+        // TODO: is check for lastUpdatedRealUser needed here?
+
+        var user = await this.__subContext__.userDAO.find(this.sourceId);
+        return foam.nanos.auth.Subject.create(
+          { user: user, realUser: user }, this.__subContext__);
+      }
     },
     {
       name: 'toString',
