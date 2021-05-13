@@ -307,8 +307,6 @@ foam.CLASS({
     async function initE() {
       var view = this;
 
-      this.currentMemento_ = null;
-
       const asyncRes = await this.filterUnpermited(view.of.getAxiomsByClass(foam.core.Property));
       this.allColumns = ! view.of ? [] : [].concat(
         asyncRes.map(a => a.name),
@@ -725,7 +723,7 @@ foam.CLASS({
       },
       async function filterUnpermited(arr) {
         if ( this.auth ) {
-          const results = await Promise.all(arr.map( async p => p.hidden? false: ! p.columnPermissionRequired || await this.auth.check(null, `${this.of.name}.column.${p.name}`)));
+          const results = await Promise.all(arr.map( async p => p.hidden ? false : ! p.columnPermissionRequired || await this.auth.check(null, `${this.of.name}.column.${p.name}`)));
           return arr.filter((_v, index) => results[index]);
         }
         return arr
