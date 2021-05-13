@@ -138,7 +138,7 @@ foam.CLASS({
       class: 'String',
       name: 'invoiceNumber',
       section: 'invoiceInformation',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       documentation: `The identifying number stated on the invoice.`,
       label: 'Invoice #',
       aliases: [
@@ -153,7 +153,7 @@ foam.CLASS({
       class: 'String',
       name: 'purchaseOrder',
       includeInDigest: true,
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       section: 'invoiceInformation',
       documentation: `The identifying number from the purchase order as stated
         on the invoice.
@@ -251,7 +251,7 @@ foam.CLASS({
       class: 'Date',
       name: 'paymentSentDate',
       includeInDigest: true,
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       section: 'invoiceInformation',
       documentation: `The date by which the invoice payment was sent.`,
       tableCellFormatter: function(val) {
@@ -262,7 +262,7 @@ foam.CLASS({
       class: 'Date',
       name: 'paymentReceivedDate',
       includeInDigest: true,
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       section: 'invoiceInformation',
       documentation: `The date by which the invoice payment was received.`,
       tableCellFormatter: function(val) {
@@ -273,7 +273,7 @@ foam.CLASS({
       class: 'DateTime',
       name: 'created',
       includeInDigest: true,
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       section: 'invoiceInformation',
       documentation: `The date and time of when the invoice was created.`,
     },
@@ -281,7 +281,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `The ID of the User who created the Invoice.`,
@@ -324,7 +324,7 @@ foam.CLASS({
       class: 'DateTime',
       name: 'lastModified',
       includeInDigest: true,
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       section: 'invoiceInformation',
       documentation: `The date and time that the Invoice was last modified.`,
       tableWidth: 140
@@ -333,7 +333,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `The ID of the individual person, or real user,
@@ -343,7 +343,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedByAgent',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       includeInDigest: true,
       section: 'invoiceInformation',
     },
@@ -351,7 +351,7 @@ foam.CLASS({
       class: 'DateTime',
       name: 'lastDateUpdated',
       includeInDigest: true,
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       section: 'invoiceInformation',
       documentation: 'Last time a XeroInvoice or QuickbooksInvoice was updated.'
     },
@@ -373,7 +373,7 @@ foam.CLASS({
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payer',
       label: 'Customer',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `Returns the name of the party making the payment from the
@@ -385,7 +385,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'paymentId',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `The transaction ID used to pay the invoice.`,
@@ -393,7 +393,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'draft',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       section: 'invoiceInformation',
       documentation: `Determines whether the Invoice is finalized.`,
       value: false,
@@ -411,7 +411,7 @@ foam.CLASS({
       class: 'String',
       name: 'note',
       includeInDigest: true,
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       section: 'invoiceInformation',
       documentation: `A written note that the user may add to the invoice.`,
       view: 'foam.u2.tag.TextArea'
@@ -420,14 +420,14 @@ foam.CLASS({
       class: 'UnitValue',
       name: 'chequeAmount',
       includeInDigest: true,
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       section: 'invoiceInformation',
       documentation: `The amount paid for an invoice using an external transaction system.`
     },
     {
       class: 'String',
       name: 'chequeCurrency',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `The currency of a transaction using by external transaction system.`,
@@ -475,7 +475,7 @@ foam.CLASS({
     { // REVIEW: How is this used? - display only?,
       class: 'UnitValue',
       name: 'sourceAmount',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       section: 'invoiceInformation',
       unitPropName: 'sourceCurrency',
       documentation: `The amount paid to the invoice, prior to exchange rates & fees.
@@ -486,7 +486,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'destinationAccount',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `The bank account into which funds are to be deposited.`
@@ -494,7 +494,7 @@ foam.CLASS({
     {
       class: 'UnitValue',
       name: 'exchangeRate',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       includeInDigest: true,
       section: 'invoiceInformation',
       documentation: 'The exchange rate captured at the time of payment.'
@@ -504,7 +504,7 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.invoice.model.PaymentStatus',
       name: 'paymentMethod',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `Tracks the payment instrument or method used to pay the invoice.`,
@@ -523,7 +523,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'sourceCurrency',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       includeInDigest: true,
       section: 'invoiceInformation',
       value: 'CAD',
@@ -533,13 +533,13 @@ foam.CLASS({
     {
       name: 'iso20022',
       section: 'invoiceInformation',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       includeInDigest: false
     },
     {
       class: 'Boolean',
       name: 'external',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       section: 'invoiceInformation',
       documentation: 'Determines whether the invoice was created for an external user.',
       includeInDigest: false
@@ -548,7 +548,7 @@ foam.CLASS({
       // TODO
       class: 'Boolean',
       name: 'autoPay',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       section: 'invoiceInformation',
       documentation: 'Determines whether the invoice can be paid automatically.',
       includeInDigest: true
@@ -557,7 +557,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'approvedBy',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       includeInDigest: true,
       section: 'invoiceInformation',
       documentation: 'the ID of the user that approved this invoice within the business.',
@@ -579,7 +579,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'account',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       includeInDigest: true,
       section: 'invoiceInformation',
       aliases: [
@@ -737,7 +737,7 @@ foam.CLASS({
       // TODO/REVIEW - used?
       class: 'Boolean',
       name: 'removed',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       section: 'invoiceInformation',
       documentation: 'Determines whether an invoice has been removed.',
       includeInDigest: false
@@ -747,7 +747,7 @@ foam.CLASS({
       targetDAOKey: 'contactDAO',
       of: 'net.nanopay.contacts.Contact',
       name: 'contactId',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       section: 'invoiceInformation',
       value: 0,
       documentation: `The unique identifier for the Contact, representing people who,
@@ -776,7 +776,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isSyncedWithAccounting',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       section: 'accountingInformation',
       factory: function() {
         return net.nanopay.accounting.xero.model.XeroInvoice.isInstance(this) ||
@@ -789,7 +789,7 @@ foam.CLASS({
     {
       name: 'lineItems',
       class: 'FObjectArray',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       section: 'invoiceInformation',
       of: 'net.nanopay.invoice.InvoiceLineItem',
       javaValue: 'new InvoiceLineItem[] {}',
@@ -803,7 +803,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'payeeReconciled',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       includeInDigest: true,
       section: 'accountingInformation',
       documentation: `Determines whether invoice has been reconciled by payee.
@@ -812,7 +812,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'payerReconciled',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       includeInDigest: true,
       section: 'accountingInformation',
       documentation: `Determines whether invoice has been reconciled by payer.
@@ -822,7 +822,7 @@ foam.CLASS({
       class: 'FObjectArray',
       name: 'transactionHistory',
       includeInDigest: false,
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       section: 'transactionInformation',
       of: 'net.nanopay.tx.model.Transaction',
       view: { class: 'foam.u2.view.DAOtoFObjectArrayView' },
@@ -831,7 +831,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'processPaymentOnCreate',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       section: 'invoiceInformation',
       documentation: `When set to true, on invoice submit a transaction will be planned and submitted.
           If the transaction require fx, current rates will be used and there will NOT be a chance to review these rates.
@@ -843,7 +843,7 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       name: 'transactionLineItems',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       of: 'net.nanopay.tx.TransactionLineItem',
       hidden: 'true',
       storageTransient: true
@@ -852,7 +852,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.TransactionQuote',
       name: 'quote',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       hidden: true,
       storageTransient: true
     },
@@ -860,7 +860,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.Transaction',
       name: 'requestTransaction',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       hidden: true,
       storageTransient: true,
       networkTransient: true
@@ -869,14 +869,14 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.Transaction',
       name: 'plan',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       hidden: true,
       storageTransient: true,
     },
     {
       class: 'String',
       name: 'totalSourceAmount',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       includeInDigest: false,
       section: 'invoiceInformation'
     },
@@ -884,7 +884,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       storageTransient: true,
       javaFactory: `
         var invoiceSpidMap = new java.util.HashMap();
@@ -902,7 +902,7 @@ foam.CLASS({
     {
       class: 'StringArray',
       name: 'capabilityIds',
-      visibilityPermissionRequired: true,
+      columnPermissionRequired: true,
       section: 'invoiceInformation'
     },
     {
@@ -1142,7 +1142,7 @@ foam.RELATIONSHIP({
   },
   targetProperty: {
     label: 'Customer',
-    visibilityPermissionRequired: true,
+    columnPermissionRequired: true,
     section: 'invoiceInformation',
     documentation: '(REQUIRED) Payer of the amount stated in the invoice.',
     required: true,
