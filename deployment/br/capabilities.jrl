@@ -7,7 +7,7 @@ p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.capital-increase
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.computer-services", operationType:"47025", name:"Servicos de computacao",reviewRequired:true})
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.education-services", operationType:"47702", name:"Servicos de educacao",reviewRequired:true})
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.wu-estrangeiro", operationType:"37004", name:"Wu estrangeiro",reviewRequired:true})
-p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.import-goods", operationType:"12012", name:"Importacao de mercadorias a vista ou financiado",reviewRequired:true, tipo:2})
+p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.import-goods", operationType:"12012", name:"Importacao de mercadorias a vista",reviewRequired:true, tipo:2})
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.import-goods-draw-back", operationType:"12012", name:"Importacao de mercadorias - draw back",reviewRequired:true, tipo:2})
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.import-goods-anticipated", operationType:"12012", name:"Importacao de mercadorias - antecipado",reviewRequired:true, tipo:2})
 p({class:"net.nanopay.country.br.NatureCode", id:"naturecode.br.import-goods-prazo", operationType:"12012", name:"Importacao de mercadorias - a prazo",reviewRequired:true, tipo:2})

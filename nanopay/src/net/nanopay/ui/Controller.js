@@ -157,6 +157,7 @@ foam.CLASS({
     .foam-flow-Document h4,
     .foam-flow-Document h5 {
       margin: 12px 0 12px 0;
+      color: #292e31;
     }
     .foam-flow-Document p {
       margin-bottom: 10px;
@@ -166,7 +167,6 @@ foam.CLASS({
       background-color: black;
       color: white;
       padding: 20px;
-      overflow: auto;
     }
     .foam-flow-Document a {
       color: rgb(0, 153, 229);

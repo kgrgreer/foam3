@@ -219,7 +219,7 @@ foam.CLASS({
     {
       name: 'loadingSpin',
       factory: function() {
-        return this.LoadingSpinner.create({ size: 32 });
+        return this.LoadingSpinner.create({ size: 56 });
       }
     },
     {
@@ -650,7 +650,7 @@ foam.CLASS({
               }
             }
             this.populatePayerIdOrPayeeId().then(() => {
-              this.subStack.push({ class: 'foam.u2.LoadingSpinner', size: 32 });
+              this.subStack.push({ class: 'foam.u2.LoadingSpinner', size: 56 });
               this.position = this.subStack.pos - 1;
               this.setTransactionPlanAndQuote().then(
                 () => {

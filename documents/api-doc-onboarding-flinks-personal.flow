@@ -1,6 +1,6 @@
 <title>API User Onboarding</title>
 
-<h2>User Onboarding</h2>
+<h1>User Onboarding</h1>
 <p>
     Onboarding is a key part of the nanopay experience. Users, businesses and account all have to be setup 
     and the process of creating these entities within the system is called onboarding. Once a user has been
@@ -8,14 +8,14 @@
     determines whether they can participate in transactions as a payee or as a payer.
 </p>
 
-<h4>Flinks</h4>
+<h2>Flinks</h2>
 <p>
     In order to make the onboarding process easier for our clients, we use an integration with 
     the <a href="https://docs.flinks.io/docs/connecting-accounts-widget">Flinks widget</a> to
     retrieve a large part of the customer data which is available through the customer's bank.
 </p>
 
-<h4>Onboarding Process for Personal Payments using Flinks</h4>
+<h2>Onboarding Process for Personal Payments using Flinks</h2>
 <p>
     There are several steps to completing onboarding for a user when using the Flinks widget.
     <ol>
@@ -25,7 +25,7 @@
     </ol>
 </p>
 
-<h4><a name="flinks-widget">Flinks Widget</a></h4>
+<h3><a name="flinks-widget">Flinks Widget</a></h3>
 <p>
     In order to start user onboarding, the user must first complete all of the steps of 
     the <a href="https://docs.flinks.io/docs/connecting-accounts-widget">Flinks widget</a>. Once 
@@ -47,7 +47,7 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
     Please contact nanopay to get the full URL.
 </p>
 
-<h4><a name="login-id">Provisioning a User with Flinks LoginId</a></h4>
+<h3><a name="login-id">Provisioning a User with Flinks LoginId</a></h3>
 <p>
     Once the user has completed the Flinks widget flow, nanopay can provision them by retrieving data from Flinks using 
     the loginId from the redirectUrl in the previous step. By sending nanopay the loginId, the system can retrieve 
@@ -90,7 +90,7 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
     If necessary, we have also provided the ability to override data returned from Flinks with your own overrides. Specifically, you can include
     'userOverrides', which is an object with the following structure:
 </p>
-<h5><a name="user-override-data">UserOverrideData</a></h5>
+<h4><a name="user-override-data">UserOverrideData</a></h4>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.flinks.external.UserOverrideData" />
 <p>
     As part of the response the to flinksLoginIdDAO call, nanopay will include the capabilities that are 
@@ -129,12 +129,12 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
     </code>
     This map can be extracted and directly used in the next API call to the capabilityPayloadDAO.
 </p>
-<h5><a name="flinks-login-id-onboarding">FlinksLoginId</a></h5>
+<h4><a name="flinks-login-id-onboarding">FlinksLoginId</a></h4>
 <p>
   Here is the full structure of the FlinksLoginId object:
   <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.flinks.external.FlinksLoginId"  whitelist="['type', 'missingUserCapabilityDataObjects', 'missingBusinessCapabilityDataObjects', 'loginId', 'institution', 'flinksOverrides', 'user', 'business', 'account', 'created', 'createdBy']" />
 </p>
-<h5><a name="onboarding-type">OnboardingType</a></h5>
+<h4><a name="onboarding-type">OnboardingType</a></h4>
 <table>
   <tbody>
     <tr>
@@ -159,14 +159,14 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
     </tr>
   </tbody>
 </table>
-<h5><a name="flinks-overrides">FlinksOverrides</a></h5>
+<h4><a name="flinks-overrides">FlinksOverrides</a></h4>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.flinks.external.FlinksOverrides" />
 
 <p>
 <i><b>Session Authentication:</b> Authentication for user provisioning with Flinks LoginId should be done with the administrative session.</i>
 </p>
 
-<h4><a name="user-onboarding">User Onboarding</a></h4>
+<h3><a name="user-onboarding">User Onboarding</a></h3>
 <p>
     Once the user has been created and partially onboarded, user onboarding can be completed by providing the final set of capabilities associated with a user. 
     Capabilities are enabled for a user by making a DIG API call to the capabilityPayloadDAO with the ID of the top level capability to enable and all of the payloads 
@@ -187,7 +187,7 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
       that was created with the userId and agentId set to the ID of the user returned in the FlinksLoginId response.</i>
 </p>
 
-<h4>Sending Capabilities to CapabilityPayloadDAO</h4>
+<h2>Sending Capabilities to CapabilityPayloadDAO</h2>
 <p>
     All functionality is enabled by setting up capabilities. The mechanism that we are providing to create capabilities 
     through the API is exposing the capabilityPayloadDAO in DIG. The idea behind this DAO is that all of the payloads, or
@@ -198,7 +198,7 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
     the data for the given objects and PUT the CapabilityPayload object back to the capabilityPayloadDAO in DIG. The following table
     describes the structure of the objects inside the capabilityPayloadDAO.
 </p>
-<h5><a name="capability-payload">CapabilityPayload</a></h5>
+<h4><a name="capability-payload">CapabilityPayload</a></h4>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="foam.nanos.crunch.connection.CapabilityPayload" />
 <p>
     Depending on your use case, the following capabilities will be the top level capabilities for the given use case:
@@ -213,18 +213,18 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
     Refer to the <a href="/#api-doc-60-capabilities">capability documentation page</a> for more information.
 </p>
 
-<h4>Onboarding Data Objects</h4>
+<h2>Onboarding Data Objects</h2>
 
-<h4><a name="user-onboarding-objects">User Onboarding Objects</a></h4>
+<h3><a name="user-onboarding-objects">User Onboarding Objects</a></h3>
 
-<h5><a name="ablii-terms-and-conditions">AbliiTermsAndConditions</a></h5>
+<h4><a name="ablii-terms-and-conditions">AbliiTermsAndConditions</a></h4>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions" whitelist="['title', 'agreement']" />
 
-<h5><a name="ablii-privacy-policy">AbliiPrivacyPolicy</a></h5>
+<h4><a name="ablii-privacy-policy">AbliiPrivacyPolicy</a></h4>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy" whitelist="['title', 'agreement']" />
 
-<h5><a name="user-detail-expanded-data">UserDetailData</a></h5>
+<h4><a name="user-detail-expanded-data">UserDetailData</a></h4>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.UserDetailData" />
 
-<h5><a name="user-detail-expanded-data">UserDetailExpandedData</a></h5>
+<h4><a name="user-detail-expanded-data">UserDetailExpandedData</a></h4>
 <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.UserDetailExpandedData" />
