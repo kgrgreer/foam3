@@ -286,7 +286,7 @@ foam.CLASS({
         .end()
       // deciding to render half screen with img and model or just centered model
         .callIfElse( !! this.imgPath && !! split, () => {
-          split.leftPanel.add(this.E().start()
+          split.leftPanel.start()
             .addClass('cover-img-block1')
               .start('img')
                 .addClass('image-one')
@@ -297,7 +297,7 @@ foam.CLASS({
                 .addClass('disclaimer-login').addClass('disclaimer-login-img')
                 .add(this.model.DISCLAIMER)
               .end()
-            .end());
+            .end();
           this.add(split);
         }, function() {
           this.add(right);
