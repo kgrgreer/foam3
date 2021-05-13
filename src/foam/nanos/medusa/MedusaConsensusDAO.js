@@ -415,13 +415,23 @@ This is the heart of Medusa.`,
             FObject nu = null;
             try {
               nu = x.create(JSONParser.class).parseString(entry.getData(), cls);
-            } catch ( Exception e ) {
-              getLogger().error("Failed to parse", entry.getIndex(), entry.getNSpecName(), cls, entry.getData());
-              throw new MedusaException("Error parsing data.", e);
+            } catch ( RuntimeException e ) {
+              Throwable cause = e.getCause();
+              while ( cause.getCause() != null ) {
+                cause = cause.getCause();
+              }
+              getLogger().error("Failed to parse", entry.getIndex(), entry.getNSpecName(), cls, entry.getData(), e);
+              Alarm alarm = new Alarm("Failed to parse");
+              alarm.setSeverity(foam.log.LogLevel.ERROR);
+              alarm.setClusterable(false);
+              alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
+              alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+              throw new MedusaException("Failed to parse.", cause);
             }
             if ( nu == null ) {
               getLogger().error("Failed to parse", entry.getIndex(), entry.getNSpecName(), cls, entry.getData());
               Alarm alarm = new Alarm("Failed to parse");
+              alarm.setSeverity(foam.log.LogLevel.ERROR);
               alarm.setClusterable(false);
               alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
               alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);

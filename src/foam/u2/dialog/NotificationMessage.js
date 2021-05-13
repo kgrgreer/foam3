@@ -172,7 +172,7 @@ foam.CLASS({
               .tag(this.CircleIndicator, indicator)
             .end()
             .start().addClass(this.myClass('content'))
-              .start('h6').addClass(this.myClass('title'))
+              .start().addClasses(['h600', this.myClass('title')])
                 .callIfElse(foam.String.isInstance(this.message), function() {
                   this.add(self.message);
                   console.log(self.message);
@@ -181,7 +181,7 @@ foam.CLASS({
                   console.log(self.message);
                 })
               .end()
-              .start('p').addClass(this.myClass('description'))
+              .start().addClasses(['p', this.myClass('description')])
                 .callIfElse(foam.String.isInstance(this.description), function() {
                   this.add(self.description);
                   console.log(self.description);

@@ -413,8 +413,9 @@ foam.CLASS({
                 if ( ! prop ) return;
 
                 var tableWidth = view.columnHandler.returnPropertyForColumn(view.props, view.of, [ col, overrides], 'tableWidth');
-                var colTitle   = view.columnConfigToPropertyConverter.returnColumnHeader(view.of, col);
-                var colHeader  = (colTitle.length > 1 ? '../'  : '') + colTitle.slice(-1)[0];
+                var colData = view.columnConfigToPropertyConverter.returnColumnHeader(view.of, col);
+                var colHeader = ( colData.colPath.length > 1 ? '../'  : '' ) + ( colData.colLabel || colData.colPath.slice(-1)[0] );
+                var colTooltip = colData.colPath.join( '/' );
 
                 this.start().
                   addClass(view.myClass('th')).
@@ -426,7 +427,7 @@ foam.CLASS({
                     'justify-content': 'start',
                     'word-wrap': 'break-word'
                   })
-                  .start('', { tooltip: colTitle.join('/') })
+                  .start('', { tooltip: colTooltip })
                     .addClass('h600')
                     .style({
                       overflow: 'hidden',

@@ -80,7 +80,7 @@ It then marshalls it to the primary mediator, and waits on a response.`,
     protected JSONFObjectFormatter initialValue() {
       JSONFObjectFormatter formatter = new JSONFObjectFormatter();
       formatter.setOutputShortNames(true);
-      formatter.setOutputClassNames(false);
+      formatter.setOutputClassNames(true);
       formatter.setOutputDefaultClassNames(false);
       formatter.setPropertyPredicate(
         new foam.lib.AndPropertyPredicate(new foam.lib.PropertyPredicate[] {
