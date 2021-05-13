@@ -44,12 +44,21 @@
        networkTransient: true
      },
      {
-       name: 'fobject',
+       name: 'specificFobject',
        class: 'FObjectProperty',
        of: 'foam.nanos.medusa.ClusterCommand',
        factory: function() {
          return foam.nanos.medusa.ClusterCommand.create();
        }
+     },
+     {
+       name: 'genericFobject',
+       class: 'FObjectProperty',
+       of: 'foam.core.FObject',
+       factory: function() {
+         return foam.nanos.medusa.ClusterCommand.create();
+       },
+       view: 'foam.u2.view.AnyView'
      }
    ]
  });
