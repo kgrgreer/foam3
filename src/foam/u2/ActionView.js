@@ -439,7 +439,7 @@ foam.CLASS({
         } else if ( this.buttonState == this.ButtonState.CONFIRM ) {
           this.buttonState = this.ButtonState.DEBOUNCE;
           this.removeAllChildren();
-          this.start('h6').add(this.CONFIRM).end();
+          this.start().addClass('h600').add(this.CONFIRM).end();
           this.debounce();
         } else if ( this.buttonState == this.ButtonState.ARMED ) {
           this.buttonState = this.ButtonState.CONFIRM;
