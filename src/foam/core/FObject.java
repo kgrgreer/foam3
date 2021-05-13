@@ -380,19 +380,25 @@ public interface FObject
   }
 
   default Object setProperty(String prop, Object value) {
-    PropertyInfo property = ((PropertyInfo) getClassInfo().getAxiomByName(prop));
+    PropertyInfo property = (PropertyInfo) getClassInfo().getAxiomByName(prop);
     if ( property != null ) property.set(this, value);
     return this;
   }
 
   default Object getProperty(String prop) {
-    PropertyInfo property = ((PropertyInfo) getClassInfo().getAxiomByName(prop));
+    PropertyInfo property = (PropertyInfo) getClassInfo().getAxiomByName(prop);
     return property == null ? null : property.get(this);
   }
 
   default boolean isPropertySet(String prop) {
     PropertyInfo property = (PropertyInfo) getClassInfo().getAxiomByName(prop);
     return property != null && property.isSet(this);
+  }
+
+  default Object clearProperty(String prop) {
+    PropertyInfo property = (PropertyInfo) getClassInfo().getAxiomByName(prop);
+    if ( property != null ) property.clear(this);
+    return this;
   }
 
   default boolean hasDefaultValue(String prop) {
