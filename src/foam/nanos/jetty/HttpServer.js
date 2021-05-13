@@ -133,7 +133,6 @@ foam.CLASS({
         int port = getPort();
         String portStr = System.getProperty("http.port");
         if ( portStr != null && ! portStr.isEmpty() ) {
-getLogger().info("getProperty(http.port) ", portStr);
           try {
             port = Integer.parseInt(portStr);
             setPort(port);
@@ -142,7 +141,7 @@ getLogger().info("getProperty(http.port) ", portStr);
             port = getPort();
           }
         } else {
-getLogger().info("setProperty(http.port)", port);
+          getLogger().info("setProperty(http.port,"+port+")");
           System.setProperty("http.port", String.valueOf(port));
         }
 
