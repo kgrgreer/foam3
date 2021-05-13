@@ -669,7 +669,7 @@ foam.CLASS({
           var summary = this.data.toSummary();
           return this
             .start()
-              .addClass(this.myClass('row'))
+              .addClasses(['p', this.myClass('row')])
               .translate(summary || ('richChoiceSummary.' + this.data.cls_.id + '.' + this.data.id), summary)
             .end();
         }
