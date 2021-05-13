@@ -64,13 +64,13 @@ public class JSONFObjectFormatter
     }
   };
 
-  protected boolean quoteKeys_               = false;
-  protected boolean outputShortNames_        = false;
-  protected boolean outputDefaultValues_     = false;
-  protected boolean multiLineOutput_         = false;
-  protected boolean outputClassNames_        = true;
-  protected boolean outputReadableDates_     = false;
-  protected boolean outputDefaultClassNames_ = true;
+  protected boolean quoteKeys_                       = false;
+  protected boolean outputShortNames_                = false;
+  protected boolean outputDefaultValues_             = false;
+  protected boolean multiLineOutput_                 = false;
+  protected boolean outputClassNames_                = false;
+  protected boolean outputReadableDates_             = false;
+  protected boolean outputDefaultClassNames_         = true;
   protected boolean calculateDeltaForNestedFObjects_ = true;
 
   public JSONFObjectFormatter(X x) {
@@ -371,7 +371,7 @@ public class JSONFObjectFormatter
     reset();
 
     if ( delta > 0 && delta > ids + optional ) {
-      boolean outputClass = outputClassNames_ && ( newInfo != defaultClass || outputDefaultClassNames_ );
+      boolean outputClass = outputClassNames_ || ( outputDefaultClassNames_ && newInfo != defaultClass );
 
       append(before);
       append('{');
