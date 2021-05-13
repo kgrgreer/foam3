@@ -4,11 +4,12 @@ import foam.core.ContextAgent;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.log.LogLevel;
 import foam.mlang.MLang;
+import foam.nanos.alarming.Alarm;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 
-import net.nanopay.tx.bmo.BmoFormatUtil;
 import net.nanopay.tx.cico.EFTFile;
 import net.nanopay.tx.cico.EFTFileStatus;
 import net.nanopay.tx.rbc.ftps.RbcFTPSClient;
@@ -17,6 +18,7 @@ import net.nanopay.tx.rbc.RbcReportProcessor;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import static foam.mlang.MLang.*;
 
 public class RbcProcessReportCron implements ContextAgent {
   protected RbcFTPSClient rbcFTPSClient;
@@ -24,14 +26,22 @@ public class RbcProcessReportCron implements ContextAgent {
 
   @Override
   public void execute(X x) {
-
-    rbcFTPSClient = new RbcFTPSClient(x);
-    reportProcessor = new RbcReportProcessor(x);
-    process(x);
+    Logger logger = new PrefixLogger(new String[] {"RBC"}, (Logger) x.get("logger"));
+    try {
+      rbcFTPSClient = new RbcFTPSClient(x);
+      reportProcessor = new RbcReportProcessor(x);
+      process(x);
+    } catch ( Exception e ) {
+      DAO alarmDAO = (DAO) x.get("alarmDAO");
+      String name = "RbcProcessReportCron-Status";
+      String note = "RbcProcessReportCron Exception: " + e.getMessage();
+      Alarm alarm = new Alarm(name, note, LogLevel.ERROR);
+      alarmDAO.put(alarm);
+      logger.error(name, e);
+    }
   }
 
   public void process(X x) {
-
     DAO eftFileDAO = (DAO) x.get("eftFileDAO");
     Logger logger = new PrefixLogger(new String[] {"RBC"}, (Logger) x.get("logger"));
 
@@ -66,10 +76,13 @@ public class RbcProcessReportCron implements ContextAgent {
           throw e;
         }
       } catch ( Exception e ) {
-        logger.error("Error during process report file. ", e);
-        BmoFormatUtil.sendEmail(x, "RBC error during processing the payment report", e);
+        DAO alarmDAO = (DAO) x.get("alarmDAO");
+        String name = "RbcProcessingReportError-Processing";
+        String note = "RBC error during processing the payment report: " + e.getMessage();
+        Alarm alarm = new Alarm(name, note, LogLevel.ERROR);
+        alarmDAO.put(alarm);
+        logger.error(name, e);
       }
     }
-
   }
 }

@@ -132,7 +132,7 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"crunch.onboarding.document.br.courier-voucher",
-  "name":"Currier Voucher or Mail",
+  "name":"Courier Voucher or Mail",
   "of":"net.nanopay.crunch.document.Document",
   "reviewRequired":true,
   "version":"0",
