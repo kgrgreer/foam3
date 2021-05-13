@@ -497,7 +497,7 @@ p({
   "id":"bf6670a5-957e-4407-a80f-7eda6f27ab23",
   "name":"TrevisoTransaction ClearingTime Rule",
   "of": "net.nanopay.partner.treviso.tx.TrevisoTransaction",
-  "duration": 0,
+  "duration": 1,
   "predicate": {
     class: "foam.mlang.predicate.And",
     args: [

@@ -443,7 +443,8 @@ foam.CLASS({
           businessName: 'b-'+user.userName,
           companyPhone: user.phoneNumber,
           address: user.address,
-          mailingAddress: user.address
+          mailingAddress: user.address,
+          submitted: true
         });
         return this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
         // call createBusiness from script
