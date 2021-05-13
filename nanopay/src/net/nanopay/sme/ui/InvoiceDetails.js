@@ -556,7 +556,7 @@ foam.CLASS({
       
       if (foam.locale === 'en') return tedText;
 
-      const amount = tedText.match(/\(([^\)]+)\)/)[0]; // first bracket from ted text
+      const amount = tedText.match(/\(([^\)]*)\)/)[0]; // first bracket from ted text
 
       // use message to translate the text
       tedText = this.TrevisoNotificationRule.TED_TEXT_MSG;
