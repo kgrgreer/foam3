@@ -1,2 +1,2 @@
 #!/bin/bash
-./build.sh -uJcluster-sa-east-release,mn -ck
+./build.sh -uJcluster,cluster-sa-east-release,mn -ck
