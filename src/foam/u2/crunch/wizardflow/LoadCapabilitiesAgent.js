@@ -23,6 +23,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.crunch.ui.ApprovableUserCapabilityJunctionWAO',
     'foam.nanos.crunch.ui.UserCapabilityJunctionWAO',
     'foam.nanos.crunch.ui.CapableWAO',
   ],
@@ -30,7 +31,7 @@ foam.CLASS({
   enums: [
     {
       name: 'WAOSetting',
-      values: ['UCJ','CAPABLE']
+      values: ['UCJ','CAPABLE','APPROVAL']
     }
   ],
 
@@ -72,6 +73,8 @@ foam.CLASS({
           return this.UserCapabilityJunctionWAO.create({ subject: this.subject }, this.__context__);
         case this.WAOSetting.CAPABLE:
           return this.CapableWAO.create({}, this.__context__);
+        case this.WAOSetting.APPROVAL:
+          return this.ApprovableUserCapabilityJunctionWAO.create({ subject: this.subject });
         default:
           throw new Error('WAOSetting is unrecognized: ' + this.waoSetting);
       }
