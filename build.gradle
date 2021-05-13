@@ -228,15 +228,14 @@ task versions() {
     project.foamRevision = "${getFOAMGitHash()}"
 }
 
-task runFoamlink(type: Exec) {
+task runFoamlink(type: NodeTask) {
     dependsOn tasks.incrementalGenTask
     onlyIf {
         // TODO: maybe -e disables genJava and -ee disables foamlink
         !project.hasProperty('foamoptions.skipgenjava')
     }
-    doFirst {
-        commandLine 'node', 'foam3/tools/foamlink/foamlink.js', '.foam/foamlinkoutput.json'
-    }
+    script = file('foam3/tools/foamlink/foamlink.js')
+    args = ['.foam/foamlinkoutput.json']
 }
 
 task genJava(type: Exec) {

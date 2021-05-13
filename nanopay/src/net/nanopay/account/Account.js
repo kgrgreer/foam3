@@ -371,7 +371,7 @@ foam.CLASS({
       tableHeaderFormatter: function(axiom) {
         this.add('Default');
       },
-      tableHeader: function(axiom) {
+      columnLabel: function(axiom) {
         return this.sourceCls_.DEFAULT_MSG;
       },
       tableCellFormatter: function(value, obj, property) {
