@@ -20,10 +20,10 @@ public interface ClassInfo extends java.lang.Comparable {
   boolean     isInstance(Object o);
   Object      newInstance() throws IllegalAccessException, InstantiationException;
 
-  ClassInfo   setObjClass(Class cls);
-  Class       getObjClass();
+  ClassInfo   setObjClass(Class<?> cls);
+  Class<?>    getObjClass();
 
-  List        getAxioms();
+  List<?>     getAxioms();
   Object      getAxiomByName(String name);
   <T> List<T> getAxiomsByClass(Class<T> cls);
 }
