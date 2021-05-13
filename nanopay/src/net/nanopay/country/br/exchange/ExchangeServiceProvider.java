@@ -141,6 +141,7 @@ public class ExchangeServiceProvider
     try {
 
       X userX = getX().put("subject", new Subject.Builder(getX()).setUser(user).build());
+      userX = userX.put("group", user.findGroup(getX()));
       InsertTitularResponse response = getExchangeServiceProvider(getX()).insertTitular(userX, request);
       if ( response == null || response.getInsertTitularResult() == null )
         throw new RuntimeException("Unable to get a valid response from Exchange while calling insertTitular");
@@ -190,6 +191,7 @@ public class ExchangeServiceProvider
     request.setCODIGO(formattedcpfCnpj);
 
     X userX = getX().put("subject", new Subject.Builder(getX()).setUser(user).build());
+    userX = userX.put("group", user.findGroup(getX()));
     SearchTitularResponse response = getExchangeServiceProvider(getX()).searchTitular(userX, request);
     if ( response == null || response.getSearchTitularResult() == null ) {
       logger_.warning("Unable to retrieve customer from exchange.");
@@ -215,6 +217,7 @@ public class ExchangeServiceProvider
     request.setCODIGO(formattedcpfCnpj);
 
     X userX = getX().put("subject", new Subject.Builder(getX()).setUser(user).build());
+    userX = userX.put("group", user.findGroup(getX()));
     SearchTitularCapFinResponse response = getExchangeServiceProvider(getX()).searchTitularCapFin(userX, request);
     if ( response == null || response.getSearchTitularCapFinResult() == null )
       throw new RuntimeException("Unable to get a valid response from Exchange while calling SearchTitularCapFin");
@@ -242,6 +245,7 @@ public class ExchangeServiceProvider
     request.setDadosTitular(titular);
     try {
       X userX = getX().put("subject", new Subject.Builder(getX()).setUser(user).build());
+      userX = userX.put("group", user.findGroup(getX()));
       UpdateTitularResponse response = getExchangeServiceProvider(getX()).updateTitular(userX, request);
       if ( response == null || response.getUpdateTitularResult() == null )
         throw new RuntimeException("Unable to get a valid response from Exchange while calling updateTitular");
@@ -596,6 +600,7 @@ public class ExchangeServiceProvider
     request.setNrBoleto(transaction.getExternalInvoiceId());
     try {
       X userX = getX().put("subject", new Subject.Builder(getX()).setUser(payer).build());
+      userX = userX.put("group", payer.findGroup(getX()));
       SearchBoletoResponse response = getExchangeServiceProvider(getX()).searchBoleto(userX, request);
       if ( response == null || response.getSearchBoletoResult() == null )
         throw new RuntimeException("Unable to get a valid response from Exchange while calling SearchBoletoResponse");
@@ -638,6 +643,7 @@ public class ExchangeServiceProvider
     request.setCD_NATUREZA(natureCode);
     try {
       X userX = getX().put("subject", new Subject.Builder(getX()).setUser(user).build());
+      userX = userX.put("group", user.findGroup(getX()));
       SearchNaturezaResponse response = getExchangeServiceProvider(getX()).searchNatureza(userX, request);
       if ( response == null || response.getSearchNaturezaResult() == null )
         throw new RuntimeException("Unable to get a valid response from Exchange while calling searchNatureza");

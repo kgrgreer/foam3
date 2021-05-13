@@ -44,7 +44,7 @@ public class ExchangeClient
   protected ExchangeCredential getCredentials(X x) {
     ExchangeCredential credentials = null;
     DAO exchangeCredentialDAO = (DAO) x.get("exchangeCredentialDAO");
-    List<ExchangeCredential> arr = ((ArraySink) exchangeCredentialDAO.select(new ArraySink())).getArray();
+    List<ExchangeCredential> arr = ((ArraySink) exchangeCredentialDAO.inX(x).select(new ArraySink())).getArray();
     if ( arr.size() > 0 ) credentials = arr.get(0);
 
     if ( credentials == null ||

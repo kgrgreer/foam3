@@ -8,6 +8,8 @@ p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-admin",targ
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-admin",targetId:"group.read.treviso-support"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-admin",targetId:"rule.read.13df0d76-ba3e-4287-b42e-c7ceff059dd8"})
 
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-sme",targetId:"exchangecredential.read.*"})
+
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"group.update.treviso-fraud-ops"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"group.update.treviso-payment-ops"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"naturecode.read.*"})
