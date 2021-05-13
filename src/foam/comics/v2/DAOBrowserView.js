@@ -62,7 +62,7 @@ foam.CLASS({
 
     ^browse-view-container {
       box-sizing: border-box;
-      padding: 0 16px;
+      padding: 0 16px 20px 16px;
       overflow: hidden;
     }
 
@@ -87,10 +87,6 @@ foam.CLASS({
       height: 34px;
       border-radius: 0 5px 5px 0;
       border: 1px solid;
-    }
-
-    ^browse-view-container .foam-u2-view-ScrollTableView {
-      height: calc(100% - 20px);
     }
   `,
 
