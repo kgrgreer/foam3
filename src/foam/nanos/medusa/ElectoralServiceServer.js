@@ -14,7 +14,7 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.box.HTTPBox',
+    'foam.box.SessionClientBox',
     'foam.core.Agency',
     'foam.core.ContextAgent',
     'foam.core.FObject',
@@ -335,12 +335,9 @@ foam.CLASS({
               getLogger().debug("callVote", "executeJob", config.getId(), "voter", clientConfig.getId());
               ClientElectoralService electoralService =
                 new ClientElectoralService.Builder(x)
-                 .setDelegate(new HTTPBox.Builder(x)
-                   .setUrl(buildURL(clientConfig))
-                   .setAuthorizationType(foam.box.HTTPAuthorizationType.BEARER)
+                 .setDelegate(new SessionClientBox.Builder(x)
                    .setSessionID(clientConfig.getSessionId())
-                   .setConnectTimeout(3000)
-                   .setReadTimeout(3000)
+                   .setDelegate(support.getSocketClientBox(x, "electoralService", config, clientConfig))
                    .build())
                  .build();
               try {
@@ -464,12 +461,9 @@ foam.CLASS({
             public void execute(X x) {
               ClientElectoralService electoralService2 =
                 new ClientElectoralService.Builder(getX())
-                 .setDelegate(new HTTPBox.Builder(getX())
-                   .setUrl(buildURL(clientConfig2))
-                   .setAuthorizationType(foam.box.HTTPAuthorizationType.BEARER)
+                 .setDelegate(new SessionClientBox.Builder(x)
                    .setSessionID(clientConfig2.getSessionId())
-                   .setConnectTimeout(3000)
-                   .setReadTimeout(3000)
+                   .setDelegate(support.getSocketClientBox(x, "electoralService", config, clientConfig2))
                    .build())
                  .build();
 
