@@ -68,7 +68,7 @@ public class JSONFObjectFormatter
   protected boolean outputShortNames_                = false;
   protected boolean outputDefaultValues_             = false;
   protected boolean multiLineOutput_                 = false;
-  protected boolean outputClassNames_                = false;
+  protected boolean outputClassNames_                = true;
   protected boolean outputReadableDates_             = false;
   protected boolean outputDefaultClassNames_         = true;
   protected boolean calculateDeltaForNestedFObjects_ = true;
@@ -428,7 +428,7 @@ public class JSONFObjectFormatter
   public void output(FObject o, ClassInfo defaultClass) {
     ClassInfo info = o.getClassInfo();
 
-    boolean outputClass = outputClassNames_ && ( info != defaultClass || outputDefaultClassNames_ );
+    boolean outputClass = outputClassNames_ || ( outputDefaultClassNames_ && info != defaultClass );
 
     append('{');
     addInnerNewline();

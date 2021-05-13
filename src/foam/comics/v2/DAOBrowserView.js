@@ -53,7 +53,7 @@ foam.CLASS({
     }
 
     ^query-bar {
-      padding: 40px 16px;
+      padding: 32px 16px;
     }
 
     ^toolbar {
@@ -61,7 +61,6 @@ foam.CLASS({
     }
 
     ^browse-view-container {
-      border-bottom: solid 1px #e7eaec;
       box-sizing: border-box;
       padding: 0 16px;
       overflow: hidden;
@@ -290,6 +289,7 @@ foam.CLASS({
           
           return self.E()
             .start(self.Rows)
+            .style({ height: '100%', 'justify-content': 'flex-start' })
               .callIf(config$cannedQueries.length >= 1, function() {
                 this
                   .start(self.Cols)
