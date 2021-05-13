@@ -204,5 +204,21 @@ p({
       .setDecorator(dao)
       .setInnerDAO(x.get("businessDAO"))
       .build();
+  """,
+  "client":
+  """
+  {
+    "of":"net.nanopay.model.Business",
+    "cache": false,
+    "remoteListenerSupport": false,
+    "decorators": [
+      {
+        "class":"foam.nanos.fs.FileDAODecorator"
+      },
+      {
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
+      }
+    ]
+  }
   """
 })
