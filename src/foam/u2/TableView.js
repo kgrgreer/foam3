@@ -46,10 +46,6 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
-      name: 'columnLabel'
-    },
-    {
       name: 'tableCellView',
       value: function(obj, e) {
         //       return foam.u2.ActionView.create({action: this, data: obj});

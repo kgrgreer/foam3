@@ -805,6 +805,7 @@ var classes = [
   'foam.nanos.crunch.lite.ruler.SetCapablePayloadStatusOnPut',
   'foam.nanos.crunch.lite.ruler.CapablePayloadApprovableRuleAction',
   'foam.nanos.crunch.lite.ruler.CapableStatusChangeAdjustApprovalsRuleAction',
+  'foam.nanos.crunch.lite.ruler.UCJApprovableValidateAction',
 
   'foam.nanos.crunch.CapabilityCategory',
   'foam.nanos.crunch.CapabilityCategoryCapabilityJunction',
@@ -900,6 +901,9 @@ var classes = [
   'foam.nanos.approval.ApprovalRequestAssignedToRule',
   'foam.nanos.approval.ApprovalRequestMemoRule',
   'foam.nanos.approval.ApprovalRequestClassificationEnum',
+  'foam.nanos.approval.CompositeApprovable',
+  'foam.nanos.approval.FulfilledCompositeApprovableRule',
+
 
   'foam.core.NumberSet',
 
