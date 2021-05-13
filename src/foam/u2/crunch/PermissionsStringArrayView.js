@@ -113,7 +113,7 @@ foam.CLASS({
         if ( mode == foam.u2.DisplayMode.RO ) dao = dao.where(this.EQ(this.PermissionRow.GRANTED, true));
         return dao.orderBy(this.PermissionRow.ID);
       },
-      view: { class: 'foam.u2.view.ScrollTableView', enableDynamicTableHeight: false, editColumnsEnabled: false, pageSize: 10, dblClickListenerAction: function(){} }
+      view: { class: 'foam.u2.view.ScrollTableView', editColumnsEnabled: false, pageSize: 10, dblClickListenerAction: function(){} }
     },
     {
       class: 'String',
