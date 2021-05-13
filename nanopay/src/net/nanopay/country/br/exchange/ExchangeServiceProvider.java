@@ -16,15 +16,12 @@
  */
 package net.nanopay.country.br.exchange;
 
-import foam.nanos.auth.Subject;
+import foam.nanos.auth.*;
 import org.apache.commons.lang3.StringUtils;
 import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.nanos.auth.Address;
-import foam.nanos.auth.Country;
-import foam.nanos.auth.User;
 import foam.nanos.crunch.CapabilityJunctionPayload;
 import foam.nanos.crunch.Capability;
 import foam.nanos.crunch.UserCapabilityJunction;
@@ -460,6 +457,7 @@ public class ExchangeServiceProvider
     request.setDadosBoleto(dadosBoleto);
 
     X userX = getX().put("subject", new Subject.Builder(getX()).setUser(payer).build());
+    userX = userX.put("group", payer.findGroup(getX()));
     InsertBoletoResponse response = getExchangeServiceProvider(getX()).insertBoleto(userX, request);
     if ( response == null || response.getInsertBoletoResult() == null )
       throw new RuntimeException("Unable to get a valid response from Exchange while calling insertBoleto");
