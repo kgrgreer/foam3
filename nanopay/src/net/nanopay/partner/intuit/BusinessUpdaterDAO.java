@@ -10,7 +10,9 @@ import foam.nanos.crunch.UserCapabilityJunction;
 import net.nanopay.crunch.registration.BusinessDetailData;
 import net.nanopay.model.Business;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static foam.mlang.MLang.*;
@@ -51,19 +53,18 @@ public class BusinessUpdaterDAO extends ProxyDAO {
       )
     ).select(new ArraySink());
 
-    BusinessDetailData bdd = null;
-    if ( sink.getArray().size() > 0 )
-      bdd = (BusinessDetailData) sink.getArray().get(0);
-    else
-      return null;
+    if ( sink.getArray().size() > 0 ) {
+      final var bdd = (BusinessDetailData) sink.getArray().get(0);
 
-    for ( var o : Business.getOwnClassInfo().getAxioms() ) {
-      var prop = (PropertyInfo) o;
-      if ( propMap.containsKey(prop) )
-        bdd = f(prop, business, bdd);
+      Business.getOwnClassInfo().getAxioms().stream()
+        .map((o) -> (PropertyInfo) o)
+        .filter(propMap::containsKey)
+        .forEach((prop) -> f(prop, business, bdd));
+
+      return super.put_(x, obj);
     }
 
-    return super.put_(x, obj);
+    return null;
   }
 
 }
