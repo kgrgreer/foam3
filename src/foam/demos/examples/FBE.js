@@ -379,6 +379,53 @@ foam.CLASS({
 ## DAOs
 */
 `
+## Validation
+##  AssertValue
+The simplest form of validation is to specify an assertValue property on a property.
+The assertValue function receives the old and new values of the property.
+--
+foam.CLASS({
+  name: 'Test',
+  properties: [
+    {
+      class: 'String',
+      name: 'p1',
+      assertValue: function(value, prop) {
+        // This property is passed as the second argument, so assertValue's can
+        // be defined in base classes and still refer to the correct property name
+        if ( ! value || value.length < 10 ) throw prop.name + ' must be at least 10 characters.'
+      }
+    },
+    {
+      class: 'Int',
+      name: 'age',
+      assertValue: function(age) {
+        if ( age < 0 )        throw 'Age must be at least 0.';
+        if ( age > 130 )      throw 'Age must be no more than 130.';
+        if ( age < this.age ) throw 'Age can not go backwards.';
+      }
+    }
+  ]
+});
+
+var t = Test.create();
+
+try { t.p1 = 'too short'; } catch (x) { print(x); }
+print(t.p1);
+t.p1 = 'not too short';
+print(t.p1);
+
+try { t.age = -1; } catch (x) { print(x); }
+print(t.age);
+try { t.age = 5; } catch (x) { print(x); }
+print(t.age);
+try { t.age = 4; } catch (x) { print(x); }
+print(t.age);
+try { t.age = 10; } catch (x) { print(x); }
+print(t.age);
+try { t.age = 200; } catch (x) { print(x); }
+print(t.age);
+
 ## U2
 ##  Background
 U2 is FOAM's native UI library.
