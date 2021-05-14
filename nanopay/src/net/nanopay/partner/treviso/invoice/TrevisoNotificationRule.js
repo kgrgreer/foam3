@@ -52,7 +52,7 @@ foam.CLASS({
         'Banco SC Treviso (143)\n' +
         'Branch: 0001\n' +
         'Account: 1-1\n\n' +
-        'In case that payment has not been done, the transaction will be canceled automatically.'
+        'If not received, the transaction will be canceled automatically.'
     }
   ],
 
