@@ -26,6 +26,10 @@ foam.CLASS({
         font-weight: bold;
         padding-bottom: 8px;
       } 
+
+      ^ .message {
+        white-space: pre-line;
+      } 
     `,
 
     requires: [
@@ -66,7 +70,7 @@ foam.CLASS({
             .end()
             .start(this.Rows).style({padding: '24px 0px'})
               .start().addClass('bold-label').add(this.MESSAGE_MSG).end()
-              .start().add(this.description).end()
+              .start().addClass('message').add(this.description).end()
             .end()
         .end();
       }
