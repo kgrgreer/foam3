@@ -153,7 +153,7 @@ foam.CLASS({
       section: 'infoSection',
       createVisibility: 'RO',
       readVisibility: 'RO',
-      updateVisibility: 'RO'
+      updateVisibility: 'RW'
     },
     {
       class: 'DateTime',

@@ -177,7 +177,7 @@ foam.CLASS({
         // PENDING_PARENT_COMPLETED or SCHEDULED.
         return oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED
           || oldTxn.getStatus() == TransactionStatus.SCHEDULED
-          || oldTxn.getStatus() == TransactionStatus.PENDING;
+          || (oldTxn.getStatus() == TransactionStatus.PENDING && getStatus() != TransactionStatus.PENDING);
       `
     },
     {

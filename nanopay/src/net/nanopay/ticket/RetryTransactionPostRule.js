@@ -33,6 +33,7 @@
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
     'net.nanopay.tx.DigitalTransaction',
+    'net.nanopay.tx.TicketTransaction',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
@@ -108,13 +109,28 @@
             quote.setRequestTransaction(retry);
             quote = (TransactionQuote) transactionPlannerDAO.put(quote);
             
+            // Create TicketTransaction and set children and parent
+            TicketTransaction ticketTxn = new TicketTransaction();
+            ticketTxn.setParent(problemTxn.getParent());
+            ticketTxn.setAmount(problemTxn.getAmount());
+            ticketTxn.setSourceAccount(problemTxn.getSourceAccount());
+            ticketTxn.setDestinationAccount(problemTxn.getDestinationAccount());
+            ticketTxn.setId(UUID.randomUUID().toString());
+            ticketTxn.setIsValid(true);
+            ticketTxn.setTicketId(request.getId());
+            ticketTxn.setExternalId(problemTxn.getExternalId());
+            ticketTxn.setExternalInvoiceId(problemTxn.getExternalInvoiceId());
+            ticketTxn = (TicketTransaction) txnDAO.put(ticketTxn);
+            
             retry = quote.getPlan();
             retry = (Transaction) txnDAO.put(retry);
-            // create ticket txn and inject, and add this to child
+            retry.setParent(ticketTxn.getId());
             retry.setExternalId(problemTxn.getExternalId());
             retry.setExternalInvoiceId(problemTxn.getExternalInvoiceId());
             retry.setAssociateTransaction(problemTxn.getId());
-            txnDAO.put(retry);
+            retry = (Transaction) txnDAO.put(retry);
+            problemTxn.setParent(ticketTxn.getId());
+            txnDAO.put(problemTxn);
           }
           catch(Exception e) {
             Logger logger = (Logger) x.get("logger");
