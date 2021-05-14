@@ -569,7 +569,10 @@
         To be used in view reference action when the approvalrequest
         needs to specify its own reference, for example in the case of
         UserCapabilityJunctions where data is null.
-      `
+      `,
+      expression: function(objId) {
+        return objId;
+      }
     },
     {
       class: 'String',
@@ -585,7 +588,10 @@
         To be used in view reference action when the approvalrequest
         needs to specify its own reference, for example in the case of
         UserCapabilityJunctions where data is null.
-      `
+      `,
+      expression: function (daoKey) {
+        return daoKey;
+      }
     },
     {
       class: 'String',
@@ -614,7 +620,7 @@
   ],
 
   messages: [
-    { 
+    {
       name: 'BACK_LABEL',
       message: 'Back'
     },
@@ -854,7 +860,7 @@
             });
         }
       },
-      code: function(X) {
+      code: async function(X) {
         var self = this;
 
         // This should already be filtered out by the isAvailable, but adding here as duplicate protection
@@ -864,96 +870,60 @@
              return;
         }
 
-        var objId, daoKey, property;
-        if ( self.refObjId && self.refDaoKey ) {
-          daoKey = self.refDaoKey;
-          property = X[daoKey].of.ID;
-          objId = property.adapt.call(property, self.refObjId, self.refObjId, property);
-        } else {
-          daoKey = self.daoKey;
-          property = X[daoKey].of.ID;
-          objId = property.adapt.call(property, self.objId, self.objId, property);
+        var daoKey = self.refDaoKey;
+        var property = X[daoKey].of.ID;
+        var objId = property.adapt.call(property, self.refObjId, self.refObjId, property);
+
+        var obj = await X[daoKey].find(objId);
+        var of = obj.cls_;
+
+        var summaryData = obj;
+
+        // If the dif of objects is calculated and stored in Map(obj.propertiesToUpdate),
+        // this is for updating object approvals
+        if ( obj.propertiesToUpdate ) {
+          if ( obj.operation === foam.nanos.dao.Operation.CREATE ) {
+            summaryData = obj.of.create({}, X);
+            daoKey = obj.daoKey;
+            of = summaryData.cls_;
+
+            Object.keys(obj.propertiesToUpdate).map(k => summaryData.cls_.getAxiomByName(k))
+              .filter(p => p && ! p.transient && ! p.storageTransient && ! p.networkTransient)
+              .forEach(p => {
+                summaryData[p.name] = obj.propertiesToUpdate[p.name];
+              });
+          } else {
+            of = obj.of;
+
+            // then here we created custom view to display these properties
+            X.stack.push({
+              class: 'foam.nanos.approval.PropertiesToUpdateView',
+              propObject: obj.propertiesToUpdate,
+              objId: obj.objId,
+              daoKey: obj.daoKey,
+              of: of,
+              title: 'Updated Properties and Changes'
+            });
+            return;
+          }
         }
 
-        return X[daoKey]
-          .find(objId)
-          .then(obj => {
-            var of = obj.cls_;
-
-            // If the dif of objects is calculated and stored in Map(obj.propertiesToUpdate),
-            // this is for updating object approvals
-            if ( obj.propertiesToUpdate ) {
-              if ( obj.operation === foam.nanos.dao.Operation.CREATE ) {
-                var temporaryNewObject = obj.of.create({}, X);
-
-                var propsToUpdate = obj.propertiesToUpdate;
-
-                var keyArray = Object.keys(propsToUpdate);
-
-                for ( var i = 0; i < keyArray.length; i++ ) {
-                  var propObj = temporaryNewObject.cls_.getAxiomByName(keyArray[i]);
-                  if (
-                    ! propObj ||
-                    propObj.transient ||
-                    propObj.storageTransient ||
-                    propObj.networkTransient
-                  ) continue;
-
-                  temporaryNewObject[keyArray[i]] = propsToUpdate[keyArray[i]];
-                }
-
-                of = temporaryNewObject.cls_;
-
-                X.stack.push({
-                  class: 'foam.comics.v2.DAOSummaryView',
-                  data: temporaryNewObject,
-                  of: of,
-                  config: foam.comics.v2.DAOControllerConfig.create({
-                    daoKey: obj.daoKey,
-                    of: of,
-                    editPredicate: foam.mlang.predicate.False.create(),
-                    createPredicate: foam.mlang.predicate.False.create(),
-                    deletePredicate: foam.mlang.predicate.False.create()
-                  }, X),
-                  mementoHead: null,
-                  backLabel: self.BACK_LABEL
-                });
-              } else {
-                of = obj.of;
-
-                // then here we created custom view to display these properties
-                X.stack.push({
-                  class: 'foam.nanos.approval.PropertiesToUpdateView',
-                  propObject: obj.propertiesToUpdate,
-                  objId: obj.objId,
-                  daoKey: obj.daoKey,
-                  of: of,
-                  title: 'Updated Properties and Changes'
-                });
-              }
-              return;
-            }
-
-            // else pass general view with modeled data for display
-            // this is for create, deleting object approvals
-            X.stack.push({
-              class: 'foam.comics.v2.DAOSummaryView',
-              data: obj,
-              of: of,
-              config: foam.comics.v2.DAOControllerConfig.create({
-                daoKey: daoKey,
-                of: of,
-                editPredicate: foam.mlang.predicate.False.create(),
-                createPredicate: foam.mlang.predicate.False.create(),
-                deletePredicate: foam.mlang.predicate.False.create()
-              }, X),
-              mementoHead: null,
-              backLabel: self.BACK_LABEL
-            }, X.createSubContext({stack: self.stack}));
-          })
-          .catch(err => {
-            console.warn(err.message || err);
-          });
+        // else pass general view with modeled data for display
+        // this is for create, deleting object approvals
+        X.stack.push({
+          class: 'foam.comics.v2.DAOSummaryView',
+          data: obj,
+          of: of,
+          config: foam.comics.v2.DAOControllerConfig.create({
+            daoKey: daoKey,
+            of: of,
+            editPredicate: foam.mlang.predicate.False.create(),
+            createPredicate: foam.mlang.predicate.False.create(),
+            deletePredicate: foam.mlang.predicate.False.create()
+          }, X),
+          mementoHead: null,
+          backLabel: self.BACK_LABEL
+        }, X.createSubContext({stack: self.stack}));
       },
       tableWidth: 100
     },
