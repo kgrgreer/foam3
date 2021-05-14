@@ -46,6 +46,10 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'spid'
+    },
+    {
+      class: 'String',
       name: 'subject',
       documentation: 'Template subject'
     },
