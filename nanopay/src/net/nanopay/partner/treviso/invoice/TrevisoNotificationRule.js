@@ -50,7 +50,7 @@ foam.CLASS({
         'Treviso Corretora de Câmbio S.A\n' +
         'CNPJ: 02.992.317/0001-87\n' +
         'Banco SC Treviso (143)\n' +
-        'Branch: 0001\n' +
+        'Institution: 0001\n' +
         'Account: 1-1\n\n' +
         'If not received, the transaction will be canceled automatically.'
     }
