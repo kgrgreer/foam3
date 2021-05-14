@@ -15,7 +15,7 @@ foam.CLASS({
 
   requires: [ 'foam.nanos.pm.PMInfo', 'foam.u2.view.TableView' ],
 
-  exports: [ 'maxTotalTime' ],
+  exports: [ 'maxTotalTime', 'as tableView' ],
 
   // Keep standard TableView styling
   constants: { CSS_CLASS: 'foam-u2-view-TableView' },
@@ -47,7 +47,7 @@ foam.CLASS({
 
       this.addClass('foam-nanos-pm-PMTableView');
       this.startContext({data: this}).add(this.CLEAR_ALL).endContext();
-      this.columns_.push([this.CLEAR, null]);
+      // this.columns.push([this.CLEAR, null]);
 
       this.SUPER();
 
@@ -61,6 +61,9 @@ foam.CLASS({
       name: 'clear',
       code: function(X) {
         X.pmInfoDAO.remove(this);
+        // This shouldn't be necessary, the DAO update should already cause
+        // a refresh
+        X.tableView.updateValues = ! X.tableView.updateValues;
       },
       tableWidth: 80
     },
