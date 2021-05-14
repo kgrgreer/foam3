@@ -382,11 +382,26 @@
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
+      name: 'createdFor',
+      includeInDigest: true,
+      section: 'approvalRequestInformation',
+      order: 105,
+      gridColumns: 6,
+      tableCellFormatter: function(value, obj, axiom) {
+        var defaultOutput = value ? `ID: ${value}`: "N/A";
+        this.__subSubContext__.userDAO
+          .find(value)
+          .then(user => this.add(user ? user.toSummary() : defaultOutput));
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
       name: 'createdBy',
       includeInDigest: true,
       section: 'approvalRequestInformation',
       order: 110,
-      gridColumns: 3,
+      gridColumns: 6,
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.userDAO
           .find(value)
@@ -400,23 +415,8 @@
       includeInDigest: true,
       section: 'approvalRequestInformation',
       order: 115,
-      gridColumns: 3,
+      gridColumns: 6,
       readPermissionRequired: true
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'createdFor',
-      includeInDigest: true,
-      section: 'approvalRequestInformation',
-      order: 116,
-      gridColumns: 3,
-      tableCellFormatter: function(value, obj, axiom) {
-        var defaultOutput = value ? `ID: ${value}`: "N/A";
-        this.__subSubContext__.userDAO
-          .find(value)
-          .then(user => this.add(user ? user.toSummary() : defaultOutput));
-      }
     },
     {
       class: 'DateTime',
@@ -438,7 +438,7 @@
       includeInDigest: true,
       section: 'approvalRequestInformation',
       order: 130,
-      gridColumns: 6,
+      gridColumns: 3,
       readPermissionRequired: true
     },
     {
@@ -448,7 +448,7 @@
       includeInDigest: true,
       section: 'approvalRequestInformation',
       order: 130,
-      gridColumns: 6,
+      gridColumns: 3,
       readPermissionRequired: true
     },
     {
