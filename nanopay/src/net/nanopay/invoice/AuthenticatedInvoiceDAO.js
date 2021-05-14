@@ -148,7 +148,7 @@ foam.CLASS({
           throw new AuthorizationException(CREATE_INVOICE_ERROR_MSG);
 
         // if updating an invoice, skip the following checks if user has the global update permission
-        if ( getAuth().check(x, GLOBAL_INVOICE_UPDATE) ) return getDelegate().put_(x, invoice);
+        if ( old != null && getAuth().check(x, GLOBAL_INVOICE_UPDATE) ) return getDelegate().put_(x, invoice);
 
         // Do not allow updates to reference ID 
         if ( old != null && ! SafetyUtil.equals(invoice.getReferenceId(), old.getReferenceId()) )
