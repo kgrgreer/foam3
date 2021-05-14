@@ -17,6 +17,7 @@
 package net.nanopay.country.br.exchange;
 
 import org.apache.commons.lang3.StringUtils;
+import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
@@ -27,6 +28,7 @@ import foam.nanos.crunch.CapabilityJunctionPayload;
 import foam.nanos.crunch.Capability;
 import foam.nanos.crunch.UserCapabilityJunction;
 import foam.nanos.logger.Logger;
+import foam.nanos.logger.PrefixLogger;
 import foam.util.SafetyUtil;
 
 import java.math.BigDecimal;
@@ -56,16 +58,35 @@ import net.nanopay.tx.TransactionLineItem;
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 
-public class ExchangeServiceProvider implements ExchangeService {
+public class ExchangeServiceProvider
+  extends ContextAwareSupport
+  implements ExchangeService {
 
-  private Exchange exchangeClient;
-  private final Logger logger_;
-  private  X x;
+  protected String exchangeClientContextKey_ = "exchange";
+  protected final Logger logger_;
 
-  public ExchangeServiceProvider(X x, final Exchange exchangeClient) {
-    this.exchangeClient = exchangeClient;
-    this.logger_ = (Logger) x.get("logger");
-    this.x = x;
+  public ExchangeServiceProvider(X x) {
+    setX(x);
+    this.logger_ = new PrefixLogger(new Object[] {
+        this.getClass().getSimpleName()
+      }, (Logger) x.get("logger"));
+  }
+
+  public ExchangeServiceProvider(X x, String exchangeClientContextKey) {
+    this(x);
+    setExchangeClientContextKey(exchangeClientContextKey);
+  }
+
+  public void setExchangeClientContextKey(String exchangeClientContextKey) {
+    exchangeClientContextKey_ = exchangeClientContextKey;
+  }
+
+  public String getExchangeClientContextKey() {
+    return exchangeClientContextKey_;
+  }
+
+  protected Exchange getExchangeServiceProvider(X x) {
+    return (Exchange) x.get(getExchangeClientContextKey());
   }
 
   protected String getName(User user) {
@@ -74,14 +95,14 @@ public class ExchangeServiceProvider implements ExchangeService {
   }
 
   protected String findCpfCnpj(long userId) {
-    User user = (User) ((DAO) this.x.get("localUserDAO")).find(userId);
+    User user = (User) ((DAO) getX().get("localUserDAO")).find(userId);
     if ( user instanceof Business ) return findCNPJ(userId);
 
     return findCPF(userId);
   }
 
   protected String findCNPJ(long userId) {
-    UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) this.x.get("bareUserCapabilityJunctionDAO")).find(AND(
+    UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) getX().get("bareUserCapabilityJunctionDAO")).find(AND(
       EQ(UserCapabilityJunction.TARGET_ID, "crunch.onboarding.br.business-identification"),
       EQ(UserCapabilityJunction.SOURCE_ID, userId)
     ));
@@ -89,7 +110,7 @@ public class ExchangeServiceProvider implements ExchangeService {
   }
 
   protected String findCPF(long userId) {
-    UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) this.x.get("bareUserCapabilityJunctionDAO")).find(AND(
+    UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) getX().get("bareUserCapabilityJunctionDAO")).find(AND(
       EQ(UserCapabilityJunction.TARGET_ID, "crunch.onboarding.br.cpf"),
       EQ(UserCapabilityJunction.SOURCE_ID, userId)
     ));
@@ -98,12 +119,12 @@ public class ExchangeServiceProvider implements ExchangeService {
   }
 
   public ExchangeCustomer createExchangeCustomerDefault(long userId) throws RuntimeException {
-    ExchangeCredential credential = (ExchangeCredential) x.get("exchangeCredential");
+    ExchangeCredential credential = (ExchangeCredential) getX().get("exchangeCredential");
     return createExchangeCustomer(userId, credential.getDefaultLimit());
   }
 
   public ExchangeCustomer createExchangeCustomer(long userId, long amount) throws RuntimeException {
-    User user = (User) ((DAO) this.x.get("localUserDAO")).find(userId);
+    User user = (User) ((DAO) getX().get("localUserDAO")).find(userId);
     if ( user == null ) throw new RuntimeException("User not found: " + userId);
 
     try {
@@ -116,7 +137,7 @@ public class ExchangeServiceProvider implements ExchangeService {
     InsertTitular request = new InsertTitular();
     request.setDadosTitular(getTitularRequest(user, amount));
     try {
-      InsertTitularResponse response = exchangeClient.insertTitular(request);
+      InsertTitularResponse response = getExchangeServiceProvider(getX()).insertTitular(request);
       if ( response == null || response.getInsertTitularResult() == null )
         throw new RuntimeException("Unable to get a valid response from Exchange while calling insertTitular");
 
@@ -132,7 +153,7 @@ public class ExchangeServiceProvider implements ExchangeService {
 
   public ExchangeCustomer findExchangeCustomer(User user) {
     ExchangeCustomer exchangeCustomer =  (ExchangeCustomer) ((DAO)
-      this.x.get("brazilExchangeCustomerDAO")).find(EQ(ExchangeCustomer.USER, user.getId()));
+      getX().get("brazilExchangeCustomerDAO")).find(EQ(ExchangeCustomer.USER, user.getId()));
 
     if ( exchangeCustomer !=  null ) return exchangeCustomer;
 
@@ -143,11 +164,11 @@ public class ExchangeServiceProvider implements ExchangeService {
   }
 
   protected ExchangeCustomer saveExchangeCustomer(User user , String status, String spid) {
-    DAO exchangeCustomerDAO = (DAO) this.x.get("brazilExchangeCustomerDAO");
+    DAO exchangeCustomerDAO = (DAO) getX().get("brazilExchangeCustomerDAO");
     ExchangeCustomer client  = (ExchangeCustomer) ((DAO)
-      this.x.get("brazilExchangeCustomerDAO")).find(EQ(ExchangeCustomer.USER, user.getId()));
+      getX().get("brazilExchangeCustomerDAO")).find(EQ(ExchangeCustomer.USER, user.getId()));
     if ( client == null ) {
-      client = (ExchangeCustomer) exchangeCustomerDAO.put(new ExchangeCustomer.Builder(this.x)
+      client = (ExchangeCustomer) exchangeCustomerDAO.put(new ExchangeCustomer.Builder(getX())
         .setUser(user.getId())
         .setStatus(status)
         .setSpid(spid)
@@ -160,7 +181,7 @@ public class ExchangeServiceProvider implements ExchangeService {
     SearchTitular request = new SearchTitular();
     String formattedcpfCnpj = findCpfCnpj(userId).replaceAll("[^0-9]", "");
     request.setCODIGO(formattedcpfCnpj);
-    SearchTitularResponse response = exchangeClient.searchTitular(request);
+    SearchTitularResponse response = getExchangeServiceProvider(getX()).searchTitular(request);
     if ( response == null || response.getSearchTitularResult() == null ) {
       logger_.warning("Unable to retrieve customer from exchange.");
       return null;
@@ -180,7 +201,7 @@ public class ExchangeServiceProvider implements ExchangeService {
     SearchTitularCapFin request = new SearchTitularCapFin();
     String formattedcpfCnpj = findCpfCnpj(userId).replaceAll("[^0-9]", "");
     request.setCODIGO(formattedcpfCnpj);
-    SearchTitularCapFinResponse response = exchangeClient.searchTitularCapFin(request);
+    SearchTitularCapFinResponse response = getExchangeServiceProvider(getX()).searchTitularCapFin(request);
     if ( response == null || response.getSearchTitularCapFinResult() == null )
       throw new RuntimeException("Unable to get a valid response from Exchange while calling SearchTitularCapFin");
 
@@ -200,13 +221,13 @@ public class ExchangeServiceProvider implements ExchangeService {
   }
 
   public void updateTransactionLimit(long userId, long amount) throws RuntimeException {
-    User user = (User) ((DAO) this.x.get("localUserDAO")).find(userId);
+    User user = (User) ((DAO) getX().get("localUserDAO")).find(userId);
     if ( user == null ) throw new RuntimeException("User not found: " + userId);
     UpdateTitular request = new UpdateTitular();
     Titular titular = getTitularRequest(user, amount);
     request.setDadosTitular(titular);
     try {
-      UpdateTitularResponse response = exchangeClient.updateTitular(request);
+      UpdateTitularResponse response = getExchangeServiceProvider(getX()).updateTitular(request);
       if ( response == null || response.getUpdateTitularResult() == null )
         throw new RuntimeException("Unable to get a valid response from Exchange while calling updateTitular");
 
@@ -239,7 +260,7 @@ public class ExchangeServiceProvider implements ExchangeService {
     titular.setCIDADE(user.getAddress().getCity());
     titular.setESTADO(user.getAddress().getRegionId().substring(3,5));
     titular.setCEP(user.getAddress().getPostalCode());
-    Pais pais = (Pais) ((DAO) this.x.get("paisDAO")).find(EQ(Pais.SWIFT, user.getAddress().getCountryId()));
+    Pais pais = (Pais) ((DAO) getX().get("paisDAO")).find(EQ(Pais.SWIFT, user.getAddress().getCountryId()));
     if ( pais != null ) {
       titular.setPAIS(pais.getPais());
       titular.setPAISMT(pais.getPais());
@@ -261,22 +282,22 @@ public class ExchangeServiceProvider implements ExchangeService {
   }
 
   public Transaction createTransaction(Transaction transaction) throws RuntimeException {
-    Transaction summaryTransaction = transaction.findRoot(this.x);
-    BankAccount bankAccount = (BankAccount)summaryTransaction.findDestinationAccount(this.x);
+    Transaction summaryTransaction = transaction.findRoot(getX());
+    BankAccount bankAccount = (BankAccount)summaryTransaction.findDestinationAccount(getX());
     if ( null == bankAccount ) throw new RuntimeException("Invalid destination bank account " + summaryTransaction.getId());
-    User receiver = bankAccount.findOwner(this.x);
+    User receiver = bankAccount.findOwner(getX());
     if ( receiver == null ) throw new RuntimeException("Destination User not found: " + bankAccount.getOwner());
 
-    BankAccount srcBankAccount = (BankAccount)summaryTransaction.findSourceAccount(this.x);
+    BankAccount srcBankAccount = (BankAccount)summaryTransaction.findSourceAccount(getX());
     if ( null == srcBankAccount ) throw new RuntimeException("Invalid source bank account " + summaryTransaction.getId());
-    User payer = srcBankAccount.findOwner(x);
+    User payer = srcBankAccount.findOwner(getX());
     if ( payer == null ) throw new RuntimeException("Source user not found: " + srcBankAccount.getOwner());
 
     ExchangeClientValues exchangeClientValues = getExchangeClientValues(payer.getSpid());
     if ( exchangeClientValues == null )
       throw new RuntimeException("Exchange is not properly configured. Missing exchange client values.");
 
-    BancoConfig bancoConfig = (BancoConfig) ((DAO) this.x.get("bancoConfigDAO")).find(AND(
+    BancoConfig bancoConfig = (BancoConfig) ((DAO) getX().get("bancoConfigDAO")).find(AND(
       EQ(BancoConfig.CURRENCY, transaction.getDestinationCurrency()),
       EQ(BancoConfig.SPID, payer.getSpid())
     ));
@@ -287,37 +308,53 @@ public class ExchangeServiceProvider implements ExchangeService {
     if ( bancoConfig != null ) dadosBoleto.setBANCO(bancoConfig.getCode());
     dadosBoleto.setBANCOBEN0(StringUtils.leftPad(exchangeClientValues.getBeneficiaryType(), 1, " "));
     dadosBoleto.setCONTA(exchangeClientValues.getCONTA());
-    dadosBoleto.setBANCOBEN1(StringUtils.leftPad(bankAccount.getSwiftCode(), 35, " "));
-    dadosBoleto.setBANCOBEN4(StringUtils.leftPad(bankAccount.getRoutingCode(this.x), 35, " "));
-    dadosBoleto.setBANCOBEN5(StringUtils.leftPad("", 20, " "));
+    String bancoBen1 = StringUtils.leftPad(bankAccount.getSwiftCode(), 35, " ");
+    bancoBen1 = bancoBen1.substring(0, Math.min(bancoBen1.length(), 35));
+    dadosBoleto.setBANCOBEN1(bancoBen1);
+
+    String bancoBen4 = StringUtils.leftPad(bankAccount.getRoutingCode(getX()), 35, " ");
+    bancoBen4 = bancoBen4.substring(0, Math.min(bancoBen4.length(), 35));
+    dadosBoleto.setBANCOBEN4(bancoBen4);
+
+    String bancoBen5 = StringUtils.leftPad("", 20, " ");
+    dadosBoleto.setBANCOBEN5(bancoBen5);
+
     dadosBoleto.setPAGADORS(bankAccount.getSwiftCode());
     dadosBoleto.setESP5(getESP("SWIFT CODE: ", bankAccount.getSwiftCode(),
       " - IBAN:  ", bankAccount.getIban(), " - DETAILS OF CHARGE: "));
 
     FindBankByNationalIDResponse bankInfo = getBankInformation(bankAccount, payer.getSpid());
-    if ( bankInfo != null )
-      dadosBoleto.setBANCOBEN2(StringUtils.leftPad(bankInfo.getInstitutionName(), 35, " "));
-    dadosBoleto.setBANCOBEN3(StringUtils.leftPad(getBancoBen3(bankInfo, bankAccount), 35, " "));
+    String bankInstitutionName = null == bankInfo ? "" : bankInfo.getInstitutionName();
+    String bancoBen2 = StringUtils.leftPad(bankInstitutionName, 35, " ");
+    bancoBen2 = bancoBen2.substring(0, Math.min(bancoBen2.length(), 35));
+    dadosBoleto.setBANCOBEN2(bancoBen2);
+
+    String bancoBen3 = StringUtils.leftPad(getBancoBen3(bankInfo, bankAccount), 35, " ");
+    bancoBen3 = bancoBen3.substring(0, Math.min(bancoBen3.length(), 35));
+    dadosBoleto.setBANCOBEN3(bancoBen3);
 
     dadosBoleto.setCLAUSULAXX(false);
     String formattedCpfCnpj = findCpfCnpj(payer.getId()).replaceAll("[^0-9]", "");
     dadosBoleto.setCNPJPCPFCLIENTE(formattedCpfCnpj); // eg 10786348070
 
     Date completionDate = transaction.getCompletionDate();
+    Date transactionDate = new Date();
     if ( completionDate == null ) {
-      ClearingTimeService clearingTimeService = (ClearingTimeService) this.x.get("clearingTimeService");
-      completionDate = clearingTimeService.estimateCompletionDateSimple(this.x, transaction);
+      ClearingTimeService clearingTimeService = (ClearingTimeService) getX().get("clearingTimeService");
+      completionDate = clearingTimeService.estimateCompletionDateSimple(getX(), transaction);
     }
 
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     String completionDateString = "";
+    String transactionDateString = "";
     try {
       completionDateString = sdf.format(completionDate);
+      transactionDateString = sdf.format(transactionDate);
       dadosBoleto.setDATALQ(completionDateString);
       dadosBoleto.setDATAME(completionDateString); // TODO Foreign currency delivery date ( DD / MM / YYYY)
-      dadosBoleto.setDATAMN(completionDateString);
-      dadosBoleto.setDATAOP(completionDateString);
       dadosBoleto.setDATAEN(completionDateString);
+      dadosBoleto.setDATAMN(transactionDateString);
+      dadosBoleto.setDATAOP(transactionDateString);
     } catch(Throwable t) {
       logger_.error("Unable to parse completion date", t);
       throw new RuntimeException("Error inserting boleto. Cound not parse completion date.");
@@ -333,11 +370,10 @@ public class ExchangeServiceProvider implements ExchangeService {
     dadosBoleto.setPLATBMF(exchangeClientValues.getPLATBMF());
     dadosBoleto.setRSISB(exchangeClientValues.getRSISB());
     dadosBoleto.setSEGMENTO(dadosBoleto.getSEGMENTO());
-    dadosBoleto.setTIPO(exchangeClientValues.getTIPO());
     dadosBoleto.setTIPOCT("");
     dadosBoleto.setTPADTO("%");
 
-    Moeda moeda = (Moeda) ((DAO) this.x.get("moedaDAO")).find(EQ(Moeda.SIMBOLO, bankAccount.getDenomination()));
+    Moeda moeda = (Moeda) ((DAO) getX().get("moedaDAO")).find(EQ(Moeda.SIMBOLO, bankAccount.getDenomination()));
     if ( moeda != null ) dadosBoleto.setMOEDA(moeda.getMoeda());
     dadosBoleto.setLEILAO(exchangeClientValues.getLEILAO());
     dadosBoleto.setAVISO2(exchangeClientValues.getAVISO2());
@@ -348,21 +384,29 @@ public class ExchangeServiceProvider implements ExchangeService {
     if ( natureza != null && natureza.size() > 0 ) {
       dadosBoleto.setCLAUSULA01(natureza.get(0).getCpClausula1());
     }
+
+
+    if ( natureCode != null ) {
+      NatureCode nCode = (NatureCode) ((DAO) getX().get("natureCodeDAO"))
+        .find(EQ(NatureCode.OPERATION_TYPE, natureCode.substring(0, Math.min(natureCode.length(), 5))));
+      dadosBoleto.setTIPO(nCode == null ? dadosBoleto.getTIPO() : nCode.getTipo());
+    }
+
     dadosBoleto.setOBSERVACAO("");
     dadosBoleto.setPAGADOR(getName(receiver));
     dadosBoleto.setPAGADORC("/" + bankAccount.getIban());
     dadosBoleto.setGERENTE(exchangeClientValues.getGERENTE());
     dadosBoleto.setESP1(getESP("FORMA DE PAGAMENTO: ", dadosBoleto.getFORMAEN(),
-      " - DATA: ", completionDateString));
+      " - DATA: ", transactionDateString));
     dadosBoleto.setESP6(getESP("OUR - INST.FINANC .: ", exchangeClientValues.getProcessorName()));
 
     Country userCountry = null;
     Address receiverAddress = receiver instanceof Contact ? ((Contact)receiver).getBusinessAddress() : receiver.getAddress();
     if ( receiverAddress != null ) {
-      userCountry = receiverAddress.findCountryId(this.x);
+      userCountry = receiverAddress.findCountryId(getX());
       dadosBoleto.setPAGADORCD(receiverAddress.getCity());
       dadosBoleto.setPAGADORE(receiverAddress.getAddress());
-      Pais sourcePais = (Pais) ((DAO) this.x.get("paisDAO")).find(EQ(Pais.SWIFT, userCountry.getCode()));
+      Pais sourcePais = (Pais) ((DAO) getX().get("paisDAO")).find(EQ(Pais.SWIFT, userCountry.getCode()));
       if ( sourcePais != null ) dadosBoleto.setPAIS(sourcePais.getPais());
     }
 
@@ -399,7 +443,7 @@ public class ExchangeServiceProvider implements ExchangeService {
     dadosBoleto.setVALORME(destinationAmount);
     dadosBoleto.setVALORMN(valormn);
     request.setDadosBoleto(dadosBoleto);
-    InsertBoletoResponse response = exchangeClient.insertBoleto(request);
+    InsertBoletoResponse response = getExchangeServiceProvider(getX()).insertBoleto(request);
     if ( response == null || response.getInsertBoletoResult() == null )
       throw new RuntimeException("Unable to get a valid response from Exchange while calling insertBoleto");
 
@@ -408,7 +452,7 @@ public class ExchangeServiceProvider implements ExchangeService {
 
     transaction.setExternalInvoiceId(response.getInsertBoletoResult().getNRREFERENCE());
     transaction.setStatus(TransactionStatus.SENT);
-    transaction.setCompletionDate(completionDate);
+    transaction.setCompletionDate(transactionDate);
     return transaction;
   }
 
@@ -424,7 +468,7 @@ public class ExchangeServiceProvider implements ExchangeService {
     Address bankAddress = bankAccount.getAddress() == null ? bankAccount.getBankAddress() : bankAccount.getAddress();
     if ( bankAddress != null && ! ( SafetyUtil.isEmpty(bankAddress.getCity()))) {
       bancoBen3.append(bankAddress.getCity());
-      Country country = bankAddress.findCountryId(this.x);
+      Country country = bankAddress.findCountryId(getX());
       if ( country != null ) {
         bancoBen3.append("/");
         bancoBen3.append(country.getName());
@@ -434,18 +478,18 @@ public class ExchangeServiceProvider implements ExchangeService {
   }
 
   public Date skipHolidayAndWeekends() {
-    BankHolidayService bankHolidayService = (BankHolidayService) this.x.get("bankHolidayService");
-    Address address = new Address.Builder(this.x).setCountryId("BR").setRegionId("").build();
-    return bankHolidayService.skipBankHolidays(this.x, new Date(), address, 0);
+    BankHolidayService bankHolidayService = (BankHolidayService) getX().get("bankHolidayService");
+    Address address = new Address.Builder(getX()).setCountryId("BR").setRegionId("").build();
+    return bankHolidayService.skipBankHolidays(getX(), new Date(), address, 0);
   }
 
   protected FindBankByNationalIDResponse getBankInformation(BankAccount bankAccount, String spid) {
-    AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) this.x.get("afexServiceProvider");
-    return afexServiceProvider.getBankInformation(x, null, bankAccount, spid);
+    AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) getX().get("afexServiceProvider");
+    return afexServiceProvider.getBankInformation(getX(), null, bankAccount, spid);
   }
 
   protected ExchangeClientValues getExchangeClientValues(String spid) {
-    return (ExchangeClientValues) ((DAO) this.x.get("exchangeClientValueDAO"))
+    return (ExchangeClientValues) ((DAO) getX().get("exchangeClientValueDAO"))
       .find(EQ(ExchangeClientValues.SPID, spid));
   }
 
@@ -497,19 +541,19 @@ public class ExchangeServiceProvider implements ExchangeService {
   protected Contact findContact(User payer, User payee) {
     if ( payee instanceof Contact ) return (Contact) payee;
 
-    return (Contact) payer.getContacts(this.x).find(EQ(Contact.BUSINESS_ID, payee.getId()));
+    return (Contact) payer.getContacts(getX()).find(EQ(Contact.BUSINESS_ID, payee.getId()));
   }
 
   protected String getNatureCodeFromInvoice(Transaction txn) {
     StringBuilder str =  new StringBuilder();
-    Invoice invoice = txn.findInvoiceId(x);
+    Invoice invoice = txn.findInvoiceId(getX());
     if ( invoice == null ) return str.toString();
 
-    DAO capablePayloadDAO = (DAO) invoice.getCapablePayloadDAO(x);
+    DAO capablePayloadDAO = (DAO) invoice.getCapablePayloadDAO(getX());
     List<CapabilityJunctionPayload> capablePayloadLst = (List<CapabilityJunctionPayload>) ((ArraySink) capablePayloadDAO.select(new ArraySink())).getArray();
 
     for ( CapabilityJunctionPayload capablePayload : capablePayloadLst ) {
-      DAO capabilityDAO = (DAO) x.get("capabilityDAO");
+      DAO capabilityDAO = (DAO) getX().get("capabilityDAO");
       Capability cap = (Capability) capabilityDAO.find(capablePayload.getCapability());
       if ( cap instanceof NatureCode && capablePayload.getData() instanceof NatureCodeData ) {
         NatureCode natureCode = (NatureCode) cap;
@@ -531,7 +575,7 @@ public class ExchangeServiceProvider implements ExchangeService {
     SearchBoleto request = new SearchBoleto();
     request.setNrBoleto(transaction.getExternalInvoiceId());
     try {
-      SearchBoletoResponse response = exchangeClient.searchBoleto(request);
+      SearchBoletoResponse response = getExchangeServiceProvider(getX()).searchBoleto(request);
       if ( response == null || response.getSearchBoletoResult() == null )
         throw new RuntimeException("Unable to get a valid response from Exchange while calling SearchBoletoResponse");
 
@@ -569,7 +613,7 @@ public class ExchangeServiceProvider implements ExchangeService {
     SearchNatureza request  = new SearchNatureza();
     request.setCD_NATUREZA(natureCode);
     try {
-      SearchNaturezaResponse response = exchangeClient.searchNatureza(request);
+      SearchNaturezaResponse response = getExchangeServiceProvider(getX()).searchNatureza(request);
       if ( response == null || response.getSearchNaturezaResult() == null )
         throw new RuntimeException("Unable to get a valid response from Exchange while calling searchNatureza");
 

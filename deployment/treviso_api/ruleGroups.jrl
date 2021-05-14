@@ -1,0 +1,10 @@
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"TrevisoAPIPlanner",
+  "enabled":true,
+})
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"TrevisoAPICompliance",
+  "enabled":true
+})

@@ -266,6 +266,7 @@ foam.CLASS({
   actions: [
     {
       name: 'verify',
+      buttonStyle: 'PRIMARY',
       code: function(X) {
         var self = this;
         if ( ! this.twoFactorToken ) {

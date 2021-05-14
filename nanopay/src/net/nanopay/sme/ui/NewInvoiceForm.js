@@ -563,7 +563,7 @@ foam.CLASS({
                         return isInvalid && type === 'payable' && ! showAddBank;
                       }))
                     .on('click', () => {
-                      this.invoice.destinationCurrency = this.currencyType.id;
+                      this.invoice.destinationCurrency = this.currencyType;
                     })
                   .end()
                 .endContext()

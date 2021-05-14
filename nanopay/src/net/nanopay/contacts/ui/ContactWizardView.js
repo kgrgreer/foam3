@@ -257,8 +257,8 @@ foam.CLASS({
                     return `${self.STEP} ${currentIndex + 1} ${self.OF_MSG} 3`;
                   }))
                 .end()
-                .start(this.NEXT).end()
-                .start(this.SAVE).end()
+                .tag(this.NEXT, { buttonStyle: 'PRIMARY' })
+                .tag(this.SAVE, { buttonStyle: 'PRIMARY' })
               .end()
             .end()
           .endContext()

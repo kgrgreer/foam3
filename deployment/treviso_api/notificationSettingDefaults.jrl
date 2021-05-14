@@ -1,0 +1,4 @@
+p({"class":"foam.nanos.notification.NotificationSetting","id":"fc7ffba6-8351-46d8-87c2-7da70bfc1722","spid":"trevisoAPI","enabled":false})
+p({"class":"foam.nanos.notification.EmailSetting","id":"bfa4a19d-0051-453e-adb9-0e6dd758e710","spid":"trevisoAPI","enabled":false})
+p({"class":"foam.nanos.notification.SlackSetting","id":"03235219-0e1d-4a7a-a906-dca87b2f764e","spid":"trevisoAPI","enabled":false})
+p({"class":"foam.nanos.notification.sms.SMSSetting","id":"28c2f377-5f7f-4309-aee6-fa4b4d646d28","spid":"trevisoAPI","enabled":false})

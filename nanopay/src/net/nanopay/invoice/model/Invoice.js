@@ -403,6 +403,12 @@ foam.CLASS({
       view: 'foam.u2.tag.TextArea'
     },
     {
+      class: 'String',
+      name: 'tedText',
+      documentation: `TED notification text`,
+      section: 'invoiceInformation'
+    },
+    {
       class: 'UnitValue',
       name: 'chequeAmount',
       includeInDigest: true,
@@ -959,7 +965,7 @@ foam.CLASS({
       name: 'toSummary',
       type: 'String',
       code: function() {
-        return this.cls_.name;
+        return this.paymentId.split('-', 1)[0];
       },
       javaCode: `
         return this.getClass().getSimpleName();

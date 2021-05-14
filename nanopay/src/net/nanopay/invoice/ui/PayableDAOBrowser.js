@@ -206,7 +206,8 @@ foam.CLASS({
           .start()
             .startContext({ data: this })
               .tag(this.primaryAction, {
-                size: 'LARGE'
+                size: 'LARGE',
+                buttonStyle: 'PRIMARY'
               })
             .endContext()
           .end()

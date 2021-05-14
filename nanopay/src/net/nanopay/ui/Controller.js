@@ -157,6 +157,7 @@ foam.CLASS({
     .foam-flow-Document h4,
     .foam-flow-Document h5 {
       margin: 12px 0 12px 0;
+      color: #292e31;
     }
     .foam-flow-Document p {
       margin-bottom: 10px;
@@ -166,7 +167,6 @@ foam.CLASS({
       background-color: black;
       color: white;
       padding: 20px;
-      overflow: auto;
     }
     .foam-flow-Document a {
       color: rgb(0, 153, 229);
@@ -846,23 +846,6 @@ foam.CLASS({
     function onUserAgentAndGroupLoaded() {
       var self = this;
       this.loginSuccess = true;
-      // Listener to check for new toast notifications
-      var userNotificationQueryId = this.subject.realUser.id;
-      this.__subSubContext__.notificationDAO.where(
-        this.EQ(this.Notification.USER_ID, userNotificationQueryId)
-      ).on.put.sub((sub, on, put, obj) => {
-        if ( obj.toastState == this.ToastState.REQUESTED ) {
-          obj.toastMessage = this.__subContext__.translationService.getTranslation(foam.locale, obj.toastMessage, obj.toastMessage);
-          this.add(this.NotificationMessage.create({
-            message: obj.toastMessage,
-            type: obj.severity,
-            description: obj.toastSubMessage
-          }));
-          var clonedNotification = obj.clone();
-          clonedNotification.toastState = this.ToastState.DISPLAYED;
-          this.__subSubContext__.notificationDAO.put(clonedNotification);
-        }
-      });
 
       if ( this.sme ) {
         window.onpopstate = async event => {

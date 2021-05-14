@@ -84,6 +84,21 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'valueDate',
+    },
+    {
+      class: 'UnitValue',
+      name: 'nanopayFee',
+      label: 'Fee Nanopay',
+      value: 499,
+      unitPropName: 'nanopayFeeCurrency'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.core.Currency',
+      name: 'nanopayFeeCurrency',
+      label: 'Nanopay Fee Currency',
+      value: 'USD',
+      targetDAOKey: 'currencyDAO'
     }
   ]
 });

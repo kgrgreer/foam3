@@ -2761,6 +2761,20 @@ p({
   """
 })
 
+p({
+"class":"foam.nanos.script.Script",
+"id":"AFEX Beneficiary Migration",
+"description":"Adds currency to existing AFEX Beneficiaries",
+"lastRun":"2021-05-05T21:30:32.216Z",
+"lastDuration":1272,
+"status":1,
+"code":
+"""import foam.dao.DAO;\u000Aimport foam.dao.ArraySink;\u000Aimport net.nanopay.fx.afex.AFEXBeneficiary;\u000Aimport foam.nanos.auth.User;\u000Aimport net.nanopay.bank.BankAccount;\u000Aimport net.nanopay.fx.afex.AFEXService;\u000Aimport net.nanopay.fx.afex.FindBeneficiaryRequest;\u000Aimport net.nanopay.fx.afex.FindBeneficiaryResponse;\u000A\u000AafexBeneficiaryDAO = (DAO) x.get("afexBeneficiaryDAO");\u000AaccountDAO = (DAO) x.get("localAccountDAO");\u000AuserDAO = (DAO) x.get("localUserDAO");\u000AafexService = (AFEXService) x.get("afexService");\u000A\u000AinstantPaymentCredential = "";\u000AafexBeneficiaries = (afexBeneficiaryDAO.select(new ArraySink())).getArray();\u000A\u000Afor( AFEXBeneficiary afexBeneficiary : afexBeneficiaries ) {\u000A  if ( ! afexBeneficiary.getIsInstantBeneficiary() ) {\u000A    user = (User) userDAO.find(afexBeneficiary.getContact());\u000A    account = (BankAccount) user.findBankAccount(x);\u000A    afexBeneficiary = afexBeneficiary.fclone();\u000A    afexBeneficiary.setCurrency(account.getDenomination());\u000A    afexBeneficiaryDAO.put(afexBeneficiary);\u000A  }\u000A  else {\u000A    user = (User) userDAO.find(afexBeneficiary.getOwner());\u000A    findBeneficiaryRequest = new FindBeneficiaryRequest();\u000A    findBeneficiaryRequest.setVendorId(afexBeneficiary.getVendorId());\u000A    findBeneficiaryRequest.setClientAPIKey(instantPaymentCredential);\u000A    FindBeneficiaryResponse beneficiaryResponse = null;\u000A    try {\u000A      beneficiaryResponse = afexService.findBeneficiary(findBeneficiaryRequest, user.getSpid());\u000A      afexBeneficiary = afexBeneficiary.fclone();\u000A      afexBeneficiary.setCurrency(beneficiaryResponse.getCurrency());\u000A      afexBeneficiaryDAO.put(afexBeneficiary);\u000A    } catch(Throwable t) {\u000A      print("A beneficiary does not exist for: " + afexBeneficiary.getId());\u000A    }\u000A  }\u000A}\u000Aprint("done");\u000A""",
+"output":
+"""done\u000A""",
+"lastModifiedBy":1348,
+"lastModified":"2021-05-05T21:30:30.941Z"
+})
 
 p({
   class:"foam.nanos.script.Script",
@@ -2798,7 +2812,6 @@ put("554af38a-8225-87c8-dfdf-eeb15f71215e-18","crunch.onboarding.general-admissi
 put("242B00F8-C775-4899-AEBA-F287EC54E901","crunch.onboarding.treviso.general-admission");
 put("554af38a-8225-87c8-dfdf-eeb15f71215e-19","crunch.onboarding.user-registration");
 put("554af38a-8225-87c8-dfdf-eeb15f71215f-76","crunch.onboarding.register-business");
-put("554af38a-8225-87c8-dfdf-eeb15f71215f-76.submit","crunch.onboarding.register-business.submit");
 put("520a4120-3bc6-cef9-6635-c32af8219a6a","payment.source.country.br");
 put("63049307-8db4-2437-5c02-b71d6878263c","payment.target.country.br");
 put("688cb7c6-7316-4bbf-8483-fb79f8fdeaaf","crunch.onboarding.br.business-identification");
@@ -2809,7 +2822,7 @@ put("7e2739cc-db32-11ea-87d0-0242ac130003","crunch.onboarding.document.annual-fi
 put("85cee1de-db32-11ea-87d0-0242ac130003","crunch.onboarding.document.utility-bills");
 put("8ad3c898-db32-11ea-87d0-0242ac130003","crunch.onboarding.document.identification");
 put("8ad3c898-db232-1ea-87d0-0242ac130z0","crunch.onboarding.document.date-of-issue");
-put("8ad3c898-db232-1ea-87d0-0242ac130z0-bepay","crunch.onboarding.document.bepay.date-of-issue");
+put("8ad3c898-db232-1ea-87d0-0242ac130z0-br","crunch.onboarding.document.br.date-of-issue");
 put("D423CDC6-6BDA-4A84-B5AE-71B4C503AD30","crunch.onboarding.document.afex.third-party-terms-and-conditions");
 put("F1359801-7D71-4F30-8D36-531B4A674981","crunch.onboarding.business-director-list");
 put("6DD8D005-7514-432D-BC32-9C5D569A0462","crunch.onboarding.business-owner-list");
@@ -2839,7 +2852,7 @@ put("2869DB5B-0AFE-4113-8EF7-5E5B6B8BB4AC","paymentprovidercorridor.bepay.br-us"
 put("5B9EE768-4B35-493C-A356-FEC306235AB7","paymentprovidercorridor.bepay.br-ca");
 put("2DCB6488-A880-49F5-9973-CABDDDDD017A","paymentprovidercorridor.bepay.br-gb");
 put("E55A5CFE-6EA1-40EC-929A-E6E374349A79","paymentprovidercorridor.bepay.br-pt");
-put("fb7d3ca2-62f2-4caf-a84c-860392e46bepay","crunch.onboarding.bepay.cpf");
+put("fb7d3ca2-62f2-4caf-a84c-860392e46br","crunch.onboarding.br.cpf");
 put("554af38a-8225-87c8-dfdf-eeb15f71215f-7-br","crunch.onboarding.br.business-ownership");
 put("F9c7ce45-c076-4f55-93d2-867c011ee6ca","paymentprovidercorridor.treviso.br-us");
 put("Ddcdada6-90de-4729-aa22-94a60b629faf","paymentprovidercorridor.treviso.br-de");
@@ -3124,4 +3137,55 @@ padCaptureDAO.select(referenceSink(padCaptureDAO));
 
 print("finished");
 """
+})
+
+p({
+"class":"foam.nanos.script.Script",
+"id":"TED-notification-text-migration",
+"description":"Remove TED text from invoice note and set it to tedText property",
+"code":
+"""
+import foam.dao.DAO;
+import foam.dao.ArraySink;
+import net.nanopay.invoice.model.Invoice;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+invoiceDAO = (DAO) x.get("invoiceDAO");
+
+invoices = ((ArraySink) invoiceDAO.select(new ArraySink())).getArray();
+
+for (invoice : invoices) {
+	if (invoice.getNote().isEmpty() || !invoice.getTedText().isEmpty()) continue;
+
+	// find ted text from invoice note
+	tedTextStart = invoice.getNote().lastIndexOf("ATENÇÃO : Esta transação ainda não foi enviada!");
+
+	// move ted text from invoice.note to invoice.tedText if the text exists
+	if (tedTextStart > -1) {
+		// get amount from ted text
+		pattern = Pattern.compile("\\\\(([^\\\\)]*)\\\\)");
+   	matcher = pattern.matcher(invoice.getNote());
+
+    amount = "";
+   	if (matcher.find()) {
+   		amount = matcher.group(1);
+   	}
+
+   	// remove ted text from invoice.note
+		invoice.setNote(invoice.getNote().substring(0, tedTextStart).trim());
+
+		// set ted text to invoice.tedText
+		tedText = net.nanopay.partner.treviso.invoice.TrevisoNotificationRule.TED_TEXT_MSG;
+
+		tedText = tedText.replace("{amount}", amount);
+		invoice.setTedText(tedText);
+
+		invoiceDAO.put(invoice);
+  }
+}
+
+print("done");
+"""
 });
+

@@ -375,7 +375,7 @@ foam.CLASS({
       name: 'canReconcile',
       documentation: `This boolean is a check for invoice ability to reconcile.`,
       expression: function(invoice$payeeReconciled, invoice$payerReconciled, invoice$status, isPayable) {
-       return invoice$status === this.InvoiceStatus.PAID &&
+        return invoice$status === this.InvoiceStatus.PAID &&
           (( ! invoice$payerReconciled && isPayable ) ||
           ( ! invoice$payeeReconciled && ! isPayable ));
       }
@@ -386,7 +386,7 @@ foam.CLASS({
       documentation: `This boolean is a check for receivable invoices that are completed from a user's perspective but money is yet to be fully transfered.
       Depspite the current requirements requiring this, the current(Jan 2019) implementation does not have this scenerio possible.`,
       expression: function(invoice$status, isPayable) {
-       return ! isPayable &&
+        return ! isPayable &&
         ( invoice$status === this.InvoiceStatus.PENDING_APPROVAL ||
           invoice$status === this.InvoiceStatus.SCHEDULED ||
           invoice$status === this.InvoiceStatus.UNPAID ||
@@ -507,7 +507,6 @@ foam.CLASS({
 
     function initE() {
       var self = this;
-      var isBillingInvoice = net.nanopay.invoice.model.BillingInvoice.isInstance(this.invoice);
 
       this
         .addClass(this.myClass())
@@ -615,7 +614,7 @@ foam.CLASS({
                 if ( ! relatedTransaction ) return;
                 return this.E()
                   .start({
-                    class: 'net.nanopay.tx.SummaryTransactionCitationView',
+                    class: 'net.nanopay.tx.InvoiceSummaryTransactionCitationView',
                     data: relatedTransaction,
                     processingDate: this.invoice.processingDate,
                     showTransactionDetail: true

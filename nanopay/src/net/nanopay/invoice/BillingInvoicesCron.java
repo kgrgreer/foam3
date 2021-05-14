@@ -156,7 +156,7 @@ public class BillingInvoicesCron implements ContextAgent {
           INSTANCE_OF(ComplianceTransaction.class)
         ));
         if ( ct != null && ct.getStatus() != TransactionStatus.COMPLETED ) {
-          return; 
+          return;
         }
 
         Account sourceAccount = transaction.findSourceAccount(x);
@@ -178,7 +178,7 @@ public class BillingInvoicesCron implements ContextAgent {
 
         // Prevent charging fee on billing invoice transaction
         if ( transaction.findInvoiceId(x) instanceof BillingInvoice
-          || transaction.getDestinationAccount() == destinationAccount_.getId()
+          || transaction.getDestinationAccount().equals(destinationAccount_.getId() )
         ) {
           return;
         }
