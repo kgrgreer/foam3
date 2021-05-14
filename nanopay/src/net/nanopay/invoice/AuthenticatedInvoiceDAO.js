@@ -43,9 +43,19 @@ foam.CLASS({
 
   constants: [
     {
+      name: 'INVOICE_CREATE',
+      type: 'String',
+      value: 'invoice.create'
+    },
+    {
       name: 'GLOBAL_INVOICE_READ',
       type: 'String',
       value: 'invoice.read.*'
+    },
+    {
+      name: 'GLOBAL_INVOICE_UPDATE',
+      type: 'String',
+      value: 'invoice.update.*'
     },
     {
       name: 'GLOBAL_INVOICE_DELETE',
@@ -60,7 +70,12 @@ foam.CLASS({
     { name: 'NO_INVOICE_ERROR_MSG', message: 'Invoice doesn\'t exist' },
     { name: 'DELETE_INVOICE_ERROR_MSG', message: 'Only invoice drafts can be deleted' },
     { name: 'DELETE_INVOICE_ERROR_MSG2', message: 'You can only delete invoices that you created' },
-    { name: 'NULL_INVOICE_ERROR_MSG', message: 'Cannot put null' }
+    { name: 'NULL_INVOICE_ERROR_MSG', message: 'Cannot put null' },
+    { name: 'UPDATE_INVOICE_PERMISSION_ERR', message: 'You do not have permission to update this invoice' },
+    { name: 'READ_INVOICE_PERMISSION_ERR', message: 'You do not have permission to view this invoice' },
+    { name: 'NOT_A_CONTACT_ERR', message: 'Cannot send to non-contact' },
+    { name: 'INVOICE_REMOVED_ERR', message: 'The invoice has already been removed.' },
+    { name: 'NO_USER_ERR', messages: 'Cannot find user in context' }
   ],
 
   properties: [
@@ -86,17 +101,19 @@ foam.CLASS({
 
             public AuthenticatedInvoiceSink(X x, Sink delegate) {
               super(x, delegate);
-              user_ = ((Subject) x.get("subject")).getUser();
-              if ( user_ == null ) throw new AuthenticationException();
+              user_ = AuthenticatedInvoiceDAO.this.getUser(x);
             }
 
             @Override
             public void put(Object obj, foam.core.Detachable sub) {
               Invoice invoice = (Invoice) obj;
-              if ( isRelated(getX(), invoice) && ! ( invoice.getDraft() && invoice.getCreatedBy() != user_.getId() && ! invoice.getRemoved() ) &&
-                  ! ( invoice.getCreatedBy() != user_.getId() && invoice.getStatus() == InvoiceStatus.PENDING_APPROVAL && invoice.getPayeeId() == user_.getId()) &&
-                  ! ( invoice.getCreatedBy() != user_.getId() && invoice.getStatus() == InvoiceStatus.VOID ) &&
-                  ! ( invoice.getCreatedBy() != user_.getId() && invoice.getStatus() == InvoiceStatus.REJECTED ) ) {
+              if (
+                isRelated(getX(), user_.getId(), invoice) && 
+                ( invoice.getCreatedBy() == user_.getId() ||
+                  ! ( ( invoice.getStatus() == InvoiceStatus.PENDING_APPROVAL && invoice.getPayeeId() == user_.getId() ) ||
+                    invoice.getStatus() == InvoiceStatus.VOID ||
+                    invoice.getStatus() == InvoiceStatus.REJECTED ) ) &&
+                ! invoice.getRemoved() ) {
                 getDelegate().put(obj, sub);
               }
             }
@@ -110,63 +127,59 @@ foam.CLASS({
   methods: [
     {
       name: 'put_',
+      documentation: `
+        To create an invoice, the user must have the global invoice create permission, and be 'related' to the invoice via 
+        the isRelated method, and the other party of the invoice must be a contact of the user;
+        To update an invoice, the user must either have the global update permission, or be 'related' to the invoice with the
+        other party of the invoice being a contact of the user
+      `,
       javaCode: `
-        User user = this.getUser(x);
+        User user = getUser(x);
+
         Invoice invoice = (Invoice) obj;
 
         if ( invoice == null ) {
           throw new IllegalArgumentException(NULL_INVOICE_ERROR_MSG);
         }
-        // TODO temporary fix
-        String temp = invoice.getReferenceId();
 
-        // Check if the user has invoice.create permission
-        Invoice oldInvoice = (Invoice) getDelegate().find(obj);
-        if ( oldInvoice == null && ! getAuth().check(x, "invoice.create") ) {
+        // If creating a new invoice, user must have global invoice create permission
+        Invoice old = (Invoice) getDelegate().find(invoice.getId());
+        if ( old == null && ! getAuth().check(x, INVOICE_CREATE) )
           throw new AuthorizationException(CREATE_INVOICE_ERROR_MSG);
-        }
 
-        // Check if the user has global access permission.
-        if ( ! getAuth().check(x, GLOBAL_INVOICE_READ) ) {
-          Invoice existingInvoice = (Invoice) super.find_(x, invoice.getId());
+        // if updating an invoice, skip the following checks if user has the global update permission
+        if ( getAuth().check(x, GLOBAL_INVOICE_UPDATE) ) return getDelegate().put_(x, invoice);
 
-          // Disable updating reference id's
-          if ( existingInvoice != null && ! SafetyUtil.equals(invoice.getReferenceId(), existingInvoice.getReferenceId()) ) {
-            throw new AuthorizationException(UPDATE_REF_ID_ERROR_MSG);
-          }
+        // Do not allow updates to reference ID 
+        if ( old != null && ! SafetyUtil.equals(invoice.getReferenceId(), old.getReferenceId()) )
+          throw new AuthorizationException(UPDATE_REF_ID_ERROR_MSG);
 
-          // Check if the user is the creator of the invoice or existing invoice
-          if ( ! this.isRelated(x, invoice) || existingInvoice != null && ! this.isRelated(x, existingInvoice) ) {
-            throw new AuthorizationException();
-          }
-          // Check if invoice is draft,
-          if ( invoice.getDraft() ) {
-            // If invoice currently exists and is not created by current user -> throw exception.
-            if ( existingInvoice != null && (invoice.getCreatedBy() != user.getId()) ) {
-              throw new AuthorizationException();
-            }
-          }
-        }
-        // Whether the invoice exist or not, utilize put method and dao will handle it.
+        // Check that user is 'related' to invoice and other party of invoice is contact of the usere
+        if ( ! isRelated(x, user.getId(), invoice) )
+          throw new AuthorizationException(UPDATE_INVOICE_PERMISSION_ERR);
+        if ( ! otherPartyIsUserContact(x, user, invoice) )
+          throw new AuthorizationException(NOT_A_CONTACT_ERR);
+
         return getDelegate().put_(x, invoice);
       `
     },
     {
       name: 'find_',
+      documentation: `
+        To view an invoice, user must either 
+        - have the global read permission, or 
+        - be related to the invoice to be found, and the invoice must not have been removed
+      `,
       javaCode: `
-        User user = this.getUser(x);
+        User user = getUser(x);
         Invoice invoice = (Invoice) super.find_(x, id);
 
         if ( invoice != null && ! getAuth().check(x, GLOBAL_INVOICE_READ)) {
           // Check if user is related to the invoice
-          if ( ! this.isRelated(x, invoice) ) {
-            throw new AuthorizationException();
+          if ( ! this.isRelated(x, user.getId(), invoice) ) {
+            throw new AuthorizationException(READ_INVOICE_PERMISSION_ERR);
           }
-          // limiting draft invoice to those who created the invoice.
-          if ( invoice.getDraft() && ( invoice.getCreatedBy() != user.getId() ) ) {
-            throw new AuthorizationException();
-          }
-          // Return null if invoice is mark as removed.
+          // Return null if invoice is mark as removed
           if ( invoice.getRemoved() ) {
             return null;
           }
@@ -176,6 +189,11 @@ foam.CLASS({
     },
     {
       name: 'select_',
+      documentation: `
+        To select from the invoiceDAO, user must either 
+        - have the global read permission, or 
+        - be related to the invoice to be found, and the invoice must not have been removed
+      `,
       javaCode: `
         if ( getAuth().check(x, GLOBAL_INVOICE_READ) ) {
           return super.select_(x, sink, skip, limit, order, predicate);
@@ -214,7 +232,7 @@ foam.CLASS({
         }
 
         if ( invoice.getRemoved() ) {
-          throw new AuthorizationException();
+          throw new AuthorizationException(INVOICE_REMOVED_ERR);
         }
 
         return getDelegate().remove_(x, obj);
@@ -230,7 +248,7 @@ foam.CLASS({
       javaCode: `
         User user = ((Subject) x.get("subject")).getUser();
         if ( user == null ) {
-          throw new AuthenticationException();
+          throw new AuthenticationException(NO_USER_ERR);
         }
         return user;
       `
@@ -241,45 +259,34 @@ foam.CLASS({
       type: 'Boolean',
       args: [
         { type: 'Context', name: 'x' },
+        { type: 'Long', name: 'userId' },
         { type: 'Invoice', name: 'invoice' }
       ],
-      documentation: 'Determine if the user is payee or payer',
+      documentation: `
+        Determine if the user is related to the invoice, will return true if
+          - invoice is a draft created by user, or
+          - invoice is not draft, and user is a payee of payer of invoice
+      `,
       javaCode: `
-        User user = getUser(x);
-        long id = user.getId();
-        boolean isPayee = invoice.getPayeeId() == id;
-        boolean isPayer = invoice.getPayerId() == id;
-        List<Contact> contacts = getContactsWithEmail(x, user.getEmail());
-        if ( contacts != null ) {
-          for ( Contact contact : contacts ) {
-            if ( invoice.getPayeeId() == contact.getId() ) {
-              isPayee = true;
-            }
-            if ( invoice.getPayerId() == contact.getId() ) {
-              isPayer = true;
-            }
-          }
-        }
-        return  isPayee || isPayer;
+        boolean userIsPayeeOrPayer = invoice.getPayeeId() == userId || invoice.getPayerId() == userId;
+        boolean userIsCreator = invoice.getCreatedBy() == userId;
+
+        return userIsPayeeOrPayer && ( invoice.getDraft() && ! invoice.getRemoved()  ? userIsCreator : true );
       `
     },
     {
-      name: 'getContactsWithEmail',
+      name: 'otherPartyIsUserContact',
       visibility: 'protected',
-      javaType: 'List<Contact>',
+      type: 'Boolean',
       args: [
         { type: 'Context', name: 'x' },
-        { type: 'String', name: 'emailAddress' }
+        { type: 'User', name: 'user' },
+        { type: 'Invoice', name: 'invoice' }
       ],
+      documentation: 'Determine if other party of the invoice is a contact of initiating user',
       javaCode: `
-        if ( SafetyUtil.isEmpty(emailAddress) ) return null;
-        DAO contactDAO = (DAO) x.get("localContactDAO");
-        ArraySink contactsWithMatchingEmail = (ArraySink) contactDAO
-          .where(AND(
-            EQ(Contact.EMAIL, emailAddress),
-            INSTANCE_OF(Contact.class)))
-          .select(new ArraySink());
-        return contactsWithMatchingEmail.getArray();
+        long contactId = invoice.getPayeeId() == user.getId() ? invoice.getPayerId() : invoice.getPayeeId();
+        return user.getContacts(x).find_(x, contactId) != null;
       `
     }
   ]
