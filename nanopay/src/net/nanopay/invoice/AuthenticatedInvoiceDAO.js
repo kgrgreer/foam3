@@ -110,7 +110,7 @@ foam.CLASS({
               if (
                 isRelated(getX(), user_.getId(), invoice) && 
                 ( invoice.getCreatedBy() == user_.getId() ||
-                  ! ( ( invoice.getStatus() == InvoiceStatus.PENDING_APPROVAL && invoice.getPayeeId() == user_.getId() ) ||
+                  ! ( invoice.getStatus() == InvoiceStatus.PENDING_APPROVAL && invoice.getPayeeId() == user_.getId() ||
                     invoice.getStatus() == InvoiceStatus.VOID ||
                     invoice.getStatus() == InvoiceStatus.REJECTED ) ) &&
                 ! invoice.getRemoved() ) {
@@ -291,4 +291,3 @@ foam.CLASS({
     }
   ]
 });
-
