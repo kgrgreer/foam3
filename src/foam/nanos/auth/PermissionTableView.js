@@ -177,6 +177,10 @@ foam.CLASS({
           checked: true
         });
 
+        data.checked$.sub(function() {
+          self.updateGroup(p, g, data.checked$, self);
+        });
+
         this.gpMap[key] = data;
       });
 
@@ -407,7 +411,8 @@ foam.CLASS({
         dao.put(obj);
       } else {
         // Remove permission
-        dao.remove(obj);      }
+        dao.remove(obj);
+      }
     }
   ],
 
