@@ -640,7 +640,7 @@ foam.CLASS({
           bank: this
         }));
       }
-    }
+    },
     {
       name: 'setAsDefault',
       section: 'contextMenuActions',
