@@ -272,18 +272,6 @@ foam.CLASS({
       `,
       tableCellFormatter: function(_, obj) {
         this.start()
-          .add(obj.slot((branch, branchDAO) => {
-            return branchDAO.find(branch).then((result) => {
-              if ( result ) {
-                return this.E()
-                  .start('span').style({ 'font-weight': '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('branch').label}`).end()
-                  .start('span').add(` ${result.branchId} |`).end();
-              }
-            });
-          }))
-        .end()
-
-        .start()
           .add(obj.slot((accountNumber) => {
               if ( accountNumber ) {
                 return this.E()
@@ -371,7 +359,6 @@ foam.CLASS({
       name: 'bankRoutingCode',
       javaPostSet: `
         if ( val != null && BRANCH_ID_PATTERN.matcher(val).matches() ) {
-          clearBranch();
           setBranchId(val);
         }
       `

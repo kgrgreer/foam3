@@ -42,10 +42,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'branchDAO',
     'capabilityDAO',
     'countryDAO',
-    'institutionDAO',
     'sourceCorridorDAO',
     'targetCorridorDAO'
   ],
@@ -369,7 +367,7 @@ foam.CLASS({
       gridColumns: 6,
       documentation: `International bank code that identifies banks worldwide. BIC/SWIFT`,
       updateVisibility: 'RO',
-      storageTransient: true,
+      // storageTransient: true,
       view: {
         class: 'foam.u2.tag.Input',
         onKey: true
@@ -385,7 +383,7 @@ foam.CLASS({
       section: 'accountInformation',
       order: 130,
       gridColumns: 6,
-      storageTransient: true,
+      // storageTransient: true,
       view: {
         class: 'foam.u2.tag.Input',
         onKey: true
@@ -645,31 +643,31 @@ foam.CLASS({
         }));
       }
     },
-    {
-      name: 'edit',
-      section: 'contextMenuActions',
-      isAvailable: function() {
-        return ! this.verifiedBy
-      },
-      code: async function(X) {
-        var self = this.__subContext__;
-        self.accountDAO.cmd_(this, this.PurgeRecordCmd.create({ id: this.id }));
-        var account = await self.accountDAO.find(this.id);
-        self.ctrl.add(this.SMEModal.create().addClass('bank-account-popup')
-          .startContext({ controllerMode: this.ControllerMode.EDIT })
-            .tag({
-              class: 'net.nanopay.account.ui.BankAccountWizard',
-              data: account,
-              useSections: ['clientAccountInformation', 'pad'],
-              config: {
-                id: { updateVisibility: 'HIDDEN' },
-                summary: { updateVisibility: 'HIDDEN' }
-              }
-            })
-          .endContext()
-          );
-      }
-    },
+    // {
+    //   name: 'edit',
+    //   section: 'contextMenuActions',
+    //   isAvailable: function() {
+    //     return ! this.verifiedBy
+    //   },
+    //   code: async function(X) {
+    //     var self = this.__subContext__;
+    //     self.accountDAO.cmd_(this, this.PurgeRecordCmd.create({ id: this.id }));
+    //     var account = await self.accountDAO.find(this.id);
+    //     self.ctrl.add(this.SMEModal.create().addClass('bank-account-popup')
+    //       .startContext({ controllerMode: this.ControllerMode.EDIT })
+    //         .tag({
+    //           class: 'net.nanopay.account.ui.BankAccountWizard',
+    //           data: account,
+    //           useSections: ['clientAccountInformation', 'pad'],
+    //           config: {
+    //             id: { updateVisibility: 'HIDDEN' },
+    //             summary: { updateVisibility: 'HIDDEN' }
+    //           }
+    //         })
+    //       .endContext()
+    //       );
+    //   }
+    // },
     {
       name: 'setAsDefault',
       section: 'contextMenuActions',
@@ -688,26 +686,26 @@ foam.CLASS({
         this.purgeCachedDAOs();
       }
     },
-    {
-      name: 'delete',
-      section: 'contextMenuActions',
-      code: function(X) {
-        if ( this.isDefault ) {
-          this.notify(this.DELETE_DEFAULT, '', this.LogLevel.ERROR, true);
-          return;
-        }
+    // {
+    //   name: 'delete',
+    //   section: 'contextMenuActions',
+    //   code: function(X) {
+    //     if ( this.isDefault ) {
+    //       this.notify(this.DELETE_DEFAULT, '', this.LogLevel.ERROR, true);
+    //       return;
+    //     }
 
-        this.deleted = true;
-        this.status = this.BankAccountStatus.DISABLED;
+    //     this.deleted = true;
+    //     this.status = this.BankAccountStatus.DISABLED;
 
-        this.__subContext__.ctrl.add(this.Popup.create().tag({
-          class: 'foam.u2.DeleteModal',
-          dao: this.subject.user.accounts,
-          data: this,
-          label: this.name
-        }));
-      }
-    }
+    //     this.__subContext__.ctrl.add(this.Popup.create().tag({
+    //       class: 'foam.u2.DeleteModal',
+    //       dao: this.subject.user.accounts,
+    //       data: this,
+    //       label: this.name
+    //     }));
+    //   }
+    // }
   ],
 
   static: [
@@ -842,12 +840,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        var code = new StringBuilder();
-        var institution = findInstitution(x);
-        if ( institution != null ) {
-          code.append(institution.getInstitutionNumber());
-        }
-        return code.toString();
+        return getInstitutionNumber();
       `
     },
     {
@@ -859,12 +852,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        var code = new StringBuilder();
-        var branch = findBranch(x);
-        if ( branch != null ) {
-          code.append(branch.getBranchId());
-        }
-        return code.toString();
+        return getBranchId();
       `
     },
     {

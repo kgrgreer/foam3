@@ -258,27 +258,6 @@ public class BankVerificationTest
       .build()
     );
 
-    Institution institution = new Institution();
-    DAO institutionDAO = (DAO) x_.get("institutionDAO");
-    List institutions = ((ArraySink) institutionDAO
-        .where(
-            EQ(Institution.INSTITUTION_NUMBER, user2USBankAccount.getInstitutionNumber())
-        )
-        .select(new ArraySink())).getArray();
-
-    if (institutions.isEmpty()) {
-      institution = new Institution();
-      institution.setName("AFEX Test institution");
-      institution.setInstitutionNumber(user2USBankAccount.getInstitutionNumber());
-      institution.setSwiftCode("22344421314124435333");
-      institution.setCountryId("CA");
-      institution = (Institution) institutionDAO.put(institution);
-    } else {
-      institution = (Institution) institutions.get(0);
-    }
-    user2USBankAccount.setInstitution(institution.getId());
-    user1CABankAccount.setInstitution(institution.getId());
-
     accDAO.put(user1CABankAccount);
     accDAO.put(user2USBankAccount);
 
