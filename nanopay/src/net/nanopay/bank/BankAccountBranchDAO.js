@@ -94,7 +94,6 @@ previously:
             bankAccount.setBranchId(branch.getBranchId());
             return bankAccount;
           }
-          // getLogger().debug("Branch not found", bankAccount.getBranch(), "account", bankAccount.getId());
         }
         return fObject;
       `

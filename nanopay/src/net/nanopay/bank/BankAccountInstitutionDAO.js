@@ -98,9 +98,6 @@ previously:
               bankAccount.setInstitutionNumber(institution.getInstitutionNumber());
               return bankAccount;
             }
-          //   getLogger().debug("Institution not found", branch.getInstitution(), "account", bankAccount.getId());
-          // } else {
-          //   getLogger().debug("Branch not found", bankAccount.getBranch(), "account", bankAccount.getId());
           }
         }
         return fObject;
