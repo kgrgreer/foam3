@@ -179,17 +179,25 @@ return ret;`
         }
       ],
       javaCode: `
-for ( Object key : sink.getGroupKeys() ) {
-  RuleGroup rg = (RuleGroup) ((DAO) x.get("ruleGroupDAO")).find(key);
-  if ( rg == null ) {
-    ((foam.nanos.logger.Logger) x.get("logger")).error("RuleGroup not found.", key);
-  } else if ( rg.f(x, obj, oldObj) ) {
-    List<Rule> group = ((ArraySink) sink.getGroups().get(key)).getArray();
-    var rules = enforceSpid(x, obj, group);
-    if ( ! rules.isEmpty() ) {
-      new RuleEngine(x, getX(), this).execute(rules, obj, oldObj);
+var groupIds = new java.util.ArrayList(sink.getGroupKeys());
+((DAO) x.get("ruleGroupDAO"))
+  .where(IN(RuleGroup.ID, groupIds))
+  .select(new AbstractSink() {
+    @Override
+    public void put(Object o, Detachable s) {
+      var rg = (RuleGroup) o;
+      if ( rg.f(x, obj, oldObj) ) {
+        var rules = ((ArraySink) sink.getGroups().get(rg.getId())).getArray();
+        if ( ! rules.isEmpty() ) {
+          new RuleEngine(x, RulerDAO.this.getX(), RulerDAO.this).execute(rules, obj, oldObj);
+        }
+      }
+      groupIds.remove(rg.getId());
     }
-  }
+  });
+
+if ( ! groupIds.isEmpty() ) {
+  ((foam.nanos.logger.Logger) x.get("logger")).error("RuleGroup not found.", groupIds);
 }`
     },
     {
