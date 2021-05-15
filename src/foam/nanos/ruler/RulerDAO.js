@@ -201,35 +201,6 @@ if ( ! groupIds.isEmpty() ) {
 }`
     },
     {
-      name: 'enforceSpid',
-      type: 'List<Rule>',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'obj', type: 'FObject' },
-        { name: 'rules', type: 'List<Rule>' }
-      ],
-      javaCode: `
-        return rules.stream()
-          .filter(rule -> rule.isGlobalSpid() || isSpidMatched(x, rule, obj))
-          .collect(Collectors.toList());
-      `
-    },
-    {
-      name: 'isSpidMatched',
-      type: 'boolean',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'rule', type: 'Rule' },
-        { name: 'obj', type: 'FObject' }
-      ],
-      documentation: 'Send a ServiceProviderAwareSupport action command to the DAO for spid matching test.',
-      javaCode: `
-        var result = getDelegate().cmd_(x.put("OBJ", obj),
-          new ServiceProviderAwareSupport(rule.getSpid()));
-        return result instanceof Boolean ? (boolean) result : true;
-      `
-    },
-    {
       name: 'updateRules',
       args: [
         {
