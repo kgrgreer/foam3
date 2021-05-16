@@ -338,7 +338,7 @@ This is the heart of Medusa.`,
               // If stalled on nextIndex and nextIndex + 1 exists and has consensus, test if nextIndex exists in nodes, if not, skip.
               if ( nextIndex == replaying.getIndex() + 1 &&
                    ( replaying.getReplaying() ||
-                     ( System.currentTimeMillis() - nextIndexSince ) > 10000 ) ) {
+                     ( System.currentTimeMillis() - nextIndexSince ) > 1000 ) ) {
                 gap(x, nextIndex, nextIndexSince);
               }
             }
@@ -635,8 +635,8 @@ During replay gaps are treated differently; If the index after the gap is ready 
             // REVIEW: This is quick and dirty.
             // look ahead, keep reducing threshold over time
             Long lookAheadThreshold = 10L;
-            Long minutes = (long) (System.currentTimeMillis() - since) / (1000 * 60);
-            lookAheadThreshold = Math.max(1, lookAheadThreshold - minutes);
+            Long t = (long) (System.currentTimeMillis() - since) / 1000;
+            lookAheadThreshold = Math.max(1, lookAheadThreshold - t);
 
             if ( ((Long)dependencies.getValue()).intValue() == 0 &&
                  ((Long)lookAhead.getValue()).intValue() > lookAheadThreshold ) {
