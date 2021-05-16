@@ -599,7 +599,7 @@ foam.CLASS({
 
     .application-stack {
       height: calc(100vh - 120px);
-      margin-top: 55px;
+      margin-top: 56px;
       overflow: auto;
     }
 
@@ -852,7 +852,6 @@ foam.CLASS({
     }
     .foam-u2-view-LoginView .foam-u2-borders-SplitScreenBorder {
       padding-top: 75px;
-      height: calc(100vh - 140px);
     }
     .foam-u2-filter-FilterSearch-container-search {
       width: 857px;
