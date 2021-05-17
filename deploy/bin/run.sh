@@ -3,7 +3,7 @@
 
 HOST_NAME=`hostname -s`
 NANOPAY_HOME=/opt/nanopay
-WEB_PORT=8080
+WEB_PORT=
 DEBUG_PORT=8000
 DEBUG_SUSPEND=n
 DEBUG_DEV=0
@@ -98,7 +98,9 @@ fi
 
 JAVA_OPTS="${JAVA_OPTS} -Dresource.journals.dir=journals"
 JAVA_OPTS="${JAVA_OPTS} -Dhostname=${HOST_NAME}"
-JAVA_OPTS="${JAVA_OPTS} -Dhttp.port=${WEB_PORT}"
+if [ -z "`echo "${JAVA_OPTS}" | grep "http.port"`" ] && [ ! -z ${WEB_PORT} ]; then
+    JAVA_OPTS="${JAVA_OPTS} -Dhttp.port=${WEB_PORT}"
+fi
 JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=${NANOPAY_HOME}"
 JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=${JOURNAL_HOME}"
 JAVA_OPTS="${JAVA_OPTS} -DDOCUMENT_HOME=${DOCUMENT_HOME}"

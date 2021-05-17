@@ -1,53 +1,53 @@
 <title>Platform Overview</title>
-<h2>NANOPAY DIGITAL CASH PLATFORM</h2>
+<h1>NANOPAY DIGITAL CASH PLATFORM</h1>
 
 <a name="intro"></a>
-<h4>Introduction</h4>
+<h2>Introduction</h2>
 <p>nanopay is a financial market infrastructure (FMI) platform that enables central banks, banks, businesses and government agencies to securely store & transfer digital fiat between parties instantly. The platform allows real time transaction settlement with data-rich payments. It effectively creates virtual immutable ledgers that can transfer value in one or multiple currencies in real time. Transactions support ISO 20022 and can be integrated directly into accounting ledgers for both accounting and regulatory capital calculations.</p>
 <p>The nanopay system uses a novel in-memory data architecture, coupled with an append-only transaction journal, to achieve extremely high transaction throughput and very low settlement latency. Since the system is designed for handling financial transactions it is designed to deliver high degrees of both security and resilience. Transactions are irrevocable, incontestable and demonstrate finality of settlement. It ensures that settlement can only complete when sufficient funds are available. In addition, the system is able to achieve an unprecedented level of performance, an exceptional level of availability and high degrees of resilience against both platform failures and deliberate attacks.</p>
 <p>It is important to point out that nanopay platform is not a cryptocurrency nor does it create new value. Since the nanopay system represents digital fiat currency, value may be transferred into the system or out of the system, but it is not created in the system in the way that it is in many cryptocurrency systems. Furthermore, the nanopay system is built on the principle that a single authority will be the final arbiter of whether a transaction has completed or not.</p>
 
 <a name="architecture"></a>
-<h4>Architecture</h4>
+<h2>Architecture</h2>
 <p>Originally designed by the Royal Canadian Mint, the nanopay platform enables value to move from one user to another safely and securely on premise or in the cloud. Our patented technology uses a centralized model, which means there is one official book of record making it faster, easier to deploy, and more scalable than any blockchain solution.</p>
 <p>There are many parts to the nanopay system but at its heart the two components that embody the central authority are the transaction ledger and the transaction engine. These components make up the immutable ledger technology that drives frictionless payments for nanopay's different use cases. Users and accounts are also key concepts of the platform which are worth highlighting. Users are the entities that interact with the system and accounts are the containers that hold value within the system. These components taken together with many others in the system create one of the highest capacity payment engines in the world.</p>
 <p>From an implementation point of view, the nanopay architecture is purpose built to enable easy integration and horizontal scalability. Today nanopay has over 140 nano-services that create a rich loosely-coupled, highly-configurable and easily extensible payment platform to support a broad range of solutions.</p>
 <img src="/nanopay/src/net/nanopay/images/nanos-architecture.png" height="400px" width="1000px"/>
 
 <a name="concepts"></a>
-<h4>Key Concepts</h4>
-<h4>Users</h4>
+<h2>Key Concepts</h2>
+<h3>Users</h3>
 <p>In the nanopay platform, a user can be a human or a legal entity (e.g. department, organization, etc). Users can be authorized to perform specific operations or access certain services, views or actions. A digital account is created and associated to a user when a new user is created within the system. The transfer of digital cash can then occur between users or accounts.</p>
 
-<h4>Accounts</h4>
+<h3>Accounts</h3>
 <p>In the nanopay platform, accounts accept customer financial assets, e.g. digital cash, and hold them on behalf of the user. To support the digital cash platform, two types of accounts are provided - a bank account and a digital cash account. Bank accounts represent the user's actual bank accounts, enabling money flow in and out of the nanopay platform. Digital cash accounts hold fully collateralized representations of digital cash and enables users to transfer digital cash in real time.</p>
 
-<h4>Group</h4>
+<h3>Group</h3>
 <p>Groups indicate and are responsible for providing users with a permission set allowing them access to permitted components in the platform. Users are assigned to a default group on create but can be moved to another group at the discretion of a user with the authority. A user can belong to one group only. A group is set with permissions and exists within the permission matrix of the system. Groups are useful for granting identical permissions to a subset of users.</p>
 
-<h4>Transaction Ledger</h4>
+<h3>Transaction Ledger</h3>
 <p>As with most transaction processing architectures, at the heart of the system is a ledger of all the transactions that have occurred to bring the system to its current state. In the case of the nanopay system however, the ledger is not simply an audit trail; it is the definitive store of data.</p>
 <p>In order to ensure resilience against failure, the ledger can be replicated in multiple locations. When replication is used one system acts as the `master' and the other systems operate as `copy' working in lock-step as active standbys, processing the same transactions and keeping the same ledger.</p>
 <p>Since it is impractical to have to reexamine the entire transaction history before executing each transaction, the relevant current state of the system is replicated in memory. Since all instances of the system execute the same sequence of transactions they all retain the same state internally. If any instance of the system ever fails (or is deliberately shut down) then when it restarts the internal state can be recreated by executing the entire history again. The system is also capable of saving its entire current state as a snapshot and recording this along side, but bound into the ledger, along with the transactional information. By doing so a newly started system only needs to reload the most recently saved snapshot and then execute the transactions that were recorded after the last snapshot. The transaction engine Tightly coupled to the transaction ledger is the transaction engine. This embodies the logic that determines if a transaction can added to the ledger and if so, what change of state results from doing so. The engine must decide if a transaction is properly authorised and if all of the requirements for the transaction have been met.</p>
 <p>Once a transaction has been authorised it is not possible for the authorisers to make any plausible claim that they did not authorise the transaction. If there is a reason to undo a transaction then this needs to be done by issuing another (properly authorised) reverse transaction. A transaction can process multiple currencies in a single atomic transaction.</p>
 
-<h4>Data Integration Gateway (DIG)</h4>
+<h3>Data Integration Gateway (DIG)</h3>
 <p>The nanopay administrative portal provides a visual interface for creating and testing API calls, supporting CRUD operations: <a href="#dig">DIG</a></p>
 
-<h4>Data Update Gateway (DUG) Interface</h4>
+<h3>Data Update Gateway (DUG) Interface</h3>
 <p>The nanopay administrative portal provides a visual interface for creating event listeners and webhooks directed at an external API/server: <a href="#dug">DUG</a></p>
 
 <a name="services"></a>
-<h4>Service Types</h4>
+<h2>Service Types</h2>
 <p>Services play multiple roles within the nanopay system. Available services can be categorized into either of 2 types, interface service or DAO services.</p>
 
-<h4>DAO Services</h4>
+<h3>DAO Services</h3>
 <p>Services without any specified label are Data access objects (DAO) which store information on the system, whether it be in memory or in journal files. These DAOs are further extended with features using decorators. The service call is unable to dictate the functionality of the decorators unless the appropriate values contained within the dataobject exist. Most DAOs require authentication and appropriate permissions enabled on the user to access and utilize.</p>
 
-<h4>Interface Services</h4>
+<h3>Interface Services</h3>
 <p>Services labelled as Interface have methods that take in arguments which process calls accordingly. Example: The “exchangeRate” service has a method “getFromSource” which requires a targetCurrency (ex: ‘CAD’), sourceCurrency (ex: ‘INR), amount (ex: 1). As a response, the service will return an object containing fields correlating to the arguments provided and providing exchange rates retrieved from the DAOs and/or third party sources. (Currently Unsupported)</p>
 
 <a name="requests-responses"></a>
-<h4>Requests and Responses</h4>
+<h2>Requests and Responses</h2>
 <p>API request and response bodies are JSON encoded. Each requests must be authenticated to be accepted and processed. Required properties are shown in the API reference which contains example service calls.</p>
 <p>Queries follow the MQL Query Language, which is a generic google-like query-language. For further information, see <a href="https://github.com/foam-framework/foam/wiki/MQL---Query-Language">the MQL documentation</a> on GitHub.</p>

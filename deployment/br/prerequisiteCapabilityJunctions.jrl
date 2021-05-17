@@ -39,10 +39,7 @@ p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-services", targetId:"crunch.onboarding.document.br.contract" })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.technical-services", targetId:"crunch.onboarding.document.br.signed-commercial-invoice" })
 
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.import-goods", targetId:"crunch.onboarding.br.expected-shipment-date",  priority: 18})
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.import-goods-draw-back", targetId:"crunch.onboarding.br.expected-shipment-date",  priority: 18})
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.import-goods-anticipated", targetId:"crunch.onboarding.br.expected-shipment-date",  priority: 18})
-p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.import-goods-prazo", targetId:"crunch.onboarding.br.expected-shipment-date",  priority: 18})
 
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.minmax.requirement", targetId:"naturecode.br.import-goods-prazo", priority: 17 })
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"naturecode.br.import-goods-prazo", targetId:"naturecode.br.minmax.import-goods-prazo", priority: 17 })
@@ -90,11 +87,4 @@ p({
   sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
   targetId:"crunch.onboarding.document.afex.third-party-terms-and-conditions",
   priority:4
-})
-
-// cpf - date of issue
-p({
-  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"crunch.onboarding.br.cpf",
-  targetId:"crunch.onboarding.document.br.date-of-issue"
 })

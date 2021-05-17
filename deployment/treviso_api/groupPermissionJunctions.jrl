@@ -31,3 +31,8 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"trevisoAPI-api-
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"trevisoAPI-fraud-ops","targetId":"menu.read.switch-user"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"trevisoAPI-payment-ops","targetId":"menu.read.switch-user"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"trevisoAPI-support","targetId":"menu.read.switch-user"})
+
+// See Menus - moved off parent
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"trevisoAPI-fraud-ops",targetId:"menu.read.bankaccounts"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"trevisoAPI-fraud-ops",targetId:"menu.read.integration"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"trevisoAPI-fraud-ops",targetId:"menu.read.transactions"})

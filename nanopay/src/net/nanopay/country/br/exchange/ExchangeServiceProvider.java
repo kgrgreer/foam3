@@ -357,6 +357,7 @@ public class ExchangeServiceProvider
     dadosBoleto.setCNPJPCPFCLIENTE(formattedCpfCnpj); // eg 10786348070
 
     Date completionDate = transaction.getCompletionDate();
+    Date transactionDate = new Date();
     if ( completionDate == null ) {
       ClearingTimeService clearingTimeService = (ClearingTimeService) getX().get("clearingTimeService");
       completionDate = clearingTimeService.estimateCompletionDateSimple(getX(), transaction);
@@ -364,13 +365,15 @@ public class ExchangeServiceProvider
 
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     String completionDateString = "";
+    String transactionDateString = "";
     try {
       completionDateString = sdf.format(completionDate);
+      transactionDateString = sdf.format(transactionDate);
       dadosBoleto.setDATALQ(completionDateString);
       dadosBoleto.setDATAME(completionDateString); // TODO Foreign currency delivery date ( DD / MM / YYYY)
-      dadosBoleto.setDATAMN(completionDateString);
-      dadosBoleto.setDATAOP(completionDateString);
       dadosBoleto.setDATAEN(completionDateString);
+      dadosBoleto.setDATAMN(transactionDateString);
+      dadosBoleto.setDATAOP(transactionDateString);
     } catch(Throwable t) {
       logger_.error("Unable to parse completion date", t);
       throw new RuntimeException("Error inserting boleto. Cound not parse completion date.");
@@ -413,7 +416,7 @@ public class ExchangeServiceProvider
     dadosBoleto.setPAGADORC("/" + bankAccount.getIban());
     dadosBoleto.setGERENTE(exchangeClientValues.getGERENTE());
     dadosBoleto.setESP1(getESP("FORMA DE PAGAMENTO: ", dadosBoleto.getFORMAEN(),
-      " - DATA: ", completionDateString));
+      " - DATA: ", transactionDateString));
     dadosBoleto.setESP6(getESP("OUR - INST.FINANC .: ", exchangeClientValues.getProcessorName()));
 
     Country userCountry = null;
@@ -471,7 +474,7 @@ public class ExchangeServiceProvider
 
     transaction.setExternalInvoiceId(response.getInsertBoletoResult().getNRREFERENCE());
     transaction.setStatus(TransactionStatus.SENT);
-    transaction.setCompletionDate(completionDate);
+    transaction.setCompletionDate(transactionDate);
     return transaction;
   }
 

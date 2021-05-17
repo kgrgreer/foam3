@@ -178,6 +178,7 @@ var classes = [
   'net.nanopay.model.JobTitle',
   'net.nanopay.model.SigningOfficer',
   'net.nanopay.bank.AddBankAccountAction',
+  'net.nanopay.sme.ui.CreateBankAccountAction',
   'net.nanopay.bank.BankHoliday',
   'net.nanopay.bank.BankHolidayService',
   'net.nanopay.bank.test.USBankAccountTest',
@@ -405,6 +406,7 @@ var classes = [
   'net.nanopay.invoice.ruler.SetPaymentSentDateRule',
   'net.nanopay.invoice.ruler.TransactionNatureCodeUpdateRule',
   'net.nanopay.invoice.test.invoiceHistoryAuthorizerTest',
+  'net.nanopay.invoice.test.SigningOfficerInvoiceApprovalTest',
   'net.nanopay.invoice.InvoiceHistoryAuthorizer',
   'net.nanopay.invoice.ruler.InvoiceQuotingRule',
   'net.nanopay.invoice.ruler.InvoiceTransactionSubmitRule',
@@ -1652,6 +1654,8 @@ var classes = [
   'net.nanopay.tx.ruler.MicroDepositSentNotification',
   'net.nanopay.sme.cron.OnboardingReminderNotification',
   'net.nanopay.sme.ruler.BusinessCompliancePassedEmailNotification',
+
+  'net.nanopay.contacts.facade.FacadeContact'
 ];
 
 var abstractClasses = [

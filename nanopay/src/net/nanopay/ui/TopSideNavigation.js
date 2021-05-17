@@ -58,10 +58,6 @@ foam.CLASS({
       white-space: normal !important;
     }
 
-    ^ .foam-nanos-menu-VerticalMenu .side-nav-view {
-      margin-top: 56px;
-    }
-
     ^ .imageMenuStyle {
       float: left;
       height: 30px;
@@ -124,12 +120,12 @@ foam.CLASS({
         .on('click', function() { self.toggleMenu(); } )
           .end()
           .start()
-            .show(this.isMenuOpen$)
-            .tag({ class: 'foam.nanos.menu.VerticalMenu' })
-          .end()
-          .start()
             .addClass('openMenuStyle')
             .tag({ class: 'net.nanopay.ui.TopNavigation' })
+          .end()
+          .start()
+            .show(this.isMenuOpen$)
+            .tag({ class: 'foam.nanos.menu.VerticalMenu' })
           .end()
         .end()
       .end()
