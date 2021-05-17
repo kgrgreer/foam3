@@ -12,10 +12,6 @@ foam.CLASS({
     'foam.core.ContextAware'
   ],
 
-  imports: [
-    'capabilities'
-  ],
-
   requires: [
     'foam.u2.wizard.StepWizardConfig'
   ],
@@ -41,4 +37,3 @@ foam.CLASS({
     }
   ]
 });
-
