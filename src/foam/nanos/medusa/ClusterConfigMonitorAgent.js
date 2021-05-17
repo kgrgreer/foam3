@@ -187,7 +187,6 @@ foam.CLASS({
         if ( alarms != null ) {
           DAO alarmDAO = (DAO) x.get("alarmDAO");
           for (Alarm alarm : alarms ) {
-            getLogger().debug("alarm", alarm);
             alarmDAO.put(alarm);
           }
         }

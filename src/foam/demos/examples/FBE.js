@@ -426,6 +426,51 @@ print(t.age);
 try { t.age = 200; } catch (x) { print(x); }
 print(t.age);
 
+##  validateObj
+The limitation of assertValue, is that it only lets you perform validations involving a single value.
+If you want to perform validations that involve more than one property, then you can use validateObj.
+--
+foam.CLASS({
+  name: 'Flight',
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'returnFlight'
+    },
+    {
+      class: 'Date',
+      name: 'departureDate'
+    },
+    {
+      class: 'Date',
+      name: 'returnDate',
+      validateObj: function(returnFlight, departureDate, returnDate) {
+        if ( returnFlight && ! returnDate ) return 'Return date require for return flights.';
+        if ( ! returnFlight && returnDate ) return "Return date can't be specified for non return flights.";
+        if ( foam.Date.compare(returnDate, departureDate) < 0 ) return "Can't return before you depart.";
+      }
+    }
+  ]
+});
+
+var f = Flight.create();
+function validateFlight() {
+  print('Errors: ', f.errors_);
+}
+
+f.departureDate = new Date('2021/04/14');
+validateFlight();
+
+f.returnFlight = true;
+validateFlight();
+
+f.returnDate = new Date('2021/04/13');
+validateFlight();
+
+f.returnDate = new Date('2021/04/15');
+validateFlight();
+
+
 ## U2
 ##  Background
 U2 is FOAM's native UI library.
