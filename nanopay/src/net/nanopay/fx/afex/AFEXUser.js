@@ -24,7 +24,8 @@ foam.CLASS({
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.EnabledAware',
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware'
+    'foam.nanos.auth.LastModifiedByAware',
+    'foam.nanos.auth.ServiceProviderAware'
   ],
 
   imports: [
@@ -111,7 +112,12 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedByAgent'
-    }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid'
+    },
   ],
 
   methods: [

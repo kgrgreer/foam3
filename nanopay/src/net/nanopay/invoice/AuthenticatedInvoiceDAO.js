@@ -93,7 +93,7 @@ foam.CLASS({
             @Override
             public void put(Object obj, foam.core.Detachable sub) {
               Invoice invoice = (Invoice) obj;
-              if ( isRelated(getX(), invoice) && ! ( invoice.getDraft() && invoice.getCreatedBy() != user_.getId() && ! invoice.getRemoved() ) &&
+              if ( isRelated(getX(), invoice) && ! ( invoice.getDraft() && invoice.getCreatedBy() != user_.getId() ) &&
                   ! ( invoice.getCreatedBy() != user_.getId() && invoice.getStatus() == InvoiceStatus.PENDING_APPROVAL && invoice.getPayeeId() == user_.getId()) &&
                   ! ( invoice.getCreatedBy() != user_.getId() && invoice.getStatus() == InvoiceStatus.VOID ) &&
                   ! ( invoice.getCreatedBy() != user_.getId() && invoice.getStatus() == InvoiceStatus.REJECTED ) ) {
@@ -166,10 +166,6 @@ foam.CLASS({
           if ( invoice.getDraft() && ( invoice.getCreatedBy() != user.getId() ) ) {
             throw new AuthorizationException();
           }
-          // Return null if invoice is mark as removed.
-          if ( invoice.getRemoved() ) {
-            return null;
-          }
         }
         return invoice;
       `
@@ -190,7 +186,7 @@ foam.CLASS({
       name: 'remove_',
       documentation: `
         Allows users with invoice delete permission and users who created the invoice to proceed with the remove.
-        If user is permitted, the invoice will be handled by the PreventRemoveInvoiceDAO decorator.
+        If user is permitted, the invoice will be handled by it's Lifecycle.
       `,
       javaCode: `
         User user = this.getUser(x);
@@ -211,10 +207,6 @@ foam.CLASS({
 
         if ( user.getId() != invoice.getCreatedBy() ) {
           throw new AuthorizationException(DELETE_INVOICE_ERROR_MSG2);
-        }
-
-        if ( invoice.getRemoved() ) {
-          throw new AuthorizationException();
         }
 
         return getDelegate().remove_(x, obj);

@@ -16,32 +16,20 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.partner.treviso.invoice',
-  name: 'TrevisoNotification',
-  extends: 'foam.nanos.notification.Notification',
+  package: 'net.nanopay.auth.ruler',
+  name: 'PermissionedUserRule',
+  extends: 'foam.nanos.ruler.Rule',
 
-  requires: [
-    'net.nanopay.partner.treviso.invoice.TrevisoNotificationRule'
-  ],
+  documentation: 'Rule that applies to user object if the user has permission to run it.',
 
   javaImports: [
-    'net.nanopay.partner.treviso.invoice.TrevisoNotificationRule'
+    'foam.nanos.auth.User'
   ],
 
-  properties: [
+  methods: [
     {
-      class: 'String',
-      name: 'amount'
-    },
-    {
-      name: 'body',
-      transient: true,
-      javaGetter: `
-        return TrevisoNotificationRule.TED_TEXT_MSG.replace("{amount}", getAmount());
-      `,
-      getter: function() {
-        return this.TrevisoNotificationRule.TED_TEXT_MSG.replace('{amount}', this.amount);
-      }
+      name: 'getUser',
+      javaCode: 'return (User) obj;'
     }
   ]
 });

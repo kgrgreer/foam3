@@ -3068,7 +3068,7 @@ referenceSink(dao){
   return new AbstractSink() {
     public void put(Object obj, Detachable sub) {
       object = obj.fclone();
-      
+
       // Replaces capable object capability id's with new capability id's from above mapping
       capabilityIds = object.getCapabilityIds();
       for ( int i = 0; i < capabilityIds.length; i++) {
@@ -3077,89 +3077,156 @@ referenceSink(dao){
         }
       }
 
-      if ( data.getSelectedDataStable() != null ) {
-        selectedStableData = data.getSelectedDataStable();
-        for ( int i = 0; i < selectedStableData.length; i++) {
-          if ( capabilityMap.containsKey(selectedStableData[i]) ) {
-            selectedStableData[i] = capabilityMap.get(selectedStableData[i]);
+      // Replace capable object userCapabilityRequirements with new capability id's from above mapping
+      userCapabilityIds = object.getUserCapabilityRequirements();
+      for ( int i = 0; i < userCapabilityIds.length; i++) {
+        if ( capabilityMap.containsKey(userCapabilityIds[i]) ) {
+          userCapabilityIds[i] = capabilityMap.get(userCapabilityIds[i]);
+        }
+      }
+
+      // Replace capability reference in capable payloads.
+      payloads = object.getCapablePayloads();
+      if ( payloads != null ) {
+        for ( int i = 0; i < payloads.length; i++ ){
+          if ( capabilityMap.containsKey(payloads[i].getProperty("capability")) ) {
+            payloads[i].setProperty("capability", capabilityMap.get(payloads[i].getProperty("capability")));
+          }
+
+          data = payloads[i].getData();
+          if ( data != null && data.getClass() == MinMaxCapabilityData.class) {
+            payloadData = updateMinMaxData(payloads[i].getData());
+            payloads[i].setData(data);
           }
         }
       }
-      return data;
+      dao.put(object);
     }
+  };
+}
+// END OF HELPER METHODS
 
-    // This sink method is responsible for updating references to capabilities on capable object
-    referenceSink(dao){
-      return new AbstractSink() {
-        public void put(Object obj, Detachable sub) {
-          object = obj.fclone();
-          
-          // Replaces capable object capability id's with new capability id's from above mapping
-          capabilityIds = object.getCapabilityIds();
-          for ( int i = 0; i < capabilityIds.length; i++) {
-            if ( capabilityMap.containsKey(capabilityIds[i]) ) {
-              capabilityIds[i] = capabilityMap.get(capabilityIds[i]);
-            }
-          }
-          
-          // Replace capable object userCapabilityRequirements with new capability id's from above mapping
-          userCapabilityIds = object.getUserCapabilityRequirements();
-          for ( int i = 0; i < userCapabilityIds.length; i++) {
-            if ( capabilityMap.containsKey(userCapabilityIds[i]) ) {
-              userCapabilityIds[i] = capabilityMap.get(userCapabilityIds[i]);
-            }
-          }
+// Updates references of targetIds and user capability junction MinMaxData
+ucjDAO = x.get("bareUserCapabilityJunctionDAO");
 
-          // Replace capability reference in capable payloads.
-          payloads = object.getCapablePayloads();
-          if ( payloads != null ) {
-            for ( int i = 0; i < payloads.length; i++ ){
-              if ( capabilityMap.containsKey(payloads[i].getProperty("capability")) ) {
-                payloads[i].setProperty("capability", capabilityMap.get(payloads[i].getProperty("capability")));
-              }
+ucjDAO.select(new AbstractSink() {
+ public void put(Object obj, Detachable sub) {
+   ucj = obj.fclone();
+   if ( capabilityMap.containsKey(obj.getTargetId()) ) {
+     ucj.setTargetId(capabilityMap.get(ucj.getTargetId()));
+     ucjDAO.put(ucj);
+   }
 
-              data = payloads[i].getData();
-              if ( data != null && data.getClass() == MinMaxCapabilityData.class) {
-                payloadData = updateMinMaxData(payloads[i].getData());
-                payloads[i].setData(data);
-              }
-            }
-          }
-          dao.put(object);
-        }
-      };
-    }
-    // END OF HELPER METHODS
+   data = ucj.getData();
+   if ( data != null && data.getClass() == MinMaxCapabilityData.class) {
+     data = updateMinMaxData(ucj.getData());
+     ucj.setData(data);
+     ucjDAO.put(ucj);
+   }
+ }
+});
 
-    // Updates references of targetIds and user capability junction MinMaxData
-    ucjDAO = x.get("bareUserCapabilityJunctionDAO");
+contactDAO = x.get("localContactDAO");
+contactDAO.select(referenceSink(contactDAO));
 
-    ucjDAO.select(new AbstractSink() {
-    public void put(Object obj, Detachable sub) {
-      ucj = obj.fclone();
-      if ( capabilityMap.containsKey(obj.getTargetId()) ) {
-        ucj.setTargetId(capabilityMap.get(ucj.getTargetId()));
-        ucjDAO.put(ucj);
+invoiceDAO = x.get("localInvoiceDAO");
+invoiceDAO.select(referenceSink(invoiceDAO));
+
+padCaptureDAO = x.get("localPadCaptureDAO");
+padCaptureDAO.select(referenceSink(padCaptureDAO));
+
+print("finished");
+"""
+})
+
+p({
+"class":"foam.nanos.script.Script",
+"id":"TED-notification-text-migration",
+"description":"Remove TED text from invoice note and set it to tedText property",
+"code":
+"""
+import foam.dao.DAO;
+import foam.dao.ArraySink;
+import net.nanopay.invoice.model.Invoice;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+invoiceDAO = (DAO) x.get("invoiceDAO");
+
+invoices = ((ArraySink) invoiceDAO.select(new ArraySink())).getArray();
+
+for (invoice : invoices) {
+	if (invoice.getNote().isEmpty() || !invoice.getTedText().isEmpty()) continue;
+
+	// find ted text from invoice note
+	tedTextStart = invoice.getNote().lastIndexOf("ATENÇÃO : Esta transação ainda não foi enviada!");
+
+	// move ted text from invoice.note to invoice.tedText if the text exists
+	if (tedTextStart > -1) {
+		// get amount from ted text
+		pattern = Pattern.compile("\\\\(([^\\\\)]*)\\\\)");
+   	matcher = pattern.matcher(invoice.getNote());
+
+    amount = "";
+   	if (matcher.find()) {
+   		amount = matcher.group(1);
+   	}
+
+   	// remove ted text from invoice.note
+		invoice.setNote(invoice.getNote().substring(0, tedTextStart).trim());
+
+		// set ted text to invoice.tedText
+		tedText = net.nanopay.partner.treviso.invoice.TrevisoNotificationRule.TED_TEXT_MSG;
+
+		tedText = tedText.replace("{amount}", amount);
+		invoice.setTedText(tedText);
+
+		invoiceDAO.put(invoice);
+  }
+}
+
+print("done");
+"""
+});
+
+p({
+  class:"foam.nanos.script.Script",
+  id:"Set SPID on AFEXUser/AFEXBeneficiary",
+  description:"Set SPID on AFEXUser/AFEXBeneficiary",
+  code:"""
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import foam.nanos.auth.User;
+    import foam.util.SafetyUtil;
+    import net.nanopay.fx.afex.AFEXBeneficiary;
+    import net.nanopay.fx.afex.AFEXUser;
+
+    afexUserDAO = x.get("afexUserDAO");
+    afexBeneficiaryDAO = x.get("afexBeneficiaryDAO");
+    userDAO = (DAO) x.get("localUserDAO");
+
+    afexUsers = (afexUserDAO.select(new ArraySink())).getArray();
+
+    for ( AFEXUser au: afexUsers ) {
+      if ( SafetyUtil.isEmpty(au.getSpid()) ) {
+        au = (AFEXUser)au.fclone();
+        User u = userDAO.find(au.getUser());
+        au.setSpid(u.getSpid());
+        afexUserDAO.put(au);
       }
+    }
 
-      data = ucj.getData();
-      if ( data != null && data.getClass() == MinMaxCapabilityData.class) {
-        data = updateMinMaxData(ucj.getData());
-        ucj.setData(data);
-        ucjDAO.put(ucj);
+    afexBeneficiaries = (afexBeneficiaryDAO.select(new ArraySink())).getArray();
+    for ( AFEXBeneficiary b: afexBeneficiaries ) {
+      if ( SafetyUtil.isEmpty(b.getSpid()) ) {
+        b = (AFEXBeneficiary)b.fclone();
+        User u = userDAO.find(b.getOwner());
+        b.setSpid(u.getSpid());
+        afexBeneficiaryDAO.put(b);
       }
     }
-    });
 
-    contactDAO = x.get("localContactDAO");
-    contactDAO.select(referenceSink(contactDAO));
-
-    invoiceDAO = x.get("localInvoiceDAO");
-    invoiceDAO.select(referenceSink(invoiceDAO));
-
-    padCaptureDAO = x.get("localPadCaptureDAO");
-    padCaptureDAO.select(referenceSink(padCaptureDAO));
-
-    print("finished");
+    print("DONE");
   """
 })
+

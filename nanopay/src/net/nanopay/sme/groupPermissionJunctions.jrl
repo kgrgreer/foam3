@@ -177,10 +177,14 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId"
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"summarytransactionlineitem.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"taxlineitem.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"transactionlineitem.read.*"})
-
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.ticketDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"ticket.create"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"historyrecord.create"})
+// Facade
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.facadeContactDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"contact.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.tableViewBankAccountDAO"})
+
 // Data export drivers
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"exportdriverregistry.read.CSV"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"exportdriverregistry.read.JSON"})

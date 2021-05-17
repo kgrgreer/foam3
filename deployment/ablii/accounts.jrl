@@ -1,6 +1,6 @@
 // Kotak
 
-p({"class":"net.nanopay.bank.CABankAccount","branch":12,"branchId":"","institutionNumber":"","country":"CA","flagImage":"images/flags/cad.png","accountNumber":"1234567","status":1,"denomination":"CAD","verificationAttempts":0,"integrationId":"","compliance":0,"institution":24,"id":"111","name":"Kotak Mahindra Canada CAD","desc":"","transferIn":true,"transferOut":true,"isDefault":true,"balance":0,"created":"2019-05-23T16:01:33.696Z","createdBy":1348,"lastModified":"2019-05-23T16:01:33.696Z","lastModifiedBy":1348,"owner":1020,"lifecycleState":1})
+p({"class":"net.nanopay.bank.CABankAccount","branchId":"12345","institutionNumber":"123","country":"CA","flagImage":"images/flags/cad.png","accountNumber":"1234567","status":1,"denomination":"CAD","verificationAttempts":0,"integrationId":"","compliance":0,"id":"111","name":"Kotak Mahindra Canada CAD","desc":"","transferIn":true,"transferOut":true,"isDefault":true,"balance":0,"created":"2019-05-23T16:01:33.696Z","createdBy":1348,"lastModified":"2019-05-23T16:01:33.696Z","lastModifiedBy":1348,"owner":1020,"lifecycleState":1})
 
 p({"class":"net.nanopay.bank.INBankAccount","denomination":"INR","accountNumber":"123456789","status":1,"id":"112","name":"Kotak Mahindra Canada INR","desc":"","transferIn":true,"transferOut":true,"isDefault":true,"created":"2019-04-30T14:58:22.412Z","createdBy":1348,"lastModified":"2019-05-24T14:58:22.412Z","lastModifiedBy":1348,"owner":1020,"lifecycleState":1})
 

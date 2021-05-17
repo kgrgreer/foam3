@@ -64,7 +64,7 @@ p({
     inner = new foam.nanos.auth.ServiceProviderAwareDAO.Builder(x)
       .setDelegate(inner)
       .build();
-      
+
     dao = new net.nanopay.tx.SaveChainedTransactionDAO.Builder(x)
       .setDelegate(new foam.dao.NullDAO(x, net.nanopay.tx.model.Transaction.getOwnClassInfo()))
       .build();
@@ -106,7 +106,7 @@ p({
     daoDecorator = new foam.nanos.auth.PermissionedPropertyDAO(x, daoDecorator);
     daoDecorator = new net.nanopay.tx.AuthenticatedTransactionDAO(x, daoDecorator);
     daoDecorator = new net.nanopay.tx.PermissionedTransactionLineItemDAO(x, daoDecorator);
-      
+
     new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
       .setInnerDAO(x.get("localTransactionDAO"))
@@ -145,6 +145,25 @@ p({
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.tx.model.Transaction\", \"remoteListenerSupport\": false, \"serverBox\":{ \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/tableViewTransactionDAO\", \"delegate\":{ \"class\":\"foam.box.TimeoutBox\", \"timeout\":25000,\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/tableViewTransactionDAO\"}}}}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "tableViewBankAccountDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.bank.BankAccount.getOwnClassInfo())
+      .setInnerDAO(x.get("accountDAO"))
+      .setAuthorize(false)//true
+      .setPm(true)
+      .setEnableInterfaceDecorators(false)
+      .setCluster(false)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.bank.BankAccount\"}"
 })
 
 p({
@@ -619,7 +638,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.billing.ErrorFee.getOwnClassInfo())
       .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("errorFeeDAO"))
-      .setInnerDAO(x.get("localErrorFeeDAO")) 
+      .setInnerDAO(x.get("localErrorFeeDAO"))
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.tx.billing.ErrorFee\"}"
