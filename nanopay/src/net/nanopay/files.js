@@ -166,7 +166,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/CNBankAccount' },
   { name: 'net/nanopay/bank/SEBankAccount' },
   { name: 'net/nanopay/bank/AddBankAccountAction' },
-  { name: 'net/nanopay/ui/AddPrimaryAction' },
+  { name: 'net/nanopay/sme/ui/CreateBankAccountAction' },
   { name: 'net/nanopay/bank/BankAccountTableView', flags: ['web'] },
   { name: 'net/nanopay/bank/BankAccountValidationMixin' },
   { name: 'net/nanopay/bank/StrategizedBankAccount' },

@@ -75,7 +75,7 @@ p({
       "editEnabled":true,
       "searchMode":0,
 
-      "Exemple_primaryAction": {"class":"net.nanopay.ui.AddPrimaryAction"},
+      "Exemple_primaryAction": {"class":"net.nanopay.sme.ui.CreateBankAccountAction"},
       "Exemple_viewBorder":{class:"foam.u2.borders.NullBorder"},
 
       "createController":{class:"net.nanopay.ui.wizard.WizardController"},

@@ -16,8 +16,8 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.ui',
-  name: 'AddPrimaryAction',
+  package: 'net.nanopay.sme.ui',
+  name: 'CreateBankAccountAction',
   extends: 'foam.core.Action',
 
   documentation: 'An action that displays the view to add a model based on the configuration.',
