@@ -162,7 +162,7 @@ foam.CLASS({
           throw new AuthorizationException(UPDATE_REF_ID_ERROR_MSG);
 
         // Check that user is 'related' to invoice and other party of invoice is contact of the usere
-        if ( ! isRelated(x, user.getId(), invoice) )
+        if ( ! isRelated(x, user.getId(), invoice) || old != null && ! isRelated(x, user.getId(), old) )
           throw new AuthorizationException(UPDATE_INVOICE_PERMISSION_ERR);
         if ( ! otherPartyIsUserContact(x, user, invoice) )
           throw new AuthorizationException(NOT_A_CONTACT_ERR);
