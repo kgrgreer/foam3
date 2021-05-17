@@ -430,7 +430,6 @@ FOAM_FILES([
   { name: "foam/box/socket/SocketClientReplyBox" },
   { name: "foam/box/socket/SocketConnectionBoxManager" },
   { name: "foam/box/socket/SocketServer" },
-  { name: "foam/box/socket/SslContextFactory" },
   { name: "foam/dao/BaseClientDAO" },
   { name: "foam/dao/BaseNotificationClientDAO" },
   { name: "foam/dao/MergeBox" },

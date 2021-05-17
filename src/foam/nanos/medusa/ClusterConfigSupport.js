@@ -502,15 +502,6 @@ configuration for contacting the primary node.`,
       DAO dao = (DAO) getX().get("localClusterConfigDAO");
       ClusterConfig myConfig = (ClusterConfig) dao.find(getConfigId());
       if ( myConfig != null ) {
-        if ( SafetyUtil.isEmpty(System.getProperty("http.port")) ) {
-          System.setProperty("http.port", String.valueOf(myConfig.getPort()));
-          getLogger().info("setProperty(http.port,"+myConfig.getPort()+")");
-        }
-        if ( myConfig.getUseHttps() &&
-             SafetyUtil.isEmpty(System.getProperty("https.port")) ) {
-          System.setProperty("https.port", String.valueOf(myConfig.getPort()));
-          getLogger().info("setProperty(https.port,"+myConfig.getPort()+")");
-        }
         myConfig = (ClusterConfig) myConfig.fclone();
         myConfig.setReplayingInfo(replaying);
         dao.put(myConfig);
@@ -547,6 +538,7 @@ configuration for contacting the primary node.`,
       javaCode: `
       PM pm = PM.create(x, this.getClass().getSimpleName(), "buildURL");
       try {
+         // TODO: protocol - http will do for now as we are behind the load balancers.
         String address = config.getId();
         DAO hostDAO = (DAO) x.get("hostDAO");
         Host host = (Host) hostDAO.find(config.getId());
@@ -563,7 +555,7 @@ configuration for contacting the primary node.`,
         String scheme = config.getUseHttps() ? "https" : "http";
         java.net.URI uri = new java.net.URI(scheme, null, address, config.getPort(), path.toString(), query, fragment);
 
-        // getLogger().debug("buildURL", serviceName, uri.toURL().toString());
+        // getLogger.debug("buildURL", serviceName, uri.toURL().toString());
         return uri.toURL().toString();
       } catch (java.net.MalformedURLException | java.net.URISyntaxException e) {
         getLogger().error(e);
@@ -898,7 +890,8 @@ configuration for contacting the primary node.`,
       `
     },
     {
-      documentation: 'Crontrol which instances cron jobs run.  Clusterable cron jobs should only run one the primary mediator.',
+      // TODO/REVIEW: Cron itself needs better cluster support
+      // we can't have the same crons running everywhere.
       name: 'cronEnabled',
       type: 'Boolean',
       args: [
@@ -923,6 +916,10 @@ configuration for contacting the primary node.`,
                config.getZone() == 0L ) {
             return true;
           }
+          // if ( config.getStatus() == Status.ONLINE &&
+          //      config.getZone() > 0L ) {
+          //   return true;
+          // }
           return false;
         }
         if ( config.getType() == MedusaType.NODE ) {
