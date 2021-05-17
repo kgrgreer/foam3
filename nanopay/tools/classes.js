@@ -16,6 +16,7 @@ var classes = [
   'net.nanopay.tx.TxnProcessorUserReference',
   'net.nanopay.tx.RetailTransactionPlanDAO',
   'net.nanopay.tx.CompositeTransaction',
+  'net.nanopay.tx.TicketTransaction',
   'net.nanopay.tx.CreateExpediteApprovalRequest',
   'net.nanopay.tx.cico.VerificationTransaction',
   'net.nanopay.tx.cico.CITransaction',

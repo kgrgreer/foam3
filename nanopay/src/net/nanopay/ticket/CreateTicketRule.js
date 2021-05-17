@@ -48,6 +48,10 @@ foam.CLASS({
       javaCode: `
 
       agency.submit(x, agencyX -> {
+        if ( ((Transaction) obj).getStatus() == ((Transaction) oldObj).getStatus() ) {
+          return;
+        }
+
         DAO ticketDAO = (DAO) agencyX.get("ticketDAO");
         ArraySink arraySink = new ArraySink();
         

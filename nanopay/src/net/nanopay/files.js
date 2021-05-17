@@ -29,6 +29,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/LiquidSummaryTransaction' },
   { name: 'net/nanopay/tx/LiquidCashTransactionType' },
   { name: 'net/nanopay/tx/CompositeTransaction' },
+  { name: 'net/nanopay/tx/TicketTransaction' },
   { name: 'net/nanopay/tx/BulkTransaction' },
   { name: 'net/nanopay/tx/CreateExpediteApprovalRequest' },
   { name: 'net/nanopay/tx/TxnProcessorUserReference' },
