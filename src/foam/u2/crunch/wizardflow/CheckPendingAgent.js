@@ -16,13 +16,11 @@ foam.CLASS({
   `,
 
   imports: [
-    'capabilityDAO',
     'capabilities',
     'crunchService',
     'ctrl',
     'rootCapability',
-    'sequence',
-    'subject'
+    'sequence'
   ],
 
   exports: [
