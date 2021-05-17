@@ -158,7 +158,6 @@ p({
       .setInnerDAO(x.get("accountDAO"))
       .setAuthorize(false)//true
       .setPm(true)
-      //.setPipelinePm(true)
       .setEnableInterfaceDecorators(false)
       .setCluster(false)
       .build();
