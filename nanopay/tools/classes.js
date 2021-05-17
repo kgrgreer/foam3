@@ -1596,7 +1596,6 @@ var classes = [
   'net.nanopay.fx.ascendantfx.AscendantFXTransactionDAO',
   'net.nanopay.invoice.AuthenticatedInvoiceDAO',
   'net.nanopay.invoice.AutoDepositPendingAcceptance',
-  'net.nanopay.invoice.PreventRemoveInvoiceDAO',
   'net.nanopay.onboarding.CreateBusinessDAO',
   'net.nanopay.onboarding.NewUserCreateBusinessDAO',
   'net.nanopay.onboarding.UpdateOnboardingDAO',
