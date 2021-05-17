@@ -10,7 +10,7 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"trevisoService",
+  "name":"mockExchangeService",
   "lazy":false,
   "serve":true,
   "serviceScript":"""
@@ -27,9 +27,21 @@ p({
         .setTitular(new Titular.Builder(x).setLIMITEOP(EXCHANGE_LIMIT).setUTILIZADO(UTILIZED_LIMIT).build())
         .build()
     );
-    return new net.nanopay.partner.treviso.TrevisoService(x, x.get("fepWebService"), mockExchange);
+    
+    return mockExchange;
   """
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"trevisoService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.treviso.TrevisoService(x, "fepWebService", "mockExchangeService");
+  """
+})
+
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"exchange",

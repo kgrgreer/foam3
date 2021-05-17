@@ -29,6 +29,10 @@ foam.INTERFACE({
       type: 'net.nanopay.country.br.exchange.InsertBoletoResponse',
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           type: 'net.nanopay.country.br.exchange.InsertBoleto',
           name: 'request',
         }
@@ -40,6 +44,10 @@ foam.INTERFACE({
       async: true,
       type: 'net.nanopay.country.br.exchange.SearchBoletoResponse',
       args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
         {
           type: 'net.nanopay.country.br.exchange.SearchBoleto',
           name: 'request',
@@ -53,6 +61,10 @@ foam.INTERFACE({
       type: 'net.nanopay.country.br.exchange.BoletoStatusResponse',
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           type: 'net.nanopay.country.br.exchange.GetBoletoStatus',
           name: 'request',
         }
@@ -64,6 +76,10 @@ foam.INTERFACE({
       async: true,
       type: 'net.nanopay.country.br.exchange.InsertTitularResponse',
       args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
         {
           type: 'net.nanopay.country.br.exchange.InsertTitular',
           name: 'request',
@@ -77,6 +93,10 @@ foam.INTERFACE({
       type: 'net.nanopay.country.br.exchange.UpdateTitularResponse',
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           type: 'net.nanopay.country.br.exchange.UpdateTitular',
           name: 'request',
         }
@@ -88,6 +108,10 @@ foam.INTERFACE({
       async: true,
       type: 'net.nanopay.country.br.exchange.SearchTitularResponse',
       args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
         {
           type: 'net.nanopay.country.br.exchange.SearchTitular',
           name: 'request',
@@ -101,6 +125,10 @@ foam.INTERFACE({
       type: 'net.nanopay.country.br.exchange.SearchTitularCapFinResponse',
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           type: 'net.nanopay.country.br.exchange.SearchTitularCapFin',
           name: 'request',
         }
@@ -112,6 +140,10 @@ foam.INTERFACE({
       async: true,
       type: 'net.nanopay.country.br.exchange.SearchNaturezaResponse',
       args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
         {
           type: 'net.nanopay.country.br.exchange.SearchNatureza',
           name: 'request',
@@ -125,6 +157,10 @@ foam.INTERFACE({
       type: 'net.nanopay.country.br.exchange.SearchMoedaResponse',
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           type: 'net.nanopay.country.br.exchange.SearchMoeda',
           name: 'request',
         }
@@ -137,6 +173,10 @@ foam.INTERFACE({
       type: 'net.nanopay.country.br.exchange.SearchPaisResponse',
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           type: 'net.nanopay.country.br.exchange.SearchPais',
           name: 'request',
         }
@@ -148,6 +188,10 @@ foam.INTERFACE({
       async: true,
       type: 'net.nanopay.country.br.exchange.CotacaoTaxaCambioResponse',
       args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
         {
           type: 'net.nanopay.country.br.exchange.GetCotacaoTaxaCambio',
           name: 'request',

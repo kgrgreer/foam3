@@ -335,7 +335,6 @@ p({
     import net.nanopay.invoice.AuthenticatedInvoiceDAO;
     import net.nanopay.invoice.InvoiceNotificationDAO;
     import net.nanopay.invoice.AutoDepositPendingAcceptance;
-    import net.nanopay.invoice.PreventRemoveInvoiceDAO;
     import foam.nanos.crunch.lite.CapableDAO;
     import foam.dao.PredicatedDualDelegateDAO;
 
@@ -353,7 +352,6 @@ p({
       .setOf(net.nanopay.invoice.model.Invoice.getOwnClassInfo())
       .build();
 
-    dao = new net.nanopay.invoice.PreventRemoveInvoiceDAO(x, dao);
     dao = new InvoiceNotificationDAO.Builder(x).setDelegate(dao).build();
     dao = new AutoDepositPendingAcceptance(x, dao);
     dao = new PublicUserInfoDAO(x, false, "payerId", "payer", dao);
@@ -587,7 +585,6 @@ p({
   "serviceScript":
   """
     dao = new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build();
-    dao = new net.nanopay.contacts.AddExternalContactToken(x, dao);
     dao = new foam.nanos.auth.UserPasswordHashingDAO(x, dao);
     dao = new net.nanopay.business.DeleteAgentJunctionsOnUserDeleteDAO.Builder(x).setDelegate(dao).build();
     dao = new net.nanopay.security.auth.LogoutDisabledUserDAO.Builder(x).setDelegate(dao).build();
@@ -2271,7 +2268,7 @@ p({
   """
 })
 
-//p({"class":"foam.nanos.boot.NSpec","id":"invoiceDAOJshell","description":"Jshell version","language":2,"serviceScript":"import foam.core.X;\nimport foam.dao.DAO;\nimport foam.dao.EasyDAO;\nimport foam.dao.history.HistoryDAO;\nimport net.nanopay.auth.PublicUserInfoDAO;\nimport net.nanopay.contacts.InvoiceToContactDAO;\nimport net.nanopay.invoice.AuthenticatedInvoiceDAO;\nimport net.nanopay.invoice.AutoDepositPendingAcceptance;\nimport net.nanopay.invoice.InvoiceNotificationDAO;\nimport net.nanopay.invoice.InvoiceVoidEmailDAO;\n\n    DAO dao = new net.nanopay.invoice.PreventRemoveInvoiceDAO(x, null);\n    dao = new InvoiceNotificationDAO.Builder(x).setDelegate(dao).build();\n    dao = new AutoDepositPendingAcceptance(x, dao);\n    dao = new InvoiceVoidEmailDAO(x, dao);\n    dao = new PublicUserInfoDAO(x, false, \"payerId\", \"payer\", dao);\n    dao = new PublicUserInfoDAO(x, false, \"payeeId\", \"payee\", dao);\n    dao = new InvoiceToContactDAO(x, dao);\n    dao = new HistoryDAO(x, \"invoiceHistoryDAO\", dao);\n    dao = new AuthenticatedInvoiceDAO(x, dao);\n\n    return new foam.dao.EasyDAO.Builder(x).setOf(net.nanopay.invoice.model.Invoice.getOwnClassInfo()).setDecorator(dao)\n        .setValidated(true).setSeqNo(true).setJournalName(\"invoices\")\n        .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setAuthorize(false).build();"})
+//p({"class":"foam.nanos.boot.NSpec","id":"invoiceDAOJshell","description":"Jshell version","language":2,"serviceScript":"import foam.core.X;\nimport foam.dao.DAO;\nimport foam.dao.EasyDAO;\nimport foam.dao.history.HistoryDAO;\nimport net.nanopay.auth.PublicUserInfoDAO;\nimport net.nanopay.contacts.InvoiceToContactDAO;\nimport net.nanopay.invoice.AuthenticatedInvoiceDAO;\nimport net.nanopay.invoice.AutoDepositPendingAcceptance;\nimport net.nanopay.invoice.InvoiceNotificationDAO;\nimport net.nanopay.invoice.InvoiceVoidEmailDAO;\n\n    dao = new InvoiceNotificationDAO.Builder(x).setDelegate(dao).build();\n    dao = new AutoDepositPendingAcceptance(x, dao);\n    dao = new InvoiceVoidEmailDAO(x, dao);\n    dao = new PublicUserInfoDAO(x, false, \"payerId\", \"payer\", dao);\n    dao = new PublicUserInfoDAO(x, false, \"payeeId\", \"payee\", dao);\n    dao = new InvoiceToContactDAO(x, dao);\n    dao = new HistoryDAO(x, \"invoiceHistoryDAO\", dao);\n    dao = new AuthenticatedInvoiceDAO(x, dao);\n\n    return new foam.dao.EasyDAO.Builder(x).setOf(net.nanopay.invoice.model.Invoice.getOwnClassInfo()).setDecorator(dao)\n        .setValidated(true).setSeqNo(true).setJournalName(\"invoices\")\n        .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setAuthorize(false).build();"})
 
 
 p({

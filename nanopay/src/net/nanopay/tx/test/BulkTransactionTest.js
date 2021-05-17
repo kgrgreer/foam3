@@ -215,24 +215,12 @@ foam.CLASS({
 
     if ( account == null ) {
 
-      final DAO  institutionDAO = (DAO) x.get("institutionDAO");
-      final DAO  branchDAO     = (DAO) x.get("branchDAO");
       final DAO  accountDAO   = (DAO) x.get("localAccountDAO");
-
-      Institution institution = new Institution.Builder(x)
-        .setInstitutionNumber(String.valueOf(user.getId()))
-        .build();
-      institution = (Institution) institutionDAO.put_(x, institution);
-
-      Branch branch = new Branch.Builder(x)
-        .setBranchId(String.valueOf(user.getId()))
-        .setInstitution(institution.getId())
-        .build();
-      branch = (Branch) branchDAO.put_(x, branch);
 
       account = new CABankAccount.Builder(x)
         .setAccountNumber(String.valueOf(user.getId()))
-        .setBranch( branch.getId() )
+        .setBranchId( String.valueOf(user.getId()) )
+        .setInstitutionNumber( String.valueOf(user.getId()) )
         .setOwner(user.getId())
         .setName(user.getLegalName())
         .setStatus(BankAccountStatus.VERIFIED)

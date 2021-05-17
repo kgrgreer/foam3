@@ -403,6 +403,12 @@ foam.CLASS({
       view: 'foam.u2.tag.TextArea'
     },
     {
+      class: 'String',
+      name: 'tedText',
+      documentation: `TED notification text`,
+      section: 'invoiceInformation'
+    },
+    {
       class: 'UnitValue',
       name: 'chequeAmount',
       includeInDigest: true,
@@ -706,14 +712,6 @@ foam.CLASS({
       javaFactory: `
         return UUID.randomUUID().toString();
       `
-    },
-    {
-      // TODO/REVIEW - used?
-      class: 'Boolean',
-      name: 'removed',
-      section: 'invoiceInformation',
-      documentation: 'Determines whether an invoice has been removed.',
-      includeInDigest: false
     },
     {
       class: 'Reference',
