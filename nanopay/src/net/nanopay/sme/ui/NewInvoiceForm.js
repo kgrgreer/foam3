@@ -59,7 +59,7 @@ foam.CLASS({
     'net.nanopay.bank.GetDefaultCurrency',
     'net.nanopay.contacts.Contact',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.ui.wizard.ContactWizardDetailView',
+    'net.nanopay.ui.wizard.WizardController',
     'foam.u2.dialog.Popup',
     'net.nanopay.accounting.xero.model.XeroInvoice',
     'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
@@ -536,8 +536,9 @@ foam.CLASS({
               .start().add(this.ADD_BANK).addClass('add-banking-information')
                 .on('click', async function() {
                   self.userDAO.find(self.invoice.contactId).then((contact)=>{
-                    self.add(self.ContactWizardDetailView.create({
+                    self.add(self.WizardController.create({
                       model: 'net.nanopay.contacts.Contact',
+                      wizardView: 'net.nanopay.contacts.ui.ContactWizardView',
                       data: contact,
                       controllerMode: foam.u2.ControllerMode.CREATE,
                       onClose: self.checkUser.bind(self)
@@ -789,8 +790,9 @@ foam.CLASS({
       icon: 'images/plus-no-bg.svg',
       code: function(X, e) {
         var self = X.data;
-        X.ctrl.add(net.nanopay.ui.wizard.ContactWizardDetailView.create({
+        X.ctrl.add(net.nanopay.ui.wizard.WizardController.create({
           model: 'net.nanopay.contacts.Contact',
+          wizardView: 'net.nanopay.contacts.ui.ContactWizardView',
           data$: self.addedContact$,
           controllerMode: foam.u2.ControllerMode.CREATE,
           onClose: self.setContactIdOnContactAdd.bind(self)
