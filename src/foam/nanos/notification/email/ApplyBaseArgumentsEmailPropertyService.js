@@ -8,7 +8,7 @@
   package: 'foam.nanos.notification.email',
   name: 'ApplyBaseArgumentsEmailPropertyService',
 
-  documentation: 'set up the base arguments of theme, appConfig ',
+  documentation: 'set up the base arguments of theme, appConfig',
 
   implements: [
     'foam.nanos.notification.email.EmailPropertyService'
@@ -39,17 +39,30 @@
         Logger logger = (Logger) x.get("logger");
         Theme theme = (Theme) x.get("theme");
         User user = ((Subject) x.get("subject")).getUser();
-        X userX = x.put("subject", new Subject.Builder(x).setUser(user).build());
+        String spid = null;
+        AppConfig appConfig = (AppConfig) x.get("appConfig");
+
+        if ( user != null ) {
+          appConfig = user.findGroup(x).getAppConfig(x);
+          spid = user.getSpid();
+        }
 
         if ( theme == null
           || ( user != null && ! user.getSpid().equals(x.get("spid")) )
         ) {
-          theme = ((Themes) x.get("themes")).findTheme(userX);
+          theme = ((Themes) x.get("themes")).findTheme(x);
+        }
+
+        if ( spid == null ) {
+          spid = theme.getSpid();
+        }
+
+        if ( SafetyUtil.isEmpty(emailMessage.getSpid()) ) {
+          emailMessage.setSpid(user.getSpid());
         }
 
         SupportConfig supportConfig = theme.getSupportConfig();
         EmailConfig emailConfig = supportConfig.getEmailConfig();
-        AppConfig appConfig = user.findGroup(x).getAppConfig(x);
 
         // Set ReplyTo, From, DisplayName from support email config
         if ( emailConfig != null ) {
@@ -67,19 +80,12 @@
           }
         }
 
-        // Add template name to templateArgs, to avoid extra parameter passing
+        // template name check
         String templateName = (String)templateArgs.get("template");
-        if ( ! SafetyUtil.isEmpty(templateName) ) {
+        if ( SafetyUtil.isEmpty(templateName) ) {
           logger.info("No email template name");
 
           return emailMessage;
-        }
-
-        if ( templateArgs != null ) {
-          templateArgs.put("template", templateName);
-        } else {
-          templateArgs = new HashMap<>();
-          templateArgs.put("template", templateName);
         }
 
         String url = appConfig.getUrl().replaceAll("/$", "");

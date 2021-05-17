@@ -12,6 +12,7 @@ import foam.nanos.notification.email.EmailPropertyService;
 import foam.nanos.theme.Theme;
 import foam.nanos.theme.Themes;
 import foam.util.SafetyUtil;
+import java.util.HashMap;
 import java.util.Map;
 
 public class EmailsUtility {
@@ -48,92 +49,34 @@ public class EmailsUtility {
 
     X userX = x;
     String group = "";
-    String spid = null;
     AppConfig appConfig = (AppConfig) x.get("appConfig");
     if ( user != null ) {
       userX = x.put("subject", new Subject.Builder(x).setUser(user).build());
       group = user.getGroup();
       appConfig = user.findGroup(x).getAppConfig(x);
-      spid = user.getSpid();
-    }
-
-    if ( SafetyUtil.isEmpty(emailMessage.getSpid()) ) {
-      emailMessage.setSpid(user.getSpid());
     }
 
     Theme theme = (Theme) x.get("theme");
-//    if ( theme == null
-//      || ( user != null && ! user.getSpid().equals(x.get("spid")) )
-//    ) {
-//      theme = ((Themes) x.get("themes")).findTheme(userX);
-//    }
-//    if ( spid == null ) {
-//      spid = theme.getSpid();
-//    }
+    if ( theme == null
+      || ( user != null && ! user.getSpid().equals(x.get("spid")) )
+    ) {
+      theme = ((Themes) x.get("themes")).findTheme(userX);
+    }
 
     if ( theme.getAppConfig() != null ) {
       appConfig.copyFrom(theme.getAppConfig());
     }
     userX = userX.put("appConfig", appConfig);
 
-    if ( SafetyUtil.isEmpty(emailMessage.getSpid()) ) {
-      emailMessage.setSpid(user.getSpid());
+    // Add template name to templateArgs, to avoid extra parameter passing
+    if ( ! SafetyUtil.isEmpty(templateName) ) {
+      if ( templateArgs != null ) {
+        templateArgs.put("template", templateName);
+      } else {
+        templateArgs = new HashMap<>();
+        templateArgs.put("template", templateName);
+      }
     }
-
-//    SupportConfig supportConfig = theme.getSupportConfig();
-//    EmailConfig emailConfig = supportConfig.getEmailConfig();
-//    if ( emailConfig == null ) {
-//      emailConfig = (EmailConfig) ((DAO) userX.get("emailConfigDAO")).find(spid);
-//    }
-//    // Set ReplyTo, From, DisplayName from support email config
-//    if ( emailConfig != null ) {
-//      // REPLY TO:
-//      if ( ! SafetyUtil.isEmpty(emailConfig.getReplyTo()) ) {
-//        emailMessage.setReplyTo(emailConfig.getReplyTo());
-//      }
-//
-//      // DISPLAY NAME:
-//      if ( ! SafetyUtil.isEmpty(emailConfig.getDisplayName()) ) {
-//        emailMessage.setDisplayName(emailConfig.getDisplayName());
-//      }
-//
-//      // FROM:
-//      if ( ! SafetyUtil.isEmpty(emailConfig.getFrom()) ) {
-//        emailMessage.setFrom(emailConfig.getFrom());
-//      }
-//    }
-//
-//    // Add template name to templateArgs, to avoid extra parameter passing
-//    if ( ! SafetyUtil.isEmpty(templateName) ) {
-//      if ( templateArgs != null ) {
-//        templateArgs.put("template", templateName);
-//      } else {
-//        templateArgs = new HashMap<>();
-//        templateArgs.put("template", templateName);
-//      }
-//
-//      String url = appConfig.getUrl().replaceAll("/$", "");
-//      templateArgs.put("logo", (url + "/" + theme.getLogo()));
-//      templateArgs.put("largeLogo", (url + "/" + theme.getLargeLogo()));
-//      templateArgs.put("appLink", url);
-//      templateArgs.put("appName", (theme.getAppName()));
-//
-//      templateArgs.put("locale", user.getLanguage().getCode().toString());
-//
-//      foam.nanos.auth.Address address = supportConfig.getSupportAddress();
-//      templateArgs.put("supportAddress", address == null ? "" : address.toSummary());
-//      templateArgs.put("supportPhone", (supportConfig.getSupportPhone()));
-//      templateArgs.put("supportEmail", (supportConfig.getSupportEmail()));
-//
-//      // personal support user
-//      User psUser = supportConfig.findPersonalSupportUser(x);
-//      templateArgs.put("personalSupportPhone", psUser == null ? "" : psUser.getPhoneNumber());
-//      templateArgs.put("personalSupportEmail", psUser == null ? "" : psUser.getEmail());
-//      templateArgs.put("personalSupportFirstName", psUser == null ? "" : psUser.getFirstName());
-//      templateArgs.put("personalSupportFullName", psUser == null ? "" : psUser.getLegalName());
-//
-//      emailMessage.setTemplateArguments(templateArgs);
-//    }
 
     // SERVICE CALL: to fill in email properties.
     EmailPropertyService cts = (EmailPropertyService) x.get("emailPropertyService");
