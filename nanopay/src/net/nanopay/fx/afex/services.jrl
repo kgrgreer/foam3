@@ -51,7 +51,6 @@ p({
       .setJournalName("afexUsers")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setAuthorize(true)
-      .setServiceProviderAware(true)
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.fx.afex.AFEXUser\"}"
@@ -90,7 +89,6 @@ p({
       .setJournalName("afexBeneficiaries")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setAuthorize(true)
-      .setServiceProviderAware(true)
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.fx.afex.AFEXBeneficiary\"}"
