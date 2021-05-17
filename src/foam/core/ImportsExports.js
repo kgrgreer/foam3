@@ -134,8 +134,8 @@ foam.CLASS({
           configurable: true,
           enumerable: false
         });
-      } catch (x){
-        console.warn(x);
+      } catch (e){
+        console.warn(e);
       }
     },
 
