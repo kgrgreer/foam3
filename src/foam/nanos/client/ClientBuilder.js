@@ -100,7 +100,8 @@ foam.CLASS({
               .select({
                 put: function(spec) {
                   if ( spec.client ) {
-                    client.exports.push(spec.name);
+                    var serviceName = spec.name.substring(spec.name.lastIndexOf('.') + 1);
+                    client.exports.push(serviceName);
 
                     var json = JSON.parse(spec.client);
 
