@@ -238,7 +238,7 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"intuitUserDAO",
+  "name":"intuit.userDAO",
   "serve": true,
   "authenticate": false,
   "serviceScript":
