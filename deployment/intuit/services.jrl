@@ -210,7 +210,7 @@ p({
       Business.MAILING_ADDRESS, BusinessDetailData.MAILING_ADDRESS
     );
 
-    dao = new net.nanopay.partner.intuit.CapabilityUpdateInterceptDAO(propMap, "crunch.onboarding.api.business-details");
+    dao = new foam.nanos.crunch.CapabilityUpdateInterceptDAO(propMap, "crunch.onboarding.api.business-details");
 
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.model.Business.getOwnClassInfo())
@@ -238,7 +238,7 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"intuit.userDAO",
+  "name":"intuitUserDAO",
   "serve": true,
   "authenticate": false,
   "serviceScript":
@@ -254,7 +254,7 @@ p({
       User.PHONE_NUMBER, SigningOfficerPersonalData.PHONE_NUMBER
     );
 
-    dao = new net.nanopay.partner.intuit.CapabilityUpdateInterceptDAO(propMap, "crunch.onboarding.signing-officer-information");
+    dao = new foam.nanos.crunch.CapabilityUpdateInterceptDAO(propMap, "crunch.onboarding.signing-officer-information");
 
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.auth.User.getOwnClassInfo())
