@@ -745,7 +745,7 @@ foam.CLASS({
     {
       name: 'updateColumns_',
       isFramed: true,
-      code: function(columns, of, editColumnsEnabled, selectedColumnNames, allColumns) {
+      code: function() {
         if ( ! this.of ) return [];
         var auth = this.auth;
         var self = this;
