@@ -5,7 +5,7 @@ p({
   "lazy":false,
   "service": {
     "class": "foam.box.socket.SslContextFactory",
-    "enableSSL": true,
+    "enableSSL": true
     "keyStorePath": "nanopay.jks",
     "keyStorePass": "nanopay",
     "trustStorePath": "nanopay.jks",

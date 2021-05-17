@@ -1,2 +1,2 @@
 #!/bin/bash
-./build.sh -uJcluster,cluster-ca-central-development,mn -ck
+./build.sh -uJcluster-ca-central-development,mn -ck
