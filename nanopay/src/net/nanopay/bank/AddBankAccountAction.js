@@ -36,7 +36,7 @@ foam.CLASS({
   messages: [
     { name: 'ACTION_LABEL', message: 'Add account' },
   ],
-  
+
   properties: [
     {
       name: 'name',

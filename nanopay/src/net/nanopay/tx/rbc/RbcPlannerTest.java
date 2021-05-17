@@ -11,8 +11,6 @@ import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.USBankAccount;
-import net.nanopay.model.Branch;
-import net.nanopay.payment.Institution;
 import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.model.Transaction;
 
@@ -64,23 +62,10 @@ public class RbcPlannerTest
     DAO bankAccountDao = (DAO) x_.get("accountDAO");
     CABankAccount account = (CABankAccount) bankAccountDao.find(EQ(CABankAccount.NAME, "RBC Test Account"));
     if ( account == null ) {
-      final DAO  institutionDAO = (DAO) x_.get("institutionDAO");
-      final DAO  branchDAO      = (DAO) x_.get("branchDAO");
-      Institution institution = new Institution.Builder(x_)
-        .setInstitutionNumber("003")
-        .setName("RBC Test institution")
-        .build();
-      institution = (Institution) institutionDAO.put_(x_, institution);
-    
-      Branch branch = new Branch.Builder(x_)
-        .setBranchId("00002")
-        .setInstitution(institution.getId())
-        .build();
-      branch = (Branch) branchDAO.put_(x_, branch);
-    
       BankAccount testBankAccount = new CABankAccount.Builder(x_)
         .setAccountNumber("12345678")
-        .setBranch( branch.getId() )
+        .setBranchId( "00002" )
+        .setInstitutionNumber("003")
         .setOwner(userId)
         .setName("RBC Test Account")
         .setStatus(BankAccountStatus.VERIFIED)
@@ -96,26 +81,11 @@ public class RbcPlannerTest
     DAO bankAccountDao = (DAO) x_.get("accountDAO");
     USBankAccount account = (USBankAccount) bankAccountDao.find(EQ(USBankAccount.NAME, "Wrong RBC Test Account"));
     if ( account == null ) {
-      final DAO  institutionDAO = (DAO) x_.get("institutionDAO");
-      final DAO  branchDAO      = (DAO) x_.get("branchDAO");
-      Institution institution = new Institution.Builder(x_)
-        .setInstitutionNumber("999")
-        .setName("Wrong RBC Test institution")
-        .build();
-      institution = (Institution) institutionDAO.put_(x_, institution);
-    
-      Branch branch = new Branch.Builder(x_)
-        .setBranchId("12222")
-        .setInstitution(institution.getId())
-        .build();
-      branch = (Branch) branchDAO.put_(x_, branch);
-    
       BankAccount testBankAccount = new USBankAccount.Builder(x_)
         .setAccountNumber("12345678")
-        .setBranch( branch.getId() )
+        .setBranchId( "123456789" )
+        .setInstitutionNumber( "999" )
         .setOwner(userId)
-        .setInstitution(institution.getId())
-        .setBranchId("123456789")
         .setName("Wrong RBC Test Account")
         .setStatus(BankAccountStatus.VERIFIED)
         .build();

@@ -22,7 +22,8 @@ p({
   "id":"36",
   "branchId":"123123123",
   "accountNumber":"123123",
-  "branch":41,
+  "branchId":"00002",
+  "institutionNumber":"003",
   "status":1,
   "address":{
     "class":"foam.nanos.auth.Address"

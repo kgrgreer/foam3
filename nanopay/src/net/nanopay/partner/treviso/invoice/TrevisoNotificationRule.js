@@ -20,14 +20,15 @@ foam.CLASS({
   name: 'TrevisoNotificationRule',
   implements: ['foam.nanos.ruler.RuleAction'],
 
-   documentation: `Adds send a TED text to invoice notes and create a notification.`,
+  documentation: `Sets a TED text and creates a notification.`,
 
-   javaImports: [
+  javaImports: [
     'foam.core.ContextAgent',
     'foam.core.Currency',
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.i18n.TranslationService',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
@@ -41,32 +42,21 @@ foam.CLASS({
     'java.util.*'
   ],
 
-  constants: [
+  messages: [
     {
-      type: 'String',
-      name: 'TEXT',
-      value: `
-      ATENÇÃO : Esta transação ainda não foi enviada!
-
-      Para completar, envie um TED de (`
-    },
-    {
-      type: 'String',
-      name: 'TEXT2',
-      value: `) para :
-
-      Treviso Corretora de Câmbio S.A
-      CNPJ: 02.992.317/0001-87
-      Banco SC Treviso (143)
-      Agencia: 0001
-      Conta: 1-1
-
-      O não envio dos fundos causará o cancelamento automático desta transação.
-      `
+      name: "TED_TEXT_MSG",
+      message: 'ATTENTION: This transaction has not yet been sent!\n\n' + 
+        'To complete, send a TED of ({amount}) to:\n\n' +
+        'Treviso Corretora de Câmbio S.A\n' +
+        'CNPJ: 02.992.317/0001-87\n' +
+        'Banco SC Treviso (143)\n' +
+        'Institution: 0001\n' +
+        'Account: 1-1\n\n' +
+        'If not received, the transaction will be canceled automatically.'
     }
   ],
 
-   methods: [
+  methods: [
     {
       name: 'applyAction',
       javaCode: `
@@ -98,14 +88,28 @@ foam.CLASS({
               .setEmailArgs(args)
               .build();
             user.doNotify(x, notify);
+            
+            Subject subject = (Subject) foam.core.XLocator.get().get("subject");
+            String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
+            TranslationService ts = (TranslationService) x.get("translationService");
+            
+            // set TED text in English, and translate it on the client side when necessary
+            String tedText;
+            if (locale.equals("en")) {
+              tedText = TED_TEXT_MSG;
+            } else {
+              tedText = ts.getTranslation(
+                "en",
+                "net.nanopay.partner.treviso.invoice.TrevisoNotificationRule.TED_TEXT_MSG",
+                ""
+              );
+            }
 
-            String note = SafetyUtil.isEmpty(invoice.getNote()) ? "" : invoice.getNote() + "\\n";
-            invoice.setNote(note + TEXT + amount + TEXT2);
+            invoice.setTedText(tedText.replace("{amount}", amount + ""));
             invoice.setTotalSourceAmount(amount);
-
           }
-        }, "Adds send a TED text to invoice note and create a notification");
+        }, "Sets TED text and creates a notification");
       `
     }
   ]
- });
+});

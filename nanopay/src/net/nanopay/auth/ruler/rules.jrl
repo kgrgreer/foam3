@@ -32,3 +32,23 @@ p({
   "limitedSpidList": [ "intuit" ],
   "action":{ "class":"net.nanopay.auth.ruler.PreventDuplicateEmailAction" }
 })
+p({
+  "class":"net.nanopay.auth.ruler.PermissionedUserRule",
+  "id":"add-external-contact-token-rule",
+  "name":"Add External Contact Token Rule",
+  "documentation": "Generate an external contact token when saving an external contact.",
+  "priority": 100,
+  "enabled": true,
+  "ruleGroup": "auth",
+  "daoKey": "localContactDAO",
+  "operation": 3,
+  "after": true,
+  "predicate": {
+    "class": "foam.mlang.predicate.MQLExpr",
+    "query": "n(has:email)"
+  },
+  "action": {
+    "class": "net.nanopay.auth.ruler.AddExternalContactTokenRuleAction"
+  },
+  "lifecycleState": 1
+})
