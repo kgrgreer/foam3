@@ -106,33 +106,37 @@ foam.CLASS({
       var slotName = this.slotName_;
       var required = this.required;
 
-      Object.defineProperty(proto, slotName, {
-        get: function importsSlotGetter() {
-          return this.__context__[key];
-        },
-        configurable: false,
-        enumerable: false
-      });
-
-      Object.defineProperty(proto, name, {
-        get: function importsGetter()  {
-          var slot = this[slotName];
-          if ( slot ) return slot.get();
-          if ( required ) {
-            console.warn('Access missing import:', name);
-          }
-          return undefined;
-        },
-        set: function importsSetter(v) {
-          var slot = this[slotName];
-          if ( slot )
-            slot.set(v);
-          else
-            console.warn('Attempt to set missing import:', name);
-        },
-        configurable: true,
-        enumerable: false
-      });
+      try{
+        Object.defineProperty(proto, slotName, {
+          get: function importsSlotGetter() {
+            return this.__context__[key];
+          },
+          configurable: false,
+          enumerable: false
+        });
+  
+        Object.defineProperty(proto, name, {
+          get: function importsGetter()  {
+            var slot = this[slotName];
+            if ( slot ) return slot.get();
+            if ( required ) {
+              console.warn('Access missing import:', name);
+            }
+            return undefined;
+          },
+          set: function importsSetter(v) {
+            var slot = this[slotName];
+            if ( slot )
+              slot.set(v);
+            else
+              console.warn('Attempt to set missing import:', name);
+          },
+          configurable: true,
+          enumerable: false
+        });
+      } catch (x){
+        console.warn(x);
+      }
     },
 
     function toSlot(obj) {
