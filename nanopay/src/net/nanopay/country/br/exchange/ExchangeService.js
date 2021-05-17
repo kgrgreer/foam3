@@ -104,6 +104,10 @@ foam.INTERFACE({
       javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
+          type: 'Long',
+          name: 'userId'
+        },
+        {
           type: 'String',
           name: 'natureCode'
         },
