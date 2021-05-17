@@ -61,13 +61,6 @@ foam.CLASS({
         DAO userDAO = ((DAO) x.get("localUserDAO")).inX(x);
         User payee = (User) userDAO.find(invoice.getPayeeId());
         if ( payee == null ) { return super.put_(x, invoice); }
-        if ( auth.check(x, "invoice.holdingAccount") &&
-          invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE &&
-          checkIfUserHasVerifiedBankAccount(x, payee, invoice)) {
-          // Try to deposit
-          doTransactionToBankAccount(x, invoice, payee);
-          return invoice;
-        }
         return super.put_(x, invoice);
       `
     },

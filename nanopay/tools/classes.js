@@ -107,7 +107,6 @@ var classes = [
   'net.nanopay.account.LossesAccount',
   'net.nanopay.account.LoanAccount',
   'net.nanopay.account.LoanedTotalAccount',
-  'net.nanopay.account.HoldingAccount',
   'net.nanopay.account.AuthenticatedAccountDAOTest',
   'net.nanopay.account.NoBalanceRule',
   'net.nanopay.account.NoPendingTransactionsRule',
