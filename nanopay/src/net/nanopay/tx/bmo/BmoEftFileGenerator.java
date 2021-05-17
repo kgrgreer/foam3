@@ -23,8 +23,6 @@ import foam.nanos.logger.PrefixLogger;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.bank.CABankAccount;
-import net.nanopay.model.Branch;
-import net.nanopay.payment.Institution;
 import net.nanopay.payment.PADTypeLineItem;
 import net.nanopay.tx.TransactionEvent;
 import net.nanopay.tx.bmo.cico.BmoCITransaction;
@@ -254,14 +252,12 @@ public class BmoEftFileGenerator implements EFTFileGenerator {
             bankAccount = getAccountById(transaction.getDestinationAccount());
           }
 
-          Branch branch = getBranchById(bankAccount.getBranch());
-
           BmoDetailRecord detailRecord =      new BmoDetailRecord();
           detailRecord.setAmount              (-transaction.getTotal(x, transaction.getSourceAccount()));
           detailRecord.setLogicalRecordTypeId (type);
           detailRecord.setClientName          (getNameById(bankAccount.getOwner()));
           // Question: Would BMO accept the standard 9 digit Canadian routing code? Or just the institution + branch which is only 8 digits.
-          detailRecord.setClientInstitutionId (getInstitutionById(branch.getInstitution()) + branch.getBranchId());
+          detailRecord.setClientInstitutionId (bankAccount.getInstitutionNumber() + bankAccount.getBranchId());
           detailRecord.setClientAccountNumber (bankAccount.getAccountNumber());
           detailRecord.setReferenceNumber     (String.valueOf(getRefNumber(transaction)));
           detailRecord.validate(x);
@@ -350,19 +346,6 @@ public class BmoEftFileGenerator implements EFTFileGenerator {
     }
 
     return BmoFormatUtil.filterASCII(displayName);
-  }
-
-  public String getInstitutionById(long id) {
-    DAO institutionDAO = (DAO) x.get("institutionDAO");
-
-    Institution institution = (Institution) institutionDAO.inX(x).find(id);
-    return institution.getInstitutionNumber();
-  }
-
-  public Branch getBranchById(long id) {
-    DAO branchDAO = (DAO) x.get("branchDAO");
-
-    return (Branch) branchDAO.inX(x).find(id);
   }
 
   public boolean isValidTransaction(Transaction transaction) {

@@ -28,10 +28,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'branchDAO',
     'capabilityDAO',
     'countryDAO',
-    'institutionDAO',
     'paymentProviderCorridorDAO',
     'supportTransactionDAO',
     'userDAO'
@@ -44,7 +42,8 @@ foam.CLASS({
   searchColumns: [
     'id',
     'accountNumber',
-    'branch',
+    'branchId',
+    'institutionNumber',
     'owner',
     'created'
   ],
@@ -102,14 +101,14 @@ foam.CLASS({
         }.bind(this));
       },
     }),
-    net.nanopay.bank.BankAccount.BRANCH.clone().copyFrom({
+    net.nanopay.bank.BankAccount.BRANCH_ID.clone().copyFrom({
       label: 'Transit Number',
       gridColumns:6,
       visibility: 'RO',
       section: 'accountInformation',
       order: 40
     }),
-    net.nanopay.bank.BankAccount.INSTITUTION.clone().copyFrom({
+    net.nanopay.bank.BankAccount.INSTITUTION_NUMBER.clone().copyFrom({
       label: 'Institution Number',
       gridColumns:6,
       visibility: 'RO',
