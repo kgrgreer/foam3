@@ -162,7 +162,7 @@ foam.CLASS({
           } else {
             socket = new Socket();
           }
-
+          
           socket.setSoTimeout(getSoTimeout());
           SocketAddress address = new InetSocketAddress(host, port);
           socket.connect(address, getConnectTimeout());
@@ -171,14 +171,13 @@ foam.CLASS({
           Agency agency = (Agency) x.get("threadPool");
           agency.submit(x, (ContextAgent) box, socket.getRemoteSocketAddress().toString());
           return box;
-        } catch ( java.net.ConnectException |
-                   java.net.NoRouteToHostException e ) {
+        } catch ( IOException e ) {
           remove(box);
-          getLogger().warning(host, port, e.getClass().getSimpleName(), e.getMessage());
+          getLogger().error(host, port, e.getClass().getSimpleName(), e.getMessage());
           throw new RuntimeException(e);
-        } catch ( Throwable t ) { // All other IOExceptions
+        } catch ( Throwable t ) {
           remove(box);
-          getLogger().error(host, port, t.getClass().getSimpleName(), t.getMessage());
+          getLogger().warning(host, port, t.getClass().getSimpleName(), t.getMessage());
           throw new RuntimeException(t);
         }
       `
