@@ -50,7 +50,7 @@ foam.CLASS({
       agency.submit(x, new ContextAgent() {
         @Override
         public void execute(X x) {
-          PM pm = new PM(getClass(), rule.getDaoKey() + "/" + rule.getName());
+          PM pm = new PM(getClass(), rule.getDaoKey(), rule.getName());
           try {
             final var sink = new HTTPSink(
               dugRule.getUrl(),
@@ -74,8 +74,6 @@ foam.CLASS({
             alarmDAO.put(
               new Alarm.Builder(x)
                 .setName("DUG/"+rule.getDaoKey() + "/" + rule.getName())
-                .setReason(AlarmReason.UNSPECIFIED)
-                .setSeverity(LogLevel.WARN)
                 .build()
             );
             pm.error(x);
