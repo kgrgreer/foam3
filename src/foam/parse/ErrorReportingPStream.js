@@ -33,11 +33,10 @@ foam.CLASS({
         if ( ! this.instance_.tail ) {
           var ps = this.cls_.create();
           ps.delegate = this.delegate.tail;
-          ps.report = this.report;
-          ps.pos = this.pos + 1;
-          ps.limit = this.limit;
-          ps.intro = ps.pos > ps.limit ?
-            this.intro.tail : this.intro;
+          ps.report   = this.report;
+          ps.pos      = this.pos + 1;
+          ps.limit    = this.limit;
+          ps.intro    = ps.pos > ps.limit ? this.intro.tail : this.intro;
           this.instance_.tail = ps;
         }
         return this.instance_.tail;
