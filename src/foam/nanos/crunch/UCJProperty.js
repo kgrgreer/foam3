@@ -33,24 +33,39 @@ foam.CLASS({
     {
       name: 'adapt',
       value: function (_, o) {
-        const e = foam.mlang.Expressions.create();
+        const Predicate = foam.mlang.predicate.Predicate;
+        if ( Predicate.isInstance(o) ) return o;
         if ( foam.String.isInstance(o) ) {
           return e.EQ(foam.nanos.crunch.UserCapabilityJunction.ID, o);
         }
         if ( ! foam.Object.isInstance(o) && ! foam.Array.isInstance(o) ) {
-          throw new Error('valid UCJProperty values are: string, object, array');
+          throw new Error('valid UCJProperty values are: Predicate, string, object');
         }
-        o = foam.Array.isInstance(o) ? { sourceId: o[0], targetId: o[1] } : o;
-        return e.AND(
-          e.EQ(
-            foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID,
-            o.sourceId
-          ),
-          e.EQ(
-            foam.nanos.crunch.UserCapabilityJunction.TARGET_ID,
-            o.targetId
-          )
+        if ( ! o.hasOwnProperty('sourceId') || ! o.hasOwnProperty('targetId') ) {
+          throw new Error('an object value for UCJProperty must have ' +
+            'properties sourceId and targetId.');
+        }
+
+        const UserCapabilityJunction = foam.nanos.crunch.UserCapabilityJunction;
+        const AgentCapabilityJunction = foam.nanos.crunch.AgentCapabilityJunction;
+
+        const e = foam.mlang.Expressions.create();
+        var predicate = e.AND(
+          e.EQ(UserCapabilityJunction.SOURCE_ID, o.sourceId),
+          e.EQ(UserCapabilityJunction.TARGET_ID, o.targetId)
         );
+
+        if ( o.hasOwnProperty('effectiveUser') ) {
+          predicate = e.AND(
+            predicate,
+            e.OR(
+              e.NOT(e.INSTANCE_OF(AgentCapabilityJunction)),
+              e.EQ(this.AgentCapabilityJunction.EFFECTIVE_USER, o.effectiveUser)
+            )
+          );
+        }
+
+        return predicate;
       }
     }
   ]

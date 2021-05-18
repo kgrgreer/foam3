@@ -478,6 +478,7 @@ FOAM_FILES([
   { name: "foam/nanos/crunch/CapabilityCategoryCapabilityJunctionRefine" },
   { name: "foam/nanos/crunch/RenewableData" },
   { name: "foam/nanos/crunch/UCJProperty" },
+  { name: "foam/nanos/crunch/UCJUpdateApprovable" },
   { name: "foam/nanos/crunch/connection/CapabilityPayload" },
   { name: "foam/nanos/crunch/connection/GrantPathNode" },
   //daos
@@ -551,6 +552,7 @@ FOAM_FILES([
   { name: 'foam/nanos/approval/ApprovalRequestMemoRule' },
   { name: 'foam/nanos/approval/ApprovalRequestClassificationEnum' },
   { name: 'foam/nanos/approval/CompositeApprovable' },
+  { name: 'foam/nanos/approval/CustomViewReferenceApprovable' },
   { name: 'foam/nanos/approval/FulfilledCompositeApprovableRule' },
 
   //authservice
