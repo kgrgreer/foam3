@@ -138,7 +138,7 @@ foam.CLASS({
 
           this.
             addClass(this.myClass()).
-            show(this.selected$.map(s => ! s || s == self.data.id)).
+            // show(this.selected$.map(s => ! s || s == self.data.id)).
             style({
               width: '100%',
               xxxborder: '2px solid black',
@@ -147,6 +147,7 @@ foam.CLASS({
             }).
             tag('hr').
             start('h3').
+              start('a').attrs({name: self.data.id}).end().
               add(this.Example.ID, ' ', this.Example.TITLE).
             end().
             br().
@@ -334,8 +335,9 @@ foam.CLASS({
           start().
             addClass(this.myClass('index')).
             select(this.data, function(e) {
-              return this.E()
-                .style({padding: '4px', 'padding-left': (16 * e.id.split('.').length  - 12)+ 'px'})
+              return this.E('a')
+                .attrs({href: '#' + e.id})
+                .style({display: 'block', padding: '4px', 'padding-left': (16 * e.id.split('.').length  - 12)+ 'px'})
                 .add(e.id, ' ', e.title)
                 .enableClass('selected', self.selected$.map(s => s == e.id))
                 .on('mouseenter', () => { self.selected = e.id; })
