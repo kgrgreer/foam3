@@ -232,7 +232,7 @@ public class QueryParser
       if ( prop instanceof AbstractDatePropertyInfo ) {
         Date[] dates;
         if ( value[0] instanceof Integer ) {
-          dates = convertToRange((int) value[0]);
+          dates = convertToYearRange((int) value[0]);
         } else {
           dates = (Date[]) value[0];
         }
@@ -310,6 +310,7 @@ public class QueryParser
 
       if ( values[0] instanceof AbstractDatePropertyInfo && values[2] instanceof Integer ) {
         Calendar c = Calendar.getInstance();
+        // beginning of year
         c.set((int) values[2], 0, 0);
 
         values[2] = c.getTime();
@@ -334,7 +335,8 @@ public class QueryParser
 
       if ( values[0] instanceof AbstractDatePropertyInfo && values[2] instanceof Integer ) {
         Calendar c = Calendar.getInstance();
-        c.set((int) values[2], 0, 0);
+        // end of year
+        c.set((int) values[2] + 1, 0, 0);
 
         values[2] = c.getTime();
       }
@@ -580,7 +582,7 @@ public class QueryParser
     return grammar;
   }
 
-  protected Date[] convertToRange(int year) {
+  protected Date[] convertToYearRange(int year) {
     Calendar start = Calendar.getInstance();
     start.set(year, 0, 0);
 
