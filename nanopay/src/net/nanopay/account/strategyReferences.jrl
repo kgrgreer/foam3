@@ -78,12 +78,6 @@ p({
 })
 p({
   "class": "foam.strategy.StrategyReference",
-  "id": "575d2308-385f-4f17-8bb7-fbb3db58c6e4",
-  "desiredModelId": "net.nanopay.account.Account",
-  "strategy": "net.nanopay.account.HoldingAccount"
-})
-p({
-  "class": "foam.strategy.StrategyReference",
   "id": "fe1c1e4f-c518-4095-9543-bd2cf5777492",
   "desiredModelId": "net.nanopay.account.Account",
   "strategy": "net.nanopay.account.SecurityAccount"
