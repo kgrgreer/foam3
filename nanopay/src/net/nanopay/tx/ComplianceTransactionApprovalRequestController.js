@@ -151,7 +151,6 @@
       factory: function() { return this.dao; },
       view: {
         class: 'foam.u2.view.ScrollTableView',
-        editColumnsEnabled: false,
         columns: [
           'referenceSummary',
           'assignedTo.legalName',
