@@ -30,7 +30,6 @@ foam.CLASS({
     'foam.mlang.predicate.Predicate',
     'foam.nanos.auth.*',
     'foam.util.SafetyUtil',
-    'net.nanopay.contacts.Contact',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
 
@@ -132,9 +131,8 @@ foam.CLASS({
       name: 'put_',
       documentation: `
         To create an invoice, the user must have the global invoice create permission, and be 'related' to the invoice via 
-        the isRelated method, and the other party of the invoice must be a contact of the user;
-        To update an invoice, the user must either have the global update permission, or be 'related' to the invoice with the
-        other party of the invoice being a contact of the user
+        the isRelated method;
+        To update an invoice, the user must either have the global update permission, or be 'related' to the invoice
       `,
       javaCode: `
         User user = getUser(x);
@@ -159,7 +157,7 @@ foam.CLASS({
         if ( old != null && ! SafetyUtil.equals(invoice.getReferenceId(), old.getReferenceId()) )
           throw new AuthorizationException(UPDATE_REF_ID_ERROR_MSG);
 
-        // Check that user is 'related' to invoice and other party of invoice is contact of the usere
+        // Check that user is 'related' to invoice
         if ( ! isRelated(x, user.getId(), invoice) || old != null && ! isRelated(x, user.getId(), old) )
           throw new AuthorizationException(UPDATE_INVOICE_PERMISSION_ERR);
 
