@@ -72,11 +72,11 @@ foam.CLASS({
           } catch (Throwable t) {
             var alarmDAO = (DAO) x.get("alarmDAO");
             alarmDAO.put(
-            new Alarm.Builder(x)
-              .setName("DUG/"+rule.getDaoKey() + "/" + rule.getName())
-              .setReason(AlarmReason.UNSPECIFIED)
-              .setSeverity(LogLevel.WARN)
-              .build()
+              new Alarm.Builder(x)
+                .setName("DUG/"+rule.getDaoKey() + "/" + rule.getName())
+                .setReason(AlarmReason.UNSPECIFIED)
+                .setSeverity(LogLevel.WARN)
+                .build()
             );
             pm.error(x);
           } finally {
