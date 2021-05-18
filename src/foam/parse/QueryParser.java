@@ -229,8 +229,13 @@ public class QueryParser
       Expr prop = ( Expr ) values[0];
 
       Object[] value = (Object[]) values[4];
-      if ( value[0] instanceof Date[] || prop instanceof AbstractDatePropertyInfo) {
-        Date[] dates = (Date[]) value[0];
+      if ( prop instanceof AbstractDatePropertyInfo ) {
+        Date[] dates;
+        if ( value[0] instanceof Integer ) {
+          dates = convertToRange((int) value[0]);
+        } else {
+          dates = (Date[]) value[0];
+        }
         And and = new And();
         Gte gte = new Gte();
         gte.setArg1(prop);
@@ -328,7 +333,7 @@ public class QueryParser
     });
 
     grammar.addSymbol("VALUE", new GreedyAlt(grammar.sym("ME"),grammar.sym("NUMBER"),
-      grammar.sym("DATE"),grammar.sym("NUMBER"),grammar.sym("STRING")));
+      grammar.sym("DATE"),grammar.sym("STRING")));
 
     grammar.addSymbol("COMPOUND_VALUE", new Alt(grammar.sym("NEGATE_VALUE"),
       grammar.sym("OR_VALUE"), grammar.sym("AND_VALUE")));
@@ -560,6 +565,16 @@ public class QueryParser
     });
 
     return grammar;
+  }
+
+  protected Date[] convertToRange(int year) {
+    Calendar start = Calendar.getInstance();
+    start.set(year, 0, 0);
+
+    Calendar end = Calendar.getInstance();
+    end.set(year + 1, 0, 0);
+
+    return new Date[] { start.getTime(), end.getTime() };
   }
 
   protected String compactToString(Object val) {
