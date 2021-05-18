@@ -108,6 +108,11 @@ public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
       intuitTxnSummary.setCategory(chainSummary.getCategory());
       intuitTxnSummary.setErrorCode(chainSummary.getErrorCode());
       intuitTxnSummary.setErrorInfo(chainSummary.getErrorInfo());
+      if ( intuitTxnSummary.getErrorCode() != 0  && intuitTxnSummary.getStatus() == TransactionStatus.PENDING) {
+        intuitTxnSummary.setStatusDetail("Retry in progress");
+      } else if ( ! (intuitTxnSummary.getStatus() == TransactionStatus.PENDING) ) {
+        intuitTxnSummary.setStatusDetail("");
+      }
       intuitTxnSummary.setCreated(txn.getCreated());
       intuitTxnSummary.setLastModified(txn.getLastModified());
       intuitTxnSummary.setExternalId(txn.getExternalId() != null ? txn.getExternalId() : "");
