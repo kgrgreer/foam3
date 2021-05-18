@@ -33,7 +33,6 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserAndGroupAuthService',
     'foam.util.Auth',
-    'net.nanopay.contacts.Contact',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.tx.model.Transaction',
     'static foam.mlang.MLang.*'
@@ -180,15 +179,6 @@ foam.CLASS({
       payee.setLifecycleState(LifecycleState.ACTIVE);
       payee = (User) userDAO.put_(x, payee);
 
-      ((DAO) payee.getContacts(x)).put_(x,
-        new net.nanopay.contacts.Contact.Builder(x)
-          .setId(1380)
-          .setOrganization("contact1380")
-          .setSpid("test")
-          .setEnabled(true)
-          .build()
-      );
-
       X payeeContext = Auth.sudo(x, payee);
 
       boolean threw = false;
@@ -267,15 +257,6 @@ foam.CLASS({
       payer.setEmail("test1380@mailinator.com");
       payer.setGroup("business");
       payer = (User) userDAO.put_(x, payer);
-
-      ((DAO) payer.getContacts(x)).put_(x,
-        new net.nanopay.contacts.Contact.Builder(x)
-          .setId(1368)
-          .setOrganization("contact1368")
-          .setEnabled(true)
-          .setSpid("test")
-          .build()
-      );
 
       X payerContext = Auth.sudo(x, payer);
       boolean threw = false;
@@ -667,27 +648,14 @@ foam.CLASS({
       regUserPermInvoice.setDraft(true);
 
       // Users .put localUserDAO
-      payerUser = (User) userDAO.put(payerUser);
-      regUser = (User) userDAO.put(regUser);
+      userDAO.put(payerUser);
+      userDAO.put(regUser);
 
       boolean threw = false;
       String message = "";
       /* CONTEXT TWO: regUserContext */
       // Logic: Running user is regUser with no global permissions.
       X regUserContext = Auth.sudo(x, regUser);
-
-      ((DAO) regUser.getContacts(x)).put(new net.nanopay.contacts.Contact.Builder(x)
-        .setId(1380)
-        .setSpid("test")
-        .setEnabled(true)
-        .setOrganization("contact1380")
-        .build());
-      ((DAO) payerUser.getContacts(x)).put(new net.nanopay.contacts.Contact.Builder(x)
-        .setId(1369)
-        .setSpid("test")
-        .setEnabled(true)
-        .setOrganization("contact1380")
-        .build());
 
       // PUT TESTS
       // 1: regUserContext
