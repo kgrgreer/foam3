@@ -19,7 +19,8 @@ foam.CLASS({
   ],
   exports: [
     'capabilities',
-    'getWAO'
+    'getWAO',
+    'subject as wizardSubject'
   ],
 
   requires: [

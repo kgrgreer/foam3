@@ -32,8 +32,13 @@ foam.CLASS({
   requires: [
     'foam.u2.ButtonSize',
     'foam.u2.ButtonStyle',
-    'foam.u2.dialog.Popup'
+    'foam.u2.dialog.Popup',
+    'foam.u2.tag.CircleIndicator',
+    'foam.net.HTTPRequest',
+    'foam.u2.HTMLView'
   ],
+
+  imports: ['theme?'],
 
   css: `
     ^ {
@@ -64,8 +69,18 @@ foam.CLASS({
       vertical-align: middle;
     }
 
+    ^ svg {
+      width: 100%;
+      height: 100%;
+      vertical-align: middle;
+    }
+
     ^.material-icons {
       cursor: pointer;
+    }
+    
+    ^ > .foam-u2-HTMLView{
+      padding: 0;
     }
 
     /* Unstyled */
@@ -76,10 +91,11 @@ foam.CLASS({
     }
 
     /* Primary */
-    ^primary {
+    ^primary, ^primary svg {
       background-color: /*%PRIMARY3%*/ #406dea;
-      color: /*%WHITE%*/ white;
       box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1);
+      color: /*%WHITE%*/ white;
+      fill: /*%WHITE%*/ white;
     }
 
     ^primary:hover:not(:disabled) {
@@ -96,9 +112,10 @@ foam.CLASS({
 
     /* Primary destructive */
 
-    ^primary-destructive {
+    ^primary-destructive,^primary-destructive svg {
       background-color: /*%DESTRUCTIVE3%*/ #d9170e;
       color: /*%WHITE%*/ white;
+      fill: /*%WHITE%*/ white;
     }
 
     ^primary-destructive:hover:not(:disabled) {
@@ -117,11 +134,13 @@ foam.CLASS({
 
     /* Secondary */
 
-    ^secondary {
+    ^secondary{
       background-color: /*%WHITE%*/ white;
       border: 1px solid /*%GREY3%*/ #B2B6BD;
       color: /*%GREY1%*/ #494F59;
     }
+
+    ^secondary svg { fill: /*%GREY1%*/ #494F59; } 
 
     ^secondary:hover:not(:disabled) {
       background-color: /*%GREY5%*/ #B2B6BD;
@@ -131,20 +150,23 @@ foam.CLASS({
       border: 1px solid /*%PRIMARY3%*/ #406DEA;
     }
 
-    ^secondary:disabled {
+    ^secondary:disabled{
       background-color: /*%GREY5%*/ #F5F7FA;
       border-color: /*%GREY4%*/ #DADDE2;
       color: /*%GREY4%*/ #DADDE2;
     }
 
+    ^secondary:disabled svg { fill: /*%GREY4%*/ #DADDE2; }
 
     /* Secondary destructive */
 
-    ^secondary-destructive {
+    ^secondary-destructive{
       background-color: white;
       border: 1px solid /*%GREY3%*/ #B2B6BD;
       color: /*%DESTRUCTIVE2%*/ #d9170e;
     }
+
+    ^secondary-destructive svg { fill: /*%DESTRUCTIVE2%*/ #d9170e; }
 
     ^secondary-destructive:hover {
       background-color: /*%GREY5%*/ #B2B6BD;
@@ -160,66 +182,75 @@ foam.CLASS({
       color: /*%DESTRUCTIVE5%*/ #E5D2D0;
     }
 
+    ^secondary-destructive:disabled svg { fill: /*%DESTRUCTIVE5%*/ #E5D2D0; }
 
     /* Tertiary */
 
-    ^tertiary {
+    ^tertiary,^tertiary svg{ 
       background: none;
       border: 1px solid transparent;
       color: /*%GREY1%*/ #5E6061;
+      fill: /*%GREY1%*/ #5E6061;
     }
 
     ^tertiary:hover:not(:disabled) {
       background-color: /*%GREY5%*/ #F5F7FA;
     }
 
-    ^tertiary:focus {
+    ^tertiary:focus,^tertiary:focus svg {
       background-color: /*%GREY5%*/ #F5F7FA;
       color: /*%PRIMARY3%*/ #494F59;
+      fill: /*%PRIMARY3%*/ #494F59;
     }
 
-    ^tertiary:disabled {
+    ^tertiary:disabled,^tertiary:disabled svg {
       color: /*%GREY4%*/ #DADDE2;
+      fill: /*%GREY4%*/ #DADDE2;
     }
 
 
     /* Tertiary destructive */
 
-    ^tertiary-destructive {
+    ^tertiary-destructive,^tertiary-destructive svg {
       background-color: transparent;
       border-color: transparent;
       color: /*%DESTRUCTIVE5%*/ #5E6061;
+      fill: /*%DESTRUCTIVE5%*/ #5E6061;
     }
 
     ^tertiary-destructive:hover:not(:disabled) {
       background-color: /*%GREY5%*/ #F5F7FA;
     }
 
-    ^tertiary-destructive:focus {
+    ^tertiary-destructive:focus,^tertiary-destructive:focus svg {
       background-color: /*%GREY5%*/ #F5F7FA;
       color: /*%DESTRUCTIVE3%*/ #494F59;
+      fill: /*%DESTRUCTIVE3%*/ #494F59;
     }
 
-    ^tertiary-destructive:disabled {
+    ^tertiary-destructive:disabled,^tertiary-destructive:diabled svg {
       color: /*%GREY4%*/ #DADDE2;
+      fill: /*%GREY4%*/ #DADDE2;
     }
 
     /* Link */
 
-    ^link {
+    ^link,^link svg {
       background: none;
       color: /*%GREY1%*/ #5E6061;
+      fill: /*%GREY1%*/ #5E6061;
     }
 
-    ^link:hover {
+    ^link:hover,^link:hover svg {
       text-decoration: underline;
       color: /*%GREY2%*/ #6B778C;
+      fill: /*%GREY2%*/ #6B778C;
     }
 
-    ^link:focus {
+    ^link:focus,^link:focus svg {
       color: /*%PRIMARY3%*/ #406DEA;
+      fill: /*%PRIMARY3%*/ #406DEA;
     }
-
 
     /* Sizes */
 
@@ -227,27 +258,12 @@ foam.CLASS({
       padding: 6px 10px;
     }
 
-    ^small > img {
-      width: 16px;
-      height: 16px;
-    }
-
     ^medium {
       padding: 8px 12px;
     }
 
-    ^medium > img {
-      width: 24px;
-      height: 24px;
-    }
-
     ^large {
       padding: 12px 12px;
-    }
-
-    ^large > img {
-      width: 32px;
-      height: 32px;
     }
 
     ^iconOnly{
@@ -261,12 +277,6 @@ foam.CLASS({
       padding-right: 0;
     }
 
-    ^link^small > img,
-    ^link^medium > img,
-    ^link^large > img {
-      width: 14px;
-      height: 14px;
-    }
   `,
 
   imports: [
@@ -294,6 +304,11 @@ foam.CLASS({
       class: 'URL',
       name: 'icon',
       factory: function(action) { return this.action.icon; }
+    },
+    {
+      class: 'GlyphProperty',
+      name: 'themeIcon',
+      factory: function(action) { return this.action.themeIcon; }
     },
     {
       class: 'String',
@@ -401,17 +416,35 @@ foam.CLASS({
       this.addClass(this.myClass(this.action.name));
     },
 
-    function addContent() {
+    async function addContent() {
       /** Add text or icon to button. **/
-      if ( this.icon ) {
-        this.start('img')
-          .style({ 'margin-right': this.label ? '4px' : 0 })
-          .attr('src', this.icon$)
-        .end();
+      var self = this;
+      var size = this.buttonStyle == this.buttonStyle.LINK ? '1em' : this.size.iconSize;
+      var iconStyle = { width: size, height: size, 'margin-right': this.label ? '4px' : '' }; 
+      
+      if ( this.themeIcon ) {
+        var indicator = this.themeIcon.clone(this).expandSVG();
+        this.start(this.HTMLView, { data: indicator }).attrs({ role: 'presentation' }).style(iconStyle).end();
+      } else if ( this.icon ) {
+        if ( this.icon.endsWith('.svg') ) {
+          var req  = this.HTTPRequest.create({
+            method: 'GET',
+            path: this.icon
+          });
+          await req.send().then(function(payload) {
+            return payload.resp.text();
+          }).then(x => {
+            self.start(this.HTMLView, { data: x }).attrs({ role: 'presentation' }).style(iconStyle).end();
+          });
+        } else {
+          this.start('img').style(iconStyle).attrs({ src: this.icon$, role: 'presentation' }).end();
+        }
       } else if ( this.iconFontName ) {
         this.nodeName = 'i';
         this.cssClass(this.action.name);
         this.cssClass(this.iconFontClass); // required by font package
+        this.style(iconStyle)
+        this.attr(role, 'presentation')
         this.style({ 'font-family': this.iconFontFamily });
         this.add(this.iconFontName);
       }

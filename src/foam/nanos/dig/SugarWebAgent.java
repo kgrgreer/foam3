@@ -56,7 +56,7 @@ public class SugarWebAgent
     HttpParameters      p              = x.get(HttpParameters.class);
     String              data           = p.getParameter("data");
 
-    var pm = new PM(SugarWebAgent.class.getSimpleName(), "");
+    var pm = new PM(SugarWebAgent.class.getSimpleName());
 
     try {
       if ( SafetyUtil.isEmpty(data) ) {
@@ -77,10 +77,10 @@ public class SugarWebAgent
       Map mapPostParam = (Map) psParse.value();
 
       String serviceName = (String) mapPostParam.get("service");
-      pm.setName("sugar" + serviceName);
       if ( SafetyUtil.isEmpty(serviceName) ) {
         throw new RuntimeException("Empty Service Key");
       }
+      pm.setName("sugar." + serviceName);
 
       String methodName = (String) mapPostParam.get("method");
       if ( SafetyUtil.isEmpty(methodName) ) {

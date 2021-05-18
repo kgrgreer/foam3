@@ -20,6 +20,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.u2.crunch.wizardflow.ApprovalRequestAgent',
     'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView'
@@ -57,7 +58,7 @@ foam.CLASS({
         stack: this.localStack,
         subject: subject
       });
-      
+
       this.crunchController.createWizardSequence(ucj.targetId, x)
         .reconfigure('LoadCapabilitiesAgent', {
           subject: subject,
@@ -70,6 +71,9 @@ foam.CLASS({
         .remove('RequirementsPreviewAgent')
         .remove('SkipGrantedAgent')
         .remove('WizardStateAgent')
+        .addAfter('SaveAllAgent', this.ApprovalRequestAgent, {
+          group: 'treviso-fraud-ops'
+        })
         .execute();
     }
   ]
