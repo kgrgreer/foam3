@@ -308,9 +308,15 @@ public class QueryParser
         new Lt() : new Lte();
       predicate.setArg1((Expr) values[0]);
 
+      if ( values[0] instanceof AbstractDatePropertyInfo && values[2] instanceof Integer ) {
+        Calendar c = Calendar.getInstance();
+        c.set((int) values[2], 0, 0);
+
+        values[2] = c.getTime();
+      }
+
       predicate
-        .setArg2((values[2] instanceof Expr) ? (Expr) values[2] :
-          new foam.mlang.Constant(values[2]));
+        .setArg2(( values[2] instanceof Expr ) ? (Expr) values[2] : new foam.mlang.Constant(values[2]));
 
       return predicate;
     });
@@ -325,6 +331,13 @@ public class QueryParser
       Binary predicate = values[1].equals(">") ?
         new Gt() : new Gte();
       predicate.setArg1(( Expr ) values[0]);
+
+      if ( values[0] instanceof AbstractDatePropertyInfo && values[2] instanceof Integer ) {
+        Calendar c = Calendar.getInstance();
+        c.set((int) values[2], 0, 0);
+
+        values[2] = c.getTime();
+      }
 
       predicate
         .setArg2(( values[2] instanceof Expr ) ? (Expr) values[2] : new foam.mlang.Constant(values[2]));
