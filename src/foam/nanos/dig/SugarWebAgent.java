@@ -80,7 +80,7 @@ public class SugarWebAgent
       if ( SafetyUtil.isEmpty(serviceName) ) {
         throw new RuntimeException("Empty Service Key");
       }
-      pm.setName(SugarWebAgent.class.getSimpleName() + ",sugar." + serviceName);
+      pm.setName("sugar." + serviceName);
 
       String methodName = (String) mapPostParam.get("method");
       if ( SafetyUtil.isEmpty(methodName) ) {
