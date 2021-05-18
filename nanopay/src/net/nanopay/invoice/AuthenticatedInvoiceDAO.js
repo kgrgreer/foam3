@@ -78,7 +78,6 @@ foam.CLASS({
     { name: 'NULL_INVOICE_ERROR_MSG', message: 'Cannot put null' },
     { name: 'UPDATE_INVOICE_PERMISSION_ERR', message: 'You do not have permission to update this invoice' },
     { name: 'READ_INVOICE_PERMISSION_ERR', message: 'You do not have permission to view this invoice' },
-    { name: 'NOT_A_CONTACT_ERR', message: 'Cannot send to non-contact' },
     { name: 'INVOICE_REMOVED_ERR', message: 'The invoice has already been removed.' },
     { name: 'NO_USER_ERR', messages: 'Cannot find user in context' }
   ],
@@ -163,8 +162,6 @@ foam.CLASS({
         // Check that user is 'related' to invoice and other party of invoice is contact of the usere
         if ( ! isRelated(x, user.getId(), invoice) || old != null && ! isRelated(x, user.getId(), old) )
           throw new AuthorizationException(UPDATE_INVOICE_PERMISSION_ERR);
-        if ( ! otherPartyIsUserContact(x, user, invoice) )
-          throw new AuthorizationException(NOT_A_CONTACT_ERR);
 
         return getDelegate().put_(x, invoice);
       `
@@ -269,22 +266,7 @@ foam.CLASS({
         boolean userIsPayeeOrPayer = invoice.getPayeeId() == userId || invoice.getPayerId() == userId;
         boolean userIsCreator = invoice.getCreatedBy() == userId;
 
-        return userIsPayeeOrPayer && ( invoice.getDraft() && ! invoice.getRemoved()  ? userIsCreator : true );
-      `
-    },
-    {
-      name: 'otherPartyIsUserContact',
-      visibility: 'protected',
-      type: 'Boolean',
-      args: [
-        { type: 'Context', name: 'x' },
-        { type: 'User', name: 'user' },
-        { type: 'Invoice', name: 'invoice' }
-      ],
-      documentation: 'Determine if other party of the invoice is a contact of initiating user',
-      javaCode: `
-        long contactId = invoice.getPayeeId() == user.getId() ? invoice.getPayerId() : invoice.getPayeeId();
-        return user.getContacts(x).find_(x, contactId) != null;
+        return userIsPayeeOrPayer && ( invoice.getDraft() ? userIsCreator : true );
       `
     }
   ]
