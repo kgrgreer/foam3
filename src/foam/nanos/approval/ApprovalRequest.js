@@ -364,7 +364,7 @@
       order: 90,
       gridColumns: 6,
       includeInDigest: true,
-      tableWidth: 450
+      tableWidth: 300
     },
     {
       class: 'DateTime',
@@ -614,7 +614,7 @@
   ],
 
   messages: [
-    { 
+    {
       name: 'BACK_LABEL',
       message: 'Back'
     },
@@ -733,6 +733,7 @@
     },
     {
       name: 'approveWithMemo',
+      tableWidth: 175,
       section: 'approvalRequestInformation',
       isAvailable: function(isTrackingRequest, status, subject, assignedTo) {
         if ( status !== this.ApprovalStatus.REQUESTED ) return false;
@@ -954,8 +955,7 @@
           .catch(err => {
             console.warn(err.message || err);
           });
-      },
-      tableWidth: 100
+      }
     },
     {
       name: 'assign',
