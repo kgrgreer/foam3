@@ -112,7 +112,7 @@ foam.CLASS({
       expression: function(defaultColumns) {
         return {
           class: 'foam.u2.view.ScrollTableView',
-          editColumnsEnabled: false,
+          editColumnsEnabled: true,
           columns: defaultColumns,
           css: {
             width: '100%',

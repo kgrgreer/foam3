@@ -13,6 +13,8 @@ foam.CLASS({
     iframe {
       border: 1px solid /*%GREY4%*/;
       padding: 8px;
+      max-width: 100%;
+      box-sizing: border-box;
     }
   `,
 
