@@ -308,12 +308,17 @@ public class QueryParser
         new Lt() : new Lte();
       predicate.setArg1((Expr) values[0]);
 
-      if ( values[0] instanceof AbstractDatePropertyInfo && values[2] instanceof Integer ) {
-        Calendar c = Calendar.getInstance();
-        // beginning of year
-        c.set((int) values[2], 0, 0);
+      if ( values[0] instanceof AbstractDatePropertyInfo ) {
+        if ( values[2] instanceof Integer ) {
+          Calendar c = Calendar.getInstance();
+          // beginning of year
+          c.set((int) values[2], 0, 0);
 
-        values[2] = c.getTime();
+          values[2] = c.getTime();
+        } else {
+          var dates = (Date[]) values[2];
+          values[2] = dates[0];
+        }
       }
 
       predicate
@@ -333,12 +338,17 @@ public class QueryParser
         new Gt() : new Gte();
       predicate.setArg1(( Expr ) values[0]);
 
-      if ( values[0] instanceof AbstractDatePropertyInfo && values[2] instanceof Integer ) {
-        Calendar c = Calendar.getInstance();
-        // end of year
-        c.set((int) values[2] + 1, 0, 0);
+      if ( values[0] instanceof AbstractDatePropertyInfo ) {
+        if ( values[2] instanceof Integer ) {
+          Calendar c = Calendar.getInstance();
+          // end of year
+          c.set((int) values[2] + 1, 0, 0);
 
-        values[2] = c.getTime();
+          values[2] = c.getTime();
+        } else {
+          var dates = (Date[]) values[2];
+          values[2] = dates[1];
+        }
       }
 
       predicate
