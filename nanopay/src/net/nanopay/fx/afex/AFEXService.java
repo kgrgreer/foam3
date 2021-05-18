@@ -210,9 +210,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
             .setIsActive(true)
             .setNote("Failed to onboard an AFEX business")
             .build();
-        } else if ( ! alarm.getIsActive() ) {
+        } else {
           alarm = (Alarm) alarm.fclone();
-          alarm.setIsActive(true);
+          if ( ! alarm.getIsActive() ) alarm.setIsActive(true);
         }
         alarmDAO.put(alarm);
         logger.error(errorMsg);
