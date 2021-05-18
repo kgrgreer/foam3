@@ -188,6 +188,11 @@
       name: 'NATURE_CODE_DOCUMENT_APPROVAL',
       label: 'Nature Code Document Approval',
       ordinal: 35
+    },
+    {
+      name: 'UPDATE_ON_ACTIVE_UCJ',
+      label: 'Update on Active UCJ',
+      ordinal: 36
     }
   ]
 });
