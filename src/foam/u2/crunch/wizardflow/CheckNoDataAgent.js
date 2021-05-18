@@ -24,7 +24,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'capabilities',
     'crunchService',
     'rootCapability',
     'sequence'

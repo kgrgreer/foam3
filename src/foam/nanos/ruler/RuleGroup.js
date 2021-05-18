@@ -44,6 +44,12 @@
       documentation: 'Enables the rule Group.',
       readPermissionRequired: true,
       writePermissionRequired: true
+    },
+    {
+      class: 'Int',
+      name: 'priority',
+      documentation: 'Support prioritizing rule group execution in the rule engine.',
+      writePermissionRequired: true
     }
   ],
 

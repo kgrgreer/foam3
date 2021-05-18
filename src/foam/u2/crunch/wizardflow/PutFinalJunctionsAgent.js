@@ -13,11 +13,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'capabilities',
     'crunchService',
-    'subject',
-    'wizardlets',
-    'userCapabilityJunctionDAO'
+    'wizardlets'
   ],
 
   requires: [
@@ -33,7 +30,7 @@ foam.CLASS({
       //   none already exists.
       // Save no-data capabilities (i.e. not displayed in wizard)
       return Promise.all(this.wizardlets.filter(wizardlet => {
-        return wizardlet.isAvailable && ( ! wizardlet.capability.of ); 
+        return wizardlet.isAvailable && ( ! wizardlet.capability.of );
       }).map(
         filteredWizard => {
           return this.crunchService.updateJunction(null, filteredWizard.capability.id, null, null)
