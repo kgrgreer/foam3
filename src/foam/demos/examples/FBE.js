@@ -3377,9 +3377,12 @@ foam.CLASS({
     }
   ]
 });
+/*
 var g = GraphicsDemo.create();
 g.write();
 g.step();
+*/
+
 ## By Example
 ##  Test Class
 Define a new class with foam.CLASS
@@ -6366,6 +6369,96 @@ return app.accountDAO.find(3).then(function(account) {
     data: transactionsDAO.orderBy(app.Transaction.DATE)
   }).write();
 })
+
+## FAQ
+
+##  Q1
+Where can I find built-in constants?
+ex)
+print("Method CODE property constant:", foam.core.Method.CODE);
+foam.core.Method.CODE.describe;
+
+Answer: Property constants are copied out of the model into to resulting class and prototype.
+Example:
+--
+foam.CLASS({
+  name: 'Test',
+  properties: [ 'p1', 'p2' ]
+});
+
+print(Test.P1.name, Test.P2.name);
+
+var t = Test.create();
+print(t.P1.name, t.P2.name);
+
+##  Q2
+Is class is a kind of type?
+
+Answer:
+A class is a class in the conventional OO sense.
+When you create a foam.CLASS(), it will define a new class.
+When you see something like { class: 'some.package.Name' , a: 1, b: 2 }, it will create
+an object of class 'some.package.Name' with the property a set to 1 and b to 2.
+It would be the equivalent to some.package.Name.create({a: 1, b: 2}).
+FOAM extends the regular JSON syntax to support objects by creating classes by
+specifying their class.
+Ex.:
+--
+foam.CLASS({
+  package: 'some.package2',
+  name: 'Test',
+  properties: [ 'p1', 'p2' ]
+});
+
+var p = foam.json.parse({class: 'some.package2.Test', p1: 42, p2: 'John'});
+print(p.cls_.id);
+
+##  Q3
+Is the Package Interface and how to use this in Foam?
+
+Answer: A classes package is defined with package: and is optional.
+--
+// Without a package:
+
+foam.CLASS({
+  name: 'Test',
+  properties: [ 'p1', 'p2' ]
+});
+
+print(Test.create());
+
+// With a package:
+
+foam.CLASS({
+  package: 'some.package2',
+  name: 'Test',
+  properties: [ 'p1', 'p2' ]
+});
+
+print(some.package2.Test.create());
+
+// When used from another class, packaged classes can be required:
+
+foam.CLASS({
+  name: 'Client',
+  requires: [ 'some.package2.Test' ],
+  methods: [
+    function createTest() { return this.Test.create(); }
+  ]
+});
+
+print(Client.create().createTest());
+
+##  Q5
+What are all of the types in FOAM?
+Answer:
+In FOAM, "types" are just sub-classes of foam.core.Property.
+Most of the types in FOAM are defined in foam/core/types.js.
+Types are not hard-coded into FOAM and you can create your own by extending Property.
+The following script will find all of the FOAM "types":
+--
+for ( var v in foam.USED ) { try { if ( foam.core.Property.isSubClass(foam.lookup(v, true)) ) print(v); } catch(x) {} }
+for ( var v in foam.UNUSED ) { try { if ( foam.core.Property.isSubClass(foam.lookup(v, true)) ) print(v); } catch(x) {} }
 `;
       var a = [];
       var id = [];
