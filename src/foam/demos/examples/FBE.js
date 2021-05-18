@@ -6457,9 +6457,8 @@ Most of the types in FOAM are defined in foam/core/types.js.
 Types are not hard-coded into FOAM and you can create your own by extending Property.
 The following script will find all of the FOAM "types":
 --
-for ( var v of Object.values(foam.USED)   ) { if ( v.extends == 'Property' ) print(v.id); }
-for ( var v of Object.values(foam.UNUSED) ) { if ( v.extends == 'Property' ) print(v.id); }
-
+for ( var v in foam.USED ) { try { if ( foam.core.Property.isSubClass(foam.lookup(v, true)) ) print(v); } catch(x) {} }
+for ( var v in foam.UNUSED ) { try { if ( foam.core.Property.isSubClass(foam.lookup(v, true)) ) print(v); } catch(x) {} }
 `;
       var a = [];
       var id = [];
