@@ -45,6 +45,7 @@ p({
     dao.setUseBMO(true);
     dao = new net.nanopay.bank.BankAccountBranchDAO(x, dao);
     dao = new net.nanopay.bank.BankAccountInstitutionDAO(x, dao);
+    dao = new net.nanopay.bank.AccountDetailDAO(x, dao);
     dao = new net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO(x, dao);
 
     return new foam.dao.EasyDAO.Builder(x)

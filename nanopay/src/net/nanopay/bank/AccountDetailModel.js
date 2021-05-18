@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -31,33 +31,49 @@ foam.CLASS({
   documentation: 'Canadian Bank account information.',
 
   messages: [
-    { name: 'TRANSIT_NUMBER_REQUIRED', message: 'Transit number required' },
-    { name: 'TRANSIT_NUMBER_FORMAT', message: 'Transit number must contain numbers' },
-    { name: 'TRANSIT_NUMBER_FIVE', message: 'Transit number must be 5 digits long' }
+    { name: 'ACCOUNT_NUMBER', message: 'AccountNumber' },
+    { name: 'IBAN', message: 'Iban' },
+    { name: 'INSTITUTION_NUMBER', message: 'InstitutionNumber' },
+    { name: 'BRANCH_ID', message: 'BranchId' },
+    { name: 'SWIFT_CODE', message: 'SwiftCode' }
   ],
 
   properties: [
     {
-      name: 'accountNumber',
-      label: 'Account'
+      class: 'String',
+      name: 'accountNumber'
     },
     {
+      class: 'String',
       name: 'iban'
     },
     {
-      name: 'institutionNumber',
-      label: 'Institution',
-      documentation: `Provides backward compatibilty for mobile call flow.
-          BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.`,
+      class: 'String',
+      name: 'institutionNumber'
     },
     {
-      name: 'branchId',
-      type: 'String',
-      label: 'Transit'
+      class: 'String',
+      name: 'branchId'
     },
     {
-      name: 'swiftCode',
-      label: 'SWIFT/BIC'
+      class: 'String',
+      name: 'swiftCode'
+    }
+  ],
+  methods: [
+    function initE() {
+      var self = this;
+      this.addClass()
+      .start()
+        .start()
+          .addClass('bold-label')
+          .add(this.PAYER_LABEL)
+        .end()
+        .start()
+          .addClass('bold-label')
+          .add(this.accountNumber)
+        .end()
+      .end()
     }
   ]
 });
