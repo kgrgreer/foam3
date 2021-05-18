@@ -38,7 +38,6 @@ foam.CLASS({
 
   methods: [
     async function execute() {
-      console.log('approvable', this.rootCapability, this.rootCapability.id);
       var id = foam.uuid.randomGUID();
 
       var subject = this.wizardSubject ? this.wizardSubject : this.subject;
@@ -51,8 +50,6 @@ foam.CLASS({
           ...(subject.user.id != subject.realUser.id
             ? { effectiveUser: subject.user.id } : {})
         }
-        // daoKey: 'approvableDAO',
-        // objId: this.rootCapability.id,
       });
       await this.approvableDAO.put(topApprovable);
 

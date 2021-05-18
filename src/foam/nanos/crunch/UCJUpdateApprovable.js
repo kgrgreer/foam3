@@ -31,8 +31,7 @@ foam.CLASS({
 
       x.crunchController.createWizardSequence(ucj.targetId, x)
         .reconfigure('LoadCapabilitiesAgent', {
-          subject: subject,
-          // waoSetting: this.LoadCapabilitiesAgent.WAOSetting.APPROVAL
+          subject: subject
         })
         .reconfigure('ConfigureFlowAgent', {
           popupMode: false
@@ -41,9 +40,6 @@ foam.CLASS({
         .remove('RequirementsPreviewAgent')
         .remove('SkipGrantedAgent')
         .remove('WizardStateAgent')
-        // .addAfter('SaveAllAgent', this.ApprovalRequestAgent, {
-        //   group: 'treviso-fraud-ops'
-        // })
         .execute();
     }
   ]
