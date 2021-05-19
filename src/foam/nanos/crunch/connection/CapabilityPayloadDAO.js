@@ -228,7 +228,7 @@ foam.CLASS({
                 } catch (ValidationException ve) {
                   validationErrors.put(
                     String.format("%s[%s]", key, ve.getPropName()), 
-                    ve.getErrorMessage());
+                    ve.getMessage());
                 } catch (CompoundException ce) {
                   for ( var t : ce.getExceptions() ) {
                     if ( t instanceof ValidationException ) {

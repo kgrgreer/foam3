@@ -94,15 +94,6 @@ foam.CLASS({
     }
   ],
 
-  // templates: [
-  //   {
-  //     name: 'toMessage',
-  //     template: function() {
-  //     /* <%= translation %> */
-  //     }
-  //   }
-  // ],
-
   methods: [
     {
       name: 'getMessage',
