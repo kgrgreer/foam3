@@ -43,6 +43,13 @@ foam.ENUM({
 
   values: [
     {
+      name: 'HOURLY',
+      label: 'Hourly',
+      startExpr: { class: 'foam.glang.StartOfHour' },
+      endExpr: { class: 'foam.glang.EndOfHour' },
+      numBarGraphPoints: 24
+    },
+    {
       name: 'DAILY',
       label: 'Daily',
       startExpr: { class: 'foam.glang.StartOfDay' },

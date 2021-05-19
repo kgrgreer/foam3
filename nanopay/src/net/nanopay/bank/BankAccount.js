@@ -29,6 +29,7 @@ foam.CLASS({
   requires: [
     'foam.core.Currency',
     'foam.dao.PromisedDAO',
+    'foam.dao.PurgeRecordCmd',
     'foam.nanos.auth.Address',
     'foam.nanos.iban.ValidationIBAN',
     'foam.u2.ControllerMode',
@@ -41,10 +42,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'branchDAO',
     'capabilityDAO',
     'countryDAO',
-    'institutionDAO',
     'sourceCorridorDAO',
     'targetCorridorDAO'
   ],
@@ -176,6 +175,7 @@ foam.CLASS({
     { name: 'BRANCH_ID_INVALID', message: 'Branch invalid' },
     { name: 'SWIFT_CODE_REQUIRED', message: 'SWIFT/BIC code required' },
     { name: 'SWIFT_CODE_INVALID', message: 'SWIFT/BIC code invalid' },
+    { name: 'SWIFT_CODE_VALIDATION_FAILED', message: 'SWIFT/BIC code validation failed' },
     { name: 'IBAN_REQUIRED', message: 'IBAN required' },
     { name: 'IBAN_INVALID', message: 'IBAN invalid' },
     { name: 'IBAN_INVALIDATION_FAILED', message: 'IBAN validation failed' },
@@ -234,7 +234,8 @@ foam.CLASS({
       order: 50,
       gridColumns: 6,
       view: {
-          class: 'foam.u2.view.StringView'
+        class: 'foam.u2.tag.Input',
+        onKey: true
       },
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
@@ -350,7 +351,11 @@ foam.CLASS({
         };
       },
       tableCellFormatter: function(value, obj, axiom) {
-        this.start('img').attr('src', value).end();
+        this.start('img')
+          .attr('src', value)
+          .attr('width', 34)
+          .attr('height', 20)
+        .end();
       }
     },
     {
@@ -362,7 +367,13 @@ foam.CLASS({
       gridColumns: 6,
       documentation: `International bank code that identifies banks worldwide. BIC/SWIFT`,
       updateVisibility: 'RO',
-      storageTransient: true
+      view: {
+        class: 'foam.u2.tag.Input',
+        onKey: true
+      },
+      preSet: function(o, n) {
+        return /^\d*$/.test(n) ? n : o;
+      },
     },
     {
       class: 'String',
@@ -371,7 +382,13 @@ foam.CLASS({
       section: 'accountInformation',
       order: 130,
       gridColumns: 6,
-      storageTransient: true
+      view: {
+        class: 'foam.u2.tag.Input',
+        onKey: true
+      },
+      preSet: function(o, n) {
+        return /^\d*$/.test(n) ? n : o;
+      },
     },
     {
       class: 'String',
@@ -594,6 +611,16 @@ foam.CLASS({
       name: 'bankRoutingCode',
       documentation: 'Bank routing code aka. national ID used to clear funds and/or route payments domestically.',
       visibility: 'HIDDEN'
+    },
+    {
+      class: 'String',
+      name: 'checkDigitNumber',
+      visibility: 'HIDDEN',
+      documentation: `check digit is to be used in IBAN translation and calculated based on account number,
+        institution and branchId. Different countries specify different rules => to be overwritten in subclass.
+        This is NOT check digit only, this property returns the final formatted number. E.g. for some countries its
+        branch + accountNumber + checkDigit, for others its accountNumber + checkDigit.`,
+      javaFactory: `return getAccountNumber();`
     }
   ],
 
@@ -615,30 +642,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'edit',
-      section: 'contextMenuActions',
-      isAvailable: function() {
-        return ! this.verifiedBy
-      },
-      code: async function(X) {
-        var self = this.__subContext__;
-        var account = await self.accountDAO.find(this.id);
-        self.ctrl.add(this.SMEModal.create().addClass('bank-account-popup')
-          .startContext({ controllerMode: this.ControllerMode.EDIT })
-            .tag({
-              class: 'net.nanopay.account.ui.BankAccountWizard',
-              data: account,
-              useSections: ['clientAccountInformation', 'pad'],
-              config: {
-                id: { updateVisibility: 'HIDDEN' },
-                summary: { updateVisibility: 'HIDDEN' }
-              }
-            })
-          .endContext()
-          );
-      }
-    },
-    {
       name: 'setAsDefault',
       section: 'contextMenuActions',
       isEnabled: function() {
@@ -655,26 +658,6 @@ foam.CLASS({
 
         this.purgeCachedDAOs();
       }
-    },
-    {
-      name: 'delete',
-      section: 'contextMenuActions',
-      code: function(X) {
-        if ( this.isDefault ) {
-          this.notify(this.DELETE_DEFAULT, '', this.LogLevel.ERROR, true);
-          return;
-        }
-
-        this.deleted = true;
-        this.status = this.BankAccountStatus.DISABLED;
-
-        this.__subContext__.ctrl.add(this.Popup.create().tag({
-          class: 'foam.u2.DeleteModal',
-          dao: this.subject.user.accounts,
-          data: this,
-          label: this.name
-        }));
-      }
     }
   ],
 
@@ -683,7 +666,7 @@ foam.CLASS({
       name: 'mask',
       documentation: `
         Use this method instead of obfusicate if specific mask format is required.
-        Currently formats str using ***### format. Update this method or 
+        Currently formats str using ***### format. Update this method or
         use obfusicate if format changes.
       `,
       code: function(str) {
@@ -810,12 +793,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        var code = new StringBuilder();
-        var institution = findInstitution(x);
-        if ( institution != null ) {
-          code.append(institution.getInstitutionNumber());
-        }
-        return code.toString();
+        return getInstitutionNumber();
       `
     },
     {
@@ -827,12 +805,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        var code = new StringBuilder();
-        var branch = findBranch(x);
-        if ( branch != null ) {
-          code.append(branch.getBranchId());
-        }
-        return code.toString();
+        return getBranchId();
       `
     },
     {
@@ -843,15 +816,26 @@ foam.CLASS({
           name: 'x', type: 'Context'
         }
       ],
+      documentation: 'Get routing code from bank and branch codes. Only applicable when the bank account is saved. Otherwise, use getRoutingCode_() instead.',
       javaCode: `
-        if ( ! SafetyUtil.isEmpty(getBankRoutingCode()) ) {
-          return getBankRoutingCode();
-        }
-
+        // Use bank and branch codes if present and fallback to bankRoutingCode.
+        // The bankRoutingCode could be of the bank head office instead of the
+        // specific branch especially when it was converted from a SWIFT/BIC.
         var code = new StringBuilder();
         code.append(getBankCode(x))
             .append(getBranchCode(x));
-        return code.toString();
+        return code.length() > 0 ? code.toString() : getBankRoutingCode();
+      `
+    },
+    {
+      name: 'getRoutingCode_',
+      type: 'String',
+      documentation: 'Get routing code from transient bank and branch codes before the bank account is saved.',
+      javaCode: `
+        var code = new StringBuilder();
+        code.append(getInstitutionNumber())
+            .append(getBranchId());
+        return code.length() > 0 ? code.toString() : getBankRoutingCode();
       `
     },
     function purgeCachedDAOs() {
@@ -867,6 +851,9 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
+        User owner = findOwner(x);
+        if ( owner == null ) throw new RuntimeException("Owner with id " + getOwner() + " doesn't exist");
+
         String name = this.getName();
         if ( ((DAO)x.get("currencyDAO")).find(this.getDenomination()) == null ) {
           throw new RuntimeException("Please select a Currency");

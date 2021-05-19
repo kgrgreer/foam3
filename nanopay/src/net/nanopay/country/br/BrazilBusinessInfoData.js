@@ -18,20 +18,30 @@
 foam.CLASS({
   package: 'net.nanopay.country.br',
   name: 'BrazilBusinessInfoData',
+  mixins: ['foam.u2.wizard.AbstractWizardletAware'],
   documentation: `
     Additional business information required for brazilian business registration
   `,
 
   implements: [
-    'foam.core.Validatable'
+    'foam.core.Validatable',
+    'foam.mlang.Expressions'
   ],
 
   javaImports: [
     'foam.nanos.logger.Logger',
+    'foam.util.SafetyUtil',
+    'java.util.regex.Pattern'
   ],
 
   imports: [
     'brazilVerificationService'
+  ],
+
+  constants: [
+    { name: 'FORMATTED_CNPJ_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{2}\\\\.\\\\d{3}\\\\.\\\\d{3}\\\\/\\\\d{4}\\\\-\\\\d{2}$")' },
+    { name: 'UNFORMATTED_CNPJ_PATTERN', javaType: 'Pattern', javaValue: 'Pattern.compile("^\\\\d{14}$")' },
+    { name: 'CNPJ_LENGTH', javaType: 'int', value: 14 }
   ],
 
   sections: [
@@ -44,13 +54,14 @@ foam.CLASS({
 
   messages: [
     { name: 'NO_CNPJ', message: '14-digit National Registry of Legal Entities Number required' },
-    { name: 'CNPJ_INVALID', message: 'CNPJ required' },
+    { name: 'CNPJ_INVALID', message: 'CNPJ invalid, please check your CNPJ number and try again' },
+    { name: 'NO_NIRE', message: 'NIRE required' },
     { name: 'VERIFY_BUSINESS_NAME', message: 'Confirm your business name' }
   ],
 
   properties: [
     {
-      class: 'String',
+      class: 'FormattedString',
       name: 'cnpj',
       label: 'National Registry of Legal Entities(CNPJ)',
       required: true,
@@ -61,59 +72,37 @@ foam.CLASS({
       section: 'businessInformation',
       validationPredicates: [
         {
-          args: ['cnpj'],
+          args: ['cnpj', 'cnpjName'],
           predicateFactory: function(e) {
-            return e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.CNPJ }), 14)          },
-            errorMessage: 'NO_CNPJ'
+            return e.OR(
+              e.REG_EXP(net.nanopay.country.br.BrazilBusinessInfoData.CNPJ, /^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/),
+              e.REG_EXP(net.nanopay.country.br.BrazilBusinessInfoData.CNPJ, /^\d{14}$/)
+            );
+          },
+          errorMessage: 'NO_CNPJ'
         },
         {
-          args: ['cnpjName'],
+          args: ['cnpj', 'cnpjName'],
           predicateFactory: function(e) {
-            return e.GT(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.CNPJ_NAME }), 0)
+            return e.AND(
+              e.GT(
+                net.nanopay.country.br.BrazilBusinessInfoData
+                .CNPJ_NAME, 0),
+              e.OR(
+                e.REG_EXP(net.nanopay.country.br.BrazilBusinessInfoData.CNPJ, /^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/),
+                e.REG_EXP(net.nanopay.country.br.BrazilBusinessInfoData.CNPJ, /^\d{14}$/)
+              )
+            );
           },
           errorMessage: 'CNPJ_INVALID'
-        },
-      ],
-      tableCellFormatter: function(val) {
-        return foam.String.applyFormat(val, 'xx.xxx.xxx/xxxx-xx');
-      },
-      postSet: function(_,n) {
-        if ( n.length == 14 && this.verifyName !== true ) {
-          this.cnpjName = "";
-          this.getCNPJBusinessName(n).then((v) => {
-            this.cnpjName = v;
-          });
         }
-      },
-      view: function(_, X) {
-        return foam.u2.FragmentedTextField.create({
-          delegates: [
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cnpj.slice(0,2),
-              maxLength: 2
-            }),
-            '.',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cnpj.slice(2,5),
-              maxLength: 3
-            }),
-            '.',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cnpj.slice(5,8),
-              maxLength: 3
-            }),
-            '/',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cnpj.slice(8,12),
-              maxLength: 4
-            }),
-            '-',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cnpj.slice(12,14),
-              maxLength: 2
-            })
-          ]
-        });
+      ],
+      formatter: [2, '.', 3, '.', 3, '/', 4, '-', 2],
+      postSet: function(o, n) {
+        var validCnpj = this.CNPJ.validationPredicates[0].predicate.f(this);
+        if ( validCnpj && o.replace(/\D/g,'') === n.replace(/\D/g,'') ) return;
+        this.cnpjName = '';
+        this.verifyName = false;
       }
     },
     {
@@ -121,15 +110,11 @@ foam.CLASS({
       name: 'verifyName',
       label: 'Is this your business?',
       section: 'businessInformation',
-      view: function(n, X) {
-        var self = X.data$;
-        return foam.u2.CheckBox.create({
-          labelFormatter: function() {
-            this.start('span')
-              .add(self.dot('cnpjName'))
-            .end();
-          }
-        });
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.CheckBox',
+          label$: X.data$.dot('cnpjName')
+        };
       },
       visibility: function(cnpjName) {
         return cnpjName.length > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
@@ -178,6 +163,16 @@ foam.CLASS({
   ],
 
   methods: [
+    function installInWizardlet(w) {
+      this.onDetach(this.cnpj$.sub(() => {
+        if ( this.cnpj.replace(/\D/g,'').length == this.CNPJ_LENGTH && this.verifyName !== true ) {
+          w.save();
+        } else {
+          this.cnpjName = '';
+          this.verifyName = false;
+        }
+      }));
+    },
     {
       name: 'getCNPJBusinessName',
       code:  async function(cnpj) {
@@ -187,8 +182,46 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
-        if ( ! getVerifyName() )
+        var brazilVerificationService = (BrazilVerificationServiceInterface)
+          x.get("brazilVerificationService");
+
+        if ( ! ( brazilVerificationService instanceof NullBrazilVerificationService ) ) {
+          // IMPORTANT: Any fix here may also apply to CPF.js
+
+          // This should be valid before making API call
+          try {
+            if ( getCnpj() == null ||
+              ( ! UNFORMATTED_CNPJ_PATTERN.matcher(getCnpj()).matches() && ! FORMATTED_CNPJ_PATTERN.matcher(getCnpj()).matches() ) ) {
+              throw new foam.core.ValidationException(NO_CNPJ);
+            }
+          } catch ( foam.core.ValidationException e ) {
+            this.setCnpjName("");
+            throw e;
+          }
+
+          var name = brazilVerificationService.getCNPJName(
+            x, getCnpj());
+
+          if ( SafetyUtil.isEmpty(name) ) {
+            setCnpjName("");
+            throw new foam.core.ValidationException(CNPJ_INVALID);
+          }
+
+          if ( ! SafetyUtil.equals(name, getCnpjName()) ) {
+            setCnpjName(name);
+            setVerifyName(false);
+          }
+        }
+
+        if ( ! getVerifyName() ) {
           throw new foam.core.ValidationException(CNPJ_INVALID);
+        }
+
+        if ( SafetyUtil.isEmpty(getNire()) ) {
+          throw new foam.core.ValidationException(NO_NIRE);
+        }
+
+        foam.core.FObject.super.validate(x);
       `
     }
   ]

@@ -32,7 +32,6 @@ import net.nanopay.country.br.exchange.Exchange;
 import net.nanopay.country.br.exchange.ExchangeClientMock;
 import net.nanopay.country.br.exchange.ExchangeClientValues;
 import net.nanopay.country.br.exchange.ExchangeService;
-import net.nanopay.model.Branch;
 import net.nanopay.partner.treviso.FepWebClient;
 import net.nanopay.partner.treviso.api.FepWeb;
 import net.nanopay.partner.treviso.api.FepWebServiceMock;
@@ -51,8 +50,10 @@ public class TrevisoServiceTest
 
   @Override
   public void runTest(X x) {
-    this.x = x;
-    trevisoService = new TrevisoService(x, new FepWebServiceMock(x), new ExchangeClientMock(x));
+    X y = x.put("fepWebService", new FepWebServiceMock(x));
+    y = y.put("exchange", new ExchangeClientMock(y));
+    this.x = y;
+    trevisoService = new TrevisoService(y, "fepWebService", "exchange");
     setUpTest();
     testSaveEntity();
     testSearchCustomer();
@@ -81,8 +82,14 @@ public class TrevisoServiceTest
       user = new User();
       user.setFirstName("Treviso");
       user.setLastName("Treviso");
-      Address address = new Address.Builder(x).setCountryId("CA")
-        .setRegionId("CA-ON").setCity("Toronto").build();
+      Address address = new Address.Builder(x)
+        .setStructured(false)
+        .setAddress1("905 King St W")
+        .setCity("Toronto")
+        .setRegionId("CA-ON")
+        .setPostalCode("M6K 3G9")
+        .setCountryId("CA")
+        .build();
       user.setAddress(address);
       user.setSpid("test");
       user.setEmail("trevisouser@nanopay.net");
@@ -114,23 +121,10 @@ public class TrevisoServiceTest
     DAO bankAccountDao = (DAO) x.get("accountDAO");
     CABankAccount account = (CABankAccount) bankAccountDao.find(EQ(CABankAccount.NAME, "RBC Test Account"));
     if ( account == null ) {
-      final DAO  institutionDAO = (DAO) x.get("institutionDAO");
-      final DAO  branchDAO      = (DAO) x.get("branchDAO");
-      Institution institution = new Institution.Builder(x_)
-        .setInstitutionNumber("003")
-        .setName("RBC Test institution")
-        .build();
-      institution = (Institution) institutionDAO.put_(x_, institution);
-
-      Branch branch = new Branch.Builder(x_)
-        .setBranchId("00002")
-        .setInstitution(institution.getId())
-        .build();
-      branch = (Branch) branchDAO.put_(x, branch);
-
       BankAccount testBankAccount = new CABankAccount.Builder(x)
         .setAccountNumber("12345678")
-        .setBranch( branch.getId() )
+        .setBranchId( "00002" )
+        .setInstitutionNumber( "003" )
         .setOwner(1014)
         .setName("RBC Test Account")
         .setStatus(BankAccountStatus.VERIFIED)

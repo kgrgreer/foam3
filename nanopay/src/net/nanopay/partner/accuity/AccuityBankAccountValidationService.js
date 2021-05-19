@@ -51,6 +51,7 @@ foam.CLASS({
     'java.time.ZoneId',
     'java.util.Date',
     'java.util.Map',
+    'java.util.regex.*',
 
     'static foam.mlang.MLang.*'
   ],
@@ -95,7 +96,59 @@ foam.CLASS({
         var response = getResponse(x,
           "GET", "/validate-api/rest/convert/1.0.1",
           "countryCode", countryCode, "nationalId", nationalId);
-        return response.get("recommendedNatId");
+        var routingCode = response.get("recommendedNatId");
+
+        if ( SafetyUtil.isEmpty(routingCode) ||
+          ! "PASS".equals(response.get("status"))
+        ) {
+          throw new RuntimeException("Failed Accuity Validation: " + String.valueOf(response.get("comment")));
+        }
+        return routingCode;
+      `
+    },
+    {
+      name: 'convertToSwiftCode',
+      javaCode: `
+        authenticate(x);
+
+        var response = getResponse(x,
+          "GET", "/validate-api/rest/convert/1.0.1",
+          "countryCode", countryCode, "accountNumber", iban);
+        var swiftCode = response.get("recommendedBIC");
+
+        if ( SafetyUtil.isEmpty(swiftCode) ||
+          ! "PASS".equals(response.get("status"))
+        ) {
+          throw new RuntimeException("Failed Accuity Validation: " + String.valueOf(response.get("comment")));
+        }
+        return swiftCode;
+      `
+    },
+    {
+      name: 'convertToIbanAndSwiftCode',
+      javaCode: `
+        authenticate(x);
+
+        var response = getResponse(x,
+          "GET", "/validate-api/rest/convert/1.0.1",
+          "countryCode", countryCode, "nationalId", nationalId, "accountNumber", accountNumber);
+        var iban = response.get("recommendedAcct");
+        var swiftCode = response.get("recommendedBIC");
+        Pattern pattern = Pattern.compile("\\\\((.+)\\\\)");
+        Matcher matcher = pattern.matcher(response.get("comment"));
+        boolean codeAllowed;
+        if ( matcher.find() ) {
+          codeAllowed = allowedCodes.contains(matcher.group(1));
+        } else {
+          codeAllowed = true;
+        }
+
+        if ( SafetyUtil.isEmpty(iban) || SafetyUtil.isEmpty(swiftCode) ||
+          ! "PASS".equals(response.get("status")) && ! ( "CAUTION".equals(response.get("status")) && codeAllowed )
+        ) {
+          throw new RuntimeException("Failed Accuity Validation: " + String.valueOf(response.get("comment")));
+        }
+        return new String[] { iban, swiftCode };
       `
     },
     {
@@ -128,9 +181,9 @@ foam.CLASS({
 
         // Send HTTP request
         response = send(x, method, pathname, params);
-        if ( ! response.get("status").equals("PASS") ) {
+        if ( ! "PASS".equals(response.get("status")) ) {
           var logger = (Logger) x.get("logger");
-          logger.debug("AccuityBankAccountValidationService", request, response.getData());
+          logger.warning("AccuityBankAccountValidationService", request, response.getData());
         }
 
         // Save to DAO

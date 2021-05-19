@@ -27,7 +27,8 @@ foam.CLASS({
   `,
 
   requires: [
-    'foam.log.LogLevel'
+    'foam.log.LogLevel',
+    'net.nanopay.contacts.ContactStatus'
   ],
 
   imports: [
@@ -129,8 +130,9 @@ foam.CLASS({
     async function addContact() {
       this.isConnecting = true;
       try {
-      contact = await this.user.contacts.put(this.data.contact);
-      this.ctrl.notify(this.CONTACT_ADDED, '', this.LogLevel.INFO, true);
+        this.data.contact.signUpStatus = this.ContactStatus.CONNECTED;
+        contact = await this.user.contacts.put(this.data.contact);
+        this.ctrl.notify(this.CONTACT_ADDED, '', this.LogLevel.INFO, true);
       } catch (e) {
         var msg = e.message || this.GENERIC_PUT_FAILED;
         this.ctrl.notify(msg, '', this.LogLevel.ERROR, true);

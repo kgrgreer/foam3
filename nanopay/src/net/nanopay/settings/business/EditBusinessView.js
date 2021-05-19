@@ -171,7 +171,6 @@ foam.CLASS({
       background: black;
     }
     ^ .foam-u2-tag-Select{
-      height: 40px;
       width: 100%;
       background: white;
       border: 1px solid lightgrey;

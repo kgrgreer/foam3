@@ -41,7 +41,7 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'id', 
+      name: 'id',
       tableWidth: 125
     },
     {
@@ -57,9 +57,7 @@ foam.CLASS({
       tableHeaderFormatter: function(axiom) {
         this.add('Status');
       },
-      tableHeader: function(axiom) {
-        return 'Status';
-      },
+      columnLabel: 'Status',
       tableCellFormatter: function(value, obj) {
         this.add( value ? "Enabled" : "Disabled" );
       }
@@ -161,6 +159,12 @@ foam.CLASS({
       documentation: `The unique identifier of the individual person, or real user,
         who last modified this account.`,
       visibility: 'RO',
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedByAgent',
+      visibility: 'RO'
     },
     {
       class: 'foam.core.Enum',

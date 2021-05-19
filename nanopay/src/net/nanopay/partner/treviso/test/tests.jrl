@@ -540,22 +540,29 @@ p({
   description: "TrevisoOnboardingTest_v2",
   server: false,
   code:"""
-/* Treviso Onboarding Test */
-/* Run this script symultaniously from at least two machines */
+  /* Treviso Onboarding Test */
+  /* Run this script symultaniously from at least two machines */
 
-/* Number of times to execute this script */
-runs = 1;
+  /* DOCUMENTATION
+  Number of times to execute this script
+  */
+  runs = 1;
 
-/* see deployment/test/sessions.jrl for unattended test session associated with admin user 1348 */
-adminSession = 'DBFDD224-774E-4716-8508-43FA72E003D9'
-/* support both attended and unattended runs */
-defaultSession = localStorage && localStorage['defaultSession'] || adminSession;
-realUser = x.subject.realUser;
-user = x.subject.user;
+  /* DOCUMENTATION
+  see deployment/test/sessions.jrl for unattended test session
+  associated with admin user 1348
+  */
+  adminSession = 'DBFDD224-774E-4716-8508-43FA72E003D9'
+  /* support both attended and unattended runs */
+  defaultSession = localStorage && localStorage['defaultSession'] || adminSession;
+  realUser = x.subject.realUser;
+  user = x.subject.user;
 
-/* model with helper methods for sudo, creating user, sessions... */
-support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport_v2.create({
-  adminSessionId: defaultSession,
+  /* DOCUMENTATION
+  model with helper methods for sudo, creating user, sessions...
+  */
+  support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport_v2.create({
+    adminSessionId: defaultSession,
     adminSubject: foam.nanos.auth.Subject.create({
       realUser: realUser,
       user: user
@@ -571,13 +578,9 @@ support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport_v2.create({
       support.setup(x);
       console.info('start');
       let n = Math.floor(Math.random() * 10000);
-      var name;
-      var ucj;
-      var u;
-      var business;
-      var businessSession;
+      var name, ucj, u, business, businessSession;
 
-    // create user under admin
+      // create user
       name = 'createUser: ';
       try {
         u = await support.createUser(x, 'u-'+support.uid+'-'+n, 'password', 'sme');
@@ -586,7 +589,8 @@ support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport_v2.create({
         test(false, name+(e.message || e));
         throw e;
       }
-    // create session
+
+      // create session
       var s;
       name = 'createSession: ';
       try {
@@ -597,161 +601,61 @@ support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport_v2.create({
         throw e;
       }
 
-    // switch to user.
+      // switch to user.
       support.sudoStore(x);
       x = support.sudo(x, s.id, u, u);
-/*
-functonIdNameParser - is a way of converting the capabilityIds(capIds) into a function name.
 
-Function names in js cannot start with a digit and cannot contain char '-'.
-Thus functionIdNameParser - used to convert the capIds to function names and using this convention in the supporting test models.
-*/
-    var functonIdNameParser = function(id) { return '_'+id.replaceAll('-','_'); };
-
-/*
-So some of the capabilities in the 'onboarding' capability are suppose to remain in pending.
-I've created a list in the call that tests 'onboarding' and use this to iteratively check that the capability we want to test is either PENDING result or GRANTED result.
-
-Say,
-n = pendingCapabilities.length,
-m = calls to functionDetermineStatus -> equals the number of capabilities under the root 'onboarding capability'
-On^2
-But n = 4 and m = ~30 ... so really 120 calls which any microprocessor can achieve quickly.
-*/
-    var functionDetermineStatus = function(id, pendingCapabilities) {
-      if ( ! pendingCapabilities ) return print('Function for pendingCapabilities is called with no pendingCapabilities list');
-      for(let i = 0; i < pendingCapabilities.length; i++) {
-        if(pendingCapabilities[i] == id)
-          return foam.nanos.crunch.CapabilityJunctionStatus.PENDING;
+      support.testSection = "GENERAL ADMISSION";
+      try {
+        await support.grantAll(x, 'crunch.onboarding.treviso.general-admission', test);
+      } catch(e){
+        test(false, support.testSection+": "+e);
+        print(e);
       }
-      return foam.nanos.crunch.CapabilityJunctionStatus.GRANTED;
-    };
-/*
-There are some 'MANUAL' capabilities - such that they are granted with triggers outside of crunch. So was thinking to avoid them with this function. Same principal as above 'functionDetermineStatus' however just return true or false if in list.
-*/
-    var functionDetermineIgnore = function(id, ignoreCapabilities) {
-      if ( ! ignoreCapabilities ) return print('Function for ignoreCapabilities is called with no ignoreCapabilities list');
-      for(let i = 0; i < ignoreCapabilities.length; i++) {
-        if(ignoreCapabilities[i] == id)
-          return true;
-      }
-      return false;
-    };
-
-    // grant things
-    var name = "GENERAL ADMISSION";
-    try {
-    /*
-crunchService.getGrantPath(x, capabilitityId)
-returns an array of capabilities or another array of capabilities.
-The array of capabilities is from either a FlattendingWizardlet or from MinMaxCapability.
-Thus the If statement 'arrayOfID_lastIsRoot[j].cls_' checks if it is a capability else is an array of capabilities.
-
-The more correct function would recurse from the else statement. No reason to assume (other then prior knowledge of hierarchy) that within an array couldn't be another array.
-
-CONSIDER : support[functonIdNameParser(arrayOfID_lastIsRoot[j].id)](x, business);
-support -> instantiated testing model with functions
-<SOME_STRING> -> function name, then support[<SOME_STRING>] -> access to instantiated testing model functions
-arrayOfID_lastIsRoot -> array variable for all capabilities under the called capabilityId. using getGrantPath.
-arrayOfID_lastIsRoot[j] -> a capability. The last value of 'j' = the root capabilityId. Also maybe an array - described in previous comment.
-support[<SOME_STRING>](x, business) -> does the call to the function. Each function signature the same.
-
-SO,
-support[functonIdNameParser(arrayOfID_lastIsRoot[j].id)](x, business);
-Is calling test model dynamically based on the capability hierarchy of the root. Have all capabilities set up in support models.
-
-FUTURE CHANGES:
-So this will work for a changing hierarchy. Possible we add a capability that we use for a user/business in which case we'll need to add a function to support model to complete this test. Might be interesting to create a function that can replace each individual ucj creation. BUT each ucj has different data and thus minorly different data. So didn't have an obvious way to do this.
-    */
-      let arrayOfID_lastIsRoot = await x.crunchService.getGrantPath(x,'242B00F8-C775-4899-AEBA-F287EC54E901');
-      for(let j = 0; j < arrayOfID_lastIsRoot.length; j++) {
-        if ( arrayOfID_lastIsRoot[j].cls_ ) {
-          ucj = await support[functonIdNameParser(arrayOfID_lastIsRoot[j].id)](x, u);
-          test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+' '+arrayOfID_lastIsRoot[j].id+' '+arrayOfID_lastIsRoot[j].id+' '+(ucj && ucj.status));
-        } else {
-          for(let i = 0; i < arrayOfID_lastIsRoot[j].length; i++) {
-            ucj = await support[functonIdNameParser(arrayOfID_lastIsRoot[j][i].id)](x, u);
-            test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+' '+arrayOfID_lastIsRoot[j][i].id+' '+arrayOfID_lastIsRoot[j][i].id+' '+(ucj && ucj.status));
-          }
-        }
-      }
-    } catch(e){
-      test(false, name+": "+e);
-      print(e);
-    }
-    name = "BUSINESS REGITSTRATION";
-    try {
-      let arrayOfID_lastIsRoot = await x.crunchService.getGrantPath(x,'554af38a-8225-87c8-dfdf-eeb15f71215f-76');
-      for(let j = 0; j < arrayOfID_lastIsRoot.length; j++) {
-        if ( arrayOfID_lastIsRoot[j].cls_ ) {
-          ucj = await support[functonIdNameParser(arrayOfID_lastIsRoot[j].id)](x, u);
-          test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+' '+arrayOfID_lastIsRoot[j].id+' '+arrayOfID_lastIsRoot[j].id+' '+(ucj && ucj.status));
-        } else {
-          for(let i = 0; i < arrayOfID_lastIsRoot[j].length; i++) {
-            ucj = await support[functonIdNameParser(arrayOfID_lastIsRoot[j][i].id)](x, u);
-            test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+' '+arrayOfID_lastIsRoot[j][i].id+' '+arrayOfID_lastIsRoot[j][i].id+' '+(ucj && ucj.status));
-          }
-        }
+      support.testSection = "BUSINESS REGITSTRATION";
+      try {
+        await support.grantAll(x, 'crunch.onboarding.register-business', test);
         // find and setup business
-        name = 'TEST BUSINESS CREATED';
+        support.testSection = 'TEST BUSINESS CREATED';
         business = await support.findBusiness(x, u);
-        test(business && business.id, name+' id: '+business.id + ' namme:'+business.businessName);
+        test(business && business.id, support.testSection+' id: '+business.id + ' namme:'+business.businessName);
         businessSession = await support.createSession(x, u.id, business.id);
         test(true, 'createBusinessSession: '+businessSession.id);
+      } catch(e){
+        test(false, support.testSection+": "+e);
+        print(e);
       }
-    } catch(e){
-      test(false, name+": "+e);
-      print(e);
-    }
 
-    support.sudoStore(x);
-    x = support.sudo(x, businessSession.id, u, business);
+      support.sudoStore(x);
+      x = support.sudo(x, businessSession.id, u, business);
+      support.user = business;
 
-    name = "SIGNING OFFICER DATA CAP";
-    try {
-      let arrayOfID_lastIsRoot = await x.crunchService.getGrantPath(x,'777af38a-8225-87c8-dfdf-eeb15f71215f-123');
-      for(let j = 0; j < arrayOfID_lastIsRoot.length; j++) {
-        if ( arrayOfID_lastIsRoot[j].cls_ ) {
-          ucj = await support[functonIdNameParser(arrayOfID_lastIsRoot[j].id)](x, business);
-          test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+' '+arrayOfID_lastIsRoot[j].id+' '+arrayOfID_lastIsRoot[j].id+' '+(ucj && ucj.status));
-        } else {
-          for(let i = 0; i < arrayOfID_lastIsRoot[j].length; i++) {
-            ucj = await support[functonIdNameParser(arrayOfID_lastIsRoot[j][i].id)](x, business);
-            test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+' '+arrayOfID_lastIsRoot[j][i].id+' '+arrayOfID_lastIsRoot[j][i].id+' '+(ucj && ucj.status));
-          }
-        }
+      support.testSection = "SIGNING OFFICER DATA CAP";
+      try {
+        await support.grantAll(x, 'crunch.onboarding.signing-officer-information', test);
+      } catch(e){
+        test(false, support.testSection+": "+e);
+        print(e);
       }
-    } catch(e){
-      test(false, name+": "+e);
-      print(e);
-    }
 
-    name = "BRAZIL ONBOARDING";
-    try {
-      var pendingCapabilities = ['554af38a-8225-87c8-dfdf-eeb15f71215f-49','05a663b8-2b48-11eb-adc1-0242ac120002','0B2E7305-B898-43F2-9C1B-63FB2CE38B2D', 'bf6a49d5-4027-4dac-a269-4d3ed070609e-4'];
-      var ignoreCapabilities = [];//['1f6b2047-1eef-471d-82e7-d86bdf511375','89cc91da-4bbd-458b-81d4-574815e455fa-4']; // Payment Provider caps
-      var arrayOfID_lastIsRoot = await x.crunchService.getGrantPath(x,'bf6a49d5-4027-4dac-a269-4d3ed070609e-4');
-      for(let j = 0; j < arrayOfID_lastIsRoot.length; j++) {
-        if ( arrayOfID_lastIsRoot[j].cls_ ) {
-          let id = arrayOfID_lastIsRoot[j].id;
-          if ( functionDetermineIgnore(id, ignoreCapabilities) ) break;
-          ucj = await support[functonIdNameParser(id)](x, business);
-          test(ucj && ucj.status == functionDetermineStatus(arrayOfID_lastIsRoot[j].id, pendingCapabilities), name+' '+arrayOfID_lastIsRoot[j].id+' '+arrayOfID_lastIsRoot[j].id+' '+(ucj && ucj.status));
-        } else {
-          for(let i = 0; i < arrayOfID_lastIsRoot[j].length; i++) {
-            let id = arrayOfID_lastIsRoot[j][i].id;
-            if ( functionDetermineIgnore(id, ignoreCapabilities) ) break;
-            ucj = await support[functonIdNameParser(id)](x, business);
-            test(ucj && ucj.status == functionDetermineStatus(arrayOfID_lastIsRoot[j][i].id, pendingCapabilities), name+' '+arrayOfID_lastIsRoot[j][i].id+' '+arrayOfID_lastIsRoot[j][i].id+' '+(ucj && ucj.status));
-          }
-        }
+      support.testSection = "BRAZIL ONBOARDING";
+      support.addPending(
+        'crunch.onboarding.br.international-payments',
+        'crunch.onboarding.br.parent.international-payments',
+        'crunch.onboarding.br.registering-payment-provider'
+      );
+
+      support.addActionRequired(
+        'AFEX'
+      )
+
+      try {
+        await support.grantAll(x, 'crunch.onboarding.br.parent.international-payments', test);
+      } catch(e){
+        test(false, support.testSection+": "+e);
+        print(e);
       }
-    } catch(e){
-      test(false, name+": "+e);
-      print(e);
-    }
 
-// then last need bankAccounnt (test with account) (test with ucj) explicitInternationalOnboarding
 
       console.info('done');
       support.teardown(x);

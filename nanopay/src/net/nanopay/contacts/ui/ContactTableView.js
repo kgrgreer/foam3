@@ -38,6 +38,7 @@ foam.CLASS({
         'email',
         'businessAddress.countryId',
         'bankAccount.denomination',
+        'bankAccount.summary',
         'signUpStatus'
       ]
     }
@@ -51,17 +52,8 @@ foam.CLASS({
         .start().addClass(this.myClass())
           .start({
             class: 'foam.u2.view.ScrollTableView',
-            enableDynamicTableHeight: false,
             editColumnsEnabled: false,
-            columns: [
-              'organization',
-              'firstName',
-              'lastName',
-              'email',
-              'businessAddress.countryId',
-              'bankAccount.denomination',
-              'signUpStatus'
-            ],
+            columns: this.columns,
             data$: this.data$,
             dblClickListenerAction: this.dblclick
           }).end()
@@ -74,8 +66,9 @@ foam.CLASS({
           if ( this.selection.signUpStatus !== net.nanopay.contacts.ContactStatus.READY && ! this.selection.bankAccount ) {
             controllerMode_ = foam.u2.ControllerMode.CREATE;
           }
-          this.add(net.nanopay.ui.wizard.ContactWizardDetailView.create({
+          this.add(net.nanopay.ui.wizard.WizardController.create({
             model: 'net.nanopay.contacts.Contact',
+            wizardView: 'net.nanopay.contacts.ui.ContactWizardView',
             data: this.selection,
             controllerMode: controllerMode_,
             isEdit: true

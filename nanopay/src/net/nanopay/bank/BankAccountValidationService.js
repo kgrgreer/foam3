@@ -31,6 +31,28 @@ foam.INTERFACE({
         { name: 'countryCode', type: 'String' },
         { name: 'nationalId', type: 'String' }
       ]
+    },
+    {
+      name: 'convertToSwiftCode',
+      documentation: 'Convert Iban to SWIFT/BIC.',
+      type: 'String',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'countryCode', type: 'String' },
+        { name: 'iban', type: 'String' }
+      ]
+    },
+    {
+      name: 'convertToIbanAndSwiftCode',
+      documentation: 'Convert Bank info to Iban and SWIFT/BIC.',
+      type: 'String[]',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'countryCode', type: 'String' },
+        { name: 'nationalId', type: 'String' },
+        { name: 'accountNumber', type: 'String' },
+        { name: 'allowedCodes', type: 'List' }
+      ]
     }
   ]
 });

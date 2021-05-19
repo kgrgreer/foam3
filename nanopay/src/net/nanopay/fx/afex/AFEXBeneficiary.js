@@ -23,7 +23,8 @@ foam.CLASS({
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware'
+    'foam.nanos.auth.LastModifiedByAware',
+    'foam.nanos.auth.ServiceProviderAware'
   ],
 
   properties: [
@@ -68,7 +69,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'status',
-      documentation: 'Beneficiary status on AFEX system.'
+      documentation: 'Beneficiary status on AFEX system.',
+      tableCellFormatter: function(val) {
+        this.translate(val, val);
+      }
     },
     {
       class: 'DateTime',
@@ -97,6 +101,21 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy'
-    }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedByAgent'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.core.Currency',
+      name: 'currency'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid'
+    },
   ]
 });

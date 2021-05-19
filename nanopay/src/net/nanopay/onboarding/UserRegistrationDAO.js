@@ -163,7 +163,7 @@ foam.CLASS({
 
           Map<String, Object> params = (Map) token.getParameters();
 
-          // TODO: Why are we doing this here instead of letting PreventDuplicateEmailDAO catch this down the line?
+          // TODO: Why are we doing this here instead of letting PreventDuplicateEmailAction catch this down the line?
           // Check if user is internal ( already a registered user ), which will happen if adding a user to
           // a business.
           isInternal = params.containsKey("internal") && ((Boolean) params.get("internal"));
@@ -221,7 +221,7 @@ foam.CLASS({
                 CrunchService crunchService = (CrunchService) x.get("crunchService");
                 Subject subject = new Subject(user);
                 subject.setUser(business);
-                crunchService.updateUserJunction(sysContext, subject, "554af38a-8225-87c8-dfdf-eeb15f71215f-0", soq, CapabilityJunctionStatus.GRANTED);
+                crunchService.updateUserJunction(sysContext, subject, "crunch.onboarding.signing-officer-question", soq, CapabilityJunctionStatus.GRANTED);
               }
 
               Invitation invitation = (Invitation) getInvitationDAO()

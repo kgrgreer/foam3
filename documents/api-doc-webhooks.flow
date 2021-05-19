@@ -321,12 +321,12 @@
   "requestId": "79a01bb5-30f4-dfd3-237a-ccf54aed7142",
   "status": "Completed",
   "flinksLoginIdResult": {
-    "class": "net.nanopay.flinks.external.FlinksLoginIdOnboarding",
+    "class": "net.nanopay.flinks.external.FlinksLoginId",
     "type": 1,
     "capabilityPayloads": [
       {
         "class": "foam.nanos.crunch.connection.CapabilityPayload",
-        "id": "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD",
+        "id": "crunch.onboarding.api.unlock-ca-payments-under-1000",
         "capabilityDataObjects": {
           "AbliiPrivacyPolicy": {
             "class": "net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy",

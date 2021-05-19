@@ -33,13 +33,18 @@ foam.CLASS({
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
-    'net.nanopay.invoice.model.PaymentStatus'
+    'net.nanopay.invoice.model.PaymentStatus',
+    'net.nanopay.partner.treviso.invoice.TrevisoNotificationRule'
   ],
 
   imports: [
+    'countryDAO',
     'currencyDAO',
     'notify',
-    'subject'
+    'regionDAO',
+    'subject',
+    'theme',
+    'translationService'
   ],
 
   css: `
@@ -316,7 +321,10 @@ foam.CLASS({
                       return self.E()
                         .start().add(payer.toSummary()).end()
                         .start().add(self.formatStreetAddress(address)).end()
-                        .start().add(self.formatRegionAddress(address)).end()
+                        .start().add(self.PromiseSlot.create({
+                          promise: self.formatRegionAddress(address),
+                          value: '',
+                        })).end()
                         .start().add(address != undefined ? address.postalCode : '').end();
                       }
                   });
@@ -461,12 +469,18 @@ foam.CLASS({
             .addClass(this.myClass('invoice-content'))
             .addClass(this.myClass('invoice-content-text'))
             .addClass('invoice-note')
-            .add(this.slot(function(invoice$note) {
-              if ( invoice$note ) {
+            .add(this.slot(function(invoice$note, invoice$tedText) {
+              if ( invoice$note || invoice$tedText ) {
+                if ( invoice$tedText ) {
+                  invoice$tedText = self.translateTEDText(invoice$tedText);
+                }
+
+                const invoiceNoteWithTed = `${invoice$note}\n\n${invoice$tedText}`.trim();
+
                 return self.E()
                   .start()
                   .addClass('note')
-                    .add(invoice$note)
+                    .add(invoiceNoteWithTed)
                   .end();
               } else {
                 return self.E()
@@ -493,29 +507,13 @@ foam.CLASS({
             .start('img')
               .addClass('icon')
               .addClass(this.myClass('align-top'))
-              .attr('src', this.PRINT_ICON)
-            .end()
-            .start('img')
-              .addClass('icon').addClass('hover')
-              .addClass(this.myClass('align-top'))
-              .attr('src', this.PRINT_ICON_HOVER)
-              .on('click', () => window.print())
-            .end()
-          .end()
-
-          .start()
-            .addClass('sme').addClass('link-button')
-            .addClass(this.myClass('link-icon'))
-            .start('img')
-              .addClass('icon')
-              .addClass(this.myClass('align-top'))
               .attr('src', this.EXPORT_ICON)
             .end()
             .start('img')
               .addClass('icon').addClass('hover')
               .addClass(this.myClass('align-top'))
               .attr('src', this.EXPORT_ICON_HOVER)
-              .on('click', () => this.exportAsPDF())
+              .on('click', this.exportAsPDF)
             .end()
           .end()
         .end()
@@ -535,20 +533,85 @@ foam.CLASS({
       }
       return formattedAddress;
     },
-
-    function formatRegionAddress(address) {
+    async function formatRegionAddress(address) {
       var formattedAddress = '';
       if ( ! address ) return '';
       if ( address.city ) formattedAddress += address.city;
       if ( address.regionId ) {
-        formattedAddress ? formattedAddress += ', ' + address.regionId
-            : formattedAddress += address.regionId;
+        let region = await this.regionDAO.find(address.regionId);
+        let regionName = ( ! region ) ? address.regionId : region.name;
+        formattedAddress ? formattedAddress += ', ' + regionName
+            : formattedAddress += regionName;
       }
       if ( address.countryId ) {
-        formattedAddress ? formattedAddress += ', ' + address.countryId
-            : formattedAddress += address.countryId;
+        let country = await this.countryDAO.find(address.countryId);
+        let countryName = ( ! country ) ? address.countryId : country.nativeName;
+        formattedAddress ? formattedAddress += ', ' + countryName
+            : formattedAddress += countryName;
       }
       return formattedAddress;
+    },
+
+    function translateTEDText(tedText) {
+      
+      if (foam.locale === 'en') return tedText;
+
+      const amount = tedText.match(/\(([^\)]*)\)/)[0]; // first pair of parentheses from ted text
+
+      // use message to translate the text
+      tedText = this.TrevisoNotificationRule.TED_TEXT_MSG;
+      tedText = tedText.replace('({amount})', amount);
+
+      return tedText;
+    },
+
+    function createInvoice4PDF() {
+      /*
+       * create invoice html to be rendered in pdf
+       */
+
+      const invoiceNode = document.querySelector('.full-invoice').cloneNode(deep=true);
+
+      // allows InvoiceOverview css to be applied to invoice and its childeren nodes
+      invoiceNode.classList.add('net-nanopay-sme-ui-InvoiceOverview');
+
+      // add app logo to invoice details
+      const appLogoImage = [  // png app logo image
+        this.theme.largeLogo,
+        this.theme.logo
+      ].find(logo => logo.search(/.png$/) > -1);
+
+      const appLogoNode = document.createElement('img');
+      appLogoNode.setAttribute('src', appLogoImage);
+      appLogoNode.style.display = 'block';
+      appLogoNode.style.height = '100px';
+      
+      invoiceNode.prepend(appLogoNode);
+
+      // get invoice status (handle html2pdf glitch where some text is not visible)
+      const invoiceStatusNode = invoiceNode.querySelector('.foam-u2-view-ReadOnlyEnumView');
+      invoiceStatusNode.classList.remove('foam-u2-view-ReadOnlyEnumView-pill');
+      invoiceStatusNode.style.backgroundColor = '#fff';
+
+      // style invoice content (left block of the invoice details)
+      const invoiceContent = invoiceNode.querySelector('.left-block');
+      invoiceContent.style.display = 'block';
+      invoiceContent.style.width = '50%';
+      invoiceContent.style.padding = '0';
+      invoiceContent.style.margin = '0';
+
+      // style payment and history content (right block of the invoice details)
+      const paymentContent = invoiceNode.querySelector('.right-block');
+      paymentContent.style.display = 'block';
+      paymentContent.style.width = '50%';
+      paymentContent.style.padding = '100px 0 0 0';
+      paymentContent.style.margin = '0';
+
+      // remove print and download icons
+      const actionContainerNode = invoiceContent.querySelector(`.${this.cls_.id.replaceAll('.', '-')}-print-wrapper`);
+      actionContainerNode.parentNode.removeChild(actionContainerNode);
+      
+      return invoiceNode;
     }
   ],
 
@@ -556,30 +619,15 @@ foam.CLASS({
     function exportAsPDF() {
       try {
         window.scrollTo(0,0);
-        var className = '.full-invoice';
-        var downloadContent = ctrl.document.querySelector(className);
-        downloadContent.style.backgroundColor = '#fff';
-        downloadContent.style.margin = '350px 50px 250px 50px';
-        downloadContent.style.padding = '350px 50px 250px 50px';
-        downloadContent.offsetParent.style.margin = '120px 40px 120px 40px';
-        downloadContent.offsetParent.style.zoom = '60%';
 
-        downloadContent.offsetParent.style.width = downloadContent.scrollWidth + downloadContent.offsetParent.scrollWidth + 'px';
-        downloadContent.offsetParent.style.height = downloadContent.scrollHeight + downloadContent.offsetParent.scrollHeight + 'px';
+        const invoice4pdf = this.createInvoice4PDF();
 
-        var doc = new jsPDF('p', 'pt');
+        html2pdf().from(invoice4pdf).set({
+          margin: [0, 30],
+          filename: `invoice-${this.invoice.referenceId}.pdf`,
+          pagebreak: { mode: 'avoid-all', before: '.right-block' }
+        }).save();
 
-        doc.addHTML(downloadContent, () => {
-           doc.save(`invoice-${this.invoice.referenceId}.pdf`);
-        });
-
-        downloadContent.style.backgroundColor = '#f9fbff';
-        downloadContent.offsetParent.style.zoom = '1.0';
-        downloadContent.style.margin = '';
-        downloadContent.style.padding = '';
-        downloadContent.offsetParent.style.margin = '';
-        downloadContent.offsetParent.style.width = '';
-        downloadContent.offsetParent.style.height = ''
       } catch (e) {
         this.notify(this.SAVE_AS_PDF_FAIL, '', this.LogLevel.ERROR, true);
         throw e;

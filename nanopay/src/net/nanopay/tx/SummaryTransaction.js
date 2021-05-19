@@ -143,7 +143,7 @@ foam.CLASS({
             this.setDepositAmount(child.getTotal(x, child.getDestinationAccount()));
           }
           if ( ( ! withdrawalAmountIsSet_) && (child instanceof ValueMovementTransaction) && (SafetyUtil.equals(this.getSourceAccount(), child.getSourceAccount())) ){
-            this.setWithdrawalAmount(child.getTotal(x, child.getSourceAccount()));
+            this.setWithdrawalAmount(-child.getTotal(x, child.getSourceAccount()));
           }
         }
 

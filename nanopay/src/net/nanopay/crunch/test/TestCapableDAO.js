@@ -21,14 +21,14 @@ foam.CLASS({
         // Add arbitrary capability BusinessAddressData as user requirement
         capable.setUserCapabilityRequirements(new String[]{
           // Unlock payments in Brazil
-          "554af38a-8225-87c8-dfdf-eeb15f71215f-49"
+          "crunch.onboarding.br.brazil-onboarding"
         });
 
         // Add NatureCode capability as object requirement
         capable.setRequirements(x, new String[]{
           // Test an arbitrary nature code;
           // TODO: replace with nature code selection when ready
-          "125215a0-b0aa-4bb4-ac26-bc5d4a7a05d1"
+          "naturecode.br.computer-programs"
         });
         
         return (foam.core.FObject) capable;

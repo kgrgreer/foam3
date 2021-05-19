@@ -332,6 +332,13 @@ foam.CLASS({
         who last modified the Invoice.`,
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedByAgent',
+      includeInDigest: true,
+      section: 'invoiceInformation',
+    },
+    {
       class: 'DateTime',
       name: 'lastDateUpdated',
       includeInDigest: true,
@@ -394,6 +401,12 @@ foam.CLASS({
       section: 'invoiceInformation',
       documentation: `A written note that the user may add to the invoice.`,
       view: 'foam.u2.tag.TextArea'
+    },
+    {
+      class: 'String',
+      name: 'tedText',
+      documentation: `TED notification text`,
+      section: 'invoiceInformation'
     },
     {
       class: 'UnitValue',
@@ -633,16 +646,6 @@ foam.CLASS({
           size: 8
         }
       },
-      tableCellFormatter: function(state, obj, rel) {
-        var name = state.name;
-        var label = state.label;
-        var color = state.color;
-        if ( state === net.nanopay.invoice.model.InvoiceStatus.SCHEDULED ) {
-          label = label + ' ' + obj.paymentDate.toLocaleDateString(foam.locale);
-        }
-
-        this.start().style({ color : color }).add(label).end();
-      },
       tableWidth: 130
     },
     {
@@ -711,14 +714,6 @@ foam.CLASS({
       `
     },
     {
-      // TODO/REVIEW - used?
-      class: 'Boolean',
-      name: 'removed',
-      section: 'invoiceInformation',
-      documentation: 'Determines whether an invoice has been removed.',
-      includeInDigest: false
-    },
-    {
       class: 'Reference',
       targetDAOKey: 'contactDAO',
       of: 'net.nanopay.contacts.Contact',
@@ -769,7 +764,7 @@ foam.CLASS({
       includeInDigest: false,
       visibility: 'RO',
       view: {
-        class: 'foam.u2.view.FObjectArrayView',
+        class: 'foam.u2.view.TitledArrayView',
         valueView: 'foam.u2.CitationView'
       }
     },
@@ -956,6 +951,16 @@ foam.CLASS({
             throw new IllegalStateException("Payer user is disabled.");
           }
         }
+      `
+    },
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: function() {
+        return this.paymentId.split('-', 1)[0];
+      },
+      javaCode: `
+        return this.getClass().getSimpleName();
       `
     }
   ],

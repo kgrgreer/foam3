@@ -80,6 +80,30 @@ foam.CLASS({
       visibility: 'HIDDEN'    // not being used in FeeEngine
     },
     {
+      class: 'Class',
+      name: 'feeClass',
+      section: 'basicInfo'
+    },
+    {
+      class: 'String',
+      name: 'rateName',
+      section: 'basicInfo',
+      documentation: 'Name of a fee entry used by FeeEngine to generate a Rate'
+    },
+    {
+      class: 'Boolean',
+      name: 'isInvertedRate',
+      section: 'basicInfo',
+      documentation: 'Set to true if the "rateName" is the inverted rate (converting from destination currency to source currency).'
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'feeAccount',
+      section: 'basicInfo',
+      documentation: 'Set fee account to create transfers for the fee line item added.'
+    },
+    {
       name: 'isPassThroughFee',
       class: 'Boolean',
       value: false,
@@ -143,7 +167,7 @@ foam.CLASS({
         if ( getFormula() != null ) {
           var result = getFormula().f(obj);
           if ( result instanceof Number ) {
-            return ((Number) result).longValue();
+            return Math.round(((Number) result).doubleValue());
           }
         }
         return 0l;

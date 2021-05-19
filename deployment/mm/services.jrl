@@ -1,16 +1,14 @@
 p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "clusterConfigSupport",
-  "serviceScript":"""
-    return new foam.nanos.medusa.ClusterConfigSupport.Builder(x)
-      .build();
-  """
+  "class":"foam.nanos.boot.NSpec",
+  "name":"clusterConfigSupport",
+  "lazy":false,
+  "serviceClass":"foam.nanos.medusa.ClusterConfigSupport"
 })
 
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"clusterConfigMonitor",
-  "lazy": false,
+  "lazy":false,
   "serviceClass":"foam.nanos.medusa.ClusterConfigMonitor"
 })
 
@@ -149,16 +147,4 @@ p({
       .build()
    `,
   "client": "{\"of\":\"foam.nanos.medusa.MedusaEntry\"}"
-})
-
-// start with cronScheduler disabled.
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"cronScheduler",
-  "lazy":false,
-  "serviceScript":"""
-    foam.nanos.cron.CronScheduler scheduler = new foam.nanos.cron.CronScheduler();
-    scheduler.setEnabled(false);
-    return scheduler;
-  """
 })

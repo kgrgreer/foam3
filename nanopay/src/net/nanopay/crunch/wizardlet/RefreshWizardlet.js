@@ -7,20 +7,17 @@ foam.CLASS({
   package: 'net.nanopay.crunch.wizardlet',
   name: 'RefreshWizardlet',
   extends: 'foam.nanos.crunch.ui.CapabilityWizardlet',
+  imports: [ 'window' ],
 
-  imports: [
-    'window'
-  ],
-
-  methods: [
+  actions: [
     {
-      flags: ['web'],
-      name: 'save',
-      code: async function() {
-        var ucj = await this.SUPER();
-        if ( ucj.status === foam.nanos.crunch.CapabilityJunctionStatus.GRANTED )
-          this.window.location.reload();
-        return;
+      class: 'foam.u2.wizard.axiom.WizardAction',
+      name: 'submit',
+      code: async function(x) {
+        this.data.submitted = true;
+        this.indicator = this.WizardletIndicator.SAVING;
+        await this.wao.save(this, null);
+        this.window.location.reload();
       }
     }
   ]

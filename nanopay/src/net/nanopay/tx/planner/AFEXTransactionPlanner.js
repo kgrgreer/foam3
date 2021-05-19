@@ -27,6 +27,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.core.FObject',
     'foam.nanos.notification.Notification',
+    'java.time.LocalDateTime',
+    'java.util.Date',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.fx.CurrencyFXService',
@@ -302,20 +304,27 @@ foam.CLASS({
         afexTransaction.setStatus(TransactionStatus.PENDING);
         afexTransaction.setName("Foreign Exchange");
 
+        // Since we book the trade right away it won't expire
+        LocalDateTime expiry = LocalDateTime.now();
+        expiry = expiry.plusHours(24);
+        Date exp = java.util.Date.from(expiry.atZone(java.time.ZoneId.systemDefault()).toInstant());
+
         //--- Set FX Information ---
         afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
         afexTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
         afexTransaction.setFxRate(fxQuote.getRate());
         FXLineItem fxl = new FXLineItem.Builder(x)
+          .setName("AFEX")
           .setGroup("fx")
           .setRate(fxQuote.getRate())
           .setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime())
           .setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
           .setSourceCurrency(fxQuote.getSourceCurrency())
           .setDestinationCurrency(fxQuote.getTargetCurrency())
+          .setExpiry(exp)
           .build();
         lines.add(fxl);
-        afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
+        afexTransaction.setFxExpiry(exp);
         afexTransaction.setPaymentProvider(PAYMENT_PROVIDER);
         if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
           afexTransaction.setAccepted(true);
@@ -342,8 +351,13 @@ foam.CLASS({
           date = format.parse(fxQuote.getValueDate());
         } catch ( Exception e) { /* throw dateParse Exception?*/ }
 
-        if ( date != null )
-          lines.add(new ETALineItem.Builder(x).setGroup("fx").setEta(date.getTime() - new  Date().getTime()).build()) ;
+        if ( date != null ) {
+          if (date.getTime() < new Date().getTime()) {
+            lines.add(new ETALineItem.Builder(x).setGroup("fx").setEta(0L).build());
+          } else {
+            lines.add(new ETALineItem.Builder(x).setGroup("fx").setEta(date.getTime() - new Date().getTime()).build());
+          }
+        }
 
         afexTransaction.addLineItems( lines.toArray(new TransactionLineItem[0]));
 

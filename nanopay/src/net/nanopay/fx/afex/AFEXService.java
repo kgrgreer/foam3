@@ -182,7 +182,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         .uri(new URI(credentials.getPartnerApi() + "api/v1/AccountCreate"))
         .POST(HttpRequest.BodyPublishers.ofString(requestJson.toString()))
         .header("Content-Type", "application/json")
-        .headers("Authorization", "bearer " + getToken(spid).getAccess_token())
+        .header("Authorization", "bearer " + getToken(spid).getAccess_token())
         .header("API-Key", credentials.getApiKey())
         .build();
       logMessage(credentials.getApiKey(), requestLabel, requestJson, false);
@@ -195,12 +195,37 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       if ( response.statusCode() / 100 == 5 ) {
         logger.debug("AFEX " + requestLabel + " failed with 500, retrying.");
         response = getJavaHttpClient().send(httpRequest, HttpResponse.BodyHandlers.ofString());
+      } else if ( response.statusCode() == 400 && response.body().contains("An unsecured or incorrectly secured fault was received from the other party") ) {
+        response = getJavaHttpClient().send(httpRequest, HttpResponse.BodyHandlers.ofString());
       }
 
       if ( response.statusCode() / 100 != 2 ) {
         String errorMsg = response.statusCode() + " " + response.body();
+        // create alarm here
+        DAO alarmDAO = (DAO) getX().get("alarmDAO");
+        Alarm alarm = (Alarm) alarmDAO.find(MLang.EQ(Alarm.NAME, "AFEXOnboarding"));
+        if ( alarm == null ) {
+          alarm = new Alarm.Builder(getX())
+            .setName("AFEXOnboarding")
+            .setIsActive(true)
+            .setNote("Failed to onboard an AFEX business")
+            .build();
+        } else {
+          alarm = (Alarm) alarm.fclone();
+          if ( ! alarm.getIsActive() ) alarm.setIsActive(true);
+        }
+        alarmDAO.put(alarm);
         logger.error(errorMsg);
         throw new RuntimeException(errorMsg);
+      } else {
+        //clear alarm if exists
+        DAO alarmDAO = (DAO) getX().get("alarmDAO");
+        Alarm alarm = (Alarm) alarmDAO.find(MLang.EQ(Alarm.NAME, "AFEXOnboarding"));
+        if ( alarm != null && alarm.getIsActive() ) {
+          alarm = (Alarm) alarm.fclone();
+          alarm.setIsActive(false);
+          alarmDAO.put(alarm);
+        }
       }
 
       logMessage(credentials.getApiKey(), requestLabel, response.body(), true);

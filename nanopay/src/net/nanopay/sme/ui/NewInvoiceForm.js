@@ -59,7 +59,7 @@ foam.CLASS({
     'net.nanopay.bank.GetDefaultCurrency',
     'net.nanopay.contacts.Contact',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.ui.wizard.ContactWizardDetailView',
+    'net.nanopay.ui.wizard.WizardController',
     'foam.u2.dialog.Popup',
     'net.nanopay.accounting.xero.model.XeroInvoice',
     'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
@@ -89,7 +89,6 @@ foam.CLASS({
     }
     ^ .foam-u2-tag-Select {
       width: 100%;
-      height: 40px;
     }
     ^ .invoice-input-box {
       font-size: 12px;
@@ -107,10 +106,11 @@ foam.CLASS({
       padding-left: 5px;
       background: #ffffff;
       display: inline-block;
-      height: 38px;
+      height: 34px;
       vertical-align: top;
       border: 1px solid /*%GREY3%*/ #cbcfd4;
       border-radius: 3px;
+      box-sizing: border-box;
     }
     ^ .validation-failure-container {
       font-size: 10px;
@@ -343,19 +343,7 @@ foam.CLASS({
         this.invoice.invoiceFile = n;
       },
       view: function(_, X) {
-        let selectSlot = foam.core.SimpleSlot.create({value: 0});
-        return foam.u2.MultiView.create({
-        views: [
-          foam.nanos.fs.fileDropZone.FileDropZone.create({
-            files$: X.uploadFileData$,
-            selected$: selectSlot
-          }, X),
-          foam.nanos.fs.fileDropZone.FilePreview.create({
-            data$: X.uploadFileData$,
-            selected$: selectSlot
-          }, X)
-        ]
-        });
+        return foam.u2.view.DocumentUploadView.create({ data$: X.uploadFileData$ }, X);
       },
     },
     {
@@ -524,7 +512,7 @@ foam.CLASS({
                 action: this.ADD_CONTACT,
                 actionData: this,
                 search: true,
-                searchPlaceholder: this.START_SEARCH,
+                searchPlaceholder: "",
                 mode: displayMode
               })
                 .enableClass('invalid', this.slot(
@@ -548,8 +536,9 @@ foam.CLASS({
               .start().add(this.ADD_BANK).addClass('add-banking-information')
                 .on('click', async function() {
                   self.userDAO.find(self.invoice.contactId).then((contact)=>{
-                    self.add(self.ContactWizardDetailView.create({
+                    self.add(self.WizardController.create({
                       model: 'net.nanopay.contacts.Contact',
+                      wizardView: 'net.nanopay.contacts.ui.ContactWizardView',
                       data: contact,
                       controllerMode: foam.u2.ControllerMode.CREATE,
                       onClose: self.checkUser.bind(self)
@@ -574,7 +563,7 @@ foam.CLASS({
                         return isInvalid && type === 'payable' && ! showAddBank;
                       }))
                     .on('click', () => {
-                      this.invoice.destinationCurrency = this.currencyType.id;
+                      this.invoice.destinationCurrency = this.currencyType;
                     })
                   .end()
                 .endContext()
@@ -801,8 +790,9 @@ foam.CLASS({
       icon: 'images/plus-no-bg.svg',
       code: function(X, e) {
         var self = X.data;
-        X.ctrl.add(net.nanopay.ui.wizard.ContactWizardDetailView.create({
+        X.ctrl.add(net.nanopay.ui.wizard.WizardController.create({
           model: 'net.nanopay.contacts.Contact',
+          wizardView: 'net.nanopay.contacts.ui.ContactWizardView',
           data$: self.addedContact$,
           controllerMode: foam.u2.ControllerMode.CREATE,
           onClose: self.setContactIdOnContactAdd.bind(self)

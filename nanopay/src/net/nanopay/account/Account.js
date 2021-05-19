@@ -240,7 +240,7 @@ foam.CLASS({
       expression: function() {
         return this.toSummary() + ` - ${this.type}`;
       },
-      tableCellFormatter: function(_, obj) {
+      tableCellFormatter: function(value, obj) {
         this.add(obj.slot(function(
           name,
           desc
@@ -255,7 +255,7 @@ foam.CLASS({
           if ( desc ) {
             output += desc;
           }
-          return output;
+          return output ? output : value;
         }));
       }
     },
@@ -303,6 +303,12 @@ foam.CLASS({
       `,
       tableWidth: 175,
       tableCellFormatter: function(value, obj, axiom) {
+        if (
+          net.nanopay.account.TrustAccount.isInstance(obj) 
+          && value < 0 
+        ){
+          value *= -1;
+        }
         this.add(value);
       }
     },
@@ -339,6 +345,12 @@ foam.CLASS({
         this.add(obj.slot(function(denomination) {
           return self.E().add(foam.core.PromiseSlot.create({
             promise: this.currencyDAO.find(denomination).then((result) => {
+              if (
+                net.nanopay.account.TrustAccount.isInstance(obj) 
+                && value < 0 
+              ){
+                value *= -1;
+              }
               return self.E().add(result.format(value));
             })
           }));
@@ -359,7 +371,7 @@ foam.CLASS({
       tableHeaderFormatter: function(axiom) {
         this.add('Default');
       },
-      tableHeader: function(axiom) {
+      columnLabel: function(axiom) {
         return this.sourceCls_.DEFAULT_MSG;
       },
       tableCellFormatter: function(value, obj, property) {
@@ -425,6 +437,25 @@ foam.CLASS({
       includeInDigest: true,
       documentation: `The unique identifier of the individual person, or real user,
         who last modified this account.`,
+      section: 'operationsInformation',
+      order: 110,
+      gridColumns: 6,
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subSubContext__.userDAO
+          .find(value)
+          .then((user) => this.add(user.toSummary()))
+          .catch((error) => {
+            this.add(value);
+          });
+      },
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedByAgent',
+      includeInDigest: true,
       section: 'operationsInformation',
       order: 110,
       gridColumns: 6,
@@ -516,7 +547,7 @@ foam.CLASS({
       javaFactory: 'return foam.mlang.MLang.FALSE;',
       visibility: 'HIDDEN'
     },
-    
+
     {
       class: 'String',
       name: 'externalId',

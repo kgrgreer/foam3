@@ -58,10 +58,6 @@ foam.CLASS({
       white-space: normal !important;
     }
 
-    ^ .foam-nanos-menu-VerticalMenu .side-nav-view {
-      margin-top: 56px;
-    }
-
     ^ .imageMenuStyle {
       float: left;
       height: 30px;
@@ -86,7 +82,7 @@ foam.CLASS({
   `,
 
   listeners: [
-    function setViewDimentions(event) {
+    function setViewDimensions(event) {
       var coll = document.getElementsByClassName('foam-u2-stack-StackView');
       var i;
       var value;
@@ -98,17 +94,15 @@ foam.CLASS({
     },
     function toggleMenu(event) {
       this.isMenuOpen = ! this.isMenuOpen;
-
-      window.localStorage.setItem('isMenuOpen', this.isMenuOpen);
-      this.setViewDimentions();
     }
   ],
   methods: [
     function init() {
-      this.setViewDimentions();
+      this.isMenuOpen$.sub(this.setViewDimensions);
+      this.setViewDimensions();
     },
     function initE() {
-      window.onresize = this.setViewDimentions;
+      window.onresize = this.setViewDimensions;
       var self = this;
       // Sets currentMenu and listeners on search selections and subMenu scroll on load.
       if ( window.location.hash != null ) this.menuListener(window.location.hash.replace('#', ''));
@@ -126,12 +120,12 @@ foam.CLASS({
         .on('click', function() { self.toggleMenu(); } )
           .end()
           .start()
-            .show(this.isMenuOpen$)
-            .tag({ class: 'foam.nanos.menu.VerticalMenu' })
-          .end()
-          .start()
             .addClass('openMenuStyle')
             .tag({ class: 'net.nanopay.ui.TopNavigation' })
+          .end()
+          .start()
+            .show(this.isMenuOpen$)
+            .tag({ class: 'foam.nanos.menu.VerticalMenu' })
           .end()
         .end()
       .end()

@@ -16,4 +16,4 @@ done
 find ../build/ -name "*.js" -type f -delete
 
 cwd=$(pwd)
-node ../../../foam2/tools/genjava.js $cwd/../classes.js $cwd/../build $cwd
+node ../../../foam3/tools/genjava.js $cwd/../classes.js $cwd/../build $cwd

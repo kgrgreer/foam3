@@ -1,5 +1,5 @@
-[submodule "foam2"]
-    path = foam2
-    url = git@github.com:foam-framework/foam2.git
-    branch = master
-    ignore = dirty
+[submodule "foam3"]
+	path = foam3
+	url = https://github.com/kgrgreer/foam3.git
+	branch = master
+	ignore = dirty

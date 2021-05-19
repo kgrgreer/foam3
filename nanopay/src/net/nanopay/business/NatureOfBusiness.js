@@ -82,6 +82,35 @@ foam.CLASS({
       postSet: function(_, n) {
         this.data$find.then((o) => { if (o) this.parentChoice = o.parent });
       }
+    },
+    {
+      name: 'filteredParentDAO',
+      expression: function(country) {
+        var daoSpec = { of: this.BusinessSector };
+        var adao = foam.dao.ArrayDAO.create(daoSpec);
+        var pdao = foam.dao.PromisedDAO.create(daoSpec);
+        this.businessSectorDAO.where(this.AND(
+          this.NEQ(this.BusinessSector.PARENT, 0),
+          this.EQ(this.BusinessSector.COUNTRY_ID, country)
+        )).select().then(bsList => {
+          const list = bsList.array;
+          var sinkFn = bs => {
+            for (var i = 0; i < list.length; i++) {
+              if (list[i].parent == bs.id) {
+                adao.put(bs);
+                break;
+              }
+            }
+          };
+  
+          this.businessSectorDAO
+            .where(this.EQ(this.BusinessSector.PARENT, 0))
+            .select({ put: sinkFn })
+            .then(() => pdao.promise.resolve(adao));
+        });
+        
+        return pdao;
+      }
     }
   ],
 
@@ -98,7 +127,7 @@ foam.CLASS({
               sections: [
                 {
                   heading: this.INDUSTRIES,
-                  dao: this.businessSectorDAO.where(this.EQ(this.BusinessSector.PARENT, 0))
+                  dao$: this.filteredParentDAO$
                 }
               ],
               search: true,

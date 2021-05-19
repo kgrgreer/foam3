@@ -17,6 +17,8 @@
 package net.nanopay.country.br.exchange;
 
 import foam.core.*;
+import foam.dao.ArraySink;
+import foam.dao.DAO;
 import foam.util.SafetyUtil;
 
 import javax.xml.bind.DatatypeConverter;
@@ -25,6 +27,8 @@ import javax.xml.soap.*;
 import java.util.*;
 import java.io.*;
 import foam.nanos.logger.Logger;
+
+import static foam.mlang.MLang.EQ;
 
 public class ExchangeClient
   extends ContextAwareSupport
@@ -37,8 +41,12 @@ public class ExchangeClient
     logger = (Logger) x.get("logger");
   }
 
-  protected ExchangeCredential getCredentials() {
-    ExchangeCredential credentials = (ExchangeCredential) getX().get("exchangeCredential");
+  protected ExchangeCredential getCredentials(X x) {
+    ExchangeCredential credentials = null;
+    DAO exchangeCredentialDAO = (DAO) x.get("exchangeCredentialDAO");
+    List<ExchangeCredential> arr = ((ArraySink) exchangeCredentialDAO.inX(x).select(new ArraySink())).getArray();
+    if ( arr.size() > 0 ) credentials = arr.get(0);
+
     if ( credentials == null ||
          SafetyUtil.isEmpty(credentials.getExchangeUsername()) ||
          SafetyUtil.isEmpty(credentials.getExchangePassword()) ||
@@ -50,11 +58,11 @@ public class ExchangeClient
   }
 
   @Override
-  public InsertBoletoResponse insertBoleto(InsertBoleto request) {
+  public InsertBoletoResponse insertBoleto(X x, InsertBoleto request) {
     try {
-      SOAPMessage message = createSOAPMessage("insertBoleto", request);
+      SOAPMessage message = createSOAPMessage(x,"insertBoleto", request);
       long startTime = logRequest(message);
-      SOAPMessage response = sendMessage("insertBoleto", message);
+      SOAPMessage response = sendMessage(x, "insertBoleto", message);
       logResponse(response, startTime);
       return (InsertBoletoResponse) parseMessage(response, InsertBoletoResponse.class);
     } catch (Throwable t) {
@@ -63,11 +71,11 @@ public class ExchangeClient
   }
 
   @Override
-  public SearchBoletoResponse searchBoleto(SearchBoleto request) {
+  public SearchBoletoResponse searchBoleto(X x, SearchBoleto request) {
     try {
-      SOAPMessage message = createSOAPMessage("searchBoleto", request);
+      SOAPMessage message = createSOAPMessage(x, "searchBoleto", request);
       long startTime = logRequest(message);
-      SOAPMessage response = sendMessage("searchBoleto", message);
+      SOAPMessage response = sendMessage(x, "searchBoleto", message);
       logResponse(response, startTime);
       return (SearchBoletoResponse) parseMessage(response, SearchBoletoResponse.class);
     } catch (Throwable t) {
@@ -76,11 +84,11 @@ public class ExchangeClient
   }
 
   @Override
-  public BoletoStatusResponse getBoletoStatus(GetBoletoStatus request) {
+  public BoletoStatusResponse getBoletoStatus(X x, GetBoletoStatus request) {
     try {
-      SOAPMessage message = createSOAPMessage("BoletoStatus", request);
+      SOAPMessage message = createSOAPMessage(x, "BoletoStatus", request);
       long startTime = logRequest(message);
-      SOAPMessage response = sendMessage("BoletoStatus", message);
+      SOAPMessage response = sendMessage(x, "BoletoStatus", message);
       logResponse(response, startTime);
       return (BoletoStatusResponse) parseMessage(response, BoletoStatusResponse.class);
     } catch (Throwable t) {
@@ -89,11 +97,11 @@ public class ExchangeClient
   }
 
   @Override
-  public SearchTitularResponse searchTitular(SearchTitular request) {
+  public SearchTitularResponse searchTitular(X x, SearchTitular request) {
     try {
-      SOAPMessage message = createSOAPMessage("searchTitular", request);
+      SOAPMessage message = createSOAPMessage(x, "searchTitular", request);
       long startTime = logRequest(message);
-      SOAPMessage response = sendMessage("searchTitular", message);
+      SOAPMessage response = sendMessage(x, "searchTitular", message);
       logResponse(response, startTime);
       return (SearchTitularResponse) parseMessage(response, SearchTitularResponse.class);
     } catch (Throwable t) {
@@ -102,11 +110,11 @@ public class ExchangeClient
   }
 
   @Override
-  public SearchTitularCapFinResponse searchTitularCapFin(SearchTitularCapFin request) {
+  public SearchTitularCapFinResponse searchTitularCapFin(X x, SearchTitularCapFin request) {
     try {
-      SOAPMessage message = createSOAPMessage("searchTitularCapFin", request);
+      SOAPMessage message = createSOAPMessage(x, "searchTitularCapFin", request);
       long startTime = logRequest(message);
-      SOAPMessage response = sendMessage("searchTitularCapFin", message);
+      SOAPMessage response = sendMessage(x,"searchTitularCapFin", message);
       logResponse(response, startTime);
       return (SearchTitularCapFinResponse) parseMessage(response, SearchTitularCapFinResponse.class);
     } catch (Throwable t) {
@@ -115,11 +123,11 @@ public class ExchangeClient
   }
 
   @Override
-  public InsertTitularResponse insertTitular(InsertTitular request) {
+  public InsertTitularResponse insertTitular(X x, InsertTitular request) {
     try {
-      SOAPMessage message = createSOAPMessage("insertTitular", request);
+      SOAPMessage message = createSOAPMessage(x,"insertTitular", request);
       long startTime = logRequest(message);
-      SOAPMessage response = sendMessage("insertTitular", message);
+      SOAPMessage response = sendMessage(x,"insertTitular", message);
       logResponse(response, startTime);
       return (InsertTitularResponse) parseMessage(response, InsertTitularResponse.class);
     } catch (Throwable t) {
@@ -128,11 +136,11 @@ public class ExchangeClient
   }
 
   @Override
-  public UpdateTitularResponse updateTitular(UpdateTitular request) {
+  public UpdateTitularResponse updateTitular(X x, UpdateTitular request) {
     try {
-      SOAPMessage message = createSOAPMessage("updateTitular", request);
+      SOAPMessage message = createSOAPMessage(x, "updateTitular", request);
       long startTime = logRequest(message);
-      SOAPMessage response = sendMessage("updateTitular", message);
+      SOAPMessage response = sendMessage(x, "updateTitular", message);
       logResponse(response, startTime);
       return (UpdateTitularResponse) parseMessage(response, UpdateTitularResponse.class);
     } catch (Throwable t) {
@@ -141,11 +149,11 @@ public class ExchangeClient
   }
 
   @Override
-  public SearchNaturezaResponse searchNatureza(SearchNatureza request) {
+  public SearchNaturezaResponse searchNatureza(X x, SearchNatureza request) {
     try {
-      SOAPMessage message = createSOAPMessage("searchNatureza", request);
+      SOAPMessage message = createSOAPMessage(x,"searchNatureza", request);
       long startTime = logRequest(message);
-      SOAPMessage response = sendMessage("searchNatureza", message);
+      SOAPMessage response = sendMessage(x,"searchNatureza", message);
       logResponse(response, startTime);
       return (SearchNaturezaResponse) parseMessage(response, SearchNaturezaResponse.class);
     } catch (Throwable t) {
@@ -154,11 +162,11 @@ public class ExchangeClient
   }
 
   @Override
-  public SearchMoedaResponse searchMoeda(SearchMoeda request) {
+  public SearchMoedaResponse searchMoeda(X x, SearchMoeda request) {
     try {
-      SOAPMessage message = createSOAPMessage("searchMoeda", request);
+      SOAPMessage message = createSOAPMessage(x,"searchMoeda", request);
       long startTime = logRequest(message);
-      SOAPMessage response = sendMessage("searchMoeda", message);
+      SOAPMessage response = sendMessage(x,"searchMoeda", message);
       logResponse(response, startTime);
       return (SearchMoedaResponse) parseMessage(response, SearchMoedaResponse.class);
     } catch (Throwable t) {
@@ -167,11 +175,11 @@ public class ExchangeClient
   }
 
   @Override
-  public SearchPaisResponse searchPais(SearchPais request) {
+  public SearchPaisResponse searchPais(X x, SearchPais request) {
     try {
-      SOAPMessage message = createSOAPMessage("searchPais", request);
+      SOAPMessage message = createSOAPMessage(x,"searchPais", request);
       long startTime = logRequest(message);
-      SOAPMessage response = sendMessage("searchPais", message);
+      SOAPMessage response = sendMessage(x,"searchPais", message);
       logResponse(response, startTime);
       return (SearchPaisResponse) parseMessage(response, SearchPaisResponse.class);
     } catch (Throwable t) {
@@ -180,11 +188,11 @@ public class ExchangeClient
   }
 
   @Override
-  public CotacaoTaxaCambioResponse cotacaoTaxaCambio(GetCotacaoTaxaCambio request) {
+  public CotacaoTaxaCambioResponse cotacaoTaxaCambio(X x, GetCotacaoTaxaCambio request) {
     try {
-      SOAPMessage message = createSOAPMessage("cotacaoTaxaCambio", request);
+      SOAPMessage message = createSOAPMessage(x,"cotacaoTaxaCambio", request);
       long startTime = logRequest(message);
-      SOAPMessage response = sendMessage("cotacaoTaxaCambio", message);
+      SOAPMessage response = sendMessage(x,"cotacaoTaxaCambio", message);
       logResponse(response, startTime);
       return (CotacaoTaxaCambioResponse) parseMessage(response, CotacaoTaxaCambioResponse.class);
     } catch (Throwable t) {
@@ -230,9 +238,9 @@ public class ExchangeClient
    * @param method method to use
    * @return newly initialized SOAPMessage
    */
-  protected SOAPMessage createSOAPMessage(String method, FObject object) {
+  protected SOAPMessage createSOAPMessage(X x, String method, FObject object) {
     try {
-      ExchangeCredential credentials = getCredentials();
+      ExchangeCredential credentials = getCredentials(x);
       SOAPMessage message = MessageFactory.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL).createMessage();
       SOAPPart part = message.getSOAPPart();
 
@@ -306,9 +314,9 @@ public class ExchangeClient
    * @param message SOAP message to send
    * @return SOAP message response
    */
-  protected SOAPMessage sendMessage(String method, SOAPMessage message) {
+  protected SOAPMessage sendMessage(X x, String method, SOAPMessage message) {
     SOAPConnection conn = null;
-    ExchangeCredential credentials = getCredentials();
+    ExchangeCredential credentials = getCredentials(x);
 
     try {
       conn = SOAPConnectionFactory.newInstance().createConnection();

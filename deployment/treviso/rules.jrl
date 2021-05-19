@@ -10,14 +10,12 @@ p({
   `,
   feeName: "Total Fee Due",
   feeDenomination: "BRL",
-  feeClass: "net.nanopay.tx.FeeLineItem",
   rateName: "Total Rate",
   isInvertedRate: true,
   rateExpiry: {
     class: "foam.nanos.cron.TimeHMS",
     hour: 24
   },
-  feeAccount: "707911f9-5129-4916-a27a-6a6c469668ce",
   enabled: true,
   predicate: {
     class: "foam.mlang.predicate.And",
@@ -279,7 +277,7 @@ p({
     ]
   },
   "action":{
-    "class":"net.nanopay.country.br.CapableCreateNatureCodeApprovalsRuleAction",
+    "class":"net.nanopay.country.br.CapableCreateInvoiceApprovalsRuleAction",
     "daoToReput":"invoiceDAO",
     "groupToNotify":"treviso-fraud-ops"
   },
@@ -437,7 +435,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"9cb36c96-c2e6-4c2a-8b38-f009d44c341a",
   "name":"Treviso TrevisoSendEmailToAllRule",
   "priority":1,
@@ -498,7 +496,7 @@ p({
   "id":"bf6670a5-957e-4407-a80f-7eda6f27ab23",
   "name":"TrevisoTransaction ClearingTime Rule",
   "of": "net.nanopay.partner.treviso.tx.TrevisoTransaction",
-  "duration": 0,
+  "duration": 1,
   "predicate": {
     class: "foam.mlang.predicate.And",
     args: [
@@ -517,6 +515,28 @@ p({
     ]
   },
   "spid": "treviso",
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"c65f1e3e-7347-4f90-82c8-ca05dc01d16a",
+  "name":"Auto Approve AFEX Payment Provider Capability",
+  "documentation":"Rule to auto grant AFEX Payment Provider Capability after Afex business is created ",
+  "priority":100,
+  "ruleGroup":"AFEXOnboarding",
+  "daoKey":"afexUserDAO",
+  "operation":0,
+  "after":true,
+  "predicate":{
+    "class":"net.nanopay.fx.afex.AFEXBusinessCreatedPredicate",
+  },
+  "action":{
+    "class":"net.nanopay.fx.afex.GrantAFEXPaymentProviderCapRule"
+  },
+  "spid": "treviso",
+  "enabled":true,
   "saveHistory":true,
   "lifecycleState":1
 })

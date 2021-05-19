@@ -8,6 +8,8 @@ p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-admin",targ
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-admin",targetId:"group.read.treviso-support"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-admin",targetId:"rule.read.13df0d76-ba3e-4287-b42e-c7ceff059dd8"})
 
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-sme",targetId:"exchangecredential.read.*"})
+
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"group.update.treviso-fraud-ops"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"group.update.treviso-payment-ops"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"naturecode.read.*"})
@@ -16,4 +18,47 @@ p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"service.natureCodeDAO"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"service.natureCodeDataDAO"})
 
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.br.international-payments"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.signing-officer-information"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.acceptance-document.afex-terms-and-conditions"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.br.brazil-onboarding"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.payment.source.country.br"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.acceptance-document.afex-terms-and-conditions"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.document.date-of-issue"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.user-birth-date"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.transaction-details"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.business-directors"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.br.business-ownership"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.business-type-sector"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.payment.target.country.br"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.br.currency-amount-information"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.br.business-account"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.document.office-consumption"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.document.annual-financial-statements"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.br.business-identification"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.document.articles-of-incorporation"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.certify-data-reviewed"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.document.utility-bills"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.document.identification"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.br.cpf"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"capability.availability.crunch.onboarding.br.parent.international-payments"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"net.nanopay.crunch.acceptancedocuments.capabilities.usdafexterms.section.reviewAgreementDocumentsSection"})
+
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"usercapabilityjunction.update.*"})
+
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"service.crunchService"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"service.crunchService.getCapabilityPathFor"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"service.crunchService.getJunctionFor"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"service.crunchService.updateJunctionFor"})
+
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"net.nanopay.country.br.naturecode.naturecode.disablereflink"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"foam.nanos.auth.group.group.disablereflink"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-fraud-ops",targetId:"foam.nanos.crunch.capability.capability.disablereflink"})
+
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"treviso-payment-ops",targetId:"service.trevisoTransactionReportDAO"})
+
+// Switch user menus
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"treviso-api-session","targetId":"menu.read.switch-user"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"treviso-fraud-ops","targetId":"menu.read.switch-user"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"treviso-payment-ops","targetId":"menu.read.switch-user"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"treviso-support","targetId":"menu.read.switch-user"})

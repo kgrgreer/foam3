@@ -53,8 +53,6 @@ foam.CLASS({
             User                  owner = (User) userDAO.find(account.getOwner());
             Group                 group = owner.findGroup(x);
             AppConfig            config = group != null ? (AppConfig) group.getAppConfig(x) : null;
-            Institution     institution = (Institution) institutionDAO.find(EQ(Institution.INSTITUTION_NUMBER,account.getInstitutionNumber()));
-
             if ( config == null ) return;
             if ( owner instanceof PersonalContact ) return;
 
@@ -63,7 +61,6 @@ foam.CLASS({
             args.put("name",    User.FIRST_NAME);
             args.put("account", BankAccount.mask(account.getAccountNumber()));
             args.put("institutionNumber", account.getInstitutionNumber());
-            args.put("institutionName", institution == null ? null : institution.toSummary());
             args.put("business", owner.toSummary());
 
             Notification deletedNotification = new Notification.Builder(x)

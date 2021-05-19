@@ -21,10 +21,11 @@ foam.CLASS({
   documentation: `The base model for representing the public information of a User`,
 
   javaImports: [
+    'foam.core.FObject',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
-    'net.nanopay.model.Business',
-    'foam.util.SafetyUtil'
+    'foam.util.SafetyUtil',
+    'net.nanopay.model.Business'
   ],
 
   tableColumns: [
@@ -118,6 +119,10 @@ foam.CLASS({
       class: 'String',
       name: 'type',
       documentation: 'The type of the public information of a User.'
+    },
+    {
+      class: 'String',
+      name: 'spid'
     }
   ],
 
@@ -151,6 +156,32 @@ foam.CLASS({
                   : this.getFirstName()
                 : "Unknown";
       `
+    },
+    {
+      name: 'compareTo',
+      type: 'int',
+      args:
+      [
+        {
+          name: 'o',
+          type: 'Object',
+        }
+      ],
+      javaCode: `
+        if ( o == null ) return 1;
+        if ( o == this ) return 0;
+        if ( ! ( o instanceof foam.core.FObject ) ) return 1;
+        if ( getClass() != o.getClass() ) {
+          return getClassInfo().getId().compareTo(((foam.core.FObject)o).getClassInfo().getId());
+        }
+        
+        PublicUserInfo o2 = (PublicUserInfo) o;
+        int cmp;
+
+        cmp = foam.util.SafetyUtil.compare(this.toSummary(), ((PublicUserInfo)o).toSummary());
+        if ( cmp != 0 ) return cmp;
+        return FObject.super.compareTo(o);
+      `
     }
   ],
 
@@ -174,6 +205,7 @@ foam.CLASS({
             setAddress(user.getAddress());
             setPhoneNumber(user.getPhoneNumber());
             setType(user.getType());
+            setSpid(user.getSpid());
           }
         `);
       },

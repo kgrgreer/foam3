@@ -100,6 +100,7 @@ foam.CLASS({
     }
     ^ .invoice-h2 {
       margin-top: 0;
+      margin-bottom: 16px;
     }
     ^ .isApproving {
       display: none;
@@ -108,7 +109,7 @@ foam.CLASS({
       margin-bottom: 0;
     }
     ^ .selectionContainer {
-      margin-bottom: 36px;
+      margin-bottom: 24px;
     }
     ^ .white-radio {
       width: 244px !important;
@@ -134,6 +135,19 @@ foam.CLASS({
       color: #f55a5a;
     }
   `,
+
+  messages: [
+    { name: 'DETAILS_SUBTITLE', message: 'Create new payable or choose from existing' },
+    { name: 'CHOOSE_EXISTING_PAYABLE', message: 'Choose an existing payable' },
+    { name: 'CHOSEE_EXISTING_RECEIVABLE', message: 'Choose an existing receivable' },
+    { name: 'DETAILS_HEADER', message: 'Invoice Details' },
+    { name: 'BACK', message: 'Back to selection' },
+    { name: 'ACCOUNT_WITHDRAW_LABEL', message: 'Withdraw from' },
+    { name: 'SELECT_BANK_ACCOUNT', message: 'Please select a bank account' },
+    { name: 'NEW_MSG', message: 'New' },
+    { name: 'EXISTING_MSG', message: 'Existing' },
+    { name: 'NEXT', message: 'Next' },
+  ],
 
   properties: [
     {
@@ -212,11 +226,11 @@ foam.CLASS({
         this.invoice.account = this.sourceAccount
       },
       factory: function() {
-       this.subject.user.accounts.find(
-         this.AND(
-           this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED),
-           this.EQ(this.Account.IS_DEFAULT, true)
-         )
+        this.subject.user.accounts.find(
+          this.AND(
+            this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED),
+            this.EQ(this.Account.IS_DEFAULT, true)
+          )
         ).then(s => {
           this.sourceAccount = s.id
         })
@@ -230,20 +244,10 @@ foam.CLASS({
     },
   ],
 
-  messages: [
-    { name: 'DETAILS_SUBTITLE', message: 'Create new payable or choose from existing' },
-    { name: 'EXISTING_HEADER', message: 'Choose an existing ' },
-    { name: 'DETAILS_HEADER', message: 'Invoice Details' },
-    { name: 'BACK', message: 'Back to selection' },
-    { name: 'ACCOUNT_WITHDRAW_LABEL', message: 'Withdraw from' },
-    { name: 'SELECT_BANK_ACCOUNT', message: 'Please select a bank account' },
-    { name: 'NEW_MSG', message: 'New' },
-    { name: 'EXISTING_MSG', message: 'Existing' },
-    { name: 'NEXT', message: 'Next' },
-  ],
-
   methods: [
     function initE() {
+      const self = this;
+
       this.SUPER();
       var newButtonLabel = this.NEW_MSG;
       var existingButtonLabel = this.EXISTING_MSG;
@@ -277,7 +281,7 @@ foam.CLASS({
           .start()
             .add(this.isForm$.map(bool => {
               return ! bool ? null :
-               this.E().start().addClass('block')
+                this.E().start().addClass('block')
                   .show(this.isForm$)
                   .start().addClass('header')
                     .add(this.DETAILS_HEADER)
@@ -292,7 +296,11 @@ foam.CLASS({
               return ! bool ? null :
               this.E().start().addClass('block')
                 .start().addClass('header')
-                  .add(`${this.EXISTING_HEADER} ${this.type}`)
+                  .callIfElse(this.type === 'payable', function() {
+                    this.add(`${self.CHOOSE_EXISTING_PAYABLE}`)
+                  }, function() {
+                    this.add(`${self.CHOOSE_EXISTING_RECEIVABLE}`)
+                  })
                 .end()
                 .start()
                   .addClass('invoice-list-wrapper')
@@ -325,7 +333,11 @@ foam.CLASS({
                   var detailView =  this.E().addClass('block')
                     .start().hide(this.isDraft$)
                       .addClass('header')
-                      .add(`${this.EXISTING_HEADER} ${this.type}`)
+                      .callIfElse(this.type === 'payable', function() {
+                        this.add(`${self.CHOOSE_EXISTING_PAYABLE}`)
+                      }, function() {
+                        this.add(`${self.CHOOSE_EXISTING_RECEIVABLE}`)
+                      })
                     .end()
                     .start().show(this.isDraft$)
                       .addClass('header')

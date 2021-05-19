@@ -45,34 +45,27 @@ foam.CLASS({
 
   messages: [
     { name: 'INVALID_NATIONALITY', message: 'Nationality required' },
-    { name: 'INVALID_CPF', message: 'Valid CPF number required' },
-    { name: 'INVALID_OWNER_NAME', message: 'Confirm the name of the business owner' },
     { name: 'YES', message: 'Yes' },
     { name: 'NO', message: 'No' },
     { name: 'RICHCHOICE_SELECTION_TITLE', message: 'Countries' },
     { name: 'PROOF_OF_ADDRESS', message: 'Proof of address documents required' },
-    { name: 'PROOF_OF_IDENTIFICATION', message: 'Proof of identication documents required' }
+    { name: 'PROOF_OF_IDENTIFICATION', message: 'Proof of identication documents required' },
+    { name: 'INVALID_CPF', message: 'Valid CPF number required' }
   ],
 
   properties: [
+    {
+      name: 'birthday',
+      validationPredicates: [],
+      hidden: true
+    },
     {
       class: 'EMail',
       name: 'email',
       section: 'requiredSection',
       required: true,
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
-      }
-    },
-    {
-      name: 'birthday',
-      postSet: function(_,n) {
-        if ( this.cpf.length == 11 && this.verifyName !== true ) {
-          this.cpfName = "";
-          this.getCpfName(this.cpf).then(v => {
-            this.cpfName = v;
-          });
-        }
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : mode === 'percent' && showFullOwnerDetails ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.RW;
       }
     },
     {
@@ -116,105 +109,34 @@ foam.CLASS({
       ]
     },
     {
-      class: 'String',
+      class: 'FObjectProperty',
       name: 'cpf',
-      label: 'Cadastro de Pessoas Físicas (CPF)',
+      label: '',
+      of: 'net.nanopay.country.br.CPF',
+      required: true,
       section: 'requiredSection',
-      documentation: `CPF number of beneficial owner.`,
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      },
+      factory: function() {
+        return net.nanopay.country.br.CPF.create({}, this.__subContext__);
+      },
+      view: function(_, X) {
+        let forceIntoRO = X.data.mode === 'percent' && X.data.showFullOwnerDetails;
+        var x = forceIntoRO ? X.createSubContext({ controllerMode: foam.u2.ControllerMode.VIEW }) : X;
+        return foam.u2.view.FObjectView.create({ classIsFinal: true }, x);
       },
       validationPredicates: [
         {
-          args: ['cpfName'],
+          args: ['cpf', 'cpf$errors_'],
           predicateFactory: function(e) {
-            return e.GT(
-              net.nanopay.partner.treviso.onboarding.BRBeneficialOwner
-                .CPF_NAME,
-              0);
+            return e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.CPF
+              }), true);
           },
           errorMessage: 'INVALID_CPF'
         }
-      ],
-      externalTransient: true,
-      tableCellFormatter: function(val) {
-        return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
-      },
-      postSet: function(_, n) {
-        this.cpfName = '';
-        if ( n.length == 11 ) {
-          this.getCpfName(n).then(v => {
-            this.cpfName = v;
-          });
-        }
-      },
-      view: function(_, X) {
-        return foam.u2.FragmentedTextField.create({
-          delegates: [
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cpf.slice(0, 3),
-              maxLength: 3
-            }),
-            '.',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cpf.slice(3, 6),
-              maxLength: 3
-            }),
-            '.',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cpf.slice(6, 9),
-              maxLength: 3
-            }),
-            '-',
-            foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cpf.slice(9, 11),
-              maxLength: 2
-            })
-          ]
-        });
-      }
-    },
-    {
-      class: 'String',
-      name: 'cpfName',
-      label: '',
-      section: 'requiredSection',
-      hidden: true,
-      externalTransient: true
-    },
-    {
-      class: 'Boolean',
-      name: 'verifyName',
-      label: 'Is this the business owner?',
-      section: 'requiredSection',
-      visibility: function(cpfName, mode) {
-        return mode === 'percent' ?
-          foam.u2.DisplayMode.HIDDEN : cpfName.length > 0 ?
-            foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
-      },
-      view: function(_, X) {
-        var self = X.data$;
-        return foam.u2.CheckBox.create({
-          labelFormatter: function() {
-            this.start('span')
-              .add(self.dot('cpfName'))
-            .end();
-          }
-        });
-      },
-      validationPredicates: [
-        {
-          args: ['verifyName'],
-          predicateFactory: function(e) {
-            return e.EQ(
-              net.nanopay.partner.treviso.onboarding.BRBeneficialOwner
-                .VERIFY_NAME,
-              true);
-          },
-          errorMessage: 'INVALID_OWNER_NAME'
-        }
-      ],
-      externalTransient: true
+      ]
     },
     {
       class: 'Boolean',
@@ -236,8 +158,8 @@ foam.CLASS({
 
       `,
       value: false,
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : mode === 'percent' && showFullOwnerDetails ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.RW;
       },
       view: function(_, X) {
         return {
@@ -260,8 +182,8 @@ foam.CLASS({
         parties agree to transfer between them a certain amount of foreign exchange at a
         predetermined rate of exchange, and as of a predetermined date.
       `,
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : mode === 'percent' && showFullOwnerDetails ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.RW;
       },
       view: function(_, X) {
         return {
@@ -280,27 +202,17 @@ foam.CLASS({
       label: 'Please upload proof of address',
       section: 'requiredSection',
       view: function(_, X) {
-        let selectSlot = foam.core.SimpleSlot.create({ value: 0 });
-        return foam.u2.MultiView.create({
-        views: [
-          foam.nanos.fs.fileDropZone.FileDropZone.create({
-            files$: X.data.documentsOfAddress$,
-            selected$: selectSlot
-          }, X),
-          foam.nanos.fs.fileDropZone.FilePreview.create({
-            data$: X.data.documentsOfAddress$,
-            selected$: selectSlot
-          })
-        ]
-        });
+        let forceIntoRO = X.data.mode === 'percent' && X.data.showFullOwnerDetails;
+        var x = forceIntoRO ? X.createSubContext({ controllerMode: foam.u2.ControllerMode.VIEW }) : X;
+        return foam.u2.view.DocumentUploadView.create({ data$: X.data.documentsOfAddress$ }, x);
       },
       validateObj: function(documentsOfAddress) {
         if ( documentsOfAddress.length === 0 ) {
           return this.PROOF_OF_ADDRESS;
         }
       },
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       }
     },
     {
@@ -309,46 +221,33 @@ foam.CLASS({
       label: 'Please upload proof of identification',
       section: 'requiredSection',
       view: function(_, X) {
-        let selectSlot = foam.core.SimpleSlot.create({ value: 0 });
-        return foam.u2.MultiView.create({
-        views: [
-          foam.nanos.fs.fileDropZone.FileDropZone.create({
-            files$: X.data.documentsOfId$,
-            selected$: selectSlot
-          }, X),
-          foam.nanos.fs.fileDropZone.FilePreview.create({
-            data$: X.data.documentsOfId$,
-            selected$: selectSlot
-          })
-        ]
-        });
+        let forceIntoRO = X.data.mode === 'percent' && X.data.showFullOwnerDetails;
+        var x = forceIntoRO ? X.createSubContext({ controllerMode: foam.u2.ControllerMode.VIEW }) : X;
+        return foam.u2.view.DocumentUploadView.create({ data$: X.data.documentsOfId$ }, x);
       },
       validateObj: function(documentsOfId) {
         if ( documentsOfId.length === 0 ) {
           return this.PROOF_OF_IDENTIFICATION;
         }
       },
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
-      }
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      },
     }
   ],
 
   methods: [
-    {
-      name: 'getCpfName',
-      code: async function(cpf) {
-        return await this.brazilVerificationService
-          .getCPFNameWithBirthDate(this.__subContext__, cpf, this.birthday);
-      }
+    function installInWizardlet(w) {
+      this.cpf.installInWizardlet(w);
     },
-    {
-      name: 'validate',
-      javaCode: `
-        super.validate(x);
 
-        if ( ! getVerifyName() ) throw new IllegalStateException("Must verify name attached to CPF is valid.");
-      `
+    function fromUser(u) {
+      var common = [
+        'firstName', 'lastName', 'jobTitle', 'address',
+        'email'
+      ];
+      for ( let p of common ) this[p] = u[p];
+      return this;
     }
   ]
 });

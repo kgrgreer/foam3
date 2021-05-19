@@ -40,10 +40,6 @@ foam.CLASS({
       hidden: true
     },
     {
-      name: 'reversable',
-      hidden: true
-    },
-    {
       name: 'note',
       hidden: true
     },
@@ -75,6 +71,12 @@ foam.CLASS({
       hidden: false,
       order: 30,
       gridColumns: 6
+    },
+    {
+      name: 'feeId',
+      class: 'Reference',
+      of: 'net.nanopay.tx.fee.Fee',
+      targetDAOKey: 'feeDAO',
     },
     {
       class: 'FObjectArray',

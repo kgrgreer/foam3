@@ -27,6 +27,22 @@ foam.CLASS({
     {
       name: 'country',
       visibility: 'RO'
+    },
+    {
+      name: 'denomination',
+      value: 'EUR'
+    },
+    {
+      name: 'accountNumber',
+      preSet: function(o, n) {
+        return n;
+      }
+    },
+    {
+      name: 'flagImage',
+      label: '',
+      value: 'images/flags/europeanUnion.svg',
+      visibility: 'RO'
     }
   ],
 

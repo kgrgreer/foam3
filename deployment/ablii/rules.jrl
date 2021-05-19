@@ -59,7 +59,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d67",
   "name":"Send business compliance passed email",
   "priority":1,
@@ -82,7 +82,8 @@ p({
   },
   "action":{"class":"net.nanopay.sme.ruler.BusinessCompliancePassedEmailRule"},
   "saveHistory":false,
-  "lifecycleState":1
+  "lifecycleState":1,
+  "spid":"ablii"
 })
 
 p({
@@ -101,7 +102,7 @@ p({
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"targetId",
-        "propValue":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
+        "propValue":"crunch.onboarding.unlock-ca-ca-payments",
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
@@ -133,7 +134,7 @@ p({
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"targetId",
-        "propValue":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
+        "propValue":"crunch.onboarding.unlock-ca-ca-payments",
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
@@ -200,4 +201,62 @@ p({
   "spid": "ablii",
   "saveHistory":true,
   "lifecycleState":1,
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d11",
+  "name":"Create AFEXBusiness Approval Request",
+  "documentation":"Rule to create AFEXBusiness Approval Request.",
+  "priority":100,
+  "ruleGroup":"AFEXOnboarding",
+  "daoKey":"afexUserDAO",
+  "operation":0,
+  "after":true,
+  "predicate":{
+    "class":"net.nanopay.fx.afex.AFEXBusinessCreatedPredicate",
+  },
+  "action":{
+    "class":"net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule"
+  },
+  "spid": "ablii",
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"5d12a5bb-2952-44ed-a8eb-be3582de7ab1",
+  "name":"Grant AFEX Payable Menu Capability",
+  "documentation":"Grants AFEX Payable Menu Capability after Afex business is created and approved.",
+  "priority":100,
+  "ruleGroup":"onboarding",
+  "daoKey":"approvalRequestDAO",
+  "operation":1,
+  "after":true,
+  "predicate": {
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.fx.afex.AFEXBusinessApprovalRequest"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{
+          "class":"foam.nanos.approval.ApprovalStatus",
+          "ordinal":1
+        }
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.fx.afex.AFEXPayableMenuCapabilityRule"
+  },
+  "spid": "ablii",
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
 })

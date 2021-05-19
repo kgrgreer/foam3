@@ -21,13 +21,30 @@ foam.CLASS({
 
   documentation: 'Pre-defined limit for transactions.',
 
-  ids: [ 'name', 'timeFrame', 'type' ],
-
   properties: [
+    {
+      class: 'Long',
+      name: 'id',
+      gridColumns: 6
+    },
     {
       class: 'String',
       name: 'name',
       documentation: 'Transaction limit name.',
+      gridColumns: 6
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid',
+      gridColumns: 6
+    },
+    {
+      class: 'Reference',
+      targetDAOKey: 'userDAO',
+      name: 'userId',
+      of: 'foam.nanos.auth.User',
+      documentation: 'User limit is applied to',
       gridColumns: 6
     },
     {
@@ -44,11 +61,24 @@ foam.CLASS({
       gridColumns: 6
     },
     {
+      class: 'Reference',
+      name: 'currency',
+      of: 'foam.core.Currency',
+      gridColumns: 6
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.util.Frequency',
+      name: 'period',
+      documentation: 'Transaction limit period. (Daily, Weekly, Monthly, Per Transaction)',
+      gridColumns: 6
+    },
+    {
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionLimitTimeFrame',
       name: 'timeFrame',
       documentation: 'Transaction limit time frame. (Day, Week etc.)',
       gridColumns: 6
-    }    
+    }
   ]
 });

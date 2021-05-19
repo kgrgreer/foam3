@@ -20,6 +20,11 @@ foam.CLASS({
   name: 'ComplianceApprovalRequest',
   extends: 'foam.nanos.approval.ApprovalRequest',
 
+  javaImports: [
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
+    'foam.util.SafetyUtil'
+  ],
+
   sections: [
     {
       name: 'complianceInformation',
@@ -91,7 +96,7 @@ foam.CLASS({
         if ( ! (obj.daoKey === "userCapabilityJunctionDAO") ){
           this.__subSubContext__[obj.daoKey].find(obj.objId).then(requestObj => {
             let referenceSummaryString = `ID:${obj.objId}`;
-  
+
             if ( requestObj ){
               Promise.resolve(requestObj.toSummary()).then(function(requestObjSummary) {
                 if ( requestObjSummary ){
@@ -107,13 +112,13 @@ foam.CLASS({
           this.__subSubContext__[obj.daoKey].find(obj.objId).then(ucj => {
 
             let referenceSummaryString = `ID:${obj.objId}`;
-  
+
             if ( ucj ){
               this.__subSubContext__.userDAO.find(ucj.sourceId).then(user => {
                 if ( user && user.toSummary && user.toSummary() ){
                   referenceSummaryString = user.toSummary();
                 }
-  
+
                 if (
                   foam.nanos.crunch.AgentCapabilityJunction.isInstance(ucj) &&
                   ucj.sourceId !== ucj.effectiveUser
@@ -123,9 +128,9 @@ foam.CLASS({
                     if (effectiveUser && effectiveUser.toSummary() ){
                       effectiveUserString = effectiveUser.toSummary();
                     }
-  
+
                     referenceSummaryString = `${effectiveUserString}: ${referenceSummaryString}`;
-  
+
                     self.add(referenceSummaryString);
                   })
                 } else {
@@ -157,13 +162,13 @@ foam.CLASS({
         } else {
           X[data.daoKey].find(data.objId).then(ucj => {
             let referenceSummaryString = `ID:${data.objId}`;
-  
+
             if ( ucj ){
               X.userDAO.find(ucj.sourceId).then(user => {
                 if ( user && user.toSummary && user.toSummary() ){
                   referenceSummaryString = user.toSummary();
                 }
-  
+
                 if (
                   foam.nanos.crunch.AgentCapabilityJunction.isInstance(ucj) &&
                   ucj.sourceId !== ucj.effectiveUser
@@ -173,9 +178,9 @@ foam.CLASS({
                     if (effectiveUser && effectiveUser.toSummary() ){
                       effectiveUserString = effectiveUser.toSummary();
                     }
-  
+
                     referenceSummaryString = `${effectiveUserString}: ${referenceSummaryString}`;
-  
+
                     slot.set(referenceSummaryString);
                   })
                 } else {
@@ -183,11 +188,11 @@ foam.CLASS({
                 }
               })
             }
-  
+
             slot.set(referenceSummaryString);
           })
         }
-        
+
         return {
           class: 'foam.u2.view.ValueView',
           data$: slot

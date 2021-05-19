@@ -47,9 +47,11 @@ foam.CLASS({
     'static foam.mlang.MLang.*',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.SummaryTransaction',
+    'net.nanopay.tx.TaxLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.InvoicedFeeLineItem',
+    'net.nanopay.tx.LimitTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
     'org.apache.commons.lang.ArrayUtils',
@@ -331,6 +333,26 @@ foam.CLASS({
       `
     },
     {
+      name: 'createLimitTransaction',
+      documentation: 'Creates a limit transaction and returns it',
+      args: [
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      type: 'net.nanopay.tx.LimitTransaction',
+      javaCode: `
+        LimitTransaction lt = new LimitTransaction();
+        lt.copyFrom(txn);
+        lt.setStatus(net.nanopay.tx.model.TransactionStatus.PENDING);
+        lt.setName("Limit Transaction");
+        lt.clearTransfers();
+        lt.clearLineItems();
+        lt.setPlanner(getId());
+        lt.clearNext();
+        lt.setId(UUID.randomUUID().toString());
+        return lt;
+      `
+    },
+    {
       name: 'validatePlan',
       documentation: 'final step validation to see if there are any line items etc to be filled out',
       type: 'boolean',
@@ -398,6 +420,7 @@ foam.CLASS({
 
         txn.setLineItems(txnclone.getLineItems());
         txn = createFeeTransfers(x, txn, quote);
+        txn = createTaxTransfers(x, txn, quote);
         return txn;
       `
     },
@@ -431,6 +454,44 @@ foam.CLASS({
             else {
               Transfer tSend = new ExternalTransfer(acc.getId(), -feeLineItem.getAmount());
               Transfer tReceive = new ExternalTransfer(feeLineItem.getDestinationAccount(), feeLineItem.getAmount());
+              Transfer[] transfers = { tSend, tReceive };
+              txn.add(transfers);
+            }
+          }
+        }
+        return txn;
+      `
+    },
+    {
+      name: 'createTaxTransfers',
+      documentation: 'Creates transfers for taxes',
+      type: 'Transaction',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
+        { name: 'quote', type: 'net.nanopay.tx.TransactionQuote' },
+      ],
+      javaCode: `
+        TransactionLineItem [] ls = txn.getLineItems();
+        for ( TransactionLineItem li : ls ) {
+          if ( li instanceof TaxLineItem && ! SafetyUtil.isEmpty(li.getSourceAccount()) ) {
+            TaxLineItem taxLineItem = (TaxLineItem) li;
+            Account acc = null;
+            if ( taxLineItem.getSourceAccount() == quote.getSourceAccount().getId() )
+              acc = quote.getSourceAccount();
+            if ( taxLineItem.getSourceAccount() == quote.getDestinationAccount().getId() )
+              acc = quote.getDestinationAccount();
+            if (acc == null)
+              acc = taxLineItem.findSourceAccount(x);
+            if ( acc instanceof DigitalAccount) {
+              Transfer tSend = new Transfer(acc.getId(), -taxLineItem.getAmount());
+              Transfer tReceive = new Transfer(taxLineItem.getDestinationAccount(), taxLineItem.getAmount());
+              Transfer[] transfers = { tSend, tReceive };
+              txn.add(transfers);
+            }
+            else {
+              Transfer tSend = new ExternalTransfer(acc.getId(), -taxLineItem.getAmount());
+              Transfer tReceive = new ExternalTransfer(taxLineItem.getDestinationAccount(), taxLineItem.getAmount());
               Transfer[] transfers = { tSend, tReceive };
               txn.add(transfers);
             }

@@ -81,7 +81,6 @@ foam.CLASS({
         try{
           Branch branch;
           DAO accountDAO = (DAO) x.get("localAccountDAO");
-          DAO branchDAO = (DAO) x.get("branchDAO");
           List usAccounts = ((ArraySink) accountDAO
             .where(
               foam.mlang.MLang.AND(
@@ -92,10 +91,7 @@ foam.CLASS({
             .select(new ArraySink()))
             .getArray();
           BankAccount usAccount = (BankAccount) usAccounts.get(0);
-          branch = new Branch.Builder(x).setBranchId(((BankAccount) usAccount).getBranchId()).build();
-          branchDAO.put(branch);
           BankAccount newaccount = (BankAccount) ((BankAccount) usAccount).fclone();
-          newaccount.setBranch(branch.getId());
           accountDAO.put(newaccount);
           return true;
         } catch ( Exception e ) {

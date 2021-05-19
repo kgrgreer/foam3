@@ -126,24 +126,10 @@ CABankAccount account = (CABankAccount) bankAccountDao.find(EQ(CABankAccount.NAM
 
 if ( account == null ) {
 
-  final DAO  institutionDAO = (DAO) x.get("institutionDAO");
-  final DAO  branchDAO      = (DAO) x.get("branchDAO");
-
-  Institution institution = new Institution.Builder(x)
-    .setInstitutionNumber("999")
-    .setName("EFT Test institution")
-    .build();
-  institution = (Institution) institutionDAO.put_(x, institution);
-
-  Branch branch = new Branch.Builder(x)
-    .setBranchId("99999")
-    .setInstitution(institution.getId())
-    .build();
-  branch = (Branch) branchDAO.put_(x, branch);
-
   BankAccount testBankAccount = new CABankAccount.Builder(x)
-    .setAccountNumber("12345678")
-    .setBranch( branch.getId() )
+    .setAccountNumber( "12345678" )
+    .setInstitutionNumber( "999" )
+    .setBranchId( "99999" )
     .setOwner(1348)
     .setName("EFT Test Account")
     .setStatus(BankAccountStatus.VERIFIED)
@@ -171,24 +157,10 @@ CABankAccount account = (CABankAccount) bankAccountDao.find(EQ(CABankAccount.NAM
 
 if ( account == null ) {
 
-  final DAO  institutionDAO = (DAO) x.get("institutionDAO");
-  final DAO  branchDAO      = (DAO) x.get("branchDAO");
-
-  Institution institution = new Institution.Builder(x)
-    .setInstitutionNumber("999")
-    .setName("EFT Test institution")
-    .build();
-  institution = (Institution) institutionDAO.put_(x, institution);
-
-  Branch branch = new Branch.Builder(x)
-    .setBranchId("99999")
-    .setInstitution(institution.getId())
-    .build();
-  branch = (Branch) branchDAO.put_(x, branch);
-
   BankAccount testBankAccount = new CABankAccount.Builder(x)
     .setAccountNumber("123456789")
-    .setBranch( branch.getId() )
+    .setBranchId( "99999" )
+    .setInstitutionNumber( "999" )
     .setOwner(1384)
     .setName("EFT CO Test Account")
     .setStatus(BankAccountStatus.VERIFIED)
@@ -481,7 +453,7 @@ logger.info("num transfers: ", transfers.length);
 for (int i = 0; i < transfers.length; i++) {
   logger.info("transfer[", i, "]", transfers[i]);
 }
-test( trustBalanceAfter.longValue() != trustBalanceBefore.longValue(), "Trust Balance has changed");
+test( Math.round(trustBalanceAfter) != Math.round(trustBalanceBefore), "Trust Balance has changed");
 logger.info("trustBalanceBefore - trustBalanceAfter", trustBalanceBefore - trustBalanceAfter);
 test( trustBalanceBefore - trustBalanceAfter == txn.getAmount(), "Trust balance validated");
     `

@@ -1,0 +1,4 @@
+p({class:"foam.nanos.auth.UserUserJunction",sourceId:2023,targetId:2026,group:"bepay-fraud-ops"})
+p({class:"foam.nanos.auth.UserUserJunction",sourceId:2023,targetId:2027,group:"bpp-fraud-ops"})
+
+p({class:"foam.nanos.auth.UserUserJunction",sourceId:2026,targetId:2027,group:"bpp-fraud-ops"})

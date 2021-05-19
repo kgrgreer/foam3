@@ -18,6 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.partner.treviso.onboarding',
   name: 'BusinessDirectorsData',
+  mixins: ['foam.u2.wizard.AbstractWizardletAware'],
 
   implements: [
     'foam.core.Validatable',
@@ -37,7 +38,7 @@ foam.CLASS({
     { name: 'ADD_NAME', message: 'Administrators or Legal Representatives' },
     { name: 'NO_DIRECTOR_INFO', message: 'Administrators or Legal Representatives information required' },
     { name: 'DIRECTOR_INFO_NOT_VALID', message: 'Administrators or Legal Representatives information is not valid' },
-    { name: 'NO_DIR_NEEDED', message: 'No Administrators or Legal Representatives required for this business type. Please proceed to next step.' }
+    { name: 'SKIP_DIRECTORS_MSG', message: 'Administrators and Legal Representatives are not required' }
   ],
 
   sections: [
@@ -48,45 +49,26 @@ foam.CLASS({
     }
   ],
 
-properties: [
+  properties: [
     {
-      name: 'needDirector',
       class: 'Boolean',
+      name: 'skipDirectors',
+      documentation: 'Make directors optional if set to true',
+      label: '',
       section: 'directorsInfoSection',
-      documentation: 'a hack for updating businessTypeId',
-      hidden: true,
-      transient: true,
-      getter: function() {
-        var self = this;
-        this.businessDAO.find(this.subject.user.id).then((business) => {
-          if ( ! business ) return;
-          
-          self.businessTypeId = business.businessTypeId;
-
-          // Clear directors if directors are not required for this business type
-          if ( self.businessTypeId < 4 ) {
-            self.businessDirectors = [];
-          }
-        });
-      }
-    },
-    {
-      name: 'businessTypeId',
-      class: 'Long',
-      section: 'directorsInfoSection',
-      hidden: true,
-      storageTransient: true
-    },
-    {
-      class: 'String',
-      name: 'noDirectorsNeeded',
-      label: 'no administrators and legal representatives needed',
-      section: 'directorsInfoSection',
-      getter: function() {
-        return this.NO_DIR_NEEDED;
+      visibility: function(businessDirectors) {
+        return businessDirectors.length > 0 ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
-      visibility: function(businessTypeId, needDirector) {
-        return businessTypeId < 4 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.CheckBox',
+          label: X.data.SKIP_DIRECTORS_MSG
+        }
+      },
+      postSet: function (_, newVal) {
+        if (newVal) {
+          this.businessDirectors = [];
+        }
       }
     },
     {
@@ -98,21 +80,23 @@ properties: [
       section: 'directorsInfoSection',
       view: function(_, x) {
         return {
-          class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
+          class: 'foam.u2.view.TitledArrayView',
           mode: 'RW',
           enableAdding: true,
           enableRemoving: true,
           defaultNewItem: net.nanopay.partner.treviso.onboarding.BRBusinessDirector.create({}, x),
-          name: x.data.ADD_NAME
+          title: x.data.ADD_NAME
         };
       },
-      visibility: function(businessTypeId, needDirector) {
-        return businessTypeId < 4 ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(skipDirectors) {
+        return skipDirectors ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
-      validateObj: function(businessTypeId, businessDirectors, businessDirectors$errors) {
-        if ( businessTypeId < 4 ) return;
-        if ( ! businessDirectors || businessDirectors.length == 0 )
+      validateObj: function(skipDirectors, businessDirectors, businessDirectors$errors) {
+        if ( skipDirectors ) return;
+
+        if ( ! businessDirectors || businessDirectors.length === 0 )
           return this.NO_DIRECTOR_INFO;
+
         if ( businessDirectors$errors && businessDirectors$errors.length )
           return this.DIRECTOR_INFO_NOT_VALID;
       },
@@ -121,10 +105,22 @@ properties: [
   ],
 
   methods: [
+    function installInWizardlet(w) {
+      var directorsInstalled = [];
+      var installDirector = () => {
+        this.businessDirectors.forEach(director => {
+          if ( directorsInstalled.includes(director) ) return;
+          directorsInstalled.push(director);
+          director.installInWizardlet(w);
+        })
+      }
+      installDirector();
+      this.businessDirectors$.sub(installDirector);
+    },
     {
       name: 'validate',
       javaCode: `
-        if (getBusinessTypeId() < 4) return;
+        if ( getSkipDirectors() ) return;
 
         // validate directors
         if (getBusinessDirectors() == null || getBusinessDirectors().length == 0) {

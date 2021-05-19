@@ -30,7 +30,7 @@ foam.CLASS({
 
     ^inner {
       position: relative;
-      max-height: 60vw;
+      max-height: 85vh;
     }
 
     ^X:hover {
@@ -41,9 +41,50 @@ foam.CLASS({
       background-color: white;
       box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
       border-radius: 3px;
-      overflow: hidden;
     }
+
+    ^ {
+      box-sizing: border-box;
+      // width: 600px;
+      // padding: 30px;
+      // max-height: 570px;
+      // overflow-y: auto;
+    }
+    ^left-button-container {
+      width: 200px;
+      display: flex;
+      justify-content: flex-start;
+    }
+    ^option {
+      margin-left: 15px;
+    }
+    ^step-indicator {
+      margin-right: 150px;
+    }
+    .property-rbiLink {
+      margin-top: -33px;
+      top: 50px;
+      position: relative;
+      float: right;
+    }
+    ^ .button-container-wrapper {
+      position: relative;
+      width: 600px;
+      right: 30px;
+      top: 30px;
+    }
+    ^ .button-container {
+      padding: 0 30px;
+    }
+
   `,
+
+  properties: [
+    {
+      name: 'isStyled',
+      value: true
+    }
+  ],
 
   methods: [
     function init() {
@@ -60,12 +101,12 @@ foam.CLASS({
         .start()
           .addClass(this.myClass('inner'))
           .startContext({ data: this })
-            .start(this.CLOSE_MODAL).show(this.closeable$)
+            .start(this.CLOSE_MODAL, { buttonStyle: 'TERTIARY' }).show(this.closeable$)
               .addClass(this.myClass('X'))
             .end()
           .endContext()
           .start()
-            .addClass(this.myClass('content'))
+            .enableClass(this.myClass('content'), this.isStyled$)
             .call(function() { content = this; })
           .end()
         .end()

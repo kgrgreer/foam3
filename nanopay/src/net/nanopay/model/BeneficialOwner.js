@@ -76,7 +76,8 @@ foam.CLASS({
     { name: 'PLACEHOLDER', message: 'Select a country' },
     { name: 'PLEASE_SELECT', message: 'Please select...' },
     { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History for' },
-    { name: 'OTHER_KEY', message: 'Other' }
+    { name: 'OTHER_KEY', message: 'Other' },
+    { name: 'INVALID_ADDRESS_ERROR', message: 'Invalid address' }
   ],
 
   properties: [
@@ -100,11 +101,20 @@ foam.CLASS({
       externalTransient: true
     },
     {
+      class: 'Boolean',
+      name: 'showFullOwnerDetails',
+      documentation: 'Used to display all owner properties without overwriting the mode.',
+      hidden: true,
+      storageTransient: true,
+      networkTransient: true
+    },
+    {
       class: 'String',
       name: 'firstName',
       section: 'requiredSection',
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      order: 1,
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : mode === 'percent' && showFullOwnerDetails ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.RW;
       },
       validationPredicates: [
         {
@@ -125,9 +135,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'lastName',
+      order: 2,
       section: 'requiredSection',
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : mode === 'percent' && showFullOwnerDetails ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.RW;
       },
       validationPredicates: [
         {
@@ -153,8 +164,8 @@ foam.CLASS({
       label: 'Date of birth',
       section: 'requiredSection',
       documentation: 'The birthday of the beneficial owner',
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       validationPredicates: [
         {
@@ -198,12 +209,13 @@ foam.CLASS({
       name: 'jobTitle',
       section: 'requiredSection',
       documentation: 'The job title of the beneficial owner',
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       view: function(_, X) {
-        return {
-          class: 'foam.u2.view.ChoiceWithOtherView',
+        let forceIntoRO = X.data.mode === 'percent' && X.data.showFullOwnerDetails;
+        var x = forceIntoRO ? X.createSubContext({ controllerMode: foam.u2.ControllerMode.VIEW }) : X;
+        return foam.u2.view.ChoiceWithOtherView.create({
           otherKey: X.data.OTHER_KEY,
           choiceView: {
             class: 'foam.u2.view.ChoiceView',
@@ -213,7 +225,7 @@ foam.CLASS({
               return [a.name, X.translationService.getTranslation(foam.locale, `${a.name}.label`, a.label)];
             }
           }
-        };
+        }, x);
       },
       validationPredicates: [
         {
@@ -245,12 +257,9 @@ foam.CLASS({
         {
           args: ['ownershipPercent', 'showValidation'],
           predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(net.nanopay.model.BeneficialOwner.SHOW_VALIDATION, false),
-              e.AND(
-                e.GTE(net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT, 25),
-                e.LTE(net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT, 100)
-              )
+            return e.AND(
+              e.GTE(net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT, 25),
+              e.LTE(net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT, 100)
             );
           },
           errorMessage: 'INVALID_OWNER_PERCENT'
@@ -263,8 +272,8 @@ foam.CLASS({
       name: 'address',
       section: 'requiredSection',
       documentation: 'The address of the beneficial owner',
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(mode, showFullOwnerDetails) {
+        return mode === 'percent' && ! showFullOwnerDetails ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       factory: function() {
         let address = this.Address.create();
@@ -273,13 +282,24 @@ foam.CLASS({
         return address;
       },
       view: function(_, X) {
-        return {
-          class: 'net.nanopay.sme.ui.AddressView',
+        let forceIntoRO = X.data.mode === 'percent' && X.data.showFullOwnerDetails;
+        var x = forceIntoRO ? X.createSubContext({ controllerMode: foam.u2.ControllerMode.VIEW }) : X;
+        return net.nanopay.sme.ui.StructuredAddressView.create({
           customCountryDAO: X.countryDAO,
           showValidation: X.data.showValidation
-        };
+        }, x);
       },
-      autoValidate: true
+      validationPredicates: [
+        {
+          args: ['address', 'address$errors_'],
+          predicateFactory: function(e) {
+            return e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.model.BeneficialOwner.ADDRESS
+              }), true);
+          },
+          errorMessage: 'INVALID_ADDRESS_ERROR'
+        }
+      ]
     },
     {
       class: 'Reference',
@@ -386,6 +406,11 @@ foam.CLASS({
         if ( SafetyUtil.isEmpty(getLastName()) ) return getFirstName();
         return getFirstName() + " " + getLastName();
       `
+    },
+    function fromUser(u) {
+      var common = ['firstName', 'lastName', 'jobTitle', 'address', 'birthday'];
+      for ( let p of common ) this[p] = u[p];
+      return this;
     }
   ],
 

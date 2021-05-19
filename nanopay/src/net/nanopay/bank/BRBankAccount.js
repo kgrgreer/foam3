@@ -59,7 +59,7 @@ foam.CLASS({
     { name: 'BRANCH_ID_REQUIRED', message: 'Branch required' },
     { name: 'HOLDER1', message: 'Individual' },
     { name: 'HOLDER2', message: 'Joint' },
-    { name: 'CURRENT', message: 'Checking' },
+    { name: 'CURRENT', message: 'Chequing' },
     { name: 'SAVINGS', message: 'Savings' },
     { name: 'PLEASE_SELECT', message: 'Please select' }
   ],
@@ -142,6 +142,7 @@ foam.CLASS({
   properties: [
     {
       name: 'denomination',
+      readPermissionRequired: true,
       value: 'BRL',
       order: 1
     },
@@ -188,9 +189,6 @@ foam.CLASS({
       name: 'accountNumber',
       section: 'accountInformation',
       updateVisibility: 'RO',
-      preSet: function(o, n) {
-        return /^[\d\w]*$/.test(n) ? n : o;
-      },
       tableCellFormatter: function(str, obj) {
         if ( ! str ) return;
         var displayAccountNumber = obj.mask(str);
@@ -240,6 +238,9 @@ foam.CLASS({
       section: 'accountInformation',
       order: 20,
       gridColumns: 6,
+      factory: function() {
+        return this.HOLDER1;
+      },
       view: function(_, X) {
         return {
           class: 'foam.u2.view.ChoiceView',
@@ -328,10 +329,6 @@ foam.CLASS({
           if ( SafetyUtil.isEmpty(this.getAccountOwnerType()) ) {
             throw new ValidationException(this.ACCOUNT_HOLDER_REQUIRED);
           }
-        }
-
-        if ( getOwner() == 0 ) {
-          setOwner(((foam.nanos.auth.Subject) x.get("subject")).getUser().getId());
         }
       `
     },

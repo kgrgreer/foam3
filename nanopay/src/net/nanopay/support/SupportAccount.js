@@ -28,23 +28,30 @@ foam.CLASS({
   ],
 
   imports: [
-    'branchDAO',
     'capabilityDAO',
     'countryDAO',
-    'institutionDAO',
     'paymentProviderCorridorDAO',
-    'supportTransactionDAO'
+    'supportTransactionDAO',
+    'userDAO'
   ],
 
   javaImports: [
     'net.nanopay.bank.BankAccount'
   ],
 
-  tableColumns: [
+  searchColumns: [
     'id',
+    'accountNumber',
+    'branchId',
+    'institutionNumber',
     'owner',
+    'created'
+  ],
+
+  tableColumns: [
     'summary',
-    'name'
+    'owner',
+    'created'
   ],
 
   sections: [
@@ -69,7 +76,8 @@ foam.CLASS({
       label: 'Account Number',
       section: 'accountInformation',
       order: 20,
-      gridColumns: 6
+      gridColumns: 6,
+      tableWidth: 0
     }),
     net.nanopay.bank.BankAccount.ACCOUNT_NUMBER.clone().copyFrom({
       hidden: true,
@@ -78,16 +86,29 @@ foam.CLASS({
     net.nanopay.account.Account.OWNER.clone().copyFrom({
       section: 'accountInformation',
       order: 30,
-      gridColumns: 6
+      gridColumns: 6,
+      view: {
+        class: 'foam.u2.view.ReferenceView'
+      },
+      tableWidth: 250,
+      tableCellFormatter: function(value, obj) {
+        obj.userDAO.find(value).then(function(u) {
+          if ( u && u.toSummary ) {
+            this.add(u.toSummary());
+          } else {
+            this.add(value);
+          }
+        }.bind(this));
+      },
     }),
-    net.nanopay.bank.BankAccount.BRANCH.clone().copyFrom({
+    net.nanopay.bank.BankAccount.BRANCH_ID.clone().copyFrom({
       label: 'Transit Number',
       gridColumns:6,
       visibility: 'RO',
       section: 'accountInformation',
       order: 40
     }),
-    net.nanopay.bank.BankAccount.INSTITUTION.clone().copyFrom({
+    net.nanopay.bank.BankAccount.INSTITUTION_NUMBER.clone().copyFrom({
       label: 'Institution Number',
       gridColumns:6,
       visibility: 'RO',
@@ -108,31 +129,35 @@ foam.CLASS({
     }),
     net.nanopay.account.Account.DESC.clone().copyFrom({
       section: 'accountInformation',
-      order: 80
-    }),
-    net.nanopay.account.Account.CREATED_BY.clone().copyFrom({
-      gridColumns:6,
-      view: {
-        class: 'foam.u2.view.ReferenceView'
-      },
-      section: 'accountInformation',
-      order: 90
-    }),
-    net.nanopay.account.Account.LAST_MODIFIED_BY.clone().copyFrom({
-      gridColumns:6,
-      view: {
-        class: 'foam.u2.view.ReferenceView'
-      },
-      section: 'accountInformation',
-      order: 100
+      order: 80,
+      readPermissionRequired: true
     }),
     net.nanopay.account.Account.CREATED.clone().copyFrom({
       gridColumns:6,
       section: 'accountInformation',
-      order: 110
+      order: 90
     }),
     net.nanopay.account.Account.LAST_MODIFIED.clone().copyFrom({
       gridColumns:6,
+      section: 'accountInformation',
+      order: 100
+    }),
+    net.nanopay.account.Account.CREATED_BY.clone().copyFrom({
+      readPermissionRequired: true,
+      gridColumns:6,
+      view: {
+        class: 'foam.u2.view.ReferenceView'
+      },
+      section: 'accountInformation',
+      order: 110,
+      tableWidth: 200
+    }),
+    net.nanopay.account.Account.LAST_MODIFIED_BY.clone().copyFrom({
+      readPermissionRequired: true,
+      gridColumns:6,
+      view: {
+        class: 'foam.u2.view.ReferenceView'
+      },
       section: 'accountInformation',
       order: 120
     }),
@@ -150,7 +175,7 @@ foam.CLASS({
 
   methods: [
     function toSummary() {
-      return `(${this.id}) ${this.name} ${this.summary}`;
+      return `${this.name} ${this.summary}`;
     },
 
     function getCredits() {

@@ -1,0 +1,2 @@
+p({"class":"net.nanopay.fx.ExchangeRate","id":2000,"fromCurrency":"CAD","toCurrency":"CAD","rate":1,"expirationDate":"2020-09-07T19:02:43.980Z","valueDate":"2019-09-06T19:02:44.028Z","dealReferenceNumber":"a080acacc6294c2f89fef92d0d3d4f17","fxProvider":"nanopay"})
+p({"class":"net.nanopay.fx.ExchangeRate","id":2001,"fromCurrency":"CAD","toCurrency":"USD","rate":0.7526266671394889})

@@ -59,22 +59,22 @@ p({
           {
             "class":"foam.nanos.ruler.predicate.PropertyEQValue",
             "propName":"targetId",
-            "propValue":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+            "propValue":"crunch.onboarding.br.international-payments",
           },
           {
             "class":"foam.nanos.ruler.predicate.PropertyEQValue",
             "propName":"targetId",
-            "propValue":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
+            "propValue":"crunch.onboarding.unlock-ca-ca-payments",
           },
           {
             "class":"foam.nanos.ruler.predicate.PropertyEQValue",
             "propName":"targetId",
-            "propValue":"554af38a-8225-87c8-dfdf-eeb15f71215f-12",
+            "propValue":"crunch.onboarding.unlock-ca-international-payments",
           },
           {
             "class":"foam.nanos.ruler.predicate.PropertyEQValue",
             "propName":"targetId",
-            "propValue":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
+            "propValue":"crunch.onboarding.unlock-us-payments",
           }
         ]
       },

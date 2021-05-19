@@ -89,11 +89,6 @@ foam.CLASS({
       readVisibility: 'HIDDEN'
     },
     {
-      name: 'reversable',
-      createVisibility: 'HIDDEN',
-      readVisibility: 'HIDDEN'
-    },
-    {
       name: 'requiresUserInput',
       readVisibility: 'HIDDEN',
       value: true

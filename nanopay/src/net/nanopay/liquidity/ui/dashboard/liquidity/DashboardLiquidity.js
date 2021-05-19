@@ -42,6 +42,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountBalanceHourlyCandlestickDAO',
     'accountBalanceAnnuallyCandlestickDAO',
     'accountBalanceDailyCandlestickDAO',
     'accountBalanceMonthlyCandlestickDAO',
@@ -50,7 +51,7 @@ foam.CLASS({
     'accountDAO',
     'currencyDAO',
     'liquidityThresholdCandlestickDAO',
-    'liquidityFilteredAccountDAO'
+    'filteredAccountDAO'
   ],
 
   css: `
@@ -116,7 +117,7 @@ foam.CLASS({
           sections: [
             {
               heading: 'Accounts',
-              dao: X.data.liquidityFilteredAccountDAO
+              dao: X.filteredAccountDAO
             },
           ],
           search: true,
@@ -276,6 +277,14 @@ foam.CLASS({
 
               // Fill the DAO with the account balance history.
               var account = await this.account$find;
+              if( this.timeFrame.label === 'Hourly' ){
+              await this['accountBalance' + this.timeFrame.label + 'CandlestickDAO']
+                .where(this.AND(
+                  this.EQ(this.Candlestick.KEY, account.id)
+                ))
+                .select(sink);
+              }
+              else {
               await this['accountBalance' + this.timeFrame.label + 'CandlestickDAO']
                 .where(this.AND(
                   this.GTE(this.Candlestick.CLOSE_TIME, this.startDate),
@@ -283,6 +292,7 @@ foam.CLASS({
                   this.EQ(this.Candlestick.KEY, account.id)
                 ))
                 .select(sink);
+              }
 
               // If there are no liquidity settings, there's nothing more to do.
               if ( ! account.liquiditySetting ) {

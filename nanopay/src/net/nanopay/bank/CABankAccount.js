@@ -179,8 +179,8 @@ foam.CLASS({
       javaGetter: `
         StringBuilder iban = new StringBuilder();
         iban.append(getInstitutionNumber());
-        iban.append(getAccountNumber());
         iban.append(getBranchId());
+        iban.append(getAccountNumber());
         return iban.toString();
       `
     },
@@ -199,14 +199,11 @@ foam.CLASS({
     {
       name: 'institutionNumber',
       label: 'Institution',
-      documentation: `Provides backward compatibilty for mobile call flow.
-          BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.`,
       updateVisibility: 'RO',
       createVisibility: 'RW',
       section: 'accountInformation',
       order: 120,
       gridColumns: 6,
-      storageTransient: true,
       view: {
         class: 'foam.u2.tag.Input',
         maxLength: 3,
@@ -220,11 +217,6 @@ foam.CLASS({
         if ( ! instNumberRegex.test(institutionNumber) ) {
           return this.INSTITUTION_NUMBER_THREE;
         }
-      },
-      preSet: function(o, n) {
-        if ( n === '' ) return n;
-        var reg = /^\d+$/;
-        return reg.test(n) ? n : o;
       },
       postSet: function(o, n) {
         this.padCapture.institutionNumber = n;
@@ -242,10 +234,6 @@ foam.CLASS({
       view: {
         class: 'foam.u2.tag.Input',
         onKey: true
-      },
-      preSet: function(o, n) {
-        if ( n === '' ) return n;
-        return /^\d+$/.test(n) ? n : o;
       },
       postSet: function(o, n) {
         this.padCapture.branchId = n;
@@ -299,30 +287,6 @@ foam.CLASS({
                   .end()
                   .start('span').add(`${obj.mask(accountNumber)} |`).end();
               }
-          }))
-          .add(obj.slot((branch, branchDAO) => {
-            return branchDAO.find(branch).then((result) => {
-              if ( result ) {
-                return this.E()
-                  .start('span').style({ 'font-weight': '500', 'white-space': 'pre' })
-                    .add(` ${obj.cls_.getAxiomByName('branch').label} `)
-                  .end()
-                  .start('span').add(`${result.branchId} |`).end();
-              }
-              return this.E(); // Prevents infinitely trying to recreate it if null/undefined is returned
-            });
-          }))
-          .add(obj.slot((institution, institutionDAO) => {
-            return institutionDAO.find(institution).then((result) => {
-              if ( result && ! net.nanopay.bank.USBankAccount.isInstance(obj) ) {
-                return this.E()
-                  .start('span').style({ 'font-weight': '500', 'white-space': 'pre' })
-                    .add(` ${obj.cls_.getAxiomByName('institution').label} `)
-                  .end()
-                  .start('span').add(`${result.name}`).end();
-              }
-              return this.E(); // Prevents infinitely trying to recreate it if null/undefined is returned
-            });
           }))
         .end();
       }
@@ -388,10 +352,6 @@ foam.CLASS({
           if ( matcher.find() ) {
             var institutionNumber = matcher.group(1);
             var branchId = matcher.group(2);
-
-            // Update institution and branch
-            clearInstitution();
-            clearBranch();
             setInstitutionNumber(institutionNumber);
             setBranchId(branchId);
           }
@@ -454,20 +414,6 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
-      Branch branch = this.findBranch(x);
-      if ( branch != null &&
-          branch.getInstitution() > 0 ) {
-        return;
-      }
-
-      Institution institution = this.findInstitution(x);
-
-      // no validation when the institution is attached.
-      if ( institution != null ) {
-        return;
-      }
-
-      // when the institutionNumber is provided and not the institution
       String institutionNumber = this.getInstitutionNumber();
       if ( SafetyUtil.isEmpty(institutionNumber) ) {
         throw new IllegalStateException(this.INSTITUTION_NUMBER_REQUIRED);
@@ -487,13 +433,6 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
-      Branch branch = this.findBranch(x);
-
-      // no validation when the branch is attached.
-      if (branch != null) {
-        return;
-      }
-      // when the branchId is provided and not the branch
       String branchId = this.getBranchId();
       if ( SafetyUtil.isEmpty(branchId) ) {
         throw new IllegalStateException(this.TRANSIT_NUMBER_REQUIRED);
@@ -512,11 +451,10 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        // REVIEW: CA routing code = "0" + branch(5 digits) + institution(3 digits)
         var code = new StringBuilder();
         code.append('0')
-            .append(getBranchCode(x))
-            .append(getBankCode(x));
+            .append(getBankCode(x))
+            .append(getBranchCode(x));
         return code.length() > 1 ? code.toString() : getBankRoutingCode();
       `
     }

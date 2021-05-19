@@ -56,15 +56,20 @@ foam.CLASS({
       }
       x = x.put("auth", newAuthService);
 
-      // Create mock transactionDAO to test PreventRemoveInvoiceDAO
       x = x.put("localTransactionDAO", new MDAO(Transaction.getOwnClassInfo()));
       DAO transactionDAO = (DAO) x.get("localTransactionDAO");
 
       /**
-       * Create mock invoiceDAO and wrap it with the sequenceNumberDAO, createdByAwareDAO,
-       * PreventRemoveInvoiceDAO and AuthenticatedInvoiceDAO to replicate required DAO behaviour.
+       * Create mock invoiceDAO and wrap it with the sequenceNumberDAO, createdByAwareDAO
+       * and AuthenticatedInvoiceDAO to replicate required DAO behaviour.
       */
-      DAO seqInvoiceDAO = new SequenceNumberDAO(new PreventRemoveInvoiceDAO(x, new MDAO(Invoice.getOwnClassInfo())));
+
+      DAO lifecycleAwareDAO = new foam.nanos.auth.LifecycleAwareDAO.Builder(x)
+       .setDelegate(new MDAO(Invoice.getOwnClassInfo()))
+       .setName("invoice")
+       .build();
+
+      DAO seqInvoiceDAO = new foam.dao.SequenceNumberDAO.Builder(x).setDelegate(lifecycleAwareDAO).build();
       DAO invoiceDAO = new CreatedByAwareDAO.Builder(x).setDelegate(new AuthenticatedInvoiceDAO(x, seqInvoiceDAO)).build();
 
       // Create admin user context
@@ -454,7 +459,7 @@ foam.CLASS({
       transaction.setInvoiceId(invoice.getId());
       transaction = (Transaction) transactionDAO.put_(x, transaction);
 
-      // Test find_ of removed invoice as admin user.
+      // Test find_ of deleted invoice as admin user.
       threw = false;
       try {
         dao.remove_(x, invoice);
@@ -462,9 +467,9 @@ foam.CLASS({
       } catch (Exception t) {
         threw = true;
       }
-      test( ! threw && inv != null && inv.getRemoved() == true, "Admin user can find removed invoice." );
+      test( ! threw && inv != null && inv.getLifecycleState() == LifecycleState.DELETED, "Admin user can find removed invoice." );
 
-      // Test select_ of removed invoice as admin user.
+      // Test select_ of deleted invoice as admin user.
       threw = false;
       ArraySink result = new ArraySink();
       try {
@@ -472,7 +477,7 @@ foam.CLASS({
       } catch (Exception t) {
         threw = true;
       }
-      test( ! threw && result.getArray().size() != 0, "Admin user can select removed invoices." );
+      test( ! threw && result.getArray().size() != 0, "Admin user can select deleted invoices." );
 
       User relatedUser = new User();
       relatedUser.setId(1380);
@@ -484,7 +489,7 @@ foam.CLASS({
       userDAO.put(relatedUser);
       X relatedUserContext = Auth.sudo(x, relatedUser);
 
-      // Test find_ of removed invoice as related user.
+      // Test find_ of deleted invoice as related user.
       threw = false;
       inv = null;
       try {
@@ -492,7 +497,7 @@ foam.CLASS({
       } catch (Exception t) {
         threw = true;
       }
-      test( ! threw && inv == null, "Related user can't find removed invoice." );
+      test( ! threw && inv == null, "Related user can't find deleted invoice." );
 
       // Clean up
       transactionDAO.remove_(x, transaction);

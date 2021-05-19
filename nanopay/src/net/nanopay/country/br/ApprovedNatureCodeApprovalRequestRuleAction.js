@@ -1,7 +1,18 @@
 /**
- * @license
- * Copyright 2020 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
  */
 
 foam.CLASS({
@@ -9,7 +20,7 @@ foam.CLASS({
   name: 'ApprovedNatureCodeApprovalRequestRuleAction',
 
   documentation: `
-    To add NatureCodeData to the payment transaction (stored in Invoice.paymentId) NatureCodeLineItem 
+    To add NatureCodeData to the payment transaction (stored in Invoice.paymentId) NatureCodeLineItem
     and to the related approvable for the capablePayload of the NatureCode which gets processed
     to the Capable object in CapablePayloadApprovableRuleAction
   `,
@@ -51,7 +62,7 @@ foam.CLASS({
         NatureCodeApprovalRequest ncarObj = (NatureCodeApprovalRequest) obj;
 
         agency.submit(x, new ContextAwareAgent() {
-          
+
           @Override
           public void execute(X x) {
             DAO approvalRequestDAO = (DAO) getX().get("approvalRequestDAO");
@@ -96,6 +107,24 @@ foam.CLASS({
               }
             }
             transactionDAO.put(paymentTransaction);
+
+            Transaction compliance = (Transaction) ((ArraySink) (paymentTransaction.getChildren(x).select(new ArraySink()))).getArray().get(0);
+            Transaction exchange = (Transaction) ((ArraySink) (compliance.getChildren(x).select(new ArraySink()))).getArray().get(0);
+            Transaction treviso = (Transaction) ((ArraySink) (exchange.getChildren(x).select(new ArraySink()))).getArray().get(0);
+
+            for (TransactionLineItem lineItem : treviso.getLineItems() ) {
+              if ( lineItem instanceof NatureCodeLineItem ) {
+                NatureCodeLineItem natureCodeLineItem = (NatureCodeLineItem) lineItem;
+
+                if ( SafetyUtil.isEmpty(natureCodeLineItem.getNatureCode()) ) {
+                  natureCodeLineItem.setNatureCode(natureCode.getOperationType());
+                }
+
+                natureCodeLineItem.setNatureCodeData(natureCodeDataToAdd);
+                break;
+              }
+            }
+            transactionDAO.put(treviso);
           }
 
         }, "Added NatureCodeData to Payment Transaction line item and capable payload after an approved NatureCodeApprovalRequest");

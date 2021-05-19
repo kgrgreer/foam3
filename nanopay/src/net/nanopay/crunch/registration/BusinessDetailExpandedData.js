@@ -21,8 +21,23 @@ foam.CLASS({
 
   documentation: `This model represents the expanded info of a Business that must be collect for onboarding.`,
   
+  messages: [
+    { name: 'BUSINESS_SECTOR_REQUIRED', message: 'Business sector ID required' }
+  ],
+
   properties: [
-    net.nanopay.model.Business.BUSINESS_SECTOR_ID.clone().copyFrom(),
+    net.nanopay.model.Business.BUSINESS_SECTOR_ID.clone().copyFrom({
+      validationPredicates: [
+        {
+          args: ['businessSectorId'],
+          predicateFactory: function(e) {
+            return e.GT(net.nanopay.crunch.registration.BusinessDetailExpandedData.BUSINESS_SECTOR_ID, 0);
+          },
+          errorString: 'Business sector ID required.',
+          errorMessage: 'BUSINESS_SECTOR_REQUIRED'
+        }
+      ]
+    }),
     net.nanopay.model.Business.SOURCE_OF_FUNDS.clone().copyFrom(),
     net.nanopay.model.Business.OPERATING_BUSINESS_NAME.clone().copyFrom(),
     net.nanopay.model.Business.TARGET_CUSTOMERS.clone().copyFrom(),

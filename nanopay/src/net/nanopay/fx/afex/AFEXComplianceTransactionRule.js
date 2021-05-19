@@ -50,7 +50,7 @@ foam.CLASS({
 
           Account sourceAccount = txn.findSourceAccount(x);
           Account destinationAccount = txn.findDestinationAccount(x);
-          AFEXBeneficiary beneficiary = afexServiceProvider.getAFEXBeneficiary(x, destinationAccount.getOwner(), sourceAccount.getOwner());
+          AFEXBeneficiary beneficiary = afexServiceProvider.getAFEXBeneficiary(x, destinationAccount.getOwner(), sourceAccount.getOwner(), txn.getDestinationCurrency());
 
           if ( beneficiary == null ) {
             ((Logger) x.get("logger")).error("beneficiary not found for transaction " + txn.getId() + " with beneficiary id " + destinationAccount.getOwner() + " with owner id " + sourceAccount.getOwner() );

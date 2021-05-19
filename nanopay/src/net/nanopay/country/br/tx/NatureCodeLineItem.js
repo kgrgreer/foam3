@@ -87,22 +87,35 @@ foam.CLASS({
     {
       name: 'type',
       createVisibility: 'HIDDEN',
-      readVisibility: 'HIDDEN'
+      readVisibility: 'HIDDEN',
+      transient: true
     },
     {
       name: 'note',
       createVisibility: 'HIDDEN',
-      readVisibility: 'HIDDEN'
+      readVisibility: 'HIDDEN',
+      transient: true
+    },
+    {
+      name: 'sourceAccount',
+      visibility: 'HIDDEN',
+      transient: true
+    },
+    {
+      name: 'destinationAccount',
+      visibility: 'HIDDEN',
+      transient: true
     },
     {
       name: 'amount',
       createVisibility: 'HIDDEN',
-      readVisibility: 'HIDDEN'
+      readVisibility: 'HIDDEN',
+      transient: true
     },
     {
-      name: 'reversable',
-      createVisibility: 'HIDDEN',
-      readVisibility: 'HIDDEN'
+      name: 'currency',
+      visibility: 'HIDDEN',
+      transient: true
     },
     {
       name: 'requiresUserInput',
@@ -124,10 +137,19 @@ foam.CLASS({
       name: 'getCode',
       type: 'String',
       code: function() {
-        return this.natureCode + this.natureCodeData.toString();
+        return this.natureCode + this.natureCodeData.payerType
+          + this.natureCodeData.approvalType
+          + this.natureCodeData.payeeType
+          + this.natureCodeData.groupCode;
       },
       javaCode: `
-        return getNatureCode() + getNatureCodeData().toString();
+        StringBuilder str = new StringBuilder();
+        str.append(getNatureCode());
+        str.append(getNatureCodeData().getPayerType());
+        str.append(getNatureCodeData().getApprovalType());
+        str.append(getNatureCodeData().getPayeeType());
+        str.append(getNatureCodeData().getGroupCode());
+        return str.toString();
       `
     }
   ]

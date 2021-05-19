@@ -22,6 +22,10 @@ foam.CLASS({
 
   documentation: 'Lets the user create a contact from scratch.',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   requires: [
     'foam.log.LogLevel',
     'net.nanopay.bank.BankAccountStatus',
@@ -29,7 +33,8 @@ foam.CLASS({
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.contacts.Contact',
     'net.nanopay.model.Invitation',
-    'foam.layout.Section'
+    'foam.layout.Section',
+    'foam.nanos.menu.Menu'
   ],
 
   imports: [
@@ -37,6 +42,8 @@ foam.CLASS({
     'ctrl',
     'contactService',
     'invitationDAO',
+    'pushMenu',
+    'menuDAO',
     'subject'
   ],
 
@@ -73,6 +80,28 @@ foam.CLASS({
     }
     ^ .button-container {
       padding: 0 30px;
+    }
+
+    .wizard {
+      display: flex;
+      flex-direction: column;
+      width: 540px;
+      max-height: 80vh;
+      overflow-y: scroll;
+    }
+    .section-container {
+      padding: 24px 24px 32px;
+      max-height: 570px;
+      overflow-y: scroll;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 84px;
+      background-color: #fafafa;
+      padding: 0 24px 0;
     }
   `,
 
@@ -120,9 +149,21 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isEdit',
-      documentation: `Set to true when editing a contact from
-      contact controller.`,
+      documentation: `Set to true when editing a contact from contact controller.`,
       value: false
+    },
+    {
+      class: 'String',
+      name: 'redirectMenu',
+      documentation: `
+        The menu to redirect to when going back to MenuToolBar with only a single 
+        available Contact submenu.`
+    },
+    {
+      class: 'Int',
+      name: 'availableMenuCount',
+      documentation: `The number of Contact submenus the user has permission to read.`,
+      value: 0
     }
   ],
 
@@ -178,6 +219,16 @@ foam.CLASS({
           this.data.createBankAccount = await this.bankAccountDAO.find(this.data.bankAccount);
         }
       }
+      let count = await this.menuDAO
+        .where(
+          this.AND(
+            this.STARTS_WITH(this.Menu.ID, 'submenu.contact'),
+            this.EQ(this.Menu.PARENT, 'sme'),
+            this.NEQ(this.Menu.ID, 'submenu.contact.toolbar')
+          )
+        )
+        .select(this.Count.create());
+      this.availableMenuCount = count.value;
     },
     function initE() {
       var self = this;
@@ -206,8 +257,8 @@ foam.CLASS({
                     return `${self.STEP} ${currentIndex + 1} ${self.OF_MSG} 3`;
                   }))
                 .end()
-                .start(this.NEXT).end()
-                .start(this.SAVE).end()
+                .tag(this.NEXT, { buttonStyle: 'PRIMARY' })
+                .tag(this.SAVE, { buttonStyle: 'PRIMARY' })
               .end()
             .end()
           .endContext()
@@ -281,8 +332,7 @@ foam.CLASS({
       var bankAccount = this.data.createBankAccount;
       bankAccount.owner = contact.id;
       try {
-        var result = await this.bankAccountDAO.put(bankAccount);
-        await this.updateContactBankInfo(contact, result.id);
+        await this.bankAccountDAO.put(bankAccount);
       } catch (err) {
         var msg = err.message || this.ACCOUNT_CREATION_ERROR;
         this.ctrl.notify(msg, '', this.LogLevel.ERROR, true);
@@ -290,16 +340,6 @@ foam.CLASS({
       }
       this.isConnecting = false;
       return true;
-    },
-    /** Sets the reference from the Contact to the Bank Account.  */
-    async function updateContactBankInfo(contact, bankAccountId) {
-      try {
-        contact.bankAccount = bankAccountId;
-        await this.subject.user.contacts.put(contact);
-      } catch (err) {
-        var msg = err.message || this.GENERIC_PUT_FAILED;
-        this.ctrl.notify(msg, '', this.LogLevel.ERROR, true);
-      }
     }
   ],
 
@@ -309,15 +349,18 @@ foam.CLASS({
       label: 'Go back',
       code: function(X) {
         this.isConnecting = false;
-        if ( this.isEdit && this.currentIndex === 0 ) {
+        if ( this.currentIndex === 0 ) {
           this.data.isEdit = false;
-          X.closeDialog();
+          if ( this.redirectMenu ) {
+            this.availableMenuCount > 1 ? X.pushMenu('sme.menu.toolbar') : X.pushMenu(this.redirectMenu);
+          }
+          else {
+            X.closeDialog()
+          }
         }
-        else if ( this.currentIndex > 0 ) {
+        else {
           this.currentIndex = this.prevIndex;
-        } else {
-          X.closeDialog();
-        }
+        } 
       }
     },
     {

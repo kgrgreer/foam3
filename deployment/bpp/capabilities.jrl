@@ -1,5 +1,13 @@
 // BPP spid
-p({class:"foam.nanos.auth.ServiceProvider",id:"bpp",description:"bpp spid",enabled:true})
+p({
+  class:"foam.nanos.auth.ServiceProvider",
+  id:"bpp",
+  description:"bpp spid",
+  enabled:true,
+  permissionsGranted: [
+    "language.read.*"
+  ]
+})
 p({
   class: "foam.nanos.crunch.Capability",
   id: "bppCorridorCapability",
@@ -7,10 +15,11 @@ p({
   enabled: true,
   permissionsGranted: [
     "paymentprovidercorridor.read.afex",
-    "paymentprovidercorridor.read.bepay",
+    "paymentprovidercorridor.read.paymentprovidercorridor.bepay.br-us",
+    "paymentprovidercorridor.read.paymentprovidercorridor.bepay.br-ca",
     "paymentprovidercorridor.source.read.bepay",
-    "paymentprovidercorridor.target.read.2869DB5B-0AFE-4113-8EF7-5E5B6B8BB4AC",
-    "paymentprovidercorridor.target.read.5B9EE768-4B35-493C-A356-FEC306235AB7"
+    "paymentprovidercorridor.target.read.paymentprovidercorridor.bepay.br-us",
+    "paymentprovidercorridor.target.read.paymentprovidercorridor.bepay.br-ca"
   ]
 })
 p({
@@ -20,7 +29,8 @@ p({
   permissionsGranted: [
     "rule.read.119fa381-d2a2-4369-b242-1dc8e2163bb9-bpp",
     "rule.read.2fdd7d35-6704-47dc-9f0e-9419e0aa74ed",
-    "rule.read.77480e3b-fc7e-400c-bee6-dda5a22b982a"
+    "rule.read.77480e3b-fc7e-400c-bee6-dda5a22b982a",
+    "rule.read.f2c694e4-ca5c-4fc7-bbf0-747f8aa794db"
   ]
 })
 
@@ -42,8 +52,8 @@ p({
   id:"bpp-tx-reason-codes",
   name:"Enable BPP reason codes",
   permissionsGranted:[
-    "naturecode.read.4cfa9007-1d87-4bdd-b6e1-4e3c6fe78a2c",
-    "naturecode.read.f0224036-2a37-4fa9-8879-a413fe168f34"
+    "naturecode.read.naturecode.br.funds-abroad",
+    "naturecode.read.naturecode.br.resident-maintenance"
   ]
 })
 

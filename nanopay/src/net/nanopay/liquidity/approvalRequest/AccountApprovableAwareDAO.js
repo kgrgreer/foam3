@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.dao.Operation',
     'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
     'foam.nanos.approval.ApprovableAware',
     'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
@@ -67,13 +68,13 @@ foam.CLASS({
         .setDaoKey(request.getDaoKey())
         .setServerDaoKey(request.getServerDaoKey())
         .setObjId(request.getObjId())
-        .setClassification(request.getClassification())
+        .setClassificationEnum(ApprovalRequestClassificationEnum.ACCOUNT_APPROVABLE_REQUEST)
         .setOperation(request.getOperation())
         .setCreatedBy(request.getCreatedBy())
         .setStatus(request.getStatus()).build();
 
       AccountApprovableAware accountApprovableAwareObj = (AccountApprovableAware) obj;
-  
+
       if ( accountRequest.getOperation() == Operation.CREATE ) {
         accountRequest.setOutgoingAccount(accountApprovableAwareObj.getOutgoingAccountCreate(x));
       } else if ( accountRequest.getOperation() == Operation.UPDATE ) {
@@ -84,7 +85,7 @@ foam.CLASS({
         logger.error("Using an invalid operation!");
         throw new RuntimeException("Using an invalid operation!");
       }
-  
+
       if ( getIsTrackingRequestSent() ){
         AccountRoleApprovalRequest accountTrackingRequest = (AccountRoleApprovalRequest) accountRequest.fclone();
         accountTrackingRequest.setIsTrackingRequest(true);
@@ -93,7 +94,7 @@ foam.CLASS({
 
         approverIds.remove(accountTrackingRequest.getCreatedBy());
       }
-  
+
       for ( int i = 0; i < approverIds.size(); i++ ){
         sendSingleAccountRequest(x, accountRequest, approverIds.get(i));
       }
@@ -108,7 +109,7 @@ foam.CLASS({
         { name: 'user', javaType: 'foam.nanos.auth.User' }
       ],
       javaType: 'List<Long>',
-      javaCode: ` 
+      javaCode: `
         Logger logger = (Logger) x.get("logger");
         DAO requestingDAO = (DAO) x.get(getDaoKey());
 
@@ -116,12 +117,12 @@ foam.CLASS({
 
         AccountUCJQueryService ucjQueryService = (AccountUCJQueryService) x.get("accountUcjQueryService");
         AccountApprovableAware aaaObj = (AccountApprovableAware) obj;
-        String outgoingAccount = operation == Operation.CREATE ? aaaObj.getOutgoingAccountCreate(x) : 
-                                operation == Operation.UPDATE ? aaaObj.getOutgoingAccountUpdate(x) : 
+        String outgoingAccount = operation == Operation.CREATE ? aaaObj.getOutgoingAccountCreate(x) :
+                                operation == Operation.UPDATE ? aaaObj.getOutgoingAccountUpdate(x) :
                                                                 aaaObj.getOutgoingAccountDelete(x);
 
         List<Long> approverIds = ucjQueryService.getAllApprovers(x, modelName, outgoingAccount);
-          
+
         if ( approverIds == null || approverIds.size() <= 0 ) {
           logger.log("No Approvers exist for the model: " + modelName);
           throw new RuntimeException("No Approvers exist for the model: " + modelName);

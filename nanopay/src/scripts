@@ -2097,8 +2097,25 @@ p({
     String rbcPublicKeyFile = "/tmp/rbc_pub_0x5439C0FD.asc.txt";
     String paraphrase = "nanopay";
 
+    tmp = x.get("privateKeyDAO").getDelegate();
+    PrivateKeyDAO privateKeyDAO = null;
+    while ( tmp != null ) {
+      if ( tmp instanceof PrivateKeyDAO ) {
+        privateKeyDAO = (PrivateKeyDAO) tmp;
+        break;
+      }
+
+      if ( tmp instanceof ProxyDAO ) {
+        tmp = tmp.getDelegate();
+      } else { tmp = null; }
+    }
+
+    if ( privateKeyDAO == null ) {
+      print("PrivateKeyDAO is unavailable.");
+      return;
+    }
+
     DAO keyPairDAO = (DAO) x.get("keyPairDAO");
-    PrivateKeyDAO privateKeyDAO = (PrivateKeyDAO) x.get("privateKeyDAO");
     KeyPairEntry keyPair = (KeyPairEntry) keyPairDAO.find(foam.mlang.MLang.EQ(KeyPairEntry.ALIAS, NANOPAY_RBC_ALIAS));
     if ( keyPair == null ) {
       try{
@@ -2743,3 +2760,473 @@ p({
   logger.info(new Object[]{sb.toString()});
   """
 })
+
+p({
+"class":"foam.nanos.script.Script",
+"id":"AFEX Beneficiary Migration",
+"description":"Adds currency to existing AFEX Beneficiaries",
+"lastRun":"2021-05-05T21:30:32.216Z",
+"lastDuration":1272,
+"status":1,
+"code":
+"""import foam.dao.DAO;\u000Aimport foam.dao.ArraySink;\u000Aimport net.nanopay.fx.afex.AFEXBeneficiary;\u000Aimport foam.nanos.auth.User;\u000Aimport net.nanopay.bank.BankAccount;\u000Aimport net.nanopay.fx.afex.AFEXService;\u000Aimport net.nanopay.fx.afex.FindBeneficiaryRequest;\u000Aimport net.nanopay.fx.afex.FindBeneficiaryResponse;\u000A\u000AafexBeneficiaryDAO = (DAO) x.get("afexBeneficiaryDAO");\u000AaccountDAO = (DAO) x.get("localAccountDAO");\u000AuserDAO = (DAO) x.get("localUserDAO");\u000AafexService = (AFEXService) x.get("afexService");\u000A\u000AinstantPaymentCredential = "";\u000AafexBeneficiaries = (afexBeneficiaryDAO.select(new ArraySink())).getArray();\u000A\u000Afor( AFEXBeneficiary afexBeneficiary : afexBeneficiaries ) {\u000A  if ( ! afexBeneficiary.getIsInstantBeneficiary() ) {\u000A    user = (User) userDAO.find(afexBeneficiary.getContact());\u000A    account = (BankAccount) user.findBankAccount(x);\u000A    afexBeneficiary = afexBeneficiary.fclone();\u000A    afexBeneficiary.setCurrency(account.getDenomination());\u000A    afexBeneficiaryDAO.put(afexBeneficiary);\u000A  }\u000A  else {\u000A    user = (User) userDAO.find(afexBeneficiary.getOwner());\u000A    findBeneficiaryRequest = new FindBeneficiaryRequest();\u000A    findBeneficiaryRequest.setVendorId(afexBeneficiary.getVendorId());\u000A    findBeneficiaryRequest.setClientAPIKey(instantPaymentCredential);\u000A    FindBeneficiaryResponse beneficiaryResponse = null;\u000A    try {\u000A      beneficiaryResponse = afexService.findBeneficiary(findBeneficiaryRequest, user.getSpid());\u000A      afexBeneficiary = afexBeneficiary.fclone();\u000A      afexBeneficiary.setCurrency(beneficiaryResponse.getCurrency());\u000A      afexBeneficiaryDAO.put(afexBeneficiary);\u000A    } catch(Throwable t) {\u000A      print("A beneficiary does not exist for: " + afexBeneficiary.getId());\u000A    }\u000A  }\u000A}\u000Aprint("done");\u000A""",
+"output":
+"""done\u000A""",
+"lastModifiedBy":1348,
+"lastModified":"2021-05-05T21:30:30.941Z"
+})
+
+p({
+  class:"foam.nanos.script.Script",
+  id:"update-journal-capability-id-references",
+  description:"Update journal capability id references",
+  code:
+"""
+import foam.dao.DAO;
+import foam.dao.AbstractSink;
+import java.util.HashMap;
+import foam.core.Detachable;
+import foam.nanos.crunch.UserCapabilityJunction;
+import foam.nanos.crunch.MinMaxCapabilityData;
+
+capabilityMap = new HashMap() {{
+put("554af38a-8225-87c8-dfdf-eeb15f71215f-0","crunch.onboarding.signing-officer-question");
+put("554af38a-8225-87c8-dfdf-eeb15f71215f-0","crunch.onboarding.signing-officer-question");
+put("554af38a-8225-87c8-dfdf-eeb15f71215f-1a5","crunch.onboarding.signing-officer-information");
+put("554af38a-8225-87c8-dfdf-eeb15f71215f-14","crunch.onboarding.certify-data-reviewed");
+put("554af38a-8225-87c8-dfdf-eeb15f71215f-4","crunch.onboarding.business-information");
+put("554af38a-8225-87c8-dfdf-eebsdf3225y-4","crunch.onboarding.business-type-sector");
+put("554af38a-8225-87c8-dfdf-eeb15f71215f-6","crunch.onboarding.transaction-details");
+put("554af38a-8225-87c8-dfdf-eeb15f71215f-6-5","crunch.onboarding.business-directors");
+put("554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired","crunch.onboarding.business-ownership");
+put("554af38a-8225-87c8-dfdf-eeb15f71215f-7-noReview","crunch.onboarding.publicly-traded");
+put("554af38a-8225-87c8-dfdf-eeb15f71215f-7","crunch.onboarding.minmax.business-ownership");
+put("Bf6a49d5-4027-4dac-a269-4d3ed070609e-1","crunch.onboarding.parent.unlock-ca-ca-payments");
+put("554af38a-8225-87c8-dfdf-eeb15f71215f-11","crunch.onboarding.unlock-ca-ca-payments");
+put("Bf6a49d5-4027-4dac-a269-4d3ed070609e-2","crunch.onboarding.parent.unlock-ca-international-payments");
+put("554af38a-8225-87c8-dfdf-eeb15f71215f-12","crunch.onboarding.unlock-ca-international-payments");
+put("Bf6a49d5-4027-4dac-a269-4d3ed070609e-3","crunch.onboarding.parent.unlock-us-payments");
+put("554af38a-8225-87c8-dfdf-eeb15f71215f-13","crunch.onboarding.unlock-us-payments");
+put("1f6b2047-1eef-471d-82e7-d86bdf511375","AFEX");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-18","crunch.onboarding.general-admission");
+put("242B00F8-C775-4899-AEBA-F287EC54E901","crunch.onboarding.treviso.general-admission");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-19","crunch.onboarding.user-registration");
+put("554af38a-8225-87c8-dfdf-eeb15f71215f-76","crunch.onboarding.register-business");
+put("520a4120-3bc6-cef9-6635-c32af8219a6a","payment.source.country.br");
+put("63049307-8db4-2437-5c02-b71d6878263c","payment.target.country.br");
+put("688cb7c6-7316-4bbf-8483-fb79f8fdeaaf","crunch.onboarding.br.business-identification");
+put("fb7d3ca2-62f2-4caf-a84c-860392e4676b","crunch.onboarding.br.cpf");
+put("b5f2b020-db0f-11ea-87d0-0242ac130003","crunch.onboarding.document.office-consumption");
+put("26d32e86-db11-11ea-87d0-0242ac130003","crunch.onboarding.document.articles-of-incorporation");
+put("7e2739cc-db32-11ea-87d0-0242ac130003","crunch.onboarding.document.annual-financial-statements");
+put("85cee1de-db32-11ea-87d0-0242ac130003","crunch.onboarding.document.utility-bills");
+put("8ad3c898-db32-11ea-87d0-0242ac130003","crunch.onboarding.document.identification");
+put("8ad3c898-db232-1ea-87d0-0242ac130z0","crunch.onboarding.document.date-of-issue");
+put("8ad3c898-db232-1ea-87d0-0242ac130z0-br","crunch.onboarding.document.br.date-of-issue");
+put("D423CDC6-6BDA-4A84-B5AE-71B4C503AD30","crunch.onboarding.document.afex.third-party-terms-and-conditions");
+put("F1359801-7D71-4F30-8D36-531B4A674981","crunch.onboarding.business-director-list");
+put("6DD8D005-7514-432D-BC32-9C5D569A0462","crunch.onboarding.business-owner-list");
+put("A285FDFA-3C6B-4150-A0F4-B72E664A3A9E","crunch.onboarding.business-has-signing-officer");
+put("7BE7F3EE-D887-42E9-8042-680C6BF1C6AE","crunch.onboarding.signing-officer-list");
+put("25D9499A-36D3-436A-9C87-3CA41B5FC08F","crunch.onboarding.user-is-signing-officer");
+put("1F0B39AD-934E-462E-A608-D590D1081298","crunch.onboarding.api.unlock-ca-payments");
+put("F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD","crunch.onboarding.api.unlock-ca-payments-under-1000");
+put("7B440CC7-C64D-4FDC-B394-052846CB7049","crunch.onboarding.api.onboarding-type");
+put("A62AC209-CD55-4755-9B93-2B9BAE885B85","crunch.onboarding.parent.api.simple-user-onboarding");
+put("0ED5DD86-AA1A-452B-BA7D-E7A2D0542135","crunch.onboarding.user-details");
+put("FB1C8CF2-34B9-40FE-A4AA-58CFA2FDBA15","crunch.onboarding.expanded-user-details");
+put("CD499238-7854-4125-A04D-7CE7EE15BC74","crunch.onboarding.api.unlock-ca-ca-payments");
+put("8bffdedc-5176-4843-97df-1b75ff6054fb","crunch.onboarding.user-birth-date");
+put("554af38a-8225-87c8-dfdf-eeb15f71215f-16","crunch.onboarding.business-registration-date");
+put("554af38a-8225-87c8-dfdf-eeb15f71215f-19","crunch.onboarding.last-business-registration-date");
+put("554af38a-8225-87c8-dfdf-eeb15f71215f-17","crunch.onboarding.business-incorporation-date");
+put("554af38a-8225-87c8-dfdf-eeb15f71215f-18","crunch.onboarding.tax-id-number");
+put("7bf54e2d-2bf0-41fe-bc25-31c8de030ffa","crunch.onboarding.submitted-by");
+put("24602528-34c1-11eb-adc1-0242ac120002","crunch.onboarding.add-bank-account");
+put("89cc91da-4bbd-458b-81d4-574815e455fa-1","crunch.onboarding.registering-ca-payment-provider");
+put("1f6b2047-1eef-471d-82e7-d86bdf511375-2","BMO");
+put("1f6b2047-1eef-471d-82e7-d86bdf511375-3","RBC");
+put("89cc91da-4bbd-458b-81d4-574815e455fa-2","crunch.onboarding.registering-international-payment-provider");
+put("89cc91da-4bbd-458b-81d4-574815e455fa-3","crunch.onboarding.registering-us-international-payment-provider");
+put("2869DB5B-0AFE-4113-8EF7-5E5B6B8BB4AC","paymentprovidercorridor.bepay.br-us");
+put("5B9EE768-4B35-493C-A356-FEC306235AB7","paymentprovidercorridor.bepay.br-ca");
+put("2DCB6488-A880-49F5-9973-CABDDDDD017A","paymentprovidercorridor.bepay.br-gb");
+put("E55A5CFE-6EA1-40EC-929A-E6E374349A79","paymentprovidercorridor.bepay.br-pt");
+put("fb7d3ca2-62f2-4caf-a84c-860392e46br","crunch.onboarding.br.cpf");
+put("554af38a-8225-87c8-dfdf-eeb15f71215f-7-br","crunch.onboarding.br.business-ownership");
+put("F9c7ce45-c076-4f55-93d2-867c011ee6ca","paymentprovidercorridor.treviso.br-us");
+put("Ddcdada6-90de-4729-aa22-94a60b629faf","paymentprovidercorridor.treviso.br-de");
+put("5466bee2-1639-461d-a8d4-84c152cfb235","paymentprovidercorridor.treviso.br-gpb");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-1","crunch.onboarding.document.br.balance-sheet");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-2","crunch.onboarding.document.br.income-statement");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-3","crunch.onboarding.document.br.bank-address-payment-reais");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-4","crunch.onboarding.document.br.bank-payment-foreign-currency");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-5","crunch.onboarding.document.br.bill-of-landing");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-6","crunch.onboarding.document.br.board-authorization-closing");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-7","crunch.onboarding.document.br.company-incorporation-document");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-8","crunch.onboarding.document.br.company-report");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-9","crunch.onboarding.document.br.contract");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-10","crunch.onboarding.document.br.social-contract");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-11","crunch.onboarding.document.br.corporate-act");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-12","crunch.onboarding.document.br.letter-of-authorization");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-13","crunch.onboarding.document.br.courier-voucher");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-14","crunch.onboarding.document.br.debit-note");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-15","crunch.onboarding.document.br.deed-of-property");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-16","crunch.onboarding.document.br.proof-of-kinship");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-17","crunch.onboarding.document.br.operation-details");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-18","crunch.onboarding.document.br.import-declaration");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-19","crunch.onboarding.document.br.insurance-note");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-20","crunch.onboarding.document.br.invoice-payment-details");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-21","crunch.onboarding.document.br.lease-agreement");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-22","crunch.onboarding.document.br.loan-agreement");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-23","crunch.onboarding.document.br.minutes-of-profit-distribution");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-24","crunch.onboarding.document.br.policy");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-25","crunch.onboarding.document.br.proof-of-investment-abroad");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-26","crunch.onboarding.document.br.proof-of-order-received-abroad");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-27","crunch.onboarding.document.br.proof-of-payment-taxes");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-28","crunch.onboarding.document.br.property-purchase-agreement");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-29","crunch.onboarding.document.br.property-sale-agreement");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-30","crunch.onboarding.document.br.property-rental-agreement");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-31","crunch.onboarding.document.br.rde-rof");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-32","crunch.onboarding.document.br.payment-scheme");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-33","crunch.onboarding.document.br.rof");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-34","crunch.onboarding.document.br.rde-ied");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-35","crunch.onboarding.document.br.simplified-export-declaration");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-36","crunch.onboarding.document.br.export-registration");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-37","crunch.onboarding.document.br.sales-statement");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-38","crunch.onboarding.document.br.service-provision");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-39","crunch.onboarding.document.br.signed-commercial-invoice");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-40","crunch.onboarding.document.br.wills-inventory");
+put("5fdd9025-86e6-45a1-bed5-8962acdf5338-41","crunch.onboarding.document.br.signed-proforma-invoice");
+put("cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode","naturecode.br.minmax.requirement");
+put("05a663b8-2b48-11eb-adc1-0242ac120002","crunch.onboarding.br.business-prerequisites");
+put("bf6a49d5-4027-4dac-a269-4d3ed070609e-4","crunch.onboarding.br.parent.international-payments");
+put("0B2E7305-B898-43F2-9C1B-63FB2CE38B2D","crunch.onboarding.br.international-payments");
+put("554af38a-8225-87c8-dfdf-eeb15f71215f-49","crunch.onboarding.br.brazil-onboarding");
+put("25F5C0CC-DD7E-4206-B392-46EAA9332870","crunch.onboarding.br.review-required");
+put("89cc91da-4bbd-458b-81d4-574815e455fa-4","crunch.onboarding.br.registering-payment-provider");
+put("2910C2C9-3597-42A3-BF85-CFBC8F0E1388","crunch.user-invoice");
+put("7b41a164-29bd-11eb-adc1-0242ac120002","crunch.onboarding.br.add-bank-account");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-25","crunch.onboarding.br.treviso-unlock-payments-terms");
+put("9d4d667c-04c3-11eb-adc1-0242ac120002","crunch.onboarding.br.currency-amount-information");
+put("af3d9c28-0674-11eb-adc1-0242ac120002","crunch.onboarding.br.business-account");
+put("4c46cdb8-06b2-11eb-adc1-0242ac120002","crunch.onboarding.br.nature-of-business");
+put("1d72f804-4019-11eb-b378-0242ac130002","crunch.onboarding.br.expected-shipment-date");
+put("2EFEFD46-967D-43B3-A464-2ACDC3B2D032","crunch.integration.spid-base");
+put("03EA45D2-BC17-4D7D-B1FD-00A69AF1FFDD","crunch.integration.planners");
+put("7566B8D4-BB9A-4B85-BABA-C61094D9A743","crunch.integration.countries");
+put("8b36b11a-93c6-b40c-d9c8-f8effefb31cc-1","crunch.liquid.view-account");
+put("8b36b11a-93c6-b40c-d9c8-f8effefb31cc-2","crunch.liquid.make-account");
+put("8b36b11a-93c6-b40c-d9c8-f8effefb31cc-3","crunch.liquid.approve-account");
+put("8b36b11a-93c6-b40c-d9c8-f8effefb31cc-4","crunch.liquid.view-transaction");
+put("8b36b11a-93c6-b40c-d9c8-f8effefb31cc-5","crunch.liquid.make-transaction");
+put("8b36b11a-93c6-b40c-d9c8-f8effefb31cc-6","crunch.liquid.approve-transaction");
+put("8b36b11a-93c6-b40c-d9c8-f8effefb31cc-7","crunch.liquid.view-user");
+put("8b36b11a-93c6-b40c-d9c8-f8effefb31cc-8","crunch.liquid.make-user");
+put("8b36b11a-93c6-b40c-d9c8-f8effefb31cc-9","crunch.liquid.approve-user");
+put("1b36b11a-93c6-b40c-d9c8-f8effefb31cc-1","crunch.liquid.view-liquidity-settings");
+put("1b36b11a-93c6-b40c-d9c8-f8effefb31cc-2","crunch.liquid.make-liquidity-settings");
+put("1b36b11a-93c6-b40c-d9c8-f8effefb31cc-3","crunch.liquid.approve-liquidity-settings");
+put("1b36b11a-93c6-b40c-d9c8-f8effefb31cc-4","crunch.liquid.view-rule");
+put("1b36b11a-93c6-b40c-d9c8-f8effefb31cc-5","crunch.liquid.make-rule");
+put("1b36b11a-93c6-b40c-d9c8-f8effefb31cc-6","crunch.liquid.approve-rule");
+put("1b36b11a-93c6-b40c-d9c8-f8effefb31cc-7","crunch.liquid.view-role-assignments");
+put("1b36b11a-93c6-b40c-d9c8-f8effefb31cc-8","crunch.liquid.make-role-assignments");
+put("1b36b11a-93c6-b40c-d9c8-f8effefb31cc-9","crunch.liquid.approve-role-assignments");
+put("2b36b11a-93c6-b40c-d9c8-f8effefb31cc-1","crunch.liquid.view-dashboard");
+put("2b36b11a-93c6-b40c-d9c8-f8effefb31cc-2","crunch.liquid.ingest-file");
+put("2b36b11a-93c6-b40c-d9c8-f8effefb31cc-3","crunch.liquid.l2-transaction-approver");
+put("554af38a-8125-87c8-dfdf-eeb15fafexca-us","paymentprovidercorridor.afex.ca-us");
+put("554af38a-8125-87c8-dfdf-eeb15fafexus-ca","paymentprovidercorridor.afex.us-ca");
+put("554af38a-8125-87c8-dfdf-eeb15f7afexus-us","paymentprovidercorridor.afex.us-us");
+put("554af38a-8125-87c8-dfdf-eeb15f7afxca-us","paymentprovidercorridor.afx.ca-us");
+put("554af38a-8125-87c8-dfdf-eeb15f7afxus-ca","paymentprovidercorridor.afx.us-ca");
+put("554af38a-8125-87c8-dfdf-eeb15f7afxus-us","paymentprovidercorridor.afx.us-us");
+put("554af38a-8125-87c8-dfdf-eeb15f7altca-ca","paymentprovidercorridor.alterna.ca-ca");
+put("554af38a-8125-87c8-dfdf-eeb15f7bmoca-ca","paymentprovidercorridor.bmo.ca-ca");
+put("554af38a-8125-87c8-dfdf-eeb15f7rbcca-ca","paymentprovidercorridor.rbc.ca-ca");
+put("554af38a-8125-87c8-dfdf-eeb15kotakca-in","paymentprovidercorridor.kotak.ca-in");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-1","crunch.acceptance-document.tri-party-cad-agreement");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-2","crunch.acceptance-document.afx-california-disclosure");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-3","crunch.acceptance-document.dual-party-agreement-cad");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-4","crunch.acceptance-document.afx-arizona-disclosure");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-5","crunch.acceptance-document.tri-party-usd-agreement");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-6","crunch.acceptance-document.afx-colorado-disclosure");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-7","crunch.acceptance-document.ablii-terms-and-conditions");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-8","crunch.acceptance-document.ablii-privacy-policy");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-9","crunch.acceptance-document.cad-afex-terms");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-10","crunch.acceptance-document.afex-terms-and-conditions");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-11","crunch.acceptance-document.international-payments-agreement");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-12","crunch.acceptance-document.certify-owners-percent");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-13","crunch.acceptance-document.certify-account-ownership");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-14","crunch.acceptance-document.afx-massachusetts-disclosure");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-15","crunch.acceptance-document.afx-new-york-disclosure");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-16","crunch.acceptance-document.afx-washington-disclosure");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-17","crunch.acceptance-document.certify-directors-list");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-20","crunch.acceptance-document.ca-account-authorization-agreement");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-21","crunch.acceptance-document.recourse-agreement");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-22","crunch.acceptance-document.ca-cancellation-agreement");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-23","crunch.acceptance-document.us-account-authorization-agreement");
+put("554af38a-8225-87c8-dfdf-eeb15f71215e-24","crunch.acceptance-document.us-cancellation-agreement");
+put("E9e1567f-ef12-4c4e-b8c2-fa614a177adb","crunch.acceptance-document.us-pad-capture");
+put("67d9a3c7-6243-4b80-a8a9-9fe0c05db6d0","crunch.acceptance-document.ca-pad-capture");
+put("B98D97EE-4A43-4B03-84C1-9DE2C0109E87","crunch.onboarding.api.onboarding-user-and-business");
+put("56D2D946-6085-4EC3-8572-04A17225F86A","crunch.onboarding.api.ca-business-send-payments");
+put("9C6D8CFE-50B8-4507-A595-78DD9E08EA2D","crunch.onboarding.api.expanded-business-details");
+put("18DD6F03-998F-4A21-8938-358183151F96","crunch.onboarding.api.ca-business-receive-payments");
+put("EC535109-E9C0-4B5D-8D24-31282EF72F8F","crunch.onboarding.api.business-details");
+put("A679CA67-93C2-4597-B92E-4BBA00797E96"," crunch.onboarding.api.minmax.business-type");
+put("125215a0-b0aa-4bb4-ac26-bc5d4a7a05d1","naturecode.br.computer-programs");
+put("4cfa9007-1d87-4bdd-b6e1-4e3c6fe78a2c","naturecode.br.funds-abroad");
+put("94bc7bf2-5637-438a-8bca-ad9e8887c84f","naturecode.br.abroad-non-profit");
+put("0492f5c9-b7a3-4a2d-a867-56de3c87116b","naturecode.br.consultancy-public-relations");
+put("9aee9512-866d-4b09-974d-d505dbbc50f4","naturecode.br.real-estate-abroad");
+put("c3297325-3b88-474d-9b59-bace9477af36","naturecode.br.capital-increase-reduction");
+put("5597214b-4017-46a0-86d6-bca65dcc8fdb","naturecode.br.computer-services");
+put("0fdd3f07-3b9b-46e3-9212-000bae2695aa","naturecode.br.education-services");
+put("b95dff95-0e4c-4d0b-932c-0b05d73577d1","naturecode.br.wu-estrangeiro");
+put("49b77f74-124e-41a5-9c0c-da3e86102d0b","naturecode.br.import-goods");
+put("ed4ca3a0-3c2a-4161-93db-48fe963f1729","naturecode.br.import-goods-draw-back");
+put("eecb85f8-66d4-43b9-8c26-a187a5a00b7a","naturecode.br.import-goods-anticipated");
+put("a84f00ac-9af0-4afe-ad87-076b7d4dc2d3","naturecode.br.international-orders");
+put("fa27048d-a980-4001-bc52-a15ce95d2e16","naturecode.br.juridic-services");
+put("408fcdd3-8a6f-4cab-a249-c381b7835033","naturecode.br.maintain-residents-abroad");
+put("61d757c6-b223-4821-b504-ed14defb8e40","naturecode.br.other.serv-tec-professional-adminstrative");
+put("cf249108-f8cc-41e2-a8b7-44169c6d815a","naturecode.br.other.technical-professional-adminstrative-services");
+put("7d6dbb97-74c8-45d7-8ab8-d31212f96266","naturecode.br.other.rental-real-estate");
+put("efdc3a3f-6f12-4eba-acd1-6e909d6427a0","naturecode.br.public-research-opinion-part-fair-exp");
+put("f0224036-2a37-4fa9-8879-a413fe168f34","naturecode.br.resident-maintenance");
+put("490912ca-a515-461f-bc10-576403e3dbd2","naturecode.br.rollback-availability");
+put("a0012f3c-0eeb-4d57-afc9-e3a33a82f5d5","naturecode.br.shipping-wu");
+put("70135e05-07f9-4a9e-811b-a045f01af233","naturecode.br.small-orders");
+put("f06cea11-a660-4562-8db0-d521f7354da3","naturecode.br.small-orders-international");
+put("e8f9ae0b-9cda-4541-a013-0ca094f975ef","naturecode.br.student-maintenance");
+put("aea63f05-071a-488f-8642-a530a8f3dfff","naturecode.br.student-maintenance-devolution");
+put("d3513121-15b7-4e22-9dd8-850c43f261f2","naturecode.br.technical-services-computer-services");
+put("68de031a-f1d4-44ca-84f3-f20d3e4d8dd0","naturecode.br.technical-services-legal-services");
+put("9b8a6ae5-7ffe-4bb1-b355-1fee4c0b02e3","naturecode.br.technical-services");
+put("49f17086-cc6b-44f7-abf5-24c712fbbf41","naturecode.br.technical-professional-repatriation-services");
+put("18ef6987-47f4-496e-8df6-be04718a9499","naturecode.br.travel-education-services");
+put("bbed00bb-0200-4b88-bf13-5d982661f652","naturecode.br.minmax.assignment-use-computer-programs");
+put("6a034ec2-e555-4d59-9a09-ce69b7c8997e","naturecode.br.minmax.availability-abroad");
+put("313a1cc6-6fc2-444c-85e4-9472ba3ea7ef","naturecode.br.minmax.availability-abroad-non-profit-organizations");
+put("0ebacf4d-29dc-4c67-9a2c-456602d48e99","naturecode.br.minmax.consultancy-public-relations");
+put("1cd2890d-ed14-48fe-a02f-828c7ffcc6e0","naturecode.br.minmax.purchase-sale-property-abroad");
+put("efcf79f1-b474-4c1b-ad83-febc1f25cb6a","naturecode.br.minmax.capital-increase-reduction");
+put("6af80d3a-4e65-4082-9384-eab196501f10","naturecode.br.minmax.computer-services");
+put("287d017b-c4f9-4b9a-a0e3-f13726997fbe","naturecode.br.minmax.education-services");
+put("fe50a117-ea7f-4aec-b629-8084615ff8e2","naturecode.br.minmax.wu-estrangeiro");
+put("9f47e1ae-88ae-4ac2-b797-c3168475d329","naturecode.br.minmax.import-goods");
+put("208c6066-e09e-40e5-a284-e6a5a4bb4bdb","naturecode.br.minmax.import-goods-draw-back");
+put("3beacdfd-f97e-4373-9e0a-4e799c616cab","naturecode.br.minmax.import-goods-anticipated");
+put("c566ecf5-3074-4af6-9552-8cf9363bbe06","naturecode.br.minmax.international-orders");
+put("86410b91-413e-4607-85f5-2f64d5bd0ae9","naturecode.br.minmax.juridic-services");
+put("a6d32823-688d-4fba-b738-2676cc2febbd","naturecode.br.minmax.maintain-residents-abroad");
+put("4a6dc849-36d5-435b-8a0b-614a267e90d4","naturecode.br.minmax.serv-tec-professional-adminstrative");
+put("2de016b5-4f7a-4a25-8783-dee3536c6265","naturecode.br.minmax.technical-professional-adminstrative-services");
+put("a6ef8cb1-47af-4994-ac6b-a6bb1ba86334","naturecode.br.minmax.real-estate-rental");
+put("df4f921d-035e-44dd-b510-24356d0a3113","naturecode.br.minmax.public-research-opinion-part-fair-exp");
+put("0fb9d7fe-8ce5-4900-9ff9-8b6d7ea64ecd","naturecode.br.minmax.resident-maintenance");
+put("e05be309-4773-457f-8ffa-ded9eb856384","naturecode.br.minmax.rollback-availability");
+put("c770f0dd-c062-48c6-953f-9d2dfc4fb3f2","naturecode.br.minmax.shipping-wu");
+put("242cc442-f321-4f0b-9272-e7d55d89e058","naturecode.br.minmax.small-orders");
+put("24701cba-6f7f-4aed-9030-b569748d779e","naturecode.br.minmax.small-orders-international");
+put("3d46f18c-c885-4be0-b013-87dc86c71c21","naturecode.br.minmax.student-maintenance");
+put("2fab650a-a470-4168-b163-115d9ed8f3b2","naturecode.br.minmax.student-maintenance-devolution");
+put("1e0b3f86-7665-4dab-a7b2-2521660fc13d","naturecode.br.minmax.technical-services-computer-services");
+put("ac5f0fe5-8734-4378-a5c8-14f22ce08ca1","naturecode.br.minmax.technical-services-legal-services");
+put("a0f3b628-ff27-44d0-ba19-262b61034f99","naturecode.br.minmax.technical-services");
+put("02717a7f-a508-4596-b29f-117a2599a367","naturecode.br.minmax.technical-professional-repatriation-services");
+put("ab3fb392-4018-446d-83a5-6026ebe6c93d","naturecode.br.minmax.travel-education-services");
+}};
+
+//HELPER METHODS
+// Updates MinMaxData capability references
+updateMinMaxData(data) {
+  if ( data.getSelectedData() != null ) {
+    selectedData = data.getSelectedData();
+    for ( int i = 0; i < selectedData.length; i++) {
+      if ( capabilityMap.containsKey(selectedData[i]) ) {
+        selectedData[i] = capabilityMap.get(selectedData[i]);
+      }
+    }
+  }
+
+  if ( data.getSelectedDataStable() != null ) {
+    selectedStableData = data.getSelectedDataStable();
+    for ( int i = 0; i < selectedStableData.length; i++) {
+      if ( capabilityMap.containsKey(selectedStableData[i]) ) {
+        selectedStableData[i] = capabilityMap.get(selectedStableData[i]);
+      }
+    }
+  }
+  return data;
+}
+
+// This sink method is responsible for updating references to capabilities on capable object
+referenceSink(dao){
+  return new AbstractSink() {
+    public void put(Object obj, Detachable sub) {
+      object = obj.fclone();
+
+      // Replaces capable object capability id's with new capability id's from above mapping
+      capabilityIds = object.getCapabilityIds();
+      for ( int i = 0; i < capabilityIds.length; i++) {
+        if ( capabilityMap.containsKey(capabilityIds[i]) ) {
+          capabilityIds[i] = capabilityMap.get(capabilityIds[i]);
+        }
+      }
+
+      // Replace capable object userCapabilityRequirements with new capability id's from above mapping
+      userCapabilityIds = object.getUserCapabilityRequirements();
+      for ( int i = 0; i < userCapabilityIds.length; i++) {
+        if ( capabilityMap.containsKey(userCapabilityIds[i]) ) {
+          userCapabilityIds[i] = capabilityMap.get(userCapabilityIds[i]);
+        }
+      }
+
+      // Replace capability reference in capable payloads.
+      payloads = object.getCapablePayloads();
+      if ( payloads != null ) {
+        for ( int i = 0; i < payloads.length; i++ ){
+          if ( capabilityMap.containsKey(payloads[i].getProperty("capability")) ) {
+            payloads[i].setProperty("capability", capabilityMap.get(payloads[i].getProperty("capability")));
+          }
+
+          data = payloads[i].getData();
+          if ( data != null && data.getClass() == MinMaxCapabilityData.class) {
+            payloadData = updateMinMaxData(payloads[i].getData());
+            payloads[i].setData(data);
+          }
+        }
+      }
+      dao.put(object);
+    }
+  };
+}
+// END OF HELPER METHODS
+
+// Updates references of targetIds and user capability junction MinMaxData
+ucjDAO = x.get("bareUserCapabilityJunctionDAO");
+
+ucjDAO.select(new AbstractSink() {
+ public void put(Object obj, Detachable sub) {
+   ucj = obj.fclone();
+   if ( capabilityMap.containsKey(obj.getTargetId()) ) {
+     ucj.setTargetId(capabilityMap.get(ucj.getTargetId()));
+     ucjDAO.put(ucj);
+   }
+
+   data = ucj.getData();
+   if ( data != null && data.getClass() == MinMaxCapabilityData.class) {
+     data = updateMinMaxData(ucj.getData());
+     ucj.setData(data);
+     ucjDAO.put(ucj);
+   }
+ }
+});
+
+contactDAO = x.get("localContactDAO");
+contactDAO.select(referenceSink(contactDAO));
+
+invoiceDAO = x.get("localInvoiceDAO");
+invoiceDAO.select(referenceSink(invoiceDAO));
+
+padCaptureDAO = x.get("localPadCaptureDAO");
+padCaptureDAO.select(referenceSink(padCaptureDAO));
+
+print("finished");
+"""
+})
+
+p({
+"class":"foam.nanos.script.Script",
+"id":"TED-notification-text-migration",
+"description":"Remove TED text from invoice note and set it to tedText property",
+"code":
+"""
+import foam.dao.DAO;
+import foam.dao.ArraySink;
+import net.nanopay.invoice.model.Invoice;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+invoiceDAO = (DAO) x.get("invoiceDAO");
+
+invoices = ((ArraySink) invoiceDAO.select(new ArraySink())).getArray();
+
+for (invoice : invoices) {
+	if (invoice.getNote().isEmpty() || !invoice.getTedText().isEmpty()) continue;
+
+	// find ted text from invoice note
+	tedTextStart = invoice.getNote().lastIndexOf("ATENÇÃO : Esta transação ainda não foi enviada!");
+
+	// move ted text from invoice.note to invoice.tedText if the text exists
+	if (tedTextStart > -1) {
+		// get amount from ted text
+		pattern = Pattern.compile("\\\\(([^\\\\)]*)\\\\)");
+   	matcher = pattern.matcher(invoice.getNote());
+
+    amount = "";
+   	if (matcher.find()) {
+   		amount = matcher.group(1);
+   	}
+
+   	// remove ted text from invoice.note
+		invoice.setNote(invoice.getNote().substring(0, tedTextStart).trim());
+
+		// set ted text to invoice.tedText
+		tedText = net.nanopay.partner.treviso.invoice.TrevisoNotificationRule.TED_TEXT_MSG;
+
+		tedText = tedText.replace("{amount}", amount);
+		invoice.setTedText(tedText);
+
+		invoiceDAO.put(invoice);
+  }
+}
+
+print("done");
+"""
+});
+
+p({
+  class:"foam.nanos.script.Script",
+  id:"Set SPID on AFEXUser/AFEXBeneficiary",
+  description:"Set SPID on AFEXUser/AFEXBeneficiary",
+  code:"""
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import foam.nanos.auth.User;
+    import foam.util.SafetyUtil;
+    import net.nanopay.fx.afex.AFEXBeneficiary;
+    import net.nanopay.fx.afex.AFEXUser;
+
+    afexUserDAO = x.get("afexUserDAO");
+    afexBeneficiaryDAO = x.get("afexBeneficiaryDAO");
+    userDAO = (DAO) x.get("localUserDAO");
+
+    afexUsers = (afexUserDAO.select(new ArraySink())).getArray();
+
+    for ( AFEXUser au: afexUsers ) {
+      if ( SafetyUtil.isEmpty(au.getSpid()) ) {
+        au = (AFEXUser)au.fclone();
+        User u = userDAO.find(au.getUser());
+        au.setSpid(u.getSpid());
+        afexUserDAO.put(au);
+      }
+    }
+
+    afexBeneficiaries = (afexBeneficiaryDAO.select(new ArraySink())).getArray();
+    for ( AFEXBeneficiary b: afexBeneficiaries ) {
+      if ( SafetyUtil.isEmpty(b.getSpid()) ) {
+        b = (AFEXBeneficiary)b.fclone();
+        User u = userDAO.find(b.getOwner());
+        b.setSpid(u.getSpid());
+        afexBeneficiaryDAO.put(b);
+      }
+    }
+
+    print("DONE");
+  """
+})
+

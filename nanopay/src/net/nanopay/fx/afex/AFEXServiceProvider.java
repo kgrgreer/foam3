@@ -90,6 +90,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         afexUser.setUser(user.getId());
         afexUser.setApiKey(newClient.getAPIKey());
         afexUser.setAccountNumber(newClient.getAccountNumber());
+        afexUser.setSpid(user.getSpid());
         afexUserDAO.put(afexUser);
       }
       return true;
@@ -197,6 +198,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
               afexUser.setUser(business.getId());
               afexUser.setApiKey(newClient.getAPIKey());
               afexUser.setAccountNumber(newClient.getAccountNumber());
+              afexUser.setSpid(business.getSpid());
               afexUserDAO.put(afexUser);
             }
             return true;
@@ -225,7 +227,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
   protected String findCNPJ(long userId) {
     UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) this.x.get("bareUserCapabilityJunctionDAO")).find(AND(
-      EQ(UserCapabilityJunction.TARGET_ID, "688cb7c6-7316-4bbf-8483-fb79f8fdeaaf"),
+      EQ(UserCapabilityJunction.TARGET_ID, "crunch.onboarding.br.business-identification"),
       EQ(UserCapabilityJunction.SOURCE_ID, userId)
     ));
 
@@ -234,7 +236,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
   protected String findCPF(long userId) {
     UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) this.x.get("bareUserCapabilityJunctionDAO")).find(AND(
-      EQ(UserCapabilityJunction.TARGET_ID, "fb7d3ca2-62f2-4caf-a84c-860392e4676b"),
+      EQ(UserCapabilityJunction.TARGET_ID, "crunch.onboarding.br.cpf"),
       EQ(UserCapabilityJunction.SOURCE_ID, userId)
     ));
 
@@ -620,7 +622,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     FindBeneficiaryResponse beneficiaryResponse = findBeneficiary(userId,afexUser.getApiKey(), user.getSpid());
     if ( null == beneficiaryResponse ) {
       String allowedChars = "[^a-zA-Z0-9,.+()?/:‘\\s-]";
-      String beneficiaryName = SafetyUtil.isEmpty(user.getOrganization()) ? user.getBusinessName() : user.getOrganization();
+      String beneficiaryName = user.toSummary();
+      if ( user instanceof Contact ) {
+        beneficiaryName = SafetyUtil.isEmpty(user.getOrganization()) ? user.getBusinessName() : user.getOrganization();
+      }
       beneficiaryName = beneficiaryName != null ? beneficiaryName.replaceAll(allowedChars,"") : "";
       String bankName = bankInformation != null ? bankInformation.getInstitutionName() : bankAccount.getName();
       CreateBeneficiaryRequest createBeneficiaryRequest = new CreateBeneficiaryRequest();
@@ -656,12 +661,12 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         CreateBeneficiaryResponse createBeneficiaryResponse = this.afexClient.createBeneficiary(createBeneficiaryRequest, user.getSpid());
         if ( null == createBeneficiaryResponse ) throw new RuntimeException("Null response got for remote system." );
         if ( createBeneficiaryResponse.getCode() != 0 ) throw new RuntimeException("Unable to create Beneficiary at this time. " +  createBeneficiaryResponse.getInformationMessage());
-        addBeneficiary(x, userId, sourceUser, createBeneficiaryResponse.getStatus());
+        addBeneficiary(x, userId, sourceUser, createBeneficiaryResponse.getStatus(), bankAccount.getDenomination(), afexUser.getSpid());
       } catch(Throwable t) {
         logger_.error("Error creating AFEX beneficiary.", t);
       }
     } else {
-      addBeneficiary(x, userId, sourceUser, beneficiaryResponse.getStatus());
+      addBeneficiary(x, userId, sourceUser, beneficiaryResponse.getStatus(), bankAccount.getDenomination(), afexUser.getSpid());
     }
   }
 
@@ -678,17 +683,19 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return beneficiaryResponse;
   }
 
-  private AFEXBeneficiary addBeneficiary(X x, long beneficiaryId, long ownerId, String status) {
-    return addBeneficiary(x, beneficiaryId, ownerId, status, false, String.valueOf(beneficiaryId));
+  private AFEXBeneficiary addBeneficiary(X x, long beneficiaryId, long ownerId, String status, String currencyId, String spid) {
+    return addBeneficiary(x, beneficiaryId, ownerId, status, false, String.valueOf(beneficiaryId), currencyId, spid);
   }
 
-  private AFEXBeneficiary addBeneficiary(X x, long beneficiaryId, long ownerId, String status, boolean isInstantBeneficiary, String vendorId) {
+  private AFEXBeneficiary addBeneficiary(X x, long beneficiaryId, long ownerId, String status,
+                                         boolean isInstantBeneficiary, String vendorId, String currencyId, String spid) {
     DAO afexBeneficiaryDAO = ((DAO) x.get("afexBeneficiaryDAO")).inX(x);
     AFEXBeneficiary afexBeneficiary = (AFEXBeneficiary) afexBeneficiaryDAO.find(
       AND(
         EQ(AFEXBeneficiary.CONTACT, beneficiaryId),
         EQ(AFEXBeneficiary.OWNER, ownerId),
-        EQ(AFEXBeneficiary.IS_INSTANT_BENEFICIARY, isInstantBeneficiary)
+        EQ(AFEXBeneficiary.IS_INSTANT_BENEFICIARY, isInstantBeneficiary),
+        EQ(AFEXBeneficiary.CURRENCY, currencyId)
       )
     );
 
@@ -702,6 +709,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     afexBeneficiary.setStatus(status);
     afexBeneficiary.setVendorId(vendorId);
     afexBeneficiary.setIsInstantBeneficiary(isInstantBeneficiary);
+    afexBeneficiary.setCurrency(currencyId);
+    afexBeneficiary.setSpid(spid);
     return (AFEXBeneficiary) afexBeneficiaryDAO.put(afexBeneficiary);
   }
 
@@ -747,7 +756,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       UpdateBeneficiaryResponse updateBeneficiaryResponse = this.afexClient.updateBeneficiary(updateBeneficiaryRequest, user.getSpid());
       if ( null == updateBeneficiaryResponse ) throw new RuntimeException("Null response got for remote system." );
       if ( updateBeneficiaryResponse.getCode() != 0 ) throw new RuntimeException("Unable to update Beneficiary at this time. " +  updateBeneficiaryResponse.getInformationMessage());
-      addBeneficiary(x, userId, sourceUser, updateBeneficiaryResponse.getStatus());
+      addBeneficiary(x, userId, sourceUser, updateBeneficiaryResponse.getStatus(), bankAccount.getDenomination(), afexUser.getSpid());
     } catch(Throwable t) {
       logger_.error("Error updating AFEX beneficiary.", t);
     }
@@ -862,7 +871,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   public AFEXFundingTransaction submitInstantPayment(AFEXFundingTransaction txn) {
 
     Account destinationAccount = txn.findDestinationAccount(x);
-    AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x, destinationAccount.getOwner(), destinationAccount.getOwner(), true);
+    AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x, destinationAccount.getOwner(), destinationAccount.getOwner(), true, txn.getSourceCurrency());
 
     User user = User.findUser(x, txn.findDestinationAccount(x).getOwner());
     CreatePaymentRequest createPaymentRequest = new CreatePaymentRequest();
@@ -901,7 +910,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       throw new RuntimeException("Business has not been completely onboarded on partner system. " + sourceAccount.getOwner());
     }
 
-    AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x, destinationAccount.getOwner(), sourceAccount.getOwner());
+    AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x, destinationAccount.getOwner(), sourceAccount.getOwner(), transaction.getDestinationCurrency());
     if ( null == afexBeneficiary ) {
       logger_.error("Contact has not been completely onboarded on partner system as a Beneficiary. " + destinationAccount.getOwner());
       throw new RuntimeException("Contact has not been completely onboarded on partner system as a Beneficiary. " + destinationAccount.getOwner());
@@ -1064,34 +1073,18 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return (AFEXUser) dao.find(EQ(AFEXUser.USER, userId));
   }
 
-  protected AFEXBeneficiary getAFEXBeneficiary(X x, Long beneficiaryId, Long ownerId) {
-    return getAFEXBeneficiary(x, beneficiaryId, ownerId, false);
+  protected AFEXBeneficiary getAFEXBeneficiary(X x, Long beneficiaryId, Long ownerId, String currencyId) {
+    return getAFEXBeneficiary(x, beneficiaryId, ownerId, false, currencyId);
   }
 
-  protected AFEXBeneficiary getAFEXBeneficiary(X x, Long beneficiaryId, Long ownerId, boolean isInstantBeneficiary) {
+  protected AFEXBeneficiary getAFEXBeneficiary(X x, Long beneficiaryId, Long ownerId, boolean isInstantBeneficiary, String currencyId) {
     DAO dao = (DAO) x.get("afexBeneficiaryDAO");
     return (AFEXBeneficiary) dao.find(AND(
       EQ(AFEXBeneficiary.CONTACT, beneficiaryId),
       EQ(AFEXBeneficiary.OWNER, ownerId),
-      EQ(AFEXBeneficiary.IS_INSTANT_BENEFICIARY, isInstantBeneficiary)
+      EQ(AFEXBeneficiary.IS_INSTANT_BENEFICIARY, isInstantBeneficiary),
+      EQ(AFEXBeneficiary.CURRENCY, currencyId)
     ));
-  }
-
-  protected AFEXBeneficiary getOrCreateAFEXBeneficiary(X x, Long beneficiaryId, Long ownerId) {
-    AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x, beneficiaryId, ownerId);
-    if ( afexBeneficiary == null ) {
-      DAO localAccountDAO = (DAO) x.get("localAccountDAO");
-      BankAccount bankAccount = ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, beneficiaryId), INSTANCE_OF(BankAccount.class), EQ(BankAccount.LIFECYCLE_STATE, LifecycleState.ACTIVE))));
-      if ( null != bankAccount ) {
-        try {
-          addPayee(beneficiaryId, bankAccount.getId(), ownerId);
-          afexBeneficiary = getAFEXBeneficiary(x, beneficiaryId, ownerId);
-        } catch(Throwable t) {
-          ((Logger) x.get("logger")).error("Error getting/creating AFEX Beneficiary.", t);
-        }
-      }
-    }
-    return afexBeneficiary;
   }
 
   protected AFEXFundingBalance getOrCreateFundingBalance(X x, AFEXFundingTransaction transaction) {
@@ -1187,7 +1180,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
     AFEXUser afexUser = getAFEXUser(x, user.getId());
     // check if instant beneficiary exists already;
-    AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x, afexUser.getId(), afexUser.getId(), true);
+    AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x, afexUser.getId(), afexUser.getId(), true, transaction.getSourceCurrency());
     if ( afexBeneficiary != null ) {
       return afexBeneficiary;
     }
@@ -1209,7 +1202,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
       if ( response.getCode() != 0 ) throw new RuntimeException("Unable to create instant beneficiary. " + response.getInformationMessage());
 
-      return addBeneficiary(x, userId, userId, "Active", true, str.toString());
+      return addBeneficiary(x, userId, userId, "Active", true, str.toString(), transaction.getSourceCurrency(), afexUser.getSpid());
     } catch(Throwable t) {
       logger_.error("Error creating instant beneficiary " + userId , t);
       throw new RuntimeException("Error creating instant beneficiary. ");

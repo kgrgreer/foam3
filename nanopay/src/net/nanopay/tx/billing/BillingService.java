@@ -22,6 +22,7 @@ import foam.core.FOAMException;
 import foam.core.FObject;
 import foam.core.X;
 import foam.nanos.auth.User;
+import foam.util.SafetyUtil;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,6 +35,7 @@ import net.nanopay.tx.ChargedTo;
 import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
+import org.eclipse.jetty.util.StringUtil;
 
 import static foam.mlang.MLang.EQ;
 
@@ -71,7 +73,7 @@ public class BillingService implements BillingServiceInterface {
     for ( int i = 0; i < sink.getArray().size(); i++ ) {
       BillingFee billingFee = new BillingFee();
       ErrorFee errorFee = (ErrorFee) sink.getArray().get(i);
-      
+
       billingFee.setAmount(errorFee.getAmount());
       billingFee.setCurrency(errorFee.getCurrency());
       billingFee.setDescription(errorCodeObj.getFullText());
@@ -93,14 +95,26 @@ public class BillingService implements BillingServiceInterface {
       bill.setStatus(TransactionStatus.PENDING);
       bill.setSpid(transaction.getSpid());
 
+      for ( BillingFee billingFee : billingFeeList ) {
+        if ( SafetyUtil.isEmpty(bill.getCurrency()) ) {
+          bill.setCurrency(billingFee.getCurrency());
+        } else if ( !SafetyUtil.equals(bill.getCurrency(), billingFee.getCurrency())) {
+          continue; // Do not add fees with different currencies
+        }
+
+        bill.setTotalAmount(bill.getTotalAmount() + billingFee.getAmount());
+      }
       if ( originatingSummaryTxn instanceof SummaryTransaction ) {
         bill.setOriginatingSummaryTransaction(originatingSummaryTxn.getId());
       }
       if ( chargedTo.equals(ChargedTo.PAYER) ) {
-        setupChargeToUser(x, transaction.getSourceAccount(), bill);
+        setupChargeToUser(x, originatingSummaryTxn.getSourceAccount(), bill);
       } else {
-        setupChargeToUser(x, transaction.getDestinationAccount(), bill);
+        setupChargeToUser(x, originatingSummaryTxn.getDestinationAccount(), bill);
       }
+
+      if ( StringUtil.isEmpty(bill.getExternalId()) )
+        bill.setExternalId(transaction.getExternalId());
       billDAO.put(bill);
     }
   }
@@ -117,12 +131,11 @@ public class BillingService implements BillingServiceInterface {
     DAO accountDAO = (DAO) x.get("localAccountDAO");
     DAO userDAO = (DAO) x.get("localUserDAO");
     Account account = (Account) accountDAO.find(accountId);
-    if ( userDAO.find(account.getOwner()) instanceof Business ) {
-      Business business = (Business) userDAO.find(account.getOwner());
-      bill.setChargeToBusiness(business.getId());
-    } else {
-      User user = (User) userDAO.find(account.getOwner());
-      bill.setChargeToUser(user.getId());
-    }
+    var accountOwner = (User) userDAO.find(account.getOwner());
+    if ( accountOwner instanceof Business )
+      bill.setChargeToBusiness(accountOwner.getId());
+    else
+      bill.setChargeToUser(accountOwner.getId());
+    bill.setExternalId(accountOwner.getExternalId());
   }
 }

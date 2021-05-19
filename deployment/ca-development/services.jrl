@@ -49,3 +49,32 @@ p({
     "levApiKey":"ODA1NTMyNjA0MTAyNDg2NzIxMzg4NTk0MTQ4ODg0NTI1MDg4NzY4"
   }
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "accuityCredentials",
+  "service": {
+    "class": "net.nanopay.partner.accuity.AccuityCredentials",
+    "baseUrl": "https://apps.applyfinancial.co.uk",
+    "username": "paymentops@nanopay.net",
+    "password": "NaPa0212!"
+  }
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "bepay.bankAccountValidationService",
+  "description": "Bank account validation service for BePay spid.",
+  "service": {
+    "class": "net.nanopay.partner.accuity.AccuityBankAccountValidationService"
+  }
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "trevisoAPI.bankAccountValidationService",
+  "description": "Bank account validation service for trevisoAPI spid.",
+  "service": {
+    "class": "net.nanopay.partner.accuity.AccuityBankAccountValidationService"
+  }
+})

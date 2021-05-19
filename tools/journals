@@ -1,6 +1,7 @@
 acceptanceDocuments
 accounts
 accountTemplates
+addressConfig
 afexBusinessSectors
 afexUsers
 afexCredentialDAO
@@ -38,6 +39,7 @@ emailTemplates
 errorCodes
 errorFees
 exchangeClientValues
+exchangeCredentials
 exchangeRates
 exportDriverRegistrys
 fees
@@ -80,6 +82,8 @@ paymentMethods
 payoutOptions
 permissions
 prerequisiteCapabilityJunctions
+privateKeys
+publicKeys
 purposeCodes
 purposeGroups
 questionnaires
@@ -118,3 +122,4 @@ xeroConfig
 xeroToken
 zeroAccountUserAssociations
 commonPasswords
+wizardStates

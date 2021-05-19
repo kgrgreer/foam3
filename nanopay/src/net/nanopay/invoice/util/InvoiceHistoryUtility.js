@@ -20,27 +20,10 @@ foam.CLASS({
   name: 'InvoiceHistoryUtility',
 
   methods: [
-
-    function getId(formattedUser) {
-      // a string has a format 'lastName, firstName(id)'
-      const start = formattedUser.lastIndexOf('(') + 1;
-      const end = formattedUser.lastIndexOf(')');
-      const id = parseInt(formattedUser.slice(start, end));
-      return id;
-    },
-
-    function getName(formattedUser) {
-      // a string has a format 'lastName, firstName(id)'
-      const start = formattedUser.lastIndexOf(',') === -1 ? 0: formattedUser.lastIndexOf(',') + 2;
-      const end = formattedUser.lastIndexOf('(') === -1 ? formattedUser.length : formattedUser.lastIndexOf('(');
-      const firstName = formattedUser.slice(start, end);
-      return firstName;
-    },
-
     function getDisplayName(record, user, invoice) {
       var business = invoice.createdBy === invoice.payer.id ? invoice.payer : invoice.payee;
-      return record.agent && user.id === this.getId(record.user) ?
-                                      this.getName(record.agent) : business.toSummary();
+      return record.agent && user.id === record.user.id ?
+                                      record.agent : business.toSummary();
     },
 
     function formatDate(timestamp) {

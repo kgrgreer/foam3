@@ -41,6 +41,14 @@ foam.CLASS({
       code: function() {
         return false;
       }
+    },
+    {
+      name: 'validate',
+      javaCode: `
+      for ( TransactionLineItem li: getLineItems() ) {
+        li.validate();
+      }
+      `
     }
   ]
 

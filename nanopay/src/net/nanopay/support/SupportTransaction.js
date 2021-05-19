@@ -47,7 +47,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.HistoricStatus',
-   ],
+  ],
 
   javaImports: [
     'java.util.Date'
@@ -144,17 +144,17 @@ foam.CLASS({
       section: 'transactionInformation',
       order: 6,
       view: function(_, X) {
-        if ( X.data.amount > 0 ) {
+        if ( X.data.destinationAmount > 0 ) {
           return {
-            class: 'foam.u2.view.LiteralValueView',
-            value: '--'
+            class: 'net.nanopay.tx.ui.UnitFormatDisplayView',
+            linkCurrency$: X.data.destinationCurrency$,
+            currency$: X.data.sourceCurrency$,
+            linkAmount$: X.data.destinationAmount$
           }
         }
         return {
-          class: 'net.nanopay.tx.ui.UnitFormatDisplayView',
-          linkCurrency$: X.data.destinationCurrency$,
-          currency$: X.data.sourceCurrency$,
-          linkAmount$: X.data.destinationAmount$
+          class: 'foam.u2.view.LiteralValueView',
+          value: '--'
         }
       }
     }),

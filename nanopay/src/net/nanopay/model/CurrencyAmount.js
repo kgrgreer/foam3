@@ -63,7 +63,7 @@ foam.CLASS({
       gridColumns: 6,
       unitPropName: 'currency',
       unitPropValueToString: async function(x, val, unitPropName) {
-        var unitProp = await x.customCurrencyDAO.find(unitPropName);
+        var unitProp = await this.customCurrencyDAO.find(unitPropName);
         if ( unitProp ) return unitProp.format(val);
         return val;
       },

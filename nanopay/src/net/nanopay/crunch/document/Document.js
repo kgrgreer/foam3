@@ -29,7 +29,7 @@ foam.CLASS({
   implements: [
     'foam.core.Validatable'
   ],
-
+  requires: ['foam.nanos.crunch.Capability'],
   messages: [
     { name: 'UPLOAD_REQUEST_MSG', message: 'Provide' },
     { name: 'IMAGE_REQUIRED', message: 'Document(s) required' },
@@ -58,19 +58,7 @@ foam.CLASS({
       label: '',
       section: 'documentUploadSection',
       view: function(_, X) {
-        let selectSlot = foam.core.SimpleSlot.create({value: 0});
-        return foam.u2.MultiView.create({
-        views: [
-          foam.nanos.fs.fileDropZone.FileDropZone.create({
-            files$: X.data.documents$,
-            selected$: selectSlot
-          }, X),
-          foam.nanos.fs.fileDropZone.FilePreview.create({
-            data$: X.data.documents$,
-            selected$: selectSlot
-          })
-        ]
-        });
+        return foam.u2.view.DocumentUploadView.create({ data$: X.data.documents$ }, X);
       },
       validateObj: function(documents, isRequired) {
         if ( isRequired && documents.length === 0 ) {
@@ -85,8 +73,9 @@ foam.CLASS({
       hidden: true,
       documentation: 'Used by section subTitle and help',
       factory: function() {
-        return foam.nanos.crunch.Capability.create();
-      }
+        return this.Capability.create();
+      },
+      javaCompare: 'return 0;'
     },
     {
       class: 'Boolean',

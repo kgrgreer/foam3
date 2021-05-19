@@ -41,7 +41,7 @@ p({
       "menu": "mainmenu.contacts",
       "view": {
         "class": "foam.nanos.menu.MenuToolBar",
-        "classification": "submenu",
+        "classification": "submenu.contact",
         "parent": "sme",
         "title": "Add contact"
       }
@@ -50,68 +50,118 @@ p({
 })
 
 p({"class":"foam.nanos.menu.Menu","id":"mainmenu.dashboard","label":"Dashboard","icon":"images/ablii/dashboard-icon-resting.svg","activeIcon":"images/ablii/dashboard-icon-active.svg","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.dashboard.Dashboard"}},"order":500,"parent":"smeNavigation"})
+
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"mainmenu.contacts",
-  "label":"Contacts",
+  "label":"Contacts DAOMenu2",
   "icon":"images/ablii/contacts-icon-resting.svg",
   "activeIcon":"images/ablii/contacts-icon-active.svg",
   "handler":{
-    "class":"foam.nanos.menu.DAOMenu",
-    "daoKey":"contactDAO",
-    "title":"Contacts",
-    "searchMode":2,
-    "editPredicate":{"class":"foam.mlang.predicate.False"},
-    "createPredicate":{"class":"foam.mlang.predicate.True"},
-    "exportEnabled":false,
-    "createEnabled":true,
-    "editEnabled":false,
-    "summaryView":{ "class":"net.nanopay.contacts.ui.ContactTableView" },
-    "createLabel":"Add contact",
-    "createControllerView":{
-      "class":"net.nanopay.sme.ui.MenuRedirectSMEModalView",
-      "menu":"mainmenu.contacts",
-      "view":{
-        "class":"foam.nanos.menu.MenuToolBar",
-        "classification":"submenu.contact",
-        "parent":"sme",
-        "title":"Add contact"
-      }
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"facadeContactDAO",
+
+      "of": "net.nanopay.contacts.facade.FacadeContact",
+      "browseTitle": "Contacts",
+      "createLabel":"Add contact",
+
+      "createTitle": "Create contact2",
+      "createPredicate":{"class":"foam.mlang.predicate.True"},
+      "editPredicate":{"class":"foam.mlang.predicate.True"},
+      "deletePredicate":{"class":"foam.mlang.predicate.True"},
+      "createEnabled":true,
+      "editEnabled":true,
+      "searchMode":0,
+
+      "Exemple_primaryAction": {"class":"net.nanopay.sme.ui.CreateBankAccountAction"},
+      "Exemple_viewBorder":{class:"foam.u2.borders.NullBorder"},
+
+      "createController":{class:"net.nanopay.ui.wizard.WizardController"},
+      "detailView":{class:"net.nanopay.account.ui.BankAccountWizard"},
+
+      "createControllerView":{
+        "class":"net.nanopay.sme.ui.MenuRedirectSMEModalView",
+        "menu":"mainmenu.contacts",
+        "view":{
+          "class":"foam.nanos.menu.MenuToolBar",
+          "classification":"submenu.contact",
+          "parent":"sme",
+          "title":"Add contact"
+        }
+      },
+
+      "exportEnabled":false,
+      "createEnabled":true,
+      "editEnabled":true,
+
+      "createLabel":"Add contact",
+
+      "defaultColumns":[
+        "organization",
+        "firstName",
+        "lastName",
+        "email",
+        "bankAccount.denomination",
+        "bankAccount.summary",
+        "status"
+      ]
     }
   },
   "order":503,
   "parent":"smeNavigation"
 })
+
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "mainmenu.banking",
-  "label": "Bank accounts",
+  "label": "Bank accounts DAOMenu2",
   "icon": "images/ablii/bankaccount-icon-resting.svg",
   "activeIcon": "images/ablii/bankaccount-icon-active.svg",
-  "handler": {
-    "class": "foam.nanos.menu.DAOMenu2",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"accountDAO",
+      "daoKey":"tableViewBankAccountDAO",
       "of":"net.nanopay.bank.BankAccount",
       "browseTitle": "Bank accounts",
-      "browseSubtitle": "View all bank accounts",
-      "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"},
-      "searchMode": 2,
+
+      "browseSubtitle": "View all bank accounts.",
+      "createPredicate":{"class":"foam.mlang.predicate.True"},
+      "editPredicate":{"class":"foam.mlang.predicate.True"},
+      "searchMode": 0,
+      "createTitle": "Create Bank accounts",
+
+      "deletePredicate":{class:"foam.mlang.predicate.True"},
+
       "primaryAction": {"class":"net.nanopay.bank.AddBankAccountAction"},
-      "browseViews": [
-        {
-          "class": "foam.comics.v2.namedViews.NamedViewCollection",
-          "name": "BankAccountTableView",
-          "view": { "class":"net.nanopay.bank.BankAccountTableView" }
-        }
+      "viewBorder":{class:"foam.u2.borders.NullBorder"},
+      "browseBorder":{class:"net.nanopay.bank.MyBankAccountsBorder"},
+
+      "createController":{class:"net.nanopay.ui.wizard.WizardController"},
+      "detailView":{class:"net.nanopay.account.ui.BankAccountWizard"},
+
+      "exportEnabled":false,
+      "createEnabled":true,
+      "editEnabled":true,
+
+      "createLabel":"Add contact",
+
+      "defaultColumns":[
+        "name",
+        "summary",
+        "flagImage",
+        "denomination",
+        "status",
+        "isDefault"
       ]
     }
   },
   "order": 504,
   "parent": "smeNavigation"
 })
+
 p({
   "class": "foam.nanos.menu.Menu",
   "parent": "sme",
@@ -122,8 +172,10 @@ p({
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
-      "class": "net.nanopay.ui.wizard.ContactWizardDetailView",
-      "model": "net.nanopay.contacts.ui.modal.BusinessNameSearch"
+      "class": "net.nanopay.ui.wizard.WizardController",
+      "wizardView": "net.nanopay.contacts.ui.BusinessNameSearchWizardView",
+      "model": "net.nanopay.contacts.ui.modal.BusinessNameSearch",
+      "redirectMenu": "mainmenu.contacts"
     }
   }
 })
@@ -138,8 +190,10 @@ p({
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
-      "class": "net.nanopay.ui.wizard.ContactWizardDetailView",
-      "model": "net.nanopay.contacts.ui.modal.PaymentCodeSearch"
+      "class": "net.nanopay.ui.wizard.WizardController",
+      "wizardView": "net.nanopay.contacts.ui.PaymentCodeSearchWizardView",
+      "model": "net.nanopay.contacts.ui.modal.PaymentCodeSearch",
+      "redirectMenu": "mainmenu.contacts"
     }
   }
 })
@@ -154,8 +208,10 @@ p({
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
-      "class": "net.nanopay.ui.wizard.ContactWizardDetailView",
-      "model": "net.nanopay.model.Invitation"
+      "class": "net.nanopay.ui.wizard.WizardController",
+      "wizardView": "net.nanopay.contacts.ui.InvitationWizardView",
+      "model": "net.nanopay.model.Invitation",
+      "redirectMenu": "mainmenu.contacts"
     }
   }
 })
@@ -170,8 +226,10 @@ p({
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
-      "class": "net.nanopay.ui.wizard.ContactWizardDetailView",
-      "model": "net.nanopay.contacts.Contact"
+      "class": "net.nanopay.ui.wizard.WizardController",
+      "wizardView": "net.nanopay.contacts.ui.ContactWizardView",
+      "model": "net.nanopay.contacts.Contact",
+      "redirectMenu": "mainmenu.contacts"
     }
   }
 })

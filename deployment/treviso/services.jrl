@@ -1,6 +1,39 @@
+// sandbox config
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"trevisoService",
+  "name":"exchangeCredential",
+  "lazy":false,
+  "service":"""
+    {
+      "class":"net.nanopay.country.br.exchange.ExchangeCredential",
+      exchangeUrl:"http://10.11.9.148:8383/Exchange.svc",
+      exchangeAgencia:1,
+      exchangeUsername:"1204",
+      exchangePassword:"102030"
+    }
+  """
+})
+
+// sandbox config
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"trevisoCredientials",
+  "lazy":false,
+  "service":"""
+    {
+      "class":"net.nanopay.partner.treviso.TrevisoCredientials",
+      fepWebUsername:"trevisocc",
+      fepWebPassword:"Treviso4321#@!",
+      fepWebApi:"https://client-uat.fepweb.com.br/fepwebws/api/",
+      fepWebCode:"100001",
+      fepWebCodeName:"Treviso Matriz - Nanopay"
+    }
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"exchange",
   "lazy":false,
   "serve":true,
   "serviceScript":"""
@@ -17,41 +50,28 @@ p({
         .setTitular(new Titular.Builder(x).setLIMITEOP(EXCHANGE_LIMIT).setUTILIZADO(UTILIZED_LIMIT).build())
         .build()
     );
-    return new net.nanopay.partner.treviso.TrevisoService(x, x.get("fepWebService"), mockExchange);
-  """
-})
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"exchange",
-  "lazy":false,
-  "serve":true,
-  "serviceScript":"""
-    import net.nanopay.country.br.exchange.*;
-
-    // Set exchange limit ($20000.00 USD)
-    EXCHANGE_LIMIT = 2000000L;
-
-    mockExchange = new ExchangeClientMock(x);
-    mockExchange.getStubSearchTitular().setSearchTitularResult(
-      new ResponseTitular.Builder(x)
-        .setServiceStatus(new ServiceStatus.Builder(x).setCODRETORNO(0).build())
-        .setTitular(new Titular.Builder(x).setLIMITEOP(EXCHANGE_LIMIT).build())
-        .build()
-    );
     return mockExchange;
   """
 })
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"SoaWebServiceCredientials",
+  "name":"fepWebService",
   "lazy":false,
-  "service": {
-    "class":"net.nanopay.partner.soawebservices.SoaCredenciais",
-    "Email":"suporte@trevisocc.com.br",
-    "Senha":"auFHK3STb",
-    "url":"http://www.soawebservices.com.br/restservices/producao/cdc/"
-  }
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.treviso.api.FepWebServiceMock(x);
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"trevisoService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.treviso.TrevisoService(x, "fepWebService", "exchange");
+  """
 })
 
 p({
@@ -66,11 +86,11 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"fepWebService",
+  "name":"trevisoFXService",
   "lazy":false,
-  "serve":true,
+  "serve":false,
   "serviceScript":"""
-    return new net.nanopay.partner.treviso.api.FepWebServiceMock(x);
+    return new net.nanopay.partner.treviso.fx.TrevisoFXServiceMock(x, "test", "test", new String[] {"USD","CAD","EUR","GBP","CNY","CLP","ARS","JPY","CHF","AUD"}, null);
   """
 })
 

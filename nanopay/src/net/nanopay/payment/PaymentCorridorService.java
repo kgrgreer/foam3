@@ -18,6 +18,7 @@
 package net.nanopay.payment;
 
 import foam.core.X;
+import foam.core.XLocator;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.sink.Count;
@@ -118,7 +119,9 @@ public class PaymentCorridorService implements CorridorService {
 
     if ( SafetyUtil.isEmpty(sourceCountry) || SafetyUtil.isEmpty(targetCountry) ) Collections.emptyList();
 
-    return getCorridorPaymentProviders(x, 
+    // Query payment provider corridors with respect to the request context so
+    // that filtering based on the user permissions is properly applied.
+    return getCorridorPaymentProviders(XLocator.get(),
       sourceCountry, targetCountry, sourceCurrency, targetCurrency);
 
   }
@@ -127,7 +130,7 @@ public class PaymentCorridorService implements CorridorService {
     List junctions = new ArrayList<>();
     if ( SafetyUtil.isEmpty(sourceCurrency) || SafetyUtil.isEmpty(targetCurrency) ) return junctions;
 
-    junctions =  ((ArraySink) ((DAO) x.get("paymentProviderCorridorDAO")).where(
+    junctions =  ((ArraySink) ((DAO) x.get("paymentProviderCorridorDAO")).inX(x).where(
       AND(
         EQ(PaymentProviderCorridor.SOURCE_COUNTRY, sourceCountry),
         EQ(PaymentProviderCorridor.TARGET_COUNTRY, targetCountry),
@@ -160,6 +163,20 @@ public class PaymentCorridorService implements CorridorService {
       AND(
         CONTAINS_IC(PaymentProviderCorridor.TARGET_CURRENCIES, targetCurrency)
         )
+    ).orderBy(PaymentProviderCorridor.RANKING).select(new ArraySink())).getArray();
+
+    return junctions;
+  }
+
+  public List getAllWithSrcForProvider(X x, String sourceCurrency, String provider) {
+    List junctions = new ArrayList<>();
+    if ( SafetyUtil.isEmpty(sourceCurrency) ) return junctions;
+
+    junctions =  ((ArraySink) ((DAO) x.get("paymentProviderCorridorDAO")).where(
+      AND(
+        CONTAINS_IC(PaymentProviderCorridor.SOURCE_CURRENCIES, sourceCurrency),
+        EQ(PaymentProviderCorridor.PROVIDER, provider)
+      )
     ).orderBy(PaymentProviderCorridor.RANKING).select(new ArraySink())).getArray();
 
     return junctions;

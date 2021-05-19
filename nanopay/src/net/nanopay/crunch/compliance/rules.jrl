@@ -842,3 +842,37 @@ p({
   "saveHistory":false,
   "lifecycleState":1
 })
+
+p({
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
+  "id":"84e2c846-e51e-4002-90b2-157bfed60241",
+  "name":"Send email to compliance when onboarding capabilities are granted",
+  "priority":100,
+  "ruleGroup":"onboardingApprovals",
+  "documentation":"Notify compliance by email if onboarding capabilities are granted",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "enabled":true,
+  "predicate": {
+    "class": "foam.mlang.predicate.Or",
+    "args": [
+      {
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "category":"apiCADOnboarding",
+        "status": 1
+      },
+      {
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "category":"apiCADOnboarding",
+        "status": 6
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.crunch.compliance.SendNotificationOnPut",
+    "group":"intuit-fraud-ops",
+    "template":"onboarding-capability-compliance-notification"
+    },
+  "lifecycleState":1
+})

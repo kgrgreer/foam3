@@ -131,14 +131,6 @@ p({
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
-      "defaultColumns": [
-        "classification",
-        "operation",
-        "createdFor",
-        "approver.legalName",
-        "status",
-        "lastModified"
-      ],
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "approvalRequestDAO",
       "browseTitle": "Approval Requests",
@@ -146,6 +138,25 @@ p({
       "createPredicate":{"class":"foam.mlang.predicate.False"},
       "editPredicate":{"class":"foam.mlang.predicate.False"},
       "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  },
+  "registrations":[
+    {
+      "class":"foam.nanos.menu.XRegistration",
+      "targetName":"foam.nanos.crunch.AgentCapabilityJunctionDAOSummaryView",
+      "className":"net.nanopay.approval.AgentCapabilityJunctionDAOSummaryView"
+    }
+  ]
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "approvals.transactions",
+  "label": "Batch Transaction Requests",
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "net.nanopay.tx.ComplianceTransactionApprovalRequestController"
     }
   }
 })

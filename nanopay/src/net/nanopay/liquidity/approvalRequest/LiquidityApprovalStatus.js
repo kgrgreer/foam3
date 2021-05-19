@@ -32,8 +32,8 @@
       label: 'Needs Approval',
       ordinal: 0,
       documentation: 'Request pending.',
-      color: '/*%DESTRUCTIVE2%*/ #a61414',
-      background: '/*%DESTRUCTIVE5%*/ #fbedec',
+      color: '/*%WARNING1%*/ #865300',
+      background: '/*%WARNING4%*/ #FFF3C1',
     },
   ]
 });

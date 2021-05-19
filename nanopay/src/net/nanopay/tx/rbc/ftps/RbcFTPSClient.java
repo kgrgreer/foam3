@@ -4,6 +4,7 @@ import foam.core.X;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.om.OMLogger;
+import net.nanopay.tx.cico.EFTFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPFile;
@@ -52,7 +53,7 @@ public class RbcFTPSClient {
 
   public File downloadLast(String filePath) throws IOException {
     String filename = filePath.substring(filePath.lastIndexOf("/") + 1);
-    
+
     this.login();
     FTPFile[] ftpFiles = this.ls(PAIN_FOLDER);
 
@@ -65,12 +66,36 @@ public class RbcFTPSClient {
     return file;
   }
 
-  public File download(String remote, String local) throws IOException {
-    this.login();
-    File file = this.get(remote, DOWNLOAD_FOLDER + local);
-    this.logout();
+  /**
+   * Download only files in the provided list
+   */
+  public List<File> batchDownload(String folder, List<String> fileNameFilters) throws IOException {
+    if ( ! this.credential.getEnable() ) {
+      return new ArrayList<>();
+    }
 
-    return file;
+    List<File> downloadFile = new ArrayList<>();
+    this.login();
+
+    this.logger.info("Start downloading. Listing all the files.");
+    FTPFile[] ftpFiles = this.ls(folder);
+
+    for (FTPFile ftpFile : ftpFiles) {
+
+      if ( ! fileNameFilters.stream().anyMatch(ftpFile.getName()::contains)
+        || ftpFile.getName().contains("downloaded%FTPS")
+        || ftpFile.getName().contains(".cp") ) continue;
+
+      this.logger.info("Start downloading file: " + ftpFile.getName());
+      downloadFile.add(
+        this.get(folder + ftpFile.getName(), DOWNLOAD_FOLDER + ftpFile.getName())
+      );
+      this.logger.info("Finish downloading file: " + ftpFile.getName());
+    }
+
+    this.logout();
+    this.logger.info("Finish downloading all the files");
+    return downloadFile;
   }
 
   /**
@@ -130,7 +155,7 @@ public class RbcFTPSClient {
   public boolean login() throws IOException {
     boolean result = false;
     omLogger.log("RBC login starting");
-    
+
     try {
       this.ftpsClient.connect(credential.getHost(), credential.getPort());
       this.logger.info("Connect : " + this.ftpsClient.getReplyString());
@@ -164,7 +189,7 @@ public class RbcFTPSClient {
       this.put(new FileInputStream(new File(local)), remote);
     } catch(IOException e) {
       throw e;
-    }    
+    }
   }
 
   public void put(FileInputStream in, String remote) throws IOException {
@@ -176,7 +201,7 @@ public class RbcFTPSClient {
       this.logger.error("RBC send file failed ", e);
       throw e;
     }
-    
+
     omLogger.log("RBC send file complete");
     this.logger.info(this.ftpsClient.getReplyString());
   }

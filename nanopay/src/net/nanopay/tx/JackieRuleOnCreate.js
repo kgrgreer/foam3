@@ -28,10 +28,17 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.i18n.TranslationService',
     'foam.util.SafetyUtil',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
-    'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.TransactionApprovalRequest'
+  ],
+
+  messages: [
+    { name: 'SUMMARY_TRANSACTION', message: '  Summary Transaction Id: ' }
   ],
 
   methods: [
@@ -46,14 +53,21 @@ foam.CLASS({
         User owner = ct.findSourceAccount(x).findOwner(x);
         String spid = owner.getSpid();
         String group = spid + "-fraud-ops";
-        ComplianceApprovalRequest req = new ComplianceApprovalRequest.Builder(x)
+
+        Subject subject = (Subject) x.get("subject");
+        String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
+        TranslationService ts = (TranslationService) x.get("translationService");
+        String summaryTx = ts.getTranslation(locale, getClassInfo().getId() + ".SUMMARY_TRANSACTION", SUMMARY_TRANSACTION);
+
+        TransactionApprovalRequest req = new TransactionApprovalRequest.Builder(x)
           .setDaoKey("transactionDAO")
           .setServerDaoKey("localTransactionDAO")
           .setObjId(ct.getId())
           .setGroup(group)
           .setCreatedFor(owner.getId())
-          .setDescription(headTx.getSummary()+"  Summary Transaction Id: "+headTx.getId())
-          .setClassification("Compliance Transaction")
+          .setDescription(headTx.getSummary() + summaryTx + headTx.getId())
+          .setClassificationEnum(ApprovalRequestClassificationEnum.COMPLIANCE_TRANSACTION)
+          .setPaymentId(headTx.getId())
           .build();
 
         agency.submit(x, new ContextAgent() {

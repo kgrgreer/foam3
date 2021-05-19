@@ -31,9 +31,11 @@ foam.CLASS({
     'foam.dao.ProxyDAO',
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.contacts.Contact',
+    'net.nanopay.contacts.PersonalContact',
     'net.nanopay.model.Business'
   ],
 
@@ -61,26 +63,26 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        if ( ! (obj instanceof Contact) ) {
+        if ( ! (obj instanceof PersonalContact) ) {
           return getDelegate().put_(x, obj);
         }
-    
-        DAO localBusinessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
+
+        DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
         DAO localAccountDAO = ((DAO) x.get("localAccountDAO")).inX(x);
         AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
-        
-        Contact contact = (Contact) obj;
-        
+
+        PersonalContact contact = (PersonalContact) obj;
+
         AuthService auth = (AuthService) x.get("auth");
-        Business contactOwner = (Business) localBusinessDAO.find(contact.getOwner());
+        User contactOwner = (User) localUserDAO.find(contact.getOwner());
         if ( contactOwner == null ) {
           return getDelegate().put_(x, obj);
         }
         String contactOwnerCountryId = contactOwner.getAddress() == null ? "" : contactOwner.getAddress().getCountryId();
-    
+
         // Check if contact has a bank account
-        BankAccount contactBankAccount = foam.util.SafetyUtil.isEmpty(contact.getBankAccount()) ? 
-          ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, contact.getId()), INSTANCE_OF(BankAccount.class)))) 
+        BankAccount contactBankAccount = foam.util.SafetyUtil.isEmpty(contact.getBankAccount()) ?
+          ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, contact.getId()), INSTANCE_OF(BankAccount.class))))
           : ((BankAccount) localAccountDAO.find(contact.getBankAccount()));
         if ( contactBankAccount != null ) {
           // check contact owner has currency.read.x permission
@@ -92,21 +94,24 @@ foam.CLASS({
             createAFEXBeneficiary(x, contact.getId(), contactBankAccount.getId(),  contact.getOwner());
           }
         }
-    
-        // Check If Contact has business and create AFEX beneficiary for business also
-        Business business = (Business) localBusinessDAO.find(contact.getBusinessId());
-        if ( business != null ) {
-          BankAccount businessBankAccount = ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, business.getId()), INSTANCE_OF(BankAccount.class), EQ(BankAccount.LIFECYCLE_STATE, LifecycleState.ACTIVE))));
-          if ( null != businessBankAccount ) {
-            String currencyPermission = "currency.read." + businessBankAccount.getDenomination();
-            boolean hasCurrencyPermission = auth.checkUser(getX(), contactOwner, currencyPermission);
-            boolean isCadToCad = "CAD".equals(businessBankAccount.getDenomination()) && "CA".equals(contactOwnerCountryId);
-            if ( ! isCadToCad && hasCurrencyPermission && ! afexBeneficiaryExists(x, business.getId(), contact.getOwner()) ) {
-              createAFEXBeneficiary(x, business.getId(), businessBankAccount.getId(),  contact.getOwner());
+
+        if (contact instanceof Contact ) {
+          Contact c = (Contact) contact;
+          // Check If Contact has business and create AFEX beneficiary for business also
+          Business business = (Business) ((DAO) x.get("localBusinessDAO")).find(c.getBusinessId());
+          if ( business != null ) {
+            BankAccount businessBankAccount = ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, business.getId()), INSTANCE_OF(BankAccount.class), EQ(BankAccount.LIFECYCLE_STATE, LifecycleState.ACTIVE))));
+            if ( null != businessBankAccount ) {
+              String currencyPermission = "currency.read." + businessBankAccount.getDenomination();
+              boolean hasCurrencyPermission = auth.checkUser(getX(), contactOwner, currencyPermission);
+              boolean isCadToCad = "CAD".equals(businessBankAccount.getDenomination()) && "CA".equals(contactOwnerCountryId);
+              if ( ! isCadToCad && hasCurrencyPermission && ! afexBeneficiaryExists(x, business.getId(), contact.getOwner()) ) {
+                createAFEXBeneficiary(x, business.getId(), businessBankAccount.getId(),  contact.getOwner());
+              }
             }
           }
         }
-    
+
         return super.put_(x, obj);
       `
     },
@@ -169,7 +174,7 @@ foam.CLASS({
       javaCode: `
         AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
         try {
-          new Thread(() -> afexServiceProvider.addPayee(beneficiaryId, bankAccountId,  beneficiaryOwnerId)).start();
+          afexServiceProvider.addPayee(beneficiaryId, bankAccountId,  beneficiaryOwnerId);
         } catch(Throwable t) {
           ((Logger) x.get("logger")).error(CREATE_AFEX_BENF_ERROR_MSG, t);
         } 

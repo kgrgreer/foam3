@@ -37,7 +37,8 @@ foam.CLASS({
     'java.util.List',
 
     'static foam.mlang.MLang.EQ',
-    'static foam.mlang.MLang.AND'
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.INSTANCE_OF'
   ],
 
   constants: [
@@ -92,7 +93,7 @@ foam.CLASS({
             @Override
             public void put(Object obj, foam.core.Detachable sub) {
               Invoice invoice = (Invoice) obj;
-              if ( isRelated(getX(), invoice) && ! ( invoice.getDraft() && invoice.getCreatedBy() != user_.getId() && ! invoice.getRemoved() ) &&
+              if ( isRelated(getX(), invoice) && ! ( invoice.getDraft() && invoice.getCreatedBy() != user_.getId() ) &&
                   ! ( invoice.getCreatedBy() != user_.getId() && invoice.getStatus() == InvoiceStatus.PENDING_APPROVAL && invoice.getPayeeId() == user_.getId()) &&
                   ! ( invoice.getCreatedBy() != user_.getId() && invoice.getStatus() == InvoiceStatus.VOID ) &&
                   ! ( invoice.getCreatedBy() != user_.getId() && invoice.getStatus() == InvoiceStatus.REJECTED ) ) {
@@ -165,10 +166,6 @@ foam.CLASS({
           if ( invoice.getDraft() && ( invoice.getCreatedBy() != user.getId() ) ) {
             throw new AuthorizationException();
           }
-          // Return null if invoice is mark as removed.
-          if ( invoice.getRemoved() ) {
-            return null;
-          }
         }
         return invoice;
       `
@@ -189,7 +186,7 @@ foam.CLASS({
       name: 'remove_',
       documentation: `
         Allows users with invoice delete permission and users who created the invoice to proceed with the remove.
-        If user is permitted, the invoice will be handled by the PreventRemoveInvoiceDAO decorator.
+        If user is permitted, the invoice will be handled by it's Lifecycle.
       `,
       javaCode: `
         User user = this.getUser(x);
@@ -210,10 +207,6 @@ foam.CLASS({
 
         if ( user.getId() != invoice.getCreatedBy() ) {
           throw new AuthorizationException(DELETE_INVOICE_ERROR_MSG2);
-        }
-
-        if ( invoice.getRemoved() ) {
-          throw new AuthorizationException();
         }
 
         return getDelegate().remove_(x, obj);
@@ -249,12 +242,14 @@ foam.CLASS({
         boolean isPayee = invoice.getPayeeId() == id;
         boolean isPayer = invoice.getPayerId() == id;
         List<Contact> contacts = getContactsWithEmail(x, user.getEmail());
-        for ( Contact contact : contacts ) {
-          if ( invoice.getPayeeId() == contact.getId() ) {
-            isPayee = true;
-          }
-          if ( invoice.getPayerId() == contact.getId() ) {
-            isPayer = true;
+        if ( contacts != null ) {
+          for ( Contact contact : contacts ) {
+            if ( invoice.getPayeeId() == contact.getId() ) {
+              isPayee = true;
+            }
+            if ( invoice.getPayerId() == contact.getId() ) {
+              isPayer = true;
+            }
           }
         }
         return  isPayee || isPayer;
@@ -269,9 +264,12 @@ foam.CLASS({
         { type: 'String', name: 'emailAddress' }
       ],
       javaCode: `
+        if ( SafetyUtil.isEmpty(emailAddress) ) return null;
         DAO contactDAO = (DAO) x.get("localContactDAO");
         ArraySink contactsWithMatchingEmail = (ArraySink) contactDAO
-          .where(EQ(Contact.EMAIL, emailAddress))
+          .where(AND(
+            EQ(Contact.EMAIL, emailAddress),
+            INSTANCE_OF(Contact.class)))
           .select(new ArraySink());
         return contactsWithMatchingEmail.getArray();
       `

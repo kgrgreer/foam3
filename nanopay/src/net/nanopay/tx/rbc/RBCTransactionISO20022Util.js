@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.nanos.notification.Notification',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
+    'foam.util.AddressUtil',
     'foam.util.SafetyUtil',
     'foam.core.ValidationException',
     'net.nanopay.account.Account',
@@ -168,6 +169,8 @@ foam.CLASS({
           insName = inst.getName();
           insNumber = padLeftWithZeros(inst.getInstitutionNumber(), 4);
         }
+      } else {
+        throw new RuntimeException("Could not find branch with id " + fundingAccount.getBranch());
       }
 
       StringBuilder memId = new StringBuilder();
@@ -191,20 +194,12 @@ foam.CLASS({
           if( destAccount == null ) continue;
           User payee = destAccount.findOwner(x);
           Address payeeAddress = payee == null ? null : payee.getAddress();
+          // TODO: It looks like payee address is required, so the below check for getStructured() should be done here or we need to be able to find a way to send in an unstructured address
           if ( payeeAddress == null ) throw new RuntimeException("Invalid Payee address.");
-
-          String senderEmail = payee.getEmail();
-          if ( payee instanceof Business && SafetyUtil.isEmpty(senderEmail)  ) {
-            Business business = (Business) payee;
-            List<User> signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
-            if ( signingOfficers.size() > 0 ) {
-              senderEmail = signingOfficers.get(0).getEmail();
-            }
-          }
 
           net.nanopay.iso20022.CreditTransferTransactionInformation10 cdtTrfTxInf = new net.nanopay.iso20022.CreditTransferTransactionInformation10();
           net.nanopay.iso20022.PaymentIdentification1 pmtId = new net.nanopay.iso20022.PaymentIdentification1();
-          String refNumber = String.valueOf(getRefNumber(x, txn));
+          String refNumber = String.valueOf(getRefNumber(txn));
           pmtId.setEndToEndIdentification(refNumber);
           ((RbcTransaction)txn).setRbcReferenceNumber(refNumber);
           cdtTrfTxInf.setPaymentIdentification(pmtId);
@@ -253,8 +248,19 @@ foam.CLASS({
           creditor.setName(getName(payee));
           if ( payeeAddress != null ) {
             net.nanopay.iso20022.PostalAddress6 pstlAdr2 = new net.nanopay.iso20022.PostalAddress6();
-            String streetName = payeeAddress.getStreetName() == null ? "" : payeeAddress.getStreetName();
-            String buildingNumber = payeeAddress.getStreetNumber() == null ? "" : payeeAddress.getStreetNumber();
+
+            String streetName = ""; ;
+            String buildingNumber = "";
+
+            if ( payeeAddress.getStructured() ) {
+              streetName = payeeAddress.getStreetName() == null ? "" : payeeAddress.getStreetName();
+              buildingNumber = payeeAddress.getStreetNumber() == null ? "" : payeeAddress.getStreetNumber();
+            } else {
+              var addr = AddressUtil.parseAddress(payeeAddress.getAddress1(), payeeAddress.getAddress2());
+              streetName = addr[1];
+              buildingNumber = addr[0];
+            }
+
             pstlAdr2.setStreetName(removeSpecialChars(streetName.substring(0, Math.min(streetName.length(), 25))));
             pstlAdr2.setBuildingNumber(removeSpecialChars(buildingNumber.substring(0, Math.min(buildingNumber.length(), 10))));
             pstlAdr2.setPostCode(payeeAddress.getPostalCode());
@@ -432,24 +438,14 @@ foam.CLASS({
         try{
           isValidTransaction(txn);
           txn = (Transaction) txn.fclone();
-          Invoice invoice = txn.findInvoiceId(x);
           BankAccount sourceAccount = (BankAccount) txn.findSourceAccount(x);
           User sender = sourceAccount.findOwner(x);
           Address senderAddress = sender.getAddress();
           Address payerBankAddress = sourceAccount.getBankAddress();
 
-          String senderEmail = sender.getEmail();
-          if ( sender instanceof Business && SafetyUtil.isEmpty(senderEmail)  ) {
-            Business business = (Business) sender;
-            List<User> signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
-            if ( signingOfficers.size() > 0 ) {
-              senderEmail = signingOfficers.get(0).getEmail();
-            }
-          }
-
           net.nanopay.iso20022.DirectDebitTransactionInformation9 drctDbtTxInf = new net.nanopay.iso20022.DirectDebitTransactionInformation9();
           net.nanopay.iso20022.PaymentIdentification1 pmtId = new net.nanopay.iso20022.PaymentIdentification1();
-          String refNumber = String.valueOf(getRefNumber(x, txn));
+          String refNumber = String.valueOf(getRefNumber(txn));
           pmtId.setEndToEndIdentification(refNumber);
           ((RbcTransaction)txn).setRbcReferenceNumber(refNumber);
           drctDbtTxInf.setPaymentIdentification(pmtId);
@@ -506,8 +502,18 @@ foam.CLASS({
           debtor.setName(getName(sender));
           if ( senderAddress != null ) {
             net.nanopay.iso20022.PostalAddress6 pstlAdr3 = new net.nanopay.iso20022.PostalAddress6();
-            String streetName = senderAddress.getStreetName() == null ? "" : senderAddress.getStreetName();
-            String buildingNumber = senderAddress.getStreetNumber() == null ? "" : senderAddress.getStreetNumber();
+            String streetName = "";
+            String buildingNumber = "";
+
+            if ( senderAddress.getStructured() ) {
+              streetName = senderAddress.getStreetName() == null ? "" : senderAddress.getStreetName();
+              buildingNumber = senderAddress.getStreetNumber() == null ? "" : senderAddress.getStreetNumber();
+            } else {
+              var addr = AddressUtil.parseAddress(senderAddress.getAddress1(), senderAddress.getAddress2());
+              streetName = addr[1];
+              buildingNumber = addr[0];
+            }
+
             pstlAdr3.setStreetName(removeSpecialChars(streetName.substring(0, Math.min(streetName.length(), 25))));
             pstlAdr3.setBuildingNumber(removeSpecialChars(buildingNumber.substring(0, Math.min(buildingNumber.length(), 10))));
             pstlAdr3.setPostCode(senderAddress.getPostalCode());
@@ -584,25 +590,20 @@ foam.CLASS({
     },
     {
       name: 'getRefNumber',
-      type: 'Long',
+      type: 'String',
       args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
         {
           name: 'transaction',
           type: 'net.nanopay.tx.model.Transaction'
         },
       ],
       javaCode:`
-      DAO refDAO = (DAO) x.get("rbcRefDAO");
-
-      RbcReferenceNumber referenceNumber = new RbcReferenceNumber();
-      referenceNumber.setTransactionId(transaction.getId());
-      referenceNumber = (RbcReferenceNumber) refDAO.inX(x).put(referenceNumber);
-
-      return referenceNumber.getId();
+        int MAX_LEN = 15; // Max characters accepted
+        int MAX_SPID_LEN = 7; // Max characters accepted
+        String spid = transaction.getSpid().substring(0, Math.min(transaction.getSpid().length(), MAX_SPID_LEN));
+        String ref = spid + transaction.getId();
+        return ref.replaceAll("[^a-zA-Z0-9]", "")
+          .substring(0, Math.min(ref.length(), MAX_LEN)).toUpperCase();
       `
     },
     {

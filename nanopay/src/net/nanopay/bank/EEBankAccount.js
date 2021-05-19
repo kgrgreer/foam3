@@ -79,5 +79,15 @@ foam.CLASS({
         }
       `
     }
+  ],
+
+  methods: [
+    {
+      name: 'getRoutingCode',
+      javaCode: `
+        var bankCode = getBankCode(x);
+        return ! bankCode.isBlank() ? bankCode : getBankRoutingCode();
+      `
+    }
   ]
 });

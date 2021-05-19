@@ -42,12 +42,4 @@ p({
   }
 })
 
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "bankAccountValidationService",
-  "description": "Bank account validation service.",
-  "lazy": false,
-  "service": {
-    "class": "net.nanopay.partner.accuity.AccuityBankAccountValidationService"
-  }
-})
+// "bankAccountValidationService" is replaced by "<spid>.bankAccountValidationService". See. "bepay.bankAccountValidationService"

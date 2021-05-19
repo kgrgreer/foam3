@@ -997,6 +997,13 @@ foam.CLASS({
         ]
       }
       },
+      javaSetter: `
+        annualRevenue_ = val;
+        annualRevenueIsSet_ = true;
+      `,
+      javaGetter: `
+        return annualRevenue_;
+      `,
       validationPredicates: [
         {
           args: ['annualRevenue', 'signingOfficer'],
@@ -1028,6 +1035,13 @@ foam.CLASS({
         ]
       }
       },
+      javaSetter: `
+        annualDomesticVolume_ = val;
+        annualDomesticVolumeIsSet_ = true;
+      `,
+      javaGetter: `
+        return annualDomesticVolume_;
+      `,
       validationPredicates: [
         {
           args: ['annualDomesticVolume', 'signingOfficer'],
@@ -1059,6 +1073,13 @@ foam.CLASS({
           ]
         };
       },
+      javaSetter: `
+        annualTransactionFrequency_ = val;
+        annualTransactionFrequencyIsSet_ = true;
+      `,
+      javaGetter: `
+        return annualTransactionFrequency_;
+      `,
       validationPredicates: [
         {
           args: ['annualTransactionFrequency', 'signingOfficer'],
@@ -1097,6 +1118,13 @@ foam.CLASS({
           }
         };
       },
+      javaSetter: `
+        transactionPurpose_ = val;
+        transactionPurposeIsSet_ = true;
+      `,
+      javaGetter: `
+        return transactionPurpose_;
+      `,
       validationPredicates: [
         {
           args: ['transactionPurpose', 'signingOfficer'],
@@ -1300,12 +1328,12 @@ foam.CLASS({
       of: 'net.nanopay.model.BusinessDirector',
       section: 'directorsInfoSection',
       view: {
-        class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
+        class: 'foam.u2.view.TitledArrayView',
         mode: 'RW',
         enableAdding: true,
         enableRemoving: true,
         defaultNewItem: '',
-        name: 'Directors'
+        title: 'Directors'
       },
       autoValidate: true,
       validationTextVisible: true,

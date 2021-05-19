@@ -63,7 +63,6 @@ foam.CLASS({
         .start().addClass(this.myClass())
           .start({
             class: 'foam.u2.view.ScrollTableView',
-            enableDynamicTableHeight: false,
             editColumnsEnabled: false,
             columns: [
               'name',
@@ -82,18 +81,20 @@ foam.CLASS({
         .end();
     },
 
-    function dblclick() {
+    async function dblclick() {
       if ( this.selection) {
-        var popupView = this.selection.status === net.nanopay.bank.BankAccountStatus.UNVERIFIED && net.nanopay.bank.CABankAccount.isInstance(this.selection) ?
+        this.__subContext__.accountDAO.cmd_(this, foam.dao.PurgeRecordCmd.create({ id: this.selection.id }));
+        var account = await this.__subContext__.accountDAO.find(this.selection.id);
+        var popupView = account.status === net.nanopay.bank.BankAccountStatus.UNVERIFIED && net.nanopay.bank.CABankAccount.isInstance(account) ?
           foam.u2.dialog.Popup.create({}, this).tag({
             class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
-            bank: this.selection
+            bank: account
           }) :
           net.nanopay.sme.ui.SMEModal.create({}, this).addClass('bank-account-popup')
             .startContext({ controllerMode: foam.u2.ControllerMode.EDIT })
               .tag({
                 class: 'net.nanopay.account.ui.BankAccountWizard',
-                data: this.selection,
+                data: account,
                 useSections: ['clientAccountInformation', 'pad'],
                 config: {
                   id: { updateVisibility: 'HIDDEN' },
