@@ -116,7 +116,6 @@ foam.CLASS({
         // REVIEW: temporary - default/simple java template support not yet split out from EmailTemplateEngine.
         foam.nanos.notification.email.EmailTemplateEngine template = new foam.nanos.notification.email.EmailTemplateEngine();
         msg = template.renderTemplate(XLocator.get(), msg, getTemplateValues()).toString().trim();
-System.out.println("FOAMException,templated,"+msg);
         return msg;
       }
       return getExceptionMessage();
@@ -178,7 +177,7 @@ System.out.println("FOAMException,templated,"+msg);
         sb.append("("+getErrorCode()+")");
         sb.append(",");
       }
-      sb.append(getClass().getName()+",");
+      sb.append(getClass().getName());
       sb.append(",");
       sb.append(getMessage());
       return sb.toString();
