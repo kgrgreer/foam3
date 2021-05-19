@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.log.LogLevel',
     'foam.nanos.alarming.Alarm',
     'foam.nanos.app.AppConfig',
     'foam.nanos.app.Mode',
@@ -685,6 +686,13 @@ foam.CLASS({
       javaCode: `
         User user = request.findUser(x);
         if ( user == null ) {
+          var alarmDAO = (DAO) x.get("alarmDAO");
+            alarmDAO.put(
+              new Alarm.Builder(x)
+                .setName("User " + request.getUser() + " not found for business setup")
+                .setSeverity(LogLevel.ERROR)
+                .build()
+            );
           throw new RuntimeException("User not found for business setup");
         }
 
