@@ -276,6 +276,9 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/report/ScreeningResponseCounter', flags: ['web'] },
   { name: 'net/nanopay/meter/report/ScreeningResponseType', flags: ['web'] },
 
+  // OAuth
+  { name: 'net/nanopay/auth/oauth/OAuthCredential'},
+
   // SSO
   { name: 'net/nanopay/auth/openid/SSOToken' },
   { name: 'net/nanopay/auth/openid/OTLoginToken' },
@@ -285,7 +288,6 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/openid/OAuthService' },
   { name: 'net/nanopay/auth/openid/ClientOAuthService' },
   { name: 'net/nanopay/auth/openid/DUGRuleRefinement' },
-  { name: 'net/nanopay/auth/openid/DUGRuleActionRefinement' },
 
   // Exchangeable
   { name: 'net/nanopay/exchangeable/Security' },

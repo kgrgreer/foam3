@@ -57,7 +57,8 @@ p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.modal.De
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.modal.DeleteContactView.FAIL_MSG",target:"Failed to delete beneficiary"})
 
 p({class:"foam.i18n.Locale",locale:"en",source:"mainmenu.contacts.label", target:"Beneficiaries"})
-p({class:"foam.i18n.Locale",locale:"en","source":"mainmenu.contacts.createLabel","target":"Add Beneficiary"})
+p({class:"foam.i18n.Locale",locale:"en",source:"mainmenu.contacts.browseTitle", target:"Beneficiaries"})
+p({class:"foam.i18n.Locale",locale:"en",source:"mainmenu.contacts.createLabel","target":"Add Beneficiary"})
 p({class:"foam.i18n.Locale",locale:"en",source:"mainmenu.contacts.handler.title",target:"Beneficiaries"})
 p({class:"foam.i18n.Locale",locale:"en",source:"mainmenu.contacts.handler.createLabel",target:"Add Beneficiary"})
 p({class:"foam.i18n.Locale",locale:"en",source:"mainmenu.contacts.handler.createControllerView.view.title",target:"Add Beneficiary"})
