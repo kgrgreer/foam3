@@ -128,7 +128,7 @@ foam.CLASS({
       section: 'emailInformation',
       order: 100,
       gridColumns: 6,
-      tableWidth: 100
+      tableWidth: 130
     },
     {
       class: 'String',
