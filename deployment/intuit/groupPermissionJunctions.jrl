@@ -1,5 +1,8 @@
 // Intuit
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-sme","targetId":"serviceprovider.read.intuit"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-sme","targetId":"feelineitem.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-sme","targetId":"feelineitem.ro.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-sme","targetId":"feesummarytransactionlineitem.ro.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-admin","targetId":"serviceprovider.read.intuit"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"serviceprovider.read.intuit"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"session.create.intuit"})
