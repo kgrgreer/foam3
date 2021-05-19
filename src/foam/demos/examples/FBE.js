@@ -297,6 +297,7 @@ foam.CLASS({
   ],
 
   properties: [
+    { class: 'Int', name: 'count' },
     'selected',
     'testData',
     {
@@ -320,7 +321,11 @@ foam.CLASS({
     async function initE() {
       this.SUPER();
 
-      this.testData = await fetch('examples').then(function(response) {
+      this.testData = await fetch('validation').then(function(response) {
+        return response.text();
+      });
+
+      this.testData += await fetch('examples').then(function(response) {
         return response.text();
       });
 
@@ -328,11 +333,11 @@ foam.CLASS({
         return response.text();
       });
 
-      this.testData += await fetch('faq').then(function(response) {
+      this.testData += await fetch('dao').then(function(response) {
         return response.text();
       });
 
-      this.testData += await fetch('dao').then(function(response) {
+      this.testData += await fetch('faq').then(function(response) {
         return response.text();
       });
 
@@ -346,7 +351,9 @@ foam.CLASS({
           style({ display: 'flex' }).
           start().
             addClass(this.myClass('index')).
+            start().
             select(this.data, function(e) {
+              self.count++;
               return this.E('a')
                 .attrs({href: '#' + e.id})
                 .style({display: 'block', padding: '4px', 'padding-left': (16 * e.id.split('.').length  - 12)+ 'px'})
@@ -356,6 +363,9 @@ foam.CLASS({
                 .on('mouseleave', () => { if ( self.selected == e.id ) self.selected = null; })
                 ;
             }).
+            end().
+            br().
+            add(this.count$, ' examples').
           end().
           start().
             addClass(this.myClass('body')).
