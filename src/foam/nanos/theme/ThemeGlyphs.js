@@ -130,9 +130,7 @@ foam.CLASS({
       of: 'foam.core.Glyph',
       factory: function() {
         return { template: `
-        <svg width="10" height="6" viewBox="0 0 10 6" fill="/*%FILL%*/ #FFFFFF" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0 0.5L5 5.5L10 0.5H0Z"/>
-        </svg>`
+        <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" viewBox="0 0 24 24" width="100%" fill="/*%FILL%*/ #ffffff"><rect fill="none" height="24" width="24"/><g><polygon points="17.77,3.77 16,2 6,12 16,22 17.77,20.23 9.54,12"/></g></svg>`
         };
       }
     },

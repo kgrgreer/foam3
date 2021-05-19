@@ -356,7 +356,7 @@ const { contains } = require("underscore");
       /** Add text or icon to button. **/
       var self = this;
       var size = this.buttonStyle == this.buttonStyle.LINK ? '1em' : this.size.iconSize;
-      var iconStyle = { 'max-width': size, 'max-height': size, 'margin-right': this.label ? '4px' : '', 'object-fit': 'contain' };
+      var iconStyle = { 'max-width': size, 'margin-right': this.label ? '4px' : '', 'object-fit': 'contain' };
       
       if ( this.themeIcon && this.theme ) {
         var indicator = this.themeIcon.clone(this).expandSVG();
