@@ -501,6 +501,7 @@ FOAM_FILES([
   { name: "foam/u2/tag/Image", flags: ['web'] },
   { name: "foam/u2/tag/Input", flags: ['web'] },
   { name: "foam/u2/tag/TextArea", flags: ['web'] },
+  { name: "foam/u2/tag/Button", flags: ['web'] },
   { name: "foam/u2/util/NumberShortener", flags: ['web'] },
   { name: "foam/u2/TextField", flags: ['web'] },
   { name: "foam/u2/TextInputCSS", flags: ['web'] },
