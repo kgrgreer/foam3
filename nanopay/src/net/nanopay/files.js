@@ -117,7 +117,6 @@ FOAM_FILES([
   { name: 'net/nanopay/account/ZeroAccountUserAssociation' },
   { name: 'net/nanopay/account/TrustAccount' },
   { name: 'net/nanopay/account/LossesAccount' },
-  { name: 'net/nanopay/account/HoldingAccount' },
   { name: 'net/nanopay/account/AuthenticatedAccountDAOTest' },
   { name: 'net/nanopay/account/LoanAccount' },
   { name: 'net/nanopay/account/LoanedTotalAccount' },
@@ -293,7 +292,6 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/openid/OAuthService' },
   { name: 'net/nanopay/auth/openid/ClientOAuthService' },
   { name: 'net/nanopay/auth/openid/DUGRuleRefinement' },
-  { name: 'net/nanopay/auth/openid/DUGRuleActionRefinement' },
 
   // Exchangeable
   { name: 'net/nanopay/exchangeable/Security' },
