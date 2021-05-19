@@ -77,7 +77,9 @@ foam.CLASS({
         .where(foam.mlang.predicate.Eq.create({
           arg1: foam.nanos.auth.Language.ENABLED,
           arg2: true
-        })).select()).array.map( c => {
+        })).select()).array;
+
+        var actionArray = this.supportedLanguages.map( c => {
           var labelSlot = foam.core.PromiseSlot.create({ value: '', promise: self.formatLabel(c) });
           return self.Action.create({
             name: c.name,
@@ -99,7 +101,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start(this.OverlayActionListView, {
           label: label,
-          data: this.supportedLanguages,
+          data: actionArray,
           obj: self,
           buttonStyle: 'UNSTYLED'
         })
