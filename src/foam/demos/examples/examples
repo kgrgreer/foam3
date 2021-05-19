@@ -1,343 +1,156 @@
-/**
- * @license
- * Copyright 2021 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
-
-foam.CLASS({
-  package: 'foam.u2',
-  name: 'ViewReloader',
-  extends: 'foam.u2.Controller',
-
-  imports: [ 'classloader' ],
-
-  properties: [
-    {
-      class: 'foam.u2.ViewSpec',
-      name: 'view'
-    },
-    'viewArea',
-    'lastModel'
-  ],
-
-  methods: [
-    function initE() {
-      this/*.add(this.RELOAD).br().br()*/.start('span',{}, this.viewArea$).tag(this.view).end();
-      //this.delayedReload();
-    }
-  ],
-
-  actions: [
-    function reload() {
-      delete foam.__context__.__cache__[this.view.class];
-      delete this.classloader.latched[this.view.class];
-      delete this.classloader.pending[this.view.class];
-      // TODO: remove old stylesheet
-
-      this.classloader.load(this.view.class).then((cls)=>{
-
-        foam.__context__.__cache__[this.view.class] = cls;
-        if ( foam.json.Compact.stringify(cls.model_.instance_) != foam.json.Compact.stringify(this.lastModel && this.lastModel.instance_) ) {
-          console.log('reload');
-          this.lastModel = cls.model_;
-          this.viewArea.removeAllChildren();
-          this.viewArea.tag(this.view);
-        } else {
-//          console.log('no reload');
-        }
-      });
-
-      this.delayedReload();
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'delayedReload',
-      isMerged: true,
-      mergeDelay: 200,
-      code: function() { this.reload(); /*this.delayedReload();*/ }
-    }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.demos.examples',
-  name: 'Example',
-
-  classes: [
-    {
-      name: 'CitationView',
-      extends: 'foam.u2.View',
-
-      requires: [
-        'foam.demos.examples.Example',
-        'foam.u2.Element'
-      ],
-
-      imports: [
-        'selected'
-      ],
-
-      properties: [
-        'dom'
-      ],
-
-      css: `
-        ^ { margin-bottom: 36px; }
-        ^ .property-text { border: none; padding: 10 0; }
-        ^ .property-code { margin-bottom: 12px; }
-        ^ .property-title { float: left; }
-        ^ .property-id { float: left; margin-right: 12px; }
-      `,
-
-      methods: [
-        function initE() {
-          this.SUPER();
-
-          var self = this;
-
-          this.
-            addClass(this.myClass()).
-            show(this.selected$.map(s => ! s || s == self.data.id)).
-            style({
-              width: '100%',
-              xxxborder: '2px solid black',
-              'border-radius': '3px',
-              'padding-bottom': '24px'
-            }).
-            tag('hr').
-            start('h3').
-              add(this.Example.ID, ' ', this.Example.TITLE).
-            end().
-            br().
-            add(this.Example.TEXT).
-            br().
-            add(this.Example.CODE).
-            br().
-            start('b').add('Output:').end().
-            br().br().
-            tag('div', {}, this.dom$);
-
-            this.onload.sub(this.run.bind(this));
-            this.onDetach(this.data.code$.sub(this.run.bind(this)));
-        }
-      ],
-
-      actions: [
-        function run() {
-          var self = this;
-          this.dom.removeAllChildren();
-          var scope = {
-            el: function() {
-              return self.dom.el();
-            },
-            E: function(opt_nodeName) {
-              return self.Element.create({nodeName: opt_nodeName});
-            },
-            print: function() {
-              self.dom.add.apply(self.dom, arguments);
-              self.dom.br();
-//              self.dom.add(arg);
-            },
-            add: function() {
-              self.dom.add.apply(self.dom, arguments);
-            }
-          };
-          with ( scope ) {
-            try {
-              eval(self.data.code);
-            } catch (x) {
-              scope.print(x);
-            }
-          }
-        }
-      ]
-    }
-  ],
-
-  properties: [
-    {
-      class: 'String',
-      name: 'id',
-      displayWidth: 10,
-      comparePropertyValues: function(id1, id2) {
-        var a1 = id1.split('.'), a2 = id2.split('.');
-        for ( var i = 0 ; i < Math.min(a1.length, a2.length)-1 ; i++ ) {
-          var c = foam.util.compare(parseInt(a1[i]), parseInt(a2[i]));
-          if ( c ) return c;
-        }
-        return foam.util.compare(a1.length, a2.length);
-      },
-      view: {
-        class: 'foam.u2.ReadWriteView', nodeName: 'span'
-      }
-    },
-    {
-      class: 'String',
-      name: 'title',
-      displayWidth: 123,
-      view: {
-        class: 'foam.u2.ReadWriteView', nodeName: 'span'
-      }
-    },
-    {
-      class: 'String',
-      name: 'text',
-      adapt: function(_, text) { return text.trim(); },
-      documentation: 'Description of the script.',
-      xxxview: {
-        class: 'foam.u2.ReadWriteView', nodeName: 'span'
-      },
-      view: { class: 'foam.u2.tag.TextArea', rows: 4, cols: 120 }
-    },
-    {
-      class: 'Code',
-      name: 'code',
-      adapt: function(_, s) {
-        if ( foam.String.isInstance(s) ) return s.trim();
-        s         = s.toString();
-        var start = s.indexOf('{');
-        var end   = s.lastIndexOf('}');
-        return ( start >= 0 && end >= 0 ) ? s.substring(start + 2, end) : '';
-      },
-      view: { class: 'foam.u2.tag.TextArea', rows: 12, cols: 120 }
-    }
-  ],
-
-  methods: [
-    {
-      name: 'runScript',
-      code: function() {
-        var log = () => {
-          this.output += Array.from(arguments).join('') + '\n';
-        };
-        try {
-          with ({ log: log, print: log, x: this.__context__ })
-          return Promise.resolve(eval(this.code));
-        } catch (err) {
-          this.output += err;
-          return Promise.reject(err);
-        }
-      }
-    }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.demos.examples',
-  name: 'Controller',
-  extends: 'foam.u2.Controller',
-
-  requires: [
-    'foam.demos.examples.Example',
-    'foam.dao.EasyDAO',
-    'foam.u2.DAOList'
-  ],
-
-  css: `
-    ^ { background: white; }
-    ^index {
-      background: #f6f6f6;
-      margin-right: 20px;
-      min-width: 400px;
-      padding: 6px 0;
-    }
-    ^ .selected {
-      background: #ddf;
-    }
-  `,
-
-  exports: [
-    'selected'
-  ],
-
-  properties: [
-    'selected',
-    {
-      name: 'data',
-      factory: function() {
-        return this.EasyDAO.create({
-          of: foam.demos.examples.Example,
-          daoType: 'MDAO',
-          cache: true,
-          testData: this.createTestData()
-        }).orderBy(foam.demos.examples.Example.ID);
-      },
-      view: {
-        class: 'foam.u2.DAOList',
-        rowView: { class: 'foam.demos.examples.Example.CitationView' }
-      }
-    }
-  ],
-
-  methods: [
-    function initE() {
-      this.SUPER();
-
-      var self = this;
-      this.
-        addClass(this.myClass()).
-        start('h1').
-          add('FOAM by Example').
-        end().
-        start().
-          style({ display: 'flex' }).
-          start().
-            addClass(this.myClass('index')).
-            select(this.data, function(e) {
-              return this.E()
-                .style({padding: '4px'})
-                .add(e.id, ' ', e.title)
-                .enableClass('selected', self.selected$.map(s => s == e.id))
-                .on('mouseenter', () => { self.selected = e.id; })
-                .on('mouseleave', () => { if ( self.selected == e.id ) self.selected = null; })
-                ;
-            }).
-          end().
-          start().
-            addClass(this.myClass('body')).
-            add(this.DATA).
-          end().
-        end();
-    },
-
-    function createTestData() {
-      var s = /*`
 ## Introduction
+
 ##  Lib
+
 ##  Models
+
 ##   Properties
+
 ##   Methods
+
 ##   Actions
+
 ##   Listeners
+
 ##   Constants
+
 ##   Messages
+
 ##   Topics
+
 ##   Imports / Exports
+
 ##   Requires
+
 ##   Implements
+
 ##   Topics
+
 ##   Requires
+
 ##   Extends
+
 ##  FObjects
+
 ##   equals
+
 ##   compareTo
+
 ##   diff
+
 ##   hashCode
+
 ##   clone
+
 ##   shallowClone
+
 ##   copyFrom
+
 ##   toSummary
+
 ##   dot
+
 ##   slot
+
 ##  Classes
+
 ##  Slots
+
 ## DAOs
-*/
-`
+
+## Validation
+
+##  AssertValue
+The simplest form of validation is to specify an assertValue property on a property.
+The assertValue function receives the old and new values of the property.
+--
+foam.CLASS({
+  name: 'Test',
+  properties: [
+    {
+      class: 'String',
+      name: 'p1',
+      assertValue: function(value, prop) {
+        // This property is passed as the second argument, so assertValue's can
+        // be defined in base classes and still refer to the correct property name
+        if ( ! value || value.length < 10 ) throw prop.name + ' must be at least 10 characters.'
+      }
+    },
+    {
+      class: 'Int',
+      name: 'age',
+      assertValue: function(age) {
+        if ( age < 0 )        throw 'Age must be at least 0.';
+        if ( age > 130 )      throw 'Age must be no more than 130.';
+        if ( age < this.age ) throw 'Age can not go backwards.';
+      }
+    }
+  ]
+});
+
+var t = Test.create();
+
+try { t.p1 = 'too short'; } catch (x) { print(x); }
+print(t.p1);
+t.p1 = 'not too short';
+print(t.p1);
+
+try { t.age = -1; } catch (x) { print(x); }
+print(t.age);
+try { t.age = 5; } catch (x) { print(x); }
+print(t.age);
+try { t.age = 4; } catch (x) { print(x); }
+print(t.age);
+try { t.age = 10; } catch (x) { print(x); }
+print(t.age);
+try { t.age = 200; } catch (x) { print(x); }
+print(t.age);
+
+##  validateObj
+The limitation of assertValue, is that it only lets you perform validations involving a single value.
+If you want to perform validations that involve more than one property, then you can use validateObj.
+--
+foam.CLASS({
+  name: 'Flight',
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'returnFlight'
+    },
+    {
+      class: 'Date',
+      name: 'departureDate'
+    },
+    {
+      class: 'Date',
+      name: 'returnDate',
+      validateObj: function(returnFlight, departureDate, returnDate) {
+        if ( returnFlight && ! returnDate ) return 'Return date require for return flights.';
+        if ( ! returnFlight && returnDate ) return "Return date can't be specified for non return flights.";
+        if ( foam.Date.compare(returnDate, departureDate) < 0 ) return "Can't return before you depart.";
+      }
+    }
+  ]
+});
+
+var f = Flight.create();
+function validateFlight() {
+  print('Errors: ', f.errors_);
+}
+
+f.departureDate = new Date('2021/04/14');
+validateFlight();
+
+f.returnFlight = true;
+validateFlight();
+
+f.returnDate = new Date('2021/04/13');
+validateFlight();
+
+f.returnDate = new Date('2021/04/15');
+validateFlight();
+
+
 ## U2
 ##  Background
 U2 is FOAM's native UI library.
@@ -346,11 +159,14 @@ The first UI library was template based, but U2 is based on an Internal Domain S
 This IDSL is used to describe virtual DOM structures.
 DOM is the browser's native API for manipulating the page conents, and stands for Document Object Model.
 A Virtual-DOM is an API which mirrors the real DOM API but does so in JS.
+<br>
 The advantages of a Virtual-DOM are:
-1. It is faster because it can batch updates across the slow JS <-> C++ bridge.
-2. It is more secure because, unlike template-based approaches, it isn't prone to Cross-Site-Scripting (XSS) attacks.
-3. It can offer higher-level features and smooth over browser incompatibilites.
-4. It doesn't require a template parser, which can either make builds faster or the download size smaller, depending on where the template parsing is performed.
+<ol>
+<li>It is more secure because, unlike template-based approaches, it isn't prone to Cross-Site-Scripting (XSS) attacks.</li>
+<li>It can offer higher-level features and abstracts over browser incompatibilites.</li>
+<li>It doesn't require a template parser, which can either make builds faster or the download size smaller, depending on where the template parsing is performed.</li>
+<li>It offers higher-level features which enable you to perform some functions with less code.</li>
+</oll>
 Improved security was the primary motivation for U2.
 
 All U2 components extend foam.u2.Element, which loosely modelled after the DOM <a href="https://www.w3schools.com/jsref/dom_obj_all.asp">Element<a> class.
@@ -387,7 +203,26 @@ print(performance.now() - startTime);
 ##  Intro2
 ##   SubIntro
 ##  Fluent Interface
+##  Hello World!
+Let's use U2 to say hello
+--
+add(foam.u2.Element.create().add('Hello World!'));
 ##  nodeName
+If you inspect the HTML output from the Hellow World! example, you'll notice that it is a div tag.<br>
+However, if you want to change it to another type, you can specify the node's name with the nodeName property.
+--
+add(foam.u2.Element.create({nodeName: 'b'}).add('Hello World!'));
+## Short Form
+Given it is so common to want to create new Elements from within other Elements, Element has a method called start()
+which is used to add another Element to it.
+--
+start('b').add('Hello again!').end();
+## Tag
+In the above example we wanted to add text inside of the <b> tag, so we started with start() and then called add() before end()-ing the tag.
+But if you didn't need to add() anything inside the tag, you could just use the tag() method. The next two lines are equivalent:
+--
+start('input').end();
+tag('input');
 ##  v2
 ##  ControllerMode
 ##  DisplayMode
@@ -414,6 +249,48 @@ print(performance.now() - startTime);
 ##  addClass() / cssClass() / addClasses()
 ##  enableCls() / enableClass()
 ##  myClass()
+--
+foam.CLASS({
+  package: 'some.good.package',
+  name: 'Test',
+  extends: 'foam.u2.Element',
+  css: `
+    ^ { background: pink; }
+    ^subsection { background: green; }
+  `,
+  classes: [
+    {
+       name: 'SubTest',
+       extends: 'foam.u2.Element',
+       css: `
+         ^ { background: pink; }
+       `,
+       methods: [
+         function initE() {
+           this.SUPER();
+            this.
+              addClass(this.myClass()).
+              add(this.myClass());
+         }
+       ]
+    }
+  ],
+  methods: [
+    function initE() {
+      this.SUPER();
+      this.
+        addClass(this.myClass()).
+        add(this.myClass()).
+        start().
+          addClass(this.myClass('subsection')).
+          add(this.myClass('subsection')).
+        end();
+      this.add(this.SubTest.create({}, this));
+    }
+  ]
+});
+add(some.good.package.Test.create());
+
 ##  removeClass()
 ##  setAttribute()
 ##  removeAttribute()
@@ -3180,9 +3057,12 @@ foam.CLASS({
     }
   ]
 });
+/*
 var g = GraphicsDemo.create();
 g.write();
 g.step();
+*/
+
 ## By Example
 ##  Test Class
 Define a new class with foam.CLASS
@@ -6169,54 +6049,93 @@ return app.accountDAO.find(3).then(function(account) {
     data: transactionsDAO.orderBy(app.Transaction.DATE)
   }).write();
 })
-`;
-      var a = [];
-      var id = [];
-      var e;
-      var mode = 'text';
-      s = s.substring(1).split('\n').forEach(l => {
-        if ( l.startsWith('##') ) {
-//          e = this.Example.create({id: i++, title: l.substring(3)});
-          var depth = l.substring(2).match(/^ */)[0].length;
-          id.length = depth;
-          id[depth-1] = (id[depth-1] || 0)+1;
-          e = {id: id.join('.') + '.', title: l.substring(3), code: '', text: ''};
-          a.push(e);
-          mode = 'text';
-        } else if ( l.startsWith('--') ) {
-          mode = 'code';
-        } else if ( ! e ) {
-        } else if ( mode == 'text' ) {
-          e.text += l + '\n';
-        } else {
-          e.code += l + '\n';
-        }
-      });
-      return a;
-    }
+
+## FAQ
+
+##  Q1
+Where can I find built-in constants?
+ex)
+print("Method CODE property constant:", foam.core.Method.CODE);
+foam.core.Method.CODE.describe;
+
+Answer: Property constants are copied out of the model into to resulting class and prototype.
+Example:
+--
+foam.CLASS({
+  name: 'Test',
+  properties: [ 'p1', 'p2' ]
+});
+
+print(Test.P1.name, Test.P2.name);
+
+var t = Test.create();
+print(t.P1.name, t.P2.name);
+
+##  Q2
+Is class is a kind of type?
+
+Answer:
+A class is a class in the conventional OO sense.
+When you create a foam.CLASS(), it will define a new class.
+When you see something like { class: 'some.package.Name' , a: 1, b: 2 }, it will create
+an object of class 'some.package.Name' with the property a set to 1 and b to 2.
+It would be the equivalent to some.package.Name.create({a: 1, b: 2}).
+FOAM extends the regular JSON syntax to support objects by creating classes by
+specifying their class.
+Ex.:
+--
+foam.CLASS({
+  package: 'some.package2',
+  name: 'Test',
+  properties: [ 'p1', 'p2' ]
+});
+
+var p = foam.json.parse({class: 'some.package2.Test', p1: 42, p2: 'John'});
+print(p.cls_.id);
+
+##  Q3
+Is the Package Interface and how to use this in Foam?
+
+Answer: A classes package is defined with package: and is optional.
+--
+// Without a package:
+
+foam.CLASS({
+  name: 'Test',
+  properties: [ 'p1', 'p2' ]
+});
+
+print(Test.create());
+
+// With a package:
+
+foam.CLASS({
+  package: 'some.package2',
+  name: 'Test',
+  properties: [ 'p1', 'p2' ]
+});
+
+print(some.package2.Test.create());
+
+// When used from another class, packaged classes can be required:
+
+foam.CLASS({
+  name: 'Client',
+  requires: [ 'some.package2.Test' ],
+  methods: [
+    function createTest() { return this.Test.create(); }
   ]
 });
 
+print(Client.create().createTest());
 
-if ( false ) {
-s = '## DAO By Example';
-
-function deindent(s) {
-  var a = s.split('\n');
-  var min = a.filter(l => l.trim().length).map(l => l.match(/^ */)[0].length).reduce((a,b) => Math.min(a,b));
-  return a.map(l => l.trim().length ? l.substring(min) : '').join('\n');
-}
-
-examples.forEach(e => {
-  var code = e.code.toString();
-  code = deindent(code.substring(13, code.length-1));
-  s += `
-##  ${e.name}
-${e.description}
+##  Q4
+What are all of the types in FOAM?
+Answer:
+In FOAM, "types" are just sub-classes of foam.core.Property.
+Most of the types in FOAM are defined in foam/core/types.js.
+Types are not hard-coded into FOAM and you can create your own by extending Property.
+The following script will find all of the FOAM "types":
 --
-${code}
-`;
-});
-
-console.log(s);
-}
+for ( var v in foam.USED ) { try { if ( foam.core.Property.isSubClass(foam.lookup(v, true)) ) print(v); } catch(x) {} }
+for ( var v in foam.UNUSED ) { try { if ( foam.core.Property.isSubClass(foam.lookup(v, true)) ) print(v); } catch(x) {} }
