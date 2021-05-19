@@ -120,12 +120,20 @@ foam.CLASS({
         return this.translationService.getTranslation(foam.locale, getOwnClassInfo().getId(), this.exceptionMessage);
       },
       javaCode: `
-      String locale = (String) XLocator.get().get("locale.language");
-      if ( SafetyUtil.isEmpty(locale) ) {
-        locale = "en";
+      try {
+        TranslationService ts = (TranslationService) XLocator.get().get("translationService");
+        if ( ts != null ) {
+          String locale = (String) XLocator.get().get("locale.language");
+          if ( SafetyUtil.isEmpty(locale) ) {
+            locale = "en";
+          }
+          return ts.getTranslation(locale, getClassInfo().getId(), getExceptionMessage());
+        }
+      } catch (NullPointerException e) {
+        // NOTE: occuring in XLocator.get().get(...) from some test cases.
+        return null;
       }
-      TranslationService ts = (TranslationService) XLocator.get().get("translationService");
-      return ts.getTranslation(locale, getClassInfo().getId(), getExceptionMessage());
+      return getExceptionMessage();
       `
     },
     {
