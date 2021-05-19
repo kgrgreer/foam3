@@ -298,6 +298,7 @@ foam.CLASS({
 
   properties: [
     { class: 'Int', name: 'count' },
+    { class: 'Int', name: 'exampleCount' },
     'selected',
     'testData',
     {
@@ -354,6 +355,7 @@ foam.CLASS({
             start().
             select(this.data, function(e) {
               self.count++;
+              if ( e.code ) self.exampleCount++;
               return this.E('a')
                 .attrs({href: '#' + e.id})
                 .style({display: 'block', padding: '4px', 'padding-left': (16 * e.id.split('.').length  - 12)+ 'px'})
@@ -365,7 +367,7 @@ foam.CLASS({
             }).
             end().
             br().
-            add(this.count$, ' examples').
+            add(this.count$, ' sections, ', this.exampleCount$, ' examples').
           end().
           start().
             addClass(this.myClass('body')).
