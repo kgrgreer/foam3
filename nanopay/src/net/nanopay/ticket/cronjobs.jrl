@@ -21,6 +21,7 @@ now = System.currentTimeMillis();
 d = x.get("localTicketDAO");
 a = d.where(MLang.EQ(Ticket.STATUS, "OPEN")).select().array;
 for ( t : a ) {
+  if ( !(t instanceof net.nanopay.ticket.SudoTicket) ) continue;
   if ( t.getExpiry().getTime() < now ) {
     t = t.fclone();
     t.setStatus("CLOSED");
