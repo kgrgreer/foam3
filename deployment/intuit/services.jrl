@@ -193,7 +193,7 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"intuit.businessDAO",
+  "name":"intuitUpdateBusinessDAO",
   "serve": true,
   "serviceScript":
   """
@@ -238,7 +238,7 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"intuit.userDAO",
+  "name":"intuitUpdateUserDAO",
   "serve": true,
   "authenticate": false,
   "serviceScript":
