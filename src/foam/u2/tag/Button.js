@@ -173,12 +173,13 @@ const { contains } = require("underscore");
 
     /* Tertiary */
 
-    ^tertiary,^tertiary svg{ 
+    ^tertiary{ 
       background: none;
       border: 1px solid transparent;
       color: /*%GREY1%*/ #5E6061;
-      fill: /*%GREY1%*/ #5E6061;
     }
+
+    ^tertiary svg { fill: /*%GREY1%*/ #5E6061; }
 
     ^tertiary:hover:not(:disabled) {
       background-color: /*%GREY5%*/ #F5F7FA;
@@ -198,12 +199,13 @@ const { contains } = require("underscore");
 
     /* Tertiary destructive */
 
-    ^tertiary-destructive,^tertiary-destructive svg {
+    ^tertiary-destructive{
       background-color: transparent;
       border-color: transparent;
-      color: /*%DESTRUCTIVE5%*/ #5E6061;
-      fill: /*%DESTRUCTIVE5%*/ #5E6061;
+      color: /*%DESTRUCTIVE5%*/ #5E6061;   
     }
+
+    ^tertiary-destructive svg { fill: /*%DESTRUCTIVE5%*/ #5E6061; }
 
     ^tertiary-destructive:hover:not(:disabled) {
       background-color: /*%GREY5%*/ #F5F7FA;

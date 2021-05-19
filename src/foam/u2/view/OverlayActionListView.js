@@ -20,8 +20,8 @@ foam.CLASS({
 
   imports: [
     'ctrl',
-    'theme',
-    'document'
+    'document',
+    'theme'
   ],
 
   properties: [
@@ -197,12 +197,12 @@ foam.CLASS({
       }
 
       if ( e.shiftKey ) {
-        if ( this.document.activeElement === this.document.getElementById(this.firstEl_.id) ) {
+        if ( this.document.activeElement === this.firstEl_.el() ) {
           this.lastEl_.focus();
           e.preventDefault();
         }
       } else {
-        if ( this.document.activeElement === this.document.getElementById(this.lastEl_.id) ) {
+        if ( this.document.activeElement === this.lastEl_.el() ) {
           this.firstEl_.focus();
           e.preventDefault();
         }
