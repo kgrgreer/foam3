@@ -320,7 +320,19 @@ foam.CLASS({
     async function initE() {
       this.SUPER();
 
-      this.testData = await fetch("examples").then(function(response) {
+      this.testData = await fetch('examples').then(function(response) {
+        return response.text();
+      });
+
+      this.testData += await fetch('u2').then(function(response) {
+        return response.text();
+      });
+
+      this.testData += await fetch('faq').then(function(response) {
+        return response.text();
+      });
+
+      this.testData += await fetch('dao').then(function(response) {
         return response.text();
       });
 
@@ -358,13 +370,15 @@ foam.CLASS({
       var id = [];
       var e;
       var mode = 'text';
-      s = s.substring(1).split('\n').forEach(l => {
+      s = s.split('\n').forEach(l => {
         if ( l.startsWith('##') ) {
+          console.log('###', l);
 //          e = this.Example.create({id: i++, title: l.substring(3)});
           var depth = l.substring(2).match(/^ */)[0].length;
           id.length = depth;
           id[depth-1] = (id[depth-1] || 0)+1;
           e = {id: id.join('.') + '.', title: l.substring(3), code: '', text: ''};
+          console.log('***', e.id, e.title);
           a.push(e);
           mode = 'text';
         } else if ( l.startsWith('--') ) {
