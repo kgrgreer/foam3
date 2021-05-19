@@ -98,6 +98,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.ADD_MSG",target:"proprietário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.HAVE_NO_OWNER_MSG",target:"Declaro que todos os cotistas tem participacao inferir a 25%"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.NO_OWNER_INFO_ERR",target:"Informações do proprietário necessárias"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.BENEFICIAL_OWNER_LABEL",target:"Portador Beneficiado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView.PLEASE_SELECT_ONE",target:"Selecione um dos seguintes ..."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView.NEW_OWNER_MSG",target:"Adicionar Proprietário"})
 
@@ -2576,7 +2577,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.BankAccountS
 
 /* AFEX User */
 // messages
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXUser.BENEFICIARIES_MSG",target:"Beneficiários para"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.INVALID_OWNER_INFOafex.AFEXUser.BENEFICIARIES_MSG",target:"Beneficiários para"})
 // property labels
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXUser.ENABLED.label",target:"Ativado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXUser.USER.label",target:"Usuário"})
