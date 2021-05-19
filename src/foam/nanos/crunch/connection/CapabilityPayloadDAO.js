@@ -226,16 +226,17 @@ foam.CLASS({
                 catch (IllegalStateException | IllegalArgumentException ie) {
                   validationErrors.put(key, ie.getMessage());
                 } catch (ValidationException ve) {
-                  validationErrors.put(
-                    String.format("%s[%s]", key, ve.getPropName()), 
-                    ve.getErrorMessage());
+                  // validationErrors.put(
+                  //   String.format("%s[%s]", key, ve.getPropName()), 
+                  //   ve.getErrorMessage());
+                  validationErrors.put(key, ve.getMessage());
                 } catch (CompoundException ce) {
                   for ( var t : ce.getExceptions() ) {
                     if ( t instanceof ValidationException ) {
                       var ve = (ValidationException) t;
                       validationErrors.put(
                         String.format("%s[%s]", key, ve.getPropName()),
-                        ve.getErrorMessage());
+                        ve.getMessage());
                     }
                   }
                 } catch (Throwable t) {
