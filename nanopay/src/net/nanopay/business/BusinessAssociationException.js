@@ -22,21 +22,11 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
-  messages: [
-    {
-      name: 'EXCEPTION_MESSAGE',
-      message: 'There was an issue associating the business to the user'
-    },
-  ],
-
   properties: [
     {
-      documentation: 'java message template',
-      name: 'javaExceptionMessage',
-      class: 'String',
-      value: 'There was an issue associating the business to the user',
-      transient: true
-    }
+      name: 'exceptionMessage',
+      value: 'There was an issue associating the business to the user'
+    },
   ],
 
   axioms: [

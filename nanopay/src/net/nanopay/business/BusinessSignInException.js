@@ -22,20 +22,10 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
-  messages: [
-    {
-      name: 'EXCEPTION_MESSAGE',
-      message: 'There was an issue signing in to the newly created business, Please go to the switch business menu in your personal menus to sign in to your business.'
-    },
-  ],
-
   properties: [
     {
-      documentation: 'java message template',
-      name: 'javaExceptionMessage',
-      class: 'String',
-      value: 'There was an issue signing in to the newly created business, Please go to the switch business menu in your personal menus to sign in to your business.',
-      transient: true
+      name: 'exceptionMessage',
+      value: 'There was an issue signing in to the newly created business, Please go to the switch business menu in your personal menus to sign in to your business.'
     }
   ],
 

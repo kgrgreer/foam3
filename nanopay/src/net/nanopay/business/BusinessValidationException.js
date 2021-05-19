@@ -22,20 +22,10 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
-  messages: [
-    {
-      name: 'EXCEPTION_MESSAGE',
-      message: 'There was an issue creating the business'
-    },
-  ],
-
   properties: [
     {
-      documentation: 'java message template',
-      name: 'javaExceptionMessage',
-      class: 'String',
-      value: 'There was an issue creating the business',
-      transient: true
+      name: 'exceptionMessage',
+      value: 'There was an issue creating the business'
     }
   ],
 

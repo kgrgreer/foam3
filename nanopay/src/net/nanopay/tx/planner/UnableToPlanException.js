@@ -22,20 +22,10 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
   
-  messages: [
-    {
-      name: 'EXCEPTION_MESSAGE',
-      message: 'Unable to plan'
-    }
-  ],
-
   properties: [
     {
-      documentation: 'java message template',
-      name: 'javaExceptionMessage',
-      class: 'String',
-      value: 'Unable to plan',
-      transient: true
+      name: 'exceptionMessage',
+      value: 'Unable to plan'
     }
   ],
 
