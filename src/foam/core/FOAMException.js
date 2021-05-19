@@ -39,6 +39,13 @@ foam.CLASS({
     getHostname();
   }
 
+  public FOAMException(String message, String errorCode) {
+    super(message);
+    setMessage_(message);
+    setErrorCode(errorCode);
+    getHostname();
+  }
+
   public FOAMException(Throwable cause) {
     super(cause);
     setMessage_(cause.getMessage());
@@ -48,6 +55,13 @@ foam.CLASS({
   public FOAMException(String message, Throwable cause) {
     super(message, cause);
     setMessage_(message);
+    getHostname();
+  }
+
+  public FOAMException(String message, String errorCode, Throwable cause) {
+    super(message, cause);
+    setMessage_(message);
+    setErrorCode(errorCode);
     getHostname();
   }
         `);
@@ -97,10 +111,7 @@ foam.CLASS({
         return getTranslation();
       },
       javaCode: `
-    try {
-System.out.println("FOAMException,translation-before,"+getExceptionMessage());
       String msg = getTranslation();
-System.out.println("FOAMException,translation-after,"+msg);
       if ( ! SafetyUtil.isEmpty(msg) ) {
         // REVIEW: temporary - default/simple java template support not yet split out from EmailTemplateEngine.
         foam.nanos.notification.email.EmailTemplateEngine template = new foam.nanos.notification.email.EmailTemplateEngine();
@@ -108,11 +119,7 @@ System.out.println("FOAMException,translation-after,"+msg);
 System.out.println("FOAMException,templated,"+msg);
         return msg;
       }
-    } catch (NullPointerException e) {
-      // REVIEW: XLocator.get().get(...) NPE in test mode.
-      System.out.println("FOAMException,XLocator,null");
-    }
-    return getExceptionMessage();
+      return getExceptionMessage();
       `
     },
     {

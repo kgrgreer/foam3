@@ -18,24 +18,48 @@ foam.CLASS({
       try {
         throw new FOAMException();
       } catch (FOAMException e) {
-        test(foam.util.SafetyUtil.isEmpty(e.getMessage()), "expecting: empty message, found: "+e.getMessage());
+        String expected = "";
+        test(expected.equals(e.getMessage()), "expecting: "+expected+", found: \\\""+e.getMessage()+"\\\"");
       }
       try {
         throw new FOAMException("test message");
       } catch (FOAMException e) {
-        test(e.getMessage().equals("test message"), "expecting: test message, found: "+e.getMessage());
+        String expected = "test message";
+        test(expected.equals(e.getMessage()), "expecting: "+expected+", found: \\\""+e.getMessage()+"\\\"");
       }
 
       try {
         throw new FOAMExceptionTestTestException();
       } catch (FOAMExceptionTestTestException e) {
-        test(e.getMessage().equals("Test exception"), "expecting: Test exception, found: "+e.getMessage());
+        String expected = "ExceptionMessage , ErrorCode:";
+        test(expected.equals(e.getMessage()), "expecting: "+expected+", found: \\\""+e.getMessage()+"\\\"");
       }
       try {
         throw new FOAMExceptionTestTestException("inner message");
       } catch (FOAMExceptionTestTestException e) {
-        test(e.getMessage().equals("Test exception inner message"), "expecting: Test exception inner message, found: "+e.getMessage());
+        String expected = "ExceptionMessage inner message, ErrorCode:";
+        test(expected.equals(e.getMessage()), "expecting: "+expected+", found: \\\""+e.getMessage()+"\\\"");
       }
+
+      // test templating
+      try {
+        throw new FOAMExceptionTestTestException("inner message", "16");
+      } catch (FOAMExceptionTestTestException e) {
+        String expected = "ExceptionMessage inner message, ErrorCode: 16";
+        test(expected.equals(e.getMessage()), "expecting: "+expected+", found: \\\""+e.getMessage()+"\\\"");
+        System.out.println("toString: "+e.toString());
+      }
+      // different locale
+      X y = x.put("locale.language", "pt");
+      XLocator.set(y);
+      try {
+        throw new FOAMExceptionTestTestException("inner message", "16");
+      } catch (FOAMExceptionTestTestException e) {
+        String expected = "MensagemDeExceção inner message, ErroDeCódigo: 16";
+        test(expected.equals(e.getMessage()), "expecting: "+expected+", found: \\\""+e.getMessage()+"\\\"");
+        System.out.println("toString: "+e.toString());
+      }
+      XLocator.set(x);
       `
     }
   ]
@@ -43,7 +67,7 @@ foam.CLASS({
 
 /**
  * @license
- * Copyright 2020 The FOAM Authors. All Rights Reserved.
+ * Copyright 2021 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -57,7 +81,7 @@ foam.CLASS({
   properties: [
     {
       name: 'exceptionMessage',
-      value: 'Test exception {{message_}}'
+      value: 'ExceptionMessage {{message_}}, ErrorCode: {{errorCode}}'
     }
   ],
 
@@ -72,6 +96,10 @@ foam.CLASS({
 
   public FOAMExceptionTestTestException(String message) {
     super(message);
+  }
+
+  public FOAMExceptionTestTestException(String message, String errorCode) {
+    super(message, errorCode);
   }
         `);
       }

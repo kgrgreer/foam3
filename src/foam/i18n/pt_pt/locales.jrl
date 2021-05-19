@@ -825,3 +825,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.AccountLockedExc
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.BusinessAssociationException",target:"Houve um problema ao associar a empresa ao usuário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.BusinessSignInException",target:"Ocorreu um problema ao iniciar sessão na empresa recém-criada. Vá para o menu de mudança de empresa nos seus menus pessoais para entrar na sua empresa."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.BusinessValidationException",target:"Ocorreu um problema ao criar o negócio"})
+
+//TestExceptions
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.FOAMExceptionTestTestException",target:"MensagemDeExceção {{message_}}, ErroDeCódigo: {{errorCode}}"})
