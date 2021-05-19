@@ -231,6 +231,7 @@ foam.CLASS({
       containsPII: true
     },
     {
+      class: 'String',
       name: 'legalName',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
