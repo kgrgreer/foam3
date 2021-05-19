@@ -39,6 +39,7 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'org.apache.http.HttpResponse',
     'org.apache.http.client.methods.HttpPost',
+    'org.apache.http.entity.ContentType',
     'org.apache.http.entity.StringEntity',
     'org.apache.http.impl.client.CloseableHttpClient',
     'org.apache.http.impl.client.HttpClients',
@@ -281,12 +282,12 @@ foam.CLASS({
         try {
           Outputter jsonOutputter = new Outputter(x).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false);
           String requestJson = jsonOutputter.stringify(request);
-          StringEntity entity = new StringEntity(requestJson);
-          entity.setContentType("application/json");
+          StringEntity entity = new StringEntity(requestJson, "UTF-8");
 
           httpPost.addHeader("Content-type", "application/json");
+          httpPost.addHeader("Accept-Encoding", "UTF-8");
           httpPost.addHeader("Authorization", "Basic " +
-            Base64.getEncoder().encodeToString(request.getBasicAuth().getBytes()));
+            Base64.getMimeEncoder().encodeToString(request.getBasicAuth().getBytes()));
           httpPost.setEntity(entity);
           httpResponse = httpClient.execute(httpPost);
           if ( httpResponse.getStatusLine().getStatusCode() >= 500 ) {
