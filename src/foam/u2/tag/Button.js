@@ -14,11 +14,11 @@ const { contains } = require("underscore");
   documentation: 'Basic button view. Should be extended to add functionality',
 
   requires: [
+    'foam.net.HTTPRequest',
     'foam.u2.ButtonSize',
     'foam.u2.ButtonStyle',
-    'foam.u2.tag.CircleIndicator',
-    'foam.net.HTTPRequest',
-    'foam.u2.HTMLView'
+    'foam.u2.HTMLView',
+    'foam.u2.tag.CircleIndicator'
   ],
 
   imports: ['theme?'],
