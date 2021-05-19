@@ -11,20 +11,10 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
-  messages: [
-    {
-      name: 'EXCEPTION_MESSAGE',
-      message: 'Account temporarily locked. You can attempt to login after {{message_}}'
-    },
-  ],
-
   properties: [
     {
-      documentation: 'java message template',
-      name: 'javaExceptionMessage',
-      class: 'String',
-      value: 'Account temporarily locked. You can attempt to login after {{message_}}',
-      transient: true
+      name: 'exceptionMessage',
+      value: 'Account temporarily locked. You can attempt to login after {{message_}}'
     }
   ],
 

@@ -11,20 +11,10 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
-  messages: [
-    {
-      name: 'EXCEPTION_MESSAGE',
-      message: 'Not logged in {{message_}}'
-    }
-  ],
-
   properties: [
     {
-      documentation: 'java message template',
-      name: 'javaExceptionMessage',
-      class: 'String',
+      name: 'exceptionMessage',
       value: 'Not logged in {{message_}}',
-      transient: true
     }
   ],
 

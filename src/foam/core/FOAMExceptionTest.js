@@ -54,20 +54,10 @@ foam.CLASS({
   javaGenerateConvenienceConstructor: false,
   javaGenerateDefaultConstructor: false,
 
-  messages: [
-    {
-      name: 'EXCEPTION_MESSAGE',
-      message: 'Test exception {{message_}}'
-    }
-  ],
-
   properties: [
     {
-      documentation: 'java message template',
-      name: 'javaExceptionMessage',
-      class: 'String',
-      value: 'Test exception {{message_}}',
-      transient: true
+      name: 'exceptionMessage',
+      value: 'Test exception {{message_}}'
     }
   ],
 
@@ -77,7 +67,7 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(`
   public FOAMExceptionTestTestException() {
-    getHostname();
+    super();
   }
 
   public FOAMExceptionTestTestException(String message) {

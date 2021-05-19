@@ -11,20 +11,10 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
-  messages: [
-    {
-      name: 'EXCEPTION_MESSAGE',
-      value: 'Access denied'
-    }
-  ],
-
   properties: [
     {
-      documentation: 'java message template',
-      name: 'javaExceptionMessage',
-      class: 'String',
-      value: 'Access denied',
-      transient: true
+      name: 'exceptionMessage',
+      value: 'Access denied'
     }
   ],
 

@@ -11,20 +11,10 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
-  messages: [
-    {
-      name: 'EXCEPTION_MESSAGE',
-      message: 'Account locked. Please contact customer service.'
-    },
-  ],
-
   properties: [
     {
-      documentation: 'java message template',
-      name: 'javaExceptionMessage',
-      class: 'String',
-      value: 'Account locked. Please contact customer service.',
-      transient: true
+      name: 'exceptionMessage',
+      value: 'Account locked. Please contact customer service.'
     }
   ],
 

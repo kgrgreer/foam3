@@ -55,25 +55,22 @@ foam.CLASS({
     }
   ],
 
-  messages: [
-    {
-      name: 'EXCEPTION_MESSAGE',
-      message: '{{message_}}'
-    },
-  ],
-
   properties: [
+    {
+      name: 'exceptionMessage',
+      class: 'String',
+      value: '{{message_}}',
+      visibility: 'RO'
+    },
     {
       name: 'message_',
       class: 'String',
       visibility: 'RO'
     },
     {
-      documentation: 'java message template',
-      name: 'javaExceptionMessage',
+      name: 'errorCode',
       class: 'String',
-      value: '{{message_}}',
-      transient: true
+      visibility: 'RO'
     },
     {
       name: 'hostname',
@@ -83,25 +80,25 @@ foam.CLASS({
     }
   ],
 
-  templates: [
-    {
-      name: 'toMessage',
-      template: function() {
-      /* <%= translation %> */
-      }
-    }
-  ],
+  // templates: [
+  //   {
+  //     name: 'toMessage',
+  //     template: function() {
+  //     /* <%= translation %> */
+  //     }
+  //   }
+  // ],
 
   methods: [
     {
       name: 'getMessage',
       type: 'String',
       code: function() {
-        return this.toMessage();
+        return getTranslation();
       },
       javaCode: `
     try {
-System.out.println("FOAMException,translation-before,"+getJavaExceptionMessage());
+System.out.println("FOAMException,translation-before,"+getExceptionMessage());
       String msg = getTranslation();
 System.out.println("FOAMException,translation-after,"+msg);
       if ( ! SafetyUtil.isEmpty(msg) ) {
@@ -115,7 +112,7 @@ System.out.println("FOAMException,templated,"+msg);
       // REVIEW: XLocator.get().get(...) NPE in test mode.
       System.out.println("FOAMException,XLocator,null");
     }
-    return getJavaExceptionMessage();
+    return getExceptionMessage();
       `
     },
     {
@@ -123,7 +120,7 @@ System.out.println("FOAMException,templated,"+msg);
       name: 'getTranslation',
       type: 'String',
       code: function() {
-        return this.translationService.getTranslation(foam.locale, getOwnClassInfo().getId(), EXCEPTION_MESSAGE);
+        return this.translationService.getTranslation(foam.locale, getOwnClassInfo().getId(), this.exceptionMessage);
       },
       javaCode: `
       String locale = (String) XLocator.get().get("locale.language");
@@ -131,7 +128,7 @@ System.out.println("FOAMException,templated,"+msg);
         locale = "en";
       }
       TranslationService ts = (TranslationService) XLocator.get().get("translationService");
-      return ts.getTranslation(locale, getClassInfo().getId(), getJavaExceptionMessage());
+      return ts.getTranslation(locale, getClassInfo().getId(), getExceptionMessage());
       `
     },
     {
@@ -158,10 +155,26 @@ System.out.println("FOAMException,templated,"+msg);
       name: 'toString',
       type: 'String',
       code: function() {
-        return '['+this.hostname+'],'+this.getOwnClassInfo().getId()+','+getMessage();
+        var s = '['+this.hostname+'],';
+        if ( this.errorCode ) {
+          s += '('+this.errorCode+'),';
+        }
+        s += this.getOwnClassInfo().getId()+',';
+        s += getMessage();
+        return s;
       },
       javaCode: `
-      return "["+getHostname()+"],"+this.getClass().getName()+","+getMessage();
+      StringBuilder sb = new StringBuilder();
+      sb.append("["+getHostname()+"]");
+      sb.append(",");
+      if ( ! foam.util.SafetyUtil.isEmpty(getErrorCode()) ) {
+        sb.append("("+getErrorCode()+")");
+        sb.append(",");
+      }
+      sb.append(getClass().getName()+",");
+      sb.append(",");
+      sb.append(getMessage());
+      return sb.toString();
       `
     }
   ]
