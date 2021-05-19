@@ -130,10 +130,9 @@ foam.CLASS({
           return ts.getTranslation(locale, getClassInfo().getId(), getExceptionMessage());
         }
       } catch (NullPointerException e) {
-        // NOTE: occuring in XLocator.get().get(...) from some test cases.
-        return null;
+        // noop - Expected when not yet logged in, as XLocator is not setup.
       }
-      return getExceptionMessage();
+      return null;
       `
     },
     {
