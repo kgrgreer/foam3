@@ -132,11 +132,11 @@ foam.CLASS({
       }
 
       var request = new Request(
-          this.protocol + "://" +
-          this.hostname +
-          ( this.port ? ( ':' + this.port ) : '' ) +
-          this.path,
-          options);
+        ( this.protocol ? ( this.protocol + '://' ) : '' ) +
+        this.hostname +
+        ( this.port ? ( ':' + this.port ) : '' ) +
+        this.path,
+        options);
 
       return fetch(request).then(function(resp) {
         var resp = this.HTTPResponse.create({

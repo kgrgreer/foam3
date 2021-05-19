@@ -25,17 +25,7 @@ foam.CLASS({
       of: 'foam.core.Glyph',
       factory: function() {
         return { template: `
-        <?xml version="1.0" encoding="UTF-8"?>
-        <svg width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-            <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                <g id="icon/complete/48x48" transform="translate(-4.000000, -4.000000)">
-                    <g id="round-check_circle-24px">
-                        <polygon id="Path" points="0 0 48 0 48 48 0 48"></polygon>
-                        <path d="M18.58,32.58 L11.4,25.4 C10.62,24.62 10.62,23.36 11.4,22.58 C12.18,21.8 13.44,21.8 14.22,22.58 L20,28.34 L33.76,14.58 C34.54,13.8 35.8,13.8 36.58,14.58 C37.36,15.36 37.36,16.62 36.58,17.4 L21.4,32.58 C20.64,33.36 19.36,33.36 18.58,32.58 Z" id="Shape" fill= "/*%FILL%*/ #ffffff" fill-rule="nonzero"></path>
-                    </g>
-                </g>
-            </g>
-        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="/*%FILL%*/ #ffffff"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M9 16.2l-3.5-3.5c-.39-.39-1.01-.39-1.4 0-.39.39-.39 1.01 0 1.4l4.19 4.19c.39.39 1.02.39 1.41 0L20.3 7.7c.39-.39.39-1.01 0-1.4-.39-.39-1.01-.39-1.4 0L9 16.2z"/></svg>
         ` };
       }
     },
@@ -45,8 +35,8 @@ foam.CLASS({
       of: 'foam.core.Glyph',
       factory: function() {
         return { template: `
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-            <path fill="/*%FILL%*/ #ffffff" fill-rule="nonzero" d="M 12 0 z m 0 13.2 c -0.66 0 -1.2 -0.54 -1.2 -1.2 V 7.2 c 0 -0.66 0.54 -1.2 1.2 -1.2 c 0.66 0 1.2 0.54 1.2 1.2 V 12 c 0 0.66 -0.54 1.2 -1.2 1.2 z m 1.2 4.8 h -2.4 v -2.4 h 2.4 V 18 z"/>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="/*%FILL%*/ #ffffff" viewBox="0 0 24 24">
+            <path fill-rule="nonzero" d="M 12 0 z m 0 13.2 c -0.66 0 -1.2 -0.54 -1.2 -1.2 V 7.2 c 0 -0.66 0.54 -1.2 1.2 -1.2 c 0.66 0 1.2 0.54 1.2 1.2 V 12 c 0 0.66 -0.54 1.2 -1.2 1.2 z m 1.2 4.8 h -2.4 v -2.4 h 2.4 V 18 z"/>
         </svg>
         ` };
       }
@@ -57,9 +47,7 @@ foam.CLASS({
       of: 'foam.core.Glyph',
       factory: function() {
         return { template: `
-        <?xml version="1.0" encoding="UTF-8"?>
         <svg width="14px" height="14px" viewBox="0 0 14 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-            <title>round-check_circle-24px (5)</title>
             <g id="Ablii" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                 <g id="Enum" transform="translate(-1490.000000, -409.000000)">
                     <g id="Group-33" transform="translate(1490.000000, 409.000000)">
@@ -77,9 +65,8 @@ foam.CLASS({
       of: 'foam.core.Glyph',
       factory: function() {
         return { template: `
-        <?xml version="1.0" encoding="UTF-8"?>
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M9 16H11V14H9V16ZM10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM10 18C5.59 18 2 14.41 2 10C2 5.59 5.59 2 10 2C14.41 2 18 5.59 18 10C18 14.41 14.41 18 10 18ZM10 4C7.79 4 6 5.79 6 8H8C8 6.9 8.9 6 10 6C11.1 6 12 6.9 12 8C12 10 9 9.75 9 13H11C11 10.75 14 10.5 14 8C14 5.79 12.21 4 10 4Z" fill="/*%FILL%*/ #FFFFFF"/>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="/*%FILL%*/ #ffffff" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9 16H11V14H9V16ZM10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM10 18C5.59 18 2 14.41 2 10C2 5.59 5.59 2 10 2C14.41 2 18 5.59 18 10C18 14.41 14.41 18 10 18ZM10 4C7.79 4 6 5.79 6 8H8C8 6.9 8.9 6 10 6C11.1 6 12 6.9 12 8C12 10 9 9.75 9 13H11C11 10.75 14 10.5 14 8C14 5.79 12.21 4 10 4Z" />
         </svg>
         ` };
       }
@@ -108,7 +95,7 @@ foam.CLASS({
       of: 'foam.core.Glyph',
       factory: function() {
         return { template: `
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="/*%FILL%*/ #FFFFFF"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 24 24" fill="/*%FILL%*/ #FFFFFF"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
         ` };
       }
     },
@@ -118,8 +105,8 @@ foam.CLASS({
       of: 'foam.core.Glyph',
       factory: function() {
         return { template: `
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19ZM8.46 11.88L9.87 10.47L12 12.59L14.12 10.47L15.53 11.88L13.41 14L15.53 16.12L14.12 17.53L12 15.41L9.88 17.53L8.47 16.12L10.59 14L8.46 11.88ZM15.5 4L14.5 3H9.5L8.5 4H5V6H19V4H15.5Z" fill="/*%FILL%*/ #B2B6BD"/>
+        <svg width="24" height="24" fill="/*%FILL%*/ #B2B6BD" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19ZM8.46 11.88L9.87 10.47L12 12.59L14.12 10.47L15.53 11.88L13.41 14L15.53 16.12L14.12 17.53L12 15.41L9.88 17.53L8.47 16.12L10.59 14L8.46 11.88ZM15.5 4L14.5 3H9.5L8.5 4H5V6H19V4H15.5Z" />
         </svg>
         ` };
       }
@@ -138,7 +125,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'dropdown',
+      name: 'back',
       class: 'GlyphProperty',
       of: 'foam.core.Glyph',
       factory: function() {
@@ -147,6 +134,42 @@ foam.CLASS({
           <path d="M0 0.5L5 5.5L10 0.5H0Z"/>
         </svg>`
         };
+      }
+    },
+    {
+      name: 'copy',
+      class: 'GlyphProperty',
+      of: 'foam.core.Glyph',
+      factory: function() {
+        return { template: `
+        <svg width="100%" viewBox="0 0 24 24" fill="/*%FILL%*/ #ffffff" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z"/>
+        </svg>`
+        };
+      }
+    },
+    {
+      name: 'edit',
+      class: 'GlyphProperty',
+      of: 'foam.core.Glyph',
+      factory: () => {
+        return { template: `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="/*%FILL%*/ #ffffff" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 17.2496V20.9996H6.75L17.81 9.93957L14.06 6.18957L3 17.2496ZM20.71 7.03957C21.1 6.64957 21.1 6.01957 20.71 5.62957L18.37 3.28957C17.98 2.89957 17.35 2.89957 16.96 3.28957L15.13 5.11957L18.88 8.86957L20.71 7.03957V7.03957Z"/>
+        </svg>
+        ` };
+      }
+    },
+    {
+      name: 'dropdown',
+      class: 'GlyphProperty',
+      of: 'foam.core.Glyph',
+      factory: () => {
+        return { template: `
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="/*%FILL%*/ #ffffff" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 0.5L5 5.5L10 0.5H0Z" />
+        </svg>
+        ` };
       }
     }
   ]

@@ -140,10 +140,10 @@ foam.CLASS({
   refines: 'foam.core.String',
 
   messages: [
-    { name: 'REQUIRED', message: 'required' },
+    { name: 'REQUIRED',        message: 'required' },
     { name: 'SHOULD_BE_LEAST', message: 'should be at least' },
-    { name: 'SHOULD_BE_MOST', message: 'should be at most' },
-    { name: 'CHARACTER', message: 'character' },
+    { name: 'SHOULD_BE_MOST',  message: 'should be at most' },
+    { name: 'CHARACTER',       message: 'character' }
   ],
 
   properties: [
@@ -199,7 +199,7 @@ foam.CLASS({
   refines: 'foam.core.FObjectProperty',
 
   messages: [
-    { name: 'PLEASE_ENTER_VALID', message: 'Please enter valid' },
+    { name: 'PLEASE_ENTER_VALID', message: 'Please enter valid' }
   ],
 
   properties: [
@@ -232,7 +232,7 @@ foam.CLASS({
   refines: 'foam.core.FObjectArray',
 
   messages: [
-    { name: 'PLEASE_ENTER_VALID', message: 'Please enter valid' },
+    { name: 'PLEASE_ENTER_VALID', message: 'Please enter valid' }
   ],
 
   properties: [
@@ -311,7 +311,6 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.core.internal',
   name: 'Errors',
-//  extends: 'foam.core.Property',
 
   documentation: `
     A psedo-Property Axiom added to FObject which contains an object\'s validation errors.
@@ -408,7 +407,7 @@ foam.CLASS({
   refines: 'foam.core.EMail',
 
   messages: [
-    { name: 'EMAIL_REQUIRED', message: 'Email address required' },
+    { name: 'EMAIL_REQUIRED',       message: 'Email address required' },
     { name: 'VALID_EMAIL_REQUIRED', message: 'Valid email address required' }
   ],
 
@@ -499,6 +498,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.core',
