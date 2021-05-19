@@ -9,6 +9,7 @@ foam.CLASS({
   name: 'EmailTemplateEngine',
 
   javaImports: [
+    'foam.core.X',
     'foam.dao.DAO',
     'foam.lib.json.*',
     'foam.lib.parse.*',
@@ -16,6 +17,7 @@ foam.CLASS({
     'foam.lib.parse.Grammar',
     'foam.nanos.alarming.Alarm',
     'foam.nanos.alarming.AlarmReason',
+    'foam.nanos.notification.email.DAOResourceLoader',
     'java.lang.StringBuilder',
     'java.util.HashMap',
     'java.util.Map',
@@ -272,7 +274,7 @@ foam.CLASS({
             for ( int i = 0 ; i < val0.length ; i++ ) {
               templateName.append(val0[i]);
             }
-            EmailTemplate extendedEmailTemplate = ((EmailTemplate) ((DAO) x.get("emailTemplateDAO")).find(EQ(EmailTemplate.NAME,templateName.toString())));
+            EmailTemplate extendedEmailTemplate = DAOResourceLoader.findTemplate((X)x.get("x"), templateName.toString());
             if ( extendedEmailTemplate == null ) {
               foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
               logger.warning("Extended template not found " + templateName);
@@ -310,7 +312,7 @@ foam.CLASS({
       ],
       type: 'StringBuilder',
       javaCode: `
-      EmailTemplate template = (EmailTemplate) ((DAO) x.get("emailTemplateDAO")).find(id);
+      EmailTemplate template = DAOResourceLoader.findTemplate(x, id);
       if ( template == null ) throw new RuntimeException("no template found with id " + id);
       return renderTemplate(x, template.getBody(), values);
       `
@@ -374,7 +376,7 @@ foam.CLASS({
       ps.setString(body);
       ParserContext parserX = new ParserContextImpl();
       parserX.set("sb", sbJoin);
-      parserX.set("emailTemplateDAO", x.get("emailTemplateDAO"));
+      parserX.set("x", x);
       parserX.set("logger", x.get("logger"));
       parserX.set("alarmDAO", x.get("alarmDAO"));
       parserX.set("isNextTemplateExtending", false);
