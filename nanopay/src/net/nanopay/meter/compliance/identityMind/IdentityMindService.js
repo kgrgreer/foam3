@@ -39,7 +39,6 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'org.apache.http.HttpResponse',
     'org.apache.http.client.methods.HttpPost',
-    'org.apache.http.entity.ContentType',
     'org.apache.http.entity.StringEntity',
     'org.apache.http.impl.client.CloseableHttpClient',
     'org.apache.http.impl.client.HttpClients',
