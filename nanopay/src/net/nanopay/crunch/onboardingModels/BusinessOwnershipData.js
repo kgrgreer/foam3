@@ -180,7 +180,6 @@ foam.CLASS({
           return this.INVALID_OWNER_INFO;
       },
       view: function (_, X) {
-      debugger;
         return {
           class: 'foam.u2.view.TitledArrayView',
           displayName: X.data.BENEFICIAL_OWNER_LABEL,
