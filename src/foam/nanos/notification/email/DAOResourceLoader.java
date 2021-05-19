@@ -13,6 +13,8 @@ import foam.dao.DAO;
 import foam.dao.Sink;
 import foam.dao.ArraySink;
 import foam.nanos.auth.Group;
+import foam.nanos.auth.Subject;
+import foam.nanos.auth.User;
 import foam.nanos.notification.email.EmailTemplate;
 import foam.util.SafetyUtil;
 import org.jtwig.resource.loader.ResourceLoader;
@@ -84,6 +86,12 @@ public class DAOResourceLoader
     } while ( ! SafetyUtil.isEmpty(groupId) );
 
     return null;
+  }
+
+  public static EmailTemplate findTemplate(X x, String name) {
+    var groupId = ((Group) x.get("group")).getId();
+    String locale = ((Subject) x.get("subject")).getRealUser().getLanguage().getCode();
+    return findTemplate(x, name, groupId, locale);
   }
 
   public DAOResourceLoader(X x, String groupId, String locale) {
