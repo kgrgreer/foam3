@@ -69,11 +69,6 @@ foam.CLASS({
       visibility: 'HIDDEN'
     },
     {
-      class: 'Boolean',
-      name: 'submitted',
-      visibility: 'HIDDEN'
-    },
-    {
       class: 'String',
       name: 'businessName',
       documentation: 'Legal name of business.',
@@ -206,18 +201,5 @@ foam.CLASS({
         }
       ]
     })
-  ],
-
-  methods: [
-    {
-      name: 'validate',
-      javaCode: `
-        // Initial Business Data will not be fully validated and granted until user
-        // explicitly submits the client side wizardlet form.
-        if ( ! getSubmitted() ) {
-          throw new IllegalStateException(NOT_SUBMITTED);
-        }
-      `
-    }
   ]
 });
