@@ -1,0 +1,189 @@
+## U2
+##  Background
+U2 is FOAM's native UI library.
+It is named U2 because it is FOAM's second UI library.
+The first UI library was template based, but U2 is based on an Internal Domain Specific Language (IDSL) or Embedded Domain Specific Language (EDSL).
+This IDSL is used to describe virtual DOM structures.
+DOM is the browser's native API for manipulating the page conents, and stands for Document Object Model.
+A Virtual-DOM is an API which mirrors the real DOM API but does so in JS.
+<br>
+The advantages of a Virtual-DOM are:
+<ol>
+<li>It is more secure because, unlike template-based approaches, it isn't prone to Cross-Site-Scripting (XSS) attacks.</li>
+<li>It can offer higher-level features and abstracts over browser incompatibilites.</li>
+<li>It doesn't require a template parser, which can either make builds faster or the download size smaller, depending on where the template parsing is performed.</li>
+<li>It offers higher-level features which enable you to perform some functions with less code.</li>
+</oll>
+Improved security was the primary motivation for U2.
+
+All U2 components extend foam.u2.Element, which loosely modelled after the DOM <a href="https://www.w3schools.com/jsref/dom_obj_all.asp">Element<a> class.
+--
+add('testing');
+##  Virtual vs. Real DOM
+--
+console.profile('p1');
+function test1() {
+var startTime = performance.now();
+var node = foam.u2.Element.create({nodeName: 'UL'});     // Create a <ul> node
+for ( var i = 0 ; i < 100 ; i++ )
+  node.start('li').add("text" + i).end();                // Append an <li>
+
+//add(node);
+print(performance.now() - startTime);
+}
+test1();
+console.profileEnd('p1');
+
+var startTime = performance.now();
+var node = document.createElement("UL");               // Create a <ul> node
+for ( var i = 0 ; i < 100 ; i++ ) {
+  var li = document.createElement("LI")
+  li.appendChild(document.createTextNode("text" + i)); // Append an <li>
+  node.appendChild(li);
+}
+//el().appendChild(node);
+print(performance.now() - startTime);
+
+
+##  DSL
+##  Intro1
+##  Intro2
+##   SubIntro
+##  Fluent Interface
+##  Hello World!
+Let's use U2 to say hello
+--
+add(foam.u2.Element.create().add('Hello World!'));
+##  nodeName
+If you inspect the HTML output from the Hellow World! example, you'll notice that it is a div tag.<br>
+However, if you want to change it to another type, you can specify the node's name with the nodeName property.
+--
+add(foam.u2.Element.create({nodeName: 'b'}).add('Hello World!'));
+## Short Form
+Given it is so common to want to create new Elements from within other Elements, Element has a method called start()
+which is used to add another Element to it.
+--
+start('b').add('Hello again!').end();
+## Tag
+In the above example we wanted to add text inside of the <b> tag, so we started with start() and then called add() before end()-ing the tag.
+But if you didn't need to add() anything inside the tag, you could just use the tag() method. The next two lines are equivalent:
+--
+start('input').end();
+tag('input');
+##  v2
+##  ControllerMode
+##  DisplayMode
+##  Borders
+##   content
+##  CSS
+##  CSS Variables
+##  inheritCSS
+##  ViewSpec
+##  Entities / entity() / nbsp()
+##  onKey
+##  Element States
+##   state
+##   onload
+##   onunload
+##  Tooltips
+##  shown / show() / hide()
+##  focused / focus() / blur()
+##  Creating a Component
+##   initE
+##  Keyboard Shortcuts
+##  el() and id
+##  E()
+##  addClass() / cssClass() / addClasses()
+##  enableCls() / enableClass()
+##  myClass()
+--
+foam.CLASS({
+  package: 'some.good.package',
+  name: 'Test',
+  extends: 'foam.u2.Element',
+  css: `
+    ^ { background: pink; }
+    ^subsection { background: green; }
+  `,
+  classes: [
+    {
+       name: 'SubTest',
+       extends: 'foam.u2.Element',
+       css: `
+         ^ { background: pink; }
+       `,
+       methods: [
+         function initE() {
+           this.SUPER();
+            this.
+              addClass(this.myClass()).
+              add(this.myClass());
+         }
+       ]
+    }
+  ],
+  methods: [
+    function initE() {
+      this.SUPER();
+      this.
+        addClass(this.myClass()).
+        add(this.myClass()).
+        start().
+          addClass(this.myClass('subsection')).
+          add(this.myClass('subsection')).
+        end();
+      this.add(this.SubTest.create({}, this));
+    }
+  ]
+});
+add(some.good.package.Test.create());
+
+##  removeClass()
+##  setAttribute()
+##  removeAttribute()
+##  appendChild()
+##  removeChild()
+##  replaceChild()
+##  insertBefore()
+##  insertAfter()
+##  remove()
+##  addEventListener()
+##  removeEventListener()
+##  on()
+##  attr()
+##  attrs()
+##  style()
+##  tag()
+##  br()
+##  startContext() / endContext()
+##  start() / end()
+##  i18n
+##   Messages
+##   translate()
+##  add()
+##   adding properties
+##   toE()
+##   view:
+##  addBefore()
+##  removeAllChildren()
+##  setChildren()
+##  repeat()
+##  daoSlot()
+##  select()
+##  call()
+##  callOn
+##  callIf
+##  callIfElse
+##  forEach()
+##  write()
+##  Tags
+##   attributes
+##   registerElement
+##   elementForName
+##  View
+##   fromProperty()
+##  Controller
+##  Views
+##   ActionView
+##  StackView
+##  More

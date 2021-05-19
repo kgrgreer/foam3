@@ -229,17 +229,22 @@ public class QueryParser
       Expr prop = ( Expr ) values[0];
 
       Object[] value = (Object[]) values[4];
-      if ( value[0] instanceof Date || prop instanceof AbstractDatePropertyInfo) {
-
+      if ( prop instanceof AbstractDatePropertyInfo ) {
+        Date[] dates;
+        if ( value[0] instanceof Integer ) {
+          dates = convertToYearRange((int) value[0]);
+        } else {
+          dates = (Date[]) value[0];
+        }
         And and = new And();
         Gte gte = new Gte();
         gte.setArg1(prop);
-        gte.setArg2((value[0] instanceof Expr) ? (Expr) value[0] :
-          new foam.mlang.Constant(value[0]));
+        gte.setArg2((dates[0] instanceof Expr) ? (Expr) dates[0] :
+          new foam.mlang.Constant(dates[0]));
         Lte lte = new Lte();
         lte.setArg1(prop);
-        lte.setArg2((value[0] instanceof Expr) ? (Expr) value[0] :
-          new foam.mlang.Constant(value[0]));
+        lte.setArg2((dates[1] instanceof Expr) ? (Expr) dates[1] :
+          new foam.mlang.Constant(dates[1]));
 
         Binary[] predicates = { gte, lte };
         and.setArgs(predicates);
@@ -303,9 +308,21 @@ public class QueryParser
         new Lt() : new Lte();
       predicate.setArg1((Expr) values[0]);
 
+      if ( values[0] instanceof AbstractDatePropertyInfo ) {
+        if ( values[2] instanceof Integer ) {
+          Calendar c = Calendar.getInstance();
+          // beginning of year
+          c.set((int) values[2], 0, 0);
+
+          values[2] = c.getTime();
+        } else {
+          var dates = (Date[]) values[2];
+          values[2] = dates[0];
+        }
+      }
+
       predicate
-        .setArg2((values[2] instanceof Expr) ? (Expr) values[2] :
-          new foam.mlang.Constant(values[2]));
+        .setArg2(( values[2] instanceof Expr ) ? (Expr) values[2] : new foam.mlang.Constant(values[2]));
 
       return predicate;
     });
@@ -321,6 +338,19 @@ public class QueryParser
         new Gt() : new Gte();
       predicate.setArg1(( Expr ) values[0]);
 
+      if ( values[0] instanceof AbstractDatePropertyInfo ) {
+        if ( values[2] instanceof Integer ) {
+          Calendar c = Calendar.getInstance();
+          // end of year
+          c.set((int) values[2] + 1, 0, 0);
+
+          values[2] = c.getTime();
+        } else {
+          var dates = (Date[]) values[2];
+          values[2] = dates[1];
+        }
+      }
+
       predicate
         .setArg2(( values[2] instanceof Expr ) ? (Expr) values[2] : new foam.mlang.Constant(values[2]));
 
@@ -328,7 +358,7 @@ public class QueryParser
     });
 
     grammar.addSymbol("VALUE", new GreedyAlt(grammar.sym("ME"),grammar.sym("NUMBER"),
-      grammar.sym("DATE"), grammar.sym("STRING")));
+      grammar.sym("DATE"),grammar.sym("STRING")));
 
     grammar.addSymbol("COMPOUND_VALUE", new Alt(grammar.sym("NEGATE_VALUE"),
       grammar.sym("OR_VALUE"), grammar.sym("AND_VALUE")));
@@ -391,28 +421,19 @@ public class QueryParser
     grammar.addAction("RANGE_DATE", (val, x) -> {
       Object[] result = (Object[]) val;
 
-      Calendar c = new GregorianCalendar();
-      // d1..d2
-      if (result.length > 10 && result[5].equals("..")) {
-        Date date1 = null, date2 = null;
-        c.set((Integer) result[0], (Integer) result[2] - 1, (Integer) result[4]);
-        date1 = c.getTime();
-        c.clear();
-        c.set((Integer) result[6], (Integer) result[8] - 1, (Integer) result[10]);
-        date2 = c.getTime();
+      Object[] startArr = (Object[]) result[0];
+      Object[] endArr = (Object[]) result[2];
 
-        Date[] dates = new Date[]{date1, date2};
-        return dates;
-      }
-      return val;
+      Date[] dates = new Date[] { (Date) startArr[0], (Date) endArr[1] };
+      return dates;
     });
 
     grammar.addSymbol("LITERAL_DATE", new Alt(
       new Seq(
         grammar.sym("NUMBER"),
-        Literal.create("-"),
+        new Alt(Literal.create("-"), Literal.create("/")),
         grammar.sym("NUMBER"),
-        Literal.create("-"),
+        new Alt(Literal.create("-"), Literal.create("/")),
         grammar.sym("NUMBER"),
         Literal.create("T"),
         grammar.sym("NUMBER"),
@@ -421,30 +442,23 @@ public class QueryParser
       ),
       new Seq(
         grammar.sym("NUMBER"),
-        Literal.create("-"),
+        new Alt(Literal.create("-"), Literal.create("/")),
         grammar.sym("NUMBER"),
-        Literal.create("-"),
+        new Alt(Literal.create("-"), Literal.create("/")),
         grammar.sym("NUMBER"),
         Literal.create("T"),
         grammar.sym("NUMBER")
       ),
       new Seq(
         grammar.sym("NUMBER"),
-        Literal.create("-"),
+        new Alt(Literal.create("-"), Literal.create("/")),
         grammar.sym("NUMBER"),
-        Literal.create("-"),
+        new Alt(Literal.create("-"), Literal.create("/")),
         grammar.sym("NUMBER")
       ),
       new Seq(
         grammar.sym("NUMBER"),
-        Literal.create("-"),
-        grammar.sym("NUMBER")
-      ),
-      new Seq(
-        grammar.sym("NUMBER"),
-        Literal.create("/"),
-        grammar.sym("NUMBER"),
-        Literal.create("/"),
+        new Alt(Literal.create("-"), Literal.create("/")),
         grammar.sym("NUMBER")
       ),
       //YYYY
@@ -452,20 +466,31 @@ public class QueryParser
         grammar.sym("NUMBER"))
     ));
     grammar.addAction("LITERAL_DATE", (val, x) -> {
-      Calendar c = new GregorianCalendar();
-      c.clear();
+      Calendar start = new GregorianCalendar();
+      start.clear();
+
+      Calendar end = new GregorianCalendar();
+      end.clear();
 
       Object[] result = (Object[]) val;
+      var dateFmt = result.length;
 
-      c.set(
-        result.length >  1 ? (Integer) result[0]     : 0,
-        result.length >  3 ? (Integer) result[2] - 1 : 0,
-        result.length >  5 ? (Integer) result[4]     : 0,
-        result.length >  7 ? (Integer) result[6]     : 0,
-        result.length >  9 ? (Integer) result[8]     : 0,
-        result.length > 11 ? (Integer) result[10]    : 0);
+      start.set(
+        dateFmt >=  1 ? (Integer) result[0]     : 0,
+        dateFmt >=  3 ? (Integer) result[2] - 1 : 0,
+        dateFmt >=  5 ? (Integer) result[4]     : 0,
+        dateFmt >=  7 ? (Integer) result[6]     : 0,
+        dateFmt >=  9 ? (Integer) result[8]     : 0);
 
-      return c.getTime();
+      end.set(
+        dateFmt >=  1 ? dateFmt == 1 ? (Integer) result[0] + 1 : (Integer) result[0]  : 0,
+        dateFmt >=  3 ? dateFmt == 3 ? (Integer) result[2]     : (Integer) result[2] - 1 : 0,
+        dateFmt >=  5 ? dateFmt == 5 ? (Integer) result[4] + 1 : (Integer) result[4]  : 0,
+        dateFmt >=  7 ? dateFmt == 7 ? (Integer) result[6] + 1 : (Integer) result[6]  : 0,
+        dateFmt >=  9 ? dateFmt == 9 ? (Integer) result[8] + 1 : (Integer) result[8]  : 0);
+
+      Date[] dates = new Date[] { start.getTime(), end.getTime() };
+      return dates;
     });
 
     grammar.addSymbol("RELATIVE_DATE", new Seq1(0,
@@ -565,6 +590,16 @@ public class QueryParser
     });
 
     return grammar;
+  }
+
+  protected Date[] convertToYearRange(int year) {
+    Calendar start = Calendar.getInstance();
+    start.set(year, 0, 0);
+
+    Calendar end = Calendar.getInstance();
+    end.set(year + 1, 0, 0);
+
+    return new Date[] { start.getTime(), end.getTime() };
   }
 
   protected String compactToString(Object val) {

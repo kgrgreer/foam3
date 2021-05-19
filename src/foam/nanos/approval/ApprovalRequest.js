@@ -43,7 +43,8 @@
     'foam.dao.AbstractDAO',
     'foam.u2.dialog.Popup',
     'foam.log.LogLevel',
-    'foam.nanos.approval.ApprovalStatus'
+    'foam.nanos.approval.ApprovalStatus',
+    'foam.nanos.approval.CustomViewReferenceApprovable'
   ],
 
   imports: [
@@ -875,8 +876,13 @@
         var objId = property.adapt.call(property, self.refObjId, self.refObjId, property);
 
         var obj = await X[daoKey].find(objId);
-        var of = obj.cls_;
 
+        if ( this.CustomViewReferenceApprovable.isInstance(obj) ) {
+          obj.launchViewReference(X, this);
+          return;
+        }
+
+        var of = obj.cls_;
         var summaryData = obj;
 
         // If the dif of objects is calculated and stored in Map(obj.propertiesToUpdate),
