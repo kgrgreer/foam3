@@ -320,7 +320,7 @@ foam.CLASS({
     async function initE() {
       this.SUPER();
 
-      this.testData = await fetch("examples.js").then(function(response) {
+      this.testData = await fetch("examples").then(function(response) {
         return response.text();
       });
 
