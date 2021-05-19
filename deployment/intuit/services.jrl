@@ -190,3 +190,91 @@ p({
       .build();
   """
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"intuit.businessDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    import foam.core.PropertyInfo;
+    import net.nanopay.crunch.registration.BusinessDetailData;
+    import net.nanopay.model.Business;
+
+    import java.util.Map;
+
+    var propMap = Map.of(
+      Business.ADDRESS, BusinessDetailData.ADDRESS,
+      Business.BUSINESS_NAME, BusinessDetailData.BUSINESS_NAME,
+      Business.EMAIL, BusinessDetailData.EMAIL,
+      Business.MAILING_ADDRESS, BusinessDetailData.MAILING_ADDRESS
+    );
+
+    dao = new foam.nanos.crunch.CapabilityUpdateInterceptDAO(propMap, "crunch.onboarding.api.business-details");
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.model.Business.getOwnClassInfo())
+      .setDecorator(dao)
+      .setInnerDAO(x.get("businessDAO"))
+      .build();
+  """,
+  "client":
+  """
+  {
+    "of":"net.nanopay.model.Business",
+    "cache": false,
+    "remoteListenerSupport": false,
+    "decorators": [
+      {
+        "class":"foam.nanos.fs.FileDAODecorator"
+      },
+      {
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
+      }
+    ]
+  }
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"intuit.userDAO",
+  "serve": true,
+  "authenticate": false,
+  "serviceScript":
+  """
+    import foam.core.PropertyInfo;
+    import foam.nanos.auth.User;
+    import net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData;
+
+    import java.util.Map;
+
+    var propMap = Map.of(
+      User.ADDRESS, SigningOfficerPersonalData.ADDRESS,
+      User.PHONE_NUMBER, SigningOfficerPersonalData.PHONE_NUMBER
+    );
+
+    dao = new foam.nanos.crunch.CapabilityUpdateInterceptDAO(propMap, "crunch.onboarding.signing-officer-information");
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setDecorator(dao)
+      .setInnerDAO(x.get("userDAO"))
+      .build();
+  """,
+  "client":
+  """
+  {
+    "of": "foam.nanos.auth.User",
+    "cache": false,
+    "decorators": [
+      {
+        "class":"foam.nanos.fs.FileDAODecorator"
+      },
+      {
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
+      }
+    ]
+  }
+  """
+})
