@@ -16,8 +16,8 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.bank',
-  name: 'AccountDetailView',
+  package: 'net.nanopay.bank.ui',
+  name: 'AccountSummaryView',
   extends: 'foam.u2.View',
 
   documentation: `

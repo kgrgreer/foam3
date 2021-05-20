@@ -390,7 +390,7 @@ foam.CLASS({
                   if ( ! ! destinationAccount && destinationAccount.forContact ) {
                     return self.E()
                     .start({
-                      class: 'net.nanopay.bank.AccountDetailView',
+                      class: 'net.nanopay.bank.ui.AccountSummaryView',
                       bankAccountDetail: destinationAccount
                     }).addClass('invoice-details')
                     .end();
