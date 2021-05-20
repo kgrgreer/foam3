@@ -46,6 +46,17 @@ foam.CLASS({
       name: 'format',
       class: 'Enum',
       of: 'foam.nanos.http.Format'
+    },
+    {
+      name: 'logger',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.logger.Logger',
+      visibility: 'HIDDEN',
+      javaFactory: `
+        return new PrefixLogger(new Object[] {
+          this.getClass().getSimpleName()
+        }, (Logger) getX().get("logger"));
+      `
     }
   ],
 
@@ -109,7 +120,7 @@ foam.CLASS({
         PrintWriter out = x.get(PrintWriter.class);
         out.println();
         out.flush();
-        ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "success");
+        getLogger().debug("put.success");
 
         HttpServletResponse resp = x.get(HttpServletResponse.class);
         resp.setStatus(HttpServletResponse.SC_OK);
@@ -139,7 +150,7 @@ foam.CLASS({
 
       ClassInfo cInfo = dao.getOf();
       Predicate pred = new WebAgentQueryParser(cInfo).parse(x, q);
-      ((Logger) x.get("logger")).debug("predicate", pred.getClass(), pred.toString());
+      getLogger().debug(pred.toString());
       dao = dao.where(pred);
 
       PropertyInfo idProp = (PropertyInfo) cInfo.getAxiomByName("id");
@@ -162,14 +173,14 @@ foam.CLASS({
       dao = dao.limit(pageSize);
 
       List fobjects = ((ArraySink) dao.select(new ArraySink())).getArray();
-      ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "Number of FObjects selected: " + fobjects.size());
+      getLogger().debug("Number of FObjects selected: " + fobjects.size());
 
       outputFObjects(x, dao, fobjects);
 
       PrintWriter out = x.get(PrintWriter.class);
       out.println();
       out.flush();
-      ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "success");
+      getLogger().debug("select.success");
 
       resp.setStatus(HttpServletResponse.SC_OK);
       `
@@ -203,7 +214,7 @@ foam.CLASS({
       dao.remove(targetFobj);
       DigUtil.outputException(x, new DigSuccessMessage.Builder(x).setMessage("Success").build(), getFormat());
 
-      ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "success");
+      getLogger().debug("remove.success");
       `
     },
     {
