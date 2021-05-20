@@ -392,7 +392,7 @@ foam.CLASS({
                     self.E()
                       .start({
                         class: 'net.nanopay.bank.ui.AccountSummaryView',
-                        bankAccountDetail: destinationAccount
+                        bankAccountDetail: destinationAccount.accountDetails
                       }).addClass('invoice-details').end()
                     : 
                     self.E().start().add(destinationAccount.summary).end();

@@ -629,8 +629,7 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.bank.AccountDetailSummary',
-      name: 'accountDetails',
-      networkTransient: true
+      name: 'accountDetails'
     },
   ],
 

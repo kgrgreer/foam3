@@ -133,6 +133,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/Transfer' },
   { name: 'net/nanopay/tx/ExternalTransfer' },
   { name: 'net/nanopay/tx/AcceptAware' },
+  { name: 'net/nanopay/bank/AccountDetailSummary' },
   { name: 'net/nanopay/bank/ui/BankPADForm', flags: ['web'] },
   { name: 'net/nanopay/bank/BankAccount' },
   { name: 'net/nanopay/bank/EstimationAccount' },
