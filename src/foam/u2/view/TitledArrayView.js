@@ -52,12 +52,13 @@ foam.CLASS({
                       .addClass(self.myClass('header-row'))
                       .start().addClass('h500').add((self.name || foam.String.labelize(e.cls_.name)) + ' #' + (i+1) ).end()
                       .tag(self.Row.REMOVE, {
-                        isDestructive: true,
+                        // isDestructive: true,
                         // icon: '/images/remove-circle.svg',
                         // encode data as an embedded data URL of the SVG
                         // because then the GUI updates without flickering
                         buttonStyle: 'TERTIARY',
-                        icon: self.theme ? self.theme.glyphs.trash.getDataUrl() : "data:image/svg+xml;utf8,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath fill='%23d9170e' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z'/%3E%3C/svg%3E"
+                        themeIcon: 'trash',
+                        icon: "data:image/svg+xml;utf8,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath fill='%23d9170e' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z'/%3E%3C/svg%3E"
                       })
                     .end()
                     .start(valueView, { data$: row.value$ })
