@@ -50,7 +50,7 @@ foam.CLASS({
                     .addClass(self.myClass('value-view-container'))
                     .start(self.Cols)
                       .addClass(self.myClass('header-row'))
-                      .start().addClass('h500').add((self.name || foam.String.labelize(e.cls_.name)) + ' #' + (i+1) ).end()
+                      .start().addClass('h500').add( (self.title || foam.String.labelize(e.cls_.name)) + ' #' + (i+1) ).end()
                       .tag(self.Row.REMOVE, {
                         // icon: '/images/remove-circle.svg',
                         // encode data as an embedded data URL of the SVG
