@@ -63,3 +63,18 @@ p({
   "spid":"bepay",
   "lifecycleState":1
 })
+
+// BePay Support
+p({
+  "class":"foam.nanos.auth.User",
+  "id":2028,
+  "firstName":"Support",
+  "lastName":"BePay",
+  "email":"support@bepay.com",
+  "emailVerified":true,
+  "password":"TBJGH4IyGqY=:ZL5CC1rlL1fBmqRoJ5dhCz03J3r8KIuMWS7zua5cr/gL0j1LBD2P7HKluI5fN7roE1GTjlWnJBhdYbhHkwhK3Q==",
+  "status":2,
+  "group":"bepay-internal-support",
+  "spid":"bepay",
+  "lifecycleState":1
+})

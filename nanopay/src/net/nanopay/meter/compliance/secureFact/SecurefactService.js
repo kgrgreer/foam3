@@ -243,13 +243,13 @@ foam.CLASS({
         try {
           Outputter jsonOutputter = new Outputter(x).setPropertyPredicate(new AndPropertyPredicate(x, new PropertyPredicate[] {new NetworkPropertyPredicate(), new PermissionedPropertyPredicate()})).setOutputClassNames(false);
           String requestJson = jsonOutputter.stringify(request);
-          StringEntity entity = new StringEntity(requestJson);
-          entity.setContentType("application/json");
+          StringEntity entity = new StringEntity(requestJson, "UTF-8");
 
           String basicAuth = request.getAuthKey() + ":";
           httpPost.addHeader("Content-type", "application/json");
+          httpPost.addHeader("Accept-Encoding", "UTF-8");
           httpPost.addHeader("Authorization", "Basic " +
-            Base64.getEncoder().encodeToString(basicAuth.getBytes()));
+            Base64.getMimeEncoder().encodeToString(basicAuth.getBytes()));
           httpPost.setEntity(entity);
           httpResponse =  httpClient.execute(httpPost);
           if ( httpResponse.getStatusLine().getStatusCode() >= 500 ) {
