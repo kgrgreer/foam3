@@ -25,3 +25,10 @@ p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2026-bepayCorridorCapabi
 p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2026-bepayPlannerCapability",sourceId:2026,targetId:"bepayPlannerCapability",status:1})
 p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2026-bepay-tx-reason-codes",sourceId:2026,targetId:"bepay-tx-reason-codes",status:1})
 p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2026-bepay-tx-fees",sourceId:2026,targetId:"bepay-tx-fees",status:1})
+
+// bepay-support
+p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2028-bepay",sourceId:2028,targetId:"bepay",status:1})
+p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2028-bepayCorridorCapability",sourceId:2028,targetId:"bepayCorridorCapability",status:1})
+p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2028-bepayPlannerCapability",sourceId:2028,targetId:"bepayPlannerCapability",status:1})
+p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2028-bepay-tx-reason-codes",sourceId:2028,targetId:"bepay-tx-reason-codes",status:1})
+p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2028-bepay-tx-fees",sourceId:2028,targetId:"bepay-tx-fees",status:1})
