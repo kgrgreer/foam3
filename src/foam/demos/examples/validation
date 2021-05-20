@@ -2,7 +2,8 @@
 
 ##  AssertValue
 The simplest form of validation is to specify an assertValue property on a property.
-The assertValue function receives the old and new values of the property.
+The assertValue function receives the old and new values of the property and if
+it throws an exception the new value is refused.
 --
 foam.CLASS({
   name: 'Test',
@@ -49,6 +50,14 @@ print(t.age);
 ##  validateObj
 The limitation of assertValue, is that it only lets you perform validations involving a single value.
 If you want to perform validations that involve more than one property, then you can use validateObj.
+Another difference of validateObj is that it doesn't block setting the property to an incorrect value,
+it just reports the value as being incorrect. This makes binding to a GUI easier, as it allows the user
+to type in intermediate values which are not yet correct. For example, for a string with a minimum length
+of five characters, the user could still type in "1", "12", "123", "1234" on the way to typing in the
+correct value of "12345".
+All errors returned from validateObj methods are stored in errors_. This approach is used rather than throwing
+an exception because it allows for the reporting of multiple errors, rather than just one at a time.
+The slot errors_$ can be subscribed to to be informed of a change to an object's validity.
 --
 foam.CLASS({
   name: 'Flight',
