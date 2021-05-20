@@ -780,6 +780,9 @@ var classes = [
   'net.nanopay.security.auth.LoginAttemptAuthService',
   'net.nanopay.security.auth.LoginAttempts',
 
+  // OAuth
+  'net.nanopay.auth.oauth.OAuthCredential',
+
   // SSO
   'net.nanopay.auth.openid.SSOToken',
   'net.nanopay.auth.openid.OTLoginToken',

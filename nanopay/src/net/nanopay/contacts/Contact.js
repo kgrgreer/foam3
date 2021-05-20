@@ -76,11 +76,6 @@ foam.CLASS({
     'net.nanopay.ui.wizard.WizardController'
   ],
 
-  tableColumns: [
-    'organization',
-    'status'
-  ],
-
   messages: [
     {
       name: 'CONFIRM_RELATIONSHIP',

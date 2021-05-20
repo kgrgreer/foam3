@@ -86,7 +86,13 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'status'
+    'organization',
+    'firstName',
+    'lastName',
+    'email',
+    'bankAccount.denomination',
+    'bankAccount.summary',
+    'signUpStatus'
   ],
 
   sections: [
