@@ -152,7 +152,7 @@ foam.CLASS({
     {
       name: 'stop',
       label: 'Stop Alarm',
-      availablePermissions: ['foam.nanos.alarming.Alarm.permission.stop'],
+      availablePermissions: ['foam.nanos.alarming.Alarm.rw.stop'],
       code: function() {
         let self = this;
         this.note = '';
@@ -174,7 +174,7 @@ foam.CLASS({
     {
       name: 'start',
       label: 'Start Alarm',
-      availablePermissions: ['foam.nanos.alarming.Alarm.permission.start'],
+      availablePermissions: ['foam.nanos.alarming.Alarm.rw.start'],
       code: function() {
         this.isActive = true;
         this.reason = this.AlarmReason.MANUAL;
