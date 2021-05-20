@@ -355,8 +355,8 @@ public class TrevisoService
     return getExchangeService(getX()).updateTransactionStatus(transaction);
   }
 
-  public List searchNatureCode(String natureCode) throws RuntimeException {
-    return getExchangeService(getX()).searchNatureCode(natureCode);
+  public List searchNatureCode(long userId, String natureCode) throws RuntimeException {
+    return getExchangeService(getX()).searchNatureCode(userId, natureCode);
   }
 
 }

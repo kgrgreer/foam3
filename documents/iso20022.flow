@@ -1,5 +1,5 @@
-<h2 id="iso20022">ISO 20022</h2>
-<h4 id="overview">Overview</h4>
+<h1 id="iso20022">ISO 20022</h1>
+<h2 id="overview">Overview</h2>
 <p>ISO 20022 is a multi part International Standard prepared by ISO Technical Committee TC68 Financial Services. It
   describes a common platform for the development of messages using:</p>
 <ul>
@@ -11,14 +11,14 @@
     the ISO 20022 XML or ASN.1-based syntax is preferred.
   </li>
 </ul>
-<h4 id="modelgeneration">Model Generation</h4>
-<h4 id="overview-1">Overview</h4>
+<h2 id="modelgeneration">Model Generation</h2>
+<h3 id="overview-1">Overview</h3>
 <p>Using FOAM we are able to model the entire ISO 20022 message repository. Through the use of scripts, we have the
   ability to parse XSD schema files (freely available <a href="https://www.iso20022.org/full_catalogue.page">here</a>)
   to generate FOAM models. These models are complete with full documentation, full and short names and property level
   validation. This greatly reduces the pain of having to model each message by hand which would otherwise be a very
   tedious property.</p>
-<h4 id="dependencies">Dependencies</h4>
+<h3 id="dependencies">Dependencies</h3>
 <p>The XSD parser &amp; model generator script use node.js and require the following packages:</p>
 <ul>
   <li>json-stringify-pretty-compact: ^1.0.4</li>
@@ -26,7 +26,7 @@
   <li>underscore: ^1.8.3</li>
   <li>xmldom : ^0.1.27</li>
 </ul>
-<h4 id="usage">Usage</h4>
+<h3 id="usage">Usage</h3>
 <p>To generate FOAM models from an XSD file by invoking the following command in the top level project directory
   (NANOPAY/):</p>
 <code>node tools/xsd/index.js <package> <files>...</code>

@@ -51,6 +51,35 @@ p({
 })
 
 p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"facadeContactDAO",
+  "serve":true,
+  "description":"Contact facade for support",
+  "serviceScript":
+  """
+    dao = new foam.dao.CopyFromDAO.Builder(x)
+      .setDelegate(x.get("contactDAO"))
+      .setTo(net.nanopay.contacts.Contact.getOwnClassInfo())
+      .setOf(net.nanopay.contacts.facade.FacadeContact.getOwnClassInfo())
+      .build();
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.contacts.facade.FacadeContact.getOwnClassInfo())
+      .setDelegate(dao)
+      .setInnerDAO(dao)
+      .setAuthorize(false)
+      .setEnableInterfaceDecorators(false)
+      .build();
+  """,
+  "client":
+  """
+  {
+    "of":"net.nanopay.contacts.facade.FacadeContact"
+  }
+  """
+})
+
+p({
   "class": "foam.nanos.boot.NSpec",
   "name": "paymentCodeService",
   "serve": true,

@@ -57,7 +57,8 @@ p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.modal.De
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.modal.DeleteContactView.FAIL_MSG",target:"Failed to delete beneficiary"})
 
 p({class:"foam.i18n.Locale",locale:"en",source:"mainmenu.contacts.label", target:"Beneficiaries"})
-p({class:"foam.i18n.Locale",locale:"en","source":"mainmenu.contacts.createLabel","target":"Add Beneficiary"})
+p({class:"foam.i18n.Locale",locale:"en",source:"mainmenu.contacts.browseTitle", target:"Beneficiaries"})
+p({class:"foam.i18n.Locale",locale:"en",source:"mainmenu.contacts.createLabel","target":"Add Beneficiary"})
 p({class:"foam.i18n.Locale",locale:"en",source:"mainmenu.contacts.handler.title",target:"Beneficiaries"})
 p({class:"foam.i18n.Locale",locale:"en",source:"mainmenu.contacts.handler.createLabel",target:"Add Beneficiary"})
 p({class:"foam.i18n.Locale",locale:"en",source:"mainmenu.contacts.handler.createControllerView.view.title",target:"Add Beneficiary"})
@@ -248,5 +249,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.Sign
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.SECTION_SIGNING_OFFICER_PERSONAL_INFORMATION_SECTION.title",target:"Informações Complementares do Operador"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.SECTION_SIGNING_OFFICER_ADDRESS_SECTION.title",target:"Endereço do Operador"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.SECTION_SIGNING_OFFICER_ADDRESS_SECTION.subTitle",target:"Informe seu endereço residencial"})
+
+/* TREVISO NOTIFICATION RULE */
+// messages
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.partner.treviso.invoice.TrevisoNotificationRule.TED_TEXT_MSG",target:"ATTENTION: This transaction has not yet been sent!\n\nTo complete, send a TED of ({amount}) to:\n\nTreviso Corretora de Câmbio S.A\nCNPJ: 02.992.317/0001-87\nBanco SC Treviso (143)\nInstitution: 0001\nAccount: 1-1\n\nIf not received, the transaction will be canceled automatically."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.invoice.TrevisoNotificationRule.TED_TEXT_MSG",target:"ATENÇÃO: Esta transação ainda não foi enviada!\n\nPara completar, envie um TED de ({amount}) para:\n\nTreviso Corretora de Câmbio S.A\nCNPJ: 02.992.317/0001-87\nBanco SC Treviso (143)\nAgencia: 0001\nConta: 1-1\n\nO não envio dos fundos causará o cancelamento automático desta transação."})
 
 

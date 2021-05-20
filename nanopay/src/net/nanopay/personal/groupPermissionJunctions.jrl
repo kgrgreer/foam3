@@ -9,7 +9,6 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targ
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"institution.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"institution.create"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"invoice.create"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"invoice.holdingAccount"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"invoice.pay"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"menu.read.notifications"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"naturecode.read.*"})

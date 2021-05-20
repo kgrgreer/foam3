@@ -11,12 +11,12 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.alarming.Alarm;
+import foam.log.LogLevel;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.notification.Notification;
 import net.nanopay.tx.TransactionEvent;
 import net.nanopay.tx.rbc.RBCEFTFileGenerator;
-import net.nanopay.tx.bmo.BmoFormatUtil;
 import net.nanopay.tx.rbc.RbcCITransaction;
 import net.nanopay.tx.rbc.RbcCOTransaction;
 import net.nanopay.tx.rbc.RbcTransaction;
@@ -63,6 +63,7 @@ public class RbcGenerateFileCron implements ContextAgent {
     /**
      * get transactions
      */
+    Logger logger = new PrefixLogger(new String[] {"RBC"}, (Logger) x.get("logger"));
     try {
       DAO transactionDAO = (DAO) x.get("localTransactionDAO");
 
@@ -96,17 +97,12 @@ public class RbcGenerateFileCron implements ContextAgent {
 
       generate(x, transactions, spid);
     } catch (Exception e) {
-      // create alarm
-      String name = "RbcGenerateFileCron Exception";
       DAO alarmDAO = (DAO) x.get("alarmDAO");
-      Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, name));
-      if ( alarm != null && alarm.getIsActive() ) { return; }
-      alarm = new Alarm.Builder(x)
-        .setName(name)
-        .setIsActive(true)
-        .setNote("RbcGenerateFileCron Exception: " + e.getMessage())
-        .build();
+      String name = "RbcGenerateFileCron-Status";
+      String note = "RbcGenerateFileCron Exception: " + e.getMessage();
+      Alarm alarm = new Alarm(name, note, LogLevel.ERROR);
       alarmDAO.put(alarm);
+      logger.error(name, e);
     }
   }
 
@@ -131,13 +127,12 @@ public class RbcGenerateFileCron implements ContextAgent {
         generateFile(x, eftLimitTransactions(x, coTransactions), spid);
       }
     } catch ( Exception e ) {
-      String msg = "RBC EFT File Generation Failed : " + e.getMessage();
-      logger.error(msg, e);
-      Notification notification = new Notification.Builder(x)
-        .setTemplate("NOC")
-        .setBody(msg)
-        .build();
-      ((DAO) x.get("localNotificationDAO")).put(notification);
+      DAO alarmDAO = (DAO) x.get("alarmDAO");
+      String name = "RBCGenerateFileCron-Generate";
+      String note = "RBC EFT File Generation Failed : " + e.getMessage();
+      Alarm alarm = new Alarm(name, note, LogLevel.ERROR);
+      alarmDAO.put(alarm);
+      logger.error(name, e);
     }
   }
 
@@ -162,12 +157,20 @@ public class RbcGenerateFileCron implements ContextAgent {
         eftFile.setSpid(spid);
         ((DAO) x.get("eftFileDAO")).put(eftFile);
       } catch ( Exception e ) {
-        logger.error("RBC Batch Error while updating transaction: " + e.getMessage(), e);
-        BmoFormatUtil.sendEmail(x, "RBC Batch Error while updating transaction: " + e.getMessage(), e);
+        DAO alarmDAO = (DAO) x.get("alarmDAO");
+        String name = "RbcBatchTransactionError-Status";
+        String note = "RBC Batch Error while updating transaction: " + e.getMessage();
+        Alarm alarm = new Alarm(name, note, LogLevel.ERROR);
+        alarmDAO.put(alarm);
+        logger.error(name, e);
       }
     } catch ( Exception e ) {
-      logger.error("RBC Batch File Generation Error : " + e.getMessage(), e);
-      BmoFormatUtil.sendEmail(x, "RBC EFT Error generating EFT File.", e);
+      DAO alarmDAO = (DAO) x.get("alarmDAO");
+      String name = "RbcEFTFileError-Status";
+      String note = "RBC EFT Error generating EFT File: " + e.getMessage();
+      Alarm alarm = new Alarm(name, note, LogLevel.ERROR);
+      alarmDAO.put(alarm);
+      logger.error(name, e);
     }
   }
 
@@ -180,14 +183,12 @@ public class RbcGenerateFileCron implements ContextAgent {
         transaction.setStatus(TransactionStatus.SENT);
         ((DAO) x.get("localTransactionDAO")).put(transaction);
       } catch ( Exception e ) {
-        String msg = "RBC Batch Error while updating transaction: " + transaction.getId() + " with error: " + e.getMessage();
-        logger.error(msg, e);
-        BmoFormatUtil.sendEmail(x, msg, e);
-        Notification notification = new Notification.Builder(x)
-          .setTemplate("NOC")
-          .setBody(msg)
-          .build();
-        ((DAO) x.get("localNotificationDAO")).put(notification);
+        DAO alarmDAO = (DAO) x.get("alarmDAO");
+        String name = "RbcBatchTransactionError-Status";
+        String note = "RBC Batch Error while updating transaction: " + e.getMessage();
+        Alarm alarm = new Alarm(name, note, LogLevel.ERROR);
+        alarmDAO.put(alarm);
+        logger.error(name, e);
       }
     }
   }

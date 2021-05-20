@@ -63,6 +63,15 @@
     ^table-tools {
       margin-top: 10px;
       margin-bottom: 20px;
+      align-items: center;
+    }
+
+    ^browse-title{
+      padding-bottom: 32px;
+    }
+
+    ^label{
+      padding-bottom: 8px;
     }
   `,
 
@@ -142,8 +151,6 @@
       factory: function() { return this.dao; },
       view: {
         class: 'foam.u2.view.ScrollTableView',
-        enableDynamicTableHeight: true,
-        editColumnsEnabled: false,
         columns: [
           'referenceSummary',
           'assignedTo.legalName',
@@ -180,12 +187,13 @@
         this.SUPER();
         this.start().addClass(this.myClass())
           .start(this.Rows).addClass(this.myClass('container'))
-            .start('h1')
-              .addClass(this.myClass('browse-title'))
+            .start()
+              .addClasses(['h100', this.myClass('browse-title')])
               .add(this.BATCH_TITLE)
             .end()
             .start().addClass(this.myClass('currency'))
-              .start('h6')
+              .start()
+                .addClasses(['h500', this.myClass('label')])
                 .add(this.CURRENCY_TITLE)
               .end()
               .tag(this.CURRENCY)
@@ -196,7 +204,8 @@
                   return self.E()
                     .start(self.Cols)
                       .start().addClass(self.myClass('requested'))
-                        .start('h5')
+                        .start()
+                          .addClasses(['h500', this.myClass('label')])
                           .add(this.REQUESTED_TITLE)
                         .end()
                         .start()
@@ -204,7 +213,8 @@
                         .end()
                       .end()
                       .start().addClass(self.myClass('received'))
-                        .start('h5')
+                        .start()
+                          .addClasses(['h500', this.myClass('label')])
                           .add(this.RECEIVED_TITLE)
                         .end()
                         .start()
@@ -220,7 +230,8 @@
             .start(this.Cols).addClass(this.myClass('table-tools'))
               .start(this.Cols).style({ 'align-items': 'center' })
                 .addClass(this.myClass('show-assigned'))
-                .start('h7')
+                .start()
+                  .addClass('p')
                   .add(this.SHOW_ASSIGNED_TITLE)
                 .end()
                 .tag(this.SHOW_ASSIGNED)

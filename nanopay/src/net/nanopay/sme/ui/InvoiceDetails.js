@@ -33,7 +33,8 @@ foam.CLASS({
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
-    'net.nanopay.invoice.model.PaymentStatus'
+    'net.nanopay.invoice.model.PaymentStatus',
+    'net.nanopay.partner.treviso.invoice.TrevisoNotificationRule'
   ],
 
   imports: [
@@ -42,7 +43,8 @@ foam.CLASS({
     'notify',
     'regionDAO',
     'subject',
-    'theme'
+    'theme',
+    'translationService'
   ],
 
   css: `
@@ -509,12 +511,18 @@ foam.CLASS({
             .addClass(this.myClass('invoice-content'))
             .addClass(this.myClass('invoice-content-text'))
             .addClass('invoice-note')
-            .add(this.slot(function(invoice$note) {
-              if ( invoice$note ) {
+            .add(this.slot(function(invoice$note, invoice$tedText) {
+              if ( invoice$note || invoice$tedText ) {
+                if ( invoice$tedText ) {
+                  invoice$tedText = self.translateTEDText(invoice$tedText);
+                }
+
+                const invoiceNoteWithTed = `${invoice$note}\n\n${invoice$tedText}`.trim();
+
                 return self.E()
                   .start()
                   .addClass('note')
-                    .add(invoice$note)
+                    .add(invoiceNoteWithTed)
                   .end();
               } else {
                 return self.E()
@@ -584,6 +592,19 @@ foam.CLASS({
             : formattedAddress += countryName;
       }
       return formattedAddress;
+    },
+
+    function translateTEDText(tedText) {
+      
+      if (foam.locale === 'en') return tedText;
+
+      const amount = tedText.match(/\(([^\)]*)\)/)[0]; // first pair of parentheses from ted text
+
+      // use message to translate the text
+      tedText = this.TrevisoNotificationRule.TED_TEXT_MSG;
+      tedText = tedText.replace('({amount})', amount);
+
+      return tedText;
     },
 
     function createInvoice4PDF() {

@@ -115,7 +115,6 @@ FOAM_FILES([
   { name: 'net/nanopay/account/ZeroAccountUserAssociation' },
   { name: 'net/nanopay/account/TrustAccount' },
   { name: 'net/nanopay/account/LossesAccount' },
-  { name: 'net/nanopay/account/HoldingAccount' },
   { name: 'net/nanopay/account/AuthenticatedAccountDAOTest' },
   { name: 'net/nanopay/account/LoanAccount' },
   { name: 'net/nanopay/account/LoanedTotalAccount' },
@@ -167,6 +166,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/CNBankAccount' },
   { name: 'net/nanopay/bank/SEBankAccount' },
   { name: 'net/nanopay/bank/AddBankAccountAction' },
+  { name: 'net/nanopay/sme/ui/CreateBankAccountAction' },
   { name: 'net/nanopay/bank/BankAccountTableView', flags: ['web'] },
   { name: 'net/nanopay/bank/BankAccountValidationMixin' },
   { name: 'net/nanopay/bank/StrategizedBankAccount' },
@@ -174,6 +174,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ui/BankPickCurrencyView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BankPickCurrencyDropDownView', flags: ['web'] },
   { name: 'net/nanopay/bank/CanReceiveCurrency' },
+  { name: 'net/nanopay/bank/MyBankAccountsBorder' },
   { name: 'net/nanopay/bank/GetDefaultCurrency' },
   { name: 'net/nanopay/bank/ui/AccountSummaryView' },
   { name: 'net/nanopay/bank/ui/BankAccountSelectionView', flags: ['web'] },
@@ -221,6 +222,7 @@ FOAM_FILES([
   { name: 'net/nanopay/model/User' },
   { name: 'net/nanopay/ui/wizard/WizardCssAxiom', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
+  { name: 'net/nanopay/ui/wizard/WizardController', flags: ['web'] },
   { name: 'net/nanopay/ui/wizardModal/WizardModal', flags: ['web'] },
   { name: 'net/nanopay/ui/wizardModal/WizardModalSubView', flags: ['web'] },
   { name: 'net/nanopay/ui/wizardModal/example/ExampleWizardModal', flags: ['web'] },
@@ -232,9 +234,11 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/email/EmailWhitelistEntry' },
   { name: 'net/nanopay/auth/email/DoNotSolicit' },
   { name: 'net/nanopay/auth/ExternalInvoiceTokenService' },
+  { name: 'net/nanopay/auth/ruler/AddExternalContactTokenRuleAction' },
   { name: 'net/nanopay/auth/ruler/LogoutUserAction' },
   { name: 'net/nanopay/auth/ruler/PreventDuplicateEmailAction' },
   { name: 'net/nanopay/auth/ruler/PreventDuplicateUsernameAction' },
+  { name: 'net/nanopay/auth/ruler/PermissionedUserRule' },
   { name: 'net/nanopay/auth/ruler/SpidLimitedPermissionedUserRule' },
   { name: 'net/nanopay/auth/ruler/predicate/IsUserInGroups' },
   { name: 'net/nanopay/auth/sms/PhoneVerificationTokenService', flags: ['web'] },
@@ -250,7 +254,6 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/SwitchUserView', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardOverview', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardSubView', flags: ['web'] },
-  { name: 'net/nanopay/ui/wizard/ContactWizardDetailView', flags: ['web'] },
   { name: 'net/nanopay/ui/NotificationActionCard', flags: ['web'] },
   { name: 'net/nanopay/ui/ContentCard', flags: ['web'] },
   { name: 'net/nanopay/ui/BusinessCard', flags: ['web'] },
@@ -275,6 +278,9 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/report/ScreeningResponseCounter', flags: ['web'] },
   { name: 'net/nanopay/meter/report/ScreeningResponseType', flags: ['web'] },
 
+  // OAuth
+  { name: 'net/nanopay/auth/oauth/OAuthCredential'},
+
   // SSO
   { name: 'net/nanopay/auth/openid/SSOToken' },
   { name: 'net/nanopay/auth/openid/OTLoginToken' },
@@ -284,7 +290,6 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/openid/OAuthService' },
   { name: 'net/nanopay/auth/openid/ClientOAuthService' },
   { name: 'net/nanopay/auth/openid/DUGRuleRefinement' },
-  { name: 'net/nanopay/auth/openid/DUGRuleActionRefinement' },
 
   // Exchangeable
   { name: 'net/nanopay/exchangeable/Security' },
@@ -1246,6 +1251,7 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/ExternalInvoiceTokenTest' },
   { name: 'net/nanopay/invoice/AuthenticatedInvoiceDAOTest' },
   { name: 'net/nanopay/invoice/test/invoiceHistoryAuthorizerTest' },
+  { name: 'net/nanopay/invoice/test/SigningOfficerInvoiceApprovalTest' },
   { name: 'net/nanopay/invoice/model/InvoiceTest' },
   { name: 'net/nanopay/test/TestsReporter' },
   { name: 'net/nanopay/test/TestReport' },
@@ -1982,10 +1988,12 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/br/businessSector/Divisao' },
   { name: 'net/nanopay/partner/br/businessSector/Secao' },
 
+  { name: 'net/nanopay/contacts/facade/FacadeContact' },
+
   //SWIFT
   { name: 'net/nanopay/swift/SCHEMA' },
   { name: 'net/nanopay/swift/Properties' },
-  
+
   { name: 'net/nanopay/swift/AbstractMT' },
   { name: 'net/nanopay/swift/MT103' },
   { name: 'net/nanopay/swift/MT205' }
