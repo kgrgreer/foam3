@@ -826,6 +826,7 @@
       name: 'viewReference',
       section: 'approvalRequestInformation',
       isDefault: true,
+      tableWidth: 150,
       isAvailable: function() {
         var self = this;
 

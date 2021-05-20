@@ -127,7 +127,7 @@ foam.CLASS({
     {
        type: 'Int',
        name: 'tableWidth',
-       value: 150
+       value: 130
     }
   ]
 });
@@ -326,7 +326,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'tableWidth',
-      value: 170
+      value: 130
     }
   ]
 });
@@ -354,7 +354,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'tableWidth',
-      value: 170
+      value: 130
     }
   ]
 });
