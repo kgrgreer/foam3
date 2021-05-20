@@ -52,7 +52,6 @@ foam.CLASS({
                       .addClass(self.myClass('header-row'))
                       .start().addClass('h500').add((self.name || foam.String.labelize(e.cls_.name)) + ' #' + (i+1) ).end()
                       .tag(self.Row.REMOVE, {
-                        // isDestructive: true,
                         // icon: '/images/remove-circle.svg',
                         // encode data as an embedded data URL of the SVG
                         // because then the GUI updates without flickering
