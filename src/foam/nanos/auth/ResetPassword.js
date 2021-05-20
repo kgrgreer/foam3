@@ -27,6 +27,7 @@ foam.CLASS({
     { name: 'RESET_PASSWORD_TITLE', message: 'Reset your password' },
     { name: 'RESET_PASSWORD_SUBTITLE', message: 'Create a new password for your account' },
     { name: 'SUCCESS_MSG', message: 'Your password was successfully updated' },
+    { name: 'SUCCESS_MSG_TITLE', message: 'Success' },
     { name: 'PASSWORD_LENGTH_10_ERROR', message: 'Password must be at least 10 characters' },
     { name: 'PASSWORD_NOT_MATCH', message: 'Passwords do not match' }
   ],
