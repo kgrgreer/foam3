@@ -290,6 +290,17 @@ foam.CLASS({
     ^ .selected {
       background: #ddf;
     }
+    ^ .topBtn > *{
+      border-radius: 50%;
+      box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1), 0px 4px 6px rgba(0, 0, 0, 0.05);
+      position: fixed;
+      right: 30px;
+      top: 20px;  
+      z-index: 99; 
+    }
+    ^ .topBtn svg{
+      transform: rotate(90deg)
+    }
   `,
 
   exports: [
@@ -341,7 +352,6 @@ foam.CLASS({
       this.testData += await fetch('faq').then(function(response) {
         return response.text();
       });
-
       var self = this;
       this.
         addClass(this.myClass()).
@@ -372,6 +382,10 @@ foam.CLASS({
           start().
             addClass(this.myClass('body')).
             add(this.DATA).
+          end().
+          start().
+            addClass('topBtn').
+            tag(this.SCROLL_TO_TOP).
           end().
         end();
     },
@@ -404,7 +418,20 @@ foam.CLASS({
       });
       return a;
     }
-  ]
+  ],
+
+  actions: [
+    {
+      name: 'scrollToTop',
+      label: '',
+      toolTip: 'Scroll to top',
+      icon: '/images/arrow-back-24px.svg',
+      code: () => {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+      }
+    }
+  ],
 });
 
 
