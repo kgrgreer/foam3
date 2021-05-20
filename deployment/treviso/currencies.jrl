@@ -1,2 +1,3 @@
 p({class:"foam.core.Currency",delimiter:".",decimalCharacter:",",id:"CAD"})
 p({class:"foam.core.Currency",delimiter:".",decimalCharacter:",",id:"BRL"})
+p({class:"foam.core.Currency",delimiter:".",decimalCharacter:",",id:"USD"})
