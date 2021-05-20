@@ -52,10 +52,6 @@ foam.CLASS({
 
         return this.toE(null, e.__subContext__.createSubContext({data: obj}));
       }
-    },
-    {
-      type: 'Int',
-      name: 'tableWidth'
     }
   ]
 });

@@ -365,7 +365,7 @@
       order: 90,
       gridColumns: 6,
       includeInDigest: true,
-      tableWidth: 450
+      tableWidth: 300
     },
     {
       class: 'DateTime',
@@ -740,6 +740,7 @@
     },
     {
       name: 'approveWithMemo',
+      tableWidth: 175,
       section: 'approvalRequestInformation',
       isAvailable: function(isTrackingRequest, status, subject, assignedTo) {
         if ( status !== this.ApprovalStatus.REQUESTED ) return false;
@@ -825,6 +826,7 @@
       name: 'viewReference',
       section: 'approvalRequestInformation',
       isDefault: true,
+      tableWidth: 150,
       isAvailable: function() {
         var self = this;
 
@@ -930,8 +932,7 @@
           mementoHead: null,
           backLabel: self.BACK_LABEL
         }, X.createSubContext({stack: self.stack}));
-      },
-      tableWidth: 100
+      }
     },
     {
       name: 'assign',
