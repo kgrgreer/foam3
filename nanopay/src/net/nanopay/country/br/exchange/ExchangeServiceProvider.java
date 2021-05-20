@@ -52,6 +52,7 @@ import net.nanopay.tx.fee.Rate;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.TransactionLineItem;
+import net.nanopay.country.br.ExpectedBoardingDate;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
@@ -363,9 +364,20 @@ public class ExchangeServiceProvider
       completionDate = clearingTimeService.estimateCompletionDateSimple(getX(), transaction);
     }
 
+    Invoice invoice = summaryTransaction.findInvoiceId(getX());
+    CapabilityJunctionPayload[] capablePayloads = invoice.getCapablePayloads();
+    CapabilityJunctionPayload capablePayload = null;
+    for ( CapabilityJunctionPayload c : capablePayloads ) {
+      if ( SafetyUtil.equals("crunch.onboarding.br.expected-shipment-date", c.getCapability()) ) {
+        capablePayload = c;
+        break;
+      }
+    }
+
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     String completionDateString = "";
     String transactionDateString = "";
+    String embarkmentDateString = "";
     try {
       completionDateString = sdf.format(completionDate);
       transactionDateString = sdf.format(transactionDate);
@@ -374,6 +386,10 @@ public class ExchangeServiceProvider
       dadosBoleto.setDATAEN(completionDateString);
       dadosBoleto.setDATAMN(transactionDateString);
       dadosBoleto.setDATAOP(transactionDateString);
+      if ( capablePayload != null ) {
+        embarkmentDateString = sdf.format(((ExpectedBoardingDate) capablePayload.getData()).getBoardingDate());
+        dadosBoleto.setDATAEB(embarkmentDateString);
+      }
     } catch(Throwable t) {
       logger_.error("Unable to parse completion date", t);
       throw new RuntimeException("Error inserting boleto. Cound not parse completion date.");
