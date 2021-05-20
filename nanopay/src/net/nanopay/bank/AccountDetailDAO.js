@@ -62,10 +62,11 @@ foam.CLASS({
           .setBranchId(bankAccount.getBranchId())
           .setSwiftCode(bankAccount.getSwiftCode())
           .build();
+
+          bankAccount = (BankAccount) bankAccount.fclone();
           bankAccount.setAccountDetails(accountDetails);
           return bankAccount;
         }
-
         return fObject;
       `
     }
