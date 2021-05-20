@@ -31,15 +31,20 @@ foam.CLASS({
         logger = new StdoutLogger();
       }
       if ( templateArgs == null ) {
+
         return emailMessage;
       }
       String templateName = (String)templateArgs.get("template");
-      if ( SafetyUtil.isEmpty(templateName) ) return emailMessage;
+      if ( SafetyUtil.isEmpty(templateName) ) {
+        logger.info("No email template name");
+
+        return emailMessage;
+      }
 
       String locale = (String) templateArgs.get("locale");
 
       // STEP 1) Find EmailTemplate
-      EmailTemplate emailTemplateObj = DAOResourceLoader.findTemplate(x, templateName, group, locale);
+      EmailTemplate emailTemplateObj = DAOResourceLoader.findTemplate(x, templateName, group, locale, emailMessage.getSpid());
       if ( emailTemplateObj == null ) {
         logger.error(this.getClass().getSimpleName(), "EmailTemplate not found", templateName, group);
         return emailMessage;
