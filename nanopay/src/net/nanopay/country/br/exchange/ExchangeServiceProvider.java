@@ -366,10 +366,10 @@ public class ExchangeServiceProvider
 
     Invoice invoice = summaryTransaction.findInvoiceId(getX());
     CapabilityJunctionPayload[] capablePayloads = invoice.getCapablePayloads();
-    CapabilityJunctionPayload capablePayload = null;
+    CapabilityJunctionPayload expectedBoardingCapablePayload = null;
     for ( CapabilityJunctionPayload c : capablePayloads ) {
       if ( SafetyUtil.equals("crunch.onboarding.br.expected-shipment-date", c.getCapability()) ) {
-        capablePayload = c;
+        expectedBoardingCapablePayload = c;
         break;
       }
     }
@@ -386,8 +386,8 @@ public class ExchangeServiceProvider
       dadosBoleto.setDATAEN(completionDateString);
       dadosBoleto.setDATAMN(transactionDateString);
       dadosBoleto.setDATAOP(transactionDateString);
-      if ( capablePayload != null ) {
-        embarkmentDateString = sdf.format(((ExpectedBoardingDate) capablePayload.getData()).getBoardingDate());
+      if ( expectedBoardingCapablePayload != null ) {
+        embarkmentDateString = sdf.format(((ExpectedBoardingDate) expectedBoardingCapablePayload.getData()).getBoardingDate());
         dadosBoleto.setDATAEB(embarkmentDateString);
       }
     } catch(Throwable t) {
