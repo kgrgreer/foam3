@@ -176,6 +176,9 @@ foam.CLASS({
               }
               if ( cause == null) {
                 cause = t.getCause(); // thrown is RuntimeException
+                if ( cause == null ) {
+                  cause = t;
+                }
                 logger.error("Failed updating exchange limit transaction status", cause);
                 txn.setStatus(TransactionStatus.FAILED);
                 txn.getTransactionEvents(x).put_(x, new TransactionEvent(cause.getMessage()));
