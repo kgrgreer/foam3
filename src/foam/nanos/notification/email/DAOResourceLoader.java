@@ -118,13 +118,13 @@ public class DAOResourceLoader
     return null;
   }
 
-  public static EmailTemplate findTemplate(X x, String name, String spid) {
+  public static EmailTemplate findTemplate(X x, String name) {
     var groupId = ((Group) x.get("group")).getId();
     User user = ((Subject) x.get("subject")).getRealUser();
     String locale = user.getLanguage().getCode();
     String spid = user.getSpid();
 
-    return findTemplate(x, name, groupId, locale);
+    return findTemplate(x, name, groupId, locale, spid);
   }
 
   public DAOResourceLoader(X x, String groupId, String locale, String spid) {
