@@ -117,14 +117,13 @@ foam.CLASS({
       order: 40,
       updateVisibility: 'RO'
     }),
-    net.nanopay.contacts.Contact.STATUS.clone().copyFrom({
+    net.nanopay.contacts.Contact.SIGN_UP_STATUS.clone().copyFrom({
       label: 'Registration Status',
       gridColumns:6,
       section: 'userInformation',
       order: 110
     }),
     net.nanopay.contacts.Contact.COUNTRIES.clone().copyFrom({
-      label: 'Registration Status',
       gridColumns:6,
       section: 'userInformation',
       order: 110
