@@ -387,13 +387,15 @@ foam.CLASS({
               .end()
               .start().addClass(self.myClass('invoice-content-text'))
                 .add(self.slot( function(destinationAccount) {
-                  if ( ! ! destinationAccount && destinationAccount.forContact ) {
-                    return self.E()
-                    .start({
-                      class: 'net.nanopay.bank.ui.AccountSummaryView',
-                      bankAccountDetail: destinationAccount
-                    }).addClass('invoice-details')
-                    .end();
+                  if ( ! ! destinationAccount ) {
+                    return destinationAccount.forContact ?
+                    self.E()
+                      .start({
+                        class: 'net.nanopay.bank.ui.AccountSummaryView',
+                        bankAccountDetail: destinationAccount
+                      }).addClass('invoice-details').end()
+                    : 
+                    self.E().start().add(destinationAccount.summary).end();
                   }
                 }))
               .end()
