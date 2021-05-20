@@ -25,19 +25,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.core.FObject',
     'foam.dao.*',
-    'foam.nanos.logger.PrefixLogger',
-    'foam.nanos.logger.Logger',
-    'foam.nanos.notification.Notification',
-    'foam.util.SafetyUtil',
-    'net.nanopay.bank.BankAccountStatus',
-    'net.nanopay.model.Branch',
-    'net.nanopay.payment.Institution',
-    'net.nanopay.tx.Transfer',
-    'java.util.List',
-
-    'static foam.mlang.MLang.AND',
-    'static foam.mlang.MLang.EQ',
-    'net.nanopay.bank.AccountDetailModel'
+    'net.nanopay.bank.AccountDetailSummary'
   ],
 
   axioms: [
@@ -57,25 +45,28 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'put_',
+      name: 'find_',
       javaCode: `
-        if (!(obj instanceof BankAccount)) {
-          return super.put_(x, obj);
+        FObject fObject = this.getDelegate().find_(x, id);
+        if ( fObject == null ) {
+          return fObject;
         }
-
-        BankAccount bankAccount = (BankAccount) obj;
-
-        AccountDetailModel ad = new AccountDetailModel.Builder(x)
+        // if (fObject instanceof BankAccount) {
+          BankAccount bankAccount = (BankAccount) fObject;
+          if ( ! bankAccount.getForContact() ) return fObject;
+          
+          AccountDetailSummary accountDetails = new AccountDetailSummary.Builder(x)
           .setAccountNumber(bankAccount.getAccountNumber())
           .setIban(bankAccount.getIban())
           .setInstitutionNumber(bankAccount.getInstitutionNumber())
           .setBranchId(bankAccount.getBranchId())
           .setSwiftCode(bankAccount.getSwiftCode())
           .build();
+          bankAccount.setAccountDetails(accountDetails);
+          return bankAccount;
+        }
 
-        bankAccount = (BankAccount) bankAccount.fclone();
-        // bankAccount.setSummary(ad);
-        return super.put_(x, bankAccount);
+        return fObject;
       `
     }
   ]

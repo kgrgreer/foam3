@@ -244,7 +244,7 @@ foam.CLASS({
       },
     },
     {
-      name: 'accountSummary'
+      name: 'destinationAccount'
     }
   ],
 
@@ -278,7 +278,7 @@ foam.CLASS({
         if( ! self.invoice.contactId ) return;
         var contact = await self.subject.user.contacts.find(self.invoice.contactId);
         var acc = await contact.accounts.find(contact.bankAccount);
-        self.accountSummary = acc.summary;
+        self.destinationAccount = acc
       };
 
       updateAccountSummary();
@@ -386,10 +386,14 @@ foam.CLASS({
                 .add(self.DESTINATION_ACCOUNT)
               .end()
               .start().addClass(self.myClass('invoice-content-text'))
-                .add(self.slot( function(accountSummary) {
-                  if ( ! ! accountSummary ) {
+                .add(self.slot( function(destinationAccount) {
+                  if ( ! ! destinationAccount && destinationAccount.forContact ) {
                     return self.E()
-                      .start().add(accountSummary).end();
+                    .start({
+                      class: 'net.nanopay.bank.AccountDetailView',
+                      bankAccountDetail: destinationAccount
+                    }).addClass('invoice-details')
+                    .end();
                   }
                 }))
               .end()

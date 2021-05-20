@@ -179,6 +179,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ui/AddINBankAccountView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/AddPKBankAccountView', flags: ['web'] },
   { name: 'net/nanopay/bank/test/BankAccountIBANTest' },
+  { name: 'net/nanopay/bank/AccountDetailView' },
   { name: 'net/nanopay/tx/InvoiceSummaryTransactionCitationView' },
   { name: 'net/nanopay/tx/LineItemCitationView' },
   { name: 'net/nanopay/tx/SummaryTransactionLineItem' },

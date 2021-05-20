@@ -118,7 +118,7 @@ var classes = [
   'net.nanopay.account.SetBankAccountOnContact',
   'net.nanopay.account.BrokerAccount',
   'net.nanopay.account.CreateDefaultDigitalAccountOnUserCreateRule',
-  'net.nanopay.bank.AccountDetailModel',
+  'net.nanopay.bank.AccountDetailSummary',
   'net.nanopay.bank.BankAccount',
   'net.nanopay.bank.EstimationAccount',
   'net.nanopay.bank.EUBankAccount',

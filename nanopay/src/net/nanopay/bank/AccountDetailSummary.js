@@ -17,26 +17,9 @@
 
 foam.CLASS({
   package: 'net.nanopay.bank',
-  name: 'AccountDetailModel',
+  name: 'AccountDetailSummary',
 
-  javaImports: [
-    'foam.nanos.iban.ValidationIBAN',
-    'foam.nanos.iban.IBANInfo',
-    'foam.util.SafetyUtil',
-    'java.util.regex.Pattern',
-    'net.nanopay.model.Branch',
-    'net.nanopay.payment.Institution'
-  ],
-
-  documentation: 'Canadian Bank account information.',
-
-  messages: [
-    { name: 'ACCOUNT_NUMBER', message: 'AccountNumber' },
-    { name: 'IBAN', message: 'Iban' },
-    { name: 'INSTITUTION_NUMBER', message: 'InstitutionNumber' },
-    { name: 'BRANCH_ID', message: 'BranchId' },
-    { name: 'SWIFT_CODE', message: 'SwiftCode' }
-  ],
+  documentation: 'summary of account informations',
 
   properties: [
     {
@@ -60,20 +43,4 @@ foam.CLASS({
       name: 'swiftCode'
     }
   ],
-  methods: [
-    function initE() {
-      var self = this;
-      this.addClass()
-      .start()
-        .start()
-          .addClass('bold-label')
-          .add(this.PAYER_LABEL)
-        .end()
-        .start()
-          .addClass('bold-label')
-          .add(this.accountNumber)
-        .end()
-      .end()
-    }
-  ]
 });
