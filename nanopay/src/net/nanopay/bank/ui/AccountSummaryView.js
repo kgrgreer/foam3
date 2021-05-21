@@ -24,11 +24,13 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'ACCOUNT_NUMBER', message: 'Account No.' },
-    { name: 'IBAN', message: 'Iban' },
-    { name: 'INSTITUTION_NUMBER', message: 'Institution' },
-    { name: 'BRANCH_ID', message: 'Branch' },
-    { name: 'SWIFT_CODE', message: 'Swift Code' }
+    { name: 'ACCOUNT_NUMBER', message: 'Account No. - ' },
+    { name: 'IBAN', message: 'Iban - ' },
+    { name: 'INSTITUTION_NUMBER', message: 'Institution - ' },
+    { name: 'BRANCH_ID', message: 'Branch - ' },
+    { name: 'SWIFT_CODE', message: 'Swift Code - ' },
+    { name: 'COUNTRY', message: 'Country - ' },
+    { name: 'CURRENCY', message: 'Currency - ' }
   ],
 
 
@@ -48,6 +50,8 @@ foam.CLASS({
           .start().add(`${self.INSTITUTION_NUMBER} ${self.bankAccountDetail.institutionNumber}`).show( !! self.bankAccountDetail.institutionNumber).end()
           .start().add(`${self.BRANCH_ID} ${self.bankAccountDetail.branchId}`).show( !! self.bankAccountDetail.branchId ).end()
           .start().add(`${self.SWIFT_CODE} ${self.bankAccountDetail.swiftCode}`).show(!! self.bankAccountDetail.swiftCode ).end()
+          .start().add(`${self.CURRENCY} ${self.bankAccountDetail.currency}`).end()
+          .start().add(`${self.COUNTRY} ${self.bankAccountDetail.country}`).end()
         .end()
     },
   ]

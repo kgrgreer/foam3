@@ -61,6 +61,8 @@ foam.CLASS({
           .setInstitutionNumber(bankAccount.getInstitutionNumber())
           .setBranchId(bankAccount.getBranchId())
           .setSwiftCode(bankAccount.getSwiftCode())
+          .setCurrency(bankAccount.getDenomination())
+          .setCountry(bankAccount.getCountry())
           .build();
 
           bankAccount = (BankAccount) bankAccount.fclone();

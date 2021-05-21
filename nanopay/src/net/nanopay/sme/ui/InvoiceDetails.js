@@ -358,7 +358,6 @@ foam.CLASS({
                       return self.E()
                         .start().add(payee.toSummary()).end()
                         .start().add(payee.email).end()
-                        .start().add(self.CURRENCY + self.invoice.destinationCurrency).end()
                     }
                   });
                 }))

@@ -41,6 +41,14 @@ foam.CLASS({
     {
       class: 'String',
       name: 'swiftCode'
+    },
+    {
+      class: 'String',
+      name: 'currency'
+    },
+    {
+      class: 'String',
+      name: 'country'
     }
   ],
 });
