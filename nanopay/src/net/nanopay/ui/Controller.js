@@ -907,25 +907,14 @@ foam.CLASS({
           this.stack.push({ class: 'foam.nanos.auth.ResendVerificationEmail' });
           return;
         }
-
-        // Update the look and feel now that the user is logged in since there
-        // might be a more specific one to use now.
-        this.fetchTheme();
-        var hash = this.window.location.hash;
-        if ( hash ) hash = hash.substring(1);
-
-        if ( hash ) {
-          window.onpopstate();
-        } else if ( this.theme ) {
-          this.window.location.hash = this.theme.defaultMenu;
-        }
-      }
-
-      else {
+      } else {
         this.initLayout.resolve();
-        this.SUPER();
         this.bannerizeTwoFactorAuth();
       }
+
+      // Update the look and feel now so that if the user is logged in there
+      // might be a more specific one to use now.
+      this.SUPER();
     }
   ]
 });
