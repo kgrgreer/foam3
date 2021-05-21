@@ -33,6 +33,8 @@ foam.CLASS({
     {
       name: 'adapt',
       value: function (_, o) {
+        const e = foam.mlang.Expressions.create();
+
         const Predicate = foam.mlang.predicate.Predicate;
         if ( Predicate.isInstance(o) ) return o;
         if ( foam.String.isInstance(o) ) {
@@ -49,7 +51,6 @@ foam.CLASS({
         const UserCapabilityJunction = foam.nanos.crunch.UserCapabilityJunction;
         const AgentCapabilityJunction = foam.nanos.crunch.AgentCapabilityJunction;
 
-        const e = foam.mlang.Expressions.create();
         var predicate = e.AND(
           e.EQ(UserCapabilityJunction.SOURCE_ID, o.sourceId),
           e.EQ(UserCapabilityJunction.TARGET_ID, o.targetId)
