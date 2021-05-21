@@ -359,7 +359,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payee',
-      label: 'Beneficiary',
+      label: 'Vendor',
       includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `Returns the name of the party receiving the payment from the
