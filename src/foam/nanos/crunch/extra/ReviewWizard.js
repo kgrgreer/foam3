@@ -16,7 +16,8 @@ foam.CLASS({
     {
       name: 'capabilityToReview',
       class: 'Reference',
-      of: 'foam.nanos.crunch.Capability'
+      of: 'foam.nanos.crunch.Capability',
+      controlAccessToDAOSummary: true
     }
   ],
 });

@@ -186,7 +186,8 @@ foam.CLASS({
       of: 'foam.nanos.auth.Group',
       name: 'groupId',
       documentation: 'Group notification will be sent to.',
-      view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select group' }
+      view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select group' },
+      controlAccessToDAOSummary: true
     },
     {
       class: 'Map',

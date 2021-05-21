@@ -887,7 +887,8 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'foam.nanos.auth.Group',
-      name: 'group'
+      name: 'group',
+      controlAccessToDAOSummary: true
     },
     {
       class: 'Enum',

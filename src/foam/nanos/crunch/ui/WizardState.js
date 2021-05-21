@@ -35,7 +35,8 @@ foam.CLASS({
     {
       name: 'capability',
       class: 'Reference',
-      of: 'foam.nanos.crunch.Capability'
+      of: 'foam.nanos.crunch.Capability',
+      controlAccessToDAOSummary: true
     },
     {
       name: 'ignoreList',

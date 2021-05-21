@@ -32,7 +32,8 @@ foam.CLASS({
       name: 'capabilityToReview',
       class: 'Reference',
       of: 'foam.nanos.crunch.Capability',
-      view: 'foam.nanos.crunch.ui.UCJView'
+      view: 'foam.nanos.crunch.ui.UCJView',
+      controlAccessToDAOSummary: true
     },
     {
       name: 'of',

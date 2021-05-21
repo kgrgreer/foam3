@@ -25,7 +25,8 @@ foam.CLASS({
       class: 'Reference',
       name: 'capabilityId',
       of: 'foam.nanos.crunch.Capability',
-      documentation: `Used to catch any ucj's with their targetId equaling this value.`
+      documentation: `Used to catch any ucj's with their targetId equaling this value.`,
+      controlAccessToDAOSummary: true
     },
     {
       name: 'status',

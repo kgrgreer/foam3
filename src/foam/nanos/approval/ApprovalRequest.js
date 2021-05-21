@@ -245,7 +245,8 @@
       includeInDigest: false,
       section: 'approvalRequestInformation',
       order: 50,
-      gridColumns: 6
+      gridColumns: 6,
+      controlAccessToDAOSummary: true
     },
     {
       class: 'Enum',
