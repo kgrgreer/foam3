@@ -99,10 +99,9 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Payables' },
     { name: 'SUB_TITLE', message: `Here's a list of payments you've sent` },
+    { name: 'RECONCILED_TITLE', message: 'Invoice Reconciliation'},
     { name: 'RECONCILED_SUCCESS', message: 'Invoice has been reconciled by payer' },
-    { name: 'RECONCILED_SUCCESS_TITLE', message: 'Invoice Reconciled' },
     { name: 'RECONCILED_ERROR', message: 'There was an error reconciling the invoice' },
-    { name: 'RECONCILED_ERROR_TITLE', message: 'Error Reconciling' },
     { name: 'INVOICE', message: 'invoice' }
   ],
 
@@ -280,9 +279,9 @@ foam.CLASS({
         var self = this.__subContext__;
         this.payerReconciled = true;
         self.subject.user.expenses.put(this).then(() => {
-          self.notify(X.payables.RECONCILED_SUCCESS_TITLE, X.payables.RECONCILED_SUCCESS, X.payables.LogLevel.INFO, true);
+          self.notify(X.payables.RECONCILED_TITLE, X.payables.RECONCILED_SUCCESS, X.payables.LogLevel.INFO, true);
         }).catch((err) => {
-          self.notify(X.payables.RECONCILED_ERROR_TITLE, X.payables.RECONCILED_ERROR, X.payables.LogLevel.ERROR, true);
+          self.notify(X.payables.RECONCILED_TITLE, X.payables.RECONCILED_ERROR, X.payables.LogLevel.ERROR, true);
         });
       }
     },
