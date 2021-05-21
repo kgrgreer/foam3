@@ -15,7 +15,7 @@ foam.CLASS({
     You configure access to the link and what is set to the link using
     'enableLink', 'menuKeys', and 'controlAccessToDAOSummary' 
     
-    * A flow chart for determining access to the link and what the link *
+    * A flow chart for determining access to the link and what the link is set to *
 
                     enableLink is
                     set to false ?
