@@ -12,58 +12,34 @@ foam.CLASS({
   documentation: `
     A read-only view for a Reference Property.
     
-    You can configure 'enableLink' and/or 'menus' when creating this view to
-    enable/disable the link and/or set different menu to the link
+    You configure access to the link and what is set to the link using
+    'enableLink', 'menuKeys', and 'controlAccessToDAOSummary' 
     
-      - To use default dao summary, do not set the two
-      
-      - To disable the link, set 'enableLink' to false. In this case,
-        providing menus won't have any effect
+    * A flow chart for determining access to the link and what the link *
 
-      - To enable the link only when group has permission to a menu, 
-        provide 'menus' to this view
-        
-        - If there are more than one menu to which group has permission, then the first menu
-          will be set to the link.
-
-        - If there are no menu to which group has permission, then the link will be disabled. 
-
-        e.g. enable the link based on group permission to dao summary
-        
-        {
-          class: 'Reference',
-          of: 'foam.nanos.auth.User',
-          name: 'user',
-          view: {
-            class: 'foam.u2.view.ReferencePropertyView',
-            readView: {
-              class: 'foam.u2.view.ReadReferenceView',
-              menus: [
-                'daoSummary'
-              ]
-            }
-          }
-        }
-
-      * tree diagram for finding 'enableLink' and 'linkTo'
-
-              enableLink set to false ?
+                    enableLink is
+                    set to false ?
                      /          \
-                y   /            \ n
+                  y /            \ n
                    /              \
-              - - -                - - - - - - - -
-             /                                     \
-        disable link                            menus provided ?
-         no link to                                 /      \   n
-                                                 y /        - - - - - - - - - - -
-                                                  /                               \
-                                            has menu with                         enable link   
-                                           read permission ?                     link to default
-                                             /        \      n                
-                                          y /          - - - - - - -
-                                           /                         \       
-                                        enable link               disable link
-                                      link to this menu             no link to
+              - - -                - - - 
+             /                           \
+        disable link                menus provided ?
+                                       /      \   n
+                                    y /         - - - - - - - - - - - - - -
+                                     /                                      \
+                              has a menu with                             access to
+                              read permission ?                          DAO summary ?
+                                /        \   n                               /     \       n
+                             y /           - - -                          y /        - - - - -
+                              /                  \                         /                   \
+                          enable link          access to             enable link          disable link
+                        link to this menu     DAO summary ?       link to dao summary
+                                                /     \    n
+                                             y /        - - - - -
+                                              /                   \
+                                         enable link           disable link
+                                      link to dao summary
   `,
 
   requires: [
@@ -80,7 +56,6 @@ foam.CLASS({
       name: 'enableLink',
       documentation: `
         Create the reference view as an anchor link to the reference\'s DetailView or provided menu.
-        Please read the model documentation for more info.
       `,
       value: true
     },
@@ -88,16 +63,13 @@ foam.CLASS({
       class: 'Boolean',
       name: 'controlAccessToDAOSummary',
       documentation: `
-        when set to true, DAO summary can be only viewed if group has permission to read it
-      `,
-      value: false
+        When set to true, DAO summary can be only viewed if group has permission to read it
+      `
     },
     {
       class: 'StringArray',
       name: 'menuKeys',
-      documentation: `
-        A list of menu ids. Please read the model documentation for more info.
-      `
+      documentation: 'A list of menu ids.'
     },
     {
       class: 'String',
