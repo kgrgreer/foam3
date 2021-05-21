@@ -18,7 +18,15 @@ foam.CLASS({
   package: 'net.nanopay.country.br.exchange',
   name: 'ExchangeCredential',
 
+  implements: [
+    'foam.nanos.auth.ServiceProviderAware'
+  ],
+
   properties: [
+    {
+      class: 'String',
+      name: 'id'
+    },
     {
       class: 'String',
        name: 'exchangeUrl'
@@ -39,6 +47,11 @@ foam.CLASS({
       class: 'Long',
       name: 'defaultLimit',
       value: 1000000
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid'
     }
   ]
 });

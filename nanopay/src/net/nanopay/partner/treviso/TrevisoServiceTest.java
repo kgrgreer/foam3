@@ -32,7 +32,6 @@ import net.nanopay.country.br.exchange.Exchange;
 import net.nanopay.country.br.exchange.ExchangeClientMock;
 import net.nanopay.country.br.exchange.ExchangeClientValues;
 import net.nanopay.country.br.exchange.ExchangeService;
-import net.nanopay.model.Branch;
 import net.nanopay.partner.treviso.FepWebClient;
 import net.nanopay.partner.treviso.api.FepWeb;
 import net.nanopay.partner.treviso.api.FepWebServiceMock;
@@ -122,23 +121,10 @@ public class TrevisoServiceTest
     DAO bankAccountDao = (DAO) x.get("accountDAO");
     CABankAccount account = (CABankAccount) bankAccountDao.find(EQ(CABankAccount.NAME, "RBC Test Account"));
     if ( account == null ) {
-      final DAO  institutionDAO = (DAO) x.get("institutionDAO");
-      final DAO  branchDAO      = (DAO) x.get("branchDAO");
-      Institution institution = new Institution.Builder(x_)
-        .setInstitutionNumber("003")
-        .setName("RBC Test institution")
-        .build();
-      institution = (Institution) institutionDAO.put_(x_, institution);
-
-      Branch branch = new Branch.Builder(x_)
-        .setBranchId("00002")
-        .setInstitution(institution.getId())
-        .build();
-      branch = (Branch) branchDAO.put_(x, branch);
-
       BankAccount testBankAccount = new CABankAccount.Builder(x)
         .setAccountNumber("12345678")
-        .setBranch( branch.getId() )
+        .setBranchId( "00002" )
+        .setInstitutionNumber( "003" )
         .setOwner(1014)
         .setName("RBC Test Account")
         .setStatus(BankAccountStatus.VERIFIED)

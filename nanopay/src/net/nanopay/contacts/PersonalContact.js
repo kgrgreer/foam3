@@ -60,6 +60,7 @@ foam.CLASS({
     'targetCorridorDAO',
     'pushMenu',
     'subject',
+    'stack',
     'user'
   ],
 
@@ -73,7 +74,7 @@ foam.CLASS({
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.payment.PaymentProviderCorridor',
-    'net.nanopay.ui.wizard.ContactWizardDetailView'
+    'net.nanopay.ui.wizard.WizardController'
   ],
 
   constants: [
@@ -85,7 +86,13 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'status'
+    'organization',
+    'firstName',
+    'lastName',
+    'email',
+    'bankAccount.denomination',
+    'bankAccount.summary',
+    'signUpStatus'
   ],
 
   sections: [
@@ -373,7 +380,7 @@ foam.CLASS({
         return this.signUpStatus !== this.ContactStatus.READY && ! this.bankAccount;
       },
       code: function(X) {
-        X.controllerView.add(this.ContactWizardDetailView.create({
+        X.controllerView.add(this.WizardController.create({
           model: 'net.nanopay.contacts.Contact',
           data: this,
           controllerMode: foam.u2.ControllerMode.CREATE,
@@ -385,7 +392,7 @@ foam.CLASS({
       name: 'edit',
       label: 'Edit Details',
       code: function(X) {
-        X.controllerView.add(this.ContactWizardDetailView.create({
+        X.controllerView.add(this.WizardController.create({
           model: 'net.nanopay.contacts.Contact',
           data: this,
           controllerMode: foam.u2.ControllerMode.EDIT,
@@ -409,7 +416,7 @@ foam.CLASS({
           createdBy: this.subject.user.id,
           isContact: true
         }, X);
-        X.controllerView.add(this.ContactWizardDetailView.create({
+        X.controllerView.add(this.WizardController.create({
           model: 'net.nanopay.model.Invitation',
           data: invite,
           controllerMode: foam.u2.ControllerMode.EDIT
@@ -467,7 +474,7 @@ foam.CLASS({
     {
       name: 'delete',
       code: function(X) {
-        X.controllerView.add(this.Popup.create(null, X).tag({
+        X.stack.push(this.Popup.create(null, X).tag({//controllerView
           class: 'net.nanopay.contacts.ui.modal.DeleteContactView',
           data: this
         }));

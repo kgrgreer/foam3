@@ -26,6 +26,7 @@ import net.nanopay.meter.compliance.secureFact.lev.document.*;
 import net.nanopay.meter.compliance.secureFact.sidni.*;
 import net.nanopay.model.Business;
 import net.nanopay.model.BusinessType;
+import org.eclipse.jetty.util.StringUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,7 +47,8 @@ public class SecurefactRequestGenerator {
   public static LEVRequest getLEVRequest(X x, Business business) {
     LEVRequest request = new LEVRequest();
     request.setSearchType("name");
-    request.setEntityName(business.getOrganization());
+
+    request.setEntityName(StringUtil.isEmpty(business.getOrganization()) ? business.getBusinessName() : business.getOrganization());
 
     Address address = business.getAddress();
     if ( address == null
@@ -86,12 +88,12 @@ public class SecurefactRequestGenerator {
     return request;
   }
 
-  
+
 
   private static SIDniCustomer buildCustomer(X x, User user) {
     return new SIDniCustomer.Builder(x)
       .setUserReference(String.valueOf(user.getId()))
-      // NOTE: Set consent granted to true because we already have the 
+      // NOTE: Set consent granted to true because we already have the
       //       user's consent for using Securefact to verify his/her identity
       //       when completing business profile in BeneficialOwnershipForm.
       .setConsentGranted(true)

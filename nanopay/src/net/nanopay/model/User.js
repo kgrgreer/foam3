@@ -431,6 +431,7 @@ foam.CLASS({
       name: 'viewReceivables',
       label: 'View Receivables',
       section: 'accountInformation',
+      tableWidth: 180,
       order: 20,
       availablePermissions: ['foam.nanos.auth.User.permission.viewReceivables'],
       code: async function(X) {
@@ -483,6 +484,7 @@ foam.CLASS({
     {
       name: 'resetLoginAttempts',
       section: 'userInformation',
+      tableWidth: 185,
       order: 10,
       code: async function(X) {
         var loginAttempts = await X.loginAttemptsDAO.find(this.id);

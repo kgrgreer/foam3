@@ -37,6 +37,7 @@ foam.CLASS({
     {
       name: 'viewTransactionLimits',
       section: 'operationsInformation',
+      tableWidth: 210,
       availablePermissions: ['foam.nanos.auth.User.permission.viewTransactionLimit'],
       code: async function() {
         var m = foam.mlang.ExpressionsSingleton.create();

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2021] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 package net.nanopay.tx.rbc.cron;
 
 import java.util.ArrayList;
@@ -31,10 +48,10 @@ import net.nanopay.tx.model.TransactionStatus;
 import static foam.mlang.MLang.*;
 
 public class RbcGenerateFileCron implements ContextAgent {
-  String spid;
-  long eftLimit = 100000000;
-  boolean createDebits = true;
-  boolean createCredits = true;
+  protected String spid;
+  protected long eftLimit = 100000000;
+  protected boolean createDebits = true;
+  protected boolean createCredits = true;
 
   public RbcGenerateFileCron(String spid) {
     this.spid = spid;
