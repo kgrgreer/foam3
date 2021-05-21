@@ -9,7 +9,63 @@ foam.CLASS({
   name: 'ReadReferenceView',
   extends: 'foam.u2.View',
 
-  documentation: 'A read-only view for a Reference Property.',
+  documentation: `
+    A read-only view for a Reference Property.
+    
+    You can configure 'enableLink' and/or 'menus' when creating this view to
+    enable/disable the link and/or set different menu to the link
+    
+      - To use default dao summary, do not set the two
+
+      - Set 'menus' if you want to enable the link only when
+        current group has permission to at least one of the menus. 
+        
+        - If there are more than one menu to which group has permission, then the first menu
+          will be set to the link.
+        
+        - If there are no menu to which group has permission, then the link will be disabled. 
+
+        e.g. enable/disable the link based on group permission to dao summary
+        
+        {
+          class: 'Reference',
+          of: 'foam.nanos.auth.User',
+          name: 'user',
+          view: {
+            class: 'foam.u2.view.ReferencePropertyView',
+            readView: {
+              class: 'foam.u2.view.ReadReferenceView',
+              menus: [
+                'menu.read.daoSummary'
+              ]
+            }
+          }
+        }
+
+      - To disable the link, set enableLink to false. In this case,
+        providing menus won't have any effect.
+      
+        
+      * tree diagram for finding 'enableLink' and 'linkTo'
+
+              enableLink set to false?
+                     /          \
+                y   /            \ n
+                   /              \
+              - - -                - - - - - - - -
+             /                                     \
+         disable link                           menus provided?
+         no link to                                 /      \   n
+                                                 y /        - - - - - - - - - - -
+                                                  /                               \
+                                              has menu                         enable link   
+                                           with permission?                  link to default
+                                             /        \      n                
+                                          y /          - - - - - - -
+                                           /                         \       
+                                        enable link               disable link
+                                      link to this menu             no link to
+  `,
 
   requires: [
     'foam.comics.v2.DAOControllerConfig',
@@ -23,14 +79,30 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'enableLink',
-      documentation: 'Create the reference view as an anchor link to the reference\'s DetailView.',
+      documentation: `
+        Create the reference view as an anchor link to the reference\'s DetailView or provided menu.
+        Please read the model documentation for more info.
+      `,
       value: true
+    },
+    {
+      class: 'StringArray',
+      name: 'menus',
+      documentation: `
+        A list of menu ids. Please read the model documentation for more info.
+      `
+    },
+    {
+      class: 'String',
+      name: 'linkTo',
+      documentation: 'link to the reference'
     }
   ],
 
   imports: [
     'auth?',
     'ctrl',
+    'pushMenu',
     'stack'
   ],
 
@@ -43,20 +115,27 @@ foam.CLASS({
         this
           .add(this.obj$.map(obj => {
             if ( ! obj ) return '';
+
             if ( this.enableLink ) {
               return this.E().start('a')
                 .attrs({ href: '#'})
-                .on('click', function(evt) {
+                .on('click', evt => {
                   evt.preventDefault();
-                  self.stack.push({
-                    class:     'foam.comics.v2.DAOSummaryView',
-                    data:      self.obj,
-                    of:        self.obj.cls_,
-                    backLabel: 'Back',
-                    config: self.DAOControllerConfig.create({
-                      daoKey: self.prop.targetDAOKey
-                    })
-                  }, self);
+                  
+                  if ( self.linkTo === 'default' || self.linkTo === 'menu.read.daoSummary' ) {
+                    self.stack.push({
+                      class: 'foam.comics.v2.DAOSummaryView',
+                      data: self.obj,
+                      of: self.obj.cls_,
+                      backLabel: 'Back',
+                      config: self.DAOControllerConfig.create({
+                        daoKey: self.prop.targetDAOKey
+                      })
+                    }, self);
+                  // have permission to a menu (not dao summary)
+                  } else {
+                    self.pushMenu(self.linkTo);
+                  }
                 })
                 .tag(self.ReferenceCitationView, {data: obj})
               .end();
@@ -71,21 +150,59 @@ foam.CLASS({
 
     function fromProperty(prop) {
       this.SUPER(prop);
+      
       this.prop = prop;
-      var dao = this.ctrl.__subContext__[prop.targetDAOKey];
-      this.permissionEnableLinkCheck().then(() => {
-        if ( dao )
-          dao.find(this.data).then((o) => this.obj = o);
-      });
+
+      this._getLinkTo(this.enableLink)
+        .then((linkTo) => {
+          this.linkTo = linkTo;
+          this.enableLink = this._getEnableLink(this.enableLink, this.linkTo);
+          
+          const dao = this.ctrl.__subContext__[prop.targetDAOKey];
+          if ( dao ) {
+            dao.find(this.data).then((o) => this.obj = o);
+          }
+        });
     },
 
-    async function permissionEnableLinkCheck() {
-      if ( ! this.auth ) return;
-      let permission = `${this.prop.of.id}.${this.prop.name}.disableRefLink`;
-      permission = permission.toLowerCase();
-      await this.auth.check(this.__subContext__, permission).then( check => {
-        this.enableLink = ! check;
-      })
+    
+
+    async function _getLinkTo(enableLink, linkTo='') {
+      /*
+       * Uses the tree diagram above to get linkTo
+       */
+
+      if ( ! this.auth ) return '';
+      if ( ! enableLink ) return '';
+      if ( this.menus.length === 0 ) return 'default';
+
+      try {
+        // get a permission for each menu in menus
+        const permissions = await Promise.all([...this.menus].map(menu => {
+          return this.auth.check(this.__subContext__, menu);
+        }));
+        // set linkTo to first permissioned menu if it exists
+        const firstAt = permissions.indexOf(true);
+        if ( firstAt > -1 ) {
+          linkTo = this.menus[firstAt];
+        }
+      } catch (e) {
+        console.warn('auth check failed');
+        linkTo = '';
+      }
+
+      return linkTo;
+    },
+
+    function _getEnableLink(enableLink, linkTo) {
+      /*
+       * Uses the tree diagram above to get enableLink
+       */
+
+      if ( ! enableLink ) return false;
+      if ( this.menus.length === 0 ) return true;
+      if ( linkTo ) return true;
+      return false;
     }
   ]
 });
