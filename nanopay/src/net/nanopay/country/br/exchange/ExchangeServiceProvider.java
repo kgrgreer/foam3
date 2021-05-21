@@ -301,6 +301,27 @@ public class ExchangeServiceProvider
     return shortName.toString();
   }
 
+  protected Date getEmbarkmentDate(Transaction summaryTransaction) {
+    // Find capable payload on invoice and seek shipment date
+    Invoice invoice = summaryTransaction.findInvoiceId(getX());
+    if ( invoice == null ) return null;
+
+    CapabilityJunctionPayload[] capablePayloads = invoice.getCapablePayloads();
+    if ( capablePayloads == null ) return null;
+
+    CapabilityJunctionPayload embarkmentDateCapablePayload = null;
+    for ( CapabilityJunctionPayload c : capablePayloads ) {
+      if ( SafetyUtil.equals("crunch.onboarding.br.expected-shipment-date", c.getCapability()) ) {
+        embarkmentDateCapablePayload = c;
+        break;
+      }
+    }
+    if ( embarkmentDateCapablePayload == null ) return null;
+    if ( (ExpectedBoardingDate) embarkmentDateCapablePayload.getData() == null ) return null;
+    return ((ExpectedBoardingDate) embarkmentDateCapablePayload.getData()).getBoardingDate();
+    
+  }
+
   public Transaction createTransaction(Transaction transaction) throws RuntimeException {
     Transaction summaryTransaction = transaction.findRoot(getX());
     BankAccount bankAccount = (BankAccount)summaryTransaction.findDestinationAccount(getX());
@@ -364,15 +385,7 @@ public class ExchangeServiceProvider
       completionDate = clearingTimeService.estimateCompletionDateSimple(getX(), transaction);
     }
 
-    Invoice invoice = summaryTransaction.findInvoiceId(getX());
-    CapabilityJunctionPayload[] capablePayloads = invoice.getCapablePayloads();
-    CapabilityJunctionPayload embarkmentDateCapablePayload = null;
-    for ( CapabilityJunctionPayload c : capablePayloads ) {
-      if ( SafetyUtil.equals("crunch.onboarding.br.expected-shipment-date", c.getCapability()) ) {
-        embarkmentDateCapablePayload = c;
-        break;
-      }
-    }
+    Date embarkmentDate = null;
 
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     String completionDateString = "";
@@ -386,8 +399,8 @@ public class ExchangeServiceProvider
       dadosBoleto.setDATAEN(completionDateString);
       dadosBoleto.setDATAMN(transactionDateString);
       dadosBoleto.setDATAOP(transactionDateString);
-      if ( embarkmentDateCapablePayload != null ) {
-        embarkmentDateString = sdf.format(((ExpectedBoardingDate) embarkmentDateCapablePayload.getData()).getBoardingDate());
+      if ( ( embarkmentDate = getEmbarkmentDate(summaryTransaction) ) != null ) {
+        embarkmentDateString = sdf.format(embarkmentDate);
         dadosBoleto.setDATAEB(embarkmentDateString);
       }
     } catch(Throwable t) {
