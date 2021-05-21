@@ -12,9 +12,9 @@ p({
 
     x = x.put("rbcAssignedClientValue", creds);
 
-    y = new net.nanopay.script.ChecklessRbcGenerateFileCron("intuit");
+    y = new net.nanopay.partner.rbc.test.ChecklessRbcGenerateFileCron("intuit");
     y.execute(x);
     """
-    
+
     ,lastModified:1616527527869
 })
