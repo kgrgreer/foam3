@@ -133,7 +133,7 @@ foam.CLASS({
       this.prop = prop;
       this.controlAccessToDAOSummary = prop.controlAccessToDAOSummary;
 
-      this.getLink().then(() => {
+      this.configLink().then(() => {
         const dao = this.ctrl.__subContext__[prop.targetDAOKey];
         if ( dao ) {
           dao.find(this.data).then((o) => this.obj = o);
@@ -141,7 +141,7 @@ foam.CLASS({
       });
     },
 
-    async function getLink() {
+    async function configLink() {
       /*
        * Uses the tree diagram above to set enableLink and linkTo
        */
