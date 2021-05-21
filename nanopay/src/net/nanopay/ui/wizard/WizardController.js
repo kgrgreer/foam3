@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.ui.wizard',
-  name: 'ContactWizardDetailView',
+  name: 'WizardController',
   extends: 'foam.u2.View',
 
   imports: [
@@ -79,11 +79,17 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'modelName',
-      expression: function(model) {
-        var array = model.split(".");
-        return array[array.length - 1];
-      }
+      name: 'wizardView'
+    },
+    {
+      class: 'String',
+      name: 'redirectMenu',
+      documentation: `
+        Optional. If set wraps the wizardView with MenuRedirectSMEModalView and overwrites onClose
+        to push this menu.`
+    },
+    {
+      name: 'controllerMode'
     },
     {
       class: 'Function',
@@ -96,29 +102,31 @@ foam.CLASS({
       documentation: 'isEdit property to be passed to the WizardView'
     }
   ],
-
+  
   methods: [
     function initE() {
       var self = this;
       this.start().addClass(this.myClass())
         .add(this.slot((data) => {
-          if ( !! data ) {
-            return self.Popup.create({ onClose: self.onClose }, self)
-              .startContext({ controllerMode: self.controllerMode })
-                .tag({
-                  class: `net.nanopay.contacts.ui.${self.modelName}WizardView`,
-                  data$: self.data$,
-                  isEdit: self.isEdit
-                })
-              .endContext();
+          if ( self.redirectMenu ) {
+            return self.MenuRedirectSMEModalView.create({
+              menu: self.redirectMenu,
+              controllerMode: self.controllerMode,
+              view: {
+                class: self.wizardView,
+                data$: !! self.data ? self.data$ : self.model_$,
+                isEdit: self.isEdit
+              }
+            });
           }
-          return self.MenuRedirectSMEModalView.create({
-            menu: 'mainmenu.contacts',
-            view: {
-              class: `net.nanopay.contacts.ui.${self.modelName}WizardView`,
-              data: self.model_
-            }
-          });
+          return self.Popup.create({ onClose: self.onClose }, self)
+            .startContext({ controllerMode: self.controllerMode })
+              .tag({
+                class: self.wizardView,
+                data$: !! self.data ? self.data$ : self.model_$,
+                isEdit: self.isEdit
+              })
+            .endContext();
         }))
       .end()
     }

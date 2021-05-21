@@ -39,6 +39,7 @@ emailTemplates
 errorCodes
 errorFees
 exchangeClientValues
+exchangeCredentials
 exchangeRates
 exportDriverRegistrys
 fees

@@ -7,7 +7,8 @@ p({
     "business.rw.ispublic",
     "service.quickbooksService",
     "language.read.en-",
-    "language.read.en-US"
+    "language.read.en-US",
+    "rule.read.add-external-contact-token-rule"
   ]
 })
 

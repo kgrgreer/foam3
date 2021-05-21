@@ -887,6 +887,7 @@ foam.CLASS({
     {
       name: 'exportComplianceDocuments',
       section: 'complianceInformation',
+      tableWidth: 250,
       isEnabled: function(compliance, onboarded) {
         return compliance !== this.ComplianceStatus.NOTREQUESTED && onboarded;
       },
@@ -899,6 +900,7 @@ foam.CLASS({
     {
       name: 'exportSettlementDocuments',
       section: 'complianceInformation',
+      tableWidth: 250,
       code: function() {
         // Let us assume that we want to search for invoices with a field 3 days before and 3 days after today.
         var sDate = new Date(Date.now() - (1000*60*60*24*3));

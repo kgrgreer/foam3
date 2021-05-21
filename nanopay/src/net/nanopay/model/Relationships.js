@@ -24,20 +24,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'accountDAO',
   unauthorizedTargetDAOKey: 'localAccountDAO',
   targetProperty: {
-    section: 'accountInformation',
-    order: 135,
-    gridColumns: 6,
-    label: 'Transit No.',
-    view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' },
-    tableCellFormatter: function(value, obj, axiom) {
-      var self = this;
-      this.__subSubContext__.branchDAO.find(value).then( function( branch ) {
-        if ( branch ) {
-          self.add(branch.branchId);
-          self.tooltip = branch.branchId;
-        }
-      });
-    }
+    visibility: 'HIDDEN'
   }
 });
 
@@ -50,37 +37,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'accountDAO',
   unauthorizedTargetDAOKey: 'localAccountDAO',
   targetProperty: {
-    section: 'accountInformation',
-    order: 125,
-    gridColumns: 6,
-    view: function(_, X) {
-      return foam.u2.view.ChoiceView.create({
-        dao: X.institutionDAO,
-        placeholder: '--',
-        objToChoice: function(institution) {
-          return [institution.id, institution.name];
-        }
-      });
-    },
-    tableCellFormatter: function(value, obj, axiom) {
-      var self = this;
-      this.__subSubContext__.institutionDAO.find(value)
-        .then( function( institution ) {
-          if ( institution ) {
-            var displayinstitution;
-            if ( institution.institutionNumber !== "" ) {
-              displayinstitution = institution.institutionNumber;
-            }  else {
-              displayinstitution = institution.name;
-            }
-            self.add(displayinstitution);
-            self.tooltip  = displayinstitution;
-          }
-        }).catch( function( error ) {
-          self.add('N/A');
-          console.error(error);
-        });
-    }
+    visibility: 'HIDDEN'
   }
 });
 

@@ -59,6 +59,7 @@ foam.CLASS({
     'publicBusinessDAO',
     'pushMenu',
     'subject',
+    'stack',
     'user'
   ],
 
@@ -72,12 +73,7 @@ foam.CLASS({
     'net.nanopay.contacts.ContactStatus',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.payment.PaymentProviderCorridor',
-    'net.nanopay.ui.wizard.ContactWizardDetailView'
-  ],
-
-  tableColumns: [
-    'organization',
-    'status'
+    'net.nanopay.ui.wizard.WizardController'
   ],
 
   messages: [
@@ -227,14 +223,30 @@ foam.CLASS({
 
   actions: [
     {
+      name: 'addBankAccount',
+      isAvailable: function() {
+        return this.signUpStatus !== this.ContactStatus.READY && ! this.bankAccount;
+      },
+      code: function(X) {
+        X.controllerView.add(this.WizardController.create({
+          model: 'net.nanopay.contacts.Contact',
+          wizardView: 'net.nanopay.contacts.ui.ContactWizardView',
+          data: this,
+          controllerMode: foam.u2.ControllerMode.CREATE,
+          isEdit: true
+        }, X));
+      }
+    },
+    {
       name: 'edit',
       label: 'Edit Details',
       isAvailable: function() {
         return this.signUpStatus === this.ContactStatus.READY && this.businessId === 0;
       },
       code: function(X) {
-        X.controllerView.add(this.ContactWizardDetailView.create({
+        X.stack.push(this.WizardController.create({
           model: 'net.nanopay.contacts.Contact',
+          wizardView: 'net.nanopay.contacts.ui.ContactWizardView',
           data: this,
           controllerMode: foam.u2.ControllerMode.EDIT,
           isEdit: true
@@ -258,10 +270,12 @@ foam.CLASS({
           createdBy: this.subject.user.id,
           isContact: true
         }, X);
-        X.controllerView.add(this.ContactWizardDetailView.create({
+        X.controllerView.add(this.WizardController.create({
           model: 'net.nanopay.model.Invitation',
+          wizardView: 'net.nanopay.contacts.ui.InvitationWizardView',
           data: invite,
-          controllerMode: foam.u2.ControllerMode.EDIT
+          controllerMode: foam.u2.ControllerMode.EDIT,
+          isEdit: true
         }, X))
       }
     },

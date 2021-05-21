@@ -417,6 +417,12 @@ foam.CLASS({
       view: 'foam.u2.tag.TextArea'
     },
     {
+      class: 'String',
+      name: 'tedText',
+      documentation: `TED notification text`,
+      section: 'invoiceInformation'
+    },
+    {
       class: 'UnitValue',
       name: 'chequeAmount',
       includeInDigest: true,

@@ -16,11 +16,8 @@ foam.CLASS({
       code: async function(x) {
         this.data.submitted = true;
         this.indicator = this.WizardletIndicator.SAVING;
-        var ret = await this.wao.save(this, null);
-        this.saveEvent.pub(ret);
-        if ( ret.status === foam.nanos.crunch.CapabilityJunctionStatus.GRANTED )
-          this.window.location.reload();
-        return;
+        await this.wao.save(this, null);
+        this.window.location.reload();
       }
     }
   ]

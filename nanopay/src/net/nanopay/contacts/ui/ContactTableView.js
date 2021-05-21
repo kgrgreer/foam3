@@ -66,8 +66,9 @@ foam.CLASS({
           if ( this.selection.signUpStatus !== net.nanopay.contacts.ContactStatus.READY && ! this.selection.bankAccount ) {
             controllerMode_ = foam.u2.ControllerMode.CREATE;
           }
-          this.add(net.nanopay.ui.wizard.ContactWizardDetailView.create({
+          this.add(net.nanopay.ui.wizard.WizardController.create({
             model: 'net.nanopay.contacts.Contact',
+            wizardView: 'net.nanopay.contacts.ui.ContactWizardView',
             data: this.selection,
             controllerMode: controllerMode_,
             isEdit: true

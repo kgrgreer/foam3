@@ -176,6 +176,9 @@ foam.CLASS({
               }
               if ( cause == null) {
                 cause = t.getCause(); // thrown is RuntimeException
+                if ( cause == null ) {
+                  cause = t;
+                }
                 logger.error("Failed updating exchange limit transaction status", cause);
                 txn.setStatus(TransactionStatus.FAILED);
                 txn.getTransactionEvents(x).put_(x, new TransactionEvent(cause.getMessage()));
@@ -201,7 +204,7 @@ foam.CLASS({
           .setSourceCurrencyExpr(Transaction.SOURCE_CURRENCY)
           .setDestinationCurrencyExpr(new Constant("USD"))
           .build();
-        var totalSourceAmount = -txn.getTotal(x, txn.getSourceAccount());
+        var totalSourceAmount = -txn.getTotal(x, txn.getSourceAccount()) / 100.0;
         return limit >= totalSourceAmount * spotRate.getRate(txn).doubleValue();
       `
     },
