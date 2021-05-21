@@ -57,8 +57,8 @@ foam.CLASS({
          no link to                                 /      \   n
                                                  y /        - - - - - - - - - - -
                                                   /                               \
-                                              has menu                         enable link   
-                                           with permission?                  link to default
+                                            has menu with                         enable link   
+                                           read permission ?                     link to default
                                              /        \      n                
                                           y /          - - - - - - -
                                            /                         \       
