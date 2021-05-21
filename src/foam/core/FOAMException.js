@@ -94,15 +94,6 @@ foam.CLASS({
     }
   ],
 
-  // templates: [
-  //   {
-  //     name: 'toMessage',
-  //     template: function() {
-  //     /* <%= translation %> */
-  //     }
-  //   }
-  // ],
-
   methods: [
     {
       name: 'getMessage',
@@ -115,9 +106,7 @@ foam.CLASS({
       if ( ! SafetyUtil.isEmpty(msg) ) {
         // REVIEW: temporary - default/simple java template support not yet split out from EmailTemplateEngine.
         foam.nanos.notification.email.EmailTemplateEngine template = new foam.nanos.notification.email.EmailTemplateEngine();
-        msg = template.renderTemplate(XLocator.get(), msg, getTemplateValues()).toString().trim();
-System.out.println("FOAMException,templated,"+msg);
-        return msg;
+        return template.renderTemplate(XLocator.get(), msg, getTemplateValues()).toString().trim();
       }
       return getExceptionMessage();
       `
@@ -130,12 +119,17 @@ System.out.println("FOAMException,templated,"+msg);
         return this.translationService.getTranslation(foam.locale, getOwnClassInfo().getId(), this.exceptionMessage);
       },
       javaCode: `
-      String locale = (String) XLocator.get().get("locale.language");
-      if ( SafetyUtil.isEmpty(locale) ) {
-        locale = "en";
+      try {
+        String locale = (String) XLocator.get().get("locale.language");
+        if ( SafetyUtil.isEmpty(locale) ) {
+          locale = "en";
+        }
+        TranslationService ts = (TranslationService) XLocator.get().get("translationService");
+        return ts.getTranslation(locale, getClassInfo().getId(), getExceptionMessage());
+      } catch (NullPointerException e) {
+        // noop: XLocator is not setup when not logged in. 
       }
-      TranslationService ts = (TranslationService) XLocator.get().get("translationService");
-      return ts.getTranslation(locale, getClassInfo().getId(), getExceptionMessage());
+      return null;
       `
     },
     {
@@ -178,7 +172,7 @@ System.out.println("FOAMException,templated,"+msg);
         sb.append("("+getErrorCode()+")");
         sb.append(",");
       }
-      sb.append(getClass().getName()+",");
+      sb.append(getClass().getName());
       sb.append(",");
       sb.append(getMessage());
       return sb.toString();
