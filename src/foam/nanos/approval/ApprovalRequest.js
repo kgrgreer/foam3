@@ -629,26 +629,52 @@
       name: 'SUCCESS_ASSIGNED',
       message: 'You have successfully assigned this request'
     },
+     {
+       name: 'SUCCESS_ASSIGNED_TITLE',
+       message: 'Request Assigned'
+     },
     {
       name: 'SUCCESS_UNASSIGNED',
       message: 'You have successfully unassigned this request'
     },
     {
+      name: 'SUCCESS_UNASSIGNED_TITLE',
+      message: 'Request Unassigned'
+    },
+    {
       name: 'SUCCESS_APPROVED',
       message: 'You have successfully approved this request'
     },
+
+     {
+      name: 'SUCCESS_APPROVED_TITLE',
+      message: 'Request Approved'
+     },
     {
       name: 'SUCCESS_MEMO',
       message: 'You have successfully added a memo'
     },
+  {
+      name: 'SUCCESS_MEMO_TITLE',
+      message: 'Memo Added'
+   },
+
     {
       name: 'SUCCESS_REJECTED',
       message: 'You have successfully rejected this request'
     },
     {
+      name: 'SUCCESS_REJECTED_TITLE',
+      message: 'Request Rejected'
+     },
+    {
       name: 'SUCCESS_CANCELLED',
       message: 'You have successfully cancelled this request'
     },
+    {
+      name: 'SUCCESS_CANCELLED_TITLE',
+      message: 'Request Cancelled'
+     },
     {
       name: 'ASSIGN_TITLE',
       message: 'Select an assignee'
@@ -724,7 +750,7 @@
         this.approvalRequestDAO.put(approvedApprovalRequest).then(req => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
-          this.notify(this.SUCCESS_APPROVED, '', this.LogLevel.INFO, true);
+          this.notify(this.SUCCESS_APPROVED_TITLE, this.SUCCESS_APPROVED, this.LogLevel.INFO, true);
 
           if (
             X.stack.top &&
@@ -808,7 +834,7 @@
           X.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
 
-          X.notify(this.SUCCESS_CANCELLED, '', this.LogLevel.INFO, true);
+          X.notify(this.SUCCESS_CANCELLED_TITLE, this.SUCCESS_CANCELLED, this.LogLevel.INFO, true);
 
           if (
             X.stack.top &&
@@ -969,7 +995,7 @@
         this.approvalRequestDAO.put(assignedApprovalRequest).then(req => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
-          this.notify(this.SUCCESS_ASSIGNED, '', this.LogLevel.INFO, true);
+          this.notify(this.SUCCESS_ASSIGNED_TITLE, this.SUCCESS_ASSIGNED, this.LogLevel.INFO, true);
           if (
             X.stack.top &&
             ( X.currentMenu.id !== X.stack.top[2] )
@@ -995,7 +1021,7 @@
         this.approvalRequestDAO.put(unassignedApprovalRequest).then(req => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
-          this.notify(this.SUCCESS_UNASSIGNED, '', this.LogLevel.INFO, true);
+          this.notify(this.SUCCESS_UNASSIGNED_TITLE, this.SUCCESS_UNASSIGNED, this.LogLevel.INFO, true);
           if (
             X.stack.top &&
             ( X.currentMenu.id !== X.stack.top[2] )
@@ -1021,7 +1047,7 @@
         this.approvalRequestDAO.put(approvedApprovalRequest).then(req => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
-          this.notify(this.SUCCESS_APPROVED, '', this.LogLevel.INFO, true);
+          this.notify(this.SUCCESS_APPROVED_TITLE, this.SUCCESS_APPROVED, this.LogLevel.INFO, true);
 
           if (
             X.stack.top &&
@@ -1044,7 +1070,7 @@
         this.approvalRequestDAO.put(newMemoRequest).then(req => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
-          this.notify(this.SUCCESS_MEMO, '', this.LogLevel.INFO, true);
+          this.notify(this.SUCCESS_MEMO_TITLE, this.SUCCESS_MEMO, this.LogLevel.INFO, true);
 
           if (
             X.stack.top &&
@@ -1068,7 +1094,7 @@
         this.approvalRequestDAO.put(rejectedApprovalRequest).then(o => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
-          this.notify(this.SUCCESS_ASSIGNED, '', this.LogLevel.INFO, true);
+          this.notify(this.SUCCESS_REJECTED_TITLE, this.SUCCESS_REJECTED, this.LogLevel.INFO, true);
 
           if (
             X.stack.top &&
@@ -1090,7 +1116,7 @@
         this.approvalRequestDAO.put(assignedApprovalRequest).then(_ => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
-          this.notify(this.SUCCESS_ASSIGNED, '', this.LogLevel.INFO, true);
+          this.notify(this.SUCCESS_ASSIGNED_TITLE, this.SUCCESS_ASSIGNED, this.LogLevel.INFO, true);
 
           if (
             X.stack.top &&
