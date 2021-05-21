@@ -67,7 +67,6 @@ p({
     }
   }
 })
-// Review.. should these not be in treviso deployment?
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"transactions-summary",

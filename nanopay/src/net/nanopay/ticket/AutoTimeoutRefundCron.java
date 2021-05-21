@@ -32,6 +32,8 @@ public class AutoTimeoutRefundCron implements ContextAgent {
 
   @Override
   public void execute(X x) {
+    // This cron automatically refunds transactions addressed by tickets in queued refund status.
+    // tickets where the autorefund date that is specified on the ticket has passed get refunded.
     Logger logger = (Logger) x.get("logger");
     DAO refundTicketDAO = (DAO) x.get("refundTicketDAO");
 
