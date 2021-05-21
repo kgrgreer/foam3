@@ -826,7 +826,7 @@
           X.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
 
-          X.notify(this.SUCCESS_CANCELLED_TITLE,this.SUCCESS_CANCELLED, this.LogLevel.INFO, true);
+          X.notify(this.SUCCESS_CANCELLED_TITLE, this.SUCCESS_CANCELLED, this.LogLevel.INFO, true);
 
           if (
             X.stack.top &&
@@ -1093,7 +1093,7 @@
         this.approvalRequestDAO.put(newMemoRequest).then(req => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
-          this.notify(this.SUCCESS_MEMO_TITLE,this.SUCCESS_MEMO, this.LogLevel.INFO, true);
+          this.notify(this.SUCCESS_MEMO_TITLE, this.SUCCESS_MEMO, this.LogLevel.INFO, true);
 
           if (
             X.stack.top &&

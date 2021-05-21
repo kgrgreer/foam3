@@ -338,7 +338,7 @@ foam.CLASS({
               if ( this.isFileType(file) ) {
                 files.push(file);
               } else {
-                ctrl.notify(this.ERROR_FILE_TITLE,this.ERROR_FILE_TYPE, this.LogLevel.ERROR, true);
+                ctrl.notify(this.ERROR_FILE_TITLE, this.ERROR_FILE_TYPE, this.LogLevel.ERROR, true);
               }
             }
           }
