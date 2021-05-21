@@ -12,10 +12,10 @@ foam.CLASS({
   documentation: `
     A read-only view for a Reference Property.
     
-    You configure access to the link and what is set to the link using
+    You can configure access to the link and what is set to the link using
     'enableLink', 'menuKeys', and 'controlAccessToDAOSummary' 
     
-    * A flow chart for determining access to the link and what the link is set to *
+    * A flow chart for determining access to the link and what the link is set to the link *
 
                     enableLink is
                     set to false ?
@@ -156,7 +156,7 @@ foam.CLASS({
       // menus are provided?
       if ( this.menuKeys.length > 0 ) {
         try {
-          // get a permission for menus
+          // check permissions for menus
           const permissions = await Promise.all([...this.menuKeys].map(menuId => {
             return this.auth.check(this.__subContext__, `menu.read.${menuId}`);
           }));
@@ -180,9 +180,9 @@ foam.CLASS({
             }
           }
         } catch (e) {
-          console.warn('something went wrong, enable access to dao summary');
+          console.error(e);
           this.enableLink = true;
-          this.enableLinkToDAOSuammry = true;
+          this.controlAccessToDAOSummary = true;
           this.linkTo = 'daoSummary';
         }
       // menus not provided
