@@ -1,4 +1,21 @@
 /**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+/**
  * @license
  * Copyright 2019 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -10,13 +27,14 @@ foam.CLASS({
 
   documentation: 'Email CASTLe opt-out registry.',
 
-  // TODO: other services such as phone (sms), social media, ... 
+  // TODO: other services such as phone (sms), social media, ...
 
   implements: [
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware'
+    'foam.nanos.auth.LastModifiedByAware',
+    'foam.nanos.auth.ServiceProviderAware'
   ],
 
   imports: [
@@ -26,18 +44,21 @@ foam.CLASS({
   tableColumns: [
     'firstName',
     'lastName',
-    'id',
+    'email',
     'doNotSolicit',
     'doNotContact',
   ],
 
   properties: [
     {
-      documentation: 'email of user opting out of solitations.',
-      name: 'id',
       class: 'String',
-      label: 'Email',
-      aliases: ['email'],
+      name: 'id',
+      visibility: 'RO'
+    },
+    {
+      documentation: 'email of user opting out of solitations.',
+      name: 'email',
+      class: 'String',
       required: true
     },
     {
@@ -124,6 +145,27 @@ foam.CLASS({
         }.bind(this));
       }
     },
+    {
+      name: 'lastModifiedByAgent',
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj) {
+        obj.userDAO.find(value).then(function(user) {
+          if ( user ) {
+            if ( user.email ) {
+              this.add(user.email);
+            }
+          }
+        }.bind(this));
+      }
+    },
+    {
+      name: 'spid',
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      readPermissionRequired: true
+    }
   ]
 });
 

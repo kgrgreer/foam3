@@ -1,0 +1,58 @@
+p({
+  class:"foam.nanos.cron.Cron",
+  id:"Intuit Billing Cron",
+  description:"Create Intuit Billing Transactions",
+  enabled:true,
+  code:"""
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import foam.nanos.alarming.Alarm;
+    import foam.nanos.auth.Subject;
+    import foam.nanos.auth.User;
+    import net.nanopay.account.Account;
+    import net.nanopay.tx.cron.BillingCron;
+    import static foam.mlang.MLang.*;
+
+    // Retrieve or create the billing user for Intuit
+    emailAddress = "billing-intuit@nanopay.net";
+    localUserDAO = x.get("localUserDAO");
+    user = localUserDAO.find(EQ(User.EMAIL, emailAddress));
+    if ( user == null ) {
+      String name = "Unable to find user billing intuit user: " + emailAddress;
+      DAO alarmDAO = (DAO) x.get("alarmDAO");
+      Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, name));
+      if ( alarm != null && alarm.getIsActive() ) { return; }
+      alarm = new Alarm.Builder(x)
+                  .setName(name)
+                  .setIsActive(true)
+                  .setNote(emailAddress + " user does not exist")
+                  .build();
+      alarmDAO.put(alarm);
+      throw new RuntimeException("Intuit Billing Cron error: Intuit billing user does exist");
+    }
+
+    ArraySink feeAccountSink = (ArraySink) ((DAO) x.get("localAccountDAO"))
+        .where(EQ(Account.NAME, "Nanopay Fee Receiving Account"))
+        .select(new ArraySink());
+
+    Account feeAccount = (Account) feeAccountSink.getArray().get(0);
+
+    // Update the subject in the context
+    billingX = x.put("subject", new Subject.Builder(x).setUser(user).build());
+    billingX = billingX.put("feeAccount", feeAccount);
+
+    // Execute billing
+    new BillingCron().execute(billingX);
+
+    print("done");
+  """,
+  schedule:{
+    class:"foam.nanos.cron.CronSchedule",
+    minute: 0,
+    hour: 1,
+    dayOfMonth:-1,
+    month:-1,
+    dayOfWeek:-1,
+    second: 0
+  }
+})

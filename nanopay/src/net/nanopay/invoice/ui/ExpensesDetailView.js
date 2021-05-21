@@ -1,3 +1,19 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
 
 foam.CLASS({
   package: 'net.nanopay.invoice.ui',
@@ -5,8 +21,8 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
+    'foam.log.LogLevel',
     'foam.u2.PopupView',
-    'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.account.Balance',
@@ -23,6 +39,7 @@ foam.CLASS({
     'ctrl',
     'hideSummary',
     'invoiceDAO',
+    'notify',
     'stack',
     'user'
   ],
@@ -149,7 +166,13 @@ foam.CLASS({
       // Currently making 'Pay Now' button disappear with CSS
       this.addClass(self.myClass())
         .add(self.data.status$.map(function(status) {
-          return self.E().addClass(self.myClass()).show( ! foam.util.equals(status, self.InvoiceStatus.VOID))
+          return self.E().addClass(self.myClass())
+            .show( ! 
+              (
+                foam.util.equals(status, self.InvoiceStatus.VOID) || 
+                foam.util.equals(status, self.InvoiceStatus.REJECTED) 
+              )
+            )
             .start(self.PAY_NOW_DROP_DOWN, null, self.payNowMenuBtn_$).end()
             .start(self.PAY_NOW).show(
               foam.util.equals(status, self.InvoiceStatus.SCHEDULED) ||
@@ -166,7 +189,7 @@ foam.CLASS({
       .endContext()
       .tag(this.EXPORT_BUTTON)
       .start('h5')
-        .add('Invoice from ', this.data.payee.label())
+        .add('Invoice from ', this.data.payee.toSummary())
         .callIf(this.foreignExchange, function() {
           this.start({
             class: 'foam.u2.tag.Image',
@@ -229,10 +252,7 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
-          this.add(self.NotificationMessage.create({
-            message: `${this.verbTenseMsg} ${this.data.paymentMethod.label}.`,
-            type: 'error'
-          }));
+          X.notify(`${this.verbTenseMsg} ${this.data.paymentMethod.label}.`, '', self.LogLevel.ERROR, true);
           return;
         }
         X.stack.push({
@@ -273,10 +293,7 @@ foam.CLASS({
       var self = this;
       self.payNowPopUp_.remove();
       if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
-        self.add(self.NotificationMessage.create({
-          message: `${this.verbTenseMsg} ${this.data.paymentMethod.label}.`,
-          type: 'error'
-        }));
+        this.notify(`${this.verbTenseMsg} ${this.data.paymentMethod.label}.`, '', this.LogLevel.ERROR, true);
         return;
       }
       this.ctrl.add(this.Popup.create().tag({
@@ -289,10 +306,7 @@ foam.CLASS({
       var self = this;
       self.payNowPopUp_.remove();
       if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
-        self.add(self.NotificationMessage.create({
-          message: `${this.verbTenseMsg} ${this.data.paymentMethod.label}.`,
-          type: 'error'
-        }));
+        this.notify(`${this.verbTenseMsg} ${this.data.paymentMethod.label}.`, '', this.LogLevel.ERROR, true);
         return;
       }
       this.ctrl.add(this.Popup.create().tag({

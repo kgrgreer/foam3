@@ -1,53 +1,49 @@
 
 p({"class":"net.nanopay.model.Branch","id":11,"branchId":"12345","institution":2})
 p({"class":"net.nanopay.model.Branch","id":12,"branchId":"12345","institution":24})
-
 p({"class":"net.nanopay.model.Branch","id":13,"branchId":"05562","institution":10})
-
 p({"class":"net.nanopay.model.Branch","id":14,"branchId":"07682","institution":10})
 p({"class":"net.nanopay.model.Branch","id":15,"branchId":"01822","institution":10})
-
-// Modified by Inspector Joe (1423) at 2018-12-27T13:58:16Z
-p({"class":"net.nanopay.model.Branch","id":15,"address":{"class":"foam.nanos.auth.Address","verified":true,"address1":"Lloyd D. Jackson Square Branch - Stelco Branch","address2":"100 King Street West","city":"Hamilton","postalCode":"L8P 1A2","countryId":"CA","regionId":"ON","hours":[{"class":"foam.nanos.auth.Hours"}]}})
 p({"class":"net.nanopay.model.Branch","id":16,"branchId":"67876","institution":11})
-
-p({"class":"net.nanopay.model.Branch","id":18,"branchId":"28402","institution":13})
-p({"class":"net.nanopay.model.Branch","id":23,"branchId":"81422","institution":11})
-p({"class":"net.nanopay.model.Branch","id":34,"branchId":"15122","institution":13})
-p({"class":"net.nanopay.model.Branch","id":20,"branchId":"00022","institution":2})
-p({"class":"net.nanopay.model.Branch","id":35,"branchId":"30500","institution":24})
-// Modified by Inspector Joe (1423) at 2019-01-02T13:11:28Z
 p({"class":"net.nanopay.model.Branch","id":17,"branchId":"10252","institution":13})
-// Modified by Inspector Joe (1423) at 2019-01-02T13:11:28Z
-p({"class":"net.nanopay.model.Branch","id":19,"branchId":"00002","institution":3})
-// Modified by Inspector Joe (1423) at 2019-01-02T13:11:28Z
-p({"class":"net.nanopay.model.Branch","id":21,"branchId":"09067","institution":10})
-// Modified by Inspector Joe (1423) at 2019-01-02T13:11:28Z
-p({"class":"net.nanopay.model.Branch","id":22,"branchId":"87106","institution":11})
-// Modified by Inspector Joe (1423) at 2019-01-02T13:11:28Z
-p({"class":"net.nanopay.model.Branch","id":25,"branchId":"82362","institution":11})
-// Modified by Inspector Joe (1423) at 2019-01-02T13:11:28Z
-p({"class":"net.nanopay.model.Branch","id":26,"branchId":"00002","institution":10})
-// Modified by Inspector Joe (1423) at 2019-01-02T13:11:28Z
-p({"class":"net.nanopay.model.Branch","id":27,"branchId":"07042","institution":3})
-// Modified by Inspector Joe (1423) at 2019-01-02T13:11:28Z
-p({"class":"net.nanopay.model.Branch","id":28,"branchId":"05562","institution":10})
-// Modified by Inspector Joe (1423) at 2019-01-02T13:11:28Z
-p({"class":"net.nanopay.model.Branch","id":29,"branchId":"07702","institution":10})
-// Modified by Inspector Joe (1423) at 2019-01-02T13:11:28Z
-p({"class":"net.nanopay.model.Branch","id":30,"branchId":"92750","institution":13})
-// Modified by Inspector Joe (1423) at 2019-01-02T13:11:28Z
-p({"class":"net.nanopay.model.Branch","id":31,"branchId":"00212","institution":3})
-// Modified by Inspector Joe (1423) at 2019-01-02T13:11:28Z
-p({"class":"net.nanopay.model.Branch","id":32,"branchId":"06352","institution":10})
-// Modified by Inspector Joe (1423) at 2019-01-02T13:11:28Z
-p({"class":"net.nanopay.model.Branch","id":33,"branchId":"02122","institution":3})
-// Modified by Inspector Joe (1423) at 2019-01-02T13:11:28Z
-p({"class":"net.nanopay.model.Branch","id":36,"branchId":"63081","institution":11})
-// Modified by Inspector Joe (1423) at 2019-01-02T13:11:28Z
-p({"class":"net.nanopay.model.Branch","id":37,"branchId":"47696","institution":11})
 p({"class":"net.nanopay.model.Branch","id":17,"branchId":"62570","institution":11})
-
+p({"class":"net.nanopay.model.Branch","id":18,"branchId":"28402","institution":13})
+p({"class":"net.nanopay.model.Branch","id":19,"branchId":"00002","institution":3})
+p({"class":"net.nanopay.model.Branch","id":20,"branchId":"00022","institution":2})
+p({"class":"net.nanopay.model.Branch","id":21,"branchId":"09067","institution":10})
+p({"class":"net.nanopay.model.Branch","id":22,"branchId":"87106","institution":11})
+p({"class":"net.nanopay.model.Branch","id":23,"branchId":"81422","institution":11})
+p({"class":"net.nanopay.model.Branch","id":25,"branchId":"82362","institution":11})
+p({"class":"net.nanopay.model.Branch","id":26,"branchId":"00002","institution":10})
+p({"class":"net.nanopay.model.Branch","id":27,"branchId":"07042","institution":3})
+p({"class":"net.nanopay.model.Branch","id":28,"branchId":"05562","institution":10})
+p({"class":"net.nanopay.model.Branch","id":29,"branchId":"07702","institution":10})
+p({"class":"net.nanopay.model.Branch","id":30,"branchId":"92750","institution":13})
+p({"class":"net.nanopay.model.Branch","id":31,"branchId":"00212","institution":3})
+p({"class":"net.nanopay.model.Branch","id":32,"branchId":"06352","institution":10})
+p({"class":"net.nanopay.model.Branch","id":33,"branchId":"02122","institution":3})
+p({"class":"net.nanopay.model.Branch","id":34,"branchId":"15122","institution":13})
+p({"class":"net.nanopay.model.Branch","id":35,"branchId":"30500","institution":24})
+p({"class":"net.nanopay.model.Branch","id":36,"branchId":"63081","institution":11})
+p({"class":"net.nanopay.model.Branch","id":37,"branchId":"47696","institution":11})
 p({"class":"net.nanopay.model.Branch","id":38,"branchId":"62782","institution":6})
 p({"class":"net.nanopay.model.Branch","id":39,"branchId":"27522","institution":13})
 p({"class":"net.nanopay.model.Branch","id":40,"branchId":"29692","institution":11})
+p({"class":"net.nanopay.model.Branch","id":130,"branchId":"00646","institution":35})
+
+p({
+    "class":"net.nanopay.model.Branch",
+    "id":15,
+    "address":{
+        "class":"foam.nanos.auth.Address",
+        "verified":true,
+        "unstructured":true,
+        "address1":"Lloyd D. Jackson Square Branch - Stelco Branch",
+        "address2":"100 King Street West",
+        "city":"Hamilton",
+        "postalCode":"L8P 1A2",
+        "countryId":"CA",
+        "regionId":"ON",
+        "hours":[{"class":"foam.nanos.auth.Hours"}]
+    }
+})

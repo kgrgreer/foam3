@@ -1,0 +1,25 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "mspSetupDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    dao = new net.nanopay.msp.MspSetupDAO.Builder(x)
+      .setDelegate(new foam.dao.NullDAO(x, net.nanopay.msp.MspInfo.getOwnClassInfo()))
+      .build();
+    
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.msp.MspInfo.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("mspSetup")
+      .setValidated(true)
+      .setDecorator(dao)
+      .build();
+  """,
+  "client":
+  """
+    {
+      "of": "net.nanopay.msp.MspInfo"
+    }
+  """
+})

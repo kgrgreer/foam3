@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui.dashboard.cards',
   name: 'BankIntegrationCard',
@@ -28,7 +45,7 @@ foam.CLASS({
     'institutionDAO',
     'pushMenu',
     'stack',
-    'user',
+    'subject',
   ],
 
   messages: [
@@ -86,7 +103,7 @@ foam.CLASS({
           return subtitle;
         }
 
-        return isAccountThere ? (this.user.address.countryId === 'US' ? this.SUBTITLE_VERIFING : this.SUBTITLE_VERIF) : this.SUBTITLE_EMPTY;
+        return isAccountThere ? (this.subject.user.address.countryId === 'US' ? this.SUBTITLE_VERIFING : this.SUBTITLE_VERIF) : this.SUBTITLE_EMPTY;
       }
     },
     {
@@ -126,14 +143,10 @@ foam.CLASS({
     },
 
     async function checkDefaultAccount() {
-      await this.user.accounts
+      await this.subject.user.accounts
         .find(
           this.AND(
-            this.OR(
-              this.EQ(this.Account.TYPE, this.BankAccount.name),
-              this.EQ(this.Account.TYPE, this.CABankAccount.name),
-              this.EQ(this.Account.TYPE, this.USBankAccount.name)
-            ),
+            this.INSTANCE_OF(this.BankAccount),
             this.NEQ(this.BankAccount.STATUS, this.BankAccountStatus.DISABLED),
             this.EQ(this.Account.IS_DEFAULT, true)
           )
@@ -152,7 +165,7 @@ foam.CLASS({
               iconPath: this.iconPath,
               title: this.TITLE,
               subtitle: subtitleToUse,
-              action: isAccountThere ? (this.user.address.countryId === 'US' ? (this.isVerified ? this.VIEW_ACCOUNT : this.VERIFY_ACCOUNT) : (this.isVerified ? this.VIEW_ACCOUNT : this.VERIFY_BANK)) : this.ADD_BANK
+              action: isAccountThere ? (this.subject.user.address.countryId === 'US' ? (this.isVerified ? this.VIEW_ACCOUNT : this.VERIFY_ACCOUNT) : (this.isVerified ? this.VIEW_ACCOUNT : this.VERIFY_BANK)) : this.ADD_BANK
             }).end();
         }));
       });
@@ -173,14 +186,14 @@ foam.CLASS({
       name: 'viewAccount',
       label: 'View',
       code: function() {
-        this.pushMenu('sme.main.banking');
+        this.pushMenu('mainmenu.banking');
       }
     },
     {
       name: 'verifyAccount',
       label: 'Pending',
       code: function() {
-        this.pushMenu('sme.main.banking');
+        this.pushMenu('mainmenu.banking');
       }
     },
     {
@@ -188,9 +201,7 @@ foam.CLASS({
       label: 'Add',
       code: function() {
         this.stack.push({
-          class: 'net.nanopay.bank.ui.BankPickCurrencyView',
-          cadAvailable: true,
-          usdAvailable: true
+          class: 'net.nanopay.bank.ui.BankPickCurrencyView'
         });
       }
     },

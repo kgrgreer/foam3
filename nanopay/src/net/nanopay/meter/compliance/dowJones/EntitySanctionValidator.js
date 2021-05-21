@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.dowJones',
   name: 'EntitySanctionValidator',
@@ -8,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.model.Business',
@@ -33,7 +51,7 @@ foam.CLASS({
               filterRegion = "United States,USA,US";
             }
           }
-          
+
           EntityNameSearchData searchData = new EntityNameSearchData.Builder(x)
             .setSearchId(business.getId())
             .setEntityName(business.getOrganization())
@@ -53,11 +71,13 @@ foam.CLASS({
                 requestApproval(x,
                   new DowJonesApprovalRequest.Builder(x)
                     .setObjId(business.getId())
-                    .setDaoKey("localUserDAO")
+                    .setDaoKey("userDAO")
+                    .setServerDaoKey("localUserDAO")
                     .setCauseId(response.getId())
                     .setCauseDaoKey("dowJonesResponseDAO")
-                    .setClassification("Validate Entity Using Dow Jones")
+                    .setClassificationEnum(ApprovalRequestClassificationEnum.BUSINESS_DOW_JONES)
                     .setMatches(response.getResponseBody().getMatches())
+                    .setCreatedFor(business.getId())
                     .build());
               }
             }, "Entity Sanction Validator");
@@ -88,11 +108,14 @@ foam.CLASS({
                     requestApproval(x,
                       new DowJonesApprovalRequest.Builder(x)
                         .setObjId(business.getId())
-                        .setDaoKey("localUserDAO")
+                        .setServerDaoKey("localUserDAO")
+                        .setDaoKey("userDAO")
                         .setCauseId(directorResponse.getId())
                         .setCauseDaoKey("dowJonesResponseDAO")
-                        .setClassification("Validate Business Director Using Dow Jones")
+                        .setReferenceSummary(businessDirector.toSummary())
+                        .setClassificationEnum(ApprovalRequestClassificationEnum.BUSINESS_DIRECTOR_DOW_JONES)
                         .setMatches(directorResponse.getResponseBody().getMatches())
+                        .setCreatedFor(business.getId())
                         .build());
                   }
                 }, "Business Director Sanction Validator");

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.liquidity.ui.dashboard.liquidity',
   name: 'DashboardLiquidity',
@@ -25,6 +42,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountBalanceHourlyCandlestickDAO',
     'accountBalanceAnnuallyCandlestickDAO',
     'accountBalanceDailyCandlestickDAO',
     'accountBalanceMonthlyCandlestickDAO',
@@ -33,7 +51,7 @@ foam.CLASS({
     'accountDAO',
     'currencyDAO',
     'liquidityThresholdCandlestickDAO',
-    'liquidityFilteredAccountDAO'
+    'filteredAccountDAO'
   ],
 
   css: `
@@ -99,7 +117,7 @@ foam.CLASS({
           sections: [
             {
               heading: 'Accounts',
-              dao: X.data.liquidityFilteredAccountDAO
+              dao: X.filteredAccountDAO
             },
           ],
           search: true,
@@ -188,8 +206,7 @@ foam.CLASS({
     },
     {
       class: 'Map',
-      name: 'styling',
-      value: {}
+      name: 'styling'
     }
   ],
 
@@ -260,6 +277,14 @@ foam.CLASS({
 
               // Fill the DAO with the account balance history.
               var account = await this.account$find;
+              if( this.timeFrame.label === 'Hourly' ){
+              await this['accountBalance' + this.timeFrame.label + 'CandlestickDAO']
+                .where(this.AND(
+                  this.EQ(this.Candlestick.KEY, account.id)
+                ))
+                .select(sink);
+              }
+              else {
               await this['accountBalance' + this.timeFrame.label + 'CandlestickDAO']
                 .where(this.AND(
                   this.GTE(this.Candlestick.CLOSE_TIME, this.startDate),
@@ -267,6 +292,7 @@ foam.CLASS({
                   this.EQ(this.Candlestick.KEY, account.id)
                 ))
                 .select(sink);
+              }
 
               // If there are no liquidity settings, there's nothing more to do.
               if ( ! account.liquiditySetting ) {

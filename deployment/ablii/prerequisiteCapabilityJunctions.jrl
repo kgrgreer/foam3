@@ -1,0 +1,156 @@
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "ucj-crunchOnboarding-rules",
+  priority: 1
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "serviceProviderCapability",
+  priority: 2
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "abliiPlannerCapability",
+  priority: 3
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "abliiCountryCapability",
+  priority: 4
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "abliiCorridorCapability",
+  priority: 5
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "abliiCurrencyCapability",
+  priority: 6
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "abliiMenuCapability",
+  priority: 7
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "ablii-tx-rules",
+  priority: 8
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "ablii-tx-fees",
+  priority: 9
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "ablii-user-notification-settings",
+  priority: 10
+})
+
+// REVIEW: Planners for ablii
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "RBCPlannerCapability",
+  priority: 10
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "BMOPlannerCapability",
+  priority: 11
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "AFEXPlannerCapability",
+  priority: 12
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "KotakPlannerCapability",
+  priority: 13
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "DomesticInterBankAccountPlannerCapability",
+  priority: 14
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "crunch.onboarding.registering-ca-payment-provider",
+  targetId: "BMO",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "crunch.onboarding.registering-ca-payment-provider",
+  targetId: "RBC",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "crunch.onboarding.parent.unlock-ca-ca-payments",
+  targetId: "crunch.onboarding.unlock-ca-ca-payments",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "crunch.onboarding.parent.unlock-ca-ca-payments",
+  targetId: "crunch.onboarding.registering-ca-payment-provider",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "crunch.onboarding.parent.unlock-ca-international-payments",
+  targetId: "crunch.onboarding.unlock-ca-international-payments",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "crunch.onboarding.parent.unlock-ca-international-payments",
+  targetId: "crunch.onboarding.registering-international-payment-provider",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "crunch.onboarding.parent.unlock-us-payments",
+  targetId: "crunch.onboarding.unlock-us-payments",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "crunch.onboarding.parent.unlock-us-payments",
+  targetId: "crunch.onboarding.registering-us-international-payment-provider",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "crunch.onboarding.registering-international-payment-provider",
+  targetId: "AFEX",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "crunch.onboarding.registering-us-international-payment-provider",
+  targetId: "AFEX",
+})

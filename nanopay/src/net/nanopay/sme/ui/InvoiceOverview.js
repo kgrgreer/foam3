@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'InvoiceOverview',
@@ -17,12 +34,14 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.account.Account',
     'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
     'net.nanopay.accounting.xero.model.XeroInvoice',
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.bank.CanReceiveCurrency',
@@ -31,7 +50,10 @@ foam.CLASS({
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.invoice.notification.NewInvoiceNotification',
     'net.nanopay.model.Invitation',
-    'net.nanopay.tx.ConfirmationFileLineItem'
+    'net.nanopay.tx.ConfirmationFileLineItem',
+    'net.nanopay.tx.FxSummaryTransactionLineItem',
+    'net.nanopay.tx.FeeSummaryTransactionLineItem',
+    'net.nanopay.tx.TaxLineItem'
   ],
 
   imports: [
@@ -52,6 +74,7 @@ foam.CLASS({
     'notify',
     'stack',
     'transactionDAO',
+    'translationService',
     'user',
     'userDAO'
   ],
@@ -100,9 +123,8 @@ foam.CLASS({
       border-radius: 4px;
     }
     ^ .actions-wrapper {
-      padding: 23px 0px 34px;
       color: #8e9090;
-      margin-top: 2px;
+      margin: 17px 0px 17px 0px;
     }
     ^ .foam-u2-ActionView {
       width: 158px;
@@ -188,15 +210,15 @@ foam.CLASS({
     { name: 'MARK_AS_COMP_MESSAGE', message: 'Mark as complete' },
     { name: 'VOID_MESSAGE', message: 'Mark as void' },
     { name: 'EMAIL_MSG_ERROR', message: 'An error occurred while sending a reminder, please try again later.' },
-    { name: 'EMAIL_MSG', message: 'Invitation sent!' },
+    { name: 'EMAIL_MSG', message: 'Invitation sent' },
     { name: 'PART_ONE_SAVE', message: 'Invoice #' },
     { name: 'PART_TWO_SAVE_SUCCESS', message: 'has successfully been voided.' },
     { name: 'PART_TWO_SAVE_ERROR', message: 'could not be voided at this time. Please try again later.' },
     { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View AscendantFX Transaction Confirmation' },
     { name: 'ANNOTATION', message: '* The dates above are estimates and are subject to change.' },
     { name: 'RECONCILED_MESSAGE', message: 'Reconcile' },
-    { name: 'RECONCILED_SUCCESS', message: 'Invoice successfully reconciled.' },
-    { name: 'REECONCILED_ERROR', message: 'An error occurred reconciling invoice.' }
+    { name: 'RECONCILED_SUCCESS', message: 'Invoice successfully reconciled' },
+    { name: 'REECONCILED_ERROR', message: 'An error occurred reconciling invoice' }
   ],
 
   constants: [
@@ -293,6 +315,14 @@ foam.CLASS({
       name: 'exchangeRateInfo'
     },
     {
+      class: 'FObjectArray',
+      of: 'net.nanopay.tx.TaxLineItem',
+      name: 'taxItems',
+      factory: function() {
+        return [];
+      }
+    },
+    {
       class: 'String',
       name: 'fee'
     },
@@ -336,7 +366,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'canApproveInvoice',
       expression: async function(invoice$status) {
-        let canPay = await this.auth.check(null, 'invoice.pay');
+        let canPay = await this.auth.check(null, 'business.invoice.pay') && await this.auth.check(null, 'user.invoice.pay');
         return canPay && invoice$status === this.InvoiceStatus.PENDING_APPROVAL;
       }
     },
@@ -345,7 +375,7 @@ foam.CLASS({
       name: 'canReconcile',
       documentation: `This boolean is a check for invoice ability to reconcile.`,
       expression: function(invoice$payeeReconciled, invoice$payerReconciled, invoice$status, isPayable) {
-       return invoice$status === this.InvoiceStatus.PAID &&
+        return invoice$status === this.InvoiceStatus.PAID &&
           (( ! invoice$payerReconciled && isPayable ) ||
           ( ! invoice$payeeReconciled && ! isPayable ));
       }
@@ -356,7 +386,7 @@ foam.CLASS({
       documentation: `This boolean is a check for receivable invoices that are completed from a user's perspective but money is yet to be fully transfered.
       Depspite the current requirements requiring this, the current(Jan 2019) implementation does not have this scenerio possible.`,
       expression: function(invoice$status, isPayable) {
-       return ! isPayable &&
+        return ! isPayable &&
         ( invoice$status === this.InvoiceStatus.PENDING_APPROVAL ||
           invoice$status === this.InvoiceStatus.SCHEDULED ||
           invoice$status === this.InvoiceStatus.UNPAID ||
@@ -425,23 +455,22 @@ foam.CLASS({
               transaction.sourceAccount :
               transaction.destinationAccount;
 
-          if ( (transaction.type === 'AscendantFXTransaction' && transaction.fxRate) || this.FXSummaryTransaction.isInstance(transaction) ) {
-            if ( transaction.fxRate !== 1 ) {
-              this.exchangeRateInfo = `1 ${transaction.destinationCurrency} = `
-                + `${(1 / transaction.fxRate).toFixed(4)} ${transaction.sourceCurrency}`;
-            }
+          if ( this.FXSummaryTransaction.isInstance(transaction) ) {
 
-            if ( this.FXSummaryTransaction.isInstance(transaction) ) {
-              this.currencyDAO.find(transaction.sourceCurrency)
-              .then((currency) => {
-                this.fee = currency.format(transaction.getCost());
-              });
-            } else {
-              this.currencyDAO.find(transaction.fxFees.totalFeesCurrency)
-                .then((currency) => {
-                  this.fee = currency.format(transaction.fxFees.totalFees);
-                });
+            // Find FXLineItems and FeeLineItems
+            let lineItems = transaction.lineItems;
+            let taxes = [];
+            for ( i=0; i < lineItems.length; i++ ) {
+              if ( this.FxSummaryTransactionLineItem.isInstance(lineItems[i]) ) {
+                this.exchangeRateInfo = lineItems[i].rate;
+              } else if ( this.FeeSummaryTransactionLineItem.isInstance(lineItems[i]) ) {
+                this.fee = lineItems[i].totalFee;
+              } else if ( this.TaxLineItem.isInstance(lineItems[i]) ) {
+                taxes.push(lineItems[i]);
+              }
             }
+            this.taxItems = taxes;
+
           } else if ( transaction.type === 'AbliiTransaction' ) {
             this.currencyDAO.find(transaction.sourceCurrency)
               .then((currency) => {
@@ -478,7 +507,6 @@ foam.CLASS({
 
     function initE() {
       var self = this;
-      var isBillingInvoice = net.nanopay.invoice.model.BillingInvoice.isInstance(this.invoice);
 
       this
         .addClass(this.myClass())
@@ -498,8 +526,8 @@ foam.CLASS({
                   .add(this.BACK)
                 .end()
                 .on('click', () => {
-                  var menuId = this.isPayable ? 'sme.main.invoices.payables'
-                    : 'sme.main.invoices.receivables';
+                  var menuId = this.isPayable ? 'mainmenu.invoices.payables'
+                    : 'mainmenu.invoices.receivables';
                   this.menuDAO
                     .find(menuId)
                     .then((menu) => menu.launch());
@@ -509,7 +537,7 @@ foam.CLASS({
                 .start()
                   .addClass(this.myClass('header-align-top'))
                   .addClass('x-large-header')
-                  .add('Invoice #' + this.invoice.invoiceNumber)
+                  .add(this.PART_ONE_SAVE + this.invoice.invoiceNumber)
                 .end()
                 // Dynamic create the primary action
                 .start()
@@ -580,84 +608,18 @@ foam.CLASS({
             .addClass('invoice-content')
             .tag({ class: 'net.nanopay.sme.ui.InvoiceDetails', invoice$: this.invoice$ })
           .end()
-          .start()
-            .addClass('right-block')
-            .start()
-              .addClass('payment-content')
-              .start()
-                .addClass('subheading')
-                .add(this.PAYMENT_DETAILS)
-              .end()
-
-              .start()
-                .start().show(this.showTran$).addClass('invoice-row')
-                  .start().addClass('invoice-text').show(this.isCrossBorder$)
-                    .start().addClass('table-content').add(this.EXCHANGE_RATE).end()
-                    .add(this.exchangeRateInfo$)
-                  .end()
-                  // Only show fee when it is a payable and not a billing invoice
-                  .start().addClass('invoice-text').show(this.isPayable && ! isBillingInvoice)
-                    .start().addClass('table-content').add(this.PAYMENT_FEE).end()
-                    .add(this.fee$)
-                  .end()
-                .end()
-                .start().addClass('invoice-row')
-                  .start().addClass('invoice-text')
-                    .start().addClass('table-content').add(this.AMOUNT_DUE).end()
-                    .add(this.PromiseSlot.create({
-                      promise$: this.formattedAmountDue$,
-                      value: '--',
-                    }))
-                  .end()
-                  .start().addClass('invoice-text')
-                    .start().addClass('table-content').add(this.AMOUNT_PAID).end()
-                    .start().show(this.isProcessOrComplete$)
-                      .add(this.formattedAmountPaid$)
-                    .end()
-                    .start().add('--').hide(this.isProcessOrComplete$).end()
-                  .end()
-                .end()
-                .start().addClass('invoice-row')
-                  .start().show(this.isProcessOrComplete$)
-                    .addClass('invoice-text')
-                    .start().show(this.isPaid$)
-                      .addClass('table-content')
-                      .add(this.DATE_CREDITED)
-                    .end()
-                    .start().show(this.isProcess$)
-                      .addClass('table-content')
-                      .add(this.ESTIMATED_CREDIT_DATE)
-                    .end()
-                    .start().show(this.relatedTransaction$)
-                      .add(this.slot(function(invoice$paymentDate) {
-                        if ( invoice$paymentDate ) {
-                          var creditDate =
-                            invoice$paymentDate.toISOString().substring(0, 10);
-                          return this.isPaid ? creditDate : `${creditDate} *`;
-                        } else {
-                          return '--';
-                        }
-                      }))
-                    .end()
-                  .end()
-                  .start().show(this.showBankAccount$).addClass('invoice-text')
-                    .start().addClass('table-content').add(this.bankAccountLabel).end()
-                    .add(this.bankAccount$.map((account) => {
-                      if ( account ) {
-                        return `${account.name} ` +
-                          `${'*'.repeat(account.accountNumber.length-4)}` +
-                          `${account.accountNumber.slice(-4)}`;
-                      } else {
-                        return '--';
-                      }
-                    }))
-                  .end()
-                .end()
-              .end()
-              .start().show(this.isProcess$)
-                .addClass(this.myClass('annotation'))
-                .add(this.ANNOTATION)
-              .end()
+          .start().addClass('right-block')
+            .start().addClass('payment-content')
+              .add(this.slot((relatedTransaction) => {
+                if ( ! relatedTransaction ) return;
+                return this.E()
+                  .start({
+                    class: 'net.nanopay.tx.InvoiceSummaryTransactionCitationView',
+                    data: relatedTransaction,
+                    processingDate: this.invoice.processingDate,
+                    showTransactionDetail: true
+                  });
+              }))
             .end()
 
             .add(this.slot(function(transactionConfirmationPDF) {
@@ -704,11 +666,11 @@ foam.CLASS({
     function markAsReconciled() {
       this.invoice[this.isPayable ? 'payerReconciled' : 'payeeReconciled'] = true;
       this.invoiceDAO.put(this.invoice).then((r) => {
-        this.notify(this.RECONCILED_SUCCESS);
+        this.notify(this.RECONCILED_SUCCESS, '', this.LogLevel.INFO, true);
       }).catch((err) => {
-        this.notify(this.RECONCILED_ERROR, 'error');
+        this.notify(this.RECONCILED_ERROR, '', this.LogLevel.ERROR, true);
       });
-    }
+    },
   ],
 
   actions: [
@@ -765,7 +727,7 @@ foam.CLASS({
             });
             this.canReceiveCurrencyDAO.put(request).then((responseObj) => {
               if ( ! responseObj.response ) {
-                this.notify(responseObj.message, 'error');
+                this.notify(responseObj.message, '', this.LogLevel.ERROR, true);
                 return;
               }
               X.menuDAO.find('sme.quickAction.send').then((menu) => {
@@ -793,6 +755,9 @@ foam.CLASS({
         // Always disabled the paid button
         return false;
       },
+      code: function() {
+        // Do nothing since it always disabled
+      }
     },
     {
       name: 'approve',
@@ -803,7 +768,7 @@ foam.CLASS({
       isEnabled: function(isPendingApproval, canApproveInvoice) {
         return canApproveInvoice && isPendingApproval;
       },
-      availablePermissions: ['invoice.pay'],
+      availablePermissions: ['business.invoice.pay', 'user.invoice.pay'],
       code: function(X) {
         X.menuDAO.find('sme.quickAction.send').then((menu) => {
           var clone = menu.clone();

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx.gs',
   name: 'GSFileUploadScreen',
@@ -7,9 +24,9 @@ foam.CLASS({
 
   requires: [
     'foam.dao.AbstractDAO',
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
+    'foam.nanos.fs.fileDropZone.FileDropZone',
     'net.nanopay.script.CsvUploadScript',
-    'net.nanopay.sme.ui.fileDropZone.FileDropZone',
     'net.nanopay.tx.gs.ProgressBarData',
   ],
 
@@ -18,6 +35,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'notify',
     'window',
     'csvUploadScriptDAO',
     'ProgressBarDAO'
@@ -52,7 +70,7 @@ foam.CLASS({
     margin-bottom: 24px;
   }
 
-  ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
+  ^ .foam-nanos-fs-fileDropZone-FileDropZone {
     margin-bottom: 24px;
   }
 
@@ -103,7 +121,6 @@ foam.CLASS({
     { name: 'TITLE', message: 'Settlement CSV File Upload' },
     { name: 'OLD_HEADING', message: 'Review Previously Ingested Files' },
     { name: 'IN_PROGRESS_HEADING', message: 'Ingestion In Progress' },
-    { name: 'FINISHED_MSG', message: 'Ingestion Finished' },
     { name: 'LOADING_MSG', message: 'Loading...' }
   ],
 
@@ -262,8 +279,8 @@ foam.CLASS({
             // Force the dropdown of previously ingested files to update so that
             // it includes the one that just finished.
             this.ProgressBarDAO.cmd(this.AbstractDAO.RESET_CMD);
-
-            this.add(this.NotificationMessage.create({ message: this.FINISHED_MSG }));
+            if ( pbd.statusPass === true ) this.notify(pbd.status, '', this.LogLevel.INFO, true);
+            else this.notify(pbd.status, '', this.LogLevel.ERROR, true);
             this.ingestionInProgress_ = false;
             this.pbdBeingReviewedId_ = this.pbdInProgressId_;
             this.pbdInProgress_ = null;

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.dowJones',
   name: 'PersonSanctionValidator',
@@ -8,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
@@ -24,14 +42,14 @@ foam.CLASS({
         try {
           String filterRegion = "";
           Date filterLRDFrom = fetchLastExecutionDate(x, user.getId(), "Dow Jones User");
-          if ( user.getAddress().getCountryId() != null ) {
+          if ( user.getAddress() != null && user.getAddress().getCountryId() != null ) {
             if ( user.getAddress().getCountryId().equals("CA") ) {
               filterRegion = "Canada,CANA,CA,CAN";
             } else if ( user.getAddress().getCountryId().equals("US") ) {
               filterRegion = "United States,USA,US";
             }
           }
-          
+
           PersonNameSearchData searchData = new PersonNameSearchData.Builder(x)
             .setSearchId(user.getId())
             .setFirstName(user.getFirstName())
@@ -50,14 +68,18 @@ foam.CLASS({
             agency.submit(x, new ContextAgent() {
               @Override
               public void execute(X x) {
-                requestApproval(x, 
+                String group = user.getSpid() + "-fraud-ops";
+                requestApproval(x,
                   new DowJonesApprovalRequest.Builder(x)
                     .setObjId(user.getId())
-                    .setDaoKey("localUserDAO")
+                    .setServerDaoKey("localUserDAO")
+                    .setDaoKey("userDAO")
                     .setCauseId(response.getId())
                     .setCauseDaoKey("dowJonesResponseDAO")
-                    .setClassification("Validate User Using Dow Jones")
+                    .setClassificationEnum(ApprovalRequestClassificationEnum.USER_DOW_JONES)
                     .setMatches(response.getResponseBody().getMatches())
+                    .setGroup(group)
+                    .setCreatedFor(user.getId())
                     .build());
               }
             }, "Person Sanction Validator");

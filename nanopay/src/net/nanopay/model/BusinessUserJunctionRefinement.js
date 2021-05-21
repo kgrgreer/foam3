@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.model',
   name: 'BusinessUserJunctionRefinement',
@@ -15,10 +32,12 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
-    'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
+
     'net.nanopay.model.Business'
   ],
 
@@ -32,7 +51,7 @@ foam.CLASS({
       javaThrows: ['AuthorizationException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
 
         if ( auth.check(x, "*") ) return;
 
@@ -56,8 +75,9 @@ foam.CLASS({
       javaThrows: ['AuthorizationException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
-        User user = (User) x.get("user");
-        User agent = (User) x.get("agent");
+        Subject subject = (Subject) x.get("subject");
+        User user = subject.getUser();
+        User agent = subject.getRealUser();
 
         if ( auth.check(x, "*") ) return;
 
@@ -85,7 +105,7 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['AuthorizationException'],
       javaCode: `
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         AuthService auth = (AuthService) x.get("auth");
 
         if ( auth.check(x, "*") || auth.check(x, "onboarding.update.*") ) return;
@@ -110,8 +130,9 @@ foam.CLASS({
       javaThrows: ['AuthorizationException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
-        User user = (User) x.get("user");
-        User agent = (User) x.get("agent");
+        Subject subject = (Subject) x.get("subject");
+        User user = subject.getUser();
+        User agent = subject.getRealUser();
 
         if ( auth.check(x, "*") ) return;
 

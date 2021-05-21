@@ -1,0 +1,94 @@
+//Unlock International & Domestic Payments and Invoicing for Brazil
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "targetId":"naturecode.br.minmax.requirement",
+  "sourceId":"invoice.capable.treviso",
+  "priority": 17
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "targetId":"crunch.onboarding.br.brazil-onboarding",
+  "sourceId":"crunch.user-invoice",
+  "priority": 2
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "targetId":"crunch.onboarding.br.cpf",
+  "sourceId":"crunch.user-invoice",
+  "priority": 1
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "crunch.onboarding.br.parent.international-payments",
+  targetId: "crunch.onboarding.signing-officer-information",
+  precondition: true
+})
+
+p({
+  sourceId: "crunch.onboarding.br.international-payments",
+  targetId: "crunch.onboarding.signing-officer-information"
+})
+
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "crunch.onboarding.br.international-payments",
+  targetId: "crunch.onboarding.br.business-prerequisites"
+})
+
+// add prereq capability junctions needed for br unlock payments flow
+// business registration date
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"crunch.onboarding.business-registration-date",
+  targetId:"crunch.onboarding.certify-data-reviewed"
+})
+// business Incorporated Date
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"crunch.onboarding.business-incorporation-date",
+  targetId:"crunch.onboarding.certify-data-reviewed"
+})
+// office consumption
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"crunch.onboarding.document.office-consumption",
+  targetId:"crunch.onboarding.certify-data-reviewed"
+})
+// business identification numbers
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"crunch.onboarding.br.business-identification",
+  targetId:"crunch.onboarding.certify-data-reviewed"
+})
+// business latest annual report
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"crunch.onboarding.document.annual-financial-statements",
+  targetId:"crunch.onboarding.certify-data-reviewed"
+})
+// articles of incorporation
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"crunch.onboarding.document.articles-of-incorporation",
+  targetId:"crunch.onboarding.certify-data-reviewed"
+})
+
+// replace businessdetails prereq with businesstypeandsector for brazil
+// certify data reviewed
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.business-type-sector",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
+  "priority":1
+})
+// brazil onboarding
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"crunch.onboarding.business-type-sector",
+  "priority":3
+})

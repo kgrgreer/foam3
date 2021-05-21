@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.fx.afex',
   name: 'AFEXBankUploadingRule2',
@@ -8,39 +25,37 @@ foam.CLASS({
    javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.DAO',
+    'foam.nanos.auth.User',
     'foam.nanos.notification.email.EmailMessage',
+    'foam.nanos.logger.Logger',
     'foam.util.Emails.EmailsUtility',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.BankAccountStatus',
-    'net.nanopay.model.Business',
-    'static foam.mlang.MLang.EQ',
-    'static foam.mlang.MLang.AND',
-    'static foam.mlang.MLang.INSTANCE_OF'
+    'net.nanopay.model.Business'
   ],
 
    methods: [
     {
       name: 'applyAction',
-      javaCode: ` 
+      javaCode: `
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            if ( ! (obj instanceof BankAccount && (oldObj == null || ((BankAccount)oldObj).getStatus() == BankAccountStatus.UNVERIFIED)) ) {
-              return;
-            }
             BankAccount account = (BankAccount) obj;
-            AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
-            AFEXBusiness afexBusiness = afexServiceProvider.getAFEXBusiness(x, account.getOwner());
+            User user = (User) account.findOwner(x);
 
-            if ( afexBusiness == null ) {
-              return;
-            }
-            DAO businessDAO = (DAO) x.get("businessDAO");
-            Business business = (Business) businessDAO.find(account.getOwner());
+            if ( user instanceof Business ) {
+              Business business = (Business) user;
+              AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
+              AFEXUser afexUser = afexServiceProvider.getAFEXUser(x, account.getOwner());
 
-            if ( ! afexServiceProvider.directDebitEnrollment(business, account) ) {
-              sendFailureEmail(x, String.valueOf(account.getId()), String.valueOf(afexBusiness.getUser()), business);
+              try {
+                if ( ! afexServiceProvider.directDebitEnrollment(business, account) ) {
+                  sendFailureEmail(x, String.valueOf(account.getId()), String.valueOf(afexUser.getUser()), business);
+                }
+              } catch (Exception e) {
+                ((Logger) x.get("logger")).error("Error uploading bank account on AFEX", account, e);
+                sendFailureEmail(x, String.valueOf(account.getId()), String.valueOf(afexUser.getUser()), business);
+              }
             }
           }
         }, "Uploads business'a bank accounts to AFEX if the business has passed comliance.");
@@ -59,7 +74,7 @@ foam.CLASS({
         },
         {
           type: 'String',
-          name: 'afexBusiness'
+          name: 'afexUser'
         },
         {
           type: 'Business',
@@ -69,8 +84,8 @@ foam.CLASS({
       javaCode: `
         EmailMessage message = new EmailMessage();
         String businessInfo = business == null ? "" : business.getId() + " " + business.getBusinessName();
-        String body = "Failed to upload bank account: " + account + ", for AFEX business " + afexBusiness + ", business: " + businessInfo;
-        message.setTo(new String[]{"paymentops@nanopay.net"});
+        String body = "Failed to upload bank account: " + account + ", for AFEX business " + afexUser + ", business: " + businessInfo;
+        message.setTo(new String[]{"enrollment@ablii.com"});
         message.setSubject("Failed AFEX Bank Account Upload");
         message.setBody(body);
         EmailsUtility.sendEmailFromTemplate(x, null, message, null, null);

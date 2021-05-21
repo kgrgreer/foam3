@@ -1,0 +1,11 @@
+// Long lived session ID for Treviso API user
+p({
+	class:"foam.nanos.session.Session",
+	id:"94075167-3404-4e1c-8c7c-0b6c55c9dee7",
+	userId:2051,
+	agentId:0,
+	created:1594308371944,
+	createdBy:1348,
+	createdByAgent:1348,
+	ttl:3153600000000
+})

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.liquidity.tx',
   name: 'IsChildAccountPredicate',
@@ -9,7 +26,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'java.util.ArrayList',
-    'java.util.HashSet',
+    'java.util.Set',
     'net.nanopay.account.Account',
     'net.nanopay.liquidity.tx.AccountHierarchy',
     'static foam.mlang.MLang.*'
@@ -17,7 +34,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Long',
+      class: 'String',
       name: 'parentId'
     }
   ],
@@ -28,7 +45,7 @@ foam.CLASS({
       javaCode: `
         // Use AccountHierarchyService to fetch child accounts of parentId then pass childIds into MLang.IN predicate
         AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchyService");
-        HashSet<Long> childIdSet = accountHierarchy.getChildAccountIds(getX(), this.getParentId());
+        Set<Long> childIdSet = accountHierarchy.getChildAccountIds(getX(), this.getParentId());
         ArrayList<Long> childIds = new ArrayList<>(childIdSet);
         return
           IN(Account.ID, childIds)

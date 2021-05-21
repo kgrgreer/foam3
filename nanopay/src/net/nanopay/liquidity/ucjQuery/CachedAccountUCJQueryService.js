@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.liquidity.ucjQuery',
   name: 'CachedAccountUCJQueryService',
@@ -14,6 +31,7 @@ foam.CLASS({
     'foam.core.Detachable',
     'java.util.HashMap',
     'foam.core.FObject',
+    'foam.core.NumberSet',
     'java.util.Set',
     'java.util.HashSet',
     'foam.nanos.auth.User',
@@ -21,12 +39,12 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.mlang.MLang',
     'foam.dao.ArraySink',
+    'foam.util.SafetyUtil',
     'foam.nanos.logger.Logger',
     'foam.nanos.crunch.UserCapabilityJunction',
     'net.nanopay.account.Account',
-    'net.nanopay.liquidity.crunch.AccountApproverMap',
-    'net.nanopay.liquidity.crunch.AccountBasedLiquidCapability'
-
+    'foam.nanos.crunch.Capability',
+    'net.nanopay.liquidity.crunch.LiquidCapability'
   ],
 
   properties: [
@@ -97,21 +115,22 @@ foam.CLASS({
           }
         };
 
-        // TODO: PLZ FIX AFTER OPTIMIZATION TO ACCOUNT TEMPLATE
         DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
 
+        Logger logger = (Logger) x.get("logger");
+
         List ucjsNotFilteredByAccount = ((ArraySink) ucjDAO.where(MLang.EQ(UserCapabilityJunction.SOURCE_ID, userId)).select(new ArraySink())).getArray();
-        List rolesFilteredByAccount = new ArrayList();
+        Set rolesFilteredByAccount = new HashSet();
 
         for (int i = 0; i < ucjsNotFilteredByAccount.size(); i++) {
           UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsNotFilteredByAccount.get(i);
 
-          if ( currentUCJ.getData() instanceof AccountApproverMap ){
-            AccountApproverMap accountMap = (AccountApproverMap) currentUCJ.getData();
+          if ( currentUCJ.getData() instanceof NumberSet ){
+            NumberSet numberSet = (NumberSet) currentUCJ.getData();
 
-            if (accountId == 0) rolesFilteredByAccount.add(currentUCJ.getTargetId());
-            else if (accountMap.hasAccount(x, accountId))
-              rolesFilteredByAccount.add(currentUCJ.getTargetId());
+            if ( numberSet.contains(accountId) ) rolesFilteredByAccount.add(currentUCJ.getTargetId());
+          } else {
+            logger.warning("Expecting data of instance set but got:  " + currentUCJ.getData().getClass().getSimpleName() + " for: " + currentUCJ.getSourceId() + '-' + currentUCJ.getTargetId());
           }
         }
 
@@ -120,7 +139,7 @@ foam.CLASS({
 
         ucjDAO.listen(purgeSink, MLang.TRUE);
 
-        return rolesFilteredByAccount;
+        return new ArrayList<>(rolesFilteredByAccount);
 
       } else {
         List newListFromCache = new ArrayList(rolesCache.get(cacheKey));
@@ -174,23 +193,22 @@ foam.CLASS({
           }
         };
 
-        // TODO: PLZ FIX AFTER OPTIMIZATION TO ACCOUNT TEMPLATE
-        // TODO: Need to add a predicate which only retrieve roles with data being an instanceOf ???
+        Logger logger = (Logger) x.get("logger");
+
         DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
 
         List ucjsNotFilteredByAccount = ((ArraySink) ucjDAO.where(MLang.EQ(UserCapabilityJunction.TARGET_ID, roleId)).select(new ArraySink())).getArray();
-        List usersFilteredByAccount = new ArrayList();
+        Set usersFilteredByAccount = new HashSet();
 
         for (int i = 0; i < ucjsNotFilteredByAccount.size(); i++) {
           UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsNotFilteredByAccount.get(i);
 
-          if ( currentUCJ.getData() instanceof AccountApproverMap ){
+          if ( currentUCJ.getData() instanceof NumberSet ){
+            NumberSet numberSet = (NumberSet) currentUCJ.getData();
 
-            AccountApproverMap accountMap = (AccountApproverMap) currentUCJ.getData();
-
-            if (accountId == 0) usersFilteredByAccount.add(currentUCJ.getSourceId());
-            else if (accountMap.hasAccount(x, accountId))
-              usersFilteredByAccount.add(currentUCJ.getSourceId());
+            if ( numberSet.contains(accountId) ) usersFilteredByAccount.add(currentUCJ.getSourceId());
+          } else {
+            logger.warning("Expecting data of instance set but got:  " + currentUCJ.getData().getClass().getSimpleName() + " for: " + currentUCJ.getSourceId() + '-' + currentUCJ.getTargetId());
           }
         }
 
@@ -199,7 +217,7 @@ foam.CLASS({
 
         ucjDAO.listen(purgeSink, MLang.TRUE);
 
-        return usersFilteredByAccount;
+        return new ArrayList<>(usersFilteredByAccount);
 
       } else {
         List newListFromCache = new ArrayList(usersCache.get(cacheKey));
@@ -253,26 +271,25 @@ foam.CLASS({
           }
         };
 
-        DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
-        List allUCJs;
-        List<String> accounts = new ArrayList();
+        Logger logger = (Logger) x.get("logger");
 
-        if (roleId == null) {
-          allUCJs = ((ArraySink) ucjDAO.where(MLang.EQ(UserCapabilityJunction.SOURCE_ID, userId)).select(new ArraySink())).getArray();
-        } else {
-          allUCJs = ((ArraySink) ucjDAO.where(MLang.AND(MLang.EQ(UserCapabilityJunction.SOURCE_ID, userId), MLang.EQ(UserCapabilityJunction.TARGET_ID, roleId))).select(new ArraySink())).getArray();
-        }
+        DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
+        Set<String> accounts = new HashSet();
+
+        List allUCJs = ((ArraySink) ucjDAO.where(MLang.AND(MLang.EQ(UserCapabilityJunction.SOURCE_ID, userId), MLang.EQ(UserCapabilityJunction.TARGET_ID, roleId))).select(new ArraySink())).getArray();
 
         for (int i = 0; i < allUCJs.size(); i++) {
           UserCapabilityJunction currentUCJ = (UserCapabilityJunction) allUCJs.get(i);
 
-          if ( currentUCJ.getData() instanceof AccountApproverMap ){
-            AccountApproverMap accountMap = (AccountApproverMap) currentUCJ.getData();
-            Object[] accountArray = accountMap.getAccounts().keySet().toArray();
+          if ( currentUCJ.getData() instanceof NumberSet ){
+            NumberSet numberSet = (NumberSet) currentUCJ.getData();
 
-            for (int j = 0; j < accountArray.length; j++) {
-              if (!accounts.contains(accountArray[j])) accounts.add(String.valueOf(accountArray[j]));
+            for ( Long id : numberSet.getAsRealSet() ){
+              accounts.add(String.valueOf(id));
             }
+
+          } else {
+            logger.warning("Expecting data of instance set but got:  " + currentUCJ.getData().getClass().getSimpleName() + " for: " + currentUCJ.getSourceId() + '-' + currentUCJ.getTargetId());
           }
         }
 
@@ -281,7 +298,7 @@ foam.CLASS({
 
         ucjDAO.listen(purgeSink, MLang.TRUE);
 
-        return accounts;
+        return new ArrayList<>(accounts);
 
       } else {
         List newListFromCache = new ArrayList(accountsCache.get(cacheKey));
@@ -305,7 +322,7 @@ foam.CLASS({
         },
         {
           name: 'accountId',
-          type: 'Long'
+          type: 'String'
         },
         {
           name: 'level',
@@ -339,64 +356,119 @@ foam.CLASS({
           }
         };
 
-        // TODO: PLZ FIX AFTER OPTIMIZATION TO ACCOUNT TEMPLATE
         DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
         DAO capabilitiesDAO = (DAO) x.get("localCapabilityDAO");
 
         Logger logger = (Logger) x.get("logger");
 
-        modelToApprove = modelToApprove.toLowerCase();
-
-        List<AccountBasedLiquidCapability> capabilitiesWithAbility;
-
-        switch(modelToApprove){
-          case "account":
-            capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
-              MLang.EQ(AccountBasedLiquidCapability.CAN_APPROVE_ACCOUNT, true)
-            ).select(new ArraySink())).getArray();
-            break;
-          case "transaction":
-            capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
-              MLang.EQ(AccountBasedLiquidCapability.CAN_APPROVE_TRANSACTION, true)
-            ).select(new ArraySink())).getArray();
-            break;
-          default:
-            capabilitiesWithAbility = null;
-            logger.error("Something went wrong with the requested model: " + modelToApprove);
-            throw new RuntimeException("Something went wrong with the requested model: " + modelToApprove);
-        }
+        String capabilityName = "approve" + modelToApprove;
 
         // using a set because we only care about unique approver ids
-        Set<Long> uniqueApproversForLevel = new HashSet<>();
-        List<String> capabilitiesWithAbilityNameIdOnly = new ArrayList<>();
+        Set<Long> uniqueApprovers = new HashSet<>();
 
-        for ( int i = 0; i < capabilitiesWithAbility.size(); i++ ){
-          capabilitiesWithAbilityNameIdOnly.add(capabilitiesWithAbility.get(i).getId());
+        List foundCapabilityArray = ((ArraySink) capabilitiesDAO
+          .where(
+            foam.mlang.MLang.EQ(Capability.NAME, capabilityName)
+          ).select(new ArraySink())).getArray();
+
+        if ( foundCapabilityArray.size() == 0 ) {
+          logger.error("Capability could not be found with name: " + capabilityName);
+          throw new RuntimeException("Capability could not be found with name: " + capabilityName);
         }
 
-        List ucjsForApprovers = ((ArraySink) ucjDAO.where(MLang.IN(UserCapabilityJunction.TARGET_ID, capabilitiesWithAbilityNameIdOnly)).select(new ArraySink())).getArray();
+        if ( foundCapabilityArray.size() > 1 ){
+          logger.error("Multiple capabilities exist with the same name: " + capabilityName);
+          throw new RuntimeException("Multiple capabilities exist with the same name: " + capabilityName);
+        }
+
+        LiquidCapability foundCapability = (LiquidCapability) foundCapabilityArray.get(0);
+
+        List ucjsForApprovers = ((ArraySink) ucjDAO.where(MLang.EQ(UserCapabilityJunction.TARGET_ID, foundCapability.getId())).select(new ArraySink())).getArray();
 
         for ( int i = 0; i < ucjsForApprovers.size(); i++ ){
           UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForApprovers.get(i);
 
-          if ( currentUCJ.getData() != null ){
-            AccountApproverMap accountMap = (AccountApproverMap) currentUCJ.getData();
-
-            if (  accountMap.hasAccountByApproverLevel(x, accountId, level) ) uniqueApproversForLevel.add(currentUCJ.getSourceId());
+          if ( currentUCJ.getData() == null ){
+            logger.warning("A UCJ with an account-based capability has no data: " + currentUCJ.getSourceId() + '-' + currentUCJ.getTargetId());
+          } else if ( currentUCJ.getData() instanceof NumberSet ) {
+            uniqueApprovers.add(currentUCJ.getSourceId());
           } else {
-            logger.warning("A UCJ with no data is found: " + currentUCJ.getSourceId() + '-' + currentUCJ.getTargetId());
+            logger.warning("Expecting data of instance set but got:  " + currentUCJ.getData().getClass().getSimpleName() + " for: " + currentUCJ.getSourceId() + '-' + currentUCJ.getTargetId());
           }
         }
 
-        List uniqueApproversForLevelList = new ArrayList(uniqueApproversForLevel);
+        List uniqueApproversForLevelList;
         
-        List uniqueApproversForLevelListToCache = new ArrayList(uniqueApproversForLevelList);
-        approversByLevelCache.put(cacheKey, uniqueApproversForLevelListToCache);
+        if ( SafetyUtil.equals(modelToApprove, "Transaction") ){
+          String multilevelCapabilityName = "level2TransactionApprover";
+
+          List foundMultilevelCapabilityArray = ((ArraySink) capabilitiesDAO
+            .where(
+              foam.mlang.MLang.EQ(Capability.NAME, capabilityName)
+            ).inX(getX()).select(new ArraySink())).getArray();
+
+          if ( foundMultilevelCapabilityArray.size() == 0 ) {
+            logger.error("Capability could not be found with name: " + capabilityName);
+            throw new RuntimeException("Capability could not be found with name: " + capabilityName);
+          }
+
+          if ( foundMultilevelCapabilityArray.size() > 1 ){
+            logger.error("Multiple capabilities exist with the same name: " + capabilityName);
+            throw new RuntimeException("Multiple capabilities exist with the same name: " + capabilityName);
+          }
+
+          LiquidCapability foundMultilevelCapability = (LiquidCapability) foundMultilevelCapabilityArray.get(0);
+
+          List level2ApproverUCJs = ((ArraySink) ucjDAO.where(
+            MLang.AND(
+              MLang.IN(
+                UserCapabilityJunction.TARGET_ID,
+                new ArrayList<>(uniqueApprovers)
+              ),
+              MLang.EQ(
+                UserCapabilityJunction.TARGET_ID,
+                foundMultilevelCapability.getId()
+              )
+            )).select(new ArraySink())
+          ).getArray();
+
+          Set level1Approvers = new HashSet(uniqueApprovers);
+          Set level2Approvers = new HashSet();
+
+          if ( level2ApproverUCJs.size() == 0 ){
+            logger.error("No level 2 Transaction approvers found for this account");
+            throw new RuntimeException("No level 2 Transaction approvers found for this account");
+          }
+
+          for ( int i = 0; i < level2ApproverUCJs.size(); i++ ){
+            UserCapabilityJunction currentUCJ = (UserCapabilityJunction) level2ApproverUCJs.get(i);
+
+            level1Approvers.remove(currentUCJ.getSourceId());
+
+            level2Approvers.add(currentUCJ.getSourceId());
+          }
+          
+          String cacheKeyL1 = 'm' + modelToApprove + 'a' + String.valueOf(accountId) + 'l' + 1;
+          String cacheKeyL2 = 'm' + modelToApprove + 'a' + String.valueOf(accountId) + 'l' + 2;
+
+          List uniqueApproversForLevel1ListToCache = new ArrayList(level1Approvers);
+          List uniqueApproversForLevel2ListToCache = new ArrayList(level2Approvers);
+          
+          approversByLevelCache.put(cacheKeyL1, uniqueApproversForLevel1ListToCache);
+          approversByLevelCache.put(cacheKeyL2, uniqueApproversForLevel2ListToCache);
+
+          uniqueApproversForLevelList = level == 1 ? new ArrayList<>(level1Approvers) : new ArrayList<>(level2Approvers);
+
+        } else {
+          uniqueApproversForLevelList = new ArrayList(uniqueApprovers);
+
+          List uniqueApproversForLevelListToCache = new ArrayList(uniqueApproversForLevelList);
+          approversByLevelCache.put(cacheKey, uniqueApproversForLevelListToCache);
+        }
 
         ucjDAO.listen(purgeSink, MLang.TRUE);
-        capabilitiesDAO.listen(purgeSink, MLang.TRUE);
 
-        return uniqueApproversForLevelList;
+        return new ArrayList<>(uniqueApproversForLevelList);
       } else {
         List newListFromCache = new ArrayList(approversByLevelCache.get(cacheKey));
 
@@ -419,7 +491,7 @@ foam.CLASS({
         },
         {
           name: 'accountId',
-          type: 'Long'
+          type: 'String'
         }
       ],
       javaCode: `
@@ -449,52 +521,44 @@ foam.CLASS({
           }
         };
 
-        // TODO: PLZ FIX AFTER OPTIMIZATION TO ACCOUNT TEMPLATE
         DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
         DAO capabilitiesDAO = (DAO) x.get("localCapabilityDAO");
 
         Logger logger = (Logger) x.get("logger");
 
-        modelToApprove = modelToApprove.toLowerCase();
-
-        List<AccountBasedLiquidCapability> capabilitiesWithAbility;
-
-        switch(modelToApprove){
-          case "account":
-            capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
-              MLang.EQ(AccountBasedLiquidCapability.CAN_APPROVE_ACCOUNT, true)
-            ).select(new ArraySink())).getArray();
-            break;
-          case "transaction":
-            capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
-              MLang.EQ(AccountBasedLiquidCapability.CAN_APPROVE_TRANSACTION, true)
-            ).select(new ArraySink())).getArray();
-            break;
-          default:
-            capabilitiesWithAbility = null;
-            logger.error("Something went wrong with the requested model: " + modelToApprove);
-            throw new RuntimeException("Something went wrong with the requested model: " + modelToApprove);
-        }
+        String capabilityName = "approve" + modelToApprove;
 
         // using a set because we only care about unique approver ids
         Set<Long> uniqueApprovers = new HashSet<>();
-        List<String> capabilitiesWithAbilityNameIdOnly = new ArrayList<>();
 
-        for ( int i = 0; i < capabilitiesWithAbility.size(); i++ ){
-          capabilitiesWithAbilityNameIdOnly.add(capabilitiesWithAbility.get(i).getId());
+        List foundCapabilityArray = ((ArraySink) capabilitiesDAO
+          .where(
+            foam.mlang.MLang.EQ(Capability.NAME, capabilityName)
+          ).inX(getX()).select(new ArraySink())).getArray();
+
+        if ( foundCapabilityArray.size() == 0 ) {
+          logger.error("Capability could not be found with name: " + capabilityName);
+          throw new RuntimeException("Capability could not be found with name: " + capabilityName);
         }
 
-        List ucjsForApprovers = ((ArraySink) ucjDAO.where(MLang.IN(UserCapabilityJunction.TARGET_ID, capabilitiesWithAbilityNameIdOnly)).select(new ArraySink())).getArray();
+        if ( foundCapabilityArray.size() > 1 ){
+          logger.error("Multiple capabilities exist with the same name: " + capabilityName);
+          throw new RuntimeException("Multiple capabilities exist with the same name: " + capabilityName);
+        }
+
+        LiquidCapability foundCapability = (LiquidCapability) foundCapabilityArray.get(0);
+
+        List ucjsForApprovers = ((ArraySink) ucjDAO.where(MLang.EQ(UserCapabilityJunction.TARGET_ID, foundCapability.getId())).select(new ArraySink())).getArray();
 
         for ( int i = 0; i < ucjsForApprovers.size(); i++ ){
           UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForApprovers.get(i);
 
-          if ( currentUCJ.getData() != null ){
-            AccountApproverMap accountMap = (AccountApproverMap) currentUCJ.getData();
-
-            if (  accountMap.hasAccount(x, accountId) ) uniqueApprovers.add(currentUCJ.getSourceId());
+          if ( currentUCJ.getData() == null ){
+            logger.warning("A UCJ with an account-based capability has no data: " + currentUCJ.getSourceId() + '-' + currentUCJ.getTargetId());
+          } else if ( currentUCJ.getData() instanceof NumberSet ) {
+            uniqueApprovers.add(currentUCJ.getSourceId());
           } else {
-            logger.warning("A UCJ with no data is found: " + currentUCJ.getSourceId() + '-' + currentUCJ.getTargetId());
+            logger.warning("Expecting data of instance set but got:  " + currentUCJ.getData().getClass().getSimpleName() + " for: " + currentUCJ.getSourceId() + '-' + currentUCJ.getTargetId());
           }
         }
 
@@ -504,9 +568,8 @@ foam.CLASS({
         allApproversCache.put(cacheKey, uniqueApproversListToCache);
 
         ucjDAO.listen(purgeSink, MLang.TRUE);
-        capabilitiesDAO.listen(purgeSink, MLang.TRUE);
 
-        return uniqueApproversList;
+        return new ArrayList<>(uniqueApproversList);
       } else {
         List newListFromCache = new ArrayList(allApproversCache.get(cacheKey));
 
@@ -568,11 +631,12 @@ foam.CLASS({
           String capabilityId = currentUCJ.getTargetId();
 
           // AccountBasedCapabilities use AccountApproverMap as data in the UCJ
-          if ( currentUCJ.getData() instanceof AccountApproverMap ){
-            AccountApproverMap currentData = (AccountApproverMap) currentUCJ.getData();
+          if ( currentUCJ.getData() instanceof NumberSet ){
+            NumberSet numberSet = (NumberSet) currentUCJ.getData();
 
+            Set<Long> currentData = (HashSet<Long>) numberSet.getAsRealSet();
 
-            for ( String accountId : currentData.getAccounts().keySet() ){
+            for ( Long accountId : currentData ){
               // ! can remove this to optimize speed and just display the ids
               Account currentAccount = (Account) accountDAO.find(accountId);
 
@@ -655,10 +719,10 @@ foam.CLASS({
 
           User currentUser = (User) localUserDAO.find(userId);
   
-          if ( currentUCJ.getData() instanceof AccountApproverMap ){
-            AccountApproverMap currentData = (AccountApproverMap) currentUCJ.getData();
+          if ( currentUCJ.getData() instanceof NumberSet ){
+            NumberSet currentData = (NumberSet) currentUCJ.getData();
   
-            if ( currentData.hasAccount(x, accountId) ){
+            if ( currentData.contains(accountId) ){
               String[] currentList = {
                 currentUser.toSummary(),
                 capabilityId
@@ -739,11 +803,11 @@ foam.CLASS({
 
           User currentUser = (User) localUserDAO.find(userId);
   
-          if ( currentUCJ.getData() instanceof AccountApproverMap ){
-            AccountApproverMap currentData = (AccountApproverMap) currentUCJ.getData();
+          if ( currentUCJ.getData() instanceof NumberSet ){
+            NumberSet numberSet = (NumberSet) currentUCJ.getData();
+            Set<Long> currentData = (HashSet<Long>) numberSet.getAsRealSet();
   
-  
-            for ( String accountId : currentData.getAccounts().keySet() ){
+            for ( Long accountId : currentData ){
               Account currentAccount = (Account) localAccountDAO.find(accountId);
 
               String[] currentList = {

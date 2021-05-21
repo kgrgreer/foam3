@@ -8,10 +8,6 @@
 # Exit on first failure
 set -e
 
-function warning {
-    echo -e "\033[0;33mWARNING :: ${1}\033[0;0m"
-}
-
 function rmdir {
     if test -d "$1" ; then
         rm -rf "$1"
@@ -30,19 +26,33 @@ function quit {
   exit $1
 }
 
+function warning {
+    echo -e "\033[0;33mWARNING :: ${1}\033[0;0m"
+}
+
+function error {
+    echo -e "\033[0;31mERROR :: ${1}\033[0;0m"
+    quit
+}
+
 function install {
     MACOS='darwin*'
 
     cd "$PROJECT_HOME"
-
-    git submodule init
-    git submodule update
+    if [ $IS_AWS -eq 0 ]; then
+        submoduleout=$(git submodule)
+        if [ -z "${submoduleout}" ]; then
+            git submodule add https://github.com/kgrgreer/foam3.git
+        else
+            git submodule init
+            git submodule update
+        fi
+    fi
 
     npm install
-
-    setenv
-
-    setup_jce
+    cd foam3
+    npm install
+    cd ..
 
     if [[ $IS_MAC -eq 1 ]]; then
         mkdir -p "$NANOPAY_HOME/journals"
@@ -52,53 +62,61 @@ function install {
     # git hooks
     git config core.hooksPath .githooks
     git config submodule.recurse true
-}
 
-function backup {
-  if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" ]]; then
-    # Preventing this from running on non AWS
-    return
-  fi
-
-  BACKUP_HOME="/opt/backup"
-
-  # backup journals in event of file incompatiblity between versions
-  if [ "$OSTYPE" == "linux-gnu" ] && [ ! -z "${BACKUP_HOME+x}" ] && [ -d "$JOURNAL_HOME" ]; then
-      printf "backup\n"
-      DATE=$(date +%Y%m%d_%H%M%S)
-      mkdir -p "$BACKUP_HOME/$DATE"
-
-      cp -r "$JOURNAL_HOME/" "$BACKUP_HOME/$DATE/"
-  fi
-}
-
-function setup_jce {
-  local JAVA_LIB_SECURITY="$JAVA_HOME/lib/security"
-
-  # For Java 8; including on linux
-  if [[ $JAVA_LIB_SECURITY = *"_"* || $JAVA_LIB_SECURITY = *"java-8-oracle"* ]]; then
-    JAVA_LIB_SECURITY="$JAVA_HOME/jre/lib/security"
-  fi
-
-  if [[ ! -f $JAVA_LIB_SECURITY/local_policy.jar && ! -f $JAVA_LIB_SECURITY/US_export_policy.jar ]]; then
-    mkdir tmp_jce
-    cd tmp_jce
-    curl -L -b "oraclelicense=a" http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip > jce_policy-8.zip
-    unzip jce_policy-8.zip
+    # install pkcs12
     if [[ $IS_MAC -eq 1 ]]; then
-        sudo cp UnlimitedJCEPolicyJDK8/local_policy.jar UnlimitedJCEPolicyJDK8/US_export_policy.jar $JAVA_LIB_SECURITY/
-      elif [[ $IS_LINUX -eq 1 ]]; then
-        cp UnlimitedJCEPolicyJDK8/local_policy.jar UnlimitedJCEPolicyJDK8/US_export_policy.jar $JAVA_LIB_SECURITY/
-      fi
-    cd ..
-    rm -rf tmp_jce
-
-    if [[ $(jrunscript -e "print (javax.crypto.Cipher.getMaxAllowedKeyLength('AES') >= 256)") = "true" ]]; then
-      echo "INFO :: Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy files setup successfully."
-    else
-      echo "ERROR :: Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy files failed to setup successfully."
+        ./tools/cert/copy-pkcs12.sh
     fi
-  fi
+
+}
+
+function deploy_documents {
+    echo "INFO :: Deploying Documents"
+
+    # prepare documents
+    cd "$PROJECT_HOME"
+
+    declare -a sources=(
+        "foam3/src"
+        "nanopay/src"
+        "documents"
+    )
+
+    declare -a exclude=(
+        "foam3/src/com/google/flow"
+    )
+
+    for dir in "${sources[@]}"; do
+        find ${dir} -type f \( -name "*.flow" \) | while read path; do
+            # skip excluded directories
+            skip="no"
+            for ex in "${excludes[@]}"; do
+                if [ "${path:0:${#ex}}" = "$ex" ]; then
+                    skip="yes"
+                    break
+                fi
+            done
+            if [ "$skip" = "yes" ]; then
+                continue
+            fi
+
+            # determine document name
+            name=$(basename $path)
+            name=${name%.flow}
+            # documents named "doc" should be renamed
+            if [ "$name" = "doc" ]; then
+                simplePath=${path:(1 + ${#dir})}
+                simplePath=${simplePath%.flow}
+                name=${simplePath//\//-}
+            fi
+            # copy this document to target
+            cp -f "$path" "$DOCUMENT_OUT/$name.flow"
+            # if not jar build, copy to runtime directory
+            if [ "$RUN_JAR" -eq 0 ]; then
+                cp -f "$path" "$DOCUMENT_HOME/$name.flow"
+            fi
+        done
+    done
 }
 
 function deploy_journals {
@@ -117,16 +135,16 @@ function deploy_journals {
         mkdir -p target
     fi
 
-    journalExtras=""
+    EXTRA_JOURNAL=""
     if [ "$DISABLE_LIVESCRIPTBUNDLER" -eq 1 ]; then
-        journalExtras=-E"tools/journal_extras/disable_livescriptbundler"
+        EXTRA_JOURNAL="-Atools/journal_extras/disable_livescriptbundler"
     fi
 
     if [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ] || [ $CLEAN_BUILD -eq 1 ]; then
-        ./tools/findJournals.sh -J${JOURNAL_CONFIG} $journalExtras < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
+        ./tools/findJournals.sh -J${JOURNAL_CONFIG} ${EXPLICIT_JOURNALS} ${EXTRA_JOURNAL} < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
     else
-        ./tools/findJournals.sh -J${JOURNAL_CONFIG} $journalExtras < $JOURNALS > target/journal_files
-        gradle findSH -PjournalOut=${JOURNAL_OUT} -PjournalIn=target/journal_files --daemon $GRADLE_FLAGS
+        ./tools/findJournals.sh -J${JOURNAL_CONFIG} ${EXPLICIT_JOURNALS} ${EXTRA_JOURNAL} < $JOURNALS > target/journal_files
+        gradle findSH -PjournalOut=${JOURNAL_OUT} -PjournalIn=target/journal_files $GRADLE_FLAGS
     fi
 
     if [[ $? -eq 1 ]]; then
@@ -138,6 +156,15 @@ function deploy_journals {
 
         if [[ $? -eq 1 ]]; then
             quit 1
+        fi
+    fi
+
+    if [ ! -z "${RESOURCES}" ]; then
+        echo "INFO :: Deploying Resources"
+        if [ "${RUN_JAR}" -eq 1 ]; then
+            cp -r deployment/${RESOURCES}/resources/* "${JOURNAL_OUT}/"
+        else
+            cp -r deployment/${RESOURCES}/resources/* "${JOURNAL_HOME}/"
         fi
     fi
 
@@ -171,16 +198,16 @@ function clean {
             rm -rf *
             cd "$tmp"
         fi
-        
+
         gradle clean $GRADLE_FLAGS
     fi
 }
 
 function build_jar {
     if [ "$TEST" -eq 1 ] || [ "$RUN_JAR" -eq 1 ]; then
-        gradle --daemon buildJar $GRADLE_FLAGS
+        gradle buildJar $GRADLE_FLAGS
     else
-        gradle --daemon build $GRADLE_FLAGS
+        gradle build $GRADLE_FLAGS
     fi
 
     if [ "${RUN_JAR}" -eq 1 ] || [ "$TEST" -eq 1 ]; then
@@ -191,7 +218,7 @@ function build_jar {
 }
 
 function package_tar {
-    gradle --daemon tarz $GRADLE_FLAGS
+    gradle tarz $GRADLE_FLAGS
 }
 
 function delete_runtime_journals {
@@ -218,7 +245,7 @@ function stop_nanos {
     RUNNING_PID=$(ps -ef | grep -v grep | grep "java.*-DNANOPAY_HOME" | awk '{print $2}')
     if [ -z "$RUNNING_PID" ]; then
         # production
-        RUNNING_PID=$(ps -ef | grep -v grep | grep "java -server -jar /opt/nanopay/lib/nanopay" | awk '{print $2}')
+        RUNNING_PID=$(ps -ef | grep -v grep | grep "java -server -jar ${NANOPAY_HOME}/lib/nanopay" | awk '{print $2}')
     fi
     if [ -f "$NANOS_PIDFILE" ]; then
         PID=$(cat "$NANOS_PIDFILE")
@@ -248,7 +275,6 @@ function stop_nanos {
 
         rmfile "$NANOS_PIDFILE"
     fi
-    backup
     delete_runtime_journals
     delete_runtime_logs
 }
@@ -269,19 +295,27 @@ function status_nanos {
 function start_nanos {
     if [ "${RUN_JAR}" -eq 1 ]; then
         OPT_ARGS=
-        
-        OPT_ARGS="${OPTARGS} -V$(gradle -q --daemon getVersion)"
+
+        OPT_ARGS="${OPTARGS} -V$(gradle -q getVersion)"
 
         if [ ! -z ${RUN_USER} ]; then
             OPT_ARGS="${OPT_ARGS} -U${RUN_USER}"
         fi
 
-        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -S${DEBUG_SUSPEND} -P${DEBUG_PORT} -N${NANOPAY_HOME} -W${WEB_PORT} ${OPT_ARGS}
+        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -S${DEBUG_SUSPEND} -P${DEBUG_PORT} -N${NANOPAY_HOME} -W${WEB_PORT} -C${CLUSTER} -H${HOST_NAME} -j${PROFILER} -J${PROFILER_PORT} -F${FS} ${OPT_ARGS}
     else
         cd "$PROJECT_HOME"
 
         JAVA_OPTS="-Dhostname=${HOST_NAME} ${JAVA_OPTS}"
-        if [ "$DEBUG" -eq 1 ]; then
+        if [ "$PROFILER" -eq 1 ]; then
+            PROFILER_AGENT_PATH=""
+            if [[ $IS_MAC -eq 1 ]]; then
+                PROFILER_AGENT_PATH="/Applications/JProfiler.app/Contents/Resources/app/bin/macos/libjprofilerti.jnilib"
+            elif [[ $IS_LINUX -eq 1 ]]; then
+                PROFILER_AGENT_PATH="/opt/jprofiler11/bin/linux-x64/libjprofilerti.so"
+            fi
+            JAVA_OPTS="${JAVA_OPTS} -agentpath:${PROFILER_AGENT_PATH}=port=$PROFILER_PORT"
+        elif [ "$DEBUG" -eq 1 ]; then
             JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT} ${JAVA_OPTS}"
         fi
         if [ ! -z "$WEB_PORT" ]; then
@@ -308,12 +342,20 @@ function start_nanos {
         fi
 
         export JAVA_TOOL_OPTIONS="$JAVA_OPTS"
+        echo "INFO :: ${JAVA_OPTS}"
         echo "INFO :: ${MESSAGE}..."
 
         if [ "$TEST" -eq 1 ]; then
             JAVA_OPTS="${JAVA_OPTS} -Dresource.journals.dir=journals"
             JAR=$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')
             exec java -jar "${JAR}"
+        elif [ "$RUNTIME_COMPILE" -eq 1 ]; then
+          gradle genJava
+          gradle copyLib
+          CLASSPATH="$CLASSPATH":foam3/src:build/src/java:nanopay/src
+          JAVA_SOURCES="{sources:[\"nanopay/src\",\"foam3/src\",\"build/src/java\"],\"output\":\"build/classes/java/main\"}"
+          javac -cp "$CLASSPATH" -d build/classes/java/main foam3/src/foam/nanos/ccl/CCLoader.java
+          exec java -cp "$CLASSPATH" -DJAVA_SOURCES=$JAVA_SOURCES -Djava.system.class.loader=foam.nanos.ccl.CCLoader foam.nanos.boot.Boot
         elif [ "$DAEMONIZE" -eq 0 ]; then
             exec java -cp "$CLASSPATH" foam.nanos.boot.Boot
         else
@@ -333,6 +375,41 @@ function beginswith {
         false
         ;;
     esac
+}
+
+function setup_dirs {
+    if [ ! -d "${PROJECT_HOME}/.foam" ]; then
+        mkdir -p "${PROJECT_HOME}/.foam"
+    fi
+
+    if [ ! -d "$NANOPAY_HOME" ]; then
+        mkdir -p "$NANOPAY_HOME"
+    fi
+    if [ ! -d "${NANOPAY_HOME}/lib" ]; then
+        mkdir -p "${NANOPAY_HOME}/lib"
+    fi
+    if [ ! -d "${NANOPAY_HOME}/bin" ]; then
+        mkdir -p "${NANOPAY_HOME}/bin"
+    fi
+    if [ ! -d "${NANOPAY_HOME}/etc" ]; then
+        mkdir -p "${NANOPAY_HOME}/etc"
+    fi
+    if [ ! -d "${LOG_HOME}" ]; then
+        mkdir -p "${LOG_HOME}"
+    fi
+    if [ ! -d "${JOURNAL_HOME}" ]; then
+        mkdir -p "${JOURNAL_HOME}"
+    fi
+    # Remove old symlink to prevent copying into the same folder
+    if [ -L "${DOCUMENT_HOME}" ]; then
+        rm "$DOCUMENT_HOME"
+    fi
+    if [ ! -d "${DOCUMENT_HOME}" ]; then
+        mkdir -p "${DOCUMENT_HOME}"
+    fi
+    if [ ! -d "${DOCUMENT_OUT}" ]; then
+        mkdir -p "${DOCUMENT_OUT}"
+    fi
 }
 
 function setenv {
@@ -369,6 +446,8 @@ function setenv {
 
     export JOURNAL_HOME="$NANOPAY_HOME/journals"
 
+    export DOCUMENT_OUT="$PROJECT_HOME"/target/documents
+
     export DOCUMENT_HOME="$NANOPAY_HOME/documents"
 
     export FOAMLINK_DATA="$PROJECT_HOME/.foam/foamlinkoutput.json"
@@ -376,38 +455,7 @@ function setenv {
     if [ "$TEST" -eq 1 ]; then
         rm -rf "$NANOPAY_HOME"
     fi
-
-    if [ ! -d "${PROJECT_HOME}/.foam" ]; then
-        mkdir -p "${PROJECT_HOME}/.foam"
-    fi
-
-    if [ ! -d "$NANOPAY_HOME" ]; then
-        mkdir -p "$NANOPAY_HOME"
-    fi
-    if [ ! -d "${NANOPAY_HOME}/lib" ]; then
-        mkdir -p "${NANOPAY_HOME}/lib"
-    fi
-    if [ ! -d "${NANOPAY_HOME}/bin" ]; then
-        mkdir -p "${NANOPAY_HOME}/bin"
-    fi
-    if [ ! -d "${NANOPAY_HOME}/etc" ]; then
-        mkdir -p "${NANOPAY_HOME}/etc"
-    fi
-    if [ ! -d "${NANOPAY_HOME}/keys" ]; then
-        mkdir -p "${NANOPAY_HOME}/keys"
-    fi
-    if [ ! -d "${LOG_HOME}" ]; then
-        mkdir -p "${LOG_HOME}"
-    fi
-    if [ ! -d "${JOURNAL_HOME}" ]; then
-        mkdir -p "${JOURNAL_HOME}"
-    fi
-    if [ ! -d "${DOCUMENT_HOME}" ]; then
-        ln -s "$(pwd)/documents" $DOCUMENT_HOME
-    elif [ ! -L "${DOCUMENT_HOME}" ]; then
-        rm -rf "${DOCUMENT_HOME}"
-        ln -s "$(pwd)/documents" $DOCUMENT_HOME
-    fi
+    setup_dirs
 
     if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 ]]; then
         echo "ERROR :: $NANOPAY_HOME is not writable! Please run 'sudo chown -R $USER /opt' first."
@@ -420,59 +468,19 @@ function setenv {
     fi
     export NANOS_PIDFILE="/tmp/${PID_FILE}"
 
-    if beginswith "/pkg/stack/stage" $0 || beginswith "/pkg/stack/stage" $PWD ; then
-        PROJECT_HOME=/pkg/stack/stage/NANOPAY
-        cd "$PROJECT_HOME"
-        cwd=$(pwd)
-
-        # see https://stackoverflow.com/a/22089950
-        #npm install npm --ca=""
-        # works with Netskope disabled.
-        npm install
-
-        CLEAN_BUILD=1
-        IS_AWS=1
-    fi
-
     JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=$NANOPAY_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=$JOURNAL_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DDOCUMENT_HOME=$DOCUMENT_HOME"
-    JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$LOG_HOME"
-
-    # keystore
-    if [ "$INSTALL" -eq 1 ] || [ "$TEST" -eq 1 ]; then
-        if [[ -f $PROJECT_HOME/tools/keystore.sh ]]; then
-            cd "$PROJECT_HOME"
-            printf "INFO :: Generating keystore...\n"
-            if [[ $TEST -eq 1 ]]; then
-                ./tools/keystore.sh -t
-            else
-                ./tools/keystore.sh
-            fi
-        fi
-    fi
-
-    # HSM setup
-    if [[ $IS_MAC -eq 1 ]]; then
-      HSM_HOME=$PROJECT_HOME/tools/hsm
-      HSM_CONFIG_PATH='/opt/nanopay/keys/pkcs11.cfg'
-
-      #softhsm setup
-      if [[ -f $HSM_HOME/development.sh ]]; then
-        printf "INFO :: Setting up SoftHSM...\n"
-        $HSM_HOME/development.sh -r $HSM_HOME -d $HSM_CONFIG_PATH
-      fi
-    fi
 
     if [[ -z $JAVA_HOME ]]; then
       if [[ $IS_MAC -eq 1 ]]; then
-        JAVA_HOME=$($(dirname $(readlink $(which javac)))/java_home)
+        warning "Java home isn't properly configured!"
       elif [[ $IS_LINUX -eq 1 ]]; then
         JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
       fi
     fi
 
-    if [ -z "$MODE" ] || [ "$MODE" == "DEVELOPMENT" ] || [ "$MODE" == "STAGING" ]; then
+    if [ "$MODE" == "TEST" ]; then
         JAVA_OPTS="-enableassertions ${JAVA_OPTS}"
     fi
 
@@ -486,9 +494,12 @@ function usage {
     echo "Options are:"
     echo "  -b : Build but don't start nanos."
     echo "  -c : Clean generated code before building.  Required if generated classes have been removed."
+    echo "  -C <true | false> Enable Medusa clustering."
     echo "  -d : Run with JDPA debugging enabled on port 8000"
     echo "  -D PORT : JDPA debugging enabled on port PORT."
     echo "  -e : Skipping genJava task."
+    echo "  -E EXPLICIT_JOURNALS : "
+    echo "  -F <rw | ro> : File System Read-Write (default) or Read-Only"
     echo "  -f : Build foam."
     echo "  -g : Output running/notrunning status of daemonized nanos."
     echo "  -h : Print usage information."
@@ -497,20 +508,20 @@ function usage {
     echo "  -J JOURNAL_CONFIG : additional journal configuration. See find.sh - deployment/CONFIG i.e. deployment/staging"
     echo "  -k : Package up a deployment tarball."
     echo "  -l : Delete runtime logs."
-    echo "  -M MODE: one of DEVELOPMENT, PRODUCTION, STAGING, TEST, DEMO"
-    echo "  -m : Run migration scripts."
+    echo "  -m : Enable Medusa clustering. Not required for 'nodes'. Same as -Ctrue"
+    # -M reserve for potential Medusa instance type: Mediator, Node, NERF,
     echo "  -N NAME : start another instance with given instance name. Deployed to /opt/nanopay_NAME."
-    echo "  -o : old maven build"
-    echo "  -p : short cut for setting MODE to PRODUCTION"
-    echo "  -q : short cut for setting MODE to STAGING"
+    echo "  -p : Enable profiling on default port"
+    echo "  -P PORT : JProfiler connection on PORT"
     echo "  -r : Start nanos with whatever was last built."
+    echo "  -R deployment directories with resources to add to Jar file"
     echo "  -s : Stop a running daemonized nanos."
     echo "  -S : When debugging, start suspended."
     echo "  -t : Run All tests."
     echo "  -T testId1,testId2,... : Run listed tests."
     echo "  -u : Run from jar. Intented for Production deployments."
     echo "  -U : User to run as"
-    echo "  -v : java compile only (maven), no code generation."
+    echo "  -v : java compile only, no code generation."
     echo "  -V VERSION : Updates the project version in POM file to the given version in major.minor.path.hotfix format"
     echo "  -w : Disable liveScriptBundler service. (development only)"
     echo "  -W PORT : HTTP Port. NOTE: WebSocketServer will use PORT+1"
@@ -555,26 +566,28 @@ else
   echo -e "\033[34;1m \033[36;1m(c) nanopay Corporation \033[0m\033[34;1m|_|          |___/  \033[0m"
   echo ""
 fi
-
 ############################
 
+FS=rw
 JOURNAL_CONFIG=default
 JOURNAL_SPECIFIED=0
 INSTANCE=
 HOST_NAME=`hostname -s`
 VERSION=
 MODE=
-#MODE=DEVELOPMENT
 BUILD_ONLY=0
 CLEAN_BUILD=0
+CLUSTER=false
 DEBUG=0
 DEBUG_PORT=8000
 DEBUG_SUSPEND=n
+EXPLICIT_JOURNALS=
 export JAVA_OPTS=
 INSTALL=0
 PACKAGE=0
+PROFILER=0
+PROFILER_PORT=8849
 RUN_JAR=0
-RUN_MIGRATION=0
 RESTART_ONLY=0
 TEST=0
 IS_AWS=0
@@ -584,23 +597,25 @@ RESTART=0
 STATUS=0
 DELETE_RUNTIME_JOURNALS=0
 DELETE_RUNTIME_LOGS=0
-COMPILE_ONLY=0
 DISABLE_LIVESCRIPTBUNDLER=0
 WEB_PORT=8080
 VULNERABILITY_CHECK=0
 GRADLE_FLAGS=
 LIQUID_DEMO=0
+RUNTIME_COMPILE=0
 RUN_USER=
+RESOURCES=
 
-while getopts "bcdD:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
+while getopts "bcC:dD:E:efF:ghijJ:klmN:pP:QR:rsStT:uU:vV:wW:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
-        c) CLEAN_BUILD=1
-           ;;
+        c) CLEAN_BUILD=1 ;;
+        C) CLUSTER=${OPTARG} ;;
         d) DEBUG=1 ;;
         D) DEBUG=1
            DEBUG_PORT=$OPTARG
            ;;
+        E) EXPLICIT_JOURNALS="-E"$OPTARG ;;
         e) warning "Skipping genJava task"
            skipGenFlag="-Pfoamoptions.skipgenjava=true"
            if [ "$GRADLE_FLAGS" == "" ]; then
@@ -609,6 +624,8 @@ while getopts "bcdD:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
                 GRADLE_FLAGS="$GRADLE_FLAGS $skipGenFlag"
            fi
            ;;
+        F) FS=$OPTARG;;
+        f) RUNTIME_COMPILE=1;;
         g) STATUS=1 ;;
         h) usage ; quit 0 ;;
         i) INSTALL=1 ;;
@@ -618,43 +635,37 @@ while getopts "bcdD:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
         k) PACKAGE=1
            BUILD_ONLY=1 ;;
         l) DELETE_RUNTIME_LOGS=1 ;;
-        m) RUN_MIGRATION=1 ;;
-        M) MODE=$OPTARG
-           echo "MODE=${MODE}"
-           ;;
+        m) CLUSTER=true ;;
         N) INSTANCE=$OPTARG
            HOST_NAME=$OPTARG
            echo "INSTANCE=${INSTANCE}" ;;
-        p) MODE=PRODUCTION
-           echo "MODE=${MODE}"
-           ;;
-        q) MODE=STAGING
-           echo "MODE=${MODE}"
-           ;;
+        p) PROFILER=1 ;;
+        P) PROFILER=1
+           PROFILER_PORT=$OPTARG ;;
         Q) LIQUID_DEMO=1
            JOURNAL_CONFIG=liquid
            JOURNAL_SPECIFIED=1
 
-           echo ""                             
-           echo -e "\033[34;1m   (                       (     \033[0m"    
+           echo ""
+           echo -e "\033[34;1m   (                       (     \033[0m"
            echo -e "\033[34;1m   )\ (     (     (   (    )\ )  \033[0m"
            echo -e "\033[34;1m  ((_))\  ( )\   ))\  )\  (()/(  \033[0m"
            echo -e "\033[34;1m   \033[96;1m_\033[0m\033[34;1m ((_) )(( ) /((_)((_)  ((\033[96;1m_\033[0m\033[34;1m)) \033[0m\033[0m"
-           echo -e "\033[96;1m  | | \033[34;1m(_)((_)_)(_))(  (_)\033[0m\033[96;1m  _| |  \033[0m" 
-           echo -e "\033[96;1m  | | | |/ _\` || || | | |/ _\` |  \033[0m" 
-           echo -e "\033[96;1m  |_| |_|\__, | \_,_| |_|\__,_|  \033[0m" 
+           echo -e "\033[96;1m  | | \033[34;1m(_)((_)_)(_))(  (_)\033[0m\033[96;1m  _| |  \033[0m"
+           echo -e "\033[96;1m  | | | |/ _\` || || | | |/ _\` |  \033[0m"
+           echo -e "\033[96;1m  |_| |_|\__, | \_,_| |_|\__,_|  \033[0m"
            echo -e "\033[96;1m            |_|                  \033[0m"
            echo ""
-           echo "" 
+           echo ""
            echo -e "💧 Initializing Liquid Environment 💧"
            echo -e "\033[41;1m IMPORTANT: BE SURE TO SET ENABLED TO TRUE FOR BOTH: \033[0m"
            echo -e "\033[41;1m GenericCIPlanner & GenericFXPlanDAO \033[0m"
            ;;
         r) RESTART_ONLY=1 ;;
+        R) RESOURCES=$OPTARG ;;
         s) STOP_ONLY=1 ;;
         t) TEST=1
            MODE=TEST
-           COMPILE_ONLY=0
            ;;
         T) TEST=1
            TESTS=$OPTARG
@@ -662,9 +673,16 @@ while getopts "bcdD:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
            ;;
         u) RUN_JAR=1;;
         U) RUN_USER=${OPTARG};;
-        v) COMPILE_ONLY=1 ;;
+        v) gradle printVersions ;
+           quit 0 ;;
         V) VERSION=$OPTARG
-           echo "VERSION=${VERSION}";;
+           echo "VERSION=${VERSION}"
+           if [ -z "${GRADLE_FLAGS}" ]; then
+               GRADLE_FLAGS="-Pversion=${VERSION}"
+           else
+               GRADLE_FLAGS="${GRADLE_FLAGS} -Pversion=${VERSION}"
+           fi
+           ;;
         w) DISABLE_LIVESCRIPTBUNDLER=1 ;;
         W) WEB_PORT=$OPTARG
            echo "WEB_PORT=${WEB_PORT}";;
@@ -676,6 +694,7 @@ while getopts "bcdD:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
 done
 
 if [ "${MODE}" == "TEST" ]; then
+    JAVA_OPTS="-enableassertions ${JAVA_OPTS}"
     if [ $JOURNAL_SPECIFIED -ne 1 ]; then
         echo "INFO :: Mode is TEST, setting JOURNAL_CONFIG to TEST"
         JOURNAL_CONFIG=test
@@ -684,14 +703,33 @@ if [ "${MODE}" == "TEST" ]; then
     fi
 fi
 
+if [ -z "${INSTANCE}" ]; then
+    HOST_NAME="localhost"
+fi
+
 if [ ${CLEAN_BUILD} -eq 1 ]; then
     GRADLE_FLAGS="${GRADLE_FLAGS} --rerun-tasks"
 fi
 
-if [[ $RUN_JAR == 1 && $JOURNAL_CONFIG != development && $JOURNAL_CONFIG != staging && $JOURNAL_CONFIG != production ]]; then
-    warning "${JOURNAL_CONFIG} journal config unsupported for jar deployment";
+
+if [ "${RUN_JAR}" -eq 1 ]; then
+    if [ -z "${JOURNAL_CONFIG}" ]; then
+        JOURNAL_CONFIG=u
+    else
+        JOURNAL_CONFIG="${JOURNAL_CONFIG},u"
+    fi
+    if [ -z "${RESOURCES}" ]; then
+        RESOURCES=u
+    else
+        RESOURCES="${RESOURCES},u"
+    fi
 fi
 
+echo "INFO :: Journal Config is ${JOURNAL_CONFIG}"
+
+############################
+# Build steps
+############################
 setenv
 
 if [[ $INSTALL -eq 1 ]]; then
@@ -705,14 +743,8 @@ if [[ $VULNERABILITY_CHECK -eq 1 ]]; then
     quit 0
 fi
 
-clean
 if [ "$STATUS" -eq 1 ]; then
     status_nanos
-    quit 0
-fi
-
-if [ "$RUN_MIGRATION" -eq 1 ]; then
-    migrate_journals
     quit 0
 fi
 
@@ -721,9 +753,12 @@ if [ "$STOP_ONLY" -eq 1 ]; then
     quit 0
 fi
 
+clean
+setup_dirs
+deploy_documents
 deploy_journals
 
-if [ "${RESTART_ONLY}" -eq 0 ]; then
+if [ "${RESTART_ONLY}" -eq 0 ] && [ "${RUNTIME_COMPILE}" -eq 0 ]; then
     build_jar
 fi
 

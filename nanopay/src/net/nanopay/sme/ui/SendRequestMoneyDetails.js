@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'SendRequestMoneyDetails',
@@ -13,6 +30,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountingIntegrationUtil',
     'existingButton',
     'invoice',
     'isApproving',
@@ -22,16 +40,19 @@ foam.CLASS({
     'newButton',
     'notificationDAO',
     'predicate',
-    'stack',
     'user',
-    'xeroService',
     'quickbooksService',
-    'accountingIntegrationUtil'
+    'stack',
+    'subject',
+    'xeroService'
   ],
 
   requires: [
     'foam.u2.Element',
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.account.Account',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.accounting.AccountingErrorCodes',
     'net.nanopay.accounting.IntegrationCode',
     'net.nanopay.auth.PublicUserInfo',
@@ -79,6 +100,7 @@ foam.CLASS({
     }
     ^ .invoice-h2 {
       margin-top: 0;
+      margin-bottom: 16px;
     }
     ^ .isApproving {
       display: none;
@@ -87,7 +109,7 @@ foam.CLASS({
       margin-bottom: 0;
     }
     ^ .selectionContainer {
-      margin-bottom: 36px;
+      margin-bottom: 24px;
     }
     ^ .white-radio {
       width: 244px !important;
@@ -107,7 +129,25 @@ foam.CLASS({
     ^back-tab {
       margin-left: 6px;
     }
+    ^ .error-slot {
+      display: flex;
+      flex-direction: row;
+      color: #f55a5a;
+    }
   `,
+
+  messages: [
+    { name: 'DETAILS_SUBTITLE', message: 'Create new payable or choose from existing' },
+    { name: 'CHOOSE_EXISTING_PAYABLE', message: 'Choose an existing payable' },
+    { name: 'CHOSEE_EXISTING_RECEIVABLE', message: 'Choose an existing receivable' },
+    { name: 'DETAILS_HEADER', message: 'Invoice Details' },
+    { name: 'BACK', message: 'Back to selection' },
+    { name: 'ACCOUNT_WITHDRAW_LABEL', message: 'Withdraw from' },
+    { name: 'SELECT_BANK_ACCOUNT', message: 'Please select a bank account' },
+    { name: 'NEW_MSG', message: 'New' },
+    { name: 'EXISTING_MSG', message: 'Existing' },
+    { name: 'NEXT', message: 'Next' },
+  ],
 
   properties: [
     {
@@ -162,24 +202,58 @@ foam.CLASS({
       expression: function(invoice$status) {
         return invoice$status === this.InvoiceStatus.DRAFT;
       }
-    }
-  ],
-
-  messages: [
-    { name: 'DETAILS_SUBTITLE', message: 'Create new or choose from existing' },
-    { name: 'EXISTING_HEADER', message: 'Choose an existing ' },
-    { name: 'DETAILS_HEADER', message: 'Details' },
-    { name: 'BACK', message: 'Back to selection' }
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'sourceAccount',
+      view: function(_,X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.bank.ui.BankAccountSelectionView' },
+          rowView: { class: 'net.nanopay.bank.ui.BankAccountCitationView' },
+          sections: [
+            {
+              heading: 'Your bank accounts',
+              dao: X.subject.user.accounts.where(
+                X.data.EQ(X.data.BankAccount.STATUS, X.data.BankAccountStatus.VERIFIED)
+              )
+            }
+          ]
+        }
+      },
+      postSet: function(){
+        this.invoice.account = this.sourceAccount
+      },
+      factory: function() {
+        this.subject.user.accounts.find(
+          this.AND(
+            this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED),
+            this.EQ(this.Account.IS_DEFAULT, true)
+          )
+        ).then(s => {
+          this.sourceAccount = s.id
+        })
+      }
+    },
+    {
+      name: 'missingSourceAccount',
+      expression: function(sourceAccount) {
+        return sourceAccount == 0;
+      }
+    },
   ],
 
   methods: [
     function initE() {
+      const self = this;
+
       this.SUPER();
-      var newButtonLabel = `New`;
-      var existingButtonLabel = `Existing`;
+      var newButtonLabel = this.NEW_MSG;
+      var existingButtonLabel = this.EXISTING_MSG;
       this.hasBackOption = false;
       // Update the next button label
-      this.nextLabel = 'Next';
+      this.nextLabel = this.NEXT;
 
       this.addClass(this.myClass())
       .startContext({ data: this })
@@ -205,9 +279,9 @@ foam.CLASS({
             .end()
           .end()
           .start()
-            .add(this.isForm$.map((bool) => {
+            .add(this.isForm$.map(bool => {
               return ! bool ? null :
-               this.E().start().addClass('block')
+                this.E().start().addClass('block')
                   .show(this.isForm$)
                   .start().addClass('header')
                     .add(this.DETAILS_HEADER)
@@ -218,15 +292,19 @@ foam.CLASS({
                   })
                   .end();
             }))
-            .add(this.isList$.map((bool) => {
+            .add(this.isList$.map(bool => {
               return ! bool ? null :
               this.E().start().addClass('block')
                 .start().addClass('header')
-                  .add(`${this.EXISTING_HEADER} ${this.type}`)
+                  .callIfElse(this.type === 'payable', function() {
+                    this.add(`${self.CHOOSE_EXISTING_PAYABLE}`)
+                  }, function() {
+                    this.add(`${self.CHOOSE_EXISTING_RECEIVABLE}`)
+                  })
                 .end()
                 .start()
                   .addClass('invoice-list-wrapper')
-                  .select(this.filteredDAO$proxy, (invoice) => {
+                  .select(this.filteredDAO$proxy, invoice => {
                     return this.E()
                       .start({
                         class: 'net.nanopay.sme.ui.InvoiceRowView',
@@ -255,7 +333,11 @@ foam.CLASS({
                   var detailView =  this.E().addClass('block')
                     .start().hide(this.isDraft$)
                       .addClass('header')
-                      .add(`${this.EXISTING_HEADER} ${this.type}`)
+                      .callIfElse(this.type === 'payable', function() {
+                        this.add(`${self.CHOOSE_EXISTING_PAYABLE}`)
+                      }, function() {
+                        this.add(`${self.CHOOSE_EXISTING_RECEIVABLE}`)
+                      })
                     .end()
                     .start().show(this.isDraft$)
                       .addClass('header')
@@ -287,7 +369,31 @@ foam.CLASS({
                       })
                       .end();
                     } else {
-                      detailView = detailView.start({
+                      detailView = detailView
+                      .start()
+                        .addClass('input-label')
+                        .add( this.ACCOUNT_WITHDRAW_LABEL )
+                      .end()
+                      .start(this.SOURCE_ACCOUNT)
+                      .end()
+                      .start().addClass('error-slot').show(this.missingSourceAccount$)
+                        .start({
+                          class: 'foam.u2.tag.Image',
+                          data: 'images/inline-error-icon.svg',
+                          displayHeight: '16px',
+                          displayWidth: '16px'
+                        })
+                          .style({
+                            'justify-content': 'flex-start',
+                            'margin': '0 8px 0 0'
+                          })
+                        .end()
+                        .start()
+                          .style({ 'flex-grow': 1 })
+                          .add(this.SELECT_BANK_ACCOUNT)
+                        .end()
+                      .end()
+                      .start({
                         class: 'net.nanopay.sme.ui.InvoiceDetails',
                         invoice: this.invoice,
                         showActions: false
@@ -307,7 +413,7 @@ foam.CLASS({
   actions: [
     {
       name: 'new',
-      label: 'New',
+      label: this.NEW_MSG,
       code: function(X) {
         if ( this.isApproving ) return;
         this.isForm = true;
@@ -324,7 +430,7 @@ foam.CLASS({
     },
     {
       name: 'existing',
-      label: 'Existing',
+      label: this.EXISTING_MSG,
       code: function(X) {
         if ( this.isApproving ) return;
         this.isForm = false;

@@ -1,7 +1,24 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'PKBankAccount',
-  label: 'Pakistan Bank Account',
+  label: 'Pakistan',
   extends: 'net.nanopay.bank.BankAccount',
 
     javaImports: [
@@ -36,23 +53,23 @@ foam.CLASS({
     properties: [
       {
         name: 'country',
-        value: 'PK'
+        value: 'PK',
+        visibility: 'RO'
       },
       {
         name: 'flagImage',
-        value: 'images/flags/unknown.png'
+        value: 'images/flags/unknown.png',
+        visibility: 'RO'
       },
       {
         name: 'denomination',
         value: 'PKR'
       },
-      { // REVIEW: remove
-        class: 'String',
+      {
         name: 'institutionNumber',
         hidden: true
       },
-      { // REVIEW: remove
-        class: 'String',
+      {
         name: 'branchId',
         hidden: true
       },
@@ -123,7 +140,7 @@ foam.CLASS({
         javaThrows: ['IllegalStateException'],
         javaCode: `
         String iban = this.getAccountNumber();
-  
+
         // is empty
         if ( SafetyUtil.isEmpty(iban) ) {
           throw new IllegalStateException("Please enter a IBAN.");

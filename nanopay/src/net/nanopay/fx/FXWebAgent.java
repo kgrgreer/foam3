@@ -6,6 +6,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.lib.json.*;
 import foam.lib.parse.*;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.http.Command;
 import foam.nanos.http.Format;
@@ -70,7 +71,7 @@ public class FXWebAgent
         outputterJson.setOutputDefaultValues(true);
         outputterJson.setOutputClassNames(false);
 
-        User user = ((User) x.get("user"));
+        User user = ((Subject) x.get("subject")).getUser();
         final ExchangeRateQuote quote = new ExchangeRateQuote();
         if ( "getFXRate".equals(serviceKey) ) {
           GetFXQuote getFXQuote = (GetFXQuote) jsonParser.parseString(data, GetFXQuote.class);

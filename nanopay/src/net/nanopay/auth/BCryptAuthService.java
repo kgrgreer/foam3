@@ -3,10 +3,7 @@ package net.nanopay.auth;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.NanoService;
-import foam.nanos.auth.AuthService;
-import foam.nanos.auth.AuthenticationException;
-import foam.nanos.auth.ProxyAuthService;
-import foam.nanos.auth.User;
+import foam.nanos.auth.*;
 import foam.nanos.session.Session;
 import foam.util.Password;
 import org.mindrot.jbcrypt.BCrypt;
@@ -74,7 +71,8 @@ public class BCryptAuthService
       // create session
       Session session = x.get(Session.class);
       session.setUserId(user.getId());
-      session.setContext(session.getContext().put("user", user));
+      Subject subject = new Subject.Builder(x).setUser(user).build();
+      session.setContext(session.getContext().put("subject", subject));
       sessionDAO_.put(session);
       return user;
     }

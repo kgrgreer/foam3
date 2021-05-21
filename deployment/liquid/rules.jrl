@@ -43,7 +43,7 @@ p({
   "class":"foam.nanos.ruler.Rule",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d19",
   "enabled":false,
-  "saveHistory":true
+  "saveHistory":false
 })
 
 // transaction auto approval
@@ -51,16 +51,17 @@ p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d161
 
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d162","name":"Create UserCapabilityJunction on CapabilityRequest Approval",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d162",
+  "name":"Create UserCapabilityJunction on RoleAssignment Approval",
   "priority": 100,
   "enabled":true,
   "ruleGroup": "liquid",
-  "documentation": "Create ucj on capabilityrequest approval",
-  "daoKey": "localCapabilityRequestDAO",
+  "documentation": "Create ucj on roleassignment approval",
+  "daoKey": "localRoleAssignmentDAO",
   "operation": 3,
   "after": true,
   "predicate":{
-    "class":"net.nanopay.liquidity.crunch.ApprovedCapabilityRequestPredicate",
+    "class":"net.nanopay.liquidity.crunch.ApprovedRoleAssignmentPredicate",
   },
   "action" : {
     "class": "net.nanopay.liquidity.crunch.CreateUserCapabilityJunctionOnRequestApproval"
@@ -71,16 +72,16 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d163","name":"Logout Users on CapabilityRequest Approval",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d163","name":"Logout Users on RoleAssignment Approval",
   "priority": 110,
   "enabled":true,
   "ruleGroup": "liquid",
-  "documentation": "Logout users on capabilityrequest approval",
-  "daoKey": "localCapabilityRequestDAO",
+  "documentation": "Logout users on roleassignment approval",
+  "daoKey": "localRoleAssignmentDAO",
   "operation": 3,
   "after": true,
   "predicate":{
-    "class":"net.nanopay.liquidity.crunch.ApprovedCapabilityRequestPredicate",
+    "class":"net.nanopay.liquidity.crunch.ApprovedRoleAssignmentPredicate",
   },
   "action" : {
     "class": "net.nanopay.liquidity.ruler.LogoutUserOnAssignmentAction"
@@ -89,6 +90,7 @@ p({
   "lifecycleState":1
 })
 
+// TODO: We need to migrate this to be triggered on every UCJ added to logout the user in the source id
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d164","name":"Logout Users on Capability Update",
@@ -132,7 +134,7 @@ p({
   "enabled":true,
   "ruleGroup": "liquid",
   "documentation": "set up newly created account in each ucj where the parent account is in the map and is cascading",
-  "daoKey": "accountDAO",
+  "daoKey": "localAccountDAO",
   "operation": 0,
   "after": true,
   "action" : {
@@ -150,7 +152,7 @@ p({
   "ruleGroup": "liquid",
   "documentation": "remove junctions on user removal",
   "daoKey": "localUserDAO",
-  "operation": 1, 
+  "operation": 1,
   "after": true,
   "predicate":{
     "class":"foam.nanos.ruler.predicate.PropertyEQValue",
@@ -173,7 +175,7 @@ p({
   "ruleGroup": "liquid",
   "documentation": "remove junctions on capability removal",
   "daoKey": "localCapabilityDAO",
-  "operation": 1, 
+  "operation": 1,
   "after": true,
   "predicate":{
     "class":"foam.nanos.ruler.predicate.PropertyEQValue",
@@ -200,7 +202,6 @@ p({
   "action" : {
     "class": "net.nanopay.liquidity.crunch.RemoveAccountBasedUCJIfAccountsEmpty"
   },
-  "saveHistory": true,
   "lifecycleState":1
 })
 
@@ -335,7 +336,7 @@ p({
     "class":"foam.nanos.approval.ApprovableApprovalRequestsRule"
   },
   "enabled":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 p({
@@ -346,7 +347,6 @@ p({
   "documentation":"Handle an approved or rejected update request",
   "daoKey":"approvableDAO",
   "operation":1,
-  "after":true,
   "predicate":{
     "class":"foam.nanos.approval.FulfilledApprovablePredicate",
   },
@@ -487,7 +487,7 @@ p({
   "ruleGroup": "liquid",
   "documentation": "Remove accounts from ucjdata on account removal",
   "daoKey": "localAccountDAO",
-  "operation": 2, 
+  "operation": 2,
   "after": true,
   "action" : { "class": "net.nanopay.liquidity.crunch.RemoveAccountFromUcjDataOnAccountRemoval" },
   "saveHistory": true,
@@ -496,30 +496,32 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d180","name":"add account to ucj of creater with non-cascading on parent",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d181",
+  "name":"Remove Deleted Account From AccountTemplate",
   "priority": 100,
   "enabled":true,
   "ruleGroup": "liquid",
-  "documentation": "add account to ucj of creater with non-cascading on parent",
+  "documentation": "On account delete, remove the reference of the account from any account templates/ any roleassignment using template",
   "daoKey": "localAccountDAO",
-  "operation": 1, 
+  "operation": 2,
   "after": true,
-  "action" : { "class": "net.nanopay.liquidity.crunch.AddChildAccountToMakerOnAccountApproval" },
+  "action" : { "class": "net.nanopay.liquidity.crunch.RemoveDeletedAccountFromAccountTemplate" },
   "saveHistory": true,
   "lifecycleState":1
 })
 
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d181","name":"Remove Deleted Account From AccountTemplate",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d281",
+  "name":"Remove Deleted Account From RootAccounts",
   "priority": 100,
   "enabled":true,
   "ruleGroup": "liquid",
-  "documentation": "On account delete, remove the reference of the account from any account templates/ any capabilityrequest using template",
+  "documentation": "On account delete, remove the reference of the account from any account templates/ any roleassignment using template",
   "daoKey": "localAccountDAO",
-  "operation": 2, 
+  "operation": 2,
   "after": true,
-  "action" : { "class": "net.nanopay.liquidity.crunch.RemoveDeletedAccountFromAccountTemplate" },
+  "action" : { "class": "net.nanopay.liquidity.crunch.RemoveAccountFromRootAccounts" },
   "saveHistory": true,
   "lifecycleState":1
 })
@@ -549,14 +551,12 @@ p({"class":"foam.nanos.ruler.Rule","enabled":false,"id":"68afcf0c-c718-98f8-0841
 // Turn move the digital transaction planner into generic planners for liquid.
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.DigitalTransactionPlanner",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d182",
   "name":"Digital Transaction Planner",
   "priority":200,
   "ruleGroup":"genericPlanner",
-  "daoKey":"transactionPlannerDAO",
   "enabled":true,
-  "operation":0,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -577,6 +577,412 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.DigitalTransactionPlanner"},
+  "lifecycleState":1
+})
+
+// Enable checker approval phase (in ApprovableAwareDAO)
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c331","name":"Enable checker on RoleAssignment put()",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on RoleAssignment put()",
+  "daoKey":"localRoleAssignmentDAO",
+  "operation":3,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c332",
+  "name":"Enable checker on RoleAssignment remove()",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on RoleAssignment remove()",
+  "daoKey":"localRoleAssignmentDAO",
+  "operation":2,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c333","name":"Enable checker on LiquiditySettings put()",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on LiquiditySettings put()",
+  "daoKey":"localLiquiditySettingsDAO",
+  "operation":3,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c334","name":"Enable checker on LiquiditySettings remove()",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on LiquiditySettings remove()",
+  "daoKey":"localLiquiditySettingsDAO",
+  "operation":2,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c335","name":"Enable checker on User put()",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on User put()",
+  "daoKey":"bareUserDAO",
+  "operation":3,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c336","name":"Enable checker on User remove()",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on User remove()",
+  "daoKey":"localUserDAO",
+  "operation":2,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c337","name":"Enable checker on Account put()",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on Account put()",
+  "daoKey":"localAccountDAO",
+  "operation":3,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c338","name":"Enable checker on Account remove()",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on Account remove()",
+  "daoKey":"localAccountDAO",
+  "operation":2,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c339","name":"Enable checker on Rule put()",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on Rule put()",
+  "daoKey":"ruleDAO",
+  "operation":3,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c340","name":"Enable checker on Rule remove()",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on Rule remove()",
+  "daoKey":"ruleDAO",
+  "operation":2,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c341","name":"Enable checker on Capability put()",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on Capability put()",
+  "daoKey":"localCapabilityDAO",
+  "operation":3,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c342","name":"Enable checker on Capability remove()",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on Capability remove()",
+  "daoKey":"localCapabilityDAO",
+  "operation":2,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"cbb0b212-0bd5-415c-8c51-8121ae6bbdf5",
+  "name":"add liquid summary txn",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Find transactions without parents, that are not liquid summary txns. add a liquid summary.",
+  "daoKey":"localTransactionDAO",
+  "operation":2,
+  "after":false,
+  "predicate":{
+        "class":"foam.mlang.predicate.AND",
+        "args": [
+          {
+            "class": "foam.mlang.predicate.Not",
+            "arg1":{
+              class:"foam.nanos.ruler.predicate.IsInstancePredicate",
+              "of":"net.nanopay.tx.LiquidSummaryTransaction"
+            }
+          },
+          {
+            "class": "foam.mlang.predicate.Not",
+            "arg1":{
+              "class":"foam.nanos.ruler.predicate.PropertyHasValue",
+              "propName":"parent"
+            }
+          }
+        ]
+  },
+  "action":{
+    "class":"net.nanopay.tx.AddLiquidTransactionAction",
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"cbb0b212-0bd5-415c-8c51-8121ae6bbdf5",
+  "name":"Add liquid transactionType to summary",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"If a liquid summary transaction doesnt have a transactiontype add one",
+  "daoKey":"localTransactionDAO",
+  "operation":2,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.AND",
+    "args": [
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.tx.LiquidSummaryTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyHasValue",
+        "propName":"transactionType"
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.tx.LabelLiquidSummaryAction",
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+// TODO: Enable when ingestion gets fixed
+// Need to be disabled for the "Prefill All Digital Accounts Through One Shadow" script to run
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"c8af9202-6890-4bdb-96ba-60082960422f",
+  "name":"block certain liquid transactions",
+  "priority":100,
+  "enabled":false,
+  "ruleGroup":"liquid",
+  "documentation":"blocks certain accounts from transacting",
+  "daoKey":"localTransactionDAO",
+  "operation":3,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.Not",
+    "arg1":{
+      "class":"foam.nanos.ruler.predicate.ContextContainsPredicate",
+      "key":"systemGenerated"
+    }
+  },
+  "action":{
+    "class":"net.nanopay.tx.ruler.LiquidTransactionalBlocks",
+  },
   "lifecycleState":1
 })

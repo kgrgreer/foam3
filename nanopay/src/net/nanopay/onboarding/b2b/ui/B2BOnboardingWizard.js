@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.onboarding.b2b.ui',
   name: 'B2BOnboardingWizard',
@@ -6,11 +23,10 @@ foam.CLASS({
   documentation: 'Onboarding Wizard for new B2B users.',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'foam.u2.dialog.Popup',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.Phone',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus'
   ],
@@ -18,6 +34,7 @@ foam.CLASS({
   imports: [
     'stack',
     'auth',
+    'notify',
     'window',
     'validatePostalCode',
     'validatePhone',
@@ -128,10 +145,10 @@ foam.CLASS({
       this.userDAO.put(this.user).then(function(result) {
         if ( ! result ) throw new Error(self.SaveFailureMessage);
         self.user.copyFrom(result);
-        self.add(self.NotificationMessage.create({ message: self.SaveSuccessfulMessage }));
+        self.notify(self.SaveSuccessfulMessage, '', self.LogLevel.INFO, true);
         if ( andLogout ) self.logOut();
       }).catch(function(err) {
-        self.add(self.NotificationMessage.create({ message: self.SaveFailureMessage, type: 'error' }));
+        self.notify(self.SaveFailureMessage, '', self.LogLevel.ERROR, true);
       });
     },
 
@@ -145,10 +162,10 @@ foam.CLASS({
       this.userDAO.put(this.user).then(function(result) {
         if ( ! result ) throw new Error(self.SubmitFailureMessage);
         self.user.copyFrom(result);
-        self.add(self.NotificationMessage.create({ message: self.SubmitSuccessMessage }));
+        self.notify(self.SubmitSuccessMessage, '', self.LogLevel.INFO, true);
         // self.subStack.push(self.views[self.subStack.pos + 1].view);
       }).catch(function(err) {
-        self.add(self.NotificationMessage.create({ message: self.SubmitFailureMessage, type: 'error' }));
+        self.notify(self.SubmitFailureMessage, '', self.LogLevel.ERROR, true);
       });
     },
 
@@ -163,50 +180,50 @@ foam.CLASS({
     function validateAdminInfo() {
       var editedUser = this.viewData.user;
       if ( ! editedUser.firstName ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorMissingFields, type: 'error' }));
+        this.notify(this.ErrorMissingFields, '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( editedUser.firstName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorFirstNameTooLong, type: 'error' }));
+        this.notify(this.ErrorFirstNameTooLong, '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( /\d/.test(editedUser.firstName) ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorFirstNameDigits, type: 'error' }));
+        this.notify(this.ErrorFirstNameDigits, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( editedUser.middleName ) {
         if ( editedUser.middleName.length > 70 ) {
-          this.add(this.NotificationMessage.create({ message: this.ErrorMiddleNameTooLong, type: 'error' }));
+          this.notify(this.ErrorMiddleNameTooLong, '', this.LogLevel.ERROR, true);
           return false;
         }
 
         if ( /\d/.test(editedUser.middleName) ) {
-          this.add(this.NotificationMessage.create({ message: this.ErrorMiddleNameDigits, type: 'error' }));
+          this.notify(this.ErrorMiddleNameDigits, '', this.LogLevel.ERROR, true);
           return false;
         }
       }
 
       if ( ! editedUser.lastName ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorMissingFields, type: 'error' }));
+        this.notify(this.ErrorMissingFields, '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( editedUser.lastName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorLastNameTooLong, type: 'error' }));
+        this.notify(this.ErrorLastNameTooLong, '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( /\d/.test(editedUser.lastName) ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorLastNameDigits, type: 'error' }));
+        this.notify(this.ErrorLastNameDigits, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! editedUser.jobTitle ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorAdminJobTitleMessage, type: 'error' }));
+        this.notify(this.ErrorAdminJobTitleMessage, '', this.LogLevel.ERROR, true);
         return false;
       }
 
-      if ( ! this.validatePhone(editedUser.phone.number) ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorAdminNumberMessage, type: 'error' }));
+      if ( ! this.validatePhone(editedUser.phoneNumber) ) {
+        this.notify(this.ErrorAdminNumberMessage, '', this.LogLevel.ERROR, true);
         return false;
       }
       return true;
@@ -215,60 +232,60 @@ foam.CLASS({
     function validateBusinessProfile() {
       var businessProfile = this.viewData.user;
       if ( ! businessProfile.businessName ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileNameMessage, type: 'error' }));
+        this.notify(this.ErrorBusinessProfileNameMessage, '', this.LogLevel.ERROR, true);
         return false;
       }
 
-      if ( ! this.validatePhone(businessProfile.phone.number) ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfilePhoneMessage, type: 'error' }));
+      if ( ! this.validatePhone(businessProfile.phoneNumber) ) {
+        this.notify(this.ErrorBusinessProfilePhoneMessage, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! businessProfile.businessRegistrationNumber ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileRegistrationNumberMessage, type: 'error' }));
+        this.notify(this.ErrorBusinessProfileRegistrationNumberMessage, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! businessProfile.businessRegistrationAuthority ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileRegistrationAuthorityMessage, type: 'error' }));
+        this.notify(this.ErrorBusinessProfileRegistrationAuthorityMessage, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       // By pass for safari & mozilla type='date' on input support
       // Operator checking if dueDate is a date object if not, makes it so or throws notification.
       if ( isNaN(businessProfile.businessRegistrationDate) && businessProfile.businessRegistrationDate != null ) {
-        this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Registration Date yyyy-mm-dd.', type: 'error' }));
+        this.notify('Please enter valid registration date yyyy-mm-dd.', '', this.LogLevel.ERROR, true);
         return;
       }
 
       if ( ! businessProfile.businessRegistrationDate || businessProfile.businessRegistrationDate > new Date() ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileRegistrationDateMessage, type: 'error' }));
+        this.notify(this.ErrorBusinessProfileRegistrationDateMessage, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       var businessAddress = businessProfile.address;
       if ( ! this.validateStreetNumber(businessAddress.streetNumber) ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileStreetNumberMessage, type: 'error' }));
+        this.notify(this.ErrorBusinessProfileStreetNumberMessage, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! this.validateAddress(businessAddress.streetName) ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileStreetNameMessage, type: 'error' }));
+        this.notify(this.ErrorBusinessProfileStreetNameMessage, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( businessAddress.suite && ! this.validateAddress(businessAddress.suite) ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileStreetNameMessage, type: 'error' }));
+        this.notify(this.ErrorBusinessProfileStreetNameMessage, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! this.validateCity(businessAddress.city) ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfileCityMessage, type: 'error' }));
+        this.notify(this.ErrorBusinessProfileCityMessage, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! this.validatePostalCode(businessAddress.postalCode, businessAddress.countryId) ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfilePostalCodeMessage, type: 'error' }));
+        this.notify(this.ErrorBusinessProfilePostalCodeMessage, '', this.LogLevel.ERROR, true);
         return false;
       }
       return true;
@@ -277,14 +294,14 @@ foam.CLASS({
     function validateQuestionnaire() {
       var questions = this.viewData.user.questionnaire.questions;
       if ( ! questions ) {
-        this.add(this.NotificationMessage.create({ message: this.ErrorQuestionnaireMessage, type: 'error' }));
+        this.notify(this.ErrorQuestionnaireMessage, '', this.LogLevel.ERROR, true);
         return false;
       }
       var self = this;
       var valid = true;
       questions.forEach(function(question) {
         if ( ! question.response ) {
-          self.add(self.NotificationMessage.create({ message: self.ErrorQuestionnaireMessage, type: 'error' }));
+          self.notify(self.ErrorQuestionnaireMessage, '', self.LogLevel.ERROR, true);
           valid = false;
         }
       });
@@ -295,10 +312,7 @@ foam.CLASS({
       var valid = true;
       var checkBox = document.getElementsByClassName('foam-u2-md-CheckBox')[0];
       if ( checkBox.checked === false ) {
-        this.add(this.NotificationMessage.create({
-            message: this.ErrorTermsAndConditionsMessage,
-            type: 'error'
-        }));
+        this.notify(this.ErrorTermsAndConditionsMessage, '', this.LogLevel.ERROR, true);
         valid = false;
       }
       return valid;

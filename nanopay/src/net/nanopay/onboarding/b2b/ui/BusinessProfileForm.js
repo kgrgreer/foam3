@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.onboarding.b2b.ui',
   name: 'BusinessProfileForm',
@@ -18,7 +35,6 @@ foam.CLASS({
     'foam.nanos.auth.Region',
     'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.Address'
   ],
 
@@ -26,7 +42,6 @@ foam.CLASS({
     ^ .foam-u2-TextField,
     ^ .foam-u2-DateView,
     ^ .foam-u2-tag-Select {
-      height: 40px;
 
       background-color: #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
@@ -293,7 +308,7 @@ foam.CLASS({
 
     ^ .address2Hint {
       height: 14px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       line-height: 1.17;
       letter-spacing: 0.2px;
@@ -368,13 +383,11 @@ foam.CLASS({
       class: 'String',
       name: 'phoneNumberField',
       factory: function() {
-        return this.viewData.user.phone ? this.viewData.user.phone.number.substring(2) : '';
+        return this.viewData.user.phoneNumber ? this.viewData.user.phoneNumber.substring(2) : '';
       },
       postSet: function(oldValue, newValue) {
         this.isEditingPhone = false;
-        this.viewData.user.phone = this.Phone.create({
-          number: '+1 ' + newValue
-        });
+        this.viewData.user.phoneNumber = '+1 ' + newValue;
       }
     },
     {
@@ -479,7 +492,7 @@ foam.CLASS({
         this.viewData.user.businessRegistrationDate = newValue;
       },
       tableCellFormatter: function(date) {
-        this.add(date ? date.toISOString().substring(0,10) : '');
+        this.add(date ? date.toLocaleDateString(foam.locale) : '');
       }
     },
     {

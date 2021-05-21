@@ -1,0 +1,11 @@
+// spids
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"C9233187-7C24-4DAB-BE04-E661D1F281D1","sourceId":8023,"targetId":"intuit","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"FFAA7A22-35B6-4BBC-A87E-D74E1BE87D5F","sourceId":8024,"targetId":"intuit","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"484747D7-8547-4D64-BB08-CDB0AD54CD82","sourceId":8025,"targetId":"intuit","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"CE243F86-DE20-453D-8E71-CEC93D7C798C","sourceId":8030,"targetId":"intuit","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"F7B7E01A-C684-4889-A40C-73EEA0CC7ACC","sourceId":8031,"targetId":"intuit","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"4F92603A-2DF7-4ACE-BEE2-3596D32253BA","sourceId":8034,"targetId":"intuit","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"01327FE5-DFD6-4E8C-9143-8109AF14A6C2","sourceId":8035,"targetId":"intuit","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"FF1EF762-66A1-4E65-A9A2-80BFB0B93E27","sourceId":9035,"targetId":"intuit","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"40934EFD-7FE8-4C02-8882-FBD814417AC9","sourceId":7036,"targetId":"intuit","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"0A22C369-5E4A-4921-B2C7-8AA1ACA15FCB","sourceId":9100,"targetId":"intuit","status":1})

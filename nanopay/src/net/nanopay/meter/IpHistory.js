@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.meter',
   name: 'IpHistory',
@@ -9,6 +26,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'translationService',
     'publicBusinessDAO',
     'userDAO'
   ],
@@ -28,7 +46,34 @@ foam.CLASS({
     {
       class: 'String',
       name: 'description',
-      visibility: 'RO'
+      visibility: 'RO',
+      tableCellFormatter: function(val, obj) {
+        /* 
+         * description has a form of <User type>: <action> <email address>
+         * e.g., Signing officer: assgined to <email address>
+         */
+
+        let [userType, remainder] = val.split(':');
+        
+        const remainderList = remainder.trim().split(' ');
+
+        let email = remainderList.pop();
+        let action = remainderList.join(' ');
+
+        userType = obj.translationService.getTranslation(
+          foam.locale,
+          userType,
+          userType
+        );
+
+        action = obj.translationService.getTranslation(
+          foam.locale,
+          action,
+          action
+        );
+
+        this.add(`${userType}: ${action} ${email}`);
+      }
     },
     {
       class: 'DateTime',
@@ -44,7 +89,8 @@ foam.RELATIONSHIP({
   forwardName: 'ipHistories',
   inverseName: 'user',
   sourceProperty: {
-    hidden: true,
+    section: 'operationsInformation',
+    order: 100,
     transient: true
   },
   targetProperty: {
@@ -63,7 +109,7 @@ foam.RELATIONSHIP({
   forwardName: 'ipHistories',
   inverseName: 'business',
   sourceProperty: {
-    hidden: false
+    section: 'operationsInformation'
   },
   targetProperty: {
     visibility: 'RO',

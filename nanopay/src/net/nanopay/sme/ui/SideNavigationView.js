@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'SideNavigationView',
@@ -10,7 +27,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'agent',
+    'subject',
     'currentMenu',
     'menuDAO',
     'pushMenu',
@@ -49,7 +66,7 @@ foam.CLASS({
       display: inline-block;
       vertical-align: middle;
       font-size: 16px;
-      font-family: lato;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     ^ .menu-item {
       margin: 14px 16px;
@@ -168,7 +185,6 @@ foam.CLASS({
       name: 'dao',
       expression: function(loginSuccess) {
         return this.menuDAO
-          .orderBy(this.Menu.ORDER)
           .where(
             this.AND(
               this.STARTS_WITH(this.Menu.ID, 'sme.main'),
@@ -198,12 +214,12 @@ foam.CLASS({
               .start()
                 .addClass('account-button-info-detail')
                 .add(this.slot(function(user) {
-                  return this.E().add(user.label());
+                  return this.E().add(user.toSummary());
                 }))
               .end()
               .start()
                 .addClass('account-button-info-detail-small')
-                .add(this.agent$.dot('firstName'))
+                .add(this.subject.realUser$.dot('firstName'))
               .end()
             .end()
             .start({

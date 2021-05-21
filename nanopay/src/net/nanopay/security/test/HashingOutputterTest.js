@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.security.test',
   name: 'HashingOutputterTest',
@@ -6,8 +23,8 @@ foam.CLASS({
   javaImports: [
     'foam.core.EmptyX',
     'foam.nanos.auth.User',
-    'net.nanopay.security.HashingJournal',
     'net.nanopay.security.HashingOutputter',
+    'net.nanopay.security.MessageDigest',
     'org.bouncycastle.util.encoders.Hex'
   ],
 
@@ -146,10 +163,14 @@ foam.CLASS({
       ],
       javaCode: `
         try {
-          StringBuilder builder = sb.get().append(EXPECTED).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(digest).append("\\"}");
-          HashingOutputter outputter = new HashingOutputter(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(false).build());
-          test(outputter.stringify(INPUT.fclone()).equals(builder.toString()), "HashingOutputter using " + algorithm + " produces correct output of: " + builder.toString());
+          StringBuilder builder = sb.get().append(EXPECTED).append(",{algorithm:\\"").append(algorithm).append("\\",provider:\\"\\",digest:\\"").append(digest).append("\\"}");
+          HashingOutputter outputter = new HashingOutputter(getX(), true, new MessageDigest.Builder(getX()).setAlgorithm(algorithm).setRollDigests(false).build());
+          String produced = outputter.stringify(INPUT.fclone());
+          // strip out possible passwordHistory
+          produced = produced.replaceAll(",\\"passwordHistory\\":.*}]", "");
+          test(produced.equals(builder.toString()), "HashingOutputter using " + algorithm + " produces correct output of: " + builder.toString()+" input: "+produced);
         } catch ( Throwable t ) {
+t.printStackTrace();
           test(false, "HashingOutputter should not throw an exception");
         }
       `
@@ -162,8 +183,8 @@ foam.CLASS({
       ],
       javaCode: `
         try {
-          StringBuilder builder = sb.get().append(EXPECTED_DELTA).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(digest).append("\\"}");
-          HashingOutputter outputter = new HashingOutputter(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(false).build());
+          StringBuilder builder = sb.get().append(EXPECTED_DELTA).append(",{algorithm:\\"").append(algorithm).append("\\",provider:\\"\\",digest:\\"").append(digest).append("\\"}");
+          HashingOutputter outputter = new HashingOutputter(getX(), true, new MessageDigest.Builder(getX()).setAlgorithm(algorithm).setRollDigests(false).build());
           String delta = outputter.stringifyDelta(INPUT.fclone(), INPUT_DELTA.fclone());
           test(delta.equals(builder.toString()), "HashingOutputter using " + algorithm + " produces correct delta output of: " + builder.toString() + " matching with: " + delta);
         } catch ( Throwable t ) {
@@ -180,9 +201,9 @@ foam.CLASS({
       ],
       javaCode: `
         try {
-          StringBuilder builder = sb.get().append(EXPECTED).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(chainedDigest).append("\\"}");
-          HashingOutputter outputter = new HashingOutputter(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(true).setPreviousDigest(Hex.decode(previousDigest)).build());
-          test(outputter.stringify(INPUT.fclone()).equals(builder.toString()), "HashingOutputter using " + algorithm + " produces correct chained output of: " + builder.toString());
+          StringBuilder builder = sb.get().append(EXPECTED).append(",{algorithm:\\"").append(algorithm).append("\\",provider:\\"\\",digest:\\"").append(chainedDigest).append("\\"}");
+          HashingOutputter outputter = new HashingOutputter(getX(), true, new MessageDigest.Builder(getX()).setAlgorithm(algorithm).setRollDigests(true).setPreviousDigest(Hex.decode(previousDigest)).build());
+          test(outputter.stringify(INPUT.fclone()).equals(builder.toString()), "HashingOutputter using " + algorithm + " produces correct chained output of: " + builder.toString()+" input: "+outputter.stringify(INPUT.fclone()));
         } catch ( Throwable t ) {
           test(false, "HashingOutputter should not throw an exception");
         }
@@ -197,9 +218,9 @@ foam.CLASS({
       ],
       javaCode: `
         try {
-          StringBuilder builder = sb.get().append(EXPECTED_DELTA).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(chainedDigest).append("\\"}");
-          HashingOutputter outputter = new HashingOutputter(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(true).setPreviousDigest(Hex.decode(previousDigest)).build());
-          test(outputter.stringifyDelta(INPUT.fclone(), INPUT_DELTA.fclone()).equals(builder.toString()), "HashingOutputter using " + algorithm + " produces correct delta chained output of: " + builder.toString());
+          StringBuilder builder = sb.get().append(EXPECTED_DELTA).append(",{algorithm:\\"").append(algorithm).append("\\",provider:\\"\\",digest:\\"").append(chainedDigest).append("\\"}");
+          HashingOutputter outputter = new HashingOutputter(getX(), true, new MessageDigest.Builder(getX()).setAlgorithm(algorithm).setRollDigests(true).setPreviousDigest(Hex.decode(previousDigest)).build());
+          test(outputter.stringifyDelta(INPUT.fclone(), INPUT_DELTA.fclone()).equals(builder.toString()), "HashingOutputter using " + algorithm + " produces correct delta chained output of: " + builder.toString()+" input: "+outputter.stringifyDelta(INPUT.fclone(), INPUT_DELTA.fclone()));
         } catch ( Throwable t ) {
           test(false, "HashingOutputter should not throw an exception");
         }

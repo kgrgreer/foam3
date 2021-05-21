@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.invoice',
   name: 'InvoiceFilteredSettlementReport',
@@ -15,9 +32,13 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserUserJunction',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.http.HttpParameters',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.io.*',
+    'java.nio.file.Files',
+    'java.nio.file.Path',
     'java.text.DecimalFormat',
     'java.text.SimpleDateFormat',
     'java.util.Date',
@@ -43,7 +64,7 @@ foam.CLASS({
         var sDate = inv.paymentDate.getTime() - (1000*60*60*24*3);
         var dDate = inv.paymentDate.getTime() + (1000*60*60*24*3);
         console.log('sDate = '+sDate+ ' eDate = ' + dDate);
-        var url = window.location.origin + "/service/settlementReports?userId=" + this.id + "&startDate="+sDate+"&endDate="+dDate;
+        var url = window.location.origin + "/service/settlementReports?startDate="+sDate+"&endDate="+dDate;
         window.location.assign(url);
   `,
 
@@ -93,36 +114,6 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'checkAndSetCalendarFields',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'start',
-          type: 'String'
-        },
-        {
-          name: 'end',
-          type: 'String'
-        }
-      ],
-      javaCode: `
-        try {
-          setStartDate(new Date(start));
-          setEndDate(new Date(end));
-
-          setDated(true);
-        } catch (Exception e ) { 
-          // Integer.parseInt throws java.lang.NumberFormatException
-          Logger logger = (Logger) x.get("logger");
-          logger.warning("Error generating settlementReport - passed in date filter error: ", e); 
-          setDated(false);
-        }
-      `
-    },
-    {
       name: 'execute',
       args: [
         {
@@ -131,53 +122,51 @@ foam.CLASS({
         }
       ],
       javaCode:
-      `        
+      `
+        HttpParameters p        = x.get(HttpParameters.class);
         DAO    userDAO           = (DAO) x.get("localUserDAO");
         DAO    agentJunctionDAO  = (DAO) x.get("agentJunctionDAO");
         Logger logger            = (Logger) x.get("logger");
-    
-        // Id check:
-        HttpServletRequest req   = x.get(HttpServletRequest.class);
-        long id = Integer.parseInt(req.getParameter("userId"));
-        if ( id <= 0 ) {
-          logger.warning("Error generating settlementReport - business/user Id invalid.");
-          return;
-        }
+        Subject subject          = (Subject) x.get("subject");
+        User business            = subject.getUser();
 
-        // Confirm Calendar search fields
-        checkAndSetCalendarFields(x, req.getParameter("startDate"), req.getParameter("endDate"));
-
-        // User check:
-        User business = findUser(x,id);
-        if ( business == null ) {
-          logger.warning("Error generating settlementReport - user.id:" + id + " does not exist.");
-          return;
-        }
-
-        // Gather data that will be displayed in the SettlementReport.pdf
-        filterInvoiceDAO(x, business);
-
+        String errorMessage = null; 
+        int errorStatus = 0;
         try {
-          // create a temporary folder to save files before zipping
-          FileUtils.forceMkdir(new File("/tmp/SettlementReport/"));
-    
-          File settlementReport = collectInvoiceDataAndWriteToData(x, business);
-    
-          if ( settlementReport == null ){
-            logger.warning("Error generating settlementReport - File null.");
-            return;
-          }
-    
-          downloadZipFile(x, (Business)business, settlementReport);
-    
-          // delete the temporary folder.
-          FileUtils.deleteDirectory(new File("/tmp/SettlementReport/"));
+          // Confirm Calendar search fields
+          setStartDate(new Date(String.valueOf(p.get("startDate"))));
+          setEndDate(new Date(String.valueOf(p.get("endDate"))));
+          setDated(true);
 
+          // Gather data that will be displayed in the SettlementReport.pdf
+          filterInvoiceDAO(x, business);
+
+          // create a temporary folder to save files before zipping
+          Path path = Files.createTempDirectory("/tmp");
+
+          File settlementReport = collectInvoiceDataAndWriteToData(x, business, path);
+
+          downloadZipFile(x, (Business)business, settlementReport);
+        } catch (NumberFormatException | NullPointerException e) {
+          logger.warning(this.getClass().getSimpleName(), "Invalid Date Range", e);
+          errorMessage = "Invalid Date Range";
+          errorStatus = 400;
         } catch (IOException e) {
-          logger.error("Error generating settlementReport: ", e);
-        } catch (Throwable t) {
-          logger.error("Error generating settlementReport: ", t);
-          throw new RuntimeException(t);
+          logger.error(this.getClass().getSimpleName(), e);
+          errorMessage = "IOException";
+          errorStatus = 500;
+        } catch (DocumentException e) {
+          logger.error(this.getClass().getSimpleName(), e);
+          errorMessage = e.getMessage();
+          errorStatus = 500;
+        }
+        if ( errorMessage != null ) {
+          HttpServletResponse resp = x.get(HttpServletResponse.class);
+          try {
+            resp.sendError(errorStatus, "Failed to create Settlement Report: "+errorMessage);
+          } catch (IOException e) {
+            logger.error(this.getClass().getSimpleName(), "Error returning error", e);
+          }
         }
       `
     },
@@ -225,35 +214,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'findUser',
-      javaType: 'foam.nanos.auth.User',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'id',
-          type: 'long'
-        }
-      ],
-      javaCode:
-      `
-        DAO  userDAO = (DAO) x.get("userDAO");
-        User user = (User) userDAO.find(id);
-    
-        if ( ! (user instanceof Business) ) {
-          DAO  agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
-          UserUserJunction userUserJunction = (UserUserJunction) agentJunctionDAO
-            .find(EQ(UserUserJunction.SOURCE_ID, user.getId()));
-
-          return userUserJunction.findTargetId(x);
-        }
-
-        return user;
-      `
-    },
-    {
       name: 'collectInvoiceDataAndWriteToData',
       javaType: 'java.io.File',
       args: [
@@ -264,52 +224,43 @@ foam.CLASS({
         {
           name: 'user',
           type: 'foam.nanos.auth.User'
+        },
+        {
+          name: 'path',
+          type: 'java.nio.file.Path'
         }
       ],
+      javaThrows: ['FileNotFoundException', 'DocumentException'],
       javaCode:
       `
-        Logger logger = (Logger) x.get("logger");
         StringBuilder title = sb.get();
 
         if ( getDated() ) {
-          try {
-            title.append("Settlement report for ")
-              .append(getStartDate())
-              .append(" to ")
-              .append(getEndDate())
-              .append("\\n for Business ID: ")
-              .append(user.getId())
-              .append("\\n\\n");
-          } catch (Exception e) {
-            logger.warning("Error generating settlementReport - Error in title", e);
-            return null;
-          }
+          title.append("Settlement report for ")
+            .append(getStartDate())
+            .append(" to ")
+            .append(getEndDate())
+            .append("\\n for Business ID: ")
+            .append(user.getId())
+            .append("\\n\\n");
         } else {
           title.append("Settlement report\\n for Business ID: ").append(user.getId()).append("\\n\\n");
         }
-    
-        String path = "/tmp/SettlementReport/[" + user.getOrganization() + "]SettlementReport.pdf";
-    
-        try {
-          Document document = new Document();
-          PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
-          document.open();
 
-          document.add(new Paragraph(title.toString()));
-    
-          List list = createListForInvoices(x, user.getOrganization());
-    
-          document.add(list);
-          document.add(Chunk.NEWLINE);
-          
-          document.close();
-          writer.close();
-    
-          return new File(path);
-        } catch (Exception e) {
-          logger.error("Error generating settlementReport - writing to document.", e);
-        }
-        return null; 
+        String pdf = path.toString()+File.pathSeparator+"[" + user.getOrganization() + "]SettlementReport.pdf";
+
+        Document document = new Document();
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(pdf));
+        document.open();
+        document.add(new Paragraph(title.toString()));
+
+        List list = createListForInvoices(x, user.getOrganization()); 
+        document.add(list);
+        document.add(Chunk.NEWLINE);
+        document.close();
+        writer.close();
+
+        return new File(pdf);
       `
     },
     {
@@ -351,7 +302,7 @@ foam.CLASS({
           // Format Information variables for each Invoice
           transDate         = df.format(invoice.getPaymentDate());
           tempUser          = invoice.findCreatedBy(x);
-          createdBy_String  = tempUser == null ? "n/a" : tempUser.label();
+          createdBy_String  = tempUser == null ? "n/a" : tempUser.toSummary();
           tempUser          = invoice.findPayerId(x);
           businessNamePayer = tempUser == null ? "n/a" : tempUser.getOrganization();
           tempUser          = invoice.findPayeeId(x);
@@ -413,6 +364,7 @@ foam.CLASS({
           type: 'File'
         }
       ],
+      javaThrows: ['IOException'],
       javaCode:
       `
         HttpServletResponse response = x.get(HttpServletResponse.class);
@@ -430,7 +382,6 @@ foam.CLASS({
         try {
           zipos = new ZipOutputStream(new BufferedOutputStream(response.getOutputStream()));
           zipos.setMethod(ZipOutputStream.DEFLATED);
-    
           zipos.putNextEntry(new ZipEntry(file.getName()));
           os = new DataOutputStream(zipos);
           is = new FileInputStream(file);
@@ -442,10 +393,6 @@ foam.CLASS({
           is.close();
           zipos.closeEntry();
           os.flush();
-          
-        } catch (Exception e) {
-          Logger logger = (Logger) x.get("logger");
-          logger.error(e);
         } finally {
           IOUtils.closeQuietly(is);
           IOUtils.closeQuietly(os);

@@ -1,0 +1,6 @@
+// Prerequisites for bepay spid capability
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bepay",targetId:"serviceProviderCapability"})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bepay",targetId:"bepayCorridorCapability"})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bepay",targetId:"bepayPlannerCapability"})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bepay",targetId:"bepay-tx-reason-codes"})
+p({class:"foam.nanos.crunch.CapabilityCapabilityJunction",sourceId:"bepay",targetId:"bepay-tx-fees"})

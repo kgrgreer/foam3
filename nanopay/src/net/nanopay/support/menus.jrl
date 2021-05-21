@@ -1,4 +1,255 @@
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "accounts-support",
+  "label": "Accounts (Support)",
+  "icon":"images/accounts-24px-resting.svg",
+  "activeIcon":"images/accounts-24px-active.svg",
+  "handler":
+    {
+      "class": "foam.nanos.menu.DAOMenu2",
+      "config": {
+        "class": "foam.comics.v2.DAOControllerConfig",
+        "daoKey": "supportAccountDAO",
+        "browseTitle": "Accounts",
+        "createTitle": "Create an Account",
+        "createPredicate":{"class":"foam.mlang.predicate.False"},
+        "editPredicate":{"class":"foam.mlang.predicate.False"},
+        "deletePredicate":{"class":"foam.mlang.predicate.False"}
+      }
+    },
+  "parent": "hidden"
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "businesses-support",
+  "label": "Businesses (Support)",
+  "icon":"images/businesses-24px-resting.svg",
+  "activeIcon":"images/businesses-24px-active.svg",
+  "handler":
+    {
+      "class": "foam.nanos.menu.DAOMenu2",
+      "config": {
+        "class": "foam.comics.v2.DAOControllerConfig",
+        "daoKey": "supportBusinessDAO",
+        "browseTitle": "Businesses",
+        "createTitle": "Create a Business",
+        "createPredicate":{"class":"foam.mlang.predicate.False"},
+        "editPredicate":{"class":"foam.mlang.predicate.False"},
+        "deletePredicate":{"class":"foam.mlang.predicate.False"}
+      }
+    },
+  "parent": "hidden"
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"transactions-support",
+  "label":"Transaction Summary",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"supportTransactionDAO",
+      "browseTitle": "Transactions",
+      "createTitle": "Create a Transaction",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"},
+      "defaultColumns":[
+        "id",
+        "amount",
+        "referenceNumber",
+        "chainSummary.summary",
+        "chainSummary.status",
+        "chainSummary.errorCode"
+      ]
+    }
+  }
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"transactions-summary",
+  "label":"Transactions",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"intuitTransactionSummaryDAO",
+      "browseTitle": "Transactions",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  }
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "users-support",
+  "label": "Users (Support)",
+  "icon":"images/users-24px-resting.svg",
+  "activeIcon":"images/users-24px-active.svg",
+  "handler":{
+      "class": "foam.nanos.menu.DAOMenu2",
+      "config":{
+          "class": "foam.comics.v2.DAOControllerConfig",
+          "daoKey": "supportUserDAO",
+          "browseTitle": "Users",
+          "createTitle": "Create a User",
+          "createPredicate":{"class":"foam.mlang.predicate.False"},
+          "editPredicate":{"class":"foam.mlang.predicate.False"},
+          "deletePredicate":{"class":"foam.mlang.predicate.False"}
+        }
+    },
+  "parent": "hidden"
+})
+
+p({
+   "class":"foam.nanos.menu.Menu",
+   "id": "bills-support",
+   "label":"Billed Charges",
+   "icon":"images/charges-24px-resting.svg",
+   "activeIcon":"images/charges-24px-active.svg",
+   "handler":{
+      "class":"foam.nanos.menu.DAOMenu2",
+      "config":{
+         "class":"foam.comics.v2.DAOControllerConfig",
+         "daoKey":"billDAO",
+         "browseTitle": "Charges",
+         "createTitle": "Create a Change",
+         "createPredicate":{"class":"foam.mlang.predicate.False"},
+         "editPredicate":{"class":"foam.mlang.predicate.False"},
+         "deletePredicate":{"class":"foam.mlang.predicate.False"}
+      }
+   },
+   "parent":"hidden"
+})
+
 p({"class":"foam.nanos.menu.Menu","id":"integration.overview","label":"Overview","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"overview","daoKey":"nanopayDocumentDAO"},"parent":"integration"})
 p({"class":"foam.nanos.menu.Menu","id":"integration.uml-doc","label":"UML Documents","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"uml-doc","daoKey":"nanopayDocumentDAO"},"parent":"integration"})
 p({"class":"foam.nanos.menu.Menu","id":"documentation","label":"Documentation","handler":{"class":"foam.nanos.menu.SubMenu"},"parent":""})
-p({"class":"foam.nanos.menu.Menu","id":"documentation.google-api-export","label":"Google APIs Export","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"google-api-export","daoKey":"nanopayDocumentDAO"},"parent":"documentation"})
+
+p({
+    "class":"foam.nanos.menu.Menu",
+    "id":"documentation.google-api-export",
+    "label":"Google APIs Export",
+    "handler":{
+        "class":"foam.nanos.menu.DocumentFileMenu",
+        "docKey":"google-api-export",
+        "daoKey":"nanopayDocumentDAO"
+    },
+    "parent":"documentation"
+})
+
+p({
+    "class":"foam.nanos.menu.Menu",
+    "id":"api-doc-10-introduction",
+    "label":"Introduction",
+    "handler": {
+        "class":"foam.nanos.menu.DocumentFileMenu",
+        "docKey":"api-doc-introduction",
+        "daoKey":"nanopayDocumentDAO"
+    },
+    "parent":"documentation"
+})
+p({
+    "class":"foam.nanos.menu.Menu",
+    "id":"api-doc-20-authentication",
+    "label":"API Authentication",
+    "handler": {
+        "class":"foam.nanos.menu.DocumentFileMenu",
+        "docKey":"api-doc-authentication",
+        "daoKey":"nanopayDocumentDAO"
+    },
+    "parent":"documentation"
+})
+p({
+    "class":"foam.nanos.menu.Menu",
+    "id":"api-doc-40-onboarding-business",
+    "label":"API Business Onboarding",
+    "handler": {
+        "class":"foam.nanos.menu.DocumentFileMenu",
+        "docKey":"api-doc-onboarding-business",
+        "daoKey":"nanopayDocumentDAO"
+    },
+    "parent":"documentation"
+})
+p({
+    "class":"foam.nanos.menu.Menu",
+    "id":"api-doc-45-onboarding-flinks-business",
+    "label":"API Business Onboarding with Flinks",
+    "handler": {
+        "class":"foam.nanos.menu.DocumentFileMenu",
+        "docKey":"api-doc-onboarding-flinks-business",
+        "daoKey":"nanopayDocumentDAO"
+    },
+    "parent":"documentation"
+})
+p({
+    "class":"foam.nanos.menu.Menu",
+    "id":"api-doc-50-onboarding-personal",
+    "label":"API Personal Onboarding",
+    "handler": {
+        "class":"foam.nanos.menu.DocumentFileMenu",
+        "docKey":"api-doc-onboarding-personal",
+        "daoKey":"nanopayDocumentDAO"
+    },
+    "parent":"documentation"
+})
+p({
+    "class":"foam.nanos.menu.Menu",
+    "id":"api-doc-55-onboarding-flinks-personal",
+    "label":"API Personal Onboarding with Flinks",
+    "handler": {
+        "class":"foam.nanos.menu.DocumentFileMenu",
+        "docKey":"api-doc-onboarding-flinks-personal",
+        "daoKey":"nanopayDocumentDAO"
+    },
+    "parent":"documentation"
+})
+p({
+    "class":"foam.nanos.menu.Menu",
+    "id":"api-doc-60-capabilities",
+    "label":"API Capabilities",
+    "handler": {
+        "class":"foam.nanos.menu.DocumentFileMenu",
+        "docKey":"api-doc-capabilities",
+        "daoKey":"nanopayDocumentDAO"
+    },
+    "parent":"documentation"
+})
+p({
+    "class":"foam.nanos.menu.Menu",
+    "id":"api-doc-70-data",
+    "label":"API Data",
+    "handler": {
+        "class":"foam.nanos.menu.DocumentFileMenu",
+        "docKey":"api-doc-data",
+        "daoKey":"nanopayDocumentDAO"
+    },
+    "parent":"documentation"
+})
+p({
+    "class":"foam.nanos.menu.Menu",
+    "id":"api-doc-75-webhooks",
+    "label":"API Webhooks",
+    "handler": {
+        "class":"foam.nanos.menu.DocumentFileMenu",
+        "docKey":"api-doc-webhooks",
+        "daoKey":"nanopayDocumentDAO"
+    },
+    "parent":"documentation"
+})
+p({
+    "class":"foam.nanos.menu.Menu",
+    "id":"api-doc-99-reference",
+    "label":"Reference",
+    "handler": {
+        "class":"foam.nanos.menu.DocumentFileMenu",
+        "docKey":"api-doc-reference",
+        "daoKey":"nanopayDocumentDAO"
+    },
+    "parent":"documentation"
+})

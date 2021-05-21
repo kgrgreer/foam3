@@ -1,0 +1,232 @@
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "exchangeCredentialDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.country.br.exchange.ExchangeCredential.getOwnClassInfo())
+      .setGuid(true)
+      .setName("exchangeCredentialDAO")
+      .setJournalName("exchangeCredentials")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.country.br.exchange.ExchangeCredential\"}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"exchange",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.country.br.exchange.ExchangeClient(x);
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"exchangeService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return x.get("trevisoService");
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "brazilExchangeCustomerDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.country.br.exchange.ExchangeCustomer.getOwnClassInfo())
+      .setSeqNo(true)
+      .setName("exchangeCustomerDAO")
+      .setJournalName("brazilExchangeCustomers")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.country.br.exchange.ExchangeCustomer\"}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"openDataService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.country.br.OpenDataService(x);
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "natureCodeRateDAO",
+  "serve":true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setJournalName("natureCodeRates")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setOf(net.nanopay.country.br.NatureCodeRate.getOwnClassInfo())
+      .setAuthorize(false)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.country.br.NatureCodeRate\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "brazilVerificationService",
+  "serve": true,
+  "authenticate": false,
+  "boxClass":"net.nanopay.country.br.BrazilVerificationServiceInterfaceSkeleton",
+  "serviceClass": "net.nanopay.country.br.BrazilVerificationService",
+  "client":
+    """
+      {
+        "class":"net.nanopay.country.br.ClientBrazilVerificationService",
+        "delegate": {
+          "class":"foam.box.SessionClientBox",
+          "delegate": {
+            "class":"foam.box.HTTPBox",
+            "url":
+            "service/brazilVerificationService"
+          }
+        }
+      }
+    """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "paisDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.country.br.exchange.Pais.getOwnClassInfo())
+      .setSeqNo(true)
+      .setName("paisDAO")
+      .setJournalName("paises")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.country.br.exchange.Pais\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "moedaDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.country.br.exchange.Moeda.getOwnClassInfo())
+      .setSeqNo(true)
+      .setName("moedaDAO")
+      .setJournalName("moedas")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.country.br.exchange.Moeda\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "exchangeClientValueDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setName("exchangeClientValueDAO")
+      .setJournalName("exchangeClientValues")
+      .setOf(net.nanopay.country.br.exchange.ExchangeClientValues.getOwnClassInfo())
+      .build();
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.country.br.exchange.ExchangeClientValues"
+    }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "cpfCacheDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.country.br.CPFCache.getOwnClassInfo())
+      .setName("cpfCacheDAO")
+      .setJournalName("cpfCache")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .setDecorator(
+        new net.nanopay.country.br.ExpiredValidationDAO.Builder(x)
+          .setValidityPeriod(30)
+          .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.country.br.CPFCache.getOwnClassInfo()).build())
+        .build())
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.country.br.CPFCache\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "cnpjCacheDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.country.br.CNPJCache.getOwnClassInfo())
+      .setName("cnpjCacheDAO")
+      .setJournalName("cnpjCache")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .setDecorator(
+        new net.nanopay.country.br.ExpiredValidationDAO.Builder(x)
+          .setValidityPeriod(30)
+          .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.country.br.CNPJCache.getOwnClassInfo()).build())
+        .build())
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.country.br.CNPJCache\"}"
+})
+
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "bancoConfigDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.country.br.exchange.BancoConfig.getOwnClassInfo())
+      .setSeqNo(true)
+      .setName("bancoConfigDAO")
+      .setJournalName("bancoConfigs")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.country.br.exchange.BancoConfig\"}"
+})

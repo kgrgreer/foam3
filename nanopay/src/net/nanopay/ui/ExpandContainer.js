@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'ExpandContainer',
@@ -32,7 +49,7 @@ foam.CLASS({
     }
     ^ .boxTitle {
       opacity: 0.6;
-      font-family: 'Roboto';
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 20px;
       font-weight: 300;
       line-height: 20px;
@@ -49,7 +66,7 @@ foam.CLASS({
       border-radous: 2px;
       background-color: /*%PRIMARY3%*/ #406dea;
       border-radius: 2px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       line-height: 2.86;
       letter-spacing: 0.2px;
@@ -65,7 +82,7 @@ foam.CLASS({
       height: 40px;
       border-radius: 2px;
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-      font-family: 2px;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       line-height: 2.86;
       letter-spacing: 0.2px;

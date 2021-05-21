@@ -18,13 +18,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public abstract class DAOSecurityTest extends ApiTestBase {
 
   private static final String USER_AGENT = "Mozilla/5.0";
-  protected static final List<String> GLOBAL_IGNORES = new ArrayList<>();
+  protected static final Set<String> GLOBAL_IGNORES = new HashSet<>();
 
   public DAOSecurityTest() {
     // TODO: Review this list.
@@ -36,9 +37,14 @@ public abstract class DAOSecurityTest extends ApiTestBase {
     GLOBAL_IGNORES.add("prerequisiteCapabilityJunctionDAO");
     GLOBAL_IGNORES.add("regionDAO");
     GLOBAL_IGNORES.add("smeBusinessRegistrationDAO");
+    GLOBAL_IGNORES.add("smeUserRegistrationDAO");
     GLOBAL_IGNORES.add("themeDAO");
+    GLOBAL_IGNORES.add("themeDomainDAO");
     GLOBAL_IGNORES.add("userDAO");
     GLOBAL_IGNORES.add("userUserDAO");
+    GLOBAL_IGNORES.add("localeDAO");
+    GLOBAL_IGNORES.add("oauthProviderDAO");
+    GLOBAL_IGNORES.add("commonPasswordDAO");
   }
 
   // Helper class for holding results
@@ -61,7 +67,7 @@ public abstract class DAOSecurityTest extends ApiTestBase {
   }
 
   private boolean testDAO(X x, String dao, String request) throws ParseException, IOException, TestDAOFailed {
-    String urlString = getBaseUrl(x) + "/service/" + dao;
+    String urlString = this.getBaseUrl(x) + "/service/"+dao;
     URL url = new URL(urlString);
     HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
@@ -150,11 +156,11 @@ public abstract class DAOSecurityTest extends ApiTestBase {
       try {
         result = testDAO(x, nspec.getName(), request);
       } catch ( TestDAOFailed e ) {
-        System.out.println(e.getMsgBody());
-        System.out.println(e.getResponse());
+        System.out.println("TestDAOSecurityTest-"+nspec.getName()+" message: "+e.getMsgBody());
+        System.out.println("TestDAOSecurityTest-"+nspec.getName()+" response: "+e.getResponse());
         result = false;
       } catch ( ParseException | IOException e ) {
-        System.out.println(e.getMessage());
+        System.out.println("TestDAOSecurityTest-"+nspec.getName()+" message: "+e.getMessage());
         result = false;
       }
 

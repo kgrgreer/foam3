@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx.planner',
   name: 'DigitalBankPlanner',
@@ -8,7 +25,16 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.SummaryTransaction',
+    'net.nanopay.tx.model.TransactionStatus',
+    'static foam.mlang.MLang.CLASS_OF',
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.EQ',
+    'java.util.ArrayList',
+    'java.util.List',
+    'foam.dao.ArraySink',
+    'foam.dao.DAO',
   ],
 
   properties: [
@@ -22,26 +48,53 @@ foam.CLASS({
     {
       name: 'plan',
       javaCode: `
+        Transaction txn;
+        if ( requestTxn.getType().equals("Transaction") ) {
+          txn = new SummaryTransaction(x);
+          txn.copyFrom(requestTxn);
+        } else {
+          txn = (Transaction) requestTxn.fclone();
+        }
+
+        txn.setStatus(TransactionStatus.PENDING);
+        txn.setInitialStatus(TransactionStatus.COMPLETED);
+
         Account destinationAccount = quote.getDestinationAccount();
         foam.nanos.auth.User bankOwner = destinationAccount.findOwner(x);
-        Account digital = DigitalAccount.findDefault(x, bankOwner, requestTxn.getDestinationCurrency());
-        
-        // digital -> digital
-        Transaction digitalTxn = new Transaction();
-        digitalTxn.copyFrom(requestTxn);
-        digitalTxn.setDestinationAccount(digital.getId());
 
-        // cash out 
-        Transaction co = new Transaction();
-        co.copyFrom(requestTxn);
-        co.setSourceAccount(digital.getId());
+        DAO dao = (DAO) x.get("localAccountDAO");
 
-        Transaction[] digitals = multiQuoteTxn(x, digitalTxn);
-        Transaction[] COs = multiQuoteTxn(x, co);
-        for ( Transaction tx1 : digitals ) {
-          for ( Transaction tx2 : COs ) {
-            tx1.addNext(tx2);
-            quote.getAlternatePlans_().add(tx1);
+        List digitals = ((ArraySink) dao.where(
+          AND(
+            EQ(Account.OWNER, destinationAccount.getOwner()),
+            CLASS_OF(DigitalAccount.class)
+          )).select(new ArraySink())).getArray();
+
+        for ( Object obj : digitals ) {
+          Account digital = (DigitalAccount) obj;
+          // Split 1: Adigital -> BDigital
+          Transaction digitalTxn = new Transaction();
+          digitalTxn.copyFrom(requestTxn);
+          digitalTxn.setDestinationAccount(digital.getId());
+          Transaction[] Ds = multiQuoteTxn(x, digitalTxn, quote);
+
+          for ( Transaction tx1 : Ds ) {
+            // Split 2: BDigital -> BBank
+            Transaction co = new Transaction();
+            co.copyFrom(requestTxn);
+            co.setSourceAccount(digital.getId());
+            //Note: if tx1, does not have all the transfers for getTotal this wont work.
+            co.setAmount(tx1.getTotal(x, digital.getId()));
+            Transaction[] COs = multiQuoteTxn(x, co, quote, false);
+
+            for ( Transaction tx2 : COs ) {
+              Transaction Digital = (Transaction) removeSummaryTransaction(tx1).fclone();
+              Digital.addNext((Transaction) removeSummaryTransaction(tx2).fclone());
+              Transaction t = (Transaction) txn.fclone();
+              t.setPlanCost(tx1.getPlanCost() + tx2.getPlanCost());
+              t.addNext(Digital);
+              quote.getAlternatePlans_().add(t);
+            }
           }
         }
         return null;

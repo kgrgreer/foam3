@@ -1,0 +1,191 @@
+p({
+  "class":"foam.nanos.script.Script",
+  "id": "createTestCapabilities",
+  "description": "Create capabilities to test CRUNCH features",
+  "server": false,
+  "scheduled": false,
+  "code": `
+    print("Ok, I'm doing it now...");
+    
+    // Promise flow variable
+    var p = Promise.resolve();
+    
+    const guid = "ff1b2cbc-4e35-4f90-a76a-0ef3ff13824f";
+
+    var capabilities = [
+      {
+        "id": guid + "-100",
+        "name": "Eric's Test Capability",
+        "version": "0",
+        "enabled": true,
+        "visible": true
+      },
+      {
+        "id": guid + "-110",
+        "name": "Shallow Prerequisite",
+        "of": "foam.nanos.cron.TimeHMS",
+        "version": "0",
+        "enabled": true,
+        "visible": true
+      },
+      {
+        // TODO: Leave of until we allow having off'less wizardlets where createView !== null
+        "class": "foam.nanos.crunch.MinMaxCapability",
+        "id": guid + "-120",
+        "name": "MinMax Prerequisite",
+        "of": "foam.nanos.cron.TimeHMS",
+        "min": 2,
+        "max": 4,
+        "version": "0",
+        "enabled": true,
+        "visible": true
+      },
+      ...(['A','B','C','D','E'].map(letter => ({
+        "id": guid + "-120-" + letter,
+        "name": "MinMax Prerequisite " + letter,
+        "of": "foam.nanos.cron.TimeHMS",
+        "version": "0",
+        "enabled": true,
+        "visible": true
+      }))),
+      ...(['A','B'].map(letter => ({
+        "id": guid + "-120-A" + letter,
+        "name": "MinMax Prerequisite A" + letter,
+        "of": "foam.nanos.cron.TimeHMS",
+        "version": "0",
+        "enabled": true,
+        "visible": true
+      }))),
+      ...(['A','B'].map(letter => ({
+        "id": guid + "-120-AA" + letter,
+        "name": "MinMax Prerequisite AA" + letter,
+        "of": "foam.nanos.cron.TimeHMS",
+        "version": "0",
+        "enabled": true,
+        "visible": true
+      }))),
+      {
+        // TODO: Leave of until we allow having off'less wizardlets where createView !== null
+        "class": "foam.nanos.crunch.MinMaxCapability",
+        "id": guid + "-120-F",
+        "name": "MinMax Prerequisite F",
+        "of": "foam.nanos.cron.TimeHMS",
+        "min": 1,
+        "max": 2,
+        "version": "0",
+        "enabled": true,
+        "visible": true
+      },
+      ...(['A','B','C','D'].map(letter => ({
+        "id": guid + "-120-F" + letter,
+        "name": "MinMax Prerequisite F" + letter,
+        "of": "foam.nanos.cron.TimeHMS",
+        "version": "0",
+        "enabled": true,
+        "visible": true
+      }))),
+    ];
+    
+    var prereqs = [
+      {
+        "sourceId": guid + "-100",
+        "targetId": guid + "-110"
+      },
+      {
+        "sourceId": guid + "-100",
+        "targetId": guid + "-120"
+      },
+      ...(['A','B','C','D','E','F'].map(letter => ({
+        "sourceId": guid + "-120",
+        "targetId": guid + "-120-" + letter
+      }))),
+      ...(['A','B'].map(letter => ({
+        "sourceId": guid + "-120-A",
+        "targetId": guid + "-120-A" + letter
+      }))),
+      ...(['A','B'].map(letter => ({
+        "sourceId": guid + "-120-AA",
+        "targetId": guid + "-120-AA" + letter
+      }))),
+      ...(['A','B','C','D'].map(letter => ({
+        "sourceId": guid + "-120-F",
+        "targetId": guid + "-120-F" + letter
+      })))
+    ];
+
+    var cats = [
+      {
+        "sourceId": "app",
+        "targetId": guid + "-100"
+      },
+      {
+        "sourceId": "app",
+        "targetId": guid + "-120"
+      }
+    ];
+
+    var addThing = (dao, o) => {
+      var cls = dao.of;
+      if ( o.hasOwnProperty('class') ) {
+        cls = foam.lookup(o.class);
+        delete o.class;
+      }
+      var obj = cls.create(o);
+      return dao.put(obj);
+    }
+
+    p = capabilities.reduce((p, o) => p.then(() => {
+      return addThing(x.capabilityDAO, o);
+    }), p);
+
+    p = prereqs.reduce((p, o) => p.then(() => {
+      return addThing(x.prerequisiteCapabilityJunctionDAO, o);
+    }), p);
+
+    p = cats.reduce((p, o) => p.then(() => {
+      return addThing(x.capabilityCategoryCapabilityJunctionDAO, o);
+    }), p);
+
+    p.then(() => {
+      print("Ok, I finished the thing.");
+    }).catch(e => {
+      print("Oops wasn't expecting this: ", e);
+    });
+  `,
+	"lastModifiedBy": 1348
+})
+p({
+  "class":"foam.nanos.script.Script",
+  "id": "createNatureCodeAssociations",
+  "description": "Create prerequisite junctions for nature codes",
+  "server": true,
+  "scheduled": false,
+  "code": `
+    import foam.nanos.crunch.Capability;
+    import foam.nanos.crunch.CapabilityCapabilityJunction;
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import foam.mlang.predicate.Predicate;
+    import java.util.List;
+    import static foam.mlang.MLang.*;
+
+    DAO capabilityDAO = (DAO) x.get("capabilityDAO");
+    Predicate predicate = INSTANCE_OF(net.nanopay.country.br.NatureCode.class);
+
+    List natureCodes = (
+      (ArraySink)
+      capabilityDAO.where(predicate).select(new ArraySink())
+    ).getArray();
+
+    DAO prerequisiteDAO = (DAO) x.get("prerequisiteCapabilityJunctionDAO");
+    for ( Capability natureCode : natureCodes ) {
+      CapabilityCapabilityJunction prerequisiteJunction =
+        new CapabilityCapabilityJunction.Builder(x)
+          .setSourceId("naturecode.br.minmax.requirement")
+          .setTargetId(natureCode.getId())
+          .build();
+      prerequisiteDAO.put(prerequisiteJunction);
+    }
+  `,
+	"lastModifiedBy": 1348
+})

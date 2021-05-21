@@ -1,0 +1,384 @@
+<title>API Webhooks</title>
+
+<h1>Webhooks</h1>
+<p>
+    The Data Update Gateway (DUG) is used to configure webhooks. DUG enables users to configure webhooks to listen for operations on a given DAO, such as the userDAO or the transactionDAO.
+</p>
+
+<h4>Webhook Retry Behaviour</h4>
+<p>
+    Webhooks are sent after an operation has completed on a DAO for a given entity, so that 
+    the result of the webhook does not affect the operation itself. If the 
+    webhook call fails, it will be retried 5 times, with a 10 second interval between each 
+    retry attempt. After the 5th retry attempt, the webhook call will fail and will not be 
+    retried again.
+</p>
+
+<h2>Transaction Webhook</h2>
+<p>
+    DUG can be configured to send transaction operations through a webhook. In order to 
+    subscribe to transaction operations, create a new DUG entry and configure the DAO as
+    the summaryTransactionDAO, set the URL and the bearer token and the format, then
+    save the DUG rule. It will be active immediately and start sending transaction operations
+    to the configured URL.
+</p>
+<h3>Message Payload</h3>
+<p>
+    The payload of the transaction webhook is a serialization of the transaction entry. See the 
+    API data decription of the Transaction for field level descriptions.
+</p>
+<p>
+<code>
+{
+    "class": "net.nanopay.tx.SummaryTransaction",
+    "chainSummary": {
+        "class": "net.nanopay.tx.ChainSummary",
+        "summary": "Approval PENDING",
+        "status": 0,
+        "category": "Approval",
+        "errorCode": 0,
+        "errorInfo": "No Error"
+    },
+    "status": 5,
+    "id": "ac583446-0fff-46c1-a6ea-8672cf259425",
+    "name": "Transaction",
+    "type": "SummaryTransaction",
+    "payerId": 0,
+    "amount": 563811,
+    "sourceCurrency": "CAD",
+    "payeeId": 0,
+    "destinationAmount": 0,
+    "destinationCurrency": "CAD",
+    "invoiceId": 0,
+    "created": "2021-03-05T21:06:57.555Z",
+    "createdBy": 9103,
+    "createdByAgent": 9103,
+    "lastModified": "2021-03-05T21:06:57.549Z",
+    "lastModifiedBy": 9103,
+    "statusHistory": [
+        {
+            "class": "net.nanopay.tx.HistoricStatus",
+            "status": 5,
+            "timeStamp": "2021-03-05T21:06:57.555Z"
+        }
+    ],
+    "externalId": "666-72497",
+    "externalInvoiceId": "3234122",
+    "externalData": {},
+    "lineItems": [
+        {
+            "class": "net.nanopay.tx.FeeSummaryTransactionLineItem",
+            "totalFee": "$56.37 CAD",
+            "name": "FeeSummaryTransactionLineItem",
+            "type": "",
+            "amount": 5637,
+            "note": "",
+            "sourceAccount": "",
+            "destinationAccount": "",
+            "currency": "CAD"
+        },
+        {
+            "class": "net.nanopay.tx.ExpirySummaryTransactionLineItem",
+            "expiry": "2021-03-06T21:06:57.963Z",
+            "type": "",
+            "amount": 0,
+            "note": "",
+            "sourceAccount": "",
+            "destinationAccount": "",
+            "name": "ExpirySummaryTransactionLineItem",
+            "currency": "CAD"
+        }
+    ],
+    "spid": "intuit",
+    "destinationAccount": "c5884c70-3712-79e8-7bfb-350ff2bb0c61",
+    "sourceAccount": "076b8f0f-602d-0eef-62a2-5a1f3c394be5",
+    "associateTransaction": "",
+    "parent": "",
+    "signatures": []
+}
+</code>
+</p>
+
+<h2>User Webhook</h2>
+<p>
+  DUG can be configured to send user changes through a webhook. In order to subscribe to user changes, 
+  create a DUG entry and configure the DAO as the userDAO, set the URL and the bearer token and the format,
+  then save the DUG rule. It will be active immediately and start sending any changes to users to the configured
+  URL.
+</p>
+<h3>Message Payload</h3>
+<p>
+  The payload of the user webhook is a serialization of the user entity. See the API data description of the 
+  User for field level descriptions.
+</p>
+<code>{
+  "class": "foam.nanos.auth.User",
+  "id": 9038,
+  "enabled": true,
+  "loginEnabled": true,
+  "firstName": "John",
+  "middleName": "",
+  "lastName": "Doe",
+  "jobTitle": "Programmer",
+  "organization": "",
+  "department": "",
+  "userName": "test521742@test.com",
+  "email": "test521742@test.com",
+  "emailVerified": true,
+  "phoneNumber": "5143337777",
+  "phoneNumberVerified": false,
+  "mobileNumber": "",
+  "mobileNumberVerified": false,
+  "type": "User",
+  "birthday": "1980-08-27T15:31:54.257Z",
+  "address": {
+    "class": "foam.nanos.auth.Address",
+    "structured": false,
+    "address1": "1275 avenue des Canadiens-de-Montréal",
+    "address2": "",
+    "countryId": "CA",
+    "regionId": "QC",
+    "suite": "",
+    "streetNumber": "",
+    "streetName": "",
+    "city": "Montréal",
+    "postalCode": "H3B 5E8",
+    "latitude": 0,
+    "longitude": 0,
+    "propertyType": 0
+  },
+  "language": "en",
+  "timeZone": "",
+  "passwordLastModified": "2020-10-23T18:58:56.465Z",
+  "note": "",
+  "businessName": "",
+  "website": "",
+  "created": "2020-10-23T18:58:56.465Z",
+  "lastModified": "2020-10-23T18:59:30.784Z",
+  "lifecycleState": 1,
+  "spid": "intuit",
+  "deviceToken": "",
+  "twoFactorEnabled": false,
+  "createdBy": 1,
+  "createdByAgent": 1,
+  "lastModifiedBy": 1,
+  "theme": "",
+  "group": "sme",
+  "invited": false,
+  "invitedBy": 0,
+  "status": 0,
+  "thirdParty": false,
+  "PEPHIORelated": false,
+  "loginAttempts": 0,
+  "isPublic": true,
+  "nextLoginAttemptAllowedAt": "2020-10-23T18:58:56.378Z",
+  "integrationCode": 0,
+  "hasIntegrated": false,
+  "compliance": 0
+}
+</code>
+
+<h2>Business Webhook</h2>
+<p>
+  DUG can be configured to send business changes through a webhook. In order to subscribe to business changes, 
+  create a DUG entry and configure the DAO as the businessDAO, set the URL and the bearer token and the format,
+  then save the DUG rule. It will be active immediately and start sending any changes to businesses to the configured
+  URL.
+</p>
+<h3>Message Payload</h3>
+<p>
+  The payload of the business webhook is a serialization of the business entity. See the API data description of the 
+  Business for field level descriptions.
+</p>
+<code>{
+  "class": "net.nanopay.model.Business",
+  "businessName": "PGWL RESOURCES LTD.",
+  "operatingBusinessName": "",
+  "businessTypeId": 0,
+  "created": "2020-10-23T19:00:36.714Z",
+  "businessSectorId": 0,
+  "businessPermissionId": "pgwlresourcesltd9040",
+  "loginEnabled": false,
+  "emailVerified": true,
+  "desiredPassword": "",
+  "residenceOperated": false,
+  "businessRegistrationAuthority": "",
+  "countryOfBusinessRegistration": "",
+  "fax": "",
+  "phoneNumber": "5143337777",
+  "phoneNumberVerified": false,
+  "address": {
+    "class": "foam.nanos.auth.Address",
+    "structured": false,
+    "address1": "20 King St. W",
+    "address2": "",
+    "countryId": "CA",
+    "regionId": "NS",
+    "suite": "",
+    "streetNumber": "",
+    "streetName": "",
+    "city": "Halifax",
+    "postalCode": "M2R 1L4",
+    "latitude": 0,
+    "longitude": 0,
+    "propertyType": 0
+  },
+  "mailingAddress": {
+    "class": "foam.nanos.auth.Address",
+    "structured": false,
+    "address1": "20 King St. W",
+    "address2": "",
+    "countryId": "CA",
+    "regionId": "NS",
+    "suite": "",
+    "streetNumber": "",
+    "streetName": "",
+    "city": "Halifax",
+    "postalCode": "M2R 1L4",
+    "latitude": 0,
+    "longitude": 0,
+    "propertyType": 0
+  },
+  "businessHoursEnabled": false,
+  "onboarded": false,
+  "holdingCompany": false,
+  "sourceOfFunds": "",
+  "targetCustomers": "",
+  "taxIdentificationNumber": "",
+  "businessIdentificationCode": "",
+  "businessRegistrationNumber": "",
+  "internationalPaymentEnabled": false,
+  "publiclyTraded": false,
+  "firstName": "",
+  "lastName": "",
+  "email": "resources@pgwl.com",
+  "id": 9040,
+  "enabled": true,
+  "middleName": "",
+  "jobTitle": "",
+  "organization": "PGWL RESOURCES LTD.",
+  "department": "",
+  "userName": "",
+  "mobileNumber": "",
+  "mobileNumberVerified": false,
+  "type": "Business",
+  "language": "en",
+  "timeZone": "",
+  "note": "",
+  "website": "",
+  "lastModified": "2020-10-23T19:00:36.823Z",
+  "lifecycleState": 1,
+  "spid": "intuit",
+  "deviceToken": "",
+  "twoFactorEnabled": false,
+  "createdBy": 9039,
+  "createdByAgent": 9039,
+  "lastModifiedBy": 1,
+  "theme": "",
+  "group": "pgwlresourcesltd9040.admin",
+  "invited": false,
+  "invitedBy": 0,
+  "status": 0,
+  "thirdParty": false,
+  "PEPHIORelated": false,
+  "loginAttempts": 0,
+  "isPublic": true,
+  "nextLoginAttemptAllowedAt": "2020-10-23T19:00:36.741Z",
+  "integrationCode": 0,
+  "hasIntegrated": false,
+  "compliance": 0
+}
+</code>
+
+<h2>Asynchronous FlinksLoginId Webhooks</h2>
+<p>
+  DUG can be configured to send updates for asynchronous Flinks onboarding calls through a webhook. In order to
+  subscribe to FlinksLoginIdAsync updates, create a DUG entry and configure the DAO as the FlinksLoginIdAsyncDAO,
+  set the URL and the bearer token and the format, then save the DUG rule. It will be active immediately and start 
+  sending any changes to Flinks onboarding calls to the configured URL.
+</p>
+<h3>Message Payloads</h3>
+<p>
+  The payload of the asynchronous Flinks onboarding calls is a serialization of the FlinksLoginIdAsync entity. The
+  first payload is an asynchronous call that is in progress, while the second one is a complete call.
+</p>
+<h4>In Progress Flinks Onboarding Call</h4>
+<code> 
+{
+  "class": "net.nanopay.flinks.external.FlinksLoginIdAsync",
+  "requestId": "79a01bb5-30f4-dfd3-237a-ccf54aed7142",
+  "status": "In Progress",
+  "errorMessage": "",
+  "created": "2020-11-20T19:56:59.889Z",
+  "createdBy": 8023,
+  "createdByAgent": 8023
+}
+</code>
+<h4>Complete Flinks Onboardin Call</h4>
+<code>
+{
+  "class": "net.nanopay.flinks.external.FlinksLoginIdAsync",
+  "requestId": "79a01bb5-30f4-dfd3-237a-ccf54aed7142",
+  "status": "Completed",
+  "flinksLoginIdResult": {
+    "class": "net.nanopay.flinks.external.FlinksLoginId",
+    "type": 1,
+    "capabilityPayloads": [
+      {
+        "class": "foam.nanos.crunch.connection.CapabilityPayload",
+        "id": "crunch.onboarding.api.unlock-ca-payments-under-1000",
+        "capabilityDataObjects": {
+          "AbliiPrivacyPolicy": {
+            "class": "net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy",
+            "title": "Ablii's Privacy Policy",
+            "agreement": false,
+            "version": "1.0"
+          },
+          "AbliiTermsAndConditions": {
+            "class": "net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions",
+            "title": "Ablii's Terms and Conditions",
+            "agreement": false,
+            "version": "1.0"
+          },
+          "CABankAccountAuthAgreement": {
+            "class": "net.nanopay.crunch.acceptanceDocuments.capabilities.CABankAccountAuthAgreement",
+            "agreement": false,
+            "version": "1.0",
+            "title": ""
+          }
+        },
+        "capabilityValidationErrors": {
+          "AbliiPrivacyPolicy": "Must acknowledge the agreement.",
+          "AbliiTermsAndConditions": "Must acknowledge the agreement.",
+          "CABankAccountAuthAgreement": "Must acknowledge the agreement."
+        }
+      }
+    ],
+    "flinksOverrides": {
+      "class": "net.nanopay.flinks.external.FlinksOverrides",
+      "userOverrides": {
+        "class": "net.nanopay.flinks.external.UserOverrideData",
+        "firstName": "",
+        "lastName": "",
+        "email": "test198044@test.com",
+        "phoneNumber": ""
+      }
+    },
+    "loginId": "2ff467b7-bcde-4346-8996-08d69b30c4d8",
+    "accountId": "8cd3e122-4826-4e24-48c4-08d69b30caf5",
+    "institution": "FlinksCapital",
+    "skipLoginIdResolution": true,
+    "user": 9036,
+    "business": 0,
+    "account": 183,
+    "id": "79a01bb5-30f4-dfd3-237a-ccf54aed7142",
+    "created": "2020-11-20T19:56:59.931Z",
+    "createdBy": 8023,
+    "createdByAgent": 8023
+  },
+  "errorMessage": "",
+  "created": "2020-11-20T19:56:59.889Z",
+  "createdBy": 8023,
+  "createdByAgent": 8023
+}
+</code>

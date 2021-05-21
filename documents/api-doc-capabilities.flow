@@ -1,0 +1,306 @@
+<title>API Capabilities</title>
+
+<h1>Capabilities</h1>
+<p>
+    Functionality within the system is controlled by granting capabilities. Capabilities are individual bits of functionality
+    combined with the requirements to gain that functionality within the product. Several aspects of capabilities are described here.
+    <ul>
+      <li>Top Level Capabilities</li>
+      <li>Capability Payloads</li>
+      <li>Checking for a Capability</li>
+      <li>Requesting a Capability</li>
+    </ul>
+</p>
+
+<h2>Top Level Capabilities</h2>
+<p>
+  There are many levels of capabilities in the system. For the purposes of gaining access to a complete functionality unit,
+  instead of understanding the full hierarchy of the capabilities and how they are related, all that is necessary is to use
+  the top level capabilities which unlock the complete set of functionality. For the purposes of the API, we have 4 top level
+  capabilities:
+  <ol>
+    <li>Sending a Small(*) Amount of Money as an Individual</li>
+    <li>Sending Money as an Individual</li>
+    <li>Sending Money as a Business</li>
+    <li>Receiving Money as a Business</li>
+  </ol>
+  <small>* - 'small' amount of money are configurable but are roughly equivalent to $1000 CAD.</small>
+</p>
+<p>
+  Capabilities are referred to by using their IDs, which are globally unique identifiers (GUIDs). The following table outlines 
+  the top level capabilities and their IDs.
+
+  <table border="1px" width="100%">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Capability</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>crunch.onboarding.api.unlock-ca-payments-under-1000</td>
+        <td>API CAD Personal Payments Under 1000CAD</td>
+        <td>Unlock capability for Canadian personal payments under $1000</td>
+      </tr>
+      <tr>
+        <td>crunch.onboarding.api.unlock-ca-payments</td>
+        <td>API CAD Personal Payments</td>
+        <td>Unlock capability for Canadian personal payments</td>
+      </tr>
+      <tr>
+        <td>crunch.onboarding.api.ca-business-send-payments</td>
+        <td>API CAD Business Payments Sending</td>
+        <td>Unlock capability for sending Canadian payments as a business</td>
+      </tr>
+      <tr>
+        <td>crunch.onboarding.api.ca-business-receive-payments</td>
+        <td>API CAD Business Payments Receiving</td>
+        <td>Unlock capability for receiving Canadian payments as a business</td>
+      </tr>
+    </tbody>
+  </table>
+</p>
+
+<h2>Capability Payloads</h2>
+<p>
+    All functionality is enabled by requesting capabilities. The mechanism provided to request capabilities
+    through the API is by sending CapabilityPayload objects to the capabilityPayloadDAO in DIG. A request sent to the capabilityPayloadDAO 
+    provides all of the data, or payloads, necessary to enable a given top level capability, by providing the set of payloads associated to
+    all sub-capabilities of that top level capability in a single call, even though the data may be very different in nature. This is done
+    by providing the ID of the top level capability, and a map of payloads for all of the necessary sub-capabilities keyed by the name of 
+    those capabilities. The following table describes the structure of the CapabilityPayload object.
+</p>
+<h4><a name="capability-payload">CapabilityPayload</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="foam.nanos.crunch.connection.CapabilityPayload" />
+
+<h2>Checking for a Capability</h2>
+<p>
+  In order to determine whether a given user or business has a top level capability, it is necessary to query the capabilityPayloadDAO
+  with the ID of the capability. Performing this request will return a map of all the missing sub-capabilities within the payload map keyed
+  by the name of the sub-capability. A list of validation errors or actions is also returned in a separate map which is also keys by the name
+  of the sub-capability. The map returned by querying for the top level capability can be used in the subsequent CapabilityPayload request by
+  filling in the map with completed information to fix the validation errors.
+</p>
+<p>
+  Here is an example of a response from a query for the API CAD Personal Payments capability:
+<code>{
+    "class": "foam.nanos.crunch.connection.CapabilityPayload",
+    "id": "crunch.onboarding.api.unlock-ca-payments",
+    "capabilityDataObjects": {
+        "Ablii Privacy Policy": {
+            "class": "net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy",
+            "title": "Ablii's Privacy Policy",
+            "agreement": false,
+            "version": "1.0"
+        },
+        "Expanded User Details": {
+            "class": "net.nanopay.crunch.registration.UserDetailExpandedData",
+            "birthday": "2012-06-15T00:00:00.000Z",
+            "PEPHIORelated": false,
+            "thirdParty": false
+        }
+    },
+    "capabilityValidationErrors": {
+        "Ablii Privacy Policy": "Must acknowledge the agreement.",
+        "Expanded User Details": "Must be at least 18 years old."
+    }
+}</code>
+</p>
+
+<h2>Requesting a Capability</h2>
+<p>
+  The process of requesting a capability starts by querying for that capability with a user transaciton session or 
+  a business transaction session to see which payloads of the capability are necessary to fulfill the requirements
+  of that capability. After receiving the resposne with the payloads that are necessary to be completed, the data 
+  has to be filled in within the payloads. Finally, the payloads have to be sent back to the capabilityPayloadDAO 
+  through a DIG API call. If all of the requirements of the capability are satisfied, an empty capabilityDataObjects 
+  map will be returned from the DIG API call. If, however, some of the capabilities have not been satified, then the
+  capabilities which need to be fulfilled will be returned in the capabilityDataObjects map, along with any validation
+  erros for that capability in the capabilityValidationErrors map.
+</p>
+
+<p>
+  The following table lists the different payload classes and which top level capability that they are required to be filled
+  in to fulfill.
+</p>
+<table border="1px" width="100%">
+  <thead>
+    <tr>
+      <th>Capability</th>
+      <th>Payload Class</th>
+      <th>Sending Sm Indvdl</th>
+      <th>Sending Individual</th>
+      <th>Sending Business</th>
+      <th>Receiving Business</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Ablii Privacy Policy</td>
+      <td>AbliiPrivacyPolicy</td>
+      <td style="text-align:center">REQUIRED</td>
+      <td style="text-align:center">REQUIRED</td>
+      <td style="text-align:center">REQUIRED</td>
+      <td style="text-align:center">REQUIRED</td>
+    </tr>
+    <tr>
+      <td>Ablii Terms and Conditions</td>
+      <td>AbliiTermsAndConditions</td>
+      <td style="text-align:center">REQUIRED</td>
+      <td style="text-align:center">REQUIRED</td>
+      <td style="text-align:center">REQUIRED</td>
+      <td style="text-align:center">REQUIRED</td>
+    </tr>
+    <tr>
+      <td>CA Account Authorization Agreement</td>
+      <td>CABankAccountAuthAgreement</td>
+      <td style="text-align:center">REQUIRED</td>
+      <td style="text-align:center">REQUIRED</td>
+      <td style="text-align:center">REQUIRED</td>
+      <td style="text-align:center">REQUIRED</td>
+    </tr>
+    <tr>
+      <td>User Details</td>
+      <td>UserDetailData</td>
+      <td style="text-align:center">REQUIRED</td>
+      <td style="text-align:center">REQUIRED</td>
+      <td style="text-align:center">REQUIRED</td>
+      <td style="text-align:center">REQUIRED</td>
+    </tr>
+    <tr>
+      <td>Expanded User Details</td>
+      <td>UserDetailExpandedData</td>
+      <td></td>
+      <td style="text-align:center">REQUIRED</td>
+      <td style="text-align:center">REQUIRED</td>
+      <td style="text-align:center">REQUIRED</td>
+    </tr>
+    <tr>
+      <td>Personal Onboarding Type</td>
+      <td>PersonalOnboardingTypeData</td>
+      <td style="text-align:center">REQUIRED</td>
+      <td style="text-align:center">REQUIRED</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Business Onboarding Details</td>
+      <td>BusinessDetailData</td>
+      <td></td>
+      <td></td>
+      <td style="text-align:center">REQUIRED</td>
+      <td style="text-align:center">REQUIRED</td>
+    </tr>
+    <tr>
+      <td>Expanded Business Onboarding Details</td>
+      <td>BusinessDetailExpandedData</td>
+      <td></td>
+      <td></td>
+      <td style="text-align:center">REQUIRED</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Business Type</td>
+      <td>BusinessTypeData</td>
+      <td></td>
+      <td></td>
+      <td style="text-align:center">REQUIRED</td>
+      <td style="text-align:center">REQUIRED</td>
+    </tr>
+    <tr>
+      <td>Extra Business Type Data Not Required</td>
+      <td>IsSelectedData</td>
+      <td></td>
+      <td></td>
+      <td style="text-align:center">CONDITIONAL</td>
+      <td style="text-align:center">CONDITIONAL</td>
+    </tr>
+    <tr>
+      <td>Extra Business Type Data Required</td>
+      <td>IsSelectedData</td>
+      <td></td>
+      <td></td>
+      <td style="text-align:center">CONDITIONAL</td>
+      <td style="text-align:center">CONDITIONAL</td>
+    </tr>
+    <tr>
+      <td>Business Directors</td>
+      <td>BusinessDirectorList</td>
+      <td></td>
+      <td></td>
+      <td style="text-align:center">CONDITIONAL</td>
+      <td style="text-align:center">CONDITIONAL</td>
+    </tr>
+    <tr>
+      <td>Business Owners</td>
+      <td>BusinessOwnerList</td>
+      <td></td>
+      <td></td>
+      <td style="text-align:center">CONDITIONAL</td>
+      <td style="text-align:center">CONDITIONAL</td>
+    </tr>
+    <tr>
+      <td>Signing Officers</td>
+      <td>SigningOfficerList</td>
+      <td></td>
+      <td></td>
+      <td style="text-align:center">REQUIRED</td>
+      <td style="text-align:center">REQUIRED</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3><a name="capability-payload-classes">Capability Payload Classes</a></h3>
+
+<h4><a name="ablii-terms-and-conditions">AbliiTermsAndConditions</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions" whitelist="['title', 'agreement', 'version']" />
+
+<h4><a name="ablii-privacy-policy">AbliiPrivacyPolicy</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy" whitelist="['title', 'agreement', 'version']" />
+
+<h4><a name="user-detail-data">UserDetailData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.UserDetailData" />
+
+<h4><a name="user-detail-expanded-data">UserDetailExpandedData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.UserDetailExpandedData" />
+
+<h4><a name="personal-onboarding-type-data">PersonalOnboardingTypeData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.PersonalOnboardingTypeData" />
+
+<h4><a name="business-address-data">BusinessDetailData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.BusinessDetailData" />
+
+<h4><a name="business-detail-expanded-data">BusinessDetailExpandedData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.BusinessDetailExpandedData" />
+
+<h4><a name="suggested-user-transaction-info">SuggestedUserTransactionInfo</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo" whitelist="['annualRevenue', 'transactionPurpose', 'annualTransactionAmount', 'annualTransactionFrequency']" />
+
+<h4><a name="business-type-data">BusinessTypeData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.BusinessTypeData" />
+
+<h4><a name="is-selected-data">IsSelectedData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.IsSelectedData" />
+
+<h4><a name="business-director-list">BusinessDirectorList</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.BusinessDirectorList" />
+
+<h4><a name="business-director">BusinessDirector</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.model.BusinessDirector" whitelist="['firstName', 'lastName', 'birthday', 'nationality']" />
+
+<h4><a name="business-owner-list">BusinessOwnerList</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.BusinessOwnerList" />
+
+<h4><a name="beneficial-owner">BeneficialOwner</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.model.BeneficialOwner"  whitelist="['firstName', 'lastName', 'jobTitle', 'ownershipPercentage', 'address', 'nationality', 'PEPHIORelated']" />
+
+<h4><a name="dual-party-agreement-cad">DualPartyAgreementCAD</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.acceptanceDocuments.capabilities.DualPartyAgreementCAD" whitelist="['title', 'agreement', 'version']" />
+
+<h4><a name="signing-officer-list">SigningOfficerList</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.SigningOfficerList" />
+
+<h4><a name="signing-officer">SigningOfficer</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.model.SigningOfficer" />

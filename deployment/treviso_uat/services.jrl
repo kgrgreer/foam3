@@ -1,0 +1,94 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"exchangeCredential",
+  "lazy":false,
+  "service":
+    {
+      "class":"net.nanopay.country.br.exchange.ExchangeCredential",
+      exchangeUrl:"http://10.11.9.148:8383/Exchange.svc",
+      exchangeAgencia:51,
+      exchangeUsername:"140",
+      exchangePassword:"120434"
+    }
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"exchange",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.country.br.exchange.ExchangeClient(x);
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"trevisoCredientials",
+  "lazy":false,
+  "service":
+    {
+      "class":"net.nanopay.partner.treviso.TrevisoCredientials",
+      fepWebUsername:"trevisocc",
+      fepWebPassword:"Treviso4321#@!",
+      fepWebApi:"https://client-uat.fepweb.com.br/fepwebws/api/",
+      fepWebCode:"100001",
+      fepWebCodeName:"Treviso Matriz - Nanopay"
+    }
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"trevisoService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.treviso.TrevisoService(x);
+  """
+})
+
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"soaWebService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.soawebservices.SoaWebServiceClientMock(x);
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"fepWebService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.treviso.api.FepWebService(x);
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"openDataService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.country.br.OpenDataService(x);
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"SMTPConfig",
+  "lazy": false,
+  "service":{
+    "class":"foam.nanos.notification.email.SMTPConfig",
+    "host":"email-smtp.sa-east-1.amazonaws.com",
+    "port":"587",
+    "starttls":true,
+    "authenticate":true,
+    "username":"AKIA5CI4IJ6Y2WRQLTXY",
+    "password":"BFFyAqJoPr0ns6gUT97MOlyIk0Hhqc94OxY638p7nhX3"
+  }
+})

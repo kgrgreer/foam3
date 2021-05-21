@@ -85,17 +85,19 @@ public class KotakStatusCheckingProcessor implements ContextAgent {
         String utr = revDetails[0].getUTR();
         kotakCOTxn.setUTRNumber(utr);
 
+        String spid = kotakCOTxn.getSpid();
+
         switch ( statusCode ) {
           case "Txn_Successful":
             kotakCOTxn.setStatus(TransactionStatus.COMPLETED);
             break;
           case "Txn_Failed": // Transaction Failed or IFT For Payment Hub Error
             kotakCOTxn.setStatus(TransactionStatus.DECLINED);
-            sendNotification(x, "Kotak payment failed. TransactionId: " + kotakCOTxn.getId() + ". Reason: " + statusDesc + ".");
+            sendNotification(x, "Kotak payment failed. TransactionId: " + kotakCOTxn.getId() + ". Reason: " + statusDesc + ".", spid);
             break;
           case "Txn_Rejected": // Transaction rejected by bank due to compliance
             kotakCOTxn.setStatus(TransactionStatus.DECLINED);
-            sendNotification(x, "Kotak payment rejected. TransactionId: " + kotakCOTxn.getId() + ". Reason: " + statusDesc + ".");
+            sendNotification(x, "Kotak payment rejected. TransactionId: " + kotakCOTxn.getId() + ". Reason: " + statusDesc + ".", spid);
             break;
           case "Txn_Under Process": // Transaction is in process from banks end
             // todo: add operation for this when we designed the workflow
@@ -104,17 +106,17 @@ public class KotakStatusCheckingProcessor implements ContextAgent {
           case "Txn_Hold": // Transaction kept on hold by bank
             // todo: add operation for this when we designed the workflow
             kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Txn_Hold.").build());
-            sendNotification(x, "Kotak payment on hold. TransactionId: " + kotakCOTxn.getId() + ". Reason: " + statusDesc + ".");
+            sendNotification(x, "Kotak payment on hold. TransactionId: " + kotakCOTxn.getId() + ". Reason: " + statusDesc + ".", spid);
             break;
           case "Txn_Not_Found": // Transaction Not Found
             // todo: add operation for this when we designed the workflow
             kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Txn_Not_Found.").build());
-            sendNotification(x, "Kotak payment not found. TransactionId: " + kotakCOTxn.getId() + ". Reason: " + statusDesc + ".");
+            sendNotification(x, "Kotak payment not found. TransactionId: " + kotakCOTxn.getId() + ". Reason: " + statusDesc + ".", spid);
             break;
           case "System Error": // Some exceptions in processing
             // todo: add operation for this when we designed the workflow
             kotakCOTxn.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("System Error.").build());
-            sendNotification(x, "System error has occurred for a Kotak payment. TransactionId: " + kotakCOTxn.getId() + ". Reason: " + statusDesc + ".");
+            sendNotification(x, "System error has occurred for a Kotak payment. TransactionId: " + kotakCOTxn.getId() + ". Reason: " + statusDesc + ".", spid);
             break;
         }
       }
@@ -126,11 +128,10 @@ public class KotakStatusCheckingProcessor implements ContextAgent {
     }
   }
 
-  private void sendNotification(X x, String body) {
+  private void sendNotification(X x, String body, String spid) {
     Notification notification = new Notification.Builder(x)
       .setNotificationType(body)
-      .setGroupId("payment-ops")
-      .setEmailIsEnabled(true)
+      .setGroupId(spid + "-payment-ops")
       .build();
 
     ((DAO) x.get("localNotificationDAO")).put(notification);

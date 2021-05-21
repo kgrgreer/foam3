@@ -1,0 +1,153 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+foam.CLASS({
+  package: 'net.nanopay.partner.treviso.onboarding',
+  name: 'BRBusinessOwnershipData',
+  extends: 'net.nanopay.crunch.onboardingModels.BusinessOwnershipData',
+  documentation: `
+    This model represents the detailed information of a Business Ownership.
+    This model is the Brazil extension of the generic BusinessOwnershipData model.
+  `,
+
+  imports: [
+    'crunchService'
+  ],
+
+  javaImports: [
+    'foam.core.XLocator',
+    'foam.nanos.auth.Subject'
+  ],
+
+  messages: [
+    { name: 'ADD_MSG', message: 'shareholder' },
+    { name: 'HAVE_NO_OWNER_MSG', message: 'I declare that all shareholders have less than 25% shares each' },
+    { name: 'NO_OWNER_INFO_ERR', message: 'Shareholder information required' }
+  ],
+
+  properties: [
+    'businessId',
+    {
+      name: 'owners',
+      label: 'Shareholder details',
+      of: 'net.nanopay.partner.treviso.onboarding.BRBeneficialOwner'
+    },
+    {
+      name: 'selectionView',
+      factory: function() {
+        return 'net.nanopay.partner.treviso.onboarding.BRBeneficialOwnerSelectionView';
+      }
+    },
+    {
+      name: 'soUsersDAO',
+      // TODO: there may be a better way to do this without replacing the
+      //       entire factory here.
+      factory: function() {
+        /* ignoreWarning */
+        var x = this.__subContext__;
+        var daoSpec = { of: this.ownerClass };
+        var adao = foam.dao.ArrayDAO.create(daoSpec);
+        var pdao = foam.dao.PromisedDAO.create(daoSpec);
+
+        var capabilityValues = {};
+
+        // function in sink
+        var index = 0;
+        var sinkFn = so => {
+          var obj = this.ownerClass.create({
+            id: ++index,
+            business: this.businessId,
+            mode: 'percent'
+          }, x).fromUser(so);
+          for ( let prop of Object.keys(capabilityValues) ) {
+            obj[prop] = capabilityValues[prop];
+          }
+          adao.put(obj);
+        };
+
+        // TODO
+        // The below works only because we have one signing officer - and tbh makes more sense to be apart of the BeneficialOwner.fromUser()
+        // also the below will not work for checking the signing officer information of another user.
+        Promise.all([
+          this.crunchService.getJunction(x, 'crunch.onboarding.br.cpf'),
+          this.crunchService.getJunction(x, 'crunch.onboarding.signing-officer-information'),
+          this.crunchService.getJunction(x, 'crunch.onboarding.document.identification')
+        ]).then(values => {
+          let cpf  = values[0] ? values[0].data : '';
+          let so   = values[1] ? values[1].data : '';
+          let doc1 = values[2] ? values[2].data : '';
+
+          if ( cpf && values[0].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+            capabilityValues['cpf'] = cpf;
+          }
+          if ( so && values[1].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+            ['hasSignedContratosDeCambio', 'pepHioRelated'].forEach(
+              name => capabilityValues[name] = so[name]);
+          }
+          if ( doc1 && values[2].status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+            // Treviso removed the requirement for the address doc
+            // todo confirm the logic of duplicationg doc setting to both these requirements
+            capabilityValues['documentsOfAddress'] = doc1.documents;
+            capabilityValues['documentsOfId'] = doc1.documents;
+          }
+
+          // POPULATE DAO
+          this.signingOfficerJunctionDAO
+          .where(this.EQ(net.nanopay.model.BusinessUserJunction
+            .SOURCE_ID, this.subject.user.id))
+          .select(this.PROJECTION(net.nanopay.model.BusinessUserJunction
+            .TARGET_ID))
+          .then(sos => {
+            this.businessEmployeeDAO
+              .where(this.IN(foam.nanos.auth.User.ID, sos.projection))
+              .select({ put: sinkFn })
+              .then(() => pdao.promise.resolve(adao));
+          });
+        }).catch(err => {
+          this.notify(this.SIGNINGOFFICER_DATA_FETCHING_ERR, '', this.LogLevel.ERROR, true);
+        });
+
+        return pdao;
+      }
+    }
+  ],
+
+  methods: [
+    function installInWizardlet(w) {
+      var ownersInstalled = [];
+      var installOwner = () => {
+        this.owners.forEach(owner => {
+          if ( ownersInstalled.includes(owner) ) return;
+          ownersInstalled.push(owner);
+          owner.installInWizardlet(w);
+        })
+      }
+      installOwner();
+      this.owners$.sub(installOwner);
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'net.nanopay.partner.treviso.onboarding',
+  name: 'BRBeneficialOwnerSelectionView',
+  extends: 'net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView',
+
+  messages: [
+    { name: 'NEW_OWNER_MSG', message: 'Add Shareholder' }
+  ]
+})

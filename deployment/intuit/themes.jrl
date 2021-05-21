@@ -1,0 +1,96 @@
+p({
+  "class":"foam.nanos.theme.Theme",
+  "id":"B5BB2FC2-AD9B-404C-BED0-59E1BF583F02",
+  "name":"intuit",
+  "appName":"Intuit",
+  "description":"Intuit",
+  "navigationRootMenu":"",
+  "settingsRootMenu":"settings",
+  "logoRedirect":"businesses-support",
+  "admissionCapability": "",
+  "defaultMenu":"businesses-support",
+  "disableCurrencyChoice": true,
+  "loginImage": "images/intuit/QB-Large-Logo.svg",
+  "logo":"images/intuit/QB-Small-Logo.svg",
+  "largeLogo": "images/intuit/QB-Large-Logo.svg",
+  "headConfig": {
+    "customFavIcon" : [
+      "<link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/favicon/intuit/apple-touch-icon.png\">",
+      "<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon/intuit/favicon-32x32.png\">",
+      "<link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/favicon/intuit/favicon-16x16.png\">",
+      "<link rel=\"manifest\" href=\"/favicon/manifest.json\">",
+      "<link rel=\"mask-icon\" href=\"/favicon/safari-pinned-tab.svg\" color=\"#5bbad5\">",
+      "<link rel=\"shortcut icon\" href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAIHSURBVHgBjVM7TxtBEP727ESRYoOLECKCo4uSIolCsCJFSqQUgSapYihIlRQXaBIKHn8AkKh5FdAAFoICQYNLGgwVSFAcEk8JJEu8G2RsXAA2y8z6zjoOgxhpdbs7+818M/OdgMveR8q/SSHCGi5rJISeu5WmBMyszHZsGIdx53thb/RIIOAX/jYJ2Yw7jPw9D2S6wzQSiXwABvuEL0bbkBvw3FeOvdNddxjTK9NVHETjI2cuBGb7+aoO/ypbXLcidCEeMwaeN5Fnuia0cdvlf1iEJ49K1Jf5fSj5iDJfEJvHq0hdJB21i89Pw0VzntLa4m46qOy/39ajr3oI9RWN+POuAWfZMytoMWpf16Hza5c6Lx0t2HFONBscJqoMaoo1oGIkiKmtiWukjelf+EuL3/BbxUJNy6q9hjKMrg1i8XAetxn7+s0uVL/4nmslpK7ZzuR5Evc11R/LqAQZ583MzjT+h1rxqfTLrUD2cQnR7UnrhscpRZRa2hTdmqSZBzH8Y0JR3TvdyQO5PF4pYjmw3A1+mysBpmDpUoCYM1MZiYdnv08CGlsfylPmAClHqRmZeamtGLuzFKrXGYCBB5b6GMBnXk4wY/i/UFIORfRARmRuSJmZ7N+Qseq+mSYpx20pm0Y84ZXeqkJMCqB7bTAfhdvP0vbA004iqbQZ8aSy1GzKNqVKdtgVUyjVq1XSBwMAAAAASUVORK5CYII=\" type=\"image/png\">",
+      "<meta name=\"msapplication-config\" content=\"/favicon/browserconfig.xml\">",
+      "<meta name=\"theme-color\" content=\"#ffffff\">"
+    ]
+  },
+  "logoBackgroundColour":"transparent",
+  "topNavigation":"net.nanopay.ui.TopSideNavigation",
+  "footerView":"net.nanopay.sme.ui.FooterView",
+  "supportConfig":{
+    class:"foam.nanos.app.SupportConfig",
+    supportEmail:"intuit@nanopay.net",
+    supportPhone:"+1.647.496.1526",
+    personalSupportUser:1030,
+  },
+  "font1":"'IBM Plex Sans', sans-serif",
+  "primary1":"#000000",
+  "primary2":"#2CA01C",
+  "primary3":"#53B700",
+  "primary4":"#7FD000",
+  "primary5":"#D4D7DC",
+  "secondary1":"#000000",
+  "secondary2":"transparent",
+  "approval1":"#19402e",
+  "approval2":"#117a41",
+  "approval3":"#32bf5e",
+  "approval4":"#b8e5b3",
+  "approval5":"#e2f2dd",
+  "warning1":"#816819",
+  "warning2":"#c1ae12",
+  "warning3":"#eedc00",
+  "warning4":"#fbe88f",
+  "warning5":"#fdf8de",
+  "destructive1":"#631414",
+  "destructive2":"#a61414",
+  "destructive3":"#d9170e",
+  "destructive4":"#f79393",
+  "destructive5":"#fbedec",
+  "grey1":"#5e6061",
+  "grey2":"#9ba1a6",
+  "grey3":"#cbcfd4",
+  "grey4":"#e7eaec",
+  "grey5":"#f5f7fa",
+  "black":"#1e1f21",
+  "white":"#ffffff",
+  "inputHeight":"34px",
+  "inputVerticalPadding":"10px",
+  "inputHorizontalPadding":"8px",
+  "customCSS":"""
+    .net-nanopay-ui-Controller {
+      overflow: hidden;
+    }
+    .foam-comics-BrowserView {
+      margin-top: 30px;
+    }
+    .net-nanopay-sme-ui-FooterView {
+      background: white !important;
+      border-top: 1px solid /*%GREY4%*/ #e7eaec;
+      color: black !important;
+    }
+    .net-nanopay-sme-ui-FooterView a{
+      color: black !important;
+    }
+    .foam-u2-ActionView-primary {
+      border: none !important;
+    }
+    .top-bar-img {
+      display: none;
+    }
+  """,
+  "createdBy":1,
+  "createdByAgent":1,
+  "created":"2020-04-29T22:32:52.685Z",
+  "spid":"intuit"
+})

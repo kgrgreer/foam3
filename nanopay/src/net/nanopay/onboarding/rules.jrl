@@ -1,15 +1,123 @@
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.notification.PermissionedNotificationSettingRule",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d115","name":"Create default notification settings for user",
   "priority":100,
   "ruleGroup":"UserCreate",
   "documentation":"Creates default notification settings on user create",
   "daoKey":"localUserDAO",
   "operation":0,
+  "predicate":{
+    "class":"net.nanopay.auth.ruler.predicate.IsUserInGroups",
+    "groupNames": [ "sme" ]
+  },
   "action":{
     "class":"net.nanopay.onboarding.ruler.NotificationSettingsRule"
   },
   "after":true,
   "enabled":true,
   "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3DFE5C07-59AD-49F6-8AA2-E9E43DCCCEDC",
+  "name":"Create default notification settings for operation users",
+  "priority":100,
+  "ruleGroup":"UserCreate",
+  "documentation":"Creates default notification settings on operation user create",
+  "daoKey":"localUserDAO",
+  "operation":0,
+  "predicate":{
+    "class":"net.nanopay.auth.ruler.predicate.IsUserInGroups",
+    "groupNames": [ "fraud-ops", "payment-ops", "support" ]
+  },
+  "action":{
+    "class":"net.nanopay.onboarding.ruler.NotificationSettingsRule"
+  },
+  "after":true,
+  "enabled":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"552fcad2-050f-11eb-adc1-0242ac120002",
+  "name":"set submitby ucj",
+  "priority":800,
+  "ruleGroup":"crunchOnboarding",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "enabled":true,
+  "saveHistory":false,
+  "action":{"class":"net.nanopay.onboarding.ruler.SetSubmitByRule"},
+  "lifecycleState":1,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.mlang.predicate.Or",
+        "args":[
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+            "propName":"targetId",
+            "propValue":"crunch.onboarding.br.international-payments",
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+            "propName":"targetId",
+            "propValue":"crunch.onboarding.unlock-ca-ca-payments",
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+            "propName":"targetId",
+            "propValue":"crunch.onboarding.unlock-ca-international-payments",
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+            "propName":"targetId",
+            "propValue":"crunch.onboarding.unlock-us-payments",
+          }
+        ]
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"status",
+        "propValue":{"class":"foam.nanos.crunch.CapabilityJunctionStatus","ordinal":0},
+        "isNew":false
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{"class":"foam.nanos.crunch.CapabilityJunctionStatus","ordinal":0}
+      }
+    ]
+  }
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"cfdfdd92-3586-11eb-adc1-0242ac120002-create",
+  "name":"Add bank account through Capability",
+  "priority":900,
+  "ruleGroup":"crunchOnboarding",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "enabled":true,
+  "predicate": {
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{"class":"foam.nanos.crunch.CapabilityJunctionStatus","ordinal":1},
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsClass",
+        "propName":"data",
+        "of":"net.nanopay.bank.StrategizedBankAccount"
+      }
+    ]
+  },
+  "action":{"class":"net.nanopay.bank.ruler.CapabilityAddBankAccountRule"},
+  "lifecycleState":1,
 })

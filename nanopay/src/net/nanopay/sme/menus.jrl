@@ -1,64 +1,171 @@
 p({"class":"foam.nanos.menu.Menu","id":"sme","label":"Ablii","handler":{"class":"foam.nanos.menu.SubMenu"},"order":101,"parent":""})
-p({"class":"foam.nanos.menu.Menu","id":"sme.accountProfile.business-settings","label":"Business settings","description":"View and update business profile information and permissions","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.BusinessSettingsView"}},"order":1,parent:"sme"})
-p({"class":"foam.nanos.menu.Menu","id":"sme.accountProfile.personal-settings","label":"Personal settings","description":"Manage your password, email and notifications","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.PersonalSettingsView"}},"order":2, parent:"sme"})
-p({"class":"foam.nanos.menu.Menu","id":"sme.accountProfile.switch-business","label":"Switch Company","description":"","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.SwitchBusinessView"}},"order":3, parent:"sme"})
-p({"class":"foam.nanos.menu.Menu","id":"sme.accountProfile.signout","label":"Sign out","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.SignOutView"}},"order":100,"parent":"sme"})
+
+p({"class":"foam.nanos.menu.Menu","id":"smeSettings","label":"Settings","handler":{"class":"foam.nanos.menu.SubMenu"},"order":102,"parent":"sme"})
+p({"class":"foam.nanos.menu.Menu","id":"sme.accountProfile.business-settings","label":"Business settings","description":"View and update business profile information and permissions","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.BusinessSettingsView"}},"order":1,"parent":"smeSettings"})
+p({"class":"foam.nanos.menu.Menu","id":"sme.accountProfile.personal-settings","label":"Personal settings","description":"Manage your password, email and notifications","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.PersonalSettingsView"}},"order":2, "parent":"smeSettings"})
+p({"class":"foam.nanos.menu.Menu","id":"sme.accountProfile.switch-business","label":"Switch Company","description":"","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.SwitchBusinessView"}},"order":3, "parent":"smeSettings"})
+p({"class":"foam.nanos.menu.Menu","id":"sme.accountProfile.signout","label":"Sign out","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.SignOutView"}},"order":100,"parent":"smeSettings"})
+
+p({"class":"foam.nanos.menu.Menu","id":"smeNavigation","label":"Ablii Navigation","handler":{"class":"foam.nanos.menu.SubMenu"},"order":103,"parent":"sme"})
+p({"class":"foam.nanos.menu.Menu","id":"sme.bank.matching","label":"Bank Matching","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.accounting.ui.AccountingCallbackPage"}},"parent":"hidden"})
+p({"class":"foam.nanos.menu.Menu","id":"sme.menu.addBankAccount","label":"Add Bank Account","icon":"images/ablii/bankaccount-icon-resting.svg","activeIcon":"images/ablii/bankaccount-icon-active.svg","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.bank.ui.BankPickCurrencyView"}},"order":506,"parent":"sme"})
+
 p({"class":"foam.nanos.menu.Menu","id":"sme.quickAction.send","label":"Send payment","icon":"images/ablii/sendpayment-icon-resting.svg","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.SendRequestMoney","isPayable":true}},"order":1,"parent":"sme"})
 p({"class":"foam.nanos.menu.Menu","id":"sme.quickAction.request","label":"Request payment","icon":"images/ablii/requestpayment-icon-resting.svg","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.SendRequestMoney"}},"order":2,"parent":"sme"})
-p({"class":"foam.nanos.menu.Menu","id":"sme.main.contacts","label":"Contacts","icon":"images/ablii/contacts-icon-resting.svg","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"contactDAO","title":"Contacts","subtitle":"Here's a list of your contacts on Ablii","customDAOController":"net.nanopay.contacts.ContactController","searchMode":2,"editPredicate":{"class":"foam.mlang.predicate.False"},"createPredicate":{"class":"foam.mlang.predicate.False"},"exportEnabled":false,"createEnabled":false,"editEnabled":false},"order":503,"parent":"sme"})
-p({"class":"foam.nanos.menu.Menu","id":"sme.main.dashboard","label":"Dashboard","icon":"images/ablii/dashboard-icon-resting.svg","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.dashboard.Dashboard"}},"order":500,"parent":"sme"})
-p({"class":"foam.nanos.menu.Menu","id":"sme.main.invoices.receivables","label":"Receivables","icon":"images/ablii/receivables-icon-resting.svg","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"invoiceDAO","title":"Receivables","subtitle":"Here's a list of the funds you've requested from other people","customDAOController":"net.nanopay.invoice.ui.ReceivableController","searchMode":2,"editPredicate":{"class":"foam.mlang.predicate.False"},"createPredicate":{"class":"foam.mlang.predicate.False"},"exportEnabled":false,"exportCSVEnabled":true,"createEnabled":false,"editEnabled":false},"order":502,"parent":"sme"})
-p({"class":"foam.nanos.menu.Menu","id":"sme.main.invoices.payables","label":"Payables","icon":"images/ablii/payables-icon-resting.svg","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"invoiceDAO","title":"Payables","subtitle":"Here's a list of payments that people have requested from you","customDAOController":"net.nanopay.invoice.ui.PayableController","searchMode":2,"editPredicate":{"class":"foam.mlang.predicate.False"},"createPredicate":{"class":"foam.mlang.predicate.False"},"exportEnabled":false,"exportCSVEnabled":true,"createEnabled":false,"editEnabled":false},"order":501,"parent":"sme"})
-p({"class":"foam.nanos.menu.Menu","id":"sme.main.banking","label":"Bank accounts","icon":"images/ablii/banking-icon-resting.svg","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO","title":"Banking","customDAOController":"net.nanopay.bank.BankAccountController","searchMode":1,"editPredicate":{"class":"foam.mlang.predicate.False"},"createPredicate":{"class":"foam.mlang.predicate.False"},"exportEnabled":false,"createEnabled":false,"editEnabled":false},"order":504,"parent":"sme"})
-p({"class":"foam.nanos.menu.Menu","id":"sme.bank.matching","label":"Bank Matching","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.accounting.ui.AccountingCallbackPage"}},"parent":"hidden"})
 
 p({
-  "class": "foam.nanos.menu.Menu",
-  "id": "sme.main.invoices.payables",
-  "label": "Payables",
-  "handler": {
-    "class": "foam.nanos.menu.ViewMenu",
-    "view": {
-      "class": "net.nanopay.invoice.ui.PayableDAOBrowser"
+  "class":"foam.nanos.menu.Menu",
+  "id": "sme.main.appStore",
+  "label": "Features",
+  "activeIcon":"images/ablii/extension-active.svg",
+  "icon":"images/ablii/extension-resting.svg",
+  "handler":{
+    "class":"foam.nanos.menu.ViewMenu",
+    "view":{
+      "class":"foam.u2.crunch.CapabilityStore"
     }
-  }
-})
-
-p({
-  "class": "foam.nanos.menu.Menu",
-  "id": "sme.main.invoices.receivables",
-  "label": "Receivables",
-  "handler": {
-    "class": "foam.nanos.menu.ViewMenu",
-    "view": {
-      "class": "net.nanopay.invoice.ui.ReceivableDAOBrowser"
-    }
-  }
+  },
+  "order":499,
+  "parent":"smeNavigation"
 })
 
 p({
   "class": "foam.nanos.menu.Menu",
   "parent": "sme",
   "id": "sme.menu.toolbar",
+  "label": "Menu Tool Bar",
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
       "class": "net.nanopay.sme.ui.MenuRedirectSMEModalView",
-      "menu": "sme.main.contacts",
+      "menu": "mainmenu.contacts",
       "view": {
         "class": "foam.nanos.menu.MenuToolBar",
-        "classification": "sme.menu",
+        "classification": "submenu.contact",
         "parent": "sme",
-        "title": "Add a contact"
+        "title": "Add contact"
       }
     }
   }
 })
 
+p({"class":"foam.nanos.menu.Menu","id":"mainmenu.dashboard","label":"Dashboard","icon":"images/ablii/dashboard-icon-resting.svg","activeIcon":"images/ablii/dashboard-icon-active.svg","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.dashboard.Dashboard"}},"order":500,"parent":"smeNavigation"})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"mainmenu.contacts",
+  "label":"Contacts DAOMenu2",
+  "icon":"images/ablii/contacts-icon-resting.svg",
+  "activeIcon":"images/ablii/contacts-icon-active.svg",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"facadeContactDAO",
+
+      "of": "net.nanopay.contacts.facade.FacadeContact",
+      "browseTitle": "Contacts",
+      "createLabel":"Add contact",
+
+      "createTitle": "Create contact2",
+      "createPredicate":{"class":"foam.mlang.predicate.True"},
+      "editPredicate":{"class":"foam.mlang.predicate.True"},
+      "deletePredicate":{"class":"foam.mlang.predicate.True"},
+      "createEnabled":true,
+      "editEnabled":true,
+      "searchMode":0,
+
+      "Exemple_primaryAction": {"class":"net.nanopay.sme.ui.CreateBankAccountAction"},
+      "Exemple_viewBorder":{class:"foam.u2.borders.NullBorder"},
+
+      "createController":{class:"net.nanopay.ui.wizard.WizardController"},
+      "detailView":{class:"net.nanopay.account.ui.BankAccountWizard"},
+
+      "createControllerView":{
+        "class":"net.nanopay.sme.ui.MenuRedirectSMEModalView",
+        "menu":"mainmenu.contacts",
+        "view":{
+          "class":"foam.nanos.menu.MenuToolBar",
+          "classification":"submenu.contact",
+          "parent":"sme",
+          "title":"Add contact"
+        }
+      },
+
+      "exportEnabled":false,
+      "createEnabled":true,
+      "editEnabled":true,
+
+      "createLabel":"Add contact",
+
+      "defaultColumns":[
+        "organization",
+        "firstName",
+        "lastName",
+        "email",
+        "bankAccount.denomination",
+        "bankAccount.summary",
+        "signUpStatus"
+      ]
+    }
+  },
+  "order":503,
+  "parent":"smeNavigation"
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "mainmenu.banking",
+  "label": "Bank accounts DAOMenu2",
+  "icon": "images/ablii/bankaccount-icon-resting.svg",
+  "activeIcon": "images/ablii/bankaccount-icon-active.svg",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"tableViewBankAccountDAO",
+      "of":"net.nanopay.bank.BankAccount",
+      "browseTitle": "Bank accounts",
+
+      "browseSubtitle": "View all bank accounts",
+      "createPredicate":{"class":"foam.mlang.predicate.True"},
+      "editPredicate":{"class":"foam.mlang.predicate.True"},
+      "searchMode": 0,
+      "createTitle": "Create Bank accounts",
+
+      "deletePredicate":{class:"foam.mlang.predicate.True"},
+
+      "primaryAction": {"class":"net.nanopay.bank.AddBankAccountAction"},
+      "viewBorder":{class:"foam.u2.borders.NullBorder"},
+      "browseBorder":{class:"net.nanopay.bank.MyBankAccountsBorder"},
+
+      "createController":{class:"net.nanopay.ui.wizard.WizardController"},
+      "detailView":{class:"net.nanopay.account.ui.BankAccountWizard"},
+
+      "exportEnabled":false,
+      "createEnabled":true,
+      "editEnabled":true,
+
+      "createLabel":"Add contact",
+
+      "defaultColumns":[
+        "name",
+        "summary",
+        "flagImage",
+        "denomination",
+        "status",
+        "isDefault"
+      ]
+    }
+  },
+  "order": 504,
+  "parent": "smeNavigation"
+})
+
 p({
   "class": "foam.nanos.menu.Menu",
   "parent": "sme",
-  "id": "sme.menu.search",
+  "id": "submenu.contact.search",
   "label": "Search by Business Name",
   "icon": "images/ablii/search.png",
   "order": 1,
@@ -66,7 +173,9 @@ p({
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
       "class": "net.nanopay.ui.wizard.WizardController",
-      "model": "net.nanopay.contacts.ui.modal.BusinessNameSearch"
+      "wizardView": "net.nanopay.contacts.ui.BusinessNameSearchWizardView",
+      "model": "net.nanopay.contacts.ui.modal.BusinessNameSearch",
+      "redirectMenu": "mainmenu.contacts"
     }
   }
 })
@@ -74,7 +183,7 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "parent": "sme",
-  "id": "sme.menu.paymentcode",
+  "id": "submenu.contact.paymentcode",
   "label": "Search by Payment Code",
   "icon": "images/ablii/payment-code.png",
   "order": 2,
@@ -82,7 +191,9 @@ p({
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
       "class": "net.nanopay.ui.wizard.WizardController",
-      "model": "net.nanopay.contacts.ui.modal.PaymentCodeSearch"
+      "wizardView": "net.nanopay.contacts.ui.PaymentCodeSearchWizardView",
+      "model": "net.nanopay.contacts.ui.modal.PaymentCodeSearch",
+      "redirectMenu": "mainmenu.contacts"
     }
   }
 })
@@ -90,23 +201,7 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "parent": "sme",
-  "id": "sme.menu.create",
-  "label": "Create from Scratch",
-  "icon": "images/ablii/scratch.png",
-  "order": 3,
-  "handler": {
-    "class": "foam.nanos.menu.ViewMenu",
-    "view": {
-      "class": "net.nanopay.ui.wizard.WizardController",
-      "model": "net.nanopay.contacts.Contact"
-    }
-  }
-})
-
-p({
-  "class": "foam.nanos.menu.Menu",
-  "parent": "sme",
-  "id": "sme.menu.invitation",
+  "id": "submenu.contact.invitation",
   "label": "Invite",
   "icon": "images/ablii/mail.png",
   "order": 4,
@@ -114,7 +209,58 @@ p({
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
       "class": "net.nanopay.ui.wizard.WizardController",
-      "model": "net.nanopay.model.Invitation"
+      "wizardView": "net.nanopay.contacts.ui.InvitationWizardView",
+      "model": "net.nanopay.model.Invitation",
+      "redirectMenu": "mainmenu.contacts"
     }
   }
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "parent": "sme",
+  "id": "submenu.contact.create",
+  "label": "Create from Scratch",
+  "icon": "images/ablii/scratch.png",
+  "order": 3,
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "net.nanopay.ui.wizard.WizardController",
+      "wizardView": "net.nanopay.contacts.ui.ContactWizardView",
+      "model": "net.nanopay.contacts.Contact",
+      "redirectMenu": "mainmenu.contacts"
+    }
+  }
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "mainmenu.invoices.payables",
+  "label": "Payables",
+  "activeIcon":"images/ablii/payables-icon-active.svg",
+  "icon":"images/ablii/payables-icon-resting.svg",
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "net.nanopay.invoice.ui.PayableDAOBrowser"
+    }
+  },
+  "order":501,
+  "parent":"smeNavigation"
+})
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "mainmenu.invoices.receivables",
+  "label": "Receivables",
+  "activeIcon":"images/ablii/receivables-icon-active.svg",
+  "icon":"images/ablii/receivables-icon-resting.svg",
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "net.nanopay.invoice.ui.ReceivableDAOBrowser"
+    }
+  },
+  "order":502,
+  "parent":"smeNavigation"
 })

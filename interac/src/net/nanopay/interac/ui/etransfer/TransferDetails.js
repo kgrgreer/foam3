@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.interac.ui.etransfer',
   name: 'TransferDetails',
@@ -31,7 +48,7 @@ foam.CLASS({
           box-sizing: border-box;
           width: 320px;
           height: 66px;
-          overflow-y: scroll;
+          overflow-y: auto;
           background-color: #ffffff;
           border: solid 1px rgba(164, 179, 184, 0.5);
           resize: vertical;
@@ -46,7 +63,6 @@ foam.CLASS({
 
         ^ .foam-u2-tag-Select {
           width: 320px;
-          height: 40px;
           border-radius: 0;
 
           -webkit-appearance: none;
@@ -156,9 +172,10 @@ foam.CLASS({
         return foam.u2.view.ChoiceView.create({
           dao: X.data.bankAccountDAO.where(X.data.EQ(X.data.BankAccount.ID, 1)),
           objToChoice: function(account) {
-            return [account.id, 'Account No. ' +
-                                '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length)
-                    ]; // TODO: Grab amount and display
+            return [
+              account.id,
+              `Account No. ${X.BankAccount.mask(account.accountNumber)}`
+            ]; // TODO: Grab amount and display
           }
         });
       }
@@ -283,7 +300,7 @@ foam.CLASS({
           .start('p').add(this.NoteLabel).end()
           .tag(this.NOTES, { onKey: true })
           .start('div').addClass('confirmationContainer').enableClass('hidden', this.invoiceMode$)
-            .tag({ class: 'foam.u2.md.CheckBox', data$: this.notThirdParty$ })
+            .tag({ class: 'foam.u2.CheckBox', data$: this.notThirdParty$ })
             .start('p').addClass('confirmationLabel').add(this.NotThirdParty)
               .on('click', function() {
                 self.notThirdParty = ! self.notThirdParty;

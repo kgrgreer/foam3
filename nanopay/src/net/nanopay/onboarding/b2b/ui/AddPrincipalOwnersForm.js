@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.onboarding.b2b.ui',
   name: 'AddPrincipalOwnersForm',
@@ -8,6 +25,7 @@ foam.CLASS({
   imports: [
     'wizard',
     'countryDAO',
+    'notify',
     'regionDAO',
     'validateEmail',
     'validatePostalCode',
@@ -24,10 +42,9 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.auth.Region',
-    'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.Address',
     'foam.dao.ArrayDAO'
   ],
@@ -430,7 +447,6 @@ foam.CLASS({
     }
 
     ^ .foam-u2-TextField, ^ .foam-u2-DateView, ^ .foam-u2-tag-Select {
-      height: 40px;
 
       background-color: #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
@@ -472,7 +488,7 @@ foam.CLASS({
 
     ^ .address2Hint {
       height: 14px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       line-height: 1.17;
       letter-spacing: 0.2px;
@@ -503,7 +519,7 @@ foam.CLASS({
     { name: 'ProvinceLabel', message: 'Province' },
     { name: 'CityLabel', message: 'City' },
     { name: 'PostalCodeLabel', message: 'Postal Code' },
-    { name: 'PrincipalOwnerError', message: 'A principal owner with that name already exists.' }
+    { name: 'PrincipalOwnerError', message: 'A principal owner with that name already exists' }
   ],
 
   properties: [
@@ -616,7 +632,7 @@ foam.CLASS({
       class: 'Date',
       name: 'birthdayField',
       tableCellFormatter: function(date) {
-        this.add(date ? date.toISOString().substring(0,10) : '');
+        this.add(date ? date.toLocaleDateString(foam.locale) : '');
       }
     },
     {
@@ -767,7 +783,7 @@ foam.CLASS({
           .start('p').add(this.BasicInfoLabel).addClass('sectionTitle').style({ 'margin-top': '0' }).end()
 
           .start('div').addClass('checkBoxContainer')
-            .start({ class: 'foam.u2.md.CheckBox', label: 'Same as Admin', data$: this.isSameAsAdmin$ }).end()
+            .start({ class: 'foam.u2.CheckBox', label: 'Same as Admin', data$: this.isSameAsAdmin$ }).end()
           .end()
 
           .start('div').addClass('animationContainer')
@@ -961,7 +977,7 @@ foam.CLASS({
       this.isEditingName = false; // This will change displayedLegalName as well
       this.jobTitleField = user.jobTitle;
       this.emailAddressField = user.email;
-      this.phoneNumberField = this.extractPhoneNumber(user.phone);
+      this.phoneNumberField = this.extractPhoneNumber(user.phoneNumber);
       this.isEditingPhone = false;
       this.birthdayField = user.birthday;
 
@@ -976,8 +992,8 @@ foam.CLASS({
       this.isDisplayMode = ! editable;
     },
 
-    function extractPhoneNumber(phone) {
-      return phone.number.substring(2);
+    function extractPhoneNumber(phoneNumber) {
+      return phoneNumber.substring(2);
     },
 
     function sameAsAdmin(flag) {
@@ -992,7 +1008,7 @@ foam.CLASS({
 
         this.jobTitleField = this.viewData.user.jobTitle;
         this.emailAddressField = this.viewData.user.email;
-        this.phoneNumberField = this.extractPhoneNumber(this.viewData.user.phone);
+        this.phoneNumberField = this.extractPhoneNumber(this.viewData.user.phoneNumber);
         this.isEditingPhone = false;
       }
     },
@@ -1024,54 +1040,54 @@ foam.CLASS({
 
     function validatePrincipalOwner() {
       if ( ! this.firstNameField || ! this.lastNameField ) {
-        this.add(this.NotificationMessage.create({ message: 'First and last name fields must be populated.', type: 'error' }));
+        this.notify('First and last name fields must be populated.', '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! this.jobTitleField ) {
-        this.add(this.NotificationMessage.create({ message: 'Job title field must be populated.', type: 'error' }));
+        this.notify('Job title field must be populated.', '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! this.validateEmail(this.emailAddressField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
+        this.notify('Invalid email address.', '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! this.validatePhone(this.phoneCountryCodeField + this.phoneNumberField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
+        this.notify('Invalid phone number.', '', this.LogLevel.ERROR, true);
         return false;
       }
 
       // By pass for safari & mozilla type='date' on input support
       // Operator checking if dueDate is a date object if not, makes it so or throws notification.
       if ( isNaN(this.birthdayField) && this.birthdayField != null ) {
-        this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Birthday yyyy-mm-dd.', type: 'error' }));
+        this.notify('Please enter valid birthday yyyy-mm-dd.', '', this.LogLevel.ERROR, true);
         return;
       }
       if ( ! this.validateAge(this.birthdayField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Principal owner must be at least 16 years of age.', type: 'error' }));
+        this.notify('Principal owner must be at least 16 years of age.', '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! this.validateStreetNumber(this.streetNumberField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
+        this.notify('Invalid street number.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateAddress(this.streetNameField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
+        this.notify('Invalid street name.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( this.suiteField.length > 0 && ! this.validateAddress(this.suiteField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid address line.', type: 'error' }));
+        this.notify('Invalid address line.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateCity(this.cityField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
+        this.notify('Invalid city name.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validatePostalCode(this.postalCodeField, this.countryField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
+        this.notify('Invalid postal code.', '', this.LogLevel.ERROR, true);
         return false;
       }
 
@@ -1110,9 +1126,7 @@ foam.CLASS({
         principalOwner.middleName = this.middleNameField;
         principalOwner.lastName = this.lastNameField;
         principalOwner.email = this.emailAddressField;
-        principalOwner.phone = this.Phone.create({
-          number: this.phoneCountryCodeField + this.phoneNumberField
-        });
+        principalOwner.phoneNumber = this.phoneCountryCodeField + this.phoneNumberField;
         principalOwner.birthday = this.birthdayField;
         principalOwner.address = this.Address.create({
           streetNumber: this.streetNumberField,
@@ -1135,10 +1149,7 @@ foam.CLASS({
             return ownerFirst === formFirst && ownerLast === formLast;
           });
           if ( nameTaken ) {
-            this.add(this.NotificationMessage.create({
-              message: this.PrincipalOwnerError,
-              type: 'error'
-            }));
+            this.notify(this.PrincipalOwnerError, '', this.LogLevel.ERROR, true);
             return;
           }
         }

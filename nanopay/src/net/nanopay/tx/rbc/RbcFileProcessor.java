@@ -4,6 +4,8 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.mlang.predicate.Predicate;
+import foam.nanos.alarming.Alarm;
+import foam.nanos.alarming.AlarmReason;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.util.SafetyUtil;
@@ -35,7 +37,7 @@ public class RbcFileProcessor {
   }
 
   /**
-   * Convert EFTFile to java File and send 
+   * Convert EFTFile to java File and send
    */
   public void send(EFTFile eftFile) {
     if ( eftFile == null ) return;
@@ -43,16 +45,16 @@ public class RbcFileProcessor {
     DAO fileDAO = ((DAO) x.get("fileDAO")).inX(x);
     try {
       foam.nanos.fs.File file = (foam.nanos.fs.File) fileDAO.find(eftFile.getFile());
-      if ( file == null ) 
+      if ( file == null )
         throw new RuntimeException("RBC unable to find in file system for EFT File: " + eftFile.getFileName());
-      
+
       send(createEncryptedFile(EFTFileUtil.getFile(x, file)));
       eftFile.setStatus(EFTFileStatus.SENT);
       eftFile.setFailureReason(""); // clear just in case it faile previously
-      
+
     } catch ( Exception e ) {
-      logger.error("BMO Sending file failed: " + e.getMessage(), e);
-      BmoFormatUtil.sendEmail(x, "BMO sending file failed " + eftFile.getFileName(), e);
+      logger.error("RBC Sending file failed: " + e.getMessage(), e);
+      BmoFormatUtil.sendEmail(x, "RBC sending file failed " + eftFile.getFileName(), e);
       eftFile.setStatus(EFTFileStatus.FAILED);
       eftFile.setFailureReason(e.getMessage());
       eftFile.setRetries(eftFile.getRetries() + 1);
@@ -67,7 +69,7 @@ public class RbcFileProcessor {
    */
   protected void send(File file) {
     if ( file == null ) return;
-                    
+
     /* we will need to lock the sending process. We want to make sure only send one file at a time.*/
     SEND_LOCK.lock();
 
@@ -96,9 +98,14 @@ public class RbcFileProcessor {
       encrypted = new RBCEFTFileGenerator(x).createEncryptedFile(file);
     } catch ( Exception e ) {
       logger.error("RBC Encrypting file : " + e.getMessage(), e);
+      ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
+        .setName("RBC File Encryption")
+        .setReason(AlarmReason.MANUAL)
+        .setNote(e.getMessage())
+        .build());
       throw new RbcEftFileException("RBC Encrypting file", e);
-    } 
+    }
     return encrypted;
   }
-   
+
 }

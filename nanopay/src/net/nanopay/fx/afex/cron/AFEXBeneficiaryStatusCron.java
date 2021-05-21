@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2021] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 package net.nanopay.fx.afex.cron;
 
 import static foam.mlang.MLang.EQ;
@@ -8,10 +25,11 @@ import foam.core.ContextAgent;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import net.nanopay.fx.afex.AFEXBeneficiary;
 import net.nanopay.fx.afex.AFEXBeneficiaryComplianceTransaction;
-import net.nanopay.fx.afex.AFEXBusiness;
+import net.nanopay.fx.afex.AFEXUser;
 import net.nanopay.fx.afex.AFEXServiceProvider;
 import net.nanopay.fx.afex.FindBeneficiaryResponse;
 import net.nanopay.tx.model.Transaction;
@@ -20,7 +38,7 @@ import net.nanopay.tx.model.TransactionStatus;
 public class AFEXBeneficiaryStatusCron implements ContextAgent {
   private DAO afexBeneficiaryDAO;
   private Logger logger;
-  private DAO afexBusinessDAO;
+  private DAO afexUserDAO;
   private AFEXServiceProvider afexServiceProvider;
   private DAO txnDAO;
 
@@ -28,16 +46,17 @@ public class AFEXBeneficiaryStatusCron implements ContextAgent {
   public void execute(X x) {
     logger = (Logger) x.get("logger");
     afexBeneficiaryDAO = (DAO) x.get("afexBeneficiaryDAO");
-    afexBusinessDAO = (DAO) x.get("afexBusinessDAO");
+    afexUserDAO = (DAO) x.get("afexUserDAO");
     afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
     txnDAO = (DAO) x.get("localTransactionDAO");
 
     ArraySink sink = (ArraySink) afexBeneficiaryDAO.where(EQ(AFEXBeneficiary.STATUS, "Pending")).select(new ArraySink());
     List<AFEXBeneficiary> pendingBeneficiaries = sink.getArray();
     for (AFEXBeneficiary beneficiary : pendingBeneficiaries) {
-      AFEXBusiness afexBusiness =  (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, beneficiary.getOwner()));
-      if ( afexBusiness != null ) {
-        FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(beneficiary.getContact(),afexBusiness.getApiKey());
+      AFEXUser afexUser =  (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, beneficiary.getOwner()));
+      if ( afexUser != null ) {
+        User user = User.findUser(x, afexUser.getUser());
+        FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(beneficiary.getContact(),afexUser.getApiKey(), user.getSpid());
         if ( beneficiaryResponse != null ) {
           if ( beneficiaryResponse.getStatus().equals("Approved") ) {
             AFEXBeneficiary obj = (AFEXBeneficiary) beneficiary.fclone();

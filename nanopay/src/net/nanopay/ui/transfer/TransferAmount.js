@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.ui.transfer',
   name: 'TransferAmount',
@@ -8,13 +25,14 @@ foam.CLASS({
   imports: [
     'addCommas',
     'exchangeRate',
+    'notify',
     'type',
     'user'
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
-    'net.nanopay.ui.LoadingSpinner'
+    'foam.log.LogLevel',
+    'foam.u2.LoadingSpinner'
   ],
 
   css: `
@@ -378,9 +396,9 @@ foam.CLASS({
       this.countdownView.reset();
       this.viewData.rateLocked = false;
 
-      this.exchangeRate.getRate('CAD', 'INR', 100).then(function(response){
-        if(!response){
-          self.tag(self.NotificationMessage.create({ message: 'Unable to retrieve rate, Please try again later.', type: 'error'}));
+      this.exchangeRate.getRate('CAD', 'INR', 100).then(function(response) {
+        if ( ! response ) {
+          self.notify('Unable to retrieve rate, Please try again later.', '', self.LogLevel.WARN, true);
           return;
         }
         self.rate = response.toAmount;
@@ -388,7 +406,6 @@ foam.CLASS({
         self.startTimer();
         self.viewData.rateLocked = true;
       });
-
     },
 
     function startTimer() {

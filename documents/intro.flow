@@ -15,39 +15,25 @@ The first step in adding a new document is to add your file to the NANOPAY repos
 There are some restrictions put on the filename that your document must have.  The filename can only contain lowercase letters, uppercase letters, numbers, underscores and hyphens and with ".flow" as a file extension.  In other words it must match the regular expression "^[a-zA-Z0-9_-]+\.flow$"
 
 
-<h3>2. Add a menu entry</h3>
-
-In order to navigate to this document a menu entry must be added.  Open nanopay/src/menus and add an entry to the bottom as follows.
-
-<code>
-p({"class":"foam.nanos.menu.Menu","id":"your-document","label":"Title Of Your Document","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"your-document","daoKey":"nanopayDocumentDAO"},"parent":"hidden"})
-</code>
-
-<ul>
-<li>"id" must be a unique menu id just like any other menu entry.</li>
-<li>"docKey" should be the filename of your document without the .flow extension</li>
-<li>"daoKey" should be "nanopayDocumentDAO"  See appendix for detalis.</li>
-<li>"parent" should be the parent menu item to show this under, or "hidden" if you don't want to show it in the menus quite yet.</li>
-</ul>
-
-<h3>3. Finish your content and iterate</h3>
+<h3>2. Add your content and iterate</h3>
 After you've completed these you're ready to test and finish your document.
 
 <ol>
 <li>First launch nanos as usual use "./build.sh" in the NANOPAY respository.</li>
-<li>Navigate your browser to <a href="http://localhost:8080/#your-document">http://localhost:8080/#your-document</a> where your-document is the "id" field you set for the menu entry.</li>
+<li>Go to http://localhost:8080</li>
+<li>Navigate your document Admin -> FLOW Documents -> "Your document name"</li>
 </ol>
 
-<p>You should see your newly written document, or an error message if the document failed to parse.  Now you're ready to iterate.  Just edit the file you added (documents/your-document.flow), save, and hit refresh in the browser.  There is no need to restart nanos, it will always serve the latest version.</p>
+<p>You should see your newly written document, or an error message if the document failed to parse. To see newly edited changes you will need to rebuild.</p>
 
-<h3>4. Committing changes</h3>
+<h3>3. Committing changes</h3>
 
 Because the document is stored as regular file in the repository, you can just add it to the git repository with "$ git add documents/your-document.flow"  Commit, push, and create a PR like you would for any other code change.
 
-<h3>5. Dealing with parsing errors</h3>
+<h3>4. Dealing with parsing errors</h3>
 
 <p>The parser does its best to report where it failed parsing and what it was expecting to encounter.  The error reporting is not perfect however, the actual error may be earlier in the document then indicated.</p>
 
-<p>To understand the supported tags you can view the grammar used to parse the document in <a href="/foam2/src/foam/flow/Document.js">foam2/src/foam/flow/Document.js</a> line 30.</p>
+<p>To understand the supported tags you can view the grammar used to parse the document in <a href="/foam3/src/foam/flow/Document.js">foam3/src/foam/flow/Document.js</a> line 30.</p>
 
 <p>If you still can't determine why your document won't parse, or its missing support for your favourite HTML element, reach out to @adamvy on Slack.</p>

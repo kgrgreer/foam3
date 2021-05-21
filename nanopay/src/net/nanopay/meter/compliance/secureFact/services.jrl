@@ -1,0 +1,103 @@
+p({
+    "class":"foam.nanos.boot.NSpec",
+    "name":"securefactSIDniDAO",
+    "serve":true,
+    "serviceScript":"""
+      import net.nanopay.meter.compliance.secureFact.SecurefactResponse;
+      import net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse;
+
+      return new foam.dao.EasyDAO.Builder(x)
+        .setOf(SIDniResponse.getOwnClassInfo())
+        .setPm(true)
+        .setPipelinePm(true)
+        .setSeqNo(true)
+        .setInnerDAO(x.get("securefactResponseDAO"))
+        .setDecorator(
+          new foam.dao.FilteredDAO.Builder(x)
+            .setPredicate(foam.mlang.MLang.EQ(SecurefactResponse.TYPE, SIDniResponse.class.getSimpleName()))
+            .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(SecurefactResponse.getOwnClassInfo()).build())
+            .build()
+        )
+        .build(); 
+    """,
+    "client":"""
+        {
+            "of":"net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse"
+        }
+    """
+})
+p({
+    "class":"foam.nanos.boot.NSpec",
+    "name":"securefactLEVDAO",
+    "serve":true,
+    "serviceScript":"""
+      import net.nanopay.meter.compliance.secureFact.SecurefactResponse;
+      import net.nanopay.meter.compliance.secureFact.lev.LEVResponse;
+
+      return new foam.dao.EasyDAO.Builder(x)
+        .setOf(LEVResponse.getOwnClassInfo())
+        .setPm(true)
+        .setPipelinePm(true)
+        .setSeqNo(true)
+        .setInnerDAO(x.get("securefactResponseDAO"))
+        .setDecorator(
+          new foam.dao.FilteredDAO.Builder(x)
+            .setPredicate(foam.mlang.MLang.EQ(SecurefactResponse.TYPE, LEVResponse.class.getSimpleName()))
+            .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(SecurefactResponse.getOwnClassInfo()).build())
+            .build()
+        )
+        .build(); 
+    """,
+    "client":"""
+        {
+            "of":"net.nanopay.meter.compliance.secureFact.lev.LEVResponse"
+        }
+    """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"securefactResponseDAO",
+  "serve":true,
+  "serviceScript":"""
+    import net.nanopay.meter.compliance.secureFact.SecurefactResponse;
+
+    mdao = new foam.dao.MDAO(SecurefactResponse.getOwnClassInfo());
+    mdao.addIndex(new foam.core.PropertyInfo[] {SecurefactResponse.TYPE});
+
+    dao = new foam.dao.EasyDAO.Builder(x)
+        .setOf(SecurefactResponse.getOwnClassInfo())
+        .setPm(true)
+        .setPipelinePm(true)
+        .setSeqNo(true)
+        .setMdao(mdao)
+        .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+        .setJournalName("securefactResponses")
+        .build();
+    return dao;
+  """,
+  "client":"""
+      {
+        "of":"net.nanopay.meter.compliance.secureFact.SecurefactResponse"
+      }
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"securefactService",
+  "lazy":false,
+  "serve":true,
+  "service":{
+    "class":"net.nanopay.meter.compliance.secureFact.MockSecurefactService"
+  }
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"securefactOnboardingService",
+  "lazy":false,
+  "service":{
+    "class":"net.nanopay.meter.compliance.secureFact.ServerSecurefactOnboardingService"
+  }
+})

@@ -12,6 +12,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.Group;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
@@ -41,7 +42,7 @@ public class XeroWebAgent
     Output: Returns the Class that contains the users Tokens to properly access Xero. If using Xero for the first time will create an empty Class to load the data in
     */
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     XeroToken token = (XeroToken) tokenDAO.find(user.getId());
 
     // If the user has never tried logging in to Xero before
@@ -66,7 +67,7 @@ public class XeroWebAgent
       HttpServletResponse resp         = x.get(HttpServletResponse.class);
       String              verifier     = req.getParameter("oauth_verifier");
       DAO                 tokenDAO     = ((DAO) x.get("xeroTokenDAO")).inX(x);
-      User                user         = (User) x.get("user");
+      User                user         = ((Subject) x.get("subject")).getUser();
       DAO                 userDAO      = ((DAO) x.get("localUserDAO")).inX(x);
       XeroToken           token        = isValidToken(x);
       String              redirect     = req.getParameter("portRedirect");
@@ -127,7 +128,7 @@ public class XeroWebAgent
   }
 
   public XeroClient getClient(X x, OAuthAccessToken token) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     Group group = user.findGroup(x);
     AppConfig app = group.getAppConfig(x);
     DAO configDAO = ((DAO) x.get("xeroConfigDAO")).inX(x);

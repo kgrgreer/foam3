@@ -1,28 +1,75 @@
 p({
   "class":"foam.nanos.script.Script",
-  "id":"benchmarkTransactionCreation",
+  "id":"plannerIntuit",
   "code":`
-    import foam.nanos.bench.*;
-    import net.nanopay.bench.*;
-    lc = x.get("logLevelFilterLogger");
-    lc.setLogInfo(true);
-    lc.setLogDebug(false);
-    x = x.put("pmLogger", null);
-    b = new TransactionBenchmark();
-    b.setQuoteTransactions(false);
-    b.setDisableRules(true);
-    builder = new BenchmarkRunner.Builder(x)
-      .setInvocationCount(10000)
-      .setRunPerThread(true)
-      .setBenchmark(b);
-    runner = builder.build();
-    runner.execute(x);
+    import net.nanopay.tx.planner.GenericCIPlanner;
+    import net.nanopay.tx.planner.GenericCOPlanner;
+    import net.nanopay.tx.planner.PlannerGroup;
+    import foam.dao.ArraySink;
+    import static foam.mlang.MLang.*;
+    import foam.nanos.ruler.Rule;
+    // optionally allow for custom clearing time
+    instantComplete = false;
+    // turn off all planners
+    ruleGroupDAO_ = x.get("ruleGroupDAO");
+    ruleDAO_ = x.get("ruleDAO");
+    pgs =  ruleGroupDAO_.where(INSTANCE_OF(PlannerGroup.class)).select(new ArraySink()).getArray();
+    for ( p : pgs ) {
+      planner = p.fclone();
+      if (planner.getEnabled() == true)
+        planner.setEnabled(false);
+      if (planner.getId().equals("SandBoxPlanner"))
+        planner.setEnabled(true);
+      try {
+        ruleGroupDAO_.put(planner);
+      }
+      catch ( e ) {
+        logger_.error("failed to disable planner group:", p);
+      }
+    }
+    //add generic planners
+    print("putting planners..");
+    r1 = ruleDAO_.find(EQ(Rule.NAME, "Digital Transaction Planner")).fclone();
+    r2 = ruleDAO_.find(EQ(Rule.NAME, "Generic Cash In Planner")).fclone();
+    r3 = ruleDAO_.find(EQ(Rule.NAME, "Bank to Bank Planner")).fclone();
+    r4 = ruleDAO_.find(EQ(Rule.NAME, "Generic Cash Out Planner")).fclone();
+    r1.setRuleGroup("SandBoxPlanner");
+    r2.setRuleGroup("SandBoxPlanner");
+    r3.setRuleGroup("SandBoxPlanner");
+    r4.setRuleGroup("SandBoxPlanner");
+    r1.setEnabled(true);
+    r2.setEnabled(true);
+    r3.setEnabled(true);
+    r4.setEnabled(true);
+    if(instantComplete == false) {
+      r2.setInstantComplete(false);
+      r4.setInstantComplete(false);
+    }
+    else{
+       r2.setInstantComplete(true);
+       r4.setInstantComplete(true);
+    }
+    r3.setCreateCompliance(false);
+    ruleDAO_.put(r1);
+    ruleDAO_.put(r2);
+    ruleDAO_.put(r3);
+    ruleDAO_.put(r4);
+
+    // enable clearing time cron and rule
+    r5 = ruleDAO_.find("348d6c1a-1e3c-4da6-a1e7-f42892aed3cb").fclone();
+    r5.setEnabled(true);
+    r6 = ruleDAO_.find("68afcf0c-c718-98f8-0841-75e97a3ad16d113").fclone();
+    r6.setEnabled(false);
+    ruleDAO_.put(r5);
+    ruleDAO_.put(r6);
+    
+    cronDAO_ = x.get("cronDAO");
+    cron = cronDAO_.find("generic transaction completion cron");
+    cron2 = cronDAO_.find("generic transaction sending cron");
+    cron.setEnabled(true);
+    cron2.setEnabled(true);
+    cronDAO_.put(cron);
+    cronDAO_.put(cron2);
     print("done");
-    print(runner.getResult());
-    l = x.get("logger");
-    lc.setLogInfo(true);
-    lc.setLogDebug(true);
-    l.info(new Object[] {runner.getResult()});
-  `,
-  "output":""
+  `
 })

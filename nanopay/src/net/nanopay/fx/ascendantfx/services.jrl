@@ -1,0 +1,40 @@
+p({"class":"foam.nanos.boot.NSpec", "name":"ascendantFX",                  "serviceScript":"return new net.nanopay.fx.ascendantfx.AscendantFXService(x);"})
+p({"class":"foam.nanos.boot.NSpec", "name":"ascendantFXService",                 "lazy":false,  "serve":true, "serviceScript":"return new net.nanopay.fx.ascendantfx.AscendantFXServiceProvider(x, x.get(\"ascendantFX\"));"})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "ascendantFXUserDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.fx.ascendantfx.AscendantFXUser.getOwnClassInfo())
+      .setPm(true)
+      .setSeqNo(true)
+      .setJournalName("ascendantfxusers")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.fx.ascendantfx.AscendantFXUser\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "ascendantUserPayeeJunctionDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.fx.ascendantfx.AscendantUserPayeeJunction.getOwnClassInfo())
+      .setPm(true)
+      .setSeqNo(true)
+      .setJournalName("ascendantUserPayeeJunctions")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.fx.ascendantfx.AscendantUserPayeeJunction\"}"
+})
+
+p({"class":"foam.nanos.boot.NSpec", "name":"ascendantFXCredientials",         "lazy":false, "serve":false, "service":{"class":"net.nanopay.fx.ascendantfx.AscendantFXCredientials"}})

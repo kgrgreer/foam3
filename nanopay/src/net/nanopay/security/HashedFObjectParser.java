@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 package net.nanopay.security;
 
 import foam.lib.json.FObjectParser;
@@ -9,11 +26,11 @@ import java.nio.charset.StandardCharsets;
 public class HashedFObjectParser
   extends ProxyParser
 {
-  public HashedFObjectParser(HashingJournal hashingJournal) {
-    this(hashingJournal, null);
+  public HashedFObjectParser(final MessageDigest messageDigest, final boolean digestRequired) {
+    this(messageDigest, null, digestRequired);
   }
 
-  public HashedFObjectParser(HashingJournal hashingJournal, final Class defaultClass) {
+  public HashedFObjectParser(final MessageDigest messageDigest, final Class defaultClass, final boolean digestRequired) {
     setDelegate(new Parser() {
       private Parser parser1 = FObjectParser.create(defaultClass);
       private Parser parser2 = new Seq1(1,
@@ -33,41 +50,13 @@ public class HashedFObjectParser
 
         // parse message digest
         PStream ps2 = ps1.apply(parser2, x);
-        if ( ps2 == null && ! hashingJournal.getDigestRequired() ) {
-          return ps.setValue(ps1.value());
-        }
 
-        // check for message digest
-        if ( ps2 == null ) {
-          throw new RuntimeException("Digest not found");
-        }
-
-        // get message digest value
-        net.nanopay.security.MessageDigest messageDigest =
-          (net.nanopay.security.MessageDigest) ps2.value();
-
-        // calculate digest based on JSON message
-        byte[] digest;
-        java.security.MessageDigest md;
-        try {
-          md = java.security.MessageDigest.getInstance(hashingJournal.getAlgorithm());
-          md.update(message.getBytes(StandardCharsets.UTF_8));
-
-          // calculate digest
-          digest = md.digest();
-          if (hashingJournal.getRollDigests() && hashingJournal.getPreviousDigest() != null) {
-            md.update(hashingJournal.getPreviousDigest());
-            md.update(digest);
-            digest = md.digest();
+        if ( digestRequired ) {
+          if ( ps2 == null ) {
+            throw new RuntimeException("Digest not found");
           }
 
-          hashingJournal.setPreviousDigest(Hex.decode(messageDigest.getDigest()));
-        } catch ( Throwable t ) {
-          throw new RuntimeException("Digest verification failed");
-        }
-
-        if ( ! Hex.toHexString(digest).equals(messageDigest.getDigest()) ) {
-          throw new RuntimeException("Digest verification failed");
+          messageDigest.setPreviousDigest(messageDigest.verify(message, (MessageDigest) ps2.value()));
         }
 
         return ps.setValue(ps1.value());

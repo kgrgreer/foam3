@@ -1,11 +1,28 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.invoice.ui',
   name: 'SalesDetailView',
   extends: 'foam.u2.View',
 
   requires: [
+    'foam.log.LogLevel',
     'foam.u2.PopupView',
-    'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
@@ -16,6 +33,7 @@ foam.CLASS({
     'ctrl',
     'hideSummary',
     'invoiceDAO',
+    'notify',
     'stack',
     'user'
   ],
@@ -153,6 +171,8 @@ foam.CLASS({
       this.hideSummary = true;
       let showVoid = ( ! foam.util.equals(self.data.status, self.InvoiceStatus.VOID) ) &&
                    self.data.createdBy === self.user.id;
+      let showRejected = ( ! foam.util.equals(self.data.status, self.InvoiceStatus.REJECTED) ) &&
+                   self.data.createdBy === self.user.id;
       let showRecPay = ( ! foam.util.equals(self.data.status, self.InvoiceStatus.VOID) );
 
       this.addClass(self.myClass())
@@ -166,7 +186,7 @@ foam.CLASS({
         .endContext()
         .tag(this.EXPORT_BUTTON)
         .start('h5')
-          .add('Bill to ', this.data.payer.label())
+          .add('Bill to ', this.data.payer.toSummary())
           .callIf(this.foreignExchange, function() {
             this.start({
               class: 'foam.u2.tag.Image',
@@ -229,10 +249,7 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
-          self.add(self.NotificationMessage.create({
-            message: `${this.verbTenseMsg} ${this.data.paymentMethod.label}.`,
-            type: 'error'
-          }));
+          X.notify(`${this.verbTenseMsg} ${this.data.paymentMethod.label}.`, '', self.LogLevel.ERROR, true);
           return;
         }
         X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({
@@ -268,10 +285,7 @@ foam.CLASS({
       var self = this;
       self.voidPopUp_.remove();
       if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
-        self.add(self.NotificationMessage.create({
-          message: `${this.verbTenseMsg} ${this.data.paymentMethod.label}.`,
-          type: 'error'
-        }));
+        X.notify(`${this.verbTenseMsg} ${this.data.paymentMethod.label}.`, '', self.LogLevel.ERROR, true);
         return;
       }
       this.ctrl.add(this.Popup.create().tag({

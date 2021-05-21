@@ -1,4 +1,21 @@
 /**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+/**
  * @license
  * Copyright 2019 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -19,7 +36,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'foam.u2.ViewSpecWithJava',
+      class: 'foam.u2.ViewSpec',
       name: 'viewView',
       factory: function() {
         const { data } = this;
@@ -45,7 +62,7 @@ foam.CLASS({
   css:`
     ^ .foam-u2-ActionView-back {
       display: flex;
-      align-items: center;
+      align-self: flex-start;
     }
 
     ^actions-header .foam-u2-ActionView {
@@ -170,11 +187,21 @@ foam.CLASS({
                                   properties: [
                                     ls.lowLiquidity.THRESHOLD.clone().copyFrom({
                                       label: 'Low',
-                                      gridColumns: 4
+                                      gridColumns: 4,
+                                      view: {
+                                        class: 'foam.u2.view.CurrencyInputView',
+                                        contingentProperty: 'denomination',
+                                        shortenToPrecision: 1
+                                      }
                                     }),
                                     ls.lowLiquidity.RESET_BALANCE.clone().copyFrom({
                                       label: 'Reset balance to',
-                                      gridColumns: 4
+                                      gridColumns: 4,
+                                      view: {
+                                        class: 'foam.u2.view.CurrencyInputView',
+                                        contingentProperty: 'denomination',
+                                        shortenToPrecision: 1
+                                      }
                                     }),
                                     ls.lowLiquidity.PUSH_PULL_ACCOUNT.clone().copyFrom({
                                       label: 'With funding from',
@@ -191,11 +218,21 @@ foam.CLASS({
                                   properties: [
                                     ls.highLiquidity.THRESHOLD.clone().copyFrom({
                                       label: 'High',
-                                      gridColumns: 4
+                                      gridColumns: 4,
+                                      view: {
+                                        class: 'foam.u2.view.CurrencyInputView',
+                                        contingentProperty: 'denomination',
+                                        shortenToPrecision: 1
+                                      }
                                     }),
                                     ls.highLiquidity.RESET_BALANCE.clone().copyFrom({
                                       label: 'Reset balance to',
-                                      gridColumns: 4
+                                      gridColumns: 4,
+                                      view: {
+                                        class: 'foam.u2.view.CurrencyInputView',
+                                        contingentProperty: 'denomination',
+                                        shortenToPrecision: 1
+                                      }
                                     }),
                                     ls.highLiquidity.PUSH_PULL_ACCOUNT.clone().copyFrom({
                                       label: 'With excess to',
@@ -216,7 +253,7 @@ foam.CLASS({
                 .start(self.CardBorder).addClass(self.myClass('transactions-table'))
                   .start().add(self.TABLE_HEADER).addClass(self.myClass('table-header')).end()
                   .start(foam.comics.v2.DAOBrowserView, {
-                    config: self.DAOControllerConfig.create({ 
+                    config: self.DAOControllerConfig.create({
                       editEnabled: false,
                       deleteEnabled: false,
                       dao: self.transactionDAO

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.model',
   name: 'Invitation',
@@ -9,8 +26,8 @@ foam.CLASS({
 
   tableColumns: [
     'id',
-    'invitee',
-    'inviter',
+    'invitee.id',
+    'inviter.id',
     'timestamp',
   ],
 
@@ -19,6 +36,12 @@ foam.CLASS({
       name: 'invitation',
       title: 'Invite a contact'
     }
+  ],
+
+  messages: [
+    { name: 'ERROR_BUSINESS_PROFILE_NAME_MESSAGE', message: 'Business name required' },
+    { name: 'INVALID_EMAIL', message: 'Invalid email address' },
+    { name: 'PERMISSION_REQUIRED', message: 'Permission required' }
   ],
 
   properties: [
@@ -56,13 +79,13 @@ foam.CLASS({
       visibility: function(isContact) {
         return isContact ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       },
-      view: { class: 'foam.u2.tag.Input', placeholder: 'ex. Vandelay Industries' },
+      view: { class: 'foam.u2.tag.Input', placeholder: 'ex. Vandelay Industries', focused: true },
       validateObj: function(businessName) {
         if (
           typeof businessName !== 'string' ||
           businessName.trim().length === 0
         ) {
-          return 'Business name required';
+          return this.ERROR_BUSINESS_PROFILE_NAME_MESSAGE;
         }
       },
     },
@@ -78,7 +101,7 @@ foam.CLASS({
       validateObj: function(email) {
         var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if ( ! emailRegex.test(email) ) {
-          return 'Invalid email address.';
+          return this.INVALID_EMAIL;
         }
       }
     },
@@ -97,7 +120,7 @@ foam.CLASS({
       view: { class: 'foam.u2.CheckBox', label: `I have this contact's permission to invite them to Ablii` },
       validateObj: function(invitePermission) {
         if ( ! invitePermission ) {
-          return 'Permission required.';
+          return this.PERMISSION_REQUIRED;
         }
       }
     },
@@ -172,6 +195,18 @@ foam.CLASS({
       documentation: 'The token associated to the sent invitation',
       visibility: 'HIDDEN'
     },
+    {
+      class: 'Boolean',
+      name: 'isSigningOfficer',
+      documentation: 'Then invited user is a signing officer',
+      visibility: 'HIDDEN'
+    },
+    {
+      class: 'Boolean',
+      name: 'isRequiredResend',
+      documentation: 'The flag to resend already sent invitation (but send a new invitation)',
+      visibility: 'HIDDEN'
+    }
   ],
 
   methods: [

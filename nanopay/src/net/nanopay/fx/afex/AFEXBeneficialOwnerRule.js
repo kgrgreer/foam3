@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.fx.afex',
   name: 'AFEXBeneficialOwnerRule',
@@ -27,14 +44,14 @@ foam.CLASS({
         @Override
         public void execute(X x) {
 
-          if ( ! (obj instanceof AFEXBusiness) ) {
+          if ( ! (obj instanceof AFEXUser) ) {
             return;
           }
 
-          AFEXBusiness afexBusiness = (AFEXBusiness) obj;
-          Business business = (Business) ((DAO) x.get("localBusinessDAO")).find(EQ(Business.ID, afexBusiness.getUser()));
+          AFEXUser afexUser = (AFEXUser) obj;
+          Business business = (Business) ((DAO) x.get("localBusinessDAO")).find(EQ(Business.ID, afexUser.getUser()));
           if ( business != null ) {
-            ((AFEXServiceProvider) x.get("afexServiceProvider")).pushBeneficialOwners(business, afexBusiness.getApiKey());
+            ((AFEXServiceProvider) x.get("afexServiceProvider")).pushBeneficialOwners(business, afexUser.getApiKey());
           }
         }
       }, "Rule to push Business Beneficial Owner to AFEX after AFEX Business is created.");

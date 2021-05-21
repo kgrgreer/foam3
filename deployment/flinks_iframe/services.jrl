@@ -1,0 +1,91 @@
+// Keep this in sync with the http service in nanopay/src/service.jrl, except for the CONTENT_SECURITY_POLICY
+//   which requires the https://nanopay-iframe.private.fin.ag URLs to allow the FlinkTest.html page to work
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "http",
+  "lazy": false,
+  "service": {
+    "class": "foam.nanos.jetty.HttpServer",
+    "port": 8080,
+    "forwardedForProxyWhitelist": [],
+    "welcomeFiles": ["welcome"],
+    "hostDomains": ["ablii", "localhost", "merchantpos"],
+    "servletMappings": [{
+      "class": "foam.nanos.servlet.ServletMapping",
+      "servletObject": {
+        "class": "foam.nanos.servlet.VirtualHostRoutingServlet",
+        "customHostMapping": {
+          "merchantpos": "/nanopay/src/net/nanopay/merchant/index.html"
+        },
+        "defaultHost": "localhost"
+      },
+      "pathSpec": "/welcome"
+    }, {
+      "class": "foam.nanos.servlet.ServletMapping",
+      "className": "foam.nanos.http.NanoRouter",
+      "pathSpec": "/service/*"
+    }, {
+      "class": "foam.nanos.servlet.ServletMapping",
+      "className": "foam.nanos.servlet.ImageServlet",
+      "pathSpec": "/images/*",
+      "initParameters": {
+        "paths": "images:merchant/src/net/nanopay/merchant/images:nanopay/src/net/nanopay/images:foam3/src/foam/support/images:foam3/src/foam/u2/images"
+      }
+    }, {
+      "class": "foam.nanos.servlet.ServletMapping",
+      "className": "org.eclipse.jetty.servlet.DefaultServlet",
+      "pathSpec": "/*",
+      "initParameters": {
+        "pathInfoOnly": "true",
+        "welcomeServlets": "true",
+        "dirAllowed": "false"
+      }
+    }],
+    "errorMappings": [{
+      "class": "foam.nanos.servlet.ErrorPageMapping",
+      "errorCode": 404,
+      "location": "/nanopay/src/net/nanopay/ui/errorPage/errorPage.html"
+    }, {
+      "class": "foam.nanos.servlet.ErrorPageMapping",
+      "exceptionType": "javax.ws.rs.NotAuthorizedException",
+      "location": "/nanopay/src/net/nanopay/ui/unauthorizedAccess/unauthorizedAccess.html"
+    }, {
+      "class": "foam.nanos.servlet.ErrorPageMapping",
+      "exceptionType": "java.lang.Throwable",
+      "location": "/nanopay/src/net/nanopay/ui/errorPage/errorPage.html"
+    }],
+    "filterMappings": [{
+      "class": "foam.nanos.servlet.FilterMapping",
+      "filterClass": "net.nanopay.security.csp.CSPFilter",
+      "pathSpec": "/*",
+      "initParameters": {
+        "CONTENT_SECURITY_POLICY": """
+          default-src 'none';
+          child-src 'self' https://cdn.plaid.com/link/ https://nanopay-iframe.private.fin.ag https://flinks.io nanopay.net nanopay.net data: chrome-extension-resource:;
+          connect-src 'self' data: blob: filesystem: ws: http://localhost:*/service/;
+          font-src 'self' https://fonts.gstatic.com data: chrome-extension-resource:;
+          img-src 'self' data: blob: filesystem:;
+          manifest-src 'self';
+          media-src * data: blob: filesystem:;
+          object-src 'self' data: blob: filesystem:;
+          prefetch-src 'self' https://cdn.plaid.com/link/;
+          report-uri /service/CSPReportWebAgent;
+          script-src 'self' https://nanopay-iframe.private.fin.ag https://cdn.plaid.com/link/v2/stable/link-initialize.js 'unsafe-eval' 'sha256-HY1JzEwuxkis4xx0ggY23gbYY/MCEAE1T6+OQnWS2vA=' 'sha256-NiNrLgJ8wbIXIi5saiR3XTd1Mxm4k0nju66GJsw4b9U=' 'sha256-FLYDXBkz4oo/H5jEfYXqAGYUwERY44OO1yznaMCdMiU=' 'sha256-G3UfiJBy6rwOk3glkBQuQDFA7IoCtiOT56gTh+IfNF0=';
+          style-src 'self' https://nanopay-iframe.private.fin.ag https://fonts.googleapis.com/css https://fonts.googleapis.com/icon data: chrome-extension-resource: 'unsafe-inline';
+          worker-src 'self';
+          """
+      }
+    }]
+  }
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"flinksCredentials",
+  "lazy":false,
+  "service":{
+    "class":"net.nanopay.flinks.model.FlinksCredentials",
+    "url": "https://nanopay-api.private.fin.ag/v3",
+    "customerId": "efee890f-e706-4d1e-b18e-a24e89aafb08"
+  }
+})

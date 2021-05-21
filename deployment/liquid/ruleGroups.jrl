@@ -2,87 +2,67 @@ p({
   "class":"foam.nanos.ruler.RuleGroup",
   "id":"txlimits",
   "predicate":{
-    "class":"foam.mlang.predicate.And",
-    "args":[
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName":"origin",
-        "propValue":{
-          "class":"net.nanopay.tx.OriginatingSource",
-          "ordinal":0
-        }
-      },
-      {
-        "class":"foam.mlang.predicate.Not",
-        "arg1":{
-          "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-          "propName":"lifecycleState",
-          "propValue":{
-            "class":"foam.nanos.auth.LifecycleState",
-            "ordinal":2
-          }
-        }
+    "class":"foam.mlang.predicate.Not",
+    "arg1":{
+      "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+      "propName":"lifecycleState",
+      "propValue":{
+        "class":"foam.nanos.auth.LifecycleState",
+        "ordinal":2
       }
-    ]
+    }
   }
 })
 p({
   "class":"foam.nanos.ruler.RuleGroup",
   "id":"restrictAccountsRules",
   "predicate":{
-    "class":"foam.mlang.predicate.And",
-    "args":[{
+    "class": "foam.mlang.predicate.Not",
+    "arg1":{
       "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-      "propName":"origin",
+      "propName":"lifecycleState",
       "propValue":{
-        "class":"net.nanopay.tx.OriginatingSource",
-        "ordinal":0
+        "class":"foam.nanos.auth.LifecycleState","ordinal":2
       }
-    },
-    {
-      "class": "foam.mlang.predicate.Not",
-      "arg1":{
-        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName":"lifecycleState",
-        "propValue":{
-          "class":"foam.nanos.auth.LifecycleState","ordinal":2
-        }
-      }
-    }]
+    }
   }
 })
 p({
-  "class":"foam.nanos.ruler.RuleGroup",
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"genericPlanner",
   "enabled":true
 })
 p({
-  "class":"foam.nanos.ruler.RuleGroup",
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"AlternaPlanner",
   "enabled":false
 })
 p({
-  "class":"foam.nanos.ruler.RuleGroup",
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"BMOPlanner",
   "enabled":false
 })
 p({
-  "class":"foam.nanos.ruler.RuleGroup",
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"RBCPlanner",
   "enabled":false
 })
 p({
-  "class":"foam.nanos.ruler.RuleGroup",
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"SecurityPlanner",
   "enabled":true
 })
 p({
-  "class":"foam.nanos.ruler.RuleGroup",
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"transactionPlanner",
   "enabled":false
 })
 p({
-  "class":"foam.nanos.ruler.RuleGroup",
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"FeeEngine",
   "enabled":false
 })
+
+// disable crunch rules
+p({"class":"foam.nanos.ruler.RuleGroup","id":"crunch","enabled":false})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"ucjDAO","enabled":false})

@@ -1,0 +1,20 @@
+p({
+  class:"foam.nanos.auth.Group",
+  id:"treviso-admin",
+  url:"http://treviso:8080"
+})
+p({
+  class:"foam.nanos.auth.Group",
+  id:"treviso-fraud-ops",
+  url:"http://treviso:8080"
+})
+p({
+  class:"foam.nanos.auth.Group",
+  id:"treviso-payment-ops",
+  url:"http://treviso:8080"
+})
+p({
+  class:"foam.nanos.auth.Group",
+  id:"treviso-support",
+  url:"http://treviso:8080"
+})

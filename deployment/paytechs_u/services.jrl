@@ -1,0 +1,35 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"flinksCredentials",
+  "lazy":false,
+  "service":{
+    "class":"net.nanopay.flinks.model.FlinksCredentials",
+    "url": "https://nanopay-api.private.fin.ag/v3",
+    "customerId": "efee890f-e706-4d1e-b18e-a24e89aafb08"
+  }
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"appConfig",
+  "description":"",
+  "lazy":false,
+  "parameters":false,
+  "pm":true,
+  "service": {
+    "class":"foam.nanos.app.AppConfig",
+    "privacy":"Privacy Policy",
+    "privacyUrl":"/service/file/d6a408c6-587d-b00f-6e04-6a4b933f7495",
+    "copyright":"Copyright © 2017-@{currentYear} nanopay Corp. All rights reserved.",
+    "urlLabel":"Powered by nanopay",
+    "termsAndCondLabel":"Terms and Conditions",
+    "termsAndCondLink":"/service/file/1f406b9b-bde4-58ff-f171-657627581f61",
+    "mode":2,
+    "appLink":"",
+    "playLink":"https://play.google.com/store?hl=en",
+    "enableInternationalPayment":true,
+    "url":"https://paytechs.nanopay.net",
+    "forceHttps":true,
+    "version":"production"
+  }
+})

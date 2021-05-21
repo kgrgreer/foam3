@@ -1,4 +1,3 @@
-p({"class":"net.nanopay.tx.PurposeCode","group":1,"code":"P1099","description":"Trade transaction","send":false})
 //p({"class":"net.nanopay.tx.PurposeCode","group":1,"code":"S0001","description":"Indian investment abroad - in equity capital (shares)","send":true})
 //p({"class":"net.nanopay.tx.PurposeCode","group":1,"code":"S0002","description":"Indian investment abroad - in debt securities","send":true})
 //p({"class":"net.nanopay.tx.PurposeCode","group":1,"code":"S0003","description":"Indian investment abroad - in branches & wholly owned subsidiaries","send":true})
@@ -109,7 +108,6 @@ p({"class":"net.nanopay.tx.PurposeCode","group":1,"code":"P1099","description":"
 //p({"class":"net.nanopay.tx.PurposeCode","group":1,"code":"P0008","description":"Foreign direct investment in India in real estate","send":false})
 //p({"class":"net.nanopay.tx.PurposeCode","group":1,"code":"P0009","description":"Foreign portfolio investment in India in equity shares","send":false})
 //p({"class":"net.nanopay.tx.PurposeCode","group":1,"code":"P0010","description":"Foreign portfolio investment in India in debt securities including debt funds","send":false})
-p({"class":"net.nanopay.tx.PurposeCode","group":1,"code":"P0011","description":"Repayment of loans","send":false})
 //p({"class":"net.nanopay.tx.PurposeCode","group":1,"code":"P0012","description":"RLong & medium term loans with original maturity above one year from Non-Residents to India","send":false})
 //p({"class":"net.nanopay.tx.PurposeCode","group":1,"code":"P0013","description":"Short term loans with original maturity upto one year from Non-Residents to India","send":false})
 //p({"class":"net.nanopay.tx.PurposeCode","group":1,"code":"P0014","description":"Receipts o/a Non-Resident deposits (FCNRB / NRERA etc) ADs should report these even if funds are not \“swapped\” into Rupees","send":false})
@@ -119,7 +117,6 @@ p({"class":"net.nanopay.tx.PurposeCode","group":1,"code":"P0011","description":"
 //p({"class":"net.nanopay.tx.PurposeCode","group":1,"code":"P0018","description":"Other capital receipts not included elsewhere","send":false})
 //p({"class":"net.nanopay.tx.PurposeCode","group":2,"code":"P0101","description":"Value of export bills negotiated / purchased / discounted etc (covered under GR/PP/SOFTEX/EC copy of shipping bills etc)","send":false})
 //p({"class":"net.nanopay.tx.PurposeCode","group":2,"code":"P0102","description":"Realisation of export bills (in respect of goods) sent on collection (full invoice value)","send":false})
-p({"class":"net.nanopay.tx.PurposeCode","group":2,"code":"P0103","description":"Advance against export ","send":false})
 //p({"class":"net.nanopay.tx.PurposeCode","group":2,"code":"P0104","description":"Receipts against export of goods not covered by the GR/PP/SOFTEX/EC copy of shipping bill etc","send":false})
 //p({"class":"net.nanopay.tx.PurposeCode","group":2,"code":"P0105","description":"Export bills (in respect of goods) sent on collection","send":false})
 //p({"class":"net.nanopay.tx.PurposeCode","group":2,"code":"P0106","description":"Conversion of overdue export bills from NPD to collection mode","send":false})
@@ -188,6 +185,22 @@ p({"class":"net.nanopay.tx.PurposeCode","group":2,"code":"P0103","description":"
 //p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"P1502","description":"Reversal of wrong entries, refunds of amount remitted for non-imports","send":false})
 //p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"P1503","description":"Remittances (receipts) by residents under international bidding process","send":false})
 
-p({"class":"net.nanopay.tx.PurposeCode","group":4,"code":"P0306","description":"Payment For Travel","send":false})
-p({"class":"net.nanopay.tx.PurposeCode","group":4,"code":"P1306","description":"Tax Payments In India","send":false})
-p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"Other","description":"Other","send":false})
+// Kotak
+p({"class":"net.nanopay.tx.PurposeCode","group":1,"code":"P0011","description":"Repayment of loans","send":false, "country":"IN"})
+p({"class":"net.nanopay.tx.PurposeCode","group":1,"code":"P1099","description":"Trade transaction","send":false, "country":"IN"})
+p({"class":"net.nanopay.tx.PurposeCode","group":2,"code":"P0103","description":"Advance against export","send":false, "country":"IN"})
+p({"class":"net.nanopay.tx.PurposeCode","group":4,"code":"P0306","description":"Payment For Travel","send":false, "country":"IN"})
+p({"class":"net.nanopay.tx.PurposeCode","group":4,"code":"P1306","description":"Tax Payments In India","send":false, "country":"IN"})
+p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"Other","description":"Other","send":false, "country":"IN"})
+
+// Treviso
+p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"37004","description":"Maintenance","send":false, "country":"BR"})
+p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"67500","description":"Availability","send":false, "country":"BR"})
+p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"47142","description":"Consultoria","send":false, "country":"BR"})
+
+// AFEXBeneficiary
+p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"CCDNDR","description":"Charity Donation","send":false, "country":"CN"})
+p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"CCTFDR","description":"Send money to own account, family or friend","send":false, "country":"CN"})
+p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"CSTRDR","description":"Send money to pay a utility bill","send":false, "country":"CN"})
+p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"CGODDR","description":"Send money to pay a vendor","send":false, "country":"CN"})
+p({"class":"net.nanopay.tx.PurposeCode","group":16,"code":"COCADR","description":"Other","send":false, "country":"CN", "order":100})

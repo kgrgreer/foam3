@@ -1,0 +1,30 @@
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3453913a-5e5b-4812-b4ec-6dff678ed9cb",
+  "name":"Exchange Limit Transaction",
+  "priority":100,
+  "ruleGroup":"Payment",
+  "documentation":"Check if the amount exceeds limit before proceeding with payment",
+  "daoKey":"localTransactionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.country.br.tx.ExchangeLimitTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{"class":"net.nanopay.tx.model.TransactionStatus","ordinal":0}
+      }
+    ]
+  },
+  "asyncAction":{"class":"net.nanopay.country.br.tx.ruler.ExchangeLimitTransactionRule"},
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})
+

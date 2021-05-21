@@ -1,0 +1,33 @@
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "rules.txfeerules",
+  "label": "Transaction Fees",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "daoKey": "ruleDAO",
+      "predicate": {
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.tx.fee.TransactionFeeRule"
+      },
+      "defaultColumns": [
+        "id",
+        "name",
+        "enabled",
+        "predicate"
+      ],
+      "of": "net.nanopay.tx.fee.TransactionFeeRule",
+      "browseTitle": "Transaction Fees",
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "rule"
+        }
+      }
+    }
+  },
+  "parent": "rules"
+})

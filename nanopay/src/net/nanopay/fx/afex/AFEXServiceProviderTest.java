@@ -2,6 +2,9 @@ package net.nanopay.fx.afex;
 
 import static foam.mlang.MLang.EQ;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +16,6 @@ import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.Permission;
-import foam.nanos.auth.Phone;
 import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
@@ -29,6 +31,10 @@ import net.nanopay.model.Business;
 import net.nanopay.model.PersonalIdentification;
 import net.nanopay.payment.Institution;
 import net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo;
+import net.nanopay.sme.onboarding.model.AnnualRevenueEnum;
+import net.nanopay.sme.onboarding.model.TransactionsPurposeEnum;
+import net.nanopay.sme.onboarding.model.AnnualTxnFrequencyEnum;
+import foam.nanos.auth.LanguageId;
 
 public class AFEXServiceProviderTest
     extends foam.nanos.test.Test {
@@ -40,11 +46,12 @@ public class AFEXServiceProviderTest
   protected DAO agentJunctionDAO;
   protected DAO businessDAO;
   protected DAO regionDAO;
+  protected DAO smeUserRegistrationDAO;
   protected DAO smeBusinessRegistrationDAO;
-  protected DAO afexBusinessDAO;
+  protected DAO afexUserDAO;
   protected User user1 ;
   protected Business business ;
-  protected AFEXBusiness afexBusiness;
+  protected AFEXUser afexUser;
   protected User user2;
   protected BankAccount user1CABankAccount;
   protected BankAccount user2USBankAccount;
@@ -61,8 +68,12 @@ public class AFEXServiceProviderTest
     agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
     businessDAO = (DAO) x.get("businessDAO");
     regionDAO = (DAO) x.get("regionDAO");
-    smeBusinessRegistrationDAO = (DAO) x.get("smeBusinessRegistrationDAO");
-    afexBusinessDAO = (DAO) x.get("afexBusinessDAO");
+    smeUserRegistrationDAO = (DAO) x.get("smeUserRegistrationDAO");
+    // smeBusinessRegistrationDAO not longer used. To avoid complete
+    // capability onboarding just to test AFEX, the relavant parts
+    // of smeBusinessRegistrationDAO are used here.
+    smeBusinessRegistrationDAO = new net.nanopay.onboarding.NewUserCreateBusinessDAO.Builder(x).setDelegate((DAO) x.get("localUserDAO")).build();
+    afexUserDAO = (DAO) x.get("afexUserDAO");
     this.x = x;
 
     afexService = new AFEXServiceMock(x);
@@ -96,23 +107,27 @@ public class AFEXServiceProviderTest
     business = null;
     if (user1 == null) {
       user1 = new User();
-      user1.setFirstName("AFEXTestPayer");
-      user1.setLastName("AFEXTwo");
+      user1.setUserName("afexpayee");
       user1.setEmail("afexpayee@nanopay.net");
       user1.setDesiredPassword("AFXTestPassword123$");
+      user1.setLanguage(new LanguageId.Builder(null).setCode("en").build());
+      user1 = (User) smeUserRegistrationDAO.put(user1).fclone();
+
+      user1.setFirstName("AFEXTestPayer");
+      user1.setLastName("AFEXTwo");
       user1.setAddress(address);
       user1.setType("Business");
       user1.setOrganization("Test Company");
       user1.setBusinessName("Test Company");
-      user1.setLanguage("en");
       user1.setBirthday(new Date());
       user1.setAddress(address);
+
+      var now = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant();
       PersonalIdentification identification = new PersonalIdentification();
-      identification.setExpirationDate(new Date());
+      identification.setIssueDate(Date.from(now.minus(1, ChronoUnit.DAYS)));
+      identification.setExpirationDate(Date.from(now.plus(1, ChronoUnit.DAYS)));
       user1.setIdentification(identification);
-      Phone phone = new Phone();
-      phone.setNumber("123-456-7890");
-      user1.setPhone(phone);
+      user1.setPhoneNumber("1234567890");
       user1 = (User) smeBusinessRegistrationDAO.put(user1).fclone();
 
       // Set properties that can't be set during registration.
@@ -148,17 +163,19 @@ public class AFEXServiceProviderTest
       business.setAddress(address);
       business.setOnboarded(true);
       business.setCompliance(ComplianceStatus.PASSED);
-      Phone phone = new Phone();
-      phone.setNumber("123-456-7890");
-      business.setPhone(phone);
+      business.setPhoneNumber("1234567890");
       business.setBusinessRegistrationDate(new Date());
       business.setBusinessTypeId(1);
       SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
       suggestedUserTransactionInfo.setBaseCurrency("CAD");
-      suggestedUserTransactionInfo.setAnnualDomesticVolume("$2000");
       suggestedUserTransactionInfo.setAnnualDomesticTransactionAmount("N/A");
+      suggestedUserTransactionInfo.setAnnualRevEnum(AnnualRevenueEnum.LESS_THAN_10000);
+      suggestedUserTransactionInfo.setTransactionPurposeEnum(TransactionsPurposeEnum.PAYABLES_PRODUCTS_SERVICES);
+      suggestedUserTransactionInfo.setAnnualTransactionFrequencyEnum(AnnualTxnFrequencyEnum.LESS_THAN_100);
+      suggestedUserTransactionInfo.setAnnualDomesticVolumeEnum(AnnualRevenueEnum.LESS_THAN_10000);
       business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
-    
+      business.setBusinessSectorId(81141);
+
       try {
         business = (Business) businessDAO.put(business);
       } catch (Exception e) {
@@ -212,9 +229,9 @@ public class AFEXServiceProviderTest
     address.setCountryId("US");
     address.setStreetName("Avenue Rd");
     address.setStreetNumber("123");
-    address.setPostalCode("M1M1M1");
+    address.setPostalCode("12345");
     address.setCity("Toronto");
-    address.setRegionId(((Region)regionDAO.find("ON")).getCode());
+    address.setRegionId(((Region)regionDAO.find("US-DE")).getCode());
     return address;
   }
 
@@ -240,8 +257,8 @@ public class AFEXServiceProviderTest
   private void tearDownTest() {
     localAccountDAO.remove(user1CABankAccount);
     localAccountDAO.remove(user2USBankAccount);
-    AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
-    afexBusinessDAO.remove(afexBusiness);
+    AFEXUser afexUser = (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, business.getId()));
+    afexUserDAO.remove(afexUser);
     localUserDAO.inX(x).remove(user1);
     localUserDAO.inX(x).remove(user2);
   }
@@ -249,17 +266,17 @@ public class AFEXServiceProviderTest
   private void testOnboardBusiness() {
     Business businessNoCompliance = (Business) business.fclone();
     businessNoCompliance.setCompliance(ComplianceStatus.FAILED);
-    boolean onbarded = afexServiceProvider.onboardBusiness(businessNoCompliance, user1CABankAccount);
+    boolean onbarded = afexServiceProvider.onboardBusiness(businessNoCompliance);
     test( ! onbarded, "Business was not onboarded" );
-    onbarded = afexServiceProvider.onboardBusiness(business, user1CABankAccount);
+    onbarded = afexServiceProvider.onboardBusiness(business);
     test( onbarded, "Business was onboarded" );
-    AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
-    if ( afexBusiness != null ) {
-      afexBusiness = (AFEXBusiness) afexBusiness.fclone();
-      afexBusiness.setStatus("Active");
-      afexBusinessDAO.put(afexBusiness);
+    AFEXUser afexUser = (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, business.getId()));
+    if ( afexUser != null ) {
+      afexUser = (AFEXUser) afexUser.fclone();
+      afexUser.setStatus("Active");
+      afexUserDAO.put(afexUser);
     }
-    
+
   }
 
   public void testGetFXRate() {
@@ -291,9 +308,9 @@ public class AFEXServiceProviderTest
   }
 
   public void testFindBeneficiary() {
-    AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
-    test( afexBusiness != null, "AFEXBusiness is found" );
-    FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(user2.getId(), afexBusiness.getApiKey());
+    AFEXUser afexUser = (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, business.getId()));
+    test( afexUser != null, "AFEXUser is found" );
+    FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(user2.getId(), afexUser.getApiKey(), user2.getSpid());
     test( beneficiaryResponse != null, "beneficiary is found" );
   }
 

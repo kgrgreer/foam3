@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.flinks.view.modalForm',
   name: 'FlinksModalSecurityQuestionAnswer',
@@ -6,12 +23,13 @@ foam.CLASS({
   documentation: 'Screen to answer Multi-Factor authentication',
 
   requires: [
+    'foam.log.LogLevel',
     'foam.u2.tag.Input',
     'foam.u2.view.ChoiceView',
     'foam.u2.view.PasswordView',
     'foam.u2.view.StringArrayView',
     'net.nanopay.flinks.view.element.StringArrayInput',
-    'net.nanopay.ui.LoadingSpinner'
+    'foam.u2.LoadingSpinner'
   ],
 
   exports: [
@@ -27,9 +45,10 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 504px;
+      box-sizing: border-box;
+      min-width: 615px;
       max-height: 80vh;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
     ^content {
       position: relative;
@@ -114,12 +133,11 @@ foam.CLASS({
     }
     ^ .foam-u2-tag-Select {
       width: 100%;
-      height: 40px;
     }
   `,
 
   messages: [
-    { name: 'INVALID_FORM', message: 'Please answer all questions.' },
+    { name: 'INVALID_FORM', message: 'Please answer all questions' },
     { name: 'INSTRUCTIONS', message : 'To verify that you own this account, please answer the following question(s).' },
     { name: 'TWO_FACTOR_METHOD', message: 'How would you like to receive your one-time security code?' },
     { name: 'CALL_METHOD', message: 'Call' },
@@ -354,11 +372,12 @@ foam.CLASS({
       name: 'next',
       label: 'Continue',
       code: function(X) {
+        var self = this;
         var model = X.model;
         if ( X.isConnecting ) return;
         var isAllAnswered  = model.answerCheck.reduce((allAnswered, val) => allAnswered && val);
         if ( ! isAllAnswered ) {
-          X.notify(model.INVALID_FORM, 'error');
+          X.notify(model.INVALID_FORM, '', self.LogLevel.ERROR, true);
           return;
         }
         X.viewData.submitChallenge();

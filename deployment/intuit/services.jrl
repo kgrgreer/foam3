@@ -1,0 +1,279 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "openid",
+  "authenticate": false,
+  "parameters": true,
+  "serviceScript":"""
+  // Intuit Client Secret FcX34gTSE04y927cVO32HZWTm5CqvNkVycLgVCleuUmcliwsBNcqrYGEp0qb2gW6
+  return new net.nanopay.auth.openid.OpenIDWebAgent(
+    "https://federatesys.intuit.com/as/authorization.oauth2",
+    "https://federatesys.intuit.com/as/token.oauth2",
+    "https://federatesys.intuit.com/pf/JWKS",
+    "https://integration.nanopay.net/service/openid",
+    "FcX34gTSE04y927cVO32HZWTm5CqvNkVycLgVCleuUmcliwsBNcqrYGEp0qb2gW6",
+    "Nanopay",
+    "intuit-support",
+    "intuit"
+  );
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "intuitWebhookOAP",
+  "authenticate": false,
+  "serve": false,
+  "serviceScript":"""
+  return new net.nanopay.partner.intuit.auth.WebhookOAuthV2(
+    "intuit-webhook"
+  );
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "chargeDateService",
+  "serve": true,
+  "serviceScript": """
+    return new net.nanopay.tx.billing.ChargeDateService(5);
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "rbcReconciliationReportGenerator",
+  "serviceScript": """return new net.nanopay.partner.intuit.IntuitReconciliationReportGenerator("intuit", false, "93f3fa36-7429-4b20-a223-f5b50a6d9872", "ab590614-f5bd-476a-84e0-6037607397b5");"""
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "reconciliationReportDAO",
+  "serve": true,
+  "serviceScript": """
+  dao = new net.nanopay.reporting.ReportDAO(
+    x,
+    new foam.dao.NullDAO(x, net.nanopay.reporting.ReconciliationReport.getOwnClassInfo()),
+    "rbcReconciliationReportGenerator"
+  );
+
+  return new foam.dao.EasyDAO.Builder(x)
+    .setOf(net.nanopay.reporting.ReconciliationReport.getOwnClassInfo())
+    .setDecorator(dao)
+    .setInnerDAO(x.get("summaryTransactionDAO"))
+    .build();
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.reporting.ReconciliationReport"
+    }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "reducedReconciliationReportGenerator",
+  "serviceScript": """return new net.nanopay.reporting.CopyReportGenerator("intuit", false, net.nanopay.reporting.ReducedReconciliationReport.getOwnClassInfo());"""
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "reducedReconciliationReportDAO",
+  "serve": true,
+  "serviceScript": """
+  dao = new net.nanopay.reporting.ReportDAO(
+    x,
+    new foam.dao.NullDAO(x, net.nanopay.reporting.ReducedReconciliationReport.getOwnClassInfo()),
+    "reducedReconciliationReportGenerator"
+  );
+
+  return new foam.dao.EasyDAO.Builder(x)
+    .setOf(net.nanopay.reporting.ReducedReconciliationReport.getOwnClassInfo())
+    .setDecorator(dao)
+    .setInnerDAO(x.get("reconciliationReportDAO"))
+    .build();
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.reporting.ReducedReconciliationReport"
+    }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "serviceFeesReportGenerator",
+  "serviceScript": """return new net.nanopay.reporting.CopyReportGenerator("intuit", false, net.nanopay.reporting.ServiceFeesReport.getOwnClassInfo());"""
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "serviceFeesReportDAO",
+  "serve": true,
+  "serviceScript": """
+  dao = new net.nanopay.reporting.ReportDAO(
+    x,
+    new foam.dao.NullDAO(x, net.nanopay.reporting.ServiceFeesReport.getOwnClassInfo()),
+    "serviceFeesReportGenerator"
+  );
+
+  return new foam.dao.EasyDAO.Builder(x)
+    .setOf(net.nanopay.reporting.ServiceFeesReport.getOwnClassInfo())
+    .setDecorator(dao)
+    .setInnerDAO(x.get("reconciliationReportDAO"))
+    .build();
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.reporting.ServiceFeesReport"
+    }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "intuitUserOnboardingReportGenerator",
+  "serviceScript": """return new net.nanopay.partner.intuit.IntuitUserOnboardingReportGenerator("intuit");"""
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "userOnboardingReportDAO",
+  "serve": true,
+  "serviceScript": """
+  dao = new net.nanopay.reporting.ReportDAO(
+    x,
+    new foam.dao.NullDAO(x, net.nanopay.reporting.UserOnboardingReport.getOwnClassInfo()),
+    "intuitUserOnboardingReportGenerator"
+  );
+
+  return new foam.dao.EasyDAO.Builder(x)
+    .setOf(net.nanopay.reporting.UserOnboardingReport.getOwnClassInfo())
+    .setDecorator(dao)
+    .setInnerDAO(x.get("userDAO"))
+    .build();
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.reporting.UserOnboardingReport"
+    }
+  """
+})
+
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"intuit.supportUserDAO",
+  "serviceScript":
+  """
+    delegate = new foam.dao.FilteredDAO.Builder(x)
+          .setPredicate(
+            foam.mlang.MLang.OR(
+              new foam.mlang.predicate.Predicate[] {
+                foam.mlang.MLang.EQ(foam.nanos.auth.User.GROUP, "intuit-sme"),
+                foam.mlang.MLang.EQ(foam.nanos.auth.User.GROUP, "intuit-business-sme")
+              }
+            ))
+          .setDelegate(x.get("userUserDAO"))
+        .build();
+
+    dao = new foam.dao.CopyFromDAO.Builder(x)
+        .setDelegate(delegate)
+        .setTo(foam.nanos.auth.User.getOwnClassInfo())
+        .setOf(net.nanopay.support.SupportUser.getOwnClassInfo())
+        .build();
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.support.SupportUser.getOwnClassInfo())
+      .setInnerDAO(dao)
+      .setEnableInterfaceDecorators(false)
+      .build();
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"intuitUpdateBusinessDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    import foam.core.PropertyInfo;
+    import net.nanopay.crunch.registration.BusinessDetailData;
+    import net.nanopay.model.Business;
+
+    import java.util.Map;
+
+    var propMap = Map.of(
+      Business.ADDRESS, BusinessDetailData.ADDRESS,
+      Business.BUSINESS_NAME, BusinessDetailData.BUSINESS_NAME,
+      Business.EMAIL, BusinessDetailData.EMAIL,
+      Business.MAILING_ADDRESS, BusinessDetailData.MAILING_ADDRESS
+    );
+
+    dao = new foam.nanos.crunch.CapabilityUpdateInterceptDAO(propMap, "crunch.onboarding.api.business-details");
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.model.Business.getOwnClassInfo())
+      .setDecorator(dao)
+      .setInnerDAO(x.get("businessDAO"))
+      .build();
+  """,
+  "client":
+  """
+  {
+    "of":"net.nanopay.model.Business",
+    "cache": false,
+    "remoteListenerSupport": false,
+    "decorators": [
+      {
+        "class":"foam.nanos.fs.FileDAODecorator"
+      },
+      {
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
+      }
+    ]
+  }
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"intuitUpdateUserDAO",
+  "serve": true,
+  "authenticate": false,
+  "serviceScript":
+  """
+    import foam.core.PropertyInfo;
+    import foam.nanos.auth.User;
+    import net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData;
+
+    import java.util.Map;
+
+    var propMap = Map.of(
+      User.ADDRESS, SigningOfficerPersonalData.ADDRESS,
+      User.PHONE_NUMBER, SigningOfficerPersonalData.PHONE_NUMBER
+    );
+
+    dao = new foam.nanos.crunch.CapabilityUpdateInterceptDAO(propMap, "crunch.onboarding.signing-officer-information");
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setDecorator(dao)
+      .setInnerDAO(x.get("userDAO"))
+      .build();
+  """,
+  "client":
+  """
+  {
+    "of": "foam.nanos.auth.User",
+    "cache": false,
+    "decorators": [
+      {
+        "class":"foam.nanos.fs.FileDAODecorator"
+      },
+      {
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
+      }
+    ]
+  }
+  """
+})

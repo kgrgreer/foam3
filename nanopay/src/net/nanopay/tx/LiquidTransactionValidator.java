@@ -5,6 +5,7 @@ import foam.core.FObject;
 import foam.core.Validator;
 import foam.core.X;
 import foam.nanos.auth.LifecycleState;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import net.nanopay.account.Account;
@@ -27,7 +28,7 @@ public class LiquidTransactionValidator implements Validator {
 
     Transaction tx = (Transaction) obj;
     Account dest = tx.findDestinationAccount(x);
-    Account source = tx.findDestinationAccount(x);
+    Account source = tx.findSourceAccount(x);
 
     if (source == null )
       throw new RuntimeException("Unable to send from account");
@@ -38,18 +39,6 @@ public class LiquidTransactionValidator implements Validator {
       throw new RuntimeException("Unable to send from deleted account");
     if (dest.getLifecycleState() == LifecycleState.DELETED )
       throw new RuntimeException("Unable to send to account "+dest.getId());
-
-    User user = (User) x.get("user");
-    if (     tx.getOrigin() == net.nanopay.tx.OriginatingSource.MANUAL && source.getClass() != DigitalAccount.class
-      && ! (
-      user.getGroup().equals("admin")
-        && source instanceof ShadowAccount )
-    ) {
-      throw new RuntimeException(
-        "Unable to send from non-digital/shadow account");
-    }
-
-
 
   }
 }

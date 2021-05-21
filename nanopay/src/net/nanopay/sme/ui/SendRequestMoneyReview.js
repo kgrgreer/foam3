@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'SendRequestMoneyReview',
@@ -9,6 +26,7 @@ foam.CLASS({
 
   requires: [
     'foam.flow.Document',
+    'foam.log.LogLevel',
     'net.nanopay.documents.AcceptanceDocumentService',
     'net.nanopay.documents.AcceptanceDocument',
     'net.nanopay.documents.AcceptanceDocumentType'
@@ -26,8 +44,8 @@ foam.CLASS({
     'isPayable',
     'loadingSpin',
     'notify',
-    'user',
-    'viewData'
+    'subject',
+    'txnQuote'
   ],
 
   properties: [
@@ -42,7 +60,7 @@ foam.CLASS({
     ^ .invoice-details {
       margin-top: 25px;
     }
-    ^ .net-nanopay-ui-LoadingSpinner img{
+    ^ .foam-u2-LoadingSpinner img{
       width: 150px;
       margin: 200px;
     }
@@ -55,8 +73,11 @@ foam.CLASS({
     }
     ^ .disclosureView {
       max-height: 170px;
-      overflow: scroll;
+      overflow: auto;
       margin-top: 15px;
+    }
+    ^ .foam-u2-view-StringView {
+      width: auto;
     }
   `,
   messages: [
@@ -70,6 +91,10 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'VOID', message: 'Void' }
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
@@ -80,16 +105,19 @@ foam.CLASS({
         ? this.APPROVE_INVOICE_LABEL
         : this.SUBMIT_LABEL;
       this.hasOtherOption = this.isApproving ? true : false;
-      this.optionLabel = 'Reject';
+      this.optionLabel = this.VOID;
       this.start().addClass(this.myClass())
         .start().show(this.loadingSpin.isHidden$)
-          .start({
-            class: 'net.nanopay.invoice.ui.InvoiceRateView',
-            isPayable: this.type,
-            isReadOnly: true,
-            quote: this.viewData.quote,
-            chosenBankAccount: this.viewData.bankAccount
-          })
+          /** summaryTransaction area **/
+          .start()
+            .add(this.slot(txnQuote => {
+              if ( ! txnQuote ) return;
+              return this.E()
+                .start({
+                  class: 'net.nanopay.tx.InvoiceSummaryTransactionCitationView',
+                  data: txnQuote
+                });
+            }))
           .end()
           .start({
             class: 'net.nanopay.sme.ui.InvoiceDetails',
@@ -106,15 +134,20 @@ foam.CLASS({
     },
     async function updateDisclosure() {
       if ( ! this.isPayable ) return;
-      var type = this.viewData.quote ? this.viewData.quote.type : null;
       try {
-        var disclosure = await this.acceptanceDocumentService.getTransactionRegionDocuments(this.__context__, type, this.AcceptanceDocumentType.DISCLOSURE, this.user.address.countryId, this.user.address.regionId);
+        var disclosure = await this.acceptanceDocumentService
+          .getTransactionRegionDocuments(
+            this.__context__,
+            this.txnQuote && this.txnQuote.type,
+            this.AcceptanceDocumentType.DISCLOSURE,
+            this.subject.user.address.countryId,
+            this.subject.user.address.regionId);
         if ( disclosure ) {
           this.disclosureView = this.Document.create({ markup: disclosure.body });
         }
       } catch (error) {
         console.error(error.message);
-        this.ctrl.notify(error.message, 'error');
+        this.ctrl.notify(error.message, '', this.LogLevel.ERROR, true);
       }
     }
   ]

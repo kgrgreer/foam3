@@ -1,0 +1,49 @@
+p({class:"foam.nanos.auth.Group",id:"bepay-api",description:"BePay API group",parent:"external-api",defaultMenu:"view-accounts"})
+p({class:"foam.nanos.auth.Group",id:"bepay-api-session",description:"BePay API session group",parent:"external-api-session",defaultMenu:"view-users"})
+p({class:"foam.nanos.auth.Group",id:"bepay-dev",description:"BePay API development group",parent:"external-dev",defaultMenu:"view-accounts"})p
+
+p({
+    class:"foam.nanos.auth.Group",
+    id:"bepay-fraud-ops",
+    description:"BePay Fraud Operations Group",
+    parent:"fraud-ops",
+    theme:"18E4CEBB-2C91-4D14-AC5B-64D38103D524",
+    defaultMenu:"bankaccounts",
+    url:"http://bepay:8080"
+})
+p({
+    class:"foam.nanos.auth.Group",
+    id:"bepay-payment-ops",
+    description:"BePay Payment Operations Group",
+    parent:"payment-ops",
+    theme:"18E4CEBB-2C91-4D14-AC5B-64D38103D524",
+    defaultMenu:"bankaccounts",
+    url:"http://bepay:8080"
+})
+
+p({
+    class:"foam.nanos.auth.Group",
+    id:"bepay-internal-support",
+    description:"bepay internal support group",
+    parent:"support",
+    defaultMenu:"contacts",
+    url:"http://bepay:8080"
+})
+
+p({
+    class:"foam.nanos.auth.Group",
+    id:"bepay-support",
+    description:"bepay support group",
+    parent:"external-support",
+    theme:"18E4CEBB-2C91-4D14-AC5B-64D38103D524",
+    defaultMenu:"businesses-support",
+    url:"http://bepay:8080"
+})
+
+p({
+    class:"foam.nanos.auth.Group",
+    id:"bepay-sme",
+    description:"bepay sme group",
+    parent:"external-sme",
+    url:"http://bepay:8080"
+})

@@ -1,0 +1,232 @@
+// External Support
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"group.read.external-support"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"group.update.external-support"})
+
+// Support permission
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"business.rw.ispublic"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"business.rw.compliance"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"business.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.agentJunctionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.businessDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.summaryTransactionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.intuitTransactionSummaryDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.transactionSummaryDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"summarytransaction.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"summarytransaction.rw.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"transactionsummary.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"intuittransactionsummary.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"transaction.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"transaction.rw.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"user.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"user.rw.compliance"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"useruserjunction.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"useruserjunction.rw.status"})
+
+// External API
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"group.read.external-api"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"group.update.external-api"})
+
+// Agent Junction (User - Business Junction)
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"service.read.agentJunctionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"service.agentJunctionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"useruserjunction.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"useruserjunction.rw.status"})
+
+// Business
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.view-businesses"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"service.read.businessDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"business.rw.ispublic"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"business.rw.compliance"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"business.read.*"})
+
+// User
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.view-users"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"user.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"user.rw.compliance"})
+
+// Documentation
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.documentation"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.api-doc-10-introduction"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.api-doc-20-authentication"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.api-doc-40-onboarding-business"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.api-doc-45-onboarding-flinks-business"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.api-doc-50-onboarding-personal"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.api-doc-55-onboarding-flinks-personal"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.api-doc-60-capabilities"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.api-doc-70-data"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.api-doc-75-webhooks"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.api-doc-99-reference"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.integration.api-sugar"})
+
+// External Service API Group Setup
+
+// Acceptance Documents
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"service.read.userAcceptanceDocumentDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"service.userAcceptanceDocumentDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"useracceptancedocument.read.*"})
+
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"service.natureCodeDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"service.permittedCountryDAO"})
+
+// ******** SESSION *********
+
+// External session creation
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"account.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"account.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"account.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"account.rw.status"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"bankaccount.rw.status"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"business.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"business.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"business.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"business.ro.compliance"})
+
+
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"cabankaccount.rw.status"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"capability.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"digitalaccount.default.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"group.read.external-api-session"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"group.read.personal"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"group.read.sme"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"group.update.external-api-session"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"group.update.personal"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"registration.email.enabled"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"service.billingService"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"user.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"user.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"user.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"user.ro.compliance"})
+
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"user.rw.emailverified"})
+
+
+// Flinks Login Id
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"service.read.flinksLoginIdDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"service.flinksLoginIdDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"service.read.flinksLoginIdAsyncDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"service.flinksLoginIdAsyncDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"service.notificationSettingDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"service.notificationSettingDefaultsDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"notificationsetting.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"notificationsetting.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"notificationsetting.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"notificationsettingdefaults.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"notificationsettingdefaults.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"notificationsettingdefaults.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"flinksloginid.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"flinksloginid.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"flinksloginid.ro.account"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"flinksloginidasync.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"flinksloginidasync.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"flinksloginidasync.ro.account"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"flinksloginidrequest.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"flinksloginidrequest.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"flinksloginidrequest.ro.account"})
+
+// ******* DEV *************
+
+// External developer
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"group.read.external-dev"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"group.update.external-dev"})
+
+// Accounts
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"menu.read.view-accounts"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"service.read.accountDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"account.read.*"})
+
+// Beneficial Owners
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"service.read.beneficialOwnerDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"service.beneficialOwnerDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"beneficialowner.read.*"})
+
+// Capability Payload
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"service.read.capabilityPayloadDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"service.capabilityPayloadDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"capabilitypayload.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"capabilitypayload.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"capabilitypayload.update.*"})
+
+// Exchange Rates
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"service.read.exchangeRateDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"service.exchangeRateDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"exchangerate.read.*"})
+
+// Flinks Login Id
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"service.read.flinksLoginIdDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"service.flinksLoginIdDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"service.read.flinksLoginIdAsyncDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"service.flinksLoginIdAsyncDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"flinksloginid.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"flinksloginid.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"flinksloginid.ro.account"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"flinksloginidasync.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"flinksloginidasync.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"flinksloginidasync.ro.account"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"flinksloginidrequest.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"flinksloginidrequest.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"flinksloginidrequest.ro.account"})
+
+// SME Business Registration
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"service.read.smeUserRegistrationDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"service.smeUserRegistrationDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"user.rw.*"})
+
+// Payment Codes
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"service.read.paymentCodeDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"service.paymentCodeDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"paymentcode.read.*"})
+
+// Signing Officers
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"service.read.signingOfficerJunctionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"service.signingOfficerJunctionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"businessuserjunction.read.*"})
+
+// Transactions
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"menu.read.view-summarytransactions"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"service.read.summaryTransactionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"service.summaryTransactionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"transaction.rw.*"})
+
+// Update base SME group to allow for DIG access
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"bill.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"business.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"business.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"business.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"capabilitypayload.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"capabilitypayload.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"capabilitypayload.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"dig.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"dig.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"flinksloginid.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"flinksloginid.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"flinksloginid.ro.account"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"service.capabilityPayloadDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"service.billingService"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"service.billDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"service.flinksLoginIdDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"service.summaryTransactionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"service.read.capabilityPayloadDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"service.read.flinksLoginIdDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"service.read.summaryTransactionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"service.run.dig"})
+
+
+// Update base PERSONAL group to allow for DIG access
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"business.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"business.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"business.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"capabilitypayload.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"capabilitypayload.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"capabilitypayload.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"dig.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"dig.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"flinksloginid.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"flinksloginid.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"flinksloginid.ro.account"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"service.capabilityPayloadDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"service.flinksLoginIdDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"service.summaryTransactionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"service.read.capabilityPayloadDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"service.read.flinksLoginIdDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"service.read.summaryTransactionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"service.run.dig"})

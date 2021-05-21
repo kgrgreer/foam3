@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'SMEModal',
@@ -7,20 +24,13 @@ foam.CLASS({
 
   css: `
     ^X {
-      position: absolute;
-      top: -30px;
-      right: -30px;
-      background: none !important;
-      width: 24px !important;
-      height: 24px !important;
-      cursor: pointer;
-      transition: ease 0.2s;
-      padding: 0;
-      border: none !important;
+      top: 24px !important;
+      right: 24px !important;
     }
 
     ^inner {
       position: relative;
+      max-height: 85vh;
     }
 
     ^X:hover {
@@ -28,15 +38,53 @@ foam.CLASS({
     }
 
     ^content {
+      background-color: white;
       box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
       border-radius: 3px;
-      overflow: hidden;
-      background-color: white;
     }
-    .net-nanopay-sme-ui-SMEModal .net-nanopay-sme-ui-SMEModal-content .foam-u2-ModalHeader button {
-      display: none;
+
+    ^ {
+      box-sizing: border-box;
+      // width: 600px;
+      // padding: 30px;
+      // max-height: 570px;
+      // overflow-y: auto;
     }
+    ^left-button-container {
+      width: 200px;
+      display: flex;
+      justify-content: flex-start;
+    }
+    ^option {
+      margin-left: 15px;
+    }
+    ^step-indicator {
+      margin-right: 150px;
+    }
+    .property-rbiLink {
+      margin-top: -33px;
+      top: 50px;
+      position: relative;
+      float: right;
+    }
+    ^ .button-container-wrapper {
+      position: relative;
+      width: 600px;
+      right: 30px;
+      top: 30px;
+    }
+    ^ .button-container {
+      padding: 0 30px;
+    }
+
   `,
+
+  properties: [
+    {
+      name: 'isStyled',
+      value: true
+    }
+  ],
 
   methods: [
     function init() {
@@ -52,11 +100,13 @@ foam.CLASS({
         .end()
         .start()
           .addClass(this.myClass('inner'))
-          .start(this.CLOSE_MODAL).show(this.closeable$)
-            .addClass(this.myClass('X'))
-          .end()
+          .startContext({ data: this })
+            .start(this.CLOSE_MODAL, { buttonStyle: 'TERTIARY' }).show(this.closeable$)
+              .addClass(this.myClass('X'))
+            .end()
+          .endContext()
           .start()
-            .addClass(this.myClass('content'))
+            .enableClass(this.myClass('content'), this.isStyled$)
             .call(function() { content = this; })
           .end()
         .end()
@@ -66,14 +116,4 @@ foam.CLASS({
     }
   ],
 
-  actions: [
-    {
-      name: 'closeModal',
-      label: '',
-      icon: 'images/ic-cancelwhite.svg',
-      code: function(X) {
-        X.closeDialog();
-      }
-    }
-  ]
 });

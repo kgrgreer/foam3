@@ -8,18 +8,19 @@ import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.ApprovalRequestUtil;
 import foam.nanos.approval.ApprovalStatus;
 import foam.nanos.auth.LifecycleState;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserQueryService;
 import foam.nanos.logger.Logger;
-import foam.nanos.ruler.Operations;
+import foam.nanos.dao.Operation;
 import foam.nanos.test.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.nanopay.liquidity.crunch.CapabilityRequest;
-import net.nanopay.liquidity.crunch.CapabilityRequestOperations;
+import net.nanopay.liquidity.crunch.RoleAssignment;
+import net.nanopay.liquidity.crunch.RoleAssignmentOperations;
 
 import static foam.mlang.MLang.*;
 
@@ -45,9 +46,13 @@ public abstract class LiquidTestExecutor extends Test {
   }
 
   protected void setupContexts(X x) {
-    this.systemX = x.put("user", new User.Builder(x).setId(1).build());
-    this.firstX = x.put("user", this.getFirstSystemUser(x));
-    this.secondX = x.put("user", this.getSecondSystemUser(x));
+    Subject systemSubject = new Subject.Builder(x).setUser(new User.Builder(x).setId(1).build()).build();
+    this.systemX = x.put("subject", systemSubject);
+
+    Subject firstSubject = new Subject.Builder(x).setUser(this.getFirstSystemUser(x)).build();
+    Subject secondSubject = new Subject.Builder(x).setUser(this.getSecondSystemUser(x)).build();
+    this.firstX = x.put("subject", firstSubject);
+    this.secondX = x.put("subject", secondSubject);
     this.logger = (Logger) x.get("logger");
   }
 
@@ -88,13 +93,13 @@ public abstract class LiquidTestExecutor extends Test {
     return (DAO) x.get("userUserDAO");
   }
 
-  protected DAO getLocalCapabilityRequestDAO(X x) {
-    return (DAO) x.get("localCapabilityRequestDAO");
+  protected DAO getLocalRoleAssignmentDAO(X x) {
+    return (DAO) x.get("localRoleAssignmentDAO");
   }
 
   protected UserQueryService getUserQueryService(X x) {
     return (UserQueryService) x.get("userQueryService");
-  }  
+  }
 
   protected String getFirstSystemUserEmail() {
     return getTestPrefix() + "approvaltest01@nanopay.net";
@@ -124,7 +129,7 @@ public abstract class LiquidTestExecutor extends Test {
     if (user != null && user.getLifecycleState() == LifecycleState.ACTIVE) {
       return user;
     }
-    
+
     // Otherwise, create the user
     user = new User.Builder(x)
         .setFirstName(this.getTestPrefix() + "User")
@@ -142,14 +147,15 @@ public abstract class LiquidTestExecutor extends Test {
     userList.add(user.getId());
 
     // Assign role
-    CapabilityRequest capabilityRequest = new CapabilityRequest.Builder(this.getSystemX())
-      .setGlobalCapability("8b36b11a-93c6-b40c-d9c8-f8effefb31cc-8")
-      .setRequestType(CapabilityRequestOperations.ASSIGN_GLOBAL)
+    // TODO: make sure they use admin role template
+    RoleAssignment RoleAssignment = new RoleAssignment.Builder(this.getSystemX())
+      .setRoleTemplate("ddbabe1a-dea2-d4e3-09af-70aac6201ed5")
       .setUsers(userList)
+      .setAccountTemplate("crunch.onboarding.signing-officer-question")
       .setLifecycleState(LifecycleState.ACTIVE)
       .build();
-    this.getLocalCapabilityRequestDAO(x).inX(this.getSystemX()).put(capabilityRequest);
-    
+    this.getLocalRoleAssignmentDAO(x).inX(this.getSystemX()).put(RoleAssignment);
+
     return user;
-  }  
+  }
 }

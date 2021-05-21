@@ -1,0 +1,105 @@
+p({
+  class:"foam.nanos.script.Script",
+  id:"Ablii Spid Data Migration",
+  description:"Migrates existing nanopay spid users to ablii spid",
+  code:"""
+    import foam.core.Detachable;
+    import foam.mlang.MLang;
+    import foam.mlang.predicate.Predicate;
+    import foam.dao.AbstractSink;
+    import foam.nanos.auth.User;
+    import net.nanopay.account.Account;
+    import net.nanopay.auth.email.DoNotSolicit;
+    import net.nanopay.invoice.model.Invoice;
+    import net.nanopay.tx.model.Transaction;
+    import net.nanopay.tx.model.TransactionFee;
+    import net.nanopay.tx.LineItemType;
+    import net.nanopay.tx.LineItemFee;
+    import net.nanopay.tax.LineItemTax;
+
+    userDAO = x.get("localUserDAO");
+    userDAO.where(MLang.EQ(User.SPID, "nanopay")).select(new AbstractSink() {
+      public void put(Object o, Detachable d) {
+        User user = (User) o.fclone();
+        user.setSpid("ablii");
+        userDAO.put(user);
+      }
+    });
+
+    invoiceDAO = x.get("invoiceDAO");
+    invoiceDAO.where(MLang.EQ(Invoice.SPID, "nanopay")).select(new AbstractSink() {
+      public void put(Object o, Detachable d) {
+        Invoice invoice = (Invoice) o.fclone();
+        invoice.setSpid("ablii");
+        invoiceDAO.put(invoice);
+      }
+    });
+
+    lineItemTaxDAO = x.get("lineItemTaxDAO");
+    lineItemTaxDAO.where(MLang.EQ(LineItemTax.SPID, "nanopay")).select(new AbstractSink() {
+      public void put(Object o, Detachable d) {
+        LineItemTax lineItemTax = (LineItemTax) o.fclone();
+        lineItemTax.setSpid("ablii");
+        lineItemTaxDAO.put(lineItemTax);
+      }
+    });
+
+    lineItemFeeDAO = x.get("lineItemFeeDAO");
+    lineItemFeeDAO.where(MLang.EQ(LineItemFee.SPID, "nanopay")).select(new AbstractSink() {
+      public void put(Object o, Detachable d) {
+        LineItemFee lineItemFee = (LineItemFee) o.fclone();
+        lineItemFee.setSpid("ablii");
+        lineItemFeeDAO.put(lineItemFee);
+      }
+    });
+
+    lineItemTypeDAO = x.get("lineItemTypeDAO");
+    lineItemTypeDAO.where(MLang.EQ(LineItemType.SPID, "nanopay")).select(new AbstractSink() {
+      public void put(Object o, Detachable d) {
+        LineItemType lineItemType = (LineItemType) o.fclone();
+        lineItemType.setSpid("ablii");
+        lineItemTypeDAO.put(lineItemType);
+      }
+    });
+
+    transactionFeeDAO = x.get("transactionFeeDAO");
+    transactionFeeDAO.where(MLang.EQ(TransactionFee.SPID, "nanopay")).select(new AbstractSink() {
+      public void put(Object o, Detachable d) {
+        TransactionFee transactionFee = (TransactionFee) o.fclone();
+        transactionFee.setSpid("ablii");
+        transactionFeeDAO.put(transactionFee);
+      }
+    });
+
+    donotsolicitDAO = x.get("doNotSolicitDAO");
+    donotsolicitDAO.where(MLang.EQ(DoNotSolicit.SPID, "nanopay")).select(new AbstractSink() {
+      public void put(Object o, Detachable d) {
+        DoNotSolicit solicit = (DoNotSolicit) o.fclone();
+        solicit.setSpid("ablii");
+        donotsolicitDAO.put(solicit);
+      }
+    });
+
+    userDAO.where(MLang.EQ(User.GROUP, "nanopay-fraud-ops")).select(new AbstractSink() {
+      public void put(Object o, Detachable d) {
+        User user = (User) o.fclone();
+        user.setSpid("ablii-fraud-ops");
+        userDAO.put(user);
+      }
+    });
+    userDAO.where(MLang.EQ(User.GROUP, "nanopay-payment-ops")).select(new AbstractSink() {
+      public void put(Object o, Detachable d) {
+        User user = (User) o.fclone();
+        user.setSpid("ablii-payment-ops");
+        userDAO.put(user);
+      }
+    });
+    userDAO.where(MLang.EQ(User.GROUP, "nanopay-support")).select(new AbstractSink() {
+      public void put(Object o, Detachable d) {
+        User user = (User) o.fclone();
+        user.setSpid("ablii-support");
+        userDAO.put(user);
+      }
+    });
+  """
+})

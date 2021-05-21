@@ -78,12 +78,6 @@ p({
 })
 p({
   "class": "foam.strategy.StrategyReference",
-  "id": "575d2308-385f-4f17-8bb7-fbb3db58c6e4",
-  "desiredModelId": "net.nanopay.account.Account",
-  "strategy": "net.nanopay.account.HoldingAccount"
-})
-p({
-  "class": "foam.strategy.StrategyReference",
   "id": "fe1c1e4f-c518-4095-9543-bd2cf5777492",
   "desiredModelId": "net.nanopay.account.Account",
   "strategy": "net.nanopay.account.SecurityAccount"
@@ -100,3 +94,46 @@ p({
   "desiredModelId": "net.nanopay.account.Account",
   "strategy": "net.nanopay.account.OverdraftAccount"
 })
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "1a96afd0-3ae1-4ea4-b25e-d6a731c03f28",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.bank.BankAccount"
+})
+
+// TODO: to be reworked for CB transaction rework
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "d697a9e8-9a12-479b-be76-6c0bdb594b8d",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.settlement.SettlementAccount"
+})
+
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "b6080453-e4af-4057-a158-7231f3fef8f8",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.settlement.ReserveAccount"
+})
+
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "f1a53d59-d94a-426d-9a8d-156d089ac306",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.settlement.GroupingAccount"
+})
+
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "830d149d-f6e9-4381-95d3-833130900839",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.settlement.BankPlayAccount"
+})
+
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "0e6ea778-91fb-4942-9d63-72ff658c8b3d",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.settlement.BiLateralAccount"
+})
+

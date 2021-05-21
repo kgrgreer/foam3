@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.cico.ui.bankAccount.form',
   name: 'BankPADAuthorizationCSSAxiom',
@@ -32,7 +49,6 @@ foam.CLASS({
 
         ^ .foam-u2-tag-Select {
           width: 100%;
-          height: 40px;
           border-radius: 0;
 
           -webkit-appearance: none;
@@ -68,7 +84,7 @@ foam.CLASS({
         }
 
         ^ .headings {
-          font-family: Roboto;
+          font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
           font-size: 14px;
           font-weight: bold;
           font-style: normal;
@@ -181,7 +197,7 @@ foam.CLASS({
           width: 496px;
           background: white;
           border-radius: 2px;
-          overflow-y: scroll;
+          overflow-y: auto;
           padding: 20px;
         }
         ^ .notEditable{
@@ -215,7 +231,7 @@ foam.CLASS({
 
         ^ .address2Hint {
           height: 14px;
-          font-family: Roboto;
+          font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
           font-size: 12px;
           line-height: 1.17;
           letter-spacing: 0.2px;

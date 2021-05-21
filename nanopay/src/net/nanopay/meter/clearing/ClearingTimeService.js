@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.meter.clearing',
   name: 'ClearingTimeService',
@@ -6,7 +23,7 @@ foam.CLASS({
     transaction based on transaction clearing time and process date.`,
 
   imports: [
-    'bankHolidayService'
+    'BankHolidayService bankHolidayService'
   ],
 
   javaImports: [
@@ -14,6 +31,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.util.Date',
+    'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankHolidayService',
     'net.nanopay.tx.cico.CITransaction',
@@ -79,6 +97,7 @@ foam.CLASS({
 
         ClearingTimesTrait trait = (ClearingTimesTrait) transaction;
         int totalClearingTime = trait.getClearingTimes().values().stream()
+          .map(Long::intValue)
           .reduce(0, Integer::sum);
         if ( trait.getClearingTimes().isEmpty()
           || totalClearingTime < 0
@@ -112,13 +131,11 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        if ( transaction instanceof CITransaction ) {
-          return (BankAccount) transaction.findSourceAccount(x);
+        Account acct =  transaction.findDestinationAccount(x);
+        if ( ! (acct instanceof BankAccount) ) {
+          acct = transaction.findSourceAccount(x);
         }
-        if ( transaction instanceof COTransaction ) {
-          return (BankAccount) transaction.findDestinationAccount(x);
-        }
-        return null;
+        return (BankAccount) acct;
       `
     },
     {

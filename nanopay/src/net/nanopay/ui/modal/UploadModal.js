@@ -1,3 +1,19 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
 
 foam.CLASS({
   package: 'net.nanopay.ui.modal',
@@ -9,13 +25,14 @@ foam.CLASS({
   requires: [
     'net.nanopay.ui.modal.ModalHeader',
     'foam.blob.BlobBlob',
+    'foam.log.LogLevel',
     'foam.nanos.fs.File',
-    'foam.u2.dialog.NotificationMessage'
   ],
 
   imports: [
     'user',
-    'blobService'
+    'blobService',
+    'notify'
   ],
 
   exports: [
@@ -46,7 +63,7 @@ foam.CLASS({
       border: dashed 4px /*%GREY5%*/ #f5f7fa;
       height: 300px;
       width: 560px;
-      overflow: scroll;
+      overflow: auto;
     }
 
     ^ .dragText{
@@ -62,7 +79,7 @@ foam.CLASS({
     ^ .inputText{
       width: 177px;
       height: 40px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: normal;
       font-style: normal;
@@ -76,7 +93,7 @@ foam.CLASS({
       width: 480px;
       height: 16px;
       opacity: 0.7;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       font-weight: normal;
       font-style: normal;
@@ -95,7 +112,7 @@ foam.CLASS({
       width: 100%;
     }
     ^ .foam-u2-ActionView-submitButton {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       width: 136px;
       height: 40px;
       border-radius: 2px;
@@ -114,7 +131,7 @@ foam.CLASS({
       font-weight: normal;
     }
     ^ .foam-u2-ActionView-cancelButton {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       width: 136px;
       height: 40px;
       border-radius: 2px;
@@ -150,7 +167,8 @@ foam.CLASS({
     { name: 'BoxText', message: 'Choose files to upload or Drag and Drop them here' },
     { name: 'FileRestrictText', message: '*jpg, jpeg, png, pdf, doc, docx, ppt, pptx, pps, ppsx, odt, xls, xlsx only, 10MB maximum' },
     { name: 'FileTypeError', message: 'Wrong file format' },
-    { name: 'FileSizeError', message: 'File size exceeds 10MB' }
+    { name: 'FileSizeError', message: 'File size exceeds 10MB' },
+    { name: 'CHOOSE_FILE', message: 'Choose File' }
   ],
 
   methods: [
@@ -163,7 +181,7 @@ foam.CLASS({
       .on('dragover', this.onDragOver)
       .on('drop', this.onDropOut)
       .tag(this.ModalHeader.create({
-        title: 'Choose File'
+        title: this.CHOOSE_FILE
       }))
       .addClass(this.myClass())
       .start()
@@ -263,7 +281,7 @@ foam.CLASS({
               if ( this.isImageType(file) ) {
                 files.push(file);
               } else {
-                this.add(this.NotificationMessage.create({ message: this.FileTypeError, type: 'error' }));
+                this.notify(this.FileTypeError, '', this.LogLevel.ERROR, true);
               }
             }
           }
@@ -274,7 +292,7 @@ foam.CLASS({
           var file = inputFile[i];
           if ( this.isImageType(file) ) files.push(file);
           else {
-            this.add(this.NotificationMessage.create({ message: this.FileTypeError, type: 'error' }));
+            this.notify(this.FileTypeError, '', this.LogLevel.ERROR, true);
           }
         }
       }
@@ -305,7 +323,7 @@ foam.CLASS({
         // skip files that exceed limit
         if ( files[i].size > ( 10 * 1024 * 1024 ) ) {
           if ( ! errors ) errors = true;
-          this.add(this.NotificationMessage.create({ message: this.FileSizeError, type: 'error' }));
+          this.notify(this.FileSizeError, '', this.LogLevel.ERROR, true);
           continue;
         }
         var isIncluded = false;

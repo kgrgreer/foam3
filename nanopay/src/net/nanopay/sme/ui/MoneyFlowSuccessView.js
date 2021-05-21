@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'MoneyFlowSuccessView',
@@ -23,7 +40,8 @@ foam.CLASS({
     'menuDAO',
     'stack',
     'transactionDAO',
-    'user'
+    'subject',
+    'crunchService'
   ],
 
   css: `
@@ -78,6 +96,9 @@ foam.CLASS({
       width: 300px;
       float: right;
     }
+    pre {
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }    
   `,
 
   properties: [
@@ -90,7 +111,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isPayable_',
       expression: function(invoice) {
-        return invoice.payerId === this.user.id;
+        return invoice.payerId === this.subject.user.id;
       }
     },
     {
@@ -106,7 +127,7 @@ foam.CLASS({
         return {
           class: 'foam.u2.tag.Image',
           data: isApprover_ ?
-            'images/checkmark-large-green.svg' :
+            'images/exclamation-large-orange.svg' :
             'images/pending-icon.svg'
         };
       }
@@ -126,21 +147,21 @@ foam.CLASS({
         The name to display for the invoice. Either the business name or the
         name of the person at that business, depending on what is available.
       `,
-      expression: async function(invoice, isPayable_) {
-        return isPayable_ ? await invoice.payee.label() : await invoice.payer.label();
+      expression: function(invoice, isPayable_) {
+        return isPayable_ ? invoice.payee.toSummary() : invoice.payer.toSummary();
       }
     },
     {
       class: 'String',
       name: 'title_',
-      expression: async function(isPayable_, isApprover_, formattedAmount_, invoiceName_) {
+      expression: function(isPayable_, isApprover_, formattedAmount_, invoiceName_) {
         if ( isPayable_ ) {
           if ( isApprover_ ) {
-            return `${this.TITLE_SEND1} ${formattedAmount_} ${this.TITLE_SEND2} ${await invoiceName_}`;
+            return this.TITLE_SEND;
           }
           return this.TITLE_PENDING;
         }
-        return `${this.TITLE_REC1} ${formattedAmount_} ${this.TITLE_REC2} ${await invoiceName_}`;
+        return `${this.TITLE_REC1} ${formattedAmount_} ${this.TITLE_REC2} ${invoiceName_}`;
       }
     },
     {
@@ -156,12 +177,15 @@ foam.CLASS({
       name: 'transactionConfirmationPDF',
       documentation: `Order confirmation, as a PDF, for the Payer.
     `
+    },
+    {
+      class: 'String',
+      name: 'invoiceReference'
     }
   ],
 
   messages: [
-    { name: 'TITLE_SEND1', message: 'Sent' },
-    { name: 'TITLE_SEND2', message: 'to' },
+    { name: 'TITLE_SEND', message: 'You’re almost there!' },
     { name: 'TITLE_REC1', message: 'Requested' },
     { name: 'TITLE_REC2', message: 'from' },
     { name: 'TITLE_PENDING', message: 'Payment has been submitted for approval' },
@@ -169,9 +193,22 @@ foam.CLASS({
     { name: 'BODY_REC', message: 'Your request has been sent to your contact and is now pending payment.' },
     { name: 'BODY_PENDING', message: 'This payable requires approval before it can be processed.' },
     { name: 'REF', message: 'Your reference ID ' },
-    { name: 'V_PAY', message: 'View this payable' },
+    { name: 'V_PAY', message: 'View this invoice' },
     { name: 'V_REC', message: 'View this receivable' },
-    { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View AscendantFX Transaction Confirmation' }
+    { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View AscendantFX Transaction Confirmation' },
+    { name: 'BODY_SEND_TREVISO_1', message: 'Attention : this transaction is not complete yet!' },
+    { name: 'BODY_SEND_TREVISO_2_0', message: 'Send a TED of ' },
+    { name: 'BODY_SEND_TREVISO_2_1', message: ' within 4 hours to:' },
+    { name: 'BODY_SEND_TREVISO_3', message: 'Company: Treviso Corretora de Câmbio S.A' },
+    { name: 'BODY_SEND_TREVISO_4', message: 'CNPJ: 02.992.317/0001-87' },
+    { name: 'BODY_SEND_TREVISO_5', message: 'Bank: Banco SC Treviso (143)' },
+    { name: 'BODY_SEND_TREVISO_6', message: 'Institution: 0001' },
+    { name: 'BODY_SEND_TREVISO_7', message: 'Account: 1-1' },
+    { name: 'BODY_SEND_TREVISO_8', message: 'Reference: ' },
+    { name: 'BODY_SEND_TREVISO_9_0', message: 'If the TED above is not received within 4 hours, the payment of ' },
+    { name: 'BODY_SEND_TREVISO_9_1', message: ' to ' },
+    { name: 'BODY_SEND_TREVISO_9_2', message: ' will be cancelled.' },
+
   ],
 
   methods: [
@@ -180,13 +217,11 @@ foam.CLASS({
         .then((currency) => {
         this.formattedAmount_ = currency.format(this.invoice.amount);
       });
-      this.auth.check(null, 'invoice.pay').then((result) => {
-        this.isApprover_ = result;
-      });
     },
     function init() {
       this.transactionDAO.find(this.invoice.paymentId).then((transaction) => {
         if ( transaction ) {
+          this.invoiceReference = transaction.id.split('-', 1)[0];
           for ( var i = 0; i < transaction.lineItems.length; i++ ) {
             if ( this.ConfirmationFileLineItem.isInstance( transaction.lineItems[i] ) ) {
               this.transactionConfirmationPDF = transaction.lineItems[i].file;
@@ -214,12 +249,7 @@ foam.CLASS({
           .end()
           .start('p')
             .addClass('success-body').addClass('subdued-text')
-            .add(this.body_$)
-          .end()
-          .start('p')
-            .addClass('success-body').addClass('subdued-text')
-            .add(this.REF)
-            .add(this.invoice.referenceId)
+            .add(this.getBody())
           .end()
           .start('a')
             .addClass('link')
@@ -249,7 +279,32 @@ foam.CLASS({
             .tag(this.DONE)
           .end()
         .end();
-    }
+    },
+    function getBody() {
+      if ( this.isPayable_ && this.isApprover_ ) {
+        return this.E()
+          .start()
+            .add(this.BODY_SEND_TREVISO_2_0 + this.invoice.totalSourceAmount + this.BODY_SEND_TREVISO_2_1)
+          .end()
+          .start().add(this.BODY_SEND_TREVISO_3).end()
+          .start().add(this.BODY_SEND_TREVISO_4).end()
+          .start().add(this.BODY_SEND_TREVISO_5).end()
+          .start().add(this.BODY_SEND_TREVISO_6).end()
+          .start().add(this.BODY_SEND_TREVISO_7).end()
+          .start()
+            .add(this.BODY_SEND_TREVISO_8)
+            .add(this.invoiceReference$)
+          .end()
+          .start('b')
+            .add(this.BODY_SEND_TREVISO_9_0 + this.invoice.totalSourceAmount + this.BODY_SEND_TREVISO_9_1 +
+              (this.invoice.payee.organization || this.invoice.payee.businessName) + this.BODY_SEND_TREVISO_9_2)
+          .end();
+      } else if ( this.isPayable_ ) {
+        return this.BODY_PENDING;
+      } else {
+        return this.BODY_REC;
+      }
+    },
   ],
 
   actions: [
@@ -258,8 +313,8 @@ foam.CLASS({
       label: 'Done',
       code: function(X) {
         var menuId = this.isPayable_ ?
-            'sme.main.invoices.payables' :
-            'sme.main.invoices.receivables';
+            'mainmenu.invoices.payables' :
+            'mainmenu.invoices.receivables';
         this.menuDAO
           .find(menuId)
           .then((menu) => menu.launch());

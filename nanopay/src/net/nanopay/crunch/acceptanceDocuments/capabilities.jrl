@@ -1,0 +1,215 @@
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.tri-party-cad-agreement",
+  "name":"TriParty Agreement (CAD)",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.TriPartyAgreementCAD",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.afx-california-disclosure",
+  "name":"AFX California Disclosure",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AFXCaliforniaDisclosure",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.dual-party-agreement-cad",
+  "name":"Dual Party Agreement CAD",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.DualPartyAgreementCAD",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.afx-arizona-disclosure",
+  "name":"AFX Arizona Disclosure",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AFXArizonaDisclosure",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.tri-party-usd-agreement",
+  "name":"TriParty Agreement (USD)",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.TriPartyAgreementUSD",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.afx-colorado-disclosure",
+  "name":"AFX Colorado Disclosure",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AFXColoradoDisclosure",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.ablii-terms-and-conditions",
+  "name":"Ablii Terms and Conditions",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions",
+  "version":"0",
+  "enabled":true,
+  "associatedEntity": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.ablii-privacy-policy",
+  "name":"Ablii Privacy Policy",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy",
+  "version":"0",
+  "enabled":true,
+  "associatedEntity": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.cad-afex-terms",
+  "name":"CAD AFEX Terms",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.CADAFEXTerms",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.afex-terms-and-conditions",
+  "name":"AFEX Terms and Conditions",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.international-payments-agreement",
+  "name":"International Payments Agreement",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.NanopayInternationalPaymentsCustomerAgreement",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.certify-owners-percent",
+  "name":"Certify Owners Percent",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyOwnersPercent",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.certify-account-ownership",
+  "name":"Certify Account Ownership",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyBankAccountOwnership",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.afx-massachusetts-disclosure",
+  "name":"AFX Massachusetts Disclosure",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AFXMassachusettsDisclosure",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.afx-new-york-disclosure",
+  "name":"AFX New York Disclosure",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AFXNewYorkDisclosure",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.afx-washington-disclosure",
+  "name":"AFX Washington Disclosure",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AFXWashingtonDisclosure",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.certify-directors-list",
+  "name":"Certify Directors Listed",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyDirectorsListed",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.ca-account-authorization-agreement",
+  "name":"CA Account Authorization Agreement",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.CABankAccountAuthAgreement",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.recourse-agreement",
+  "name":"Recourse Agreement",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.RecourseAgreement",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.ca-cancellation-agreement",
+  "name":"CA Cancellation Agreement",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.CACancellationAgreement",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.us-account-authorization-agreement",
+  "name":"US Account Authorization Agreement",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.USBankAccountAuthAgreement",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.us-cancellation-agreement",
+  "name":"US Cancellation Agreement",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.USCancellationAgreement",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.us-pad-capture",
+  "name":"US Pad Capture",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.acceptance-document.ca-pad-capture",
+  "name":"CA Pad Capture",
+  "version":"0",
+  "enabled":true
+})

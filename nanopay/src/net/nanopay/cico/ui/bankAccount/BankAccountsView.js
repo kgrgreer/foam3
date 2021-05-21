@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.cico.ui.bankAccount',
   name: 'BankAccountsView',
@@ -37,7 +54,7 @@ foam.CLASS({
     }
     ^ h3 {
       opacity: 0.6;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 20px;
       font-weight: 300;
       line-height: 1;
@@ -153,13 +170,11 @@ foam.CLASS({
             .where(
               this.AND(
                 this.EQ(this.BankAccount.OWNER, this.user.id),
-                // TODO: Use this.INSTANCE_OF(this.BankAccount) instead.
                 this.OR(
-                  this.EQ(this.Account.TYPE, this.BankAccount.name),
-                  this.EQ(this.Account.TYPE, this.USBankAccount.name),
-                  this.EQ(this.Account.TYPE, this.CABankAccount.name),
-                  this.EQ(this.Account.TYPE, this.INBankAccount.name),
-                  this.EQ(this.Account.TYPE, this.PKBankAccount.name))));
+                  this.INSTANCE_OF(this.CABankAccount),
+                  this.INSTANCE_OF(this.USBankAccount),
+                  this.INSTANCE_OF(this.INBankAccount),
+                  this.INSTANCE_OF(this.PKBankAccount))));
         dao.of = this.BankAccount;
         return dao;
       }
@@ -269,12 +284,12 @@ foam.CLASS({
       requires: [
         'net.nanopay.bank.BankAccount',
         'net.nanopay.bank.BankAccountStatus',
-        'foam.u2.dialog.Popup',
-        'foam.u2.dialog.NotificationMessage'
+        'foam.u2.dialog.Popup'
       ],
 
       imports: [
         'accountDAO as bankAccountDAO',
+        'notify',
         'verifyAccount',
         'stack',
         'selectedAccount',
@@ -306,10 +321,7 @@ foam.CLASS({
                 .where(
                   this.AND(
                     this.EQ(this.BankAccount.OWNER, this.user.id),
-                    // TODO: Use this.INSTANCE_OF(this.BankAccount) instead.
-                    this.OR(
-                      this.EQ(this.Account.TYPE, this.BankAccount.name),
-                      this.EQ(this.Account.TYPE, this.CABankAccount.name))));
+                    this.INSTANCE_OF(this.CABankAccount)));
             dao.of = this.BankAccount;
             return dao;
           }
@@ -342,10 +354,7 @@ foam.CLASS({
         },
 
         function manageAccountNotification(_message, _type) {
-          this.add(this.NotificationMessage.create({
-            message: _message,
-            type: _type
-          }));
+          this.notify(_message, '', _type, true);
         }
       ]
     }

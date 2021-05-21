@@ -1,4 +1,21 @@
 /**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+/**
  * @license
  * Copyright 2020 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -13,16 +30,22 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.dao.history.HistoryRecord',
     'foam.dao.SequenceNumberDAO',
+    'foam.dao.history.HistoryRecord',
     'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.LifecycleState',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.test.Test',
     'foam.test.TestUtils',
+    'foam.util.Auth',
+
     'java.util.Date',
+
     'net.nanopay.contacts.Contact',
     'net.nanopay.invoice.model.Invoice',
-    'static foam.mlang.MLang.*',
+
+    'static foam.mlang.MLang.*'
   ],
 
   documentation: 'Class to test invoiceHistoryDAO security',
@@ -31,28 +54,30 @@ foam.CLASS({
     {
       name: 'runTest',
       javaCode: `
-        x = x.put("user", null)
+        Subject subject = new Subject.Builder(x).setUser(null).build();
+        x = x.put("subject", subject)
              .put("group", null)
              .put("twoFactorSuccess", false);
         User payerUser = new User();
         User payeeUser = new User();
         User unrelatedUser = new User();
         User adminUser = new User();
-        DAO invoiceHistoryDAO = ((DAO) x.get("invoiceHistoryDAO")).inX(x);
         DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-        DAO bareUserDAO = (DAO) x.get("bareUserDAO");
+        DAO invoiceHistoryDAO = ((DAO) x.get("invoiceHistoryDAO")).inX(x);
+        DAO bareUserDAO = ((DAO) x.get("bareUserDAO"));
         Invoice invoice = new Invoice();
         HistoryRecord historyRecord = null;
         boolean threw;
 
-        payerUser.setId(1);
-        payeeUser.setId(2);
-        unrelatedUser.setId(3);
         adminUser.setGroup("admin");
 
-        x = x.put("user", adminUser);
+        adminUser = (User) bareUserDAO.put(adminUser);
+
+        x = Auth.sudo(x, adminUser);
 
         payeeUser = (User) bareUserDAO.put(payeeUser);
+        payerUser = (User) bareUserDAO.put(payerUser);
+        unrelatedUser = (User) bareUserDAO.put(unrelatedUser);
 
         invoice.setPayeeId(payeeUser.getId());
         invoice.setPayerId(payerUser.getId());
@@ -63,7 +88,7 @@ foam.CLASS({
           EQ(HistoryRecord.OBJECT_ID, invoice.getId())
         ).select(new ArraySink())).getArray().get(0);
 
-        x = x.put("user", payerUser);
+        x = Auth.sudo(x, payerUser);
 
         ArraySink invoiceHistoryTestSink = (ArraySink) invoiceHistoryDAO.inX(x).where(
           EQ(HistoryRecord.OBJECT_ID, invoice.getId())
@@ -71,14 +96,14 @@ foam.CLASS({
 
         test(invoiceHistoryTestSink.getArray().size() == 1 , "Users can view the invoice history for invoices where they are the payee.");
 
-        x = x.put("user", payeeUser);
+        x = Auth.sudo(x, payeeUser);
         invoiceHistoryTestSink = (ArraySink) invoiceHistoryDAO.inX(x).where(
           EQ(HistoryRecord.OBJECT_ID, invoice.getId())
         ).select(new ArraySink());
 
         test(invoiceHistoryTestSink.getArray().size() == 1 , "Users can view the invoice history for invoices where they are the payer.");
 
-        x = x.put("user", unrelatedUser);
+        x = Auth.sudo(x, unrelatedUser);
         invoiceHistoryTestSink = (ArraySink) invoiceHistoryDAO.inX(x).select(new ArraySink());
 
         test(invoiceHistoryTestSink.getArray().size() == 0, "Users cannot view the history of invoices that they are not the payee or payer of.");
@@ -111,7 +136,7 @@ foam.CLASS({
 
         test(threw, "Non Admin/System group user can't add HistoryRecord to invoiceHistroyDAO");
 
-        x = x.put("user", adminUser);
+        x = Auth.sudo(x, adminUser);
         threw = false;
         try {
           invoiceHistoryDAO.inX(x).remove(historyRecord1);
@@ -137,7 +162,8 @@ foam.CLASS({
         }
 
         test(! threw, "Admin user can update invoiceHistoryDAO");
+        DAO localUserDAO = (DAO) x.get("localUserDAO");
       `
-    },
+    }
   ]
 });

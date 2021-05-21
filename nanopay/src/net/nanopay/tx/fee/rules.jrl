@@ -1,0 +1,41 @@
+// TODO: Check corridor.sourceCountry in (US, CA)
+p({
+  class: "net.nanopay.tx.fee.TransactionFeeRule",
+  id: "bb64181c-654e-4bc5-a31e-03642a34df50",
+  name: "Ablii Fee",
+  documentation: "Add fee line item for Ablii transactions.",
+  feeName: "Ablii Fee",
+  sourceCurrencyAsFeeDenomination: true,
+  enabled: true,
+  predicate: {
+    class: "foam.mlang.predicate.Or",
+    args: [
+      {
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of: "net.nanopay.tx.SummaryTransaction"
+      },
+      {
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of: "net.nanopay.fx.FXSummaryTransaction"
+      }
+    ]
+  },
+  spid: "ablii",
+  lifecycleState:1
+})
+
+p({
+  class: "net.nanopay.tx.fee.TransactionFeeRule",
+  id: "68afcf0c-c718-98f8-0841-75e97a3ad16d56",
+  name: "GD Fee",
+  documentation: "Add fee line item to GD transactions.",
+  feeName: "GD Fee",
+  feeDenomination: "CAD",
+  enabled: false,
+  predicate: {
+    class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+    of: "net.nanopay.tx.cico.COTransaction"
+  },
+  spid: "gd",
+  lifecycleState: 1
+})

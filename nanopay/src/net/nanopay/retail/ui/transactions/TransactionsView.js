@@ -23,7 +23,7 @@ foam.CLASS({
 
   axioms: [
     foam.u2.CSS.create({
-      code: function CSS() {/*
+      code: `
         ^ {
           width: 100%;
           margin: auto;
@@ -50,7 +50,7 @@ foam.CLASS({
 
         ^ .foam-u2-ActionView {
           opacity: 0.6;
-          font-family: Roboto;
+          font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
           font-size: 14px;
           font-weight: bold;
           letter-spacing: 0.3px;
@@ -115,7 +115,7 @@ foam.CLASS({
         }
 
         ^ thead > tr > th {
-          font-family: 'Roboto';
+          font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
           font-size: 14px;
           background-color: rgba(110, 174, 195, 0.2);
           color: /*%BLACK%*/ #1e1f21;
@@ -137,7 +137,7 @@ foam.CLASS({
         }
 
         ^ .foam-u2-view-TableView th {
-          font-family: 'Roboto';
+          font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
           padding-left: 15px;
           font-size: 14px;
           line-height: 1;
@@ -147,7 +147,7 @@ foam.CLASS({
         }
 
         ^ .foam-u2-view-TableView td {
-          font-family: Roboto;
+          font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
           font-size: 12px;
           line-height: 1.33;
           letter-spacing: 0.2px;
@@ -164,7 +164,7 @@ foam.CLASS({
         ^ tbody > tr:nth-child(odd) {
           background: #f6f9f9;
         }
-      */}
+      `
     })
   ],
 

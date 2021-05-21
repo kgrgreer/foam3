@@ -1,0 +1,6 @@
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"487e99e6-dd11-49e2-82d6-2ee5de9ca9cb",
+  "desiredModelId":"net.nanopay.tx.model.Transaction",
+  "strategy":"net.nanopay.tx.LiquidSummaryTransaction"
+})

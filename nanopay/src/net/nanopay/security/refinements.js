@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.security',
   name: 'UserRefine',
@@ -9,26 +26,14 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Short',
-      name: 'loginAttempts',
-      value: 0,
-      createVisibility: 'HIDDEN',
-      section: 'administrative'
-    },
-    {
       documentation: 'Visibility in Global Directory / Parners lookup',
       name: 'isPublic',
       class: 'Boolean',
       value: true,
       writePermissionRequired: true,
-      section: 'administrative'
-    },
-    {
-      class: 'DateTime',
-      name: 'nextLoginAttemptAllowedAt',
-      type: 'Date',
-      javaFactory: 'return new Date();',
-      section: 'administrative'
+      section: 'operationsInformation',
+      order: 100,
+      gridColumns: 6
     }
   ]
 });
@@ -41,6 +46,8 @@ foam.CLASS({
     {
       class: 'List',
       name: 'signatures',
+      section: 'systemInformation',
+      order: 30,
       documentation: 'List of signatures for a given transaction',
       javaType: 'java.util.ArrayList<net.nanopay.security.Signature>',
       visibility: function(signatures) {

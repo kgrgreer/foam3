@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.settings.business',
   name: 'BusinessHoursView',
@@ -6,6 +23,7 @@ foam.CLASS({
   documentation: 'View displaying business hours',
 
   imports: [
+    'notify',
     'user',
     'userDAO'
   ],
@@ -17,10 +35,10 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.DayOfWeek',
     'foam.nanos.auth.Hours',
-    'foam.u2.dialog.NotificationMessage'
   ],
 
   css: `
@@ -36,7 +54,7 @@ foam.CLASS({
       box-sizing: border-box;
     }
     ^ .labelTitle {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: bold;
       letter-spacing: 0.2px;
@@ -63,7 +81,7 @@ foam.CLASS({
       width: 135px;
       height: 40px;
       border-radius: 2px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       line-height: 2.86;
       letter-spacing: 0.2px;
@@ -91,7 +109,7 @@ foam.CLASS({
       visibility: hidden;
     }
     ^ .foam-u2-TimeView {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       color: /*%BLACK%*/ #1e1f21;
       height: 30px;
@@ -485,7 +503,7 @@ foam.CLASS({
         var businessHoursArray = [];
 
         if( ! X.timeRegex() ) {
-          self.add(self.NotificationMessage.create({ message: 'Please input time in 24 hour format when using safari, eg. 01:00 PM -> 13:00', type: 'error' }));
+          X.notify('Please input time in 24 hour format when using safari, eg. 01:00 PM -> 13:00', '', self.LogLevel.ERROR, true);
           return;
         }
 
@@ -548,9 +566,9 @@ foam.CLASS({
 
         this.userDAO.put(this.user).then(function (response) {
           self.user.copyFrom(response);
-          self.add(self.NotificationMessage.create({ message: 'Business hours sucessfully saved.', type: '' }));
+          X.notify('Business hours successfully saved.', '', self.LogLevel.INFO, true);
         }).catch(function (error) {
-          self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          X.notify(error.message, '', self.LogLevel.ERROR, true);
         });
       }
 

@@ -1,0 +1,92 @@
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"9dc62e3a-2d04-82be-eb2e-365bf9847413","sourceId":2004,"targetId":"plannerCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"becacef6-27ff-7953-013d-c3ad3cfb7df7","sourceId":2004,"targetId":"countryCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"cbcf20fe-6ace-de67-9baa-08e3b5051f38","sourceId":2004,"targetId":"corridorCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"aad7338a-38e8-9536-616b-9ef326e4573f","sourceId":2004,"targetId":"currencyCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"7c3dc022-bb0b-39f5-80ed-c65edda480a8","sourceId":2004,"targetId":"menuCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"860706b0-4e4a-ccfe-6b3f-ff77e1858209","sourceId":2004,"targetId":"serviceProviderCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"fff864f3-6e14-95b0-a33f-c34e5468cca6","sourceId":2004,"targetId":"trevisoPlannerCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"6d21e0ae-4241-f168-1ea2-83e158053c84","sourceId":2004,"targetId":"trevisoCountryCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"de0bc776-b7d2-0ed7-97b4-8ea837593ebe","sourceId":2004,"targetId":"trevisoCorridorCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"d0bfe00c-9a68-afcc-595b-ef82e4b093a4","sourceId":2004,"targetId":"trevisoCurrencyCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"b050a141-18e6-dbf7-a1ff-8e1115f6fae5","sourceId":2004,"targetId":"trevisoMenuCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"0844ee43-e2eb-88fd-7c2e-e2bea6fb9909","sourceId":2004,"targetId":"treviso","status":1})
+
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"7d71fee6-d644-d519-bee9-b71403195c00","sourceId":2005,"targetId":"crunch.onboarding.br.treviso-unlock-payments-terms","data":{"class":"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions","agreement":true,"user":2005,"business":2005,"ipAddress":"127.0.0.1"},"status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"0f5e4b9f-7616-bf8d-1185-df9e07dc8806","sourceId":2004,"targetId":"crunch.onboarding.user-registration","data":{"class":"net.nanopay.crunch.registration.UserRegistrationData","firstName":"Business","lastName":"Treviso","phoneNumber":"1234567890"},"status":1})
+
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"fe55162a-c94c-bc09-db95-da43aa5e4512","sourceId":2004,"targetId":"crunch.onboarding.treviso.general-admission","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"72777cb6-f1d5-732c-7971-f55c4693ff98","sourceId":2005,"targetId":"plannerCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"3c7fe806-1f9f-753c-ace9-1546cea8b1e2","sourceId":2005,"targetId":"countryCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"ba6c4911-f07f-94ab-ddee-af9726c3503a","sourceId":2005,"targetId":"corridorCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"fcc6a6e5-3ab7-e128-d244-ef4bbe4c1bc3","sourceId":2005,"targetId":"currencyCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"7752ed6f-416a-e1de-54d5-8c258d675ed1","sourceId":2005,"targetId":"menuCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"1be874fb-18a4-2f8f-d970-403098627006","sourceId":2005,"targetId":"serviceProviderCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"befec61d-bc2c-7d4a-2668-dfe2f82cef27","sourceId":2005,"targetId":"trevisoPlannerCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"ccb8d2b8-2bed-ee2b-cdd9-8ba833878bbe","sourceId":2005,"targetId":"trevisoCountryCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"7731e5a2-2b62-9a69-259e-97bf03818647","sourceId":2005,"targetId":"trevisoCorridorCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"81674ca1-7b33-cc1b-4229-f519747794ff","sourceId":2005,"targetId":"trevisoCurrencyCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"bb2ba81f-2ce2-e95f-e8a4-e3fe30c94641","sourceId":2005,"targetId":"trevisoMenuCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"4e283ddf-9458-e92d-2921-90150052cc10","sourceId":2005,"targetId":"treviso","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"d8ad41c1-bb50-c84a-3f04-cdeda5f66a13","sourceId":2005,"targetId":"crunch.onboarding.register-business","data":{"class":"net.nanopay.crunch.onboardingModels.InitialBusinessData","businessName":"Business","companyPhone":"1234567890","address":{"class":"foam.nanos.auth.Address","countryId":"BR","regionId":"BR-RJ","streetNumber":"5","streetName":"Atlantica","city":"Copacabana","postalCode":"22021-020"},"sameAsBusinessAddress":true,"mailingAddress":{"class":"foam.nanos.auth.Address","countryId":"BR","regionId":"BR-RJ","streetNumber":"5","streetName":"Atlantica","city":"Copacabana","postalCode":"22021-020"}},"status":1})
+
+p({"class":"foam.nanos.crunch.AgentCapabilityJunction","effectiveUser":2005,"id":"237258ef-4b71-6a2d-98d0-463241e7f986","sourceId":2004,"targetId":"crunch.onboarding.signing-officer-question","data":{"class":"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion","isSigningOfficer":true},"status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"a0cf014b-394c-eccf-1555-9fa722590e01","sourceId":2004,"targetId":"crunch.onboarding.document.utility-bills","data":{"class":"net.nanopay.crunch.document.Document"},"status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"bbf38199-9fd6-07f2-c10e-1da82c9234ce","sourceId":2004,"targetId":"crunch.onboarding.document.identification","data":{"class":"net.nanopay.crunch.document.Document"},"status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"bbf38199-9fd6-07f2-c10e-1da82c9234-q","sourceId":2004,"targetId":"crunch.onboarding.document.date-of-issue","data":{"class":"net.nanopay.crunch.document.DateOfIssue"},"status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"f96313d7-caa0-c0cd-d845-8fb5b3de9e11","sourceId":2004,"targetId":"crunch.onboarding.user-birth-date","data":{"class":"net.nanopay.crunch.onboardingModels.UserBirthDateData","birthday":"1990-10-02T00:00:00.000Z"},"status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"a51a6635-0603-85cf-3cbf-8706a6609370","sourceId":2004,"targetId":"crunch.onboarding.br.cpf","data":{"class":"net.nanopay.country.br.CPF","data":"10786348070","cpfName":"RAUL SILVA","verifyName":true,"birthday":"1990-10-02T00:00:00.000Z"},"status":1})
+p({"class":"foam.nanos.crunch.AgentCapabilityJunction","effectiveUser":2005,"id":"ea21feb2-869e-0acc-fd4b-0690b1dcc7d5","sourceId":2004,"targetId":"777af38a-8225-87c8-dfdf-eeb15f71215f-1a5","data":{"class":"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso","address":{"class":"foam.nanos.auth.Address","countryId":"BR","regionId":"BR-RJ","streetNumber":"5","streetName":"Atlantica","city":"Copacabana","postalCode":"22021-020"},"jobTitle":"CEO","phoneNumber":"1234567890"},"status":1})
+
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"ea6bf6ed-6483-84f5-9357-3935a7fca7f6","sourceId":2005,"targetId":"crunch.onboarding.document.office-consumption","data":{"class":"net.nanopay.crunch.document.Document"},"status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"c9f865ab-c4e4-3d6a-a54a-7276e4c969a1","sourceId":2005,"targetId":"crunch.onboarding.br.business-identification","data":{"class":"net.nanopay.country.br.BrazilBusinessInfoData","nire":"1","im":"","cnpj":"06990590000123","cnpjName":"GOOGLE BRASIL INTERNET LTDA.","verifyName":true},"status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"bf8a164f-9d20-b667-d5e5-7635195d7237","sourceId":2005,"targetId":"crunch.onboarding.document.annual-financial-statements","data":{"class":"net.nanopay.crunch.document.Document"},"status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"abfdd1b2-af18-5bf2-0898-f44dac28fe18","sourceId":2005,"targetId":"crunch.onboarding.document.articles-of-incorporation","data":{"class":"net.nanopay.crunch.document.Document"},"status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"ad78caa4-22d0-dd37-e3b1-8aa3e7c3f675","sourceId":2005,"targetId":"crunch.onboarding.business-registration-date","data":{"class":"net.nanopay.crunch.onboardingModels.BusinessRegistrationDateData","businessRegistrationDate":"2020-10-02T00:00:00.000Z"},"status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"53a46f1d-4aab-1447-d7d6-7b132fdb4dc5","sourceId":2005,"targetId":"crunch.onboarding.business-incorporation-date","data":{"class":"net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData","businessIncorporationDate":"2020-10-02T00:00:00.000Z"},"status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"31690bba-af33-6665-c1c5-ad6d8f68a9c3","sourceId":2005,"targetId":"crunch.onboarding.business-type-sector","data":{"class":"net.nanopay.crunch.onboardingModels.BusinessTypeAndSector","businessTypeId":1,"businessSectorId":11111},"status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"baf25d61-819b-beb3-09b2-4c3ceb51d460","sourceId":2005,"targetId":"crunch.onboarding.transaction-details","data":{"class":"net.nanopay.crunch.onboardingModels.TransactionDetailsData","targetCustomers":"Dev","suggestedUserTransactionInfo":{"class":"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo","baseCurrency":"USD","annualRevenue":"$0 to $10,000","transactionPurpose":"Payables for products and/or services","annualTransactionFrequency":"1 to 99","annualDomesticVolume":"$0 to $10,000"}},"status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"ce74f6cd-8fec-35fd-a0d3-4ef726124695","sourceId":2005,"targetId":"crunch.onboarding.business-directors","data":{"class":"net.nanopay.crunch.onboardingModels.BusinessDirectorsData"},"status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"fb9f9b08-af23-796e-a0bc-3eb2f8ad2b20","sourceId":2005,"targetId":"crunch.onboarding.br.business-ownership","data":{"class":"net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData"},"status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"c2684d35-7dba-f68e-bb4b-c33fc076d484","sourceId":2005,"targetId":"crunch.acceptance-document.afex-terms-and-conditions","data":{"class":"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms","issuedDate":"2019-08-09T00:00:00.000Z","agreement":true,"user":2005,"business":2005,"ipAddress":"127.0.0.1"},"status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"e569de40-f91e-ea6d-02ef-f4c860811009","sourceId":2005,"targetId":"payment.source.country.br","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"bef42a2b-56e4-9cf5-f6e8-d9b7145af134","sourceId":2005,"targetId":"crunch.onboarding.certify-data-reviewed","data":{"class":"net.nanopay.crunch.onboardingModels.CertifyDataReviewed","reviewed":true,"signingOfficer":2005},"status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"9efc5b40-9f2c-f6a1-cf52-091c42fc461d","sourceId":2005,"targetId":"payment.target.country.br","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"330ee77f-7074-7f59-a689-9ae6c7009626","sourceId":2005,"targetId":"crunch.onboarding.br.brazil-onboarding","status":1})
+
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"e461a2c4-9f9f-484c-d090-bc9ee098b680","sourceId":2006,"targetId":"plannerCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"660edf1e-28e1-5caa-4727-ed23f582bbeb","sourceId":2006,"targetId":"countryCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"dd45599b-5cc4-dd46-177d-cef01d735685","sourceId":2006,"targetId":"corridorCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"88a57d88-b987-71ea-b7cf-93b25d48562c","sourceId":2006,"targetId":"currencyCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"27067fb4-9f09-5c81-4085-b6e0249a2eab","sourceId":2006,"targetId":"menuCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"16823aa7-a9a7-bb17-4276-312c254b3145","sourceId":2006,"targetId":"serviceProviderCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"94b5afc9-288f-60b8-bc9f-b7e03e6c5398","sourceId":2006,"targetId":"trevisoPlannerCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"ac57ec6e-3bda-5b36-8226-62f917e93bc8","sourceId":2006,"targetId":"trevisoCountryCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"b179703c-a954-dee1-3202-63bf93f3be25","sourceId":2006,"targetId":"trevisoCorridorCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"4c7e2123-1326-9016-5259-491aa008cd07","sourceId":2006,"targetId":"trevisoCurrencyCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"d4ef62f8-5b1c-eff8-1eda-137929af84da","sourceId":2006,"targetId":"trevisoMenuCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"629a4937-2d2e-0cf0-a157-cff6a85e15ad","sourceId":2006,"targetId":"treviso","status":1})
+
+p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"36c0f24b-5db7-756d-86f8-59433641d1da",sourceId:2004,targetId:"crunch.acceptance-document.ablii-terms-and-conditions",data:{class:"net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions",link:"/service/httpFileService/eb21ba1e-7bfc-ba96-e9f6-9ad6a6ad83d2?sessionId=dafecc8b-2624-43e6-adf1-ce1da7205918",agreement:true,user:2004,business:2004,ipAddress:"127.0.0.1"},status:1})
+p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"2dbf5eaf-5ac9-c434-50c1-5ee362343c51",sourceId:2004,targetId:"crunch.acceptance-document.ablii-privacy-policy",data:{class:"net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy",link:"/service/httpFileService/81aaec42-b38e-fb90-3200-58bcb39542b7?sessionId=dafecc8b-2624-43e6-adf1-ce1da7205918",agreement:true,user:2004,business:2004,ipAddress:"127.0.0.1"},status:1})
+p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"ac720a4f-e6b2-3c68-0c86-08a069ac3bcd",sourceId:2004,targetId:"crunch.onboarding.general-admission",status:1})
+
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"139AC293-6D02-4FF2-B284-651D1A2D6C9A","sourceId":2005,"targetId":"crunch.onboarding.br.registering-payment-provider","status":1})
+
+p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"ccae6fce-1213-2d39-e357-e2961be5e306",sourceId:2005,targetId:"crunch.onboarding.br.currency-amount-information",data:{class:"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation",capital:{class:"net.nanopay.model.CurrencyAmount",currency:"BRL",amount:20000000},equity:{class:"net.nanopay.model.CurrencyAmount",currency:"BRL",amount:50000000}},status:1})
+p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"e5024cee-3d44-dfc9-35a5-bbc1aa620a50",sourceId:2005,targetId:"crunch.onboarding.br.business-account",data:{class:"net.nanopay.partner.treviso.TrevisoBusinessAccountData",ownerManagment:true,dateOfFilingTaxes:1604707200000,customers:[{class:"net.nanopay.crunch.onboardingModels.CustomerBasicInformation",name:"Brazil Dude",telephone:"12345"}],suppliers:[{class:"net.nanopay.crunch.onboardingModels.CustomerBasicInformation",name:"Brazil Gal",telephone:"12345"}]},status:1})
+p({
+  class:"foam.nanos.crunch.AgentCapabilityJunction",
+  effectiveUser:2005,
+  id:"8b7ed7df-31a2-d351-6182-dc597237e242",
+  sourceId:2004,
+  targetId:"crunch.user-invoice",
+  status:1
+})
+
+p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"df3322b3-2164-5e16-287b-a5068b392618",sourceId:2005,targetId:"crunch.onboarding.last-business-registration-date",payload:{class:"foam.nanos.crunch.CapabilityJunctionPayload",data:{class:"net.nanopay.crunch.onboardingModels.BusinessLastRegistrationDateData",businessLastRegistrationDate:1607558400000},status:1},lastUpdatedRealUser:2004})
+p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"240fa67b-6a3a-df0f-5596-100b90c9ed84",sourceId:2005,targetId:"crunch.onboarding.br.add-bank-account",payload:{class:"foam.nanos.crunch.CapabilityJunctionPayload",data:{class:"net.nanopay.bank.BRBankAccount",accountNumber:"2445638416A4",accountType:"Checking",accountOwnerType:"1",id:"7a4d62c3-dd7d-91bb-2abe-0f6cf66b514c",status:1,bankAddress:{class:"foam.nanos.auth.Address"},name:"Bank BRL",iban:"BR5155245856279572445638416A4",institution:36,branch:42,created:1607972032350,createdBy:2005,createdByAgent:2004,lastModified:1607972032350,lastModifiedBy:2004,lifecycleState:1,owner:2005},status:1},lastUpdatedRealUser:2004})
+p({class:"foam.nanos.crunch.AgentCapabilityJunction",effectiveUser:2005,id:"2b19d6bb-674d-faab-0526-ef8953770419",sourceId:2004,targetId:"crunch.onboarding.br.international-payments",payload:{class:"foam.nanos.crunch.CapabilityJunctionPayload",status:1},lastUpdatedRealUser:2004})
+p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"be6f822c-d537-1016-0b56-258ca08ad9b6",sourceId:2005,targetId:"crunch.onboarding.br.business-prerequisites",payload:{class:"foam.nanos.crunch.CapabilityJunctionPayload",status:1},lastUpdatedRealUser:2004})
+
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"50ee1aa9-f9bc-48f3-bdea-fd72f71b027c","sourceId":2005,"targetId":"treviso-tx-rules","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"1cf7a521-a792-43c1-985e-ccda041762ce","sourceId":2005,"targetId":"treviso-tx-fees","status":1})

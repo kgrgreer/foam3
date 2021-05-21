@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.flinks.view.form',
   name: 'FlinksMultipleChoiceForm',
@@ -23,7 +40,7 @@ foam.CLASS({
       height: 285px;
     }
     ^ .sub-header {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: 300;
       font-style: normal;
@@ -34,7 +51,7 @@ foam.CLASS({
       color: /*%BLACK%*/ #1e1f21;
     }
     ^ .header1 {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: 300;
       font-style: normal;
@@ -98,7 +115,7 @@ foam.CLASS({
     }
     ^ .question {
       height: 15px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: normal;
       font-style: normal;

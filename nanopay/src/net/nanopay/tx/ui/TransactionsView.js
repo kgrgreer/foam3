@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx.ui',
   name: 'TransactionsView',
@@ -36,7 +53,7 @@ foam.CLASS({
     }
     ^ h3 {
       opacity: 0.6;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 20px;
       font-weight: 300;
       line-height: 1;
@@ -55,7 +72,7 @@ foam.CLASS({
       margin-bottom: 10px;
     }
     ^ .account {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       line-height: 1.33;
       letter-spacing: 0.2px;
@@ -65,7 +82,7 @@ foam.CLASS({
       display: inline-block;
     }
     ^ .accountBalance {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       line-height: 1.33;
       letter-spacing: 0.2px;
@@ -118,7 +135,7 @@ foam.CLASS({
       width: 962px;
     }
     ^ thead > tr > th {
-      font-family: 'Roboto';
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       background: white;
       color: /*%BLACK%*/ #1e1f21;

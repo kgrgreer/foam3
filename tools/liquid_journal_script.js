@@ -9,9 +9,9 @@ global.FOAM_FLAGS = {
   swift: true,
 };
 
-require(npRoot + 'foam2/src/foam.js');
-require(npRoot + 'foam2/src/foam/nanos/nanos.js');
-require(npRoot + 'foam2/src/foam/support/support.js');
+require(npRoot + 'foam3/src/foam.js');
+require(npRoot + 'foam3/src/foam/nanos/nanos.js');
+require(npRoot + 'foam3/src/foam/support/support.js');
 
 var classloader = foam.__context__.classloader;
 [
@@ -313,7 +313,6 @@ function transfer(X, source, dest, amount) {
 
   var tx = net.nanopay.tx.DigitalTransaction.create({
     name: 'Digital Transfer',
-    isQuoted: true,
     id: foam.next$UID(),
     amount: amount,
     completionDate: X.currentDate,
@@ -423,7 +422,6 @@ function cashIn(X, bank, dest, amount) {
     destinationCurrency: dest.denomination,
     status: net.nanopay.tx.model.TransactionStatus.PENDING,
     initialStatus: net.nanopay.tx.model.TransactionStatus.PENDING,
-    isQuoted: false,
     lineItems: [
       net.nanopay.tx.ETALineItem.create({
         eta: 172800000
@@ -471,7 +469,6 @@ function cashOut(X, source, bank, amount) {
     destinationCurrency: bank.denomination,
     status: net.nanopay.tx.model.TransactionStatus.PENDING,
     initialStatus: net.nanopay.tx.model.TransactionStatus.PENDING,
-    isQuoted: false,
     lineItems: [
       net.nanopay.tx.ETALineItem.create({
         eta: 172800000

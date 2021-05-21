@@ -1,24 +1,9 @@
-p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d68","name":"No Duplicate Accounts","priority":100,"ruleGroup":"DuplicateAccount","documentation":"Ensure that added accounts are not duplicates","daoKey":"localAccountDAO","operation":0,"after":false,"action":{"class":"net.nanopay.account.DuplicateAccountRule"},"enabled":false,"saveHistory":true,"lifecycleState":1})
-p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d69","name":"Pending Transactions","priority":100,"ruleGroup":"ClosingAccount","documentation":"Disallow deleting an account if there are any pending transactions to or from the account","daoKey":"localAccountDAO","operation":2,"after":false,"action":{"class":"net.nanopay.account.NoPendingTransactionsRule"},"enabled":true,"saveHistory":true,"lifecycleState":1})
-p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d70","name":"Has Children","priority":110,"ruleGroup":"ClosingAccount","documentation":"Disallow deleting an account if the account has any children","daoKey":"localAccountDAO","operation":2,"after":false,"action":{"class":"net.nanopay.account.NoChildrenRule"},"enabled":true,"saveHistory":true,"lifecycleState":1})
-p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d71","name":"Balance not 0","priority":120,"ruleGroup":"ClosingAccount","documentation":"Disallow deleting an account if the account has a balance above 0","daoKey":"localAccountDAO","operation":2,"after":false,"action":{"class":"net.nanopay.account.NoBalanceRule"},"enabled":true,"saveHistory":true,"lifecycleState":1})
+p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d69","name":"Pending Transactions","priority":100,"ruleGroup":"ClosingAccount","documentation":"Disallow deleting an account if there are any pending transactions to or from the account","daoKey":"localAccountDAO","operation":2,"after":false,"action":{"class":"net.nanopay.account.NoPendingTransactionsRule"},"enabled":true,"saveHistory":false,"lifecycleState":1})
+p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d70","name":"Has Children","priority":110,"ruleGroup":"ClosingAccount","documentation":"Disallow deleting an account if the account has any children","daoKey":"localAccountDAO","operation":2,"after":false,"action":{"class":"net.nanopay.account.NoChildrenRule"},"enabled":true,"saveHistory":false,"lifecycleState":1})
+p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d71","name":"Balance not 0","priority":120,"ruleGroup":"ClosingAccount","documentation":"Disallow deleting an account if the account has a balance above 0","daoKey":"localAccountDAO","operation":2,"after":false,"action":{"class":"net.nanopay.account.NoBalanceRule"},"enabled":true,"saveHistory":false,"lifecycleState":1})
 p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d72","name":"Currency Permission Check - Accounts","priority":100,"ruleGroup":"CurrencyCheck","documentation":"Checks if the user has permission to have an account in the currency they set the denomination of the account to.","daoKey":"localAccountDAO","operation":3,"action":{"class":"net.nanopay.auth.CheckCurrencyRule","property":{"class":"__Property__","forClass_":"net.nanopay.account.Account","name":"denomination"}},"after":false,"enabled":true,"saveHistory":false,"lifecycleState":1})
 p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d73","name":"Currency Permission Check - Transactions","priority":100,"ruleGroup":"CurrencyCheck","documentation":"Checks if the user has permission to create transactions based on destination currency.","daoKey":"localTransactionDAO","operation":3,"action":{"class":"net.nanopay.auth.CheckCurrencyRule","property":{"class":"__Property__","forClass_":"net.nanopay.tx.model.Transaction","name":"destinationCurrency"}},"after":false,"enabled":true,"saveHistory":false,"lifecycleState":1})
 p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d74","name":"Currency Permission Check - Invoices","priority":100,"ruleGroup":"CurrencyCheck","documentation":"Checks if the user has permission to create invoices based on destination currency.","daoKey":"invoiceDAO","operation":3,"action":{"class":"net.nanopay.auth.CheckCurrencyRule","property":{"class":"__Property__","forClass_":"net.nanopay.invoice.model.Invoice","name":"destinationCurrency"}},"after":false,"enabled":true,"saveHistory":false,"lifecycleState":1})
-p({
-  "class":"foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d75","name":"Create Default Digital Account",
-  "priority":100,
-  "ruleGroup":"CreateDefaultDigitalAccount",
-  "documentation":"Creates a default digital account when a user is created.",
-  "daoKey":"localUserDAO",
-  "operation":0,
-  "action":{"class":"net.nanopay.account.CreateDefaultDigitalAccountOnUserCreateRule"},
-  "after":true,
-  "enabled":true,
-  "saveHistory":false,
-  "lifecycleState":1
-})
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d76","name":"prevent liquidity push/pull equal to current account",
@@ -33,6 +18,44 @@ p({
   "action":{
     "class":"net.nanopay.liquidity.tx.ExceptionRuleAction",
     "message":"Cannot apply liquidity setting to account, please check the push/pull account on the setting"
+  },
+  "after":false,
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"08bbad15-4c87-4ded-b5b0-429271bd4cee","name":"prevent accounts from creating liquidity settings loop",
+  "priority":100,
+  "ruleGroup":"Liquidity",
+  "documentation":"if the user creates or updates an account with a liquidity settings loop, throw an error.",
+  "daoKey":"localAccountDAO",
+  "operation":3,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+    "of":"net.nanopay.account.DigitalAccount"
+  },
+  "action":{
+    "class":"net.nanopay.liquidity.PreventAccountLiquidityLoopRule",
+    "message":"Liquidity threshold settings inputted will create a looping error. Please review and update accounts or thresholds."
+  },
+  "after":false,
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"a2931561-c643-4917-a491-386d4f9cf592","name":"prevent updated liquidity settings from creating loops in associated accounts",
+  "priority":100,
+  "ruleGroup":"Liquidity",
+  "documentation":"if the user updates a liquidity setting where associated accounts would create a liquidity settings loop, throw an error.",
+  "daoKey":"localLiquiditySettingsDAO",
+  "operation":1,
+  "action":{
+    "class":"net.nanopay.liquidity.PreventLiquiditySettingsLoopRule",
+    "message":"Liquidity threshold settings inputted will create a looping error. Please review and update accounts or thresholds."
   },
   "after":false,
   "enabled":true,
@@ -74,16 +97,110 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"f3a5e13a-5cac-11ea-bc55-0242ac130003",
-  "name":"preventDuplicateAccounts",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d68",
+  "name":"prevent duplicate digital accounts",
   "priority":100,
   "ruleGroup":"DuplicateAccount",
   "documentation":"Ensure that added accounts are not duplicates",
   "daoKey":"localAccountDAO",
   "operation":0,
   "after":false,
-  "action":{"class":"net.nanopay.account.PreventDuplicateBankAccountRule"},
-  "enabled":true,
-  "saveHistory":true,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+    "of":"net.nanopay.account.DigitalAccount"
+  },
+  "action":{
+    "class":"net.nanopay.account.DuplicateEntryRule",
+    "daoName":"localAccountDAO",
+    "readOnly": true,
+    "properties":[
+      "name",
+      "denomination",
+      "parent",
+      "desc"
+    ]
+  },
+  "enabled":false,
+  "saveHistory":false,
   "lifecycleState":1
 })
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"f3a5e13a-5cac-11ea-bc55-0242ac130003",
+  "name":"prevent duplicate CA bank accounts",
+  "priority":100,
+  "ruleGroup":"DuplicateAccount",
+  "documentation":"Ensure that added accounts are not duplicates",
+  "daoKey":"localAccountDAO",
+  "operation":0,
+  "after":false,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+    "of":"net.nanopay.bank.CABankAccount"
+  },
+  "action":{
+    "class":"net.nanopay.account.DuplicateCABankAccountRule",
+    "daoName":"localAccountDAO",
+    "readOnly": true,
+    "properties":[
+      "owner",
+      "accountNumber",
+      "denomination"
+    ]
+  },
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"af0f5c89-33e9-489e-a3c4-56812b4faa43",
+  "name":"prevent duplicate US bank accounts",
+  "priority":100,
+  "ruleGroup":"DuplicateAccount",
+  "documentation":"Ensure that added accounts are not duplicates",
+  "daoKey":"localAccountDAO",
+  "operation":0,
+  "after":false,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+    "of":"net.nanopay.bank.USBankAccount"
+  },
+  "action":{
+    "class":"net.nanopay.account.DuplicateUSBankAccountRule",
+    "daoName":"localAccountDAO",
+    "readOnly": true,
+    "properties":[
+      "owner",
+      "accountNumber",
+      "denomination"
+    ]
+  },
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"b89a336d-6de5-454e-8162-fb8514b30d6c",
+  "name":"set contact's bank account",
+  "priority":100,
+  "ruleGroup":"ContactBankAccount",
+  "documentation":"If account's owner is Contact then set its bankAccount to be this bankaccount",
+  "daoKey":"localAccountDAO",
+  "operation":0,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.MQLExpr",
+    "query":"n(instanceof net.nanopay.bank.BankAccount)"
+  },
+  "action":{
+    "class":"net.nanopay.account.SetBankAccountOnContact"
+  },
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})
+
+
+

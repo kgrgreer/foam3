@@ -4,22 +4,23 @@ p({
   "lazy":false,
   "serviceScript":
   """
-    foam.dao.DAO dao = new net.nanopay.tx.planner.SummaryPopulatorDAO(x, null);
-    dao = new net.nanopay.tx.TransactionQuoteDAO.Builder(x)
-      .setDelegate(dao)
-      .build();
+    foam.dao.DAO dao = new foam.dao.MDAO(net.nanopay.tx.planner.TransactionPlan.getOwnClassInfo());
+    dao = new net.nanopay.tx.planner.PlanSavingDAO(x, dao);
+    dao = new net.nanopay.tx.planner.PartialPlanDAO(x, dao);
+    dao = new net.nanopay.tx.planner.TransactionQuoteDAO(x, dao);
+    dao = new net.nanopay.tx.planner.SummaryPopulatorDAO(x, dao);
     dao = new foam.nanos.ruler.RulerDAO(x, dao, "transactionPlannerDAO");
     dao = new foam.dao.ValidatingDAO(x, dao, new net.nanopay.tx.RequestTransactionValidator());
-    dao = new net.nanopay.tx.QuoteFillerDAO(x, dao);
-    dao = new net.nanopay.tx.BulkTransactionPlanDAO.Builder(x)
-      .setDelegate(dao)
-      .build(); 
+    dao = new net.nanopay.tx.planner.CorridorQuoteDAO(x, dao);
+    dao = new net.nanopay.tx.planner.QuoteFillerDAO(x, dao);
+    dao = new net.nanopay.tx.BulkTransactionDAO(x, dao);
+    dao = new net.nanopay.tx.planner.AccessPlannerDAO(x, dao);
 
     return new foam.dao.EasyDAO.Builder(x)
-      .setNullify(true)
       .setDecorator(dao)
-      .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
+      .setOf(net.nanopay.tx.planner.TransactionPlan.getOwnClassInfo())
       .setRuler(false)
+      .setCluster(false)
       .setPm(true)
       .setPipelinePm(true)
       .setAuthorize(false)
@@ -32,15 +33,17 @@ p({
   "lazy":false,
   "serve":true,
   "serviceScript":"""
-      return new foam.dao.EasyDAO.Builder(x)
-        .setInnerDAO(x.get("localTransactionPlannerDAO"))
-        .setOf(net.nanopay.tx.TransactionQuote.getOwnClassInfo())
-        .setRuler(false)
-        .setAuthorize(true)
-        .setPm(true)
-        .setPipelinePm(true)
-        .setEnableInterfaceDecorators(false)
-        .build();
+    return new foam.dao.EasyDAO.Builder(x)
+      .setInnerDAO(x.get("localTransactionPlannerDAO"))
+      .setDecorator(new net.nanopay.tx.planner.TransactionPlannerBlockDAO(x, new foam.dao.NullDAO(x, net.nanopay.tx.planner.TransactionPlan.getOwnClassInfo())))
+      .setOf(net.nanopay.tx.planner.TransactionPlan.getOwnClassInfo())
+      .setRuler(false)
+      .setAuthorize(true)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setEnableInterfaceDecorators(false)
+      .setCluster(false)
+      .build();
     """,
-  "client":"{\"of\":\"net.nanopay.tx.TransactionQuote\"}"
+  "client":"{\"of\":\"net.nanopay.tx.planner.TransactionPlan\"}"
 })

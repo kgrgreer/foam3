@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.INTERFACE({
   package: 'net.nanopay.fx.afex',
   name: 'AFEX',
@@ -9,17 +26,31 @@ foam.INTERFACE({
       name: 'getToken',
       documentation: 'Get token',
       async: true,
-      type: 'net.nanopay.fx.afex.Token'
+      type: 'net.nanopay.fx.afex.Token',
+      args: [
+        {
+          name: 'spid',
+          type: 'String'
+        }
+      ]
     },
     {
-      name: 'onboardCorporateClient',
-      documentation: 'Create a new corporate client account',
+      name: 'onboardAFEXClient',
+      documentation: 'Create a new AFEX client account',
       async: true,
-      type: 'net.nanopay.fx.afex.OnboardCorporateClientResponse',
+      type: 'net.nanopay.fx.afex.OnboardAFEXClientResponse',
       args: [
         {
           name: 'request',
-          type: 'net.nanopay.fx.afex.OnboardCorporateClientRequest'
+          type: 'net.nanopay.fx.afex.OnboardAFEXClientRequest'
+        },
+        {
+          name: 'spid',
+          type: 'String'
+        },
+        {
+          name: 'requestType',
+          type: 'net.nanopay.fx.afex.AccountEntityType'
         }
       ]
     },
@@ -31,6 +62,10 @@ foam.INTERFACE({
       args: [
         {
           name: 'clientAPIKey',
+          type: 'String'
+        },
+        {
+          name: 'spid',
           type: 'String'
         }
       ]
@@ -44,6 +79,10 @@ foam.INTERFACE({
         {
           name: 'clientAPIKey',
           type: 'String'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -56,6 +95,10 @@ foam.INTERFACE({
         {
           name: 'request',
           type: 'net.nanopay.fx.afex.CreateBeneficiaryRequest'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -68,6 +111,10 @@ foam.INTERFACE({
         {
           name: 'request',
           type: 'net.nanopay.fx.afex.UpdateBeneficiaryRequest'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -80,6 +127,10 @@ foam.INTERFACE({
         {
           name: 'request',
           type: 'net.nanopay.fx.afex.DisableBeneficiaryRequest'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -92,6 +143,10 @@ foam.INTERFACE({
         {
           name: 'request',
           type: 'net.nanopay.fx.afex.FindBeneficiaryRequest'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -104,6 +159,10 @@ foam.INTERFACE({
         {
           name: 'request',
           type: 'net.nanopay.fx.afex.FindBankByNationalIDRequest'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -123,6 +182,10 @@ foam.INTERFACE({
         {
           type: 'String',
           name: 'businessApiKey'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -135,6 +198,26 @@ foam.INTERFACE({
         {
           type: 'net.nanopay.fx.afex.GetRateRequest',
           name: 'request'
+        },
+        {
+          name: 'spid',
+          type: 'String'
+        }
+      ]
+    },
+    {
+      name: 'getSpotRate',
+      documentation: 'Request a SPOT rate for a specified currency pair',
+      async: true,
+      type: 'net.nanopay.fx.afex.GetRateResponse',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.GetRateRequest',
+          name: 'request'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -147,6 +230,10 @@ foam.INTERFACE({
         {
           type: 'net.nanopay.fx.afex.GetQuoteRequest',
           name: 'request'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -159,6 +246,10 @@ foam.INTERFACE({
         {
           type: 'net.nanopay.fx.afex.CreateTradeRequest',
           name: 'request'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -171,6 +262,10 @@ foam.INTERFACE({
         {
           type: 'net.nanopay.fx.afex.CheckTradeStatusRequest',
           name: 'request'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -183,6 +278,10 @@ foam.INTERFACE({
         {
           type: 'net.nanopay.fx.afex.CreatePaymentRequest',
           name: 'request'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -195,6 +294,10 @@ foam.INTERFACE({
         {
           type: 'net.nanopay.fx.afex.CheckPaymentStatusRequest',
           name: 'request'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -207,6 +310,10 @@ foam.INTERFACE({
         {
           type: 'net.nanopay.fx.afex.GetConfirmationPDFRequest',
           name: 'confirmationPDFRequest'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -219,6 +326,10 @@ foam.INTERFACE({
         {
           type: 'net.nanopay.fx.afex.DirectDebitEnrollmentRequest',
           name: 'directDebitRequest'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -231,6 +342,10 @@ foam.INTERFACE({
         {
           type: 'net.nanopay.fx.afex.DirectDebitUnenrollmentRequest',
           name: 'directDebitUnenrollmentRequest'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -243,6 +358,94 @@ foam.INTERFACE({
         {
           type: 'net.nanopay.fx.afex.AddCompanyOfficerRequest',
           name: 'addCompanyOfficerRequest'
+        },
+        {
+          name: 'spid',
+          type: 'String'
+        }
+      ]
+    },
+    {
+      name: 'createFundingBalance',
+      documentation: 'This method is used to create a funding balance so AFEX client can receive instant payment',
+      async: true,
+      type: 'net.nanopay.fx.afex.CreateFundingBalanceResponse',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.CreateFundingBalanceRequest',
+          name: 'request'
+        },
+        {
+          name: 'spid',
+          type: 'String'
+        }
+      ]
+    },
+    {
+      name: 'getFundingBalance',
+      documentation: 'Get funding balance',
+      async: true,
+      type: 'net.nanopay.fx.afex.FundingBalance',
+      args: [
+        {
+          class: 'String',
+          name: "clientAPIKey"
+        },
+        {
+          type: 'String',
+          name: 'currency'
+        },
+        {
+          name: 'spid',
+          type: 'String'
+        }
+      ]
+    },
+    {
+      name: 'createInstantBeneficiary',
+      documentation: 'This method is used to create an Instant Beneficiary',
+      async: true,
+      type: 'net.nanopay.fx.afex.CreateInstantBeneficiaryResponse',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.CreateInstantBeneficiaryRequest',
+          name: 'request'
+        },
+        {
+          name: 'spid',
+          type: 'String'
+        }
+      ]
+    },
+    {
+      name: 'validateInstantBenefiaryRequest',
+      documentation: 'This method is used to validate an Instant Beneficiary request to see its details are valid',
+      async: true,
+      type: 'net.nanopay.fx.afex.ValidateInstantBenefiaryResponse',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.ValidateInstantBenefiaryRequest',
+          name: 'request'
+        },
+        {
+          name: 'spid',
+          type: 'String'
+        }
+      ]
+    },
+    {
+      name: 'isiban',
+      documentation: 'This method is used to validate a given IBAN',
+      async: true,
+      type: 'net.nanopay.fx.afex.IsIbanResponse',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.IsIbanRequest',
+          name: 'isIbanRequest'
+        },
+        {
+          type: 'String',
+          name: 'spid'
         }
       ]
     }

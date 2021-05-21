@@ -1,0 +1,20 @@
+p({"class":"foam.nanos.auth.ServiceProvider", "id":"nanopay", "enabled":true})
+p({"class":"foam.nanos.auth.ServiceProvider", "id":"spid", "enabled":true})
+p({"class":"foam.nanos.auth.ServiceProvider", "id":"test", "enabled":true})
+p({"class":"foam.nanos.auth.ServiceProvider", "id":"other", "enabled":true})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"testBusinessMenuCapability",
+  "enabled":true
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"testCorridorCapability",
+  permissionsGranted: [
+  "paymentprovidercorridor.source.read.paymentprovidercorridor.rbc.ca-ca",
+  "paymentprovidercorridor.source.read.paymentprovidercorridor.afex.us-ca",
+  "paymentprovidercorridor.target.read.paymentprovidercorridor.rbc.ca-ca",
+  "paymentprovidercorridor.target.read.paymentprovidercorridor.afex.us-ca"
+  ]
+})

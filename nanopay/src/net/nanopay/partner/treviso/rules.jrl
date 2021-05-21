@@ -1,0 +1,89 @@
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"c1e2dbd5-75e0-4734-9c5e-ddd4247af774",
+  "name":"Treviso TED Transaction Notification",
+  "priority":1,
+  "ruleGroup":"Notifications",
+  "documentation":"Sends a notification to the user to make a TED transfer.",
+  "enabled":true,
+  "after":false,
+  "daoKey":"invoiceDAO",
+  "operation":3,
+  "predicate": {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"paymentMethod",
+        "propValue":{
+          "class":"net.nanopay.invoice.model.PaymentStatus",
+          "ordinal":9
+        },
+        "isNew":false
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"paymentMethod",
+        "propValue":{
+          "class":"net.nanopay.invoice.model.PaymentStatus",
+          "ordinal":4
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"paymentId",
+        "propValue": ""
+      }
+    ]
+  },
+  "action":{"class":"net.nanopay.partner.treviso.invoice.TrevisoNotificationRule"},
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid": "treviso"
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"38070d3a-7bac-4d7d-8240-d57c66ef6dbd",
+  "name":"Treviso SigningOfficerByDefaultRule",
+  "priority":1,
+  "ruleGroup":"TrevisoConfig",
+  "enabled":true,
+  "after":true,
+  "daoKey":"localUserDAO",
+  "operation":0,
+  "predicate": {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.model.Business"
+      },
+      {
+        "class":"net.nanopay.crunch.IsSpid",
+        "spid": "treviso"
+      }
+    ]
+  },
+  "action":{"class":"net.nanopay.crunch.onboardingModels.SigningOfficerByDefaultRule"},
+  "saveHistory":false,
+  "spid": "treviso",
+  "lifecycleState":1
+})
+p({
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
+  "id":"ae4aa9c1-2e62-41a2-b5e5-73e5a951ce15",
+  "name":"Treviso addSigningOfficerRule",
+  "priority":100,
+  "ruleGroup":"crunchOnboarding",
+  "daoKey":"userCapabilityJunctionDAO",
+  "enabled":true,
+  "after":true,
+  "operation":3,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+    "propName":"data",
+    "of":"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso"
+  },
+  "action":{"class":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalDataOnPut"},
+  "lifecycleState":1
+})

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.settings.business',
   name: 'EditBusinessProfileView',
@@ -7,6 +24,7 @@ foam.CLASS({
 
   imports: [
     'countryDAO',
+    'notify',
     'userDAO',
     'regionDAO',
     'validatePostalCode',
@@ -28,10 +46,9 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.auth.Region',
-    'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.Address'
   ],
 
@@ -39,7 +56,6 @@ foam.CLASS({
     ^ .foam-u2-TextField,
     ^ .foam-u2-DateView,
     ^ .foam-u2-tag-Select {
-      height: 40px;
 
       background-color: #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
@@ -332,7 +348,7 @@ foam.CLASS({
     }
     ^ .address2Hint {
       height: 14px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       line-height: 1.17;
       letter-spacing: 0.2px;
@@ -389,7 +405,7 @@ foam.CLASS({
       name: 'displayedPhoneNumber',
       value: '+1',
       factory: function() {
-        return this.user.phone ? '+1 ' + this.user.phone.number : '';
+        return this.user.phoneNumber ? '+1 ' + this.user.phoneNumber : '';
       }
     },
     {
@@ -402,7 +418,7 @@ foam.CLASS({
       class: 'String',
       name: 'phoneNumberField',
       factory: function() {
-        return this.user.phone ? this.user.phone.number : '';
+        return this.user.phoneNumber ? this.user.phoneNumber : '';
       },
       postSet: function(oldValue, newValue){
         this.displayPhoneNumber = newValue;
@@ -689,54 +705,54 @@ foam.CLASS({
     },
     {
       name: 'Save',
-      code: function(){
+      code: function() {
         var self = this;
         if( !this.businessNameField ) {
-          this.add(this.NotificationMessage.create({ message: 'Business name required.', type: 'error' }));
+          this.notify('Business name required.', '', this.LogLevel.ERROR, true);
           return;
         }
         if( !this.validatePhone(this.phoneNumberField) ) {
-          this.add(this.NotificationMessage.create({ message: 'Business phone required.', type: 'error' }));
+          this.notify('Business phone required.', '', this.LogLevel.ERROR, true);
           return;
         }
         if( ! (this.businessTypeField || this.businessTypeField === 0) ) {
-          this.add(this.NotificationMessage.create({ message: 'Business type required.', type: 'error' }));
+          this.notify('Business type required.', '', this.LogLevel.ERROR, true);
           return;
         }
         if( !this.businessRegistrationNumberField ) {
-          this.add(this.NotificationMessage.create({ message: 'Business registration number required.', type: 'error' }));
+          this.notify('Business registration number required.', '', this.LogLevel.ERROR, true);
           return;
         }
         if( !this.registrationAuthorityField ) {
-          this.add(this.NotificationMessage.create({ message: 'Business registration authority required.', type: 'error' }));
+          this.notify('Business registration authority required.', '', this.LogLevel.ERROR, true);
           return;
         }
         if( !this.registrationDateField ) {
-          this.add(this.NotificationMessage.create({ message: 'Business registration date required.', type: 'error' }));
+          this.notify('Business registration date required.', '', this.LogLevel.ERROR, true);
           return;
         }
         if( !this.countryField ) {
-          this.add(this.NotificationMessage.create({ message: 'Country required.', type: 'error' }));
+          this.notify('Country required.', '', this.LogLevel.ERROR, true);
           return;
         }
         if( !this.validateStreetNumber(this.streetNumberField) ) {
-          this.add(this.NotificationMessage.create({ message: 'Street number required.', type: 'error' }));
+          this.notify('Street number required.', '', this.LogLevel.ERROR, true);
           return;
         }
         if( !this.provinceField ) {
-          this.add(this.NotificationMessage.create({ message: 'Province required.', type: 'error' }));
+          this.notify('Province required.', '', this.LogLevel.ERROR, true);
           return;
         }
         if( !this.validateCity(this.cityField) ) {
-          this.add(this.NotificationMessage.create({ message: 'City required.', type: 'error' }));
+          this.notify('City required.', '', this.LogLevel.ERROR, true);
           return;
         }
         if( !this.validatePostalCode(this.postalCodeField, this.countryField) ) {
-          this.add(this.NotificationMessage.create({ message: 'Postal Code required.', type: 'error' }));
+          this.notify('Postal code required.', '', this.LogLevel.ERROR, true);
           return;
         }
         this.user.businessName = this.businessNameField;
-        this.user.phone.number = this.phoneNumberField;
+        this.user.phoneNumber = this.phoneNumberField;
         this.user.website = this.websiteField;
         this.user.businessTypeId = this.businessTypeField;
         this.user.businessRegistrationNumber = this.businessRegistrationNumberField;
@@ -750,12 +766,12 @@ foam.CLASS({
         this.user.address.city = this.cityField;
         this.user.address.postalCode = this.postalCodeField;
         this.user.businessProfilePicture = this.businessProfilePicture;
-        this.userDAO.put(this.user).then(function(a){
-          if(!a){
-            ctrl.add(self.NotificationMessage.create({ message: 'Could not update user.', type: 'error' }));
+        this.userDAO.put(this.user).then(function(a) {
+          if ( ! a ) {
+            self.notify('Could not update user.', '', self.LogLevel.ERROR, true);
             return;
           }
-          ctrl.add(self.NotificationMessage.create({ message: 'Business profile updated.'}));
+          self.notify('Business profile updated', '', self.LogLevel.INFO, true);
           self.stack.back();
         });
       }

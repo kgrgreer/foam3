@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.liquidity',
   name: 'LiquiditySettings',
@@ -41,8 +58,8 @@ foam.CLASS({
   tableColumns: [
     'name',
     'cashOutFrequency',
-    'denomination',
-    'createdBy',
+    'denomination.name',
+    'createdBy.legalName',
     'lowLiquidity',
     'highLiquidity'
   ],
@@ -61,9 +78,8 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Long',
       name: 'id',
-      hidden: true
+      class: 'String'
     },
     {
       class: 'String',
@@ -80,7 +96,7 @@ foam.CLASS({
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.liquiditySettingsUserDAO
           .find(value)
-          .then((user) => this.add(user.label()))
+          .then((user) => this.add(user.toSummary()))
           .catch((error) => {
             this.add(value);
           });
@@ -338,7 +354,21 @@ foam.CLASS({
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.userDAO
           .find(value)
-          .then((user) => this.add(user.label()))
+          .then((user) => this.add(user.toSummary()))
+          .catch((error) => {
+            this.add(value);
+          });
+      },
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedByAgent',
+      visibility: 'RO',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subSubContext__.userDAO
+          .find(value)
+          .then((user) => this.add(user.toSummary()))
           .catch((error) => {
             this.add(value);
           });
@@ -348,7 +378,6 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
-      section: 'basicInfo',
       value: foam.nanos.auth.LifecycleState.PENDING,
       writePermissionRequired: true,
       createVisibility: 'HIDDEN',
@@ -361,11 +390,16 @@ foam.CLASS({
       name: 'userFeedback',
       storageTransient: true,
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'checkerPredicate',
+      javaFactory: 'return foam.mlang.MLang.FALSE;'
     }
   ],
   methods: [
     {
       name: 'toSummary',
+      type: 'String',
       documentation: `
         When using a reference to the accountDAO, the labels associated to it will show a chosen property
         rather than the first alphabetical string property. In this case, we are using the account name.
@@ -374,6 +408,9 @@ foam.CLASS({
         var self = this;
         return this.name;
       },
+      javaCode: `
+        return getName();
+      `
     },
     {
       name: 'doFolds',
@@ -383,13 +420,5 @@ fm.foldForState(getId()+":high", getLastModified(), getHighLiquidity().getThresh
 fm.foldForState(getId()+":low", getLastModified(), getLowLiquidity().getThreshold());
       `
     },
-    {
-      name: 'getStringId',
-      type: 'String',
-      javaCode: `
-        String id = ((Long) getId()).toString();
-        return id;
-      `
-    }
   ]
 });

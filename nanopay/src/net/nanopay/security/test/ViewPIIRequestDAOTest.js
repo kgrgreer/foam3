@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.security.test',
   name: 'ViewPIIRequestDAOTest',
@@ -10,17 +27,19 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.MDAO',
     'foam.mlang.sink.Count',
-    'foam.nanos.auth.User',
     'foam.nanos.auth.LifecycleState',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
     'foam.nanos.auth.UserAndGroupAuthService',
     'foam.util.Auth',
+
+    'java.util.ArrayList',
+    'java.util.Date',
+
     'net.nanopay.security.pii.AuthenticatedPIIRequestDAO',
     'net.nanopay.security.pii.PIIReportGenerator',
     'net.nanopay.security.pii.PIIRequestStatus',
-    'net.nanopay.security.pii.ViewPIIRequest',
-
-    'java.util.ArrayList',
-    'java.util.Date'
+    'net.nanopay.security.pii.ViewPIIRequest'
   ],
 
   constants: [
@@ -181,7 +200,7 @@ foam.CLASS({
         // Create new request, set it to approved and put to DAO
         ViewPIIRequest piiRequest = new ViewPIIRequest();
         piiRequest.setId(100);
-        piiRequest.setCreatedBy(((User) x.get("user")).getId());
+        piiRequest.setCreatedBy((((Subject) x.get("subject")).getUser()).getId());
         piiRequest.setViewRequestStatus(PIIRequestStatus.APPROVED);
         vprDAO.inX(x).put(piiRequest);
         // Find object from DAO

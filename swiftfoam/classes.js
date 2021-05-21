@@ -91,15 +91,11 @@ var classes = [
   'net.nanopay.onboarding.model.Question',
   'net.nanopay.tx.UserTransactionLimit',
   'net.nanopay.tx.client.ClientUserTransactionLimitService',
-  'net.nanopay.tx.model.Fee',
   'net.nanopay.tx.alterna.AlternaCITransaction',
   'net.nanopay.tx.cico.CITransaction',
   'net.nanopay.tx.alterna.AlternaCOTransaction',
   'net.nanopay.tx.cico.COTransaction',
   'net.nanopay.util.Frequency',
-  'net.nanopay.tx.model.FeeInterface',
-  'net.nanopay.tx.model.FeeType',
-  'net.nanopay.tx.model.FixedFee',
   'net.nanopay.tx.model.InformationalFee',
   'net.nanopay.liquidity.LiquiditySettings',
   'net.nanopay.tx.model.PercentageFee',
@@ -155,7 +151,11 @@ var classes = [
   'net.nanopay.security.Signature',
   'net.nanopay.security.PublicKeyEntry',
   'net.nanopay.security.KeyRight',
-  'net.nanopay.security.RightCondition'
+  'net.nanopay.security.RightCondition',
+  'net.nanopay.tx.fee.Fee',
+  'net.nanopay.tx.fee.FeeInterface',
+  'net.nanopay.tx.fee.FeeType',
+  'net.nanopay.tx.fee.FixedFee',
 ];
 
 module.exports = {

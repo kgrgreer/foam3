@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'TransactionQuote',
@@ -7,6 +24,7 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.ExternalTransfer',
     'java.util.ArrayList',
 
   ],
@@ -16,8 +34,7 @@ foam.CLASS({
       documentation: `Request quote on behalf of this transaction.`,
       name: 'requestTransaction',
       class: 'FObjectProperty',
-      of: 'net.nanopay.tx.model.Transaction',
-      type: 'net.nanopay.tx.model.Transaction'
+      of: 'net.nanopay.tx.model.Transaction'
     },
     {
       class: 'FObjectArray',
@@ -43,6 +60,18 @@ foam.CLASS({
       name: 'destinationAccount',
       networkTransient: true,
       documentation: 'helper property to be used during planning in order to avoid overuse of transaction.findDestinationAccount'
+    },
+    {
+      class: 'Long',
+      name: 'amount',
+      networkTransient: true,
+      documentation: 'helper property to be used during planning'
+    },
+    {
+      class: 'Long',
+      name: 'destinationAmount',
+      networkTransient: true,
+      documentation: 'helper property to be used during planning'
     },
     {
       class: 'String',
@@ -76,7 +105,44 @@ foam.CLASS({
       javaFactory: 'return new ArrayList<Transaction>();',
       networkTransient: true,
       documentation: 'helper property used by planners'
-    }
+    },
+    {
+      name: 'eligibleProviders',
+      class: 'Map',
+      javaFactory: `
+        return new java.util.HashMap<String, Boolean>();
+      `,
+      networkTransient: true,
+      documentation: 'helper property used by planners'
+    },
+    {
+      name: 'corridorsEnabled',
+      class: 'Boolean',
+      value: false,
+      networkTransient: true,
+      documentation: 'helper property used by planners'
+    },
+    {
+      class: 'Boolean',
+      name: 'showAllLineItems',
+      value: true,
+      networkTransient: true,
+      documentation: 'Set to false to only show SummaryLineItems and lineItems that require user input'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'requestOwner',
+      networkTransient: true,
+    },
+    {
+      documentation: `if we are finishing a partial transaction, it is stored here`,
+      name: 'partialTransaction',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.Transaction',
+      javaFactory: 'return null;',
+      networkTransient: true,
+    },
   ],
 
   methods: [
@@ -103,14 +169,16 @@ foam.CLASS({
       name: 'addTransfer',
       documentation: 'helper function for adding transfers to the plan',
       args: [
-        { name: 'account', type: 'Long' },
-        { name: 'amount', type: 'Long' }
+        { name: 'internal', type: 'Boolean' },
+        { name: 'account', type: 'String' },
+        { name: 'amount', type: 'Long' },
+        { name: 'stage', type: 'Long' }
       ],
       javaCode: `
-        Transfer t = new Transfer();
-        t.setAccount(account);
-        t.setAmount(amount);
-        getMyTransfers_().add(t);
+        if (internal)
+          getMyTransfers_().add( new Transfer(account, amount, stage) );
+        else
+          getMyTransfers_().add( new ExternalTransfer(account, amount, stage) );
       `
     },
   ]

@@ -1,7 +1,28 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.liquidity.ui.transaction',
   name: 'TransactionDAOBrowserView',
   extends: 'foam.comics.v2.DAOBrowserView',
+
+  requires: [
+    'foam.log.LogLevel'
+  ],
 
   imports: [
     'notify'
@@ -78,7 +99,7 @@ foam.CLASS({
     },
     {
       name: 'NO_TRANSACTIONS',
-      message: 'Selected account has no transactions.'
+      message: 'Selected account has no transactions'
     }
   ],
 
@@ -100,12 +121,21 @@ foam.CLASS({
       }
     },
     {
+      class: 'foam.dao.DAOProperty',
+      name: 'searchFilterDAO',
+      expression: function(config, accountSelectionPredicate, cannedPredicate) {
+        return config.dao$proxy.where(this.AND(accountSelectionPredicate, cannedPredicate));
+      }
+    },
+    {
       class: 'foam.mlang.predicate.PredicateProperty',
       name: 'accountSelectionPredicate',
       expression: function(accountSelection) {
-        return this.OR(
-          this.EQ(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, accountSelection),
-          this.EQ(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, accountSelection));
+        return ((!! accountSelection) && accountSelection != 0) ?
+          this.OR(
+            this.EQ(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, accountSelection),
+            this.EQ(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, accountSelection)) :
+          this.TRUE;
       }
     },
     {
@@ -116,14 +146,9 @@ foam.CLASS({
         sec = [
           {
             dao: X.accountDAO.where(X.data.AND( // TODO confirm these filters.***
-              X.data.EQ(net.nanopay.account.Account.DELETED, false),
-              X.data.EQ(net.nanopay.account.Account.ENABLED, true),
-              X.data.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
-              X.data.OR(
-                foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' }),
-                X.data.INSTANCE_OF(net.nanopay.account.ShadowAccount),
-                X.data.INSTANCE_OF(net.nanopay.account.SecuritiesAccount),
-              ))).orderBy(net.nanopay.account.Account.NAME),
+                X.data.EQ(net.nanopay.account.Account.DELETED, false),
+                X.data.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE)
+              )).orderBy(net.nanopay.account.Account.NAME),
             objToChoice: function(a) {
               return [a.id, a.summary];
             }
@@ -159,7 +184,7 @@ foam.CLASS({
     function fetchTransactionCount() {
       this.predicatedDAO.select(this.COUNT()).then((count) => {
         if ( count.value === 0 ) {
-          this.notify(this.NO_TRANSACTIONS);
+          this.notify(this.NO_TRANSACTIONS, '', this.LogLevel.WARN, true);
         }
       });
     }

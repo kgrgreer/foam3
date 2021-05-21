@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.ui.transfer',
   name: 'PlanSelectionWizard',
@@ -35,7 +52,6 @@ foam.CLASS({
   css: `
     ^ .foam-u2-tag-Select {
       width: 320px;
-      height: 40px;
       border-radius: 0;
 
       -webkit-appearance: none;
@@ -90,7 +106,7 @@ foam.CLASS({
       border: solid 1px rgba(164, 179, 184, 0.5);
     }
     ^ .checkBox-Text{
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       font-weight: normal;
       display: inline-block;
@@ -162,7 +178,7 @@ foam.CLASS({
                 self.currency = await self.currencyDAO.find(q.plans[i].sourceCurrency);
                 self.formattedAmount = self.currency.format(plan.amount);
               });
-              let checkBox = foam.u2.md.CheckBox.create({ id: i, data: i === 0 });
+              let checkBox = foam.u2.CheckBox.create({ id: i, data: i === 0 });
               checkBox.data$.sub(function() {
                 if ( checkBox.data ) {
                   self.checkedPlan = checkBox.id;

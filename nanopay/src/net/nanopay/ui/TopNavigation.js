@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'TopNavigation',
@@ -8,17 +25,23 @@ foam.CLASS({
     information along with personal settings menus.`,
 
   imports: [
-    'loginSuccess'
+    'loginSuccess',
+    'theme'
+  ],
+
+  requires: [
+    'foam.nanos.auth.LanguageChoiceView'
   ],
 
   css: `
     ^ {
-      width: 100%;
       display: flex;
-      z-index: 10001;
+      justify-content: space-between;
       background-color: /*%PRIMARY1%*/ #202341;
-      height: 60px;
-      font-family: Roboto, Helvetica, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+    ^ .logo-wrapper {
+      cursor: pointer;
     }
     ^ .navigation-components {
       margin-right: 40px;
@@ -26,12 +49,13 @@ foam.CLASS({
       align-items: center;
     }
     ^ .foam-nanos-u2-navigation-ApplicationLogoView {
-      margin-left: 16px;
+      margin-left: 28px;
       display: flex;
       flex-grow: 1;
+      height: 56px;
     }
-    ^ .net-nanopay-sme-ui-AbliiActionView-currencyChoice,
-    ^ .net-nanopay-sme-ui-AbliiActionView-currencyChoice:hover
+    ^ .foam-u2-ActionView-currencyChoice,
+    ^ .foam-u2-ActionView-currencyChoice:hover
     {
       background: none !important;
       border: none !important;
@@ -39,24 +63,17 @@ foam.CLASS({
     ^ .foam-nanos-u2-navigation-NotificationMenuItem img {
       margin-top: 10px;
     }
-    ^ .foam-nanos-u2-navigation-ApplicationLogoView {
-      margin-left: 40px;
-    }
-    ^ .foam-nanos-menu-SubMenuView-inner div {
-      right: 100px;
-      position: relative;
-    }
     ^ .foam-nanos-menu-SubMenuView-inner {
       z-index: 10001;
       box-shadow: none;
       position: absolute;
       top: 60px;
       font-weight: 300;
-      right: -100px;
+      right: 0;
     }
     ^ .foam-nanos-menu-SubMenuView-inner > div {
       height: 40px;
-      padding-left: 50px;
+      padding: 8px 0px 8px 50px;
       font-size: 14px;
       font-weight: 300;
       color: /*%BLACK%*/ #1e1f21;
@@ -68,7 +85,7 @@ foam.CLASS({
       color: /*%BLACK%*/ black;
     }
     ^ .foam-nanos-menu-SubMenuView-inner > div:hover {
-      background-color: /*%GREY5%*/ #406dea;
+      background-color: /*%GREY5%*/ #f5f7fa;
       cursor: pointer;
     }
     ^ .foam-nanos-menu-SubMenuView-inner::before {
@@ -95,7 +112,7 @@ foam.CLASS({
       background-color: /*%PRIMARY1%*/ #202341;
       height: 60px;
       justify-content: center;
-      font-family: Roboto, Helvetica, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
   `,
 
@@ -111,11 +128,18 @@ foam.CLASS({
           this.start()
             .show(this.loginSuccess$)
             .addClass(this.myClass())
-            .tag({ class: 'foam.nanos.u2.navigation.ApplicationLogoView' })
+            .start().addClass('logo-wrapper')
+              .on('click', () => {
+                window.location.hash = this.theme.logoRedirect;
+              })
+              .tag({ class: 'foam.nanos.u2.navigation.ApplicationLogoView' })
+            .end()
             .start().addClass('navigation-components')
-              .tag({ class: 'net.nanopay.ui.topNavigation.CurrencyChoiceView' })
-              // Hide notification icon from Top Nav for Liquid Demo
-              // .tag({ class: 'foam.nanos.u2.navigation.NotificationMenuItem' })
+              .tag({ class: 'foam.nanos.auth.LanguageChoiceView' })
+              .callIf( ! this.theme.disableCurrencyChoice, function() {
+                this.tag({ class: 'net.nanopay.ui.topNavigation.CurrencyChoiceView' });
+              })
+              .tag({ class: 'foam.nanos.u2.navigation.NotificationMenuItem' })
               .tag({ class: 'foam.nanos.u2.navigation.UserInfoNavigationView' })
             .end()
           .end()

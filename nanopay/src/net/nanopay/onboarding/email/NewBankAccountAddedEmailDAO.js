@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.onboarding.email',
   name: 'NewBankAccountAddedEmailDAO',
@@ -13,11 +30,12 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
+    'foam.nanos.auth.LifecycleState',
     'foam.util.Emails.EmailsUtility',
     'java.util.HashMap',
     'java.util.Map',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.contacts.Contact',
+    'net.nanopay.contacts.PersonalContact',
     'net.nanopay.model.Business'
   ],
 
@@ -33,7 +51,7 @@ foam.CLASS({
       BankAccount account    = (BankAccount) obj;
   
       // Check 1: Don't send email if account is not enabled
-      if ( ! account.getEnabled() ) {
+      if ( account.getLifecycleState() != LifecycleState.ACTIVE ) {
         return getDelegate().put_(x, obj);
       }
   
@@ -64,7 +82,7 @@ foam.CLASS({
       account = (BankAccount) getDelegate().put_(x, obj);
 
       // Do not send email to contact owned accounts.
-      if ( owner instanceof Contact ) {
+      if ( owner instanceof PersonalContact ) {
         return account;
       }
 
@@ -72,7 +90,7 @@ foam.CLASS({
       EmailMessage message = new EmailMessage.Builder(x).build();
       Map<String, Object>  args = new HashMap<>();
 
-      args.put("userId", owner.getId());
+      args.put("userId", String.valueOf(owner.getId()));
       args.put("userEmail", owner.getEmail());
       args.put("userCo", owner.getOrganization());
       args.put("subTitle2", "BankAccount Information:");
@@ -91,7 +109,7 @@ foam.CLASS({
       try {
         EmailsUtility.sendEmailFromTemplate(x, owner, message, "notification-to-onboarding-team", args);
       } catch (Throwable t) {
-        String msg = String.format("Email meant for complaince team Error: User (id = %1$s) has added a BankAccount (id = %2$d).", owner.getId(), account.getId());
+        String msg = String.format("Email meant for complaince team Error: User (id = %1$s) has added a BankAccount (id = %2$s).", owner.getId(), account.getId());
         ((Logger) x.get("logger")).error(msg, t);
       }
 

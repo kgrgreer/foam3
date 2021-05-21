@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.liquidity.tx',
   name: 'TxLimitRule',
@@ -15,6 +32,7 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.tx.ruler.TransactionLimitState',
     'static foam.mlang.MLang.*',
+    'foam.util.SafetyUtil'
   ],
 
   searchColumns: [
@@ -51,6 +69,18 @@ foam.CLASS({
           class: 'foam.u2.EnumView',
           permissioned: true
         };
+      },
+      postSet: function(o, n) {
+        if ( o.name === 'ACCOUNT' ) {
+          this.clearProperty('accountToLimit');
+          this.clearProperty('includeChildAccounts');
+        } else if ( o.name === 'USER' ) {
+          this.clearProperty('userToLimit');
+          this.clearProperty('denomination');
+        } else if (o.name === 'BUSINESS' ) {
+          this.clearProperty('businessToLimit');
+          this.clearProperty('denomination');
+        }
       }
     },
     {
@@ -79,7 +109,7 @@ foam.CLASS({
         this.__subContext__.liquiditySettingsUserDAO
           .find(value)
           .then((user) => {
-            this.add(user.label());
+            this.add(user.toSummary());
           })
           .catch((error) => {
             this.add(value);
@@ -112,7 +142,7 @@ foam.CLASS({
         this.__subContext__.businessDAO
           .find(value)
           .then((business) => {
-            this.add(business.label());
+            this.add(business.toSummary());
           })
           .catch((error) => {
             this.add(value);
@@ -190,6 +220,7 @@ foam.CLASS({
       tableHeaderFormatter: function(axiom) {
         this.add('Direction');
       },
+      columnLabel: 'Direction',
       tableCellFormatter: function(value, obj) {
         this.add( value ? "Sending" : "Receiving" );
       }
@@ -199,6 +230,7 @@ foam.CLASS({
       name: 'limit',
       label: 'With Transaction Value More Than',
       section: 'basicInfo',
+      columnLabel: 'Value',
       tableHeaderFormatter: function(axiom) {
         this.add('Value');
       },
@@ -212,7 +244,7 @@ foam.CLASS({
           errorString: 'Limit amount must be greater than 0.'
         }
       ],
-      view: { class: 'net.nanopay.liquidity.ui.LiquidCurrencyView' }
+      view: { class: 'foam.u2.view.CurrencyInputView', contingentProperty: 'denomination' }
     },
     {
       class: 'Reference',
@@ -257,6 +289,7 @@ foam.CLASS({
       javaGetter: `
         return (new TxLimitPredicate.Builder(getX()))
           .setEntityType(this.getApplyLimitTo())
+          //TODO: check liquidity for stringId
           .setId(this.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? this.getAccountToLimit() :
                  this.getApplyLimitTo() == TxLimitEntityType.BUSINESS ? this.getBusinessToLimit() :
                  this.getApplyLimitTo() == TxLimitEntityType.USER ? this.getUserToLimit() : 0)
@@ -308,7 +341,7 @@ foam.CLASS({
               throw new IllegalStateException("Business to limit must be set");
         }
         else if (this.getApplyLimitTo() == TxLimitEntityType.ACCOUNT &&
-                 this.getAccountToLimit() == 0) {
+                  SafetyUtil.isEmpty(this.getAccountToLimit())) {
               throw new IllegalStateException("Account to limit must be set");
         }
       `

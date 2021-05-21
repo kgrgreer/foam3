@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx.ruler',
   name: 'SendDeclinedCINotification',
@@ -35,11 +52,9 @@ foam.CLASS({
             public void execute(X x) {
               // SETUP
               DAO currencyDAO = (DAO) x.get("currencyDAO");
-              DAO notificationDAO = ((DAO) x.get("localNotificationDAO"));
               Logger logger  = (Logger) x.get("logger");
 
               Notification notification = new Notification();
-              notification.setEmailIsEnabled(true);
 
               if ( obj == null ) return; 
               Transaction t = (Transaction) obj; // used through loop
@@ -88,9 +103,9 @@ foam.CLASS({
                 args.put("amount", currency.format(t.getAmount()));
                 args.put("toName", (signingOfficer != null) ?
                   signingOfficer.getFirstName() :
-                  sender.label()
+                  sender.toSummary()
                 );
-                args.put("name", receiver.label());
+                args.put("name", receiver.toSummary());
                 args.put("reference", invoice.getReferenceId());
                 args.put("sendTo", sender.getEmail());
                 args.put("account", ((BankAccount) t.findSourceAccount(x)).getAccountNumber());
@@ -99,7 +114,7 @@ foam.CLASS({
                 args.put("link", config.getUrl());
 
                 notification.setEmailArgs(args);
-                notificationDAO.put(notification);
+                sender.doNotify(x, notification);
               } else {
                 notification.setBody("Your Cash In transaction was rejected.");
                 notification.setUserId(receiver.getId());
@@ -117,12 +132,12 @@ foam.CLASS({
                 String bankAccountNumber = ((BankAccount) tx.findSourceAccount(x)).getAccountNumber();
                 args.put("amount", currency.format(tx.getAmount()));
                 args.put("name", receiver.getFirstName());
-                args.put("account", bankAccountNumber.substring(bankAccountNumber.length()-4, bankAccountNumber.length()));
+                args.put("account", BankAccount.mask(bankAccountNumber));
                 args.put("link",    config.getUrl());
 
                 notification.setEmailArgs(args);
                 try {
-                  notificationDAO.put(notification);
+                  receiver.doNotify(x, notification);
                 }
                 catch (Exception E) { logger.error("Failed to put notification. "+E); };
               }

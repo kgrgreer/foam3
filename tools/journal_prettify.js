@@ -1,3 +1,7 @@
+// Something is destroying the String.fromCharCode method, so
+// it needs to be kept safe up here. Yes; this really happened.
+global.fromCharCode = String.fromCharCode;
+
 const util = require('util');
 var fs = require('fs');
 // Next 28 lines copied from liquid_journal_script.js
@@ -11,9 +15,9 @@ global.FOAM_FLAGS = {
   swift: true,
 };
 
-require(npRoot + 'foam2/src/foam.js');
-require(npRoot + 'foam2/src/foam/nanos/nanos.js');
-require(npRoot + 'foam2/src/foam/support/support.js');
+require(npRoot + 'foam3/src/foam.js');
+require(npRoot + 'foam3/src/foam/nanos/nanos.js');
+require(npRoot + 'foam3/src/foam/support/support.js');
 
 var classloader = foam.__context__.classloader;
 [
@@ -123,6 +127,19 @@ foam.CLASS({
 });
 
 
+foam.LIB({
+    name: 'local',
+    methods: [
+        function chrRange (first, last) {
+            var n = last.charCodeAt() + 1 - first.charCodeAt();
+            return Array.from(Array(n).keys()).map(
+                v => global.fromCharCode(first.charCodeAt()+v))
+                .join('');
+        }
+    ]
+});
+
+
 foam.CLASS({
     package: 'net.nanopay.toolsfolder',
     name: 'RawJournal',
@@ -161,6 +178,10 @@ foam.CLASS({
         {
             name: 'journal',
             symbols: function() {
+
+                var validSymbolStart =
+                    local.chrRange('a','z') + local.chrRange('A','Z') + '_';
+                var validSymbol = validSymbolStart + local.chrRange('0','9');
                 return {
                     "net.nanopay.toolsfolder.RawJournal": seq(
                         repeat(alt(
@@ -185,7 +206,7 @@ foam.CLASS({
                             optional(seq(sym('ws'), ',', sym('ws'))),
                             '}'),
                     'json-object-property': seq(
-                        seq1(1, sym('ws'), sym('json-string')),
+                        seq1(1, sym('ws'), sym('jsonj-key')),
                         seq1(2, sym('ws'), ':', sym('json-value'))),
 
                     // https://www.json.org/img/array.png
@@ -208,6 +229,11 @@ foam.CLASS({
                             literal('null', null),
                             ), sym('ws')),
                     
+                    'jsonj-key': seq1(1, sym('ws'),
+                        alt(
+                            sym('json-string'),
+                            sym('jsonj-symbol')), sym('ws')),
+                    
                     'foam-multiline': seq1(1, '"""', join(until('"""'))),
                     
                     // https://www.json.org/img/string.png
@@ -217,6 +243,9 @@ foam.CLASS({
                             term: '"'
                         })
                     )),
+                    'jsonj-symbol': seq(
+                        chars(validSymbolStart),
+                        optional(repeat(chars(validSymbol)))),
                     'json-escape': seq1(1, '\\', alt(
                             '\\',
                             '"',
@@ -300,6 +329,13 @@ foam.CLASS({
 
                 // Parser helpers (avoided when possible)
                 'json-number-integer': function(v) {
+                    vNew = [v[0]];
+                    if (v.length > 1) {
+                        vNew = vNew.concat(v[1]);
+                    }
+                    return vNew.join('');
+                },
+                'jsonj-symbol': function(v) {
                     vNew = [v[0]];
                     if (v.length > 1) {
                         vNew = vNew.concat(v[1]);
@@ -437,11 +473,65 @@ function addEscapes(s) {
     return newS;
 }
 
-function printObject(actionInput, ws) {
+var printObject, printArray;
+
+var printValue = (actionInput, ws) => {
+    var strKeyVal = '';
+    if ( typeof actionInput !== 'string' ) {
+        if ( actionInput === true ) {
+            strKeyVal += 'true';
+        }
+        else if ( actionInput === false ) {
+            strKeyVal += 'false';
+        }
+        else if ( actionInput === null ) {
+            strKeyVal += 'null';
+        }
+        else if ( typeof actionInput === 'object' ){
+            if ( Array.isArray(actionInput) ) {
+                strKeyVal += printArray(
+                    actionInput, ws+'  ');
+            } else {
+                strKeyVal += printObject(
+                    actionInput, ws+'  ');
+            }
+        }
+        else {
+            strKeyVal += '' + actionInput;
+        }
+    } else {
+        // TODO: Add escapes
+        strKeyVal += '"' + addEscapes(actionInput) + '"';
+    }
+    return strKeyVal;
+};
+
+printArray = (actionInput, ws) => {
+    return '[' +
+        actionInput.map(v => printValue(v, ws)).join(',')
+        + ']';
+};
+
+printObject = (actionInput, ws) => {
     var output = '{\n';
     var keyVals = [];
+    var unquotedKeyStart =
+        local.chrRange('a','z') + local.chrRange('A','Z') + '_';
+    var unquotedKeyContinue = unquotedKeyStart + local.chrRange('0','9');
     for ( var k in actionInput ) {
-        var strKeyVal = ws + '  "'+k+'": ';
+        var keyNeedsQuotes = true;
+        if (
+            k.length > 0 && unquotedKeyStart.includes(k[0])
+        ) {
+            var keyNeedsQuotes = false;
+            for ( let i = 1 ; i < k.length ; i++ ) {
+                if ( ! unquotedKeyContinue.includes(k[i])) {
+                    keyNeedsQuotes = true;
+                    break;
+                }
+            }
+        }
+        var strKeyVal = `${ws}  ${ keyNeedsQuotes ? `"${k}"` : k }: `;
 
         // For this purpose, hard-coding these specific keys to be
         // rendered as multiline strings is sufficient.
@@ -457,26 +547,8 @@ function printObject(actionInput, ws) {
             strKeyVal += blockTrim(
                 reIndent(4, actionInput[k]));
             strKeyVal += '\n'+ws+'  """'
-        } else if ( typeof actionInput[k] !== 'string' ) {
-            if ( actionInput[k] === true ) {
-                strKeyVal += 'true';
-            }
-            else if ( actionInput[k] === false ) {
-                strKeyVal += 'false';
-            }
-            else if ( actionInput[k] === null ) {
-                strKeyVal += 'null';
-            }
-            else if ( typeof actionInput[k] === 'object' ){
-                strKeyVal += printObject(
-                    actionInput[k], ws+'  ');
-            }
-            else {
-                strKeyVal += '' + actionInput[k];
-            }
         } else {
-            // TODO: Add escapes
-            strKeyVal += '"' + addEscapes(actionInput[k]) + '"';
+            strKeyVal += printValue(actionInput[k], ws);
         }
 
         keyVals.push(strKeyVal);

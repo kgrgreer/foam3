@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.payment',
   name: 'PADTypeLineItem',
@@ -41,10 +58,6 @@ foam.CLASS({
       hidden: true
     },
     {
-      name: 'reversable',
-      hidden: true
-    },
-    {
       name: 'note',
       hidden: true
     }
@@ -62,10 +75,10 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(`
   public static void addEmptyLineTo(Transaction transaction) {
-    addTo(transaction, 0);
+    addTo(transaction, 0l);
   }
 
-  public static void addTo(Transaction transaction, int padType) {
+  public static void addTo(Transaction transaction, long padType) {
     boolean set = false;
     for (TransactionLineItem lineItem : transaction.getLineItems()) {
       if ( lineItem instanceof PADTypeLineItem ) {
@@ -76,7 +89,7 @@ foam.CLASS({
     if ( ! set ) {
       PADTypeLineItem lineItem = new PADTypeLineItem();
       lineItem.setPadType(padType);
-      transaction.addLineItems(new TransactionLineItem[] { lineItem }, null);
+      transaction.addLineItems( new TransactionLineItem[] { lineItem } );
     }
   }
 
@@ -97,6 +110,14 @@ foam.CLASS({
     return null;
   }
           `);
+      }
+    }
+  ],
+  methods: [
+    {
+      name: 'showLineItem',
+      code: function() {
+        return false;
       }
     }
   ]

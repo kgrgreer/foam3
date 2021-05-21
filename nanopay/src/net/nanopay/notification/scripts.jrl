@@ -46,3 +46,91 @@ p({
     print("Done");
   """
 })
+
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"create notification settings for existing users",
+  "code":"""
+import foam.nanos.auth.User;
+// Uncomment for v3.9+
+//import foam.nanos.auth.Subject;
+import net.nanopay.model.Business;
+import foam.dao.DAO;
+import foam.nanos.notification.NotificationSetting;
+import foam.nanos.notification.EmailSetting;
+import foam.nanos.notification.sms.SMSSetting;
+import foam.dao.ArraySink;
+import foam.mlang.MLang;
+import foam.mlang.predicate.Predicate;
+import foam.mlang.sink.Count;
+
+// Switch to Subject for v3.9+
+//user = ((Subject) x.get("subject")).getUser();
+user = (User) x.get("user");
+userDAO = (DAO) x.get("bareUserDAO");
+agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
+notificationSettingDAO = (DAO) x.get("notificationSettingDAO");
+users = userDAO.select(new ArraySink()).getArray();
+
+for ( User user : users ) {
+  notificationSetting = user.getNotificationSettings(x).where(MLang.CLASS_OF(NotificationSetting.class)).select(new Count());
+  emailSetting = user.getNotificationSettings(x).where(MLang.CLASS_OF(EmailSetting.class)).select(new Count());
+  smsSetting = user.getNotificationSettings(x).where(MLang.CLASS_OF(SMSSetting.class)).select(new Count());
+
+  if (notificationSetting.getValue() <= 0) {
+    notificationSetting = new NotificationSetting();
+    notificationSetting.setOwner(user.getId());
+    notificationSettingDAO.put(notificationSetting);
+    print("Notification Setting created for user: " + user.getId());
+  }
+
+  if ( ! ( user instanceof Business ) ) {
+    if (emailSetting.getValue() <= 0) {
+      emailsetting = new EmailSetting();
+      emailsetting.setOwner(user.getId());
+      notificationSettingDAO.put(emailsetting);
+      print("Email Setting created for user: " + user.getId());
+    }
+    if (smsSetting.getValue() <= 0) {
+      smsSetting = new SMSSetting();
+      smsSetting.setOwner(user.getId());
+      notificationSettingDAO.put(smsSetting);
+      print("SMS Setting created for user: " + user.getId());
+    }
+  }
+}
+
+junctions = agentJunctionDAO.select(new ArraySink()).getArray();
+for ( junction : junctions ) {
+  junctionId = new foam.nanos.auth.UserUserJunctionId();
+  junctionId.setSourceId(junction.getSourceId());
+  junctionId.setTargetId(junction.getTargetId());
+
+  notificationSettings = notificationSettingDAO.where(MLang.AND(new Predicate [] {
+        MLang.CLASS_OF(NotificationSetting.class),
+        MLang.EQ(NotificationSetting.USER_JUNCTION, junctionId)
+      })).select(new Count()).getValue();
+
+  emailSettings = notificationSettingDAO.where(MLang.AND(new Predicate [] {
+        MLang.CLASS_OF(EmailSetting.class),
+        MLang.EQ(NotificationSetting.USER_JUNCTION, junctionId)
+      })).select(new Count()).getValue();
+
+  if ( notificationSettings <= 0 ){
+    notificationSetting = new NotificationSetting();
+    notificationSetting.setUserJunction(junctionId);
+    notificationSettingDAO.put(notificationSetting);
+    print("Notification setting created for junction: sourceId: " + junctionId.getSourceId() + " targetId: " + junctionId.getTargetId());
+  }
+
+  if ( emailSettings <= 0 ) {
+    emailsetting = new EmailSetting();
+    emailsetting.setUserJunction(junctionId);
+    notificationSettingDAO.put(emailsetting);
+    print("Email setting created for junction: sourceId: " + junctionId.getSourceId() + " targetId: " + junctionId.getTargetId());
+  }
+}
+
+print("done");
+  """
+})

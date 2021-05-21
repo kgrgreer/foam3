@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.ui.transfer',
   name: 'TransferUserCard',
@@ -10,6 +27,10 @@ foam.CLASS({
     'branchDAO',
     'invoiceMode',
     'type'
+  ],
+
+  requires: [
+    'net.nanopay.bank.BankAccount'
   ],
 
   css: `
@@ -90,7 +111,7 @@ foam.CLASS({
     'idLabel_',
     'name_',
     'email_',
-    'phone_',
+    'phoneNumber_',
     'flagURL_',
     {
       name: 'suite_',
@@ -147,7 +168,7 @@ foam.CLASS({
             .end()
           .end()
           .start('p').addClass('pDetails').add(this.email_$).end()
-          .start('p').addClass('pDetails').add(this.phone_$).end()
+          .start('p').addClass('pDetails').add(this.phoneNumber_$).end()
           .start('p').addClass('pDetails').add(this.suite_$).end()
           .start('p').addClass('pDetails').add(this.address1_$).end()
           .start('p').addClass('pDetails').add(this.address2_$).end()
@@ -187,7 +208,7 @@ foam.CLASS({
 
     function setBankInfo(account) {
       var self = this;
-      self.accountNo_ = '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length);
+      self.accountNo_ = this.bankAccount.mask(account.accountNumber);
       self.branchDAO.find(account.branchId).then(function(bank) {
         switch ( self.user.address.countryId ) {
           case 'CA':
@@ -240,14 +261,14 @@ foam.CLASS({
         this.email_ = this.user.email;
 
         var phonePropertyName = this.invoiceMode ?
-          'businessPhone' :
-          'phone';
+          'businessPhoneNumber' :
+          'phoneNumber';
         var addressPropertyName = this.invoiceMode ?
           'businessAddress' :
           'address';
 
         if ( this.user[phonePropertyName] ) {
-          this.phone_ = this.user[phonePropertyName].number;
+          this.phoneNumber_ = this.user[phonePropertyName];
         }
 
         if ( this.user[addressPropertyName] ) {

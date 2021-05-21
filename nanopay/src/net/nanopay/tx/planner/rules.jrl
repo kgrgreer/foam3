@@ -1,13 +1,10 @@
 //Transaction Planners only beyond this point.
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.DigitalTransactionPlanner",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d182",
   "name":"Digital Transaction Planner",
   "priority":200,
   "ruleGroup":"transactionPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -25,21 +22,132 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyEQProperty",
         "prop1":"sourceUnit",
         "prop2":"destinationUnit"
+      },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1": {
+          "class": "foam.nanos.ruler.predicate.PropertyEQProperty",
+          "prop1": "sourceAccount",
+          "prop2": "destinationAccount"
+        }
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.HasSameReserveAccount"
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.DigitalTransactionPlanner"},
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.RbcInterTrustPlanner",
+  "id":"c4f3e4ae-01b6-4638-8a09-06e6b9f05f42",
+  "name":"RBC Digital Inter Trust Transaction Planner",
+  "priority":200,
+  "ruleGroup":"transactionPlanner",
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"RBC"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQProperty",
+        "prop1":"sourceUnit",
+        "prop2":"destinationUnit"
+      },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1": {
+          "class": "foam.nanos.ruler.predicate.PropertyEQProperty",
+          "prop1": "sourceAccount",
+          "prop2": "destinationAccount"
+        }
+      },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1":{
+          "class":"net.nanopay.tx.planner.predicate.HasSameReserveAccount"
+        }
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.CheckReserveAccountFor",
+        "source":true,
+        "bankProperty":"institution",
+        "bankValue":"10"
+      }
+    ]
+  },
+  "lifecycleState":1
+})
+p({
+  "class":"net.nanopay.tx.planner.BmoInterTrustPlanner",
+  "id":"884607ff-055e-41d4-9dbb-69433b2aa816",
+  "name":"BMO Digital Inter Trust Transaction Planner",
+  "priority":200,
+  "ruleGroup":"transactionPlanner",
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"BMO"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQProperty",
+        "prop1":"sourceUnit",
+        "prop2":"destinationUnit"
+      },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1": {
+          "class": "foam.nanos.ruler.predicate.PropertyEQProperty",
+          "prop1": "sourceAccount",
+          "prop2": "destinationAccount"
+        }
+      },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1":{
+          "class":"net.nanopay.tx.planner.predicate.HasSameReserveAccount"
+        }
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.CheckReserveAccountFor",
+        "source":true,
+        "bankProperty":"institution",
+        "bankValue":"2"
+      }
+    ]
+  },
+  "lifecycleState":1
+})
+p({
+  "class":"net.nanopay.tx.planner.GenericCIPlanner",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d183",
   "name":"Generic Cash In Planner",
   "priority":100,
   "ruleGroup":"genericPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -55,18 +163,14 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.GenericCIPlanner"},
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.GenericCOPlanner",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d184",
   "name":"Generic Cash Out Planner",
   "priority":101,
   "ruleGroup":"genericPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -82,18 +186,14 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.GenericCOPlanner"},
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.GenericFXPlanner",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d185",
   "name":"Generic FX Planner",
   "priority": 95,
   "ruleGroup":"genericPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -117,23 +217,20 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.GenericFXPlanner"},
   "lifecycleState":1
 })
-
-
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.SecurityCIPlanner",
   "name":"Generic Security CI planner",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d51",
   "priority":110,
   "ruleGroup":"SecurityPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
+      {
+        "class":"net.nanopay.tx.ruler.IsSecurityQuote"
+      },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQProperty",
         "prop1":"sourceUnit",
@@ -151,21 +248,20 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.SecurityCIPlanner"},
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.SecurityCOPlanner",
   "id":"dad02a73-5a81-4f38-8b0c-0b7cbb09fa71",
   "name":"Generic Security CO planner",
   "priority":111,
   "ruleGroup":"SecurityPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
+      {
+        "class":"net.nanopay.tx.ruler.IsSecurityQuote"
+      },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQProperty",
         "prop1":"sourceUnit",
@@ -183,18 +279,14 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.SecurityCOPlanner"},
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.FOPPlanner",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d52",
   "name":"FOP Transaction Planner",
   "priority":100,
   "ruleGroup":"SecurityPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -215,52 +307,40 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.FOPPlanner"},
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.DVPPlanner",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d53",
   "name":"DVP Transaction Planner",
   "priority":90,
   "ruleGroup":"SecurityPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
   "predicate":{
     "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
     "propName":"requestTransaction",
     "of":"net.nanopay.tx.DVPTransaction"
   },
-  "action":{"class":"net.nanopay.tx.planner.DVPPlanner"},
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.SecurityBucketPlanner",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d54",
   "name":"Bucket Transaction Planner",
   "priority":80,
   "ruleGroup":"SecurityPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
   "predicate":{
     "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
     "propName":"requestTransaction",
     "of":"net.nanopay.tx.BucketTransaction"
   },
-  "action":{"class":"net.nanopay.tx.planner.SecurityBucketPlanner"},
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.AFEXTransactionPlanner",
   "id":"13df0d76-ba3e-4287-b42e-c7ceff059dd8",
   "name":"AFEX Transaction Planner",
   "priority":95,
   "ruleGroup":"transactionPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -275,27 +355,23 @@ p({
         "of":"net.nanopay.bank.BankAccount"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.TransactionQuoteCorridorPredicate",
-        "providerId":4,
+        "class":"net.nanopay.tx.planner.predicate.IsAccountOwnerAFEXUserPredicate",
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.IsAFEXUserPredicate",
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"AFEX"
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.AFEXTransactionPlanner"},
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.AscendantFXTransactionPlanner",
   "id":"33666aa9-2294-415a-a015-31530f9e0204",
   "name":"AscendantFx Transaction Planner",
   "priority":90,
   "ruleGroup":"transactionPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
-    "predicate":{
+  "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
       {
@@ -309,27 +385,23 @@ p({
         "of":"net.nanopay.bank.BankAccount"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.TransactionQuoteCorridorPredicate",
-        "providerId":1,
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"AscendantFX"
       },
       {
         "class":"net.nanopay.tx.planner.predicate.IsAscendantFXUserPredicate",
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.AscendantFXTransactionPlanner"},
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.KotakFxTransactionPlanner",
   "id":"43db5d84-1d63-4b28-b671-7bd1e7cccf5f",
   "name":"KotakFxTransactionPlanner",
   "documentation":"Planner for transaction from CA Digital Account (CAD) to IN Bank Account (INR)",
   "priority":90,
-  "ruleGroup":"transactionPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
+  "ruleGroup":"KotakPlanner",
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -353,21 +425,21 @@ p({
         "propName":"destinationUnit",
         "propValue":"INR"
       },
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"Kotak"
+      }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.KotakFxTransactionPlanner"},
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.KotakSplitTransactionPlanner",
   "id":"10625392-606c-4d9b-9cec-8e588b28e134",
   "name":"KotakSplitTransactionPlanner",
   "documentation":"Split CA bank to IN bank transactions",
   "priority":85,
-  "ruleGroup":"transactionPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
+  "ruleGroup":"KotakPlanner",
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -380,22 +452,22 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"destinationAccount",
         "of":"net.nanopay.bank.INBankAccount"
+      },
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"Kotak"
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.KotakSplitTransactionPlanner"},
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.KotakTransactionPlanner",
   "id":"eab3592a-b79e-4c5f-a198-328729133d25",
   "name":"KotakTransactionPlanner",
   "documentation":"Planner for INR Digital to INR bank account",
   "priority":70,
-  "ruleGroup":"transactionPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
+  "ruleGroup":"KotakPlanner",
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -413,22 +485,22 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyEQProperty",
         "prop1":"sourceUnit",
         "prop2":"destinationUnit"
+      },
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"Kotak"
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.KotakTransactionPlanner"},
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.BankDigitalPlanner",
   "id":"3cb6aab3-107a-495a-8974-ed3286192b35",
   "name":"Bank to Digital Planner",
   "documentation":"Planner for bank -> digital transaction where owners for both accounts are different",
   "priority":90,
   "ruleGroup":"transactionPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -453,20 +525,16 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.BankDigitalPlanner"},
   "lifecycleState":1
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.DigitalBankPlanner",
   "id":"ab51def7-b5d4-48ee-99ee-e3d418583740",
   "name":"Digital to Bank Planner",
   "documentation":"Planner for digital -> bank transaction where owners for both accounts are different",
   "priority":90,
   "ruleGroup":"transactionPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -491,19 +559,16 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.DigitalBankPlanner"},
   "lifecycleState":1
 })
+//TODO: Basically don't merge the change to this file in was for testing
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.BankToBankPlanner",
   "id":"61d57d66-3e63-4c53-9eee-de3f8f75e56c",
   "name":"Bank to Bank Planner",
   "documentation":"Planner for Bank -> bank transactions",
   "priority":95,
   "ruleGroup":"transactionPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -516,27 +581,47 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"destinationAccount",
         "of":"net.nanopay.bank.BankAccount"
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyEQProperty",
-        "prop1":"sourceUnit",
-        "prop2":"destinationUnit"
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.BankToBankPlanner"},
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.IntuitBankToBankPlanner",
+  "id":"8A9B2980-F6C5-4A67-966E-760FE6649B56",
+  "name":"Intuit Bank to Bank Planner",
+  "documentation":"Planner for Bank -> Bank Transactions for Intuit",
+  "priority":95,
+  "ruleGroup":"transactionPlanner",
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+       "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      }
+    ]
+  },
+  "lifecycleState":1,
+  "sourceCapabilityList": ["crunch.onboarding.api.ca-business-send-payments", "crunch.onboarding.api.unlock-ca-payments"],
+  "sourceCapabilityExceptionListUpperLimit": 100000,
+  "sourceCapabilityExceptionList": ["crunch.onboarding.api.unlock-ca-payments-under-1000"],
+  "destinationCapabilityList": ["crunch.onboarding.api.ca-business-receive-payments", "crunch.onboarding.api.unlock-ca-payments"]
+})
+p({
+  "class":"net.nanopay.tx.planner.VerificationPlanner",
   "id":"9577e4ae-c3c3-41a2-b479-43d91a12b2a0",
   "name":"Verification Transaction Planner",
   "documentation":"Planner for micro deposit to verify bank account",
   "priority":70,
+  "verifierAccount":4,
   "ruleGroup":"transactionPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -552,25 +637,22 @@ p({
       }
     ]
   },
-  "action":{
-    "class":"net.nanopay.tx.planner.VerificationPlanner",
-    "verifierAccount":4
-  },
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.AlternaCITransactionPlanner",
   "id":"826d7ac5-65ce-4459-972b-6211a3fb8554",
   "name":"Alterna CI Planner",
   "documentation":"Alterna CI Transaction Planner",
   "priority":100,
   "ruleGroup":"AlternaPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"Alterna"
+      },
       {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
@@ -596,22 +678,22 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.AlternaCITransactionPlanner"},
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.AlternaCOTransactionPlanner",
   "id":"b72c9818-1446-4041-8ea8-598205bd3a1f",
   "name":"Alterna CO Planner",
   "documentation":"Alterna CO Transaction Planner",
   "priority":100,
   "ruleGroup":"AlternaPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"Alterna"
+      },
       {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
@@ -645,22 +727,23 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.AlternaCOTransactionPlanner"},
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.BmoCITransactionPlanner",
   "id":"4763d336-e876-4611-a8b4-b0325b187d79",
   "name":"BMO CI Planner",
   "documentation":"BMO CI Transaction Planner",
+  "upperLimit":50000000,
   "priority":100,
   "ruleGroup":"BMOPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"BMO"
+      },
       {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
@@ -683,25 +766,31 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"destinationUnit",
         "propValue":"CAD"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.CheckReserveAccountFor",
+        "source":false,
+        "bankProperty":"institution",
+        "bankValue":"2"
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.BmoCITransactionPlanner"},
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.BmoCOTransactionPlanner",
   "id":"8ddd5708-1420-4e7a-b383-d9f683405179",
   "name":"BMO CO Planner",
   "documentation":"BMO CO Transaction Planner",
   "priority":100,
   "ruleGroup":"BMOPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"BMO"
+      },
       {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
@@ -732,40 +821,24 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"destinationUnit",
         "propValue":"CAD"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.CheckReserveAccountFor",
+        "source":true,
+        "bankProperty":"institution",
+        "bankValue":"2"
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.BmoCOTransactionPlanner"},
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
-  "id":"2719fbd7-49e2-4e9a-8f98-ee26a9345479",
-  "name":"Bulk Transaction Planner",
-  "documentation":"Bulk Transaction Planner",
-  "priority":100,
-  "ruleGroup":"transactionPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
-  "predicate":{
-    "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
-    "propName":"requestTransaction",
-    "of":"net.nanopay.tx.BulkTransaction"
-  },
-  "action":{"class":"net.nanopay.tx.planner.BulkTransaction"},
-  "lifecycleState":1
-})
-p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.NanopayFXTransactionPlanner",
   "id":"ea880670-142c-4be3-930d-acfba1bd5914",
   "name":"NanopayFXTransactionPlanner",
   "documentation":"Plans Fx transactions",
   "priority":85,
   "ruleGroup":"transactionPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -789,19 +862,15 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.NanopayFXTransactionPlanner"},
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.LoanTransactionPlanner",
   "id":"d4d6dc04-db17-43f6-a7e8-e720d18b22df",
   "name":"LoanTransactionPlanner",
   "documentation":"Plans loan transactions",
   "priority":85,
   "ruleGroup":"transactionPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
   "predicate":{
     "class":"foam.mlang.predicate.Or",
     "args":[
@@ -817,130 +886,52 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.LoanTransactionPlanner"},
   "lifecycleState":1
 })
 
 p({
-  "class": "foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d55","name": "Compliance Transaction Planner",
-  "ruleGroup": "Planner",
-  "documentation": "Plans compliance transaction before money changes hands. Currently only used on the children transactions of a BulkTransaction to check each beneficiary compliance.",
-  "daoKey": "transactionPlannerDAO",
-  "operation": 0,
-  "after": true,
-  "priority": 100,
-  "predicate": {
-    "class":"foam.mlang.predicate.And",
-    "args":[
-      {
-        "class": "foam.nanos.ruler.predicate.PropertyNEQValue",
-        "propName": "parent",
-        "propValue": null
-      },
-      {
-        "class": "foam.mlang.predicate.Eq",
-        "arg1": {
-          "class": "foam.mlang.expr.Dot",
-          "arg1": {
-            "class": "foam.mlang.expr.Dot",
-            "arg1": {
-              "class": "foam.mlang.expr.Dot",
-              "arg1": {
-                "class": "foam.mlang.ContextObject",
-                "key": "NEW"
-              },
-              "arg2": {
-                "class": "__Property__",
-                "forClass_": "net.nanopay.tx.TransactionQuote",
-                "name":"parent"
-              }
-            },
-            "arg2": {
-              "class": "__Property__",
-              "forClass_": "net.nanopay.tx.TransactionQuote",
-              "name":"requestTransaction"
-            }
-          },
-          "arg2": {
-            "class": "foam.mlang.PredicatedExpr",
-            "arg1": {
-              "class": "foam.mlang.predicate.IsInstanceOf",
-              "targetClass": "net.nanopay.tx.BulkTransaction"
-            }
-          }
-        },
-        "arg2": {
-          "class": "foam.mlang.Constant",
-          "value": true
-        }
-      }
-    ]
-  },
-  "action": {
-    "class": "net.nanopay.tx.ruler.ComplianceTransactionPlanner"
-  },
-  "enabled": true,
-  "lifecycleState":1
-})
-
-p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.DebtablePlanner",
   "id":"9522dba0-ea23-4249-b6a5-cfe5105cf12f",
   "name":"Detable Planner",
   "priority":85,
-  "ruleGroup":"transactionPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
+  "ruleGroup":"LoanPlanner",
   "predicate":{
-    "args":[
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
-        "propName":"sourceAccount",
-        "of":"net.nanopay.account.Debtable"
-      }
-    ]
+    "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+    "propName":"sourceAccount",
+    "of":"net.nanopay.account.Debtable"
   },
-  "action":{"class":"net.nanopay.tx.planner.DebtablePlanner"},
   "lifecycleState":1
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.DebtRepaymentPlanner",
   "id":"9124f118-f408-456b-813d-2ca92c95747e",
   "name":"Debt Repayment Planner",
   "priority":85,
-  "ruleGroup":"transactionPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
+  "ruleGroup":"LoanPlanner",
   "predicate":{
-    "args":[
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
-        "propName":"destinationAccount",
-        "of":"net.nanopay.account.DebtAccount"
-      }
-    ]
+    "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+    "propName":"destinationAccount",
+    "of":"net.nanopay.account.DebtAccount"
   },
-  "action":{"class":"net.nanopay.tx.planner.DebtRepaymentPlanner"},
   "lifecycleState":1
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.RbcCITransactionPlanner",
   "id":"3ced1642-1bed-4615-a263-d816b2a2db60",
   "name":"RBC CI Planner",
   "documentation":"RBC CI Transaction Planner",
   "priority":100,
   "ruleGroup":"RBCPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
+  "upperLimit":25000000,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"RBC"
+      },
       {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
@@ -963,25 +954,32 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"destinationUnit",
         "propValue":"CAD"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.CheckReserveAccountFor",
+        "source":false,
+        "bankProperty":"institution",
+        "bankValue":"10"
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.RbcCITransactionPlanner"},
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.tx.planner.RbcCOTransactionPlanner",
   "id":"1dce9ad8-41cc-44f6-a64f-4e7596556fa6",
   "name":"RBC CO Planner",
   "documentation":"RBC CO Transaction Planner",
   "priority":100,
   "ruleGroup":"RBCPlanner",
-  "daoKey":"transactionPlannerDAO",
-  "enabled":true,
-  "operation":0,
+  "upperLimit":25000000,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"RBC"
+      },
       {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
@@ -1012,9 +1010,39 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"destinationUnit",
         "propValue":"CAD"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.CheckReserveAccountFor",
+        "source":true,
+        "bankProperty":"institution",
+        "bankValue":"10"
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.RbcCOTransactionPlanner"},
   "lifecycleState":1
+})
+
+p({
+  class: "net.nanopay.tx.planner.BulkTransactionPlanner",
+  id: "2585bc32-02f1-4a66-bebe-39e61740abf7",
+  name: "Bulk Transaction Planner",
+  priority: 100,
+  ruleGroup: "transactionPlanner",
+  enabled: true,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.nanos.ruler.predicate.PropertyIsInstance",
+        propName: "requestTransaction",
+        of: "net.nanopay.tx.BulkTransaction"
+      },
+      {
+        class: "foam.nanos.ruler.predicate.PropertyEQProperty",
+        prop1: "sourceAccount",
+        prop2: "destinationAccount"
+      }
+    ]
+  },
+  lifecycleState: 1
 })

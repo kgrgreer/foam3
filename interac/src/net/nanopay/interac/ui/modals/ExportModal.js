@@ -1,3 +1,19 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
 
 foam.CLASS({
   package: 'net.nanopay.interac.ui.modals',
@@ -62,7 +78,7 @@ foam.CLASS({
 
   axioms: [
     foam.u2.CSS.create({
-      code: function CSS() {/*
+      code: `
 
       ^{
         width: 448px;
@@ -78,7 +94,7 @@ foam.CLASS({
       ^ .payNow-Text{
         width: 57px;
         height: 40px;
-        font-family: Roboto;
+        font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-size: 14px;
         line-height: 2.86;
         letter-spacing: 0.2px;
@@ -92,7 +108,7 @@ foam.CLASS({
       ^ .amount-Text{
         width: 51px;
         height: 16px;
-        font-family: Roboto;
+        font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-size: 14px;
         font-weight: bold;
         letter-spacing: 0.2px;
@@ -107,7 +123,7 @@ foam.CLASS({
       ^ .paymentMethod-Text{
         width: 165px;
         height: 16px;
-        font-family: Roboto
+        font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-size: 14px;
         font-weight: 300;
         letter-spacing: 0.2px;
@@ -121,7 +137,7 @@ foam.CLASS({
 
       ^ .note-Text{
         width: 31px;
-        font-family: Roboto;
+        font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-size: 14px;
         font-weight: 300;
         letter-spacing: 0.2px;
@@ -144,7 +160,7 @@ foam.CLASS({
         font-size: 12px;
         font-weight: 300;
         letter-spacing: 0.2px;
-        font-family: Roboto;
+        font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
         color: #093649;
         text-align: left;
       }
@@ -157,7 +173,7 @@ foam.CLASS({
         cursor: pointer;
         text-align: center;
         color: #ffffff;
-        font-family: Roboto;
+        font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-size: 14px;
         line-height: 2.86;
         letter-spacing: 0.2px;
@@ -174,7 +190,6 @@ foam.CLASS({
 
       ^ .foam-u2-tag-Select {
         width: 125px;
-        height: 40px;
         border-radius: 0;
         margin-left: 20px;
 
@@ -226,7 +241,7 @@ foam.CLASS({
         cursor: pointer;
         opacity: 0.01;
       }
-    */}
+    `
     })
   ],
   

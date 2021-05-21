@@ -1,0 +1,111 @@
+p({
+  class:"foam.nanos.cron.Cron",
+  id:"AFEX Business ApprovalRequest Cron",
+  description:"Auto-Approve AFEXUser ApprovalRequest",
+  enabled:true,
+  code:"""
+    import net.nanopay.fx.afex.cron.AFEXBusinessApprovalRequestCron;
+    cron = new AFEXBusinessApprovalRequestCron();
+    cron.execute(x);
+    print("done");
+  """,
+  schedule:{
+    class:"foam.nanos.cron.CronSchedule",
+    minute:-1,
+    hour:-1,
+    dayOfMonth:-1,
+    month:-1,
+    dayOfWeek:-1,
+    second:37
+  }
+})
+
+p({
+  "class": "foam.nanos.cron.Cron",
+  "id": "AFEX Funding cron",
+  "description": "This cron job sets AFEXFundingTransaction to sent if funding balance exists",
+  "enabled": false,
+  schedule:{
+    class:"foam.nanos.cron.IntervalSchedule",
+    duration:{
+      class:"foam.nanos.cron.TimeHMS",
+      hour:0,
+      minute:5,
+      second:0
+    }
+  },
+  "code":
+  """
+  import net.nanopay.fx.afex.cron.AFEXFundingCron;
+  print("running AFEXFundingCron");
+  cron = new AFEXFundingCron();
+  cron.execute(x);
+  print("done");
+  """
+})
+p({
+  "class":"foam.nanos.cron.Cron",
+  "id":"AFEX Beneficiary Compliance",
+  "description":"Check AFEX Beneficiary Compliance Status",
+  "enabled":false,
+  "schedule":{
+    "class":"foam.nanos.cron.CronSchedule",
+    "minute":0,
+    "hour":-1,
+    "dayOfMonth":-1,
+    "month":-1,
+    "dayOfWeek":-1,
+    "second":45
+  },
+  "code":"""
+    import net.nanopay.fx.afex.cron.AFEXBeneficiaryStatusCron;
+    print("running AFEXBeneficiaryStatusCron");
+    cron = new AFEXBeneficiaryStatusCron();
+    cron.execute(x);
+    print("done");
+  """
+})
+
+p({
+  "class":"foam.nanos.cron.Cron",
+  "id":"AFEX Check Payment Status",
+  "description":"Check AFEX Payment Status",
+  "enabled":false,
+  "schedule":{
+    "class":"foam.nanos.cron.CronSchedule",
+    "minute":0,
+    "hour":-1,
+    "dayOfMonth":-1,
+    "month":-1,
+    "dayOfWeek":-1,
+    "second":23
+  },
+  "code":"""
+    import net.nanopay.fx.afex.cron.AFEXPaymentStatusCron;
+    cron = new AFEXPaymentStatusCron();
+    cron.execute(x);
+    print("done");
+  """
+})
+
+p({
+  "class":"foam.nanos.cron.Cron",
+  "id":"AFEX Check Business Compliance Status",
+  "description":"Check AFEX Business Compliance Status",
+  "enabled":false,
+  "schedule":{
+    "class":"foam.nanos.cron.CronSchedule",
+    "minute":0,
+    "hour":0,
+    "dayOfMonth":-1,
+    "month":-1,
+    "dayOfWeek":-1,
+    "second":0
+  },
+  "code":"""
+    import net.nanopay.fx.afex.cron.AFEXBusinessComplianceStatusCron;
+    cron = new AFEXBusinessComplianceStatusCron();
+    cron.execute(x);
+    print("done");
+  """
+})

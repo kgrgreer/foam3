@@ -8,6 +8,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.Group;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
@@ -32,7 +33,7 @@ public class QuickbooksClientFactory {
     Info:   Creates the urls based on the system you chose
     Input:  x: The context to allow access to services that will store the information obtained when contacting QuickBooks
     */
-    User              user         = (User) x.get("user");
+    User              user         = ((Subject) x.get("subject")).getUser();
     Group             group        = user.findGroup(x);
     AppConfig         app          = group.getAppConfig(x);
     DAO               configDAO    = (DAO) x.get("quickbooksConfigDAO");

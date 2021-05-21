@@ -4,18 +4,12 @@ import static foam.mlang.MLang.EQ;
 
 import java.io.PrintWriter;
 import java.net.URLEncoder;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.jtwig.JtwigModel;
-import org.jtwig.JtwigTemplate;
-import org.jtwig.environment.EnvironmentConfiguration;
-import org.jtwig.environment.EnvironmentConfigurationBuilder;
-import org.jtwig.resource.loader.TypedResourceLoader;
 
 import foam.core.X;
 import foam.dao.DAO;
@@ -28,6 +22,7 @@ import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.DAOResourceLoader;
 import foam.nanos.notification.email.EmailTemplate;
+import foam.nanos.notification.email.EmailTemplateEngine;
 import net.nanopay.model.Business;
 import net.nanopay.onboarding.CreateOnboardingCloneService;
 
@@ -37,8 +32,6 @@ import net.nanopay.onboarding.CreateOnboardingCloneService;
  * service will handle adding that user to the business.
  */
 public class JoinBusinessWebAgent implements WebAgent {
-
-  private EnvironmentConfiguration config_;
 
   @Override
   public void execute(X x) {
@@ -63,7 +56,7 @@ public class JoinBusinessWebAgent implements WebAgent {
       long businessId = (long) parameters.get("businessId");
       DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
       Business business = (Business) localBusinessDAO.inX(x).find(businessId);
-      message = "You've been successfully added to " + business.label();
+      message = "You've been successfully added to " + business.toSummary();
       // Look up the user.
       if ( token.getUserId() == 0 ) throw new Exception("User not found.");
       DAO localUserDAO = (DAO) x.get("localUserDAO");
@@ -93,16 +86,6 @@ public class JoinBusinessWebAgent implements WebAgent {
 
     if ( user == null ) throw new RuntimeException("User not found.");
 
-    if ( config_ == null ) {
-      config_ = EnvironmentConfigurationBuilder
-        .configuration()
-        .resources()
-        .resourceLoaders()
-        .add(new TypedResourceLoader("dao", new DAOResourceLoader(x, user.getGroup())))
-        .and().and()
-        .build();
-    }
-
     Group group = user.findGroup(x);
     AppConfig appConfig = group.getAppConfig(x);
     String url = appConfig.getUrl().replaceAll("/$", "");
@@ -117,10 +100,17 @@ public class JoinBusinessWebAgent implements WebAgent {
 
     if ( redirect.equals("/") ) redirect = url + "?email=" + encodedEmail;
 
-    EmailTemplate emailTemplate = DAOResourceLoader.findTemplate(x, "join-business-splash-page", user.getGroup());
-    JtwigTemplate template = JtwigTemplate.inlineTemplate(emailTemplate.getBody(), config_);
-    JtwigModel model = JtwigModel.newModel(Collections.singletonMap("msg", message));
-    out.write(template.render(model));
+    EmailTemplate emailTemplate = DAOResourceLoader.findTemplate(
+      x,
+      "join-business-splash-page",
+      user.getGroup(),
+      user.getLanguage().getCode().toString()
+    );
+    EmailTemplateEngine templateEngine = (EmailTemplateEngine) x.get("templateEngine");
+    HashMap args = new HashMap();
+    args.put("msg", message);
+    StringBuilder templateBody = templateEngine.renderTemplate(x, emailTemplate.getBody(), args);
+    out.append(templateBody);
 
     if ( ! redirect.equals("null") ) {
       try {

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'InvoiceTransaction',
@@ -88,9 +105,12 @@ foam.CLASS({
           }
         }
         Double percent = getServiceCompleted()/100.0;
-        value = value * percent.longValue();
-        return value;
+        return Math.round(value * percent);
       `,
+      unitPropValueToString: async function(x, val, unitPropName) {
+        var formattedAmount = val / 100;
+        return '$' + x.addCommas(formattedAmount.toFixed(2));
+      },
       tableCellFormatter: function(total, X) {
         var formattedAmount = total / 100;
         this
@@ -115,8 +135,8 @@ foam.CLASS({
       super.limitedCopyFrom(other);
       setInvoiceId(other.getInvoiceId());
       setStatus(other.getStatus());
-      setReferenceData(other.getReferenceData());
-      setReferenceNumber(other.getReferenceNumber());
+      setExternalData(other.getExternalData());
+      setExternalInvoiceId(other.getExternalInvoiceId());
       if ( other instanceof InvoiceTransaction ) {
         setServiceCompleted(((InvoiceTransaction)other).getServiceCompleted());
       }

@@ -1,0 +1,75 @@
+// Prerequisites for treviso spid capability
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "treviso",
+  targetId: "serviceProviderCapability",
+  priority: 1
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "treviso",
+  targetId: "trevisoPlannerCapability",
+  priority: 2
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "treviso",
+  targetId: "trevisoCountryCapability",
+  priority: 3
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "treviso",
+  targetId: "trevisoCorridorCapability",
+  priority: 4
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "treviso",
+  targetId: "trevisoCurrencyCapability",
+  priority: 5
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "treviso",
+  targetId: "trevisoMenuCapability",
+  priority: 6
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "treviso",
+  targetId: "treviso-ucj-crunchOnboarding-rules",
+  priority: 7
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "treviso",
+  targetId: "treviso-tx-rules",
+  priority: 8
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "treviso",
+  targetId: "treviso-tx-fees",
+  priority: 9
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "treviso",
+  targetId: "treviso-user-notification-settings",
+  priority: 10
+})
+
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"crunch.onboarding.br.business-ownership",
+  targetId:"crunch.onboarding.certify-data-reviewed"
+})

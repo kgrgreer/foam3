@@ -1,0 +1,19 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "openid",
+  "authenticate": false,
+  "parameters": true,
+  "serviceScript":"""
+  // Intuit Client Secret FcX34gTSE04y927cVO32HZWTm5CqvNkVycLgVCleuUmcliwsBNcqrYGEp0qb2gW6
+  return new net.nanopay.auth.openid.OpenIDWebAgent(
+    "https://federatesys.intuit.com/as/authorization.oauth2",
+    "https://federatesys.intuit.com/as/token.oauth2",
+    "https://federatesys.intuit.com/pf/JWKS",
+    "https://intuit.nanopay.net/service/openid",
+    "FcX34gTSE04y927cVO32HZWTm5CqvNkVycLgVCleuUmcliwsBNcqrYGEp0qb2gW6",
+    "Nanopay",
+    "intuit-support",
+    "intuit"
+  );
+  """
+})

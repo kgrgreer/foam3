@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.onboarding',
   name: 'BusinessOnboardingDAOTest',
@@ -10,7 +27,6 @@ foam.CLASS({
     'foam.dao.MDAO',
     'foam.dao.Sink',
     'foam.nanos.auth.Address',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'net.nanopay.model.Business',
     'static foam.mlang.MLang.*',
@@ -89,9 +105,7 @@ foam.CLASS({
 
         onboarding.setSigningOfficer(true);
         onboarding.setJobTitle("CEO");
-        Phone signingOfficerPhone = new Phone();
-        signingOfficerPhone.setNumber("123-456-7890");
-        onboarding.setPhone(signingOfficerPhone);
+        onboarding.setPhoneNumber("1234567890");
         Date birthday = new Date(1992, 11, 21); 
         onboarding.setBirthday(birthday);
         onboarding.setPEPHIORelated(true);

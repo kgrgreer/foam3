@@ -70,7 +70,11 @@ public class AFEXTransactionPlanDAOTest
     localUserDAO = (DAO) x_.get("localUserDAO");
     localAccountDAO = (DAO) x_.get("localAccountDAO");
     Address businessAddress = new Address();
+    businessAddress.setStructured(false);
+    businessAddress.setAddress1("905 King St W");
     businessAddress.setCity("Toronto");
+    businessAddress.setRegionId("CA-ON");
+    businessAddress.setPostalCode("M6K 3G9");
     businessAddress.setCountryId("CA");
 
     Group businessGroup = (Group) groupDAO_.find("business");
@@ -93,6 +97,7 @@ public class AFEXTransactionPlanDAOTest
     user1.setEmail("testAFEXTransaction@nanopay.net");
     user1.setAddress(businessAddress);
     user1.setEmailVerified(true);
+    user1.setSpid("nanopay");
     localUserDAO.put(user1);
 
     user2 = new User();
@@ -102,6 +107,7 @@ public class AFEXTransactionPlanDAOTest
     user2.setEmail("testAFEXTransaction1@nanopay.net");
     user2.setAddress(businessAddress);
     user2.setEmailVerified(true);
+    user2.setSpid("nanopay");
     localUserDAO.put(user2);
 
 
@@ -162,24 +168,24 @@ public class AFEXTransactionPlanDAOTest
     localAccountDAO.put(user2USBankAccount);
 
 
-    DAO afexBusinessDAO = (DAO) x_.get("afexBusinessDAO");
+    DAO afexUserDAO = (DAO) x_.get("afexUserDAO");
     DAO afexBeneficiaryDAO = (DAO) x_.get("afexBeneficiaryDAO");
 
-    AFEXBusiness b1 = new AFEXBusiness.Builder(x_)
+    AFEXUser b1 = new AFEXUser.Builder(x_)
       .setApiKey("abc123")
       .setAccountNumber("0001")
       .setUser(user1.getId())
       .setStatus("Active")
       .build();
-    afexBusinessDAO.put(b1);
+    afexUserDAO.put(b1);
 
-    AFEXBusiness b2 = new AFEXBusiness.Builder(x_)
+    AFEXUser b2 = new AFEXUser.Builder(x_)
       .setApiKey("123abc")
       .setAccountNumber("0002")
       .setUser(user2.getId())
       .setStatus("Active")
       .build();
-    afexBusinessDAO.put(b2);
+    afexUserDAO.put(b2);
 
     AFEXBeneficiary beneficiary1 = new AFEXBeneficiary.Builder(x_)
       .setContact(user2.getId())
@@ -227,7 +233,7 @@ public class AFEXTransactionPlanDAOTest
     Transaction result = (Transaction) planDAO.generateTransaction(x_, quote, afexService);
     test( null != result, "CAD USD quote was processed" );
 
-    test( result instanceof FXSummaryTransaction && result.getStatus() == TransactionStatus.COMPLETED, "FXSummary Transaction is first transaction for CAD to USD");
+    test( result instanceof FXSummaryTransaction && result.getStatus() == TransactionStatus.PENDING, "FXSummary Transaction is first transaction for CAD to USD");
 
     Transaction tx2 = (result.getNext()[0]).getNext()[0].getNext()[0];
     test( tx2 instanceof AFEXTransaction && tx2.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "AFEX Transaction is 3rd transaction");
@@ -260,7 +266,7 @@ public class AFEXTransactionPlanDAOTest
     Transaction result = (Transaction) planDAO.generateTransaction(x_, quote, afexService);
     test( null != result, "USD USD quote was processed" );
 
-    test( result instanceof FXSummaryTransaction && result.getStatus() == TransactionStatus.COMPLETED, "FXSummary Transaction is first transaction for USD to USD");
+    test( result instanceof FXSummaryTransaction && result.getStatus() == TransactionStatus.PENDING, "FXSummary Transaction is first transaction for USD to USD");
 
     Transaction tx2 = (result.getNext()[0]).getNext()[0].getNext()[0];
     test( tx2 instanceof AFEXTransaction && tx2.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "AFEX Transaction is 3rd transaction");
@@ -291,7 +297,7 @@ public class AFEXTransactionPlanDAOTest
     quote.setSourceAccount(user2USBankAccount);
     Transaction result = (Transaction) planDAO.generateTransaction(x_, quote, afexService);
 
-    test( result instanceof FXSummaryTransaction && result.getStatus() == TransactionStatus.COMPLETED, "FXSummary Transaction is first transaction for USD to CAD");
+    test( result instanceof FXSummaryTransaction && result.getStatus() == TransactionStatus.PENDING, "FXSummary Transaction is first transaction for USD to CAD");
 
     Transaction tx2 = (result.getNext()[0]).getNext()[0].getNext()[0];
     test( tx2 instanceof AFEXTransaction && tx2.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "AFEX Transaction is 3rd transaction");

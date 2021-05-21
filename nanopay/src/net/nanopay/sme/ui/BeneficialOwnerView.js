@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'BeneficialOwnerView',
@@ -13,7 +30,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'user'
+    'subject'
   ],
 
   css: `
@@ -32,21 +49,23 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'TITLE', message: 'Beneficial owners' },
-    { name: 'LEGAL_NAME_LABEL', message: 'Legal name' },
+    { name: 'TITLE', message: 'Owners' },
+    { name: 'LEGAL_NAME_LABEL', message: 'Name' },
     { name: 'JOB_TITLE_LABEL', message: 'Job title' },
-    { name: 'ADDRESS_LABEL', message: 'Residential address' },
+    { name: 'ADDRESS_LABEL', message: 'Address' },
     { name: 'DATE_OF_BIRTH_LABEL', message: 'Date of birth' },
     { name: 'OWNER_COUNT_LABEL', message: 'Beneficial owner' }
   ],
 
   methods: [
     function initE() {
-      this.addClass(this.myClass()).addClass('card')
-        .start().addClass('sub-heading').add(this.TITLE).end()
-        // TODO: Allow users to edit the beneficial owners.
-        .select(this.user.beneficialOwners, (owner) => {
-          return this.E().start()
+      // TODO: Allow users to edit the beneficial owners.
+      this.subject.user.beneficialOwners.select().then(owners => {
+        if (owners.array.length == 0) return
+        this.addClass(this.myClass()).addClass('card')
+          .start().addClass('sub-heading').add(this.TITLE).end()
+        .forEach(owners.array, owner => {
+          this.start()
             .start().addClass('info-container')
               .start().addClass('table-content').add(this.LEGAL_NAME_LABEL).end()
               .start().addClass('table-content').addClass('subdued-text').add(owner.firstName, ' ', owner.lastName).end()
@@ -61,10 +80,11 @@ foam.CLASS({
             .end()
             .start().addClass('info-container')
               .start().addClass('table-content').add(this.DATE_OF_BIRTH_LABEL).end()
-              .start().addClass('table-content').addClass('subdued-text').add(owner.birthday ? owner.birthday.toISOString().substring(0, 10) : '').end()
+              .start().addClass('table-content').addClass('subdued-text').add(owner.birthday ? owner.birthday.toLocaleDateString(foam.locale) : '').end()
             .end()
           .end();
-      });
+        })
+      })
     }
   ]
 });

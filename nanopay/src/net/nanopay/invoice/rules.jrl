@@ -1,6 +1,7 @@
 p({
     "class":"foam.nanos.ruler.Rule",
-    "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d116","name":" Invoice Completed notification rule",
+    "id":"732debb7-0e9a-4c31-a63f-ef516bc11924",
+    "name":"Invoice Completed notification rule",
     "priority":100,
     "ruleGroup":"InvoiceNotification",
     "documentation":"Sends notification when payment is Completed",
@@ -11,33 +12,41 @@ p({
       "class": "net.nanopay.invoice.ruler.IsCompletePayment"
     },
     "action":{
-      "class":"net.nanopay.invoice.ruler.CompleteInvoiceNotification"
+      "class":"net.nanopay.invoice.ruler.CompleteInvoiceNotificationRule"
     },
     "enabled":true,
-    "saveHistory":true,
     "lifecycleState":1
 })
 
 p({
     "class":"foam.nanos.ruler.Rule",
-    "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d117","name":"Request payment notification rule",
+    "id":"5efe7719-df01-4725-b5f6-847ff45be234",
+    "name":"Request payment notification rule",
     "priority":100,
     "ruleGroup":"InvoiceNotification",
     "documentation":"Sends notification when request payment is made.",
     "daoKey":"invoiceDAO",
-        "operation":0,
+    "operation":3,
     "after":true,
+    "predicate":{
+      "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+      "propName":"status",
+      "propValue":{
+        "class":"net.nanopay.invoice.model.InvoiceStatus",
+        "ordinal":9
+      }
+    },
     "action":{
         "class":"net.nanopay.invoice.ruler.RequestPaymentNotificationRule"
     },
     "enabled":true,
-    "saveHistory":true,
     "lifecycleState":1
 })
 
 p({
   "class": "foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d118","name": "Send invoice voided email to payer",
+  "id":"5ce84bea-f2f4-47ae-952c-b44858ca5aa7",
+  "name": "Send invoice voided email to payer",
   "priority": 100,
   "ruleGroup": "InvoiceNotification",
   "documentation": "Send invoice voided email to payer",
@@ -66,14 +75,13 @@ p({
     "class": "net.nanopay.invoice.ruler.InvoiceVoidEmailRule"
   },
   "enabled":true,
-  "saveHistory":true,
   "lifecycleState":1
 })
 
 p({
   "class": "foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-75e97b3ad16d211",
-  "name": "Set invoice processing date on transaction create",
+  "id":"e2343ed4-e606-4ff8-9430-d873fb56cbfa",
+  "name":"Set invoice processing date on transaction create",
   "priority":100,
   "ruleGroup":"UpdateInvoiceDates",
   "documentation": "Sets invoice processing date when transaction id is associated to invoice",
@@ -101,13 +109,12 @@ p({
     "class": "net.nanopay.invoice.ruler.SetProcessingDateRule"
   },
   "enabled":true,
-  "saveHistory":true,
   "lifecycleState":1
 })
 
 p({
   "class": "foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0941-75e97b3ad16d905",
+  "id":"d859b51e-83e3-4eb1-b0b1-72003c6775d8",
   "name":"Set invoice payment sent date on transaction settlement",
   "priority":100,
   "ruleGroup":"UpdateInvoiceByTransaction",
@@ -156,13 +163,12 @@ p({
     "class": "net.nanopay.invoice.ruler.SetPaymentSentDateRule"
   },
   "enabled":true,
-  "saveHistory":true,
   "lifecycleState":1
 })
 
 p({
   "class": "foam.nanos.ruler.Rule",
-  "id":"68bfcf0c-c718-98f8-0942-75e97b3ad16d905",
+  "id":"5da46082-54cb-4d76-ac4b-baaadb167e2d",
   "name":"Set invoice payment received date on CO transaction settlement",
   "priority":101,
   "ruleGroup":"UpdateInvoiceByTransaction",
@@ -211,6 +217,121 @@ p({
     "class": "net.nanopay.invoice.ruler.SetReceivedDateRule"
   },
   "enabled":true,
-  "saveHistory":true,
   "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"039555c4-16d0-462b-8a6c-c0edbc9c2c47",
+  "name":"RequestTransaction creation from invoice",
+  "documentation":"Quotes transactions ",
+  "ruleGroup":"InvoicePayment",
+  "daoKey":"invoiceDAO",
+  "priority":3000,
+  "operation":3,
+  "after": false,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{
+          "class":"net.nanopay.invoice.model.InvoiceStatus",
+          "ordinal":11
+        },
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"plan",
+        "propValue": null
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.invoice.ruler.InvoiceRequestTransactionRule",
+  },
+  "enabled":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"f3ba124b-1e81-4173-9d7d-a947df54e909a",
+  "name":"Transaction submit from invoice",
+  "documentation":"Quotes transactions ",
+  "ruleGroup":"InvoicePayment",
+  "daoKey":"invoiceDAO",
+  "priority":4000,
+  "operation":3,
+  "after": false,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{
+          "class":"net.nanopay.invoice.model.InvoiceStatus",
+          "ordinal":11
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"plan",
+        "propValue": null
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.invoice.ruler.InvoiceTransactionSubmitRule",
+  },
+  "enabled":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"957a27bd-6453-4413-b92d-7e88bcf297a7",
+  "name":"Transaction quoting from invoice",
+  "documentation":"Quotes transactions ",
+  "ruleGroup":"InvoicePayment",
+  "daoKey":"invoiceDAO",
+  "priority":10,
+  "operation":3,
+  "after": false,
+  "predicate": {
+    "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+    "propName":"requestTransaction",
+    "propValue": null
+  },
+  "action":{
+    "class":"net.nanopay.invoice.ruler.InvoiceQuotingRule",
+  },
+  "enabled":true,
+  "lifecycleState":1
+})
+
+p({
+    "class":"foam.nanos.ruler.Rule",
+    "id":"c30c6bea-b9c4-4917-9087-da4932802817",
+    "name":"Update Transaction on Invoice Validation",
+    "priority":100,
+    "ruleGroup":"InvoicePayment",
+    "documentation":"Sets associated transaction status to COMPLETED when the capabilities are granted on invoice",
+    "daoKey":"invoiceDAO",
+    "operation":1,
+    "after":true,
+    "action":{
+      "class":"net.nanopay.partner.treviso.invoice.UpdateTransactionOnInvoiceValidationRule"
+    },
+    "predicate":{
+      "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+      "propName":"status",
+      "propValue":{
+        "class":"net.nanopay.invoice.model.InvoiceStatus",
+        "ordinal":6
+      }
+    },
+    "lifecycleState":1
 })

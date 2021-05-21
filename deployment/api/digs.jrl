@@ -1,0 +1,16 @@
+p({
+    class:"foam.nanos.dig.DIG",
+    id:"Retrieve All Business requests",
+    daoKey:"businessDAO",
+    postURL:"/service/dig?dao=businessDAO&cmd=select&format=json",
+    result:"[]"
+})
+
+p({
+    class:"foam.nanos.dig.DIG",
+    id:"Retrieve All Users requests",
+    daoKey:"userDAO",
+    q:"type=User",
+    postURL:"/service/dig?dao=userDAO&cmd=select&format=json&q=type%3DUser",
+    result:"[]"
+})

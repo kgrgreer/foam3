@@ -1,0 +1,124 @@
+// sandbox config
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"exchangeCredential",
+  "lazy":false,
+  "service":"""
+    {
+      "class":"net.nanopay.country.br.exchange.ExchangeCredential",
+      exchangeUrl:"http://10.11.9.148:8383/Exchange.svc",
+      exchangeAgencia:1,
+      exchangeUsername:"1204",
+      exchangePassword:"102030"
+    }
+  """
+})
+
+// sandbox config
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"trevisoCredientials",
+  "lazy":false,
+  "service":"""
+    {
+      "class":"net.nanopay.partner.treviso.TrevisoCredientials",
+      fepWebUsername:"trevisocc",
+      fepWebPassword:"Treviso4321#@!",
+      fepWebApi:"https://client-uat.fepweb.com.br/fepwebws/api/",
+      fepWebCode:"100001",
+      fepWebCodeName:"Treviso Matriz - Nanopay"
+    }
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"exchange",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    import net.nanopay.country.br.exchange.*;
+
+    // Set exchange limit ($20000.00 USD)
+    EXCHANGE_LIMIT = 2000000L;
+    UTILIZED_LIMIT = 1000L;
+
+    mockExchange = new ExchangeClientMock(x);
+    mockExchange.getStubSearchTitularCapFin().setSearchTitularCapFinResult(
+      new ResponseTitular.Builder(x)
+        .setServiceStatus(new ServiceStatus.Builder(x).setCODRETORNO(0).build())
+        .setTitular(new Titular.Builder(x).setLIMITEOP(EXCHANGE_LIMIT).setUTILIZADO(UTILIZED_LIMIT).build())
+        .build()
+    );
+    return mockExchange;
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"fepWebService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.treviso.api.FepWebServiceMock(x);
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"trevisoService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.treviso.TrevisoService(x, "fepWebService", "exchange");
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"soaWebService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.soawebservices.SoaWebServiceClientMock(x);
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"trevisoFXService",
+  "lazy":false,
+  "serve":false,
+  "serviceScript":"""
+    return new net.nanopay.partner.treviso.fx.TrevisoFXServiceMock(x, "test", "test", new String[] {"USD","CAD","EUR","GBP","CNY","CLP","ARS","JPY","CHF","AUD"}, null);
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"openDataService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.country.br.OpenDataServiceMock(x);
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "trevisoTransactionReportDAO",
+  "serve": true,
+  "serviceScript": """
+    ttrDAO =  new net.nanopay.partner.treviso.report.TrevisoTransactionReportDAO.Builder(x)
+      .build();
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.partner.treviso.report.TrevisoTransactionReport.getOwnClassInfo())
+      .setDecorator(ttrDAO)
+      .build();
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.partner.treviso.report.TrevisoTransactionReport"
+    }
+  """
+})

@@ -1,5 +1,5 @@
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.notification.PermissionedNotificationSettingRule",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d27","name":"Create default notification settings for agentJunction",
   "priority":100,
   "ruleGroup":"AgentJunctions",
@@ -32,5 +32,69 @@ p({
   },
   "after": false,
   "enabled": false,
+  "lifecycleState":1
+})
+
+
+p({
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
+  "id":"crunch-business-registration",
+  "name":"Create business on initial business data submit.",
+  "priority":1,
+  "ruleGroup":"crunchOnboarding",
+  "documentation":"Create business on initial business data submit",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.crunch.predicate.StatusChangedTo",
+        "status": 1
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsClass",
+        "propName":"data",
+        "of":"net.nanopay.crunch.onboardingModels.InitialBusinessData"
+      }
+    ]
+  },
+  "action":{
+    "class": "net.nanopay.business.ruler.InitialBusinessRegistrationRule"
+  },
+  "enabled":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
+  "id":"b82fc19c-0f13-11eb-adc1-0242ac120002",
+  "name":"set business capability after business registration",
+  "priority":1,
+  "ruleGroup":"crunchOnboarding",
+  "documentation":"set business capability after business registration",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName": "status",
+        "propValue":{"class":"foam.nanos.crunch.CapabilityJunctionStatus","ordinal":1},
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsClass",
+        "propName":"data",
+        "of":"net.nanopay.crunch.onboardingModels.InitialBusinessData"
+      }
+    ]
+  },
+  "action":{
+    "class": "net.nanopay.business.ruler.businessCapabilitySetUp"
+  },
+  "enabled":true,
   "lifecycleState":1
 })

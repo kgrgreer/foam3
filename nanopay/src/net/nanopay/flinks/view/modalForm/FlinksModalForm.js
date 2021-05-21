@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.flinks.view.modalForm',
   name: 'FlinksModalForm',
@@ -45,7 +62,7 @@ foam.CLASS({
 
       height: 100%;
     }
-    ^ .spinner-container .net-nanopay-ui-LoadingSpinner img {
+    ^ .spinner-container .foam-u2-LoadingSpinner img {
       width: 50px;
       height: 50px;
     }
@@ -58,6 +75,10 @@ foam.CLASS({
     }
     ^ .full-width-input-password {
       width: 100%;
+    }
+    ^ .net-nanopay-sme-ui-wizardModal-WizardModalNavigationBar .net-nanopay-sme-ui-wizardModal-WizardModalNavigationBar-container {
+      padding-top: 0;
+      background-color: #0000;
     }
   `,
 
@@ -97,6 +118,7 @@ foam.CLASS({
         'accountSelection'        : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalAccountSelect' } },
         'pad'                     : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalPAD' } },
       };
+
       this.viewData.redoOnFail = true;
       this.onDetach(function() {
         if ( self.viewData.pollTimer ) clearTimeout(self.viewData.pollTimer);

@@ -2,8 +2,12 @@ package net.nanopay.test.api;
 
 import static foam.mlang.MLang.EQ;
 
+import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 
 import foam.core.X;
 import foam.dao.DAO;
@@ -13,18 +17,17 @@ public class PostMethodTest
   extends ApiTestBase {
 
 
-  public void runTest(X x) {
+  public void runTest(X x) throws MalformedURLException, ProtocolException, UnsupportedEncodingException, IOException {
 
-    try {
+    
       // Enable the test user.
-      x = foam.util.Auth.sudo(x,  "developer@nanopay.net");
       DAO  localUserDAO = ( (DAO) x.get("localUserDAO") ).inX(x);
       User user         = (User) ( localUserDAO.find(EQ(User.EMAIL, "developer@nanopay.net")) ).fclone();
       user.setLoginEnabled(true);
       localUserDAO.put(user);
 
       // Create the request
-      String            sugarUrl   = this.getBaseUrl(x) + "/service/sugar";
+      String sugarUrl = this.getBaseUrl(x) + "/service/sugar";
       HttpURLConnection connection = this.createRequest(sugarUrl, "POST");
       connection.setRequestProperty("Content-Type", "application/json");
       
@@ -56,8 +59,5 @@ public class PostMethodTest
       // to convert it to appropriate type.
       // boolean response = Boolean.valueOf(s);
       test(s.contains("true"), "the same user can act as it self");
-    } catch (Exception ex) {
-      print(ex.toString());
-    }
   }
 }

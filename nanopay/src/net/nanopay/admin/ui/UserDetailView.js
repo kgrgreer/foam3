@@ -1,11 +1,28 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.admin.ui',
   name: 'UserDetailView',
   extends: 'foam.u2.View',
 
   requires: [
+    'foam.log.LogLevel',
     'foam.u2.PopupView',
-    'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
@@ -15,6 +32,7 @@ foam.CLASS({
 
   imports: [
     'window',
+    'notify',
     'userDAO'
   ],
 
@@ -64,7 +82,7 @@ foam.CLASS({
     ^ .foam-u2-ActionView-print span {
       width: 31px;
       height: 20px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 10px;
       font-weight: 300;
       font-style: normal;
@@ -202,7 +220,7 @@ foam.CLASS({
       width: 1240px;
     }
     ^ .net-nanopay-admin-ui-ReviewProfileView{
-      overflow-y: scroll;
+      overflow-y: auto;
       height: 500px;
       margin-top: 50px;
     }
@@ -305,10 +323,10 @@ foam.CLASS({
         .then(function (result) {
           if ( ! result ) throw new Error('Unable to set pending profile.');
           self.data.copyFrom(result);
-          self.add(self.NotificationMessage.create({ message: 'Profile successfully set to pending.' }));
+          X.notify('Profile successfully set to pending.', '', self.LogLevel.INFO, true);
         })
         .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: 'Unable to set profile to pending.', type: 'error' }));
+          X.notify('Unable to set profile to pending.', '', self.LogLevel.ERROR, true);
         });
       }
     },
@@ -324,10 +342,10 @@ foam.CLASS({
         .then(function (result) {
           if ( ! result ) throw new Error('Unable to approve profile.');
           self.data.copyFrom(result);
-          self.add(self.NotificationMessage.create({ message: 'Profile successfully approved.' }));
+          X.notify('Profile successfully approved.', '', self.LogLevel.INFO, true);
         })
         .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: 'Unable to approve profile.', type: 'error' }));
+          X.notify('Unable to approve profile.', '', self.LogLevel.ERROR, true);
         });
       }
     },

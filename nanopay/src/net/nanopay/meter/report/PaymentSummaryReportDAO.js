@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.meter.report',
   name: 'PaymentSummaryReportDAO',
@@ -15,16 +32,26 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.MDAO',
     'foam.dao.Sink',
+    'foam.i18n.TranslationService',
     'foam.mlang.predicate.Predicate',
     'foam.mlang.sink.Count',
     'foam.mlang.sink.Sum',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
     'net.nanopay.account.Account',
+    'net.nanopay.meter.report.ReportStatus',
     'net.nanopay.meter.report.PaymentSummaryReport',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
 
     'static foam.mlang.MLang.*',
     'java.util.*'
+  ],
+
+  messages: [
+    { name: 'DOMESTIC_CANADA_MSG', message: 'Domestic Canada' },
+    { name: 'DOMESTIC_USA_MSG', message: 'Domestic USA' },
+    { name: 'INTERNATIONAL_MSG', message: 'International' }
   ],
 
   methods: [
@@ -205,7 +232,7 @@ foam.CLASS({
       javaCode: `
         NumTotal nt = new NumTotal();
         nt.num = ((Count) transactions.inX(x).select(new Count())).getValue();
-        nt.total = ((Double) ((Sum) transactions.inX(x).select(SUM(Transaction.AMOUNT))).getValue()).longValue();
+        nt.total = Math.round(((Sum) transactions.inX(x).select(SUM(Transaction.AMOUNT))).getValue());
         return nt;
       `
     },
@@ -216,7 +243,7 @@ foam.CLASS({
         { type: 'Context', name: 'x' },
         { type: 'DAO', name: 'transactions' },
         { type: 'String', name: 'countryLabel' },
-        { type: 'String', name: 'statusLabel' },
+        { type: 'ReportStatus', name: 'status' },
         { type: 'Currency', name: 'currency' }
       ],
       javaCode: `
@@ -229,7 +256,7 @@ foam.CLASS({
         NumTotal totalNT = countTotal(x, transactions);
         PaymentSummaryReport pst = new PaymentSummaryReport.Builder(x)
           .setTypeDate(countryLabel)
-          .setStatus(statusLabel)
+          .setStatus(status)
           .setDaily(Long.toString(dailyNT.num))
           .setDailyAmount(currency.format(dailyNT.total))
           .setYesterday(Long.toString(yesterdayNT.num))
@@ -265,11 +292,12 @@ foam.CLASS({
         transactions.where(EQ(Transaction.PARENT, "")).select(new AbstractSink() {
           public void put(Object obj, Detachable sub) {
             Transaction transaction = (Transaction) obj;
-            if ((transaction.getState(x) == TransactionStatus.PENDING) ||
-              (transaction.getState(x) == TransactionStatus.SENT)) {
+            TransactionStatus state = transaction.getState(x);
+            if ( (state == TransactionStatus.PENDING) ||
+              (state == TransactionStatus.SENT) ) {
               // In Process (Any payment that has started processing but not yet completed)
               txsInProcess.put(transaction);
-            } else if (transaction.getState(x) == TransactionStatus.COMPLETED) {
+            } else if (state == TransactionStatus.COMPLETED) {
               // Completed (All components of the transaction is completed)
               txsCompleted.put(transaction);
             }
@@ -277,8 +305,8 @@ foam.CLASS({
         });
 
         List tmpList = new ArrayList();
-        tmpList.add(appendTX(x, txsInProcess, countryLabel, "In Process", currency));
-        tmpList.add(appendTX(x, txsCompleted, "", "Completed", currency));
+        tmpList.add(appendTX(x, txsInProcess, countryLabel, ReportStatus.IN_PROCESS, currency));
+        tmpList.add(appendTX(x, txsCompleted, "", ReportStatus.COMPLETED, currency));
         return tmpList;
       `
     },
@@ -327,22 +355,26 @@ foam.CLASS({
             }
           }
         });
+        
+        Subject subject = (Subject) x.get("subject");
+        String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
+        TranslationService ts = (TranslationService) x.get("translationService");
 
         pstList.addAll(breakDown(
           x,
           txDomesticCanada,
-          "Domestic Canada",
+          ts.getTranslation(locale, getClassInfo().getId() + ".DOMESTIC_CANADA_MSG", DOMESTIC_CANADA_MSG),
           (Currency) currencyDAO.find("CAD")
         ));
         pstList.addAll(breakDown(
           x,
           txDomesticUSA,
-          "Domestic USA",
+          ts.getTranslation(locale, getClassInfo().getId() + ".DOMESTIC_USA_MSG", DOMESTIC_USA_MSG),
           (Currency) currencyDAO.find("USD")
         ));
     
         PaymentSummaryReport pst = new PaymentSummaryReport.Builder(x)
-          .setTypeDate("International")
+          .setTypeDate(ts.getTranslation(locale, getClassInfo().getId() + ".INTERNATIONAL_MSG", INTERNATIONAL_MSG))
           .build();
         pstList.add(pst);
         // order the transactions by destination currency
@@ -357,7 +389,7 @@ foam.CLASS({
             paymentSummaryReport.setId(i++);
             decoratedSink.put(paymentSummaryReport, null);
           }
-          return decoratedSink;
+          return sink;
         }
     
         // separate by currency
@@ -391,7 +423,7 @@ foam.CLASS({
           paymentSummaryReport.setId(i++);
           decoratedSink.put(paymentSummaryReport, null);
         }
-        return decoratedSink;
+        return sink;
       `
     }
   ],

@@ -1,0 +1,2 @@
+p({class:"foam.nanos.auth.UserUserJunction",sourceId:2002,targetId:2052,group:"treviso-fraud-ops"})
+p({class:"foam.nanos.auth.UserUserJunction",sourceId:2052,targetId:2002,group:"trevisoAPI-fraud-ops"})

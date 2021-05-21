@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'TransferFrom',
@@ -37,7 +54,7 @@ foam.CLASS({
       box-sizing: border-box;
       width: 320px;
       height: 66px;
-      overflow-y: scroll;
+      overflow-y: auto;
       background-color: #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
       resize: vertical;
@@ -52,7 +69,6 @@ foam.CLASS({
 
     ^ .foam-u2-tag-Select {
       width: 320px;
-      height: 48px;
       border-radius: 0;
 
       -webkit-appearance: none;
@@ -434,9 +450,8 @@ foam.CLASS({
       }
 
       if ( type.length >= 11 && type.substring(type.length - 11) == 'BankAccount')  {
-        view.choices = accounts.map(function(account) {
-          var numLength = account.accountNumber.length;
-          var choice = account.name + ' ' + '***' + account.accountNumber.substring(numLength - 4, numLength);
+        view.choices = accounts.map(account => {
+          var choice = `${account.name} ${this.BankAccount.mask(account.accountNumber)}`;
           return [account.id, choice];
         });
       }

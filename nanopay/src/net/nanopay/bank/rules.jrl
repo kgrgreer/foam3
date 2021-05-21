@@ -32,7 +32,7 @@ p({
     "class":"net.nanopay.bank.DefaultBankAccountRule"
   },
   "enabled":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -67,7 +67,7 @@ p({
     "class":"net.nanopay.bank.IsDefaultRule"
   },
   "enabled":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -106,7 +106,7 @@ p({
   },
   "enabled":true,
   "after":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -129,7 +129,7 @@ p({
     "class": "net.nanopay.bank.ruler.AccountDeletedNotificationRule"
   },
   "enabled":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -146,6 +146,147 @@ p({
   },
   "enabled":true,
   "after":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"9c65ddf4-d1b3-11ea-87d0-0242ac130003",
+  "name": "corridor Authorization rule",
+  "priority": 100,
+  "ruleGroup": "bankOperations",
+  "documentation": "throw AuthorizationException if user missing correct PaymentProviderCorridor",
+  "daoKey": "localAccountDAO",
+  "operation": 3,
+  "action": {
+    "class": "net.nanopay.bank.ruler.CorridorAuthorizationRule"
+  },
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})
+
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": "E7E91F22-6806-4601-A942-E6999DC435F1-0",
+  "name": "SWIFT/BIC Code to Bank Routing Code Translation On BankAccount Create",
+  "documentation": "Translate SWIFT/BIC code to bank routing code on create for non-EUR bank account.",
+  "priority": 100,
+  "ruleGroup": "bankOperations",
+  "daoKey": "localAccountDAO",
+  "operation": 0,
+  "predicate": {
+    "class": "foam.mlang.predicate.MQLExpr",
+    "query": "n(instanceof net.nanopay.bank.BankAccount) AND n(-denomination=EUR) AND n(has:swiftCode)"
+  },
+  "action": {
+    "class": "net.nanopay.bank.ruler.SwiftCodeToBankRoutingCodeTranslation"
+  },
+  "enabled": true,
+  "saveHistory": true,
+  "lifecycleState": 1
+})
+
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": "E7E91F22-6806-4601-A942-E6999DC435F1-1",
+  "name": "SWIFT/BIC Code to Bank Routing Code Translation On BankAccount Update",
+  "documentation": "Translate SWIFT/BIC code to bank routing code on update for non-EUR bank account.",
+  "priority": 100,
+  "ruleGroup": "bankOperations",
+  "daoKey": "localAccountDAO",
+  "operation": 1,
+  "predicate": {
+    "class": "foam.mlang.predicate.MQLExpr",
+    "query": "n(instanceof net.nanopay.bank.BankAccount) AND n(-denomination=EUR) AND diff:swiftCode"
+  },
+  "action": {
+    "class": "net.nanopay.bank.ruler.SwiftCodeToBankRoutingCodeTranslation"
+  },
+  "enabled": true,
+  "saveHistory": true,
+  "lifecycleState": 1
+})
+
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": "B00ACCAB-92DC-4623-B1ED-7302F7676F8C-0",
+  "name": "IBAN to SWIFT/BIC Code Translation On BankAccount Create",
+  "priority": 90,
+  "ruleGroup": "bankOperations",
+  "daoKey": "localAccountDAO",
+  "operation": 0,
+  "predicate": {
+    "class": "foam.mlang.predicate.MQLExpr",
+    "query": "n(instanceof net.nanopay.bank.BankAccount) AND n(denomination=EUR) AND n(has:iban) AND n(-has:swiftCode)"
+  },
+  "action": {
+    "class": "net.nanopay.bank.ruler.IbanToSwiftCodeTranslation"
+  },
+  "enabled": true,
+  "saveHistory": true,
+  "lifecycleState": 1
+})
+
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": "B00ACCAB-92DC-4623-B1ED-7302F7676F8C-1",
+  "name": "IBAN to SWIFT/BIC Code Translation On BankAccount Update",
+  "priority": 90,
+  "ruleGroup": "bankOperations",
+  "daoKey": "localAccountDAO",
+  "operation": 1,
+  "predicate": {
+    "class": "foam.mlang.predicate.MQLExpr",
+    "query": "n(instanceof net.nanopay.bank.BankAccount) AND n(denomination=EUR) AND diff:iban"
+  },
+  "action": {
+    "class": "net.nanopay.bank.ruler.IbanToSwiftCodeTranslation"
+  },
+  "enabled": true,
+  "saveHistory": true,
+  "lifecycleState": 1
+})
+
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": "5F700B57-D183-4CB2-B0AA-799606F7524E-0",
+  "name": "Bank Info to IBAN and SWIFT/BIC Translation On BankAccount Create",
+  "documentation": "Translate EUR bank info to Iban and SWIFT/BIC on create.",
+  "priority": 80,
+  "ruleGroup": "bankOperations",
+  "daoKey": "localAccountDAO",
+  "operation": 0,
+  "predicate": {
+    "class": "foam.mlang.predicate.MQLExpr",
+    "query": "n(instanceof net.nanopay.bank.BankAccount) AND n(denomination=EUR) AND n(-has:iban)"
+  },
+  "action": {
+    "class": "net.nanopay.bank.ruler.BankInfoToIbanAndSwiftCodeTranslation"
+  },
+  "enabled": true,
+  "saveHistory": true,
+  "lifecycleState": 1
+})
+
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": "5F700B57-D183-4CB2-B0AA-799606F7524E-1",
+  "name": "IBAN to SWIFT/BIC Code Translation On BankAccount Update",
+  "documentation": "Translate EUR bank info to Iban and SWIFT/BIC on update.",
+  "priority": 80,
+  "ruleGroup": "bankOperations",
+  "daoKey": "localAccountDAO",
+  "operation": 1,
+  "predicate": {
+    "class": "foam.mlang.predicate.MQLExpr",
+    "query": "n(instanceof net.nanopay.bank.BankAccount) AND n(denomination=EUR) AND diff:institution,branch,accountNumber,swiftCode"
+  },
+  "action": {
+    "class": "net.nanopay.bank.ruler.BankInfoToIbanAndSwiftCodeTranslation"
+  },
+  "enabled": true,
+  "saveHistory": true,
+  "lifecycleState": 1
 })

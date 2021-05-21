@@ -1,11 +1,28 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
     package: 'net.nanopay.meter.report',
     name: 'BusinessSummaryReportDAO',
     extends: 'foam.dao.ProxyDAO',
-  
+
     documentation: `A DAO decorator to generate the business summary report
         for leadership`,
-  
+
     javaImports: [
       'foam.core.Detachable',
       'foam.core.X',
@@ -23,11 +40,12 @@ foam.CLASS({
       'net.nanopay.meter.reports.RowOfBusSumReports',
       'net.nanopay.model.Business',
       'net.nanopay.tx.model.Transaction',
-  
+      'foam.nanos.auth.LifecycleState',
+
       'static foam.mlang.MLang.*',
       'java.util.*'
     ],
-  
+
     methods: [
       {
         name: 'countDaily',
@@ -179,7 +197,7 @@ foam.CLASS({
         javaCode: `
           BusinessSummaryReport bst = new BusinessSummaryReport.Builder(x)
             .setId(row.ordinal())
-            .setTypeDate(row.getLabel())
+            .setTypeDate(row)
             .setDaily(countDaily(businesses))
             .setYesterday(countYesterday(businesses))
             .setWeekly(countWeekly(businesses))
@@ -196,13 +214,13 @@ foam.CLASS({
         javaCode: `
           if ( sink == null )
             return super.select_(x, sink, skip, limit, order, predicate);
-  
+
           Sink decoratedSink = decorateSink(x, sink, skip, limit, order, predicate);
 
           // Retrieve the DAO
           DAO businessDAO = (DAO) x.get("businessDAO");
-      
-      
+
+
           // Registration (business created AND Compliance = "Pending")
           DAO businesses = businessDAO.where(
             EQ(Business.COMPLIANCE, ComplianceStatus.NOTREQUESTED)
@@ -212,8 +230,8 @@ foam.CLASS({
             businesses,
             RowOfBusSumReports.REGISTRATION
           ), null);
-      
-      
+
+
           // Application Submitted (Compliance = "Submitted" AND Onboarding is checked)
           businesses = businessDAO.where(
             AND(
@@ -226,13 +244,13 @@ foam.CLASS({
             businesses,
             RowOfBusSumReports.APPLICATION_SUBMITTED
           ), null);
-      
-      
+
+
           // Approved (Compliance = "Approved" AND Status = "Active", Onboarding is checked)
           businesses = businessDAO.where(
             AND(
               EQ(Business.COMPLIANCE, ComplianceStatus.PASSED),
-              EQ(Business.STATUS, AccountStatus.ACTIVE),
+              EQ(Business.LIFECYCLE_STATE, LifecycleState.ACTIVE),
               EQ(Business.ONBOARDED, true)
             )
           );
@@ -241,13 +259,13 @@ foam.CLASS({
             businesses,
             RowOfBusSumReports.APPROVED
           ), null);
-      
+
           // Active (If Approved AND at least 1 payment created in the last 30 days)
           DAO transactionDAO = (DAO) x.get("localTransactionDAO");
           List busLst = ((ArraySink) businessDAO.where(
             EQ(Business.COMPLIANCE, ComplianceStatus.PASSED)
           ).select(new ArraySink())).getArray();
-      
+
           // get the date 30 days before
           Date currentDate = new Date();
           Calendar c = Calendar.getInstance();
@@ -260,7 +278,7 @@ foam.CLASS({
           DAO accountDAO = (DAO) x.get("localAccountDAO");
           for (Object obj : busLst) {
             Business business = (Business) obj;
-      
+
             Map map = new Map.Builder(x)
               .setArg1(Account.ID)
               .setDelegate(new ArraySink())
@@ -282,8 +300,8 @@ foam.CLASS({
             businesses,
             RowOfBusSumReports.ACTIVE
           ), null);
-      
-      
+
+
           // Declined (Compliance ="Failed")
           businesses = businessDAO.where(
             EQ(Business.COMPLIANCE, ComplianceStatus.FAILED)
@@ -293,8 +311,8 @@ foam.CLASS({
             businesses,
             RowOfBusSumReports.DECLINED
           ), null);
-      
-      
+
+
           // Locked (Status = "Revoked")
           businesses = businessDAO.where(
             EQ(Business.STATUS, AccountStatus.REVOKED)
@@ -305,9 +323,9 @@ foam.CLASS({
             RowOfBusSumReports.LOCKED
           ), null);
 
-          return decoratedSink;
+          return sink;
         `
       }
     ]
   });
-  
+

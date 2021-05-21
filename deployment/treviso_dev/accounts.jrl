@@ -1,0 +1,44 @@
+p({
+  "class":"net.nanopay.bank.BRBankAccount",
+  "id":"34",
+  "bankCode":"12345678",
+  "branchCode":"12345",
+  "accountNumber":"1234567890",
+  "status":1,
+  "name":"Bank BRL",
+  "iban":"BR5155245856279572445638416A4",
+  "isDefault":true,
+  "created":"2020-10-02T18:45:41.978Z",
+  "createdBy":1,
+  "createdByAgent":1,
+  "lastModified":"2020-10-02T18:45:41.978Z",
+  "lastModifiedBy":1,
+  "lifecycleState":1,
+  "owner":2005,
+  "accountOwnerType":"1"
+})
+p({
+  "class":"net.nanopay.bank.USBankAccount",
+  "id":"36",
+  "branchId":"123123123",
+  "accountNumber":"123123",
+  "branchId":"00002",
+  "institutionNumber":"003",
+  "status":1,
+  "address":{
+    "class":"foam.nanos.auth.Address"
+  },
+  "bankAddress":{
+    "class":"foam.nanos.auth.Address"
+  },
+  "forContact":true,
+  "name":"US contact Bank",
+  "isDefault":true,
+  "created":"2020-10-02T18:51:33.912Z",
+  "createdBy":1,
+  "createdByAgent":1,
+  "lastModified":"2020-10-02T18:51:33.912Z",
+  "lastModifiedBy":1,
+  "lifecycleState":1,
+  "owner":2006
+})

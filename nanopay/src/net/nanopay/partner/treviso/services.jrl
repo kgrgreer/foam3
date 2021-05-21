@@ -1,0 +1,51 @@
+p({"class":"foam.nanos.boot.NSpec", "name":"trevisoCredientials", "lazy":false, "service":{"class":"net.nanopay.partner.treviso.TrevisoCredientials"}})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "fepWebClientDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.partner.treviso.FepWebClient.getOwnClassInfo())
+      .setSeqNo(true)
+      .setName("trevisoClientDAO")
+      .setJournalName("trevisoClients")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.partner.treviso.FepWebClient\"}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"fepWebService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.treviso.api.FepWebService(x);
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"trevisoService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.treviso.TrevisoService(x, "fepWebService", "exchange");
+  """,
+  "authNotes":"An instance of fepWebService and exchange are attached to the trevisoService when initialized therefore later changes to those nspecs won't take effect on this service."
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"sintegraService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.sintegra.SintegraServiceMock(x);
+  """
+})

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.contacts.ui.modal',
   name: 'BusinessListView',
@@ -12,7 +29,7 @@ foam.CLASS({
 
   messages: [
     { name: 'DEFAULT_RESULT_MSG', message: 'Matching businesses will appear here' },
-    { name: 'FAILED_RESULT_MSG', message: 'We couldn’t find a business with that name.' }
+    { name: 'FAILED_RESULT_MSG', message: 'We couldn’t find a business with that name' }
   ],
 
   methods: [
@@ -32,13 +49,13 @@ foam.CLASS({
                   let { data }  = self.wizard;
                   var contact = net.nanopay.contacts.Contact.create({
                     type: 'Contact',
-                    group: 'sme',
+                    group: business.spid + '-sme',
                     organization: business.businessName,
+                    operatingBusinessName: business.operatingBusinessName,
                     businessId: business.id,
                     address: business.address
                   });
                   contact.businessSectorId = business.businessSectorId;
-                  contact.operatingBusinessName = business.operatingBusinessName;
                   data.contact = contact;
                 })
               .end();
@@ -100,7 +117,7 @@ foam.CLASS({
       name: 'createNewContact',
       label: 'Create New',
       code: function() {
-        this.pushMenu('sme.menu.create');
+        this.pushMenu('submenu.contact.create');
       }
     },
   ]

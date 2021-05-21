@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.onboarding',
   name: 'CanadaUsBusinessOnboarding',
@@ -23,15 +40,19 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.FObject',
     'foam.dao.DAO',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+
     'net.nanopay.sme.onboarding.OnboardingStatus'
   ],
 
   tableColumns: [
-    'userId',
-    'businessId',
+    'userId.id',
+    'businessId.id',
     'status',
     'created',
     'lastModified'
@@ -95,7 +116,7 @@ foam.CLASS({
         var e = this.start('span').add(id).end();
         o.userId$find.then((b) => {
           if ( ! b ) return;
-          e.add(' - ', b.label());
+          e.add(' - ', b.toSummary());
         });
       }
     },
@@ -124,7 +145,7 @@ foam.CLASS({
         var e = this.start('span').add(id).end();
         o.businessId$find.then((b) => {
           if ( ! b ) return;
-          e.add(' - ', b.label());
+          e.add(' - ', b.toSummary());
         });
       }
     },
@@ -306,18 +327,18 @@ foam.CLASS({
           throw new AuthorizationException(PROHIBITED_MESSAGE);
         }
 
-        if ( obj.getStatus() == OnboardingStatus.SUBMITTED ) super.validate(x);
+        if ( obj.getStatus() == OnboardingStatus.SUBMITTED ) FObject.super.validate(x);
       `
     },
     {
       name: 'authorizeOnCreate',
       javaCode: `
-        foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
-        if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
+        Subject subject = (Subject) x.get("subject");
+        User user = subject.getRealUser();
 
         if ( user.getId() == getUserId() ) return;
 
-        String permission = "canadaUsBusinessOnboarding.create." + getId();
+        String permission = "canadausnusinessonboardingcreate." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
 
@@ -327,12 +348,12 @@ foam.CLASS({
     {
       name: 'authorizeOnRead',
       javaCode: `
-        foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
-        if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
+        Subject subject = (Subject) x.get("subject");
+        User user = subject.getRealUser();
 
         if ( user.getId() == getUserId() ) return;
 
-        String permission = "canadaUsBusinessOnboarding.read." + getId();
+        String permission = "canadausnusinessonboardingread." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
 
@@ -342,12 +363,12 @@ foam.CLASS({
     {
       name: 'authorizeOnUpdate',
       javaCode: `
-        foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
-        if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
+        Subject subject = (Subject) x.get("subject");
+        User user = subject.getRealUser();
 
         if ( user.getId() == getUserId() ) return;
 
-        String permission = "canadaUsBusinessOnboarding.update." + getId();
+        String permission = "canadausnusinessonboardingupdate." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
 
@@ -357,12 +378,12 @@ foam.CLASS({
     {
       name: 'authorizeOnDelete',
       javaCode: `
-        foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
-        if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
+        Subject subject = (Subject) x.get("subject");
+        User user = subject.getRealUser();
 
         if ( user.getId() == getUserId() ) return;
 
-        String permission = "canadaUsBusinessOnboarding.delete." + getId();
+        String permission = "canadausnusinessonboardingremove." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
 
@@ -370,5 +391,5 @@ foam.CLASS({
       `
     }
   ]
-  
+
 });

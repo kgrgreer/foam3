@@ -1,0 +1,19 @@
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "test",
+  targetId: "ucj-crunchOnboarding-rules",
+  priority: 1
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "test",
+  targetId: "AllPlannerCapability",
+  priority: 2
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "test",
+  targetId: "abliiCorridorCapability",
+  priority: 2
+})

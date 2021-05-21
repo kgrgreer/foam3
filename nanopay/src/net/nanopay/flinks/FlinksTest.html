@@ -1,0 +1,30 @@
+<html>
+ <head>
+  <meta name="viewport" content="width=device-width" />
+  
+  <title>Flinks</title>
+ </head>
+
+ <body>
+  <div class="page-title">Flinks Example</div>
+  <p>Flinks embedded iFrame example.</p>
+
+  <p>Configuring Flinks Widget - <a href="https://docs.flinks.io/docs/configure-and-install-flinks-connect">https://docs.flinks.io/docs/configure-and-install-flinks-connect</a></p>
+  <p>Widget Parameters - <a href="https://docs.flinks.io/docs/parameters">https://docs.flinks.io/docs/parameters</a></p>
+  <p>URL - https://nanopay-iframe.private.fin.ag/?theme=light&desktopLayout=true&institutionFilterEnable=true&redirectUrl=http://intuit:8080/&demo=true&tag=intuit&consentEnable=true&accountSelectorEnable=true</p>
+  <p>Successful Response Redirect - http://intuit:8080/?loginId=2ff467b7-bcde-4346-8996-08d69b30c4d8&tag=intuit&accountId=8cd3e122-4826-4e24-48c4-08d69b30caf5&institution=FlinksCapital</p>
+
+<!-- Flinks Connect -->
+<iframe class="flinksconnect" height="760" scrolling="no"
+    src="https://nanopay-iframe.private.fin.ag/?theme=light&desktopLayout=true&institutionFilterEnable=true&redirectUrl=http://intuit:8080/&demo=true&tag=intuit&consentEnable=true&accountSelectorEnable=true">
+</iframe>
+
+<!-- Event Listener -->
+<script>
+    window.addEventListener('message', function(e) {
+        console.log(e.data);
+    });
+</script>
+
+ </body>
+</html>

@@ -1,0 +1,50 @@
+p({
+  class:"foam.nanos.boot.NSpec",
+  id:"dowjonesCredentials",
+  service:{
+    class:"net.nanopay.meter.compliance.dowJones.DowJonesCredentials",
+    namespace:"18",
+    username:"nanoAPI",
+    password:"4ZszDP3c51Va",
+    baseUrl:"https://djrc.api.test.dowjones.com/v1/search/"
+  }
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "accuityCredentials",
+  "service": {
+    "class": "net.nanopay.partner.accuity.AccuityCredentials",
+    "baseUrl": "https://apps.applyfinancial.co.uk",
+    "username": "paymentops@nanopay.net",
+    "password": "NaPa0212!"
+  }
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "bepay.bankAccountValidationService",
+  "description": "Bank account validation service for BePay spid.",
+  "service": {
+    "class": "net.nanopay.partner.accuity.AccuityBankAccountValidationService"
+  }
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"afexService",
+  "lazy":true,
+  "serve":false,
+  "serviceScript":"""
+    return new net.nanopay.fx.afex.AFEXService(x);
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "trevisoAPI.bankAccountValidationService",
+  "description": "Bank account validation service for trevisoAPI spid.",
+  "service": {
+    "class": "net.nanopay.partner.accuity.AccuityBankAccountValidationService"
+  }
+})

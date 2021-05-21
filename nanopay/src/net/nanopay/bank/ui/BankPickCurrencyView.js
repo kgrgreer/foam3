@@ -1,25 +1,54 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.bank.ui',
   name: 'BankPickCurrencyView',
   extends: 'foam.u2.Controller',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   imports: [
+    'sourceCorridorDAO',
+    'countryDAO',
     'ctrl',
     'notify',
     'pushMenu',
     'stack',
-    'user',
+    'subject',
     'userDAO'
   ],
 
   requires: [
     'foam.core.Action',
+    'foam.core.Currency',
+    'foam.dao.EasyDAO',
+    'foam.dao.PromisedDAO',
+    'foam.nanos.auth.Country',
     'foam.u2.dialog.Popup',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
-    'net.nanopay.bank.USBankAccount'
+    'net.nanopay.bank.USBankAccount',
+    'net.nanopay.payment.PaymentProviderCorridor',
+    'net.nanopay.sme.ui.SMEModal'
   ],
 
   css: `
@@ -28,7 +57,7 @@ foam.CLASS({
   }
   ^ .bank-currency-pick-height {
     height: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
   ^ .bank-pick-margin {
     width: 1046px;
@@ -162,28 +191,82 @@ foam.CLASS({
   ^ h1 {
     margin-bottom: 0px;
   }
+  ^ .property-selectedCountry {
+    display: inline-block;
+    width: 200px;
+  }
+  ^ .DefaultRowView-row {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+  ^ .net-nanopay-sme-ui-SMEModal-inner {
+    height: 500px;
+  }
+  ^ .net-nanopay-sme-ui-SMEModal-content {
+    box-sizing: border-box;
+    width: 600px;
+    overflow-y: auto;
+    padding: 30px;
+  }
   `,
 
   messages: [
     { name: 'TITLE', message: 'Add a new bank' },
     { name: 'SUB_TITLE', message: 'Connect through a banking partner below, or ' },
     { name: 'CONNECT_LABEL', message: 'connect with a void check' },
-    { name: 'BANK_ADDED', message: 'Your bank account was successfully added.' },
+    { name: 'BANK_ADDED', message: 'Your bank account was successfully added' },
+    { name: 'CHOOSE_COUNTRY', message: 'Please select the originating country of the bank account you would like to add.' },
+    { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' },
+    { name: 'DOMICILED_BK_ACC_COUNTRY', message: 'Domiciled bank account country' }
   ],
 
   properties: [
     {
-      name: 'selection',
-      class: 'Int',
-      factory: function(user) {
-        return this.user.address.countryId === 'CA' ? 1 : 2;
+      class: 'foam.dao.DAOProperty',
+      name: 'permittedCountries',
+      factory: function() {
+        return this.PromisedDAO.create({
+          of: 'foam.nanos.auth.Country',
+          promise: this.sourceCorridorDAO
+            .select(this.MAP(this.PaymentProviderCorridor.SOURCE_COUNTRY))
+            .then((sink) => {
+              let countries = sink.delegate.array ? sink.delegate.array : [];
+              countries.push(this.subject.user.address.countryId);
+              return this.countryDAO.where(this.IN(this.Country.CODE, sink.delegate.array));
+            })
+        });
+      }
+    },
+    {
+      class: 'Reference',
+      name: 'selectedCountry',
+      of: 'foam.nanos.auth.Country',
+      label: 'Country of bank account',
+      documentation: 'Determines what bank view will be displayed pertaining to country.',
+      // TODO: Select first country after promise resolve on permitted countries.
+      view: function(_, x) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          sections: [
+            {
+              heading: x.data.DOMICILED_BK_ACC_COUNTRY,
+              dao$: x.data.permittedCountries$
+            }
+          ]
+        };
+      },
+      factory: function() {
+        return this.subject.user.address.countryId;
       }
     },
     {
       class: 'Boolean',
       name: 'hasCompletedIntegration',
       value: false,
-      documentation: `Boolean to determine if the User has completed 
+      documentation: `Boolean to determine if the User has completed
                       the integration process before`
     },
     {
@@ -196,21 +279,19 @@ foam.CLASS({
       }
     },
     {
-      name: 'usdAvailable',
-      class: 'Boolean'
-    },
-    {
-      name: 'cadAvailable',
-      class: 'Boolean'
+      class: 'FObjectProperty',
+      name: 'bankAccount',
+      expression: function(selectedCountry) {
+        return (foam.lookup(`net.nanopay.bank.${ selectedCountry }BankAccount`)).create({}, this);
+      }
     }
   ],
 
   methods: [
     function initE() {
       this.SUPER();
-      var self = this;
-
       this.checkIntegration();
+
       this.addClass(this.myClass())
       .start().addClass('bank-currency-pick-height')
         .start().addClass('bank-pick-margin')
@@ -227,37 +308,27 @@ foam.CLASS({
               this.stack.back();
             }).end()
             .start('h1').add(this.TITLE).addClass('bank-pick-title').end()
-            .start()
+            .start().show(this.selectedCountry$)
               .start('h4').add(this.SUB_TITLE).addClass('bank-pick-title').addClass('bank-pick-subtitle').end()
               .start('p')
                 .addClass(this.myClass('link-text'))
                 .add(this.CONNECT_LABEL)
                 .attrs({ name: 'connectWithVoidCheck' })
-                .on('click', function() {
-                  var bankModal = self.selection == 1 ? 'net.nanopay.cico.ui.bankAccount.modalForm.AddCABankModal' :
-                      'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard';
-
-                  self.ctrl.add(self.Popup.create().tag({
-                    class: bankModal,
-                    onComplete: self.createOnComplete()
+                .on('click', () => {
+                  this.add(this.SMEModal.create().tag({
+                    class: 'net.nanopay.account.ui.BankAccountWizard',
+                    data: this.bankAccount,
+                    customTitle: this.SECTION_DETAILS_TITLE_VOID,
+                    useSections: ['clientAccountInformation', 'pad']
                   }));
                 })
               .end()
             .end()
             .start('span').addClass('resting')
             .startContext({ data: this })
-              .start(this.CURRENCY_ONE, { buttonStyle: 'UNSTYLED' })
-                .addClass('white-radio').show(this.cadAvailable)
-                .enableClass('selected', this.selection$.map((v) => v === 1))
-                .style({ 'margin-left': '5px', 'margin-right': '10px' })
-              .end()
-              .start(this.CURRENCY_TWO, { buttonStyle: 'UNSTYLED' })
-                .addClass('white-radio').show(this.usdAvailable)
-                .enableClass('selected', this.selection$.map((v) => v === 2))
-                .style({ 'margin-left': '5px', 'margin-right': '5px' })
-              .end()
+              .tag(this.SELECTED_COUNTRY).addClass('country-dropdown')
             .endContext()
-            .start().addClass('institutionSearchContainer').hide(this.selection === 2)
+            .start().addClass('institutionSearchContainer').hide(this.selectedCountry$.map((v) => v === 'US'))
               .start({ class: 'foam.u2.tag.Image', data: 'images/ic-search.svg' }).end()
               .start(this.FILTER_FOR)
                 .addClass('institutionSearch')
@@ -266,8 +337,7 @@ foam.CLASS({
             .end()
             .end()
           .end()
-          .start().show(this.selection$.map(
-            (v) => v === 1 && this.cadAvailable))
+          .start().show(this.selectedCountry$.map((v) => v === 'CA'))
             .start().tag({
               class: 'net.nanopay.flinks.view.FlinksInstitutionsView',
               filterFor$: this.filterFor$,
@@ -276,8 +346,7 @@ foam.CLASS({
             }).end()
           .end()
 
-          .start().show(this.selection$.map(
-            (v) => v === 2 && this.usdAvailable))
+          .start().show(this.selectedCountry$.map((v) => v === 'US'))
             .start().tag({
               class: 'net.nanopay.plaid.ui.PlaidView',
               logoPath: 'images/ablii-logo.svg',
@@ -292,46 +361,16 @@ foam.CLASS({
     function createOnComplete() {
       var self = this;
       return function() {
-        var menuLocation = 'sme.main.banking';
+        var menuLocation = 'mainmenu.banking';
         window.location.hash.substr(1) != menuLocation ?
           self.pushMenu(menuLocation) : self.stack.back();
         return;
       };
     },
 
-    function createOnDismiss() {
-      var self = this;
-      return function() {
-        self.selection = 1;
-      };
-    },
-
     async function checkIntegration() {
-      var nUser = await this.userDAO.find(this.user.id);
+      var nUser = await this.userDAO.find(this.subject.user.id);
       this.hasCompletedIntegration = nUser.hasIntegrated;
     }
-  ],
-
-  actions: [
-    {
-      name: 'currencyOne',
-      label: 'Canada',
-      isAvailable: function() {
-        return this.user.address.countryId === 'CA';
-      },
-      code: function() {
-        this.selection = 1;
-      }
-    },
-    {
-      name: 'currencyTwo',
-      label: 'US',
-      isAvailable: function() {
-        return this.user.address.countryId === 'US';
-      },
-      code: function() {
-        this.selection = 2;
-      }
-    },
   ]
 });

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.flinks.view.form',
   name: 'FlinksBankPadAuthorization',
@@ -11,6 +28,7 @@ foam.CLASS({
     'isConnecting',
     'notify',
     'padCaptureDAO',
+    'pushMenu',
     'pushViews',
     'validateAddress',
     'validateCity',
@@ -19,6 +37,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.model.PadCapture'
   ],
 
@@ -82,27 +101,27 @@ foam.CLASS({
       var user = this.viewData.user;
 
       if ( user.firstName.length > 70 ) {
-        this.notify('First name cannot exceed 70 characters.', 'error');
+        this.notify('First name cannot exceed 70 characters.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( user.lastName.length > 70 ) {
-        this.notify('Last name cannot exceed 70 characters.', 'error');
+        this.notify('Last name cannot exceed 70 characters.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateStreetNumber(user.address.streetNumber) ) {
-        this.notify('Invalid street number.', 'error');
+        this.notify('Invalid street number.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateAddress(user.address.streetName) ) {
-        this.notify('Invalid street number.', 'error');
+        this.notify('Invalid street number.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateCity(user.address.city) ) {
-        this.notify('Invalid city name.', 'error');
+        this.notify('Invalid city name.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validatePostalCode(user.address.postalCode, user.address.countryId) ) {
-        this.notify('Invalid postal code.', 'error');
+        this.notify('Invalid postal code.', '', this.LogLevel.ERROR, true);
         return false;
       }
       return true;
@@ -130,7 +149,7 @@ foam.CLASS({
           account.bankAddress = this.bankAddress;
           await this.bankAccountDAO.put(account);
         } catch (error) {
-          this.notify(error.message, 'error');
+          this.notify(error.message, '', this.LogLevel.ERROR, true);
           return;
         } finally {
           this.isConnecting = false;
@@ -151,14 +170,11 @@ foam.CLASS({
       code: function(X) {
         if ( this.validateInputs() ) {
           this.capturePADAndPutBankAccounts().then(() => {
-            this.error ? this.ctrl.notify(this.error, 'error') : this.ctrl.notify(this.SUCCESS);
+            this.error ? this.ctrl.notify(this.error, '', this.LogLevel.ERROR, true) : this.ctrl.notify(this.SUCCESS, '', this.LogLevel.INFO, true);
 
             X.closeDialog();
 
-            location.hash = 'sme.main.banking';
-            this.stack.push({
-              class: 'net.nanopay.bank.BankAccountController'
-            })
+            this.pushMenu('mainmenu.banking');
           });
         }
       }

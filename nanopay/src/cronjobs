@@ -7,15 +7,32 @@ p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nano
 p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":0,"hour":0,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},"scheduledTime":"2019-09-10T04:00:00.000Z","id":"Eft Return File Remove Cron","description":"Move old Alterna EFT Return Files to archive folder","code":"import net.nanopay.tx.cron.EftReturnFileRemoveCron;\ncron = new EftReturnFileRemoveCron();\ncron.execute(x);\nprint(\"done\");"})
 p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":0,"hour":23,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},"scheduledTime":"2019-09-10T03:00:00.000Z","id":"testReporterCron","description":"Run test reporter.","code":"runScript(\"TestReporter\");"})
 p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":0,"hour":0,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},"scheduledTime":"2019-09-10T04:00:00.000Z","id":"Update Exchange Rates With CAD as Base Currency","description":"Fetch Exchange rates daily using CAD as base currency","code":"import net.nanopay.fx.ExchangeRatesCron; \ncron = new ExchangeRatesCron();\ncron.execute(x);\nprint(\"done\");"})
-p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":0,"hour":-1,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},"scheduledTime":"2019-09-09T17:00:00.000Z","id":"Reload Canadian Sanctions List","description":"Reload Canadian sanctions list every hour.","code":"import net.nanopay.meter.compliance.cron.ReloadCanadianSanctionsListCron; \ncron = new ReloadCanadianSanctionsListCron();\ncron.execute(x);\nprint(\"done\");"})
+p({
+  "class":"foam.nanos.cron.Cron",
+  "id": "Reload Canadian Sanctions List",
+  "description": "Reload Canadian sanctions list every hour.",
+  "enabled": false,
+  "schedule": {
+    "class": "foam.nanos.cron.CronSchedule",
+    "minute": 0,
+    "hour": -1,
+    "dayOfMonth": -1,
+    "month": -1,
+    "dayOfWeek": -1,
+    "second": 0
+  },
+  "scheduledTime": "2019-09-09T17:00:00.000Z",
+  "code": """
+    import net.nanopay.meter.compliance.cron.ReloadCanadianSanctionsListCron;
+    cron = new ReloadCanadianSanctionsListCron();
+    cron.execute(x);
+    print("done");
+  """
+})
 p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":0,"hour":0,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},"scheduledTime":"2019-09-10T04:00:00.000Z","id":"Calculate daily Interest","description":"calculates daily interest based on EOD balance","code":"import net.nanopay.tx.cron.InterestAccrual; ICcron = new InterestAccrual();ICcron.execute(x);\nprint(\"done\");"})
 p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":0,"hour":0,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},"scheduledTime":"2019-09-10T04:00:00.000Z","id":"Compound Interest Rate","description":"adds interest to account via tx","code":"import net.nanopay.tx.cron.CompoundInterest; CIcron = new CompoundInterest();CIcron.execute(x);\nprint(\"done\");"})
 p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":-1,"hour":-1,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":1},"scheduledTime":"2019-09-09T16:56:01.000Z","id":"Scheduled Transactions","description":"executes scheduled transactions","code":"import net.nanopay.tx.cron.ScheduledTransactionCron;\ncron = new ScheduledTransactionCron();\ncron.execute(x);\nprint(\"done\");"})
 p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":-1,"hour":0,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},"scheduledTime":"2019-09-10T04:00:00.000Z","id":"dailyReduce","description":"","code":"x.get(\"accountBalanceDailyReduceManager\").doReduce();\nx.get(\"accountBalanceWeeklyReduceManager\").doReduce();\nx.get(\"accountBalanceMonthlyReduceManager\").doReduce();\nx.get(\"accountBalanceQuarterlyReduceManager\").doReduce();\nx.get(\"accountBalanceAnnuallyReduceManager\").doReduce();"})
-p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":-1,"hour":-1,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},"scheduledTime":"2019-09-09T16:56:00.000Z","id":"AFEX Beneficiary Compliance","description":"Check AFEX Beneficiary Compliance Status","code":"import net.nanopay.fx.afex.cron.AFEXBeneficiaryStatusCron;\n\ndate = new Date();\nif ( date.getMinutes() == 30 || date.getMinutes() == 0 ) {\nprint(\"running AFEXBeneficiaryStatusCron\");\ncron = new AFEXBeneficiaryStatusCron();\ncron.execute(x);\n}\nprint(\"done\");\n"})
-p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":0,"hour":0,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},"scheduledTime":"2019-09-10T04:00:00.000Z","id":"AFEX Check Payment Status","description":"Check AFEX Payment Status","code":"import net.nanopay.fx.afex.cron.AFEXPaymentStatusCron;\ncron = new AFEXPaymentStatusCron();\ncron.execute(x);\nprint(\"done\");"})
-p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":0,"hour":0,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},"scheduledTime":"2019-09-10T04:00:00.000Z","id":"AFEX Check Business Compliance Status","description":"Check AFEX Business Compliance Status","code":"import net.nanopay.fx.afex.cron.AFEXBusinessComplianceStatusCron;\ncron = new AFEXBusinessComplianceStatusCron();\ncron.execute(x);\nprint(\"done\");"})
-p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":0,"hour":-1,"dayOfMonth":-1,"month":-1,"dayOfWeek": 1,"second":-1},"id": "AFEX Business ApprovalRequest Cron","description": "Auto-Approve AFEXBusiness ApprovalRequest ","code": "import net.nanopay.fx.afex.cron.AFEXBusinessApprovalRequestCron;\ncron = new AFEXBusinessApprovalRequestCron();\ncron.execute(x);\nprint(\"done\");"})
 p({
   "class":"foam.nanos.cron.Cron",
   "enabled":false,
@@ -40,89 +57,7 @@ p({
 })
 p({
   "class": "foam.nanos.cron.Cron",
-  "enabled": true,
-  "schedule": {
-    "class": "foam.nanos.cron.CronSchedule",
-    "dayOfMonth": 1,
-    "hour": 1,
-    "minute": 0
-  },
-  "scheduledTime": "2019-11-01T05:00:00.000Z",
-  "id": "Monthly Billing Invoices for Ablii",
-  "description": "Send billing invoices to Ablii users",
-  "code": """
-    import foam.mlang.predicate.Predicate;
-    import java.time.YearMonth;
-    import net.nanopay.invoice.BillingInvoicesCron;
-    import net.nanopay.tx.SummaryTransaction;
-    import net.nanopay.tx.model.Transaction;
-    import net.nanopay.fx.FXSummaryTransaction;
-    import static foam.mlang.MLang.*;
-
-    /**
-     * Configure revenue accounts for billing invoices
-     */
-    CAD_REVENUE_ACCOUNT_ID = 2L;
-    USD_REVENUE_ACCOUNT_ID = 2L;
-
-    /**
-     * Configure the number of business days due before processing the invoices
-     */
-    DUE_IN = 5;
-
-    /**
-     * Configure DRY_RUN option of the billing cron
-     */
-    DRY_RUN = false;
-
-    /**
-     * Configure exemption list
-     */
-    EXEMPTION_LIST = new Long[] {
-      // Add PAYER_IDS separated by comma
-    };
-
-    // Check for SummaryTransaction and FXSummaryTransaction because there
-    // are still ComplianceTransactions that have redundant InvoicedFeeLineItem
-    // from their parent transaction.
-    isSummaryTransaction = OR(new Predicate[] {
-      INSTANCE_OF(SummaryTransaction.class),
-      INSTANCE_OF(FXSummaryTransaction.class)
-    });
-
-    // Billing for last month period
-    billingMonth = YearMonth.now().minusMonths(1);
-    startDate = billingMonth.atDay(1);
-    endDate = billingMonth.atEndOfMonth();
-
-    accountDAO = x.get("localAccountDAO");
-
-    // Generate billing invoices for CAD-* transactions
-    cadBillingAgent = new BillingInvoicesCron(startDate, endDate, accountDAO.find(CAD_REVENUE_ACCOUNT_ID));
-    cadBillingAgent.setPredicate(AND(new Predicate[] { isSummaryTransaction, EQ(Transaction.SOURCE_CURRENCY, "CAD") }));
-    cadBillingAgent.setDueIn(DUE_IN);
-    cadBillingAgent.setDryRun(DRY_RUN);
-    cadBillingAgent.addToExemptionPayerList(EXEMPTION_LIST);
-    print("============== CAD billing invoices ==============");
-    cadBillingAgent.execute(x);
-    print(cadBillingAgent.getResult());
-
-    print("\\n\\n");
-
-    // Generate billing invoices for USD-* transactions
-    usdBillingAgent = new BillingInvoicesCron(startDate, endDate, accountDAO.find(USD_REVENUE_ACCOUNT_ID));
-    usdBillingAgent.setPredicate(AND(new Predicate[] { isSummaryTransaction, EQ(Transaction.SOURCE_CURRENCY, "USD") }));
-    usdBillingAgent.setDueIn(DUE_IN);
-    usdBillingAgent.setDryRun(DRY_RUN);
-    usdBillingAgent.addToExemptionPayerList(EXEMPTION_LIST);
-    print("============== USD billing invoices ==============");
-    usdBillingAgent.execute(x);
-    print(usdBillingAgent.getResult());
-  """
-})
-p({
-  "class": "foam.nanos.cron.Cron",
-  "enabled":true,
+  "enabled":false,
   "scheduledTime": "2019-11-19T00:00:00.000Z",
   "schedule": {"class":"foam.nanos.cron.CronSchedule","minute":20,"hour":-1,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},
   "id":"Send Welcome Email to Ablii Business 30min after SignUp",
@@ -136,7 +71,7 @@ p({
 })
 p({
   "class": "foam.nanos.cron.Cron",
-  "enabled":true,
+  "enabled":false,
   "scheduledTime": "2019-11-25T00:00:00.000Z",
   "schedule": {"class":"foam.nanos.cron.CronSchedule","minute":59,"hour":23,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":-1},
   "id":"Send Reminder Email to SigningOfficer",
@@ -145,7 +80,7 @@ p({
 })
 p({
   "class": "foam.nanos.cron.Cron",
-  "enabled":true,
+  "enabled":false,
   "scheduledTime": "2019-11-25T00:00:00.000Z",
   "schedule": {"class":"foam.nanos.cron.CronSchedule","minute":59,"hour":23,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":-1},
   "id": "Send Onboarding Reminder Email To Businesses Created Over 24 Hours Ago",

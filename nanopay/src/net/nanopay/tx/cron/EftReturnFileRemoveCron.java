@@ -3,6 +3,9 @@ package net.nanopay.tx.cron;
 import com.jcraft.jsch.*;
 import foam.core.ContextAgent;
 import foam.core.X;
+import foam.dao.DAO;
+import foam.nanos.alarming.Alarm;
+import foam.nanos.alarming.AlarmReason;
 import foam.nanos.logger.Logger;
 import net.nanopay.cico.model.EFTReturnFileCredentials;
 
@@ -85,6 +88,11 @@ public class EftReturnFileRemoveCron implements ContextAgent {
 
     } catch ( JSchException | SftpException | ParseException e) {
       logger.error(e);
+      ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
+        .setName("EFF Return File Remove Cron")
+        .setReason(AlarmReason.CREDENTIALS)
+        .setNote(e.getMessage())
+        .build());
     } finally {
       if ( channel != null ) channel.disconnect();
       if ( session != null ) session.disconnect();

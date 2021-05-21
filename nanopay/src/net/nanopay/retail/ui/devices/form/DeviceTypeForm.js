@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.retail.ui.devices.form',
   name: 'DeviceTypeForm',
@@ -75,7 +92,7 @@ foam.CLASS({
     { name: 'Step',             message: 'Step 2: Select your device type.' },
     { name: 'DeviceTypeLabel',  message: 'Device Type *' },
     { name: 'Instructions',     message: 'Please navigate to the Merchant Web App (for iOS and Android tablets only).' },
-    { name: 'Error',            message: 'Device type required.' }
+    { name: 'Error',            message: 'Device type required' }
   ],
 
   properties: [

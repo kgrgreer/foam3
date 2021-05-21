@@ -3,6 +3,7 @@ package net.nanopay.account;
 import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.dao.DAO;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
@@ -12,12 +13,17 @@ public class DigitalAccountService
   extends ContextAwareSupport
   implements DigitalAccountServiceInterface {
 
-  public DigitalAccount findDefault(X x, String denomination) {
-    User user = (User) x.get("user");
+  public void createDefaults(X x, String denomination, String[] trustAccounts) {
+    for (String id : trustAccounts)
+      findDefault(x, denomination, id);
+  }
+
+  public DigitalAccount findDefault(X x, String denomination, String trustAccount) {
+    User user = ((Subject) x.get("subject")).getUser();
 
      if ( (user instanceof Business || user.getGroup().equals("sme") ) && SafetyUtil.equals("CAD",denomination) )   {
        DAO accountDAO = (DAO) x.get("localAccountDAO");
-       OverdraftAccount overdraft = (OverdraftAccount) OverdraftAccount.findDefault(x, user, denomination, new OverdraftAccount()).fclone();
+       OverdraftAccount overdraft = (OverdraftAccount) OverdraftAccount.findDefault(x, user, denomination, new OverdraftAccount(), null).fclone();
        overdraft.setName("OverdraftAccount for: " + overdraft.getOwner());
        DebtAccount debtAccount = (DebtAccount) overdraft.findDebtAccount(x);
        if ( debtAccount == null ) {
@@ -30,7 +36,7 @@ public class DigitalAccountService
          debtAccount = (DebtAccount) accountDAO.put(
           new DebtAccount.Builder(x)
             .setDebtorAccount(overdraft.getId())
-            .setCreditorAccount(6)
+            .setCreditorAccount("6")
             .setParent(overdraft.getId())
             .setOwner(overdraft.getOwner())
             .setName("DebtAccount for: " + overdraft.getId())
@@ -41,7 +47,7 @@ public class DigitalAccountService
 
        return overdraft;
      } else {
-       return DigitalAccount.findDefault(getX(), user, denomination);
+       return DigitalAccount.findDefault(getX(), user, denomination, trustAccount);
      }
   }
 }

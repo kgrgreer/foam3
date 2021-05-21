@@ -1,0 +1,14 @@
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"TrevisoPlanner",
+  "enabled":true,
+})
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"PruneCicoApprovalCleanup",
+  "enabled":false,
+})
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"NatureCodeApprovals"
+})

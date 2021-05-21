@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'PersonalSettingsView',
@@ -6,7 +23,7 @@ foam.CLASS({
   documentation: 'Personal settings page for Ablii',
 
   imports: [
-    'agent',
+    'subject',
     'twofactor'
   ],
 
@@ -32,7 +49,7 @@ foam.CLASS({
       margin-bottom: 15px;
     }
     ^step-1 span {
-      font-family: Lato;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: normal;
       font-style: normal;
@@ -44,14 +61,13 @@ foam.CLASS({
     ^two-factor-link {
       color: #604aff;
       display: inline-block;
-      margin-top: 8px;
       text-decoration: none;
     }
     ^step-2 {
       margin-top: 32px;
     }
     ^step-2 span {
-      font-family: Lato;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: normal;
       font-style: normal;
@@ -106,14 +122,17 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TITLE', message: 'Personal Settings' },
-    { name: 'TWO_FACTOR_SUBTITLE', message: 'Two-factor Authentication' },
-    { name: 'TwoFactorInstr1', message: 'Download and use your Google Authenticator ' },
-    { name: 'TwoFactorInstr2', message: ' app on your mobile device to scan the QR code. If you can’t use the QR code, you can enter the provided key into the Google Authenticator app manually.' },
-    { name: 'IOSName', message: 'iOS' },
-    { name: 'AndroidName', message: 'Android' },
-    { name: 'StepOne', message: 'Step 1' },
-    { name: 'StepTwo', message: 'Step 2' }
+    { name: 'TITLE', message: 'Personal settings' },
+    { name: 'TWO_FACTOR_SUBTITLE', message: 'Two-factor authentication' },
+    { name: 'TWO_FACTOR_INSTR1', message: 'Two-factor authentication provides an added layer of security against impersonation and prevents access to sensitive account information' },
+    { name: 'TWO_FACTOR_INSTR2', message: 'Step 1: On your mobile device, download the Google Authenticator ' },
+    { name: 'TWO_FACTOR_INSTR3', message: 'Step 2: Scan the QR code, or type the 16-digit key into the Google Authenticator app' },
+    { name: 'TWO_FACTOR_INSTR4', message: 'Step 3: The app will provide a verification code. Enter the code and select ‘Verify’' },
+    { name: 'IOS_NAME', message: 'iOS' },
+    { name: 'ANDROID_NAME', message: 'Android' },
+    { name: 'OR', message: ' or ' },
+    { name: 'STEP_ONE', message: 'Step 1' },
+    { name: 'STEP_TWO', message: 'Step 2' }
   ],
 
   methods: [
@@ -147,17 +166,22 @@ foam.CLASS({
                   .start().addClass(this.myClass('step-1'))
                     .br()
                     .start('span')
-                      .add(this.TwoFactorInstr1)
+                      .add(this.TWO_FACTOR_INSTR1)
+                      .br()
+                      .add(this.TWO_FACTOR_INSTR2)
                       .start('a').addClass(this.myClass('two-factor-link'))
-                        .add(this.IOSName)
+                        .add(this.IOS_NAME)
                         .attrs({ href: this.IOS_LINK, target: '_blank' })
                       .end()
-                      .add(' or ')
+                      .add(this.OR)
                       .start('a').addClass(this.myClass('two-factor-link'))
-                        .add(this.AndroidName)
+                        .add(this.ANDROID_NAME)
                         .attrs({ href: this.ANDROID_LINK, target: '_blank' })
                       .end()
-                      .add(this.TwoFactorInstr2)
+                      .br()
+                      .add(this.TWO_FACTOR_INSTR3)
+                      .br()
+                      .add(this.TWO_FACTOR_INSTR4)
                     .end()
                   .end()
                 .end()
@@ -177,7 +201,7 @@ foam.CLASS({
               })
               .end();
           }
-        }, this.agent.twoFactorEnabled$))
+        }, this.subject.realUser.twoFactorEnabled$))
       .end();
     }
   ]

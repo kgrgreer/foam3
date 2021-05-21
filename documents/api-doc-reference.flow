@@ -1,0 +1,135 @@
+<title>API Reference</title>
+
+<h1>Reference</h1>
+
+<h2>Core Concept - Query Parameters</h2>
+<p>
+    This is the API query syntax that determines what entities to retrieve and filter within a DAO. 
+    The DAO gives access to source data through a generic interface. Any existing field can be queried.
+</p>
+<p>
+    The query syntax is URL encoded. It is composed of predicates (e.g. true/false logic) and linked by operators 
+    and modifiers which add conditions to the predicates. (e.g. ‘and’ = both input predicates are TRUE).
+</p>
+<p>
+    <b>Query Syntax Glossary</b>
+    <ul>
+        <li>q represents the query parameter for retrieving requests (e.g. cmd=select)</li>
+        <li>%3D represents ‘=’ in an encoded URL</li>
+        <li>%20 represents a space in an encoded URL</li>
+        <li>%3A represents a ‘:’ in an encoded URL</li>
+    </ul>
+</p>
+<p>
+    <b>Query Syntax Functions</b>
+    <p>Use this query syntax to:</p>
+    <ol>
+        <li>
+            Retrieve all entities that EQUAL a specific value.
+            <blockquote><i>
+                <p>Example: The name equals to the string "Ontario"</p>
+                q=name%3DOntario
+            </i></blockquote>
+        </li>
+        <li>
+            <p>Retrieve all entities that EQUAL a specific value with an ‘OR’ condition:</p>
+            <blockquote><i>
+                <p>Example: The name equals to the string "Ontario" or "Alberta"</p>
+                q=name%3DOntario%20OR%20name%3DAlberta
+            </i></blockquote>
+        </li>
+        <li>
+            <p>Retrieve all entities which CONTAIN a specific value:</p>
+            <blockquote><i>
+                <p>Example: The name contains the string "Ontario"</p>
+                q=name%3AOntario
+            </i></blockquote>
+        </li>
+        <li>
+            <p>Retrieve all entities which equal a specific value with an ‘AND’ condition:</p>
+            <blockquote><i>
+                <p>Example: The id equal to "1234" and the name equal to the string "Ontario"</p>
+                q=id=1234%20AND%20name=Ontario
+            </i></blockquote>
+        </li>
+    </ol>
+</p>
+
+<h2>Reference - DIG Error Codes</h2>
+<p>
+    DIG returns error codes in specific scenarios. The following table outlines the errors that are returned and 
+    the corresponding error codes that are included in the responses.
+</p>
+<p><b>Error Code Table</b></p>
+<table border="1px" width="100%">
+    <thead>
+        <tr>
+            <th>Exception</th>
+            <th>Code</th>
+            <th>Status</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>DAONotFoundException</td>
+            <td>1000</td>
+            <td>400</td>
+            <td>DAO not found.</td>
+        </tr>
+        <tr>
+            <td>DAOPutException</td>
+            <td>1001</td>
+            <td>400</td>
+            <td>DAO put rejection.</td>
+        </tr>
+        <tr>
+            <td>EmptyDataException</td>
+            <td>1002</td>
+            <td>400</td>
+            <td>DAO rejection.</td>
+        </tr>
+        <tr>
+            <td>ParsingErrorException</td>
+            <td>1003</td>
+            <td>400</td>
+            <td>Data parsing error.</td>
+        </tr>
+        <tr>
+            <td>UnsupportException</td>
+            <td>1004</td>
+            <td>400</td>
+            <td>Unsupported operation.</td>
+        </tr>
+        <tr>
+            <td>UnknownIdException</td>
+            <td>1005</td>
+            <td>400</td>
+            <td>ID not found.</td>
+        </tr>
+        <tr>
+            <td>DigSuccessMessage</td>
+            <td>1006</td>
+            <td>200</td>
+            <td>Success.</td>
+        </tr>
+        <tr>
+            <td>EmptyParameterException</td>
+            <td>1007</td>
+            <td>400</td>
+            <td>Empty parameter.</td>
+        </tr>
+        <tr>
+            <td>GeneralException</td>
+            <td>1008</td>
+            <td>400</td>
+            <td>General server exception.</td>
+        </tr>
+        <tr>
+            <td>AuthorizationException</td>
+            <td>1009</td>
+            <td>403</td>
+            <td>Authorization failed.</td>
+        </tr>
+    </tbody>
+</table>

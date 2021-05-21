@@ -1,0 +1,28 @@
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"TransactionBenchmark",
+  "description":"Transaction Creation Benchmark - runs against local DAO.",
+  "code":`
+    import foam.nanos.bench.*;
+    import net.nanopay.tx.bench.*;
+    lc = x.get("logLevelFilterLogger");
+    lc.setLogInfo(true);
+    savedDebug = lc.getLogDebug();
+    lc.setLogDebug(false);
+    b = new TransactionBenchmark();
+    builder = new BenchmarkRunner.Builder(x)
+      .setInvocationCount(1000)
+      .setThreadCount(1)
+      .setRunPerThread(false)
+      .setBenchmark(b);
+    runner = builder.build();
+    runner.execute(x);
+    print("done");
+    print(runner.getResult());
+    l = x.get("logger");
+    lc.setLogInfo(true);
+    lc.setLogDebug(savedDebug);
+    l.info(new Object[] {runner.getResult()});
+  `,
+  "output":""
+})

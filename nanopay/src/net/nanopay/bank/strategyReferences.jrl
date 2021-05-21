@@ -19,3 +19,203 @@ p({
   "strategy":"net.nanopay.bank.USBankAccount",
   "label": "USA"
 })
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"9319664b-aa92-5aac-ae77-98dasb6d734d",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.BRBankAccount",
+  "label": "Brazil"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"72465240-79e3-4bc8-b8fa-4ff49a5506ce",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.ATBankAccount",
+  "label": "Austrian"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"82869972-0831-410c-a889-42ff50348161",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.BEBankAccount",
+  "label": "Belgium"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"81c3de60-be0b-4e6a-bc02-8672eeabe241",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.CNBankAccount",
+  "label": "China"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"744c5247c-e5af-474f-bd1c-4cad3898be9b",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.CYBankAccount",
+  "label": "Cyprus"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"f30f47b7-4919-4b02-a2f9-33496fa32fcb",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.DEBankAccount",
+  "label": "Germany"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"868a7e42-2424-4e6d-99e5-286f6089a27b",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.EEBankAccount",
+  "label": "Estonia"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"94409452-70e2-4d7e-abfd-f10085ca96f9",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.FIBankAccount",
+  "label": "Finland"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"62327d2f-fad3-4b30-b338-0bc8eff84bfb",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.FRBankAccount",
+  "label": "France"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"8867e656-c68b-4ef2-833b-587c03f9d7e7",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.GBBankAccount",
+  "label": "United Kingdom"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"1f49351e-9257-4605-a14e-cf07941e5c56",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.GRBankAccount",
+  "label": "Greece"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"9fb28ca2-3f68-4fa3-8a2c-875062dfeafb",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.HKBankAccount",
+  "label": "Hong Kong"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"17a69691-7584-4c59-af41-07f71e22361a",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.IEBankAccount",
+  "label": "Ireland"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"6f013a8b-3857-4d01-8390-f8bc105ef0e5",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.ITBankAccount",
+  "label": "Italy"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"fcad5d32-4cb0-4160-b34b-40edfe99950b",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.LTBankAccount",
+  "label": "Lithuania"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"dc5885b2-cd7c-446e-aed6-59d9f3ecb918",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.LUBankAccount",
+  "label": "Luxembourg"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"4337aa54-60d8-487b-8c93-f46a1cd891c2",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.LVBankAccount",
+  "label": "Latvian"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"b8d3b499-4e64-47ed-b508-4675b502cdae",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.MTBankAccount",
+  "label": "Malta"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"a195ad51-4cb1-433a-9bc7-3602f14879cb",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.NLBankAccount",
+  "label": "Netherlands"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"27270969-b7a7-4f1b-9bef-b9c29a21e8ea",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.PKBankAccount",
+  "label": "Pakistan"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"3b251ddf-5723-41a8-ad5d-c9dece2a18ce",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.PTBankAccount",
+  "label": "Portugal"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"cbaad4b3-4950-42f4-81c6-ef59534fa4c9",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.SIBankAccount",
+  "label": "Slovenia"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"4aa5e483-c837-4652-a9f1-6995e487e1a5",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.SKBankAccount",
+  "label": "Slovakia"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"20f2e47c-13b8-11eb-adc1-0242ac120002",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.SEBankAccount",
+  "label": "Sweden"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"6df3094b-e275-4a1b-a90c-b7b1c5be90fb",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.ESBankAccount",
+  "label": "Spain"
+})

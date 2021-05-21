@@ -12,3 +12,370 @@ p({"class":"net.nanopay.test.api.PostMethodTest","id":"PostMethodTest"})
 p({"class":"net.nanopay.test.api.DAOSecurityTest.DAOSecurityTestFind","id":"DAOSecurityTestFind"})
 p({"class":"net.nanopay.test.api.DAOSecurityTest.DAOSecurityTestSelect","id":"DAOSecurityTestSelect"})
 p({"class":"net.nanopay.test.api.DAOSecurityTest.DAOSecurityTestRemoveAll","id":"DAOSecurityTestRemoveAll"})
+
+p({
+  class:"foam.nanos.test.Test",
+  id:"AbliiOnboardingTest",
+  description: "AbliiOnboardingTest",
+  language: 0,
+  code:"""
+/* Ablii Onboarding Test */
+/* Run this script symultaniously from at least two machines */
+
+/* Number of times to execute this script */
+runs = 1;
+
+/* see deployment/test/sessions.jrl for unattended test session associated with admin user 1348 */
+adminSession = 'DBFDD224-774E-4716-8508-43FA72E003D9'
+/* support both attended and unattended runs */
+defaultSession = localStorage && localStorage['defaultSession'] || adminSession;
+realUser = x.subject.realUser;
+user = x.subject.user;
+
+/* model with helper methods for sudo, creating user, sessions... */
+support = net.nanopay.test.AbliiOnboardingSupport.create({
+  adminSessionId: defaultSession,
+    adminSubject: foam.nanos.auth.Subject.create({
+      realUser: realUser,
+      user: user
+    }, x),
+    subject: foam.nanos.auth.Subject.create({
+      realUser: realUser,
+      user: user
+    }, x)
+  }, x);
+
+async function execute(x) {
+    try {
+      support.setup(x);
+      console.info('start');
+      let n = Math.floor(Math.random() * 10000);
+
+      // create user under admin
+      var u;
+      try {
+        u = await support.createUser(x, 'u-'+support.uid+'-'+n, 'password', 'sme');
+        test(true, 'createUser: '+u.id+', '+u.userName);
+      } catch (e) {
+        test(false, 'createUser: '+(e.message || e));
+        throw e;
+      }
+      var s;
+      try {
+        s = await support.createSession(x, u.id, u.id);
+        test(true, 'createSession: '+s.id);
+      } catch (e) {
+        test(false, 'createSession: '+(e.message || e));
+        throw e;
+      }
+
+      // switch to user.
+      support.sudoStore(x);
+      x = support.sudo(x, s.id, u, u);
+
+      try {
+        await support.userRegistrationData(x, u);
+        test(true, 'userRegistrationData');
+      } catch (e) {
+        test(false, 'userRegistrationData: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.userGeneralAdmission(x, u);
+        test(true, 'userGeneralAdmission');
+      } catch (e) {
+        test(false, 'userGeneralAdmission: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.abliiPrivacyPolicy(x, u);
+        test(true, 'abliiPrivacyPolicy');
+      } catch (e) {
+        test(false, 'abliiPrivacyPolicy: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.abliiTermsAndConditions(x, u);
+        test(true, 'abliiTermsAndConditions');
+      } catch (e) {
+        test(false, 'abliiTermsAndConditions: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.generalAdmission(x, u);
+        test(true, 'generalAdmission');
+      } catch (e) {
+        test(false, 'generalAdmission: '+(e.message || e));
+        throw e;
+      }
+      
+            
+      // try {
+      //   let cap = await support.abliiUserOnboardingCapability(x, u);
+      //   test(true, 'abliiUserOnboardingCapability');
+      // } catch (e) {
+      //   test(false, 'abliiUserOnboardingCapability: '+(e.message || e));
+      //   throw e;
+      // }
+      // try {
+      //   u = await support.updateUserComplianceStatus(x, u);
+      //   test(true, 'updateUserComplianceStatus');
+      // } catch (e) {
+      //   test(false, 'updateUserComplianceStatus: '+(e.message || e));
+      //   throw e;
+      // }
+
+      // Required for business onboarding
+      try {
+        await support.userDetails(x, u);
+        test(true, 'userDetails');
+      } catch (e) {
+        test(false, 'userDetails: '+(e.message || e));
+        throw e;
+      }
+
+      var business;
+      try {
+        business = await support.createBusiness(x, u);
+        test(true, 'createBusiness: '+u.id);
+      } catch (e) {
+        test(false, 'createBusiness: '+(e.message || e));
+        throw e;
+      }
+      try {
+        business = await support.businessInitialData(x, u);
+        test(true, 'businessInitialData: '+business.id);
+      } catch (e) {
+        test(false, 'businessInitialData: '+(e.message || e));
+        throw e;
+      }
+
+      var businessSession;
+      try {
+        businessSession = await support.createSession(x, u.id, business.id);
+        test(true, 'createBusinessSession: '+s.id);
+      } catch (e) {
+        test(false, 'createBusinessSession: '+(e.message || e));
+        throw e;
+      }
+
+      // switch to business
+      support.sudoStore(x);
+      x = support.sudo(x, businessSession.id, u, business);
+
+      try {
+        await support.userDateOfBirth(x, u);
+        test(true, 'userDateOfBirth');
+      } catch (e) {
+        test(false, 'userDateOfBirth: '+(e.message || e));
+        throw e;
+      }
+
+      try {
+        await support.signingOfficerQuestion(x, u);
+        test(true, 'signingOfficerQuestion');
+      } catch (e) {
+        test(false, 'signingOfficerQuestion: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.signingOfficerPersonalData(x, u, business);
+        test(true, 'signingOfficerPersonalData');
+      } catch (e) {
+        test(false, 'signingOfficerPersonalData: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessRegistrationDate(x, business);
+        test(true, 'businessRegistrationDate');
+      } catch (e) {
+        test(false, 'businessRegistrationDate: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessDetailExpandedData(x, business);
+        test(true, 'businessDetailExpandedData');
+      } catch (e) {
+        test(false, 'businessDetailExpandedData: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessTypeData(x, business);
+        test(true, 'businessTypeData');
+      } catch (e) {
+        test(false, 'businessTypeData: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessExtraBusinessTypeDataNotRequired(x, business);
+        test(true, 'businessExtraBusinessTypeDataNotRequired');
+      } catch (e) {
+        test(false, 'businessExtraBusinessTypeDataNotRequired: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessExtraBusinessTypeDataRequired(x, business);
+        test(true, 'businessExtraBusinessTypeDataRequired');
+      } catch (e) {
+        test(false, 'businessExtraBusinessTypeDataRequired: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessOwners(x, business);
+        test(true, 'businessOwners');
+      } catch (e) {
+        test(false, 'businessOwners: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessIncorporationDate(x, business);
+        test(true, 'businessIncorporationDate');
+      } catch (e) {
+        test(false, 'businessIncorporationDate: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessTaxIdNumber(x, business);
+        test(true, 'businessTaxIdNumber');
+      } catch (e) {
+        test(false, 'businessTaxIdNumber: '+(e.message || e));
+        throw e;
+      }
+      // try {
+      //   await support.businessOfficeConsumptionDocument(x, business);
+      //   test(true, 'businessOfficeConsumption');
+      // } catch (e) {
+      //   test(false, 'businessOfficeConsumption: '+(e.message || e));
+      //   throw e;
+      // }
+     // try {
+     //   await support.businessArticleOfIncoporation(x, business);
+     //   test(true, 'businessArticleOfIncoporation');
+     // } catch (e) {
+     //   test(false, 'businessArticleOfIncoporation: '+(e.message || e));
+     //   throw e;
+     // }
+      try {
+        await support.updateBusinessComplianceStatus(x, business);
+        test(true, 'updateBusinessComplianceStatus');
+      } catch (e) {
+        test(false, 'updateBusinessComplianceStatus: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.transactionDetailsData(x, business);
+        test(true, 'transactionDetailsData');
+      } catch (e) {
+        test(false, 'transactionDetailsData: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessDirectorsData(x, business);
+        test(true, 'businessDirectorsData');
+      } catch (e) {
+        test(false, 'businessDirectorsData: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.certifyDirectorsListed(x, business);
+        test(true, 'certifyDirectorsListed');
+      } catch (e) {
+        test(false, 'certifyDirectorsListed: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessOwnershipData(x, business);
+        test(true, 'businessOwnershipData');
+      } catch (e) {
+        test(false, 'businessOwnershipData: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.certifyOwnersPercent(x, business);
+        test(true, 'certifyOwnersPercent');
+      } catch (e) {
+        test(false, 'certifyOwnersPercent: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.internationalPaymentsAgreement(x, business);
+        test(true, 'internationalPaymentsAgreement');
+      } catch (e) {
+        test(false, 'internationalPaymentsAgreement: '+(e.message || e));
+        throw e;
+      }
+      try {
+        let bank = await support.createUSBankAccount(x, business);
+        test(true, 'createBusinessBankAccount');
+      } catch (e) {
+        test(false, 'createBusinessBankAccount: '+(e.message || e));
+        throw e;
+      }
+
+      var contact;
+      var contactbank;
+      // US Contact US-USD bank Account
+      try {
+        contact = await support.createUSContact(x, business, 1);
+        test(true, 'createUSContact');
+      } catch (e) {
+        test(false, 'createUSContact: '+(e.message || e));
+        throw e;
+      }
+      try {
+        contactbank = await support.createUSBankAccount(x, contact, true);
+        test(true, 'createUSBankAccount');
+      } catch (e) {
+        test(false, 'createUSBankAccount: '+(e.message || e));
+        throw e;
+      }
+      try {
+        contact.bankAccount = contactbank.id;
+        await business.contacts.put(contact);
+        test(true, 'adding business US contact: ' + contact.id + ', account: ' + contactbank.id);
+      } catch (e) {
+        test(false, 'adding business US contact: ' + contact.id + ', account: ' + contactbank.id + '. ' +(e.message || e));
+        throw e;
+      }
+      // CA Contact CA-CAD bank Account
+      try {
+        contact = await support.createCAContact(x, business, 1);
+        test(true, 'createCAContact');
+      } catch (e) {
+        test(false, 'createCAContact: '+(e.message || e));
+        throw e;
+      }
+      try {
+        contactbank = await support.createCABankAccount(x, contact, true);
+        test(true, 'createContactCABankAccount');
+      } catch (e) {
+        test(false, 'createContactCABankAccount: '+(e.message || e));
+        throw e;
+      }
+      try {
+        contact.bankAccount = contactbank.id;
+        await business.contacts.put(contact);
+        test(true, 'adding business CA contact: ' + contact.id + ', account: ' + contactbank.id);
+      } catch (e) {
+        test(false, 'adding business CA contact: ' + contact.id + ', account: ' + contactbank.id + '. ' +(e.message || e));
+        throw e;
+      }
+
+      console.info('done');
+      support.teardown(x);
+    } catch (e) {
+      console.error(e.message || e);
+      support.teardown(x);
+    }
+}
+
+async function run(x) {
+  var i;
+  for ( i = 0; i < runs; i++ ) {
+    await execute(x);
+  }
+}
+
+run(x);
+  """
+})

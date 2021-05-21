@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.accounting.ui',
   name: 'AccountingCallbackPage',
@@ -29,7 +46,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
-    'net.nanopay.ui.LoadingSpinner',
+    'foam.u2.LoadingSpinner',
     'foam.u2.dialog.Popup'
   ],
 
@@ -87,9 +104,8 @@ foam.CLASS({
       factory: function() {
         var dao = this.user.accounts.where(
           this.OR(
-            this.EQ(this.Account.TYPE, this.BankAccount.name),
-            this.EQ(this.Account.TYPE, this.CABankAccount.name),
-            this.EQ(this.Account.TYPE, this.USBankAccount.name)
+            this.INSTANCE_OF(this.CABankAccount),
+            this.INSTANCE_OF(this.USBankAccount)
           )
         );
         dao.of = this.BankAccount;
@@ -179,9 +195,8 @@ foam.CLASS({
       return await this.user.accounts.where(
         this.AND(
           this.OR(
-            this.EQ(this.Account.TYPE, this.BankAccount.name),
-            this.EQ(this.Account.TYPE, this.CABankAccount.name),
-            this.EQ(this.Account.TYPE, this.USBankAccount.name)
+            this.INSTANCE_OF(this.CABankAccount),
+            this.INSTANCE_OF(this.USBankAccount)
           ),
           this.NEQ(this.BankAccount.INTEGRATION_ID, '')
         )

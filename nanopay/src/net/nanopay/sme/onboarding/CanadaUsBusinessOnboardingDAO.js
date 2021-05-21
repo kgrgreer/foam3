@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.onboarding',
   name: 'CanadaUsBusinessOnboardingDAO',
@@ -71,14 +88,13 @@ foam.CLASS({
         // Generate the notification sent to Fraud-ops & Payment-ops group only
         DAO localNotificationDAO = (DAO) x.get("localNotificationDAO");
         Notification notification = new Notification();
-        notification.setEmailIsEnabled(true);
         notification.setBody("A Canadian business with name: " + business.getOrganization() + " and id: "
           + business.getId() + " has completed the cross-border onboarding.");
         notification.setNotificationType("A cross-border business has been onboarded");
 
-        notification.setGroupId("fraud-ops");
+        notification.setGroupId(business.getSpid() + "-fraud-ops");
         localNotificationDAO.put(notification);
-        notification.setGroupId("payment-ops");
+        notification.setGroupId(business.getSpid() + "-payment-ops");
         localNotificationDAO.put(notification);
 
         return fObject;

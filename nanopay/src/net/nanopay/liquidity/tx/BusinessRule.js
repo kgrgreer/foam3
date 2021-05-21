@@ -1,12 +1,25 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.liquidity.tx',
   name: 'BusinessRule',
   extends: 'foam.nanos.ruler.Rule',
   abstract: true,
-
-  implements: [
-    'foam.nanos.approval.ApprovableAware'
-  ],
 
   documentation: 'Business rule base class.',
 
@@ -28,7 +41,7 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'id', 
+      name: 'id',
       tableWidth: 125
     },
     {
@@ -44,6 +57,7 @@ foam.CLASS({
       tableHeaderFormatter: function(axiom) {
         this.add('Status');
       },
+      columnLabel: 'Status',
       tableCellFormatter: function(value, obj) {
         this.add( value ? "Enabled" : "Disabled" );
       }
@@ -55,7 +69,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'foam.nanos.ruler.Operations',
+      of: 'foam.nanos.dao.Operation',
       name: 'operation',
       value: 'CREATE_OR_UPDATE',
       visibility: 'RO',
@@ -120,8 +134,8 @@ foam.CLASS({
       tableCellFormatter: function(value, obj) {
         obj.__subContext__.userDAO.find(value).then(function(user) {
           if ( user ) {
-            if ( user.label() ) {
-              this.add(user.label());
+            if ( user.toSummary() ) {
+              this.add(user.toSummary());
             }
           }
         }.bind(this));
@@ -147,6 +161,12 @@ foam.CLASS({
       visibility: 'RO',
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedByAgent',
+      visibility: 'RO'
+    },
+    {
       class: 'foam.core.Enum',
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
@@ -162,27 +182,27 @@ foam.CLASS({
       name: 'userFeedback',
       storageTransient: true,
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'spid',
+      value: ''
     }
   ],
 
   methods: [
     {
-      name: 'getStringId',
-      type: 'String',
-      javaCode: `
-        String id = (String) getId();
-        return id;
-      `
-    },
-    {
       name: 'toSummary',
+      type: 'String',
       documentation: `When using a reference to the roleDAO, the labels associated
         to it will show a chosen property rather than the first alphabetical string
         property. In this case, we are using the name.
       `,
       code: function(x) {
         return this.name || this.id;
-      }
+      },
+      javaCode: `
+        return foam.util.SafetyUtil.isEmpty(getName()) ? getId() : getName();
+      `
     },
     {
       name: 'validate',

@@ -1,13 +1,26 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.onboarding.b2b.ui',
   name: 'ConfirmAdminInfoForm',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
 
   documentation: 'Form to input and confirm admin information',
-
-  requires: [
-    'foam.nanos.auth.Phone'
-  ],
 
   css: `
   ^ .container {
@@ -298,13 +311,11 @@ foam.CLASS({
       name: 'phoneNumber',
       class: 'String',
       factory: function() {
-        return this.viewData.user.phone ? this.viewData.user.phone.number.substring(2) : '';
+        return this.viewData.user.phoneNumber ? this.viewData.user.phoneNumber.substring(2) : '';
       },
       postSet: function(oldValue, newValue) {
         this.isEditingPhone = false;
-        this.viewData.user.phone = this.Phone.create({
-          number: '+1 ' + newValue
-        });
+        this.viewData.user.phoneNumber = '+1 ' + newValue;
       }
     },
     'phoneNumberElement'

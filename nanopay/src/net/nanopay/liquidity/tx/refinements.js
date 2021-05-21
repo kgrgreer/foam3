@@ -1,20 +1,44 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.liquidity.tx',
   name: 'UserRefine',
   refines: 'foam.nanos.auth.User',
 
-   imports: [
-     'ruleDAO?'
-   ],
+  imports: [
+    'ruleDAO?'
+  ],
 
-   requires: [
-     'net.nanopay.liquidity.tx.TxLimitRule',
-     'net.nanopay.liquidity.tx.TxLimitEntityType'
-   ],
+  requires: [
+    'net.nanopay.liquidity.tx.TxLimitRule',
+    'net.nanopay.liquidity.tx.TxLimitEntityType'
+  ],
+
+  messages: [
+    { name: 'TRANSACTION_LIMITS_MSG', message: 'Transaction Limits for' }
+  ],
 
   actions: [
     {
       name: 'viewTransactionLimits',
+      section: 'operationsInformation',
+      tableWidth: 210,
+      availablePermissions: ['foam.nanos.auth.User.permission.viewTransactionLimit'],
       code: async function() {
         var m = foam.mlang.ExpressionsSingleton.create();
         var accountIds = await this.accounts
@@ -56,12 +80,15 @@ foam.CLASS({
         );
         dao.of = this.TxLimitRule;
         this.__context__.stack.push({
-          class: 'foam.comics.BrowserView',
-          createEnabled: false,
-          editEnabled: true,
-          exportEnabled: true,
-          title: 'Transaction Limits',
-          data: dao
+          class: 'foam.comics.v2.DAOBrowseControllerView',
+          data: dao,
+          config: {
+            class: 'foam.comics.v2.DAOControllerConfig',
+            dao: dao,
+            createPredicate: foam.mlang.predicate.False,
+            editPredicate: foam.mlang.predicate.True,
+            browseTitle: `${this.TRANSACTION_LIMITS_MSG} ${this.toSummary()}`
+          }
         });
       }
     }

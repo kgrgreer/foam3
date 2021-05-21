@@ -9,8 +9,8 @@ buildscript {
 plugins {
     id "java"
     id "maven-publish"
-    id "com.moowork.node" version "0.12"
-    id "org.owasp.dependencycheck" version "5.3.0"
+    id "com.moowork.node" version "1.3.1"
+    id "org.owasp.dependencycheck" version "6.1.6"
 }
 
 repositories {
@@ -20,72 +20,76 @@ repositories {
     }
 }
 
+configurations {
+    all {
+        resolutionStrategy {
+            force 'xml-apis:xml-apis:1.4.01'
+            dependencySubstitution {
+                substitute module('asm:asm-tree:3.3.1') with module ('org.ow2.asm:asm-tree:5.0.3')
+                substitute module('asm:asm-commons:3.3.1') with module ('org.ow2.asm:asm-commons:5.0.3')
+                substitute module('asm:asm:3.3.1') with module ('org.ow2.asm:asm:5.0.3')
+            }
+        }
+    }
+}
+
 dependencies {
-  compile "net.schmizz:sshj:0.3.1"
-  compile 'commons-net:commons-net:3.6'
-  compile "org.jtwig:jtwig-core:5.87.0.RELEASE"
-	compile "org.apache.commons:commons-collections4:4.3"
-	compile "xerces:xercesImpl:2.12.0"
-	compile "com.github.xeroapi:xero-java:2.1.3"
-	compile "com.intuit.quickbooks-online:ipp-v3-java-data:5.0.4"
-	compile "com.intuit.quickbooks-online:ipp-v3-java-devkit:5.0.4"
-	compile "com.intuit.quickbooks-online:oauth2-platform-api:5.0.4"
-	compile "javax.json:javax.json-api:1.0"
-	compile "javax.websocket:javax.websocket-api:1.1"
-	compile "javax.mail:javax.mail-api:1.6.2"
-	compile "javax.servlet:javax.servlet-api:3.1.0"
-	compile "jstl:jstl:1.2"
-	compile ("org.apache.commons:commons-dbcp2:2.0.1") {
+    implementation "net.schmizz:sshj:0.3.1"
+    implementation 'commons-net:commons-net:3.6'
+    implementation "org.jtwig:jtwig-core:5.87.0.RELEASE"
+    implementation "org.apache.commons:commons-collections4:4.3"
+    implementation "xerces:xercesImpl:2.12.0"
+    implementation "com.github.xeroapi:xero-java:2.1.3"
+    implementation "com.intuit.quickbooks-online:ipp-v3-java-data:5.0.4"
+    implementation "com.intuit.quickbooks-online:ipp-v3-java-devkit:5.0.4"
+    implementation "com.intuit.quickbooks-online:oauth2-platform-api:5.0.4"
+    implementation "javax.json:javax.json-api:1.0"
+    implementation "javax.websocket:javax.websocket-api:1.1"
+    implementation "javax.mail:javax.mail-api:1.6.2"
+    implementation "javax.servlet:javax.servlet-api:3.1.0"
+    implementation "jstl:jstl:1.2"
+    implementation ("org.apache.commons:commons-dbcp2:2.0.1") {
         exclude group: 'xml-apis'
         exclude module: 'xml-apis'
         exclude group: 'xerces'
         exclude module: 'xerces'
     }
-	compile "org.apache.commons:commons-text:1.1"
-	compile "commons-codec:commons-codec:1.11"
-	compile "com.jcraft:jsch:0.1.54"
-	compile "org.apache-extras.beanshell:bsh:2.0b6"
-	compile "com.google.api-client:google-api-client:1.22.0"
-  compile "com.google.apis:google-api-services-sheets:v4-rev567-1.22.0"
-  compile "com.google.apis:google-api-services-drive:v3-rev72-1.22.0"
-  compile "com.google.oauth-client:google-oauth-client-jetty:1.22.0"
-  compile "org.bouncycastle:bcpg-jdk15on:1.64"
-	compile "org.bouncycastle:bcpkix-jdk15on:1.64"
-	compile "org.bouncycastle:bcprov-jdk15on:1.64"
-	compile "org.mindrot:jbcrypt:0.3m"
-	compile "org.mongodb:mongodb-driver:3.4.2"
-	compile "org.java-websocket:Java-WebSocket:1.3.4"
-	compile "com.twilio.sdk:twilio:7.23.0"
-	compile "com.stripe:stripe-java:5.35.1"
-	compile "com.realexpayments.remote.sdk:rxp-remote-java:1.3.1"
-	compile "javax.xml.bind:jaxb-api:2.1"
-	compile "org.eclipse.jetty:jetty-server:9.4.10.v20180503"
-	compile "org.eclipse.jetty:jetty-servlet:9.4.10.v20180503"
-	compile "org.eclipse.jetty.websocket:websocket-server:9.4.10.v20180503"
-	// compile "com.redhat.victims.maven:security-versions:1.0.6"
-	compile "org.apache.logging.log4j:log4j-slf4j-impl:2.1"
-	compile "org.slf4j:slf4j-api:1.8.0-beta2"
-	compile "org.slf4j:slf4j-jdk14:1.7.25"
-	compile "com.nulab-inc:zxcvbn:1.2.5"
-	compile "com.plaid:plaid-java:3.0.5"
-	compile "com.itextpdf:itextpdf:5.5.12"
-	compile "com.itextpdf:html2pdf:1.0.2"
-	compile "xml-apis:xml-apis:1.4.01"
-	compile "mysql:mysql-connector-java:8.0.16"
-	compile "com.sun.xml.ws:jaxws-ri:2.3.2"
+    implementation "org.apache.commons:commons-text:1.1"
+    implementation "commons-codec:commons-codec:1.11"
+    implementation "com.jcraft:jsch:0.1.54"
+    implementation "org.apache-extras.beanshell:bsh:2.0b6"
+    implementation "com.google.api-client:google-api-client:1.22.0"
+    implementation "com.google.apis:google-api-services-sheets:v4-rev567-1.22.0"
+    implementation "com.google.apis:google-api-services-drive:v3-rev72-1.22.0"
+    implementation "com.google.oauth-client:google-oauth-client-jetty:1.22.0"
+    implementation "org.bouncycastle:bcpg-jdk15on:1.64"
+    implementation "org.bouncycastle:bcpkix-jdk15on:1.64"
+    implementation "org.bouncycastle:bcprov-jdk15on:1.64"
+    implementation "org.mindrot:jbcrypt:0.3m"
+    implementation "org.mongodb:mongodb-driver:3.4.2"
+    implementation "org.java-websocket:Java-WebSocket:1.3.4"
+    implementation "com.twilio.sdk:twilio:7.50.1"
+    implementation "com.stripe:stripe-java:5.35.1"
+    implementation "com.realexpayments.remote.sdk:rxp-remote-java:1.3.1"
+    implementation "javax.xml.bind:jaxb-api:2.1"
+    implementation "org.eclipse.jetty:jetty-server:9.4.30.v20200611"
+    implementation "org.eclipse.jetty:jetty-servlet:9.4.30.v20200611"
+    implementation "org.eclipse.jetty.websocket:websocket-server:9.4.30.v20200611"
+    // implementation "com.redhat.victims.maven:security-versions:1.0.6"
+    implementation "org.apache.logging.log4j:log4j-slf4j-impl:2.1"
+    implementation "org.slf4j:slf4j-api:1.8.0-beta2"
+    implementation "org.slf4j:slf4j-jdk14:1.7.25"
+    implementation "com.nulab-inc:zxcvbn:1.2.5"
+    implementation "com.plaid:plaid-java:3.0.5"
+    implementation "com.itextpdf:itextpdf:5.5.12"
+    implementation "com.itextpdf:html2pdf:1.0.2"
+    implementation "xml-apis:xml-apis:1.4.01"
+    implementation "mysql:mysql-connector-java:8.0.16"
+    implementation "com.sun.xml.ws:jaxws-ri:2.3.2"
+    implementation "io.methvin:directory-watcher:0.9.10"
+    implementation "com.auth0:java-jwt:3.11.0"
+    implementation "com.auth0:jwks-rsa:0.15.0"
 }
-
-configurations.all {
-    resolutionStrategy {
-        force 'xml-apis:xml-apis:1.4.01'
-        dependencySubstitution {
-            substitute module('asm:asm-tree:3.3.1') with module ('org.ow2.asm:asm-tree:5.0.3')
-            substitute module('asm:asm-commons:3.3.1') with module ('org.ow2.asm:asm-commons:5.0.3')
-            substitute module('asm:asm:3.3.1') with module ('org.ow2.asm:asm:5.0.3')
-        }
-    }
-}
-
 
 publishing {
     publications {
@@ -99,7 +103,7 @@ sourceSets {
     main {
         java {
             srcDirs = [
-                    "$rootDir/foam2/src",
+                    "$rootDir/foam3/src",
                     "$rootDir/nanopay/src",
                     "$rootDir/${project.genJavaDir}"
             ]
@@ -111,36 +115,35 @@ sourceSets {
     }
 }
 
+
+import org.gradle.api.internal.file.UnionFileCollection
 import java.nio.file.Paths;
+
 abstract class IncrementalTask extends DefaultTask {
-    abstract FileCollection getIncludedFiles()
-
-    abstract File getOutputDirectory()
-
-    String inputsAsJSON = ""
+    protected abstract FileCollection getIncludedFiles()
+    protected abstract File getOutputDirectory()
+    protected String inputsAsJSON = ""
 
     void execute(IncrementalTaskInputs inputs) {
-        inputsAsJSON = ""
         if (inputs.incremental) {
             println "CHANGED inputs considered out of date"
-            inputsAsJSON += '{"modified":['
+
+            StringJoiner modified = new StringJoiner("\",\"", "{\"modified\":[\"", "\"]")
+            modified.setEmptyValue("{\"modified\":[]")
             inputs.outOfDate { change ->
-                String relPath = project.projectDir.toPath().relativize(change.file.toPath()).toString();
+                String relPath = project.projectDir.toPath().relativize(change.file.toPath()).toString()
                 println "out of date: ${relPath}"
-                inputsAsJSON += "\"${change.file.path}\","
+                modified.add(change.file.path)
             }
-            if (inputsAsJSON[-1] == ',') {
-                inputsAsJSON = inputsAsJSON[0..-2]
-            }
-            inputsAsJSON += '],"removed":['
+
+            StringJoiner removed = new StringJoiner("\",\"", ",\"removed\":[\"", "\"]}")
+            removed.setEmptyValue(",\"removed\":[]}")
             inputs.removed { change ->
                 println "removed: ${change.file.path}"
-                inputsAsJSON += "\"${change.file.path}\","
+                removed.add(change.file.path)
             }
-            if (inputsAsJSON[-1] == ',') {
-                inputsAsJSON = inputsAsJSON[0..-2]
-            }
-            inputsAsJSON += ']}'
+
+            inputsAsJSON = modified.toString() + removed.toString()
         } else {
             println "ALL inputs considered out of date"
             project.delete(getOutputDirectory().listFiles())
@@ -149,20 +152,13 @@ abstract class IncrementalTask extends DefaultTask {
 }
 
 class IncrementalGenTask extends IncrementalTask {
-    Set<File> includeFiles;
-    List<File> classFiles = new ArrayList<>();
-    File outputDir
+    protected Set<File> includeFiles;
+    protected List<File> classFiles = new ArrayList<>();
+    protected File outputDir
 
     @InputFiles
     FileCollection getIncludedFiles() {
-        FileCollection files = getProject().files();
-        for(File f : includeFiles) {
-            files = files + getProject().fileTree(f);
-        }
-        for(File f : classFiles) {
-            files = files + getProject().fileTree(f);
-        }
-        return files;
+        return project.files(includeFiles) + project.files(classFiles)
     }
 
     @OutputDirectory
@@ -177,8 +173,8 @@ class IncrementalGenTask extends IncrementalTask {
 }
 
 class IncrementalFindTask extends IncrementalTask {
-    String journalIn = ""
-    String journalOut = ""
+    protected String journalIn = ""
+    protected String journalOut = ""
 
     @OutputDirectory
     File getOutputDirectory() {
@@ -187,11 +183,7 @@ class IncrementalFindTask extends IncrementalTask {
 
     @InputFiles
     FileCollection getIncludedFiles() {
-        FileCollection files = getProject().files();
-        new File(journalIn).text.split("\n").each { String f ->
-            files = files + getProject().fileTree(new File(f));
-        }
-        return files;
+        return project.files(new File(journalIn).text.split("\n"))
     }
 
     @TaskAction
@@ -201,7 +193,7 @@ class IncrementalFindTask extends IncrementalTask {
 }
 
 task incrementalGenTask(type: IncrementalGenTask) {
-    includeFiles = (fileTree(dir: "nanopay/src") + fileTree(dir: "foam2/src")).matching{include "**/*.js"}.getFiles()
+    includeFiles = (fileTree(dir: "nanopay/src") + fileTree(dir: "foam3/src")).matching{include "**/*.js"}.getFiles()
     classFiles.add(file("nanopay/tools/classes.js"))
     outputDir = file(project.genJavaDir)
     onlyIf {
@@ -212,15 +204,38 @@ task incrementalGenTask(type: IncrementalGenTask) {
     }
 }
 
-task runFoamlink(type: Exec) {
+def getNanopayGitHash = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-parse', '--short', 'HEAD'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+def getFOAMGitHash = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        workingDir 'foam3/'
+        commandLine 'git', 'rev-parse', '--short', 'HEAD'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+task versions() {
+    project.nanopayRevision = "${getNanopayGitHash()}"
+    project.foamRevision = "${getFOAMGitHash()}"
+}
+
+task runFoamlink(type: NodeTask) {
     dependsOn tasks.incrementalGenTask
     onlyIf {
         // TODO: maybe -e disables genJava and -ee disables foamlink
         !project.hasProperty('foamoptions.skipgenjava')
     }
-    doFirst {
-        commandLine 'node', 'foam2/tools/foamlink/foamlink.js', '.foam/foamlinkoutput.json'
-    }
+    script = file('foam3/tools/foamlink/foamlink.js')
+    args = ['.foam/foamlinkoutput.json']
 }
 
 task genJava(type: Exec) {
@@ -264,47 +279,54 @@ task packageFoam(type: NodeTask) {
 }
 
 task foamNodeModulesCopy(type: Copy) {
-    from "$rootDir/foam2/node_modules/ace-builds/src-min-noconflict", "$rootDir/nanopay/src/net/nanopay/merchant/libs", "$rootDir/nanopay/src/net/nanopay/merchant/libs/qrcode"
+    duplicatesStrategy = DuplicatesStrategy.FAIL
+    from "$rootDir/foam3/node_modules/ace-builds/src-min-noconflict", "$rootDir/nanopay/src/net/nanopay/merchant/libs", "$rootDir/nanopay/src/net/nanopay/merchant/libs/qrcode"
     into "${project.targetDir}/classes/webroot"
     include "*.js"
 }
 
 task nanopayNodeModulesCopy(type: Copy) {
+    duplicatesStrategy = DuplicatesStrategy.FAIL
     from "$rootDir/node_modules/html2canvas/dist/html2canvas.min.js", "node_modules/jspdf/dist/jspdf.min.js", "node_modules/jspdf-autotable/dist/jspdf.plugin.autotable.min.js"
     into "${project.targetDir}/classes/webroot"
 }
 
 task foamCopy(type: Copy) {
+    dependsOn tasks.versions
     dependsOn tasks.packageFoam
     dependsOn tasks.foamNodeModulesCopy
     dependsOn tasks.nanopayNodeModulesCopy
 
+    duplicatesStrategy = DuplicatesStrategy.FAIL
     from "tools/js_build/foam-bin-${project.version}.js"
     into "${project.targetDir}/classes/webroot"
 }
 
 task copyLib(type: Copy) {
-    from configurations.runtime
+    duplicatesStrategy = DuplicatesStrategy.FAIL
+    from configurations.runtimeClasspath
     into "${project.targetDir}/lib"
 }
 
 task copyResources(type: Copy) {
+    duplicatesStrategy = DuplicatesStrategy.WARN
     from "$rootDir/nanopay/src/resources"
-    from "$rootDir/foam2/src/resources"
+    from "$rootDir/foam3/src/resources"
     into "${project.targetDir}/classes"
     filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [VERSION:project.version])
 }
 
 task copyJournals(type: Copy) {
+    duplicatesStrategy = DuplicatesStrategy.WARN
     from "${project.targetDir}/journals"
     into "${project.targetDir}/classes/journals"
-    include "*.0"
 }
 
 task copyImages(type: Copy) {
-    from "$rootDir/foam2/src/foam/u2"
-    from "$rootDir/foam2/src/foam/nanos"
-    from "$rootDir/foam2/src/foam/support"
+    duplicatesStrategy = DuplicatesStrategy.WARN
+    from "$rootDir/foam3/src/foam/u2"
+    from "$rootDir/foam3/src/foam/nanos"
+    from "$rootDir/foam3/src/foam/support"
     from "$rootDir/nanopay/src/net/nanopay"
     from "$rootDir/nanopay/src/net/nanopay/merchant"
     into "${project.targetDir}/classes"
@@ -312,12 +334,14 @@ task copyImages(type: Copy) {
 }
 
 task copyFlows(type: Copy) {
+    duplicatesStrategy = DuplicatesStrategy.WARN
     from "$rootDir/documents"
     into "${project.targetDir}/classes/documents"
     include "**"
 }
 
 task copyFavicon(type: Copy) {
+    duplicatesStrategy = DuplicatesStrategy.WARN
     from "$rootDir/favicon"
     into "${project.targetDir}/classes/webroot/favicon"
     include "**"
@@ -330,6 +354,15 @@ tasks.withType(JavaCompile) {
 task getVersion() {
     doLast {
         println project.version
+    }
+}
+
+task printVersions() {
+    doLast {
+        logger.quiet("Application Version: ${project.version}")
+        logger.quiet("nanopay revision:    ${project.nanopayRevision}")
+        logger.quiet("FOAM revision:       ${project.foamRevision}")
+        logger.quiet("Transaction Engine: ${project.transactionEngine}")
     }
 }
 
@@ -362,17 +395,23 @@ clean {
     delete project.targetDir
     delete project.buildDir
     delete project.genJavaDir
+    delete fileTree(project.jsBuildDir).matching {
+      include "**/foam-*.js"
+    }
 }
 
 compileJava {
     dependsOn tasks.genJava
     dependsOn tasks.copyLib
+    dependsOn printVersions
 
     options.incremental = true
     options.compilerArgs += ["-parameters"]
+    options.release = 11
 }
 
 task buildJar(type: Jar) {
+    dependsOn versions
     dependsOn tasks.withType(Copy)
     dependsOn compileJava
     destinationDirectory = file("${project.targetDir}/lib")
@@ -387,8 +426,12 @@ task buildJar(type: Jar) {
         /* version - see settings.gradle and override on the command line
             with -Pversion=x.y.z */
         attributes "Implementation-Version": project.version
+        attributes "Implementation-Revision": project.nanopayRevision
         attributes "Implementation-Timestamp": new Date()
         attributes "Implementation-Vendor-Id": project.group
         attributes "Implementation-Vendor": "nanopay"
+        attributes "nanopay-Revision":project.nanopayRevision
+        attributes "FOAM-Revision":project.foamRevision
+        attributes "Transaction-Engine":project.transactionEngine
     }
 }

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
   name: 'LiquidTransactionAuthorizer',
@@ -37,7 +54,7 @@ foam.CLASS({
           Eq eq = (Eq) predicate;
           if ( eq.getArg1().toString().equals("net.nanopay.tx.model.Transaction.destinationAccount") || eq.getArg1().toString().equals("net.nanopay.tx.model.Transaction.sourceAccount") ) {
             Constant    c              = (Constant) eq.getArg2();
-            Long        accountId      = (Long) c.getValue();
+            String        accountId      = (String) c.getValue();
             String      readPermission = createPermission(getPermissionPrefix(), "view", accountId);
             AuthService authService    = (AuthService) x.get("auth");
 
@@ -75,7 +92,7 @@ foam.CLASS({
     {
       name: 'authorizeOnRead',
       javaCode:  `
-        Long accountId = ((Transaction) obj).getDestinationAccount();
+        String accountId = ((Transaction) obj).getDestinationAccount();
         String readPermission = createPermission(getPermissionPrefix(), "view", accountId);
         AuthService authService = (AuthService) x.get("auth");
 

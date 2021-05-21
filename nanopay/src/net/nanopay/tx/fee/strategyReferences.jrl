@@ -1,0 +1,33 @@
+// FeeDAOCreateView - fee types dropdown
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"b071c5f6-ff91-4e63-aee8-813aaf2d840001",
+  "desiredModelId":"net.nanopay.tx.fee.Fee",
+  "strategy":"net.nanopay.tx.fee.Fee"
+})
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"b071c5f6-ff91-4e63-aee8-813aaf2d840002",
+  "desiredModelId":"net.nanopay.tx.fee.Fee",
+  "strategy":"net.nanopay.tx.fee.FixedFee"
+})
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"b071c5f6-ff91-4e63-aee8-813aaf2d840003",
+  "desiredModelId":"net.nanopay.tx.fee.Fee",
+  "strategy":"net.nanopay.tx.fee.PercentageFee"
+})
+
+// TransactionFeeRule.feeClass dropdown
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"681f4390-cb19-4bfc-b9ab-fcfdee4a7923001",
+  "desiredModelId":"net.nanopay.tx.FeeLineItem",
+  "strategy":"net.nanopay.tx.FeeLineItem"
+})
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"681f4390-cb19-4bfc-b9ab-fcfdee4a7923002",
+  "desiredModelId":"net.nanopay.tx.FeeLineItem",
+  "strategy":"net.nanopay.tx.InvoicedFeeLineItem"
+})

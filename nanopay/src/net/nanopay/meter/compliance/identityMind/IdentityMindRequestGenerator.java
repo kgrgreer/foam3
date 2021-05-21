@@ -4,7 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.Address;
-import foam.nanos.auth.Phone;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.session.Session;
@@ -101,9 +101,9 @@ public class IdentityMindRequestGenerator {
       request.setAs(prepareString(address.getRegionId()));
       request.setAz(prepareString(address.getPostalCode()));
     }
-    Phone phone = business.getPhone();
-    if ( phone != null ) {
-      request.setPhn(prepareString(phone.getNumber()));
+    String phoneNumber = business.getPhoneNumber();
+    if ( phoneNumber != null ) {
+      request.setPhn(prepareString(phoneNumber));
     }
     request.setWebsite(prepareString(business.getWebsite()));
     return request;
@@ -115,15 +115,15 @@ public class IdentityMindRequestGenerator {
     Account destinationAccount = transaction.findDestinationAccount(x);
     // The owner of destination account is a business but we need to know
     // the person who actually sends the payment therefore uses agent as sender.
-    User sender = (User) x.get("agent");
-    if ( sender == null ) {
-      // REVIEW: it is not always the case that a user is logged in when
-      // Transactions are created. Also, this logic fails the transaction
-      // pipeline during non-ablii tests as they have no knowledge of
-      // user/agent setup.
-      ((Logger) x.get("logger")).warning("IdentityMindRequestGenerator.getTransferRequest agent not found in context, using sourceAccount owner.");
-      sender = (User) localUserDAO.inX(x).find(sourceAccount.getOwner());
-    }
+    User sender = ((Subject) x.get("subject")).getRealUser();
+//    if ( sender == null ) {
+//      // REVIEW: it is not always the case that a user is logged in when
+//      // Transactions are created. Also, this logic fails the transaction
+//      // pipeline during non-ablii tests as they have no knowledge of
+//      // user/agent setup.
+//      ((Logger) x.get("logger")).warning("IdentityMindRequestGenerator.getTransferRequest agent not found in context, using sourceAccount owner.");
+//      sender = (User) localUserDAO.inX(x).find(sourceAccount.getOwner());
+//    }
     User receiver = (User) localUserDAO.inX(x).find(destinationAccount.getOwner());
 
     IdentityMindRequest request = new IdentityMindRequest.Builder(x)
@@ -163,9 +163,9 @@ public class IdentityMindRequestGenerator {
       request.setBs(prepareString(senderAddress.getRegionId()));
       request.setBz(prepareString(senderAddress.getPostalCode()));
     }
-    Phone senderPhone = sender.getPhone();
-    if (senderPhone != null) {
-      request.setPhn(prepareString(senderPhone.getNumber()));
+    String senderPhoneNumber = sender.getPhoneNumber();
+    if (senderPhoneNumber != null) {
+      request.setPhn(prepareString(senderPhoneNumber));
     }
 
     // Receiver information
@@ -178,7 +178,7 @@ public class IdentityMindRequestGenerator {
 
     // External contact extra information
     if ( receiver instanceof Contact ) {
-      request.setMemo(receiver.getBusinessName());
+      request.setMemo(receiver.getOrganization());
       request.setDemail(receiver.getEmail());
       request.setSfn(prepareString(receiver.getFirstName()));
       request.setSln(prepareString(receiver.getLastName()));
@@ -190,9 +190,9 @@ public class IdentityMindRequestGenerator {
         request.setSs(prepareString(receiverAddress.getRegionId()));
         request.setSz(prepareString(receiverAddress.getPostalCode()));
       }
-      Phone receiverPhone = receiver.getPhone();
-      if (receiverPhone != null) {
-        request.setDph(prepareString(receiverPhone.getNumber()));
+      String receiverPhoneNumber = receiver.getPhoneNumber();
+      if (receiverPhoneNumber != null) {
+        request.setDph(prepareString(receiverPhoneNumber));
       }
     }
     return request;
@@ -231,9 +231,9 @@ public class IdentityMindRequestGenerator {
       request.setBs(prepareString(address.getRegionId()));
       request.setBz(prepareString(address.getPostalCode()));
     }
-    Phone phone = user.getPhone();
-    if (phone != null) {
-      request.setPhn(prepareString(phone.getNumber()));
+    String phoneNumber = user.getPhoneNumber();
+    if (phoneNumber != null) {
+      request.setPhn(prepareString(phoneNumber));
     }
     request.setTitle(prepareString(user.getJobTitle()));
     Date birthDay = user.getBirthday();
@@ -270,11 +270,11 @@ public class IdentityMindRequestGenerator {
   }
 
   private static User getRealUser(X x) {
-    User agent = (User) x.get("agent");
+    User agent = ((Subject) x.get("subject")).getRealUser();
     if ( agent != null ) {
       return agent;
     }
-    return (User) x.get("user");
+    return ((Subject) x.get("subject")).getUser();
   }
 
   private static String formatDate(Date date) {

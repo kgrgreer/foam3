@@ -1,6 +1,7 @@
 p({
   "class": "foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d24","name": "Create payement code",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d24",
+  "name": "Create payment code",
   "priority": 100,
   "ruleGroup": "Payment",
   "documentation": "Create a payment code for each business or user",
@@ -15,3 +16,42 @@ p({
   "lifecycleState":1
 })
 
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-85e97a4ad16d45",
+  "name": "Create payment provider prerequisite",
+  "priority": 100,
+  "ruleGroup": "paymentProvidersCapabilities",
+  "documentation": "Create payment provider prerequisites on payment provider corridor capability create",
+  "daoKey":"localCapabilityDAO",
+  "operation": 0,
+  "after": true,
+  "action": {
+    "class": "net.nanopay.payment.PaymentProviderPrerequisiteRule"
+  },
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+    "of":"net.nanopay.payment.PaymentProviderCorridor"
+  },
+  "enabled": true,
+  "saveHistory": false,
+  "lifecycleState":1
+})
+
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id":"69vfcf0c-c718-98g8-0841-75e97a3ad16c80",
+  "name": "Country capability as prerequisites for PPC.",
+  "priority": 200,
+  "ruleGroup": "paymentProvidersCapabilities",
+  "documentation": "Creates or adds country capability as prerequisites to new payment provider corridor.",
+  "daoKey": "paymentProviderCorridorDAO",
+  "operation": 0,
+  "after": true,
+  "action": {
+    "class": "net.nanopay.payment.PaymentProviderCorridorAddCountryRule"
+  },
+  "enabled": true,
+  "saveHistory": false,
+  "lifecycleState":1
+})

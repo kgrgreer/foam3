@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 
 import foam.core.X;
+import foam.nanos.pm.PM;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -72,58 +73,94 @@ public class FlinksRestService
   }
 
   public ResponseMsg authorizeService(RequestMsg msg) {
-    ResponseMsg resp = request(msg);
-    if ( resp.getHttpStatusCode() == 203 ) {
-      //MFA challenge
-      resp.setModelInfo(FlinksMFAResponse.getOwnClassInfo());
-    } else if ( resp.getHttpStatusCode() == 200 ) {
-      //success authorize
-      resp.setModelInfo(FlinksAuthResponse.getOwnClassInfo());
-    } else {
-      //Error response
-      resp.setModelInfo(FlinksInvalidResponse.getOwnClassInfo());
+    var pm = new PM(FlinksRestService.class.getSimpleName(), "authorizeService");
+
+    try {
+      ResponseMsg resp = request(msg);
+      if ( resp.getHttpStatusCode() == 203 ) {
+        //MFA challenge
+        resp.setModelInfo(FlinksMFAResponse.getOwnClassInfo());
+      } else if ( resp.getHttpStatusCode() == 200 ) {
+        //success authorize
+        resp.setModelInfo(FlinksAuthResponse.getOwnClassInfo());
+      } else {
+        //Error response
+        resp.setModelInfo(FlinksInvalidResponse.getOwnClassInfo());
+      }
+      return resp;
+    } catch (Throwable t) {
+      pm.error(getX(), t.getMessage());
+      throw t;
+    } finally {
+      pm.log(getX());
     }
-    return resp;
   }
 
   public ResponseMsg challengeService(RequestMsg msg) {
-    ResponseMsg resp = request(msg);
-    if ( resp.getHttpStatusCode() == 203 ) {
-      //MFA challenge
-      resp.setModelInfo(FlinksMFAResponse.getOwnClassInfo());
-    } else if ( resp.getHttpStatusCode() == 200 ) {
-      //success authorize
-      resp.setModelInfo(FlinksAuthResponse.getOwnClassInfo());
-    } else if ( resp.getHttpStatusCode() == 401) {
-      //Error in MFA
-      resp.setModelInfo(FlinksMFAResponse.getOwnClassInfo());
-    } else {
-      //Error response
-      resp.setModelInfo(FlinksInvalidResponse.getOwnClassInfo());
+    var pm = new PM(FlinksRestService.class.getSimpleName(), "challengeService");
+
+    try {
+      ResponseMsg resp = request(msg);
+      if (resp.getHttpStatusCode() == 203) {
+        //MFA challenge
+        resp.setModelInfo(FlinksMFAResponse.getOwnClassInfo());
+      } else if (resp.getHttpStatusCode() == 200) {
+        //success authorize
+        resp.setModelInfo(FlinksAuthResponse.getOwnClassInfo());
+      } else if (resp.getHttpStatusCode() == 401) {
+        //Error in MFA
+        resp.setModelInfo(FlinksMFAResponse.getOwnClassInfo());
+      } else {
+        //Error response
+        resp.setModelInfo(FlinksInvalidResponse.getOwnClassInfo());
+      }
+      return resp;
+    } catch(Throwable t) {
+      pm.error(getX(), t.getMessage());
+      throw t;
+    } finally {
+      pm.log(getX());
     }
-    return resp;
   }
 
   public ResponseMsg accountsDetailService(RequestMsg msg) {
-    ResponseMsg resp = request(msg);
+    var pm = new PM(FlinksRestService.class.getSimpleName(), "accountsDetailService");
 
-    if ( resp.getHttpStatusCode() == 200 ) {
-      resp.setModelInfo(FlinksAccountsDetailResponse.getOwnClassInfo());
-    } else {
-      resp.setModelInfo(FlinksInvalidResponse.getOwnClassInfo());
+    try {
+      ResponseMsg resp = request(msg);
+
+      if (resp.getHttpStatusCode() == 200) {
+        resp.setModelInfo(FlinksAccountsDetailResponse.getOwnClassInfo());
+      } else {
+        resp.setModelInfo(FlinksInvalidResponse.getOwnClassInfo());
+      }
+      return resp;
+    } catch(Throwable t) {
+      pm.error(getX(), t.getMessage());
+      throw t;
+    } finally {
+      pm.log(getX());
     }
-    return resp;
   }
 
   public ResponseMsg accountsSummaryService(RequestMsg msg) {
-    ResponseMsg resp = request(msg);
+    var pm = new PM(FlinksRestService.class.getSimpleName(), "authorizeService");
 
-    if ( resp.getHttpStatusCode() == 200 ) {
-      resp.setModelInfo(FlinksAccountsSummaryResponse.getOwnClassInfo());
-    } else {
-      resp.setModelInfo(FlinksInvalidResponse.getOwnClassInfo());
+    try {
+      ResponseMsg resp = request(msg);
+
+      if (resp.getHttpStatusCode() == 200) {
+        resp.setModelInfo(FlinksAccountsSummaryResponse.getOwnClassInfo());
+      } else {
+        resp.setModelInfo(FlinksInvalidResponse.getOwnClassInfo());
+      }
+      return resp;
+    } catch(Throwable t) {
+      pm.error(getX(), t.getMessage());
+      throw t;
+    } finally {
+      pm.log(getX());
     }
-    return resp;
   }
 
   private ResponseMsg request(RequestMsg req) {
@@ -172,18 +209,18 @@ public class FlinksRestService
         response = client.execute(post);
       }
 
-      int statusCode =  response.getStatusLine().getStatusCode();
+      int statusCode = response.getStatusLine().getStatusCode();
       responseEntity = response.getEntity();
-      
+
       StringBuilder res = builders.get();
       String line = "";
-      
+
       try(BufferedReader rd = new BufferedReader(new InputStreamReader(responseEntity.getContent()))) {
     	  while ((line = rd.readLine()) != null) {
     	        res.append(line);
     	      }
       }
-      
+
       msg = new ResponseMsg(getX(), res.toString());
       msg.setHttpStatusCode(statusCode);
     } catch ( Throwable t ) {

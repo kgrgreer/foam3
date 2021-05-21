@@ -1,0 +1,542 @@
+p({
+  class: "net.nanopay.tx.fee.TransactionFeeRule",
+  id: "91194da9-8391-436a-8468-fa2c706126b8",
+  name: "Treviso Fee",
+  documentation: `
+    Add fee line item to FXSummaryTransaction returned by IntermediaryDestinationAccountSplitPlanner.
+
+    Does not apply on the summary transaction from TrevisoTransactionPlanner
+    because it doesn't carry the nature code with it.
+  `,
+  feeName: "Total Fee Due",
+  feeDenomination: "BRL",
+  rateName: "Total Rate",
+  isInvertedRate: true,
+  rateExpiry: {
+    class: "foam.nanos.cron.TimeHMS",
+    hour: 24
+  },
+  enabled: true,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of: "net.nanopay.fx.FXSummaryTransaction"
+      },
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "foam.mlang.expr.Dot",
+          arg1: {
+            class: "foam.mlang.ContextObject",
+            key: "NEW"
+          },
+          arg2: {
+            class: "foam.mlang.PredicatedExpr",
+            arg1: {
+              class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+              of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+              propName: "natureCode"
+            }
+          }
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: true
+        }
+      }
+    ]
+  },
+  spid: "treviso",
+  lifecycleState:1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"treviso-exchange-crunch-onboarding-rule",
+  "name":"Onboard Business to Brazil Exchange",
+  "documentation":"Rule to onboard business to Brazil Exchange if it has passed comliance.",
+  "priority":1,
+  "ruleGroup":"TrevisoCrunchOnboarding",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "status": 1,
+        "statusChanged": false,
+        "category": "onboarding"
+      }
+    ]
+  },
+  spid: "treviso",
+  "asyncAction":{ "class":"net.nanopay.country.br.crunch.ExchangeServiceOnboardingRule" },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+// TODO: Add spid: treviso to next 3 rules
+p({
+    "class":"foam.nanos.ruler.Rule",
+    "id":"86a3a3e5-b576-48c4-819e-e4db286782cd",
+    "name":"Invoice Nature Code Rule",
+    "priority":120,
+    "ruleGroup":"InvoiceNotification",
+    "documentation":"Sets proper capabilities and capables on invoice creation",
+    "daoKey":"invoiceDAO",
+    "operation":3,
+    "after":false,
+    "action":{
+      "class":"net.nanopay.invoice.ruler.TrevisoInvoiceCapabilityRule"
+    },
+    "predicate":{
+      "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+      "propName":"status",
+      "propValue":{
+        "class":"net.nanopay.invoice.model.InvoiceStatus",
+        "ordinal":12
+      }
+    },
+    "enabled":true,
+    "saveHistory":false,
+    "lifecycleState":1
+})
+
+p({
+    "class":"foam.nanos.ruler.Rule",
+    "id":"b6043450-fcc9-457a-a283-54dd02c7245e",
+    "name":"Invoice Validate Capabilities Rule",
+    "priority":100,
+    "ruleGroup":"InvoiceNotification",
+    "documentation":"Validates invoice if status is SUBMIT after invoiceDAO put",
+    "daoKey":"invoiceDAO",
+    "operation":3,
+    "after":true,
+    "action":{
+      "class":"net.nanopay.partner.treviso.invoice.TrevisoCapabilityValidateRule"
+    },
+    "predicate":{
+      "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+      "propName":"status",
+      "propValue":{
+        "class":"net.nanopay.invoice.model.InvoiceStatus",
+        "ordinal":12
+      }
+    },
+    "saveHistory":false,
+    "lifecycleState":1
+})
+
+p({
+    "class":"foam.nanos.ruler.Rule",
+    "id":"c30c6bea-b9c4-4917-9087-da4932802817",
+    "name":"Update Transaction on Invoice Validation",
+    "priority":100,
+    "ruleGroup":"InvoiceNotification",
+    "documentation":"Sets associated transaction status to COMPLETED when the capabilities are granted on invoice",
+    "daoKey":"invoiceDAO",
+    "operation":1,
+    "after":true,
+    "action":{
+      "class":"net.nanopay.partner.treviso.invoice.UpdateTransactionOnInvoiceValidationRule"
+    },
+    "predicate":{
+      "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+      "propName":"status",
+      "propValue":{
+        "class":"net.nanopay.invoice.model.InvoiceStatus",
+        "ordinal":6
+      }
+    },
+    "saveHistory":true,
+    "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"fepweb-onboarding-rule",
+  "name":"Onboard Business to FepWeb",
+  "documentation":"Rule to onboard business to FepWeb if it has passed compliance.",
+  "priority":100,
+  "ruleGroup":"FEPWebOnboarding",
+  "daoKey":"localUserDAO",
+  "operation":3,
+  "after":true,
+  "predicate": {
+    "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessCompliancePassed"
+  },
+  "spid": "treviso",
+  "asyncAction":{ "class":"net.nanopay.partner.treviso.FepWebOnboardingRule" },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"fepweb-update-user-rule",
+  "name":"FepWeb Update User",
+  "priority":100,
+  "ruleGroup":"FEPWebOnboarding",
+  "documentation":"Rule to update the user information to FepWeb when it is changed by Treviso agents",
+  "daoKey":"localUserDAO",
+  "operation":1,
+  "after":true,
+  "predicate":{
+    "class": "foam.mlang.predicate.Or",
+    "args": [
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyChangePredicate",
+        "propName": "address"
+      },
+      {
+        "class": "foam.mlang.predicate.And",
+        "args": [
+          {
+            "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+            "of": "net.nanopay.model.Business"
+          },
+          {
+            "class": "foam.nanos.ruler.predicate.PropertyChangePredicate",
+            "propName": "businessName"
+          }
+        ]
+      },
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyChangePredicate",
+        "propName": "legalName"
+      }
+    ]
+  },
+  "asyncAction":{
+    "class": "net.nanopay.partner.treviso.FepWebUserUpdatingRule"
+  },
+  "enabled":false,
+  "saveHistory":true,
+  "spid": "treviso",
+  "lifecycleState":1
+})
+
+// TODO: add spid
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"c29de620-c22c-4e71-aabc-50b97d47b985",
+  "name":"Extract NatureCode to Transaction",
+  "priority":100,
+  "ruleGroup":"InvoicePayment",
+  "documentation":"Extract nature code from invoice to transaction.",
+  "daoKey":"invoiceDAO",
+  "operation":3,
+  "after":false,
+  "action":{
+    "class":"net.nanopay.invoice.ruler.TransactionNatureCodeUpdateRule"
+  },
+  "predicate": {
+    "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+    "propName":"requestTransaction",
+    "propValue": null
+  },
+  "enabled":true,
+  "lifecycleState":1,
+  "spid": "treviso"
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"520c5c8a-f3a8-11ea-adc1-0242ac120002",
+  "name":"Capable Create Approvals Rule Action for Invoice",
+  "priority":100,
+  "daoKey":"invoiceDAO",
+  "ruleGroup":"InvoiceNotification",
+  "operation":3,
+  "after":true,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{
+          "class":"net.nanopay.invoice.model.InvoiceStatus",
+          "ordinal":6
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsSetPredicate",
+        "propName":"paymentId"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyChangePredicate",
+        "propName":"paymentId"
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.country.br.CapableCreateInvoiceApprovalsRuleAction",
+    "daoToReput":"invoiceDAO",
+    "groupToNotify":"treviso-fraud-ops"
+  },
+  "enabled":true,
+  "lifecycleState":1,
+  "spid": "treviso"
+})
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id":"9d1d9360-c320-4b2c-b813-8482c07a75a1",
+  "name": "Signing Officer manual Approval by Agent",
+  "enabled": true
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"1106f209-e33c-4870-bcad-0b717f831e37",
+  "name":"Business manual Approval by Agent",
+  "enabled": true
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d38",
+  "name":"Create Expedite Aproval Request",
+  "enabled":false
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d77",
+  "enabled":false
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"c5a2a56e-4b6b-403d-a064-522709daf215",
+  "name":"Approved NatureCodeApproval Request Rule",
+  "priority":100000,
+  "daoKey":"approvalRequestDAO",
+  "ruleGroup":"NatureCodeApprovals",
+  "operation":3,
+  "after":true,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.country.br.NatureCodeApprovalRequest"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{
+          "class":"foam.nanos.approval.ApprovalStatus",
+          "ordinal":1
+        }
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.country.br.ApprovedNatureCodeApprovalRequestRuleAction",
+  },
+  "enabled":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"ad5a192e-72c5-4037-9149-d9f9e5a433a2",
+  "name":"Capable Payload Status Adjust Approvals",
+  "priority":99,
+  "ruleGroup":"InvoiceNotification",
+  "documentation":"Sets associated transaction status to COMPLETED when the capabilities are granted on invoice",
+  "daoKey":"invoiceDAO",
+  "operation":1,
+  "after":true,
+  "action":{
+    "class":"foam.nanos.crunch.lite.ruler.CapableStatusChangeAdjustApprovalsRuleAction"
+  },
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+    "propName":"status",
+    "propValue":{
+      "class":"net.nanopay.invoice.model.InvoiceStatus",
+      "ordinal":6
+    }
+  },
+  "saveHistory":false,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"afex-crunch-onboarding-rule1",
+  "name":"Onboard Business to AFEX",
+  "documentation":"Rule to onboard business to AFEX if it has passed comliance.",
+  "priority":1,
+  "ruleGroup":"crunchOnboarding",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate": {
+    "class": "net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+    "status": 1,
+    "statusChanged": false,
+    "category": "AFEXOnboarding"
+  },
+  "asyncAction":{ "class":"net.nanopay.partner.afex.crunch.AFEXBusinessOnboardingRule"},
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+// No compliance approvals for beneficialOwnerOnboarding or businessDirectorOnboarding
+p({
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
+  "id":"crunch-onboard-compliance-0",
+  "name":"Crunch Onboarding - User Final Compliance Rule",
+  "documentation":"Final rule for User compliance.",
+  "priority":50,
+  "ruleGroup":"crunchOnboarding",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.Or",
+    "args":[
+      {
+        "class":"foam.mlang.predicate.And",
+        "args":[
+          {
+            "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+            "category":"complianceSetting",
+            "isRecurring":false,
+            "statusChanged":false
+          },
+          {
+            "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+            "category":"signingOfficerOnboarding",
+            "isRecurring":false,
+            "statusChanged":false
+          }
+        ]
+      },
+      {
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "category":"onboarding",
+        "isRecurring":false,
+        "statusChanged":false
+      }
+    ]
+  },
+  "asyncAction":{
+    "class":"net.nanopay.crunch.compliance.UserComplianceApproval"
+  },
+  "enabled":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
+  "id":"9cb36c96-c2e6-4c2a-8b38-f009d44c341a",
+  "name":"Treviso TrevisoSendEmailToAllRule",
+  "priority":1,
+  "ruleGroup":"Notifications",
+  "documentation":"When the business account is approved, send emails to all directors, signing officers who have signed contratos de câmbio.",
+  "enabled":true,
+  "after":true,
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "category":"registerPaymentProvider",
+        "isRecurring":false,
+        "status": 1
+      }
+    ]
+  },
+  "action":{"class":"net.nanopay.partner.treviso.TrevisoSendEmailToAllRule"},
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid": "treviso"
+})
+
+// Clearing time rules
+p({
+  "class": "net.nanopay.meter.clearing.ruler.TransactionTypeClearingTimeRule",
+  "id":"0466c0ce-27bb-48ed-acf8-4f63f3ec5632",
+  "name":"AFEXTransaction ClearingTime Rule",
+  "of": "net.nanopay.fx.afex.AFEXTransaction",
+  "duration": 1,
+  "predicate": {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of: "net.nanopay.fx.afex.AFEXTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal":0
+        }
+      }
+    ]
+  },
+  "spid": "treviso",
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+p({
+  "class": "net.nanopay.meter.clearing.ruler.TransactionTypeClearingTimeRule",
+  "id":"bf6670a5-957e-4407-a80f-7eda6f27ab23",
+  "name":"TrevisoTransaction ClearingTime Rule",
+  "of": "net.nanopay.partner.treviso.tx.TrevisoTransaction",
+  "duration": 1,
+  "predicate": {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of: "net.nanopay.partner.treviso.tx.TrevisoTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal":0
+        }
+      }
+    ]
+  },
+  "spid": "treviso",
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"c65f1e3e-7347-4f90-82c8-ca05dc01d16a",
+  "name":"Auto Approve AFEX Payment Provider Capability",
+  "documentation":"Rule to auto grant AFEX Payment Provider Capability after Afex business is created ",
+  "priority":100,
+  "ruleGroup":"AFEXOnboarding",
+  "daoKey":"afexUserDAO",
+  "operation":0,
+  "after":true,
+  "predicate":{
+    "class":"net.nanopay.fx.afex.AFEXBusinessCreatedPredicate",
+  },
+  "action":{
+    "class":"net.nanopay.fx.afex.GrantAFEXPaymentProviderCapRule"
+  },
+  "spid": "treviso",
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})

@@ -17,7 +17,7 @@ import foam.mlang.sink.Count;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
 import foam.nanos.auth.LifecycleState;
-import foam.nanos.ruler.Operations;
+import foam.nanos.dao.Operation;
 import foam.nanos.ruler.Rule;
 import foam.nanos.ruler.RuleAction;
 import foam.nanos.ruler.RuleGroup;
@@ -76,7 +76,7 @@ extends Test {
 
     test(numberOfRequests == 5, "Expected: 5 requests were created, one for each user in the group. Actual: " + numberOfRequests);
     test(userToTest.getFirstName().equals("Pending"), "Expected: Tested user's first name is 'Pending' at the start of the test. Actual: " + userToTest.getFirstName());
-DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getId(), initialRequest.getClassification()).where(NEQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED));
+DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getId(), initialRequest.getClassificationEnum()).where(NEQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED));
     unapprovedRequestDAO.limit(2).select(new AbstractSink() {
       @Override
       public void put(Object obj, Detachable sub) {
@@ -126,8 +126,9 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getI
     initialRequest = new ApprovalRequest();
     initialRequest.setGroup(group.getId());
     initialRequest.setRequiredPoints(3);
-    initialRequest.setClassification("testing approval system");
-    initialRequest.setDaoKey("localUserDAO");
+    initialRequest.setClassificationEnum(foam.nanos.approval.ApprovalRequestClassificationEnum.TESTING_APPROVAL_SYSTEM);
+    initialRequest.setServerDaoKey("localUserDAO");
+    initialRequest.setDaoKey("userDAO");
   }
 
   private void createUserRule(X ctx) {
@@ -140,7 +141,7 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getI
     rgDAO.put(rg);
     rule.setRuleGroup("test approval_CREATE");
     rule.setDaoKey("testUserDAO");
-    rule.setOperation(Operations.CREATE);
+    rule.setOperation(Operation.CREATE);
     rule.setAfter(true);
     rule.setLifecycleState(LifecycleState.ACTIVE);
     Predicate predicate = EQ(DOT(NEW_OBJ, INSTANCE_OF(foam.nanos.auth.User.class)), true);
@@ -160,14 +161,14 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getI
     rgDAO.put(rg2);
     rule2.setRuleGroup("test approval_UPDATE");
     rule2.setDaoKey("testUserDAO");
-    rule2.setOperation(Operations.UPDATE);
+    rule2.setOperation(Operation.UPDATE);
     rule2.setAfter(false);
     rule2.setLifecycleState(LifecycleState.ACTIVE);
     Predicate predicate2 = EQ(DOT(NEW_OBJ, INSTANCE_OF(foam.nanos.auth.User.class)), true);
     rule.setPredicate(predicate2);
     RuleAction action2 = (RuleAction) (x, obj, oldObj, ruler, r2, agency) -> {
       User user = (User) obj;
-      long points = ApprovalRequestUtil.getApprovedPoints(ctx, userToTest.getId(), initialRequest.getClassification());
+      long points = ApprovalRequestUtil.getApprovedPoints(ctx, userToTest.getId(), initialRequest.getClassificationEnum());
 
       if ( points >= initialRequest.getRequiredPoints() ) {
         user.setFirstName("Approved");

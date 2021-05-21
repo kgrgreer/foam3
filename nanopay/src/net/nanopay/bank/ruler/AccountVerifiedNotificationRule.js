@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.bank.ruler',
   name: 'AccountVerifiedNotificationRule',
@@ -15,7 +32,7 @@ foam.CLASS({
     'foam.nanos.notification.Notification',
     'java.util.HashMap',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.contacts.Contact',
+    'net.nanopay.contacts.PersonalContact',
     'net.nanopay.model.Branch',
     'net.nanopay.payment.Institution'
   ],
@@ -27,7 +44,7 @@ foam.CLASS({
         DAO userDAO = (DAO) x.get("userDAO");
         BankAccount account = (BankAccount) obj;
         User owner = (User) userDAO.find(account.getOwner());
-        if ( owner instanceof Contact && account.getCreatedBy() != owner.getId() ) return;
+        if ( owner instanceof PersonalContact && account.getCreatedBy() != owner.getId() ) return;
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
@@ -44,7 +61,7 @@ foam.CLASS({
             HashMap<String, Object> args    = new HashMap<>();
             args.put("link",    config.getUrl());
             args.put("name",    User.FIRST_NAME);
-            args.put("accountNumber",  "***" + account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
+            args.put("accountNumber",  BankAccount.mask(account.getAccountNumber()));
             args.put("institution", institutionName);
             args.put("institutionNumber", account.getInstitutionNumber());
             args.put("accountType", account.getType());
@@ -54,7 +71,6 @@ foam.CLASS({
             Notification verifiedNotification = new Notification.Builder(x)
                     .setBody(account.getName() + " has been verified!")
                     .setNotificationType("Latest_Activity")
-                    .setEmailIsEnabled(true)
                     .setEmailArgs(args)
                     .setEmailName("verifiedBank")
                     .build();

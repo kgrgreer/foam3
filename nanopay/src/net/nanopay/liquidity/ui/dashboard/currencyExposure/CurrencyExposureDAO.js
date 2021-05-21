@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.liquidity.ui.dashboard.currencyExposure',
   name: 'CurrencyExposureDAO',
@@ -13,6 +30,8 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
   imports: [
+    'fxService',
+    'filteredAccountDAO?',
     'accountDAO',
     'balanceDAO',
     'homeDenomination',
@@ -23,19 +42,9 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'delegate',
-      expression: function(homeDenomination, exchangeRateService, user, accountDAO) {
-        var accountDenominationGroupBy = accountDAO.where(
-          this.OR(
-            this.AND(
-              foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' }),
-              this.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
-              this.EQ(net.nanopay.account.Account.IS_DEFAULT, false)
-            ),
-            this.AND(
-              foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.ShadowAccount' }),
-              this.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE)
-            )
-          ))
+      expression: function(homeDenomination, fxService, exchangeRateService, user, filteredAccountDAO, accountDAO) {
+        var daoToUse = filteredAccountDAO ? filteredAccountDAO : accountDAO;
+        var accountDenominationGroupBy = daoToUse
           .select(
             this.GROUP_BY(
               this.Account.DENOMINATION,

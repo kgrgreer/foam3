@@ -1,0 +1,288 @@
+<title>API Business Onboarding</title>
+
+<h1>Business Onboarding</h1>
+<p>
+    Onboarding is a key part of the nanopay experience. Users, businesses and account all have to be setup 
+    and the process of creating these entities within the system is called onboarding. Once a user has been
+    setup within the system, they can then participate in a transaction.
+</p>
+
+<h2>Flinks</h2>
+<p>
+    In order to make the onboarding process easier for our clients, we use an integration with 
+    the <a href="https://docs.flinks.io/docs/connecting-accounts-widget">Flinks widget</a> to
+    retrieve a large part of the customer data which is available through the customer's bank.
+</p>
+
+<h2>Onboarding Process for Business Payments using Flinks</h2>
+<p>
+    There are several steps to completing onboarding for a user when using the Flinks widget.
+    <ol>
+        <li><a href="#flinks-widget">Call Flinks widget</a></li>
+        <li><a href="#login-id">Provision Business with Flinks LoginId</a></li>
+        <li><a href="#business-onboarding">Complete Business Onboarding</a></li>
+    </ol>
+</p>
+
+<h3><a name="flinks-widget">Flinks Widget</a></h3>
+<p>
+    In order to start business onboarding, a user for the business must first complete all of the steps of 
+    the <a href="https://docs.flinks.io/docs/connecting-accounts-widget">Flinks widget</a>. Once 
+    they have completed the full flow of the widget, they will be redirected back to a page of your
+    choosing with several key pieces of information, namely the loginId and the accountId.
+</p>
+<p>
+    When configuring the Flinks widget, you provide a redirectUrl. The flinks widget will redirect back to that 
+    URL once it has completed. Here is a sample of what the resulting URL returned will look like:
+    <code>
+https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31&
+        tag=YourTag&accountId=8cd3e122-4826-4e24-48c4-08d69b30caf5&institution=FlinksCapital</code>
+    As you can see in the URL, both the loginId and the accountId are embedded as parameters returned in the URL. 
+    They simply need to be parsed and passed to nanopay's DIG API, which we will do in the next step.
+</p>
+<p>
+    In order for the Flinks widget to work properly, your i-frame has to be configured with a specific nanopay URL which will allow
+    for sessions created with a widget on your server to be maintained when we use the same loginId to make follow-up API calls. 
+    Please contact nanopay to get the full URL.
+</p>
+
+<h3><a name="login-id">Provisioning a Business with Flinks LoginId</a></h3>
+<p>
+    Once a user for the business has completed the Flinks widget flow, nanopay can provision them by retrieving data from Flinks using 
+    the loginId from the redirectUrl in the previous step. By sending nanopay the loginId, the system can retrieve 
+    information from Flinks and perform the following steps:
+    <ol>
+      <li>Create the User</li>
+      <li>Create the Business</li>
+      <li>Start Business Onboaring</li>
+      <li>Create a CAD Bank Account</li>
+    </ol>
+    However, full business onboarding cannot be completed with the Flinks data alone. Several capabilities will still need to
+    be completed in order for onboarding to complete successfully. The missing capabilities are returned in the response
+    to the DIG call.
+</p>
+<p>
+    One thing to note here is that if the LoginId has been previously seen by the nanopay system, a new busienss will not be 
+    created. Instead, the previously provisioned business and supporting user will be found and will be returned in the 'business' and 'user' properties. 
+    Businesses that are found that have already completed onboarding will be easily identifiable by checking the 'capabilityPayloads' property, which should 
+    return an empty map for the capability you are trying to enable. Similarly, if the CAD bank account already exists for that business, it will be found 
+    and the ID will be returned in the 'account' field.
+</p>
+<p>
+    In order to start the provisioning process, the loginId has to be passed in to the flinksLoginIdDAO through DIG.
+    The FlinksLoginId API call is a DIG API call to the flinksLoginIdDAO with the following payload:
+    <code>{
+    "class": "net.nanopay.flinks.external.FlinksLoginId",
+    "loginId": "2ff467b7-bcde-4346-8996-08d69b30c4d8",
+    "accountId": "8cd3e122-4826-4e24-48c4-08d69b30caf5",
+    "institution": "FlinksCapital",
+    "type": 2,
+    "flinksOverrides": {
+      "userOverrides": {
+        // add user overrides
+        ...
+      },
+      "businessOverrides": {
+        "businessName": "--Custom Business Name--",
+        ...
+      }
+    }
+}   </code>
+    Note that the class is required to be 'net.nanopay.flinks.external.FlinksLoginId' in order for the onboarding process to be triggered.
+</p>
+<p>
+    If necessary, we have also provided the ability to override data returned from Flinks with your own overrides. Specifically, you can include
+    'businessOverrides' or 'userOverrides', which is an object with the following structure:
+</p>
+<h4><a name="business-override-data">BusinessOverrideData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.flinks.external.BusinessOverrideData" />
+<h4><a name="user-override-data">UserOverrideData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.flinks.external.UserOverrideData" />
+<p>
+    As part of the response the to flinksLoginIdDAO call, nanopay will include the capabilities that are 
+    still required to be completed in order for the business to be onboarded for Recieving CAD Payments. 
+    The property that needs to be checked is the capabilityPayloads property. Here is an example of a response
+    with the the privacy policy and the terms and conditions agreements which still needing to be agreed to:
+    <code>{
+    "class": "net.nanopay.flinks.external.FlinksLoginId",
+    "type": 1,
+    "capabilityPayloads": [
+        {
+            "class": "foam.nanos.crunch.connection.CapabilityPayload",
+            "id": "crunch.onboarding.api.unlock-ca-payments-under-1000",
+            "capabilityDataObjects": {
+                "Ablii Privacy Policy": {
+                    "class": "net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy",
+                    "title": "Ablii's Privacy Policy",
+                    "agreement": false,
+                    "version": "1.0"
+                },
+                "Ablii Terms and Conditions": {
+                    "class": "net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions",
+                    "title": "Ablii's Terms and Conditions",
+                    "agreement": false,
+                    "version": "1.0"
+                }
+            },
+            "capabilityValidationErrors": {
+                "AbliiPrivacyPolicy": "Must acknowledge the agreement.",
+                "AbliiTermsAndConditions": "Must acknowledge the agreement."
+            }
+        }
+    ],
+    ...
+}
+    </code>
+    This capabilityPayloads can be extracted and directly used in the next API call to the capabilityPayloadDAO.
+</p>
+<h4><a name="flinks-login-id-onboarding">FlinksLoginId</a></h4>
+<p>
+  Here is the full structure of the FlinksLoginId object:
+  <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.flinks.external.FlinksLoginId"  whitelist="['type', 'missingUserCapabilityDataObjects', 'missingBusinessCapabilityDataObjects', 'loginId', 'institution', 'skipLoginIdResolution', 'flinksOverrides', 'user', 'business', 'account', 'created', 'createdBy']" />
+</p>
+<h4><a name="onboarding-type">OnboardingType</a></h4>
+<table>
+  <tbody>
+    <tr>
+      <th>Name</th>
+      <th>Value</th>
+      <th>Documentation</th>
+    </tr>
+    <tr>
+      <td>DEFAULT</td>
+      <td>0</td>
+      <td>Allow the flinks login type to dictate the type of onboarding performed.</td>
+    </tr>
+    <tr>
+      <td>PERSONAL</td>
+      <td>1</td>
+      <td>Personal payments onboarding.</td>
+    </tr>
+    <tr>
+      <td>BUSINESS</td>
+      <td>2</td>
+      <td>Business payments onboarding.</td>
+    </tr>
+  </tbody>
+</table>
+<h4><a name="flinks-overrides">FlinksOverrides</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.flinks.external.FlinksOverrides" />
+
+<p>
+  Previously specified classes:
+  <ul>
+    <li><a href="#business-override-data">BusinessOverrideData</a></li>
+    <li><a href="#user-override-data">UserOverrideData</a></li>
+  </ul>
+</p>
+
+<p>
+<i><b>Session Authentication:</b> Authentication for business provisioning with Flinks LoginId should be done with the administrative session.</i>
+</p>
+
+<h3><a name="business-onboarding">Business Onboarding</a></h3>
+<p>
+    Once the business has been created and partially onboarded, business onboarding can be completed by providing the final set of capabilities associated with a business. 
+    Capabilities are enabled for a business by making a DIG API call to the capabilityPayloadDAO with the ID of the top level capability to enable and all of the payloads 
+    for the supporting data. To complete onboarding of the business specifically for receiving CAD payments, the following payloads have to be provided:
+    <ul>
+        <li><a href="#ablii-terms-and-conditions">AbliiTermsAndConditions</a></li>
+        <li><a href="#ablii-privacy-policy">AbliiPrivacyPolicy</a></li>
+        <li><a href="#user-detail-expanded-data">UserDetailExpandedData</a></li>
+    </ul>
+    Providing all of this information will setup the business. The definition of these objects can be found in the <a href="#business-onboarding-objects">business onboarding objects</a> section.
+</p>
+
+<p>
+<i><b>Session Authentication:</b> Authentication for business onboarding should be done with a transaction session 
+      that was created with the userId set the ID of the business and agentId set to the ID of the user returned in the FlinksLoginId response.</i>
+</p>
+
+<h3><a name="update-business">Updating Business Name</a></h3>
+<p>
+  Because the data returned from Flinks for a business may be either the user data or the business data, it may be necessary
+  to update either the business name or the first and last name of the user in order to complete onboarding properly. In order
+  to update the business name, simply update the business directly through DIG API call to the businessDAO.
+  Here is an example of the JSON for the API call that would update the business name:
+  <code>{
+    "class": "net.nanopay.model.Business",
+    "id": 9036,
+    "businessName": "PGWL RESOURCES LTD."
+}</code>
+
+  If the business name is correct, but the user's first name and last name need to be updated, the user should be updated directly instead with
+  a call to the userDAO with the following JSON data:
+<code>{
+    "class": "foam.nanos.auth.User",
+    "id": 9030,
+    "firstName": "Jane",
+    "lastName": "Smith"
+}</code>
+</p>
+<p>
+<i><b>Session Authentication:</b> Authentication for updating business and user information should be done with a transaction session 
+      that was created with the userId set the ID of the business and agentId set to the ID of the user returned in the FlinksLoginId response.</i>
+</p>
+
+<h2>Sending Capabilities to CapabilityPayloadDAO</h2>
+<p>
+    All functionality is enabled by setting up capabilities. The mechanism that we are providing to create capabilities 
+    through the API is exposing the capabilityPayloadDAO in DIG. The idea behind this DAO is that all of the payloads, or
+    data, necessary to enable a given set of capabilities is provided in a single call, even though the data may be very 
+    different in nature. In order to determine which payloads are necessary to be provided for a given capability, simply
+    query the capabilityPayloadDAO and provide the ID of the capability in the SELECT method. Performing this select call
+    will return an object which contains the necessary structure for saving to the capabilityPayloadDAO. Simply fill in 
+    the data for the given objects and PUT the CapabilityPayload object back to the capabilityPayloadDAO in DIG. The following table
+    describes the structure of the objects inside the capabilityPayloadDAO.
+</p>
+<h4><a name="capability-payload">CapabilityPayload</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="foam.nanos.crunch.connection.CapabilityPayload" />
+<p>
+    Depending on your use case, the following capabilities will be the top level capabilities for the given use case:
+    <ol>
+        <li>CAD Receiving Business Payments - Capability ID: <pre>crunch.onboarding.api.ca-business-receive-payments</pre></li>
+        <li>CAD Sending Business Payments - Capability ID: <pre>crunch.onboarding.api.ca-business-send-payments</pre></li>
+    </ol>
+    As stated above in the <a href="#business-onboarding">business onboarding</a> section, the payloads necessary are all objects listed. 
+    These objects will be mapped by easily understandable keys in the capabilityDataObjects map.
+</p>
+<p>
+    Refer to the <a href="/#api-doc-60-capabilities">capability documentation page</a> for more information.
+</p>
+
+<h2>Onboarding Data Objects</h2>
+
+<h3><a name="business-onboarding-objects">Business Onboarding Objects</a></h3>
+
+<h4><a name="ablii-terms-and-conditions">AbliiTermsAndConditions</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions" whitelist="['title', 'agreement']" />
+
+<h4><a name="ablii-privacy-policy">AbliiPrivacyPolicy</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy" whitelist="['title', 'agreement']" />
+
+<h4><a name="business-detail-data">BusinessDetailData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.BusinessDetailData" />
+
+<h4><a name="business-detail-data">BusinessDetailExpandedData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.BusinessDetailExpandedData" />
+
+<h4><a name="business-director-list">BusinessDirectorList</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.BusinessDirectorList" />
+
+<h4><a name="business-owner-list">BusinessOwnerList</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.BusinessOwnerList" />
+
+<h4><a name="business-type-data">BusinessTypeData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.BusinessTypeData" />
+
+<h4><a name="dual-party-agreement-cad">DualPartyAgreementCAD</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.acceptanceDocuments.capabilities.DualPartyAgreementCAD" whitelist="['title', 'agreement']" />
+
+<h4><a name="signing-officer-list">SigningOfficerList</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.SigningOfficerList" />
+
+<h4><a name="user-detail-expanded-data">UserDetailData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.UserDetailData" />
+
+<h4><a name="user-detail-expanded-data">UserDetailExpandedData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.UserDetailExpandedData" />

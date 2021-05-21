@@ -196,12 +196,12 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String province = isBusinessAddressSet ? business.getAddress().getRegionId() : "-";
     String country = isBusinessAddressSet ? business.getAddress().getCountryId() : "-";
     String postalCode = isBusinessAddressSet ? business.getAddress().getPostalCode() : "-";
-    String businessReg = business.getBusinessRegistrationDate() != null ? new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z").format(business.getBusinessRegistrationDate()) : "-";
+    String businessReg = business.getBusinessRegistrationDate() != null ? sdf.format(business.getBusinessRegistrationDate()) : "-";
 
     String businessPhoneNumber;
-    if ( isBusinessSet && business.getPhone() != null ) {
-      if ( ! SafetyUtil.isEmpty(business.getPhone().getNumber()) ) {
-        businessPhoneNumber = business.getPhone().getNumber();
+    if ( isBusinessSet && business.getPhoneNumber() != null ) {
+      if ( ! SafetyUtil.isEmpty(business.getPhoneNumber()) ) {
+        businessPhoneNumber = business.getPhoneNumber();
       } else {
         businessPhoneNumber = "N/A";
       }
@@ -312,7 +312,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       List list = new List(List.UNORDERED);
       list.add(new ListItem("Currency choices for this business will be USD and CAD")); // TODO this is hardcoded for Currency choice AFEX wants confirmation of. Future this should be dynamically set.
-      if ( !country.equals("US") ) list.add(new ListItem("Business Registration Time: " + businessReg));
+      if ( !country.equals("US") ) list.add(new ListItem("Business Registration Date: " + businessReg));
       list.add(new ListItem("Type of Business: " + businessType));
       list.add(new ListItem("Legal Name of Business: " + businessName));
       if ( operatingName.length() != 0 ) {
@@ -333,19 +333,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Who do you market your products and services to? " + targetCustomers));
       list.add(new ListItem("Source of Funds (Where did you acquire the funds used to pay us?): " + sourceOfFunds));
       list.add(new ListItem("Transaction purpose: " + purposeOfTransactions));
-      if ( purposeOfTransactions.equals("Other") ) {
-        String otherPurposeOfTransactions;
-        if ( business.getSuggestedUserTransactionInfo() != null ) {
-          if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getOtherTransactionPurpose()) ) {
-            otherPurposeOfTransactions = business.getSuggestedUserTransactionInfo().getOtherTransactionPurpose();
-          } else {
-            otherPurposeOfTransactions = "N/A";
-          }
-        } else {
-          otherPurposeOfTransactions = "N/A";
-        }
-        list.add(new ListItem("Other transaction purpose: " + otherPurposeOfTransactions));
-      }
       list.add(new ListItem("Annual gross sales: " + baseCurrency + " " + annualRevenue));
       list.add(new ListItem("Transfers: "));
       List domesticSubList = new List(true, false, 20);
@@ -384,7 +371,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
               list.add(new ListItem(String.format("acceptance document: %s user: %s business: %s country: %s date: %s",
                 accDoc.getTitle(),
-                user.label(),
+                user.toSummary(),
                 businessId,
                 business.getAddress().getCountryId(),
                 doc.getLastModified())));
@@ -495,8 +482,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       birthday = sdf.format(signingOfficer.getBirthday());
     }
     String phoneNumber = null;
-    if ( signingOfficer.getPhone() != null ) {
-      phoneNumber = signingOfficer.getPhone().getNumber();
+    if ( signingOfficer.getPhoneNumber() != null ) {
+      phoneNumber = signingOfficer.getPhoneNumber();
     }
     String email = signingOfficer.getEmail();
     String suiteNumber = signingOfficer.getAddress().getSuite();

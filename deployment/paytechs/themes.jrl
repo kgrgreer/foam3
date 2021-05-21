@@ -1,0 +1,28 @@
+p({
+  "class":"foam.nanos.theme.Theme",
+  "id":"A7FBB672-D395-4C30-B5EE-F737B8079BCD",
+  "name":"nanopay",
+  "appName":"nanopay",
+  "description":"nanopay",
+  "defaultMenu":"admin.data",
+  "logoRedirect":"admin.data",
+  "loginImage": "images/sign_in_illustration.png",
+  "logo":"images/nanopay_logo_blue.svg",
+  "logoBackgroundColour":"#202341",
+  "largeLogoEnabled": true,
+  "largeLogo": "images/nanopay_blue_white_206x42.png",
+  "supportEmail":"support@nanopay.net",
+  "supportPhone":"+1.647.496.1526",
+  "headConfig": {
+    "customFavIcon" : [
+      "<link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/favicon/apple-touch-icon.png\">",
+      "<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon/favicon-32x32.png\">",
+      "<link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/favicon/favicon-16x16.png\">",
+      "<link rel=\"manifest\" href=\"/favicon/manifest.json\">",
+      "<link rel=\"mask-icon\" href=\"/favicon/safari-pinned-tab.svg\" color=\"#5bbad5\">",
+      "<link rel=\"shortcut icon\" href=\"/favicon/favicon.png\">",
+      "<meta name=\"msapplication-config\" content=\"/favicon/browserconfig.xml\">",
+      "<meta name=\"theme-color\" content=\"#ffffff\">"
+    ]
+  },
+})

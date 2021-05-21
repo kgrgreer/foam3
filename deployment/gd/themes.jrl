@@ -1,19 +1,43 @@
 p({
   "class":"foam.nanos.theme.Theme",
-  "id":4,
-  "description":"Ablii Grain Discovery",
-  "appName":"Ablii-GD",
-  "priority":2,
-  "defaultMenu":"sme.accountProfile.switch-business",
+  "id":"BE1FD088-5618-4508-BCDF-178719D863B3",
+  "name":"gd",
+  "appName":"Grain Discovery",
+  "description":"Grain Discovery",
+  "navigationRootMenu":"smeNavigation",
+  "settingsRootMenu":"smeSettings",
+  "logoRedirect":"sme.main.appStore",
+  "admissionCapability": "crunch.onboarding.general-admission",
+  "defaultMenu":"sme.main.appStore",
+  "disableCurrencyChoice": true,
+  "loginImage": "images/sign_in_illustration.png",
   "logo":"images/gd/gd-logo-72x72.png",
   "largeLogo":"images/gd/gd-logo-72x72.png",
+  "headConfig": {
+    "customFavIcon" : [
+      "<link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/favicon/apple-touch-icon.png\">",
+      "<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon/ablii.png\">",
+      "<link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/favicon/ablii.png\">",
+      "<link rel=\"manifest\" href=\"/favicon/manifest.json\">",
+      "<link rel=\"mask-icon\" href=\"/favicon/safari-pinned-tab.svg\" color=\"#5bbad5\">",
+      "<link rel=\"shortcut icon\" href=\"/favicon/ablii.png\">",
+      "<meta name=\"msapplication-config\" content=\"/favicon/browserconfig.xml\">",
+      "<meta name=\"theme-color\" content=\"#ffffff\">"
+    ]
+  },
   "logoBackgroundColour":"transparent",
-  "topNavigation":"net.nanopay.sme.ui.SideNavigationView",
+  "topNavigation":"net.nanopay.ui.TopSideNavigation",
+  "footerView":"net.nanopay.sme.ui.FooterView",
+  "supportEmail":"support@ablii.com",
+  "supportPhone":"+1.647.496.1526",
+  "personalSupportUser":1030,
   "primary1":"#2e2379",
   "primary2":"#4434b4",
   "primary3":"#604aff",
   "primary4":"#937dff",
   "primary5":"#fbeeff",
+  "secondary1":"#4a33f4",
+  "secondary2":"#432de7",
   "approval1":"#19402e",
   "approval2":"#117a41",
   "approval3":"#32bf5e",
@@ -40,6 +64,12 @@ p({
   "inputHorizontalPadding":"8px",
   "customCSS":
   """
+    .net-nanopay-ui-Controller {
+      overflow: hidden;
+    }
+    .foam-comics-BrowserView {
+      margin-top: 30px;
+    }
     .us-business-onboarding {
       display: none;
     }
@@ -49,5 +79,9 @@ p({
     .latest-ablii-items {
       display: none;
     }
-  """
+  """,
+  "createdBy":1,
+  "createdByAgent":1,
+  "created":"2020-04-29T22:32:52.685Z",
+  "spid":"gd"
 })

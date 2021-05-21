@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx.planner',
   name: 'KotakSplitTransactionPlanner',
@@ -18,6 +35,8 @@ foam.CLASS({
     'net.nanopay.bank.INBankAccount',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.fx.CurrencyFXService',
+    'net.nanopay.tx.SummaryTransaction',
+    'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXService',
     'net.nanopay.fx.FXQuote',
     'net.nanopay.fx.FXSummaryTransaction',
@@ -27,7 +46,9 @@ foam.CLASS({
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.bmo.cico.BmoCITransaction',
+    'net.nanopay.tx.KotakAccountRelationshipLineItem',
     'net.nanopay.tx.KotakCOTransaction',
+    'net.nanopay.tx.KotakPaymentPurposeLineItem',
     'net.nanopay.tx.rbc.RbcCITransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
@@ -61,6 +82,13 @@ foam.CLASS({
     },
   ],
 
+  properties: [
+    {
+      name: 'bestPlan',
+      value: true
+    }
+  ],
+
   methods: [
     {
       name: 'plan',
@@ -68,26 +96,26 @@ foam.CLASS({
       Account sourceAccount = quote.getSourceAccount();
       Account destinationAccount = quote.getDestinationAccount();
 
-      // check for transaction limits
-      INBankAccount inDestinationAccount = (INBankAccount) destinationAccount;
-      if ( getPurposeText(inDestinationAccount.getPurposeCode()).equals("TRADE_TRANSACTION") ) {
-        checkTransactionLimits(x, requestTxn);
-      }
-
       // get fx rate
       FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, requestTxn.getSourceCurrency(), requestTxn.getDestinationCurrency(), LOCAL_FX_SERVICE_NSPEC_ID);
       FXQuote fxQuote = fxService.getFXRate(sourceAccount.getDenomination(), destinationAccount.getDenomination(), quote.getRequestTransaction().getAmount(), quote.getRequestTransaction().getDestinationAmount(),"","",sourceAccount.getOwner(),"nanopay");
       requestTxn = (Transaction) requestTxn.fclone();
-  
-      // calculate source amount 
+
+      // calculate source amount
       Unit denomination = sourceAccount.findDenomination(x);
       Double currencyPrecision = Math.pow(10, denomination.getPrecision());
       Double amount =  Math.ceil(requestTxn.getDestinationAmount()/currencyPrecision/fxQuote.getRate()*currencyPrecision);
-      requestTxn.setAmount(amount.longValue());
+      requestTxn.setAmount(Math.round(amount));
 
       FXSummaryTransaction txn = new FXSummaryTransaction.Builder(x).build();
       txn.copyFrom(requestTxn);
-      txn.addNext(createCompliance(requestTxn));
+      txn.addNext(createComplianceTransaction(requestTxn));
+      FXLineItem fxLineItem = new FXLineItem();
+      fxLineItem.setRate(fxQuote.getRate());
+      fxLineItem.setSourceCurrency(fxQuote.getSourceCurrency());
+      fxLineItem.setDestinationCurrency(fxQuote.getTargetCurrency());
+      txn.addLineItems( new TransactionLineItem[] { fxLineItem } );
+
       DigitalAccount destinationDigitalaccount = DigitalAccount.findDefault(x, destinationAccount.findOwner(x), sourceAccount.getDenomination());
       // split 1: CA bank -> CA digital
 
@@ -95,29 +123,22 @@ foam.CLASS({
       t1.setDestinationAccount(destinationDigitalaccount.getId());
       t1.setDestinationCurrency(t1.getSourceCurrency());
       t1.setDestinationAmount(t1.getAmount());
-      Transaction cashinPlan = quoteTxn(x, t1);
+      Transaction cashinPlan = quoteTxn(x, t1, quote);
+      cashinPlan = removeSummaryTransaction(cashinPlan);
       if ( cashinPlan != null ) {
         txn.addNext(cashinPlan);
       } else {
         return null;
       }
-      
+
       // split 2: CA digital -> IN bank
       Transaction t2 = (Transaction) requestTxn.fclone();
       t2.setSourceAccount(destinationDigitalaccount.getId());
-      Transaction kotakPlan = quoteTxn(x,t2);
+      Transaction kotakPlan = quoteTxn(x, t2, quote);
       if ( kotakPlan != null ) {
 
-
         // add transfer to update CI trust account
-        TrustAccount trustAccount = null;
-        if ( cashinPlan instanceof BmoCITransaction ) {
-          trustAccount = TrustAccount.find(x, quote.getSourceAccount(), BMO_INSTITUTION_NUMBER);
-        } else if ( cashinPlan instanceof RbcCITransaction ) {
-          trustAccount = TrustAccount.find(x, quote.getSourceAccount(), RBC_INSTITUTION_NUMBER);
-        } else {
-          trustAccount = TrustAccount.find(x, quote.getSourceAccount(), ALTERNA_INSTITUTION_NUMBER);
-        }
+        TrustAccount trustAccount =  ((DigitalAccount) cashinPlan.findDestinationAccount(x)).findTrustAccount(x);
         Transfer t = new Transfer();
         t.setAccount(trustAccount.getId());
         t.setAmount(requestTxn.getAmount());
@@ -127,113 +148,14 @@ foam.CLASS({
         kotakCO.setTransfers((Transfer[]) ArrayUtils.addAll(transfers, kotakCO.getTransfers()));
 
         txn.addNext(kotakPlan);
-        Transaction[] nextPlans = kotakPlan.getNext();
-        while( nextPlans != null && nextPlans.length > 0 ) {
-          Transaction nextPlan = nextPlans[0];
-          txn.addLineItems(nextPlan.getLineItems(), nextPlan.getReverseLineItems());
-          nextPlans = nextPlan.getNext();
-        }
       } else {
         return null;
       }
 
       txn.setStatus(TransactionStatus.COMPLETED);
       ((FXSummaryTransaction) txn).setFxRate(fxQuote.getRate());
-      ((FXSummaryTransaction) txn).collectLineItems();
       return txn;
     `
-    },
-    {
-      name: 'getPurposeText',
-      javaType: 'String',
-      args: [
-        {
-          name: 'purposeCode',
-          type: 'String',
-        }
-      ],
-      javaCode: `
-        switch (purposeCode) {
-          case "P0306":
-            return "PAYMENTS_FOR_TRAVEL";
-    
-          case "P1306":
-            return "TAX_PAYMENTS_IN_INDIA";
-    
-          case "P0011":
-            return "EMI_PAYMENTS_FOR_REPAYMENT_OF_LOANS";
-    
-          case "P0103":
-            return "ADVANCE_AGAINST_EXPORTS";
-    
-          default:
-            return "TRADE_TRANSACTION";
-        }
-      `
-    },
-    {
-      name: 'checkTransactionLimits',
-      javaType: 'void',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'requestTxn',
-          type: 'Transaction',
-        }
-      ],
-      javaCode: `
-        KotakCredentials credentials = (KotakCredentials) x.get("kotakCredentials");
-
-        if ( requestTxn.getDestinationAmount() > credentials.getTradePurposeCodeLimit() ) {
-          throw new RuntimeException("Exceed INR Transaction limit");
-        }
-        
-        DAO txnDAO = (DAO) x.get("localTransactionDAO");
-    
-        User owner = requestTxn.findSourceAccount(x).findOwner(x);
-        DAO accounts = owner.getAccounts(x);
-        ArraySink sink = new ArraySink(x);
-        accounts.where (MLang.AND(
-          MLang.INSTANCE_OF(CABankAccount.class),
-          MLang.EQ(CABankAccount.STATUS, BankAccountStatus.VERIFIED)
-        )).select(sink);
-        List<CABankAccount> caBankAccounts = sink.getArray();
-    
-        long limit = 0;
-        Date now = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
-        Date dayAgo = Date.from(LocalDateTime.now().minusHours(24).atZone(ZoneId.systemDefault()).toInstant());
-    
-        for ( CABankAccount bankAccount : caBankAccounts ) {
-          ArraySink txnSink = new ArraySink(x);
-          txnDAO.where(MLang.AND(
-            MLang.EQ(Transaction.SOURCE_ACCOUNT, bankAccount.getId()),
-            MLang.EQ(Transaction.STATUS, TransactionStatus.COMPLETED),
-            MLang.GTE(Transaction.CREATED, dayAgo),
-            MLang.LT(Transaction.CREATED, now)
-          )).select(txnSink);
-    
-          List<Transaction> txnList = txnSink.getArray();
-          for ( Transaction txn: txnList ) {
-            Account account = txn.findDestinationAccount(x);
-            if ( account instanceof INBankAccount && getPurposeText(((INBankAccount) account).getPurposeCode()).equals("TRADE_TRANSACTION") ) {
-              limit += txn.getDestinationAmount();
-            }
-          }
-        }
-        
-        if ( limit + requestTxn.getDestinationAmount() > credentials.getTradePurposeCodeLimit() ) {
-          throw new RuntimeException("Exceed INR Transaction limit");
-        }
-      `
-    },
-    {
-      name: 'forceBestPlan',
-      javaCode: `
-        return true;
-      `
-    },
+    }
   ]
 });

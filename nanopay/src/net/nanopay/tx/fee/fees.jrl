@@ -1,0 +1,39 @@
+// Ablii Fee
+p({
+  class: "net.nanopay.tx.fee.FixedFee",
+  id:"b3a61c9b-047c-df94-ac0d-8a190099eeb8",
+  name: "Ablii Fee",
+  label: "Domestic Fee",
+  fixedFee: 75,
+  feeClass: "net.nanopay.tx.InvoicedFeeLineItem",
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.IsDomesticTransaction"
+  },
+  feeRule: "bb64181c-654e-4bc5-a31e-03642a34df50"
+})
+p({
+  class: "net.nanopay.tx.fee.FixedFee",
+  id:"323bd5c0-7cc3-0390-ef02-26e99696b878",
+  name: "Ablii Fee",
+  label: "International Fee",
+  fixedFee: 500,
+  feeClass: "net.nanopay.tx.InvoicedFeeLineItem",
+  predicate: {
+    class: "foam.mlang.predicate.Not",
+    arg1: {
+      class: "net.nanopay.tx.fee.predicate.IsDomesticTransaction"
+    }
+  },
+  feeRule: "bb64181c-654e-4bc5-a31e-03642a34df50"
+})
+
+// GD Fee
+p({
+  class: "net.nanopay.tx.fee.FixedFee",
+  id:"87eae9e0-c4d0-4fd4-b198-9b1ee2488af5",
+  name: "GD Fee",
+  label: "GD Fee",
+  fixedFee: 150,
+  feeClass: "net.nanopay.tx.InvoicedFeeLineItem",
+  feeRule: "68afcf0c-c718-98f8-0841-75e97a3ad16d56"
+})

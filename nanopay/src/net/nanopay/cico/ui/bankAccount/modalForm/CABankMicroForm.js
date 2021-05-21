@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.cico.ui.bankAccount.modalForm',
   name: 'CABankMicroForm',
@@ -6,7 +23,9 @@ foam.CLASS({
   documentation: 'Input micro-deposit amount screen',
 
   requires: [
-    'net.nanopay.ui.LoadingSpinner'
+    'foam.log.LogLevel',
+    'foam.u2.LoadingSpinner',
+    'net.nanopay.bank.BankAccount'
   ],
 
   exports: [
@@ -86,7 +105,7 @@ foam.CLASS({
     { name: 'MICRO_PLACEHOLDER', message: 'Enter micro-deposit amount' },
     { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.' },
     { name: 'INVALID_FORM', message: 'You have entered an invalid amount. Please try again.' },
-    { name: 'DEFAULT_ERROR', message: 'An error occurred while processing your request.' },
+    { name: 'DEFAULT_ERROR', message: 'An error occurred while processing your request' },
     { name: 'SUCCESS_ONE', message: 'Your bank account' },
     { name: 'SUCCESS_TWO', message: 'is now verified.' }
   ],
@@ -131,7 +150,7 @@ foam.CLASS({
 
     function validateForm() {
       if ( this.amount <= 0 || this.amount >= 1 ) {
-        ctrl.notify(this.INVALID_FORM, 'error');
+        ctrl.notify(this.INVALID_FORM, '', this.LogLevel.ERROR, true);
         return false;
       }
       return true;
@@ -143,21 +162,21 @@ foam.CLASS({
         var isVerified = await this.bankAccountVerification
           .verify(null, this.bank.id, Math.round(this.amount*100));
       } catch (error) {
-        this.ctrl.notify(error.message ? error.message : this.DEFAULT_ERROR, 'error');
+        this.ctrl.notify(error.message ? error.message : this.DEFAULT_ERROR, '', this.LogLevel.ERROR, true);
         return;
       } finally {
         this.isConnecting = false;
       }
 
       if ( isVerified ) {
-        var accountNumber = '***' + this.bank.accountNumber.slice(-4);
-        ctrl.notify(this.SUCCESS_ONE + ` ${accountNumber} ` + this.SUCCESS_TWO);
+        var accountNumber = this.BankAccount(this.bank.accountNumber);
+        ctrl.notify(this.SUCCESS_ONE + ` ${accountNumber} ` + this.SUCCESS_TWO, '', this.LogLevel.INFO, true);
         if ( this.onComplete ) this.onComplete();
 
         try {
           this.bank = await this.accountDAO.find(this.bank.id);
         } catch (error) {
-          this.ctrl.notify(error.message ? error.message : this.DEFAULT_ERROR, 'error');
+          this.ctrl.notify(error.message ? error.message : this.DEFAULT_ERROR, '', this.LogLevel.ERROR, true);
         }
         // Force the view to update.
         this.user.accounts.cmd(foam.dao.AbstractDAO.RESET_CMD);

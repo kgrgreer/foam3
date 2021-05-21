@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
     package: 'net.nanopay.sme.ruler',
     name: 'OnboardingPaymentOperationNotification',
@@ -8,12 +25,11 @@ foam.CLASS({
     implements: ['foam.nanos.ruler.RuleAction'],
 
     javaImports: [
-      'foam.core.ContextAgent',
+      'foam.core.ContextAwareAgent',
       'foam.core.X',
       'foam.dao.DAO',
       'foam.nanos.auth.User',
       'foam.nanos.auth.UserUserJunction',
-      'foam.nanos.notification.Notification',
       'foam.nanos.notification.email.EmailMessage',
       'java.util.HashMap',
       'java.util.Map',
@@ -26,14 +42,14 @@ foam.CLASS({
       {
         name: 'applyAction',
         javaCode: `
-           agency.submit(x, new ContextAgent() {
+           agency.submit(x, new ContextAwareAgent() {
             @Override
              public void execute(X x) {
-              User user = (User) obj; 
+              User user = (User) obj;
 
               if (user == null || user.getId() <= 0) return;
-              DAO businessDAO = (DAO) x.get("businessDAO");
-              DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
+              DAO businessDAO = (DAO) getX().get("businessDAO");
+              DAO agentJunctionDAO = (DAO) getX().get("agentJunctionDAO");
               UserUserJunction junction = (UserUserJunction) agentJunctionDAO.find(EQ(UserUserJunction.SOURCE_ID, user.getId()));
               Business business = (Business) businessDAO.find(junction.getTargetId());
               EmailMessage message = new EmailMessage();
@@ -45,10 +61,11 @@ foam.CLASS({
 
               OnboardingPaymentOpsNotification notification = new OnboardingPaymentOpsNotification.Builder(x)
               .setEmailArgs(args)
+              .setGroupId(user.getSpid() + "-payment-ops")
               .build();
 
-              DAO notificationDAO = ((DAO) x.get("localNotificationDAO")).inX(x);
-              notificationDAO.put(notification);            
+              DAO notificationDAO = (DAO) getX().get("localNotificationDAO");
+              notificationDAO.put(notification);
           }
         }, "send notification");
         `

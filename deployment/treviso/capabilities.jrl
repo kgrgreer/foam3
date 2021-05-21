@@ -1,0 +1,314 @@
+// treviso service provider capability and permissions from running MSP setup
+p({
+  class: "foam.nanos.auth.ServiceProvider",
+  id: "treviso",
+  description: "treviso",
+  permissionsGranted: [
+    "net.nanopay.partner.treviso.trevisounlockpaymenttermsandconditions.section.reviewAgreementDocumentsSection",
+    "language.read.*"
+  ]
+})
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoMenuCapability",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "menu.read.sme.accountProfile.personal-settings",
+    "menu.read.sme.accountProfile.signout"
+  ]
+})
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoPlannerCapability",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.2775abef-05d4-4460-bea8-7a70e9d544af",
+    "rule.read.519e2a68-a914-444f-b050-2ce01f29fe24"
+  ]
+})
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoCountryCapability",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "country.read.BR"
+  ]
+})
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoCorridorCapability",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "paymentprovidercorridor.read.afex",
+    "paymentprovidercorridor.read.treviso",
+    "paymentprovidercorridor.source.read.treviso",
+    "paymentprovidercorridor.target.read.afex"
+  ]
+})
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoCurrencyCapability",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "currency.read.USD",
+    "currency.read.CAD"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoBusinessMenuCapability",
+  name: "treviso business registration granted menu",
+  version: "0",
+  enabled: true,
+  visible: false,
+  permissionsGranted: [
+    "menu.read.sme.accountProfile.business-settings"
+  ]
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.certify-data-reviewed",
+  "name":"Certify Data Reviewed",
+  "of":"net.nanopay.crunch.onboardingModels.CertifyDataReviewed",
+  "description":"Certify all data submitted has been reviewed",
+  "documentation":"""
+    Certify data reviewed for Brazil businesses.
+    Certify data reviewed is expired to expire unlock payments br,
+    it has a duration of 18 months.
+  """,
+  "version":"0",
+  "duration":540,
+  "gracePeriod":7,
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.document.date-of-issue",
+  "name":"Date of Issue",
+  "description":"Date of issue of an identification document",
+  "of":"net.nanopay.crunch.document.DateOfIssue",
+  "version":"0",
+  "duration":540,
+  "gracePeriod":7,
+  "enabled":true,
+  "associatedEntity":1
+})
+
+// These capabilities do not have approval requests in Treviso
+// and the of is set to BRBusinessOwnershipData instead of generic BusinessOwnershipData
+p({
+  class:"foam.nanos.crunch.Capability",
+  id:"crunch.onboarding.br.business-ownership",
+  name:"Business ownership",
+  of:"net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData",
+  reviewRequired:false,
+  enabled:true,
+  daoKey:"convertOwnerObjectDAO"
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.business-directors",
+  "name":"Information from Administrators and Legal Representatives",
+  "of":"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData",
+  "reviewRequired":false
+})
+p({class:"net.nanopay.payment.CountryCapability",country:"GB",type:0,id:"payment.source.country.gb",name:"Source Country Capability GB",enabled:true,lastModified:1619119860763,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"CN",type:1,id:"payment.target.country.cn",name:"Target Country Capability CN",enabled:true,lastModified:1619119860766,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"GB",type:1,id:"payment.target.country.gb",name:"Target Country Capability GB",enabled:true,lastModified:1619119860761,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"CA",type:0,id:"payment.source.country.ca",name:"Source Country Capability CA",enabled:true,lastModified:1619119860742,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"CA",type:1,id:"payment.target.country.ca",name:"Target Country Capability CA",enabled:true,lastModified:1619119860742,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"CN",type:0,id:"payment.source.country.cn",name:"Source Country Capability CN",enabled:true,lastModified:1619119860768,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"HK",type:1,id:"payment.target.country.hk",name:"Target Country Capability HK",enabled:true,lastModified:1619119860783,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"HK",type:0,id:"payment.source.country.hk",name:"Source Country Capability HK",enabled:true,lastModified:1619119860785,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"AT",type:1,id:"payment.target.country.at",name:"Target Country Capability AT",enabled:true,lastModified:1619119860788,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"AT",type:0,id:"payment.source.country.at",name:"Source Country Capability AT",enabled:true,lastModified:1619119860790,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"BE",type:1,id:"payment.target.country.be",name:"Target Country Capability BE",enabled:true,lastModified:1619119860792,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"BE",type:0,id:"payment.source.country.be",name:"Source Country Capability BE",enabled:true,lastModified:1619119860794,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"CY",type:1,id:"payment.target.country.cy",name:"Target Country Capability CY",enabled:true,lastModified:1619119860796,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"CY",type:0,id:"payment.source.country.cy",name:"Source Country Capability CY",enabled:true,lastModified:1619119860798,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"EE",type:1,id:"payment.target.country.ee",name:"Target Country Capability EE",enabled:true,lastModified:1619119860800,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"EE",type:0,id:"payment.source.country.ee",name:"Source Country Capability EE",enabled:true,lastModified:1619119860802,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"FI",type:1,id:"payment.target.country.fi",name:"Target Country Capability FI",enabled:true,lastModified:1619119860809,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"FI",type:0,id:"payment.source.country.fi",name:"Source Country Capability FI",enabled:true,lastModified:1619119860811,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"FR",type:1,id:"payment.target.country.fr",name:"Target Country Capability FR",enabled:true,lastModified:1619119860813,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"FR",type:0,id:"payment.source.country.fr",name:"Source Country Capability FR",enabled:true,lastModified:1619119860815,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"DE",type:1,id:"payment.target.country.de",name:"Target Country Capability DE",enabled:true,lastModified:1619119860817,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"DE",type:0,id:"payment.source.country.de",name:"Source Country Capability DE",enabled:true,lastModified:1619119860819,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"GR",type:1,id:"payment.target.country.gr",name:"Target Country Capability GR",enabled:true,lastModified:1619119860822,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"GR",type:0,id:"payment.source.country.gr",name:"Source Country Capability GR",enabled:true,lastModified:1619119860824,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"IE",type:1,id:"payment.target.country.ie",name:"Target Country Capability IE",enabled:true,lastModified:1619119860826,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"IE",type:0,id:"payment.source.country.ie",name:"Source Country Capability IE",enabled:true,lastModified:1619119860827,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"IT",type:1,id:"payment.target.country.it",name:"Target Country Capability IT",enabled:true,lastModified:1619119860829,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"IT",type:0,id:"payment.source.country.it",name:"Source Country Capability IT",enabled:true,lastModified:1619119860831,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"LV",type:1,id:"payment.target.country.lv",name:"Target Country Capability LV",enabled:true,lastModified:1619119860833,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"LV",type:0,id:"payment.source.country.lv",name:"Source Country Capability LV",enabled:true,lastModified:1619119860835,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"LT",type:1,id:"payment.target.country.lt",name:"Target Country Capability LT",enabled:true,lastModified:1619119860837,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"LT",type:0,id:"payment.source.country.lt",name:"Source Country Capability LT",enabled:true,lastModified:1619119860839,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"LU",type:1,id:"payment.target.country.lu",name:"Target Country Capability LU",enabled:true,lastModified:1619119860841,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"LU",type:0,id:"payment.source.country.lu",name:"Source Country Capability LU",enabled:true,lastModified:1619119860843,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"MT",type:1,id:"payment.target.country.mt",name:"Target Country Capability MT",enabled:true,lastModified:1619119860846,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"MT",type:0,id:"payment.source.country.mt",name:"Source Country Capability MT",enabled:true,lastModified:1619119860848,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"NL",type:1,id:"payment.target.country.nl",name:"Target Country Capability NL",enabled:true,lastModified:1619119860850,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"NL",type:0,id:"payment.source.country.nl",name:"Source Country Capability NL",enabled:true,lastModified:1619119860852,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"PT",type:1,id:"payment.target.country.pt",name:"Target Country Capability PT",enabled:true,lastModified:1619119860854,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"PT",type:0,id:"payment.source.country.pt",name:"Source Country Capability PT",enabled:true,lastModified:1619119860856,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"SK",type:1,id:"payment.target.country.sk",name:"Target Country Capability SK",enabled:true,lastModified:1619119860858,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"SK",type:0,id:"payment.source.country.sk",name:"Source Country Capability SK",enabled:true,lastModified:1619119860860,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"SI",type:1,id:"payment.target.country.si",name:"Target Country Capability SI",enabled:true,lastModified:1619119860862,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"SI",type:0,id:"payment.source.country.si",name:"Source Country Capability SI",enabled:true,lastModified:1619119860864,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"SE",type:1,id:"payment.target.country.se",name:"Target Country Capability SE",enabled:true,lastModified:1619119860866,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"SE",type:0,id:"payment.source.country.se",name:"Source Country Capability SE",enabled:true,lastModified:1619119860868,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"ES",type:1,id:"payment.target.country.es",name:"Target Country Capability ES",enabled:true,lastModified:1619119860870,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"ES",type:0,id:"payment.source.country.es",name:"Source Country Capability ES",enabled:true,lastModified:1619119860872,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"US",type:0,id:"payment.source.country.us",name:"Source Country Capability US",enabled:true,lastModified:1619119860874,lastModifiedBy:1})
+p({class:"net.nanopay.payment.CountryCapability",country:"US",type:1,id:"payment.target.country.us",name:"Target Country Capability US",enabled:true,lastModified:1619119860876,lastModifiedBy:1})
+
+// Treviso config
+p({
+  class:"net.nanopay.payment.PaymentProviderCorridor",
+  id:"paymentprovidercorridor.treviso.br-us",
+  name:"BR-USD Corridor - Treviso",
+  ranking:1,
+  provider:"Treviso",
+  sourceCountry:"BR",
+  targetCountry:"US",
+  sourceCurrencies:["BRL"],
+  targetCurrencies:["USD"],
+  enabled:true,
+  "visibilityPredicate": { class: "foam.mlang.predicate.True" },
+  lastModified:1602783690373,lastModifiedBy:1
+})
+p({
+  class:"net.nanopay.payment.PaymentProviderCorridor",
+  id:"paymentprovidercorridor.treviso.br-de",
+  name:"BR-EUR Corridor - Treviso",
+  ranking:2,
+  provider:"Treviso",
+  sourceCountry:"BR",
+  targetCountry:"DE",
+  sourceCurrencies:["BRL"],
+  targetCurrencies:["EUR"],
+  enabled:true,
+  "visibilityPredicate": { class: "foam.mlang.predicate.True" },
+  lastModified:1602783690373,
+  lastModifiedBy:1
+})
+p({
+  class:"net.nanopay.payment.PaymentProviderCorridor",
+  id:"paymentprovidercorridor.treviso.br-gbp",
+  name:"BR-GBP Corridor - Treviso",
+  ranking:3,
+  provider:"Treviso",
+  sourceCountry:"BR",
+  targetCountry:"GB",
+  sourceCurrencies:["BRL"],
+  targetCurrencies:["GBP"],
+  enabled:true,
+  "visibilityPredicate": { class: "foam.mlang.predicate.True" },
+  lastModified:1602783690373,
+  lastModifiedBy:1
+})
+
+p({
+  class:"net.nanopay.payment.PaymentProviderCorridor",
+  id:"paymentprovidercorridor.treviso.br-cad",
+  name:"BR-CAD Corridor - Treviso",
+  ranking:1,
+  provider:"Treviso",
+  sourceCountry:"BR",
+  targetCountry:"CA",
+  sourceCurrencies:["BRL"],
+  targetCurrencies:["CAD"],
+  enabled:true,
+  "visibilityPredicate": { class: "foam.mlang.predicate.True" },
+  lastModified:1602783690373,
+  lastModifiedBy:1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.signing-officer-information",
+  "name":"Complete your signing officer information",
+  "of":"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso",
+  "visibilityPredicate": {
+    "class":"foam.mlang.predicate.Not",
+    "arg1": {
+      "class":"foam.nanos.crunch.predicate.CapabilityGranted",
+      "capabilityId":"crunch.onboarding.signing-officer-information",
+      "subjectFromUCJ":false
+    }
+  },
+  "reviewRequired":false,
+  "wizardConfig": {
+    "class": "net.nanopay.crunch.wizardlet.SigningOfficerWizardConfig",
+    "allowSkipping": false
+  },
+  "requirementViewTitle":"Have your signing officer documents ready. You can save your progress and come back later."
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "treviso-tx-rules",
+  name: "Enable Treviso Transaction Rules",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d31",
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d32",
+    "rule.read.0466c0ce-27bb-48ed-acf8-4f63f3ec5632",
+    "rule.read.bf6670a5-957e-4407-a80f-7eda6f27ab23",
+    "rule.read.c65f1e3e-7347-4f90-82c8-ca05dc01d16a"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "treviso-tx-fees",
+  name: "Enable Treviso Fees",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.91194da9-8391-436a-8468-fa2c706126b8"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "treviso-user-notification-settings",
+  name: "Enable Ablii User Notification Settings",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d27",
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d115"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "treviso-ucj-crunchOnboarding-rules",
+  name: "Enable Treviso crunchOnboarding rules",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d0-crunch0",
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d0-crunch1",
+    "rule.read.ae4aa9c1-2e62-41a2-b5e5-73e5a951ce15",
+    "rule.read.12b0c9d0-eeb9-4b26-9d8d-95ddd19dfb1e",
+    "rule.read.7bedc2da-d27f-4f17-a452-50038993898e",
+    "rule.read.crunch-onboard-compliance-0",
+    "rule.read.b82fc19c-0f13-11eb-adc1-0242ac120002",
+    "rule.read.crunch-onboard-compliance-approvalrequest-0",
+    "rule.read.crunch-onboard-compliance-notification",
+    "rule.read.crunch-business-registration",
+    "rule.read.9cb36c96-c2e6-4c2a-8b38-f009d44c341a"
+  ]
+})

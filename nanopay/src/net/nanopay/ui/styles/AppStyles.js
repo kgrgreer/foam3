@@ -1,3 +1,19 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
 
 foam.CLASS({
   package: 'net.nanopay.ui.style',
@@ -10,7 +26,7 @@ foam.CLASS({
 
   css: `
     body {
-      font-family: 'Roboto', sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       letter-spacing: 0.2px;
       color: #373a3c;
@@ -28,7 +44,7 @@ foam.CLASS({
     .foam-u2-DetailView-title {
       background: #ddd;
       color: gray;
-      padding: 6px;
+      padding: 8px;
     }
     .foam-u2-ActionView{
       border: none;
@@ -426,7 +442,7 @@ foam.CLASS({
       height: 290px;
       background: white;
       border-radius: 2px;
-      overflow-y: scroll;
+      overflow-y: auto;
       padding: 20px;
     }
     .bottomMargin {
@@ -434,7 +450,7 @@ foam.CLASS({
     }
     .boxTitle {
       opacity: 0.6;
-      font-family: 'Roboto';
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 20px;
       font-weight: 300;
       line-height: 20px;
@@ -607,16 +623,16 @@ foam.CLASS({
     }
     .foam-doc-DocBrowser {
       width: 100%;
-      overflow: scroll;
+      overflow: auto;
       padding: 20px 0px 0px 20px;
     }
     .foam-doc-DocBorder-content {
       height: 80vh !important;
-      overflow: scroll;
+      overflow: auto;
     }
     .foam-doc-DocBorder-content .foam-u2-DetailView {
       width: 200px;
-      overflow: scroll;
+      overflow: auto;
     }
     .foam-doc-ClassList {
       display: inline-block;

@@ -1,0 +1,98 @@
+p({
+  "class":"foam.nanos.theme.Theme",
+  "id":"85d018c3-ec75-028e-523e-23d0c89c243b",
+  "name":"treviso",
+  "admissionCapability":"crunch.onboarding.treviso.general-admission",
+  "appName":"Treviso",
+  "loginImage":"images/treviso/treviso_black_logo.svg",
+  "domains":[
+    "treviso"
+  ],
+  "navigationRootMenu":"smeNavigation",
+  "settingsRootMenu":"smeSettings",
+  "disableCurrencyChoice":true,
+  "logoRedirect":"sme.main.appStore",
+  "defaultMenu":"mainmenu.invoices.payables",
+  "headConfig":{
+    "customFavIcon":[
+       "<link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/favicon/treviso/apple-touch-icon.png\">",
+       "<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon/treviso/treviso.png\">",
+       "<link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/favicon/treviso/treviso.png\">",
+       "<link rel=\"manifest\" href=\"/favicon/treviso/site.webmanifest\">",
+       "<link rel=\"mask-icon\" href=\"/favicon/safari-pinned-tab.svg\" color=\"#5bbad5\">",
+       "<link rel=\"shortcut icon\" href=\"data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAABMLAAATCwAAAAAAAAAAAAAAAAAAAAAAAAAAAACCQQAAgkEAAIJBAAeCQQAqgkEARYJBAE6CQQAlgkEAAIJBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACCQQAAgkEAAYJBADOCQQCWgkEAwYJBANOCQQCOgkEAGoJBAACCQQAFgkEAD4JBAACCQQAAAAAAAAAAAACCQQAAgkEAAYJBAEiCQQC+gkEA1IJBAOGCQQCFgkEAC4JBAACCQQAMgkEAcIJBAKWCQQAtgkEAAIJBAACCQQAAgkEAAIJBADeCQQDNgkEA1YJBAO+CQQC7gkEAF4JBAACCQQAPgkEAloJBAPGCQQDRgkEAtIJBABmCQQAAgkEAAIJBAAqCQQCmgkEA2oJBAOmCQQDggkEAPoJBAACCQQAFgkEAf4JBAPqCQQD3gkEA5YJBAOGCQQBigkEAAIJBAACCQQA2gkEA0YJBAN2CQQD/gkEAq4JBAAeCQQAAgkEAXYJBAOaCQQDkgkEA2oJBAPGCQQD2gkEAooJBABSCQQAAgkEAOYJBAMuCQQDlgkEA4oJBAFKCQQAAgkEAIIJBANSCQQD/gkEA+YJBANKCQQDhgkEA8IJBAMiCQQApgkEAAIJBAAGCQQBIgkEA4oJBAOOCQQAigkEAAIJBAG+CQQD2gkEA/4JBAO+CQQDsgkEA94JBANSCQQDcgkEAQIJBAACCQQAAgkEAAIJBAECCQQCOgkEADIJBABaCQQDJgkEA6oJBAOSCQQDZgkEA+oJBAP+CQQDigkEA0YJBADiCQQAAgkEAEIJBABSCQQAAgkEACYJBAACCQQBHgkEA9oJBAP+CQQDogkEA2IJBAOaCQQDwgkEA54JBANaCQQAagkEAAIJBABWCQQB7gkEAJ4JBAACCQQAAgkEAHYJBAIGCQQDKgkEA24JBAPyCQQD8gkEA2oJBAN+CQQCXgkEAA4JBAACCQQAAgkEAWYJBALqCQQBjgkEAA4JBAACCQQAAgkEAEIJBADyCQQB2gkEAn4JBAKqCQQCxgkEAKoJBAAAAAAAAgkEAAIJBAAeCQQBvgkEAyoJBACiCQQBfgkEAOYJBABaCQQAHgkEAAoJBAAyCQQAQgkEADYJBAAGCQQAAAAAAAAAAAACCQQAAgkEABYJBAFOCQQA9gkEA04JBAN6CQQDWgkEAsYJBAJmCQQB4gkEAG4JBAACCQQAAAAAAAAAAAAAAAAAAAAAAAIJBAACCQQAAgkEACYJBAEaCQQB2gkEAeoJBAGmCQQBGgkEAEoJBAACCQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+D8AAOAjAADAQwAAwIEAAIEBAACBAAAAggAAAIIAAACAAAAAlAAAAIQAAADCAQAAwAEAAOAHAADwDwAA//8AAA==\" type=\"image/x-icon\">",
+       "<meta name=\"msapplication-config\" content=\"/favicon/browserconfig.xml\">",
+       "<meta name=\"theme-color\" content=\"#ffffff\">"
+    ]
+  },
+  "logo":"images/treviso/treviso_logo_outline.svg",
+  "largeLogo":"images/treviso/treviso_black.png",
+  "logoBackgroundColour":"transparent",
+  "topNavigation":"net.nanopay.ui.TopSideNavigation",
+  "footerView":"net.nanopay.sme.ui.FooterView",
+  "customCSS":"""
+    .top-bar-img {
+      display: none;
+    }
+    .net-nanopay-contacts-ui-ContactWizardView-option {
+      display: none;
+    }
+    .net-nanopay-ui-Controller {
+      overflow: hidden;
+    }
+    .foam-comics-BrowserView {
+      margin-top: 30px;
+    }
+  """,
+  "font1":"'IBM Plex Sans', sans-serif",
+  "primary1":"#1B365D",
+  "primary2":"#1F4F9D",
+  "primary3":"#406DEA",
+  "primary4":"#A7BEFF",
+  "primary5":"#E5F1FC",
+  "secondary1":"#4a33f4",
+  "secondary2":"#432de7",
+  "approval1":"#04612E",
+  "approval2":"#199351",
+  "approval3":"#51BB56",
+  "approval4":"#ADE1A7",
+  "approval5":"#EEF7ED",
+  "warning1":"#865300",
+  "warning2":"#D57D11",
+  "warning3":"#FFCB71",
+  "warning4":"#FFF3C1",
+  "warning5":"#FFF4DE",
+  "destructive1":"#631414",
+  "destructive2":"#A61414",
+  "destructive3":"#E24740",
+  "destructive4":"#F79393",
+  "destructive5":"#FFE9E7",
+  "grey1":"#5A5A5A",
+  "grey2":"#848688",
+  "grey3":"#B5B8BB",
+  "grey4":"#CFD3D7",
+  "grey5":"#EEF0F2",
+  "black":"#1E1F21",
+  "white":"#ffffff",
+  "inputHeight":"34px",
+  "inputVerticalPadding":"10px",
+  "inputHorizontalPadding":"8px",
+  "createdBy":1,
+  "createdByAgent":1,
+  "created":1601313461870,
+  "lastModified":1601313461870,
+  "appConfig":{
+    "class":"foam.nanos.app.AppConfig",
+    "termsAndCondLabel":"Terms and Conditions",
+    "termsAndCondLink":"/service/file/61ee89ca-19ec-d8fc-0306-380657a38949",
+    "privacyUrl":"",
+    "copyright":"Copyright © 2020-@{currentYear} Treviso. All rights reserved."
+  },
+  "supportConfig":{
+    "class":"foam.nanos.app.SupportConfig",
+    "supportEmail":"suportetech@trevisocc.com.br",
+    "supportPhone":"55 11 21411777"
+  },
+  "spid":"treviso",
+  "defaultLocaleLanguage":"pt-BR"
+})

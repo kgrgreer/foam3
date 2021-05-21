@@ -1,13 +1,30 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.meter.test',
   name: 'BlockDisabledUserTransactionTest',
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
+    'foam.core.CompoundException',
     'foam.dao.DAO',
     'foam.mlang.MLang',
     'foam.nanos.auth.User',
-    'foam.test.TestUtils',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
@@ -101,14 +118,15 @@ foam.CLASS({
         User receiver = setUserStatus("test_user@nanopay.net", AccountStatus.ACTIVE);
         Transaction txn = buildTransaction(disabledUser, receiver);
 
-        test(
-          TestUtils.testThrows(
-            () -> transactionDAO_.put(txn),
-            "Unable to find a plan for requested transaction.",
-            RuntimeException.class
-          ),
-          "Create transaction with disabled sender throws RuntimeException"
-        );
+        String message = "Create transaction with disabled sender throws RuntimeException";
+        try {
+          transactionDAO_.put(txn);
+          test(false, message);
+        } catch ( RuntimeException e ) {
+          test(e.getMessage().contains("Payer user is disabled") ||
+               e.getMessage().contains("Unable to find a plan for requested transaction"),
+               message);
+        }
       `
     },
     {
@@ -118,14 +136,15 @@ foam.CLASS({
         User sender = setUserStatus("test_user@nanopay.net", AccountStatus.ACTIVE);
         Transaction txn = buildTransaction(sender, disabledUser);
 
-        test(
-          TestUtils.testThrows(
-            () -> transactionDAO_.put(txn),
-            "Unable to find a plan for requested transaction.",
-            RuntimeException.class
-          ),
-          "Create transaction with disabled receiver throws RuntimeException"
-        );
+        String message = "Create transaction with disabled receiver throws RuntimeException";
+        try {
+          transactionDAO_.put(txn);
+          test(false, message);
+        } catch ( RuntimeException e ) {
+          test(e.getMessage().contains("Payee user is disabled") ||
+               e.getMessage().contains("Unable to find a plan for requested transaction"),
+               message);
+        }
       `
     }
   ],

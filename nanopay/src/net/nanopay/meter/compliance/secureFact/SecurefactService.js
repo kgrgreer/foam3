@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.secureFact',
   name: 'SecurefactService',
@@ -6,8 +23,7 @@ foam.CLASS({
     for individual identity verification and business entity search.`,
 
   imports: [
-    'securefactLEVDAO',
-    'securefactSIDniDAO'
+    'DAO securefactResponseDAO?'
   ],
 
   javaImports: [
@@ -19,8 +35,11 @@ foam.CLASS({
     'foam.lib.PermissionedPropertyPredicate',
     'foam.lib.PropertyPredicate',
     'foam.nanos.logger.Logger',
+    'foam.nanos.pm.PM',
     'java.util.Arrays',
     'java.util.Base64',
+    'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentDataResponse',
+    'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentOrderResponse',
     'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
     'net.nanopay.meter.compliance.secureFact.lev.LEVResult',
     'net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse',
@@ -50,6 +69,16 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'levDocumentOrderUrl',
+      label: 'LEV DOCUMENT ORDER URL'
+    },
+    {
+      class: 'String',
+      name: 'levDocumentDataUrl',
+      label: 'LEV DOCUMENT DATA URL'
+    },
+    {
+      class: 'String',
       name: 'levApiKey',
       label: 'LEV API Key'
     }
@@ -70,15 +99,23 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        SecurefactRequest request = SecurefactRequestGenerator.getSIDniRequest(x, user);
-        request.setUrl(getSidniUrl());
-        request.setAuthKey(getSidniApiKey());
+        var pm = new PM(SecurefactService.getOwnClassInfo().getId(), "sidniVerify");
+        try {
+          SecurefactRequest request = SecurefactRequestGenerator.getSIDniRequest(x, user);
+          request.setUrl(getSidniUrl());
+          request.setAuthKey(getSidniApiKey());
 
-        SIDniResponse response = (SIDniResponse) sendRequest(x, request, SIDniResponse.class);
-        response.setEntityName(user.getLegalName());
-        response.setEntityId(user.getId());
-        return (SIDniResponse)
-          ((DAO) getSecurefactSIDniDAO()).put(response);
+          SIDniResponse response = (SIDniResponse) sendRequest(x, request, SIDniResponse.class);
+          response.setEntityName(user.getLegalName());
+          response.setEntityId(user.getId());
+          return (SIDniResponse)
+            ((DAO) getSecurefactResponseDAO()).put(response);
+        } catch (Throwable t) {
+          pm.error(x, t.getMessage());
+          throw t;
+        } finally {
+          pm.log(x);
+        }
       `
     },
     {
@@ -95,22 +132,90 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        SecurefactRequest request = SecurefactRequestGenerator.getLEVRequest(x, business);
-        request.setUrl(getLevUrl());
-        request.setAuthKey(getLevApiKey());
-
-        LEVResponse response = (LEVResponse) sendRequest(x, request, LEVResponse.class);
-        response.setEntityName(business.getOrganization());
-        response.setEntityId(business.getId());
-        // Aggregate close matches
-        String region = business.getAddress().getRegionId();
-        LEVResult[] results = response.getResults();
-        long closeMatchCounter = Arrays.stream(results).filter(
-          o -> o.getCloseMatch() && o.getJurisdiction().equals(region)
-        ).count();
-        response.setCloseMatches(closeMatchCounter + "/" + results.length);
-        return (LEVResponse)
-          ((DAO) getSecurefactLEVDAO()).put(response);
+        var pm = new PM(SecurefactService.getOwnClassInfo().getId(), "levSearch");
+        try {
+          SecurefactRequest request = SecurefactRequestGenerator.getLEVRequest(x, business);
+          request.setUrl(getLevUrl());
+          request.setAuthKey(getLevApiKey());
+  
+          LEVResponse response = (LEVResponse) sendRequest(x, request, LEVResponse.class);
+          response.setEntityName(business.getOrganization());
+          response.setEntityId(business.getId());
+          // Aggregate close matches
+          String region = business.getAddress().getRegionId();
+          LEVResult[] results = response.getResults();
+          long closeMatchCounter = Arrays.stream(results).filter(
+            o -> o.getCloseMatch() && o.getJurisdiction().equals(region)
+          ).count();
+          response.setCloseMatches(closeMatchCounter + "/" + results.length);
+          return (LEVResponse)
+            ((DAO) getSecurefactResponseDAO()).put(response);
+        } catch (Throwable t) {
+          pm.error(x, t.getMessage());
+          throw t;
+        } finally {
+          pm.log(x);
+        }
+      `
+    },
+    {
+      name: 'levDocumentOrder',
+      type: 'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentOrderResponse',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'resultId',
+          type: 'int'
+        }
+      ],
+      javaCode: `
+        var pm = new PM(SecurefactService.getOwnClassInfo().getId(), "levDocumentOrder");
+        try {
+          SecurefactRequest request = SecurefactRequestGenerator.getLEVDocumentOrderRequest(resultId);
+          request.setUrl(getLevDocumentOrderUrl());
+          request.setAuthKey(getLevApiKey());
+          LEVDocumentOrderResponse response = (LEVDocumentOrderResponse) sendRequest(x, request, LEVDocumentOrderResponse.class);
+          return (LEVDocumentOrderResponse)
+            ((DAO) getSecurefactResponseDAO()).put(response);
+        } catch (Throwable t) {
+          pm.error(x, t.getMessage());
+          throw t;
+        } finally {
+          pm.log(x);
+        }
+      `
+    },
+    {
+      name: 'levDocumentData',
+      type: 'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentDataResponse',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'orderId',
+          type: 'int'
+        }
+      ],
+      javaCode: `
+        var pm = new PM(SecurefactService.getOwnClassInfo().getId(), "levDocumentData");
+        try {
+          SecurefactRequest request = SecurefactRequestGenerator.getLEVDocumentDataRequest(orderId);
+          request.setUrl(getLevDocumentDataUrl());
+          request.setAuthKey(getLevApiKey());
+          LEVDocumentDataResponse response = (LEVDocumentDataResponse) sendRequest(x, request, LEVDocumentDataResponse.class);
+          return (LEVDocumentDataResponse)
+            ((DAO) getSecurefactResponseDAO()).put(response);
+        } catch (Throwable t) {
+          pm.error(x, t.getMessage());
+          throw t;
+        } finally {
+          pm.log(x);
+        }
       `
     },
     {
@@ -138,13 +243,13 @@ foam.CLASS({
         try {
           Outputter jsonOutputter = new Outputter(x).setPropertyPredicate(new AndPropertyPredicate(x, new PropertyPredicate[] {new NetworkPropertyPredicate(), new PermissionedPropertyPredicate()})).setOutputClassNames(false);
           String requestJson = jsonOutputter.stringify(request);
-          StringEntity entity = new StringEntity(requestJson);
-          entity.setContentType("application/json");
+          StringEntity entity = new StringEntity(requestJson, "UTF-8");
 
           String basicAuth = request.getAuthKey() + ":";
           httpPost.addHeader("Content-type", "application/json");
+          httpPost.addHeader("Accept-Encoding", "UTF-8");
           httpPost.addHeader("Authorization", "Basic " +
-            Base64.getEncoder().encodeToString(basicAuth.getBytes()));
+            Base64.getMimeEncoder().encodeToString(basicAuth.getBytes()));
           httpPost.setEntity(entity);
           httpResponse =  httpClient.execute(httpPost);
           if ( httpResponse.getStatusLine().getStatusCode() >= 500 ) {

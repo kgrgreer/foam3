@@ -1,4 +1,21 @@
 /**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+/**
  * @license
  * Copyright 2018 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -49,11 +66,11 @@ foam.CLASS({
         Transaction txn = (Transaction) requestTxn.fclone();
         if ( txn instanceof InterestTransaction ){
           txn.setStatus(TransactionStatus.COMPLETED);
-          quote.addTransfer(txn.getSourceAccount(), -txn.getTotal());
-          quote.addTransfer(txn.getDestinationAccount(), txn.getTotal());
+          quote.addTransfer(true, txn.getSourceAccount(), -txn.getAmount(), 0);
+          quote.addTransfer(true, txn.getDestinationAccount(), txn.getAmount(), 0);
           return txn;
         }
-    
+
         TransactionLineItem withdrawLineItem = null;
         TransactionLineItem depositLineItem = null;
         DAO accountDAO = (DAO) x.get("localAccountDAO");
@@ -69,13 +86,13 @@ foam.CLASS({
               MLang.EQ( LoanedTotalAccount.DENOMINATION,theLoanAccount.getDenomination())
             )
           ));
-    
+
           if ( globalLoanAccount == null ) {
             ((Logger) x.get("logger")).error("Total Loan Account not found");
             throw new RuntimeException("Total Loan Account not found");
           }
-          quote.addTransfer(theLoanAccount.getId(), -txn.getTotal());
-          quote.addTransfer(globalLoanAccount.getId(), txn.getTotal());
+          quote.addTransfer(true, theLoanAccount.getId(), -txn.getAmount(), 0);
+          quote.addTransfer(true, globalLoanAccount.getId(), txn.getAmount(), 0);
           withdrawLineItem = new TransactionLineItem.Builder(x)
             .setSourceAccount( theLoanAccount.getId() )
             .setDestinationAccount( globalLoanAccount.getId() )
@@ -85,7 +102,7 @@ foam.CLASS({
           txn.setSourceAccount( theLoanAccount.getLenderAccount() );
           quote.setSourceAccount(theLoanAccount.findLenderAccount(x));
         }
-    
+
         if ( destinationAccount instanceof LoanAccount ) {
           LoanAccount theLoanAccount = (LoanAccount) destinationAccount;
           LoanedTotalAccount globalLoanAccount = ( (LoanedTotalAccount) accountDAO.find(
@@ -94,13 +111,13 @@ foam.CLASS({
               MLang.EQ( LoanedTotalAccount.DENOMINATION,theLoanAccount.getDenomination())
             )
           ));
-    
+
           if ( globalLoanAccount == null ) {
             ((Logger) x.get("logger")).error("Total Loan Account not found");
             throw new RuntimeException("Total Loan Account not found");
           }
-          quote.addTransfer(globalLoanAccount.getId(), -txn.getTotal());
-          quote.addTransfer(theLoanAccount.getId(), txn.getTotal());
+          quote.addTransfer(true, globalLoanAccount.getId(), -txn.getAmount(), 0);
+          quote.addTransfer(true, theLoanAccount.getId(), txn.getAmount(), 0);
           depositLineItem = new TransactionLineItem.Builder(x)
             .setSourceAccount( globalLoanAccount.getId() )
             .setDestinationAccount( theLoanAccount.getId() )
@@ -111,13 +128,13 @@ foam.CLASS({
           quote.setDestinationAccount(theLoanAccount.findLenderAccount(x));
         }
 
-        Transaction plan = (Transaction) quoteTxn(x, txn).fclone();
+        Transaction plan = (Transaction) quoteTxn(x, txn, quote).fclone();
 
         if ( withdrawLineItem != null ) {
-          plan.addLineItems( new TransactionLineItem[] {withdrawLineItem},null );
+          plan.addLineItems( new TransactionLineItem[] {withdrawLineItem} );
         }
         if ( depositLineItem != null ) {
-          plan.addLineItems( new TransactionLineItem[] {depositLineItem},null );
+          plan.addLineItems( new TransactionLineItem[] {depositLineItem} );
         }
 
         quote.getAlternatePlans_().add(plan);

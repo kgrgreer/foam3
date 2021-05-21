@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'BusinessSettingsView',
@@ -8,10 +25,11 @@ foam.CLASS({
   imports: [
     'accountingIntegrationUtil',
     'auth',
-    'notify'
+    'ctrl'
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.u2.Tab',
     'foam.u2.UnstyledTabs',
     'net.nanopay.settings.business.UserManagementView',
@@ -28,7 +46,7 @@ foam.CLASS({
       width: 109px;
       height: 19px;
       font-size: 16px;
-      font-family: Avenir;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       color: #8e9090;
       margin-right: 20px;
       cursor: pointer;
@@ -54,12 +72,12 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'TITLE', message: 'Business Settings' },
-    { name: 'COMPANY_TAB', message: 'Company Profile' },
-    { name: 'USER_MANAGEMENT_TAB', message: 'User Management' },
+    { name: 'TITLE', message: 'Business settings' },
+    { name: 'COMPANY_TAB', message: 'Profile' },
+    { name: 'USER_MANAGEMENT_TAB', message: 'User management' },
     { name: 'INTEGRATION_TAB', message: 'Integrations' },
     { name: 'PRIVACY_TAB', message: 'Privacy'},
-    { name: 'GENERIC_ERROR', message: 'There was an unexpected error.' }
+    { name: 'GENERIC_ERROR', message: 'There was an unexpected error' }
   ],
 
   properties: [
@@ -69,12 +87,16 @@ foam.CLASS({
   methods: [
     async function initE() {
       this.SUPER();
+
       try {
-        const [hasUMPermission, [hasIntegrationPermission], hasPrivacyPermission] = await Promise.all([
-          this.auth.check(null, 'menu.read.sme.userManagement'),
-          this.accountingIntegrationUtil.getPermission(),
-          this.auth.check(null, 'business.rw.ispublic')
-        ]);
+        const [hasUMPermission, [hasIntegrationPermission], hasPrivacyPermission, hasPaymentcodePermission, hasTxnLimitPermission] = 
+          await Promise.all([
+            this.auth.check(null, 'businesssetting.read.userManagement'),
+            this.accountingIntegrationUtil.getPermission(),
+            this.auth.check(null, 'businesssetting.read.businessvisibility'),
+            this.auth.check(null, 'businesssetting.read.paymentcode'),
+            this.auth.check(null, 'businesssetting.read.transactionlimit')
+          ]);
 
         // display Company Profile tab
         const tabs = this.UnstyledTabs.create()
@@ -82,7 +104,10 @@ foam.CLASS({
             label: this.COMPANY_TAB,
             selected: this.preSelectedTab && this.preSelectedTab === 'COMPANY_TAB'
           })
-            .add(this.CompanyInformationView.create({}, this))
+            .add(this.CompanyInformationView.create({ 
+              paymentCodePermission: hasPaymentcodePermission, 
+              txnLimitPermission: hasTxnLimitPermission 
+            }, this))
           .end();
 
         // display User Management tab if user has permission
@@ -121,7 +146,7 @@ foam.CLASS({
           .tag(tabs);
       } catch (err) {
         console.error(err);
-        this.notify(err.message || this.GENERIC_ERROR, 'error');
+        this.ctrl.notify(err.message || this.GENERIC_ERROR, '', this.LogLevel.ERROR, true);
       }
     }
   ]

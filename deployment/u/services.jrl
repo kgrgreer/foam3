@@ -1,0 +1,82 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "http",
+  "lazy": false,
+  "service": {
+    "class": "foam.nanos.jetty.HttpServer",
+    "enableHttp": true,
+    "port": 8080,
+    "enableHttps": true,
+    "httpsPort": 8443,
+    "keystoreFileName": "nanopay.jks",
+    "keystorePassword": "nanopay",
+    "forwardedForProxyWhitelist": [],
+    "welcomeFiles": ["welcome"],
+    "servletMappings": [{
+      "class": "foam.nanos.servlet.ServletMapping",
+      "servletObject": {
+        "class": "foam.nanos.servlet.VirtualHostRoutingServlet",
+        "liveScriptBundlerDisabled": true,
+        "isResourceStorage": true
+      },
+      "pathSpec": "/welcome"
+    }, {
+      "class": "foam.nanos.servlet.ServletMapping",
+      "className": "foam.nanos.http.NanoRouter",
+      "pathSpec": "/service/*"
+    }, {
+      "class": "foam.nanos.servlet.ServletMapping",
+      "className": "foam.nanos.servlet.ResourceImageServlet",
+      "pathSpec": "/images/*",
+      "initParameters": {
+        "paths": "images"
+      }
+    }, {
+      "class": "foam.nanos.servlet.ServletMapping",
+      "className": "org.eclipse.jetty.servlet.DefaultServlet",
+      "pathSpec": "/*",
+      "initParameters": {
+        "pathInfoOnly": "true",
+        "welcomeServlets": "true",
+        "dirAllowed": "false"
+      }
+    }],
+    "errorMappings": [{
+      "class": "foam.nanos.servlet.ErrorPageMapping",
+      "errorCode": 404,
+      "location": "/errorPage.html"
+    }, {
+      "class": "foam.nanos.servlet.ErrorPageMapping",
+      "exceptionType": "javax.ws.rs.NotAuthorizedException",
+      "location": "/unauthorizedAccess.html"
+    }, {
+      "class": "foam.nanos.servlet.ErrorPageMapping",
+      "exceptionType": "java.lang.Throwable",
+      "location": "/errorPage.html"
+    }],
+    "filterMappings": [{
+      "class": "foam.nanos.servlet.FilterMapping",
+      "filterClass": "net.nanopay.security.csp.CSPFilter",
+      "pathSpec": "/*",
+      "initParameters": {
+        "CONTENT_SECURITY_POLICY": """
+          default-src 'none';
+          child-src 'self' https://cdn.plaid.com/link/ nanopay.net nanopay.net data: chrome-extension-resource:;
+          connect-src 'self' http://localhost:*/service/;
+          frame-src 'self' data: blob: filesystem:;
+          font-src 'self' https://fonts.gstatic.com data: chrome-extension-resource:;
+          img-src 'self' data: blob: filesystem:;
+          manifest-src 'self';
+          media-src * data: blob: filesystem:;
+          object-src 'self' data: blob: filesystem:;
+          prefetch-src 'self' https://cdn.plaid.com/link/;
+          report-uri /service/CSPReportWebAgent;
+          script-src 'self' https://cdn.plaid.com/link/v2/stable/link-initialize.js https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js 'unsafe-eval' 'sha256-HY1JzEwuxkis4xx0ggY23gbYY/MCEAE1T6+OQnWS2vA=' 'sha256-NiNrLgJ8wbIXIi5saiR3XTd1Mxm4k0nju66GJsw4b9U=' 'sha256-FLYDXBkz4oo/H5jEfYXqAGYUwERY44OO1yznaMCdMiU=' 'sha256-G3UfiJBy6rwOk3glkBQuQDFA7IoCtiOT56gTh+IfNF0=';
+          style-src 'self' https://fonts.googleapis.com/css https://fonts.googleapis.com/css2 https://fonts.googleapis.com/icon data: chrome-extension-resource: 'unsafe-inline';
+          worker-src 'self';
+        """
+      }
+    }]
+  }
+})
+r({"class":"foam.nanos.boot.NSpec", "name":"liveScriptBundler"})

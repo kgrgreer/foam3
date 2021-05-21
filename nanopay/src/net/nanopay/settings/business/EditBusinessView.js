@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.settings.business',
   name: 'EditBusinessView',
@@ -8,7 +25,6 @@ foam.CLASS({
   requires: [
     'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.retail.model.Business'
   ],
 
@@ -17,6 +33,7 @@ foam.CLASS({
     'businessSectorDAO',
     'businessTypeDAO',
     'countryDAO',
+    'notify',
     'regionDAO',
     'stack',
     'user',
@@ -46,7 +63,7 @@ foam.CLASS({
     }
     ^ .foam-u2-ActionView {
       opacity: 0.6;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: bold;
       letter-spacing: 0.3px;
@@ -74,7 +91,7 @@ foam.CLASS({
     }
     ^ h2{
       opacity: 0.6;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 20px;
       font-weight: 300;
       line-height: 1;
@@ -154,7 +171,6 @@ foam.CLASS({
       background: black;
     }
     ^ .foam-u2-tag-Select{
-      height: 40px;
       width: 100%;
       background: white;
       border: 1px solid lightgrey;
@@ -296,23 +312,23 @@ foam.CLASS({
         address.postalCode = address.postalCode.toUpperCase().replace(/\s/g, '');
         if ( address.structured ) {
           if ( ! address.streetNumber ) {
-            view.add(foam.u2.dialog.NotificationMessage.create({ message: view.structAddress, type: 'error' }));
+            X.notify(view.structAddress, '', foam.log.LogLevel.ERROR, true);
             return;
           }
         } else {
           if ( ! address.address1 ) {
-            view.add(foam.u2.dialog.NotificationMessage.create({ message: view.nonStructAddress, type: 'error' }));
+            X.notify(view.nonStructAddress, '', foam.log.LogLevel.ERROR, true);
             return;
           }
         }
 
         if ( ! /^(?!.*[DFIOQU])[A-VXY][0-9][A-Z][0-9][A-Z][0-9]$/.test(address.postalCode) ) {
-          view.add(foam.u2.dialog.NotificationMessage.create({ message: view.invalidPostal, type: 'error' }));
+          X.notify(view.invalidPostal, '', foam.log.LogLevel.ERROR, true);
           return;
         }
 
         if ( ! this.businessName || ! this.businessIdentificationNumber || ! this.issuingAuthority || ! address.city ) {
-          view.add(foam.u2.dialog.NotificationMessage.create({ message: view.noInformation, type: 'error' }));
+          X.notify(view.noInformation, '', foam.log.LogLevel.ERROR, true);
           return;
         }
 

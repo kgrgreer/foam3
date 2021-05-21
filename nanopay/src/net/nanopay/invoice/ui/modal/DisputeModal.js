@@ -1,3 +1,19 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
 
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.modal',
@@ -7,8 +23,8 @@ foam.CLASS({
   documentation: 'Dispute Invoice Modal',
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.ui.modal.ModalHeader',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.invoice.model.PaymentStatus'
   ],
 
@@ -19,6 +35,7 @@ foam.CLASS({
   imports: [
     'user',
     'invoiceDAO',
+    'notify',
     'stack'
   ],
 
@@ -29,8 +46,8 @@ foam.CLASS({
       documentation: `The name of the other party involved with the invoice.`,
       expression: function(invoice, user) {
         return user.id !== invoice.payeeId ?
-            this.invoice.payee.label() :
-            this.invoice.payer.label();
+            this.invoice.payee.toSummary() :
+            this.invoice.payer.toSummary();
       }
     },
     {
@@ -44,14 +61,14 @@ foam.CLASS({
     ^{
       width: 448px;
       margin: auto;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
   `,
 
   messages: [
     {
       name: 'VoidSuccess',
-      message: 'Invoice voided.'
+      message: 'Invoice voided'
     }
   ],
 
@@ -93,10 +110,7 @@ foam.CLASS({
         this.invoice.paymentMethod = this.PaymentStatus.VOID;
         this.invoice.note = X.data.note;
         this.invoiceDAO.put(this.invoice);
-        ctrl.add(this.NotificationMessage.create({
-          message: this.VoidSuccess,
-          type: ''
-        }));
+        this.notify(this.VoidSuccess, '', this.LogLevel.INFO, true);
         this.stack.push({"class":"net.nanopay.invoice.ui.SalesView"});
         X.closeDialog();
       }

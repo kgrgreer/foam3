@@ -68,7 +68,7 @@ public class ReportDowJonesUserCheck {
       .append(address.getCountryId()).append(COMMA_SEPARATOR) // Country
       .append(address.getSuite()).append(COMMA_SEPARATOR) // Address Line
       .append(address.getStreetNumber() + " " + address.getStreetName()).append(COMMA_SEPARATOR) // Address URL
-      .append(user.getPhone().getNumber()).append(COMMA_SEPARATOR) // Phone
+      .append(user.getPhoneNumber()).append(COMMA_SEPARATOR) // Phone
       .append(address.getCity()).append(COMMA_SEPARATOR) // City
       .append(address.getRegionId()).append(COMMA_SEPARATOR) // State
       .append(address.getPostalCode()).append(COMMA_SEPARATOR) // Postal Code

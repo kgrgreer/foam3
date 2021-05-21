@@ -1,0 +1,2 @@
+p({class: "net.nanopay.util.Tag", id: "openid"})
+p({class: "net.nanopay.util.Tag", id: "intuitWebhookOAP"})

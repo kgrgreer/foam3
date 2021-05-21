@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.meter.report',
   name: 'TransactionHierarchyDAO',
@@ -37,7 +54,7 @@ foam.CLASS({
           TransactionReport transactionDetail = new TransactionReport();
           transactionDetail.setId(transaction.getId());
           transactionDetail.setType(transaction.getType());
-          transactionDetail.setAmount(Long.toString(transaction.getAmount()));
+          transactionDetail.setAmount(Long.toString(-transaction.getTotal(x, transaction.getSourceAccount())));
           transactionDetail.setCreated(transaction.getCreated());
           transactionDetail.setPayeeId(transaction.getPayeeId());
           transactionDetail.setPayerId(transaction.getPayerId());
@@ -51,12 +68,21 @@ foam.CLASS({
           ).select(txnSink);
 
           List<Transaction> txnList = txnSink.getArray();
-          ArraySink arraySink_txnList = new ArraySink();
-          List<Transaction> childTxnList = new ArrayList<>();
 
           // If the trasaction id is not valid format or it cannot find transaction
           if (txnList.isEmpty() || txnList.get(0) == null) {
             throw new RuntimeException("Error when trying to find the child transaction of " + id);
+          }
+
+          ArraySink arraySink_txnList = new ArraySink();
+          List<Transaction> childTxnList = new ArrayList<>();
+
+          if (txnList.get(0) instanceof CITransaction) {
+            txnList.get(0).getChildren(x).select(arraySink_txnList);
+            childTxnList.add(txnList.get(0));
+
+            Transaction nextTxn = (Transaction) arraySink_txnList.getArray().get(0);
+            txnList.set(0, nextTxn);
           }
 
           // If it is a one-to-many transactions
@@ -93,13 +119,21 @@ foam.CLASS({
               }
             }
           } else {
-            // If it is a one-to-one transaction
-            childTxnList.add(txnList.get(0));
-            txnList.get(0).getChildren(x).select(arraySink_txnList);
+            // If it is a one-to-one transaction,
+            // iterate throw the transaction chain to find digital and CICO transaction
+            while (txnList.get(0) != null) {
+              ArraySink oneToOneSink = new ArraySink();
+              txnList.get(0).getChildren(x).select(oneToOneSink);
+              if ( oneToOneSink.getArray().size() > 0 ) {
+                Transaction txn = (Transaction) oneToOneSink.getArray().get(0);
+                txnList.set(0, txn);
 
-            if (! arraySink_txnList.getArray().isEmpty() && arraySink_txnList.getArray().get(0) != null) {
-              List<Transaction> txnList2 = arraySink_txnList.getArray();
-              childTxnList.add(txnList2.get(0));
+                if (txn instanceof CITransaction || txn instanceof COTransaction || txn instanceof DigitalTransaction ) {
+                  childTxnList.add(txn);
+                }
+              } else {
+                txnList.set(0, null);
+              }
             }
           }
 

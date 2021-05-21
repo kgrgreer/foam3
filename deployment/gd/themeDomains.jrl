@@ -1,0 +1,25 @@
+p({
+  "class":"foam.nanos.theme.ThemeDomain",
+  "id":"gd",
+  "theme":"BE1FD088-5618-4508-BCDF-178719D863B3"
+})
+p({
+  "class":"foam.nanos.theme.ThemeDomain",
+  "id":"gd.nanopay.net",
+  "theme":"BE1FD088-5618-4508-BCDF-178719D863B3"
+})
+p({
+  "class":"foam.nanos.theme.ThemeDomain",
+  "id":"gd.sandbox.nanopay.net",
+  "theme":"BE1FD088-5618-4508-BCDF-178719D863B3"
+})
+p({
+  "class":"foam.nanos.theme.ThemeDomain",
+  "id":"gd.ablii.com",
+  "theme":"BE1FD088-5618-4508-BCDF-178719D863B3"
+})
+p({
+  "class":"foam.nanos.theme.ThemeDomain",
+  "id":"gd.sandbox.ablii.com",
+  "theme":"BE1FD088-5618-4508-BCDF-178719D863B3"
+})

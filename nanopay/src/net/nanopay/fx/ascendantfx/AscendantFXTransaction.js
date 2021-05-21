@@ -1,4 +1,21 @@
 /**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+/**
  * @license
  * Copyright 2018 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -194,7 +211,7 @@ foam.CLASS({
       String fee = srcCurrency.format(getCost());
 
       // Get and format the total settlement.
-      String totalSettlement = srcCurrency.format(getTotal());
+      String totalSettlement = srcCurrency.format(getAmount());
 
       // Get the client ID.
       DAO ascendantFXUserDAO = ((DAO) x.get("ascendantFXUserDAO")).inX(x);
@@ -232,7 +249,7 @@ foam.CLASS({
       doc.append("body {");
       doc.append("  width: 8.5in;");
       doc.append("  min-height: 11in;");
-      doc.append("  font-family: sans-serif;");
+      doc.append("  font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;");
       doc.append("  font-size: 12px;");
       doc.append("}");
       doc.append("img {");
@@ -273,11 +290,11 @@ foam.CLASS({
       doc.append(\"    <td><b>Client ID:</b></td>\");
       doc.append(\"    <td>\").append(clientId).append(\"</td>\");
       doc.append(\"    <td><b>Transaction Number:</b></td>\");
-      doc.append(\"    <td>\").append(getReferenceNumber()).append(\"</td>\");
+      doc.append(\"    <td>\").append(getExternalInvoiceId()).append(\"</td>\");
       doc.append(\"  </tr>\");
       doc.append(\"  <tr>\");
       doc.append(\"    <td><b>Client Name:</b></td>\");
-      doc.append(\"    <td>\").append(payer.label()).append(\"</td>\");
+      doc.append(\"    <td>\").append(payer.toSummary()).append(\"</td>\");
       doc.append(\"    <td><b>Transaction Date:</b></td>\");
       doc.append(\"    <td>\").append(transactionCreated).append(\"</td>\");
       doc.append(\"  </tr>\");
@@ -289,7 +306,7 @@ foam.CLASS({
       doc.append(\"  </tr>\");
       doc.append(\"  <tr>\");
       doc.append(\"    <td><b>Tel:</b></td>\");
-      doc.append(\"    <td>\").append(payer.getPhone().getNumber()).append(\"</td>\");
+      doc.append(\"    <td>\").append(payer.getPhoneNumber()).append(\"</td>\");
       doc.append(\"    <td><b>Deal Type:</b></td>\");
       doc.append(\"    <td>Spot</td>\");
       doc.append(\"  </tr>\");
@@ -313,19 +330,19 @@ foam.CLASS({
       doc.append(\"  </tr>\");
       doc.append(\"  <tr>\");
       doc.append(\"    <td><b>Initiated By:</b></td>\");
-      doc.append(\"    <td>\").append(initiator.label()).append(\" [\").append(invoiceCreated).append(\"]\").append(\"</td>\");
+      doc.append(\"    <td>\").append(initiator.toSummary()).append(\" [\").append(invoiceCreated).append(\"]\").append(\"</td>\");
       doc.append(\"    <td></td>\");
       doc.append(\"    <td></td>\");
       doc.append(\"  </tr>\");
       doc.append(\"  <tr>\");
       doc.append(\"    <td><b>Approved By:</b></td>\");
-      doc.append(\"    <td>\").append(approver.label()).append(\" [\").append(transactionCreated).append(\"]\").append(\"</td>\");
+      doc.append(\"    <td>\").append(approver.toSummary()).append(\" [\").append(transactionCreated).append(\"]\").append(\"</td>\");
       doc.append(\"    <td></td>\");
       doc.append(\"    <td></td>\");
       doc.append(\"  </tr>\");
       doc.append(\"  <tr>\");
       doc.append(\"    <td><b>Released By:</b></td>\");
-      doc.append(\"    <td>\").append(approver.label()).append(\" [\").append(transactionCreated).append(\"]\").append(\"</td>\");
+      doc.append(\"    <td>\").append(approver.toSummary()).append(\" [\").append(transactionCreated).append(\"]\").append(\"</td>\");
       doc.append(\"    <td></td>\");
       doc.append(\"    <td></td>\");
       doc.append(\"  </tr>\");
@@ -345,7 +362,7 @@ foam.CLASS({
       doc.append(\"  </tr>\");
       doc.append(\"  <tr>\");
       doc.append(\"    <td>1</td>\");
-      doc.append(\"    <td>\").append(payee.label()).append(\"</td>\");
+      doc.append(\"    <td>\").append(payee.toSummary()).append(\"</td>\");
       doc.append(\"    <td>EFT/ACH</td>\");
       doc.append(\"    <td>\").append(getDestinationCurrency()).append(\"</td>\");
       doc.append(\"    <td class=\\\"r-align\\\">\").append(destAmountFormatted).append(\"</td>\");

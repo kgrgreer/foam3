@@ -40,6 +40,7 @@ public class BankHolidayServiceTest extends foam.nanos.test.Test {
     Test_SkipCountryAndRegionHoliday(x);
     Test_NoSkipBusinessDay(x);
     Test_SkipCustomWeekend(x);
+    Test_SkipHoliday_Backwards(x);
   }
 
   private void Test_SkipHoliday(X x) {
@@ -86,6 +87,13 @@ public class BankHolidayServiceTest extends foam.nanos.test.Test {
     Date expected = getDate(jan2_2020);
 
     test(expected.equals(result), "Should not skip business day");
+  }
+
+  private void Test_SkipHoliday_Backwards(X x) {
+    Date result = bankHolidayService.skipBankHolidaysBackwards(x, getDate(jan1_2020), ca_ON, 0);
+    Date expected = getDate(jan1_2020.minusDays(1));
+
+    test(expected.equals(result), "Should skip bank holiday backward");
   }
 
   private void Test_SkipCustomWeekend(X x) {

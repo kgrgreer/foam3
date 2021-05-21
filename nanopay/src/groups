@@ -1,14 +1,19 @@
 p({"class":"foam.nanos.auth.Group","id":"system","description":"System Internal","defaultMenu":"set-personal"})
 p({"class":"foam.nanos.auth.Group","id":"basicUser","description":"Minimal access group.","parent":"","defaultMenu":"set-personal","logo":"/images/nanopay_blue_white_206x42.png"})
 p({"class":"foam.nanos.auth.Group","id":"tester","description":"Tester","parent":"basicUser","defaultMenu":"admin.tests","logo":"/images/nanopay_blue_white_206x42.png"})
-p({"class":"foam.nanos.auth.Group","id":"admin","description":"nanoPay Admin","parent":"","defaultMenu":"admin.data","logo":"/images/nanopay_blue_white_206x42.png"})
+p({"class":"foam.nanos.auth.Group","id":"admin","description":"nanoPay Admin","parent":"","defaultMenu":"admin.data","theme":"06B35BA7-C672-4DBC-8788-14922B704DBF"})
 p({"class":"foam.nanos.auth.Group","id":"business","description":"Members of the self-serve portal. This group might be split into several tiers with different permissions later.","parent":"basicUser","defaultMenu":"dashboard","logo":"/images/nanopay_blue_white_206x42.png"})
-p({"class":"foam.nanos.auth.Group","id":"support","description":"nanopay Support","parent":"basicUser","defaultMenu":"operation.transactions"})
 p({"class":"foam.nanos.auth.Group","id":"shopper","description":"nanopay Shopper","parent":"basicUser","defaultMenu":"transactions"})
 p({"class":"foam.nanos.auth.Group","id":"merchant","description":"nanopay Merchant","parent":"basicUser","defaultMenu":"transactions"})
 p({"class":"foam.nanos.auth.Group","id":"nanopay-trust","description":"nanopay Trust accounts","parent":""});
 p({"class":"foam.nanos.auth.Group","id":"portal-developer","enabled":true,"description":"API Portal Developer","parent":"basicUser","defaultMenu":"integration.overview"})
-p({"class":"foam.nanos.auth.Group","id":"payment-ops","enabled":true,"description":"Payment Operations","parent":"basicUser","defaultMenu":"accounts"})
-p({"class":"foam.nanos.auth.Group","id":"fraud-ops","enabled":true,"description":"Fraud Operations","parent":"basicUser","defaultMenu":"accounts"})
 p({"class":"foam.nanos.auth.Group","id":"operations-support","enabled":true,"description":"Operations Support","parent":"basicUser","defaultMenu":"accounts"})
 p({"class":"foam.nanos.auth.Group","id":"identityMind","enabled":true,"description":"IdentityMind group for webhook user.","parent":"basicUser"})
+
+// White-labelling parent groups
+p({"class":"foam.nanos.auth.Group","id":"msp-admin","enabled":true,"description":"Multi Service Provider admin group.","parent":"basicUser","defaultMenu":"admin.users-2","theme":"D306F95E-4C4F-4C2B-BC5F-F67CFFE3EC99"})
+p({"class":"foam.nanos.auth.Group","id":"fraud-ops","enabled":true,"description":"Fraud Operations","parent":"basicUser","defaultMenu":"bankaccounts","theme":"D306F95E-4C4F-4C2B-BC5F-F67CFFE3EC99"})
+p({"class":"foam.nanos.auth.Group","id":"payment-ops","enabled":true,"description":"Payment Operations","parent":"basicUser","defaultMenu":"bankaccounts","theme":"D306F95E-4C4F-4C2B-BC5F-F67CFFE3EC99"})
+p({"class":"foam.nanos.auth.Group","id":"support","description":"nanopay Support","parent":"basicUser","defaultMenu":"contacts", "theme":"D306F95E-4C4F-4C2B-BC5F-F67CFFE3EC99"})
+
+p({"class":"foam.nanos.auth.Group","id":"treviso-fraud-ops","enabled":true,"description":"Fraud Operations","parent":"basicUser",defaultMenu:"transactions-support","theme":"D306F95E-4C4F-4C2B-BC5F-F67CFFE3EC99"})

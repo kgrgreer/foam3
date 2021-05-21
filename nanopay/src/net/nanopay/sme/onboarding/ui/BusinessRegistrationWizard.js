@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.onboarding.ui',
   name: 'BusinessRegistrationWizard',
@@ -8,10 +25,9 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.auth.Address',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.BusinessUserJunction',
@@ -19,7 +35,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'agent',
+    'subject',
     'bannerizeCompliance',
     'businessDAO',
     'ctrl',
@@ -89,7 +105,7 @@ foam.CLASS({
       box-sizing: border-box;
       position: relative;
       top: -20px;
-      overflow-y: scroll;
+      overflow-y: auto;
       vertical-align: top;
       -ms-overflow-style: none;  // IE 10+
       overflow: -moz-scrollbars-none;  // Firefox
@@ -231,11 +247,11 @@ foam.CLASS({
   methods: [
     function init() {
       this.viewData.user = this.user;
-      this.viewData.agent = this.agent;
+      this.viewData.agent = this.subject.realUser;
       this.title = 'Your business profile';
 
       this.user.signingOfficers.dao
-        .find(this.agent.id)
+        .find(this.subject.realUser.id)
         .then((result) => {
           this.isSigningOfficer = result != null;
         });
@@ -267,58 +283,58 @@ foam.CLASS({
       var currentDate = new Date();
 
       if ( ! editedUser.firstName ) {
-        this.notify(this.ERROR_MISSINGS_FIELDS, 'error');
+        this.notify(this.ERROR_MISSINGS_FIELDS, '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( editedUser.firstName.length > 70 ) {
-        this.notify(this.ERROR_FIRST_NAME_TOO_LONG, 'error');
+        this.notify(this.ERROR_FIRST_NAME_TOO_LONG, '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( /\d/.test(editedUser.firstName) ) {
-        this.notify(this.ERROR_FIRST_NAME_DIGITS, 'error');
+        this.notify(this.ERROR_FIRST_NAME_DIGITS, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! editedUser.lastName ) {
-        this.notify(this.ERROR_MISSING_FIELDS, 'error');
+        this.notify(this.ERROR_MISSING_FIELDS, '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( editedUser.lastName.length > 70 ) {
-        this.notify(this.ERROR_LAST_NAME_TOO_LONG, 'error');
+        this.notify(this.ERROR_LAST_NAME_TOO_LONG, '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( /\d/.test(editedUser.lastName) ) {
-        this.notify(this.ERROR_LAST_NAME_DIGITS, 'error');
+        this.notify(this.ERROR_LAST_NAME_DIGITS, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! editedUser.jobTitle || ! editedUser.jobTitle.trim() ) {
-        this.notify(this.ERROR_ADMIN_JOB_TITLE_MESSAGE, 'error');
+        this.notify(this.ERROR_ADMIN_JOB_TITLE_MESSAGE, '', this.LogLevel.ERROR, true);
         return false;
       }
 
-      if ( ! this.validatePhone(editedUser.phone.number) ) {
-        this.notify(this.ERROR_ADMIN_NUMBER_MESSAGE, 'error');
+      if ( ! this.validatePhone(editedUser.phoneNumber) ) {
+        this.notify(this.ERROR_ADMIN_NUMBER_MESSAGE, '', this.LogLevel.ERROR, true);
         return false;
       }
 
-      if ( editedUser.phone.number.length > 10 ) {
-        this.notify(this.ERROR_PHONE_LENGTH, 'error');
+      if ( editedUser.phoneNumber.length > 10 ) {
+        this.notify(this.ERROR_PHONE_LENGTH, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! (editedUser.birthday instanceof Date && ! isNaN(editedUser.birthday.getTime())) ) {
-        this.notify(this.BIRTHDAY_ERROR, 'error');
+        this.notify(this.BIRTHDAY_ERROR, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! this.validateAge(editedUser.birthday) ) {
-        this.notify(this.BIRTHDAY_ERROR_2, 'error');
+        this.notify(this.BIRTHDAY_ERROR_2, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( editedUser.address.errors_ ) {
-        this.notify(editedUser.address.errors_[0][1], 'error');
+        this.notify(editedUser.address.errors_[0][1], '', this.LogLevel.ERROR, true);
         return false;
       }
 
@@ -344,7 +360,7 @@ foam.CLASS({
         //   return false;
         // }
         if ( ! this.viewData.canadianScrollBoxTwo ) {
-          this.notify(this.ERROR_TERMS_NOT_CHECKED_2, 'error');
+          this.notify(this.ERROR_TERMS_NOT_CHECKED_2, '', this.LogLevel.ERROR, true);
           return false;
         }
       }
@@ -367,40 +383,40 @@ foam.CLASS({
       var transactionInfo = this.viewData.user.suggestedUserTransactionInfo;
 
       if ( ! transactionInfo.baseCurrency ) {
-        this.notify(this.ERROR_BASE_CURRENCY_MESSAGE, 'error');
+        this.notify(this.ERROR_BASE_CURRENCY_MESSAGE, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! transactionInfo.transactionPurpose ) {
-        this.notify(this.ERROR_TRANSACTION_PURPOSE_MESSAGE, 'error');
+        this.notify(this.ERROR_TRANSACTION_PURPOSE_MESSAGE, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( transactionInfo.transactionPurpose === 'Other' &&
         ! transactionInfo.otherTransactionPurpose ) {
-        this.notify(this.ERROR_OTHER_TRANSACTION_PURPOSE_MESSAGE, 'error');
+        this.notify(this.ERROR_OTHER_TRANSACTION_PURPOSE_MESSAGE, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! transactionInfo.annualRevenue ) {
-        this.notify(this.ERROR_ANNUAL_REVENUE_MESSAGE, 'error');
+        this.notify(this.ERROR_ANNUAL_REVENUE_MESSAGE, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( transactionInfo.internationalPayments ) {
         if ( ! transactionInfo.annualTransactionAmount ) {
-          this.notify(this.ERROR_ANNUAL_TRANSACTION_MESSAGE, 'error');
+          this.notify(this.ERROR_ANNUAL_TRANSACTION_MESSAGE, '', this.LogLevel.ERROR, true);
           return false;
         }
       }
       
       if ( ! transactionInfo.annualDomesticTransactionAmount ) {
-        this.notify(this.ERROR_ANNUAL_TRANSACTION_MESSAGE, 'error');
+        this.notify(this.ERROR_ANNUAL_TRANSACTION_MESSAGE, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! transactionInfo.annualDomesticVolume ) {
-        this.notify(this.ERROR_ANNUAL_VOLUME_CAD, 'error');
+        this.notify(this.ERROR_ANNUAL_VOLUME_CAD, '', this.LogLevel.ERROR, true);
         return false;
       }
 
@@ -433,39 +449,39 @@ foam.CLASS({
       var businessAddress = businessProfile.address;
 
       if ( businessAddress.errors_ ) {
-        this.notify(businessAddress.errors_[0][1], 'error');
+        this.notify(businessAddress.errors_[0][1], '', this.LogLevel.ERROR, true);
         return false;
       }
 
-      if ( ! this.validatePhone(businessProfile.phone.number) ) {
-        this.notify(this.ERROR_BUSINESS_PROFILE_PHONE_MESSAGE, 'error');
+      if ( ! this.validatePhone(businessProfile.phoneNumber) ) {
+        this.notify(this.ERROR_BUSINESS_PROFILE_PHONE_MESSAGE, '', this.LogLevel.ERROR, true);
         return false;
       }
 
-      if ( businessProfile.phone.number.length > 10 ) {
-        this.notify(this.ERROR_PHONE_LENGTH, 'error');
+      if ( businessProfile.phoneNumber.length > 10 ) {
+        this.notify(this.ERROR_PHONE_LENGTH, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( businessProfile.businessTypeId == null ) {
-        this.notify(this.ERROR_MISSING_BUSINESS_TYPE, 'error');
+        this.notify(this.ERROR_MISSING_BUSINESS_TYPE, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! businessProfile.businessSectorId ) {
-        this.notify(this.ERROR_MISSING_NATURE_OF_BUSINESS, 'error');
+        this.notify(this.ERROR_MISSING_NATURE_OF_BUSINESS, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! businessProfile.organization
         || ! businessProfile.organization.trim() ) {
-        this.notify(this.ERROR_BUSINESS_PROFILE_NAME_MESSAGE, 'error');
+        this.notify(this.ERROR_BUSINESS_PROFILE_NAME_MESSAGE, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! businessProfile.targetCustomers
         || ! businessProfile.targetCustomers.trim() ) {
-        this.notify(this.ERROR_MISSING_TARGET_CUSTOMERS, 'error');
+        this.notify(this.ERROR_MISSING_TARGET_CUSTOMERS, '', this.LogLevel.ERROR, true);
         return false;
       }
 
@@ -473,17 +489,17 @@ foam.CLASS({
         || ! businessProfile.sourceOfFunds.trim()
         || businessProfile.sourceOfFunds === 'Other'
         && ( ! this.viewData.sourceOfFundsOther || ! this.viewData.sourceOfFundsOther.trim()) ) {
-        this.notify(this.ERROR_MISSING_SOURCE_OF_FUNDS, 'error');
+        this.notify(this.ERROR_MISSING_SOURCE_OF_FUNDS, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( businessProfile.address.countryId === 'US' ) {
         if ( ! businessProfile.taxIdentificationNumber ) {
-          this.notify(this.ERROR_TAX_ID_REQUIRED, 'error');
+          this.notify(this.ERROR_TAX_ID_REQUIRED, '', this.LogLevel.ERROR, true);
           return false;
         }
         if ( businessProfile.taxIdentificationNumber.length !== 9 ) {
-          this.notify(this.ERROR_TAX_ID_INVALID, 'error');
+          this.notify(this.ERROR_TAX_ID_INVALID, '', this.LogLevel.ERROR, true);
           return false;
         }
       }
@@ -503,33 +519,33 @@ foam.CLASS({
       if ( ! beneficialOwner.ownershipPercent ||
         beneficialOwner.ownershipPercent <= 0 ||
         beneficialOwner.ownershipPercent > 100 ) {
-          this.notify(this.OWNER_PERCENT_ERROR, 'error');
+          this.notify(this.OWNER_PERCENT_ERROR, '', this.LogLevel.ERROR, true);
           return false;
       }
 
       if ( ! beneficialOwner.firstName || ! beneficialOwner.lastName ) {
-        this.notify(this.FIRST_NAME_ERROR, 'error');
+        this.notify(this.FIRST_NAME_ERROR, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! beneficialOwner.jobTitle || ! beneficialOwner.jobTitle.trim() ) {
-        this.notify(this.JOB_TITLE_ERROR, 'error');
+        this.notify(this.JOB_TITLE_ERROR, '', this.LogLevel.ERROR, true);
         return false;
       }
       // By pass for safari & mozilla type='date' on input support
       // Operator checking if dueDate is a date object if not, makes it so or throws notification.
       if ( isNaN(beneficialOwner.birthday) && beneficialOwner.birthday != null ) {
-        this.notify(this.BIRTHDAY_ERROR, 'error');
+        this.notify(this.BIRTHDAY_ERROR, '', this.LogLevel.ERROR, true);
         return;
       }
       if ( ! this.validateAge(beneficialOwner.birthday) ) {
-        this.notify(this.BIRTHDAY_ERROR_2, 'error');
+        this.notify(this.BIRTHDAY_ERROR_2, '', this.LogLevel.ERROR, true);
         return false;
       }
 
       var address = beneficialOwner.address;
       if ( address.errors_ ) {
-        this.notify(address.errors_[0][1], 'error');
+        this.notify(address.errors_[0][1], '', this.LogLevel.ERROR, true);
         return false;
       }
 
@@ -564,20 +580,20 @@ foam.CLASS({
         this.viewData.user = this.user;
       } catch (err) {
         console.error(err);
-        this.notify(this.SAVE_FAILURE_MESSAGE, 'error');
+        this.notify(this.SAVE_FAILURE_MESSAGE, '', this.LogLevel.ERROR, true);
         return false;
       }
       return true;
     },
 
     async function saveAgent() {
-      this.agent = this.viewData.agent;
+      this.subject.realUser = this.viewData.agent;
       try {
-        var result = await this.userDAO.put(this.agent);
-        this.agent.copyFrom(result);
-        this.viewData.agent = this.agent;
+        var result = await this.userDAO.put(this.subject.realUser);
+        this.subject.realUser.copyFrom(result);
+        this.viewData.agent = this.subject.realUser;
       } catch (exp) {
-        this.notify(this.SAVE_FAILURE_MESSAGE, 'error');
+        this.notify(this.SAVE_FAILURE_MESSAGE, '', this.LogLevel.ERROR, true);
         return false;
       }
 
@@ -592,10 +608,10 @@ foam.CLASS({
         isSaved = await this.saveBusiness();
       }
       if ( isSaved ) {
-        this.notify(this.SAVE_SUCCESSFUL_MESSAGE);
+        this.notify(this.SAVE_SUCCESSFUL_MESSAGE, '', this.LogLevel.INFO, true);
         this.stack.back();
       } else {
-        this.notify(this.SAVE_FAILURE_MESSAGE, 'error');
+        this.notify(this.SAVE_FAILURE_MESSAGE, '', this.LogLevel.ERROR, true);
       }
     }
   ],
@@ -646,7 +662,7 @@ foam.CLASS({
               // if not signing officer then exit wizard
               var isAgentSaved = await this.saveAgent();
               if ( isAgentSaved ) {
-                this.notify(this.SUCCESS_REGISTRATION_MESSAGE);
+                this.notify(this.SUCCESS_REGISTRATION_MESSAGE, '', this.LogLevel.INFO, true);
                 this.stack.back();
               }
               return;
@@ -654,12 +670,12 @@ foam.CLASS({
           }
           if ( this.position === 4 ) {
             if ( ! await this.validateBeneficialOwners() ) {
-              this.notify(this.ERROR_NO_BENEFICIAL_OWNERS, 'error');
+              this.notify(this.ERROR_NO_BENEFICIAL_OWNERS, '', this.LogLevel.ERROR, true);
               return;
             }
 
             if ( ! this.viewData.noAdditionalBeneficialOwners ) {
-              this.notify(this.ERROR_NO_ADDITIONAL_BENEFICIAL_OWNERS, 'error' );
+              this.notify(this.ERROR_NO_ADDITIONAL_BENEFICIAL_OWNERS, '', this.LogLevel.ERROR, true);
               return;
             }
 
@@ -677,7 +693,7 @@ foam.CLASS({
                   });
                   await this.beneficialOwnersDAO.put(beneficialOwner);
                 } catch (err) {
-                  this.notify(err ? err.message : this.BENEFICIAL_OWNER_FAILURE, 'error');
+                  this.notify(err ? err.message : this.BENEFICIAL_OWNER_FAILURE, '', this.LogLevel.ERROR, true);
                 }
               } else {
                 return;
@@ -689,7 +705,7 @@ foam.CLASS({
             this.ctrl.bannerizeCompliance();
             var isBusinessSaved = await this.saveBusiness();
             if ( isBusinessSaved ) {
-              this.ctrl.add(this.NotificationMessage.create({ message: this.SUCCESS_REGISTRATION_MESSAGE }));
+              this.notify(this.SUCCESS_REGISTRATION_MESSAGE, '', this.LogLevel.INFO, true);
               this.pushMenu('sme.accountProfile.business-settings');
             }
             return;

@@ -1,9 +1,43 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.meter.reports',
   name: 'Report',
   extends: 'foam.nanos.script.Script',
 
+  tableColumns: [
+    'id',
+    'name',
+    'description',
+    'lastDuration',
+    'lastRun',
+    'status'
+  ],
+
   properties: [
+    {
+      class: 'String',
+      name: 'name',
+      tableWidth: 300,
+      tableCellFormatter: function(val, obj) {
+        this.translate(`${obj.id}.name`, val);
+      }
+    },
     {
       name: 'output',
       preSet: function(_, newVal) {
@@ -23,7 +57,7 @@ foam.CLASS({
   actions: [
       {
         name: 'downloadCSV',
-        label: 'DownloadCSV',  //Download CSV file for export OUTPUT data
+        label: 'Download CSV',  //Download CSV file for export OUTPUT data
         code: async function() {
           if ( this.output == "" )
             alert("Empty Output");

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.flinks.view.modalForm',
   name: 'FlinksModalSecurityImage',
@@ -6,7 +23,8 @@ foam.CLASS({
   documentation: 'Security authentication for Laurentienne bank. May be used by other banks',
 
   requires: [
-    'net.nanopay.ui.LoadingSpinner',
+    'foam.log.LogLevel',
+    'foam.u2.LoadingSpinner',
     'foam.u2.tag.Image'
   ],
 
@@ -27,7 +45,7 @@ foam.CLASS({
     ^ {
       width: 504px;
       max-height: 80vh;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
     ^content {
       position: relative;
@@ -120,7 +138,7 @@ foam.CLASS({
 
   messages: [
     { name: 'INSTRUCTIONS', message: 'Please select your personal image below: ' },
-    { name: 'INVALID_FORM', message: 'Please select your personal image to proceed.'}
+    { name: 'INVALID_FORM', message: 'Please select your personal image to proceed'}
   ],
 
   methods: [
@@ -189,10 +207,11 @@ foam.CLASS({
       name: 'next',
       label: 'Connect',
       code: function(X) {
+        var self = this;
         var model = X.securityImage;
         if ( model.isConnecting ) return;
         if ( model.selectedIndex < 0 ) {
-          X.notify(model.INVALID_FORM, 'error');
+          X.notify(model.INVALID_FORM, '', self.LogLevel.ERROR, true);
           return;
         }
 

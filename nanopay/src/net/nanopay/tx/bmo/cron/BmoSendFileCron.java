@@ -5,6 +5,8 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
+import foam.nanos.alarming.Alarm;
+import foam.nanos.alarming.AlarmReason;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 
@@ -41,11 +43,16 @@ public class BmoSendFileCron implements ContextAgent {
     for ( BmoEftFile file : files ) {
       /* Send and verify file */
       try{
-        new BmoFileProcessor(x).sendAndVerify(file);  
+        new BmoFileProcessor(x).sendAndVerify(file);
       } catch ( Exception e ) {
         logger.error("BMO send file failed. " + e.getMessage(), e);
-        BmoFormatUtil.sendEmail(x, "BMO EFT Error sending and verifying EFT File. " + e.getMessage(), e); 
-      } 
+        ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
+          .setName("BMO send file")
+          .setReason(AlarmReason.TIMEOUT)
+          .setNote(e.getMessage())
+          .build());
+        BmoFormatUtil.sendEmail(x, "BMO EFT Error sending and verifying EFT File. " + e.getMessage(), e);
+      }
     }
   }
 }

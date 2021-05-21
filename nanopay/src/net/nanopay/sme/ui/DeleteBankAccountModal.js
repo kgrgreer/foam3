@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'DeleteBankAccountModal',
@@ -6,6 +23,7 @@ foam.CLASS({
   documentation: 'Export Modal',
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.ui.modal.ModalHeader'
   ],
 
@@ -84,7 +102,7 @@ foam.CLASS({
       font-size: 24px;
       color: /*%BLACK%*/ #1e1f21;
       font-weight: 900;
-      font-family: Lato;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       margin-left: 0;
       line-height: 1.5;
     }
@@ -116,7 +134,7 @@ foam.CLASS({
     },
     {
       name: 'SUCCESS_MESSAGE',
-      message: 'Bank account deleted.'
+      message: 'Bank account deleted'
     }
   ],
 
@@ -158,11 +176,11 @@ foam.CLASS({
         X.accountDAO
           .remove(this.account)
           .then(() => {
-            this.notify(this.SUCCESS_MESSAGE);
+            this.notify(this.SUCCESS_MESSAGE, '', this.LogLevel.INFO, true);
             this.closeDialog();
           })
           .catch((err) => {
-            this.notify(err.message || this.DEFAULT_ERROR_MESSAGE, 'error');
+            this.notify(err.message || this.DEFAULT_ERROR_MESSAGE, '', this.LogLevel.ERROR, true);
           });
       }
     }

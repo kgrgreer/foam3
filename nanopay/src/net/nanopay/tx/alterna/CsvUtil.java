@@ -266,6 +266,7 @@ public class CsvUtil {
 
           alternaFormat.setFirstName( removeComma(!isOrganization ? user.getFirstName() : user.getOrganization()) );
           alternaFormat.setLastName(  removeComma(!isOrganization ? user.getLastName() : "") );
+          // Question: Only branchId is used? Is the institution number not needed for alterna?
           alternaFormat.setTransitNumber(padLeftWithZeros(String.valueOf(( branch.getBranchId() )), 5));
           alternaFormat.setBankNumber(padLeftWithZeros(String.valueOf((    institution.getInstitutionNumber() )), 3));
           alternaFormat.setAccountNumber(bankAccount.getAccountNumber());

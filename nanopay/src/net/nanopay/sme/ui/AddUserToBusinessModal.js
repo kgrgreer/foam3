@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'AddUserToBusinessModal',
@@ -8,10 +25,10 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.auth.AgentJunctionStatus',
+    'foam.log.LogLevel',
+    'foam.nanos.auth.AgentJunctionStatus',
     'net.nanopay.model.ClientUserJunction',
-    'net.nanopay.model.Invitation',
-    'foam.u2.dialog.NotificationMessage'
+    'net.nanopay.model.Invitation'
   ],
 
   imports: [
@@ -73,7 +90,6 @@ foam.CLASS({
         class: 'foam.u2.view.ChoiceView',
         choices: [
           ['admin', 'Admin'],
-          ['approver', 'Approver'],
           ['employee', 'Employee']
         ]
       }
@@ -92,16 +108,16 @@ foam.CLASS({
     { name: 'EMAIL_LABEL', message: 'Email' },
     { name: 'ROLE_LABEL', message: 'Role' },
     { name: 'INVITATION_SUCCESS', message: 'Invitation sent' },
-    { name: 'INVITATION_ERROR', message: 'Something went wrong with adding the user.' },
-    { name: 'INVALID_EMAIL', message: 'Invalid email address.' },
-    { name: 'INVALID_EMAIL2', message: 'Sorry but the email you are trying to add is already a user within your business.' }
+    { name: 'INVITATION_ERROR', message: 'Something went wrong with adding the user' },
+    { name: 'INVALID_EMAIL', message: 'Invalid email address' },
+    { name: 'INVALID_EMAIL2', message: 'The email you are trying to add is already a user within your business' }
   ],
 
   methods: [
     function initE() {
       this.addClass(this.myClass())
         .start().addClass('input-container')
-          .start('h2').add(this.TITLE, this.user.label()).addClass('medium-header').end()
+          .start('h2').add(this.TITLE, this.user.toSummary()).addClass('medium-header').end()
           .start().addClass('input-wrapper')
             .hide(this.noChoice$)
             .start().addClass('input-label').add(this.ROLE_LABEL).end()
@@ -128,7 +144,7 @@ foam.CLASS({
       name: 'addUser',
       code: async function() {
         if ( ! this.validateEmail(this.email) ) {
-          this.notify(this.INVALID_EMAIL, 'error');
+          this.notify(this.INVALID_EMAIL, '', this.LogLevel.ERROR, true);
           return;
         }
 
@@ -139,7 +155,7 @@ foam.CLASS({
           var currentBusUserArray = (await this.dao.where(this.EQ(this.ClientUserJunction.STATUS, this.AgentJunctionStatus.ACTIVE)).select()).array;
           currentBusUserArray.forEach( (busUser) => {
             if ( foam.util.equals(busUser.email, this.email) ) {
-              this.notify(this.INVALID_EMAIL2, 'error');
+              this.notify(this.INVALID_EMAIL2, '', this.LogLevel.ERROR, true);
               disallowUserAdditionReturnFromAddUser = true;
               // only exits loop with return, due to nesting function
               return;
@@ -157,12 +173,12 @@ foam.CLASS({
         this.businessInvitationDAO
           .put(invitation)
           .then((resp) => {
-            this.notify(this.INVITATION_SUCCESS);
+            this.notify(this.INVITATION_SUCCESS, '', this.LogLevel.INFO, true);
             this.agentJunctionDAO.on.reset.pub();
             this.closeDialog();
           })
           .catch((err) => {
-            this.notify(`${ this.INVITATION_ERROR } ${ err.message }`, 'error');
+            this.notify(`${ this.INVITATION_ERROR } ${ err.message }`, '', this.LogLevel.ERROR, true);
           });
       }
     },

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.liquidity.ruler',
   name: 'ApprovalRuleActionOnCreate',
@@ -18,23 +35,27 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.Detachable',
-    'foam.core.X',
     'foam.core.FObject',
     'foam.core.MethodInfo',
-    'foam.dao.DAO',
+    'foam.core.X',
     'foam.dao.AbstractSink',
+    'foam.dao.DAO',
+    'foam.nanos.approval.ApprovableAware',
+    'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
+    'foam.nanos.approval.ApprovalRequestUtil',
+    'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LifecycleAware',
     'foam.nanos.auth.LifecycleState',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'foam.nanos.ruler.Operations',
+    'foam.nanos.dao.Operation',
+
     'java.util.List',
+
     'net.nanopay.account.Account',
-    'foam.nanos.approval.ApprovalRequest',
-    'foam.nanos.approval.ApprovalRequestUtil',
-    'foam.nanos.approval.ApprovalStatus',
-    'foam.nanos.approval.ApprovableAware',
     'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
     'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
     'net.nanopay.tx.model.Transaction',
@@ -113,7 +134,7 @@ foam.CLASS({
             EQ(ApprovalRequest.OBJ_ID, objId),
             EQ(ApprovalRequest.DAO_KEY, daoKey),
             getIsFinal()
-              ? TRUE : EQ(ApprovalRequest.CLASSIFICATION, classification)
+              ? TRUE : EQ(ApprovalRequest.CLASSIFICATION_ENUM, ApprovalRequestClassificationEnum.ACCOUNT_ROLE_APPROVAL)
           ))
         );
 
@@ -123,7 +144,7 @@ foam.CLASS({
 
           AccountUCJQueryService ucjQueryService = (AccountUCJQueryService) x.get("accountUcjQueryService");
           MethodInfo method = (MethodInfo) obj.getClassInfo().getAxiomByName(getOutgoingAccountFinder());
-          long accountId = ((Long) method.call(x, obj, null)).longValue();
+          String accountId = (String) method.call(x, obj, null);
 
           List<Long> approvers = ucjQueryService.getApproversByLevel(
             x, modelName, accountId, getApproverLevel());
@@ -139,18 +160,18 @@ foam.CLASS({
           // Fallback if initiating user was not found
           if (initiatingUser == null) {
             ((Logger) x.get("logger")).info("Falling back to agent/user for initiating user.");
-            initiatingUser = x.get("agent") != null ? ((User) x.get("agent")) : ((User) x.get("user"));
+            initiatingUser = ((Subject) x.get("subject")).getRealUser();
           }
 
           // Context for putting approval requests as the initiating user
-          X initiatingUserX = x.put("user", initiatingUser);
+          Subject subject = new Subject.Builder(x).setUser(initiatingUser).build();
+          X initiatingUserX = x.put("subject", subject);
 
           ApprovalRequest approvalRequest = new AccountRoleApprovalRequest.Builder(x)
-            .setClassification(classification)
+            .setClassificationEnum(ApprovalRequestClassificationEnum.ACCOUNT_ROLE_APPROVAL)
             .setObjId(objId)
             .setDaoKey(daoKey)
-            .setApprovableHashKey(ApprovableAware.getApprovableHashKey(x, obj, Operations.CREATE))
-            .setOperation(Operations.CREATE)
+            .setOperation(Operation.CREATE)
             .setOutgoingAccount(accountId)
             .setStatus(ApprovalStatus.REQUESTED)
             .setDescription(description)
@@ -246,7 +267,8 @@ foam.CLASS({
           )
         ).select(new AbstractSink() {
           public void put(Object obj, Detachable sub) {
-            X system = x.put("user", new User.Builder(x).setId(User.SYSTEM_USER_ID).build());
+            Subject subject = new Subject.Builder(x).setUser(new User.Builder(x).setId(User.SYSTEM_USER_ID).build()).build();
+            X system = x.put("subject", subject);
 
             AccountRoleApprovalRequest approvalRequest = (AccountRoleApprovalRequest) obj;
             approvalRequest.setIsFulfilled(true);

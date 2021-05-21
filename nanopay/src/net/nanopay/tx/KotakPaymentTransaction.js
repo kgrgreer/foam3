@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'KotakPaymentTransaction',
@@ -9,7 +26,7 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   properties: [
@@ -157,11 +174,11 @@ foam.CLASS({
       type: 'String',
       javaCode: `
       for ( TransactionLineItem item : getLineItems() ) {
-        if ( item instanceof PurposeCodeLineItem ) {
-          return ((PurposeCodeLineItem) item).getPurposeCode();
+        if ( item instanceof KotakPaymentPurposeLineItem ) {
+          return getPurposeText(((KotakPaymentPurposeLineItem) item).getPurposeCode());
         }
       }
-      return "P1099";
+      return"";
       `
     },
     {
@@ -169,12 +186,40 @@ foam.CLASS({
       type: 'String',
       javaCode: `
       for ( TransactionLineItem item : getLineItems() ) {
-        if ( item instanceof AccountRelationshipLineItem ) {
-          return ((AccountRelationshipLineItem) item).getAccountRelationship();
+        if ( item instanceof KotakAccountRelationshipLineItem ) {
+          return ((KotakAccountRelationshipLineItem) item).getAccountRelationship();
         }
       }
-      return "Employee";
+      return"";
       `
-    }
+    },
+    {
+      name: 'getPurposeText',
+      javaType: 'String',
+      args: [
+        {
+          name: 'purposeCode',
+          type: 'String',
+        }
+      ],
+      javaCode: `
+        switch (purposeCode) {
+          case "P0306":
+            return "PAYMENTS_FOR_TRAVEL";
+    
+          case "P1306":
+            return "TAX_PAYMENTS_IN_INDIA";
+    
+          case "P0011":
+            return "EMI_PAYMENTS_FOR_REPAYMENT_OF_LOANS";
+    
+          case "P0103":
+            return "ADVANCE_AGAINST_EXPORTS";
+    
+          default:
+            return "TRADE_TRANSACTION";
+        }
+      `
+    },
   ]
 });

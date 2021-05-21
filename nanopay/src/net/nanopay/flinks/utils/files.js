@@ -31,9 +31,22 @@ FOAM_FILES([
   { name: 'net/nanopay/flinks/model/FlinksCredentials' },
   // flinks service
   { name: 'net/nanopay/flinks/FlinksAuth' },
+  { name: 'net/nanopay/flinks/FlinksResponseService' },
   { name: 'net/nanopay/flinks/ClientFlinksAuthService' },
   { name: 'net/nanopay/flinks/MaskedFlinksAccountDAO' },
   { name: 'net/nanopay/flinks/RefinedFlinksAccountDAO' },
+  { name: 'net/nanopay/flinks/external/AsyncStatus' },
+  { name: 'net/nanopay/flinks/external/BusinessOverrideData' },
+  { name: 'net/nanopay/flinks/external/CancelInProgressAsyncDAO' },
+  { name: 'net/nanopay/flinks/external/FlinksLoginId' },
+  { name: 'net/nanopay/flinks/external/FlinksLoginIdAsync' },
+  { name: 'net/nanopay/flinks/external/FlinksLoginIdAsyncDAO' },
+  { name: 'net/nanopay/flinks/external/FlinksLoginIdDAO' },
+  { name: 'net/nanopay/flinks/external/FlinksLoginIdRequest' },
+  { name: 'net/nanopay/flinks/external/FlinksOverrides' },
+  { name: 'net/nanopay/flinks/external/OnboardingType' },
+  { name: 'net/nanopay/flinks/external/OverrideData' },
+  { name: 'net/nanopay/flinks/external/UserOverrideData' },
   // flinks views
   { name: 'net/nanopay/flinks/view/FlinksView' },
   { name: 'net/nanopay/flinks/view/form/FlinksForm', flags: ['web'] },
@@ -56,6 +69,11 @@ FOAM_FILES([
   { name: 'net/nanopay/flinks/view/form/FlinksFailForm', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/form/FlinksImageForm', flages: ['web'] },
   { name: 'net/nanopay/flinks/view/element/StringArrayInput', flages: ['web'] },
+  // flinks widget
+  { name: 'net/nanopay/flinks/widget/FlinksException' },
+  { name: 'net/nanopay/flinks/widget/FlinksWidgetView', flags: ['web'] },
+  { name: 'net/nanopay/flinks/widget/drivers/FlinksDriver' },
+  { name: 'net/nanopay/flinks/widget/drivers/RequestToPayFlinksDriver' },
 
   // modals
   { name: 'net/nanopay/flinks/view/FlinksInstitutionsView', flags: ['web'] },

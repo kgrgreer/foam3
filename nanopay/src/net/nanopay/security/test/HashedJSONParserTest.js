@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.security.test',
   name: 'HashedJSONParserTest',
@@ -9,6 +26,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.security.HashedJSONParser',
     'net.nanopay.security.HashingJournal',
+    'net.nanopay.security.MessageDigest',
     'org.bouncycastle.util.encoders.Hex'
   ],
 
@@ -94,7 +112,7 @@ foam.CLASS({
     {
       name: 'HashedJSONParser_JSONStringWithoutMessageDigestWithDigestNotRequired_Parse',
       javaCode: `
-        HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setDigestRequired(false).build());
+        HashedJSONParser parser = new HashedJSONParser.Builder(getX()).setMessageDigest(new MessageDigest()).setDigestRequired(false).build();
         User result = (User) parser.parseString(INPUT, User.class);
         test(result != null, "User parsed successfully");
         test(1000 == result.getId(), "User id \\"1000\\" parsed successfully");
@@ -107,7 +125,7 @@ foam.CLASS({
       name: 'HashedJSONParser_JSONStringWithoutMessageDigestWithDigestRequired_Exception',
       javaCode: `
         try {
-          HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setDigestRequired(true).build());
+          HashedJSONParser parser = new HashedJSONParser.Builder(getX()).setMessageDigest(new MessageDigest()).setDigestRequired(true).build();
           parser.parseString(INPUT);
           test(false, "HashedJSONParser with digest required should not parse a string without a message digest");
         } catch ( Throwable t ) {
@@ -123,8 +141,8 @@ foam.CLASS({
       ],
       javaCode: `
         try {
-          StringBuilder builder = sb.get().append(INPUT).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(digest).append("\\"}");
-          HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).build());
+          StringBuilder builder = sb.get().append(INPUT).append(",{algorithm:\\"").append(algorithm).append("\\",provider:\\"\\",digest:\\"").append(digest).append("\\"}");
+          HashedJSONParser parser = new HashedJSONParser.Builder(getX()).setMessageDigest(new MessageDigest.Builder(getX()).setAlgorithm(algorithm).build()).setDigestRequired(true).build();
           test(parser.parseString(builder.toString()) != null, algorithm + " message digest parsed successfully");
         } catch ( Throwable t ) {
           test(false, "HashedJSONParser with valid message digest should not throw an exception");
@@ -139,12 +157,12 @@ foam.CLASS({
       ],
       javaCode: `
         try {
-          StringBuilder builder = sb.get().append(INPUT).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(digest).append("\\"}");
-          HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).build());
+          StringBuilder builder = sb.get().append(INPUT).append(",{algorithm:\\"").append(algorithm).append("\\",provider:\\"\\",digest:\\"").append(digest).append("\\"}");
+          HashedJSONParser parser = new HashedJSONParser.Builder(getX()).setMessageDigest(new MessageDigest.Builder(getX()).setAlgorithm(algorithm).build()).setDigestRequired(true).build();
           parser.parseString(builder.toString());
           test(false, "HashedJSONParser should not parse a string with an invalid message digest");
         } catch ( Throwable t ) {
-          test("Digest verification failed".equals(t.getMessage()), "Exception thrown for invalid digest");
+          test("Digest verification failed.".equals(t.getMessage()), "Exception thrown for invalid digest");
         }
       `
     },
@@ -157,10 +175,12 @@ foam.CLASS({
       ],
       javaCode: `
         try {
-          StringBuilder builder = sb.get().append(INPUT).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(chainedDigest).append("\\"}");
-          HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(true).setPreviousDigest(Hex.decode(previousDigest)).build());
+          StringBuilder builder = sb.get().append(INPUT).append(",{algorithm:\\"").append(algorithm).append("\\",provider:\\"\\",digest:\\"").append(chainedDigest).append("\\"}");
+          HashedJSONParser parser = new HashedJSONParser.Builder(getX()).setMessageDigest(new MessageDigest.Builder(getX()).setAlgorithm(algorithm).setRollDigests(true).setPreviousDigest(Hex.decode(previousDigest)).build()).setDigestRequired(true).build();
           test(parser.parseString(builder.toString()) != null, algorithm + " chained message digest parsed successfully");
         } catch ( Throwable t ) {
+System.err.println("HashedJSONParser_JSONStringWithValidChainedMessageDigest_Parse");
+t.printStackTrace();
           test(false, "HashedJSONParser with valid chained message digest should not throw an exception");
         }
       `
@@ -174,12 +194,12 @@ foam.CLASS({
       ],
       javaCode: `
         try {
-          StringBuilder builder = sb.get().append(INPUT).append(",{\\"algorithm\\":\\"").append(algorithm).append("\\",\\"digest\\":\\"").append(chainedDigest).append("\\"}");
-          HashedJSONParser parser = new HashedJSONParser(getX(), new HashingJournal.Builder(getX()).setAlgorithm(algorithm).setRollDigests(true).setPreviousDigest(Hex.decode(previousDigest)).build());
+          StringBuilder builder = sb.get().append(INPUT).append(",{algorithm:\\"").append(algorithm).append("\\",provider:\\"\\",digest:\\"").append(chainedDigest).append("\\"}");
+          HashedJSONParser parser = new HashedJSONParser.Builder(getX()).setMessageDigest(new MessageDigest.Builder(getX()).setAlgorithm(algorithm).setRollDigests(true).setPreviousDigest(Hex.decode(previousDigest)).build()).setDigestRequired(true).build();
           parser.parseString(builder.toString());
           test(false, "HashedJSONParser should not parse a string with an invalid chained message digest");
         } catch ( Throwable t ) {
-          test("Digest verification failed".equals(t.getMessage()), "Exception thrown for invalid chained digest");
+          test("Digest verification failed.".equals(t.getMessage()), "Exception thrown for invalid chained digest");
         }
       `
     }

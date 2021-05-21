@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.cico.ui.co',
   name: 'ConfirmCashOutModal',
@@ -6,7 +23,7 @@ foam.CLASS({
   documentation: 'Pop up modal for confirming cash out.',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'net.nanopay.tx.model.Transaction'
   ],
 
@@ -19,6 +36,7 @@ foam.CLASS({
     'onCashOutSuccess',
     'cashOut',
     'transactionDAO',
+    'notify',
     'user'
   ],
 
@@ -44,7 +62,7 @@ foam.CLASS({
     ^ .popUpTitle {
       width: 198px;
       height: 40px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       line-height: 40.5px;
       letter-spacing: 0.2px;
@@ -72,7 +90,7 @@ foam.CLASS({
       background-color: transparent;
     }
     ^ .label {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: bold;
       letter-spacing: 0.2px;
@@ -119,7 +137,7 @@ foam.CLASS({
       margin-left: 75px;
     }
     ^ .foam-u2-ActionView-cashOutBtn {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       width: 136px;
       height: 40px;
       position: static;
@@ -143,7 +161,7 @@ foam.CLASS({
       opacity: 0.9;
     }
     ^ .foam-u2-ActionView-back {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       width: 136px;
       height: 40px;
       position: static;
@@ -194,7 +212,7 @@ foam.CLASS({
             .start().addClass('accountNumber')
             .call(function() {
               self.bankAccountDAO.find(self.bankList).then(function(bank) {
-                this.add('***' + bank.accountNumber.substring(bank.accountNumber.length - 4, bank.accountNumber.length));
+                this.add('***' + bank.accountNumber.substring(bank.accountNumber.length - 3));
               }.bind(this));
             })
             .end()
@@ -250,7 +268,7 @@ foam.CLASS({
           X.closeDialog();
           X.onCashOutSuccess();
         }).catch(function(error) {
-          self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          X.notify(error.message, '', self.LogLevel.ERROR, true);
         });
       }
     }

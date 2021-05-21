@@ -8,4 +8,9 @@ p({"class":"net.nanopay.liquidity.tx.RestrictAccountsRuleTest", "id":"restrictAc
 p({"class":"net.nanopay.liquidity.tx.RestrictAccountChildrenRuleTest", "id":"restrictAccountChildrenRuleTest"})
 p({"class":"net.nanopay.liquidity.tx.RestrictUsersRuleTest", "id":"restrictUsersRuleTest"})
 p({"class":"net.nanopay.liquidity.tx.TxLimitRuleTest", "id":"txLimitRuleTest"})
-p({"class":"net.nanopay.liquidity.tx.TxLimitRuleTest", "id":"txLimitRuleTestLiquid","testSuite":"liquid"})
+//p({"class":"net.nanopay.liquidity.tx.TxLimitRuleTest", "id":"txLimitRuleTestLiquid","testSuite":"liquid"})
+p({
+  "class": "net.nanopay.tx.test.BusinessCompliancyTransactionValidationTests",
+  "id": "Business_compliancy_transaction_validation_tests",
+  "description": "Tests creating transactions as business user to check compliancy status.",
+})

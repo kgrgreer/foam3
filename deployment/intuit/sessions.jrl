@@ -1,0 +1,11 @@
+// Long lived session ID for Intuit API user
+p({
+    class:"foam.nanos.session.Session",
+    id:"2c2d88af-cba8-9549-05e9-18be400a0aed",
+    userId:8023,
+    agentId:0,
+    created:1594308371944,
+    createdBy:1348,
+    createdByAgent:1348,
+    ttl:3153600000000
+})

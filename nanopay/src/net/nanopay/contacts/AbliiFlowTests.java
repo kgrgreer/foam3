@@ -12,7 +12,6 @@ import foam.nanos.test.Test;
 import foam.util.Auth;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
-import net.nanopay.auth.email.EmailWhitelistEntry;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
@@ -33,29 +32,6 @@ extends Test
   protected User mainUser_;
   protected X mainUserContext_;
   protected X x;
-
-  public  void cleanWhiteList() {
-    DAO whitelistedEmailDAO = (DAO) x.get("whitelistedEmailDAO");
-    whitelistedEmailDAO.remove(new EmailWhitelistEntry.Builder(x).setId("bob@marley.com").build());
-    whitelistedEmailDAO.remove(new EmailWhitelistEntry.Builder(x).setId("oxy@moron.com").build());
-    whitelistedEmailDAO.remove(new EmailWhitelistEntry.Builder(x).setId("unicorn@princess.com").build());
-    whitelistedEmailDAO.remove(new EmailWhitelistEntry.Builder(x).setId("prince@caspen.com").build());
-    whitelistedEmailDAO.remove(new EmailWhitelistEntry.Builder(x).setId("fox@example.com").build());
-    whitelistedEmailDAO.remove(new EmailWhitelistEntry.Builder(x).setId("foo@bar.com").build());
-    whitelistedEmailDAO.remove(new EmailWhitelistEntry.Builder(x).setId("bar@foo.com").build());
-  }
-  public void whiteListTestEmail() {
-    /* Whitelist the testing emails, then get rid of them at the end of the test. */
-    DAO whitelistedEmailDAO = (DAO) x.get("whitelistedEmailDAO");
-    whitelistedEmailDAO.put(new EmailWhitelistEntry.Builder(x).setId("bob@marley.com").build());
-    whitelistedEmailDAO.put(new EmailWhitelistEntry.Builder(x).setId("oxy@moron.com").build());
-    whitelistedEmailDAO.put(new EmailWhitelistEntry.Builder(x).setId("unicorn@princess.com").build());
-    whitelistedEmailDAO.put(new EmailWhitelistEntry.Builder(x).setId("prince@caspen.com").build());
-    whitelistedEmailDAO.put(new EmailWhitelistEntry.Builder(x).setId("fox@example.com").build());
-    whitelistedEmailDAO.put(new EmailWhitelistEntry.Builder(x).setId("foo@bar.com").build());
-    whitelistedEmailDAO.put(new EmailWhitelistEntry.Builder(x).setId("bar@foo.com").build());
-
-  }
 
   public void cleanUserData() {
     userDAO_.where(foam.mlang.MLang.EQ(User.EMAIL, "bob@marley.com")).removeAll();
@@ -606,7 +582,6 @@ extends Test
     invoiceDAO_ = (DAO) x.get("invoiceDAO");
     /* Confirm Clean UP */
     cleanUserData();
-    whiteListTestEmail();
     cleanAccountData();
     cleanContactData();
     cleanInvoiceData();
@@ -644,7 +619,5 @@ extends Test
     cleanAccountData();
     cleanContactData();
     cleanInvoiceData();
-    cleanWhiteList();
-
   }
 }

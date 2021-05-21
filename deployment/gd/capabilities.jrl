@@ -1,0 +1,53 @@
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "gdPlannerCapability",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.*"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "gdCountryCapability",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "country.read.CA"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "gdCorridorCapability",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "paymentprovidercorridor.read.paymentprovidercorridor.bmo.ca-ca",
+    "paymentprovidercorridor.read.paymentprovidercorridor.rbc.ca-ca"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "gdCurrencyCapability",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "currency.read.CAD"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "gdMenuCapability",
+  version: "0",
+  enabled: true,
+  "permissionsGranted":[
+    "menu.read.submenu.contact.search",
+    "menu.read.submenu.contact.paymentcode",
+    "menu.read.submenu.contact.invitation",
+    "contact.rw.shouldinvite"
+  ]
+})

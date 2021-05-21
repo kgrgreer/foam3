@@ -71,3 +71,248 @@ p({
     print("Liquidity Monthly Run");
   """
 })
+
+p({
+  "class": "foam.nanos.cron.Cron",
+  "enabled": false,
+  "schedule": {
+    "class": "foam.nanos.cron.CronSchedule",
+    "minute": -1,
+    "hour": -1,
+    "dayOfMonth": -1,
+    "month": -1,
+    "dayOfWeek": -1,
+    "second": 0
+  },
+  "id": "generic transaction completion cron",
+  "description": "This cron job sets CICO transaction to complete if they are in sent status and have passed the completion date.",
+  "code": 
+  """
+  import foam.mlang.predicate.Predicate;
+  import foam.core.ContextAgent;
+  import foam.core.Detachable;
+  import foam.core.X;
+  import foam.dao.AbstractSink;
+  import foam.dao.DAO;
+  import net.nanopay.tx.cico.CITransaction;
+  import net.nanopay.tx.cico.COTransaction;
+  import net.nanopay.tx.cico.VerificationTransaction;
+  import net.nanopay.tx.model.Transaction;
+  import net.nanopay.tx.model.TransactionStatus;
+  import java.time.LocalDateTime;
+  import static foam.mlang.MLang.*;
+  import java.time.ZoneId;
+
+  DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+  transactionDAO
+    .where(
+          AND(new Predicate[] {
+              EQ(Transaction.STATUS, TransactionStatus.SENT),
+              OR(new Predicate[] {
+                INSTANCE_OF(CITransaction.class),
+                INSTANCE_OF(COTransaction.class),
+                INSTANCE_OF(VerificationTransaction.class)
+              })
+            })
+          )
+    .select( new AbstractSink() {
+
+    public void put(Object o, Detachable d) {
+      Transaction txn = (Transaction) o.fclone();
+      LocalDateTime now = LocalDateTime.now();
+      if ( txn.getEstimatedCompletionDate() != null ) {
+        LocalDateTime completion = LocalDateTime.ofInstant(txn.getEstimatedCompletionDate().toInstant(),ZoneId.systemDefault());
+        if ( now.isAfter(completion) ) {
+          txn.setStatus(TransactionStatus.COMPLETED);
+          txn2 = transactionDAO.put(txn);
+        }
+      }
+    }
+  });
+  print("done");
+  """
+})
+p({
+  "class": "foam.nanos.cron.Cron",
+  "enabled": false,
+  "schedule": {
+    "class": "foam.nanos.cron.CronSchedule",
+    "minute": -1,
+    "hour": -1,
+    "dayOfMonth": -1,
+    "month": -1,
+    "dayOfWeek": -1,
+    "second": 0
+  },
+  "id": "generic transaction sending cron",
+  "description": "This cron job sets CICO transaction to sent if they are in pending status",
+  "code":
+  """
+  import foam.mlang.predicate.Predicate;
+  import foam.core.ContextAgent;
+  import foam.core.Detachable;
+  import foam.core.X;
+  import foam.dao.AbstractSink;
+  import foam.dao.DAO;
+  import net.nanopay.tx.cico.CITransaction;
+  import net.nanopay.tx.cico.COTransaction;
+  import net.nanopay.tx.cico.VerificationTransaction;
+  import net.nanopay.tx.model.Transaction;
+  import net.nanopay.tx.model.TransactionStatus;
+  import static foam.mlang.MLang.*;
+
+  DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+  transactionDAO
+    .where(
+          AND(new Predicate[] {
+              EQ(Transaction.STATUS, TransactionStatus.PENDING),
+              OR(new Predicate[] {
+                INSTANCE_OF(CITransaction.class),
+                INSTANCE_OF(COTransaction.class),
+                INSTANCE_OF(VerificationTransaction.class)
+              })
+            })
+          )
+    .select( new AbstractSink() {
+
+    public void put(Object o, Detachable d) {
+      Transaction txn = (Transaction) o.fclone();
+      txn.setStatus(TransactionStatus.SENT);
+      txn2 = transactionDAO.put(txn);
+    }
+  });
+  print("done");
+  """
+})
+
+p({
+  "class": "foam.nanos.cron.Cron",
+  "enabled": true,
+  "schedule": {
+    "class":"foam.nanos.cron.IntervalSchedule",
+    "start": "1992-04-20",
+    "duration": {
+      "class": "foam.nanos.cron.TimeHMS",
+      "hour": 1
+    }
+  },
+  "id": "TransactionPlan Expiry Cron",
+  "description": "Remove Expired TransactionPlans",
+  "code": """
+    import foam.core.Detachable;
+    import foam.core.X;
+    import foam.dao.AbstractSink;
+    import net.nanopay.tx.planner.TransactionPlan;
+    import foam.nanos.logger.Logger;
+
+    now = new java.util.Date();
+    planDAO = (x.get("localTransactionPlannerDAO")).where( foam.mlang.MLang.LT(TransactionPlan.EXPIRY, now ) );
+    Long expiredPlans = planDAO.select(new foam.mlang.sink.Count()).getValue();
+    planDAO.select( new AbstractSink() {
+
+        public void put(Object o, Detachable d) {
+          TransactionPlan plan = (TransactionPlan) o;
+          planDAO.remove(plan);
+        }
+    });
+    print("TransactionPlan Expiry Cron removed " + expiredPlans + " expired plans at " + now );
+    logger = x.get("logger");
+    logger.info(new Object[] {"TransactionPlan Expiry Cron removed " + expiredPlans + " expired plans at " + now});
+  """
+})
+
+p({
+  "class":"foam.nanos.cron.Cron",
+  "schedule":{
+    "class":"foam.nanos.cron.TimeOfDaySchedule",
+    "time":{
+      "class":"foam.nanos.cron.TimeHMS",
+      "hour":8
+    }
+  },
+  "id":"Stuck transaction detector cron2",
+  "description":"Sound an alarm if transaction get stuck",
+  "status":1,
+  "enabled": true,
+  code: """
+    import foam.mlang.predicate.Predicate;
+    import foam.core.ContextAgent;
+    import foam.core.Detachable;
+    import foam.core.X;
+    import foam.dao.AbstractSink;
+    import foam.dao.DAO;
+    import net.nanopay.tx.model.Transaction;
+    import net.nanopay.tx.model.TransactionStatus;
+    import java.time.LocalDateTime;
+    import static foam.mlang.MLang.*;
+    import java.time.ZoneId;
+    import foam.nanos.alarming.Alarm;
+    import foam.nanos.alarming.AlarmReason;
+
+    DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+    alarmDAO = x.get("alarmDAO");
+    stuckIds = "";
+    stuckCount = 0;
+    LocalDateTime now = LocalDateTime.now();
+    
+    transactionDAO.where(
+        EQ(Transaction.STATUS, TransactionStatus.PENDING_PARENT_COMPLETED)
+      ).select( new AbstractSink() {
+
+      public void put(Object o, Detachable d) {
+
+        Transaction txn = (Transaction) o.fclone();
+        Transaction parent = txn.findParent(x);
+        lastModified = parent.getLastModified();
+        if ( lastModified != null  && parent.getStatus() == TransactionStatus.COMPLETED ) {
+          LocalDateTime lastUpdated = LocalDateTime.ofInstant(lastModified.toInstant(), ZoneId.systemDefault());
+          lastUpdated = lastUpdated.plusHours(1);
+          if ( now.isAfter(lastUpdated) ) {
+            stuckCount++;
+            stuckIds += txn.getId() + "\\n";
+          }
+        }
+
+      }
+    });
+    
+    if ( stuckCount > 0 ) {
+      note = "Transactions stuck in PendingParentComplete: " + stuckCount + ": \\n" + stuckIds;
+      print(note);
+      Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, "Transaction Alarm"));
+      if ( alarm == null ) {
+        alarm = new Alarm();
+        alarm.setName("Transaction Alarm");
+      }
+      alarm.setIsActive(true);
+      alarm.setReason(AlarmReason.TRANSACTION);
+      alarm.setNote(note);
+      alarmDAO.put(alarm);
+    }
+    print("done");
+  """
+})
+
+p({
+  "class": "foam.nanos.cron.Cron",
+  "schedule":{
+    "class":"foam.nanos.cron.IntervalSchedule",
+    "duration":{
+      "class":"foam.nanos.cron.TimeHMS",
+      "hour":0,
+      "minute":0,
+      "second":30
+    }
+  },
+  "id":"IntuitTransactionSummaryAgent",
+  "description":"Creates Transaction Summary objects for all intuit summary transactions",
+  "enabled":true,
+  "clusterable":false,
+  "code": """
+    String spid = "intuit";
+    import net.nanopay.partner.intuit.tx.IntuitTransactionSummaryAgent;
+    cron = new IntuitTransactionSummaryAgent(spid);
+    cron.execute(x);
+    print("Transaction Summary Agent run.");
+  """
+})

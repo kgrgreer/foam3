@@ -1,0 +1,128 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "otLoginService",
+  "serve": true,
+  "authenticate": false,
+  "boxClass": "net.nanopay.auth.openid.TokenLoginServiceSkeleton",
+  "serviceClass": "net.nanopay.auth.openid.OTLoginService",
+  "client":"""
+  {
+    "class":"net.nanopay.auth.openid.ClientTokenLoginService",
+    "delegate": {
+      "class": "foam.box.SessionClientBox",
+      "delegate":{
+        "class":"foam.box.HTTPBox",
+        "url":"service/otLoginService"
+      }
+    }
+  }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "oauth",
+  "serve": true,
+  "authenticate": false,
+  "boxClass": "net.nanopay.auth.openid.OAuthServiceSkeleton",
+  "serviceScript":"""
+  return new net.nanopay.auth.openid.ServerOAuthService("localOAuthProviderDAO");
+  """,
+  "client":"""
+  {
+    "class":"net.nanopay.auth.openid.ClientOAuthService",
+    "delegate": {
+      "class": "foam.box.SessionClientBox",
+      "delegate":{
+        "class":"foam.box.HTTPBox",
+        "url":"service/oauth"
+      }
+    }
+  }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "localOAuthProviderDAO",
+  "serviceScript": """
+  import foam.dao.DAO;
+
+  dao = new foam.dao.MDAO(net.nanopay.util.Tag.getOwnClassInfo());
+  dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.util.Tag.ID });
+
+  return new foam.dao.EasyDAO.Builder(x)
+    .setRuler(false)
+    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+    .setJournalName("oauthproviders")
+    .setOf(net.nanopay.util.Tag.getOwnClassInfo())
+    .setInnerDAO(x.get(dao))
+    .build();
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "oauthProviderDAO",
+  "serve": true,
+  "authenticate": false,
+  "serviceScript": """
+  return new foam.dao.EasyDAO.Builder(x)
+    .setAuthorize(false)
+    .setReadOnly(false)
+    .setRuler(false)
+    .setOf(net.nanopay.util.Tag.getOwnClassInfo())
+    .setInnerDAO(x.get("localOAuthProviderDAO"))
+    .build();
+  """,
+  "client": """
+  {
+    "of":"net.nanopay.util.Tag"
+  }
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"otLoginTokenDAO",
+  "lazy":false,
+  "serve":false,
+  "serviceScript":"""
+    import foam.dao.DAO;
+
+    dao = new foam.dao.MDAO(net.nanopay.auth.openid.OTLoginToken.getOwnClassInfo());
+    dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.auth.openid.OTLoginToken.ID });
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setGuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("otlogintokens")
+      .setOf(net.nanopay.auth.openid.OTLoginToken.getOwnClassInfo())
+      .setInnerDAO(dao)
+      .build();
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"ssoTokenDAO",
+  "lazy":false,
+  "serve":false,
+  "serviceScript":"""
+    import foam.dao.DAO;
+
+    dao = new foam.dao.MDAO(net.nanopay.auth.openid.SSOToken.getOwnClassInfo());
+    dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.auth.openid.SSOToken.ID });
+    dao = new foam.dao.java.JDAO(x, dao, "ssotokens");
+
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setGuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("ssotokens")
+      .setOf(net.nanopay.auth.openid.SSOToken.getOwnClassInfo())
+      .setInnerDAO(dao)
+      .build();
+  """
+})

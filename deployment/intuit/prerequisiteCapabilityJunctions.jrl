@@ -1,0 +1,77 @@
+// Prerequisites for Intuit spid capability
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "intuit",
+  targetId: "serviceProviderCapability",
+  priority: 1
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "intuit",
+  targetId: "crunch.integration.spid-base",
+  priority: 2
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "intuit",
+  targetId: "intuitPlannerCapability",
+  priority: 3
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "intuit",
+  targetId: "intuitCountryCapability",
+  priority: 4
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "intuit",
+  targetId: "intuitCurrencyCapability",
+  priority: 5
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "intuit",
+  targetId: "intuitCorridorCapability",
+  priority: 6
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "intuit",
+  targetId: "intuitMenuCapability",
+  priority: 7
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "intuit",
+  targetId: "ucj-expandedOnboarding-rules",
+  priority: 8
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "intuit",
+  targetId: "intuit-tx-rules",
+  priority: 9
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "intuit",
+  targetId: "intuit-tx-fees",
+  priority: 10
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "intuit",
+  targetId: "intuit-onboarding-rules",
+  priority: 11
+})

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.accounting.ui',
   name: 'AccountingInvoiceSyncModal',
@@ -27,7 +44,7 @@ foam.CLASS({
     ^ .headerTitle {
       margin-left: 24px;
       margin-top: 24px;
-      font-family: Lato;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 24px;
       font-weight: 900;
       font-style: normal;
@@ -40,7 +57,7 @@ foam.CLASS({
     ^ .content {
       width: 456px;
       height: 51px;
-      font-family: Lato;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 15px;
       font-weight: normal;
       font-style: normal;

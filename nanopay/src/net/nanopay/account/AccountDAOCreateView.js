@@ -1,4 +1,21 @@
 /**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+/**
  * @license
  * Copyright 2019 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -12,13 +29,14 @@ foam.CLASS({
   imports: [
     'ctrl',
     'group',
+    'notify',
     'stack',
     'user'
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.account.DigitalAccount',
-    'foam.u2.dialog.NotificationMessage'
   ],
 
   documentation: `
@@ -28,13 +46,13 @@ foam.CLASS({
   messages: [
     {
       name: 'SUCCESS_MESSAGE',
-      message: 'An approval request has been created.'
+      message: 'An approval request has been created'
     }
   ],
 
   properties: [
     {
-      class: 'foam.u2.ViewSpecWithJava',
+      class: 'foam.u2.ViewSpec',
       name: 'viewView',
       expression: function() {
         return {
@@ -43,7 +61,7 @@ foam.CLASS({
           dataView: 'net.nanopay.liquidity.ui.account.AccountDetailView'
         };
       }
-    },
+    }
   ],
 
   actions: [
@@ -62,54 +80,30 @@ foam.CLASS({
         this.config.dao.put(cData).then((o) => {
           this.data = o;
           this.finished.pub();
-          if ( foam.comics.v2.userfeedback.UserFeedbackAware.isInstance(o) && o.userFeedback ){
+          if ( foam.comics.v2.userfeedback.UserFeedbackAware.isInstance(o) && o.userFeedback ) {
             var currentFeedback = o.userFeedback;
-            while ( currentFeedback ){
-              this.ctrl.add(this.NotificationMessage.create({
-                message: currentFeedback.message,
-                type: currentFeedback.status.name.toLowerCase()
-              }));
-
+            while ( currentFeedback ) {
+              this.notify(currentFeedback.message, '', this.LogLevel.INFO, true);
               currentFeedback = currentFeedback.next;
             }
           } else {
-            this.ctrl.add(this.NotificationMessage.create({
-              message: `${this.data.model_.label} created.`
-            }));
+            this.notify(`${this.data.model_.label} created.`, '', this.LogLevel.INFO, true);
           }
 
           this.stack.back();
         }, (e) => {
           this.throwError.pub(e);
-          
-          // TODO: Uncomment this once we turn UserFeedbackException into an actual throwable
-          // if ( foam.comics.v2.userfeedback.UserFeedbackException.isInstance(e) && e.userFeedback  ){
-          //   var currentFeedback = e.userFeedback;
-          //   while ( currentFeedback ){
-          //     this.ctrl.add(this.NotificationMessage.create({
-          //       message: currentFeedback.message,
-          //       type: currentFeedback.status.name.toLowerCase()
-          //     }));
 
-          //     currentFeedback = currentFeedback.next;
-          //   }
-          // } else {
-          //   this.ctrl.add(this.NotificationMessage.create({
-          //     message: e.message,
-          //     type: 'error'
-          //   }));
-          // }
+          if ( e.exception && e.exception.userFeedback  ) {
+            var currentFeedback = e.exception.userFeedback;
+            while ( currentFeedback ) {
+              this.ctrl.notify(currentFeedback.message, '', this.LogLevel.INFO, true);
+              currentFeedback = currentFeedback.next;
+            }
 
-          if ( e.message === "An approval request has been sent out." ){
-            this.ctrl.add(this.NotificationMessage.create({
-              message: e.message,
-              type: 'success'
-            }));
+            this.stack.back();
           } else {
-            this.ctrl.add(this.NotificationMessage.create({
-              message: e.message,
-              type: 'error'
-            }));
+            this.notify(e.message, '', this.LogLevel.ERROR, true);
           }
         });
       }

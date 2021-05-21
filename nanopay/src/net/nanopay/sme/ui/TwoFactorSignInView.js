@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'TwoFactorSignInView',
@@ -6,14 +23,16 @@ foam.CLASS({
   documentation: 'Two-Factor sign in view',
 
   imports: [
+    'auth',
     'loginSuccess',
+    'menuDAO',
     'notify',
-    'twofactor',
-    'menuDAO'
+    'theme',
+    'twofactor'
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'foam.u2.Element',
     'foam.u2.ViewSpec'
   ],
@@ -57,11 +76,11 @@ foam.CLASS({
       width: 80%;
       margin-top: 20px;
     }
-    ^ .net-nanopay-sme-ui-AbliiEmptyTopNavView {
+    ^ .net-nanopay-sme-ui-EmptyTopNavView {
       border: 0;
       height: 36px
     }
-    ^ .net-nanopay-sme-ui-AbliiEmptyTopNavView img{
+    ^ .net-nanopay-sme-ui-EmptyTopNavView img{
       width: auto;
       height: 20px;
       padding-left: 5px;
@@ -77,7 +96,7 @@ foam.CLASS({
     }
     ^ .sme-image {
       width: 30vw;
-      min-width: 560px; 
+      min-width: 560px;
       margin-top: 19vh;
       margin-left: 12vw;
     }
@@ -89,7 +108,7 @@ foam.CLASS({
     }
     ^TwoFactAuthIntro {
       font-size: 14px;
-      font-family: Lato;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       line-height: 1.6;
       height: 63px;
       padding: 0 16px;
@@ -105,8 +124,8 @@ foam.CLASS({
       margin: 0 128px;
     }
     ^ .sub-note {
-      font-family: Lato;
-      font-size: 12px 
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 12px
     }
   `,
 
@@ -114,7 +133,7 @@ foam.CLASS({
     { name: 'PHONE_IPHONE_IMAGE', value: 'images/phone-iphone-24-px.png' },
     { name: 'SIGN_IN_IMAGE', value: 'images/sign_in_illustration.png' },
     { name: 'ERROR_ICON', value: 'images/inline-error-icon.svg' },
-    { name: 'CONTACT_EMAIL', value: 'mailto:support@ablii.com' },
+    { name: 'CONTACT_EMAIL', value: 'mailto: ' },
     { name: 'ABLII_ADDRESS', value: 'https://www.ablii.com' },
   ],
 
@@ -132,18 +151,34 @@ foam.CLASS({
           incorrectCode$: X.data.incorrectCode$
         };
       }
-    }
+    },
+    {
+      class: 'String',
+      name: 'appName',
+      factory: function() {
+        return this.theme.appName;
+      }
+    },
+    {
+      class: 'String',
+      name: 'supportPhone',
+      factory: function() {
+        let supportConfig = this.theme.supportConfig;
+        return supportConfig ? supportConfig.supportPhone : '';
+      }
+    },
+
   ],
 
   messages: [
-    { name: 'TWO_FACTOR_NO_TOKEN', message: 'Please enter a verification code.' },
+    { name: 'TWO_FACTOR_NO_TOKEN', message: 'Please enter a verification code' },
     { name: 'TWO_FACTOR_LABEL', message: 'Enter verification code' },
-    { name: 'TWO_FACTOR_ERROR', message: 'Incorrect code. Please try again.' },
+    { name: 'TWO_FACTOR_ERROR', message: 'Incorrect code. Please try again' },
     { name: 'TWO_FACTOR_TITLE', message: 'Two-factor authentication' },
     { name: 'TWO_FACTOR_EXPLANATION', message: `Open your Google Authenticator app on your mobile device to view the 6-digit code and verify your identity` },
     { name: 'TWO_FACTOR_NOTES_1', message: `Need another way to authenticate?` },
     { name: 'TWO_FACTOR_NOTES_2', message: `Contact us` },
-    { name: 'GO_BACK', message: 'Go to ablii.com' }
+    { name: 'GO_BACK', message: 'Go to ' }
   ],
 
   methods: [
@@ -153,6 +188,7 @@ foam.CLASS({
 
     async function initE() {
       this.SUPER();
+      var self = this;
       var split = foam.u2.borders.SplitScreenBorder.create();
       var left = this.Element.create()
         .start('img')
@@ -162,7 +198,7 @@ foam.CLASS({
 
       var right = this.Element.create()
       .addClass(this.myClass())
-      .tag({ class: 'net.nanopay.sme.ui.AbliiEmptyTopNavView' })
+      .tag({ class: 'net.nanopay.sme.ui.EmptyTopNavView' })
       .start().addClass('tf-container')
         .start('h2').addClass('tfa-title').add(this.TWO_FACTOR_TITLE).end()
         .start().addClass(this.myClass('TwoFactAuthNote'))
@@ -197,7 +233,7 @@ foam.CLASS({
       .start().addClass(this.myClass('sme-subtitle'))
         .start('strong').add(this.TWO_FACTOR_NOTES_1).end()
         .start('a').addClass('app-link')
-          .attrs({ href: this.CONTACT_EMAIL })
+          .attrs({ href: this.CONTACT_EMAIL + this.supportPhone})
           .add(this.TWO_FACTOR_NOTES_2)
         .end()
       .end();
@@ -214,9 +250,11 @@ foam.CLASS({
                 .addClass('inline-block')
                 .add('➔')
               .end()
-              .add(this.GO_BACK)
+              .add(this.GO_BACK + this.appName)
               .on('click', () => {
-                window.location = this.ABLII_ADDRESS;
+                 this.auth.logout().then(function() {
+                    window.location = window.location.href;
+                 });
               })
             .end()
           .end()
@@ -228,10 +266,11 @@ foam.CLASS({
   actions: [
     {
       name: 'verify',
+      buttonStyle: 'PRIMARY',
       code: function(X) {
         var self = this;
         if ( ! this.twoFactorToken ) {
-          this.notify(this.TWO_FACTOR_NO_TOKEN, 'error');
+          this.notify(this.TWO_FACTOR_NO_TOKEN, '', this.LogLevel.ERROR, true);
           return;
         }
 

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.invoice.ui',
   name: 'SubscriptionDetailView',
@@ -111,7 +128,7 @@ foam.CLASS({
             .start(this.CANCEL_SUBSCRIPTION).addClass('float-right').addClass('white-blue-button').end()
           .end() 
           .start()
-          .add('Recurring Invoice for ', this.data.payer.label()).addClass('light-roboto-h2')
+          .add('Recurring Invoice for ', this.data.payer.toSummary()).addClass('light-roboto-h2')
           .end()
           .tag({ class: 'net.nanopay.invoice.ui.shared.SingleSubscriptionView', data: this.data })
           .start().addClass(this.myClass('view-invoices')).enableClass('blue' ,this.showInvoices$)

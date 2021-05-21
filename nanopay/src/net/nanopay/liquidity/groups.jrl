@@ -1,1 +1,1 @@
-p({"class":"foam.nanos.auth.Group","id":"liquidBasic","parent":"basicUser","defaultMenu":"accounts","rootMenu":"accounts"}})
+p({"class":"foam.nanos.auth.Group","id":"liquidBasic","parent":"basicUser","defaultMenu":"accounts","rootMenu":"accounts", "theme":"D306F95E-4C4F-4C2B-BC5F-F67CFFE3ED00"})

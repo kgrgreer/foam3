@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.ui.wizard',
   name: 'WizardController',
@@ -9,7 +26,6 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.detail.WizardSectionView',
     'foam.u2.dialog.Popup',
     'net.nanopay.sme.ui.MenuRedirectSMEModalView',
   ],
@@ -43,8 +59,8 @@ foam.CLASS({
       background-color: #fafafa;
       padding: 0 24px 0;
     }
-    .net-nanopay-sme-ui-AbliiActionView-tertiary:focus:not(:hover),
-    .net-nanopay-sme-ui-AbliiActionView-primary:focus:not(:hover) {
+    .foam-u2-ActionView-tertiary:focus:not(:hover),
+    .foam-u2-ActionView-primary:focus:not(:hover) {
       border-color: transparent !important;
     }
   `,
@@ -63,16 +79,27 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'modelName',
-      expression: function(model) {
-        var array = model.split(".");
-        return array[array.length - 1];
-      }
+      name: 'wizardView'
+    },
+    {
+      class: 'String',
+      name: 'redirectMenu',
+      documentation: `
+        Optional. If set wraps the wizardView with MenuRedirectSMEModalView and overwrites onClose
+        to push this menu.`
+    },
+    {
+      name: 'controllerMode'
     },
     {
       class: 'Function',
       name: 'onClose',
       documentation: 'Callback function to be passed on to Popup.'
+    },
+    {
+      class: 'Boolean',
+      name: 'isEdit',
+      documentation: 'isEdit property to be passed to the WizardView'
     }
   ],
   
@@ -81,23 +108,25 @@ foam.CLASS({
       var self = this;
       this.start().addClass(this.myClass())
         .add(this.slot((data) => {
-          if ( !! data ) {
-            return self.Popup.create({ onClose: self.onClose }, self)
-              .startContext({ controllerMode: self.controllerMode })
-                .tag({
-                  class: `net.nanopay.contacts.ui.${self.modelName}WizardView`,
-                  data: self.data,
-                  isEdit: true
-                })
-              .endContext();
+          if ( self.redirectMenu ) {
+            return self.MenuRedirectSMEModalView.create({
+              menu: self.redirectMenu,
+              controllerMode: self.controllerMode,
+              view: {
+                class: self.wizardView,
+                data$: !! self.data ? self.data$ : self.model_$,
+                isEdit: self.isEdit
+              }
+            });
           }
-          return self.MenuRedirectSMEModalView.create({
-            menu: 'sme.main.contacts',
-            view: {
-              class: `net.nanopay.contacts.ui.${self.modelName}WizardView`,
-              data: self.model_
-            }
-          });
+          return self.Popup.create({ onClose: self.onClose }, self)
+            .startContext({ controllerMode: self.controllerMode })
+              .tag({
+                class: self.wizardView,
+                data$: !! self.data ? self.data$ : self.model_$,
+                isEdit: self.isEdit
+              })
+            .endContext();
         }))
       .end()
     }

@@ -20,6 +20,7 @@ import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.tx.model.Transaction;
+import foam.util.SafetyUtil;
 
 public class BankAccountVerifierService
     extends    ContextAwareSupport
@@ -27,21 +28,21 @@ public class BankAccountVerifierService
   protected DAO bankAccountDAO;
 
   @Override
-  public boolean verify(X x, long bankAccountId, long randomDepositAmount)
+  public boolean verify(X x, String bankAccountId, long randomDepositAmount)
       throws RuntimeException {
     // To test auto depoit of the ablii app
     if ( randomDepositAmount == -1000000 ) {
       BankAccount bankAccount = (BankAccount) bankAccountDAO.inX(x).find(bankAccountId);
       bankAccount.setStatus(BankAccountStatus.VERIFIED);
+      bankAccount.setVerifiedBy("MICRO_DEPOSIT");
       bankAccount = (BankAccount) bankAccountDAO.inX(x).put(bankAccount);
-      if ( bankAccount != null) checkPendingAcceptanceInvoices(x, bankAccount);
       return true;
     }
 
     PM pm = new PM(this.getClass(), "bankAccountVerify");
 
     try {
-      if (bankAccountId <= 0) {
+      if ( SafetyUtil.isEmpty(bankAccountId) ) {
         throw new RuntimeException("Invalid Bank Account Id");
       }
 
@@ -88,7 +89,6 @@ public class BankAccountVerifierService
         bankAccount.setMicroVerificationTimestamp(new Date());
         isVerified = true;
         bankAccount = (BankAccount) bankAccountDAO.inX(x).put(bankAccount);
-        checkPendingAcceptanceInvoices(x, bankAccount);
       }
 
       return isVerified;
@@ -100,53 +100,5 @@ public class BankAccountVerifierService
   @Override
   public void start() {
     bankAccountDAO = (DAO) getX().get("localAccountDAO");
-  }
-
-  private void checkPendingAcceptanceInvoices(X x, BankAccount bankAccount) {
-    // Automation of transfer, where invoice payment
-    //  has been in Holding (payer's default digital account)
-    try {
-      AuthService auth = (AuthService) x.get("auth");
-      if ( auth.check(x, "invoice.holdingAccount") ) {
-        DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-        DAO transactionDAO = (DAO) x.get("localTransactionDAO");
-        DAO userDAO = (DAO) x.get("userDAO");
-        User currentUser = null;
-        try {
-          currentUser = (User) userDAO.find(bankAccount.getOwner());
-        } catch (Exception e) {
-          Logger logger = (Logger) x.get("logger");
-          logger.log(e);
-        }
-        if ( currentUser == null ) return;
-
-        List pendAccInvoice = ((ArraySink)invoiceDAO.where(AND(
-            EQ(Invoice.DESTINATION_CURRENCY, bankAccount.getDenomination()),
-            EQ(Invoice.PAYEE_ID, currentUser.getId()),
-            EQ(Invoice.STATUS, InvoiceStatus.PENDING_ACCEPTANCE)
-          )).select(new ArraySink())).getArray();
-        Transaction txn = null;
-        Invoice inv = null;
-
-        for( int i = 0; i < pendAccInvoice.size(); i++ ) {
-          // For each found invoice with the above mlang conditions
-          // make a transaction to Currently verified Bank Account
-          inv = (Invoice) pendAccInvoice.get(i);
-          txn = new Transaction();
-          txn.setPayeeId(inv.getPayeeId());
-          txn.setPayerId(inv.getPayerId());
-          txn.setSourceAccount(inv.getDestinationAccount());
-          txn.setDestinationAccount(bankAccount.getId());
-          txn.setInvoiceId(inv.getId());
-          txn.setAmount(inv.getAmount());
-
-          transactionDAO.put(txn);
-        }
-      }
-    } catch(Exception e) {
-      Logger logger = (Logger) x.get("logger");
-      logger.error("AUTO DEPOSIT TO --- FAILED" );
-    }
-
   }
 }

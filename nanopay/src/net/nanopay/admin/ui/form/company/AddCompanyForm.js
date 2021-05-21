@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.admin.ui.form.company',
   name: 'AddCompanyForm',
@@ -6,15 +23,15 @@ foam.CLASS({
   documentation: 'Pop up that extends WizardView for adding a company',
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.auth.Address',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.Country',
     'foam.nanos.auth.User',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.tx.model.Transaction'
   ],
 
   imports: [
+    'notify',
     'stack',
     'userDAO',
     'validateEmail',
@@ -48,31 +65,31 @@ foam.CLASS({
       var companyInfo = this.viewData;
 
       if ( companyInfo.firstName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
+        this.notify('First name cannot exceed 70 characters.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( companyInfo.lastName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
+        this.notify('Last name cannot exceed 70 characters.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( companyInfo.jobTitle.length > 0 && ! this.validateTitleNumOrAuth(companyInfo.jobTitle) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid job title.', type: 'error' }));
+        this.notify('Invalid job title.', '', this.LogLevel.ERROR, true);
         return;
       }
       if ( ! this.validateEmail(companyInfo.email) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
+        this.notify('Invalid email address.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validatePhone(companyInfo.phoneNumber) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
+        this.notify('Invalid phone number.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validatePassword(companyInfo.password) ) {
-        this.add(this.NotificationMessage.create({ message: 'Password must be at least 6 characters long.', type: 'error' }));
+        this.notify('Password must be at least 6 characters long.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( companyInfo.password != companyInfo.confirmPassword ) {
-        this.add(this.NotificationMessage.create({ message: 'Confirmation password does not match.', type: 'error' }));
+        this.notify('Confirmation password does not match.', '', this.LogLevel.ERROR, true);
         return false;
       }
 
@@ -82,39 +99,39 @@ foam.CLASS({
       var companyInfo = this.viewData;
 
       if ( companyInfo.businessName.length > 35 ) {
-        this.add(this.NotificationMessage.create({ message: 'Business name must be less than 35 characters.', type: 'error' }));
+        this.notify('Business name must be less than 35 characters long.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( companyInfo.registrationNumber.length > 0 && ! this.validateTitleNumOrAuth(companyInfo.registrationNumber) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid registration number.', type: 'error' }));
+        this.notify('Invalid registration number.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( companyInfo.issuingAuthority.length > 0 && ! this.validateTitleNumOrAuth(companyInfo.issuingAuthority) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid issuing authority', type: 'error' }));
+        this.notify('Invalid issuing authority.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( companyInfo.website.length > 0 && ! this.validateWebsite(companyInfo.website) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid website.', type: 'error' }));
+        this.notify('Invalid website.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateStreetNumber(companyInfo.streetNumber) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
+        this.notify('Invalid street number.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateAddress(companyInfo.streetName) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
+        this.notify('Invalid street name.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( companyInfo.addressLine.length > 0 && ! this.validateAddress(companyInfo.addressLine) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid address line.', type: 'error' }));
+        this.notify('Invalid address line.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateCity(companyInfo.city) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
+        this.notify('Invalid city name.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validatePostalCode(companyInfo.postalCode, companyInfo.country) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
+        this.notify('Invalid postal code.', '', this.LogLevel.ERROR, true);
         return false;
       }
 
@@ -151,7 +168,7 @@ foam.CLASS({
           ( companyInfo.email == null || companyInfo.email.trim() == '' ) ||
           ( companyInfo.phoneNumber == null || companyInfo.phoneNumber.trim() == '' ) ||
           ( companyInfo.password == null || companyInfo.password.trim() == '' ) ) {
-            self.add(self.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
+            this.notify('Please fill out all necessary fields before proceeding.', '', this.LogLevel.ERROR, true);
             return;
           }
 
@@ -172,7 +189,7 @@ foam.CLASS({
           ( companyInfo.streetName == null || companyInfo.streetName.trim() == '' ) ||
           ( companyInfo.city == null || companyInfo.city.trim() == '' ) ||
           ( companyInfo.postalCode == null || companyInfo.postalCode.trim() == '' ) ) {
-            self.add(self.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
+            this.notify('Please fill out all necessary fields before proceeding.', '', this.LogLevel.ERROR, true);
             return;
           }
 
@@ -187,9 +204,7 @@ foam.CLASS({
         if ( this.position == 2 ) {
           // Review
 
-          var businessPhone = this.Phone.create({
-            number: companyInfo.phoneNumber
-          });
+          var businessPhone = companyInfo.phoneNumber;
 
           var businessAddress = this.Address.create({
             address1: companyInfo.streetNumber + ' ' + companyInfo.streetName,
@@ -224,24 +239,21 @@ foam.CLASS({
           });
 
           if ( newBusiness.errors_ ) {
-            this.add(this.NotificationMessage.create({ message: newBusiness.errors_[0][1], type: 'error' }));
+            this.notify(newBusiness.errors_[0][1], '', this.LogLevel.ERROR, true);
             return;
           }
-          if ( businessPhone.errors_ ) {
-            this.add(this.NotificationMessage.create({ message: businessPhone.errors_[0[1]], type: 'error' }));
-            return;
-          }
+          
           if ( businessAddress.errors_ ) {
-            this.add(this.NotificationMessage.create({ message: businessAddress.errors_[0][1], type: 'error' }));
+            this.notify(businessAddress.errors_[0][1], '', this.LogLevel.ERROR, true);
             return;
           }
 
           this.userDAO.put(newBusiness).then(function(response) {
-            self.add(self.NotificationMessage.create({ message: 'New business ' + companyInfo.businessName + ' successfully added!', type: '' }));
+            self.notify('New business ' + companyInfo.businessName + ' successfully added!', '', self.LogLevel.INFO, true);
             self.subStack.push(self.views[self.subStack.pos + 1].view);
             self.nextLabel = 'Done';
           }).catch(function(error) {
-            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+            self.notify(error.message, '', self.LogLevel.ERROR, true);
           });
         }
 

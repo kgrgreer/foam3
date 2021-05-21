@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.fx.afex',
   name: 'AFEXCoridorEnabledNotificationRule',
@@ -36,14 +53,14 @@ foam.CLASS({
 
           Logger logger = (Logger) x.get("logger");
 
-          if ( ! (obj instanceof AFEXBusiness) ) {
+          if ( ! (obj instanceof AFEXUser) ) {
             return;
           }
 
-          AFEXBusiness afexBusiness = (AFEXBusiness) obj;
+          AFEXUser afexUser = (AFEXUser) obj;
           DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
 
-          Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexBusiness.getUser()));
+          Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexUser.getUser()));
           if ( null != business ) {
             Address businessAddress = business.getAddress();
             if ( null != businessAddress && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {
@@ -73,20 +90,19 @@ foam.CLASS({
       DAO                  localGroupDAO  = (DAO) x.get("localGroupDAO");
       Group                group          = (Group) localGroupDAO.find(business.getGroup());
       AppConfig            appConfig      = group.getAppConfig(x);
-      String               url            = appConfig.getUrl().replaceAll("/$", "");
+      String               url            = appConfig.getUrl();
 
       message.setTo(new String[]{business.getEmail()});
       String toCountry = business.getAddress().getCountryId().equals("CA") ? "USA" : "Canada";
       String toCurrency = business.getAddress().getCountryId().equals("CA") ? "USD" : "CAD";
-      args.put("business", business.label());
+      args.put("business", business.toSummary());
       args.put("toCurrency", toCurrency);
       args.put("toCountry", toCountry);
-      args.put("link",   url + "#sme.main.dashboard");
+      args.put("link",   url + "#mainmenu.dashboard");
       try {
         Notification internationalPaymentsEnabledNotification = new Notification.Builder(x)
           .setBody("AFEX Business has been created and corridor has been enabled.")
           .setNotificationType("AFEXBusinessCreatedCorridorEnabled")
-          .setEmailIsEnabled(true)
           .setEmailArgs(args)
           .setEmailName("international-payments-enabled-notification")
           .build();

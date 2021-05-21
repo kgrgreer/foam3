@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.ui.modal',
   name: 'ExportModal',
@@ -13,7 +30,7 @@ foam.CLASS({
     'foam.nanos.export.JSONDriver',
     'foam.nanos.export.JSONJDriver',
     'foam.nanos.export.XMLDriver',
-    'foam.nanos.export.CSVDriver'
+    'foam.nanos.export.CSVTableExportDriver'
   ],
 
   properties: [
@@ -50,7 +67,7 @@ foam.CLASS({
     {
       name: 'csvDriver',
       factory: function() {
-        return this.CSVDriver.create();
+        return this.CSVTableExportDriver.create();
       }
     },
     {
@@ -80,7 +97,6 @@ foam.CLASS({
     }
     ^ .foam-u2-tag-Select {
       width: 125px;
-      height: 40px;
       border-radius: 0;
       margin-left: 25px;
       padding: 12px 20px;

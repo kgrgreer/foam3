@@ -1,4 +1,21 @@
 /**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+/**
  * @license
  * Copyright 2019 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -12,24 +29,38 @@ foam.CLASS({
   javaImports: [
     'foam.core.FObject',
     'foam.core.X',
-    'foam.dao.DAO',
     'foam.dao.ArraySink',
+    'foam.dao.DAO',
     'foam.nanos.approval.ApprovalRequest',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.approval.ApprovalRequestUtil',
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.auth.Group',
+    'foam.nanos.auth.GroupPermissionJunction',
+    'foam.nanos.auth.LifecycleState',
+    'foam.nanos.auth.ServiceProvider',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
+    'foam.nanos.session.Session',
     'foam.nanos.ticket.Ticket',
     'foam.nanos.ticket.TicketStatus',
-    'foam.nanos.session.Session',
-    'net.nanopay.ticket.SudoTicket',
-    'net.nanopay.ticket.SudoTicketApprovalResponseRule',
-    'net.nanopay.ticket.SudoTicketApprovalRequestRule',
+    'foam.util.Auth',
     'java.util.ArrayList',
     'java.util.Arrays',
+    'net.nanopay.ticket.SudoTicket',
+    'net.nanopay.ticket.SudoTicketApprovalRequestRule',
+    'net.nanopay.ticket.SudoTicketApprovalResponseRule',
     'static foam.mlang.MLang.*'
+  ],
+
+  properties: [
+    {
+      name: 'spid',
+      class: 'String',
+      javaFactory: 'return java.util.UUID.randomUUID().toString().toLowerCase().split("-")[0];'
+    }
   ],
 
   methods: [
@@ -50,12 +81,32 @@ foam.CLASS({
 
     // repeat with declined.
     Logger logger = new PrefixLogger(new Object[] {"SudoTicketTest"}, (Logger) x.get("logger"));
+    ((DAO) x.get("localServiceProviderDAO")).put(new ServiceProvider.Builder(x).setId(getSpid()).build());
+
     DAO groupDAO = (DAO) x.get("localGroupDAO");
     Group group1 = (Group) groupDAO.put(new Group.Builder(x).setId("group1").build());
     Group group2 = (Group) groupDAO.put(new Group.Builder(x).setId("group2").build());
     Group group3 = (Group) groupDAO.put(new Group.Builder(x).setId("group3").build());
 
+    DAO groupPermissionJunctionDAO = (DAO) x.get("localGroupPermissionJunctionDAO");
+    groupPermissionJunctionDAO.put(new GroupPermissionJunction.Builder(x).setSourceId("group1").setTargetId("serviceprovider.read."+getSpid()).build());
+    groupPermissionJunctionDAO.put(new GroupPermissionJunction.Builder(x).setSourceId("group2").setTargetId("serviceprovider.read."+getSpid()).build());
+    groupPermissionJunctionDAO.put(new GroupPermissionJunction.Builder(x).setSourceId("group3").setTargetId("serviceprovider.read."+getSpid()).build());
+    groupPermissionJunctionDAO.put(new GroupPermissionJunction.Builder(x).setSourceId("group2").setTargetId("group.read.group3").build());
+
     DAO userDAO = (DAO) x.get("localUserDAO");
+
+    User admin = new User.Builder(x)
+       .setId(99195)
+       .setEmail("test@example.com")
+       .setSpid(getSpid())
+       .setGroup("admin")
+       .setLifecycleState(LifecycleState.ACTIVE)
+       .build();
+    admin = (User) userDAO.put(admin);
+    x = Auth.sudo(x, admin);
+    userDAO = userDAO.inX(x);
+
     User user1 = (User) userDAO.put(new User.Builder(x).setGroup("group1").setFirstName("user_one").setLastName("user_one").setEmail("user1@nanopay.net").build());
     User user2 = (User) userDAO.put(new User.Builder(x).setGroup("group2").setFirstName("user_two").setLastName("user_two").setEmail("user2@nanopay.net").build());
     User user3 = (User) userDAO.put(new User.Builder(x).setGroup("group3").setFirstName("user_three").setLastName("user_three").setEmail("user3@nanopay.net").build());
@@ -76,10 +127,11 @@ foam.CLASS({
 
    DAO ticketDAO = (DAO) x.get("localTicketDAO");
    SudoTicket ticket = new SudoTicket.Builder(x).setOwner(user2.getId()).setSudoAsUser(user3.getId()).setComment("user2 as user3").build();
-   X y = x.put("user", user2);
-   ticket = (SudoTicket) ticketDAO.inX(y).put_(y, ticket).fclone();
+   Subject subject = new Subject.Builder(x).setUser(user2).build();
+   X y = x.put("subject", subject);
+   ticket = (SudoTicket) ticketDAO.inX(y).put(ticket).fclone();
 
-   String classification = SudoTicket.class.getSimpleName();
+   ApprovalRequestClassificationEnum classification = ApprovalRequestClassificationEnum.SUDO_TICKET_APPROVAL;
    DAO approvalRequestDAO = ApprovalRequestUtil.getAllRequests(x, ticket.getId(), classification);
    ApprovalStatus status = ApprovalRequestUtil.getState(approvalRequestDAO);
    test(status != null, "ApprovalRequest found.");

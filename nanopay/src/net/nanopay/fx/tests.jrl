@@ -1,5 +1,6 @@
 p({"class":"net.nanopay.fx.FXServiceTest","id":"FXServiceTest"})
-p({"class":"net.nanopay.fx.ascendantfx.AscendantFXServiceTest","id":"AscendantFXServiceTest"})
+//p({"class":"net.nanopay.fx.ascendantfx.AscendantFXServiceTest","id":"AscendantFXServiceTest"})
 p({"class":"net.nanopay.fx.afex.AFEXServiceProviderTest","id":"AFEXServiceProviderTest"})
 //p({"class":"net.nanopay.fx.ascendantfx.AscendantFXTransactionPlanDAOTest","id":"AscendantFXTransactionPlanDAOTest"})
 p({"class":"net.nanopay.fx.afex.AFEXTransactionPlanDAOTest","id":"AFEXTransactionPlanDAOTest"})
+//p({"class":"net.nanopay.partner.treviso.tx.TrevisoPlannerTest","id":"TrevisoPlannerTest"})

@@ -1,11 +1,1061 @@
+// base capabilities
+p({class: "foam.nanos.crunch.Capability", id: "serviceProviderCapability", name: "Service Provider Capability"})
+p({class: "foam.nanos.crunch.Capability", id: "plannerCapability", name: "Planner Capability"})
+p({class: "foam.nanos.crunch.Capability", id: "countryCapability", name: "Country Capability"})
+p({class: "foam.nanos.crunch.Capability", id: "corridorCapability", name: "Corridor Capability"})
+p({class: "foam.nanos.crunch.Capability", id: "currencyCapability", name: "Currency Capability"})
+p({class: "foam.nanos.crunch.Capability", id: "menuCapability", name: "Menu Capability", permissionsGranted: ["menu.read.submenu.contact.create", "menu.read.sme.main.onboarding"]})
+
+// spid capabilities
+p({
+  "class":"foam.nanos.auth.ServiceProvider",
+  "id":"nanopay",
+  "description":"nanopay",
+  "permissionsGranted": [
+    "language.read.*"
+  ]
+})
+//p({"class":"foam.nanos.auth.ServiceProvider","id":"connected-city","description":"ConnectedCity"})
+//p({"class":"foam.nanos.auth.ServiceProvider","id":"goldman-sachs","description":"Goldman Sachs"})
+//p({"class":"foam.nanos.auth.ServiceProvider","id":"opentext","description":"OpenText"})
+p({"class":"foam.nanos.auth.ServiceProvider","id":"portal-developer","enabled":true,"description":"API Portal Developer"})
+p({"class":"foam.nanos.auth.ServiceProvider","id":"intuit","enabled":true,"description":"intuit spid"})
+
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f",
-  "name":"viewCrunchAppStore",
-  "description":"Ability to view the CRUNCH App Store",
-  "notes":"When users sign up for an account, they are granted the capability to view the crunch app store and select the capabilities they want.",
+  "id":"crunch.onboarding.signing-officer-question",
+  "name":"Signing Officer",
+  "of":"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion",
+  "description":"Are you a Signing Officer?",
+  "notes":"This capability will intercept its permissions when there are no signingofficerjunctions belonging to the current business",
   "version":"0",
   "enabled":true,
-  "visible":false,
-  "permissionsGranted":["menu.read.appStore"]
+  "keywords":["featured"],
+  "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
+  "associatedEntity":2,
+  "permissionsIntercepted":[
+    "businessHasSigningOfficer"
+  ],
+  "availabilityPredicate": {
+    "class": "foam.nanos.crunch.predicate.IsAgent"
+  },
+  "keywords":["featured"],
+  "interceptIf":{
+    "class":"foam.mlang.predicate.Not",
+    "arg1":{"class":"net.nanopay.crunch.predicate.SigningOfficerQuestionAnswered"}
+  },
+  "wizardlet": {
+    "class": "net.nanopay.crunch.wizardlet.SigningOfficerQuestionWizardlet"
+  },
+  "wizardConfig": {
+    "class": "foam.u2.crunch.EasyCrunchWizard",
+    "allowSkipping": false
+  },
+  "visibilityPredicate": {
+    "class": "foam.mlang.predicate.Not",
+    "arg1":
+      {
+        "class":"net.nanopay.crunch.IsSpid",
+        "spid": "treviso"
+      }
+  },
+  "requirementViewTitle":"We require a person authorized to act on behalf of the company to provide certain information to us. In this section, we ask if you are such a person, or alternatively, an email address for someone who is."
 })
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.signing-officer-information",
+  "name":"Complete your signing officer information",
+  "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData",
+  "description":"Authorization to sign on behalf of the business",
+  "version":"0",
+  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
+  "enabled":true,
+  "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
+  "daoKey":"userDAO",
+  "contextDAOFindKey":"subject.realuser",
+  "reviewRequired":true,
+  "associatedEntity":2,
+  "keywords":["featured"],
+  "permissionsGranted":[
+    "certifydatareviewed.rw.reviewed",
+    "net.nanopay.crunch.onboardingmodels.certifydatareviewed.section.reviewDataSection",
+    "user.invoice.pay",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementcad.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.usdafexterms.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.nanopayinternationalpaymentscustomeragreement.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxmassachusettsdisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxnewyorkdisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxwashingtondisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcaliforniadisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxarizonadisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementusd.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcoloradodisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.abliitermsandconditions.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.abliiprivacypolicy.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
+  ],
+  "permissionsIntercepted": [
+    "certifydatareviewed.rw.reviewed",
+    "user.invoice.pay",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementcad.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.usdafexterms.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.nanopayinternationalpaymentscustomeragreement.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxmassachusettsdisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxnewyorkdisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxwashingtondisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcaliforniadisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxarizonadisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementusd.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcoloradodisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.abliitermsandconditions.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.abliiprivacypolicy.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
+  ],
+  "interceptIf": { "class":"net.nanopay.crunch.predicate.SigningOfficerCapabilityInterceptPredicate" },
+  "availabilityPredicate": { "class":"net.nanopay.crunch.predicate.SigningOfficerPrivilegesRequested" },
+  "wizardConfig": {
+    "class": "foam.u2.crunch.EasyCrunchWizard",
+    "allowSkipping": false
+  }
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.certify-data-reviewed",
+  "name":"Certify Data Reviewed",
+  "of":"net.nanopay.crunch.onboardingModels.CertifyDataReviewed",
+  "description":"Certify all data submitted has been reviewed",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.business-information",
+  "name":"Business Details",
+  "of":"net.nanopay.crunch.onboardingModels.BusinessInformationData",
+  "version":"0",
+  "enabled":true,
+  "daoKey":"businessDAO",
+  "wizardlet": {
+    class: "net.nanopay.crunch.wizardlet.RerenderWizardlet",
+    rerenderList: ["crunch.onboarding.business-directors"]
+  },
+  "contextDAOFindKey":"subject.user"
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.business-type-sector",
+  "name":"Business Details",
+  "documentation":"A simplified version of Business Details containing only Business Type and Business Sector",
+  "of":"net.nanopay.crunch.onboardingModels.BusinessTypeAndSector",
+  "version":"0",
+  "enabled":true,
+  "daoKey":"businessDAO",
+  "wizardlet": {
+    class: "net.nanopay.crunch.wizardlet.RerenderWizardlet",
+    rerenderList: ["crunch.onboarding.business-directors"]
+  },
+  "contextDAOFindKey":"subject.user"
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.transaction-details",
+  "name":"Transaction Details",
+  "of":"net.nanopay.crunch.onboardingModels.TransactionDetailsData",
+  "version":"0",
+  "enabled":true,
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.business-directors",
+  "name":"Business Directors Data",
+  "of":"net.nanopay.crunch.onboardingModels.BusinessDirectorsData",
+  "version":"0",
+  "enabled":true,
+  "daoKey":"businessDAO",
+  "reviewRequired":true,
+  "contextDAOFindKey":"subject.user"
+})
+
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.business-ownership",
+  "name":"Does your company have one or more people who own 25% or more of the business either directly or indirectly?",
+  "of":"net.nanopay.crunch.onboardingModels.BusinessOwnershipData",
+  "version":"0",
+  "enabled":true,
+  "daoKey":"convertOwnerObjectDAO",
+  "reviewRequired":true
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.publicly-traded",
+  "name":"Your company does NOT have a person who own 25% or more of the business either directly or indirectly.",
+  "of":"net.nanopay.crunch.onboardingModels.IsPubliclyTradedQuestion",
+  "version":"0",
+  "enabled":true,
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user",
+  "reviewRequired":false
+})
+
+p({
+  "class":"foam.nanos.crunch.MinMaxCapability",
+  "id":"crunch.onboarding.minmax.business-ownership",
+  "name":"Business Ownership",
+  "min":1,
+  "max":1,
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class": "foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.parent.unlock-ca-ca-payments",
+  "name":"Unlock Domestic Payments and Invoicing",
+  "description":"Unlock payments and invoicing to Canada (CAD to CAD)",
+  "icon":"/images/capabilityIcons/CADOnboardCap.svg",
+  "version":"0",
+  "enabled":true,
+  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
+  "keywords":["featured"],
+  "permissionsGranted":[
+    "business.invoice.pay",
+    "menu.read.capability.main.invoices.receivables",
+    "invoice.create"
+  ],
+  "permissionsIntercepted": [
+    "business.invoice.pay"
+  ],
+  "availabilityPredicate": {
+    "class":"foam.mlang.predicate.And",
+    "args": [
+      { "class":"net.nanopay.crunch.predicate.IsBusiness" },
+      {
+        "class":"net.nanopay.crunch.predicate.CheckUserCountry",
+        "country":"CA"
+      }
+    ]
+  }
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.unlock-ca-ca-payments",
+  "name":"Unlock Domestic Payments and Invoicing",
+  "description":"Unlock payments and invoicing to Canada (CAD to CAD)",
+  "version":"0",
+  "enabled":true,
+  "reviewRequired":true,
+  "permissionsGranted":[
+    "business.invoice.pay",
+    "menu.read.capability.main.invoices.receivables",
+    "invoice.create"
+  ],
+  "permissionsIntercepted": [
+    "business.invoice.pay"
+  ],
+  "wizardlet": {
+    "class": "foam.nanos.crunch.ui.CapabilityWizardlet"
+  },
+  "wizardConfig": {
+    "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig",
+    "allowSkipping": false
+  }
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.parent.unlock-ca-international-payments",
+  "name":"International payments",
+  "description":"International payments",
+  "icon":"/images/capabilityIcons/CADOnboardCap.svg",
+  "version":"0",
+  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
+  "enabled":true,
+  "keywords":["featured"],
+  "availabilityPredicate": {
+    "class":"foam.mlang.predicate.And",
+    "args": [
+      { "class":"net.nanopay.crunch.predicate.IsBusiness" },
+      {
+        "class":"net.nanopay.crunch.predicate.CheckUserCountry",
+        "country":"CA"
+      }
+    ]
+  }
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.unlock-ca-international-payments",
+  "name":"International payments onboarding",
+  "description":"International payments onboarding",
+  "version":"0",
+  "enabled":true,
+  "reviewRequired":true,
+  "permissionsGranted":[
+    "business.invoice.pay",
+    "menu.read.mainmenu.invoices.receivables",
+    "paymentprovidercorridor.read.kotak",
+    "paymentprovidercorridor.target.read.kotak"
+  ],
+  "permissionsIntercepted": [
+    "business.invoice.pay"
+  ],
+  "wizardConfig": {
+    "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig",
+    "allowSkipping": false
+  }
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.parent.unlock-us-payments",
+  "name":"Unlock International & Domestic Payments and Invoicing",
+  "description":"Unlock payments",
+  "icon":"/images/capabilityIcons/USDOnboardCap.svg",
+  "version":"0",
+  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
+  "enabled":true,
+  "keywords":["featured"],
+  "availabilityPredicate": {
+    "class":"foam.mlang.predicate.And",
+    "args": [
+      { "class":"net.nanopay.crunch.predicate.IsBusiness" },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1": {
+          "class":"net.nanopay.crunch.predicate.CheckUserCountry",
+          "country":""
+        }
+      },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1": {
+          "class":"net.nanopay.crunch.predicate.CheckUserCountry",
+          "country":"CA"
+        }
+      },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1": {
+          "class":"net.nanopay.crunch.predicate.CheckUserCountry",
+          "country":"BR"
+        }
+      }
+    ]
+  }
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.unlock-us-payments",
+  "name":"International & Domestic Payments Onboarding",
+  "description":"International & Domestic Payments Onboarding",
+  "version":"0",
+  "enabled":true,
+  "reviewRequired":true,
+  "permissionsGranted":[
+    "business.invoice.pay",
+    "menu.read.mainmenu.invoices.receivables",
+    "paymentprovidercorridor.read.kotak",
+    "paymentprovidercorridor.target.read.kotak"
+  ],
+  "permissionsIntercepted": [
+    "business.invoice.pay"
+  ],
+  "wizardConfig": {
+    "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig",
+    "allowSkipping": false
+  },
+  "requirementViewTitle":"In this section, we ask for more business information to enable us to securely process payments on your behalf."
+})
+
+p({
+  "class": "foam.nanos.crunch.Capability",
+  "id":"AFEX",
+  "name":"AFEX Payment Provider Capability",
+  "description":"AFEXPayment Provider Capability",
+  "version":"0",
+  "enabled":true,
+  "grantMode": 1,
+  "permissionsGranted":[
+    "paymentprovidercorridor.read.paymentprovidercorridor.afex.ca-us",
+    "paymentprovidercorridor.source.read.paymentprovidercorridor.afex.ca-us",
+    "paymentprovidercorridor.target.read.paymentprovidercorridor.afex.ca-us",
+    "paymentprovidercorridor.read.paymentprovidercorridor.afex.us-ca",
+    "paymentprovidercorridor.source.read.paymentprovidercorridor.afex.us-ca",
+    "paymentprovidercorridor.target.read.paymentprovidercorridor.afex.us-ca",
+    "paymentprovidercorridor.read.paymentprovidercorridor.afex.us-us",
+    "paymentprovidercorridor.source.read.paymentprovidercorridor.afex.us-us",
+    "paymentprovidercorridor.target.read.paymentprovidercorridor.afex.us-us"
+  ]
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.general-admission",
+  "name":"General Admission",
+  "description": "User registration",
+  "version":"0",
+  "icon":"images/nanopay_logo_blue.png",
+  "enabled":true,
+  "availabilityPredicate":
+  {
+    "class": "foam.mlang.predicate.Not",
+    "arg1":
+      {
+        "class":"net.nanopay.crunch.IsSpid",
+        "spid": "treviso"
+      }
+  },
+  "associatedEntity": 1,
+  "wizardConfig": {
+    "class": "foam.u2.crunch.EasyCrunchWizard",
+    "allowSkipping": false
+  }
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.treviso.general-admission",
+  "name":"General Admission",
+  "description": "User registration",
+  "version":"0",
+  "icon":"data:image/gif;base64,R0lGODlhzgDJAOYAAABCgkt6pqe91B1Xj3KWus7b5wxLiDpsno2rx7fK3GKKseLp8CphlpizzYCgwFF9qtrk7cXU4gVFhK7D1xJPiz9xoGmPte3x9jNmmVmErZy1ztbg67PG2RhTjZKuyeju9HqcvUd2pc3Z5omnxaK50WyStqvA1tPe6b3O3lWBrN7m74SkwxlSlMfV5LXI2w5LiZSvy+bs8nWZu3CUuCZdlKO60UNzo1qMrYChwMLR4QlJhmOLsyJak098qEJrnBxXkP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAUUAEAALAAAAADOAMkAAAf/gECCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp+goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2+v8DBwsPExcbHyMnKy8zNzs/Q0dLT1NXW19jZhQkaIBYCgisBKSMkBdrohycFCTY0FDoSAAYHIDUwAToAHQwZDi4f0mFDUYLBvAk8AChcqFBCiAYcLOhbSMEGAggCp5lgCKBCAnkcGdJwkACEAY4SbJDICI1ESAcjQobssCKBBZk8VgRkWayFgp1ANqJ0EUJmyAEQD8ikyVPYhRkSDhBKIJNGDgpGQ9pIsMIoDXBNe5kYoFADIRFGLbjMGnJGjYQy/wOoCKtrx0IJGwidyCogg1EDAzBUCJFixw4UFxyUUNDDxoF3ACQgoHsLA0MGhTZkpeDiBwAd/UCQaLEA0oUTJkCIoEyrK0MLhS50MPpiRIEJpVkv08BhNsMGhgwyxCADsW5nBCzICHkiuMIKI5off+YAgAusDHkcUi59+jMPAGSACBnCe7YJAF4k8P3a/LUTJy3EDAmj1gWg7jnRiMwBLsMO56iywQIFIEDAAwEw0MGCFICQHyd+ARBAAxwZIAN+oiyAwgoWhNCBBANwMJFMCTyYiVAAkGADQxlgJMoFLSCQAgMnhZQCiiH9EIOJlsimEA8TgIRBiaHkMIKHbC0EQ/8JWaHAYyU3KSTDchKsEIoJGZCVJEcvoODfQge4QEAOT0pyAkgSCEDBAat1okIDFSiAwJZG9SAAQzqsgMKKUpUJSQALYUBCCZ18oEEII5rwAJ0y1bCohFyBBMAEfjrSAkM7dJJABtiJhEKNjC7EgwAMkGCCZcNV2kgKC9mAYSUfeICqUTK4FqpCBrQAQQ9GcaCqIhCARGgmBVjQaVYSJDArnRLM4AIIOHJU3q+IjAfAZJhEwGqoIUTLlgIJjODZCjMYJUF31BJC1kqZKHVrihGylcIEDQi3jwsjcuRgulMBAFYm893Kw6dZ9WACCcsqhIACRmHG7yDycbLXuwA4YK3/tBPU4G5IGHi7UAsPAxHDv5vYG6oBKGipkMEkbGxUDRUYZWXIn1RHsQIUAvDAwTFvmcKcMmFA8yeXUpwiAQK0HKoOHBy7EGxDQ1JDIyYzq0AEC1RNpwePMmQDB21GvcgJSr1qiM10UjADBwjQACfFNuQsagsdjCD2IjDoI8FciwS75QAkOaAlBui9a8AELyxkQA6AQn23IRdsqxCZjKyYFQMIcECA0xpIHioCXU/ApISPGxLBlwAAx8idMlVAwgQKSHoZB7LT+XNZtvZZuiAw1A6A44uwF1kKAtTAK1sNxMvoAHd6AEN2uwsyOnmOWPtCCRw0kHDDLviepAcugMcQ/wUXlH5BUUYN4AgEDODAwQr7hQqD8nSiwEFIBpj9MPtJBshICztwGp0YcD/5iWB6d9FfunLgmSTVpxFFM1oDusYWA3DAAR2oQe0koEBq9SxJmXLE8ShGuC3xIAIEUIgAhAcAoUVNAyugn1G04wi0GA0ANbCcUUIggq5pIGEzo9lGMnCxJIHMERS8lQ1qkBUZRGBZDmDYQnQQtocFqSNyS5LqGnGmG05AaxQwgQASxyK06YxyD6OdQihwRbaEAAZEcoRdjJYB8S0kBC1YDsey2IB98SsC+arB9hTSgRKYQAMBMADfGhEDUN3Kgr6RTA5clp21AOAAHsiAFRu4kBiG5P8AMJgACOyFLUcE7F0OKJcNcoAA761RABPRwAEc8DCV3VFuFLCAGFNQO905QmtpMwECcvBBc5FgNgxADxqpVS6UCIAemVvBIBVSRUagwGgKAEIW2fLD1D1AAuXjlwscuY8ERIAEGSBjVmYQCSkyKgAJgMEOTok8DNDgfr5MF6p00AMYCEADlkxSByJxAU6ypQIm4EDPOGDQrIzgAA0AFC1DBoIDjMAEHgiAPCbQ0Kxs0REFzMoBTJCAEYYnhVvaAb0UEgGaXSB5whMPoxwGCQQyxGAT8JxCaFC4JKUACAmhIc0E2IFxMopSkTDZCyzgAhMAyihKSxICxCeDqKGUIyv/sKlIzSSPA2QOAdNciAJs1TAgjM5/IduA7zqAAnUmyVeRcEEDTBBAOnVgAuRkyOE0UK4K3M2kCwGBGdniwkhsc0sN0GFISKCAB4wHqVHLgUx0kID4bWlqkkAfo24nExloAAA7KMFAH6fYhQTAYzJR3ySAaRQ25kshKcDX7yzwwLtBoAQ2YKEH5ril2kJCBSxEXmlDkAPfZACyjwtX8WAAghKEQC4H+AEPeMAADBzgAD2YgQw8QIJ/5iYSInArWzJwyhCcbiGajB4EIhOYDJQABzAgwQVIAIMGNAAGGmDuYg6gIADYgBIoeG36TACSHuTgSxONXkAZMoPn0cksk+ge/50Q9jsUGLQDO4qeIJK4kG6k7buRUGOSlOOAZ3IEudG7AOoawgEZyuS/lEhAXjkSACDokcEaLkQLvEcBFHBYJkGURAQEuBACcCAHr/Vrjgux4IX8IAeANYqTKFGAFYeAbQY4EkMG0MHd0XMhA8jBjznSARBHIgYbc50AUJUBW1EAXUsmRAtGoAAGyI6t7tyqJVJwgBoIQLMAGJVCXnDEOB8iASUwVQMscADfkODGWUlvJRZAyciYQAeLM7QiylURGTRAAALAgQUgUAMBc6SqljBBcEU9ZU0n4rN3YUAKZoAAEYggNSVIAQZ40AFHEuASCwA0ACTtakUc2Cg2WMAEdv+Ag08LwAQ1IEF+S2mJEYAkA10utiA+oNOFvAAGrWzIC37AgANUwAYYoDYlWgAdbUOiAUQGbQ7y/BJ3q2IBLgbAAEwV1hDaGxV7qlMCEBBchST736kgikyalQAHEPkHcEX4KQ7Y0Qa5QHAyKUE4JX4KEyigoS8wMgwq/QMEZJvjnWhBJjEwAL2loAEaUMCXdFABCKM8FSqYAAJ20AEKKAACKpBBBRzgAV2d/OZIT7rSl870pjv96VCPutSnTvWqW/3qWM+61pF+gR0EBgNgx0B10br1S8SgtAtZZtkt8QG0R6alxuhLBuZO97rb/e54p/sDqkmNsy8c7sXQ6g1lQrL/avg9JBIAPDEgPXijoLjvbk/8MRjf+JA8fhpt//vkK8+Wy0vj8CFR/DAoz/mFeD4aMUikAVbP+kwb46ql54gJtDGBFXjg9ref6tFzsYIBTPf3wOdBRxWiA98HH/gDcMHaBbGAGCzg+dBv/gXa2joIXCD60Hf+IpcPLCL3oBMXCD9B77PxZIRf/JsI/+4jcQLxKmRajPgABOY//w1kWGQtWHQKUpABdiniA6gBAvtXGAiQAC6SCDFAfwqYF4ygAhuggBDwgIUAgBC4AduXCBewASYQQwNIWwJQAAf4CBcAAfFkAfv3ABZQgBtQfpfQfjIBf4swAx3wAwNQgxTwU0Aw/wFoRwP/xwEpYGoA8AMEUGiGAAIDQIM1WIMdkGCIsAEMQAFJaIMYUEUEABhRSAEVEIKHgAKcgiwM8A0XiAgXkAA8lxUdsAMJsH6J4ILU0wgc1gEnQHopkQgRMGYoMQIsKAjUNxN4YxQ1RgguNgBwRggxAHtb8oeKUAC85TNESAlsKC2OQG8AsCZZoWSGYALxZhQZkIdA4HYAEHGG8AHFNEU2JwiSCAAMwICh+FShkk+XWHBsQQGFZybuBwAwqAineFCHIACu9C2H0AAzhoOHYEOfdH+mKBOpiAi56EaKoAG9mCSlSIsvGIm3MoeFkAO1+GChaFkM8QKcCARkhWOFcP+KyWgIEvYut0gIHJCNjNJq0tiGjLCMRlFY21ZpomJPrsQAWggEsSMT0SgIMQBMbGUI5KiKhDCKjJKOgqACrBUqPKCGg/CIDKGQhyCPdzGDP4CIgnBYP+IAEaACIjACrOVbgnAVrXMIkhUXFYmMBsl8BUdzCjADO9ADj8EellgIpBcoD7ADDxBWFeOItUiRBMkWOnAAcmICLuACVbQA3LgQVlEIJwBMFWCMgjBIOhCGgqcD6naMIVGOhDABAqQDdlMItwYCIcADNzkIBWBL/wECB6gCKxBv3jgJEnlH1DiPMECVhdBTejWLQEACAqYDjQgEI2BqOFAIC8CWCsEAZsb/lRzhlYOgAe43WomAApcHNCFBAf5HCGMEVXQZlHcZEgGwj4awiOiVCAiZIqE4fDQlCCHFEdm0kl3ZktrkfjqwmY5wAVGmEH5kCBbgPQ/wmdPYCKf4AnppCAGZcSpQAMzZnCewAazIEKhWCN+EeFXkYhQAioRQkIZAAkQmATsgAC1wdCKwYvtAdoSwAcP3kO8IicRZFVzkOyDCXwxQn/UJdkSmAHnIAXklAcMCBCpQi2m5nSxpCC2QifrWAyAwAbRZCCLGEcKICKmpA7PHfqD5niHBA9+ojrH3AGYDTKoFBKyDEkw4jgVqCD45HGOSCBwJAL15CFCBeEHmCHX5fqG5/2UbOggjWnkhcJwgIJ/KBwTC9iMN6piX0aBNxhY/4ACcGI4dtggIMGP/+Qg1aos3CmY5Kgiwxnk9eggqIEASoEkqAJy4eKK++S7AMwiDtRDaaQgNUIuxCQlVKpQmehRZCgRbWnkBcJxAkJo/8Jcy8QKYpYxmaggywI4yUaJAgANGUaGJAANw2p4TeaUKMQB3mqRGM5WIoEH4MwEuRo+y+ZhFKgg5BYs5ooVfphAkaQgr0J+/ZqHDGY+pdaeoxQAKkAIPkKu6uqu6mgI9sJXqgnj9hRLsVKazaU0r0APmyRASUKJ5yhCvmgi/iXjAOjYXKqt2yggpGRJTyghZOq108v8DfFenopqbLSAAJRBWEQoEHxEXOTpIXSKpdomhHGGpjAABM3YAd/oIIgCEWoGt5RoJG4ADpvZ9egFMFKB2hGCSXSmc8LgIp2ivi5B5iFesmpCiuLKqQ3msk+B2BguIRrGuhKBRMuFvcnqtEDurjYCZFaKoyHlfXWZHbEEDd8qd19gApDkIHwBMwVkILSoB00kIP2oUcXSysZqy2coIBTBjChEARVd+G6BzCnAAEoABOTsIF4CgkRGnxhqwhIAAFIABCuABBrhxJ6ABqQkAXLuQrCUBN7IjH9BiWSFUsPqwXYujjmCIKEEDgxECIVABGCA8B9CYhpABz9hj9HqkhpD/Nw3xA4JhAzZQATTyF/8IBCybmQcQAo3GFoNat+4JsHjbCBCwrIxSAYRbCNfEFq5IqBxLCJBqNAzAiRdgj7dCp9Z6tHeLpY/AlxRjuo3QlHhymIm7EJDJO4hqLh9FlorpkFfLCHNKqfq2r4PQonTiu4zAqOnDpxvrtdN7vDKRpoawHkbDA4Mpp0Rmu4Ngmj8ivYNgAqTLFvrYCAsAhB8LusRLmyvwjDJBANkWAbSbFTZQvpBAjByhr40QnQkkCQUgA1rLETrwoooQeY7KCN02iejZG6EiKI+gAiNgqls2Aqf7Ww9gAwFQwiVcARCMCAjwXCYcADZAbODFNctLSAdg/wEaIALsiwIsbMIhAL6KgAAV0MIBUAE7QLgFkgKkywMKQALNiwgnAAM9QGQUEAAwMIiw0nwxkMXOx75arMULAJETuAEoQF8jYHsNQAI5cAIhvAhdrMXsy3xt/MX/twEtIG0eMAIIcMYRsIJsdwLZgwB43AAucALay32GfMiInMiKrAoiEAA78MaLPAg5UGg1MAIj0Grbd30AOX+ESIgJsMaEqALzVz4haH2DgAJtYozGWH4fwMqEoCHScX3zF4bpQHAvYADYcgE0IIwe0AGoNroYEAMbQAMGQAF1AwRRiS0S8QI6sLZbyAMUEM0XMgCoZoSC4ADM3AEkkDXYYgI8Jf8IJ0ADFmsBPzBlIGC1QPABPfACFCABHsCPPQeFTVwNvbMCG6DGpDqJfMOoLrQRPLAAOwYCC+AAOoAbFGAlO6ADNaBsIbcItDMBEIDPztgCBQAAZuEBEgADC9AcLfACM/NMmDUnPxAgdsGYZjUAGCF2HACSpQG4EWjF2jAAMAwEmXsAw9IVDAAOfmG1LYDLlosyC9ABDZC106kAAKIItFNNChC2YsoDETpk+wJv4HABkMsDY5kBVJspBKChHkBFhQC5dPEBBkCS8AEBxyQIONABJrizPRnR7fwh5XECHaABB/ovkKqwU6ED0fzPAAkigtCvEywCPyABC0LYJdIAPwD/AedcGjagABqgAyiAA5gRAEITARmAM0DwTT3XrenwAuq2HDRZ0EAAAgNDAzsQAisEAT0tAxdQAxRgcj+AszqwRa3aUipgA9SlINhCOx/oP8/TAZNRAO5MCENmAR+wAHFJKXbRA/uhfGC9AxhA2Zkduy1QAkUppBhQACIAytawa/iRkQ4gAxhQHqTdpxLQABFgABCQ3sABAR1AAAU1GdcVTtaVYSIQAS3QAjmQG7RjjCIgARowATpwDo+xsActCGqSACowABYVl7DxAAZMtbGLHuziGJ2okTyxAbz2twClA7lhAgZwAiOgPlE6hgAAAWjRATYAGg4oAQ6CAh0wACnQuHN4/ZWgUQEHMAMx0AE1dgEPoD4iEM090C17sS+fhQKFeUQEsDe6Vhp00wEYARUH8E1SUQESgOMe0RQXAAMpoAAtIALIJQDzN3sx4CsLABYm0AAIYALlcwEmIB3IHQIgUMjbJgD3BRELoAHhdAEagBEfIA4W0BxvvpAT8AEREEcfsNCHfsqQFQEz0AMeCQQ5QF/1Nc+RfOmYnumavumc3ume/umgHuqiPuqkXuqmfuqonuqqvuqlHggAOw==",largeLogo:"data:data:image/gif;base64,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",
+  "enabled":true,
+  "availabilityPredicate":
+  {
+    "class":"net.nanopay.crunch.IsSpid",
+    "spid": "treviso"
+  },
+  "associatedEntity": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.user-registration",
+  "name":"User Registration",
+  "of":"net.nanopay.crunch.registration.UserRegistrationData",
+  "version":"0",
+  "enabled":true,
+  "daoKey":"userDAO",
+  "contextDAOFindKey": "subject.realUser",
+  "associatedEntity": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.register-business",
+  "name":"Register your business",
+  "description":"Access payments and invoices",
+  "icon":"/images/capabilityIcons/BusinessRegistrationCap.svg",
+  "of":"net.nanopay.crunch.onboardingModels.InitialBusinessData",
+  "version":"0",
+  "enabled":true,
+  "keywords":["featured"],
+  "visibilityPredicate":{
+    "class": "foam.mlang.predicate.Not",
+    "arg1": {
+      "class":"net.nanopay.crunch.predicate.IsBusiness"
+    }
+  },
+  "wizardlet": {
+    "class": "net.nanopay.crunch.wizardlet.RefreshWizardlet"
+  },
+  "wizardConfig": {
+    "class": "net.nanopay.crunch.wizardlet.BusinessRegistrationWizardConfig",
+    "allowSkipping": false
+  },
+  "requirementViewTitle":"Have your business documents ready. You can save your progress and come back later.",
+  "associatedEntity": 1,
+  "permissionsGranted":[
+  "menu.read.mainmenu.banking",
+  "menu.read.mainmenu.contacts"
+  ]
+})
+
+p({
+  class:"net.nanopay.payment.CountryCapability",
+  id:"payment.source.country.br",
+  country:"BR",
+  type:0,
+  name:"Source Country Capability BR",
+  enabled:true
+})
+
+p({
+  class:"net.nanopay.payment.CountryCapability",
+  id:"payment.target.country.br",
+  country:"BR",
+  type:1,
+  name:"Target Country Capability BR",
+  enabled:true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.br.business-identification",
+  "name":"Business Identification Numbers",
+  "of":"net.nanopay.country.br.BrazilBusinessInfoData",
+  "version":"0",
+  "enabled":true,
+  "associatedEntity": 0
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.br.cpf",
+  "name":"CPF number",
+  "of":"net.nanopay.country.br.CPF",
+  "version":"0",
+  "daoKey":"userDAO",
+  "contextDAOFindKey":"subject.realUser",
+  "enabled":true,
+  "associatedEntity": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.document.office-consumption",
+  "name":"Office Consumption",
+  "description":"Provide three months of bills, such as water, electricity, telephone, cable TV, internet, or property tax. Alternatively, you can provide bank statements.",
+  "of":"net.nanopay.crunch.document.Document",
+  "version":"0",
+  "enabled":true,
+  "associatedEntity": 0
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.document.articles-of-incorporation",
+  "name":"Articles Of Incorporation",
+  "description":"Provide the articles of incorporation for your business.",
+  "of":"net.nanopay.crunch.document.Document",
+  "version":"0",
+  "enabled":true,
+  "associatedEntity": 0
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.document.annual-financial-statements",
+  "name":"Annual Financial Statements",
+  "description":"Formal financial statements that are published annually and sent to the company's shareholders and several other stakeholders.",
+  "of":"net.nanopay.crunch.document.Document",
+  "version":"0",
+  "enabled":true,
+  "associatedEntity": 0
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.document.utility-bills",
+  "name":"Utility bills",
+  "description":"Provide three months of bills, such as water, electricity, telephone, cable TV, internet, or property tax. Alternatively, you can provide bank statements.",
+  "of":"net.nanopay.crunch.document.Document",
+  "version":"0",
+  "enabled":true,
+  "associatedEntity": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.document.identification",
+  "name":"Identification",
+  "description":"Provide a copy of a piece of government issued identification which shows your full name, picture, and Identification number.",
+  "of":"net.nanopay.crunch.document.Document",
+  "version":"0",
+  "enabled":true,
+  "associatedEntity": 1,
+  "wizardlet": {
+    class: "foam.u2.crunch.FlatteningCapabilityWizardlet",
+    before: true
+  }
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.document.date-of-issue",
+  "name":"Date of Issue",
+  "description":"Date of issue of an identification document",
+  "of":"net.nanopay.crunch.document.DateOfIssue",
+  "version":"0",
+  "duration":540,
+  "gracePeriod":7,
+  "enabled":true,
+  "associatedEntity":1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.api.onboarding-user-and-business",
+  "name":"API Onboarding User and Business",
+  "description":"Unlock onboarding for a given user by provisioning a business",
+  "icon":"/images/capabilityIcons/CADOnboardCap.svg",
+  "version":"0",
+  "enabled":true,
+  "keywords":["intuit"]
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.api.ca-business-send-payments",
+  "name":"API CAD Business Payments Sending",
+  "description":"Unlock capability for sending Canadian payments as a business",
+  "icon":"/images/capabilityIcons/CADOnboardCap.svg",
+  "version":"0",
+  "enabled":true,
+  "keywords":["intuit"]
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.api.expanded-business-details",
+  "name":"Expanded Business Onboarding Details",
+  "description": "Extra properties needed to onboarding a business for sending payments",
+  "of":"net.nanopay.crunch.registration.BusinessDetailExpandedData",
+  "version":"0",
+  "enabled":true,
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.api.ca-business-receive-payments",
+  "name":"API CAD Business Payments Receiving",
+  "description":"Unlock capability for receiving Canadian payments as a business",
+  "icon":"/images/capabilityIcons/CADOnboardCap.svg",
+  "version":"0",
+  "enabled":true,
+  "keywords":["intuit"],
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"manual.compliance.securefact.business",
+  "name":"SecureFact Business Validation",
+  "description":"Validate a business against SecureFact LEF.",
+  "version":"0",
+  "enabled":true,
+  "grantMode": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"manual.compliance.dowjones.business",
+  "name":"Dow Jones Business Validation",
+  "description":"Validate a business against Dow Jones.",
+  "version":"0",
+  "enabled":true,
+  "grantMode": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"manual.compliance.identitymind.business",
+  "name":"IdentityMind Business Validation",
+  "description":"Validate a business against IdentityMind.",
+  "version":"0",
+  "enabled":true,
+  "grantMode": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.api.business-details",
+  "name":"Business Onboarding Details",
+  "of":"net.nanopay.crunch.registration.BusinessDetailData",
+  "version":"0",
+  "enabled":true,
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
+})
+
+p({
+  "class": "foam.nanos.crunch.MinMaxCapability",
+  "id":"crunch.onboarding.api.minmax.business-type",
+  "name":"Business Type",
+  "version":"0",
+  "enabled":true,
+  "min": 1,
+  "max": 1,
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"business-type-sole-proprietorship",
+  "name":"Sole Proprietorship Business Type",
+  "description":"Business is a sole proprietorship.",
+  "of":"net.nanopay.crunch.registration.businesstypes.SoleProprietorData",
+  "version":"0",
+  "enabled":true,
+  "keywords":["intuit"],
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"business-type-partnership",
+  "name":"Partnership Business Type",
+  "description":"Business is a paretnership.",
+  "of":"net.nanopay.crunch.registration.businesstypes.PartnershipData",
+  "version":"0",
+  "enabled":true,
+  "keywords":["intuit"],
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"business-type-corporation",
+  "name":"Corporation Business Type",
+  "description":"Business is a corporation.",
+  "of":"net.nanopay.crunch.registration.businesstypes.CorporationData",
+  "version":"0",
+  "enabled":true,
+  "keywords":["intuit"],
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"business-type-nonprofit",
+  "name":"Nonprofit Business Type",
+  "description":"Business is a nonprofit or charitable organization.",
+  "of":"net.nanopay.crunch.registration.businesstypes.NonprofitData",
+  "version":"0",
+  "enabled":true,
+  "keywords":["intuit"],
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"business-type-limited-liability",
+  "name":"Limited Liability Company Business Type",
+  "description":"Business is a limited liability company (LLC).",
+  "of":"net.nanopay.crunch.registration.businesstypes.LimitedLiabilityData",
+  "version":"0",
+  "enabled":true,
+  "keywords":["intuit"],
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"business-type-publicly-traded",
+  "name":"Publicly Traded Business Type",
+  "description":"Business is a publicly traded company.",
+  "of":"net.nanopay.crunch.registration.businesstypes.PubliclyTradedData",
+  "version":"0",
+  "enabled":true,
+  "keywords":["intuit"],
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"business-type-trust",
+  "name":"Trust Business Type",
+  "description":"Business is a trust.",
+  "of":"net.nanopay.crunch.registration.businesstypes.TrustData",
+  "version":"0",
+  "enabled":true,
+  "keywords":["intuit"],
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.business-director-list",
+  "name":"Business Directors",
+  "of":"net.nanopay.crunch.registration.BusinessDirectorList",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.business-owner-list",
+  "name":"Business Owners",
+  "of":"net.nanopay.crunch.registration.BusinessOwnerList",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.business-has-signing-officer",
+  "name":"Business Signing Officer",
+  "description":"Business has a signing officer",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.signing-officer-list",
+  "name":"Signing Officers",
+  "of":"net.nanopay.crunch.registration.SigningOfficerList",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.user-is-signing-officer",
+  "name":"User Signing Officer Capability",
+  "description":"User is a signing officer",
+  "version":"0",
+  "enabled":true,
+  "contextDAOFindKey":"subject.realuser",
+  "associatedEntity":2
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.api.unlock-ca-payments",
+  "name":"API CAD Personal Payments",
+  "description":"Unlock capability for Canadian personal payments",
+  "icon":"/images/capabilityIcons/CADOnboardCap.svg",
+  "version":"0",
+  "enabled":true,
+  "keywords":["intuit"]
+})
+
+p({
+  "class":"net.nanopay.crunch.registration.LimitedAmountCapability",
+  "id":"crunch.onboarding.api.unlock-ca-payments-under-1000",
+  "name":"API CAD Personal Payments Under 1000CAD",
+  "description":"Unlock capability for Canadian personal payments under $1000",
+  "icon":"/images/capabilityIcons/CADOnboardCap.svg",
+  "version":"0",
+  "enabled":true,
+  "keywords":["intuit"],
+  "maximumAmount": 100000
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.api.onboarding-type",
+  "name":"Personal Onboarding Type",
+  "of":"net.nanopay.crunch.registration.PersonalOnboardingTypeData",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.parent.api.simple-user-onboarding",
+  "name":"Simple User Onboarding",
+  "description":"Basic information for user onboarding",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.user-details",
+  "name":"User Details",
+  "of":"net.nanopay.crunch.registration.UserDetailData",
+  "version":"0",
+  "enabled":true,
+  "daoKey":"userDAO",
+  "contextDAOFindKey": "subject.realUser",
+  "associatedEntity": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"manual.compliance.securefact.user",
+  "name":"SecureFact User Validation",
+  "description":"Validate a user against SecureFact SIDni.",
+  "version":"0",
+  "enabled":true,
+  "grantMode": 1,
+  "daoKey":"userDAO",
+  "contextDAOFindKey": "subject.realUser",
+  "associatedEntity": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"manual.compliance.dowjones.user",
+  "name":"Dow Jones User Validation",
+  "description":"Validate a user against Dow Jones.",
+  "version":"0",
+  "enabled":true,
+  "grantMode": 1,
+  "daoKey":"userDAO",
+  "contextDAOFindKey": "subject.realUser",
+  "associatedEntity": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"manual.compliance.identitymind.user",
+  "name":"IdentityMind User Validation",
+  "description":"Validate a user against IdentityMind.",
+  "version":"0",
+  "enabled":true,
+  "grantMode": 1,
+  "daoKey":"userDAO",
+  "contextDAOFindKey": "subject.realUser",
+  "associatedEntity": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.expanded-user-details",
+  "name":"Expanded User Details",
+  "description":"Advanced information for expanded user onboarding",
+  "icon":"/images/capabilityIcons/CADOnboardCap.svg",
+  "of":"net.nanopay.crunch.registration.UserDetailExpandedData",
+  "version":"0",
+  "enabled":true,
+  "daoKey":"userDAO",
+  "contextDAOFindKey": "subject.realUser",
+  "associatedEntity": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.api.unlock-ca-ca-payments",
+  "name":"API Onboarding Domestic Business Payments (CAD to CAD)",
+  "description":"Unlock domestic payments through the API for a business.",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.user-birth-date",
+  "name":"Date of birth",
+  "of":"net.nanopay.crunch.onboardingModels.UserBirthDateData",
+  "daoKey":"userDAO",
+  "contextDAOFindKey":"subject.realuser",
+  "version":"0",
+  "enabled":true,
+  "associatedEntity": 1,
+  "wizardlet": {
+    "class": "foam.nanos.crunch.ui.CapabilityWizardlet"
+  }
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.business-registration-date",
+  "name":"When was your business created?",
+  "of":"net.nanopay.crunch.onboardingModels.BusinessRegistrationDateData",
+  "description":"Business Registration Date",
+  "daoKey": "businessDAO",
+  "contextDAOFindKey": "subject.user",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.last-business-registration-date",
+  "name":"Date of the last Contractual Amendment or Minutes",
+  "of":"net.nanopay.crunch.onboardingModels.BusinessLastRegistrationDateData",
+  "description":"Business Last Registration Date",
+  "daoKey": "businessDAO",
+  "contextDAOFindKey": "subject.user",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.business-incorporation-date",
+  "name":"Business Incorporation",
+  "of":"net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData",
+  "description":"Date of incorporation of the business",
+  "daoKey": "businessDAO",
+  "contextDAOFindKey": "subject.user",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.tax-id-number",
+  "name":"Tax Id Number",
+  "of":"net.nanopay.crunch.onboardingModels.TaxIdNumberData",
+  "description":"Tax Id Number",
+  "daoKey": "businessDAO",
+  "contextDAOFindKey": "subject.user",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.submitted-by",
+  "name":"Business Onboarding Addition Infor",
+  "of":"net.nanopay.onboarding.model.BusinessOnboardingExtra",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"googleSheetsImportCapability",
+  "name":"google sheets import capability",
+  "version":"0",
+  "enabled":true,
+  "permissionsGranted":[
+    "data.import.googleSheets"
+  ]
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"crunch.onboarding.add-bank-account",
+  "name":"Add Bank Acccount",
+  "of":"net.nanopay.bank.StrategizedBankAccount",
+  "enabled":true,
+  "permissionsGranted":[
+    "menu.read.mainmenu.invoices.receivables"
+  ]
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"contact.capable.afex.cn",
+  "name":"Additional information required",
+  "requirementViewTitle":"To send a payment to a contact in this corridor you will need to provide more information",
+  "of":"net.nanopay.contacts.AFEXCNBeneficiaryCapability",
+  "enabled":true,
+  "icon":"/images/capabilityIcons/BeneficiaryCap.png",
+  "wizardConfig": {
+    "class": "foam.u2.crunch.EasyCrunchWizard",
+    "incrementalWizard": true,
+    "skipMode":1
+  }
+})
+
+p({class:"foam.nanos.auth.ServiceProvider",id:"nanopay.estimationaccount",description:"estimation account spid",enabled:true})

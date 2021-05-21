@@ -1,0 +1,34 @@
+p({
+  "class":"foam.net.Host",
+  "id":"mediator-1",
+  "address":"192.168.2.71"
+})
+p({
+  "class":"foam.net.Host",
+  "id":"mediator-2",
+  "address":"192.168.2.72"
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"node-1",
+  "address":"192.168.2.73"
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"node-2",
+  "address":"192.168.2.74"
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"node-3",
+  "address":"192.168.2.75"
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"node-4",
+  "address":"192.168.2.76"
+})

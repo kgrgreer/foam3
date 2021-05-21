@@ -28,3 +28,9 @@ p({
   """,
   "client": "{\"of\":\"foam.nanos.approval.ApprovalRequest\"}"
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "ApprovalRequestNotification",
+  "serviceClass": "foam.nanos.approval.ApprovalRequestNotification"
+})

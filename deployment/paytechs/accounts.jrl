@@ -1,0 +1,35 @@
+p({
+    "class":"net.nanopay.bank.CABankAccount",
+    "branchId":"00646",
+    "institutionNumber":"842",
+    "accountNumber":"100010350145",
+    "country":"CA",
+    "address":{
+        "class":"foam.nanos.auth.Address",
+        "countryId":"CA",
+        "regionId":"ON",
+        "streetNumber":"319",
+        "streetName":"McRae Avenue, 1st floor",
+        "city":"Ottawa",
+        "postalCode":"K1Z 0B9"
+    },
+    "bankAddress":{
+        "class":"foam.nanos.auth.Address",
+        "countryId":"CA",
+        "regionId":"ON",
+        "streetNumber":"319",
+        "streetName":"McRae Avenue, 1st floor",
+        "city":"Ottawa",
+        "postalCode":"K1Z 0B9"
+    },
+    "id":66,
+    "name":"Paytechs of Canada",
+    "isDefault":true,
+    "created":"2019-07-15T18:55:15.220Z",
+    "createdBy":1348,
+    "lastModified":"2019-07-15T18:55:15.220Z",
+    "lastModifiedBy":1348,
+    "owner":1666,
+    "lifecycleState":1,
+    "status":1
+})

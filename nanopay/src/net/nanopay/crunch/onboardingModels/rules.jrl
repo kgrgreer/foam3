@@ -1,0 +1,38 @@
+p({
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d0-crunch0",
+  "name":"inviteSigningOfficerRule",
+  "priority":100,
+  "ruleGroup":"crunchOnboarding",
+  "daoKey":"userCapabilityJunctionDAO",
+  "enabled":true,
+  "after":true,
+  "operation":3,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+    "propName":"data",
+    "of":"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion"
+  },
+  "action":{"class":"net.nanopay.crunch.onboardingModels.SigningOfficerQuestionOnPut"},
+  "lifecycleState":1
+})
+
+p({
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d0-crunch1",
+  "name":"addSigningOfficerRule",
+  "priority":100,
+  "ruleGroup":"crunchOnboarding",
+  "daoKey":"userCapabilityJunctionDAO",
+  "enabled":true,
+  "after":true,
+  "operation":3,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+    "propName":"data",
+    "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData"
+  },
+  "action":{"class":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalDataOnPut"},
+  "lifecycleState":1
+})
+

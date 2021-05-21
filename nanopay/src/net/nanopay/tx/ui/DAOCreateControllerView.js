@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
     package: 'net.nanopay.tx.ui',
     name: 'DAOCreateControllerView',
@@ -5,11 +22,12 @@ foam.CLASS({
   
     requires: [
       'foam.comics.DAOCreateController',
-      'foam.u2.dialog.NotificationMessage'
+      'foam.log.LogLevel'
     ],
   
     imports: [
       'dao',
+      'notify',
       'stack'
     ],
   
@@ -72,10 +90,7 @@ foam.CLASS({
       },
       function onThrowError() {
         var self = this;
-        this.add(this.NotificationMessage.create({
-           message: self.data.exception.message,
-           type: 'error'
-        }));
+        this.notify(self.data.exception.message, '', this.LogLevel.ERROR, true);
       }
     ]
   });

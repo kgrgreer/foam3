@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.onboarding',
   name: 'USBusinessOnboardingDAO',
@@ -11,7 +28,6 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.Phone',
     'foam.nanos.session.Session',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.documents.AcceptanceDocumentService',
@@ -148,7 +164,7 @@ foam.CLASS({
 
         // * Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());
-        user.setPhone(businessOnboarding.getPhone());
+        user.setPhoneNumber(businessOnboarding.getPhoneNumber());
         user.setIdentification(businessOnboarding.getSigningOfficerIdentification());
         user.setAddress(businessOnboarding.getAddress());
 
@@ -172,7 +188,7 @@ foam.CLASS({
             // * Step 6: Business info
             // Business info: business address
             business.setAddress(businessOnboarding.getBusinessAddress());
-            business.setPhone(businessOnboarding.getPhone());
+            business.setPhoneNumber(businessOnboarding.getPhoneNumber());
             business.setBusinessRegistrationDate(businessOnboarding.getBusinessFormationDate());
             business.setTaxIdentificationNumber(businessOnboarding.getTaxIdentificationNumber());
             business.setCountryOfBusinessRegistration(businessOnboarding.getCountryOfBusinessFormation());

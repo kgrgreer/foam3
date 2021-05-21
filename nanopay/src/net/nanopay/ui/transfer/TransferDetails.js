@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.ui.transfer',
   name: 'TransferDetails',
@@ -35,7 +52,7 @@ foam.CLASS({
       box-sizing: border-box;
       width: 320px;
       height: 66px;
-      overflow-y: scroll;
+      overflow-y: auto;
       background-color: #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
       resize: vertical;
@@ -50,7 +67,6 @@ foam.CLASS({
 
     ^ .foam-u2-tag-Select {
       width: 320px;
-      height: 40px;
       border-radius: 0;
 
       -webkit-appearance: none;
@@ -184,7 +200,7 @@ foam.CLASS({
             return [
               account.id,
               account.name + ' ' + '***' +
-                account.accountNumber.substring(length - 4, length)
+                account.accountNumber.substring(length - 3)
             ];
           }
         });
@@ -208,8 +224,8 @@ foam.CLASS({
           dao: X.data.publicUserDAO,
           objToChoice: function(payee) {
             var username = payee.firstName + ' ' + payee.lastName;
-            if ( X.data.invoiceMode && payee.businessName ) {
-              username = payee.businessName;
+            if ( X.data.invoiceMode && ( payee.organization || payee.businessName ) ) {
+              username = payee.organization || payee.businessName;
             }
             return [payee.id, username + ' - (' + payee.email + ')'];
           }
@@ -335,12 +351,12 @@ foam.CLASS({
            .start('p').add(self.AccountLabel).end()
           .start().addClass('choice')
             .start('div').addClass('confirmationContainer')
-              .tag({ class: 'foam.u2.md.CheckBox', data$: this.digitalCash$ })
+              .tag({ class: 'foam.u2.CheckBox', data$: this.digitalCash$ })
                .start('p').addClass('confirmationLabel').add('Digital Balance: ', this.formattedBalance$)
                .end()
             .end()
             .start('div').addClass('confirmationContainer')
-              .tag({ class: 'foam.u2.md.CheckBox', data$: this.accountCheck$ })
+              .tag({ class: 'foam.u2.CheckBox', data$: this.accountCheck$ })
               .start('p').addClass('confirmationLabel').add('Pay from account')
               .end()
             .end()
@@ -368,7 +384,7 @@ foam.CLASS({
           .tag(this.NOTES, { onKey: true })
           .start('div').addClass('confirmationContainer').enableClass('hidden', this.invoiceMode$)
             .callIf(this.type == 'foreign', function() {
-              this.tag({ class: 'foam.u2.md.CheckBox', data$: self.notThirdParty$ })
+              this.tag({ class: 'foam.u2.CheckBox', data$: self.notThirdParty$ })
               .start('p').addClass('confirmationLabel').add(self.NotThirdParty)
                 .on('click', function() {
                   self.notThirdParty = ! self.notThirdParty;

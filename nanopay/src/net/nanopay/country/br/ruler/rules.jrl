@@ -1,0 +1,33 @@
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"c5add02e-2643-4481-adf5-fe3492367a4b",
+  "name":"BRBankAccountCapability on grant rule.",
+  "priority":100,
+  "ruleGroup":"treviso",
+  "documentation":"When BRBankAccountCapability is granted, put account to accountDAO.",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"targetId",
+        "propValue":"crunch.onboarding.br.add-bank-account",
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{"class":"foam.nanos.crunch.CapabilityJunctionStatus","ordinal":1}
+      }  
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.country.br.ruler.BRBankAccountCapabilityOnGrantRule"
+  },
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid": "treviso"
+})

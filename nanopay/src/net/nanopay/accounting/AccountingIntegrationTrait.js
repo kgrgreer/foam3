@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.accounting',
   name: 'AccountingIntegrationTrait',
@@ -5,7 +22,7 @@ foam.CLASS({
   documentation: 'Manages the buttons for Accounting Integrations',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'net.nanopay.accounting.IntegrationCode',
     'net.nanopay.accounting.AccountingErrorCodes'
   ],
@@ -14,6 +31,7 @@ foam.CLASS({
     'contactDAO',
     'ctrl',
     'invoiceDAO',
+    'notify',
     'quickbooksService',
     'userDAO',
     'xeroService'
@@ -43,7 +61,7 @@ foam.CLASS({
       }
     }
 
-    .account-sync-loading-animation .net-nanopay-sme-ui-AbliiActionView-syncBtn > img {
+    .account-sync-loading-animation .foam-u2-ActionView-syncBtn > img {
       animation-name: spin;
       animation-duration: 1.5s;
       animation-iteration-count: infinite;
@@ -62,7 +80,7 @@ foam.CLASS({
       */
 
       let service = null;
-      let newUser = await this.userDAO.find(this.user.id);
+      let newUser = await this.userDAO.find(this.subject.user.id);
 
       if ( newUser.integrationCode == this.IntegrationCode.XERO ) {
         service = this.xeroService;
@@ -77,10 +95,7 @@ foam.CLASS({
           let result = await service.isSignedIn(null, newUser);
           this.isSignedIn = result.result;
         } catch (error) {
-          this.ctrl.add(this.NotificationMessage.create({
-            message: err.message,
-            type: 'error'
-          }));
+          this.notify(err.message, '', this.LogLevel.ERROR, true);
         }
       } else {
         this.isSignedIn = false;

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.modal',
   name: 'MarkAsVoidModal',
@@ -11,18 +28,19 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.invoice.model.PaymentStatus'
   ],
 
   messages: [
     { name: 'TITLE', message: 'Mark as void?' },
-    { name: 'MSG1', message: 'Are you sure you want to void this invoice?'},
+    { name: 'MSG1', message: 'Are you sure you want to void this invoice?' },
     { name: 'MSG2', message: 'Once this invoice is voided, it cannot be edited.' },
-    { name: 'SUCCESS_MESSAGE', message: 'Invoice has been marked as voided.'},
+    { name: 'SUCCESS_MESSAGE', message: 'Invoice has been marked as voided' },
     { name: 'NOTE_LABEL', message: 'Notes' },
     { name: 'NOTE_HINT', message: 'i.e. Why is it voided?' },
-    { name: 'VOID_SUCCESS', message: 'Invoice successfully voided.'},
-    { name: 'VOID_ERROR', message: 'Invoice could not be voided.'}
+    { name: 'VOID_SUCCESS', message: 'Invoice successfully voided' },
+    { name: 'VOID_ERROR', message: 'Invoice could not be voided' }
   ],
 
   css: `
@@ -46,11 +64,11 @@ foam.CLASS({
       opacity: 0.8;
     }
     ^ .margin-bottom-8 {
-     margin: 0px;
-     margin-bottom: 8px;
+      margin: 0px;
+      margin-bottom: 8px;
     }
     ^ .input-note {
-     width: 100%;
+      width: 100%;
     }
   `,
   properties: [
@@ -118,22 +136,26 @@ foam.CLASS({
       name: 'voidMethod',
       label: 'Void',
       code: function(X) {
+        this.invoice.draft = false
         this.invoice.paymentMethod = this.PaymentStatus.VOID;
-        this.invoice.note = this.note ? this.invoice.note + ' On Void Note: ' + this.note : this.invoice.note;
+        // if void note is provided, append it to the end of the existing invoice note
+        if ( this.note ) {
+          this.invoice.note = `${this.invoice.note} ${this.invoice.ON_VOID_NOTE}${this.note}`;
+        }
         this.invoiceDAO.put(this.invoice).then((invoice) => {
          if ( invoice.paymentMethod == this.PaymentStatus.VOID ) {
           X.closeDialog();
-          if ( X.currentMenu.id == 'sme.quickAction.send' || X.currentMenu.id == 'sme.main.dashboard' ) {
+          if ( X.currentMenu.id == 'sme.quickAction.send' || X.currentMenu.id == 'mainmenu.dashboard' ) {
             X.stack.push({
               class: 'net.nanopay.sme.ui.MoneyFlowRejectView',
               invoice: this.invoice
             });
           } else {
-            this.notify(this.VOID_SUCCESS, 'success');
+            this.notify(this.VOID_SUCCESS, '', this.LogLevel.INFO, true);
           }
          }
         }).catch((err) => {
-         if ( err ) this.notify(this.VOID_ERROR, 'error');
+         if ( err ) this.notify(this.VOID_ERROR, '', this.LogLevel.ERROR, true);
          X.closeDialog();
         });
       }

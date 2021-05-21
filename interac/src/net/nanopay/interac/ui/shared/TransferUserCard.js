@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.interac.ui.shared',
   name: 'TransferUserCard',
@@ -9,6 +26,10 @@ foam.CLASS({
     'invoiceMode',
     'bankAccountDAO',
     'branchDAO'
+  ],
+
+  requires: [
+    'net.nanopay.bank.BankAccount'
   ],
 
   axioms: [
@@ -183,7 +204,7 @@ foam.CLASS({
         this.address_ += ', ' + this.user.address.countryId;
 
         this.bankAccountDAO.find(this.user.id).then(function(account) {
-          self.accountNo_ = '***' + account.accountNumber.substring(account.accountNumber.length - 4, account.accountNumber.length);
+          self.accountNo_ = this.BankAccount.mask(account.accountNumber);
           self.branchDAO.find(account.branchId).then(function(bank){
             switch( self.user.address.countryId ) {
               case 'CA' :

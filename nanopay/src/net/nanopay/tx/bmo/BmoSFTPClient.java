@@ -22,7 +22,6 @@ public class BmoSFTPClient {
   protected X x_ = null;
   private SSHClient          sshClient          = null;
   private StatefulSFTPClient statefulSFTPClient = null;
-  private BmoSFTPCredential  credential         = null;
 
   private static final String PATH                    = System.getProperty("NANOPAY_HOME") + "/var" + "/bmo_eft/";
   public  static final String RECEIPT_DOWNLOAD_FOLDER = PATH + "/receipt/";
@@ -34,9 +33,15 @@ public class BmoSFTPClient {
   private static String OM_NAME = "BMO";
   private Logger logger;
 
+  public BmoSFTPClient(X x) {
+    setX(x);
+    getCredentials();
+    this.logger = new PrefixLogger(new String[] {"BMO"}, (Logger) x.get("logger"));
+  }
+
   public BmoSFTPClient(X x, BmoSFTPCredential credential) {
     setX(x);
-    this.init(x, credential);
+    getCredentials();
     this.logger = new PrefixLogger(new String[] {"BMO"}, (Logger) x.get("logger"));
   };
 
@@ -48,13 +53,12 @@ public class BmoSFTPClient {
     return x_;
   }
 
-  private BmoSFTPClient init(X x, BmoSFTPCredential credential) {
-    this.credential = credential;
-    if ( credential.getEnable() == false ) {
-      throw new BmoSFTPException("BMO SFTP not enable.");
+  protected BmoSFTPCredential getCredentials() {
+    BmoSFTPCredential credentials = (BmoSFTPCredential) getX().get("bmoSFTPCredential");
+    if ( credentials == null ) {
+      throw new RuntimeException("Invalid credentials");
     }
-
-    return this;
+    return credentials;
   }
 
   /**
@@ -64,8 +68,8 @@ public class BmoSFTPClient {
     sshClient        = new SSHClient();
 
     sshClient.addHostKeyVerifier (new PromiscuousVerifier());
-    sshClient.connect            (this.credential.getHost());
-    sshClient.authPassword       (loginId, this.credential.getPassword());
+    sshClient.connect            (getCredentials().getHost());
+    sshClient.authPassword       (loginId, getCredentials().getPassword());
 
     statefulSFTPClient = new StatefulSFTPClient(new SFTPEngine(sshClient).init());
 
@@ -81,7 +85,7 @@ public class BmoSFTPClient {
       omLogger.log(OM_NAME, "processReceiptFiles", "starting");
       this.logger.info("check unprocessed receipt files.");
 
-      this.                     connect (this.credential.getReceiptFileLoginId());
+      this.                     connect (getCredentials().getReceiptFileLoginId());
       this.statefulSFTPClient.  cd      (POLLABLE_FOLDER);
       List<RemoteResourceInfo>  ls =
       this.statefulSFTPClient.  ls();
@@ -116,7 +120,7 @@ public class BmoSFTPClient {
           "Please make sure all previous transactions have been successfully delivered.");
       }
 
-      this.                    connect (this.credential.getSendLoginId());
+      this.                    connect (getCredentials().getSendLoginId());
       this.statefulSFTPClient. cd      (SEND_FOLDER);
       this.statefulSFTPClient. put     (file.getAbsolutePath(), "");
       omLogger.log(OM_NAME, "upload", "complete");
@@ -139,7 +143,7 @@ public class BmoSFTPClient {
 
     try {
       omLogger.log(OM_NAME, "downloadReceipt", "starting");
-      this.connect(this.credential.getReceiptFileLoginId());
+      this.connect(getCredentials().getReceiptFileLoginId());
       this.statefulSFTPClient.cd(POLLABLE_FOLDER);
 
       List<RemoteResourceInfo> ls = null;
@@ -182,8 +186,8 @@ public class BmoSFTPClient {
 
   public void downloadReports() {
     this.logger.info("start downloading reports.");
-    this.download(this.credential.getCreditReportLoginId(), REPORT_DOWNLOAD_FOLDER);
-    this.download(this.credential.getDebitReportLoginId(), REPORT_DOWNLOAD_FOLDER);
+    this.download(getCredentials().getCreditReportLoginId(), REPORT_DOWNLOAD_FOLDER);
+    this.download(getCredentials().getDebitReportLoginId(), REPORT_DOWNLOAD_FOLDER);
     this.logger.info("finishing downloading reports.");
   }
 

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.retail.ui.devices',
   name: 'ManageDeviceModal',
@@ -6,12 +23,13 @@ foam.CLASS({
   documentation: 'Pop up modal for deleting a device',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage'
+    'foam.log.LogLevel'
   ],
 
   imports: [
     'deviceDAO', 
-    'closeDialog', 
+    'closeDialog',
+    'notify', 
     'selectedDevice'
   ],
 
@@ -37,7 +55,7 @@ foam.CLASS({
     ^ .popUpTitle {
       width: 198px;
       height: 40px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       line-height: 40.5px;
       letter-spacing: 0.2px;
@@ -129,15 +147,17 @@ foam.CLASS({
     {
       name: 'deleteButton',
       label: 'Delete',
-      confirmationRequired: true,
+      confirmationRequired: function() {
+        return true;
+      },
       code: function(X) {
         var self = this;
 
         X.deviceDAO.remove(X.selectedDevice).then(function(response) {
-          self.add(self.NotificationMessage.create({ message: 'Device successfully deleted.'}));
+          X.notify('Device successfully deleted.', '', self.LogLevel.INFO, true);
           X.closeDialog();
         }).catch(function(error) {
-          self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          X.notify(error.message, '', self.LogLevel.ERROR, true);
         });
       }
     }

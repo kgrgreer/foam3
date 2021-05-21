@@ -1,0 +1,87 @@
+p({
+    class:"foam.nanos.auth.Group",
+    id:"intuit-admin",
+    description:"intuit admin",
+    parent:"msp-admin",
+    defaultMenu:"users"
+})
+p({
+    class:"foam.nanos.auth.Group",
+    id:"intuit-api",
+    description:"intuit api group",
+    parent:"external-api",
+    defaultMenu:"view-accounts"
+})
+p({
+    class:"foam.nanos.auth.Group",
+    id:"intuit-api-session",
+    description:"intuit api session group",
+    parent:"external-api-session",
+    defaultMenu:"view-users"
+})
+p({
+    class:"foam.nanos.auth.Group",
+    id:"intuit-dev",
+    description:"intuit dev group",
+    parent:"external-dev",
+    defaultMenu:"view-accounts"
+})
+p({
+    class:"foam.nanos.auth.Group",
+    id:"intuit-fraud-ops",
+    description:"Intuit Fraud Operations Group",
+    parent:"fraud-ops",
+    defaultMenu:"accounts",
+    url:"http://intuit:8080"
+})
+p({
+    class:"foam.nanos.auth.Group",
+    id:"intuit-payment-ops",
+    description:"Intuit Payment Operations Group",
+    parent:"payment-ops",
+    defaultMenu:"accounts",
+    url:"http://intuit:8080"
+})
+
+p({
+    class:"foam.nanos.auth.Group",
+    id:"intuit-internal-support",
+    description:"intuit internal support group",
+    parent:"support",
+    defaultMenu:"contacts",
+    url:"http://intuit:8080"
+})
+
+p({
+    class:"foam.nanos.auth.Group",
+    id:"intuit-support",
+    description:"intuit support group",
+    parent:"external-support",
+    defaultMenu:"businesses-support",
+    url:"http://intuit:8080"
+})
+
+p({
+    class:"foam.nanos.auth.Group",
+    id:"intuit-sme",
+    description:"intuit sme group",
+    parent:"external-sme",
+    url:"http://intuit:8080"
+})
+
+p({
+    class:"foam.nanos.auth.Group",
+    id:"intuit-business-sme",
+    description:"Intuit QBO Business SME Group",
+    parent:"intuit-sme",
+    url:"http://intuit:8080"
+})
+
+p({
+    class:"foam.nanos.auth.Group",
+    id:"intuit-reporting",
+    description:"intuit Reporting group",
+    parent:"intuit-support",
+    defaultMenu:"businesses-support",
+    url:"http://intuit:8080"
+})

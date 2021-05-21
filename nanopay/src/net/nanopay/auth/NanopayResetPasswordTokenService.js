@@ -1,4 +1,21 @@
 /**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+/**
  * @license
  * Copyright 2019 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -16,12 +33,14 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.Sink',
     'foam.mlang.MLang',
-    'foam.nanos.auth.token.Token',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.token.Token',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.util.Emails.EmailsUtility',
     'foam.util.Email',
+    'foam.util.Emails.EmailsUtility',
+
     'java.util.Calendar',
     'java.util.HashMap',
     'java.util.List',
@@ -41,8 +60,9 @@ Logger logger = (Logger) x.get("logger");
 // context. Therefore we put the system user in the context here so that
 // decorators down the line won't throw NPEs when trying to access the user in
 // the context.
-User systemUser = (User) getX().get("user");
-x = x.put("user", systemUser);
+User systemUser = ((Subject) getX().get("subject")).getUser();
+Subject subject = new Subject.Builder(x).setUser(systemUser).build();
+x = x.put("subject", subject);
 
 DAO userDAO = (DAO) getX().get("localUserUserDAO");
 DAO tokenDAO = (DAO) getTokenDAO();
@@ -78,7 +98,7 @@ if ( user == null ) {
   throw new RuntimeException("User not found");
 }
 
-String url = ((User)x.get("user")).findGroup(x).getAppConfig(x).getUrl();
+String url = user.findGroup(x).getAppConfig(x).getUrl();
 
 Token token = new Token();
 token.setUserId(user.getId());

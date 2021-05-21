@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.documents',
   name: 'UserAcceptanceDocument',
@@ -5,9 +22,11 @@ foam.CLASS({
   documentation: 'Captures acceptance documents accepted by user and date accepted.',
 
   javaImports: [
-    'foam.nanos.auth.AuthorizationException',
-    'foam.nanos.auth.User',
     'foam.dao.DAO',
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+
     'net.nanopay.model.Business'
   ],
 
@@ -20,7 +39,11 @@ foam.CLASS({
   ],
 
   tableColumns: [
-      'id', 'user', 'acceptedDocument', 'createdBy', 'createdByAgent'
+      'id',
+      'user.id',
+      'acceptedDocument',
+      'createdBy.legalName',
+      'createdByAgent.legalName'
   ],
 
   properties: [
@@ -79,6 +102,11 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'lastModifiedByAgent'
     }
   ],
 
@@ -134,7 +162,7 @@ foam.CLASS({
       DAO acceptanceDocumentDAO = (DAO) x.get("acceptanceDocumentDAO");
       AcceptanceDocument acceptanceDocument = (AcceptanceDocument) acceptanceDocumentDAO.find(getAcceptedDocument());
       if ( acceptanceDocument != null && acceptanceDocument.getAuthenticated()) {
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         if ( user == null ) throw new AuthorizationException("You need to be logged in to access document.");
       }
       `

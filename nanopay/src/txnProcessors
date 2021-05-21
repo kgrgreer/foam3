@@ -1,5 +1,5 @@
 p({"class":"net.nanopay.tx.TxnProcessor", "id":"--",      "name":"None", "abbreviation":"NONE"})
-p({"class":"net.nanopay.tx.TxnProcessor", "id":"ALTERNA", "name":"Alterna","abbreviation":"ALTERNA", "apiBaseUrl":"","userId":1001,"fee":{"class":"net.nanopay.tx.model.FixedFee","fixedFee":50,"type":2}})
+p({"class":"net.nanopay.tx.TxnProcessor", "id":"ALTERNA", "name":"Alterna","abbreviation":"ALTERNA", "apiBaseUrl":"","userId":1001,"fee":{"class":"net.nanopay.tx.fee.FixedFee","fixedFee":50,"type":2}})
 p({"class":"net.nanopay.tx.TxnProcessor", "id":"REALEX",  "name":"Realex Global Payments", "abbreviation":"REALEX"})
 p({"class":"net.nanopay.tx.TxnProcessor", "id":"STRIPE",  "name":"Stripe",                 "abbreviation":"STRIPE"})
 p({"class":"net.nanopay.tx.TxnProcessor", "id":"DWOLLA",  "name":"Dwolla",                 "abbreviation":"DWOLLA"})

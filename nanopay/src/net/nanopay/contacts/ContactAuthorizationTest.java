@@ -69,7 +69,7 @@ public class ContactAuthorizationTest
 
       // Only admins can run tests, so just get the current user instead of
       // creating a new user and putting them in the admin group.
-      adminUser_ = (User) x.get("user");
+      adminUser_ = ((Subject) x.get("subject")).getUser();
       adminUserContext_ = x;
 
       // Delete the test user if it exists.
@@ -116,7 +116,7 @@ public class ContactAuthorizationTest
 
   private void Put_Create(X x) {
     try {
-      User user = (User) x.get("user");
+      User user = ((Subject) x.get("subject")).getUser();
 
       // Create a contact to put.
       Contact contact = new Contact.Builder(x).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
@@ -152,7 +152,7 @@ public class ContactAuthorizationTest
 
   private void Put_Update_Own(X x) {
     try {
-      User user = (User) x.get("user");
+      User user = ((Subject) x.get("subject")).getUser();
 
       // Create a contact to put.
       Contact contact = new Contact.Builder(x).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
@@ -227,7 +227,7 @@ public class ContactAuthorizationTest
 
   private void Find_Own(X x) {
     try {
-      User user = (User) x.get("user");
+      User user = ((Subject) x.get("subject")).getUser();
 
       // Create a contact to put.
       Contact contact = new Contact.Builder(x).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
@@ -330,7 +330,7 @@ public class ContactAuthorizationTest
 
   private void Remove_Own(X x) {
     try {
-      User user = (User) x.get("user");
+      User user = ((Subject) x.get("subject")).getUser();
 
       // Create a contact to put.
       Contact contact = new Contact.Builder(x).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();
@@ -547,7 +547,7 @@ public class ContactAuthorizationTest
 
   private void Cannot_Set_Owner(X x) {
     try {
-      User user = (User) x.get("user");
+      User user = ((Subject) x.get("subject")).getUser();
 
       // Create a contact to put.
       Contact contact = new Contact.Builder(x).setFirstName(testFirstName_).setLastName(testLastName_).setEmail(testEmail_).setOrganization(testOrganization_).build();

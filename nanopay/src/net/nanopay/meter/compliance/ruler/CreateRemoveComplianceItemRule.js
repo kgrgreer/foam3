@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.ruler',
   name: 'CreateRemoveComplianceItemRule',
@@ -22,7 +39,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.dig.exception.GeneralException',
     'foam.nanos.logger.Logger',
-    'foam.nanos.ruler.Operations',
+    'foam.nanos.dao.Operation',
     'java.util.List',
     'net.nanopay.meter.compliance.ComplianceItem',
     'net.nanopay.meter.compliance.dowJones.DowJonesResponse',
@@ -48,7 +65,7 @@ foam.CLASS({
   properties: [
     {
       class: 'Enum',
-      of: 'foam.nanos.ruler.Operations',
+      of: 'foam.nanos.dao.Operation',
       name: 'operation',
       documentation: `
         Describes whether a compliance item is being created or removed. Only
@@ -73,14 +90,14 @@ foam.CLASS({
           agency.submit(x, new ContextAgent() {
             @Override
             public void execute(X x) {
-              if(CreateRemoveComplianceItemRule.this.getOperation() == Operations.CREATE) {
+              if(CreateRemoveComplianceItemRule.this.getOperation() == Operation.CREATE) {
                 if ( obj instanceof DowJonesResponse ) {
                   DowJonesResponse response = (DowJonesResponse) obj;
                   // entity could be User or Beneficial Owner
                   DAO entityDAO = (DAO) x.get(response.getDaoKey());
                   FObject entity = (FObject) entityDAO.find(response.getUserId());
                   String label = "";
-                  if ( entity instanceof User ) { label = ((User) entity).label(); }
+                  if ( entity instanceof User ) { label = ((User) entity).toSummary(); }
                   if ( entity instanceof BeneficialOwner ) { label = ((BeneficialOwner) entity).toSummary(); }
                   ComplianceItem complianceItem = new ComplianceItem.Builder(x)
                     .setDowJones(response.getId())
@@ -97,7 +114,7 @@ foam.CLASS({
                   DAO entityDAO = (DAO) x.get(response.getDaoKey());
                   FObject entity = (FObject) entityDAO.find(response.getEntityId().toString());
                   String label = "";
-                  if ( entity instanceof User ) { label = ((User) entity).label(); }
+                  if ( entity instanceof User ) { label = ((User) entity).toSummary(); }
                   if ( entity instanceof BeneficialOwner ) { label = ((BeneficialOwner) entity).toSummary(); }
                   ComplianceItem complianceItem;
                   if ( entity instanceof Transaction ) {
@@ -128,7 +145,7 @@ foam.CLASS({
                     .setType("Secure Fact (LEV)")
                     .setUser(response.getEntityId())
                     .setEntityId(response.getEntityId())
-                    .setEntityLabel(business.label())
+                    .setEntityLabel(business.toSummary())
                     .build();
                   DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
                   complianceItemDAO.inX(x).put(complianceItem);
@@ -141,12 +158,12 @@ foam.CLASS({
                     .setType("Secure Fact (SIDni)")
                     .setUser(response.getEntityId())
                     .setEntityId(response.getEntityId())
-                    .setEntityLabel(user.label())
+                    .setEntityLabel(user.toSummary())
                     .build();
                   DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
                   complianceItemDAO.inX(x).put(complianceItem);
                 }
-              } else if(CreateRemoveComplianceItemRule.this.getOperation() == Operations.REMOVE && obj != null) {
+              } else if(CreateRemoveComplianceItemRule.this.getOperation() == Operation.REMOVE && obj != null) {
                 if ( obj instanceof DowJonesResponse ) {
                   DowJonesResponse response = (DowJonesResponse) obj;
                   DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");

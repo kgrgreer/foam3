@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.ruler',
   name: 'SecurefactSIDniValidator',
@@ -8,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
@@ -33,9 +51,11 @@ foam.CLASS({
                 requestApproval(x,
                   new ComplianceApprovalRequest.Builder(x)
                     .setObjId(user.getId())
-                    .setDaoKey("localUserDAO")
+                    .setDaoKey("userDAO")
+                    .setServerDaoKey("localUserDAO")
                     .setCauseId(response.getId())
-                    .setClassification("Validate User Using SecureFact")
+                    .setClassificationEnum(ApprovalRequestClassificationEnum.USER_SECUREFACT_SIDNI)
+                    .setCreatedFor(user.getId())
                     .setCauseDaoKey("securefactSIDniDAO")
                     .build()
                 );

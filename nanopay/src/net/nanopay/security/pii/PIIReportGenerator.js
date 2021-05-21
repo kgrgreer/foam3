@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.security.pii',
   name: 'PIIReportGenerator',
@@ -8,10 +25,12 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.nanos.auth.User',
     'foam.mlang.MLang',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+
     'java.util.ArrayList',
-    'java.util.Date',
+    'java.util.Date'
   ],
 
   imports: [
@@ -46,7 +65,7 @@ foam.CLASS({
     },
     {
       name: 'addTimeToPIIRequest',
-      documentation: `clones a PIIRequest and adds the current date to the DownloadedAt Array and puts 
+      documentation: `clones a PIIRequest and adds the current date to the DownloadedAt Array and puts
       it back to the dao `,
       type: 'Void',
       args: [
@@ -57,7 +76,7 @@ foam.CLASS({
       ],
       javaCode: `
         DAO vprDAO = (DAO) x.get("viewPIIRequestDAO");
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
 
         // get valid PII request object for current user
         ViewPIIRequest request = (ViewPIIRequest) vprDAO.inX(x)

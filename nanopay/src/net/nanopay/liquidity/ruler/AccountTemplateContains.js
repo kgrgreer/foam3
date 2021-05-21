@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.liquidity.ruler',
   name: 'AccountTemplateContains',
@@ -11,8 +28,8 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
-    'net.nanopay.liquidity.crunch.AccountMap',
-    'net.nanopay.liquidity.tx.AccountHierarchy',
+    'foam.dao.DAO',
+    'net.nanopay.liquidity.crunch.AccountTemplate',
     'static foam.mlang.MLang.*'
   ],
 
@@ -34,11 +51,12 @@ foam.CLASS({
       name: 'f',
       javaCode: `
         X x = (X) obj;
-        AccountHierarchy accountHierarchy = (AccountHierarchy) x.get("accountHierarchyService");
-        AccountMap accountMap = accountHierarchy.getAccountsFromAccountTemplate(x, findAccountTemplate(x));
+        DAO accountTemplateDAO = (DAO) x.get("accountTemplateDAO");
 
-        return accountMap.getAccounts().containsKey(
-          String.valueOf( DOT(NEW_OBJ, getAccountProperty()).f(obj) )
+        AccountTemplate accountTemplate = (AccountTemplate) accountTemplateDAO.find(getAccountTemplate());
+
+        return accountTemplate.getAccounts().contains(
+          DOT(NEW_OBJ, getAccountProperty()).f(obj)
         );
       `
     }

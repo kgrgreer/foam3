@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.liquidity.tx',
   name: 'L2TransactionApprovalRule',
@@ -42,7 +59,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'foam.nanos.ruler.Operations',
+      of: 'foam.nanos.dao.Operation',
       name: 'operation',
       value: 'UPDATE',
       visibility: 'RO',
@@ -56,7 +73,15 @@ foam.CLASS({
       name: 'useAccountTemplate',
       label: 'Use Account Group',
       documentation: 'Use account group instead of source account if set to true.',
-      section: 'basicInfo'
+      section: 'basicInfo',
+      postSet: function(o, n) {
+        if ( o ) {
+          this.clearProperty('accountTemplate');
+          this.clearProperty('denomination');
+        } else if ( n ) {
+          this.clearProperty('sourceAccount');
+        }
+      }
     },
     {
       class: 'Reference',
@@ -148,7 +173,7 @@ foam.CLASS({
           errorString: 'Amount must be greater than 0.'
         }
       ],
-      view: { class: 'net.nanopay.liquidity.ui.LiquidCurrencyView' }
+      view: { class: 'foam.u2.view.CurrencyInputView', contingentProperty: 'denomination' }
     },
     {
       name: 'predicate',

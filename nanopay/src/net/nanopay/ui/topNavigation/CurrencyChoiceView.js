@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.ui.topNavigation',
   name: 'CurrencyChoiceView',
@@ -39,7 +56,8 @@ foam.CLASS({
     margin-top: 7px;
     margin-left: 7px;
   }
-  ^ .foam-u2-ActionView-currencyChoice{
+  ^ .foam-u2-ActionView-currencyChoice {
+    display: inline-block;
     background: none !important;
     border: 0 !important;
     box-shadow: none !important;
@@ -50,8 +68,8 @@ foam.CLASS({
   ^ .foam-nanos-u2-navigation-TopNavigation-CurrencyChoiceView {
     align-items: center;
   }
-  ^ .foam-u2-ActionView-currencyChoice > span{
-    font-family: Roboto;
+  ^ .foam-u2-ActionView-currencyChoice > span {
+    font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 16px;
     font-weight: 300;
     letter-spacing: 0.2px;
@@ -69,7 +87,7 @@ foam.CLASS({
     line-height: 30px;
   }
   ^ .foam-u2-PopupView {
-    left: -40 !important;
+    left: -30 !important;
     top: 51px !important;
     padding: 0 !important;
     z-index: 1000;
@@ -170,7 +188,7 @@ foam.CLASS({
                 if ( c.flagImage != null ) {
                   return self.E()
                     .start('div').start('img')
-                      .attrs({ src: c.flagImage })
+                      .attrs({ src: c.flagImage, alt: c.name })
                       .addClass('flag').end().add(c.id)
                       .on('click', function() {
                         self.lastCurrency = c;

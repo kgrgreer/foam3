@@ -4,3 +4,63 @@ p({"class":"foam.nanos.menu.Menu","id":"sync-bank","label":"Banking","handler":{
 p({"class":"foam.nanos.menu.Menu","id":"reset","label":"Reset Password","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.ChangePasswordView", "modelOf":"foam.nanos.auth.ResetPassword", "showHeader":false}},"parent":"hidden"})
 p({"class":"foam.nanos.menu.Menu","id":"sign-up","label":"Sign Up","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.u2.view.LoginView", "mode_":"SignUp"}},"parent":"hidden"})
 p({"class":"foam.nanos.menu.Menu","id":"set-password","label":"Change Password","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.ChangePasswordView"}},"parent":"hidden"})
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "dashboard-backoffice",
+  "label": "Backoffice Dashboard",
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "net.nanopay.ui.dashboard.DashboardView"
+    }
+  }
+})
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "dashboard-backoffice.paymentErrors",
+  "label": "Payment Errors",
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "net.nanopay.ui.dashboard.PaymentErrorCard"
+    }
+  },
+  "parent": "dashboard-backoffice"
+})
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "dashboard-backoffice.screeningResponses",
+  "label": "Screening Responses",
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "net.nanopay.ui.dashboard.ScreeningResponsesCard"
+    }
+  },
+  "parent": "dashboard-backoffice"
+})
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "dashboard-backoffice.pendingCompliance",
+  "label": "Pending Compliance",
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "net.nanopay.ui.dashboard.PendingComplianceCard"
+    }
+  },
+  "parent": "dashboard-backoffice"
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"switch-user",
+  "label":"Switch User",
+  "description":"",
+  "handler":{
+    "class":"foam.nanos.menu.ViewMenu",
+    "view":{"class":"net.nanopay.auth.SwitchUserView"}
+  },
+  "order":40,
+  "parent":"settings"
+})

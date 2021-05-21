@@ -1,0 +1,114 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "afexCredentialDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setGuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("afexCredentialDAO")
+      .setOf(net.nanopay.fx.afex.AFEXCredentials.getOwnClassInfo())
+      .build();
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.fx.afex.AFEXCredentials"
+    }
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"afexService",
+  "lazy":true,
+  "serve":false,
+  "serviceScript":"""
+    return new net.nanopay.fx.afex.AFEXServiceMock(x);
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"afexServiceProvider",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.fx.afex.AFEXServiceProvider(x, x.get("afexService"));
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "afexUserDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.fx.afex.AFEXUser.getOwnClassInfo())
+      .setSeqNo(true)
+      .setName("afexUserDAO")
+      .setJournalName("afexUsers")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.fx.afex.AFEXUser\"}"
+})
+
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "afexFundingBalanceDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.fx.afex.AFEXFundingBalance.getOwnClassInfo())
+      .setSeqNo(true)
+      .setName("afexFundingBalanceDAO")
+      .setJournalName("afexFundingBalances")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.fx.afex.AFEXFundingBalance\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "afexBeneficiaryDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.fx.afex.AFEXBeneficiary.getOwnClassInfo())
+      .setSeqNo(true)
+      .setJournalName("afexBeneficiaries")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.fx.afex.AFEXBeneficiary\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "afexBusinessSectorDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.model.BusinessSector.getOwnClassInfo())
+      .setJournalName("afexBusinessSectors")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.model.BusinessSector\"}"
+})
+
+p({"class":"foam.nanos.boot.NSpec", "name":"AFEXLogDAO",                 "lazy":false,  "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setOf(net.nanopay.fx.afex.AFEXLog.getOwnClassInfo()).setSeqNo(true).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"afexLogs\").build();","client":"{\"of\":\"net.nanopay.fx.afex.AFEXLog\"}" })

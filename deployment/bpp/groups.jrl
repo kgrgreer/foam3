@@ -1,0 +1,14 @@
+// From MSP setup
+p({class:"foam.nanos.auth.Group",id:"bpp-admin",description:"bpp admin",parent:"msp-admin"})
+p({class:"foam.nanos.auth.Group",id:"bpp-fraud-ops",description:"bpp fraud-ops group",parent:"fraud-ops"})
+p({class:"foam.nanos.auth.Group",id:"bpp-payment-ops",description:"bpp payment-ops group",parent:"payment-ops"})
+p({class:"foam.nanos.auth.Group",id:"bpp-support",description:"bpp support group",parent:"support"})
+p({class:"foam.nanos.auth.Group",id:"bpp-sme",description:"bpp sme group",parent:"sme"})
+
+p({
+  class:"foam.nanos.auth.Group",
+  id:"bpp-sme",
+  parent:"external-sme"
+})
+
+p({class:"foam.nanos.auth.Group",id:"bpp-api-session",description:"BPP API session group",parent:"external-api-session",defaultMenu:"view-users"})

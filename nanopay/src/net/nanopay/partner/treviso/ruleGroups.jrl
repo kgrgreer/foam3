@@ -1,0 +1,5 @@
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"TrevisoConfig",
+  "enabled":true,
+})

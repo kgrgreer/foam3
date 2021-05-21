@@ -1,10 +1,27 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.auth.email',
   name: 'EmailTokenServiceRefine',
   refines: 'foam.nanos.auth.email.EmailTokenService',
 
   imports: [
-    'logger'
+    'Logger logger'
   ],
 
   javaImports: [
@@ -32,7 +49,7 @@ foam.CLASS({
           message.setTo(new String[]{user.getEmail()});
 
           HashMap<String, Object> args = new HashMap<>();
-          args.put("name", user.getFirstName());
+          args.put("name", user.getUserName());
           args.put("email", user.getEmail());
           args.put("link", url + "/service/verifyEmail?userId=" + user.getId() + "&token=" + token.getData() + "&redirect=/");
           args.put("sendTo", user.getEmail());

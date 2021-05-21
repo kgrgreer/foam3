@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import foam.dao.DAO;
+import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 import org.apache.commons.lang3.StringUtils;
 
@@ -30,9 +31,16 @@ public class BmoFormatUtil {
       + addLeftZeros(est.getDayOfYear(), 3);
   }
 
+  public static DateTimeFormatter getDateTimeFormat() {
+    return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.of("America/Toronto"));
+  }
+
   public static String getCurrentDateTimeEDT() {
-    ZonedDateTime est = ZonedDateTime.now(ZoneId.of("America/Toronto"));
-    return est.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    return ZonedDateTime.now().format(getDateTimeFormat());
+  }
+
+  public static ZonedDateTime parseDateTimeEDT(String date) {
+    return ZonedDateTime.parse(date, getDateTimeFormat());
   }
 
   public static String addLeftZeros(long number, int size) {
@@ -90,20 +98,18 @@ public class BmoFormatUtil {
 
   public static void sendEmail(X x, String subject, Exception e) {
     DAO notificationDAO = (DAO) x.get("notificationDAO");
+    Logger logger = (Logger) x.get("logger");
     String body = "Exception" + System.lineSeparator();
-    body = body + e.getMessage() + System.lineSeparator();
-    body = body + System.lineSeparator();
-    ByteArrayOutputStream os = new ByteArrayOutputStream();
-    PrintStream ps = new PrintStream(os);
-    e.printStackTrace(ps);
-    body = body + os.toString();
-    
+    if ( e != null ) {
+      body = body + e.getMessage() + System.lineSeparator();
+      body = body + e.getStackTrace();
+      logger.error(body);
+    }
+
     Notification notification = new Notification();
-    notification.setGroupId("payment-ops");
+    notification.setGroupId("nanopay-payment-ops");
     notification.setNotificationType("BMO EFT");
-    notification.setIssuedDate(new Date());
     notification.setBody(subject + "\n" + body);
-    notification.setEmailIsEnabled(true);
     notificationDAO.put(notification);
   }
 }

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.plaid.ui',
   name: 'PlaidView',
@@ -11,13 +28,14 @@ foam.CLASS({
     'stack',
     'appConfig',
     'plaidCredential',
-    'ctrl'
+    'ctrl',
+    'notify'
   ],
 
   requires: [
     'net.nanopay.plaid.model.PlaidPublicToken',
     'net.nanopay.plaid.PlaidResponseItem',
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'foam.u2.dialog.Popup'
   ],
 
@@ -208,7 +226,7 @@ foam.CLASS({
         );
 
       if ( Object.keys(selectedAccount).length > 1 ) {
-        this.showNotification('Only 1 bank account can be added.', 'warning');
+        this.showNotification('Only 1 bank account can be added.', this.LogLevel.WARN);
         this.isLoading = false;
         return;
       }
@@ -231,7 +249,7 @@ foam.CLASS({
         responseItem.account = response.account;
         responseItem.plaidItem = response.plaidItem;
         responseItem.plaidError = response.plaidError;
-
+        responseItem.account.plaidResponseItem = responseItem;
         // No errors, success
         if ( responseItem.plaidError === undefined ) {
           if ( this.isUpdateMode ) {
@@ -240,9 +258,10 @@ foam.CLASS({
           } else {
             this.hint = 'You can add another bank account by clicking the Connect button again';
 
-            this.ctrl.add(this.Popup.create().tag({
-              class: 'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard',
-              plaidResponseItem: responseItem
+            this.add(this.Popup.create().tag({
+              class: 'net.nanopay.account.ui.BankAccountWizard',
+              data: responseItem.account,
+              useSections: ['pad']
             }));
           }
         }
@@ -257,7 +276,7 @@ foam.CLASS({
       } catch (e) {
         this.isUpdateMode = false;
         this.hint = 'Oops! Retry?';
-        this.showNotification(e.message, 'error');
+        this.showNotification(e.message, this.LogLevel.ERROR);
       }
 
       this.isLoading = false;
@@ -282,12 +301,12 @@ foam.CLASS({
         default:
           let msg =
             error.display_message !== "" ? error.display_message : error.error_code;
-          this.showNotification(msg, 'error')
+          this.showNotification(msg, this.LogLevel.ERROR)
       }
     },
 
     function showNotification(msg, type) {
-      this.ctrl.add(this.NotificationMessage.create({ message: msg, type: type}));
+      this.notify(msg, '', type, true);
     }
   ],
 

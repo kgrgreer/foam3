@@ -1,4 +1,21 @@
 /**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+/**
  * @license
  * Copyright 2019 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -18,6 +35,7 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
+    'foam.nanos.approval.ApprovalRequestClassificationEnum',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
@@ -40,7 +58,7 @@ foam.CLASS({
       value: 'SudoTicket'
     }
   ],
-  
+
   methods: [
     {
       name: 'applyAction',
@@ -55,7 +73,7 @@ foam.CLASS({
               return;
             }
             SudoTicket ticket = (SudoTicket) obj; //.fclone();
-            DAO approvalDAO = ApprovalRequestUtil.getAllRequests(x, ticket.getId(), getClassification());
+            DAO approvalDAO = ApprovalRequestUtil.getAllRequests(x, ticket.getId(), ApprovalRequestClassificationEnum.SUDO_TICKET_APPROVAL);
 
             ApprovalStatus status = ApprovalRequestUtil.getState(approvalDAO);
             logger.debug("ApprovalStatus", status);
@@ -66,8 +84,9 @@ foam.CLASS({
               ApprovalRequest approval = new ApprovalRequest.Builder(x)
                 .setObjId(ticket.getId())
                 .setDaoKey(getDaoKey())
-                .setClassification(getClassification())
-                .setDescription(owner.getLegalName()+" request access to "+as.getLegalName())
+                .setClassificationEnum(ApprovalRequestClassificationEnum.SUDO_TICKET_APPROVAL)
+                .setDescription(owner.getLegalName() + " request access to " + as.getLegalName())
+                .setCreatedFor(owner.getId())
                 .build();
               for ( Long approverId : myRule.getApprovers() ) {
                 ApprovalRequest request = (ApprovalRequest) approval.fclone();

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.meter.report',
   name: 'PaymentReport',
@@ -58,7 +75,7 @@ foam.CLASS({
       class: 'Long',
       name: 'invoiceId',
       visibility: 'RO',
-      tableWidth: 60,
+      tableWidth: 100,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Invoice ID");
       }
@@ -68,7 +85,7 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 170,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Transaction Status");
       }
@@ -78,16 +95,16 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'state',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 170,
       toCSVLabel: function (x, outputter) {
-        outputter.outputValue("Transaction State"); 
+        outputter.outputValue("Transaction State");
       }
     },
     {
       class: 'String',
       name: 'id',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 100,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Transaction ID");
       }
@@ -96,7 +113,7 @@ foam.CLASS({
       class: 'String',
       name: 'referenceNumber',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 120,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Reference Number");
       }
@@ -105,7 +122,7 @@ foam.CLASS({
       class: 'String',
       name: 'parent',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 120,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Parent");
       }
@@ -114,7 +131,7 @@ foam.CLASS({
       class: 'DateTime',
       name: 'created',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 120,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Created");
       }
@@ -123,7 +140,7 @@ foam.CLASS({
       class: 'DateTime',
       name: 'processDate',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 120,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Process Date");
       }
@@ -132,7 +149,7 @@ foam.CLASS({
       class: 'DateTime',
       name: 'completionDate',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 120,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Completion Date");
       }
@@ -141,7 +158,7 @@ foam.CLASS({
       class: 'String',
       name: 'type',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 120,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Type");
       }
@@ -150,7 +167,7 @@ foam.CLASS({
       class: 'Long',
       name: 'senderUserId',
       visibility: 'RO',
-      tableWidth: 60,
+      tableWidth: 120,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Sender User ID");
       }
@@ -159,7 +176,7 @@ foam.CLASS({
       class: 'String',
       name: 'senderName',
       visibility: 'RO',
-      tableWidth: 100,
+      tableWidth: 120,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Sender Name");
       }
@@ -168,7 +185,7 @@ foam.CLASS({
       class: 'Long',
       name: 'receiverUserId',
       visibility: 'RO',
-      tableWidth: 60,
+      tableWidth: 120,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Receiver User ID");
       }
@@ -177,7 +194,7 @@ foam.CLASS({
       class: 'String',
       name: 'receiverName',
       visibility: 'RO',
-      tableWidth: 100,
+      tableWidth: 120,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Receiver Name");
       }
@@ -187,7 +204,7 @@ foam.CLASS({
       name: 'sourceAmount',
       unitPropName: 'sourceCurrency',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 120,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Source Amount");
       }
@@ -196,7 +213,7 @@ foam.CLASS({
       class: 'String',
       name: 'sourceCurrency',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 120,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Source Currency");
       }
@@ -206,7 +223,7 @@ foam.CLASS({
       name: 'destinationAmount',
       unitPropName: 'destinationCurrency',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 120,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Destination Amount");
       }
@@ -215,7 +232,7 @@ foam.CLASS({
       class: 'String',
       name: 'destinationCurrency',
       visibility: 'RO',
-      tableWidth: 80,
+      tableWidth: 120,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Destination Currency");
       }

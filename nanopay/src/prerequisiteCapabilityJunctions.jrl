@@ -1,0 +1,907 @@
+// nanopay spid has access to all planners
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "nanopay",
+  targetId: "AllPlannerCapability",
+  priority: 1
+})
+
+// Prerequisites for canadianBusinessOnboardedWithDomesticPayments
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-ca-ca-payments",
+  "targetId":"crunch.onboarding.business-information",
+  "priority":2
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-ca-ca-payments",
+  "targetId":"crunch.onboarding.transaction-details",
+  "priority":4
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-ca-ca-payments",
+  "targetId":"crunch.onboarding.minmax.business-ownership",
+  "priority":5
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-ca-ca-payments",
+  "targetId":"crunch.acceptance-document.certify-owners-percent",
+  "priority":6
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-ca-ca-payments",
+  "targetId":"crunch.onboarding.business-directors",
+  "priority":7
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-ca-ca-payments",
+  "targetId":"crunch.acceptance-document.certify-directors-list",
+  "priority":8
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-ca-ca-payments",
+  "targetId":"crunch.acceptance-document.dual-party-agreement-cad",
+  "priority":9
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-ca-ca-payments",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
+  "priority":10
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.acceptance-document.certify-owners-percent",
+  "targetId":"crunch.onboarding.minmax.business-ownership"
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.minmax.business-ownership",
+  "targetId":"crunch.onboarding.business-ownership"
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.minmax.business-ownership",
+  "targetId":"crunch.onboarding.publicly-traded"
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.acceptance-document.certify-directors-list",
+  "targetId":"crunch.onboarding.business-directors"
+})
+
+// prerequisites for usBusinessOnboardedWithDomesticPayments
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.onboarding.business-information",
+  "priority":3
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.onboarding.transaction-details",
+  "priority":5
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.onboarding.business-directors",
+  "priority":6
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.acceptance-document.certify-directors-list",
+  "priority":7
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.onboarding.minmax.business-ownership",
+  "priority":8
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.acceptance-document.certify-owners-percent",
+  "priority":9
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.acceptance-document.afex-terms-and-conditions",
+  "priority":10
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.acceptance-document.international-payments-agreement",
+  "priority":11
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
+  "priority":12
+})
+
+
+// prerequisites for internationalBusinessOnboarded
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-ca-international-payments",
+  "targetId":"crunch.onboarding.unlock-ca-ca-payments",
+  "priority":1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-ca-international-payments",
+  "targetId":"crunch.acceptance-document.international-payments-agreement",
+  "priority":3
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-ca-international-payments",
+  "targetId":"crunch.acceptance-document.cad-afex-terms",
+  "priority":4
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-ca-international-payments",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
+  "priority":5
+})
+
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.business-information",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
+  "priority":1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.transaction-details",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
+  "priority":4
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.business-directors",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
+  "priority":5
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.acceptance-document.certify-directors-list",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
+  "priority":6
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.publicly-traded",
+  "targetId":"crunch.onboarding.certify-data-reviewed"
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.business-ownership",
+  "targetId":"crunch.onboarding.certify-data-reviewed"
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.acceptance-document.certify-owners-percent",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
+  "priority":7
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.acceptance-document.dual-party-agreement-cad",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
+  "priority":8
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.acceptance-document.cad-afex-terms",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
+  "priority":9
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.acceptance-document.afex-terms-and-conditions",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
+  "priority":10
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.acceptance-document.international-payments-agreement",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
+  "priority":11
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.general-admission",
+  "targetId":"crunch.acceptance-document.ablii-terms-and-conditions",
+  "priority":1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.general-admission",
+  "targetId":"crunch.acceptance-document.ablii-privacy-policy",
+  "priority":2
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.general-admission",
+  "targetId":"crunch.onboarding.user-registration",
+  "priority":3
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.treviso.general-admission",
+  "targetId":"crunch.onboarding.user-registration",
+  "priority":3
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.treviso.general-admission",
+  "targetId":"crunch.onboarding.br.treviso-unlock-payments-terms",
+  "priority":3
+})
+
+// top-level Brazil Onboarding prerequisites
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.br.business-prerequisites",
+  "targetId":"crunch.onboarding.br.brazil-onboarding",
+  "priority":3
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.br.business-prerequisites",
+  "targetId":"crunch.onboarding.br.add-bank-account",
+  "priority":3
+})
+
+// prerequisites for Brazil Initial Onboarding
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"crunch.onboarding.business-type-sector",
+  "priority":3
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"crunch.onboarding.transaction-details",
+  "priority":5
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"crunch.onboarding.business-directors",
+  "priority":6
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"crunch.onboarding.business-directors",
+  "priority":7
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"crunch.onboarding.br.business-ownership",
+  "priority":8
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"crunch.acceptance-document.afex-terms-and-conditions",
+  "priority":10
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
+  "priority":12
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"payment.source.country.br",
+  "priority":12
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"payment.target.country.br",
+  "priority":13
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"payment.target.country.br",
+  "targetId":"crunch.onboarding.br.business-identification",
+  "priority":12
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"payment.target.country.br",
+  "targetId":"crunch.onboarding.document.annual-financial-statements",
+  "priority":13
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"payment.target.country.br",
+  "targetId":"crunch.onboarding.document.articles-of-incorporation",
+  "priority":14
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"payment.target.country.br",
+  "targetId":"crunch.onboarding.document.office-consumption",
+  "priority":15
+})
+
+// BR Signing Officer to Residence Consumption Bill (Utility bills)
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.signing-officer-information",
+  "targetId":"crunch.onboarding.document.utility-bills",
+  "predicate":{ "class":"net.nanopay.crunch.predicate.CheckUserCountry","country":"BR" },
+  "priority":2
+})
+
+// BR/US Signing Officer to User Identity (Identification)
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.signing-officer-information",
+  "targetId":"crunch.onboarding.document.identification",
+  "predicate":{ 
+    "class":"foam.mlang.predicate.Or",
+    "args":[
+      { "class":"net.nanopay.crunch.predicate.CheckUserCountry","country":"BR" },
+      { "class":"net.nanopay.crunch.predicate.CheckUserCountry","country":"US" }
+    ]
+  },
+  "priority":3
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.document.identification",
+  "targetId":"crunch.onboarding.document.date-of-issue"
+})
+
+// BR Signing Officer to CPF
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.signing-officer-information",
+  "targetId":"crunch.onboarding.br.cpf",
+  "predicate":{ "class":"net.nanopay.crunch.predicate.CheckUserCountry","country":"BR" },
+  "priority":1
+})
+
+// Not BR Signing Officer to Birth date
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.signing-officer-information",
+  "targetId":"crunch.onboarding.user-birth-date",
+  "predicate":{ 
+    "class":"foam.mlang.predicate.Or",
+    "args":[
+      { "class":"net.nanopay.crunch.predicate.CheckUserCountry","country":"CA" },
+      { "class":"net.nanopay.crunch.predicate.CheckUserCountry","country":"US" }
+    ]
+  },
+  "priority":5
+})
+
+// Prerequisites for apiUserBusinessOnboarding
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.onboarding-user-and-business",
+  "targetId":"crunch.onboarding.general-admission",
+  "priority":1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.onboarding-user-and-business",
+  "targetId":"crunch.onboarding.register-business",
+  "priority":2
+})
+
+// Prerequisites for apiDomesticPayments
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.unlock-ca-ca-payments",
+  "targetId":"crunch.onboarding.signing-officer-question",
+  "priority":1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.unlock-ca-ca-payments",
+  "targetId":"crunch.onboarding.signing-officer-information",
+  "priority":2
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.unlock-ca-ca-payments",
+  "targetId":"crunch.onboarding.unlock-ca-ca-payments",
+  "priority":3
+})
+
+//API Onboarding Domestic Business Payments (CAD to CAD)
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.unlock-ca-ca-payments",
+  "targetId":"crunch.onboarding.register-business",
+  "priority": 16
+})
+
+//API CAD Business Payments Sending
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.ca-business-send-payments",
+  "targetId":"crunch.onboarding.api.ca-business-receive-payments",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.ca-business-send-payments",
+  "targetId":"crunch.onboarding.api.expanded-business-details",
+  "priority": 2
+})
+
+
+//API CAD Business Payments Receiving
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.ca-business-receive-payments",
+  "targetId":"manual.compliance.securefact.business",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.ca-business-receive-payments",
+  "targetId":"manual.compliance.dowjones.business",
+  "priority": 2
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.ca-business-receive-payments",
+  "targetId":"manual.compliance.identitymind.business",
+  "priority": 3
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"manual.compliance.securefact.business",
+  "targetId":"crunch.onboarding.api.business-details",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"manual.compliance.dowjones.business",
+  "targetId":"crunch.onboarding.api.business-details",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"manual.compliance.identitymind.business",
+  "targetId":"crunch.onboarding.api.business-details",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.ca-business-receive-payments",
+  "targetId":"crunch.onboarding.business-has-signing-officer",
+  "priority": 4
+})
+
+// Business Onboarding Details
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.business-details",
+  "targetId":"crunch.onboarding.api.minmax.business-type",
+  "priority": 2
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.business-details",
+  "targetId":"crunch.onboarding.signing-officer-list",
+  "priority": 3
+})
+
+//Business Type
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.minmax.business-type",
+  "targetId":"business-type-sole-proprietorship",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.minmax.business-type",
+  "targetId":"business-type-partnership",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.minmax.business-type",
+  "targetId":"business-type-corporation",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.minmax.business-type",
+  "targetId":"business-type-nonprofit",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.minmax.business-type",
+  "targetId":"business-type-limited-liability",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.minmax.business-type",
+  "targetId":"business-type-publicly-traded",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.minmax.business-type",
+  "targetId":"business-type-trust",
+  "priority": 1
+})
+
+//Corporation Business Type
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"business-type-corporation",
+  "targetId":"crunch.onboarding.business-director-list",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"business-type-corporation",
+  "targetId":"crunch.onboarding.business-owner-list",
+  "priority": 2
+})
+
+//Limited Liability Business Type
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"business-type-limited-liability",
+  "targetId":"crunch.onboarding.business-director-list",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"business-type-limited-liability",
+  "targetId":"crunch.onboarding.business-owner-list",
+  "priority": 2
+})
+
+//Publicly Traded Business Type
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"business-type-publicly-traded",
+  "targetId":"crunch.onboarding.business-director-list",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"business-type-publicly-traded",
+  "targetId":"crunch.onboarding.business-owner-list",
+  "priority": 2
+})
+
+//Signing Officers
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.business-has-signing-officer",
+  "targetId":"crunch.onboarding.signing-officer-list",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.business-has-signing-officer",
+  "targetId":"crunch.onboarding.user-is-signing-officer",
+  "priority": 2
+})
+
+//User Signing Officer Capability
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.user-is-signing-officer",
+  "targetId":"manual.compliance.securefact.user",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.user-is-signing-officer",
+  "targetId":"manual.compliance.dowjones.user",
+  "priority": 2
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.user-is-signing-officer",
+  "targetId":"manual.compliance.identitymind.user",
+  "priority": 3
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"manual.compliance.securefact.user",
+  "targetId":"crunch.onboarding.expanded-user-details",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"manual.compliance.dowjones.user",
+  "targetId":"crunch.onboarding.expanded-user-details",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"manual.compliance.identitymind.user",
+  "targetId":"crunch.onboarding.expanded-user-details",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.user-is-signing-officer",
+  "targetId":"crunch.onboarding.parent.api.simple-user-onboarding",
+  "priority": 2
+})
+
+//API CAD Personal Payments
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.unlock-ca-payments",
+  "targetId":"crunch.onboarding.api.unlock-ca-payments-under-1000",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.unlock-ca-payments",
+  "targetId":"manual.compliance.securefact.user",
+  "priority": 2
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.unlock-ca-payments",
+  "targetId":"manual.compliance.dowjones.user",
+  "priority": 3
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.unlock-ca-payments",
+  "targetId":"manual.compliance.identitymind.user",
+  "priority": 4
+})
+
+// Expanded User Details
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.expanded-user-details",
+  "targetId":"crunch.onboarding.parent.api.simple-user-onboarding",
+  "priority": 1
+})
+
+//API CAD Personal Payments Under 1000CAD
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.unlock-ca-payments-under-1000",
+  "targetId":"crunch.onboarding.parent.api.simple-user-onboarding",
+  "priority": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.api.unlock-ca-payments-under-1000",
+  "targetId":"crunch.onboarding.api.onboarding-type",
+  "priority": 2
+})
+
+//Simple User Onboarding
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.parent.api.simple-user-onboarding",
+  "targetId":"crunch.onboarding.user-details",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.parent.api.simple-user-onboarding",
+  "targetId":"crunch.acceptance-document.ablii-privacy-policy",
+  "priority": 2
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.parent.api.simple-user-onboarding",
+  "targetId":"crunch.acceptance-document.ablii-terms-and-conditions",
+  "priority": 2
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.parent.api.simple-user-onboarding",
+  "targetId":"crunch.acceptance-document.ca-account-authorization-agreement",
+  "priority": 3
+})
+
+//usBusinessOnboarding
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.onboarding.business-registration-date",
+  "priority":1
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.onboarding.tax-id-number",
+  "priority":2
+})
+
+//brBusinessOnboarding
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"crunch.onboarding.last-business-registration-date",
+  "priority":3
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.br.brazil-onboarding",
+  "targetId":"crunch.onboarding.business-incorporation-date",
+  "priority":2
+})
+
+//treviso extra
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "crunch.onboarding.br.brazil-onboarding",
+  targetId: "crunch.onboarding.br.currency-amount-information",
+  priority: 3
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "crunch.onboarding.br.brazil-onboarding",
+  targetId: "crunch.onboarding.br.business-account",
+  priority: 4
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "crunch.onboarding.br.currency-amount-information",
+  targetId: "crunch.onboarding.certify-data-reviewed",
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "crunch.onboarding.br.business-account",
+  targetId: "crunch.onboarding.certify-data-reviewed",
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "crunch.onboarding.br.nature-of-business",
+  targetId: "crunch.onboarding.certify-data-reviewed",
+})
+
+//default
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-ca-international-payments",
+  "targetId":"crunch.onboarding.business-registration-date",
+  "priority":1
+})
+
+// Prerequisites for serviceProviderCapability
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "serviceProviderCapability",
+  targetId: "plannerCapability",
+  priority: 1
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "serviceProviderCapability",
+  targetId: "countryCapability",
+  priority: 2
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "serviceProviderCapability",
+  targetId: "corridorCapability",
+  priority: 3
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "serviceProviderCapability",
+  targetId: "currencyCapability",
+  priority: 4
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "serviceProviderCapability",
+  targetId: "menuCapability",
+  priority: 5
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-ca-ca-payments",
+  "targetId":"crunch.onboarding.add-bank-account",
+  "priority":3
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.add-bank-account",
+  "targetId":"crunch.onboarding.certify-data-reviewed",
+  "priority":5
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.onboarding.unlock-us-payments",
+  "targetId":"crunch.onboarding.add-bank-account",
+  "priority":6
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.acceptance-document.ca-pad-capture",
+  "targetId":"crunch.acceptance-document.certify-account-ownership",
+  "priority":6
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.acceptance-document.ca-pad-capture",
+  "targetId":"crunch.acceptance-document.ca-account-authorization-agreement",
+  "priority":6
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.acceptance-document.ca-pad-capture",
+  "targetId":"crunch.acceptance-document.recourse-agreement",
+  "priority":6
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.acceptance-document.ca-pad-capture",
+  "targetId":"crunch.acceptance-document.ca-cancellation-agreement",
+  "priority":6
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.acceptance-document.us-pad-capture",
+  "targetId":"crunch.acceptance-document.us-account-authorization-agreement",
+  "priority":6
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"crunch.acceptance-document.us-pad-capture",
+  "targetId":"crunch.acceptance-document.us-cancellation-agreement",
+  "priority":6
+})

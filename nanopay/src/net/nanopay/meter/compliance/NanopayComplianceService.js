@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.meter.compliance',
   name: 'NanopayComplianceService',
@@ -11,13 +28,16 @@ foam.CLASS({
   javaImports: [
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.nanos.auth.User',
     'foam.nanos.auth.Group',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
     'foam.nanos.session.Session',
+
+    'java.util.List',
+
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.model.Business',
     'net.nanopay.model.BusinessUserJunction',
-    'java.util.List',
     'static foam.mlang.MLang.EQ'
   ],
 
@@ -51,7 +71,7 @@ foam.CLASS({
         // QUESTION: Why do we cache compliance user and agent? Shouldn't it be
         // always checking the latest user/agent when checking for compliance?
         User cachedAgent = (User) x.get("cachedComplianceAgent");
-        User agent = (cachedAgent != null) ? cachedAgent : (User) x.get("agent");
+        User agent = (cachedAgent != null) ? cachedAgent : ((Subject) x.get("subject")).getRealUser();
         if ( agent != null ) {
           // Set the cached agent if it hasn't been set already
           if ( cachedAgent == null ) {
@@ -70,12 +90,12 @@ foam.CLASS({
         }
 
         User cachedUser = (User) x.get("cachedComplianceUser");
-        User user = (cachedUser != null) ? cachedUser : (User) x.get("user");
+        User user = (cachedUser != null) ? cachedUser : ((Subject) x.get("subject")).getUser();
         if ( user != null ) {
           // Set the cached User if it hasn't been set already
           if ( cachedUser == null ) {
             DAO userDao = (DAO) x.get("localUserDAO");
-            if ( userDao != null ) { 
+            if ( userDao != null ) {
               user = (User) userDao.find(user.getId());
               x.put("cachedComplianceUser", user);
             }
@@ -138,7 +158,7 @@ foam.CLASS({
       ],
       type: 'Boolean',
       javaCode: `
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         if ( user instanceof Business ) {
           DAO businessDao = (DAO) x.get("localBusinessDAO");
           assert businessDao != null : "localBusinessDAO must not be null";

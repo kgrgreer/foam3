@@ -1,0 +1,42 @@
+// Prerequisites for gd spid capability
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "gd",
+  targetId: "serviceProviderCapability",
+  priority: 1
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "gd",
+  targetId: "gdPlannerCapability",
+  priority: 2
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "gd",
+  targetId: "gdCountryCapability",
+  priority: 3
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "gd",
+  targetId: "gdCorridorCapability",
+  priority: 4
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "gd",
+  targetId: "gdCurrencyCapability",
+  priority: 5
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "gd",
+  targetId: "gdMenuCapability",
+  priority: 6
+})

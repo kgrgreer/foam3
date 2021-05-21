@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.cico.ui.ci',
   name: 'CashInModal',
@@ -7,9 +24,9 @@ foam.CLASS({
     'foam.mlang.Expressions',
   ],
 
-  requires: [ 
-    'net.nanopay.cico.ui.CicoView',
-    'foam.u2.dialog.NotificationMessage' 
+  requires: [
+    'foam.log.LogLevel',
+    'net.nanopay.cico.ui.CicoView'
   ],
 
   imports: [ 
@@ -17,7 +34,8 @@ foam.CLASS({
     'bankList', 
     'closeDialog', 
     'confirmCashIn', 
-    'goToBankAccounts'
+    'goToBankAccounts',
+    'notify'
    ],
 
   documentation: 'Pop up modal for cashing In.',
@@ -44,7 +62,7 @@ foam.CLASS({
     ^ .popUpTitle {
       width: 198px;
       height: 40px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       line-height: 40.5px;
       letter-spacing: 0.2px;
@@ -72,7 +90,7 @@ foam.CLASS({
       background-color: transparent;
     }
     ^ .label {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
@@ -81,7 +99,6 @@ foam.CLASS({
       margin-left: 20px;
     }
     ^ .foam-u2-tag-Select{
-      height: 40px;
       width: 408px;
       background: white;
       border: solid 1px rgba(164, 179, 184, 0.5);
@@ -91,7 +108,7 @@ foam.CLASS({
       padding: 10px;
     }
     ^ .foam-u2-ActionView-nextButton {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       width: 136px;
       height: 40px;
       border-radius: 2px;
@@ -117,7 +134,7 @@ foam.CLASS({
     ^ .foam-u2-ActionView-goToBank {
       width: 118.3px;
       height: 14px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       line-height: 1.33;
       letter-spacing: 0.3px;
@@ -194,12 +211,12 @@ foam.CLASS({
       label: 'Next',
       code: function(X) {
         var self = this;
-        if(self.bankList == null) {
-          self.add(self.NotificationMessage.create({ message: 'Please add and verify a bank account to continue.', type: 'error' }));
+        if ( self.bankList == null ) {
+          X.notify('Please add and verify a bank account to continue.', '', self.LogLevel.ERROR, true);
           return;
         }
-        if(self.amount == 0) {
-          self.add(self.NotificationMessage.create({ message: 'Please enter an amount greater than $0.00.', type: 'error' }));
+        if ( self.amount == 0 ) {
+          X.notify('Please enter an amount greater than $0.00', '', self.LogLevel.ERROR, true);
           return;
         }
         X.closeDialog();

@@ -4,16 +4,23 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.mlang.predicate.Predicate;
+import foam.nanos.alarming.Alarm;
+import foam.nanos.alarming.AlarmReason;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
+import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import javax.xml.stream.XMLStreamException;
 
+import net.nanopay.iso20022.TransactionGroupStatus3Code;
 import net.nanopay.tx.cico.EFTFile;
 import net.nanopay.tx.cico.EFTFileStatus;
 import net.nanopay.tx.cico.EFTFileUtil;
@@ -48,7 +55,7 @@ public class RbcReportProcessor {
    * Process the receipt report
    */
   public void decryptFolder(X x) {
-    File folder = new File(RbcFTPSClient.DOWNLOAD_FOLDER);   
+    File folder = new File(RbcFTPSClient.DOWNLOAD_FOLDER);
     for ( File file : folder.listFiles() ) {
       if ( file.isDirectory() ) continue;
       try {
@@ -56,21 +63,53 @@ public class RbcReportProcessor {
         if ( null != RbcPGPUtil.decrypt(x, file) ) FileUtils.deleteQuietly(file);
       } catch (Exception e) {
         this.logger.error("Error decrypting file: " + file.getName(), e);
+        ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
+          .setName("RBC File Decryption")
+          .setReason(AlarmReason.MANUAL)
+          .setNote(e.getMessage())
+          .build());
         BmoFormatUtil.sendEmail(x, "RBC error while decrypting file: " + file.getName(), e);
       }
     }
   }
 
   /**
-   * Process the report to check file was accepted and valid 
+   * Download specific Level 1(Receipts) EFT files
    */
-  public void processReceipts() {
-    /* Download status report files from RBC */
-    try {
-      rbcFTPSClient.batchDownload();
-    } catch (Exception e) {
-      this.logger.error("Error downloading status reports from RBC ", e);
+  public void downloadReceipts(List<EFTFile> files) {
+    for ( EFTFile eftFile : files ) {
+      try {
+        String level1Filter = eftFile.getSpid() + eftFile.getId() + "_A1";
+        List<String> nameFilters = Arrays.asList(level1Filter.toUpperCase());
+        rbcFTPSClient.batchDownload(RbcFTPSClient.PAIN_FOLDER, nameFilters);
+      } catch (Exception e) {
+        this.logger.error("Error downloading status receipts from RBC ", e);
+      }
     }
+  }
+
+  /**
+   * Download specific Level 2 & 3(Reports) EFT files
+   */
+  public void  downloadReports(List<EFTFile> files) {
+    for ( EFTFile eftFile : files ) {
+      try {
+        String level2Filter = eftFile.getSpid() + eftFile.getId() + "_A2";
+        String level3Filter = eftFile.getSpid() + eftFile.getId() + "_A3";
+        List<String> nameFilters = Arrays.asList(level2Filter.toUpperCase(), level3Filter.toUpperCase());
+        rbcFTPSClient.batchDownload(RbcFTPSClient.PAIN_FOLDER, nameFilters);
+      } catch (Exception e) {
+        this.logger.error("Error downloading status reports from RBC ", e);
+      }
+    }
+  }
+
+  /**
+   * Process the report to check file was accepted and valid
+   */
+  public void processReceipts(List<EFTFile> files) {
+    /* Download status report files from RBC */
+    downloadReceipts(files);
 
     /* Decrypt file status report files */
     try{
@@ -79,7 +118,7 @@ public class RbcReportProcessor {
       this.logger.error("Error decrypting files from download folder", e);
     }
 
-    File folder = new File(RbcPGPUtil.DECRYPT_FOLDER);   
+    File folder = new File(RbcPGPUtil.DECRYPT_FOLDER);
     for ( File file : folder.listFiles() ) {
       if ( file.isDirectory() ) continue;
       try {
@@ -103,10 +142,14 @@ public class RbcReportProcessor {
       net.nanopay.iso20022.OriginalGroupInformation20 grpInfo = pain.getCstmrPmtStsRpt().getOriginalGroupInformationAndStatus();
       if ( grpInfo == null || grpInfo.getGroupStatus() == null ) return;
 
-      if ( net.nanopay.iso20022.TransactionGroupStatus3Code.ACTC == grpInfo.getGroupStatus() ) { 
-        updateEFTFileReceipt(file, Long.valueOf(getFileId(pain.getCstmrPmtStsRpt())), EFTFileStatus.ACCEPTED);
-      } else if ( net.nanopay.iso20022.TransactionGroupStatus3Code.RJCT == grpInfo.getGroupStatus() ) { 
-        updateEFTFileReceipt(file, Long.valueOf(getFileId(pain.getCstmrPmtStsRpt())), EFTFileStatus.REJECTED);
+      String fileMessageId = getFileId(pain.getCstmrPmtStsRpt());
+      if ( fileMessageId == null ) throw new RuntimeException("Unable to parse File Message ID from PSR file.");
+      long fileId = Long.valueOf(fileMessageId.replaceAll("[^0-9]", ""));
+
+      if ( net.nanopay.iso20022.TransactionGroupStatus3Code.ACTC == grpInfo.getGroupStatus() ) {
+        updateEFTFile(file, fileId, EFTFileStatus.ACCEPTED);
+      } else if ( net.nanopay.iso20022.TransactionGroupStatus3Code.RJCT == grpInfo.getGroupStatus() ) {
+        updateEFTFile(file, fileId, EFTFileStatus.REJECTED);
         try {
           processFailedReport(pain.getCstmrPmtStsRpt());
         } catch (Exception e) {
@@ -118,15 +161,16 @@ public class RbcReportProcessor {
     }
   }
 
-  protected void updateEFTFileReceipt(File file, long fileNumber, EFTFileStatus status) {
+  protected void updateEFTFile(File file, long fileNumber, EFTFileStatus status) {
     try {
-      // Save Receipt File
-      foam.nanos.fs.File f = EFTFileUtil.storeEFTFile(this.x, file, fileNumber + "_receipt.txt", "text/plan"); 
+      // Save EFTFile
+      foam.nanos.fs.File f = EFTFileUtil.storeEFTFile(this.x, file, fileNumber + "_receipt.txt", "text/plain");
       DAO eftFileDAO = ((DAO) x.get("eftFileDAO")).inX(x);
       EFTFile eftFile = (EFTFile) eftFileDAO.find(fileNumber);
       if ( eftFile != null ) {
+        eftFile = (EFTFile) eftFile.fclone();
         eftFile.setReceipt(f.getId());
-        eftFile.setStatus(status);
+        if ( status != null ) eftFile.setStatus(status);
         eftFileDAO.put(eftFile);
         FileUtils.deleteQuietly(file);
       }
@@ -140,7 +184,7 @@ public class RbcReportProcessor {
    * Process reports from RBC
    */
   public void processReports() throws IOException, XMLStreamException {
-    File folder = new File(RbcPGPUtil.DECRYPT_FOLDER);   
+    File folder = new File(RbcPGPUtil.DECRYPT_FOLDER);
     for ( File file : folder.listFiles() ) {
       if ( file.isDirectory() ) continue;
       try {
@@ -158,39 +202,32 @@ public class RbcReportProcessor {
   public void processReport(File file) throws IOException, XMLStreamException {
     ISO20022Util driver = new ISO20022Util();
     Pain00200103 pain = null;
+    EFTFileStatus fileStatus = null;
     try {
       pain = (Pain00200103) driver.fromXML(x, file, Pain00200103.class);
       if ( pain == null || pain.getCstmrPmtStsRpt() == null ) return;
       net.nanopay.iso20022.OriginalGroupInformation20 grpInfo = pain.getCstmrPmtStsRpt().getOriginalGroupInformationAndStatus();
       if ( grpInfo == null  || null == grpInfo.getGroupStatus()) return;
 
-      if ( net.nanopay.iso20022.TransactionGroupStatus3Code.RJCT == grpInfo.getGroupStatus() ) { 
+      // Do nothing if it is a receipt. Receipt cron already handles this
+      if ( net.nanopay.iso20022.TransactionGroupStatus3Code.ACTC == grpInfo.getGroupStatus() ) return;
+
+      if ( net.nanopay.iso20022.TransactionGroupStatus3Code.RJCT == grpInfo.getGroupStatus() ) {
+        fileStatus = EFTFileStatus.REJECTED;
         processFailedReport(pain.getCstmrPmtStsRpt());
-      } else {
+      } else if ( TransactionGroupStatus3Code.ACSP == grpInfo.getGroupStatus() ) {
+        fileStatus = EFTFileStatus.PROCESSED;
         processPaymentReport(pain.getCstmrPmtStsRpt());
       }
+
       // Store report file processed
-      updateEFTFileReport(file, Long.valueOf(getFileId(pain.getCstmrPmtStsRpt())));
+      String fileMessageId = getFileId(pain.getCstmrPmtStsRpt());
+      if ( fileMessageId == null ) throw new RuntimeException("Unable to parse File Message ID from PSR file.");
+      long fileId = Long.valueOf(fileMessageId.replaceAll("[^0-9]", ""));
+      updateEFTFile(file, fileId, fileStatus);
     } catch (Exception e) {
       this.logger.error("Error when processing the report file. ", e);
       throw e;
-    }
-  }
-
-  protected void updateEFTFileReport(File file, long fileNumber) {
-    try {
-      // Save Report File
-      foam.nanos.fs.File f = EFTFileUtil.storeEFTFile(this.x, file, fileNumber + "_report.txt", "text/plan"); 
-      DAO eftFileDAO = ((DAO) x.get("eftFileDAO")).inX(x);
-      EFTFile eftFile = (EFTFile) eftFileDAO.find(fileNumber);
-      if ( eftFile != null ) {
-        eftFile.setReport(f.getId());
-        eftFileDAO.put(eftFile);
-        FileUtils.deleteQuietly(file);
-      }
-    } catch ( Exception e ) {
-      this.logger.error("Error while saving and updating EFT Report File with filecreation number: . " + fileNumber, e.getMessage(), e);
-      BmoFormatUtil.sendEmail(x, "Error while saving and updating EFT Report File with filecreation number: . " + fileNumber, e);
     }
   }
 
@@ -199,12 +236,14 @@ public class RbcReportProcessor {
    */
   protected void processFailedReport(net.nanopay.iso20022.CustomerPaymentStatusReportV03 cstmrPmtStsRpt) throws RuntimeException  {
     try {
-      if ( cstmrPmtStsRpt == null || null == cstmrPmtStsRpt.getOriginalPaymentInformationAndStatus() 
+      if ( cstmrPmtStsRpt == null || null == cstmrPmtStsRpt.getOriginalPaymentInformationAndStatus()
         || null == cstmrPmtStsRpt.getOriginalGroupInformationAndStatus() ) return;
 
-      long fileMessageId = Long.valueOf(getFileId(cstmrPmtStsRpt));
+      String fileMessageId = getFileId(cstmrPmtStsRpt);
+      if ( fileMessageId == null ) throw new RuntimeException("Unable to parse File Message ID from PSR file.");
+      long fileId = Long.valueOf(fileMessageId.replaceAll("[^0-9]", ""));
       for( net.nanopay.iso20022.OriginalPaymentInformation1 paymentInfo : cstmrPmtStsRpt.getOriginalPaymentInformationAndStatus() ) {
-        processFailedPayment(paymentInfo, fileMessageId);
+        processFailedPayment(paymentInfo, fileId);
       }
     } catch (Exception e) {
       this.logger.error("Error when processing failed report ", e);
@@ -221,14 +260,24 @@ public class RbcReportProcessor {
     for ( net.nanopay.iso20022.PaymentTransactionInformation25 txnInfoStatus : paymentInfo.getTransactionInformationAndStatus() ) {
       try {
         String rejectReason = getRejectReason(txnInfoStatus.getStatusReasonInformation());
-        Transaction transaction = getTransaction(messageId, txnInfoStatus.getOriginalEndToEndIdentification(), TransactionStatus.SENT);
+        Transaction transaction = getTransaction(messageId, txnInfoStatus.getOriginalEndToEndIdentification());
+        if ( TransactionStatus.COMPLETED == transaction.getStatus() ) {
+          String msg = "RBC received DECLINE on COMPLETED transaction: " + transaction.getId();
+          BmoFormatUtil.sendEmail(x, msg, null);
+          Notification notification = new Notification.Builder(x)
+            .setTemplate("NOC")
+            .setBody(msg)
+            .build();
+          ((DAO) x.get("localNotificationDAO")).put(notification);
+          return; // Don't decline already Completed transactions
+        }
         transaction.setStatus(TransactionStatus.DECLINED);
         transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction rejected. " + rejectReason).build());
         ((RbcTransaction)transaction).setRejectReason(rejectReason);
         transaction.setCompletionDate(new Date());
-  
+
         transactionDAO.inX(this.x).put(transaction);
-        
+
       } catch (Exception e) {
         this.logger.error("Error when parsing failed report for transaction reference number " + txnInfoStatus.getOriginalEndToEndIdentification(), e);
         BmoFormatUtil.sendEmail(x, "Error when process report for payment with reference number: " + txnInfoStatus.getOriginalEndToEndIdentification(), e);
@@ -238,12 +287,14 @@ public class RbcReportProcessor {
 
   protected void processPaymentReport(net.nanopay.iso20022.CustomerPaymentStatusReportV03 cstmrPmtStsRpt) throws RuntimeException  {
     try {
-      if ( cstmrPmtStsRpt == null || null == cstmrPmtStsRpt.getOriginalPaymentInformationAndStatus() 
+      if ( cstmrPmtStsRpt == null || null == cstmrPmtStsRpt.getOriginalPaymentInformationAndStatus()
         || null == cstmrPmtStsRpt.getOriginalGroupInformationAndStatus() ) return;
 
-      long fileMessageId = Long.valueOf(getFileId(cstmrPmtStsRpt));
+      String fileMessageId = getFileId(cstmrPmtStsRpt);
+      if ( fileMessageId == null ) throw new RuntimeException("Unable to parse File Message ID from PSR file.");
+      long fileId = Long.valueOf(fileMessageId.replaceAll("[^0-9]", ""));
       for ( net.nanopay.iso20022.OriginalPaymentInformation1 paymentInfo : cstmrPmtStsRpt.getOriginalPaymentInformationAndStatus() ) {
-        processPaymentStatus(paymentInfo, fileMessageId);
+        processPaymentStatus(paymentInfo, fileId);
       }
     } catch (Exception e) {
       this.logger.error("Error when processing failed report ", e);
@@ -260,12 +311,12 @@ public class RbcReportProcessor {
     for ( net.nanopay.iso20022.PaymentTransactionInformation25 txnInfoStatus : paymentInfo.getTransactionInformationAndStatus() ) {
       if ( net.nanopay.iso20022.TransactionIndividualStatus3Code.ACSP != txnInfoStatus.getTransactionStatus() ) continue;
       try {
-        Transaction transaction = getTransaction(messageId, txnInfoStatus.getOriginalEndToEndIdentification(), TransactionStatus.SENT);
+        Transaction transaction = getTransaction(messageId, txnInfoStatus.getOriginalEndToEndIdentification());
         transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction was settled by RBC.").build());
         ((RbcTransaction)transaction).setSettled(true);
-  
+
         transactionDAO.inX(this.x).put(transaction);
-        
+
       } catch (Exception e) {
         this.logger.error("Error when parsing failed report for transaction reference number " + txnInfoStatus.getOriginalEndToEndIdentification(), e);
         BmoFormatUtil.sendEmail(x, "Error when process report for payment with reference number: " + txnInfoStatus.getOriginalEndToEndIdentification(), e);
@@ -273,27 +324,24 @@ public class RbcReportProcessor {
     }
   }
 
-  public Transaction getTransaction(long fileId,  String referenceNumber, TransactionStatus status) throws RuntimeException {
+  public Transaction getTransaction(long fileId,  String referenceNumber) throws RuntimeException {
 
     Transaction transaction = (Transaction) this.transactionDAO.find(MLang.AND(
       MLang.EQ(RbcCITransaction.RBC_REFERENCE_NUMBER, referenceNumber),
-      MLang.EQ(RbcCITransaction.RBC_FILE_CREATION_NUMBER, fileId),
-      MLang.EQ(Transaction.STATUS, status)
+      MLang.EQ(RbcCITransaction.RBC_FILE_CREATION_NUMBER, fileId)
     ));
 
     if ( transaction == null ) {
       transaction = (Transaction) this.transactionDAO.find(MLang.AND(
         MLang.EQ(RbcCOTransaction.RBC_REFERENCE_NUMBER, referenceNumber),
-        MLang.EQ(RbcCOTransaction.RBC_FILE_CREATION_NUMBER, fileId),
-        MLang.EQ(Transaction.STATUS, status)
+        MLang.EQ(RbcCOTransaction.RBC_FILE_CREATION_NUMBER, fileId)
       ));
     }
 
     if ( transaction == null ) {
       transaction = (Transaction) this.transactionDAO.find(MLang.AND(
         MLang.EQ(RbcVerificationTransaction.RBC_REFERENCE_NUMBER, referenceNumber),
-        MLang.EQ(RbcVerificationTransaction.RBC_FILE_CREATION_NUMBER, fileId),
-        MLang.EQ(Transaction.STATUS, status)
+        MLang.EQ(RbcVerificationTransaction.RBC_FILE_CREATION_NUMBER, fileId)
       ));
     }
 
@@ -324,9 +372,9 @@ public class RbcReportProcessor {
   }
 
   protected String getFileId(net.nanopay.iso20022.CustomerPaymentStatusReportV03 cstmrPmtStsRpt) {
-    if ( cstmrPmtStsRpt == null || null == cstmrPmtStsRpt.getOriginalPaymentInformationAndStatus() 
+    if ( cstmrPmtStsRpt == null || null == cstmrPmtStsRpt.getOriginalPaymentInformationAndStatus()
         || null == cstmrPmtStsRpt.getOriginalGroupInformationAndStatus() ) return null;
-        
+
     return cstmrPmtStsRpt.getOriginalGroupInformationAndStatus().getOriginalMessageIdentification();
   }
 }

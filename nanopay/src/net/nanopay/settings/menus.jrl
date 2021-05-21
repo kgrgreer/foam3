@@ -1,6 +1,35 @@
 // settings
-p({"class":"foam.nanos.menu.Menu","id":"set-personal","label":"Personal Settings","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settings.PersonalProfileView"}},"order":30,"parent":"settings"})
-p({"class":"foam.nanos.menu.Menu","id":"set-bus","label":"Business Settings","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settings.business.BusinessProfileView"}},"order":40,"parent":"settings"})
-p({"class":"foam.nanos.menu.Menu","id":"set-bank","label":"Bank Accounts","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.cico.ui.bankAccount.BankAccountsView"}},"order":50,"parent":"settings"})
-p({"class":"foam.nanos.menu.Menu","id":"set-multi-user","label":"Multi-User","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settings.MultiUserManagementView"}},"order":70,"parent":"settings"})
-p({"class":"foam.nanos.menu.Menu","id":"set-integrate","label":"Integration","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settings.IntegrationView"}},"order":80,"parent":"settings"})
+p({
+    "class":"foam.nanos.menu.Menu",
+    "id":"set-personal",
+    "label":"Personal Settings",
+    "handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settings.PersonalProfileView"}},
+    "order":10,
+    "parent":"settings"
+})
+p({
+    "class":"foam.nanos.menu.Menu",
+    "id":"set-bus",
+    "label":"Business Settings",
+    "handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settings.business.BusinessProfileView"}},
+    "order":20,
+    "parent":"settings"
+})
+p({
+    "class":"foam.nanos.menu.Menu",
+    "id":"set-integrate",
+    "label":"Integration",
+    "handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.settings.IntegrationView"}},
+    "order":30,
+    "parent":"settings"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"set-password",
+  "order":40
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"set-security",
+  "order":50
+})

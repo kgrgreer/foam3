@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.cico.ui.bankAccount',
   name: 'ManageAccountModal',
@@ -10,6 +27,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus'
   ],
@@ -45,7 +63,7 @@ foam.CLASS({
     ^ .popUpTitle {
       width: 198px;
       height: 40px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       line-height: 40.5px;
       letter-spacing: 0.2px;
@@ -183,7 +201,7 @@ foam.CLASS({
       self.selectedAccount.isDefault = true;
       self.selectedAccount.name += ' (Default)';
       self.bankAccountDAO.put(self.selectedAccount).then(function(response) {
-        self.manageAccountNotification('Bank account successfully set as default.', '');
+        self.manageAccountNotification('Bank account successfully set as default.', self.LogLevel.INFO);
         self.closeDialog();
       });
     },
@@ -201,7 +219,7 @@ foam.CLASS({
           self.bankAccountDAO.put(a.array[0]).then( function(a) {
             self.setNewDefaultBank();
           }).catch( function( error ) {
-            self.manageAccountNotification(error.message, 'error');
+            self.manageAccountNotification(error.message, self.LogLevel.ERROR);
           });
         }
       });
@@ -237,7 +255,7 @@ foam.CLASS({
         if ( ! X.selectedAccount.isDefault ) {
           this.switchDefaultBank();
         } else {
-          X.manageAccountNotification('Bank account already set as default.', 'error');
+          X.manageAccountNotification('Bank account already set as default.', this.LogLevel.ERROR);
           X.closeDialog();
         }
       }
@@ -245,14 +263,16 @@ foam.CLASS({
     {
       name: 'deleteButton',
       label: 'Delete',
-      confirmationRequired: true,
+      confirmationRequired: function() {
+        return true;
+      },
       code: function(X) {
         // bankAccountDAO
         X.accountDAO.remove(X.selectedAccount).then(function(response) {
-          X.manageAccountNotification('Bank account successfully deleted', '');
+          X.manageAccountNotification('Bank account successfully deleted', this.LogLevel.INFO);
           X.closeDialog();
         }).catch(function(error) {
-          X.manageAccountNotification(error.message, 'error');
+          X.manageAccountNotification(error.message, this.LogLevel.ERROR);
         });
       }
     }

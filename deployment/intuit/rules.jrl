@@ -1,0 +1,46 @@
+p({
+  class: "net.nanopay.tx.fee.TransactionFeeRule",
+  name:"Nanopay0.4PercentFee",
+  id: "d2a9b4b5-3c84-4742-84cc-6bb11928ed82",
+  feeName:"Nanopay Transaction Fee",
+  sourceCurrencyAsFeeDenomination: true,
+  predicate:{
+    "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+    "of":"net.nanopay.tx.DigitalTransaction"
+  },
+  lifecycleState:1,
+  spid: "intuit"
+})
+
+p({
+  class: "net.nanopay.tx.fee.TransactionFeeRule",
+  name:"Intuit0.6PercentFee",
+  id: "b57ad1a4-d907-4d6a-adf2-bdf9e51fe905",
+  feeName:"Intuit Transaction Fee",
+  sourceCurrencyAsFeeDenomination: true,
+  predicate:{
+    "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+    "of":"net.nanopay.tx.DigitalTransaction"
+  },
+  lifecycleState:1,
+  spid: "intuit"
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d75",
+  "name":"Create Default Digital Accounts",
+  "priority":100,
+  "ruleGroup":"CreateDefaultDigitalAccount",
+  "documentation":"Creates a default digital account when a user is created.",
+  "daoKey":"localUserDAO",
+  "operation":0,
+  "action":{
+    "class":"net.nanopay.account.CreateDefaultDigitalAccountOnUserCreateRule",
+    "trusts":["7951ef93-42d3-4896-a9ad-f3f0773f649d"]
+  },
+  "after":true,
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid": "intuit"
+})

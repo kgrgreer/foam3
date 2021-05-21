@@ -1,98 +1,67 @@
 p({
   "class":"foam.nanos.theme.Theme",
-  "id":2,
-  "description":"nanopay",
+  "id":"D306F95E-4C4F-4C2B-BC5F-F67CFFE3EC99",
+  "name":"Operator",
+  "navigationRootMenu":"",
+  "settingsRootMenu":"settings",
+  "logoRedirect":"bankaccounts",
+  "defaultMenu":"bankaccounts"
+})
+
+p({
+  "class":"foam.nanos.theme.Theme",
+  "id":"06B35BA7-C672-4DBC-8788-14922B704DBF",
+  "name":"nanopay Admin",
+  "spid":"nanopay",
   "appName":"nanopay",
-  "priority":2,
+  "description":"nanopay",
+  "navigationRootMenu":"",
+  "settingsRootMenu":"settings",
+  "topNavigation":"net.nanopay.ui.TopSideNavigation",
+  "footerView":"net.nanopay.sme.ui.FooterView",
+  "logoRedirect":"admin.data",
   "defaultMenu":"admin.data",
   "largeLogoEnabled": true,
   "largeLogo": "images/nanopay_blue_white_206x42.png",
   "logoBackgroundColour":"#202341",
-  "logo":"images/nanopay_logo_blue.svg",
+  "logo":"images/nanopay_logo_blue.png",
+  "font1":"'IBM Plex Sans', sans-serif",
   "primary1":"#202341",
   "primary2":"#144794",
   "primary3":"#406dea",
   "primary4":"#a7beff",
   "primary5":"#e5f1fc",
-  "approval1":"#19402e",
-  "approval2":"#117a41",
-  "approval3":"#32bf5e",
-  "approval4":"#b8e5b3",
-  "approval5":"#e2f2dd",
-  "warning1":"#816819",
-  "warning2":"#c1ae12",
-  "warning3":"#eedc00",
-  "warning4":"#fbe88f",
-  "warning5":"#fdf8de",
+  "approval1":"#113C28",
+  "approval2":"#117A41",
+  "approval3":"#32BF5E",
+  "approval4":"#B8E5B3",
+  "approval5":"#E2F2DD",
+  "warning1":"#604C0E",
+  "warning2":"#C1AE12",
+  "warning3":"#EEDC00",
+  "warning4":"#FBE88F",
+  "warning5":"#FDF8DE",
   "destructive1":"#631414",
-  "destructive2":"#a61414",
-  "destructive3":"#d9170e",
-  "destructive4":"#f79393",
-  "destructive5":"#fbedec",
-  "grey1":"#5e6061",
-  "grey2":"#9ba1a6",
-  "grey3":"#cbcfd4",
-  "grey4":"#e7eaec",
-  "grey5":"#f5f7fa",
-  "black":"#1e1f21",
-  "inputHeight":"32px",
-  "inputVerticalPadding":"6px",
-  "inputHorizontalPadding":"8px",
-  "topNavigation":"net.nanopay.ui.TopSideNavigation",
-  "customCSS":
-  """
-    .login-wrapper {
-      padding-top: 60px;
-      margin-left: 250px;
+  "destructive2":"#A61414",
+  "destructive3":"#D9170E",
+  "destructive4":"#F79393",
+  "destructive5":"#E5D2D0",
+  "grey1":"#494F59",
+  "grey2":"#6B778C",
+  "grey3":"#B2B6BD",
+  "grey4":"#DADDE2",
+  "grey5":"#F5F7FA",
+  "white":"#FFFFFF",
+  "black":"#1E1F21",
+  "createdBy":1,
+  "createdByAgent":1,
+  "created":"2020-04-29T22:32:52.685Z",
+  "customCSS":"""
+    .net-nanopay-ui-Controller {
+      overflow: hidden;
     }
-    .footer-wrapper {
-      margin-left: 250px;
-    }
-    .foam-u2-DateView {
-      font-family: Roboto, 'Helvetica Neue', helvetica, sans-serif;
-      letter-spacing: 0.2px;
+    .foam-comics-BrowserView {
+      width: 95%;
     }
   """
-})
-
-p({
-  "class":"foam.nanos.theme.Theme",
-  "id":3,
-  "description":"Ablii",
-  "appName":"Ablii",
-  "priority":2,
-  "defaultMenu":"sme.accountProfile.switch-business",
-  "logo":"images/ablii-logo.svg",
-  "largeLogo":"images/ablii-wordmark.svg",
-  "logoBackgroundColour":"transparent",
-  "topNavigation":"net.nanopay.sme.ui.SideNavigationView",
-  "primary1":"#2e2379",
-  "primary2":"#4434b4",
-  "primary3":"#604aff",
-  "primary4":"#937dff",
-  "primary5":"#fbeeff",
-  "approval1":"#19402e",
-  "approval2":"#117a41",
-  "approval3":"#32bf5e",
-  "approval4":"#b8e5b3",
-  "approval5":"#e2f2dd",
-  "warning1":"#816819",
-  "warning2":"#c1ae12",
-  "warning3":"#eedc00",
-  "warning4":"#fbe88f",
-  "warning5":"#fdf8de",
-  "destructive1":"#631414",
-  "destructive2":"#a61414",
-  "destructive3":"#d9170e",
-  "destructive4":"#f79393",
-  "destructive5":"#fbedec",
-  "grey1":"#5e6061",
-  "grey2":"#9ba1a6",
-  "grey3":"#cbcfd4",
-  "grey4":"#e7eaec",
-  "grey5":"#f5f7fa",
-  "black":"#1e1f21",
-  "inputHeight":"40px",
-  "inputVerticalPadding":"10px",
-  "inputHorizontalPadding":"8px"
 })

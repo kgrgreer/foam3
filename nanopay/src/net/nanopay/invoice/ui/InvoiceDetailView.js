@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.invoice.ui',
   name: 'InvoiceDetailView',
@@ -11,6 +28,7 @@ foam.CLASS({
     'ctrl',
     'hideSummary',
     'notificationDAO',
+    'notify',
     'publicUserDAO',
     'stack',
     'user'
@@ -23,7 +41,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
@@ -89,7 +107,7 @@ foam.CLASS({
           placeholder: `Please Select a ${X.data.otherPartyName}`,
           objToChoice: function(user) {
             var username = user.businessName || user.organization ||
-                user.label();
+                user.toSummary();
             return [user.id, username + ' - (' + user.email + ')'];
           }
         });
@@ -291,26 +309,17 @@ foam.CLASS({
         var dueDate = this.data.dueDate;
 
         if ( ! this.userList ) {
-          this.add(foam.u2.dialog.NotificationMessage.create({
-            message: `Please Select a ${this.otherPartyName}.`,
-            type: 'error'
-          }));
+          X.notify(`Please select a ${this.otherPartyName}.`, '', this.LogLevel.ERROR, true);
           return;
         }
 
         if ( ! this.data.amount || this.data.amount < 0 ) {
-          this.add(foam.u2.dialog.NotificationMessage.create({
-            message: 'Please Enter Amount.',
-            type: 'error'
-          }));
+          X.notify('Please enter amount.', '', this.LogLevel.ERROR, true);
           return;
         }
 
         if ( ! (dueDate instanceof Date && ! isNaN(dueDate.getTime())) ) {
-          this.add(foam.u2.dialog.NotificationMessage.create({
-            message: 'Please use this format: yyyy/mm/dd',
-            type: 'error'
-          }));
+          X.notify('Please user this format: yyyy/mm/dd', '', this.LogLevel.ERROR, true);
           return;
         }
 
@@ -338,10 +347,7 @@ foam.CLASS({
             X.stack.back();
           })
           .catch((err) => {
-            this.ctrl.add(foam.u2.dialog.NotificationMessage.create({
-              message: err.message,
-              type: 'error'
-            }));
+            X.notify(err.message, '', this.LogLevel.ERROR, true);
           });
 
         // if ( X.frequency && X.endsAfter && X.nextInvoiceDate && this.amount) {

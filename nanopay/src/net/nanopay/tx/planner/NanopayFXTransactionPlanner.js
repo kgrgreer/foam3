@@ -1,4 +1,21 @@
 /**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+/**
  * @license
  * Copyright 2018 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -38,9 +55,9 @@ foam.CLASS({
       value: 'localFXService'
     },
     {
-      type: 'Long',
+      type: 'String',
       name: 'NANOPAY_FEE_ACCOUNT_ID',
-      value: 2
+      value: '2'
     },
     {
       type: 'Long',
@@ -78,22 +95,21 @@ foam.CLASS({
         fxTransaction.setFxExpiry(fxQuote.getExpiryTime());
         fxTransaction.setFxQuoteId(fxQuote.getExternalId());
         fxTransaction.setFxRate(fxQuote.getRate());
-        fxTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
-        fxTransaction.addLineItems(new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(fxQuote.getExternalId()).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
+        fxTransaction.setDestinationAmount(Math.round(new Double(fxQuote.getTargetAmount())));
+        fxTransaction.addLineItems( new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(fxQuote.getExternalId()).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).setSourceCurrency(fxQuote.getSourceCurrency()).setDestinationCurrency(fxQuote.getTargetCurrency()).build()} );
         if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()) ) {
           fxTransaction.setAccepted(true);
         }
 
-        quote.addTransfer(sourceAccount.getId(), -requestTxn.getTotal());
-        quote.addTransfer(brokerSourceAccount.getId(), requestTxn.getTotal());
-        quote.addTransfer(brokerDestinationAccount.getId(), -fxTransaction.getDestinationAmount());
-        quote.addTransfer(destinationAccount.getId(), fxTransaction.getDestinationAmount());
+        quote.addTransfer(true, sourceAccount.getId(), -requestTxn.getAmount(), 0);
+        quote.addTransfer(true, brokerSourceAccount.getId(), requestTxn.getAmount(), 0);
+        quote.addTransfer(true, brokerDestinationAccount.getId(), -fxTransaction.getDestinationAmount(), 0);
+        quote.addTransfer(true, destinationAccount.getId(), fxTransaction.getDestinationAmount(), 0);
 
         if ( fxQuote.getFee() > 0 ) {
-          Long feeAmount = (new Double(fxQuote.getFee())).longValue();
-          fxTransaction.addLineItems(new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setNote("FX Broker Fee").setAmount(feeAmount).setDestinationAccount(NANOPAY_FEE_ACCOUNT_ID).build()}, null);
+          Long feeAmount = Math.round(new Double(fxQuote.getFee()));
+          fxTransaction.addLineItems( new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setNote("FX Broker Fee").setAmount(feeAmount).setDestinationAccount(NANOPAY_FEE_ACCOUNT_ID).build()} );
         }
-        fxTransaction.setIsQuoted(true);
         return fxTransaction;
       }
 

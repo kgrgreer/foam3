@@ -1,0 +1,151 @@
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "businesses-support",
+  "label": "Businesses",
+  "icon":"images/intuit/businesses-24px-resting.svg",
+  "activeIcon":"images/intuit/businesses-24px-active.svg",
+  "parent": "",
+  "order": 10
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "transactions-summary",
+  "label": "Transactions",
+  "icon":"images/intuit/transactions-24px-resting.svg",
+  "activeIcon":"images/intuit/transactions-24px-active.svg",
+  "parent": "",
+  "order": 20
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "accounts-support",
+  "label": "Accounts",
+  "icon":"images/intuit/account-balance-resting-24px.svg",
+  "activeIcon":"images/intuit/account-balance-active-24px.svg",
+  "parent": "",
+  "order": 30
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "users-support",
+  "label": "Users",
+  "icon":"images/intuit/users-24px-resting.svg",
+  "activeIcon":"images/intuit/users-24px-active.svg",
+  "parent": "",
+  "order": 40
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "bills-support",
+  "label": "Charges",
+  "icon":"images/intuit/charges-24px-resting.svg",
+  "activeIcon":"images/intuit/charges-24px-active.svg",
+  "parent": "",
+  "order": 50
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"intuit-reports",
+  "label":"Reports",
+  "icon":"images/intuit/reports-24px-resting.svg",
+  "activeIcon":"images/intuit/reports-24px-active.svg",
+  "handler":{
+    "class":"foam.nanos.menu.SubMenu"
+  },
+  "parent":""
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "securefact-responses",
+  "label": "Securefact Responses",
+  "handler": {
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"securefactResponseDAO",
+      "browseTitle": "Securefact Responses",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  }
+})
+
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "reconciliation-reports",
+  "label": "Reconciliation Reports",
+  "handler": {
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"reconciliationReportDAO",
+      "browseTitle": "Reconciliation Reports",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  },
+  "parent":"intuit-reports"
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "reduced-reconciliation-reports",
+  "label": "Reduced Reconciliation Reports",
+  "handler": {
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"reducedReconciliationReportDAO",
+      "browseTitle": "Reduced Reconciliation Reports",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  },
+  "parent":"intuit-reports"
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "service-fees-reports",
+  "label": "Service Fees Reports",
+  "handler": {
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"serviceFeesReportDAO",
+      "browseTitle": "Service Fees Reports",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  },
+  "parent":"intuit-reports"
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "user-onboarding-reports",
+  "label": "User Onboarding Reports",
+  "handler": {
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"userOnboardingReportDAO",
+      "browseTitle": "User Onboarding Reports",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  },
+  "parent":"intuit-reports"
+})

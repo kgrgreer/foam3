@@ -1,14 +1,32 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 package net.nanopay.meter.compliance.secureFact;
 
 import foam.core.X;
 import foam.nanos.auth.Address;
-import foam.nanos.auth.Phone;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
-import net.nanopay.meter.compliance.secureFact.lev.LEVRequest;
+import net.nanopay.meter.compliance.secureFact.lev.*;
+import net.nanopay.meter.compliance.secureFact.lev.document.*;
 import net.nanopay.meter.compliance.secureFact.sidni.*;
 import net.nanopay.model.Business;
 import net.nanopay.model.BusinessType;
+import org.eclipse.jetty.util.StringUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,7 +47,8 @@ public class SecurefactRequestGenerator {
   public static LEVRequest getLEVRequest(X x, Business business) {
     LEVRequest request = new LEVRequest();
     request.setSearchType("name");
-    request.setEntityName(business.getOrganization());
+
+    request.setEntityName(StringUtil.isEmpty(business.getOrganization()) ? business.getBusinessName() : business.getOrganization());
 
     Address address = business.getAddress();
     if ( address == null
@@ -55,10 +74,26 @@ public class SecurefactRequestGenerator {
     return request;
   }
 
+  public static LEVDocumentOrderRequest getLEVDocumentOrderRequest(int resultId) {
+    LEVDocumentOrderRequest request = new LEVDocumentOrderRequest();
+    request.setResultId(resultId);
+
+    return request;
+  }
+
+  public static LEVDocumentDataRequest getLEVDocumentDataRequest(int orderId) {
+    LEVDocumentDataRequest request = new LEVDocumentDataRequest();
+    request.setOrderId(orderId);
+
+    return request;
+  }
+
+
+
   private static SIDniCustomer buildCustomer(X x, User user) {
     return new SIDniCustomer.Builder(x)
       .setUserReference(String.valueOf(user.getId()))
-      // NOTE: Set consent granted to true because we already have the 
+      // NOTE: Set consent granted to true because we already have the
       //       user's consent for using Securefact to verify his/her identity
       //       when completing business profile in BeneficialOwnershipForm.
       .setConsentGranted(true)
@@ -106,9 +141,9 @@ public class SecurefactRequestGenerator {
     List<SIDniPhone> list = new ArrayList<>();
     boolean hasMobile = false;
 
-    Phone mobile = user.getMobile();
-    if ( mobile != null && ! SafetyUtil.isEmpty(mobile.getNumber()) ) {
-      String mobileNumber = mobile.getNumber().replaceAll("[-()]", "");
+    String mobile = user.getMobileNumber();
+    if ( ! SafetyUtil.isEmpty(mobile) ) {
+      String mobileNumber = mobile.replaceAll("[-()]", "");
       list.add(
         new SIDniPhone.Builder(x)
           .setType("MOBILE")
@@ -117,9 +152,9 @@ public class SecurefactRequestGenerator {
       );
       hasMobile = true;
     }
-    Phone phone = user.getPhone();
-    if ( phone != null && ! SafetyUtil.isEmpty(phone.getNumber()) ) {
-      String phoneNumber = phone.getNumber().replaceAll("[-()]", "");
+    String phone = user.getPhoneNumber();
+    if ( ! SafetyUtil.isEmpty(phone) ) {
+      String phoneNumber = phone.replaceAll("[-()]", "");
       list.add(
         new SIDniPhone.Builder(x)
           .setType("HOME")

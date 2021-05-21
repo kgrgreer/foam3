@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.onboarding.ui',
   name: 'BusinessForm',
@@ -9,9 +26,9 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.Region',
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
@@ -31,7 +48,6 @@ foam.CLASS({
     }
     ^ .foam-u2-tag-Select {
       width: 100%;
-      height: 35px;
       margin-bottom: 10px;
     }
     ^ .label {
@@ -40,7 +56,6 @@ foam.CLASS({
     }
     ^ .foam-u2-TextField {
       width: 100%;
-      height: 35px;
       margin-bottom: 10px;
       padding-left: 5px;
     }
@@ -103,7 +118,7 @@ foam.CLASS({
     }
     .net-nanopay-ui-modal-UploadModal .buttonBox .foam-u2-ActionView-cancelButton,
     .net-nanopay-ui-modal-UploadModal .buttonBox .foam-u2-ActionView-submitButton {
-      font-family: Lato;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       float: none;
       margin: 0;
     }
@@ -121,7 +136,7 @@ foam.CLASS({
       margin-left: 24px;
     }
 
-    ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
+    ^ .foam-nanos-fs-fileDropZone-FileDropZone {
       background-color: white;
       margin-top: 16px;
       min-height: 264px;
@@ -364,10 +379,10 @@ foam.CLASS({
       name: 'phoneNumberField',
       documentation: 'Business phone number field.',
       factory: function() {
-        if ( this.viewData.user.phone ) return this.viewData.user.phone.number;
+        if ( this.viewData.user.phoneNumber ) return this.viewData.user.phoneNumber;
       },
       postSet: function(o, n) {
-        this.viewData.user.phone.number = n;
+        this.viewData.user.phoneNumber = n;
       }
     },
     {
@@ -588,7 +603,7 @@ foam.CLASS({
     function checkQuebec(detachable, eventName, propName, propSlot) {
       var regionId = propSlot.get();
       if ( regionId === 'QC' ) {
-        this.ctrl.notify(this.QUEBEC_DISCLAIMER, 'error');
+        this.ctrl.notify(this.QUEBEC_DISCLAIMER, '', this.LogLevel.WARN, true);
       }
     }
   ]

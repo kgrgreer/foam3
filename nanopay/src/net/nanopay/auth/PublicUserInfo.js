@@ -1,18 +1,31 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.auth',
   name: 'PublicUserInfo',
   documentation: `The base model for representing the public information of a User`,
 
   javaImports: [
+    'foam.core.FObject',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
-    'net.nanopay.model.Business',
-    'net.nanopay.contacts.Contact',
     'foam.util.SafetyUtil',
-  ],
-
-  imports: [
-    'contactDAO'
+    'net.nanopay.model.Business'
   ],
 
   tableColumns: [
@@ -23,7 +36,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'id',
-      tableWidth: 50,
+      tableWidth: 60,
       documentation: `The unique identifier for the User.`,
       visibility: 'RO'
     },
@@ -91,6 +104,10 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
+      class: 'PhoneNumber',
+      name: 'phoneNumber'
+    },
+    {
       class: 'foam.nanos.fs.FileProperty',
       name: 'businessProfilePicture',
       documentation: `The profile picture of the business, initially defaulting
@@ -102,27 +119,17 @@ foam.CLASS({
       class: 'String',
       name: 'type',
       documentation: 'The type of the public information of a User.'
+    },
+    {
+      class: 'String',
+      name: 'spid'
     }
   ],
 
   methods: [
     {
       name: 'toSummary',
-      type: 'String',
-      code: async function() {
-        return await this.label();
-      },
-      javaCode: `
-        return this.label();
-      `
-    },
-    {
-      name: 'label',
-      code: async function() {
-        if ( this.type === 'Contact' ) {
-          let contact = await this.contactDAO.find(this.id);
-          return await contact.label();
-        }
+      code: function() {
         return this.operatingBusinessName
           ? this.operatingBusinessName
           : this.organization
@@ -149,6 +156,32 @@ foam.CLASS({
                   : this.getFirstName()
                 : "Unknown";
       `
+    },
+    {
+      name: 'compareTo',
+      type: 'int',
+      args:
+      [
+        {
+          name: 'o',
+          type: 'Object',
+        }
+      ],
+      javaCode: `
+        if ( o == null ) return 1;
+        if ( o == this ) return 0;
+        if ( ! ( o instanceof foam.core.FObject ) ) return 1;
+        if ( getClass() != o.getClass() ) {
+          return getClassInfo().getId().compareTo(((foam.core.FObject)o).getClassInfo().getId());
+        }
+        
+        PublicUserInfo o2 = (PublicUserInfo) o;
+        int cmp;
+
+        cmp = foam.util.SafetyUtil.compare(this.toSummary(), ((PublicUserInfo)o).toSummary());
+        if ( cmp != 0 ) return cmp;
+        return FObject.super.compareTo(o);
+      `
     }
   ],
 
@@ -170,8 +203,9 @@ foam.CLASS({
             setEmail(user.getEmail());
             setProfilePicture(user.getProfilePicture());
             setAddress(user.getAddress());
-            setPhone(user.getPhone());
+            setPhoneNumber(user.getPhoneNumber());
             setType(user.getType());
+            setSpid(user.getSpid());
           }
         `);
       },

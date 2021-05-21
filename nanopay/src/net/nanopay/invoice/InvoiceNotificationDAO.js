@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.invoice',
   name: 'InvoiceNotificationDAO',
@@ -5,25 +22,28 @@ foam.CLASS({
   extends: 'foam.dao.ProxyDAO',
 
   javaImports: [
+    'foam.core.Currency',
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Group',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserUserJunction',
     'foam.nanos.auth.token.TokenService',
     'foam.nanos.logger.Logger',
-    'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.Notification',
+    'foam.nanos.notification.email.EmailMessage',
+
     'java.text.SimpleDateFormat',
     'java.util.*',
+
     'net.nanopay.invoice.model.BillingInvoice',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.model.Business',
-    'foam.core.Currency',
     'static foam.mlang.MLang.*'
   ],
 
@@ -46,10 +66,11 @@ foam.CLASS({
 
         Invoice invoice = (Invoice) obj;
         Invoice oldInvoice = (Invoice) super.find(invoice.getId());
-        User agent = (User) x.get("agent");
-        User user = (User) x.get("user");
+        Subject subject = ((Subject) x.get("subject"));
+        User agent = subject.getRealUser();
+        User user = subject.getUser();
 
-        String agentName = agent != null ? agent.getFirstName() + " " + agent.getLastName() : null;
+        String agentName = agent != user ? agent.getFirstName() + " " + agent.getLastName() : null;
 
         // CPF-1322 showed an issue with an invoice not being saved in dao due to error down chain
         // thus confirm invoice put first.
@@ -119,16 +140,16 @@ foam.CLASS({
 
           try {
             if ( invoiceIsBeingPaidButNotComplete ) {
-              args = populateArgsForEmail(args, invoice, payerUser.label(), invoice.getCreated(), currencyDAO, agentName, null);
+              args = populateArgsForEmail(args, invoice, payerUser.toSummary(), invoice.getCreated(), currencyDAO, agentName, null);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(), payeeUser, args, externalInvoiceToken );
             }
             if ( invoiceIsARecievable ) {
-              args = populateArgsForEmail(args, invoice, payeeUser.label(), invoice.getDueDate(), currencyDAO, agentName, null);
+              args = populateArgsForEmail(args, invoice, payeeUser.toSummary(), invoice.getDueDate(), currencyDAO, agentName, null);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[1], invoice.getId(), payerUser, args, externalInvoiceToken );
             }
             if ( invoiceNeedsApproval ) {
               User tempApprover = null;
-              User currentUser = (User) x.get("user");
+              User currentUser = ((Subject) x.get("subject")).getUser();
               List<UserUserJunction> approvers = findApproversOftheBusiness(x);
               DAO userDAO = (DAO) x.get("userDAO");
               for ( UserUserJunction approver : approvers ) {
@@ -136,12 +157,12 @@ foam.CLASS({
                 tempApprover = (User) userDAO.find(approver.getPartnerId());
                 if ( tempApprover == null ) continue;
                 args = populateArgsForEmail(args, invoice, agent.getFirstName(), invoice.getDueDate(), currencyDAO, agentName, null);
-                args.put("paymentTo", payeeUser.label());
+                args.put("paymentTo", payeeUser.toSummary());
                 sendEmailFunction(x, false, emailTemplates[2], invoice.getId(), tempApprover, args, externalInvoiceToken);
               }
             }
             if ( invoiceIsBeingPaidAndCompleted ) {
-              args = populateArgsForEmail(args, invoice, payerUser.label(), invoice.getPaymentDate(), currencyDAO, agentName, null);
+              args = populateArgsForEmail(args, invoice, payerUser.toSummary(), invoice.getPaymentDate(), currencyDAO, agentName, null);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(), payeeUser, args, externalInvoiceToken );
             }
             if ( invoiceHasBeenMarkedComplete ) {
@@ -149,7 +170,7 @@ foam.CLASS({
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[4], invoice.getId(), payerUser, args, externalInvoiceToken );
             }
             if ( invoiceIsPartOfFeesScheduledInvoice ) {
-              args = populateArgsForEmail(args, invoice, payeeUser.label(), invoice.getPaymentDate(), currencyDAO, agentName, null);
+              args = populateArgsForEmail(args, invoice, payeeUser.toSummary(), invoice.getPaymentDate(), currencyDAO, agentName, null);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[5], invoice.getId(), payerUser, args, externalInvoiceToken );
             }
           } catch (Exception e) {}
@@ -191,21 +212,20 @@ foam.CLASS({
         }
       ],
       javaCode: `
+        Group group = (Group) userBeingSentEmail.findGroup(x);
+        AppConfig appConfig = group.getAppConfig(x);
+        args.put("link", appConfig.getUrl());
+        args.put("name", User.FIRST_NAME);
+        args.put("sendTo", User.EMAIL);
+        args.put("invoiceId", invoiceId);
+
         if ( isContact ) {
           args.put("template", emailTemplateName);
-          args.put("invoiceId", invoiceId);
           externalInvoiceToken.generateTokenWithParameters(x, userBeingSentEmail, args);
         } else {
-          Group group = (Group) userBeingSentEmail.findGroup(x);
-          AppConfig appConfig = group.getAppConfig(x);
-          args.put("link", appConfig.getUrl().replaceAll("/$", ""));
-          args.put("name", User.FIRST_NAME);
-          args.put("sendTo", User.EMAIL);
-
           Notification notification = new Notification.Builder(x)
             .setBody("Invoice Notification.")
             .setNotificationType(emailTemplateName + " email.")
-            .setEmailIsEnabled(true)
             .setEmailArgs(args)
             .setEmailName(emailTemplateName)
             .build();
@@ -289,7 +309,7 @@ foam.CLASS({
       javaCode: `
         // Need to find all approvers and admins in a business
         DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         if ( user == null ) {
           ((Logger) x.get("logger")).error("@InvoiceNotificationDAO and context user is null", new Exception());
           return null;

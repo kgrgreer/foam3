@@ -1,0 +1,122 @@
+p({
+  "class":"net.nanopay.tx.planner.IntermediaryDestinationAccountSplitPlanner",
+  "id":"2775abef-05d4-4460-bea8-7a70e9d544af",
+  "name":"TrevisoSplitTransactionPlanner",
+  "documentation":"Split Planner for BRL to destination currency via an intermediary Treviso owned AFEX account",
+  "intermediaryAccountId":{
+    "USD":"6ceee60f-94f7-4e8e-a97e-5e9e211e2727",
+    "GBP":"b586e165-fe56-48e4-b249-8977b5718952",
+    "EUR":"e0b91985-fef0-4b07-a197-a5a0585604fa",
+    "CAD":"e61b7131-d60a-4c6c-8f18-36f4ba3edf59"
+  },
+  "provider":"Treviso",
+  "priority":90,
+  "ruleGroup":"TrevisoPlanner",
+  "enabled":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"parent",
+        "propValue":null
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.BRBankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"sourceUnit",
+        "propValue":"BRL"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.IsAccountOwnerAFEXUserPredicate",
+      }
+    ]
+  },
+  "spid": "treviso",
+  "lifecycleState":1
+})
+
+p({
+  "class":"net.nanopay.partner.treviso.tx.planner.TrevisoTransactionPlanner",
+  "id":"519e2a68-a914-444f-b050-2ce01f29fe24",
+  "name":"TrevisoTransactionPlanner",
+  "documentation":"Planner for transaction from BRL to USD/EUR/GBP (leg 1)",
+  "priority":80,
+  "ruleGroup":"TrevisoPlanner",
+  "enabled":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"parent",
+        "propValue": null
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"sourceUnit",
+        "propValue":"BRL"
+      },
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"Treviso"
+      }
+    ]
+  },
+  "isFeeOnRootCorridors": true,
+  "spid": "treviso",
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"ca9af304-7545-47f0-8863-c61a3d654148","name":"Treviso create exchange rule",
+  "documentation":"Rule to create exchange when transaction is PENDING.",
+  "priority":100,
+  "ruleGroup":"TrevisoPlanner",
+  "daoKey":"localTransactionDAO",
+  "operation":1,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.partner.treviso.tx.TrevisoTransaction"
+      },
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyChangePredicate",
+        "propName": "status"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{"class":"net.nanopay.tx.model.TransactionStatus","ordinal":0}
+      }
+    ]
+  },
+  "asyncAction":{
+    "class":"net.nanopay.partner.treviso.tx.TrevisoCreateExchange"
+  },
+  "enabled":true,
+  "lifecycleState":1
+})

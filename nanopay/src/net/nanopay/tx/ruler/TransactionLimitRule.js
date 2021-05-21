@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx.ruler',
   name: 'TransactionLimitRule',
@@ -9,6 +26,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.core.ValidationException',
     'net.nanopay.tx.model.Transaction',
     'static foam.mlang.MLang.*'
   ],
@@ -31,7 +49,7 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'foam.nanos.ruler.Operations',
+      of: 'foam.nanos.dao.Operation',
       name: 'operation',
       value: 'CREATE',
       visibility: 'RO',
@@ -90,7 +108,7 @@ foam.CLASS({
       value: 'localTransactionDAO',
       visibility: 'RO',
     },
-    {
+    /*{ //TODO: Rule Action does not exist
       name: 'action',
       transient: true,
       javaFactory: `
@@ -101,10 +119,14 @@ foam.CLASS({
           .setCurrentLimits(this.getCurrentLimits())
           .build();
       `,
-    },
+    },*/
     {
       name: 'predicate',
       transient: true
+    },
+    {
+      name: 'spid',
+      value: ''
     }
   ],
 
@@ -138,7 +160,7 @@ foam.CLASS({
       javaCode: `
       TransactionLimitRule ret = (TransactionLimitRule) rule.fclone();
       if ( ret.getSend() != getSend() ) {
-        throw new RuntimeException("send property cannot be changed");
+        throw new ValidationException("send property cannot be changed");
       }
       ret.clearAction();
       return ret;

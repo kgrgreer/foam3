@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.flinks.view.modalForm',
   name: 'FlinksModalAccountSelect',
@@ -10,11 +27,12 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.payment.Institution',
-    'net.nanopay.ui.LoadingSpinner'
+    'foam.u2.LoadingSpinner'
   ],
 
   exports: [
@@ -33,9 +51,10 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 504px;
+      box-sizing: border-box;
+      min-width: 615px;
       max-height: 80vh;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
     ^content {
       position: relative;
@@ -48,7 +67,7 @@ foam.CLASS({
       overflow: hidden;
     }
     ^account-card {
-      width: 456px;
+      width: auto;
       height: 83px;
       box-sizing: border-box;
       border-radius: 3px;
@@ -94,6 +113,7 @@ foam.CLASS({
     ^title {
       font-size: 14px;
       font-weight: 900;
+      padding-bottom: 4px;
     }
     ^subtitle {
       font-size: 10px;
@@ -137,7 +157,7 @@ foam.CLASS({
 
   messages: [
     { name: 'Connecting', message: 'Almost there ...'},
-    { name: 'INVALID_FORM', message: 'Please select an account to proceed.'},
+    { name: 'INVALID_FORM', message: 'Please select an account to proceed'},
     { name: 'INSTRUCTIONS', message : 'Please select the account you wish to connect.'}
   ],
 
@@ -238,13 +258,14 @@ foam.CLASS({
       name: 'next',
       label: 'Confirm',
       code: function(X) {
+        var self = this;
         var model = X.accountSelection;
         if ( model.isConnecting ) return;
         if ( model.selectedAccounts.length > 0 ) {
           model.crossCheckInstitutions();
           return;
         }
-        X.notify(model.INVALID_FORM, 'error');
+        X.notify(model.INVALID_FORM, '', self.LogLevel.ERROR, true);
       }
     }
   ]

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.contacts.ui',
   name: 'PaymentCodeSearchWizardView',
@@ -19,8 +36,10 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
+    'foam.mlang.sink.Count',
     'net.nanopay.contacts.Contact',
-    'foam.mlang.sink.Count'
+    'net.nanopay.contacts.ContactStatus'
   ],
 
   css: `
@@ -53,8 +72,8 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'CONTACT_ADDED', message: 'Personal contact added.' },
-    { name: 'CONTACT_EXISTS_ERROR', message: 'Contact with this payment code already exists.' },
+    { name: 'CONTACT_ADDED', message: 'Contact added successfully' },
+    { name: 'CONTACT_EXISTS_ERROR', message: 'Contact with this payment code already exists' },
   ],
 
   properties: [
@@ -92,11 +111,12 @@ foam.CLASS({
     async function addContact() {
       this.isConnecting = true;
       try {
-      contact = await this.user.contacts.put(this.data.contact);
-      this.ctrl.notify(this.CONTACT_ADDED);
+        this.contact.signUpStatus = this.ContactStatus.CONNECTED; 
+        contact = await this.user.contacts.put(this.data.contact);
+        this.ctrl.notify(this.CONTACT_ADDED, '', this.LogLevel.INFO, true);
       } catch (e) {
         var msg = e.message || this.GENERIC_PUT_FAILED;
-        this.ctrl.notify(msg, 'error');
+        this.ctrl.notify(msg, '', this.LogLevel.ERROR, true);
         this.isConnecting = false;
         return false;
       }
@@ -130,23 +150,23 @@ foam.CLASS({
           // check if contact associated with given payment code already exists
           var sink = await this.user.contacts.where(this.EQ(this.Contact.BUSINESS_ID, business.id)).select(this.Count.create());
           if ( sink.value != 0 ) {
-            this.ctrl.notify(this.CONTACT_EXISTS_ERROR, 'error');
+            this.ctrl.notify(this.CONTACT_EXISTS_ERROR, '', this.LogLevel.ERROR, true);
             return;
           }
           // copy over contact properties
           contact.copyFrom({
             organization: business.organization,
+            operatingBusinessName: business.operatingBusinessName,
             businessId: business.id,
             address: business.address
           });
           // set confirmation display properties
           contact.businessSectorId = business.businessSectorId;
-          contact.operatingBusinessName = business.operatingBusinessName;
           contact.paymentCodeValue = paymentCodeValue;
           this.currentIndex = this.nextIndex;
         } catch (err) {
           var msg = err.message;
-          this.ctrl.notify(msg, 'error');
+          this.ctrl.notify(msg, '', this.LogLevel.ERROR, true);
         }
       }
     },

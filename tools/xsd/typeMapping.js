@@ -9,5 +9,7 @@ module.exports = {
   'xs:time'         : 'foam.core.Date',
   'xs:base64Binary' : 'foam.core.String',
   'xs:int'          : 'foam.core.Int',
-  'xs:long'         : 'foam.core.Long'
+  'xs:long'         : 'foam.core.Long',
+  'xs:short'        : 'foam.core.Int',
+  'xs:double'       : 'foam.core.Double',
 }

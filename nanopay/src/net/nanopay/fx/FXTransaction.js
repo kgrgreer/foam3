@@ -1,4 +1,21 @@
 /**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+/**
  * @license
  * Copyright 2018 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -13,7 +30,8 @@ foam.CLASS({
 Stores all Exchange Rate info.`,
 
   implements: [
-    'net.nanopay.tx.AcceptAware'
+    'net.nanopay.tx.AcceptAware',
+    'net.nanopay.tx.ValueMovementTransaction'
   ],
 
   javaImports: [
@@ -36,41 +54,48 @@ Stores all Exchange Rate info.`,
     {
       name: 'fxRate',
       class: 'Double',
-      section: 'amountSelection',
-      visibility: function(fxRate) {
-        if ( ! fxRate || fxRate == 1 ) return foam.u2.DisplayMode.HIDDEN;
-        return foam.u2.DisplayMode.RO;
-      },
-      view: function (_, X) {
-        return X.data.slot(function(fxRate) {
-          return foam.u2.TextField.create({
-            mode: foam.u2.DisplayMode.RO,
-            data: fxRate != 1 ? `Rate: ${fxRate.toString()}` : 'No Fx'
-          });
-        });
-      }
+      section: 'transactionInformation',
+      order: 200,
+      gridColumns: 6,
+      visibility: 'RO'
     },
     {
-      name: 'fxExpiry',
-      class: 'DateTime'
-    },
-    {
-      name: 'accepted',
-      class: 'Boolean',
-      value: false
-    },
-    {
-      name: 'fxQuoteId', // or fxQuoteCode
-      class: 'String'
+      name: 'fxQuoteId',
+      class: 'String',
+      aliases: [ 'fxQuoteCode' ],
+      section: 'transactionInformation',
+      order: 205,
+      gridColumns: 6
     },
     {
       name: 'fxFees',
       class: 'FObjectProperty',
-      of: 'net.nanopay.fx.FeesFields'
+      of: 'net.nanopay.fx.FeesFields',
+      section: 'transactionInformation',
+      order: 210,
+      gridColumns: 6
+    },
+    {
+      name: 'fxExpiry',
+      class: 'DateTime',
+      section: 'transactionInformation',
+      order: 220,
+      gridColumns: 6
+    },
+    {
+      name: 'accepted',
+      class: 'Boolean',
+      value: false,
+      section: 'transactionInformation',
+      order: 225,
+      gridColumns: 6
     },
     {
       name: 'paymentMethod',
-      class: 'String'
+      class: 'String',
+      section: 'transactionInformation',
+      order: 260,
+      gridColumns: 6
     }
   ],
 

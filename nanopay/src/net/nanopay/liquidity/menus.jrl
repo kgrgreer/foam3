@@ -1,5 +1,11 @@
 p({
   "class": "foam.nanos.menu.Menu",
+  "id": "liquid",
+  "label": "Liquid"
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
   "id": "dashboard",
   "label": "Dashboard",
   "handler": {
@@ -7,7 +13,8 @@ p({
     "view": {
       "class": "net.nanopay.liquidity.ui.dashboard.Dashboard"
     }
-  }
+  },
+  "parent": "liquid"
 })
 
 p({
@@ -21,23 +28,12 @@ p({
         {
           "class": "foam.comics.v2.DAOControllerConfig",
           "daoKey": "tableViewAccountDAO",
-          "predicate": {
-            "class": "foam.mlang.predicate.Eq",
-            "arg1": {
-              "class": "__Property__",
-              "forClass_": "net.nanopay.account.Account",
-              "name": "lifecycleState"
-            },
-            "arg2": {
-              "class": "foam.mlang.Constant",
-              "value": 1
-            }
-          },
           "defaultColumns": [
             "name",
             "balance",
             "homeBalance"
           ],
+          "factory": "net.nanopay.account.AggregateAccount",
           "filterExportPredicate":
           {
             "class": "foam.mlang.predicate.Neq",
@@ -58,67 +54,31 @@ p({
               "class": "foam.comics.v2.BasicEnabledActionsAuth",
               "modelName": "account"
             }
-          },
+          }
         }
-    }
-})
-
-p({
-  "class": "foam.nanos.menu.Menu",
-  "id": "transactions",
-  "label": "Transactions",
-  "handler":
+    },
+  "registrations":[
     {
-      "class": "foam.nanos.menu.DAOMenu2",
-      "config":
-        {
-          "class": "foam.comics.v2.DAOControllerConfig",
-          "daoKey": "transactionDAO",
-          "editPredicate":{"class":"foam.mlang.predicate.False"},
-          "deletePredicate":{"class":"foam.mlang.predicate.False"},
-          "defaultColumns": [
-            "summary",
-            "lastModified",
-            "sourceAccount",
-            "destinationAccount",
-            "destinationCurrency",
-            "destinationAmount"
-          ],
-          "CRUDEnabledActionsAuth": {
-            "class": "foam.comics.v2.CRUDEnabledActionsAuth",
-            "isEnabled": true,
-            "enabledActionsAuth": {
-              "class": "foam.comics.v2.BasicEnabledActionsAuth",
-              "modelName": "transaction"
-            }
-          },
-          "filterExportPredicate":
-            {
-              "class": "foam.mlang.predicate.Neq",
-              "arg1": {
-                "class": "__Property__",
-                "forClass_": "foam.nanos.export.ExportDriverRegistry",
-                "name": "id"
-              },
-              "arg2": {
-                "class": "foam.mlang.Constant",
-                "value": "CSV"
-              }
-            },
-          "browseViews": [
-            {
-              "class": "foam.comics.v2.namedViews.NamedViewCollection",
-              "name": "Transactions",
-              "view": { "class": "net.nanopay.liquidity.ui.transaction.TransactionDAOBrowserView" }
-            }
-          ]
-        }
+      "class":"foam.nanos.menu.XRegistration",
+      "targetName":"net.nanopay.liquidity.ui.account.AccountDetailView",
+      "className":"foam.u2.detail.SectionedDetailView"
+    },
+    {
+      "class":"foam.nanos.menu.XRegistration",
+      "targetName":"net.nanopay.account.AccountDAOSummaryViewView",
+      "className":"foam.u2.detail.SectionedDetailView"
+    },
+    {
+      "class":"foam.nanos.menu.XRegistration",
+      "targetName":"net.nanopay.account.AccountDAOSummaryView",
+      "className":"foam.comics.v2.DAOSummaryView"
     }
+  ]
 })
 
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "users",
+  "id": "admin.users-2",
   "label": "Users",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
@@ -126,9 +86,18 @@ p({
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "userUserDAO",
       "browseTitle": "Users",
-      "defaultColumns": ["id", "firstName", "lastName", "jobTitle", "organization", "email"]
+      "defaultColumns": ["id", "firstName", "lastName", "jobTitle", "organization", "email"],
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "user"
+        }
+      }
     }
-  }
+  },
+  "parent": "admin"
 })
 
 p({
@@ -142,18 +111,6 @@ p({
       "daoKey": "liquiditySettingsDAO",
       "browseTitle": "Liquidity Settings",
       "createTitle": "Create a New Liquidity Setting",
-      "predicate": {
-        "class": "foam.mlang.predicate.Eq",
-        "arg1": {
-          "class": "__Property__",
-          "forClass_": "net.nanopay.liquidity.LiquiditySettings",
-          "name": "lifecycleState"
-        },
-        "arg2": {
-          "class": "foam.mlang.Constant",
-          "value": "ACTIVE"
-        }
-      },
       "CRUDEnabledActionsAuth": {
         "class": "foam.comics.v2.CRUDEnabledActionsAuth",
         "isEnabled": true,
@@ -161,9 +118,10 @@ p({
           "class": "foam.comics.v2.BasicEnabledActionsAuth",
           "modelName": "liquiditysettings"
         }
-      },
+      }
     }
-  }
+  },
+  "parent": "liquid"
 })
 
 p({
@@ -173,14 +131,6 @@ p({
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
-      "defaultColumns": [
-        "classification",
-        "operation",
-        "createdBy",
-        "approver",
-        "status",
-        "lastModified"
-      ],
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "approvalRequestDAO",
       "browseTitle": "Approval Requests",
@@ -188,6 +138,25 @@ p({
       "createPredicate":{"class":"foam.mlang.predicate.False"},
       "editPredicate":{"class":"foam.mlang.predicate.False"},
       "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  },
+  "registrations":[
+    {
+      "class":"foam.nanos.menu.XRegistration",
+      "targetName":"foam.nanos.crunch.AgentCapabilityJunctionDAOSummaryView",
+      "className":"net.nanopay.approval.AgentCapabilityJunctionDAOSummaryView"
+    }
+  ]
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "approvals.transactions",
+  "label": "Batch Transaction Requests",
+  "handler": {
+    "class": "foam.nanos.menu.ViewMenu",
+    "view": {
+      "class": "net.nanopay.tx.ComplianceTransactionApprovalRequestController"
     }
   }
 })
@@ -199,7 +168,8 @@ p({
   "label": "Business Rules",
   "handler": {
     "class": "foam.nanos.menu.SubMenu"
-  }
+  },
+  "parent": "liquid"
 })
 
 p({
@@ -212,7 +182,7 @@ p({
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "accountTemplateDAO",
       "browseTitle": "Account Groups for Rules",
-      "createTitle": "Create a New Account Group for Rules",
+      "createTitle": "Create a New Account Group for Rules"
     }
   },
   "parent": "rules"
@@ -228,32 +198,15 @@ p({
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "ruleDAO",
       "predicate": {
-        "class": "foam.mlang.predicate.And",
-        "args": [
-          {
-            "class": "foam.mlang.predicate.IsInstanceOf",
-            "targetClass": "net.nanopay.liquidity.tx.GenericBusinessRule"
-          },
-          {
-            "class": "foam.mlang.predicate.Eq",
-            "arg1": {
-              "class": "__Property__",
-              "forClass_": "net.nanopay.liquidity.tx.BusinessRule",
-              "name": "lifecycleState"
-            },
-            "arg2": {
-              "class": "foam.mlang.Constant",
-              "value": "ACTIVE"
-            }
-          }
-        ]
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.liquidity.tx.GenericBusinessRule"
       },
       "defaultColumns": [
         "id",
         "name",
         "enabled",
         "businessRuleAction",
-        "createdBy"
+        "createdBy.legalName"
       ],
       "of": "net.nanopay.liquidity.tx.GenericBusinessRule",
       "CRUDEnabledActionsAuth": {
@@ -263,7 +216,7 @@ p({
           "class": "foam.comics.v2.BasicEnabledActionsAuth",
           "modelName": "rule"
         }
-      },
+      }
     }
   },
   "parent": "rules"
@@ -279,33 +232,16 @@ p({
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "ruleDAO",
       "predicate": {
-        "class": "foam.mlang.predicate.And",
-        "args": [
-          {
-            "class": "foam.mlang.predicate.IsInstanceOf",
-            "targetClass": "net.nanopay.liquidity.tx.RestrictAccountsRule"
-          },
-          {
-            "class": "foam.mlang.predicate.Eq",
-            "arg1": {
-              "class": "__Property__",
-              "forClass_": "net.nanopay.liquidity.tx.BusinessRule",
-              "name": "lifecycleState"
-            },
-            "arg2": {
-              "class": "foam.mlang.Constant",
-              "value": "ACTIVE"
-            }
-          }
-        ]
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.liquidity.tx.RestrictAccountsRule"
       },
       "defaultColumns": [
         "id",
         "name",
         "enabled",
-        "createdBy",
-        "sourceAccount",
-        "destinationAccount"
+        "createdBy.legalName",
+        "sourceAccount.name",
+        "destinationAccount.name"
       ],
       "of": "net.nanopay.liquidity.tx.RestrictAccountsRule",
       "browseTitle": "Restrict Accounts",
@@ -333,33 +269,16 @@ p({
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "ruleDAO",
       "predicate": {
-        "class": "foam.mlang.predicate.And",
-        "args": [
-          {
-            "class": "foam.mlang.predicate.IsInstanceOf",
-            "targetClass": "net.nanopay.liquidity.tx.RestrictUsersRule"
-          },
-          {
-            "class": "foam.mlang.predicate.Eq",
-            "arg1": {
-              "class": "__Property__",
-              "forClass_": "net.nanopay.liquidity.tx.BusinessRule",
-              "name": "lifecycleState"
-            },
-            "arg2": {
-              "class": "foam.mlang.Constant",
-              "value": "ACTIVE"
-            }
-          }
-        ]
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.liquidity.tx.RestrictUsersRule"
       },
       "defaultColumns": [
         "id",
         "name",
         "enabled",
-        "createdBy",
-        "sourceUser",
-        "destinationUser"
+        "createdBy.legalName",
+        "sourceUser.legalName",
+        "destinationUser.legalName"
       ],
       "of": "net.nanopay.liquidity.tx.RestrictUsersRule",
       "browseTitle": "Restrict Users",
@@ -379,7 +298,7 @@ p({
 
 p({
   "class":"foam.nanos.menu.Menu",
-  "id":"rules.txapprovaltrules",
+  "id":"rules.txapprovalrules",
   "label":"High Value L2 Rules",
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
@@ -389,25 +308,8 @@ p({
       "createTitle": "Create a new High Value L2 Rule",
       "daoKey":"ruleDAO",
       "predicate": {
-        "class": "foam.mlang.predicate.And",
-        "args": [
-          {
-            "class": "foam.mlang.predicate.IsInstanceOf",
-            "targetClass": "net.nanopay.liquidity.tx.L2TransactionApprovalRule"
-          },
-          {
-            "class": "foam.mlang.predicate.Eq",
-            "arg1": {
-              "class": "__Property__",
-              "forClass_": "net.nanopay.liquidity.tx.BusinessRule",
-              "name": "lifecycleState"
-            },
-            "arg2": {
-              "class": "foam.mlang.Constant",
-              "value": "ACTIVE"
-            }
-          }
-        ]
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.liquidity.tx.L2TransactionApprovalRule"
       },
       "defaultColumns": [
         "id",
@@ -431,194 +333,6 @@ p({
 
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "rules.txlimitrules",
-  "label": "Transaction Limits",
-  "handler": {
-    "class": "foam.nanos.menu.DAOMenu2",
-    "config": {
-      "class": "foam.comics.v2.DAOControllerConfig",
-      "daoKey": "ruleDAO",
-      "predicate": {
-        "class": "foam.mlang.predicate.And",
-        "args": [
-          {
-            "class": "foam.mlang.predicate.IsInstanceOf",
-            "targetClass": "net.nanopay.liquidity.tx.TxLimitRule"
-          },
-          {
-            "class": "foam.mlang.predicate.Eq",
-            "arg1": {
-              "class": "__Property__",
-              "forClass_": "net.nanopay.liquidity.tx.TxLimitRule",
-              "name": "lifecycleState"
-            },
-            "arg2": {
-              "class": "foam.mlang.Constant",
-              "value": "ACTIVE"
-            }
-          }
-        ]
-      },
-      "defaultColumns": [
-        "id",
-        "name",
-        "enabled",
-        "applyLimitTo",
-        "send",
-        "limit",
-        "period"
-      ],
-      "of": "net.nanopay.liquidity.tx.TxLimitRule",
-      "browseTitle": "Transaction Limits",
-      "createTitle": "Create a New Transaction Limit",
-      "CRUDEnabledActionsAuth": {
-        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
-        "isEnabled": true,
-        "enabledActionsAuth": {
-          "class": "foam.comics.v2.BasicEnabledActionsAuth",
-          "modelName": "rule"
-        }
-      }
-    }
-  },
-  "parent": "rules"
-})
-
-// Roles and Capabilities
-p({
-  "class": "foam.nanos.menu.Menu",
-  "id": "roles",
-  "label": "Role Management",
-  "handler": {
-    "class": "foam.nanos.menu.SubMenu"
-  }
-})
-
-p({
-  "class": "foam.nanos.menu.Menu",
-  "id": "roles.globalliquidcapabilities",
-  "label": "Admin Roles",
-  "handler": {
-    "class": "foam.nanos.menu.DAOMenu2",
-    "config": {
-      "class": "foam.comics.v2.DAOControllerConfig",
-      "daoKey": "globalLiquidCapabilityDAO",
-      "browseTitle": "Admin Roles",
-      "createTitle": "Create a New Admin Role",
-      "predicate": {
-        "class": "foam.mlang.predicate.Eq",
-        "arg1": {
-          "class": "__Property__",
-          "forClass_": "net.nanopay.liquidity.crunch.LiquidCapability",
-          "name": "lifecycleState"
-        },
-        "arg2": {
-          "class": "foam.mlang.Constant",
-          "value": "ACTIVE"
-        }
-      },
-      "CRUDEnabledActionsAuth": {
-        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
-        "isEnabled": true,
-        "enabledActionsAuth": {
-          "class": "foam.comics.v2.BasicEnabledActionsAuth",
-          "modelName": "capability"
-        }
-      }
-    }
-  },
-  "parent": "roles"
-})
-p({
-  "class": "foam.nanos.menu.Menu",
-  "id": "roles.accountbasedliquidcapabilities",
-  "label": "Transactional Roles",
-  "handler": {
-    "class": "foam.nanos.menu.DAOMenu2",
-    "config": {
-      "class": "foam.comics.v2.DAOControllerConfig",
-      "daoKey": "accountBasedLiquidCapabilityDAO",
-      "browseTitle": "Transactional Roles",
-      "createTitle": "Create a Transactional Role",
-      "predicate": {
-        "class": "foam.mlang.predicate.Eq",
-        "arg1": {
-          "class": "__Property__",
-          "forClass_": "net.nanopay.liquidity.crunch.LiquidCapability",
-          "name": "lifecycleState"
-        },
-        "arg2": {
-          "class": "foam.mlang.Constant",
-          "value": "ACTIVE"
-        }
-      },
-      "CRUDEnabledActionsAuth": {
-        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
-        "isEnabled": true,
-        "enabledActionsAuth": {
-          "class": "foam.comics.v2.BasicEnabledActionsAuth",
-          "modelName": "capability"
-        }
-      }
-    }
-  },
-  "parent": "roles"
-})
-p({
-  "class": "foam.nanos.menu.Menu",
-  "id": "roles.capabilityaccounttemplates",
-  "label": "Account Groups for Roles",
-  "handler": {
-    "class": "foam.nanos.menu.DAOMenu2",
-    "config": {
-      "class": "foam.comics.v2.DAOControllerConfig",
-      "daoKey": "capabilityAccountTemplateDAO",
-      "browseTitle": "Account Groups for Roles",
-      "createTitle": "Create a New Account Group for Roles",
-    }
-  },
-  "parent": "roles"
-})
-
-p({
-  "class": "foam.nanos.menu.Menu",
-  "id": "roles.assigncapability",
-  "label": "Role Assignment",
-  "handler": {
-    "class": "foam.nanos.menu.DAOMenu2",
-    "config": {
-      "class": "foam.comics.v2.DAOControllerConfig",
-      "daoKey": "capabilityRequestDAO",
-      "browseTitle": "Role Assignment",
-      "createTitle": "Execute a Role Assignment",
-      "CRUDEnabledActionsAuth": {
-        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
-        "isEnabled": true,
-        "enabledActionsAuth": {
-          "class": "foam.comics.v2.BasicEnabledActionsAuth",
-          "modelName": "capabilityrequest"
-        }
-      }
-    }
-  },
-  "parent": "roles"
-})
-
-p({
-  "class": "foam.nanos.menu.Menu",
-  "id": "roles.rolequeryview",
-  "label": "Role Query",
-  "handler": {
-    "class": "foam.nanos.menu.ViewMenu",
-    "view": {
-      "class": "net.nanopay.liquidity.ucjQuery.RoleQueryView"
-    }
-  },
-  "parent": "roles"
-})
-
-p({
-  "class": "foam.nanos.menu.Menu",
   "id": "fileupload",
   "label": "File Upload",
   "handler": {
@@ -626,5 +340,6 @@ p({
     "view": {
       "class": "net.nanopay.tx.gs.GSFileUploadScreen"
     }
-  }
+  },
+  "parent": "liquid"
 })

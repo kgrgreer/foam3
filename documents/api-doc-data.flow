@@ -1,0 +1,219 @@
+<title>API Data</title>
+
+<h1>Data Objects</h1>
+
+<p>Data objects outlined in this document:</p>
+<ul>
+  <li>
+    <a href="#account">Account</a>
+  </li>
+  <li>
+    <a href="#business">Business</a>
+    <ul>
+      <li><a href="#address">Address</a></li>
+      <li><a href="#business-director">BusinessDirector</a></li>
+    </ul>
+  </li>
+  <li>
+    <a href="#contact">Contact</a>
+  </li>
+  <li>
+    <a href="#transaction">Transaction</a>
+    <ul>
+      <li><a href="#chain-summary">ChainSummary</a></li>
+      <li><a href="#error-codes">Error Codes</a></li>
+      <li><a href="#historic-status">HistoricStatus</a></li>
+      <li><a href="#signature">Signature</a></li>
+      <li><a href="#transaction-line-item">TransactionLineItem</a></li>
+    </ul>
+  </li>
+  <li>
+    <a href="#user">User</a>
+    <ul>
+      <li><a href="#address">Address</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h2><a name="account">Account</a></h2>
+<p>An account is used to create and manage a bank account.</p>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.bank.CABankAccount" whitelist="['country', 'denomination', 'iban', 'bankCode', 'branchId', 'institutionNumber', 'accountNumber', 'status', 'address', 'bankAddress', 'name', 'compliance', 'type', 'id', 'isDefault', 'balance', 'homeBalance', 'created', 'createdBy', 'lastModified', 'lastModifiedBy', 'owner', 'parent']" />
+
+<h2><a name="business">Business</a></h2>
+<p>A business is an entity on behalf of which multiple users can act. A business is associated with the company name provided by the user who first creates it.</p>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.model.Business" whitelist="['businessName', 'operatingBusinessName', 'businessTypeId', 'created', 'businessSectorId', 'emailVerified', 'countryOfBusinessRegistration', 'phoneNumber', 'phoneNumberVerified', 'address', 'mailingAddress', 'holdingCompany', 'sourceOfFunds', 'targetCustomers', 'taxIdentificationNumber', 'id', 'enabled', 'organization', 'type', 'website', 'lastModified', 'compliance', 'status', 'createdBy']" />
+
+<h3>Supporting Data</h3>
+<h4><a name="business-director">BusinessDirector</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.model.BusinessDirector" whitelist="['firstName', 'lastName', 'birthday', 'nationality']"/>
+
+<h2><a name="contact">Contact</a></h2>
+<p>A contact is an entity known to a business or user. A contact can own bank accounts and be paid into those bank accounts.</p>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.contacts.Contact" whitelist="['organization', 'legalName', 'email', 'firstName', 'lastName', 'businessId', 'bankAccount', 'businessAddress', 'owner', 'id', 'enabled', 'jobTitle', 'type', 'birthday', 'address', 'businessName', 'created', 'lastModified', 'compliance', 'status' ]"/>
+
+<h2><a name="transaction">Transaction</a></h2>
+<p>A "Transaction" on the platform is an transfer of value from a source account with a source currency to a destination account in the destination currency.</p>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.tx.SummaryTransaction" whitelist="['chainSummary', 'status', 'name', 'type', 'id', 'payer', 'payerId', 'payee', 'payeeId', 'created', 'createdBy', 'lastModified', 'lastModifiedBy', 'invoiceId', 'externalId', 'externalInvoiceId', 'externalData', 'amount', 'destinationAmount', 'sourceCurrency', 'destinationCurrency', 'statusHistory', 'lineItems', 'destinationAccount', 'sourceAccount', 'spid', 'signatures' ]" />
+
+<h3>Supporting Data</h3>
+<h4><a name="chain-summary">ChainSummary</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.tx.ChainSummary" />
+
+<h4><a name="error-codes">Error Codes in ChainSummary</a></h4>
+<table border="1px" width="100%">
+<thead>
+  <tr>
+    <th>Code</th>
+    <th>Category</th>
+    <th>Description</th>
+    <th>Abbreviation</th>
+  </tr>
+</thead>
+<tbody>
+
+    <tr>
+        <td>900</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>Edit Reject</td>
+        <td>REJ/REV</td>
+    </tr>
+    <tr>
+        <td>901</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>NSF (Debit Only)</td>
+        <td>NSF/DSP</td>
+    </tr>
+    <tr>
+        <td>902</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>Account not found</td>
+        <td>CNT/ITV</td>
+    </tr>
+    <tr>
+        <td>903</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>Payment Stopped/Recalled</td>
+        <td>STP/ARR</td>
+    </tr>
+    <tr>
+        <td>905</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>Account Closed</td>
+        <td>CLS/FER</td>
+    </tr>
+    <tr>
+        <td>907</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>No Debit Allowed</td>
+        <td>NCP/PPC</td>
+    </tr>
+    <tr>
+        <td>908</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>Funds not Cleared (Debit Only)</td>
+        <td>FNC/FNL</td>
+    </tr>
+    <tr>
+        <td>909</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>Currency/Account Mismatch</td>
+        <td>WCU/MDC</td>
+    </tr>
+    <tr>
+        <td>910</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>Payor/Payee Deceased</td>
+        <td>DEC/DEC</td>
+    </tr>
+    <tr>
+        <td>911</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>Account Frozen</td>
+        <td>FZN/BLQ</td>
+    </tr>
+    <tr>
+        <td>912</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>Invalid/Incorrect Account No.</td>
+        <td>INA/INV</td>
+    </tr>
+    <tr>
+        <td>914</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>Incorrect Payor/Payee Name</td>
+        <td>INP/NOM</td>
+    </tr>
+    <tr>
+        <td>915</td>
+        <td>Customer Initiated Returns, Debits Only</td>
+        <td>No Agreement Existed</td>
+        <td>ANP/NOG</td>
+    </tr>
+    <tr>
+        <td>916</td>
+        <td>Customer Initiated Returns, Debits Only</td>
+        <td>Not According to Agreement - Personal</td>
+        <td>NCA/ACP</td>
+    </tr>
+    <tr>
+        <td>917</td>
+        <td>Customer Initiated Returns, Debits Only</td>
+        <td>Agreement Revoked - Personal</td>
+        <td>ARP/AGP</td>
+    </tr>
+    <tr>
+        <td>918</td>
+        <td>Customer Initiated Returns, Debits Only</td>
+        <td>No Confirmation/Pre-Notification - Personal</td>
+        <td>PNP/PRP</td>
+    </tr>
+    <tr>
+        <td>919</td>
+        <td>Customer Initiated Returns, Debits Only</td>
+        <td>Not According to Agreement - Business</td>
+        <td>NCE/ACB</td>
+    </tr>
+    <tr>
+        <td>920</td>
+        <td>Customer Initiated Returns, Debits Only</td>
+        <td>Agreement Revoked - Business</td>
+        <td>ARE/AGB</td>
+    </tr>
+    <tr>
+        <td>921</td>
+        <td>Customer Initiated Returns, Debits Only</td>
+        <td>No Confirmation/Pre-Notification - Business</td>
+        <td>PNE/PRB</td>
+    </tr>
+    <tr>
+        <td>922</td>
+        <td>Customer Initiated Returns, Credits Only</td>
+        <td>Customer Intiated Return</td>
+        <td>REC/CIR</td>
+    </tr>
+    <tr>
+        <td>990</td>
+        <td>Default</td>
+        <td>Institution in Default</td>
+        <td>DEF/DEF</td>
+    </tr>
+    
+</tbody>
+</table>
+
+<h4><a name="historic-status">HistoricStatus</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.tx.HistoricStatus" />
+
+<h4><a name="signature">Signature</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.security.Signature" />
+
+<h4><a name="transaction-line-item">TransactionLineItem</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.tx.TransactionLineItem" />
+
+<h2><a name="user">User</a></h2>
+<p>A “User” on the platform is an individual that is added to a business with a specific set of permissions. Each user will be assigned a set of defined permissions based on the role that they are given.</p>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="foam.nanos.auth.User" whitelist="['id', 'enabled', 'firstName', 'lastName', 'legalName', 'jobTitle', 'organization', 'department', 'userName', 'email', 'emailVerified', 'phoneNumber', 'phoneNumberVerified', 'mobileNumber', 'mobileNumberVerified', 'type', 'birthday', 'address', 'note', 'businessName', 'created', 'lastModified', 'lifecycleState', 'compliance', 'status', 'thirdyParty', 'identification', 'PEPHIORelated', 'createdBy' ]" />
+
+<h3>Supporting Data</h3>
+<h4><a name="address">Address</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="foam.nanos.auth.Address" whitelist="['structured', 'address1', 'address2', 'countryId', 'regionId', 'city', 'postalCode']" />

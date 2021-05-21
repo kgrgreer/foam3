@@ -5,6 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.NanoService;
 import foam.nanos.auth.Group;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
@@ -36,7 +37,7 @@ public class DefaultInvoicePaymentService extends ContextAwareSupport implements
 
     Invoice invoice = (Invoice) invoiceDAO_.inX(x).find(Long.parseLong(invoiceId));
 
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
 
     validateInvoice(x, user, invoice);
 
@@ -62,7 +63,7 @@ public class DefaultInvoicePaymentService extends ContextAwareSupport implements
       throw new RuntimeException("Can't pay a null invoice");
 
     if ( invoice.getStatus().equals(InvoiceStatus.DRAFT) ) {
-      throw new RuntimeException("Can't pay a draft invoice."); 
+      throw new RuntimeException("Can't pay a draft invoice.");
     }
 
     invoice.validate(x);

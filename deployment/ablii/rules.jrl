@@ -1,0 +1,262 @@
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"afex-crunch-onboarding-rule1-ablii",
+  "name":"Onboard Business to AFEX",
+  "documentation":"Rule to onboard business to AFEX if it has passed comliance and has a verified bank account.",
+  "priority":1,
+  "ruleGroup":"crunchOnboarding",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "status": 1,
+        "statusChanged": false,
+        "category": "AFEXOnboarding"
+      },
+      {
+        "class": "net.nanopay.partner.afex.crunch.BusinessHasVerifiedBankAccount"
+      }
+    ]
+  },
+  "asyncAction":{ "class":"net.nanopay.partner.afex.crunch.AFEXBusinessOnboardingRule"},
+  "enabled":false,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"afex-crunch-onboarding-rule-2",
+  "name":"Onboard Business Bank Account Owner to AFEX",
+  "documentation":"Rule to onboard bank account owner to AFEX if it is a business and has afex onboarding capability.",
+  "priority":100,
+  "ruleGroup":"AFEXCrunchOnboarding",
+  "daoKey":"localAccountDAO",
+  "operation":3,
+  "after":true,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "net.nanopay.meter.compliance.ruler.predicate.BankAccountVerified"
+      },
+      {
+        "class": "net.nanopay.partner.afex.crunch.BankAccountOwnerIsBusiness"
+      }
+    ]
+  },
+  "asyncAction":{
+    "class":"net.nanopay.fx.afex.AFEXBankOnboardingRule"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d67",
+  "name":"Send business compliance passed email",
+  "priority":1,
+  "ruleGroup":"smeBusinessCompliance",
+  "documentation":"Send business compliance passed email to signing officer",
+  "enabled":true,
+  "after":true,
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "category":"registerPaymentProvider",
+        "isRecurring":false,
+        "status": 1
+      }
+    ]
+  },
+  "action":{"class":"net.nanopay.sme.ruler.BusinessCompliancePassedEmailRule"},
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid":"ablii"
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"ac18795b-5512-4a58-8964-d0e45d43ba91",
+  "name":"Grant BMO Payment Provider Capability",
+  "documentation":"Set BMO Payment Provider Capability to GRANTED when domestic onboarding is complete.",
+  "priority":80,
+  "ruleGroup":"onboarding",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"targetId",
+        "propValue":"crunch.onboarding.unlock-ca-ca-payments",
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{"class":"foam.nanos.crunch.CapabilityJunctionStatus","ordinal":1}
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.partner.bmo.BMOPaymentProviderCapabilityRule"
+  },
+  "enabled":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"5bf2690b-cbb7-49a8-a57c-546b98364c56",
+  "name":"Grant RBC Payment Provider Capability",
+  "documentation":"Set RBC Payment Provider Capability to GRANTED when domestic onboarding is complete.",
+  "priority":80,
+  "ruleGroup":"onboarding",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"targetId",
+        "propValue":"crunch.onboarding.unlock-ca-ca-payments",
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{"class":"foam.nanos.crunch.CapabilityJunctionStatus","ordinal":1}
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.partner.rbc.RBCPaymentProviderCapabilityRule"
+  },
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d75",
+  "name":"Create Default Digital Account",
+  "priority":100,
+  "ruleGroup":"CreateDefaultDigitalAccount",
+  "documentation":"Creates a default digital account when a user is created.",
+  "daoKey":"localUserDAO",
+  "operation":0,
+  "action":{
+    "class":"net.nanopay.account.CreateDefaultDigitalAccountOnUserCreateRule",
+    "trusts":[
+      "7ee216ae-9371-4684-9e99-ba42a5759444",
+      "325e128a-f76f-46bd-ba82-26d12d92865f",
+      "5b68522d-2948-4b64-a2ea-afe5108a95ae"
+    ]
+  },
+  "after":true,
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})
+
+// Clearing time rules
+p({
+  "class": "net.nanopay.meter.clearing.ruler.TransactionTypeClearingTimeRule",
+  "id":"b3bc934e-39d3-4a50-afdf-1b631000eab3",
+  "name":"AFEXTransaction ClearingTime Rule",
+  "of": "net.nanopay.fx.afex.AFEXTransaction",
+  "duration": 2,
+  "predicate": {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of: "net.nanopay.fx.afex.AFEXTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal":0
+        }
+      }
+    ]
+  },
+  "spid": "ablii",
+  "saveHistory":true,
+  "lifecycleState":1,
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d11",
+  "name":"Create AFEXBusiness Approval Request",
+  "documentation":"Rule to create AFEXBusiness Approval Request.",
+  "priority":100,
+  "ruleGroup":"AFEXOnboarding",
+  "daoKey":"afexUserDAO",
+  "operation":0,
+  "after":true,
+  "predicate":{
+    "class":"net.nanopay.fx.afex.AFEXBusinessCreatedPredicate",
+  },
+  "action":{
+    "class":"net.nanopay.fx.afex.AFEXBusinessApprovalRequestRule"
+  },
+  "spid": "ablii",
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"5d12a5bb-2952-44ed-a8eb-be3582de7ab1",
+  "name":"Grant AFEX Payable Menu Capability",
+  "documentation":"Grants AFEX Payable Menu Capability after Afex business is created and approved.",
+  "priority":100,
+  "ruleGroup":"onboarding",
+  "daoKey":"approvalRequestDAO",
+  "operation":1,
+  "after":true,
+  "predicate": {
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.fx.afex.AFEXBusinessApprovalRequest"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{
+          "class":"foam.nanos.approval.ApprovalStatus",
+          "ordinal":1
+        }
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.fx.afex.AFEXPayableMenuCapabilityRule"
+  },
+  "spid": "ablii",
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})

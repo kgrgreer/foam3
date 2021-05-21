@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
   name: 'AccountMap',
@@ -27,7 +44,7 @@ foam.CLASS({
     {
       name: 'addAccount',
       args: [
-        { name: 'accountId', class: 'Long' },
+        { name: 'accountId', class: 'String' },
         { name: 'data', javaType: 'net.nanopay.liquidity.crunch.AccountData' }
       ],
       documentation: `
@@ -37,41 +54,41 @@ foam.CLASS({
         return;
       },
       javaCode: `
-        getAccounts().put(String.valueOf(accountId), data);
+        getAccounts().put(accountId, data);
       `
     },
     {
       name: 'impliesChildAccount',
       args: [
         { name: 'x', javaType: 'foam.core.X' },
-        { name: 'childId', class: 'Long' },
+        { name: 'childId', class: 'String' },
       ],
-      type: 'Long',
+      type: 'String',
       javaCode: `
         DAO accountDAO = (DAO) x.get("localAccountDAO");
         Account child = (Account) accountDAO.find_(x, childId);
         AccountData data;
 
         while ( child != null ) {
-          if ( getAccounts().containsKey(String.valueOf(child.getId())) ) {
-            data = getAccounts().get(String.valueOf(child.getId()));
+          if ( getAccounts().containsKey(child.getId()) ) {
+            data = getAccounts().get(child.getId());
             if ( data != null && data.getIsIncluded() && data.getIsCascading() ) {
               return child.getId();
             } 
-            return 0L;
+            return "";
           } 
-          Long parentId = child.getParent();
+          String parentId = child.getParent();
           child = (Account) accountDAO.find(parentId);
         }
 
-        return 0L;
+        return "";
         
       `
     },
     {
       name: 'removeAccount',
       args: [
-        { name: 'accountId', class: 'Long' },
+        { name: 'accountId', class: 'String' },
       ],
       documentation: `
       remove an account from the map, abiding the the following rules : 
@@ -90,7 +107,7 @@ foam.CLASS({
       name: 'hasAccount',
       args: [
         { name: 'x', javaType: 'foam.core.X' },
-        { name: 'childAccountId', class: 'Long' }
+        { name: 'childAccountId', class: 'String' }
       ],
       javaType: 'Boolean',
       code: function hasAccount(x, childAccountId) {
@@ -99,7 +116,7 @@ foam.CLASS({
       },
       javaCode: `
         Map<String, AccountData> map = getAccounts();
-        return map != null && map.containsKey(String.valueOf(childAccountId));
+        return map != null && map.containsKey(childAccountId);
       `
     }
   ]

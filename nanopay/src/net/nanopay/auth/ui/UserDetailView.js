@@ -1,13 +1,31 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.auth.ui',
   name: 'UserDetailView',
   extends: 'foam.u2.Controller',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage'
+    'foam.log.LogLevel'
   ],
 
   imports: [
+    'notify',
     'regionDAO',
     'userDAO',
     'validateAddress',
@@ -29,7 +47,6 @@ foam.CLASS({
     }
     ^ .foam-u2-tag-Select {
       width: 218px;
-      height: 40px;
       margin-top: 8px;
       border-radius: 0;
       -webkit-appearance: none;
@@ -651,10 +668,7 @@ foam.CLASS({
     },
 
     function showErrorMessage(msg) {
-      this.add(this.NotificationMessage.create({
-        message: msg,
-        type: 'error'
-      }));
+      this.notify(msg, '', this.LogLevel.ERROR, true);
     }
   ],
 
@@ -670,7 +684,7 @@ foam.CLASS({
           this.user.group = X.data.group;
 
           if ( X.data.phoneNumber ) {
-            this.user.phone.number = X.data.phoneNumber;
+            this.user.phoneNumber = X.data.phoneNumber;
           }
           if ( X.data.birthday ) {
             this.user.birthday = X.data.birthday;

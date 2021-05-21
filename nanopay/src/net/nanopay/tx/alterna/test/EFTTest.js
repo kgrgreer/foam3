@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx.alterna.test',
   name: 'EFTTest',
@@ -36,7 +53,8 @@ foam.CLASS({
     'java.util.List',
     'static foam.mlang.MLang.EQ',
     'net.nanopay.payment.Institution',
-    'net.nanopay.model.Branch'
+    'net.nanopay.model.Branch',
+    'foam.core.ValidationException'
   ],
 
   methods: [
@@ -108,24 +126,10 @@ CABankAccount account = (CABankAccount) bankAccountDao.find(EQ(CABankAccount.NAM
 
 if ( account == null ) {
 
-  final DAO  institutionDAO = (DAO) x.get("institutionDAO");
-  final DAO  branchDAO      = (DAO) x.get("branchDAO");
-
-  Institution institution = new Institution.Builder(x)
-    .setInstitutionNumber("999")
-    .setName("EFT Test institution")
-    .build();
-  institution = (Institution) institutionDAO.put_(x, institution);
-
-  Branch branch = new Branch.Builder(x)
-    .setBranchId("99999")
-    .setInstitution(institution.getId())
-    .build();
-  branch = (Branch) branchDAO.put_(x, branch);
-
   BankAccount testBankAccount = new CABankAccount.Builder(x)
-    .setAccountNumber("12345678")
-    .setBranch( branch.getId() )
+    .setAccountNumber( "12345678" )
+    .setInstitutionNumber( "999" )
+    .setBranchId( "99999" )
     .setOwner(1348)
     .setName("EFT Test Account")
     .setStatus(BankAccountStatus.VERIFIED)
@@ -153,24 +157,10 @@ CABankAccount account = (CABankAccount) bankAccountDao.find(EQ(CABankAccount.NAM
 
 if ( account == null ) {
 
-  final DAO  institutionDAO = (DAO) x.get("institutionDAO");
-  final DAO  branchDAO      = (DAO) x.get("branchDAO");
-
-  Institution institution = new Institution.Builder(x)
-    .setInstitutionNumber("999")
-    .setName("EFT Test institution")
-    .build();
-  institution = (Institution) institutionDAO.put_(x, institution);
-
-  Branch branch = new Branch.Builder(x)
-    .setBranchId("99999")
-    .setInstitution(institution.getId())
-    .build();
-  branch = (Branch) branchDAO.put_(x, branch);
-
   BankAccount testBankAccount = new CABankAccount.Builder(x)
     .setAccountNumber("123456789")
-    .setBranch( branch.getId() )
+    .setBranchId( "99999" )
+    .setInstitutionNumber( "999" )
     .setOwner(1384)
     .setName("EFT CO Test Account")
     .setStatus(BankAccountStatus.VERIFIED)
@@ -260,7 +250,7 @@ System.out.println("createTEstCItransaction before initial put status: "+plan.ge
 System.out.println("createTEstCItransaction after initial put status: "+plan.getStatus());
   return (AlternaCITransaction) plan;
 }
-throw new RuntimeException("Plan transaction not instance of AlternaCITransaction. transaction: "+plan);
+throw new ValidationException("Plan transaction not instance of AlternaCITransaction. transaction: "+plan);
     `
     },
      {
@@ -447,13 +437,13 @@ test(txn.getStatus() == TransactionStatus.SENT, "Transaction status SENT");
 Account destAccount = txn.findDestinationAccount(x);
 //Account destAcccount = (Account) ((DAO) x.get("localAccountDAO")).find_(x, txn.getSourceAccount());
 Long destBalanceBefore = (Long) destAccount.findBalance(x);
-TrustAccount trustAccount = TrustAccount.find(x, txn.findSourceAccount(x));
+TrustAccount trustAccount = ((DigitalAccount) txn.findDestinationAccount(x)).findTrustAccount(x);
 Long trustBalanceBefore = (Long) trustAccount.findBalance(x);
 logger.info("completionTest trust balance before", trustBalanceBefore);
 txn.setStatus(TransactionStatus.COMPLETED);
 txn = (AlternaCITransaction) transactionDAO.put_(x, txn);
 Long destBalanceAfter = (Long) destAccount.findBalance(x);
-trustAccount = TrustAccount.find(x, txn.findSourceAccount(x));
+trustAccount = ((DigitalAccount) txn.findDestinationAccount(x)).findTrustAccount(x);
 Long trustBalanceAfter = (Long) trustAccount.findBalance(x);
 logger.info("completionTest dest account balance: before", destBalanceBefore, "after", destBalanceAfter, "amount", txn.getAmount());
 logger.info("completionTest trust account balance:  before", trustBalanceBefore, "after", trustBalanceAfter, "amount", txn.getAmount());
@@ -463,7 +453,7 @@ logger.info("num transfers: ", transfers.length);
 for (int i = 0; i < transfers.length; i++) {
   logger.info("transfer[", i, "]", transfers[i]);
 }
-test( trustBalanceAfter.longValue() != trustBalanceBefore.longValue(), "Trust Balance has changed");
+test( Math.round(trustBalanceAfter) != Math.round(trustBalanceBefore), "Trust Balance has changed");
 logger.info("trustBalanceBefore - trustBalanceAfter", trustBalanceBefore - trustBalanceAfter);
 test( trustBalanceBefore - trustBalanceAfter == txn.getAmount(), "Trust balance validated");
     `

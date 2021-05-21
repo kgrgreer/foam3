@@ -1,0 +1,109 @@
+p({
+  class:"foam.nanos.auth.ServiceProvider",
+  id:"bepay",
+  enabled:true,
+  description:"bepay spid",
+  permissionsGranted: [
+    "language.read.*"
+  ]
+})
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "bepayCorridorCapability",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "paymentprovidercorridor.read.afex",
+    "paymentprovidercorridor.read.bepay",
+    "paymentprovidercorridor.source.read.bepay",
+    "paymentprovidercorridor.target.read.bepay"
+  ]
+})
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "bepayPlannerCapability",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.119fa381-d2a2-4369-b242-1dc8e2163bb9-bepay",
+    "rule.read.2fdd7d35-6704-47dc-9f0e-9419e0aa74ed",
+    "rule.read.77480e3b-fc7e-400c-bee6-dda5a22b982a",
+    "rule.read.f2c694e4-ca5c-4fc7-bbf0-747f8aa794db"
+  ]
+})
+
+// Fees
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "bepay-tx-fees",
+  name: "Enable BePay Fees",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.454df571-f639-4506-8d59-98b4f39934e4-bepay",
+    "rule.read.9e7661a6-610b-47ad-b521-96b9c760fb16-bepay"
+  ]
+})
+
+// Reason codes
+p({
+  class:"foam.nanos.crunch.Capability",
+  id:"bepay-tx-reason-codes",
+  name:"Enable BePay reason codes",
+  permissionsGranted:[
+    "naturecode.read.naturecode.br.funds-abroad",
+    "naturecode.read.naturecode.br.resident-maintenance"
+  ]
+})
+
+// PaymentProviderCorridors
+p({
+  class:"net.nanopay.payment.PaymentProviderCorridor",
+  id:"paymentprovidercorridor.bepay.br-us",
+  name:"BR-USD Corridor - BePay",
+  ranking:1,
+  provider:"BePay",
+  sourceCountry:"BR",
+  targetCountry:"US",
+  sourceCurrencies:["BRL"],
+  targetCurrencies:["USD"],
+  enabled:true,
+  "visibilityPredicate": { class: "foam.mlang.predicate.True" }
+})
+p({
+  class:"net.nanopay.payment.PaymentProviderCorridor",
+  id:"paymentprovidercorridor.bepay.br-ca",
+  name:"BR-CAD Corridor - BePay",
+  ranking:1,
+  provider:"BePay",
+  sourceCountry:"BR",
+  targetCountry:"CA",
+  sourceCurrencies:["BRL"],
+  targetCurrencies:["CAD"],
+  enabled:true,
+  "visibilityPredicate": { class: "foam.mlang.predicate.True" }
+})
+p({
+  class:"net.nanopay.payment.PaymentProviderCorridor",
+  id:"paymentprovidercorridor.bepay.br-gb",
+  name:"BR-GBP Corridor - BePay",
+  ranking:1,
+  provider:"BePay",
+  sourceCountry:"BR",
+  targetCountry:"GB",
+  sourceCurrencies:["BRL"],
+  targetCurrencies:["GBP"],
+  enabled:true,
+  "visibilityPredicate": { class: "foam.mlang.predicate.True" }
+})
+p({
+  class:"net.nanopay.payment.PaymentProviderCorridor",
+  id:"paymentprovidercorridor.bepay.br-pt",
+  name:"BR-EUR Corridor - BePay",
+  ranking:1,
+  provider:"BePay",
+  sourceCountry:"BR",
+  targetCountry:"PT",
+  sourceCurrencies:["BRL"],
+  targetCurrencies:["EUR"],
+  enabled:true,
+  "visibilityPredicate": { class: "foam.mlang.predicate.True" }
+})

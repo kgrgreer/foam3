@@ -1,4 +1,21 @@
 /**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+/**
  * @license
  * Copyright 2020 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -14,6 +31,10 @@ foam.CLASS({
     Along with the dynamics labels, an action is provided to put the provided data object
     into the targetDAO provided.
   `,
+
+  requires: [
+    'foam.log.LogLevel'
+  ],
 
   imports: [
     'notify'
@@ -63,7 +84,7 @@ foam.CLASS({
 
   messages: [
     { name: 'BOOLEAN_ERROR', message: 'There was an issue updating' },
-    { name: 'BOOLEAN_SUCCESS', message: 'was successfully updated.' }
+    { name: 'BOOLEAN_SUCCESS', message: 'was successfully updated' }
   ],
 
   methods: [
@@ -109,10 +130,10 @@ foam.CLASS({
           dao.put(this.__context__.data);
         } catch (e) {
           console.error(`${ this.BOOLEAN_ERROR } ${ this.property.label } of ${ this.__context__.cls_.name }`);
-          this.notify(`${ this.BOOLEAN_ERROR } ${ this.property.label }`);
+          this.notify(`${ this.BOOLEAN_ERROR } ${ this.property.label }`, '', this.LogLevel.ERROR, true);
           return;
         }
-        this.notify(`${ this.property.label } ${ this.BOOLEAN_SUCCESS }`);
+        this.notify(`${ this.property.label } ${ this.BOOLEAN_SUCCESS }`, '', this.LogLevel.INFO, true);
       }
     }
   ]

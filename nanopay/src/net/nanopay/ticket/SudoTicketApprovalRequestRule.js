@@ -1,4 +1,21 @@
 /**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+/**
  * @license
  * Copyright 2019 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -12,6 +29,8 @@ foam.CLASS({
   documentation: 'Generate an Approval Request for priveledge access.',
 
   javaImports: [
+    'foam.nanos.alarming.Alarm',
+    'foam.nanos.alarming.AlarmReason',
     'java.util.List'
   ],
 
@@ -44,9 +63,13 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
-        super.validate(x);
         if ( getApprovers().size() == 0 ) {
-          throw new IllegalStateException("SudoTicketApprovalRequestRule approvers not set.");
+        super.validate(x);
+          Alarm alarm = new Alarm(this.getClass().getSimpleName(), AlarmReason.CONFIGURATION);
+          alarm.setNote("No Approvers");
+          ((foam.dao.DAO) x.get("alarmDAO")).put(alarm);
+
+          throw new IllegalStateException("SudoTicketApprovalRequestRule no approvers");
         }
       `
     }

@@ -1,0 +1,14 @@
+p({
+  class: "net.nanopay.tx.fee.FixedFee",
+  id: "d14ad888-4f3a-4199-bd37-18f7373cf193-bpp",
+  name: "Nanopay Transaction Fee",
+  fixedFee: 499,
+  feeClass: "net.nanopay.tx.InvoicedFeeLineItem",
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.PaymentCorridorPredicate",
+    paymentProvider: "BePay",
+    sourceCountry: "BR",
+    targetCountryList: [ "US", "CA" ]
+  },
+  feeRule: "454df571-f639-4506-8d59-98b4f39934e4-bpp"
+})

@@ -2,8 +2,12 @@ package net.nanopay.payment;
 
 import foam.core.X;
 import foam.dao.DAO;
+import foam.nanos.auth.LifecycleState;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import net.nanopay.account.DigitalAccount;
+import net.nanopay.account.DigitalAccountService;
+import net.nanopay.account.DigitalAccountServiceInterface;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
@@ -12,7 +16,8 @@ import net.nanopay.tx.model.Transaction;
 import static foam.mlang.MLang.*;
 
 public class PayrollDAOTest extends foam.nanos.test.Test {
-  long PAYER_ID, PAYER_ACCOUNT;
+  long PAYER_ID;
+  String PAYER_ACCOUNT;
   String PAYER_EMAIL = "payroll@nanopay.net";
   DAO payrollDAO, userDAO, accountDAO, txnDAO;
   Payroll payroll;
@@ -34,6 +39,7 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
     addPayeesIfNotFound(x);
     addPayrollEntries(x);
     payroll = new Payroll();
+    payroll.setSpid("test");
     payroll.setSourceAccount(PAYER_ACCOUNT);
     payroll.setPayrollEntries(entries);
 
@@ -44,15 +50,43 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
     test( foundPayroll != null && foundPayroll.getId() == payroll.getId(), "payrollDAO find_ is successful" );
 
     amount = 100;
-    for( long payeeId : payeeIds ) {
+    String payerA = ((DigitalAccount) accountDAO.find(AND(
+      INSTANCE_OF(DigitalAccount.class),
+      EQ(DigitalAccount.OWNER, PAYER_ID),
+      EQ(DigitalAccount.TRUST_ACCOUNT,"325e128a-f76f-46bd-ba82-26d12d92865f")
+    ))).getId();
+    String payerB = ((DigitalAccount) accountDAO.find(AND(
+      INSTANCE_OF(DigitalAccount.class),
+      EQ(DigitalAccount.OWNER, PAYER_ID),
+      EQ(DigitalAccount.TRUST_ACCOUNT,"7ee216ae-9371-4684-9e99-ba42a5759444")
+    ))).getId();
+
+    for(long payeeId : payeeIds) {
+      String payeeA = ((DigitalAccount) accountDAO.find(AND(
+        INSTANCE_OF(DigitalAccount.class),
+        EQ(DigitalAccount.OWNER, payeeId),
+        EQ(DigitalAccount.TRUST_ACCOUNT,"7ee216ae-9371-4684-9e99-ba42a5759444")
+        ))).getId();
+      String payeeB = ((DigitalAccount) accountDAO.find(AND(
+        INSTANCE_OF(DigitalAccount.class),
+        EQ(DigitalAccount.OWNER, payeeId),
+        EQ(DigitalAccount.TRUST_ACCOUNT,"325e128a-f76f-46bd-ba82-26d12d92865f")
+      ))).getId();
+
       Transaction txn = (Transaction) txnDAO.find(
         AND(
-          EQ(Transaction.SOURCE_ACCOUNT, DigitalAccount.findDefault(x, (User) userDAO.find(PAYER_ID), "CAD").getId()),
-          EQ(Transaction.DESTINATION_ACCOUNT, DigitalAccount.findDefault(x, (User) userDAO.find(payeeId), "CAD").getId()),
-          EQ(Transaction.AMOUNT, amount)
+          EQ(Transaction.AMOUNT, amount),
+          OR(
+            EQ(Transaction.DESTINATION_ACCOUNT, payeeA),
+            EQ(Transaction.DESTINATION_ACCOUNT, payeeB)
+            ),
+          OR(
+            EQ(Transaction.SOURCE_ACCOUNT, payerA),
+            EQ(Transaction.SOURCE_ACCOUNT, payerB)
+          )
         )
       );
-      test (txn != null, "Transaction paid to " + payeeId + " exists.");
+      test (txn != null, "Transaction paid to " + payeeA + " exists.");
       amount += 100;
     }
 
@@ -61,60 +95,47 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
   }
 
   public void addSourceAccountIfNotFound(X x) {
-    CABankAccount account = (CABankAccount) accountDAO.find(
-      AND(
-        EQ(BankAccount.OWNER, PAYER_ID),
-        INSTANCE_OF(CABankAccount.class),
-        EQ(BankAccount.IS_DEFAULT, true),
-        EQ(BankAccount.DENOMINATION, "CAD")
-      )
-    );
-    if ( account == null ) {
-      account = new CABankAccount();
+     CABankAccount account = new CABankAccount();
       account.setBranchId("12345");
       account.setInstitutionNumber("123");
       account.setAccountNumber("1234543");
       account.setStatus(BankAccountStatus.VERIFIED);
       account.setOwner(PAYER_ID);
       account.setDenomination("CAD");
-      account.setEnabled(true);
+      account.setLifecycleState(LifecycleState.ACTIVE);
       account.setIsDefault(true);
       account = (CABankAccount) accountDAO.put_(x, account);
-    }
+
     PAYER_ACCOUNT = account.getId();
   }
 
   public void createPayerIfNotFound(X x) {
-    User user = (User) userDAO.find(EQ(User.EMAIL, PAYER_EMAIL));
-    if ( user == null ) {
-      user = new User();
+      User user = new User();
       user.setFirstName("payroll");
       user.setLastName("payer");
       user.setGroup("business");
       user.setEmail(PAYER_EMAIL);
       user.setEmailVerified(true);
+      user.setSpid("test");
       user = (User) userDAO.put_(x, user);
-    }
     PAYER_ID = user.getId();
   }
 
   public void addPayeesIfNotFound(X x) {
-    addPayeeIfNotFound(x, "FrancisOne", "francis1@nanopay.net", "001", "12345", "1234567");
-    addPayeeIfNotFound(x, "FrancisTwo", "francis2@nanopay.net", "002", "12346", "1234568");
-    addPayeeIfNotFound(x, "FrancisThree", "francis3@nanopay.net", "003", "12347", "1234569");
+    addPayeeIfNotFound(x, "FrancisOnePRDT", "francis1PRDT@nanopay.net", "001", "12345", "7234567");
+    addPayeeIfNotFound(x, "FrancisTwoPRDT", "francis2PRDT@nanopay.net", "002", "12346", "7234568");
+    addPayeeIfNotFound(x, "FrancisThreePRDT", "francis3PRDT@nanopay.net", "003", "12347", "7234569");
   }
 
   public void addPayeeIfNotFound(X x, String firstName, String email, String institutionNo, String branchId, String bankAccountNo) {
-    User user = (User) userDAO.find(EQ(User.EMAIL, email));
-    if ( user == null ) {
-      user = new User();
+      User user = new User();
       user.setEmail(email);
       user.setFirstName(firstName);
       user.setLastName("Filth");
       user.setEmailVerified(true);
       user.setGroup("business");
+      user.setSpid("test");
       user = (User) userDAO.put_(x, user);
-    }
     long userId = user.getId();
     payeeIds[payeeIndex] =  userId;
     ++payeeIndex;
@@ -123,16 +144,7 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
   }
 
   public void addBankAccountIfNotFound(X x, long owner, String institutionNo, String branchId, String bankAccountNo) {
-    CABankAccount account = (CABankAccount) accountDAO.find(
-      AND(
-        EQ(BankAccount.OWNER, owner),
-        INSTANCE_OF(CABankAccount.class),
-        EQ(BankAccount.IS_DEFAULT, true),
-        EQ(BankAccount.DENOMINATION, "CAD")
-      )
-    );
-    if ( account == null ) {
-      account = new CABankAccount();
+      CABankAccount account = new CABankAccount();
       account.setOwner(owner);
       account.setInstitutionNumber(institutionNo);
       account.setBranchId(branchId);
@@ -141,7 +153,7 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
       account.setDenomination("CAD");
       account.setStatus(BankAccountStatus.VERIFIED);
       accountDAO.put_(x, account);
-    }
+
   }
 
   public void addPayrollEntries(X x) {

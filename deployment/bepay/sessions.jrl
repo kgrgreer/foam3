@@ -1,0 +1,11 @@
+// Long lived session ID for BePay API user
+p({
+    class:"foam.nanos.session.Session",
+    id:"E50DCA40-3B75-4617-9C0C-92E6E8AAE93B",
+    userId:2021,
+    agentId:0,
+    created:1594308371944,
+    createdBy:1348,
+    createdByAgent:1348,
+    ttl:3153600000000
+})

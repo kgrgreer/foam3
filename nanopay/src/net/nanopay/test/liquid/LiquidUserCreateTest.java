@@ -1,29 +1,19 @@
 package net.nanopay.test.liquid;
 
+import foam.comics.v2.userfeedback.UserFeedbackException;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.nanos.approval.Approvable;
-import foam.nanos.approval.ApprovalRequest;
-import foam.nanos.approval.ApprovalRequestUtil;
-import foam.nanos.approval.ApprovalStatus;
-import foam.nanos.auth.LifecycleState;
+import foam.nanos.approval.*;
 import foam.nanos.auth.User;
-import foam.nanos.logger.Logger;
-import foam.nanos.ruler.Operations;
-import foam.nanos.test.Test;
+import foam.nanos.dao.Operation;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import net.nanopay.liquidity.crunch.CapabilityRequest;
-import net.nanopay.liquidity.crunch.CapabilityRequestOperations;
 
 import static foam.mlang.MLang.*;
 
 public class LiquidUserCreateTest extends LiquidTestExecutor {
-  
+
   public LiquidUserCreateTest() {
     super("CreateUserTest");
   }
@@ -51,21 +41,51 @@ public class LiquidUserCreateTest extends LiquidTestExecutor {
       .build();
 
     // Add to the context
-    user = (User) getUserUserDAO(x).inX(getFirstX()).put(user);
-    test(user != null, "Checking if user created: " + this.getTestPrefix());
-    test(user.getLifecycleState().equals(LifecycleState.PENDING), "Checking if created User LifecycleState is PENDING: " + user.getLifecycleState() + " - " + this.getTestPrefix());
-    test(user.getGroup().equals("liquidBasic"), "Checking if group assigned to user is liquidBasic: " + user.getGroup());
-    test(user.getEmailVerified(), "Checking if user email is automatically verified: " + user.getEmailVerified());
+    try {
+      getUserUserDAO(x).inX(getFirstX()).put(user);
+    }
+    catch (RuntimeException ex)
+    {
+      boolean pass = false;
 
-    // Attempt retrieving the user 
+      if ( ex instanceof UserFeedbackException) {
+        var ufe = (UserFeedbackException) ex;
+        if ( ufe.getUserFeedback().getMessage().equals("An approval request has been sent out."))
+          pass = true;
+      }
+
+      test(pass, "Expecting approval exception: " + ex.getMessage());
+    }
+
+    DAO approvableDAO = getApprovableDAO(getFirstX());
+
+    String approvableHashKey = ApprovableAware.getApprovableHashKey(getFirstX(), user, Operation.CREATE);
+
+    String hashedId = new StringBuilder("d")
+      .append("bareUserDAO")
+      .append(":o")
+      .append(user.getId())
+      .append(":h")
+      .append(String.valueOf(approvableHashKey))
+      .toString();
+
+    List approvablesPending = ((ArraySink) approvableDAO
+      .where(foam.mlang.MLang.AND(
+        foam.mlang.MLang.EQ(Approvable.LOOKUP_ID, hashedId),
+        foam.mlang.MLang.EQ(Approvable.STATUS, ApprovalStatus.REQUESTED)
+      )).inX(getFirstX()).select(new ArraySink())).getArray();
+
+    test(approvablesPending.size() == 1, "Checking if a single approvable exists: # of approvables - " + approvablesPending.size());
+
+    Approvable approvable = (Approvable) approvablesPending.get(0);
+    String group = (String) approvable.getPropertiesToUpdate().get("group");
+    Boolean emailVerified = (Boolean) approvable.getPropertiesToUpdate().get("emailVerified");
+
+    test(group.equals("liquidBasic"), "Checking if group assigned to user is liquidBasic: " + group);
+    test(emailVerified, "Checking if user email is automatically verified: " + emailVerified);
+
+    // Attempt retrieving the user
     user = (User) getUserUserDAO(x).inX(getFirstX()).find(user.getId());
-    test(user != null, "Checking if PENDING users can be retrieved");
-
-    // Retrieve the user as the system
-    user = (User) getUserUserDAO(x).inX(getSystemX()).find(user.getId());
-    test(user != null, "Checking if retrieved user created: " + this.getTestPrefix());
-    test(user.getLifecycleState().equals(LifecycleState.PENDING), "Checking if retrieved  User LifecycleState is PENDING: " + user.getLifecycleState() + " - " + this.getTestPrefix());
-    test(user.getGroup().equals("liquidBasic"), "Checking if group assigned to retrieved user is liquidBasic: " + user.getGroup());
-    test(user.getEmailVerified(), "Checking if retrieved user email is automatically verified: " + user.getEmailVerified());
+    test(user == null, "Checking if user can be retrieved if the create approvable hasn't been approved");
   }
 }

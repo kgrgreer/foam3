@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.onboarding.ui',
   name: 'BeneficialOwnershipForm',
@@ -8,7 +25,6 @@ foam.CLASS({
 `,
 
 imports: [
-  'agent',
   'beneficialOwnersDAO',
   'countryDAO',
   'notify',
@@ -29,6 +45,7 @@ implements: [
 
 requires: [
   'foam.dao.ArrayDAO',
+  'foam.log.LogLevel',
   'foam.nanos.auth.Address',
   'foam.nanos.auth.Region',
   'foam.nanos.auth.User',
@@ -252,7 +269,7 @@ css: `
 
     ^ .address2Hint {
       height: 14px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       line-height: 1.17;
       letter-spacing: 0.2px;
@@ -282,7 +299,7 @@ css: `
     ^ .label-beside {
       margin-top: 15px;
       display: inline;
-      font-family: 'Lato', sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     ^ .intTextBox {
       width: 10%;
@@ -305,12 +322,12 @@ css: `
     }
 
     ^ .boxedField {
-      border: 1px solid;  
+      border: 1px solid;
       border-radius: 5px;
       padding: 24px;
     }
 
-    ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
+    ^ .foam-nanos-fs-fileDropZone-FileDropZone {
       background-color: white;
       margin-right: 25px;
       min-height: 264px;
@@ -464,7 +481,7 @@ properties: [
     class: 'Date',
     name: 'birthdayField',
     tableCellFormatter: function(date) {
-      this.add(date ? date.toISOString().substring(0, 10) : '');
+      this.add(date ? date.toLocaleDateString(foam.locale) : '');
     },
     postSet: function(o, n) {
       this.viewData.beneficialOwner.birthday = n;
@@ -594,7 +611,7 @@ messages: [
   },
   {
     name: 'NO_ADDITIONAL_OWNERS',
-    message: `I certify that all beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.`
+    message: `I certify that the people who own 25% or more of the business, either directly or indirectly, have been listed and their information is accurate.`
   },
   { name: 'BENEFICIAL_OWNER_SUCCESS', message: 'Beneficial owner added successfully.' },
   { name: 'BENEFICIAL_OWNER_FAILURE', message: 'Unexpected error when adding beneficial owner.' },
@@ -626,10 +643,10 @@ methods: [
       .start().addClass('medium-header').add(this.TITLE).end()
       .tag({ class: 'net.nanopay.sme.ui.InfoMessageContainer', message: this.ADVISORY_NOTE })
       .start().addClass('beneficialOwnersCheckBox')
-        .start({ class: 'foam.u2.md.CheckBox', label: this.NO_BENEFICIAL_OWNERS, data$: this.noBeneficialOwners$ }).end()
+        .start({ class: 'foam.u2.CheckBox', label: this.NO_BENEFICIAL_OWNERS, data$: this.noBeneficialOwners$ }).end()
       .end()
       .start().addClass('beneficialOwnersCheckBox')
-        .start({ class: 'foam.u2.md.CheckBox', label: this.PUBLICLY_TRADED_ENTITY, data$: this.publiclyTradedEntity$ }).end()
+        .start({ class: 'foam.u2.CheckBox', label: this.PUBLICLY_TRADED_ENTITY, data$: this.publiclyTradedEntity$ }).end()
       .end()
       .start().show(this.showAddingBeneficalOwner$)
         .start().addClass('boxedField')
@@ -641,7 +658,7 @@ methods: [
             .end()
             .start().add(this.OWNER_LABEL, ' ', this.beneficialOwnersCount$.map(function(p) { return p + 1; })).addClass('medium-header').end()
             .start().show(this.showSameAsAdminOption$).addClass('checkBoxContainer')
-              .start({ class: 'foam.u2.md.CheckBox', label: this.SAME_AS_SIGNING, data$: this.isSameAsAdmin$ }).end()
+              .start({ class: 'foam.u2.CheckBox', label: this.SAME_AS_SIGNING, data$: this.isSameAsAdmin$ }).end()
             .end()
             .start().addClass('owner-percent-container')
               .start(this.OWNERSHIP_PERCENT).addClass('intTextBox').end()
@@ -754,7 +771,7 @@ methods: [
         // .start('p').addClass('disclosure').add(this.SECUREFACT_DISCLOSURE_4).end()
       .end()
       .start().addClass('principalOwnersCheckBox')
-        .start({ class: 'foam.u2.md.CheckBox', label: this.NO_ADDITIONAL_OWNERS, data$: this.noAdditionalBeneficialOwners$ }).end()
+        .start({ class: 'foam.u2.CheckBox', label: this.NO_ADDITIONAL_OWNERS, data$: this.noAdditionalBeneficialOwners$ }).end()
       .end();
   },
 
@@ -850,10 +867,10 @@ actions: [
 
       try {
         await this.user.beneficialOwners.put(beneficialOwner);
-        this.notify(this.BENEFICIAL_OWNER_SUCCESS);
+        this.notify(this.BENEFICIAL_OWNER_SUCCESS, '', this.LogLevel.INFO, true);
       } catch (err) {
         console.error(err);
-        this.notify(err && err.message ? err.message : this.BENEFICIAL_OWNER_FAILURE, 'error');
+        this.notify(err && err.message ? err.message : this.BENEFICIAL_OWNER_FAILURE, '', this.LogLevel.ERROR, true);
       }
 
       this.editingBeneficialOwner = null;

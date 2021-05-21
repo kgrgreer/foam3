@@ -35,9 +35,26 @@ var classes = [
   'net.nanopay.flinks.model.FlinksAccount',
   //flinks service
   'net.nanopay.flinks.FlinksAuth',
+  'net.nanopay.flinks.FlinksResponseService',
   'net.nanopay.flinks.ClientFlinksAuthService',
   'net.nanopay.flinks.MaskedFlinksAccountDAO',
   'net.nanopay.flinks.RefinedFlinksAccountDAO',
+  'net.nanopay.flinks.external.AsyncStatus',
+  'net.nanopay.flinks.external.BusinessOverrideData',
+  'net.nanopay.flinks.external.CancelInProgressAsyncDAO',
+  'net.nanopay.flinks.external.FlinksLoginId',
+  'net.nanopay.flinks.external.FlinksLoginIdAsync',
+  'net.nanopay.flinks.external.FlinksLoginIdAsyncDAO',
+  'net.nanopay.flinks.external.FlinksLoginIdDAO',
+  'net.nanopay.flinks.external.FlinksLoginIdRequest',
+  'net.nanopay.flinks.external.FlinksOverrides',
+  'net.nanopay.flinks.external.OnboardingType',
+  'net.nanopay.flinks.external.OverrideData',
+  'net.nanopay.flinks.external.UserOverrideData',
+  //flinks widget
+  'net.nanopay.flinks.widget.FlinksException',
+  'net.nanopay.flinks.widget.drivers.FlinksDriver',
+  'net.nanopay.flinks.widget.drivers.RequestToPayFlinksDriver'
 ];
 var abstractClasses = [];
 var skeletons = [

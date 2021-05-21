@@ -1,0 +1,22 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "accuityResponseDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.partner.accuity.AccuityAPIResponse.getOwnClassInfo())
+      .setPm(true)
+      .setPipelinePm(true)
+      .setGuid(true)
+      .setAuthorize(true)
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("accuityResponseDAO"))
+      .setJournalName("accuityResponses")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .build();
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.partner.accuity.AccuityAPIResponse"
+    }
+  """
+})

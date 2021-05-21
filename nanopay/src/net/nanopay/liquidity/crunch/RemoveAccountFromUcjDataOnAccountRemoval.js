@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
     package: 'net.nanopay.liquidity.crunch',
     name: 'RemoveAccountFromUcjDataOnAccountRemoval',
@@ -10,16 +27,14 @@ foam.CLASS({
   
     javaImports: [
       'foam.core.ContextAgent',
+      'foam.core.NumberSet',
       'foam.core.X',
       'foam.dao.ArraySink',
       'foam.dao.DAO',
       'foam.nanos.auth.LifecycleAware',
       'foam.nanos.crunch.UserCapabilityJunction',
-      'java.util.HashMap',
       'java.util.List',
-      'java.util.Map',
-      'net.nanopay.account.Account',
-      'net.nanopay.liquidity.tx.AccountHierarchy'
+      'net.nanopay.account.Account'
     ],
   
     methods: [
@@ -29,32 +44,30 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            if ( ((LifecycleAware) obj).getLifecycleState() == foam.nanos.auth.LifecycleState.DELETED ) {
-              DAO dao = (DAO) x.get("userCapabilityJunctionDAO");
-              AccountHierarchy service = (AccountHierarchy) x.get("accountHierarchyService");
+            //TODO: fix numberSet for string id
+            if ( true ) throw new RuntimeException("fix numberSet for string id in RemoveAccountFromUcjDataOnAccountRemoval");
 
-              String id = String.valueOf(((Account) obj).getId());
+            // if ( ((LifecycleAware) obj).getLifecycleState() == foam.nanos.auth.LifecycleState.DELETED ) {
+            //   DAO dao = (DAO) x.get("userCapabilityJunctionDAO");
 
-              List<UserCapabilityJunction> list= ((ArraySink) dao
-                .select(new ArraySink()))
-                .getArray();
+            //   String id = ((Account) obj).getId();
 
-              for ( UserCapabilityJunction ucj : list ) {
-                if ( ucj.getData() instanceof AccountApproverMap ) {
-                  AccountApproverMap map = (AccountApproverMap) ucj.getData();
+            //   List<UserCapabilityJunction> list= ((ArraySink) dao
+            //     .select(new ArraySink()))
+            //     .getArray();
 
-                  if ( map.getAccounts() != null && map.getAccounts().containsKey(id) ) {
-                    Map<String, CapabilityAccountData> oldMap = map.getAccounts();
-                    oldMap.remove(id);
-                    map.setAccounts(oldMap);
-                    ucj.setData(map);
-                    dao.put(ucj);
+            //   for ( UserCapabilityJunction ucj : list ) {
+            //     if ( ucj.getData() instanceof NumberSet ) {
+            //       NumberSet numberSet = (NumberSet) ucj.getData();
 
-                    service.removeRootFromUser(x, ucj.getSourceId(), ((Account) obj).getId());
-                  }
-                }
-              }
-            }
+            //       if ( numberSet.contains(id) ) {
+            //         numberSet.remove(id);
+            //         ucj.setData(numberSet);
+            //         dao.put(ucj);
+            //       }
+            //     }
+            //   }
+            // }
           }
         }, "Remove accounts from ucjdata on account removal");
         `

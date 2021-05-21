@@ -1,0 +1,111 @@
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "app",
+  "name": "Premium Feature"
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "currency",
+  "name": "Payment Corridor",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "onboarding",
+  "name": "Onboarding Your Business",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "signingOfficerOnboarding",
+  "name": "Onboarding A Signing Officer",
+  "visible": true,
+  "visibilityCondition": { "class": "net.nanopay.crunch.predicate.IsBusiness" }
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "beneficialOwnerOnboarding",
+  "name": "Adding beneficial owners",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "businessDirectorOnboarding",
+  "name": "Adding business directors",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "AFEXOnboarding",
+  "name": "Onboarding Your AFEX Business",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "complianceSetting",
+  "name": "Change compliance of entity",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "secureFactUserValidation",
+  "name": "Check Compliance of User Against SecureFact",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "dowJonesUserValidation",
+  "name": "Check Compliance of User Against Dow Jone",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "identityMindUserValidation",
+  "name": "Check Compliance of User Against IdentityMind",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "secureFactBusinessValidation",
+  "name": "Check Compliance of Business Against SecureFact",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "dowJonesBusinessValidation",
+  "name": "Check Compliance of Business Against Dow Jones",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "identityMindBusinessValidation",
+  "name": "Check Compliance of Business Against IdentityMind",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "compliancePassed",
+  "name": "Capabilities that are granted once compliance has been passed",
+  "visible": false
+})
+
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "toplevelonboarding",
+  "name": "Top Level Onboarding",
+  "visible": false
+})
+
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "registerPaymentProvider",
+  "name": "Register Payment Provider",
+  "visible": false
+})
+
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "apiCADOnboarding",
+  "name": "API CAD Onboarding",
+  "visible": false
+})

@@ -3,6 +3,7 @@ package net.nanopay.liquidity.tx;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.auth.LifecycleState;
 import foam.nanos.test.Test;
@@ -14,7 +15,7 @@ import net.nanopay.tx.model.TransactionStatus;
 
 import static foam.mlang.MLang.*;
 
-/* 
+/*
   Test for RestrictAccountsRule, creates a test rule with a source and destination account.
   Tries sending a transaction between those accounts which should throw a RuntimeException.
 */
@@ -35,10 +36,10 @@ public class RestrictAccountsRuleTest
     ruleDAO_ = (DAO) x.get("localRuleDAO");
     transactionDAO_ = (DAO) x.get("localTransactionDAO");
     userDAO_ = (DAO) x.get("localUserDAO");
-    user_ = (User) x.get("user");
+    user_ = ((Subject) x.get("subject")).getUser();
     x_ = x;
 
-    // create source user which generates source account 
+    // create source user which generates source account
     sourceUser_ = (User) userDAO_.find(EQ(User.EMAIL, "source_account_test@nanopay.net"));
     if ( sourceUser_ == null ) {
       sourceUser_ = new User();
@@ -100,8 +101,9 @@ public class RestrictAccountsRuleTest
     transaction_.setDestinationAccount(destinationAccount_.getId());
     transaction_.setAmount(50000);
     transaction_.setStatus(TransactionStatus.COMPLETED);
-    transaction_.setIsQuoted(true);
-    transaction_.setOrigin(net.nanopay.tx.OriginatingSource.MANUAL);
+    //this test bypasses planners and built in validation
+    transaction_.setPlanner("68afcf0c-c718-98f8-0841-75e97a3ad16d182");
+    transaction_.setIsValid(true);
 
     // make sure transaction throws expected RuntimeException
     test(

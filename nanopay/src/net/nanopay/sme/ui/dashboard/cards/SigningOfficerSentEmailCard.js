@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui.dashboard.cards',
   name: 'SigningOfficerSentEmailCard',
@@ -12,10 +29,10 @@ foam.CLASS({
   ],
 
   imports: [
-    'agent',
     'stack',
     'menuDAO',
-    'user'
+    'user',
+    'theme'
   ],
 
   css: `
@@ -49,7 +66,7 @@ foam.CLASS({
       height: auto;
       margin: 0;
 
-      font-family: Lato;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 16px;
       font-weight: 900;
       line-height: 1.5;
@@ -60,7 +77,7 @@ foam.CLASS({
       margin: 0;
       margin-top: 8px;
 
-      font-family: Lato;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       line-height: 1.5;
       color: #525455;
@@ -82,11 +99,13 @@ foam.CLASS({
       name: 'TITLE',
       message: 'We’ve sent an email to a signing officer at your company!'
     },
+    { 
+      name: 'DESCRIPTION_1',
+      message: 'For security reasons, we required that a signing officer complete your businesses verification.\nOnce the signing officer completes it, your business can start using '
+    },
     {
-      name: 'DESCRIPTION',
-      message: `For security reasons, we required that a signing officer complete your businesses verification.\n
-      Once the signing officer completes it, your business can start using Ablii. \n
-      In the meantime, you’re more than welcome to have a look around the app!`
+      name: 'DESCRIPTION_2',
+      message: '.\nIn the meantime, you’re more than welcome to have a look around the app!'
     }
   ],
 
@@ -95,7 +114,7 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start().addClass('info-box')
           .start('p').addClass('title').add(this.TITLE).end()
-          .start('p').addClass('description').add(this.DESCRIPTION).end()
+          .start('p').addClass('description').add(this.DESCRIPTION_1 + this.theme.appName + this.DESCRIPTION_2).end()
         .end()
         .start('img').addClass('img-right-corner') 
           .attrs({ src: '/images/ablii/dashboard/contacts-4.png' })

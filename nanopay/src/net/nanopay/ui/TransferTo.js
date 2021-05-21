@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'TransferTo',
@@ -35,7 +52,6 @@ foam.CLASS({
   css: `
     ^ .foam-u2-tag-Select {
       width: 320px;
-      height: 48px;
       border-radius: 0;
 
       -webkit-appearance: none;
@@ -319,7 +335,7 @@ foam.CLASS({
             return mdao;
           }),
           objToChoice: function(user) {
-            return [user.id, user.label() + ' - (' + user.email + ')'];
+            return [user.id, user.toSummary() + ' - (' + user.email + ')'];
           }
         });
       }
@@ -338,7 +354,7 @@ foam.CLASS({
             return X.user.contacts.limit(50);
           }),
           objToChoice: function(contact) {
-            return [contact.id, contact.label() + ' - (' + contact.email + ')'];
+            return [contact.id, contact.toSummary() + ' - (' + contact.email + ')'];
           }
         });
       }
@@ -514,15 +530,15 @@ foam.CLASS({
                     X.data.EQ(X.data.Account.DENOMINATION, denominations || ''),
                     X.data.EQ(X.data.Account.TYPE, types || ''))));
           }),
-          objToChoice: function(account) {
+          objToChoice: function(account, obj) {
             var choice = account.name;
             var type = account.type;
             if ( type == 'DigitalAccount' ) {
               choice = account.name ? account.name : 'Digital Account';
             }
-             if ( type.length >= 11 && type.substring(type.length - 11) == 'BankAccount')  {
+            if ( type.length >= 11 && type.substring(type.length - 11) == 'BankAccount')  {
               var length = account.accountNumber.length;
-              choice = account.name + ' ' + '***' + account.accountNumber.substring(length - 4, length);
+              choice = `${account.name} ${obj.BankAccount.mask(account.accountNumber)}`;
             }
             return [ account.id, choice ];
           }
@@ -579,17 +595,17 @@ foam.CLASS({
 
           .start().addClass('choice')
             .start('div').addClass('confirmationContainer')
-              .tag({ class: 'foam.u2.md.CheckBox', data$: this.accountCheck$ })
+              .tag({ class: 'foam.u2.CheckBox', data$: this.accountCheck$ })
               .start('p').addClass('confirmationLabel').add('Transfer to payee account').end()
             .end()
             .start('div').addClass('confirmationContainer')
-              .tag({ class: 'foam.u2.md.CheckBox', data$: this.partnerCheck$ })
+              .tag({ class: 'foam.u2.CheckBox', data$: this.partnerCheck$ })
               .start('p').addClass('confirmationLabel').add('Transfer to payee partner account').end()
             .end()
             .start('div').addClass('confirmationContainer').show(this.slot(function(hasContactPermission, invoiceMode) {
               return hasContactPermission && ! invoiceMode;
             }))
-              .tag({ class: 'foam.u2.md.CheckBox', data$: this.contactCheck$ })
+              .tag({ class: 'foam.u2.CheckBox', data$: this.contactCheck$ })
               .start('p').addClass('confirmationLabel').add('Transfer to my contact').end()
             .end()
           .end()

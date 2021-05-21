@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.bank.test',
   name: 'USBankAccountTest',
@@ -64,7 +81,6 @@ foam.CLASS({
         try{
           Branch branch;
           DAO accountDAO = (DAO) x.get("localAccountDAO");
-          DAO branchDAO = (DAO) x.get("branchDAO");
           List usAccounts = ((ArraySink) accountDAO
             .where(
               foam.mlang.MLang.AND(
@@ -75,10 +91,7 @@ foam.CLASS({
             .select(new ArraySink()))
             .getArray();
           BankAccount usAccount = (BankAccount) usAccounts.get(0);
-          branch = new Branch.Builder(x).setBranchId(((BankAccount) usAccount).getBranchId()).build();
-          branchDAO.put(branch);
           BankAccount newaccount = (BankAccount) ((BankAccount) usAccount).fclone();
-          newaccount.setBranch(branch.getId());
           accountDAO.put(newaccount);
           return true;
         } catch ( Exception e ) {
@@ -108,13 +121,15 @@ foam.CLASS({
           ImageIO.write(image, "png", baos);
           byte[] bytes = baos.toByteArray();
           InputStream is = new ByteArrayInputStream(bytes);
-          foam.blob.Blob data = blobStore.put(new foam.blob.InputStreamBlob(is, bytes.length));
+          foam.blob.Blob data = new foam.blob.InputStreamBlob(is, bytes.length);
           ffile = new foam.nanos.fs.File.Builder(x)
             .setFilename("testimg")
             .setFilesize(bytes.length)
             .setData(data)
+            .setMimeType("image/png")
             .build();
-        } catch ( IOException e ) {
+          ((foam.dao.DAO) x.get("fileDAO")).put(ffile);
+        } catch ( java.io.IOException | foam.core.FOAMException e ) {
           test(false, "Can't create Image blob");
         }
         return ffile;
