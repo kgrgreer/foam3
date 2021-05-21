@@ -16,16 +16,19 @@ foam.CLASS({
     enable/disable the link and/or set different menu to the link
     
       - To use default dao summary, do not set the two
+      
+      - To disable the link, set 'enableLink' to false. In this case,
+        providing menus won't have any effect
 
-      - Set 'menus' if you want to enable the link only when
-        current group has permission to at least one of the menus. 
+      - To enable the link only when group has permission to a menu, 
+        provide 'menus' to this view
         
         - If there are more than one menu to which group has permission, then the first menu
           will be set to the link.
-        
+
         - If there are no menu to which group has permission, then the link will be disabled. 
 
-        e.g. enable/disable the link based on group permission to dao summary
+        e.g. enable the link based on group permission to dao summary
         
         {
           class: 'Reference',
@@ -42,19 +45,15 @@ foam.CLASS({
           }
         }
 
-      - To disable the link, set enableLink to false. In this case,
-        providing menus won't have any effect.
-      
-        
       * tree diagram for finding 'enableLink' and 'linkTo'
 
-              enableLink set to false?
+              enableLink set to false ?
                      /          \
                 y   /            \ n
                    /              \
               - - -                - - - - - - - -
              /                                     \
-         disable link                           menus provided?
+        disable link                            menus provided ?
          no link to                                 /      \   n
                                                  y /        - - - - - - - - - - -
                                                   /                               \
@@ -167,7 +166,7 @@ foam.CLASS({
 
     
 
-    async function _getLinkTo(enableLink, linkTo='') {
+    async function _getLinkTo(enableLink) {
       /*
        * Uses the tree diagram above to get linkTo
        */
@@ -176,12 +175,14 @@ foam.CLASS({
       if ( ! enableLink ) return '';
       if ( this.menus.length === 0 ) return 'default';
 
+      let linkTo = '';
+
       try {
         // get a permission for each menu in menus
         const permissions = await Promise.all([...this.menus].map(menu => {
           return this.auth.check(this.__subContext__, menu);
         }));
-        // set linkTo to first permissioned menu if it exists
+        // set linkTo to first menu if it exists
         const firstAt = permissions.indexOf(true);
         if ( firstAt > -1 ) {
           linkTo = this.menus[firstAt];
