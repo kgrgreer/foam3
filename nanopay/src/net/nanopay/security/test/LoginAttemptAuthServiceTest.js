@@ -70,12 +70,12 @@ foam.CLASS({
 
         try {
           // test login attempts reset by email
-          Test_LoginAttemptAuthService_LoginAttemptsReset(x, userDAO, auth, "kirk@nanopay.net", "login in by email");
-          ResetLoginCount(x, userDAO);
+          Test_LoginAttemptAuthService_LoginAttemptsReset(x, auth, "kirk@nanopay.net", "login in by email");
+          resetLoginCount(x);
 
           // test login by email
-          Test_LoginAttemptAuthService_LoginAttemptsExceeded(x, userDAO, auth, "kirk@nanopay.net", "login in by email");
-          ResetLoginCount(x, userDAO);
+          Test_LoginAttemptAuthService_LoginAttemptsExceeded(x, auth, "kirk@nanopay.net", "login in by email");
+          resetLoginCount(x);
         } finally {
           //set back the Context
           session.setUserId(oldUserId);
