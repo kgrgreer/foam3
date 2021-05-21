@@ -510,7 +510,7 @@ foam.CLASS({
           user.twoFactorEnabled = false;
           X.userDAO.put(user)
             .then(() => {
-              X.notify(this.TWO_FACTOR_SUCCCESS, '', this.LogLevel.INFO, true);
+              X.notify(this.TWO_FACTOR_SUCCESS, '', this.LogLevel.INFO, true);
             });
         }
       }
