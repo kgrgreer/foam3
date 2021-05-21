@@ -690,5 +690,5 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.AccountSumma
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.AccountSummaryView.INSTITUTION_NUMBER",target:"Instituição - "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.AccountSummaryView.BRANCH_ID",target:"Galho -"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.AccountSummaryView.SWIFT_CODE",target:"Código Swift -"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.AccountSummaryView.COUNTRY",target:"País"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.AccountSummaryView.CURRENCY",target:"Moeda"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.AccountSummaryView.COUNTRY",target:"País - "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.AccountSummaryView.CURRENCY",target:"Moeda - "})
