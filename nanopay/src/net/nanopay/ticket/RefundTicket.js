@@ -35,7 +35,7 @@ foam.CLASS({
 
   messages: [
     { name: 'SUBMIT_FOR_APPROVAL', message: 'Successfully submitted' },
-    { name: 'ASSIGN', message: 'Sucessfully assigned.' },
+    { name: 'ASSIGN', message: 'Successfully assigned.' },
     { name: 'SET_ACCOUNT_ID', message: 'Please set the retry account ID.' }
   ],
 
