@@ -90,6 +90,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         afexUser.setUser(user.getId());
         afexUser.setApiKey(newClient.getAPIKey());
         afexUser.setAccountNumber(newClient.getAccountNumber());
+        afexUser.setSpid(user.getSpid());
         afexUserDAO.put(afexUser);
       }
       return true;

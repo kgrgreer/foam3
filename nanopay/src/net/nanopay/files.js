@@ -115,7 +115,6 @@ FOAM_FILES([
   { name: 'net/nanopay/account/ZeroAccountUserAssociation' },
   { name: 'net/nanopay/account/TrustAccount' },
   { name: 'net/nanopay/account/LossesAccount' },
-  { name: 'net/nanopay/account/HoldingAccount' },
   { name: 'net/nanopay/account/AuthenticatedAccountDAOTest' },
   { name: 'net/nanopay/account/LoanAccount' },
   { name: 'net/nanopay/account/LoanedTotalAccount' },
@@ -277,6 +276,9 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/report/ScreeningResponseCounter', flags: ['web'] },
   { name: 'net/nanopay/meter/report/ScreeningResponseType', flags: ['web'] },
 
+  // OAuth
+  { name: 'net/nanopay/auth/oauth/OAuthCredential'},
+
   // SSO
   { name: 'net/nanopay/auth/openid/SSOToken' },
   { name: 'net/nanopay/auth/openid/OTLoginToken' },
@@ -286,7 +288,6 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/openid/OAuthService' },
   { name: 'net/nanopay/auth/openid/ClientOAuthService' },
   { name: 'net/nanopay/auth/openid/DUGRuleRefinement' },
-  { name: 'net/nanopay/auth/openid/DUGRuleActionRefinement' },
 
   // Exchangeable
   { name: 'net/nanopay/exchangeable/Security' },
@@ -889,6 +890,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/JKSKeyStoreManager' },
   { name: 'net/nanopay/security/PKCS11KeyStoreManager' },
   { name: 'net/nanopay/security/PKCS12KeyStoreManager' },
+  { name: 'net/nanopay/security/csp/CSPReportWebAgent' },
   { name: 'net/nanopay/security/csp/CSPViolation' },
   { name: 'net/nanopay/security/KeyPairEntry' },
   { name: 'net/nanopay/security/PublicKeyEntry' },
