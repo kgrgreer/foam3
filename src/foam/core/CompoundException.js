@@ -4,8 +4,6 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-// TODO: indentation doesn't follow styleguide
-
 foam.CLASS({
   name: 'CompoundException',
   package: 'foam.core',
@@ -85,7 +83,7 @@ foam.CLASS({
         for ( var t : getExceptions() ) {
           if ( t instanceof ExceptionInterface ) {
             RuntimeException clientE =
-                ((ExceptionInterface) t).getClientRethrowException();
+              ((ExceptionInterface) t).getClientRethrowException();
             if ( clientE != null ) {
               return clientE;
             }
@@ -124,7 +122,7 @@ foam.CLASS({
         StringBuilder str = (StringBuilder) getSb().get();
         var size = getExceptions().length;
 
-        for ( int i = 0; i < size; i++ ) {
+        for ( int i = 0 ; i < size ; i++ ) {
           var t = getExceptions()[i];
           var counter = i + 1;
 
