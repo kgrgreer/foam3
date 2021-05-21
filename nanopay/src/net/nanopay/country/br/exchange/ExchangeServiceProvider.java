@@ -52,6 +52,7 @@ import net.nanopay.tx.fee.Rate;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.TransactionLineItem;
+import net.nanopay.country.br.ExpectedBoardingDate;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
@@ -300,6 +301,27 @@ public class ExchangeServiceProvider
     return shortName.toString();
   }
 
+  protected Date getEmbarkmentDate(Transaction summaryTransaction) {
+    // Find capable payload on invoice and seek shipment date
+    Invoice invoice = summaryTransaction.findInvoiceId(getX());
+    if ( invoice == null ) return null;
+
+    CapabilityJunctionPayload[] capablePayloads = invoice.getCapablePayloads();
+    if ( capablePayloads == null ) return null;
+
+    CapabilityJunctionPayload embarkmentDateCapablePayload = null;
+    for ( CapabilityJunctionPayload c : capablePayloads ) {
+      if ( SafetyUtil.equals("crunch.onboarding.br.expected-shipment-date", c.getCapability()) ) {
+        embarkmentDateCapablePayload = c;
+        break;
+      }
+    }
+    if ( embarkmentDateCapablePayload == null ) return null;
+    if ( (ExpectedBoardingDate) embarkmentDateCapablePayload.getData() == null ) return null;
+    return ((ExpectedBoardingDate) embarkmentDateCapablePayload.getData()).getBoardingDate();
+    
+  }
+
   public Transaction createTransaction(Transaction transaction) throws RuntimeException {
     Transaction summaryTransaction = transaction.findRoot(getX());
     BankAccount bankAccount = (BankAccount)summaryTransaction.findDestinationAccount(getX());
@@ -363,9 +385,12 @@ public class ExchangeServiceProvider
       completionDate = clearingTimeService.estimateCompletionDateSimple(getX(), transaction);
     }
 
+    Date embarkmentDate = null;
+
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     String completionDateString = "";
     String transactionDateString = "";
+    String embarkmentDateString = "";
     try {
       completionDateString = sdf.format(completionDate);
       transactionDateString = sdf.format(transactionDate);
@@ -374,6 +399,10 @@ public class ExchangeServiceProvider
       dadosBoleto.setDATAEN(completionDateString);
       dadosBoleto.setDATAMN(transactionDateString);
       dadosBoleto.setDATAOP(transactionDateString);
+      if ( ( embarkmentDate = getEmbarkmentDate(summaryTransaction) ) != null ) {
+        embarkmentDateString = sdf.format(embarkmentDate);
+        dadosBoleto.setDATAEB(embarkmentDateString);
+      }
     } catch(Throwable t) {
       logger_.error("Unable to parse completion date", t);
       throw new RuntimeException("Error inserting boleto. Cound not parse completion date.");
