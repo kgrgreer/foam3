@@ -890,6 +890,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/JKSKeyStoreManager' },
   { name: 'net/nanopay/security/PKCS11KeyStoreManager' },
   { name: 'net/nanopay/security/PKCS12KeyStoreManager' },
+  { name: 'net/nanopay/security/csp/CSPReportWebAgent' },
   { name: 'net/nanopay/security/csp/CSPViolation' },
   { name: 'net/nanopay/security/KeyPairEntry' },
   { name: 'net/nanopay/security/PublicKeyEntry' },
