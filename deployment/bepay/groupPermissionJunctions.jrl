@@ -39,3 +39,6 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bepay-support",
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bepay-fraud-ops",targetId:"menu.read.bankaccounts"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bepay-fraud-ops",targetId:"menu.read.integration"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bepay-fraud-ops",targetId:"menu.read.transactions"})
+
+// Allow duplicate email for users in bepay-sme group
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bepay-sme",targetId:"rule.read.user-allow-duplicate-email-rule"})
