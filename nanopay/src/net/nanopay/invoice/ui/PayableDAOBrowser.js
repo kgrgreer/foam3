@@ -280,9 +280,9 @@ foam.CLASS({
         var self = this.__subContext__;
         this.payerReconciled = true;
         self.subject.user.expenses.put(this).then(() => {
-          self.notify(X.payables.RECONCILED_SUCCESS_TITLE,X.payables.RECONCILED_SUCCESS, X.payables.LogLevel.INFO, true);
+          self.notify(X.payables.RECONCILED_SUCCESS_TITLE, X.payables.RECONCILED_SUCCESS, X.payables.LogLevel.INFO, true);
         }).catch((err) => {
-          self.notify(X.payables.RECONCILED_ERROR_TITLE,X.payables.RECONCILED_ERROR, X.payables.LogLevel.ERROR, true);
+          self.notify(X.payables.RECONCILED_ERROR_TITLE, X.payables.RECONCILED_ERROR, X.payables.LogLevel.ERROR, true);
         });
       }
     },
