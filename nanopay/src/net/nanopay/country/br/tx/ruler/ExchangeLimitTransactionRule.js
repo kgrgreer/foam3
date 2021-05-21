@@ -204,7 +204,7 @@ foam.CLASS({
           .setSourceCurrencyExpr(Transaction.SOURCE_CURRENCY)
           .setDestinationCurrencyExpr(new Constant("USD"))
           .build();
-        var totalSourceAmount = -txn.getTotal(x, txn.getSourceAccount()) / 100.0;
+        var totalSourceAmount = -txn.getTotal(x, txn.getSourceAccount());
         return limit >= totalSourceAmount * spotRate.getRate(txn).doubleValue();
       `
     },

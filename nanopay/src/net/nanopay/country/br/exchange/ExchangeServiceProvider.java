@@ -234,7 +234,7 @@ public class ExchangeServiceProvider
 
   public long getTransactionLimit(long userId) throws RuntimeException {
     Titular titular = getExchangeCustomerLimit(userId);
-    return Double.valueOf(titular.getLIMITEOP() - titular.getUTILIZADO()).longValue();
+    return Double.valueOf((titular.getLIMITEOP() * 100.0) - (titular.getUTILIZADO() * 100.0)).longValue();
   }
 
   public void updateTransactionLimit(long userId, long amount) throws RuntimeException {
