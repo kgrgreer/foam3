@@ -39,7 +39,7 @@ foam.CLASS({
             readView: {
               class: 'foam.u2.view.ReadReferenceView',
               menus: [
-                'menu.read.daoSummary'
+                'daoSummary'
               ]
             }
           }
@@ -121,7 +121,7 @@ foam.CLASS({
                 .on('click', evt => {
                   evt.preventDefault();
                   
-                  if ( self.linkTo === 'default' || self.linkTo === 'menu.read.daoSummary' ) {
+                  if ( self.linkTo === 'default' || self.linkTo === 'daoSummary' ) {
                     self.stack.push({
                       class: 'foam.comics.v2.DAOSummaryView',
                       data: self.obj,
@@ -179,8 +179,8 @@ foam.CLASS({
 
       try {
         // get a permission for each menu in menus
-        const permissions = await Promise.all([...this.menus].map(menu => {
-          return this.auth.check(this.__subContext__, menu);
+        const permissions = await Promise.all([...this.menus].map(menuId => {
+          return this.auth.check(this.__subContext__, `menu.read.${menuId}`);
         }));
         // set linkTo to first menu if it exists
         const firstAt = permissions.indexOf(true);
