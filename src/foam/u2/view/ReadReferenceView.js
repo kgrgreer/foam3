@@ -153,9 +153,9 @@ foam.CLASS({
         return;
       }      
       
-      // menus are provided?
-      if ( this.menuKeys.length > 0 ) {
-        try {
+      try {
+        // menus are provided?
+        if ( this.menuKeys.length > 0 ) {
           // check permissions for menus
           const permissions = await Promise.all([...this.menuKeys].map(menuId => {
             return this.auth.check(this.__subContext__, `menu.read.${menuId}`);
@@ -179,25 +179,22 @@ foam.CLASS({
               this.linkTo = '';
             }
           }
-        } catch (e) {
-          console.error(e);
-          this.enableLink = true;
-          this.controlAccessToDAOSummary = true;
-          this.linkTo = 'daoSummary';
-        }
-      // menus not provided
-      } else {
-        // access to dao summary?
-        if (
-          ! this.controlAccessToDAOSummary ||
-          await this.auth.check(this.__subContext__, 'daoSummary.read')
-        ) {
-          this.enableLink = true;
-          this.linkTo = 'daoSummary';
+        // menus not provided
         } else {
-          this.enableLink = false;
-          this.linkTo = '';
+          // access to dao summary?
+          if ( ! this.controlAccessToDAOSummary || await this.auth.check(this.__subContext__, 'daoSummary.read')) {
+              this.enableLink = true;
+              this.linkTo = 'daoSummary';
+          } else {
+            this.enableLink = false;
+            this.linkTo = '';
+          }
         }
+      } catch (e) {
+        console.error(e);
+        this.enableLink = true;
+        this.controlAccessToDAOSummary = true;
+        this.linkTo = 'daoSummary';
       }
     },
   ]
