@@ -884,6 +884,13 @@ foam.CLASS({
       }
     },
     {
+      class: 'Boolean',
+      name: 'controlAccessToDAOSummary',
+      documentation: `
+        When set to true, DAO summary can be only viewed if group has permission to read it
+      `
+    },
+    {
       class: 'String',
       name: 'unauthorizedTargetDAOKey',
       documentation: `

@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-foam.CLASS({
+ foam.CLASS({
   package: 'foam.u2.view',
   name: 'ReadReferenceView',
   extends: 'foam.u2.View',
@@ -131,6 +131,7 @@ foam.CLASS({
       this.SUPER(prop);
       
       this.prop = prop;
+      this.controlAccessToDAOSummary = prop.controlAccessToDAOSummary;
 
       this.getLink().then(() => {
         const dao = this.ctrl.__subContext__[prop.targetDAOKey];
