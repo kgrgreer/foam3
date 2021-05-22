@@ -37,28 +37,6 @@ foam.CLASS({
     }
   ],
 
-  properties:  [
-    {
-      class: 'Object',
-      name: 'sb',
-      javaType: 'ThreadLocal',
-      javaFactory: `
-        return new ThreadLocal<StringBuilder>() {
-          @Override
-          protected StringBuilder initialValue() {
-            return new StringBuilder();
-          }
-
-          @Override
-          public StringBuilder get() {
-            StringBuilder b = super.get();
-            b.setLength(0);
-            return b;
-          }
-      };`
-    }
-  ],
-
   methods:  [
     {
       name: 'getExceptions',
@@ -119,8 +97,8 @@ foam.CLASS({
       name: 'getMessage',
       type: 'String',
       javaCode: `
-        StringBuilder str = (StringBuilder) getSb().get();
-        var size = getExceptions().length;
+        StringBuilder str  = new StringBuilder();
+        var           size = getExceptions().length;
 
         for ( int i = 0 ; i < size ; i++ ) {
           var t = getExceptions()[i];
