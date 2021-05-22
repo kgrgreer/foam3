@@ -3141,6 +3141,7 @@ p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.Payable
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.DELETE.label","target":"Excluir"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.TITLE","target":"Pagáveis"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.SUB_TITLE","target":"Aqui está uma lista de pagamentos que você enviou"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.RECONCILED_TITLE","target":"Reconciliação de Fatura"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.RECONCILED_SUCCESS","target":"A fatura foi reconciliada pelo pagador"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.RECONCILED_ERROR","target":"Ocorreu um erro ao reconciliar a fatura"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.INVOICE","target":"fatura"})
