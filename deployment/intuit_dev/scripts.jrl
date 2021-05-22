@@ -1,0 +1,20 @@
+p({
+    class:"foam.nanos.script.Script",
+    id:"Run RBC EFT Generation",
+    code:"""
+    nanopayAccountId = "";
+    creds = new net.nanopay.tx.rbc.RbcAssignedClientValue.Builder(x)
+    .setAccountId(nanopayAccountId)
+    .setInitiatingPartyId("random-id1")
+    .setPDSAccountNumber("random-id2")
+    .setPAPAccountNumber("random-id3")
+    .build();
+
+    x = x.put("rbcAssignedClientValue", creds);
+
+    y = new net.nanopay.partner.rbc.test.ChecklessRbcGenerateFileCron("intuit");
+    y.execute(x);
+    """
+
+    ,lastModified:1616527527869
+})

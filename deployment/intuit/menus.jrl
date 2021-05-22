@@ -60,6 +60,23 @@ p({
   "parent":""
 })
 
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "securefact-responses",
+  "label": "Securefact Responses",
+  "handler": {
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"securefactResponseDAO",
+      "browseTitle": "Securefact Responses",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  }
+})
+
 
 p({
   "class": "foam.nanos.menu.Menu",

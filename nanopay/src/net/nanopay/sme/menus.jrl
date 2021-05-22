@@ -105,7 +105,7 @@ p({
         "email",
         "bankAccount.denomination",
         "bankAccount.summary",
-        "status"
+        "signUpStatus"
       ]
     }
   },
@@ -127,7 +127,7 @@ p({
       "of":"net.nanopay.bank.BankAccount",
       "browseTitle": "Bank accounts",
 
-      "browseSubtitle": "View all bank accounts.",
+      "browseSubtitle": "View all bank accounts",
       "createPredicate":{"class":"foam.mlang.predicate.True"},
       "editPredicate":{"class":"foam.mlang.predicate.True"},
       "searchMode": 0,

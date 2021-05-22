@@ -121,12 +121,10 @@ foam.CLASS({
         boolean isSourceAccountOwner = sourceAccount != null && sourceAccount.getOwner() == user.getId();
         boolean isPayer = sourceAccount != null ? sourceAccount.getOwner() == user.getId() : t.getPayerId() == user.getId();
         boolean isPayee = destinationAccount != null ? destinationAccount.getOwner() == user.getId() : t.getPayeeId() == user.getId();
-        boolean isAcceptingPaymentFromPayersDigitalAccount = sourceAccount instanceof DigitalAccount && auth.check(x, "invoice.holdingAccount");
         boolean isCreatePermitted = auth.check(x, GLOBAL_TXN_CREATE);
         boolean isUpdatePermitted = auth.check(x, GLOBAL_TXN_UPDATE);
 
-        if ( ! ( isSourceAccountOwner || isPayer || isAcceptingPaymentFromPayersDigitalAccount
-        || t instanceof CITransaction && isPayee ) ) {
+        if ( ! ( isSourceAccountOwner || isPayer || t instanceof CITransaction && isPayee ) ) {
 
           /**
            * here we are handling two cases:
@@ -147,7 +145,7 @@ foam.CLASS({
             throw new RuntimeException(INVOICE_NOT_FOUND_ERROR_MSG);
           }
 
-          if ( invoice.getPayerId() != user.getId() && ! isAcceptingPaymentFromPayersDigitalAccount ) {
+          if ( invoice.getPayerId() != user.getId() ) {
             if ( oldTxn == null ) {
               logger.error("You cannot pay a receivable " + t.getId());
               throw new AuthorizationException(PAY_RECEIVABLE_ERROR_MSG);

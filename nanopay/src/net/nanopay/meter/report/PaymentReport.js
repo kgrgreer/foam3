@@ -85,7 +85,7 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
       visibility: 'RO',
-      tableWidth: 120,
+      tableWidth: 170,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("Transaction Status");
       }
@@ -95,9 +95,9 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'state',
       visibility: 'RO',
-      tableWidth: 120,
+      tableWidth: 170,
       toCSVLabel: function (x, outputter) {
-        outputter.outputValue("Transaction State"); 
+        outputter.outputValue("Transaction State");
       }
     },
     {
