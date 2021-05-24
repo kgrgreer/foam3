@@ -64,9 +64,7 @@ foam.CLASS({
           expr: alt(
             sym('paren'),
             sym('negate'),
-            sym('expr'),
-            sym('before'),
-            sym('after')
+            sym('expr')
           ),
 
           paren: seq1(1, '(', sym('expr'), ')'),
@@ -95,12 +93,6 @@ foam.CLASS({
           value: alt(
             sym('string'),
             sym('number')
-          ),
-
-          andValue: seq(
-            '(',
-            repeat(sym('value'), alt(literalIC(' and '), ' '), 1),
-            ')'
           ),
 
           string: seq1(1, '"',
