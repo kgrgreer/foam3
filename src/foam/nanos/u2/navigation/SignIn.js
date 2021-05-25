@@ -15,15 +15,20 @@ foam.CLASS({
     'auth',
     'ctrl',
     'loginSuccess',
-    'stack',
-    'user',
     'menuDAO',
-    'memento'
+    'memento',
+    'notificationDAO',
+    'notify',
+    'stack',
+    'translationService',
+    'user',
   ],
 
   requires: [
     'foam.log.LogLevel',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.u2.dialog.NotificationMessage',
+    'foam.nanos.notification.Notification',
+    'foam.nanos.notification.ToastState'
   ],
 
   messages: [
@@ -133,8 +138,18 @@ foam.CLASS({
                     this.user.copyFrom(updatedUser);
                     this.nextStep();
                   }).catch(err => {
+                    let id = err.data && err.data.id && err.data.id;
+                    var title = this.ERROR_MSG;
+                    var message;
+                    if ( id ) {
+                      title = foam.String.labelize(id.split('.').pop());
+                      title = this.translationService.getTranslation(foam.locale, id+'.title', title);
+                      message = this.translationService.getTranslation(foam.locale, id+'.message', err.message);
+                    }
+                    // this.notify(title, message, this.LogLevel.ERROR, true);
                     this.ctrl.add(this.NotificationMessage.create({
-                      message: err.message || this.ERROR_MSG,
+                      message: title,
+                      description: message,
                       type: this.LogLevel.ERROR
                     }));
                   });
@@ -145,8 +160,18 @@ foam.CLASS({
             }
           ).catch(
             err => {
+              let id = err.data && err.data.id && err.data.id;
+              var title = this.ERROR_MSG;
+              var message;
+              if ( id ) {
+                title = foam.String.labelize(id.split('.').pop());
+                title = this.translationService.getTranslation(foam.locale, id+'.title', title);
+                message = this.translationService.getTranslation(foam.locale, id+'.message', err.message);
+              }
+              // this.notify(title, message, this.LogLevel.ERROR, true);
               this.ctrl.add(this.NotificationMessage.create({
-                message: err.message || this.ERROR_MSG,
+                message: title,
+                description: message,
                 type: this.LogLevel.ERROR
               }));
           });
