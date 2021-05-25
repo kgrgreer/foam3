@@ -33,7 +33,6 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserAndGroupAuthService',
     'foam.util.Auth',
-
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.tx.model.Transaction',
     'static foam.mlang.MLang.*'
@@ -43,8 +42,6 @@ foam.CLASS({
     name: 'runTest',
     type: 'Void',
     javaCode: `
-      // Create mock userDAO as localUserDAO
-      x = x.put("localUserDAO", new MDAO(User.getOwnClassInfo()));
       DAO userDAO = (DAO) x.get("localUserDAO");
 
       // Create Auth Service
@@ -174,12 +171,14 @@ foam.CLASS({
       String message = "";
       User payee = new User();
       payee.setId(1368);
+      payee.setSpid("test");
       payee.setFirstName("Payee");
       payee.setLastName("Business");
-      payee.setEmail("test@mailinator.com");
+      payee.setEmail("test1368@mailinator.com");
       payee.setGroup("business");
       payee.setLifecycleState(LifecycleState.ACTIVE);
       payee = (User) userDAO.put_(x, payee);
+
       X payeeContext = Auth.sudo(x, payee);
 
       boolean threw = false;
@@ -251,12 +250,14 @@ foam.CLASS({
       String message = "";
       User payer = new User();
       payer.setId(1380);
+      payer.setSpid("test");
       payer.setFirstName("payer");
       payer.setLastName("Business");
       payer.setLifecycleState(LifecycleState.ACTIVE);
-      payer.setEmail("test@mailinator.com");
+      payer.setEmail("test1380@mailinator.com");
       payer.setGroup("business");
       payer = (User) userDAO.put_(x, payer);
+
       X payerContext = Auth.sudo(x, payer);
       boolean threw = false;
 
@@ -327,9 +328,10 @@ foam.CLASS({
       String message = "";
       User businessUser = new User();
       businessUser.setId(1311);
+      businessUser.setSpid("test");
       businessUser.setFirstName("Normal");
       businessUser.setLastName("Business");
-      businessUser.setEmail("test@mailinator.com");
+      businessUser.setEmail("test1311@mailinator.com");
       businessUser.setGroup("business");
       businessUser.setLifecycleState(LifecycleState.ACTIVE);
       userDAO.put(businessUser);
@@ -344,7 +346,7 @@ foam.CLASS({
         message = t.getMessage();
         threw = true;
       }
-      test( threw && message.equals("Permission denied."), "Unrelated Business user should not be able to create an invoice for other users." );
+      test( threw && message.equals("You do not have permission to update this invoice"), "Unrelated Business user should not be able to create an invoice for other users." );
 
       // Put invoice and set value change on amount
       invoice = (Invoice) dao.put_(x, invoice);
@@ -358,7 +360,7 @@ foam.CLASS({
         message = t.getMessage();
         threw = true;
       }
-      test( threw && message.equals("Permission denied."), "Unrelated Business user should not be able to edit an invoice for other users." );
+      test( threw && message.equals("You do not have permission to view this invoice"), "Unrelated Business user should not be able to edit an invoice for other users.");
 
       // Test find_ method with related business user
       threw = false;
@@ -368,7 +370,7 @@ foam.CLASS({
         message = t.getMessage();
         threw = true;
       }
-      test( threw && message.equals("Permission denied."), "Unrelated Business user should not be able to find the invoice of other users." );
+      test( threw && message.equals("You do not have permission to view this invoice"), "Unrelated Business user should not be able to find the invoice of other users.");
 
       // Clean up
       dao.remove_(x, invoice);
@@ -387,6 +389,7 @@ foam.CLASS({
       // Test setup
       User relatedUser = new User();
       relatedUser.setId(1380);
+      relatedUser.setSpid("test");
       relatedUser.setFirstName("RelatedUser");
       relatedUser.setLastName("Account");
       relatedUser.setEmail("test.related@mailinator.com");
@@ -481,6 +484,7 @@ foam.CLASS({
 
       User relatedUser = new User();
       relatedUser.setId(1380);
+      relatedUser.setSpid("test");
       relatedUser.setFirstName("RelatedUser");
       relatedUser.setLastName("Account");
       relatedUser.setEmail("test.related@mailinator.com");
@@ -516,6 +520,7 @@ foam.CLASS({
       String message = "";
       User unrelatedUser = new User();
       unrelatedUser.setId(1000);
+      unrelatedUser.setSpid("test");
       unrelatedUser.setFirstName("UnrelatedUser");
       unrelatedUser.setLastName("Account");
       unrelatedUser.setEmail("test.unrelated@mailinator.com");
@@ -537,7 +542,7 @@ foam.CLASS({
         message = t.getMessage();
         threw = true;
       }
-      test( threw && message.equals("Permission denied."), "Unrelated user cannot remove unrelated invoice." );
+      test( threw && message.equals("You do not have permission to view this invoice"), "Unrelated user cannot remove unrelated invoice.");
 
       // Clean up
       dao.remove_(x, mutatedInvoice);
@@ -556,6 +561,7 @@ foam.CLASS({
       String message = "";
       User relatedUser = new User();
       relatedUser.setId(1380);
+      relatedUser.setSpid("test");
       relatedUser.setFirstName("RelatedUser");
       relatedUser.setLastName("Account");
       relatedUser.setEmail("test.related@mailinator.com");
@@ -617,6 +623,7 @@ foam.CLASS({
       // Payer Business User
       User payerUser = new User();
       payerUser.setId(1380);
+      payerUser.setSpid("test");
       payerUser.setFirstName("payerUser");
       payerUser.setLastName("payer");
       payerUser.setEmail("payer@mailinator.com");
@@ -626,6 +633,7 @@ foam.CLASS({
       // Regular business user
       User regUser = new User();
       regUser.setId(1369);
+      regUser.setSpid("test");
       regUser.setFirstName("RelatedUser");
       regUser.setLastName("Account");
       regUser.setEmail("test.related@mailinator.com");
@@ -668,7 +676,7 @@ foam.CLASS({
         message = e.getMessage();
         threw = true;
       }
-      test( threw && message.equals("Permission denied."), "Test 2: Cannot put admin created invoice as regular user within context." );
+      test( threw && message.equals("You do not have permission to view this invoice"), "Test 2: Cannot put admin created invoice as regular user within context.");
 
       // FIND TESTS
       // 3: regUserContext
@@ -681,7 +689,7 @@ foam.CLASS({
         message = e.getMessage();
         threw = true;
       }
-      test( threw && message.equals("Permission denied."), "Test 3: Find admin created invoice as regular user, find on invoiceDAO failed." );
+      test( threw && message.equals("You do not have permission to view this invoice"), "Test 3: Find admin created invoice as regular user, find on invoiceDAO failed.");
 
       // 4: regUserContext
       // Logic: regUserPermInvoice was created by regUser as a draft invoice, and should be found while running as regUser
