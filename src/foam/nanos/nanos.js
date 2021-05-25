@@ -407,6 +407,7 @@ FOAM_FILES([
   { name: "foam/nanos/ruler/Rule" },
   { name: "foam/nanos/ruler/RuleAction" },
   { name: "foam/nanos/ruler/CompositeRuleAction" },
+  { name: "foam/nanos/ruler/StopRulerAction" },
   { name: "foam/nanos/ruler/RuleHistory" },
   { name: "foam/nanos/ruler/RuleHistoryStatus" },
   { name: "foam/nanos/ruler/RuledDAO" },
