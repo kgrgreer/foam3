@@ -27,7 +27,6 @@
   ],
 
   tableColumns: [
-      'summary',
       'amount',
       'payer',
       'category',

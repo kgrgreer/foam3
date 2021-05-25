@@ -43,7 +43,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'message',
-      value: '"Flinks failed to provide valid account detials'
+      value: 'Flinks failed to provide valid account detials'
     },
     {
       class: 'FObjectProperty',
