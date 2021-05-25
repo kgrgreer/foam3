@@ -81,7 +81,6 @@ p({
   }
 })
 
-
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "reconciliation-reports",

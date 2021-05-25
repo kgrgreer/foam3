@@ -343,22 +343,10 @@ foam.CLASS({
       border: 1px solid #8e9090 !important;
       border-radius: 4px !important;
       box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05) !important;
-      background-repeat: no-repeat;
-      background-position-x: 25px;
-      background-position-y: 13px;
-      background-image: url(images/ablii/radio-resting.svg);
       color: /*%BLACK%*/ #1e1f21 !important;
       background-color: white !important;
       font-size: 16px !important;
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    }
-    .white-radio.selected {
-      border: 1px solid /*%PRIMARY3%*/ #406dea !important;
-      background-image: url(images/ablii/radio-active.svg);
-    }
-    .white-radio:disabled {
-      border: 1px solid #e2e2e3 !important;
-      color: #8e9090 !important;
     }
 
     /* Link */
