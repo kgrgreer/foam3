@@ -1577,9 +1577,6 @@ FOAM_FILES([
   { name: 'net/nanopay/business/ruler/RegistrationLoginDisabledRule' },
   { name: 'net/nanopay/business/ruler/InitialBusinessRegistrationRule' },
   { name: 'net/nanopay/business/ruler/businessCapabilitySetUp' },
-  { name: 'net/nanopay/business/BusinessAssociationException' },
-  { name: 'net/nanopay/business/BusinessSignInException' },
-  { name: 'net/nanopay/business/BusinessValidationException' },
 
   // bmo
   { name: 'net/nanopay/tx/bmo/BmoAssignedClientValue' },
@@ -1706,7 +1703,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/QuoteFillerDAO' },
   { name: 'net/nanopay/tx/planner/PlanNotFoundException' },
   { name: 'net/nanopay/tx/planner/UnableToPlanException' },
-  { name: 'net/nanopay/tx/planner/InvalidPlanException' },
   { name: 'net/nanopay/tx/planner/InterTrustPlanner' },
   { name: 'net/nanopay/tx/planner/RbcInterTrustPlanner' },
   { name: 'net/nanopay/tx/planner/BmoInterTrustPlanner' },
