@@ -228,14 +228,14 @@ foam.CLASS({
                 } catch (ValidationException ve) {
                   validationErrors.put(
                     String.format("%s[%s]", key, ve.getPropName()), 
-                    ve.getMessage());
+                    ve.getErrorMessage());
                 } catch (CompoundException ce) {
                   for ( var t : ce.getExceptions() ) {
                     if ( t instanceof ValidationException ) {
                       var ve = (ValidationException) t;
                       validationErrors.put(
                         String.format("%s[%s]", key, ve.getPropName()),
-                        ve.getMessage());
+                        ve.getErrorMessage());
                     }
                   }
                 } catch (Throwable t) {

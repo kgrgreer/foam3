@@ -23,7 +23,6 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.NanoService',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.UserNotFoundException',
 
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.OR',
@@ -71,7 +70,7 @@ foam.CLASS({
       ],
       javaCode:
         `if ( user == null ) {
-          throw new UserNotFoundException();
+          throw new AuthenticationException("User not found");
         }
         // if we are after the expiry date then prevent login
         return user.getPasswordExpiry() != null && user.getPasswordExpiry().getTime() < System.currentTimeMillis();`

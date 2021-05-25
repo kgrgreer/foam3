@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'foam.box',
   name: 'NoSuchNameException',
-  extends: 'foam.core.FOAMException',
+  implements: ['foam.core.Exception'],
 
   properties: [
     {

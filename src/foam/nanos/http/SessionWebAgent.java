@@ -77,7 +77,7 @@ public class SessionWebAgent
       // find user
       User user = (User) userDAO.find(session.getUserId());
       if ( user == null ) {
-        throw new UserNotFoundException();
+        throw new AuthenticationException("User not found");
       }
 
       // check permissions

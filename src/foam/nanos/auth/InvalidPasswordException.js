@@ -11,21 +11,13 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
-
-  properties: [
-    {
-      name: 'exceptionMessage',
-      value: 'Invalid password'
-    }
-  ],
-
   axioms: [
     {
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(`
   public InvalidPasswordException() {
-    super();
+    super("Invalid password");
   }
 
   public InvalidPasswordException(String message) {
@@ -33,7 +25,7 @@ foam.CLASS({
   }
 
   public InvalidPasswordException(Throwable cause) {
-    super(cause);
+    super("Invalid password", cause);
   }
 
   public InvalidPasswordException(String message, Throwable cause) {
