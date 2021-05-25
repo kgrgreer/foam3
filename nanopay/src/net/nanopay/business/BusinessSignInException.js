@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -16,36 +16,33 @@
  */
 
 foam.CLASS({
-  name: 'TransactionException',
-  package: 'net.nanopay.tx',
-  extends: 'foam.core.FOAMException',
-  javaGenerateConvenienceConstructor: false,
+  name: 'BusinessSignInException',
+  package: 'net.nanopay.business',
+  extends: 'foam.core.ClientRuntimeException',
   javaGenerateDefaultConstructor: false,
+  javaGenerateConvenienceConstructor: false,
 
+  properties: [
+    {
+      name: 'exceptionMessage',
+      value: 'There was an issue signing in to the newly created business, Please go to the switch business menu in your personal menus to sign in to your business.'
+    }
+  ],
 
   axioms: [
     {
       name: 'javaExtras',
       buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  public TransactionException() {
+        cls.extras.push(`
+  public BusinessSignInException() {
     super();
   }
 
-  public TransactionException(String message) {
-    super(message);
-  }
-
-  public TransactionException(String message, Exception cause) {
-    super(message, cause);
-  }
-
-  public TransactionException(Exception cause) {
+  public BusinessSignInException(Exception cause) {
     super(cause);
   }
-          `
-        }));
+
+        `);
       }
     }
   ]

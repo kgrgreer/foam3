@@ -1112,6 +1112,9 @@ var classes = [
   'net.nanopay.business.ruler.RegistrationLoginDisabledRule',
   'net.nanopay.business.ruler.businessCapabilitySetUp',
   'net.nanopay.business.ruler.InitialBusinessRegistrationRule',
+  'net.nanopay.business.BusinessAssociationException',
+  'net.nanopay.business.BusinessSignInException',
+  'net.nanopay.business.BusinessValidationException',
 
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',
@@ -1241,6 +1244,7 @@ var classes = [
   'net.nanopay.tx.planner.QuoteFillerDAO',
   'net.nanopay.tx.planner.PlanNotFoundException',
   'net.nanopay.tx.planner.UnableToPlanException',
+  'net.nanopay.tx.planner.InvalidPlanException',
   'net.nanopay.tx.planner.InterTrustPlanner',
   'net.nanopay.tx.planner.RbcInterTrustPlanner',
   'net.nanopay.tx.planner.BmoInterTrustPlanner',
