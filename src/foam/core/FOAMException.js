@@ -74,12 +74,24 @@ foam.CLASS({
       name: 'exceptionMessage',
       class: 'String',
       value: '{{message_}}',
+      externalTransient: true,
       visibility: 'RO'
     },
     {
       name: 'message_',
       class: 'String',
+      externalTransient: true,
       visibility: 'RO'
+    },
+    {
+      name: 'msg',
+      class: 'String',
+      visibility: 'RO',
+      storageTransient: true,
+      clusterTransient: true,
+      javaGetter: `
+      return getMessage();
+      `
     },
     {
       name: 'errorCode',
@@ -145,7 +157,8 @@ foam.CLASS({
       var i     = props.iterator();
       while ( i.hasNext() ) {
         foam.core.PropertyInfo prop = i.next();
-        if ( ! prop.getNetworkTransient() ) {
+        if ( ! prop.getNetworkTransient() &&
+             ! "msg".equals(prop.getName()) ) {
           Object value = prop.get(this);
           if ( value != null ) {
             map.put(prop.getName(), String.valueOf(value));

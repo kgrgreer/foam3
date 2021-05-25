@@ -15,7 +15,6 @@ foam.CLASS({
         cls.extras.push(`
           public EmptyDataException(String message) {
             super(message);
-            setMessage(message);
           } 
         `
         );
@@ -30,19 +29,14 @@ foam.CLASS({
       value: '400'
     },
     {
-      class: 'Int',
-      name: 'code',
-      value: 1002
-    },
-    {
       class: 'String',
-      name: 'type',
-      value: 'DAOReject'
-    },
-    {
-      class: 'String',
-      name: 'message',
-      value: 'PUT|POST expecting data, non received.'
+      name: 'errorCode',
+      value: '1002'
+    // },
+    // {
+    //   class: 'String',
+    //   name: 'message',
+    //   value: 'PUT|POST expecting data, non received.'
     }
   ]
 });

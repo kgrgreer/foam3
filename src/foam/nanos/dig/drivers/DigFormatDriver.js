@@ -197,7 +197,7 @@ foam.CLASS({
         return;
 
       if ( SafetyUtil.isEmpty(id) ) {
-        DigUtil.outputException(x, new UnknownIdException.Builder(x).build(), getFormat());
+        DigUtil.outputException(x, new UnknownIdException(), getFormat());
         return;
       }
 
@@ -207,12 +207,12 @@ foam.CLASS({
       FObject targetFobj = dao.find(idObj);
 
       if ( targetFobj == null ) {
-        DigUtil.outputException(x, new UnknownIdException.Builder(x).build(), getFormat());
+        DigUtil.outputException(x, new UnknownIdException(), getFormat());
         return;
       }
 
       dao.remove(targetFobj);
-      DigUtil.outputException(x, new DigSuccessMessage.Builder(x).setMessage("Success").build(), getFormat());
+      DigUtil.outputException(x, new DigSuccessMessage("Success"), getFormat());
 
       getLogger().debug("remove.success");
       `
@@ -226,20 +226,14 @@ foam.CLASS({
       String daoName = p.getParameter("dao");
 
       if ( SafetyUtil.isEmpty(daoName) ) {
-        DigUtil.outputException(x,
-          new GeneralException.Builder(x)
-            .setMessage("DAO name is required.").build(),
-          getFormat());
+        DigUtil.outputException(x, new GeneralException("DAO name is required."), getFormat());
         return null;
       }
 
       DAO nSpecDAO = (DAO) x.get("AuthenticatedNSpecDAO");
       NSpec nspec = (NSpec) nSpecDAO.find(daoName);
       if ( nspec == null || ! nspec.getServe() ) {
-        DigUtil.outputException(x,
-          new DAONotFoundException.Builder(x)
-            .setMessage("DAO not found: " + daoName).build(),
-          getFormat());
+        DigUtil.outputException(x, new DAONotFoundException("DAO not found: " + daoName), getFormat());
         return null;
       }
 
@@ -247,20 +241,13 @@ foam.CLASS({
       try {
         nspec.checkAuthorization(x);
       } catch (foam.nanos.auth.AuthorizationException e) {
-        DigUtil.outputException(x,
-          new foam.nanos.dig.exception.AuthorizationException.Builder(x)
-            .setMessage(e.getMessage())
-            .build(),
-          getFormat());
+        DigUtil.outputException(x, new AuthorizationException(e.getMessage()), getFormat());
         return null;
       }
 
       DAO dao = (DAO) x.get(daoName);
       if ( dao == null ) {
-        DigUtil.outputException(x,
-          new DAONotFoundException.Builder(x)
-            .setMessage("DAO not found: " + daoName).build(),
-          getFormat());
+        DigUtil.outputException(x, new DAONotFoundException("DAO not found: " + daoName), getFormat());
         return null;
       }
 
