@@ -155,8 +155,8 @@ public class BrazilVerificationService
         .setName(this.getClass().getSimpleName())
         .setSeverity(foam.log.LogLevel.ERROR)
         .setReason(AlarmReason.TIMEOUT)
-        .setIsActive(true)
         .setNote(t.getMessage())
+        .setIsActive(true)
         .build();
       ((DAO) getX().get("alarmDAO")).put(alarm);
       throw t;
@@ -167,7 +167,7 @@ public class BrazilVerificationService
     try {
       String formattedCnpj = cnpj.replaceAll("[^0-9]", "");
       PessoaResponse response = findFromCNPJCache(formattedCnpj);
-      // if ( response != null ) return response;
+      if ( response != null ) return response;
 
       PessoaJuridicaNFe request = new PessoaJuridicaNFe();
       request.setDocumento(formattedCnpj);
@@ -188,8 +188,8 @@ public class BrazilVerificationService
         .setName(this.getClass().getSimpleName())
         .setSeverity(foam.log.LogLevel.ERROR)
         .setReason(AlarmReason.TIMEOUT)
-        .setIsActive(true)
         .setNote(t.getMessage())
+        .setIsActive(true)
         .build();
       ((DAO) getX().get("alarmDAO")).put(alarm);
       throw t;
