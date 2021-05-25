@@ -7,16 +7,9 @@
 foam.CLASS({
   name: 'AuthenticationException',
   package: 'foam.nanos.auth',
-  extends: 'foam.core.ClientRuntimeException',
+  extends: 'foam.core.FOAMException',
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
-
-  properties: [
-    {
-      name: 'exceptionMessage',
-      value: 'Not logged in {{message_}}',
-    }
-  ],
 
   axioms: [
     {
@@ -24,7 +17,7 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(`
   public AuthenticationException() {
-    super();
+    super("Not logged in");
   }
 
   public AuthenticationException(String message) {

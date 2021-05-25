@@ -18,8 +18,7 @@ foam.CLASS({
     'stack',
     'user',
     'menuDAO',
-    'memento',
-    'translationService'
+    'memento'
   ],
 
   requires: [
@@ -146,9 +145,8 @@ foam.CLASS({
             }
           ).catch(
             err => {
-              let message = err.message ? this.translationService.getTranslation(foam.locale, `${err.data.id}`, err.message) : this.ERROR_MSG
               this.ctrl.add(this.NotificationMessage.create({
-                message: message,
+                message: err.message || this.ERROR_MSG,
                 type: this.LogLevel.ERROR
               }));
           });

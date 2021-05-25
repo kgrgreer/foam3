@@ -72,8 +72,6 @@ foam.CLASS({
         }
       ],
       javaCode: `
-//        foam.core.XLocator.set(x);
-
         // turn off logging to get rid of clutter.
         LogLevelFilterLogger loggerFilter = (LogLevelFilterLogger) x.get("logger");
         loggerFilter.setLogDebug(false);
