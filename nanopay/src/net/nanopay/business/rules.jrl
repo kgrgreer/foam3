@@ -45,7 +45,7 @@ p({
   "documentation":"Create business on initial business data submit",
   "daoKey":"userCapabilityJunctionDAO",
   "operation":3,
-  "after":false,
+  "after":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
