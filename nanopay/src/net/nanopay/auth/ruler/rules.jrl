@@ -27,12 +27,6 @@ p({
   "action":{ "class":"net.nanopay.auth.ruler.PreventDuplicateUsernameAction" }
 })
 p({
-  "class":"net.nanopay.auth.ruler.SpidLimitedPermissionedUserRule",
-  "id":"user-prevent-duplicate-email-rule",
-  "limitedSpidList": [ "intuit" ],
-  "action":{ "class":"net.nanopay.auth.ruler.PreventDuplicateEmailAction" }
-})
-p({
   "class":"net.nanopay.auth.ruler.PermissionedUserRule",
   "id":"add-external-contact-token-rule",
   "name":"Add External Contact Token Rule",
@@ -51,4 +45,28 @@ p({
     "class": "net.nanopay.auth.ruler.AddExternalContactTokenRuleAction"
   },
   "lifecycleState": 1
+})
+
+// user-allow-duplicate-email-rule must run before user-prevent-duplicate-email-rule
+// so that it can stop the ruler (aka. rule engine) and opt out the latter rule.
+p({
+  "class": "net.nanopay.auth.ruler.PermissionedUserRule",
+  "id": "user-allow-duplicate-email-rule",
+  "name": "Allow Duplicate Email Rule",
+  "enabled": true,
+  "ruleGroup": "UserEmail",
+  "priority": 110,
+  "documentation": "Allow duplicate email for users.",
+  "daoKey": "localUserDAO",
+  "operation": 3,
+  "after": false,
+  "action": { "class": "foam.nanos.ruler.StopRulerAction" },
+  "lifecycleState": 1
+})
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id": "user-prevent-duplicate-email-rule",
+  "ruleGroup": "UserEmail",
+  "priority": 100,
+  "action": { "class":"net.nanopay.auth.ruler.PreventDuplicateEmailAction" }
 })

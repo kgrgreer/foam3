@@ -21,39 +21,42 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
-    'foam.nanos.auth.User',
-    'static foam.mlang.MLang.*',
+    'foam.core.RequiredBooleanHolder',
+    'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
-    'java.util.Date',
+    'foam.nanos.auth.Group',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+    'foam.nanos.crunch.Capability',
+    'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.CrunchService',
     'foam.nanos.crunch.ServerCrunchService',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.nanos.crunch.Capability',
-    'java.util.List',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.session.Session',
+    'java.lang.NoSuchMethodException',
+    'java.lang.reflect.InvocationTargetException',
+    'java.lang.reflect.Method',
     'java.util.ArrayList',
     'java.util.Arrays',
-    'foam.nanos.crunch.CapabilityJunctionStatus',
-    'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
-    'foam.nanos.auth.Subject',
-    'foam.nanos.auth.Group',
-    'net.nanopay.crunch.registration.UserRegistrationData',
-    'net.nanopay.crunch.onboardingModels.InitialBusinessData',
-    'net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions',
-    'foam.core.RequiredBooleanHolder',
     'foam.util.Auth',
-    'foam.core.X',
-    'foam.nanos.session.Session',
-    'net.nanopay.model.Business',
+    'java.util.Calendar',
+    'java.util.Date',
+    'java.util.GregorianCalendar',
+    'java.util.List',
     'net.nanopay.country.br.CPF',
+    'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
     'net.nanopay.crunch.document.DateOfIssue',
     'net.nanopay.crunch.document.Document',
+    'net.nanopay.crunch.onboardingModels.InitialBusinessData',
+    'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData',
     'net.nanopay.crunch.onboardingModels.UserBirthDateData',
+    'net.nanopay.crunch.registration.UserRegistrationData',
+    'net.nanopay.model.Business',
     'net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso',
-    'java.util.Calendar',
-    'java.util.GregorianCalendar',
-    'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData'
-
+    'net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions',
+    'static foam.mlang.MLang.*'
   ],
 
   properties: [
@@ -85,6 +88,7 @@ foam.CLASS({
     {
       name: 'createUser',
       type: 'User',
+      documentation: 'Helper method to create treviso user',
       args: [
         {
           name: 'x',
@@ -140,6 +144,7 @@ foam.CLASS({
     },
     {
       name: 'grantAll',
+      documentation: 'Method for granting capability and all pre required capabilities',
       type: 'Void',
       args: [
         {
@@ -156,6 +161,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      // Find all pre required capabilities and call grantArray to sequantually grant all of then
         CrunchService crunchService = (ServerCrunchService) x.get("crunchService");
         List grantPath = crunchService.getGrantPath(x, capabilityId);
         grantArray(x, grantPath, user);
@@ -190,6 +196,7 @@ foam.CLASS({
     },
     {
       name: 'grantCapability',
+      documentation: 'Method for granting specific capability',
       type: 'Void',
       args: [
         {
@@ -214,40 +221,21 @@ foam.CLASS({
 
         UserCapabilityJunction ucj = null;
 
-        switch ( capability.getId() ) {
-          case "crunch.onboarding.treviso.general-admission":
-            crunch_onboarding_treviso_general_admission(x, user);
-            break;
-          case "crunch.onboarding.br.treviso-unlock-payments-terms":
-            crunch_onboarding_br_treviso_unlock_payments_terms(x, user);
-            break;
-          case "crunch.onboarding.user-registration":
-            crunch_onboarding_user_registration(x, user);
-            break;
-          case "crunch.onboarding.register-business":
-            crunch_onboarding_register_business(x, user);
-            break;
-          case "crunch.onboarding.register-business.submit":
-            crunch_onboarding_register_business_submit(x, user);
-            break;
-          case "crunch.onboarding.br.cpf":
-            crunch_onboarding_br_cpf(x, user);
-            break;
-          case "crunch.onboarding.document.utility-bills":
-            crunch_onboarding_document_utility_bills(x, user);
-            break;
-          case "crunch.onboarding.document.date-of-issue":
-            crunch_onboarding_document_date_of_issue(x, user);
-            break;
-          case "crunch.onboarding.document.identification":
-            crunch_onboarding_document_identification(x, user);
-            break;
-          case "crunch.onboarding.user-birth-date":
-            crunch_onboarding_user_birth_date(x, user);
-            break;
-          case "crunch.onboarding.signing-officer-information":
-            crunch_onboarding_signing_officer_information(x, user);
-            break;
+        // Find and call method to grant specific capability
+        String id = capabilityIdToSupportMethods(capability.getId());
+        Logger logger = (Logger) x.get("logger");
+        try {
+          Class[] cArg = new Class[2];
+          cArg[0] = X.class;
+          cArg[1] = User.class;
+          Method getNameMethod = getClass().getMethod(id, cArg);
+          try {
+            getNameMethod.invoke(this, x, user);
+          } catch ( Exception e ) {
+            logger.error(e.getMessage(), e);
+          }
+        } catch ( NoSuchMethodException e ) {
+          logger.error(e.getMessage(), e);
         }
       `
     },
@@ -660,6 +648,19 @@ foam.CLASS({
 
           crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
         }
+      `
+    },
+    {
+      name: 'capabilityIdToSupportMethods',
+      type: 'String',
+      args: [
+        {
+          name: 'capabilityId',
+          type: 'String'
+        }
+      ],
+      javaCode: `
+        return capabilityId.replaceAll("\\\\.|-", "_");
       `
     }
   ]

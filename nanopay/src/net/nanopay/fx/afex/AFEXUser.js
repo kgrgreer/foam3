@@ -137,7 +137,7 @@ foam.CLASS({
     {
       name: 'viewBeneficiaries',
       label: 'View Beneficiaries',
-      tableWidth: 135,
+      tableWidth: 170,
       code: function(X) {
         var m = foam.mlang.ExpressionsSingleton.create({});
         var self = this;

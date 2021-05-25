@@ -850,7 +850,7 @@ foam.CLASS({
           Invoice.class.getName(),
           new foam.core.PropertyInfo[] {
             Invoice.PAYER_ID,
-            Invoice.PAYEE_ID,
+            Invoice.PAYEE_ID
           }
         );
         return new ServiceProviderAwareSupport()
