@@ -121,7 +121,7 @@ public class BrazilVerificationService
 
     String formattedCpf = cpf.replaceAll("[^0-9]", "");
     PessoaResponse response = findFromCPFCache(formattedCpf, birthDate);
-    // if ( response != null ) return response;
+    if ( response != null ) return response;
 
     try {
       String birthDateString = "";
@@ -155,6 +155,7 @@ public class BrazilVerificationService
         .setName(this.getClass().getSimpleName())
         .setSeverity(foam.log.LogLevel.ERROR)
         .setReason(AlarmReason.TIMEOUT)
+        .setIsActive(true)
         .setNote(t.getMessage())
         .build();
       ((DAO) getX().get("alarmDAO")).put(alarm);
@@ -170,7 +171,7 @@ public class BrazilVerificationService
 
       PessoaJuridicaNFe request = new PessoaJuridicaNFe();
       request.setDocumento(formattedCnpj);
-      response = ((SoaWebService) getX().get("soaWebServices")).pessoaJuridicaNFe(request);
+      response = ((SoaWebService) getX().get("soaWebService")).pessoaJuridicaNFe(request);
       if ( response == null ) {
         throw new RuntimeException("SoaWebService.PessoaJuridicaNFe no response");
       }
@@ -187,6 +188,7 @@ public class BrazilVerificationService
         .setName(this.getClass().getSimpleName())
         .setSeverity(foam.log.LogLevel.ERROR)
         .setReason(AlarmReason.TIMEOUT)
+        .setIsActive(true)
         .setNote(t.getMessage())
         .build();
       ((DAO) getX().get("alarmDAO")).put(alarm);
