@@ -94,7 +94,7 @@ foam.CLASS({
           if ( ! result ) {
             throw new Error('Error generating reset token');
           }
-          self.notify('Verification email sent to ' + self.user.email, '', self.LogLevel.INFO, true);
+          self.notify('Verification Email Sent', 'Verification email sent to ' + self.user.email, '', self.LogLevel.INFO, true);
         }).catch(function(err) {
           self.notify(err.message, '', self.LogLevel.ERROR, true);
         });

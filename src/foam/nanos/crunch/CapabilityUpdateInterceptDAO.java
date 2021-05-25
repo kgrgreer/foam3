@@ -89,7 +89,7 @@ public class CapabilityUpdateInterceptDAO extends ProxyDAO {
    * @param propMap Properties on the source model that will be used to update the capability
    * @param capability ID of Capability that will be updated
    */
-  CapabilityUpdateInterceptDAO(Map<PropertyInfo, PropertyInfo> propMap, String capability) {
+  public CapabilityUpdateInterceptDAO(Map<PropertyInfo, PropertyInfo> propMap, String capability) {
     this.propMap = propMap;
     this.capability = capability;
   }

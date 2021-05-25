@@ -47,8 +47,6 @@ foam.CLASS({
       right: 16px;
       z-index: 1000;
       background: none !important;
-      width: 24px !important;
-      height: 24px !important;
       cursor: pointer;
       transition: ease 0.2s;
       padding: 0;
