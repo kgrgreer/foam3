@@ -86,27 +86,33 @@ foam.CLASS({
     {
       name: 'businessInformation',
       title: 'Business Information',
-      order: 2
+      order: 2,
+      permissionRequired: true
     },
     {
       name: 'ownerInformation',
-      title: 'Ownership'
+      title: 'Ownership',
+      permissionRequired: true
     },
     {
       name: 'operationsInformation',
-      title: 'Operations'
+      title: 'Operations',
+      permissionRequired: true
     },
     {
       name: 'complianceInformation',
-      title: 'Compliance'
+      title: 'Compliance',
+      permissionRequired: true
     },
     {
       name: 'accountInformation',
-      title: 'Accounts'
+      title: 'Accounts',
+      permissionRequired: true
     },
     {
       name: 'contactInformation',
-      title: 'Contacts'
+      title: 'Contacts',
+      permissionRequired: true
     },
     {
       name: 'systemInformation',
