@@ -95,11 +95,21 @@ foam.CLASS({
       class: 'Boolean',
       documentation: `
         Specify the visibility of this wizardlet. If true, 'createView' will
-        be called on any of this wizardlets visible sections.
+        be called on any of this wizardlets visible sections. When false, no
+        DOM element is rendered.
       `,
       expression: function (of, isAvailable, atLeastOneSectionVisible_) {
         return isAvailable && of && atLeastOneSectionVisible_;
       }
+    },
+    {
+      name: 'isHidden',
+      class: 'Boolean',
+      documentation: `
+        Specify if the wizardlet should have display:none even if it's logically
+        visible (when isVisible is true). This is used for search filtering.
+      `,
+      value: false
     },
     { name: 'atLeastOneSectionVisible_', class: 'Boolean', value: true },
     {
