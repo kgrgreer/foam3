@@ -150,6 +150,7 @@ public class BrazilVerificationService
         .setSeverity(foam.log.LogLevel.ERROR)
         .setReason(AlarmReason.TIMEOUT)
         .setNote(t.getMessage())
+        .setIsActive(true)
         .build();
       ((DAO) getX().get("alarmDAO")).put(alarm);
       throw t;
