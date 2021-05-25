@@ -167,6 +167,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'waiveCharges',
+      documentation: 'waive the fees and all charges applicable to this transaction',
       hidden: true
     },
     {
@@ -218,6 +219,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'selectedFeeLineItemsIsValid',
+      documentation: 'used for choice view. selection of specific charges to be waived in remediation transaction',
       visibility: 'HIDDEN',
       value: false
     },
