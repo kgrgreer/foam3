@@ -580,7 +580,7 @@ foam.CLASS({
     },
 
     function returnExpandedCSS(text) {
-      var text2 = text; 
+      var text2 = text;
       for ( var i = 0 ; i < this.MACROS.length ; i++ ) {
         let m = this.MACROS[i];
         text2 = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
@@ -624,12 +624,12 @@ foam.CLASS({
       var notification = this.Notification.create();
       notification.userId = this.subject && this.subject.realUser ?
         this.subject.realUser.id : this.user.id;
-      notification.toastMessage = toastMessage;
+      notification.toastMessage    = toastMessage;
       notification.toastSubMessage = toastSubMessage;
-      notification.toastState = this.ToastState.REQUESTED;
-      notification.severity = severity;
-      notification.transient = transient;
-      notification.icon = icon;
+      notification.toastState      = this.ToastState.REQUESTED;
+      notification.severity        = severity || this.LogLevel.INFO;
+      notification.transient       = transient;
+      notification.icon            = icon;
       this.__subContext__.notificationDAO.put(notification);
     }
   ],
