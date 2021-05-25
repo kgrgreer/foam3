@@ -167,6 +167,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'waiveCharges',
+      documentation: 'waive the fees and all charges applicable to this transaction',
       hidden: true
     },
     {
@@ -218,6 +219,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'selectedFeeLineItemsIsValid',
+      documentation: 'used for choice view. selection of specific charges to be waived in remediation transaction',
       visibility: 'HIDDEN',
       value: false
     },
@@ -265,22 +267,6 @@ foam.CLASS({
   ],
 
   actions: [
-    {
-      name: 'assignToMe',
-      section: 'infoSection',
-      availablePermissions: ['net.nanopay.ticket.refundTicket.viewAssignToMe'],
-      isAvailable: function(assignedTo) {
-        return assignedTo == 0;
-      },
-      code: function(X) {
-        this.assignedTo = this.subject.user.id;
-        this.ticketDAO.put(this).then(ticket => {
-          this.notify(this.ASSIGN, '', foam.log.LogLevel.INFO, true);
-        }).catch(error => {
-          this.notify(error.message, '', this.LogLevel.ERROR, true);
-        });
-      }
-    },
     {
       name: 'submit',
       section: 'infoSection',

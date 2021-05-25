@@ -976,7 +976,9 @@ foam.CLASS({
   ],
 
   actions: [
-    {
+    /*
+    TODO: we are not ready for this feature yet. but want to keep this code for when we are.
+    ({
       name: 'requestCancellation',
       isAvailable: function(status, paymentId){
         return (status === net.nanopay.invoice.model.InvoiceStatus.PROCESSING) && paymentId
@@ -996,7 +998,7 @@ foam.CLASS({
           this.notify(error.message, '', foam.log.LogLevel.ERROR, true);
         })
       }
-    },
+    },*/
     {
       name: 'payNow',
       label: 'Pay now',
