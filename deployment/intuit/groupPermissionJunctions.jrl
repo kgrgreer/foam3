@@ -44,6 +44,8 @@ p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",t
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"menu.read.securefact-responses"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"service.securefactResponseDAO"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"securefactresponse.read.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"service.summaryTransactionDAO"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"summarytransaction.read.*"})
 
 // ********** PAYMENT OPS ***************
 
