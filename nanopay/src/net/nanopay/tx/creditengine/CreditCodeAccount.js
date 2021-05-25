@@ -75,7 +75,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'codeActive',
-      documentation: 'Indicates whether or nto the credit code is currently Active',
+      documentation: 'Indicates whether or not the credit code is currently Active',
       value: false,
       createVisibility: 'RW',
       updateVisibility: 'RW',
