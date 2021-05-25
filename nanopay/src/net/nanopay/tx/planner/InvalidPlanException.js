@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -16,12 +16,18 @@
  */
 
 foam.CLASS({
-  name: 'TransactionException',
-  package: 'net.nanopay.tx',
-  extends: 'foam.core.FOAMException',
-  javaGenerateConvenienceConstructor: false,
+  name: 'InvalidPlanException',
+  package: 'net.nanopay.tx.planner',
+  javaExtends: 'net.nanopay.tx.TransactionException',
   javaGenerateDefaultConstructor: false,
+  javaGenerateConvenienceConstructor: false,
 
+  properties: [
+    {
+      name: 'exceptionMessage',
+      value: 'Invalid plan'
+    }
+  ],
 
   axioms: [
     {
@@ -29,19 +35,11 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data: `
-  public TransactionException() {
+  public InvalidPlanException() {
     super();
   }
 
-  public TransactionException(String message) {
-    super(message);
-  }
-
-  public TransactionException(String message, Exception cause) {
-    super(message, cause);
-  }
-
-  public TransactionException(Exception cause) {
+  public InvalidPlanException(Exception cause) {
     super(cause);
   }
           `

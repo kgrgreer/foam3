@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -16,36 +16,33 @@
  */
 
 foam.CLASS({
-  name: 'TransactionException',
-  package: 'net.nanopay.tx',
-  extends: 'foam.core.FOAMException',
-  javaGenerateConvenienceConstructor: false,
+  name: 'BusinessAssociationException',
+  package: 'net.nanopay.business',
+  extends: 'foam.core.ClientRuntimeException',
   javaGenerateDefaultConstructor: false,
+  javaGenerateConvenienceConstructor: false,
 
+  properties: [
+    {
+      name: 'exceptionMessage',
+      value: 'There was an issue associating the business to the user'
+    },
+  ],
 
   axioms: [
     {
       name: 'javaExtras',
       buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  public TransactionException() {
+        cls.extras.push(`
+  public BusinessAssociationException() {
     super();
   }
 
-  public TransactionException(String message) {
-    super(message);
-  }
-
-  public TransactionException(String message, Exception cause) {
-    super(message, cause);
-  }
-
-  public TransactionException(Exception cause) {
+  public BusinessAssociationException(Exception cause) {
     super(cause);
   }
-          `
-        }));
+
+        `);
       }
     }
   ]
