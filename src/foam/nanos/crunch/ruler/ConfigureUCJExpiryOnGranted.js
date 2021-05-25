@@ -47,7 +47,7 @@ foam.CLASS({
             ) return;
               
             Capability capability = (Capability) ucj.findTargetId(x);
-            logger.debug(this.getClass().getSimpleName(), "ucj.findTargetId(x) - capability", capability);
+            logger.debug(this.getClass().getSimpleName(), "ucj.findTargetId(x) - capability", capability.getId());
             if ( capability == null ) {
               logger.debug("UCJ Expiry not configured: Capability not found for UCJ targetId : " + ucj.getSourceId());
               return;

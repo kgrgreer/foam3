@@ -43,7 +43,7 @@ foam.CLASS({
             ) return;
 
             Capability capability = (Capability) ucj.findTargetId(x);
-            logger.debug(this.getClass().getSimpleName(), "ucj.findTargetId(x) - capability ", capability);
+            logger.debug(this.getClass().getSimpleName(), "ucj.findTargetId(x) - capability ", capability.getId());
             if ( capability == null ) throw new RuntimeException("Data not saved to target object: Capability not found.");
 
             foam.core.FObject obj = null;
