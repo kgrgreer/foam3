@@ -84,7 +84,7 @@ foam.CLASS({
       this
       .addClass(this.myClass())
       .start(this.OverlayActionListView, {
-        contents: mainLabel,
+        label: mainLabel,
         data: menuArray,
         obj: self,
         buttonStyle: 'UNSTYLED'

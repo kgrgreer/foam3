@@ -149,10 +149,10 @@ const { contains } = require("underscore");
     ^secondary-destructive{
       background-color: white;
       border: 1px solid /*%GREY3%*/ #B2B6BD;
-      color: /*%DESTRUCTIVE2%*/ #d9170e;
+      color: /*%DESTRUCTIVE2%*/ #a61414;
     }
 
-    ^secondary-destructive svg { fill: /*%DESTRUCTIVE2%*/ #d9170e; }
+    ^secondary-destructive svg { fill: /*%DESTRUCTIVE2%*/ #a61414; }
 
     ^secondary-destructive:hover {
       background-color: /*%GREY5%*/ #B2B6BD;
@@ -202,10 +202,10 @@ const { contains } = require("underscore");
     ^tertiary-destructive{
       background-color: transparent;
       border-color: transparent;
-      color: /*%DESTRUCTIVE5%*/ #5E6061;   
+      color: /*%DESTRUCTIVE5%*/ #a61414;   
     }
 
-    ^tertiary-destructive svg { fill: /*%DESTRUCTIVE5%*/ #5E6061; }
+    ^tertiary-destructive svg { fill: /*%DESTRUCTIVE5%*/ #a61414; }
 
     ^tertiary-destructive:hover:not(:disabled) {
       background-color: /*%GREY5%*/ #F5F7FA;
@@ -292,10 +292,6 @@ const { contains } = require("underscore");
     [ 'nodeName', 'button' ],
     {
       name: 'label'
-    },
-    {
-      name: 'contents',
-      documentation: 'Adds any element to the button'
     },
     {
       class: 'Enum',
@@ -388,15 +384,15 @@ const { contains } = require("underscore");
       }
 
       if ( this.label ) {
-        if ( this.buttonStyle == 'LINK' || this.buttonStyle == 'UNSTYLED' ) {
-          this.start().addClass('p').add(this.label$).end();
+        if ( foam.String.isInstance(this.label) ) {
+          if ( this.buttonStyle == 'LINK' || this.buttonStyle == 'UNSTYLED' ) {
+            this.start().addClass('p').add(this.label$).end();
+          } else {
+            this.start().addClass('h600').add(this.label$).end();
+          }
         } else {
-          this.start().addClass('h600').add(this.label$).end();
+          this.add(this.label$);
         }
-      }
-
-      if ( this.contents ) {
-        this.tag(this.contents$);
       }
     }
   ],
