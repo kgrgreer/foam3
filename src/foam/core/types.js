@@ -144,7 +144,7 @@ foam.CLASS({
             this.formatted${capitalized}_ = (String) method.invoke(${cls.name}.${constantize}, (Object) this);
             this.formatted${capitalized}IsSet_ = true;
             return this.formatted${capitalized}_;
-          } 
+          }
           catch (NoSuchMethodException e) { }
           catch (IllegalAccessException e) { }
           catch (java.lang.reflect.InvocationTargetException e) { }
@@ -209,8 +209,10 @@ foam.CLASS({
         if ( d == foam.Date.MAX_DATE || d == foam.Date.MIN_DATE ) return d;
         if ( foam.Date.isInstance(d) ) {
           // Convert the Date to Noon time in GMT
-          var timeOfDay = d.getTime() % (1000*60*60*24);
-          d = new Date(d.getTime() - timeOfDay + 12 * 60 * 60000);
+          const DAY = 1000*60*60*24;
+          // Add many days to time so not to break for negative times before EPOCH of 1970
+          var timeOfDay = (d.getTime() + 100000 * DAY) % DAY;
+          return new Date(d.getTime() - timeOfDay + 12 * 60 * 60000);
         }
         return d;
       }
