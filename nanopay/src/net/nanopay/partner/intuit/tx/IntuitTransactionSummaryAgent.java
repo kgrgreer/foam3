@@ -63,7 +63,6 @@ public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
       Predicate predicate = AND(
         EQ(Transaction.SPID, spid),
         NOT(INSTANCE_OF(net.nanopay.tx.creditengine.CreditCodeTransaction.getOwnClassInfo())),
-        NOT(INSTANCE_OF(net.nanopay.tx.FeeSummaryTransaction.getOwnClassInfo())),
         NOT(INSTANCE_OF(BmoVerificationTransaction.getOwnClassInfo()))
       );
       generateTransactionSummaries(x, predicate, summaryTransactionDAO);
