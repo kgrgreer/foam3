@@ -733,11 +733,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Limited Liability Company",targe
 p({class:"foam.i18n.Locale",locale:"pt",source:"Publicly Traded Corporation",target:"Corporação de capital aberto"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Trust",target:"Confiar em"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"Read",target:"leitura"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"Unread",target:"Não lida"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"Today",target:"hoje"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"View all notifications",target:"Veja todas as notificações."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"Notifications",target:"Notificações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Assigned",target:"Designados"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Requested",target:"Requeridos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Approved",target:"Aprovados"})
@@ -753,3 +748,4 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Domestic services",target:"Servi
 p({class:"foam.i18n.Locale",locale:"pt",source:"Signing officer",target:"Oficial de assinatura"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"assigned to",target:"atribuído a"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"revoked from",target:"revogado de"})
+

@@ -561,6 +561,7 @@ p({
   },
   "lifecycleState":1
 })
+//TODO: Basically don't merge the change to this file in was for testing
 p({
   "class":"net.nanopay.tx.planner.BankToBankPlanner",
   "id":"61d57d66-3e63-4c53-9eee-de3f8f75e56c",
@@ -580,11 +581,6 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"destinationAccount",
         "of":"net.nanopay.bank.BankAccount"
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyEQProperty",
-        "prop1":"sourceUnit",
-        "prop2":"destinationUnit"
       }
     ]
   },
@@ -609,11 +605,6 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"destinationAccount",
         "of":"net.nanopay.bank.BankAccount"
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyEQProperty",
-        "prop1":"sourceUnit",
-        "prop2":"destinationUnit"
       }
     ]
   },

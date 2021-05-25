@@ -472,7 +472,7 @@ foam.CLASS({
       }
 
       if ( ! this.invoice.quote ) {
-        this.abortQuoteAndSaveDraft(new Error(this.QUOTE_MISSING));
+        this.abortQuoteAndSaveDraft(new Error("quote not set"));
         return;
       }
       this.txnQuote = this.invoice.quote.plan;
