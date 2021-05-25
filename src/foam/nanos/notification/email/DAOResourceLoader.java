@@ -39,24 +39,13 @@ public class DAOResourceLoader
     DAO emailTemplateDAO = (DAO) x.get("localEmailTemplateDAO");
     String group_ = ((Group) groupDAO.find(groupId)).getParent();
     group_ = SafetyUtil.isEmpty(group_) ? groupId : group_;
-    /*
-    TODO:
-
-    name  group locale spid
-      Y     Y     Y     Y
-      Y     Y     Y     *
-      Y     Y     *     Y
-      Y     Y     *     *
-      Y     *     *     Y
-      Y     *     *     *
-    */
 
     do {
       EmailTemplate emailTemplate = (EmailTemplate) emailTemplateDAO
         .find(
           AND(
-            EQ(EmailTemplate.NAME,   name),
-            EQ(EmailTemplate.GROUP,  SafetyUtil.isEmpty(group_) ? "*" : group_),
+            EQ(EmailTemplate.NAME, name),
+            EQ(EmailTemplate.GROUP, SafetyUtil.isEmpty(group_) ? "*" : group_),
             EQ(EmailTemplate.SPID, spid),
             EQ(EmailTemplate.LOCALE, locale)
           ));
@@ -65,7 +54,7 @@ public class DAOResourceLoader
         emailTemplate = (EmailTemplate) emailTemplateDAO
           .find(
             AND(
-              EQ(EmailTemplate.NAME,  name),
+              EQ(EmailTemplate.NAME, name),
               EQ(EmailTemplate.GROUP,  SafetyUtil.isEmpty(group_) ? "*" : group_),
               EQ(EmailTemplate.LOCALE, locale)
             ));
