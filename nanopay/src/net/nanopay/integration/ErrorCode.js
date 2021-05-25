@@ -79,6 +79,13 @@ foam.CLASS({
       order: 50,
       gridColumns: 6
     },
+    {
+      class: 'String',
+      name: 'agentMessage',
+      section: 'errorCodeInformation',
+      order: 60,
+      gridColumns: 6
+    }
   ],
 
   methods: [

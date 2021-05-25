@@ -26,7 +26,8 @@ p({
     "rule.read.c4f3e4ae-01b6-4638-8a09-06e6b9f05f42",
     "rule.read.b57ad1a4-d907-4d6a-adf2-bdf9e51fe905",
     "rule.read.d2a9b4b5-3c84-4742-84cc-6bb11928ed82",
-    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d94"
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d94",
+    "rule.read.162e7497-1ab8-465f-ac49-15d4626f7d44"
   ]
 })
 
@@ -90,6 +91,24 @@ p({
   permissionsGranted: [
     "rule.read.b57ad1a4-d907-4d6a-adf2-bdf9e51fe905",
     "rule.read.d2a9b4b5-3c84-4742-84cc-6bb11928ed82"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "intuit-tx-reversal-rules",
+  name: "Enable Intuit Transaction Reversal Rules",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.379c1084-ebec-4f3b-8627-964146c6f06b",
+    "rule.read.6bd4ba7d-c432-4391-9541-77760c851629",
+    "rule.read.ed46c99d-cbe7-4863-8775-211b993030b3",
+    "rule.read.88b99a28-50ae-4cde-a7dc-cbcc099de17d",    
+    "rule.read.77e68cc9-c7f4-4b97-a600-8cd24eead84d",
+    "rule.read.224de998-1f08-4f92-b516-2cc7dca6c476",
+    "rule.read.7a360340-1e66-4cb8-8076-e1b2a6d505d8",
+    "rule.read.1b639bf0-6ff7-4886-b0df-77425abac191"
   ]
 })
 

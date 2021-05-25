@@ -69,3 +69,22 @@ p({
     }
   """
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "oauthCredentialDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.auth.oauth.OAuthCredential.getOwnClassInfo())
+      .setGuid(true)
+      .setName("oauthCredentialDAO")
+      .setJournalName("oauthCredentials")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.auth.oauth.OAuthCredential\"}"
+})

@@ -2,8 +2,7 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "accounts-support",
   "label": "Accounts (Support)",
-  "icon":"images/accounts-24px-resting.svg",
-  "activeIcon":"images/accounts-24px-active.svg",
+  "themeIcon":"accounts",
   "handler":
     {
       "class": "foam.nanos.menu.DAOMenu2",
@@ -24,8 +23,7 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "businesses-support",
   "label": "Businesses (Support)",
-  "icon":"images/businesses-24px-resting.svg",
-  "activeIcon":"images/businesses-24px-active.svg",
+  "themeIcon":"businesses",
   "handler":
     {
       "class": "foam.nanos.menu.DAOMenu2",
@@ -67,7 +65,6 @@ p({
     }
   }
 })
-
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"transactions-summary",
@@ -89,8 +86,7 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "users-support",
   "label": "Users (Support)",
-  "icon":"images/users-24px-resting.svg",
-  "activeIcon":"images/users-24px-active.svg",
+  "themeIcon":"users",
   "handler":{
       "class": "foam.nanos.menu.DAOMenu2",
       "config":{
@@ -110,8 +106,7 @@ p({
    "class":"foam.nanos.menu.Menu",
    "id": "bills-support",
    "label":"Billed Charges",
-   "icon":"images/charges-24px-resting.svg",
-   "activeIcon":"images/charges-24px-active.svg",
+   "themeIcon":"charges",
    "handler":{
       "class":"foam.nanos.menu.DAOMenu2",
       "config":{
@@ -253,3 +248,31 @@ p({
     },
     "parent":"documentation"
 })
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"credits-support",
+  "label":"CreditCodes (Support)",
+  "icon":"images/coupons-24px-resting.svg",
+  "activeIcon":"images/coupons-24px-active.svg",
+    "handler":{
+      "class":"foam.nanos.menu.DAOMenu",
+      "daoKey":"creditCodeDAO"
+    },
+  "parent":"hidden"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"tickets-support",
+  "label":"Support Tickets",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"refundTicketDAO",
+      "browseTitle":"SupportTickets"
+    }
+  },
+  "parent":"hidden"
+})
+

@@ -45,15 +45,15 @@ public class BusinessCompliancyTransactionValidationTests
     txn.setAmount(100);
 
     // Test 1 - Sender needs to pass business compliance
-    var threw = false;
-    var message = "";
+    payer.setCompliance(net.nanopay.admin.model.ComplianceStatus.FAILED);
+    payer = (Business) localUserDAO.put_(x, payer).fclone();
     try {
       var quote = (TransactionQuote) localTransactionPlannerDAO.put_(x, txn);
       try {
         var quoteR = localTransactionPlannerDAO.put_(x, quote.getPlan());
         test(false , "validation unexpectantly successful");
       } catch (ValidationException e) {
-        test( e.getMessage().equals("Sender needs to pass business compliance."), "Unable to put if sender business user hasn't passed compliance.");
+        test( e.getMessage().equals("Sender needs to pass compliance."), "Unable to put if sender business user hasn't passed compliance.");
       }
     } catch (UnableToPlanException e) {
       test(false , e.getClass().getSimpleName() + " " + e.getMessage());

@@ -12,6 +12,9 @@ import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.nio.file.Files;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -46,7 +49,7 @@ public class RbcReportProcessor {
 
   public RbcReportProcessor(X x) {
     this.x          = x;
-    logger          = new PrefixLogger(new String[] {"RBC"}, (Logger) x.get("logger"));
+    logger          = new PrefixLogger(new String[] {this.getClass().getSimpleName(), "RBC"}, (Logger) x.get("logger"));
     transactionDAO  = (DAO) x.get("localTransactionDAO");
     rbcFTPSClient   = new RbcFTPSClient(x);
   }
@@ -134,6 +137,7 @@ public class RbcReportProcessor {
    */
   public void processReceipt(File file) {
     if ( file == null ) return;
+    // debugFileContents(file); 
 
     try {
       ISO20022Util driver = new ISO20022Util();
@@ -376,5 +380,20 @@ public class RbcReportProcessor {
         || null == cstmrPmtStsRpt.getOriginalGroupInformationAndStatus() ) return null;
 
     return cstmrPmtStsRpt.getOriginalGroupInformationAndStatus().getOriginalMessageIdentification();
+  }
+
+  protected void debugFileContents(File file) {
+    if ( file == null || file.length() == 0 ) return;
+
+    try {
+      char[] buffer = new char[(int)file.length()];
+      int read = new FileReader(file).read(buffer, 0, (int)file.length());
+      if ( read > 0 ) {
+        String contents = new StringBuilder().append(buffer).toString();
+        this.logger.debug(contents);
+      }
+    } catch (Exception ex) {
+      this.logger.error("Error writing debug message for file", file, ex);
+    }
   }
 }

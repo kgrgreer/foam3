@@ -44,6 +44,7 @@ p({"class":"foam.nanos.ruler.RuleGroup","id":"Payment"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"smeBusinessCompliance"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"GD"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"FEPWebOnboarding"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"refundTickets"})
 p({
   "class":"foam.nanos.ruler.RuleGroup",
   "id":"bankOperations",
@@ -88,6 +89,8 @@ p({"class":"foam.nanos.ruler.RuleGroup","id":"treviso"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"TrevisoCrunchOnboarding"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"ScreeningResponse"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"billing"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"Promotions"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"limitTxn"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"crunchApprovals"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"onboardingApprovals"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"UserEmail"})

@@ -29,6 +29,11 @@ foam.CLASS({
     'net.nanopay.invoice.model.InvoiceStatus'
   ],
 
+  topics: [
+    'finished',
+    'throwError'
+  ],
+
   implements: [
     'foam.core.Validatable',
     'foam.mlang.Expressions',
@@ -79,6 +84,9 @@ foam.CLASS({
   imports: [
     'accountDAO',
     'currencyDAO',
+    'ticketDAO',
+    'notify',
+    'stack',
     'user'
   ],
 
@@ -850,7 +858,7 @@ foam.CLASS({
           Invoice.class.getName(),
           new foam.core.PropertyInfo[] {
             Invoice.PAYER_ID,
-            Invoice.PAYEE_ID,
+            Invoice.PAYEE_ID
           }
         );
         return new ServiceProviderAwareSupport()
@@ -875,7 +883,9 @@ foam.CLASS({
   messages: [
     { name: 'SELECT_CONTACT', message: 'Select contact' },
     // used in MarkAsVoidModal and InvoiceVoidEmailRule
-    { name: 'ON_VOID_NOTE', message: 'On Void Note: ' }
+    { name: 'ON_VOID_NOTE', message: 'On Void Note: ' },
+    { name: 'REQUEST_CANCELLATION_SUCCESS', message: 'Successfully sent request for cancellation' },
+    { name: 'REQUEST_REFUND_SUCCESS', message: 'Successfully sent request for refund' }
   ],
 
   methods: [
@@ -966,6 +976,29 @@ foam.CLASS({
   ],
 
   actions: [
+    /*
+    TODO: we are not ready for this feature yet. but want to keep this code for when we are.
+    ({
+      name: 'requestCancellation',
+      isAvailable: function(status, paymentId){
+        return (status === net.nanopay.invoice.model.InvoiceStatus.PROCESSING) && paymentId
+      },
+      code: function(X) {
+        var refundTicket = net.nanopay.ticket.RefundTicket.create({
+          problemTransaction: this.paymentId,
+          title: 'Refund request for invoice: ' + this.id
+        });
+
+        this.ticketDAO.put(refundTicket).then(ticket => {
+          this.finished.pub();
+          this.notify(this.REQUEST_CANCELLATION_SUCCESS, '', foam.log.LogLevel.INFO, true);
+          X.stack.back();
+        }).catch(error => {
+          this.throwError.pub(error);
+          this.notify(error.message, '', foam.log.LogLevel.ERROR, true);
+        })
+      }
+    },*/
     {
       name: 'payNow',
       label: 'Pay now',

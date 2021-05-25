@@ -48,6 +48,7 @@ foam.CLASS({
               for ( Object o : children ) {
                 Transaction t = (Transaction) o;
                 t.setStatus(TransactionStatus.CANCELLED);
+                t.setErrorCode(10002);
                 localTransactionDAO.put(t);
               }
             }

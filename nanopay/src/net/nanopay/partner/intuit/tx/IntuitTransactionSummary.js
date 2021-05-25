@@ -66,6 +66,14 @@ foam.CLASS({
       section: 'transactionInformation',
       order: 150,
       gridColumns: 6
+    },
+    {
+      name: 'associate',
+      label: 'Fee Transaction',
+      class: 'String',
+      section: 'transactionInformation',
+      order: 160,
+      gridColumns: 6
     }
   ]
 });

@@ -41,15 +41,23 @@ foam.CLASS({
   properties: [
     {
       name: 'clearingTimes',
-      javaFactory: 'return new java.util.HashMap<>();'
+      javaFactory: 'return new java.util.HashMap<>();',
+      section: 'systemInformation',
+      order: 100
     },
     {
       name: 'estimatedCompletionDate',
-      javaFactory: 'return null;'
+      javaFactory: 'return null;',
+      section: 'systemInformation',
+      order: 90,
+      gridColumns: 6
     },
     {
       name: 'processDate',
-      javaFactory: 'return null;'
+      javaFactory: 'return null;',
+      section: 'systemInformation',
+      order: 80,
+      gridColumns: 6
     }
   ]
 });

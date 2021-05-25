@@ -13,12 +13,13 @@ p({
 p({
   class: "foam.nanos.crunch.Capability",
   id: "DomesticInterBankAccountPlannerCapability",
-  description: "Grants BankBank, BankDigital, DigitalBank planners and Verification Transaction planner",
+  description: "Grants BankBank, BankDigital, DigitalBank planners, DigitalTransactionPlanner and Verification Transaction planner",
   version: "0",
   permissionsGranted: [
     "rule.read.3cb6aab3-107a-495a-8974-ed3286192b35",
     "rule.read.ab51def7-b5d4-48ee-99ee-e3d418583740",
     "rule.read.61d57d66-3e63-4c53-9eee-de3f8f75e56c",
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d182",
     "rule.read.9577e4ae-c3c3-41a2-b479-43d91a12b2a0"
   ]
 })
@@ -131,6 +132,17 @@ p({
     "rule.read.ab51def7-b5d4-48ee-99ee-e3d418583740"
   ]
 })
+// Credit Code Planner
+p({
+  class: "foam.nanos.crunch.Capability",
+  description: "Support for Credit Code manipulation",
+  id: "CreditCodePlannerCapability",
+  version: "0",
+  permissionsGranted: [
+    "rule.read.cb6f0b7a-6001-4351-8dee-8f36ccc6c51b"
+  ]
+})
+
 
 p({
   class: "foam.nanos.crunch.Capability",
@@ -169,7 +181,9 @@ p({
     "rule.read.3cb6aab3-107a-495a-8974-ed3286192b35",
     "rule.read.ab51def7-b5d4-48ee-99ee-e3d418583740",
     "rule.read.61d57d66-3e63-4c53-9eee-de3f8f75e56c",
-    "rule.read.9577e4ae-c3c3-41a2-b479-43d91a12b2a0"
+    "rule.read.9577e4ae-c3c3-41a2-b479-43d91a12b2a0",
+    "rule.read.cb6f0b7a-6001-4351-8dee-8f36ccc6c51b",
+    "rule.read.162e7497-1ab8-465f-ac49-15d4626f7d44"
   ]
 })
 
@@ -206,3 +220,5 @@ p({
 //  "rule.read.ab51def7-b5d4-48ee-99ee-e3d418583740",    // Digital to Bank different user planner
 //  "rule.read.61d57d66-3e63-4c53-9eee-de3f8f75e56c",    // Bank to Bank planner
 //  "rule.read.9577e4ae-c3c3-41a2-b479-43d91a12b2a0",    // Verification Planner
+//  "rule.read.cb6f0b7a-6001-4351-8dee-8f36ccc6c51b",    // Credit Code Planner
+//  "rule.read.162e7497-1ab8-465f-ac49-15d4626f7d44",    // Bank Digital Composite Fee Planner

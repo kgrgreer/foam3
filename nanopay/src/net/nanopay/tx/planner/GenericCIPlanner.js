@@ -52,9 +52,9 @@ foam.CLASS({
       cashIn.setLineItems(requestTxn.getLineItems());
       TrustAccount trustAccount = ((DigitalAccount) quote.getDestinationAccount()).findTrustAccount(x);
 
-      quote.addTransfer(true, trustAccount.getId(), - cashIn.getAmount(), 0);
-      quote.addTransfer(true, quote.getDestinationAccount().getId(), cashIn.getAmount(), 0);
-      quote.addTransfer(false, quote.getSourceAccount().getId(), - cashIn.getAmount(), 0);
+      quote.addTransfer(true, trustAccount.getId(), - cashIn.getAmount(), 1);
+      quote.addTransfer(true, quote.getDestinationAccount().getId(), cashIn.getAmount(), 1);
+      quote.addTransfer(false, quote.getSourceAccount().getId(), - cashIn.getAmount(), 1);
 
       if ( getInstantComplete() ) {
         cashIn.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);

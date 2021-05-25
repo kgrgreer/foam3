@@ -71,6 +71,6 @@ foam.CLASS({
        setFxRate(((KotakFxTransaction) other).getFxRate());
        setFxQuoteId(((KotakFxTransaction) other).getFxQuoteId());
        `
-     },
+     }
   ]
 });

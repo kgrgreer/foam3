@@ -71,7 +71,7 @@ foam.CLASS({
       of: 'net.nanopay.meter.report.ReportStatus',
       name: 'status',
       visibility: 'RO',
-      tableWidth: 100,
+      tableWidth: 110,
       toCSVLabel: function (x, outputter) {
         outputter.outputValue("");
       }

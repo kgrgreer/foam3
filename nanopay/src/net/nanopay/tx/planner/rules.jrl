@@ -1055,3 +1055,63 @@ p({
   },
   lifecycleState: 1
 })
+
+p({
+  class: "net.nanopay.tx.planner.CreditCodeTransactionPlanner",
+  id: "cb6f0b7a-6001-4351-8dee-8f36ccc6c51b",
+  name: "Credit Code Transaction Planner",
+  priority: 100,
+  ruleGroup: "transactionPlanner",
+  enabled: true,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.nanos.ruler.predicate.PropertyIsInstance",
+        propName: "requestTransaction",
+        of: "net.nanopay.tx.creditengine.CreditCodeTransaction"
+      },
+      {
+        class: "foam.nanos.ruler.predicate.PropertyIsInstance",
+        propName: "sourceAccount",
+        of: "net.nanopay.tx.creditengine.CreditCodeAccount"
+      }
+    ]
+  },
+  lifecycleState: 1
+})
+
+p({
+  "class":"net.nanopay.tx.planner.BankDigitalCompositeFeePlanner",
+  "id":"162e7497-1ab8-465f-ac49-15d4626f7d44",
+  "name":"BankDigitalCompositeFeePlanner",
+  "documentation":"Plans independent fee transactions",
+  "priority":100,
+  "ruleGroup":"transactionPlanner",
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.CABankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"requestTransaction",
+        "of":"net.nanopay.tx.FeeSummaryTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQProperty",
+        "prop1":"sourceUnit",
+        "prop2":"destinationUnit"
+      }
+    ]
+  },
+  "lifecycleState":1
+})
