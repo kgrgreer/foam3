@@ -1,11 +1,11 @@
 /**
  * @license
- * Copyright 2020 The FOAM Authors. All Rights Reserved.
+ * Copyright 2021 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
 foam.CLASS({
-  name: 'AccessDeniedException',
+  name: 'UserNotFoundException',
   package: 'foam.nanos.auth',
   extends: 'foam.nanos.auth.AuthenticationException',
   javaGenerateDefaultConstructor: false,
@@ -14,7 +14,7 @@ foam.CLASS({
   properties: [
     {
       name: 'exceptionMessage',
-      value: 'Access denied'
+      value: 'Not logged in {{message_}}'
     }
   ],
 
@@ -23,12 +23,20 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(`
-  public AccessDeniedException() {
+  public UserNotFoundException() {
     super();
   }
 
-  public AccessDeniedException(Throwable cause) {
+  public UserNotFoundException(String message) {
+    super(message);
+  }
+
+  public UserNotFoundException(Throwable cause) {
     super(cause);
+  }
+
+  public UserNotFoundException(String message, Throwable cause) {
+    super(message, cause);
   }
         `);
       }
