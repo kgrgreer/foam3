@@ -121,7 +121,7 @@ public class BrazilVerificationService
 
     String formattedCpf = cpf.replaceAll("[^0-9]", "");
     PessoaResponse response = findFromCPFCache(formattedCpf, birthDate);
-    if ( response != null ) return response;
+    // if ( response != null ) return response;
 
     try {
       String birthDateString = "";
@@ -142,7 +142,13 @@ public class BrazilVerificationService
       if ( response == null ) {
         throw new RuntimeException("SoaWebService.PessoaFisicaNFe no response");
       }
-      ((DAO) getX().get("alarmDAO")).put(new Alarm(this.getClass().getSimpleName(), false));
+      DAO alarmDAO = (DAO) getX().get("alarmDAO");
+      Alarm serviceAlarm = (Alarm) alarmDAO.find(this.getClass().getSimpleName());
+      if ( serviceAlarm != null ) {
+        serviceAlarm = (Alarm) serviceAlarm.fclone();
+        serviceAlarm.setIsActive(false);
+        alarmDAO.put(serviceAlarm);
+      }
       return saveCPFValidationResponse(formattedCpf, birthDate, response).getResponse();
     } catch (Throwable t) {
       Alarm alarm = new Alarm.Builder(getX())
@@ -150,7 +156,6 @@ public class BrazilVerificationService
         .setSeverity(foam.log.LogLevel.ERROR)
         .setReason(AlarmReason.TIMEOUT)
         .setNote(t.getMessage())
-        .setIsActive(true)
         .build();
       ((DAO) getX().get("alarmDAO")).put(alarm);
       throw t;
@@ -161,15 +166,21 @@ public class BrazilVerificationService
     try {
       String formattedCnpj = cnpj.replaceAll("[^0-9]", "");
       PessoaResponse response = findFromCNPJCache(formattedCnpj);
-      if ( response != null ) return response;
+      // if ( response != null ) return response;
 
       PessoaJuridicaNFe request = new PessoaJuridicaNFe();
       request.setDocumento(formattedCnpj);
-      response = ((SoaWebService) getX().get("soaWebService")).pessoaJuridicaNFe(request);
+      response = ((SoaWebService) getX().get("soaWebServices")).pessoaJuridicaNFe(request);
       if ( response == null ) {
         throw new RuntimeException("SoaWebService.PessoaJuridicaNFe no response");
       }
-      ((DAO) getX().get("alarmDAO")).put(new Alarm(this.getClass().getSimpleName(), false));
+      DAO alarmDAO = (DAO) getX().get("alarmDAO");
+      Alarm serviceAlarm = (Alarm) alarmDAO.find(this.getClass().getSimpleName());
+      if ( serviceAlarm != null ) {
+        serviceAlarm = (Alarm) serviceAlarm.fclone();
+        serviceAlarm.setIsActive(false);
+        alarmDAO.put(serviceAlarm);
+      }
       return saveCNPJValidationResponse(formattedCnpj, response).getResponse();
     } catch (Throwable t) {
       Alarm alarm = new Alarm.Builder(getX())
