@@ -624,6 +624,8 @@ FOAM_FILES([
   { name: "foam/u2/view/StrategizerChoiceView" },
   { name: "foam/u2/tag/Card", flags: ['web'] },
   { name: "foam/u2/dialog/Popup", flags: ['web'] },
+  { name: "foam/u2/dialog/StyledModal", flags: ['web'] },
+  { name: "foam/u2/dialog/ConfirmationModals", flags: ['web'] },
   { name: "foam/u2/Dialog", flags: ['web'] },
   { name: "foam/u2/dialog/NotificationMessage", flags: ['web'] },
   { name: "foam/u2/dialog/InlineNotificationMessage", flags: ['web'] },

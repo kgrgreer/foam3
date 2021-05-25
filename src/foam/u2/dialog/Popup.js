@@ -34,33 +34,26 @@ foam.CLASS({
       align-items: center;
       bottom: 0;
       display: flex;
+      height: 100%;
       justify-content: space-around;
       left: 0;
       position: fixed;
       right: 0;
       top: 0;
+      width: 100%;
       z-index: 1000;
     }
     ^X {
       position: absolute;
-      top: 8px;
-      right: 16px;
+      top: min(10%, 16px);
+      right: min(10%, 16px);
       z-index: 1000;
-      background: none !important;
-      width: 24px !important;
-      height: 24px !important;
       cursor: pointer;
-      transition: ease 0.2s;
-      padding: 0;
-      border: none !important;
+      transition: all ease-in 0.1s;
+      padding: 0 !important;
     }
-    ^container {
-      align-items: center;
-      display: flex;
-      height: 100%;
-      justify-content: space-around;
-      position: relative;
-      width: 100%;
+    ^X:hover{
+      transform: scale(1.1)
     }
     ^background {
       background-color: #000;
@@ -73,7 +66,6 @@ foam.CLASS({
     }
     ^inner {
       z-index: 3;
-      max-width: 80vw;
       position: relative;
       /* The following line fixes a stacking problem in certain browsers. */
       will-change: opacity;
@@ -96,8 +88,7 @@ foam.CLASS({
       var content;
 
       this.addClass(this.myClass())
-        .start()
-        .addClass(this.myClass('container'))
+        .on('keydown', this.onKeyDown)
         .start()
           .addClass(this.myClass('background'))
           .on('click', this.closeable ? this.close : null)
@@ -107,12 +98,11 @@ foam.CLASS({
           .addClass(this.myClass('inner'))
           .style({ 'background-color': this.backgroundColor })
           .startContext({ data: this })
-            .start(this.CLOSE_MODAL).show(this.closeable$)
+            .start(this.CLOSE_MODAL, { buttonStyle: 'TERTIARY',  size: 'SMALL' }).show(this.closeable$)
               .addClass(this.myClass('X'))
             .end()
           .endContext()
-        .end()
-      .end();
+        .end();
 
       this.content = content;
     },
@@ -120,6 +110,8 @@ foam.CLASS({
     function open() {
       this.document.body.insertAdjacentHTML('beforeend', this.outerHTML);
       this.load();
+      var focusable = this.el().querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      focusable.length > 1 ? focusable[1].focus() : focusable[0].focus();
     }
   ],
 
@@ -127,6 +119,11 @@ foam.CLASS({
     function close() {
       if ( this.onClose ) this.onClose();
       this.remove();
+    },
+
+    function onKeyDown(e) {
+      var isEsc = (e.key === 'Escape' || e.keyCode === 27);
+      if ( isEsc ) { this.close(); }
     }
   ],
 
