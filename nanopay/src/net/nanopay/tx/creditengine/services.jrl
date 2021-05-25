@@ -1,0 +1,45 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"unitDAO",
+  "serve":true,
+  "serviceScript":
+  """
+  return new foam.dao.EasyDAO.Builder(x)
+    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+    .setJournalName("units")
+    .setPm(true)
+    .setPipelinePm(true)
+    .setOf(foam.core.Unit.getOwnClassInfo())
+    .setName("unit")
+    .setIndex(new foam.core.PropertyInfo[] {foam.core.Unit.NAME})
+    .build();
+  """,
+  "client":
+  """
+  {
+    "of":"foam.core.Unit"
+  }
+  """
+})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"refundTicketDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.ticket.RefundTicket.getOwnClassInfo())
+      .setPm(true)
+      .setAuthorize(true)
+      .setInnerDAO((x.get("ticketDAO")).where(foam.mlang.MLang.INSTANCE_OF(net.nanopay.ticket.RefundTicket.class)))
+      .setEnableInterfaceDecorators(false)
+      .build();
+  """,
+  "client":
+  """
+  {
+    "of":"net.nanopay.ticket.RefundTicket"
+  }
+  """
+})

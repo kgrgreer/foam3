@@ -18,6 +18,16 @@ p({
 
 p({
   "class": "foam.nanos.menu.Menu",
+  "id": "transactions-fee-summary",
+  "label": "Fee Transactions",
+  "icon":"images/intuit/transactions-24px-resting.svg",
+  "activeIcon":"images/intuit/transactions-24px-active.svg",
+  "parent": "",
+  "order": 25
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
   "id": "accounts-support",
   "label": "Accounts",
   "themeIcon":"accountBalance",
@@ -142,4 +152,50 @@ p({
     }
   },
   "parent":"intuit-reports"
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "tickets-support",
+  "label": "Support Tickets",
+  "icon":"images/intuit/supportTickets-24px-resting.svg",
+  "activeIcon":"images/intuit/supportTickets-24px-active.svg",
+  "parent": ""
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"refundtickets-support",
+  "label":"Refund Tickets",
+  "icon":"images/intuit/supportTickets-24px-resting.svg",
+  "activeIcon":"images/intuit/supportTickets-24px-active.svg",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"refundTicketDAO",
+      "browseTitle":"Refund Tickets",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  },
+  "parent":""
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"transactions-fee-summary",
+  "label":"Fee Transactions",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"intuitFeeTransactionSummaryDAO",
+      "browseTitle": "Fee Transactions",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  }
 })

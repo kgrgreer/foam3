@@ -44,3 +44,455 @@ p({
   "lifecycleState":1,
   "spid": "intuit"
 })
+p({
+  "class":"net.nanopay.ticket.Scenario",
+  "id":"379c1084-ebec-4f3b-8627-964146c6f06b",
+  "name":"RefundTicket - cancel CO on pending",
+  "priority":100,
+  "ruleGroup":"refundTickets",
+  "documentation":"Scenario 4: user presses cancel on pending cashout",
+  "daoKey":"localTicketDAO",
+  "operation":3,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue": {
+          "class": "net.nanopay.ticket.RefundStatus",
+          "ordinal":0
+        }
+      },
+      {
+        "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
+        "txnProperty":"status",
+        "txnValue":
+        {
+          "class":"net.nanopay.tx.model.TransactionStatus",
+          "ordinal":0
+        }
+      },
+      {
+        "class":"net.nanopay.ticket.RefundTicketInstanceOfPredicate",
+        "instanceOf":"net.nanopay.tx.cico.COTransaction"
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.ticket.FullReverseScenarioAction",
+    "textToAgent":"Payor has cancelled the transaction. Cancellation in progress",
+    "creditAccount":"64307927-db83-43a7-9787-c5cc89becc11",
+    "postApprovalRuleId": "b64905d0-289b-4371-92a5-f843e344109a",
+    "autoApprove": true
+  },
+  "after":false,
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid": "intuit"
+})
+
+p({
+  "class":"net.nanopay.ticket.Scenario",
+  "id":"6bd4ba7d-c432-4391-9541-77760c851629",
+  "name":"RefundTicket - cancel CI on pending",
+  "priority":100,
+  "ruleGroup":"refundTickets",
+  "documentation":"Scenario 1: CashIn txn, status pending, sender needs to cancel",
+  "daoKey":"localTicketDAO",
+  "operation":3,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.ticket.RefundTicket"
+      },
+      { 
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue": {
+          "class": "net.nanopay.ticket.RefundStatus",
+          "ordinal":0
+        }
+      },
+      {
+        "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
+        "txnProperty":"status",
+        "txnValue":
+        {
+          "class":"net.nanopay.tx.model.TransactionStatus",
+          "ordinal":0
+        }
+      },
+      {
+        "class":"net.nanopay.ticket.RefundTicketInstanceOfPredicate",
+        "instanceOf":"net.nanopay.tx.cico.CITransaction"
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.ticket.ScenarioAction",
+    "textToAgent":"Transaction Cancelled",
+    "postApprovalRuleId": "20b9d32c-8d89-4cf1-aa70-3a759e604fb4",
+    "autoApprove": true
+  },
+  "after":false,
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid": "intuit"
+})
+
+p({
+  "class":"net.nanopay.ticket.Scenario",
+  "id":"ed46c99d-cbe7-4863-8775-211b993030b3",
+  "name":"RefundTicket - cancel CI on Sent",
+  "priority":100,
+  "ruleGroup":"refundTickets",
+  "documentation":"Scenario 2: CashIn txn, status Sent. user clicks cancel",
+  "daoKey":"localTicketDAO",
+  "operation":3,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue": {
+          "class": "net.nanopay.ticket.RefundStatus",
+          "ordinal":0
+        }
+      },
+      {
+        "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
+        "txnProperty":"status",
+        "txnValue":
+        {
+          "class":"net.nanopay.tx.model.TransactionStatus",
+          "ordinal":3
+        }
+      },
+      {
+        "class":"net.nanopay.ticket.RefundTicketInstanceOfPredicate",
+        "instanceOf":"net.nanopay.tx.cico.CITransaction"
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.ticket.WaitingScenarioAction",
+    "textToAgent":"Payor has cancelled the transaction. Cancellation in progress.",
+    "postApprovalRuleId": "waiting",
+    "autoApprove":false
+  },
+  "after":false,
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid": "intuit"
+})
+p({
+  "class":"net.nanopay.ticket.Scenario",
+  "id":"88b99a28-50ae-4cde-a7dc-cbcc099de17d",
+  "name":"RefundTicket - CI goes to Declined",
+  "priority":100,
+  "ruleGroup":"refundTickets",
+  "documentation":"Scenario 3: CashIn txn is declined",
+  "daoKey":"localTicketDAO",
+  "operation":3,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue": {
+          "class": "net.nanopay.ticket.RefundStatus",
+          "ordinal":0
+        }
+      },
+      {
+        "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
+        "txnProperty":"status",
+        "txnValue":
+        {
+          "class":"net.nanopay.tx.model.TransactionStatus",
+          "ordinal":4
+        }
+      },
+      {
+        "class":"net.nanopay.ticket.RefundTicketInstanceOfPredicate",
+        "instanceOf":"net.nanopay.tx.cico.CITransaction"
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.ticket.ScenarioAction",
+    "textToAgent":"The payment has failed due to:",
+    "postApprovalRuleId": "69bafee2-9f5f-4ecb-8aaa-8db8ab9d1adb",
+    "autoApprove": true
+  },
+  "after":false,
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid": "intuit"
+})
+
+p({
+  "class":"net.nanopay.ticket.Scenario",
+  "id":"7a360340-1e66-4cb8-8076-e1b2a6d505d8",
+  "name":"RefundTicket - CI goes to complete, digital is paused",
+  "priority":100,
+  "ruleGroup":"refundTickets",
+  "documentation":"Scenario 2.5: CashIn txn is cancelled in sent and goes to complete. digital paused.",
+  "daoKey":"localTicketDAO",
+  "operation":3,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue": {
+          "class": "net.nanopay.ticket.RefundStatus",
+          "ordinal":0
+        }
+      },
+      {
+        "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
+        "txnProperty":"status",
+        "txnValue":
+        {
+          "class":"net.nanopay.tx.model.TransactionStatus",
+          "ordinal":5
+        }
+      },
+      {
+        "class":"net.nanopay.ticket.RefundTicketInstanceOfPredicate",
+        "instanceOf":"net.nanopay.tx.cico.CITransaction"
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.ticket.FullReverseScenarioAction",
+    "textToAgent":"Payor has cancelled the transaction. Cancellation in progress",
+    "postApprovalRuleId": "b64905d0-289b-4371-92a5-f843e344109a",
+    "autoApprove": true
+  },
+  "after":false,
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid": "intuit"
+})
+
+p({
+  "class":"net.nanopay.ticket.Scenario",
+  "id":"1b639bf0-6ff7-4886-b0df-77425abac191",
+  "name":"RefundTicket - CO goes to complete, after sent",
+  "priority":100,
+  "ruleGroup":"refundTickets",
+  "documentation":"Scenario 5.5: CashOut txn is cancelled in sent and goes to complete.",
+  "daoKey":"localTicketDAO",
+  "operation":3,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue": {
+          "class": "net.nanopay.ticket.RefundStatus",
+          "ordinal":0
+        }
+      },
+      {
+        "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
+        "txnProperty":"status",
+        "txnValue":
+        {
+          "class":"net.nanopay.tx.model.TransactionStatus",
+          "ordinal":5
+        }
+      },
+      {
+        "class":"net.nanopay.ticket.RefundTicketInstanceOfPredicate",
+        "instanceOf":"net.nanopay.tx.cico.COTransaction"
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.ticket.ScenarioAction",
+    "textToAgent":"Cash Out has completed. No action required. txn can't be cancelled",
+    "autoApprove":false,
+    "postApprovalRuleId": "none",
+  },
+  "after":false,
+  "enabled":false,
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid": "intuit"
+})
+
+p({
+  "class":"net.nanopay.ticket.Scenario",
+  "id":"77e68cc9-c7f4-4b97-a600-8cd24eead84d",
+  "name":"RefundTicket - Cancel CO when Sent",
+  "priority":100,
+  "ruleGroup":"refundTickets",
+  "documentation":"Scenario 5: Payor cancels CO while status sent",
+  "daoKey":"localTicketDAO",
+  "operation":3,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue": {
+          "class": "net.nanopay.ticket.RefundStatus",
+          "ordinal":0
+        }
+      },
+      {
+        "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
+        "txnProperty":"status",
+        "txnValue":
+        {
+          "class":"net.nanopay.tx.model.TransactionStatus",
+          "ordinal":3
+        }
+      },
+      {
+        "class":"net.nanopay.ticket.RefundTicketInstanceOfPredicate",
+        "instanceOf":"net.nanopay.tx.cico.COTransaction"
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.ticket.WaitingScenarioAction",
+    "textToAgent":"Waiting for transaction to enter interactable state.",
+    "postApprovalRuleId": "waiting",
+    "autoApprove":false
+  },
+  "after":false,
+  "enabled":false,
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid": "intuit"
+})
+
+p({
+  "class":"net.nanopay.ticket.Scenario",
+  "id":"224de998-1f08-4f92-b516-2cc7dca6c476",
+  "name":"RefundTicket - CO on Declined",
+  "priority":100,
+  "ruleGroup":"refundTickets",
+  "documentation":"Scenario 6: Cash out failed due to destination account error",
+  "daoKey":"localTicketDAO",
+  "operation":3,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue": {
+          "class": "net.nanopay.ticket.RefundStatus",
+          "ordinal":0
+        }
+      },
+      {
+        "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
+        "txnProperty":"status",
+        "txnValue":
+        {
+          "class":"net.nanopay.tx.model.TransactionStatus",
+          "ordinal":4
+        }
+      },
+      {
+        "class":"net.nanopay.ticket.RefundTicketInstanceOfPredicate",
+        "instanceOf":"net.nanopay.tx.cico.COTransaction"
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.ticket.FullReverseScenarioAction",
+    "textToAgent":"The payment has failed due to:",
+    "postApprovalRuleId": "b64905d0-289b-4371-92a5-f843e344109a",
+    "autoApprove": true,
+    "autoRefundDays": 30
+  },
+  "after":false,
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid": "intuit"
+})
+
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id":"cec1ed4f-7563-49a3-9036-3e07cd668b5c",
+  "name":"Create fee transaction",
+  "priority":100,
+  "ruleGroup":"refundTickets",
+  "documentation":"Create fee transaction when digital completes and has the line item",
+  "daoKey":"localTransactionDAO",
+  "operation":1,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.tx.DigitalTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal":5
+        }
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.tx.IndependantFeePlanningRule"
+  },
+  "after":false,
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid": "intuit"
+})

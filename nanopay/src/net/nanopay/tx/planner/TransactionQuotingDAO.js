@@ -34,9 +34,9 @@ foam.CLASS({
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.tx.SummaryTransaction',
-    'net.nanopay.fx.FXSummaryTransaction',
-    'net.nanopay.tx.planner.UnableToPlanException'
+    'net.nanopay.tx.SummarizingTransaction',
+    'net.nanopay.tx.planner.UnableToPlanException',
+    'net.nanopay.tx.creditengine.CreditCodeAccount'
   ],
 
   properties: [
@@ -103,8 +103,10 @@ foam.CLASS({
             return loadedTxn;
           }
 
+          consumeCreditCode(x, loadedTxn);
           return getDelegate().put_(x, loadedTxn); //recovered plan is put in.
         }
+        consumeCreditCode(x, txn);
         return getDelegate().put_(x, txn); // txn being saved as part of chain here.
       `
     },
@@ -142,6 +144,26 @@ foam.CLASS({
           // value at that point.
           if ( ! ( account instanceof ZeroAccount ) ) {
             account.validateAmount(x, (Balance) balanceDAO.find(account.getId()), transfer.getAmount());
+          }
+        }
+      `
+    },
+    {
+      name: 'consumeCreditCode',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction'}
+      ],
+      documentation: 'consumes the credit code',
+      javaCode: `
+        if ( ( (txn instanceof SummarizingTransaction) ) && txn.getCreditCodes() != null && txn.getCreditCodes().length > 0 ) {
+          DAO creditCodeDAO = (DAO) x.get("localCreditCodeDAO");
+          for ( String code : txn.getCreditCodes() ) {
+            CreditCodeAccount creditCode = (CreditCodeAccount) creditCodeDAO.find(code);
+            if ( creditCode == null ) {
+              throw new RuntimeException("cant find error code");
+            }
+            creditCode.consume(x, txn);
           }
         }
       `
