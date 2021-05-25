@@ -740,15 +740,6 @@ foam.CLASS({
       `
     },
     {
-      // TODO/REVIEW - used?
-      class: 'Boolean',
-      name: 'removed',
-      columnPermissionRequired: true,
-      section: 'invoiceInformation',
-      documentation: 'Determines whether an invoice has been removed.',
-      includeInDigest: false
-    },
-    {
       class: 'Reference',
       targetDAOKey: 'contactDAO',
       of: 'net.nanopay.contacts.Contact',
