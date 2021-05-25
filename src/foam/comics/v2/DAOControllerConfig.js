@@ -13,6 +13,8 @@ foam.CLASS({
   `,
 
   imports: [
+    'auth',
+    'currentMenu',
     'translationService'
   ],
 
@@ -112,7 +114,6 @@ foam.CLASS({
       expression: function(defaultColumns) {
         return {
           class: 'foam.u2.view.ScrollTableView',
-          editColumnsEnabled: true,
           columns: defaultColumns,
           css: {
             width: '100%',

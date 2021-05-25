@@ -10,6 +10,8 @@
   extends: 'foam.u2.Element',
 
   imports: [
+    'auth',
+    'currentMenu',
     'memento?',
     'stack'
   ],
@@ -85,14 +87,6 @@
     },
     'selection',
     'disableUserSelection',
-    {
-      class: 'Boolean',
-      name: 'editColumnsEnabled',
-      documentation: `
-        Set to true if users should be allowed to choose which columns to use.
-      `,
-      value: true
-    },
     {
       class: 'Int',
       name: 'rowHeight',
@@ -199,7 +193,7 @@
       this.updateCount();
     },
 
-    function initE() {
+    async function initE() {
       if ( this.memento ) {
         //as there two settings to configure for table scroll and columns params
         //scroll setting which setts the record to which table currently scrolled
@@ -224,7 +218,6 @@
         columns: this.columns,
         contextMenuActions: this.contextMenuActions,
         selection$: this.selection$,
-        editColumnsEnabled: this.editColumnsEnabled,
         disableUserSelection: this.disableUserSelection,
         multiSelectEnabled: this.multiSelectEnabled,
         selectedObjects$: this.selectedObjects$

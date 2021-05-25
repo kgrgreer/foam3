@@ -10,10 +10,6 @@ foam.CLASS({
   extends: 'foam.u2.view.UnstyledTableView',
   properties: [
     {
-      name: 'editColumnsEnabled',
-      value: false,
-    },
-    {
       name: 'disableUserSelection',
       value: true,
     },

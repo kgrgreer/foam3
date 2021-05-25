@@ -148,11 +148,12 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    async function initE() {
     this.SUPER();
 
     var self = this;
     var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
+    let primaryActionPermission = await this.auth.check(null, `primary-action-${menuId}`)
     this.addClass(this.myClass())
 
       .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$browseSubtitle, config$primaryAction, config$createTitle, config$createControllerView) {
@@ -166,17 +167,17 @@ foam.CLASS({
                     .addClasses(['h100',self.myClass('browse-title')])
                     .translate(menuId + ".browseTitle", config$browseTitle)
                   .end()
-                  .callIf( ! config.detailView, function() {
+                  .callIf( ! config.detailView && primaryActionPermission, function() {
                     this.startContext({ data: self })
                       .tag(self.CREATE, { label: config$createTitle, buttonStyle: foam.u2.ButtonStyle.PRIMARY })
                     .endContext()
                   })
-                  .callIf( config.createControllerView, function() {
+                  .callIf( config.createControllerView&& primaryActionPermission, function() {
                     this.startContext({ data: self })
                       .tag(self.CREATE, { label: config$createControllerView.view.title, buttonStyle: foam.u2.ButtonStyle.PRIMARY })
                     .endContext()
                   })
-                  .callIf( config$primaryAction, function() {
+                  .callIf( config$primaryAction&& primaryActionPermission, function() {
                     this.startContext({ data: self }).tag(config$primaryAction, { size: 'LARGE', buttonStyle: 'PRIMARY' }).endContext();
                   })
                 .end()

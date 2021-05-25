@@ -88,8 +88,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.ScrollTableView',
         of: foam.demos.sevenguis.Person,
-        title: '',
-        editColumnsEnabled: false
+        title: ''
       }
     },
     {

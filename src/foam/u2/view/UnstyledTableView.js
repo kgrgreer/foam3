@@ -37,6 +37,7 @@ foam.CLASS({
   imports: [
     'auth?',
     'click?',
+    'currentMenu',
     'dblclick?',
     'editRecord?',
     'filteredTableColumns?',
@@ -132,7 +133,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'editColumnsEnabled',
-      value: true,
+      value: false,
       documentation: 'Set this to true to let the user select columns.'
     },
     {
@@ -316,6 +317,8 @@ foam.CLASS({
 
     async function initE() {
       var view = this;
+
+      this.editColumnsEnabled =  await this.auth.check(null, `edit-columns-${this.currentMenu.id}`);
 
       this.columns$.sub(this.updateColumns_);
       this.of$.sub(this.updateColumns_);
