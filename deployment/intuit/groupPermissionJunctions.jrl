@@ -102,3 +102,6 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reportin
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"menu.read.service-fees-reports"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"service.serviceFeesReportDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-reporting","targetId":"servicefeesreport.read.*"})
+
+// ********** SME *****************
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-sme","targetId":"rule.read.user-allow-duplicate-email-rule"})
