@@ -266,22 +266,6 @@ foam.CLASS({
 
   actions: [
     {
-      name: 'assignToMe',
-      section: 'infoSection',
-      availablePermissions: ['net.nanopay.ticket.refundTicket.viewAssignToMe'],
-      isAvailable: function(assignedTo) {
-        return assignedTo == 0;
-      },
-      code: function(X) {
-        this.assignedTo = this.subject.user.id;
-        this.ticketDAO.put(this).then(ticket => {
-          this.notify(this.ASSIGN, '', foam.log.LogLevel.INFO, true);
-        }).catch(error => {
-          this.notify(error.message, '', this.LogLevel.ERROR, true);
-        });
-      }
-    },
-    {
       name: 'submit',
       section: 'infoSection',
       isAvailable: function(assignedTo, refundStatus) {

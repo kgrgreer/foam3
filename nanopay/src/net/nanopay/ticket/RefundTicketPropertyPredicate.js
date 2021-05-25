@@ -58,7 +58,7 @@ foam.CLASS({
       Transaction txn = (Transaction) txnDAO.find(ticket.getProblemTransaction());
       if ( txn == null ) {
         Logger logger = (Logger) x.get("logger");
-        logger.error("RefundTicketPropertyPredicate has failed, because txn find returned null "+ ticket.getId());
+        logger.debug("RefundTicketPropertyPredicate has failed, because txn find returned null "+ ticket.getId());
         throw new TransactionException("RefundTicketPropertyPredicate has failed, because txn find returned null "+ ticket.getId());
       }
       if ( txn instanceof SummarizingTransaction ) {
