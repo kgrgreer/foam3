@@ -78,7 +78,7 @@ foam.CLASS({
         }
 
         Group primaryGroup = request.findGroup(getX());
-        
+
         if ( primaryGroup == null ) {
           Logger logger = (Logger) x.get("logger");
           logger.error(GROUP_NOT_SET_ERROR_MSG, request.getGroup(), request.getApprover());
