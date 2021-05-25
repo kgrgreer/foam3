@@ -40,7 +40,6 @@ foam.CLASS({
           ((Logger) x.get("logger")).error(e);
         }
       }
-      alarm.setSeverity(config.getSeverity());
       return getDelegate().put_(x, alarm);
       `
     }
