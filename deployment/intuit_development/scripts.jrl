@@ -393,6 +393,11 @@ p({
         print("");
     }
 
+    // Setup DUG rules for Intuit
+    // 1. Intuit userDAO Webhook
+    // 2. Intuit summaryTransactionDOA Webhook
+    // 3. Intuit flinksLoginIdAsyncDAO Webhook
+
     print("Done ...");
   """
 })

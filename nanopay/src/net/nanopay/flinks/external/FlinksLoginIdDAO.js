@@ -69,6 +69,9 @@ foam.CLASS({
     'net.nanopay.crunch.registration.UserDetailExpandedData',
     'net.nanopay.flinks.FlinksAuth',
     'net.nanopay.flinks.FlinksResponseService',
+    'net.nanopay.flinks.exception.FlinksInvalidLoginIdException',
+    'net.nanopay.flinks.exception.FlinksInvalidAccountException',
+    'net.nanopay.flinks.exception.FlinksOnboardingFailureException',
     'net.nanopay.flinks.model.AddressModel',
     'net.nanopay.flinks.model.AccountWithDetailModel',
     'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
@@ -153,7 +156,7 @@ foam.CLASS({
         if ( !SafetyUtil.isEmpty(flinksLoginId.getLoginId()) ) {
           FlinksResponse flinksResponse = (FlinksResponse) ((FlinksResponseService) x.get("flinksResponseService")).getFlinksResponse(x, flinksLoginId);
           if ( flinksResponse == null ) {
-            throw new TemporaryExternalAPIException("Flinks failed to provide a valid response when provided with login ID: " + flinksLoginId.getLoginId());
+            throw new FlinksInvalidLoginIdException.Builder(x).setLoginId(flinksLoginId.getLoginId()).build();
           }
 
           FlinksAuth flinksAuth = (FlinksAuth) x.get("flinksAuth");
@@ -162,7 +165,7 @@ foam.CLASS({
             flinksAuthResponse = flinksAuth.pollAsync(x, flinksAuthResponse.getRequestId(), subject.getUser());
           }
           if ( flinksAuthResponse.getHttpStatusCode() != 200 ) {
-            throw new TemporaryExternalAPIException("Flinks failed to provide valid account detials " + flinksAuthResponse);
+            throw new FlinksInvalidAccountException.Builder(x).setFlinksResponse(flinksAuthResponse).build();
           }
           FlinksAccountsDetailResponse flinksDetailResponse = (FlinksAccountsDetailResponse) flinksAuthResponse;
           flinksLoginId.setFlinksAccountsDetails(flinksDetailResponse.getId());
@@ -798,7 +801,7 @@ foam.CLASS({
         // Retrieve the updated business
         business = (Business) localUserDAO.inX(subjectX).find(business);
         if ( business == null ) {
-          throw new TemporaryExternalAPIException("Failed to create business during onboarding with Flinks");
+          throw new FlinksOnboardingFailureException();
         }
 
         // Business CAD payments capability
