@@ -170,7 +170,7 @@ public class TrevisoService
       if ( res.getCode() != 0 )
         throw new RuntimeException("Error onboarding Treviso client to FepWeb. " + res.getMessage());
 
-      return saveFepWebClient(user.getId(), "Active");
+      return saveFepWebClient(user.getId(), FepWebClientStatus.ACTIVE);
     } catch(Throwable t) {
       throw new RuntimeException(t);
     }
@@ -206,7 +206,7 @@ public class TrevisoService
       SearchCustomerResponse res = getFepWebService(x).searchCustomer(request);
       if ( res != null && res.getEntityDTOList() != null && res.getEntityDTOList().length > 0  ) {
         Entity entity = (Entity) res.getEntityDTOList()[0];
-        return saveFepWebClient(user.getId(), entity.getStatus());
+        return saveFepWebClient(user.getId(), FepWebClientStatus.ACTIVE);
       }
     } catch(Throwable t) {
       logger_.error("Error searching Treviso client.", t);
@@ -265,16 +265,21 @@ public class TrevisoService
       getX().get("fepWebClientDAO")).find(EQ(FepWebClient.USER, user));
   }
 
-  protected FepWebClient saveFepWebClient(long userId, String status) {
-    DAO fepWebClientDAO = (DAO) getX().get("fepWebClientDAO");
+  public FepWebClient createFepWebClient(long userId) {
+    return saveFepWebClient(userId, FepWebClientStatus.PENDING);
+  }
+
+  protected FepWebClient saveFepWebClient(long userId, FepWebClientStatus status) {
     FepWebClient client  = findClient(userId);
     if ( client == null ) {
-      client = (FepWebClient) fepWebClientDAO.put(new FepWebClient.Builder(getX())
+      client = new FepWebClient.Builder(getX())
         .setUser(userId)
-        .setStatus(status)
-        .build());
+        .build();
     }
-    return client;
+
+    client = (FepWebClient) client.fclone();
+    client.setStatus(status);
+    return (FepWebClient) ((DAO) getX().get("fepWebClientDAO")).put(client);
   }
 
   protected String getName(User user) {
