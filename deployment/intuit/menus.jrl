@@ -2,8 +2,7 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "businesses-support",
   "label": "Businesses",
-  "icon":"images/intuit/businesses-24px-resting.svg",
-  "activeIcon":"images/intuit/businesses-24px-active.svg",
+  "themeIcon":"businesses",
   "parent": "",
   "order": 10
 })
@@ -12,8 +11,7 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "transactions-summary",
   "label": "Transactions",
-  "icon":"images/intuit/transactions-24px-resting.svg",
-  "activeIcon":"images/intuit/transactions-24px-active.svg",
+  "themeIcon":"transactions",
   "parent": "",
   "order": 20
 })
@@ -22,8 +20,7 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "accounts-support",
   "label": "Accounts",
-  "icon":"images/intuit/account-balance-resting-24px.svg",
-  "activeIcon":"images/intuit/account-balance-active-24px.svg",
+  "themeIcon":"accountBalance",
   "parent": "",
   "order": 30
 })
@@ -32,8 +29,7 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "users-support",
   "label": "Users",
-  "icon":"images/intuit/users-24px-resting.svg",
-  "activeIcon":"images/intuit/users-24px-active.svg",
+  "themeIcon":"users",
   "parent": "",
   "order": 40
 })
@@ -42,8 +38,7 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "bills-support",
   "label": "Charges",
-  "icon":"images/intuit/charges-24px-resting.svg",
-  "activeIcon":"images/intuit/charges-24px-active.svg",
+  "themeIcon":"charges",
   "parent": "",
   "order": 50
 })
@@ -52,8 +47,7 @@ p({
   "class":"foam.nanos.menu.Menu",
   "id":"intuit-reports",
   "label":"Reports",
-  "icon":"images/intuit/reports-24px-resting.svg",
-  "activeIcon":"images/intuit/reports-24px-active.svg",
+  "themeIcon":"reports",
   "handler":{
     "class":"foam.nanos.menu.SubMenu"
   },
