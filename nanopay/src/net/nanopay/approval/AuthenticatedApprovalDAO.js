@@ -125,7 +125,10 @@ foam.CLASS({
                   NOT(
                     EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)
                   ),
-                  EQ(ApprovalRequest.GROUP, user.getGroup())
+                  OR(
+                    EQ(ApprovalRequest.GROUP, user.getGroup()),
+                    CONTAINS(ApprovalRequest.ADDITIONAL_GROUPS, user.getGroup())
+                  )
                 )
               )
             );
