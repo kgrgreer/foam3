@@ -682,8 +682,9 @@ p({
       .setRuler(false)
       .setPm(true)
       .setOrder(new foam.mlang.order.Comparator[] {
-        foam.mlang.MLang.DESC(foam.nanos.ruler.RuleGroup.PRIORITY),
-        foam.nanos.ruler.RuleGroup.ID })
+        foam.nanos.ruler.RuleGroup.ID,
+        foam.mlang.MLang.DESC(foam.nanos.ruler.RuleGroup.PRIORITY)
+      })
       .build();
     ed.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.ruler.RuleGroup.PRIORITY });
     return new foam.dao.ValidatingDAO(x, ed);
