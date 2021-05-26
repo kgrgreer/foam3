@@ -110,6 +110,7 @@ foam.CLASS({
     function open() {
       this.document.body.insertAdjacentHTML('beforeend', this.outerHTML);
       this.load();
+      // Sets focus to first modal element after the close button
       var focusable = this.el().querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
       focusable.length > 1 ? focusable[1].focus() : focusable[0].focus();
     }

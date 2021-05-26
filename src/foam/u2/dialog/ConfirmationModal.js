@@ -10,7 +10,7 @@ foam.CLASS({
   extends: 'foam.u2.dialog.StyledModal',
   documentation: `
     Extension of styled modal with a primary and secondary action, mainly to be used for conifrmations and yes/no modals.
-    Clicking on any action closes performs the action adn closes the dialog
+    Clicking on any action closes performs the action and closes the dialog
   `,
 
   imports: ['theme?'],
@@ -28,7 +28,8 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.core.Action',
       name: 'secondaryAction',
-      documentation: 'The secondary action for this modal dialog (Close/Cancel)',
+      documentation: `The secondary action for this modal dialog (Close/Cancel)
+      can be turned off using the 'showCancel' property`,
     },
     ['showCancel', true],
     'data'

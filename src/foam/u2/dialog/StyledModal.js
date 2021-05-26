@@ -82,11 +82,13 @@ foam.CLASS({
       class: 'Enum',
       of: 'foam.u2.dialog.ModalStyles',
       name: 'modalStyle',
-      value: 'DEFAULT'
+      value: 'DEFAULT',
+      documentation: 'Setting modal styles adds a coloured bar at the top of the modal'
     },
     {
       name: 'isStyled',
-      value: true
+      value: true,
+      documentation: 'Can be used to turn off all styling for modal container'
     },
     {
       name: 'title',
@@ -101,14 +103,13 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isTop',
-      value: false
+      value: false,
+      documentation: 'Positions the modal to the top of the screen'
     }
   ],
 
   methods: [
     function init() {
-      var bgcolor = this.modalStyle.color;
-
       this
         .addClass(this.myClass())
         .on('keydown', this.onKeyDown)
@@ -120,7 +121,7 @@ foam.CLASS({
           .enableClass(this.myClass('top'), this.isTop$)
           .start()
               .enableClass(this.myClass('colorBar'), this.isStyled$)
-              .style({ background: bgcolor })
+              .style({ background: this.modalStyle.color })
           .end()
           .start()
             .enableClass(this.myClass('inner'), this.isStyled$)
