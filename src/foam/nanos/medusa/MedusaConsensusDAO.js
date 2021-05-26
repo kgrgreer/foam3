@@ -452,9 +452,9 @@ This is the heart of Medusa.`,
                 var i     = props.iterator();
                 while ( i.hasNext() ) {
                   foam.core.PropertyInfo prop = i.next();
-                  // Explicitly copy only storageTransient to avoid copying defaults
                   if ( prop.getStorageTransient() &&
-                       ! prop.getClusterTransient() ) {
+                       ! prop.getClusterTransient() &&
+                       prop.isSet(tran) ) {
                     prop.set(nu, prop.get(tran));
                   }
                 }

@@ -85,9 +85,10 @@ foam.CLASS({
 
     /* Unstyled */
     ^unstyled {
-      background-color: none;
+      background: none;
       border: none;
       color: inherit;
+      width: 100%;
     }
 
     /* Primary */
@@ -163,10 +164,10 @@ foam.CLASS({
     ^secondary-destructive{
       background-color: white;
       border: 1px solid /*%GREY3%*/ #B2B6BD;
-      color: /*%DESTRUCTIVE2%*/ #d9170e;
+      color: /*%DESTRUCTIVE2%*/ #a61414;
     }
 
-    ^secondary-destructive svg { fill: /*%DESTRUCTIVE2%*/ #d9170e; }
+    ^secondary-destructive svg { fill: /*%DESTRUCTIVE2%*/ #a61414; }
 
     ^secondary-destructive:hover {
       background-color: /*%GREY5%*/ #B2B6BD;
@@ -214,8 +215,8 @@ foam.CLASS({
     ^tertiary-destructive,^tertiary-destructive svg {
       background-color: transparent;
       border-color: transparent;
-      color: /*%DESTRUCTIVE5%*/ #5E6061;
-      fill: /*%DESTRUCTIVE5%*/ #5E6061;
+      color: /*%DESTRUCTIVE2%*/ #a61414;
+      fill: /*%DESTRUCTIVE2%*/ #a61414;
     }
 
     ^tertiary-destructive:hover:not(:disabled) {
@@ -451,8 +452,10 @@ foam.CLASS({
       }
 
       if ( this.label ) {
-        if ( this.buttonStyle == 'LINK' || this.buttonStyle == 'UNSTYLED' ) {
+        if ( this.buttonStyle == 'LINK' ) {
           this.start().addClass('p').add(this.label$).end();
+        } else if ( this.buttonStyle == 'UNSTYLED' ) {
+          this.add(this.label$);
         } else {
           this.start().addClass('h600').add(this.label$).end();
         }

@@ -88,9 +88,10 @@ foam.CLASS({
   messages: [
     { name: 'LABEL_DEFAULT_TITLE', message: 'Drag your file here' },
     { name: 'LABEL_OR',            message: 'or' },
-    { name: 'LABEL_BROWSE',        message: 'select from your device' },
+    { name: 'LABEL_BROWSE',        message: 'Select from your device' },
     { name: 'LABEL_SUPPORTED',     message: 'Supported file types:' },
     { name: 'LABEL_MAX_SIZE',      message: 'Max size:' },
+    { name: 'ERROR_FILE_TITLE',    message: 'Error' },
     { name: 'ERROR_FILE_TYPE',     message: 'Invalid file type' },
     { name: 'ERROR_FILE_SIZE',     message: 'File size exceeds 15MB' }
   ],
@@ -242,7 +243,7 @@ foam.CLASS({
         // skip files that exceed limit
         if ( files[i].size > ( this.maxSize * 1024 * 1024 ) ) {
           if ( ! errors ) errors = true;
-          ctrl.notify(this.ERROR_FILE_SIZE, '', this.LogLevel.ERROR, true);
+          ctrl.notify(this.ERROR_FILE_TITLE, this.ERROR_FILE_SIZE, this.LogLevel.ERROR, true);
           continue;
         }
         var isIncluded = false;
@@ -337,7 +338,7 @@ foam.CLASS({
               if ( this.isFileType(file) ) {
                 files.push(file);
               } else {
-                ctrl.notify(this.ERROR_FILE_TYPE, '', this.LogLevel.ERROR, true);
+                ctrl.notify(this.ERROR_FILE_TITLE, this.ERROR_FILE_TYPE, this.LogLevel.ERROR, true);
               }
             }
           }
@@ -349,7 +350,7 @@ foam.CLASS({
           if ( this.isFileType(file) ) {
             files.push(file);
           } else {
-            ctrl.notify(this.ERROR_FILE_TYPE, '', this.LogLevel.ERROR, true);
+            ctrl.notify(this.ERROR_FILE_TITLE, this.ERROR_FILE_TYPE, this.LogLevel.ERROR, true);
           }
         }
       }
