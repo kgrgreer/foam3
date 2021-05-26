@@ -65,6 +65,7 @@ var classes = [
   'foam.mlang.predicate.IsInstanceOf',
   'foam.mlang.predicate.IsClassOf',
   'foam.mlang.predicate.DotF',
+  'foam.mlang.predicate.CapabilityAuthServicePredicate',
   'foam.mlang.sink.Count',
   'foam.mlang.sink.GroupBy',
   'foam.mlang.F',
