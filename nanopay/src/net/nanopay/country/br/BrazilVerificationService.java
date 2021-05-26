@@ -143,7 +143,7 @@ public class BrazilVerificationService
         throw new RuntimeException("SoaWebService.PessoaFisicaNFe no response");
       }
       DAO alarmDAO = (DAO) getX().get("alarmDAO");
-      Alarm serviceAlarm = (Alarm) alarmDAO.find(this.getClass().getSimpleName());
+      Alarm serviceAlarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, this.getClass().getSimpleName()));
       if ( serviceAlarm != null ) {
         serviceAlarm = (Alarm) serviceAlarm.fclone();
         serviceAlarm.setIsActive(false);
@@ -167,7 +167,7 @@ public class BrazilVerificationService
     try {
       String formattedCnpj = cnpj.replaceAll("[^0-9]", "");
       PessoaResponse response = findFromCNPJCache(formattedCnpj);
-      if ( response != null ) return response;
+      // if ( response != null ) return response;
 
       PessoaJuridicaNFe request = new PessoaJuridicaNFe();
       request.setDocumento(formattedCnpj);
@@ -176,7 +176,7 @@ public class BrazilVerificationService
         throw new RuntimeException("SoaWebService.PessoaJuridicaNFe no response");
       }
       DAO alarmDAO = (DAO) getX().get("alarmDAO");
-      Alarm serviceAlarm = (Alarm) alarmDAO.find(this.getClass().getSimpleName());
+      Alarm serviceAlarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, this.getClass().getSimpleName()));
       if ( serviceAlarm != null ) {
         serviceAlarm = (Alarm) serviceAlarm.fclone();
         serviceAlarm.setIsActive(false);
