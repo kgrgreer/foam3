@@ -15,11 +15,11 @@ foam.CLASS({
     'auth',
     'ctrl',
     'loginSuccess',
-    'stack',
-    'user',
     'menuDAO',
     'memento',
-    'translationService'
+    'stack',
+    'translationService',
+    'user'
   ],
 
   requires: [
@@ -134,8 +134,17 @@ foam.CLASS({
                     this.user.copyFrom(updatedUser);
                     this.nextStep();
                   }).catch(err => {
+                    let id = err.data && err.data.id;
+                    var message = this.ERROR_MSG;
+                    var description;
+                    if ( id ) {
+                      message = foam.String.labelize(id.split('.').pop());
+                      message = this.translationService.getTranslation(foam.locale, id+'.notification.message', message);
+                      description = this.translationService.getTranslation(foam.locale, id+'.notification.description', err.message);
+                    }
                     this.ctrl.add(this.NotificationMessage.create({
-                      message: err.message || this.ERROR_MSG,
+                      message: message,
+                      description: description,
                       type: this.LogLevel.ERROR
                     }));
                   });
@@ -146,9 +155,17 @@ foam.CLASS({
             }
           ).catch(
             err => {
-              let message = err.message ? this.translationService.getTranslation(foam.locale, `${err.data.id}`, err.message) : this.ERROR_MSG
+              let id = err.data && err.data.id;
+              var message = this.ERROR_MSG;
+              var description;
+              if ( id ) {
+                message = foam.String.labelize(id.split('.').pop());
+                message = this.translationService.getTranslation(foam.locale, id+'.notification.message', message);
+                description = this.translationService.getTranslation(foam.locale, id+'.notification.description', err.message);
+              }
               this.ctrl.add(this.NotificationMessage.create({
                 message: message,
+                description: description,
                 type: this.LogLevel.ERROR
               }));
           });
