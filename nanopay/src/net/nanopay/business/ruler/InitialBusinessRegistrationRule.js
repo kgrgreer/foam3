@@ -34,21 +34,10 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
-    'foam.core.ClientRuntimeException',
+    'net.nanopay.business.BusinessValidationException',
+    'net.nanopay.business.BusinessSignInException',
     'net.nanopay.crunch.onboardingModels.InitialBusinessData',
     'net.nanopay.model.Business'
-  ],
-
-  messages: [
-    { name: 'BUSINESS_CREATE_ERROR',  message: 'There was an issue creating the business' },
-    { name: 'ASSOCIATION_ERROR', messsage: 'There was an issue associating the business to the user' },
-    {
-      name: 'UNABLE_SIGN_IN',
-      message: `
-        There was an issue signing in to the newly created business, Please go to the switch business menu in your personal menus
-        to sign in to your business.
-      `
-    }
   ],
 
   methods: [
@@ -96,7 +85,7 @@ foam.CLASS({
             ucj.setSourceId(business.getId());
           } catch (Exception e) {
             ((Logger) x.get("logger")).warning(e);
-            throw new ClientRuntimeException(BUSINESS_CREATE_ERROR, e);
+            throw new BusinessValidationException(e);
           }
 
           try {
@@ -104,7 +93,7 @@ foam.CLASS({
               agentAuth.actAs(x, business);
           } catch (Exception e) {
             ((Logger) x.get("logger")).warning(e);
-            throw new ClientRuntimeException(UNABLE_SIGN_IN, e);
+            throw new BusinessSignInException(e);
           }
         }
       }, "Creates business on initial business data submit.");
