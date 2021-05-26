@@ -459,7 +459,7 @@ p({
   """
     return new foam.nanos.auth.AuthorizationDAO.Builder(x)
       .setDelegate((foam.dao.DAO) x.get("localServiceProviderDAO"))
-      .setAuthorizer(new foam.nanos.auth.StandardAuthorizer("serviceprovider"))
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("serviceprovidercapability"))
       .build();
   """,
   "client":"{\"of\":\"foam.nanos.auth.ServiceProvider\"}"
