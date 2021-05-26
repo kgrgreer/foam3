@@ -30,8 +30,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.log.LogLevel',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.log.LogLevel'
   ],
 
   javaImports: [
