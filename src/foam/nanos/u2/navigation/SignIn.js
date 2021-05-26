@@ -143,8 +143,8 @@ foam.CLASS({
                       description = this.translationService.getTranslation(foam.locale, id+'.notification.description', err.message);
                     }
                     this.ctrl.add(this.NotificationMessage.create({
-                      message: title,
-                      description: message,
+                      message: message,
+                      description: description,
                       type: this.LogLevel.ERROR
                     }));
                   });
