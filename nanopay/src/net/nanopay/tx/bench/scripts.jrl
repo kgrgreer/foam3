@@ -28,7 +28,7 @@ p({
 })
 p({
   class:"foam.nanos.script.Script",
-  id:"TransactionBenchmarkV2Jshell",
+  id:"TransactionBenchmarkJShell",
   language:2,
   code:`
     import foam.nanos.bench.BenchmarkRunner;
