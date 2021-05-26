@@ -4,12 +4,13 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.u2.dialog',
   name: 'ConfirmationModal',
   extends: 'foam.u2.dialog.StyledModal',
   documentation: `
-    This is a styled modal with a title, content/body and a primary and secondary action
+    Extension of styled modal with a primary and secondary action, mainly to be used for conifrmations and yes/no modals.
+    Clicking on any action closes performs the action adn closes the dialog
   `,
 
   imports: ['theme?'],
@@ -17,40 +18,28 @@
   messages: [{ name: 'CancelLabel', message: 'Cancel' }],
 
   properties: [
-    ['isTop', true],
     {
       class: 'FObjectProperty',
       of: 'foam.core.Action',
       name: 'primaryAction',
       documentation: 'The primary action for this modal dialog (Save/Submit/Continue)',
-      adapt: (_, a, p) => {
-        a.buttonStyle = 'PRIMARY';
-        return a;
-      }
     },
     {
       class: 'FObjectProperty',
       of: 'foam.core.Action',
       name: 'secondaryAction',
       documentation: 'The secondary action for this modal dialog (Close/Cancel)',
-      adapt: (_, a, p) => {
-        a.buttonStyle = 'TERTIARY';
-        return a;
-      }
     },
-    ['showCancel', true]
+    ['showCancel', true],
+    'data'
   ],
 
   methods: [
-    function init() {
-      this.SUPER();
-      this.sub('action', () => { this.close(); });
-    },
     function addActions() {
       var actions = this.E().startContext({ data: this });
-      actions.tag(this.primaryAction, { isDestructive: this.modalStyle == 'DESTRUCTIVE' });
+      actions.tag(this.CONFIRM, { label: this.primaryAction.label, isDestructive: this.modalStyle == 'DESTRUCTIVE' });
       if ( this.showCancel ) {
-        actions.tag(this.secondaryAction || this.CANCEL);
+        actions.tag(this.CANCEL, { label: this.secondaryAction ? this.secondaryAction.label : this.CANCEL_LABEL });
       }
       return actions.endContext();
     }
@@ -58,10 +47,18 @@
 
   actions: [
     {
+      name: 'confirm',
+      buttonStyle: 'PRIMARY',
+      code: function(X) {
+        this.primaryAction && this.primaryAction.maybeCall(X, this.data);
+        X.closeDialog();
+      }
+    },
+    {
       name: 'cancel',
-      label: this.CANCEL_LABEL,
       buttonStyle: 'TERTIARY',
       code: function(X) {
+        this.secondaryAction && this.secondaryAction.maybeCall(X, this.data);
         X.closeDialog();
       }
     }
