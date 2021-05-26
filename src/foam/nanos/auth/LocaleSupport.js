@@ -14,6 +14,8 @@ foam.CLASS({
     'foam.nanos.auth.LanguageId',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.theme.Theme',
+    'foam.nanos.theme.Themes',
     'foam.util.SafetyUtil',
     'javax.servlet.http.HttpServletRequest'
   ],
@@ -49,19 +51,18 @@ foam.CLASS({
       Subject subject = (Subject) x.get("subject");
       if ( subject != null ) {
         User user = subject.getRealUser();
-        if ( user != null ) {
-          user.getLanguage().getCode();
+        if ( user != null &&
+             User.LANGUAGE.isSet(user) ) {
+          Language language = (Language) user.findLanguage(x);
+          if ( language != null ) {
+            return language.getCode();
+          }
         }
       }
 
-      // HttpRequest Header
-      HttpServletRequest req = x.get(HttpServletRequest.class);
-      if ( req != null ) {
-        String acceptLanguage = req.getHeader("Accept-Language");
-        if ( ! SafetyUtil.isEmpty(acceptLanguage) ) {
-          String[] languages = acceptLanguage.split(",");
-          return languages[0];
-        }
+      Theme theme = ((Themes) x.get("themes")).findTheme(x);
+      if ( theme != null ) {
+        return theme.getDefaultLocaleLanguage();
       }
 
       return "en";
