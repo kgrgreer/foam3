@@ -22,8 +22,7 @@ foam.CLASS({
 
   requires: [
     'foam.blob.BlobBlob',
-    'foam.nanos.fs.File',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.nanos.fs.File'
   ],
 
   imports: [
