@@ -156,9 +156,6 @@ public class TrevisoService
   }
 
   public FepWebClient createEntity(X x, long userId) {
-    FepWebClient client = findClient(userId);
-    if ( client != null ) return client;
-
     User user = (User) ((DAO) x.get("bareUserDAO")).find(userId);
     if ( user == null ) throw new RuntimeException("User not found: " + userId);
     if ( user.getAddress() == null ) throw new RuntimeException("User address cannot be null: " + userId);

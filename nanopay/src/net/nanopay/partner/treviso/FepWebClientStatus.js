@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -18,14 +18,9 @@
 foam.ENUM({
   package: 'net.nanopay.partner.treviso',
   name: 'FepWebClientStatus',
+
   values: [
-    {
-      name: 'PENDING',
-      label: 'Pending'
-    },
-    {
-      name: 'ACTIVE',
-      label: 'Active'
-    }
+    { name: 'PENDING',   label: 'Pending' },
+    { name: 'ACTIVE',  label: 'Active' }
   ]
 });
