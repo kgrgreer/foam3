@@ -55,11 +55,22 @@ foam.CLASS({
     },
     {
       name: 'inherentPermissions',
-      javaGetter: 'return new String[] { "serviceprovider.read." + getId() };',
+      javaGetter: `
+        return new String[] {
+          "serviceprovider.read." + getId(),
+          "serviceprovidercapability.read." + getId()
+        };
+      `,
       factory: function() {
-        return [ 'serviceprovider.read.' + this.id ];
+        return [
+          'serviceprovider.read.' + this.id,
+          'serviceprovidercapability.read.' + this.id
+        ];
       },
-      documentation: 'Service provider must have "serviceprovider.read.<SPID>" inherent permission.',
+      documentation: `Service provider must have inherent permissions
+        "serviceprovider.read.<SPID>" to allow users to read ServiceProviderAware objects under this spid, as well as
+        "serviceprovidercapability.read.<SPID> to allow user to read this ServiceProvider itself
+      `,
     }
   ],
 
