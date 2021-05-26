@@ -16,8 +16,9 @@ foam.CLASS({
 
       function test(s) {
         try {
-          console.log(fs.parseString(s)[0]);
+          console.log(fs.parseString(s).toString());
         } catch (x) {
+          console.log('ERROR: ', x);
         }
       }
 
@@ -59,15 +60,15 @@ foam.CLASS({
       value: function(alt, anyChar, eof, join, literal, literalIC, not, notChars, optional, range,
         repeat, repeat0, seq, seq1, str, sym, until) {
         return {
-          START: seq1(0, sym('expr'), repeat0(' '), eof()),
+          START: sym('expr'), //seq1(0, sym('expr'), repeat0(' '), eof()),
 
-          expr: sym('orexpr'),
+          expr: sym('or'),
 
-          orexpr: repeat(sym('andexpr'), literal('||'), 1),
+          or: repeat(sym('and'), literal('||'), 1),
 
-          andexpr: repeat(sym('parenexpr'),literal('&&'), 1),
+          and: repeat(sym('simpleexpr'), literal('&&'), 1),
 
-          parenexpr: alt(
+          simpleexpr: alt(
             sym('paren'),
             sym('negate'),
             sym('comparison')
@@ -154,14 +155,6 @@ foam.CLASS({
         };
 
         var actions = {
-          or: function(v) {
-            return self.Or.create({ args: v });
-          },
-
-          and: function(v) {
-            return self.And.create({ args: v });
-          },
-
           negate: function(v) {
             return self.Not.create({ arg1: v[1] });
           },
@@ -177,6 +170,10 @@ foam.CLASS({
 
             return op.call(self, lhs, rhs);
           },
+
+          or: function(v) { return self.OR(v); },
+
+          and: function(v) { return self.AND(v); },
 
           field: function(v) {
             var expr = v[0];
