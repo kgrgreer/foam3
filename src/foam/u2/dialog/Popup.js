@@ -123,7 +123,7 @@ foam.CLASS({
     },
 
     function onKeyDown(e) {
-      var isEsc = (e.key === 'Escape' || e.keyCode === 27);
+      var isEsc = (e.key === 'Escape' || e.keyCode === 27); // 27 is the keyCode for escape keys, keyCode is mainly for older browser support
       if ( isEsc ) { this.close(); }
     }
   ],

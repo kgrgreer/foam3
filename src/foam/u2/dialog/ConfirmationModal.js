@@ -15,7 +15,7 @@ foam.CLASS({
 
   imports: ['theme?'],
 
-  messages: [{ name: 'CancelLabel', message: 'Cancel' }],
+  messages: [{ name: 'CANCEL_LABEL', message: 'Cancel' }],
 
   properties: [
     {
