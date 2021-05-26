@@ -39,6 +39,7 @@ foam.CLASS({
       of: 'foam.nanos.logger.Logger',
       visibility: 'HIDDEN',
       transient: true,
+      javaCloneProperty: '//noop',
       javaFactory: `
         Logger logger = (Logger) getX().get("logger");
         if ( logger == null ) {
