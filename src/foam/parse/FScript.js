@@ -13,8 +13,11 @@ foam.CLASS({
   static: [
     function test__() {
       var fs = foam.parse.FScript.create({of: foam.nanos.auth.User});
+      console.log(fs.parseString('id==42'));
       console.log(fs.parseString('"Kevin"=="Kevin"'));
       console.log(fs.parseString('firstName=="Kevin"'));
+      console.log(fs.parseString('firstName=="Kevin"&&lastName=="Greer"'));
+      console.log(fs.parseString('firstName=="Kevin"||id==42'));
     }
   ],
 
@@ -125,9 +128,10 @@ foam.CLASS({
         var base = foam.Function.withArgs(
           this.baseGrammar_,
           this.Parsers.create(), this);
+
         var grammar = {
           __proto__: base,
-          fieldname: this.Alternate.create({ args: fields })
+          fieldname: this.Alternate.create({args: fields})
         };
 
         var compactToString = function(v) {
