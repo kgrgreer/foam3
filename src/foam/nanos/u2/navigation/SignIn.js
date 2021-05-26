@@ -17,8 +17,6 @@ foam.CLASS({
     'loginSuccess',
     'menuDAO',
     'memento',
-    'notificationDAO',
-    'notify',
     'stack',
     'translationService',
     'user',
@@ -26,9 +24,7 @@ foam.CLASS({
 
   requires: [
     'foam.log.LogLevel',
-    'foam.u2.dialog.NotificationMessage',
-    'foam.nanos.notification.Notification',
-    'foam.nanos.notification.ToastState'
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   messages: [
@@ -139,14 +135,13 @@ foam.CLASS({
                     this.nextStep();
                   }).catch(err => {
                     let id = err.data && err.data.id && err.data.id;
-                    var title = this.ERROR_MSG;
-                    var message;
+                    var message = this.ERROR_MSG;
+                    var description;
                     if ( id ) {
-                      title = foam.String.labelize(id.split('.').pop());
-                      title = this.translationService.getTranslation(foam.locale, id+'.title', title);
-                      message = this.translationService.getTranslation(foam.locale, id+'.message', err.message);
+                      message = foam.String.labelize(id.split('.').pop());
+                      message = this.translationService.getTranslation(foam.locale, id+'.notification.message', message);
+                      description = this.translationService.getTranslation(foam.locale, id+'.notification.description', err.message);
                     }
-                    // this.notify(title, message, this.LogLevel.ERROR, true);
                     this.ctrl.add(this.NotificationMessage.create({
                       message: title,
                       description: message,
@@ -161,17 +156,16 @@ foam.CLASS({
           ).catch(
             err => {
               let id = err.data && err.data.id && err.data.id;
-              var title = this.ERROR_MSG;
-              var message;
+              var message = this.ERROR_MSG;
+              var description;
               if ( id ) {
-                title = foam.String.labelize(id.split('.').pop());
-                title = this.translationService.getTranslation(foam.locale, id+'.title', title);
-                message = this.translationService.getTranslation(foam.locale, id+'.message', err.message);
+                message = foam.String.labelize(id.split('.').pop());
+                message = this.translationService.getTranslation(foam.locale, id+'.notification.message', message);
+                description = this.translationService.getTranslation(foam.locale, id+'.notification.description', err.message);
               }
-              // this.notify(title, message, this.LogLevel.ERROR, true);
               this.ctrl.add(this.NotificationMessage.create({
-                message: title,
-                description: message,
+                message: message,
+                description: description,
                 type: this.LogLevel.ERROR
               }));
           });

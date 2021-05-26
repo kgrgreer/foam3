@@ -13,7 +13,8 @@ foam.CLASS({
   imports: [
     'ctrl',
     'resetPasswordToken',
-    'stack'
+    'stack',
+    'translationService',
   ],
 
   requires: [
@@ -98,10 +99,18 @@ foam.CLASS({
             transient: true
           }));
           this.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, this);
-        })
-        .catch((err) => {
+        }).catch((err) => {
+          let id = err.data && err.data.id && err.data.id;
+          var message = this.ERROR_MSG;
+          var description;
+          if ( id ) {
+            message = foam.String.labelize(id.split('.').pop());
+            message = this.translationService.getTranslation(foam.locale, id+'.notification.message', message);
+            description = this.translationService.getTranslation(foam.locale, id+'.notification.description', err.message);
+          }
           this.ctrl.add(this.NotificationMessage.create({
-            message: err.message || this.ERROR_MSG,
+            message: message,
+            description: description,
             type: this.LogLevel.ERROR,
             transient: true
           }));
