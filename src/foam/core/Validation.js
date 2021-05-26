@@ -541,3 +541,26 @@ foam.CLASS({
     }
   ]
 });
+
+foam.CLASS({
+  package: 'foam.core',
+  name: 'URLValidationRefinement',
+  refines: 'foam.core.URL',
+
+  messages: [
+    { name: 'INVALID_WEBSITE', message: 'Invalid website' }
+  ],
+
+  properties: [
+    {
+      name: 'validateObj',
+      expression: function(website) {
+        var websiteRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/;
+
+        if ( website.length > 0 && ! websiteRegex.test(website) ) {
+          return this.INVALID_WEBSITE;
+        }
+      }
+    }
+  ]
+});
