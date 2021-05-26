@@ -346,10 +346,11 @@ foam.CLASS({
       var self = this;
 
       // Start Memento Support
-      this.WindowHash.create({value$: this.memento.value$});
+      var windowHash = this.WindowHash.create({value: this.memento.value});
 
       this.onDetach(this.memento.changeIndicator$.sub(function () {
         self.memento.value = self.memento.combine();
+        windowHash.valueChanged(self.memento.value, self.memento.replaceHistoryState);
 
         if ( ! self.memento.feedback_ )
           self.mementoChange();

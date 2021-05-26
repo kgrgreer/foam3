@@ -206,15 +206,19 @@
         var m = this.memento;
         for ( var i = 0 ; i < 2 ; i++ ) {
           if ( ! m ) {
-            m = foam.nanos.controller.Memento.create({ value: '', parent: this.memento });
+            m = foam.nanos.controller.Memento.create({ value: '', parent: this.memento, replaceHistoryState: true });
             this.memento.tail = m;
           } else {
             if ( ! m.tail )
-              m.tail = foam.nanos.controller.Memento.create({ value: '', parent: m });
+              m.tail = foam.nanos.controller.Memento.create({ value: '', parent: m, replaceHistoryState: true });
             m = m.tail;
           }
         }
         this.currentMemento_ = this.memento.tail;
+
+        this.memento$.sub(function() {
+          console.log('aaa');
+        });
       }
 
 

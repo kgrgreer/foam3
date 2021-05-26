@@ -9,9 +9,9 @@ foam.CLASS({
   name: 'Memento',
 
   constants: [
-    { name: 'SEPARATOR',    value: '::'},
-    { name: 'PARAMS_BEGIN', value: '{'},
-    { name: 'PARAMS_END',   value: '}'},
+    { name: 'SEPARATOR',    value: '::' },
+    { name: 'PARAMS_BEGIN', value: '{'  },
+    { name: 'PARAMS_END',   value: '}'  },
 
     {
       name: 'OUTPUTTER',
@@ -71,10 +71,17 @@ foam.CLASS({
         this.value                    = this.combine();
         if ( this.parent ) {
           this.parent.feedback_       = true;
+          var parentOriginalReplaceParentHistoryValue = this.parent.replaceHistoryState;
+          this.parent.replaceHistoryState = this.replaceHistoryState;
           this.parent.changeIndicator = ! this.parent.changeIndicator;
+          this.parent.replaceHistoryState = parentOriginalReplaceParentHistoryValue;
           this.parent.feedback_       = false;
         }
       }
+    },
+    {
+      name: 'replaceHistoryState',
+      class: 'Boolean'
     }
   ],
 
