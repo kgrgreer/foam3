@@ -32,38 +32,50 @@ public class DAOResourceLoader
 {
   protected String groupId_;
   protected String locale_;
+  protected String spid_;
 
-  public static EmailTemplate findTemplate(X x, String name, String groupId, String locale) {
+  public static EmailTemplate findTemplate(X x, String name, String groupId, String locale, String spid) {
     DAO groupDAO = (DAO) x.get("groupDAO");
     DAO emailTemplateDAO = (DAO) x.get("localEmailTemplateDAO");
-
-    /*
-    TODO:
-
-    name  group locale spid
-      Y     Y     Y     Y
-      Y     Y     Y     *
-      Y     Y     *     Y
-      Y     Y     *     *
-      Y     *     *     Y
-      Y     *     *     *
-    */
+    String group_ = ((Group) groupDAO.find(groupId)).getParent();
+    group_ = SafetyUtil.isEmpty(group_) ? groupId : group_;
 
     do {
       EmailTemplate emailTemplate = (EmailTemplate) emailTemplateDAO
         .find(
           AND(
-            EQ(EmailTemplate.NAME,   name),
-            EQ(EmailTemplate.GROUP,  SafetyUtil.isEmpty(groupId) ? "*" : groupId),
+            EQ(EmailTemplate.NAME, name),
+            EQ(EmailTemplate.GROUP, SafetyUtil.isEmpty(group_) ? "*" : group_),
+            EQ(EmailTemplate.SPID, spid),
             EQ(EmailTemplate.LOCALE, locale)
           ));
 
-      if ( emailTemplate == null ) {
+      if ( emailTemplate == null && ! SafetyUtil.isEmpty(locale) ) {
+        emailTemplate = (EmailTemplate) emailTemplateDAO
+          .find(
+            AND(
+              EQ(EmailTemplate.NAME, name),
+              EQ(EmailTemplate.GROUP,  SafetyUtil.isEmpty(group_) ? "*" : group_),
+              EQ(EmailTemplate.LOCALE, locale)
+            ));
+      }
+
+      if ( emailTemplate == null && ! SafetyUtil.isEmpty(spid) ) {
         emailTemplate = (EmailTemplate) emailTemplateDAO
           .find(
             AND(
               EQ(EmailTemplate.NAME,  name),
-              EQ(EmailTemplate.GROUP, SafetyUtil.isEmpty(groupId) ? "*" : groupId)
+              EQ(EmailTemplate.GROUP,  SafetyUtil.isEmpty(group_) ? "*" : group_),
+              EQ(EmailTemplate.SPID, spid)
+            ));
+      }
+
+      if ( emailTemplate == null && ! SafetyUtil.isEmpty(spid) ) {
+        emailTemplate = (EmailTemplate) emailTemplateDAO
+          .find(
+            AND(
+              EQ(EmailTemplate.NAME,  name),
+              EQ(EmailTemplate.SPID, spid)
             ));
       }
 
@@ -72,7 +84,15 @@ public class DAOResourceLoader
           .find(
             AND(
               EQ(EmailTemplate.NAME,  name),
-              EQ(EmailTemplate.GROUP, "*")
+              EQ(EmailTemplate.GROUP,  SafetyUtil.isEmpty(group_) ? "*" : group_)
+            ));
+      }
+
+      if ( emailTemplate == null && ! SafetyUtil.isEmpty(name) ) {
+        emailTemplate = (EmailTemplate) emailTemplateDAO
+          .find(
+            AND(
+              EQ(EmailTemplate.NAME,  name)
             ));
       }
 
@@ -90,14 +110,18 @@ public class DAOResourceLoader
 
   public static EmailTemplate findTemplate(X x, String name) {
     var groupId = ((Group) x.get("group")).getId();
-    String locale = ((Subject) x.get("subject")).getRealUser().getLanguage().getCode();
-    return findTemplate(x, name, groupId, locale);
+    User user = ((Subject) x.get("subject")).getRealUser();
+    String locale = user.getLanguage().getCode();
+    String spid = user.getSpid();
+
+    return findTemplate(x, name, groupId, locale, spid);
   }
 
-  public DAOResourceLoader(X x, String groupId, String locale) {
+  public DAOResourceLoader(X x, String groupId, String locale, String spid) {
     setX(x);
     this.groupId_ = groupId;
     this.locale_  = locale;
+    this.spid_  = spid;
   }
 
   @Override
@@ -107,7 +131,7 @@ public class DAOResourceLoader
 
   @Override
   public InputStream load(String s) {
-    EmailTemplate template = DAOResourceLoader.findTemplate(getX(), s, this.groupId_, this.locale_);
+    EmailTemplate template = DAOResourceLoader.findTemplate(getX(), s, this.groupId_, this.locale_, this.spid_);
     return template == null ? null : new ByteArrayInputStream(template.getBodyAsByteArray());
   }
 
