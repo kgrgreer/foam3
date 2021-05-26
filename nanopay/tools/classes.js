@@ -1399,6 +1399,7 @@ var classes = [
   'net.nanopay.partner.treviso.api.Workflow',
   'net.nanopay.partner.treviso.FepWebClient',
   'net.nanopay.partner.treviso.FepWebOnboardingRule',
+  'net.nanopay.partner.treviso.FepWebClientStatus',
   'net.nanopay.partner.treviso.FepWebUserUpdatingRule',
   'net.nanopay.partner.treviso.TrevisoCredientials',
   'net.nanopay.partner.treviso.TrevisoServiceInterface',
