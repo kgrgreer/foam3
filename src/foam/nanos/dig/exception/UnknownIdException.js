@@ -15,7 +15,6 @@ foam.CLASS({
         cls.extras.push(`
           public UnknownIdException(String message) {
             super(message);
-            setMessage(message);
           } 
         `
         );
@@ -30,19 +29,9 @@ foam.CLASS({
       value: '400'
     },
     {
-      class: 'Int',
-      name: 'code',
-      value: 1005
-    },
-    {
       class: 'String',
-      name: 'type',
-      value: 'NotFound'
-    },
-    {
-      class: 'String',
-      name: 'message',
-      value: 'Unknown ID'
+      name: 'errorCode',
+      value: '1005'
     }
   ]
 });

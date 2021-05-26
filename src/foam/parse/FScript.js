@@ -13,11 +13,22 @@ foam.CLASS({
   static: [
     function test__() {
       var fs = foam.parse.FScript.create({of: foam.nanos.auth.User});
-      console.log(fs.parseString('id==42'));
-      console.log(fs.parseString('"Kevin"=="Kevin"'));
-      console.log(fs.parseString('firstName=="Kevin"'));
-      console.log(fs.parseString('firstName=="Kevin"&&lastName=="Greer"'));
-      console.log(fs.parseString('firstName=="Kevin"||id==42'));
+
+      function test(s) {
+        try {
+          console.log(fs.parseString(s).toString());
+        } catch (x) {
+          console.log('ERROR: ', x);
+        }
+      }
+
+      test('address.city=="Toronto"');
+      test('address.city==address.province');
+      test('id==42');
+      test('"Kevin"=="Kevin"');
+      test('firstName=="Kevin"');
+      test('firstName=="Kevin"&&lastName=="Greer"');
+      test('firstName=="Kevin"||id==42');
     }
   ],
 
@@ -29,6 +40,7 @@ foam.CLASS({
   mixins: [ 'foam.mlang.Expressions' ],
 
   requires: [
+    'foam.mlang.predicate.NamedProperty',
     'foam.parse.Alternate',
     'foam.parse.ImperativeGrammar',
     'foam.parse.Literal',
@@ -48,15 +60,15 @@ foam.CLASS({
       value: function(alt, anyChar, eof, join, literal, literalIC, not, notChars, optional, range,
         repeat, repeat0, seq, seq1, str, sym, until) {
         return {
-          START: seq1(0, sym('expr'), repeat0(' '), eof()),
+          START: sym('expr'), //seq1(0, sym('expr'), repeat0(' '), eof()),
 
-          expr: sym('orexpr'),
+          expr: sym('or'),
 
-          orexpr: repeat(sym('andexpr'), literal('||'), 1),
+          or: repeat(sym('and'), literal('||'), 1),
 
-          andexpr: repeat(sym('parenexpr'),literal('&&'), 1),
+          and: repeat(sym('simpleexpr'), literal('&&'), 1),
 
-          parenexpr: alt(
+          simpleexpr: alt(
             sym('paren'),
             sym('negate'),
             sym('comparison')
@@ -83,8 +95,12 @@ foam.CLASS({
           value: alt(
             sym('string'),
             sym('number'),
-            sym('fieldname')
+            sym('field')
           ),
+
+          field: seq(
+            sym('fieldname'),
+            repeat(sym('word'), '.')),
 
           string: str(seq1(1, '"',
             repeat(alt(literal('\\"', '"'), notChars('"'))),
@@ -139,14 +155,6 @@ foam.CLASS({
         };
 
         var actions = {
-          or: function(v) {
-            return self.Or.create({ args: v });
-          },
-
-          and: function(v) {
-            return self.And.create({ args: v });
-          },
-
           negate: function(v) {
             return self.Not.create({ arg1: v[1] });
           },
@@ -161,6 +169,18 @@ foam.CLASS({
             var rhs = v[2];
 
             return op.call(self, lhs, rhs);
+          },
+
+          or: function(v) { return self.OR(v); },
+
+          and: function(v) { return self.AND(v); },
+
+          field: function(v) {
+            var expr = v[0];
+            for ( var i = 0 ; i < v[1].length ; i++ ) {
+              expr = self.DOT(expr, self.NamedProperty.create({propName: v[1][i]}));
+            }
+            return expr;
           }
         };
 

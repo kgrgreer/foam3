@@ -37,9 +37,8 @@ public class DigWebAgent extends ContextAwareSupport
       DigFormatDriver driver = DigFormatDriverFactory.create(getX(), format);
 
       if ( driver == null ) {
-        DigUtil.outputException(x, new ParsingErrorException.Builder(x)
-          .setMessage("Unsupported format.")
-          .build(), format);
+        DigErrorMessage error = new ParsingErrorException("UnsupportedFormat");
+        DigUtil.outputException(x, error, format);
         return;
       }
 
@@ -65,13 +64,10 @@ public class DigWebAgent extends ContextAwareSupport
       pm.error(x, fe.getMessage());
     } catch (Throwable t) {
       logger.error(t);
-      DigUtil.outputException(x,
-          new GeneralException.Builder(x)
-            .setStatus(String.valueOf(HttpServletResponse.SC_INTERNAL_SERVER_ERROR))
-            .setMessage(t.getMessage())
-            .setMoreInfo(t.getClass().getName())
-            .build(),
-          format);
+      DigErrorMessage error = new GeneralException(t.getMessage());
+      error.setStatus(String.valueOf(HttpServletResponse.SC_INTERNAL_SERVER_ERROR));
+      error.setMoreInfo(t.getClass().getName());
+      DigUtil.outputException(x, error, format);
       pm.error(x, t.getMessage());
     } finally {
       pm.log(x);
@@ -79,12 +75,9 @@ public class DigWebAgent extends ContextAwareSupport
   }
 
   public void sendError(X x, int status, String message) {
-    DigUtil.outputException(x,
-      new GeneralException.Builder(x)
-        .setStatus(String.valueOf(status))
-        .setMessage(message)
-        .build(),
-      Format.JSON);
+    DigErrorMessage error = new GeneralException(message);
+    error.setStatus(String.valueOf(status));
+    DigUtil.outputException(x, error, Format.JSON);
   }
 
   public boolean redirectToLogin(X x) {

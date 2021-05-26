@@ -19,7 +19,7 @@ foam.CLASS({
     'memento',
     'stack',
     'translationService',
-    'user',
+    'user'
   ],
 
   requires: [
