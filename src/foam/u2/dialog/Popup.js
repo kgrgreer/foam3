@@ -98,7 +98,7 @@ foam.CLASS({
           .addClass(this.myClass('inner'))
           .style({ 'background-color': this.backgroundColor })
           .startContext({ data: this })
-            .start(this.CLOSE_MODAL, { buttonStyle: 'TERTIARY',  size: 'SMALL' }).show(this.closeable$)
+            .start(this.CLOSE_MODAL, { buttonStyle: 'TERTIARY' }).show(this.closeable$)
               .addClass(this.myClass('X'))
             .end()
           .endContext()
