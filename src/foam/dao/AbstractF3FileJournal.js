@@ -131,7 +131,8 @@ foam.CLASS({
           logger = new StdoutLogger();
         }
         return new PrefixLogger(new Object[] { "[JDAO]", getFilename() }, logger);
-      `
+      `,
+      javaCloneProperty: '//noop'
     },
     {
       class: 'String',
