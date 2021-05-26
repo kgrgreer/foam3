@@ -213,6 +213,10 @@ foam.CLASS({
       updateVisibility: 'RO'
     },
     {
+      name: 'instruction',
+      visibility: 'HIDDEN'
+    },
+    {
       name: 'name',
       label: 'Nickname',
       section: 'accountInformation',

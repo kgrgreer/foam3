@@ -30,7 +30,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.log.LogLevel'
+    'foam.log.LogLevel',
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   javaImports: [
@@ -49,7 +50,15 @@ foam.CLASS({
       title: function() {
         return this.clientAccountInformationTitle;
       },
+      subTitle: function() {
+        return ' ';
+      },
       properties: [
+        {
+          name: 'instruction',
+          order: 01,
+          gridColumns: 12
+        },
         {
           name: 'denomination',
           order: 10,
@@ -86,8 +95,13 @@ foam.CLASS({
           gridColumns: 6
         },
         {
-          name: 'supportingDocuments',
+          name: 'swiftCode',
           order: 80,
+          gridColumns: 12
+        },
+        {
+          name: 'supportingDocuments',
+          order: 90,
           gridColumns: 12
         }
       ]
@@ -134,7 +148,8 @@ foam.CLASS({
     { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' },
     { name: 'SECTION_DETAILS_SUBTITLE_VOID', message: 'Connect to your account without signing in to online banking. Please ensure your details are entered properly.' },
     { name: 'SECTION_DETAILS_TITLE_PLAID', message: 'Finish adding your bank account' },
-    { name: 'SECTION_DETAILS_SUBTITLE_PLAID', message: 'Please confirm some banking details to securely interact with your account.' }
+    { name: 'SECTION_DETAILS_SUBTITLE_PLAID', message: 'Please confirm some banking details to securely interact with your account.' },
+    { name: 'ACH_ROUTING_NUMBER_INSTRUCTION', message: 'Important to note: Not all ABA routing numbers are ACH routing numbers, it might be different for some banks, best to validate this information with the bank' }
   ],
 
   properties: [
@@ -156,6 +171,21 @@ foam.CLASS({
     {
       name: 'desc',
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'instruction',
+      class: 'String',
+      label: '',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.dialog.InlineNotificationMessage',
+          message: X.data.ACH_ROUTING_NUMBER_INSTRUCTION,
+          isWarning: true
+        };
+      },
+      section: 'accountInformation',
+      visibility: 'RO',
+      transient: true
     },
     {
       name: 'iban',
@@ -199,7 +229,7 @@ foam.CLASS({
     },
     {
       name: 'branchId',
-      label: 'Routing Number',
+      label: 'ACH Routing Number',
       section: 'accountInformation',
       updateVisibility: 'RO',
       gridColumns: 6,
@@ -237,6 +267,16 @@ foam.CLASS({
         }
       },
       gridColumns: 6
+    },
+    {
+      name: 'swiftCode',
+      label: 'SWIFT/BIC',
+      updateVisibility: 'RO',
+      section: 'accountInformation',
+      order: 150,
+      gridColumns: 6,
+      validateObj: function(swiftCode) {
+      }
     },
     // {
     //   name: 'institution',
@@ -346,13 +386,6 @@ foam.CLASS({
             }
           ]
         }, X);
-      }
-    },
-    {
-      name: 'swiftCode',
-      visibility: 'HIDDEN',
-      required: false,
-      validateObj: function(swiftCode) {
       }
     },
     {
