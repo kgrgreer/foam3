@@ -548,17 +548,17 @@ foam.CLASS({
   refines: 'foam.core.URL',
 
   messages: [
-    { name: 'INVALID_WEBSITE', message: 'Invalid website' }
+    { name: 'INVALID_URL', message: 'Invalid URL' }
   ],
 
   properties: [
     {
       name: 'validateObj',
-      expression: function(website) {
-        var websiteRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/;
+      expression: function(url) {
+        var urlRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/;
 
-        if ( website.length > 0 && ! websiteRegex.test(website) ) {
-          return this.INVALID_WEBSITE;
+        if ( url.length > 0 && ! urlRegex.test(url) ) {
+          return this.INVALID_URL;
         }
       }
     }
