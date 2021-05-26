@@ -100,7 +100,7 @@ foam.CLASS({
           }));
           this.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, this);
         }).catch((err) => {
-          let id = err.data && err.data.id && err.data.id;
+          let id = err.data && err.data.id;
           var message = this.ERROR_MSG;
           var description;
           if ( id ) {

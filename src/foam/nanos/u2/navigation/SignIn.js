@@ -134,7 +134,7 @@ foam.CLASS({
                     this.user.copyFrom(updatedUser);
                     this.nextStep();
                   }).catch(err => {
-                    let id = err.data && err.data.id && err.data.id;
+                    let id = err.data && err.data.id;
                     var message = this.ERROR_MSG;
                     var description;
                     if ( id ) {
@@ -155,7 +155,7 @@ foam.CLASS({
             }
           ).catch(
             err => {
-              let id = err.data && err.data.id && err.data.id;
+              let id = err.data && err.data.id;
               var message = this.ERROR_MSG;
               var description;
               if ( id ) {

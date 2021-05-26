@@ -224,7 +224,7 @@ foam.CLASS({
             this.user.copyFrom(user);
             await this.updateUser(x);
           }).catch((err) => {
-            let id = err.data && err.data.id && err.data.id;
+            let id = err.data && err.data.id;
             var message = this.ERROR_MSG;
             var description;
             if ( id ) {
