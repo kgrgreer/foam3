@@ -496,3 +496,50 @@ p({
   "lifecycleState":1,
   "spid": "intuit"
 })
+
+p({
+  class:"foam.nanos.dig.DUGRule",
+  id:"intuit-localuserdao-dug-webhook",
+  name:"Intuit localUserDAO DUG Webhook",
+  daoKey:"localUserDAO",
+  url:"https://webhook.site/eac544d4-a08b-4d75-a3df-0014e474c894",
+  bearerToken:"localUserDAO",
+  lifecycleState:1,
+  authType:2,
+  spid:"intuit",
+  predicate:{
+    class:"foam.mlang.predicate.MQLExpr",
+    query:"n(spid=intuit) and diff:compliance,status"
+  },
+  enabled:false
+})
+
+p({
+  class:"foam.nanos.dig.DUGRule",
+  id:"intuit-flinksloginidasyncdao-dug-webhook",
+  name:"Intuit flinksLoginIdAsyncDAO DUG Webhook",
+  daoKey:"flinksLoginIdAsyncDAO",
+  url:"https://webhook.site/eac544d4-a08b-4d75-a3df-0014e474c894",
+  bearerToken:"flinksLoginIdAsyncDAO",
+  lifecycleState:1,
+  authType:2,
+  spid:"intuit",
+  predicate:{
+    class:"foam.mlang.predicate.MQLExpr",
+    query:"diff:errorMessage,status"
+  },
+  enabled:false
+})
+
+p({
+  class:"foam.nanos.dig.DUGRule",
+  id:"intuit-summarytransactiondao-dug-webhook",
+  name:"Intuit summaryTransactionDAO DUG Webhook",
+  daoKey:"summaryTransactionDAO",
+  url:"https://webhook.site/eac544d4-a08b-4d75-a3df-0014e474c894",
+  bearerToken:"summaryTransactionDAO",
+  lifecycleState:1,
+  authType:2,
+  spid:"intuit",
+  enabled:false
+})
