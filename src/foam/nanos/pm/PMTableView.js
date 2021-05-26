@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.pm',
   name: 'PMTableView',
-  extends: 'foam.u2.view.TableView',
+  extends: 'foam.u2.view.ScrollTableView',
 
   documentation: 'TableView for displaying PMInfos.',
 
