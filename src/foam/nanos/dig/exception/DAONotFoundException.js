@@ -15,7 +15,6 @@ foam.CLASS({
         cls.extras.push(`
           public DAONotFoundException(String message) {
             super(message);
-            setMessage(message);
           } 
         `
         );
@@ -30,14 +29,9 @@ foam.CLASS({
       value: '404'
     },
     {
-      class: 'Int',
-      name: 'code',
-      value: 1000
-    },
-    {
       class: 'String',
-      name: 'type',
-      value: 'NotFound'
+      name: 'errorCode',
+      value: '1000'
     }
   ]
 });
