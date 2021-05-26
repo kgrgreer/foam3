@@ -215,6 +215,7 @@
           }
         }
         this.currentMemento_ = this.memento.tail;
+        this.currentMemento_.replaceHistoryState = true;
 
         this.memento$.sub(function() {
           console.log('aaa');
