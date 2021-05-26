@@ -16,7 +16,6 @@ foam.CLASS({
         cls.extras.push(`
           public TemporaryExternalAPIException(String message) {
             super(message);
-            setMessage(message);
           } 
         `
         );
@@ -31,19 +30,9 @@ foam.CLASS({
       value: '400'
     },
     {
-      class: 'Int',
-      name: 'code',
-      value: 1011
-    },
-    {
       class: 'String',
-      name: 'type',
-      value: 'Temporary External API Failure'
-    },
-    {
-      class: 'String',
-      name: 'message',
-      value: 'Temporary External API Failure'
+      name: 'errorCode',
+      value: '1011'
     }
   ]
 });
