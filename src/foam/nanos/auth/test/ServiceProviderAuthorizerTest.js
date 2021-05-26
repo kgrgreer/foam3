@@ -22,19 +22,9 @@ foam.CLASS({
     {
       name: 'runTest',
       javaCode: `
-        User nonAdminUser = new User();
-        DAO bareUserDAO = (DAO) x.get("bareUserDAO");
         DAO serviceProviderDAO = (DAO) x.get("serviceProviderDAO");
         ServiceProvider serviceProvider = new ServiceProvider.Builder(x).setId("testspid").build();
         boolean threw;
-
-        nonAdminUser = (User) bareUserDAO.put(nonAdminUser);
-
-        Session nonAdminUserSession = new Session.Builder(x)
-          .setUserId(nonAdminUser.getId())
-          .build();
-
-        X nonAdminUserContext = nonAdminUserSession.applyTo(x);
 
         threw = false;
         try {
@@ -70,6 +60,18 @@ foam.CLASS({
 
         serviceProvider = (ServiceProvider) serviceProviderDAO.inX(x).put(serviceProvider);
 
+
+        User nonAdminUser = new User();
+        nonAdminUser.setSpid(serviceProvider.getId());
+        nonAdminUser.setEmail("nonadmin@nanopay.net");
+        DAO localUserDAO = (DAO) x.get("localUserDAO");
+        nonAdminUser = (User) localUserDAO.put(nonAdminUser);
+
+        Session nonAdminUserSession = new Session.Builder(x)
+          .setUserId(nonAdminUser.getId())
+          .build();
+        X nonAdminUserContext = nonAdminUserSession.applyTo(x);
+
         threw = false;
         try {
           serviceProviderDAO.inX(nonAdminUserContext).put(serviceProvider);
@@ -84,7 +86,16 @@ foam.CLASS({
         } catch ( AuthorizationException e ) {
           threw = true;
         }
-        test(! threw, "Non admin user can view serviceProvider");
+        test(! threw, "Non admin user can view serviceProvider they have");
+
+        threw = false;
+        ServiceProvider otherSpid = null;
+        try {
+          otherSpid = (ServiceProvider) serviceProviderDAO.inX(nonAdminUserContext).find("nanopay");
+        } catch ( AuthorizationException e ) {
+          threw = true;
+        }
+        test(threw || otherSpid == null, "Non admin user cannot view serviceProvider they don't have");
 
         threw = false;
         try {
