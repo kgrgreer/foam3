@@ -13,6 +13,7 @@ foam.CLASS({
   static: [
     function test__() {
       var fs = foam.parse.FScript.create({of: foam.nanos.auth.User});
+      console.log(fs.parseString('address.city=="Toronto"'));
       console.log(fs.parseString('id==42'));
       console.log(fs.parseString('"Kevin"=="Kevin"'));
       console.log(fs.parseString('firstName=="Kevin"'));
@@ -29,6 +30,7 @@ foam.CLASS({
   mixins: [ 'foam.mlang.Expressions' ],
 
   requires: [
+    'foam.mlang.predicate.NamedProperty',
     'foam.parse.Alternate',
     'foam.parse.ImperativeGrammar',
     'foam.parse.Literal',
@@ -83,8 +85,12 @@ foam.CLASS({
           value: alt(
             sym('string'),
             sym('number'),
-            sym('fieldname')
+            sym('field')
           ),
+
+          field: seq(
+            sym('fieldname'),
+            repeat(sym('word'), '.')),
 
           string: str(seq1(1, '"',
             repeat(alt(literal('\\"', '"'), notChars('"'))),
@@ -161,6 +167,14 @@ foam.CLASS({
             var rhs = v[2];
 
             return op.call(self, lhs, rhs);
+          },
+
+          field: function(v) {
+            var expr = v[0];
+            for ( var i = 0 ; i < v[1].length ; i++ ) {
+              expr = self.DOT(expr, self.NamedProperty.create({propName: v[1][i]}));
+            }
+            return expr;
           }
         };
 
