@@ -26,3 +26,37 @@ p({
   `,
   "output":""
 })
+p({
+  class:"foam.nanos.script.Script",
+  id:"TransactionBenchmarkV2Jshell",
+  language:2,
+  code:`
+    import foam.nanos.bench.BenchmarkRunner;
+    import foam.nanos.bench.BenchmarkRunner.Builder;
+    import foam.nanos.logger.LogLevelFilterLogger;
+    import foam.nanos.logger.Logger;
+    import net.nanopay.tx.bench.TransactionBenchmark;
+    import net.nanopay.tx.model.Transaction;
+
+    LogLevelFilterLogger lc = (LogLevelFilterLogger) x.get("logLevelFilterLogger");
+    lc.setLogInfo(true);
+    boolean savedDebug = lc.getLogDebug();
+    lc.setLogDebug(false);
+    TransactionBenchmark b = new TransactionBenchmark();
+    Builder builder = new BenchmarkRunner.Builder(x);
+    builder.setInvocationCount(1000);
+    builder.setThreadCount(1)
+    builder.setRunPerThread(false)
+    builder.setBenchmark(b);
+    BenchmarkRunner runner = builder.build();
+    runner.execute(x);
+    System.out.println("done");
+    System.out.println(runner.getResult());
+    Logger l = (Logger) x.get("logger");
+    lc.setLogInfo(true);
+    lc.setLogDebug(savedDebug);
+    l.info(new Object[] {runner.getResult()});
+  `,
+  lastModifiedBy:1348,
+  lastModified:1621534513832
+})
