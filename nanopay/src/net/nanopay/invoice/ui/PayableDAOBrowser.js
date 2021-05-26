@@ -25,7 +25,6 @@ foam.CLASS({
     'foam.core.Action',
     'foam.log.LogLevel',
     'foam.u2.dialog.Popup',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',

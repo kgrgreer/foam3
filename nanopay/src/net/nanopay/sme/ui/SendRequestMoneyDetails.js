@@ -49,7 +49,6 @@ foam.CLASS({
 
   requires: [
     'foam.u2.Element',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
