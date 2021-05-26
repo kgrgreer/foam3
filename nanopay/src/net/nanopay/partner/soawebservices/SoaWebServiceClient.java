@@ -82,6 +82,7 @@ public class SoaWebServiceClient extends ContextAwareSupport implements SoaWebSe
           .setName(this.getClass().getSimpleName())
           .setSeverity(foam.log.LogLevel.ERROR)
           .setReason(AlarmReason.CREDENTIALS)
+          .setIsActive(true)
           .setNote(response.getTransacao().getCodigoStatusDescricao())
           .build();
         ((DAO) getX().get("alarmDAO")).put(alarm);
