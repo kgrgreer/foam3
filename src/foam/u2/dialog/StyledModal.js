@@ -121,7 +121,7 @@ foam.CLASS({
           .enableClass(this.myClass('top'), this.isTop$)
           .start()
               .enableClass(this.myClass('colorBar'), this.isStyled$)
-              .style({ background: this.modalStyle.color })
+              .style({ background: this.returnExpandedCSS(this.modalStyle.color) })
           .end()
           .start()
             .enableClass(this.myClass('inner'), this.isStyled$)
