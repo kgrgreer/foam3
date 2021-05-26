@@ -13,12 +13,21 @@ foam.CLASS({
   static: [
     function test__() {
       var fs = foam.parse.FScript.create({of: foam.nanos.auth.User});
-      console.log(fs.parseString('address.city=="Toronto"'));
-      console.log(fs.parseString('id==42'));
-      console.log(fs.parseString('"Kevin"=="Kevin"'));
-      console.log(fs.parseString('firstName=="Kevin"'));
-      console.log(fs.parseString('firstName=="Kevin"&&lastName=="Greer"'));
-      console.log(fs.parseString('firstName=="Kevin"||id==42'));
+
+      function test(s) {
+        try {
+          console.log(fs.parseString(s)[0]);
+        } catch (x) {
+        }
+      }
+
+      test('address.city=="Toronto"');
+      test('address.city==address.province');
+      test('id==42');
+      test('"Kevin"=="Kevin"');
+      test('firstName=="Kevin"');
+      test('firstName=="Kevin"&&lastName=="Greer"');
+      test('firstName=="Kevin"||id==42');
     }
   ],
 
