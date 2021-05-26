@@ -148,7 +148,7 @@ foam.CLASS({
     { name: 'SECTION_DETAILS_SUBTITLE_VOID', message: 'Connect to your account without signing in to online banking. Please ensure your details are entered properly.' },
     { name: 'SECTION_DETAILS_TITLE_PLAID', message: 'Finish adding your bank account' },
     { name: 'SECTION_DETAILS_SUBTITLE_PLAID', message: 'Please confirm some banking details to securely interact with your account.' },
-    { name: 'ACH_ROUTING_NUMBER_INSTRUCTION', message: 'Important to note: Not all ABA routing numbers are ACH routing numbers, it might be different for some banks, best to validate this information with the bank' }
+    { name: 'ACH_ROUTING_NUMBER_INSTRUCTION', message: 'Important to note: Not all ABA routing numbers are ACH routing numbers, it might be different for some banks, best to validate this information with the bank.' }
   ],
 
   properties: [
