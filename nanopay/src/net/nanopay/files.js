@@ -1961,6 +1961,7 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/TrevisoCredientials' },
   { name: 'net/nanopay/country/br/tx/NatureCodeLineItem' },
   { name: 'net/nanopay/partner/treviso/FepWebClient' },
+  { name: 'net/nanopay/partner/treviso/FepWebClientStatus' },
   { name: 'net/nanopay/partner/treviso/tx/TrevisoTransaction' },
   { name: 'net/nanopay/partner/treviso/tx/planner/TrevisoTransactionPlanner' },
   { name: 'net/nanopay/partner/treviso/tx/TrevisoCreateExchange' },

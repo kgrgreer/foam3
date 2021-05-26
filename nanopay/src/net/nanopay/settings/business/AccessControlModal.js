@@ -15,7 +15,6 @@ foam.CLASS({
     'foam.log.LogLevel',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.UserUserJunction',
-    'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.AgentJunctionStatus',
     'net.nanopay.model.ClientUserJunction',
     'net.nanopay.model.Invitation'

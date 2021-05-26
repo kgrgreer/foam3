@@ -37,7 +37,6 @@ foam.CLASS({
     'foam.log.LogLevel',
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.Popup',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.account.Account',
     'net.nanopay.accounting.quickbooks.model.QuickbooksInvoice',
     'net.nanopay.accounting.xero.model.XeroInvoice',

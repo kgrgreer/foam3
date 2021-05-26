@@ -22,10 +22,6 @@ foam.CLASS({
 
   documentation: 'Main WizardModal for Flinks Flow',
 
-  requires: [
-    'foam.u2.dialog.NotificationMessage'
-  ],
-
   exports: [
     'connectingMessage',
     'institution',

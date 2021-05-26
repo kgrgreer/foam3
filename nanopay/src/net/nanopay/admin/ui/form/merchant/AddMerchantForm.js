@@ -28,7 +28,6 @@ foam.CLASS({
     'foam.nanos.auth.Country',
     'foam.nanos.auth.User',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.tx.model.Transaction'
   ],
 

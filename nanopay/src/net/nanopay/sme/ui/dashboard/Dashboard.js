@@ -27,7 +27,6 @@ foam.CLASS({
   requires: [
     'foam.nanos.notification.Notification',
     'foam.u2.crunch.CapabilityStore',
-    'foam.u2.dialog.NotificationMessage',
     'foam.u2.Element',
     'net.nanopay.account.Account',
     'net.nanopay.accounting.AccountingErrorCodes',
