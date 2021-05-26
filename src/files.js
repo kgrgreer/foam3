@@ -359,6 +359,7 @@ FOAM_FILES([
   { name: "foam/dao/PutOnlyDAO" },
   { name: "foam/glang/glang" },
   { name: "foam/parse/QueryParser" },
+  { name: "foam/parse/FScript" },
   { name: "foam/parse/QueryParserUserTest" },
   { name: "foam/physics/Physical" },
   { name: "foam/physics/Collider" },
@@ -757,10 +758,6 @@ FOAM_FILES([
   { name: "foam/doc/ModelBrowser", flags: ['debug', 'web'] },
 
   { name: "com/google/net/node/Google2LOAuthAgent", flags: ['node', 'gcloud'] },
-  { name: "com/google/cloud/datastore/types", flags: ['gcloud'] },
-  { name: "com/google/cloud/datastore/mlang", flags: ['gcloud'] },
-  { name: "com/google/cloud/datastore/DatastoreDAO", flags: ['gcloud'] },
-  { name: "com/google/cloud/datastore/BatchMutationDatastoreDAO", flags: ['gcloud'] },
   { name: "com/google/firebase/DefaultFirestoreDocumentID", flags: ['firebase'] },
   { name: "com/google/firebase/DefaultFirestoreData", flags: ['firebase'] },
   { name: "com/google/firebase/DefaultFObject", flags: ['firebase'] },

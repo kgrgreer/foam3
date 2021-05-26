@@ -4,8 +4,6 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-// TODO: indentation doesn't follow styleguide
-
 foam.CLASS({
   name: 'CompoundException',
   package: 'foam.core',
@@ -39,28 +37,6 @@ foam.CLASS({
     }
   ],
 
-  properties:  [
-    {
-      class: 'Object',
-      name: 'sb',
-      javaType: 'ThreadLocal',
-      javaFactory: `
-        return new ThreadLocal<StringBuilder>() {
-          @Override
-          protected StringBuilder initialValue() {
-            return new StringBuilder();
-          }
-
-          @Override
-          public StringBuilder get() {
-            StringBuilder b = super.get();
-            b.setLength(0);
-            return b;
-          }
-      };`
-    }
-  ],
-
   methods:  [
     {
       name: 'getExceptions',
@@ -85,7 +61,7 @@ foam.CLASS({
         for ( var t : getExceptions() ) {
           if ( t instanceof ExceptionInterface ) {
             RuntimeException clientE =
-                ((ExceptionInterface) t).getClientRethrowException();
+              ((ExceptionInterface) t).getClientRethrowException();
             if ( clientE != null ) {
               return clientE;
             }
@@ -121,10 +97,10 @@ foam.CLASS({
       name: 'getMessage',
       type: 'String',
       javaCode: `
-        StringBuilder str = (StringBuilder) getSb().get();
-        var size = getExceptions().length;
+        StringBuilder str  = new StringBuilder();
+        var           size = getExceptions().length;
 
-        for ( int i = 0; i < size; i++ ) {
+        for ( int i = 0 ; i < size ; i++ ) {
           var t = getExceptions()[i];
           var counter = i + 1;
 

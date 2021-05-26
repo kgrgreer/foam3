@@ -123,6 +123,11 @@ foam.CLASS({
       generateJava: false,
       name: 'tableHeaderFormatter',
       value: function(axiom) { this.add(axiom.label); }
+    },
+    {
+       type: 'Int',
+       name: 'tableWidth',
+       value: 130
     }
   ]
 });
@@ -149,6 +154,11 @@ foam.CLASS({
           end();
         }
       }
+    },
+    {
+      class: 'Int',
+      name: 'tableWidth',
+      value: 130
     }
   ]
 });
@@ -312,6 +322,11 @@ foam.CLASS({
           this.tooltip = formattedDate;
         }
       }
+    },
+    {
+      class: 'Int',
+      name: 'tableWidth',
+      value: 130
     }
   ]
 });
@@ -335,6 +350,11 @@ foam.CLASS({
           this.tooltip = formattedDate;
         }
       }
+    },
+    {
+      class: 'Int',
+      name: 'tableWidth',
+      value: 130
     }
   ]
 });
