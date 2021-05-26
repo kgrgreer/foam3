@@ -32,11 +32,6 @@ foam.CLASS({
       class: 'String',
       name: 'errorCode',
       value: '1002'
-    // },
-    // {
-    //   class: 'String',
-    //   name: 'message',
-    //   value: 'PUT|POST expecting data, non received.'
     }
   ]
 });
