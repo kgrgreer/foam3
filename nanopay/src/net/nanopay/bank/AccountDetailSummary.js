@@ -24,11 +24,11 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'accountNumber'
+      name: 'country'
     },
     {
       class: 'String',
-      name: 'iban'
+      name: 'currency'
     },
     {
       class: 'String',
@@ -40,15 +40,15 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'accountNumber'
+    },
+    {
+      class: 'String',
       name: 'swiftCode'
     },
     {
       class: 'String',
-      name: 'currency'
-    },
-    {
-      class: 'String',
-      name: 'country'
+      name: 'iban'
     }
   ],
 });
