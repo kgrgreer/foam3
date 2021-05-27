@@ -22,7 +22,6 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.User',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.admin.model.AccountStatus'
   ],

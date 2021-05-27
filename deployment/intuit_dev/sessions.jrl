@@ -7,118 +7,166 @@ p({
     createdBy:1348,
     createdByAgent:1348,
     ttl:3153600000000,
-    cidrWhiteList:[
-        {
-            class:"foam.net.CIDR",
-            notation:"99.244.39.194/32",
-            startAddress:"99.244.39.194",
-            endAddress:"99.244.39.194",
-            high:1676945346,
-            low:1676945346
-        },
-        {
-            class:"foam.net.CIDR",
-            notation:"76.70.94.252/32",
-            startAddress:"76.70.94.252",
-            endAddress:"76.70.94.252",
-            high:1279680252,
-            low:1279680252
-        },
-        {
-            class:"foam.net.CIDR",
-            notation:"24.130.69.94/32",
-            startAddress:"24.130.69.94",
-            endAddress:"24.130.69.94",
-            high:411190622,
-            low:411190622
-        },
-        {
-            class:"foam.net.CIDR",
-            notation:"73.71.153.193/32",
-            startAddress:"73.71.153.193",
-            endAddress:"73.71.153.193",
-            high:1229429185,
-            low:1229429185
-        },
-        {
-            class:"foam.net.CIDR",
-            notation:"73.185.83.196/32",
-            startAddress:"73.185.83.196",
-            endAddress:"73.185.83.196",
-            high:1236882372,
-            low:1236882372
-        },
-        {
-            class:"foam.net.CIDR",
-            notation:"207.207.162.0/23",
-            startAddress:"207.207.162.0",
-            endAddress:"207.207.163.255",
-            high:3486491647,
-            low:3486491136
-        },
-        {
-            class:"foam.net.CIDR",
-            notation:"207.207.164.0/23",
-            startAddress:"207.207.164.0",
-            endAddress:"207.207.165.255",
-            high:3486492159,
-            low:3486491648
-        },
-        {
-            class:"foam.net.CIDR",
-            notation:"207.207.166.0/23",
-            startAddress:"207.207.166.0",
-            endAddress:"207.207.167.255",
-            high:3486492671,
-            low:3486492160
-        },
-        {
-            class:"foam.net.CIDR",
-            notation:"207.207.168.0/23",
-            startAddress:"207.207.168.0",
-            endAddress:"207.207.169.255",
-            high:3486493183,
-            low:3486492672
-        },
-        {
-            class:"foam.net.CIDR",
-            notation:"207.207.170.0/23",
-            startAddress:"207.207.170.0",
-            endAddress:"207.207.171.255",
-            high:3486493695,
-            low:3486493184
-        },
-        {
-            class:"foam.net.CIDR",
-            notation:"207.207.172.0/23",
-            startAddress:"207.207.172.0",
-            endAddress:"207.207.173.255",
-            high:3486494207,
-            low:3486493696
-        },
-        {
-            class:"foam.net.CIDR",
-            notation:"207.207.174.0/23",
-            startAddress:"207.207.174.0",
-            endAddress:"207.207.175.255",
-            high:3486494719,
-            low:3486494208
-        },
-        {
-            class:"foam.net.CIDR",
-            notation:"207.207.176.0/23",
-            startAddress:"207.207.176.0",
-            endAddress:"207.207.177.255",
-            high:3486495231,
-            low:3486494720
-        },
-        {
-            class:"foam.net.CIDR",
-            notation:"207.207.178.0/23",
-            startAddress:"207.207.178.0",
-            endAddress:"207.207.179.255",
-            high:3486495743,
-            low:3486495232
-        }
-        ]
+    "cidrWhiteList": [
+		{
+			
+			"notation": "99.244.39.194/32",
+			"startAddress": "99.244.39.194",
+			"endAddress": "99.244.39.194",
+			"high": 1676945346,
+			"low": 1676945346
+		},
+		{
+			
+			"notation": "76.70.94.252/32",
+			"startAddress": "76.70.94.252",
+			"endAddress": "76.70.94.252",
+			"high": 1279680252,
+			"low": 1279680252
+		},
+		{
+			
+			"notation": "24.130.69.94/32",
+			"startAddress": "24.130.69.94",
+			"endAddress": "24.130.69.94",
+			"high": 411190622,
+			"low": 411190622
+		},
+		{
+			
+			"notation": "73.71.153.193/32",
+			"startAddress": "73.71.153.193",
+			"endAddress": "73.71.153.193",
+			"high": 1229429185,
+			"low": 1229429185
+		},
+		{
+			
+			"notation": "73.185.83.196/32",
+			"startAddress": "73.185.83.196",
+			"endAddress": "73.185.83.196",
+			"high": 1236882372,
+			"low": 1236882372
+		},
+		{
+			
+			"notation": "207.207.162.0/23",
+			"startAddress": "207.207.162.0",
+			"endAddress": "207.207.163.255",
+			"high": 3486491647,
+			"low": 3486491136
+		},
+		{
+			
+			"notation": "207.207.164.0/23",
+			"startAddress": "207.207.164.0",
+			"endAddress": "207.207.165.255",
+			"high": 3486492159,
+			"low": 3486491648
+		},
+		{
+			
+			"notation": "207.207.166.0/23",
+			"startAddress": "207.207.166.0",
+			"endAddress": "207.207.167.255",
+			"high": 3486492671,
+			"low": 3486492160
+		},
+		{
+			
+			"notation": "207.207.168.0/23",
+			"startAddress": "207.207.168.0",
+			"endAddress": "207.207.169.255",
+			"high": 3486493183,
+			"low": 3486492672
+		},
+		{
+			
+			"notation": "207.207.170.0/23",
+			"startAddress": "207.207.170.0",
+			"endAddress": "207.207.171.255",
+			"high": 3486493695,
+			"low": 3486493184
+		},
+		{
+			
+			"notation": "207.207.172.0/23",
+			"startAddress": "207.207.172.0",
+			"endAddress": "207.207.173.255",
+			"high": 3486494207,
+			"low": 3486493696
+		},
+		{
+			
+			"notation": "207.207.174.0/23",
+			"startAddress": "207.207.174.0",
+			"endAddress": "207.207.175.255",
+			"high": 3486494719,
+			"low": 3486494208
+		},
+		{
+			
+			"notation": "207.207.176.0/23",
+			"startAddress": "207.207.176.0",
+			"endAddress": "207.207.177.255",
+			"high": 3486495231,
+			"low": 3486494720
+		},
+		{
+			
+			"notation": "207.207.178.0/23",
+			"startAddress": "207.207.178.0",
+			"endAddress": "207.207.179.255",
+			"high": 3486495743,
+			"low": 3486495232
+		},
+		{
+			
+			"notation": "52.38.205.15/32",
+			"startAddress": "52.38.205.15",
+			"endAddress": "52.38.205.15",
+			"high": 874958095,
+			"low": 874958095
+		},
+		{
+			
+			"notation": "52.32.196.249/32",
+			"startAddress": "52.32.196.249",
+			"endAddress": "52.32.196.249",
+			"high": 874562809,
+			"low": 874562809
+		},
+		{
+			
+			"notation": "54.68.1.248/32",
+			"startAddress": "54.68.1.248",
+			"endAddress": "54.68.1.248",
+			"high": 910426616,
+			"low": 910426616
+		},
+		{
+			
+			"notation": "34.212.53.149/32",
+			"startAddress": "34.212.53.149",
+			"endAddress": "34.212.53.149",
+			"high": 584332693,
+			"low": 584332693
+		},
+		{
+			
+			"notation": "54.203.242.199/32",
+			"startAddress": "54.203.242.199",
+			"endAddress": "54.203.242.199",
+			"high": 919335623,
+			"low": 919335623
+		},
+		{
+			
+			"notation": "52.40.168.216/32",
+			"startAddress": "52.40.168.216",
+			"endAddress": "52.40.168.216",
+			"high": 875079896,
+			"low": 875079896
+		}
+	]
 })

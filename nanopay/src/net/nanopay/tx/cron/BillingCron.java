@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.HashMap;
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccount;
+import net.nanopay.tx.creditengine.CancelIndependentFees;
 import net.nanopay.tx.billing.Bill;
 import net.nanopay.tx.billing.BillingFee;
 import net.nanopay.tx.model.Transaction;
@@ -110,12 +111,25 @@ public class BillingCron implements ContextAgent {
         }
       }
 
+      DAO creditCodeDAO = (DAO) x.get("creditCodeDAO");
+      ArrayList<String> creditcodeArray = new ArrayList<String>();
+      CancelIndependentFees feeWaiver = new CancelIndependentFees();
+      feeWaiver.setDiscountPercent(1);
+      feeWaiver.setName("Fee not applicable");
+      feeWaiver.setSpid(userAccount.getSpid());
+      feeWaiver.setOwner(userAccount.getOwner());
+      feeWaiver.setInitialQuantity(1);
+      feeWaiver = (CancelIndependentFees) creditCodeDAO.put(feeWaiver);
+      creditcodeArray.add(feeWaiver.getId());
+
+
       Transaction billingTxn = new Transaction.Builder(x)
         .setSourceAccount(userAccount.getId())
         .setDestinationAccount(feeAccount.getId())
         .setSourceCurrency(userAccount.getDenomination())
         .setDestinationCurrency(feeAccount.getDenomination())
         .setAmount(amount)
+        .setCreditCodes(creditcodeArray.toArray(new String[creditcodeArray.size()]))
         .build();
 
       try {

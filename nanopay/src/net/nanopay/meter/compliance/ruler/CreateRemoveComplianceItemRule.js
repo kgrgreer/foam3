@@ -24,7 +24,6 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
     'foam.dao.DAO'
   ],
 

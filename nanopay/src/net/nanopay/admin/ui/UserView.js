@@ -29,7 +29,6 @@ foam.CLASS({
   requires: [
     'foam.u2.PopupView',
     'foam.u2.dialog.Popup',
-    'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.User'
   ],
 

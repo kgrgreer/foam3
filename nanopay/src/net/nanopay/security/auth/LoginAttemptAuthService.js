@@ -143,13 +143,11 @@ foam.CLASS({
 
           if ( auth.check(x, "loginattempts.lock.time") ) {
             if ( ! loginFreezeWindowReached(la) ) {
-              throw new foam.nanos.auth.AuthenticationException("Account temporarily locked. You can attempt to login after " + getDateFormat().format(la.getNextLoginAttemptAllowedAt()));
+              throw new foam.nanos.auth.AccountTemporarilyLockedException(getDateFormat().format(la.getNextLoginAttemptAllowedAt()));
             }
           }  else {
             String locale = user.getLanguage().getCode().toString();
-            TranslationService ts = (TranslationService) getX().get("translationService");
-            String exc = ts.getTranslation(locale, getClassInfo().getId()+ ".ACCOUNT_LOCKED", this.ACCOUNT_LOCKED);
-            throw new foam.nanos.auth.AuthenticationException(exc);
+            throw new foam.nanos.auth.AccountLockedException();
           }
         }
         try {
@@ -242,7 +240,7 @@ foam.CLASS({
       ],
       javaCode: `
         if ( loginAttempts == null ) {
-          throw new foam.nanos.auth.AuthenticationException("User not found.");
+          throw new foam.nanos.auth.UserNotFoundException();
         }
         return loginAttempts.getLoginAttempts() >= getMaxAttempts();
       `
@@ -354,7 +352,7 @@ foam.CLASS({
          loginAttempts.setNextLoginAttemptAllowedAt(cal.getTime());
          ((foam.dao.DAO) x.get("localLoginAttemptsDAO")).put(loginAttempts);
        `
-     },
+    },
     {
       name: 'loginFreezeWindowReached',
       documentation: 'Convenience method to check if user next allowed login attempt date has been reached',
@@ -367,7 +365,7 @@ foam.CLASS({
       ],
       javaCode: `
         if ( loginAttempts == null ) {
-          throw new foam.nanos.auth.AuthenticationException("User not found.");
+          throw new foam.nanos.auth.UserNotFoundException();
         }
         Calendar now = Calendar.getInstance();
         Calendar cal = Calendar.getInstance();

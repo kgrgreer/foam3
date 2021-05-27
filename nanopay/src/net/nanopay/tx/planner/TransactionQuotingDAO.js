@@ -30,12 +30,13 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.Balance',
     'net.nanopay.account.ZeroAccount',
-    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.SummarizingTransaction',
     'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.Transfer',
     'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.tx.SummaryTransaction',
-    'net.nanopay.fx.FXSummaryTransaction',
+    'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.creditengine.CreditCodeAccount',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.planner.InvalidPlanException',
     'net.nanopay.tx.planner.UnableToPlanException'
   ],
 
@@ -103,8 +104,10 @@ foam.CLASS({
             return loadedTxn;
           }
 
+          consumeCreditCode(x, loadedTxn);
           return getDelegate().put_(x, loadedTxn); //recovered plan is put in.
         }
+        consumeCreditCode(x, txn);
         return getDelegate().put_(x, txn); // txn being saved as part of chain here.
       `
     },
@@ -128,12 +131,12 @@ foam.CLASS({
           try {
             transfer.validate();
           } catch (RuntimeException e) {
-            throw new UnableToPlanException("Invalid plan", e);
+            throw new InvalidPlanException(e);
           }
           Account account = transfer.findAccount(getX());
           if ( account == null ) {
             logger.error(this.getClass().getSimpleName(), "validateQuoteTransfers", "transfer account not found: " + transfer.getAccount(), transfer);
-            throw new UnableToPlanException("Invalid plan");
+            throw new InvalidPlanException();
           }
 
           // Skip validation of amounts for transfers to trust accounts (zero accounts) since we don't
@@ -142,6 +145,26 @@ foam.CLASS({
           // value at that point.
           if ( ! ( account instanceof ZeroAccount ) ) {
             account.validateAmount(x, (Balance) balanceDAO.find(account.getId()), transfer.getAmount());
+          }
+        }
+      `
+    },
+    {
+      name: 'consumeCreditCode',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction'}
+      ],
+      documentation: 'consumes the credit code',
+      javaCode: `
+        if ( ( (txn instanceof SummarizingTransaction) ) && txn.getCreditCodes() != null && txn.getCreditCodes().length > 0 ) {
+          DAO creditCodeDAO = (DAO) x.get("localCreditCodeDAO");
+          for ( String code : txn.getCreditCodes() ) {
+            CreditCodeAccount creditCode = (CreditCodeAccount) creditCodeDAO.find(code);
+            if ( creditCode == null ) {
+              throw new RuntimeException("cant find error code");
+            }
+            creditCode.consume(x, txn);
           }
         }
       `

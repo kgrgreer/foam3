@@ -47,7 +47,7 @@ foam.CLASS({
       class: 'List',
       name: 'signatures',
       section: 'systemInformation',
-      order: 30,
+      order: 300,
       documentation: 'List of signatures for a given transaction',
       javaType: 'java.util.ArrayList<net.nanopay.security.Signature>',
       visibility: function(signatures) {

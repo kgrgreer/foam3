@@ -11,6 +11,7 @@ p({
 })
 
 // Receiving Fee accounts
+p({"class":"net.nanopay.account.DigitalAccount", "name":"CreditAccount-intuit", "id":"64307927-db83-43a7-9787-c5cc89becc11", "trustAccount":"7951ef93-42d3-4896-a9ad-f3f0773f649d", "owner":8034, "denomination":"CAD", "name":"nanopay RBC Credit Account CAD","lifecycleState":1})
 p({
     "class":"net.nanopay.account.DigitalAccount", 
     "id":"ab590614-f5bd-476a-84e0-6037607397b5", 

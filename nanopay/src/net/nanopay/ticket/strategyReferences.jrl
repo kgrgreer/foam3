@@ -4,3 +4,10 @@ p({
   "desiredModelId":"foam.nanos.ticket.Ticket",
   "strategy":"net.nanopay.ticket.SudoTicket"
 })
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"dda26266-147d-4f40-81e4-4427b224ef3d",
+  "desiredModelId":"foam.nanos.ticket.Ticket",
+  "strategy":"net.nanopay.ticket.RefundTicket"
+})

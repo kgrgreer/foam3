@@ -1,6 +1,7 @@
 p({
   "class":"net.nanopay.ticket.SudoTicketApprovalRequestRule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d64","name":"SudoTicketApprovalRequestRule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d64",
+  "name":"SudoTicketApprovalRequestRule",
   "priority":100,
   "ruleGroup":"Ticket",
   "documentation":"Generate an Approval Request for priveledge access.",
@@ -16,7 +17,8 @@ p({
 })
 p({
   "class":"net.nanopay.ticket.SudoTicketApprovalResponseRule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d65","name":"SudoTicketApprovalResponseRule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d65",
+  "name":"SudoTicketApprovalResponseRule",
   "priority":101,
   "ruleGroup":"Ticket",
   "documentation":"Act on an Approval Request for priveledge access.",
@@ -25,8 +27,279 @@ p({
   "after":false,
   "enabled":true,
   "saveHistory":false,
+  "predicate": {
+    "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+    "of": "net.nanopay.ticket.SudoTicket"
+  },
   "asyncAction":{
     "class":"net.nanopay.ticket.SudoTicketApprovalResponseAction"
   },
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"b64905d0-289b-4371-92a5-f843e344109a",
+  "name":"Reversal Rule",
+  "priority":100,
+  "ruleGroup":"Ticket",
+  "documentation":"Handle transaction reversal",
+  "daoKey":"localTicketDAO",
+  "operation":3,
+  "action":{
+    "class":"net.nanopay.ticket.RefundTransactionPostRule",
+    "errorCode":10001
+  },
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue":{
+          "class":"net.nanopay.ticket.RefundStatus",
+          "ordinal":2
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"postApprovalRuleId",
+        "propValue": "b64905d0-289b-4371-92a5-f843e344109a"
+      }
+    ]
+  },
+  "after":false,
+  "enabled":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"c6c5c0b8-a24d-4dc7-8561-57e206ed1b45",
+  "name":"Cancel Transaction Post Rule - cancel code 10001",
+  "priority":100,
+  "ruleGroup":"Ticket",
+  "documentation":"Handle transaction cancelation",
+  "daoKey":"localTicketDAO",
+  "operation":3,
+  "action":{
+    "class":"net.nanopay.ticket.CancelTransactionPostRule",
+    "errorCode":10001
+  },
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue":{
+          "class":"net.nanopay.ticket.RefundStatus",
+          "ordinal":2
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"postApprovalRuleId",
+        "propValue": "c6c5c0b8-a24d-4dc7-8561-57e206ed1b45"
+      }
+    ]
+  },
+  "after":false,
+  "enabled":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"69bafee2-9f5f-4ecb-8aaa-8db8ab9d1adb",
+  "name":"Cancel Transaction Post Rule - cancel code not set happens after decline",
+  "priority":100,
+  "ruleGroup":"Ticket",
+  "documentation":"Handle transaction declines where u need to cancel tail. ",
+  "daoKey":"localTicketDAO",
+  "operation":3,
+  "action":{
+    "class":"net.nanopay.ticket.CancelTransactionPostRule",
+  },
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue":{
+          "class":"net.nanopay.ticket.RefundStatus",
+          "ordinal":2
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"postApprovalRuleId",
+        "propValue": "69bafee2-9f5f-4ecb-8aaa-8db8ab9d1adb"
+      }
+    ]
+  },
+  "after":false,
+  "enabled":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"20b9d32c-8d89-4cf1-aa70-3a759e604fb4",
+  "name":"Cancel Transaction Post Rule - cancel code 10000",
+  "priority":100,
+  "ruleGroup":"Ticket",
+  "documentation":"Handle transaction cancelation",
+  "daoKey":"localTicketDAO",
+  "operation":3,
+  "action":{
+    "class":"net.nanopay.ticket.CancelTransactionPostRule",
+    "errorCode":10000
+  },
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue":{
+          "class":"net.nanopay.ticket.RefundStatus",
+          "ordinal":2
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"postApprovalRuleId",
+        "propValue": "20b9d32c-8d89-4cf1-aa70-3a759e604fb4"
+      }
+    ]
+  },
+  "after":false,
+  "enabled":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"680ef5ac-78c1-4331-813f-d78058ad827c",
+  "name":"RefundTicket Create Approvals",
+  "priority":100,
+  "ruleGroup":"Ticket",
+  "daoKey":"localTicketDAO",
+  "operation":3,
+  "action":{
+    "class":"net.nanopay.ticket.RefundTicketCreateApprovals",
+  },
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue":{
+          "class":"net.nanopay.ticket.RefundStatus",
+          "ordinal":1
+        }
+      }
+    ]
+  },
+  "after":true,
+  "enabled":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"e1470962-b96a-4572-ae56-f45715f9819b",
+  "name":"Default scenario",
+  "priority":1,
+  "ruleGroup":"refundTickets",
+  "documentation":"Default scenario runs only if no other scenario has been found.",
+  "daoKey":"localTicketDAO",
+  "operation":3,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue":{
+          "class":"net.nanopay.ticket.RefundStatus",
+          "ordinal":0
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"postApprovalRuleId",
+        "propValue":""
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.ticket.ScenarioAction",
+    "textToAgent":"No scenario found.",
+  },
+  "after":false,
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"0bf00402-ce7e-4f7c-92fd-4fa6bbc45ae8",
+  "name":"Retry a Transaction",
+  "priority":100,
+  "ruleGroup":"Ticket",
+  "documentation":"Retry transaction",
+  "daoKey":"localTicketDAO",
+  "operation":3,
+  "action":{
+    "class":"net.nanopay.ticket.RetryTransactionPostRule"
+  },
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue":{
+          "class":"net.nanopay.ticket.RefundStatus",
+          "ordinal":9
+        }
+      }
+    ]
+  },
+  "after":false,
+  "enabled":true,
   "lifecycleState":1
 })
