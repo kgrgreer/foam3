@@ -100,7 +100,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
+      class: 'Long',
       name: 'id',
       visibility: 'RO',
       section: 'infoSection',
