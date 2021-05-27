@@ -133,6 +133,11 @@ foam.CLASS({
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
       javaValue: 'Pattern.compile("^[0-9]{6,17}$")'
+    },
+    {
+      name: 'ROUTING_CODE_PATTERN',
+      type: 'Regex',
+      value: /^[0-9]{9}$/
     }
   ],
 
@@ -240,11 +245,13 @@ foam.CLASS({
       postSet: function(o, n) {
         this.padCapture.branchId = n;
       },
-      validateObj: function(branchId) {
+      validateObj: function(branchId, swiftCode) {
+        if ( this.SWIFT_CODE_PATTERN && this.SWIFT_CODE_PATTERN.test(swiftCode) )
+          return;
+
         if ( branchId === '' ) return this.ROUTING_NUMBER_REQUIRED;
 
-        var accNumberRegex = /^[0-9]{9}$/;
-        if ( ! accNumberRegex.test(branchId) ) {
+        if ( ! this.ROUTING_CODE_PATTERN.test(branchId) ) {
           return this.ROUTING_NUMBER_INVALID;
         }
       }
@@ -274,7 +281,15 @@ foam.CLASS({
       section: 'accountInformation',
       order: 150,
       gridColumns: 6,
-      validateObj: function(swiftCode) {
+      validateObj: function(branchId, swiftCode) {
+        if ( this.ROUTING_CODE_PATTERN && this.ROUTING_CODE_PATTERN.test(branchId) )
+          return;
+
+        if ( swiftCode === '' ) return this.SWIFT_CODE_REQUIRED;
+
+        if ( ! this.SWIFT_CODE_PATTERN.test(swiftCode) ) {
+          return this.SWIFT_CODE_INVALID;
+        }
       }
     },
     // {
@@ -360,7 +375,7 @@ foam.CLASS({
       transient: true,
       label: '',
       updateVisibility: 'HIDDEN',
-      autoValidate: true,
+      autoValidate: false,
       factory: function() {
         return net.nanopay.model.USPadCapture.create({
           country: this.country,

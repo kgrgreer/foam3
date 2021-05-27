@@ -1450,7 +1450,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.D
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.VOID_CHEQUE_IMAGE.value",target:"images/USA-Check.png"})
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.VOID_CHEQUE_IMAGE.label",target:"voidChequeImage"})
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.VOID_CHECK_IMAGE.label",target:"voidCheckImage"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.BRANCH_ID.label",target:"Número do ROUT ou ABA"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.BRANCH_ID.label",target:"Número do ROUT ou ACH"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.VOID_CHECK_IMAGE.documentation",target:"anular imagem de cheque para esta conta bancária"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.ACCOUNT_NUMBER.label",target:"Número da Conta"})
