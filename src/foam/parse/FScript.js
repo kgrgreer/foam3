@@ -4,6 +4,15 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+ foam.CLASS({
+   package: 'foam.parse',
+   name: 'Test',
+   properties: [
+     'id', 'firstName', 'lastName', 'address'
+   ]
+ });
+
+
 foam.CLASS({
   package: 'foam.parse',
   name: 'FScript',
@@ -12,11 +21,34 @@ foam.CLASS({
 
   static: [
     function test__() {
-      var fs = foam.parse.FScript.create({of: foam.nanos.auth.User});
+//      var fs = foam.parse.FScript.create({of: foam.nanos.auth.User});
+      var fs = foam.parse.FScript.create({of: foam.parse.Test});
 
       function test(s) {
         try {
-          console.log(fs.parseString(s).toString());
+          var p = fs.parseString(s);
+          console.log(p.partialEval().toString());
+        } catch (x) {
+          console.log('ERROR: ', x);
+        }
+      }
+
+      test('address.city=="Toronto"');
+      test('address.city==address.province');
+      test('id==42');
+      test('"Kevin"=="Kevin"');
+      test('firstName=="Kevin"');
+      test('firstName=="Kevin"&&lastName=="Greer"');
+      test('firstName=="Kevin"||id==42');
+    },
+
+    function test2__() {
+      var fs = foam.parse.FScript.create({of: foam.util.Timer});
+
+      function test(s) {
+        try {
+          var p = fs.parseString(s);
+          console.log(p.cls_.name, p.partialEval().toString());
         } catch (x) {
           console.log('ERROR: ', x);
         }
@@ -121,10 +153,10 @@ foam.CLASS({
     {
       name: 'grammar_',
       factory: function() {
-        var self       = this;
-        var cls        = this.of;
-        var fields     = [];
-        var properties = cls.getAxiomsByClass(foam.core.Property);
+        const self       = this;
+        const cls        = this.of;
+        const fields     = [];
+        const properties = cls.getAxiomsByClass(foam.core.Property);
 
         for ( var i = 0 ; i < properties.length ; i++ ) {
           var prop = properties[i];
@@ -171,9 +203,9 @@ foam.CLASS({
             return op.call(self, lhs, rhs);
           },
 
-          or: function(v) { return self.OR(v); },
+          or: function(v) { return self.OR.apply(self, v); },
 
-          and: function(v) { return self.AND(v); },
+          and: function(v) { return self.AND.apply(self, v); },
 
           field: function(v) {
             var expr = v[0];
