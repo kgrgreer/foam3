@@ -4,25 +4,26 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
-   package: 'foam.parse',
-   name: 'Test',
-   properties: [
-     'id',
-     'firstName',
-     'lastName',
-     { class: 'FObjectProperty', of: 'foam.parse.Address', name: 'address' }
-   ]
- });
+foam.CLASS({
+  package: 'foam.parse',
+  name: 'Test',
+  properties: [
+    'id',
+    'firstName',
+    'lastName',
+    { class: 'FObjectProperty', of: 'foam.parse.Address', name: 'address' }
+  ]
+});
 
 
- foam.CLASS({
-   package: 'foam.parse',
-   name: 'Address',
-   properties: [
-     'city', 'province'
-   ]
- });
+foam.CLASS({
+  package: 'foam.parse',
+  name: 'Address',
+  properties: [
+    'city', 'province'
+  ]
+});
+
 
 foam.CLASS({
   package: 'foam.parse',
@@ -35,10 +36,17 @@ foam.CLASS({
 //      var fs = foam.parse.FScript.create({of: foam.nanos.auth.User});
       var fs = foam.parse.FScript.create({of: foam.parse.Test});
 
+      var data = foam.parse.Test.create({
+        id: 42,
+        firstName: 'Kevin',
+        lastName: 'Greer',
+        address: { city: 'Toronto', province: 'ON' }
+      });
+
       function test(s) {
         try {
-          var p = fs.parseString(s);
-          console.log(s, ' -> ', p.partialEval().toString());
+          var p = fs.parseString(s).partialEval();
+          console.log(s, '->', p.toString(), '=', p.f(data));
         } catch (x) {
           console.log('ERROR: ', x);
         }
@@ -46,6 +54,7 @@ foam.CLASS({
 
       test('address.city=="Toronto"');
       test('address.city==address.province');
+      test('address.city!=address.province');
       test('id==42');
       test('"Kevin"=="Kevin"');
       test('firstName=="Kevin"');
