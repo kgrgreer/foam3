@@ -3188,7 +3188,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.UCJExpiryRemi
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.UCJExpiryReminderNotification.NOTIFICATION_BODY_P3",target:" dias."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.VERIFICATION_EMAIL_TITLE",target:"E-mail de Verificação Enviado"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.VERIFICATION_EMAIL",target:"Email de verificação enviado para"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.VERIFICATION_EMAIL",target:"Email enviado para"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceForm.ACCOUNT_CREATE.label",target:"Crie uma nova conta bancária"})
 

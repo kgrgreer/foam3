@@ -148,7 +148,7 @@ foam.CLASS({
     {
       name: 'NO_EMAIL_INSTRUCTIONS_2', message: '\u2022 Verify the email address above is correct'
     },
-    { name: 'VERIFICATION_EMAIL', message: 'Verification email sent to' }
+    { name: 'VERIFICATION_EMAIL', message: 'Email sent to' }
   ],
 
   methods: [
