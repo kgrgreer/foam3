@@ -21,7 +21,6 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup'
   ],
 

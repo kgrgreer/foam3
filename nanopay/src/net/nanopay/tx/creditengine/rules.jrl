@@ -1,0 +1,21 @@
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"fc2b0430-90df-42c1-ab98-cae1c6a5c3e5",
+  "name":"Load promo account on account creation",
+  "priority":100,
+  "ruleGroup":"Promotions",
+  "documentation":"When a creditCodeAccount is created, top it off with a transaction to ensure it has proper starting balance.",
+  "daoKey":"localAccountDAO",
+  "operation":0,
+  "after":true,
+  "predicate": {
+    "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+    "of":"net.nanopay.tx.creditengine.CreditCodeAccount"
+  },
+  "action":{
+    "class": "net.nanopay.tx.creditengine.CreditCodeLoadAction"
+  },
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})

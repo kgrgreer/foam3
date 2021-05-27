@@ -2,8 +2,7 @@ p({
   "class":"foam.nanos.menu.Menu",
   "id": "sme.main.appStore",
   "label": "Registration",
-  "activeIcon":"images/ablii/dashboard-icon-active.svg",
-  "icon":"images/ablii/dashboard-icon-resting.svg",
+  "themeIcon":"dashboard",
   "handler":{
     "class":"foam.nanos.menu.ViewMenu",
     "view":{

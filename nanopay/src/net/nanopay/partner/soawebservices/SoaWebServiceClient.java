@@ -25,9 +25,12 @@ import foam.lib.json.JSONParser;
 import foam.lib.json.Outputter;
 import foam.nanos.alarming.Alarm;
 import foam.nanos.alarming.AlarmReason;
+import foam.nanos.alarming.Alarm;
+import foam.nanos.alarming.AlarmReason;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.om.OMLogger;
+import foam.mlang.MLang;
 import foam.util.SafetyUtil;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -68,7 +71,6 @@ public class SoaWebServiceClient extends ContextAwareSupport implements SoaWebSe
       SoaCredenciais creds = getCredentials();
       String endpoint = creds.getUrl() + "PessoaFisicaNFe.ashx";
       request.setCredenciais(creds);
-      request.setCredenciais(getCredentials());
       CloseableHttpResponse httpResponse = sendPost(endpoint, getJsonMessage(request));
       String responseString = parseHttpResponse(httpResponse, endpoint);
       PessoaResponse response = (PessoaResponse) jsonParser.parseString(responseString, PessoaResponse.class);
@@ -80,6 +82,7 @@ public class SoaWebServiceClient extends ContextAwareSupport implements SoaWebSe
           .setName(this.getClass().getSimpleName())
           .setSeverity(foam.log.LogLevel.ERROR)
           .setReason(AlarmReason.CREDENTIALS)
+          .setIsActive(true)
           .setNote(response.getTransacao().getCodigoStatusDescricao())
           .build();
         ((DAO) getX().get("alarmDAO")).put(alarm);
@@ -116,6 +119,7 @@ public class SoaWebServiceClient extends ContextAwareSupport implements SoaWebSe
          SafetyUtil.isEmpty(credentials.getEmail()) ||
          SafetyUtil.isEmpty(credentials.getSenha()) ) {
       logger.error(this.getClass().getSimpleName(), "Invalid credentials");
+      createAlarm("Invalid credentials");
       throw new RuntimeException("Invalid credentials" );
     }
     return credentials;
@@ -184,14 +188,33 @@ public class SoaWebServiceClient extends ContextAwareSupport implements SoaWebSe
       return response;
     } catch (IOException io) {
       logger.error(io);
-      throw new RuntimeException("Unable to parse http response from endpoint: " + endpoint  + io.getMessage());
+      String msg = "Unable to parse http response from endpoint: " + endpoint  + io.getMessage();
+      createAlarm(msg);
+      throw new RuntimeException(msg);
     } finally {
       try {
         httpResponse.close();
       } catch (IOException io) {
         logger.error(io);
+        createAlarm(io.getMessage());
       }
     }
+  }
+
+  protected void createAlarm(String note) {
+    DAO alarmDAO = (DAO) getX().get("alarmDAO");
+    Alarm alarm = (Alarm) alarmDAO.find(MLang.EQ(Alarm.NAME, "SOAWebService"));
+    if ( alarm == null ) {
+      alarm = new Alarm.Builder(getX())
+        .setName("SOAWebService")
+        .setIsActive(true)
+        .setNote(note)
+        .build();
+    } else {
+      alarm = (Alarm) alarm.fclone();
+      if ( ! alarm.getIsActive() ) alarm.setIsActive(true);
+    }
+    alarmDAO.put(alarm);
   }
 
   protected String parseHttpResponseError(String endpoint, CloseableHttpResponse httpResponse) {

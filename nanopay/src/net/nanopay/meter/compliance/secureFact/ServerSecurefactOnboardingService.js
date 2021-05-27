@@ -31,7 +31,7 @@
      'foam.nanos.crunch.Capability',
      'foam.nanos.crunch.CapabilityCapabilityJunction',
      'foam.nanos.crunch.CrunchService',
-     'foam.nanos.dig.exception.ExternalAPIException',
+     'foam.nanos.dig.exception.TemporaryExternalAPIException',
      'foam.nanos.logger.Logger',
      'foam.util.SafetyUtil',
      'java.util.ArrayList',
@@ -300,12 +300,12 @@
           dataResponse = securefactService.levDocumentData(x, orderResponse.getOrderId());
 
           if ( System.currentTimeMillis() - startTime > DOCUMENT_DATA_TIMEOUT ) {
-            throw new ExternalAPIException("Timeout retrieving party data for " + business.getBusinessName());
+            throw new TemporaryExternalAPIException("Timeout retrieving party data for " + business.getBusinessName());
           }
         } while ( dataResponse != null && SafetyUtil.equals(dataResponse.getStatus(), "In Progress") );
         
         if ( SafetyUtil.equals(dataResponse.getStatus(), "Cancelled") ) {
-          throw new ExternalAPIException("Company data failed document lookup for " + business.getBusinessName());
+          throw new TemporaryExternalAPIException("Company data failed document lookup for " + business.getBusinessName());
         }
 
         return dataResponse;

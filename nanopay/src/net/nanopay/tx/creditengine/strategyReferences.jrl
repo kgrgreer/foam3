@@ -1,0 +1,18 @@
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"96b52369-946a-4bf2-8e17-1832acf8922e",
+  "desiredModelId":"net.nanopay.tx.creditengine.CreditCodeAccount",
+  "strategy":"net.nanopay.tx.creditengine.CourtesyCredit"
+})
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"6246258d-a62e-4388-a3e4-c08d73998ab6",
+  "desiredModelId":"net.nanopay.tx.creditengine.CreditCodeAccount",
+  "strategy":"net.nanopay.tx.creditengine.FeeWaiver"
+})
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"6f4f1f58-ce03-4124-b5cb-0c1b8b86e7cc",
+  "desiredModelId":"net.nanopay.tx.creditengine.CreditCodeAccount",
+  "strategy":"net.nanopay.tx.creditengine.FeeRefund"
+})

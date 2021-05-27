@@ -8,7 +8,7 @@ p({"class":"foam.nanos.menu.Menu","id":"sme.accountProfile.signout","label":"Sig
 
 p({"class":"foam.nanos.menu.Menu","id":"smeNavigation","label":"Ablii Navigation","handler":{"class":"foam.nanos.menu.SubMenu"},"order":103,"parent":"sme"})
 p({"class":"foam.nanos.menu.Menu","id":"sme.bank.matching","label":"Bank Matching","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.accounting.ui.AccountingCallbackPage"}},"parent":"hidden"})
-p({"class":"foam.nanos.menu.Menu","id":"sme.menu.addBankAccount","label":"Add Bank Account","icon":"images/ablii/bankaccount-icon-resting.svg","activeIcon":"images/ablii/bankaccount-icon-active.svg","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.bank.ui.BankPickCurrencyView"}},"order":506,"parent":"sme"})
+p({"class":"foam.nanos.menu.Menu","id":"sme.menu.addBankAccount","label":"Add Bank Account","themeIcon":"bankaccount","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.bank.ui.BankPickCurrencyView"}},"order":506,"parent":"sme"})
 
 p({"class":"foam.nanos.menu.Menu","id":"sme.quickAction.send","label":"Send payment","icon":"images/ablii/sendpayment-icon-resting.svg","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.SendRequestMoney","isPayable":true}},"order":1,"parent":"sme"})
 p({"class":"foam.nanos.menu.Menu","id":"sme.quickAction.request","label":"Request payment","icon":"images/ablii/requestpayment-icon-resting.svg","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.SendRequestMoney"}},"order":2,"parent":"sme"})
@@ -17,8 +17,7 @@ p({
   "class":"foam.nanos.menu.Menu",
   "id": "sme.main.appStore",
   "label": "Features",
-  "activeIcon":"images/ablii/extension-active.svg",
-  "icon":"images/ablii/extension-resting.svg",
+  "themeIcon":"extension",
   "handler":{
     "class":"foam.nanos.menu.ViewMenu",
     "view":{
@@ -49,14 +48,13 @@ p({
   }
 })
 
-p({"class":"foam.nanos.menu.Menu","id":"mainmenu.dashboard","label":"Dashboard","icon":"images/ablii/dashboard-icon-resting.svg","activeIcon":"images/ablii/dashboard-icon-active.svg","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.dashboard.Dashboard"}},"order":500,"parent":"smeNavigation"})
+p({"class":"foam.nanos.menu.Menu","id":"mainmenu.dashboard","label":"Dashboard","themeIcon":"dashboard","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.dashboard.Dashboard"}},"order":500,"parent":"smeNavigation"})
 
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"mainmenu.contacts",
   "label":"Contacts DAOMenu2",
-  "icon":"images/ablii/contacts-icon-resting.svg",
-  "activeIcon":"images/ablii/contacts-icon-active.svg",
+  "themeIcon":"users",
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
@@ -117,8 +115,7 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "mainmenu.banking",
   "label": "Bank accounts DAOMenu2",
-  "icon": "images/ablii/bankaccount-icon-resting.svg",
-  "activeIcon": "images/ablii/bankaccount-icon-active.svg",
+  "themeIcon":"bankaccount",
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
@@ -238,8 +235,7 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "mainmenu.invoices.payables",
   "label": "Payables",
-  "activeIcon":"images/ablii/payables-icon-active.svg",
-  "icon":"images/ablii/payables-icon-resting.svg",
+  "themeIcon":"payables",
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
@@ -253,8 +249,7 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "mainmenu.invoices.receivables",
   "label": "Receivables",
-  "activeIcon":"images/ablii/receivables-icon-active.svg",
-  "icon":"images/ablii/receivables-icon-resting.svg",
+  "themeIcon":"receivables",
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {

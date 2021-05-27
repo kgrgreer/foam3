@@ -80,13 +80,6 @@ foam.CLASS({
     },
     {
       class: 'FObjectArray',
-      of: 'net.nanopay.tx.Transfer',
-      name: 'Transfers',
-      networkTransient: true,
-      hidden: true
-    },
-    {
-      class: 'FObjectArray',
       of: 'net.nanopay.tx.fee.Rate',
       name: 'rates',
       hidden: true

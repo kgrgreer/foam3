@@ -40,43 +40,28 @@ foam.CLASS({
       },
       javaFactory: `
         return "Clearing Time Transaction";
-      `
+      `,
+      section: 'systemInformation',
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'DateTime',
       name: 'estimatedCompletionDate',
       createVisibility: 'HIDDEN',
-      readVisibility: function(processDate) {
-       return processDate ?
-         foam.u2.DisplayMode.RO :
-         foam.u2.DisplayMode.HIDDEN;
-      },
-      updateVisibility: function(processDate) {
-       return processDate ?
-         foam.u2.DisplayMode.RO :
-         foam.u2.DisplayMode.HIDDEN;
-      },
-      section: 'transactionInformation',
-      order: 410,
-      gridColumns: 6,
-      createVisibility: 'HIDDEN',
-      tableWidth: 172
+      readVisibility: 'RO',
+      updateVisibility: 'RO',
+      section: 'systemInformation',
+      order: 90,
+      gridColumns: 6
     },
     {
      class: 'DateTime',
      name: 'processDate',
      storageTransient: true,
      createVisibility: 'HIDDEN',
-     readVisibility: function(processDate) {
-      return processDate ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-     },
-     updateVisibility: function(processDate) {
-      return processDate ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-     }
+     readVisibility: 'RO',
+     updateVisibility: 'RO'
     },
     {
       class: 'foam.core.Enum',

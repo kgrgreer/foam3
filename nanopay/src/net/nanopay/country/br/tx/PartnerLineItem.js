@@ -34,6 +34,10 @@ foam.CLASS({
     },
     {
       class: 'Double',
+      name: 'bankFee'
+    },
+    {
+      class: 'Double',
       name: 'fxSpread',
       documentation: 'the spread partner applies'
     },
@@ -41,9 +45,9 @@ foam.CLASS({
       class: 'Double',
       name: 'effectiveRate',
       factory: function() {
-        return this.fxSpread + this.fxRate + this.bankFeeRate;
+        return (this.fxRate + this.bankFee) * (1 + this.fxSpread);
       },
-      javaFactory: 'return getFxSpread() + getFxRate() + getBankFeeRate();'
+      javaFactory: 'return (getFxRate() + getBankFee()) * (1 + getFxSpread());'
     },
     {
       class: 'UnitValue',
@@ -140,23 +144,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'natureCode'
-    },
-    {
-      class: 'UnitValue',
-      name: 'bankFee',
-      unitPropName: 'bankFeeCurrency'
-    },
-    {
-      class: 'Reference',
-      of: 'foam.core.Currency',
-      name: 'bankFeeCurrency',
-      targetDAOKey: 'currencyDAO',
-      label: 'Bank Fee Currency'
-    },
-    {
-      class: 'Double',
-      name: 'bankFeeRate',
-      label: 'bank Rate'
     }
   ],
 
@@ -174,8 +161,6 @@ foam.CLASS({
       if ( getIOFCurrency() == "" ) throw new ValidationException("IOFCurrency is missing on PartnerLineItem");
       if ( getVET() == 0 ) throw new ValidationException("VET is missing on PartnerLineItem");
       if ( getBankFee() == 0 ) throw new ValidationException("bankFee is missing on PartnerLineItem");
-      if ( getBankFeeRate() == 0 ) throw new ValidationException("bankFeeRate is missing on PartnerLineItem");
-      if ( getBankFeeCurrency() == "" ) throw new ValidationException("bankFeeCurrency is missing on PartnerLineItem");
       `
     }
   ]
