@@ -137,7 +137,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailVi
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.INSTRUCTIONS1",target:"Enviamos um email para "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.INSTRUCTIONS2",target:" com um link para ativar sua conta."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.NO_EMAIL_INSTRUCTIONS_2",target:"\u2022 Verifique se o endereço de e-mail acima está correto"})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.EMAIL.label",target:"email pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.NO_EMAIL_TOGGLE.label",target:"noEmailToggle pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.RESEND_EMAIL.label",target:"Reenviar o Email "})
@@ -2090,7 +2089,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.Account.SECT
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.Account.DENOMINATION.label",target:"Moeda"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.Account.SUMMARY.label",target:"Sumário"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.approval.AgentCapabilityJunctionDAOSummaryView.SUCCESS_REMOVED",target:"Informações de integração removidas com sucesso. Aguarde o reenvio."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.approval.AgentCapabilityJunctionDAOSummaryView.SUCCESS_REMOVED_TITLE",target:"Informações de Integração Removidas"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.approval.AgentCapabilityJunctionDAOSummaryView.SUCCESS_REMOVED",target:"Aguarde o reenvio."})
 
 // Email subject translation
 p({class:"foam.i18n.Locale",locale:"pt",source:"4f45c745-1c93-4380-b275-2d2fea091d1e-1.subject",target:"Redefinir senha"})
@@ -3187,6 +3187,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.UCJExpiryRemi
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.UCJExpiryReminderNotification.NOTIFICATION_BODY_P2",target:"\" irá expirar em "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.UCJExpiryReminderNotification.NOTIFICATION_BODY_P3",target:" dias."})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.VERIFICATION_EMAIL_TITLE",target:"E-mail de Verificação Enviado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.VERIFICATION_EMAIL",target:"Email de verificação enviado para"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceForm.ACCOUNT_CREATE.label",target:"Crie uma nova conta bancária"})
