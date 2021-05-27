@@ -639,8 +639,8 @@
       message: 'You have successfully assigned this request'
     },
      {
-       name: 'SUCCESS_ASSIGNED_TITLE',
-       message: 'Request Assigned'
+      name: 'SUCCESS_ASSIGNED_TITLE',
+      message: 'Request Assigned'
      },
     {
       name: 'SUCCESS_UNASSIGNED',
