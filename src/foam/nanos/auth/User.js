@@ -310,7 +310,7 @@ foam.CLASS({
       gridColumns: 6
     },
     {
-      class: 'URL',
+      class: 'Website',
       name: 'website',
       includeInDigest: false,
       documentation: 'A URL link to the website of the User.',

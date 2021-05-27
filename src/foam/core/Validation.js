@@ -553,13 +553,58 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'validateObj',
-      expression: function(url) {
-        var urlRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/;
+      class: 'FObjectArray',
+      of: 'foam.core.ValidationPredicate',
+      name: 'validationPredicates',
+      factory: function() {
+        var self = this;
+        var urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
+        return [
+          {
+            args: [this.name],
+            predicateFactory: function(e) {
+              return e.OR(
+                e.EQ(self, ''),
+                e.REG_EXP(self, urlRegex)
+              );
+            },
+            errorString: this.INVALID_URL
+          }
+        ];
+      }
+    }
+  ]
+});
 
-        if ( url.length > 0 && ! urlRegex.test(url) ) {
-          return this.INVALID_URL;
-        }
+foam.CLASS({
+  package: 'foam.core',
+  name: 'WebsiteValidationRefinement',
+  refines: 'foam.core.Website',
+
+  messages: [
+    { name: 'INVALID_Website', message: 'Invalid Website' }
+  ],
+
+  properties: [
+    {
+      class: 'FObjectArray',
+      of: 'foam.core.ValidationPredicate',
+      name: 'validationPredicates',
+      factory: function() {
+        var self = this;
+        var websiteRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/;
+        return [
+          {
+            args: [this.name],
+            predicateFactory: function(e) {
+              return e.OR(
+                e.EQ(self, ''),
+                e.REG_EXP(self, websiteRegex)
+              );
+            },
+            errorString: this.INVALID_WEBSITE
+          }
+        ];
       }
     }
   ]
