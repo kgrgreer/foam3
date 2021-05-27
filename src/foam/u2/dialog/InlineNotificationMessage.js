@@ -62,7 +62,7 @@ foam.CLASS({
 
   constants: {
     ERROR_ICON: 'images/inline-error-icon.svg',
-    WARNING_ICON: 'images/information-small-purple.svg',
+    WARNING_ICON: 'images/baseline-warning-yellow.svg',
     SUCCESS_ICON: 'images/checkmark-small-green.svg'
   },
 
@@ -97,12 +97,12 @@ foam.CLASS({
       margin-left: 10px;
     }
     ^error-background {
-      background: #fff6f6;
-      border: 1px solid #f91c1c;
+      background: /*%GREY5%*/ #f5f4ff;
+      border: 1px solid /*%DESTRUCTIVE3%*/ #f91c1c;
     }
     ^warning-background {
-      background: #f5f4ff;
-      border: 1px solid #604aff;
+      background: /*%GREY5%*/ #f5f4ff;
+      border: 1px solid /*%WARNING3%*/ #604aff;
     }
     ^icon {
       display: inline-block;

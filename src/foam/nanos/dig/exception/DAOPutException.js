@@ -15,12 +15,10 @@ foam.CLASS({
         cls.extras.push(`
           public DAOPutException(String message) {
             super(message);
-            setMessage(message);
           }
 
           public DAOPutException(String message, Throwable cause) {
             super(message, cause);
-            setMessage(message);
           }
         `
         );
@@ -35,14 +33,9 @@ foam.CLASS({
       value: '400'
     },
     {
-      class: 'Int',
-      name: 'code',
-      value: 1001
-    },
-    {
       class: 'String',
-      name: 'type',
-      value: 'DAOReject'
+      name: 'errorCode',
+      value: '1001'
     }
   ]
 });
