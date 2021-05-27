@@ -318,7 +318,7 @@ foam.CLASS({
     async function initE() {
       var view = this;
 
-      this.editColumnsEnabled =  await this.auth.check(null, `edit-columns-${this.currentMenu.id}`);
+      this.editColumnsEnabled =  await this.auth.check(null, `${this.currentMenu.id}.edit-columns`);
 
       this.columns$.sub(this.updateColumns_);
       this.of$.sub(this.updateColumns_);

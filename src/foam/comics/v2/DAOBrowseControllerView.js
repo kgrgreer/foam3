@@ -114,7 +114,8 @@ foam.CLASS({
       },
       isAvailable: function(config) {
         try {
-          return config.createPredicate.f();
+          var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
+          return config.createPredicate.f() || this.auth.check(null, `${menuId}.primary-action`);
         } catch(e) {
           return false;
         }
@@ -153,7 +154,7 @@ foam.CLASS({
 
     var self = this;
     var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
-    let primaryActionPermission = await this.auth.check(null, `primary-action-${menuId}`)
+    let primaryActionPermission = await this.auth.check(null, `${menuId}.primary-action`)
     this.addClass(this.myClass())
 
       .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$browseSubtitle, config$primaryAction, config$createTitle, config$createControllerView) {
