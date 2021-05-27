@@ -1190,11 +1190,6 @@ foam.CLASS({
       return this.AttrSlot.create(args);
     },
 
-    function myCls(opt_extra) {
-      console.error('Deprecated use of Element.myCls(). Use myClass() instead.');
-      return this.myClass(opt_extra);
-    },
-
     function myClass(opt_extra) {
       // Use hasOwnProperty so that class doesn't inherit CSS classname
       // from ancestor FOAM class.
@@ -1505,12 +1500,6 @@ foam.CLASS({
       return this;
     },
 
-    // TODO: remove
-    function enableCls(cls, enabled, opt_negate) {
-      console.error('Deprecated use of Element.enableCls(). Use enableClass() instead.');
-      return this.enableClass(cls, enabled, opt_negate);
-    },
-
     function enableClass(cls, enabled, opt_negate) {
       /* Enable/disable a CSS class based on a boolean-ish dynamic value. */
       function negate(a, b) { return b ? ! a : a; }
@@ -1531,12 +1520,6 @@ foam.CLASS({
         }
       }
       return this;
-    },
-
-    // TODO: remove
-    function removeCls(cls) {
-      console.error('Deprecated use of Element.removeCls(). Use removeClass() instead.');
-      return this.removeClass(cls);
     },
 
     function removeClass(cls) {
@@ -2958,16 +2941,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'inheritCSS',
       value: true
-    },
-    {
-      documentation: `
-        // TODO: remove when all code ported
-      `,
-      name: 'tableProperties',
-      setter: function(_, ps) {
-        console.error("Deprecated use of tableProperties. Use 'tableColumns' instead.");
-        this.tableColumns = ps;
-      }
     },
     {
       name: 'tableColumns',
