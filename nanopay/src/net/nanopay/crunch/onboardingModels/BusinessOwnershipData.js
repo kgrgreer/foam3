@@ -261,7 +261,7 @@ foam.CLASS({
       javaCode: `
         if ( getHaveLowShares() ) return;
 
-        // validate directors
+        // validate owners
         if (getOwners() == null || getOwners().length == 0) {
           throw new IllegalStateException(NO_OWNER_INFO_ERR);
         }
