@@ -430,6 +430,7 @@ foam.CLASS({
       updateVisibility: 'RO',
       storageOptional: true,
       section: 'userInformation',
+      readPermissionRequired: true,
       order: 260,
       gridColumns: 6
     },

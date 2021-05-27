@@ -60,7 +60,6 @@
 
   tableColumns: [
     'id',
-    'referenceSummary',
     'classificationEnum',
     'createdFor',
     'assignedTo.legalName',
