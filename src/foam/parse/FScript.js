@@ -100,7 +100,7 @@ foam.CLASS({
 
           field: seq(
             sym('fieldname'),
-            repeat(sym('word'), '.')),
+            optional(seq('.', repeat(sym('word'), '.')))),
 
           string: str(seq1(1, '"',
             repeat(alt(literal('\\"', '"'), notChars('"'))),
@@ -177,8 +177,11 @@ foam.CLASS({
 
           field: function(v) {
             var expr = v[0];
-            for ( var i = 0 ; i < v[1].length ; i++ ) {
-              expr = self.DOT(expr, self.NamedProperty.create({propName: v[1][i]}));
+            if ( v[1] ) {
+              var parts = v[1][1];
+              for ( var i = 0 ; i < parts.length ; i++ ) {
+                expr = self.DOT(expr, self.NamedProperty.create({propName: parts[i]}));
+              }
             }
             return expr;
           }
