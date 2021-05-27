@@ -661,6 +661,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ThemeRefinements
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.UserCreatedByAwareRefinement.CREATE_BY.label",target:"Criado Por"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.UserCreatedByAwareRefinement.CREATED_BY_AGENT.label",target:"Criado Por Agente"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.URLValidationRefinement.INVALID_URL",target:"URL inválida"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.WebsiteValidationRefinement.INVALID_WEBSITE",target:"Site inválido"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"notifications.label",target:"Notificações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"notifications.browseTitle",target:"Notificações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"notifications.browseSubtitle",target:"Ver tudo Notificações"})
