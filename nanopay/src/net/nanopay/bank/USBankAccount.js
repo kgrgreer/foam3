@@ -385,7 +385,9 @@ foam.CLASS({
     {
       name: 'bankRoutingCode',
       javaPostSet: `
-        if ( val != null && BRANCH_ID_PATTERN.matcher(val).matches() ) {
+        if ( val != null && BRANCH_ID_PATTERN.matcher(val).matches()
+          && ( SafetyUtil.isEmpty(getBranchId())
+          || ! BRANCH_ID_PATTERN.matcher(getBranchId()).matches() )) {
           setBranchId(val);
         }
       `
