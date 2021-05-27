@@ -85,6 +85,7 @@ foam.CLASS({
             .setOperation(request.getOperation())
             .setCreatedFor(request.getCreatedFor())
             .setGroup(request.getGroup())
+            .setAdditionalGroups(getAdditionalGroupsToNotify())
             .setClassificationEnum(ApprovalRequestClassificationEnum.NATURE_CODE_APPROVAL)
             .setStatus(request.getStatus())
             .setPaymentId(invoice.getPaymentId())
@@ -99,6 +100,7 @@ foam.CLASS({
           .setOperation(request.getOperation())
           .setCreatedFor(request.getCreatedFor())
           .setGroup(request.getGroup())
+          .setAdditionalGroups(getAdditionalGroupsToNotify())
           .setClassificationEnum(ApprovalRequestClassificationEnum.NATURE_CODE_DOCUMENT_APPROVAL)
           .setStatus(request.getStatus())
           .setPaymentId(invoice.getPaymentId()).build();
