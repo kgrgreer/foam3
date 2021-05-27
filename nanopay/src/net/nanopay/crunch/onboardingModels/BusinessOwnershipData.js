@@ -259,6 +259,12 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
+        if ( getHaveLowShares() ) return;
+
+        // validate directors
+        if (getOwners() == null || getOwners().length == 0) {
+          throw new IllegalStateException(NO_OWNER_INFO_ERR);
+        }
         for ( Validatable bo : getOwners() ) {
           bo.validate(x);
         }
