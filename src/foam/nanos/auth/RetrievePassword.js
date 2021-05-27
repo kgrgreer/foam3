@@ -23,9 +23,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'INSTRUC_ONE_TITLE', message: 'Password Reset Instructions Sent' },
-    { name: 'INSTRUC_ONE', message: 'Password reset instructions were sent to' },
-    { name: 'INSTRUC_TWO', message: 'Please check your inbox to continue' },
+    { name: 'INSTRUC_TITLE', message: 'Password Reset Instructions Sent' },
+    { name: 'INSTRUC', message: 'Please check your inbox to continue' },
     { name: 'REDIRECTION_TO', message: 'Back to Sign in' }
   ],
 
@@ -94,8 +93,8 @@ foam.CLASS({
         const user = this.User.create({ email: this.email });
         this.resetPasswordToken.generateToken(null, user).then((_) => {
           this.ctrl.add(this.NotificationMessage.create({
-            message: `${this.INSTRUC_ONE_TITLE}`,
-            description: `${this.INSTRUC_TWO}`,
+            message: `${this.INSTRUC_TITLE}`,
+            description: `${this.INSTRUC}`,
             type: this.LogLevel.INFO,
             transient: true
           }));
