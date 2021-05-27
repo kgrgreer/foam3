@@ -42,13 +42,7 @@ foam.CLASS({
             name: 'outputValue',
             code: function(message) {
                 var SBF = '';
-                //MTn96 and MTn92 lacks a fieldtag at the last position, so translating leads to crash
-                for (var i = 1; i < message.length + 1; i++)
-                {
-                    //note, the i is NOT correct for the below command, modification required
-                    var field = foam.lookup("net.nanopay.swift.fields.FieldTag" + i).create();
-                    SBF += field.toSBF(message);
-                }
+                message.cls_.getAxiomsByClass(net.nanopay.swift.fields.FieldTagRegexValidated).forEach(p => SBF += p.toSBF(message));
                 return SBF;
             },
         },
