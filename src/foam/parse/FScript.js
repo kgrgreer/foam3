@@ -8,10 +8,21 @@
    package: 'foam.parse',
    name: 'Test',
    properties: [
-     'id', 'firstName', 'lastName', 'address'
+     'id',
+     'firstName',
+     'lastName',
+     { class: 'FObjectProperty', of: 'foam.parse.Address', name: 'address' }
    ]
  });
 
+
+ foam.CLASS({
+   package: 'foam.parse',
+   name: 'Address',
+   properties: [
+     'city', 'province'
+   ]
+ });
 
 foam.CLASS({
   package: 'foam.parse',
@@ -27,7 +38,7 @@ foam.CLASS({
       function test(s) {
         try {
           var p = fs.parseString(s);
-          console.log(p.partialEval().toString());
+          console.log(s, ' -> ', p.partialEval().toString());
         } catch (x) {
           console.log('ERROR: ', x);
         }
