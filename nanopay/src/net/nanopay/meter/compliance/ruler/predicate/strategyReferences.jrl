@@ -35,4 +35,4 @@ p({"class":"foam.strategy.StrategyReference","id":"93995b51-d2ea-1f49-7450-88870
 p({"class":"foam.strategy.StrategyReference","id":"bde4b90d-c2ce-dd8f-d7de-e8fe4304a8b4","desiredModelId":"foam.Class","strategy":"net.nanopay.meter.compliance.identityMind.IdentityMindResponse"})
 
 p({"class":"foam.strategy.StrategyReference","id":"75A861D6-2A9E-468C-9C34-BF762E5A3EAB","desiredModelId":"foam.mlang.predicate.Predicate","strategy":"net.nanopay.crunch.predicate.CheckUserCountry"})
-p({"class":"foam.strategy.StrategyReference","id":"CFEDB082-8530-4C60-9AC9-1A77D10DB00C","desiredModelId":"foam.mlang.predicate.Predicate","strategy":"foam.nanos.crunch.predicate.CapabilityGranted"})
+p({"class":"foam.strategy.StrategyReference","id":"CFEDB082-8530-4C60-9AC9-1A77D10DB00C","desiredModelId":"foam.mlang.predicate.Predicate","strategy":"foam.nanos.crunch.predicate.CapabilityIsStatus"})

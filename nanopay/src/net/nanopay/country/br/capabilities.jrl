@@ -455,7 +455,7 @@ p({
   "icon":"/images/capabilityIcons/BrazilCap.svg",
   "version":"0",
   "visibilityPredicate":  {
-    "class": "foam.nanos.crunch.predicate.CapabilityGranted",
+    "class": "foam.nanos.crunch.predicate.CapabilityIsStatus",
     "capabilityId": "crunch.onboarding.signing-officer-information",
     "subjectFromUCJ": false
   },
@@ -527,11 +527,11 @@ p({
     "args": [
       { "class":"net.nanopay.crunch.predicate.IsBusiness" },
       {
-        "class":"foam.nanos.crunch.predicate.CapabilityGranted",
+        "class":"foam.nanos.crunch.predicate.CapabilityIsStatus",
         "capabilityId":"crunch.onboarding.br.international-payments"
       },
       {
-        "class":"foam.nanos.crunch.predicate.CapabilityGranted",
+        "class":"foam.nanos.crunch.predicate.CapabilityIsStatus",
         "capabilityId":"crunch.onboarding.signing-officer-information"
       }
     ]
