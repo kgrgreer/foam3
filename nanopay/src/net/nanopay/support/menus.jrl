@@ -253,12 +253,11 @@ p({
   "class":"foam.nanos.menu.Menu",
   "id":"credits-support",
   "label":"CreditCodes (Support)",
-  "icon":"images/coupons-24px-resting.svg",
-  "activeIcon":"images/coupons-24px-active.svg",
-    "handler":{
-      "class":"foam.nanos.menu.DAOMenu",
-      "daoKey":"creditCodeDAO"
-    },
+  "themeIcon":"coupons",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu",
+    "daoKey":"creditCodeDAO"
+  },
   "parent":"hidden"
 })
 p({
