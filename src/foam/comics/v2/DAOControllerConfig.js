@@ -13,8 +13,6 @@ foam.CLASS({
   `,
 
   imports: [
-    'auth',
-    'currentMenu',
     'translationService'
   ],
 

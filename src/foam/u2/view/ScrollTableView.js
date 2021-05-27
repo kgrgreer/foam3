@@ -10,8 +10,6 @@
   extends: 'foam.u2.Element',
 
   imports: [
-    'auth',
-    'currentMenu',
     'memento?',
     'stack'
   ],
