@@ -49,7 +49,6 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Long',
       name: 'id',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
@@ -153,7 +152,7 @@ foam.CLASS({
       section: 'infoSection',
       createVisibility: 'RO',
       readVisibility: 'RO',
-      updateVisibility: 'RW'
+      updateVisibility: 'RO'
     },
     {
       class: 'DateTime',
