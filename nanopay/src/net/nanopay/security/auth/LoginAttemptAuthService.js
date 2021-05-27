@@ -140,7 +140,7 @@ foam.CLASS({
         }
         if ( user != null &&
              isLoginAttemptsExceeded(la) ) {
-          
+
           if ( auth.check(x, "loginattempts.lock.time") ) {
             if ( ! loginFreezeWindowReached(la) ) {
               throw new foam.nanos.auth.AuthenticationException("Account temporarily locked. You can attempt to login after " + getDateFormat().format(la.getNextLoginAttemptAllowedAt()));
@@ -158,6 +158,9 @@ foam.CLASS({
           resetLoginAttempts(x, la);
           return u;
         } catch ( AccessDeniedException t ) {
+          // don't allow admin to be locked out when accessed from restricted network.
+          throw t;
+        } catch ( AuthenticationException t ) {
           // don't allow admin to be locked out when accessed from restricted network.
           throw t;
         } catch ( Throwable t ) {
