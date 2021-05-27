@@ -79,11 +79,6 @@ foam.CLASS({
           gridColumns: 12
         },
         {
-          name: 'voidChequeImage',
-          order: 50,
-          gridColumns: 12
-        },
-        {
           name: 'branchId',
           order: 60,
           gridColumns: 6
@@ -207,21 +202,6 @@ foam.CLASS({
     {
       name: 'institutionNumber',
       hidden: true
-    },
-    {
-      name: 'voidChequeImage',
-      class: 'String',
-      label: '',
-      value: 'images/USA-Check.png',
-      section: 'accountInformation',
-      visibility: 'RO',
-      transient: true,
-      view: function(_, X) {
-        return {
-          class: 'foam.u2.tag.Image',
-          displayWidth: '100%'
-        };
-      }
     },
     {
       class: 'foam.nanos.fs.FileProperty',
