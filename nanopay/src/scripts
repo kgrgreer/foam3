@@ -3230,3 +3230,33 @@ p({
   """
 })
 
+p({
+  class:"foam.nanos.script.Script",id:"support-group-migration",
+  description:"rename support group to support-ops",
+  code:"""
+  import static foam.mlang.MLang.*;
+  import foam.nanos.auth.User;
+  import foam.nanos.auth.Group;
+  import foam.nanos.auth.GroupPermissionJunction;
+  import foam.dao.AbstractSink;
+  userdao = x.get(\"localUserDAO\");
+  userdao.where(EQ(User.GROUP, \"support\")).select(new AbstractSink() {
+    public void put(obj,sub) {
+      cl = obj.fclone();
+      cl.setGroup(\"support-ops\");
+      userdao.put(obj);
+    }
+  });
+  permdao = x.get(\"groupPermissionJunctionDAO\");
+  permdao.where(EQ(GroupPermissionJunction.SOURCE_ID, \"support\")).select(new AbstractSink() {
+    public void put(obj,sub) {
+      cl = obj.fclone();
+      cl.setSourceId(\"support-ops\");
+      permdao.put(obj);
+    }
+  });
+  print(\"Done\");
+  """,
+  lastModified:1622127924974
+})
+
