@@ -26,6 +26,8 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.logger.Logger',
       visibility: 'HIDDEN',
+      transient: true,
+      javaCloneProperty: '//noop',
       javaFactory: `
         Logger logger = (Logger) getX().get("logger");
         return new PrefixLogger(new Object[] {
