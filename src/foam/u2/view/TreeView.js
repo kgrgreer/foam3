@@ -243,6 +243,7 @@ foam.CLASS({
               label: mainLabel, 
               size: 'SMALL',
               themeIcon: self.level === 1 ? self.data.themeIcon : '',
+              icon: self.level === 1 ? self.data.icon : ''
             }).
             style({
               'padding': '0px !important',
