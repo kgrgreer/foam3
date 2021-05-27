@@ -109,7 +109,7 @@ public class IntuitTransactionSummaryAgent extends TransactionSummaryAgent {
       intuitTxnSummary.setErrorInfo(chainSummary.getErrorInfo());
       if ( intuitTxnSummary.getErrorCode() != 0  && intuitTxnSummary.getStatus() == TransactionStatus.PENDING) {
         intuitTxnSummary.setStatusDetail("Retry in progress");
-      } else if ( ! (intuitTxnSummary.getStatus() == TransactionStatus.PAUSED) ) {
+      } else if ( intuitTxnSummary.getStatus() == TransactionStatus.PAUSED ) {
         intuitTxnSummary.setStatusDetail("Cancelation in progress");
       } else {
         intuitTxnSummary.setStatusDetail("");
