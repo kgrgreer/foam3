@@ -19,12 +19,18 @@ package net.nanopay.partner.treviso.api;
 import foam.core.ContextAwareSupport;
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.DAO;
 import foam.lib.NetworkPropertyPredicate;
 import foam.lib.json.JSONParser;
 import foam.lib.json.Outputter;
+import foam.nanos.alarming.Alarm;
+import foam.nanos.alarming.AlarmReason;
+import foam.nanos.alarming.Alarm;
+import foam.nanos.alarming.AlarmReason;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.om.OMLogger;
+import foam.mlang.MLang;
 import foam.util.SafetyUtil;
 import foam.util.StringUtil;
 import java.io.IOException;
@@ -164,6 +170,23 @@ public class FepWebService extends ContextAwareSupport implements FepWeb {
     return header;
   }
 
+  protected void createAlarm(String note) {
+    DAO alarmDAO = (DAO) getX().get("alarmDAO");
+    Alarm alarm = (Alarm) alarmDAO.find(MLang.EQ(Alarm.NAME, "FepWebService"));
+    if ( alarm == null ) {
+      alarm = new Alarm.Builder(getX())
+        .setName("FepWebService")
+        .setSeverity(foam.log.LogLevel.ERROR)
+        .setIsActive(true)
+        .setNote(note)
+        .build();
+    } else {
+      alarm = (Alarm) alarm.fclone();
+      if ( ! alarm.getIsActive() ) alarm.setIsActive(true);
+    }
+    alarmDAO.put(alarm);
+  }
+
   protected String parseHttpResponse(CloseableHttpResponse httpResponse, String endpoint) {
     if ( httpResponse == null ) throw new RuntimeException("No response got from Treviso endpoint: " + endpoint);
     try {
@@ -175,6 +198,7 @@ public class FepWebService extends ContextAwareSupport implements FepWeb {
       return response;
     } catch (IOException io) {
       logger.error(io);
+      createAlarm(io.getMessage());
       throw new RuntimeException("Unable to parse http response from endpoint: " + endpoint  + io.getMessage());
     } finally {
       try {

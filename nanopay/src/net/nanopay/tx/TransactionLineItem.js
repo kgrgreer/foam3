@@ -103,7 +103,8 @@ foam.CLASS({
     {
       documentation: 'Used to format amount',
       name: 'currency',
-      class: 'String',
+      class: 'Reference',
+      of: 'foam.core.Currency',
       hidden: true
     },
     {

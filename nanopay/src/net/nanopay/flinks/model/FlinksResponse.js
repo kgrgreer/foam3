@@ -51,9 +51,7 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
-      type: 'foam.lib.json.UnknownFObject',
-      javaInfoType: 'foam.core.AbstractFObjectPropertyInfo',
-      javaJSONParser: 'new foam.lib.json.UnknownFObjectParser()',
+      class: 'Map',
       name: 'ValidationDetails',
       visibility: 'RO'
     },

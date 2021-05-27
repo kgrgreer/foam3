@@ -174,6 +174,76 @@ p({
   "lifecycleState":1
 })
 
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d175","name":"approvableDAO Approve or Reject",
+  "priority":110,
+  "ruleGroup":"approvables",
+  "documentation":"Handle an approved or rejected update request",
+  "daoKey":"approvableDAO",
+  "operation":1,
+  "predicate":{
+    "class":"foam.nanos.approval.FulfilledApprovablePredicate",
+  },
+  "action":{
+    "class":"foam.nanos.approval.FulfilledApprovableRule"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"net.nanopay.ticket.Scenario",
+  "id":"bd485714-b0c1-458e-acba-2804d6765ff3",
+  "name":"RefundTicket - cancel CO on pending",
+  "priority":100,
+  "ruleGroup":"refundTickets",
+  "documentation":"Scenario 4: user presses cancel on pending cashout",
+  "daoKey":"localTicketDAO",
+  "operation":3,
+  "predicate":{
+      "class":"foam.mlang.predicate.And",
+      "args":[
+        {
+          class: "foam.nanos.ruler.predicate.IsInstancePredicate",   
+          "of": "net.nanopay.ticket.RefundTicket"
+        },
+        {
+          "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+          "propName":"refundStatus",
+          "propValue": {
+            "class": "net.nanopay.ticket.RefundStatus",
+            "ordinal":0
+          }
+        },
+        {
+          "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
+          "txnProperty":"status",
+          "txnValue":
+          {
+            "class":"net.nanopay.tx.model.TransactionStatus",
+            "ordinal":0
+          }
+        },
+        {
+          "class":"net.nanopay.ticket.RefundTicketInstanceOfPredicate",
+          "instanceOf":"net.nanopay.tx.cico.COTransaction",
+        }
+      ]
+    },
+  "action":{
+    "class":"net.nanopay.ticket.FullReverseScenarioAction",
+    "textToAgent":"This transaction can be safely refunded, don't waive fees though",
+    "creditAccount":"6028f910-9f66-4cc3-a4cd-f5790ca3eafa",
+    "postApprovalRuleId": "b64905d0-289b-4371-92a5-f843e344109a",
+    "autoApprove":false
+  },
+  "after":false,
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid": "ablii"
+})
 // Clearing time rules
 p({
   "class": "net.nanopay.meter.clearing.ruler.TransactionTypeClearingTimeRule",

@@ -130,6 +130,7 @@ foam.CLASS({
               businessName = payer.getOrganization();
             }
             entity.setBusinessName(businessName);
+            tx.setPayerId(payer.getId());
             tx.setPayer(entity);
           }
         }
@@ -152,6 +153,7 @@ foam.CLASS({
               businessName = payee.getOrganization();
             }
             entity.setBusinessName(businessName);
+            tx.setPayeeId(payee.getId());
             tx.setPayee(entity);
           }
         }

@@ -26,10 +26,6 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
-  requires: [
-    'foam.u2.dialog.NotificationMessage'
-  ],
-
   imports: [
     'stack',
     'xeroService',

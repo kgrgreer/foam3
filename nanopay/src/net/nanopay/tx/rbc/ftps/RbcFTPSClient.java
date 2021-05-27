@@ -147,7 +147,7 @@ public class RbcFTPSClient {
   private void init(X x, FTPSClient ftpsClient) {
     this.x = x;
     this.ftpsClient = ftpsClient == null ? new FTPSClient("TLS", false) : ftpsClient;
-    this.logger = new PrefixLogger(new String[] {"RBC"}, (Logger) x.get("logger"));
+    this.logger = new PrefixLogger(new String[] {this.getClass().getSimpleName(), "RBC"}, (Logger) x.get("logger"));
     this.credential = (RbcFTPSCredential) this.x.get("rbcFTPSCredential");
     this.omLogger = (OMLogger) x.get("OMLogger");
   }

@@ -838,6 +838,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-ops","t
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-ops","targetId":"txlimitrule.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-ops","targetId":"usbusinessonboarding.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-ops","targetId":"user.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support-ops","targetId":"service.ticketDAO"})
 
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"alarm.create"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"alarm.read.*"})

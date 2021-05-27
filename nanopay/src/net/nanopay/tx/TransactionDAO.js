@@ -246,8 +246,13 @@ foam.CLASS({
         for ( Transfer tr : ts ) {
           if ( hm.get(tr.getAccount()) != null ) {
             tr.setAmount((hm.get(tr.getAccount())).getAmount() + tr.getAmount());
+            if ( tr.getAmount() == 0 ) {
+              hm.remove(tr.getAccount());
+            }
           }
-          hm.put(tr.getAccount(), tr);
+          if (tr.getAmount() != 0) {
+            hm.put(tr.getAccount(), tr);
+          }
         }
         Transfer [] newTs = hm.values().toArray(new Transfer[0]);
         // sort the transfer array

@@ -28,7 +28,6 @@ foam.CLASS({
   requires: [
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.u2.dialog.Popup',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.sme.onboarding.BusinessOnboarding',
     'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
     'net.nanopay.sme.onboarding.USBusinessOnboarding',

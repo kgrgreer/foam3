@@ -27,7 +27,6 @@
      'foam.dao.DAO',
      'foam.nanos.auth.Subject',
      'foam.nanos.auth.User',
-     'foam.nanos.dig.exception.ExternalAPIException',
      'foam.nanos.logger.Logger',
      'foam.util.SafetyUtil',
      'java.util.ArrayList',

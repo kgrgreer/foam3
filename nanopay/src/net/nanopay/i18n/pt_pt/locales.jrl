@@ -256,6 +256,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMo
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.RATE_REFRESH_SUBMIT",target:" envie novamente."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.RATE_REFRESH_APPROVE",target:" Aprove novamente."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.QUOTE_MISSING",target:"citação não definida"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.PROCESSING_NOTICE",target:"Processando sua transação, isso pode levar até 30 segundos."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.TWO_FACTOR_REQUIRED",target:"Você requer autenticação de dois fatores para continuar este pagamento. Vá para a página Configurações pessoais para configurar a autenticação de dois fatores."})
@@ -1877,6 +1878,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"api-doc-99-reference.label",targ
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"approvals.label",target:"Pedidos de Aprovação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"bankaccounts.label",target:"Contas bancárias"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"notification.label",target:"Negócios"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"businesses.label",target:"Negócios"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"mainmenu.banking.label",target:"Conta Bancária para Recebimento"})
@@ -2423,6 +2425,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMo
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.FeeSummaryTransactionLineItem.FEE",target:"Taxa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.FeeSummaryTransactionLineItem.TOTAL_FEE.label",target:"taxa total"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.GrandTotalLineItem.GRAND_TOTAL",target:"Total geral"})
 
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoneyDetails.DETAILS_SUBTITLE",target:"Create new or choose from existing"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoneyDetails.EXISTING_HEADER",target:"Choose an existing "})
@@ -2531,6 +2534,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.EtaSummaryTransac
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.NO_ATTACHEMENT_PROVIDED",target:"Nenhum anexo fornecido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.NO_NOTES_PROVIDED",target:"Nenhuma nota fornecida"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.DESTINATION_ACCOUNT",target:"Conta de Destino"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.CURRENCY",target:"Moeda: "})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.history.InvoiceCreatedHistoryItemView.INVOICE_CREATED",target:"A fatura foi criada"})
 
@@ -3595,6 +3600,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"admin.acceptanceDocument.browseS
 p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-summary.label",target:"Transações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-summary.browseTitle",target:"Transações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-summary.browseSubtitle",target:"Ver tudo Transações"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-fee-summary.label",target:"Transações"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-fee-summary.browseTitle",target:"Taxa de Transação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-fee-summary.browseSubtitle",target:"Ver tudo Taxa de Transações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-support.label",target:"Transações Resumo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-support.browseTitle",target:"Transações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-support.browseSubtitle",target:"Ver tudo Transações"})

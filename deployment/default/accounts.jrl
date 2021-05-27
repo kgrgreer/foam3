@@ -1,3 +1,7 @@
 p({"class":"net.nanopay.account.TrustAccount", "id":"5b68522d-2948-4b64-a2ea-afe5108a95ae", "reserveAccount":"9c3d0e0e-7b5e-46da-9093-ceb1b0da2b0b", "owner":101, "denomination":"CAD", "name":"nanopay Alterna Trust Account CAD","lifecycleState":1})
 p({"class":"net.nanopay.account.TrustAccount", "id":"325e128a-f76f-46bd-ba82-26d12d92865f", "reserveAccount":"9c34bfad-ec60-4abd-8fc3-fcd5681df5f8", "owner":101, "denomination":"CAD", "name":"nanopay BMO Trust Account CAD","lifecycleState":1})
 p({"class":"net.nanopay.account.TrustAccount", "id":"7ee216ae-9371-4684-9e99-ba42a5759444", "reserveAccount":"73ee9d92-fc0b-471c-8e9b-0fc0d85e318c", "owner":101, "denomination":"CAD", "name":"nanopay RBC Trust Account CAD","lifecycleState":1})
+
+p({"class":"net.nanopay.account.DigitalAccount", "id":"25b06dce-39bc-45ec-b736-856f3c25ce28", "trustAccount":"7ee216ae-9371-4684-9e99-ba42a5759444", "owner":101, "denomination":"CAD", "name":"nanopay RBC Credit Account CAD","lifecycleState":1})
+p({"class":"net.nanopay.account.DigitalAccount", "id":"6028f910-9f66-4cc3-a4cd-f5790ca3eafa", "trustAccount":"325e128a-f76f-46bd-ba82-26d12d92865f", "owner":101, "denomination":"CAD", "name":"nanopay BMO Credit Account CAD","lifecycleState":1})
+p({"class":"net.nanopay.account.DigitalAccount", "id":"39b79a50-94d7-4cc9-b81c-50ebc9a4dd33", "trustAccount":"5b68522d-2948-4b64-a2ea-afe5108a95ae", "owner":101, "denomination":"CAD", "name":"nanopay Alterna Credit Account CAD","lifecycleState":1})

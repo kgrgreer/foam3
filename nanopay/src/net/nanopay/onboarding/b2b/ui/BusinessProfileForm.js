@@ -33,7 +33,6 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.Region',
-    'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Address'
   ],

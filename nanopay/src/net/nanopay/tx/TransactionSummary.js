@@ -115,6 +115,14 @@ foam.CLASS({
       gridColumns: 6
     },
     {
+      class: 'String',
+      name: 'statusDetail',
+      label: 'Status Detail',
+      section: 'transactionInformation',  
+      order: 75,
+      gridColumns: 6
+    },
+    {
       class: 'Reference',
       of: 'net.nanopay.integration.ErrorCode',
       targetDAOKey: 'errorCodeDAO',
