@@ -67,7 +67,8 @@ foam.CLASS({
       left: 0;
       height: 100vh !important;
       width: 100vw;
-      max-height: 100vh !important;
+      max-height: 100vh;
+      max-width: 100vw;
       z-index: 950;
       margin: 0;
       padding: 0;

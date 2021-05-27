@@ -32,7 +32,7 @@ foam.CLASS({
     This view is a simple styled modal with a title and ability to add content/strings and actions
   `,
 
-  imports: ['returnExpandedCSS?', 'theme?'],
+  imports: ['returnExpandedCSS', 'theme?'],
 
   requires: ['foam.u2.dialog.ModalStyles', 'foam.u2.layout.Rows'],
 
@@ -57,8 +57,6 @@ foam.CLASS({
       padding: 24px;
       padding-bottom: 0px; 
       display: flex;
-      max-width: 45vw;
-      max-height: 65vh;
       flex-direction: column;
     }
     ^modal-body{
@@ -78,6 +76,16 @@ foam.CLASS({
   `,
 
   properties: [
+    {
+      class: 'Int',
+      name: 'maxHeight',
+      value: '65'
+    },
+    {
+      class: 'Int',
+      name: 'maxWidth',
+      value: '45'
+    },
     {
       class: 'Enum',
       of: 'foam.u2.dialog.ModalStyles',
@@ -121,9 +129,11 @@ foam.CLASS({
           .enableClass(this.myClass('top'), this.isTop$)
           .start()
               .enableClass(this.myClass('colorBar'), this.isStyled$)
-              .style({ background: this.returnExpandedCSS(this.modalStyle.color) })
+              //TODO: Figure out why this can't use the returnExpandedCSS function
+              .style({ background: this.modalStyle.color })
           .end()
           .start()
+            .style({ 'max-height': this.maxHeight+'vh', 'max-width': this.maxWidth+'vw' })
             .enableClass(this.myClass('inner'), this.isStyled$)
             .startContext({ data: this })
               .start(this.CLOSE_MODAL, { buttonStyle: 'TERTIARY' }).show(this.closeable$)
@@ -142,7 +152,6 @@ foam.CLASS({
           .end()
         .end();
     },
-
     function addActions() {
       var actions = this.E().startContext({ data: this });
       for ( action of this.actionArray ) {
