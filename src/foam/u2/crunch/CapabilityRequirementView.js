@@ -125,7 +125,7 @@ foam.CLASS({
               .addClass(style.myClass('icon-circle'))
               .style({
                 'background-image': `url('${mainCapability[0].icon}')`,
-                'background-size': 'cover',
+                'background-size': '200% 110%',
                 'background-position': '50% 50%'
               })
             .end();
