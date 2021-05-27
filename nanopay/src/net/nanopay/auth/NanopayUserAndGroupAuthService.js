@@ -158,22 +158,6 @@ foam.CLASS({
           throw new AuthenticationException("User not found.");
         }
 
-        // Get theme's spid and user's spid
-        Theme theme = ((Theme) x.get("theme"));
-        String themeSpid = theme.getSpid();
-        String userSpid = user.getSpid();
-
-        // Check if theme's spid and user's spid matched.
-        // if matched pass, else throw an error.
-        // e.g., throws error: userSpid: "treviso", themeSpid: "intuit"
-        if (
-          ! SafetyUtil.isEmpty(themeSpid) &&
-          ! SafetyUtil.isEmpty(userSpid) &&
-          ! themeSpid.equals(userSpid)
-        ) {
-          throw new AuthenticationException("Unauthorized: Access is denied.");
-        }
-
         X userX = x.put("subject", new Subject.Builder(x).setUser(user).build());
         Group group = user.findGroup(userX);
         if ( group == null ) {
@@ -183,7 +167,8 @@ foam.CLASS({
           throw new AuthenticationException("There was an issue logging in");
         }
 
-        SupportConfig supportConfig = theme.getSupportConfig();
+        Theme userTheme = ((Themes) x.get("themes")).findTheme(userX);
+        SupportConfig supportConfig = userTheme.getSupportConfig();
         String supportEmail = (String) supportConfig.getSupportEmail();
 
         if (
