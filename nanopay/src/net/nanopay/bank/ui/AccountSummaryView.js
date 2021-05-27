@@ -45,13 +45,13 @@ foam.CLASS({
       this
         .addClass(this.myClass())
         .start()
-          .start().add(`${self.ACCOUNT_NUMBER} ${self.bankAccountDetail.accountNumber}`).show(!!self.bankAccountDetail.accountNumber).end()
-          .start().add(`${self.IBAN} ${self.bankAccountDetail.iban}`).show(!!self.bankAccountDetail.iban).end()
+          .start().add(`${self.COUNTRY} ${self.bankAccountDetail.country}`).end()
+          .start().add(`${self.CURRENCY} ${self.bankAccountDetail.currency}`).end()
           .start().add(`${self.INSTITUTION_NUMBER} ${self.bankAccountDetail.institutionNumber}`).show( !! self.bankAccountDetail.institutionNumber).end()
           .start().add(`${self.BRANCH_ID} ${self.bankAccountDetail.branchId}`).show( !! self.bankAccountDetail.branchId ).end()
+          .start().add(`${self.ACCOUNT_NUMBER} ${self.bankAccountDetail.accountNumber}`).show(!!self.bankAccountDetail.accountNumber).end()
           .start().add(`${self.SWIFT_CODE} ${self.bankAccountDetail.swiftCode}`).show(!! self.bankAccountDetail.swiftCode ).end()
-          .start().add(`${self.CURRENCY} ${self.bankAccountDetail.currency}`).end()
-          .start().add(`${self.COUNTRY} ${self.bankAccountDetail.country}`).end()
+          .start().add(`${self.IBAN} ${self.bankAccountDetail.iban}`).show(!!self.bankAccountDetail.iban).end()
         .end()
     },
   ]

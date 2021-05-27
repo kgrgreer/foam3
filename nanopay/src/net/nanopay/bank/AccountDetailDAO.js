@@ -51,7 +51,7 @@ foam.CLASS({
         if ( fObject == null ) {
           return fObject;
         }
-        if (fObject instanceof BankAccount) {
+        if ( fObject instanceof BankAccount ) {
           BankAccount bankAccount = (BankAccount) fObject;
           if ( ! bankAccount.getForContact() ) return fObject;
           
