@@ -74,7 +74,7 @@ foam.CLASS({
                 Notification notification = new Notification();
                 notification.setBody("intertrust transaction id: " + txn.getId() + " was declined but the balance was not restored.");
                 notification.setNotificationType("intertrust transaction declined");
-                notification.setGroupId("support");
+                notification.setGroupId("support-ops");
                 ((DAO) x.get("notificationDAO")).put(notification);
               }
             }
@@ -90,7 +90,7 @@ foam.CLASS({
                 Notification notification = new Notification();
                 notification.setBody("intertrust transaction id: " + txn.getId() + " was declined after Completion");
                 notification.setNotificationType("intertrust transaction declined after status complete");
-                notification.setGroupId("support");
+                notification.setGroupId("support-ops");
                 ((DAO) x.get("notificationDAO")).put(notification);
               }
             },"Reversal of InterTrust Rule detected Decline after Complete");
