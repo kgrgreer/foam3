@@ -21,7 +21,6 @@ foam.CLASS({
         cls.extras.push(`
           public AuthorizationException(String message) {
             super(message);
-            setMessage(message);
           } 
         `
         );
@@ -36,14 +35,9 @@ foam.CLASS({
       value: '403'
     },
     {
-      class: 'Int',
-      name: 'code',
-      value: 1009
-    },
-    {
       class: 'String',
-      name: 'type',
-      value: 'Authorization Failed'
+      name: 'errorCode',
+      value: '1009'
     }
   ]
 });

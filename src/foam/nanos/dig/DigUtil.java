@@ -32,25 +32,27 @@ public class DigUtil {
    * @param format The format of the output.
    */
   public static void outputException(X x, DigErrorMessage error, Format format) {
-    HttpServletResponse resp = x.get(HttpServletResponse.class);
-
-    resp.setStatus(Integer.parseInt(error.getStatus()));
-    outputFObject(x, error, format);
+    outputFObject(x, error, Integer.parseInt(error.getStatus()), format);
   }
 
   public static void outputFOAMException(X x, FOAMException foamException, int status, Format format) {
-    HttpServletResponse resp = x.get(HttpServletResponse.class);
-
-    resp.setStatus(status);
-    outputFObject(x, foamException, format);
+    outputFObject(x, foamException, status, format);
   }
 
+  public static void outputFObject(X x, FOAMException error, int status, Format format) {
+    HttpServletResponse resp  = x.get(HttpServletResponse.class);
+    PrintWriter         out   = x.get(PrintWriter.class);
+
+    resp.setStatus(status);
+    outputFObject(x, error, format);
+  }
+  
   public static void outputFObject(X x, FObject object, Format format) {
     HttpServletResponse resp  = x.get(HttpServletResponse.class);
     PrintWriter         out   = x.get(PrintWriter.class);
 
     if ( format == Format.JSON ) {
-      //output error in json format
+      //output object in json format
       resp.setContentType("application/json");
 
       JSONParser jsonParser = new JSONParser();
@@ -70,7 +72,7 @@ public class DigUtil {
       out.println(outputterJson.toString());
 
     } else if ( format == Format.XML )  {
-      //output error in xml format
+      //output object in xml format
       resp.setContentType("application/xml");
 
       foam.lib.xml.Outputter outputterXml = new foam.lib.xml.Outputter(OutputterMode.NETWORK);
@@ -78,7 +80,7 @@ public class DigUtil {
       out.println(outputterXml.toString());
 
     } else if ( format == Format.CSV )  {
-      //output error in csv format
+      //output object in csv format
       resp.setContentType("text/csv");
 
       CSVOutputter outputterCsv = new foam.lib.csv.CSVOutputterImpl.Builder(x).build();
@@ -86,7 +88,7 @@ public class DigUtil {
       out.println(outputterCsv.toString());
 
     } else if ( format == Format.HTML ) {
-      //output error in html format
+      //output object in html format
       resp.setContentType("text/html");
 
       foam.lib.html.Outputter outputterHtml = new foam.lib.html.Outputter(OutputterMode.NETWORK);
@@ -98,7 +100,7 @@ public class DigUtil {
       outputterHtml.outputEndHtml();
       out.println(outputterHtml.toString());
     } else if ( format == Format.JSONJ ) {
-      //output error in jsonJ format
+      //output object in jsonJ format
       resp.setContentType("application/json");
 
       JSONParser jsonParser = new JSONParser();
