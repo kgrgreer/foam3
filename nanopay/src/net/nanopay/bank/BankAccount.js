@@ -621,7 +621,13 @@ foam.CLASS({
         This is NOT check digit only, this property returns the final formatted number. E.g. for some countries its
         branch + accountNumber + checkDigit, for others its accountNumber + checkDigit.`,
       javaFactory: `return getAccountNumber();`
-    }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.bank.AccountDetailSummary',
+      name: 'accountDetails',
+      storageTransient: true
+    },
   ],
 
   actions: [
