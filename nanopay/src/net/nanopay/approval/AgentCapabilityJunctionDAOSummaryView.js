@@ -29,7 +29,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'SUCCESS_REMOVED_TITLE', message: 'Onboarding Information Removed'}
+    { name: 'SUCCESS_REMOVED_TITLE', message: 'Onboarding Information Removed'},
     { name: 'SUCCESS_REMOVED', message: 'Please wait for resubmission.'}
   ],
 
