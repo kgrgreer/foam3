@@ -94,7 +94,7 @@ tag('input');
 ##  el() and id
 ##  E()
 ##  addClass() / cssClass() / addClasses()
-##  enableCls() / enableClass()
+##  enableClass()
 ##  myClass()
 --
 foam.CLASS({

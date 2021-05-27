@@ -4,6 +4,26 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+ foam.CLASS({
+   package: 'foam.parse',
+   name: 'Test',
+   properties: [
+     'id',
+     'firstName',
+     'lastName',
+     { class: 'FObjectProperty', of: 'foam.parse.Address', name: 'address' }
+   ]
+ });
+
+
+ foam.CLASS({
+   package: 'foam.parse',
+   name: 'Address',
+   properties: [
+     'city', 'province'
+   ]
+ });
+
 foam.CLASS({
   package: 'foam.parse',
   name: 'FScript',
@@ -12,12 +32,46 @@ foam.CLASS({
 
   static: [
     function test__() {
-      var fs = foam.parse.FScript.create({of: foam.nanos.auth.User});
-      console.log(fs.parseString('id==42'));
-      console.log(fs.parseString('"Kevin"=="Kevin"'));
-      console.log(fs.parseString('firstName=="Kevin"'));
-      console.log(fs.parseString('firstName=="Kevin"&&lastName=="Greer"'));
-      console.log(fs.parseString('firstName=="Kevin"||id==42'));
+//      var fs = foam.parse.FScript.create({of: foam.nanos.auth.User});
+      var fs = foam.parse.FScript.create({of: foam.parse.Test});
+
+      function test(s) {
+        try {
+          var p = fs.parseString(s);
+          console.log(s, ' -> ', p.partialEval().toString());
+        } catch (x) {
+          console.log('ERROR: ', x);
+        }
+      }
+
+      test('address.city=="Toronto"');
+      test('address.city==address.province');
+      test('id==42');
+      test('"Kevin"=="Kevin"');
+      test('firstName=="Kevin"');
+      test('firstName=="Kevin"&&lastName=="Greer"');
+      test('firstName=="Kevin"||id==42');
+    },
+
+    function test2__() {
+      var fs = foam.parse.FScript.create({of: foam.util.Timer});
+
+      function test(s) {
+        try {
+          var p = fs.parseString(s);
+          console.log(p.cls_.name, p.partialEval().toString());
+        } catch (x) {
+          console.log('ERROR: ', x);
+        }
+      }
+
+      test('address.city=="Toronto"');
+      test('address.city==address.province');
+      test('id==42');
+      test('"Kevin"=="Kevin"');
+      test('firstName=="Kevin"');
+      test('firstName=="Kevin"&&lastName=="Greer"');
+      test('firstName=="Kevin"||id==42');
     }
   ],
 
@@ -29,6 +83,7 @@ foam.CLASS({
   mixins: [ 'foam.mlang.Expressions' ],
 
   requires: [
+    'foam.mlang.predicate.NamedProperty',
     'foam.parse.Alternate',
     'foam.parse.ImperativeGrammar',
     'foam.parse.Literal',
@@ -48,15 +103,15 @@ foam.CLASS({
       value: function(alt, anyChar, eof, join, literal, literalIC, not, notChars, optional, range,
         repeat, repeat0, seq, seq1, str, sym, until) {
         return {
-          START: seq1(0, sym('expr'), repeat0(' '), eof()),
+          START: sym('expr'), //seq1(0, sym('expr'), repeat0(' '), eof()),
 
-          expr: sym('orexpr'),
+          expr: sym('or'),
 
-          orexpr: repeat(sym('andexpr'), literal('||'), 1),
+          or: repeat(sym('and'), literal('||'), 1),
 
-          andexpr: repeat(sym('parenexpr'),literal('&&'), 1),
+          and: repeat(sym('simpleexpr'), literal('&&'), 1),
 
-          parenexpr: alt(
+          simpleexpr: alt(
             sym('paren'),
             sym('negate'),
             sym('comparison')
@@ -83,8 +138,12 @@ foam.CLASS({
           value: alt(
             sym('string'),
             sym('number'),
-            sym('fieldname')
+            sym('field')
           ),
+
+          field: seq(
+            sym('fieldname'),
+            optional(seq('.', repeat(sym('word'), '.')))),
 
           string: str(seq1(1, '"',
             repeat(alt(literal('\\"', '"'), notChars('"'))),
@@ -105,10 +164,10 @@ foam.CLASS({
     {
       name: 'grammar_',
       factory: function() {
-        var self       = this;
-        var cls        = this.of;
-        var fields     = [];
-        var properties = cls.getAxiomsByClass(foam.core.Property);
+        const self       = this;
+        const cls        = this.of;
+        const fields     = [];
+        const properties = cls.getAxiomsByClass(foam.core.Property);
 
         for ( var i = 0 ; i < properties.length ; i++ ) {
           var prop = properties[i];
@@ -139,14 +198,6 @@ foam.CLASS({
         };
 
         var actions = {
-          or: function(v) {
-            return self.Or.create({ args: v });
-          },
-
-          and: function(v) {
-            return self.And.create({ args: v });
-          },
-
           negate: function(v) {
             return self.Not.create({ arg1: v[1] });
           },
@@ -161,6 +212,21 @@ foam.CLASS({
             var rhs = v[2];
 
             return op.call(self, lhs, rhs);
+          },
+
+          or: function(v) { return self.OR.apply(self, v); },
+
+          and: function(v) { return self.AND.apply(self, v); },
+
+          field: function(v) {
+            var expr = v[0];
+            if ( v[1] ) {
+              var parts = v[1][1];
+              for ( var i = 0 ; i < parts.length ; i++ ) {
+                expr = self.DOT(expr, self.NamedProperty.create({propName: parts[i]}));
+              }
+            }
+            return expr;
           }
         };
 
