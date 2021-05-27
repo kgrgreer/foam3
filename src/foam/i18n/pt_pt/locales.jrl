@@ -418,6 +418,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Today",target:"hoje"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Yesterday",target:"Ontem"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Older",target:"Mais velho"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.RetrievePassword.INSTRUC_ONE_TITLE",target:"Redefinir Intruções Enviadas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.RetrievePassword.INSTRUC_ONE",target:"As instruções de redefinição de senha foram enviadas para"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.RetrievePassword.INSTRUC_TWO",target:"Verifique sua caixa de entrada para continuar"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.RetrievePassword.REDIRECTION_TO",target:"Retornar à tela de login"})
