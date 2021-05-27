@@ -645,8 +645,7 @@ foam.CLASS({
   package: 'foam.core',
   name: 'Website',
   extends: 'URL',
-  label: `Websites (requires 'http(s)'/'www' links)`,
-  properties: [ [ 'displayWidth', 80 ] ]
+  label: `Websites (requires 'http(s)'/'www' links)`
 });
 
 
