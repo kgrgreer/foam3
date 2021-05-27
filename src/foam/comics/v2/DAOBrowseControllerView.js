@@ -173,12 +173,12 @@ foam.CLASS({
                       .tag(self.CREATE, { label: config$createTitle, buttonStyle: foam.u2.ButtonStyle.PRIMARY })
                     .endContext()
                   })
-                  .callIf( config.createControllerView&& primaryActionPermission, function() {
+                  .callIf( config.createControllerView && primaryActionPermission, function() {
                     this.startContext({ data: self })
                       .tag(self.CREATE, { label: config$createControllerView.view.title, buttonStyle: foam.u2.ButtonStyle.PRIMARY })
                     .endContext()
                   })
-                  .callIf( config$primaryAction&& primaryActionPermission, function() {
+                  .callIf( config$primaryAction && primaryActionPermission, function() {
                     this.startContext({ data: self }).tag(config$primaryAction, { size: 'LARGE', buttonStyle: 'PRIMARY' }).endContext();
                   })
                 .end()

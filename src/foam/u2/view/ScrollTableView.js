@@ -191,7 +191,7 @@
       this.updateCount();
     },
 
-    async function initE() {
+    function initE() {
       if ( this.memento ) {
         //as there two settings to configure for table scroll and columns params
         //scroll setting which setts the record to which table currently scrolled
