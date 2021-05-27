@@ -37,6 +37,12 @@ foam.CLASS({
     'net.nanopay.tx.model.TransactionStatus'
 ],
 
+
+messages: [
+  { name: 'SOURCE_OWNER_COMPLIANCE', message: 'Sender needs to pass compliance.' },
+  { name: 'DESTINATION_OWNER_COMPLIANCE', message: 'Receiver needs to pass compliance.' },
+],
+
   properties: [
     {
       name: 'name',
@@ -82,10 +88,8 @@ foam.CLASS({
 
         // Check source account owner compliance
         User sourceOwner = findSourceAccount(x).findOwner(x);
-        if ( sourceOwner instanceof Business &&
-           ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED)
-        ) {
-          throw new ValidationException("Sender needs to pass business compliance.");
+        if ( sourceOwner.getCompliance().equals(ComplianceStatus.FAILED) ) {
+          throw new ValidationException(SOURCE_OWNER_COMPLIANCE);
         }
 
         // Check destination account owner compliance
@@ -93,7 +97,7 @@ foam.CLASS({
         if ( destinationOwner.getCompliance().equals(ComplianceStatus.FAILED) ) {
           // We throw when the destination account owner failed compliance, however
           // we are obligated to not expose this fact to the user.
-          throw new ValidationException("Receiver needs to pass compliance.");
+          throw new ValidationException(DESTINATION_OWNER_COMPLIANCE);
         }
       `
     },

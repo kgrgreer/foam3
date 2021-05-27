@@ -66,7 +66,7 @@ foam.CLASS({
         String message = String.format("Unable to plan transaction with source currency: %s, destination currency: %s, source account: %s, destination account: %s", requestTxn.getSourceCurrency(), requestTxn.getDestinationCurrency(), requestTxn.getSourceAccount(), requestTxn.getDestinationAccount());
         sendNOC(x, message);
         ((Logger) x.get("logger")).error(message);
-        throw new UnableToPlanException("Unable to plan");
+        throw new UnableToPlanException();
       }
 
       //if there was only one plan added we do not need to calculate the cost.
@@ -86,7 +86,7 @@ foam.CLASS({
           transactionPlans.add(aTransaction);
       }
       if ( transactionPlans.size() == 0 ) {
-        throw new UnableToPlanException("Unable to plan");
+        throw new UnableToPlanException();
       }
       Collections.sort(transactionPlans, planComparators);
       quote.setPlan(transactionPlans.get(0));

@@ -54,9 +54,10 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.partner.treviso.FepWebClientStatus',
       name: 'status',
-      value: 'NEW',
+      value: 'PENDING',
       documentation: 'Status on FEPWEB system.'
     },
     {

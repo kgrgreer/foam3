@@ -49,7 +49,6 @@ foam.CLASS({
 
   requires: [
     'foam.u2.Element',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
@@ -112,7 +111,19 @@ foam.CLASS({
       margin-bottom: 24px;
     }
     ^ .white-radio {
+      background-repeat: no-repeat;
+      background-position-x: 25px;
+      background-position-y: 13px;
+      background-image: url(images/ablii/radio-resting.svg);
       width: 244px !important;
+    }
+    .white-radio.selected {
+      border: 1px solid /*%PRIMARY3%*/ #406dea !important;
+      background-image: url(images/ablii/radio-active.svg);
+    }
+    .white-radio:disabled {
+      border: 1px solid #e2e2e3 !important;
+      color: #8e9090 !important;
     }
     ^back-arrow {
       font-size: 10.7px;

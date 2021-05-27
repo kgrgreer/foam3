@@ -59,20 +59,12 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'StringArray',
-      name: 'sourceCapabilityList',
+      name: 'createCompliance',
+      value: true
     },
     {
-      class: 'Long',
-      name: 'sourceCapabilityExceptionListUpperLimit'
-    },
-    {
-      class: 'StringArray',
-      name: 'sourceCapabilityExceptionList'
-    },
-    {
-      class: 'StringArray',
-      name: 'destinationCapabilityList'
+      name: 'createUserCompliance',
+      value: true
     },
     {
       name: 'createLimit',
@@ -90,14 +82,6 @@ foam.CLASS({
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
-        List sourceCapabilityList = new ArrayList(Arrays.asList(getSourceCapabilityList()));
-        if ( txn.getAmount() < getSourceCapabilityExceptionListUpperLimit() ) {
-          List exceptionList = new ArrayList(Arrays.asList(getSourceCapabilityExceptionList()));
-          if ( exceptionList != null ) {
-            sourceCapabilityList.addAll(exceptionList);
-          }
-        }
-
         // Check source account owner compliance
         User sourceOwner = txn.findSourceAccount(x).findOwner(x);
         if ( ! sourceOwner.getStatus().equals(AccountStatus.ACTIVE) ) {
@@ -110,9 +94,7 @@ foam.CLASS({
           exception.setEntityClass(sourceOwner.getClass().getName());
           exception.setStatus(sourceOwner.getStatus());
           throw exception;
-        } else if ( 
-             ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED) &&
-             ! grantedOneOfCapabilitySet(x, sourceOwner, sourceCapabilityList)) {
+        } else if ( sourceOwner.getCompliance().equals(ComplianceStatus.FAILED) ) {
           Logger logger = (Logger) x.get("logger");
           logger.warning(txn.getId() + " planner validation failure on source account owner. (" + sourceOwner.getId() + ") " + sourceOwner.toSummary());
           
@@ -127,7 +109,6 @@ foam.CLASS({
         }
 
         // Check destination account owner compliance
-        List destinationCapabilityList = new ArrayList(Arrays.asList(getDestinationCapabilityList()));
         User destinationOwner = txn.findDestinationAccount(x).findOwner(x);
         if ( ! destinationOwner.getStatus().equals(AccountStatus.ACTIVE) ) {
           Logger logger = (Logger) x.get("logger");
@@ -139,9 +120,7 @@ foam.CLASS({
           exception.setEntityClass(destinationOwner.getClass().getName());
           exception.setStatus(destinationOwner.getStatus());
           throw exception;
-        } else if ( 
-             ! destinationOwner.getCompliance().equals(ComplianceStatus.PASSED) &&
-             ! grantedOneOfCapabilitySet(x, destinationOwner, destinationCapabilityList) ) {
+        } else if ( destinationOwner.getCompliance().equals(ComplianceStatus.FAILED) ) {
           Logger logger = (Logger) x.get("logger");
           logger.warning(txn.getId() + " planner validation failure on destination account owner. (" + destinationOwner.getId() + ") " + destinationOwner.toSummary());
 
@@ -156,29 +135,6 @@ foam.CLASS({
         }
 
         return true;
-      `
-    },
-    {
-      name: 'grantedOneOfCapabilitySet',
-      type: 'boolean',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'user', type: 'User' },
-        { name: 'capabilityList', type: 'List' }
-      ],
-      javaCode: `
-        CrunchService crunchService = (CrunchService) x.get("crunchService");
-        Subject subject = new Subject.Builder(x).setUser(user).build();
-        X subjectX = x.put("subject", subject);
-        for ( Object id : capabilityList ) {
-          String capabilityId = (String) id;
-          UserCapabilityJunction ucj = crunchService.getJunctionForSubject(subjectX, capabilityId, subject);
-          if ( ucj != null && ucj.getStatus() == CapabilityJunctionStatus.GRANTED ) 
-            return true;
-        }
-
-        // No capabilities in set were granted
-        return false;
       `
     }
   ]

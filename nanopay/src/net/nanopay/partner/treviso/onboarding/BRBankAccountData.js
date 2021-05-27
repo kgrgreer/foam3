@@ -86,11 +86,21 @@ foam.CLASS({
       factory: function() {
         return net.nanopay.bank.BRBankAccount.create({ clientAccountInformationTitle: '', owner: this.subject.user.id }, this);
       },
-      validateObj: function(bankAccount$errors_, hasBankAccount, loading_) {
-        if ( ! loading_ && ! hasBankAccount && bankAccount$errors_ && bankAccount$errors_.length ) {
-          return this.INVALID_BANK;
+      validationPredicates: [
+        {
+          args: ['hasBankAccount', 'loading_'],
+          predicateFactory: function(e) {
+            return e.AND(
+              e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.partner.treviso.onboarding.BRBankAccountData.BANK_ACCOUNT
+              }), true),
+              e.EQ(net.nanopay.partner.treviso.onboarding.BRBankAccountData.LOADING_, false),
+              e.EQ(net.nanopay.partner.treviso.onboarding.BRBankAccountData.HAS_BANK_ACCOUNT, false)
+            );
+          },
+          errorMessage: 'INVALID_BANK'
         }
-      }
+      ]
     },
     {
       class: 'String',

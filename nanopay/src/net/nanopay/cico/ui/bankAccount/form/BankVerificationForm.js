@@ -25,10 +25,6 @@ foam.CLASS({
       account provided.
   `,
 
-  requires: [
-    'foam.u2.dialog.NotificationMessage'
-  ],
-
   imports: [
     'viewData',
     'errors',

@@ -52,7 +52,9 @@ foam.CLASS({
     {
       name: 'institutionNumber',
       class: 'String',
-      visibility: 'Hidden'
+      section: 'systemInformation',
+      order: 120,
+      gridColumns: 6
     },
     {
       name: 'statusChoices',
@@ -127,7 +129,22 @@ foam.CLASS({
           logger.error("Unable to update CITransaction, if transaction status is completed or declined. Transaction id: " + getId());
           throw new ValidationException("Unable to update CITransaction, if transaction status is completed or declined. Transaction id: " + getId());
         }
+
+        if ( ( oldTxn != null && oldTxn.getStatus() == TransactionStatus.SENT) && (getStatus() == TransactionStatus.PAUSED))
+                    throw new ValidationException("Unable to pause CITransaction, it is already in Sent Status! Transaction id: " + getId());
+
       `
+    },
+    {
+      name: 'getStage',
+      documentation: 'Intertrust transactions have multi-stage transfers, 0 on pending, 1 when completed.',
+      type: 'Long',
+      javaCode: `
+        if ( getStatus() == TransactionStatus.COMPLETED ) {
+          return 1;
+        }
+        return 0;
+      `,
     }
   ]
 });

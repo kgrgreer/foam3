@@ -130,9 +130,10 @@ p({
   "serve": true,
   "serviceScript":
   """
+    inner = new net.nanopay.tx.SummaryTransactionDAO(x, x.get("transactionDAO"));
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
-      .setInnerDAO(x.get("transactionDAO"))
+      .setInnerDAO(inner)
       .setDecorator(new net.nanopay.tx.TransactionEntitiesDAO(x, new foam.dao.NullDAO(x, net.nanopay.tx.model.Transaction.getOwnClassInfo())))
       .setAuthorize(false)
       .setPm(true)
@@ -772,7 +773,7 @@ p({
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
-      .setInnerDAO(x.get("localTransactionSummaryDAO"))
+      .setInnerDAO(x.get("localTransactionSummaryDAO").where(foam.mlang.MLang.CLASS_OF(net.nanopay.partner.intuit.tx.IntuitTransactionSummary.class)))
       .setOf(net.nanopay.partner.intuit.tx.IntuitTransactionSummary.getOwnClassInfo())
       .setRuler(false)
       .setCluster(false)
@@ -781,6 +782,44 @@ p({
       .setAuthorize(false)
       .build();
   """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"localIntuitFeeTransactionSummaryDAO",
+  "lazy":false,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setInnerDAO(x.get("localTransactionSummaryDAO").where(foam.mlang.MLang.CLASS_OF(net.nanopay.partner.intuit.tx.IntuitFeeTransactionSummary.class)))
+      .setOf(net.nanopay.partner.intuit.tx.IntuitFeeTransactionSummary.getOwnClassInfo())
+      .setRuler(false)
+      .setCluster(false)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setAuthorize(false)
+      .build();
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"intuitFeeTransactionSummaryDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setInnerDAO(x.get("localIntuitFeeTransactionSummaryDAO"))
+      .setOf(net.nanopay.partner.intuit.tx.IntuitFeeTransactionSummary.getOwnClassInfo())
+      .setRuler(false)
+      .setAuthorize(true)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setEnableInterfaceDecorators(false)
+      .setCluster(false)
+      .build();
+    """,
+  "client":"{\"of\":\"net.nanopay.partner.intuit.tx.IntuitFeeTransactionSummary\"}"
 })
 
 p({

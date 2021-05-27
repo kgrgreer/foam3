@@ -35,6 +35,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.tx.Transfer',
     'foam.util.SafetyUtil'
   ],
   properties: [
@@ -82,7 +83,8 @@ foam.CLASS({
         if ( this.status == this.TransactionStatus.PENDING_PARENT_COMPLETED ) {
           return [
             'choose status',
-            ['PAUSED', 'PAUSED']
+            ['PAUSED', 'PAUSED'],
+            ['PENDING', 'PENDING']
           ];
         }
         if ( this.status == this.TransactionStatus.PAUSED ) {
@@ -126,6 +128,9 @@ foam.CLASS({
           logger.error("Unable to update COTransaction, if transaction status is completed or declined. Transaction id: " + getId());
           throw new ValidationException("Unable to update COTransaction, if transaction status is completed or declined. Transaction id: " + getId());
         }
+
+        if ( ( oldTxn != null && oldTxn.getStatus() == TransactionStatus.SENT) && (getStatus() == TransactionStatus.PAUSED))
+                            throw new ValidationException("Unable to pause COTransaction, it is already in Sent Status! Transaction id: " + getId());
       `
     },
     {
@@ -160,15 +165,52 @@ foam.CLASS({
           return false;
         }
 
+        // Reverse funds that were taken out of digital accounts when old status was pending or sent
+        if ( getStage() == 2 && (oldTxn.getStatus() == TransactionStatus.PENDING || oldTxn.getStatus() == TransactionStatus.SENT) ) {
+          return true;
+        }
+
         // Cannot transfer when updating status != PENDING.
-        if ( getStatus() != TransactionStatus.PENDING ) return false;
+        if ( ! (getStatus() == TransactionStatus.PENDING || getStatus() == TransactionStatus.COMPLETED) ) return false;
 
         // Updating status=PENDING, can transfer when transitioning from
-        // PENDING_PARENT_COMPLETED, PAUSED or SCHEDULED.
+        // PENDING_PARENT_COMPLETED or SCHEDULED.
         return oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED
-          || oldTxn.getStatus() == TransactionStatus.PAUSED
-          || oldTxn.getStatus() == TransactionStatus.SCHEDULED;
+          || oldTxn.getStatus() == TransactionStatus.SCHEDULED
+          || (oldTxn.getStatus() == TransactionStatus.PENDING && getStatus() != TransactionStatus.PENDING);
       `
-    }
+    },
+    {
+      name: 'getStage',
+      documentation: 'Intertrust transactions have multi-stage transfers, 0 on pending, 1 when completed.',
+      type: 'Long',
+      javaCode: `
+        if ( getStatus() == TransactionStatus.COMPLETED ) {
+          return 1;
+        } else if ( getStatus() == TransactionStatus.CANCELLED ||
+            getStatus() == TransactionStatus.DECLINED ||
+            getStatus() == TransactionStatus.FAILED ) {
+          return 2;
+        }
+        return 0;
+      `,
+    },
+    {
+      name: 'getTotal',
+      type: 'Long',
+      documentation: 'Sum of transfers on this transaction for a given account',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'accountId', type: 'String' }
+      ],
+      javaCode: `
+        Long sum = 0l;
+        //Sum transfers that affect account
+        for ( Transfer t : getTransfers() )
+          if ( SafetyUtil.equals(t.getAccount(), accountId) && t.getStage() != 2 )
+            sum += t.getAmount();
+        return sum;
+      `
+    },
  ]
 });

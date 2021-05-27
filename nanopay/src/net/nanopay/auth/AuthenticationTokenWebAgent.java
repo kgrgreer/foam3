@@ -54,15 +54,9 @@ public class AuthenticationTokenWebAgent implements WebAgent {
         return;
       }
 
-      DigErrorMessage error = new DAOPutException.Builder(x)
-        .setMessage(FAILURE)
-        .build();
-      DigUtil.outputException(x, error, Format.JSON);
+      DigUtil.outputException(x, new DAOPutException(FAILURE), Format.JSON);
     } catch (Exception e) {
-      DigErrorMessage error = new GeneralException.Builder(x)
-        .setMessage(e.toString())
-        .build();
-      DigUtil.outputException(x, error, Format.JSON);
+      DigUtil.outputException(x, new GeneralException(e.toString()), Format.JSON);
     }
   }
 }

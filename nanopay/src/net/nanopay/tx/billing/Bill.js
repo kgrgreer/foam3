@@ -72,7 +72,10 @@ foam.CLASS({
       section: 'billInformation',
       order: 20,
       gridColumns: 6,
-      tableWidth: 150
+      tableWidth: 150,
+      view: {
+        class: 'foam.u2.view.ReferenceView'
+      }
     },
     {
       class: 'FObjectArray',
@@ -136,6 +139,9 @@ foam.CLASS({
             this.add(value);
           }
         }.bind(this));
+      },
+      view: {
+        class: 'foam.u2.view.ReferenceView'
       }
     },
     {

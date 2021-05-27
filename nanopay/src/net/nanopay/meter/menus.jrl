@@ -45,7 +45,7 @@ p({
 p({
    "class":"foam.nanos.menu.Menu",
    "id":"operation.bills",
-   "label":"Bills",
+   "label":"Charges",
    "handler":{
       "class":"foam.nanos.menu.DAOMenu2",
       "config":{

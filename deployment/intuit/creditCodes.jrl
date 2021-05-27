@@ -1,0 +1,12 @@
+p({
+  class:"net.nanopay.tx.creditengine.FeeWaiver",
+  id:"c665b26d-cacb-4086-a347-129fb307c679",
+  name:"waive the 0.4% fee - nanopay and 0.6% fee - intuit",
+  applicableFees:[
+    "216b204f-3c41-4a9a-934a-5f5ddf873299",
+    "7521329b-651e-4f12-bcdd-b1b68032957f"
+  }
+  discountPercent:1,
+  lifecycleState:1,
+  spid:"intuit"
+})

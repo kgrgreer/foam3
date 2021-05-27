@@ -244,6 +244,9 @@ foam.CLASS({
           return Promise.resolve(invoice$payee);
         }
       },
+    },
+    {
+      name: 'destinationAccount'
     }
   ],
 
@@ -264,12 +267,23 @@ foam.CLASS({
     { name: 'SAVE_AS_PDF_FAIL', message: 'There was an unexpected error when creating the PDF. Please contact support.' },
     { name: 'NO_ATTACHEMENT_PROVIDED', message: 'No attachments provided'},
     { name: 'NO_NOTES_PROVIDED', message: 'No notes provided'},
+    { name: 'DESTINATION_ACCOUNT', message: 'Destination Account'},
+    { name: 'CURRENCY', message: 'Currency: '},
   ],
 
   methods: [
     function initE() {
       var self = this;
       var isBillingInvoice = net.nanopay.invoice.model.BillingInvoice.isInstance(this.invoice);
+
+      var updateAccountSummary = async () => {
+        if( ! self.invoice.contactId ) return;
+        var contact = await self.subject.user.contacts.find(self.invoice.contactId);
+        var acc = await contact.accounts.find(contact.bankAccount);
+        self.destinationAccount = acc
+      };
+
+      updateAccountSummary();
 
       this
         .addClass(this.myClass())
@@ -342,7 +356,8 @@ foam.CLASS({
                   return payee.then(function(payee) {
                     if ( payee != null ) {
                       return self.E()
-                        .start().add(payee.toSummary()).end();
+                        .start().add(payee.toSummary()).end()
+                        .start().add(payee.email).end()
                     }
                   });
                 }))
@@ -352,14 +367,40 @@ foam.CLASS({
           .start()
             .addClass('invoice-row')
             .start()
-              .addClass('bold-label')
-              .add(this.AMOUNT_LABEL)
+              .addClass(this.myClass('invoice-content-block'))
+              .start()
+                .addClass('bold-label')
+                .add(this.AMOUNT_LABEL)
+              .end()
+              .start().addClass(this.myClass('invoice-content-text'))
+                .add(this.PromiseSlot.create({
+                  promise$: this.formattedAmount$,
+                  value: '--',
+                }))
+              .end()
             .end()
-            .start().addClass(this.myClass('invoice-content-text'))
-              .add(this.PromiseSlot.create({
-                promise$: this.formattedAmount$,
-                value: '--',
-              }))
+            .start()
+            .addClass(self.myClass('invoice-content-block'))
+            .callIf( !! this.invoice.contactId, function() {
+              this.start()
+                .addClass('bold-label')
+                .add(self.DESTINATION_ACCOUNT)
+              .end()
+              .start().addClass(self.myClass('invoice-content-text'))
+                .add(self.slot( function(destinationAccount) {
+                  if ( ! ! destinationAccount ) {
+                    return destinationAccount.forContact ?
+                    self.E()
+                      .start({
+                        class: 'net.nanopay.bank.ui.AccountSummaryView',
+                        bankAccountDetail: destinationAccount.accountDetails
+                      }).addClass('invoice-details').end()
+                    : 
+                    self.E().start().add(destinationAccount.summary).end();
+                  }
+                }))
+              .end()
+            })
             .end()
           .end()
           .start()

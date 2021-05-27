@@ -27,10 +27,6 @@ foam.CLASS({
       'theme'
     ],
 
-    requires: [
-      'foam.u2.dialog.NotificationMessage'
-    ],
-
     css: `
     ^{
         margin: auto;

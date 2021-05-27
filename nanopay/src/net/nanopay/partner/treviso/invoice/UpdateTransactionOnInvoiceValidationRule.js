@@ -41,11 +41,10 @@ foam.CLASS({
         'foam.nanos.alarming.AlarmReason'
     ],
 
-    constants: [
+    properties: [
         {
-            name: 'NATURE_CODE_ID',
-            type: 'String',
-            value: 'naturecode.br.minmax.requirement'
+            class: 'String',
+            name:'requiredCapabilityId',
         }
     ],
   
@@ -68,12 +67,12 @@ foam.CLASS({
                     throw new RuntimeException(message);
                 }
 
-                try {
+                if ( ! SafetyUtil.isEmpty(getRequiredCapabilityId()) ){
                     // If invoice is valid & capabilities are granted, change the summaryTransaction status to completed
                     SafetyUtil.validate(agencyX, invoice);
                     var crunchService = (CrunchService) agencyX.get("crunchService");
 
-                    Boolean isRejected = invoice.checkRequirementsStatusNoThrow(x, new String[]{NATURE_CODE_ID}, CapabilityJunctionStatus.REJECTED);
+                    boolean isRejected = invoice.checkRequirementsStatusNoThrow(x, new String[]{getRequiredCapabilityId()}, CapabilityJunctionStatus.REJECTED);
 
                     if ( isRejected ){
                         var transactionDAO = (DAO) agencyX.get("transactionDAO");
@@ -91,22 +90,19 @@ foam.CLASS({
                         invoiceDAO.put(invoice);
                         return;
                     }
-                    
                     try {
-                        invoice.verifyRequirements(x, new String[]{NATURE_CODE_ID});
+                        invoice.verifyRequirements(x, new String[]{ getRequiredCapabilityId() });
                     } catch (IllegalStateException e) {
                         return;
                     }
+                }
 
-                    var transactionDAO = (DAO) agencyX.get("transactionDAO");
-                    var transaction = (Transaction) transactionDAO.find(invoice.getPaymentId());
-                    if (transaction != null) {
-                        transaction = (Transaction) transaction.fclone();
-                        transaction.setStatus(TransactionStatus.COMPLETED);
-                        transactionDAO.put(transaction);
-                    }
-                } catch (IllegalStateException e) {
-                    throw e;
+                var transactionDAO = (DAO) agencyX.get("transactionDAO");
+                var transaction = (Transaction) transactionDAO.find(invoice.getPaymentId());
+                if (transaction != null) {
+                    transaction = (Transaction) transaction.fclone();
+                    transaction.setStatus(TransactionStatus.COMPLETED);
+                    transactionDAO.put(transaction);
                 }
             }, "Updates transaction to completed when all capables are approved for the user");
             `

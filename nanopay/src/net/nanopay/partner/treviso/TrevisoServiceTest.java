@@ -64,7 +64,7 @@ public class TrevisoServiceTest
     createUsers(x);
     testBankAccount = createTestBankAccount();
     ((TrevisoService) trevisoService)
-      .saveFepWebClient(testBankAccount.getOwner(), "Active");
+      .saveFepWebClient(testBankAccount.getOwner(), FepWebClientStatus.ACTIVE);
 
     setUpExchangeClientValues();
   }

@@ -684,3 +684,11 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Transformation industries",targe
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.tx.ExchangeLimitTransaction.model_.label",target:"Câmbio limite Transação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.tx.ExchangeLimitTransaction.name",target:"Câmbio limite Transação"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.AccountSummaryView.ACCOUNT_NUMBER",target:"Número de conta - "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.AccountSummaryView.IBAN",target:"Iban - "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.AccountSummaryView.INSTITUTION_NUMBER",target:"Instituição - "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.AccountSummaryView.BRANCH_ID",target:"Galho -"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.AccountSummaryView.SWIFT_CODE",target:"Código Swift -"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.AccountSummaryView.COUNTRY",target:"País - "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.AccountSummaryView.CURRENCY",target:"Moeda - "})
