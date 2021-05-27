@@ -177,7 +177,7 @@ foam.CLASS({
         this.approvalRequestDAO.put(approvedApprovalRequest).then((req) => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
-          this.notify(this.SUCCESS_APPROVED, '', this.LogLevel.INFO, true);
+          this.notify(this.SUCCESS_APPROVED_TITLE, this.SUCCESS_APPROVED, this.LogLevel.INFO, true);
 
           if (
             X.stack.top &&

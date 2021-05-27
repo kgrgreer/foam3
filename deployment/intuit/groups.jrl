@@ -47,7 +47,7 @@ p({
     class:"foam.nanos.auth.Group",
     id:"intuit-internal-support",
     description:"intuit internal support group",
-    parent:"support",
+    parent:"support-ops",
     defaultMenu:"contacts",
     url:"http://intuit:8080"
 })

@@ -1,6 +1,6 @@
 p({class:"foam.nanos.auth.Group",id:"cb-admin",description:"cb admin",parent:"msp-admin",url:"http://cb:8080",theme:"487d4c72-be3f-d3e3-0d9f-2fe38d3335c5"})
 p({class:"foam.nanos.auth.Group",id:"cb-fraud-ops",description:"cb fraud-ops group",parent:"fraud-ops",url:"http://cb:8080",theme:"487d4c72-be3f-d3e3-0d9f-2fe38d3335c5"})
 p({class:"foam.nanos.auth.Group",id:"cb-payment-ops",description:"cb payment-ops group",parent:"payment-ops",url:"http://cb:8080",theme:"487d4c72-be3f-d3e3-0d9f-2fe38d3335c5"})
-p({class:"foam.nanos.auth.Group",id:"cb-support",description:"cb support group",parent:"support",url:"http://cb:8080",theme:"487d4c72-be3f-d3e3-0d9f-2fe38d3335c5"})
+p({class:"foam.nanos.auth.Group",id:"cb-support",description:"cb support group",parent:"support-ops",url:"http://cb:8080",theme:"487d4c72-be3f-d3e3-0d9f-2fe38d3335c5"})
 p({class:"foam.nanos.auth.Group",id:"cb-sme",description:"cb sme group",parent:"sme",url:"http://cb:8080",theme:"487d4c72-be3f-d3e3-0d9f-2fe38d3335c5"})
 p({class:"foam.nanos.auth.Group",id:"cb-bank-admin",description:"cb bank-admin group","parent":"basicUser",url:"http://cb:8080",theme:"487d4c72-be3f-d3e3-0d9f-2fe38d3335c5"})
