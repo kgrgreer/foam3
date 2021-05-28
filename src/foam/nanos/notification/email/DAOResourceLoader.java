@@ -37,9 +37,10 @@ public class DAOResourceLoader
   public static EmailTemplate findTemplate(X x, String name, String groupId, String locale, String spid) {
     DAO groupDAO = (DAO) x.get("groupDAO");
     DAO emailTemplateDAO = (DAO) x.get("localEmailTemplateDAO");
+    EmailTemplate emailTemplate = null;
 
     do {
-      EmailTemplate emailTemplate = (EmailTemplate) emailTemplateDAO
+      emailTemplate = (EmailTemplate) emailTemplateDAO
         .find(
           AND(
             EQ(EmailTemplate.NAME, name),
@@ -96,14 +97,6 @@ public class DAOResourceLoader
             ));
       }
 
-      if ( emailTemplate == null && ! SafetyUtil.isEmpty(name) ) {
-        emailTemplate = (EmailTemplate) emailTemplateDAO
-          .find(
-            AND(
-              EQ(EmailTemplate.NAME,  name)
-            ));
-      }
-
       if ( emailTemplate != null ) return emailTemplate;
 
       // exit condition, no emails even with wildcard group so return null
@@ -113,7 +106,15 @@ public class DAOResourceLoader
       groupId = ( group != null && ! SafetyUtil.isEmpty(group.getParent()) ) ? group.getParent() : "*";
     } while ( ! SafetyUtil.isEmpty(groupId) );
 
-    return null;
+    if ( emailTemplate == null && ! SafetyUtil.isEmpty(name) ) {
+      emailTemplate = (EmailTemplate) emailTemplateDAO
+        .find(
+          AND(
+            EQ(EmailTemplate.NAME,  name)
+          ));
+    }
+
+    return emailTemplate;
   }
 
   public static EmailTemplate findTemplate(X x, String name) {
