@@ -172,17 +172,7 @@ foam.CLASS({
           // NOTE: On Login, context is empty of subject and spid
           Subject subject = (Subject) x.get("subject");
           if ( ( subject == null || subject.getRealUser() == null ) ) {
-            // In the case where there is no user session, we set the session spid to that of the current theme
-            // and create the spid restriction based on this.
-            // However, on login, we will reset the spid to null for the purpose of finding the user from the localUserDAO
-            // without restriction since the spid of the user logging in will not necessarily match that of the theme
-            if ( x.get("spid") != null ) {
-              spidPredicate = MLang.EQ(getPropertyInfo(), x.get("spid"));
-              ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "select", "login", "spid restrictions set to context spid.");
-            } else {
-              spidPredicate = null;
-              ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "select", "login", "spid restrictions disabled.");
-            }
+            spidPredicate = getUnauthenticatedPredicate(x);
           } else {
             throw e;
           }
@@ -198,6 +188,32 @@ foam.CLASS({
         }
       }
       return getDelegate().select_(x, sink, skip, limit, order, spidPredicate);
+      `
+    },
+    {
+      name: 'getUnauthenticatedPredicate',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        }
+      ],
+      type: 'foam.mlang.predicate.Predicate',
+      documentation: `
+        In the case where there is no user session, we set the session spid to that of the current theme
+        and create the spid restriction based on this.
+        However, on login, we will reset the spid to null for the purpose of finding the user from the localUserDAO
+        without restriction since the spid of the user logging in will not necessarily match that of the theme
+      `,
+      javaCode: `            
+        if ( x.get("spid") != null ) {
+          spidPredicate = MLang.EQ(getPropertyInfo(), x.get("spid"));
+          ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "select", "login", "spid restrictions set to context spid.");
+        } else {
+          spidPredicate = null;
+          ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "select", "login", "spid restrictions disabled.");
+        }
+        return spidPredicate;
       `
     }
   ]
