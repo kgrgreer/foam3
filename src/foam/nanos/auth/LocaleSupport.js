@@ -60,9 +60,23 @@ foam.CLASS({
         }
       }
 
-      Theme theme = ((Themes) x.get("themes")).findTheme(x);
-      if ( theme != null ) {
+      Theme theme = (Theme) x.get("theme");
+      if ( theme == null ) {
+        theme = ((Themes) x.get("themes")).findTheme(x);
+      }
+      if ( theme != null &&
+           Theme.DEFAULT_LOCALE_LANGUAGE.isSet(theme) ) {
         return theme.getDefaultLocaleLanguage();
+      }
+
+      // HttpRequest Header
+      HttpServletRequest req = x.get(HttpServletRequest.class);
+      if ( req != null ) {
+        String acceptLanguage = req.getHeader("Accept-Language");
+        if ( ! SafetyUtil.isEmpty(acceptLanguage) ) {
+          String[] languages = acceptLanguage.split(",");
+          return languages[0];
+        }
       }
 
       return "en";

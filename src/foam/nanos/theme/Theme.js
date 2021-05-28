@@ -163,9 +163,9 @@ foam.CLASS({
       section: 'navigation'
     },
     {
+      documentation: 'See LocaleSupport for default fallback',
       class: 'String',
       name: 'defaultLocaleLanguage',
-      value: 'en'
     },
     {
       class: 'Map',
