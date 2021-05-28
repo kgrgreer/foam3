@@ -56,6 +56,10 @@ foam.CLASS({
         }
       ],
       type: 'foam.mlang.predicate.Predicate',
+      documentation: `
+        Create a predicate used to restrict dao operations to objects whose spid the user is authorized to access
+        via the permission "serviceprovider.read.<spid>".
+      `,
       javaCode: `
       AuthService auth = (AuthService) x.get("auth");
       ArrayList<ServiceProvider> serviceProviders = (ArrayList) ((ArraySink) ((DAO) getX().get("localServiceProviderDAO")).select(new ArraySink())).getArray();
@@ -81,6 +85,13 @@ foam.CLASS({
       ],
       type: 'String',
       javaThrows: ['AuthorizationException'],
+      documentation: `
+        Get the spid based on the current context by first trying to get subject.user.spid, and then
+        theme.spid if there is no user.
+        If no spid can be found, throw an AuthorizationException
+        This is used in setting the spid when trying to put a new serviceProviderAware object that
+        does not already have a spid set.
+      `,
       javaCode: `
       User user = null;
       String spid = (String) x.get("spid");
@@ -115,6 +126,15 @@ foam.CLASS({
     {
       name: 'put_',
       javaThrows: ['AuthorizationException'],
+      documentation: `
+        On put of a newly created object where the spid is not set, set context spid found via this.getSpid(x)
+        Otherwise, restrict put to only objects for which the user has permission to via "serviceprovider.read.<spid>"
+
+        Furthermore, if updating the spid property of an object, user must have the permissions
+          "serviceprovider.update.<oldSpid>", as well as
+          "serviceprovider.update.<spid>"
+        where the serviceprovider update permission currently belongs only to admin.
+      `,
       javaCode: `
       if ( ! ( obj instanceof ServiceProviderAware ) ) {
         return super.put_(x, obj);
@@ -144,6 +164,12 @@ foam.CLASS({
     },
     {
       name: 'find_',
+      documentation: `
+        Allow users to remove objects for which they have permission to via "serviceprovider.read.<spid>"
+        
+        Alternatively, if user has the global read permission "serviceprovider.read.*" for ServiceProvider,
+        they are also authorized to read any object associated to the serviceproviders.
+      `,
       javaCode: `
       if ( ((AuthService) x.get("auth")).check(x, "serviceprovider.read.*") ) {
         return getDelegate().find_(x, id);
@@ -153,6 +179,13 @@ foam.CLASS({
     },
     {
       name: 'remove_',
+      documentation: `
+        Allow users to remove objects for which they have permission to via "serviceprovider.read.<spid>".
+
+        Alternatively, if user has the global remove permission "serviceprovider.remove.*" for ServiceProvider,
+        they are also authorized to remove any object associated to the serviceproviders.
+        This permission is currently only granted to admin.
+      `,
       javaCode: `
       if ( ((AuthService) x.get("auth")).check(x, "serviceprovider.remove.*") ||
            getPredicate(x).f(obj) ) {
@@ -163,6 +196,12 @@ foam.CLASS({
     },
     {
       name: 'select_',
+      documentation: `
+        Add an additional predicate to select based on the context given:
+          - If there is a user in the context, restrict select to return only the objects for which they have permission to 
+          via "serviceprovider.read.<spid>
+          - Otherwise, restrict select based on the getUnauthenticatedPredicate(x)
+      `,
       javaCode: `
       Predicate spidPredicate = predicate;
       if ( ! ((AuthService) x.get("auth")).check(x, "serviceprovider.read.*") ) {
@@ -200,10 +239,7 @@ foam.CLASS({
       ],
       type: 'foam.mlang.predicate.Predicate',
       documentation: `
-        In the case where there is no user session, we set the session spid to that of the current theme
-        and create the spid restriction based on this.
-        However, on login, we will reset the spid to null for the purpose of finding the user from the localUserDAO
-        without restriction since the spid of the user logging in will not necessarily match that of the theme
+        Returns a predicate to restrict access to only the context spid, or return null if there is none, as is the case with login
       `,
       javaCode: `
         if ( x.get("spid") != null ) {
