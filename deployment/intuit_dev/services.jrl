@@ -6,3 +6,13 @@ p({
     "class":"net.nanopay.meter.compliance.secureFact.MockSecurefactOnboardingService"
   }
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"securefactService",
+  "lazy":false,
+  "serve":true,
+  "service":{
+    "class":"net.nanopay.meter.compliance.secureFact.MockSecurefactService"
+  }
+})
