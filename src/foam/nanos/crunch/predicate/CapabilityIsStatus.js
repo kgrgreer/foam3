@@ -27,7 +27,7 @@ foam.CLASS({
       class: 'Boolean',
       value: true,
       documentation: `
-        When this property is true, CapabilityGranted expects a UCJ object in
+        When this property is true, CapabilityIsStatus expects a UCJ object in
         the context which it will use to determine the corresponding subject.
         Otherwise, the context is assumed to contain the appropriate subject.
       `
