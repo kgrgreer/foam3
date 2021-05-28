@@ -23,7 +23,7 @@ foam.CLASS({
     function initArgs(args, ctx) {
       this.SUPER(args, ctx);
 
-      this.value$.sub(this.onValueChange);
+      // this.value$.sub(this.onValueChange);
       this.onPopState();
       this.window.onpopstate = this.onPopState;
     },
@@ -34,7 +34,14 @@ foam.CLASS({
       if ( replaceHistoryState )
         this.window.history.replaceState(null, '', this.window.origin + '/#' + this.value);
       else
-        this.onValueChange();
+        this.updateHash();
+    },
+    function updateHash() {
+      if ( this.feedback_ ) return;
+
+        this.feedback_ = true;
+        this.window.location.hash = this.value;
+        this.feedback_ = false;
     }
   ],
 
@@ -42,7 +49,7 @@ foam.CLASS({
     function onPopState() {
       if ( this.feedback_ ) return;
       
-      this.feedback_ = true;
+      // this.feedback_ = true;
       this.value = this.window.location.hash.substr(1);
       this.feedback_ = false;
     },

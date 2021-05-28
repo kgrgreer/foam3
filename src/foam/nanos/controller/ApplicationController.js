@@ -349,6 +349,12 @@ foam.CLASS({
       var windowHash = this.WindowHash.create();
       this.memento.value = windowHash.value;
 
+      this.onDetach(windowHash.value$.sub(function() {
+        if ( windowHash.feedback_ )
+          return;
+        self.memento.value = windowHash.value;
+      }));
+
       this.onDetach(this.memento.changeIndicator$.sub(function () {
         self.memento.value = self.memento.combine();
         windowHash.valueChanged(self.memento.value, self.memento.replaceHistoryState);
@@ -360,8 +366,10 @@ foam.CLASS({
       this.onDetach(this.memento.value$.sub(function () {
         self.memento.parseValue();
 
-        if ( ! self.memento.feedback_ )
+        if ( ! self.memento.feedback_ ) {
           self.mementoChange();
+          windowHash.valueChanged(self.memento.value, self.memento.replaceHistoryState);
+        }
       }));
       // End Memento Support
 
