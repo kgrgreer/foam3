@@ -253,7 +253,8 @@ foam.CLASS({
       var simpleSearch;
 
       if ( this.memento && ! this.memento.tail ) {
-        this.memento.tail = foam.nanos.controller.Memento.create({});
+        this.memento.replaceHistoryState = true;
+        this.memento.tail = foam.nanos.controller.Memento.create({ replaceHistoryState: true });
       }
 
       this.addClass(this.myClass());

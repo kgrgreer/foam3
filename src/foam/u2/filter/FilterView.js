@@ -356,7 +356,7 @@ foam.CLASS({
                         if ( counter != 0 ) {
                           self.currentMemento_ = self.currentMemento_.tail;
                           if ( self.currentMemento_.tail == null )
-                            self.currentMemento_.tail = foam.nanos.controller.Memento.create();
+                            self.currentMemento_.tail = foam.nanos.controller.Memento.create({ replaceHistoryState: true });
                         }
                       }
 
@@ -482,11 +482,11 @@ foam.CLASS({
         //i + 1 as there is a textSearch that we also need for memento
         for ( var i = 0 ; i < this.filters.length + 1 ; i++ ) {
           if ( ! m ) {
-            m = foam.nanos.controller.Memento.create({ value: '', parent: this.memento });
+            m = foam.nanos.controller.Memento.create({ value: '', parent: this.memento, replaceHistoryState: true });
             this.memento.tail = m;
           } else {
             if ( ! m.tail )
-              m.tail = foam.nanos.controller.Memento.create({ value: '', parent: m });
+              m.tail = foam.nanos.controller.Memento.create({ value: '', parent: m, replaceHistoryState: true });
             m = m.tail;
           }
         }
