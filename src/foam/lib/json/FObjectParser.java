@@ -59,6 +59,7 @@ public class FObjectParser
 
             // return null if class not specified in JSON and no default class available
             if ( c == null ) return null;
+            if ( c == foam.core.FObject.class ) return null;
 
             if ( ps1 != null ) ps = ps1;
 
