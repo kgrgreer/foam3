@@ -120,7 +120,7 @@ foam.CLASS({
       order: 30,
       gridColumns: 6
     },
-    
+
     {
       class: 'String',
       name: 'identificationNumber',
@@ -172,6 +172,13 @@ foam.CLASS({
           errorString: 'Must be after today.'
         }
       ]
+    },
+    {
+      class: 'String',
+      name: 'issuer',
+      documentation: 'The issuer of the identification.',
+      order: 70,
+      gridColumns: 6
     }
   ]
 });

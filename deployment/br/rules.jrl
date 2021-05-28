@@ -1,0 +1,20 @@
+p({
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
+  "id":"cpf-as-personal-identification-rule",
+  "name":"Use CPF As The Personal Identification For User",
+  "documentation": "Set user personal identification according to CPF data.",
+  "priority": 100,
+  "enabled": true,
+  "ruleGroup": "crunchOnboarding",
+  "daoKey": "userCapabilityJunctionDAO",
+  "operation": 3,
+  "after": true,
+  "predicate": {
+    "class": "foam.mlang.predicate.MQLExpr",
+    "query": "n(targetId=crunch.onboarding.br.cpf) AND n(status=1)"
+  },
+  "action": {
+    "class": "net.nanopay.country.br.ruler.SetCPFAsPersonalIdentificationRuleAction"
+  },
+  "lifecycleState": 1
+})
