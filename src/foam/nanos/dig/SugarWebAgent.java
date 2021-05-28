@@ -60,10 +60,7 @@ public class SugarWebAgent
 
     try {
       if ( SafetyUtil.isEmpty(data) ) {
-        DigErrorMessage error = new GeneralException.Builder(x)
-          .setMessage("Empty data")
-          .build();
-        DigUtil.outputException(x, error, Format.JSON);
+        DigUtil.outputException(x, new GeneralException("Empty data"), Format.JSON);
         return;
       }
 
@@ -153,10 +150,7 @@ public class SugarWebAgent
       }
 
     } catch (Exception e) {
-      DigErrorMessage error = new GeneralException.Builder(x)
-        .setMessage(e.toString())
-        .build();
-      DigUtil.outputException(x, error, Format.JSON);
+      DigUtil.outputException(x, new GeneralException(e.toString()), Format.JSON);
       pm.error(x, e.getMessage());
     } finally {
       pm.log(x);
@@ -184,15 +178,9 @@ public class SugarWebAgent
       outputterJson.output(declaredMethod_.invoke(x.get(serviceName), arglist));
       out.println(outputterJson);
     } catch (InvocationTargetException e) {
-      DigErrorMessage error = new GeneralException.Builder(x)
-        .setMessage("InvocationTargetException: " + e.getTargetException().getMessage())
-        .build();
-      DigUtil.outputException(x, error, Format.JSON);
+      DigUtil.outputException(x, new GeneralException("InvocationTargetException: " + e.getTargetException().getMessage()), Format.JSON);
     } catch (Exception e) {
-      DigErrorMessage error = new GeneralException.Builder(x)
-        .setMessage("Exception: " + e.toString())
-        .build();
-      DigUtil.outputException(x, error, Format.JSON);
+      DigUtil.outputException(x, new GeneralException("Exception: " + e.toString()), Format.JSON);
     }
   }
 
@@ -231,10 +219,7 @@ public class SugarWebAgent
         }
       }
     } catch (Exception e) {
-      DigErrorMessage error = new GeneralException.Builder(x)
-        .setMessage(e.toString())
-        .build();
-      DigUtil.outputException(x, error, Format.JSON);
+      DigUtil.outputException(x, new GeneralException(e.toString()), Format.JSON);
     }
 
     return clsObj;

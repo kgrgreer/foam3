@@ -617,6 +617,15 @@
       name: 'assignedTo',
       section: 'approvalRequestInformation',
       order: 65
+    },
+    {
+      class: 'StringArray',
+      name: 'additionalGroups',
+      documentation: `
+        Optional field to specify the request to be sent to multiple  groups.
+        Should remain non-transient to handle fulfilled requests being visible to different groups.
+      `,
+      hidden: true
     }
   ],
 
@@ -630,8 +639,8 @@
       message: 'You have successfully assigned this request'
     },
      {
-       name: 'SUCCESS_ASSIGNED_TITLE',
-       message: 'Request Assigned'
+      name: 'SUCCESS_ASSIGNED_TITLE',
+      message: 'Request Assigned'
      },
     {
       name: 'SUCCESS_UNASSIGNED',

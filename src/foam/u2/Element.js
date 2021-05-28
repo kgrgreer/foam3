@@ -294,39 +294,14 @@ foam.CLASS({
     function onRemoveChild() {},
     function getBoundingClientRect() {
       return {
-        left: 0,
-        right: 0,
+        left:   0,
+        right:  0,
         bottom: 0,
-        top: 0,
-        width: 0,
+        top:    0,
+        width:  0,
         height: 0
       };
     }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.u2',
-  name: 'UnloadedElementState',
-  extends: 'foam.u2.ElementState',
-
-  documentation: 'State of an unloaded Element.',
-
-  methods: [
-    function output(out) {
-      this.__context__.warn('Outputting unloaded element can cause event/binding bugs.', this.cls_.id);
-      this.state = this.OUTPUT;
-      this.output_(out);
-      return out;
-    },
-    function load() {
-      this.__context__.warn('Must output before loading.');
-    },
-    function unload() {
-      this.__context__.warn('Must output before loading.');
-    },
-    function toString() { return 'UNLOADED'; }
   ]
 });
 
@@ -535,6 +510,31 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.u2',
+  name: 'UnloadedElementState',
+  extends: 'foam.u2.ElementState',
+
+  documentation: 'State of an unloaded Element.',
+
+  methods: [
+    function output(out) {
+      this.__context__.warn('Outputting unloaded element can cause event/binding bugs.', this.cls_.id);
+      this.state = this.OUTPUT;
+      this.output_(out);
+      return out;
+    },
+    function load() {
+      this.__context__.warn('Must output before loading.');
+    },
+    function unload() {
+      this.__context__.warn('Must output before loading.');
+    },
+    function toString() { return 'UNLOADED'; }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2',
   name: 'RenderSink',
   implements: [
     'foam.dao.Sink'
@@ -724,6 +724,18 @@ foam.CLASS({
 
     {
       documentation: `
+        Initial state of an Element before it has been added to the DOM.
+      `,
+      name: 'INITIAL',
+      type: 'foam.u2.InitialElementState',
+      flags: ['js'],
+      factory: function() {
+        return foam.u2.InitialElementState.create();
+      }
+    },
+
+    {
+      documentation: `
         State of an Element after it has been output (to a String) but before it
         is loaded. This should be only a brief transitory state, as the Element
         should be loaded almost immediately after being output. It is an error
@@ -755,18 +767,6 @@ foam.CLASS({
       type: 'foam.u2.UnloadedElementState',
       flags: ['js'],
       factory: function() { return foam.u2.UnloadedElementState.create(); }
-    },
-
-    {
-      documentation: `
-        Initial state of an Element before it has been added to the DOM.
-      `,
-      name: 'INITIAL',
-      type: 'foam.u2.InitialElementState',
-      flags: ['js'],
-      factory: function() {
-        return foam.u2.InitialElementState.create();
-      }
     },
 
     // ???: Add DESTROYED State?
@@ -1190,11 +1190,6 @@ foam.CLASS({
       return this.AttrSlot.create(args);
     },
 
-    function myCls(opt_extra) {
-      console.error('Deprecated use of Element.myCls(). Use myClass() instead.');
-      return this.myClass(opt_extra);
-    },
-
     function myClass(opt_extra) {
       // Use hasOwnProperty so that class doesn't inherit CSS classname
       // from ancestor FOAM class.
@@ -1505,12 +1500,6 @@ foam.CLASS({
       return this;
     },
 
-    // TODO: remove
-    function enableCls(cls, enabled, opt_negate) {
-      console.error('Deprecated use of Element.enableCls(). Use enableClass() instead.');
-      return this.enableClass(cls, enabled, opt_negate);
-    },
-
     function enableClass(cls, enabled, opt_negate) {
       /* Enable/disable a CSS class based on a boolean-ish dynamic value. */
       function negate(a, b) { return b ? ! a : a; }
@@ -1531,12 +1520,6 @@ foam.CLASS({
         }
       }
       return this;
-    },
-
-    // TODO: remove
-    function removeCls(cls) {
-      console.error('Deprecated use of Element.removeCls(). Use removeClass() instead.');
-      return this.removeClass(cls);
     },
 
     function removeClass(cls) {
@@ -2958,16 +2941,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'inheritCSS',
       value: true
-    },
-    {
-      documentation: `
-        // TODO: remove when all code ported
-      `,
-      name: 'tableProperties',
-      setter: function(_, ps) {
-        console.error("Deprecated use of tableProperties. Use 'tableColumns' instead.");
-        this.tableColumns = ps;
-      }
     },
     {
       name: 'tableColumns',

@@ -51,10 +51,7 @@ foam.CLASS({
       List<FObject> objList = xmlSupport.fromXML(x, factory.createXMLStreamReader(reader), cInfo.getObjClass());
 
       if ( objList.size() == 0 ) {
-        DigUtil.outputException(x, 
-          new ParsingErrorException.Builder(x)
-            .setMessage("Invalid XML Format").build(), 
-          getFormat());
+        DigUtil.outputException(x, new ParsingErrorException("Invalid XML Format"), getFormat());
         return null;
       }
 

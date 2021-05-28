@@ -26,7 +26,7 @@ p({
       .setIndex(new foam.core.PropertyInfo[] {foam.nanos.ticket.Ticket.ID})
       .setAuthorize(false)
       .setPm(true)
-      .setSeqNo(true)
+      .setGuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("tickets")
       .setOrder(new foam.mlang.order.Comparator[] {

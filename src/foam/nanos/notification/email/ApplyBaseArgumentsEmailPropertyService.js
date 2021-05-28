@@ -106,6 +106,10 @@
         templateArgs.put("personalSupportEmail", psUser == null ? "" : psUser.getEmail());
         templateArgs.put("personalSupportFirstName", psUser == null ? "" : psUser.getFirstName());
         templateArgs.put("personalSupportFullName", psUser == null ? "" : psUser.getLegalName());
+
+        // system
+        templateArgs.put("hostname", System.getProperty("hostname", "localhost"));
+
         emailMessage.setTemplateArguments(templateArgs);
 
         return emailMessage;
