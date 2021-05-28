@@ -84,12 +84,12 @@ It then marshalls it to the primary mediator, and waits on a response.`,
       formatter.setOutputShortNames(true);
       formatter.setOutputClassNames(true);
       formatter.setOutputDefaultClassNames(false);
+      formatter.setCalculateNestedDelta(false);
       formatter.setPropertyPredicate(
         new foam.lib.AndPropertyPredicate(new foam.lib.PropertyPredicate[] {
           new foam.lib.StoragePropertyPredicate(),
           new foam.lib.ClusterPropertyPredicate()
         }));
-      formatter.setCalculateNestedDelta(false);
       return formatter;
     }
 
@@ -103,17 +103,17 @@ It then marshalls it to the primary mediator, and waits on a response.`,
 
   protected static final ThreadLocal<FObjectFormatter> transientFormatter_ = new ThreadLocal<FObjectFormatter>() {
     @Override
-    protected JSONFObjectFormatter initialValue() {
-      JSONFObjectFormatter formatter = new JSONFObjectFormatter();
+    protected MedusaTransientJSONFObjectFormatter initialValue() {
+      MedusaTransientJSONFObjectFormatter formatter = new MedusaTransientJSONFObjectFormatter();
       formatter.setOutputShortNames(true);
-      formatter.setOutputClassNames(false);
+      formatter.setOutputClassNames(true);
       formatter.setOutputDefaultClassNames(false);
+      formatter.setCalculateNestedDelta(true);
       formatter.setPropertyPredicate(
         new foam.lib.AndPropertyPredicate(new foam.lib.PropertyPredicate[] {
           new foam.lib.StorageTransientPropertyPredicate(),
           new foam.lib.ClusterPropertyPredicate()
         }));
-      formatter.setCalculateNestedDelta(false);
       return formatter;
     }
 

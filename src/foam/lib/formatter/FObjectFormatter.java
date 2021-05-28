@@ -34,6 +34,8 @@ public interface FObjectFormatter
 
   public boolean maybeOutputDelta(FObject oldFObject, FObject newFObject);
 
+  public boolean maybeOutputDelta(FObject oldFObject, FObject newFObject, PropertyInfo parentProp, ClassInfo defaultClass);
+
   public void output(String val);
 
   public void output(short val);

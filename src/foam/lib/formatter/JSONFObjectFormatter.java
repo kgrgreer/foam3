@@ -184,13 +184,13 @@ public class JSONFObjectFormatter
     p.formatJSON(this, o);
   }
 
-  protected boolean maybeOutPutFObjectProperty(FObject newFObject, FObject oldFObject, PropertyInfo prop) {
+  protected boolean maybeOutputFObjectProperty(FObject newFObject, FObject oldFObject, PropertyInfo prop) {
     if ( prop instanceof AbstractFObjectPropertyInfo && oldFObject != null &&
       prop.get(oldFObject) != null && prop.get(newFObject) != null
     ) {
       String before = builder().toString();
       reset();
-      if ( maybeOutputDelta(((FObject)prop.get(oldFObject)), ((FObject)prop.get(newFObject))) ) {
+      if ( maybeOutputDelta(((FObject)prop.get(oldFObject)), ((FObject)prop.get(newFObject)), prop, null) ) {
         String after = builder().toString();
         reset();
         append(before);
@@ -330,14 +330,10 @@ public class JSONFObjectFormatter
     return true;
   }
 
-  public boolean maybeOutputDelta(FObject oldFObject, FObject newFObject) {
-    return maybeOutputDelta(oldFObject, newFObject, null);
-  }
-
-  public boolean maybeOutputDelta(FObject oldFObject, FObject newFObject, ClassInfo defaultClass) {
+  public boolean maybeOutputDelta(FObject oldFObject, FObject newFObject, PropertyInfo parentProp, ClassInfo defaultClass) {
     ClassInfo newInfo   = newFObject.getClassInfo();
     String    of        = newInfo.getObjClass().getSimpleName().toLowerCase();
-    List      axioms    = getProperties(newInfo);
+    List      axioms    = getProperties(parentProp, newInfo);
     int       size      = axioms.size();
     int       delta     = 0;
     int       ids       = 0;
@@ -353,14 +349,15 @@ public class JSONFObjectFormatter
           addInnerNewline();
         }
         if ( calculateDeltaForNestedFObjects_ ) {
-          if (maybeOutPutFObjectProperty(newFObject, oldFObject, prop)) delta += 1;
+          if (maybeOutputFObjectProperty(newFObject, oldFObject, prop)) delta += 1;
         } else {
           outputProperty(newFObject, prop);
           delta += 1;
         }
 
-
-        if ( prop.includeInID() ) {
+        if ( parentProp == null &&
+             prop.includeInID() ) {
+          // IDs only relevant on root objects
           ids += 1;
         } else if ( optionalPredicate_.propertyPredicateCheck(getX(), of, prop) ) {
           optional += 1;
@@ -439,7 +436,7 @@ public class JSONFObjectFormatter
     }
     boolean outputComma = outputClass;
 
-    List axioms = getProperties(info);
+    List axioms = getProperties(null, info);
     int  size   = axioms.size();
     for ( int i = 0 ; i < size ; i++ ) {
       PropertyInfo prop = (PropertyInfo) axioms.get(i);

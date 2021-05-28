@@ -454,8 +454,7 @@ This is the heart of Medusa.`,
                 var i     = props.iterator();
                 while ( i.hasNext() ) {
                   foam.core.PropertyInfo prop = i.next();
-                  if ( prop.getStorageTransient() &&
-                       ! prop.getClusterTransient() &&
+                  if ( ! prop.getClusterTransient() &&
                        prop.isSet(tran) ) {
                     prop.set(nu, prop.get(tran));
                   }
