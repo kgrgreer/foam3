@@ -37,25 +37,33 @@ public class DAOResourceLoader
   public static EmailTemplate findTemplate(X x, String name, String groupId, String locale, String spid) {
     DAO groupDAO = (DAO) x.get("groupDAO");
     DAO emailTemplateDAO = (DAO) x.get("localEmailTemplateDAO");
-    String group_ = ((Group) groupDAO.find(groupId)).getParent();
-    group_ = SafetyUtil.isEmpty(group_) ? groupId : group_;
 
     do {
       EmailTemplate emailTemplate = (EmailTemplate) emailTemplateDAO
         .find(
           AND(
             EQ(EmailTemplate.NAME, name),
-            EQ(EmailTemplate.GROUP, SafetyUtil.isEmpty(group_) ? "*" : group_),
+            EQ(EmailTemplate.GROUP, SafetyUtil.isEmpty(groupId) ? "*" : groupId),
             EQ(EmailTemplate.SPID, spid),
             EQ(EmailTemplate.LOCALE, locale)
           ));
+
+      if ( emailTemplate == null && ! SafetyUtil.isEmpty(spid) && ! SafetyUtil.isEmpty(locale) ) {
+        emailTemplate = (EmailTemplate) emailTemplateDAO
+          .find(
+            AND(
+              EQ(EmailTemplate.NAME, name),
+              EQ(EmailTemplate.SPID, spid),
+              EQ(EmailTemplate.LOCALE, locale)
+            ));
+      }
 
       if ( emailTemplate == null && ! SafetyUtil.isEmpty(locale) ) {
         emailTemplate = (EmailTemplate) emailTemplateDAO
           .find(
             AND(
               EQ(EmailTemplate.NAME, name),
-              EQ(EmailTemplate.GROUP,  SafetyUtil.isEmpty(group_) ? "*" : group_),
+              EQ(EmailTemplate.GROUP,  SafetyUtil.isEmpty(groupId) ? "*" : groupId),
               EQ(EmailTemplate.LOCALE, locale)
             ));
       }
@@ -65,7 +73,7 @@ public class DAOResourceLoader
           .find(
             AND(
               EQ(EmailTemplate.NAME,  name),
-              EQ(EmailTemplate.GROUP,  SafetyUtil.isEmpty(group_) ? "*" : group_),
+              EQ(EmailTemplate.GROUP,  SafetyUtil.isEmpty(groupId) ? "*" : groupId),
               EQ(EmailTemplate.SPID, spid)
             ));
       }
@@ -84,7 +92,7 @@ public class DAOResourceLoader
           .find(
             AND(
               EQ(EmailTemplate.NAME,  name),
-              EQ(EmailTemplate.GROUP,  SafetyUtil.isEmpty(group_) ? "*" : group_)
+              EQ(EmailTemplate.GROUP,  SafetyUtil.isEmpty(groupId) ? "*" : groupId)
             ));
       }
 

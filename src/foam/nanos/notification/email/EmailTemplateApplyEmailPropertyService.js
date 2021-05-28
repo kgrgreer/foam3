@@ -35,11 +35,7 @@ foam.CLASS({
         return emailMessage;
       }
       String templateName = (String)templateArgs.get("template");
-      if ( SafetyUtil.isEmpty(templateName) ) {
-        logger.info("No email template name");
-
-        return emailMessage;
-      }
+      if ( SafetyUtil.isEmpty(templateName) ) return emailMessage;
 
       String locale = (String) templateArgs.get("locale");
 
