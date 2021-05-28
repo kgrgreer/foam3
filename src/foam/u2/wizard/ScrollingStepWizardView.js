@@ -110,7 +110,7 @@ foam.CLASS({
         var test_visible = el => {
           // Offset parent might be a wrapping element, but we want the element
           // who has the wizard scroller as its offsetParent
-          while ( el.offsetParent != null & el.offsetParent != this.scrollOffsetElement ) el = el.offsetParent;
+          while ( el.offsetParent != null && el.offsetParent != this.scrollOffsetElement ) el = el.offsetParent;
 
           var sectTop = el.offsetTop - offset;
           var sectBot = sectTop + el.clientHeight;
