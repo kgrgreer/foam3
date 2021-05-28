@@ -353,7 +353,7 @@ public class JSONFObjectFormatter
           addInnerNewline();
         }
         if ( calculateDeltaForNestedFObjects_ ) {
-          if (maybeOutPutFObjectProperty(newFObject, oldFObject, prop)) delta += 1;
+          if ( maybeOutPutFObjectProperty(newFObject, oldFObject, prop) ) delta += 1;
         } else {
           outputProperty(newFObject, prop);
           delta += 1;
