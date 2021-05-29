@@ -243,7 +243,7 @@ foam.CLASS({
       `,
       javaCode: `
         if ( x.get("spid") != null ) {
-          ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "select", "login", "spid restrictions set to context spid.");
+          ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "getUnauthenticatedPredicate", "spid restrictions set to context spid.");
           return MLang.EQ(getPropertyInfo(), x.get("spid"));
         }
         ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "getUnauthenticatedPredicate", "spid restrictions disabled.");
