@@ -27,6 +27,8 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data: `
+  public final static String CONTEXT_KEY = "locale.language";
+
   private final static LocaleSupport instance__ = new LocaleSupport();
   public static LocaleSupport instance() { return instance__; }
           `
@@ -60,9 +62,23 @@ foam.CLASS({
         }
       }
 
-      Theme theme = ((Themes) x.get("themes")).findTheme(x);
-      if ( theme != null ) {
+      Theme theme = (Theme) x.get("theme");
+      if ( theme == null ) {
+        theme = ((Themes) x.get("themes")).findTheme(x);
+      }
+      if ( theme != null &&
+           Theme.DEFAULT_LOCALE_LANGUAGE.isSet(theme) ) {
         return theme.getDefaultLocaleLanguage();
+      }
+
+      // HttpRequest Header
+      HttpServletRequest req = x.get(HttpServletRequest.class);
+      if ( req != null ) {
+        String acceptLanguage = req.getHeader("Accept-Language");
+        if ( ! SafetyUtil.isEmpty(acceptLanguage) ) {
+          String[] languages = acceptLanguage.split(",");
+          return languages[0];
+        }
       }
 
       return "en";
