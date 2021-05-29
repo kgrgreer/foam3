@@ -27,8 +27,6 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data: `
-  public final static String CONTEXT_KEY = "locale.language";
-
   private final static LocaleSupport instance__ = new LocaleSupport();
   public static LocaleSupport instance() { return instance__; }
           `
@@ -62,10 +60,7 @@ foam.CLASS({
         }
       }
 
-      Theme theme = (Theme) x.get("theme");
-      if ( theme == null ) {
-        theme = ((Themes) x.get("themes")).findTheme(x);
-      }
+      Theme theme = ((Themes) x.get("themes")).findTheme(x);
       if ( theme != null ) {
         return theme.getDefaultLocaleLanguage();
       }

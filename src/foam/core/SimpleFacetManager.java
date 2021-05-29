@@ -14,11 +14,7 @@ public class SimpleFacetManager
 {
 
   public Object getInstanceOf(Object value, Class type, X x) {
-    Object result = create(type, x);
-    if ( result == null ) {
-      System.err.println("value: "+value);
-    }
-    return result;
+    return create(type, x);
   }
 
   public <T> T create(Class<T> type, X x) {
@@ -29,12 +25,6 @@ public class SimpleFacetManager
     if ( type == foam.core.FObject.class ) {
       Thread.dumpStack();
       System.err.println("Unable to create FObject.");
-      if ( args != null ) {
-        System.err.println("type: "+type.getName()+", args("+args.size()+"):");
-        args.forEach((k,v) -> System.err.print("key: "+k+", value: "+v));
-      } else {
-        System.err.println("type: "+type.getName()+", args: null");
-      }
       return null;
     }
     try {

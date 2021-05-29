@@ -75,14 +75,12 @@ foam.CLASS({
       class: 'String',
       value: '{{message_}}',
       externalTransient: true,
-      transient: true,
       visibility: 'RO'
     },
     {
       name: 'message_',
       class: 'String',
       externalTransient: true,
-      transient: true,
       visibility: 'RO'
     },
     {
@@ -174,24 +172,24 @@ foam.CLASS({
       name: 'toString',
       type: 'String',
       code: function() {
-        var s = this.getOwnClassInfo().getId()+',';
-        s += '['+this.hostname+'],';
+        var s = '['+this.hostname+'],';
         if ( this.errorCode ) {
           s += '('+this.errorCode+'),';
         }
+        s += this.getOwnClassInfo().getId()+',';
         s += getMessage();
         return s;
       },
       javaCode: `
       StringBuilder sb = new StringBuilder();
-      sb.append(getClass().getName());
-      sb.append(",");
       sb.append("["+getHostname()+"]");
       sb.append(",");
       if ( ! foam.util.SafetyUtil.isEmpty(getErrorCode()) ) {
         sb.append("("+getErrorCode()+")");
         sb.append(",");
       }
+      sb.append(getClass().getName());
+      sb.append(",");
       sb.append(getMessage());
       return sb.toString();
       `

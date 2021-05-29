@@ -302,7 +302,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
           appConfig = appConfig.configure(x, null);
 
           rtn = rtn.put("appConfig", appConfig);
-          rtn = rtn.put(foam.nanos.auth.LocaleSupport.CONTEXT_KEY, foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(rtn));
+          rtn = rtn.put("locale.language", foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(x));
           return rtn;
         }
 
@@ -333,7 +333,8 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
           .put("logger", new PrefixLogger(prefix, (Logger) x.get("logger")))
           .put("twoFactorSuccess", getContext().get("twoFactorSuccess"))
           .put(CachingAuthService.CACHE_KEY, getContext().get(CachingAuthService.CACHE_KEY))
-          .put(ServerCrunchService.CACHE_KEY, getContext().get(ServerCrunchService.CACHE_KEY));
+          .put(ServerCrunchService.CACHE_KEY, getContext().get(ServerCrunchService.CACHE_KEY))
+          .put("locale.language", foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(rtn));
 
         // We need to do this after the user and agent have been put since
         // 'getCurrentGroup' depends on them being in the context.
@@ -345,7 +346,6 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
             .put("appConfig", group.getAppConfig(rtn));
         }
         rtn = rtn.put("theme", ((Themes) x.get("themes")).findTheme(rtn));
-        rtn = rtn.put(foam.nanos.auth.LocaleSupport.CONTEXT_KEY, foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(rtn));
 
         return rtn;
       `
