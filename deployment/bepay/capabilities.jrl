@@ -4,7 +4,8 @@ p({
   enabled:true,
   description:"bepay spid",
   permissionsGranted: [
-    "language.read.*"
+    "language.read.*",
+    "rule.read.cpf-as-personal-identification-rule"
   ]
 })
 p({

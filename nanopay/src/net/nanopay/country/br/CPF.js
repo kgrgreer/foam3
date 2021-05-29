@@ -183,6 +183,12 @@ foam.CLASS({
         return ((Subject) XLocator.get().get("subject")).getRealUser().getId();
       `
       // depricated but leaving for data migration - script to do this needed - then delete
+    },
+    {
+      class: 'String',
+      name: 'issuer',
+      value: 'Department of Federal Revenue Brazil',
+      hidden: true
     }
   ],
 

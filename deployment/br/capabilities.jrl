@@ -98,16 +98,6 @@ p({
 
 p({
   class:"foam.nanos.crunch.Capability",
-  id:"crunch.onboarding.document.br.date-of-issue",
-  name:"Date of Issue",
-  description:"Date of issue of an identification document",
-  of:"net.nanopay.crunch.document.DateOfIssue",
-  enabled:true,
-  associatedEntity:0
-})
-
-p({
-  class:"foam.nanos.crunch.Capability",
   id:"crunch.onboarding.document.afex.third-party-terms-and-conditions",
   name:"Third Party Verification AFEX Terms and Conditions",
   of:"net.nanopay.crunch.acceptanceDocuments.capabilities.ThirdPartyVerificationAFEXTerms",

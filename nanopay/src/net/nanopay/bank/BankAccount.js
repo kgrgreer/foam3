@@ -213,6 +213,10 @@ foam.CLASS({
       updateVisibility: 'RO'
     },
     {
+      name: 'instruction',
+      visibility: 'HIDDEN'
+    },
+    {
       name: 'name',
       label: 'Nickname',
       section: 'accountInformation',
@@ -626,8 +630,9 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.bank.AccountDetailSummary',
       name: 'accountDetails',
+      visibility: 'HIDDEN',
       storageTransient: true
-    },
+    }
   ],
 
   actions: [
