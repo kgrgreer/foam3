@@ -79,6 +79,11 @@ foam.CLASS({
           gridColumns: 12
         },
         {
+          name: 'voidChequeImage',
+          order: 50,
+          gridColumns: 12
+        },
+        {
           name: 'branchId',
           order: 60,
           gridColumns: 6
@@ -204,6 +209,21 @@ foam.CLASS({
       hidden: true
     },
     {
+      name: 'voidChequeImage',
+      class: 'String',
+      label: '',
+      value: 'images/USA-Check.png',
+      section: 'accountInformation',
+      visibility: 'RO',
+      transient: true,
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.tag.Image',
+          displayWidth: '100%'
+        };
+      }
+    },
+    {
       class: 'foam.nanos.fs.FileProperty',
       name: 'voidCheckImage',
       documentation: 'void check image for this bank account',
@@ -229,7 +249,9 @@ foam.CLASS({
         if ( this.SWIFT_CODE_PATTERN && this.SWIFT_CODE_PATTERN.test(swiftCode) )
           return;
 
-        if ( branchId === '' ) return this.ROUTING_NUMBER_REQUIRED;
+        if ( branchId === '' ) {
+          return this.ROUTING_NUMBER_REQUIRED;
+        }
 
         if ( ! this.ROUTING_CODE_PATTERN.test(branchId) ) {
           return this.ROUTING_NUMBER_INVALID;
@@ -245,7 +267,9 @@ foam.CLASS({
         this.padCapture.accountNumber = n;
       },
       validateObj: function(accountNumber) {
-        if ( accountNumber === '' ) return this.ACCOUNT_NUMBER_REQUIRED;
+        if ( accountNumber === '' ) {
+          return this.ACCOUNT_NUMBER_REQUIRED;
+        }
 
         var accNumberRegex = /^[0-9]{6,17}$/;
         if ( ! accNumberRegex.test(accountNumber) ) {
@@ -265,7 +289,9 @@ foam.CLASS({
         if ( this.ROUTING_CODE_PATTERN && this.ROUTING_CODE_PATTERN.test(branchId) )
           return;
 
-        if ( swiftCode === '' ) return this.SWIFT_CODE_REQUIRED;
+        if ( swiftCode === '' ) {
+          return this.SWIFT_CODE_REQUIRED;
+        }
 
         if ( ! this.SWIFT_CODE_PATTERN.test(swiftCode) ) {
           return this.SWIFT_CODE_INVALID;
