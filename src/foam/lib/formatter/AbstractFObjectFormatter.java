@@ -58,7 +58,7 @@ public abstract class AbstractFObjectFormatter
 
   public String stringifyDelta(FObject oldFObject, FObject newFObject) {
     reset();
-    maybeOutputDelta(oldFObject, newFObject, null, null);
+    maybeOutputDelta(oldFObject, newFObject);
     return b_.toString();
   }
 
