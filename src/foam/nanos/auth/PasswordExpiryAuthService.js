@@ -42,8 +42,6 @@ foam.CLASS({
     {
       name: 'login',
       javaCode:`
-        // on login, clear the context spid to avoid spid restrictions on user find
-        x = x.put("spid", null);
         User user = (User) ((DAO) getLocalUserDAO())
           .find(
             AND(

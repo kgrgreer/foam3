@@ -180,8 +180,6 @@ foam.CLASS({
       documentation: `Login a user by their identifier (email or username) provided, validate the password and
         return the user in the context`,
       javaCode: `
-      // on login, clear the context spid to avoid spid restrictions on user find
-      x = x.put("spid", null);
         User user = (User) ((DAO) getLocalUserDAO())
           .inX(x)
           .find(
