@@ -21,18 +21,21 @@ foam.CLASS({
   extends: 'foam.nanos.auth.UserAndGroupAuthService',
   flags: ['java'],
 
-  documentation: `This class checks spids of user and theme.`,
-
-  imports: [
-    'passwordEntropyService'
-  ],
+  documentation: `Restrict login to the url that matches the spid of the user.`,
 
   javaImports: [
-    'foam.core.X',
+    'foam.dao.DAO',
     'foam.nanos.auth.AccessDeniedException',
+    'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.User',
+    'foam.util.Password',
     'foam.util.SafetyUtil',
     'foam.nanos.theme.Theme',
+
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.OR',
+    'static foam.mlang.MLang.CLASS_OF'
   ],
 
   methods: [
@@ -61,23 +64,55 @@ foam.CLASS({
         }
       ],
       javaCode: `
+        User user = getUser(x, identifier);
+        if ( user == null ) {
+          throw new AuthenticationException("User not found.");
+        }
 
         // Get theme's spid and user's spid
-        Theme theme = ((Theme) x.get("theme"));
+        Theme theme      = ((Theme) x.get("theme"));
         String themeSpid = theme.getSpid();
-        String userSpid = user.getSpid();
+        String userSpid  = user.getSpid();
 
         // Check if theme's spid and user's spid matched.
         // if matched pass, else throw an error.
         // e.g., throws error: userSpid: "treviso", themeSpid: "intuit"
         if (
-        ! SafetyUtil.isEmpty(themeSpid) &&
-        ! SafetyUtil.isEmpty(userSpid) &&
-        ! themeSpid.equals(userSpid)
+          ! SafetyUtil.isEmpty(themeSpid) &&
+          ! SafetyUtil.isEmpty(userSpid) &&
+          ! themeSpid.equals(userSpid)
         ) {
-        throw new AccessDeniedException("");
+          throw new AccessDeniedException();
         }
         return super.login(x, identifier, password);
+      `
+    },
+    {
+      name: 'getUser',
+      documentation: 'Convenience method to get a user by username or email',
+      type: 'User',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'identifier',
+          type: 'String'
+        }
+      ],
+      javaCode: `
+        return (User) ((DAO) getLocalUserDAO())
+          .inX(x)
+          .find(
+            AND(
+              OR(
+                EQ(User.EMAIL, identifier.toLowerCase()),
+                EQ(User.USER_NAME, identifier)
+              ),
+              CLASS_OF(User.class)
+            )
+          );
       `
     }
   ]
