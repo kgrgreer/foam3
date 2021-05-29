@@ -31,6 +31,7 @@ FOAM_FILES([
   { name: "foam/nanos/crunch/CapabilityGrantMode" },
   { name: "foam/nanos/crunch/Capability" },
   { name: "foam/nanos/auth/ServiceProvider" },
+  { name: 'foam/nanos/auth/test/DummySp' },
   { name: 'foam/nanos/fs/TextSaveView', flags: ['web'] },
   { name: "foam/nanos/app/AppConfig" },
   { name: "foam/nanos/app/ContextLookupAppConfigService"},

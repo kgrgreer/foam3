@@ -349,7 +349,7 @@ public class JSONFObjectFormatter
           addInnerNewline();
         }
         if ( calculateDeltaForNestedFObjects_ ) {
-          if (maybeOutputFObjectProperty(newFObject, oldFObject, prop)) delta += 1;
+          if ( maybeOutputFObjectProperty(newFObject, oldFObject, prop) ) delta += 1;
         } else {
           outputProperty(newFObject, prop);
           delta += 1;
@@ -422,7 +422,15 @@ public class JSONFObjectFormatter
 
   }
 
+  public void output(FObject o) {
+    output(o, null, null);
+  }
+
   public void output(FObject o, ClassInfo defaultClass) {
+    output(o, defaultClass, null);
+  }
+
+  public void output(FObject o, ClassInfo defaultClass, PropertyInfo parentProp) {
     ClassInfo info = o.getClassInfo();
 
     boolean outputClass = outputClassNames_ || ( outputDefaultClassNames_ && info != defaultClass );
@@ -436,7 +444,7 @@ public class JSONFObjectFormatter
     }
     boolean outputComma = outputClass;
 
-    List axioms = getProperties(null, info);
+    List axioms = getProperties(parentProp, info);
     int  size   = axioms.size();
     for ( int i = 0 ; i < size ; i++ ) {
       PropertyInfo prop = (PropertyInfo) axioms.get(i);
@@ -444,10 +452,6 @@ public class JSONFObjectFormatter
     }
     addInnerNewline();
     append('}');
-  }
-
-  public void output(FObject o) {
-    output(o, null);
   }
 
   public void output(PropertyInfo prop) {

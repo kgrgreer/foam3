@@ -17,6 +17,20 @@ import java.util.List;
 
 /**
  * Include all properties of a storageTransient property.
+ *
+ Developer Notes
+ Flow 1 - nu object
+ formatter.output(nu) // nu object,
+ this calls formatter.outputProperty which in turn calls formatter.output
+ which calls p.formatJSON(formatter, o), which again calls formatter.output
+ with o's properties.
+ The parentProp is the 'p' in p.formatJSON(formatter).
+
+ Flow 2 - nu / old delta
+ formatter.outputDelta
+ this calls formatter.maybeOutputDelta, which calls maybeOutputFObjectProperty,
+ which in turn calls maybeOutputDelta again. The parentProp is passed
+ from maybeOutputDelta to/from maybeOutputFObjectProperty
  */
 public class MedusaTransientJSONFObjectFormatter
   extends JSONFObjectFormatter {

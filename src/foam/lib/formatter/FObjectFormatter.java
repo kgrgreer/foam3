@@ -72,6 +72,8 @@ public interface FObjectFormatter
 
   public void output(FObject val, ClassInfo defaultClass);
 
+  public void output(FObject val, ClassInfo defaultClass, PropertyInfo parentInfo);
+
   public void output(Date val);
   public void outputReadableDate(Date val);
 
