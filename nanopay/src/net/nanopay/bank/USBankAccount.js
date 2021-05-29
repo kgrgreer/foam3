@@ -49,7 +49,15 @@ foam.CLASS({
       title: function() {
         return this.clientAccountInformationTitle;
       },
+      subTitle: function() {
+        return ' ';
+      },
       properties: [
+        {
+          name: 'instruction',
+          order: 01,
+          gridColumns: 12
+        },
         {
           name: 'denomination',
           order: 10,
@@ -71,11 +79,6 @@ foam.CLASS({
           gridColumns: 12
         },
         {
-          name: 'voidChequeImage',
-          order: 50,
-          gridColumns: 12
-        },
-        {
           name: 'branchId',
           order: 60,
           gridColumns: 6
@@ -86,8 +89,13 @@ foam.CLASS({
           gridColumns: 6
         },
         {
-          name: 'supportingDocuments',
+          name: 'swiftCode',
           order: 80,
+          gridColumns: 12
+        },
+        {
+          name: 'supportingDocuments',
+          order: 90,
           gridColumns: 12
         }
       ]
@@ -120,6 +128,11 @@ foam.CLASS({
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
       javaValue: 'Pattern.compile("^[0-9]{6,17}$")'
+    },
+    {
+      name: 'ROUTING_CODE_PATTERN',
+      type: 'Regex',
+      value: /^[0-9]{9}$/
     }
   ],
 
@@ -134,7 +147,8 @@ foam.CLASS({
     { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' },
     { name: 'SECTION_DETAILS_SUBTITLE_VOID', message: 'Connect to your account without signing in to online banking. Please ensure your details are entered properly.' },
     { name: 'SECTION_DETAILS_TITLE_PLAID', message: 'Finish adding your bank account' },
-    { name: 'SECTION_DETAILS_SUBTITLE_PLAID', message: 'Please confirm some banking details to securely interact with your account.' }
+    { name: 'SECTION_DETAILS_SUBTITLE_PLAID', message: 'Please confirm some banking details to securely interact with your account.' },
+    { name: 'ACH_ROUTING_NUMBER_INSTRUCTION', message: 'Important to note: Not all ABA routing numbers are ACH routing numbers, it might be different for some banks, best to validate this information with the bank.' }
   ],
 
   properties: [
@@ -158,6 +172,21 @@ foam.CLASS({
       visibility: 'HIDDEN'
     },
     {
+      name: 'instruction',
+      class: 'String',
+      label: '',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.dialog.InlineNotificationMessage',
+          message: X.data.ACH_ROUTING_NUMBER_INSTRUCTION,
+          isWarning: true
+        };
+      },
+      section: 'accountInformation',
+      visibility: 'RO',
+      transient: true
+    },
+    {
       name: 'iban',
       visibility: 'HIDDEN',
       required: false,
@@ -175,21 +204,6 @@ foam.CLASS({
       hidden: true
     },
     {
-      name: 'voidChequeImage',
-      class: 'String',
-      label: '',
-      value: 'images/USA-Check.png',
-      section: 'accountInformation',
-      visibility: 'RO',
-      transient: true,
-      view: function(_, X) {
-        return {
-          class: 'foam.u2.tag.Image',
-          displayWidth: '100%'
-        };
-      }
-    },
-    {
       class: 'foam.nanos.fs.FileProperty',
       name: 'voidCheckImage',
       documentation: 'void check image for this bank account',
@@ -199,7 +213,7 @@ foam.CLASS({
     },
     {
       name: 'branchId',
-      label: 'Routing Number',
+      label: 'ACH Routing Number',
       section: 'accountInformation',
       updateVisibility: 'RO',
       gridColumns: 6,
@@ -211,11 +225,13 @@ foam.CLASS({
       postSet: function(o, n) {
         this.padCapture.branchId = n;
       },
-      validateObj: function(branchId) {
+      validateObj: function(branchId, swiftCode) {
+        if ( this.SWIFT_CODE_PATTERN && this.SWIFT_CODE_PATTERN.test(swiftCode) )
+          return;
+
         if ( branchId === '' ) return this.ROUTING_NUMBER_REQUIRED;
 
-        var accNumberRegex = /^[0-9]{9}$/;
-        if ( ! accNumberRegex.test(branchId) ) {
+        if ( ! this.ROUTING_CODE_PATTERN.test(branchId) ) {
           return this.ROUTING_NUMBER_INVALID;
         }
       }
@@ -237,6 +253,24 @@ foam.CLASS({
         }
       },
       gridColumns: 6
+    },
+    {
+      name: 'swiftCode',
+      label: 'SWIFT/BIC',
+      updateVisibility: 'RO',
+      section: 'accountInformation',
+      order: 150,
+      gridColumns: 6,
+      validateObj: function(branchId, swiftCode) {
+        if ( this.ROUTING_CODE_PATTERN && this.ROUTING_CODE_PATTERN.test(branchId) )
+          return;
+
+        if ( swiftCode === '' ) return this.SWIFT_CODE_REQUIRED;
+
+        if ( ! this.SWIFT_CODE_PATTERN.test(swiftCode) ) {
+          return this.SWIFT_CODE_INVALID;
+        }
+      }
     },
     // {
     //   name: 'institution',
@@ -321,7 +355,7 @@ foam.CLASS({
       transient: true,
       label: '',
       updateVisibility: 'HIDDEN',
-      autoValidate: true,
+      autoValidate: false,
       factory: function() {
         return net.nanopay.model.USPadCapture.create({
           country: this.country,
@@ -349,16 +383,11 @@ foam.CLASS({
       }
     },
     {
-      name: 'swiftCode',
-      visibility: 'HIDDEN',
-      required: false,
-      validateObj: function(swiftCode) {
-      }
-    },
-    {
       name: 'bankRoutingCode',
       javaPostSet: `
-        if ( val != null && BRANCH_ID_PATTERN.matcher(val).matches() ) {
+        if ( val != null && BRANCH_ID_PATTERN.matcher(val).matches()
+          && ( SafetyUtil.isEmpty(getBranchId())
+          || ! BRANCH_ID_PATTERN.matcher(getBranchId()).matches() )) {
           setBranchId(val);
         }
       `
