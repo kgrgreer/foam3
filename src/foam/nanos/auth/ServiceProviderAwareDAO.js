@@ -165,7 +165,7 @@ foam.CLASS({
     {
       name: 'find_',
       documentation: `
-        Allow users to remove objects for which they have permission to via "serviceprovider.read.<spid>"
+        Allow users to find object for which they have permission to via "serviceprovider.read.<spid>"
         
         Alternatively, if user has the global read permission "serviceprovider.read.*" for ServiceProvider,
         they are also authorized to read any object associated to the serviceproviders.
