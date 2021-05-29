@@ -182,7 +182,7 @@ foam.CLASS({
       documentation: `
         Allow users to remove objects for which they have permission to via "serviceprovider.read.<spid>".
 
-        Alternatively, if user has the global remove permission "serviceprovider.remove.*" for ServiceProvider,
+        Alternatively, if user has the global remove permission "serviceprovider.remove.*" for ServiceProvider or permission to remove the ServiceProvider eg. "serviceprovider.remove.<spid>",
         they are also authorized to remove any object associated to the serviceproviders.
         This permission is currently only granted to admin.
       `,
