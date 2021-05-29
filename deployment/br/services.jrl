@@ -107,3 +107,23 @@ p({
     }
   """
 })
+
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "afexPOPCodesDAO",
+  "serve": true,
+  "serviceScript": """
+  return new foam.dao.EasyDAO.Builder(x)
+    .setOf(net.nanopay.country.br.AFEXPOPCode.getOwnClassInfo())
+    .setJournalName("afexPOPCodes")
+    .setSeqNo(true)
+    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+    .build();
+  """,
+  "client": """
+    {
+      "of": "net.nanopay.country.br.AFEXPOPCode"
+    }
+  """
+})

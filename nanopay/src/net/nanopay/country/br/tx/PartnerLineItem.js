@@ -161,6 +161,7 @@ foam.CLASS({
       if ( getIOFCurrency() == "" ) throw new ValidationException("IOFCurrency is missing on PartnerLineItem");
       if ( getVET() == 0 ) throw new ValidationException("VET is missing on PartnerLineItem");
       if ( getBankFee() == 0 ) throw new ValidationException("bankFee is missing on PartnerLineItem");
+      if ( "".equals(getNatureCode()) ) throw new ValidationException("natureCode is missing on PartnerLineItem");
       `
     }
   ]

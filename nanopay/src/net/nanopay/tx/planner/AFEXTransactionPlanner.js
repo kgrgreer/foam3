@@ -51,6 +51,8 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.UnsupportedDateException',
+    'net.nanopay.country.br.AFEXPOPCode',
+    'net.nanopay.country.br.tx.PartnerLineItem',
     'java.util.Date',
     'java.text.DateFormat',
     'java.text.SimpleDateFormat',
@@ -84,7 +86,7 @@ foam.CLASS({
     {
       name: 'plan',
       javaCode: `
-    
+
         AFEXServiceProvider fxService = (AFEXServiceProvider) x.get("afexServiceProvider");
         return generateTransaction(x, quote, (AFEXServiceProvider) fxService);
               `
@@ -208,7 +210,7 @@ foam.CLASS({
         //--- Create Fx Summary ---
         FXSummaryTransaction summary = new FXSummaryTransaction();
         // get Summary amounts from the fxQuote
-        summary.setAmount(fxQuote.getSourceAmount()); 
+        summary.setAmount(fxQuote.getSourceAmount());
         summary.setDestinationAmount(fxQuote.getTargetAmount());
         summary.setSourceCurrency(request.getSourceCurrency());
         summary.setDestinationCurrency(request.getDestinationCurrency());
@@ -338,6 +340,8 @@ foam.CLASS({
         afexTransaction.setSourceAccount(source); // Source could be afex digital, or bank account.
         afexTransaction.setDestinationAccount(request.getDestinationAccount());
         afexTransaction.setInvoiceId(request.getInvoiceId()); // should this not be already copied?
+        var popCode = findPOPCode(request, x);
+        if ( popCode != null ) afexTransaction.setPOPCode(popCode);
 
         ExternalTransfer[] exT = new ExternalTransfer[2];
         exT[0] = new ExternalTransfer( afexTransaction.getSourceAccount(), -afexTransaction.getAmount() );
@@ -400,5 +404,29 @@ foam.CLASS({
         return account;
       `
     },
+    {
+      name: 'findPOPCode',
+      args: [
+        {
+          type: 'Transaction',
+          name: 'request'
+        },
+        {
+          type: 'Context',
+          name: 'x'
+        }
+      ],
+      javaType: 'String',
+      javaCode: `
+        for ( TransactionLineItem lineItem : request.getLineItems() ) {
+          if ( lineItem instanceof PartnerLineItem ) {
+            String natureCode = ((PartnerLineItem) lineItem).getNatureCode();
+            var popCode = ((DAO) x.get("afexPOPCodesDAO")).find(EQ(AFEXPOPCode.NATURE_CODE, natureCode));
+            return popCode == null ? null : ((AFEXPOPCode) popCode).getAfexCode();
+          }
+        }
+        return null;
+      `
+    }
   ]
 });

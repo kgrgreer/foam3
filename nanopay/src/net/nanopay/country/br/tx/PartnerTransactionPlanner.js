@@ -33,6 +33,8 @@ foam.CLASS({
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.country.br.tx.PartnerLineItem',
     'net.nanopay.country.br.tx.BRPartnerTransaction',
+    'net.nanopay.country.br.NatureCode',
+    'net.nanopay.country.br.AFEXPOPCode',
     'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.InfoLineItem',
@@ -93,13 +95,22 @@ foam.CLASS({
           return true;
         }
         BRPartnerTransaction transaction = (BRPartnerTransaction) txn;
+        PartnerLineItem pLineItem = null;
 
         for ( TransactionLineItem lineItem: txn.getLineItems() ) {
           if ( lineItem instanceof PartnerLineItem ) {
-            return true;
+            pLineItem = (PartnerLineItem) lineItem;
           }
         }
-        throw new ValidationException("[Transaction Validation error] "+ this.MISSING_LINEITEM);
+        if ( pLineItem == null ) throw new ValidationException("[Transaction Validation error] "+ this.MISSING_LINEITEM);
+
+        NatureCode natureCode = (NatureCode) ((DAO) x.get("natureCodeDAO")).inX(x).find(EQ(NatureCode.OPERATION_TYPE, pLineItem.getNatureCode()));
+        if ( natureCode == null ) throw new ValidationException("natureCode doesn't exist");
+
+        var popCode = ((DAO) x.get("afexPOPCodesDAO")).find(EQ(AFEXPOPCode.NATURE_CODE, natureCode.getOperationType()));
+        if ( popCode == null ) throw new ValidationException("natureCode doesn't match any AFEX POP Code");
+
+        return true;
       `
     },
     {

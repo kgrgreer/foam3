@@ -1,0 +1,6 @@
+p({class:"net.nanopay.country.br.AFEXPOPCode",id:1,afexCode:"ALLW",natureCode:"37004"})
+p({class:"net.nanopay.country.br.AFEXPOPCode",id:3,afexCode:"ALLW",natureCode:"37011"})
+p({class:"net.nanopay.country.br.AFEXPOPCode",id:4,afexCode:"STDY",natureCode:"47702"})
+
+// REVIEW: alternative afex codes form google spreadsheets
+p({class:"net.nanopay.country.br.AFEXPOPCode",id:2,afexCode:"POP",natureCode:"67500"})
