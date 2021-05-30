@@ -109,11 +109,6 @@ It then marshalls it to the primary mediator, and waits on a response.`,
       formatter.setOutputClassNames(true);
       formatter.setOutputDefaultClassNames(false);
       formatter.setCalculateNestedDelta(false);
-      formatter.setPropertyPredicate(
-        new foam.lib.AndPropertyPredicate(new foam.lib.PropertyPredicate[] {
-          new foam.lib.StorageTransientPropertyPredicate(),
-          new foam.lib.ClusterPropertyPredicate()
-        }));
       return formatter;
     }
 
@@ -431,11 +426,10 @@ It then marshalls it to the primary mediator, and waits on a response.`,
         } else {
           transientFormatter.output(obj);
           String data = transientFormatter.builder().toString();
-          if ( SafetyUtil.isEmpty(data) ||
-               "{}".equals(data) ) {
-            return null;
+          if ( ! SafetyUtil.isEmpty(data) ) {
+            return data;
           }
-          return data;
+          return null;
         }
       } finally {
         pm.log(x);

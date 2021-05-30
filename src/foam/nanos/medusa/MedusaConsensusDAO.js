@@ -423,7 +423,7 @@ This is the heart of Medusa.`,
                 cause = cause.getCause();
               }
               getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), cls, entry.getData(), e);
-              Alarm alarm = new Alarm("Failed to parse");
+              Alarm alarm = new Alarm("Medusa Failed to parse");
               alarm.setSeverity(foam.log.LogLevel.ERROR);
               alarm.setClusterable(false);
               alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
@@ -432,7 +432,7 @@ This is the heart of Medusa.`,
             }
             if ( nu == null ) {
               getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), cls, entry.getData());
-              Alarm alarm = new Alarm("Failed to parse");
+              Alarm alarm = new Alarm("Medusa Failed to parse");
               alarm.setSeverity(foam.log.LogLevel.ERROR);
               alarm.setClusterable(false);
               alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
@@ -449,6 +449,10 @@ This is the heart of Medusa.`,
             FObject tran = x.create(JSONParser.class).parseString(entry.getTransientData(), cls);
             if ( tran == null ) {
               getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), cls, entry.getTransientData());
+              Alarm alarm = new Alarm("Medusa Failed to parse (transient)");
+              alarm.setClusterable(false);
+              alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
+              alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
             } else {
               if ( nu == null ) {
                 nu = tran;
@@ -457,16 +461,7 @@ This is the heart of Medusa.`,
                   nu = old.fclone().copyFrom(nu);
                 }
               } else {
-                var props = nu.getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
-                var i     = props.iterator();
-                while ( i.hasNext() ) {
-                  foam.core.PropertyInfo prop = i.next();
-                  getLogger().info("mdao", "transient", nu.getClassInfo().getId(), prop.getName(), prop.isSet(tran), prop.get(tran));
-                  if ( ! prop.getClusterTransient() &&
-                       prop.isSet(tran) ) {
-                    prop.set(nu, prop.get(tran));
-                  }
-                }
+                nu = nu.copyFrom(tran);
               }
             }
           }

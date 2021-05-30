@@ -55,12 +55,12 @@ public class MedusaTransientJSONFObjectFormatter
 
     if ( ! propertyMap_.containsKey(of) ) {
       List<PropertyInfo> filteredAxioms = new ArrayList<>();
-      Iterator e = info.getAxiomsByClass(PropertyInfo.class).iterator();
-      while ( e.hasNext() ) {
-        PropertyInfo prop = (PropertyInfo) e.next();
-        if ( propertyPredicate_ == null ||
-             ( parentProp != null || prop.includeInID() /* && parentProp.getStorageTransient() */ ) ||
-             propertyPredicate_.propertyPredicateCheck(this.x_, of, prop) ) {
+      List<PropertyInfo> props = info.getAxiomsByClass(PropertyInfo.class);
+      for ( PropertyInfo prop : props ) {
+        if ( ( parentProp != null || // parent was storage transient
+               prop.includeInID() ||
+               prop.getStorageTransient() ) &&
+             ! prop.getClusterTransient() ) {
           filteredAxioms.add(prop);
         }
       }
