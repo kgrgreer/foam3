@@ -84,7 +84,6 @@ It then marshalls it to the primary mediator, and waits on a response.`,
       formatter.setOutputShortNames(true);
       formatter.setOutputClassNames(true);
       formatter.setOutputDefaultClassNames(false);
-      formatter.setCalculateNestedDelta(false);
       formatter.setPropertyPredicate(
         new foam.lib.AndPropertyPredicate(new foam.lib.PropertyPredicate[] {
           new foam.lib.StoragePropertyPredicate(),
@@ -108,7 +107,6 @@ It then marshalls it to the primary mediator, and waits on a response.`,
       formatter.setOutputShortNames(true);
       formatter.setOutputClassNames(true);
       formatter.setOutputDefaultClassNames(false);
-      formatter.setCalculateNestedDelta(false);
       return formatter;
     }
 
