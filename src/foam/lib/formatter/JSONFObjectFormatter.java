@@ -407,19 +407,13 @@ public class JSONFObjectFormatter
   }
   */
 
-  public void output(FObject[] arr, ClassInfo defaultClass) {
-    output(arr);
-  }
-
-  public void output(FObject[] arr) {
-
+  public void output(FObject[] arr, ClassInfo defaultClass, PropertyInfo parentProp) {
     append('[');
     for ( int i = 0 ; i < arr.length ; i++ ) {
-      output(arr[i]);
+      output(arr[i], defaultClass, parentProp);
       if ( i < arr.length - 1 ) append(',');
     }
     append(']');
-
   }
 
   public void output(FObject o) {

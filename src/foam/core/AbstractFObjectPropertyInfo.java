@@ -142,8 +142,7 @@ public abstract class AbstractFObjectPropertyInfo
     Object propObj = get_(obj);
     if ( propObj instanceof FObject && ! (propObj instanceof OutputJSON) ) {
       formatter.output((FObject) propObj, of(), this);
-    }
-    else {
+    } else {
       formatter.output(propObj);
     }
   }
