@@ -336,7 +336,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'URL',
+      class: 'Image',
       name: 'flagImage',
       label: 'Country', // To set table column heading
       documentation: `A URL link to an image of the country's flag. Used for
