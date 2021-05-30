@@ -59,7 +59,7 @@ public class MedusaTransientJSONFObjectFormatter
       while ( e.hasNext() ) {
         PropertyInfo prop = (PropertyInfo) e.next();
         if ( propertyPredicate_ == null ||
-             ( parentProp != null && parentProp.getStorageTransient() ) ||
+             ( parentProp != null || prop.includeInID() /* && parentProp.getStorageTransient() */ ) ||
              propertyPredicate_.propertyPredicateCheck(this.x_, of, prop) ) {
           filteredAxioms.add(prop);
         }

@@ -397,8 +397,6 @@ This is the heart of Medusa.`,
         ReplayingInfo replaying = (ReplayingInfo) x.get("replayingInfo");
         if ( replaying.getReplaying() ||
              ! config.getIsPrimary() ) {
-          String data = entry.getData();
-          if ( ! SafetyUtil.isEmpty(data) ) {
             // TODO: cache cls for nspecName
             DAO dao = support.getMdao(x, entry.getNSpecName());
             Class cls = null;
@@ -407,14 +405,16 @@ This is the heart of Medusa.`,
             } else if ( dao instanceof foam.dao.MDAO ) {
               cls = ((foam.dao.MDAO) dao).getOf().getObjClass();
             } else {
-              getLogger().error("mdao", entry.getIndex(), entry.getNSpecName(), dao.getClass().getSimpleName(), "Unable to determine class", data);
+              getLogger().error("mdao", entry.getIndex(), entry.getNSpecName(), dao.getClass().getSimpleName(), "Unable to determine class");
               Alarm alarm = new Alarm("Unknown class");
               alarm.setClusterable(false);
               alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
               alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
               throw new MedusaException("Unknown class");
             }
-            FObject nu = null;
+          FObject nu = null;
+          String data = entry.getData();
+          if ( ! SafetyUtil.isEmpty(data) ) {
             try {
               nu = x.create(JSONParser.class).parseString(entry.getData(), cls);
             } catch ( RuntimeException e ) {
@@ -422,7 +422,7 @@ This is the heart of Medusa.`,
               while ( cause.getCause() != null ) {
                 cause = cause.getCause();
               }
-              getLogger().error("Failed to parse", entry.getIndex(), entry.getNSpecName(), cls, entry.getData(), e);
+              getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), cls, entry.getData(), e);
               Alarm alarm = new Alarm("Failed to parse");
               alarm.setSeverity(foam.log.LogLevel.ERROR);
               alarm.setClusterable(false);
@@ -431,7 +431,7 @@ This is the heart of Medusa.`,
               throw new MedusaException("Failed to parse.", cause);
             }
             if ( nu == null ) {
-              getLogger().error("Failed to parse", entry.getIndex(), entry.getNSpecName(), cls, entry.getData());
+              getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), cls, entry.getData());
               Alarm alarm = new Alarm("Failed to parse");
               alarm.setSeverity(foam.log.LogLevel.ERROR);
               alarm.setClusterable(false);
@@ -444,16 +444,24 @@ This is the heart of Medusa.`,
             if (  old != null ) {
               nu = old.fclone().copyFrom(nu);
             }
-
-            if ( ! SafetyUtil.isEmpty(entry.getTransientData()) ) {
-              FObject tran = x.create(JSONParser.class).parseString(entry.getTransientData(), cls);
-              if ( tran == null ) {
-                getLogger().error("Failed to parse", entry.getIndex(), entry.getNSpecName(), cls, entry.getTransientData());
+          }
+          if ( ! SafetyUtil.isEmpty(entry.getTransientData()) ) {
+            FObject tran = x.create(JSONParser.class).parseString(entry.getTransientData(), cls);
+            if ( tran == null ) {
+              getLogger().error("mdao", "Failed to parse", entry.getIndex(), entry.getNSpecName(), cls, entry.getTransientData());
+            } else {
+              if ( nu == null ) {
+                nu = tran;
+                FObject old = dao.find_(x, nu.getProperty("id"));
+                if (  old != null ) {
+                  nu = old.fclone().copyFrom(nu);
+                }
               } else {
-                var props = tran.getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
+                var props = nu.getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
                 var i     = props.iterator();
                 while ( i.hasNext() ) {
                   foam.core.PropertyInfo prop = i.next();
+                  getLogger().info("mdao", "transient", nu.getClassInfo().getId(), prop.getName(), prop.isSet(tran), prop.get(tran));
                   if ( ! prop.getClusterTransient() &&
                        prop.isSet(tran) ) {
                     prop.set(nu, prop.get(tran));
@@ -461,7 +469,8 @@ This is the heart of Medusa.`,
                 }
               }
             }
-
+          }
+          if ( nu != null ) {
             if ( DOP.PUT == entry.getDop() ) {
               dao.put_(x, nu);
             } else if ( DOP.REMOVE == entry.getDop() ) {
