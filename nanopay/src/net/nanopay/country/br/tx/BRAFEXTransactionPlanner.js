@@ -28,7 +28,7 @@ foam.CLASS({
     'java.text.DateFormat',
     'java.text.SimpleDateFormat',
     'java.time.LocalDateTime',
-    'java.util.ArrayList'
+    'java.util.ArrayList',
     'java.util.Date',
     'java.util.Date',
     'java.util.Locale',
@@ -42,7 +42,8 @@ foam.CLASS({
     'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus'
+    'net.nanopay.tx.model.TransactionStatus',
+    'static foam.mlang.MLang.*'
   ],
 
 
