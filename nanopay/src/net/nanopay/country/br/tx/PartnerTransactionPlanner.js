@@ -107,7 +107,7 @@ foam.CLASS({
         NatureCode natureCode = (NatureCode) ((DAO) x.get("natureCodeDAO")).inX(x).find(EQ(NatureCode.OPERATION_TYPE, pLineItem.getNatureCode()));
         if ( natureCode == null ) throw new ValidationException("natureCode doesn't exist");
 
-        var popCode = ((DAO) x.get("afexPOPCodesDAO")).find(EQ(AFEXPOPCode.NATURE_CODE, natureCode.getOperationType()));
+        var popCode = ((DAO) x.get("afexPOPCodesDAO")).find(EQ(AFEXPOPCode.PARTNER_CODE, natureCode.getOperationType()));
         if ( popCode == null ) throw new ValidationException("natureCode doesn't match any AFEX POP Code");
 
         return true;

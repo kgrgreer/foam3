@@ -33,7 +33,11 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'natureCode' // Review: should be partnerCode instead?
+      name: 'partnerCode'
+    },
+    {
+      class: 'String',
+      name: 'countryCode'
     }
   ]
 });

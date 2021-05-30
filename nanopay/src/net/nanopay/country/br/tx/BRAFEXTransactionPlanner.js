@@ -62,7 +62,7 @@ foam.CLASS({
         for ( TransactionLineItem lineItem : request.getLineItems() ) {
           if ( lineItem instanceof PartnerLineItem ) {
             String natureCode = ((PartnerLineItem) lineItem).getNatureCode();
-            var popCode = ((DAO) x.get("afexPOPCodesDAO")).find(EQ(AFEXPOPCode.NATURE_CODE, natureCode));
+            var popCode = ((DAO) x.get("afexPOPCodesDAO")).find(EQ(AFEXPOPCode.PARTNER_CODE, natureCode));
             return popCode == null ? null : ((AFEXPOPCode) popCode).getAfexCode();
           }
         }
