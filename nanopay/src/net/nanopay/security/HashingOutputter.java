@@ -81,7 +81,7 @@ public class HashingOutputter
   @Override
   public boolean maybeOutputDelta(FObject old, FObject obj, PropertyInfo parentProp, ClassInfo of) {
     count_.get().incrementAndGet();
-    var ret = super.maybeOutputDelta(old, obj, parentProp, of);
+    var ret = super.maybeOutputDelta(old, obj, null, of);
     if ( count_.get().decrementAndGet() == 0 && ret ) {
       outputDigest();
     }
@@ -89,9 +89,9 @@ public class HashingOutputter
   }
 
   @Override
-  public void output(FObject obj, ClassInfo of) {
+  public void output(FObject obj, ClassInfo of, PropertyInfo parentProp) {
     count_.get().incrementAndGet();
-    super.output(obj, of);
+    super.output(obj, of, null);
     if ( count_.get().decrementAndGet() == 0 ) {
       outputDigest();
     }
@@ -116,7 +116,7 @@ public class HashingOutputter
       formatter_.setPropertyPredicate(new StoragePropertyPredicate());
     }
     formatter_.reset();
-    formatter_.output(messageDigest_.get(), MessageDigest.getOwnClassInfo());
+    formatter_.output(messageDigest_.get(), MessageDigest.getOwnClassInfo(), null);
     builder().append(formatter_.builder().toString());
   }
 
