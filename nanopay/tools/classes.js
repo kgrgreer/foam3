@@ -1447,12 +1447,13 @@ var classes = [
   'net.nanopay.reporting.ServiceFeesReport',
   'net.nanopay.reporting.UserOnboardingReport',
 
-  // bepay
+  // partner
   'net.nanopay.country.br.tx.BRPartnerTransaction',
   'net.nanopay.country.br.tx.PartnerLineItem',
   'net.nanopay.country.br.tx.PartnerReport',
   'net.nanopay.country.br.tx.PartnerTransactionPlanner',
   'net.nanopay.country.br.tx.ScreenUsersOnTransactionCreate',
+  'net.nanopay.country.br.tx.BRAFEXTransactionPlanner',
   'net.nanopay.partner.bepay.tx.BePayTransaction',
 
   // accuity
