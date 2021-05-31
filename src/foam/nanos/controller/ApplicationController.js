@@ -584,8 +584,10 @@ foam.CLASS({
       for ( var i = 0 ; i < this.MACROS.length ; i++ ) {
         let m = this.MACROS[i];
         text2 = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
+        if ( text != text2 )
+          text = text2;
       }
-      return text2;
+      return text;
     },
 
     function pushMenu(menu, opt_forceReload) {
