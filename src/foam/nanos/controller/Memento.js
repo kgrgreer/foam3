@@ -57,7 +57,18 @@ foam.CLASS({
 
         if ( this.feedback_ ) return;
         this.feedback_       = true;
+
+        var origReplaceHistoryState;
+        if ( n ) {
+          origReplaceHistoryState = this.replaceHistoryState;
+          this.replaceHistoryState = n.replaceHistoryState;
+        }
         this.changeIndicator = ! this.changeIndicator;
+
+        if ( n ) {
+          this.replaceHistoryState = origReplaceHistoryState;
+        }
+
         this.feedback_       = false;
       },
       value: null
