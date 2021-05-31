@@ -13,33 +13,54 @@ foam.CLASS({
     A read-only view for a Reference Property.
     
     You can configure access to the link and what is set to the link using
-    'enableLink', 'menuKeys', and 'controlAccessToDAOSummary' 
-    
-    * A flow chart for determining access to the link and what is set to the link *
+    'enableLink', 'controlAccessToDAOSummary', and 'menuKeys'.
 
-                    enableLink is
-                    set to false ?
-                     /          \
-                  y /            \ n
-                   /              \
-              - - -                - - - 
-             /                           \
-        disable link                menus provided ?
-                                       /      \   n
-                                    y /         - - - - - - - - - - - - - -
-                                     /                                      \
-                              has a menu with                             access to
-                              read permission ?                          DAO summary ?
-                                /        \   n                               /     \       n
-                             y /           - - -                          y /        - - - - -
-                              /                  \                         /                   \
-                          enable link          access to             enable link          disable link
-                        link to this menu     DAO summary ?       link to dao summary
-                                                /     \    n
-                                             y /        - - - - -
-                                              /                   \
-                                         enable link           disable link
-                                      link to dao summary
+    'enableLink' enables the link if set to true and otherwise disables it.
+    
+    'controlAccessToDAOSummary' uses dao summary permission to enable/disable the link
+    if set to true.
+    
+    'menuKeys' is a list of menu ids. The link will reference to the first menu
+    to which group has permission in this list. If no menus are permissioned,
+    the link will be disabled.
+
+    Note that the three properties need to be set to ref property property
+      e.g.
+        {
+          class: 'Reference',
+          of: 'foam.nanos.auth.Group',
+          name: 'group',
+          enableLink: false,
+          controlAccessToDAOSummary: true,
+          menuKeys: [
+            'someMenuId',
+            'someMenuId2'
+          ]
+        }
+    
+    A flow chart for determining access to the link and what is set to the link
+
+                                         enableLink is
+                                         set to true ?
+                                         /          \
+                                      y /            \ n
+                                       /              \
+                                  - - -                - - - - - - - - - - - - - -
+                                 /                                                 \
+                          menus provided ?                                      disable link
+                            /      \   n
+                         y /         - - - - - - - - - - - - - -
+                          /                                      \
+                   have a menu with                             can read   
+                   read permission ?                          DAO summary ?
+                      /        \                     (controlAccessToDAOSummary is false or 
+                     /          \                     have a permission to read DAO summary)
+                  y /            \   n                           /     \       n
+                   /              - - -                       y /        - - - - -
+                  /                     \                      /                   \
+              enable link          disable link          enable link          disable link
+            link to this menu                        link to dao summary
+
   `,
 
   requires: [
@@ -130,7 +151,8 @@ foam.CLASS({
 
     async function configLink() {
       /*
-       * Uses the tree diagram above to set enableLink and linkTo
+       * Uses the flow chart above to control access to the link
+       * and what is set to this link.
        */
 
       // enableLink explicitly set to false?
