@@ -113,6 +113,7 @@ foam.CLASS({
       name: 'getMessage',
       type: 'String',
       code: function() {
+        // TODO: template replacement.
         return this.getTranslation();
       },
       javaCode: `
