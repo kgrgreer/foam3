@@ -111,7 +111,7 @@ foam.CLASS({
           EQ(AFEXPOPCode.PARTNER_CODE, natureCode.getOperationType()),
           EQ(AFEXPOPCode.COUNTRY_CODE, "BR")
         ));
-        if ( popCode == null ) throw new ValidationException("natureCode doesn't match any AFEX POP Code");
+        if ( popCode == null ) throw new ValidationException("natureCode doesn't match any partner reason code");
 
         return true;
       `
