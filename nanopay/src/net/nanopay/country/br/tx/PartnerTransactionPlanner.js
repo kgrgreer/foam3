@@ -121,7 +121,7 @@ foam.CLASS({
           alarm.setClusterable(false);
           alarm.setSeverity(LogLevel.ERROR);
           alarm.setName("Failed to map natureCode/POP");
-          alarm.setNote("No AFE POP for nature code: " + natureCode.getOperationType());
+          alarm.setNote("No AFEX POP for nature code: " + natureCode.getOperationType());
           alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
           throw new ValidationException("natureCode doesn't match any partner reason code");
         }
