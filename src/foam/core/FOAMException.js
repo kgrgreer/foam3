@@ -82,7 +82,6 @@ foam.CLASS({
     {
       name: 'message_',
       class: 'String',
-      value: '',
       externalTransient: true,
       storageTransient: true,
       visibility: 'RO'
@@ -163,7 +162,6 @@ foam.CLASS({
           Object value = prop.get(this);
           if ( value != null ) {
             map.put(prop.getName(), String.valueOf(value));
-System.out.println(this.getClass().getName()+","+prop.getName()+","+String.valueOf(value));
           }
         }
       }
