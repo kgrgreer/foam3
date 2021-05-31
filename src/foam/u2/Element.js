@@ -1064,8 +1064,9 @@ foam.CLASS({
       // TODO: This should be handled by an onsub event when someone subscribes to
       // scroll height changes.
       var self = this;
-      var observer = new MutationObserver(function(mutations) {
-        self.scrollHeight = self.el().then(el => el.scrollHeight);
+      var observer = new MutationObserver(async function(mutations) {
+        var el = await self.el();
+        self.scrollHeight = el.scrollHeight;
       });
       var config = { attributes: true, childList: true, characterData: true };
 

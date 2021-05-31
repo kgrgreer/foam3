@@ -260,7 +260,6 @@ foam.CLASS({
         var ele;
         async function checkCardsOverflow(evt) {
           var el = await ele.el();
-          if ( ! el ) return;
           self.cardsOverflow = el.scrollWidth > el.clientWidth;
         }
         spot.add(self.slot(
