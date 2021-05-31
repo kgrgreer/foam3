@@ -40,7 +40,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'countryCode',
-      documentation: 'Country code for the partnerCode, eg. "BR" for Brazilian nature code.`
+      documentation: 'Country code for the partnerCode, eg. "BR" for Brazilian nature code.'
     }
   ]
 });

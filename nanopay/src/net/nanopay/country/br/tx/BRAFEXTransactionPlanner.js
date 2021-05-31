@@ -60,9 +60,13 @@ foam.CLASS({
       javaType: 'String',
       javaCode: `
         for ( TransactionLineItem lineItem : request.getLineItems() ) {
-          if ( lineItem instanceof PartnerLineItem ) {
-            String natureCode = ((PartnerLineItem) lineItem).getNatureCode();
-            var popCode = ((DAO) x.get("afexPOPCodesDAO")).find(EQ(AFEXPOPCode.PARTNER_CODE, natureCode));
+          if ( lineItem instanceof PartnerLineItem || lineItem instanceof NatureCodeLineItem ) {
+            String natureCode = lineItem instanceof PartnerLineItem ? ((PartnerLineItem) lineItem).getNatureCode()
+              : ((NatureCodeLineItem) lineItem).getNatureCode();
+            var popCode = ((DAO) x.get("afexPOPCodesDAO")).find(AND(
+              EQ(AFEXPOPCode.PARTNER_CODE, natureCode),
+              EQ(AFEXPOPCode.COUNTRY_CODE, "BR")
+            ));
             return popCode == null ? null : ((AFEXPOPCode) popCode).getAfexCode();
           }
         }
