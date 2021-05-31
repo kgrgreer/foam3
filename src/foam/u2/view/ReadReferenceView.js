@@ -60,26 +60,6 @@ foam.CLASS({
     },
     'prop',
     {
-      class: 'Boolean',
-      name: 'enableLink',
-      documentation: `
-        Create the reference view as an anchor link to the reference\'s DetailView or provided menu.
-      `,
-      value: true
-    },
-    {
-      class: 'Boolean',
-      name: 'controlAccessToDAOSummary',
-      documentation: `
-        When set to true, DAO summary can be only viewed if group has permission to read it
-      `
-    },
-    {
-      class: 'StringArray',
-      name: 'menuKeys',
-      documentation: 'A list of menu ids.'
-    },
-    {
       class: 'String',
       name: 'linkTo',
       documentation: 'link to the reference'
@@ -103,7 +83,7 @@ foam.CLASS({
           .add(this.obj$.map(obj => {
             if ( ! obj ) return '';
 
-            if ( this.enableLink ) {
+            if ( this.prop.enableLink ) {
               return this.E().start('a')
                 .attrs({ href: '#'})
                 .on('click', evt => {
@@ -139,7 +119,6 @@ foam.CLASS({
       this.SUPER(prop);
       
       this.prop = prop;
-      this.controlAccessToDAOSummary = prop.controlAccessToDAOSummary;
 
       this.configLink().then(() => {
         const dao = this.ctrl.__subContext__[prop.targetDAOKey];
@@ -155,47 +134,47 @@ foam.CLASS({
        */
 
       // enableLink explicitly set to false?
-      if ( ! this.auth || ! this.enableLink ) {
-        this.enableLink = false;
+      if ( ! this.auth || ! this.prop.enableLink ) {
+        this.prop.enableLink = false;
         this.linkTo = '';
         return;
       }      
       
       try {
         // menus are provided?
-        if ( this.menuKeys.length > 0 ) {
+        if ( this.prop.menuKeys.length > 0 ) {
           // check permissions for menus
-          const permissions = await Promise.all([...this.menuKeys].map(menuId => {
+          const permissions = await Promise.all([...this.prop.menuKeys].map(menuId => {
             return this.auth.check(this.__subContext__, `menu.read.${menuId}`);
           }));
 
           const firstAt = permissions.indexOf(true);
           // can read menu?
           if ( firstAt > -1 ) {
-            this.enableLink = true;
-            this.linkTo = this.menuKeys[firstAt];
+            this.prop.enableLink = true;
+            this.linkTo = this.prop.menuKeys[firstAt];
           } else {
-            this.enableLink = false;
+            this.prop.enableLink = false;
             this.linkTo = '';
           }
         // menus not provided
         } else {
           // access to dao summary?
           if ( 
-            ! this.controlAccessToDAOSummary ||
+            ! this.prop.controlAccessToDAOSummary ||
             await this.auth.check(this.__subContext__, `${this.prop.targetDAOkey}Summary.read`)
           ) {
-            this.enableLink = true;
+            this.prop.enableLink = true;
             this.linkTo = 'daoSummary';
           } else {
-            this.enableLink = false;
+            this.prop.enableLink = false;
             this.linkTo = '';
           }
         }
       } catch (e) {
         console.error(e);
-        this.enableLink = true;
-        this.controlAccessToDAOSummary = false;
+        this.prop.enableLink = true;
+        this.prop.controlAccessToDAOSummary = false;
         this.linkTo = 'daoSummary';
       }
     },
