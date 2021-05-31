@@ -227,8 +227,10 @@ foam.CLASS({
       var currentLetter = '';
       var section;
 
-      if ( self.memento )
+      if ( self.memento ) {
         this.currentMemento_$ = self.memento.tail$;
+        // self.currentMemento_.replaceHistoryState = true;
+      }
 
       this.addClass(this.myClass()).
       start().
@@ -297,7 +299,7 @@ foam.CLASS({
               .attrs({title: spec.description})
               .on('click', function() {
                 if ( self.memento ) {
-                  var tail = self.Memento.create({ head: spec.id, tail: self.Memento.create() });
+                  var tail = self.Memento.create({ head: spec.id, tail: self.Memento.create({ replaceHistoryState : true }) });
                   self.memento.tail$.set(tail);
                 }
               });
