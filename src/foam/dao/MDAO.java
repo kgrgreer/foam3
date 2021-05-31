@@ -45,6 +45,10 @@ import java.util.Set;
 public class MDAO
   extends AbstractDAO
 {
+  public MDAO() {
+    super();
+  }
+
   public static class DetachSelect implements Detachable {
     private static Detachable instance__ = new DetachSelect();
     public  static Detachable instance() { return instance__; }
