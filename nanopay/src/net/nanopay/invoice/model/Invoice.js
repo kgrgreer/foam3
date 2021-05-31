@@ -824,7 +824,7 @@ foam.CLASS({
       of: 'net.nanopay.tx.TransactionQuote',
       name: 'quote',
       hidden: true,
-      // storageTransient: true
+      storageTransient: true
     },
     {
       class: 'FObjectProperty',
