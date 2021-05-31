@@ -103,7 +103,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'enableLink',
       documentation: `
-        Create the reference view as an anchor link to the reference\'s DetailView or provided menu.
+        Create the reference view as an anchor link to the reference's DetailView or provided menu.
       `,
       value: true
     },
