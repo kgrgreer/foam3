@@ -11,7 +11,7 @@ foam.ENUM({
   values: [
     {
       name: 'DEFAULT',
-      color: ''
+      color: '/*%WHITE%*/ #FFFFFF'
     },
     {
       name: 'DESTRUCTIVE',
@@ -38,40 +38,43 @@ foam.CLASS({
 
   css: `
     ^top{
-      top: 2vh;
       position: absolute;
+      top: 2vh;
     }
     ^colorBar{
-      width: 100%;
-      height: 8px;
-      z-index: 3;
+      border: 1px solid;
+      border-bottom: 0px;
       border-radius: 3px 3px 0 0;
+      box-sizing: border-box;
+      height: 8px;
+      width: 100%;
+      z-index: 4;
     }
     ^inner {
-      border: 1px solid /*%GREY4%*/ #DADDE2;
-      border-top: none;
       background-color: /*%WHITE%*/ white;
-      box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
+      border: 1px solid /*%GREY4%*/ #DADDE2;
       border-radius: 0 0 3px 3px;
+      border-top: none;
+      box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);      
+      display: flex;
+      flex-direction: column;
       overflow: hidden;
       padding: 24px;
       padding-bottom: 0px; 
-      display: flex;
-      flex-direction: column;
     }
     ^modal-body{
-      overflow: auto;
       height: 100%;
+      overflow: auto;
       position: relative;
     }
     ^title{
-      padding-bottom: 16px;
       margin-right: 40px;
+      padding-bottom: 16px;
     }
     ^actionBar {
-      padding: 16px 0px;
       display: flex;
       justify-content: flex-end;
+      padding: 16px 0px;
     }
   `,
 
@@ -79,12 +82,12 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'maxHeight',
-      value: '65'
+      value: 65
     },
     {
       class: 'Int',
       name: 'maxWidth',
-      value: '45'
+      value: 45
     },
     {
       class: 'Enum',
@@ -118,6 +121,7 @@ foam.CLASS({
 
   methods: [
     function init() {
+      bgColor = this.returnExpandedCSS(this.modalStyle.color);
       this
         .addClass(this.myClass())
         .on('keydown', this.onKeyDown)
@@ -129,8 +133,7 @@ foam.CLASS({
           .enableClass(this.myClass('top'), this.isTop$)
           .start()
               .enableClass(this.myClass('colorBar'), this.isStyled$)
-              //TODO: Figure out why this can't use the returnExpandedCSS function
-              .style({ background: this.modalStyle.color })
+              .style({ 'background-color': bgColor, 'border-color': this.modalStyle != 'DEFAULT' ? bgColor : this.returnExpandedCSS('/*%GREY4%*/ #DADDE2')})
           .end()
           .start()
             .style({ 'max-height': this.maxHeight+'vh', 'max-width': this.maxWidth+'vw' })
