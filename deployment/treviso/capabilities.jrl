@@ -241,7 +241,7 @@ p({
   "visibilityPredicate": {
     "class":"foam.mlang.predicate.Not",
     "arg1": {
-      "class":"foam.nanos.crunch.predicate.CapabilityGranted",
+      "class":"foam.nanos.crunch.predicate.CapabilityIsStatus",
       "capabilityId":"crunch.onboarding.signing-officer-information",
       "subjectFromUCJ":false
     }

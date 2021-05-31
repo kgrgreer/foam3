@@ -1430,6 +1430,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.R
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.ROUTING_NUMBER_INVALID",target:"O número identificador deve ter 9 dígitos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.ACCOUNT_NUMBER_REQUIRED",target:"Número da conta obrigatório"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.ACCOUNT_NUMBER_INVALID",target:"O número da conta deve ter entre 6 e 17 dígitos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.ACH_ROUTING_NUMBER_INSTRUCTION",target:"Importante : Nem todo número de roteamento ABA é igual ao ACH, pode ser diferente para alguns bancos. Nós fazemos o máximo possível para fazer a validação desta informação com o banco, mas sempre certifique-se que o número informado é o ACH Routing / Roteamento ACH."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.IMAGE_REQUIRED",target:"Anexe um cheque sem efeito ou um extrato bancário de 3 meses"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.ADD_SUCCESSFUL",target:"Conta bancária adicionada com sucesso!"})
@@ -1449,7 +1450,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.D
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.VOID_CHEQUE_IMAGE.value",target:"images/USA-Check.png"})
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.VOID_CHEQUE_IMAGE.label",target:"voidChequeImage"})
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.VOID_CHECK_IMAGE.label",target:"voidCheckImage"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.BRANCH_ID.label",target:"Número do ROUT ou ABA"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.BRANCH_ID.label",target:"Número do ROUT ou ACH"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.VOID_CHECK_IMAGE.documentation",target:"anular imagem de cheque para esta conta bancária"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.ACCOUNT_NUMBER.label",target:"Número da Conta"})

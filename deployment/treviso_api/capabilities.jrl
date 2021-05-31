@@ -5,7 +5,8 @@ p({
   description:"trevisoAPI spid",
   enabled:true,
   permissionsGranted: [
-    "language.read.*"
+    "language.read.*",
+    "rule.read.cpf-as-personal-identification-rule"
   ]
 })
 

@@ -44,12 +44,10 @@ foam.CLASS({
     'ctrl',
     'currencyDAO',
     'securitiesDAO',
-    'refundTicketDAO',
     'notify',
     'group',
     'homeDenomination',
     'stack?',
-    'subject',
     'user',
     'userDAO',
     'exchangeRateService'
@@ -1508,37 +1506,6 @@ foam.CLASS({
       javaCode: `
       return 0;
     `,
-    }
-  ],
-
-  actions: [
-    {
-      name: 'requestCancellation',
-      section: 'transactionInformation',
-      isAvailable: function(status) {
-        return ((status === net.nanopay.tx.model.TransactionStatus.PENDING) || (status === net.nanopay.tx.model.TransactionStatus.SENT) );
-      },
-      code: async function(X) {
-        // check if ticket exists already
-        var refundTicket = await this.refundTicketDAO.where(this.AND(
-          this.EQ(net.nanopay.ticket.RefundTicket.PROBLEM_TRANSACTION, this.id),
-          this.EQ(net.nanopay.ticket.RefundTicket.STATUS, "OPEN")
-        )
-        ).select();
-
-        if ( refundTicket.array.length == 0 ) {
-          refundTicket = net.nanopay.ticket.RefundTicket.create({
-            problemTransaction: this.id,
-            title: 'Refund request for transaction: ' + this.id,
-            assignedTo: this.subject.user.id
-          });
-          refundTicket = await this.refundTicketDAO.put(refundTicket);
-        } else {
-          refundTicket = refundTicket.array[0];
-        }
-
-        window.location.hash = '#tickets-support::::::::::::::::id,createdBy,status,title,assignToMe,submit,assignedTo.userName::edit::' + refundTicket.id;
-      }
     }
   ]
 });

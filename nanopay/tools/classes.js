@@ -161,6 +161,7 @@ var classes = [
   'net.nanopay.bank.ruler.VerifyBankRule',
   'net.nanopay.bank.ruler.CapabilityAddBankAccountRule',
   'net.nanopay.country.br.ruler.BRBankAccountCapabilityOnGrantRule',
+  'net.nanopay.country.br.ruler.SetCPFAsPersonalIdentificationRuleAction',
   'net.nanopay.bank.test.BankAccountIBANTest',
   'net.nanopay.model.CurrencyAmount',
   'net.nanopay.model.Broker',

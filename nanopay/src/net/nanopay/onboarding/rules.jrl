@@ -28,7 +28,7 @@ p({
   "operation":0,
   "predicate":{
     "class":"net.nanopay.auth.ruler.predicate.IsUserInGroups",
-    "groupNames": [ "fraud-ops", "payment-ops", "support" ]
+    "groupNames": [ "fraud-ops", "payment-ops", "support-ops" ]
   },
   "action":{
     "class":"net.nanopay.onboarding.ruler.NotificationSettingsRule"

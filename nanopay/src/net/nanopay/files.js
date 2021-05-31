@@ -340,6 +340,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ruler/IbanToSwiftCodeTranslation' },
   { name: 'net/nanopay/bank/ruler/SwiftCodeToBankRoutingCodeTranslation' },
   { name: 'net/nanopay/country/br/ruler/BRBankAccountCapabilityOnGrantRule' },
+  { name: 'net/nanopay/country/br/ruler/SetCPFAsPersonalIdentificationRuleAction' },
 
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },

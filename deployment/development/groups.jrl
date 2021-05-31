@@ -23,7 +23,7 @@ p({
   class:"foam.nanos.auth.Group",
   id:"treviso-support",
   description:"treviso support group",
-  parent:"support",
+  parent:"support-ops",
   url:"http://treviso:8080"
 })
 p({

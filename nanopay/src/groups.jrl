@@ -14,6 +14,6 @@ p({"class":"foam.nanos.auth.Group","id":"identityMind","enabled":true,"descripti
 p({"class":"foam.nanos.auth.Group","id":"msp-admin","enabled":true,"description":"Multi Service Provider admin group.","parent":"basicUser","defaultMenu":"admin.users-2","theme":"D306F95E-4C4F-4C2B-BC5F-F67CFFE3EC99"})
 p({"class":"foam.nanos.auth.Group","id":"fraud-ops","enabled":true,"description":"Fraud Operations","parent":"basicUser","defaultMenu":"bankaccounts","theme":"D306F95E-4C4F-4C2B-BC5F-F67CFFE3EC99"})
 p({"class":"foam.nanos.auth.Group","id":"payment-ops","enabled":true,"description":"Payment Operations","parent":"basicUser","defaultMenu":"bankaccounts","theme":"D306F95E-4C4F-4C2B-BC5F-F67CFFE3EC99"})
-p({"class":"foam.nanos.auth.Group","id":"support","description":"nanopay Support","parent":"basicUser","defaultMenu":"contacts", "theme":"D306F95E-4C4F-4C2B-BC5F-F67CFFE3EC99"})
+p({"class":"foam.nanos.auth.Group","id":"support-ops","description":"nanopay Support","parent":"basicUser","defaultMenu":"contacts", "theme":"D306F95E-4C4F-4C2B-BC5F-F67CFFE3EC99"})
 
 p({"class":"foam.nanos.auth.Group","id":"treviso-fraud-ops","enabled":true,"description":"Fraud Operations","parent":"basicUser",defaultMenu:"transactions-support","theme":"D306F95E-4C4F-4C2B-BC5F-F67CFFE3EC99"})

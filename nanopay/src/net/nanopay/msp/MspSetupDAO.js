@@ -200,7 +200,7 @@ foam.CLASS({
         // Create spid-support group
         Group supportGroup = new Group();
         supportGroup.setId(mspInfo.getSpid() + "-support");
-        supportGroup.setParent("support");
+        supportGroup.setParent("support-ops");
         supportGroup.setDescription(mspInfo.getSpid() + " support group");
         groupDAO.put(supportGroup);
 
