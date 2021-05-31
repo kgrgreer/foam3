@@ -889,6 +889,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       createTradeRequest.setNote(((AFEXDigitalAccount)srcAccount).getId() + ", " + ((AFEXDigitalAccount)srcAccount).getDenomination());
     }
     createTradeRequest.setValueDate(quote.getValueDate().toString());
+    createTradeRequest.setPOPCode(((AFEXTransaction) transaction).getPOPCode());
 
     try {
       CreateTradeResponse tradeResponse = this.afexClient.createTrade(createTradeRequest, user.getSpid());

@@ -132,7 +132,7 @@ foam.CLASS({
         if ( requestTxn.getDestinationAmount() > 0 ) {
           String[] intermediaryCurrencies = new String[this.getDepth()];
           getIntermediateCurrencies(x,requestTxn, intermediaryCurrencies);
-        
+
           var dao = (DAO) x.get("localTransactionPlannerDAO");
           var accountDAO = (DAO) x.get("localAccountDAO");
 
@@ -143,7 +143,6 @@ foam.CLASS({
 
             // plan intermediary to dest currency (leg2)
             var t1 = (Transaction) requestTxn.fclone();
-            t1.clearLineItems();
             t1.setSourceCurrency(intermediaryAccount.getDenomination());
             t1.setSourceAccount(intermediaryAccount.getId());
             t1.setAmount(0);
