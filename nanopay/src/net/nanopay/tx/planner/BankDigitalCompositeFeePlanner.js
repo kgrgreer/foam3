@@ -65,6 +65,9 @@ foam.CLASS({
             leg2.setDestinationAmount(itli.getAmount());
             leg2.setSourceCurrency(requestTxn.getSourceCurrency());
             leg2.setDestinationCurrency(requestTxn.getDestinationCurrency());
+            leg2.setExternalId(requestTxn.getExternalId());
+            leg2.setExternalInvoiceId(requestTxn.getExternalInvoiceId());
+            leg2.setExternalData(requestTxn.getExternalData());
             leg2 = this.quoteTxn(x, leg2, null, true);
             leg2 = this.removeSummaryTransaction(leg2);
             feeTransactions.add(leg2);
@@ -77,6 +80,9 @@ foam.CLASS({
         cashin.setAmount(requestTxn.getAmount());
         cashin.setSourceCurrency(requestTxn.getSourceCurrency());
         cashin.setDestinationCurrency(requestTxn.getDestinationCurrency());
+        cashin.setExternalId(requestTxn.getExternalId());
+        cashin.setExternalInvoiceId(requestTxn.getExternalInvoiceId());
+        cashin.setExternalData(requestTxn.getExternalData());
         cashin = this.quoteTxn(x, cashin, null, true);
         cashin = this.removeSummaryTransaction(cashin);
 
