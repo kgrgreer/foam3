@@ -82,6 +82,7 @@ foam.CLASS({
     {
       name: 'message_',
       class: 'String',
+      value: '',
       externalTransient: true,
       storageTransient: true,
       visibility: 'RO'
@@ -113,7 +114,7 @@ foam.CLASS({
       name: 'getMessage',
       type: 'String',
       code: function() {
-        return getTranslation();
+        return this.getTranslation();
       },
       javaCode: `
       String msg = getTranslation();
@@ -131,7 +132,7 @@ foam.CLASS({
       name: 'getTranslation',
       type: 'String',
       code: function() {
-        return this.translationService.getTranslation(foam.locale, getOwnClassInfo().getId(), this.exceptionMessage);
+        return this.translationService.getTranslation(foam.locale, this.cls_.id, this.exceptionMessage);
       },
       javaCode: `
       try {
@@ -159,7 +160,11 @@ foam.CLASS({
       for ( PropertyInfo prop : props ) {
         if ( ! "msg".equals(prop.getName()) &&
              prop.isSet(this) ) {
-          map.put(prop.getName(), String.valueOf(prop.get(this)));
+          Object value = prop.get(this);
+          if ( value != null ) {
+            map.put(prop.getName(), String.valueOf(value));
+System.out.println(this.getClass().getName()+","+prop.getName()+","+String.valueOf(value));
+          }
         }
       }
       return map;

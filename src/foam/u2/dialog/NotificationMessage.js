@@ -31,6 +31,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'translationService',
     'theme'
   ],
 
@@ -118,6 +119,7 @@ foam.CLASS({
       class: 'String',
       name: 'type'
     },
+    'err',
     'message',
     'description',
     'icon'
@@ -128,6 +130,21 @@ foam.CLASS({
     function initE() {
       var self = this;
       var indicator;
+      if ( this.err ) {
+        if ( this.err.id ) {
+          this.message = this.err.id.split('.').pop();
+          if ( this.message.endsWith('Exception') ) {
+            this.message = this.message.replace('Exception', '');
+          }
+          this.message = foam.String.labelize(this.message);
+          this.message = this.translationService.getTranslation(foam.locale, this.err.id+'.notification.message', this.message);
+        }
+        this.description = this.err.message;
+        if ( this.err && this.err.exception && this.err.exception.getMessage ) {
+          this.description = this.err.exception.getMessage();
+          this.description = this.translationService.getTranslation(foam.locale, this.err.id+'.notification.description', this.description);
+        }
+      }
       if ( ! this.icon ) {
         if ( this.type == this.LogLevel.ERROR ) {
           console.error('notification: ' + this.message);
