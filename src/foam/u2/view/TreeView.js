@@ -20,9 +20,9 @@ foam.CLASS({
   imports: [
     'dblclick?',
     'onObjDrop',
+    'returnExpandedCSS',
     'selection',
-    'startExpanded',
-    'returnExpandedCSS'
+    'startExpanded'
   ],
 
   css: `
