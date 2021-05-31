@@ -14,7 +14,7 @@ foam.CLASS({
   properties: [
     {
       name: 'exceptionMessage',
-      value: 'Account temporarily locked. You can attempt to login after {{message_}}'
+      value: 'You can attempt to login after {{message_}}'
     }
   ],
 

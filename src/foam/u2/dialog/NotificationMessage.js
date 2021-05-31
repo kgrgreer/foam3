@@ -131,19 +131,18 @@ foam.CLASS({
       var self = this;
       var indicator;
       if ( this.err ) {
+        // Create notification message and description from
+        // exception name and message.
         if ( this.err.id ) {
           this.message = this.err.id.split('.').pop();
           if ( this.message.endsWith('Exception') ) {
             this.message = this.message.replace('Exception', '');
           }
           this.message = foam.String.labelize(this.message);
-          this.message = this.translationService.getTranslation(foam.locale, this.err.id+'.notification.message', this.message);
+          this.message = this.translationService.getTranslation(foam.locale, this.err.id, this.message);
         }
-        this.description = this.err.message;
-        if ( this.err && this.err.exception && this.err.exception.getMessage ) {
-          this.description = this.err.exception.getMessage();
-          this.description = this.translationService.getTranslation(foam.locale, this.err.id+'.notification.description', this.description);
-        }
+        // TODO: see foam.box.Message - this should already be translated.
+        this.description = this.translationService.getTranslation(foam.locale, this.err.message, this.err.message);
       }
       if ( ! this.icon ) {
         if ( this.type == this.LogLevel.ERROR ) {

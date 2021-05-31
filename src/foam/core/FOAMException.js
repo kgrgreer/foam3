@@ -84,7 +84,8 @@ foam.CLASS({
       class: 'String',
       externalTransient: true,
       storageTransient: true,
-      visibility: 'RO'
+      visibility: 'RO',
+      javaGetter: 'return super.getMessage();'
     },
     {
       name: 'msg',
