@@ -1272,10 +1272,16 @@ foam.CLASS({
   properties: [
     [ 'nodeName', 'CANVAS' ],
     {
-      name: 'context'
+      name: 'context',
+      factory: function() {
+        return this.el_().getContext('2d');
+      }
     },
     {
-      name: 'context3D'
+      name: 'context3D',
+      factory: function() {
+        return this.el_().getContext('webgl');
+      }
     },
     {
       name: 'cview',
@@ -1299,12 +1305,6 @@ foam.CLASS({
   ],
 
   methods: [
-    async function init() {
-      let el = await this.el();
-      this.context = el.getContext('2d');
-      this.context3D = el.getContext('webgl');
-    },
-
     function initE() {
       this.SUPER();
       this.sub('onload', this.paint);
