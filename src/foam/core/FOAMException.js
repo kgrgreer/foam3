@@ -17,10 +17,12 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.PropertyInfo',
     'foam.core.XLocator',
     'foam.i18n.TranslationService',
     'foam.util.SafetyUtil',
     'java.util.HashMap',
+    'java.util.List',
     'java.util.Map'
   ],
   
@@ -75,14 +77,13 @@ foam.CLASS({
       class: 'String',
       value: '{{message_}}',
       externalTransient: true,
-      transient: true,
       visibility: 'RO'
     },
     {
       name: 'message_',
       class: 'String',
       externalTransient: true,
-      transient: true,
+      storageTransient: true,
       visibility: 'RO'
     },
     {
@@ -91,9 +92,8 @@ foam.CLASS({
       visibility: 'RO',
       storageTransient: true,
       clusterTransient: true,
-      javaGetter: `
-      return getMessage();
-      `
+      factory: 'function() { return getMessage(); }',
+      javaGetter: 'return getMessage();'
     },
     {
       name: 'errorCode',
@@ -155,16 +155,11 @@ foam.CLASS({
       type: 'Map',
       javaCode: `
       Map map = new HashMap();
-      var props = getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
-      var i     = props.iterator();
-      while ( i.hasNext() ) {
-        foam.core.PropertyInfo prop = i.next();
-        if ( ! prop.getNetworkTransient() &&
-             ! "msg".equals(prop.getName()) ) {
-          Object value = prop.get(this);
-          if ( value != null ) {
-            map.put(prop.getName(), String.valueOf(value));
-          }
+      List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
+      for ( PropertyInfo prop : props ) {
+        if ( ! "msg".equals(prop.getName()) &&
+             prop.isSet(this) ) {
+          map.put(prop.getName(), String.valueOf(prop.get(this)));
         }
       }
       return map;
