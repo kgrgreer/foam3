@@ -227,10 +227,8 @@ foam.CLASS({
       var currentLetter = '';
       var section;
 
-      if ( self.memento ) {
+      if ( self.memento )
         this.currentMemento_$ = self.memento.tail$;
-        // self.currentMemento_.replaceHistoryState = true;
-      }
 
       this.addClass(this.myClass()).
       start().

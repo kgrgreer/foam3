@@ -23,7 +23,6 @@ foam.CLASS({
     function initArgs(args, ctx) {
       this.SUPER(args, ctx);
 
-      // this.value$.sub(this.onValueChange);
       this.onPopState();
       this.window.onpopstate = this.onPopState;
     },
