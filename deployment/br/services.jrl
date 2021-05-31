@@ -115,7 +115,7 @@ p({
   "serve": true,
   "serviceScript": """
   return new foam.dao.EasyDAO.Builder(x)
-    .setOf(net.nanopay.country.br.AFEXPOPCode.getOwnClassInfo())
+    .setOf(net.nanopay.fx.afex.AFEXPOPCode.getOwnClassInfo())
     .setJournalName("afexPOPCodes")
     .setSeqNo(true)
     .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
