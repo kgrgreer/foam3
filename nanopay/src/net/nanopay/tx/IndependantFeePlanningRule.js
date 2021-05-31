@@ -90,15 +90,14 @@
             feeTxn.setPayerId(dest.getOwner());
             feeTxn.setPayeeId(dest.getOwner());
             feeTxn.setName("Fee Transaction for: "+root.getId());
+            feeTxn.setAssociateTransaction(root.getId());
+            feeTxn.setExternalId(root.getExternalId());
+            feeTxn.setExternalInvoiceId(root.getExternalInvoiceId());
 
             try {
               quote = (TransactionQuote) transactionPlannerDAO.put(quote);
               Transaction feeTxn2 = quote.getPlan();
               feeTxn2 = (Transaction) transactionDAO.put(quote.getPlan()).fclone();
-              feeTxn2.setAssociateTransaction(root.getId());
-              feeTxn2.setExternalId(root.getExternalId());
-              feeTxn2.setExternalInvoiceId(root.getExternalInvoiceId());
-              transactionDAO.put(feeTxn2);
             } catch ( RuntimeException error ) {
               // TODO: create a ticket for fee creation failure
             }
