@@ -20,6 +20,7 @@ foam.CLASS({
   imports: [
     'dblclick?',
     'onObjDrop',
+    'returnExpandedCSS',
     'selection',
     'startExpanded'
   ],
@@ -143,6 +144,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      this.SUPER();
       var self = this;
       var controlledSearchSlot = foam.core.SimpleSlot.create();
 
@@ -248,14 +250,15 @@ foam.CLASS({
               label: mainLabel, 
               size: 'SMALL',
               themeIcon: self.level === 1 ? self.data.themeIcon : '',
+              icon: self.level === 1 ? self.data.icon : ''
             }).
             addClass(this.myClass('button')).
             style({
               'fill': this.slot(function(selected, id) {
                         if ( selected && foam.util.equals(selected.id, id) ) {
-                          return '/*%PRIMARY3%*/ #604aff';
+                          return self.returnExpandedCSS('/*%PRIMARY3%*/ #604aff');
                         }
-                        return '/*%GREY2%*/ #9ba1a6';
+                        return self.returnExpandedCSS('/*%GREY2%*/ #9ba1a6');
                       }, this.selection$, this.data$.dot('id'))
             }).
           endContext().

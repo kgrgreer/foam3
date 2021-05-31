@@ -17,12 +17,10 @@ foam.CLASS({
         cls.extras.push(`
           public DigErrorMessage(String message) {
             super(message);
-            setMessage(message);
           }
 
           public DigErrorMessage(String message, Throwable cause) {
             super(message, cause);
-            setMessage(message);
             if ( cause instanceof foam.core.Exception ) {
               setInner((foam.core.Exception) cause);
             }
@@ -39,16 +37,16 @@ foam.CLASS({
       name: 'status'
     },
     {
-      class: 'Int',
-      name: 'code'
-    },
-    {
       class: 'String',
-      name: 'message'
-    },
-    {
-     class: 'String',
-     name: 'type'
+      name: 'type',
+      javaFactory: `
+      String name = this.getClass().getSimpleName();
+      int i = name.indexOf("Exception");
+      if ( i > 0 ) {
+        name = name.substring(0, i);
+      }
+      return name;
+      `
     },
     {
       class: 'String',
@@ -65,7 +63,7 @@ foam.CLASS({
     }
   ],
 
-  methods:  [
+  methods: [
     {
         name: 'getClientRethrowException',
         type: 'RuntimeException',

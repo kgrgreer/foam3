@@ -3,10 +3,9 @@
  * Copyright 2020 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 foam.CLASS({
   package: 'foam.nanos.crunch.predicate',
-  name: 'CapabilityGranted',
+  name: 'CapabilityIsStatus',
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
 
@@ -28,9 +27,18 @@ foam.CLASS({
       class: 'Boolean',
       value: true,
       documentation: `
-        When this property is true, CapabilityGranted expects a UCJ object in
+        When this property is true, CapabilityIsStatus expects a UCJ object in
         the context which it will use to determine the corresponding subject.
         Otherwise, the context is assumed to contain the appropriate subject.
+      `
+    },
+    {
+      name: 'status',
+      class: 'Enum',
+      of: 'foam.nanos.crunch.CapabilityJunctionStatus',
+      documentation: `Check status of the capabilities user capability junction status.`,
+      javaFactory: `
+        return foam.nanos.crunch.CapabilityJunctionStatus.GRANTED;
       `
     }
   ],
@@ -59,8 +67,8 @@ foam.CLASS({
 
         var ucj = crunchService.getJunction(x, getCapabilityId());
         if ( ucj == null ) return false;
-        return ucj.getStatus() == GRANTED;
+        return ucj.getStatus() == getStatus();
       `
     }
-  ],
+  ]
 });

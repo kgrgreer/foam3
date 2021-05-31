@@ -15,7 +15,6 @@ foam.CLASS({
         cls.extras.push(`
           public DigSuccessMessage(String message) {
             super(message);
-            setMessage(message);
           } 
         `
         );
@@ -30,18 +29,9 @@ foam.CLASS({
       value: '200'
     },
     {
-      class: 'Int',
-      name: 'code',
-      value: 1006
-    },
-    {
       class: 'String',
-      name: 'message'
-    },
-    {
-      class: 'String',
-      name: 'type',
-      value: 'Success'
+      name: 'errorCode',
+      value: '1006'
     }
   ]
 });

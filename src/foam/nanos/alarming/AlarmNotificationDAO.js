@@ -28,7 +28,7 @@ foam.CLASS({
       name: 'group',
       class: 'Reference',
       of: 'foam.nanos.auth.Group',
-      value: 'support'
+      value: 'support-ops'
     }
   ],
 

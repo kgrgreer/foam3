@@ -15,7 +15,6 @@ foam.CLASS({
         cls.extras.push(`
           public EmptyParameterException(String message) {
             super(message);
-            setMessage(message);
           } 
         `
         );
@@ -30,19 +29,9 @@ foam.CLASS({
       value: '400'
     },
     {
-      class: 'Int',
-      name: 'code',
-      value: 1007
-    },
-    {
       class: 'String',
-      name: 'type',
-      value: 'Empty Parameter'
-    },
-    {
-      class: 'String',
-      name: 'message',
-      value: 'Empty Parameter Exception'
+      name: 'errorCode',
+      value: '1007'
     }
   ]
 });
