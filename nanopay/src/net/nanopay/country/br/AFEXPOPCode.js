@@ -29,7 +29,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'afexCode'
+      name: 'afexCode',
+      documentation: 'AFEX Purpose of Payment code as defined in AFEX API doc: https://doc.api.afex.com/?version=latest#28166472-e705-4f51-b6e6-1c6d64100eb1'
     },
     {
       class: 'String',
