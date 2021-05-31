@@ -358,7 +358,7 @@ foam.CLASS({
       this.state = this.LOADED;
       if ( this.tabIndex ) this.setAttribute('tabindex', this.tabIndex);
       // Add a delay before setting the focus in case the DOM isn't visible yet.
-      if ( this.focused ) window.setTimeout(() => { try { this.el_().focus() } catch(x) {} }, 70);
+      if ( this.focused ) window.setTimeout(() => { try { this.el_().focus(); } catch(x) {} }, 70);
       // Allows you to take the DOM element and map it back to a
       // foam.u2.Element object.  This is expensive when building
       // lots of DOM since it adds an extra DOM call per Element.
@@ -526,6 +526,10 @@ foam.CLASS({
   documentation: 'State of an unloaded Element.',
 
   methods: [
+    function el() {
+      // A NOOP Promise that will never resolve
+      return { then: function() {}, catch: function() {} };
+    },
     function output(out) {
       this.__context__.warn('Outputting unloaded element can cause event/binding bugs.', this.cls_.id);
       this.state = this.OUTPUT;
