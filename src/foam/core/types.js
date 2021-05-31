@@ -895,7 +895,7 @@ foam.CLASS({
       name: 'enableLink',
       documentation: `
         Create the reference view as an anchor link to the reference\'s DetailView or provided menu.
-        Check ReadReferenceView documentation for more info.
+        Check ReadRefernceView documentation for more info.
       `,
       value: true
     },
@@ -904,15 +904,17 @@ foam.CLASS({
       name: 'controlAccessToDAOSummary',
       documentation: `
         When set to true, DAO summary can be only viewed if group has permission to read it.
-        Check ReadReferenceView documentation for more info.
+        Check ReadRefernceView documentation for more info.
       `
     },
     {
       class: 'StringArray',
       name: 'menuKeys',
       documentation: `
-        A list of menu ids that is used to permission access the ref link when provided.
-        Check ReadReferenceView documentation for more info.
+        A list of menu ids, and the link will reference to the first menu
+        to which group has permission in this list. If no menus are permissioned,
+        the link will be disabled.
+        Check ReadRefernceView documentation for more info.
       `
     },
     {
