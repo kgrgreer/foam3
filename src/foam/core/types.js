@@ -911,9 +911,9 @@ foam.CLASS({
       class: 'StringArray',
       name: 'menuKeys',
       documentation: `
-        A list of menu ids, and the link will reference to the first menu
-        to which group has permission in this list. If no menus are permissioned,
-        the link will be disabled.
+        A list of menu ids.
+        The link will reference to the first menu to which group has permission
+        in this list. If no menus are permissioned, the link will be disabled.
         Check ReadReferenceView documentation for more info.
       `
     },
