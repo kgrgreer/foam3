@@ -175,24 +175,18 @@ foam.CLASS({
             this.enableLink = true;
             this.linkTo = this.menuKeys[firstAt];
           } else {
-            // access to dao summary?
-            if (
-              ! this.controlAccessToDAOSummary ||
-              await this.auth.check(this.__subContext__, 'daoSummary.read')
-            ) {
-              this.enableLink = true;
-              this.linkTo = 'daoSummary';
-            } else {
-              this.enableLink = false;
-              this.linkTo = '';
-            }
+            this.enableLink = false;
+            this.linkTo = '';
           }
         // menus not provided
         } else {
           // access to dao summary?
-          if ( ! this.controlAccessToDAOSummary || await this.auth.check(this.__subContext__, 'daoSummary.read')) {
-              this.enableLink = true;
-              this.linkTo = 'daoSummary';
+          if ( 
+            ! this.controlAccessToDAOSummary ||
+            await this.auth.check(this.__subContext__, `${this.prop.targetDAOkey}Summary.read`)
+          ) {
+            this.enableLink = true;
+            this.linkTo = 'daoSummary';
           } else {
             this.enableLink = false;
             this.linkTo = '';
@@ -201,7 +195,7 @@ foam.CLASS({
       } catch (e) {
         console.error(e);
         this.enableLink = true;
-        this.controlAccessToDAOSummary = true;
+        this.controlAccessToDAOSummary = false;
         this.linkTo = 'daoSummary';
       }
     },
