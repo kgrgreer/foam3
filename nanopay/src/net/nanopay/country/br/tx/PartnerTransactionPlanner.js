@@ -25,6 +25,9 @@ foam.CLASS({
   javaImports: [
     'foam.core.ValidationException',
     'foam.dao.DAO',
+    'foam.log.LogLevel',
+    'foam.nanos.alarming.Alarm',
+    'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.util.Calendar',
     'java.util.Date',
@@ -111,7 +114,17 @@ foam.CLASS({
           EQ(AFEXPOPCode.PARTNER_CODE, natureCode.getOperationType()),
           EQ(AFEXPOPCode.COUNTRY_CODE, "BR")
         ));
-        if ( popCode == null ) throw new ValidationException("natureCode doesn't match any partner reason code");
+        if ( popCode == null ) {
+          Logger logger = (Logger) x.get("logger");
+          logger.error("No mapping found for natureCode: " + natureCode.getOperationType());
+          Alarm alarm = new Alarm();
+          alarm.setClusterable(false);
+          alarm.setSeverity(LogLevel.ERROR);
+          alarm.setName("Failed to map natureCode/POP");
+          alarm.setNote("No AFE POP for nature code: " + natureCode.getOperationType());
+          alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+          throw new ValidationException("natureCode doesn't match any partner reason code");
+        }
 
         return true;
       `
