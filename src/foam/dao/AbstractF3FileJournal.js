@@ -131,7 +131,8 @@ foam.CLASS({
           logger = new StdoutLogger();
         }
         return new PrefixLogger(new Object[] { "[JDAO]", getFilename() }, logger);
-      `
+      `,
+      javaCloneProperty: '//noop'
     },
     {
       class: 'String',
@@ -220,7 +221,7 @@ try {
           public void executeJob() {
             try {
               if ( old != null ) {
-                fmt.maybeOutputDelta(old, obj, of);
+                fmt.maybeOutputDelta(old, obj, null, of);
               } else {
                 fmt.output(obj, of);
               }

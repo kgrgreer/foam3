@@ -55,6 +55,8 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.logger.Logger',
       visibility: 'HIDDEN',
+      transient: true,
+      javaCloneProperty: '//noop',
       javaFactory: `
         return new PrefixLogger(new Object[] {
           this.getClass().getSimpleName()
@@ -83,7 +85,7 @@ foam.CLASS({
         CountDownLatch latch = (CountDownLatch) getLatches().get(id);
         if ( latch == null ) {
           latch = new CountDownLatch(1);
-          getLogger().debug("latch", id);
+          // getLogger().debug("latch", id);
           getLatches().put(id, latch);
         }
         return latch;
@@ -136,7 +138,7 @@ foam.CLASS({
             .limit(1)
             .select(new ArraySink())).getArray();
           if ( list.size() > 0 ) {
-            getLogger().debug("promoted", id);
+            // getLogger().debug("promoted", id);
             return list.get(0);
           }
           latch = latch(x, id);
@@ -179,9 +181,9 @@ foam.CLASS({
       }
       if ( latch == null ) {
         ReplayingInfo info = (ReplayingInfo) x.get("replayingInfo");
-        if ( ! info.getReplaying() ) {
-          getLogger().debug("notify", id, "Latch not found", entry.toSummary());
-        }
+        // if ( ! info.getReplaying() ) {
+        //   getLogger().debug("notify", id, "Latch not found", entry.toSummary());
+        // }
         return;
       }
       MedusaEntry e = (MedusaEntry) getEntries().get(id);

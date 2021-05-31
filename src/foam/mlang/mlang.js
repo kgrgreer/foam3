@@ -1314,13 +1314,13 @@ foam.CLASS({
       name: 'f',
       code: function f(o) {
         var arg1 = this.arg1.f(o);
-        var arg2 = this.arg2.f(o).toUpperCase();
+        var arg2 = this.arg2.f(o).toString().toUpperCase();
         if ( Array.isArray(arg1) ) {
           return arg1.some(function(a) {
-            return a.toUpperCase().indexOf(arg2) !== -1;
+            return a.toString().toUpperCase().indexOf(arg2) !== -1;
           })
         }
-        return arg1 ? arg1.toUpperCase().indexOf(arg2) !== -1 : false;
+        return arg1 ? arg1.toString().toUpperCase().indexOf(arg2) !== -1 : false;
       },
       javaCode:
 `Object s1 = getArg1().f(obj);
@@ -1631,7 +1631,7 @@ foam.CLASS({
             var set = {};
             for ( var i = 0 ; i < rhs.length ; i++ ) {
               var s = rhs[i];
-              if ( this.upperCase_ ) s = s.toUpperCase();
+              if ( this.upperCase_ ) s = s.toString().toUpperCase();
               set[s] = true;
             }
             this.valueSet_ = set;
@@ -1763,14 +1763,14 @@ foam.CLASS({
       var lhs = this.arg1.f(o);
       var rhs = this.arg2.f(o);
 
-      if ( lhs.toUpperCase ) lhs = lhs.toUpperCase();
+      if ( lhs.toUpperCase ) lhs = lhs.toString().toUpperCase();
 
       // If arg2 is a constant array, we use valueSet for it.
       if ( foam.mlang.Constant.isInstance(this.arg2) ) {
         if ( ! this.valueSet_ ) {
           var set = {};
           for ( var i = 0 ; i < rhs.length ; i++ ) {
-            set[rhs[i].toUpperCase()] = true;
+            set[rhs[i].toString().toUpperCase()] = true;
           }
           this.valueSet_ = set;
         }
@@ -1778,7 +1778,7 @@ foam.CLASS({
         return !! this.valueSet_[lhs];
       } else {
         if ( ! rhs ) return false;
-        return rhs.toUpperCase().indexOf(lhs) !== -1;
+        return rhs.toString().toUpperCase().indexOf(lhs) !== -1;
       }
     }
   ]
@@ -3586,6 +3586,10 @@ foam.CLASS({
       `
     },
 
+    function toString() {
+      return this.arg1 + '.' + this.arg2;
+    },
+
     function comparePropertyValues(o1, o2) {
       /**
          Compare property values using arg2's property value comparator.
@@ -4049,6 +4053,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.mlang.predicate',

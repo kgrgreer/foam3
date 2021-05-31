@@ -11,25 +11,24 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
+  properties: [
+    {
+      name: 'exceptionMessage',
+      value: 'Access denied'
+    }
+  ],
+
   axioms: [
     {
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(`
   public AccessDeniedException() {
-    super("Access denied");
-  }
-
-  public AccessDeniedException(String message) {
-    super(message);
+    super();
   }
 
   public AccessDeniedException(Throwable cause) {
-    super("Access denied", cause);
-  }
-
-  public AccessDeniedException(String message, Throwable cause) {
-    super(message, cause);
+    super(cause);
   }
         `);
       }
