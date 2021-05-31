@@ -260,8 +260,8 @@ foam.CLASS({
       name: 'setScrollPos',
       isFramed: true,
       code: async function() {
-        let currI      = 0;
-        var el         = await this.parentNode.el();
+        let currI = 0;
+        var el    = await this.parentNode.el();
         for ( let w = 0 ; w < this.data.wizardlets.length ; w++ ) {
           let wizardlet = this.data.wizardlets[w];
           if ( wizardlet === this.data.currentWizardlet ) {
