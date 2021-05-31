@@ -177,7 +177,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
   // select all ccjs from pcjdao and put them into map of <src, [tgt]> pairs
   // then the map is stored in the session context under CACHE_KEY
   public Map initCache(X x) {
-    Session session = x.get(Session.class);
+    
     Sink purgeSink = new Sink() {
       public void put(Object obj, Detachable sub) {
         updateEntry(x, (CapabilityCapabilityJunction) obj);
@@ -208,7 +208,10 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       map.put(key.toString(), ((ArraySink) ((foam.mlang.sink.Map)
         sink.getGroups().get(key)).getDelegate()).getArray());
     }
-    session.setContext(session.getContext().put(CACHE_KEY, map));
+    Session session = x.get(Session.class);
+    if ( session != null ) {
+      session.setContext(session.getContext().put(CACHE_KEY, map));
+    }
     return map;
   }
 
@@ -255,7 +258,6 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
   // otherwise, return the result of directly looking up prerequisitecapabilityjunctiondao since
   // the cache is not valid
   protected Map<String, List<String>> getPrereqsCache(X x) {
-    Session session = x.get(Session.class);
     User user = ((Subject) x.get("subject")).getUser();
     if ( user == null ) {
       return initCache(x);
@@ -263,6 +265,9 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
     Long userId = user.getId();
     Long agentId = ((Subject) x.get("subject")).getRealUser().getId();
 
+    Session session = x.get(Session.class);
+    if ( session == null ) return null;
+    
     boolean cacheValid = session.getAgentId() > 0 ?
       session.getAgentId() == agentId && session.getUserId() == userId :
       session.getUserId() == agentId && session.getUserId() == userId;
