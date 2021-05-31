@@ -34,7 +34,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'partnerCode'
+      name: 'partnerCode',
+      documentation: 'Purpose of Payment code being used by partner eg. bepay uses nature codes for Brazil and kotak uses purpose codes for India'
     },
     {
       class: 'String',
