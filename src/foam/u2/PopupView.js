@@ -46,7 +46,7 @@ foam.CLASS({
 
   methods: [
     async function initE() {
-      var parent = this.parentNode;
+      var parent  = this.parentNode;
       var parentE = await parent.el();
 
       if ( ! this.padding ) this.padding = 20;

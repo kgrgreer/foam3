@@ -95,7 +95,6 @@ foam.CLASS({
         console.error('Target not found');
         return;
       }
-
       var el = await this.target.el();
       if ( ! el ) {
         console.error('Target not found');
