@@ -253,20 +253,21 @@ foam.CLASS({
     {
       name: 'setScrollPos',
       isFramed: true,
-      code: function() {
-        if ( this.state == this.UNLOADED ) return;
-        if ( this.state != this.LOADED ) { this.setScrollPos(); return; }
-        let currI = 0;
+      code: async function() {
+        let currI      = 0;
+        var el         = await this.parentNode.el();
         for ( let w = 0 ; w < this.data.wizardlets.length ; w++ ) {
           let wizardlet = this.data.wizardlets[w];
-          if (wizardlet === this.data.currentWizardlet){
+          if ( wizardlet === this.data.currentWizardlet ) {
             currI = Math.max(w - 1, 0);
           }
         }
 
-        var padding = this.childNodes[0].childNodes[0].el().offsetTop;
-        var scrollTop = this.childNodes[0].childNodes[currI].el().offsetTop;
-        this.parentNode.el().scrollTop = scrollTop - padding;
+        var firstChild = await this.childNodes[0].childNodes[0].el();
+        var currChild  = await this.childNodes[0].childNodes[currI].el();
+        var padding    = firstChild.offsetTop;
+        var scrollTop  = currChild.offsetTop;
+        el.scrollTop   = scrollTop - padding;
       }
     }
   ]

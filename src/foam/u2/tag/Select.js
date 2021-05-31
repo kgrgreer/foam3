@@ -101,9 +101,7 @@ foam.CLASS({
 
           if ( value.indexOf('  ') !== -1 ) {
             // Hack to display spaces as nbsp's
-            e.onload.sub(function() {
-              e.el().innerHTML = value.replace(/ /g, '&nbsp;');
-            });
+            e.el().then(el => el.innerHTML = value.replace(/ /g, '&nbsp;'));
           }
 
           cs.push(e);

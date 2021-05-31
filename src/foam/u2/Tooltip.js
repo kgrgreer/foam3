@@ -45,7 +45,7 @@ foam.CLASS({
 
     function setTooltip(evt) {
       this.tooltipStore = this.TooltipView.create({ data: this.text });
-      var domRect       = this.target.el().getBoundingClientRect();
+      var domRect       = this.target.el().then(el => el.getBoundingClientRect());
       this.screenWidth  = this.window.innerWidth;
       var screenHeight  = this.window.innerHeight;
       var scrollY       = this.window.scrollY;
@@ -90,8 +90,14 @@ foam.CLASS({
       clearTimeout(this.timer);
     },
 
-    function loadTooltip(evt) {
-      if ( ! this.target || ! this.target.el() ) {
+    async function loadTooltip(evt) {
+      if ( ! this.target ) {
+        console.error('Target not found');
+        return;
+      }
+
+      var el = await this.target.el();
+      if ( ! el ) {
         console.error('Target not found');
         return;
       }

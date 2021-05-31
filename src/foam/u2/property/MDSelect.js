@@ -33,7 +33,7 @@ foam.CLASS({
     {
       name: 'onClick',
       isFramed: true,
-      code: function() {
+      code: async function() {
         if ( this.mode === foam.u2.DisplayMode.RO ) return;
         if ( this.popup && ! this.popup.isHidden ) {
           this.popup.close();
@@ -47,7 +47,8 @@ foam.CLASS({
             choices$: this.choices$,
             index$: this.index$
           });
-          this.popup.open(this.index, this.el());
+          var el = await this.el();
+          this.popup.open(this.index, el);
         }
       }
     }

@@ -58,8 +58,9 @@ foam.CLASS({
   listeners: [
     {
       name: 'onMouseMove',
-      code: function(evt) {
-        var pos = this.el().getBoundingClientRect();
+      code: async function(evt) {
+        var el = await this.el();
+        var pos = el.getBoundingClientRect();
         var margin = 50;
         if (evt.clientX < pos.left - margin || pos.right + margin < evt.clientX ||
             evt.clientY < pos.top - margin || pos.bottom + margin < evt.clientY) {
@@ -69,8 +70,9 @@ foam.CLASS({
     },
     {
       name: 'onTouch',
-      code: function(evt) {
-        if (!this.el().contains(evt.target)) {
+      code: async function(evt) {
+        var el = await this.el();
+        if (!el.contains(evt.target)) {
           this.popup.close();
         }
       }

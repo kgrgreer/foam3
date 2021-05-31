@@ -152,8 +152,9 @@ foam.CLASS({
       this.close();
     },
 
-    function onMouseLeave(e) {
-      console.assert(e.target === this.dropdownE_.el(),
+    async function onMouseLeave(e) {
+      var el = await this.dropdownE_.el();
+      console.assert(e.target === el,
           'mouseleave should only fire on this, not on children');
       this.close();
     },

@@ -104,7 +104,7 @@ foam.CLASS({
     },
     {
       name: 'scrollWizardPosition',
-      expression: function (scrollPosition, wizardPositionElements) {
+      expression: async function (scrollPosition, wizardPositionElements) {
         var offset = 50;
 
         var test_visible = el => {
@@ -123,7 +123,7 @@ foam.CLASS({
         var minTopPosition = null;
         // Find the closest visible section to the top
         for ( let hash in wizardPositionElements ) {
-          let el = wizardPositionElements[hash].section.el();
+          let el = await wizardPositionElements[hash].section.el();
           let pos = wizardPositionElements[hash].position;
           if ( ! el ) {
             console.error('missing element', wizardPositionElements[hash]);
@@ -199,20 +199,16 @@ foam.CLASS({
           .start(this.GUnit, { columns: 8 })
             .addClass(this.myClass('rightside'))
             .call(function () {
-              self.onDetach(this.state$.sub(() => {
-                if ( this.state.cls_ == foam.u2.LoadedElementState ) {
-                  self.scrollOffsetElement = this.el();
-                }
-              }));
+              self.onDetach(async function() {
+                  self.scrollOffsetElement = await self.el();
+              });
             })
             .start()
               .call(function () {
-                self.onDetach(this.state$.sub(() => {
-                  if ( this.state.cls_ == foam.u2.LoadedElementState ) {
-                    self.mainScrollElement = this.el();
+                self.onDetach(async function() {
+                    self.mainScrollElement = await self.el();
                     self.scrollWizardPosition$.get();
-                  }
-                }));
+                });
               })
               .on('scroll', function (e) {
                 self.scrollPosition = e.srcElement.scrollTop;

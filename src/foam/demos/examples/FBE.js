@@ -169,8 +169,8 @@ foam.CLASS({
           var self = this;
           this.dom.removeAllChildren();
           var scope = {
-            el: function() {
-              return self.dom.el();
+            el: async function() {
+              return await self.dom.el();
             },
             E: function(opt_nodeName) {
               return self.Element.create({nodeName: opt_nodeName});

@@ -258,9 +258,10 @@ foam.CLASS({
           .end()
         .end();
         var ele;
-        function checkCardsOverflow(evt) {
-          if ( ! ele.el() ) return;
-          self.cardsOverflow = ele.el().scrollWidth > ele.el().clientWidth;
+        async function checkCardsOverflow(evt) {
+          var el = await ele.el();
+          if ( ! el ) return;
+          self.cardsOverflow = el.scrollWidth > el.clientWidth;
         }
         spot.add(self.slot(
           function(carouselCounter, totalNumCards) {

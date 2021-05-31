@@ -101,10 +101,11 @@ foam.CLASS({
         });
     },
 
-    function load() {
+    async function load() {
       this.SUPER();
       // compute and set the minWidth from the maxlength of the input
-      this.el().style['min-width'] = this.dynamicPlaceholder.length + 'em';
+      var el = await this.el();
+      el.style['min-width'] = this.dynamicPlaceholder.length + 'em';
     },
 
     function setStateOnDelete(evt) {
@@ -125,8 +126,9 @@ foam.CLASS({
       }
     },
 
-    function resetState() {
-      if ( this.el() && window.getComputedStyle(this.el(), ':after').content !== ( '"' + this.dynamicPlaceholder + '"' ) ) {
+    async function resetState() {
+      var el = await this.el();
+      if ( el && window.getComputedStyle(el, ':after').content !== ( '"' + this.dynamicPlaceholder + '"' ) ) {
         // workaround for Safari isssue where attr(data-placeholder) is not
         // being recalculated on data-placeholder changes
         this.removeClass(this.myClass('placeholder'));
@@ -143,15 +145,16 @@ foam.CLASS({
   listeners: [
     {
       name: 'formatData',
-      code: function () {
+      code: async function () {
         var data = this.formattedData.replace(/\D/g,'');
         if ( this.formatted || this.formattedData.trim() == '' ) {
           this.resetState();
           return;
         }
 
-        var startingPos = this.el() ? this.el().children[0].selectionStart : this.formattedData.length;
-        var endPos = this.el() ? this.el().children[0].selectionEnd : this.formattedData.length;
+        var el = await this.el();
+        var startingPos = el ? el.children[0].selectionStart : this.formattedData.length;
+        var endPos = el ? el.children[0].selectionEnd : this.formattedData.length;
 
         // keep track of number of digits before selection start and use is as a initial value for final position of the cursor
         var digitsBeforeSelectionStart = pos = this.formattedData.substring(0, startingPos).replace(/\D/g, '').length;
@@ -178,7 +181,7 @@ foam.CLASS({
           pos = this.isDelete ? startingPos : pos; // final cursor position is fixed on delete
           this.formattedData = temp;
 
-          this.el() && this.el().children[0].setSelectionRange(pos, pos);
+          el && el.children[0].setSelectionRange(pos, pos);
         }
         this.resetState();
       }
