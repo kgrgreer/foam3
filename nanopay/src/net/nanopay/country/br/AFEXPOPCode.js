@@ -17,7 +17,7 @@
 
 
 foam.CLASS({
-  package: 'net.nanopay.country.br',
+  package: 'net.nanopay.fx.afex',
   name: 'AFEXPOPCode',
   documentation: 'Mapping AFEX Purpose Of Payment codes to brazilian Nature codes',
 
