@@ -34,7 +34,7 @@ foam.CLASS({
     'net.nanopay.country.br.tx.PartnerLineItem',
     'net.nanopay.country.br.tx.BRPartnerTransaction',
     'net.nanopay.country.br.NatureCode',
-    'net.nanopay.country.br.AFEXPOPCode',
+    'net.nanopay.fx.afex.AFEXPOPCode',
     'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.InfoLineItem',
@@ -108,7 +108,7 @@ foam.CLASS({
         if ( natureCode == null ) throw new ValidationException("natureCode doesn't exist");
 
         var popCode = ((DAO) x.get("afexPOPCodesDAO")).find(AND(
-          EQ(AFEXPOPCode.PARTNER_CODE, natureCode),
+          EQ(AFEXPOPCode.PARTNER_CODE, natureCode.getOperationType()),
           EQ(AFEXPOPCode.COUNTRY_CODE, "BR")
         ));
         if ( popCode == null ) throw new ValidationException("natureCode doesn't match any AFEX POP Code");

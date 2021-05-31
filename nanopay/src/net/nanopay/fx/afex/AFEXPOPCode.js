@@ -38,7 +38,8 @@ foam.CLASS({
       documentation: 'Purpose of Payment code being used by partner eg. bepay uses nature codes for Brazil and kotak uses purpose codes for India'
     },
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
       name: 'countryCode',
       documentation: 'Country code for the partnerCode, eg. "BR" for Brazilian nature code.'
     }

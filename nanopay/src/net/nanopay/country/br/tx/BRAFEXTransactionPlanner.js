@@ -24,7 +24,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'net.nanopay.country.br.AFEXPOPCode',
+    'net.nanopay.fx.afex.AFEXPOPCode',
     'net.nanopay.fx.FXQuote',
     'net.nanopay.fx.afex.AFEXTransaction',
     'net.nanopay.tx.TransactionLineItem',

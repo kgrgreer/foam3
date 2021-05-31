@@ -1935,7 +1935,7 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/exchange/ExchangeCustomer' },
   { name: 'net/nanopay/country/br/exchange/ExchangeClientValues' },
   { name: 'net/nanopay/country/br/exchange/Moeda' },
-  { name: 'net/nanopay/country/br/AFEXPOPCode' },
+  { name: 'net/nanopay/fx/afex/AFEXPOPCode' },
   { name: 'net/nanopay/country/br/NatureCode' },
   { name: 'net/nanopay/country/br/NatureCodeData' },
   { name: 'net/nanopay/country/br/NatureCodeRate' },

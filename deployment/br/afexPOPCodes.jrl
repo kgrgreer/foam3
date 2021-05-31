@@ -1,4 +1,4 @@
 p({class:"net.nanopay.fx.afex.AFEXPOPCode",id:1,afexCode:"ALLW",partnerCode:"37004", countryCode:"BR"})
-p({class:"net.nanopay.country.br.AFEXPOPCode",id:3,afexCode:"ALLW",partnerCode:"37011", countryCode:"BR"})
-p({class:"net.nanopay.country.br.AFEXPOPCode",id:4,afexCode:"STDY",partnerCode:"47702", countryCode:"BR"})
-p({class:"net.nanopay.country.br.AFEXPOPCode",id:2,afexCode:"/POP/CCDNDR",partnerCode:"67500", countryCode:"BR"})
+p({class:"net.nanopay.fx.afex.AFEXPOPCode",id:3,afexCode:"ALLW",partnerCode:"37011", countryCode:"BR"})
+p({class:"net.nanopay.fx.afex.AFEXPOPCode",id:4,afexCode:"STDY",partnerCode:"47702", countryCode:"BR"})
+p({class:"net.nanopay.fx.afex.AFEXPOPCode",id:2,afexCode:"/POP/CCDNDR",partnerCode:"67500", countryCode:"BR"})

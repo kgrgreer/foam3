@@ -1287,7 +1287,7 @@ var classes = [
   'net.nanopay.country.br.tx.fee.PTaxRate',
 
   // Treviso
-  'net.nanopay.country.br.AFEXPOPCode',
+  'net.nanopay.fx.afex.AFEXPOPCode',
   'net.nanopay.country.br.CNPJCache',
   'net.nanopay.country.br.CPFCache',
   'net.nanopay.country.br.ExpiredValidationDAO',
