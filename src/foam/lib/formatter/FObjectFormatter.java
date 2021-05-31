@@ -34,6 +34,8 @@ public interface FObjectFormatter
 
   public boolean maybeOutputDelta(FObject oldFObject, FObject newFObject);
 
+  public boolean maybeOutputDelta(FObject oldFObject, FObject newFObject, PropertyInfo parentProp, ClassInfo defaultClass);
+
   public void output(String val);
 
   public void output(short val);
@@ -50,9 +52,7 @@ public interface FObjectFormatter
 
   public void output(String[] arr);
 
-  public void output(FObject[] arr, ClassInfo defaultClass);
-
-  public void output(FObject[] arr);
+  public void output(FObject[] arr, ClassInfo defaultClass, PropertyInfo parentProp);
 
   public void output(Object[] arr);
 
@@ -70,7 +70,10 @@ public interface FObjectFormatter
 
   public void output(FObject val, ClassInfo defaultClass);
 
+  public void output(FObject val, ClassInfo defaultClass, PropertyInfo parentInfo);
+
   public void output(Date val);
+
   public void outputReadableDate(Date val);
 
   public void output(ClassInfo val);
