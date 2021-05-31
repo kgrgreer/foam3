@@ -67,10 +67,8 @@ foam.CLASS({
                           /                                      \
                    have a menu with                             can read   
                    read permission ?                          DAO summary ?
-                      /        \                     (controlAccessToDAOSummary is false or 
-                     /          \                     have a permission to read DAO summary)
-                  y /            \   n                           /     \       n
-                   /              - - -                       y /        - - - - -
+                    /            \   n                           /     \       n
+                 y /              - - -                       y /        - - - - -
                   /                     \                      /                   \
               enable link          disable link          enable link          disable link
             link to this menu                        link to dao summary
