@@ -99,13 +99,13 @@ foam.CLASS({
         this.currentMemento_$ = this.memento.tail$;
 
         if ( ! this.memento.tail ) {
-          this.memento.tail = foam.nanos.controller.Memento.create();
+          this.memento.tail = foam.nanos.controller.Memento.create({ replaceHistoryState : true });
         }
       }
 
       if ( this.currentMemento_ ) {
         if ( ! this.currentMemento_.tail ) {
-          this.currentMemento_.tail = foam.nanos.controller.Memento.create();
+          this.currentMemento_.tail = foam.nanos.controller.Memento.create({ replaceHistoryState : true });
         }
       }
 
