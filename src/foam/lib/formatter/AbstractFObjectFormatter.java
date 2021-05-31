@@ -62,7 +62,11 @@ public abstract class AbstractFObjectFormatter
     return b_.toString();
   }
 
-  protected synchronized List getProperties(ClassInfo info) {
+  public boolean maybeOutputDelta(FObject oldFObject, FObject newFObject) {
+    return maybeOutputDelta(oldFObject, newFObject, null, null);
+  }
+
+  protected synchronized List getProperties(PropertyInfo parentProp, ClassInfo info) {
     String of = info.getObjClass().getName();
 
     if ( propertyMap_.containsKey(of) && propertyMap_.get(of).isEmpty() ) {

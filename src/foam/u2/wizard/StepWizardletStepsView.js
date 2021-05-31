@@ -112,6 +112,10 @@ foam.CLASS({
       width: 24px;
       height: 24px;
     }
+
+    ^hide {
+      opacity: 0.3;
+    }
   `,
 
   imports: [
@@ -159,10 +163,12 @@ foam.CLASS({
             elem = elem
               .start()
                 .addClass(self.myClass('item'))
+                .addClass(wizardlet.isHidden$.map(v => v && self.myClass('hide')))
                 .add(this.ExpressionSlot.create({
                   args: [wizardlet.indicator$],
                   code: () => {
-                    return self.E().addClass(self.myClass('step-number-and-title'))
+                    return self.E()
+                      .addClass(self.myClass('step-number-and-title'))
 
                       // Render circle indicator
                       .start(this.CircleIndicator, this.configureIndicator(

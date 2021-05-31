@@ -21,6 +21,7 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   imports: [
+    'currentMenu',
     'theme'
   ],
 
@@ -85,8 +86,8 @@ foam.CLASS({
   listeners: [
     function goToDefault() {
       if ( this.group ) {
-        window.location.hash = this.group.defaultMenu;
+        this.currentMenu = this.group.defaultMenu;
       }
-    },
+    }
   ]
 });
