@@ -215,7 +215,6 @@
           }
         }
         this.currentMemento_ = this.memento.tail;
-        this.currentMemento_.replaceHistoryState = true;
       }
 
 
