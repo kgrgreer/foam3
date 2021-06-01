@@ -16,13 +16,12 @@
 
   javaImports: [
     'foam.core.X',
-    'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
-    'foam.nanos.notification.email.EmailConfig',
     'foam.nanos.app.SupportConfig',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'foam.nanos.notification.email.EmailConfig',
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.Themes',
@@ -89,19 +88,19 @@
         }
 
         String url = appConfig.getUrl().replaceAll("/$", "");
-        templateArgs.put("logo", (url + "/" + theme.getLogo()));
-        templateArgs.put("largeLogo", (url + "/" + theme.getLargeLogo()));
+        templateArgs.put("logo", url + "/" + theme.getLogo());
+        templateArgs.put("largeLogo", url + "/" + theme.getLargeLogo());
         templateArgs.put("appLink", url);
-        templateArgs.put("appName", (theme.getAppName()));
+        templateArgs.put("appName", theme.getAppName());
         templateArgs.put("locale", user.getLanguage().getCode().toString());
 
         foam.nanos.auth.Address address = supportConfig.getSupportAddress();
         templateArgs.put("supportAddress", address == null ? "" : address.toSummary());
-        templateArgs.put("supportPhone", (supportConfig.getSupportPhone()));
-        templateArgs.put("supportEmail", (supportConfig.getSupportEmail()));
+        templateArgs.put("supportPhone", supportConfig.getSupportPhone());
+        templateArgs.put("supportEmail", supportConfig.getSupportEmail());
 
         // personal support user
-        User psUser = supportConfig.findPersonalSupportUser(x);
+        User psUser = supportConfig.findPersonalSupportUser(getX());
         templateArgs.put("personalSupportPhone", psUser == null ? "" : psUser.getPhoneNumber());
         templateArgs.put("personalSupportEmail", psUser == null ? "" : psUser.getEmail());
         templateArgs.put("personalSupportFirstName", psUser == null ? "" : psUser.getFirstName());
