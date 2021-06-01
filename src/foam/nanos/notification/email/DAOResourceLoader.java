@@ -36,66 +36,32 @@ public class DAOResourceLoader
 
   public static EmailTemplate findTemplate(X x, String name, String groupId, String locale, String spid) {
     DAO groupDAO = (DAO) x.get("groupDAO");
-    DAO emailTemplateDAO = (DAO) x.get("localEmailTemplateDAO");
     EmailTemplate emailTemplate = null;
 
     do {
-      emailTemplate = (EmailTemplate) emailTemplateDAO
-        .find(
-          AND(
-            EQ(EmailTemplate.NAME, name),
-            EQ(EmailTemplate.GROUP, SafetyUtil.isEmpty(groupId) ? "*" : groupId),
-            EQ(EmailTemplate.SPID, spid),
-            EQ(EmailTemplate.LOCALE, locale)
-          ));
+      boolean group_  = ! SafetyUtil.isEmpty(groupId);
+      boolean spid_   = ! SafetyUtil.isEmpty(spid);
 
-      if ( emailTemplate == null && ! SafetyUtil.isEmpty(spid) && ! SafetyUtil.isEmpty(locale) ) {
-        emailTemplate = (EmailTemplate) emailTemplateDAO
-          .find(
-            AND(
-              EQ(EmailTemplate.NAME, name),
-              EQ(EmailTemplate.SPID, spid),
-              EQ(EmailTemplate.LOCALE, locale)
-            ));
-      }
+      if ( group_ && spid_ )
+        emailTemplate = findTemplateHelper(x, name, groupId, locale, spid);
 
-      if ( emailTemplate == null && ! SafetyUtil.isEmpty(locale) ) {
-        emailTemplate = (EmailTemplate) emailTemplateDAO
-          .find(
-            AND(
-              EQ(EmailTemplate.NAME, name),
-              EQ(EmailTemplate.GROUP,  SafetyUtil.isEmpty(groupId) ? "*" : groupId),
-              EQ(EmailTemplate.LOCALE, locale)
-            ));
-      }
+      if ( emailTemplate == null && group_)
+        emailTemplate = findTemplateHelper(x, name, groupId, locale, "");
 
-      if ( emailTemplate == null && ! SafetyUtil.isEmpty(spid) ) {
-        emailTemplate = (EmailTemplate) emailTemplateDAO
-          .find(
-            AND(
-              EQ(EmailTemplate.NAME,  name),
-              EQ(EmailTemplate.GROUP,  SafetyUtil.isEmpty(groupId) ? "*" : groupId),
-              EQ(EmailTemplate.SPID, spid)
-            ));
-      }
+      if ( emailTemplate == null && spid_ )
+        emailTemplate = findTemplateHelper(x, name, groupId, "en", spid);
 
-      if ( emailTemplate == null && ! SafetyUtil.isEmpty(spid) ) {
-        emailTemplate = (EmailTemplate) emailTemplateDAO
-          .find(
-            AND(
-              EQ(EmailTemplate.NAME,  name),
-              EQ(EmailTemplate.SPID, spid)
-            ));
-      }
+      if ( emailTemplate == null && group_ && spid_ )
+        emailTemplate = findTemplateHelper(x, name, groupId,"en", spid);
 
-      if ( emailTemplate == null && ! SafetyUtil.isEmpty(groupId) ) {
-        emailTemplate = (EmailTemplate) emailTemplateDAO
-          .find(
-            AND(
-              EQ(EmailTemplate.NAME,  name),
-              EQ(EmailTemplate.GROUP,  SafetyUtil.isEmpty(groupId) ? "*" : groupId)
-            ));
-      }
+      if ( emailTemplate == null && group_ )
+        emailTemplate = findTemplateHelper(x, name, groupId, "en",   "");
+
+      if ( emailTemplate == null && spid_ )
+        emailTemplate = findTemplateHelper(x, name,"", "en", spid);
+
+      if ( emailTemplate == null )
+        findTemplateHelper(x, name, "", "en", "");
 
       if ( emailTemplate != null ) return emailTemplate;
 
@@ -106,24 +72,30 @@ public class DAOResourceLoader
       groupId = ( group != null && ! SafetyUtil.isEmpty(group.getParent()) ) ? group.getParent() : "*";
     } while ( ! SafetyUtil.isEmpty(groupId) );
 
-    if ( emailTemplate == null && ! SafetyUtil.isEmpty(name) ) {
-      emailTemplate = (EmailTemplate) emailTemplateDAO
-        .find(
-          AND(
-            EQ(EmailTemplate.NAME,  name)
-          ));
-    }
-
-    return emailTemplate;
+    return null;
   }
 
   public static EmailTemplate findTemplate(X x, String name) {
-    var groupId = ((Group) x.get("group")).getId();
     User user = ((Subject) x.get("subject")).getRealUser();
+    var groupId = user.findGroup(x).getId();
     String locale = user.getLanguage().getCode();
     String spid = user.getSpid();
 
     return findTemplate(x, name, groupId, locale, spid);
+  }
+
+  public static EmailTemplate findTemplateHelper(X x, String name, String groupId, String locale, String spid) {
+    DAO emailTemplateDAO = (DAO) x.get("localEmailTemplateDAO");
+    EmailTemplate emailTemplate_ = (EmailTemplate) emailTemplateDAO
+      .find(
+        AND(
+          EQ(EmailTemplate.NAME, name),
+          EQ(EmailTemplate.GROUP, SafetyUtil.isEmpty(groupId) ? "*" : groupId),
+          EQ(EmailTemplate.SPID, spid),
+          EQ(EmailTemplate.LOCALE, locale)
+        ));
+
+    return emailTemplate_;
   }
 
   public DAOResourceLoader(X x, String groupId, String locale, String spid) {
