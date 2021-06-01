@@ -704,10 +704,8 @@ foam.CLASS({
           class: 'foam.u2.view.OverlayActionListView',
           data: actions,
           obj: this,
-          activeImageURL: '/images/attachment-purple.svg',
-          restingImageURL: '/images/attachment.svg',
-          hoverImageURL: '/images/attachment.svg',
-          disabledImageURL: '/images/attachment.svg',
+          icon: '/images/attachment.svg',
+          showDropdownIcon: false
         });
       },
       javaToCSV: `
