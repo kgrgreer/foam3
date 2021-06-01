@@ -271,7 +271,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
     }
     Long userId = user.getId();
     Long agentId = ((Subject) x.get("subject")).getRealUser().getId();
-    
+
     boolean cacheValid = session.getAgentId() > 0 ?
       session.getAgentId() == agentId && session.getUserId() == userId :
       session.getUserId() == agentId && session.getUserId() == userId;
