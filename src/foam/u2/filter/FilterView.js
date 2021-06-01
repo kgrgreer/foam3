@@ -80,15 +80,11 @@ foam.CLASS({
       flex: 1 1 80%;
     }
 
-    ^general-field .foam-u2-tag-Input {
+    ^general-field input {
       width: 100%;
       height: 34px;
       border-radius: 0 5px 5px 0;
       border: 1px solid /*%GREY4%*/ #e7eaec;
-    }
-
-    ^container-search .foam-u2-search-TextSearchView {
-      margin: 0;
     }
 
     ^container-handle {
@@ -164,12 +160,11 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'LABEL_RESULTS', message: 'Filter results: '},
-    { name: 'LINK_ADVANCED', message: 'Advanced filters'},
-    { name: 'LINK_SIMPLE', message: 'Switch to simple filters'},
-    { name: 'MESSAGE_ADVANCEDMODE', message: 'Advanced filters are currently being used.'},
-    { name: 'LABEL_SEARCH', message: 'Search'},
-    { name: 'SELECTED', message: 'selected'},
+    { name: 'LABEL_RESULTS', message: 'Filter results: ' },
+    { name: 'LINK_ADVANCED', message: 'Advanced filters' },
+    { name: 'LINK_SIMPLE', message: 'Switch to simple filters' },
+    { name: 'MESSAGE_ADVANCEDMODE', message: 'Advanced filters are currently being used.' },
+    { name: 'SELECTED', message: 'selected' },
   ],
 
   properties: [
@@ -285,11 +280,7 @@ foam.CLASS({
           self.generalSearchField = foam.u2.ViewSpec.createView(self.TextSearchView, {
             richSearch: true,
             of: self.dao.of.id,
-            onKey: true,
-            viewSpec: {
-              class: 'foam.u2.tag.Input',
-              placeholder: this.LABEL_SEARCH
-            }
+            onKey: true
           },  this, self.__subSubContext__.createSubContext({ memento: self.currentMemento_ }));
 
           if ( self.currentMemento_ ) self.currentMemento_ = self.currentMemento_.tail;

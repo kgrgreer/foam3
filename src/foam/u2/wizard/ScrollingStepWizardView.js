@@ -61,26 +61,17 @@ foam.CLASS({
     }
 
     ^rightside ^bottomnav {
-      display: flex;
-      padding: 0 var(--lrPadding);
-      padding-top: var(--actionBarTbPadding);
-      float: right;
-      width: calc(100% - 2*var(--lrPadding));
-      flex-grow: 0;
-      min-height: calc(
-        var(--actionBarHeight) - var(--actionBarTbPadding));
+      align-items: center;
       background-color: rgba(255,255,255,0.7);
       backdrop-filter: blur(5px);
       box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.3);
-    }
-
-    ^rightside ^search {
-      flex-grow: 1;
-    }
-
-    ^rightside ^search input {
-      height: 36px;
-      width: 33%;
+      display: flex;
+      flex-grow: 0;
+      justify-content: flex-end;
+      min-height: calc(
+        var(--actionBarHeight) - var(--actionBarTbPadding));
+      padding: var(--actionBarTbPadding) var(--lrPadding);
+      width: calc(100% - 2*var(--lrPadding));
     }
 
     ^heading {
@@ -191,25 +182,12 @@ foam.CLASS({
       expression: function( data$config$approvalMode, data$allValid ) {
         return data$config$approvalMode && ! data$allValid;
       }
-    },
-    {
-      class: 'foam.u2.ViewSpec',
-      name: 'searchView',
-      value: { class: 'foam.u2.tag.Input' }
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.u2.wizard.WizardletSearchController',
-      name: 'searchController'
     }
   ],
 
   methods: [
     function initE() {
       var self = this;
-      this.searchController = this.WizardletSearchController.create({
-        wizardlets$: this.data.wizardlets$
-      });
       window.testing_ = self;
       this.onDetach(this.scrollWizardPosition$.sub(() => {
         if ( ! this.scrollWizardPosition ) return; // TEMP
@@ -268,13 +246,6 @@ foam.CLASS({
             .end()
             .start()
               .addClass(this.myClass('bottomnav'))
-              .start()
-                .addClass(this.myClass('search'))
-                .tag(this.Input, {
-                  data$: this.searchController.data$,
-                  onKey: true
-                })
-              .end()
               .start()
                 .addClass(this.myClass('actions'))
                 .startContext({ data: self })

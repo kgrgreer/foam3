@@ -82,7 +82,7 @@ foam.CLASS({
       flex-grow: 1;
     }
 
-    ^ .foam-u2-view-SimpleSearch .foam-u2-search-TextSearchView .foam-u2-tag-Input {
+    ^ .foam-u2-view-SimpleSearch input {
       width: 100%;
       height: 34px;
       border-radius: 0 5px 5px 0;
