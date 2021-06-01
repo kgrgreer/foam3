@@ -3,11 +3,9 @@
 # -------------------------------------------------------------------------------------------------
 #!/bin/bash
 
-BUILD_FILE=ca-central-development-mediators-build.sh
-MEDIATORS=tools/medusa/ca-central-development-mediators
-NODES=tools/medusa/ca-central-development-nodes
-SERVICE_HEALTH_URLS=tools/jenkins/services-ca-central-development-mediators
-
+BUILD_FILE=integration-nanopay-net-build.sh
+MEDIATORS=tools/medusa/integration-nanopay-net
+SERVICE_HEALTH_URLS=tools/jenkins/services-integration-nanopay-net
 
 echo '********************************************************************************************'
 echo '------------------------------------------- PRE-BUILD  -------------------------------------'
@@ -34,15 +32,11 @@ echo '------------------------------------------ PRE-DEPLOY  -------------------
 echo '********************************************************************************************'
 echo 'Running Pre-Deploy checks ...'
 echo 'Running Mediator(s) & Node(s) Service Status Check ...'
-tools/jenkins/pre_deploy.sh $NODES $MEDIATORS
+tools/jenkins/pre_deploy.sh $MEDIATORS
 
 echo '********************************************************************************************'
 echo '-------------------------------------------- DEPLOY  ---------------------------------------'
 echo '********************************************************************************************'
-echo 'Stopping Mediator(s) Service ...'
-tools/medusa/stop.sh $MEDIATORS
-echo 'Running Nodes backup ...'
-tools/medusa/backup-ledger.sh tools/medusa/ca-central-development-nodes
 echo 'Running Remote Install/Deploy ...'
 tools/jenkins/deploy.sh $MEDIATORS
 
@@ -52,7 +46,7 @@ echo '**************************************************************************
 echo 'Waiting three minutes to allow the services & health checks to be fully ready'
 sleep 180
 echo 'Running Post Deploy Checks ...' 
-tools/jenkins/post_deploy.sh $SERVICE_HEALTH_URLS $NODES $MEDIATORS
+tools/jenkins/post_deploy.sh $SERVICE_HEALTH_URLS $MEDIATORS
 
 # -------------------------------------------------------------------------------------------------
 
