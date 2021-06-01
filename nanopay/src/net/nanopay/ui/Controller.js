@@ -63,7 +63,6 @@ foam.CLASS({
     'net.nanopay.model.BusinessUserJunction',
     'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
     'net.nanopay.sme.onboarding.OnboardingStatus',
-    'net.nanopay.sme.ui.AbliiOverlayActionListView',
     'net.nanopay.sme.ui.SMEModal',
     'net.nanopay.sme.ui.SMEStyles',
     'net.nanopay.sme.ui.SMEWizardOverview',
@@ -445,7 +444,6 @@ foam.CLASS({
         this.__subContext__.register(this.VerifyEmailView, 'foam.nanos.auth.ResendVerificationEmail');
         this.__subContext__.register(this.NotificationMessage, 'foam.u2.dialog.NotificationMessage');
         this.__subContext__.register(this.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
-        this.__subContext__.register(this.AbliiOverlayActionListView, 'foam.u2.view.OverlayActionListView');
 
         this.themeInstalled.resolve();
       });

@@ -39,98 +39,26 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
     'foam.core.Currency',
-    'foam.u2.PopupView',
+    'foam.u2.view.OverlayActionListView',
+    'foam.core.Action'
   ],
 
   exports: [ 'as data' ],
 
   css: `
-  ^carrot {
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 5px solid white;
-    display: inline-block;
-    float: right;
-    margin-top: 7px;
-    margin-left: 7px;
-  }
-  ^ .foam-u2-ActionView-currencyChoice {
-    display: inline-block;
-    background: none !important;
-    border: 0 !important;
-    box-shadow: none !important;
-    width: max-content;
-    cursor: pointer;
-    margin-right: 27px;
-  }
-  ^ .foam-nanos-u2-navigation-TopNavigation-CurrencyChoiceView {
-    align-items: center;
-  }
-  ^ .foam-u2-ActionView-currencyChoice > span {
-    font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 16px;
-    font-weight: 300;
-    letter-spacing: 0.2px;
-    color: #ffffff;
-  }
-  ^ .popUpDropDown > div {
-    width: 100%;
-    text-align: center;
-    height: 25;
-    padding-bottom: 5;
-    font-size: 14px;
-    font-weight: 300;
-    letter-spacing: 0.2px;
-    color: /*%BLACK%*/ #1e1f21;
-    line-height: 30px;
-  }
-  ^ .foam-u2-PopupView {
-    left: -30 !important;
-    top: 51px !important;
-    padding: 0 !important;
-    z-index: 1000;
-    width: 110px !important;
-    background: white;
-    opacity: 1;
-    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.19);
-  }
-  ^ .popUpDropDown > div:hover{
-    background-color: #1cc2b7;
-    color: white;
-    cursor: pointer;
-  }
-  ^ .popUpDropDown::before {
-    content: ' ';
-    position: absolute;
-    height: 0;
-    width: 0;
-    border: 8px solid transparent;
-    border-bottom-color: white;
-    -ms-transform: translate(110px, -16px);
-    transform: translate(50px, -16px);
-  }
-  ^ .popUpDropDown > div {
-    display: flex;
-  }
-  ^ .flag {
-    width: 30px !important;
-    height: 17.6px;
-    object-fit: contain;
-    padding-top: 6px;
-    padding-left: 10px;
-    margin-right: 23px;
-  }
-  ^ img {
+  ^dropdown img {
     height: 17.6px !important;
-    margin-right: 6;
-    width: auto;
+    width: auto !important;
+  }
+  ^dropdown span, ^dropdown svg {
+    font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: /*%WHITE%*/ #ffffff;
   }
   `,
 
   properties: [
-    'optionsBtn_',
     {
       class: 'FObjectProperty',
       of: 'foam.core.Currency',
@@ -139,20 +67,37 @@ foam.CLASS({
   ],
 
   methods: [
-
-    function initE() {
+    async function initE() {
+      var self = this;
       this.updateCurrency();
+
+      var currencySelection = (await self.currencyDAO.where(
+        self.IN(foam.core.Currency.ID, ['USD', 'CAD', 'EUR', 'GBP', 'JPY', 'AUD'])
+      ).select()).array.map( c => {
+        return self.Action.create({
+          name: c.id,
+          label: c.id,
+          icon: c.flagImage,
+          code: function() {
+            self.lastCurrency = c;
+            self.homeDenomination = c.id;
+            // TODO: Figure out a better way to store user preferences
+            localStorage.setItem('homeDenomination', c.id);
+          }
+        });
+      });
 
       this
         .addClass(this.myClass())
-        .tag('span', null, this.optionsBtn_$)
-        .start(this.CURRENCY_CHOICE, {
+        .start(this.OverlayActionListView, {
+          name: this.cls_.name,
           icon$: this.lastCurrency$.dot('flagImage').map(function(v) { return v || ' ';}),
-          label$: this.lastCurrency$.dot('id')
+          label$: this.lastCurrency$.dot('id'),
+          data: currencySelection,
+          obj: self,
+          buttonStyle: 'UNSTYLED'
         })
-          .start('div')
-            .addClass(this.myClass('carrot'))
-          .end()
+          .addClass(this.myClass('dropdown'))
         .end();
     }
   ],
@@ -164,44 +109,6 @@ foam.CLASS({
       this.currencyDAO.find(this.homeDenomination).then(function(c) {
         self.lastCurrency = c;
       });
-    }
-  ],
-
-  actions: [
-    {
-      name: 'currencyChoice',
-      label: '',
-      code: function() {
-        var self = this;
-        self.optionPopup_ = this.PopupView.create({
-          width: 165,
-          x: -137,
-          y: 40
-        }).on('click', function() {
-          return self.optionPopup_.remove();
-        });
-
-        self.optionPopup_ = self.optionPopup_.start('div').addClass('popUpDropDown')
-          .select(self.currencyDAO.where(
-              self.IN(foam.core.Currency.ID, ['USD', 'CAD', 'EUR', 'GBP', 'JPY', 'AUD'])
-            ), function(c) {
-                if ( c.flagImage != null ) {
-                  return self.E()
-                    .start('div').start('img')
-                      .attrs({ src: c.flagImage, alt: c.name })
-                      .addClass('flag').end().add(c.id)
-                      .on('click', function() {
-                        self.lastCurrency = c;
-                        self.homeDenomination = c.id;
-
-                        // TODO: Figure out a better way to store user preferences
-                        localStorage.setItem('homeDenomination', c.id);
-                      });
-                }
-            })
-          .end();
-        self.optionsBtn_.add(self.optionPopup_);
-      }
     }
   ]
 });
