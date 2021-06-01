@@ -48,7 +48,6 @@ foam.CLASS({
     function onPopState() {
       if ( this.feedback_ ) return;
       
-      // this.feedback_ = true;
       this.value = this.window.location.hash.substr(1);
       this.feedback_ = false;
     },
