@@ -172,7 +172,7 @@ foam.CLASS({
       if ( this.memento ) {
         m = this.memento.tail || this.memento;
         if ( ! m.tail ) {
-          m.tail = foam.nanos.controller.Memento.create({ replaceHistoryState: true });
+          m.tail = foam.nanos.controller.Memento.create();
         }
         this.memento.tail.replaceHistoryState = true
         m = this.memento.tail || this.memento;
@@ -233,7 +233,7 @@ foam.CLASS({
 
             if ( self.memento && m ) {
               if ( ! m.tail )
-                m.tail = foam.nanos.controller.Memento.create({ replaceHistoryState: true });
+                m.tail = foam.nanos.controller.Memento.create();
               counter--;
               if ( counter != 0 )
                 m = m.tail;

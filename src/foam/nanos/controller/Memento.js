@@ -92,7 +92,8 @@ foam.CLASS({
     },
     {
       name: 'replaceHistoryState',
-      class: 'Boolean'
+      class: 'Boolean',
+      value: true
     }
   ],
 

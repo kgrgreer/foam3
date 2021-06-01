@@ -191,7 +191,7 @@ foam.CLASS({
     {
       name: 'memento',
       factory: function() {
-        return this.Memento.create();
+        return this.Memento.create({ replaceHistoryState : false });
       }
     },
     {

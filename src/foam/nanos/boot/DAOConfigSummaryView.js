@@ -297,7 +297,7 @@ foam.CLASS({
               .attrs({title: spec.description})
               .on('click', function() {
                 if ( self.memento ) {
-                  var tail = self.Memento.create({ head: spec.id, tail: self.Memento.create({ replaceHistoryState : true }) });
+                  var tail = self.Memento.create({ head: spec.id, tail: self.Memento.create(), replaceHistoryState : false });
                   self.memento.tail$.set(tail);
                 }
               });
