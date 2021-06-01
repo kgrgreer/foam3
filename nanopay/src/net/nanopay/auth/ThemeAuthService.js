@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -18,10 +18,14 @@
 foam.CLASS({
   package: 'net.nanopay.auth',
   name: 'ThemeAuthService',
-  extends: 'foam.nanos.auth.UserAndGroupAuthService',
+  extends: 'foam.nanos.auth.ProxyAuthService',
   flags: ['java'],
 
   documentation: `Restrict login to the url that matches the spid of the user.`,
+
+  imports: [
+    'DAO localUserDAO'
+  ],
 
   javaImports: [
     'foam.dao.DAO',
@@ -103,14 +107,10 @@ foam.CLASS({
       ],
       javaCode: `
         return (User) ((DAO) getLocalUserDAO())
-          .inX(x)
           .find(
-            AND(
-              OR(
-                EQ(User.EMAIL, identifier.toLowerCase()),
-                EQ(User.USER_NAME, identifier)
-              ),
-              CLASS_OF(User.class)
+            OR(
+              EQ(User.EMAIL, identifier.toLowerCase()),
+              EQ(User.USER_NAME, identifier)
             )
           );
       `

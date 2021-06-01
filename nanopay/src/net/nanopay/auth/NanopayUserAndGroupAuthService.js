@@ -167,8 +167,8 @@ foam.CLASS({
           throw new AuthenticationException("There was an issue logging in");
         }
 
-        Theme userTheme = ((Themes) x.get("themes")).findTheme(userX);
-        SupportConfig supportConfig = userTheme.getSupportConfig();
+        Theme theme = ((Themes) x.get("themes")).findTheme(userX);
+        SupportConfig supportConfig = theme.getSupportConfig();
         String supportEmail = (String) supportConfig.getSupportEmail();
 
         if (
