@@ -134,16 +134,30 @@ foam.CLASS({
       ],
       javaCode: `
         DAO dao = (DAO) x.get("localTransactionDAO");
+        DAO stDAO = (DAO) x.get("summaryTransactionDAO");
         List children = ((ArraySink) dao.where(EQ(Transaction.PARENT, txn.getId())).select(new ArraySink())).getArray();
+        boolean modified = false;
 
         for ( Object obj : children ) {
           Transaction child = (Transaction) obj;
-          this.calculateTransients(x, child);
-          if ( ( ! depositAmountIsSet_) && (child instanceof ValueMovementTransaction) && (SafetyUtil.equals(this.getDestinationAccount(), child.getDestinationAccount())) ){
-            this.setDepositAmount(child.getTotal(x, child.getDestinationAccount()));
+          modified |= this.calculateTransients(x, child);
+
+          if ( ( ! depositAmountIsSet_ ) && ( child instanceof ValueMovementTransaction ) && SafetyUtil.equals(this.getDestinationAccount(), child.getDestinationAccount()) ) {
+            var amount = getDepositAmount();
+            var namount = child.getTotal(x, child.getDestinationAccount());
+            if ( amount != namount ) {
+              this.setDepositAmount(namount);
+              modified = true;
+            }
+
           }
-          if ( ( ! withdrawalAmountIsSet_) && (child instanceof ValueMovementTransaction) && (SafetyUtil.equals(this.getSourceAccount(), child.getSourceAccount())) ){
-            this.setWithdrawalAmount(-child.getTotal(x, child.getSourceAccount()));
+          if ( ( ! withdrawalAmountIsSet_ ) && ( child instanceof ValueMovementTransaction) && SafetyUtil.equals(this.getSourceAccount(), child.getSourceAccount()) ) {
+            var amount = getWithdrawalAmount();
+            var namount = -child.getTotal(x, child.getSourceAccount());
+            if ( amount != namount ) {
+              this.setWithdrawalAmount(namount);
+              modified = true;
+            }
           }
         }
 
@@ -160,8 +174,13 @@ foam.CLASS({
           cs.setStatus(t.getStatus());
           cs.setCategory(categorize_(t));
           cs.setSummary(cs.toSummary());
-          this.setChainSummary(cs);
+          if ( cs.compareTo(getChainSummary()) != 0 ) {
+            this.setChainSummary(cs);
+            modified = true;
+          }
         }
+
+        return modified;
       `
     },
     {
