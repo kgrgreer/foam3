@@ -307,7 +307,7 @@ foam.CLASS({
     async function initE() {
       var view = this;
 
-      const asyncRes = await this.filterUnpermited(view.of.getAxiomsByClass(foam.core.Property));
+      const asyncRes = await this.filterUnpermitted(view.of.getAxiomsByClass(foam.core.Property));
       this.allColumns = ! view.of ? [] : [].concat(
         asyncRes.map(a => a.name),
         view.of.getAxiomsByClass(foam.core.Action)
@@ -721,7 +721,7 @@ foam.CLASS({
       function returnMementoColumnNameDisregardSorting(c) {
         return c && this.shouldColumnBeSorted(c) ? c.substr(0, c.length - 1) : c;
       },
-      async function filterUnpermited(arr) {
+      async function filterUnpermitted(arr) {
         if ( this.auth ) {
           const results = await Promise.all(arr.map( async p => 
             p.hidden ? false : 
@@ -729,7 +729,7 @@ foam.CLASS({
             await this.auth.check(null, `${this.of.name.toLowerCase()}.column.${p.name}`)));
           return arr.filter((_v, index) => results[index]);
         }
-        return arr
+        return arr;
       },
       {
         name: 'getActionsForRow',
