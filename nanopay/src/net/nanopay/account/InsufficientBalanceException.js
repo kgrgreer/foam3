@@ -22,10 +22,6 @@ foam.CLASS({
   javaGenerateConvenienceConstructor: false,
 
   properties: [
-    // {
-    //   name: 'exceptionMessage',
-    //   message: 'Insufficient balance in account: '
-    // },
     {
       name: 'account',
       class: 'Reference',
