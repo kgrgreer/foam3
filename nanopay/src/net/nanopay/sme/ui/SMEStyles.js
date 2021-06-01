@@ -84,17 +84,6 @@ foam.CLASS({
       user-select: none; /* Non-prefixed version, currently
                             supported by Chrome and Opera */
     }
-    .foam-u2-search-TextSearchView input {
-      background-image: url("images/ic-search.svg");
-      background-repeat: no-repeat;
-      background-position: 8px;
-      border-radius: 2px;
-      border: 1px solid #dce0e7;
-      color: /*%BLACK%*/ #1e1f21;
-      font-size: 14px;
-      height: 40px;
-      padding: 0 21px 0 38px;
-    }
     .foam-u2-stack-StackView {
       width: 100%;
     }
@@ -105,10 +94,6 @@ foam.CLASS({
       padding: 12px;
       font-size: 14px;
       font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    }
-
-    input:focus {
-      border: solid 2px #604aff;
     }
 
     /* Modal windows */
@@ -566,13 +551,6 @@ foam.CLASS({
       line-height: 48px;
       font-weight: 900;
       color: /*%BLACK%*/ #1e1f21;
-    }
-
-    .foam-u2-search-TextSearchView input {
-      box-shadow: inset 0 1px 2px 0 rgba(116, 122, 130, 0.21);
-      border: solid 1px #e2e2e3;
-      border-radius: 3px;
-      width: 330px;
     }
 
     .net-nanopay-ui-Controller .foam-u2-view-TableView-selected {
