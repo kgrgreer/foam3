@@ -174,7 +174,6 @@ foam.CLASS({
         if ( ! m.tail ) {
           m.tail = foam.nanos.controller.Memento.create();
         }
-        this.memento.tail.replaceHistoryState = true
         m = this.memento.tail || this.memento;
         this.currentMemento_ = this.memento.tail;
       }
