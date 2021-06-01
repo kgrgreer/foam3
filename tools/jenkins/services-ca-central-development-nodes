@@ -1,0 +1,4 @@
+https://node1-ca-central-development.nanopay.net:8443/service/health
+https://node2-ca-central-development.nanopay.net:8443/service/health
+https://node3-ca-central-development.nanopay.net:8443/service/health
+https://node4-ca-central-development.nanopay.net:8443/service/health
