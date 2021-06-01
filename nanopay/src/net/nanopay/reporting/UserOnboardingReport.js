@@ -27,6 +27,24 @@ foam.CLASS({
     'userId'
   ],
 
+  tableColumns: [
+    'userId',
+    'firstName',
+    'lastName',
+    'business',
+    'merchantId',
+    'businessSending',
+    'businessReceiving',
+    'userSendingOver1000',
+    'userSendingUnder1000',
+    'onboardingSubmissionDate',
+    'userCreated',
+    'complianceStatus',
+    'approvalDate',
+    'firstPaymentDate',
+    'city'
+  ],
+
   properties: [
     {
       name: 'userId',
@@ -69,6 +87,10 @@ foam.CLASS({
       class: 'DateTime'
     },
     {
+      name: 'userCreated',
+      class: 'DateTime'
+    },
+    {
       name: 'complianceStatus',
       class: 'String'
     },
@@ -81,7 +103,7 @@ foam.CLASS({
       class: 'DateTime'
     },
     {
-      name: 'City',
+      name: 'city',
       class: 'String'
     }
   ]

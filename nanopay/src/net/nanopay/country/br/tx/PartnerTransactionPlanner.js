@@ -25,6 +25,9 @@ foam.CLASS({
   javaImports: [
     'foam.core.ValidationException',
     'foam.dao.DAO',
+    'foam.log.LogLevel',
+    'foam.nanos.alarming.Alarm',
+    'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.util.Calendar',
     'java.util.Date',
@@ -33,6 +36,8 @@ foam.CLASS({
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.country.br.tx.PartnerLineItem',
     'net.nanopay.country.br.tx.BRPartnerTransaction',
+    'net.nanopay.country.br.NatureCode',
+    'net.nanopay.fx.afex.AFEXPOPCode',
     'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.InfoLineItem',
@@ -93,13 +98,35 @@ foam.CLASS({
           return true;
         }
         BRPartnerTransaction transaction = (BRPartnerTransaction) txn;
+        PartnerLineItem pLineItem = null;
 
         for ( TransactionLineItem lineItem: txn.getLineItems() ) {
           if ( lineItem instanceof PartnerLineItem ) {
-            return true;
+            pLineItem = (PartnerLineItem) lineItem;
           }
         }
-        throw new ValidationException("[Transaction Validation error] "+ this.MISSING_LINEITEM);
+        if ( pLineItem == null ) throw new ValidationException("[Transaction Validation error] "+ this.MISSING_LINEITEM);
+
+        NatureCode natureCode = (NatureCode) ((DAO) x.get("natureCodeDAO")).inX(x).find(EQ(NatureCode.OPERATION_TYPE, pLineItem.getNatureCode()));
+        if ( natureCode == null ) throw new ValidationException("natureCode doesn't exist");
+
+        var popCode = ((DAO) x.get("afexPOPCodesDAO")).find(AND(
+          EQ(AFEXPOPCode.PARTNER_CODE, natureCode.getOperationType()),
+          EQ(AFEXPOPCode.COUNTRY_CODE, "BR")
+        ));
+        if ( popCode == null ) {
+          Logger logger = (Logger) x.get("logger");
+          logger.error("No mapping found for natureCode: " + natureCode.getOperationType());
+          Alarm alarm = new Alarm();
+          alarm.setClusterable(false);
+          alarm.setSeverity(LogLevel.ERROR);
+          alarm.setName("Failed to map natureCode/POP");
+          alarm.setNote("No AFEX POP for nature code: " + natureCode.getOperationType());
+          alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+          throw new ValidationException("natureCode doesn't match any partner reason code");
+        }
+
+        return true;
       `
     },
     {

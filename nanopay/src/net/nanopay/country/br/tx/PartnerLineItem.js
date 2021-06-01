@@ -23,7 +23,8 @@ foam.CLASS({
   documentation: 'Line item to carry information about the transaction details happening outside of nanopay',
 
   javaImports: [
-    'foam.core.ValidationException'
+    'foam.core.ValidationException',
+    'foam.util.SafetyUtil'
   ],
 
   properties: [
@@ -155,12 +156,13 @@ foam.CLASS({
       if ( getFxRate() == 0 ) throw new ValidationException("fxRate is missing on PartnerLineItem");
       if ( getFxSpread() == 0 ) throw new ValidationException("fxSpread is missing on PartnerLineItem");
       if ( getTransactionFee() == 0 ) throw new ValidationException("transactionFee is missing on PartnerLineItem");
-      if ( getTransactionFeeCurrency() == "" ) throw new ValidationException("transactionFeeCurrency is missing on PartnerLineItem");
+      if ( SafetyUtil.isEmpty(getTransactionFeeCurrency()) ) throw new ValidationException("transactionFeeCurrency is missing on PartnerLineItem");
       if ( getIOF() == 0 ) throw new ValidationException("IOF is missing on PartnerLineItem");
       if ( getIOFRate() == 0 ) throw new ValidationException("IOFRate is missing on PartnerLineItem");
-      if ( getIOFCurrency() == "" ) throw new ValidationException("IOFCurrency is missing on PartnerLineItem");
+      if ( SafetyUtil.isEmpty(getIOFCurrency()) ) throw new ValidationException("IOFCurrency is missing on PartnerLineItem");
       if ( getVET() == 0 ) throw new ValidationException("VET is missing on PartnerLineItem");
       if ( getBankFee() == 0 ) throw new ValidationException("bankFee is missing on PartnerLineItem");
+      if ( SafetyUtil.isEmpty(getNatureCode()) ) throw new ValidationException("natureCode is missing on PartnerLineItem");
       `
     }
   ]

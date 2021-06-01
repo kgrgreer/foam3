@@ -1937,6 +1937,7 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/exchange/ExchangeCustomer' },
   { name: 'net/nanopay/country/br/exchange/ExchangeClientValues' },
   { name: 'net/nanopay/country/br/exchange/Moeda' },
+  { name: 'net/nanopay/fx/afex/AFEXPOPCode' },
   { name: 'net/nanopay/country/br/NatureCode' },
   { name: 'net/nanopay/country/br/NatureCodeData' },
   { name: 'net/nanopay/country/br/NatureCodeRate' },
@@ -1995,13 +1996,12 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/tx/PartnerReport' },
   { name: 'net/nanopay/country/br/tx/PartnerTransactionPlanner' },
   { name: 'net/nanopay/partner/bepay/tx/BePayTransaction' },
+  { name: 'net/nanopay/country/br/tx/ScreenUsersOnTransactionCreate' },
 
   // Reports for Treviso
   { name: 'net/nanopay/partner/treviso/report/TrevisoTransactionReport' },
   { name: 'net/nanopay/partner/treviso/report/TrevisoTransactionReportDAO' },
 
-  // bepay
-  { name: 'net/nanopay/country/br/tx/ScreenUsersOnTransactionCreate' },
 
   // accuity
   { name: 'net/nanopay/partner/accuity/AccuityCredentials' },
