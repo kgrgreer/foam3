@@ -47,8 +47,7 @@ foam.CLASS({
             choices$: this.choices$,
             index$: this.index$
           });
-          var el = await this.el();
-          this.popup.open(this.index, el);
+          this.popup.open(this.index, this.el_());
         }
       }
     }

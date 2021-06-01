@@ -153,8 +153,8 @@ foam.CLASS({
         }
 
         var el = await this.el();
-        var startingPos = el ? el.children[0].selectionStart : this.formattedData.length;
-        var endPos = el ? el.children[0].selectionEnd : this.formattedData.length;
+        var startingPos = el.children[0].selectionStart;
+        var endPos = el.children[0].selectionEnd;
 
         // keep track of number of digits before selection start and use is as a initial value for final position of the cursor
         var digitsBeforeSelectionStart = pos = this.formattedData.substring(0, startingPos).replace(/\D/g, '').length;
@@ -181,7 +181,7 @@ foam.CLASS({
           pos = this.isDelete ? startingPos : pos; // final cursor position is fixed on delete
           this.formattedData = temp;
 
-          el && el.children[0].setSelectionRange(pos, pos);
+          el.children[0].setSelectionRange(pos, pos);
         }
         this.resetState();
       }

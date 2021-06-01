@@ -290,7 +290,7 @@
         });
         this.updateRenderedPages_();
         var el = await this.el();
-        if ( el && ! this.isInit && this.currentMemento_ && this.currentMemento_.head.length != 0 ) {
+        if ( ! this.isInit && this.currentMemento_ && this.currentMemento_.head.length != 0 ) {
           var scroll = this.currentMemento_.head * this.rowHeight;
           scroll = scroll >= this.rowHeight && scroll < this.scrollHeight ? scroll : 0;
 
@@ -298,7 +298,9 @@
             document.getElementById(this.tableWrapper_.id).scrollTop = scroll;
 
           this.isInit = true;
-        } else if ( el ) el.scrollTop = 0;
+        } else {
+          el.scrollTop = 0;
+        }
       }
     },
     {
