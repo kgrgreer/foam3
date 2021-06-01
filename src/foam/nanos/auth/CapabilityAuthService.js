@@ -68,7 +68,7 @@ foam.CLASS({
         if ( ! foam.util.SafetyUtil.isEmpty(spid) ) {
           DAO localSpidDAO = (DAO) x.get("localServiceProviderDAO");
           ServiceProvider sp = (ServiceProvider) localSpidDAO.find(spid);
-
+          sp.setX(x);
           return sp.grantsPermission(permission);
         }
         return false;
