@@ -81,10 +81,10 @@ foam.CLASS({
     }
 
     ^general-field input {
-      width: 100%;
-      height: 34px;
-      border-radius: 0 5px 5px 0;
       border: 1px solid /*%GREY4%*/ #e7eaec;
+      border-radius: 0 5px 5px 0;
+      height: 34px;
+      width: 100%;
     }
 
     ^container-handle {
