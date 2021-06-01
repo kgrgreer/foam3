@@ -20,6 +20,7 @@ foam.CLASS({
   imports: [
     'dblclick?',
     'onObjDrop',
+    'returnExpandedCSS',
     'selection',
     'startExpanded'
   ],
@@ -138,6 +139,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      this.SUPER();
       var self = this;
       var controlledSearchSlot = foam.core.SimpleSlot.create();
 
@@ -249,10 +251,10 @@ foam.CLASS({
               'padding': '0px !important',
               'width': '100%',
               'fill': this.slot(function(selected, id) {
-                        if ( selected && foam.util.equals(selected.id, id)) {
-                          return '/*%PRIMARY3%*/ #604aff';
+                        if ( selected && foam.util.equals(selected.id, id) ) {
+                          return self.returnExpandedCSS('/*%PRIMARY3%*/ #604aff');
                         }
-                        return '/*%GREY2%*/ #9ba1a6'; 
+                        return self.returnExpandedCSS('/*%GREY2%*/ #9ba1a6');
                       }, this.selection$, this.data$.dot('id'))
             }).
           endContext().

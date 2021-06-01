@@ -43,7 +43,7 @@ foam.CLASS({
       String name = this.getClass().getSimpleName();
       int i = name.indexOf("Exception");
       if ( i > 0 ) {
-        name = name.substring(0, i-1);
+        name = name.substring(0, i);
       }
       return name;
       `
