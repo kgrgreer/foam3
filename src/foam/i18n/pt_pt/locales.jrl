@@ -841,4 +841,4 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.BusinessSignInEx
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.BusinessValidationException",target:"Ocorreu um problema ao criar o negócio"})
 
 //TestExceptions
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.FOAMExceptionTestTestException",target:"MensagemDeExceção {{message_}}, ErroDeCódigo: {{errorCode}}"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.FOAMExceptionTestTestException.ExceptionMessage {{message}}, ErrorCode: {{errorCode}}",target:"MensagemDeExceção {{message}}, ErroDeCódigo: {{errorCode}}"})
