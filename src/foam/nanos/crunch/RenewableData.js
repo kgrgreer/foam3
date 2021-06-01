@@ -40,10 +40,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(foam.nanos.crunch.RenewableData.RENEWABLE, false),
-              e.AND(
-                e.EQ(foam.nanos.crunch.RenewableData.RENEWABLE, true),
-                e.EQ(foam.nanos.crunch.RenewableData.REVIEWED, true)
-              )
+              e.EQ(foam.nanos.crunch.RenewableData.REVIEWED,  true)
             )
           },
           errorMessage: 'REVIEW_ERROR'

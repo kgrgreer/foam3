@@ -88,6 +88,12 @@
     },
     {
       class: 'String',
+      name: 'themeIcon',
+      documentation: 'Theme icon associated to the menu item.',
+      displayWidth: 80
+    },
+    {
+      class: 'String',
       name: 'activeIcon',
       documentation: 'Active icon associated to the menu item.',
       displayWidth: 80

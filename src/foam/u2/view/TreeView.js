@@ -20,6 +20,7 @@ foam.CLASS({
   imports: [
     'dblclick?',
     'onObjDrop',
+    'returnExpandedCSS',
     'selection',
     'startExpanded'
   ],
@@ -138,6 +139,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      this.SUPER();
       var self = this;
       var controlledSearchSlot = foam.core.SimpleSlot.create();
 
@@ -157,6 +159,35 @@ foam.CLASS({
         self.hasChildren = val.array.length > 0;
         self.subMenus    = val.array;
       });
+
+      var mainLabel = this.E().
+        addClass(self.myClass('select-level')).
+        style({
+          'width':         '100%',
+          'padding-right': '20px',
+          'text-align':    'left'
+        }).
+        start()
+          .addClass(self.myClass('label')).
+          call(this.formatter, [self.data]).
+        end().
+        start('span').
+          addClass(self.myClass('toggle-icon')).
+          show(this.hasChildren$).
+          style({
+            'visibility':    'visible',
+            'font-size':     '16px',
+            'float':         'right',
+            'height':        '12px',
+            'width':         '12px',
+            'padding-top':   '4px',
+            'padding-left':  self.expanded$.map(function(c) { return c ? '0px' : '4px'; }),
+            'padding-right':  self.expanded$.map(function(c) { return c ? '4px' : '0px'; }),
+            'transform':     self.expanded$.map(function(c) { return c ? 'rotate(0deg)' : 'rotate(90deg)'; })
+          }).
+          on('click', this.toggleExpanded).
+          add('\u2303').
+        end();
 
       this.
         addClass(this.myClass()).
@@ -194,7 +225,6 @@ foam.CLASS({
           }
           return '';
         }, this.selection$, this.data$.dot('id'))).
-        on('click', this.onClickFunctions).
         on('dblclick', function() { self.dblclick && self.dblclick(self.data); }).
         callIf(this.draggable, function() {
           this.
@@ -209,47 +239,25 @@ foam.CLASS({
           style({
             'padding-left': ((( self.level - 1) * 16 + 8) + 'px')
           }).
-          add(this.slot( function(level, selected, id) {
-            if ( level === 1 ) {
-              var imgUrl = self.data.icon;
-              if ( selected && foam.util.equals(selected.id, id) ) {
-                imgUrl = self.data.activeIcon;
-              }
-              if ( imgUrl )
-                return this.E().start('img').
-                  addClass(self.myClass('label-icon')).
-                  attrs({ 'src': imgUrl, 'width': '16px', 'height': '16px' }).
-                end();
-              return;
-            }
-          }, self.level$, this.selection$, this.data$.dot('id'))).
-          start().
-            addClass(self.myClass('select-level')).
-            style({
-              'width':         '100%',
-              'padding-right': '20px'
+          startContext({ data: self }).
+            start(self.ON_CLICK_FUNCTIONS, { 
+              buttonStyle: 'UNSTYLED', 
+              label: mainLabel, 
+              size: 'SMALL',
+              themeIcon: self.level === 1 ? self.data.themeIcon : '',
+              icon: self.level === 1 ? self.data.icon : ''
             }).
-            start()
-              .addClass(self.myClass('label')).
-              call(this.formatter, [self.data]).
-            end().
-            start('span').
-              addClass(self.myClass('toggle-icon')).
-              show(this.hasChildren$).
-              style({
-                'visibility':    'visible',
-                'font-size':     '16px',
-                'float':         'right',
-                'height':        '12px',
-                'width':         '12px',
-                'padding-top':   '4px',
-                'padding-left':  self.expanded$.map(function(c) { return c ? '0px' : '4px'; }),
-                'padding-right':  self.expanded$.map(function(c) { return c ? '4px' : '0px'; }),
-                'transform':     self.expanded$.map(function(c) { return c ? 'rotate(0deg)' : 'rotate(90deg)'; })
-              }).
-              on('click', this.toggleExpanded).
-              add('\u2303').
-            end().
+            style({
+              'padding': '0px !important',
+              'width': '100%',
+              'fill': this.slot(function(selected, id) {
+                        if ( selected && foam.util.equals(selected.id, id) ) {
+                          return self.returnExpandedCSS('/*%PRIMARY3%*/ #604aff');
+                        }
+                        return self.returnExpandedCSS('/*%GREY2%*/ #9ba1a6');
+                      }, this.selection$, this.data$.dot('id'))
+            }).
+          endContext().
           end().
         end().
         start().
@@ -322,19 +330,26 @@ foam.CLASS({
       this.selection = this.data;
       e.preventDefault();
       e.stopPropagation();
-    },
+    }
+  ],
 
-    function onClickFunctions(e) {
-      if ( this.onClickAddOn )
-        this.onClickAddOn(this.data);
-      this.toggleExpanded(e);
+  actions: [
+    {
+      name: 'onClickFunctions',
+      label: '',
+      code: function () {
+        if ( this.onClickAddOn )
+          this.onClickAddOn(this.data);
+        this.toggleExpanded();
+      }
     },
-
-    function toggleExpanded(e) {
-      this.expanded  = ! this.expanded;
-      this.selection = this.data;
-      e.preventDefault();
-      e.stopPropagation();
+    {
+      name: 'toggleExpanded',
+      label: '',
+      code: function() {
+        this.expanded  = ! this.expanded;
+        this.selection = this.data;
+      }
     }
   ]
 });

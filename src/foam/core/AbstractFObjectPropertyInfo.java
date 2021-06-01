@@ -141,9 +141,8 @@ public abstract class AbstractFObjectPropertyInfo
   public void format(foam.lib.formatter.FObjectFormatter formatter, foam.core.FObject obj) {
     Object propObj = get_(obj);
     if ( propObj instanceof FObject && ! (propObj instanceof OutputJSON) ) {
-      formatter.output((FObject) propObj, of());
-    }
-    else {
+      formatter.output((FObject) propObj, of(), this);
+    } else {
       formatter.output(propObj);
     }
   }
