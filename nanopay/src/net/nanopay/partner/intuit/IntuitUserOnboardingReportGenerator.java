@@ -57,6 +57,7 @@ public class IntuitUserOnboardingReportGenerator extends ReportGenerator {
     cor.setUserSendingOver1000(crunchService.getJunctionFor(x, "crunch.onboarding.api.unlock-ca-payments", user, user).getStatus() == CapabilityJunctionStatus.GRANTED);
 
     cor.setOnboardingSubmissionDate(user.getCreated());
+    cor.setUserCreated(user.getCreated());
 
     cor.setComplianceStatus(user.getCompliance().toString());
     cor.setApprovalDate(user.getDateCompliancePassed());
