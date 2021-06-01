@@ -91,8 +91,9 @@ foam.CLASS({
       }
     },
     {
-      name: 'replaceHistoryState',
       class: 'Boolean',
+      name: 'replaceHistoryState',
+      documentation: 'if set to true, then current history state will be replaced instead of new state being created',
       value: true
     }
   ],
