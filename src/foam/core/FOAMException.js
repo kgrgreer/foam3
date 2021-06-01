@@ -91,8 +91,7 @@ foam.CLASS({
       name: 'message',
       class: 'String',
       storageTransient: true,
-      visibility: 'RO',
-      factory: function() { return this.getTranslation(); }
+      visibility: 'RO'
     },
     {
       name: 'errorCode',
@@ -113,7 +112,12 @@ foam.CLASS({
       name: 'getTranslation',
       type: 'String',
       code: function() {
-        return this.translationService.getTranslation(foam.locale, this.cls_.id, this.exceptionMessage);
+        var msg = this.translationService.getTranslation(foam.locale, this.cls_.id+'.'+this.exceptionMessage, this.exceptionMessage);
+        let m = this.getTemplateValues();
+        for ( let [key, value] of m.entries() ) {
+          msg = msg.replaceAll(key, value);
+        }
+        return msg;
       },
       javaCode: `
       try {
@@ -123,7 +127,7 @@ foam.CLASS({
           if ( SafetyUtil.isEmpty(locale) ) {
             locale = "en";
           }
-          var msg = ts.getTranslation(locale, getClassInfo().getId(), getExceptionMessage());
+          var msg = ts.getTranslation(locale, getClass().getName()+"."+getExceptionMessage(), getExceptionMessage());
 
           // REVIEW: temporary - default/simple java template support not yet split out from EmailTemplateEngine.
           foam.nanos.notification.email.EmailTemplateEngine template = new foam.nanos.notification.email.EmailTemplateEngine();
@@ -140,6 +144,16 @@ foam.CLASS({
       documentation: 'Build map of template parameter replacements',
       name: 'getTemplateValues',
       type: 'Map',
+      code: function() {
+        var m = new Map();
+        var ps = this.cls_.getAxiomsByClass(foam.core.Property);
+        for ( var i = 0, property; property = ps[i]; i++ ) {
+          if ( ! property.externalTransient ) {
+            m.set('{{'+property.name+'}}', this[property.name] || '');
+          }
+        }
+        return m;
+      },
       javaCode: `
       Map map = new HashMap();
       List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
