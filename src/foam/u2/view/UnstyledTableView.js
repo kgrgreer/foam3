@@ -687,7 +687,10 @@ foam.CLASS({
                       tag(view.OverlayActionListView, {
                         data: Object.values(actions),
                         obj: obj,
-                        dao: dao
+                        dao: dao,
+                        showDropdownIcon: false,
+                        buttonStyle: 'TERTIARY',
+                        icon: 'images/Icon_More_Resting.svg'
                       }).
                     end();
                   tbodyElement.add(tableRowElement);
