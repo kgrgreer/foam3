@@ -144,7 +144,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'natureCode'
+      name: 'reasonCode'
     }
   ],
 
@@ -162,7 +162,7 @@ foam.CLASS({
       if ( SafetyUtil.isEmpty(getIOFCurrency()) ) throw new ValidationException("IOFCurrency is missing on PartnerLineItem");
       if ( getVET() == 0 ) throw new ValidationException("VET is missing on PartnerLineItem");
       if ( getBankFee() == 0 ) throw new ValidationException("bankFee is missing on PartnerLineItem");
-      if ( SafetyUtil.isEmpty(getNatureCode()) ) throw new ValidationException("natureCode is missing on PartnerLineItem");
+      if ( SafetyUtil.isEmpty(getReasonCode()) ) throw new ValidationException("reasonCode is missing on PartnerLineItem");
       `
     }
   ]
