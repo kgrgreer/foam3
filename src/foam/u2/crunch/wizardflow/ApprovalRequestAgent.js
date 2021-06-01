@@ -15,6 +15,7 @@ foam.CLASS({
     'approvableDAO',
     'approvalRequestDAO',
     'capabilities',
+    'crunchService',
     'rootCapability',
     'subject',
     'submitted',
@@ -40,30 +41,34 @@ foam.CLASS({
     async function execute() {
       var id = foam.uuid.randomGUID();
 
-      var subject = this.wizardSubject ? this.wizardSubject : this.subject;
+      await this.crunchService.createApprovalRequest(
+        null,
+        this.rootCapability.id
+      );
 
-      var topApprovable = this.UCJUpdateApprovable.create({
-        id: id,
-        associatedTopLevelUCJ: {
-          sourceId:  subject.realUser.id,
-          targetId: this.rootCapability.id,
-          ...(subject.user.id != subject.realUser.id
-            ? { effectiveUser: subject.user.id } : {})
-        }
-      });
-      await this.approvableDAO.put(topApprovable);
-
-      var approvalRequest = this.ApprovalRequest.create({
-        daoKey: 'approvableDAO',
-        objId: id,
-        operation: this.Operation.UPDATE,
-        createdFor: this.wizardSubject ?
-          this.wizardSubject.user.id : this.subject.user.id,
-        ...(this.group ? { group: this.group } : {}),
-        classificationEnum: this.ApprovalRequestClassificationEnum.UPDATE_ON_ACTIVE_UCJ
-      });
-
-      await this.approvalRequestDAO.put(approvalRequest);
+      // var subject = this.wizardSubject ? this.wizardSubject : this.subject;
+      // var topApprovable = this.UCJUpdateApprovable.create({
+      //   id: id,
+      //   associatedTopLevelUCJ: {
+      //     sourceId:  subject.realUser.id,
+      //     targetId: this.rootCapability.id,
+      //     ...(subject.user.id != subject.realUser.id
+      //       ? { effectiveUser: subject.user.id } : {})
+      //   }
+      // });
+      // await this.approvableDAO.put(topApprovable);
+      //
+      // var approvalRequest = this.ApprovalRequest.create({
+      //   daoKey: 'approvableDAO',
+      //   objId: id,
+      //   operation: this.Operation.UPDATE,
+      //   createdFor: this.wizardSubject ?
+      //     this.wizardSubject.user.id : this.subject.user.id,
+      //   ...(this.group ? { group: this.group } : {}),
+      //   classificationEnum: this.ApprovalRequestClassificationEnum.UPDATE_ON_ACTIVE_UCJ
+      // });
+      //
+      // await this.approvalRequestDAO.put(approvalRequest);
     }
   ]
 });
