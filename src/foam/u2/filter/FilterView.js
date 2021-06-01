@@ -109,20 +109,6 @@ foam.CLASS({
       background-image: linear-gradient(to bottom, #ffffff, #d3d6d8);
     }
 
-    ^container-footer {
-      margin-top: 8px;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-    }
-
-    ^label-results {
-      margin: 0;
-      font-size: 12px;
-      padding: 0 8px;
-      flex: 1;
-    }
-
     ^link-mode {
       margin: 0;
       font-size: 14px;
@@ -378,19 +364,12 @@ foam.CLASS({
                   .startContext({ data: self })
                     .tag(self.CLEAR_ALL, {
                       isDestructive: true,
-                      buttonStyle: 'TERTIARY'                  
+                      buttonStyle: 'TERTIARY'
                     })
                   .endContext()
                 .end()
-
-            .end()
-            .start().addClass(self.myClass('container-footer'))
-              .start('p')
-                .addClass(self.myClass('label-results'))
-                .add(self.resultLabel$)
-              .end()
             .end();
-          }))
+          }));
 
           return e;
         }, this.filters$));
