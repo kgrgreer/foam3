@@ -176,21 +176,25 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
 
   // select all ccjs from pcjdao and put them into map of <src, [tgt]> pairs
   // then the map is stored in the session context under CACHE_KEY
-  public Map initCache(X x) {
+  public Map initCache(X x, bool cache) {
     
-    Sink purgeSink = new Sink() {
-      public void put(Object obj, Detachable sub) {
-        updateEntry(x, (CapabilityCapabilityJunction) obj);
-      }
-      public void remove(Object obj, Detachable sub) {
-        updateEntry(x, (CapabilityCapabilityJunction) obj);
-      }
-      public void reset(Detachable sub) {
-        purgeCache(x);
-      }
-      public void eof() {}
-    };
-    ((DAO) x.get("prerequisiteCapabilityJunctionDAO")).listen(purgeSink, TRUE);
+    if ( cache ) {
+      Sink purgeSink = new Sink() {
+        public void put(Object obj, Detachable sub) {
+          updateEntry(x, (CapabilityCapabilityJunction) obj);
+        }
+        public void remove(Object obj, Detachable sub) {
+          updateEntry(x, (CapabilityCapabilityJunction) obj);
+        }
+        public void reset(Detachable sub) {
+          purgeCache(x);
+        }
+        public void eof() {}
+      };
+
+      ((DAO) x.get("prerequisiteCapabilityJunctionDAO")).listen(purgeSink, TRUE);
+    }
+
     Map map = new ConcurrentHashMap<String, List<String>>();
     var dao = ((DAO) x.get("prerequisiteCapabilityJunctionDAO")).inX(x);
     var sink = (GroupBy) dao.
@@ -208,10 +212,12 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       map.put(key.toString(), ((ArraySink) ((foam.mlang.sink.Map)
         sink.getGroups().get(key)).getDelegate()).getArray());
     }
+
     Session session = x.get(Session.class);
-    if ( session != null ) {
+    if ( cache && session != null ) {
       session.setContext(session.getContext().put(CACHE_KEY, map));
     }
+
     return map;
   }
 
@@ -258,15 +264,13 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
   // otherwise, return the result of directly looking up prerequisitecapabilityjunctiondao since
   // the cache is not valid
   protected Map<String, List<String>> getPrereqsCache(X x) {
+    Session session = x.get(Session.class);
     User user = ((Subject) x.get("subject")).getUser();
-    if ( user == null ) {
-      return initCache(x);
+    if ( user == null || session == null || user.getId() == 1) {
+      return initCache(x, false);
     }
     Long userId = user.getId();
     Long agentId = ((Subject) x.get("subject")).getRealUser().getId();
-
-    Session session = x.get(Session.class);
-    if ( session == null ) return null;
     
     boolean cacheValid = session.getAgentId() > 0 ?
       session.getAgentId() == agentId && session.getUserId() == userId :
@@ -277,7 +281,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
     if ( ! cacheValid ) return null;
 
     Map<String, List<String>> map = (Map) session.getContext().get(CACHE_KEY);
-    return map == null ? initCache(x) : map;
+    return map == null ? initCache(x, true) : map;
   }
 
   //TODO: Needs to be refactored once Subject is serializable
