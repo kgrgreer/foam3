@@ -38,6 +38,10 @@ foam.CLASS({
     'static foam.mlang.MLang.EQ'
   ],
 
+  implements: [
+    'net.nanopay.tx.SummarizingTransaction'
+  ],
+
   methods: [
     {
       documentation: 'sorts transaction into category, for display to user.',
