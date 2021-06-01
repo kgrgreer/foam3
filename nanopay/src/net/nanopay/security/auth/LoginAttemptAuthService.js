@@ -52,12 +52,6 @@ foam.CLASS({
     'java.text.SimpleDateFormat'
   ],
 
-  messages: [
-    { name: 'ACCOUNT_LOCKED', message: 'Account locked. Please contact customer service.'},
-    { name: 'LOGIN_FAILED', message: 'Login failed'},
-    { name: 'ATTEPMTS_REMAIN', message: 'attempts remaining.'},
-  ],
-
   properties: [
     {
       class: 'Short',
@@ -71,15 +65,18 @@ foam.CLASS({
       javaFactory: 'SimpleDateFormat df =  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); df.setTimeZone(java.util.TimeZone.getTimeZone("UTC")); return df;',
     },
     {
+      documentation: 'delay between logins in minutes',
       class: 'Short',
-      name: 'loginDelayMultiplier',
-      value: 5
+      name: 'loginDelay',
+      value: 1
     },
     {
       name: 'logger',
       class: 'FObjectProperty',
       of: 'foam.nanos.logger.Logger',
       visibility: 'HIDDEN',
+      transient: true,
+      javaCloneProperty: '//noop',
       javaFactory: `
         return new PrefixLogger(new Object[] {
           this.getClass().getSimpleName()
@@ -121,7 +118,6 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        AuthService auth = (AuthService) x.get("auth");
         if ( SafetyUtil.isEmpty(identifier) &&
              SafetyUtil.isEmpty(password) ) {
           throw new AuthenticationException("Not logged in");
@@ -138,25 +134,29 @@ foam.CLASS({
             la = (LoginAttempts) la.fclone();
           }
         }
-        if ( user != null &&
-             isLoginAttemptsExceeded(la) ) {
-          
-          if ( auth.check(x, "loginattempts.lock.time") ) {
-            if ( ! loginFreezeWindowReached(la) ) {
-              throw new foam.nanos.auth.AccountTemporarilyLockedException(getDateFormat().format(la.getNextLoginAttemptAllowedAt()));
-            }
-          }  else {
-            String locale = user.getLanguage().getCode().toString();
-            throw new foam.nanos.auth.AccountLockedException();
-          }
-        }
+
+
+        // TODO: auth.checks are not working, wrong context.
         try {
           // attempt to login in, on success reset the login attempts
-          User u = super.login(x, identifier, password);
+          user = super.login(x, identifier, password);
+
+          if ( super.check(x, "loginattempts.lock.time") ||
+               "admin".equals(user.getGroup()) ) {
+            if ( ! loginFreezeWindowReached(la) ) {
+              throw new Throwable();
+            }
+          } else {
+            int remaining = getMaxAttempts() - la.getLoginAttempts();
+            if ( remaining <= 0 ) {
+              throw new Throwable();
+            }
+          }
+
           resetLoginAttempts(x, la);
-          return u;
+          return user;
         } catch ( AccessDeniedException t ) {
-          // don't allow admin to be locked out when accessed from restricted network.
+          // TODO: don't allow admin to be locked out when accessed from restricted network.
           throw t;
         } catch ( Throwable t ) {
           if ( user == null ) {
@@ -164,18 +164,34 @@ foam.CLASS({
               We check for invalid users in NanopayUserAndGroupAuthService.
               This gets caught here, hence the rethrow.
             */
-            throw t;
+            if ( t instanceof RuntimeException ) {
+              throw (RuntimeException) t;
+            }
+            throw new RuntimeException(t.getMessage(), t);
           }
-          // increment login attempts by 1
-          if ( auth.check(x, "loginattempts.notclustered") ) {
-            la.setClusterable(false);
+
+          try {
+            if ( super.check(x, "loginattempts.notclustered") ||
+                 "admin".equals(user.getGroup()) ) {
+              la.setClusterable(false);
+            }
+
+            la = incrementLoginAttempts(x, la);
+            int remaining = getMaxAttempts() - la.getLoginAttempts();
+            if ( remaining > 0 ) {
+              throw new net.nanopay.security.auth.InvalidPasswordException(String.valueOf(remaining));
+            }
+
+            if ( super.check(x, "loginattempts.lock.time") ||
+                 "admin".equals(user.getGroup()) ) {
+              la = incrementNextLoginAttemptAllowedAt(x, la);
+              throw new net.nanopay.security.auth.AccountTemporarilyLockedException(getDateFormat().format(la.getNextLoginAttemptAllowedAt()));
+            }
+
+            throw new foam.nanos.auth.AccountLockedException();
+          } finally {
+            super.logout(x);
           }
-          la = incrementLoginAttempts(x, la);
-          if ( auth.check(x, "loginattempts.lock.time") ) {
-            incrementNextLoginAttemptAllowedAt(x, la);
-          }
-          getLogger().error("Error logging in.", t);
-          throw new foam.nanos.auth.AuthenticationException(getErrorMessage(x, user, la, t.getMessage()));
         }
       `
     },
@@ -243,48 +259,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'getErrorMessage',
-      documentation: 'Convenience method with returns a formatted error message',
-      type: 'String',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'user',
-          type: 'User'
-        },
-        {
-          name: 'loginAttempts',
-          type: 'LoginAttempts'
-        },
-        {
-          name: 'reason',
-          type: 'String'
-        }
-      ],
-      javaCode: `
-        AuthService auth = (AuthService) x.get("auth");
-        if ( AccountStatus.DISABLED == user.getStatus() ) {
-          return reason;
-        }
-        int remaining = getMaxAttempts() - loginAttempts.getLoginAttempts();
-        String locale = user.getLanguage().getCode().toString();
-        TranslationService ts = (TranslationService) getX().get("translationService");
-        if ( remaining > 0 ) {
-          return ts.getTranslation(locale, getClassInfo().getId()+ ".LOGIN_FAILED", this.LOGIN_FAILED) + " " + remaining + " "
-          + ts.getTranslation(locale, getClassInfo().getId()+ ".ATTEPMTS_REMAIN", this.ATTEPMTS_REMAIN);
-        } else {
-          if ( auth.check(x, "loginattempts.lock.time") ){
-            return "Account temporarily locked. You can attempt to login after " + getDateFormat().format(loginAttempts.getNextLoginAttemptAllowedAt());
-          } else {
-            return ts.getTranslation(locale, getClassInfo().getId()+ ".ACCOUNT_LOCKED", this.ACCOUNT_LOCKED);
-          }
-        }
-      `
-    },
-    {
       name: 'resetLoginAttempts',
       documentation: 'Checks if login attempts have been modified, and resets them if they have been',
       type: 'LoginAttempts',
@@ -331,7 +305,7 @@ foam.CLASS({
     {
        name: 'incrementNextLoginAttemptAllowedAt',
        documentation: 'Increases time delay between attempts',
-       type: 'Void',
+       type: 'LoginAttempts',
        args: [
          {
            name: 'x',
@@ -344,10 +318,15 @@ foam.CLASS({
        ],
        javaCode: `
          loginAttempts = loginAttempts.isFrozen() ? (LoginAttempts) loginAttempts.fclone() : loginAttempts;
+         java.util.Date now = new Date();
          Calendar cal = Calendar.getInstance();
-         cal.add((Calendar.MINUTE), loginAttempts.getLoginAttempts() * getLoginDelayMultiplier());
+         cal.setTime(loginAttempts.getNextLoginAttemptAllowedAt());
+         if ( cal.getTime().getTime() < now.getTime() ) {
+           cal.setTime(now);
+         }
+         cal.add((Calendar.MINUTE), getLoginDelay());
          loginAttempts.setNextLoginAttemptAllowedAt(cal.getTime());
-         ((foam.dao.DAO) x.get("localLoginAttemptsDAO")).put(loginAttempts);
+         return (LoginAttempts) ((foam.dao.DAO) x.get("localLoginAttemptsDAO")).put(loginAttempts);
        `
     },
     {
@@ -364,10 +343,7 @@ foam.CLASS({
         if ( loginAttempts == null ) {
           throw new foam.nanos.auth.UserNotFoundException();
         }
-        Calendar now = Calendar.getInstance();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(loginAttempts.getNextLoginAttemptAllowedAt());
-        return now.compareTo(cal) > 0;
+        return loginAttempts.getNextLoginAttemptAllowedAt().getTime() < System.currentTimeMillis();
       `
     },
   ]

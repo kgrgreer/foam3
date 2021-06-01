@@ -157,13 +157,13 @@ foam.CLASS({
 
         // attempt to exceed login attempts with invalid credentials
         test(foam.test.TestUtils.testThrows(() -> loginWithInvalidCredentials(x, auth, email),
-          getNextLoginAttemptAllowedAtMsg(x, email), foam.nanos.auth.AuthenticationException.class),
-          "LoginAttemptAuthService throws AuthenticationException with the message \\"Account locked. Please contact customer service.\\" with invalid credentials after using " + method);
+          getNextLoginAttemptAllowedAtMsg(x, email), net.nanopay.security.auth.AccountTemporarilyLockedException.class),
+          "LoginAttemptAuthService throws AccountTemporarilyLockedException with the message \\"You can login again after {{}}\\" with invalid credentials after using " + method);
 
         // attempt to exceed login attempts with valid credentials
         test(foam.test.TestUtils.testThrows(() -> loginWithValidCredentials(x, auth, email),
-          getNextLoginAttemptAllowedAtMsg(x, email), foam.nanos.auth.AuthenticationException.class),
-          "LoginAttemptAuthService throws AuthenticationException with the message \\"Account locked. Please contact customer service.\\" with valid credentials after using " + method);
+          null, foam.nanos.auth.AccountLockedException.class),
+          "LoginAttemptAuthService throws AccountLockedException with the message \\"Please contact customer service\\" with valid credentials after using " + method);
       `
     },
     {

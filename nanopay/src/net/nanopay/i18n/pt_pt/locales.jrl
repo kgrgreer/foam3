@@ -3909,3 +3909,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureCodeApprovalRequest.REJECT.label",target:"Rejeitar"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.TransactionApprovalRequest.PAYMENT_ID.label",target:"Referência"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.security.auth.AccountTemporarilyLockedException",target:"Conta temporariamente bloqueada"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.security.auth.AccountTemporarilyLockedException.You can login again after {{message}}",target:"Você pode tentar fazer o login novamente após {{message}}"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.security.auth.InvalidPasswordException.{{message}} attempts remaining",target:"{{message}} tentativas restantes"})
