@@ -34,7 +34,7 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(`
-  protected AccountTemporarilyLockedException() {
+  public AccountTemporarilyLockedException() {
   }
 
   public AccountTemporarilyLockedException(String message) {
