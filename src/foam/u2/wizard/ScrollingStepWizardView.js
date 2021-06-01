@@ -146,6 +146,10 @@ foam.CLASS({
         for ( let hash in wizardPositionElements ) {
           let el = await wizardPositionElements[hash].section.el();
           let pos = wizardPositionElements[hash].position;
+          if ( ! el ) {
+            delete wizardPositionElements[hash];
+            continue;
+          }
           if ( test_visible(el) ) {
             if ( ! minTopPosition || pos.compareTo(minTopPosition) < 0 )
               minTopPosition = pos;

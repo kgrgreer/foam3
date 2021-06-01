@@ -1311,9 +1311,8 @@ foam.CLASS({
       this.cview$.valueSub('invalidated', this.paint);
     },
 
-    async function erase() {
-      let el = await this.el();
-      el.width = el.width;
+    function erase() {
+      this.el_().width = this.el_().width;
     }
   ],
 

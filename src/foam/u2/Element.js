@@ -277,12 +277,7 @@ foam.CLASS({
   `,
 
   methods: [
-    function el() {
-      var self = this;
-      return new Promise(function(resolve, reject) {
-        self.sub('onload', () => resolve(self.el_()));
-      });
-    },
+    function el() {},
     function output(out) {},
     function load() {},
     function unload() {},
@@ -322,6 +317,12 @@ foam.CLASS({
   axioms: [ foam.pattern.Singleton.create() ],
 
   methods: [
+    function el() {
+      var self = this;
+      return new Promise(function(resolve, reject) {
+        self.sub('onload', () => resolve(self.el_()));
+      });
+    },
     function output(out) {
       this.initE();
       this.state = this.OUTPUT;
@@ -341,6 +342,12 @@ foam.CLASS({
   documentation: 'State of Element after it has been output to DOM, but not yet loaded.',
 
   methods: [
+    function el() {
+      var self = this;
+      return new Promise(function(resolve, reject) {
+        self.sub('onload', () => resolve(self.el_()));
+      });
+    },
     function output(out) {
       // TODO: raise a real error
       this.__context__.warn('ERROR: Duplicate output.');

@@ -97,6 +97,10 @@ foam.CLASS({
         return;
       }
       var el = await this.target.el();
+      if ( ! el) {
+        console.error('Target not found');
+        return;
+      }
       this.target.on('mouseover',  this.onMouseOver);
       this.target.on('mousedown',  this.close);
       this.target.on('mouseleave', this.close);
