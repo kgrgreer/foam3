@@ -7,18 +7,21 @@
 foam.CLASS({
   package: 'foam.u2.view',
   name: 'OverlayActionListView',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.tag.Button',
 
   documentation: 'An overlay that presents a list of actions a user can take.',
 
   requires: [
     'foam.core.ConstantSlot',
     'foam.core.ExpressionSlot',
-    'foam.u2.md.OverlayDropdown'
+    'foam.u2.md.OverlayDropdown',
+    'foam.u2.HTMLView'
   ],
 
   imports: [
-    'ctrl'
+    'ctrl',
+    'document',
+    'theme'
   ],
 
   properties: [
@@ -31,50 +34,8 @@ foam.CLASS({
       name: 'obj'
     },
     {
-      class: 'URL',
-      name: 'activeImageURL',
-      // value: 'images/Icon_More_Active.svg'
-      value: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAh0lEQVRIS2NkoDFgpLH5DCPIAp2Iyw6MDP/mg4L0PwNT4pUVugeICV6ig0gn8uIDRgZGebCh//8/uLxCX5GqFuhGXPzAwMjID/HB/4dXlusrUNUCUBAxMP5bAPEBUwLVg4gY12JTQ3Qc0NyC0VREMIhHUxFRQTRaFuENptFURDAVkauA5qUpAH6TVBkCb7ScAAAAAElFTkSuQmCC'
-    },
-    {
-      class: 'URL',
-      name: 'restingImageURL',
-      // value: 'images/Icon_More_Resting.svg'
-      value: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAhUlEQVRIS2NkoDFgpLH5DCPIgv7+fof/jIzzQUHK+P9/YmFh4QFigpfoIOrt73/AyMgoDzX0QVFBgSK1LfjAyMjIDzL0////D4sLCxWoagEoiP4xMCwAGcrEwJBA9SAixrXY1BAdBzS3YDQVEQzi0VREVBCNlkV4g2k0FRFMReQqoHlpCgDoa1EZV5fY0wAAAABJRU5ErkJggg=='
-    },
-    {
-      class: 'URL',
-      name: 'hoverImageURL',
-      // value: 'images/Icon_More_Hover.svg'
-      value: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAzklEQVRIS2O8f/++wL9///oZGBgCGBgYBBioBxYwMTEVMt65c2cDIyOjP/XMRZj0////hYx37979TwvDoWZ+oLUFDERb8ObNG4bzFy+CHWaor88gIiJClMeJtmDXnj0M379/BxvKxcXF4OrsTF0Ltm7fzvDnzx+woZycnAxuLi7UtQAUROcuXAAbamRgQP0gIsq5WBQRHQc0t2A0FREM4tFURFQQjZZFeINpxKaij7Sv9EHNlr9//y5gZGR0YGBg4CeYXolUAGpRMDMzFwAAKa+ydPFw0XUAAAAASUVORK5CYII=',
-    },
-    {
-      class: 'URL',
-      name: 'disabledImageURL',
-      // value: 'images/Icon_More_Disabled.svg'
-      value: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAhUlEQVRIS2NkoDFgpLH5DCPIgv7+fof/jIzzQUHK+P9/YmFh4QFigpfoIOrt73/AyMgoDzX0QVFBgSK1LfjAyMjIDzL0////D4sLCxWoagEoiP4xMCwAGcrEwJBA9SAixrXY1BAdBzS3YDQVEQzi0VREVBCNlkV4g2k0FRFMReQqoHlpCgDoa1EZV5fY0wAAAABJRU5ErkJggg=='
-    },
-    {
-      class: 'URL',
-      name: 'imageURL_',
-      expression: function(restingImageURL, hoverImageURL, disabledImageURL, activeImageURL, hovered_, disabled_, active_) {
-        if ( disabled_ ) return `url(${disabledImageURL})`;
-        if ( active_   ) return `url(${activeImageURL})`;
-        if ( hovered_  ) return `url(${hoverImageURL})`;
-        return `url(${restingImageURL})`;
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'hovered_'
-    },
-    {
       class: 'Boolean',
       name: 'disabled_'
-    },
-    {
-      class: 'Boolean',
-      name: 'active_'
     },
     {
       class: 'FObjectProperty',
@@ -88,98 +49,85 @@ foam.CLASS({
       class: 'Boolean',
       name: 'overlayInitialized_'
     },
-    'dao'
+    'dao',
+    {
+      class: 'Boolean',
+      name: 'showDropdownIcon',
+      documentation: 'Hide/Show dropdown arrow',
+      value: true
+    },
+    {
+      name: 'dropdownIcon',
+      documentation: 'fallback dropdown icon that can be specified for non-nanos apps',
+      value: '/images/dropdown-icon.svg'
+    },
+    // Used for keyboard navigation
+    'firstEl_', 'lastEl_', 
+    [ 'isMouseClick_', true ]
   ],
 
   css: `
-    ^action {
-      padding: 10px;
-    }
-
-    ^action[disabled] {
-      color: #aaa;
-    }
-
-    ^action:hover:not([disabled]) {
-      cursor: pointer;
-      background-color: /*%PRIMARY5%*/ #e5f1fc;
-    }
-
-    ^icon {
-      background-size: 24px;
-      width: 24px;
-      height: 24px;
-      right: 20;
-    }
-
-    ^icon:hover {
-      cursor: pointer;
-    }
-
-    ^noselect {
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-    }
-
-    ^disabled-button-container>button {
-      background-color: /*%WHITE%*/ #FFFFFF;
+    ^disabled > button {
       color: /*%GREY4%*/ grey;
-      justify-content: flex-start;
-      text-align: left;
-      white-space: nowrap;
-      width: fill-available;
-      width: -webkit-fill-available;
     }
 
     ^button-container>button {
+      border: 1px solid transparent;
       background-color: /*%WHITE%*/ #FFFFFF;
       justify-content: flex-start;
       text-align: left;
       white-space: nowrap;
       width: fill-available;
       width: -webkit-fill-available;
+    }
+
+    ^button-container > button > img{
+      height: 100%;
     }
 
     ^button-container>button:hover {
       background-color: /*%PRIMARY5%*/ #E5F1FC;
     }
+
+    ^button-container>button:focus {
+      border-color: /*%PRIMARY4%*/ #C6D2FF;
+      background-color: /*%PRIMARY5%*/ #E5F1FC;
+    }
+
+    ^button-container>button:focus:not(:focus-visible){
+      border-color: transparent;
+    }
+
+    ^iconOnly{
+      padding: 0px !important;
+    }
+
+    ^dropdownIcon {
+      margin-left: 4px;
+    }
   `,
 
   methods: [
-    async function initE() {
-      var self = this;
-      this.onDetach(this.active_$.follow(this.overlay_.opened$));
+    function initE() {
       var dataSlots = this.data.map((action) => action.createIsAvailable$(this.__context__, this.obj));
-      if  ( ! dataSlots.filter(slot => slot.get()).length > 0 ) return;
+      if  ( ! dataSlots.filter(slot => slot.get()).length > 0 ) {
+        this.shown = false; return;
+      }
+      this.SUPER();
+    },
 
-      this.
-        addClass(this.myClass()).
-        start('span').
-          addClass(this.myClass('noselect')).
-          start().
-            addClass(this.myClass('icon')).
-            style({ 'background-image': this.imageURL_$ }).
-                on('mouseover', self.onMouseOver).
-                on('mouseout', self.onMouseOut).
-                on('click', function(evt) {
-                  evt.preventDefault();
-                  evt.stopPropagation();
-                  if ( self.disabled_ ) return;
-                  if ( ! self.overlayInitialized_ ) self.initializeOverlay();
-                  self.overlay_.open(evt.clientX, evt.clientY);
-                }).
-          end().
-        end();
+    function addContent() {
+      this.SUPER();
+      this.showDropdownIcon && this.start().addClass(this.myClass('dropdownIcon')).add(this.theme ?
+        this.HTMLView.create({ data: this.theme.glyphs.dropdown.expandSVG() }):
+        this.start('img').attr('src', this.dropdownIcon$).end()
+      ).end();
     },
 
     async function initializeOverlay() {
       var self = this;
 
-      if ( this.obj ) {
+      if ( this.obj && this.dao ) {
         this.obj = await this.dao.inX(this.__context__).find(this.obj.id);
       }
 
@@ -188,25 +136,38 @@ foam.CLASS({
         code: (...rest) => ! rest.reduce((l, r) => l || r, false)
       })));
 
+      this.onDetach(() => { this.overlay_ && this.overlay_.remove(); });
 
       self.obj.sub(function() {
         self.overlay_.close();
       });
 
       this.overlay_.startContext({ data: self.obj })
-      .forEach(self.data, function(action) {
-        this
-            .start()
-              .addClass(action.createIsEnabled$(self.__context__, self.obj).map( e => e ? self.myClass('button-container') : self.myClass('disabled-button-container')))
-              .tag(action, { buttonStyle: 'UNSTYLED' })
-              .attrs({
-                disabled: action.createIsEnabled$(self.__context__, self.obj).map(function(e) {
-                  return ! e;
+        .forEach(self.data, function(action) {
+          if ( action.createIsAvailable$(self.__context__, self.obj).value ) {
+            this
+              .start()
+                .addClass(self.myClass('button-container'))
+                .addClass(action.createIsEnabled$(self.__context__, self.obj).map( e => ! e && self.myClass('disabled')))
+                .tag(action, { buttonStyle: 'UNSTYLED' })
+                .attrs({
+                  disabled: action.createIsEnabled$(self.__context__, self.obj).map(function(e) {
+                    return ! e;
+                  }),
+                  tabindex: -1
                 })
-              })
-            .end();
+              .end();
+          }
         })
-        .endContext();
+      .endContext();
+
+      // Moves focus to the modal when it is open and keeps it in the modal till it is closed
+      
+      this.overlay_.on('keydown', this.onKeyDown);
+      var actionElArray_ = this.overlay_.dropdownE_.childNodes;
+      this.firstEl_ = actionElArray_[0].childNodes[0];
+      this.lastEl_ = actionElArray_[actionElArray_.length - 1].childNodes[0];
+      (this.firstEl_ && ! this.isMouseClick) && this.firstEl_.focus();
 
       // Add the overlay to the controller so if the table is inside a container
       // with `overflow: hidden` then this overlay won't be cut off.
@@ -216,12 +177,36 @@ foam.CLASS({
   ],
 
   listeners: [
-    function onMouseOver() {
-      this.hovered_ = true;
+    function click(evt) {
+      this.SUPER(evt);
+      this.overlay_.parentEl = this;
+      this.isMouseClick = !! evt.detail;
+      var x = evt.clientX || this.getBoundingClientRect().x;
+      var y = evt.clientY || this.getBoundingClientRect().y;
+      if ( this.disabled_ ) return;
+      if ( ! this.overlayInitialized_ ) this.initializeOverlay();
+      this.overlay_.open(x, y);
+      (this.firstEl_ && ! this.isMouseClick) && this.firstEl_.focus();
     },
 
-    function onMouseOut() {
-      this.hovered_ = false;
+    function onKeyDown(e) {
+      var isTabPressed = (e.key === 'Tab' || e.keyCode === 9);
+
+      if ( ! isTabPressed ) {
+        return;
+      }
+
+      if ( e.shiftKey ) {
+        if ( this.document.activeElement === this.firstEl_.el() ) {
+          this.lastEl_.focus();
+          e.preventDefault();
+        }
+      } else {
+        if ( this.document.activeElement === this.lastEl_.el() ) {
+          this.firstEl_.focus();
+          e.preventDefault();
+        }
+      }
     }
   ]
 });
