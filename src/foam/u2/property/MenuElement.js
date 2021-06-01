@@ -69,7 +69,7 @@ foam.CLASS({
     },
     {
       name: 'onTouch',
-      code: async function(evt) {
+      code: function(evt) {
         if ( ! this.el_().contains(evt.target) ) {
           this.popup.close();
         }

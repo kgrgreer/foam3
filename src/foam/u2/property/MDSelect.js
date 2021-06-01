@@ -33,7 +33,7 @@ foam.CLASS({
     {
       name: 'onClick',
       isFramed: true,
-      code: async function() {
+      code: function() {
         if ( this.mode === foam.u2.DisplayMode.RO ) return;
         if ( this.popup && ! this.popup.isHidden ) {
           this.popup.close();
