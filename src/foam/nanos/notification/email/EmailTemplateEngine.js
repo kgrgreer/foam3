@@ -376,7 +376,7 @@ foam.CLASS({
       ps.setString(body);
       ParserContext parserX = new ParserContextImpl();
       parserX.set("sb", sbJoin);
-      parserX.set("x", x);
+      parserX.set("x", getX());
       parserX.set("logger", x.get("logger"));
       parserX.set("alarmDAO", x.get("alarmDAO"));
       parserX.set("isNextTemplateExtending", false);
