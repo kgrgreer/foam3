@@ -42,5 +42,32 @@ foam.CLASS({
         }));
       }
     }
+  ],
+  
+  messages: [
+    {
+      name: 'MESSAGE',
+      message: 'Insufficient balance in account: '
+    }
+  ],
+  
+  methods: [
+    {
+      name: 'getMessage',
+      type: 'String',
+      code: function() {
+        return this.MESSAGE + this.getAccount();
+      },
+      javaCode: `
+      StringBuilder sb = new StringBuilder();
+      sb.append(this.MESSAGE);
+      sb.append(this.getAccount());
+      if ( ! foam.util.SafetyUtil.isEmpty(super.getMessage()) ) {
+        sb.append("\\n");
+        sb.append(super.getMessage());
+      }
+      return sb.toString();
+      `
+    }
   ]
 });

@@ -878,6 +878,9 @@ foam.CLASS({
 
           var hash = location.hash.substr(1);
 
+
+          this.memento.value = hash;
+
           if ( hash !== 'sme.accountProfile.switch-business' ) {
             this.initLayout.resolve();
           }
