@@ -97,7 +97,6 @@ foam.CLASS({
     {
       documentation: 'Updates transients on current transaction, returns true if anything was modified.',
       name: 'calculateTransients',
-      type: 'Boolean',
       args: [
         { name: 'x', type: 'Context' },
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
@@ -106,28 +105,22 @@ foam.CLASS({
         DAO dao = (DAO) x.get("localTransactionDAO");
         DAO stDAO = (DAO) x.get("summaryTransactionDAO");
         List children = ((ArraySink) dao.where(EQ(Transaction.PARENT, txn.getId())).select(new ArraySink())).getArray();
-        boolean modified = false;
 
         for ( Object obj : children ) {
           Transaction child = (Transaction) obj;
-          modified |= this.calculateTransients(x, child);
+          this.calculateTransients(x, child);
 
           if ( ( ! depositAmountIsSet_ ) && ( child instanceof ValueMovementTransaction ) && SafetyUtil.equals(this.getDestinationAccount(), child.getDestinationAccount()) ) {
             var amount = getDepositAmount();
             var namount = child.getTotal(x, child.getDestinationAccount());
-            if ( amount != namount ) {
+            if ( amount != namount )
               this.setDepositAmount(namount);
-              modified = true;
-            }
-
           }
           if ( ( ! withdrawalAmountIsSet_ ) && ( child instanceof ValueMovementTransaction) && SafetyUtil.equals(this.getSourceAccount(), child.getSourceAccount()) ) {
             var amount = getWithdrawalAmount();
             var namount = -child.getTotal(x, child.getSourceAccount());
-            if ( amount != namount ) {
+            if ( amount != namount )
               this.setWithdrawalAmount(namount);
-              modified = true;
-            }
           }
         }
 
@@ -144,13 +137,9 @@ foam.CLASS({
           cs.setStatus(t.getStatus());
           cs.setCategory(categorize_(t));
           cs.setSummary(cs.toSummary());
-          if ( cs.compareTo(getChainSummary()) != 0 ) {
+          if ( cs.compareTo(getChainSummary()) != 0 )
             this.setChainSummary(cs);
-            modified = true;
-          }
         }
-
-        return modified;
       `
     }
   ]
