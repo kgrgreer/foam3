@@ -831,13 +831,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.MemoModal.NOTE_OPTIONAL"
 //Exceptions
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.UserNotFoundException",target:"Usuário não encontrado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.AuthenticationException",target:"Não logado"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.AccountLockedException",target:"Conta bloqueada"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.AccountLockedException.Please contact customer service",target:"Entre em contato com o atendimento ao cliente"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.InvalidPasswordException",target:"Senha inválida"})
-
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.AccountLockedException",target:"Conta bloqueada. Entre em contato com o atendimento ao cliente."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.BusinessAssociationException",target:"Houve um problema ao associar a empresa ao usuário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.BusinessSignInException",target:"Ocorreu um problema ao iniciar sessão na empresa recém-criada. Vá para o menu de mudança de empresa nos seus menus pessoais para entrar na sua empresa."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.BusinessValidationException",target:"Ocorreu um problema ao criar o negócio"})
 
 //TestExceptions
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.FOAMExceptionTestTestException.ExceptionMessage {{message}}, ErrorCode: {{errorCode}}",target:"MensagemDeExceção {{message}}, ErroDeCódigo: {{errorCode}}"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.FOAMExceptionTestTestException",target:"MensagemDeExceção {{message_}}, ErroDeCódigo: {{errorCode}}"})
