@@ -182,6 +182,16 @@ foam.CLASS({
       expression: function( data$config$approvalMode, data$allValid ) {
         return data$config$approvalMode && ! data$allValid;
       }
+    },
+    {
+      name: 'primaryLabel',
+      documentation: 'Used to switch to the appropriate label for the primary action',
+      expression: function(hasAction, willReject, willSave) {
+        if ( willReject ) return this.REJECT_LABEL;
+        if ( hasAction ) return this.ACTION_LABEL;
+        if ( willSave ) return this.SAVE_LABEL;
+        return this.NO_ACTION_LABEL;
+      }
     }
   ],
 
@@ -246,12 +256,7 @@ foam.CLASS({
                 .addClass(this.myClass('actions'))
                 .startContext({ data: self })
                   .tag(this.SUBMIT, {
-                    label: this.slot(function(hasAction, willReject, willSave) {
-                      if ( willReject ) return this.REJECT_LABEL;
-                      if ( hasAction ) return this.ACTION_LABEL;
-                      if ( willSave ) return this.SAVE_LABEL;
-                      return this.NO_ACTION_LABEL;
-                    }),
+                    label$: this.primaryLabel$,
                     buttonStyle: 'PRIMARY'
                   })
                 .endContext()
