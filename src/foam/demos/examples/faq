@@ -113,6 +113,11 @@ How do I use References?
 <br>
 A Reference is a type of property which stores the primary key of a record
 stored in a DAO.
+<br>
+To create a Reference property, set its class: 'Reference', and then set the of: property to be the model
+of the referenced class, and daoKey: to be the context key of the referenced DAO.
+<br>
+Relationships with cardinality: '1:*' will add a Reference property to the target model.
 --
 
 foam.CLASS({
@@ -154,8 +159,8 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      of: 'Province',
       name: 'province1',
+      of: 'Province',
       targetDAOKey: 'provinceDAO'
 
       // Without specifying the view:, this property will use a ReferenceView
