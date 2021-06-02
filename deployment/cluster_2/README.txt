@@ -15,6 +15,10 @@ mediator
 ./build.sh -uJcluster_2,mm -Nmediator1 -W8100 -m -c [-j (just first time)]
 ./build.sh -uJcluster_2,mm -Nmediator2 -W8110 -m [-j (just first time)]
 
+mediator all
+./build.sh -uJablii,ablii_development,api,intuit,intuit_dev,intuit_development,br,bepay,bepay_development,bpp,bpp_development,treviso,treviso_development,ca-development,cluster_2,mm -Nmediator1 -W8100 -m -c [-j (just first time)]
+./build.sh -uJablii,ablii_development,api,intuit,intuit_dev,intuit_development,br,bepay,bepay_development,bpp,bpp_development,treviso,treviso_development,ca-development,cluster_2,mm -Nmediator2 -W8110 -m [-j (just first time)]
+
 mediator treviso
 ./build.sh -uJbr,treviso,treviso_dev,cluster_2,mm -Nmediator1 -W8100 -m -c [-j (just first time)]
 ./build.sh -uJbr,treviso,treviso_dev,cluster_2,mm -Nmediator2 -W8110 -m [-j (just first time)]

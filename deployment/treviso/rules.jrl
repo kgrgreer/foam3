@@ -143,7 +143,8 @@ p({
     "operation":1,
     "after":true,
     "action":{
-      "class":"net.nanopay.partner.treviso.invoice.UpdateTransactionOnInvoiceValidationRule"
+      "class":"net.nanopay.partner.treviso.invoice.UpdateTransactionOnInvoiceValidationRule",
+      "requiredCapabilityId":"naturecode.br.minmax.requirement"
     },
     "predicate":{
       "class":"foam.nanos.ruler.predicate.PropertyEQValue",

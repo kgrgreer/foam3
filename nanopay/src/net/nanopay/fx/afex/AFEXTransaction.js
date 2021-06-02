@@ -127,6 +127,11 @@ foam.CLASS({
       name: 'estimatedCompletionDate',
       javaFactory: 'return null;'
     },
+    {
+      class: 'String',
+      name: 'POPCode',
+      documentation: 'Purpose of payment.'
+    },
   ],
 
   methods: [

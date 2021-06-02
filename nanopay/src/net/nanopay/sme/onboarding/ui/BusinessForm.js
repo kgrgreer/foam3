@@ -31,7 +31,6 @@ foam.CLASS({
     'foam.nanos.auth.Country',
     'foam.nanos.auth.Region',
     'foam.nanos.auth.User',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.model.BusinessSector'
   ],
 

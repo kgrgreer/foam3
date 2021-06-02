@@ -115,8 +115,7 @@ foam.CLASS({
       name: 'ipAddress',
       readVisibility: 'RO',
       updateVisibility: 'RO',
-      section: 'userAgreementDocumentsSection',
-      externalTransient: true
+      section: 'userAgreementDocumentsSection'
     },
     {
       class: 'String',
@@ -204,7 +203,7 @@ foam.CLASS({
       name: 'agreementDate',
       documentation: 'Date of agreement',
       storageOptional: true,
-      hidden: true
+      readPermissionRequired: true
     }
   ],
 
@@ -231,7 +230,7 @@ foam.CLASS({
             setAgreementDate(Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime());
           }
 
-          if ( request != null ){
+          if ( request != null && ! BaseAcceptanceDocumentCapability.IP_ADDRESS.isSet(this) ){
             setIpAddress(request.getRemoteAddr());
           }
         } catch (Exception e) {

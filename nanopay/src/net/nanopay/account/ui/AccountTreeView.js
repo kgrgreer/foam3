@@ -276,7 +276,7 @@ foam.CLASS({
           .end()
         .endContext()
         .start('div', null, this.canvasContainer$).addClass(this.myClass('canvas-container'))
-          .add(this.slot(selectedRoot => this.accountDAO.find(selectedRoot).then(a => {
+          .add(this.slot(selectedRoot => this.accountDAO.find(selectedRoot).then(async (a) => {
             if ( ! a ) {
               return self.E()
                 .start().addClass(self.myClass('container-message'))
@@ -287,10 +287,11 @@ foam.CLASS({
             }
 
             var v = this.AccountTreeGraph.create({ data: a });
+            var el = await this.el();
             this.cview = this.ZoomMapView.create({
               view: v,
               height$: v.height$,
-              width: this.el().clientWidth,
+              width: el.clientWidth,
               viewBorder: '#d9170e',
               navBorder: 'black',
               handleHeight: '10',

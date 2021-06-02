@@ -23,7 +23,8 @@ foam.CLASS({
   documentation: 'Line item to carry information about the transaction details happening outside of nanopay',
 
   javaImports: [
-    'foam.core.ValidationException'
+    'foam.core.ValidationException',
+    'foam.util.SafetyUtil'
   ],
 
   properties: [
@@ -34,6 +35,10 @@ foam.CLASS({
     },
     {
       class: 'Double',
+      name: 'bankFee'
+    },
+    {
+      class: 'Double',
       name: 'fxSpread',
       documentation: 'the spread partner applies'
     },
@@ -41,9 +46,9 @@ foam.CLASS({
       class: 'Double',
       name: 'effectiveRate',
       factory: function() {
-        return this.fxSpread + this.fxRate + this.bankFeeRate;
+        return (this.fxRate + this.bankFee) * (1 + this.fxSpread);
       },
-      javaFactory: 'return getFxSpread() + getFxRate() + getBankFeeRate();'
+      javaFactory: 'return (getFxRate() + getBankFee()) * (1 + getFxSpread());'
     },
     {
       class: 'UnitValue',
@@ -139,24 +144,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'natureCode'
-    },
-    {
-      class: 'UnitValue',
-      name: 'bankFee',
-      unitPropName: 'bankFeeCurrency'
-    },
-    {
-      class: 'Reference',
-      of: 'foam.core.Currency',
-      name: 'bankFeeCurrency',
-      targetDAOKey: 'currencyDAO',
-      label: 'Bank Fee Currency'
-    },
-    {
-      class: 'Double',
-      name: 'bankFeeRate',
-      label: 'bank Rate'
+      name: 'reasonCode'
     }
   ],
 
@@ -168,14 +156,13 @@ foam.CLASS({
       if ( getFxRate() == 0 ) throw new ValidationException("fxRate is missing on PartnerLineItem");
       if ( getFxSpread() == 0 ) throw new ValidationException("fxSpread is missing on PartnerLineItem");
       if ( getTransactionFee() == 0 ) throw new ValidationException("transactionFee is missing on PartnerLineItem");
-      if ( getTransactionFeeCurrency() == "" ) throw new ValidationException("transactionFeeCurrency is missing on PartnerLineItem");
+      if ( SafetyUtil.isEmpty(getTransactionFeeCurrency()) ) throw new ValidationException("transactionFeeCurrency is missing on PartnerLineItem");
       if ( getIOF() == 0 ) throw new ValidationException("IOF is missing on PartnerLineItem");
       if ( getIOFRate() == 0 ) throw new ValidationException("IOFRate is missing on PartnerLineItem");
-      if ( getIOFCurrency() == "" ) throw new ValidationException("IOFCurrency is missing on PartnerLineItem");
+      if ( SafetyUtil.isEmpty(getIOFCurrency()) ) throw new ValidationException("IOFCurrency is missing on PartnerLineItem");
       if ( getVET() == 0 ) throw new ValidationException("VET is missing on PartnerLineItem");
       if ( getBankFee() == 0 ) throw new ValidationException("bankFee is missing on PartnerLineItem");
-      if ( getBankFeeRate() == 0 ) throw new ValidationException("bankFeeRate is missing on PartnerLineItem");
-      if ( getBankFeeCurrency() == "" ) throw new ValidationException("bankFeeCurrency is missing on PartnerLineItem");
+      if ( SafetyUtil.isEmpty(getReasonCode()) ) throw new ValidationException("reasonCode is missing on PartnerLineItem");
       `
     }
   ]

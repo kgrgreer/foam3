@@ -98,6 +98,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.ADD_MSG",target:"proprietário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.HAVE_NO_OWNER_MSG",target:"Declaro que todos os cotistas tem participacao inferir a 25%"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.NO_OWNER_INFO_ERR",target:"Informações do proprietário necessárias"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.BENEFICIAL_OWNER_LABEL",target:"Portador Beneficiado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView.PLEASE_SELECT_ONE",target:"Selecione um dos seguintes ..."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BeneficialOwnerSelectionView.NEW_OWNER_MSG",target:"Adicionar Proprietário"})
 
@@ -113,7 +114,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SuccessPasswordView.INSTRUCTIONS",target:"Sua senha foi redefinida com sucesso"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SuccessPasswordView.RESET_PASSWORD",target:"Redefinição de senha"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SuccessPasswordView.BACK_TO",target:"Voltar para fazer login"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.AbliiOverlayActionListView.ACTIVE_IMAGE_URL.label",target:"activeImageURL"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SMEWizardOverview.HIDE_NUMBERS.label",target:"hideNumbers"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SMEWizardOverview.HIDE_NUMBERS.value",target:"true"})
@@ -137,7 +137,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailVi
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.INSTRUCTIONS1",target:"Enviamos um email para "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.INSTRUCTIONS2",target:" com um link para ativar sua conta."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.NO_EMAIL_INSTRUCTIONS_2",target:"\u2022 Verifique se o endereço de e-mail acima está correto"})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.EMAIL.label",target:"email pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.NO_EMAIL_TOGGLE.label",target:"noEmailToggle pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.RESEND_EMAIL.label",target:"Reenviar o Email "})
@@ -255,6 +254,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMo
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.RATE_REFRESH_SUBMIT",target:" envie novamente."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.RATE_REFRESH_APPROVE",target:" Aprove novamente."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.QUOTE_MISSING",target:"citação não definida"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.PROCESSING_NOTICE",target:"Processando sua transação, isso pode levar até 30 segundos."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.TWO_FACTOR_REQUIRED",target:"Você requer autenticação de dois fatores para continuar este pagamento. Vá para a página Configurações pessoais para configurar a autenticação de dois fatores."})
@@ -1429,6 +1429,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.R
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.ROUTING_NUMBER_INVALID",target:"O número identificador deve ter 9 dígitos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.ACCOUNT_NUMBER_REQUIRED",target:"Número da conta obrigatório"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.ACCOUNT_NUMBER_INVALID",target:"O número da conta deve ter entre 6 e 17 dígitos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.ACH_ROUTING_NUMBER_INSTRUCTION",target:"Importante : Nem todo número de roteamento ABA é igual ao ACH, pode ser diferente para alguns bancos. Nós fazemos o máximo possível para fazer a validação desta informação com o banco, mas sempre certifique-se que o número informado é o ACH Routing / Roteamento ACH."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.IMAGE_REQUIRED",target:"Anexe um cheque sem efeito ou um extrato bancário de 3 meses"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.ADD_SUCCESSFUL",target:"Conta bancária adicionada com sucesso!"})
@@ -1448,7 +1449,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.D
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.VOID_CHEQUE_IMAGE.value",target:"images/USA-Check.png"})
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.VOID_CHEQUE_IMAGE.label",target:"voidChequeImage"})
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.VOID_CHECK_IMAGE.label",target:"voidCheckImage"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.BRANCH_ID.label",target:"Número do ROUT ou ABA"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.BRANCH_ID.label",target:"Número do ROUT ou ACH"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.VOID_CHECK_IMAGE.documentation",target:"anular imagem de cheque para esta conta bancária"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.ACCOUNT_NUMBER.label",target:"Número da Conta"})
@@ -1876,6 +1877,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"api-doc-99-reference.label",targ
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"approvals.label",target:"Pedidos de Aprovação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"bankaccounts.label",target:"Contas bancárias"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"notification.label",target:"Negócios"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"businesses.label",target:"Negócios"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"mainmenu.banking.label",target:"Conta Bancária para Recebimento"})
@@ -2090,7 +2092,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.Account.SECT
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.Account.DENOMINATION.label",target:"Moeda"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.Account.SUMMARY.label",target:"Sumário"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.approval.AgentCapabilityJunctionDAOSummaryView.SUCCESS_REMOVED",target:"Informações de integração removidas com sucesso. Aguarde o reenvio."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.approval.AgentCapabilityJunctionDAOSummaryView.SUCCESS_REMOVED_TITLE",target:"Informações de Integração Removidas"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.approval.AgentCapabilityJunctionDAOSummaryView.SUCCESS_REMOVED",target:"Aguarde o reenvio."})
 
 // Email subject translation
 p({class:"foam.i18n.Locale",locale:"pt",source:"4f45c745-1c93-4380-b275-2d2fea091d1e-1.subject",target:"Redefinir senha"})
@@ -2422,6 +2425,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMo
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.FeeSummaryTransactionLineItem.FEE",target:"Taxa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.FeeSummaryTransactionLineItem.TOTAL_FEE.label",target:"taxa total"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.GrandTotalLineItem.GRAND_TOTAL",target:"Total geral"})
 
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoneyDetails.DETAILS_SUBTITLE",target:"Create new or choose from existing"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoneyDetails.EXISTING_HEADER",target:"Choose an existing "})
@@ -2530,6 +2534,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.EtaSummaryTransac
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.NO_ATTACHEMENT_PROVIDED",target:"Nenhum anexo fornecido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.NO_NOTES_PROVIDED",target:"Nenhuma nota fornecida"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.DESTINATION_ACCOUNT",target:"Conta de Destino"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.CURRENCY",target:"Moeda: "})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.history.InvoiceCreatedHistoryItemView.INVOICE_CREATED",target:"A fatura foi criada"})
 
@@ -3140,6 +3146,7 @@ p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.Payable
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.DELETE.label","target":"Excluir"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.TITLE","target":"Pagáveis"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.SUB_TITLE","target":"Aqui está uma lista de pagamentos que você enviou"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.RECONCILED_TITLE","target":"Reconciliação de Fatura"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.RECONCILED_SUCCESS","target":"A fatura foi reconciliada pelo pagador"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.RECONCILED_ERROR","target":"Ocorreu um erro ao reconciliar a fatura"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.INVOICE","target":"fatura"})
@@ -3186,7 +3193,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.UCJExpiryRemi
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.UCJExpiryReminderNotification.NOTIFICATION_BODY_P2",target:"\" irá expirar em "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.UCJExpiryReminderNotification.NOTIFICATION_BODY_P3",target:" dias."})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.VERIFICATION_EMAIL",target:"Email de verificação enviado para"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.VERIFICATION_EMAIL_TITLE",target:"E-mail de Verificação Enviado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.VERIFICATION_EMAIL",target:"Email enviado para"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceForm.ACCOUNT_CREATE.label",target:"Crie uma nova conta bancária"})
 
@@ -3593,6 +3601,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"admin.acceptanceDocument.browseS
 p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-summary.label",target:"Transações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-summary.browseTitle",target:"Transações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-summary.browseSubtitle",target:"Ver tudo Transações"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-fee-summary.label",target:"Transações"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-fee-summary.browseTitle",target:"Taxa de Transação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-fee-summary.browseSubtitle",target:"Ver tudo Taxa de Transações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-support.label",target:"Transações Resumo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-support.browseTitle",target:"Transações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"transactions-support.browseSubtitle",target:"Ver tudo Transações"})

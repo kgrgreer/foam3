@@ -63,7 +63,6 @@ foam.CLASS({
     'net.nanopay.model.BusinessUserJunction',
     'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
     'net.nanopay.sme.onboarding.OnboardingStatus',
-    'net.nanopay.sme.ui.AbliiOverlayActionListView',
     'net.nanopay.sme.ui.SMEModal',
     'net.nanopay.sme.ui.SMEStyles',
     'net.nanopay.sme.ui.SMEWizardOverview',
@@ -445,7 +444,6 @@ foam.CLASS({
         this.__subContext__.register(this.VerifyEmailView, 'foam.nanos.auth.ResendVerificationEmail');
         this.__subContext__.register(this.NotificationMessage, 'foam.u2.dialog.NotificationMessage');
         this.__subContext__.register(this.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
-        this.__subContext__.register(this.AbliiOverlayActionListView, 'foam.u2.view.OverlayActionListView');
 
         this.themeInstalled.resolve();
       });
@@ -907,25 +905,14 @@ foam.CLASS({
           this.stack.push({ class: 'foam.nanos.auth.ResendVerificationEmail' });
           return;
         }
-
-        // Update the look and feel now that the user is logged in since there
-        // might be a more specific one to use now.
-        this.fetchTheme();
-        var hash = this.window.location.hash;
-        if ( hash ) hash = hash.substring(1);
-
-        if ( hash ) {
-          window.onpopstate();
-        } else if ( this.theme ) {
-          this.window.location.hash = this.theme.defaultMenu;
-        }
-      }
-
-      else {
+      } else {
         this.initLayout.resolve();
-        this.SUPER();
         this.bannerizeTwoFactorAuth();
       }
+
+      // Update the look and feel now so that if the user is logged in there
+      // might be a more specific one to use now.
+      this.SUPER();
     }
   ]
 });

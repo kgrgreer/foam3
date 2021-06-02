@@ -213,6 +213,10 @@ foam.CLASS({
       updateVisibility: 'RO'
     },
     {
+      name: 'instruction',
+      visibility: 'HIDDEN'
+    },
+    {
       name: 'name',
       label: 'Nickname',
       section: 'accountInformation',
@@ -332,7 +336,7 @@ foam.CLASS({
       }
     },
     {
-      class: 'URL',
+      class: 'Image',
       name: 'flagImage',
       label: 'Country', // To set table column heading
       documentation: `A URL link to an image of the country's flag. Used for
@@ -621,6 +625,13 @@ foam.CLASS({
         This is NOT check digit only, this property returns the final formatted number. E.g. for some countries its
         branch + accountNumber + checkDigit, for others its accountNumber + checkDigit.`,
       javaFactory: `return getAccountNumber();`
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.bank.AccountDetailSummary',
+      name: 'accountDetails',
+      visibility: 'HIDDEN',
+      storageTransient: true
     }
   ],
 

@@ -280,8 +280,7 @@ foam.CLASS({
 
   messages: [
     { name: 'SAVE_DRAFT_ERROR', message: 'An error occurred while saving the draft ' },
-    { name: 'INVOICE_ERROR', message: 'Invoice Error: An error occurred while saving the ' },
-    { name: 'TRANSACTION_ERROR', message: 'Transaction Error: An error occurred while saving the ' },
+    { name: 'SAVE_ERROR', message: 'An error occurred while saving the ' },
     { name: 'BANK_ACCOUNT_REQUIRED', message: 'Please select a bank account that has been verified' },
     { name: 'QUOTE_ERROR', message: 'An unexpected error occurred while fetching the exchange rate' },
     { name: 'CONTACT_ERROR', message: 'Need to choose a contact' },
@@ -472,7 +471,7 @@ foam.CLASS({
       }
 
       if ( ! this.invoice.quote ) {
-        this.abortQuoteAndSaveDraft(new Error("quote not set"));
+        this.abortQuoteAndSaveDraft(new Error(this.QUOTE_MISSING));
         return;
       }
       this.txnQuote = this.invoice.quote.plan;
@@ -520,7 +519,8 @@ foam.CLASS({
           this.invoice = await this.invoiceDAO.put(this.invoice);
           if ( ! this.invoice.paymentId ) {
             this.isLoading = false;
-            this.notify(this.TRANSACTION_ERROR + this.type, '', this.LogLevel.ERROR, true);
+            console.error('@SendRequestMoney: missing paymentId');
+            this.notify(this.SAVE_ERROR + this.type, '', this.LogLevel.ERROR, true);
             return;
           }
         } else if ( this.isPayable ) {
@@ -558,7 +558,7 @@ foam.CLASS({
         }
         this.isLoading = false;
         console.error('@SendRequestMoney (Invoice/Integration Sync): ' + error.message);
-        this.notify(this.TRANSACTION_ERROR + this.type, '', this.LogLevel.ERROR, true);
+        this.notify(this.SAVE_ERROR + this.type, '', this.LogLevel.ERROR, true);
         this.invoice.quote.plan = null;
         return;
       }

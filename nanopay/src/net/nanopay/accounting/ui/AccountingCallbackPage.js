@@ -40,7 +40,6 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.account.Account',
     'net.nanopay.accounting.IntegrationCode',
     'net.nanopay.bank.BankAccount',

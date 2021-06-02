@@ -1,58 +1,47 @@
 package net.nanopay.fx.afex;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
-import java.util.UUID;
-
 import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.i18n.TranslationService;
+import foam.mlang.sink.Count;
+import foam.mlang.sink.Map;
 import foam.nanos.auth.Address;
-import foam.nanos.auth.AuthService;
 import foam.nanos.auth.Country;
 import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
-import foam.nanos.auth.LifecycleState;
-import foam.nanos.crunch.connection.CapabilityPayload;
 import foam.nanos.crunch.UserCapabilityJunction;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
+import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.admin.model.ComplianceStatus;
-import net.nanopay.bank.*;
+import net.nanopay.bank.BankAccount;
+import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.contacts.AFEXCNBeneficiaryCapability;
 import net.nanopay.contacts.Contact;
-import net.nanopay.country.br.CPF;
 import net.nanopay.country.br.BrazilBusinessInfoData;
+import net.nanopay.country.br.CPF;
 import net.nanopay.fx.ExchangeRate;
-import net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.meter.clearing.ClearingTimeService;
-import net.nanopay.model.BeneficialOwner;
-import net.nanopay.model.Business;
-import net.nanopay.model.BusinessDirector;
-import net.nanopay.model.BusinessSector;
-import net.nanopay.model.BusinessType;
-import net.nanopay.model.JobTitle;
-import net.nanopay.model.PadCapture;
-import net.nanopay.model.PersonalIdentification;
+import net.nanopay.model.*;
 import net.nanopay.partner.afex.AFEXDigitalAccount;
-import net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding;
+import net.nanopay.payment.PaymentProviderCorridor;
 import net.nanopay.payment.PaymentService;
+import net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding;
 import net.nanopay.tx.UnsupportedDateException;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 
 import static foam.mlang.MLang.*;
 
@@ -62,6 +51,16 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   protected DAO fxQuoteDAO_;
   private  X x;
   private final Logger logger_;
+
+  protected final java.lang.ThreadLocal<java.text.SimpleDateFormat> sdf_ =
+    new ThreadLocal<SimpleDateFormat>() {
+      @Override
+      protected SimpleDateFormat initialValue() {
+        var df = new SimpleDateFormat("yyyy-MM-dd");
+        df.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return df;
+      }
+    };
 
   public AFEXServiceProvider(X x, final AFEX afexClient) {
     this.afexClient = afexClient;
@@ -78,11 +77,53 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       // set up the required parameters for onboarding private client
       OnboardAFEXClientRequest onboardingRequest = new OnboardAFEXClientRequest();
       onboardingRequest.setAccountEntityType(AccountEntityType.PRIVATE_CLIENT.getLabel());
-      onboardingRequest.setContactAddress1(user.getAddress().getAddress());
-      onboardingRequest.setContactCountryCode(user.getAddress().findCountryId(this.x).getCode());
+      onboardingRequest.setTermsAndConditions("TRUE");
+
+      var address = user.getAddress();
+      if ( address != null ) {
+        onboardingRequest.setContactAddress1(address.getAddress());
+        onboardingRequest.setContactCountryCode(address.findCountryId(this.x).getCode());
+        onboardingRequest.setContactCity(address.getCity());
+        onboardingRequest.setContactStateRegion(address.findRegionId(x).getRegionCode());
+        onboardingRequest.setContactZip(address.getPostalCode());
+        // NOTE: assume citizenship from user.address.country, could have been
+        // taken from the user's bank account domicile however AFEX onboarding
+        // might occur before the bank account is created.
+        onboardingRequest.setCitizenship(address.getCountryId());
+      }
+
       onboardingRequest.setFirstName(user.getFirstName());
       onboardingRequest.setLastName(user.getLastName());
-      onboardingRequest.setTermsAndConditions("TRUE");
+      onboardingRequest.setPrimaryEmailAddress(getUniqueEmail(user));
+      onboardingRequest.setContactPhone(user.getPhoneNumber());
+
+      var dateFormat = sdf_.get();
+      onboardingRequest.setDateOfBirth( dateFormat.format(user.getBirthday()) );
+
+      List<String> corridors = ((ArraySink) ((Map)
+        ((DAO) x.get("targetCorridorDAO")).inX(Auth.sudo(x, user)).select(
+          MAP(PaymentProviderCorridor.TARGET_COUNTRY, new ArraySink()))
+      ).getDelegate()).getArray();
+      onboardingRequest.setTradingCountries(corridors.toArray(new String[0]));
+
+      var identification = user.getIdentification();
+      if ( identification != null ) {
+        onboardingRequest.setContactPrimaryIdentificationIssuingAgency(identification.getIssuer());
+
+        // TODO: AFEX p2p onboarding requirement varies per each customer eg. bepay, treviso, we would need the ability to configure the onboardingRequest per spid
+        if ( identification.getIdentificationTypeId() == 10L ) {
+          // For user having a Brazilian CPF, send TaxIdentificationNumber and Citizenship="BR"
+          onboardingRequest.setTaxIdentificationNumber(identification.getIdentificationNumber());
+          onboardingRequest.setCitizenship("BR");
+          onboardingRequest.setExpectedMonthlyVolume("10000");
+          onboardingRequest.setExpectedMonthlyPayments("20");
+        } else {
+          // For other identification type, send identification info
+          onboardingRequest.setContactPrimaryIdentificationType(getAFEXIdentificationType(identification.getIdentificationTypeId()));
+          onboardingRequest.setContactPrimaryIdentificationExpirationDate(dateFormat.format(identification.getExpirationDate()));
+          onboardingRequest.setContactPrimaryIdentificationNumber(identification.getIdentificationNumber());
+        }
+      }
 
       OnboardAFEXClientResponse newClient = afexClient.onboardAFEXClient(onboardingRequest, user.getSpid(), AccountEntityType.PRIVATE_CLIENT);
       if ( newClient != null && afexUser == null ) {
@@ -848,6 +889,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       createTradeRequest.setNote(((AFEXDigitalAccount)srcAccount).getId() + ", " + ((AFEXDigitalAccount)srcAccount).getDenomination());
     }
     createTradeRequest.setValueDate(quote.getValueDate().toString());
+    createTradeRequest.setPOPCode(((AFEXTransaction) transaction).getPOPCode());
 
     try {
       CreateTradeResponse tradeResponse = this.afexClient.createTrade(createTradeRequest, user.getSpid());
@@ -1355,6 +1397,22 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     BigDecimal x100 = new BigDecimal(100);
     BigDecimal val = BigDecimal.valueOf(amount).setScale(2,BigDecimal.ROUND_HALF_DOWN);
     return val.multiply(x100).longValueExact();
+  }
+
+  private String getUniqueEmail(User user) {
+    var email = user.getEmail();
+    var duplicateEmail = (Count) ((DAO) this.x.get("localUserDAO")).where(AND(
+      EQ(User.EMAIL, user.getEmail()),
+      EQ(User.SPID, user.getSpid()),
+      NOT(EQ(User.ID, user.getId()))
+    )).limit(1).select(new Count());
+
+    if ( duplicateEmail.getValue() == 0 ) {
+      return email;
+    }
+
+    var emailParts = user.getEmail().split("@");
+    return emailParts[0] + "+" + user.getId() + "@" + emailParts[1];
   }
 
 }

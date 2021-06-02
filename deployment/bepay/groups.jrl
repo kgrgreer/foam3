@@ -25,7 +25,7 @@ p({
     class:"foam.nanos.auth.Group",
     id:"bepay-internal-support",
     description:"bepay internal support group",
-    parent:"support",
+    parent:"support-ops",
     defaultMenu:"contacts",
     url:"http://bepay:8080"
 })

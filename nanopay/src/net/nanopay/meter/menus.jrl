@@ -45,7 +45,7 @@ p({
 p({
    "class":"foam.nanos.menu.Menu",
    "id":"operation.bills",
-   "label":"Bills",
+   "label":"Charges",
    "handler":{
       "class":"foam.nanos.menu.DAOMenu2",
       "config":{
@@ -354,6 +354,24 @@ p({
     "config": {
       "daoKey":        "rejectedTransactionReportDAO",
       "browseTitle":   "Rejected Transaction Report",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  },
+  "parent":  "report"
+})
+
+// PartnerTransactionReport
+p({
+  "class":   "foam.nanos.menu.Menu",
+  "id":      "report.partnerTransactionReport",
+  "label":   "Partner Transaction Report",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "daoKey":        "partnerTransactionReportDAO",
+      "browseTitle":   "Partner Transaction Report",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
       "editPredicate":{"class":"foam.mlang.predicate.False"},
       "deletePredicate":{"class":"foam.mlang.predicate.False"}

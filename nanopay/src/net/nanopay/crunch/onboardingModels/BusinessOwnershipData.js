@@ -44,7 +44,8 @@ foam.CLASS({
     { name: 'ADD_MSG', message: 'owner' },
     { name: 'HAVE_NO_OWNER_MSG', message: 'I declare that all owners have less than 25% shares each' },
     { name: 'NO_OWNER_INFO_ERR', message: 'Owner information required' },
-    { name: 'INVALID_OWNER_INFO', message: 'Owner information is invalid'}
+    { name: 'INVALID_OWNER_INFO', message: 'Owner information is invalid'},
+    { name: 'BENEFICIAL_OWNER_LABEL', message: 'Beneficial Owner'}
   ],
 
   sections: [
@@ -181,6 +182,7 @@ foam.CLASS({
       view: function (_, X) {
         return {
           class: 'foam.u2.view.TitledArrayView',
+          name: X.data.BENEFICIAL_OWNER_LABEL,
           of: X.data.ownerClass,
           defaultNewItem: X.data.ownerClass.create({ mode: 'blank' }, X),
           enableAdding$: X.data.owners$.map(a =>
@@ -189,7 +191,7 @@ foam.CLASS({
             // Last item, if present, must have a selection made
             ( a.length == 0 || a[a.length-1].mode != 'blank' )
           ),
-          title: X.data.ADD_MSG,
+          title: X.data.BENEFICIAL_OWNER_LABEL,
           valueView: () => ({
             class: X.data.selectionView,
 
@@ -257,6 +259,12 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
+        if ( getHaveLowShares() ) return;
+
+        // validate owners
+        if (getOwners() == null || getOwners().length == 0) {
+          throw new IllegalStateException(NO_OWNER_INFO_ERR);
+        }
         for ( Validatable bo : getOwners() ) {
           bo.validate(x);
         }

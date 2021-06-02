@@ -115,7 +115,9 @@ public class BillingService implements BillingServiceInterface {
 
       if ( StringUtil.isEmpty(bill.getExternalId()) )
         bill.setExternalId(transaction.getExternalId());
-      billDAO.put(bill);
+      if ( bill.getTotalAmount() != 0 ) {
+        billDAO.put(bill);
+      }
     }
   }
 

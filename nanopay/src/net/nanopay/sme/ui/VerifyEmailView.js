@@ -140,6 +140,7 @@ foam.CLASS({
     { name: 'INSTRUCTIONS2', message: ' to activate your account.' },
     { name: 'NO_EMAIL_LINK', message: 'Didn\'t receive the email?' },
     { name: 'RESEND_EMAIL_LINK', message: 'Resend the email' },
+    { name: 'VERIFICATION_EMAIL_TITLE', message: 'Verification Email Sent'},
     { name: 'ERROR_MSG', message: 'There was an issue with resending your verification email.' },
     {
       name: 'NO_EMAIL_INSTRUCTIONS_1', message: '\u2022 Check your spam folder'
@@ -147,7 +148,7 @@ foam.CLASS({
     {
       name: 'NO_EMAIL_INSTRUCTIONS_2', message: '\u2022 Verify the email address above is correct'
     },
-    { name: 'VERIFICATION_EMAIL', message: 'Verification email sent to' }
+    { name: 'VERIFICATION_EMAIL', message: 'Email sent to' }
   ],
 
   methods: [
@@ -225,7 +226,8 @@ foam.CLASS({
             throw new Error('Error generating reset token');
           }
           self.ctrl.add(self.NotificationMessage.create({
-            message: self.VERIFICATION_EMAIL+ ' ' + self.user.email,
+            message: self.VERIFICATION_EMAIL_TITLE,
+            description: self.VERIFICATION_EMAIL+ ' ' + self.user.email,
             type: self.LogLevel.INFO
           }));
         }).catch(function(err) {

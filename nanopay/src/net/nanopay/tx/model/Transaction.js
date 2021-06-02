@@ -32,6 +32,11 @@ foam.CLASS({
     'foam.nanos.auth.ServiceProviderAware'
   ],
 
+  topics: [
+    'finished',
+    'throwError'
+  ],
+
   imports: [
     'accountDAO',
     'addCommas',
@@ -39,6 +44,7 @@ foam.CLASS({
     'ctrl',
     'currencyDAO',
     'securitiesDAO',
+    'notify',
     'group',
     'homeDenomination',
     'stack?',
@@ -69,12 +75,14 @@ foam.CLASS({
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.FeeSummaryTransactionLineItem',
     'net.nanopay.tx.InterestTransaction',
+    'net.nanopay.tx.HistoricStatus',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.TransactionException',
     'foam.core.ValidationException',
     'net.nanopay.account.Balance',
     'static foam.mlang.MLang.EQ',
+    'net.nanopay.tx.creditengine.CreditCodeAccount',
     'net.nanopay.tx.planner.AbstractTransactionPlanner'
   ],
 
@@ -183,7 +191,9 @@ foam.CLASS({
   messages: [
     { name: 'INVALID_AMOUNT', message: 'Amount cannot be negative' },
     { name: 'BOTH_INVALID_AMOUNT', message: 'Both amount and destination amount cannot be 0' },
-    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History for' }
+    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History for' },
+    { name: 'REQUEST_CANCELLATION_SUCCESS', message: 'Successfully sent request for cancellation' },
+    { name: 'REQUEST_REFUND_SUCCESS', message: 'Successfully sent request for refund' }
   ],
 
   // relationships: parent, children
@@ -597,6 +607,14 @@ foam.CLASS({
       includeInDigest: true
     },
     {
+      class: 'StringArray',
+      name: 'creditCodes',
+      documentation: `The ids of the credit code to be applied to transaction.`,
+      visibility: 'HIDDEN',
+      includeInDigest: true,
+      section: 'transactionInformation'
+    },
+    {
       class: 'DateTime',
       name: 'lastModified',
       section: 'transactionInformation',
@@ -664,6 +682,24 @@ foam.CLASS({
         return Array.isArray(statusHistory)
           && statusHistory.length > 0 ? statusHistory[statusHistory.length - 1].timeStamp : null;
       }
+    },
+    {
+      name: 'lastStatus',
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
+      includeInDigest: false,
+      section: 'transactionInformation',
+      createVisibility: 'HIDDEN',
+      readVisibility: 'HIDDEN',
+      updateVisibility: 'HIDDEN',
+      storageTransient: true,
+      javaGetter: `
+        HistoricStatus[] statusHistory = getStatusHistory();
+        if ( statusHistory.length-2 > 0 ) {
+          return  statusHistory[statusHistory.length-2].getStatus();
+        }
+        return getInitialStatus();
+      `
     },
     {
       name: 'statusHistory',
@@ -815,23 +851,24 @@ foam.CLASS({
       documentation: `The scheduled date when transaction should be processed.`
     },
     {
-      // TODO: DELETE... DEPRECATED
-      // REVIEW: processDate and completionDate are Alterna specific?
       class: 'DateTime',
       name: 'processDate',
-      section: 'deprecatedInformation',
+      section: 'systemInformation',
+      order: 80,
+      gridColumns: 6,
       storageTransient: true,
-      createVisibility: 'RO',
+      createVisibility: 'HIDDEN',
       readVisibility: 'RO',
       updateVisibility: 'RO'
     },
     {
-      //TODO: DELETE ... DEPRECATED
       class: 'DateTime',
       name: 'completionDate',
       storageTransient: true,
-      section: 'deprecatedInformation',
-      createVisibility: 'RO',
+      section: 'systemInformation',
+      order: 95,
+      gridColumns: 6,
+      createVisibility: 'HIDDEN',
       readVisibility: 'RO',
       updateVisibility: 'RO',
       tableWidth: 172
@@ -937,6 +974,14 @@ foam.CLASS({
       },
       documentation: 'Returns available statuses for each transaction depending on current status',
       storageTransient: true
+    },
+    {
+      name: 'errorCode',
+      class: 'Reference',
+      of: 'net.nanopay.integration.ErrorCode',
+      hidden: true,
+      value: 0,
+      documentation: 'used for negative flows'
     }
   ],
 
@@ -1077,6 +1122,18 @@ foam.CLASS({
       ],
       type: 'Void',
       javaCode: `
+      Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
+
+      // We don't allow pausing any transaction in status: complete, sent, failed, Declined
+      if ( (oldTxn != null) && (getStatus() == TransactionStatus.PAUSED)
+        && ( (oldTxn.getStatus() == TransactionStatus.COMPLETED ) ||
+        (oldTxn.getStatus() == TransactionStatus.SENT ) ||
+        (oldTxn.getStatus() == TransactionStatus.FAILED ) ||
+        (oldTxn.getStatus() == TransactionStatus.DECLINED )
+        )
+      ) {
+        throw new ValidationException("Unable to pause this transaction");
+      }
 
       AppConfig appConfig = (AppConfig) x.get("appConfig");
       DAO userDAO = (DAO) x.get("bareUserDAO");
@@ -1092,6 +1149,9 @@ foam.CLASS({
       if ( sourceAccount == null ) {
         throw new ValidationException("Source account not found");
       }
+      if ( sourceAccount instanceof CreditCodeAccount ) {
+        throw new ValidationException("Improper source account");
+      }
       User sourceOwner = (User) userDAO.find(sourceAccount.getOwner());
       if ( sourceOwner == null ) {
         throw new ValidationException("Payer not found");
@@ -1105,6 +1165,9 @@ foam.CLASS({
       Account destinationAccount = findDestinationAccount(x);
       if ( destinationAccount == null ) {
         throw new ValidationException("Destination account not found");
+      }
+      if ( destinationAccount instanceof CreditCodeAccount ) {
+        throw new ValidationException("Improper destination account");
       }
       User destinationOwner = (User) userDAO.find(destinationAccount.getOwner());
       if ( destinationOwner == null ) {
@@ -1263,6 +1326,9 @@ foam.CLASS({
           if ( this.FeeLineItem.isInstance( this.lineItems[i] ) ) {
             value += this.lineItems[i].amount;
           }
+          if ( this.CreditLineItem.isInstance( this.lineItems[i] ) ) {
+            value -= this.lineItems[i].amount;
+          }
         }
         return value;
       },
@@ -1403,7 +1469,7 @@ foam.CLASS({
       name: 'calculateErrorCode',
       type: 'Long',
       javaCode: `
-      return 0l;
+      return getErrorCode();
     `
     },
     {

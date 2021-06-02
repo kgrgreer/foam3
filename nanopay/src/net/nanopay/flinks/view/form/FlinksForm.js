@@ -38,7 +38,6 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.Address',
     'foam.u2.LoadingSpinner'
   ],

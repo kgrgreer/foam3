@@ -253,6 +253,7 @@
 
         this.currency$.sub(this.updateBalances);
         this.showAssigned$.sub(this.updateAssigned);
+        this.approvalRequestDAO.on.reset.sub(this.updateBalances);
 
         this.updateBalances();
       }
@@ -263,9 +264,7 @@
     {
       name: 'refreshTable',
       code: function(X) {
-        this.filteredDAO.cmd_(X, foam.dao.CachingDAO.PURGE);
-        this.filteredDAO.cmd_(X, foam.dao.AbstractDAO.RESET_CMD);
-        this.updateBalances();
+        this.approvalRequestDAO.cmd_(X, foam.dao.AbstractDAO.RESET_CMD);
         this.notify(this.REFRESH_MSG, '', this.LogLevel.INFO, true);
       }
     },

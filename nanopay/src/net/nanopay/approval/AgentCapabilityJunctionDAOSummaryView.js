@@ -29,7 +29,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'SUCCESS_REMOVED', message: 'Successfuly removed onboarding information. Please wait for resubmission.'}
+    { name: 'SUCCESS_REMOVED_TITLE', message: 'Onboarding Information Removed'},
+    { name: 'SUCCESS_REMOVED', message: 'Please wait for resubmission.'}
   ],
 
   css: `
@@ -66,7 +67,7 @@ foam.CLASS({
               rejectedApproval.memo = 'Outdated Approval.';
               this.approvalRequestDAO.put(rejectedApproval).then(o => {
                 this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
-                this.notify(this.SUCCESS_REMOVED, '', this.LogLevel.INFO, true);
+                this.notify(this.SUCCESS_REMOVED_TITLE, this.SUCCESS_REMOVED, this.LogLevel.INFO, true);
                 this.pushMenu('approvals', true);
               }, e => {
                 this.notify(e.message, '', this.LogLevel.ERROR, true);

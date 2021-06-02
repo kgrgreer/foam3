@@ -39,6 +39,8 @@ foam.CLASS({
     'java.util.List',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.util.SafetyUtil',
+    'net.nanopay.fx.FXSummaryTransaction',
   ],
 
   properties: [
@@ -52,6 +54,11 @@ foam.CLASS({
       value: true
     },
     {
+      name: 'createUserCompliance',
+      class: 'Boolean',
+      value: false
+    },
+    {
       name: 'createLimit',
       class: 'Boolean',
       value: false
@@ -63,14 +70,13 @@ foam.CLASS({
       name: 'plan',
       javaCode: `
         Transaction txn;
-        // create summary transaction when the request transaction is the base Transaction,
-        // otherwise conserve the type of the transaction.
-        if ( requestTxn.getType().equals("Transaction") ) {
+        if ( SafetyUtil.equals(quote.getDestinationAccount().getDenomination(), quote.getSourceAccount().getDenomination() )) {
           txn = new SummaryTransaction(x);
-          txn.copyFrom(requestTxn);
-        } else {
-          txn = (Transaction) requestTxn.fclone();
         }
+        else {
+          txn = new FXSummaryTransaction(x);
+        }
+        txn.copyFrom(requestTxn);
 
         txn.setStatus(TransactionStatus.PENDING);
         txn.setInitialStatus(TransactionStatus.COMPLETED);
@@ -89,42 +95,55 @@ foam.CLASS({
           )).select(new ArraySink())).getArray();
 
         for ( Object obj : digitals ) {
-          DigitalAccount sourceDigitalAccount = (DigitalAccount) obj;
+          // Failing a digital plan for 1 account shouldn't fail planning
+          try {
+            DigitalAccount sourceDigitalAccount = (DigitalAccount) obj;
 
-          // Split 1: ABank -> ADigital
-          Transaction t1 = new Transaction(x);
-          t1.copyFrom(txn);
-          t1.setDestinationAccount(sourceDigitalAccount.getId());
-          Transaction[] cashInPlans = multiQuoteTxn(x, t1, quote);
+            // Split 1: ABank -> ADigital
+            Transaction t1 = new Transaction(x);
+            t1.copyFrom(txn);
+            t1.setDestinationAccount(sourceDigitalAccount.getId());
+            Transaction[] cashInPlans = multiQuoteTxn(x, t1, quote);
 
-          for ( Transaction CIP : cashInPlans ) {
-            // Split 2: ADigital -> BBank
-            Transaction t2 = new Transaction(x);
-            t2.copyFrom(txn);
-            t2.setSourceAccount(sourceDigitalAccount.getId());
-            //Note: if CIP, does not have all the transfers for getTotal this wont work.
-            t2.setAmount(CIP.getTotal(x, sourceDigitalAccount.getId()));
-            Transaction[] cashOutPlans = multiQuoteTxn(x, t2, quote);
+            for ( Transaction CIP : cashInPlans ) {
+              // Split 2: ADigital -> BBank
+              Transaction t2 = new Transaction(x);
+              t2.copyFrom(txn);
+              t2.setSourceAccount(sourceDigitalAccount.getId());
+              //Note: if CIP, does not have all the transfers for getTotal this wont work.
+              t2.setAmount(CIP.getTotal(x, sourceDigitalAccount.getId()));
+              Transaction[] cashOutPlans = multiQuoteTxn(x, t2, quote);
 
-            for ( Transaction COP : cashOutPlans ) {
-              Transaction t = (Transaction) txn.fclone();
-              Transaction ci = (Transaction) removeSummaryTransaction(CIP).fclone();
-              ci.addNext((Transaction) removeSummaryTransaction(COP).fclone());
-              if ( getCreateLimit() ) {
-                LimitTransaction lt = createLimitTransaction(txn);
-                t.addNext(lt);
+              for ( Transaction COP : cashOutPlans ) {
+                List<Transaction> chain = new ArrayList<Transaction>();
+                
+                // Transactions are added to chain in reverse execution order
+                chain.add((Transaction) removeSummaryTransaction(COP).fclone());
+                chain.add((Transaction) removeSummaryTransaction(CIP).fclone());
+ 
+                // Optional transactions
+                if (getCreateCompliance())
+                  chain.add(createComplianceTransaction(txn));
+                if ( getCreateUserCompliance() )
+                  chain.add(createUserComplianceTransaction(txn));
+                if ( getCreateLimit() )
+                  chain.add(createLimitTransaction(txn));
+
+                // Buld the tx chain in reverse order
+                Transaction t = (Transaction) txn.fclone();
+                Transaction last = t;
+                for (int i = chain.size() - 1; i >= 0; i--) {
+                  Transaction next = chain.get(i);
+                  last.addNext(next);
+                  last = next;
+                }
+
+                t.setStatus(TransactionStatus.COMPLETED);
+                t.setPlanCost(t.getPlanCost() + CIP.getPlanCost() + COP.getPlanCost());
+                quote.getAlternatePlans_().add(t);
               }
-              if ( getCreateCompliance() ) {
-                ComplianceTransaction ct = createComplianceTransaction(txn);
-                ct.addNext(ci);
-                t.addNext(ct);
-              } else {
-                t.addNext(ci);
-              }
-              t.setStatus(TransactionStatus.COMPLETED);
-              t.setPlanCost(t.getPlanCost() + CIP.getPlanCost() + COP.getPlanCost());
-              quote.getAlternatePlans_().add(t);
             }
+          } catch (Exception e) {
           }
         }
         return null;

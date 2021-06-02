@@ -33,30 +33,36 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.nanos.logger.Logger',
     'java.util.UUID',
     'java.util.List',
     'java.util.ArrayList',
     'foam.core.ContextAwareAgent',
     'foam.core.X',
     'foam.util.SafetyUtil',
-    'net.nanopay.tx.ComplianceTransaction',
-    'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.Account',
-    'static foam.mlang.MLang.*',
-    'net.nanopay.fx.FXSummaryTransaction',
-    'net.nanopay.tx.SummaryTransaction',
-    'net.nanopay.tx.TaxLineItem',
-    'net.nanopay.tx.TransactionQuote',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.tx.ComplianceTransaction',
+    'net.nanopay.tx.CompositeTransaction',
+    'net.nanopay.tx.CreditLineItem',
+    'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.InvoicedCreditLineItem',
     'net.nanopay.tx.InvoicedFeeLineItem',
+    'net.nanopay.tx.PropertyCompare',
+    'net.nanopay.tx.SummarizingTransaction',
+    'net.nanopay.tx.TaxLineItem',
+    'net.nanopay.tx.TransactionException',
     'net.nanopay.tx.LimitTransaction',
     'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.TransactionQuote',
+    'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.UserComplianceTransaction',
+    'net.nanopay.tx.creditengine.CreditEngine',
     'net.nanopay.tx.model.Transaction',
     'org.apache.commons.lang.ArrayUtils',
-    'net.nanopay.tx.TransactionException',
-    'net.nanopay.tx.PropertyCompare'
+    'static foam.mlang.MLang.*'
   ],
 
   tableColumns: [
@@ -313,6 +319,26 @@ foam.CLASS({
       `
     },
     {
+      name: 'createUserComplianceTransaction',
+      documentation: 'Creates a user compliance transaction and returns it',
+      args: [
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      type: 'net.nanopay.tx.UserComplianceTransaction',
+      javaCode: `
+        UserComplianceTransaction ct = new UserComplianceTransaction();
+        ct.copyFrom(txn);
+        ct.setStatus(net.nanopay.tx.model.TransactionStatus.PENDING);
+        ct.setName("User Compliance Transaction");
+        ct.clearTransfers();
+        ct.clearLineItems();
+        ct.setPlanner(getId());
+        ct.clearNext();
+        ct.setId(UUID.randomUUID().toString());
+        return ct;
+      `
+    },
+    {
       name: 'createComplianceTransaction',
       documentation: 'Creates a compliance transaction and returns it',
       args: [
@@ -324,6 +350,26 @@ foam.CLASS({
         ct.copyFrom(txn);
         ct.setStatus(net.nanopay.tx.model.TransactionStatus.PENDING);
         ct.setName("Compliance Transaction");
+        ct.clearTransfers();
+        ct.clearLineItems();
+        ct.setPlanner(getId());
+        ct.clearNext();
+        ct.setId(UUID.randomUUID().toString());
+        return ct;
+      `
+    },
+    {
+      name: 'createCompositeTransaction',
+      documentation: 'Creates a composite transaction and returns it',
+      args: [
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      type: 'net.nanopay.tx.CompositeTransaction',
+      javaCode: `
+        CompositeTransaction ct = new CompositeTransaction();
+        ct.copyFrom(txn);
+        ct.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
+        ct.setName("Composite Transaction");
         ct.clearTransfers();
         ct.clearLineItems();
         ct.setPlanner(getId());
@@ -419,6 +465,10 @@ foam.CLASS({
         txnclone = (Transaction) ((DAO) x.get("localFeeEngineDAO")).put(txnclone);
 
         txn.setLineItems(txnclone.getLineItems());
+        // hit creditEngine
+        if ( txn.getCreditCodes() != null && txn.getCreditCodes().length > 0 ) {
+          txn = ((CreditEngine) x.get("creditEngine")).calculateCredits(x, txn);
+        }
         txn = createFeeTransfers(x, txn, quote);
         txn = createTaxTransfers(x, txn, quote);
         return txn;
@@ -436,28 +486,89 @@ foam.CLASS({
       javaCode: `
         TransactionLineItem [] ls = txn.getLineItems();
         for ( TransactionLineItem li : ls ) {
-          if ( li instanceof FeeLineItem && ! (li instanceof InvoicedFeeLineItem) && ! SafetyUtil.isEmpty(li.getSourceAccount()) ) {
+
+          // *** dont bother for not fee or credit line items ***
+          if ( ( ! (
+            ( (li instanceof CreditLineItem) && (! (li instanceof InvoicedCreditLineItem)) ) ||
+            ( (li instanceof FeeLineItem) && (! (li instanceof InvoicedFeeLineItem)) )
+          ))) {
+            continue;
+          }
+          Account acc = null;
+          Account accDest = null;
+          Long amount = null;
+
+        // *** Prep accounts for Credit Transfers ***
+        // we can assume destination will likely be one of the txn accounts
+          if ( li instanceof CreditLineItem ) {
+            CreditLineItem cli = (CreditLineItem) li;
+
+            if ( cli.getDestinationAccount() == quote.getSourceAccount().getId() )
+              accDest = quote.getSourceAccount();
+            if ( cli.getDestinationAccount() == quote.getDestinationAccount().getId() )
+              accDest = quote.getDestinationAccount();
+            if (accDest == null)
+              accDest = cli.findDestinationAccount(x);
+            acc = cli.findSourceAccount(x);
+            amount = cli.getAmount();
+          }
+
+        // *** Prep accounts for Fee Transfers ***
+        // we can assume source will likely be one of the txn accounts
+          if ( li instanceof FeeLineItem ) {
             FeeLineItem feeLineItem = (FeeLineItem) li;
-            Account acc = null;
             if ( feeLineItem.getSourceAccount() == quote.getSourceAccount().getId() )
               acc = quote.getSourceAccount();
             if ( feeLineItem.getSourceAccount() == quote.getDestinationAccount().getId() )
               acc = quote.getDestinationAccount();
             if (acc == null)
               acc = feeLineItem.findSourceAccount(x);
-            if ( acc instanceof DigitalAccount) {
-              Transfer tSend = new Transfer(acc.getId(), -feeLineItem.getAmount());
-              Transfer tReceive = new Transfer(feeLineItem.getDestinationAccount(), feeLineItem.getAmount());
-              Transfer[] transfers = { tSend, tReceive };
-              txn.add(transfers);
-            }
-            else {
-              Transfer tSend = new ExternalTransfer(acc.getId(), -feeLineItem.getAmount());
-              Transfer tReceive = new ExternalTransfer(feeLineItem.getDestinationAccount(), feeLineItem.getAmount());
-              Transfer[] transfers = { tSend, tReceive };
-              txn.add(transfers);
-            }
+            accDest = feeLineItem.findDestinationAccount(x);
+            amount = feeLineItem.getAmount();
           }
+
+          if ( acc instanceof DigitalAccount && accDest instanceof DigitalAccount)
+          { // case: fee/credit from digital account to digital account .
+            Transfer tSend = new Transfer(acc.getId(), -amount);
+            Transfer tReceive = new Transfer(accDest.getId(), amount);
+            Transfer[] transfers = { tSend, tReceive };
+            txn.add(transfers);
+            continue;
+          }
+
+          if ( acc instanceof DigitalAccount && accDest instanceof BankAccount
+          && SafetyUtil.equals(accDest.getId(), txn.getDestinationAccount()) )
+          { // case: Fee/credit from digital to an external, external must be txn dest, need trust transfer.
+            Transfer tSend = new Transfer(acc.getId(), -amount);
+            Transfer tReceive = new ExternalTransfer(accDest.getId(), amount);
+            Transfer tTrust = new Transfer(( (DigitalAccount) acc).getTrustAccount(), amount);
+            Transfer[] transfers = { tSend, tReceive, tTrust };
+            txn.add(transfers);
+            continue;
+          }
+
+          if ( acc instanceof BankAccount && accDest instanceof DigitalAccount
+          && SafetyUtil.equals(acc.getId(), txn.getSourceAccount()) )
+          { // case: Fee/credit from external to a digital, external must be txn source, need trust transfer.
+            Transfer tSend = new ExternalTransfer(acc.getId(), -amount);
+            Transfer tReceive = new Transfer(accDest.getId(), amount);
+            Transfer tTrust = new Transfer( ((DigitalAccount) accDest).getTrustAccount(), amount);
+            Transfer[] transfers = { tSend, tReceive, tTrust };
+            txn.add(transfers);
+            continue;
+          }
+          if ( acc instanceof BankAccount && accDest instanceof BankAccount )
+          { // case: Fee paid from external to an external.
+            Transfer tSend = new ExternalTransfer(acc.getId(), -amount);
+            Transfer tReceive = new ExternalTransfer(accDest.getId(), amount);
+            Transfer[] transfers = { tSend, tReceive };
+            txn.add(transfers);
+            continue;
+          }
+
+          // case: fee or credit can not be applied to this transaction. it is misconfigured
+          Logger logger = (Logger) x.get("logger");
+          logger.error("ERROR Fee/Credit Transfers not created for txn: " + txn.getId() + " fee/Credit: " + li);
         }
         return txn;
       `
@@ -509,7 +620,7 @@ foam.CLASS({
       documentation: 'Remove the summary and or compliance transaction from this chain.',
       javaCode: `
         boolean removed = false;
-        if ( (txn != null) && (txn instanceof FXSummaryTransaction || txn instanceof SummaryTransaction) ) {
+        if ( (txn != null) && (txn instanceof SummarizingTransaction) ) {
           txn = txn.getNext()[0];
           removed = true;
         }

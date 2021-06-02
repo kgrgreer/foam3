@@ -17,10 +17,7 @@ import net.nanopay.fx.FXTransaction;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.payment.PADTypeLineItem;
-import net.nanopay.tx.AbliiTransaction;
-import net.nanopay.tx.DigitalTransaction;
-import net.nanopay.tx.TransactionLineItem;
-import net.nanopay.tx.TransactionQuote;
+import net.nanopay.tx.*;
 import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
@@ -280,7 +277,7 @@ public class TransactionTest
     tq.setRequestTransaction(txn);
     tq = (TransactionQuote) txnQuoteDAO.put(tq).fclone();
     Transaction txn1 = tq.getPlan();
-    test(txn1.getClass() == AbliiTransaction.class, "Parent transaction is of type AbliiTransaction");
+    test(txn1 instanceof SummaryTransaction,"Parent transaction is of type AbliiTransaction");
 
     Transaction txn2 = txn1.getNext()[0];//compliance txn
     Transaction txn3 = txn2.getNext()[0];

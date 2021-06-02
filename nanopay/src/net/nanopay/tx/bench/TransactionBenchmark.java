@@ -323,6 +323,7 @@ public class TransactionBenchmark
           da.setOwner(user.getId());
           da.setIsDefault(true);
           da.setTrustAccount(ta.getId());
+          da.setSpid(user.getSpid());
           accountDAO_.put(da);
         } else {
           a.setTrustAccount(ta.getId());

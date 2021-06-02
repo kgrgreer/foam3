@@ -84,7 +84,7 @@ foam.CLASS({
     {
       name: 'plan',
       javaCode: `
-    
+
         AFEXServiceProvider fxService = (AFEXServiceProvider) x.get("afexServiceProvider");
         return generateTransaction(x, quote, (AFEXServiceProvider) fxService);
               `
@@ -108,11 +108,9 @@ foam.CLASS({
         ],
         javaType: 'Transaction',
         javaCode: `
-
         Transaction request = quote.getRequestTransaction();
         Logger logger = (Logger) x.get("logger");
         logger.debug(this.getClass().getSimpleName(), "generateTransaction", quote);
-
         //--- Fetch FX rate and build a transaction chain with it ---
         try {
           return buildChain(quote, x, afexService);
@@ -148,7 +146,6 @@ foam.CLASS({
       ],
       javaType: 'FXSummaryTransaction',
       javaCode: `
-
         Transaction request = txnQuote.getRequestTransaction();
         FXQuote fxQuote = new FXQuote.Builder(x).build();
         Long owner = txnQuote.getRequestOwner() != 0 ? txnQuote.getRequestOwner(): txnQuote.getSourceAccount().getOwner();
@@ -160,7 +157,6 @@ foam.CLASS({
           afexDigital = findAFEXDigitalAccount(request, x, txnQuote);
           sourceAccountId = afexDigital.getId();
         }
-
         // --- Plan AFEXTransaction first as it might take multiple quotes to find a working one ---
         try {
           fxQuote = afexService.getFXRate(request.getSourceCurrency(), request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(), null, "CASH", owner, null);
@@ -180,7 +176,6 @@ foam.CLASS({
             afexTransaction.setAfexTradeResponseNumber(result);
           }
         }
-
         // --- Create AFEXBeneficiaryComplianceTransaction ---
         AFEXBeneficiaryComplianceTransaction afexCT = new AFEXBeneficiaryComplianceTransaction();
         afexCT.copyFrom(request);
@@ -195,7 +190,6 @@ foam.CLASS({
         afexCT.setPayeeId(request.getPayeeId());
         afexCT.setPayerId(request.getPayerId());
         afexCT.setPlanner(this.getId());
-
         if ( txnQuote.getParent() != null ) { //this is not standalone txn
           afexCT.setSourceAccount(afexDigital.getId());
           afexCT.addNext( createFundingTransaction(x, request, fxQuote, afexDigital.getId()) );
@@ -208,7 +202,7 @@ foam.CLASS({
         //--- Create Fx Summary ---
         FXSummaryTransaction summary = new FXSummaryTransaction();
         // get Summary amounts from the fxQuote
-        summary.setAmount(fxQuote.getSourceAmount()); 
+        summary.setAmount(fxQuote.getSourceAmount());
         summary.setDestinationAmount(fxQuote.getTargetAmount());
         summary.setSourceCurrency(request.getSourceCurrency());
         summary.setDestinationCurrency(request.getDestinationCurrency());
@@ -219,7 +213,6 @@ foam.CLASS({
         summary.setFxExpiry(fxQuote.getExpiryTime());
         summary.setInvoiceId(request.getInvoiceId());
         summary.setPlanner(this.getId());
-
         summary.addNext(createComplianceTransaction(request));
         summary.addNext(afexCT);
         return summary;
@@ -248,7 +241,6 @@ foam.CLASS({
       javaType: 'AFEXFundingTransaction',
       javaCode: `
         AFEXFundingTransaction fundingTransaction = new AFEXFundingTransaction();
-
         fundingTransaction.copyFrom(request);
         fundingTransaction.setId(UUID.randomUUID().toString());
         fundingTransaction.setStatus(TransactionStatus.PENDING);
@@ -266,12 +258,10 @@ foam.CLASS({
         fundingTransaction.setPlanner(this.getId());
         fundingTransaction.setValueDate(fxQuote.getValueDate());
         fundingTransaction.clearLineItems();
-
         ExternalTransfer[] exT = new ExternalTransfer[2];
         exT[0] = new ExternalTransfer( fundingTransaction.getSourceAccount(), -fundingTransaction.getAmount() );
         exT[1] = new ExternalTransfer( fundingTransaction.getDestinationAccount(), fundingTransaction.getDestinationAmount() );
         fundingTransaction.setTransfers( exT );
-
         return fundingTransaction;
       `
     },
@@ -303,12 +293,10 @@ foam.CLASS({
         afexTransaction.setId(UUID.randomUUID().toString());
         afexTransaction.setStatus(TransactionStatus.PENDING);
         afexTransaction.setName("Foreign Exchange");
-
         // Since we book the trade right away it won't expire
         LocalDateTime expiry = LocalDateTime.now();
         expiry = expiry.plusHours(24);
         Date exp = java.util.Date.from(expiry.atZone(java.time.ZoneId.systemDefault()).toInstant());
-
         //--- Set FX Information ---
         afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
         afexTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
@@ -328,7 +316,6 @@ foam.CLASS({
         afexTransaction.setPaymentProvider(PAYMENT_PROVIDER);
         if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
           afexTransaction.setAccepted(true);
-
         //--- Set Transaction details ---
         afexTransaction.setAmount(fxQuote.getSourceAmount());
         afexTransaction.setSourceCurrency(fxQuote.getSourceCurrency());
@@ -338,19 +325,16 @@ foam.CLASS({
         afexTransaction.setSourceAccount(source); // Source could be afex digital, or bank account.
         afexTransaction.setDestinationAccount(request.getDestinationAccount());
         afexTransaction.setInvoiceId(request.getInvoiceId()); // should this not be already copied?
-
         ExternalTransfer[] exT = new ExternalTransfer[2];
         exT[0] = new ExternalTransfer( afexTransaction.getSourceAccount(), -afexTransaction.getAmount() );
         exT[1] = new ExternalTransfer( afexTransaction.getDestinationAccount(), afexTransaction.getDestinationAmount() );
         afexTransaction.setTransfers( exT );
-
         //--- Find completion date estimate ---
         Date date = null;
         try{
           DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
           date = format.parse(fxQuote.getValueDate());
         } catch ( Exception e) { /* throw dateParse Exception?*/ }
-
         if ( date != null ) {
           if (date.getTime() < new Date().getTime()) {
             lines.add(new ETALineItem.Builder(x).setGroup("fx").setEta(0L).build());
@@ -358,9 +342,7 @@ foam.CLASS({
             lines.add(new ETALineItem.Builder(x).setGroup("fx").setEta(date.getTime() - new Date().getTime()).build());
           }
         }
-
         afexTransaction.addLineItems( lines.toArray(new TransactionLineItem[0]));
-
         return afexTransaction;
       `
     },
@@ -388,7 +370,6 @@ foam.CLASS({
           INSTANCE_OF(AFEXDigitalAccount.getOwnClassInfo()),
           EQ(AFEXDigitalAccount. OWNER, quote.getRequestOwner())
         ));
-
         if ( account == null ) {
           account = new AFEXDigitalAccount.Builder(x)
             .setOwner(quote.getRequestOwner())
