@@ -95,7 +95,7 @@ foam.CLASS({
       type: 'net.nanopay.tx.ChainSummary'
     },
     {
-      documentation: 'Returns childrens status.',
+      documentation: 'Updates transients on current transaction, returns true if anything was modified.',
       name: 'calculateTransients',
       type: 'Boolean',
       args: [
