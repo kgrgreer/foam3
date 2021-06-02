@@ -89,16 +89,6 @@ foam.CLASS({
     },
     {
       name: 'allColumns',
-      expression: function(of) {
-        return ! of ? [] : [].concat(
-          of.getAxiomsByClass(foam.core.Property)
-            .filter(p => ! p.hidden )
-            .filter(p => ! p.columnHidden )
-            .map(a => a.name),
-          of.getAxiomsByClass(foam.core.Action)
-            .map(a => a.name)
-        );
-      }
     },
     {
       name: 'selectedColumnNames',
@@ -316,6 +306,13 @@ foam.CLASS({
 
     async function initE() {
       var view = this;
+
+      const asyncRes = await this.filterUnpermitted(view.of.getAxiomsByClass(foam.core.Property));
+      this.allColumns = ! view.of ? [] : [].concat(
+        asyncRes.map(a => a.name),
+        view.of.getAxiomsByClass(foam.core.Action)
+        .map(a => a.name)
+      );
 
       this.columns$.sub(this.updateColumns_);
       this.of$.sub(this.updateColumns_);
@@ -690,7 +687,10 @@ foam.CLASS({
                       tag(view.OverlayActionListView, {
                         data: Object.values(actions),
                         obj: obj,
-                        dao: dao
+                        dao: dao,
+                        showDropdownIcon: false,
+                        buttonStyle: 'TERTIARY',
+                        icon: 'images/Icon_More_Resting.svg'
                       }).
                     end();
                   tbodyElement.add(tableRowElement);
@@ -724,6 +724,16 @@ foam.CLASS({
       },
       function returnMementoColumnNameDisregardSorting(c) {
         return c && this.shouldColumnBeSorted(c) ? c.substr(0, c.length - 1) : c;
+      },
+      async function filterUnpermitted(arr) {
+        if ( this.auth ) {
+          const results = await Promise.all(arr.map( async p => 
+            p.hidden ? false : 
+            ! p.columnPermissionRequired || 
+            await this.auth.check(null, `${this.of.name.toLowerCase()}.column.${p.name}`)));
+          return arr.filter((_v, index) => results[index]);
+        }
+        return arr;
       },
       {
         name: 'getActionsForRow',

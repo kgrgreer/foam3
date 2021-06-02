@@ -62,6 +62,11 @@ foam.CLASS({
       align-items: center;
     }
 
+    ^button{
+      padding: 0 !important;
+      width: 100%;
+    }
+
     ^select-level {
       padding: 8px;
     }
@@ -247,9 +252,8 @@ foam.CLASS({
               themeIcon: self.level === 1 ? self.data.themeIcon : '',
               icon: self.level === 1 ? self.data.icon : ''
             }).
+            addClass(this.myClass('button')).
             style({
-              'padding': '0px !important',
-              'width': '100%',
               'fill': this.slot(function(selected, id) {
                         if ( selected && foam.util.equals(selected.id, id) ) {
                           return self.returnExpandedCSS('/*%PRIMARY3%*/ #604aff');

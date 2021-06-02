@@ -209,8 +209,7 @@ foam.CLASS({
       class: 'String',
       name: 'search',
       view: {
-       class: 'foam.u2.TextField',
-       type: 'search',
+       class: 'foam.u2.SearchField',
        onKey: true
       }
     },

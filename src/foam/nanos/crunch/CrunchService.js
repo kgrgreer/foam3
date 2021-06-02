@@ -105,6 +105,10 @@ foam.INTERFACE({
         {
           name: 'filterGrantedUCJ',
           type: 'boolean'
+        },
+        {
+          name: 'groupPrereqAwares',
+          type: 'boolean'
         }
       ]
     },
@@ -347,6 +351,25 @@ foam.INTERFACE({
         },
         {
           name: 'capabilityId',
+          type: 'String'
+        }
+      ]
+    },
+    {
+      name: 'createApprovalRequest',
+      async: true,
+      type: 'Void',
+      documentation: `
+        Create an approval request for UCJ updates that were saved in
+        approvables by the CRUNCH wizard.
+      `,
+      args: [
+        {
+          name: 'x',
+          type: 'Context',
+        },
+        {
+          name: 'rootCapability',
           type: 'String'
         }
       ]

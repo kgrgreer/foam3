@@ -116,6 +116,14 @@ foam.CLASS({
     ^hide {
       opacity: 0.3;
     }
+
+    ^search{
+      padding-bottom: 32px;
+    }
+
+    ^search input{
+      width: 100%;
+    }
   `,
 
   imports: [
@@ -127,18 +135,37 @@ foam.CLASS({
     'foam.u2.detail.AbstractSectionedDetailView',
     'foam.u2.tag.CircleIndicator',
     'foam.u2.wizard.WizardPosition',
-    'foam.u2.wizard.WizardletIndicator'
+    'foam.u2.wizard.WizardletIndicator',
+    'foam.u2.wizard.WizardletSearchController'
   ],
 
   messages: [
     { name: 'PART_LABEL', message: 'Part ' }
   ],
 
+  properties: [
+    {
+      class: 'FObjectProperty',
+      of: 'foam.u2.wizard.WizardletSearchController',
+      name: 'searchController'
+    }
+  ],
+
   methods: [
     function initE() {
       var self = this;
+      this.searchController = this.WizardletSearchController.create({
+        wizardlets$: this.data.wizardlets$
+      });
       this
         .addClass(this.myClass())
+        .start()
+          .addClass(this.myClass('search'))
+          .tag(foam.u2.SearchField, {
+            data$: this.searchController.data$,
+            onKey: true
+          })
+        .end()
         .add(this.slot(function (
           data$wizardlets,
           data$wizardPosition,
