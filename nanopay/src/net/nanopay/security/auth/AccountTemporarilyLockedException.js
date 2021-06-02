@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -16,30 +16,35 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.account',
-  name: 'InsufficientBalanceException',
-  extends: 'foam.core.FOAMException',
+  name: 'AccountTemporarilyLockedException',
+  package: 'net.nanopay.security.auth',
+  extends: 'foam.nanos.auth.AuthenticationException',
+  javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
   properties: [
     {
-      name: 'account',
-      class: 'Reference',
-      of: 'net.nanopay.account.Account'
+      name: 'exceptionMessage',
+      value: 'You can login again after {{message}}'
     }
   ],
-  
+
   axioms: [
     {
       name: 'javaExtras',
       buildJavaClass: function(cls) {
-        cls.extras.push(foam.java.Code.create({
-          data: `
-  public InsufficientBalanceException(String accountId) {
-    setAccount(accountId);
+        cls.extras.push(`
+  public AccountTemporarilyLockedException() {
   }
-          `
-        }));
+
+  public AccountTemporarilyLockedException(String message) {
+    super(message);
+  }
+
+  public AccountTemporarilyLockedException(String message, Exception cause) {
+    super(message, cause);
+  }
+        `);
       }
     }
   ]
