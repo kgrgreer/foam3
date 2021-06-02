@@ -260,6 +260,7 @@ foam.CLASS({
       name: 'setScrollPos',
       isFramed: true,
       code: async function() {
+        var el    = await this.parentNode.el();
         let currI = 0;
         for ( let w = 0 ; w < this.data.wizardlets.length ; w++ ) {
           let wizardlet = this.data.wizardlets[w];
@@ -268,7 +269,6 @@ foam.CLASS({
           }
         }
 
-        var el         = await this.parentNode.el();
         var firstChild = await this.childNodes[0].childNodes[0].el();
         var currChild  = await this.childNodes[0].childNodes[currI].el();
         var padding    = firstChild.offsetTop;
