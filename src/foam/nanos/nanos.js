@@ -31,6 +31,7 @@ FOAM_FILES([
   { name: "foam/nanos/crunch/CapabilityGrantMode" },
   { name: "foam/nanos/crunch/Capability" },
   { name: "foam/nanos/auth/ServiceProvider" },
+  { name: 'foam/nanos/auth/test/DummySp' },
   { name: 'foam/nanos/fs/TextSaveView', flags: ['web'] },
   { name: "foam/nanos/app/AppConfig" },
   { name: "foam/nanos/app/ContextLookupAppConfigService"},
@@ -494,7 +495,7 @@ FOAM_FILES([
   { name: "foam/nanos/crunch/ClientCrunchService" },
   { name: "foam/nanos/crunch/ReputDependentUCJs" },
   //predicates
-  { name: 'foam/nanos/crunch/predicate/CapabilityGranted' },
+  { name: 'foam/nanos/crunch/predicate/CapabilityIsStatus' },
   { name: 'foam/nanos/crunch/predicate/CapabilityPrerequisitesGranted' },
   { name: 'foam/nanos/crunch/predicate/StatusChangedTo' },
   { name: 'foam/nanos/crunch/predicate/IsAgent' },
@@ -555,6 +556,7 @@ FOAM_FILES([
   { name: 'foam/nanos/approval/CompositeApprovable' },
   { name: 'foam/nanos/approval/CustomViewReferenceApprovable' },
   { name: 'foam/nanos/approval/FulfilledCompositeApprovableRule' },
+  { name: 'foam/nanos/approval/RestrictedApprovableDAO' },
 
   //authservice
   { name: "foam/nanos/auth/CapabilityAuthService" },

@@ -33,7 +33,7 @@
       name: 'applyAction',
       javaCode: `
         agency.submit(x, new ContextAwareAgent() {
-          
+
           @Override
           public void execute(X x) {
             CompositeApprovable compositeApprovable = (CompositeApprovable) obj;
@@ -47,9 +47,9 @@
             ).select(new AbstractSink() {
               @Override
               public void put(Object obj, Detachable sub) {
-                Approvable approvable = (Approvable) obj;
+                Approvable approvable = (Approvable) ((FObject) obj).fclone();
                 approvable.setStatus(compositeApprovable.getStatus());
-                approvableDAO.put_(getX(), approvable);
+                approvableDAO.put_(x, approvable);
               }
             });
           }

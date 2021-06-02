@@ -63,6 +63,22 @@ foam.CLASS({
   name: 'Flight',
   properties: [
     {
+      class: 'String',
+      name: 'passengerName',
+      required: true
+    },
+    {
+      class: 'EMail',
+      name: 'email',
+      required: true
+    },
+    {
+      class: 'Int',
+      name: 'age',
+      min: 0,
+      max: 130
+    },
+    {
       class: 'Boolean',
       name: 'returnFlight'
     },
@@ -98,3 +114,9 @@ validateFlight();
 
 f.returnDate = new Date('2021/04/15');
 validateFlight();
+
+##  Validation Errors in GUI
+--
+var f = Flight.create();
+add(f);
+add(foam.u2.detail.SectionedDetailView.create({data: f}));

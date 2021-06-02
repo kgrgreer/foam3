@@ -85,7 +85,7 @@ foam.CLASS({
         CountDownLatch latch = (CountDownLatch) getLatches().get(id);
         if ( latch == null ) {
           latch = new CountDownLatch(1);
-          getLogger().debug("latch", id);
+          // getLogger().debug("latch", id);
           getLatches().put(id, latch);
         }
         return latch;
@@ -138,7 +138,7 @@ foam.CLASS({
             .limit(1)
             .select(new ArraySink())).getArray();
           if ( list.size() > 0 ) {
-            getLogger().debug("promoted", id);
+            // getLogger().debug("promoted", id);
             return list.get(0);
           }
           latch = latch(x, id);

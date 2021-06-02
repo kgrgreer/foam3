@@ -146,10 +146,8 @@ foam.CLASS({
       class: 'String',
       name: 'menuSearch',
       view: {
-        class: 'foam.u2.TextField',
-        type: 'search',
+        class: 'foam.u2.SearchField',
         onKey: true,
-
       },
       value: '',
       postSet: function() {
@@ -177,7 +175,6 @@ foam.CLASS({
         .start()
           .start()
             .add(this.MENU_SEARCH)
-            .addClass('foam-u2-search-TextSearchView')
             .addClass(this.myClass('search'))
           .end()
           .start()

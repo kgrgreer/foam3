@@ -55,10 +55,6 @@ foam.CLASS({
     }
   `,
 
-  messages: [
-    { name: 'LABEL_SEARCH',    message: 'Search' }
-  ],
-
   properties: [
     {
       name: 'searchView',
@@ -107,8 +103,7 @@ foam.CLASS({
           of: this.filterController.dao.of.id,
           onKey: true,
           viewSpec: {
-            class: 'foam.u2.tag.Input',
-            placeholder: this.LABEL_SEARCH
+            class: 'foam.u2.SearchField',
           }
         }, this.searchView$).addClass(self.myClass('general-field'))
         .end()

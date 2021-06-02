@@ -360,7 +360,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.properties.String
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.properties.StringFilterView.LABEL_FILTERED",target:"Opções"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.search.TextSearchView.LABEL_SEARCH",target:"Pesquisa"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.advanced.CriteriaView.LABEL_SEARCH",target:"Pesquisa"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.search.IntegerSearchView.LABEL_EQ",target:"é igual a"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.search.IntegerSearchView.LABEL_NEQ",target:"não é igual a"})
@@ -369,7 +368,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.search.IntegerSearchView
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.search.IntegerSearchView.LABEL_GTE",target:"é maior que ou igual a"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.search.IntegerSearchView.LABEL_LTE",target:"é menor ou igual a"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.FilterView.LABEL_SEARCH",target:"Pesquisa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.SearchField.LABEL_SEARCH",target:"Pesquisa..."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.advanced.AdvancedFilterView.TITLE_HEADER",target:"Filtros Avançados"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.advanced.AdvancedFilterView.LABEL_CRITERIA",target:"Critério"})
@@ -418,8 +417,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Today",target:"hoje"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Yesterday",target:"Ontem"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Older",target:"Mais velho"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.RetrievePassword.INSTRUC_ONE",target:"As instruções de redefinição de senha foram enviadas para"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.RetrievePassword.INSTRUC_TWO",target:"Verifique sua caixa de entrada para continuar"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.RetrievePassword.INSTRUC_TITLE",target:"Redefinir Intruções Enviadas"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.RetrievePassword.INSTRUC",target:"Verifique sua caixa de entrada para continuar"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.RetrievePassword.REDIRECTION_TO",target:"Retornar à tela de login"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.RetrievePassword.SECTION_EMAIL_PASSWORD_SECTION.title",target:"Esqueceu sua Senha?"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.RetrievePassword.SECTION_EMAIL_PASSWORD_SECTION.subTitle",target:"Forneça o email com o quals e cadastrou e enviaremos um link para que cadastre uma nova senha"})
@@ -660,6 +659,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ThemeRefinements
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.UserCreatedByAwareRefinement.CREATE_BY.label",target:"Criado Por"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.UserCreatedByAwareRefinement.CREATED_BY_AGENT.label",target:"Criado Por Agente"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.URLValidationRefinement.INVALID_URL",target:"URL inválida"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.WebsiteValidationRefinement.INVALID_WEBSITE",target:"Site inválido"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"notifications.label",target:"Notificações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"notifications.browseTitle",target:"Notificações"})

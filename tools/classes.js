@@ -727,6 +727,7 @@ var classes = [
   // DAO decorators
   'foam.nanos.actioncommand.ActionCommandDAO',
   'foam.nanos.approval.ApprovalDAO',
+  'foam.nanos.approval.RestrictedApprovableDAO',
   'foam.nanos.audit.AuditDAO',
   'foam.nanos.auth.email.EmailVerificationDAO',
   'foam.nanos.auth.email.EmailVerificationWebAgent',
@@ -866,7 +867,7 @@ var classes = [
   'foam.nanos.crunch.extra.ImplyReviewedAction',
 
   //crunch predicates
-  'foam.nanos.crunch.predicate.CapabilityGranted',
+  'foam.nanos.crunch.predicate.CapabilityIsStatus',
   'foam.nanos.crunch.predicate.CapabilityPrerequisitesGranted',
   'foam.nanos.crunch.predicate.StatusChangedTo',
   'foam.nanos.crunch.predicate.IsAgent',
