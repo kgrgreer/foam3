@@ -121,9 +121,9 @@ foam.CLASS({
       javaCode: `
         if ( SafetyUtil.isEmpty(identifier) &&
              SafetyUtil.isEmpty(password) ) {
-          throw new AuthenticationException(); //"Not logged in");
+          throw new AuthenticationException();
         }
-        // check login attempts
+
         LoginAttempts la = null;
         User user = getUser(x, identifier);
         if ( user != null ) {
@@ -161,7 +161,6 @@ foam.CLASS({
         }
 
         try {
-          // attempt to login in, on success reset the login attempts
           user = super.login(x, identifier, password);
           resetLoginAttempts(x, la);
           return user;
