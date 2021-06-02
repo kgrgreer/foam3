@@ -183,8 +183,6 @@ add('output');
 var rt = ReferenceTest.create({province1: 'ON', province2: 'PQ'});
 add(rt);
 
-rt.province1$dao.select(console);
-
 // Each reference property has an associated $dao property
 // which returns the referenced DAO.
 add('select: ').start().style({'margin-left': '12px'}).select(rt.province1$dao, function(p) {
@@ -205,3 +203,53 @@ rt.province2$find.then(function(p) {
 
 // We can also, just add promises to U2 directly?
 add('find: ').add(rt.province1$find);
+
+##  Q7
+What does Slot.clear() do?
+<br>
+<b>A.</b> Calling slot.clear() is the same as setting the assocated property to <code>undefined</code> or calling clearProperty() on the owning object.
+
+##  Q8
+From the code below, is it just cloning the value of property? They are not pointing to the same property after copying values?
+<br>
+<b>A.</b> It isn't cloning the property, just copying the property value whenever it changes.
+It's the same as if we did:
+// copy p2's name to p1's name whenever p2.name's value changes
+p2.name$.sub(function() { p1.name = p2.name; });
+
+--
+foam.CLASS({name: 'Person', properties: [ 'name' ]});
+
+p1 = Person.create();
+p2 = Person.create({name:'John'});
+print('Initial:', p1.name, ' ', p2.name);
+
+p1.name$.follow(p2.name$);
+log('After follow:', p1.name, ' ', p2.name);
+
+p2.name = 'Janet';
+log('After update:', p1.name, ' ', p2.name);
+
+// Notice that in the above example, the binding is 1-way.
+// If I change p1, p2 isn't affect:
+p1.name = 'Kevin';
+log('After update:', p1.name, ' ', p2.name);
+
+// If I wanted to make it a 2-way data-binding, I could do:
+// p1.name$.linkFrom(p2.name$)
+// or just:
+// p1.name$ = p2.name$;
+// Ex.
+
+p1 = Person.create();
+p2 = Person.create({name:'John'});
+
+p1.name$ = p2.name$;
+
+log('After link:', p1.name, ' ', p2.name);
+
+p1.name = 'Steve';
+log('After Update p1:', p1.name, ' ', p2.name);
+
+p2.name = 'Samantha';
+log('After Update p2:', p1.name, ' ', p2.name);
