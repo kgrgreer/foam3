@@ -114,13 +114,15 @@ foam.CLASS({
         } catch ( Throwable ignored ) { }
 
         // verify login attempts increased
-        test(verifyLoginAttempts(x, email, 1), "Login attempts is equal to 1 after using " + method);
+        short loginAttempts = getLoginAttempts(x, email).getLoginAttempts();
+        test(loginAttempts == 1, "Login attempts ("+loginAttempts+") is equal to 1 after using " + method);
 
         // login with valid credentials
         loginWithValidCredentials(x, auth, email);
 
         // verify login attempts reset
-        test(verifyLoginAttempts(x, email, 0), "Login attempts is reset to 0 after using " + method);
+        loginAttempts = getLoginAttempts(x, email).getLoginAttempts();
+        test(loginAttempts == 0, "Login attempts ("+loginAttempts+") is reset to 0 after using " + method);
       `
     },
     {
@@ -153,29 +155,25 @@ foam.CLASS({
             loginWithInvalidCredentials(x, auth, email);
           } catch ( Throwable t ) {
             // verify login attempts increased
-            test(verifyLoginAttempts(x, email, i), "Login attempts is equal to " + i + " after using " + method);
+            short loginAttempts = getLoginAttempts(x, email).getLoginAttempts();
+            test(loginAttempts == i, "Login attempts ("+loginAttempts+") is equal to " + i + " after using " + method);
           }
         }
 
-        // attempt to exceed login attempts with invalid credentials
-        // NOTE: Can't test date as it changes from actual exception.
-        try {
-          loginWithInvalidCredentials(x, auth, email);
-          test(false, "LoginAttemptAuthService throws AccountTemporarilyLockedException with the message \\"You can login again after ..date..\\" with invalid credentials after using " + method);
-        } catch (AccountTemporarilyLockedException e) {
-          test(true, "LoginAttemptAuthService throws AccountTemporarilyLockedException with the message \\"You can login again after ..date..\\" with invalid credentials after using " + method);
-        }
-
-        LoginAttempts la = (LoginAttempts) getLoginAttempts(x, email).fclone();
-        la.setLoginAttempts((short)100);
-        ((foam.dao.DAO) x.get("loginAttemptsDAO")).put(la);
-
         // Admin users report AccountTemporarilyLockedException - when waiting on freeze window.  
         try {
-          loginWithInvalidCredentials(x, auth, email);
+          loginWithValidCredentials(x, auth, email);
           test(false, "LoginAttemptAuthService throws AccountTemporarilyLockedException with the message \\"You can login again after ..date..\\" with valid credentials after using " + method);
         } catch (AccountTemporarilyLockedException e) {
           test(true, "LoginAttemptAuthService throws AccountTemporarilyLockedException with the message \\"You can login again after ..date..\\" with valid credentials after using " + method);
+        }
+
+        resetLoginCount(x);
+        try {
+          loginWithValidCredentials(x, auth, email);
+          test(true, "LoginAttemptAuthService login with valid credentials after reset, using " + method);
+        } catch (Throwable t) {
+          test(false, "LoginAttemptAuthService login with valid credentials after reset, using " + method+", exception: "+t.getClass().getName()+", "+t.getMessage());
         }
       `
     },
@@ -222,35 +220,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'verifyLoginAttempts',
-      documentation: 'Verifies the amount of login attempts',
-      type: 'Boolean',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'email',
-          type: 'String'
-        },
-        {
-          name: 'attempts',
-          type: 'Integer'
-        }
-      ],
-      javaCode: `
-        foam.nanos.auth.User user = (foam.nanos.auth.User)
-          ((foam.dao.DAO) x.get("localUserDAO")).inX(x).find(foam.mlang.MLang.EQ(foam.nanos.auth.User.EMAIL, email));
-        if ( user != null ) {
-          LoginAttempts loginAttempts = (LoginAttempts) ((foam.dao.DAO) x.get("localLoginAttemptsDAO")).inX(x).find(user.getId());
-          return loginAttempts != null &&
-            loginAttempts.getLoginAttempts() == attempts;
-        }
-        return false;
-      `
-    },
-    {
       name: 'resetLoginCount',
       documentation: 'Resets the user\'s login attempt counter',
       type: 'Void',
@@ -272,6 +241,7 @@ foam.CLASS({
         ((foam.dao.DAO) x.get("localLoginAttemptsDAO")).inX(x).put(new LoginAttempts.Builder(x)
           .setId(1000)
           .setLoginAttempts((short) 0)
+          .setNextLoginAttemptAllowedAt(null)
           .build());
       `
     },

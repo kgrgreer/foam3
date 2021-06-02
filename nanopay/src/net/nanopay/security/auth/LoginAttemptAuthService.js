@@ -35,6 +35,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.i18n.TranslationService',
     'foam.nanos.auth.AccessDeniedException',
+    'foam.nanos.auth.AccountLockedException',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.Group',
@@ -120,7 +121,7 @@ foam.CLASS({
       javaCode: `
         if ( SafetyUtil.isEmpty(identifier) &&
              SafetyUtil.isEmpty(password) ) {
-          throw new AuthenticationException("Not logged in");
+          throw new AuthenticationException(); //"Not logged in");
         }
         // check login attempts
         LoginAttempts la = null;
@@ -135,63 +136,42 @@ foam.CLASS({
           }
         }
 
+        la = incrementLoginAttempts(x, la);
+        int remaining = getMaxAttempts() - la.getLoginAttempts();
 
-        // TODO: auth.checks are not working, wrong context.
+        if ( remaining < 0 ) {
+          // TODO: auth.checks are not working, wrong context.
+          if ( super.check(x, "loginattempts.lock.time") ||
+               "admin".equals(user.getGroup()) ) {
+            if ( la.getNextLoginAttemptAllowedAt() == null ) {
+              la = incrementNextLoginAttemptAllowedAt(x, la);
+              throw new AccountTemporarilyLockedException(getDateFormat().format(la.getNextLoginAttemptAllowedAt()));
+            } else if ( la.getNextLoginAttemptAllowedAt().getTime() > System.currentTimeMillis() ) {
+              la = incrementNextLoginAttemptAllowedAt(x, la);
+
+              throw new AccountTemporarilyLockedException(getDateFormat().format(la.getNextLoginAttemptAllowedAt()));
+            } else {
+              la = resetLoginAttempts(x, la);
+              la = incrementLoginAttempts(x, la);
+              remaining = getMaxAttempts() - la.getLoginAttempts();
+            }
+          } else {
+            throw new AccountLockedException();
+          }
+        }
+
         try {
           // attempt to login in, on success reset the login attempts
           user = super.login(x, identifier, password);
-
-          if ( super.check(x, "loginattempts.lock.time") ||
-               "admin".equals(user.getGroup()) ) {
-            if ( ! loginFreezeWindowReached(la) ) {
-              throw new Throwable();
-            }
-          } else {
-            int remaining = getMaxAttempts() - la.getLoginAttempts();
-            if ( remaining <= 0 ) {
-              throw new Throwable();
-            }
-          }
-
           resetLoginAttempts(x, la);
           return user;
         } catch ( AccessDeniedException t ) {
           // TODO: don't allow admin to be locked out when accessed from restricted network.
           throw t;
-        } catch ( Throwable t ) {
-          if ( user == null ) {
-            /*
-              We check for invalid users in NanopayUserAndGroupAuthService.
-              This gets caught here, hence the rethrow.
-            */
-            if ( t instanceof RuntimeException ) {
-              throw (RuntimeException) t;
-            }
-            throw new RuntimeException(t.getMessage(), t);
-          }
-
-          try {
-            if ( super.check(x, "loginattempts.notclustered") ||
-                 "admin".equals(user.getGroup()) ) {
-              la.setClusterable(false);
-            }
-
-            la = incrementLoginAttempts(x, la);
-            int remaining = getMaxAttempts() - la.getLoginAttempts();
-            if ( remaining > 0 ) {
-              throw new net.nanopay.security.auth.InvalidPasswordException(String.valueOf(remaining));
-            }
-
-            if ( super.check(x, "loginattempts.lock.time") ||
-                 "admin".equals(user.getGroup()) ) {
-              la = incrementNextLoginAttemptAllowedAt(x, la);
-              throw new net.nanopay.security.auth.AccountTemporarilyLockedException(getDateFormat().format(la.getNextLoginAttemptAllowedAt()));
-            }
-
-            throw new foam.nanos.auth.AccountLockedException();
-          } finally {
-            super.logout(x);
-          }
+        } catch ( foam.nanos.auth.InvalidPasswordException p ) {
+          throw new net.nanopay.security.auth.InvalidPasswordException(String.valueOf(remaining));
+        } finally {
+          super.logout(x);
         }
       `
     },
@@ -273,12 +253,9 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        if ( loginAttempts.getLoginAttempts() == 0 ) {
-          return loginAttempts;
-        }
         loginAttempts = loginAttempts.isFrozen() ? (LoginAttempts) loginAttempts.fclone() : loginAttempts;
         loginAttempts.setLoginAttempts((short) 0);
-        loginAttempts.setNextLoginAttemptAllowedAt(new Date());
+        loginAttempts.setNextLoginAttemptAllowedAt(null); //new Date());
         return (LoginAttempts) ((foam.dao.DAO) x.get("localLoginAttemptsDAO")).put(loginAttempts);
       `
     },
@@ -319,32 +296,19 @@ foam.CLASS({
        javaCode: `
          loginAttempts = loginAttempts.isFrozen() ? (LoginAttempts) loginAttempts.fclone() : loginAttempts;
          java.util.Date now = new Date();
+         java.util.Date next = loginAttempts.getNextLoginAttemptAllowedAt();
+         if ( next == null ) {
+           next = now;
+         }
          Calendar cal = Calendar.getInstance();
-         cal.setTime(loginAttempts.getNextLoginAttemptAllowedAt());
-         if ( cal.getTime().getTime() < now.getTime() ) {
+         cal.setTime(next);
+         if ( next.getTime() < now.getTime() ) {
            cal.setTime(now);
          }
          cal.add((Calendar.MINUTE), getLoginDelay());
          loginAttempts.setNextLoginAttemptAllowedAt(cal.getTime());
          return (LoginAttempts) ((foam.dao.DAO) x.get("localLoginAttemptsDAO")).put(loginAttempts);
        `
-    },
-    {
-      name: 'loginFreezeWindowReached',
-      documentation: 'Convenience method to check if user next allowed login attempt date has been reached',
-      type: 'Boolean',
-      args: [
-        {
-          name: 'loginAttempts',
-          type: 'LoginAttempts'
-        }
-      ],
-      javaCode: `
-        if ( loginAttempts == null ) {
-          throw new foam.nanos.auth.UserNotFoundException();
-        }
-        return loginAttempts.getNextLoginAttemptAllowedAt().getTime() < System.currentTimeMillis();
-      `
-    },
+    }
   ]
 });
