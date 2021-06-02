@@ -109,12 +109,14 @@ console.log('a: ' + o.a + ', b: ' + o.b);
 ##  Class reference
 Objects have a reference to their class in .cls_
 --
+var o = Test.create({ a: 3, b: 'hello' });
 console.log("Class object:", o.cls_);
 
 
 ##  Test isInstance
 Test Class membership with Class.isInstance()
 --
+var o = Test.create({ a: 3, b: 'hello' });
 console.log('Test.isInstance(o)?', Test.isInstance(o));
 console.log('Test.isInstance("foo")?', Test.isInstance("Test"));
 
@@ -122,12 +124,14 @@ console.log('Test.isInstance("foo")?', Test.isInstance("Test"));
 ##  Test Methods
 Call Methods on the Test instance
 --
+var o = Test.create({ a: 3, b: 'hello' });
 console.log("Methods return: ", o.f1(), o.f2());
 
 
 ##  Update Properties
 Properties accept value changes as normal
 --
+var o = Test.create({ a: 3, b: 'hello' });
 o.a++;
 o.b = 'bye';
 console.log('New values: a: ' + o.a + ', b: ' + o.b);
@@ -136,6 +140,7 @@ console.log('New values: a: ' + o.a + ', b: ' + o.b);
 ##  Test copyFrom
 Multiple properties can be updated at once using copyFrom()
 --
+var o = Test.create({ a: 3, b: 'hello' });
 o.copyFrom({a: 42, b: 'rosebud'});
 console.log('New values: a: ' + o.a + ', b: ' + o.b);
 
@@ -143,12 +148,14 @@ console.log('New values: a: ' + o.a + ', b: ' + o.b);
 ##  Test toString
 Call toString on an object
 --
+var o = Test.create({ a: 3, b: 'hello' });
 console.log("toString:", o.toString());
 
 
 ##  Describe instance
 Call describe() on an object to see its Property values
 --
+var o = Test.create({ a: 3, b: 'hello' });
 o.describe();
 
 
@@ -712,6 +719,7 @@ Refinement upgrades the existing class rather than create a new sub-class
 // new sub-class. In the following example we add 'salary' to
 // the person class, rather than creating a new Employee sub-class.
 foam.CLASS({
+  name: 'PersonRefinement',
   refines: 'Person',
   properties: [ { class: 'Float', name: 'salary', value: 0 } ],
   methods: [
@@ -1224,7 +1232,7 @@ o.pub(1,2,3,4,5,6,7,8);
 o.pub(1,2,3,4,5,6,7,8,9);
 o.pub(1,2,3,4,5,6,7,8,9,10);
 o.pub(1,2,3,4,5,6,7,8,9,10,11);
-console.log(globalResult);
+// console.log(globalResult);
 
 
 ##  Topics

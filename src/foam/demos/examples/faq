@@ -106,3 +106,75 @@ In your HTML file, you can customize the flags by setting FOAM_FLAGS before load
   &lt;script language="javascript" src="../../../foam.js">&lt;/script>
 </pre>
 The set of flags isn't fixed, and you can make up your own for your own purposes.
+
+##  Q6
+How do I use References?
+<br>
+<br>
+A Reference is a type of property which stores the primary key of a record
+stored in a DAO.
+--
+
+foam.CLASS({
+  name: 'Province',
+
+  properties: [ 'id', 'name' ],
+
+  methods: [
+    function toSummary() { return this.name; }
+  ]
+});
+
+foam.CLASS({
+  name: 'ReferenceTest',
+
+  requires: [
+    'foam.dao.EasyDAO',
+    'foam.u2.view.ReferenceView'
+   ],
+
+  properties: [
+    {
+      name: 'provinceDAO',
+      hidden: true,
+      factory: function() {
+        return this.EasyDAO.create({
+          of: Province,
+          daoType: 'MDAO',
+          testData: [
+            { id: 'ON', name: 'Ontario' },
+            { id: 'PQ', name: 'Quebec' },
+            { id: 'NS', name: 'Nova Scotia' },
+            { id: 'NB', name: 'New Brunswick' },
+            { id: 'PE', name: 'Prince Edward Island' }
+            // that's enough for demo purposes
+          ]
+        });
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'Province',
+      name: 'province1',
+      targetDAOKey: 'provinceDAO'
+    },
+    {
+      class: 'Reference',
+      of: 'Province',
+      name: 'province2',
+      view: { class: 'foam.u2.view.ReferenceView', objToChoice: function(obj) { return [obj.id, obj.id + ' ' + obj.name]; } },
+      targetDAOKey: 'provinceDAO'
+    }
+  ]
+});
+add('output');
+var rt = ReferenceTest.create({province1: 'ON', province2: 'PQ'});
+add(rt);
+
+rt.province1$dao.select(console);
+
+add('select: ').start().select(rt.province1$dao, function(p) {
+  return this.E().nbsp().nbsp().add(p.name);
+}).end().br();
+
+add('find: ').start().add(rt.province1$find).end();
