@@ -37,13 +37,13 @@ foam.CLASS({
 
   methods: [
     async function init() {
-        if ( ! this.parentEl_ ) return null;
-        var el = await this.parentEl_.el();
-        this.chart_ = this.ChartCView.create({
-          config$: this.config$,
-          height: el.clientHeight,
-          width: el.clientWidth
-        });
+      if ( ! this.parentEl_ ) return null;
+      var el = await this.parentEl_.el();
+      this.chart_ = this.ChartCView.create({
+        config$: this.config$,
+        height: el.clientHeight,
+        width: el.clientWidth
+      });
     },
 
     function initE() {
