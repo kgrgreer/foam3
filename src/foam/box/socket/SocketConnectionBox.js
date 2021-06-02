@@ -303,7 +303,7 @@ NOTE: duplicated in SocketConnectionReplyBox
               if ( o != null &&
                    o instanceof foam.box.RPCErrorMessage ) {
                 foam.box.RemoteException re = (foam.box.RemoteException) ((foam.box.RPCErrorMessage) o).getData();
-                getLogger().warning("RemoteException", re.getId(), re.getMessage(), re.getException() != null ? re.getException().getClass().getName() : "");
+                getLogger().warning("RemoteException", re.getId(), re.getMessage(), re.getException());
                 if ( re.getException() != null ) {
                   throw (foam.core.FOAMException) re.getException();
                 }

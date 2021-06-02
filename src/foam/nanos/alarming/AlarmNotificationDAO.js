@@ -29,10 +29,6 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.Group',
       value: 'support-ops'
-    },
-    {
-      name: 'slackWebhook',
-      class: 'String'
     }
   ],
 
@@ -91,9 +87,6 @@ foam.CLASS({
         .setEmailArgs(args)
         .setBody(body.toString())
         .build();
-     if ( ! foam.util.SafetyUtil.isEmpty(getSlackWebhook()) ) {
-       notification.setSlackWebhook(getSlackWebhook());
-     }
      ((DAO) x.get("localNotificationDAO")).put(notification);
       return alarm;
       `

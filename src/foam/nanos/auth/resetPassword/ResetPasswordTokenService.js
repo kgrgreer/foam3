@@ -138,7 +138,7 @@ if ( data == null || data.size() == 0 ) {
 Token tokenResult = (Token) data.get(0);
 User userResult = (User) userDAO.find(tokenResult.getUserId());
 if ( userResult == null ) {
-  throw new UserNotFoundException();
+  throw new RuntimeException("User not found");
 }
 
 if ( ! Password.isValid(x, userResult, newPassword) ) {
