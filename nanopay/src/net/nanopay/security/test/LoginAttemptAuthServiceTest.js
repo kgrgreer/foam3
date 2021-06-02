@@ -24,9 +24,7 @@ foam.CLASS({
     'foam.nanos.session.Session',
     'foam.core.X',
     'foam.nanos.auth.LifecycleState',
-    'foam.nanos.auth.AccountLockedException',
-    'net.nanopay.security.auth.LoginAttempts',
-    'net.nanopay.security.auth.AccountTemporarilyLockedException'
+    'net.nanopay.security.auth.LoginAttempts'
   ],
 
   constants: [
@@ -43,7 +41,7 @@ foam.CLASS({
       javaCode: `
         // set up user dao
         x = x.put("localUserDAO", new foam.dao.MDAO(foam.nanos.auth.User.getOwnClassInfo()));
-        x = x.put("localLoginAttemptsDAO", new foam.dao.MDAO(LoginAttempts.getOwnClassInfo()));
+        x = x.put("localLoginAttemptsDAO", new foam.dao.MDAO(net.nanopay.security.auth.LoginAttempts.getOwnClassInfo()));
         foam.dao.DAO userDAO = (foam.dao.DAO) x.get("localUserDAO");
         foam.dao.DAO loginAttemtpsDAO = (foam.dao.DAO) x.get("localLoginAttemptsDAO");
         resetLoginCount(x);
@@ -114,15 +112,13 @@ foam.CLASS({
         } catch ( Throwable ignored ) { }
 
         // verify login attempts increased
-        short loginAttempts = getLoginAttempts(x, email).getLoginAttempts();
-        test(loginAttempts == 1, "Login attempts ("+loginAttempts+") is equal to 1 after using " + method);
+        test(verifyLoginAttempts(x, email, 1), "Login attempts is equal to 1 after using " + method);
 
         // login with valid credentials
         loginWithValidCredentials(x, auth, email);
 
         // verify login attempts reset
-        loginAttempts = getLoginAttempts(x, email).getLoginAttempts();
-        test(loginAttempts == 0, "Login attempts ("+loginAttempts+") is reset to 0 after using " + method);
+        test(verifyLoginAttempts(x, email, 0), "Login attempts is reset to 0 after using " + method);
       `
     },
     {
@@ -155,26 +151,19 @@ foam.CLASS({
             loginWithInvalidCredentials(x, auth, email);
           } catch ( Throwable t ) {
             // verify login attempts increased
-            short loginAttempts = getLoginAttempts(x, email).getLoginAttempts();
-            test(loginAttempts == i, "Login attempts ("+loginAttempts+") is equal to " + i + " after using " + method);
+            test(verifyLoginAttempts(x, email, i), "Login attempts is equal to " + i + " after using " + method);
           }
         }
 
-        // Admin users report AccountTemporarilyLockedException - when waiting on freeze window.  
-        try {
-          loginWithValidCredentials(x, auth, email);
-          test(false, "LoginAttemptAuthService throws AccountTemporarilyLockedException with the message \\"You can login again after ..date..\\" with valid credentials after using " + method);
-        } catch (AccountTemporarilyLockedException e) {
-          test(true, "LoginAttemptAuthService throws AccountTemporarilyLockedException with the message \\"You can login again after ..date..\\" with valid credentials after using " + method);
-        }
+        // attempt to exceed login attempts with invalid credentials
+        test(foam.test.TestUtils.testThrows(() -> loginWithInvalidCredentials(x, auth, email),
+          getNextLoginAttemptAllowedAtMsg(x, email), foam.nanos.auth.AuthenticationException.class),
+          "LoginAttemptAuthService throws AuthenticationException with the message \\"Account locked. Please contact customer service.\\" with invalid credentials after using " + method);
 
-        resetLoginCount(x);
-        try {
-          loginWithValidCredentials(x, auth, email);
-          test(true, "LoginAttemptAuthService login with valid credentials after reset, using " + method);
-        } catch (Throwable t) {
-          test(false, "LoginAttemptAuthService login with valid credentials after reset, using " + method+", exception: "+t.getClass().getName()+", "+t.getMessage());
-        }
+        // attempt to exceed login attempts with valid credentials
+        test(foam.test.TestUtils.testThrows(() -> loginWithValidCredentials(x, auth, email),
+          getNextLoginAttemptAllowedAtMsg(x, email), foam.nanos.auth.AuthenticationException.class),
+          "LoginAttemptAuthService throws AuthenticationException with the message \\"Account locked. Please contact customer service.\\" with valid credentials after using " + method);
       `
     },
     {
@@ -220,6 +209,35 @@ foam.CLASS({
       `
     },
     {
+      name: 'verifyLoginAttempts',
+      documentation: 'Verifies the amount of login attempts',
+      type: 'Boolean',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'email',
+          type: 'String'
+        },
+        {
+          name: 'attempts',
+          type: 'Integer'
+        }
+      ],
+      javaCode: `
+        foam.nanos.auth.User user = (foam.nanos.auth.User)
+          ((foam.dao.DAO) x.get("localUserDAO")).inX(x).find(foam.mlang.MLang.EQ(foam.nanos.auth.User.EMAIL, email));
+        if ( user != null ) {
+          LoginAttempts loginAttempts = (LoginAttempts) ((foam.dao.DAO) x.get("localLoginAttemptsDAO")).inX(x).find(user.getId());
+          return loginAttempts != null &&
+            loginAttempts.getLoginAttempts() == attempts;
+        }
+        return false;
+      `
+    },
+    {
       name: 'resetLoginCount',
       documentation: 'Resets the user\'s login attempt counter',
       type: 'Void',
@@ -238,10 +256,9 @@ foam.CLASS({
           .setLifecycleState(LifecycleState.ACTIVE)
           .build());
    
-        ((foam.dao.DAO) x.get("localLoginAttemptsDAO")).inX(x).put(new LoginAttempts.Builder(x)
+        ((foam.dao.DAO) x.get("localLoginAttemptsDAO")).inX(x).put(new net.nanopay.security.auth.LoginAttempts.Builder(x)
           .setId(1000)
           .setLoginAttempts((short) 0)
-          .setNextLoginAttemptAllowedAt(null)
           .build());
       `
     },
@@ -260,47 +277,23 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      try {
-          LoginAttempts loginAttempts = getLoginAttempts(x, email);
-
-          if ( loginAttempts != null ) {
-            java.text.SimpleDateFormat df =  new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            df.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
-            AccountTemporarilyLockedException ex = new AccountTemporarilyLockedException();
-            String msg = ex.getExceptionMessage();
-            return msg.replace("{{message}}", df.format(loginAttempts.getNextLoginAttemptAllowedAt()));
-          }
-        } catch (Throwable t) {
-          System.err.println(t.getMessage());
-        }
-        return "";
-      `
-    },
-    {
-      name: 'getLoginAttempts',
-      documentation: '',
-      type: 'LoginAttempts',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'email',
-          type: 'String'
-        }
-      ],
-      javaCode: `
         foam.dao.DAO userDAO = ((foam.dao.DAO) x.get("localUserDAO")).inX(x);
         foam.dao.DAO loginAttemptsDAO = ((foam.dao.DAO) x.get("localLoginAttemptsDAO")).inX(x);
         foam.nanos.auth.User user = (foam.nanos.auth.User)
           userDAO.find(foam.mlang.MLang.EQ(foam.nanos.auth.User.EMAIL, email));
 
         if ( user != null ) {
-          return (LoginAttempts) loginAttemptsDAO.find(user.getId());
+          net.nanopay.security.auth.LoginAttempts loginAttempts = (net.nanopay.security.auth.LoginAttempts)
+            loginAttemptsDAO.find(user.getId());
+
+          if ( loginAttempts != null ) {
+            java.text.SimpleDateFormat df =  new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            df.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+            return "Account temporarily locked. You can attempt to login after " + df.format(loginAttempts.getNextLoginAttemptAllowedAt());
+          }
         }
-        throw new RuntimeException("LoginAttempts not found");
-        `
+        return "";
+      `
     }
   ]
 });
