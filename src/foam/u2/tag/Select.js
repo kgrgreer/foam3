@@ -27,7 +27,7 @@ foam.CLASS({
       -moz-appearance: none;
       -webkit-appearance: none;
       background: #ffffff url('/images/dropdown-icon.svg') no-repeat;
-      background-position: right 0.9em top 50%, 0 0; 
+      background-position: right 0.9em top 50%, 0 0;
       box-shadow: none;
       cursor: pointer;
       max-width: 100%;

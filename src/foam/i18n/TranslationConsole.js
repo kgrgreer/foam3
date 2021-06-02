@@ -13,7 +13,7 @@ foam.CLASS({
 
   static: [
     function OPEN() {
-      var w      = global.window.open("", 'Translation Console', "width=800,height=800,scrollbars=no", true);
+      var w = global.window.open("", 'Translation Console', "width=800,height=800,scrollbars=no", true);
 
       // I would like to close 'w' when the parent window is reloaded, but it doesn't work.
       document.body.addEventListener('beforeunload', () => w.close());
@@ -37,7 +37,6 @@ foam.CLASS({
         }
         return obj.instance_[key];
       };
-
     }
   ],
 
@@ -57,7 +56,6 @@ foam.CLASS({
     .foam-u2-view-TableView-th-editColumns { display: none; }
     .foam-u2-view-TableView-td[name="contextMenuCell"] { display: none; }
     .foam-u2-view-ScrollTableView { height: auto !important; }
-
   `,
 
   classes: [

@@ -36,7 +36,7 @@ protected ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
     return b;
   }
 };`
-        }))
+        }));
       }
     }
   ],
@@ -61,7 +61,6 @@ protected ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
 
   return w.toString();
 }
-
 return String.valueOf(obj);`
     },
     {
@@ -76,7 +75,14 @@ return String.valueOf(obj);`
       javaCode:
       `
   StringBuilder str = sb.get();
-  if ( args.length >= 1) {
+  if ( args.length == 1 &&
+       args[0] instanceof Throwable ) {
+    str.append(((Throwable) args[0]).getMessage());
+    str.append(formatArg(args[0]));
+    return str.toString();
+  }
+
+  if ( args.length > 0) {
     str.append(formatArg(args[0]));
   }
   for ( int i = 1; i < args.length; ++i) {

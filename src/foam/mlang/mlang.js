@@ -945,7 +945,7 @@ for ( int i = 0; i < this.args_.length; i++ ) {
       update = true;
     } else {
       args.add(newArg);
-      if ( ! arg.createStatement().equals(newArg.createStatement()) ) update = true;
+      if ( ! arg.equals(newArg) ) update = true;
     }
   }
 }
@@ -1107,7 +1107,7 @@ for ( int i = 0; i < this.args_.length; i++ ) {
       update = true;
     } else {
       args.add(newArg);
-      if ( ! arg.createStatement().equals(newArg.createStatement()) ) update = true;
+      if ( ! arg.equals(newArg) ) update = true;
     }
   }
 }
