@@ -124,7 +124,6 @@ foam.CLASS({
           throw new AuthenticationException();
         }
 
-        int remaining = 0;
         LoginAttempts la = null;
         User user = getUser(x, identifier);
         if ( user != null ) {
@@ -135,29 +134,31 @@ foam.CLASS({
           } else {
             la = (LoginAttempts) la.fclone();
           }
+        } else {
+          return super.login(x, identifier, password);
+        }
 
-          la = incrementLoginAttempts(x, la);
-          remaining = getMaxAttempts() - la.getLoginAttempts();
+        la = incrementLoginAttempts(x, la);
+        int remaining = getMaxAttempts() - la.getLoginAttempts();
 
-          if ( remaining < 0 ) {
-            // TODO: auth.checks are not working, wrong context.
-            if ( super.check(x, "loginattempts.lock.time") ||
-                 "admin".equals(user.getGroup()) ) {
-              if ( la.getNextLoginAttemptAllowedAt() == null ) {
-                la = incrementNextLoginAttemptAllowedAt(x, la);
-                throw new AccountTemporarilyLockedException(getDateFormat().format(la.getNextLoginAttemptAllowedAt()));
-              } else if ( la.getNextLoginAttemptAllowedAt().getTime() > System.currentTimeMillis() ) {
-                la = incrementNextLoginAttemptAllowedAt(x, la);
+        if ( remaining < 0 ) {
+          // TODO: auth.checks are not working, wrong context.
+          if ( super.check(x, "loginattempts.lock.time") ||
+               "admin".equals(user.getGroup()) ) {
+            if ( la.getNextLoginAttemptAllowedAt() == null ) {
+              la = incrementNextLoginAttemptAllowedAt(x, la);
+              throw new AccountTemporarilyLockedException(getDateFormat().format(la.getNextLoginAttemptAllowedAt()));
+            } else if ( la.getNextLoginAttemptAllowedAt().getTime() > System.currentTimeMillis() ) {
+              la = incrementNextLoginAttemptAllowedAt(x, la);
 
-                throw new AccountTemporarilyLockedException(getDateFormat().format(la.getNextLoginAttemptAllowedAt()));
-              } else {
-                la = resetLoginAttempts(x, la);
-                la = incrementLoginAttempts(x, la);
-                remaining = getMaxAttempts() - la.getLoginAttempts();
-              }
+              throw new AccountTemporarilyLockedException(getDateFormat().format(la.getNextLoginAttemptAllowedAt()));
             } else {
-              throw new AccountLockedException();
+              la = resetLoginAttempts(x, la);
+              la = incrementLoginAttempts(x, la);
+              remaining = getMaxAttempts() - la.getLoginAttempts();
             }
+          } else {
+            throw new AccountLockedException();
           }
         }
 
