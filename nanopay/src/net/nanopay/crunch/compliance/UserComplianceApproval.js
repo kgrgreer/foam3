@@ -142,12 +142,12 @@ foam.CLASS({
         CrunchService crunchService = (CrunchService) x.get("crunchService");
         DAO userCapabilityJunctionDAO = (DAO) x.get("bareUserCapabilityJunctionDAO");
 
-        List<Capability> prereqs = (List<Capability>) crunchService.getCapabilityPath(x, ucj.getTargetId(), false);
+        List<Capability> prereqs = (List<Capability>) crunchService.getCapabilityPath(x, ucj.getTargetId(), false, true);
 
         for ( Capability prereq : prereqs ) {
-          // this is the business registration capability, onboarding seems to be dependent on this, 
+          // this is the business registration capability, onboarding seems to be dependent on this,
           // but if this is cleared and the user is prompted to reapply - it will create new business,
-          // and also this is not part of the "onboarding" data, so skip over 
+          // and also this is not part of the "onboarding" data, so skip over
           if ( prereq.getId().equals("crunch.onboarding.register-business")) continue;
 
           UserCapabilityJunction prereqUcj = crunchService.getJunction(x, prereq.getId());
