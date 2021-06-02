@@ -41,7 +41,6 @@ foam.CLASS({
       class: 'DateTime',
       name: 'nextLoginAttemptAllowedAt',
       type: 'Date',
-      // javaFactory: 'return new Date();',
       storageTransient: true
     },
     {
