@@ -114,7 +114,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SuccessPasswordView.INSTRUCTIONS",target:"Sua senha foi redefinida com sucesso"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SuccessPasswordView.RESET_PASSWORD",target:"Redefinição de senha"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SuccessPasswordView.BACK_TO",target:"Voltar para fazer login"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.AbliiOverlayActionListView.ACTIVE_IMAGE_URL.label",target:"activeImageURL"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SMEWizardOverview.HIDE_NUMBERS.label",target:"hideNumbers"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SMEWizardOverview.HIDE_NUMBERS.value",target:"true"})

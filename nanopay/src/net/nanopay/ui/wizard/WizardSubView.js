@@ -52,10 +52,9 @@ foam.CLASS({
       this.errors_$.sub(this.errorsUpdate);
       this.errorsUpdate();
     },
-    function scrollToTop() {
-      if ( ! this.wizard.el() ) return;
-
-      this.wizard.el().scrollIntoView({ behavior: 'smooth', block: 'start' });
+    async function scrollToTop() {
+      var el = await this.wizard.el();
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   ],
 

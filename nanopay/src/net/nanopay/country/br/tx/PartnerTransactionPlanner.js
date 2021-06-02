@@ -107,8 +107,8 @@ foam.CLASS({
         }
         if ( pLineItem == null ) throw new ValidationException("[Transaction Validation error] "+ this.MISSING_LINEITEM);
 
-        NatureCode natureCode = (NatureCode) ((DAO) x.get("natureCodeDAO")).inX(x).find(EQ(NatureCode.OPERATION_TYPE, pLineItem.getNatureCode()));
-        if ( natureCode == null ) throw new ValidationException("natureCode doesn't exist");
+        NatureCode natureCode = (NatureCode) ((DAO) x.get("natureCodeDAO")).inX(x).find(EQ(NatureCode.OPERATION_TYPE, pLineItem.getReasonCode()));
+        if ( natureCode == null ) throw new ValidationException("Nature Code doesn't exist: " + pLineItem.getReasonCode());
 
         var popCode = ((DAO) x.get("afexPOPCodesDAO")).find(AND(
           EQ(AFEXPOPCode.PARTNER_CODE, natureCode.getOperationType()),
@@ -116,14 +116,14 @@ foam.CLASS({
         ));
         if ( popCode == null ) {
           Logger logger = (Logger) x.get("logger");
-          logger.error("No mapping found for natureCode: " + natureCode.getOperationType());
+          logger.error("No mapping found for reasonCode: " + natureCode.getOperationType() + " for AFEX partner");
           Alarm alarm = new Alarm();
           alarm.setClusterable(false);
           alarm.setSeverity(LogLevel.ERROR);
-          alarm.setName("Failed to map natureCode/POP");
-          alarm.setNote("No AFEX POP for nature code: " + natureCode.getOperationType());
+          alarm.setName("Failed to map Nature Code to partner reason code");
+          alarm.setNote("No reason code found for Nature Code: " + natureCode.getOperationType() + " for AFEX partner");
           alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
-          throw new ValidationException("natureCode doesn't match any partner reason code");
+          throw new ValidationException("Nature Code doesn't match any partner reason code");
         }
 
         return true;

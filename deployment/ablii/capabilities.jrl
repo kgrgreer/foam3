@@ -56,7 +56,8 @@ p({
   id:"abliiCorridorCapability",
   permissionsGranted: [
     "paymentprovidercorridor.source.read.paymentprovidercorridor.rbc.ca-ca",
-    "paymentprovidercorridor.source.read.paymentprovidercorridor.afex.us-ca"
+    "paymentprovidercorridor.source.read.paymentprovidercorridor.afex.us-ca",
+    "invoice.column.payer"
   ]
 })
 
