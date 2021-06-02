@@ -157,13 +157,20 @@ foam.CLASS({
       of: 'Province',
       name: 'province1',
       targetDAOKey: 'provinceDAO'
+
+      // Without specifying the view:, this property will use a ReferenceView
+      // which displays the result of calling the toSummary() method
+      // for each object from the DAO.
     },
     {
       class: 'Reference',
       of: 'Province',
       name: 'province2',
-      view: { class: 'foam.u2.view.ReferenceView', objToChoice: function(obj) { return [obj.id, obj.id + ' ' + obj.name]; } },
-      targetDAOKey: 'provinceDAO'
+      targetDAOKey: 'provinceDAO',
+      view: { class: 'foam.u2.view.ReferenceView', objToChoice: function(obj) { return [obj.id, obj.id + ' ' + obj.name]; } }
+      // In this case, we want to change what's displayed in the ReferenceView,
+      // so we explicitly set the view: and then override objToChoice: to
+      // also include the province id.
     }
   ]
 });
@@ -173,8 +180,23 @@ add(rt);
 
 rt.province1$dao.select(console);
 
-add('select: ').start().select(rt.province1$dao, function(p) {
-  return this.E().nbsp().nbsp().add(p.name);
+// Each reference property has an associated $dao property
+// which returns the referenced DAO.
+add('select: ').start().style({'margin-left': '12px'}).select(rt.province1$dao, function(p) {
+  return this.E().add(p.name);
 }).end().br();
 
-add('find: ').start().add(rt.province1$find).end();
+// Each reference property has an associated $find property
+// which returns a promise which will lookup the referenced
+// object from its DAO.
+
+rt.province1$find.then(function(p) {
+  add('find province1: ', p.name);
+});
+
+rt.province2$find.then(function(p) {
+  add('find province2: ', p.name);
+});
+
+// We can also, just add promises to U2 directly?
+add('find: ').add(rt.province1$find);
