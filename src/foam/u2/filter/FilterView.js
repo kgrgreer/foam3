@@ -98,6 +98,7 @@ foam.CLASS({
       flex: 1 1 5%;
       display: flex;
       align-items: center;
+      justify-content: center;
     }
 
     ^container-handle:hover {
