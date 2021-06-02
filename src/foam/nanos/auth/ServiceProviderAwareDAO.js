@@ -174,7 +174,18 @@ foam.CLASS({
       if ( ((AuthService) x.get("auth")).check(x, "serviceprovider.read.*") ) {
         return getDelegate().find_(x, id);
       }
-      return getDelegate().where(getPredicate(x)).find_(x, id);
+      Predicate spidPredicate = null;
+      try {
+        spidPredicate = getPredicate(x);
+      } catch ( AuthorizationException e ) {
+        Subject subject = (Subject) x.get("subject");
+        if ( ( subject == null || subject.getRealUser() == null ) ) {
+          spidPredicate = getUnauthenticatedPredicate(x);
+        } else {
+          throw e;
+        }
+      }
+      return getDelegate().where(spidPredicate).find_(x, id);
       `
     },
     {
