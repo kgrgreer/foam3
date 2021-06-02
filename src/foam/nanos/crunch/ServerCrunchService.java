@@ -266,7 +266,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
   protected Map<String, List<String>> getPrereqsCache(X x) {
     Session session = x.get(Session.class);
     User user = ((Subject) x.get("subject")).getUser();
-    if ( user == null || session == null || user.getId() == 1) {
+    if ( user == null || session == null || user.getId() == User.SYSTEM_USER_ID ) {
       return initCache(x, false);
     }
     Long userId = user.getId();
