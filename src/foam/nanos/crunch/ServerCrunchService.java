@@ -176,7 +176,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
 
   // select all ccjs from pcjdao and put them into map of <src, [tgt]> pairs
   // then the map is stored in the session context under CACHE_KEY
-  public Map initCache(X x, Boolean cache) {
+  public Map initCache(X x, boolean cache) {
     
     if ( cache ) {
       Sink purgeSink = new Sink() {
