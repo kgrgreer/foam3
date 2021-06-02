@@ -80,18 +80,18 @@ foam.CLASS({
         Method responsible for setting up a user's ServiceProvider capability by finding
         the prerequisites of the ServiceProvider and granting those along with it
       `,
-      javaCode: `
+      javaCode: `           
         Logger logger = (Logger) x.get("logger");
         DAO userCapabilityJunctionDAO = (DAO) x.get("bareUserCapabilityJunctionDAO");
         CrunchService crunchService = (CrunchService) x.get("crunchService");
 
         // get grantPath of the service provider capability
-        List<Capability> grantPath = (List<Capability>) crunchService.getCapabilityPath(x, getId(), false, true);
+        List<Capability> grantPath = (List<Capability>) crunchService.getCapabilityPath(x, getId(), false);
 
         try {
           // for each capability in the grantPath of the spid capability,
           // find the ucj and update its status to granted, or create a ucj none found
-
+          
           UserCapabilityJunction ucj;
           Subject subject = new Subject(user);
           for ( Capability capability : grantPath ) {
@@ -138,7 +138,7 @@ foam.CLASS({
         // for each old spid, get its capabilityPath, and remove all ucjs on the capabilityPath
 
         for ( UserCapabilityJunction sp : spidsToRemove ) {
-          List<Capability> capabilitiesToRemove = (List<Capability>) crunchService.getCapabilityPath(x, sp.getTargetId(), false, true);
+          List<Capability> capabilitiesToRemove = (List<Capability>) crunchService.getCapabilityPath(x, sp.getTargetId(), false);
           List<String> targetIdsToRemove = capabilitiesToRemove.stream().map(c -> c.getId()).collect(Collectors.toList());
 
           userCapabilityJunctionDAO.where(AND(
