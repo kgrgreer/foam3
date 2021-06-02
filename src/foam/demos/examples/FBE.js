@@ -166,6 +166,7 @@ foam.CLASS({
 
       actions: [
         function run() {
+          if ( this.data.title.trim() != 'Q6' ) return;
           var self = this;
           this.dom.removeAllChildren();
           var scope = {
@@ -175,13 +176,20 @@ foam.CLASS({
             E: function(opt_nodeName) {
               return self.Element.create({nodeName: opt_nodeName});
             },
+            log: function() {
+              self.dom.add.apply(self.dom, arguments);
+              self.dom.br();
+//              self.dom.add(arg);
+            },
+
             print: function() {
+              console.log('deprecated use of print(). Use log() isntead.');
               self.dom.add.apply(self.dom, arguments);
               self.dom.br();
 //              self.dom.add(arg);
             },
             add: function() {
-              self.dom.add.apply(self.dom, arguments);
+              return self.dom.add.apply(self.dom, arguments);
             },
             start: function() {
               return self.dom.start.apply(self.dom, arguments);
