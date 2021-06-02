@@ -41,8 +41,8 @@ foam.CLASS({
     },
     {
       name: 'login',
-      javaCode:`
-        User user = (User) ((DAO) getLocalUserDAO())
+      javaCode:
+        `User user = (User) ((DAO) getLocalUserDAO())
           .find(
             AND(
               OR(
