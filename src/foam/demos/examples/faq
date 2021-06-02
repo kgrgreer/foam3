@@ -206,12 +206,51 @@ add('find: ').add(rt.province1$find);
 
 ##  Q7
 What does Slot.clear() do?
-<br>
+<br><br>
 <b>A.</b> Calling slot.clear() is the same as setting the assocated property to <code>undefined</code> or calling clearProperty() on the owning object.
+In all three cases, it reverts the property to its initial value.
+The initial value will be either the default value of the property, as defined by either value:, factory: or expression:.
+--
+foam.CLASS({
+  name: 'Test',
+  properties: [
+    {
+      name: 'noDefault',
+    },
+    {
+      name: 'defaultValue',
+      value: 42
+    },
+    {
+      name: 'defaultFactory',
+      factory: function() { return this.defaultValue*10; }
+    },
+    {
+      name: 'defaultExpression',
+      expression: function(defaultValue, defaultFactory) {
+        return defaultValue + defaultFactory;
+      }
+    }
+  ]
+});
+
+var t = Test.create();
+log('' + t.noDefault, ' ', t.defaultValue, ' ', t.defaultFactory, ' ', t.defaultExpression);
+
+t.noDefault = 1;
+t.defaultValue = 2;
+t.defaultFactory = 3;
+t.defaultExpression = 4;
+log('' + t.noDefault, ' ', t.defaultValue, ' ', t.defaultFactory, ' ', t.defaultExpression);
+
+t.noDefault = undefined;
+t.clearProperty('defaultValue');
+t.defaultFactory$.clear();
+log('' + t.noDefault, ' ', t.defaultValue, ' ', t.defaultFactory, ' ', t.defaultExpression);
 
 ##  Q8
 From the code below, is it just cloning the value of property? They are not pointing to the same property after copying values?
-<br>
+<br><br>
 <b>A.</b> It isn't cloning the property, just copying the property value whenever it changes.
 It's the same as if we did:
 // copy p2's name to p1's name whenever p2.name's value changes
