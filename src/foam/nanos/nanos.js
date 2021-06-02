@@ -556,7 +556,6 @@ FOAM_FILES([
   { name: 'foam/nanos/approval/CompositeApprovable' },
   { name: 'foam/nanos/approval/CustomViewReferenceApprovable' },
   { name: 'foam/nanos/approval/FulfilledCompositeApprovableRule' },
-  { name: 'foam/nanos/approval/RestrictedApprovableDAO' },
 
   //authservice
   { name: "foam/nanos/auth/CapabilityAuthService" },

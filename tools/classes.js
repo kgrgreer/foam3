@@ -727,7 +727,6 @@ var classes = [
   // DAO decorators
   'foam.nanos.actioncommand.ActionCommandDAO',
   'foam.nanos.approval.ApprovalDAO',
-  'foam.nanos.approval.RestrictedApprovableDAO',
   'foam.nanos.audit.AuditDAO',
   'foam.nanos.auth.email.EmailVerificationDAO',
   'foam.nanos.auth.email.EmailVerificationWebAgent',
