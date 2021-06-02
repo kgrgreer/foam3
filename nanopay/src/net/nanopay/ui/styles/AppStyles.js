@@ -50,17 +50,6 @@ foam.CLASS({
       border: none;
       outline: none;
     }
-    .foam-u2-search-TextSearchView input {
-      background-image: url("images/ic-search.svg");
-      background-repeat: no-repeat;
-      background-position: 8px;
-      border-radius: 2px;
-      border: 1px solid #dce0e7;
-      color: /*%BLACK%*/ #1e1f21;
-      font-size: 14px;
-      height: 40px;
-      padding: 0 21px 0 38px;
-    }
     .foam-u2-search-GroupBySearchView select {
       font-family: monospace;
       font-size: 9pt;

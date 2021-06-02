@@ -583,7 +583,7 @@ p({
       // create user
       name = 'createUser: ';
       try {
-        u = await support.createUser(x, 'u-'+support.uid+'-'+n, 'password', 'sme');
+        u = await support.createUser(x, 'u-'+support.uid+'-'+n, 'password', 'treviso-sme');
         test(true, name+u.id+', '+u.userName);
       } catch (e) {
         test(false, name+(e.message || e));
