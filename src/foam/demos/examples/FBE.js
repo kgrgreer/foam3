@@ -166,7 +166,6 @@ foam.CLASS({
 
       actions: [
         function run() {
-          if ( this.data.title.trim() != 'Q6' ) return;
           var self = this;
           this.dom.removeAllChildren();
           var scope = {
@@ -389,13 +388,11 @@ foam.CLASS({
       var mode = 'text';
       s = s.split('\n').forEach(l => {
         if ( l.startsWith('##') ) {
-          console.log('###', l);
 //          e = this.Example.create({id: i++, title: l.substring(3)});
           var depth = l.substring(2).match(/^ */)[0].length;
           id.length = depth;
           id[depth-1] = (id[depth-1] || 0)+1;
           e = {id: id.join('.') + '.', title: l.substring(3), code: '', text: ''};
-          console.log('***', e.id, e.title);
           a.push(e);
           mode = 'text';
         } else if ( l.startsWith('--') ) {
