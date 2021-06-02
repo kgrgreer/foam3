@@ -1833,6 +1833,7 @@ foam.CLASS({
     function xxoutputJSON(os) {
       os.output(this.value);
     },
+
     function toMQL() {
       if ( this.value && foam.Date.isInstance(this.value) ) {
         var isoDateString = this.value.toISOString();
