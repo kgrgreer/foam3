@@ -87,3 +87,21 @@ The following script will find all of the FOAM "types":
 --
 for ( var v in foam.USED ) { try { if ( foam.core.Property.isSubClass(foam.lookup(v, true)) ) print(v); } catch(x) {} }
 for ( var v in foam.UNUSED ) { try { if ( foam.core.Property.isSubClass(foam.lookup(v, true)) ) print(v); } catch(x) {} }
+
+##  Q5
+What does this code mean? e.g., flags: [&#39;java&#39;], flags[&#39;web&#39;] , flags: [ &#39;node&#39; ]
+<br>
+<br>
+<b>A:</b> Some FOAM models are intended only for specific platforms, and the flags feature
+determines when and where a model will be loaded or ignored.
+For example, view specific models are only needed when loaded in a web browser,
+so they can be configured with <code>flags: ['web']</code>.
+Other code may only be useful when run in node.js <code>flags: ['node']</code>, for java <code>flags: ['java']</code>,
+or swift, <code>flags: ['swift']</code>. When <code>flags: ['debug']</code> is present, the model is only
+loaded when in debug mode (which is the default).
+<br>
+In your HTML file, you can customize the flags by setting FOAM_FLAGS before loading foam:
+<pre>
+  &lt;script>FOAM_FLAGS = {debug: false};&lt;/script>
+  &lt;script language="javascript" src="../../../foam.js">&lt;/script>
+</pre>
