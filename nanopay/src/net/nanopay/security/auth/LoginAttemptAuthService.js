@@ -164,15 +164,15 @@ foam.CLASS({
 
         try {
           user = super.login(x, identifier, password);
-          resetLoginAttempts(x, la);
+          if ( la != null ) {
+            resetLoginAttempts(x, la);
+          }
           return user;
         } catch ( AccessDeniedException t ) {
           // TODO: don't allow admin to be locked out when accessed from restricted network.
           throw t;
         } catch ( foam.nanos.auth.InvalidPasswordException p ) {
           throw new net.nanopay.security.auth.InvalidPasswordException(String.valueOf(remaining));
-        } finally {
-          super.logout(x);
         }
       `
     },
