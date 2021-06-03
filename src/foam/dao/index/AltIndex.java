@@ -124,7 +124,7 @@ public class AltIndex
       // ???: Why is this?
       // To keep the original predicate, because in our next operate the predicate will be changed
       if ( predicate != null ) {
-        originalPredicate = (Predicate) ((FObject) predicate).deepClone();
+        originalPredicate = (Predicate) ((FObject) predicate).shallowClone();
       }
 
       SelectPlan plan = delegates_.get(i).planSelect(s[i], sink, skip, limit, order, originalPredicate);
