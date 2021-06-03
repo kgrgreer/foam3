@@ -65,7 +65,6 @@ FOAM_FILES([
   { name: "foam/nanos/auth/PasswordPolicy" },
   { name: "foam/nanos/auth/Group" },
   { name: 'foam/nanos/auth/HumanNameTrait' },
-  { name: 'foam/nanos/auth/InvalidPasswordException' },
   { name: "foam/nanos/auth/LifecycleState" },
   { name: "foam/nanos/auth/LifecycleAware" },
   { name: 'foam/nanos/notification/Notifiable' },
