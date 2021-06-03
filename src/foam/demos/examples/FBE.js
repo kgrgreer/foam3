@@ -125,8 +125,8 @@ foam.CLASS({
 
       css: `
         ^ { margin-bottom: 36px; }
-        ^ .property-text { border: none; padding: 10 0; width: 60%; }
-        ^ .property-code { margin-bottom: 12px; }
+        ^ .property-text { border: none; padding: 10 0; width: 45%; }
+        ^ .property-code { margin-bottom: 12px; width: 46%; }
         ^ .property-title { float: left; }
         ^ .property-id { float: left; margin-right: 12px; }
       `,
@@ -146,7 +146,8 @@ foam.CLASS({
               'border-radius': '3px',
               'padding-bottom': '24px'
             }).
-            tag('hr').
+            start('hr').style({width: '47%', float: 'left', display: 'block'}).end().
+            br().
             start('h3').
               start('a').attrs({name: self.data.id}).end().
               add(this.Example.ID, ' ', this.Example.TITLE).
@@ -157,8 +158,10 @@ foam.CLASS({
             add(this.Example.CODE).
             br().
             start('b').add('Output:').end().
-            br().br().
-            tag('div', {}, this.dom$);
+            start().
+              style({width: '45%', border: '1px solid black', padding: '8px'}).
+              tag('div', {}, this.dom$).
+            end();
 
             this.onload.sub(this.run.bind(this));
             this.onDetach(this.data.code$.sub(this.run.bind(this)));
