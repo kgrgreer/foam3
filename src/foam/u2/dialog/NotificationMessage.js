@@ -54,9 +54,11 @@ foam.CLASS({
       border: 1px solid /*%GREY4%*/ #DADDE2;
       border-radius: 3px;
       box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1), 0px 4px 6px rgba(0, 0, 0, 0.05);
+      box-sizing: border-box;
       display: flex;
       justify-content: space-between;
       margin: auto;
+      min-height: 64px;
       padding: 12px 16px;
       width: -webkit-fill-available;
     }
@@ -98,18 +100,14 @@ foam.CLASS({
       width: -webkit-fill-available;
     }
     ^close-icon {
-      background-image: url("images/round-close-icon.svg");
-      background-size: 12px 12px;
-      cursor: pointer;
-      height: 12px;
-      opacity: 0.5;
-      width: 12px;
       position: absolute;
-      top: 1em;
-      right: 1em;
+      right: 0.5em;
+      top: 0.5em;
     }
-    ^close-icon:hover {
-      opacity: 1;
+    ^close-icon > *{
+      width: 20px;
+      height: 20px;
+      padding: 0;
     }
   `,
 
@@ -195,20 +193,22 @@ foam.CLASS({
           .startContext({ data: this })
             .start()
                 .addClass(this.myClass('close-icon'))
-                .tag(self.REMOVE_NOTIFICATION, { buttonStyle: 'LINK', label: '' })
+                .tag(self.REMOVE_NOTIFICATION, { buttonStyle: 'TERTIARY', label: '' })
             .end()
           .endContext()
         .end();
 
       setTimeout(() => {
         this.remove();
-      }, 9900);
+      }, 99999900);
     }
   ],
 
   actions: [
     {
       name: 'removeNotification',
+      themeIcon: 'close',
+      icon: 'images/ic-cancelblack.svg',
       code: function() { this.remove(); }
     }
   ]
