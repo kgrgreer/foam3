@@ -19,10 +19,8 @@ foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'SummaryTransaction',
   extends: 'net.nanopay.tx.model.Transaction',
-
-  implements: [
-    'net.nanopay.tx.SummarizingTransaction'
-  ],
+  
+  documentation: 'Used solely to present a summary of LineItems for chained Transactions',
 
   javaImports: [
     'foam.dao.DAO',
@@ -41,7 +39,9 @@ foam.CLASS({
     'static foam.mlang.MLang.EQ'
   ],
 
-  documentation: 'Used solely to present a summary of LineItems for chained Transactions',
+  mixins: [
+    'net.nanopay.tx.SummarizingTransactionMixin'
+  ],
 
   sections: [
     {
@@ -99,92 +99,6 @@ foam.CLASS({
       javaCode: `
         return false;
       `
-    },
-    {
-      documentation: `Collect all line items of succeeding transactions of self.`,
-      name: 'collectLineItems',
-      javaCode: `
-      collectLineItemsFromChain(getNext());
-      `
-    },
-    {
-      documentation: `Collect all line items of succeeding transactions of transactions.`,
-      name: 'collectLineItemsFromChain',
-      args: [
-        {
-          name: 'transactions',
-          type: 'net.nanopay.tx.model.Transaction[]'
-        }
-      ],
-      javaCode: `
-      if ( transactions != null ) {
-        for ( Transaction transaction : transactions ) {
-          addLineItems(transaction.getLineItems());
-          collectLineItemsFromChain(transaction.getNext());
-        }
-      }
-      `
-    },
-    {
-      documentation: 'Returns childrens status.',
-      name: 'calculateTransients',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
-      ],
-      javaCode: `
-        DAO dao = (DAO) x.get("localTransactionDAO");
-        List children = ((ArraySink) dao.where(EQ(Transaction.PARENT, txn.getId())).select(new ArraySink())).getArray();
-
-        for ( Object obj : children ) {
-          Transaction child = (Transaction) obj;
-          this.calculateTransients(x, child);
-          if ( ( ! depositAmountIsSet_) && (child instanceof ValueMovementTransaction) && (SafetyUtil.equals(this.getDestinationAccount(), child.getDestinationAccount())) ){
-            this.setDepositAmount(child.getTotal(x, child.getDestinationAccount()));
-          }
-          if ( ( ! withdrawalAmountIsSet_) && (child instanceof ValueMovementTransaction) && (SafetyUtil.equals(this.getSourceAccount(), child.getSourceAccount())) ){
-            this.setWithdrawalAmount(-child.getTotal(x, child.getSourceAccount()));
-          }
-        }
-
-        if (SafetyUtil.equals(txn, this)) {
-          Transaction t = this.getStateTxn(x);
-          ChainSummary cs = new ChainSummary();
-          if (t.getStatus() != TransactionStatus.COMPLETED) {
-            cs.setErrorCode(t.getErrorCode());
-            ErrorCode errorCode = cs.findErrorCode(x);
-            if ( errorCode != null ) {
-              cs.setErrorInfo(errorCode.getSummary());
-            }
-          }
-          cs.setStatus(t.getStatus());
-          cs.setCategory(categorize_(t));
-          cs.setSummary(cs.toSummary());
-          this.setChainSummary(cs);
-        }
-      `
-    },
-    {
-      documentation: 'sorts transaction into category, for display to user.',
-      name: 'categorize_',
-      args: [
-        { name: 't', type: 'net.nanopay.tx.model.Transaction' }
-      ],
-      type: 'String',
-      javaCode: `
-        if (t.getStatus().equals(TransactionStatus.COMPLETED))
-          return "";
-        if (t instanceof CITransaction)
-          return "CashIn";
-        if (t instanceof COTransaction)
-          return "CashOut";
-        if (t instanceof PartnerTransaction)
-          return "Partner";
-        if (t instanceof DigitalTransaction)
-          return "Digital";
-        else
-          return "Approval";
-      `
-    },
+    }
   ]
 });
