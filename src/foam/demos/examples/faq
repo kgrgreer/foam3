@@ -292,3 +292,36 @@ log('After Update p1:', p1.name, ' ', p2.name);
 
 p2.name = 'Samantha';
 log('After Update p2:', p1.name, ' ', p2.name);
+
+##  Q9
+What does it mean when I get this error: Use of literal View as ViewSpec: foam.u2.someView?
+<br><br><b>A.</b>
+It means that you've add an actual View object to another View instead of adding a ViewSpec.
+A ViewSpec is a specification for creating a view, but not yet an actual View.
+U2 relies on ViewSpecs instead of just using Views directly, for two reasons:
+<ol>
+<li>When creating the View from a ViewSpec, it can be certain that the View is created in the proper sub-context.
+This will ensure that it has access to any values exported by parent views or services.
+<li>Some parent views, like the StackView, may need to recreate the view more than once, which they can easily do from a ViewSpec.
+<ol>
+--
+foam.CLASS({
+  name: 'Test',
+  extends: 'foam.u2.Element',
+
+  requires: [ 'foam.u2.ControllerMode', 'foam.u2.view.StringView' ],
+
+  methods: [
+    function initE() {
+      this.startContext({controllerMode: this.ControllerMode.VIEW}).
+        // works, but generates a warning
+        add('literal: ').tag(this.StringView.create({data: 'value1'})).
+        br().
+        // works without a warning
+        add('viewSpec: ').tag(this.StringView, {data: 'value2'}).
+      endContext();
+    }
+  ]
+});
+
+add(Test.create());
