@@ -88,14 +88,16 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['hasBankAccount', 'loading_'],
+          args: ['hasBankAccount'],
           predicateFactory: function(e) {
-            return e.AND(
-              e.EQ(foam.mlang.IsValid.create({
-                arg1: net.nanopay.partner.treviso.onboarding.BRBankAccountData.BANK_ACCOUNT
-              }), true),
-              e.EQ(net.nanopay.partner.treviso.onboarding.BRBankAccountData.LOADING_, false),
-              e.EQ(net.nanopay.partner.treviso.onboarding.BRBankAccountData.HAS_BANK_ACCOUNT, false)
+            return e.OR(
+              e.AND(
+                e.EQ(net.nanopay.partner.treviso.onboarding.BRBankAccountData.HAS_BANK_ACCOUNT, false),
+                e.EQ(foam.mlang.IsValid.create({
+                  arg1: net.nanopay.partner.treviso.onboarding.BRBankAccountData.BANK_ACCOUNT
+                }), true)
+              ),
+              e.EQ(net.nanopay.partner.treviso.onboarding.BRBankAccountData.HAS_BANK_ACCOUNT, true)
             );
           },
           errorMessage: 'INVALID_BANK'
