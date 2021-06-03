@@ -175,14 +175,11 @@ foam.CLASS({
             log: function() {
               self.dom.add.apply(self.dom, arguments);
               self.dom.br();
-//              self.dom.add(arg);
             },
-
             print: function() {
               console.log('deprecated use of print(). Use log() isntead.');
               self.dom.add.apply(self.dom, arguments);
               self.dom.br();
-//              self.dom.add(arg);
             },
             add: function() {
               return self.dom.add.apply(self.dom, arguments);
@@ -198,7 +195,7 @@ foam.CLASS({
             try {
               eval(self.data.code);
             } catch (x) {
-              scope.print(x);
+              scope.log(x);
             }
           }
         }
