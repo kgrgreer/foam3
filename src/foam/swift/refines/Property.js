@@ -339,7 +339,7 @@ foam.CLASS({
   templates: [
     {
       name: 'swiftSlotInitializer',
-      template: function() {/*
+      template: `
 let s = <%=foam.swift.core.PropertySlot.model_.swiftName%>([
   "object": self,
   "propertyName": "<%=this.name%>",
@@ -348,17 +348,17 @@ self.onDetach(Subscription(detach: {
   s.detach()
 }))
 return s
-      */},
+      `,
     },
     {
       name: 'swiftSetterTemplate',
-      template: function() {/*
+      template: `
 self.set(key: "<%=this.name%>", value: value)
-      */},
+      `,
     },
     {
       name: 'swiftGetterTemplate',
-      template: function() {/*
+      template: `
 if <%=this.swiftInitedName%> {
   return <%=this.swiftValueName%><% if ( this.swiftType != this.swiftValueType ) { %>!<% } %>
 }
@@ -398,20 +398,20 @@ return nil
 <% } else { %>
 fatalError("No default value for <%=this.name%>")
 <% } %>
-      */},
+      `,
     },
     {
       name: 'swiftSlotSetter',
-      template: function() {/*
+      template: `
 self.<%=this.swiftSlotLinkSubName%>?.detach()
 self.<%=this.swiftSlotLinkSubName%> = self.<%=this.swiftSlotName%>.linkFrom(value)
 self.onDetach(self.<%=this.swiftSlotLinkSubName%>!)
-      */},
+      `,
     },
     {
       name: 'swiftPropertyInfoInit',
       args: ['parentCls'],
-      template: function() {/*
+      template: `
 class PInfo: PropertyInfo {
   let name = "<%=this.name%>"
   let classInfo: ClassInfo
@@ -490,7 +490,7 @@ class PInfo: PropertyInfo {
   }
 }
 return PInfo(classInfo())
-      */},
+      `,
     }
   ],
 });

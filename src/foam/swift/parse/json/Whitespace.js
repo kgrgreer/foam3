@@ -14,7 +14,7 @@ foam.CLASS({
   methods: [
     {
       name: 'parse',
-      swiftCode: function() {/*
+      swiftCode: `
 var ps = ps!
 while ps.valid() {
   let c = ps.head()
@@ -25,7 +25,7 @@ while ps.valid() {
   }
 }
 return nil
-      */},
+      `,
     },
   ],
 });

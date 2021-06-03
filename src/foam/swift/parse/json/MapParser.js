@@ -23,8 +23,8 @@ foam.CLASS({
   properties: [
     {
       name: 'delegate',
-      swiftFactory: function() {/*
-return 
+      swiftFactory: `
+return
   Seq1_create(["index": 2, "parsers": [
     Whitespace_create(),
     Literal_create(["string": "{"]),
@@ -47,13 +47,13 @@ return
     Whitespace_create(),
     Literal_create(["string": "}"]),
   ]])
-      */},
+      `,
     },
   ],
   methods: [
     {
       name: 'parse',
-      swiftCode: function() {/*
+      swiftCode: `
 let ps = super.parse(ps, x)
 if ps != nil {
   let values = ps!.value() as! [Any?]
@@ -65,7 +65,7 @@ if ps != nil {
   return ps!.setValue(map)
 }
 return ps
-      */},
+      `,
     },
   ],
 });

@@ -24,7 +24,7 @@ foam.CLASS({
   properties: [
     {
       name: 'delegate',
-      swiftFactory: function() {/*
+      swiftFactory: `
 return
   Seq1_create(["index": 3, "parsers": [
     Whitespace_create(),
@@ -34,7 +34,7 @@ return
     Whitespace_create(),
     Literal_create(["string": "}"]),
   ]])
-      */},
+      `,
     },
   ],
   methods: [
@@ -52,12 +52,12 @@ return
           name: 'x',
         },
       ],
-      swiftCode: function() {/*
+      swiftCode: `
 let ps = StringPStream_create(["str": str])
 let parserContext = ParserContext()
 parserContext.set("X", x ?? __subContext__)
 return parse(ps, parserContext)?.value() as? foam_core_FObject
-      */},
+      `,
     },
   ],
 });
