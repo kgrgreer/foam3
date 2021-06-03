@@ -129,8 +129,8 @@ public class TransactionDAOTest
     txn.setDestinationAccount(destinationDigitalAccount_.getId());
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, txn),
-      "Insufficient balance in account: " + senderDigitalAccount_.getId(),
-      net.nanopay.account.InsufficientBalanceException.class), "Exception: Insufficient balance");
+      null,
+      net.nanopay.account.InsufficientBalanceException.class), "InsufficientBalanceException");
 
     // Test return transactionStatus
     cashIn();

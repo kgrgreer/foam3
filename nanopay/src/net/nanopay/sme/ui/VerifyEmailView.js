@@ -232,7 +232,8 @@ foam.CLASS({
           }));
         }).catch(function(err) {
           self.ctrl.add(self.NotificationMessage.create({
-            message: err.message || self.ERROR_MSG,
+            err: err.data,
+            message: self.ERROR_MSG,
             type: self.LogLevel.ERROR
           }));
         });
