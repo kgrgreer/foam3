@@ -14,7 +14,7 @@ foam.CLASS({
   properties: [
     {
       name: 'exceptionMessage',
-      value: 'Account locked. Please contact customer service.'
+      value: 'Please contact customer service'
     }
   ],
 

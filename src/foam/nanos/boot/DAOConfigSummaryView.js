@@ -209,8 +209,7 @@ foam.CLASS({
       class: 'String',
       name: 'search',
       view: {
-       class: 'foam.u2.TextField',
-       type: 'search',
+       class: 'foam.u2.SearchField',
        onKey: true
       }
     },
@@ -297,7 +296,7 @@ foam.CLASS({
               .attrs({title: spec.description})
               .on('click', function() {
                 if ( self.memento ) {
-                  var tail = self.Memento.create({ head: spec.id, tail: self.Memento.create() });
+                  var tail = self.Memento.create({ head: spec.id, tail: self.Memento.create(), replaceHistoryState : false });
                   self.memento.tail$.set(tail);
                 }
               });
