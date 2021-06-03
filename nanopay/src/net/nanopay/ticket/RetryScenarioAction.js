@@ -62,6 +62,9 @@ foam.CLASS({
         newRequest.setSourceAccount(problem.getSourceAccount());
         newRequest.setSourceCurrency(problem.getSourceCurrency());
         newRequest.setDestinationCurrency(summary.getDestinationCurrency());
+        newRequest.setAssociateTransaction(summary.getId());
+        newRequest.setExternalId(summary.getExternalId());
+        newRequest.setExternalInvoiceId(summary.getExternalInvoiceId());
 
         ticket.setRequestTransaction(newRequest);
 

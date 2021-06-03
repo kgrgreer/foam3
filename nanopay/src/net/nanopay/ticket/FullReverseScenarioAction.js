@@ -122,6 +122,9 @@ foam.CLASS({
         newRequest.setSourceAccount(problem.getSourceAccount());
         newRequest.setSourceCurrency(problem.getSourceCurrency());
         newRequest.setDestinationCurrency(summary.getSourceCurrency());
+        newRequest.setAssociateTransaction(summary.getId());
+        newRequest.setExternalId(summary.getExternalId());
+        newRequest.setExternalInvoiceId(summary.getExternalInvoiceId());
 
         List<FeeLineItem> feeLineItemsAvaliable = findFeeLineItems(x, summary);
         ticket.setFeeLineItemsAvaliable(feeLineItemsAvaliable.toArray(FeeLineItem[]::new));
