@@ -11,6 +11,7 @@ import foam.nanos.auth.Address;
 import foam.nanos.auth.Country;
 import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
+import foam.nanos.crunch.AgentCapabilityJunction;
 import foam.nanos.crunch.UserCapabilityJunction;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
@@ -156,94 +157,99 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     if ( business == null ||  ! business.getCompliance().equals(ComplianceStatus.PASSED) ) return false;
 
     try {
-        DAO afexUserDAO = (DAO) this.x.get("afexUserDAO");
-        AFEXUser afexUser = (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, business.getId()));
+      DAO afexUserDAO = (DAO) this.x.get("afexUserDAO");
+      AFEXUser afexUser = (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, business.getId()));
 
-        User signingOfficer = getSigningOfficer(this.x, business);
-          OnboardAFEXClientRequest onboardingRequest = new OnboardAFEXClientRequest();
-          onboardingRequest.setAccountEntityType(AccountEntityType.CORPORATE_CLIENT.getLabel());
-          Region businessRegion = business.getAddress().findRegionId(this.x);
-          Country businessCountry = business.getAddress().findCountryId(this.x);
-          if ( afexUser != null ) {
-            onboardingRequest.setAccountNumber(afexUser.getAccountNumber());
-          }
+      User signingOfficer = getSigningOfficer(this.x, business);
+      if ( signingOfficer == null ) throw new RuntimeException("No signing officer was found for business " + business.getId());
 
-          if ( signingOfficer != null ) {
-//            Boolean useHardCoded = business.getAddress().getCountryId().equals("CA");
-//            String identificationType = businessCountry == null || businessCountry.getId().equals("US") ? "Employer Identification Number(EIN)"
-//              : "Business Registration Number";
+      OnboardAFEXClientRequest onboardingRequest = new OnboardAFEXClientRequest();
+      onboardingRequest.setAccountEntityType(AccountEntityType.CORPORATE_CLIENT.getLabel());
+      Region businessRegion = business.getAddress().findRegionId(this.x);
+      Country businessCountry = business.getAddress().findCountryId(this.x);
+      if ( afexUser != null ) {
+        onboardingRequest.setAccountNumber(afexUser.getAccountNumber());
+      }
 
-            String identificationNumber = business.getBusinessRegistrationNumber();
-            if ( SafetyUtil.isEmpty(identificationNumber) && businessCountry.getId().equals("BR") )
-              identificationNumber = findCNPJ(business.getId());
-            onboardingRequest.setCompanyRegistrationNo(identificationNumber);
-            onboardingRequest.setCompanyRegistrationNumber(identificationNumber);
+//      Boolean useHardCoded = business.getAddress().getCountryId().equals("CA");
+//      String identificationType = businessCountry == null || businessCountry.getId().equals("US") ? "Employer Identification Number(EIN)"
+//        : "Business Registration Number";
 
-            if ( businessRegion != null ) onboardingRequest.setBusinessState(businessRegion.getRegionCode());
-//            onboardingRequest.setContactPrimaryIdentificationExpirationDate("01/01/2099"); // Asked to hardcode this by Madlen(AFEX)
-//            onboardingRequest.setContactPrimaryIdentificationNumber( useHardCoded ? "000000000" : identificationNumber);
-//            onboardingRequest.setContactPrimaryIdentificationType(useHardCoded ? "Business Registration Number" : identificationType);
+      String identificationNumber = business.getBusinessRegistrationNumber();
+      if ( SafetyUtil.isEmpty(identificationNumber) && businessCountry.getId().equals("BR") )
+        identificationNumber = findCNPJ(business.getId());
 
-            if ( businessCountry.getId().equals("US") ) onboardingRequest.setFederalTaxId(business.getTaxIdentificationNumber());
-            if ( businessCountry != null ) onboardingRequest.setBusinessCountry(businessCountry.getCode());
-            if ( businessRegion != null ) onboardingRequest.setBusinessState(businessRegion.getRegionCode());
-            onboardingRequest.setBusinessAddress(business.getAddress().getAddress());
-            onboardingRequest.setBusinessCity(business.getAddress().getCity());
-            onboardingRequest.setBusinessWebsite(business.getWebsite());
+      onboardingRequest.setCompanyRegistrationNo(identificationNumber);
+      onboardingRequest.setCompanyRegistrationNumber(identificationNumber);
 
-            if ( businessCountry != null )
-              onboardingRequest.setCountryOfIncorporation(businessCountry.getName());
-            onboardingRequest.setLegalCompanyName(business.getBusinessName());
-            onboardingRequest.setBusinessZip(business.getAddress().getPostalCode());
-            onboardingRequest.setCompanyType(getBusinessType(business.getBusinessTypeId()));
-            onboardingRequest.setBusinessTelephoneNo(business.getPhoneNumber());
-            String businessRegDate = null;
-            try {
-              SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-              sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-              businessRegDate = sdf.format(business.getBusinessRegistrationDate());
-            } catch(Throwable t) {
-              logger_.error("Error onboarding business. Error parsing business registration date.", t);
-              throw new RuntimeException("Error onboarding business. Error parsing business registration date.");
-            }
-            onboardingRequest.setDateOfFormation(businessRegDate);
-            onboardingRequest.setFirstName(signingOfficer.getFirstName());
-            onboardingRequest.setLastName(signingOfficer.getLastName());
+      if ( businessRegion != null ) onboardingRequest.setBusinessState(businessRegion.getRegionCode());
+//      onboardingRequest.setContactPrimaryIdentificationExpirationDate("01/01/2099"); // Asked to hardcode this by Madlen(AFEX)
+//      onboardingRequest.setContactPrimaryIdentificationNumber( useHardCoded ? "000000000" : identificationNumber);
+//      onboardingRequest.setContactPrimaryIdentificationType(useHardCoded ? "Business Registration Number" : identificationType);
 
-            try {
-              SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-              sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-              onboardingRequest.setDateOfBirth(sdf.format(signingOfficer.getBirthday()));
-            } catch(Throwable t) {
-              logger_.error("Error onboarding business. Cound not parse signing officer birthday", t);
-              throw new RuntimeException("Error onboarding business. Cound not parse signing officer birthday.");
-            }
-            JobTitle jobTitle = (JobTitle) ((DAO) this.x.get("jobTitleDAO")).find(EQ(JobTitle.NAME, signingOfficer.getJobTitle()));
-            String jobTitleName = jobTitle == null ? "Other" : jobTitle.getName();
-            onboardingRequest.setJobTitle(jobTitleName);
-            onboardingRequest.setExpectedMonthlyPayments(mapAFEXTransactionCount(business.getSuggestedUserTransactionInfo().getAnnualTransactionFrequency()));
-            onboardingRequest.setExpectedMonthlyVolume(mapAFEXVolumeEstimates(business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume()));
-            onboardingRequest.setDescription(business.getSuggestedUserTransactionInfo().getTransactionPurpose());
-            onboardingRequest.setNAICS(getBusinessSector(business.getBusinessSectorId()));
-            onboardingRequest.setKeyIndividuals(getKeyIndividuals(business));
+      if ( businessCountry.getId().equals("US") ) onboardingRequest.setFederalTaxId(business.getTaxIdentificationNumber());
+      if ( businessCountry != null ) onboardingRequest.setBusinessCountry(businessCountry.getCode());
+      if ( businessRegion != null ) onboardingRequest.setBusinessState(businessRegion.getRegionCode());
+      onboardingRequest.setBusinessAddress(business.getAddress().getAddress());
+      onboardingRequest.setBusinessCity(business.getAddress().getCity());
+      onboardingRequest.setBusinessWebsite(business.getWebsite());
 
-            if ( ! SafetyUtil.isEmpty(business.getOperatingBusinessName()) ) {
-              onboardingRequest.setDoingBusinessAs(business.getOperatingBusinessName());
-            } else {
-              onboardingRequest.setDoingBusinessAs(business.getOrganization());
-            }
-            onboardingRequest.setTermsAndConditions("true");
-            OnboardAFEXClientResponse newClient = afexClient.onboardAFEXClient(onboardingRequest, business.getSpid(), AccountEntityType.CORPORATE_CLIENT);
-            if ( newClient != null && afexUser == null ) {
-              afexUser  = new AFEXUser();
-              afexUser.setUser(business.getId());
-              afexUser.setApiKey(newClient.getAPIKey());
-              afexUser.setAccountNumber(newClient.getAccountNumber());
-              afexUser.setSpid(business.getSpid());
-              afexUserDAO.put(afexUser);
-            }
-            return true;
-          }
+      if ( businessCountry != null )
+        onboardingRequest.setCountryOfIncorporation(businessCountry.getName());
+      onboardingRequest.setLegalCompanyName(business.getBusinessName());
+      onboardingRequest.setBusinessZip(business.getAddress().getPostalCode());
+      onboardingRequest.setCompanyType(getBusinessType(business.getBusinessTypeId()));
+      onboardingRequest.setBusinessTelephoneNo(business.getPhoneNumber());
+
+      String businessRegDate = null;
+      try {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        businessRegDate = sdf.format(business.getBusinessRegistrationDate());
+      } catch(Throwable t) {
+        logger_.error("Error onboarding business. Error parsing business registration date.", t);
+        throw new RuntimeException("Error onboarding business. Error parsing business registration date.");
+      }
+      onboardingRequest.setDateOfFormation(businessRegDate);
+      onboardingRequest.setFirstName(signingOfficer.getFirstName());
+      onboardingRequest.setLastName(signingOfficer.getLastName());
+
+      try {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        onboardingRequest.setDateOfBirth(sdf.format(signingOfficer.getBirthday()));
+      } catch(Throwable t) {
+        logger_.error("Error onboarding business. Cound not parse signing officer birthday", t);
+        throw new RuntimeException("Error onboarding business. Cound not parse signing officer birthday.");
+      }
+
+      JobTitle jobTitle = (JobTitle) ((DAO) this.x.get("jobTitleDAO")).find(EQ(JobTitle.NAME, signingOfficer.getJobTitle()));
+      String jobTitleName = jobTitle == null ? "Other" : jobTitle.getName();
+      onboardingRequest.setJobTitle(jobTitleName);
+      onboardingRequest.setExpectedMonthlyPayments(mapAFEXTransactionCount(business.getSuggestedUserTransactionInfo().getAnnualTransactionFrequency()));
+      onboardingRequest.setExpectedMonthlyVolume(mapAFEXVolumeEstimates(business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume()));
+      onboardingRequest.setDescription(business.getSuggestedUserTransactionInfo().getTransactionPurpose());
+      onboardingRequest.setNAICS(getBusinessSector(business.getBusinessSectorId()));
+      onboardingRequest.setKeyIndividuals(getKeyIndividuals(business));
+
+      if ( ! SafetyUtil.isEmpty(business.getOperatingBusinessName()) ) {
+        onboardingRequest.setDoingBusinessAs(business.getOperatingBusinessName());
+      } else {
+        onboardingRequest.setDoingBusinessAs(business.getOrganization());
+      }
+
+      onboardingRequest.setTermsAndConditions("true");
+      OnboardAFEXClientResponse newClient = afexClient.onboardAFEXClient(onboardingRequest, business.getSpid(), AccountEntityType.CORPORATE_CLIENT);
+      if ( newClient != null && afexUser == null ) {
+        afexUser  = new AFEXUser();
+        afexUser.setUser(business.getId());
+        afexUser.setApiKey(newClient.getAPIKey());
+        afexUser.setAccountNumber(newClient.getAccountNumber());
+        afexUser.setSpid(business.getSpid());
+        afexUserDAO.put(afexUser);
+      }
+
+      return true;
     } catch(Exception e) {
       logger_.error("Failed to onboard client to AFEX.", e);
       Notification notification = new Notification.Builder(x)
@@ -1266,7 +1272,19 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
   protected User getSigningOfficer(X x, Business business) {
     java.util.List<User> signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
-    return signingOfficers.isEmpty() ? null : signingOfficers.get(0);
+    if ( signingOfficers.isEmpty() ) return getSigningOfficerFromCapability(x, business.getId());
+
+    return signingOfficers.get(0);
+  }
+
+  protected User getSigningOfficerFromCapability(X x, long businessId) {
+    java.util.List<UserCapabilityJunction> ucjs = ((ArraySink) ((DAO) x.get("bareUserCapabilityJunctionDAO")).where(AND(
+      EQ(UserCapabilityJunction.TARGET_ID, "crunch.onboarding.signing-officer-information"),
+      INSTANCE_OF(AgentCapabilityJunction.class),
+      EQ(AgentCapabilityJunction.EFFECTIVE_USER, businessId)
+    )).select(new ArraySink())).getArray();
+
+    return ucjs.isEmpty() ? null :  User.findUser(x, ucjs.get(0).getSourceId());
   }
 
 
