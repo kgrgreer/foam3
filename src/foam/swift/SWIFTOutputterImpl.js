@@ -39,12 +39,19 @@ foam.CLASS({
 
     methods: [
         {
-            name: 'outputValue',
-            code: function(message) {
-                var SBF = '';
-                message.cls_.getAxiomsByClass(net.nanopay.swift.fields.FieldTagRegexValidated).forEach(p => SBF += p.toSBF(message));
+            name: 'outputFObject',
+            code: function(obj) {
+                var SBF = this.outputHeader();
+                obj.cls_.getAxiomsByClass(net.nanopay.swift.fields.FieldTagRegexValidated).forEach(p => SBF += p.toSBF(obj));
                 return SBF;
             },
         },
+        {
+            name: 'outputHeader',
+            code: function(obj)
+            {
+                return '{' + obj.generateBasicHeader() + '}{' + obj.generateApplicationHeader() + '}{' + obj.generateUserHeader() + '}';
+            }
+        }
     ]
 });
