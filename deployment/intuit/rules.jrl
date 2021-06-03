@@ -526,7 +526,7 @@ p({
   spid:"intuit",
   predicate:{
     class:"foam.mlang.predicate.MQLExpr",
-    query:"diff:errorMessage,status"
+    query:"n(type=2) and diff:status,errorMessage"
   },
   enabled:false
 })

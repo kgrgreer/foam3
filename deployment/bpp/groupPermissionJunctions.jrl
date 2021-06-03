@@ -31,3 +31,5 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bpp-fraud-ops",
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-fraud-ops",targetId:"menu.read.bankaccounts"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-fraud-ops",targetId:"menu.read.integration"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-fraud-ops",targetId:"menu.read.transactions"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-fraud-ops",targetId:"menu.read.transactions-support"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"bpp-payment-ops",targetId:"menu.read.transactions-support"})
