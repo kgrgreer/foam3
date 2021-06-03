@@ -125,9 +125,9 @@ foam.CLASS({
       arr.push(data.substring(0, maxLength));
       return this.processData(data.substring(maxLength), index + 2, arr);
     },
-    function onDelete() {
+    async function onDelete() {
       // do the deletion
-      var el = this.childNodes[this.currentIndex].el();
+      var el = await this.childNodes[this.currentIndex].el();
       var start = el.selectionStart == el.selectionEnd && el.selectionStart > 0 ? el.selectionStart - 1 : el.selectionStart;
       this.childNodes[this.currentIndex].data = el.value.substr(0, start) + el.value.substr(el.selectionEnd);
       // if there is more data before the cursor position, do not move to previous textfield
@@ -139,7 +139,8 @@ foam.CLASS({
       }
       if ( this.currentIndex != prevIndex ) {
         var prev = this.childNodes[prevIndex];
-        prev.el().setSelectionRange(prev.data.length + 1, prev.data.length + 1);
+        var prevE = await prev.el();
+        prevE.setSelectionRange(prev.data.length + 1, prev.data.length + 1);
         prev.focus();
       }
     }
