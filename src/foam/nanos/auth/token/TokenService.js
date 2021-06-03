@@ -69,6 +69,26 @@ foam.INTERFACE({
           type: 'String'
         }
       ]
+    },
+    {
+      name: 'isTokenValid',
+      async: true,
+      type: 'Boolean',
+      swiftThrows: true,
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'user',
+          type: 'foam.nanos.auth.User'
+        },
+        {
+          name: 'token',
+          type: 'String'
+        }
+      ]
     }
   ]
 });

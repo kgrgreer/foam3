@@ -16,7 +16,10 @@ foam.CLASS({
   ],
 
   javaImports: [
+     'foam.dao.DAO',
+     'foam.nanos.auth.token.Token',
      'java.util.Calendar',
+     'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -28,10 +31,24 @@ foam.CLASS({
 calendar.add(java.util.Calendar.DAY_OF_MONTH, 1);
 return calendar.getTime();`
     },
-
     {
       name: 'generateToken',
       javaCode: `return this.generateTokenWithParameters(x, user, null);`
+    },
+    {
+      name: 'isTokenValid',
+      javaCode: `
+        DAO tokenDAO = (DAO) x.get("localTokenDAO");
+        Token tokenResult = (Token) tokenDAO.find(EQ(Token.DATA, token));
+
+        if ( tokenResult == null )
+          return false;
+
+        if ( tokenResult.getProcessed() )
+          return false;
+
+        return true;
+      `
     }
   ]
 });
