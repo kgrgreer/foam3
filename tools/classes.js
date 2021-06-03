@@ -285,7 +285,6 @@ var classes = [
   'foam.nanos.auth.LifecycleAware',
   'foam.nanos.auth.LifecycleAwareDAO',
   'foam.nanos.auth.LocaleSupport',
-  'foam.nanos.auth.AccountTemporarilyLockedException',
   'foam.nanos.auth.AccountLockedException',
   'foam.nanos.auth.DeletedAwareDAO',
   'foam.nanos.auth.DeletedAwareDAOTest',
@@ -498,6 +497,7 @@ var classes = [
   'foam.nanos.notification.email.EmailConfig',
   'foam.nanos.notification.email.EmailConfigEmailPropertyService',
   'foam.nanos.notification.email.EmailMessageValidationPropertyService',
+  'foam.nanos.notification.email.ApplyBaseArgumentsEmailPropertyService',
   // EmailMessageDAO(service) decorator
   'foam.nanos.notification.email.EmailServiceDAO',
 
@@ -727,6 +727,7 @@ var classes = [
   // DAO decorators
   'foam.nanos.actioncommand.ActionCommandDAO',
   'foam.nanos.approval.ApprovalDAO',
+  'foam.nanos.approval.RestrictedApprovableDAO',
   'foam.nanos.audit.AuditDAO',
   'foam.nanos.auth.email.EmailVerificationDAO',
   'foam.nanos.auth.email.EmailVerificationWebAgent',
