@@ -25,6 +25,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/SecurityTransaction' },
   { name: 'net/nanopay/tx/SummaryTransaction' },
   { name: 'net/nanopay/tx/SummarizingTransaction' },
+  { name: 'net/nanopay/tx/SummarizingTransactionMixin' },
   { name: 'net/nanopay/tx/ValueMovementTransaction' },
   { name: 'net/nanopay/tx/LiquidSummaryTransaction' },
   { name: 'net/nanopay/tx/LiquidCashTransactionType' },
@@ -888,9 +889,11 @@ FOAM_FILES([
   { name: 'net/nanopay/settings/IntegrationView', flags: ['web'] },
 
   // auth
+  { name: 'net/nanopay/security/auth/AccountTemporarilyLockedException' },
+  { name: 'net/nanopay/security/auth/IPLoggingAuthService' },
   { name: 'net/nanopay/security/auth/LoginAttemptAuthService' },
   { name: 'net/nanopay/security/auth/LoginAttempts' },
-  { name: 'net/nanopay/security/auth/IPLoggingAuthService' },
+  { name: 'net/nanopay/security/auth/InvalidPasswordException' },
   { name: 'net/nanopay/auth/LoginAttempt' },
 
   // PII

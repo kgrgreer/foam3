@@ -778,6 +778,7 @@ var classes = [
   'net.nanopay.auth.ruler.PermissionedUserRule',
   'net.nanopay.auth.ruler.SpidLimitedPermissionedUserRule',
   'net.nanopay.auth.ruler.predicate.IsUserInGroups',
+  'net.nanopay.security.auth.AccountTemporarilyLockedException',
   'net.nanopay.security.auth.IPLoggingAuthService',
   'net.nanopay.security.auth.LoginAttemptAuthService',
   'net.nanopay.security.auth.LoginAttempts',
