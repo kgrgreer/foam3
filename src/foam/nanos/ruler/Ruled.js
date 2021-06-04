@@ -49,7 +49,10 @@
       class: 'Reference',
       of: 'foam.nanos.ruler.RuleGroup',
       name: 'ruleGroup',
-      documentation: 'The name of the ruleGroup associated with the rule.'
+      documentation: `
+        The name of the ruleGroup associated with the rule.
+        the ruleGroup must be a valid RuleGroup entry in the RuleGroupDAO
+      `
     }
   ],
 
