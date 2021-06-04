@@ -27,10 +27,13 @@ foam.CLASS({
       -moz-appearance: none;
       -webkit-appearance: none;
       background: #ffffff url('/images/dropdown-icon.svg') no-repeat;
-      background-position: right 0.9em top 50%, 0 0;
+      background-position: right 0.25em top 50%, 0 0;
       box-shadow: none;
       cursor: pointer;
       max-width: 100%;
+      /* TODO: Remove this once css class loading is fixed */
+      padding-right: 2.1em !important; 
+      text-overflow: ellipsis;
       width: 100%;
     }
     ^ option {
@@ -88,7 +91,7 @@ foam.CLASS({
           cs.push(self.E('option').attrs({
             value: -1,
             selected: self.data === -1
-          }).add(placeholder));
+          }).addClass('truncate-ellipsis').add(placeholder));
         }
 
         for ( var i = 0 ; i < choices.length ; i++ ) {
