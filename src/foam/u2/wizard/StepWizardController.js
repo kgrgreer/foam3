@@ -334,9 +334,11 @@ foam.CLASS({
   listeners: [
     function onWizardletAvailability(wizardletIndex, value) {
       // Force a position update so views recalculate state
-      this.wizardPosition = this.WizardPosition.create({
-        wizardletIndex: this.wizardPosition.wizardletIndex,
-        sectionIndex: this.wizardPosition.sectionIndex,
+      window.requestAnimationFrame(() => {
+        this.wizardPosition = this.WizardPosition.create({
+          wizardletIndex: this.wizardPosition.wizardletIndex,
+          sectionIndex: this.wizardPosition.sectionIndex,
+        });
       });
     },
     function onWizardletValidity() {
