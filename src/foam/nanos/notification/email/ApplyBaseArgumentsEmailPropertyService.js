@@ -89,7 +89,7 @@
         templateArgs.put("supportPhone", supportConfig.getSupportPhone());
         templateArgs.put("supportEmail", supportConfig.getSupportEmail());
         // personal support user
-        User psUser = supportConfig.findPersonalSupportUser(getX());
+        User psUser = supportConfig.findPersonalSupportUser(x);
         templateArgs.put("personalSupportPhone", psUser == null ? "" : psUser.getPhoneNumber());
         templateArgs.put("personalSupportEmail", psUser == null ? "" : psUser.getEmail());
         templateArgs.put("personalSupportFirstName", psUser == null ? "" : psUser.getFirstName());

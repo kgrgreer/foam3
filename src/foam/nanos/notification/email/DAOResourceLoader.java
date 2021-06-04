@@ -78,7 +78,7 @@ public class DAOResourceLoader
 
   public static EmailTemplate findTemplate(X x, String name) {
     User user = ((Subject) x.get("subject")).getRealUser();
-    var groupId = user.findGroup(x).getId();
+    var groupId = ((Group) x.get("group")).getId();
     String locale = user.getLanguage().getCode();
     String spid = user.getSpid();
 
