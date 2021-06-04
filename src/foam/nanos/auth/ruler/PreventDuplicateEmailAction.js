@@ -14,6 +14,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.ContextAgent',
+    'foam.core.ValidationException',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
@@ -63,7 +64,7 @@ foam.CLASS({
             )).limit(1).select(count);
 
         if ( count.getValue() == 1 ) {
-          throw new RuntimeException(DUPLICATE_ERROR + user.getEmail());
+          throw new ValidationException(DUPLICATE_ERROR + user.getEmail());
         }
       `
     }
