@@ -50,6 +50,11 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'exception',
       of: 'foam.core.FOAMException'
-    }
+    },
+    {
+      class: 'Enum',
+      of: 'net.nanopay.flinks.external.OnboardingType',
+      name: 'type'
+    },
   ]
 });

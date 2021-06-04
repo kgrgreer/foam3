@@ -107,6 +107,7 @@ foam.CLASS({
   ],
 
   searchColumns: [
+    'id',
     'type',
     'status',
     'created',

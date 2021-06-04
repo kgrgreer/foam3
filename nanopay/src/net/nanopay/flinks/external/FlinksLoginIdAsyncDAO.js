@@ -64,6 +64,7 @@ foam.CLASS({
             flinksLoginIdAsync.clearFlinksLoginIdResult();
             flinksLoginIdAsync.setRequestId(flinksLoginId.getId());
             flinksLoginIdAsync.setStatus(AsyncStatus.IN_PROGRESS.getLabel());
+            flinksLoginIdAsync.setType(flinksLoginId.getType());
         }
         else if ( obj instanceof FlinksLoginId ) {
             flinksLoginId = (FlinksLoginId) obj;
@@ -77,6 +78,7 @@ foam.CLASS({
 
             flinksLoginIdAsync = new FlinksLoginIdAsync.Builder(x)
                 .setId(flinksLoginId.getId())
+                .setType(flinksLoginId.getType())
                 .setRequestId(flinksLoginId.getId())
                 .setStatus(AsyncStatus.IN_PROGRESS.getLabel())
                 .setCreated(flinksLoginId.getCreated())

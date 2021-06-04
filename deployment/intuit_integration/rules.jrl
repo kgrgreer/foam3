@@ -1,0 +1,26 @@
+p({
+  class:"foam.nanos.dig.DUGRule",
+  id:"intuit-localuserdao-dug-webhook",
+  url:"https://e2e.api.intuit.com/appconnect/connector/nanopay/api/nanopay.json?token=3q73t1qbz9vzx94&env=e2e&appId=AD13815&version=1",
+  oAuthProvider:"intuitWebhookOAP",
+  authType:3,
+  enabled:true
+})
+
+p({
+  class:"foam.nanos.dig.DUGRule",
+  id:"intuit-flinksloginidasyncdao-dug-webhook",
+  url:"https://e2e.api.intuit.com/appconnect/connector/nanopay/api/nanopay.json?token=3q73t1qbz9vzx94&env=e2e&appId=AD13815&version=1",
+  oAuthProvider:"intuitWebhookOAP",
+  authType:3,
+  enabled:true
+})
+
+p({
+  class:"foam.nanos.dig.DUGRule",
+  id:"intuit-summarytransactiondao-dug-webhook",
+  url:"https://e2e.api.intuit.com/appconnect/connector/nanopay/api/nanopay.json?token=3q73t1qbz9vzx94&env=e2e&appId=AD13815&version=1",
+  oAuthProvider:"intuitWebhookOAP",
+  authType:3,
+  enabled:true
+})

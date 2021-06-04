@@ -2,7 +2,7 @@ p({
   class:"foam.nanos.cron.Cron",
   id:"Intuit Billing Cron",
   description:"Create Intuit Billing Transactions",
-  enabled:true,
+  enabled:false,
   code:"""
     import foam.dao.ArraySink;
     import foam.dao.DAO;

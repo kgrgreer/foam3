@@ -167,7 +167,7 @@ public class BrazilVerificationService
     try {
       String formattedCnpj = cnpj.replaceAll("[^0-9]", "");
       PessoaResponse response = findFromCNPJCache(formattedCnpj);
-      // if ( response != null ) return response;
+      if ( response != null ) return response;
 
       PessoaJuridicaNFe request = new PessoaJuridicaNFe();
       request.setDocumento(formattedCnpj);
