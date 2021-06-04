@@ -106,7 +106,7 @@ foam.CLASS({
             });
           } else {
             this.menuDAO.cmd_(X, foam.dao.CachingDAO.PURGE);
-            if ( ! this.memento || this.memento.value.length === 0 )
+            if ( ! this.memento || this.memento.value.length === 0 || this.memento.value == 'sme.accountProfile.signout' )
               window.location.hash = '';
             this.loginSuccess = !! this.user;
           }
