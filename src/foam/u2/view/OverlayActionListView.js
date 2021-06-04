@@ -190,7 +190,7 @@ foam.CLASS({
       (this.firstEl_ && ! this.isMouseClick) && this.firstEl_.focus();
     },
 
-    function onKeyDown(e) {
+    async function onKeyDown(e) {
       var isTabPressed = (e.key === 'Tab' || e.keyCode === 9);
 
       if ( ! isTabPressed ) {
@@ -198,12 +198,12 @@ foam.CLASS({
       }
 
       if ( e.shiftKey ) {
-        if ( this.document.activeElement === this.firstEl_.el() ) {
+        if ( this.document.activeElement === await this.firstEl_.el() ) {
           this.lastEl_.focus();
           e.preventDefault();
         }
       } else {
-        if ( this.document.activeElement === this.lastEl_.el() ) {
+        if ( this.document.activeElement === await this.lastEl_.el() ) {
           this.firstEl_.focus();
           e.preventDefault();
         }
