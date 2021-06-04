@@ -104,6 +104,7 @@ foam.CLASS({
 
     ^dropdownIcon {
       margin-left: 4px;
+      width: 1.5em;
     }
   `,
 
