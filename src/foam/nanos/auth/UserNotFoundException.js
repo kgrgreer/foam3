@@ -11,6 +11,13 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
+  properties: [
+    {
+      name: 'exceptionMessage',
+      value: 'Not logged in {{message_}}'
+    }
+  ],
+
   axioms: [
     {
       name: 'javaExtras',

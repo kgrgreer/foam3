@@ -276,11 +276,6 @@ foam.CLASS({
           m = m.tail;
           counter++;
         }
-
-        this.currentMemento_ = m;
-        if ( ! this.currentMemento_ ) {
-          this.currentMemento_ = foam.nanos.controller.Memento.create();
-        }
       }
 
       var promise = this.config.unfilteredDAO.inX(this.__subContext__).find(this.data ? this.data.id : this.idOfRecord);

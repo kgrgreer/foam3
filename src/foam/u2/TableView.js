@@ -100,9 +100,9 @@ foam.CLASS({
       });
     },
 
-    async function eToObj(event) {
+    function eToObj(event) {
       /** Find the object associated with a DOM element. **/
-      var me = await this.el();
+      var me = this.el();
       var e = event.target;
       while ( e.nodeName !== 'TR' && e !== me )
         e = e.parentNode;

@@ -9,9 +9,9 @@ foam.CLASS({
   name: 'Memento',
 
   constants: [
-    { name: 'SEPARATOR',    value: '::' },
-    { name: 'PARAMS_BEGIN', value: '{'  },
-    { name: 'PARAMS_END',   value: '}'  },
+    { name: 'SEPARATOR',    value: '::'},
+    { name: 'PARAMS_BEGIN', value: '{'},
+    { name: 'PARAMS_END',   value: '}'},
 
     {
       name: 'OUTPUTTER',
@@ -57,18 +57,7 @@ foam.CLASS({
 
         if ( this.feedback_ ) return;
         this.feedback_       = true;
-
-        var origReplaceHistoryState;
-        if ( n ) {
-          origReplaceHistoryState = this.replaceHistoryState;
-          this.replaceHistoryState = n.replaceHistoryState;
-        }
         this.changeIndicator = ! this.changeIndicator;
-
-        if ( n ) {
-          this.replaceHistoryState = origReplaceHistoryState;
-        }
-
         this.feedback_       = false;
       },
       value: null
@@ -82,19 +71,10 @@ foam.CLASS({
         this.value                    = this.combine();
         if ( this.parent ) {
           this.parent.feedback_       = true;
-          var parentOriginalReplaceParentHistoryValue = this.parent.replaceHistoryState;
-          this.parent.replaceHistoryState = this.replaceHistoryState;
           this.parent.changeIndicator = ! this.parent.changeIndicator;
-          this.parent.replaceHistoryState = parentOriginalReplaceParentHistoryValue;
           this.parent.feedback_       = false;
         }
       }
-    },
-    {
-      class: 'Boolean',
-      name: 'replaceHistoryState',
-      documentation: 'if set to true, then current history state will be replaced instead of new state being created',
-      value: true
     }
   ],
 

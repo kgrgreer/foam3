@@ -13,28 +13,20 @@ import foam.dao.DAO;
 import foam.dao.ProxySink;
 import foam.dao.Sink;
 import foam.mlang.predicate.Predicate;
-import foam.mlang.predicate.Nary;
 import foam.mlang.sink.GroupBy;
 import foam.nanos.NanoService;
-import foam.nanos.approval.Approvable;
-import foam.nanos.approval.ApprovalRequest;
-import foam.nanos.approval.ApprovalRequestClassificationEnum;
-import foam.nanos.approval.CompositeApprovable;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.auth.AuthService;
 import foam.nanos.crunch.lite.Capable;
 import foam.nanos.crunch.CapabilityJunctionPayload;
-import foam.nanos.crunch.UCJUpdateApprovable;
 import foam.nanos.crunch.ui.PrerequisiteAwareWizardlet;
 import foam.nanos.crunch.ui.WizardState;
-import foam.nanos.dao.Operation;
 import foam.nanos.logger.Logger;
 import foam.nanos.pm.PM;
 import foam.nanos.session.Session;
 import java.lang.Exception;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static foam.mlang.MLang.*;
@@ -47,7 +39,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
   public void start() { }
 
   public List getGrantPath(X x, String rootId) {
-    return getCapabilityPath(x, rootId, true, true);
+    return getCapabilityPath(x, rootId, true);
   }
 
   //TODO: Needs to be refactored once Subject is serializable
@@ -59,12 +51,10 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       requestedSubject.setUser(effectiveUser);
       x = x.put("subject", requestedSubject);
     }
-    return this.getCapabilityPath(x, rootId, filterGrantedUCJ, true);
+    return this.getCapabilityPath(x, rootId, filterGrantedUCJ);
   }
 
-  public List getCapabilityPath(
-    X x, String rootId, boolean filterGrantedUCJ, boolean groupPrereqAwares
-  ) {
+  public List getCapabilityPath(X x, String rootId, boolean filterGrantedUCJ) {
     Logger logger = (Logger) x.get("logger");
     PM pm = PM.create(x, this.getClass().getSimpleName(), "getCapabilityPath");
 
@@ -92,8 +82,8 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
 
       if ( filterGrantedUCJ ) {
         UserCapabilityJunction ucj = getJunction(x, sourceCapabilityId);
-        if ( ucj != null && ucj.getStatus() == CapabilityJunctionStatus.GRANTED
-          && ! maybeReopen(x, ucj.getTargetId())
+        if ( ucj != null && ucj.getStatus() == CapabilityJunctionStatus.GRANTED 
+          && ! maybeReopen(x, ucj.getTargetId()) 
         ) {
           continue;
         }
@@ -118,18 +108,18 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
         cap.getBeforeWizardlet() != null &&
         cap.getBeforeWizardlet() instanceof PrerequisiteAwareWizardlet
       );
-      if ( groupPrereqAwares && prereqAware && ! rootId.equals(sourceCapabilityId) ) {
+      if ( prereqAware && ! rootId.equals(sourceCapabilityId) ) {
         List minMaxArray = new ArrayList<>();
 
         // Manually grab the direct  prereqs to the  MinMaxCapability
         for ( int i = prereqs.length - 1 ; i >= 0 ; i-- ) {
-          var prereqGrantPath = this.getCapabilityPath(x, prereqs[i], filterGrantedUCJ, true);
-
+          var prereqGrantPath = this.getCapabilityPath(x, prereqs[i], filterGrantedUCJ);
+          
           // remove prereqs that are already listed
           prereqGrantPath.removeIf(c -> {
             if (  c instanceof List ){
               return false;
-            }
+            }       
             return alreadyListed.contains(((Capability) c).getId());
           });
 
@@ -182,29 +172,25 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
     if ( prereqsCache_ != null ) return prereqsCache_.get(capId);
 
     return getPrereqs_(x, capId);
-  }
+  } 
 
   // select all ccjs from pcjdao and put them into map of <src, [tgt]> pairs
   // then the map is stored in the session context under CACHE_KEY
-  public Map initCache(X x, boolean cache) {
-    
-    if ( cache ) {
-      Sink purgeSink = new Sink() {
-        public void put(Object obj, Detachable sub) {
-          updateEntry(x, (CapabilityCapabilityJunction) obj);
-        }
-        public void remove(Object obj, Detachable sub) {
-          updateEntry(x, (CapabilityCapabilityJunction) obj);
-        }
-        public void reset(Detachable sub) {
-          purgeCache(x);
-        }
-        public void eof() {}
-      };
-
-      ((DAO) x.get("prerequisiteCapabilityJunctionDAO")).listen(purgeSink, TRUE);
-    }
-
+  public Map initCache(X x) {
+    Session session = x.get(Session.class);
+    Sink purgeSink = new Sink() {
+      public void put(Object obj, Detachable sub) {
+        updateEntry(x, (CapabilityCapabilityJunction) obj);
+      }
+      public void remove(Object obj, Detachable sub) {
+        updateEntry(x, (CapabilityCapabilityJunction) obj);
+      }
+      public void reset(Detachable sub) {
+        purgeCache(x);
+      }
+      public void eof() {}
+    };
+    ((DAO) x.get("prerequisiteCapabilityJunctionDAO")).listen(purgeSink, TRUE);
     Map map = new ConcurrentHashMap<String, List<String>>();
     var dao = ((DAO) x.get("prerequisiteCapabilityJunctionDAO")).inX(x);
     var sink = (GroupBy) dao.
@@ -222,12 +208,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       map.put(key.toString(), ((ArraySink) ((foam.mlang.sink.Map)
         sink.getGroups().get(key)).getDelegate()).getArray());
     }
-
-    Session session = x.get(Session.class);
-    if ( cache && session != null ) {
-      session.setContext(session.getContext().put(CACHE_KEY, map));
-    }
-
+    session.setContext(session.getContext().put(CACHE_KEY, map));
     return map;
   }
 
@@ -240,7 +221,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
       .select(MAP(CapabilityCapabilityJunction.TARGET_ID, new ArraySink()))).getDelegate())
       .getArray();
   }
-
+   
   // when an entry of ccj is added, updated, or removed from pcjdao, update corresponding entry in the cache
   public void updateEntry(X x, CapabilityCapabilityJunction ccj) {
     Session session = x.get(Session.class);
@@ -276,8 +257,8 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
   protected Map<String, List<String>> getPrereqsCache(X x) {
     Session session = x.get(Session.class);
     User user = ((Subject) x.get("subject")).getUser();
-    if ( user == null || session == null || user.getId() == User.SYSTEM_USER_ID ) {
-      return initCache(x, false);
+    if ( user == null ) {
+      return initCache(x);
     }
     Long userId = user.getId();
     Long agentId = ((Subject) x.get("subject")).getRealUser().getId();
@@ -291,7 +272,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
     if ( ! cacheValid ) return null;
 
     Map<String, List<String>> map = (Map) session.getContext().get(CACHE_KEY);
-    return map == null ? initCache(x, true) : map;
+    return map == null ? initCache(x) : map;
   }
 
   //TODO: Needs to be refactored once Subject is serializable
@@ -573,58 +554,6 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
     return false;
   }
 
-  public void createApprovalRequest(X x, String rootCapability) {
-    var subject = (Subject) x.get("subject");
-    Random r = ThreadLocalRandom.current();
-    var uuid = new UUID(r.nextLong(), r.nextLong()).toString();
-    var ucjReference = (Nary) AND(
-      EQ(UserCapabilityJunction.SOURCE_ID, subject.getRealUser().getId()),
-      EQ(UserCapabilityJunction.TARGET_ID, rootCapability)
-    );
-    if ( subject.getRealUser().getId() != subject.getUser().getId() ) {
-      ucjReference.setArgs(new Predicate[] {
-        ucjReference.getArgs()[0],
-        ucjReference.getArgs()[1],
-        EQ(AgentCapabilityJunction.EFFECTIVE_USER, subject.getUser().getId())
-      });
-    }
-
-    // Replace capability IDs with approvable IDs
-    var i = 0;
-    var approvableIds = new ArrayList<String>();
-    for ( Object capability : getCapabilityPath(x, rootCapability, false, false) ) {
-      var capabilityId = ((Capability) capability).getId();
-      var ucj = getJunction(x, capabilityId);
-      if ( ucj == null ) continue;
-      var approvable = (Approvable) ((DAO) x.get("approvableDAO")).find(EQ(
-        Approvable.OBJ_ID, ucj.getId()
-      ));
-      if ( approvable == null ) continue;
-      approvableIds.add(approvable.getId());
-      i++;
-    }
-
-    var approvable = new UCJUpdateApprovable.Builder(x)
-      .setId(uuid)
-      .setAssociatedTopLevelUCJ(ucjReference)
-      .setApprovableIds(approvableIds.toArray(String[]::new))
-      .build();
-
-    ((DAO) x.get("approvableDAO")).put(approvable);
-
-    var approvalRequest = new ApprovalRequest.Builder(x)
-      .setDaoKey("approvableDAO")
-      .setObjId(uuid)
-      .setOperation(Operation.UPDATE)
-      .setCreatedFor(subject.getUser().getId())
-      // TODO: How can we make this configurable?
-      .setGroup(subject.getUser().getSpid() + "-fraud-ops")
-      .setClassificationEnum(ApprovalRequestClassificationEnum.UPDATE_ON_ACTIVE_UCJ)
-      .build();
-
-    ((DAO) x.get("approvalRequestDAO")).put(approvalRequest);
-  }
-
   public boolean maybeReopen(X x, String capabilityId) {
     DAO capabilityDAO = (DAO) x.get("capabilityDAO");
     CrunchService crunchService = (CrunchService) x.get("crunchService");
@@ -655,7 +584,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
 
     var subjectWizardState = getWizardStateFor_(x, subject, capabilityId);
 
-    return capability.getAssociatedEntity() == AssociatedEntity.USER ? userWizardState :
+    return capability.getAssociatedEntity() == AssociatedEntity.USER ? userWizardState : 
       capability.getAssociatedEntity() == AssociatedEntity.REAL_USER ? realUserWizardState :
       subjectWizardState;
   }
@@ -680,7 +609,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
 
   private String[] getGrantedFor_(X x, Subject s, String capabilityId) {
     x = x.put("subject", s);
-    var capsOrLists = getCapabilityPath(x, capabilityId, false, true);
+    var capsOrLists = getCapabilityPath(x, capabilityId, false);
     var granted = (List<String>) new ArrayList<String>();
 
     var grantedStatuses = new CapabilityJunctionStatus[] {

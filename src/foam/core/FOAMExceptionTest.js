@@ -9,10 +9,6 @@ foam.CLASS({
   name: 'FOAMExceptionTest',
   extends: 'foam.nanos.test.Test',
 
-  javaImports: [
-    'foam.i18n.TranslationService',
-  ],
-
   methods: [
     {
       name: 'runTest',
@@ -35,13 +31,13 @@ foam.CLASS({
       try {
         throw new FOAMExceptionTestTestException();
       } catch (FOAMExceptionTestTestException e) {
-        String expected = "";
+        String expected = "ExceptionMessage , ErrorCode:";
         test(expected.equals(e.getMessage()), "expecting: "+expected+", found: \\\""+e.getMessage()+"\\\"");
       }
       try {
         throw new FOAMExceptionTestTestException("inner message");
       } catch (FOAMExceptionTestTestException e) {
-        String expected = "inner message";
+        String expected = "ExceptionMessage inner message, ErrorCode:";
         test(expected.equals(e.getMessage()), "expecting: "+expected+", found: \\\""+e.getMessage()+"\\\"");
       }
 
@@ -49,22 +45,18 @@ foam.CLASS({
       try {
         throw new FOAMExceptionTestTestException("inner message", "16");
       } catch (FOAMExceptionTestTestException e) {
-        String expected = "inner message";
+        String expected = "ExceptionMessage inner message, ErrorCode: 16";
         test(expected.equals(e.getMessage()), "expecting: "+expected+", found: \\\""+e.getMessage()+"\\\"");
         System.out.println("toString: "+e.toString());
       }
-
       // different locale
-      TranslationService ts = (TranslationService) x.get("translationService");
-      test(ts != null, "TranslationService");
-
       X y = x.put("locale.language", "pt");
       XLocator.set(y);
       try {
         throw new FOAMExceptionTestTestException("inner message", "16");
       } catch (FOAMExceptionTestTestException e) {
         String expected = "MensagemDeExceção inner message, ErroDeCódigo: 16";
-        test(expected.equals(e.getTranslation()), "expecting: "+expected+", found: \\\""+e.getTranslation()+"\\\"");
+        test(expected.equals(e.getMessage()), "expecting: "+expected+", found: \\\""+e.getMessage()+"\\\"");
         System.out.println("toString: "+e.toString());
       }
       XLocator.set(x);
@@ -89,7 +81,7 @@ foam.CLASS({
   properties: [
     {
       name: 'exceptionMessage',
-      value: 'ExceptionMessage {{message}}, ErrorCode: {{errorCode}}'
+      value: 'ExceptionMessage {{message_}}, ErrorCode: {{errorCode}}'
     }
   ],
 

@@ -5,7 +5,7 @@
  */
 
 foam.CLASS({
-  name: 'AccountLockedException',
+  name: 'AccountTemporarilyLockedException',
   package: 'foam.nanos.auth',
   extends: 'foam.nanos.auth.AuthenticationException',
   javaGenerateDefaultConstructor: false,
@@ -14,7 +14,7 @@ foam.CLASS({
   properties: [
     {
       name: 'exceptionMessage',
-      value: 'Account locked. Please contact customer service.'
+      value: 'Account temporarily locked. You can attempt to login after {{message_}}'
     }
   ],
 
@@ -23,14 +23,17 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(`
-  public AccountLockedException() {
+  public AccountTemporarilyLockedException() {
     super();
   }
 
-  public AccountLockedException(Exception cause) {
-    super(cause);
+  public AccountTemporarilyLockedException(String message) {
+    super(message);
   }
 
+  public AccountTemporarilyLockedException(String message, Exception cause) {
+    super(message, cause);
+  }
         `);
       }
     }

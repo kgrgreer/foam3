@@ -315,9 +315,10 @@ foam.CLASS({
         {
           name: 'data',
           postSet: function(old, nu) {
+            if ( this.state !== this.LOADED ) return;
             const htmlStr = this.rowFormatter.format(
               nu, this.columns);
-            this.el().then(el => el.innerHTML = htmlStr);
+            this.el().innerHTML = htmlStr;
           }
         }
       ],
@@ -358,9 +359,9 @@ foam.CLASS({
       ],
 
       listeners: [
-        async function render() {
-          var el = await this.el();
-          el.innerHTML = this.rowFormatter.format(this.data, this.columns);
+        function render() {
+          this.el().innerHTML = this.rowFormatter.format(this.data,
+                                                         this.columns);
         }
       ]
     },

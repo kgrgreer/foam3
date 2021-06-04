@@ -42,11 +42,10 @@ foam.CLASS({
             logger.debug(this.getClass().getSimpleName(), "old ", old);
 
             if ( ucj.getStatus() != CapabilityJunctionStatus.GRANTED || ucj.getIsRenewable() ) return;
-            if ( old != null && old.getStatus() == CapabilityJunctionStatus.GRANTED && ! old.getIsRenewable() &&
-              ( ( old.getData() == null && ucj.getData() == null ) ||
-                ( old.getData() != null && old.getData().equals(ucj.getData()) ) )
+            if ( old != null && old.getStatus() == CapabilityJunctionStatus.GRANTED && ! old.getIsRenewable() && 
+              ( ( old.getData() == null && ucj.getData() == null ) || old.getData().equals(ucj.getData()) ) 
             ) return;
-
+              
             Capability capability = (Capability) ucj.findTargetId(x);
             logger.debug(this.getClass().getSimpleName(), "ucj.findTargetId(x) - capability", capability);
             if ( capability == null ) {

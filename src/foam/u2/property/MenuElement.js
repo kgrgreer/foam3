@@ -59,7 +59,7 @@ foam.CLASS({
     {
       name: 'onMouseMove',
       code: function(evt) {
-        var pos = this.el_().getBoundingClientRect();
+        var pos = this.el().getBoundingClientRect();
         var margin = 50;
         if (evt.clientX < pos.left - margin || pos.right + margin < evt.clientX ||
             evt.clientY < pos.top - margin || pos.bottom + margin < evt.clientY) {
@@ -70,7 +70,7 @@ foam.CLASS({
     {
       name: 'onTouch',
       code: function(evt) {
-        if ( ! this.el_().contains(evt.target) ) {
+        if (!this.el().contains(evt.target)) {
           this.popup.close();
         }
       }

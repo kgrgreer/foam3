@@ -283,14 +283,13 @@
     {
       name: 'refresh',
       isFramed: true,
-      code: async function() {
+      code: function() {
         Object.keys(this.renderedPages_).forEach(i => {
           this.renderedPages_[i].remove();
           delete this.renderedPages_[i];
         });
         this.updateRenderedPages_();
-        var el = await this.el();
-        if ( ! this.isInit && this.currentMemento_ && this.currentMemento_.head.length != 0 ) {
+        if ( this.el() && ! this.isInit && this.currentMemento_ && this.currentMemento_.head.length != 0 ) {
           var scroll = this.currentMemento_.head * this.rowHeight;
           scroll = scroll >= this.rowHeight && scroll < this.scrollHeight ? scroll : 0;
 
@@ -298,9 +297,7 @@
             document.getElementById(this.tableWrapper_.id).scrollTop = scroll;
 
           this.isInit = true;
-        } else {
-          el.scrollTop = 0;
-        }
+        } else if ( this.el() ) this.el().scrollTop = 0;
       }
     },
     {
