@@ -98,6 +98,31 @@ p({
 })
 
 p({
+  class: "foam.nanos.boot.NSpec",
+  name: "userCapabilityJunctionApprovableDAO",
+  serve: true,
+  serviceScript: `
+    dec = new foam.dao.NullDAO(x, foam.nanos.approval.Approvable.getOwnClassInfo());
+    dec = new foam.nanos.approval.RestrictedApprovableDAO.Builder(x)
+      .setDelegate(dec)
+      .setDaoKey("userCapabilityJunctionDAO")
+      .setServerDaoKey("userCapabilityJunctionDAO")
+      .build();
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorizer(new foam.nanos.auth.StandardAuthorizer("userCapabilityJunctionApprovable"))
+      .setDecorator(dec)
+      .setInnerDAO(x.get("approvableDAO"))
+      .setOf(foam.nanos.approval.Approvable.getOwnClassInfo())
+      .build();
+  `,
+  client: `
+    {
+      "of": "foam.nanos.approval.Approvable"
+    }
+  `
+})
+
+p({
   "class":"foam.nanos.boot.NSpec",
   "name":"bareUserCapabilityJunctionDAO",
   "serviceScript":"""

@@ -61,26 +61,17 @@ foam.CLASS({
     }
 
     ^rightside ^bottomnav {
-      display: flex;
-      padding: 0 var(--lrPadding);
-      padding-top: var(--actionBarTbPadding);
-      float: right;
-      width: calc(100% - 2*var(--lrPadding));
-      flex-grow: 0;
-      min-height: calc(
-        var(--actionBarHeight) - var(--actionBarTbPadding));
+      align-items: center;
       background-color: rgba(255,255,255,0.7);
       backdrop-filter: blur(5px);
       box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.3);
-    }
-
-    ^rightside ^search {
-      flex-grow: 1;
-    }
-
-    ^rightside ^search input {
-      height: 36px;
-      width: 33%;
+      display: flex;
+      flex-grow: 0;
+      justify-content: flex-end;
+      min-height: calc(
+        var(--actionBarHeight) - var(--actionBarTbPadding));
+      padding: var(--actionBarTbPadding) var(--lrPadding);
+      width: calc(100% - 2*var(--lrPadding));
     }
 
     ^heading {
@@ -120,7 +111,7 @@ foam.CLASS({
     },
     {
       name: 'scrollWizardPosition',
-      expression: function (scrollPosition, wizardPositionElements) {
+      expression: async function (scrollPosition, wizardPositionElements) {
         var offset = 50;
 
         var test_visible = el => {
@@ -144,7 +135,7 @@ foam.CLASS({
         var minTopPosition = null;
         // Find the closest visible section to the top
         for ( let hash in wizardPositionElements ) {
-          let el = wizardPositionElements[hash].section.el();
+          let el = await wizardPositionElements[hash].section.el();
           let pos = wizardPositionElements[hash].position;
           if ( ! el ) {
             delete wizardPositionElements[hash];
@@ -193,23 +184,20 @@ foam.CLASS({
       }
     },
     {
-      class: 'foam.u2.ViewSpec',
-      name: 'searchView',
-      value: { class: 'foam.u2.tag.Input' }
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.u2.wizard.WizardletSearchController',
-      name: 'searchController'
+      name: 'primaryLabel',
+      documentation: 'Used to switch to the appropriate label for the primary action',
+      expression: function(hasAction, willReject, willSave) {
+        if ( willReject ) return this.REJECT_LABEL;
+        if ( hasAction ) return this.ACTION_LABEL;
+        if ( willSave ) return this.SAVE_LABEL;
+        return this.NO_ACTION_LABEL;
+      }
     }
   ],
 
   methods: [
     function initE() {
       var self = this;
-      this.searchController = this.WizardletSearchController.create({
-        wizardlets$: this.data.wizardlets$
-      });
       window.testing_ = self;
       this.onDetach(this.scrollWizardPosition$.sub(() => {
         if ( ! this.scrollWizardPosition ) return; // TEMP
@@ -234,20 +222,16 @@ foam.CLASS({
           .start(this.GUnit, { columns: 8 })
             .addClass(this.myClass('rightside'))
             .call(function () {
-              self.onDetach(this.state$.sub(() => {
-                if ( this.state.cls_ == foam.u2.LoadedElementState ) {
-                  self.scrollOffsetElement = this.el();
-                }
-              }));
+              self.onDetach(async function() {
+                  self.scrollOffsetElement = await self.el();
+              });
             })
             .start()
               .call(function () {
-                self.onDetach(this.state$.sub(() => {
-                  if ( this.state.cls_ == foam.u2.LoadedElementState ) {
-                    self.mainScrollElement = this.el();
+                self.onDetach(async function() {
+                    self.mainScrollElement = await self.el();
                     self.scrollWizardPosition$.get();
-                  }
-                }));
+                });
               })
               .on('scroll', function (e) {
                 self.scrollPosition = e.srcElement.scrollTop;
@@ -269,22 +253,10 @@ foam.CLASS({
             .start()
               .addClass(this.myClass('bottomnav'))
               .start()
-                .addClass(this.myClass('search'))
-                .tag(this.Input, {
-                  data$: this.searchController.data$,
-                  onKey: true
-                })
-              .end()
-              .start()
                 .addClass(this.myClass('actions'))
                 .startContext({ data: self })
                   .tag(this.SUBMIT, {
-                    label: this.slot(function(hasAction, willReject, willSave) {
-                      if ( willReject ) return this.REJECT_LABEL;
-                      if ( hasAction ) return this.ACTION_LABEL;
-                      if ( willSave ) return this.SAVE_LABEL;
-                      return this.NO_ACTION_LABEL;
-                    }),
+                    label$: this.primaryLabel$,
                     buttonStyle: 'PRIMARY'
                   })
                 .endContext()
