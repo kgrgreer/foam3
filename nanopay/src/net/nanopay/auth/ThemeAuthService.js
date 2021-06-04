@@ -36,10 +36,8 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'foam.nanos.theme.Theme',
 
-    'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.OR',
-    'static foam.mlang.MLang.CLASS_OF'
   ],
 
   methods: [
