@@ -11,7 +11,12 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.auth.Group',
+    'foam.nanos.session.Session',
     'javax.security.auth.AuthPermission'
+  ],
+
+  constants: [
+    { name: 'CACHE_KEY', value: 'system.auth.cache' }
   ],
 
   methods: [
@@ -20,8 +25,21 @@ foam.CLASS({
       javaCode: `
         User user = ((Subject) x.get("subject")).getUser();
         Group group = (Group) x.get("group");
-        boolean isSystem = user != null && user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID;
-        return isSystem || group != null && group.implies(x, new AuthPermission("*")) || getDelegate().check(x, permission);
+        if ( user != null && user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID ) {
+          return true;
+        }
+        // Response from group implies is cached to maintain intented performance.
+        if ( group != null ) {
+          Session session = x.get(Session.class);
+          Boolean isSuper = (Boolean) session.getContext().get(CACHE_KEY);
+          if ( isSuper == null ) {
+            isSuper = group.implies(x, new AuthPermission("*"));
+            session.setContext(session.getContext().put(CACHE_KEY, isSuper));
+          }
+          return isSuper || getDelegate().check(x, permission);
+        }
+
+        return getDelegate().check(x, permission);
       `
     }
   ]
