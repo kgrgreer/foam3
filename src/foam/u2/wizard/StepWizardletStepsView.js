@@ -112,6 +112,18 @@ foam.CLASS({
       width: 24px;
       height: 24px;
     }
+
+    ^hide {
+      opacity: 0.3;
+    }
+
+    ^search{
+      padding-bottom: 32px;
+    }
+
+    ^search input{
+      width: 100%;
+    }
   `,
 
   imports: [
@@ -123,18 +135,37 @@ foam.CLASS({
     'foam.u2.detail.AbstractSectionedDetailView',
     'foam.u2.tag.CircleIndicator',
     'foam.u2.wizard.WizardPosition',
-    'foam.u2.wizard.WizardletIndicator'
+    'foam.u2.wizard.WizardletIndicator',
+    'foam.u2.wizard.WizardletSearchController'
   ],
 
   messages: [
     { name: 'PART_LABEL', message: 'Part ' }
   ],
 
+  properties: [
+    {
+      class: 'FObjectProperty',
+      of: 'foam.u2.wizard.WizardletSearchController',
+      name: 'searchController'
+    }
+  ],
+
   methods: [
     function initE() {
       var self = this;
+      this.searchController = this.WizardletSearchController.create({
+        wizardlets$: this.data.wizardlets$
+      });
       this
         .addClass(this.myClass())
+        .start()
+          .addClass(this.myClass('search'))
+          .tag(foam.u2.SearchField, {
+            data$: this.searchController.data$,
+            onKey: true
+          })
+        .end()
         .add(this.slot(function (
           data$wizardlets,
           data$wizardPosition,
@@ -159,10 +190,12 @@ foam.CLASS({
             elem = elem
               .start()
                 .addClass(self.myClass('item'))
+                .addClass(wizardlet.isHidden$.map(v => v && self.myClass('hide')))
                 .add(this.ExpressionSlot.create({
                   args: [wizardlet.indicator$],
                   code: () => {
-                    return self.E().addClass(self.myClass('step-number-and-title'))
+                    return self.E()
+                      .addClass(self.myClass('step-number-and-title'))
 
                       // Render circle indicator
                       .start(this.CircleIndicator, this.configureIndicator(
@@ -253,20 +286,21 @@ foam.CLASS({
     {
       name: 'setScrollPos',
       isFramed: true,
-      code: function() {
-        if ( this.state == this.UNLOADED ) return;
-        if ( this.state != this.LOADED ) { this.setScrollPos(); return; }
+      code: async function() {
+        var el    = await this.parentNode.el();
         let currI = 0;
         for ( let w = 0 ; w < this.data.wizardlets.length ; w++ ) {
           let wizardlet = this.data.wizardlets[w];
-          if (wizardlet === this.data.currentWizardlet){
+          if ( wizardlet === this.data.currentWizardlet ) {
             currI = Math.max(w - 1, 0);
           }
         }
 
-        var padding = this.childNodes[0].childNodes[0].el().offsetTop;
-        var scrollTop = this.childNodes[0].childNodes[currI].el().offsetTop;
-        this.parentNode.el().scrollTop = scrollTop - padding;
+        var firstChild = await this.childNodes[0].childNodes[0].el();
+        var currChild  = await this.childNodes[0].childNodes[currI].el();
+        var padding    = firstChild.offsetTop;
+        var scrollTop  = currChild.offsetTop;
+        el.scrollTop   = scrollTop - padding;
       }
     }
   ]

@@ -27,7 +27,7 @@ foam.CLASS({
       -moz-appearance: none;
       -webkit-appearance: none;
       background: #ffffff url('/images/dropdown-icon.svg') no-repeat;
-      background-position: right 0.9em top 50%, 0 0; 
+      background-position: right 0.9em top 50%, 0 0;
       box-shadow: none;
       cursor: pointer;
       max-width: 100%;
@@ -101,9 +101,7 @@ foam.CLASS({
 
           if ( value.indexOf('  ') !== -1 ) {
             // Hack to display spaces as nbsp's
-            e.onload.sub(function() {
-              e.el().innerHTML = value.replace(/ /g, '&nbsp;');
-            });
+            e.el().then(el => el.innerHTML = value.replace(/ /g, '&nbsp;'));
           }
 
           cs.push(e);

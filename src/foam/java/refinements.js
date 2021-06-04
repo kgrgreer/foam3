@@ -2419,7 +2419,8 @@ foam.CLASS({
   refines: 'foam.dao.DAOProperty',
   flags: ['java'],
   properties: [
-    ['javaCompare',    '']
+    [ 'javaCompare',       '' ],
+    [ 'javaCloneProperty', null ]
   ]
 });
 

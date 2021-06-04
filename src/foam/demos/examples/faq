@@ -87,3 +87,241 @@ The following script will find all of the FOAM "types":
 --
 for ( var v in foam.USED ) { try { if ( foam.core.Property.isSubClass(foam.lookup(v, true)) ) print(v); } catch(x) {} }
 for ( var v in foam.UNUSED ) { try { if ( foam.core.Property.isSubClass(foam.lookup(v, true)) ) print(v); } catch(x) {} }
+
+##  Q5
+What does this code mean? e.g., flags: [&#39;java&#39;], flags[&#39;web&#39;] , flags: [ &#39;node&#39; ]
+<br>
+<br>
+<b>A:</b> Some FOAM models are intended only for specific platforms, and the flags feature
+determines when and where a model will be loaded or ignored.
+For example, view specific models are only needed when loaded in a web browser,
+so they can be configured with <code>flags: ['web']</code>.
+Other code may only be useful when run in node.js <code>flags: ['node']</code>, for java <code>flags: ['java']</code>,
+or swift, <code>flags: ['swift']</code>. When <code>flags: ['debug']</code> is present, the model is only
+loaded when in debug mode (which is the default).
+<br>
+In your HTML file, you can customize the flags by setting FOAM_FLAGS before loading foam:
+<pre>
+  &lt;script>FOAM_FLAGS = {debug: false};&lt;/script>
+  &lt;script language="javascript" src="../../../foam.js">&lt;/script>
+</pre>
+The set of flags isn't fixed, and you can make up your own for your own purposes.
+
+##  Q6
+How do I use References?
+<br>
+<br>
+A Reference is a type of property which stores the primary key of a record
+stored in a DAO.
+<br>
+To create a Reference property, set its class: 'Reference', and then set the of: property to be the model
+of the referenced class, and daoKey: to be the context key of the referenced DAO.
+<br>
+Relationships with cardinality: '1:*' will add a Reference property to the target model.
+--
+
+foam.CLASS({
+  name: 'Province',
+
+  properties: [ 'id', 'name' ],
+
+  methods: [
+    function toSummary() { return this.name; }
+  ]
+});
+
+foam.CLASS({
+  name: 'ReferenceTest',
+
+  requires: [
+    'foam.dao.EasyDAO',
+    'foam.u2.view.ReferenceView'
+   ],
+
+  properties: [
+    {
+      name: 'provinceDAO',
+      hidden: true,
+      factory: function() {
+        return this.EasyDAO.create({
+          of: Province,
+          daoType: 'MDAO',
+          testData: [
+            { id: 'ON', name: 'Ontario' },
+            { id: 'PQ', name: 'Quebec' },
+            { id: 'NS', name: 'Nova Scotia' },
+            { id: 'NB', name: 'New Brunswick' },
+            { id: 'PE', name: 'Prince Edward Island' }
+            // that's enough for demo purposes
+          ]
+        });
+      }
+    },
+    {
+      class: 'Reference',
+      name: 'province1',
+      of: 'Province',
+      targetDAOKey: 'provinceDAO'
+
+      // Without specifying the view:, this property will use a ReferenceView
+      // which displays the result of calling the toSummary() method
+      // for each object from the DAO.
+    },
+    {
+      class: 'Reference',
+      of: 'Province',
+      name: 'province2',
+      targetDAOKey: 'provinceDAO',
+      view: { class: 'foam.u2.view.ReferenceView', objToChoice: function(obj) { return [obj.id, obj.id + ' ' + obj.name]; } }
+      // In this case, we want to change what's displayed in the ReferenceView,
+      // so we explicitly set the view: and then override objToChoice: to
+      // also include the province id.
+    }
+  ]
+});
+add('output');
+var rt = ReferenceTest.create({province1: 'ON', province2: 'PQ'});
+add(rt);
+
+// Each reference property has an associated $dao property
+// which returns the referenced DAO.
+add('select: ').start().style({'margin-left': '12px'}).select(rt.province1$dao, function(p) {
+  return this.E().add(p.name);
+}).end().br();
+
+// Each reference property has an associated $find property
+// which returns a promise which will lookup the referenced
+// object from its DAO.
+
+rt.province1$find.then(function(p) {
+  add('find province1: ', p.name);
+});
+
+rt.province2$find.then(function(p) {
+  add('find province2: ', p.name);
+});
+
+// We can also, just add promises to U2 directly?
+add('find: ').add(rt.province1$find);
+
+##  Q7
+What does Slot.clear() do?
+<br><br>
+<b>A.</b> Calling slot.clear() is the same as setting the assocated property to <code>undefined</code> or calling clearProperty() on the owning object.
+In all three cases, it reverts the property to its initial value.
+The initial value will be either the default value of the property, as defined by either value:, factory: or expression:.
+--
+foam.CLASS({
+  name: 'Test',
+  properties: [
+    {
+      name: 'noDefault',
+    },
+    {
+      name: 'defaultValue',
+      value: 42
+    },
+    {
+      name: 'defaultFactory',
+      factory: function() { return this.defaultValue*10; }
+    },
+    {
+      name: 'defaultExpression',
+      expression: function(defaultValue, defaultFactory) {
+        return defaultValue + defaultFactory;
+      }
+    }
+  ]
+});
+
+var t = Test.create();
+log('' + t.noDefault, ' ', t.defaultValue, ' ', t.defaultFactory, ' ', t.defaultExpression);
+
+t.noDefault = 1;
+t.defaultValue = 2;
+t.defaultFactory = 3;
+t.defaultExpression = 4;
+log('' + t.noDefault, ' ', t.defaultValue, ' ', t.defaultFactory, ' ', t.defaultExpression);
+
+t.noDefault = undefined;
+t.clearProperty('defaultValue');
+t.defaultFactory$.clear();
+log('' + t.noDefault, ' ', t.defaultValue, ' ', t.defaultFactory, ' ', t.defaultExpression);
+
+##  Q8
+From the code below, is it just cloning the value of property? They are not pointing to the same property after copying values?
+<br><br>
+<b>A.</b> It isn't cloning the property, just copying the property value whenever it changes.
+It's the same as if we did:
+// copy p2's name to p1's name whenever p2.name's value changes
+p2.name$.sub(function() { p1.name = p2.name; });
+
+--
+foam.CLASS({name: 'Person', properties: [ 'name' ]});
+
+p1 = Person.create();
+p2 = Person.create({name:'John'});
+print('Initial:', p1.name, ' ', p2.name);
+
+p1.name$.follow(p2.name$);
+log('After follow:', p1.name, ' ', p2.name);
+
+p2.name = 'Janet';
+log('After update:', p1.name, ' ', p2.name);
+
+// Notice that in the above example, the binding is 1-way.
+// If I change p1, p2 isn't affect:
+p1.name = 'Kevin';
+log('After update:', p1.name, ' ', p2.name);
+
+// If I wanted to make it a 2-way data-binding, I could do:
+// p1.name$.linkFrom(p2.name$)
+// or just:
+// p1.name$ = p2.name$;
+// Ex.
+
+p1 = Person.create();
+p2 = Person.create({name:'John'});
+
+p1.name$ = p2.name$;
+
+log('After link:', p1.name, ' ', p2.name);
+
+p1.name = 'Steve';
+log('After Update p1:', p1.name, ' ', p2.name);
+
+p2.name = 'Samantha';
+log('After Update p2:', p1.name, ' ', p2.name);
+
+##  Q9
+What does it mean when I get this error: Use of literal View as ViewSpec: foam.u2.someView?
+<br><br><b>A.</b>
+It means that you've add an actual View object to another View instead of adding a ViewSpec.
+A ViewSpec is a specification for creating a view, but not yet an actual View.
+U2 relies on ViewSpecs instead of just using Views directly, for two reasons:
+<ol>
+<li>When creating the View from a ViewSpec, it can be certain that the View is created in the proper sub-context.
+This will ensure that it has access to any values exported by parent views or services.
+<li>Some parent views, like the StackView, may need to recreate the view more than once, which they can easily do from a ViewSpec.
+<ol>
+--
+foam.CLASS({
+  name: 'Test',
+  extends: 'foam.u2.Element',
+
+  requires: [ 'foam.u2.ControllerMode', 'foam.u2.view.StringView' ],
+
+  methods: [
+    function initE() {
+      this.startContext({controllerMode: this.ControllerMode.VIEW}).
+        // works, but generates a warning
+        add('literal: ').tag(this.StringView.create({data: 'value1'})).
+        br().
+        // works without a warning
+        add('viewSpec: ').tag(this.StringView, {data: 'value2'}).
+      endContext();
+    }
+  ]
+});
+
+add(Test.create());

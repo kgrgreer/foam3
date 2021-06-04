@@ -38,7 +38,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'LABEL_SEARCH',    message: 'Search' }
+    { name: 'LABEL_SEARCH', message: 'Search' }
   ],
 
   properties: [
@@ -82,7 +82,7 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'viewSpec',
-      value: { class: 'foam.u2.tag.Input' }
+      value: { class: 'foam.u2.SearchField' }
     },
     {
       name: 'view'

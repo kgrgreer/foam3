@@ -639,7 +639,6 @@ foam.LIB({
         (obj + new Array(size).join(' ')).substring(0, size) ;
     },
     function multiline(f) {
-      console.log('*********************************************************************', f);
       // Function for returning multi-line strings from commented functions.
       // Ex. var str = multiline(function() { /* multi-line string here */ });
       if ( typeof f === 'string' ) return f;
