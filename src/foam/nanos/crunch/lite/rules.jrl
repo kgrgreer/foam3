@@ -205,7 +205,7 @@ p({
   "action":{
     "class":"foam.nanos.crunch.lite.ruler.UCJApprovableValidateAction"
   },
-  "enabled":false,
+  "enabled":true,
   "saveHistory":false,
   "lifecycleState":1
 })

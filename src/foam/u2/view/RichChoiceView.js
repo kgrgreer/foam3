@@ -451,12 +451,12 @@ foam.CLASS({
       // Set up an event listener on the window so we can close the dropdown
       // when the user clicks somewhere else.
       var containerU2Element;
-      const fn = async function(evt) {
+      const fn = function(evt) {
         // This prevents a console error when opening the dropdown.
         if ( containerU2Element === undefined ) return;
 
-        var selfDOMElement = await self.el();
-        var containerDOMElement = await containerU2Element.el();
+        var selfDOMElement = self.el();
+        var containerDOMElement = containerU2Element.el();
 
         // If an ancestor U2 Element was removed but didn't properly detach us,
         // then the DOM elements will be removed but the listener will still be

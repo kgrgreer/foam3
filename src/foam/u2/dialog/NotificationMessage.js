@@ -31,7 +31,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'translationService',
     'theme'
   ],
 
@@ -55,11 +54,9 @@ foam.CLASS({
       border: 1px solid /*%GREY4%*/ #DADDE2;
       border-radius: 3px;
       box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1), 0px 4px 6px rgba(0, 0, 0, 0.05);
-      box-sizing: border-box;
       display: flex;
       justify-content: space-between;
       margin: auto;
-      min-height: 64px;
       padding: 12px 16px;
       width: -webkit-fill-available;
     }
@@ -101,14 +98,18 @@ foam.CLASS({
       width: -webkit-fill-available;
     }
     ^close-icon {
+      background-image: url("images/round-close-icon.svg");
+      background-size: 12px 12px;
+      cursor: pointer;
+      height: 12px;
+      opacity: 0.5;
+      width: 12px;
       position: absolute;
-      right: 0.5em;
-      top: 0.5em;
+      top: 1em;
+      right: 1em;
     }
-    ^close-icon > *{
-      width: 20px;
-      height: 20px;
-      padding: 0;
+    ^close-icon:hover {
+      opacity: 1;
     }
   `,
 
@@ -117,7 +118,6 @@ foam.CLASS({
       class: 'String',
       name: 'type'
     },
-    'err',
     'message',
     'description',
     'icon'
@@ -128,27 +128,6 @@ foam.CLASS({
     function initE() {
       var self = this;
       var indicator;
-      if ( this.err ) {
-        // Create notification message and description from
-        // exception name and message.
-        var ex = this.err.exception || this.err;
-        if ( ex.id ) {
-          this.message = ex.id.split('.').pop();
-          if ( this.message.endsWith('Exception') ) {
-            this.message = this.message.replace('Exception', '');
-          }
-          this.message = foam.String.capitalize(foam.String.labelize(this.message).toLowerCase());
-          this.message = this.translationService.getTranslation(foam.locale, ex.id, this.message);
-        }
-        if ( ex.getTranslation ) {
-          this.description = ex.getTranslation();
-        } else {
-          this.description = this.translationService.getTranslation(foam.locale, ex.id+'.'+ex.message, ex.message);
-        }
-        if ( this.message == this.description ) {
-          this.description = null;
-        }
-      }
       if ( ! this.icon ) {
         if ( this.type == this.LogLevel.ERROR ) {
           console.error('notification: ' + this.message);
@@ -216,7 +195,7 @@ foam.CLASS({
           .startContext({ data: this })
             .start()
                 .addClass(this.myClass('close-icon'))
-                .tag(self.REMOVE_NOTIFICATION, { buttonStyle: 'TERTIARY', label: '' })
+                .tag(self.REMOVE_NOTIFICATION, { buttonStyle: 'LINK', label: '' })
             .end()
           .endContext()
         .end();
@@ -230,8 +209,6 @@ foam.CLASS({
   actions: [
     {
       name: 'removeNotification',
-      themeIcon: 'close',
-      icon: 'images/ic-cancelblack.svg',
       code: function() { this.remove(); }
     }
   ]

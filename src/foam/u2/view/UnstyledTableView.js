@@ -420,7 +420,7 @@ foam.CLASS({
                   .style({
                     'align-items': 'center',
                     display: 'flex',
-                    flex: tableWidth ? `1 0 ${tableWidth}px` : '3 0 0',
+                    flex: tableWidth ? `0 0 ${tableWidth}px` : '1 0 0',
                     'justify-content': 'start',
                     'word-wrap': 'break-word'
                   })
@@ -670,7 +670,7 @@ foam.CLASS({
                     prop = objForCurrentProperty ? objForCurrentProperty.cls_.getAxiomByName(view.columnHandler.getNameOfLastPropertyForNestedProperty(propName)) : prop && prop.property ? prop.property : view.of.getAxiomByName(propName);
                     var tableWidth = view.columnHandler.returnPropertyForColumn(view.props, view.of, view.columns_[j], 'tableWidth');
 
-                    var elmt = tableRowElement.E().addClass(view.myClass('td')).style({flex: tableWidth ? `1 0 ${tableWidth}px` : '3 0 0'}).
+                    var elmt = tableRowElement.E().addClass(view.myClass('td')).style({flex: tableWidth ? `0 0 ${tableWidth}px` : '1 0 0'}).
                     callOn(prop.tableCellFormatter, 'format', [
                       prop.f ? prop.f(objForCurrentProperty) : null, objForCurrentProperty, prop
                     ]);

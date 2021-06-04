@@ -211,15 +211,14 @@ foam.CLASS({
       }.bind(this), 500);
     },
 
-    async function scrollToIndex(index) {
+    function scrollToIndex(index) {
       // Three cases: in view, need to scroll up, need to scroll down.
       // Determine the parent's scrolling bounds first:
       var e = this.delegate_.children[index];
       // TODO(braden): This sucks and needs fixing.
       if ( ! e ) return;
-      delegateE = await this.delegate_.el();
-      childrenE = await e.el();
-      delegateE.scrollTop = childrenE.offsetTop - this.vMargin;
+
+      this.delegate_.el().scrollTop = e.el().offsetTop - this.vMargin;
     }
   ]
 });

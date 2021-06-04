@@ -65,7 +65,7 @@ foam.CLASS({
         return this.crunchService.getCapabilityPathFor(null, this.rootCapability.id, false, this.subject.user, this.subject.realUser)
           .then(capabilities => { this.capabilities = capabilities });
       }
-      return this.crunchService.getCapabilityPath(null, this.rootCapability.id, false, true)
+      return this.crunchService.getCapabilityPath(null, this.rootCapability.id, false)
         .then(capabilities => { this.capabilities = capabilities });
     },
     function getWAO() {

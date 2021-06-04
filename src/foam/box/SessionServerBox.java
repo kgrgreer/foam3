@@ -187,7 +187,8 @@ public class SessionServerBox
       msg.getLocalAttributes().put("x", effectiveContext);
       getDelegate().send(msg);
     } catch (Throwable t) {
-      logger.warning(t.getMessage());
+      // TODO: CapabilityIntercepts are caught here and generate an uneccessary stack trace
+      logger.warning(t.getMessage(), t);
       msg.replyWithException(t);
 
       AppConfig appConfig = (AppConfig) getX().get("appConfig");

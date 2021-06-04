@@ -195,10 +195,10 @@ foam.CLASS({
             of: self.dao.of.id,
             onKey: true,
             viewSpec: {
-              class: 'foam.u2.SearchField',
+              class: 'foam.u2.tag.Input',
               focused: true
             }
-          }, this, this.__subContext__.createSubContext({ memento: this.memento ? this.memento.tail : this.memento }));
+          }, this, this.__subContext__.createSubContext({ memento: this.memento.tail }));
           var slot = self.SimpleSlot.create({ value: searchView });
 
           e.start()

@@ -277,7 +277,6 @@ foam.CLASS({
   `,
 
   methods: [
-    function el() {},
     function output(out) {},
     function load() {},
     function unload() {},
@@ -317,12 +316,6 @@ foam.CLASS({
   axioms: [ foam.pattern.Singleton.create() ],
 
   methods: [
-    function el() {
-      var self = this;
-      return new Promise(function(resolve, reject) {
-        self.sub('onload', () => resolve(self.el_()));
-      });
-    },
     function output(out) {
       this.initE();
       this.state = this.OUTPUT;
@@ -342,12 +335,6 @@ foam.CLASS({
   documentation: 'State of Element after it has been output to DOM, but not yet loaded.',
 
   methods: [
-    function el() {
-      var self = this;
-      return new Promise(function(resolve, reject) {
-        self.sub('onload', () => resolve(self.el_()));
-      });
-    },
     function output(out) {
       // TODO: raise a real error
       this.__context__.warn('ERROR: Duplicate output.');
@@ -365,7 +352,7 @@ foam.CLASS({
       this.state = this.LOADED;
       if ( this.tabIndex ) this.setAttribute('tabindex', this.tabIndex);
       // Add a delay before setting the focus in case the DOM isn't visible yet.
-      if ( this.focused ) this.el().then(el => el.focus());
+      if ( this.focused ) window.setTimeout(() => { try { this.el().focus(); } catch(x) {} }, 70);
       // Allows you to take the DOM element and map it back to a
       // foam.u2.Element object.  This is expensive when building
       // lots of DOM since it adds an extra DOM call per Element.
@@ -406,10 +393,6 @@ foam.CLASS({
   documentation: 'State of an Element after it has been output to the DOM and loaded.',
 
   methods: [
-    function el() {
-      return Promise.resolve(this.el_());
-    },
-
     function output(out) {
       this.__context__.warn('Duplicate output.');
       return this.UNLOADED.output.call(this, out);
@@ -417,7 +400,7 @@ foam.CLASS({
     function load() { this.__console__.warn('Duplicate load.'); },
     function unload() {
       if ( ! this.parentNode || this.parentNode.state === this.LOADED ) {
-        var e = this.el_();
+        var e = this.el();
         if ( e ) e.remove();
       }
 
@@ -427,7 +410,7 @@ foam.CLASS({
     },
     function onRemove() { this.unload(); },
     function onSetClass(cls, enabled) {
-      var e = this.el_();
+      var e = this.el();
       if ( e ) {
         e.classList[enabled ? 'add' : 'remove'](cls);
       } else {
@@ -435,7 +418,7 @@ foam.CLASS({
       }
     },
     function onFocus() {
-      this.el_().focus();
+      this.el().focus();
     },
     function onAddListener(topic, listener) {
       this.addEventListener_(topic, listener);
@@ -444,24 +427,24 @@ foam.CLASS({
       this.addRemoveListener_(topic, listener);
     },
     function onSetStyle(key, value) {
-      this.el_().style[key] = value;
+      this.el().style[key] = value;
     },
     function onSetAttr(key, value) {
       if ( this.PSEDO_ATTRIBUTES[key] ) {
-        this.el_()[key] = value;
+        this.el()[key] = value;
       } else {
-        this.el_().setAttribute(key, value === true ? '' : value);
+        this.el().setAttribute(key, value === true ? '' : value);
       }
     },
     function onRemoveAttr(key) {
       if ( this.PSEDO_ATTRIBUTES[key] ) {
-        this.el_()[key] = '';
+        this.el()[key] = '';
       } else {
-        this.el_().removeAttribute(key);
+        this.el().removeAttribute(key);
       }
     },
     function onAddChildren() {
-      var e = this.el_();
+      var e = this.el();
       if ( ! e ) {
         this.__context__.warn('Missing Element: ', this.id);
         return;
@@ -476,7 +459,7 @@ foam.CLASS({
       }
     },
     function onInsertChildren(children, reference, where) {
-      var e = this.el_();
+      var e = this.el();
       if ( ! e ) {
         this.__context__.warn('Missing Element: ', this.id);
         return;
@@ -486,7 +469,7 @@ foam.CLASS({
         out(children[i]);
       }
 
-      reference.el_().insertAdjacentHTML(where, out);
+      reference.el().insertAdjacentHTML(where, out);
 
       // EXPERIMENTAL:
       // TODO(kgr): This causes some elements to get stuck in OUTPUT state
@@ -500,25 +483,25 @@ foam.CLASS({
       // }, 33);
     },
     function onReplaceChild(oldE, newE) {
-      var e = this.el_();
+      var e = this.el();
       if ( ! e ) {
         this.__context__.warn('Missing Element: ', this.id);
         return;
       }
       var out = this.createOutputStream();
       out(newE);
-      oldE.el_().outerHTML = out.toString();
+      oldE.el().outerHTML = out.toString();
       newE.load && newE.load();
     },
     function onRemoveChild(child, index) {
       if ( typeof child === 'string' ) {
-        this.el_().childNodes[index].remove();
+        this.el().childNodes[index].remove();
       } else {
         child.remove();
       }
     },
     function getBoundingClientRect() {
-      return this.el_().getBoundingClientRect();
+      return this.el().getBoundingClientRect();
     },
     function toString() { return 'LOADED'; }
   ]
@@ -533,10 +516,6 @@ foam.CLASS({
   documentation: 'State of an unloaded Element.',
 
   methods: [
-    function el() {
-      // A NOOP Promise that will never resolve
-      return { then: function() {}, catch: function() {} };
-    },
     function output(out) {
       this.__context__.warn('Outputting unloaded element can cause event/binding bugs.', this.cls_.id);
       this.state = this.OUTPUT;
@@ -1067,18 +1046,18 @@ foam.CLASS({
       this.initKeyboardShortcuts();
     },
 
-    async function observeScrollHeight() {
+    function observeScrollHeight() {
       // TODO: This should be handled by an onsub event when someone subscribes to
       // scroll height changes.
       var self = this;
-      var observer = new MutationObserver(async function(mutations) {
-        var el = await self.el();
-        self.scrollHeight = el.scrollHeight;
+      var observer = new MutationObserver(function(mutations) {
+        self.scrollHeight = self.el().scrollHeight;
       });
       var config = { attributes: true, childList: true, characterData: true };
 
-      var e = await this.el();
-      observer.observe(e, config);
+      this.onload.sub(function(s) {
+        observer.observe(self.el(), config);
+      });
       this.onunload.sub(function(s) {
         observer.disconnect()
       });
@@ -1171,13 +1150,15 @@ foam.CLASS({
       }
     },
 
-    function el_() {
+    function el() {
+      /* Return this Element's real DOM element, if loaded. */
+      // Caching this call doesn't appear to help performance.
       return this.getElementById(this.id);
     },
 
     function findChildForEvent(e) {
       var src  = e.srcElement;
-      var el   = this.el_();
+      var el   = this.el();
       var cMap = {};
       var cs   = this.children;
 
@@ -1362,8 +1343,8 @@ foam.CLASS({
     function getAttribute(name) {
       // TODO: add support for other dynamic attributes also
       // TODO: don't lookup in real DOM if listener present
-      if ( this.PSEDO_ATTRIBUTES[name] && this.el_() ) {
-        var value = this.el_()[name];
+      if ( this.PSEDO_ATTRIBUTES[name] && this.el() ) {
+        var value = this.el()[name];
         var attr  = this.getAttributeNode(name);
 
         if ( attr ) {
@@ -2087,13 +2068,12 @@ foam.CLASS({
     },
 
     function addEventListener_(topic, listener) {
-      var el = this.el_();
+      var el = this.el();
       el && el.addEventListener(topic, listener, false);
     },
 
     function removeEventListener_(topic, listener) {
-      var el = this.el_();
-      el && el.removeEventListener(topic, listener);
+      this.el() && this.el().removeEventListener(topic, listener);
     },
 
     function output_(out) {

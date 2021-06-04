@@ -917,19 +917,10 @@ foam.CLASS({
   methods: [
     function installInProto(proto) {
       this.SUPER(proto);
-      var self    = this;
-      var daoName = self.name + '$dao';
-
-      Object.defineProperty(proto, daoName, {
-        get: function classGetter() {
-          return this.__subContext__[self.targetDAOKey] || this[self.targetDAOKey];
-        },
-        configurable: true
-      });
-
+      var self = this;
       Object.defineProperty(proto, self.name + '$find', {
         get: function classGetter() {
-          return this[daoName].find(this[self.name]);
+          return this.__subContext__[self.targetDAOKey].find(this[self.name]);
         },
         configurable: true
       });

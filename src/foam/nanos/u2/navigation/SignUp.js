@@ -224,9 +224,17 @@ foam.CLASS({
             this.user.copyFrom(user);
             await this.updateUser(x);
           }).catch((err) => {
+            let id = err.data && err.data.id;
+            var message = this.ERROR_MSG;
+            var description;
+            if ( id ) {
+              message = foam.String.labelize(id.split('.').pop());
+              message = this.translationService.getTranslation(foam.locale, id+'.notification.message', message);
+              description = this.translationService.getTranslation(foam.locale, id+'.notification.description', err.message);
+            }
             this.ctrl.add(this.NotificationMessage.create({
-              err: err.data,
-              message: this.ERROR_MSG,
+              message: message,
+              description: description,
               type: this.LogLevel.ERROR
             }));
           })

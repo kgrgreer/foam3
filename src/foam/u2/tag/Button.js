@@ -4,7 +4,9 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-foam.CLASS({
+const { contains } = require("underscore");
+
+ foam.CLASS({
   package: 'foam.u2.tag',
   name: 'Button',
   extends: 'foam.u2.View',

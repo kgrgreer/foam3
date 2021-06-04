@@ -178,7 +178,7 @@ foam.CLASS({
     },
 
     function onMouseLeave(e) {
-      console.assert(e.target === this.dropdownE_.el_(),
+      console.assert(e.target === this.dropdownE_.el(),
           'mouseleave should only fire on this, not on children');
       this.timer = setTimeout(() => { this.close(); }, 500);
     },

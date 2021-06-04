@@ -11,6 +11,13 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
+  properties: [
+    {
+      name: 'exceptionMessage',
+      value: 'Access denied'
+    }
+  ],
+
   axioms: [
     {
       name: 'javaExtras',

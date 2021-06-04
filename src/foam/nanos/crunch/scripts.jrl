@@ -21,13 +21,13 @@ p({
     List reviewWizards = capabilityDAO
       .where(MLang.INSTANCE_OF(ReviewWizard.class))
       .select(new ArraySink()).getArray();
-
+    
     for ( Object o : reviewWizards ) {
       var reviewWizard = (ReviewWizard) o;
 
       // CRUNCH path determines prerequisites for review
       List idsToReview = crunchService.getCapabilityPath(
-        x, reviewWizard.getCapabilityToReview(), false, true);
+        x, reviewWizard.getCapabilityToReview(), false);
 
       for ( int i = 0 ; i < idsToReview.size() ; i++ ) {
         // TODO: add support for minmax lists

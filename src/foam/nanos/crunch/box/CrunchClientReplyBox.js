@@ -44,8 +44,8 @@ foam.CLASS({
         var self = this;
         if (
           this.RPCErrorMessage.isInstance(msg.object) &&
-          this.RemoteException.isInstance(msg.object.data) &&
-          this.CapabilityIntercept.isInstance(msg.object.data.exception)
+            this.RemoteException.isInstance(msg.object.data) &&
+            this.CapabilityIntercept.isInstance(msg.object.data.exception)
         ) {
           var intercept = msg.object.data.exception;
           intercept.message = msg.object.data.message;

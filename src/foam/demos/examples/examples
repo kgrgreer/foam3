@@ -94,68 +94,61 @@ Test.describe();
 Create an instance of Test
 --
 var o = Test.create();
-log("Class: ", o);
-log('a: ' + o.a + ', b: ' + o.b);
+console.log("Class: ", o);
+console.log('a: ' + o.a + ', b: ' + o.b);
 
 
 ##  Test create with values
 Create an instance with a map argument to initialize properties
 --
 var o = Test.create({ a: 3, b: 'hello' });
-log("Class: ", o);
-log('a: ' + o.a + ', b: ' + o.b);
+console.log("Class: ", o);
+console.log('a: ' + o.a + ', b: ' + o.b);
 
 
 ##  Class reference
 Objects have a reference to their class in .cls_
 --
-var o = Test.create({ a: 3, b: 'hello' });
-log("Class object:", o.cls_);
+console.log("Class object:", o.cls_);
 
 
 ##  Test isInstance
 Test Class membership with Class.isInstance()
 --
-var o = Test.create({ a: 3, b: 'hello' });
-log('Test.isInstance(o)?', Test.isInstance(o));
-log('Test.isInstance("foo")?', Test.isInstance("Test"));
+console.log('Test.isInstance(o)?', Test.isInstance(o));
+console.log('Test.isInstance("foo")?', Test.isInstance("Test"));
 
 
 ##  Test Methods
 Call Methods on the Test instance
 --
-var o = Test.create({ a: 3, b: 'hello' });
-log("Methods return: ", o.f1(), o.f2());
+console.log("Methods return: ", o.f1(), o.f2());
 
 
 ##  Update Properties
 Properties accept value changes as normal
 --
-var o = Test.create({ a: 3, b: 'hello' });
 o.a++;
 o.b = 'bye';
-log('New values: a: ' + o.a + ', b: ' + o.b);
+console.log('New values: a: ' + o.a + ', b: ' + o.b);
 
 
 ##  Test copyFrom
 Multiple properties can be updated at once using copyFrom()
 --
-var o = Test.create({ a: 3, b: 'hello' });
 o.copyFrom({a: 42, b: 'rosebud'});
-log('New values: a: ' + o.a + ', b: ' + o.b);
+console.log('New values: a: ' + o.a + ', b: ' + o.b);
 
 
 ##  Test toString
 Call toString on an object
 --
-var o = Test.create({ a: 3, b: 'hello' });
-log("toString:", o.toString());
+console.log("toString:", o.toString());
 
 
 ##  Describe instance
 Call describe() on an object to see its Property values
 --
-var o = Test.create({ a: 3, b: 'hello' });
 o.describe();
 
 
@@ -163,7 +156,7 @@ o.describe();
 Get an array of all Axioms belonging to a Class by calling getAxioms
 --
 Test.getAxioms().forEach(function(a) {
-  log(a.cls_ && a.cls_.name, a.name);
+  console.log(a.cls_ && a.cls_.name, a.name);
 });
 
 
@@ -171,21 +164,21 @@ Test.getAxioms().forEach(function(a) {
 Find an Axiom for a class using getAxiomByName
 --
 var a = Test.getAxiomByName('a');
-log(a.cls_.name, a.name);
+console.log(a.cls_.name, a.name);
 
 
 ##  Test getAxiomsByClass
 Find all Axioms of a particular class using getAxiomsByClass
 --
 Test.getAxiomsByClass(foam.core.Method).forEach(function(a) {
-  log(a.cls_ && a.cls_.name, a.name);
+  console.log(a.cls_ && a.cls_.name, a.name);
 });
 
 
 ##  Test Property constants
 Properties are defined on the class as constants
 --
-log("Method CODE property constant:", foam.core.Method.CODE);
+console.log("Method CODE property constant:", foam.core.Method.CODE);
 foam.core.Method.CODE.describe();
 
 
@@ -193,7 +186,7 @@ foam.core.Method.CODE.describe();
 Property constants contain map functions
 --
 // foam.core.Method.NAME.f(obj) returns obj.name
-log("Method names in Test:",
+console.log("Method names in Test:",
   Test
     .getAxiomsByClass(foam.core.Method)
     .map(foam.core.Method.NAME.f)
@@ -206,7 +199,7 @@ Property constants contain comparators
 --
 // foam.core.Method.NAME.compare is a compare function
 // that properly compares values of NAME.
-log("Method names in Test, sorted:",
+console.log("Method names in Test, sorted:",
   Test
     .getAxiomsByClass(foam.core.Method)
     .sort(foam.core.Method.NAME.compare)
@@ -224,7 +217,7 @@ foam.CLASS({
   methods: [ function init() { this.a = 'just born!'; } ]
 });
 var o = InitTest.create();
-log("Initialized value:", o.a);
+console.log("Initialized value:", o.a);
 
 
 ##  Create default values
@@ -239,24 +232,24 @@ foam.CLASS({
   ]
 });
 var o = DefaultValueTest.create();
-log("Values:", o.a, o.b, o.c);
+console.log("Values:", o.a, o.b, o.c);
 
 
 ##  Test hasOwnProperty
 FObject.hasOwnProperty() tells you if a Property has been set
 --
-log("Before setting:", o.hasOwnProperty('a'), o.hasOwnProperty('b'), o.hasOwnProperty('c'));
+console.log("Before setting:", o.hasOwnProperty('a'), o.hasOwnProperty('b'), o.hasOwnProperty('c'));
 o.a = 99;
 o.c = 'test';
-log("After setting a, c:", o.hasOwnProperty('a'), o.hasOwnProperty('b'), o.hasOwnProperty('c'));
+console.log("After setting a, c:", o.hasOwnProperty('a'), o.hasOwnProperty('b'), o.hasOwnProperty('c'));
 
 
 ##  Test clearProperty
 FObject.clearProperty() reverts a value back to its value
 --
-log("Before clearing:", o.hasOwnProperty('a'), o.a);
+console.log("Before clearing:", o.hasOwnProperty('a'), o.a);
 o.clearProperty('a');
-log("After clearing:", o.hasOwnProperty('a'), o.a);
+console.log("After clearing:", o.hasOwnProperty('a'), o.a);
 
 
 ##  Create factory test
@@ -278,10 +271,10 @@ var o = FactoryTest.create();
 ##  Test factory running
 Factories run once when the property is first accessed
 --
-log("Before:    factory run count:", factoryCount);
-log("Value:", o.a, " factory run count:", factoryCount);
+console.log("Before:    factory run count:", factoryCount);
+console.log("Value:", o.a, " factory run count:", factoryCount);
 // Factory not called value accessed second time:
-log("Again:", o.a, " factory run count:", factoryCount);
+console.log("Again:", o.a, " factory run count:", factoryCount);
 
 
 ##  Test factory not run
@@ -289,23 +282,23 @@ Factories do not run if the value is set before being accessed
 --
 // Value supplied in create()
 o = FactoryTest.create({a: 42});
-log("Value:", o.a, " factory run count:", factoryCount);
+console.log("Value:", o.a, " factory run count:", factoryCount);
 
 // Value set before first access
 o = FactoryTest.create();
 o.a = 99;
-log("Value:", o.a, " factory run count:", factoryCount);
+console.log("Value:", o.a, " factory run count:", factoryCount);
 
 
 ##  FactoryTest
 Factory is called again if clearProperty() called
 --
 var o = FactoryTest.create();
-log("Run factory: ", o.a);
-log(" factory run count:", factoryCount);
+console.log("Run factory: ", o.a);
+console.log(" factory run count:", factoryCount);
 o.clearProperty('a');
-log("Again:       ", o.a);
-log(" factory run count:", factoryCount);
+console.log("Again:       ", o.a);
+console.log(" factory run count:", factoryCount);
 
 
 ##  Property Getters and Setters
@@ -329,10 +322,10 @@ foam.CLASS({
 var o = GetterSetter.create();
 
 o.diameter = 10;
-log("r:", o.radius, "d:", o.diameter);
+console.log("r:", o.radius, "d:", o.diameter);
 
 o.radius = 10;
-log("r:", o.radius, "d:", o.diameter);
+console.log("r:", o.radius, "d:", o.diameter);
 
 
 
@@ -352,7 +345,7 @@ foam.CLASS({
     {
       name: 'flag',
       adapt: function(oldValue, newValue) {
-        log('Adapt old:', oldValue, "to new:", newValue);
+        console.log('Adapt old:', oldValue, "to new:", newValue);
         // adapt to a boolean
         return !! newValue;
       }
@@ -364,7 +357,7 @@ var o = AdaptTest.create({ flag: true });
 
 // adapt called again to adapt null
 o.flag = null;
-log("Adapted value:", o.flag);
+console.log("Adapted value:", o.flag);
 
 
 ##  Property preSet
@@ -382,17 +375,17 @@ foam.CLASS({
     {
       name: 'a',
       preSet: function(oldValue, newValue) {
-        log('preSet p1');
+        console.log('preSet p1');
         return newValue + "y";
       }
     }
   ]
 });
 var o = PreSetTest.create({ a: 'Smith' });
-log(o.a);
+console.log(o.a);
 
 o.a = 'Jones';
-log(o.a);
+console.log(o.a);
 
 
 ##  Property postSet
@@ -409,7 +402,7 @@ foam.CLASS({
     {
       name: 'a',
       postSet: function(oldValue, newValue) {
-        log('postSet old:', oldValue, "new:", newValue);
+        console.log('postSet old:', oldValue, "new:", newValue);
         // this.a will match the newValue, since the set is already
         // complete
         lastPostSetValue = this.a;
@@ -432,15 +425,15 @@ foam.CLASS({
     {
       name: 'a',
       adapt: function(oldValue, newValue) {
-        log('adapt old:', oldValue, 'new:', newValue);
+        console.log('adapt old:', oldValue, 'new:', newValue);
         return newValue + 1;
       },
       preSet: function(oldValue, newValue) {
-        log('preSet old:', oldValue, 'new:', newValue);
+        console.log('preSet old:', oldValue, 'new:', newValue);
         return newValue + 2;
       },
       postSet: function(oldValue, newValue) {
-        log('postSet old:', oldValue, 'new:', newValue);
+        console.log('postSet old:', oldValue, 'new:', newValue);
         lastPostSetValue = this.a;
       }
     }
@@ -462,21 +455,21 @@ foam.CLASS({
   }
 });
 var o = ConstantTest.create();
-log("Constant values:", o.MEANING_OF_LIFE, o.FAVOURITE_COLOR);
+console.log("Constant values:", o.MEANING_OF_LIFE, o.FAVOURITE_COLOR);
 
 
 ##  Constants Class access
 Constants can also be accessed from the Class
 --
-log("ConstantTest constants:", ConstantTest.MEANING_OF_LIFE, ConstantTest.FAVOURITE_COLOR);
-log("o.cls_ constants:", o.cls_.MEANING_OF_LIFE, o.cls_.FAVOURITE_COLOR);
+console.log("ConstantTest constants:", ConstantTest.MEANING_OF_LIFE, ConstantTest.FAVOURITE_COLOR);
+console.log("o.cls_ constants:", o.cls_.MEANING_OF_LIFE, o.cls_.FAVOURITE_COLOR);
 
 
 ##  Constants are constant
 Constants are constant, and cannot be assigned
 --
 o.MEANING_OF_LIFE = 43;
-log("Constant after setting to 43:", o.MEANING_OF_LIFE);
+console.log("Constant after setting to 43:", o.MEANING_OF_LIFE);
 
 
 ##  Person Class
@@ -510,30 +503,30 @@ foam.CLASS({
 });
 
 var p = Person.create({name: 'John', sex: 'M'});
-log("Person:", p.toString());
+console.log("Person:", p.toString());
 
 var e = Employee.create({name: 'Jane', sex: 'F', salary: 50000});
-log("Employee:", e.toString());
+console.log("Employee:", e.toString());
 
 
 ##  Test SubClass
 Test if one class is a sub-class of another
 --
-log("Is Employee a subclass of Person?", Person.isSubClass(Employee));
-log("Is Person a subclass of Employee?", Employee.isSubClass(Person));
+console.log("Is Employee a subclass of Person?", Person.isSubClass(Employee));
+console.log("Is Person a subclass of Employee?", Employee.isSubClass(Person));
 
 
 ##  Test SubClass self
 A Class is considered a sub-class of itself
 --
-log("Is Person a subclass of Person?", Person.isSubClass(Person));
+console.log("Is Person a subclass of Person?", Person.isSubClass(Person));
 
 
 ##  Test FObject SubClass
 FObject is the root class of all other classes
 --
-log("Is Employee an FObject?", foam.core.FObject.isSubClass(Employee));
-log("Is Person an FObject?", foam.core.FObject.isSubClass(Person));
+console.log("Is Employee an FObject?", foam.core.FObject.isSubClass(Employee));
+console.log("Is Person an FObject?", foam.core.FObject.isSubClass(Person));
 
 
 ##  Test isSubClass and package
@@ -544,8 +537,8 @@ foam.CLASS({
   name: 'Person'
 });
 // The two Person classes are independent of each other
-log("Is Person a packaged-Person?", com.acme.package.Person.isSubClass(Person));
-log("Is packaged-Person a Person?", Person.isSubClass(com.acme.package.Person));
+console.log("Is Person a packaged-Person?", com.acme.package.Person.isSubClass(Person));
+console.log("Is packaged-Person a Person?", Person.isSubClass(com.acme.package.Person));
 
 
 ##  Test isSubClass and interfaces
@@ -554,14 +547,14 @@ isSubClass() works for interfaces
 foam.CLASS({
   package: 'test',
   name: 'ThingI',
-  methods: [ function foo() { log('Called ThingI.foo()'); } ]
+  methods: [ function foo() { console.log('Called ThingI.foo()'); } ]
 });
 foam.CLASS({
   package: 'test',
   name: 'C1',
   implements: [ 'test.ThingI' ]
 });
-log("Is C1 a ThingI?", test.ThingI.isSubClass(test.C1));
+console.log("Is C1 a ThingI?", test.ThingI.isSubClass(test.C1));
 
 
 ##  Test isSubClass sub interfaces
@@ -585,18 +578,18 @@ foam.CLASS({
 var o = test.C2.create();
 o.foo();
 
-log("Is C2 a ThingI?", test.ThingI.isSubClass(test.C2));
-log("Is C2 a Thing2I?", test.Thing2I.isSubClass(test.C2));
-log("Is C2 a Thing3I?", test.Thing3I.isSubClass(test.C2));
+console.log("Is C2 a ThingI?", test.ThingI.isSubClass(test.C2));
+console.log("Is C2 a Thing2I?", test.Thing2I.isSubClass(test.C2));
+console.log("Is C2 a Thing3I?", test.Thing3I.isSubClass(test.C2));
 
 
 ##  Test isInstance sub interfaces
 isInstance() works for sub-interfaces
 --
-log("Is o a ThingI?", test.ThingI.isInstance(o));
-log("Is o a Thing2I?", test.Thing2I.isInstance(o));
-log("Is o a Thing3I?", test.Thing3I.isInstance(o));
-log("Is o a C2?", test.C2.isInstance(o));
+console.log("Is o a ThingI?", test.ThingI.isInstance(o));
+console.log("Is o a Thing2I?", test.Thing2I.isInstance(o));
+console.log("Is o a Thing3I?", test.Thing3I.isInstance(o));
+console.log("Is o a C2?", test.C2.isInstance(o));
 
 
 ##  Package imports exports demo
@@ -623,7 +616,7 @@ foam.CLASS({
       code: function (amount) {
         this.balance += amount;
         this.reportDeposit(this.id, amount, this.balance);
-        log('Bank: ', this.__context__.Bank);
+        console.log('Bank: ', this.__context__.Bank);
         return this.balance;
       }
     },
@@ -719,7 +712,6 @@ Refinement upgrades the existing class rather than create a new sub-class
 // new sub-class. In the following example we add 'salary' to
 // the person class, rather than creating a new Employee sub-class.
 foam.CLASS({
-  name: 'PersonRefinement',
   refines: 'Person',
   properties: [ { class: 'Float', name: 'salary', value: 0 } ],
   methods: [
@@ -727,15 +719,15 @@ foam.CLASS({
   ]
 });
 var n = Person.create({name: 'Bob', sex: 'M', salary: 40000});
-log("New person after refinement:", n.toString());
+console.log("New person after refinement:", n.toString());
 // The already created person, John, now has a salary too!
-log("Old person after refinement:", p.toString());
+console.log("Old person after refinement:", p.toString());
 
 
 ##  Refine a Property
 Properties in classes can be changed in a refinement
 --
-log("Old type of Person.salary:", Person.SALARY.cls_.name);
+console.log("Old type of Person.salary:", Person.SALARY.cls_.name);
 
 // Change the salary property type, add a default value
 foam.CLASS({
@@ -743,11 +735,11 @@ foam.CLASS({
   properties: [ { name: 'salary', value: 30000 } ]
 });
 
-log("New type of Person.salary:", Person.SALARY.cls_.name);
+console.log("New type of Person.salary:", Person.SALARY.cls_.name);
 
 var o = Person.create({name:'John'});
-log("Now with default value:", o.salary);
-log("And original person gets the default too:", p.salary);
+console.log("Now with default value:", o.salary);
+console.log("And original person gets the default too:", p.salary);
 
 
 ##  Cannot Refine a Property Class
@@ -760,9 +752,9 @@ foam.CLASS({ name: 'Emp', properties: [ { class: 'Salary', name: 'salary' } ] })
 
 // Since Classes are not constructed until used, we create an instance to force
 // Emp to be loaded (otherwise the refinement will appear to work):
-log("Emp.salary before:", Emp.create().salary);
+console.log("Emp.salary before:", Emp.create().salary);
 foam.CLASS({ refines: 'Salary', properties: [ { name: 'value', value: 30000 } ]});
-log("Emp.salary refined:", Emp.create().salary);
+console.log("Emp.salary refined:", Emp.create().salary);
 
 
 ##  Refine Property
@@ -772,7 +764,7 @@ Refine foam.core.Property Class
 foam.CLASS({ name: 'Emp', properties: [ { class: 'Float', name: 'salary' } ] });
 Emp.create();
 foam.CLASS({ refines: 'Float', properties: [ [ 'javaClass', 'Float' ] ]});
-log(Emp.SALARY.javaClass);
+console.log(Emp.SALARY.javaClass);
 
 
 ##  Cannot Refine a SuperProperty Class
@@ -780,10 +772,10 @@ Currently unsupported and unlikely to be supported
 --
 foam.CLASS({ name: 'SuperClass', properties: [ 'p1' ]});
 foam.CLASS({ name: 'SubClass', extends: 'SuperClass', properties: [ 'p1' ]});
-log('Before: super: ', SuperClass.create().p1, 'sub: ', SubClass.create().p1);
+console.log('Before: super: ', SuperClass.create().p1, 'sub: ', SubClass.create().p1);
 
 foam.CLASS({ refines: 'SuperClass', properties: [ { name: 'p1', value: 42 } ]});
-log('Refined: super: ', SuperClass.create().p1, 'sub: ', SubClass.create().p1);
+console.log('Refined: super: ', SuperClass.create().p1, 'sub: ', SubClass.create().p1);
 
 
 ##  Cannot Refine a DoubleSuperProperty Class
@@ -792,13 +784,13 @@ Currently unsupported and unlikely to be supported. Two inheritance levels.
 foam.CLASS({ name: 'SuperClass', properties: [ 'p1' ]});
 foam.CLASS({ name: 'MidClass', extends: 'SuperClass' });
 foam.CLASS({ name: 'SubClass', extends: 'MidClass', properties: [ 'p1' ]});
-log('Before: super: ', SuperClass.create().p1, 'mid: ', MidClass.create().p1, 'sub: ', SubClass.create().p1);
+console.log('Before: super: ', SuperClass.create().p1, 'mid: ', MidClass.create().p1, 'sub: ', SubClass.create().p1);
 
 // MidClass will see the refinement since it does not redefine the p1 property, so it
 // uses SuperClass' directly. SubClass keeps its own definition, and doesn't see the changes
 // to SuperClass.p1
 foam.CLASS({ refines: 'SuperClass', properties: [ { name: 'p1', value: 42 } ]});
-log('Refined: super: ', SuperClass.create().p1, 'mid: ', MidClass.create().p1, 'sub: ', SubClass.create().p1);
+console.log('Refined: super: ', SuperClass.create().p1, 'mid: ', MidClass.create().p1, 'sub: ', SubClass.create().p1);
 
 
 ##  Create Listeners
@@ -808,11 +800,11 @@ foam.CLASS({
   name: 'ListenerTest',
   properties: [ 'name' ],
   methods: [ function m1() {
-    log('m1', this.name);
+    console.log('m1', this.name);
     return 'M1' + this.name;
   } ],
   listeners: [ function l1() {
-    log('l1', this.name);
+    console.log('l1', this.name);
     return 'L1' + this.name; // listener return value is ignored by most callers
   } ]
 });
@@ -848,7 +840,7 @@ foam.CLASS({
       name: 'l',
       isMerged: true,
       isFramed: true,
-      code: function() { log('listener'); }
+      code: function() { console.log('listener'); }
     }
   ]
 });
@@ -873,7 +865,7 @@ c() {
             name: 'notMerged',
             isMerged: false, // the default
             code: function() {
-              log('not merged listener');
+              console.log('not merged listener');
             }
           },
           {
@@ -881,7 +873,7 @@ c() {
             isMerged: true,
             mergeDelay: 1, // 1ms
             code: function() {
-              log('merged listener ' + mergedCalls);
+              console.log('merged listener ' + mergedCalls);
               mergedCalls += 1;
             }
           }
@@ -918,7 +910,7 @@ c() {
             name: 'framed',
             isFramed: true,
             code: function() {
-              log('framed listener ' + framedCalls);
+              console.log('framed listener ' + framedCalls);
               framedCalls += 1;
             }
           }
@@ -945,11 +937,11 @@ c() {
       // results, delayed() does not merge results.
       var callOrder = '';
       var l1 = foam.__context__.delayed(function() {
-        log('l1');
+        console.log('l1');
         callOrder += 'l1';
       }, 10);
       var l2 = foam.__context__.delayed(function() {
-        log('l2');
+        console.log('l2');
         callOrder += 'l2';
       }, 5);
       l1();
@@ -969,11 +961,11 @@ async(l) is the same as delayed(l, 0)
 --
 var callOrder = '';
 var d1 = foam.__context__.async(function() {
-  log('d1');
+  console.log('d1');
   callOrder += 'd1';
 });
 var d2 = function() {
-  log('d2');
+  console.log('d2');
   callOrder += 'd2';
 };
 d1();
@@ -1008,7 +1000,7 @@ foam.CLASS({
   ]
 });
 LongAlarm.create().alarm();
-log(alarms);
+console.log(alarms);
 
 
 ##  Test Actions
@@ -1023,13 +1015,13 @@ foam.CLASS({
   name: 'ActionTest',
   properties: [ 'enabled', 'available' ],
   actions: [
-    function shortForm() { log('short action!'); },
+    function shortForm() { console.log('short action!'); },
     {
       name: 'longForm',
       isAvailable: function() { return this.available; },
       isEnabled: function() { return this.enabled; },
       code: function() {
-        log('long action!');
+        console.log('long action!');
         longCalls += 1;
       }
     }
@@ -1055,8 +1047,8 @@ foam.CLASS({
   name: 'SampleI',
   properties: [ 't1', 't2', 't3' ],
   methods: [
-    function tfoo() { log('tfoo'); },
-    function tbar() { log('tbar'); }
+    function tfoo() { console.log('tfoo'); },
+    function tbar() { console.log('tbar'); }
   ]
 });
 foam.CLASS({
@@ -1064,14 +1056,14 @@ foam.CLASS({
   implements: ['SampleI'],
   properties: [ 'p1', 'p2', 'p3' ],
   methods: [
-    function foo() { log('foo'); },
-    function bar() { log('bar'); }
+    function foo() { console.log('foo'); },
+    function bar() { console.log('bar'); }
   ]
 });
 var tt = ImplementsTest.create({p1:1, t1:2});
 tt.tfoo(); // From SampleI
 tt.foo();
-log("Properties p1:", tt.p1, "t1:", tt.t1);
+console.log("Properties p1:", tt.p1, "t1:", tt.t1);
 
 
 ##  Interface multiple inheritance
@@ -1085,8 +1077,8 @@ foam.CLASS({
   name: 'Sample2I',
   properties: [ 'tb1', 'tb2', 'tb3' ],
   methods: [
-    function tbfoo() { log('ffoo'); },
-    function tbbar() { log('tbar'); }
+    function tbfoo() { console.log('ffoo'); },
+    function tbbar() { console.log('tbar'); }
   ]
 });
 foam.CLASS({
@@ -1094,7 +1086,7 @@ foam.CLASS({
   implements: ['SampleI', 'Sample2I']
 });
 
-log("ImplementsTest2 properties:",
+console.log("ImplementsTest2 properties:",
   ImplementsTest2.getAxiomsByClass(foam.core.Property));
 
 
@@ -1112,7 +1104,7 @@ foam.CLASS({
   extends: 'PropertyInheritA',
   properties: [ 'sameName' ]
 });
-log(PropertyInheritA.SAME_NAME.cls_.id, PropertyInheritB.SAME_NAME.cls_.id);
+console.log(PropertyInheritA.SAME_NAME.cls_.id, PropertyInheritB.SAME_NAME.cls_.id);
 
 
 ##  Inner Classes
@@ -1136,16 +1128,16 @@ foam.CLASS({
   ]
 });
 InnerClassTest.create();
-log(results);
+console.log(results);
 
 
 ##  Inner Class access
 Inner classes are only accessible through their outer class
 --
-log("Access through outer:", InnerClassTest.InnerClass1.name);
+console.log("Access through outer:", InnerClassTest.InnerClass1.name);
 
 // Inner-classes do not appear in the global namespace
-log("Available globally?", !! global.InnerClass1);
+console.log("Available globally?", !! global.InnerClass1);
 
 
 ##  Inner Enums
@@ -1168,16 +1160,16 @@ foam.CLASS({
   ]
 });
 InnerEnumTest.create();
-log(result);
+console.log(result);
 
 
 ##  Inner Enum access
 Inner-enums can only be accessed through the outer-class
 --
-log("Access through outer:", InnerEnumTest.InnerEnum.name);
+console.log("Access through outer:", InnerEnumTest.InnerEnum.name);
 
 // Inner-enums do not appear in the global namespace
-log("Available globally?", !! global.InnerEnum);
+console.log("Available globally?", !! global.InnerEnum);
 
 
 ##  Pub Sub
@@ -1201,18 +1193,18 @@ var globalResult = '';
 // Listeners are called with a subscription object and the given
 //   arguments from pub().
 o.sub(function() {
-  log('  global listener: ', [].join.call(arguments, ' '));
+  console.log('  global listener: ', [].join.call(arguments, ' '));
   globalCalls += 1;
   globalResult += ' a' + arguments.length;
 });
 // This listener will only fire if the first argument matches 'alarm'
 o.sub('alarm', function() {
-  log('  alarm: ', [].join.call(arguments, ' '));
+  console.log('  alarm: ', [].join.call(arguments, ' '));
   alarmCalls += 1;
 });
-log("Pub alarm:");
+console.log("Pub alarm:");
 o.pub('alarm', 'on');
-log("Pub lifecycle:");
+console.log("Pub lifecycle:");
 o.pub('lifecycle', 'loaded');
 
 
@@ -1220,7 +1212,7 @@ o.pub('lifecycle', 'loaded');
 Any number of arguments can be published
 --
 // Test publishing with many args
-log("Pub many arguments:");
+console.log("Pub many arguments:");
 o.pub(1);
 o.pub(1,2);
 o.pub(1,2,3);
@@ -1232,7 +1224,7 @@ o.pub(1,2,3,4,5,6,7,8);
 o.pub(1,2,3,4,5,6,7,8,9);
 o.pub(1,2,3,4,5,6,7,8,9,10);
 o.pub(1,2,3,4,5,6,7,8,9,10,11);
-// log(globalResult);
+console.log(globalResult);
 
 
 ##  Topics
@@ -1247,12 +1239,12 @@ var normalCalls = 0;
 var topicCalls = 0;
 
 o.sub('alarm', function(_, __, state) {
-  log('alarm: ', state);
+  console.log('alarm: ', state);
   normalCalls += 1;
 });
 // The next line uses the Topic and is slightly shorter than the equivalent above.
 o.alarm.sub(function(_, __, state) {
-  log('alarm (topic): ', state);
+  console.log('alarm (topic): ', state);
   topicCalls += 1;
 });
 o.alarm.pub('on');
@@ -1279,13 +1271,13 @@ var anyChangeCalls = 0;
 var propAChangeCalls = 0;
 // Listen for all propertyChange events:
 o.propertyChange.sub(function(sub, p, name, dyn) {
-  log('propertyChange: ', p, name, dyn.getPrev(), dyn.get());
+  console.log('propertyChange: ', p, name, dyn.getPrev(), dyn.get());
   anyChangeCalls += 1;
 });
 
 // Listen for only changes to the 'a' Property:
 o.propertyChange.sub('a', function(sub, p, name, dyn) {
-  log('propertyChange.a: ', p, name, dyn.getPrev(), dyn.get());
+  console.log('propertyChange.a: ', p, name, dyn.getPrev(), dyn.get());
   propAChangeCalls += 1;
 });
 
@@ -1300,7 +1292,7 @@ o.a++;
 
 var calls = 0;
 var l = function(sub, name) {
-  log('Event:', name);
+  console.log('Event:', name);
   calls += 1;
 };
 
@@ -1315,7 +1307,7 @@ o.pub("fire again, but nobody's listenering");
 --
 var calls = 0;
 var once = function(sub, name) {
-  log('Event:', name);
+  console.log('Event:', name);
   calls += 1;
   // stop listening
   sub.detach();
@@ -1333,7 +1325,7 @@ o.pub("fire again, but nobody's listening");
 // listener with foam.events.oneTime() and it will cancel the subscription
 // when it receives the first event.
 o.sub(foam.events.oneTime(function() {
-  log.apply(log, arguments);
+  console.log.apply(console.log, arguments);
 }));
 
 o.pub('fire');
@@ -1347,14 +1339,14 @@ Slots are like Object-Oriented pointers
 // get() is used to dereference the value of a slot
 var p = Person.create({ name: 'Bob' });
 var dyn = p.name$;
-log("Person name:", dyn.get());
+console.log("Person name:", dyn.get());
 
 
 ##  Slot set
 set() is used to set a Slot's value
 --
 dyn.set('John'); // sets p.name implicitly
-log("Name after set:", p.name, "get():", dyn.get());
+console.log("Name after set:", p.name, "get():", dyn.get());
 
 
 ##  Slot get with slot method
@@ -1363,10 +1355,10 @@ Calling obj.slot('name') is the same as obj.name$
 var p = Person.create({name: 'Bob'});
 
 var dyn = p.slot('name'); // same as p.name$
-log("slot value:", dyn.get());
+console.log("slot value:", dyn.get());
 
 dyn.set('John');
-log("after set:", dyn.get());
+console.log("after set:", dyn.get());
 
 
 ##  Slot nesting
@@ -1384,30 +1376,30 @@ var s = h.data$.dot('name');
 //  p2.name is not the same as p1.name.
 var changes = "";
 s.sub(function() {
-  log('    h.data.name change: ', h.data.name);
+  console.log('    h.data.name change: ', h.data.name);
   changes += h.data.name + " ";
 });
 
-log('Set to p1:');
+console.log('Set to p1:');
 
-log("  Initial s:", s.get());
+console.log("  Initial s:", s.get());
 
 s.set('George');
-log("  After setting s, p1.name:", p1.name);
+console.log("  After setting s, p1.name:", p1.name);
 
 p1.name = 'Ringo';
-log("  After setting p1.name, s:", s.get());
+console.log("  After setting p1.name, s:", s.get());
 
-log('Setting to p2, which has a different name:');
+console.log('Setting to p2, which has a different name:');
 
 h.data = p2;
-log("  Initial s:", s.get());
+console.log("  Initial s:", s.get());
 
 s.set('George');
-log("  After setting s, p2.name:", p2.name);
+console.log("  After setting s, p2.name:", p2.name);
 
 p2.name = 'Ringo';
-log("  After setting p2.name, s:", s.get());
+console.log("  After setting p2.name, s:", s.get());
 
 
 ##  Subscription nesting
@@ -1422,7 +1414,7 @@ var p2 = Person.create({name: 'Paul'});
 var h = Holder.create({data: p1});
 var changes = "";
 h.data$.valueSub(function(e, topic, name, dyn) {
-  log('sub change: ', e.src.name, topic, name);
+  console.log('sub change: ', e.src.name, topic, name);
   changes += topic + ':' + (dyn && dyn.get()) + ' ';
 });
 
@@ -1444,10 +1436,10 @@ var p1 = Person.create(), p2 = Person.create();
 
 p1.name$ = p2.name$;
 p1.name = 'John'; // also sets p2.name
-log("Assigned first:", p1.name, p2.name);
+console.log("Assigned first:", p1.name, p2.name);
 
 p2.name = 'Steve'; // also sets p1.name
-log("Assigned second: ", p1.name, p2.name);
+console.log("Assigned second: ", p1.name, p2.name);
 
 
 ##  Data Binding linkFrom
@@ -1457,7 +1449,7 @@ var p1 = Person.create({ name: 'p1' });
 var p2 = Person.create({ name: 'p2' });
 var d = p1.name$.linkFrom(p2.name$);
 p1.name = 'John';
-log("Assigned first:", p1.name, p2.name);
+console.log("Assigned first:", p1.name, p2.name);
 
 
 ##  Data Binding linkFrom unbind
@@ -1467,7 +1459,7 @@ linkFrom/To() returns a detachable that unbinds the slots
 // on the object return from .linkFrom/To().
 d.detach();
 p2.name = 'Steve';
-log("No longer bound:", p1.name, p2.name);
+console.log("No longer bound:", p1.name, p2.name);
 
 
 ##  Data Binding linkTo
@@ -1477,11 +1469,11 @@ linkTo() is the same as linkFrom(), except that the initial value is taken from 
 // is taken from 'this' instead of the other object.
 var p1 = Person.create({ name:'p1' }), p2 = Person.create({ name:'p2' });
 var d = p1.name$.linkTo(p2.name$);
-log("After linkTo:", p1.name, p2.name);
+console.log("After linkTo:", p1.name, p2.name);
 var name2 = p2.name;
 
 p1.name = 'John';
-log("Assigned first:", p1.name, p2.name);
+console.log("Assigned first:", p1.name, p2.name);
 
 
 ##  Data Binding relateTo
@@ -1500,10 +1492,10 @@ foam.CLASS({
       this.f$.relateTo(
         this.c$,
         function f2c(f) {
-          log('f2c', f); return 5/9 * ( f - 32 );
+          console.log('f2c', f); return 5/9 * ( f - 32 );
         },
         function c2f(c) {
-          log('c2f', c); return 9/5 * c + 32;
+          console.log('c2f', c); return 9/5 * c + 32;
         }
       );
     }
@@ -1511,11 +1503,11 @@ foam.CLASS({
 });
 
 var t = Temperature.create();
-log("Initial     f:", t.f, " c:", t.c);
+console.log("Initial     f:", t.f, " c:", t.c);
 t.f = 100;
-log("Set(f=100)  f:", t.f, " c:", t.c);
+console.log("Set(f=100)  f:", t.f, " c:", t.c);
 t.c = 100;
-log("Set(c=100)  f:", t.f, " c:", t.c);
+console.log("Set(c=100)  f:", t.f, " c:", t.c);
 
 
 ##  Data Binding one way
@@ -1529,9 +1521,9 @@ var d = p1.name$.follow(p2.name$);
 
 p2.name = 'Ringo'; // Will update p1 and p2
 p2.name = 'Paul'; // Will update p1 and p2
-log('Assigned p2:', p1.name, p2.name);
+console.log('Assigned p2:', p1.name, p2.name);
 p1.name = 'George'; // Will only update p1
-log('Assigned p1:', p1.name, p2.name);
+console.log('Assigned p1:', p1.name, p2.name);
 d.detach();
 
 
@@ -1540,10 +1532,10 @@ Follow copies the initial value of the followed slot
 --
 p1 = Person.create();
 p2 = Person.create({name:'John'});
-log("Initial:", p1.name, p2.name);
+console.log("Initial:", p1.name, p2.name);
 
 p1.name$.follow(p2.name$);
-log("After follow:", p1.name, p2.name);
+console.log("After follow:", p1.name, p2.name);
 
 
 ##  Data Binding one way mapFrom
@@ -1555,9 +1547,9 @@ var d = p1.name$.mapFrom(p2.name$, function(n) {
 });
 
 p2.name = 'Ringo'; // Will update p1 and p2
-log('Assigned second:', p1.name, p2.name);
+console.log('Assigned second:', p1.name, p2.name);
 p1.name = 'George'; // Will only update p1
-log('Assigned first:', p1.name, p2.name);
+console.log('Assigned first:', p1.name, p2.name);
 d.detach();
 
 
@@ -1572,9 +1564,9 @@ var d = p2.name$.mapTo(p1.name$, function(n) {
 });
 
 p2.name = 'Ringo'; // Will update p1 and p2
-log("Assigned second:", p1.name, p2.name);
+console.log("Assigned second:", p1.name, p2.name);
 p1.name = 'George'; // Will only update p1
-log("Assigned first:", p1.name, p2.name);
+console.log("Assigned first:", p1.name, p2.name);
 d.detach();
 
 
@@ -1585,9 +1577,9 @@ Slots also let you check if the value is defined by calling isDefined()
 foam.CLASS({name: 'IsDefinedTest', properties: [ { name: 'a', value: 42 } ]});
 var o = IsDefinedTest.create();
 var dv = o.a$;
-log("Default value only, isDefined?", dv.isDefined());
+console.log("Default value only, isDefined?", dv.isDefined());
 dv.set(99);
-log("Set to 99, isDefined?", dv.isDefined());
+console.log("Set to 99, isDefined?", dv.isDefined());
 
 
 ##  Slot clear
@@ -1595,27 +1587,27 @@ You can reset a Slot to its default value by calling .clear()
 --
 // Calling obj.name$.clear() is equivalent to obj.clearProperty('name');
 dv.clear();
-log("After clearing:", dv.get(), dv.isDefined());
+console.log("After clearing:", dv.get(), dv.isDefined());
 
 
 ##  ConstantSlot
 ConstantSlot creates an immutable slot
 --
 var s = foam.core.ConstantSlot.create({ value: 42 });
-log("Intial value:", s.get());
+console.log("Intial value:", s.get());
 s.value = 66;
 s.set(66);
-log("After set to 66:", s.get());
+console.log("After set to 66:", s.get());
 
 
 ##  SimpleSlot
 SimpleSlot creates a mutable slot.
 --
 var s = foam.core.SimpleSlot.create({ value: 42 });
-log("Intial value:", s.get());
+console.log("Intial value:", s.get());
 s.value = 66;
 s.set(66);
-log("After set to 66:", s.get());
+console.log("After set to 66:", s.get());
 
 
 ##  PromiseSlot
@@ -1626,17 +1618,17 @@ var promise = new Promise(function(resolve, reject) {
     resolve(66);
   }, 3000);
 }).then((value) => {
-  log('Promise resolved!', new Date());
-  log('Slot value:', value);
+  console.log('Promise resolved!', new Date());
+  console.log('Slot value:', value);
 });
-log('Promise created.', new Date());
+console.log('Promise created.', new Date());
 var s = foam.core.PromiseSlot.create({
   value: 42,
   promise: promise
 });
-log("Intial value of the slot:", s.get());
+console.log("Intial value of the slot:", s.get());
 window.setTimeout(() => {
-  log('Value 1 second later, at ' + new Date() + ':', s.get());
+  console.log('Value 1 second later, at ' + new Date() + ':', s.get());
 }, 1000);
 return promise;
 
@@ -1650,9 +1642,9 @@ var promise = new Promise(function(resolve, reject) {
 var s1 = foam.core.SimpleSlot.create({ value: 42 });
 var s2 = foam.core.PromiseSlot.create({ value: 'foo', promise: promise });
 var arraySlot = foam.core.ArraySlot.create({ slots: [s1, s2] });
-log('Initial value:', arraySlot.get());
+console.log('Initial value:', arraySlot.get());
 arraySlot.sub((detachable, eventName, propName, slot) => {
-  log('Value updated to:', arraySlot.get());
+  console.log('Value updated to:', arraySlot.get());
 });
 s1.set(66);
 return promise;
@@ -1668,9 +1660,9 @@ var slotOfSlot = s1.map((propName) => {
   return p.slot(propName).map((propValue) => propName + ' = ' + propValue);
 });
 var proxySlot = foam.core.ProxySlot.create({ delegate$: slotOfSlot });
-log('Value:', proxySlot.get());
+console.log('Value:', proxySlot.get());
 s1.set('lname');
-log('Value:', proxySlot.get());
+console.log('Value:', proxySlot.get());
 
 
 ##  Expression Slots
@@ -1685,15 +1677,15 @@ var e = foam.core.ExpressionSlot.create({
   code: function(f, l) { return f + ' ' + l; }
 });
 
-log("Intial e:", e.get());
+console.log("Intial e:", e.get());
 var calls = 0;
 e.sub(function() {
-  log("e changed:", e.get());
+  console.log("e changed:", e.get());
   calls += 1;
 });
 p.fname = 'Steve';
 p.lname = 'Jones';
-log("Final e:", e.get());
+console.log("Final e:", e.get());
 
 
 ##  Expression Slot with object
@@ -1706,13 +1698,13 @@ var e = foam.core.ExpressionSlot.create({
   obj: p,
   code: function(f, l) { return f + ' ' + l; }
 });
-log("Initial e:", e.get());
+console.log("Initial e:", e.get());
 e.sub(function() {
-  log("e changed:", e.get());
+  console.log("e changed:", e.get());
 });
 p.f = 'Steve';
 p.l = 'Jones';
-log("Final e:", e.get());
+console.log("Final e:", e.get());
 
 
 ##  Expression Slot unbinding
@@ -1720,10 +1712,10 @@ Detach the ExpressionSlot to prevent further updates
 --
 calls = 0;
 e.detach();
-log("e detached, setting f and l again...");
+console.log("e detached, setting f and l again...");
 p.f = 'Bob';
 p.l = 'Roberts';
-log("Updates since detach:", calls);
+console.log("Updates since detach:", calls);
 
 
 ##  Property Expression Class
@@ -1752,31 +1744,31 @@ Expression properties are invalidated whenever of their listed source values cha
 // when their value is accessed.
 p.describe();
 p.sub(function(sub, propChg, name) {
-  log("Event:", propChg, name);
+  console.log("Event:", propChg, name);
 });
 p.fname = 'Steve';
-log(p.fname, p.lname, '=', p.name);
+console.log(p.fname, p.lname, '=', p.name);
 p.lname = 'Jones';
-log(p.fname, p.lname, '=', p.name);
+console.log(p.fname, p.lname, '=', p.name);
 
 
 ##  Property Expression setting
 Expression properties can also be explicitly set, disabling the dynamic expression
 --
-log(p.name, p.hasOwnProperty('name'));
+console.log(p.name, p.hasOwnProperty('name'));
 p.name = 'Kevin Greer';
-log(p.name, p.hasOwnProperty('name'));
+console.log(p.name, p.hasOwnProperty('name'));
 p.fname = 'Sebastian';
-log(p.fname, p.lname, ':', p.name);
+console.log(p.fname, p.lname, ':', p.name);
 
 
 ##  Property Expression
 Clearing a set expression property reverts it to expression mode
 --
 p.name = "Joe"
-log("Set directly:", p.name, "hasOwnProperty(name)?", p.hasOwnProperty('name'));
+console.log("Set directly:", p.name, "hasOwnProperty(name)?", p.hasOwnProperty('name'));
 p.clearProperty('name');
-log("After clearing:", p.name, "hasOwnProperty(name)?", p.hasOwnProperty('name'));
+console.log("After clearing:", p.name, "hasOwnProperty(name)?", p.hasOwnProperty('name'));
 
 
 ##  Detachables
@@ -1790,11 +1782,11 @@ var detachs = '';
 
 // onDetach adds a function to be called when the object is detached
 o.onDetach(function() {
-  log('detach 1');
+  console.log('detach 1');
   detachs += '1 ';
 });
 o2.onDetach(function() {
-  log('detach 2');
+  console.log('detach 2');
   detachs += '2 ';
 });
 
@@ -1823,7 +1815,7 @@ foam.CLASS({
   listeners: [
     function l() {
       calls += 1;
-      log('ping:', calls);
+      console.log('ping:', calls);
     }
   ]
 });
@@ -2008,7 +2000,7 @@ foam.CLASS({
 
 var o = ValidationTest.create({test: '42'});
 o.validate();
-log('-');
+console.log('-');
 var o = ValidationTest.create();
 o.validate();
 
@@ -2036,14 +2028,14 @@ var Y1 = foam.createSubContext({
     return 'here';
   }
 }, 'SubContext');
-log("Y1:", Y1.key, Y1.fn());
+console.log("Y1:", Y1.key, Y1.fn());
 
 
 ##  Context context sub context
 Sub-Contexts can be created from other Contexts
 --
 var Y2 = Y1.createSubContext({ key: 'value2' });
-log("Y2:", Y2.key, Y2.fn());
+console.log("Y2:", Y2.key, Y2.fn());
 
 
 ##  Context sub context describe
@@ -2071,16 +2063,16 @@ Classes can import values from the Context so that they can be accessed from thi
 // First try the import with no 'myLogger' in its context
 try {
   var o = ImportsTest.create(); // should fail here, on object creation
-  log('test created');
+  console.log('test created');
   o.foo();
 } catch(e) {
-  log('Could not import "myLogger" since nobody provided it.');
+  console.log('Could not import "myLogger" since nobody provided it.');
 }
 
 var lastLogMsg = "";
 // Provide a 'myLogger' on a context
 var Y = foam.createSubContext({ myLogger: function(msg) {
-  log('log:', msg);
+  console.log('log:', msg);
   lastLogMsg = msg;
 }});
 
@@ -2103,11 +2095,11 @@ foam.CLASS({
 });
 try {
   var o = OptionalImportsTest.create();
-  log('Test created ok');
-  log('Trying to use missing import...');
+  console.log('Test created ok');
+  console.log('Trying to use missing import...');
   o.foo(); // should fail here, on import use
 } catch(e) {
-  log('As expected, could not import "myLogger" since nobody provided it.');
+  console.log('As expected, could not import "myLogger" since nobody provided it.');
 }
 
 
@@ -2126,7 +2118,7 @@ foam.CLASS({
     function myLogger(msg) {
       // this function is exported, thus available to object we create
       // (like ImportsTest in our init)
-      log('ExportsTest logger call:', msg);
+      console.log('ExportsTest logger call:', msg);
       calls += 1;
     }
   ]
@@ -2141,7 +2133,7 @@ foam.CLASS({
   package: 'com.acme',
   name: 'Test',
   methods: [ function foo() {
-    log('Hello, I am foo() from com.acme.Test');
+    console.log('Hello, I am foo() from com.acme.Test');
   } ]
 });
 com.acme.Test.create().foo();
@@ -2161,7 +2153,7 @@ foam.CLASS({
   } ]
 });
 
-log("When required:");
+console.log("When required:");
 RequiresTest.create().foo();
 
 
@@ -2180,7 +2172,7 @@ foam.CLASS({
   } ]
 });
 
-log("Required as NotTest:");
+console.log("Required as NotTest:");
 RequiresAliasTest.create().foo();
 
 
@@ -2193,7 +2185,7 @@ foam.CLASS({
   properties: [ 'id', 'desc', 'amount' ]
 });
 var o = Invoice.create({ id: 1, desc: 'Duct Cleaning', amount: 99.99 });
-log(o.id);
+console.log(o.id);
 
 
 ##  Primary Key ids
@@ -2209,7 +2201,7 @@ foam.CLASS({
   properties: [ 'invoiceId', 'desc', 'amount' ]
 });
 var o = Invoice2.create({ invoiceId: 23, desc: 'Duct Cleaning', amount: 99.99 });
-log("Id:", o.id, "invoiceId:", o.invoiceId);
+console.log("Id:", o.id, "invoiceId:", o.invoiceId);
 
 
 ##  Primary Key multipart Class
@@ -2226,11 +2218,11 @@ foam.CLASS({
 Multi-part unique identifiers are also supported by setting ids
 --
 var o = Invoice3.create({customerId: 1, invoiceId: 1, desc: 'Duct Cleaning', amount: 99.99});
-log("initial           id:", o.id, "customerId:", o.customerId, "invoiceId:", o.invoiceId);
+console.log("initial           id:", o.id, "customerId:", o.customerId, "invoiceId:", o.invoiceId);
 // setting id propagates the changes to the properties that make up the
 // multipart id:
 o.id = [2, 3];
-log("after setting id, id:", o.id, "customerId:", o.customerId, "invoiceId:", o.invoiceId);
+console.log("after setting id, id:", o.id, "customerId:", o.customerId, "invoiceId:", o.invoiceId);
 
 
 ##  Primary Key multipart comparison
@@ -2257,13 +2249,13 @@ results += ", " + Invoice3.ID.compare(
   Invoice3.create({customerId: 1, invoiceId: 1}),
   Invoice3.create({customerId: 2, invoiceId: 1}));
 
-log("Comparison results:", results);
+console.log("Comparison results:", results);
 
 
 ##  Class Id
 A Class' id is a combination of its package and name
 --
-log("Test class id:", com.acme.Test.id);
+console.log("Test class id:", com.acme.Test.id);
 
 
 ##  Custom Axioms
@@ -2278,13 +2270,13 @@ foam.CLASS({
   name: 'AxiomTest',
   axioms: [ foam.pattern.Singleton.create() ],
   methods: [ function init() {
-    log('Creating AxiomTest');
+    console.log('Creating AxiomTest');
   } ]
 });
 
 AxiomTest.create();
 AxiomTest.create();
-log("Same instance?", AxiomTest.create() === AxiomTest.create());
+console.log("Same instance?", AxiomTest.create() === AxiomTest.create());
 
 
 ##  Custom Axioms inherit
@@ -2295,13 +2287,13 @@ foam.CLASS({
   name: 'AxiomSubTest',
   extends: 'AxiomTest',
   methods: [ function init() {
-    log('Creating AxiomSubTest');
+    console.log('Creating AxiomSubTest');
   } ]
 });
 AxiomSubTest.create();
 AxiomSubTest.create();
-log("sub is same instance?", AxiomSubTest.create() === AxiomSubTest.create());
-log("sub same as super?", AxiomSubTest.create() === AxiomTest.create());
+console.log("sub is same instance?", AxiomSubTest.create() === AxiomSubTest.create());
+console.log("sub same as super?", AxiomSubTest.create() === AxiomTest.create());
 
 
 ##  Multiton
@@ -2314,7 +2306,7 @@ foam.CLASS({
   axioms: [ foam.pattern.Multiton.create({ property: 'color' }) ],
   properties: [ 'color' ],
   methods: [ function init() {
-    log('Creating Color:', this.color);
+    console.log('Creating Color:', this.color);
   } ]
 });
 
@@ -2322,15 +2314,15 @@ var red1 = Color.create({color: 'red'});
 var red2 = Color.create({color: 'red'});
 var blue = Color.create({color: 'blue'});
 
-log('reds same?', red1 === red2);
-log('red same as blue?', red1 === blue);
+console.log('reds same?', red1 === red2);
+console.log('red same as blue?', red1 === blue);
 
 
 ##  Object UID
 All Objects have a unique identifier, accessible with the .$UID property
 --
 var a = {}, b = [], c = Person.create();
-log(a.$UID, b.$UID, c.$UID);
+console.log(a.$UID, b.$UID, c.$UID);
 
 
 ##  Console log listener
@@ -2353,14 +2345,14 @@ foam.Function.memoize1() memoizes a one-argument function
 var calls = 0;
 var f = foam.Function.memoize1(function(x) {
   calls += 1;
-  log('calculating ', x, "=>", x*x);
+  console.log('calculating ', x, "=>", x*x);
   return x*x;
 });
 
-log(f(2));
-log(f(2));
-log(f(4));
-log("Total number of calls:", calls);
+console.log(f(2));
+console.log(f(2));
+console.log(f(4));
+console.log("Total number of calls:", calls);
 
 
 ##  Function memoize1 one arg only
@@ -2375,7 +2367,7 @@ foam.Function.argsStr() returns a function's arguments as a string
 --
 var f = function(a, b, fooBar) { };
 var argsAsStr = foam.Function.argsStr(f);
-log('Function args:', argsAsStr);
+console.log('Function args:', argsAsStr);
 
 
 ##  Function argNames
@@ -2383,36 +2375,36 @@ foam.Function.argNames() returns a function's arguments an an array
 --
 var f = function(a, b, fooBar) { };
 var argsAsArray = foam.Function.argNames(f);
-log('Function args array:', argsAsArray);
+console.log('Function args array:', argsAsArray);
 
 
 ##  String constantize
 foam.String.constantize converts strings from camelCase to CONSTANT_FORMAT
 --
-log('foo      =>', foam.String.constantize('foo'));
-log('fooBar   =>', foam.String.constantize('fooBar'));
-log('fooBar12 =>', foam.String.constantize('fooBar12'));
+console.log('foo      =>', foam.String.constantize('foo'));
+console.log('fooBar   =>', foam.String.constantize('fooBar'));
+console.log('fooBar12 =>', foam.String.constantize('fooBar12'));
 
 
 ##  String capitalize
 foam.String.capitalize capitalizes the first letter of a string
 --
-log(foam.String.capitalize('Abc def'));
-log(foam.String.capitalize('abc def'));
+console.log(foam.String.capitalize('Abc def'));
+console.log(foam.String.capitalize('abc def'));
 
 
 ##  String labelize
 foam.String.labelize converts from camelCase to labels
 --
-log(foam.String.labelize('camelCase'));
-log(foam.String.labelize('firstName'));
-log(foam.String.labelize('someLongName'));
+console.log(foam.String.labelize('camelCase'));
+console.log(foam.String.labelize('firstName'));
+console.log(foam.String.labelize('someLongName'));
 
 
 ##  String multiline
 foam.String.multiline lets you build multi-line strings from function comments
 --
-log(foam.String.multiline(function(){/*This is
+console.log(foam.String.multiline(function(){/*This is
 a
 multi-line
 string*/}));
@@ -2422,11 +2414,11 @@ string*/}));
 foam.String.pad() pads a string to the specified length
 --
 var s = foam.String.pad('foobar', 10);
-log("padded  10:", '"' + s + '"', s.length);
+console.log("padded  10:", '"' + s + '"', s.length);
 
 // pad() is right justifying if given a negative number
 var s = foam.String.pad('foobar', -10);
-log("padded -10:", '"' + s + '"', s.length);
+console.log("padded -10:", '"' + s + '"', s.length);
 
 
 ##  Template basics
@@ -2447,7 +2439,7 @@ foam.CLASS({
 });
 
 var o = TemplateTest.create({ name: 'Adam' });
-log(o.hello());
+console.log(o.hello());
 
 
 ##  Template arguments
@@ -2470,7 +2462,7 @@ foam.CLASS({
 });
 
 var o = TemplateTest.create({ name: 'Adam' });
-log(o.greet("Bob"));
+console.log(o.greet("Bob"));
 
 
 ##  Template nesting
@@ -2496,7 +2488,7 @@ foam.CLASS({
 });
 
 var o = TemplateTest.create({ name: 'Adam' });
-log(o.greet("Alice"));
+console.log(o.greet("Alice"));
 
 
 ##  Template code
@@ -2519,7 +2511,7 @@ foam.CLASS({
   ]
 });
 
-log(TemplateTest.create({ name: 'Adam' }).complexTemplate());
+console.log(TemplateTest.create({ name: 'Adam' }).complexTemplate());
 
 
 ##  Template mutliline
@@ -2542,7 +2534,7 @@ For instance, my name is %%name
           }
         ]
       });
-      log(MultiLineTemplateTest.create({ name: 'Adam' }).complexTemplate());
+      console.log(MultiLineTemplateTest.create({ name: 'Adam' }).complexTemplate());
 
 
 ##  Create JSON Class
@@ -2621,7 +2613,7 @@ o = JSONTest.create({
   storageTransient: 'storage transient value'
 });
 // Default JSON formatting
-log(foam.json.stringify(o));
+console.log(foam.json.stringify(o));
 
 
 
@@ -2632,35 +2624,35 @@ Different outputters support suppressing properties, transients, and other optio
 // to output, etc. You can clone one and change these settings on the
 // outputter to customize your JSON output.
 
-log('\nConvert to a JSON object (instead of a String):');
-log(foam.json.stringify(JSONTest.create(foam.json.objectify(o))));
+console.log('\nConvert to a JSON object (instead of a String):');
+console.log(foam.json.stringify(JSONTest.create(foam.json.objectify(o))));
 
-log('\nAs a method on Objects:');
-log(o.stringify());
+console.log('\nAs a method on Objects:');
+console.log(o.stringify());
 
-log('\nPretty-printed output:');
-log(foam.json.Pretty.stringify(o));
+console.log('\nPretty-printed output:');
+console.log(foam.json.Pretty.stringify(o));
 
-log('\nDisable class name output by cloning your own outputter:');
-log(foam.json.Pretty.clone().copyFrom({ outputClassNames: false }).stringify(o));
+console.log('\nDisable class name output by cloning your own outputter:');
+console.log(foam.json.Pretty.clone().copyFrom({ outputClassNames: false }).stringify(o));
 
-log('\nStrict output:');
-log(foam.json.Strict.stringify(o));
+console.log('\nStrict output:');
+console.log(foam.json.Strict.stringify(o));
 
-log('\nStrict-but-still-readable output:');
-log(foam.json.PrettyStrict.stringify(o));
+console.log('\nStrict-but-still-readable output:');
+console.log(foam.json.PrettyStrict.stringify(o));
 
-log('\nCompact output:');
-log(foam.json.Compact.stringify(o));
+console.log('\nCompact output:');
+console.log(foam.json.Compact.stringify(o));
 
-log('\nShort-name (very compact) output:');
-log(foam.json.Short.stringify(o));
+console.log('\nShort-name (very compact) output:');
+console.log(foam.json.Short.stringify(o));
 
-log('\nNetwork (network-transient properties omitted) output:');
-log(foam.json.Network.stringify(o));
+console.log('\nNetwork (network-transient properties omitted) output:');
+console.log(foam.json.Network.stringify(o));
 
-log('\nStorage (storage-transient properties omitted) output:');
-log(foam.json.Storage.stringify(o));
+console.log('\nStorage (storage-transient properties omitted) output:');
+console.log(foam.json.Storage.stringify(o));
 
 
 ##  Graphics Support
@@ -2825,35 +2817,35 @@ Test.describe();
 Create an instance of Test
 --
 var o = Test.create();
-log("Class: ", o);
-log('a: ' + o.a + ', b: ' + o.b);
+console.log("Class: ", o);
+console.log('a: ' + o.a + ', b: ' + o.b);
 
 
 ##  Test create with values
 Create an instance with a map argument to initialize properties
 --
 var o = Test.create({ a: 3, b: 'hello' });
-log("Class: ", o);
-log('a: ' + o.a + ', b: ' + o.b);
+console.log("Class: ", o);
+console.log('a: ' + o.a + ', b: ' + o.b);
 
 
 ##  Class reference
 Objects have a reference to their class in .cls_
 --
-log("Class object:", o.cls_);
+console.log("Class object:", o.cls_);
 
 
 ##  Test isInstance
 Test Class membership with Class.isInstance()
 --
-log('Test.isInstance(o)?', Test.isInstance(o));
-log('Test.isInstance("foo")?', Test.isInstance("Test"));
+console.log('Test.isInstance(o)?', Test.isInstance(o));
+console.log('Test.isInstance("foo")?', Test.isInstance("Test"));
 
 
 ##  Test Methods
 Call Methods on the Test instance
 --
-log("Methods return: ", o.f1(), o.f2());
+console.log("Methods return: ", o.f1(), o.f2());
 
 
 ##  Update Properties
@@ -2861,20 +2853,20 @@ Properties accept value changes as normal
 --
 o.a++;
 o.b = 'bye';
-log('New values: a: ' + o.a + ', b: ' + o.b);
+console.log('New values: a: ' + o.a + ', b: ' + o.b);
 
 
 ##  Test copyFrom
 Multiple properties can be updated at once using copyFrom()
 --
 o.copyFrom({a: 42, b: 'rosebud'});
-log('New values: a: ' + o.a + ', b: ' + o.b);
+console.log('New values: a: ' + o.a + ', b: ' + o.b);
 
 
 ##  Test toString
 Call toString on an object
 --
-log("toString:", o.toString());
+console.log("toString:", o.toString());
 
 
 ##  Describe instance
@@ -2887,7 +2879,7 @@ o.describe();
 Get an array of all Axioms belonging to a Class by calling getAxioms
 --
 Test.getAxioms().forEach(function(a) {
-  log(a.cls_ && a.cls_.name, a.name);
+  console.log(a.cls_ && a.cls_.name, a.name);
 });
 
 
@@ -2895,21 +2887,21 @@ Test.getAxioms().forEach(function(a) {
 Find an Axiom for a class using getAxiomByName
 --
 var a = Test.getAxiomByName('a');
-log(a.cls_.name, a.name);
+console.log(a.cls_.name, a.name);
 
 
 ##  Test getAxiomsByClass
 Find all Axioms of a particular class using getAxiomsByClass
 --
 Test.getAxiomsByClass(foam.core.Method).forEach(function(a) {
-  log(a.cls_ && a.cls_.name, a.name);
+  console.log(a.cls_ && a.cls_.name, a.name);
 });
 
 
 ##  Test Property constants
 Properties are defined on the class as constants
 --
-log("Method CODE property constant:", foam.core.Method.CODE);
+console.log("Method CODE property constant:", foam.core.Method.CODE);
 foam.core.Method.CODE.describe();
 
 
@@ -2917,7 +2909,7 @@ foam.core.Method.CODE.describe();
 Property constants contain map functions
 --
 // foam.core.Method.NAME.f(obj) returns obj.name
-log("Method names in Test:",
+console.log("Method names in Test:",
   Test
     .getAxiomsByClass(foam.core.Method)
     .map(foam.core.Method.NAME.f)
@@ -2930,7 +2922,7 @@ Property constants contain comparators
 --
 // foam.core.Method.NAME.compare is a compare function
 // that properly compares values of NAME.
-log("Method names in Test, sorted:",
+console.log("Method names in Test, sorted:",
   Test
     .getAxiomsByClass(foam.core.Method)
     .sort(foam.core.Method.NAME.compare)
@@ -2948,7 +2940,7 @@ foam.CLASS({
   methods: [ function init() { this.a = 'just born!'; } ]
 });
 var o = InitTest.create();
-log("Initialized value:", o.a);
+console.log("Initialized value:", o.a);
 
 
 ##  Create default values
@@ -2963,24 +2955,24 @@ foam.CLASS({
   ]
 });
 var o = DefaultValueTest.create();
-log("Values:", o.a, o.b, o.c);
+console.log("Values:", o.a, o.b, o.c);
 
 
 ##  Test hasOwnProperty
 FObject.hasOwnProperty() tells you if a Property has been set
 --
-log("Before setting:", o.hasOwnProperty('a'), o.hasOwnProperty('b'), o.hasOwnProperty('c'));
+console.log("Before setting:", o.hasOwnProperty('a'), o.hasOwnProperty('b'), o.hasOwnProperty('c'));
 o.a = 99;
 o.c = 'test';
-log("After setting a, c:", o.hasOwnProperty('a'), o.hasOwnProperty('b'), o.hasOwnProperty('c'));
+console.log("After setting a, c:", o.hasOwnProperty('a'), o.hasOwnProperty('b'), o.hasOwnProperty('c'));
 
 
 ##  Test clearProperty
 FObject.clearProperty() reverts a value back to its value
 --
-log("Before clearing:", o.hasOwnProperty('a'), o.a);
+console.log("Before clearing:", o.hasOwnProperty('a'), o.a);
 o.clearProperty('a');
-log("After clearing:", o.hasOwnProperty('a'), o.a);
+console.log("After clearing:", o.hasOwnProperty('a'), o.a);
 
 
 ##  Create factory test
@@ -3002,10 +2994,10 @@ var o = FactoryTest.create();
 ##  Test factory running
 Factories run once when the property is first accessed
 --
-log("Before:    factory run count:", factoryCount);
-log("Value:", o.a, " factory run count:", factoryCount);
+console.log("Before:    factory run count:", factoryCount);
+console.log("Value:", o.a, " factory run count:", factoryCount);
 // Factory not called value accessed second time:
-log("Again:", o.a, " factory run count:", factoryCount);
+console.log("Again:", o.a, " factory run count:", factoryCount);
 
 
 ##  Test factory not run
@@ -3013,23 +3005,23 @@ Factories do not run if the value is set before being accessed
 --
 // Value supplied in create()
 o = FactoryTest.create({a: 42});
-log("Value:", o.a, " factory run count:", factoryCount);
+console.log("Value:", o.a, " factory run count:", factoryCount);
 
 // Value set before first access
 o = FactoryTest.create();
 o.a = 99;
-log("Value:", o.a, " factory run count:", factoryCount);
+console.log("Value:", o.a, " factory run count:", factoryCount);
 
 
 ##  FactoryTest
 Factory is called again if clearProperty() called
 --
 var o = FactoryTest.create();
-log("Run factory: ", o.a);
-log(" factory run count:", factoryCount);
+console.log("Run factory: ", o.a);
+console.log(" factory run count:", factoryCount);
 o.clearProperty('a');
-log("Again:       ", o.a);
-log(" factory run count:", factoryCount);
+console.log("Again:       ", o.a);
+console.log(" factory run count:", factoryCount);
 
 
 ##  Property Getters and Setters
@@ -3053,10 +3045,10 @@ foam.CLASS({
 var o = GetterSetter.create();
 
 o.diameter = 10;
-log("r:", o.radius, "d:", o.diameter);
+console.log("r:", o.radius, "d:", o.diameter);
 
 o.radius = 10;
-log("r:", o.radius, "d:", o.diameter);
+console.log("r:", o.radius, "d:", o.diameter);
 
 
 
@@ -3076,7 +3068,7 @@ foam.CLASS({
     {
       name: 'flag',
       adapt: function(oldValue, newValue) {
-        log('Adapt old:', oldValue, "to new:", newValue);
+        console.log('Adapt old:', oldValue, "to new:", newValue);
         // adapt to a boolean
         return !! newValue;
       }
@@ -3088,7 +3080,7 @@ var o = AdaptTest.create({ flag: true });
 
 // adapt called again to adapt null
 o.flag = null;
-log("Adapted value:", o.flag);
+console.log("Adapted value:", o.flag);
 
 
 ##  Property preSet
@@ -3106,17 +3098,17 @@ foam.CLASS({
     {
       name: 'a',
       preSet: function(oldValue, newValue) {
-        log('preSet p1');
+        console.log('preSet p1');
         return newValue + "y";
       }
     }
   ]
 });
 var o = PreSetTest.create({ a: 'Smith' });
-log(o.a);
+console.log(o.a);
 
 o.a = 'Jones';
-log(o.a);
+console.log(o.a);
 
 
 ##  Property postSet
@@ -3133,7 +3125,7 @@ foam.CLASS({
     {
       name: 'a',
       postSet: function(oldValue, newValue) {
-        log('postSet old:', oldValue, "new:", newValue);
+        console.log('postSet old:', oldValue, "new:", newValue);
         // this.a will match the newValue, since the set is already
         // complete
         lastPostSetValue = this.a;
@@ -3156,15 +3148,15 @@ foam.CLASS({
     {
       name: 'a',
       adapt: function(oldValue, newValue) {
-        log('adapt old:', oldValue, 'new:', newValue);
+        console.log('adapt old:', oldValue, 'new:', newValue);
         return newValue + 1;
       },
       preSet: function(oldValue, newValue) {
-        log('preSet old:', oldValue, 'new:', newValue);
+        console.log('preSet old:', oldValue, 'new:', newValue);
         return newValue + 2;
       },
       postSet: function(oldValue, newValue) {
-        log('postSet old:', oldValue, 'new:', newValue);
+        console.log('postSet old:', oldValue, 'new:', newValue);
         lastPostSetValue = this.a;
       }
     }
@@ -3186,21 +3178,21 @@ foam.CLASS({
   }
 });
 var o = ConstantTest.create();
-log("Constant values:", o.MEANING_OF_LIFE, o.FAVOURITE_COLOR);
+console.log("Constant values:", o.MEANING_OF_LIFE, o.FAVOURITE_COLOR);
 
 
 ##  Constants Class access
 Constants can also be accessed from the Class
 --
-log("ConstantTest constants:", ConstantTest.MEANING_OF_LIFE, ConstantTest.FAVOURITE_COLOR);
-log("o.cls_ constants:", o.cls_.MEANING_OF_LIFE, o.cls_.FAVOURITE_COLOR);
+console.log("ConstantTest constants:", ConstantTest.MEANING_OF_LIFE, ConstantTest.FAVOURITE_COLOR);
+console.log("o.cls_ constants:", o.cls_.MEANING_OF_LIFE, o.cls_.FAVOURITE_COLOR);
 
 
 ##  Constants are constant
 Constants are constant, and cannot be assigned
 --
 o.MEANING_OF_LIFE = 43;
-log("Constant after setting to 43:", o.MEANING_OF_LIFE);
+console.log("Constant after setting to 43:", o.MEANING_OF_LIFE);
 
 
 ##  Person Class
@@ -3234,30 +3226,30 @@ foam.CLASS({
 });
 
 var p = Person.create({name: 'John', sex: 'M'});
-log("Person:", p.toString());
+console.log("Person:", p.toString());
 
 var e = Employee.create({name: 'Jane', sex: 'F', salary: 50000});
-log("Employee:", e.toString());
+console.log("Employee:", e.toString());
 
 
 ##  Test SubClass
 Test if one class is a sub-class of another
 --
-log("Is Employee a subclass of Person?", Person.isSubClass(Employee));
-log("Is Person a subclass of Employee?", Employee.isSubClass(Person));
+console.log("Is Employee a subclass of Person?", Person.isSubClass(Employee));
+console.log("Is Person a subclass of Employee?", Employee.isSubClass(Person));
 
 
 ##  Test SubClass self
 A Class is considered a sub-class of itself
 --
-log("Is Person a subclass of Person?", Person.isSubClass(Person));
+console.log("Is Person a subclass of Person?", Person.isSubClass(Person));
 
 
 ##  Test FObject SubClass
 FObject is the root class of all other classes
 --
-log("Is Employee an FObject?", foam.core.FObject.isSubClass(Employee));
-log("Is Person an FObject?", foam.core.FObject.isSubClass(Person));
+console.log("Is Employee an FObject?", foam.core.FObject.isSubClass(Employee));
+console.log("Is Person an FObject?", foam.core.FObject.isSubClass(Person));
 
 
 ##  Test isSubClass and package
@@ -3268,8 +3260,8 @@ foam.CLASS({
   name: 'Person'
 });
 // The two Person classes are independent of each other
-log("Is Person a packaged-Person?", com.acme.package.Person.isSubClass(Person));
-log("Is packaged-Person a Person?", Person.isSubClass(com.acme.package.Person));
+console.log("Is Person a packaged-Person?", com.acme.package.Person.isSubClass(Person));
+console.log("Is packaged-Person a Person?", Person.isSubClass(com.acme.package.Person));
 
 
 ##  Test isSubClass and interfaces
@@ -3278,14 +3270,14 @@ isSubClass() works for interfaces
 foam.CLASS({
   package: 'test',
   name: 'ThingI',
-  methods: [ function foo() { log('Called ThingI.foo()'); } ]
+  methods: [ function foo() { console.log('Called ThingI.foo()'); } ]
 });
 foam.CLASS({
   package: 'test',
   name: 'C1',
   implements: [ 'test.ThingI' ]
 });
-log("Is C1 a ThingI?", test.ThingI.isSubClass(test.C1));
+console.log("Is C1 a ThingI?", test.ThingI.isSubClass(test.C1));
 
 
 ##  Test isSubClass sub interfaces
@@ -3309,18 +3301,18 @@ foam.CLASS({
 var o = test.C2.create();
 o.foo();
 
-log("Is C2 a ThingI?", test.ThingI.isSubClass(test.C2));
-log("Is C2 a Thing2I?", test.Thing2I.isSubClass(test.C2));
-log("Is C2 a Thing3I?", test.Thing3I.isSubClass(test.C2));
+console.log("Is C2 a ThingI?", test.ThingI.isSubClass(test.C2));
+console.log("Is C2 a Thing2I?", test.Thing2I.isSubClass(test.C2));
+console.log("Is C2 a Thing3I?", test.Thing3I.isSubClass(test.C2));
 
 
 ##  Test isInstance sub interfaces
 isInstance() works for sub-interfaces
 --
-log("Is o a ThingI?", test.ThingI.isInstance(o));
-log("Is o a Thing2I?", test.Thing2I.isInstance(o));
-log("Is o a Thing3I?", test.Thing3I.isInstance(o));
-log("Is o a C2?", test.C2.isInstance(o));
+console.log("Is o a ThingI?", test.ThingI.isInstance(o));
+console.log("Is o a Thing2I?", test.Thing2I.isInstance(o));
+console.log("Is o a Thing3I?", test.Thing3I.isInstance(o));
+console.log("Is o a C2?", test.C2.isInstance(o));
 
 
 ##  Package imports exports demo
@@ -3347,7 +3339,7 @@ foam.CLASS({
       code: function (amount) {
         this.balance += amount;
         this.reportDeposit(this.id, amount, this.balance);
-        log('Bank: ', this.__context__.Bank);
+        console.log('Bank: ', this.__context__.Bank);
         return this.balance;
       }
     },
@@ -3424,15 +3416,15 @@ foam.CLASS({
   ]
 });
 var n = Person.create({name: 'Bob', sex: 'M', salary: 40000});
-log("New person after refinement:", n.toString());
+console.log("New person after refinement:", n.toString());
 // The already created person, John, now has a salary too!
-log("Old person after refinement:", p.toString());
+console.log("Old person after refinement:", p.toString());
 
 
 ##  Refine a Property
 Properties in classes can be changed in a refinement
 --
-log("Old type of Person.salary:", Person.SALARY.cls_.name);
+console.log("Old type of Person.salary:", Person.SALARY.cls_.name);
 
 // Change the salary property type, add a default value
 foam.CLASS({
@@ -3440,11 +3432,11 @@ foam.CLASS({
   properties: [ { name: 'salary', value: 30000 } ]
 });
 
-log("New type of Person.salary:", Person.SALARY.cls_.name);
+console.log("New type of Person.salary:", Person.SALARY.cls_.name);
 
 var o = Person.create({name:'John'});
-log("Now with default value:", o.salary);
-log("And original person gets the default too:", p.salary);
+console.log("Now with default value:", o.salary);
+console.log("And original person gets the default too:", p.salary);
 
 
 ##  Cannot Refine a Property Class
@@ -3457,9 +3449,9 @@ foam.CLASS({ name: 'Emp', properties: [ { class: 'Salary', name: 'salary' } ] })
 
 // Since Classes are not constructed until used, we create an instance to force
 // Emp to be loaded (otherwise the refinement will appear to work):
-log("Emp.salary before:", Emp.create().salary);
+console.log("Emp.salary before:", Emp.create().salary);
 foam.CLASS({ refines: 'Salary', properties: [ { name: 'value', value: 30000 } ]});
-log("Emp.salary refined:", Emp.create().salary);
+console.log("Emp.salary refined:", Emp.create().salary);
 
 
 ##  Refine Property
@@ -3469,7 +3461,7 @@ Refine foam.core.Property Class
 foam.CLASS({ name: 'Emp', properties: [ { class: 'Float', name: 'salary' } ] });
 Emp.create();
 foam.CLASS({ refines: 'Float', properties: [ [ 'javaClass', 'Float' ] ]});
-log(Emp.SALARY.javaClass);
+console.log(Emp.SALARY.javaClass);
 
 
 ##  Cannot Refine a SuperProperty Class
@@ -3477,10 +3469,10 @@ Currently unsupported and unlikely to be supported
 --
 foam.CLASS({ name: 'SuperClass', properties: [ 'p1' ]});
 foam.CLASS({ name: 'SubClass', extends: 'SuperClass', properties: [ 'p1' ]});
-log('Before: super: ', SuperClass.create().p1, 'sub: ', SubClass.create().p1);
+console.log('Before: super: ', SuperClass.create().p1, 'sub: ', SubClass.create().p1);
 
 foam.CLASS({ refines: 'SuperClass', properties: [ { name: 'p1', value: 42 } ]});
-log('Refined: super: ', SuperClass.create().p1, 'sub: ', SubClass.create().p1);
+console.log('Refined: super: ', SuperClass.create().p1, 'sub: ', SubClass.create().p1);
 
 
 ##  Cannot Refine a DoubleSuperProperty Class
@@ -3489,13 +3481,13 @@ Currently unsupported and unlikely to be supported. Two inheritance levels.
 foam.CLASS({ name: 'SuperClass', properties: [ 'p1' ]});
 foam.CLASS({ name: 'MidClass', extends: 'SuperClass' });
 foam.CLASS({ name: 'SubClass', extends: 'MidClass', properties: [ 'p1' ]});
-log('Before: super: ', SuperClass.create().p1, 'mid: ', MidClass.create().p1, 'sub: ', SubClass.create().p1);
+console.log('Before: super: ', SuperClass.create().p1, 'mid: ', MidClass.create().p1, 'sub: ', SubClass.create().p1);
 
 // MidClass will see the refinement since it does not redefine the p1 property, so it
 // uses SuperClass' directly. SubClass keeps its own definition, and doesn't see the changes
 // to SuperClass.p1
 foam.CLASS({ refines: 'SuperClass', properties: [ { name: 'p1', value: 42 } ]});
-log('Refined: super: ', SuperClass.create().p1, 'mid: ', MidClass.create().p1, 'sub: ', SubClass.create().p1);
+console.log('Refined: super: ', SuperClass.create().p1, 'mid: ', MidClass.create().p1, 'sub: ', SubClass.create().p1);
 
 
 ##  Create Listeners
@@ -3505,11 +3497,11 @@ foam.CLASS({
   name: 'ListenerTest',
   properties: [ 'name' ],
   methods: [ function m1() {
-    log('m1', this.name);
+    console.log('m1', this.name);
     return 'M1' + this.name;
   } ],
   listeners: [ function l1() {
-    log('l1', this.name);
+    console.log('l1', this.name);
     return 'L1' + this.name; // listener return value is ignored by most callers
   } ]
 });
@@ -3545,7 +3537,7 @@ foam.CLASS({
       name: 'l',
       isMerged: true,
       isFramed: true,
-      code: function() { log('listener'); }
+      code: function() { console.log('listener'); }
     }
   ]
 });
@@ -3570,7 +3562,7 @@ c() {
             name: 'notMerged',
             isMerged: false, // the default
             code: function() {
-              log('not merged listener');
+              console.log('not merged listener');
             }
           },
           {
@@ -3578,7 +3570,7 @@ c() {
             isMerged: true,
             mergeDelay: 1, // 1ms
             code: function() {
-              log('merged listener ' + mergedCalls);
+              console.log('merged listener ' + mergedCalls);
               mergedCalls += 1;
             }
           }
@@ -3615,7 +3607,7 @@ c() {
             name: 'framed',
             isFramed: true,
             code: function() {
-              log('framed listener ' + framedCalls);
+              console.log('framed listener ' + framedCalls);
               framedCalls += 1;
             }
           }
@@ -3642,11 +3634,11 @@ c() {
       // results, delayed() does not merge results.
       var callOrder = '';
       var l1 = foam.__context__.delayed(function() {
-        log('l1');
+        console.log('l1');
         callOrder += 'l1';
       }, 10);
       var l2 = foam.__context__.delayed(function() {
-        log('l2');
+        console.log('l2');
         callOrder += 'l2';
       }, 5);
       l1();
@@ -3666,11 +3658,11 @@ async(l) is the same as delayed(l, 0)
 --
 var callOrder = '';
 var d1 = foam.__context__.async(function() {
-  log('d1');
+  console.log('d1');
   callOrder += 'd1';
 });
 var d2 = function() {
-  log('d2');
+  console.log('d2');
   callOrder += 'd2';
 };
 d1();
@@ -3705,7 +3697,7 @@ foam.CLASS({
   ]
 });
 LongAlarm.create().alarm();
-log(alarms);
+console.log(alarms);
 
 
 ##  Test Actions
@@ -3720,13 +3712,13 @@ foam.CLASS({
   name: 'ActionTest',
   properties: [ 'enabled', 'available' ],
   actions: [
-    function shortForm() { log('short action!'); },
+    function shortForm() { console.log('short action!'); },
     {
       name: 'longForm',
       isAvailable: function() { return this.available; },
       isEnabled: function() { return this.enabled; },
       code: function() {
-        log('long action!');
+        console.log('long action!');
         longCalls += 1;
       }
     }
@@ -3752,8 +3744,8 @@ foam.CLASS({
   name: 'SampleI',
   properties: [ 't1', 't2', 't3' ],
   methods: [
-    function tfoo() { log('tfoo'); },
-    function tbar() { log('tbar'); }
+    function tfoo() { console.log('tfoo'); },
+    function tbar() { console.log('tbar'); }
   ]
 });
 foam.CLASS({
@@ -3761,14 +3753,14 @@ foam.CLASS({
   implements: ['SampleI'],
   properties: [ 'p1', 'p2', 'p3' ],
   methods: [
-    function foo() { log('foo'); },
-    function bar() { log('bar'); }
+    function foo() { console.log('foo'); },
+    function bar() { console.log('bar'); }
   ]
 });
 var tt = ImplementsTest.create({p1:1, t1:2});
 tt.tfoo(); // From SampleI
 tt.foo();
-log("Properties p1:", tt.p1, "t1:", tt.t1);
+console.log("Properties p1:", tt.p1, "t1:", tt.t1);
 
 
 ##  Interface multiple inheritance
@@ -3782,8 +3774,8 @@ foam.CLASS({
   name: 'Sample2I',
   properties: [ 'tb1', 'tb2', 'tb3' ],
   methods: [
-    function tbfoo() { log('ffoo'); },
-    function tbbar() { log('tbar'); }
+    function tbfoo() { console.log('ffoo'); },
+    function tbbar() { console.log('tbar'); }
   ]
 });
 foam.CLASS({
@@ -3791,7 +3783,7 @@ foam.CLASS({
   implements: ['SampleI', 'Sample2I']
 });
 
-log("ImplementsTest2 properties:",
+console.log("ImplementsTest2 properties:",
   ImplementsTest2.getAxiomsByClass(foam.core.Property));
 
 
@@ -3809,7 +3801,7 @@ foam.CLASS({
   extends: 'PropertyInheritA',
   properties: [ 'sameName' ]
 });
-log(PropertyInheritA.SAME_NAME.cls_.id, PropertyInheritB.SAME_NAME.cls_.id);
+console.log(PropertyInheritA.SAME_NAME.cls_.id, PropertyInheritB.SAME_NAME.cls_.id);
 
 
 ##  Inner Classes
@@ -3833,16 +3825,16 @@ foam.CLASS({
   ]
 });
 InnerClassTest.create();
-log(results);
+console.log(results);
 
 
 ##  Inner Class access
 Inner classes are only accessible through their outer class
 --
-log("Access through outer:", InnerClassTest.InnerClass1.name);
+console.log("Access through outer:", InnerClassTest.InnerClass1.name);
 
 // Inner-classes do not appear in the global namespace
-log("Available globally?", !! global.InnerClass1);
+console.log("Available globally?", !! global.InnerClass1);
 
 
 ##  Inner Enums
@@ -3865,16 +3857,16 @@ foam.CLASS({
   ]
 });
 InnerEnumTest.create();
-log(result);
+console.log(result);
 
 
 ##  Inner Enum access
 Inner-enums can only be accessed through the outer-class
 --
-log("Access through outer:", InnerEnumTest.InnerEnum.name);
+console.log("Access through outer:", InnerEnumTest.InnerEnum.name);
 
 // Inner-enums do not appear in the global namespace
-log("Available globally?", !! global.InnerEnum);
+console.log("Available globally?", !! global.InnerEnum);
 
 
 ##  Pub Sub
@@ -3898,18 +3890,18 @@ var globalResult = '';
 // Listeners are called with a subscription object and the given
 //   arguments from pub().
 o.sub(function() {
-  log('  global listener: ', [].join.call(arguments, ' '));
+  console.log('  global listener: ', [].join.call(arguments, ' '));
   globalCalls += 1;
   globalResult += ' a' + arguments.length;
 });
 // This listener will only fire if the first argument matches 'alarm'
 o.sub('alarm', function() {
-  log('  alarm: ', [].join.call(arguments, ' '));
+  console.log('  alarm: ', [].join.call(arguments, ' '));
   alarmCalls += 1;
 });
-log("Pub alarm:");
+console.log("Pub alarm:");
 o.pub('alarm', 'on');
-log("Pub lifecycle:");
+console.log("Pub lifecycle:");
 o.pub('lifecycle', 'loaded');
 
 
@@ -3917,7 +3909,7 @@ o.pub('lifecycle', 'loaded');
 Any number of arguments can be published
 --
 // Test publishing with many args
-log("Pub many arguments:");
+console.log("Pub many arguments:");
 o.pub(1);
 o.pub(1,2);
 o.pub(1,2,3);
@@ -3929,7 +3921,7 @@ o.pub(1,2,3,4,5,6,7,8);
 o.pub(1,2,3,4,5,6,7,8,9);
 o.pub(1,2,3,4,5,6,7,8,9,10);
 o.pub(1,2,3,4,5,6,7,8,9,10,11);
-log(globalResult);
+console.log(globalResult);
 
 
 ##  Topics
@@ -3944,12 +3936,12 @@ var normalCalls = 0;
 var topicCalls = 0;
 
 o.sub('alarm', function(_, __, state) {
-  log('alarm: ', state);
+  console.log('alarm: ', state);
   normalCalls += 1;
 });
 // The next line uses the Topic and is slightly shorter than the equivalent above.
 o.alarm.sub(function(_, __, state) {
-  log('alarm (topic): ', state);
+  console.log('alarm (topic): ', state);
   topicCalls += 1;
 });
 o.alarm.pub('on');
@@ -3976,13 +3968,13 @@ var anyChangeCalls = 0;
 var propAChangeCalls = 0;
 // Listen for all propertyChange events:
 o.propertyChange.sub(function(sub, p, name, dyn) {
-  log('propertyChange: ', p, name, dyn.getPrev(), dyn.get());
+  console.log('propertyChange: ', p, name, dyn.getPrev(), dyn.get());
   anyChangeCalls += 1;
 });
 
 // Listen for only changes to the 'a' Property:
 o.propertyChange.sub('a', function(sub, p, name, dyn) {
-  log('propertyChange.a: ', p, name, dyn.getPrev(), dyn.get());
+  console.log('propertyChange.a: ', p, name, dyn.getPrev(), dyn.get());
   propAChangeCalls += 1;
 });
 
@@ -3997,7 +3989,7 @@ o.a++;
 
 var calls = 0;
 var l = function(sub, name) {
-  log('Event:', name);
+  console.log('Event:', name);
   calls += 1;
 };
 
@@ -4012,7 +4004,7 @@ o.pub("fire again, but nobody's listenering");
 --
 var calls = 0;
 var once = function(sub, name) {
-  log('Event:', name);
+  console.log('Event:', name);
   calls += 1;
   // stop listening
   sub.detach();
@@ -4030,7 +4022,7 @@ o.pub("fire again, but nobody's listening");
 // listener with foam.events.oneTime() and it will cancel the subscription
 // when it receives the first event.
 o.sub(foam.events.oneTime(function() {
-  log.apply(log, arguments);
+  console.log.apply(console.log, arguments);
 }));
 
 o.pub('fire');
@@ -4044,14 +4036,14 @@ Slots are like Object-Oriented pointers
 // get() is used to dereference the value of a slot
 var p = Person.create({ name: 'Bob' });
 var dyn = p.name$;
-log("Person name:", dyn.get());
+console.log("Person name:", dyn.get());
 
 
 ##  Slot set
 set() is used to set a Slot's value
 --
 dyn.set('John'); // sets p.name implicitly
-log("Name after set:", p.name, "get():", dyn.get());
+console.log("Name after set:", p.name, "get():", dyn.get());
 
 
 ##  Slot get with slot method
@@ -4060,10 +4052,10 @@ Calling obj.slot('name') is the same as obj.name$
 var p = Person.create({name: 'Bob'});
 
 var dyn = p.slot('name'); // same as p.name$
-log("slot value:", dyn.get());
+console.log("slot value:", dyn.get());
 
 dyn.set('John');
-log("after set:", dyn.get());
+console.log("after set:", dyn.get());
 
 
 ##  Slot nesting
@@ -4081,30 +4073,30 @@ var s = h.data$.dot('name');
 //  p2.name is not the same as p1.name.
 var changes = "";
 s.sub(function() {
-  log('    h.data.name change: ', h.data.name);
+  console.log('    h.data.name change: ', h.data.name);
   changes += h.data.name + " ";
 });
 
-log('Set to p1:');
+console.log('Set to p1:');
 
-log("  Initial s:", s.get());
+console.log("  Initial s:", s.get());
 
 s.set('George');
-log("  After setting s, p1.name:", p1.name);
+console.log("  After setting s, p1.name:", p1.name);
 
 p1.name = 'Ringo';
-log("  After setting p1.name, s:", s.get());
+console.log("  After setting p1.name, s:", s.get());
 
-log('Setting to p2, which has a different name:');
+console.log('Setting to p2, which has a different name:');
 
 h.data = p2;
-log("  Initial s:", s.get());
+console.log("  Initial s:", s.get());
 
 s.set('George');
-log("  After setting s, p2.name:", p2.name);
+console.log("  After setting s, p2.name:", p2.name);
 
 p2.name = 'Ringo';
-log("  After setting p2.name, s:", s.get());
+console.log("  After setting p2.name, s:", s.get());
 
 
 ##  Subscription nesting
@@ -4119,7 +4111,7 @@ var p2 = Person.create({name: 'Paul'});
 var h = Holder.create({data: p1});
 var changes = "";
 h.data$.valueSub(function(e, topic, name, dyn) {
-  log('sub change: ', e.src.name, topic, name);
+  console.log('sub change: ', e.src.name, topic, name);
   changes += topic + ':' + (dyn && dyn.get()) + ' ';
 });
 
@@ -4141,10 +4133,10 @@ var p1 = Person.create(), p2 = Person.create();
 
 p1.name$ = p2.name$;
 p1.name = 'John'; // also sets p2.name
-log("Assigned first:", p1.name, p2.name);
+console.log("Assigned first:", p1.name, p2.name);
 
 p2.name = 'Steve'; // also sets p1.name
-log("Assigned second: ", p1.name, p2.name);
+console.log("Assigned second: ", p1.name, p2.name);
 
 
 ##  Data Binding linkFrom
@@ -4154,7 +4146,7 @@ var p1 = Person.create({ name: 'p1' });
 var p2 = Person.create({ name: 'p2' });
 var d = p1.name$.linkFrom(p2.name$);
 p1.name = 'John';
-log("Assigned first:", p1.name, p2.name);
+console.log("Assigned first:", p1.name, p2.name);
 
 
 ##  Data Binding linkFrom unbind
@@ -4164,7 +4156,7 @@ linkFrom/To() returns a detachable that unbinds the slots
 // on the object return from .linkFrom/To().
 d.detach();
 p2.name = 'Steve';
-log("No longer bound:", p1.name, p2.name);
+console.log("No longer bound:", p1.name, p2.name);
 
 
 ##  Data Binding linkTo
@@ -4174,11 +4166,11 @@ linkTo() is the same as linkFrom(), except that the initial value is taken from 
 // is taken from 'this' instead of the other object.
 var p1 = Person.create({ name:'p1' }), p2 = Person.create({ name:'p2' });
 var d = p1.name$.linkTo(p2.name$);
-log("After linkTo:", p1.name, p2.name);
+console.log("After linkTo:", p1.name, p2.name);
 var name2 = p2.name;
 
 p1.name = 'John';
-log("Assigned first:", p1.name, p2.name);
+console.log("Assigned first:", p1.name, p2.name);
 
 
 ##  Data Binding relateTo
@@ -4197,10 +4189,10 @@ foam.CLASS({
       this.f$.relateTo(
         this.c$,
         function f2c(f) {
-          log('f2c', f); return 5/9 * ( f - 32 );
+          console.log('f2c', f); return 5/9 * ( f - 32 );
         },
         function c2f(c) {
-          log('c2f', c); return 9/5 * c + 32;
+          console.log('c2f', c); return 9/5 * c + 32;
         }
       );
     }
@@ -4208,11 +4200,11 @@ foam.CLASS({
 });
 
 var t = Temperature.create();
-log("Initial     f:", t.f, " c:", t.c);
+console.log("Initial     f:", t.f, " c:", t.c);
 t.f = 100;
-log("Set(f=100)  f:", t.f, " c:", t.c);
+console.log("Set(f=100)  f:", t.f, " c:", t.c);
 t.c = 100;
-log("Set(c=100)  f:", t.f, " c:", t.c);
+console.log("Set(c=100)  f:", t.f, " c:", t.c);
 
 
 ##  Data Binding one way
@@ -4226,9 +4218,9 @@ var d = p1.name$.follow(p2.name$);
 
 p2.name = 'Ringo'; // Will update p1 and p2
 p2.name = 'Paul'; // Will update p1 and p2
-log('Assigned p2:', p1.name, p2.name);
+console.log('Assigned p2:', p1.name, p2.name);
 p1.name = 'George'; // Will only update p1
-log('Assigned p1:', p1.name, p2.name);
+console.log('Assigned p1:', p1.name, p2.name);
 d.detach();
 
 
@@ -4237,10 +4229,10 @@ Follow copies the initial value of the followed slot
 --
 p1 = Person.create();
 p2 = Person.create({name:'John'});
-log("Initial:", p1.name, p2.name);
+console.log("Initial:", p1.name, p2.name);
 
 p1.name$.follow(p2.name$);
-log("After follow:", p1.name, p2.name);
+console.log("After follow:", p1.name, p2.name);
 
 
 ##  Data Binding one way mapFrom
@@ -4252,9 +4244,9 @@ var d = p1.name$.mapFrom(p2.name$, function(n) {
 });
 
 p2.name = 'Ringo'; // Will update p1 and p2
-log('Assigned second:', p1.name, p2.name);
+console.log('Assigned second:', p1.name, p2.name);
 p1.name = 'George'; // Will only update p1
-log('Assigned first:', p1.name, p2.name);
+console.log('Assigned first:', p1.name, p2.name);
 d.detach();
 
 
@@ -4269,9 +4261,9 @@ var d = p2.name$.mapTo(p1.name$, function(n) {
 });
 
 p2.name = 'Ringo'; // Will update p1 and p2
-log("Assigned second:", p1.name, p2.name);
+console.log("Assigned second:", p1.name, p2.name);
 p1.name = 'George'; // Will only update p1
-log("Assigned first:", p1.name, p2.name);
+console.log("Assigned first:", p1.name, p2.name);
 d.detach();
 
 
@@ -4282,9 +4274,9 @@ Slots also let you check if the value is defined by calling isDefined()
 foam.CLASS({name: 'IsDefinedTest', properties: [ { name: 'a', value: 42 } ]});
 var o = IsDefinedTest.create();
 var dv = o.a$;
-log("Default value only, isDefined?", dv.isDefined());
+console.log("Default value only, isDefined?", dv.isDefined());
 dv.set(99);
-log("Set to 99, isDefined?", dv.isDefined());
+console.log("Set to 99, isDefined?", dv.isDefined());
 
 
 ##  Slot clear
@@ -4292,27 +4284,27 @@ You can reset a Slot to its default value by calling .clear()
 --
 // Calling obj.name$.clear() is equivalent to obj.clearProperty('name');
 dv.clear();
-log("After clearing:", dv.get(), dv.isDefined());
+console.log("After clearing:", dv.get(), dv.isDefined());
 
 
 ##  ConstantSlot
 ConstantSlot creates an immutable slot
 --
 var s = foam.core.ConstantSlot.create({ value: 42 });
-log("Intial value:", s.get());
+console.log("Intial value:", s.get());
 s.value = 66;
 s.set(66);
-log("After set to 66:", s.get());
+console.log("After set to 66:", s.get());
 
 
 ##  SimpleSlot
 SimpleSlot creates a mutable slot.
 --
 var s = foam.core.SimpleSlot.create({ value: 42 });
-log("Intial value:", s.get());
+console.log("Intial value:", s.get());
 s.value = 66;
 s.set(66);
-log("After set to 66:", s.get());
+console.log("After set to 66:", s.get());
 
 
 ##  PromiseSlot
@@ -4323,17 +4315,17 @@ var promise = new Promise(function(resolve, reject) {
     resolve(66);
   }, 3000);
 }).then((value) => {
-  log('Promise resolved!', new Date());
-  log('Slot value:', value);
+  console.log('Promise resolved!', new Date());
+  console.log('Slot value:', value);
 });
-log('Promise created.', new Date());
+console.log('Promise created.', new Date());
 var s = foam.core.PromiseSlot.create({
   value: 42,
   promise: promise
 });
-log("Intial value of the slot:", s.get());
+console.log("Intial value of the slot:", s.get());
 window.setTimeout(() => {
-  log('Value 1 second later, at ' + new Date() + ':', s.get());
+  console.log('Value 1 second later, at ' + new Date() + ':', s.get());
 }, 1000);
 return promise;
 
@@ -4347,9 +4339,9 @@ var promise = new Promise(function(resolve, reject) {
 var s1 = foam.core.SimpleSlot.create({ value: 42 });
 var s2 = foam.core.PromiseSlot.create({ value: 'foo', promise: promise });
 var arraySlot = foam.core.ArraySlot.create({ slots: [s1, s2] });
-log('Initial value:', arraySlot.get());
+console.log('Initial value:', arraySlot.get());
 arraySlot.sub((detachable, eventName, propName, slot) => {
-  log('Value updated to:', arraySlot.get());
+  console.log('Value updated to:', arraySlot.get());
 });
 s1.set(66);
 return promise;
@@ -4365,9 +4357,9 @@ var slotOfSlot = s1.map((propName) => {
   return p.slot(propName).map((propValue) => propName + ' = ' + propValue);
 });
 var proxySlot = foam.core.ProxySlot.create({ delegate$: slotOfSlot });
-log('Value:', proxySlot.get());
+console.log('Value:', proxySlot.get());
 s1.set('lname');
-log('Value:', proxySlot.get());
+console.log('Value:', proxySlot.get());
 
 
 ##  Expression Slots
@@ -4382,15 +4374,15 @@ var e = foam.core.ExpressionSlot.create({
   code: function(f, l) { return f + ' ' + l; }
 });
 
-log("Intial e:", e.get());
+console.log("Intial e:", e.get());
 var calls = 0;
 e.sub(function() {
-  log("e changed:", e.get());
+  console.log("e changed:", e.get());
   calls += 1;
 });
 p.fname = 'Steve';
 p.lname = 'Jones';
-log("Final e:", e.get());
+console.log("Final e:", e.get());
 
 
 ##  Expression Slot with object
@@ -4403,13 +4395,13 @@ var e = foam.core.ExpressionSlot.create({
   obj: p,
   code: function(f, l) { return f + ' ' + l; }
 });
-log("Initial e:", e.get());
+console.log("Initial e:", e.get());
 e.sub(function() {
-  log("e changed:", e.get());
+  console.log("e changed:", e.get());
 });
 p.f = 'Steve';
 p.l = 'Jones';
-log("Final e:", e.get());
+console.log("Final e:", e.get());
 
 
 ##  Expression Slot unbinding
@@ -4417,10 +4409,10 @@ Detach the ExpressionSlot to prevent further updates
 --
 calls = 0;
 e.detach();
-log("e detached, setting f and l again...");
+console.log("e detached, setting f and l again...");
 p.f = 'Bob';
 p.l = 'Roberts';
-log("Updates since detach:", calls);
+console.log("Updates since detach:", calls);
 
 
 ##  Property Expression Class
@@ -4449,31 +4441,31 @@ Expression properties are invalidated whenever of their listed source values cha
 // when their value is accessed.
 p.describe();
 p.sub(function(sub, propChg, name) {
-  log("Event:", propChg, name);
+  console.log("Event:", propChg, name);
 });
 p.fname = 'Steve';
-log(p.fname, p.lname, '=', p.name);
+console.log(p.fname, p.lname, '=', p.name);
 p.lname = 'Jones';
-log(p.fname, p.lname, '=', p.name);
+console.log(p.fname, p.lname, '=', p.name);
 
 
 ##  Property Expression setting
 Expression properties can also be explicitly set, disabling the dynamic expression
 --
-log(p.name, p.hasOwnProperty('name'));
+console.log(p.name, p.hasOwnProperty('name'));
 p.name = 'Kevin Greer';
-log(p.name, p.hasOwnProperty('name'));
+console.log(p.name, p.hasOwnProperty('name'));
 p.fname = 'Sebastian';
-log(p.fname, p.lname, ':', p.name);
+console.log(p.fname, p.lname, ':', p.name);
 
 
 ##  Property Expression
 Clearing a set expression property reverts it to expression mode
 --
 p.name = "Joe"
-log("Set directly:", p.name, "hasOwnProperty(name)?", p.hasOwnProperty('name'));
+console.log("Set directly:", p.name, "hasOwnProperty(name)?", p.hasOwnProperty('name'));
 p.clearProperty('name');
-log("After clearing:", p.name, "hasOwnProperty(name)?", p.hasOwnProperty('name'));
+console.log("After clearing:", p.name, "hasOwnProperty(name)?", p.hasOwnProperty('name'));
 
 
 ##  Detachables
@@ -4487,11 +4479,11 @@ var detachs = '';
 
 // onDetach adds a function to be called when the object is detached
 o.onDetach(function() {
-  log('detach 1');
+  console.log('detach 1');
   detachs += '1 ';
 });
 o2.onDetach(function() {
-  log('detach 2');
+  console.log('detach 2');
   detachs += '2 ';
 });
 
@@ -4520,7 +4512,7 @@ foam.CLASS({
   listeners: [
     function l() {
       calls += 1;
-      log('ping:', calls);
+      console.log('ping:', calls);
     }
   ]
 });
@@ -4705,7 +4697,7 @@ foam.CLASS({
 
 var o = ValidationTest.create({test: '42'});
 o.validate();
-log('-');
+console.log('-');
 var o = ValidationTest.create();
 o.validate();
 
@@ -4733,14 +4725,14 @@ var Y1 = foam.createSubContext({
     return 'here';
   }
 }, 'SubContext');
-log("Y1:", Y1.key, Y1.fn());
+console.log("Y1:", Y1.key, Y1.fn());
 
 
 ##  Context context sub context
 Sub-Contexts can be created from other Contexts
 --
 var Y2 = Y1.createSubContext({ key: 'value2' });
-log("Y2:", Y2.key, Y2.fn());
+console.log("Y2:", Y2.key, Y2.fn());
 
 
 ##  Context sub context describe
@@ -4768,16 +4760,16 @@ Classes can import values from the Context so that they can be accessed from thi
 // First try the import with no 'myLogger' in its context
 try {
   var o = ImportsTest.create(); // should fail here, on object creation
-  log('test created');
+  console.log('test created');
   o.foo();
 } catch(e) {
-  log('Could not import "myLogger" since nobody provided it.');
+  console.log('Could not import "myLogger" since nobody provided it.');
 }
 
 var lastLogMsg = "";
 // Provide a 'myLogger' on a context
 var Y = foam.createSubContext({ myLogger: function(msg) {
-  log('log:', msg);
+  console.log('log:', msg);
   lastLogMsg = msg;
 }});
 
@@ -4800,11 +4792,11 @@ foam.CLASS({
 });
 try {
   var o = OptionalImportsTest.create();
-  log('Test created ok');
-  log('Trying to use missing import...');
+  console.log('Test created ok');
+  console.log('Trying to use missing import...');
   o.foo(); // should fail here, on import use
 } catch(e) {
-  log('As expected, could not import "myLogger" since nobody provided it.');
+  console.log('As expected, could not import "myLogger" since nobody provided it.');
 }
 
 
@@ -4823,7 +4815,7 @@ foam.CLASS({
     function myLogger(msg) {
       // this function is exported, thus available to object we create
       // (like ImportsTest in our init)
-      log('ExportsTest logger call:', msg);
+      console.log('ExportsTest logger call:', msg);
       calls += 1;
     }
   ]
@@ -4838,7 +4830,7 @@ foam.CLASS({
   package: 'com.acme',
   name: 'Test',
   methods: [ function foo() {
-    log('Hello, I am foo() from com.acme.Test');
+    console.log('Hello, I am foo() from com.acme.Test');
   } ]
 });
 com.acme.Test.create().foo();
@@ -4858,7 +4850,7 @@ foam.CLASS({
   } ]
 });
 
-log("When required:");
+console.log("When required:");
 RequiresTest.create().foo();
 
 
@@ -4877,7 +4869,7 @@ foam.CLASS({
   } ]
 });
 
-log("Required as NotTest:");
+console.log("Required as NotTest:");
 RequiresAliasTest.create().foo();
 
 
@@ -4890,7 +4882,7 @@ foam.CLASS({
   properties: [ 'id', 'desc', 'amount' ]
 });
 var o = Invoice.create({ id: 1, desc: 'Duct Cleaning', amount: 99.99 });
-log(o.id);
+console.log(o.id);
 
 
 ##  Primary Key ids
@@ -4906,7 +4898,7 @@ foam.CLASS({
   properties: [ 'invoiceId', 'desc', 'amount' ]
 });
 var o = Invoice2.create({ invoiceId: 23, desc: 'Duct Cleaning', amount: 99.99 });
-log("Id:", o.id, "invoiceId:", o.invoiceId);
+console.log("Id:", o.id, "invoiceId:", o.invoiceId);
 
 
 ##  Primary Key multipart Class
@@ -4923,11 +4915,11 @@ foam.CLASS({
 Multi-part unique identifiers are also supported by setting ids
 --
 var o = Invoice3.create({customerId: 1, invoiceId: 1, desc: 'Duct Cleaning', amount: 99.99});
-log("initial           id:", o.id, "customerId:", o.customerId, "invoiceId:", o.invoiceId);
+console.log("initial           id:", o.id, "customerId:", o.customerId, "invoiceId:", o.invoiceId);
 // setting id propagates the changes to the properties that make up the
 // multipart id:
 o.id = [2, 3];
-log("after setting id, id:", o.id, "customerId:", o.customerId, "invoiceId:", o.invoiceId);
+console.log("after setting id, id:", o.id, "customerId:", o.customerId, "invoiceId:", o.invoiceId);
 
 
 ##  Primary Key multipart comparison
@@ -4954,13 +4946,13 @@ results += ", " + Invoice3.ID.compare(
   Invoice3.create({customerId: 1, invoiceId: 1}),
   Invoice3.create({customerId: 2, invoiceId: 1}));
 
-log("Comparison results:", results);
+console.log("Comparison results:", results);
 
 
 ##  Class Id
 A Class' id is a combination of its package and name
 --
-log("Test class id:", com.acme.Test.id);
+console.log("Test class id:", com.acme.Test.id);
 
 
 ##  Custom Axioms
@@ -4975,13 +4967,13 @@ foam.CLASS({
   name: 'AxiomTest',
   axioms: [ foam.pattern.Singleton.create() ],
   methods: [ function init() {
-    log('Creating AxiomTest');
+    console.log('Creating AxiomTest');
   } ]
 });
 
 AxiomTest.create();
 AxiomTest.create();
-log("Same instance?", AxiomTest.create() === AxiomTest.create());
+console.log("Same instance?", AxiomTest.create() === AxiomTest.create());
 
 
 ##  Custom Axioms inherit
@@ -4992,13 +4984,13 @@ foam.CLASS({
   name: 'AxiomSubTest',
   extends: 'AxiomTest',
   methods: [ function init() {
-    log('Creating AxiomSubTest');
+    console.log('Creating AxiomSubTest');
   } ]
 });
 AxiomSubTest.create();
 AxiomSubTest.create();
-log("sub is same instance?", AxiomSubTest.create() === AxiomSubTest.create());
-log("sub same as super?", AxiomSubTest.create() === AxiomTest.create());
+console.log("sub is same instance?", AxiomSubTest.create() === AxiomSubTest.create());
+console.log("sub same as super?", AxiomSubTest.create() === AxiomTest.create());
 
 
 ##  Multiton
@@ -5011,7 +5003,7 @@ foam.CLASS({
   axioms: [ foam.pattern.Multiton.create({ property: 'color' }) ],
   properties: [ 'color' ],
   methods: [ function init() {
-    log('Creating Color:', this.color);
+    console.log('Creating Color:', this.color);
   } ]
 });
 
@@ -5019,15 +5011,15 @@ var red1 = Color.create({color: 'red'});
 var red2 = Color.create({color: 'red'});
 var blue = Color.create({color: 'blue'});
 
-log('reds same?', red1 === red2);
-log('red same as blue?', red1 === blue);
+console.log('reds same?', red1 === red2);
+console.log('red same as blue?', red1 === blue);
 
 
 ##  Object UID
 All Objects have a unique identifier, accessible with the .$UID property
 --
 var a = {}, b = [], c = Person.create();
-log(a.$UID, b.$UID, c.$UID);
+console.log(a.$UID, b.$UID, c.$UID);
 
 
 ##  Console log listener
@@ -5050,14 +5042,14 @@ foam.Function.memoize1() memoizes a one-argument function
 var calls = 0;
 var f = foam.Function.memoize1(function(x) {
   calls += 1;
-  log('calculating ', x, "=>", x*x);
+  console.log('calculating ', x, "=>", x*x);
   return x*x;
 });
 
-log(f(2));
-log(f(2));
-log(f(4));
-log("Total number of calls:", calls);
+console.log(f(2));
+console.log(f(2));
+console.log(f(4));
+console.log("Total number of calls:", calls);
 
 
 ##  Function memoize1 one arg only
@@ -5072,7 +5064,7 @@ foam.Function.argsStr() returns a function's arguments as a string
 --
 var f = function(a, b, fooBar) { };
 var argsAsStr = foam.Function.argsStr(f);
-log('Function args:', argsAsStr);
+console.log('Function args:', argsAsStr);
 
 
 ##  Function argNames
@@ -5080,36 +5072,36 @@ foam.Function.argNames() returns a function's arguments an an array
 --
 var f = function(a, b, fooBar) { };
 var argsAsArray = foam.Function.argNames(f);
-log('Function args array:', argsAsArray);
+console.log('Function args array:', argsAsArray);
 
 
 ##  String constantize
 foam.String.constantize converts strings from camelCase to CONSTANT_FORMAT
 --
-log('foo      =>', foam.String.constantize('foo'));
-log('fooBar   =>', foam.String.constantize('fooBar'));
-log('fooBar12 =>', foam.String.constantize('fooBar12'));
+console.log('foo      =>', foam.String.constantize('foo'));
+console.log('fooBar   =>', foam.String.constantize('fooBar'));
+console.log('fooBar12 =>', foam.String.constantize('fooBar12'));
 
 
 ##  String capitalize
 foam.String.capitalize capitalizes the first letter of a string
 --
-log(foam.String.capitalize('Abc def'));
-log(foam.String.capitalize('abc def'));
+console.log(foam.String.capitalize('Abc def'));
+console.log(foam.String.capitalize('abc def'));
 
 
 ##  String labelize
 foam.String.labelize converts from camelCase to labels
 --
-log(foam.String.labelize('camelCase'));
-log(foam.String.labelize('firstName'));
-log(foam.String.labelize('someLongName'));
+console.log(foam.String.labelize('camelCase'));
+console.log(foam.String.labelize('firstName'));
+console.log(foam.String.labelize('someLongName'));
 
 
 ##  String multiline
 foam.String.multiline lets you build multi-line strings from function comments
 --
-log(foam.String.multiline(function(){/*This is
+console.log(foam.String.multiline(function(){/*This is
 a
 multi-line
 string*/}));
@@ -5119,11 +5111,11 @@ string*/}));
 foam.String.pad() pads a string to the specified length
 --
 var s = foam.String.pad('foobar', 10);
-log("padded  10:", '"' + s + '"', s.length);
+console.log("padded  10:", '"' + s + '"', s.length);
 
 // pad() is right justifying if given a negative number
 var s = foam.String.pad('foobar', -10);
-log("padded -10:", '"' + s + '"', s.length);
+console.log("padded -10:", '"' + s + '"', s.length);
 
 
 ##  Template basics
@@ -5144,7 +5136,7 @@ foam.CLASS({
 });
 
 var o = TemplateTest.create({ name: 'Adam' });
-log(o.hello());
+console.log(o.hello());
 
 
 ##  Template arguments
@@ -5167,7 +5159,7 @@ foam.CLASS({
 });
 
 var o = TemplateTest.create({ name: 'Adam' });
-log(o.greet("Bob"));
+console.log(o.greet("Bob"));
 
 
 ##  Template nesting
@@ -5193,7 +5185,7 @@ foam.CLASS({
 });
 
 var o = TemplateTest.create({ name: 'Adam' });
-log(o.greet("Alice"));
+console.log(o.greet("Alice"));
 
 
 ##  Template code
@@ -5216,7 +5208,7 @@ foam.CLASS({
   ]
 });
 
-log(TemplateTest.create({ name: 'Adam' }).complexTemplate());
+console.log(TemplateTest.create({ name: 'Adam' }).complexTemplate());
 
 
 ##  Template mutliline
@@ -5239,7 +5231,7 @@ For instance, my name is %%name
           }
         ]
       });
-      log(MultiLineTemplateTest.create({ name: 'Adam' }).complexTemplate());
+      console.log(MultiLineTemplateTest.create({ name: 'Adam' }).complexTemplate());
 
 
 ##  Create JSON Class
@@ -5318,7 +5310,7 @@ o = JSONTest.create({
   storageTransient: 'storage transient value'
 });
 // Default JSON formatting
-log(foam.json.stringify(o));
+console.log(foam.json.stringify(o));
 
 
 
@@ -5329,35 +5321,35 @@ Different outputters support suppressing properties, transients, and other optio
 // to output, etc. You can clone one and change these settings on the
 // outputter to customize your JSON output.
 
-log('\nConvert to a JSON object (instead of a String):');
-log(foam.json.stringify(JSONTest.create(foam.json.objectify(o))));
+console.log('\nConvert to a JSON object (instead of a String):');
+console.log(foam.json.stringify(JSONTest.create(foam.json.objectify(o))));
 
-log('\nAs a method on Objects:');
-log(o.stringify());
+console.log('\nAs a method on Objects:');
+console.log(o.stringify());
 
-log('\nPretty-printed output:');
-log(foam.json.Pretty.stringify(o));
+console.log('\nPretty-printed output:');
+console.log(foam.json.Pretty.stringify(o));
 
-log('\nDisable class name output by cloning your own outputter:');
-log(foam.json.Pretty.clone().copyFrom({ outputClassNames: false }).stringify(o));
+console.log('\nDisable class name output by cloning your own outputter:');
+console.log(foam.json.Pretty.clone().copyFrom({ outputClassNames: false }).stringify(o));
 
-log('\nStrict output:');
-log(foam.json.Strict.stringify(o));
+console.log('\nStrict output:');
+console.log(foam.json.Strict.stringify(o));
 
-log('\nStrict-but-still-readable output:');
-log(foam.json.PrettyStrict.stringify(o));
+console.log('\nStrict-but-still-readable output:');
+console.log(foam.json.PrettyStrict.stringify(o));
 
-log('\nCompact output:');
-log(foam.json.Compact.stringify(o));
+console.log('\nCompact output:');
+console.log(foam.json.Compact.stringify(o));
 
-log('\nShort-name (very compact) output:');
-log(foam.json.Short.stringify(o));
+console.log('\nShort-name (very compact) output:');
+console.log(foam.json.Short.stringify(o));
 
-log('\nNetwork (network-transient properties omitted) output:');
-log(foam.json.Network.stringify(o));
+console.log('\nNetwork (network-transient properties omitted) output:');
+console.log(foam.json.Network.stringify(o));
 
-log('\nStorage (storage-transient properties omitted) output:');
-log(foam.json.Storage.stringify(o));
+console.log('\nStorage (storage-transient properties omitted) output:');
+console.log(foam.json.Storage.stringify(o));
 
 
 ##  Graphics Support

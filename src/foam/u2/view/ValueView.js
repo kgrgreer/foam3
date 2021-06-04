@@ -12,7 +12,6 @@ foam.CLASS({
   documentation: 'Just shows the value of data as a string.',
 
   properties: [
-    [ 'nodeName', 'SPAN' ],
     {
       name: 'prop'
     }

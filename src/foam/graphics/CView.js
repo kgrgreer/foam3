@@ -1274,13 +1274,13 @@ foam.CLASS({
     {
       name: 'context',
       factory: function() {
-        return this.el_().getContext('2d');
+        return this.el().getContext('2d');
       }
     },
     {
       name: 'context3D',
       factory: function() {
-        return this.el_().getContext('webgl');
+        return this.el().getContext('webgl');
       }
     },
     {
@@ -1312,7 +1312,7 @@ foam.CLASS({
     },
 
     function erase() {
-      this.el_().width = this.el_().width;
+      this.el().width = this.el().width;
     }
   ],
 

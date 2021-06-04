@@ -82,7 +82,7 @@ foam.CLASS({
       flex-grow: 1;
     }
 
-    ^ .foam-u2-view-SimpleSearch input {
+    ^ .foam-u2-view-SimpleSearch .foam-u2-search-TextSearchView .foam-u2-tag-Input {
       width: 100%;
       height: 34px;
       border-radius: 0 5px 5px 0;
@@ -253,7 +253,7 @@ foam.CLASS({
       var simpleSearch;
 
       if ( this.memento && ! this.memento.tail ) {
-        this.memento.tail = foam.nanos.controller.Memento.create();
+        this.memento.tail = foam.nanos.controller.Memento.create({});
       }
 
       this.addClass(this.myClass());
