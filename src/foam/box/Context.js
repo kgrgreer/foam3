@@ -122,11 +122,11 @@ return __context__.lookup("foam.swift.net.SocketService")!.create(args: [
         me.delegate = this.registry;
         return me;
       },
-      swiftFactory: function() {/*
+      swiftFactory: `
         let me = NamedBox_create(["name": self.myname])
         me.delegate = self.registry!
         return me
-      */},
+      `,
     },
     {
       class: 'Boolean',

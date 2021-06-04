@@ -44,12 +44,12 @@ foam.CLASS({
           parentBox: this.getParentBox()
         });
       },
-      swiftFactory: function() {/*
+      swiftFactory: `
 return self.LookupBox_create([
   "name": self.getBaseName(),
   "parentBox": self.getParentBox()
 ])
-      */}
+    `
     }
   ],
 
@@ -62,7 +62,7 @@ return self.LookupBox_create([
           name: this.name.substring(0, this.name.lastIndexOf('/'))
         }, this);
       },
-      swiftCode: function() {/*
+      swiftCode: `
 var name = ""
 if let index = self.name.range(of: "/", options: .backwards)?.lowerBound {
   name = String(self.name[..<index])
@@ -70,7 +70,7 @@ if let index = self.name.range(of: "/", options: .backwards)?.lowerBound {
 return ownClassInfo().create(args: [
   "name": name
 ], x: __subContext__) as? foam_box_Box
-      */},
+      `,
     },
     {
       name: 'getBaseName',

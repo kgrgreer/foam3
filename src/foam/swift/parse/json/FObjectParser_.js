@@ -22,25 +22,25 @@ foam.CLASS({
   properties: [
     {
       name: 'delegate',
-      swiftFactory: function() {/*
-return 
+      swiftFactory: `
+return
   Seq1_create(["index": 4, "parsers": [
     KeyParser_create(["key": "class"]),
     Whitespace_create(),
     Literal_create(["string": ":"]),
     Whitespace_create(),
     StringParser_create(),
-    Optional_create(["delegate": 
+    Optional_create(["delegate":
       Literal_create(["string": ","]),
     ])
   ]])
-      */},
+      `,
     },
   ],
   methods: [
     {
       name: 'parse',
-      swiftCode: function() {/*
+      swiftCode: `
 var ps: foam_swift_parse_PStream? = ps
 guard let ps1 = delegate.parse(ps!, x),
       let c: ClassInfo = __subContext__.lookup(ps1.value() as? String) else {
@@ -60,7 +60,7 @@ if ps != nil {
 }
 
 return nil
-      */},
+      `,
     },
   ],
 });

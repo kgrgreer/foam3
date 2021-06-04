@@ -49,7 +49,7 @@ CSS is now specified as a CSS Axiom, rather than as a template named CSS:
         */}
       })
     ],
-    
+
 Support for specifying methods: or listeners: as maps ({}) is no longer supported. They must be specified as arrays ([]) in FOAM2.
 
 U2 renames cls() to cssClass().
