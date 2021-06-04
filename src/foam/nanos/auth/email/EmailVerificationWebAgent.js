@@ -102,8 +102,7 @@ foam.CLASS({
             x,
             "verify-email-link",
             (String) user.getGroup(),
-            user.getLanguage().getCode().toString(),
-            user.getSpid()
+            user.getLanguage().getCode().toString()
           );
           StringBuilder templateBody = templateEngine.renderTemplate(x, emailTemplate.getBody(), args);
           out.write(templateBody.toString());

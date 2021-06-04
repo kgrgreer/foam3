@@ -46,10 +46,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'spid'
-    },
-    {
-      class: 'String',
       name: 'subject',
       documentation: 'Template subject'
     },
@@ -142,7 +138,14 @@ foam.CLASS({
 
         // SUBJECT:
         if ( ! emailMessage.isPropertySet("subject") && ! SafetyUtil.isEmpty(getSubject()) ) {
-          emailMessage.setSubject(templateEngine.renderTemplate(x, getSubject(), templateArgs).toString());
+          // translate first and then set
+          TranslationService ts = (TranslationService) x.get("translationService");
+          Subject subject = (Subject) x.get("subject");
+          User user = subject.getRealUser();
+          String locale = user.getLanguage().toString();
+          String source = getId() + ".subject";
+          String translatedSubject = ts.getTranslation(locale, source, getSubject());
+          emailMessage.setSubject(templateEngine.renderTemplate(x, translatedSubject, templateArgs).toString());
         }
 
         // SEND TO:
