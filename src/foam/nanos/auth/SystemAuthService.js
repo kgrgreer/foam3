@@ -28,7 +28,7 @@ foam.CLASS({
         if ( user != null && user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID ) {
           return true;
         }
-        // Response from group implies is cached to maintain intented performance.
+        // Response from group implies is cached to maintain intended performance.
         if ( group != null ) {
           Session session = x.get(Session.class);
           Boolean isSuper = (Boolean) session.getContext().get(CACHE_KEY);
