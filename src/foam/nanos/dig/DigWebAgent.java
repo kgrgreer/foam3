@@ -48,6 +48,7 @@ public class DigWebAgent extends ContextAwareSupport
         DigErrorMessage error = new GeneralException("DAO not provided");
         error.setStatus(String.valueOf(HttpServletResponse.SC_BAD_REQUEST));
         DigUtil.outputException(x, error, format);
+        logger.error(error);
         return;
       }
 
