@@ -27,6 +27,10 @@ foam.CLASS({
     'foam.u2.dialog.NotificationMessage'
   ],
 
+  constants: {
+    SIGNOUT_URL: 'sme.accountProfile.signout'
+  },
+
   messages: [
     { name: 'TITLE', message: 'Welcome!' },
     { name: 'FOOTER_TXT', message: 'Not a user yet?' },
@@ -106,7 +110,7 @@ foam.CLASS({
             });
           } else {
             this.menuDAO.cmd_(X, foam.dao.CachingDAO.PURGE);
-            if ( ! this.memento || this.memento.value.length === 0 || this.memento.value == 'sme.accountProfile.signout' )
+            if ( ! this.memento || this.memento.value.length === 0 || this.memento.value == this.SIGNOUT_URL )
               window.location.hash = '';
             this.loginSuccess = !! this.user;
           }
