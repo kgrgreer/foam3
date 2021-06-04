@@ -79,11 +79,7 @@ foam.CLASS({
         // Check if theme's spid and user's spid matched.
         // if matched pass, else throw an error.
         // e.g., throws error: userSpid: "treviso", themeSpid: "intuit"
-        if (
-          ! SafetyUtil.isEmpty(themeSpid) &&
-          ! SafetyUtil.isEmpty(userSpid) &&
-          ! themeSpid.equals(userSpid)
-        ) {
+        if ( ! themeSpid.equals(userSpid) ) {
           throw new AccessDeniedException();
         }
         return super.login(x, identifier, password);
