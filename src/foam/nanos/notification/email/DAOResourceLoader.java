@@ -38,7 +38,7 @@ public class DAOResourceLoader
     DAO groupDAO = (DAO) x.get("groupDAO");
     DAO emailTemplateDAO = (DAO) x.get("localEmailTemplateDAO");
     EmailTemplate emailTemplate = null;
-
+///eeeee
     do {
       emailTemplate = (EmailTemplate) emailTemplateDAO
         .find(
