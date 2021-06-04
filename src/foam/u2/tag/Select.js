@@ -31,6 +31,7 @@ foam.CLASS({
       box-shadow: none;
       cursor: pointer;
       max-width: 100%;
+      overflow: hidden;
       /* TODO: Remove this once css class loading is fixed */
       padding-right: 2.1em !important; 
       text-overflow: ellipsis;
