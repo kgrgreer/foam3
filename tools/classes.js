@@ -497,6 +497,7 @@ var classes = [
   'foam.nanos.notification.email.EmailConfig',
   'foam.nanos.notification.email.EmailConfigEmailPropertyService',
   'foam.nanos.notification.email.EmailMessageValidationPropertyService',
+  'foam.nanos.notification.email.ApplyBaseArgumentsEmailPropertyService',
   // EmailMessageDAO(service) decorator
   'foam.nanos.notification.email.EmailServiceDAO',
 
