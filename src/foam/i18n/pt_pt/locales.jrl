@@ -401,7 +401,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.UpdatePassword.C
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.UpdatePassword.CONFIRMATION_PASSWORD.validationPredicates[0].errorString",target:"As senhas não coincidem."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.RESET_PASSWORD_TITLE",target:"Atualize sua senha"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.SUCCESS_MSG_TITLE",target:"Senha Atualizada"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.SUCCESS_MSG_TITLE",target:"Sucesso"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.SUCCESS_MSG",target:"Sua senha foi atualizada com sucesso"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.RESET_PASSWORD_SUBTITLE",target:"Crie uma nova senha para sua conta"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.PASSWORD_LENGTH_10_ERROR",target:"A senha deve ter pelo menos 10 caracteres"})
