@@ -16,6 +16,7 @@ foam.CLASS({
 
   imports: [
     'auth',
+    'currentMenu?',
     'memento',
     'stack'
   ],
@@ -70,6 +71,10 @@ foam.CLASS({
       -moz-box-shadow: 0px 1px 3px 0px #E7E7E7;
     }
   `,
+
+  messages: [
+    { name: 'VIEW_ALL', message: 'View all ' }
+  ],
 
   properties: [
     {
@@ -135,9 +140,9 @@ foam.CLASS({
     this.SUPER();
 
     var self = this;
-
-      this.addClass(this.myClass())
-      .add(this.slot(function(data, config, config$browseBorder, config$browseViews, config$browseTitle, config$browseSubtitle, config$primaryAction) {
+    var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
+    this.addClass(this.myClass())
+      .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$browseSubtitle, config$primaryAction) {
         return self.E()
           .start(self.Rows)
             .addClass(self.myClass('container'))
@@ -146,7 +151,7 @@ foam.CLASS({
                 .start(self.Cols)
                   .start()
                     .addClass(self.myClass('browse-title'))
-                    .translate(config$browseTitle, config$browseTitle)
+                    .translate(menuId + ".browseTitle", config$browseTitle)
                   .end()
                   .startContext({ data: self }).tag(self.CREATE).endContext()
                   .callIf(config$primaryAction, function() {
@@ -157,7 +162,15 @@ foam.CLASS({
                   this
                     .start()
                       .addClass(self.myClass('browse-subtitle'))
-                      .translate(config$browseSubtitle, config$browseSubtitle)
+                      .translate(menuId + ".browseSubtitle", config$browseSubtitle)
+                    .end();
+                })
+                .callIf(! config$browseSubtitle, function() {
+                  this
+                    .start()
+                      .addClass(self.myClass('browse-subtitle'))
+                      .translate(self.cls_.id + '.VIEW_ALL', self.VIEW_ALL)
+                      .translate(menuId + ".browseTitle", config$browseTitle)
                     .end();
                 })
               .end()
