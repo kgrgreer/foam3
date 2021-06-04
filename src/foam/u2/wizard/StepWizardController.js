@@ -337,7 +337,7 @@ foam.CLASS({
       framed: true,
       code: function onWizardletAvailability(wizardletIndex, value) {
         // Force a position update so views recalculate state
-        this.wizardPosition = this.WizardPosition.clone();
+        this.wizardPosition = this.wizardPosition.clone();
       },
     },
     function onWizardletValidity() {
@@ -365,7 +365,7 @@ foam.CLASS({
       }
 
       // Force position update anyway so views recalculate state
-      this.wizardPosition = this.WizardPosition.clone();
+      this.wizardPosition = this.wizardPosition.clone();
     }
   ]
 });
