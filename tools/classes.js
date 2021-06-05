@@ -265,6 +265,8 @@ var classes = [
   'foam.nanos.auth.AuthorizationDAO',
   'foam.nanos.auth.AuthenticationException',
   'foam.nanos.auth.AssignableAware',
+  'foam.nanos.auth.DuplicateEmailException',
+  'foam.nanos.auth.DuplicateUserNameException',
   'foam.nanos.auth.EnabledAware',
   'foam.nanos.auth.EnabledAwareDummy',
   'foam.nanos.auth.GroupPermissionJunction',
