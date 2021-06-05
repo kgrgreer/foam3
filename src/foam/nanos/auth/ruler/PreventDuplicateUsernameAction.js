@@ -14,10 +14,10 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.ContextAgent',
-    'foam.core.ValidationException',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.mlang.sink.Count',
+    'foam.nanos.auth.DuplicateUserNameException',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
@@ -25,7 +25,6 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'DUPLICATE_ERROR', message: 'User with same username already exists: ' },
     { name: 'EMPTY_ERROR', message: 'Username required' }
   ],
 
@@ -60,7 +59,7 @@ foam.CLASS({
             )).limit(1).select(count);
 
         if ( count.getValue() == 1 ) {
-          throw new ValidationException(DUPLICATE_ERROR + user.getUserName());
+          throw new DuplicateUserNameException();
         }
       `
     }
