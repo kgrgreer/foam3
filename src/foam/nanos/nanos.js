@@ -62,6 +62,8 @@ FOAM_FILES([
   { name: "foam/nanos/auth/AgentJunctionStatus" },
   { name: "foam/nanos/auth/DeletedAware" },
   { name: "foam/nanos/auth/DeletedAwareDAOTest" },
+  { name: 'foam/nanos/auth/DuplicateEmailException' },
+  { name: 'foam/nanos/auth/DuplicateUserNameException' },
   { name: "foam/nanos/auth/PasswordPolicy" },
   { name: "foam/nanos/auth/Group" },
   { name: 'foam/nanos/auth/HumanNameTrait' },
