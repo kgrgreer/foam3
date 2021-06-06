@@ -845,3 +845,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.DuplicateEmailEx
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.DuplicateEmailException.Email already in use",target:"Email já em uso"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.DuplicateUserNameException",target:"Nome de usuário duplicado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.DuplicateUserNameException.UserName already in use",target:"Nome de usuário já em uso"})
+
+//DigErrorMessage
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.dig.exception.DigSuccessMessage.{{message}}",target:"Sucesso"})
