@@ -274,14 +274,15 @@ foam.CLASS({
       try {
         return dao.put(nu);
       } catch ( ValidationException ve ) {
-        throw new DAOPutException(ve.getMessage(), ve);
+        throw new DAOPutException(ve.getTranslation(), ve);
       } catch ( CompoundException ce ) {
         // FObject.validate(x) can collect all validation exceptions into a
         // CompoundException but we just need to return the first to preserve
         // the existing behavior.
         var clientEx = ce.getClientRethrowException();
         if ( clientEx instanceof ValidationException ) {
-          throw new DAOPutException(clientEx.getMessage(), ce);
+          throw new DAOPutException(
+            ((ValidationException) clientEx).getTranslation(), ce);
         }
         throw ce;
       }
