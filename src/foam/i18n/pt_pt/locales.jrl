@@ -848,3 +848,4 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.DuplicateUserNam
 
 //DigErrorMessage
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.dig.exception.DigSuccessMessage.{{message}}",target:"Sucesso"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.dig.exception.DAONotFoundException.DAO not found: {{daoName}}",target:"DAO não encontrado: {{daoName}}"})

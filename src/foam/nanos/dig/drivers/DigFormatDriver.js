@@ -235,7 +235,7 @@ foam.CLASS({
       DAO nSpecDAO = (DAO) x.get("AuthenticatedNSpecDAO");
       NSpec nspec = (NSpec) nSpecDAO.find(daoName);
       if ( nspec == null || ! nspec.getServe() ) {
-        DigUtil.outputException(x, new DAONotFoundException("DAO not found: " + daoName), getFormat());
+        DigUtil.outputException(x, new DAONotFoundException(daoName), getFormat());
         return null;
       }
 
@@ -249,7 +249,7 @@ foam.CLASS({
 
       DAO dao = (DAO) x.get(daoName);
       if ( dao == null ) {
-        DigUtil.outputException(x, new DAONotFoundException("DAO not found: " + daoName), getFormat());
+        DigUtil.outputException(x, new DAONotFoundException(daoName), getFormat());
         return null;
       }
 
