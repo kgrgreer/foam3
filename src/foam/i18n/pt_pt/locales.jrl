@@ -848,6 +848,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.DuplicateUserNam
 
 //FOAMException
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.FOAMException.You do not have permission to access the service named {{id}}",target:"Você não tem permissão para acessar o serviço chamado {{id}}"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.FOAMException.DAO name is required.",target:"O nome DAO é obrigatório."})
 
 //DigErrorMessage
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.dig.exception.DigSuccessMessage.{{message}}",target:"Sucesso"})

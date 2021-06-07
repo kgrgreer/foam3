@@ -228,7 +228,9 @@ foam.CLASS({
       String daoName = p.getParameter("dao");
 
       if ( SafetyUtil.isEmpty(daoName) ) {
-        DigUtil.outputException(x, new GeneralException("DAO name is required."), getFormat());
+        var ex = new foam.core.FOAMException();
+        ex.setExceptionMessage("DAO name is required.");
+        DigUtil.outputException(x, new GeneralException(ex.getTranslation()), getFormat());
         return null;
       }
 
