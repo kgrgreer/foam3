@@ -10,23 +10,67 @@ foam.CLASS({
   extends: 'foam.nanos.auth.ProxyAuthService',
 
   javaImports: [
+    'foam.core.Detachable',
+    'foam.dao.DAO',
+    'foam.dao.Sink',
     'foam.nanos.auth.Group',
-    'javax.security.auth.AuthPermission',
     'java.util.Map',
     'java.util.concurrent.ConcurrentHashMap',
+    'javax.security.auth.AuthPermission',
+    'static foam.mlang.MLang.TRUE'
   ],
 
   properties: [
     {
       class: 'Map',
       name: 'cache',
+      javaType: 'Map<String, Boolean>',
       javaFactory: `
         return new ConcurrentHashMap<String, Boolean>();
       `
+    },
+    {
+      class: 'Boolean',
+      name: 'initialized'
     }
   ],
 
   methods: [
+    {
+      name: 'initCache',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+      ],
+      javaCode: `
+        if ( getInitialized() ) {
+          return;
+        }
+
+        DAO groupPermissionJunctionDAO = (DAO) x.get("groupPermissionJunctionDAO");
+        if ( groupPermissionJunctionDAO == null ) {
+          return;
+        }
+
+        Map<String, Boolean> cache = ( Map<String, Boolean> ) getCache();
+        groupPermissionJunctionDAO.listen(new Sink() {
+          public void put(Object obj, Detachable sub) {
+            cache.clear();
+          }
+          public void remove(Object obj, Detachable sub) {
+            cache.clear();
+          }
+          public void eof() {
+          }
+          public void reset(Detachable sub) {
+            cache.clear();
+          }
+        }, TRUE);
+        setInitialized(true);
+      `
+    },
     {
       name: 'check',
       javaCode: `
@@ -38,13 +82,15 @@ foam.CLASS({
 
         // Response from group implies is cached to maintain intended performance.
         if ( group != null ) {
-          Map<String, Boolean> cache = ( Map<String, Boolean> ) getCache();
-          if ( cache.get(group.getId()) == null ) {
+          this.initCache(x);
+          Map<String, Boolean> cache = getCache();
+          var groupCache = cache.get(group.getId());
+          if ( groupCache == null ) {
             boolean isSuper = group.implies(x, new AuthPermission("*"));
             cache.put(group.getId(), isSuper);
             return isSuper || getDelegate().check(x, permission);
           }
-          return cache.get(group.getId()) || getDelegate().check(x, permission);
+          return groupCache || getDelegate().check(x, permission);
         }
         return getDelegate().check(x, permission);
       `
