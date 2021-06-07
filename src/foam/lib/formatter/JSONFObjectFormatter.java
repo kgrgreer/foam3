@@ -64,14 +64,29 @@ public class JSONFObjectFormatter
     }
   };
 
+  // if set to true, then produces "name":"kristina", otherwise name:"kristina"
   protected boolean quoteKeys_                       = false;
+
+  // if set to true and property has a short name, uses that as a key: fn:"kristina", otherwise: firstName:"kristina"
   protected boolean outputShortNames_                = false;
+
+  // if set to true, outputs properties and their default values that were not explicitly set
   protected boolean outputDefaultValues_             = false;
+
+  // if set to true, appends escaped new line character
   protected boolean multiLineOutput_                 = false;
+
+  // when set to true check whether the object of the same class as dao.of, if so doesn't output top level classname
   protected boolean outputClassNames_                = true;
+
+  // if set to true formats dates into readable date format otherwise outputs in milliseconds
   protected boolean outputReadableDates_             = false;
+
+  // when set to true and property is an FObjectProperty, checks whether property value matches specified class.
+  // if matches then doesn't output the class name, otherwise(if a subclasss or interface implementation) outputs.
+  // TODO: should be combined with outputClassNames_?
   protected boolean outputDefaultClassNames_         = true;
-  protected boolean calculateDeltaForNestedFObjects_ = true;
+
 
   public JSONFObjectFormatter(X x) {
     super(x);
@@ -348,12 +363,7 @@ public class JSONFObjectFormatter
           append(',');
           addInnerNewline();
         }
-        if ( calculateDeltaForNestedFObjects_ ) {
-          if ( maybeOutputFObjectProperty(newFObject, oldFObject, prop) ) delta += 1;
-        } else {
-          outputProperty(newFObject, prop);
-          delta += 1;
-        }
+        if ( maybeOutputFObjectProperty(newFObject, oldFObject, prop) ) delta += 1;
 
         if ( parentProp == null &&
              prop.includeInID() ) {
@@ -503,11 +513,6 @@ public class JSONFObjectFormatter
 
   public JSONFObjectFormatter setQuoteKeys(boolean quoteKeys) {
     quoteKeys_ = quoteKeys;
-    return this;
-  }
-
-  public JSONFObjectFormatter setCalculateNestedDelta(boolean calculateNestedDelta) {
-    calculateDeltaForNestedFObjects_ = calculateNestedDelta;
     return this;
   }
 
