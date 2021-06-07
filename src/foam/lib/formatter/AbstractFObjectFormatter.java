@@ -21,7 +21,7 @@ public abstract class AbstractFObjectFormatter
   protected X                 x_;
   protected StringBuilder     b_                         = new StringBuilder();
 
-  // Used to filter out what properties are being outputted.
+  // Used to filter properties that are being outputted.  
   protected PropertyPredicate propertyPredicate_;
 
   // additional predicate applied to already filtered out mao of properties
