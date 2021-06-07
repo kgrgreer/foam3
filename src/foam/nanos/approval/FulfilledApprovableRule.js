@@ -41,6 +41,11 @@
           @Override
           public void execute(X x) {
             Approvable approvable = (Approvable) obj;
+
+            if ( approvable.getDisablePut() ) {
+              return;
+            }
+
             DAO dao = (DAO) getX().get(approvable.getServerDaoKey());
 
             FObject objectToPut;

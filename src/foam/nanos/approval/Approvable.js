@@ -90,6 +90,13 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isUsingNestedJournal',
       section: 'admin'
+    },
+    {
+      class: 'Boolean',
+      name: 'disablePut',
+      documentation: `A toggle property to disable approvable put after approval request approval/rejection.`,
+      section: 'admin',
+      value: false
     }
   ],
 
