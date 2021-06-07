@@ -525,6 +525,7 @@ FOAM_FILES([
   { name: "foam/nanos/crunch/ui/MinMaxCapabilityWizardletSection" },
   { name: "foam/nanos/crunch/ui/ReviewCapabilityWizardlet" },
   { name: "foam/nanos/crunch/ui/ReviewCapabilityView" },
+  { name: 'foam/nanos/crunch/ui/ReviewUCJView' },
   { name: "foam/nanos/crunch/ui/CapableView" },
   { name: 'foam/nanos/crunch/ui/UCJView' },
   { name: "foam/nanos/crunch/ui/PrerequisiteAwareWizardlet" },
