@@ -2323,6 +2323,10 @@ foam.CLASS({
         The order to render the property in if rendering multiple properties.
       `,
       value: Number.MAX_SAFE_INTEGER
+    },
+    {
+      class: 'Boolean',
+      name: 'onKey'
     }
   ],
 
