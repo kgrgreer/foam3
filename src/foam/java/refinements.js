@@ -1620,7 +1620,7 @@ foam.CLASS({
   documentation: `
     Override setter for formattedstrings so that we only store the unformatted data
     and generate method to return a formatted version of the data
-  `,  
+  `,
 
   properties: [
     {
@@ -2418,7 +2418,8 @@ foam.CLASS({
   refines: 'foam.dao.DAOProperty',
   flags: ['java'],
   properties: [
-    ['javaCompare',    '']
+    [ 'javaCompare',       '' ],
+    [ 'javaCloneProperty', null ]
   ]
 });
 

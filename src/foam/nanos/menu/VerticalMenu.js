@@ -47,9 +47,10 @@ foam.CLASS({
     background: /*%GREY5%*/ #f5f7fas;
   }
 
-  .foam-u2-search-TextSearchView {
+  ^search {
     text-align: center;
-    margin: 14px 0 0;
+    margin-top: 14px;
+    padding: 0 5px;
   }
 
   ^ .tree-view-height-manager {
@@ -75,8 +76,7 @@ foam.CLASS({
       class: 'String',
       name: 'menuSearch',
       view: {
-        class: 'foam.u2.TextField',
-        type: 'search',
+        class: 'foam.u2.SearchField',
         onKey: true,
         ariaLabel: 'Menu Search',
         autocomplete: false
@@ -96,7 +96,7 @@ foam.CLASS({
           .startContext({ data: this })
           .start()
             .add(this.MENU_SEARCH)
-            .addClass('foam-u2-search-TextSearchView')
+            .addClass(this.myClass('search'))
           .end()
           .endContext()
           .start()

@@ -62,7 +62,9 @@ foam.CLASS({
 
     ^browse-view-container {
       box-sizing: border-box;
-      padding: 0 16px 20px 16px;
+      height: 100%;
+      margin-bottom: 20px;
+      padding: 0 16px;
       overflow: hidden;
     }
 
@@ -82,7 +84,7 @@ foam.CLASS({
       flex-grow: 1;
     }
 
-    ^ .foam-u2-view-SimpleSearch .foam-u2-search-TextSearchView .foam-u2-tag-Input {
+    ^ .foam-u2-view-SimpleSearch input {
       width: 100%;
       height: 34px;
       border-radius: 0 5px 5px 0;
@@ -253,7 +255,7 @@ foam.CLASS({
       var simpleSearch;
 
       if ( this.memento && ! this.memento.tail ) {
-        this.memento.tail = foam.nanos.controller.Memento.create({});
+        this.memento.tail = foam.nanos.controller.Memento.create();
       }
 
       this.addClass(this.myClass());

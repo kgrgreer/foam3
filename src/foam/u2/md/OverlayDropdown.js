@@ -9,6 +9,8 @@ foam.CLASS({
   name: 'OverlayDropdown',
   extends: 'foam.u2.Element',
 
+  imports: [ 'document', 'window' ],
+
   exports: [
     'as dropdown'
   ],
@@ -25,7 +27,7 @@ foam.CLASS({
 
     ^ {
       background-color: /*%WHITE%*/ #ffffff;
-      border: 1px solid #DADDE2;
+      border: 1px solid /*%GREY4%*/ #DADDE2;
       box-sizing: border-box;
       box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1), 0px 4px 6px rgba(0, 0, 0, 0.05);
       border-radius: 4px;
@@ -37,7 +39,7 @@ foam.CLASS({
       position: absolute;
       padding: 8px;
       z-index: 1010;
-      transform: translate(-100%, 12px);
+      transform: translate(-100%, 8px);
     }
 
     ^open {
@@ -80,13 +82,15 @@ foam.CLASS({
       value: false
     },
     {
-      type: 'Int',
       name: 'x'
     },
     {
-      type: 'Int',
-      name: 'y'
-    }
+      name: 'top'
+    },
+    {
+      name: 'bottom'
+    },
+    'parentEl'
   ],
 
   methods: [
@@ -102,8 +106,15 @@ foam.CLASS({
     },
 
     function open(x, y) {
+      var domRect       = this.parentEl.getBoundingClientRect();
+      var screenHeight  = this.window.innerHeight;
+      var scrollY       = this.window.scrollY;
+      if ( domRect.top - scrollY < screenHeight / 2 ) {
+        this.top = y; this.bottom = 'auto';
+      } else {
+        this.top = 'auto'; this.bottom = screenHeight - y;
+      }
       this.x = x;
-      this.y = y;
       this.opened = true;
       window.addEventListener('resize', this.onResize);
     },
@@ -135,10 +146,13 @@ foam.CLASS({
       this.dropdownE_.addClass(this.myClass())
         .show(this.opened$)
         .style({
-          top: this.y$,
-          left: this.x$
+          top: this.top$,
+          left: this.x$,
+          bottom: this.bottom$
         })
+        .on('mouseenter', this.onMouseEnter)
         .on('mouseleave', this.onMouseLeave)
+        .on('keydown', this.onKeyDown)
         .on('click', this.onClick);
 
       this.add(this.dropdownE_);
@@ -152,10 +166,21 @@ foam.CLASS({
       this.close();
     },
 
+    function onKeyDown(e) {
+      var isEsc = (e.key === 'Escape' || e.keyCode === 27);
+      if ( isEsc ) { this.close(); this.document.getElementById(this.parentEl.id).focus(); }
+    },
+
+    function onMouseEnter(e) {
+      if ( this.timer !== undefined ) {
+        clearTimeout(this.timer);
+      }
+    },
+
     function onMouseLeave(e) {
-      console.assert(e.target === this.dropdownE_.el(),
+      console.assert(e.target === this.dropdownE_.el_(),
           'mouseleave should only fire on this, not on children');
-      this.close();
+      this.timer = setTimeout(() => { this.close(); }, 500);
     },
 
     /**
