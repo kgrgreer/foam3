@@ -11,7 +11,6 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.auth.Group',
-    'foam.nanos.session.Session',
     'javax.security.auth.AuthPermission',
     'java.util.Map',
     'java.util.concurrent.ConcurrentHashMap',
