@@ -10,8 +10,10 @@
   extends: 'foam.u2.View',
 
   imports: [
+    'approvalRequestDAO',
     'crunchController',
     'notify',
+    'pushMenu',
     'stack',
     'translationService',
     'userDAO'
@@ -80,7 +82,7 @@
         .remove('WizardStateAgent')
         .remove('AutoSaveWizardletsAgent')
         .remove('PutFinalJunctionsAgent')
-        .add(this.SaveAllAgent, { onSave: this.onSave })
+        .add(this.SaveAllAgent, { onSave: this.onSave.bind(this) })
         .execute();
        
         //add back button and 'View Reference' title
@@ -101,8 +103,9 @@
         this.stack.back();
       }
       else {
-        if ( this.config.rejectOnInvalidatedSave ) {
-          let rejectedApproval = this.config.approval.clone();
+        let { rejectOnInvalidatedSave, approval } = this.config;
+        if ( rejectOnInvalidatedSave && approval ) {
+          let rejectedApproval = approval.clone();
           rejectedApproval.status = this.ApprovalStatus.REJECTED;
           rejectedApproval.memo = 'Outdated Approval.';
           this.approvalRequestDAO.put(rejectedApproval).then(o => {
@@ -120,6 +123,7 @@
       }
     }
   ],
+  
   actions: [
     {
       name: 'back',

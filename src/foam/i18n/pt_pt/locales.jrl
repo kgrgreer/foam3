@@ -237,6 +237,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.AssociatedEnti
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.AssociatedEntity.ACTING_USER.documentation",target:"Denota o caso especial onde o associatedEntity de uma capacidade deve ser\n        algum usuário agindo como outro usuário."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.ui.UCJView.BACK_LABEL",target:"Voltar"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.ui.UCJView.SUCCESS_UPDATED",target:"Dados atualizados com sucesso"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.ui.UCJView.SUCCESS_REMOVED",target:"Dados removidos com sucesso"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.FooterView.GO_TO.label",target:"vamos para"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.FooterView.GO_TO_TERM.label",target:"ir para o prazo"})
