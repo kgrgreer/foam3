@@ -24,7 +24,7 @@ public abstract class AbstractFObjectFormatter
   // Used to filter properties that are being outputted.  
   protected PropertyPredicate propertyPredicate_;
 
-  // additional predicate applied to already filtered out mao of properties
+  // additional predicate applied to determine if the property is 'storageOptional'. If after processing an object, if only storageOptional properties remain, then the object is not output. 
   protected PropertyPredicate optionalPredicate_         = new StorageOptionalPropertyPredicate();
   protected Map<String, List<PropertyInfo>> propertyMap_ = new HashMap<>();
 
