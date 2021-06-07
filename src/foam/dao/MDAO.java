@@ -83,7 +83,7 @@ public class MDAO
   /**
    * DAO Command to retrieve MDAO at some state.
    * Request a null state to retrieve 'now' or head of MDAO.
-   */ 
+   */
   public static class WhenCmd {
     protected Object state_ = null;
     public void setState(Object state) {

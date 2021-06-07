@@ -43,7 +43,8 @@
     'foam.dao.AbstractDAO',
     'foam.u2.dialog.Popup',
     'foam.log.LogLevel',
-    'foam.nanos.approval.ApprovalStatus'
+    'foam.nanos.approval.ApprovalStatus',
+    'foam.nanos.approval.CustomViewReferenceApprovable'
   ],
 
   imports: [
@@ -364,7 +365,7 @@
       order: 90,
       gridColumns: 6,
       includeInDigest: true,
-      tableWidth: 450
+      tableWidth: 300
     },
     {
       class: 'DateTime',
@@ -382,11 +383,26 @@
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
+      name: 'createdFor',
+      includeInDigest: true,
+      section: 'approvalRequestInformation',
+      order: 105,
+      gridColumns: 6,
+      tableCellFormatter: function(value, obj, axiom) {
+        var defaultOutput = value ? `ID: ${value}`: "N/A";
+        this.__subSubContext__.userDAO
+          .find(value)
+          .then(user => this.add(user ? user.toSummary() : defaultOutput));
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
       name: 'createdBy',
       includeInDigest: true,
       section: 'approvalRequestInformation',
       order: 110,
-      gridColumns: 3,
+      gridColumns: 6,
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.userDAO
           .find(value)
@@ -400,23 +416,8 @@
       includeInDigest: true,
       section: 'approvalRequestInformation',
       order: 115,
-      gridColumns: 3,
+      gridColumns: 6,
       readPermissionRequired: true
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'createdFor',
-      includeInDigest: true,
-      section: 'approvalRequestInformation',
-      order: 116,
-      gridColumns: 3,
-      tableCellFormatter: function(value, obj, axiom) {
-        var defaultOutput = value ? `ID: ${value}`: "N/A";
-        this.__subSubContext__.userDAO
-          .find(value)
-          .then(user => this.add(user ? user.toSummary() : defaultOutput));
-      }
     },
     {
       class: 'DateTime',
@@ -438,7 +439,7 @@
       includeInDigest: true,
       section: 'approvalRequestInformation',
       order: 130,
-      gridColumns: 6,
+      gridColumns: 3,
       readPermissionRequired: true
     },
     {
@@ -448,7 +449,7 @@
       includeInDigest: true,
       section: 'approvalRequestInformation',
       order: 130,
-      gridColumns: 6,
+      gridColumns: 3,
       readPermissionRequired: true
     },
     {
@@ -569,7 +570,10 @@
         To be used in view reference action when the approvalrequest
         needs to specify its own reference, for example in the case of
         UserCapabilityJunctions where data is null.
-      `
+      `,
+      expression: function(objId) {
+        return objId;
+      }
     },
     {
       class: 'String',
@@ -585,7 +589,10 @@
         To be used in view reference action when the approvalrequest
         needs to specify its own reference, for example in the case of
         UserCapabilityJunctions where data is null.
-      `
+      `,
+      expression: function (daoKey) {
+        return daoKey;
+      }
     },
     {
       class: 'String',
@@ -610,11 +617,20 @@
       name: 'assignedTo',
       section: 'approvalRequestInformation',
       order: 65
+    },
+    {
+      class: 'StringArray',
+      name: 'additionalGroups',
+      documentation: `
+        Optional field to specify the request to be sent to multiple  groups.
+        Should remain non-transient to handle fulfilled requests being visible to different groups.
+      `,
+      hidden: true
     }
   ],
 
   messages: [
-    { 
+    {
       name: 'BACK_LABEL',
       message: 'Back'
     },
@@ -622,26 +638,52 @@
       name: 'SUCCESS_ASSIGNED',
       message: 'You have successfully assigned this request'
     },
+     {
+      name: 'SUCCESS_ASSIGNED_TITLE',
+      message: 'Request Assigned'
+     },
     {
       name: 'SUCCESS_UNASSIGNED',
       message: 'You have successfully unassigned this request'
     },
     {
+      name: 'SUCCESS_UNASSIGNED_TITLE',
+      message: 'Request Unassigned'
+    },
+    {
       name: 'SUCCESS_APPROVED',
       message: 'You have successfully approved this request'
     },
+
+     {
+      name: 'SUCCESS_APPROVED_TITLE',
+      message: 'Request Approved'
+     },
     {
       name: 'SUCCESS_MEMO',
       message: 'You have successfully added a memo'
     },
+  {
+      name: 'SUCCESS_MEMO_TITLE',
+      message: 'Memo Added'
+   },
+
     {
       name: 'SUCCESS_REJECTED',
       message: 'You have successfully rejected this request'
     },
     {
+      name: 'SUCCESS_REJECTED_TITLE',
+      message: 'Request Rejected'
+     },
+    {
       name: 'SUCCESS_CANCELLED',
       message: 'You have successfully cancelled this request'
     },
+    {
+      name: 'SUCCESS_CANCELLED_TITLE',
+      message: 'Request Cancelled'
+     },
     {
       name: 'ASSIGN_TITLE',
       message: 'Select an assignee'
@@ -717,7 +759,7 @@
         this.approvalRequestDAO.put(approvedApprovalRequest).then(req => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
-          this.notify(this.SUCCESS_APPROVED, '', this.LogLevel.INFO, true);
+          this.notify(this.SUCCESS_APPROVED_TITLE, this.SUCCESS_APPROVED, this.LogLevel.INFO, true);
 
           if (
             X.stack.top &&
@@ -733,6 +775,7 @@
     },
     {
       name: 'approveWithMemo',
+      tableWidth: 175,
       section: 'approvalRequestInformation',
       isAvailable: function(isTrackingRequest, status, subject, assignedTo) {
         if ( status !== this.ApprovalStatus.REQUESTED ) return false;
@@ -800,7 +843,7 @@
           X.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
 
-          X.notify(this.SUCCESS_CANCELLED, '', this.LogLevel.INFO, true);
+          X.notify(this.SUCCESS_CANCELLED_TITLE, this.SUCCESS_CANCELLED, this.LogLevel.INFO, true);
 
           if (
             X.stack.top &&
@@ -818,6 +861,7 @@
       name: 'viewReference',
       section: 'approvalRequestInformation',
       isDefault: true,
+      tableWidth: 150,
       isAvailable: function() {
         var self = this;
 
@@ -854,7 +898,7 @@
             });
         }
       },
-      code: function(X) {
+      code: async function(X) {
         var self = this;
 
         // This should already be filtered out by the isAvailable, but adding here as duplicate protection
@@ -864,98 +908,66 @@
              return;
         }
 
-        var objId, daoKey, property;
-        if ( self.refObjId && self.refDaoKey ) {
-          daoKey = self.refDaoKey;
-          property = X[daoKey].of.ID;
-          objId = property.adapt.call(property, self.refObjId, self.refObjId, property);
-        } else {
-          daoKey = self.daoKey;
-          property = X[daoKey].of.ID;
-          objId = property.adapt.call(property, self.objId, self.objId, property);
+        var daoKey = self.refDaoKey;
+        var property = X[daoKey].of.ID;
+        var objId = property.adapt.call(property, self.refObjId, self.refObjId, property);
+
+        var obj = await X[daoKey].find(objId);
+
+        if ( this.CustomViewReferenceApprovable.isInstance(obj) ) {
+          obj.launchViewReference(X, this);
+          return;
         }
 
-        return X[daoKey]
-          .find(objId)
-          .then(obj => {
-            var of = obj.cls_;
+        var of = obj.cls_;
+        var summaryData = obj;
 
-            // If the dif of objects is calculated and stored in Map(obj.propertiesToUpdate),
-            // this is for updating object approvals
-            if ( obj.propertiesToUpdate ) {
-              if ( obj.operation === foam.nanos.dao.Operation.CREATE ) {
-                var temporaryNewObject = obj.of.create({}, X);
+        // If the dif of objects is calculated and stored in Map(obj.propertiesToUpdate),
+        // this is for updating object approvals
+        if ( obj.propertiesToUpdate ) {
+          if ( obj.operation === foam.nanos.dao.Operation.CREATE ) {
+            summaryData = obj.of.create({}, X);
+            daoKey = obj.daoKey;
+            of = summaryData.cls_;
 
-                var propsToUpdate = obj.propertiesToUpdate;
+            Object.keys(obj.propertiesToUpdate).map(k => summaryData.cls_.getAxiomByName(k))
+              .filter(p => p && ! p.transient && ! p.storageTransient && ! p.networkTransient)
+              .forEach(p => {
+                summaryData[p.name] = obj.propertiesToUpdate[p.name];
+              });
+          } else {
+            of = obj.of;
 
-                var keyArray = Object.keys(propsToUpdate);
-
-                for ( var i = 0; i < keyArray.length; i++ ) {
-                  var propObj = temporaryNewObject.cls_.getAxiomByName(keyArray[i]);
-                  if (
-                    ! propObj ||
-                    propObj.transient ||
-                    propObj.storageTransient ||
-                    propObj.networkTransient
-                  ) continue;
-
-                  temporaryNewObject[keyArray[i]] = propsToUpdate[keyArray[i]];
-                }
-
-                of = temporaryNewObject.cls_;
-
-                X.stack.push({
-                  class: 'foam.comics.v2.DAOSummaryView',
-                  data: temporaryNewObject,
-                  of: of,
-                  config: foam.comics.v2.DAOControllerConfig.create({
-                    daoKey: obj.daoKey,
-                    of: of,
-                    editPredicate: foam.mlang.predicate.False.create(),
-                    createPredicate: foam.mlang.predicate.False.create(),
-                    deletePredicate: foam.mlang.predicate.False.create()
-                  }, X),
-                  mementoHead: null,
-                  backLabel: self.BACK_LABEL
-                });
-              } else {
-                of = obj.of;
-
-                // then here we created custom view to display these properties
-                X.stack.push({
-                  class: 'foam.nanos.approval.PropertiesToUpdateView',
-                  propObject: obj.propertiesToUpdate,
-                  objId: obj.objId,
-                  daoKey: obj.daoKey,
-                  of: of,
-                  title: 'Updated Properties and Changes'
-                });
-              }
-              return;
-            }
-
-            // else pass general view with modeled data for display
-            // this is for create, deleting object approvals
+            // then here we created custom view to display these properties
             X.stack.push({
-              class: 'foam.comics.v2.DAOSummaryView',
-              data: obj,
+              class: 'foam.nanos.approval.PropertiesToUpdateView',
+              propObject: obj.propertiesToUpdate,
+              objId: obj.objId,
+              daoKey: obj.daoKey,
               of: of,
-              config: foam.comics.v2.DAOControllerConfig.create({
-                daoKey: daoKey,
-                of: of,
-                editPredicate: foam.mlang.predicate.False.create(),
-                createPredicate: foam.mlang.predicate.False.create(),
-                deletePredicate: foam.mlang.predicate.False.create()
-              }, X),
-              mementoHead: null,
-              backLabel: self.BACK_LABEL
-            }, X.createSubContext({stack: self.stack}));
-          })
-          .catch(err => {
-            console.warn(err.message || err);
-          });
-      },
-      tableWidth: 100
+              title: 'Updated Properties and Changes'
+            });
+            return;
+          }
+        }
+
+        // else pass general view with modeled data for display
+        // this is for create, deleting object approvals
+        X.stack.push({
+          class: 'foam.comics.v2.DAOSummaryView',
+          data: obj,
+          of: of,
+          config: foam.comics.v2.DAOControllerConfig.create({
+            daoKey: daoKey,
+            of: of,
+            editPredicate: foam.mlang.predicate.False.create(),
+            createPredicate: foam.mlang.predicate.False.create(),
+            deletePredicate: foam.mlang.predicate.False.create()
+          }, X),
+          mementoHead: null,
+          backLabel: self.BACK_LABEL
+        }, X.createSubContext({stack: self.stack}));
+      }
     },
     {
       name: 'assign',
@@ -992,7 +1004,7 @@
         this.approvalRequestDAO.put(assignedApprovalRequest).then(req => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
-          this.notify(this.SUCCESS_ASSIGNED, '', this.LogLevel.INFO, true);
+          this.notify(this.SUCCESS_ASSIGNED_TITLE, this.SUCCESS_ASSIGNED, this.LogLevel.INFO, true);
           if (
             X.stack.top &&
             ( X.currentMenu.id !== X.stack.top[2] )
@@ -1018,7 +1030,7 @@
         this.approvalRequestDAO.put(unassignedApprovalRequest).then(req => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
-          this.notify(this.SUCCESS_UNASSIGNED, '', this.LogLevel.INFO, true);
+          this.notify(this.SUCCESS_UNASSIGNED_TITLE, this.SUCCESS_UNASSIGNED, this.LogLevel.INFO, true);
           if (
             X.stack.top &&
             ( X.currentMenu.id !== X.stack.top[2] )
@@ -1044,7 +1056,7 @@
         this.approvalRequestDAO.put(approvedApprovalRequest).then(req => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
-          this.notify(this.SUCCESS_APPROVED, '', this.LogLevel.INFO, true);
+          this.notify(this.SUCCESS_APPROVED_TITLE, this.SUCCESS_APPROVED, this.LogLevel.INFO, true);
 
           if (
             X.stack.top &&
@@ -1067,7 +1079,7 @@
         this.approvalRequestDAO.put(newMemoRequest).then(req => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
-          this.notify(this.SUCCESS_MEMO, '', this.LogLevel.INFO, true);
+          this.notify(this.SUCCESS_MEMO_TITLE, this.SUCCESS_MEMO, this.LogLevel.INFO, true);
 
           if (
             X.stack.top &&
@@ -1091,7 +1103,7 @@
         this.approvalRequestDAO.put(rejectedApprovalRequest).then(o => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
-          this.notify(this.SUCCESS_ASSIGNED, '', this.LogLevel.INFO, true);
+          this.notify(this.SUCCESS_REJECTED_TITLE, this.SUCCESS_REJECTED, this.LogLevel.INFO, true);
 
           if (
             X.stack.top &&
@@ -1113,7 +1125,7 @@
         this.approvalRequestDAO.put(assignedApprovalRequest).then(_ => {
           this.approvalRequestDAO.cmd(this.AbstractDAO.RESET_CMD);
           this.finished.pub();
-          this.notify(this.SUCCESS_ASSIGNED, '', this.LogLevel.INFO, true);
+          this.notify(this.SUCCESS_ASSIGNED_TITLE, this.SUCCESS_ASSIGNED, this.LogLevel.INFO, true);
 
           if (
             X.stack.top &&

@@ -53,7 +53,7 @@ foam.CLASS({
     }
 
     ^query-bar {
-      padding: 40px 16px;
+      padding: 32px 16px;
     }
 
     ^toolbar {
@@ -61,8 +61,9 @@ foam.CLASS({
     }
 
     ^browse-view-container {
-      border-bottom: solid 1px #e7eaec;
       box-sizing: border-box;
+      height: 100%;
+      margin-bottom: 20px;
       padding: 0 16px;
       overflow: hidden;
     }
@@ -83,15 +84,11 @@ foam.CLASS({
       flex-grow: 1;
     }
 
-    ^ .foam-u2-view-SimpleSearch .foam-u2-search-TextSearchView .foam-u2-tag-Input {
+    ^ .foam-u2-view-SimpleSearch input {
       width: 100%;
       height: 34px;
       border-radius: 0 5px 5px 0;
       border: 1px solid;
-    }
-
-    ^browse-view-container .foam-u2-view-ScrollTableView {
-      height: calc(100% - 20px);
     }
   `,
 
@@ -258,7 +255,7 @@ foam.CLASS({
       var simpleSearch;
 
       if ( this.memento && ! this.memento.tail ) {
-        this.memento.tail = foam.nanos.controller.Memento.create({});
+        this.memento.tail = foam.nanos.controller.Memento.create();
       }
 
       this.addClass(this.myClass());
@@ -290,6 +287,7 @@ foam.CLASS({
           
           return self.E()
             .start(self.Rows)
+            .style({ height: '100%', 'justify-content': 'flex-start' })
               .callIf(config$cannedQueries.length >= 1, function() {
                 this
                   .start(self.Cols)

@@ -60,6 +60,8 @@ It then marshalls it to the primary mediator, and waits on a response.`,
       class: 'FObjectProperty',
       of: 'foam.nanos.logger.Logger',
       visibility: 'HIDDEN',
+      transient: true,
+      javaCloneProperty: '//noop',
       javaFactory: `
         return new PrefixLogger(new Object[] {
           this.getClass().getSimpleName(),
@@ -80,14 +82,13 @@ It then marshalls it to the primary mediator, and waits on a response.`,
     protected JSONFObjectFormatter initialValue() {
       JSONFObjectFormatter formatter = new JSONFObjectFormatter();
       formatter.setOutputShortNames(true);
-      formatter.setOutputClassNames(false);
+      formatter.setOutputClassNames(true);
       formatter.setOutputDefaultClassNames(false);
       formatter.setPropertyPredicate(
         new foam.lib.AndPropertyPredicate(new foam.lib.PropertyPredicate[] {
           new foam.lib.StoragePropertyPredicate(),
           new foam.lib.ClusterPropertyPredicate()
         }));
-      formatter.setCalculateNestedDelta(false);
       return formatter;
     }
 
@@ -101,17 +102,11 @@ It then marshalls it to the primary mediator, and waits on a response.`,
 
   protected static final ThreadLocal<FObjectFormatter> transientFormatter_ = new ThreadLocal<FObjectFormatter>() {
     @Override
-    protected JSONFObjectFormatter initialValue() {
-      JSONFObjectFormatter formatter = new JSONFObjectFormatter();
+    protected MedusaTransientJSONFObjectFormatter initialValue() {
+      MedusaTransientJSONFObjectFormatter formatter = new MedusaTransientJSONFObjectFormatter();
       formatter.setOutputShortNames(true);
-      formatter.setOutputClassNames(false);
+      formatter.setOutputClassNames(true);
       formatter.setOutputDefaultClassNames(false);
-      formatter.setPropertyPredicate(
-        new foam.lib.AndPropertyPredicate(new foam.lib.PropertyPredicate[] {
-          new foam.lib.StorageTransientPropertyPredicate(),
-          new foam.lib.ClusterPropertyPredicate()
-        }));
-      formatter.setCalculateNestedDelta(false);
       return formatter;
     }
 
@@ -429,11 +424,10 @@ It then marshalls it to the primary mediator, and waits on a response.`,
         } else {
           transientFormatter.output(obj);
           String data = transientFormatter.builder().toString();
-          if ( SafetyUtil.isEmpty(data) ||
-               "{}".equals(data) ) {
-            return null;
+          if ( ! SafetyUtil.isEmpty(data) ) {
+            return data;
           }
-          return data;
+          return null;
         }
       } finally {
         pm.log(x);

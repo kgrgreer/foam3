@@ -36,7 +36,9 @@ foam.CLASS({
 
   css: `
     ^container {
-      padding: 32px;
+      padding: 24px 32px 16px 32px;
+      height: 100%;
+      box-sizing: border-box;
     }
 
     ^header-container {
@@ -59,6 +61,7 @@ foam.CLASS({
       padding: 0px;
       border-radius: 6px;
       box-shadow: 0px 1px 3px 0px #E7E7E7;
+      height: 100%;
       -webkit-box-shadow: 0px 1px 3px 0px #E7E7E7;
       -moz-box-shadow: 0px 1px 3px 0px #E7E7E7;
     }
@@ -193,7 +196,7 @@ foam.CLASS({
                 })
               .end()
             .start(self.CardBorder)
-              .style({ position: 'relative' })
+              .style({ position: 'relative', 'min-height': config.minHeight })
               .start(config$browseBorder)
                 .callIf(config$browseViews.length > 1 && config.cannedQueries.length > 0, function() {
                   this

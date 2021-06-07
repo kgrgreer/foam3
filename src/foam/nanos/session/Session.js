@@ -295,6 +295,9 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
           Theme theme = ((Themes) x.get("themes")).findTheme(x);
           rtn = rtn.put("theme", theme);
 
+          // if there is no user, set spid to the theme spid so that spid restrictions can be applied
+          rtn = rtn.put("spid", theme.getSpid());
+
           AppConfig themeAppConfig = theme.getAppConfig();
           if ( themeAppConfig != null ) {
             appConfig.copyFrom(themeAppConfig);
@@ -302,7 +305,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
           appConfig = appConfig.configure(x, null);
 
           rtn = rtn.put("appConfig", appConfig);
-
+          rtn = rtn.put(foam.nanos.auth.LocaleSupport.CONTEXT_KEY, foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(rtn));
           return rtn;
         }
 
@@ -345,6 +348,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
             .put("appConfig", group.getAppConfig(rtn));
         }
         rtn = rtn.put("theme", ((Themes) x.get("themes")).findTheme(rtn));
+        rtn = rtn.put(foam.nanos.auth.LocaleSupport.CONTEXT_KEY, foam.nanos.auth.LocaleSupport.instance().findLanguageLocale(rtn));
 
         return rtn;
       `
@@ -385,11 +389,11 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
          || (user instanceof LifecycleAware && ((LifecycleAware)user).getLifecycleState() != LifecycleState.ACTIVE)
        ) {
           ((Logger) x.get("logger")).warning("Session", "User not found.", userId);
-          throw new RuntimeException(String.format("User with id '%d' not found.", userId));
+          throw new foam.nanos.auth.UserNotFoundException();
         }
 
         if ( ! user.getEnabled() ) {
-          throw new RuntimeException(String.format("The user with id '%d' has been disabled.", userId));
+          throw new foam.nanos.auth.AuthenticationException(String.format("The user with id '%d' has been disabled.", userId));
         }
       `
     }

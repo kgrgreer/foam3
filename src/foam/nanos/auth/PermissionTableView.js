@@ -177,6 +177,10 @@ foam.CLASS({
           checked: true
         });
 
+        data.checked$.sub(function() {
+          self.updateGroup(p, g, data.checked$, self);
+        });
+
         this.gpMap[key] = data;
       });
 
@@ -363,12 +367,12 @@ foam.CLASS({
               autoRepaint: true,
               width: 20,
               height: 200});
-            var l  = foam.graphics.Label.create({
+            var l = foam.graphics.Label.create({
               text: g.id,
               x: 25,
               y: 8,
               color: 'black',
-              font: '300 16px Roboto',
+              font: '300 16px Helvetica',
               width: 200,
               height: 20,
               rotation: -Math.PI/2});
@@ -407,7 +411,8 @@ foam.CLASS({
         dao.put(obj);
       } else {
         // Remove permission
-        dao.remove(obj);      }
+        dao.remove(obj);
+      }
     }
   ],
 

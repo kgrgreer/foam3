@@ -50,8 +50,8 @@ public class ErrorReportingPStream
   public void report(ErrorReportingNodePStream ernps, Parser parser, ParserContext x) {
     // get the report with the furthest position
     if ( errStream == null || errStream.pos_ <= ernps.pos_ ) {
-      errStream = ernps;
-      errParser = parser;
+      errStream  = ernps;
+      errParser  = parser;
       errContext = x;
     }
   }
@@ -62,7 +62,7 @@ public class ErrorReportingPStream
 
   public String getMessage() {
     // check if err is valid and print the char, if not print EOF
-    String invalid = ( errStream.valid() ) ? String.valueOf(errStream.head()) : "EOF";
+    String invalid = errStream.valid() ? String.valueOf(errStream.head()) : "EOF";
 
     // get a list of valid characters
     TrapPStream trap = new TrapPStream(this);
@@ -71,6 +71,9 @@ public class ErrorReportingPStream
       trap.apply(errParser, errContext);
     }
 
+    // TODO: @kristina add more context
+    // TODO: @kristina try removing a character
+    // " if ( firstname == 'kristina' ^ERROR^ { ..."
     return "Invalid character '" + invalid +
       "' found at " + errStream.pos_ + "\n" +
       "Valid characters include: " +

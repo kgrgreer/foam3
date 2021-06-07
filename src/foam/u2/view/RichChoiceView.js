@@ -451,12 +451,12 @@ foam.CLASS({
       // Set up an event listener on the window so we can close the dropdown
       // when the user clicks somewhere else.
       var containerU2Element;
-      const fn = function(evt) {
+      const fn = async function(evt) {
         // This prevents a console error when opening the dropdown.
         if ( containerU2Element === undefined ) return;
 
-        var selfDOMElement = self.el();
-        var containerDOMElement = containerU2Element.el();
+        var selfDOMElement = await self.el();
+        var containerDOMElement = await containerU2Element.el();
 
         // If an ancestor U2 Element was removed but didn't properly detach us,
         // then the DOM elements will be removed but the listener will still be
@@ -669,7 +669,7 @@ foam.CLASS({
           var summary = this.data.toSummary();
           return this
             .start()
-              .addClass(this.myClass('row'))
+              .addClasses(['p', this.myClass('row')])
               .translate(summary || ('richChoiceSummary.' + this.data.cls_.id + '.' + this.data.id), summary)
             .end();
         }

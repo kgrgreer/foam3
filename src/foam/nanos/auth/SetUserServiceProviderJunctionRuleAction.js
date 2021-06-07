@@ -35,7 +35,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.Capability',
-    'foam.nanos.crunch.UserCapabilityJunction'
+    'foam.nanos.crunch.UserCapabilityJunction',
+    'foam.nanos.logger.Logger'
   ],
 
   methods: [
@@ -51,6 +52,7 @@ foam.CLASS({
             if ( ! ( target instanceof ServiceProvider ) ) return;
 
             AuthService auth = (AuthService) x.get("auth");
+            Logger logger = (Logger) x.get("logger");
 
             // check that the user is authorized to perform this Service Provider update
             User admin = ((Subject) x.get("subject")).getUser();
@@ -72,6 +74,7 @@ foam.CLASS({
 
             // get grantpath and create/reput grantpath
             serviceProvider.setupSpid(x, user);
+            logger.debug("Updating spid capabilities for user", serviceProvider.getId(), user.getId());
 
             // finally set user spid to new spid
             DAO userDAO = (DAO) x.get("bareUserDAO");

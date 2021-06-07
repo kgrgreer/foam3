@@ -191,7 +191,7 @@ foam.CLASS({
     {
       name: 'memento',
       factory: function() {
-        return this.Memento.create();
+        return this.Memento.create({ replaceHistoryState : false });
       }
     },
     {
@@ -346,10 +346,18 @@ foam.CLASS({
       var self = this;
 
       // Start Memento Support
-      this.WindowHash.create({value$: this.memento.value$});
+      var windowHash = this.WindowHash.create();
+      this.memento.value = windowHash.value;
+
+      this.onDetach(windowHash.value$.sub(function() {
+        if ( windowHash.feedback_ )
+          return;
+        self.memento.value = windowHash.value;
+      }));
 
       this.onDetach(this.memento.changeIndicator$.sub(function () {
         self.memento.value = self.memento.combine();
+        windowHash.valueChanged(self.memento.value, self.memento.replaceHistoryState);
 
         if ( ! self.memento.feedback_ )
           self.mementoChange();
@@ -358,8 +366,10 @@ foam.CLASS({
       this.onDetach(this.memento.value$.sub(function () {
         self.memento.parseValue();
 
-        if ( ! self.memento.feedback_ )
+        if ( ! self.memento.feedback_ ) {
           self.mementoChange();
+          windowHash.valueChanged(self.memento.value, self.memento.replaceHistoryState);
+        }
       }));
       // End Memento Support
 
@@ -367,7 +377,7 @@ foam.CLASS({
         self.setPrivate_('__subContext__', client.__subContext__);
 
         await self.fetchTheme();
-        foam.locale = localStorage.getItem('localeLanguage') || self.theme.defaultLocaleLanguage;
+        foam.locale = localStorage.getItem('localeLanguage') || self.theme.defaultLocaleLanguage || 'en';
 
         await client.translationService.initLatch;
         self.installLanguage();
@@ -580,12 +590,13 @@ foam.CLASS({
     },
 
     function returnExpandedCSS(text) {
-      var text2 = text; 
+      var text2 = text;
       for ( var i = 0 ; i < this.MACROS.length ; i++ ) {
         let m = this.MACROS[i];
         text2 = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
+        text = text2;
       }
-      return text2;
+      return text;
     },
 
     function pushMenu(menu, opt_forceReload) {
@@ -624,12 +635,12 @@ foam.CLASS({
       var notification = this.Notification.create();
       notification.userId = this.subject && this.subject.realUser ?
         this.subject.realUser.id : this.user.id;
-      notification.toastMessage = toastMessage;
+      notification.toastMessage    = toastMessage;
       notification.toastSubMessage = toastSubMessage;
-      notification.toastState = this.ToastState.REQUESTED;
-      notification.severity = severity;
-      notification.transient = transient;
-      notification.icon = icon;
+      notification.toastState      = this.ToastState.REQUESTED;
+      notification.severity        = severity || this.LogLevel.INFO;
+      notification.transient       = transient;
+      notification.icon            = icon;
       this.__subContext__.notificationDAO.put(notification);
     }
   ],

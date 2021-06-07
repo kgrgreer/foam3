@@ -20,10 +20,19 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'user',
+      class: 'Reference',
+      of: 'foam.nanos.auth.User'
+    },
+    {
       name: 'group',
       class: 'Reference',
       of: 'foam.nanos.auth.Group',
-      value: 'noc'
+      value: 'support-ops'
+    },
+    {
+      name: 'slackWebhook',
+      class: 'String'
     }
   ],
 
@@ -75,12 +84,16 @@ foam.CLASS({
       args.put("alarm.note", alarm.getNote());
 
       Notification notification = new Notification.Builder(x)
+        .setUserId(getUser())
         .setGroupId(getGroup())
         .setSeverity(alarm.getSeverity())
         .setEmailName("alarm")
         .setEmailArgs(args)
         .setBody(body.toString())
         .build();
+     if ( ! foam.util.SafetyUtil.isEmpty(getSlackWebhook()) ) {
+       notification.setSlackWebhook(getSlackWebhook());
+     }
      ((DAO) x.get("localNotificationDAO")).put(notification);
       return alarm;
       `

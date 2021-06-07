@@ -89,16 +89,6 @@ foam.CLASS({
     },
     {
       name: 'allColumns',
-      expression: function(of) {
-        return ! of ? [] : [].concat(
-          of.getAxiomsByClass(foam.core.Property)
-            .filter(p => ! p.hidden )
-            .filter(p => ! p.columnHidden )
-            .map(a => a.name),
-          of.getAxiomsByClass(foam.core.Action)
-            .map(a => a.name)
-        );
-      }
     },
     {
       name: 'selectedColumnNames',
@@ -317,6 +307,13 @@ foam.CLASS({
     async function initE() {
       var view = this;
 
+      const asyncRes = await this.filterUnpermitted(view.of.getAxiomsByClass(foam.core.Property));
+      this.allColumns = ! view.of ? [] : [].concat(
+        asyncRes.map(a => a.name),
+        view.of.getAxiomsByClass(foam.core.Action)
+        .map(a => a.name)
+      );
+
       this.columns$.sub(this.updateColumns_);
       this.of$.sub(this.updateColumns_);
       this.editColumnsEnabled$.sub(this.updateColumns_);
@@ -423,7 +420,7 @@ foam.CLASS({
                   .style({
                     'align-items': 'center',
                     display: 'flex',
-                    flex: tableWidth ? `0 0 ${tableWidth}px` : '1 0 0',
+                    flex: tableWidth ? `1 0 ${tableWidth}px` : '3 0 0',
                     'justify-content': 'start',
                     'word-wrap': 'break-word'
                   })
@@ -673,7 +670,7 @@ foam.CLASS({
                     prop = objForCurrentProperty ? objForCurrentProperty.cls_.getAxiomByName(view.columnHandler.getNameOfLastPropertyForNestedProperty(propName)) : prop && prop.property ? prop.property : view.of.getAxiomByName(propName);
                     var tableWidth = view.columnHandler.returnPropertyForColumn(view.props, view.of, view.columns_[j], 'tableWidth');
 
-                    var elmt = tableRowElement.E().addClass(view.myClass('td')).style({flex: tableWidth ? `0 0 ${tableWidth}px` : '1 0 0'}).
+                    var elmt = tableRowElement.E().addClass(view.myClass('td')).style({flex: tableWidth ? `1 0 ${tableWidth}px` : '3 0 0'}).
                     callOn(prop.tableCellFormatter, 'format', [
                       prop.f ? prop.f(objForCurrentProperty) : null, objForCurrentProperty, prop
                     ]);
@@ -690,7 +687,10 @@ foam.CLASS({
                       tag(view.OverlayActionListView, {
                         data: Object.values(actions),
                         obj: obj,
-                        dao: dao
+                        dao: dao,
+                        showDropdownIcon: false,
+                        buttonStyle: 'TERTIARY',
+                        icon: 'images/Icon_More_Resting.svg'
                       }).
                     end();
                   tbodyElement.add(tableRowElement);
@@ -725,6 +725,16 @@ foam.CLASS({
       function returnMementoColumnNameDisregardSorting(c) {
         return c && this.shouldColumnBeSorted(c) ? c.substr(0, c.length - 1) : c;
       },
+      async function filterUnpermitted(arr) {
+        if ( this.auth ) {
+          const results = await Promise.all(arr.map( async p => 
+            p.hidden ? false : 
+            ! p.columnPermissionRequired || 
+            await this.auth.check(null, `${this.of.name.toLowerCase()}.column.${p.name}`)));
+          return arr.filter((_v, index) => results[index]);
+        }
+        return arr;
+      },
       {
         name: 'getActionsForRow',
         code: function(obj) {
@@ -745,7 +755,7 @@ foam.CLASS({
     {
       name: 'updateColumns_',
       isFramed: true,
-      code: function(columns, of, editColumnsEnabled, selectedColumnNames, allColumns) {
+      code: function() {
         if ( ! this.of ) return [];
         var auth = this.auth;
         var self = this;

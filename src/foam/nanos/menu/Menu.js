@@ -88,6 +88,12 @@
     },
     {
       class: 'String',
+      name: 'themeIcon',
+      documentation: 'Theme icon associated to the menu item.',
+      displayWidth: 80
+    },
+    {
+      class: 'String',
       name: 'activeIcon',
       documentation: 'Active icon associated to the menu item.',
       displayWidth: 80
@@ -116,6 +122,11 @@
     {
       class: 'StringArray',
       name: 'keywords'
+    },
+    {
+      class: 'Boolean',
+      name: 'authenticate',
+      value: true
     }
   ],
 
@@ -177,6 +188,7 @@
     {
       name: 'authorizeOnRead',
       javaCode: `
+        if ( ! getAuthenticate() ) return;
         AuthService auth = (AuthService) x.get("auth");
         if ( ! ( f(x) &&
                  auth.check(x, "menu.read." + getId()) ) ) {

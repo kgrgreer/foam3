@@ -64,7 +64,7 @@
     {
       type: 'Integer',
       name: 'TABLE_HEAD_HEIGHT',
-      value: 51
+      value: 52
     }
   ],
 
@@ -117,11 +117,6 @@
       name: 'pageSize',
       value: 30,
       documentation: 'The number of items in each "page". There are three pages.'
-    },
-    {
-      type: 'Boolean',
-      name: 'enableDynamicTableHeight',
-      value: true
     },
     {
       class: 'Boolean',
@@ -279,20 +274,6 @@
           }, this.__subContext__.createSubContext({ memento: this.table_.memento }));
         }
       }
-      
-
-      /*
-        to be used in cases where we don't want the whole table to
-        take the whole page (i.e. we need multiple tables)
-        and enableDynamicTableHeight can be switched off
-      */
-      if ( this.enableDynamicTableHeight ) {
-        this.onDetach(this.onload.sub(this.updateTableHeight));
-        window.addEventListener('resize', this.updateTableHeight);
-        this.onDetach(() => {
-          window.removeEventListener('resize', this.updateTableHeight);
-        });
-      }
 
       this.onDetach(this.table_$.sub(this.updateRenderedPages_));
     }
@@ -302,13 +283,14 @@
     {
       name: 'refresh',
       isFramed: true,
-      code: function() {
+      code: async function() {
         Object.keys(this.renderedPages_).forEach(i => {
           this.renderedPages_[i].remove();
           delete this.renderedPages_[i];
         });
         this.updateRenderedPages_();
-        if ( this.el() && ! this.isInit && this.currentMemento_ && this.currentMemento_.head.length != 0 ) {
+        var el = await this.el();
+        if ( ! this.isInit && this.currentMemento_ && this.currentMemento_.head.length != 0 ) {
           var scroll = this.currentMemento_.head * this.rowHeight;
           scroll = scroll >= this.rowHeight && scroll < this.scrollHeight ? scroll : 0;
 
@@ -316,7 +298,9 @@
             document.getElementById(this.tableWrapper_.id).scrollTop = scroll;
 
           this.isInit = true;
-        } else if ( this.el() ) this.el().scrollTop = 0;
+        } else {
+          el.scrollTop = 0;
+        }
       }
     },
     {
@@ -362,22 +346,6 @@
         if ( this.currentMemento_ ) {
           this.currentMemento_.head = this.scrollPos_ >= this.rowHeight && this.scrollPos_ < this.scrollHeight ? Math.floor( this.scrollPos_  / this.rowHeight) : 0;
         }
-      }
-    },
-    {
-      name: 'updateTableHeight',
-      code: function() {
-        // Find the distance from the top of the table to the top of the screen.
-        var distanceFromTop = this.el().getBoundingClientRect().y;
-
-        // Calculate the remaining space we have to make use of.
-        var remainingSpace = window.innerHeight - distanceFromTop;
-
-        // TODO: Do we want to do this?
-        // Leave space for the footer.
-        remainingSpace -= 44;
-
-        this.style({ height: `${remainingSpace}px` });
       }
     },
     function dblclick(obj, id) {

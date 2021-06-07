@@ -144,7 +144,7 @@ foam.CLASS({
             this.formatted${capitalized}_ = (String) method.invoke(${cls.name}.${constantize}, (Object) this);
             this.formatted${capitalized}IsSet_ = true;
             return this.formatted${capitalized}_;
-          } 
+          }
           catch (NoSuchMethodException e) { }
           catch (IllegalAccessException e) { }
           catch (java.lang.reflect.InvocationTargetException e) { }
@@ -209,8 +209,10 @@ foam.CLASS({
         if ( d == foam.Date.MAX_DATE || d == foam.Date.MIN_DATE ) return d;
         if ( foam.Date.isInstance(d) ) {
           // Convert the Date to Noon time in GMT
-          var timeOfDay = d.getTime() % (1000*60*60*24);
-          d = new Date(d.getTime() - timeOfDay + 12 * 60 * 60000);
+          const DAY = 1000*60*60*24;
+          // Add many days to time so not to break for negative times before EPOCH of 1970
+          var timeOfDay = (d.getTime() + 100000 * DAY) % DAY;
+          return new Date(d.getTime() - timeOfDay + 12 * 60 * 60000);
         }
         return d;
       }
@@ -639,6 +641,13 @@ foam.CLASS({
   properties: [ [ 'displayWidth', 80 ] ]
 });
 
+foam.CLASS({
+  package: 'foam.core',
+  name: 'Website',
+  extends: 'URL',
+  label: `Websites (requires 'http(s)'/'www' links)`
+});
+
 
 foam.CLASS({
   package: 'foam.core',
@@ -908,10 +917,19 @@ foam.CLASS({
   methods: [
     function installInProto(proto) {
       this.SUPER(proto);
-      var self = this;
+      var self    = this;
+      var daoName = self.name + '$dao';
+
+      Object.defineProperty(proto, daoName, {
+        get: function classGetter() {
+          return this.__subContext__[self.targetDAOKey] || this[self.targetDAOKey];
+        },
+        configurable: true
+      });
+
       Object.defineProperty(proto, self.name + '$find', {
         get: function classGetter() {
-          return this.__subContext__[self.targetDAOKey].find(this[self.name]);
+          return this[daoName].find(this[self.name]);
         },
         configurable: true
       });

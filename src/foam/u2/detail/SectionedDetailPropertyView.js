@@ -9,9 +9,7 @@ foam.CLASS({
   name: 'SectionedDetailPropertyView',
   extends: 'foam.u2.View',
 
-  documentation: `
-    View for one property of a SectionedDetailView.
-  `,
+  documentation: 'View for one property of a SectionedDetailView.',
 
   css: `
     ^ {
@@ -28,9 +26,9 @@ foam.CLASS({
       cursor: pointer;
       float: right;
       padding-left: 12px;
-      user-select: none; 
-      -moz-user-select: none; 
-      -webkit-user-select: none; 
+      user-select: none;
+      -moz-user-select: none;
+      -webkit-user-select: none;
     }
 
     ^tooltip {
@@ -187,7 +185,7 @@ foam.CLASS({
     'foam.u2.tag.CircleIndicator'
   ],
 
-  imports: ['theme?'],
+  imports: [ 'theme?' ],
 
   properties: [
     'prop',
@@ -195,7 +193,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'HELP', message: 'Help' },
+    { name: 'HELP',       message: 'Help' },
     { name: 'LEARN_MORE', message: 'Click to learn more' }
   ],
 

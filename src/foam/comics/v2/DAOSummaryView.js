@@ -276,6 +276,11 @@ foam.CLASS({
           m = m.tail;
           counter++;
         }
+
+        this.currentMemento_ = m;
+        if ( ! this.currentMemento_ ) {
+          this.currentMemento_ = foam.nanos.controller.Memento.create();
+        }
       }
 
       var promise = this.config.unfilteredDAO.inX(this.__subContext__).find(this.data ? this.data.id : this.idOfRecord);
@@ -297,7 +302,7 @@ foam.CLASS({
                   .startContext({ onBack: self.onBack })
                     .tag(self.BACK, {
                       buttonStyle: foam.u2.ButtonStyle.LINK,
-                      icon: 'images/back-icon.svg',
+                      themeIcon: 'back',
                       label: self.backLabel
                     })
                   .endContext()
@@ -316,14 +321,17 @@ foam.CLASS({
                     .startContext({ data: self })
                       .tag(self.EDIT, {
                         buttonStyle: foam.u2.ButtonStyle.LINK,
+                        themeIcon: 'edit',
                         icon: 'images/edit-icon.svg'
                       })
                       .tag(self.COPY, {
                         buttonStyle: foam.u2.ButtonStyle.LINK,
+                        themeIcon: 'copy',
                         icon: 'images/copy-icon.svg'
                       })
                       .tag(self.DELETE, {
                         buttonStyle: foam.u2.ButtonStyle.LINK,
+                        themeIcon: 'trash',
                         icon: 'images/delete-icon.svg'
                       })
                     .endContext()

@@ -43,8 +43,8 @@ public class PreventDuplicateEmailTest
     test(
       TestUtils.testThrows(
         () -> action.applyAction(x, userWithDuplicateEmail, null, null, null, null),
-        "User with same email already exists: " + userWithDuplicateEmail.getEmail(),
-        RuntimeException.class
+        "Email already in use",
+        foam.nanos.auth.DuplicateEmailException.class
       ),
       "Rule throws a RuntimeException with an appropriate message when a User is put with the same email as an existing user and a different id."
     );

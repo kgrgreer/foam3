@@ -53,6 +53,10 @@ foam.CLASS({
       class: 'String',
       name: 'groupToNotify',
       value: 'fraud-ops'
+    },
+    {
+      class: 'StringArray',
+      name: 'additionalGroupsToNotify'
     }
   ],
 
@@ -165,6 +169,7 @@ foam.CLASS({
                   .setOperation(operation)
                   .setCreatedFor(user.getId())
                   .setGroup(getGroupToNotify())
+                  .setAdditionalGroups(getAdditionalGroupsToNotify())
                   .setClassificationEnum(ApprovalRequestClassificationEnum.CAPABLE_CREATED_APPROVAL)
                   .setDescription(capName + FOR + objName + " - id:" + String.valueOf(obj.getProperty("id")))
                   .setStatus(ApprovalStatus.REQUESTED).build();

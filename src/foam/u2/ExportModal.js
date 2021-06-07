@@ -59,6 +59,10 @@ foam.CLASS({
       name: 'predicate',
       factory: function() { return foam.mlang.predicate.True.create(); }
     },
+    {
+      name: 'unknownExportDriverRegistry',
+      factory: function() { return foam.nanos.export.ExportDriverRegistry.create(); }
+    },
     'exportData',
     'exportObj',
     {
@@ -125,7 +129,7 @@ foam.CLASS({
       margin-left: 24px;
     }
     ^buttons {
-      padding: 12px 12px 0px 12px;
+      padding: 12px 12px 0px 24px;
       position: relative;
       top: 10;
     }
@@ -140,18 +144,18 @@ foam.CLASS({
       var self = this;
       this.SUPER();
 
-      console.log(this.dataType);
-      self.exportDriverRegistryDAO.where(self.predicate).select().then(function(val) {
-        self.exportDriverRegistryDAO.find(val.array[0].id).then(function(val) {
-          self.exportDriverReg = val;
-          self.exportDriver = foam.lookup(self.exportDriverReg.driverName).create();
-        });
-      });
+      this.exportDriverReg = this.unknownExportDriverRegistry;
+      this.exportDriver = undefined;
 
       self.dataType$.sub(function() {
         self.exportDriverRegistryDAO.find(self.dataType).then(function(val) {
-          self.exportDriverReg = val;
-          self.exportDriver = foam.lookup(self.exportDriverReg.driverName).create();
+          if ( ! val ) {
+            self.exportDriverReg = self.unknownExportDriverRegistry;
+            self.exportDriver = undefined;
+          } else {
+            self.exportDriverReg = val;
+            self.exportDriver = foam.lookup(self.exportDriverReg.driverName).create();           
+          }
         });
       });
 
@@ -171,7 +175,9 @@ foam.CLASS({
           .start().addClass('label').style({'padding-top': '14px'}).add(this.DATA_TYPE_MSG).end()
           .start().style({'margin-left': '24px'}).add(this.DATA_TYPE).end()
           .add(this.slot(function (exportDriver) {
-            return this.E().add(exportDriver);
+            return this.E()
+              .show(exportDriver && exportDriver.cls_.getAxiomsByClass(foam.core.Property).some(p => ! p.hidden))
+              .add(exportDriver);
           }))
           .start().show(this.isDataTypeSelected$)
             .start().addClass('label').style({'padding-top': '14px'}).add(this.RESPONSE).end()

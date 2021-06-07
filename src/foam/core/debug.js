@@ -337,8 +337,8 @@ foam.SCRIPT({
         this.log(
           'Context:',
           this.hasOwnProperty('NAME') ? this.NAME : ('anonymous ' + this.$UID));
-        this.log('KEY                                 Type                                Value');
-        this.log('----------------------------------------------------------------------------------------');
+        this.log('KEY                                      Type                                     Value');
+        this.log('--------------------------------------------------------------------------------------------------');
         for ( var key in this ) {
           try {
             var value = this[key];
@@ -349,9 +349,10 @@ foam.SCRIPT({
             if ( type == 'ConstantSlot' ) value = value.get();
             if ( foam.core.FObject.isInstance(value) ) value = value.cls_.name;
             this.log(
-              foam.String.pad(key,  35),
-              foam.String.pad(type, 35),
-              type === 'string' ? '"' + value + '"' : (typeof value === 'number' || typeof value === 'boolean') ? value : '');
+              foam.String.pad(key,  40),
+              foam.String.pad(type, 40),
+              value);
+//              type === 'string' ? '"' + value + '"' : (typeof value === 'number' || typeof value === 'boolean') ? value : '');
           } catch (x) {
           }
         }

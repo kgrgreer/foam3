@@ -80,15 +80,11 @@ foam.CLASS({
       flex: 1 1 80%;
     }
 
-    ^general-field .foam-u2-tag-Input {
-      width: 100%;
-      height: 34px;
-      border-radius: 0 5px 5px 0;
+    ^general-field input {
       border: 1px solid /*%GREY4%*/ #e7eaec;
-    }
-
-    ^container-search .foam-u2-search-TextSearchView {
-      margin: 0;
+      border-radius: 0 5px 5px 0;
+      height: 34px;
+      width: 100%;
     }
 
     ^container-handle {
@@ -102,31 +98,12 @@ foam.CLASS({
       flex: 1 1 5%;
       display: flex;
       align-items: center;
-    }
-
-    ^handle-title {
-      flex: 1;
-      margin: 0;
-      text-align: center;
+      justify-content: center;
     }
 
     ^container-handle:hover {
       cursor: pointer;
       background-image: linear-gradient(to bottom, #ffffff, #d3d6d8);
-    }
-
-    ^container-footer {
-      margin-top: 8px;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-    }
-
-    ^label-results {
-      margin: 0;
-      font-size: 12px;
-      padding: 0 8px;
-      flex: 1;
     }
 
     ^link-mode {
@@ -184,15 +161,11 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'LABEL_FILTER', message: 'Filters'},
-    { name: 'LABEL_RESULTS', message: 'Filter results: '},
-    { name: 'LABEL_CLEAR', message: 'Clear filters'},
-    { name: 'LINK_ADVANCED', message: 'Advanced filters'},
-    { name: 'LINK_SIMPLE', message: 'Switch to simple filters'},
-    { name: 'MESSAGE_ADVANCEDMODE', message: 'Advanced filters are currently being used.'},
-    { name: 'MESSAGE_VIEWADVANCED', message: 'View filters'},
-    { name: 'LABEL_SEARCH', message: 'Search'},
-    { name: 'SELECTED', message: 'selected'},
+    { name: 'LABEL_RESULTS', message: 'Filter results: ' },
+    { name: 'LINK_ADVANCED', message: 'Advanced filters' },
+    { name: 'LINK_SIMPLE', message: 'Switch to simple filters' },
+    { name: 'MESSAGE_ADVANCEDMODE', message: 'Advanced filters are currently being used.' },
+    { name: 'SELECTED', message: 'selected' },
   ],
 
   properties: [
@@ -308,11 +281,7 @@ foam.CLASS({
           self.generalSearchField = foam.u2.ViewSpec.createView(self.TextSearchView, {
             richSearch: true,
             of: self.dao.of.id,
-            onKey: true,
-            viewSpec: {
-              class: 'foam.u2.tag.Input',
-              placeholder: this.LABEL_SEARCH
-            }
+            onKey: true
           },  this, self.__subSubContext__.createSubContext({ memento: self.currentMemento_ }));
 
           if ( self.currentMemento_ ) self.currentMemento_ = self.currentMemento_.tail;
@@ -323,8 +292,9 @@ foam.CLASS({
           e.onDetach(self.filterController);
           e.start().addClass(self.myClass('container-search'))
             .start().addClass(self.myClass('container-handle'))
-              .on('click', self.toggleDrawer)
-              .start('p').addClass(self.myClass('handle-title')).add(self.LABEL_FILTER).end()
+            .startContext({ data: self })
+              .tag(self.TOGGLE_DRAWER, { buttonStyle: 'UNSTYLED' })
+            .endContext()
             .end()
             .start()
               .add(self.generalSearchField)
@@ -374,26 +344,24 @@ foam.CLASS({
                   .start('p')
                     .show(self.filterController$.dot('isAdvanced'))
                     .addClass(self.myClass('message-view'))
-                    .on('click', self.openAdvanced)
-                    .add(self.MESSAGE_VIEWADVANCED)
+                    .startContext({ data: self })
+                      .tag(self.OPEN_ADVANCED, { buttonStyle: 'TERTIARY' })
+                    .endContext()
                   .end()
                 .end()
                 .start('p')
                   .hide(self.filterController$.dot('isAdvanced'))
                   .addClass(self.myClass('link-mode'))
                   .addClass('clear')
-                  .on('click', self.clearAll)
-                  .add(self.LABEL_CLEAR)
+                  .startContext({ data: self })
+                    .tag(self.CLEAR_ALL, {
+                      isDestructive: true,
+                      buttonStyle: 'TERTIARY'
+                    })
+                  .endContext()
                 .end()
-
-            .end()
-            .start().addClass(self.myClass('container-footer'))
-              .start('p')
-                .addClass(self.myClass('label-results'))
-                .add(self.resultLabel$)
-              .end()
             .end();
-          }))
+          }));
 
           return e;
         }, this.filters$));
@@ -428,21 +396,6 @@ foam.CLASS({
 
   listeners: [
     {
-      name: 'toggleDrawer',
-      code: function() {
-        this.isOpen = ! this.isOpen;
-      }
-    },
-    {
-      name: 'clearAll',
-      code: function() {
-        // clear all filters
-        if ( this.filterController.isAdvanced ) return;
-        this.filterController.clearAll();
-        this.generalSearchField.view.data = '';
-      }
-    },
-    {
       name: 'toggleMode',
       code: function() {
         if ( this.filterController.isAdvanced ) {
@@ -452,15 +405,6 @@ foam.CLASS({
         }
         this.filterController.switchToPreview();
         this.openAdvanced();
-      }
-    },
-    {
-      name: 'openAdvanced',
-      code: function() {
-        this.add(this.Popup.create().tag({
-          class: 'foam.u2.filter.advanced.AdvancedFilterView',
-          dao$: this.dao$
-        }));
       }
     },
     {
@@ -507,6 +451,36 @@ foam.CLASS({
         }
       }
       return counter;
+    }
+  ],
+
+  actions: [
+    {
+      name: 'clearAll',
+      label: 'Clear all',
+      code: function() {
+        // clear all filters
+        if ( this.filterController.isAdvanced ) return;
+        this.filterController.clearAll();
+        this.generalSearchField.view.data = '';
+      }
+    },
+    {
+      name: 'toggleDrawer',
+      label: 'Filters',
+      code: function() {
+        this.isOpen = ! this.isOpen;
+      }
+    },
+    {
+      name: 'openAdvanced',
+      label: 'View filters',
+      code: function() {
+        this.add(this.Popup.create().tag({
+          class: 'foam.u2.filter.advanced.AdvancedFilterView',
+          dao$: this.dao$
+        }));
+      }
     }
   ]
 });

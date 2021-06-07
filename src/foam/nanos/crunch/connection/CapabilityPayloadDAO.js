@@ -59,8 +59,9 @@ foam.CLASS({
       name: 'logger',
       class: 'FObjectProperty',
       of: 'foam.nanos.logger.Logger',
-      transient: true,
       visibility: 'HIDDEN',
+      transient: true,
+      javaCloneProperty: '//noop',
       javaFactory: `
         return new PrefixLogger(new Object[] {
           this.getClass().getSimpleName()
@@ -228,14 +229,14 @@ foam.CLASS({
                 } catch (ValidationException ve) {
                   validationErrors.put(
                     String.format("%s[%s]", key, ve.getPropName()), 
-                    ve.getErrorMessage());
+                    ve.getMessage());
                 } catch (CompoundException ce) {
                   for ( var t : ce.getExceptions() ) {
                     if ( t instanceof ValidationException ) {
                       var ve = (ValidationException) t;
                       validationErrors.put(
                         String.format("%s[%s]", key, ve.getPropName()),
-                        ve.getErrorMessage());
+                        ve.getMessage());
                     }
                   }
                 } catch (Throwable t) {

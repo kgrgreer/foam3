@@ -16,9 +16,8 @@ import foam.lib.json.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.nanos.dig.exception.DigErrorMessage;
 import foam.nanos.http.Format;
-
-import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * DigUtil contains static utility methods for working with Dig and Sugar.
@@ -32,35 +31,37 @@ public class DigUtil {
    * @param format The format of the output.
    */
   public static void outputException(X x, DigErrorMessage error, Format format) {
-    HttpServletResponse resp = x.get(HttpServletResponse.class);
-
-    resp.setStatus(Integer.parseInt(error.getStatus()));
-    outputFObject(x, error, format);
+    outputFObject(x, error, Integer.parseInt(error.getStatus()), format);
   }
 
   public static void outputFOAMException(X x, FOAMException foamException, int status, Format format) {
+    outputFObject(x, foamException, status, format);
+  }
+
+  public static void outputFObject(X x, FOAMException error, int status, Format format) {
     HttpServletResponse resp = x.get(HttpServletResponse.class);
+    PrintWriter         out  = x.get(PrintWriter.class);
 
     resp.setStatus(status);
-    outputFObject(x, foamException, format);
+    outputFObject(x, error, format);
   }
 
   public static void outputFObject(X x, FObject object, Format format) {
-    HttpServletResponse resp  = x.get(HttpServletResponse.class);
-    PrintWriter         out   = x.get(PrintWriter.class);
+    HttpServletResponse resp = x.get(HttpServletResponse.class);
+    PrintWriter         out  = x.get(PrintWriter.class);
 
     if ( format == Format.JSON ) {
-      //output error in json format
+      //output object in json format
       resp.setContentType("application/json");
 
       JSONParser jsonParser = new JSONParser();
       jsonParser.setX(x);
       foam.lib.json.Outputter outputterJson = new foam.lib.json.Outputter(x)
         .setPropertyPredicate(
-          new foam.lib.AndPropertyPredicate(x, 
+          new foam.lib.AndPropertyPredicate(x,
             new foam.lib.PropertyPredicate[] {
               new foam.lib.ExternalPropertyPredicate(),
-              new foam.lib.NetworkPropertyPredicate(), 
+              new foam.lib.NetworkPropertyPredicate(),
               new foam.lib.PermissionedPropertyPredicate()}));
 
       outputterJson.setOutputDefaultValues(true);
@@ -70,7 +71,7 @@ public class DigUtil {
       out.println(outputterJson.toString());
 
     } else if ( format == Format.XML )  {
-      //output error in xml format
+      //output object in xml format
       resp.setContentType("application/xml");
 
       foam.lib.xml.Outputter outputterXml = new foam.lib.xml.Outputter(OutputterMode.NETWORK);
@@ -78,7 +79,7 @@ public class DigUtil {
       out.println(outputterXml.toString());
 
     } else if ( format == Format.CSV )  {
-      //output error in csv format
+      //output object in csv format
       resp.setContentType("text/csv");
 
       CSVOutputter outputterCsv = new foam.lib.csv.CSVOutputterImpl.Builder(x).build();
@@ -86,7 +87,7 @@ public class DigUtil {
       out.println(outputterCsv.toString());
 
     } else if ( format == Format.HTML ) {
-      //output error in html format
+      //output object in html format
       resp.setContentType("text/html");
 
       foam.lib.html.Outputter outputterHtml = new foam.lib.html.Outputter(OutputterMode.NETWORK);
@@ -98,14 +99,14 @@ public class DigUtil {
       outputterHtml.outputEndHtml();
       out.println(outputterHtml.toString());
     } else if ( format == Format.JSONJ ) {
-      //output error in jsonJ format
+      //output object in jsonJ format
       resp.setContentType("application/json");
 
       JSONParser jsonParser = new JSONParser();
       jsonParser.setX(x);
       foam.lib.json.Outputter outputterJsonJ = new foam.lib.json.Outputter(x)
         .setPropertyPredicate(
-          new foam.lib.AndPropertyPredicate(x, 
+          new foam.lib.AndPropertyPredicate(x,
             new foam.lib.PropertyPredicate[] {
               new foam.lib.ExternalPropertyPredicate(),
               new foam.lib.NetworkPropertyPredicate(),
@@ -115,7 +116,6 @@ public class DigUtil {
       outputterJsonJ.setMultiLine(true);
       outputterJsonJ.outputJSONJFObject(object);
       out.println(outputterJsonJ.toString());
-
     } else {
       throw new UnsupportedOperationException(
         String.format("Output FObject in %s format is not supported.", format.getName()));

@@ -17,13 +17,21 @@ foam.CLASS({
     'foam.u2.view.ReferenceCitationView'
   ],
 
+  axioms: [
+    foam.pattern.Faceted.create()
+  ],
+
   properties: [
     'obj',
+    {
+      name: 'of',
+      expression: function(obj) { return obj.cls_; }
+    },
     'prop',
     {
-      documentation: `Create the reference view as an anchor link to the reference's  DetailView.`,
-      name: 'enableLink',
       class: 'Boolean',
+      name: 'enableLink',
+      documentation: 'Create the reference view as an anchor link to the reference\'s DetailView.',
       value: true
     }
   ],
@@ -45,24 +53,24 @@ foam.CLASS({
             if ( ! obj ) return '';
             if ( this.enableLink ) {
               return this.E().start('a')
-                .attrs({ href: '#'})
+                .attrs({href: '#'})
                 .on('click', function(evt) {
                   evt.preventDefault();
                   self.stack.push({
-                    class: 'foam.comics.v2.DAOSummaryView',
-                    data: self.obj,
-                    of: self.obj.cls_,
+                    class:     'foam.comics.v2.DAOSummaryView',
+                    data:      self.obj,
+                    of:        self.of,
+                    backLabel: 'Back',
                     config: self.DAOControllerConfig.create({
                       daoKey: self.prop.targetDAOKey
-                    }),
-                    backLabel: 'Back'
+                    })
                   }, self);
                 })
                 .tag(self.ReferenceCitationView, {data: obj})
               .end();
             } else {
               return this.E().start()
-              .tag(self.ReferenceCitationView, {data: obj})
+                .tag(self.ReferenceCitationView, {data: obj})
               .end();
             }
           }));
@@ -78,6 +86,7 @@ foam.CLASS({
           dao.find(this.data).then((o) => this.obj = o);
       });
     },
+
     async function permissionEnableLinkCheck() {
       if ( ! this.auth ) return;
       let permission = `${this.prop.of.id}.${this.prop.name}.disableRefLink`;
