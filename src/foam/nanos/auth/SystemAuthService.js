@@ -12,11 +12,19 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.auth.Group',
     'foam.nanos.session.Session',
-    'javax.security.auth.AuthPermission'
+    'javax.security.auth.AuthPermission',
+    'java.util.Map',
+    'java.util.concurrent.ConcurrentHashMap',
   ],
 
-  constants: [
-    { name: 'CACHE_KEY', value: 'system.auth.cache' }
+  properties: [
+    {
+      class: 'Map',
+      name: 'cache',
+      javaFactory: `
+        return new ConcurrentHashMap<String, Boolean>();
+      `
+    }
   ],
 
   methods: [
@@ -28,17 +36,17 @@ foam.CLASS({
         if ( user != null && user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID ) {
           return true;
         }
+
         // Response from group implies is cached to maintain intended performance.
         if ( group != null ) {
-          Session session = x.get(Session.class);
-          Boolean isSuper = (Boolean) session.getContext().get(CACHE_KEY);
-          if ( isSuper == null ) {
-            isSuper = group.implies(x, new AuthPermission("*"));
-            session.setContext(session.getContext().put(CACHE_KEY, isSuper));
+          Map<String, Boolean> cache = ( Map<String, Boolean> ) getCache();
+          if ( cache.get(group.getId()) == null ) {
+            boolean isSuper = group.implies(x, new AuthPermission("*"));
+            cache.put(group.getId(), isSuper);
+            return isSuper || getDelegate().check(x, permission);
           }
-          return isSuper || getDelegate().check(x, permission);
+          return cache.get(group.getId()) || getDelegate().check(x, permission);
         }
-
         return getDelegate().check(x, permission);
       `
     }
