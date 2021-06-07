@@ -14,7 +14,9 @@
   ],
 
   documentation: `
-    An ucj approvable.
+    UCJApprovable is used when we want to view a UCJ in an Approval Request's
+    'View Reference'. UCJApprovable stores an EasyCrunchWizard configuration
+    that's used to to customize UCJView's behaviour.
   `,
 
   requires: [
@@ -28,7 +30,9 @@
   properties: [
     {
       name: 'lookupId',
-      value: '123'
+      expression: function(ucj) {
+        return ucj.id;
+      }
     },
     {
       name: 'disablePut',
