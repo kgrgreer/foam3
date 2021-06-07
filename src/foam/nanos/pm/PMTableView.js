@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.pm',
   name: 'PMTableView',
-  extends: 'foam.u2.view.ScrollTableView',
+  extends: 'foam.u2.view.TableView',
 
   documentation: 'TableView for displaying PMInfos.',
 
@@ -21,6 +21,7 @@ foam.CLASS({
   constants: { CSS_CLASS: 'foam-u2-view-TableView' },
 
   css: `
+    ^ { overflow: auto; }
     ^ .foam-u2-ActionView-clearAll { margin-bottom: 10px; }
     ^ .foam-u2-ActionView-create { display: none; }
     ^ .foam-u2-ActionView-edit   { display: none; }

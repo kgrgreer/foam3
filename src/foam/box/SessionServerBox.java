@@ -187,7 +187,7 @@ public class SessionServerBox
       msg.getLocalAttributes().put("x", effectiveContext);
       getDelegate().send(msg);
     } catch (Throwable t) {
-      logger.error(t.getMessage(), t);
+      logger.warning(t.getMessage());
       msg.replyWithException(t);
 
       AppConfig appConfig = (AppConfig) getX().get("appConfig");

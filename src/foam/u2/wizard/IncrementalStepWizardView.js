@@ -85,7 +85,6 @@ foam.CLASS({
     ^hide-X-status {
       background-color: %WHITE%;
       padding: 50px;
-      padding-top: 75px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;

@@ -61,8 +61,7 @@ foam.CLASS({
       padding: 0px;
       border-radius: 6px;
       box-shadow: 0px 1px 3px 0px #E7E7E7;
-      height: -webkit-fill-available;
-      height: fill-available;
+      height: 100%;
       -webkit-box-shadow: 0px 1px 3px 0px #E7E7E7;
       -moz-box-shadow: 0px 1px 3px 0px #E7E7E7;
     }

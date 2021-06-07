@@ -11,13 +11,6 @@ foam.CLASS({
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
-  messages: [
-    {
-      name: 'EXCEPTION_MESSAGE',
-      message: 'Primary not found'
-    }
-  ],
-
   axioms: [
     {
       name: 'javaExtras',
@@ -25,7 +18,7 @@ foam.CLASS({
         cls.extras.push(foam.java.Code.create({
           data: `
   public PrimaryNotFoundException() {
-    super(EXCEPTION_MESSAGE);
+    super();
   }
           `
         }));
