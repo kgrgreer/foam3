@@ -28,28 +28,14 @@ foam.CLASS({
       javaFactory: `
         return new ConcurrentHashMap<String, Boolean>();
       `
-    },
-    {
-      class: 'Boolean',
-      name: 'initialized'
     }
   ],
 
   methods: [
     {
-      name: 'initCache',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-      ],
+      name: 'init',
       javaCode: `
-        if ( getInitialized() ) {
-          return;
-        }
-
-        DAO groupPermissionJunctionDAO = (DAO) x.get("groupPermissionJunctionDAO");
+        DAO groupPermissionJunctionDAO = (DAO) getX().get("groupPermissionJunctionDAO");
         if ( groupPermissionJunctionDAO == null ) {
           return;
         }
@@ -68,7 +54,6 @@ foam.CLASS({
             cache.clear();
           }
         }, TRUE);
-        setInitialized(true);
       `
     },
     {
@@ -80,19 +65,37 @@ foam.CLASS({
           return true;
         }
 
-        // Response from group implies is cached to maintain intended performance.
-        if ( group != null ) {
-          this.initCache(x);
-          Map<String, Boolean> cache = getCache();
-          var groupCache = cache.get(group.getId());
-          if ( groupCache == null ) {
-            boolean isSuper = group.implies(x, new AuthPermission("*"));
-            cache.put(group.getId(), isSuper);
-            return isSuper || getDelegate().check(x, permission);
-          }
-          return groupCache || getDelegate().check(x, permission);
+        return isAdmin(x, group) || getDelegate().check(x, permission);
+      `
+    },
+    {
+      name: 'isAdmin',
+      javaType: 'Boolean',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'group',
+          type: 'foam.nanos.auth.Group'
         }
-        return getDelegate().check(x, permission);
+      ],
+      javaCode: `
+        AuthService auth = (AuthService) x.get("auth");
+
+        if ( group == null ) {
+          return false;
+        }
+
+        Map<String, Boolean> cache = getCache();
+        var groupCache = cache.get(group.getId());
+        if ( groupCache == null ) {
+          boolean isSuper = auth.checkGroup(x, group.getId(), "*");
+          cache.put(group.getId(), isSuper);
+          return isSuper;
+        }
+        return groupCache;
       `
     }
   ]
