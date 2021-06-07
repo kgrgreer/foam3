@@ -82,12 +82,10 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        AuthService auth = (AuthService) x.get("auth");
-
         if ( group == null ) {
           return false;
         }
-
+        AuthService auth = (AuthService) x.get("auth");
         Map<String, Boolean> cache = getCache();
         var groupCache = cache.get(group.getId());
         if ( groupCache == null ) {
