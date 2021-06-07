@@ -104,6 +104,7 @@ foam.CLASS({
 
     ^dropdownIcon {
       margin-left: 4px;
+      width: 1.5em;
     }
   `,
 
@@ -197,12 +198,12 @@ foam.CLASS({
       }
 
       if ( e.shiftKey ) {
-        if ( this.document.activeElement === this.firstEl_.el() ) {
+        if ( this.document.activeElement === this.firstEl_.el_() ) {
           this.lastEl_.focus();
           e.preventDefault();
         }
       } else {
-        if ( this.document.activeElement === this.lastEl_.el() ) {
+        if ( this.document.activeElement === this.lastEl_.el_() ) {
           this.firstEl_.focus();
           e.preventDefault();
         }

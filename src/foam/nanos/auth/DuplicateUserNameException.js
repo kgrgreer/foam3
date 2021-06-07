@@ -5,16 +5,16 @@
  */
 
 foam.CLASS({
-  name: 'AccountLockedException',
+  name: 'DuplicateUserNameException',
   package: 'foam.nanos.auth',
-  extends: 'foam.nanos.auth.AuthenticationException',
+  extends: 'foam.core.ValidationException',
   javaGenerateDefaultConstructor: false,
   javaGenerateConvenienceConstructor: false,
 
   properties: [
     {
       name: 'exceptionMessage',
-      value: 'Please contact customer service'
+      value: 'UserName already in use'
     }
   ],
 
@@ -23,14 +23,21 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(`
-  public AccountLockedException() {
+  public DuplicateUserNameException() {
     super();
   }
 
-  public AccountLockedException(Exception cause) {
+  public DuplicateUserNameException(String message) {
+    super(message);
+  }
+
+  public DuplicateUserNameException(Throwable cause) {
     super(cause);
   }
 
+  public DuplicateUserNameException(String message, Throwable cause) {
+    super(message, cause);
+  }
         `);
       }
     }

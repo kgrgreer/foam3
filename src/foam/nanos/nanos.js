@@ -62,9 +62,12 @@ FOAM_FILES([
   { name: "foam/nanos/auth/AgentJunctionStatus" },
   { name: "foam/nanos/auth/DeletedAware" },
   { name: "foam/nanos/auth/DeletedAwareDAOTest" },
+  { name: 'foam/nanos/auth/DuplicateEmailException' },
+  { name: 'foam/nanos/auth/DuplicateUserNameException' },
   { name: "foam/nanos/auth/PasswordPolicy" },
   { name: "foam/nanos/auth/Group" },
   { name: 'foam/nanos/auth/HumanNameTrait' },
+  { name: 'foam/nanos/auth/InvalidPasswordException' },
   { name: "foam/nanos/auth/LifecycleState" },
   { name: "foam/nanos/auth/LifecycleAware" },
   { name: 'foam/nanos/notification/Notifiable' },
@@ -557,6 +560,7 @@ FOAM_FILES([
   { name: 'foam/nanos/approval/CompositeApprovable' },
   { name: 'foam/nanos/approval/CustomViewReferenceApprovable' },
   { name: 'foam/nanos/approval/FulfilledCompositeApprovableRule' },
+  { name: 'foam/nanos/approval/RestrictedApprovableDAO' },
 
   //authservice
   { name: "foam/nanos/auth/CapabilityAuthService" },
