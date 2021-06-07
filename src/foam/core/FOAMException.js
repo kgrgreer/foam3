@@ -66,6 +66,11 @@ foam.CLASS({
     setErrorCode(errorCode);
     getHostname();
   }
+  
+  @Override
+  public synchronized Throwable fillInStackTrace() {
+    return null;
+  }
         `);
       }
     }
