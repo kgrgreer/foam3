@@ -145,7 +145,10 @@ foam.CLASS({
     function fromProperty(p) {
       this.SUPER(p);
 
-      if ( ! this.hasOwnProperty('onKey') ) this.onKey = p.onKey === undefined ? p.validateObj : p.onKey;
+      if ( ! this.hasOwnProperty('onKey') ) {
+        if ( p.hasOwnProperty('onKey') ) this.onKey = p.onKey;
+        else this.onKey = p.validateObj;
+      }
       if ( ! this.hasOwnProperty('maxLength') && p.maxLength ) this.maxLength = p.maxLength;
       this.ariaLabel = p.label || p.name;
     },
