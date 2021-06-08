@@ -15,7 +15,7 @@ foam.CLASS({
 
   axioms: [
     foam.u2.CSS.create({
-      code: function CSS() {/*
+      code: `
         ^{
           position: relative;
           border-radius: 50%;
@@ -33,7 +33,7 @@ foam.CLASS({
           padding-top: 8px;
           text-align: center;
         }
-      */}
+     `
     })
   ],
 
@@ -73,7 +73,7 @@ foam.CLASS({
               .style({
                 'transform-origin': 'center',
                 'transform-box': 'fill-box', //Safari support
-                transform: this.angle$.map(a => 'rotate(' + a + 'deg)') 
+                transform: this.angle$.map(a => 'rotate(' + a + 'deg)')
               })
               .start('path')
                 .attrs({

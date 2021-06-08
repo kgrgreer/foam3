@@ -638,15 +638,6 @@ foam.LIB({
         (new Array(-size).join(' ') + obj).slice(size)       :
         (obj + new Array(size).join(' ')).substring(0, size) ;
     },
-    function multiline(f) {
-      // Function for returning multi-line strings from commented functions.
-      // Ex. var str = multiline(function() { /* multi-line string here */ });
-      if ( typeof f === 'string' ) return f;
-      var s     = f.toString();
-      var start = s.indexOf('/*');
-      var end   = s.lastIndexOf('*/');
-      return ( start >= 0 && end >= 0 ) ? s.substring(start + 2, end) : '';
-    },
     function startsWithIC(a, b) {
       foam.assert(typeof a === 'string' && typeof b === 'string',
           'Cannot startsWithIC non-string values.');

@@ -458,7 +458,7 @@ class PInfo: PropertyInfo {
   }
   public func hasOwnProperty(_ obj: foam_core_FObject?) -> Bool {
     let obj = obj as! <%=parentCls.model_.swiftName%>
-    return obj.`<%=p.swiftInitedName%>`
+    return obj.\`<%=p.swiftInitedName%>\`
   }
   public func clearProperty(_ obj: foam_core_FObject?) {
     let obj = obj as! <%=parentCls.model_.swiftName%>
