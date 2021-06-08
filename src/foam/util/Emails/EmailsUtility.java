@@ -55,6 +55,7 @@ public class EmailsUtility {
     AppConfig appConfig = (AppConfig) x.get("appConfig");
     if ( user != null ) {
       userX = x.put("subject", new Subject.Builder(x).setUser(user).build());
+      userX = x.put("group", user.findGroup(x));
       group = user.getGroup();
       appConfig = user.findGroup(x).getAppConfig(x);
       spid = user.getSpid();
