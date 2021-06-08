@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.comics.v2',
   name: 'DAOBrowserView',
   extends: 'foam.u2.View',
+  mixins: ['foam.nanos.controller.MementoUtils'],
 
   requires: [
     'foam.comics.SearchMode',
@@ -97,7 +98,6 @@ foam.CLASS({
   imports: [
     'ctrl',
     'exportDriverRegistryDAO',
-    'memento',
     'stack?'
   ],
 
@@ -252,9 +252,7 @@ foam.CLASS({
       var filterView;
       var simpleSearch;
 
-      if ( this.memento && ! this.memento.tail ) {
-        this.memento.tail = foam.nanos.controller.Memento.create();
-      }
+      this.initMemento();
 
       this.addClass(this.myClass());
       this.SUPER();
@@ -265,7 +263,7 @@ foam.CLASS({
             var simpleSearch = foam.u2.ViewSpec.createView(self.SimpleSearch, {
               showCount: false,
               data$: self.searchPredicate$,
-            }, this, self.__subSubContext__.createSubContext({ memento: self.memento }));
+            }, this, self.__subSubContext__.createSubContext({ memento: self.currentMemento_ }));
     
             var filterView = foam.u2.ViewSpec.createView(self.FilterView, {
               dao$: self.searchFilterDAO$,
@@ -275,7 +273,7 @@ foam.CLASS({
             var filterView = foam.u2.ViewSpec.createView(self.FilterView, {
               dao$: self.searchFilterDAO$,
               data$: self.searchPredicate$
-            }, this, self.__subContext__.createSubContext({ memento: self.memento }));
+            }, this, self.__subContext__.createSubContext({ memento: self.currentMemento_ }));
           }
 
           summaryView = foam.u2.ViewSpec.createView(self.summaryView ,{

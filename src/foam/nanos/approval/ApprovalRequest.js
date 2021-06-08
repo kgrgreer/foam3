@@ -111,7 +111,7 @@
       class: 'foam.comics.v2.CannedQuery',
       label: 'Approved',
       predicateFactory: function(e) {
-        return  e.EQ(
+        return e.EQ(
           foam.nanos.approval.ApprovalRequest.STATUS,
           foam.nanos.approval.ApprovalStatus.APPROVED
         );
@@ -121,7 +121,7 @@
       class: 'foam.comics.v2.CannedQuery',
       label: 'Rejected',
       predicateFactory: function(e) {
-        return  e.EQ(
+        return e.EQ(
           foam.nanos.approval.ApprovalRequest.STATUS,
           foam.nanos.approval.ApprovalStatus.REJECTED
         );
