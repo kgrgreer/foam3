@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.nanos.crunch.ui',
   name: 'UCJView',
   extends: 'foam.u2.View',

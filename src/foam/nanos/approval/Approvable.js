@@ -93,8 +93,8 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'disablePut',
-      documentation: `A toggle property to disable approvable put after approval request approval/rejection.`,
+      name: 'blockFulfillementLogic',
+      documentation: `If true, prevents Approvable reput logic in FulfilledApprovableRule.`,
       section: 'admin',
       value: false
     }

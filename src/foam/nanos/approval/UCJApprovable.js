@@ -35,7 +35,7 @@
       }
     },
     {
-      name: 'disablePut',
+      name: 'blockFulfillementLogic',
       value: true
     },
     {

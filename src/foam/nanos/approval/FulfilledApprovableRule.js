@@ -42,7 +42,7 @@
           public void execute(X x) {
             Approvable approvable = (Approvable) obj;
 
-            if ( approvable.getDisablePut() ) {
+            if ( approvable.getBlockFulfillementLogic() ) {
               return;
             }
 
