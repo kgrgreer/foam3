@@ -308,6 +308,7 @@ FOAM_FILES([
   { name: "foam/dao/SyncDAO" },
 
   { name: 'foam/nanos/approval/AuthenticatedApprovalDAOAuthorizer' },
+  { name: 'foam/nanos/approval/UCJApprovable' },
 
   { name: 'foam/nanos/alarming/AddAlarmNameDAO' },
   { name: "foam/nanos/approval/ApprovalRequestNotificationNotificationCitationView", flags: ['web'] },
@@ -483,7 +484,6 @@ FOAM_FILES([
 
   { name: "foam/nanos/menu/DAOMenu2" },
   { name: "foam/nanos/menu/MenuToolBar" },
-
   { name: "foam/box/LogBox" },
   { name: "foam/box/MultiDelegateBox" },
   { name: "foam/box/BroadcastBox" },
