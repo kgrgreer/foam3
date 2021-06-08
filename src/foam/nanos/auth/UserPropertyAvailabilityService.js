@@ -25,9 +25,9 @@ foam.CLASS({
   javaImports: [
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.mlang.MLang',
     'foam.nanos.auth.User',
-    'foam.nanos.theme.Theme'
+    'foam.nanos.theme.Theme',
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -41,11 +41,11 @@ foam.CLASS({
         }
 
         ArraySink select = (ArraySink) userDAO.inX(x).where(
-          MLang.AND(
-            MLang.EQ(targetProperty.equals("userName") ? User.USER_NAME : User.EMAIL, value),
+          AND(
+            EQ(targetProperty.equals("userName") ? User.USER_NAME : User.EMAIL, value),
             // Find a user within the same spid.
             // Support having users with the same email or user name in different spids.
-            MLang.EQ(User.SPID, ((Theme) x.get("theme")).getSpid())
+            EQ(User.SPID, ((Theme) x.get("theme")).getSpid())
           ))
           .select(new ArraySink());
 
