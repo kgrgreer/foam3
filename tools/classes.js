@@ -913,6 +913,7 @@ var classes = [
   'foam.nanos.approval.ApprovalRequestClassificationEnum',
   'foam.nanos.approval.CompositeApprovable',
   'foam.nanos.approval.FulfilledCompositeApprovableRule',
+  'foam.nanos.approval.UCJApprovable',
 
 
   'foam.core.NumberSet',

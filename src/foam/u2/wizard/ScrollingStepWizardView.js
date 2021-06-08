@@ -176,11 +176,11 @@ foam.CLASS({
       name: 'willReject',
       documentation: `
         Used to put submit button in confirmationRequired mode and change the
-        button test from 'Done' to 'Reject' when in approvalMode and the wizard
-        has at least on invalid wizardlet.
+        submit button label from 'Done' to 'Reject' when rejectOnInvalidatedSave is true 
+        and the wizard has at least one invalid wizardlet.
       `,
-      expression: function( data$config$approvalMode, data$allValid ) {
-        return data$config$approvalMode && ! data$allValid;
+      expression: function( data$config$rejectOnInvalidatedSave, data$allValid ) {
+        return data$config$rejectOnInvalidatedSave && ! data$allValid;
       }
     },
     {
