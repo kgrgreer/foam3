@@ -65,11 +65,7 @@ foam.CLASS({
           return true;
         }
 
-        try {
-          if ( isAdmin(x, group) ) return true;
-        } catch ( AuthorizationException e ) { }
-
-        return getDelegate().check(x, permission);
+        return isAdmin(x, group) || getDelegate().check(x, permission);
       `
     },
     {
