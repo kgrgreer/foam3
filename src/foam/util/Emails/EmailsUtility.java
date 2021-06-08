@@ -2,13 +2,14 @@ package foam.util.Emails;
 
 import foam.core.X;
 import foam.dao.DAO;
-import foam.nanos.app.AppConfig;
-import foam.nanos.notification.email.EmailConfig;
 import foam.nanos.alarming.Alarm;
+import foam.nanos.app.AppConfig;
 import foam.nanos.app.SupportConfig;
+import foam.nanos.auth.Group;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
+import foam.nanos.notification.email.EmailConfig;
 import foam.nanos.notification.email.EmailMessage;
 import foam.nanos.notification.email.EmailPropertyService;
 import foam.nanos.theme.Theme;
@@ -55,9 +56,10 @@ public class EmailsUtility {
     AppConfig appConfig = (AppConfig) x.get("appConfig");
     if ( user != null ) {
       userX = x.put("subject", new Subject.Builder(x).setUser(user).build());
-      userX = x.put("group", user.findGroup(x));
-      group = user.getGroup();
-      appConfig = user.findGroup(x).getAppConfig(x);
+      Group userGroup = user.findGroup(x);
+      group = userGroup.getId();
+      userX = userX.put("group", user.findGroup(userX));
+      appConfig = userGroup.getAppConfig(x);
       spid = user.getSpid();
     }
 
