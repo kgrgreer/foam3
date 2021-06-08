@@ -31,12 +31,9 @@
     {
       name: 'lookupId',
       documentation:`
-        In terms of lookup, UCJApprovable is able to default to ucj.
-        id here since lookupId isn't even used here to query the 
-        approvable in this case. In the generic Approvable case, the 
-        lookupId would be a string consisting of the daoKey, objId 
-        and propertiesToUpdate hash so that the system can detect 
-        duplicate requests.
+        In terms of lookup, UCJApprovable is able to default to ucj. id here since lookupId isn't even used here to query the 
+        approvable in this case. In the generic Approvable case, the lookupId would be a string consisting of the daoKey, objId 
+        and propertiesToUpdate hash so that the system can detect duplicate requests.
       `,
       expression: function(ucj) {
         return ucj.id;
