@@ -89,7 +89,7 @@ foam.CLASS({
         Map<String, Boolean> cache = getCache();
         var groupCache = cache.get(group.getId());
         if ( groupCache == null ) {
-          boolean isSuper = auth.checkGroup(x, group.getId(), "*");
+          boolean isSuper = auth.checkGroup(getX(), group.getId(), "*");
           cache.put(group.getId(), isSuper);
           return isSuper;
         }
