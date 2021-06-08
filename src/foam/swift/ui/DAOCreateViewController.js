@@ -32,37 +32,37 @@ foam.CLASS({
     {
       name: 'title',
       swiftExpressionArgs: ['data'],
-      swiftExpression: function() {/*
+      swiftExpression: `
 return String(
     format: type(of: self).CREATE_VC_TITLE,
     data.ownClassInfo().label)
-      */}
+      `
     },
     {
       class: 'FObjectProperty',
       required: true,
       name: 'data',
       swiftExpressionArgs: ['dao$of'],
-      swiftExpression: function() {/*
+      swiftExpression: `
 guard let of = dao$of as? ClassInfo else {
   fatalError("no dao of over here!")
 }
 return of.create(x: self.__context__) as! foam_core_FObject
-      */},
+      `,
     },
     {
       name: 'view',
-      swiftFactory: function() {/*
+      swiftFactory: `
 let dv = DetailView_create(["data$": data$])
 dv.initAllViews()
 return dv
-      */},
+      `,
     },
   ],
   methods: [
     {
       name: 'init',
-      swiftCode: function() {/*
+      swiftCode: `
 super.__foamInit__()
 let onVcChange = { [weak self] () -> Void in
   guard let vc = self?.vc else {
@@ -79,16 +79,16 @@ self.onDetach(self.vc$.swiftSub({ (_, _) in
   onVcChange()
 }))
 onVcChange()
-      */},
+      `,
     },
     {
       name: 'onSaveButtonPressed',
       swiftAnnotations: ['@objc'],
-      swiftCode: function() {/*
+      swiftCode: `
 (view?.get(key: "view") as? UIView)?.endEditing(true)
 _ = try! dao.put(data)
 (stack as? UINavigationController)?.popViewController(animated: true)
-      */},
+     `,
     },
   ],
 });

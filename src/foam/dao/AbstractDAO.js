@@ -101,12 +101,12 @@ return getOf() == null ? null : (foam.core.PropertyInfo) getOf().getAxiomByName(
           predicate: p
         });
       },
-      swiftCode: function() {/*
+      swiftCode: `
         return FilteredDAO_create([
           "delegate": self,
           "predicate": predicate,
         ]);
-      */},
+      `,
       javaCode: 'return new FilteredDAO.Builder(getX()).setPredicate(predicate).setDelegate(this).build();'
     },
 
@@ -145,12 +145,12 @@ return new OrderedDAO(this.getX(), comparator, this);
           skip_: s
         });
       },
-      swiftCode: function() {/*
+      swiftCode: `
 return SkipDAO_create([
   "delegate": self,
   "skip_": count,
 ])
-      */},
+      `,
       javaCode: `
 return new SkipDAO(this.getX(), count, this);
       `,
@@ -168,12 +168,12 @@ return new SkipDAO(this.getX(), count, this);
           limit_: l
         });
       },
-      swiftCode: function() {/*
+      swiftCode: `
 return LimitedDAO_create([
   "delegate": self,
   "limit_": count,
 ])
-      */},
+      `,
       javaCode: `
 return new LimitedDAO(this.getX(), count, this);
       `,
@@ -261,7 +261,7 @@ throw new UnsupportedOperationException();
 
         return sub;
       },
-      swiftCode: function() {/*
+      swiftCode: `
 let mySink = decorateListener_(sink, predicate)
 return on.sub(listener: { (sub: Subscription, args: [Any?]) -> Void in
   guard let topic = args[1] as? String else { return }
@@ -279,7 +279,7 @@ return on.sub(listener: { (sub: Subscription, args: [Any?]) -> Void in
       break
   }
 })
-      */},
+      `,
       javaCode: `
 sink = decorateListener_(sink, predicate);
 listeners_.add(new DAOListener(sink, listeners_));
@@ -306,7 +306,7 @@ listeners_.add(new DAOListener(sink, listeners_));
 
         return sink;
       },
-      swiftCode: function() {/*
+      swiftCode: `
 // TODO: There are probably optimizations we can make here
 // but every time I try it comes out broken.  So for the time being,
 // if you have any sort of skip/limit/order/predicate we will just
@@ -315,7 +315,7 @@ if predicate != nil {
   return self.ResetListener_create(["delegate": sink])
 }
 return sink
-      */},
+      `,
       javaCode: `
 if ( predicate != null ) {
   sink = new PredicatedSink(predicate, sink);
@@ -388,7 +388,7 @@ return sink;
 
         return sink;
       },
-      swiftCode: function() {/*
+      swiftCode: `
 var sink = sink
 if limit > 0 {
   sink = LimitedSink_create([
@@ -415,7 +415,7 @@ if predicate != nil {
   ])
 }
 return sink
-      */},
+      `,
       javaCode: `
 return decorateSink(getX(), sink, skip, limit, order, predicate);
       `,

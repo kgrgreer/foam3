@@ -2163,11 +2163,11 @@ foam.CLASS({
   listeners: [
     {
       name: 'onKeyboardShortcut',
-      documentation: function() {/*
+      documentation: `
           Automatic mapping of keyboard events to $$DOC{ref:'Action'} trigger.
           To handle keyboard shortcuts, create and attach $$DOC{ref:'Action',usePlural:true}
           to your $$DOC{ref:'foam.ui.View'}.
-      */},
+      `,
       code: function(evt) {
         if ( evt.type === 'keydown' && ! this.KEYPRESS_CODES[evt.which] ) return;
         var action = this.keyMap_[this.evtToCharCode(evt)];
