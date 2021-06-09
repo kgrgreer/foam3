@@ -67,9 +67,6 @@ p({
     auth = new foam.nanos.auth.twofactor.TwoFactorAuthService.Builder(x)
       .setDelegate(auth)
       .build();
-    auth = new foam.nanos.auth.ResetSpidBeforeLoginAuthService.Builder(x)
-      .setDelegate(auth)
-      .build();
     auth = new foam.nanos.auth.SystemAuthService.Builder(x)
       .setDelegate(auth)
       .build();

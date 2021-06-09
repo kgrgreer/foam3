@@ -357,7 +357,6 @@ var classes = [
   'foam.nanos.auth.CommonPassword',
   'foam.nanos.auth.AddressConfig',
   'foam.nanos.auth.UserNotFoundException',
-  'foam.nanos.auth.ResetSpidBeforeLoginAuthService',
   'foam.nanos.http.HttpParameters',
   'foam.nanos.http.DefaultHttpParameters',
   'foam.nanos.http.SendErrorHandler',
