@@ -551,6 +551,7 @@ this.select_(x, new RemoveSink(x, this), skip, limit, order, predicate);
       return this;
     }
   ],
+
   static: [
     {
       name: 'decorateSink',
