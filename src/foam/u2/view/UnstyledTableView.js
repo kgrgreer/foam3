@@ -306,6 +306,7 @@ foam.CLASS({
 
     async function initE() {
       var view = this;
+
       const asyncRes = await this.filterUnpermitted(view.of.getAxiomsByClass(foam.core.Property));
       this.allColumns = ! view.of ? [] : [].concat(
         asyncRes.map(a => a.name),
@@ -804,6 +805,7 @@ foam.CLASS({
     },
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.u2.view',
