@@ -42,7 +42,7 @@ foam.CLASS({
 
         ArraySink select = (ArraySink) userDAO.inX(x).where(
           AND(
-            EQ(targetProperty.equals("userName") ? User.USER_NAME : User.EMAIL, value),
+            EQ(User.getOwnClassInfo().getAxiomByName(targetProperty), value),
             // Find a user within the same spid.
             // Support having users with the same email or user name in different spids.
             EQ(User.SPID, ((Theme) x.get("theme")).getSpid())

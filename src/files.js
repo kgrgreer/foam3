@@ -115,6 +115,7 @@ FOAM_FILES([
   { name: 'foam/u2/ModalOverlay', flags: ['web'] },
   { name: "foam/core/Agency"},
   { name: "foam/nanos/auth/Authorizable" },
+  { name: "foam/nanos/auth/ThemeAuthService" },
   { name: "foam/i18n/TranslationFormatStringParser", flags: ['swift'] },
   { name: "foam/swift/SwiftLib", flags: ['swift'] },
   { name: "foam/swift/SwiftClass", flags: ['swift'] },
