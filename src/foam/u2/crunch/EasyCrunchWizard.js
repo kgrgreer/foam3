@@ -7,6 +7,7 @@
 foam.CLASS({
   package: 'foam.u2.crunch',
   name: 'EasyCrunchWizard',
+
   requires: [
     'foam.u2.crunch.wizardflow.SkipGrantedAgent',
     'foam.u2.crunch.wizardflow.SkipMode',
@@ -50,11 +51,13 @@ foam.CLASS({
       name: 'requireAll',
       value: false
     },
+    /*
+    KGR: Commented out because is breaking build.
     {
       name: 'approval',
       class: 'FObjectProperty',
       of: 'foam.nanos.approval.ApprovalRequest'
-    }
+    }*/
   ],
 
   methods: [
