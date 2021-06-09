@@ -1,43 +1,32 @@
 /**
- * NANOPAY CONFIDENTIAL
- *
- * [2021] nanopay Corporation
- * All Rights Reserved.
- *
- * NOTICE:  All information contained herein is, and remains
- * the property of nanopay Corporation.
- * The intellectual and technical concepts contained
- * herein are proprietary to nanopay Corporation
- * and may be covered by Canadian and Foreign Patents, patents
- * in process, and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained
- * from nanopay Corporation.
+ * @license
+ * Copyright 2021 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 
 foam.CLASS({
-  package: 'net.nanopay.auth',
+  package: 'foam.nanos.auth',
   name: 'ThemeAuthService',
   extends: 'foam.nanos.auth.ProxyAuthService',
   flags: ['java'],
 
   documentation: `Restrict login to the url that matches the spid of the user.`,
 
-  imports: [
-    'DAO localUserDAO'
-  ],
-
   javaImports: [
-    'foam.dao.DAO',
     'foam.nanos.auth.AuthenticationException',
+    'foam.nanos.auth.AuthService',
     'foam.nanos.auth.User',
     'foam.util.Password',
-    'foam.util.SafetyUtil',
     'foam.nanos.theme.Theme',
+  ],
 
-    'static foam.mlang.MLang.EQ',
-    'static foam.mlang.MLang.OR',
-    'static foam.mlang.MLang.AND',
+  properties: [
+    {
+      class: 'String',
+      name: 'superSpid',
+      documentation: 'Set spid of a theme that is accessible to all users',
+      value: "",
+    }
   ],
 
   methods: [
@@ -66,41 +55,27 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        User user = getUser(x, identifier);
-        if ( user == null ) {
-          throw new AuthenticationException("User not found.");
+        AuthService auth = (AuthService) x.get("auth");
+        User user = super.login(x, identifier, password);
+
+        // Get theme's spid and user's spid
+        Theme theme = ((Theme) x.get("theme"));
+        String themeSpid = theme.getSpid();
+        String userSpid = user.getSpid();
+
+        // Check if theme's spid and user's spid matched.
+        // if matched pass, else throw an error.
+        // e.g., throws error: userSpid: "treviso", themeSpid: "intuit"
+        if (
+          user != null &&
+          ! userSpid.equals(themeSpid) &&
+          ! userSpid.equals(getSuperSpid())
+        ) {
+          auth.logout(x);
+          throw new AuthenticationException("User not found");
         }
-        return super.login(x, identifier, password);
-      `
-    },
-    {
-      name: 'getUser',
-      documentation: 'Convenience method to get a user by username or email',
-      type: 'User',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'identifier',
-          type: 'String'
-        }
-      ],
-      javaCode: `
-        return (User) ((DAO) getLocalUserDAO())
-          .find(
-            AND(
-              OR(
-                EQ(User.EMAIL, identifier.toLowerCase()),
-                EQ(User.USER_NAME, identifier)
-              ),
-              OR(
-                EQ(User.SPID, ((Theme) x.get("theme")).getSpid()),
-                EQ(User.SPID, "nanopay")
-              )
-            )
-          );
+
+        return user;
       `
     }
   ]
