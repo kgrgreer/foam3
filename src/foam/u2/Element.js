@@ -356,8 +356,8 @@ foam.CLASS({
     function load() {
       if ( this.hasOwnProperty('elListeners') ) {
         var ls = this.elListeners;
-        for ( var i = 0 ; i < ls.length ; i += 2 ) {
-          this.addEventListener_(ls[i], ls[i+1]);
+        for ( var i = 0 ; i < ls.length ; i += 3 ) {
+          this.addEventListener_(ls[i], ls[i+1], ls[i+2] || false);
         }
       }
 
@@ -382,14 +382,14 @@ foam.CLASS({
       this.visitChildren('unload');
       this.detach();
     },
-    function onSetClass(cls, enabled) { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onFocus(cls, enabled) { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onAddListener(topic, listener) { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onRemoveListener(topic, listener) { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onSetStyle(key, value) { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onSetAttr(key, value) { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onRemoveAttr(key) { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onAddChildren(c) { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onSetClass() { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onFocus() { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onAddListener() { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onRemoveListener() { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onSetStyle() { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onSetAttr() { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onRemoveAttr() { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onAddChildren() { throw new Error('Mutations not allowed in OUTPUT state.'); },
     function onInsertChildren() { throw new Error('Mutations not allowed in OUTPUT state.'); },
     function onReplaceChild() { throw new Error('Mutations not allowed in OUTPUT state.'); },
     function onRemoveChild() { throw new Error('Mutations not allowed in OUTPUT state.'); },
@@ -437,8 +437,8 @@ foam.CLASS({
     function onFocus() {
       this.el_().focus();
     },
-    function onAddListener(topic, listener) {
-      this.addEventListener_(topic, listener);
+    function onAddListener(topic, listener, opt_args) {
+      this.addEventListener_(topic, listener, opt_args);
     },
     function onRemoveListener(topic, listener) {
       this.addRemoveListener_(topic, listener);
@@ -1445,19 +1445,19 @@ foam.CLASS({
       }
     },
 
-    function addEventListener(topic, listener) {
+    function addEventListener(topic, listener, opt_args) {
       /* Add DOM listener. */
-      this.elListeners.push(topic, listener);
-      this.onAddListener(topic, listener);
+      this.elListeners.push(topic, listener, opt_args);
+      this.onAddListener(topic, listener, opt_args);
     },
 
     function removeEventListener(topic, listener) {
       /* Remove DOM listener. */
       var ls = this.elListeners;
-      for ( var i = 0 ; i < ls.length ; i+=2 ) {
+      for ( var i = 0 ; i < ls.length ; i += 3 ) {
         var t = ls[i], l = ls[i+1];
         if ( t === topic && l === listener ) {
-          ls.splice(i, 2);
+          ls.splice(i, 3);
           this.onRemoveListener(topic, listener);
           return;
         }
@@ -1550,9 +1550,9 @@ foam.CLASS({
       return this;
     },
 
-    function on(topic, listener) {
+    function on(topic, listener, opt_args) {
       /* Shorter fluent version of addEventListener. Prefered method. */
-      this.addEventListener(topic, listener);
+      this.addEventListener(topic, listener, opt_args);
       return this;
     },
 
@@ -2086,9 +2086,9 @@ foam.CLASS({
       return e;
     },
 
-    function addEventListener_(topic, listener) {
+    function addEventListener_(topic, listener, opt_args) {
       var el = this.el_();
-      el && el.addEventListener(topic, listener, false);
+      el && el.addEventListener(topic, listener, opt_args || false);
     },
 
     function removeEventListener_(topic, listener) {
@@ -2163,11 +2163,11 @@ foam.CLASS({
   listeners: [
     {
       name: 'onKeyboardShortcut',
-      documentation: function() {/*
+      documentation: `
           Automatic mapping of keyboard events to $$DOC{ref:'Action'} trigger.
           To handle keyboard shortcuts, create and attach $$DOC{ref:'Action',usePlural:true}
           to your $$DOC{ref:'foam.ui.View'}.
-      */},
+      `,
       code: function(evt) {
         if ( evt.type === 'keydown' && ! this.KEYPRESS_CODES[evt.which] ) return;
         var action = this.keyMap_[this.evtToCharCode(evt)];
@@ -2323,6 +2323,10 @@ foam.CLASS({
         The order to render the property in if rendering multiple properties.
       `,
       value: Number.MAX_SAFE_INTEGER
+    },
+    {
+      class: 'Boolean',
+      name: 'onKey'
     }
   ],
 

@@ -50,10 +50,10 @@ foam.CLASS({
         this.record[id] = id;
         return this.__context__.lookup.call(X, id, opt_suppress);
       },
-      swiftCode: function() {/*
+      swiftCode: `
 record[id] = id;
 return X!.lookup(id)
-      */}
+      `
     }
   ]
 });

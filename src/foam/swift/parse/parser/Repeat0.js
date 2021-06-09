@@ -29,7 +29,7 @@ foam.CLASS({
   methods: [
     {
       name: 'parse',
-      swiftCode: function() {/*
+      swiftCode: `
 var first = true
 var ps = ps!
 var result: foam_swift_parse_PStream?
@@ -52,7 +52,7 @@ while max == -1 || i < max {
 
 if min != -1 && i < min { return nil }
 return ps
-      */},
+      `,
     },
   ]
 });

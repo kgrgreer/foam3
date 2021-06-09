@@ -115,6 +115,7 @@ foam.CLASS({
       ],
 
       imports: [
+        'globalScope',
         'selected'
       ],
 
@@ -124,8 +125,8 @@ foam.CLASS({
 
       css: `
         ^ { margin-bottom: 36px; }
-        ^ .property-text { border: none; padding: 10 0; }
-        ^ .property-code { margin-bottom: 12px; }
+        ^ .property-text { border: none; padding: 10 0; width: 45%; }
+        ^ .property-code { margin-bottom: 12px; width: 46%; }
         ^ .property-title { float: left; }
         ^ .property-id { float: left; margin-right: 12px; }
       `,
@@ -145,7 +146,8 @@ foam.CLASS({
               'border-radius': '3px',
               'padding-bottom': '24px'
             }).
-            tag('hr').
+            start('hr').style({width: '47%', float: 'left', display: 'block'}).end().
+            br().
             start('h3').
               start('a').attrs({name: self.data.id}).end().
               add(this.Example.ID, ' ', this.Example.TITLE).
@@ -156,8 +158,10 @@ foam.CLASS({
             add(this.Example.CODE).
             br().
             start('b').add('Output:').end().
-            br().br().
-            tag('div', {}, this.dom$);
+            start().
+              style({width: '45%', border: '1px solid black', padding: '8px'}).
+              tag('div', {}, this.dom$).
+            end();
 
             this.onload.sub(this.run.bind(this));
             this.onDetach(this.data.code$.sub(this.run.bind(this)));
@@ -191,11 +195,15 @@ foam.CLASS({
               return self.dom.start.apply(self.dom, arguments);
             }
           };
+
           with ( scope ) {
-            try {
-              eval(self.data.code);
-            } catch (x) {
-              scope.log(x);
+            with ( this.globalScope ) {
+              try {
+                eval(self.data.code);
+              } catch (x) {
+                self.data.error = true;
+                scope.log(x);
+              }
             }
           }
         }
@@ -236,6 +244,10 @@ foam.CLASS({
       view: 'foam.demos.examples.TextView'
     },
     {
+      class: 'Boolean',
+      name: 'error'
+    },
+    {
       class: 'Code',
       name: 'code',
       adapt: function(_, s) {
@@ -246,24 +258,6 @@ foam.CLASS({
         return ( start >= 0 && end >= 0 ) ? s.substring(start + 2, end) : '';
       },
       view: 'foam.demos.examples.CodeView'
-    }
-  ],
-
-  methods: [
-    {
-      name: 'runScript',
-      code: function() {
-        var log = () => {
-          this.output += Array.from(arguments).join('') + '\n';
-        };
-        try {
-          with ({ log: log, print: log, x: this.__context__ })
-          return Promise.resolve(eval(this.code));
-        } catch (err) {
-          this.output += err;
-          return Promise.reject(err);
-        }
-      }
     }
   ]
 });
@@ -291,15 +285,20 @@ foam.CLASS({
     ^ .selected {
       background: #ddf;
     }
+    ^ .error {
+      color: red;
+    }
   `,
 
   exports: [
+    'globalScope',
     'selected'
   ],
 
   properties: [
     { class: 'Int', name: 'count' },
     { class: 'Int', name: 'exampleCount' },
+    { class: 'Int', name: 'errorCount' },
     'selected',
     'testData',
     {
@@ -316,6 +315,10 @@ foam.CLASS({
         class: 'foam.u2.DAOList',
         rowView: { class: 'foam.demos.examples.Example.CitationView' }
       }
+    },
+    {
+      name: 'globalScope',
+      factory: function() { return { }; }
     }
   ],
 
@@ -356,9 +359,11 @@ foam.CLASS({
             start().
             select(this.data, function(e) {
               self.count++;
+              if ( e.error ) self.errorCount++;
               if ( e.code ) self.exampleCount++;
               return this.E('a')
                 .attrs({href: '#' + e.id})
+                .enableClass('error', e.error$)
                 .style({display: 'block', padding: '4px', 'padding-left': (16 * e.id.split('.').length  - 12)+ 'px'})
                 .add(e.id, ' ', e.title)
                 .enableClass('selected', self.selected$.map(s => s == e.id))
@@ -368,7 +373,7 @@ foam.CLASS({
             }).
             end().
             br().
-            add(this.count$, ' sections, ', this.exampleCount$, ' examples').
+            add(this.count$, ' sections, ', this.exampleCount$, ' examples, ', this.errorCount$, ' errors').
           end().
           start().
             addClass(this.myClass('body')).
@@ -379,7 +384,7 @@ foam.CLASS({
 
     function createTestData() {
       s = this.testData;
-      var a = [];
+      var a  = [];
       var id = [];
       var e;
       var mode = 'text';
@@ -405,27 +410,3 @@ foam.CLASS({
     }
   ]
 });
-
-
-if ( false ) {
-s = '## DAO By Example';
-
-function deindent(s) {
-  var a = s.split('\n');
-  var min = a.filter(l => l.trim().length).map(l => l.match(/^ */)[0].length).reduce((a,b) => Math.min(a,b));
-  return a.map(l => l.trim().length ? l.substring(min) : '').join('\n');
-}
-
-examples.forEach(e => {
-  var code = e.code.toString();
-  code = deindent(code.substring(13, code.length-1));
-  s += `
-##  ${e.name}
-${e.description}
---
-${code}
-`;
-});
-
-console.log(s);
-}

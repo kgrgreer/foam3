@@ -48,9 +48,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.crunch.CapabilityFeature
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.crunch.CapabilityFeatureView.CJ_STATUS.documentation",target:"\nArmazena o status do recurso de capacidade e é atualizado quando o usuário \n tenta preencher ou preencher os formulários CRUNCH. \n"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.crunch.CapabilityFeatureView.RENEW_DATA_LABEL",target:"Por favor reveja e atualize seus dados"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.AgentCapabilityJunctionDAOSummaryView.BACK_LABEL_ACJ",target:"Voltar"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.AgentCapabilityJunctionDAOSummaryView.SUCCESS_UPDATED",target:"Informações de integração atualizadas com êxito."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.AgentCapabilityJunctionDAOSummaryView.SUCCESS_REMOVED",target:"Informações de integração removidas com sucesso."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CRUNCHThemeRefinement.ADMISSION_CAPABILITY.label",target:"admissionCapability pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CRUNCHThemeRefinement.ADMISSION_CAPABILITY.documentation",target:"Especifica a capacidade de nível superior que deve ser concedida antes de admitirmos um usuário no sistema."})
@@ -235,6 +232,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.AssociatedEnti
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.AssociatedEntity.REAL_USER.documentation",target:"\n          Associe a junção de capacidade ao usuário conectado\n        "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.AssociatedEntity.ACTING_USER.label",target:"acting_user pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.AssociatedEntity.ACTING_USER.documentation",target:"Denota o caso especial onde o associatedEntity de uma capacidade deve ser\n        algum usuário agindo como outro usuário."})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.ui.UCJView.BACK_LABEL",target:"Voltar"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.ui.UCJView.SUCCESS_UPDATED",target:"Dados atualizados com sucesso"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.ui.UCJView.SUCCESS_REMOVED",target:"Dados removidos com sucesso"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.FooterView.GO_TO.label",target:"vamos para"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.FooterView.GO_TO_TERM.label",target:"ir para o prazo"})
@@ -832,6 +833,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.MemoModal.NOTE_OPTIONAL"
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.UserNotFoundException",target:"Usuário não encontrado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.AuthenticationException",target:"Não logado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.AccountLockedException",target:"Conta bloqueada"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.AccountDisabledException",target:"Conta desativada"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.AccountDisabledException.Please contact customer service",target:"Entre em contato com o atendimento ao cliente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.AccountLockedException.Please contact customer service",target:"Entre em contato com o atendimento ao cliente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.InvalidPasswordException",target:"Senha inválida"})
 
@@ -841,3 +844,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.BusinessValidati
 
 //TestExceptions
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.FOAMExceptionTestTestException.ExceptionMessage {{message}}, ErrorCode: {{errorCode}}",target:"MensagemDeExceção {{message}}, ErroDeCódigo: {{errorCode}}"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.DuplicateEmailException",target:"E-mail duplicado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.DuplicateEmailException.Email already in use",target:"Email já em uso"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.DuplicateUserNameException",target:"Nome de usuário duplicado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.DuplicateUserNameException.UserName already in use",target:"Nome de usuário já em uso"})

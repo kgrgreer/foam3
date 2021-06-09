@@ -201,17 +201,21 @@ foam.CLASS({
     {
       name: 'checkUser',
       documentation: `Checks if the user passed into the method has the passed
-        in permission attributed to it by checking their group. No check on User
-        and group enabled flags.`,
+      in permission attributed to it by checking their group. No check on User
+      and group enabled flags.`,
       javaCode: `
-        // check whether user has permission to check user permissions
+        if ( user == null || permission == null ) return false;
+        String groupId = (String) user.getGroup();
+        return checkGroup(x, groupId, permission);
+      `
+    },
+    {
+      name: 'checkGroup',
+      javaCode: `
+        // check whether user has permission to check group permissions
         if ( ! check(x, CHECK_USER_PERMISSION) ) throw new AuthorizationException();
 
-        if ( user == null || permission == null ) return false;
-
         try {
-          String groupId = (String) user.getGroup();
-
           while ( ! SafetyUtil.isEmpty(groupId) ) {
             Group group = (Group) ((DAO) getLocalGroupDAO()).find(groupId);
 

@@ -34,6 +34,26 @@ foam.CLASS({
     {
       name: 'incrementalWizard',
       class: 'Boolean'
+    },
+    {
+      class: 'String',
+      name: 'view',
+      value: 'foam.nanos.crunch.ui.UCJView'
+    },
+    {
+      class: 'Boolean',
+      name: 'rejectOnInvalidatedSave',
+      value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'requireAll',
+      value: false
+    },
+    {
+      name: 'approval',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.approval.ApprovalRequest'
     }
   ],
 
@@ -42,6 +62,8 @@ foam.CLASS({
       var config = this.StepWizardConfig.create({
         allowSkipping: this.allowSkipping,
         allowBacktracking: this.allowBacktracking,
+        rejectOnInvalidatedSave: this.rejectOnInvalidatedSave,
+        requireAll: this.requireAll,
         ...(this.incrementalWizard ? {
           wizardView: { class: 'foam.u2.wizard.IncrementalStepWizardView' }
         } : {})

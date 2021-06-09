@@ -196,17 +196,17 @@ foam.CLASS({
     {
       name: 'exportsBody',
       args: ['exports'],
-      template: function() {/*
+      template: `
 var args = super._createExports_()
 <% for (var i = 0, p; p = exports[i]; i++) { %>
 args["<%=p.exportName%>"] = <%if (p.key) {%><%=p.exportName%>$<%}else{%>__context__.create(ConstantSlot.self, args: ["value": self])<%}%>
 <% } %>
 return args
-      */},
+      `,
     },
     {
       name: 'axiomsInitializer',
-      template: function() {/*
+      template: `
 var curCls: ClassInfo? = self
 var axioms: [Axiom] = []
 var seen = Set<String>()
@@ -219,17 +219,17 @@ while curCls != nil {
   curCls = curCls!.parent
 }
 return axioms
-      */}
+      `
     },
     {
       name: 'nameAxiomMapInitializer',
-      template: function() {/*
+      template: `
 var map: [String:Axiom] = [:]
 for axiom in axioms {
   map[axiom.name] = axiom
 }
 return map
-      */}
+      `
     },
   ],
 });

@@ -38,18 +38,18 @@ foam.CLASS({
     {
       swiftType: 'UITableViewRowAction',
       name: 'deleteAction',
-      swiftFactory: function() {/*
+      swiftFactory: `
 return UITableViewRowAction(style: .destructive, title: "Delete") { (_, indexPath) in
   _ = try? self.dataSource?.dao?.remove(
       self.dataSource?.daoContents[indexPath.row] as! foam_core_FObject?)
 }
-      */},
+      `,
     },
     {
       swiftType: '((foam_core_FObject) -> UIViewController)',
       swiftRequiresEscaping: true,
       name: 'updateVcFactory',
-      swiftFactory: function() {/*
+      swiftFactory: `
 return { (o: foam_core_FObject) -> UIViewController in
   let v = self.DetailView_create([
     "data": o,
@@ -65,10 +65,10 @@ return { (o: foam_core_FObject) -> UIViewController in
 
   return svc.vc
 }
-      */},
+      `,
     },
   ],
-  swiftCode: function() {/*
+  swiftCode: `
 public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
   let data = (dataSource!.daoContents[indexPath.row] as! foam_core_FObject) // TODO: Clone?
 
@@ -83,5 +83,5 @@ public func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: I
 public func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
   dataSource?.rowViewRemoved?(indexPath, cell)
 }
-  */},
+  `,
 });

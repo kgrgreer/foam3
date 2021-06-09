@@ -10,18 +10,90 @@ foam.CLASS({
   extends: 'foam.nanos.auth.ProxyAuthService',
 
   javaImports: [
+    'foam.core.Detachable',
+    'foam.dao.DAO',
+    'foam.dao.Sink',
     'foam.nanos.auth.Group',
-    'javax.security.auth.AuthPermission'
+    'java.util.Map',
+    'java.util.concurrent.ConcurrentHashMap',
+    'javax.security.auth.AuthPermission',
+    'static foam.mlang.MLang.TRUE'
+  ],
+
+  properties: [
+    {
+      class: 'Map',
+      name: 'cache',
+      javaType: 'Map<String, Boolean>',
+      javaFactory: `
+        return new ConcurrentHashMap<String, Boolean>();
+      `
+    }
   ],
 
   methods: [
+    {
+      name: 'init',
+      javaCode: `
+        DAO groupPermissionJunctionDAO = (DAO) getX().get("groupPermissionJunctionDAO");
+        if ( groupPermissionJunctionDAO == null ) {
+          return;
+        }
+
+        Map<String, Boolean> cache = ( Map<String, Boolean> ) getCache();
+        groupPermissionJunctionDAO.listen(new Sink() {
+          public void put(Object obj, Detachable sub) {
+            cache.clear();
+          }
+          public void remove(Object obj, Detachable sub) {
+            cache.clear();
+          }
+          public void eof() {
+          }
+          public void reset(Detachable sub) {
+            cache.clear();
+          }
+        }, TRUE);
+      `
+    },
     {
       name: 'check',
       javaCode: `
         User user = ((Subject) x.get("subject")).getUser();
         Group group = (Group) x.get("group");
-        boolean isSystem = user != null && user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID;
-        return isSystem || group != null && group.implies(x, new AuthPermission("*")) || getDelegate().check(x, permission);
+        if ( user != null && user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID ) {
+          return true;
+        }
+
+        return isAdmin(x, group) || getDelegate().check(x, permission);
+      `
+    },
+    {
+      name: 'isAdmin',
+      javaType: 'Boolean',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'group',
+          type: 'foam.nanos.auth.Group'
+        }
+      ],
+      javaCode: `
+        if ( group == null ) {
+          return false;
+        }
+        AuthService auth = (AuthService) x.get("auth");
+        Map<String, Boolean> cache = getCache();
+        var groupCache = cache.get(group.getId());
+        if ( groupCache == null ) {
+          boolean isSuper = auth.checkGroup(getX(), group.getId(), "*");
+          cache.put(group.getId(), isSuper);
+          return isSuper;
+        }
+        return groupCache;
       `
     }
   ]

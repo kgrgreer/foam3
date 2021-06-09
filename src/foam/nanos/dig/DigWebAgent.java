@@ -13,6 +13,7 @@ import foam.nanos.http.*;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.pm.PM;
+import foam.util.SafetyUtil;
 import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,6 +29,7 @@ public class DigWebAgent extends ContextAwareSupport
     Command             command = (Command) p.get(Command.class);
     Format              format  = (Format) p.get(Format.class);
     Logger              logger  = (Logger) x.get("logger");
+    String              daoName = p.getParameter("dao");
     PM                  pm      = new PM(getClass(), p.getParameter("dao"), command.getName(), format.getName());
 
     logger = new PrefixLogger(new Object[] { this.getClass().getSimpleName() }, logger);
@@ -39,6 +41,14 @@ public class DigWebAgent extends ContextAwareSupport
       if ( driver == null ) {
         DigErrorMessage error = new ParsingErrorException("UnsupportedFormat");
         DigUtil.outputException(x, error, format);
+        return;
+      }
+
+      if ( SafetyUtil.isEmpty(daoName) ) {
+        DigErrorMessage error = new GeneralException("DAO not provided");
+        error.setStatus(String.valueOf(HttpServletResponse.SC_BAD_REQUEST));
+        DigUtil.outputException(x, error, format);
+        logger.error(error);
         return;
       }
 

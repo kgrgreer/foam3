@@ -76,34 +76,34 @@ foam.CLASS({
     {
       name: 'slotGetter',
       args: [],
-      template: function() {/*
+      template: `
 return __context__["<%=this.key%>$"] as? <%=foam.swift.core.Slot.model_.swiftName%> ?? nil
-      */}
+      `
     },
     {
       name: 'valueGetter',
       args: [],
-      template: function() {/*
-return __context__["<%=this.key%>"]<%= this.swiftCast %>
-      */}
+      template: `
+      return __context__["<%=this.key%>"]<%= this.swiftCast %>
+     `
     },
     {
       name: 'valueSetter',
       args: [],
-      template: function() {/*
+      template: `
 self.<%=this.name%>$?.swiftSet(value)
-      */}
+      `
     },
     {
       name: 'swiftPropertyInfoInit',
-      template: function() {/*
+      template: `
 class PInfo: Axiom {
   let name = "<%=this.swiftName%>"
   let classInfo: ClassInfo
   init(_ ci: ClassInfo) { classInfo = ci }
 }
 return PInfo(classInfo())
-      */}
+      `
     }
   ]
 });
