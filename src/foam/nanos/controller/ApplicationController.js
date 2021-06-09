@@ -382,6 +382,22 @@ foam.CLASS({
         await client.translationService.initLatch;
         self.installLanguage();
 
+        if ( self.memento.value ) {
+          console.log('value', self.memento.value);
+          console.log('head', self.memento.head);
+          // await self.mementoChange();
+          var menu = await self.__subContext__.menuDAO.find(self.memento.value);
+          console.log(menu);
+          if ( menu ) {
+            self.pushMenu(menu);
+            await self.maybeReinstallLanguage(client);
+            self.languageInstalled.resolve();
+            // await self.fetchTheme();
+            // self.mementoChange();
+            return;
+          }
+        }
+
         await self.fetchSubject();
 
         await self.maybeReinstallLanguage(client);
