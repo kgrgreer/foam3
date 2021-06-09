@@ -23,7 +23,7 @@ foam.CLASS({
           return menu.border ? {... menu.border, children: [ this.createView(X, menu) ]} : menu;
         },
         X,
-        menu.id);
+        menu.id, { menuItem: true });
     }
   ]
 });

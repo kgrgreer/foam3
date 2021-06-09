@@ -64,6 +64,15 @@ foam.CLASS({
         while ( pos >= 0 && this.stack_[pos][3].popup ) pos--;
         return this.stack_[pos] || null;
       }
+    },
+    {
+      class: 'Int',
+      name: 'navStackBottom',
+      value: -1,
+      preSet: function(_, p) {
+        if ( isNaN(p) || p > this.depth || p < 0 ) return 0;
+        return p;
+      }
     }
   ],
 
@@ -99,6 +108,8 @@ foam.CLASS({
       this.stack_.length = this.depth;
       this.stack_[pos] = [v, parent, opt_id, opt_hint || {}];
       this.pos = pos;
+      if ( opt_hint && opt_hint.menuItem )
+        this.navStackBottom = pos;
     },
 
     function deleteMemento(mementoToDelete) {
@@ -131,6 +142,41 @@ foam.CLASS({
         }
         tail = tail.tail;
       }
+    },
+    function jump(jumpPos, ctx) {
+      var isMementoSetWithView = false;
+
+      //check if the class of the view to which current position points has property MEMENTO_HEAD
+      //or if the view is object and it has mementoHead set
+      //if so we need to set last not-null memento in the memento chain to null as we're going back
+      if ( this.stack_[this.pos][0].class ) {
+        var classObj = this.stack_[this.pos][0].class;
+        if ( foam.String.isInstance(classObj) ) {
+          classObj = foam.lookup(this.stack_[this.pos][0].class);
+        }
+        var obj = classObj.create(this.stack_[this.pos][0], ctx);
+        if ( obj && obj.mementoHead ) {
+          isMementoSetWithView = true;
+        }
+      } else {
+        if ( this.stack_[this.pos][0].mementoHead ) {
+          isMementoSetWithView = true;
+        }
+      }
+
+      this.pos = jumpPos;
+
+      if ( this.navStackBottom > this.pos ) {
+        for ( var i = this.pos; i >= 0; i-- ) {
+          if ( this.stack_[i][4] && this.stack_[i][4].menuItem ) {
+            this.navStackBottom = i;
+            break;
+          }
+        }
+      }
+
+      if ( isMementoSetWithView )
+        this.deleteMemento(obj.mementoHead);
     }
   ],
 
@@ -141,7 +187,6 @@ foam.CLASS({
       isEnabled: function(pos) { return pos > 0; },
       code: function(X) {
         var isMementoSetWithView = false;
-
         //check if the class of the view to which current position points has property MEMENTO_HEAD
         //or if the view is object and it has mementoHead set
         //if so we need to set last not-null memento in the memento chain to null as we're going back
