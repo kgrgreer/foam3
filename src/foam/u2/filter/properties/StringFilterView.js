@@ -140,7 +140,7 @@ foam.CLASS({
       name: 'search',
       postSet: function(_, n) {
         this.isOverLimit = false;
-        this.dao.where(this.CONTAINS_IC(this.property, n)).select(this.GROUP_BY(this.property, null, 101)).then((results) => {
+        this.dao.where(this.STARTS_WITH(this.property, n)).select(this.GROUP_BY(this.property, null, 101)).then((results) => {
           this.countByContents = results.groups;
           if ( Object.keys(results.groups).length > 100 ) this.isOverLimit = true;
         });
