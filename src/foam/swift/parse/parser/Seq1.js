@@ -22,7 +22,7 @@ foam.CLASS({
   methods: [
     {
       name: 'parse',
-      swiftCode: function() {/*
+      swiftCode: `
 var value: Any? = nil
 var ps: foam_swift_parse_PStream? = ps
 for (i, parser) in parsers.enumerated() {
@@ -31,7 +31,7 @@ for (i, parser) in parsers.enumerated() {
   if i == index { value = ps!.value() }
 }
 return ps!.setValue(value)
-      */},
+      `,
     },
   ]
 });

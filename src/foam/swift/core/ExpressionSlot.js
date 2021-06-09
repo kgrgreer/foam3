@@ -22,9 +22,9 @@ foam.CLASS({
     },
     {
       name: 'value',
-      swiftFactory: function() {/*
+      swiftFactory: `
 return code(args.map { (slot) -> Any? in return slot.swiftGet() })
-      */}
+      `
     },
     {
       name: 'cleanup_', // detachable to cleanup old subs when obj changes
@@ -43,9 +43,9 @@ return code(args.map { (slot) -> Any? in return slot.swiftGet() })
     },
     {
       name: 'swiftSub',
-      swiftCode: function() {/*
-return sub(topics: ["propertyChange", "value"], listener: listener)
-      */},
+      swiftCode: `
+      return sub(topics: ["propertyChange", "value"], listener: listener)
+      `,
     },
     {
       name: 'subToArgs_',
@@ -55,13 +55,13 @@ return sub(topics: ["propertyChange", "value"], listener: listener)
           swiftType: '[foam_swift_core_Slot]',
         },
       ],
-      swiftCode: function() {/*
+      swiftCode: `
 cleanup();
 let subs = slots.map { (slot) -> Subscription in
   return slot.swiftSub(invalidate_listener)
 }
 cleanup_ = Subscription(detach: { for sub in subs { sub.detach() } })
-      */},
+      `,
     }
   ],
 

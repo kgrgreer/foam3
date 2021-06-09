@@ -37,38 +37,38 @@ foam.CLASS({
       of: 'foam.swift.ui.DAOTableViewSource',
       required: true,
       name: 'dataSource',
-      swiftFactory: function() {/*
+      swiftFactory: `
 let dataSource = DAOTableViewSource_create([
   "dao$": self.dao$,
 ])
 return dataSource
-      */}
+      `
     },
     {
       class: 'FObjectProperty',
       of: 'foam.swift.ui.DAOUITableViewDelegate',
       name: 'tableViewDelegate',
-      swiftFactory: function() {/*
+      swiftFactory: `
 return DAOUITableViewDelegate_create([
   "dataSource$": dataSource$,
 ])
-      */}
+      `
     },
     {
       class: 'FObjectProperty',
       of: 'foam.swift.ui.DAOCreateViewController',
       required: true,
       name: 'createVc',
-      swiftFactory: function() {/*
+      swiftFactory: `
 return DAOCreateViewController_create([
   "dao": dao,
 ])
-      */},
+      `,
     },
     {
       swiftType: 'UITableViewController',
       name: 'vc',
-      swiftFactory: function() {/*
+      swiftFactory: `
 let tvc = UITableViewController()
 tvc.navigationItem.rightBarButtonItem = UIBarButtonItem(
     barButtonSystemItem: .add,
@@ -80,11 +80,11 @@ if let of = dao?.get(key: "of") as? ClassInfo {
 }
 
 return tvc
-      */},
-      swiftPostSet: function() {/*
+      `,
+      swiftPostSet: `
 dataSource.tableView = newValue.tableView
 newValue.tableView.delegate = tableViewDelegate
-      */}
+      `
     },
   ],
 
@@ -92,10 +92,10 @@ newValue.tableView.delegate = tableViewDelegate
     {
       name: 'onCreate',
       swiftAnnotations: ['@objc'],
-      swiftCode: function() {/*
+      swiftCode: `
 createVc.clearProperty("data")
 (stack as? UINavigationController)?.pushViewController(createVc.vc, animated: true)
-      */}
+     `
     }
   ]
 });

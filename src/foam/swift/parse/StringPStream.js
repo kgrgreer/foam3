@@ -14,12 +14,12 @@ foam.CLASS({
     {
       swiftType: '[Character]',
       name: 'str',
-      swiftAdapt: function() {/*
+      swiftAdapt: `
 if let s = newValue as? String {
   return Array(s)
 }
 return newValue as! [Character]
-      */},
+      `,
     },
     {
       name: 'value_',
@@ -38,19 +38,19 @@ return newValue as! [Character]
   methods: [
     {
       name: 'head',
-      swiftCode: function() {/*
+      swiftCode: `
 return str[pos]
-      */},
+      `,
     },
     {
       name: 'valid',
-      swiftCode: function() {/*
+      swiftCode: `
 return pos < str.count
-      */},
+      `,
     },
     {
       name: 'tail',
-      swiftCode: function() {/*
+      swiftCode: `
 if tail_ == nil {
   tail_ = foam_swift_parse_StringPStream([
     "str": str,
@@ -58,32 +58,32 @@ if tail_ == nil {
   ])
 }
 return tail_!
-      */},
+      `,
     },
     {
       name: 'substring',
-      swiftCode: function() {/*
+      swiftCode: `
 let startIndex = pos
 let endIndex = (end as! foam_swift_parse_StringPStream).pos
 return String(str[startIndex..<endIndex])
-      */},
+      `,
     },
     {
       name: 'value',
-      swiftCode: function() {/*
+      swiftCode: `
 return value_
-      */},
+      `,
     },
     {
       name: 'setValue',
-      swiftCode: function() {/*
+      swiftCode: `
 let ps = foam_swift_parse_StringPStream([
   "str": str,
   "pos": pos,
   "value_": value,
 ])
 return ps
-      */},
+      `,
     },
   ]
 });

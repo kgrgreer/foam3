@@ -37,10 +37,10 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'approvalMode',
+      name: 'rejectOnInvalidatedSave',
       documentation: `
-        Set to true when ScrollingWizard is used to view UCJ data
-        accociated to an Approval Request.
+        Set to true when ScrollingWizard is used in association with an Approval Request
+        and requires the approval request to be rejected if invalidated data is saved.
       `,
       value: false
     },

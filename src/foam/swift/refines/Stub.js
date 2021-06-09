@@ -21,7 +21,7 @@ foam.CLASS({
     {
       name: 'swiftCodeGenerator',
       args: [],
-      template: function() {/*
+      template: `
 let replyBox = RPCReturnBox_create()
 
 let msg = Message_create([
@@ -52,7 +52,7 @@ if let o = o as? <%=this.swiftType%> {
 throw FoamError(o ?? "Failed to cast response to <%=this.swiftName%> as <%=this.swiftType%>")
   <% } %>
 <% } %>
-      */},
+      `,
     },
   ],
 });
@@ -75,7 +75,7 @@ foam.CLASS({
     {
       name: 'swiftCodeGenerator',
       args: [],
-      template: function() {/*
+      template: `
 let msg = Message_create([
   "object": RPCMessage_create([
     "name": "<%=this.swiftName%>",
@@ -83,7 +83,7 @@ let msg = Message_create([
   ]),
 ])
 try? delegate.send(msg)
-      */},
+      `,
     },
   ],
 });
