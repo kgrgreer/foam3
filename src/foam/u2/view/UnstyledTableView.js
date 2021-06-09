@@ -306,13 +306,8 @@ foam.CLASS({
 
     async function initE() {
       var view = this;
-
-      const asyncRes = await this.filterUnpermitted(view.of.getAxiomsByClass(foam.core.Property));
-      this.allColumns = ! view.of ? [] : [].concat(
-        asyncRes.map(a => a.name),
-        view.of.getAxiomsByClass(foam.core.Action)
-        .map(a => a.name)
-      );
+      const asyncRes = await this.filterUnpermitted([].concat(view.of.getAxiomsByClass(foam.core.Property), view.of.getAxiomsByClass(foam.core.Action)));
+      this.allColumns = ! view.of ? [] : asyncRes.map(a => a.name);
 
       this.columns$.sub(this.updateColumns_);
       this.of$.sub(this.updateColumns_);
@@ -800,6 +795,27 @@ foam.CLASS({
         When set to true, the '<model>.column.<property>' permission is required for a
         user to be able to read this property. If false, any user can see the
         value of this property in a table column.
+      `,
+      name: 'columnPermissionRequired'
+    },
+  ]
+});
+
+foam.CLASS({
+  package: 'foam.u2.view',
+  name: 'TableViewActionRefinement',
+  refines: 'foam.core.Action',
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'columnHidden'
+    },
+    {
+      class: 'Boolean',
+      documentation: `
+        When set to true, the '<model>.column.<Action>' permission is required for a
+        user to be able to read this property. If false, any user can see the
+        value of this Action in a table column.
       `,
       name: 'columnPermissionRequired'
     },
