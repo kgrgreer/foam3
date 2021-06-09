@@ -7,7 +7,7 @@
  foam.CLASS({
   package: 'foam.nanos.approval',
   name: 'ApprovalRequest',
-  plural: 'ApprovalRequests',
+  plural: 'Approval Requests',
   documentation: 'Approval requests are stored in approvalRequestDAO and' +
   'represent a single approval request for a single user.',
 

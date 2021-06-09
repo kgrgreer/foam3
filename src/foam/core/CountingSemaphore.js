@@ -6,13 +6,15 @@
 
 foam.CLASS({
   package: 'foam.core',
-  name: 'Lock',
+  name: 'CountingSemaphore',
 
-  documentation: 'A binary Semaphore / Lock.',
+  documentation: 'A Counting Semaphore.',
+
+  requires: [ 'foam.core.Latch' ],
 
   static: [
     function test__() {
-      var lock = foam.core.Lock.create();
+      var lock = foam.core.CountingSemaphore.create({limit:1});
 
       /*
       // Wihtout Locking
@@ -38,14 +40,36 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'promise',
-      factory: function() { return Promise.resolve(); }
+      class: 'Int',
+      name: 'count_'
+    },
+    {
+      class: 'Int',
+      name: 'limit',
+      value: 10
+    },
+    {
+      name: 'queue_',
+      factory: function() { return []; }
     }
   ],
 
   methods: [
+    function decr() {
+      this.count_--;
+      var latch = this.queue_.shift();
+      if ( latch ) return latch.resolve();
+    },
+
     function then(resolve) {
-      this.promise = this.promise.then(resolve);
+      if ( this.count_++ < this.limit ) {
+        resolve().then(this.decr.bind(this));
+        return Promise.resolve();
+      }
+
+      var latch = this.Latch.create();
+      this.queue_.push(latch);
+      return latch.then(resolve).then(this.decr.bind(this))
     }
   ]
 });

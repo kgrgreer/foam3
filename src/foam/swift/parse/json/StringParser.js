@@ -14,7 +14,7 @@ foam.CLASS({
   methods: [
     {
       name: 'parse',
-      swiftCode: function() {/*
+      swiftCode: `
 let escape_: Character = "\\"
 let delim_ = ps!.head()
 if delim_ != "\"" && delim_ != "'" { return nil }
@@ -33,7 +33,7 @@ while ps.valid() {
   ps = ps.tail()!
 }
 return ps.tail()!.setValue(sb)
-      */},
+      `,
     },
   ]
 });

@@ -89,7 +89,7 @@ foam.CLASS({
           }));
         }
       },
-      swiftCode: function() {/*
+      swiftCode: `
 let message = message!
 do {
   guard let object = message.object as? foam_box_RPCMessage,
@@ -117,7 +117,7 @@ do {
     ]))
   }
 }
-      */},
+      `,
     },
 
     {
@@ -132,7 +132,7 @@ do {
           messageType: message.cls_ && message.cls_.id
         });
       },
-      swiftCode: function() {/*
+      swiftCode: `
 let msg = msg!
 if let _ = msg.object as? foam_box_RPCMessage {
   call(msg)
@@ -142,7 +142,7 @@ if let _ = msg.object as? foam_box_RPCMessage {
 throw InvalidMessageException_create([
   "messageType": msg.ownClassInfo().id,
 ])
-      */},
+      `,
     },
   ]
 });

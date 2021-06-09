@@ -33,9 +33,9 @@ foam.CLASS({
       code: function select_(x, sink, skip, limit, order, predicate) {
         return this.delegate.select_(x, sink, this.skip_, limit, order, predicate);
       },
-      swiftCode: function() {/*
+      swiftCode: `
 return try delegate.select_(x, sink, skip_, limit, order, predicate)
-      */},
+      `,
     },
     function removeAll_(x, skip, limit, order, predicate) {
       return this.delegate.removeAll_(x, this.skip_, limit, order, predicate);
