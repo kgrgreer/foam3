@@ -47,8 +47,7 @@ foam.CLASS({
     }
 
     ^label-limit {
-      margin-top: 8px;
-      margin-bottom: 0;
+      padding-bottom: 4px;
     }
 
     ^container-filter {
@@ -220,7 +219,7 @@ foam.CLASS({
             onKey: true
           })
           .end()
-          .start('p')
+          .start('h4')
             .addClass(this.myClass('label-limit'))
             .show(this.isOverLimit$)
             .add(this.LABEL_LIMIT_REACHED)
