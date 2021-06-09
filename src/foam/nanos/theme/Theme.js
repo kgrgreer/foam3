@@ -125,6 +125,21 @@ foam.CLASS({
       },
     },
     {
+      class: 'Image',
+      name: 'backgroundImage',
+      displayWidth: 60,
+      view: {
+        class: 'foam.u2.MultiView',
+        views: [
+          {
+            class: 'foam.u2.tag.TextArea',
+            rows: 4, cols: 80
+          },
+          { class: 'foam.u2.view.ImageView' },
+        ]
+      },
+    },
+    {
       class: 'Array',
       name: 'domains',
       of: 'String',
