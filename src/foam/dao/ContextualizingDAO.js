@@ -21,13 +21,13 @@ foam.CLASS({
   name: 'ContextualizingDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: function() {/*
+  documentation: `
     ContextualizingDAO recreates objects returned by find()/put(), giving them
     access to the exports that this ContextualizingDAO has access to.
     <p>
     If using a foam.dao.EasyDAO, set contextualize:true to automatically
     contextualize objects returned by find().
-  */},
+  `,
 
   methods: [
     /** Found objects are cloned into the same context as this DAO */

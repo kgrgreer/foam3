@@ -18,8 +18,8 @@ foam.CLASS({
   properties: [
     {
       name: 'delegate',
-      swiftFactory: function() {/*
-return 
+      swiftFactory: `
+return
   Seq0_create(["parsers": [
     Whitespace_create(),
     AnyKeyParser_create(),
@@ -27,7 +27,7 @@ return
     Literal_create(["string": ":"]),
     AnyParser_create(),
   ]])
-      */},
+      `,
     },
   ],
 });

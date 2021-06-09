@@ -62,7 +62,7 @@ foam.CLASS({
   name: 'MultiPartID',
   extends: 'foam.core.FObjectProperty',
 
-  documentation: function() {/*
+  documentation: `
   An Identity Axiom which installs a psedo-property to use as an id.
 
   Use when you want a multi-part primary-key.
@@ -80,7 +80,7 @@ foam.CLASS({
   > p.id.toString();
   "{firstName:\"Kevin\",lastName:\"Greer\"}"
   </pre>
-  */},
+  `,
 
   properties: [
     [ 'name', 'id' ],

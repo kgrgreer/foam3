@@ -24,9 +24,9 @@ foam.CLASS({
       class: 'String',
       name: 'title',
       swiftExpressionArgs: ['data'],
-      swiftExpression: function() {/*
+      swiftExpression: `
 return data?.ownClassInfo().label ?? self.ownClassInfo().label
-      */},
+      `,
     },
     {
       name: 'propertyViews',
@@ -61,26 +61,26 @@ return data?.ownClassInfo().label ?? self.ownClassInfo().label
   methods: [
     {
       name: 'init',
-      swiftCode: function() {/*
+      swiftCode: `
 onDetach(of$.sub(listener: { (_, _) in
   self.reset()
 }))
-      */},
+      `,
     },
     {
       name: 'reset',
-      swiftCode: function() {/*
+      swiftCode: `
 self.actionViews = [:]
 self.propertyViews = [:]
 for (_, sub) in subViewSubscriptions {
   sub.detach()
 }
 subViewSubscriptions = [:]
-      */},
+      `,
     },
     {
       name: 'initAllViews',
-      swiftCode: function() {/*
+      swiftCode: `
 var properties: [PropertyInfo] = []
 var actions: [ActionInfo] = []
 if let fobj = data as AnyObject as? foam_core_FObject {
@@ -174,7 +174,7 @@ if let bottom: UIView = actionViews.first ?? labelViews.last {
     multiplier: 1,
     constant: 0))
 }
-      */},
+      `,
     },
     {
       name: 'getView',
@@ -185,16 +185,16 @@ if let bottom: UIView = actionViews.first ?? labelViews.last {
         }
       ],
       swiftType: 'foam_core_FObject?',
-      swiftCode: function() {/*
+      swiftCode: `
 if let c = config[a.name] as? [String:Any?],
     let vf = c["viewFactory"] as? (Context) -> foam_core_FObject? {
   return vf(__context__)
 }
 return a.viewFactory(x: __context__)
-      */},
+      `,
     },
   ],
-  swiftCode: function() {/*
+  swiftCode: `
 public subscript(key: String) -> foam_core_FObject? {
   guard let of = self.of else { return nil }
   if let v = self.propertyViews[key] ?? self.actionViews[key] {
@@ -223,5 +223,5 @@ public subscript(key: String) -> foam_core_FObject? {
   }
   return nil
 }
-  */},
+  `,
 });

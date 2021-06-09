@@ -37,13 +37,13 @@ foam.CLASS({
       },
       swiftType: 'Set<String>',
       swiftExpressionArgs: ['whitelist'],
-      swiftExpression: function() {/*
+      swiftExpression: `
 var w = Set<String>()
 for i in whitelist {
   w.insert(i)
 }
 return w
-      */}
+      `
     }
   ],
   methods: [
@@ -68,13 +68,13 @@ return w
         }
         return this.__context__.lookup.call(X, id);
       },
-      swiftCode: function() {/*
+      swiftCode: `
 let id = id!
 if whitelist.contains(id) {
   throw FoamError("Class " + id + " is not whitelisted.")
 }
 return X!.lookup(id)
-      */}
+     `
     }
   ]
 });

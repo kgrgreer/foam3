@@ -226,7 +226,7 @@ foam.CLASS({
     {
       name: 'slotInit',
       args: [],
-      template: function() {/*
+      template: `
 return <%=foam.swift.core.ConstantSlot.model_.swiftName%>([
   "value": { [weak self] (args: [Any?]) throws -> Any? in
     if self == nil { fatalError() }
@@ -235,7 +235,7 @@ return <%=foam.swift.core.ConstantSlot.model_.swiftName%>([
   %><%=a.localName%> = args[<%=i%>] as<%=!a.type.match(/^Any\??$/) ? '!' : ''%> <%=a.type%>
 <% }) %>
 
-    return <%=this.swiftThrows ? 'try ' : ''%>self!.`<%=this.swiftName%>`(
+    return <%=this.swiftThrows ? 'try ' : ''%>self!.\`<%=this.swiftName%>\`(
         <%=this.swiftArgs.map(function(a){
           return (a.externalName != '_' ? a.externalName + ': ' : '') +
                  (a.mutable ? '&' : '') +
@@ -243,12 +243,12 @@ return <%=foam.swift.core.ConstantSlot.model_.swiftName%>([
         }).join(', ')%>)
   }
 ])
-      */},
+      `,
     },
     {
       name: 'syncronizedCode',
       args: [],
-      template: function() {/*
+      template: `
 <%=this.swiftSynchronizedSemaphoreName%>.wait()
 <%if (this.swiftType != 'Void') {%>let ret = <%}%><%=
     this.swiftThrows ? 'try ' : ''%><%=
@@ -256,12 +256,12 @@ return <%=foam.swift.core.ConstantSlot.model_.swiftName%>([
         this.swiftArgs.map(function(a) { return a.localName }).join(',')%>)
 <%=this.swiftSynchronizedSemaphoreName%>.signal()
 <%if (this.swiftType != 'Void') {%>return ret<%}%>
-      */},
+      `,
     },
     {
       name: 'swiftMethodInfoInit',
       args: ['parentCls'],
-      template: function() {/*
+      template: `
 class MInfo: MethodInfo {
   let name = "<%=this.swiftName%>"
   let args: [MethodArg] = [] //TODO
@@ -273,7 +273,7 @@ class MInfo: MethodInfo {
   }
 }
 return MInfo(classInfo())
-      */},
+      `,
     }
   ],
 });

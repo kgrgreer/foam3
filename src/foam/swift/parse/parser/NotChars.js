@@ -21,13 +21,13 @@ foam.CLASS({
   methods: [
     {
       name: 'parse',
-      swiftCode: function() {/*
+      swiftCode: `
 let ps = ps!
 if ps.valid() && chars.index(of: ps.head()) == -1 {
   return ps.tail()!.setValue(ps.head())
 }
 return nil
-      */},
+      `,
     },
   ]
 });

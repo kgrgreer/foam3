@@ -833,6 +833,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.MemoModal.NOTE_OPTIONAL"
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.UserNotFoundException",target:"Usuário não encontrado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.AuthenticationException",target:"Não logado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.AccountLockedException",target:"Conta bloqueada"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.AccountDisabledException",target:"Conta desativada"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.AccountDisabledException.Please contact customer service",target:"Entre em contato com o atendimento ao cliente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.AccountLockedException.Please contact customer service",target:"Entre em contato com o atendimento ao cliente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.InvalidPasswordException",target:"Senha inválida"})
 

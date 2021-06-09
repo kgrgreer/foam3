@@ -59,6 +59,7 @@ FOAM_FILES([
   { name: "foam/core/Proxy" },
   { name: "foam/core/Latch" },
   { name: "foam/core/Lock" },
+  { name: "foam/core/CountingSemaphore" },
   { name: "foam/core/Promised" },
   { name: "foam/core/Interface" },
   { name: "foam/core/Type" },
