@@ -235,7 +235,7 @@ protected class ResponseThread implements Runnable {
           replyBox && replyBox.send(foam.box.Message.create({ object: foam.box.HTTPException.create({ response: r }) }));
         });
       },
-      swiftCode: function() {/*
+      swiftCode: `
 let msg = msg!
 let replyBox = msg.attributes["replyBox"] as? foam_box_Box
 msg.attributes["replyBox"] = getReplyBox()
@@ -261,7 +261,7 @@ let task = URLSession.shared.dataTask(with: request) { data, response, error in
   }
 }
 task.resume()
-      */},
+      `,
       javaCode: `
       // TODO: Go async and make request in a separate thread.
 
@@ -300,9 +300,9 @@ task.resume()
       code: function() {
         return this.HTTPReplyBox.create();
       },
-      swiftCode: function() {/*
+      swiftCode: `
       return HTTPReplyBox_create()
-                             */},
+                             `,
       javaCode: `
         return getX().create(foam.box.HTTPReplyBox.class);
       `

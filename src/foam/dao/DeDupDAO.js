@@ -20,12 +20,12 @@ foam.CLASS({
   name: 'DeDupDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: function() {/*
+  documentation: `
     DeDupDAO is a decorator that internalizes strings in put() objects to save memory.
     Useful for indexed or cached data.
     <p>
     Use a foam.dao.EasyDAO with dedup:true to automatically apply deduplication.
-  */},
+   `,
 
   methods: [
     /** Scan each object for strings and internalize them. */
