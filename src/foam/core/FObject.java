@@ -292,17 +292,75 @@ public interface FObject
   }
 
   default FObject copyFrom(FObject obj) {
+    if ( ! ( this.getClass().isAssignableFrom(obj.getClass()))) {
+      System.err.println("FObject.copyFrom "+this.getClass().getName()+" not assignable from "+obj.getClass().getName());
+    }
     List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
     for ( PropertyInfo p : props ) {
       try {
         if ( p.isSet(obj) ) p.set(this, p.get(obj));
       } catch (ClassCastException e) {
+        System.err.println("FObject.copyFrom "+p.getName()+" "+e.getMessage());
         try {
           PropertyInfo p2 = (PropertyInfo) obj.getClassInfo().getAxiomByName(p.getName());
           if ( p2 != null ) {
             if ( p2.isSet(obj) ) p.set(this, p2.get(obj));
           }
-        } catch (ClassCastException ignore) {}
+        } catch (ClassCastException ignore) {
+          System.err.println("FObject.copyFrom "+p.getName()+" p2.get(obj) "+ignore.getMessage());
+        }
+      }
+    }
+    return this;
+  }
+
+  /**
+   * Similar to copyFrom, with recursion on nested FObjects, only setting
+   * isSet=true properties.
+   */
+  default FObject overlay(FObject obj) {
+    //    throw ClassCastException {
+    if ( ! ( this.getClass().isAssignableFrom(obj.getClass()))) {
+      System.err.println("FObject.overlay "+this.getClass().getName()+" not assignable from "+obj.getClass().getName());
+    }
+    List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
+    for ( PropertyInfo p : props ) {
+      Object remote = null;
+      try {
+        remote = p.get(obj);
+      } catch ( ClassCastException e ) {
+        System.err.println("FObject.overlay "+p.getName()+" p.get(obj): "+e.getMessage());
+        PropertyInfo p2 = (PropertyInfo) obj.getClassInfo().getAxiomByName(p.getName());
+        if ( p2 != null ) {
+          p = p2;
+          try {
+            remote = p.get(obj);
+          } catch ( ClassCastException ee ) {
+            System.err.println("FObject.overlay "+p.getName()+" p2.get(obj): "+ee.getMessage());
+          }
+        } else {
+          System.out.println("FObject.overlay "+p.getName()+" p2: null");
+        }
+      }
+      try {
+        if ( remote != null &&
+             remote instanceof FObject ) {
+          Object local = p.get(this);
+          if ( local != null ) {
+            if ( local == remote ) {
+              System.out.println("FObject.overlay "+p.getName()+" local == remote");
+            } else {
+              System.out.println("FObject.overlay "+p.getName()+" local: "+local.toString()+", remote: "+remote.toString());
+              p.set(this, ((FObject)local).overlay((FObject)remote));
+            }
+          } else {
+            p.set(this, remote);
+          }
+        } else if ( p.isSet(obj) ) {
+          p.set(this, remote);
+        }
+      } catch ( ClassCastException e ) {
+        System.err.println("FObject.overlay "+p.getName()+" local "+e.getMessage());
       }
     }
     return this;

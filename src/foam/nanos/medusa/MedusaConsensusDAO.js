@@ -442,7 +442,7 @@ This is the heart of Medusa.`,
 
             FObject old = dao.find_(x, nu.getProperty("id"));
             if (  old != null ) {
-              nu = old.fclone().copyFrom(nu);
+              nu = old.fclone().overlay(nu);
             }
           }
           if ( ! SafetyUtil.isEmpty(entry.getTransientData()) ) {
@@ -458,10 +458,10 @@ This is the heart of Medusa.`,
                 nu = tran;
                 FObject old = dao.find_(x, nu.getProperty("id"));
                 if (  old != null ) {
-                  nu = old.fclone().copyFrom(nu);
+                  nu = old.fclone().overlay(nu);
                 }
               } else {
-                nu = nu.copyFrom(tran);
+                nu = nu.overlay(tran);
               }
             }
           }
