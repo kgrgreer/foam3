@@ -50,14 +50,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'requireAll',
       value: false
-    },
-    /*
-    KGR: Commented out because is breaking build.
-    {
-      name: 'approval',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.approval.ApprovalRequest'
-    }*/
+    }
   ],
 
   methods: [

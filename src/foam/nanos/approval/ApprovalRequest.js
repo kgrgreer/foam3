@@ -1141,3 +1141,17 @@
     }
   ]
 });
+
+
+foam.CLASS({
+  name: 'RefineEasyCrunchWizard',
+  refines: 'foam.u2.crunch.EasyCrunchWizard',
+
+  properties: [
+    {
+      name: 'approval',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.approval.ApprovalRequest'
+    }
+  ]
+});
