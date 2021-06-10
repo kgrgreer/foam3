@@ -37,7 +37,7 @@ foam.ENUM({
           Min-width @ 576px, max-width @ 768px and a 12 column grid
         `,
         minWidth: 576,
-        cols: 12
+        cols: 8
       },
       {
         name: 'MD',
