@@ -143,6 +143,10 @@ foam.CLASS({
       required: true,
       javaValidateObj: `
         var address = (Address) obj;
+        if ( SafetyUtil.isEmpty(address.getCountryId()) ) {
+          return;
+        }
+
         if ( SafetyUtil.isEmpty(address.getRegionId()) ) {
           throw new IllegalStateException(REGION_REQUIRED);
         }
