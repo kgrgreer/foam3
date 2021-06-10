@@ -849,10 +849,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.DuplicateEmailEx
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.DuplicateUserNameException",target:"Nome de usuário duplicado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.DuplicateUserNameException.UserName already in use",target:"Nome de usuário já em uso"})
 
-//FOAMException
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.FOAMException.You do not have permission to access the service named {{id}}",target:"Você não tem permissão para acessar o serviço chamado {{id}}"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.FOAMException.DAO name is required.",target:"O nome DAO é obrigatório."})
-
-//DigErrorMessage
+// DIG Exceptions
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.dig.exception.AuthorizationException.You do not have permission to access the service named {{message}}",target:"Você não tem permissão para acessar o serviço chamado {{message}}"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.dig.exception.DAORequiredException.DAO name required",target:"O nome DAO é obrigatório."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.dig.exception.DigSuccessMessage.{{message}}",target:"Sucesso"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.dig.exception.DAONotFoundException.DAO not found: {{daoName}}",target:"DAO não encontrado: {{daoName}}"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.dig.exception.DAONotFoundException.DAO not found: {{message}}",target:"DAO não encontrado: {{daoName}}"})

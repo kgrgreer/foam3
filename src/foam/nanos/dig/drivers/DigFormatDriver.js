@@ -227,9 +227,7 @@ foam.CLASS({
       String daoName = p.getParameter("dao");
 
       if ( SafetyUtil.isEmpty(daoName) ) {
-        var ex = new foam.core.FOAMException();
-        ex.setExceptionMessage("DAO name is required.");
-        DigUtil.outputException(x, new GeneralException(ex.getTranslation()), getFormat());
+        DigUtil.outputException(x, new DAORequiredException(), getFormat());
         return null;
       }
 
@@ -275,7 +273,7 @@ foam.CLASS({
       try {
         return dao.put(nu);
       } catch ( ValidationException ve ) {
-        throw new DAOPutException(ve.getTranslation(), ve);
+        throw new DAOPutException(ve.getMessage(), ve);
       } catch ( CompoundException ce ) {
         // FObject.validate(x) can collect all validation exceptions into a
         // CompoundException but we just need to return the first to preserve
@@ -283,7 +281,7 @@ foam.CLASS({
         var clientEx = ce.getClientRethrowException();
         if ( clientEx instanceof ValidationException ) {
           throw new DAOPutException(
-            ((ValidationException) clientEx).getTranslation(), ce);
+            ((ValidationException) clientEx).getMessage(), ce);
         }
         throw ce;
       }

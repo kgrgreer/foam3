@@ -15,7 +15,7 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(`
           public DigSuccessMessage() {
-            setMessage(getTranslation());
+            super();
           }
 
           public DigSuccessMessage(String message) {

@@ -14,11 +14,14 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(`
-          protected DAONotFoundException() { }
+          public DAONotFoundException() { }
 
           public DAONotFoundException(String daoName) {
-            setDaoName(daoName);
-            setMessage(getTranslation());
+            super(daoName);
+          }
+
+          public DAONotFoundException(String daoName, Throwable cause) {
+            super(daoName, cause);
           }
         `
         );
@@ -29,11 +32,8 @@ foam.CLASS({
   properties: [
     {
       name: 'exceptionMessage',
-      value: 'DAO not found: {{daoName}}'
-    },
-    {
       class: 'String',
-      name: 'daoName'
+      value: 'DAO not found {{message}}',
     },
     {
       class: 'String',
