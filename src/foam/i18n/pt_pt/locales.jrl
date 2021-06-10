@@ -407,6 +407,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.SU
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.RESET_PASSWORD_SUBTITLE",target:"Crie uma nova senha para sua conta"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.PASSWORD_LENGTH_10_ERROR",target:"A senha deve ter pelo menos 10 caracteres"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.PASSWORD_NOT_MATCH",target:"As senhas não coincidem"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.NEW_PASSWORD.label",target:"Nova Senha"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.CONFIRMATION_PASSWORD.label",target:"Confirme a Senha"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.RESET_PASSWORD.label",target:"Confirme"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.Notification.model_.plural",target:"notificações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"notifications.label",target:"notificações"})
