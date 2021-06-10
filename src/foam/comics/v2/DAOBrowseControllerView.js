@@ -18,7 +18,8 @@ foam.CLASS({
     'auth',
     'currentMenu?',
     'memento',
-    'stack'
+    'stack',
+    'translationService'
   ],
 
   exports: [
@@ -167,12 +168,18 @@ foam.CLASS({
                   .end()
                   .callIf( ! config.detailView, function() {
                     this.startContext({ data: self })
-                      .tag(self.CREATE, { label: config$createTitle, buttonStyle: foam.u2.ButtonStyle.PRIMARY })
+                      .tag(self.CREATE, {
+                           label: this.translationService.getTranslation(foam.locale, menuId + '.createTitle', config$createTitle),
+                           buttonStyle: foam.u2.ButtonStyle.PRIMARY
+                      })
                     .endContext()
                   })
                   .callIf( config.createControllerView, function() {
                     this.startContext({ data: self })
-                      .tag(self.CREATE, { label: config$createControllerView.view.title, buttonStyle: foam.u2.ButtonStyle.PRIMARY })
+                      .tag(self.CREATE, {
+                           label: this.translationService.getTranslation(foam.locale, menuId + '.handler.createControllerView.view.title', config$createControllerView.view.title),
+                           buttonStyle: foam.u2.ButtonStyle.PRIMARY
+                      })
                     .endContext()
                   })
                   .callIf( config$primaryAction, function() {

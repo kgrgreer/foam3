@@ -7,6 +7,7 @@
 foam.CLASS({
   package: 'foam.u2.crunch',
   name: 'EasyCrunchWizard',
+
   requires: [
     'foam.u2.crunch.wizardflow.SkipGrantedAgent',
     'foam.u2.crunch.wizardflow.SkipMode',
@@ -42,18 +43,11 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'rejectOnInvalidatedSave',
-      value: false
+      name: 'rejectOnInvalidatedSave'
     },
     {
       class: 'Boolean',
-      name: 'requireAll',
-      value: false
-    },
-    {
-      name: 'approval',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.approval.ApprovalRequest'
+      name: 'requireAll'
     }
   ],
 
