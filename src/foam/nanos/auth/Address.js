@@ -25,10 +25,15 @@ foam.CLASS({
     'translationService'
   ],
 
+  javaImports: [
+    'foam.util.SafetyUtil'
+  ],
+
   messages: [
     { name: 'CITY_REQUIRED', message: 'City required' },
     { name: 'COUNTRY_REQUIRED', message: 'Country required' },
     { name: 'REGION_REQUIRED', message: 'Region required' },
+    { name: 'INVALID_REGION', message: 'Invalid region' },
     { name: 'INVALID_ADDRESS_1', message: 'Invalid value for address line 1' },
     { name: 'INVALID_POSTAL_CODE', message: 'Valid Postal Code or ZIP Code required' },
     { name: 'POSTAL_CODE_REQUIRE', message: 'Postal Code required' },
@@ -137,10 +142,15 @@ foam.CLASS({
       },
       required: true,
       javaValidateObj: `
-        if ( ((Address) obj).getCountryId() != null && 
-          ( ((Address) obj).getRegionId() == null || ((Address) obj).getRegionId().trim().length() == 0 ) 
-        )
-          throw new IllegalStateException(((Address) obj).REGION_REQUIRED);
+        var address = (Address) obj;
+        if ( SafetyUtil.isEmpty(address.getRegionId()) ) {
+          throw new IllegalStateException(REGION_REQUIRED);
+        }
+
+        var region = address.findRegionId(x);
+        if ( region == null || ! region.getCountryId().equals(address.getCountryId()) ) {
+          throw new IllegalStateException(INVALID_REGION);
+        }
       `,
       validateObj: function(regionId, countryId) {
         // If the country hasn't been selected yet, don't show this error.
