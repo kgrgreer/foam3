@@ -193,7 +193,7 @@ foam.CLASS({
           );
 
         if ( user == null ) {
-          throw new AuthenticationException("User not found");
+          throw new UserNotFoundException();
         }
         return loginHelper(x, user, password);
       `
@@ -315,12 +315,12 @@ foam.CLASS({
 
         Session session = x.get(Session.class);
         if ( session == null || session.getUserId() == 0 ) {
-          throw new AuthenticationException("User not found");
+          throw new UserNotFoundException();
         }
 
         User user = (User) ((DAO) getLocalUserDAO()).find(session.getUserId());
         if ( user == null ) {
-          throw new AuthenticationException("User not found");
+          throw new UserNotFoundException();
         }
 
         // check that the user is active
