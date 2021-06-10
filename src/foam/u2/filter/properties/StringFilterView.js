@@ -141,7 +141,7 @@ foam.CLASS({
         this.isOverLimit = false;
         this.dao.where(this.STARTS_WITH(this.property, n)).select(this.GROUP_BY(this.property, null, 101)).then((results) => {
           this.countByContents = results.groups;
-          if ( Object.keys(results.groups).length > 100 ) this.isOverLimit = true;
+          if ( Object.keys(results.groups).length > 20 ) this.isOverLimit = true;
         });
       }
     },
@@ -315,10 +315,10 @@ foam.CLASS({
       code: function() {
         this.isOverLimit = false;
         this.isLoading = true;
-        var pred = this.search && this.search.trim().length > 0 ? this.CONTAINS_IC(this.property, this.search) : this.TRUE;
+        var pred = this.search && this.search.trim().length > 0 ? this.STARTS_WITH(this.property, this.search) : this.TRUE;
         this.dao.where(pred).select(this.GROUP_BY(this.property, null, 101)).then((results) => {
           this.countByContents = results.groups;
-          if ( Object.keys(results.groups).length > 100 ) this.isOverLimit = true;
+          if ( Object.keys(results.groups).length > 20 ) this.isOverLimit = true;
           this.isLoading = false;
         });
       }
