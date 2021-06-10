@@ -47,7 +47,7 @@ foam.CLASS({
     }
 
     ^label-limit {
-      padding: 16px 0;
+      padding: 4px 0 16px;
     }
 
     ^container-filter {
@@ -220,7 +220,7 @@ foam.CLASS({
           })
           .end()
           .start()
-            .addClasses(['h600', this.myClass('label-limit')])
+            .addClasses(['p-semibold', this.myClass('label-limit')])
             .show(this.isOverLimit$)
             .add(this.LABEL_LIMIT_REACHED)
           .end()
