@@ -32,6 +32,7 @@ foam.CLASS({
   messages: [
     { name: 'CITY_REQUIRED', message: 'City required' },
     { name: 'COUNTRY_REQUIRED', message: 'Country required' },
+    { name: 'INVALID_COUNTRY', message: 'Invalid country' },
     { name: 'REGION_REQUIRED', message: 'Region required' },
     { name: 'INVALID_REGION', message: 'Invalid region' },
     { name: 'INVALID_ADDRESS_1', message: 'Invalid value for address line 1' },
@@ -102,6 +103,16 @@ foam.CLASS({
           return this.COUNTRY_REQUIRED;
         }
       },
+      javaValidateObj: `
+        var address = (Address) obj;
+        if ( SafetyUtil.isEmpty(address.getCountryId()) ) {
+          throw new IllegalStateException(COUNTRY_REQUIRED);
+        }
+
+        if ( address.findCountryId(x) == null ) {
+          throw new IllegalStateException(INVALID_COUNTRY);
+        }
+      `,
       postSet: function(oldValue, newValue) {
         if ( oldValue !== newValue ) {
           this.regionId = undefined;
