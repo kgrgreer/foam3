@@ -936,19 +936,6 @@ foam.CLASS({
             }
             return postalCodeError ? postalCodeError : X.INVALID_POSTAL_CODE;
           }
-        },
-        {
-          args: ['countryId'],
-          predicateFactory: function(e) {
-            return e.HAS(foam.nanos.auth.Address.COUNTRY_ID);
-          },
-          jsErr: function(X) {
-            let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
-            if ( ! postalCodeError ) {
-              postalCodeError = X.translationService.getTranslation(foam.locale, '*.foam.nanos.auth.Address.POSTAL_CODE.error');
-            }
-            return postalCodeError ? postalCodeError : X.INVALID_POSTAL_CODE;
-          }
         }
       ],
       javaSetter: `
