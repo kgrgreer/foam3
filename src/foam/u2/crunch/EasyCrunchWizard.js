@@ -43,13 +43,11 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'rejectOnInvalidatedSave',
-      value: false
+      name: 'rejectOnInvalidatedSave'
     },
     {
       class: 'Boolean',
-      name: 'requireAll',
-      value: false
+      name: 'requireAll'
     }
   ],
 
