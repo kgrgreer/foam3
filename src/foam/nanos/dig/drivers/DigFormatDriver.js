@@ -280,8 +280,7 @@ foam.CLASS({
         // the existing behavior.
         var clientEx = ce.getClientRethrowException();
         if ( clientEx instanceof ValidationException ) {
-          throw new DAOPutException(
-            ((ValidationException) clientEx).getMessage(), ce);
+          throw new DAOPutException(clientEx.getMessage(), clientEx);
         }
         throw ce;
       }
