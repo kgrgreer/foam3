@@ -7,15 +7,20 @@ foam.CLASS({
   package: 'foam.nanos.dig.exception',
   name: 'DigSuccessMessage',
   extends: 'foam.nanos.dig.exception.DigErrorMessage',
+  javaGenerateDefaultConstructor: false,
 
   axioms: [
     {
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(`
+          public DigSuccessMessage() {
+            super();
+          }
+
           public DigSuccessMessage(String message) {
             super(message);
-          } 
+          }
         `
         );
       }
