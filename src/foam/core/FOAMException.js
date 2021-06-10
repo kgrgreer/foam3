@@ -25,7 +25,7 @@ foam.CLASS({
     'java.util.List',
     'java.util.Map'
   ],
-  
+
   axioms: [
     {
       name: 'javaExtras',
@@ -65,6 +65,11 @@ foam.CLASS({
     setMessage(message);
     setErrorCode(errorCode);
     getHostname();
+  }
+  
+  @Override
+  public synchronized Throwable fillInStackTrace() {
+    return null;
   }
         `);
       }
@@ -183,12 +188,13 @@ foam.CLASS({
       javaCode: `
       StringBuilder sb = new StringBuilder();
       sb.append(getId());
-      sb.append(",");
-      sb.append("["+getHostname()+"]");
-      sb.append(",");
+      sb.append(",[");
+      sb.append(getHostname());
+      sb.append("],");
       if ( ! foam.util.SafetyUtil.isEmpty(getErrorCode()) ) {
-        sb.append("("+getErrorCode()+")");
-        sb.append(",");
+        sb.append('(');
+        sb.append(getErrorCode());
+        sb.append("),");
       }
       sb.append(getMessage());
       return sb.toString();

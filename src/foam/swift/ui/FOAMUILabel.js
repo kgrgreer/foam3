@@ -15,31 +15,31 @@ foam.CLASS({
       name: 'view',
       swiftType: 'UILabel',
       swiftFactory: 'return UILabel()',
-      swiftPostSet: function() {/*
+      swiftPostSet: `
 updateLabel();
-      */},
+     `,
     },
     {
       name: 'data',
-      swiftPostSet: function() {/*
+      swiftPostSet: `
 updateLabel();
-      */},
+      `,
     },
     {
       swiftType: 'UIColor?',
       name: 'textColor',
-      swiftPostSet: function() {/*
+      swiftPostSet: `
 updateLabel();
-      */},
+      `,
     },
   ],
   listeners: [
     {
       name: 'updateLabel',
-      swiftCode: function() {/*
+      swiftCode: `
 view.text = data == nil ? "nil" : String(describing: data!)
 if let textColor = textColor { view.textColor = textColor }
-      */},
+     `,
     },
   ],
 });

@@ -2531,14 +2531,14 @@ Multi-line templates can be defined as function comments
         templates: [
           {
             name: 'complexTemplate',
-            template: function() {/*
+            template: `
 Use raw JS code for loops and control structures
 <% for ( var i = 0 ; i < 10; i++ ) { %>
 i is: "<%= i %>" <% if ( i % 2 == 0 ) { %> which is even!<% }
 } %>
 Use percent signs to shortcut access to local properties
 For instance, my name is %%name
-            */}
+            `
           }
         ]
       });
@@ -5106,15 +5106,6 @@ log(foam.String.labelize('firstName'));
 log(foam.String.labelize('someLongName'));
 
 
-##  String multiline
-foam.String.multiline lets you build multi-line strings from function comments
---
-log(foam.String.multiline(function(){/*This is
-a
-multi-line
-string*/}));
-
-
 ##  String pad
 foam.String.pad() pads a string to the specified length
 --
@@ -5228,14 +5219,14 @@ Multi-line templates can be defined as function comments
         templates: [
           {
             name: 'complexTemplate',
-            template: function() {/*
+            template: `
 Use raw JS code for loops and control structures
 <% for ( var i = 0 ; i < 10; i++ ) { %>
 i is: "<%= i %>" <% if ( i % 2 == 0 ) { %> which is even!<% }
 } %>
 Use percent signs to shortcut access to local properties
 For instance, my name is %%name
-            */}
+            `
           }
         ]
       });

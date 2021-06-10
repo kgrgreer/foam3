@@ -200,10 +200,10 @@ foam.CLASS({
     ^tertiary-destructive{
       background-color: transparent;
       border-color: transparent;
-      color: /*%DESTRUCTIVE5%*/ #a61414;   
+      color: /*%DESTRUCTIVE3%*/ #D9170E;   
     }
 
-    ^tertiary-destructive svg { fill: /*%DESTRUCTIVE5%*/ #a61414; }
+    ^tertiary-destructive svg { fill: /*%DESTRUCTIVE3%*/ #D9170E; }
 
     ^tertiary-destructive:hover:not(:disabled) {
       background-color: /*%GREY5%*/ #F5F7FA;

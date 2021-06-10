@@ -142,7 +142,6 @@ foam.CLASS({
       String daoName = p.getParameter("dao");
 
       if ( SafetyUtil.isEmpty(daoName) ) {
-        resp.setStatus(HttpServletResponse.SC_OK);
         return;
       }
 

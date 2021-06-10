@@ -64,6 +64,9 @@ p({
     auth = new foam.nanos.auth.twofactor.TwoFactorAuthService.Builder(x)
       .setDelegate(auth)
       .build();
+    auth = new foam.nanos.auth.ResetSpidBeforeLoginAuthService.Builder(x)
+      .setDelegate(auth)
+      .build();
     auth = new foam.nanos.auth.SystemAuthService.Builder(x)
       .setDelegate(auth)
       .build();
@@ -303,6 +306,7 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name" :"menuDAO",
   "serve" :true,
+  "authenticate": false,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)

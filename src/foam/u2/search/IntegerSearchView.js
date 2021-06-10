@@ -75,6 +75,16 @@ foam.CLASS({
   ],
 
   methods: [
+    /**
+     * Restores the view based on passed in predicate
+     */
+      function restoreFromPredicate(predicate) {
+      if ( predicate === this.TRUE ) return;
+
+      this.qualifier = predicate.cls_.name;
+      this.amount = predicate.arg2.value;
+    },
+    
     function initE() {
       this
         .addClass(this.myClass())

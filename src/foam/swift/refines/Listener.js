@@ -102,7 +102,7 @@ foam.CLASS({
     {
       name: 'swiftInit',
       args: [],
-      template: function() {/*
+      template: `
 <% if ( this.isMerged || this.isFramed ) { %>
 
 var triggered = false
@@ -128,7 +128,7 @@ return { [weak self] sub, args in
 } as (Subscription, [Any?]) -> Void
 
 <% } %>
-      */},
+      `,
     }
   ],
 });

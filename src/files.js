@@ -59,6 +59,7 @@ FOAM_FILES([
   { name: "foam/core/Proxy" },
   { name: "foam/core/Latch" },
   { name: "foam/core/Lock" },
+  { name: "foam/core/CountingSemaphore" },
   { name: "foam/core/Promised" },
   { name: "foam/core/Interface" },
   { name: "foam/core/Type" },
@@ -308,6 +309,7 @@ FOAM_FILES([
   { name: "foam/dao/SyncDAO" },
 
   { name: 'foam/nanos/approval/AuthenticatedApprovalDAOAuthorizer' },
+  { name: 'foam/nanos/approval/UCJApprovable' },
 
   { name: 'foam/nanos/alarming/AddAlarmNameDAO' },
   { name: "foam/nanos/approval/ApprovalRequestNotificationNotificationCitationView", flags: ['web'] },
@@ -483,7 +485,6 @@ FOAM_FILES([
 
   { name: "foam/nanos/menu/DAOMenu2" },
   { name: "foam/nanos/menu/MenuToolBar" },
-
   { name: "foam/box/LogBox" },
   { name: "foam/box/MultiDelegateBox" },
   { name: "foam/box/BroadcastBox" },
@@ -670,6 +671,7 @@ FOAM_FILES([
   { name: "foam/u2/crunch/wizardflow/CapabilityAdaptAgent", flags: ['web'] },
   { name: "foam/u2/crunch/wizardflow/CheckRootIdAgent", flags: ['web'] },
   { name: "foam/u2/crunch/wizardflow/CheckPendingAgent", flags: ['web'] },
+  { name: "foam/u2/crunch/wizardflow/GrantedEditAgent", flags: ['web'] },
   { name: "foam/u2/crunch/wizardflow/CheckNoDataAgent", flags: ['web'] },
   { name: "foam/u2/crunch/wizardflow/LoadCapabilitiesAgent", flags: ['web'] },
   { name: "foam/u2/crunch/wizardflow/CreateWizardletsAgent", flags: ['web'] },
