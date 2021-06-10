@@ -26,7 +26,7 @@ foam.CLASS({
     }
 
     ^container-search {
-      padding: 24px 16px;
+      padding: 24px 16px 0px;
       border-bottom: solid 1px #cbcfd4;
     }
 
