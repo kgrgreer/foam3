@@ -139,7 +139,7 @@ foam.CLASS({
       name: 'search',
       postSet: function(_, n) {
         this.isOverLimit = false;
-        this.dao.where(this.STARTS_WITH(this.property, n)).limit(21).select(this.GROUP_BY(this.property, null, 21)).then((results) => {
+        this.dao.where(this.STARTS_WITH(this.property, n)).limit(21).select(this.GROUP_BY(this.property)).then((results) => {
           this.countByContents = results.groups;
           if ( Object.keys(results.groups).length > 20 ) this.isOverLimit = true;
         });
@@ -316,7 +316,7 @@ foam.CLASS({
         this.isOverLimit = false;
         this.isLoading = true;
         var pred = this.search && this.search.trim().length > 0 ? this.STARTS_WITH(this.property, this.search) : this.TRUE;
-        this.dao.where(pred).limit(21).select(this.GROUP_BY(this.property, null, 21)).then((results) => {
+        this.dao.where(pred).limit(21).select(this.GROUP_BY(this.property)).then((results) => {
           this.countByContents = results.groups;
           if ( Object.keys(results.groups).length > 20 ) this.isOverLimit = true;
           this.isLoading = false;
