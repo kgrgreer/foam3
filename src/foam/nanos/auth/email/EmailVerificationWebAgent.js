@@ -15,6 +15,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.i18n.TranslationService',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.UserNotFoundException',
     'foam.nanos.auth.Subject',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.DAOResourceLoader',
@@ -32,7 +33,6 @@ foam.CLASS({
   messages: [
     { name: 'EMAIL_VERIFIED_SUCCESS', message: 'Your email has now been verified.' },
     { name: 'EMAIL_VERIFIED_ERROR', message: 'There was a problem verifying your email.' },
-    { name: 'USER_NOT_FOUND', message: 'User not found.' },
     { name: 'TOKEN_NOT_FOUND', message: 'Token not found.' },
     { name: 'EMAIL_ALREADY_VERIFIED', message: 'Email already verified.' }
   ],
@@ -67,11 +67,11 @@ foam.CLASS({
           if ( token == null || "".equals(token) ) {
             translatedMsg = ts.getTranslation(local, getClassInfo().getId()+ ".TOKEN_NOT_FOUND", this.TOKEN_NOT_FOUND);
             throw new Exception(translatedMsg);
+            // TODO: replace with TokenNotFoundException();
           }
 
           if ( "".equals(userId) || ! StringUtils.isNumeric(userId) ) {
-            translatedMsg = ts.getTranslation(local, getClassInfo().getId()+ ".USER_NOT_FOUND", this.USER_NOT_FOUND);
-            throw new Exception(translatedMsg);
+            throw new UserNotFoundException();
           }
 
           if ( user.getEmailVerified() ) {
