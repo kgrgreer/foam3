@@ -24,7 +24,7 @@ foam.CLASS({
   messages: [
     {
       name: 'LACKS_PERMISSION',
-      message: 'Permission denied. You cannot add or remove a permission that you do not have.'
+      message: 'You cannot add or remove a permission that you do not have.'
     },
     {
       name: 'CANNOT_UPDATE_GROUP',

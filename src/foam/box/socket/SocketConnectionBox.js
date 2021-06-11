@@ -192,7 +192,7 @@ NOTE: duplicated in SocketConnectionReplyBox
         omLogger.log(this.getClass().getSimpleName(), getId(), "pending");
         synchronized (out_) {
           // NOTE: enable along with send debug call in SocketServerProcessor to monitor all messages.
-          // getLogger().debug("send", message);
+          getLogger().debug("send", message);
           out_.writeLong(System.currentTimeMillis());
           out_.writeInt(messageBytes.length);
           out_.write(messageBytes);
@@ -274,7 +274,7 @@ NOTE: duplicated in SocketConnectionReplyBox
               throw new RuntimeException("Received empty message.");
             }
             // NOTE: enable along with send debug call in SocketServerProcessor to monitor all messages.
-            // getLogger().debug("receive", message);
+            getLogger().debug("receive", message);
             Message msg = (Message) x.create(JSONParser.class).parseString(message);
             if ( msg == null ) {
               throw new RuntimeException("Failed to parse. message: "+message);
