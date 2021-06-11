@@ -69,7 +69,7 @@ return (foam.core.PropertyInfo)(getOf().getAxiomByName(getProperty()));
 Object val = obj.getProperty(getProperty());
 UIdGenerator uIdGenerator = (UIdGenerator) x.get("uIdGenerator");
 if ( "".equals(val) ) {
-  getAxiom().set(obj,  uIdGenerator.generate());
+  getAxiom().set(obj, uIdGenerator.generate());
 }
 
 return getDelegate().put_(x, obj);
