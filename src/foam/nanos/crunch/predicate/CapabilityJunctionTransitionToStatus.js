@@ -47,8 +47,8 @@ foam.CLASS({
         UserCapabilityJunction ucj = (UserCapabilityJunction) x.get("NEW");
 
         return ( old == null || old != null && old.getStatus() != ucj.getStatus() ) &&
-            ucj.getStatus() == getStatus() &&
-            ucj.getTargetId() == getCapabilityId();
+            ucj.getStatus().equals(getStatus()) &&
+            ucj.getTargetId().equals(getCapabilityId());
       `
     }
   ]
