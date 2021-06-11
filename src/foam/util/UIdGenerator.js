@@ -40,11 +40,44 @@ foam.CLASS({
           setLastTimeCalled(currTime);
         }
         int seqNo = getSeqNo();
-        String idStr  = Long.toHexString(currTime);
-        if ( seqNo < 10 ) idStr = idStr + "0";
-        idStr = idStr + Integer.toString(seqNo);
-
-        // permutation
+        String id  = Long.toHexString(currTime);
+        String seqStr = Integer.toHexString(seqNo);
+        if ( seqStr.length() % 2 != 0 ) seqStr = "0" + seqStr;
+        String checksum = calcChecksum(currTime);
+        id = id + seqStr + checksum;
+        id = permutate(id);
+        setSeqNo(seqNo + 1);
+        return id;
+      `
+    },
+    {
+      name: 'calcChecksum',
+      type: 'String',
+      args: [
+        { name: 'currTime', type: 'long' }
+      ],
+      javaCode: `
+        int checksum = 0;
+        while ( currTime > 0 ) {
+          checksum += currTime % 256;
+          currTime = currTime / 256;
+        }
+        int seqNo = getSeqNo();
+        while ( seqNo > 0) {
+          checksum += seqNo % 256;
+          seqNo = seqNo / 256;
+        }
+        checksum = 256 - (checksum % 256);
+        return Integer.toHexString(checksum);
+      `
+    },
+    {
+      name: 'permutate',
+      type: 'String',
+      args: [
+        { name: 'idStr', type: 'String' }
+      ],
+      javaCode: `
         char[] id = idStr.toCharArray();
         Random r = ThreadLocalRandom.current();
         for ( int i = id.length - 1; i > 0; i-- )
@@ -54,7 +87,6 @@ foam.CLASS({
           id[newI] = id[i];
           id[i] = c;
         }
-        setSeqNo(seqNo + 1);
         return String.valueOf(id);
       `
     }
