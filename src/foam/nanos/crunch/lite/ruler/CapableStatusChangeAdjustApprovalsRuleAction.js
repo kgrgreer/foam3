@@ -141,6 +141,10 @@ foam.CLASS({
 
 
               for ( Approvable approvable : approvablesPending ){
+                /**
+                 * TODO: Need to think of clever way to grab the original approver given approved
+                 * requests  and granted payloads
+                 */
                 approvalRequestDAO.where(
                   foam.mlang.MLang.AND(
                     foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, approvable.getId()),
