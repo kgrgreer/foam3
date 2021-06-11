@@ -36,7 +36,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'status',
-      value: '404'
+      value: '400'
     },
     {
       class: 'String',

@@ -66,6 +66,8 @@ foam.CLASS({
     setErrorCode(errorCode);
     getHostname();
   }
+
+  protected static final java.util.regex.Pattern MESSAGE_PATTERN = java.util.regex.Pattern.compile("\\\\{\\\\{.*?\\\\}\\\\}");
         `);
       }
     }
@@ -160,7 +162,9 @@ foam.CLASS({
       } catch (NullPointerException e) {
         // noop - Expected when not yet logged in, as XLocator is not setup.
       }
-      return msg.replaceAll("{{message}}", message_ == null ? "" : message_).trim();
+      // fallback
+      java.util.regex.Matcher matcher = MESSAGE_PATTERN.matcher(msg);
+      return matcher.replaceAll(message_ == null ? "" : message_);
       `
     },
     {
