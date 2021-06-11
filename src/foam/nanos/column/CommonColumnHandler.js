@@ -91,6 +91,11 @@ foam.CLASS({
       return  prop ? prop.property[property] : of.getAxiomByName(this.returnPropertyNamesForColumn(colObj))[property];
     },
     function groupObjectsThatAreRelatedToNestedProperties(of, arrayOfNestedPropertiesName, arrayOfValues) {
+      //this function creates obj for nested properties
+      //eg lets assume that current `of` class has property called user
+      //and we query 3 properties user.firstName, user.lastName, user.fullName
+      //then we will create 'user' entry in our map object initalized below
+      //and itterating over all properties that have key which equal to 'user' we will set all properties values for which were retrieved with projection
       var map = {};
       for ( var i = 0 ; i < arrayOfNestedPropertiesName.length ; i++ ) {
         var key = this.getNestedPropertyNameExcludingLastProperty(arrayOfNestedPropertiesName[i]);
@@ -113,6 +118,7 @@ foam.CLASS({
       return nestedPropertyName.substr(lastIndex + 1);
     },
     function buildArrayOfNestedPropertyNamesAndCorrespondingIndexesInArray(propNames) {
+      //gathering nested properties and indexes of corresponding values in Projection array 
       var nestedPropertyNames = [];
       var indexOfValuesForCorrespondingPropertyNames = [];
       for ( var i = 0 ; i < propNames.length ; i++ ) {
