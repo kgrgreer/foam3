@@ -92,7 +92,10 @@ foam.CLASS({
       class: 'String',
       storageTransient: true,
       visibility: 'RO',
-      javaGetter: `return getTranslation();`
+      javaGetter: `
+        // Return non-translated template rendered exceptionMessage
+        return renderMessage(getExceptionMessage());
+      `
     },
     {
       name: 'errorCode',
@@ -128,17 +131,36 @@ foam.CLASS({
           if ( SafetyUtil.isEmpty(locale) ) {
             locale = "en";
           }
-          var msg = ts.getTranslation(locale, getClass().getName()+"."+getExceptionMessage(), getExceptionMessage());
-
-          // REVIEW: temporary - default/simple java template support not yet split out from EmailTemplateEngine.
-          foam.nanos.notification.email.EmailTemplateEngine template = new foam.nanos.notification.email.EmailTemplateEngine();
-          msg = template.renderTemplate(foam.core.XLocator.get(), msg, getTemplateValues()).toString().trim();
-          return msg;
+          return renderMessage(ts.getTranslation(locale, getClass().getName()+"."+getExceptionMessage(), getExceptionMessage()));
         }
       } catch (NullPointerException e) {
         // noop - Expected when not yet logged in, as XLocator is not setup.
       }
-      return getExceptionMessage().replaceAll("{{message}}", message_ == null ? "" : message_).trim();
+      return renderMessage(getExceptionMessage());
+     `
+    },
+    {
+      documentation: 'Perform template replacement on msg. Provides server side exceptionMessage template rendering, without translation.',
+      name: 'renderMessage',
+      args: [
+        {
+          name: 'msg',
+          type: 'String'
+        }
+      ],
+      type: 'String',
+      javaCode: `
+      if ( SafetyUtil.isEmpty(msg) ) {
+        return msg;
+      }
+      try {
+        // REVIEW: temporary - default/simple java template support not yet split out from EmailTemplateEngine.
+        foam.nanos.notification.email.EmailTemplateEngine template = new foam.nanos.notification.email.EmailTemplateEngine();
+        return template.renderTemplate(foam.core.XLocator.get(), msg, getTemplateValues()).toString().trim();
+      } catch (NullPointerException e) {
+        // noop - Expected when not yet logged in, as XLocator is not setup.
+      }
+      return msg.replaceAll("{{message}}", message_ == null ? "" : message_).trim();
       `
     },
     {
