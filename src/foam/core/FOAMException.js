@@ -96,7 +96,8 @@ foam.CLASS({
       name: 'message',
       class: 'String',
       storageTransient: true,
-      visibility: 'RO'
+      visibility: 'RO',
+      javaGetter: `return getTranslation();`
     },
     {
       name: 'errorCode',
@@ -142,7 +143,7 @@ foam.CLASS({
       } catch (NullPointerException e) {
         // noop - Expected when not yet logged in, as XLocator is not setup.
       }
-      return getMessage();
+      return getExceptionMessage().replaceAll("{{message}}", message_ == null ? "" : message_).trim();
       `
     },
     {
@@ -164,7 +165,12 @@ foam.CLASS({
       List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
       for ( PropertyInfo prop : props ) {
         if ( prop.isSet(this) ) {
-          Object value = prop.get(this);
+          Object value = null;
+          if ( "message".equals(prop.getName()) ) {
+            value = message_;
+          } else {
+            value = prop.get(this);
+          }
           if ( value != null ) {
             map.put(prop.getName(), String.valueOf(value));
           }
