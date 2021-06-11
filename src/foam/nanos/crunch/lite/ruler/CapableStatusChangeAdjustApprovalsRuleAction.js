@@ -14,8 +14,10 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.ContextAwareAgent',
+    'foam.core.Detachable',
     'foam.core.FObject',
     'foam.core.X',
+    'foam.dao.AbstractSink',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
@@ -115,8 +117,8 @@ foam.CLASS({
         agency.submit(x, new ContextAwareAgent() {
           @Override
           public void execute(X x) {
-            DAO approvalRequestDAO = (DAO) getX().get("approvalRequestDAO");
-            DAO approvableDAO = (DAO) getX().get("approvableDAO");
+            DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
+            DAO approvableDAO = (DAO) x.get("approvableDAO");
 
             for ( CapabilityJunctionPayload capablePayload : updatedApprovalPayloads ){
               Capability capability = (Capability) capabilityDAO.find(capablePayload.getCapability());
@@ -137,6 +139,7 @@ foam.CLASS({
 
               List<Approvable> approvablesPending = ((ArraySink) approvablesPendingDAO.inX(getX()).select(new ArraySink())).getArray();
 
+
               for ( Approvable approvable : approvablesPending ){
                 approvalRequestDAO.where(
                   foam.mlang.MLang.AND(
@@ -144,10 +147,18 @@ foam.CLASS({
                     foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, "approvableDAO"),
                     foam.mlang.MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)
                   )
-                ).removeAll();
-              }
+                ).limit(1).select(new AbstractSink() {
+                  @Override
+                  public void put(Object obj, Detachable sub) {
+                    ApprovalRequest approval = (ApprovalRequest) ((FObject) obj).fclone();
+                    ApprovalStatus status =  ApprovalStatus.APPROVED;
+                    if ( capablePayload.getStatus() == CapabilityJunctionStatus.REJECTED ) status  = ApprovalStatus.APPROVED;
 
-              approvablesPendingDAO.removeAll();
+                    approval.setStatus(status);
+                    approvalRequestDAO.put(approval);
+                  }
+                });
+              }
             }
           }
         }, "Adjusted approvals after the capable payload status changed");
