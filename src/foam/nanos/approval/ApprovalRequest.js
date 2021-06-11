@@ -7,7 +7,7 @@
  foam.CLASS({
   package: 'foam.nanos.approval',
   name: 'ApprovalRequest',
-  plural: 'ApprovalRequests',
+  plural: 'Approval Requests',
   documentation: 'Approval requests are stored in approvalRequestDAO and' +
   'represent a single approval request for a single user.',
 
@@ -1138,6 +1138,20 @@
           this.notify(e.message, '', this.LogLevel.ERROR, true);
         });
       }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  name: 'RefineEasyCrunchWizard',
+  refines: 'foam.u2.crunch.EasyCrunchWizard',
+
+  properties: [
+    {
+      name: 'approval',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.approval.ApprovalRequest'
     }
   ]
 });

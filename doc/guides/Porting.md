@@ -36,8 +36,8 @@ CSS is now specified as a CSS Axiom, rather than as a template named CSS:
 
     axioms: [
       foam.u2.CSS.create({
-        code: function() {/*
-        ^ {
+        code: `
+          ^ {
           border: 1px solid gray;
           display: table-cell;
           font-weight: bold;
@@ -46,10 +46,10 @@ CSS is now specified as a CSS Axiom, rather than as a template named CSS:
           vertical-align: middle;
           width: 26px;
         }
-        */}
+        `
       })
     ],
-    
+
 Support for specifying methods: or listeners: as maps ({}) is no longer supported. They must be specified as arrays ([]) in FOAM2.
 
 U2 renames cls() to cssClass().
@@ -60,7 +60,7 @@ The signature of property-change events have changed.
 
 In U2, 'onKeyMode' is renamed to just 'onKey'
 
-U2 no longer takes functions direction for use as dynamic values.  Instead, use obj.slot(fn[, slots]). 
+U2 no longer takes functions direction for use as dynamic values.  Instead, use obj.slot(fn[, slots]).
 X is now renamed __context__
 
 Y is now renamed __subContext__

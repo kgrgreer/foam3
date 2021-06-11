@@ -13,29 +13,24 @@ foam.CLASS({
 
   imports: ['theme'],
 
-  axioms: [
-    foam.u2.CSS.create({
-      code: function CSS() {/*
-        ^{
-          position: relative;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-direction: column;
-        }
+  css: `
+    ^{
+      position: relative;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
 
-        ^.hidden {
-          display: none;
-        }
+    ^.hidden {
+      display: none;
+    }
 
-        ^ .processing-notice {
-          padding-top: 8px;
-          text-align: center;
-        }
-      */}
-    })
-  ],
+    ^ .processing-notice {
+      padding-top: 8px;
+      text-align: center;
+    }`,
 
   properties: [
     {
@@ -73,7 +68,7 @@ foam.CLASS({
               .style({
                 'transform-origin': 'center',
                 'transform-box': 'fill-box', //Safari support
-                transform: this.angle$.map(a => 'rotate(' + a + 'deg)') 
+                transform: this.angle$.map(a => 'rotate(' + a + 'deg)')
               })
               .start('path')
                 .attrs({

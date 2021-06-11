@@ -295,6 +295,9 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
           Theme theme = ((Themes) x.get("themes")).findTheme(x);
           rtn = rtn.put("theme", theme);
 
+          // if there is no user, set spid to the theme spid so that spid restrictions can be applied
+          rtn = rtn.put("spid", theme.getSpid());
+
           AppConfig themeAppConfig = theme.getAppConfig();
           if ( themeAppConfig != null ) {
             appConfig.copyFrom(themeAppConfig);

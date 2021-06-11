@@ -220,22 +220,22 @@ protected class ResponseThread implements Runnable {
         }
         var req = this.HTTPRequest.create({
           url:     this.prepareURL(this.url),
-          method: this.method,
+          method:  this.method,
           payload: payload,
           headers: headers
         }).send();
 
-        req.then(function(resp) {
+        req.then((resp) => {
           return resp.payload;
-        }).then(function(p) {
+        }).then((p) => {
           return this.parser.aparse(p);
-        }.bind(this)).then(function(rmsg) {
+        }).then((rmsg) => {
           rmsg && replyBox && replyBox.send(rmsg);
-        }.bind(this), function(r) {
+        }, function(r) {
           replyBox && replyBox.send(foam.box.Message.create({ object: foam.box.HTTPException.create({ response: r }) }));
         });
       },
-      swiftCode: function() {/*
+      swiftCode: `
 let msg = msg!
 let replyBox = msg.attributes["replyBox"] as? foam_box_Box
 msg.attributes["replyBox"] = getReplyBox()
@@ -261,7 +261,7 @@ let task = URLSession.shared.dataTask(with: request) { data, response, error in
   }
 }
 task.resume()
-      */},
+      `,
       javaCode: `
       // TODO: Go async and make request in a separate thread.
 
@@ -300,9 +300,9 @@ task.resume()
       code: function() {
         return this.HTTPReplyBox.create();
       },
-      swiftCode: function() {/*
+      swiftCode: `
       return HTTPReplyBox_create()
-                             */},
+                             `,
       javaCode: `
         return getX().create(foam.box.HTTPReplyBox.class);
       `
