@@ -33,6 +33,7 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.ConfigureFlowAgent',
     'foam.u2.crunch.wizardflow.CapabilityAdaptAgent',
     'foam.u2.crunch.wizardflow.CheckRootIdAgent',
+    'foam.u2.crunch.wizardflow.GrantedEditAgent',
     'foam.u2.crunch.wizardflow.CheckPendingAgent',
     'foam.u2.crunch.wizardflow.CheckNoDataAgent',
     'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
@@ -93,7 +94,8 @@ foam.CLASS({
       class: 'Boolean',
       name: 'debugMode',
       factory: function () {
-        return this.ctrl.appConfig.mode == foam.nanos.app.Mode.DEVELOPMENT;
+        // return this.ctrl.appConfig.mode == foam.nanos.app.Mode.DEVELOPMENT;
+        return false;
       }
     }
   ],
@@ -114,6 +116,7 @@ foam.CLASS({
           .add(this.ConfigureFlowAgent)
           .add(this.CapabilityAdaptAgent)
           .add(this.LoadTopConfig)
+          .add(this.GrantedEditAgent)
           .add(this.LoadCapabilitiesAgent)
           // TODO: remove CheckRootIdAgent after phase 2 fix on PENDING
           .add(this.CheckRootIdAgent)
@@ -257,7 +260,7 @@ foam.CLASS({
       p.catch(err => {
         console.error(err); // do not remove
         if (err.data.id == "foam.core.ClientRuntimeException" && err.data.exception.cause_) {
-          err.data.message = this.translationService.getTranslation(foam.locale, `${err.data.exception.cause_}`, err.data.message) 
+          err.data.message = this.translationService.getTranslation(foam.locale, `${err.data.exception.cause_}`, err.data.message)
         }
         intercept.reject(err.data);
       })

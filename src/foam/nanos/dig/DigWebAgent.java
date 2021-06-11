@@ -45,7 +45,7 @@ public class DigWebAgent extends ContextAwareSupport
       }
 
       if ( SafetyUtil.isEmpty(daoName) ) {
-        DigErrorMessage error = new GeneralException("DAO not provided");
+        DigErrorMessage error = new DAORequiredException();
         error.setStatus(String.valueOf(HttpServletResponse.SC_BAD_REQUEST));
         DigUtil.outputException(x, error, format);
         logger.error(error);

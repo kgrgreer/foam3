@@ -43,6 +43,8 @@ public class DigUtil {
     PrintWriter         out  = x.get(PrintWriter.class);
 
     resp.setStatus(status);
+
+    error.setMessage(error.getTranslation());
     outputFObject(x, error, format);
   }
 

@@ -678,6 +678,7 @@ var classes = [
   'foam.nanos.dig.drivers.DigXmlDriver',
   'foam.nanos.dig.exception.DigErrorMessage',
   'foam.nanos.dig.exception.DAONotFoundException',
+  'foam.nanos.dig.exception.DAORequiredException',
   'foam.nanos.dig.exception.ParsingErrorException',
   'foam.nanos.dig.exception.DAOPutException',
   'foam.nanos.dig.exception.EmptyDataException',
