@@ -191,22 +191,6 @@ foam.CLASS({
               CLASS_OF(User.class)
             )
           );
-        if ( user == null ) {
-          ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), "login", "UserNotFound", identifier);
-          user = (User) ((DAO) x.get("localUserDAO"))
-          .find(
-            AND(
-              OR(
-                EQ(User.EMAIL, identifier.toLowerCase()),
-                EQ(User.USER_NAME, identifier)
-              ),
-              CLASS_OF(User.class)
-            )
-          );
-          if ( user != null ) {
-            ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), "login", "UserNotFound", identifier, "found without inX");
-          }
-        }
 
         if ( user == null ) {
           throw new UserNotFoundException();

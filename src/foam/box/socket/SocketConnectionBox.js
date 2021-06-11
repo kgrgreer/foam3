@@ -171,7 +171,7 @@ NOTE: duplicated in SocketConnectionReplyBox
         SocketClientReplyBox box = new SocketClientReplyBox(replyBoxId);
         if ( replyBox instanceof ReplyBox ) {
           ((ReplyBox)replyBox).setDelegate(box);
-          getLogger().debug("send", "replyBox.setDelegate");
+          // getLogger().debug("send", "replyBox.setDelegate");
         } else {
           msg.getAttributes().put("replyBox", box);
         }
@@ -274,7 +274,7 @@ NOTE: duplicated in SocketConnectionReplyBox
               throw new RuntimeException("Received empty message.");
             }
             // NOTE: enable along with send debug call in SocketServerProcessor to monitor all messages.
-            getLogger().debug("receive", message);
+            // getLogger().debug("receive", message);
             Message msg = (Message) x.create(JSONParser.class).parseString(message);
             if ( msg == null ) {
               throw new RuntimeException("Failed to parse. message: "+message);
