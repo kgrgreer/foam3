@@ -185,7 +185,7 @@ foam.CLASS({
       code: function() {
         if ( ! this.stack ) return;
 
-        //setting memento to edit so the url will look something like '...::edit::id' instead of '...::view::edit::id'
+        //setting memento head to 'edit' so the url will look something like '...::edit::id' instead of '...::view::edit::id'
         if ( this.memento && this.memento.tail )
           this.memento.tail.head = 'edit';
         this.stack.push({

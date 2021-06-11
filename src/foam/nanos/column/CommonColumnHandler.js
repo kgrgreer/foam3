@@ -94,8 +94,8 @@ foam.CLASS({
       //this function creates obj for nested properties
       //eg lets assume that current `of` class has property called user
       //and we query 3 properties user.firstName, user.lastName, user.fullName
-      //then we will create 'user' entry in our map object initalized below
-      //and itterating over all properties that have key which equal to 'user' we will set all properties values for which were retrieved with projection
+      //in this case we will create 'user' entry in our 'map' object initalized below
+      //and itterate over all properties that have key which equal to 'user' to set all properties of the key's value with values for which were retrieved with projection
       var map = {};
       for ( var i = 0 ; i < arrayOfNestedPropertiesName.length ; i++ ) {
         var key = this.getNestedPropertyNameExcludingLastProperty(arrayOfNestedPropertiesName[i]);
