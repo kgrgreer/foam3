@@ -334,7 +334,6 @@ var classes = [
   'foam.nanos.auth.ServiceProviderAwarePredicate',
   'foam.nanos.auth.ServiceProviderAwareSink',
   'foam.nanos.auth.ServiceProviderAwareSupport',
-  'foam.nanos.auth.ThemeAuthService',
   'foam.nanos.auth.test.ServiceProviderAwareTest',
   'foam.nanos.auth.test.ServiceProviderAuthorizerTest',
   'foam.nanos.auth.test.DummySp',
@@ -358,6 +357,7 @@ var classes = [
   'foam.nanos.auth.AddressConfig',
   'foam.nanos.auth.UserNotFoundException',
   'foam.nanos.auth.ResetSpidBeforeLoginAuthService',
+  'foam.nanos.auth.PreventDuplicateEmailLoginService',
   'foam.nanos.http.HttpParameters',
   'foam.nanos.http.DefaultHttpParameters',
   'foam.nanos.http.SendErrorHandler',
@@ -788,6 +788,7 @@ var classes = [
   'foam.nanos.theme.ThemeDomain',
   'foam.nanos.theme.ThemeDomainsDAO',
   'foam.nanos.theme.Themes',
+  'foam.nanos.auth.ThemeAuthService',
 
   //SQL JBDC Support
   'foam.dao.jdbc.JDBCConnectionSpec',
@@ -856,6 +857,7 @@ var classes = [
   // spid
   'foam.nanos.auth.CreateUserCapabilityJunctionOnSpidSet',
   'foam.nanos.auth.SetUserServiceProviderJunctionRuleAction',
+  'foam.nanos.auth.FilterBySpidService',
 
   //ucjdao rules
   'foam.nanos.crunch.ruler.AuthorizeUCJStatusOnPut',
@@ -950,6 +952,7 @@ var skeletons = [
   'foam.nanos.app.AppConfigService',
   'foam.nanos.auth.AuthService',
   'foam.nanos.auth.AgentAuthService',
+  'foam.nanos.auth.UserLocatorService',
   'foam.nanos.auth.email.EmailDocInterface',
   'foam.nanos.auth.twofactor.OTPAuthService',
   'foam.nanos.auth.token.TokenService',
@@ -980,6 +983,7 @@ var proxies = [
   'foam.nanos.auth.AuthService',
   'foam.nanos.auth.twofactor.OTPAuthService',
   'foam.nanos.auth.UserPropertyAvailabilityServiceInterface',
+  'foam.nanos.auth.UserLocatorService',
   'foam.nanos.http.WebAgent',
   'foam.nanos.notification.email.EmailService',
   'foam.nanos.notification.push.PushService',
