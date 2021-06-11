@@ -661,6 +661,7 @@ var classes = [
   'foam.lib.parse.Action',
   'foam.lib.parse.ActionParser',
   'foam.lib.parse.SymbolParser',
+  'foam.util.UIdGenerator',
   'foam.util.EmailTest',
   'foam.util.PasswordTest',
   'foam.util.SecurityUtilTest',
