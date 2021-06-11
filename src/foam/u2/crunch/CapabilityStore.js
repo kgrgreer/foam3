@@ -47,7 +47,8 @@ foam.CLASS({
   messages: [
     { name: 'TAB_ALL', message: 'All' },
     { name: 'TITLE', message: 'Features' },
-    { name: 'SUBTITLE', message: 'Unlock more features on {appName}' }
+    { name: 'SUBTITLE', message: 'Unlock more features on {appName}' },
+    { name: 'EDITABLE', message: 'Edit existing information' }
   ],
 
   css: `
@@ -176,12 +177,14 @@ foam.CLASS({
       name: 'cardsOverflow',
       class: 'Boolean'
     },
+    'junctions',
     'wizardOpened'
   ],
 
   methods: [
     function init() {
       this.crunchService.getAllJunctionsForUser().then(juncs => {
+        this.junctions = juncs;
         this.daoUpdate();
       });
       this.crunchService.getEntryCapabilities().then(a => {
@@ -204,8 +207,17 @@ foam.CLASS({
         .start('p').addClass(this.myClass('label-subtitle'))
           .add(this.SUBTITLE.replace('{appName}', this.theme.appName))
         .end()
-        .add(this.slot(function(featuredCapabilities){
+        .add(this.slot(function(junctions, featuredCapabilities){
           return self.renderFeatured();
+        }))
+        .add(this.slot(function(junctions){
+          return self.renderPredicatedSection(
+            this.TRUE,
+            this.EQ(
+              this.UserCapabilityJunction.STATUS,
+              this.CapabilityJunctionStatus.GRANTED
+            )
+          );
         }))
         // NOTE: TEMPORARILY REMOVED
         // .add(self.accountAndAccountingCard())
@@ -221,7 +233,7 @@ foam.CLASS({
         //       for ( let i = 0 ; i < a.array.length ; i++ ) {
         //         let category = a.array[i];
         //         let e = self.Tab.create({ label: category.name })
-        //           .add(self.renderSection(category));
+        //           .add(self.renderCategorySection(category));
         //         this.add(e);
         //       }
         //     });
@@ -234,6 +246,10 @@ foam.CLASS({
       var spot = self.E();
       this.featuredCapabilities.select().then(result => {
         var arr = result.array;
+        var arr = result.array.filter(cap => {
+          let ucj = self.junctions.find(ucj => ucj.targetId == cap.id);
+          return ! ucj || ucj.status != this.CapabilityJunctionStatus.GRANTED;
+        });
         self.totalNumCards = arr.length;
         self.featureCardArray = [];
         for ( let i = 0 ; i < self.totalNumCards ; i++ ) { // build featured cards as elements
@@ -327,7 +343,7 @@ foam.CLASS({
         });
     },
 
-    function renderSection(category) {
+    function renderCategorySection(category) {
       var self = this;
       var sectionElement = this.E();
 
@@ -358,6 +374,39 @@ foam.CLASS({
       });
       return sectionElement;
     },
+
+    function renderPredicatedSection(capPredicate, ucjPredicate) {
+      var self = this;
+      var sectionElement = this.E();
+
+      // When 'p' resolves, query all matching capabilities
+      self.visibleCapabilityDAO.where(capPredicate).select().then(result => {
+        let arr = result.array;
+        let grid = self.Grid.create();
+        let addedFirstItem = false;
+        for ( let i = 0 ; i < arr.length ; i++ ) {
+          let cap = arr[i];
+          let ucj = self.junctions.find(ucj => ucj.targetId == cap.id);
+          if ( ! ucjPredicate.f(ucj) ) continue;
+          if ( ! addedFirstItem ) {
+            addedFirstItem = true;
+            sectionElement
+              .addClass(this.myClass('category'))
+              .start('h3').add(this.EDITABLE).end()
+          }
+          grid = grid
+            .start(self.GUnit, { columns: 4 })
+              .tag(self.CapabilityCardView, { data: cap })
+              .on('click', () => {
+                self.openWizard(cap, true);
+              })
+            .end();
+        }
+        sectionElement.add(grid);
+      });
+      return sectionElement;
+    },
+
     function getCategoryDAO_(categoryId) {
       return this.capabilityCategoryCapabilityJunctionDAO.where(
         this.EQ(
@@ -387,7 +436,12 @@ foam.CLASS({
           )).select())
         .then(sink => {
           if ( sink.array.length == 1 ) {
-            this.openWizard(sink.array[0], false);
+            let cap = sink.array[0];
+            let ucj = this.junctions.find(ucj => ucj.targetId == cap.id);
+            if ( ucj.status == this.CapabilityJunctionStatus.GRANTED
+              || ucj.status == this.CapabilityJunctionStatus.PENDING) return;
+
+            this.openWizard(cap, false);
           }
         })
     },
@@ -412,7 +466,8 @@ foam.CLASS({
         this.visibleCapabilityDAO = this.ArrayDAO.create({
           array: a.array
         });
-        await this.crunchService.getAllJunctionsForUser();
+        let juncs = await this.crunchService.getAllJunctionsForUser();
+        this.junctions = juncs;
         this.daoUpdate();
         // Attempting to reset menuDAO incase of menu permission grantings.
         this.menuDAO.cmd_(this, foam.dao.CachingDAO.PURGE);

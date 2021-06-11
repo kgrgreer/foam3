@@ -30,6 +30,11 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'exceptionMessage',
+      class: 'String',
+      value: 'You do not have permission to access the service named {{message}}'
+    },
+    {
       class: 'String',
       name: 'status',
       value: '403'

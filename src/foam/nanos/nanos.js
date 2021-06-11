@@ -139,6 +139,7 @@ FOAM_FILES([
   { name: "foam/nanos/auth/UserQueryService" },
   { name: "foam/nanos/auth/SimpleUserQueryService" },
   { name: "foam/nanos/auth/AssignableAware" },
+  { name: "foam/nanos/auth/ResetSpidBeforeLoginAuthService" },
   { name: "foam/nanos/theme/Theme" },
   { name: "foam/nanos/theme/ThemeGlyphs" },
   { name: "foam/nanos/theme/ThemeDomain" },
@@ -393,7 +394,8 @@ FOAM_FILES([
   { name: 'foam/nanos/ticket/SummaryCard' },
 
   // Dig
-  { name: "foam/nanos/dig/exception/DigErrorMessage" },
+  { name: 'foam/nanos/dig/exception/DigErrorMessage' },
+  { name: 'foam/nanos/dig/exception/DAORequiredException' },
   { name: 'foam/nanos/dig/Argument'},
   { name: 'foam/nanos/dig/ResultView' },
   { name: 'foam/nanos/dig/DIG' },
