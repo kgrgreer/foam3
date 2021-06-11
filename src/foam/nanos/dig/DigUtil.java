@@ -44,7 +44,7 @@ public class DigUtil {
 
     resp.setStatus(status);
 
-    error.setMessage(error.getTranslation());
+    error.setExceptionMessage(error.getTranslation());
     outputFObject(x, error, format);
   }
 
