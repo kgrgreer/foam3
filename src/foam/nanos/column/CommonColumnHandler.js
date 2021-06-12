@@ -114,6 +114,7 @@ foam.CLASS({
       return nestedPropertyName.substr(0, lastIndex);//lastIndex == length here
     },
     function getNameOfLastPropertyForNestedProperty(nestedPropertyName) {
+      //returns last property name eg for 'user.firstName' that would be 'firstName'
       var lastIndex = nestedPropertyName.lastIndexOf('.');
       return nestedPropertyName.substr(lastIndex + 1);
     },
