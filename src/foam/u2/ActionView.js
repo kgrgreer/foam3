@@ -32,7 +32,7 @@ foam.CLASS({
   requires: [
     'foam.u2.ButtonSize',
     'foam.u2.ButtonStyle',
-    'foam.u2.dialog.Popup'
+    'foam.u2.dialog.ConfirmationModal'
   ],
 
   imports: [
@@ -52,7 +52,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'CONFIRM', message: 'Confirm' }
+    { name: 'CONFIRM', message: 'Confirm' },
+    { name: 'CONFIRM_MSG', message: 'Are you sure you want to ' }
   ],
 
   properties: [
@@ -145,10 +146,11 @@ foam.CLASS({
     function click(e) {
       try {
         if ( this.action && this.action.confirmationView && this.buttonState == this.ButtonState.NO_CONFIRM ) {
-          this.ctrl.add(this.Popup.create().tag(this.action.confirmationView, {
-            action: this.action,
-            data: this.data
-          }));
+          this.ctrl.add(this.ConfirmationModal.create({
+            primaryAction: this.action,
+            data: this.data,
+            title: this.action.confirmationView().title || this.action.label + ' ' + this.data.toSummary() + '?'
+          }).add(this.action.confirmationView().body || this.CONFIRM_MSG + ' ' + this.action.label.toLowerCase() + ' ' + this.data.toSummary() + '?'));
         } else if ( this.buttonState == this.ButtonState.NO_CONFIRM ) {
           this.action && this.action.maybeCall(this.__subContext__, this.data);
         } else if ( this.buttonState == this.ButtonState.CONFIRM ) {

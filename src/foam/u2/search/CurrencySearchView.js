@@ -38,5 +38,19 @@ foam.CLASS({
       documentation: `Required by SearchManager.`,
       value: 'currency search view'
     }
+  ],
+  
+  methods: [
+    /**
+     * Restores the view based on passed in predicate
+     */
+    function restoreFromPredicate(predicate) {
+      if ( predicate === this.TRUE ) return;
+
+      this.qualifier = predicate.cls_.name;
+      this.amount = typeof predicate.arg2.value === 'number' 
+        ? (predicate.arg2.value / 100)
+        : 0;
+    },
   ]
 });

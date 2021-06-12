@@ -394,7 +394,8 @@ FOAM_FILES([
   { name: 'foam/nanos/ticket/SummaryCard' },
 
   // Dig
-  { name: "foam/nanos/dig/exception/DigErrorMessage" },
+  { name: 'foam/nanos/dig/exception/DigErrorMessage' },
+  { name: 'foam/nanos/dig/exception/DAORequiredException' },
   { name: 'foam/nanos/dig/Argument'},
   { name: 'foam/nanos/dig/ResultView' },
   { name: 'foam/nanos/dig/DIG' },

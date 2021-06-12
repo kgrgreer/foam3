@@ -35,13 +35,13 @@ foam.CLASS({
       try {
         throw new FOAMExceptionTestTestException();
       } catch (FOAMExceptionTestTestException e) {
-        String expected = "";
+        String expected = "ExceptionMessage , ErrorCode:";
         test(expected.equals(e.getMessage()), "expecting: "+expected+", found: \\\""+e.getMessage()+"\\\"");
       }
       try {
         throw new FOAMExceptionTestTestException("inner message");
       } catch (FOAMExceptionTestTestException e) {
-        String expected = "inner message";
+        String expected = "ExceptionMessage inner message, ErrorCode:";
         test(expected.equals(e.getMessage()), "expecting: "+expected+", found: \\\""+e.getMessage()+"\\\"");
       }
 
@@ -49,7 +49,7 @@ foam.CLASS({
       try {
         throw new FOAMExceptionTestTestException("inner message", "16");
       } catch (FOAMExceptionTestTestException e) {
-        String expected = "inner message";
+        String expected = "ExceptionMessage inner message, ErrorCode: 16";
         test(expected.equals(e.getMessage()), "expecting: "+expected+", found: \\\""+e.getMessage()+"\\\"");
         System.out.println("toString: "+e.toString());
       }
