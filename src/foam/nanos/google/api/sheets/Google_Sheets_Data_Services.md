@@ -11,8 +11,8 @@ To create a Google Sheet templete:
 4. Make your sheet accesible to anyone
 5. Go to back office -> Admin -> Report Template -> Create new template
 6. For id use your google sheet id
-for dao use dao that is used by table which you want to export to Google Sheets
-for name use any name but choose wisely as it's visible to user
+for dao use dao that is used by a table which you want to export to Google Sheets
+for name use any name but keep in mind it's visible to user and will appear in template selection for drop box in GoogleSheetsBasedExportDriver
 7. Save template
 In case it's not visible in template dropdown make sure you used correct daoName
 
