@@ -45,7 +45,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'exportAllColumns',
-      documentation: 'exportAllColumns should be set to true if user wants to export all the columns available. if set to false only columns that at this point of time are visible in the table will be exported'
+      documentation: 'exportAllColumns should be set to true if user wants to export all the columns available. if set to false only columns that are visible in the table will be exported'
     },
     {
       class: 'Boolean',
