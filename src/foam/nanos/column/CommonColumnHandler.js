@@ -95,7 +95,10 @@ foam.CLASS({
       //eg lets assume that current `of` class has property called user
       //and we query 3 properties user.firstName, user.lastName, user.fullName
       //in this case we will create 'user' entry in our 'map' object initalized below
-      //and itterate over all properties that have key which equal to 'user' to set all properties of the key's value with values for which were retrieved with projection
+      //and value for 'user' key will be object of class user
+      //then we set firstName of user with user.firstName value from array of values which we got with projection
+      //then user.lastName and then user.fullName
+      //so if tableCellFormatter of one property depends on tableCellFormatter of other property, it works correctly
       var map = {};
       for ( var i = 0 ; i < arrayOfNestedPropertiesName.length ; i++ ) {
         var key = this.getNestedPropertyNameExcludingLastProperty(arrayOfNestedPropertiesName[i]);
