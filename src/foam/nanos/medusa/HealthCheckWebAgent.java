@@ -29,9 +29,10 @@ public class HealthCheckWebAgent
     ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
 
     if ( support != null ) {
-      ClusterConfig config = support.getConfig(x, support.getConfigId());
       ElectoralService electoral = (ElectoralService) x.get("electoralService");
-      ReplayingInfo info = (ReplayingInfo) x.get("replayingInfo");
+      ClusterConfig config = (ClusterConfig) ((foam.dao.DAO) x.get("clusterConfigDAO")).find(support.getConfigId());
+      ReplayingInfo info = config.getReplayingInfo();
+
       if ( ! config.getEnabled() ) {
         response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
         out.println("down\n");
@@ -49,10 +50,15 @@ public class HealthCheckWebAgent
                       config.getZone() == 0 &&
                       info != null ) {
             response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-            out.println("maint\n");
-            out.println("replaying: "+info.getReplaying()+"\n");
-            out.println("timeRemaining: "+info.getTimeRemaining()+"\n");
-            out.println("percentComplete: "+info.getPercentComplete()+"\n");
+            if ( ! foam.util.SafetyUtil.isEmpty(config.getErrorMessage()) ) {
+              out.println("failed\n");
+              out.println("error: "+config.getErrorMessage());
+            } else {
+              out.println("maint\n");
+              out.println("replaying: "+info.getReplaying()+"\n");
+              out.println("timeRemaining: "+info.getTimeRemaining()+"\n");
+              out.println("percentComplete: "+info.getPercentComplete()+"\n");
+            }
           } else {
             response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
             out.println("maint\n");
