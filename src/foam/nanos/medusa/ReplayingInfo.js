@@ -118,7 +118,16 @@ foam.CLASS({
         }
         return 0;
       },
-      visibility: 'RO'
+      visibility: 'RO',
+      javaGetter: `
+      if ( getReplayIndex() > getIndex() ) {
+        return (float) (int) (((float) getIndex() / (float) getReplayIndex()) * 100);
+      } else if ( getReplayIndex() > 0 ) {
+        return (float) 100.0;
+      } else {
+        return (float) 0.0;
+      }
+      `
     },
     {
       name: 'timeRemaining',
@@ -134,7 +143,18 @@ foam.CLASS({
         let duration = foam.core.Duration.duration(remaining);
         return duration;
       },
-      visibility: 'RO'
+      visibility: 'RO',
+      javaGetter: `
+      var timeElapsed = 1L;
+      if ( getStartTime() != null ) {
+        var end = getEndTime();
+        if ( end == null ) {
+          end = new java.util.Date();
+        }
+        timeElapsed = end.getTime() - getStartTime().getTime();
+      }
+      return String.valueOf((( timeElapsed / getIndex() ) * getReplayIndex() - timeElapsed) / 1000);
+      `
     },
     {
       name: 'replayTps',
