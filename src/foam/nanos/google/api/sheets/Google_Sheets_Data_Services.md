@@ -11,4 +11,4 @@ To create a Google Sheet templete:
 4. Make your sheet accesible to anyone 
 
 #GoogleSheetsDataImportServiceImpl
-GoogleSheetsDataImportService is a service to import data from a Google sheet, parse it and create object with parsed data and add records to DAO
+GoogleSheetsDataImportService is a service to import data from a Google sheet, parse it, create object with parsed data and add records to DAO
