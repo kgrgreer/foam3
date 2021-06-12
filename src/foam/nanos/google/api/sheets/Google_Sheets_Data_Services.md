@@ -8,7 +8,13 @@ To create a Google Sheet templete:
 1. Create a new sheet with Google Sheets or use excisting one
 2. Leave first sheet empty. There should be nothing in there
 3. Add your formula, charts and any other components of template on sheets other then first one
-4. Make your sheet accesible to anyone 
+4. Make your sheet accesible to anyone
+5. Go to back office -> Admin -> Report Template -> Create new template
+6. For id use your google sheet id
+for dao use dao that is used by table which you want to export to Google Sheets
+for name use any name but choose wisely as it's visible to user
+7. Save template
+In case it's not visible in template dropdown make sure you used correct daoName
 
 #GoogleSheetsDataImportServiceImpl
 GoogleSheetsDataImportService is a service to import data from a Google sheet, parse it, create object with parsed data and add records to DAO
