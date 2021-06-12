@@ -1,5 +1,5 @@
 #Google export related services 
-GoogleApiAuthService takes care of setting up authorization flow.
+GoogleApiAuthService takes care of setting up authorization flow with a GoogleApiCredentials.
 GoogleDriveService takes care of making calls to Google Drive APIs, with which we can create files and directories.
 GoogleSheetsApiService takes in data that we want to export and its metadata (which type of the cell should be used to display values) and sends requests to GoogleSheetsApi to create new sheet or copy existing one (which we do there is a template that user would like to use).
 
