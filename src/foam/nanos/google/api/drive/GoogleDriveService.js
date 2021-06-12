@@ -7,6 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.google.api.drive',
   name: 'GoogleDriveService',
+  
   javaImports: [
     'com.google.api.client.googleapis.javanet.GoogleNetHttpTransport',
     'com.google.api.client.http.FileContent',

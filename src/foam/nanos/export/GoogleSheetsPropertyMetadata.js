@@ -30,7 +30,8 @@
     },
     {
       name: 'perValuePatternSpecificValues',
-      class: 'StringArray'
+      class: 'StringArray',
+      documentation: 'Stores values that we need for google sheets cell\'s format (eg for property \'amount\' that could be [\'CAD\', \'USD\', etc])'
     },
     {
       name: 'propName',
@@ -43,11 +44,13 @@
     },
     {
       name: 'unitPropName',
-      class: 'String'
+      class: 'String',
+      documentation: 'For properties of class UnitValue we store unitPropName here'
     },
     {
       name: 'projectionIndex',
-      class: 'Int'
+      class: 'Int',
+      documentation: 'Store index of this property\'s values in array, which is result of execution of projection'
     }
   ]
 });
