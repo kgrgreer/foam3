@@ -117,7 +117,7 @@ foam.CLASS({
       var lastIndex = nestedPropertyName.lastIndexOf('.');
       return nestedPropertyName.substr(lastIndex + 1);
     },
-    function buildArrayOfNestedPropertyNamesAndCorrespondingIndexesInArray(propNames) {
+    function buildArrayOfNestedPropertyNamesAndCorrespondingIndexesInArrayOfValues(propNames) {
       //gathering nested properties and indexes of corresponding values in Projection array 
       var nestedPropertyNames = [];
       var indexOfValuesForCorrespondingPropertyNames = [];
