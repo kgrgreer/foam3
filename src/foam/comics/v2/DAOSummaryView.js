@@ -135,8 +135,8 @@ foam.CLASS({
       name: 'mementoHead',
       documentation: 'StackView will use mementoHead to set memento value. Stack will check if memento was set with mementoHead on back action execution and if so it will clean up memento',
       factory: function() {
-        //on url set to DAOSummaryView edit mode (we can check for it with this.memento.tail.head == 'edit') we return undefined to StackView. DAOUpdateView will reuse current memento
-        //so the url will look something like '...::edit::id' instead of '...::view::edit::id' though DAOUpdateView is child to current view'
+        // on url set to DAOSummaryView edit mode (we can check for it with this.memento.tail.head == 'edit') we return undefined to StackView. DAOUpdateView will reuse current memento
+        // so the url will look something like '...::edit::id' instead of '...::view::edit::id' though DAOUpdateView is child to current view'
         if ( ! this.memento || ! this.memento.tail || this.memento.tail.head != 'edit' ) {
           if ( ! this.idOfRecord )
             return '::';
@@ -185,7 +185,7 @@ foam.CLASS({
       code: function() {
         if ( ! this.stack ) return;
 
-        //setting memento head to 'edit' so the url will look something like '...::edit::id' instead of '...::view::edit::id'
+        // setting memento head to 'edit' so the url will look something like '...::edit::id' instead of '...::view::edit::id'
         if ( this.memento && this.memento.tail )
           this.memento.tail.head = 'edit';
         this.stack.push({

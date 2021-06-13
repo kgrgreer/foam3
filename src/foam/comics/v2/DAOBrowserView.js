@@ -264,7 +264,7 @@ foam.CLASS({
       this
         .add(this.slot(function(config$cannedQueries, config$hideQueryBar, searchFilterDAO) {
 
-          //to manage memento imports for filter view (if any)
+          // to manage memento imports for filter view (if any)
           if ( self.config.searchMode === self.SearchMode.SIMPLE ) {
             var simpleSearch = foam.u2.ViewSpec.createView(self.SimpleSearch, {
               showCount: false,
