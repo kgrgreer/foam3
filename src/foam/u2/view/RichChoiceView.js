@@ -587,7 +587,7 @@ foam.CLASS({
                           .addClass(self.myClass('action'))
                         .end();
                     }
-                   if ( action ) {
+                    if ( action ) {
                       return this.E()
                         .start(self.DefaultActionView, { action: action })
                           .addClass(self.myClass('action'))
