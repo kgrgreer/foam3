@@ -980,7 +980,7 @@
       ],
       code: function(X) {
         var objToAdd = X.objectSummaryView ? X.objectSummaryView : X.summaryView;
-        objToAdd.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
+        objToAdd.tag({
           class: "foam.u2.PropertyModal",
           property: this.ASSIGNED_TO.clone().copyFrom({ label: '' }),
           isModalRequired: true,
@@ -988,7 +988,7 @@
           propertyData$: X.data.assignedTo$,
           title: this.ASSIGN_TITLE,
           onExecute: this.assignRequest.bind(this, X)
-        }));
+        });
       }
     },
     {
