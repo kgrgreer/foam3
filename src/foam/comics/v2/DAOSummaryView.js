@@ -302,11 +302,6 @@ foam.CLASS({
                   // we will handle this in the StackView instead
                   .startContext({ onBack: self.onBack })
                     .tag(self.BreadcrumbView)
-                    .tag(self.BACK, {
-                      buttonStyle: foam.u2.ButtonStyle.LINK,
-                      themeIcon: 'back',
-                      label: self.backLabel
-                    })
                   .endContext()
                   .start(self.Cols).style({ 'align-items': 'center' })
                     .start()

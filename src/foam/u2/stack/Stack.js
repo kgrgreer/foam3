@@ -146,20 +146,20 @@ foam.CLASS({
     function jump(jumpPos, ctx) {
       var isMementoSetWithView = false;
 
-      //check if the class of the view to which current position points has property MEMENTO_HEAD
+      //check if the class of the view to which current memento points has property MEMENTO_HEAD
       //or if the view is object and it has mementoHead set
       //if so we need to set last not-null memento in the memento chain to null as we're going back
-      if ( this.stack_[this.pos][0].class ) {
-        var classObj = this.stack_[this.pos][0].class;
+      if ( this.stack_[this.navStackBottom +1][0].class ) {
+        var classObj = this.stack_[this.navStackBottom +1][0].class;
         if ( foam.String.isInstance(classObj) ) {
-          classObj = foam.lookup(this.stack_[this.pos][0].class);
+          classObj = foam.lookup(this.stack_[this.navStackBottom +1][0].class);
         }
-        var obj = classObj.create(this.stack_[this.pos][0], ctx);
+        var obj = classObj.create(this.stack_[this.navStackBottom +1][0], ctx);
         if ( obj && obj.mementoHead ) {
           isMementoSetWithView = true;
         }
       } else {
-        if ( this.stack_[this.pos][0].mementoHead ) {
+        if ( this.stack_[this.navStackBottom +1][0].mementoHead ) {
           isMementoSetWithView = true;
         }
       }
@@ -186,29 +186,7 @@ foam.CLASS({
       // icon: 'arrow_back',
       isEnabled: function(pos) { return pos > 0; },
       code: function(X) {
-        var isMementoSetWithView = false;
-        //check if the class of the view to which current position points has property MEMENTO_HEAD
-        //or if the view is object and it has mementoHead set
-        //if so we need to set last not-null memento in the memento chain to null as we're going back
-        if ( this.stack_[this.pos][0].class ) {
-          var classObj = this.stack_[this.pos][0].class;
-          if ( foam.String.isInstance(classObj) ) {
-            classObj = foam.lookup(this.stack_[this.pos][0].class);
-          }
-          var obj = classObj.create(this.stack_[this.pos][0], X);
-          if ( obj && obj.mementoHead ) {
-            isMementoSetWithView = true;
-          }
-        } else {
-          if ( this.stack_[this.pos][0].mementoHead ) {
-            isMementoSetWithView = true;
-          }
-        }
-
-        this.pos--;
-
-        if ( isMementoSetWithView )
-          this.deleteMemento(obj.mementoHead);
+        this.jump(pos-1, X);
       }
     },
     {
