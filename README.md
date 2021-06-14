@@ -1,9 +1,5 @@
 # FOAM3
 
-FOAM3 is the active version of FOAM.
-
-The FOAM1 [website](https://foam-framework.github.io/foam/) still contains many useful demos and videos (but some links may be broken).
-
 Build fully featured high performance apps in less time using FOAM.
 
   * Application Speed
@@ -11,6 +7,10 @@ Build fully featured high performance apps in less time using FOAM.
   * Developer Efficiency
 
 "Fast apps Fast"
+
+FOAM3 is the active version of FOAM.
+
+The FOAM1 [website](https://foam-framework.github.io/foam/) still contains many useful demos and videos (but some links may be broken).
 
 [![Build Status](https://travis-ci.org/foam-framework/foam3.svg?branch=master)](https://travis-ci.org/foam-framework/foam3)
 
