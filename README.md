@@ -12,8 +12,6 @@ Build fully featured high performance apps in less time using FOAM.
 
 "Fast apps Fast"
 
-[http://foamdev.com](http://foamdev.com)
-
 [![Build Status](https://travis-ci.org/foam-framework/foam3.svg?branch=master)](https://travis-ci.org/foam-framework/foam3)
 
 ## Feature Oriented Active Modeller
