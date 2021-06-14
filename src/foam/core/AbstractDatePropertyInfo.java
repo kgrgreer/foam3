@@ -52,13 +52,8 @@ public abstract class AbstractDatePropertyInfo
 
   @Override
   public void cloneProperty(FObject source, FObject dest) {
-    // NOP
-    /*
-    Object value = get(source);
-
-    set(dest, value == null ? null : new Date(((Date) value).getTime()));
-    */
-  }
+    set(dest, get(source));
+  } 
 
   @Override
   public void updateDigest(FObject obj, MessageDigest md) {
