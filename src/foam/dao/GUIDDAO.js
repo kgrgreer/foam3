@@ -32,7 +32,7 @@ foam.CLASS({
   javaImports: [
     'java.util.concurrent.ThreadLocalRandom',
     'java.util.Random',
-    'foam.util.UIdGenerator'
+    'java.util.UUID'
   ],
 
   properties: [
@@ -67,9 +67,10 @@ return (foam.core.PropertyInfo)(getOf().getAxiomByName(getProperty()));
       },
       javaCode: `
 Object val = obj.getProperty(getProperty());
-UIdGenerator uIdGenerator = (UIdGenerator) x.get("uIdGenerator");
+
 if ( "".equals(val) ) {
-  getAxiom().set(obj, uIdGenerator.generate());
+  Random r = ThreadLocalRandom.current();
+  getAxiom().set(obj, new UUID(r.nextLong(), r.nextLong()).toString());
 }
 
 return getDelegate().put_(x, obj);

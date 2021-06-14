@@ -1090,5 +1090,5 @@ p({
   "class":"foam.nanos.boot.NSpec",
   "name":"uIdGenerator",
   "serve":true,
-  "serviceClass":"foam.util.UIdGenerator"
+  "serviceClass":"foam.util.UIDGenerator"
 })

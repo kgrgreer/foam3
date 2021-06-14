@@ -6,11 +6,12 @@
 
 foam.CLASS({
   package: 'foam.util',
-  name: 'UIdGenerator',
+  name: 'UIDGenerator',
   flags: ['java'],
 
   javaImports: [
     'java.util.concurrent.ThreadLocalRandom',
+    'java.util.ArrayList',
     'java.util.Random'
   ],
 
@@ -24,6 +25,24 @@ foam.CLASS({
       name: 'lastTimeCalled',
       class: 'Long',
       javaFactory: 'return System.currentTimeMillis() / 1000;'
+    },
+    {
+      name: 'randInts',
+      class: 'List',
+      javaType: 'ArrayList<Integer>',
+      javaFactory: `
+        Random r = new Random();
+        ArrayList<Integer> randInts =  new ArrayList<>();
+        long seed = 1;
+        r.setSeed(seed);
+        int lowerbound = 12;
+        int upperbound = 30;
+        for ( int i = 0; i < upperbound; i++ )
+        {
+          randInts.add(r.nextInt(Math.max(i, lowerbound - 1)));
+        }
+        return randInts;
+      `
     }
   ],
 
@@ -40,21 +59,21 @@ foam.CLASS({
           setLastTimeCalled(currTime);
         }
         int seqNo = getSeqNo();
-        String id  = Long.toHexString(currTime);
-        String seqStr = Integer.toHexString(seqNo);
-        if ( seqStr.length() % 2 != 0 ) seqStr = "0" + seqStr;
-        String checksum = calcChecksum(currTime);
-        id = id + seqStr + checksum;
-        id = permutate(id);
+        StringBuilder id = new StringBuilder(Long.toHexString(currTime));
+        int seqNoLength = (int) (Math.log(seqNo) / Math.log(16));
+        if ( seqNoLength == 0 || seqNo == 0 ) id.append("0");
+        int seqNoAndCks = seqNo * 256 + calcChecksum(currTime, seqNo);
+        id.append(Integer.toHexString(seqNoAndCks));
         setSeqNo(seqNo + 1);
-        return id;
+        return permutate(id);
       `
     },
     {
       name: 'calcChecksum',
-      type: 'String',
+      type: 'int',
       args: [
-        { name: 'currTime', type: 'long' }
+        { name: 'currTime', type: 'long' },
+        { name: 'seqNo', type: 'int' }
       ],
       javaCode: `
         int checksum = 0;
@@ -62,27 +81,28 @@ foam.CLASS({
           checksum += currTime % 256;
           currTime = currTime / 256;
         }
-        int seqNo = getSeqNo();
         while ( seqNo > 0) {
           checksum += seqNo % 256;
           seqNo = seqNo / 256;
         }
         checksum = 256 - (checksum % 256);
-        return Integer.toHexString(checksum);
+        return checksum;
       `
     },
     {
       name: 'permutate',
       type: 'String',
       args: [
-        { name: 'idStr', type: 'String' }
+        { name: 'idStr', type: 'StringBuilder' }
       ],
       javaCode: `
-        char[] id = idStr.toCharArray();
-        Random r = ThreadLocalRandom.current();
+        int l = idStr.length();
+        char[] id = new char[l];
+        idStr.getChars(0, l, id, 0);
+        ArrayList<Integer> randInts = getRandInts();
         for ( int i = id.length - 1; i > 0; i-- )
         {
-          int newI = r.nextInt(i + 1);
+          int newI = randInts.get(i);
           char c = id[newI];
           id[newI] = id[i];
           id[i] = c;
