@@ -32,6 +32,7 @@ foam.CLASS({
     'foam.u2.borders.CardBorder',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
+    'foam.u2.stack.BreadcrumbView',
     'foam.u2.view.IconChoiceView'
   ],
 
@@ -161,6 +162,7 @@ foam.CLASS({
             .addClass(self.myClass('container'))
               .start()
                 .addClass(self.myClass('header-container'))
+                .tag(self.BreadcrumbView)
                 .start(self.Cols)
                   .start()
                     .addClasses(['h100',self.myClass('browse-title')])
