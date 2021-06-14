@@ -1063,6 +1063,22 @@ foam.CLASS({
       javaCode: `
       return getShortAddress();
      `
+    },
+    {
+      name: 'retrieveRegionCode',
+      type: 'String',
+      args: [ { name: 'x', type: 'Context' } ],
+      javaCode: `
+        String regionCode = "";
+        Region region = findRegionId(x);
+        if ( region != null ) {
+          regoinCode = getRegionCode()
+        }
+
+        return ! SafetyUtil.isEmpty(regionCode) ?
+          regionCode :
+          getRegionId();
+      `
     }
   ]
 });
