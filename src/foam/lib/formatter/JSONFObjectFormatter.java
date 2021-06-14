@@ -323,10 +323,14 @@ public class JSONFObjectFormatter
 
   public void outputReadableDate(Date date) {
     if ( date != null ) {
-      output(timestamper_.get().createTimestamp(date.getTime()));
+      outputReadableDate(date.getTime());
     } else {
       output("null");
     }
+  }
+
+  public void outputReadableDate(Long time) {
+    output(timestamper_.get().createTimestamp(time));
   }
 
   protected boolean maybeOutputProperty(FObject fo, PropertyInfo prop, boolean includeComma) {
