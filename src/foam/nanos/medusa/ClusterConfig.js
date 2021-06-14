@@ -124,7 +124,7 @@ foam.CLASS({
     {
       name: 'useHttps',
       class: 'Boolean',
-      value: false
+      value: true
     },
     {
       name: 'sessionId',
