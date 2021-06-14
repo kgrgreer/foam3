@@ -1072,7 +1072,7 @@ foam.CLASS({
         String regionCode = "";
         Region region = findRegionId(x);
         if ( region != null ) {
-          regoinCode = region.getRegionCode();
+          regionCode = region.getRegionCode();
         }
 
         return ! SafetyUtil.isEmpty(regionCode) ?
