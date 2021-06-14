@@ -2,7 +2,7 @@
 
 FOAM3 is the active version FOAM.
 
-The FOAM1 [website](http://foam-framework.github.io/foam/website) still contains many useful demos and videos.
+The FOAM1 [website](https://foam-framework.github.io/foam/website) still contains many useful demos and videos.
 
 Build fully featured high performance apps in less time using FOAM.
 
