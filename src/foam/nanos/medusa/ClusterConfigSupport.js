@@ -503,15 +503,6 @@ configuration for contacting the primary node.`,
       DAO dao = (DAO) getX().get("localClusterConfigDAO");
       ClusterConfig myConfig = (ClusterConfig) dao.find(getConfigId());
       if ( myConfig != null ) {
-        if ( SafetyUtil.isEmpty(System.getProperty("http.port")) ) {
-          System.setProperty("http.port", String.valueOf(myConfig.getPort()));
-          getLogger().info("setProperty(http.port,"+myConfig.getPort()+")");
-        }
-        if ( myConfig.getUseHttps() &&
-             SafetyUtil.isEmpty(System.getProperty("https.port")) ) {
-          System.setProperty("https.port", String.valueOf(myConfig.getPort()));
-          getLogger().info("setProperty(https.port,"+myConfig.getPort()+")");
-        }
         myConfig = (ClusterConfig) myConfig.fclone();
         myConfig.setReplayingInfo(replaying);
         dao.put(myConfig);
