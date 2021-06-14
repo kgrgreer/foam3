@@ -1,6 +1,6 @@
 # FOAM3
 
-FOAM3 is the active version FOAM.
+FOAM3 is the active version of FOAM.
 
 The FOAM1 [website](https://foam-framework.github.io/foam/) still contains many useful demos and videos.
 
