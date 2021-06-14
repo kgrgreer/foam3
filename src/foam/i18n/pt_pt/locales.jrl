@@ -536,6 +536,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.PropertyModal.CANCEL.lab
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.PropertyModal.CONFIRM_DELETE_1",target:"Tem certeza de que deseja excluir"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.PropertyModal.SUCCESS_MSG",target:" excluído"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.PropertyModal.FAIL_MSG",target:"Falha ao excluir"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.PropertyModal.DEFAULT_TITLE",target:"Por favor, preencha o seguinte"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.PropertyModal.REQUIRED",target:"Obrigatória"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.PropertyModal.OPTIONAL",target:"Opcional"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOBrowseControllerView.CREATE.label",target:"Crio"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOBrowseControllerView.VIEW_ALL",target:"Ver tudo "})
