@@ -10,6 +10,8 @@ public class NanoWebSocketServer
   extends ContextAwareSupport
   implements NanoService
 {
+  public static int WEBSOCKET_PORT_OFFSET = 1;
+
   protected int port_ = 8080;
   protected WebSocketServer server_;
   public void start() {
@@ -21,7 +23,7 @@ public class NanoWebSocketServer
     } else {
       ((foam.nanos.logger.Logger) getX().get("logger")).warning(this.getClass().getSimpleName(), "http not found in context");
     }
-    port += 1;
+    port += WEBSOCKET_PORT_OFFSET;
     System.out.println("Starting WebSocket Server on port " + port);
 
     server_ = new WebSocketServer(new InetSocketAddress(port));
