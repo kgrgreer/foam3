@@ -68,8 +68,9 @@ foam.CLASS({
       ) : await this.crunchService.getJunction(
         null, wizardlet.capability.id
       );
-      let approvable = (await this.userCapabilityJunctionApprovableDAO.where(this.EQ(
-        this.Approvable.OBJ_ID, ucj.id
+      let approvable = (await this.userCapabilityJunctionApprovableDAO.where(this.AND(
+        this.EQ(this.Approvable.OBJ_ID, ucj.id),
+        this.EQ(this.Approvable.STATUS, this.ApprovalStatus.REQUESTED)
       )).select()).array[0];
       if ( ! approvable ) approvable = this.createApprovable_(ucj);
       return { ucj: ucj, approvable: approvable };

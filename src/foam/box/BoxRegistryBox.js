@@ -39,29 +39,29 @@ foam.CLASS({
       },
       // TODO check if this leaks.
       swiftFactory: 'return SkeletonBox_create(["data": self])',
-      swiftPostSet: function() {/*
+      swiftPostSet: `
 if let oldValue = oldValue as? foam_box_SkeletonBox {
   oldValue.clearProperty("data")
 }
-      */},
+       `,
     }
   ],
 
   methods: [
     {
       name: 'init',
-      swiftCode: function() {/*
+      swiftCode: `
 self.onDetach(Subscription(detach: {
   if self.hasOwnProperty("registrySkeleton") {
     (self.registrySkeleton as? foam_core_FObject)?.clearProperty("data")
   }
 }))
-      */},
+     `,
       code: function() { this.SUPER() },
     },
     {
       name: 'send',
-      swiftCode: function() {/*
+      swiftCode: `
 let msg = msg!
 if let object = msg.object as? foam_box_SubBoxMessage {
   let name = object.name
@@ -81,7 +81,7 @@ if let object = msg.object as? foam_box_SubBoxMessage {
 } else {
   try registrySkeleton!.send(msg)
 }
-      */},
+      `,
       code: function(msg) {
         if ( this.SubBoxMessage.isInstance(msg.object) ) {
           var name = msg.object.name;

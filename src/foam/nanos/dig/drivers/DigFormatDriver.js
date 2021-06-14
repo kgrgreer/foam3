@@ -142,7 +142,6 @@ foam.CLASS({
       String daoName = p.getParameter("dao");
 
       if ( SafetyUtil.isEmpty(daoName) ) {
-        resp.setStatus(HttpServletResponse.SC_OK);
         return;
       }
 
@@ -228,14 +227,14 @@ foam.CLASS({
       String daoName = p.getParameter("dao");
 
       if ( SafetyUtil.isEmpty(daoName) ) {
-        DigUtil.outputException(x, new GeneralException("DAO name is required."), getFormat());
+        DigUtil.outputException(x, new DAORequiredException(), getFormat());
         return null;
       }
 
       DAO nSpecDAO = (DAO) x.get("AuthenticatedNSpecDAO");
       NSpec nspec = (NSpec) nSpecDAO.find(daoName);
       if ( nspec == null || ! nspec.getServe() ) {
-        DigUtil.outputException(x, new DAONotFoundException("DAO not found: " + daoName), getFormat());
+        DigUtil.outputException(x, new DAONotFoundException(daoName), getFormat());
         return null;
       }
 
@@ -249,7 +248,7 @@ foam.CLASS({
 
       DAO dao = (DAO) x.get(daoName);
       if ( dao == null ) {
-        DigUtil.outputException(x, new DAONotFoundException("DAO not found: " + daoName), getFormat());
+        DigUtil.outputException(x, new DAONotFoundException(daoName), getFormat());
         return null;
       }
 
@@ -281,7 +280,7 @@ foam.CLASS({
         // the existing behavior.
         var clientEx = ce.getClientRethrowException();
         if ( clientEx instanceof ValidationException ) {
-          throw new DAOPutException(clientEx.getMessage(), ce);
+          throw new DAOPutException(clientEx.getMessage(), clientEx);
         }
         throw ce;
       }

@@ -260,6 +260,8 @@ var classes = [
   'foam.nanos.app.Mode',
   'foam.nanos.bench.Benchmark',
   'foam.nanos.auth.AccessDeniedException',
+  'foam.nanos.auth.AccountDisabledException',
+  'foam.nanos.auth.AccountLockedException',
   'foam.nanos.auth.AgentJunctionStatus',
   'foam.nanos.auth.Authorizer',
   'foam.nanos.auth.AuthorizationDAO',
@@ -287,7 +289,6 @@ var classes = [
   'foam.nanos.auth.LifecycleAware',
   'foam.nanos.auth.LifecycleAwareDAO',
   'foam.nanos.auth.LocaleSupport',
-  'foam.nanos.auth.AccountLockedException',
   'foam.nanos.auth.DeletedAwareDAO',
   'foam.nanos.auth.DeletedAwareDAOTest',
   'foam.nanos.auth.Permission',
@@ -677,6 +678,7 @@ var classes = [
   'foam.nanos.dig.drivers.DigXmlDriver',
   'foam.nanos.dig.exception.DigErrorMessage',
   'foam.nanos.dig.exception.DAONotFoundException',
+  'foam.nanos.dig.exception.DAORequiredException',
   'foam.nanos.dig.exception.ParsingErrorException',
   'foam.nanos.dig.exception.DAOPutException',
   'foam.nanos.dig.exception.EmptyDataException',
@@ -914,6 +916,7 @@ var classes = [
   'foam.nanos.approval.ApprovalRequestClassificationEnum',
   'foam.nanos.approval.CompositeApprovable',
   'foam.nanos.approval.FulfilledCompositeApprovableRule',
+  'foam.nanos.approval.UCJApprovable',
 
 
   'foam.core.NumberSet',

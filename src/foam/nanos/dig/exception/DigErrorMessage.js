@@ -25,6 +25,13 @@ foam.CLASS({
               setInner((foam.core.Exception) cause);
             }
           }
+
+          public DigErrorMessage(Throwable cause) {
+            super(cause);
+            if ( cause instanceof foam.core.Exception ) {
+              setInner((foam.core.Exception) cause);
+            }
+          }
         `
         );
       }
