@@ -192,7 +192,7 @@ NOTE: duplicated in SocketConnectionReplyBox
         omLogger.log(this.getClass().getSimpleName(), getId(), "pending");
         synchronized (out_) {
           // NOTE: enable along with send debug call in SocketServerProcessor to monitor all messages.
-          getLogger().debug("send", message);
+          // getLogger().debug("send", message);
           out_.writeLong(System.currentTimeMillis());
           out_.writeInt(messageBytes.length);
           out_.write(messageBytes);
