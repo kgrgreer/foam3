@@ -26,6 +26,10 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'String',
+      name: 'id'
+    },
+    {
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid'
