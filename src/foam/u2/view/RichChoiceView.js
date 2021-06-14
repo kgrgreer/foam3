@@ -624,7 +624,7 @@ foam.CLASS({
       code: function() {
         if ( this.data ) {
           this.sections[0].dao.find(this.data).then((result) => {
-            this.fullObject_ = result;
+            this.fullObject_ = this.summarize ? Object.assign(result, { toSummary: this.summarize}) : result;
           });
         }
       }
@@ -721,7 +721,7 @@ foam.CLASS({
 
       methods: [
         function initE() {
-
+          debugger;
           this.style({
             'overflow': 'hidden',
             'white-space': 'nowrap',
