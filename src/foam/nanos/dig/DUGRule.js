@@ -106,6 +106,11 @@ foam.CLASS({
       section: 'dugInfo'
     },
     {
+      class: 'String',
+      name: 'payloadSignature',
+      section: 'dugInfo'
+    },
+    {
       class: 'foam.core.Enum',
       of: 'foam.nanos.http.Format',
       name: 'format',
@@ -141,6 +146,7 @@ foam.CLASS({
         DUGRuleAction action = new DUGRuleAction();
         action.setUrl(getUrl());
         action.setBearerToken(getBearerToken());
+        action.setPayloadSignature(getPayloadSignature());
         action.setFormat(getFormat());
         return action;
       `
