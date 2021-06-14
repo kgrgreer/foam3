@@ -1,4 +1,4 @@
-# FOAM
+# FOAM3
 
 FOAM3 is the active version FOAM.
 
