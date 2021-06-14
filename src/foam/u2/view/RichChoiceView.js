@@ -721,7 +721,6 @@ foam.CLASS({
 
       methods: [
         function initE() {
-          debugger;
           this.style({
             'overflow': 'hidden',
             'white-space': 'nowrap',
