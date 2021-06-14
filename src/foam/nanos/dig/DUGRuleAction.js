@@ -35,6 +35,10 @@ foam.CLASS({
       name: 'bearerToken'
     },
     {
+      class: 'String',
+      name: 'payloadSignature'
+    },
+    {
       class: 'foam.core.Enum',
       of: 'foam.nanos.http.Format',
       name: 'format'
@@ -55,6 +59,7 @@ foam.CLASS({
             final var sink = new HTTPSink(
               dugRule.getUrl(),
               dugRule.evaluateBearerToken(),
+              dugRule.getPayloadSignature(),
               dugRule.getFormat(),
               new foam.lib.AndPropertyPredicate(
                 x,

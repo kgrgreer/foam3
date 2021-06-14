@@ -15,28 +15,32 @@ import foam.lib.PropertyPredicate;
 import foam.nanos.http.Format;
 import foam.util.SafetyUtil;
 
+import javax.crypto.Mac;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import org.apache.commons.codec.binary.Base64;
 
 public class HTTPSink
     extends AbstractSink
 {
   protected String url_;
   protected String bearerToken_;
+  protected String payloadSignature_;
   protected Format format_;
   protected PropertyPredicate propertyPredicate_;
   protected boolean outputDefaultValues_;
 
   public HTTPSink(String url, Format format) {
-    this(url, "", format, null, false);
+    this(url, "", "", format, null, false);
   }
 
-  public HTTPSink(String url, String bearerToken, Format format, PropertyPredicate propertyPredicate, boolean outputDefaultValues) {
+  public HTTPSink(String url, String bearerToken, String payloadSignature, Format format, PropertyPredicate propertyPredicate, boolean outputDefaultValues) {
     url_ = url;
     bearerToken_ = bearerToken;
+    payloadSignature_ = payloadSignature;
     format_ = format;
     propertyPredicate_ = propertyPredicate;
     outputDefaultValues_ = outputDefaultValues;
@@ -52,6 +56,11 @@ public class HTTPSink
       conn.setRequestMethod("POST");
       if ( ! SafetyUtil.isEmpty(bearerToken_) ) {
         conn.setRequestProperty("Authorization", "Bearer " + bearerToken_);
+      }
+      if ( ! SafetyUtil.isEmpty(payloadSignature_) ) {
+        Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+        String hashedSignature = Base64.encodeBase64String(sha256_HMAC.doFinal(payloadSignature_.getBytes("UTF-8")));
+        conn.setRequestProperty("payload-signature", hashedSignature);
       }
       conn.setDoInput(true);
       conn.setDoOutput(true);
