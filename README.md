@@ -12,7 +12,8 @@ FOAM3 is the active version of FOAM.
 
 The FOAM1 [website](https://foam-framework.github.io/foam/) still contains many useful demos and videos (but some links may be broken).
 
-[![Build Status](https://travis-ci.org/foam-framework/foam3.svg?branch=master)](https://travis-ci.org/foam-framework/foam3)
+<!--
+[![Build Status](https://travis-ci.org/foam-framework/foam3.svg?branch=master)](https://travis-ci.org/foam-framework/foam3) -->
 
 ## Feature Oriented Active Modeller
 
@@ -26,7 +27,7 @@ While FOAM is written in JavaScript, it can be used to generate code
 for any language or platform, including Android Java and iOS Swift.
 
 # Development
-
+<!--
 ## Building Java
 
 cd src; ./gen.sh; cd ../build; cp ../tools/pom.xml .; mvn compile; mvn package
@@ -61,13 +62,14 @@ To access, run the following in the parent directory of foam3:
 * Run foam3/./tools/nanos.sh
 
 * Visit http://localhost:8080/src/foam/nanos/controller/index.html
+-->
 
 ## Style Guide
 
 All code should follow the [style guide.](doc/guides/StyleGuide.md)
 
 ## Testing
-
+<!--
 * _npm test_ runs standard unit tests.
 
 * _npm run testDebug_ runs the unit tests with a debugger.
@@ -78,7 +80,7 @@ For in-browser testing, run your favorite web server at the root of the FOAM
 repository. In a browser, navigate to
 [http://localhost:8000/test/browser/SpecRunner.html](http://localhost:8000/test/browser/SpecRunner.html)
 to run the unit tests.
-
+-->
 # Documentation
 
 ## Videos
