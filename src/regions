@@ -495,7 +495,7 @@ p({"class":"foam.nanos.auth.Region", "code":"NL-GE", "name":"Gelderland", "count
 p({"class":"foam.nanos.auth.Region", "code":"NL-LI", "name":"Limburg", "countryId":"NL"})
 
 // Portugual
-p({"class":"foam.nanos.auth.Region", "code":"PT-11", "name":"Lisbon", "countryId":"PT"})
+p({"class":"foam.nanos.auth.Region", "code":"PT-11", "name":"Lisboa", "countryId":"PT"})
 p({"class":"foam.nanos.auth.Region", "code":"PT-10", "name":"Leiria", "countryId":"PT"})
 p({"class":"foam.nanos.auth.Region", "code":"PT-14", "name":"Santarém", "countryId":"PT"})
 p({"class":"foam.nanos.auth.Region", "code":"PT-15", "name":"Setúbal", "countryId":"PT"})
