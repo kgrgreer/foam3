@@ -255,7 +255,7 @@ foam.CLASS({
         List<Approvable> approvableList = ((ArraySink)  approvableDAO.where(foam.mlang.MLang.EQ(Approvable.LOOKUP_ID, hashedId))
           .select(new ArraySink())).getArray();
 
-        if ( approvableList.size() != 1 ){
+        if ( approvableList.size() != 1 ) {
           String message = approvableList.size() > 1
             ? "Approvable Lookup Id " + hashedId + " is not unique"
             : "Approvable Lookup Id " + hashedId + " cannot be found";
