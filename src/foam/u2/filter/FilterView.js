@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.u2.filter',
   name: 'FilterView',
   extends: 'foam.u2.View',
+  mixins: ['foam.nanos.controller.MementoMixin'],
 
   documentation: `
     Filter View takes the properties defined in 'searchColumns' and creates
@@ -27,14 +28,12 @@ foam.CLASS({
   ],
 
   imports: [
-    'searchColumns',
-    'memento'
+    'searchColumns'
   ],
 
   exports: [
     'as data',
-    'filterController',
-    'currentMemento_ as memento'
+    'filterController'
   ],
 
   css: `
@@ -256,8 +255,7 @@ foam.CLASS({
       expression: function(filterController$isAdvanced) {
         return filterController$isAdvanced ? this.LINK_SIMPLE : this.LINK_ADVANCED;
       }
-    },
-    'currentMemento_'
+    }
   ],
 
   methods: [
