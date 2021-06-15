@@ -86,12 +86,9 @@ to run the unit tests.
 - [Medium Intro](https://www.youtube.com/watch?v=n699DWb2TUs)
 - [Long Intro](https://www.youtube.com/watch?v=PsFLlgrzn2E)
 - [Reactive Programming in FOAM](https://www.youtube.com/watch?v=-fbq-_H6Lf4)
-- []()
-- []()
-- []()
-- []()
-- []()
-- []()
+- [UNIX and Google](https://www.youtube.com/watch?v=3Ea3pkTCYx4)
+- [Olympic Medals Demo](https://www.youtube.com/watch?v=y9i4oW9dHHw)
+- [Turtle Graphics](https://www.youtube.com/watch?v=4wO_RrftJTE)
 
 ## Guides
 - [Contexts](doc/guides/Context.md)
