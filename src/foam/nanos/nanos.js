@@ -41,7 +41,7 @@ FOAM_FILES([
   { name: "foam/nanos/app/ClientAppConfigService" },
   { name: "foam/nanos/controller/WindowHash" },
   { name: "foam/nanos/controller/Memento" },
-  { name: "foam/nanos/controller/MementoUtils" },
+  { name: "foam/nanos/controller/MementoMixin" },
   { name: "foam/nanos/controller/ApplicationController" },
   { name: "foam/nanos/app/Mode" },
   { name: 'foam/nanos/alarming/AddAlarmNameDAO' },

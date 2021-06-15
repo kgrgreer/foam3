@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.comics.v2',
   name: 'DAOBrowserView',
   extends: 'foam.u2.View',
-  mixins: ['foam.nanos.controller.MementoUtils'],
+  mixins: ['foam.nanos.controller.MementoMixin'],
 
   requires: [
     'foam.comics.SearchMode',

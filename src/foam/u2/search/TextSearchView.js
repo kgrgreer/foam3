@@ -19,7 +19,7 @@ foam.CLASS({
   package: 'foam.u2.search',
   name: 'TextSearchView',
   extends: 'foam.u2.View',
-  mixins: ['foam.nanos.controller.MementoUtils'],
+  mixins: ['foam.nanos.controller.MementoMixin'],
 
   requires: [
     'foam.parse.QueryParser',

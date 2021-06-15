@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.nanos.controller',
-  name: 'MementoUtils',
+  name: 'MementoMixin',
 
   imports: ['memento'],
 

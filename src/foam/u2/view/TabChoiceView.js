@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.u2.view',
   name: 'TabChoiceView',
   extends: 'foam.u2.view.ChoiceView',
-  mixins: ['foam.nanos.controller.MementoUtils'],
+  mixins: ['foam.nanos.controller.MementoMixin'],
 
   documentation: `
     A choice view that outputs user-specified tabs

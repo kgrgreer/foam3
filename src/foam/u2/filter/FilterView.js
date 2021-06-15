@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.u2.filter',
   name: 'FilterView',
   extends: 'foam.u2.View',
-  mixins: ['foam.nanos.controller.MementoUtils'],
+  mixins: ['foam.nanos.controller.MementoMixin'],
 
   documentation: `
     Filter View takes the properties defined in 'searchColumns' and creates
