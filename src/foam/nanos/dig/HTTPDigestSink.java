@@ -1,5 +1,21 @@
-package foam.nanos.dig;
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2021] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
 
+package foam.nanos.dig;
 import foam.core.Detachable;
 import foam.core.FObject;
 import foam.dao.AbstractSink;
@@ -72,7 +88,7 @@ public class HTTPDigestSink extends AbstractSink {
       md.update(payload.getBytes(StandardCharsets.UTF_8));
       String hash = byte2Hex(md.digest());
       conn.addRequestProperty("payload-digest", hash);
-      
+
       conn.connect();
 
       try (OutputStream os = conn.getOutputStream()) {
