@@ -12,8 +12,12 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
+import foam.nanos.logger.PrefixLogger;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
@@ -25,6 +29,12 @@ public class CapabilityUpdateInterceptDAO extends ProxyDAO {
 
   protected String capability;
   protected Map<PropertyInfo, PropertyInfo> propMap;
+
+  protected Logger getLogger() {
+    return new PrefixLogger(new Object[] {
+      this.getClass().getSimpleName()
+    }, (Logger) getX().get("logger"));
+  }
 
   /**
    * @param prop The property on the source model that will be applied to the dst capability
@@ -65,22 +75,35 @@ public class CapabilityUpdateInterceptDAO extends ProxyDAO {
   public FObject put_(X x, FObject obj) {
     final var ucj = getCapability(obj);
 
-    if ( ucj == null )
-      throw new RuntimeException("Couldn't find UCJ to update");
+    if ( ucj != null ) {
+      try {
+        final var oldObj = super.find_(x, obj.getProperty("id"));
 
-    final var oldObj = super.find_(x, obj.getProperty("id"));
-    final var ucjDAO = (DAO) getX().get("userCapabilityJunctionDAO");
-    final var data = (FObject) ucj.getData();
+        var props = getOf().getAxiomsByClass(PropertyInfo.class).stream()
+          .filter((prop) -> propMap.containsKey(prop))
+          .filter((prop) -> prop.get(obj) != null && ! prop.get(obj).equals(prop.get(oldObj)))
+          .collect(Collectors.toList());
 
-    if ( data == null )
-      throw new RuntimeException("UCJ doesn't contain data element");
+        if ( props.size() > 0 ) {
+          final var data = (FObject) ucj.getData();
+          if ( data == null )
+            throw new RuntimeException("UCJ " + capability + " for " + obj.getProperty("id") + " doesn't contain data element");
 
-    getOf().getAxiomsByClass(PropertyInfo.class).stream()
-      .filter((prop) -> propMap.containsKey(prop))
-      .filter((prop) -> prop.get(obj) != null && ! prop.get(obj).equals(prop.get(oldObj)))
-      .forEach((prop) -> apply(prop, obj, data));
+          var newData = data.fclone();
 
-    ucjDAO.put_(x, ucj);
+          for ( var prop : props ) {
+            apply(prop, obj, newData);
+            prop.set(obj, prop.get(oldObj));
+          }
+
+          var user = (User) ((DAO)x.get("bareUserDAO")).find(obj.getProperty("id"));
+          var crunchService = (CrunchService) x.get("crunchService");
+          crunchService.updateJunctionFor(x, capability, newData, ucj.getStatus(), user, user);
+        }
+      } catch(Exception e) {
+        getLogger().log(e);
+      }
+    }
 
     return super.put_(x, obj);
   }
@@ -89,7 +112,8 @@ public class CapabilityUpdateInterceptDAO extends ProxyDAO {
    * @param propMap Properties on the source model that will be used to update the capability
    * @param capability ID of Capability that will be updated
    */
-  public CapabilityUpdateInterceptDAO(Map<PropertyInfo, PropertyInfo> propMap, String capability) {
+  public CapabilityUpdateInterceptDAO(DAO dao, Map<PropertyInfo, PropertyInfo> propMap, String capability) {
+    setDelegate(dao);
     this.propMap = propMap;
     this.capability = capability;
   }
