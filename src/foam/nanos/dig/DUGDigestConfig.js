@@ -24,11 +24,9 @@ foam.CLASS({
     'foam.nanos.auth.ServiceProviderAware'
   ],
 
+  ids: ['spid'],
+
   properties: [
-    {
-      class: 'String',
-      name: 'id'
-    },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',

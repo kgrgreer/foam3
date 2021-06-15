@@ -8,39 +8,40 @@ package foam.dao;
 
 import foam.core.Detachable;
 import foam.core.FObject;
+import foam.dao.DAO;
 import foam.lib.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.lib.NetworkPropertyPredicate;
 import foam.lib.PropertyPredicate;
+import foam.nanos.dig.DUGDigestConfig;
 import foam.nanos.http.Format;
 import foam.util.SafetyUtil;
 
-import javax.crypto.Mac;
+import java.security.MessageDigest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import org.apache.commons.codec.binary.Base64;
 
 public class HTTPSink
     extends AbstractSink
 {
   protected String url_;
   protected String bearerToken_;
-  protected String payloadSignature_;
+  protected DUGDigestConfig dugDigestConfig_;
   protected Format format_;
   protected PropertyPredicate propertyPredicate_;
   protected boolean outputDefaultValues_;
 
   public HTTPSink(String url, Format format) {
-    this(url, "", "", format, null, false);
+    this(url, "", null, format, null, false);
   }
 
-  public HTTPSink(String url, String bearerToken, String payloadSignature, Format format, PropertyPredicate propertyPredicate, boolean outputDefaultValues) {
+  public HTTPSink(String url, String bearerToken, DUGDigestConfig dugDigestConfig, Format format, PropertyPredicate propertyPredicate, boolean outputDefaultValues) {
     url_ = url;
     bearerToken_ = bearerToken;
-    payloadSignature_ = payloadSignature;
+    dugDigestConfig_ = dugDigestConfig;
     format_ = format;
     propertyPredicate_ = propertyPredicate;
     outputDefaultValues_ = outputDefaultValues;
@@ -49,7 +50,6 @@ public class HTTPSink
   @Override
   public void put(Object obj, Detachable sub) {
     HttpURLConnection conn = null;
-
     try {
       Outputter outputter = null;
       conn = (HttpURLConnection) new URL(url_).openConnection();
@@ -57,11 +57,7 @@ public class HTTPSink
       if ( ! SafetyUtil.isEmpty(bearerToken_) ) {
         conn.setRequestProperty("Authorization", "Bearer " + bearerToken_);
       }
-      if ( ! SafetyUtil.isEmpty(payloadSignature_) ) {
-        Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-        String hashedSignature = Base64.encodeBase64String(sha256_HMAC.doFinal(payloadSignature_.getBytes("UTF-8")));
-        conn.setRequestProperty("payload-signature", hashedSignature);
-      }
+      
       conn.setDoInput(true);
       conn.setDoOutput(true);
       if ( format_ == Format.JSON ) {
@@ -85,6 +81,15 @@ public class HTTPSink
         }
       }
 
+      if ( dugDigestConfig_ != null && dugDigestConfig_.getEnabled() ) {
+        String payload = outputter.stringify((FObject) obj);
+        MessageDigest md = MessageDigest.getInstance(dugDigestConfig_.getAlgorithm());
+        md.update(dugDigestConfig_.getSecretKey().getBytes(StandardCharsets.UTF_8));
+        md.update(payload.getBytes(StandardCharsets.UTF_8));
+        String hashedSignature = byte2Hex(md.digest());
+        conn.addRequestProperty("payload-digest", hashedSignature);
+      }
+
       // check response code
       int code = conn.getResponseCode();
       if ( code != HttpServletResponse.SC_OK ) {
@@ -98,4 +103,18 @@ public class HTTPSink
       }
     }
   }
+
+  public String byte2Hex(byte[] bytes) {
+    StringBuffer stringBuffer = new StringBuffer();
+    String temp = null;
+    for ( int i=0; i<bytes.length; i++ ) {
+      temp = Integer.toHexString(bytes[i] & 0xFF);
+      if ( temp.length() == 1 ) {
+        stringBuffer.append("0");
+      }
+      stringBuffer.append(temp);
+    }
+    return stringBuffer.toString();
+  }
+
 }

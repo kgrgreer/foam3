@@ -35,10 +35,6 @@ foam.CLASS({
       name: 'bearerToken'
     },
     {
-      class: 'String',
-      name: 'payloadSignature'
-    },
-    {
       class: 'foam.core.Enum',
       of: 'foam.nanos.http.Format',
       name: 'format'
@@ -55,11 +51,13 @@ foam.CLASS({
         @Override
         public void execute(X x) {
           PM pm = new PM(getClass(), rule.getDaoKey(), rule.getName());
+          DAO dugDigestConfigDAO = (DAO) x.get("dugDigestConfigDAO");
+          DUGDigestConfig dugDigestConfig = (DUGDigestConfig) dugDigestConfigDAO.find(rule.getSpid());
           try {
             final var sink = new HTTPSink(
               dugRule.getUrl(),
               dugRule.evaluateBearerToken(),
-              dugRule.getPayloadSignature(),
+              dugDigestConfig,
               dugRule.getFormat(),
               new foam.lib.AndPropertyPredicate(
                 x,
