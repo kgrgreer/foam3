@@ -156,7 +156,7 @@ foam.CLASS({
 
             List<ApprovalRequest> approvedRequestList =  ((ArraySink) approvedRequestDAO.select(new ArraySink())).getArray();
 
-            if ( approvedRequestList.size() != 1 ){
+            if ( approvedRequestList.size() != 1 ) {
               String message = approvedRequestList.size() > 1
                 ? "Approved Approval Request is not unique"
                 : "Approved Approval Request cannot be found";
