@@ -34,7 +34,7 @@ foam.CLASS({
            appConfig.getMode() == Mode.DEVELOPMENT ||
            appConfig.getMode() == Mode.TEST ) {
         // TODO: Extend LogMessage model, and set 
-        // javaFormatJSON: `formatter.outputReadableDate(get_(obj));`,
+        // javaFormatJSON: formatter.outputReadableDate(get_(obj));
         // on 'created' property for readable dates in the
         // 'journal' style log  file.
         return super.put(x, prefix, dao, obj);
