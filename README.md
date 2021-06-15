@@ -106,8 +106,8 @@ to run the unit tests.
 - [Long Form](https://docs.google.com/document/d/1XnxtQ_B6D1SWo2FSh8UkWq1euElBLONBVBCo6cPueL4/edit?usp=sharing)
 
 ## Tutorials
-- [TODO](http://foam-framework.github.io/foam/tutorial/todo/0-intro/)
-- [PhoneCat](http://foam-framework.github.io/foam/tutorial/phonecat/0-intro/)
+- [TODO](http://foam-framework.github.io/foam/tutorial/todo/0-intro/) (undergoing updates)
+- [PhoneCat](http://foam-framework.github.io/foam/tutorial/phonecat/0-intro/) (undergoing updates)
 
 ## Demos
 - [FOAM1 Demo Catalog](http://foam-framework.github.io/foam/foam/demos/DemoCat.html)
