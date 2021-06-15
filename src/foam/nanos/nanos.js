@@ -62,6 +62,7 @@ FOAM_FILES([
   { name: 'foam/nanos/auth/AccountLockedException' },
   { name: 'foam/nanos/auth/AccountDisabledException' },
   { name: 'foam/nanos/auth/AuthenticationException' },
+  { name: 'foam/nanos/auth/AuthorizationException' },
   { name: "foam/nanos/auth/DeletedAware" },
   { name: "foam/nanos/auth/DeletedAwareDAOTest" },
   { name: 'foam/nanos/auth/DuplicateEmailException' },

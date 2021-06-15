@@ -197,7 +197,7 @@ public class PreventPrivilegeEscalationTest
       test(false, "Users cannot set the parent of a group to a group containing a permission that isn't implied by one they already have.");
 
     } catch (AuthorizationException e) {
-      test(e.getMessage().equals("Permission denied. You cannot change the parent of a group."), "Users cannot set the parent of a group to a group containing a permission that isn't implied by one they already have.");
+      test(e.getMessage().equals("You cannot change the parent of a group."), "Users cannot set the parent of a group to a group containing a permission that isn't implied by one they already have.");
     } finally {
       cleanUp(x);
     }
@@ -266,7 +266,7 @@ public class PreventPrivilegeEscalationTest
       test(false, "Users cannot update the parent of a group to a group containing a permission that isn't implied by one they already have.");
 
     } catch (AuthorizationException e) {
-      test(e.getMessage().equals("Permission denied. You cannot change the parent of a group."), "Users cannot set the parent of a group to a group containing a permission that isn't implied by one they already have.");
+      test(e.getMessage().equals("You cannot change the parent of a group."), "Users cannot set the parent of a group to a group containing a permission that isn't implied by one they already have.");
     } finally {
       cleanUp(x);
     }
@@ -615,7 +615,7 @@ public class PreventPrivilegeEscalationTest
       // If the put didn't throw, then this test failed.
       test(false, TEST_MESSAGE);
     } catch (AuthorizationException e) {
-      Boolean passed = e.getMessage().equals("Permission denied. You cannot add or remove a permission that you do not have.");
+      Boolean passed = e.getMessage().equals("You cannot add or remove a permission that you do not have.");
       test(passed, TEST_MESSAGE);
       if ( ! passed ) {
         print("Error message mismatch. Actual was: " + e.getMessage());
