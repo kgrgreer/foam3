@@ -25,7 +25,7 @@ FOAM’s U2 syntax provides methods for adding and interacting with UI component
 
 ## **Tutorial Application**
 
-Let’s define the `initE()` for each phone in the catalog. 
+Let’s define the `initE()` for each phone in the catalog.
 
 **STEP #1.** Expand `PhoneCitationView` so it looks like this:
 
@@ -42,7 +42,7 @@ foam.CLASS({
         .start('li')
           .start('a')
             .attrs({ href: '#' + this.data.id })
-            .start({ class: 'foam.u2.tag.Image', 
+            .start({ class: 'foam.u2.tag.Image',
                      data: this.data.imageUrl })
               .addClass('thumb').end()
           .end()
@@ -57,13 +57,12 @@ foam.CLASS({
     }
   ]
 });
-});
 {% endraw %}
 {% endhighlight %}
 
-**STEP #2.** Reload your app and see that... it's a complete mess. That's because `PhoneCitationView` is putting in `<li>` tags but they're not in a `<ul>`, and the custom CSS for the app is not being loaded.  We'll get back to the CSS shortly. 
+**STEP #2.** Reload your app and see that... it's a complete mess. That's because `PhoneCitationView` is putting in `<li>` tags but they're not in a `<ul>`, and the custom CSS for the app is not being loaded.  We'll get back to the CSS shortly.
 
-**STEP #3.** Add a second template for the top-level `ControllerView`. 
+**STEP #3.** Add a second template for the top-level `ControllerView`.
 
 **STEP #4.** Add the followng code to `Controller.js`and expand your `ControllerView`:
 
@@ -105,7 +104,7 @@ foam.CLASS({
       expression: function (dao, search, order) {
         var expr = foam.mlang.Expressions.create();
         return dao.orderBy(order).where(expr.OR(
-          expr.CONTAINS_IC(Phone.SNIPPET, search), 
+          expr.CONTAINS_IC(Phone.SNIPPET, search),
           expr.CONTAINS_IC(Phone.SNIPPET, search)));
       }
     },
@@ -149,13 +148,13 @@ foam.CLASS({
 <link rel="stylesheet" href="css/bootstrap.css" />
 {% endhighlight %}
 
-**STEP #6.** Reload your app. 
+**STEP #6.** Reload your app.
 
 ## **Conclusion**
 
 Now your app should look much better and the search and sort functions work! You are now ready for the final stage of your basic app in FOAM.  Please proceed to the next lesson on navigation.
 
-## **[NEXT: Part III - Applied Learning - Navigation](../3d-navigation/)** 
+## **[NEXT: Part III - Applied Learning - Navigation](../3d-navigation/)**
 
 ### **Tutorial Menu:**
 

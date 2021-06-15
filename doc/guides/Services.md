@@ -28,7 +28,7 @@ var skeletons = [
 
  Eg:
 
- `p({"class":"foam.nanos.boot.NSpec", "name":"auth",                        "lazy":true,  "serve":true,  "authenticate": false, "boxClass":"foam.nanos.auth.AuthServiceSkeleton", "serviceClass":"foam.nanos.auth.UserAndGroupAuthService","client":"{\"class\":\"foam.nanos.auth.ClientAuthService\"}"})`
+ `p({"class":"foam.nanos.boot.NSpec", "name":"auth", "lazy":true, "serve":true, "authenticate": false, "boxClass":"foam.nanos.auth.AuthServiceSkeleton", "serviceClass":"foam.nanos.auth.UserAndGroupAuthService", "client":"{\"class\":\"foam.nanos.auth.ClientAuthService\"}"})`
 
 ### CLIENT SIDE
 4. Create stub for Service on the client side

@@ -6,11 +6,11 @@ tutorial: 1
 
 # **Part I:  Getting Started**
 
-Let's dive right in. 
+Let's dive right in.
 
-1. Create a new folder for your project and open it. 
+1. Create a new folder for your project and open it.
 
-1. Ensure all the required tools are available or have been downloaded. 
+1. Ensure all the required tools are available or have been downloaded.
 
      There are only four required tools for this tutorial. The following list includes links to locations where the required tools may be downloaded:
 
@@ -30,7 +30,7 @@ Let's dive right in.
      <font color="#555555" > POWERED</font></font></a>';
      {% endhighlight %}
 
-   The FOAM library is split across many files, but you only need to include this one JS file in your HTML document: `foam3/src/foam.js`.  
+   The FOAM library is split across many files, but you only need to include this one JS file in your HTML document: `foam3/src/foam.js`.
 
 1. Create and save a new HTML file in your project directory called `$PROJECT/index.html` with the following contents:
 
@@ -50,8 +50,8 @@ Let's dive right in.
 
 1. Launch your local web server and direct your browser to this file. Using Python, the local web server will look like:
 
-    python -m SimpleHTTPServer    # Python 2
-    python -m http.server         # Python 3
+    python -m SimpleHTTPServer 8000    # Python 2
+    python -m http.server              # Python 3
 
    This will serve as the current directory on port 8000: [http://localhost:8000/](http://localhost:8000/).
 
@@ -59,9 +59,9 @@ Let's dive right in.
 
 If that's what you're seeing, then congratulations! You've got FOAM running and you're ready to move on to the next stage in this tutorial: Core Concepts.
 
-## **[NEXT:  Part II - Core Concepts](../2-concepts/)** 
+## **[NEXT:  Part II - Core Concepts](../2-concepts/)**
 
-### **Tutorial Menu:** 
+### **Tutorial Menu:**
 
 1. [Getting Started](../1-gettingstarted/)
 1. [Core Concepts](../2-concepts/)

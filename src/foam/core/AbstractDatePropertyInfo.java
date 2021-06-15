@@ -52,10 +52,8 @@ public abstract class AbstractDatePropertyInfo
 
   @Override
   public void cloneProperty(FObject source, FObject dest) {
-    Object value = get(source);
-
-    set(dest, value == null ? null : new Date(((Date) value).getTime()));
-  }
+    set(dest, get(source));
+  } 
 
   @Override
   public void updateDigest(FObject obj, MessageDigest md) {
@@ -88,11 +86,11 @@ public abstract class AbstractDatePropertyInfo
 
   protected abstract java.util.Date get_(Object o);
   protected abstract java.util.Date cast(Object key);
-    
+
 //  public foam.lib.parse.Parser jsonParser() {
 //    return foam.lib.json.DateParser.instance() == null ? foam.lib.json.DateParser.instance(): null;
 //  }
-  
+
   public int compare(Object o1, Object o2) {
     return foam.util.SafetyUtil.compare(get_(o1), get_(o2));
   }
@@ -116,7 +114,7 @@ public abstract class AbstractDatePropertyInfo
   public Class getValueClass() {
     return java.util.Date.class;
   }
-  
+
   public boolean isDefaultValue(Object o) {
     return foam.util.SafetyUtil.compare(get_(o), null) == 0;
   }

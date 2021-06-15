@@ -363,16 +363,18 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
           throw new IllegalStateException("User id is invalid.");
         }
 
-        if ( getAgentId() < 0 ) {
-          throw new IllegalStateException("Agent id is invalid.");
-        }
-
         if ( getUserId() > 0 ) {
           checkUserEnabled(x, getUserId());
         }
 
-        if ( getAgentId() > 0 ) {
-          checkUserEnabled(x, getAgentId());
+        if ( getUserId() != getAgentId() ) {
+          if ( getAgentId() < 0  ) {
+            throw new IllegalStateException("Agent id is invalid.");
+          }
+
+          if ( getAgentId() > 0 ) {
+            checkUserEnabled(x, getAgentId());
+          }
         }
       `
     },
@@ -385,15 +387,17 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
       javaCode: `
         User user = (User) ((DAO) x.get("localUserDAO")).find(userId);
 
-        if ( user == null
-         || (user instanceof LifecycleAware && ((LifecycleAware)user).getLifecycleState() != LifecycleState.ACTIVE)
-       ) {
+        if ( user == null ) {
           ((Logger) x.get("logger")).warning("Session", "User not found.", userId);
+          throw new foam.nanos.auth.UserNotFoundException();
+        }
+        if ( user instanceof LifecycleAware && ((LifecycleAware)user).getLifecycleState() != LifecycleState.ACTIVE ) {
+          ((Logger) x.get("logger")).warning("Session", "User not active", userId);
           throw new foam.nanos.auth.UserNotFoundException();
         }
 
         if ( ! user.getEnabled() ) {
-          throw new foam.nanos.auth.AuthenticationException(String.format("The user with id '%d' has been disabled.", userId));
+          throw new foam.nanos.auth.AccountDisabledException();
         }
       `
     }

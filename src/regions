@@ -495,7 +495,7 @@ p({"class":"foam.nanos.auth.Region", "code":"NL-GE", "name":"Gelderland", "count
 p({"class":"foam.nanos.auth.Region", "code":"NL-LI", "name":"Limburg", "countryId":"NL"})
 
 // Portugual
-p({"class":"foam.nanos.auth.Region", "code":"PT-11", "name":"Lisbon", "countryId":"PT"})
+p({"class":"foam.nanos.auth.Region", "code":"PT-11", "name":"Lisboa", "countryId":"PT"})
 p({"class":"foam.nanos.auth.Region", "code":"PT-10", "name":"Leiria", "countryId":"PT"})
 p({"class":"foam.nanos.auth.Region", "code":"PT-14", "name":"Santarém", "countryId":"PT"})
 p({"class":"foam.nanos.auth.Region", "code":"PT-15", "name":"Setúbal", "countryId":"PT"})
@@ -885,7 +885,7 @@ p({class:"foam.nanos.auth.Region",code:"MX-PUE",name:"Puebla",countryId:"MX"})
 p({class:"foam.nanos.auth.Region",code:"MX-QUE",name:"Querétaro",countryId:"MX"})
 p({class:"foam.nanos.auth.Region",code:"MX-ROO",name:"Quintana Roo",countryId:"MX"})
 p({class:"foam.nanos.auth.Region",code:"MX-SLP",name:"San Luis Potosí",countryId:"MX"})
-p({class:"foam.nanos.auth.Region",code:"MX-SIN",name:"Sinaloa",countryId:":MX"})
+p({class:"foam.nanos.auth.Region",code:"MX-SIN",name:"Sinaloa",countryId:"MX"})
 p({class:"foam.nanos.auth.Region",code:"MX-SON",name:"Sonora",countryId:"MX"})
 p({class:"foam.nanos.auth.Region",code:"MX-TAB",name:"Tabasco",countryId:"MX"})
 p({class:"foam.nanos.auth.Region",code:"MX-TAM",name:"Tamaulipas",countryId:"MX"})

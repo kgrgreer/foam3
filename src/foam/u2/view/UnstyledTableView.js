@@ -528,7 +528,7 @@ foam.CLASS({
 
             var propertyNamesToQuery = view.columnHandler.returnPropNamesToQuery(view.props);
             var valPromises = view.returnRecords(view.of, proxy, propertyNamesToQuery, canObjBeBuildFromProjection);
-            var nastedPropertyNamesAndItsIndexes = view.columnHandler.buildArrayOfNestedPropertyNamesAndCorrespondingIndexesInArray(propertyNamesToQuery);
+            var nastedPropertyNamesAndItsIndexes = view.columnHandler.buildArrayOfNestedPropertyNamesAndCorrespondingIndexesInArrayOfValues(propertyNamesToQuery);
 
             var tbodyElement = this.E();
             tbodyElement.style({
