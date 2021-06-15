@@ -100,3 +100,11 @@ to run the unit tests.
 - [Enums](doc/guides/Enum.md)
 - [Porting](doc/guides/Porting.md)
 - [Services](doc/guides/Services.md)
+
+## Tutorials
+- TODO
+- PhoneCat
+
+## Demos
+- [FOAM1 Demo Catalog](http://foam-framework.github.io/foam/foam/demos/DemoCat.html)
+- FOAM by Example
