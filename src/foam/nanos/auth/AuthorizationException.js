@@ -1,13 +1,15 @@
 /**
  * @license
- * Copyright 2019 The FOAM Authors. All Rights Reserved.
+ * Copyright 2021 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
 foam.CLASS({
-  package: 'foam.nanos.dig.exception',
+  package: 'foam.nanos.auth',
   name: 'AuthorizationException',
-  extends: 'foam.nanos.dig.exception.DigErrorMessage',
+  extends: 'foam.core.FOAMException',
+  javaGenerateDefaultConstructor: false,
+  javaGenerateConvenienceConstructor: false,
 
   documentation: `
     Thrown when a user tries to access a resource that they don't have
@@ -19,8 +21,16 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(`
+          public AuthorizationException() {
+            super("Permission denied.");
+          }
+
           public AuthorizationException(String message) {
             super(message);
+          }
+
+          public AuthorizationException(String message, Throwable cause) {
+            super(message, cause);
           } 
         `
         );
@@ -29,16 +39,6 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      name: 'exceptionMessage',
-      class: 'String',
-      value: 'You do not have permission to access the service named {{message}}'
-    },
-    {
-      class: 'String',
-      name: 'status',
-      value: '403'
-    },
     {
       class: 'String',
       name: 'errorCode',

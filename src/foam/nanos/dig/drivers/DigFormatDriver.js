@@ -17,6 +17,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.lib.csv.CSVOutputter',
     'foam.lib.json.OutputterMode',
+    'foam.nanos.auth.AuthorizationException',
     'foam.nanos.boot.NSpec',
     'foam.nanos.dig.*',
     'foam.nanos.dig.exception.*',
@@ -241,8 +242,8 @@ foam.CLASS({
       // Check if the user is authorized to access the DAO.
       try {
         nspec.checkAuthorization(x);
-      } catch (foam.nanos.auth.AuthorizationException e) {
-        DigUtil.outputException(x, new AuthorizationException(e.getMessage()), getFormat());
+      } catch (AuthorizationException e) {
+        DigUtil.outputFObject(x, e, 403, getFormat());
         return null;
       }
 

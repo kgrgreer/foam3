@@ -266,6 +266,7 @@ var classes = [
   'foam.nanos.auth.Authorizer',
   'foam.nanos.auth.AuthorizationDAO',
   'foam.nanos.auth.AuthenticationException',
+  'foam.nanos.auth.AuthorizationException',
   'foam.nanos.auth.AssignableAware',
   'foam.nanos.auth.DuplicateEmailException',
   'foam.nanos.auth.DuplicateUserNameException',
@@ -392,6 +393,7 @@ var classes = [
   'foam.nanos.logger.LoggerJournal',
   'foam.nanos.logger.LoggingDAO',
   'foam.nanos.logger.StdoutLoggerDAO',
+  'foam.nanos.logger.benchmark.LoggerBenchmark',
   'foam.nanos.menu.XRegistration',
   'foam.nanos.menu.Menu',
   'foam.nanos.menu.DAOMenu',
@@ -687,7 +689,6 @@ var classes = [
   'foam.nanos.dig.exception.UnsupportException',
   'foam.nanos.dig.exception.UnknownIdException',
   'foam.nanos.dig.exception.DigSuccessMessage',
-  'foam.nanos.dig.exception.AuthorizationException',
 
   'foam.nanos.dao.Operation',
 
