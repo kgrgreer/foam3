@@ -391,6 +391,7 @@ var classes = [
   'foam.nanos.logger.LoggerJournal',
   'foam.nanos.logger.LoggingDAO',
   'foam.nanos.logger.StdoutLoggerDAO',
+  'foam.nanos.logger.benchmark.LoggerBenchmark',
   'foam.nanos.menu.XRegistration',
   'foam.nanos.menu.Menu',
   'foam.nanos.menu.DAOMenu',
