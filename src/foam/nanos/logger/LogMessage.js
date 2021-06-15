@@ -59,7 +59,6 @@ foam.CLASS({
       class: 'Long',
       visibility: 'RO',
       javaFactory: 'return System.currentTimeMillis();',
-      javaFormatJSON: `formatter.outputReadableDate(get_(obj));`,
       tableWidth: 180,
       view: 'foam.u2.view.date.ROMillisecondView',
       tableCellFormatter: function(value, obj, axiom) {
