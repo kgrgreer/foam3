@@ -5,7 +5,7 @@
  */
 
 foam.INTERFACE({
-  package: 'foam.nanos.auth'
+  package: 'foam.nanos.auth',
   name: 'UserLocatorService',
 
   methods: [

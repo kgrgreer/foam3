@@ -307,6 +307,7 @@ var classes = [
   'foam.nanos.auth.Country',
   'foam.nanos.auth.PropertyType',
   'foam.nanos.auth.AuthService',
+  'foam.nanos.auth.UserLocatorService',
   'foam.nanos.auth.PMAuthService',
   'foam.nanos.auth.UserUserJunction',
   'foam.nanos.auth.ClientAuthService',

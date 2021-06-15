@@ -17,6 +17,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.theme.Theme',
+    'foam.nanos.auth.UserLocatorService',
 
     'static foam.mlang.MLang.*',
   ],
@@ -44,7 +45,7 @@ foam.CLASS({
           name: 'identifier',
           type: 'String'
         },
-        {// need this?
+        {
           name: 'password',
           class: 'String'
         }
@@ -52,7 +53,6 @@ foam.CLASS({
       javaCode: `
         User user = (User) ((DAO) getLocalUserDAO());
         Theme theme = ((Theme) x.get("theme"));
-        // should I think about "user == null || theme == null" statement?
         return getDelegate().where(
           OR(
             EQ(user.getSpid(), ((Theme) x.get("theme"))),

@@ -320,7 +320,6 @@ FOAM_FILES([
   { name: "foam/nanos/auth/ClientAgentAuthService" },
   { name: "foam/nanos/auth/UserLocatorService" },
   { name: "foam/nanos/auth/ProxyUserLocatorService" },
-  { name: "foam/nanos/auth/ClientUserLocatorService" },
   { name: "foam/nanos/pm/PMTemperatureCellFormatter" },
   { name: "foam/nanos/pm/NullPM" },
   { name: "foam/nanos/pm/PM" },
