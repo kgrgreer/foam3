@@ -6,6 +6,7 @@
 
 package foam.util;
 
+import java.util.List;
 import java.util.regex.Pattern;
 import foam.core.FObject;
 import foam.core.Validatable;
@@ -200,6 +201,17 @@ public class SafetyUtil {
     } catch(InstantiationException | IllegalAccessException e) {
       return null;
     }
+  }
+
+  /**
+   * @param l1 The list that will be tested if it's a subset
+   * @param l2 The list that l1 will be tested against
+   * @param <T> The type of Object in the lists
+   * @return Whether or not l1 union l2 is equal to l1
+   */
+  public static <T> boolean isSubSet(List<T> l1, List<T> l2) {
+    if ( l1 == null || l2 == null ) return false;
+    return l1.containsAll(l2);
   }
 
   public static boolean isEmpty(String s) {
