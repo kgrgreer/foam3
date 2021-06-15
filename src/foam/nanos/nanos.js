@@ -11,7 +11,6 @@ FOAM_FILES([
   { name: "foam/nanos/logger/LogMessageDAO" },
   { name: "foam/nanos/logger/AbstractLogger" },
   { name: "foam/nanos/logger/ProxyLogger" },
-  { name: 'foam/nanos/logger/LoggerBenchmark' },
   { name: "foam/nanos/logger/LoggerJDAO" },
   { name: "foam/nanos/logger/LogLevelFilterLogger" },
   { name: "foam/nanos/logger/NotificationLogMessageDAO" },
