@@ -18,8 +18,6 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.theme.Theme',
     'foam.nanos.auth.UserLocatorService',
-    'foam.dao.ArraySink',
-    'foam.dao.Sink',
     'java.util.List',
 
     'static foam.mlang.MLang.*'
@@ -56,26 +54,17 @@ foam.CLASS({
       javaCode: `
         DAO userDAO = (DAO) getX().get("localUserDAO");
 
-        Sink sink = new ArraySink();
-        sink = userDAO
-          .where(
+        User user = (User) userDAO
+          .find(
             OR(
               EQ(User.SPID, ((Theme) x.get("theme"))),
               EQ(User.SPID, getSuperSpid())
-            )
-          )
-          .select(sink);
-        List list = ((ArraySink) sink).getArray();
+            ));
 
-        if ( list != null ){
-          if ( list.size() == 0 ) {
-            throw new AuthenticationException("User not found.");
-          } else if ( list.size() > 1 ) {
-            throw new AuthenticationException("Duplicate Email.");
-          }
+        if ( user != null ){
+          throw new AuthenticationException("User not found.");
         }
-
-        return (User) list.get(0);
+        return user;
       `
     }
   ]
