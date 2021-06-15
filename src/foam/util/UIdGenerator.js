@@ -69,9 +69,7 @@ foam.CLASS({
         int seqNoAndCks = seqNo * 256 + calcChecksum(currTime, seqNo);
         id.append(Integer.toHexString(seqNoAndCks));
         setSeqNo(seqNo + 1);
-        //return permutate(id);
-        // TODO: permutation
-        return id.toString();
+        return permutate(id);
       `
     },
     {
