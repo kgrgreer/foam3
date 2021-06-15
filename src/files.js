@@ -319,6 +319,7 @@ FOAM_FILES([
   { name: "foam/nanos/auth/Authorizer" },
   { name: "foam/nanos/auth/AccessDeniedException" },
   { name: "foam/nanos/auth/AuthenticationException" },
+  { name: "foam/nanos/auth/AuthorizationException" },
   { name: "foam/nanos/auth/AccountLockedException" },
   { name: "foam/nanos/auth/EnabledAware" },
   { name: "foam/nanos/auth/InvalidPasswordException" },
@@ -891,6 +892,7 @@ FOAM_FILES([
 
   { name: "foam/u2/view/date/AbstractDateView" },
   { name: "foam/u2/view/date/RODateView" },
+  { name: "foam/u2/view/date/ROMillisecondView" },
   { name: "foam/u2/view/date/CalendarDatePicker" },
   { name: "foam/u2/view/date/DateTimePicker" },
   { name: "foam/u2/view/date/Month" },
