@@ -8,7 +8,7 @@ foam.CLASS({
    package: 'foam.nanos.auth',
    name: 'PreventDuplicateEmailLoginService',
    extends: 'foam.nanos.auth.ProxyUserLocatorService',
-   flags: ['java']
+   flags: ['java'],
 
   documentation: 'Prevent users from logging in with duplicate email',
 
@@ -19,6 +19,9 @@ foam.CLASS({
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.User',
     'foam.nanos.theme.Theme',
+    'foam.nanos.auth.UserLocatorService',
+
+    'java.util.List',
 
     'static foam.mlang.MLang.*',
   ],
@@ -45,8 +48,8 @@ foam.CLASS({
         {
           name: 'identifier',
           type: 'String'
-        }
-        {// need this?
+        },
+        {
           name: 'password',
           class: 'String'
         }
@@ -61,7 +64,7 @@ foam.CLASS({
         List list = ((ArraySink) sink).getArray();
 
         if ( list != null ){
-          if ( list.size() == 0 ) {// list.size() < 1 ?
+          if ( list.size() == 0 ) {
             throw new AuthenticationException("User not found.");
           } else if ( list.size() > 0 ) {
             throw new AuthenticationException("Duplicate Email.");
