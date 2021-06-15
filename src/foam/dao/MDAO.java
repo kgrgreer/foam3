@@ -109,7 +109,7 @@ public class MDAO
 
 
 
-  public ArrayList<PropertyInfo> propertyInfoList_(Index index){
+  protected ArrayList<PropertyInfo> propertyInfoList_(Index index){
         ArrayList<PropertyInfo> infoList = new ArrayList<PropertyInfo>();
         var current = index;
         while ( current != null && ( current instanceof TreeIndex ) ){
@@ -119,12 +119,6 @@ public class MDAO
         return infoList;
 
   }
-  public boolean isSubSet_(ArrayList<PropertyInfo> list1 , ArrayList<PropertyInfo> list2){
-    return list2.containsAll(list1);
-  }
-
-
-
 
   public void addIndex(Index index) {
     synchronized ( writeLock_ ) {
@@ -133,7 +127,7 @@ public class MDAO
         var delegates = index_.getDelegates();
         for ( Index i : delegates ){
           var properties2 = propertyInfoList_(i);
-          if ( isSubSet_(properties,properties2) ){
+          if ( properties.containsAll(properties2) || properties2.containsAll(properties) ){
             //Logger  logger = (Logger) getX().get("logger");
             //logger.warning("redundant indexes...did not add");
             System.err.println("redundant indexes...did not add");
