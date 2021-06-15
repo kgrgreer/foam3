@@ -81,6 +81,11 @@ to run the unit tests.
 
 # Documentation
 
-# Contributing
-
-Before contributing code to FOAM, you must complete the [Google Individual Contributor License Agreement](https://cla.developers.google.com/about/google-individual?csw=1).
+## Guides
+[Contexts](doc/guides/Context.md)
+[DAOs](doc/guides/Dao.md)
+[DAO Examples](doc/guides/DaoExamples.md)
+[Easy DAO](doc/guides/EasyDao.md)
+[Enums](doc/guides/Enum.md)
+[Porting](doc/guides/Porting.md)
+[Services](doc/guides/Services.md)
