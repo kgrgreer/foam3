@@ -32,7 +32,7 @@ foam.CLASS({
   javaImports: [
     'java.util.concurrent.ThreadLocalRandom',
     'java.util.Random',
-    'java.util.UUID'
+    'foam.util.UIDGenerator'
   ],
 
   properties: [
@@ -50,6 +50,14 @@ foam.CLASS({
       javaFactory: `
 return (foam.core.PropertyInfo)(getOf().getAxiomByName(getProperty()));
       `,
+    },
+    {
+      class: 'Object',
+      name: 'uIDGenerator',
+      javaType: 'foam.util.UIDGenerator',
+      javaFactory: `
+        return new UIDGenerator();
+      `
     }
   ],
 
@@ -69,8 +77,7 @@ return (foam.core.PropertyInfo)(getOf().getAxiomByName(getProperty()));
 Object val = obj.getProperty(getProperty());
 
 if ( "".equals(val) ) {
-  Random r = ThreadLocalRandom.current();
-  getAxiom().set(obj, new UUID(r.nextLong(), r.nextLong()).toString());
+  getAxiom().set(obj, getUIDGenerator().generate());
 }
 
 return getDelegate().put_(x, obj);

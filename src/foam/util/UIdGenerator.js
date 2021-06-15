@@ -60,16 +60,18 @@ foam.CLASS({
         }
         int seqNo = getSeqNo();
         StringBuilder id = new StringBuilder(Long.toHexString(currTime));
-        int seqNoLength = (int) (Math.log(seqNo) / Math.log(16));
         if ( seqNo == 0 ) {
           id.append("00");
-        } else if ( seqNoLength % 2 == 0 ) {
-          id.append("0");
+        } else {
+          int seqNoLength = (int) (Math.log(seqNo) / Math.log(16));
+          if ( seqNoLength % 2 == 0 ) { id.append("0"); }
         }
         int seqNoAndCks = seqNo * 256 + calcChecksum(currTime, seqNo);
         id.append(Integer.toHexString(seqNoAndCks));
         setSeqNo(seqNo + 1);
-        return permutate(id);
+        //return permutate(id);
+        // TODO: permutation
+        return id.toString();
       `
     },
     {
