@@ -8,7 +8,6 @@ package foam.dao;
 
 import foam.core.Detachable;
 import foam.core.FObject;
-import foam.dao.DAO;
 import foam.lib.Outputter;
 import foam.lib.json.OutputterMode;
 import foam.lib.NetworkPropertyPredicate;
