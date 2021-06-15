@@ -369,6 +369,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.search.IntegerSearchView
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.search.IntegerSearchView.LABEL_GTE",target:"é maior que ou igual a"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.search.IntegerSearchView.LABEL_LTE",target:"é menor ou igual a"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.dialog.ConfirmationModal.CANCEL_LABEL",target:"Cancelar"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.SearchField.LABEL_SEARCH",target:"Pesquisa..."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.advanced.AdvancedFilterView.TITLE_HEADER",target:"Filtros Avançados"})
@@ -407,6 +409,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.SU
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.RESET_PASSWORD_SUBTITLE",target:"Crie uma nova senha para sua conta"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.PASSWORD_LENGTH_10_ERROR",target:"A senha deve ter pelo menos 10 caracteres"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.PASSWORD_NOT_MATCH",target:"As senhas não coincidem"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.NEW_PASSWORD.label",target:"Nova Senha"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.CONFIRMATION_PASSWORD.label",target:"Confirme a Senha"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.ResetPassword.RESET_PASSWORD.label",target:"Confirme"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.notification.Notification.model_.plural",target:"notificações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"notifications.label",target:"notificações"})
@@ -848,3 +853,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.DuplicateEmailEx
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.DuplicateEmailException.Email already in use",target:"Email já em uso"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.DuplicateUserNameException",target:"Nome de usuário duplicado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.DuplicateUserNameException.UserName already in use",target:"Nome de usuário já em uso"})
+
+// DIG Exceptions
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.AuthorizationException",target:"Autorização"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.dig.exception.DAORequiredException.DAO name required",target:"O nome DAO é obrigatório."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.dig.exception.DigSuccessMessage.{{message}}",target:"Sucesso"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.dig.exception.DAONotFoundException.DAO not found: {{message}}",target:"DAO não encontrado: {{daoName}}"})

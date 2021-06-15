@@ -65,3 +65,11 @@ X is now renamed __context__
 
 Y is now renamed __subContext__
 
+# Porting from FOAM2 to FOAM3
+
+See: [Changes From FOAM2](/wiki/Changes-From-FOAM2)
+
+Convert function() {/* multi-line string here */} style multi-line strings to ES6 style `multi-line strings`.
+
+Methods which were previously deprecated (mostly in U2) have now been removed.
+

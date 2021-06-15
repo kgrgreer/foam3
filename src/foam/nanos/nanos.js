@@ -16,6 +16,7 @@ FOAM_FILES([
   { name: "foam/nanos/logger/NotificationLogMessageDAO" },
   { name: "foam/nanos/logger/RepeatLogMessageDAO" },
   { name: "foam/nanos/logger/StdoutLoggerDAO" },
+  { name: 'foam/nanos/logger/benchmark/LoggerBenchmark' },
   { name: 'foam/nanos/fs/File' },
   { name: 'foam/nanos/fs/FileType' },
   { name: 'foam/nanos/fs/FileProperty' },
@@ -62,6 +63,7 @@ FOAM_FILES([
   { name: 'foam/nanos/auth/AccountLockedException' },
   { name: 'foam/nanos/auth/AccountDisabledException' },
   { name: 'foam/nanos/auth/AuthenticationException' },
+  { name: 'foam/nanos/auth/AuthorizationException' },
   { name: "foam/nanos/auth/DeletedAware" },
   { name: "foam/nanos/auth/DeletedAwareDAOTest" },
   { name: 'foam/nanos/auth/DuplicateEmailException' },
@@ -394,7 +396,8 @@ FOAM_FILES([
   { name: 'foam/nanos/ticket/SummaryCard' },
 
   // Dig
-  { name: "foam/nanos/dig/exception/DigErrorMessage" },
+  { name: 'foam/nanos/dig/exception/DigErrorMessage' },
+  { name: 'foam/nanos/dig/exception/DAORequiredException' },
   { name: 'foam/nanos/dig/Argument'},
   { name: 'foam/nanos/dig/ResultView' },
   { name: 'foam/nanos/dig/DIG' },
