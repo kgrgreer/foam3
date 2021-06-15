@@ -23,7 +23,7 @@ foam.CLASS({
 
     'java.util.List',
 
-    'static foam.mlang.MLang.*',
+    'static foam.mlang.MLang.*'
   ],
 
   properties: [
@@ -66,11 +66,11 @@ foam.CLASS({
         if ( list != null ){
           if ( list.size() == 0 ) {
             throw new AuthenticationException("User not found.");
-          } else if ( list.size() > 0 ) {
+          } else if ( list.size() > 1 ) {
             throw new AuthenticationException("Duplicate Email.");
           }
         }
-        return user;
+        return (User) list.get(0);
       `
     }
   ]
