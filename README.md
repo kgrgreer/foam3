@@ -102,8 +102,8 @@ to run the unit tests.
 - [Services](doc/guides/Services.md)
 
 ## Cheatsheets
-- [Short Form](https://docs.google.com/document/d/1P4fsQgacCoXOyzZMMujSriXPBvFFSBW4GjQSfvD6mJs/pub)
-- [Long Form](https://docs.google.com/document/u/1/d/1HIL69h9kuzwgsrzRSBhvNYzihISX4wdE8bfdToNAZ34/pub)
+- [Short Form](https://docs.google.com/document/d/1IUH4jveNk5eidFiXr-m76mYOAdPMA5TngF-wgN4zFvM/edit?usp=sharing)
+- [Long Form](https://docs.google.com/document/d/1XnxtQ_B6D1SWo2FSh8UkWq1euElBLONBVBCo6cPueL4/edit?usp=sharing)
 
 ## Tutorials
 - [TODO](http://foam-framework.github.io/foam/tutorial/todo/0-intro/)
