@@ -892,6 +892,7 @@ FOAM_FILES([
 
   { name: "foam/u2/view/date/AbstractDateView" },
   { name: "foam/u2/view/date/RODateView" },
+  { name: "foam/u2/view/date/ROMillisecondView" },
   { name: "foam/u2/view/date/CalendarDatePicker" },
   { name: "foam/u2/view/date/DateTimePicker" },
   { name: "foam/u2/view/date/Month" },
