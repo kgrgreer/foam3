@@ -101,6 +101,10 @@ to run the unit tests.
 - [Porting](doc/guides/Porting.md)
 - [Services](doc/guides/Services.md)
 
+## Cheatsheets
+- [Short Form](https://docs.google.com/document/d/1P4fsQgacCoXOyzZMMujSriXPBvFFSBW4GjQSfvD6mJs/pub)
+- [Long Form](https://docs.google.com/document/u/1/d/1HIL69h9kuzwgsrzRSBhvNYzihISX4wdE8bfdToNAZ34/pub)
+
 ## Tutorials
 - [TODO](http://foam-framework.github.io/foam/tutorial/todo/0-intro/)
 - [PhoneCat](http://foam-framework.github.io/foam/tutorial/phonecat/0-intro/)
