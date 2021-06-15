@@ -7,7 +7,7 @@
  foam.CLASS({
   package: 'foam.nanos.approval',
   name: 'ApprovalRequest',
-  plural: 'ApprovalRequests',
+  plural: 'Approval Requests',
   documentation: 'Approval requests are stored in approvalRequestDAO and' +
   'represent a single approval request for a single user.',
 
@@ -980,7 +980,7 @@
       ],
       code: function(X) {
         var objToAdd = X.objectSummaryView ? X.objectSummaryView : X.summaryView;
-        objToAdd.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
+        objToAdd.tag({
           class: "foam.u2.PropertyModal",
           property: this.ASSIGNED_TO.clone().copyFrom({ label: '' }),
           isModalRequired: true,
@@ -988,7 +988,7 @@
           propertyData$: X.data.assignedTo$,
           title: this.ASSIGN_TITLE,
           onExecute: this.assignRequest.bind(this, X)
-        }));
+        });
       }
     },
     {
@@ -1138,6 +1138,20 @@
           this.notify(e.message, '', this.LogLevel.ERROR, true);
         });
       }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  name: 'RefineEasyCrunchWizard',
+  refines: 'foam.u2.crunch.EasyCrunchWizard',
+
+  properties: [
+    {
+      name: 'approval',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.approval.ApprovalRequest'
     }
   ]
 });

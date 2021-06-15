@@ -159,10 +159,12 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      var self = this;
-
+      var self    = this;
       var hasTabs = false;
-      self.start().addClass(self.myClass('title')).add(self.title$).end();
+
+      if ( this.title ) {
+        self.start().addClass(self.myClass('title')).add(self.title$).end();
+      }
 
       this.add(this.slot(function(of, properties, actions) {
         if ( ! of ) return '';

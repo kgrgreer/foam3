@@ -7,6 +7,7 @@
 foam.CLASS({
   package: 'foam.u2.crunch',
   name: 'EasyCrunchWizard',
+
   requires: [
     'foam.u2.crunch.wizardflow.SkipGrantedAgent',
     'foam.u2.crunch.wizardflow.SkipMode',
@@ -34,6 +35,19 @@ foam.CLASS({
     {
       name: 'incrementalWizard',
       class: 'Boolean'
+    },
+    {
+      class: 'String',
+      name: 'view',
+      value: 'foam.nanos.crunch.ui.UCJView'
+    },
+    {
+      class: 'Boolean',
+      name: 'rejectOnInvalidatedSave'
+    },
+    {
+      class: 'Boolean',
+      name: 'requireAll'
     }
   ],
 
@@ -42,6 +56,8 @@ foam.CLASS({
       var config = this.StepWizardConfig.create({
         allowSkipping: this.allowSkipping,
         allowBacktracking: this.allowBacktracking,
+        rejectOnInvalidatedSave: this.rejectOnInvalidatedSave,
+        requireAll: this.requireAll,
         ...(this.incrementalWizard ? {
           wizardView: { class: 'foam.u2.wizard.IncrementalStepWizardView' }
         } : {})

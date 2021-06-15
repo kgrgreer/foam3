@@ -59,6 +59,7 @@ FOAM_FILES([
   { name: "foam/core/Proxy" },
   { name: "foam/core/Latch" },
   { name: "foam/core/Lock" },
+  { name: "foam/core/CountingSemaphore" },
   { name: "foam/core/Promised" },
   { name: "foam/core/Interface" },
   { name: "foam/core/Type" },
@@ -193,7 +194,6 @@ FOAM_FILES([
   { name: "foam/web/URLState", flags: ['web'] },
   { name: "lib/input", flags: ['web'] },
   { name: "foam/box/Remote" },
-  { name: 'foam/u2/ConfirmationModal', flags: ['web'] },
   { name: 'foam/u2/DeleteModal', flags: ['web'] },
   { name: 'foam/u2/EasyModal', flags: ['web'] },
   { name: 'foam/u2/MemoModal', flags: ['web'] },
@@ -308,6 +308,7 @@ FOAM_FILES([
   { name: "foam/dao/SyncDAO" },
 
   { name: 'foam/nanos/approval/AuthenticatedApprovalDAOAuthorizer' },
+  { name: 'foam/nanos/approval/UCJApprovable' },
 
   { name: 'foam/nanos/alarming/AddAlarmNameDAO' },
   { name: "foam/nanos/approval/ApprovalRequestNotificationNotificationCitationView", flags: ['web'] },
@@ -318,6 +319,7 @@ FOAM_FILES([
   { name: "foam/nanos/auth/Authorizer" },
   { name: "foam/nanos/auth/AccessDeniedException" },
   { name: "foam/nanos/auth/AuthenticationException" },
+  { name: "foam/nanos/auth/AuthorizationException" },
   { name: "foam/nanos/auth/AccountLockedException" },
   { name: "foam/nanos/auth/EnabledAware" },
   { name: "foam/nanos/auth/InvalidPasswordException" },
@@ -483,7 +485,6 @@ FOAM_FILES([
 
   { name: "foam/nanos/menu/DAOMenu2" },
   { name: "foam/nanos/menu/MenuToolBar" },
-
   { name: "foam/box/LogBox" },
   { name: "foam/box/MultiDelegateBox" },
   { name: "foam/box/BroadcastBox" },
@@ -631,6 +632,8 @@ FOAM_FILES([
   { name: "foam/u2/view/StrategizerChoiceView" },
   { name: "foam/u2/tag/Card", flags: ['web'] },
   { name: "foam/u2/dialog/Popup", flags: ['web'] },
+  { name: "foam/u2/dialog/StyledModal", flags: ['web'] },
+  { name: "foam/u2/dialog/ConfirmationModal", flags: ['web'] },
   { name: "foam/u2/Dialog", flags: ['web'] },
   { name: "foam/u2/dialog/NotificationMessage", flags: ['web'] },
   { name: "foam/u2/dialog/InlineNotificationMessage", flags: ['web'] },
@@ -670,6 +673,7 @@ FOAM_FILES([
   { name: "foam/u2/crunch/wizardflow/CapabilityAdaptAgent", flags: ['web'] },
   { name: "foam/u2/crunch/wizardflow/CheckRootIdAgent", flags: ['web'] },
   { name: "foam/u2/crunch/wizardflow/CheckPendingAgent", flags: ['web'] },
+  { name: "foam/u2/crunch/wizardflow/GrantedEditAgent", flags: ['web'] },
   { name: "foam/u2/crunch/wizardflow/CheckNoDataAgent", flags: ['web'] },
   { name: "foam/u2/crunch/wizardflow/LoadCapabilitiesAgent", flags: ['web'] },
   { name: "foam/u2/crunch/wizardflow/CreateWizardletsAgent", flags: ['web'] },
@@ -888,6 +892,7 @@ FOAM_FILES([
 
   { name: "foam/u2/view/date/AbstractDateView" },
   { name: "foam/u2/view/date/RODateView" },
+  { name: "foam/u2/view/date/ROMillisecondView" },
   { name: "foam/u2/view/date/CalendarDatePicker" },
   { name: "foam/u2/view/date/DateTimePicker" },
   { name: "foam/u2/view/date/Month" },

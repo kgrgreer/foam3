@@ -44,20 +44,20 @@ foam.CLASS({
         'releaseVelocity',
         'duration'
       ],
-      swiftExpression: function() {/*
+      swiftExpression: `
 return MIDINoteMessage(
     channel: UInt8(channel),
     note: UInt8(note),
     velocity: UInt8(velocity),
     releaseVelocity: UInt8(releaseVelocity),
     duration: Float32(duration))
-      */},
+      `,
     },
   ],
   actions: [
     {
       name: 'play',
-      swiftCode: function() {/*
+      swiftCode: `
 // Creating the sequence
 
 var sequence: MusicSequence? = nil
@@ -80,7 +80,7 @@ _ = NewMusicPlayer(&musicPlayer)
 
 _ = MusicPlayerSetSequence(musicPlayer!, sequence!)
 _ = MusicPlayerStart(musicPlayer!)
-      */},
+     `,
     },
   ],
 });

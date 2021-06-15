@@ -63,7 +63,9 @@ foam.CLASS({
 
     ^browse-view-container {
       box-sizing: border-box;
-      padding: 0 16px 20px 16px;
+      height: 100%;
+      margin-bottom: 20px;
+      padding: 0 16px;
       overflow: hidden;
     }
 
@@ -259,6 +261,8 @@ foam.CLASS({
 
       this
         .add(this.slot(function(config$cannedQueries, config$hideQueryBar, searchFilterDAO) {
+
+          // to manage memento imports for filter view (if any)
           if ( self.config.searchMode === self.SearchMode.SIMPLE ) {
             var simpleSearch = foam.u2.ViewSpec.createView(self.SimpleSearch, {
               showCount: false,

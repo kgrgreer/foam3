@@ -311,7 +311,7 @@ foam.CLASS({
       this.allColumns = ! view.of ? [] : [].concat(
         asyncRes.map(a => a.name),
         view.of.getAxiomsByClass(foam.core.Action)
-        .map(a => a.name)
+        .map(a => a.name).filter( a => view.of.getAxiomByName('tableColumns').columns.includes(a))
       );
 
       this.columns$.sub(this.updateColumns_);
@@ -528,7 +528,7 @@ foam.CLASS({
 
             var propertyNamesToQuery = view.columnHandler.returnPropNamesToQuery(view.props);
             var valPromises = view.returnRecords(view.of, proxy, propertyNamesToQuery, canObjBeBuildFromProjection);
-            var nastedPropertyNamesAndItsIndexes = view.columnHandler.buildArrayOfNestedPropertyNamesAndCorrespondingIndexesInArray(propertyNamesToQuery);
+            var nastedPropertyNamesAndItsIndexes = view.columnHandler.buildArrayOfNestedPropertyNamesAndCorrespondingIndexesInArrayOfValues(propertyNamesToQuery);
 
             var tbodyElement = this.E();
             tbodyElement.style({

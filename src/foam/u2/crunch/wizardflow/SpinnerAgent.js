@@ -26,12 +26,12 @@ foam.CLASS({
 
   requires: [
     'foam.u2.LoadingSpinner',
-    'foam.u2.dialog.Popup'
+    'foam.u2.dialog.StyledModal'
   ],
 
   methods: [
     async function execute() {
-      var popup = this.Popup.create({
+      var popup = this.StyledModal.create({
         closeable: false,
         isStyled: false
       })

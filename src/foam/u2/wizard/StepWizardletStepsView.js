@@ -148,6 +148,10 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.u2.wizard.WizardletSearchController',
       name: 'searchController'
+    },
+    {
+      class: 'Array',
+      name: 'stepElements'
     }
   ],
 
@@ -175,6 +179,7 @@ foam.CLASS({
 
           let afterCurrent = false;
 
+          this.stepElements = [];
           for ( let w = 0 ; w < data$wizardlets.length ; w++ ) {
             let wizardlet = this.data.wizardlets[w];
             let isCurrent = wizardlet === this.data.currentWizardlet;
@@ -189,6 +194,8 @@ foam.CLASS({
 
             elem = elem
               .start()
+                .call(function () { self.stepElements.push(this) })
+                .setAttribute('data-wizardlet', wizardlet.id)
                 .addClass(self.myClass('item'))
                 .addClass(wizardlet.isHidden$.map(v => v && self.myClass('hide')))
                 .add(this.ExpressionSlot.create({
@@ -288,16 +295,17 @@ foam.CLASS({
       isFramed: true,
       code: async function() {
         var el    = await this.parentNode.el();
-        let currI = 0;
-        for ( let w = 0 ; w < this.data.wizardlets.length ; w++ ) {
-          let wizardlet = this.data.wizardlets[w];
-          if ( wizardlet === this.data.currentWizardlet ) {
-            currI = Math.max(w - 1, 0);
+
+        var currChild = null;
+        for ( let node of this.stepElements ) {
+          if ( node.getAttribute('data-wizardlet') == this.data.currentWizardlet.id ) {
+            currChild = node;
+            break;
           }
         }
-
         var firstChild = await this.childNodes[0].childNodes[0].el();
-        var currChild  = await this.childNodes[0].childNodes[currI].el();
+        currChild = await currChild.el();
+
         var padding    = firstChild.offsetTop;
         var scrollTop  = currChild.offsetTop;
         el.scrollTop   = scrollTop - padding;

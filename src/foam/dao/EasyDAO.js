@@ -25,14 +25,14 @@ foam.CLASS({
     'foam.nanos.boot.NSpecAware'
   ],
 
-  documentation: function() {/*
+  documentation: `
     Facade for easily creating decorated DAOs.
     <p>
     Most DAOs are most easily created and configured with EasyDAO.
     Simply require foam.dao.EasyDAO and create() with the flags
     to indicate what behavior you're looking for. Under the hood, EasyDAO
     will create one or more DAO instances to service your requirements and then
-  */},
+  `,
 
   requires: [
     'foam.box.Context',

@@ -7,6 +7,7 @@
  foam.CLASS({
   package: 'foam.nanos.google.api.sheets',
   name: 'GoogleSheetsDataImportServiceImpl',
+  documentation: 'Service to import data from google sheets to DAO',
   implements: [
     'foam.nanos.google.api.sheets.GoogleSheetsDataImportService'
   ],
