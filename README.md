@@ -82,10 +82,10 @@ to run the unit tests.
 # Documentation
 
 ## Videos
-- [https://www.youtube.com/watch?v=S4LbUv5FsGQ](Short Intro)
-- [https://www.youtube.com/watch?v=n699DWb2TUs](Medium Intro)
-- [https://www.youtube.com/watch?v=PsFLlgrzn2E](Long Intro)
-- [https://www.youtube.com/watch?v=-fbq-_H6Lf4](Reactive Programming in FOAM)
+- [Short Intro](https://www.youtube.com/watch?v=S4LbUv5FsGQ)
+- [Medium Intro](https://www.youtube.com/watch?v=n699DWb2TUs)
+- [Long Intro](https://www.youtube.com/watch?v=PsFLlgrzn2E)
+- [Reactive Programming in FOAM](https://www.youtube.com/watch?v=-fbq-_H6Lf4)
 - []()
 - []()
 - []()
