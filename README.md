@@ -82,10 +82,10 @@ to run the unit tests.
 # Documentation
 
 ## Guides
-[Contexts](doc/guides/Context.md)
-[DAOs](doc/guides/Dao.md)
-[DAO Examples](doc/guides/DaoExamples.md)
-[Easy DAO](doc/guides/EasyDao.md)
-[Enums](doc/guides/Enum.md)
-[Porting](doc/guides/Porting.md)
-[Services](doc/guides/Services.md)
+- [Contexts](doc/guides/Context.md)
+- [DAOs](doc/guides/Dao.md)
+- [DAO Examples](doc/guides/DaoExamples.md)
+- [Easy DAO](doc/guides/EasyDao.md)
+- [Enums](doc/guides/Enum.md)
+- [Porting](doc/guides/Porting.md)
+- [Services](doc/guides/Services.md)
