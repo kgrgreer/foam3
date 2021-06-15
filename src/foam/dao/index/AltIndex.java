@@ -143,4 +143,9 @@ public class AltIndex
     Object[] s = (Object[]) state;
     return s.length > 0 ? delegates_.get(0).size(s[0]) : 0;
   }
+
+
+  public ArrayList<Index> getDelegates() {
+    return this.delegates_;
+  }
 }

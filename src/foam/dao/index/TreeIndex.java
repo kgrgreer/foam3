@@ -18,23 +18,24 @@ import java.util.Arrays;
 public class TreeIndex
   extends AbstractIndex
 {
-  protected Index        tail_;
+  protected Index tail_;
   protected PropertyInfo prop_;
-  protected long         selectCount_;
+  protected long selectCount_;
+
 
   public TreeIndex(PropertyInfo prop) {
     this(prop, ValueIndex.instance());
   }
 
   public TreeIndex(PropertyInfo prop, Index tail) {
-    prop_        = prop;
+    prop_ = prop;
     selectCount_ = 0;
-    tail_        = tail;
+    tail_ = tail;
   }
 
   public Object bulkLoad(FObject[] a) {
     Arrays.sort(a);
-    return TreeNode.getNullNode().bulkLoad(tail_, prop_, 0, a.length-1, a);
+    return TreeNode.getNullNode().bulkLoad(tail_, prop_, 0, a.length - 1, a);
   }
 
   /**
@@ -154,8 +155,8 @@ public class TreeIndex
 
       // We return a groupByPlan only if no order, no limit, no skip, no predicate
       if ( sink instanceof GroupBy
-          && ((GroupBy) sink).getArg1().toString().equals(prop_.toString())
-          && order == null && skip == 0 && limit == AbstractDAO.MAX_SAFE_INTEGER )
+        && ((GroupBy) sink).getArg1().toString().equals(prop_.toString())
+        && order == null && skip == 0 && limit == AbstractDAO.MAX_SAFE_INTEGER )
       {
         return new GroupByPlan(state, sink, predicate, prop_, tail_);
       }
@@ -167,4 +168,13 @@ public class TreeIndex
   public long size(Object state) {
     return ((TreeNode) state).size;
   }
+
+
+  public Index getTail() {
+    return this.tail_;
+  }
+
+ public PropertyInfo getProp(){
+    return this.prop_;
+ }
 }

@@ -23,7 +23,7 @@ import java.util.Set;
  The MDAO class for an ordering, fast lookup, single value,
  index multiplexer, or any other MDAO select() assistance class.
 
- The assitance class TreeIndex implements the
+ The assistance class TreeIndex implements the
  data nodes that hold the indexed items and plan and execute
  queries. For any particular operational Index, there may be
  many IndexNode instances:
@@ -107,11 +107,44 @@ public class MDAO
     index_ = new AltIndex(new TreeIndex((PropertyInfo) this.of_.getAxiomByName("id")));
   }
 
+
+
+  public ArrayList<PropertyInfo> propertyInfoList_(Index index){
+        ArrayList<PropertyInfo> infoList = new ArrayList<PropertyInfo>();
+        var current = index;
+        while ( current != null && ( current instanceof TreeIndex ) ){
+          infoList.add(((TreeIndex)current).getProp());
+          current = ((TreeIndex)current).getTail();
+        }
+        return infoList;
+
+  }
+  public boolean isSubSet_(ArrayList<PropertyInfo> list1 , ArrayList<PropertyInfo> list2){
+    return list2.containsAll(list1);
+  }
+
+
+
+
   public void addIndex(Index index) {
     synchronized ( writeLock_ ) {
+      if ( index instanceof TreeIndex ){
+        var properties = propertyInfoList_(index);
+        var delegates = index_.getDelegates();
+        for ( Index i : delegates ){
+          var properties2 = propertyInfoList_(i);
+          if ( isSubSet_(properties,properties2) ){
+            //Logger  logger = (Logger) getX().get("logger");
+            //logger.warning("redundant indexes...did not add");
+            System.err.println("redundant indexes...did not add");
+            return;
+          }
+        }
+      }
       state_ = index_.addIndex(state_, index);
     }
-  }
+    }
+
 
   /** Add an Index which is for a unique value. Use addIndex() if the index is not unique. **/
   public void addUniqueIndex(PropertyInfo... props) {
