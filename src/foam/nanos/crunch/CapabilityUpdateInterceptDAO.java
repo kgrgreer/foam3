@@ -79,7 +79,7 @@ public class CapabilityUpdateInterceptDAO extends ProxyDAO {
       try {
         final var oldObj = super.find_(x, obj.getProperty("id"));
 
-        var props = getOf().getAxiomsByClass(PropertyInfo.class).stream()
+        final var props = getOf().getAxiomsByClass(PropertyInfo.class).stream()
           .filter((prop) -> propMap.containsKey(prop))
           .filter((prop) -> prop.get(obj) != null && ! prop.get(obj).equals(prop.get(oldObj)))
           .collect(Collectors.toList());
@@ -89,15 +89,15 @@ public class CapabilityUpdateInterceptDAO extends ProxyDAO {
           if ( data == null )
             throw new RuntimeException("UCJ " + capability + " for " + obj.getProperty("id") + " doesn't contain data element");
 
-          var newData = data.fclone();
+          final var newData = data.fclone();
 
-          for ( var prop : props ) {
+          for ( final var prop : props ) {
             apply(prop, obj, newData);
             prop.set(obj, prop.get(oldObj));
           }
 
-          var user = (User) ((DAO)x.get("bareUserDAO")).find(obj.getProperty("id"));
-          var crunchService = (CrunchService) x.get("crunchService");
+          final var user = (User) ((DAO)x.get("bareUserDAO")).find(obj.getProperty("id"));
+          final var crunchService = (CrunchService) x.get("crunchService");
           crunchService.updateJunctionFor(x, capability, newData, ucj.getStatus(), user, user);
         }
       } catch(Exception e) {
