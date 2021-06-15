@@ -319,6 +319,7 @@ FOAM_FILES([
   { name: "foam/nanos/auth/Authorizer" },
   { name: "foam/nanos/auth/AccessDeniedException" },
   { name: "foam/nanos/auth/AuthenticationException" },
+  { name: "foam/nanos/auth/AuthorizationException" },
   { name: "foam/nanos/auth/AccountLockedException" },
   { name: "foam/nanos/auth/EnabledAware" },
   { name: "foam/nanos/auth/InvalidPasswordException" },

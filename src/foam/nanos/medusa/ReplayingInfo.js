@@ -145,6 +145,9 @@ foam.CLASS({
       },
       visibility: 'RO',
       javaGetter: `
+      if ( getIndex() == 0 ) {
+        return "0";
+      }
       var timeElapsed = 1L;
       if ( getStartTime() != null ) {
         var end = getEndTime();
