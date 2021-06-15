@@ -81,6 +81,18 @@ to run the unit tests.
 
 # Documentation
 
+## Videos
+- [https://www.youtube.com/watch?v=S4LbUv5FsGQ](Short Intro)
+- [https://www.youtube.com/watch?v=n699DWb2TUs](Medium Intro)
+- [https://www.youtube.com/watch?v=PsFLlgrzn2E](Long Intro)
+- [https://www.youtube.com/watch?v=-fbq-_H6Lf4](Reactive Programming in FOAM)
+- []()
+- []()
+- []()
+- []()
+- []()
+- []()
+
 ## Guides
 - [Contexts](doc/guides/Context.md)
 - [DAOs](doc/guides/Dao.md)
