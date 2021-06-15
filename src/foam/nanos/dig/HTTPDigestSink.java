@@ -65,6 +65,14 @@ public class HTTPDigestSink extends AbstractSink {
         conn.addRequestProperty("Accept", "application/xml");
         conn.addRequestProperty("Content-Type", "application/xml");
       }
+      // add hashed payload-digest to request headers
+      String payload = outputter.stringify((FObject) obj);
+      MessageDigest md = MessageDigest.getInstance(dugDigestConfig_.getAlgorithm());
+      md.update(dugDigestConfig_.getSecretKey().getBytes(StandardCharsets.UTF_8));
+      md.update(payload.getBytes(StandardCharsets.UTF_8));
+      String hash = byte2Hex(md.digest());
+      conn.addRequestProperty("payload-digest", hash);
+      
       conn.connect();
 
       try (OutputStream os = conn.getOutputStream()) {
@@ -73,14 +81,6 @@ public class HTTPDigestSink extends AbstractSink {
           writer.flush();
         }
       }
-
-      // add hashed payload-digest to request headers
-      String payload = outputter.stringify((FObject) obj);
-      MessageDigest md = MessageDigest.getInstance(dugDigestConfig_.getAlgorithm());
-      md.update(dugDigestConfig_.getSecretKey().getBytes(StandardCharsets.UTF_8));
-      md.update(payload.getBytes(StandardCharsets.UTF_8));
-      String hash = byte2Hex(md.digest());
-      conn.addRequestProperty("payload-digest", hash);
 
       // check response code
       int code = conn.getResponseCode();
