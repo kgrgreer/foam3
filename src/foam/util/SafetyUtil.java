@@ -211,7 +211,7 @@ public class SafetyUtil {
    */
   public static <T> boolean isSubSet(List<T> l1, List<T> l2) {
     if ( l1 == null || l2 == null ) return false;
-    return l1.containsAll(l2);
+    return l2.containsAll(l1);
   }
 
   public static boolean isEmpty(String s) {
