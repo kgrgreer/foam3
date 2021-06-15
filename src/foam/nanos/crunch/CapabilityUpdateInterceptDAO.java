@@ -48,6 +48,8 @@ public class CapabilityUpdateInterceptDAO extends ProxyDAO {
 
     if ( dstProp != null )
       dstProp.set(dst, prop.get(src));
+    else
+      getLogger().warning("Destination property not found for " + prop.getName() + " for capability " + capability);
 
     return dst;
   }
@@ -101,7 +103,7 @@ public class CapabilityUpdateInterceptDAO extends ProxyDAO {
           crunchService.updateJunctionFor(x, capability, newData, ucj.getStatus(), user, user);
         }
       } catch(Exception e) {
-        getLogger().log(e);
+        getLogger().error(e);
       }
     }
 
