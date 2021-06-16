@@ -42,7 +42,6 @@ foam.CLASS({
       ],
       javaCode: `
           foam.core.X x = getX();
-          Logger logger = (Logger) getX().get("logger");
           UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
           if ( ucj.getStatus() == CapabilityJunctionStatus.GRANTED ) {
             Capability c = (Capability) getCapabilityDAO().find(ucj.getTargetId());
@@ -54,6 +53,7 @@ foam.CLASS({
                return true;
               }
             } else if ( c == null ) {
+              Logger logger = (Logger) getX().get("logger");
               logger.warning(this.getClass().getSimpleName(), "capabilityCheck", "targetId not found", ucj);
             }
           }
