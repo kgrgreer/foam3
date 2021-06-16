@@ -107,7 +107,7 @@ to run the unit tests.
 
 ## Tutorials
 - [TODO](http://foam-framework.github.io/foam/tutorial/todo/0-intro/) (undergoing updates)
-- [PhoneCat](http://foam-framework.github.io/foam/tutorial/phonecat/0-intro/) (undergoing updates)
+- [PhoneCat](https://github.com/kgrgreer/foam3/blob/development/tutorial/phonecat/0-intro.md)
 
 ## Demos
 - [FOAM1 Demo Catalog](http://foam-framework.github.io/foam/foam/demos/DemoCat.html)
