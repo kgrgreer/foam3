@@ -192,18 +192,22 @@ Later themes:
       if ( user != null ) {
         DAO groupDAO = (DAO) x.get("groupDAO");
         Group group = user.findGroup(x);
+        var defaultMenu = group.getDefaultMenu();
         while ( group != null ) {
           Theme groupTheme = group.findTheme(x);
           if ( groupTheme != null ) {
             theme = (Theme) theme.fclone().copyFrom(groupTheme);
-            if ( ! SafetyUtil.isEmpty(group.getDefaultMenu()) ) {
-              theme.setDefaultMenu(group.getDefaultMenu());
-              theme.setLogoRedirect(group.getDefaultMenu());
-            }
             break;
           }
           group = (Group) groupDAO.find(group.getParent());
         }
+
+        // Use default menu from user group if present
+        if ( ! SafetyUtil.isEmpty(defaultMenu) ) {
+          theme.setDefaultMenu(defaultMenu);
+          theme.setLogoRedirect(defaultMenu);
+        }
+
         Theme userTheme = user.findTheme(x);
         if ( userTheme != null ) {
           theme = (Theme) theme.fclone().copyFrom(userTheme);
