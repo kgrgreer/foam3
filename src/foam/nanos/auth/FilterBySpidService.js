@@ -10,7 +10,7 @@ foam.CLASS({
    extends: 'foam.nanos.auth.ProxyUserLocatorService',
    flags: ['java'],
 
-  documentation: `Restrict login.....`,
+  documentation: `Restrict login to the url that matches the spid of the user.`,
 
 
   javaImports: [
@@ -61,8 +61,8 @@ foam.CLASS({
               EQ(User.SPID, getSuperSpid())
             ));
 
-        if ( user != null ){
-          throw new AuthenticationException("User not found.");
+        if ( user == null ){
+          throw new AuthenticationException("User not found_test.");
         }
         return user;
       `
