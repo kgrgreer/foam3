@@ -63,6 +63,8 @@ foam.CLASS({
 
     ^browse-view-container {
       box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
       height: 100%;
       margin-bottom: 20px;
       padding: 0 16px;
