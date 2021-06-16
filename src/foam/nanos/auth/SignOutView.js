@@ -31,15 +31,13 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
+      this.window.location.hash = 'empty';
       this.window.location.hash = '';
-      // Not sure why timeout is required
-      this.setTimeout(() => {
-        this.auth.logout().then(() => {
-          this.window.location.hash = '';
-          localStorage.removeItem('defaultSession');
-          this.window.location.reload();
-        });
-      }, 500);
+      this.auth.logout().then(() => {
+        this.window.location.hash = '';
+        localStorage.removeItem('defaultSession');
+        this.window.location.reload();
+      });
     }
   ]
 });
