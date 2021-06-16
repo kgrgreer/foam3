@@ -30,19 +30,24 @@ public class ExpireUserCapabilityJunctionsCron implements ContextAgent {
     userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
     Date today = new Date();
 
+    // Find all junctions that are past the expiration date and filter by the following
+    //    - If ucj is still GRANTED and not in grace period, it needs to be returned 
+    //      and reput such that it is either in graceperiod (if applicable) or expired
+    //    - if ucj is in grace period, and the graceperiod is less than or equals to 0 days left
+    //    - return the ucj and reput it in EXPIRED status
     List<UserCapabilityJunction> activeJunctions = ((ArraySink) userCapabilityJunctionDAO
-      .where(OR(
+      .where(
         AND(
-          EQ(UserCapabilityJunction.IS_IN_GRACE_PERIOD, true),
-          LTE(UserCapabilityJunction.GRACE_PERIOD, 0)
-        ),
-        AND(
-          OR(
-            EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED)
-          ),
           NEQ(UserCapabilityJunction.EXPIRY, null),
-          LT(UserCapabilityJunction.EXPIRY, today)
-        )
+          LT(UserCapabilityJunction.EXPIRY, today),
+          OR(
+            AND(
+              EQ(UserCapabilityJunction.IS_IN_GRACE_PERIOD, true),
+              LTE(UserCapabilityJunction.GRACE_PERIOD, 0)),
+            AND(
+              EQ(UserCapabilityJunction.IS_IN_GRACE_PERIOD, false),
+              EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED))
+          )
       ))
       .select(new ArraySink()))
       .getArray();
