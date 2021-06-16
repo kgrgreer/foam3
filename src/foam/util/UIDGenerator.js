@@ -10,10 +10,9 @@ foam.CLASS({
   flags: ['java'],
 
   javaImports: [
-    'java.util.concurrent.ThreadLocalRandom',
-    'java.util.List',
     'java.util.Arrays',
-    'java.util.Random'
+    'java.util.concurrent.ThreadLocalRandom',
+    'java.util.List'
   ],
 
   properties: [
