@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.pm',
   name: 'PMTableView',
-  extends: 'foam.u2.view.TableView',
+  extends: 'foam.u2.view.ScrollTableView',
 
   documentation: 'TableView for displaying PMInfos.',
 
@@ -17,14 +17,19 @@ foam.CLASS({
 
   exports: [ 'maxTotalTime', 'as tableView' ],
 
-  // Keep standard TableView styling
-  constants: { CSS_CLASS: 'foam-u2-view-TableView' },
-
   css: `
     ^ { overflow: auto; }
-    ^ .foam-u2-ActionView-clearAll { margin-bottom: 10px; }
+    ^container > .foam-u2-ActionView-clearAll { 
+      margin: 0 10px 10px 0;
+      align-self: flex-start;
+    }
     ^ .foam-u2-ActionView-create { display: none; }
     ^ .foam-u2-ActionView-edit   { display: none; }
+    ^container{
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
   `,
 
   properties: [
@@ -46,7 +51,7 @@ foam.CLASS({
       // is broken if loaded before any tableviews
       this.TableView.create();
 
-      this.addClass('foam-nanos-pm-PMTableView');
+      this.addClass(this.myClass('container'));
       this.startContext({data: this}).add(this.CLEAR_ALL).endContext();
       // this.columns.push([this.CLEAR, null]);
 
