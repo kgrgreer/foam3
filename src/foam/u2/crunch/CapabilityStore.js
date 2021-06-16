@@ -393,7 +393,8 @@ foam.CLASS({
             addedFirstItem = true;
             sectionElement
               .addClass(this.myClass('category'))
-              .start('h3').add(this.EDITABLE).end()
+              // TODO: uncomment when UCJs are editable again
+              // .start('h3').add(this.EDITABLE).end()
           }
           grid = grid
             .start(self.GUnit, { columns: 4 })
