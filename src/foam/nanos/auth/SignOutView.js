@@ -24,18 +24,22 @@ foam.CLASS({
 
   imports: [
     'auth',
+    'setTimeout',
     'window'
   ],
 
   methods: [
     function initE() {
       this.SUPER();
-      var self = this;
       this.window.location.hash = '';
-      this.auth.logout().then(function() {
-        localStorage.removeItem('defaultSession');
-        self.window.location.reload();
-      });
+      // Not sure why timeout is required
+      this.setTimeout(() => {
+        this.auth.logout().then(() => {
+          this.window.location.hash = '';
+          localStorage.removeItem('defaultSession');
+          this.window.location.reload();
+        });
+      }, 500);
     }
   ]
 });
