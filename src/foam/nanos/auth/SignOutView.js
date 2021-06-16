@@ -31,9 +31,9 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+      this.window.location.hash = '';
       this.auth.logout().then(function() {
         localStorage.removeItem('defaultSession');
-        self.window.location.hash = '';
         self.window.location.reload();
       });
     }
