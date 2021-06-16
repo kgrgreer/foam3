@@ -14,7 +14,7 @@ foam.CLASS({
   methods: [
     {
       name: 'parse',
-      swiftCode: function() {/*
+      swiftCode: `
 var ps = ps!
 var n: [Character] = []
 var decimalFound = false
@@ -54,7 +54,7 @@ while ps.valid() {
 if !decimalFound { return nil }
 
 return ps.setValue(n.count > 0 ? Float(String(n)) : nil)
-      */},
+      `,
     },
   ]
 });

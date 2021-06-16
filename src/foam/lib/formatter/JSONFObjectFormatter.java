@@ -64,14 +64,29 @@ public class JSONFObjectFormatter
     }
   };
 
+  // if set to true, then produces "name":"kristina", otherwise name:"kristina"
   protected boolean quoteKeys_                       = false;
+
+  // if set to true and property has a short name, uses that as a key: fn:"kristina", otherwise: firstName:"kristina"
   protected boolean outputShortNames_                = false;
+
+  // if set to true, outputs properties and their default values that were not explicitly set
   protected boolean outputDefaultValues_             = false;
+
+  // if set to true, appends escaped new line character
   protected boolean multiLineOutput_                 = false;
+
+  // when set to true check whether the object of the same class as dao.of, if so doesn't output top level classname
   protected boolean outputClassNames_                = true;
+
+  // if set to true formats dates into readable date format otherwise outputs in milliseconds
   protected boolean outputReadableDates_             = false;
+
+  // when set to true and property is an FObjectProperty, checks whether property value matches specified class.
+  // if matches then doesn't output the class name, otherwise(if a subclasss or interface implementation) outputs.
+  // TODO: should be combined with outputClassNames_?
   protected boolean outputDefaultClassNames_         = true;
-  protected boolean calculateDeltaForNestedFObjects_ = true;
+
 
   public JSONFObjectFormatter(X x) {
     super(x);
@@ -184,13 +199,13 @@ public class JSONFObjectFormatter
     p.formatJSON(this, o);
   }
 
-  protected boolean maybeOutPutFObjectProperty(FObject newFObject, FObject oldFObject, PropertyInfo prop) {
+  protected boolean maybeOutputFObjectProperty(FObject newFObject, FObject oldFObject, PropertyInfo prop) {
     if ( prop instanceof AbstractFObjectPropertyInfo && oldFObject != null &&
       prop.get(oldFObject) != null && prop.get(newFObject) != null
     ) {
       String before = builder().toString();
       reset();
-      if ( maybeOutputDelta(((FObject)prop.get(oldFObject)), ((FObject)prop.get(newFObject))) ) {
+      if ( maybeOutputDelta(((FObject)prop.get(oldFObject)), ((FObject)prop.get(newFObject)), prop, null) ) {
         String after = builder().toString();
         reset();
         append(before);
@@ -308,10 +323,14 @@ public class JSONFObjectFormatter
 
   public void outputReadableDate(Date date) {
     if ( date != null ) {
-      output(timestamper_.get().createTimestamp(date.getTime()));
+      outputReadableDate(date.getTime());
     } else {
       output("null");
     }
+  }
+
+  public void outputReadableDate(Long time) {
+    output(timestamper_.get().createTimestamp(time));
   }
 
   protected boolean maybeOutputProperty(FObject fo, PropertyInfo prop, boolean includeComma) {
@@ -330,14 +349,10 @@ public class JSONFObjectFormatter
     return true;
   }
 
-  public boolean maybeOutputDelta(FObject oldFObject, FObject newFObject) {
-    return maybeOutputDelta(oldFObject, newFObject, null);
-  }
-
-  public boolean maybeOutputDelta(FObject oldFObject, FObject newFObject, ClassInfo defaultClass) {
+  public boolean maybeOutputDelta(FObject oldFObject, FObject newFObject, PropertyInfo parentProp, ClassInfo defaultClass) {
     ClassInfo newInfo   = newFObject.getClassInfo();
     String    of        = newInfo.getObjClass().getSimpleName().toLowerCase();
-    List      axioms    = getProperties(newInfo);
+    List      axioms    = getProperties(parentProp, newInfo);
     int       size      = axioms.size();
     int       delta     = 0;
     int       ids       = 0;
@@ -352,15 +367,11 @@ public class JSONFObjectFormatter
           append(',');
           addInnerNewline();
         }
-        if ( calculateDeltaForNestedFObjects_ ) {
-          if (maybeOutPutFObjectProperty(newFObject, oldFObject, prop)) delta += 1;
-        } else {
-          outputProperty(newFObject, prop);
-          delta += 1;
-        }
+        if ( maybeOutputFObjectProperty(newFObject, oldFObject, prop) ) delta += 1;
 
-
-        if ( prop.includeInID() ) {
+        if ( parentProp == null &&
+             prop.includeInID() ) {
+          // IDs only relevant on root objects
           ids += 1;
         } else if ( optionalPredicate_.propertyPredicateCheck(getX(), of, prop) ) {
           optional += 1;
@@ -410,22 +421,24 @@ public class JSONFObjectFormatter
   }
   */
 
-  public void output(FObject[] arr, ClassInfo defaultClass) {
-    output(arr);
-  }
-
-  public void output(FObject[] arr) {
-
+  public void output(FObject[] arr, ClassInfo defaultClass, PropertyInfo parentProp) {
     append('[');
     for ( int i = 0 ; i < arr.length ; i++ ) {
-      output(arr[i]);
+      output(arr[i], defaultClass, parentProp);
       if ( i < arr.length - 1 ) append(',');
     }
     append(']');
+  }
 
+  public void output(FObject o) {
+    output(o, null, null);
   }
 
   public void output(FObject o, ClassInfo defaultClass) {
+    output(o, defaultClass, null);
+  }
+
+  public void output(FObject o, ClassInfo defaultClass, PropertyInfo parentProp) {
     ClassInfo info = o.getClassInfo();
 
     boolean outputClass = outputClassNames_ || ( outputDefaultClassNames_ && info != defaultClass );
@@ -439,7 +452,7 @@ public class JSONFObjectFormatter
     }
     boolean outputComma = outputClass;
 
-    List axioms = getProperties(info);
+    List axioms = getProperties(parentProp, info);
     int  size   = axioms.size();
     for ( int i = 0 ; i < size ; i++ ) {
       PropertyInfo prop = (PropertyInfo) axioms.get(i);
@@ -447,10 +460,6 @@ public class JSONFObjectFormatter
     }
     addInnerNewline();
     append('}');
-  }
-
-  public void output(FObject o) {
-    output(o, null);
   }
 
   public void output(PropertyInfo prop) {
@@ -508,11 +517,6 @@ public class JSONFObjectFormatter
 
   public JSONFObjectFormatter setQuoteKeys(boolean quoteKeys) {
     quoteKeys_ = quoteKeys;
-    return this;
-  }
-
-  public JSONFObjectFormatter setCalculateNestedDelta(boolean calculateNestedDelta) {
-    calculateDeltaForNestedFObjects_ = calculateNestedDelta;
     return this;
   }
 

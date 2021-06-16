@@ -15,7 +15,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'approvableDAO'
+    'userCapabilityJunctionApprovableDAO'
   ],
 
   requires: [
@@ -48,7 +48,7 @@ foam.CLASS({
         }
         var { ucj, approvable } = await this.getUcjAndApprovable_(wizardlet);
         this.updateApprovable_(wizardlet, ucj, approvable);
-        approvable = await this.approvableDAO.put(approvable);
+        approvable = await this.userCapabilityJunctionApprovableDAO.put(approvable);
         ucj = this.applyApprovalToUCJ_(approvable, ucj);
         if ( wizardlet.reloadAfterSave && options.reloadData ) {
           wizardlet.loadingLevel = this.LoadingLevel.IDLE;
@@ -68,8 +68,9 @@ foam.CLASS({
       ) : await this.crunchService.getJunction(
         null, wizardlet.capability.id
       );
-      let approvable = (await this.approvableDAO.where(this.EQ(
-        this.Approvable.OBJ_ID, ucj.id
+      let approvable = (await this.userCapabilityJunctionApprovableDAO.where(this.AND(
+        this.EQ(this.Approvable.OBJ_ID, ucj.id),
+        this.EQ(this.Approvable.STATUS, this.ApprovalStatus.REQUESTED)
       )).select()).array[0];
       if ( ! approvable ) approvable = this.createApprovable_(ucj);
       return { ucj: ucj, approvable: approvable };
@@ -78,7 +79,10 @@ foam.CLASS({
       return this.Approvable.create({
         id: foam.uuid.randomGUID(),
         daoKey: 'userCapabilityJunctionDAO',
-        objId: ucj.id
+        serverDaoKey: 'userCapabilityJunctionDAO',
+        of: 'foam.nanos.crunch.UserCapabilityJunction',
+        objId: ucj.id,
+        operation: 'UPDATE'
       });
     },
     function updateApprovable_(wizardlet, ucj, approvable) {

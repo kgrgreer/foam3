@@ -277,6 +277,7 @@ foam.CLASS({
   `,
 
   methods: [
+    function el() {},
     function output(out) {},
     function load() {},
     function unload() {},
@@ -316,6 +317,12 @@ foam.CLASS({
   axioms: [ foam.pattern.Singleton.create() ],
 
   methods: [
+    function el() {
+      var self = this;
+      return new Promise(function(resolve, reject) {
+        self.sub('onload', () => resolve(self.el_()));
+      });
+    },
     function output(out) {
       this.initE();
       this.state = this.OUTPUT;
@@ -335,6 +342,12 @@ foam.CLASS({
   documentation: 'State of Element after it has been output to DOM, but not yet loaded.',
 
   methods: [
+    function el() {
+      var self = this;
+      return new Promise(function(resolve, reject) {
+        self.sub('onload', () => resolve(self.el_()));
+      });
+    },
     function output(out) {
       // TODO: raise a real error
       this.__context__.warn('ERROR: Duplicate output.');
@@ -343,8 +356,8 @@ foam.CLASS({
     function load() {
       if ( this.hasOwnProperty('elListeners') ) {
         var ls = this.elListeners;
-        for ( var i = 0 ; i < ls.length ; i += 2 ) {
-          this.addEventListener_(ls[i], ls[i+1]);
+        for ( var i = 0 ; i < ls.length ; i += 3 ) {
+          this.addEventListener_(ls[i], ls[i+1], ls[i+2] || false);
         }
       }
 
@@ -352,7 +365,7 @@ foam.CLASS({
       this.state = this.LOADED;
       if ( this.tabIndex ) this.setAttribute('tabindex', this.tabIndex);
       // Add a delay before setting the focus in case the DOM isn't visible yet.
-      if ( this.focused ) window.setTimeout(() => { try { this.el().focus(); } catch(x) {} }, 70);
+      if ( this.focused ) this.el().then(el => el.focus());
       // Allows you to take the DOM element and map it back to a
       // foam.u2.Element object.  This is expensive when building
       // lots of DOM since it adds an extra DOM call per Element.
@@ -369,14 +382,14 @@ foam.CLASS({
       this.visitChildren('unload');
       this.detach();
     },
-    function onSetClass(cls, enabled) { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onFocus(cls, enabled) { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onAddListener(topic, listener) { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onRemoveListener(topic, listener) { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onSetStyle(key, value) { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onSetAttr(key, value) { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onRemoveAttr(key) { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onAddChildren(c) { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onSetClass() { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onFocus() { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onAddListener() { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onRemoveListener() { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onSetStyle() { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onSetAttr() { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onRemoveAttr() { throw new Error('Mutations not allowed in OUTPUT state.'); },
+    function onAddChildren() { throw new Error('Mutations not allowed in OUTPUT state.'); },
     function onInsertChildren() { throw new Error('Mutations not allowed in OUTPUT state.'); },
     function onReplaceChild() { throw new Error('Mutations not allowed in OUTPUT state.'); },
     function onRemoveChild() { throw new Error('Mutations not allowed in OUTPUT state.'); },
@@ -393,6 +406,10 @@ foam.CLASS({
   documentation: 'State of an Element after it has been output to the DOM and loaded.',
 
   methods: [
+    function el() {
+      return Promise.resolve(this.el_());
+    },
+
     function output(out) {
       this.__context__.warn('Duplicate output.');
       return this.UNLOADED.output.call(this, out);
@@ -400,7 +417,7 @@ foam.CLASS({
     function load() { this.__console__.warn('Duplicate load.'); },
     function unload() {
       if ( ! this.parentNode || this.parentNode.state === this.LOADED ) {
-        var e = this.el();
+        var e = this.el_();
         if ( e ) e.remove();
       }
 
@@ -410,7 +427,7 @@ foam.CLASS({
     },
     function onRemove() { this.unload(); },
     function onSetClass(cls, enabled) {
-      var e = this.el();
+      var e = this.el_();
       if ( e ) {
         e.classList[enabled ? 'add' : 'remove'](cls);
       } else {
@@ -418,33 +435,33 @@ foam.CLASS({
       }
     },
     function onFocus() {
-      this.el().focus();
+      this.el_().focus();
     },
-    function onAddListener(topic, listener) {
-      this.addEventListener_(topic, listener);
+    function onAddListener(topic, listener, opt_args) {
+      this.addEventListener_(topic, listener, opt_args);
     },
     function onRemoveListener(topic, listener) {
       this.addRemoveListener_(topic, listener);
     },
     function onSetStyle(key, value) {
-      this.el().style[key] = value;
+      this.el_().style[key] = value;
     },
     function onSetAttr(key, value) {
       if ( this.PSEDO_ATTRIBUTES[key] ) {
-        this.el()[key] = value;
+        this.el_()[key] = value;
       } else {
-        this.el().setAttribute(key, value === true ? '' : value);
+        this.el_().setAttribute(key, value === true ? '' : value);
       }
     },
     function onRemoveAttr(key) {
       if ( this.PSEDO_ATTRIBUTES[key] ) {
-        this.el()[key] = '';
+        this.el_()[key] = '';
       } else {
-        this.el().removeAttribute(key);
+        this.el_().removeAttribute(key);
       }
     },
     function onAddChildren() {
-      var e = this.el();
+      var e = this.el_();
       if ( ! e ) {
         this.__context__.warn('Missing Element: ', this.id);
         return;
@@ -459,7 +476,7 @@ foam.CLASS({
       }
     },
     function onInsertChildren(children, reference, where) {
-      var e = this.el();
+      var e = this.el_();
       if ( ! e ) {
         this.__context__.warn('Missing Element: ', this.id);
         return;
@@ -469,7 +486,7 @@ foam.CLASS({
         out(children[i]);
       }
 
-      reference.el().insertAdjacentHTML(where, out);
+      reference.el_().insertAdjacentHTML(where, out);
 
       // EXPERIMENTAL:
       // TODO(kgr): This causes some elements to get stuck in OUTPUT state
@@ -483,25 +500,25 @@ foam.CLASS({
       // }, 33);
     },
     function onReplaceChild(oldE, newE) {
-      var e = this.el();
+      var e = this.el_();
       if ( ! e ) {
         this.__context__.warn('Missing Element: ', this.id);
         return;
       }
       var out = this.createOutputStream();
       out(newE);
-      oldE.el().outerHTML = out.toString();
+      oldE.el_().outerHTML = out.toString();
       newE.load && newE.load();
     },
     function onRemoveChild(child, index) {
       if ( typeof child === 'string' ) {
-        this.el().childNodes[index].remove();
+        this.el_().childNodes[index].remove();
       } else {
         child.remove();
       }
     },
     function getBoundingClientRect() {
-      return this.el().getBoundingClientRect();
+      return this.el_().getBoundingClientRect();
     },
     function toString() { return 'LOADED'; }
   ]
@@ -516,6 +533,10 @@ foam.CLASS({
   documentation: 'State of an unloaded Element.',
 
   methods: [
+    function el() {
+      // A NOOP Promise that will never resolve
+      return { then: function() {}, catch: function() {} };
+    },
     function output(out) {
       this.__context__.warn('Outputting unloaded element can cause event/binding bugs.', this.cls_.id);
       this.state = this.OUTPUT;
@@ -1046,18 +1067,18 @@ foam.CLASS({
       this.initKeyboardShortcuts();
     },
 
-    function observeScrollHeight() {
+    async function observeScrollHeight() {
       // TODO: This should be handled by an onsub event when someone subscribes to
       // scroll height changes.
       var self = this;
-      var observer = new MutationObserver(function(mutations) {
-        self.scrollHeight = self.el().scrollHeight;
+      var observer = new MutationObserver(async function(mutations) {
+        var el = await self.el();
+        self.scrollHeight = el.scrollHeight;
       });
       var config = { attributes: true, childList: true, characterData: true };
 
-      this.onload.sub(function(s) {
-        observer.observe(self.el(), config);
-      });
+      var e = await this.el();
+      observer.observe(e, config);
       this.onunload.sub(function(s) {
         observer.disconnect()
       });
@@ -1150,15 +1171,13 @@ foam.CLASS({
       }
     },
 
-    function el() {
-      /* Return this Element's real DOM element, if loaded. */
-      // Caching this call doesn't appear to help performance.
+    function el_() {
       return this.getElementById(this.id);
     },
 
     function findChildForEvent(e) {
       var src  = e.srcElement;
-      var el   = this.el();
+      var el   = this.el_();
       var cMap = {};
       var cs   = this.children;
 
@@ -1343,8 +1362,8 @@ foam.CLASS({
     function getAttribute(name) {
       // TODO: add support for other dynamic attributes also
       // TODO: don't lookup in real DOM if listener present
-      if ( this.PSEDO_ATTRIBUTES[name] && this.el() ) {
-        var value = this.el()[name];
+      if ( this.PSEDO_ATTRIBUTES[name] && this.el_() ) {
+        var value = this.el_()[name];
         var attr  = this.getAttributeNode(name);
 
         if ( attr ) {
@@ -1426,19 +1445,19 @@ foam.CLASS({
       }
     },
 
-    function addEventListener(topic, listener) {
+    function addEventListener(topic, listener, opt_args) {
       /* Add DOM listener. */
-      this.elListeners.push(topic, listener);
-      this.onAddListener(topic, listener);
+      this.elListeners.push(topic, listener, opt_args);
+      this.onAddListener(topic, listener, opt_args);
     },
 
     function removeEventListener(topic, listener) {
       /* Remove DOM listener. */
       var ls = this.elListeners;
-      for ( var i = 0 ; i < ls.length ; i+=2 ) {
+      for ( var i = 0 ; i < ls.length ; i += 3 ) {
         var t = ls[i], l = ls[i+1];
         if ( t === topic && l === listener ) {
-          ls.splice(i, 2);
+          ls.splice(i, 3);
           this.onRemoveListener(topic, listener);
           return;
         }
@@ -1531,9 +1550,9 @@ foam.CLASS({
       return this;
     },
 
-    function on(topic, listener) {
+    function on(topic, listener, opt_args) {
       /* Shorter fluent version of addEventListener. Prefered method. */
-      this.addEventListener(topic, listener);
+      this.addEventListener(topic, listener, opt_args);
       return this;
     },
 
@@ -2067,13 +2086,14 @@ foam.CLASS({
       return e;
     },
 
-    function addEventListener_(topic, listener) {
-      var el = this.el();
-      el && el.addEventListener(topic, listener, false);
+    function addEventListener_(topic, listener, opt_args) {
+      var el = this.el_();
+      el && el.addEventListener(topic, listener, opt_args || false);
     },
 
     function removeEventListener_(topic, listener) {
-      this.el() && this.el().removeEventListener(topic, listener);
+      var el = this.el_();
+      el && el.removeEventListener(topic, listener);
     },
 
     function output_(out) {
@@ -2143,11 +2163,11 @@ foam.CLASS({
   listeners: [
     {
       name: 'onKeyboardShortcut',
-      documentation: function() {/*
+      documentation: `
           Automatic mapping of keyboard events to $$DOC{ref:'Action'} trigger.
           To handle keyboard shortcuts, create and attach $$DOC{ref:'Action',usePlural:true}
           to your $$DOC{ref:'foam.ui.View'}.
-      */},
+      `,
       code: function(evt) {
         if ( evt.type === 'keydown' && ! this.KEYPRESS_CODES[evt.which] ) return;
         var action = this.keyMap_[this.evtToCharCode(evt)];
@@ -2303,6 +2323,10 @@ foam.CLASS({
         The order to render the property in if rendering multiple properties.
       `,
       value: Number.MAX_SAFE_INTEGER
+    },
+    {
+      class: 'Boolean',
+      name: 'onKey'
     }
   ],
 

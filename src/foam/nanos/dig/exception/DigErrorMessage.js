@@ -25,6 +25,13 @@ foam.CLASS({
               setInner((foam.core.Exception) cause);
             }
           }
+
+          public DigErrorMessage(Throwable cause) {
+            super(cause);
+            if ( cause instanceof foam.core.Exception ) {
+              setInner((foam.core.Exception) cause);
+            }
+          }
         `
         );
       }
@@ -43,7 +50,7 @@ foam.CLASS({
       String name = this.getClass().getSimpleName();
       int i = name.indexOf("Exception");
       if ( i > 0 ) {
-        name = name.substring(0, i-1);
+        name = name.substring(0, i);
       }
       return name;
       `

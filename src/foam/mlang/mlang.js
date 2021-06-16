@@ -945,7 +945,7 @@ for ( int i = 0; i < this.args_.length; i++ ) {
       update = true;
     } else {
       args.add(newArg);
-      if ( ! arg.createStatement().equals(newArg.createStatement()) ) update = true;
+      if ( ! arg.equals(newArg) ) update = true;
     }
   }
 }
@@ -1021,12 +1021,12 @@ foam.CLASS({
         }
         return true;
       },
-      swiftCode: function() {/*
+      swiftCode: `
 for arg in args {
   if !arg.f(obj) { return false }
 }
 return true
-                             */},
+                             `,
       javaCode: 'for ( int i = 0 ; i < getArgs().length ; i++ ) {\n'
                 + '  if ( ! getArgs()[i].f(obj) ) return false;\n'
                 + '}\n'
@@ -1107,7 +1107,7 @@ for ( int i = 0; i < this.args_.length; i++ ) {
       update = true;
     } else {
       args.add(newArg);
-      if ( ! arg.createStatement().equals(newArg.createStatement()) ) update = true;
+      if ( ! arg.equals(newArg) ) update = true;
     }
   }
 }
@@ -1833,6 +1833,7 @@ foam.CLASS({
     function xxoutputJSON(os) {
       os.output(this.value);
     },
+
     function toMQL() {
       if ( this.value && foam.Date.isInstance(this.value) ) {
         var isoDateString = this.value.toISOString();

@@ -1,4 +1,4 @@
-# FOAM
+# FOAM3
 
 Build fully featured high performance apps in less time using FOAM.
 
@@ -8,9 +8,12 @@ Build fully featured high performance apps in less time using FOAM.
 
 "Fast apps Fast"
 
-[http://foamdev.com](http://foamdev.com)
+FOAM3 is the active version of FOAM.
 
-[![Build Status](https://travis-ci.org/foam-framework/foam3.svg?branch=master)](https://travis-ci.org/foam-framework/foam3)
+The FOAM1 [website](https://foam-framework.github.io/foam/) still contains many useful demos and videos (but some links may be broken).
+
+<!--
+[![Build Status](https://travis-ci.org/foam-framework/foam3.svg?branch=master)](https://travis-ci.org/foam-framework/foam3) -->
 
 ## Feature Oriented Active Modeller
 
@@ -24,7 +27,7 @@ While FOAM is written in JavaScript, it can be used to generate code
 for any language or platform, including Android Java and iOS Swift.
 
 # Development
-
+<!--
 ## Building Java
 
 cd src; ./gen.sh; cd ../build; cp ../tools/pom.xml .; mvn compile; mvn package
@@ -59,13 +62,14 @@ To access, run the following in the parent directory of foam3:
 * Run foam3/./tools/nanos.sh
 
 * Visit http://localhost:8080/src/foam/nanos/controller/index.html
+-->
 
 ## Style Guide
 
 All code should follow the [style guide.](doc/guides/StyleGuide.md)
 
 ## Testing
-
+<!--
 * _npm test_ runs standard unit tests.
 
 * _npm run testDebug_ runs the unit tests with a debugger.
@@ -76,9 +80,35 @@ For in-browser testing, run your favorite web server at the root of the FOAM
 repository. In a browser, navigate to
 [http://localhost:8000/test/browser/SpecRunner.html](http://localhost:8000/test/browser/SpecRunner.html)
 to run the unit tests.
-
+-->
 # Documentation
 
-# Contributing
+## Videos
+- [Short Intro](https://www.youtube.com/watch?v=S4LbUv5FsGQ)
+- [Medium Intro](https://www.youtube.com/watch?v=n699DWb2TUs)
+- [Long Intro](https://www.youtube.com/watch?v=PsFLlgrzn2E)
+- [Reactive Programming in FOAM](https://www.youtube.com/watch?v=-fbq-_H6Lf4)
+- [UNIX and Google](https://www.youtube.com/watch?v=3Ea3pkTCYx4)
+- [Olympic Medals Demo](https://www.youtube.com/watch?v=y9i4oW9dHHw)
+- [Turtle Graphics](https://www.youtube.com/watch?v=4wO_RrftJTE)
 
-Before contributing code to FOAM, you must complete the [Google Individual Contributor License Agreement](https://cla.developers.google.com/about/google-individual?csw=1).
+## Guides
+- [Contexts](doc/guides/Context.md)
+- [DAOs](doc/guides/Dao.md)
+- [DAO Examples](doc/guides/DaoExamples.md)
+- [Easy DAO](doc/guides/EasyDao.md)
+- [Enums](doc/guides/Enum.md)
+- [Porting](doc/guides/Porting.md)
+- [Services](doc/guides/Services.md)
+
+## Cheatsheets
+- [Short Form](https://docs.google.com/document/d/1IUH4jveNk5eidFiXr-m76mYOAdPMA5TngF-wgN4zFvM/edit?usp=sharing)
+- [Long Form](https://docs.google.com/document/d/1XnxtQ_B6D1SWo2FSh8UkWq1euElBLONBVBCo6cPueL4/edit?usp=sharing)
+
+## Tutorials
+- [TODO](http://foam-framework.github.io/foam/tutorial/todo/0-intro/) (needs to be ported to FOAM3, needs fixes, even for FOAM1)
+- [PhoneCat](https://github.com/kgrgreer/foam3/blob/development/tutorial/phonecat/0-intro.md)
+
+## Demos
+- [FOAM1 Demo Catalog](http://foam-framework.github.io/foam/foam/demos/DemoCat.html)
+- FOAM by Example

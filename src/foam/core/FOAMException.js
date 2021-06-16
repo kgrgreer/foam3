@@ -17,13 +17,15 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.PropertyInfo',
     'foam.core.XLocator',
     'foam.i18n.TranslationService',
     'foam.util.SafetyUtil',
     'java.util.HashMap',
+    'java.util.List',
     'java.util.Map'
   ],
-  
+
   axioms: [
     {
       name: 'javaExtras',
@@ -35,35 +37,37 @@ foam.CLASS({
 
   public FOAMException(String message) {
     super(message);
-    setMessage_(message);
+    setMessage(message);
     getHostname();
   }
 
   public FOAMException(String message, String errorCode) {
     super(message);
-    setMessage_(message);
+    setMessage(message);
     setErrorCode(errorCode);
     getHostname();
   }
 
   public FOAMException(Throwable cause) {
     super(cause);
-    setMessage_(cause.getMessage());
+    setMessage(cause.getMessage());
     getHostname();
   }
 
   public FOAMException(String message, Throwable cause) {
     super(message, cause);
-    setMessage_(message);
+    setMessage(message);
     getHostname();
   }
 
   public FOAMException(String message, String errorCode, Throwable cause) {
     super(message, cause);
-    setMessage_(message);
+    setMessage(message);
     setErrorCode(errorCode);
     getHostname();
   }
+
+  protected static final java.util.regex.Pattern MESSAGE_PATTERN = java.util.regex.Pattern.compile("\\\\{\\\\{.*?\\\\}\\\\}");
         `);
       }
     }
@@ -71,26 +75,28 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'id',
+      class: 'String',
+      factory: function() { return this.cls_.id; },
+      javaFactory: 'return this.getClass().getName();',
+      externalTransient: true,
+      storageTransient: true
+    },
+    {
       name: 'exceptionMessage',
       class: 'String',
-      value: '{{message_}}',
+      value: '{{message}}',
       externalTransient: true,
       visibility: 'RO'
     },
     {
-      name: 'message_',
+      name: 'message',
       class: 'String',
-      externalTransient: true,
-      visibility: 'RO'
-    },
-    {
-      name: 'msg',
-      class: 'String',
-      visibility: 'RO',
       storageTransient: true,
-      clusterTransient: true,
+      visibility: 'RO',
       javaGetter: `
-      return getMessage();
+        // Return non-translated template rendered exceptionMessage
+        return renderMessage(getExceptionMessage());
       `
     },
     {
@@ -108,28 +114,16 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'getMessage',
-      type: 'String',
-      code: function() {
-        return getTranslation();
-      },
-      javaCode: `
-      String msg = getTranslation();
-      if ( ! SafetyUtil.isEmpty(msg) ) {
-        // REVIEW: temporary - default/simple java template support not yet split out from EmailTemplateEngine.
-        foam.nanos.notification.email.EmailTemplateEngine template = new foam.nanos.notification.email.EmailTemplateEngine();
-        msg = template.renderTemplate(XLocator.get(), msg, getTemplateValues()).toString().trim();
-        return msg;
-      }
-      return getExceptionMessage();
-      `
-    },
-    {
       documentation: 'Translate the exception message before template parameter replacement.',
       name: 'getTranslation',
       type: 'String',
       code: function() {
-        return this.translationService.getTranslation(foam.locale, getOwnClassInfo().getId(), this.exceptionMessage);
+        var msg = this.translationService.getTranslation(foam.locale, this.cls_.id+'.'+this.exceptionMessage, this.exceptionMessage);
+        let m = this.getTemplateValues();
+        for ( let [key, value] of m.entries() ) {
+          msg = msg.replaceAll(key, value);
+        }
+        return msg;
       },
       javaCode: `
       try {
@@ -139,27 +133,65 @@ foam.CLASS({
           if ( SafetyUtil.isEmpty(locale) ) {
             locale = "en";
           }
-          return ts.getTranslation(locale, getClassInfo().getId(), getExceptionMessage());
+          return renderMessage(ts.getTranslation(locale, getClass().getName()+"."+getExceptionMessage(), getExceptionMessage()));
         }
       } catch (NullPointerException e) {
         // noop - Expected when not yet logged in, as XLocator is not setup.
       }
-      return null;
+      return renderMessage(getExceptionMessage());
+     `
+    },
+    {
+      documentation: 'Perform template replacement on msg. Provides server side exceptionMessage template rendering, without translation.',
+      name: 'renderMessage',
+      args: [
+        {
+          name: 'msg',
+          type: 'String'
+        }
+      ],
+      type: 'String',
+      javaCode: `
+      if ( SafetyUtil.isEmpty(msg) ) {
+        return msg;
+      }
+      try {
+        // REVIEW: temporary - default/simple java template support not yet split out from EmailTemplateEngine.
+        foam.nanos.notification.email.EmailTemplateEngine template = new foam.nanos.notification.email.EmailTemplateEngine();
+        return template.renderTemplate(foam.core.XLocator.get(), msg, getTemplateValues()).toString().trim();
+      } catch (NullPointerException e) {
+        // noop - Expected when not yet logged in, as XLocator is not setup.
+      }
+      // fallback
+      java.util.regex.Matcher matcher = MESSAGE_PATTERN.matcher(msg);
+      return matcher.replaceAll(message_ == null ? "" : message_);
       `
     },
     {
       documentation: 'Build map of template parameter replacements',
       name: 'getTemplateValues',
       type: 'Map',
+      code: function() {
+        var m = new Map();
+        var ps = this.cls_.getAxiomsByClass(foam.core.Property);
+        for ( var i = 0, property; property = ps[i]; i++ ) {
+          if ( ! property.externalTransient ) {
+            m.set('{{'+property.name+'}}', this[property.name] || '');
+          }
+        }
+        return m;
+      },
       javaCode: `
       Map map = new HashMap();
-      var props = getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
-      var i     = props.iterator();
-      while ( i.hasNext() ) {
-        foam.core.PropertyInfo prop = i.next();
-        if ( ! prop.getNetworkTransient() &&
-             ! "msg".equals(prop.getName()) ) {
-          Object value = prop.get(this);
+      List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
+      for ( PropertyInfo prop : props ) {
+        if ( prop.isSet(this) ) {
+          Object value = null;
+          if ( "message".equals(prop.getName()) ) {
+            value = message_;
+          } else {
+            value = prop.get(this);
+          }
           if ( value != null ) {
             map.put(prop.getName(), String.valueOf(value));
           }
@@ -172,24 +204,25 @@ foam.CLASS({
       name: 'toString',
       type: 'String',
       code: function() {
-        var s = '['+this.hostname+'],';
+        var s = this.id+',';
+        s += '['+this.hostname+'],';
         if ( this.errorCode ) {
           s += '('+this.errorCode+'),';
         }
-        s += this.getOwnClassInfo().getId()+',';
-        s += getMessage();
+        s += this.message;
         return s;
       },
       javaCode: `
       StringBuilder sb = new StringBuilder();
-      sb.append("["+getHostname()+"]");
-      sb.append(",");
+      sb.append(getId());
+      sb.append(",[");
+      sb.append(getHostname());
+      sb.append("],");
       if ( ! foam.util.SafetyUtil.isEmpty(getErrorCode()) ) {
-        sb.append("("+getErrorCode()+")");
-        sb.append(",");
+        sb.append('(');
+        sb.append(getErrorCode());
+        sb.append("),");
       }
-      sb.append(getClass().getName());
-      sb.append(",");
       sb.append(getMessage());
       return sb.toString();
       `

@@ -332,12 +332,13 @@ foam.CLASS({
   ],
 
   listeners: [
-    function onWizardletAvailability(wizardletIndex, value) {
-      // Force a position update so views recalculate state
-      this.wizardPosition = this.WizardPosition.create({
-        wizardletIndex: this.wizardPosition.wizardletIndex,
-        sectionIndex: this.wizardPosition.sectionIndex,
-      });
+    {
+      name: 'onWizardletAvailability',
+      framed: true,
+      code: function onWizardletAvailability(wizardletIndex, value) {
+        // Force a position update so views recalculate state
+        this.wizardPosition = this.wizardPosition.clone();
+      },
     },
     function onWizardletValidity() {
       this.allValid = this.wizardlets.filter(w => ! w.isValid).length == 0;
@@ -364,10 +365,7 @@ foam.CLASS({
       }
 
       // Force position update anyway so views recalculate state
-      this.wizardPosition = this.WizardPosition.create({
-        wizardletIndex: this.wizardPosition.wizardletIndex,
-        sectionIndex: this.wizardPosition.sectionIndex,
-      });
+      this.wizardPosition = this.wizardPosition.clone();
     }
   ]
 });

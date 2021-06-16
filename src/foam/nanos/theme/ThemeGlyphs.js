@@ -130,8 +130,8 @@ foam.CLASS({
       of: 'foam.core.Glyph',
       factory: function() {
         return { template: `
-        <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24"  viewBox="0 0 24 24" width="100%" fill="/*%FILL%*/ #ffffff"><rect fill="none" height="24" width="24"/><g><polygon points="17.77,3.77 16,2 6,12 16,22 17.77,20.23 9.54,12"/></g></svg>
-        ` };
+        <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" viewBox="0 0 24 24" width="100%" fill="/*%FILL%*/ #ffffff"><rect fill="none" height="24" width="24"/><g><polygon points="17.77,3.77 16,2 6,12 16,22 17.77,20.23 9.54,12"/></g></svg>`
+        };
       }
     },
     {
@@ -144,6 +144,14 @@ foam.CLASS({
         <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z"/>
         </svg>`
         };
+      }
+    },
+    {
+      name: 'close',
+      class: 'GlyphProperty',
+      of: 'foam.core.Glyph',
+      factory: function() {
+        return { template: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100%" fill="/*%FILL%*/ #ffffff"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M18.3 5.71c-.39-.39-1.02-.39-1.41 0L12 10.59 7.11 5.7c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41L10.59 12 5.7 16.89c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0L12 13.41l4.89 4.89c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"/></svg>'}
       }
     },
     {
@@ -216,6 +224,16 @@ foam.CLASS({
           <path d="M19,3.5 L14.82,3.5 C14.4,2.34 13.3,1.5 12,1.5 C10.7,1.5 9.6,2.34 9.18,3.5 L5,3.5 C3.9,3.5 3,4.4 3,5.5 L3,19.5 C3,20.6 3.9,21.5 5,21.5 L19,21.5 C20.1,21.5 21,20.6 21,19.5 L21,5.5 C21,4.4 20.1,3.5 19,3.5 Z M12,3.5 C12.55,3.5 13,3.95 13,4.5 C13,5.05 12.55,5.5 12,5.5 C11.45,5.5 11,5.05 11,4.5 C11,3.95 11.45,3.5 12,3.5 Z M9.29,16.79 L6.7,14.2 C6.31,13.81 6.31,13.18 6.7,12.79 C7.09,12.4 7.72,12.4 8.11,12.79 L10,14.67 L15.88,8.79 C16.27,8.4 16.9,8.4 17.29,8.79 C17.68,9.18 17.68,9.81 17.29,10.2 L10.7,16.79 C10.32,17.18 9.68,17.18 9.29,16.79 Z"></path>
         </svg>
         ` };
+      }
+    },
+    {
+      name: 'dropdown',
+      class: 'GlyphProperty',
+      of: 'foam.core.Glyph',
+      factory: () => {
+        return { template: `<svg width="10" height="6" viewBox="0 0 10 6" fill="/*%FILL%*/ #ffffff" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 0.5L5 5.5L10 0.5H0Z" /></svg>`
+        };
       }
     },
     {
