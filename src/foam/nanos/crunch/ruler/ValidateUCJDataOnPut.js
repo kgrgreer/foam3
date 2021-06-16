@@ -45,6 +45,12 @@ foam.CLASS({
 
             Capability capability = (Capability) ucj.findTargetId(systemX);
 
+            System.out.println(">>>>>>>>> VALIDATE UCJ DATA ON PUT");
+            System.out.println("ucj = " + capability.getName());
+            System.out.println("status = " + ucj.getStatus());
+            UserCapabilityJunction oldUcj = (UserCapabilityJunction) (((foam.dao.DAO) x.get("bareUserCapabilityJunctionDAO")).find(ucj.getId()));
+            System.out.println("olducj = " + (oldUcj == null ? "null" : oldUcj.getStatus()));
+
             if ( capability.getGrantMode() != CapabilityGrantMode.AUTOMATIC ) return;
             if ( ! isRenewable ) ucj.setStatus(CapabilityJunctionStatus.ACTION_REQUIRED);
 
