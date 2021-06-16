@@ -159,4 +159,10 @@ public abstract class AbstractFObjectPropertyInfo
   public int comparePropertyToValue(Object key, Object value) {
     return foam.util.SafetyUtil.compare(cast(key), cast(value));
   }
+
+  @Override
+  public boolean copyValueFrom(FObject targetObj, FObject sourceObj) {
+    var updated = ((FObject) get(sourceObj)).fclone().copyFrom((FObject) get(targetObj));
+    return ! updated.equals(get(sourceObj));
+  }
 }

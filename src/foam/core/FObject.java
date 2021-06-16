@@ -295,24 +295,14 @@ public interface FObject
     List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
     for ( PropertyInfo p : props ) {
       try {
-        if ( p.isSet(obj) ) {
-          var value = p.get(obj);
-          if ( value instanceof FObject ) {
-            value = ((FObject) p.get(this)).copyFrom((FObject) value);
-          }
-          p.set(this, value);
-        }
+        if ( p.isSet(obj) && p.copyValueFrom(obj, this) )
+          p.set(this, p.get(obj));
       } catch (ClassCastException e) {
         try {
           PropertyInfo p2 = (PropertyInfo) obj.getClassInfo().getAxiomByName(p.getName());
           if ( p2 != null ) {
-            if ( p2.isSet(obj) ) {
-              var value = p2.get(obj);
-              if ( value instanceof FObject ) {
-                value = ((FObject) p.get(this)).copyFrom((FObject) value);
-              }
-              p.set(this, value);
-            }
+            if ( p2.isSet(obj) && p.copyValueFrom(obj, this) )
+              p.set(this, p2.get(obj));
           }
         } catch (ClassCastException ignore) {}
       }
