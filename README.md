@@ -112,3 +112,10 @@ to run the unit tests.
 ## Demos
 - [FOAM1 Demo Catalog](http://foam-framework.github.io/foam/foam/demos/DemoCat.html)
 - FOAM by Example
+
+## Design Patterns
+The following course is not directly about FOAM, but covers material essential for fully understanding FOAM's design:
+
+[Introduction to Design Patterns](https://docs.google.com/presentation/d/1kcohKD0WJHJWoJshOUpVdk-Pa3oeJMt9DTl63gWt-bo/edit)
+
+Videos: [Part 1](https://www.youtube.com/watch?v=uslGu0kezeg), [Part2](https://www.youtube.com/watch?v=jzWjp_B7wE4), [Part 3](https://www.youtube.com/watch?v=yIfPa7yzYpQ)
