@@ -40,6 +40,14 @@ foam.CLASS({
       javaFactory: `
         return foam.nanos.crunch.CapabilityJunctionStatus.GRANTED;
       `
+    },
+    {
+      class: 'Boolean',
+      name: 'includeGracePeriod',
+      documentation: `
+        If status is GRANTED, determine if ucjs that are GRANTED but in gracePeriod
+        should also be included.
+      `
     }
   ],
 
@@ -66,8 +74,10 @@ foam.CLASS({
         if ( cap == null ) return false;
 
         var ucj = crunchService.getJunction(x, getCapabilityId());
-        if ( ucj == null ) return false;
-        return ucj.getStatus() == getStatus();
+        if ( ucj == null || ucj.getStatus() != getStatus() ) return false;
+        // if status being checked is GRANTED, check if we should include those that are granted but in graceperiod
+        if ( getStatus() == GRANTED && ucj.getIsInGracePeriod() ) return getIncludeGracePeriod();
+        return true;
       `
     }
   ]
