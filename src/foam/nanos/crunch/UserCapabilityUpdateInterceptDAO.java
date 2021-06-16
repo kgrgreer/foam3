@@ -25,7 +25,7 @@ import static foam.mlang.MLang.EQ;
 /**
  * Intercepts a DAO put and forwards updates to a capability
  */
-public class CapabilityUpdateInterceptDAO extends ProxyDAO {
+public class UserCapabilityUpdateInterceptDAO extends ProxyDAO {
 
   protected String capability;
   protected Map<PropertyInfo, PropertyInfo> propMap;
@@ -114,7 +114,7 @@ public class CapabilityUpdateInterceptDAO extends ProxyDAO {
    * @param propMap Properties on the source model that will be used to update the capability
    * @param capability ID of Capability that will be updated
    */
-  public CapabilityUpdateInterceptDAO(DAO dao, Map<PropertyInfo, PropertyInfo> propMap, String capability) {
+  public UserCapabilityUpdateInterceptDAO(DAO dao, Map<PropertyInfo, PropertyInfo> propMap, String capability) {
     setDelegate(dao);
     this.propMap = propMap;
     this.capability = capability;
