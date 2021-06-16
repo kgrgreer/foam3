@@ -40,6 +40,7 @@ foam.CLASS({
     'targetId',
     'status',
     'expiry',
+    'isInGracePeriod',
     'gracePeriod',
     'data'
   ],
