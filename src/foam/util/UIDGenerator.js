@@ -11,7 +11,8 @@ foam.CLASS({
 
   javaImports: [
     'java.util.concurrent.ThreadLocalRandom',
-    'java.util.ArrayList',
+    'java.util.List',
+    'java.util.Arrays',
     'java.util.Random'
   ],
 
@@ -29,18 +30,10 @@ foam.CLASS({
     {
       name: 'randInts',
       class: 'List',
-      javaType: 'ArrayList<Integer>',
+      javaType: 'List<Integer>',
       javaFactory: `
-        Random r = new Random();
-        ArrayList<Integer> randInts =  new ArrayList<>();
-        long seed = 1;
-        r.setSeed(seed);
-        int lowerbound = 12;
-        int upperbound = 30;
-        for ( int i = 0; i < upperbound; i++ )
-        {
-          randInts.add(r.nextInt(Math.max(i, lowerbound - 1)));
-        }
+        List<Integer> randInts = Arrays.asList(11, 3, 7, 9, 5, 6, 2, 8, 1, 9, 11, 10, 8, 12, 6,
+                                  14, 6, 5, 16, 3, 17, 2, 20, 18, 24, 17, 25, 3, 16, 12);
         return randInts;
       `
     }
@@ -60,13 +53,14 @@ foam.CLASS({
         }
         int seqNo = getSeqNo();
         StringBuilder id = new StringBuilder(Long.toHexString(currTime));
-        if ( seqNo == 0 ) {
-          id.append("00");
-        } else {
-          int seqNoLength = (int) (Math.log(seqNo) / Math.log(16));
-          if ( seqNoLength % 2 == 0 ) { id.append("0"); }
-        }
         int seqNoAndCks = seqNo * 256 + calcChecksum(currTime, seqNo);
+        if ( seqNoAndCks == 0 ) {
+          id.append("0000");
+        } else {
+          int l = (int) (Math.log(seqNoAndCks) / Math.log(16)) + 1;
+          if ( l <= 2 ) { id.append("00"); } 
+          if ( l % 2 != 0 ) { id.append("0"); }
+        }
         id.append(Integer.toHexString(seqNoAndCks));
         setSeqNo(seqNo + 1);
         return permutate(id);
@@ -85,7 +79,7 @@ foam.CLASS({
           checksum += currTime % 256;
           currTime = currTime / 256;
         }
-        while ( seqNo > 0) {
+        while ( seqNo > 0 ) {
           checksum += seqNo % 256;
           seqNo = seqNo / 256;
         }
@@ -103,8 +97,28 @@ foam.CLASS({
         int l = idStr.length();
         char[] id = new char[l];
         idStr.getChars(0, l, id, 0);
-        ArrayList<Integer> randInts = getRandInts();
-        for ( int i = id.length - 1; i > 0; i-- )
+        List<Integer> randInts = getRandInts();
+        for ( int i = 0 ; i < l ; i++ )
+        {
+          int newI = randInts.get(i);
+          char c = id[newI];
+          id[newI] = id[i];
+          id[i] = c;
+        }
+        return String.valueOf(id);
+      `
+    },
+    {
+      name: 'undoPermutate',
+      type: 'String',
+      args: [
+        { name: 'idStr', type: 'String' }
+      ],
+      javaCode: `
+        int l = idStr.length();
+        char[] id = idStr.toCharArray();
+        List<Integer> randInts = getRandInts();
+        for ( int i = l - 1 ; i >= 0; i-- )
         {
           int newI = randInts.get(i);
           char c = id[newI];
