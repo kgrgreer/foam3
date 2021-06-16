@@ -301,7 +301,7 @@ public interface FObject
         try {
           PropertyInfo p2 = (PropertyInfo) obj.getClassInfo().getAxiomByName(p.getName());
           if ( p2 != null ) {
-            if ( p2.isSet(obj) && p.copyValueFrom(obj, this) )
+            if ( p2.isSet(obj) && p2.copyValueFrom(obj, this) )
               p.set(this, p2.get(obj));
           }
         } catch (ClassCastException ignore) {}
