@@ -15,9 +15,10 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.User',
     'foam.nanos.theme.Theme',
-    'foam.nanos.auth.UserLocatorService',
+
     'java.util.List',
 
     'static foam.mlang.MLang.*'
@@ -56,13 +57,15 @@ foam.CLASS({
 
         User user = (User) userDAO
           .find(
-            OR(
-              EQ(User.SPID, ((Theme) x.get("theme"))),
-              EQ(User.SPID, getSuperSpid())
-            ));
+            AND(
+              EQ(User.EMAIL, identifier.toLowerCase()),
+              OR(
+                EQ(User.SPID, ((Theme) x.get("theme")).getSpid()),
+                EQ(User.SPID, getSuperSpid())
+              )));
 
         if ( user == null ){
-          throw new AuthenticationException("User not found_test.");
+          throw new AuthenticationException("User not found.");
         }
         return user;
       `

@@ -19,7 +19,6 @@ foam.CLASS({
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.User',
     'foam.nanos.theme.Theme',
-    'foam.nanos.auth.UserLocatorService',
 
     'java.util.List',
 
