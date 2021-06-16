@@ -169,7 +169,8 @@ foam.CLASS({
     },
     {
       class: 'Map',
-      name: 'headConfig'
+      name: 'headConfig',
+      javaFactory: ''
     },
     {
       class: 'Image',
