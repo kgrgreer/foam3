@@ -79,7 +79,12 @@ foam.CLASS({
       class: 'Boolean',
       value: true
     },
-    'onClose'
+    'onClose',
+    {
+      name: 'isStyled',
+      value: true,
+      documentation: 'Can be used to turn off all styling for modal container'
+    }
   ],
 
   methods: [
@@ -95,8 +100,8 @@ foam.CLASS({
         .end()
         .start()
           .call(function() { content = this; })
-          .addClass(this.myClass('inner'))
-          .style({ 'background-color': this.backgroundColor })
+          .enableClass(this.myClass('inner'), this.isStyled$)
+          .style({ 'background-color': this.isStyled ? this.backgroundColor : ''})
           .startContext({ data: this })
             .start(this.CLOSE_MODAL, { buttonStyle: 'TERTIARY' }).show(this.closeable$)
               .addClass(this.myClass('X'))
