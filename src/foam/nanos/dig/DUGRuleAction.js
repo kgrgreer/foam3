@@ -17,11 +17,13 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'foam.dao.HTTPSink',
     'foam.log.LogLevel',
     'foam.nanos.alarming.Alarm',
     'foam.nanos.alarming.AlarmReason',
+    'foam.nanos.dig.HTTPDigestSink',
     'foam.nanos.pm.PM'
   ],
 
@@ -51,21 +53,42 @@ foam.CLASS({
         @Override
         public void execute(X x) {
           PM pm = new PM(getClass(), rule.getDaoKey(), rule.getName());
+          DAO dugDigestConfigDAO = (DAO) x.get("dugDigestConfigDAO");
+          DUGDigestConfig dugDigestConfig = (DUGDigestConfig) dugDigestConfigDAO.find(rule.getSpid());
           try {
-            final var sink = new HTTPSink(
-              dugRule.getUrl(),
-              dugRule.evaluateBearerToken(),
-              dugRule.getFormat(),
-              new foam.lib.AndPropertyPredicate(
-                x,
-                new foam.lib.PropertyPredicate[] {
-                  new foam.lib.ExternalPropertyPredicate(),
-                  new foam.lib.NetworkPropertyPredicate(),
-                  new foam.lib.PermissionedPropertyPredicate()
-                }
-              ),
-              true
-            );
+            AbstractSink sink = null;
+            if ( dugDigestConfig != null && dugDigestConfig.getEnabled() ) {
+              sink = new HTTPDigestSink(
+                dugRule.getUrl(),
+                dugRule.evaluateBearerToken(),
+                dugDigestConfig,
+                dugRule.getFormat(),
+                new foam.lib.AndPropertyPredicate(
+                  x,
+                  new foam.lib.PropertyPredicate[] {
+                    new foam.lib.ExternalPropertyPredicate(),
+                    new foam.lib.NetworkPropertyPredicate(),
+                    new foam.lib.PermissionedPropertyPredicate()
+                  }
+                ),
+                true
+              );
+            } else {
+              sink = new HTTPSink(
+                dugRule.getUrl(),
+                dugRule.evaluateBearerToken(),
+                dugRule.getFormat(),
+                new foam.lib.AndPropertyPredicate(
+                  x,
+                  new foam.lib.PropertyPredicate[] {
+                    new foam.lib.ExternalPropertyPredicate(),
+                    new foam.lib.NetworkPropertyPredicate(),
+                    new foam.lib.PermissionedPropertyPredicate()
+                  }
+                ),
+                true
+              );
+            }
 
             sink.setX(x);
             sink.put(obj, null);

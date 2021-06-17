@@ -7,7 +7,7 @@
 foam.CLASS({
   package: 'foam.u2',
   name: 'PropertyModal',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.dialog.StyledModal',
 
   documentation: 'View for attaching a choice to a modal',
 
@@ -20,35 +20,13 @@ foam.CLASS({
     'foam.u2.detail.SectionedDetailPropertyView'
   ],
 
-  css: `
-    ^ {
-      border-radius: 3px;
-      background-color: #fff;
-      max-width: calc(100vw - 48px);
-      max-height: calc(100vh - 116px);
-      min-width: 20vw;
-    }
-    ^title {
-      max-width: fit-content;
-      padding: 32px 0px;
-      font-size: 1.5em;
-      font-weight: bold;
-    }
-    ^main {
-      padding: 0px 32px;
-    }
-    ^ .buttons {
-      padding: 32px;
-      box-sizing: border-box;
-      display: flex;
-      justify-content: flex-end;
-    }
-  `,
-
   messages: [
     { name: 'CONFIRM_DELETE_1', message: 'Are you sure you want to delete' },
     { name: 'SUCCESS_MSG', message: ' deleted' },
-    { name: 'FAIL_MSG', message: 'Failed to delete' }
+    { name: 'FAIL_MSG', message: 'Failed to delete' },
+    { name: 'DEFAULT_TITLE', message: 'Please fill out the following' },
+    { name: 'REQUIRED', message: 'Required' },
+    { name: 'OPTIONAL', message: 'Optional' }
   ],
 
   properties: [
@@ -57,11 +35,10 @@ foam.CLASS({
       name: 'onExecute'
     },
     {
-      class: 'String',
       name: 'title',
       expression: function(isModalRequired) {
-        if ( isModalRequired ) return 'Please fill out the following (required)';
-        return 'Please fill out the following (optional)';
+        if ( isModalRequired ) return `${this.DEFAULT_TITLE} (${this.REQUIRED})`;
+        return `${this.DEFAULT_TITLE} (${this.OPTIONAL})`;
       }
     },
     {
@@ -76,39 +53,33 @@ foam.CLASS({
       name: 'propertyData',
       attribute: true
     },
+    'data'
   ],
 
   methods: [
-    function initE() {
-      this.SUPER();
-      this
-        .addClass(this.myClass())
-        .start()
-          .addClass(this.myClass('main'))
-          .start()
-            .addClass(this.myClass('title'))
-            .add(this.title$)
-          .end()
-          .startContext({ data: this, controllerMode: this.ControllerMode.EDIT })
+    function addBody() {
+      return this.E()
+        .startContext({ controllerMode: this.ControllerMode.EDIT })
           .tag(this.SectionedDetailPropertyView, {
             prop: this.property,
             data$: this.data$
           })
-          .endContext()
-        .end()
-        .start()
-          .addClass('buttons')
-          .startContext({ data: this })
-            .tag(this.CANCEL, { buttonStyle: 'SECONDARY' })
-            .tag(this.OK)
-          .endContext()
-        .end();
+        .endContext();
+    },
+    function addActions() {
+      var actions = this.E().startContext({ data: this });
+      actions.tag(this.OK, { isDestructive: this.modalStyle == 'DESTRUCTIVE' });
+      if ( this.showCancel ) {
+        actions.tag(this.CANCEL);
+      }
+      return actions.endContext();
     }
   ],
 
   actions: [
     {
       name: 'ok',
+      buttonStyle: 'PRIMARY',
       isEnabled: (isModalRequired, propertyData) => {
         if ( ! isModalRequired ) return true;
 

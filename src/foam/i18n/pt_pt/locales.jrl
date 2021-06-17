@@ -536,6 +536,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.PropertyModal.CANCEL.lab
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.PropertyModal.CONFIRM_DELETE_1",target:"Tem certeza de que deseja excluir"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.PropertyModal.SUCCESS_MSG",target:" excluído"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.PropertyModal.FAIL_MSG",target:"Falha ao excluir"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.PropertyModal.DEFAULT_TITLE",target:"Por favor, preencha o seguinte"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.PropertyModal.REQUIRED",target:"Obrigatória"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.PropertyModal.OPTIONAL",target:"Opcional"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOBrowseControllerView.CREATE.label",target:"Crio"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOBrowseControllerView.VIEW_ALL",target:"Ver tudo "})
@@ -855,7 +858,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.DuplicateUserNam
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.DuplicateUserNameException.UserName already in use",target:"Nome de usuário já em uso"})
 
 // DIG Exceptions
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.dig.exception.AuthorizationException.You do not have permission to access the service named {{message}}",target:"Você não tem permissão para acessar o serviço chamado {{message}}"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.AuthorizationException",target:"Autorização"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.dig.exception.DAORequiredException.DAO name required",target:"O nome DAO é obrigatório."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.dig.exception.DigSuccessMessage.{{message}}",target:"Sucesso"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.dig.exception.DAONotFoundException.DAO not found: {{message}}",target:"DAO não encontrado: {{daoName}}"})

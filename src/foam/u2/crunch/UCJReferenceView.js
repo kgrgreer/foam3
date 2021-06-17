@@ -20,6 +20,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.crunch.ui.UCJView',
     'foam.u2.crunch.wizardflow.ApprovalRequestAgent',
     'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
     'foam.u2.stack.Stack',
@@ -38,43 +39,27 @@ foam.CLASS({
       factory: function () {
         return this.Stack.create();
       }
+    },
+    {
+      name: 'ucj',
+      transient: true
     }
   ],
 
   methods: [
     async function initE() {
       this
-        .addClass(this.myClass())
-        .tag(this.StackView.create({
-          data: this.localStack,
-          showActions: false
-        }));
+        .add(this.slot(function (ucj) {
+          if ( ! ucj ) return this.E();
+          return this.UCJView.create({
+            data: ucj,
+            mode: this.mode
+          });
+        }))
 
-      var ucj = (
+      this.ucj = (
         await this.userCapabilityJunctionDAO.where(this.data).select()
       ).array[0];
-      var subject = await ucj.getSubject();
-      var x = this.__subContext__.createSubContext({
-        stack: this.localStack,
-        subject: subject
-      });
-
-      this.crunchController.createWizardSequence(ucj.targetId, x)
-        .reconfigure('LoadCapabilitiesAgent', {
-          subject: subject,
-          waoSetting: this.LoadCapabilitiesAgent.WAOSetting.APPROVAL
-        })
-        .reconfigure('ConfigureFlowAgent', {
-          popupMode: false
-        })
-        .remove('LoadTopConfig')
-        .remove('RequirementsPreviewAgent')
-        .remove('SkipGrantedAgent')
-        .remove('WizardStateAgent')
-        .addAfter('SaveAllAgent', this.ApprovalRequestAgent, {
-          group: 'treviso-fraud-ops'
-        })
-        .execute();
     }
   ]
 });

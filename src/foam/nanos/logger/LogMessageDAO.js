@@ -39,8 +39,8 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
       LogMessage lm = (LogMessage) obj;
+      lm.getCreated();
       lm.setHostname(getHostname());
-      lm.setCreated(new java.util.Date());
       Subject subject = (Subject) x.get("subject");
       User user = subject.getUser();
       lm.setCreatedBy(user.getId());
