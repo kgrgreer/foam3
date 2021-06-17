@@ -251,6 +251,7 @@ foam.CLASS({
 
     ^large {
       padding: 12px 12px;
+      min-width: 100px;
     }
 
     ^iconOnly{
