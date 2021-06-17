@@ -47,12 +47,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      // Next line is a temporary hack to fix CSS loading, otherwise screen
-      // is broken if loaded before any tableviews
-      this.TableView.create();
-
       this.addClass(this.myClass('container'));
-      this.startContext({data: this}).add(this.CLEAR_ALL).endContext();
       // this.columns.push([this.CLEAR, null]);
 
       this.SUPER();

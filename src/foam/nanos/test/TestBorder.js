@@ -14,7 +14,7 @@ foam.CLASS({
   requires: ['foam.nanos.test.Test'],
 
   css: `
-    ^upper > span, ^upper .buttons .foam-u2-ActionView {
+    ^upper > span{
       margin: 0 10px 10px 0;
     }
     ^container{
@@ -24,6 +24,7 @@ foam.CLASS({
     }
     ^upper{
       flex: 0 0 0;
+      margin-bottom: 10px;
     }
   `,
 
@@ -41,12 +42,6 @@ foam.CLASS({
         .addClass(this.myClass('container'))
         .start()
           .addClass(this.myClass('upper'))
-          .start('span')
-            .addClass('buttons')
-            .startContext({ data: this })
-              .add(this.RUN_ALL, this.RUN_FAILED_TESTS)
-            .endContext()
-          .end()
           .start('span').add('Total: ', this.total$).end()
           .start('span').add('Passed: ', this.passed$).end()
           .start('span').add('Failed: ', this.failed$).end()
