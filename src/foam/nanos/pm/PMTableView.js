@@ -19,12 +19,6 @@ foam.CLASS({
 
   css: `
     ^ { overflow: auto; }
-    ^container > .foam-u2-ActionView-clearAll { 
-      margin: 0 10px 10px 0;
-      align-self: flex-start;
-    }
-    ^ .foam-u2-ActionView-create { display: none; }
-    ^ .foam-u2-ActionView-edit   { display: none; }
     ^container{
       display: flex;
       flex-direction: column;
