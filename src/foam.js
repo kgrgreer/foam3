@@ -24,6 +24,7 @@
 //  replace use of global and window with new globalThis
 //  replace all use of 'global' in foam with globalThis
 //  remove support for workers
+//  case-specific setting of flags (HTTP parameters or command-line)
 
 (function() {
 
