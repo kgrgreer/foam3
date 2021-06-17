@@ -2420,9 +2420,10 @@ foam.CLASS({
   flags: ['java'],
   properties: [
     [ 'javaCompare',       '' ],
-    [ 'javaCloneProperty', null ]
+    [ 'javaCloneProperty', 'set(dest, get(source));' ]
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.java',
