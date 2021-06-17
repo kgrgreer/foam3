@@ -203,7 +203,7 @@ foam.CLASS({
           });
         });
         this.isLoading = false;
-        return options;
+        return options.sort();
       }
     },
     {
