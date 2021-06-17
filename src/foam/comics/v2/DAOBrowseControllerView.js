@@ -74,7 +74,8 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'VIEW_ALL', message: 'View all ' }
+    { name: 'VIEW_ALL', message: 'View all ' },
+    { name: 'ACTIONS', message: 'Actions' }
   ],
 
   properties: [
@@ -175,7 +176,7 @@ foam.CLASS({
                     .callIf( config.browseActions != [] && config.browseContext, function() {
                       if ( config.browseActions.length > 2 ) {
                         this.start(self.OverlayActionListView, {
-                          label: 'Actions',
+                          label: this.ACTIONS,
                           data: config.browseActions,
                           obj: config$browseContext
                         }).addClass(self.myClass('buttons')).end();
