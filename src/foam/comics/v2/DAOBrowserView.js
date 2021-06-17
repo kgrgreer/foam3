@@ -63,6 +63,8 @@ foam.CLASS({
 
     ^browse-view-container {
       box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
       height: 100%;
       margin-bottom: 20px;
       padding: 0 16px;
@@ -284,7 +286,11 @@ foam.CLASS({
             data: self.predicatedDAO$proxy,
             config: self.config
           },  this, filterView.__subContext__.createSubContext());
-          
+
+          if ( ! self.config.browseContext ) {
+            self.config.browseContext = summaryView;
+          }
+
           return self.E()
             .start(self.Rows)
             .style({ height: '100%', 'justify-content': 'flex-start' })
