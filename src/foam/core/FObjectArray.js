@@ -80,10 +80,13 @@ foam.CLASS({
         // If not an array, allow assertValue to assert the type-check.
         if ( ! Array.isArray(a) ) return a;
 
+        var anyChange = false;
         var b = new Array(a.length);
         for ( var i = 0 ; i < a.length ; i++ ) {
           b[i] = prop.adaptArrayElement(a[i], this);
+          if ( a[i] != b[i] ) anyChange = true;
         }
+        if ( ! anyChange ) return a;
         return b;
       }
     ],

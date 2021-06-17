@@ -15,10 +15,10 @@ foam.CLASS({
       name: 'view',
       swiftType: 'UIButton',
       swiftFactory: 'return UIButton()',
-      swiftPostSet: function() {/*
+      swiftPostSet: `
 newValue.addTarget(self, action: #selector(onButtonClick), for: .touchUpInside)
 newValue.setTitle(self.action?.label, for: .normal)
-      */},
+      `,
     },
     {
       class: 'FObjectProperty',
@@ -38,12 +38,12 @@ newValue.setTitle(self.action?.label, for: .normal)
   methods: [
     {
       name: 'onButtonClick',
-      swiftCode: function() {/*
+      swiftCode: `
 if dismissKeyboardOnTap {
   UIApplication.shared.keyWindow?.rootViewController?.view.endEditing(true)
 }
 if fobj != nil { _ = try? action?.call(fobj!) }
-      */},
+      `,
       swiftAnnotations: ['@objc'],
     },
   ],

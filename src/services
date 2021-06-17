@@ -64,6 +64,9 @@ p({
     auth = new foam.nanos.auth.twofactor.TwoFactorAuthService.Builder(x)
       .setDelegate(auth)
       .build();
+    auth = new foam.nanos.auth.ResetSpidBeforeLoginAuthService.Builder(x)
+      .setDelegate(auth)
+      .build();
     auth = new foam.nanos.auth.SystemAuthService.Builder(x)
       .setDelegate(auth)
       .build();
@@ -303,6 +306,7 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name" :"menuDAO",
   "serve" :true,
+  "authenticate": false,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
@@ -424,6 +428,28 @@ p({
     .build();
   """,
   "client":"{\"of\":\"foam.nanos.dig.DIG\",\"decorators\": [{\"class\":\"foam.nanos.fs.FileDAODecorator\"},{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"dugDigestConfigDAO",
+  "serve":true,
+  "serviceScript":
+  """
+  return new foam.dao.EasyDAO.Builder(x)
+    .setPm(true)
+    .setGuid(true)
+    .setOf(foam.nanos.dig.DUGDigestConfig.getOwnClassInfo())
+    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+    .setJournalName("dugDigestConfigs")
+    .build();
+  """,
+  "client":
+  """
+    {
+      "of":"foam.nanos.dig.DUGDigestConfig"
+    }
+  """
 })
 
 p({"class":"foam.nanos.boot.NSpec", "name":"demoObjectDAO",                      "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"demoObjects\").setGuid(true).setOf(foam.nanos.demo.DemoObject.getOwnClassInfo()).build();", "client":"{\"of\":\"foam.nanos.demo.DemoObject\", \"remoteListenerSupport\": false}"})

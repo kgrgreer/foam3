@@ -176,11 +176,21 @@ foam.CLASS({
       name: 'willReject',
       documentation: `
         Used to put submit button in confirmationRequired mode and change the
-        button test from 'Done' to 'Reject' when in approvalMode and the wizard
-        has at least on invalid wizardlet.
+        submit button label from 'Done' to 'Reject' when rejectOnInvalidatedSave is true
+        and the wizard has at least one invalid wizardlet.
       `,
-      expression: function( data$config$approvalMode, data$allValid ) {
-        return data$config$approvalMode && ! data$allValid;
+      expression: function( data$config$rejectOnInvalidatedSave, data$allValid ) {
+        return data$config$rejectOnInvalidatedSave && ! data$allValid;
+      }
+    },
+    {
+      name: 'primaryLabel',
+      documentation: 'Used to switch to the appropriate label for the primary action',
+      expression: function(hasAction, willReject, willSave) {
+        if ( willReject ) return this.REJECT_LABEL;
+        if ( hasAction ) return this.ACTION_LABEL;
+        if ( willSave ) return this.SAVE_LABEL;
+        return this.NO_ACTION_LABEL;
       }
     }
   ],
@@ -246,12 +256,7 @@ foam.CLASS({
                 .addClass(this.myClass('actions'))
                 .startContext({ data: self })
                   .tag(this.SUBMIT, {
-                    label: this.slot(function(hasAction, willReject, willSave) {
-                      if ( willReject ) return this.REJECT_LABEL;
-                      if ( hasAction ) return this.ACTION_LABEL;
-                      if ( willSave ) return this.SAVE_LABEL;
-                      return this.NO_ACTION_LABEL;
-                    }),
+                    label$: this.primaryLabel$,
                     buttonStyle: 'PRIMARY'
                   })
                 .endContext()
@@ -341,6 +346,9 @@ foam.CLASS({
       isEnabled: function (data$config, data$allValid, data$someFailures) {
         if ( data$someFailures ) return false;
         return ! data$config.requireAll || data$allValid;
+      },
+      isAvailable: function (mode) {
+        return mode == foam.u2.DisplayMode.RW;
       },
       code: function (x) {
         for ( let w of this.data.wizardlets ) {

@@ -4,9 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-const { contains } = require("underscore");
-
- foam.CLASS({
+foam.CLASS({
   package: 'foam.u2.tag',
   name: 'Button',
   extends: 'foam.u2.View',
@@ -202,10 +200,10 @@ const { contains } = require("underscore");
     ^tertiary-destructive{
       background-color: transparent;
       border-color: transparent;
-      color: /*%DESTRUCTIVE5%*/ #a61414;   
+      color: /*%DESTRUCTIVE3%*/ #D9170E;   
     }
 
-    ^tertiary-destructive svg { fill: /*%DESTRUCTIVE5%*/ #a61414; }
+    ^tertiary-destructive svg { fill: /*%DESTRUCTIVE3%*/ #D9170E; }
 
     ^tertiary-destructive:hover:not(:disabled) {
       background-color: /*%GREY5%*/ #F5F7FA;

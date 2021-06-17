@@ -36,3 +36,6 @@ p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.tx.model.Transaction
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.model.Business.model_.plural",target:"Businesses"})
 p({class:"foam.i18n.Locale",locale:"en",source:"foam.nanos.auth.User.model_.plural",target:"Users"})
 p({class:"foam.i18n.Locale",locale:"en",source:"foam.nanos.approval.ApprovalRequest.model_.plural",target:"ApprovalRequests"})
+
+//DigErrorMessage
+p({class:"foam.i18n.Locale",locale:"en",source:"foam.nanos.dig.exception.DigSuccessMessage.{{message}}",target:"Success"})

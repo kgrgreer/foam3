@@ -1620,7 +1620,7 @@ foam.CLASS({
   documentation: `
     Override setter for formattedstrings so that we only store the unformatted data
     and generate method to return a formatted version of the data
-  `,  
+  `,
 
   properties: [
     {
@@ -1789,8 +1789,8 @@ foam.CLASS({
   templates: [
     {
         name: 'compareTemplate',
-        template: function() {
-/* <%= this.javaType %> values1 = get_(o1);
+        template: `
+<%= this.javaType %> values1 = get_(o1);
 <%= this.javaType %> values2 = get_(o2);
 if ( values1 == null && values2 == null ) return 0;
 if ( values2 == null ) return 1;
@@ -1804,8 +1804,8 @@ for ( int i = 0 ; i < values1.length ; i++ ) {
   result = foam.util.SafetyUtil.compare(values1[i], values2[i]);
   if ( result != 0 ) return result;
 }
-return 0;*/
-      }
+return 0;
+    `
     }
   ]
 });
@@ -1857,8 +1857,8 @@ foam.CLASS({
   templates: [
     {
       name: 'compareTemplate',
-      template: function() {
-/* <%= this.javaType %> values1 = get_(o1);
+      template: `
+<%= this.javaType %> values1 = get_(o1);
 <%= this.javaType %> values2 = get_(o2);
 if ( values1 == null && values2 == null ) return 0;
 if ( values2 == null ) return 1;
@@ -1872,8 +1872,8 @@ for ( int i = 0 ; i < values1.length ; i++ ) {
   result = ((Comparable)values1[i]).compareTo(values2[i]);
   if ( result != 0 ) return result;
 }
-return 0;*/
-      }
+return 0;
+`
     }
   ]
 });
@@ -1924,8 +1924,8 @@ foam.CLASS({
   templates: [
     {
       name: 'compareTemplate',
-      template: function() {
-/* <%= this.javaType %> values1 = get_(o1);
+      template: `
+<%= this.javaType %> values1 = get_(o1);
 <%= this.javaType %> values2 = get_(o2);
 if ( values1 == null && values2 == null ) return 0;
 if ( values2 == null ) return 1;
@@ -1939,8 +1939,8 @@ for ( int i = 0 ; i < values1.length ; i++ ) {
   result = ((Comparable)values1[i]).compareTo(values2[i]);
   if ( result != 0 ) return result;
 }
-return 0;*/
-      }
+return 0;
+`
     }
   ]
 });
@@ -1970,7 +1970,7 @@ foam.CLASS({
   templates: [
     {
       name: 'compareTemplate',
-      template: function() {/*
+      template: `
   <%= this.javaType %> values1 = get_(o1);
   <%= this.javaType %> values2 = get_(o2);
 
@@ -1982,7 +1982,8 @@ foam.CLASS({
     result = ((Comparable)values1.get(i)).compareTo(values2.get(i));
     if ( result != 0 ) return result;
   }
-  return 0;*/}
+  return 0;
+    `
     }
   ]
 });
@@ -2418,9 +2419,11 @@ foam.CLASS({
   refines: 'foam.dao.DAOProperty',
   flags: ['java'],
   properties: [
-    ['javaCompare',    '']
+    [ 'javaCompare',       '' ],
+    [ 'javaCloneProperty', 'set(dest, get(source));' ]
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.java',

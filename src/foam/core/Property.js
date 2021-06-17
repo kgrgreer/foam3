@@ -313,6 +313,8 @@ foam.CLASS({
     function installInClass(c, superProp, existingProp) {
       var prop = this;
 
+      if ( existingProp ) superProp = existingProp;
+
       if ( superProp && foam.core.Property.isInstance(superProp) ) {
         prop = superProp.createChildProperty_(prop);
 

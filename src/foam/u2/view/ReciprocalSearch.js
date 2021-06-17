@@ -178,6 +178,7 @@ foam.CLASS({
         this.currentMemento_ = this.memento.tail;
       }
 
+      // will use counter to count how many mementos in memento chain we need to iterate over to get a memento that we'll export to table view
       var counter = this.filters.length;
 
       this.
@@ -198,7 +199,7 @@ foam.CLASS({
               class: 'foam.u2.SearchField',
               focused: true
             }
-          }, this, this.__subContext__.createSubContext({ memento: this.memento.tail }));
+          }, this, this.__subContext__.createSubContext({ memento: this.memento ? this.memento.tail : this.memento }));
           var slot = self.SimpleSlot.create({ value: searchView });
 
           e.start()

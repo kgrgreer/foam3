@@ -25,10 +25,16 @@ foam.CLASS({
     'translationService'
   ],
 
+  javaImports: [
+    'foam.util.SafetyUtil'
+  ],
+
   messages: [
     { name: 'CITY_REQUIRED', message: 'City required' },
     { name: 'COUNTRY_REQUIRED', message: 'Country required' },
+    { name: 'INVALID_COUNTRY', message: 'Invalid country' },
     { name: 'REGION_REQUIRED', message: 'Region required' },
+    { name: 'INVALID_REGION', message: 'Invalid region. Please provide valid ISO-3166-2 region.' },
     { name: 'INVALID_ADDRESS_1', message: 'Invalid value for address line 1' },
     { name: 'INVALID_POSTAL_CODE', message: 'Valid Postal Code or ZIP Code required' },
     { name: 'POSTAL_CODE_REQUIRE', message: 'Postal Code required' },
@@ -97,6 +103,16 @@ foam.CLASS({
           return this.COUNTRY_REQUIRED;
         }
       },
+      javaValidateObj: `
+        var address = (Address) obj;
+        if ( SafetyUtil.isEmpty(address.getCountryId()) ) {
+          throw new IllegalStateException(COUNTRY_REQUIRED);
+        }
+
+        if ( address.findCountryId(x) == null ) {
+          throw new IllegalStateException(INVALID_COUNTRY);
+        }
+      `,
       postSet: function(oldValue, newValue) {
         if ( oldValue !== newValue ) {
           this.regionId = undefined;
@@ -137,10 +153,19 @@ foam.CLASS({
       },
       required: true,
       javaValidateObj: `
-        if ( ((Address) obj).getCountryId() != null && 
-          ( ((Address) obj).getRegionId() == null || ((Address) obj).getRegionId().trim().length() == 0 ) 
-        )
-          throw new IllegalStateException(((Address) obj).REGION_REQUIRED);
+        var address = (Address) obj;
+        if ( SafetyUtil.isEmpty(address.getCountryId()) ) {
+          return;
+        }
+
+        if ( SafetyUtil.isEmpty(address.getRegionId()) ) {
+          throw new IllegalStateException(REGION_REQUIRED);
+        }
+
+        var region = address.findRegionId(x);
+        if ( region == null || ! region.getCountryId().equals(address.getCountryId()) ) {
+          throw new IllegalStateException(INVALID_REGION);
+        }
       `,
       validateObj: function(regionId, countryId) {
         // If the country hasn't been selected yet, don't show this error.
@@ -570,6 +595,27 @@ foam.CLASS({
             return postalCodeError ? postalCodeError : X.INVALID_POSTAL_CODE;
           }
         },
+        // Isreal
+        {
+          args: ['postalCode', 'countryId'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.NEQ(foam.nanos.auth.Address.COUNTRY_ID, 'IL'),
+              e.REG_EXP(
+                foam.nanos.auth.Address.POSTAL_CODE,
+                /^\d{7}$/
+              )
+            );
+          },
+          errorMessage: 'INVALID_POSTAL_CODE',
+          jsErr: function(X) {
+            let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
+            if ( ! postalCodeError ) {
+              postalCodeError = X.translationService.getTranslation(foam.locale, '*.foam.nanos.auth.Address.POSTAL_CODE.error');
+            }
+            return postalCodeError ? postalCodeError : X.INVALID_POSTAL_CODE;
+          }
+        },
         // Latvia
         {
           args: ['postalCode', 'countryId'],
@@ -905,19 +951,6 @@ foam.CLASS({
             }
             return postalCodeError ? postalCodeError : X.INVALID_POSTAL_CODE;
           }
-        },
-        {
-          args: ['countryId'],
-          predicateFactory: function(e) {
-            return e.HAS(foam.nanos.auth.Address.COUNTRY_ID);
-          },
-          jsErr: function(X) {
-            let postalCodeError = X.translationService.getTranslation(foam.locale, `${X.countryId.toLowerCase()}.foam.nanos.auth.Address.POSTAL_CODE.error`);
-            if ( ! postalCodeError ) {
-              postalCodeError = X.translationService.getTranslation(foam.locale, '*.foam.nanos.auth.Address.POSTAL_CODE.error');
-            }
-            return postalCodeError ? postalCodeError : X.INVALID_POSTAL_CODE;
-          }
         }
       ],
       javaSetter: `
@@ -1030,6 +1063,22 @@ foam.CLASS({
       javaCode: `
       return getShortAddress();
      `
+    },
+    {
+      name: 'retrieveRegionCode',
+      type: 'String',
+      args: [ { name: 'x', type: 'Context' } ],
+      javaCode: `
+        String regionCode = "";
+        Region region = findRegionId(x);
+        if ( region != null ) {
+          regionCode = region.getRegionCode();
+        }
+
+        return ! SafetyUtil.isEmpty(regionCode) ?
+          regionCode :
+          getRegionId();
+      `
     }
   ]
 });

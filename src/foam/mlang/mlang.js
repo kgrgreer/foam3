@@ -1021,12 +1021,12 @@ foam.CLASS({
         }
         return true;
       },
-      swiftCode: function() {/*
+      swiftCode: `
 for arg in args {
   if !arg.f(obj) { return false }
 }
 return true
-                             */},
+                             `,
       javaCode: 'for ( int i = 0 ; i < getArgs().length ; i++ ) {\n'
                 + '  if ( ! getArgs()[i].f(obj) ) return false;\n'
                 + '}\n'

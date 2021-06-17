@@ -311,7 +311,7 @@ foam.CLASS({
       this.allColumns = ! view.of ? [] : [].concat(
         asyncRes.map(a => a.name),
         view.of.getAxiomsByClass(foam.core.Action)
-        .map(a => a.name)
+        .map(a => a.name).filter( a => view.of.getAxiomByName('tableColumns').columns.includes(a))
       );
 
       this.columns$.sub(this.updateColumns_);
@@ -420,7 +420,7 @@ foam.CLASS({
                   .style({
                     'align-items': 'center',
                     display: 'flex',
-                    flex: tableWidth ? `0 0 ${tableWidth}px` : '1 0 0',
+                    flex: tableWidth ? `1 0 ${tableWidth}px` : '3 0 0',
                     'justify-content': 'start',
                     'word-wrap': 'break-word'
                   })
@@ -528,7 +528,7 @@ foam.CLASS({
 
             var propertyNamesToQuery = view.columnHandler.returnPropNamesToQuery(view.props);
             var valPromises = view.returnRecords(view.of, proxy, propertyNamesToQuery, canObjBeBuildFromProjection);
-            var nastedPropertyNamesAndItsIndexes = view.columnHandler.buildArrayOfNestedPropertyNamesAndCorrespondingIndexesInArray(propertyNamesToQuery);
+            var nastedPropertyNamesAndItsIndexes = view.columnHandler.buildArrayOfNestedPropertyNamesAndCorrespondingIndexesInArrayOfValues(propertyNamesToQuery);
 
             var tbodyElement = this.E();
             tbodyElement.style({
@@ -670,7 +670,7 @@ foam.CLASS({
                     prop = objForCurrentProperty ? objForCurrentProperty.cls_.getAxiomByName(view.columnHandler.getNameOfLastPropertyForNestedProperty(propName)) : prop && prop.property ? prop.property : view.of.getAxiomByName(propName);
                     var tableWidth = view.columnHandler.returnPropertyForColumn(view.props, view.of, view.columns_[j], 'tableWidth');
 
-                    var elmt = tableRowElement.E().addClass(view.myClass('td')).style({flex: tableWidth ? `0 0 ${tableWidth}px` : '1 0 0'}).
+                    var elmt = tableRowElement.E().addClass(view.myClass('td')).style({flex: tableWidth ? `1 0 ${tableWidth}px` : '3 0 0'}).
                     callOn(prop.tableCellFormatter, 'format', [
                       prop.f ? prop.f(objForCurrentProperty) : null, objForCurrentProperty, prop
                     ]);

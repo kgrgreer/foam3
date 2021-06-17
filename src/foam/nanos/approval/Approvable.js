@@ -89,7 +89,19 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isUsingNestedJournal',
+      documentation: `
+        For cases where the approvable pertains to updating a nested object from a list. See  capable.capablePayloads for  example. 
+        This is done so that the predicate can differentiate between  an approvable for an entire object vs a nested object and
+        know when not to apply the generic approvable rule.
+      `,
       section: 'admin'
+    },
+    {
+      class: 'Boolean',
+      name: 'blockFulfillementLogic',
+      documentation: `If true, prevents Approvable reput logic in FulfilledApprovableRule.`,
+      section: 'admin',
+      value: false
     }
   ],
 

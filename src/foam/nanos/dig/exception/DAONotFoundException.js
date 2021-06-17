@@ -7,15 +7,22 @@ foam.CLASS({
   package: 'foam.nanos.dig.exception',
   name: 'DAONotFoundException',
   extends: 'foam.nanos.dig.exception.DigErrorMessage',
+  javaGenerateDefaultConstructor: false,
 
   axioms: [
     {
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(`
-          public DAONotFoundException(String message) {
-            super(message);
-          } 
+          public DAONotFoundException() { }
+
+          public DAONotFoundException(String daoName) {
+            super(daoName);
+          }
+
+          public DAONotFoundException(String daoName, Throwable cause) {
+            super(daoName, cause);
+          }
         `
         );
       }
@@ -23,6 +30,11 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'exceptionMessage',
+      class: 'String',
+      value: 'DAO not found {{message}}',
+    },
     {
       class: 'String',
       name: 'status',

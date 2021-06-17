@@ -30,5 +30,6 @@ p({"class":"foam.nanos.auth.Country", "code":"ZA", "iso31661Code":"ZAF","name":"
 p({"class":"foam.nanos.auth.Country", "code":"ES", "iso31661Code":"ESP","name":"Spain"})
 p({"class":"foam.nanos.auth.Country", "code":"SE", "iso31661Code":"SWE","name":"Sweden"})
 p({"class":"foam.nanos.auth.Country", "code":"TT", "iso31661Code":"TTO","name":"Trinidad and Tobago"})
+p({"class":"foam.nanos.auth.Country", "code":"IL", "iso31661Code":"ISR","name":"Israel"})
 p({"class":"foam.nanos.auth.Country", "code":"GB", "iso31661Code":"GBR","name":"United Kingdom", "alternativeNames":["Great Britain"]})
 p({"class":"foam.nanos.auth.Country", "code":"US", "iso31661Code":"USA","name":"US","nativeName":"US","alternativeNames":["United States", "United States of America"]})
