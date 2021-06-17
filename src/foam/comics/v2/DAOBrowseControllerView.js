@@ -173,7 +173,7 @@ foam.CLASS({
                     .translate(menuId + ".browseTitle", config$browseTitle)
                   .end()
                   .start(self.Cols)
-                    .callIf( config.browseActions != [] && config.browseContext, function() {
+                    .callIf( config.browseActions.length && config.browseContext, function() {
                       if ( config.browseActions.length > 2 ) {
                         this.start(self.OverlayActionListView, {
                           label: this.ACTIONS,
