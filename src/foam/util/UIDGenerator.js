@@ -97,8 +97,7 @@ foam.CLASS({
         char[] id = new char[l];
         idStr.getChars(0, l, id, 0);
         List<Integer> randInts = getRandInts();
-        for ( int i = 0 ; i < l ; i++ )
-        {
+        for ( int i = 0 ; i < l ; i++ ) {
           int newI = randInts.get(i);
           char c = id[newI];
           id[newI] = id[i];
@@ -117,8 +116,7 @@ foam.CLASS({
         int l = idStr.length();
         char[] id = idStr.toCharArray();
         List<Integer> randInts = getRandInts();
-        for ( int i = l - 1 ; i >= 0; i-- )
-        {
+        for ( int i = l - 1 ; i >= 0; i-- ) {
           int newI = randInts.get(i);
           char c = id[newI];
           id[newI] = id[i];
