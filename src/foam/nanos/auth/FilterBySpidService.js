@@ -58,7 +58,10 @@ foam.CLASS({
         User user = (User) userDAO
           .find(
             AND(
-              EQ(User.EMAIL, identifier.toLowerCase()),
+              OR(
+                EQ(User.EMAIL, identifier.toLowerCase()),
+                EQ(User.USER_NAME, identifier)
+              ),
               OR(
                 EQ(User.SPID, ((Theme) x.get("theme")).getSpid()),
                 EQ(User.SPID, getSuperSpid())
