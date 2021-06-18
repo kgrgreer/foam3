@@ -261,7 +261,7 @@ foam.CLASS({
                 .addClass(self.myClass('featureSection'))
               .end()
               .on('click', () => {
-                self.openWizard(arr[i].id, true);
+                self.openWizard(arr[i], true);
               })
             .end());
         }
@@ -440,8 +440,8 @@ foam.CLASS({
           if ( sink.array.length == 1 ) {
             let cap = sink.array[0];
             let ucj = await this.junctions.find(ucj => ucj.targetId == cap.id);
-            if ( ucj.status == this.CapabilityJunctionStatus.GRANTED
-              || ucj.status == this.CapabilityJunctionStatus.PENDING) return;
+            if ( ucj && ( ucj.status == this.CapabilityJunctionStatus.GRANTED
+              || ucj.status == this.CapabilityJunctionStatus.PENDING ) ) return;
 
             this.openWizard(cap, false);
           }
@@ -452,9 +452,9 @@ foam.CLASS({
       this.wizardOpened = true;
       let ucj = await this.junctions.find(ucj => ucj.targetId == cap.id);
       let x = null;
-      if ( ucj.status == this.CapabilityJunctionStatus.GRANTED
+      if ( ucj && ( ucj.status == this.CapabilityJunctionStatus.GRANTED
         || ucj.status == this.CapabilityJunctionStatus.PENDING
-      ) {
+      ) ) {
         x = this.__subContext__.createSubContext({
           controllerMode: this.ControllerMode.VIEW
         });
