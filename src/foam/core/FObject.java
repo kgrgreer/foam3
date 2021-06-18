@@ -319,6 +319,17 @@ public interface FObject
    * isSet=true properties.
    */
   default FObject overlay(FObject obj) {
+    return overlay_(obj, new java.util.HashSet());
+  }
+
+  default FObject overlay_(FObject obj, java.util.Set visited) {
+    if ( visited.contains(obj.hashCode()) ) {
+      System.err.println("FObject.overlay "+this.getClass().getName()+" visited "+obj.getClass().getName()+": "+obj.toString());
+      return obj;
+    } else {
+      visited.add(obj.hashCode());
+    }
+
     //    throw ClassCastException {
     if ( ! ( this.getClass().isAssignableFrom(obj.getClass()))) {
       System.err.println("FObject.overlay "+this.getClass().getName()+" not assignable from "+obj.getClass().getName());
@@ -351,7 +362,7 @@ public interface FObject
               System.out.println("FObject.overlay "+p.getName()+" local == remote");
             } else {
               System.out.println("FObject.overlay "+p.getName()+" local: "+local.toString()+", remote: "+remote.toString());
-              p.set(this, ((FObject)local).overlay((FObject)remote));
+              p.set(this, ((FObject)local).overlay_((FObject)remote, visited));
             }
           } else {
             p.set(this, remote);
