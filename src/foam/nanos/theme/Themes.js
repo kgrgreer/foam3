@@ -188,7 +188,7 @@ Later themes:
         }
       }
 
-      // Augment the theme with group and user themes
+      // Merge the theme with group and user themes
       if ( user != null ) {
         DAO groupDAO = (DAO) x.get("groupDAO");
         Group group = user.findGroup(x);
@@ -210,7 +210,7 @@ Later themes:
 
         Theme userTheme = user.findTheme(x);
         if ( userTheme != null ) {
-          theme = (Theme) theme.fclone().copyFrom(userTheme);
+          theme = theme.merge(userTheme);
         }
       }
 
