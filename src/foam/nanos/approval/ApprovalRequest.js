@@ -58,6 +58,12 @@
     'summaryView?'
   ],
 
+  searchColumns: [
+    'id',
+    'classificationEnum',
+    'status'
+  ],
+
   tableColumns: [
     'id',
     'referenceSummary',
