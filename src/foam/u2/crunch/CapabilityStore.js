@@ -21,14 +21,15 @@ foam.CLASS({
     'foam.nanos.crunch.CapabilityCategoryCapabilityJunction',
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.u2.crunch.CapabilityCardView',
-    'foam.u2.crunch.CapabilityFeatureView',
+    'foam.u2.ControllerMode',
     'foam.u2.Element',
-    'foam.u2.layout.Grid',
-    'foam.u2.layout.GUnit',
     'foam.u2.Tab',
     'foam.u2.Tabs',
-    'foam.u2.UnstyledTabs'
+    'foam.u2.UnstyledTabs',
+    'foam.u2.crunch.CapabilityCardView',
+    'foam.u2.crunch.CapabilityFeatureView',
+    'foam.u2.layout.Grid',
+    'foam.u2.layout.GUnit'
   ],
 
   imports: [
@@ -260,7 +261,7 @@ foam.CLASS({
                 .addClass(self.myClass('featureSection'))
               .end()
               .on('click', () => {
-                self.openWizard(arr[i].id, true);
+                self.openWizard(arr[i], true);
               })
             .end());
         }
@@ -392,7 +393,8 @@ foam.CLASS({
             addedFirstItem = true;
             sectionElement
               .addClass(this.myClass('category'))
-              .start('h3').add(this.EDITABLE).end()
+              // TODO: uncomment when UCJs are editable again
+              // .start('h3').add(this.EDITABLE).end()
           }
           grid = grid
             .start(self.GUnit, { columns: 4 })
@@ -434,21 +436,30 @@ foam.CLASS({
             this.IN(this.Capability.ID, visibleList),
             this.IN('featured', this.Capability.KEYWORDS)
           )).select())
-        .then(sink => {
+        .then(async sink => {
           if ( sink.array.length == 1 ) {
             let cap = sink.array[0];
-            let ucj = this.junctions.find(ucj => ucj.targetId == cap.id);
-            if ( ucj.status == this.CapabilityJunctionStatus.GRANTED
-              || ucj.status == this.CapabilityJunctionStatus.PENDING) return;
+            let ucj = await this.junctions.find(ucj => ucj.targetId == cap.id);
+            if ( ucj && ( ucj.status == this.CapabilityJunctionStatus.GRANTED
+              || ucj.status == this.CapabilityJunctionStatus.PENDING ) ) return;
 
             this.openWizard(cap, false);
           }
         })
     },
-    function openWizard(cap, showToast) {
+    async function openWizard(cap, showToast) {
       if ( this.wizardOpened ) return;
       this.wizardOpened = true;
-      this.crunchController.createWizardSequence(cap)
+      let ucj = await this.junctions.find(ucj => ucj.targetId == cap.id);
+      let x = null;
+      if ( ucj && ( ucj.status == this.CapabilityJunctionStatus.GRANTED
+        || ucj.status == this.CapabilityJunctionStatus.PENDING
+      ) ) {
+        x = this.__subContext__.createSubContext({
+          controllerMode: this.ControllerMode.VIEW
+        });
+      }
+      this.crunchController.createWizardSequence(cap, x)
         .reconfigure('CheckPendingAgent', { showToast: showToast })
           .execute().then(() => {
             this.wizardOpened = false

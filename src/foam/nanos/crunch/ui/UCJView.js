@@ -69,6 +69,7 @@ foam.CLASS({
     async function initE() {
       var user = await this.userDAO.find(this.data.effectiveUser);
       var realUser = await this.userDAO.find(this.data.sourceId);
+      if ( ! user ) user = realUser;
       var subject = this.Subject.create({ user: user, realUser: realUser });
       var stack = this.Stack.create();
       var x = this.__subContext__.createSubContext({
@@ -96,7 +97,7 @@ foam.CLASS({
         .remove('PutFinalJunctionsAgent')
         .add(this.SaveAllAgent, { onSave: this.onSave.bind(this) })
         .execute();
-       
+
         //add back button and 'View Reference' title
         this.addClass(this.myClass())
           .startContext({ data: this })
@@ -135,7 +136,7 @@ foam.CLASS({
       }
     }
   ],
-  
+
   actions: [
     {
       name: 'back',
