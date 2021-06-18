@@ -87,7 +87,6 @@ foam.CLASS({
     }
 
     ^container-handle {
-      padding: 0 16px;
       box-sizing: border-box;
       height: 34px;
       border: 1px solid /*%GREY4%*/ #e7eaec;
@@ -103,6 +102,11 @@ foam.CLASS({
     ^container-handle:hover {
       cursor: pointer;
       background-image: linear-gradient(to bottom, #ffffff, #d3d6d8);
+    }
+
+    ^filter-button{
+      width: 100%;
+      height: 100%;
     }
 
     ^link-mode {
@@ -292,7 +296,9 @@ foam.CLASS({
           e.start().addClass(self.myClass('container-search'))
             .start().addClass(self.myClass('container-handle'))
             .startContext({ data: self })
-              .tag(self.TOGGLE_DRAWER, { buttonStyle: 'UNSTYLED' })
+              .start(self.TOGGLE_DRAWER, { buttonStyle: 'UNSTYLED' })
+                .addClass(this.myClass('filter-button'))
+              .end()
             .endContext()
             .end()
             .start()
