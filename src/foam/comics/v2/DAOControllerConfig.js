@@ -115,8 +115,7 @@ foam.CLASS({
           editColumnsEnabled: true,
           columns: defaultColumns,
           css: {
-            width: '100%',
-            'min-height': this.minHeight + 'px'
+            width: '100%'
           }
         };
       }
