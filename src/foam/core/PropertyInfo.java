@@ -70,5 +70,4 @@ public interface PropertyInfo
   public void fromCSVLabelMapping(java.util.Map<String, foam.lib.csv.FromCSVSetter> map);
   public boolean getSheetsOutput();
   public Object castObject(Object value);
-  default boolean copyValueFrom(FObject targetObj, FObject sourceObj) { return true; }
 }
