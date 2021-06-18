@@ -71,6 +71,17 @@ foam.CLASS({
       overflow: hidden;
     }
 
+    /*
+      Scroll is handled here to ensure summaryView always has a scroll 
+      even if it is not configured in the summaryView.
+      This is the generalised way to do this but should be removed 
+      if double scroll bars start appearing
+    */
+    ^browse-view-container > * {
+      height: 100%;
+      overflow: auto;
+    }
+
     ^canned-queries {
       padding: 0 16px;
     }
