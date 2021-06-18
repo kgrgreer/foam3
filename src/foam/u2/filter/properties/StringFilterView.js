@@ -169,7 +169,7 @@ foam.CLASS({
           });
         });
 
-        return options;
+        return options.sort();
       }
     },
     {

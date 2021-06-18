@@ -250,6 +250,7 @@ foam.CLASS({
     }
 
     ^large {
+      min-width: 100px;
       padding: 12px 12px;
     }
 
