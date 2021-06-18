@@ -159,4 +159,15 @@ public abstract class AbstractFObjectPropertyInfo
   public int comparePropertyToValue(Object key, Object value) {
     return foam.util.SafetyUtil.compare(cast(key), cast(value));
   }
+
+  @Override
+  public Object merge(Object o1, Object o2) {
+    FObject value1 = (FObject) this.get(o1);
+    FObject value2 = (FObject) this.get(o2);
+
+    if ( value1 == null ) return value2;
+    if ( value2 == null ) return value1;
+
+    return value1.fclone().copyFrom(value2);
+  }
 }

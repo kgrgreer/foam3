@@ -32,6 +32,11 @@ foam.CLASS({
     'foam.nanos.theme.ThemeGlyphs'
   ],
 
+  javaImports: [
+    'foam.core.PropertyInfo',
+    'java.util.List'
+  ],
+
   tableColumns: [
     'enabled',
     'name',
@@ -169,8 +174,7 @@ foam.CLASS({
     },
     {
       class: 'Map',
-      name: 'headConfig',
-      javaFactory: ''
+      name: 'headConfig'
     },
     {
       class: 'Image',
@@ -585,5 +589,18 @@ foam.CLASS({
         return foam.util.SafetyUtil.isEmpty(getName()) || foam.util.SafetyUtil.isEmpty(getDescription()) ? "" : getName() + " " + getDescription();
       `
     },
+    {
+      name: 'merge',
+      type: 'Theme',
+      args: [ 'Theme other' ],
+      javaCode: `
+        var theme = new Theme();
+        List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
+        for ( PropertyInfo p : props ) {
+          p.set(theme, p.merge(this, other));
+        }
+        return theme;
+      `
+    }
   ]
 });

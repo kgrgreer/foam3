@@ -8,6 +8,7 @@ package foam.core;
 
 import foam.util.SafetyUtil;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractMapPropertyInfo
@@ -48,8 +49,25 @@ public abstract class AbstractMapPropertyInfo
     }
     return 0;
   }
-  
+
   public String getSQLType() {
     return "";
+  }
+
+  @Override
+  public Object merge(Object o1, Object o2) {
+    Map m1 = (Map) this.get(o1);
+    Map m2 = (Map) this.get(o2);
+
+    if ( m1 == null ) return m2;
+    if ( m2 == null ) return m1;
+
+    Map merged = new HashMap(m2);
+    for ( var k : m1.keySet() ) {
+      if ( ! merged.containsKey(k) ) {
+        merged.put(k, m1.get(k));
+      }
+    }
+    return merged;
   }
 }

@@ -196,7 +196,7 @@ Later themes:
         while ( group != null ) {
           Theme groupTheme = group.findTheme(x);
           if ( groupTheme != null ) {
-            theme = (Theme) theme.fclone().copyFrom(groupTheme);
+            theme = theme.merge(groupTheme);
             break;
           }
           group = (Group) groupDAO.find(group.getParent());
