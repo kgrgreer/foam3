@@ -24,17 +24,19 @@ foam.CLASS({
 
   imports: [
     'auth',
+    'setTimeout',
     'window'
   ],
 
   methods: [
     function initE() {
       this.SUPER();
-      var self = this;
+      this.window.location.hash = 'empty';
       this.window.location.hash = '';
-      this.auth.logout().then(function() {
+      this.auth.logout().then(() => {
+        this.window.location.hash = '';
         localStorage.removeItem('defaultSession');
-        self.window.location.reload();
+        this.window.location.reload();
       });
     }
   ]

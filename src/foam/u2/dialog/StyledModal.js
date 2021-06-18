@@ -97,11 +97,6 @@ foam.CLASS({
       documentation: 'Setting modal styles adds a coloured bar at the top of the modal'
     },
     {
-      name: 'isStyled',
-      value: true,
-      documentation: 'Can be used to turn off all styling for modal container'
-    },
-    {
       name: 'title',
       class: 'String'
     },
