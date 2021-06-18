@@ -207,7 +207,12 @@ foam.CLASS({
       class: 'Enum',
       of: 'foam.u2.layout.DisplayWidth',
       name: 'displayWidth',
-      value: foam.u2.layout.DisplayWidth.XL
+      factory: function() {
+        return foam.u2.layout.DisplayWidth.VALUES
+          .concat()
+          .sort((a, b) => b.minWidth - a.minWidth)
+          .find(o => o.minWidth <= Math.min(window.innerWidth, window.screen.width) );
+      }
     },
     {
       name: 'clientPromise',
