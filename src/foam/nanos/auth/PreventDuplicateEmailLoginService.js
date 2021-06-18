@@ -54,11 +54,15 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        DAO user = (DAO) getX().get("localUserDAO");
+        DAO userDAO = (DAO) getX().get("localUserDAO");
 
         Sink sink = new ArraySink();
-        sink = user
-          .where(EQ(User.EMAIL, identifier.toLowerCase()))
+        sink = userDAO
+          .where(
+            OR(
+              EQ(User.EMAIL, identifier.toLowerCase()),
+              EQ(User.USER_NAME, identifier)
+            ))
           .select(sink);
         List list = ((ArraySink) sink).getArray();
 
