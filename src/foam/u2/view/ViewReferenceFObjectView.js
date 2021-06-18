@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'ViewReferenceFObjectView',
   extends: 'foam.u2.View',
 
-  documentation: `A view to display nested approvable FObjects.`,
+  documentation: `A view to display FObjects in Approval Request View Reference.`,
 
   imports: [
     'stack'
