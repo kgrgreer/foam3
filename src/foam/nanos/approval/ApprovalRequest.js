@@ -927,7 +927,6 @@
         if ( obj.propertiesToUpdate ) {
           if ( obj.operation === foam.nanos.dao.Operation.CREATE ) {
             summaryData = obj.of.create({}, X);
-            daoKey = obj.daoKey;
             of = summaryData.cls_;
 
             Object.keys(obj.propertiesToUpdate).map(k => summaryData.cls_.getAxiomByName(k))
@@ -935,6 +934,14 @@
               .forEach(p => {
                 summaryData[p.name] = obj.propertiesToUpdate[p.name];
               });
+            if ( obj.isUsingNestedJournal ) {
+              X.stack.push({
+                class: 'foam.u2.view.ViewReferenceFObjectView',
+                data: summaryData,
+                of: of
+              });
+              return;
+            }
           } else {
             of = obj.of;
 
