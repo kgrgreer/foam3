@@ -70,7 +70,9 @@ foam.CLASS({
         if ( user == null ){
           throw new AuthenticationException("User not found.");
         }
-        return user;
+
+        ((DAO) x.get("localUserDAO")).put(user.fclone());
+        return getDelegate().getUser(x, identifier, password);
       `
     }
   ]
