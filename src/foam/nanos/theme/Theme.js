@@ -593,6 +593,15 @@ foam.CLASS({
       name: 'merge',
       type: 'Theme',
       args: [ 'Theme other' ],
+      code: function(other) {
+        var theme = foam.nanos.theme.Theme.create();
+        var props = this.cls_.getAxiomsByClass(foam.core.Property);
+        for ( var i = 0 ; i < props.length ; i++ ) {
+          var name = props[i].name;
+          theme[name] = props[i].merge(this, other);
+        }
+        return theme;
+      },
       javaCode: `
         var theme = new Theme();
         List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);

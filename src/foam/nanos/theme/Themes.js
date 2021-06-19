@@ -94,21 +94,24 @@ Later themes:
         var group = x.group;
         if ( user && group ) { // non-null when logged in.
           var group = await user.group$find;
+          var defaultMenu = group && group.defaultMenu;
           while ( group ) {
             var groupTheme = await group.theme$find;
             if ( groupTheme ) {
               theme = theme && theme.copyFrom(groupTheme) || groupTheme;
-              if ( !! group.defaultMenu ) {
-                theme.defaultMenu = group.defaultMenu;
-                theme.logoRedirect = group.defaultMenu;
-              }
               break;
             }
             group = await group.parent$find;
           }
+
+          if ( !! group.defaultMenu ) {
+            theme.defaultMenu = group.defaultMenu;
+            theme.logoRedirect = group.defaultMenu;
+          }
+
           var userTheme = await user.theme$find;
           if ( userTheme ) {
-            theme = theme && theme.copyFrom(userTheme) || theme;
+            theme = theme && theme.copyFrom(userTheme) || userTheme;
           }
         }
         if ( theme ) {
@@ -192,7 +195,7 @@ Later themes:
       if ( user != null ) {
         DAO groupDAO = (DAO) x.get("groupDAO");
         Group group = user.findGroup(x);
-        var defaultMenu = group.getDefaultMenu();
+        var defaultMenu = group != null ? group.getDefaultMenu() : "";
         while ( group != null ) {
           Theme groupTheme = group.findTheme(x);
           if ( groupTheme != null ) {

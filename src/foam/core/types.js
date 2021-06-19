@@ -536,6 +536,18 @@ foam.CLASS({
         }
       }
     ]
+  ],
+
+  methods: [
+    function merge(o1, o2) {
+      const object1 = o1[this.name];
+      const object2 = o2[this.name];
+
+      if ( ! object1 || ! Array.isArray(object1) ) return object2;
+      if ( ! object2 || ! Array.isArray(object2) ) return object1;
+
+      return object1.concat(object2);
+    }
   ]
 });
 
@@ -771,6 +783,16 @@ foam.CLASS({
         },
         configurable: true
       })
+    },
+
+    function merge(o1, o2) {
+      const object1 = o1[this.name];
+      const object2 = o2[this.name];
+
+      if ( ! object1 ) return object2;
+      if ( ! object2 ) return object1;
+
+      return Object.assign({}, object1, object2);
     }
   ]
 });
@@ -864,6 +886,16 @@ foam.CLASS({
         return true;
       }
       return false;
+    },
+
+    function merge(o1, o2) {
+      const object1 = o1[this.name];
+      const object2 = o2[this.name];
+
+      if ( ! object1 || ! foam.core.FObject.isInstance(object1) ) return object2;
+      if ( ! object2 || ! foam.core.FObject.isInstance(object2) ) return object1;
+
+      return object1.shallowClone(o1.__subContext__).copyFrom(object2);
     }
   ]
 });

@@ -721,6 +721,10 @@ if ( eFactory && (
 
     function clone(opt_X) {
       return this.shallowClone(opt_X);
+    },
+
+    function merge(o1, o2) {
+      return o2[this.name];
     }
   ]
 });
