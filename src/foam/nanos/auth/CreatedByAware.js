@@ -51,6 +51,7 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       section: 'userInformation',
+      readPermissionRequired: true,
       gridColumns: 6
     },
     {
@@ -61,6 +62,7 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       section: 'userInformation',
+      readPermissionRequired: true,
       gridColumns: 6
     }
   ]

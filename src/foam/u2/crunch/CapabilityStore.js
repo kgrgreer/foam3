@@ -5,6 +5,46 @@
  */
 
 foam.CLASS({
+  class: 'foam.core.Model',
+  
+  package: 'foam.u2.crunch',
+  name: 'TestView',
+  extends: 'foam.u2.View',
+
+  properties: [
+    {
+      name: 'something',
+      factory: () => ({ a: 1 })
+    },
+    {
+      class: 'String',
+      name: 'company',
+      value: 'Nanopay',
+      view: {
+        // Also read only, but usually don't favour this over ControllerMode
+        // but... really useful for custom views
+        class: 'foam.u2.view.ValueView'
+      }
+    }
+  ],
+
+  methods: [
+    function initE() {
+      this.something.a = 2;
+      this
+        .start('h1').add('hello').end() // <h1>hello</h1>
+        .start()
+          .start('p')
+            .startContext({ data: this, controllerMode: foam.u2.ControllerMode.VIEW /* read only */ })
+              .start(this.COMPANY).end()
+            .endContext()
+          .end()
+        .end()
+    }
+  ]
+});
+
+foam.CLASS({
   package: 'foam.u2.crunch',
   name: 'CapabilityStore',
   extends: 'foam.u2.View',
@@ -178,7 +218,10 @@ foam.CLASS({
       name: 'cardsOverflow',
       class: 'Boolean'
     },
-    'junctions',
+    {
+      name: 'junctions',
+      factory: () => []
+    },
     'wizardOpened'
   ],
 
@@ -211,7 +254,7 @@ foam.CLASS({
         .add(this.slot(function(junctions, featuredCapabilities){
           return self.renderFeatured();
         }))
-        .add(this.slot(function(junctions){
+        .add(this.slot(function(junctions, visibleCapabilityDAO){
           return self.renderPredicatedSection(
             this.TRUE,
             this.EQ(
@@ -261,7 +304,7 @@ foam.CLASS({
                 .addClass(self.myClass('featureSection'))
               .end()
               .on('click', () => {
-                self.openWizard(arr[i].id, true);
+                self.openWizard(arr[i], true);
               })
             .end());
         }
@@ -440,8 +483,8 @@ foam.CLASS({
           if ( sink.array.length == 1 ) {
             let cap = sink.array[0];
             let ucj = await this.junctions.find(ucj => ucj.targetId == cap.id);
-            if ( ucj.status == this.CapabilityJunctionStatus.GRANTED
-              || ucj.status == this.CapabilityJunctionStatus.PENDING) return;
+            if ( ucj && ( ucj.status == this.CapabilityJunctionStatus.GRANTED
+              || ucj.status == this.CapabilityJunctionStatus.PENDING ) ) return;
 
             this.openWizard(cap, false);
           }
@@ -452,9 +495,9 @@ foam.CLASS({
       this.wizardOpened = true;
       let ucj = await this.junctions.find(ucj => ucj.targetId == cap.id);
       let x = null;
-      if ( ucj.status == this.CapabilityJunctionStatus.GRANTED
+      if ( ucj && ( ucj.status == this.CapabilityJunctionStatus.GRANTED
         || ucj.status == this.CapabilityJunctionStatus.PENDING
-      ) {
+      ) ) {
         x = this.__subContext__.createSubContext({
           controllerMode: this.ControllerMode.VIEW
         });
