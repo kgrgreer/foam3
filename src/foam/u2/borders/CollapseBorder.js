@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.u2.borders',
-  name: 'CollapseBorder',
+  name: 'CollapseBorder', // use this
   extends: 'foam.u2.Controller',
 
   requires: [ 'foam.u2.ActionView' ],
@@ -26,7 +26,6 @@ foam.CLASS({
     }
     ^control {
       display: inline;
-      float: right;
       height: 30px;
       position: relative;
       top: -10px;
@@ -37,9 +36,10 @@ foam.CLASS({
       position: absolute;
       padding: 3px;
       width: calc(100% - 16px);
-      left: 8px;
-      top: -8px;
+      left: 1.5vmin;
+      top: max(-12px, -2vmin);
       color: #666;
+      padding-top: 0;
     }
     ^title {
       background: white;
@@ -54,11 +54,13 @@ foam.CLASS({
       outline: none;
       padding: 3px;
       width: 30px;
-      height: 30px;
     }
     ^.expanded .foam-u2-ActionView-toggle {
       transform: rotate(0deg);
       transition: transform 0.3s;
+    }
+    ^float-right {
+      float: right;
     }
   `,
 
@@ -68,7 +70,12 @@ foam.CLASS({
       class: 'Boolean',
       name: 'expanded',
       value: true
-    }
+    },
+    {
+      name: 'label',
+      value: '\u25BD'
+    },
+    [ 'toggleLeft', false ]
   ],
 
   methods: [
@@ -78,13 +85,15 @@ foam.CLASS({
         enableClass('expanded', this.expanded$).
         start('div').
           addClass(this.myClass('toolbar')).
-          start('span').
-            addClass(this.myClass('title')).
-            add(this.title$).
-          end().
           start('div').
             addClass(this.myClass('control')).
-            tag(this.TOGGLE, {label: '\u25BD'}).
+            addClass( this.toggleLeft ? '' : this.myClass('float-right')).
+            tag(this.TOGGLE, { label: this.label$ }).
+          end().
+          start('span').
+            on('click', () => this.toggle()).
+            addClass(this.myClass('title')).
+            add(this.title$).
           end().
         end().
         start('div', null, this.content$).
