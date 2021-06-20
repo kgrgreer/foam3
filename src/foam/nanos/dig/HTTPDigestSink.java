@@ -83,12 +83,8 @@ public class HTTPDigestSink extends AbstractSink {
       }
       // add hashed payload-digest to request headers
       String payload = outputter.stringify((FObject) obj);
-      MessageDigest md = MessageDigest.getInstance(dugDigestConfig_.getAlgorithm());
-      md.update(dugDigestConfig_.getSecretKey().getBytes(StandardCharsets.UTF_8));
-      md.update(payload.getBytes(StandardCharsets.UTF_8));
-      String hash = byte2Hex(md.digest());
+      String digest = getDigest(getX(), dugDigestConfig_, payload);
       conn.addRequestProperty("payload-digest", hash);
-
       conn.connect();
 
       try (OutputStream os = conn.getOutputStream()) {
@@ -112,7 +108,7 @@ public class HTTPDigestSink extends AbstractSink {
     }
   }
 
-  private String byte2Hex(byte[] bytes) {
+  protected String byte2Hex(byte[] bytes) {
     StringBuffer stringBuffer = new StringBuffer();
     String temp = null;
     for ( int i=0; i<bytes.length; i++ ) {
@@ -123,5 +119,18 @@ public class HTTPDigestSink extends AbstractSink {
       stringBuffer.append(temp);
     }
     return stringBuffer.toString();
+  }
+
+  protected byte[] getDigest(X x, DUGDigestConfig config, String payload) 
+    throws UnsupportedEncodingException {
+    try {
+      MessageDigest md = MessageDigest.getInstance(config.getAlgorithm());
+      md.update(config.getSecretKey().getBytes(StandardCharsets.UTF_8));
+      md.update(payload.getBytes(StandardCharsets.UTF_8));
+      return byte2Hex(md.digest());
+    } catch (UnsupportedEncodingException e) {
+      ((Logger) getX().get("logger")).error("Failed digest calculation", config.getAlgorithm(), e.getMessage());
+      throw e;
+    }
   }
 }
