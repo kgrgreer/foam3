@@ -368,7 +368,17 @@ foam.CLASS({
         this.onSetAttr(attr.name, attr.value);
       }
 
-      this.initE();
+      // disable adding to content$ during render()
+      this.add = function() { return this.add_(arguments, this); }
+      this.initTooltip();
+      this.initKeyboardShortcuts();
+      this.render();
+      if ( this.initE != foam.u2.Element.prototype.initE ) {
+        console.warn('Deprecated use of Element.initE(). Use render instead: ', this.cls_.name);
+        this.initE();
+      }
+      this.add = foam.u2.Element.prototype.add;
+
       if ( this.tabIndex ) this.setAttribute('tabindex', this.tabIndex);
       // Add a delay before setting the focus in case the DOM isn't visible yet.
       if ( this.focused ) this.el().then(el => el.focus());
@@ -1064,13 +1074,10 @@ foam.CLASS({
       this.onDetach(this.visitChildren.bind(this, 'detach'));
     },
 
+    function render() {
+    },
+
     function initE() {
-      /*
-        Template method for adding addtion element initialization
-        just before Element is output().
-      */
-      this.initTooltip();
-      this.initKeyboardShortcuts();
     },
 
     async function observeScrollHeight() {
@@ -1660,7 +1667,11 @@ foam.CLASS({
     },
 
     function add() {
-      return this[this.content || 'add_'](arguments, this);
+      if ( this.content ) {
+        this.content.add(arguments, this);
+        return this;
+      }
+      return this.add_(arguments, this);
     },
 
     function add_(cs, parentNode) {
