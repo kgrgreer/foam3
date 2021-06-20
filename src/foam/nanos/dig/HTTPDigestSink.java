@@ -16,8 +16,10 @@
  */
 
 package foam.nanos.dig;
+
 import foam.core.Detachable;
 import foam.core.FObject;
+import foam.core.X;
 import foam.dao.AbstractSink;
 import foam.dao.DAO;
 import foam.lib.Outputter;
@@ -25,14 +27,17 @@ import foam.lib.json.OutputterMode;
 import foam.lib.NetworkPropertyPredicate;
 import foam.lib.PropertyPredicate;
 import foam.nanos.http.Format;
+import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 
-import java.security.MessageDigest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpServletResponse;
 
 public class HTTPDigestSink extends AbstractSink {
 
@@ -84,7 +89,7 @@ public class HTTPDigestSink extends AbstractSink {
       // add hashed payload-digest to request headers
       String payload = outputter.stringify((FObject) obj);
       String digest = getDigest(getX(), dugDigestConfig_, payload);
-      conn.addRequestProperty("payload-digest", hash);
+      conn.addRequestProperty("payload-digest", digest);
       conn.connect();
 
       try (OutputStream os = conn.getOutputStream()) {
@@ -121,15 +126,26 @@ public class HTTPDigestSink extends AbstractSink {
     return stringBuffer.toString();
   }
 
-  protected byte[] getDigest(X x, DUGDigestConfig config, String payload) 
-    throws UnsupportedEncodingException {
+  protected String getDigest(X x, DUGDigestConfig config, String payload) 
+    throws Exception {
     try {
+      if ( config.getAlgorithm().toLowerCase().startsWith("hmac") ) {
+        // Generate HMAC Digest
+        // @see https://commons.apache.org/proper/commons-codec/apidocs/src-html/org/apache/commons/codec/digest/HmacUtils.html
+        // @see https://sorenpoulsen.com/calculate-hmac-sha256-with-java
+        Mac mac = Mac.getInstance(config.getAlgorithm()); // "HmacSHA256"
+        SecretKeySpec secretKeySpec = new SecretKeySpec(config.getSecretKey().getBytes(StandardCharsets.UTF_8), config.getAlgorithm()); 
+        mac.init(secretKeySpec);
+        byte[] digest = mac.doFinal(payload.getBytes(StandardCharsets.UTF_8));
+        return byte2Hex(digest);
+      }
+
       MessageDigest md = MessageDigest.getInstance(config.getAlgorithm());
       md.update(config.getSecretKey().getBytes(StandardCharsets.UTF_8));
       md.update(payload.getBytes(StandardCharsets.UTF_8));
       return byte2Hex(md.digest());
-    } catch (UnsupportedEncodingException e) {
-      ((Logger) getX().get("logger")).error("Failed digest calculation", config.getAlgorithm(), e.getMessage());
+    } catch (Exception e) {
+      ((Logger) x.get("logger")).error(this.getClass().getSimpleName(), "Failed digest calculation", config.getAlgorithm(), e.getMessage());
       throw e;
     }
   }
