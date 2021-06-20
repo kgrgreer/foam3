@@ -62,11 +62,7 @@ foam.CLASS({
     {
       name: 'timerInterval',
       class: 'Long',
-      // TODO: make random ,
-      value: 10000,
-      javaFactory: ` // 7000-10000 ms
-      return ((long)(Math.random() * 3))*1000 + 7000;
-      `
+      value: 10000
     },
     {
       name: 'initialTimerDelay',
@@ -139,12 +135,13 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      // getLogger().info("execute");
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
       ClusterConfig config = support.getConfig(x, getId());
       try {
         if ( ! config.getEnabled() ) {
-          // getLogger().debug("execute, disabled");
+          getLogger().debug("execute, disabled");
           return;
         }
         // getLogger().debug("execute");

@@ -16,15 +16,23 @@ public class NanoWebSocketServer
   protected WebSocketServer server_;
   public void start() {
     int port = port_;
-    foam.nanos.jetty.HttpServer httpServer = (foam.nanos.jetty.HttpServer) getX().get("http");
-    if ( httpServer != null ) {
-      port = httpServer.getPort();
-      ((foam.nanos.logger.Logger) getX().get("logger")).debug(this.getClass().getSimpleName(), "http port", httpServer.getPort());
+    // TODO: add a port config support system.
+    if ( ! foam.util.SafetyUtil.isEmpty(System.getProperty("http.port")) ) {
+      try {
+        port = Integer.parseInt(System.getProperty("http.port"));
+      } catch ( NumberFormatException e ) {
+        ((foam.nanos.logger.Logger) getX().get("logger")).error(this.getClass().getSimpleName(), "Invalid http.port", System.getProperty("http.port"));
+      }
     } else {
-      ((foam.nanos.logger.Logger) getX().get("logger")).warning(this.getClass().getSimpleName(), "http not found in context");
+      foam.nanos.jetty.HttpServer httpServer = (foam.nanos.jetty.HttpServer) getX().get("http");
+      if ( httpServer != null ) {
+        port = httpServer.getPort();
+      } else {
+        ((foam.nanos.logger.Logger) getX().get("logger")).warning(this.getClass().getSimpleName(), "http not found");
+      }
     }
     port += WEBSOCKET_PORT_OFFSET;
-    System.out.println("Starting WebSocket Server on port " + port);
+    ((foam.nanos.logger.Logger) getX().get("logger")).info(this.getClass().getSimpleName(),"Starting,port",port);
 
     server_ = new WebSocketServer(new InetSocketAddress(port));
     server_.setX(getX());

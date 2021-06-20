@@ -148,7 +148,6 @@ foam.CLASS({
             port = Integer.parseInt(portStr);
           } catch ( NumberFormatException e ) {
             getLogger().error("invalid HTTP port", portStr);
-            port = getPort();
           }
         }
 
@@ -164,7 +163,7 @@ foam.CLASS({
           new org.eclipse.jetty.server.Server(threadPool);
 
         if ( getEnableHttp() ) {
-          getLogger().info("Starting Jetty HTTP server on port", port);
+          getLogger().info("Starting,HTTP,port", port);
           ServerConnector connector = new ServerConnector(server);
           connector.setPort(port);
           connector.addBean(stats);
@@ -331,7 +330,6 @@ foam.CLASS({
             port = Integer.parseInt(System.getProperty("https.port"));
           } catch ( NumberFormatException e ) {
             getLogger().error("invalid HTTPS port", System.getProperty("https.port"));
-            port = getHttpsPort();
           }
         } else if ( ! foam.util.SafetyUtil.isEmpty(System.getProperty("http.port")) ) {
           // when https.port is not specified and http.port is and http is not
@@ -343,7 +341,6 @@ foam.CLASS({
             }
           } catch ( NumberFormatException e ) {
             getLogger().error("invalid HTTPS port", System.getProperty("http.port"));
-            port = getHttpsPort();
           }
         }
 
@@ -400,7 +397,7 @@ foam.CLASS({
           // sslContextFactory.setWantClientAuth(true);
           // sslContextFactory.setNeedClientAuth(true);
 
-          getLogger().info("Starting Jetty HTTPS server on port", port);
+          getLogger().info("Starting,HTTPS,port", port);
           ServerConnector sslConnector = new ServerConnector(server,
             new SslConnectionFactory(sslContextFactory, "http/1.1"),
             new HttpConnectionFactory(https));

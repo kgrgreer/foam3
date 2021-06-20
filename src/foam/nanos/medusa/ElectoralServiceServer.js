@@ -154,34 +154,6 @@ foam.CLASS({
     `
     },
     {
-      name: 'buildURL',
-      args: [
-        {
-          name: 'config',
-          type: 'foam.nanos.medusa.ClusterConfig'
-        }
-      ],
-      type: 'String',
-      javaCode: `
-      try {
-        // TODO: protocol - http will do for now as we are behind the load balancers.
-        String address = config.getId();
-        DAO hostDAO = (DAO) getX().get("hostDAO");
-        Host host = (Host) hostDAO.find(config.getId());
-        if ( host != null ) {
-          address = host.getAddress();
-        }
-        String scheme = config.getUseHttps() ? "https" : "http";
-        java.net.URI uri = new java.net.URI(scheme, null, address, config.getPort(), "/service/electoralService", null, null);
-        // getLogger().debug("buildURL", config.getName(), uri.toURL().toString());
-        return uri.toURL().toString();
-      } catch (java.net.MalformedURLException | java.net.URISyntaxException e) {
-        getLogger().error(e);
-        throw new RuntimeException(e);
-      }
-      `
-    },
-    {
       documentation: 'Force an election, if one not already in progress.',
       name: 'register',
       synchronized: true,
