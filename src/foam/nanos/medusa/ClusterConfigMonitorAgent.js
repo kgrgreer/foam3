@@ -135,7 +135,6 @@ foam.CLASS({
         }
       ],
       javaCode: `
-      // getLogger().info("execute");
       ClusterConfigSupport support = (ClusterConfigSupport) x.get("clusterConfigSupport");
       ClusterConfig myConfig = support.getConfig(x, support.getConfigId());
       ClusterConfig config = support.getConfig(x, getId());
@@ -144,7 +143,6 @@ foam.CLASS({
           getLogger().debug("execute, disabled");
           return;
         }
-        // getLogger().debug("execute");
         DAO client = support.getClientDAO(x, "clusterConfigDAO", myConfig, config);
         PM pm = new PM(this.getClass().getSimpleName(), config.getId());
         try {
