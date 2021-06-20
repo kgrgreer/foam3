@@ -38,7 +38,11 @@ foam.CLASS({
     },
     {
       name: 'nodeView',
-      class: 'foam.u2.ViewSpec'
+      class: 'foam.u2.ViewSpec',
+      documentation: `
+        ViewSpec for each node rendered in the DAG view. This u2 element should
+        render as the same size specified by the cellSize property.
+      `
     },
     {
       name: 'cellSize',
@@ -69,10 +73,6 @@ foam.CLASS({
           cellSize$: this.cellSize$
         })
       }
-    },
-    {
-      name: 'nodeView',
-      class: 'foam.u2.ViewSpec'
     },
     {
       name: 'zoom',
