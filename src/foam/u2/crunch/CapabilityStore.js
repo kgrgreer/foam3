@@ -5,6 +5,46 @@
  */
 
 foam.CLASS({
+  class: 'foam.core.Model',
+  
+  package: 'foam.u2.crunch',
+  name: 'TestView',
+  extends: 'foam.u2.View',
+
+  properties: [
+    {
+      name: 'something',
+      factory: () => ({ a: 1 })
+    },
+    {
+      class: 'String',
+      name: 'company',
+      value: 'Nanopay',
+      view: {
+        // Also read only, but usually don't favour this over ControllerMode
+        // but... really useful for custom views
+        class: 'foam.u2.view.ValueView'
+      }
+    }
+  ],
+
+  methods: [
+    function initE() {
+      this.something.a = 2;
+      this
+        .start('h1').add('hello').end() // <h1>hello</h1>
+        .start()
+          .start('p')
+            .startContext({ data: this, controllerMode: foam.u2.ControllerMode.VIEW /* read only */ })
+              .start(this.COMPANY).end()
+            .endContext()
+          .end()
+        .end()
+    }
+  ]
+});
+
+foam.CLASS({
   package: 'foam.u2.crunch',
   name: 'CapabilityStore',
   extends: 'foam.u2.View',
@@ -178,7 +218,10 @@ foam.CLASS({
       name: 'cardsOverflow',
       class: 'Boolean'
     },
-    'junctions',
+    {
+      name: 'junctions',
+      factory: () => []
+    },
     'wizardOpened'
   ],
 
@@ -211,7 +254,7 @@ foam.CLASS({
         .add(this.slot(function(junctions, featuredCapabilities){
           return self.renderFeatured();
         }))
-        .add(this.slot(function(junctions){
+        .add(this.slot(function(junctions, visibleCapabilityDAO){
           return self.renderPredicatedSection(
             this.TRUE,
             this.EQ(
