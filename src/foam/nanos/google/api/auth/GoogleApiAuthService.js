@@ -18,8 +18,13 @@ foam.CLASS({
     'com.google.api.client.json.JsonFactory',
     'com.google.api.client.json.jackson2.JacksonFactory',
     'com.google.api.client.util.store.FileDataStoreFactory',
+    
+    'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.logger.PrefixLogger',
+
     'java.io.FileInputStream',
     'java.io.IOException',
     'java.io.InputStreamReader',
@@ -71,7 +76,7 @@ foam.CLASS({
         GoogleApiCredentials credentialsConfig = (GoogleApiCredentials) ((DAO)getX().get("googleApiCredentialsDAO")).find(req.getServerName());
         
         if ( credentialsConfig == null ) {
-          getLogger.error("Missing GoogleApiCredential for " + req.getServerName());
+          getLogger(x).error("Missing GoogleApiCredential for " + req.getServerName());
           return null;
         }
 
@@ -113,19 +118,6 @@ foam.CLASS({
           httpRequest.setReadTimeout(3 * 60000);
         }
       };
-      `
-    },
-    {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaGetter: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
       `
     }
   ]
