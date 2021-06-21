@@ -165,13 +165,7 @@ foam.CLASS({
               delegate = fixedSizeDAO;
               //setMdao(fixedSizeDAO);
             }
-            if ( getJournalType().equals(JournalType.SINGLE_JOURNAL) ) {
-              if ( getWriteOnly() ) {
-                delegate = new foam.dao.WriteOnlyJDAO(getX(), delegate, getOf(), getJournalName());
-              } else {
-                delegate = new foam.dao.java.JDAO(getX(), delegate, getJournalName(), getCluster());
-              }
-            }
+            delegate = getJournalDelegate(getX(), delegate);
           }
         }
 
@@ -792,6 +786,30 @@ model from which to test ServiceProvider ID (spid)`,
          setMdao(new foam.dao.MDAO(of_));
        }
      `
+    },
+    {
+      name: 'getJournalDelegate',
+      args: [
+        {
+          type: 'Context',
+          name: 'x'
+        },
+        {
+          type: 'foam.dao.DAO',
+          name: 'delegate'
+        }
+      ],
+      type: 'foam.dao.DAO',
+      javaCode: `
+        if ( getJournalType().equals(JournalType.SINGLE_JOURNAL) ) {
+          if ( getWriteOnly() ) {
+            delegate = new foam.dao.WriteOnlyJDAO(x, delegate, getOf(), getJournalName());
+          } else {
+            delegate = new foam.dao.java.JDAO(x, delegate, getJournalName(), getCluster());
+          }
+        }
+        return delegate;
+      `
     },
     {
       name: 'getOuterDAO',
