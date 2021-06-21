@@ -185,6 +185,11 @@ foam.CLASS({
       value: false
     },
 
+    {
+      class: 'Boolean',
+      name: 'includeInHash',
+      value: true
+    },
     /**
       When set, marks the property with the given flags. This can be used for
       things like stripping out platform specific properties when serializing.
@@ -423,14 +428,14 @@ foam.CLASS({
       var fip         = 0;
 
 if ( factory && (
-     factory.toString().indexOf('/* ignoreWarning */') == -1) && ( 
+     factory.toString().indexOf('/* ignoreWarning */') == -1) && (
      factory.toString().indexOf('then(') != -1 ||
      factory.toString().indexOf('await') != -1 ) )
 {
   console.error('Invalid Asynchronous Function', proto.cls_.id + '.' + prop.name + '.factory=', factory);
 }
 if ( eFactory && (
-     eFactory.toString().indexOf('/* ignoreWarning */') == -1) && ( 
+     eFactory.toString().indexOf('/* ignoreWarning */') == -1) && (
      eFactory.toString().indexOf('then(') != -1 ||
      eFactory.toString().indexOf('await') != -1 ) )
 {

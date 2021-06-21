@@ -570,7 +570,7 @@ foam.LIB({
         })
         .filter(flagFilter)
         .map(function(p) {
-          return foam.java.Field.create({ name: p.name, type: p.javaType });
+          return foam.java.Field.create({ name: p.name, type: p.javaType, includeInHash: p.includeInHash });
         });
 
       var properties = this.getAxiomsByClass(foam.core.Property)
@@ -725,8 +725,9 @@ return sb.toString();`
           name: 'hashCode',
           type: 'int',
           body:
-            ['int hash = 1'].concat(props.map(function(f) {
-              return 'hash = hash * 31 + foam.util.SafetyUtil.hashCode('+f.name+ '_' +')';
+            ['int hash = 1'].concat(props.filter(function(p) {
+              return p.includeInHash; }).map(function(f) {
+              return 'hash = hash * 31 + foam.util.SafetyUtil.hashCode(' + f.name + '_)';
             })).join(';\n') + ';\n'
             +'return hash;\n'
         });
