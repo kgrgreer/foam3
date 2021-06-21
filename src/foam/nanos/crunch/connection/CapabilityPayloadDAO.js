@@ -262,12 +262,8 @@ foam.CLASS({
         CapabilityPayload receivingCapPayload = (CapabilityPayload) obj;
         Map<String,FObject> capabilityDataObjects = (Map<String,FObject>) receivingCapPayload.getCapabilityDataObjects();
 
-        // Retrieve the current set
-        CapabilityPayload currentCapPayload = (CapabilityPayload) find_(x, receivingCapPayload.getId());
-        Map<String,FObject> currentCapabilityDataObjects = (Map<String,FObject>) currentCapPayload.getCapabilityDataObjects();
-
         List grantPath = ((CrunchService) x.get("crunchService")).getGrantPath(x, receivingCapPayload.getId());
-        processCapabilityList(x, grantPath, capabilityDataObjects, currentCapabilityDataObjects);
+        processCapabilityList(x, grantPath, capabilityDataObjects);
 
         var ret =  find_(x, receivingCapPayload.getId());
         return ret;
@@ -284,21 +280,12 @@ foam.CLASS({
       args: [
         { name: 'x', type: 'Context' },
         { name: 'list', type: 'List' },
-        { name: 'capabilityDataObjects', type: 'Map' },
-        { name: 'currentCapabilityDataObjects', type: 'Map' }
+        { name: 'capabilityDataObjects', type: 'Map' }
       ],
       javaCode: `
         for (Object item : list) {
           if ( item instanceof Capability ) {
             Capability cap = (Capability) item;
-
-            FObject currentDataObj = null;
-            if ( currentCapabilityDataObjects != null && currentCapabilityDataObjects.containsKey(cap.getName()))
-            {
-              currentDataObj = ( cap.getOf() != null ) ? 
-                (FObject) cap.getOf().getObjClass().cast(currentCapabilityDataObjects.get(cap.getName())) :
-                (FObject) capabilityDataObjects.get(cap.getName());
-            }
 
             FObject dataObj = null;
             if ( capabilityDataObjects != null && capabilityDataObjects.containsKey(cap.getName()) ) {
@@ -307,22 +294,19 @@ foam.CLASS({
                 (FObject) cap.getOf().getObjClass().cast(capabilityDataObjects.get(cap.getName())) :
                 (FObject) capabilityDataObjects.get(cap.getName());  
             }
-
-            if ( currentDataObj != null ) {
-              // copy any new values from the new data object into the current object
-              if ( dataObj != null) {
-                currentDataObj.copyFrom(dataObj);
-              }
-              dataObj = currentDataObj;
-            } 
             
-            UserCapabilityJunction ucj = (UserCapabilityJunction) ((CrunchService) x.get("crunchService")).updateJunction(x, cap.getId(), dataObj, null);
-            getLogger().debug(
-              "Updated capability: " + cap.getName() + " - " + cap.getId(), 
-              "Status: " + ucj.getStatus(), 
-              "Source: " + ((ucj.findSourceId(x) != null) ? ucj.getSourceId() + " - " + ucj.findSourceId(x).toSummary() : ucj.getSourceId()));
+            CrunchService crunchService = (CrunchService) x.get("crunchService");
+            UserCapabilityJunction oldUcj = crunchService.getJunction(x, cap.getId());
+            FObject currentDataObj = oldUcj.getData();
+            if ( currentDataObj != null && dataObj != null ) {
+              currentDataObj.copyFrom(dataObj);
+              dataObj = currentDataObj;
+            }
+            
+            UserCapabilityJunction ucj = (UserCapabilityJunction) crunchService.updateJunction(x, cap.getId(), dataObj, null);
+            getLogger().debug("Updated capability: " + cap.getName() + " - " + cap.getId(), ucj.getStatus(), ucj.findSourceId(x), dataObj);
           } else if ( item instanceof List ) {
-            processCapabilityList(x, (List) item, capabilityDataObjects, currentCapabilityDataObjects);
+            processCapabilityList(x, (List) item, capabilityDataObjects);
           } else {
             getLogger().warning("Ignoring unexpected item in grant path " + item);
           }
