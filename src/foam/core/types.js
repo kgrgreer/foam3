@@ -908,7 +908,20 @@ foam.CLASS({
     {
       name: 'value',
       expression: function(of) {
-        return of ? of.ID.value : null;
+        var ret = of ? of.ID.value : null;
+
+
+        if ( ! of ){
+          console.warn('Of not found for: ' + this.name)
+          console.warn('Possible circular reference: Please explicitly set a default value on: ' + this.name)
+        }
+
+        if ( ret === undefined ){
+          console.warn('Default value is undefined for: ' + of.name + '.' + this.name)
+          ret = null;
+        }
+
+        return ret;
         // return ( of && of.ID.value ) || null;
       }
     }

@@ -42,6 +42,9 @@ foam.CLASS({
       name: 'port',
       javaFactory: `
         String portStr = System.getProperty("http.port");
+        if ( foam.util.SafetyUtil.isEmpty(portStr) ) {
+          portStr = "8080";
+        }
         return Integer.parseInt(portStr) + PORT_OFFSET;
       `
     },

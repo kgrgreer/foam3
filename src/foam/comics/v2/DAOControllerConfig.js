@@ -115,8 +115,7 @@ foam.CLASS({
           editColumnsEnabled: true,
           columns: defaultColumns,
           css: {
-            width: '100%',
-            'min-height': this.minHeight + 'px'
+            width: '100%'
           }
         };
       }
@@ -264,6 +263,23 @@ foam.CLASS({
       fromJSON: function fromJSON(value, ctx, prop, json) {
         return value;
       }
+    },
+    {
+      class: 'FObjectArray',
+      of: 'foam.core.Action',
+      name: 'browseActions',
+      documentation: 'An array of Actions valid for the summaryView',
+      adaptArrayElement: function(o) {
+        if ( foam.core.Action.isInstance(o) ) return;
+        var lastIndex = o.lastIndexOf('.');
+        var classObj = foam.lookup(o.substring(0, lastIndex));
+        return classObj[o.substring(lastIndex + 1)];
+      }
+    },
+    {
+      name: 'browseContext',
+      documentation: 'Used to relay context for summaryView/browserView back to the ControllerView',
+      value: null
     }
   ]
 });

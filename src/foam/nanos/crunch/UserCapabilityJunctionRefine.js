@@ -8,8 +8,10 @@ foam.CLASS({
   package: 'foam.nanos.crunch',
   name: 'UserCapabilityJunctionRefine',
   refines: 'foam.nanos.crunch.UserCapabilityJunction',
-  mixins: [ 'foam.nanos.crunch.CapabilityJunctionPayload' ],
+
   implements: [ 'foam.nanos.auth.LifecycleAware' ],
+
+  mixins: [ 'foam.nanos.crunch.CapabilityJunctionPayload' ],
 
   documentation: `
     Model for UserCapabilityJunction, contains the data needed to grant the
@@ -46,7 +48,7 @@ foam.CLASS({
 
   messages: [
     { name: 'VIEW_TITLE_USER', message: 'Users' },
-    { name: 'VIEW_TITLE_CAP', message: 'Capabilities' }
+    { name: 'VIEW_TITLE_CAP',  message: 'Capabilities' }
   ],
 
   sections: [
@@ -126,10 +128,13 @@ foam.CLASS({
       name: 'payload',
       class: 'FObjectProperty',
       of: 'foam.nanos.crunch.UserCapabilityJunction',
+      includeInHash: false,
       javaCompare: 'return 0;',
       javaGetter: `
         return this;
       `,
+      javaSetter: '',
+      javaCloneProperty: '',
       hidden: true,
       externalTransient: true
     },
