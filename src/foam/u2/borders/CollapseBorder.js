@@ -28,7 +28,6 @@ foam.CLASS({
       display: inline;
       height: 30px;
       position: relative;
-      top: -10px;
       width: 30px;
     }
     ^toolbar {
@@ -45,7 +44,6 @@ foam.CLASS({
       background: white;
       padding: 3px;
       position: relative;
-      top: -3px;
     }
     ^control > .foam-u2-ActionView-toggle {
       transform: rotate(-90deg);
@@ -84,6 +82,7 @@ foam.CLASS({
         addClass(this.myClass()).
         enableClass('expanded', this.expanded$).
         start('div').
+          style({ 'display': 'flex', 'flex-direction': 'row', 'align-items': 'center' }).
           addClass(this.myClass('toolbar')).
           start('div').
             addClass(this.myClass('control')).
