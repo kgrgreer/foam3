@@ -11,6 +11,14 @@ TODO:
  - Don't generate .java and remove need for flags: ['js'].
 */
 
+/* PORTING:
+  - rename initE to render
+  - move init() rendering code to render
+  - replace use of setNodeName to setting the nodeName property
+  - remove use of this.sub('onload') this.sub('onunload')
+  - el() is now synchronous instead of returning a Promise
+*/
+
 foam.ENUM({
   package: 'foam.u2',
   name: 'ControllerMode',
@@ -368,7 +376,17 @@ foam.CLASS({
         this.onSetAttr(attr.name, attr.value);
       }
 
-      this.initE();
+      // disable adding to content$ during render()
+      this.add = function() { return this.add_(arguments, this); }
+      this.initTooltip();
+      this.initKeyboardShortcuts();
+      this.render();
+      if ( this.initE != foam.u2.Element.prototype.initE ) {
+        console.warn('Deprecated use of Element.initE(). Use render instead: ', this.cls_.name);
+        this.initE();
+      }
+      this.add = foam.u2.Element.prototype.add;
+
       if ( this.tabIndex ) this.setAttribute('tabindex', this.tabIndex);
       // Add a delay before setting the focus in case the DOM isn't visible yet.
       if ( this.focused ) this.el().then(el => el.focus());
@@ -450,9 +468,11 @@ foam.CLASS({
       this.addRemoveListener_(topic, listener);
     },
     function onSetStyle(key, value) {
+if ( ! this.el_() ) return;
       this.el_().style[key] = value;
     },
     function onSetAttr(key, value) {
+if ( ! this.el_() ) return;
       if ( this.PSEDO_ATTRIBUTES[key] ) {
         this.el_()[key] = value;
       } else {
@@ -905,7 +925,7 @@ foam.CLASS({
       topics: [],
       delegates: foam.u2.ElementState.getOwnAxiomsByClass(foam.core.Method).
         map(function(m) { return m.name; }),
-      factory: function() { return this.INITIAL; },
+      factory: function() { return this.LOADED; },
       postSet: function(oldState, state) {
         if ( state === this.LOADED ) {
           this.pub('onload');
@@ -1064,13 +1084,10 @@ foam.CLASS({
       this.onDetach(this.visitChildren.bind(this, 'detach'));
     },
 
+    function render() {
+    },
+
     function initE() {
-      /*
-        Template method for adding addtion element initialization
-        just before Element is output().
-      */
-      this.initTooltip();
-      this.initKeyboardShortcuts();
     },
 
     async function observeScrollHeight() {
@@ -1660,7 +1677,11 @@ foam.CLASS({
     },
 
     function add() {
-      return this[this.content || 'add_'](arguments, this);
+      if ( this.content ) {
+        this.content.add(arguments, this);
+        return this;
+      }
+      return this.add_(arguments, this);
     },
 
     function add_(cs, parentNode) {
