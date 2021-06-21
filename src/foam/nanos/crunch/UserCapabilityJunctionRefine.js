@@ -133,6 +133,8 @@ foam.CLASS({
       javaGetter: `
         return this;
       `,
+      javaSetter: '',
+      javaCloneProperty: '',
       hidden: true,
       externalTransient: true
     },
