@@ -191,6 +191,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var btn = { size: 'LARGE' };
+      var primaryBtn = { ...btn, buttonStyle: 'PRIMARY' };
       var self = this;
 
       this
@@ -247,8 +248,8 @@ foam.CLASS({
                   .tag(this.GO_PREV, btn)
                   .tag(this.GO_NEXT,
                     data$isLastScreen
-                      ? { ...btn, label: this.ACTION_LABEL }
-                      : btn
+                      ? { ...primaryBtn, label: this.ACTION_LABEL }
+                      : primaryBtn
                   )
                   .endContext();
               }))

@@ -104,15 +104,23 @@ public class ServiceWebAgent
       try {
         // logger.debug("parseString", builder.toString());
         result = requestContext.create(JSONParser.class).parseString(builder.toString());
-      } catch (Throwable t) {
-        logger.error("Unable to parse", builder.toString());
-        throw t;
+      } catch (RuntimeException t) {
+        try {
+          String message = getParsingError(x, builder.toString());
+          logger.error("Unable to parse", message, "input", builder.toString());
+        } catch (RuntimeException r) {
+          // noop
+          logger.error("Unable to parse", t.getMessage(), "input", builder.toString(), t);
+        }
+        resp.setStatus(resp.SC_BAD_REQUEST);
+        out.flush();
+        return;
       }
 
       if ( result == null ) {
         resp.setStatus(resp.SC_BAD_REQUEST);
         String message = getParsingError(x, builder.toString());
-        logger.error("JSON parse error: " + message + ", input: " + builder.toString());
+        logger.error("Unable to parse", message, "input", builder.toString());
         out.flush();
         return;
       }
@@ -127,8 +135,8 @@ public class ServiceWebAgent
 
       foam.box.Message msg = (foam.box.Message) result;
       new SessionServerBox(x, skeleton_, authenticate_).send(msg);
-    } catch (Throwable t) {
-      throw new RuntimeException(t);
+    } catch (java.io.IOException t) {
+      throw new foam.core.FOAMException(t.getMessage(), t);
     }
   }
 
