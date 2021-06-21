@@ -442,7 +442,9 @@ This is the heart of Medusa.`,
 
             FObject old = dao.find_(x, nu.getProperty("id"));
             if (  old != null ) {
+getLogger().info("mdao", "data", "overlay", "start");
               nu = old.fclone().overlay(nu);
+getLogger().info("mdao", "data", "overlay", "end");
             }
           }
           if ( ! SafetyUtil.isEmpty(entry.getTransientData()) ) {
@@ -458,10 +460,14 @@ This is the heart of Medusa.`,
                 nu = tran;
                 FObject old = dao.find_(x, nu.getProperty("id"));
                 if (  old != null ) {
+getLogger().info("mdao", "transient", "old", "overlay", "start");
                   nu = old.fclone().overlay(nu);
+getLogger().info("mdao", "transient", "old", "overlay", "end");
                 }
               } else {
+getLogger().info("mdao", "transient", "tran", "overlay", "start");
                 nu = nu.overlay(tran);
+getLogger().info("mdao", "transient", "tran", "overlay", "end");
               }
             }
           }

@@ -323,16 +323,25 @@ public interface FObject
   }
 
   default FObject overlay_(FObject obj, java.util.Set visited) {
-    if ( visited.contains(obj.hashCode()) ) {
-      System.err.println("FObject.overlay "+this.getClass().getName()+" visited "+obj.getClass().getName()+": "+obj.toString());
-      return obj;
+    foam.nanos.logger.Logger logger = new foam.nanos.logger.StdoutLogger();
+    // int code = obj.hashCode();
+    String code = obj.toString();
+    if ( visited.contains(code) ) {
+      logger.info("FObject.overlay",this.getClass().getName(),"visited",obj.getClass().getName(), code);
+      return this;
     } else {
-      visited.add(obj.hashCode());
+      logger.info("FObject.overlay",this.getClass().getName(),"visiting",obj.getClass().getName(), code);
+      visited.add(code);
+      // if ( this.hashCode() == obj.hashCode() ) {
+      if ( this.toString().equals(obj.toString()) ) {
+        logger.info("FObject.overlay",this.getClass().getName(),"visiting self", code);
+        return this;
+      }
     }
 
     //    throw ClassCastException {
     if ( ! ( this.getClass().isAssignableFrom(obj.getClass()))) {
-      System.err.println("FObject.overlay "+this.getClass().getName()+" not assignable from "+obj.getClass().getName());
+      logger.info("FObject.overlay", this.getClass().getName(), "not assignable from",obj.getClass().getName());
     }
     List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
     for ( PropertyInfo p : props ) {
@@ -340,17 +349,17 @@ public interface FObject
       try {
         remote = p.get(obj);
       } catch ( ClassCastException e ) {
-        System.err.println("FObject.overlay "+p.getName()+" p.get(obj): "+e.getMessage());
+        logger.info("FObject.overlay ",p.getName(),"p.get(obj)",e.getMessage());
         PropertyInfo p2 = (PropertyInfo) obj.getClassInfo().getAxiomByName(p.getName());
         if ( p2 != null ) {
           p = p2;
           try {
             remote = p.get(obj);
           } catch ( ClassCastException ee ) {
-            System.err.println("FObject.overlay "+p.getName()+" p2.get(obj): "+ee.getMessage());
+            logger.info("FObject.overlay",p.getName(),"p2.get(obj)",ee.getMessage());
           }
         } else {
-          System.out.println("FObject.overlay "+p.getName()+" p2: null");
+          logger.info("FObject.overlay",p.getName(),"p2: null");
         }
       }
       try {
@@ -359,9 +368,9 @@ public interface FObject
           Object local = p.get(this);
           if ( local != null ) {
             if ( local == remote ) {
-              System.out.println("FObject.overlay "+p.getName()+" local == remote");
+              logger.info("FObject.overlay",p.getName(),"local == remote");
             } else {
-              System.out.println("FObject.overlay "+p.getName()+" local: "+local.toString()+", remote: "+remote.toString());
+              logger.info("FObject.overlay",p.getName(),"local != remote");
               p.set(this, ((FObject)local).overlay_((FObject)remote, visited));
             }
           } else {
@@ -371,7 +380,7 @@ public interface FObject
           p.set(this, remote);
         }
       } catch ( ClassCastException e ) {
-        System.err.println("FObject.overlay "+p.getName()+" local "+e.getMessage());
+        logger.error("FObject.overlay",p.getName(),"local",e.getMessage());
       }
     }
     return this;
