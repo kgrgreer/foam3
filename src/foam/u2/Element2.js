@@ -11,6 +11,14 @@ TODO:
  - Don't generate .java and remove need for flags: ['js'].
 */
 
+/* PORTING:
+  - rename initE to render
+  - move init() rendering code to render
+  - replace use of setNodeName to setting the nodeName property
+  - remove use of this.sub('onload') this.sub('onunload')
+  - el() is now synchronous instead of returning a Promise
+*/
+
 foam.ENUM({
   package: 'foam.u2',
   name: 'ControllerMode',
@@ -460,9 +468,11 @@ foam.CLASS({
       this.addRemoveListener_(topic, listener);
     },
     function onSetStyle(key, value) {
+if ( ! this.el_() ) return;
       this.el_().style[key] = value;
     },
     function onSetAttr(key, value) {
+if ( ! this.el_() ) return;
       if ( this.PSEDO_ATTRIBUTES[key] ) {
         this.el_()[key] = value;
       } else {
@@ -915,7 +925,7 @@ foam.CLASS({
       topics: [],
       delegates: foam.u2.ElementState.getOwnAxiomsByClass(foam.core.Method).
         map(function(m) { return m.name; }),
-      factory: function() { return this.INITIAL; },
+      factory: function() { return this.LOADED; },
       postSet: function(oldState, state) {
         if ( state === this.LOADED ) {
           this.pub('onload');
