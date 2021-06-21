@@ -20,7 +20,6 @@ foam.CLASS({
     }
 
     ^tr {
-      border-radius: 4px;
       background: /*%WHITE%*/ white;
       display: flex;
       height: 48px;
@@ -29,6 +28,7 @@ foam.CLASS({
 
     ^tbody > ^tr:hover {
       background: /*%GREY5%*/ #f5f7fa;
+      border-radius: 4px;
       cursor: pointer;
     }
 
@@ -64,6 +64,10 @@ foam.CLASS({
 
     ^th:not(:last-child) > img {
       margin-left: 8px;
+    }
+
+    ^th:hover {
+      cursor: pointer;
     }
 
     /**

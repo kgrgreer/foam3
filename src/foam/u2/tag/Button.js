@@ -23,6 +23,7 @@ foam.CLASS({
 
   css: `
     ^ {
+      font: inherit;
       align-items: center;
       border: 1px solid transparent;
       border-radius: 4px;
