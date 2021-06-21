@@ -726,7 +726,7 @@ return sb.toString();`
           type: 'int',
           body:
             ['int hash = 1'].concat(props.map(function(f) {
-              return 'hash += hash * 31 + foam.util.SafetyUtil.hashCode('+f.name+ '_' +')';
+              return 'hash = hash * 31 + foam.util.SafetyUtil.hashCode('+f.name+ '_' +')';
             })).join(';\n') + ';\n'
             +'return hash;\n'
         });
@@ -1254,8 +1254,8 @@ foam.CLASS({
   mixins: [ 'foam.java.JavaCompareImplementor' ],
 
   properties: [
-    ['javaType',                     'long'],
-    ['javaInfoType',                 'foam.core.AbstractLongPropertyInfo']
+    ['javaType',     'long'],
+    ['javaInfoType', 'foam.core.AbstractLongPropertyInfo']
   ]
 });
 
@@ -1268,8 +1268,8 @@ foam.CLASS({
   mixins: [ 'foam.java.JavaCompareImplementor' ],
 
   properties: [
-    ['javaType',       'double'],
-    ['javaInfoType',   'foam.core.AbstractDoublePropertyInfo']
+    ['javaType',     'double'],
+    ['javaInfoType', 'foam.core.AbstractDoublePropertyInfo']
   ]
 });
 
