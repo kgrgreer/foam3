@@ -20,16 +20,11 @@ foam.CLASS({
     }
 
     ^tr {
-      background: white;
+      border-radius: 4px;
+      background: /*%WHITE%*/ white;
       display: flex;
       height: 48px;
       justify-content: space-between;
-    }
-
-    ^tbody > ^tr {
-      border-left: 1px solid /*%GREY4%*/ #e7eaec;
-      border-right: 1px solid /*%GREY4%*/ #e7eaec;
-      border-bottom: 1px solid /*%GREY4%*/ #e7eaec;
     }
 
     ^tbody > ^tr:hover {
@@ -38,13 +33,16 @@ foam.CLASS({
     }
 
     ^thead {
-      border: 1px solid /*%GREY4%*/ #e7eaec;
-      border-radius: 5px;
-      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
       overflow: hidden;
       position: sticky;
       top: 0;
       overflow-x: auto;
+    }
+
+    ^thead > ^tr {
+      border-bottom: 2px solid /*%GREY4%*/ #DADDE2;
+      box-sizing: border-box;
+      border-radius: 0px;
     }
 
     ^td,
@@ -62,10 +60,6 @@ foam.CLASS({
       text-overflow: ellipsis;
       white-space: nowrap;
       min-width: 40px; /* So when the table's width decreases, columns aren't hidden completely */
-    }
-
-    ^th {
-      font-weight: 900;
     }
 
     ^th:not(:last-child) > img {
