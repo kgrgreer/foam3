@@ -14,7 +14,7 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.box.HTTPBox',
+    'foam.box.SessionClientBox',
     'foam.core.Agency',
     'foam.core.ContextAgent',
     'foam.core.FObject',
@@ -152,34 +152,6 @@ foam.CLASS({
       }
       getLogger().debug("recordResult", config.getName(), result, "votes", getVotes());
     `
-    },
-    {
-      name: 'buildURL',
-      args: [
-        {
-          name: 'config',
-          type: 'foam.nanos.medusa.ClusterConfig'
-        }
-      ],
-      type: 'String',
-      javaCode: `
-      try {
-        // TODO: protocol - http will do for now as we are behind the load balancers.
-        String address = config.getId();
-        DAO hostDAO = (DAO) getX().get("hostDAO");
-        Host host = (Host) hostDAO.find(config.getId());
-        if ( host != null ) {
-          address = host.getAddress();
-        }
-        String scheme = config.getUseHttps() ? "https" : "http";
-        java.net.URI uri = new java.net.URI(scheme, null, address, config.getPort(), "/service/electoralService", null, null);
-        // getLogger().debug("buildURL", config.getName(), uri.toURL().toString());
-        return uri.toURL().toString();
-      } catch (java.net.MalformedURLException | java.net.URISyntaxException e) {
-        getLogger().error(e);
-        throw new RuntimeException(e);
-      }
-      `
     },
     {
       documentation: 'Force an election, if one not already in progress.',
@@ -336,12 +308,9 @@ foam.CLASS({
               getLogger().debug("callVote", "executeJob", config.getId(), "voter", clientConfig.getId());
               ClientElectoralService electoralService =
                 new ClientElectoralService.Builder(x)
-                 .setDelegate(new HTTPBox.Builder(x)
-                   .setUrl(buildURL(clientConfig))
-                   .setAuthorizationType(foam.box.HTTPAuthorizationType.BEARER)
+                 .setDelegate(new SessionClientBox.Builder(x)
                    .setSessionID(clientConfig.getSessionId())
-                   .setConnectTimeout(3000)
-                   .setReadTimeout(3000)
+                   .setDelegate(support.getSocketClientBox(x, "electoralService", config, clientConfig))
                    .build())
                  .build();
               try {
@@ -465,12 +434,9 @@ foam.CLASS({
             public void execute(X x) {
               ClientElectoralService electoralService2 =
                 new ClientElectoralService.Builder(getX())
-                 .setDelegate(new HTTPBox.Builder(getX())
-                   .setUrl(buildURL(clientConfig2))
-                   .setAuthorizationType(foam.box.HTTPAuthorizationType.BEARER)
+                 .setDelegate(new SessionClientBox.Builder(x)
                    .setSessionID(clientConfig2.getSessionId())
-                   .setConnectTimeout(3000)
-                   .setReadTimeout(3000)
+                   .setDelegate(support.getSocketClientBox(x, "electoralService", config, clientConfig2))
                    .build())
                  .build();
 
