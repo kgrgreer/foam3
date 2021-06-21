@@ -35,18 +35,6 @@ foam.CLASS({
   `,
 
   css: `
-    ^export {
-      margin-left: 16px;
-    }
-
-    ^export img {
-      margin-right: 0;
-    }
-
-    .foam-u2-ActionView-refreshTable > img {
-      margin-right: 0;
-    }
-
     ^top-bar {
       border-bottom: solid 1px #e7eaec;
       align-items: center;
@@ -59,6 +47,11 @@ foam.CLASS({
 
     ^toolbar {
       flex-grow: 1;
+    }
+
+    ^buttons{
+      gap: 0.5em;
+      align-items: flex-start;
     }
 
     ^browse-view-container {
@@ -208,7 +201,7 @@ foam.CLASS({
   actions: [
     {
       name: 'export',
-      label: '',
+      label: 'Export',
       toolTip: 'Export Table Data',
       icon: 'images/export-arrow-icon.svg',
       isAvailable: async function() {
@@ -225,7 +218,7 @@ foam.CLASS({
     },
     {
       name: 'refreshTable',
-      label: '',
+      label: 'Refresh',
       toolTip: 'Refresh Table',
       icon: 'images/refresh-icon-black.svg',
       code: function(X) {
@@ -236,10 +229,10 @@ foam.CLASS({
     },
     {
       name: 'import',
-      label: '',
+      label: 'Import',
+      icon: 'images/import-arrow-icon.svg',
       availablePermissions: [ "data.import.googleSheets" ],
       toolTip: 'Import From Google Sheet',
-      // icon: 'images/export-arrow-icon.svg',//need find out where we're getting the icons
       code: function() {
         this.add(this.Popup.create().tag(this.importModal));
       }
@@ -336,15 +329,16 @@ foam.CLASS({
                         this.add(filterView);
                     })
                     .endContext()
-                    .start()
+                    .start(self.Cols)
+                      .addClass(self.myClass('buttons'))
                       .startContext({ data: self })
-                        .start(self.EXPORT, { buttonStyle: 'SECONDARY', size: 'SMALL' })
+                        .start(self.EXPORT, { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true })
                           .addClass(self.myClass('export'))
                         .end()
-                        .start(self.IMPORT, { buttonStyle: 'SECONDARY', size: 'SMALL', icon: 'images/export-arrow-icon.svg', css: {'transform': 'rotate(180deg)'} })
+                        .start(self.IMPORT, { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true })
                           .addClass(self.myClass('export'))
                         .end()
-                        .start(self.REFRESH_TABLE, { buttonStyle: 'SECONDARY', size: 'SMALL' })
+                        .start(self.REFRESH_TABLE, { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true })
                           .addClass(self.myClass('refresh'))
                         .end()
                       .endContext()
