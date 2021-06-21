@@ -7,6 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.google.api.auth',
   name: 'GoogleApiAuthService',
+
   javaImports: [
     'com.google.api.client.auth.oauth2.Credential',
     'com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp',
@@ -26,6 +27,7 @@ foam.CLASS({
     'java.util.Arrays',
     'java.util.List'
   ],
+
   constants: [
     {
       name: 'JSON_FACTORY',
@@ -33,6 +35,16 @@ foam.CLASS({
       javaValue: `JacksonFactory.getDefaultInstance();`
     }
   ],
+
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function(cls) {
+        cls.extras.push(`protected Logger getLogger(X x) { return new PrefixLogger(new Object[] { this.getClass().getSimpleName() }, (Logger) x.get("logger")); }`);
+      }
+    }
+  ],
+
   methods: [
     {
       name: 'getCredentials',
@@ -58,8 +70,11 @@ foam.CLASS({
         HttpServletRequest req = (HttpServletRequest)x.get(HttpServletRequest.class);
         GoogleApiCredentials credentialsConfig = (GoogleApiCredentials) ((DAO)getX().get("googleApiCredentialsDAO")).find(req.getServerName());
         
-        if ( credentialsConfig == null )
+        if ( credentialsConfig == null ) {
+          getLogger.error("Missing GoogleApiCredential for " + req.getServerName());
           return null;
+        }
+
         GoogleClientSecrets.Details details = new GoogleClientSecrets.Details()
                 .setClientId(credentialsConfig.getClientId())
                 .setClientSecret(credentialsConfig.getClientSecret())
@@ -98,6 +113,19 @@ foam.CLASS({
           httpRequest.setReadTimeout(3 * 60000);
         }
       };
+      `
+    },
+    {
+      name: 'logger',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.logger.Logger',
+      visibility: 'HIDDEN',
+      transient: true,
+      javaCloneProperty: '//noop',
+      javaGetter: `
+        return new PrefixLogger(new Object[] {
+          this.getClass().getSimpleName()
+        }, (Logger) getX().get("logger"));
       `
     }
   ]
