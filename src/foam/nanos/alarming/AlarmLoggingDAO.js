@@ -45,15 +45,6 @@ foam.CLASS({
           break;
         case ERROR:
           logger.error("Alarm", alarm.getName(), alarm.getIsActive(), alarm.getNote());
-          if ( alarm.getIsActive() ) {
-            Notification notification = new Notification.Builder(x)
-              .setTemplate("NOC")
-              .setToastMessage(alarm.getName())
-              .setBody(alarm.getNote())
-              .setClusterable(alarm.getClusterable())
-              .build();
-              ((DAO) x.get("localNotificationDAO")).put(notification);
-          }
           break;
         default:
           logger.info("Alarm", alarm.getName(), alarm.getIsActive(), alarm.getNote());
