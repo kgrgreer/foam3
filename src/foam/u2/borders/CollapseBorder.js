@@ -31,10 +31,12 @@ foam.CLASS({
       width: 30px;
     }
     ^toolbar {
-      display: inline-block;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
       position: absolute;
       padding: 3px;
-      width: calc(100% - 16px);
+      width: calc(100% - 3vmin);
       left: 1.5vmin;
       top: max(-12px, -2vmin);
       color: #666;
@@ -57,8 +59,11 @@ foam.CLASS({
       transform: rotate(0deg);
       transition: transform 0.3s;
     }
-    ^float-right {
-      float: right;
+    ^place-right {
+      order: 1;
+    }
+    ^space-even {
+      justify-content: space-between;
     }
   `,
 
@@ -82,15 +87,14 @@ foam.CLASS({
         addClass(this.myClass()).
         enableClass('expanded', this.expanded$).
         start('div').
-          style({ 'display': 'flex', 'flex-direction': 'row', 'align-items': 'center' }).
           addClass(this.myClass('toolbar')).
+          enableClass(this.myClass('space-even'), this.toggleLeft$.map( val => ! val)).
           start('div').
             addClass(this.myClass('control')).
-            addClass( this.toggleLeft ? '' : this.myClass('float-right')).
+            enableClass(this.myClass('place-right'), this.toggleLeft$.map( val => ! val)).
             tag(this.TOGGLE, { label: this.label$ }).
           end().
           start('span').
-            on('click', () => this.toggle()).
             addClass(this.myClass('title')).
             add(this.title$).
           end().
