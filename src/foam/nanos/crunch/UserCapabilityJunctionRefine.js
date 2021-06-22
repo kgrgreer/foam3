@@ -134,7 +134,7 @@ foam.CLASS({
         return this;
       `,
       javaSetter: '',
-      javaCloneProperty: '',
+      javaCloneProperty: '// noop',
       hidden: true,
       externalTransient: true
     },
