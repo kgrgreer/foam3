@@ -155,7 +155,9 @@ foam.CLASS({
       name: 'data',
       value: [],
       adapt: function(_, n) {
-        return this.returnChoiceObj && Array.isArray(n) ? n[0] : n;
+        return this.returnChoiceObj && Array.isArray(n) ?
+          n.length ? n[0] : null
+          : n;
       }
     },
     {
