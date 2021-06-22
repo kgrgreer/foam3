@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-foam.CLASS({
+ foam.CLASS({
   package: 'foam.u2.view',
   name: 'MultiChoiceView',
   extends: 'foam.u2.View',
@@ -294,7 +294,7 @@ foam.CLASS({
                           var array;
                           var indexDataToAdd = self.getIndexOfChoice(self.data, valueSimpSlot.get());
                           if ( indexDataToAdd === -1 ) {
-                            if ( self.data.length >= self.maxSelected ){
+                            if ( self.data?.length >= self.maxSelected ){
                               return;
                             }
                             array = self.returnChoiceObj ?
