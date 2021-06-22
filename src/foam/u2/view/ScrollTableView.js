@@ -217,8 +217,7 @@
         this.currentMemento_ = this.memento.tail;
       }
 
-
-
+      var self = this;
       this.table_ = foam.u2.ViewSpec.createView(this.TableView, {
         data: foam.dao.NullDAO.create({of: this.data.of}),
         columns: this.columns,
@@ -268,6 +267,7 @@
           }
           this.config.dao.inX(ctrl.__subContext__).find(id).then(v => {
             if ( ! v ) return;
+            if ( self.state != self.LOADED ) return;
             this.stack.push({
               class: 'foam.comics.v2.DAOSummaryView',
               data: null,

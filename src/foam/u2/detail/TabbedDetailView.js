@@ -76,7 +76,7 @@ foam.CLASS({
           });
 
           return self.E()
-            .add(arraySlot.map((visibilities) => {
+            .add(arraySlot.map(visibilities => {
               var availableSections = visibilities.length == sections.length ? sections.filter((_, i) => visibilities[i]) : sections;
               var e = availableSections.length == 1 ? 
                 this.E().start(self.CardBorder)
@@ -101,8 +101,8 @@ foam.CLASS({
                             section: s,
                             showTitle: false,
                             selected$: tab.value.selected$
-                          }, self, self.__subContext__.createSubContext({ memento: null }));
-                          this.add(sectionView)
+                          }, self, self.__subContext__.createSubContext({ memento: self.memento }));
+                          this.add(sectionView);
                         })
                       .end();
                   })

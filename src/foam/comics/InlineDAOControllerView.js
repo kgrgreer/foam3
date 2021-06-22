@@ -26,7 +26,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'stack'
+    'stack', 'memento'
   ],
 
   properties: [
@@ -47,7 +47,7 @@ foam.CLASS({
         selectedObjects$: this.data.selectedObjects$
       },
       this,
-      this.__subContext__.createSubContext({ memento: null }));
+      this.__subContext__.createSubContext({ memento: this.memento }));
 
       this.
         add(view).
@@ -65,7 +65,7 @@ foam.CLASS({
         config: foam.comics.v2.DAOControllerConfig.create({ dao: this.__subContext__[this.data.data.targetDAOKey] }),
         idOfRecord: id,
         backLabel: 'Back'
-      }, this.__subContext__.createSubContext({ memento: null }));
+      }, this.__subContext__.createSubContext({ memento: this.memento }));
     }
   ]
 });

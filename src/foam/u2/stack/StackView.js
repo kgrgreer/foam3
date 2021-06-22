@@ -73,10 +73,10 @@ foam.CLASS({
         //we need to check if memento is already set
         //for example when we copy-paste url
         if ( currMemento ) {
-          var m = this.Memento.create({ replaceHistoryState : false });
+          var m = this.Memento.create({ replaceHistoryState: false });
           m.value = v.mementoHead;
   
-          if ( currMemento.value == '' || this.shouldMementoValueBeChanged(X.ctrl.memento.value, v.mementoHead) ) {
+          if ( this.shouldMementoValueBeChanged(X.ctrl.memento.value, v.mementoHead) ) {
             currMemento.tail = m;
           }
         }

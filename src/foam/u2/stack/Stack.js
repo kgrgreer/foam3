@@ -149,34 +149,36 @@ foam.CLASS({
       //check if the class of the view to which current memento points has property MEMENTO_HEAD
       //or if the view is object and it has mementoHead set
       //if so we need to set last not-null memento in the memento chain to null as we're going back
-      if ( this.stack_[this.navStackBottom +1][0].class ) {
-        var classObj = this.stack_[this.navStackBottom +1][0].class;
-        if ( foam.String.isInstance(classObj) ) {
-          classObj = foam.lookup(this.stack_[this.navStackBottom +1][0].class);
-        }
-        var obj = classObj.create(this.stack_[this.navStackBottom +1][0], ctx);
-        if ( obj && obj.mementoHead ) {
-          isMementoSetWithView = true;
-        }
-      } else {
-        if ( this.stack_[this.navStackBottom +1][0].mementoHead ) {
-          isMementoSetWithView = true;
-        }
-      }
-
-      this.pos = jumpPos;
-
-      if ( this.navStackBottom > this.pos ) {
-        for ( var i = this.pos; i >= 0; i-- ) {
-          if ( this.stack_[i][4] && this.stack_[i][4].menuItem ) {
-            this.navStackBottom = i;
-            break;
+      while ( this.pos > jumpPos ) {
+        if ( this.stack_[this.pos][0].class ) {
+          var classObj = this.stack_[this.pos][0].class;
+          if ( foam.String.isInstance(classObj) ) {
+            classObj = foam.lookup(this.stack_[this.pos][0].class);
+          }
+          var obj = classObj.create(this.stack_[this.pos][0], ctx);
+          if ( obj && obj.mementoHead ) {
+            isMementoSetWithView = true;
+          }
+        } else {
+          if ( this.stack_[this.pos][0].mementoHead ) {
+            isMementoSetWithView = true;
           }
         }
-      }
 
-      if ( isMementoSetWithView )
-        this.deleteMemento(obj.mementoHead);
+        this.pos--;
+
+        if ( this.navStackBottom > this.pos ) {
+          for ( var i = this.pos; i >= 0; i-- ) {
+            if ( this.stack_[i][4] && this.stack_[i][4].menuItem ) {
+              this.navStackBottom = i;
+              break;
+            }
+          }
+        }
+
+        if ( isMementoSetWithView )
+          this.deleteMemento(obj.mementoHead);
+      }
     }
   ],
 
@@ -186,7 +188,7 @@ foam.CLASS({
       // icon: 'arrow_back',
       isEnabled: function(pos) { return pos > 0; },
       code: function(X) {
-        this.jump(pos-1, X);
+        this.jump(this.pos-1, X);
       }
     },
     {
