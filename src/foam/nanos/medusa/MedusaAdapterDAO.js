@@ -89,6 +89,7 @@ It then marshalls it to the primary mediator, and waits on a response.`,
           new foam.lib.StoragePropertyPredicate(),
           new foam.lib.ClusterPropertyPredicate()
         }));
+      formatter.setCalculateDeltaForNestedFObjects(false);
       return formatter;
     }
 
@@ -107,6 +108,7 @@ It then marshalls it to the primary mediator, and waits on a response.`,
       formatter.setOutputShortNames(true);
       formatter.setOutputClassNames(true);
       formatter.setOutputDefaultClassNames(false);
+      formatter.setCalculateDeltaForNestedFObjects(false);
       return formatter;
     }
 
