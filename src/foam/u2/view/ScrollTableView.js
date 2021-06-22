@@ -44,9 +44,6 @@
     ^scrolled .foam-u2-view-TableView-thead {
       box-shadow: 0 1.5px 4px /*%GREY4%*/ #DADDE2;
     }
-    ^endScroll .foam-u2-view-TableView-thead {
-      box-shadow: inset 0px -1.5px 4px /*%GREY4%*/ #DADDE2;
-    }
   `,
 
   constants: [
