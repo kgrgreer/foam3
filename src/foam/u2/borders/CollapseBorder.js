@@ -95,7 +95,7 @@ foam.CLASS({
             tag(this.TOGGLE, { label: this.label$ }).
           end().
           start('span').
-            on('click', () => this.toggle()).
+            // TODO add support for toggle action on title click
             addClass(this.myClass('title')).
             add(this.title$).
           end().
