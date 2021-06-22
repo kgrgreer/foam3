@@ -54,21 +54,17 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        DAO userDAO = (DAO) getX().get("localUserDAO");
+        DAO userDAO = (DAO) x.get("localUserDAO");
 
         Sink sink = new ArraySink();
         sink = userDAO
-          .where(
-            OR(
-              EQ(User.EMAIL, identifier.toLowerCase()),
-              EQ(User.USER_NAME, identifier)
-            ))
+          .where(EQ(User.EMAIL, identifier.toLowerCase()))
           .select(sink);
         List list = ((ArraySink) sink).getArray();
 
         if ( list != null ){
           if ( list.size() == 0 ) {
-            throw new AuthenticationException("User not found.");
+            throw new AuthenticationException("User is not found with this email");
           } else if ( list.size() > 1 ) {
             throw new AuthenticationException("Duplicate Email.");
           }
