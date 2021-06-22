@@ -55,23 +55,20 @@ foam.CLASS({
       javaCode: `
         DAO userDAO = (DAO) getX().get("localUserDAO");
 
-        User user = (User) userDAO
-          .find(
-            AND(
-              OR(
-                EQ(User.EMAIL, identifier.toLowerCase()),
-                EQ(User.USER_NAME, identifier)
-              ),
-              OR(
-                EQ(User.SPID, ((Theme) x.get("theme")).getSpid()),
-                EQ(User.SPID, getSuperSpid())
-              )));
+        userDAO = userDAO
+          .where(
+          AND(
+            OR(
+              EQ(User.EMAIL, identifier.toLowerCase()),
+              EQ(User.USER_NAME, identifier)
+            ),
+            OR(
+              EQ(User.SPID, ((Theme) x.get("theme")).getSpid()),
+              EQ(User.SPID, getSuperSpid())
+            )
+          ));
 
-        if ( user == null ){
-          throw new AuthenticationException("User not found.");
-        }
-
-        ((DAO) x.get("localUserDAO")).put(user.fclone());
+        x = x.put("localUserDAO", userDAO);
         return getDelegate().getUser(x, identifier, password);
       `
     }
