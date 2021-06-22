@@ -208,7 +208,6 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
     Map map = new ConcurrentHashMap<String, List<String>>();
     var dao = ((DAO) x.get("prerequisiteCapabilityJunctionDAO")).inX(x);
     var sink = (GroupBy) dao.
-      orderBy(CapabilityCapabilityJunction.PRIORITY).
       select(
         GROUP_BY(
           CapabilityCapabilityJunction.SOURCE_ID,
