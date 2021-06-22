@@ -517,7 +517,6 @@ FOAM_FILES([
   //spid
   { name: "foam/nanos/auth/CreateUserCapabilityJunctionOnSpidSet" },
   { name: "foam/nanos/auth/SetUserServiceProviderJunctionRuleAction" },
-  { name: "foam/nanos/auth/ThemeAuthService" },
   { name: "foam/nanos/auth/FilterBySpidService" },
   { name: "foam/nanos/auth/PreventDuplicateEmailLoginService" },
   //ucjDAO rules
