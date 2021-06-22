@@ -63,10 +63,23 @@ foam.CLASS({
 
     ^browse-view-container {
       box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
       height: 100%;
       margin-bottom: 20px;
       padding: 0 16px;
       overflow: hidden;
+    }
+
+    /*
+      Scroll is handled here to ensure summaryView always has a scroll 
+      even if it is not configured in the summaryView.
+      This is the generalised way to do this but should be removed 
+      if double scroll bars start appearing
+    */
+    ^browse-view-container > * {
+      height: 100%;
+      overflow: auto;
     }
 
     ^canned-queries {
@@ -107,6 +120,7 @@ foam.CLASS({
     'click',
     'config',
     'filteredTableColumns',
+    'searchColumns',
     'serviceName'
   ],
 
@@ -125,6 +139,14 @@ foam.CLASS({
       name: 'config',
       factory: function() {
         return this.DAOControllerConfig.create({ dao: this.data });
+      }
+    },
+    {
+      class: 'StringArray',
+      name: 'searchColumns',
+      factory: null,
+      expression: function(config$searchColumns){
+        return config$searchColumns;
       }
     },
     {
@@ -284,7 +306,11 @@ foam.CLASS({
             data: self.predicatedDAO$proxy,
             config: self.config
           },  this, filterView.__subContext__.createSubContext());
-          
+
+          if ( ! self.config.browseContext ) {
+            self.config.browseContext = summaryView;
+          }
+
           return self.E()
             .start(self.Rows)
             .style({ height: '100%', 'justify-content': 'flex-start' })

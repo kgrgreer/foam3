@@ -385,6 +385,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.advanced.Advanced
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.FObjectView.PLACEHOLDER_TEXT",target:"selecionar..."})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.ViewReferenceFObjectView.BACK_LABEL",target:"Voltar"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.UpdatePassword.SUCCESS_MSG",target:"Sua senha foi atualizada com sucesso"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.UpdatePassword.SECTION_UPDATE_PASSWORD_SECTION.title",target:"Atualize sua senha"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.UpdatePassword.SECTION_UPDATE_PASSWORD_SECTION.subTitle",target:"Crie uma nova senha para sua conta"})
@@ -542,6 +544,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.PropertyModal.OPTIONAL",
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOBrowseControllerView.CREATE.label",target:"Crio"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOBrowseControllerView.VIEW_ALL",target:"Ver tudo "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOBrowseControllerView.ACTIONS",target:"Ações"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.User.SECTION_USER_INFORMATION.title",target:"Usuário Informação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.User.SECTION_BUSINESS_INFORMATION.title",target:"Negócios Informação"})
@@ -812,7 +815,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequ
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.MANUAL_USER_IDENTITYMIND.label",target:"Identidade Manual do Usuário (Acuant)"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.MANUAL_BUSINESS_DOW_JONES.label",target:"Manual de Negócios Dow Jones R&C"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanosoval.ApprovalRequestClassificationEnum.BUSINESS_SECUREFACT_LEV.label",target:"Fato Segurança Comercial LEV"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.BUSINESS_IDENTITYMIND_KYC.label",target:"Negócio IdentityMind KYC (Acuant)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.MANUAL_BUSINESS_IDENTITYMIND.label",target:"Negócio IdentityMind KYC (Acuant)"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.COMPLIANCE_CAPABILITY_GRANTED.label",target:"Capacidade Conformidade Concedida"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.GENERIC_SIGNING_OFFICER_VALIDATION.label",target:"Validador Oficial Assinatura Genérico"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.USER_DOW_JONES.label",target:"Usuário Dow Jones R&C"})

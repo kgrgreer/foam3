@@ -37,7 +37,31 @@ p({
   """,
   documentation:"The authenticated version of nSpecDAO - for dig and docs."
 })
-p({"class":"foam.nanos.boot.NSpec", "name":"http",                             "lazy":false, "service":{"class":"foam.nanos.jetty.HttpServer","port":8080,"forwardedForProxyWhitelist":[],"welcomeFiles":["/src/foam/nanos/controller/index.html"],"servletMappings":[{"class":"foam.nanos.servlet.ServletMapping","className":"foam.nanos.http.NanoRouter","pathSpec":"/service/*"},{"class":"foam.nanos.servlet.ServletMapping","className":"org.eclipse.jetty.servlet.DefaultServlet","pathSpec":"/*","initParameters":{"dirAllowed":"true","redirectWelcome":"true"}}]}})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"http",
+  "lazy":false,
+  "service":{
+    "class":"foam.nanos.jetty.HttpServer",
+    "port":8080,
+    "forwardedForProxyWhitelist":[],
+    "welcomeFiles":["/src/foam/nanos/controller/index.html"],
+    "servletMappings":[
+      {
+        "class":"foam.nanos.servlet.ServletMapping",
+        "className":"foam.nanos.http.NanoRouter",
+        "pathSpec":"/service/*"
+      }, {
+        "class":"foam.nanos.servlet.ServletMapping",
+        "className":"org.eclipse.jetty.servlet.DefaultServlet",
+        "pathSpec":"/*",
+        "initParameters":{"dirAllowed":"true","redirectWelcome":"true"}
+      }
+    ]
+  }
+})
+
 p({"class":"foam.nanos.boot.NSpec", "name":"httprouter",                         "serviceClass":"foam.nanos.http.NanoRouter"})
 
 p({"class":"foam.nanos.boot.NSpec", "name":"websockets",                       "lazy":false, "serviceClass":"foam.nanos.ws.NanoWebSocketServer"})
@@ -428,6 +452,27 @@ p({
     .build();
   """,
   "client":"{\"of\":\"foam.nanos.dig.DIG\",\"decorators\": [{\"class\":\"foam.nanos.fs.FileDAODecorator\"},{\"class\":\"foam.nanos.fs.FileArrayDAODecorator\"}]}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"dugDigestConfigDAO",
+  "serve":true,
+  "serviceScript":
+  """
+  return new foam.dao.EasyDAO.Builder(x)
+    .setPm(true)
+    .setOf(foam.nanos.dig.DUGDigestConfig.getOwnClassInfo())
+    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+    .setJournalName("dugDigestConfigs")
+    .build();
+  """,
+  "client":
+  """
+    {
+      "of":"foam.nanos.dig.DUGDigestConfig"
+    }
+  """
 })
 
 p({"class":"foam.nanos.boot.NSpec", "name":"demoObjectDAO",                      "serve":true,  "serviceScript":"return new foam.dao.EasyDAO.Builder(x).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"demoObjects\").setGuid(true).setOf(foam.nanos.demo.DemoObject.getOwnClassInfo()).build();", "client":"{\"of\":\"foam.nanos.demo.DemoObject\", \"remoteListenerSupport\": false}"})

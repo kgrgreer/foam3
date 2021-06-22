@@ -37,8 +37,8 @@ foam.CLASS({
     {
       name: 'title',
       expression: function(isModalRequired) {
-        if ( isModalRequired ) return `${DEFAULT_TITLE} (${REQUIRED})`;
-        return `${DEFAULT_TITLE} (${OPTIONAL})`;
+        if ( isModalRequired ) return `${this.DEFAULT_TITLE} (${this.REQUIRED})`;
+        return `${this.DEFAULT_TITLE} (${this.OPTIONAL})`;
       }
     },
     {

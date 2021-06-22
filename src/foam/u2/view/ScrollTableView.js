@@ -32,6 +32,7 @@
     ^ {
       overflow: auto;
       max-height: 100%;
+      flex: 1;
     }
     ^table {
       position: relative;

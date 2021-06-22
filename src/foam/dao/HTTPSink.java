@@ -45,7 +45,6 @@ public class HTTPSink
   @Override
   public void put(Object obj, Detachable sub) {
     HttpURLConnection conn = null;
-
     try {
       Outputter outputter = null;
       conn = (HttpURLConnection) new URL(url_).openConnection();
@@ -53,6 +52,7 @@ public class HTTPSink
       if ( ! SafetyUtil.isEmpty(bearerToken_) ) {
         conn.setRequestProperty("Authorization", "Bearer " + bearerToken_);
       }
+      
       conn.setDoInput(true);
       conn.setDoOutput(true);
       if ( format_ == Format.JSON ) {

@@ -1,6 +1,7 @@
 # FOAM3 Coding Style Guidelines
 
 Except where noted below, FOAM conforms to the [Google Javascript Style Guide](https://google.github.io/styleguide/jsguide.html).
+Java code should abide by the [Doug Lea Java Code Standard](http://gee.cs.oswego.edu/dl/html/javaCodingStd.html)
 
 ## Exceptions
 * One space is required inside the parentheses of `if`, `for`, `while`, and `switch` headers:

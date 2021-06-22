@@ -87,7 +87,6 @@ foam.CLASS({
     }
 
     ^container-handle {
-      padding: 0 16px;
       box-sizing: border-box;
       height: 34px;
       border: 1px solid /*%GREY4%*/ #e7eaec;
@@ -103,6 +102,11 @@ foam.CLASS({
     ^container-handle:hover {
       cursor: pointer;
       background-image: linear-gradient(to bottom, #ffffff, #d3d6d8);
+    }
+
+    ^filter-button{
+      width: 100%;
+      height: 100%;
     }
 
     ^link-mode {
@@ -187,7 +191,7 @@ foam.CLASS({
 
         if ( ! of ) return [];
 
-        if ( searchColumns ) return searchColumns;
+        if ( searchColumns && searchColumns.length > 0 ) return searchColumns;
 
         var columns = of.getAxiomByName('searchColumns');
         columns = columns && columns.columns;
@@ -197,13 +201,28 @@ foam.CLASS({
         columns = columns && columns.columns;
         if ( columns ) {
           return columns.filter(function(c) {
-            var axiom = of.getAxiomByName(c);
-            return axiom && axiom.searchView;
+          //  to account for nested columns like approver.legalName
+          if ( c.split('.').length > 1 ) return false;
+
+          var a = of.getAxiomByName(c);
+
+          if ( ! a ) console.warn("Column does not exist for " + of.name + ": " + c);
+          
+          return a
+            && ! a.storageTransient
+            && ! a.networkTransient
+            && a.searchView
+            && ! a.hidden
           });
         }
 
         return of.getAxiomsByClass(foam.core.Property)
-          .filter((prop) => prop.searchView && ! prop.hidden)
+          .filter((p) => {
+            return ! p.storageTransient
+            && ! p.networkTransient
+            && p.searchView 
+            && ! p.hidden
+          })
           .map(foam.core.Property.NAME.f);
       }
     },
@@ -292,7 +311,9 @@ foam.CLASS({
           e.start().addClass(self.myClass('container-search'))
             .start().addClass(self.myClass('container-handle'))
             .startContext({ data: self })
-              .tag(self.TOGGLE_DRAWER, { buttonStyle: 'UNSTYLED' })
+              .start(self.TOGGLE_DRAWER, { buttonStyle: 'UNSTYLED' })
+                .addClass(this.myClass('filter-button'))
+              .end()
             .endContext()
             .end()
             .start()

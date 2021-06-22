@@ -25,6 +25,8 @@ foam.CLASS({
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.auth.Subject',
     'foam.u2.ControllerMode',
+    'foam.u2.DisplayMode',
+    'foam.u2.crunch.EasyCrunchWizard',
     'foam.u2.crunch.wizardflow.SaveAllAgent',
     'foam.u2.stack.Stack',
     'foam.u2.stack.StackView',
@@ -56,7 +58,10 @@ foam.CLASS({
     {
       name: 'config',
       class: 'FObjectProperty',
-      of: 'foam.u2.crunch.EasyCrunchWizard'
+      of: 'foam.u2.crunch.EasyCrunchWizard',
+      factory: function () {
+        return this.EasyCrunchWizard.create();
+      }
     }
   ],
 
@@ -64,9 +69,17 @@ foam.CLASS({
     async function initE() {
       var user = await this.userDAO.find(this.data.effectiveUser);
       var realUser = await this.userDAO.find(this.data.sourceId);
+      if ( ! user ) user = realUser;
       var subject = this.Subject.create({ user: user, realUser: realUser });
       var stack = this.Stack.create();
-      var x = this.__subContext__.createSubContext({ stack: stack, subject: subject, controllerMode: this.ControllerMode.EDIT });
+      var x = this.__subContext__.createSubContext({
+        stack: stack,
+        subject: subject,
+        controllerMode:
+          this.mode == this.DisplayMode.RW
+            ? this.ControllerMode.EDIT
+            : this.ControllerMode.VIEW
+      });
 
       var sequence = this.crunchController.createWizardSequence(this.data.targetId, x);
       this.config.applyTo(sequence);
@@ -84,7 +97,7 @@ foam.CLASS({
         .remove('PutFinalJunctionsAgent')
         .add(this.SaveAllAgent, { onSave: this.onSave.bind(this) })
         .execute();
-       
+
         //add back button and 'View Reference' title
         this.addClass(this.myClass())
           .startContext({ data: this })
@@ -123,7 +136,7 @@ foam.CLASS({
       }
     }
   ],
-  
+
   actions: [
     {
       name: 'back',
