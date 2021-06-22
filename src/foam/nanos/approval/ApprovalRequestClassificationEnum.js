@@ -193,6 +193,11 @@
       name: 'UPDATE_ON_ACTIVE_UCJ',
       label: 'Update on Active UCJ',
       ordinal: 36
+    },
+    {
+      name: 'MANUAL_BUSINESS_SECUREFACT_LEV',
+      label: 'Manual Business SecureFact LEV',
+      ordinal: 37
     }
   ]
 });
