@@ -82,6 +82,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'dao',
       documentation: `
+        Not supported when returnObjChoice is true.
         If the user wants to be able to export data as a dao, then this needs to be filled out.
 
         If the user just wants to pass in a dao and no choices array, useDao should be true as well and it will be processed to populate the
@@ -100,7 +101,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isValidNumberOfChoices',
-      expression: function(minSelected, maxSelected, data){
+      expression: function(minSelected, maxSelected, data, returnChoiceObj){
+        if ( returnChoiceObj ) return !! data;
         return data.length >= minSelected && data.length <= maxSelected;
       }
     },
@@ -151,7 +153,21 @@ foam.CLASS({
     },
     {
       name: 'data',
-      value: []
+      value: [],
+      adapt: function(_, n) {
+        return this.returnChoiceObj && Array.isArray(n) ? n[0] : n;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'returnChoiceObj',
+      documentation: `
+        if maxSelected <= 1, set true to return data[0] as data.
+      `,
+      preSet: function(_, n) {
+        if ( n && this.maxSelected > 1 ) return false;
+        return n;
+      }
     }
   ],
 
@@ -168,13 +184,15 @@ foam.CLASS({
     },
 
     function isChoiceSelected(data, choice){
+      if ( this.returnChoiceObj ) return foam.util.equals(data, choice);
       for ( var i = 0 ; i < data.length ; i++ ) {
         if ( foam.util.equals(data[i], choice) ) return true;
       }
       return false;
     },
 
-    function getIndexOfChoice(data, choice){                          
+    function getIndexOfChoice(data, choice){
+      if ( this.returnChoiceObj ) data = [data];
       for ( var i = 0 ; i < data.length ; i++ ) {
         if ( foam.util.equals(data[i], choice) ) return i;
       }
@@ -184,7 +202,7 @@ foam.CLASS({
     function getSelectedSlot(choice) {
       var slot = foam.core.SimpleSlot.create();
       slot.sub(() => {
-        var arr = [
+        var arr = this.returnChoiceObj ? [ this.data ] : [
           ...this.data,
         ];
         arr = arr.filter(o => ! foam.util.equals(o, choice));
@@ -238,14 +256,14 @@ foam.CLASS({
       
                 });
 
-                var isDisabledSlot = self.slot(function(choices, data, maxSelected) {
+                var isDisabledSlot = self.slot(function(choices, data, maxSelected, returnChoiceObj) {
+                  if ( returnChoiceObj ) return false;
                   try {
                       if ( isFinal ) {
                         return true;
                       }
   
                       var isSelected = self.isChoiceSelected(data, choices[index][0]);
-  
                       return !! (! isSelected && data.length >= maxSelected);
                   } catch(err) {
                     console.error('isDisabledSlot', err);
@@ -275,21 +293,25 @@ foam.CLASS({
                         this.clicked.sub(() => {
                           var array;
                           var indexDataToAdd = self.getIndexOfChoice(self.data, valueSimpSlot.get());
-                          if ( indexDataToAdd === -1 ){
+                          if ( indexDataToAdd === -1 ) {
                             if ( self.data.length >= self.maxSelected ){
                               return;
                             }
-
-                            array = [
-                              ...self.data,
-                              valueSimpSlot.get()
-                            ];
+                            array = self.returnChoiceObj ?
+                              [ valueSimpSlot.get() ] :
+                              [
+                                ...self.data,
+                                valueSimpSlot.get()
+                              ];
                           } else {
-                            array = [
-                              ...self.data
-                            ]
-
-                            array.splice(indexDataToAdd, 1);
+                            if ( self.returnChoiceObj ) array = [];
+                            else {
+                              array = [
+                                ...self.data
+                              ]
+  
+                              array.splice(indexDataToAdd, 1);
+                            }
                           }
                           self.data = array;
                         })
