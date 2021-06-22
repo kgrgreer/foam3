@@ -261,7 +261,7 @@ foam.CLASS({
                   .addClass(self.myClass('innerFlexer'))
                   // NOTE: This should not be the way we implement columns.
                   .style({
-                    'width': `${100 / self.NUM_COLUMNS}%`
+                    'width': self.isVertical ? '100%' : `${100 / self.NUM_COLUMNS}%`
                   })
                   .start(self.CardSelectView, {
                     data$: valueSimpSlot,
