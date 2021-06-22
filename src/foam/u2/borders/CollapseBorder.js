@@ -73,7 +73,7 @@ foam.CLASS({
       name: 'label',
       value: '\u25BD'
     },
-    [ 'toggleLeft', false ]
+    [ 'toggleLeft', false ] /* if true, will place the toggle action to the left side of the title */
   ],
 
   methods: [
