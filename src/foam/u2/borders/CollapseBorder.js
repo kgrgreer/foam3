@@ -6,7 +6,7 @@
 
 foam.CLASS({
   package: 'foam.u2.borders',
-  name: 'CollapseBorder', // use this
+  name: 'CollapseBorder',
   extends: 'foam.u2.Controller',
 
   requires: [ 'foam.u2.ActionView' ],
