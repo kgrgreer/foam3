@@ -98,19 +98,27 @@ public class UserCapabilityUpdateInterceptDAO extends ProxyDAO {
             prop.set(obj, prop.get(oldObj));
           }
 
+          // Perform the update on the entity before updating the UCJ
           super.put_(x, obj);
 
-          final var effectiveUser = (User) ((DAO)x.get("bareUserDAO")).find(ucj.getSourceId());
-          final var user = (User) ((DAO)x.get("bareUserDAO")).find(ucj.getLastUpdatedRealUser());
+          User sourceUser = (User) ((DAO)x.get("bareUserDAO")).find(ucj.getSourceId());
+          User effectiveUser = null;
+          if ( ucj instanceof AgentCapabilityJunction) {
+              effectiveUser = (User) ((DAO)x.get("bareUserDAO")).find(((AgentCapabilityJunction)ucj).getEffectiveUser());
+          } 
           final var crunchService = (CrunchService) x.get("crunchService");
-          crunchService.updateJunctionFor(x, capability, newData, ucj.getStatus(), effectiveUser, user);
+          var result = crunchService.updateJunctionFor(x, capability, newData, ucj.getStatus(), effectiveUser, sourceUser);
+          getLogger().debug("Update UCJ", sourceUser, effectiveUser, result);
+
+          // Return the resulting entity
+          return super.find_(x, obj);
         }
       } catch(Exception e) {
         getLogger().error(e);
       }
     }
 
-    return super.find_(x, obj);
+    return super.put_(x, obj);
   }
 
   /**
