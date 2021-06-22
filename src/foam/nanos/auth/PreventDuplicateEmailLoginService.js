@@ -58,7 +58,9 @@ foam.CLASS({
 
         Sink sink = new ArraySink();
         sink = userDAO
-          .where(EQ(User.EMAIL, identifier.toLowerCase()))
+          .where(OR(
+            EQ(User.EMAIL, identifier.toLowerCase()),
+            EQ(User.USER_NAME, identifier)))
           .select(sink);
         List list = ((ArraySink) sink).getArray();
 
