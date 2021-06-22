@@ -311,6 +311,7 @@ foam.CLASS({
             .end()
             .start()
             .style({ overflow: 'hidden', 'align-self': 'center' })
+            //TODO: remove when filter button gets a badge
             .add(this.filterController.slot(function (totalCount, resultsCount) {
               return self.E().addClass('p-legal').add(`${resultsCount.toLocaleString(foam.locale)} ${self.RESULTS} `);
             }))
