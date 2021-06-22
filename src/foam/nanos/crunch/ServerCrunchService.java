@@ -486,7 +486,7 @@ public class ServerCrunchService extends ContextAwareSupport implements CrunchSe
 
     DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
     var subjectX = x.put("subject", subject);
-    return (UserCapabilityJunction) userCapabilityJunctionDAO.inX(x).put(ucj);
+    return (UserCapabilityJunction) userCapabilityJunctionDAO.inX(subjectX).put(ucj);
   }
 
   public UserCapabilityJunction buildAssociatedUCJ(
