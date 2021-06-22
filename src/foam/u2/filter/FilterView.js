@@ -48,10 +48,12 @@ foam.CLASS({
     }
 
     ^container-drawer {
+      border-color: transparent;
       border-radius: 5px;
       display: flex;
       max-height: 0;
       overflow: hidden;
+      padding: 0 24px;
       transition: all 0.24s linear;
       -webkit-transition: all 0.24s linear;
       -moz-transition: all 0.24s linear;
@@ -64,6 +66,7 @@ foam.CLASS({
       max-height: -moz-available;
       overflow: auto;
       padding: 24px;
+      margin: 12px 0;
     }
 
     ^container-filters {
@@ -318,6 +321,7 @@ foam.CLASS({
             return self.E().start().addClass(self.myClass('container-drawer'))
               .enableClass(self.myClass('container-drawer-open'), self.isOpen$)
                 .start().addClass(self.myClass('container-filters'))
+                  .show(self.isOpen$)
                   .forEach(filters, function(f) {
                     var axiom = self.dao.of.getAxiomByName(f);
                     if ( axiom ) {
@@ -360,6 +364,7 @@ foam.CLASS({
                   .hide(self.filterController$.dot('isAdvanced'))
                   .addClass(self.myClass('link-mode'))
                   .addClass('clear')
+                  .show(self.isOpen$)
                   .startContext({ data: self })
                     .tag(self.CLEAR_ALL, {
                       isDestructive: true,

@@ -37,7 +37,7 @@ foam.CLASS({
   css: `
     ^wrapper {
       box-sizing: border-box;
-      gap: 24px;
+      gap: 12px;
       height: 100%;
       justify-content: flex-start;
       padding: 32px 24px;
