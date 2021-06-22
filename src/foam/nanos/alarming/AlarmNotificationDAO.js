@@ -20,19 +20,9 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'user',
-      class: 'Reference',
-      of: 'foam.nanos.auth.User'
-    },
-    {
-      name: 'group',
-      class: 'Reference',
-      of: 'foam.nanos.auth.Group',
-      value: 'support-ops'
-    },
-    {
-      name: 'slackWebhook',
-      class: 'String'
+      name: 'notificationTemplate',
+      class: 'String',
+      value: 'NOC'
     }
   ],
 
@@ -42,8 +32,7 @@ foam.CLASS({
       javaCode: `
       Alarm old = (Alarm) getDelegate().find_(x, ((Alarm)obj).getId());
       Alarm alarm = (Alarm) getDelegate().put_(x, obj);
-      if ( ! alarm.getClusterable() ||
-           ( old != null &&
+      if ( ( old != null &&
              old.getIsActive() == alarm.getIsActive() ) ||
            ( ( old == null ||
                old.getSeverity().getOrdinal() < LogLevel.WARN.getOrdinal() ) &&
@@ -57,7 +46,13 @@ foam.CLASS({
 
       // create body for non-email notifications
       StringBuilder body = new StringBuilder();
-      body.append("name: ");
+      body.append("[");
+      body.append(alarm.getHostname());
+      body.append("] ");
+      body.append(alarm.getSeverity().getLabel().toUpperCase());
+      body.append(" - ");
+      body.append(alarm.getName());
+      body.append("\\nname: ");
       body.append(alarm.getName());
       body.append("\\nstatus: ");
       body.append(alarm.getIsActive() ? "Active": "Cleared");
@@ -77,23 +72,21 @@ foam.CLASS({
       HashMap args = new HashMap();
       args.put("alarm.name", alarm.getName());
       args.put("alarm.status", alarm.getIsActive() ? "Active" : "Cleared");
-      args.put("alarm.severity", alarm.getSeverity().getLabel());
+      args.put("alarm.severity", alarm.getSeverity().getLabel().toUpperCase());
       args.put("alarm.host", alarm.getHostname());
       args.put("alarm.started", alarm.getCreated().toString());
       args.put("alarm.cleared", alarm.getIsActive() ? "" : alarm.getLastModified().toString());
       args.put("alarm.note", alarm.getNote());
 
       Notification notification = new Notification.Builder(x)
-        .setUserId(getUser())
-        .setGroupId(getGroup())
-        .setSeverity(alarm.getSeverity())
-        .setEmailName("alarm")
-        .setEmailArgs(args)
         .setBody(body.toString())
+        .setEmailArgs(args)
+        .setEmailName("alarm")
+        .setSeverity(alarm.getSeverity())
+        .setTemplate(getNotificationTemplate())
+        .setToastMessage(alarm.getName())
         .build();
-     if ( ! foam.util.SafetyUtil.isEmpty(getSlackWebhook()) ) {
-       notification.setSlackWebhook(getSlackWebhook());
-     }
+
      ((DAO) x.get("localNotificationDAO")).put(notification);
       return alarm;
       `
