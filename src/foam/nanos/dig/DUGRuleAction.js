@@ -71,6 +71,7 @@ foam.CLASS({
                     new foam.lib.PermissionedPropertyPredicate()
                   }
                 ),
+                true,
                 true
               );
             } else {
