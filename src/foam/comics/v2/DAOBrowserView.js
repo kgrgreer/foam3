@@ -37,10 +37,8 @@ foam.CLASS({
   css: `
     ^wrapper {
       box-sizing: border-box;
-      gap: 12px;
       height: 100%;
       justify-content: flex-start;
-      padding: 32px 24px;
     }
 
     ^top-bar {
@@ -53,9 +51,19 @@ foam.CLASS({
       flex-grow: 1;
     }
 
+    ^query-bar {
+      padding: 12px 24px;
+      padding-top: 32px;
+    }
+
     ^buttons{
       gap: 0.5em;
       align-items: flex-start;
+    }
+
+    ^filters{
+      padding: 0 24px;
+      padding-bottom: 12px;
     }
 
     ^browse-view-container {
@@ -64,6 +72,8 @@ foam.CLASS({
       flex-direction: column;
       height: 100%;
       overflow: hidden;
+      padding: 0 24px;
+      padding-bottom: 24px;
     }
 
     /*
@@ -346,9 +356,7 @@ foam.CLASS({
                       .endContext()
                     .end()
                   .end()
-                  .start()
-                    .tag(filterView.filterDiv$)
-                  .end();
+                  .start().tag(filterView.filtersContainer$).addClass(self.myClass('filters')).end();
                 })
               .start()
                 .add(summaryView)

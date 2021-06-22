@@ -66,7 +66,6 @@ foam.CLASS({
       max-height: -moz-available;
       overflow: auto;
       padding: 24px;
-      margin: 12px 0;
     }
 
     ^container-filters {
@@ -174,7 +173,7 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'filterDiv'
+      name: 'filtersContainer'
     },
     {
       class: 'Class',
@@ -317,7 +316,7 @@ foam.CLASS({
             }))
             .end()
           .end();
-          self.filterDiv = this.E().add(self.filterController.slot(function (criterias) {
+          self.filtersContainer = this.E().add(self.filterController.slot(function (criterias) {
             return self.E().start().addClass(self.myClass('container-drawer'))
               .enableClass(self.myClass('container-drawer-open'), self.isOpen$)
                 .start().addClass(self.myClass('container-filters'))
