@@ -252,6 +252,7 @@ foam.CLASS({
 
     ^medium {
       padding: 8px 12px;
+      max-height: 34px;
     }
 
     ^large {
