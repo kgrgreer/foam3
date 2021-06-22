@@ -168,7 +168,7 @@ foam.CLASS({
     { name: 'LINK_ADVANCED', message: 'Advanced filters' },
     { name: 'LINK_SIMPLE', message: 'Switch to simple filters' },
     { name: 'MESSAGE_ADVANCEDMODE', message: 'Advanced filters are currently being used.' },
-    { name: 'SELECTED', message: 'selected' },
+    { name: 'RESULTS', message: 'result(s) found' },
   ],
 
   properties: [
@@ -303,7 +303,7 @@ foam.CLASS({
             .end()
             .start().addClass(self.myClass('container-handle'))
             .startContext({ data: self })
-              .start(self.TOGGLE_DRAWER, { buttonStyle: 'TERTIARY', isIconAfter: true })
+              .start(self.TOGGLE_DRAWER, { buttonStyle: 'SECONDARY', isIconAfter: true })
                 .enableClass(this.myClass('filter-button-active'), this.isOpen$)
                 .addClass(this.myClass('filter-button'))
               .end()
@@ -312,7 +312,7 @@ foam.CLASS({
             .start()
             .style({ overflow: 'hidden', 'align-self': 'center' })
             .add(this.filterController.slot(function (totalCount, resultsCount) {
-              return self.E().addClass('p-legal').add(`${resultsCount.toLocaleString(foam.locale)} of ${totalCount.toLocaleString(foam.locale)} ` + selectedLabel);
+              return self.E().addClass('p-legal').add(`${resultsCount.toLocaleString(foam.locale)} ${self.RESULTS} `);
             }))
             .end()
           .end();
