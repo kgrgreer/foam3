@@ -35,14 +35,18 @@ foam.CLASS({
   `,
 
   css: `
+    ^wrapper {
+      box-sizing: border-box;
+      gap: 24px;
+      height: 100%;
+      justify-content: flex-start;
+      padding: 32px 24px;
+    }
+
     ^top-bar {
       border-bottom: solid 1px #e7eaec;
       align-items: center;
       padding-top: 16px;
-    }
-
-    ^query-bar {
-      padding: 32px 16px;
     }
 
     ^toolbar {
@@ -59,8 +63,6 @@ foam.CLASS({
       display: flex;
       flex-direction: column;
       height: 100%;
-      margin-bottom: 20px;
-      padding: 0 16px;
       overflow: hidden;
     }
 
@@ -297,7 +299,7 @@ foam.CLASS({
 
           return self.E()
             .start(self.Rows)
-            .style({ height: '100%', 'justify-content': 'flex-start' })
+            .addClass(this.myClass('wrapper'))
               .callIf(config$cannedQueries.length >= 1, function() {
                 this
                   .start(self.Cols)
@@ -343,8 +345,11 @@ foam.CLASS({
                         .end()
                       .endContext()
                     .end()
+                  .end()
+                  .start()
+                    .tag(filterView.filterDiv$)
                   .end();
-              })
+                })
               .start()
                 .add(summaryView)
                 .addClass(self.myClass('browse-view-container'))

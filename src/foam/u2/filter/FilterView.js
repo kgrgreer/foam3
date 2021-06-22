@@ -48,7 +48,6 @@ foam.CLASS({
     }
 
     ^container-drawer {
-      border: 1px solid transparent;
       border-radius: 5px;
       display: flex;
       max-height: 0;
@@ -60,10 +59,9 @@ foam.CLASS({
 
     ^container-drawer-open {
       align-items: center;
-      border-color: #cbcfd4;
-      margin-top: 24px;
+      border: 1px solid #cbcfd4;
       max-height: -webkit-fill-available;
-      max-height:-moz-available;
+      max-height: -moz-available;
       overflow: auto;
       padding: 24px;
     }
@@ -116,9 +114,8 @@ foam.CLASS({
     }
 
     ^link-mode {
-      margin: 0;
       font-size: 14px;
-      margin: 16px;
+      margin-left: 16px;
       cursor: pointer;
     }
 
@@ -173,6 +170,9 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'filterDiv'
+    },
     {
       class: 'Class',
       name: 'of'
@@ -313,8 +313,8 @@ foam.CLASS({
               return self.E().addClass('p-legal').add(`${resultsCount.toLocaleString(foam.locale)} of ${totalCount.toLocaleString(foam.locale)} ` + selectedLabel);
             }))
             .end()
-          .end()
-          .add(this.filterController.slot(function (criterias) {
+          .end();
+          self.filterDiv = this.E().add(self.filterController.slot(function (criterias) {
             return self.E().start().addClass(self.myClass('container-drawer'))
               .enableClass(self.myClass('container-drawer-open'), self.isOpen$)
                 .start().addClass(self.myClass('container-filters'))
@@ -356,7 +356,7 @@ foam.CLASS({
                     .endContext()
                   .end()
                 .end()
-                .start('p')
+                .start()
                   .hide(self.filterController$.dot('isAdvanced'))
                   .addClass(self.myClass('link-mode'))
                   .addClass('clear')
