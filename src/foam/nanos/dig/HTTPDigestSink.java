@@ -47,18 +47,20 @@ public class HTTPDigestSink extends AbstractSink {
   protected Format format_;
   protected PropertyPredicate propertyPredicate_;
   protected boolean outputDefaultValues_;
+  protected boolean removeWhitespacesInPayloadDigest_;
 
   public HTTPDigestSink(String url, Format format) {
-    this(url, "", null, format, null, false);
+    this(url, "", null, format, null, false, false);
   }
 
-  public HTTPDigestSink(String url, String bearerToken, DUGDigestConfig dugDigestConfig, Format format, PropertyPredicate propertyPredicate, boolean outputDefaultValues) {
+  public HTTPDigestSink(String url, String bearerToken, DUGDigestConfig dugDigestConfig, Format format, PropertyPredicate propertyPredicate, boolean outputDefaultValues, boolean removeWhitespacesInPayloadDigest) {
     url_ = url;
     bearerToken_ = bearerToken;
     dugDigestConfig_ = dugDigestConfig;
     format_ = format;
     propertyPredicate_ = propertyPredicate;
     outputDefaultValues_ = outputDefaultValues;
+    removeWhitespacesInPayloadDigest_ = removeWhitespacesInPayloadDigest;
   }
 
   @Override
@@ -129,6 +131,9 @@ public class HTTPDigestSink extends AbstractSink {
   protected String getDigest(X x, DUGDigestConfig config, String payload) 
     throws Exception {
     try {
+      if (removeWhitespacesInPayloadDigest_)
+        payload = payload.replaceAll("\\s", "");
+
       if ( config.getAlgorithm().toLowerCase().startsWith("hmac") ) {
         // Generate HMAC Digest
         // @see https://commons.apache.org/proper/commons-codec/apidocs/src-html/org/apache/commons/codec/digest/HmacUtils.html
