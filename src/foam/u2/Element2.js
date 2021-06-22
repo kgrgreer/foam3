@@ -11,12 +11,15 @@ TODO:
  - Don't generate .java and remove need for flags: ['js'].
 */
 
-/* PORTING:
+/* PORTING U2 to U3:
   - rename initE to render
   - move init() rendering code to render
   - replace use of setNodeName to setting the nodeName property
-  - remove use of this.sub('onload') this.sub('onunload')
+  - remove use of this.sub('onload')
+  - replace this.sub('onunload') with this.onDetach()
   - el() is now synchronous instead of returning a Promise
+  - you can use views directly instead of ViewSpecs
+  - the Element.state property no longer exists
 */
 
 foam.ENUM({
