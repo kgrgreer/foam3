@@ -85,8 +85,8 @@
       ordinal: 14
     },
     {
-      name: 'BUSINESS_IDENTITYMIND_KYC',
-      label: 'Business IdentityMind KYC (Acuant)',
+      name: 'MANUAL_BUSINESS_IDENTITYMIND',
+      label: 'Manual Business IdentityMind (Acuant)',
       ordinal: 15
     },
     {
