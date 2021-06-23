@@ -207,6 +207,7 @@ foam.CLASS({
 
     ^chevron::before {
       content: '▾';
+      font-size: 1.5em !important;
       padding-left: 4px;
     }
 
@@ -660,7 +661,6 @@ foam.CLASS({
           padding: 1px 2px;
           font-size: 12px;
         }
-
         ^row:hover {
           background: #f4f4f9;
           cursor: pointer;
@@ -756,12 +756,10 @@ foam.CLASS({
           text-align: left;
           width: 100%;
         }
-
         ^:hover {
           color: /*%PRIMARY2%*/ #144794;
           cursor: pointer;
         }
-
         ^ img + span {
           margin-left: 6px;
         }
