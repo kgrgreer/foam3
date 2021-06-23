@@ -71,7 +71,7 @@ foam.CLASS({
     {
       name: 'choices',
       documentation: `
-        An array of choices which are single choice is denoted as [value, label, isFinal]
+        An array of choices which are single choice is denoted as [value, label, isFinal, customDisabledSlot(optional)]
 
       `,
       factory: function() {
@@ -258,20 +258,22 @@ foam.CLASS({
       
                 });
 
-                var isDisabledSlot = self.slot(function(choices, data, maxSelected, returnChoiceObj) {
-                  if ( returnChoiceObj ) return false;
-                  try {
-                      if ( isFinal ) {
-                        return true;
-                      }
+                var customDisabledSlot = foam.core.Slot.isInstance(choice[3]) ? choice[3] : null;
+                var isDisabledSlot = customDisabledSlot ||
+                  self.slot(function(choices, data, maxSelected, returnChoiceObj) {
+                    if ( returnChoiceObj ) return false;
+                    try {
+                        if ( isFinal ) {
+                          return true;
+                        }
   
-                      var isSelected = self.isChoiceSelected(data, choices[index][0]);
-                      return !! (! isSelected && data.length >= maxSelected);
-                  } catch(err) {
-                    console.error('isDisabledSlot', err);
-                    return false;
-                  }
-                });
+                        var isSelected = self.isChoiceSelected(data, choices[index][0]);
+                        return !! (! isSelected && data.length >= maxSelected);
+                    } catch(err) {
+                      console.error('isDisabledSlot', err);
+                      return false;
+                    }
+                  });
                 
                 var cls =  choice[0] && choice[0].cls_.id;
 
