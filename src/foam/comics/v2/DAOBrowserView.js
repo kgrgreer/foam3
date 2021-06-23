@@ -120,6 +120,7 @@ foam.CLASS({
     'click',
     'config',
     'filteredTableColumns',
+    'searchColumns',
     'serviceName'
   ],
 
@@ -138,6 +139,14 @@ foam.CLASS({
       name: 'config',
       factory: function() {
         return this.DAOControllerConfig.create({ dao: this.data });
+      }
+    },
+    {
+      class: 'StringArray',
+      name: 'searchColumns',
+      factory: null,
+      expression: function(config$searchColumns){
+        return config$searchColumns;
       }
     },
     {
