@@ -169,7 +169,7 @@ foam.CLASS({
 
         if ( this.navStackBottom > this.pos ) {
           for ( var i = this.pos; i >= 0; i-- ) {
-            if ( this.stack_[i][4] && this.stack_[i][4].menuItem ) {
+            if ( this.stack_[i][3] && this.stack_[i][3].menuItem ) {
               this.navStackBottom = i;
               break;
             }

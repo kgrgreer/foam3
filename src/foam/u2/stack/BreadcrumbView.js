@@ -14,11 +14,11 @@ foam.CLASS({
   requires: ['foam.core.Action'],
 
   css: `
-  .display {
+  ^display {
     display: inline-flex;
     align-items: center;
   }
-  .slash{
+  ^slash{
     padding: 8px;
     vertical-align: middle;
   }
@@ -28,7 +28,7 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      this.addClass('display');
+      this.addClass(this.myClass('display'));
       var navStack = this.stack.stack_.slice(this.stack.navStackBottom, this.stack.pos);
       var themeIcon = navStack.length == 1 ? 'back' : '';
       navStack.map((v, i, _) =>{
@@ -45,7 +45,7 @@ foam.CLASS({
             themeIcon: themeIcon,
             buttonStyle: 'LINK'
           })
-          .callIf(navStack.length != 1, () => { self.start('span').addClass('slash').add('/').end(); });
+          .callIf(navStack.length != 1, () => { self.start('span').addClass(this.myClass('slash')).add('/').end(); });
         } else {
           console.warn('Missing Title for BreadcrumbView ' + navStack[i][0].class);
           debugger;
