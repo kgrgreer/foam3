@@ -26,26 +26,26 @@ foam.CLASS({
     }
     ^control {
       display: inline;
-      float: right;
       height: 30px;
       position: relative;
-      top: -10px;
       width: 30px;
     }
     ^toolbar {
-      display: inline-block;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
       position: absolute;
       padding: 3px;
-      width: calc(100% - 16px);
-      left: 8px;
-      top: -8px;
+      width: calc(100% - 3vmin);
+      left: 1.5vmin;
+      top: max(-12px, -2vmin);
       color: #666;
+      padding-top: 0;
     }
     ^title {
       background: white;
       padding: 3px;
       position: relative;
-      top: -3px;
     }
     ^control > .foam-u2-ActionView-toggle {
       transform: rotate(-90deg);
@@ -54,11 +54,16 @@ foam.CLASS({
       outline: none;
       padding: 3px;
       width: 30px;
-      height: 30px;
     }
     ^.expanded .foam-u2-ActionView-toggle {
       transform: rotate(0deg);
       transition: transform 0.3s;
+    }
+    ^place-right {
+      order: 1;
+    }
+    ^space-even {
+      justify-content: space-between;
     }
   `,
 
@@ -68,7 +73,12 @@ foam.CLASS({
       class: 'Boolean',
       name: 'expanded',
       value: true
-    }
+    },
+    {
+      name: 'label',
+      value: '\u25BD'
+    },
+    [ 'toggleLeft', false ] /* if true, will place the toggle action to the left side of the title */
   ],
 
   methods: [
@@ -78,13 +88,15 @@ foam.CLASS({
         enableClass('expanded', this.expanded$).
         start('div').
           addClass(this.myClass('toolbar')).
+          enableClass(this.myClass('space-even'), this.toggleLeft$.map( val => ! val)).
+          start('div').
+            addClass(this.myClass('control')).
+            enableClass(this.myClass('place-right'), this.toggleLeft$.map( val => ! val)).
+            tag(this.TOGGLE, { label: this.label$ }).
+          end().
           start('span').
             addClass(this.myClass('title')).
             add(this.title$).
-          end().
-          start('div').
-            addClass(this.myClass('control')).
-            tag(this.TOGGLE, {label: '\u25BD'}).
           end().
         end().
         start('div', null, this.content$).
