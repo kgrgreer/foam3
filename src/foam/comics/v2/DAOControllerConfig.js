@@ -144,7 +144,13 @@ foam.CLASS({
       expression: function(of, defaultColumns) {
         var tableSearchColumns = of.getAxiomByName('searchColumns');
 
-        var filteredDefaultColumns = defaultColumns.filter(c => {
+        var defaultColumnsToString  = defaultColumns.map(c => {
+          if ( typeof c == 'string' ) return c;
+          if ( foam.core.Property.isInstance(c) ) return c.name;
+          throw new Error("Unexpected input to defaultColumns");
+        })
+
+        var filteredDefaultColumns = defaultColumnsToString.filter(c => {
           //  to account for nested columns like approver.legalName
           if ( c.split('.').length > 1 ) return false;
 
