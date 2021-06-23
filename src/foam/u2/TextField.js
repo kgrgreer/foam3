@@ -26,7 +26,7 @@ foam.CLASS({
 
   css: `
     input[type="search"] {
-      -webkit-appearance: textfield !important;
+      -webkit-appearance: textfield;
     }
 
     ^:read-only {

@@ -35,16 +35,16 @@ foam.CLASS({
 
   css: `
     ^ {
-      padding-bottom: 0px !important;
+      padding-bottom: 0px;
     }
     ^stack-container .foam-u2-stack-StackView {
-      padding-left: 0px !important;
+      padding-left: 0px;
     }
     ^ .foam-u2-wizard-ScrollingStepWizardView {
       height: auto;
     }
     ^ .foam-u2-wizard-ScrollingStepWizardView-fix-grid {
-      height: calc(100vh - 163px) !important;
+      height: calc(100vh - 163px);
     }
   `,
 

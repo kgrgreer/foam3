@@ -75,7 +75,7 @@ foam.CLASS({
     ^error .foam-u2-view-RichChoiceView-selection-view,
     ^error .foam-u2-view-RichChoiceView-clear-btn
     {
-      border-color: /*%DESTRUCTIVE3%*/ #d9170e !important;
+      border-color: /*%DESTRUCTIVE3%*/ #d9170e;
     }
 
     /*

@@ -51,8 +51,7 @@ foam.CLASS({
     }
 
     ^ img {
-      /*TODO: Remove this important once Action button CSS is fixed*/
-      margin-right: 0px !important;
+      margin-right: 0px;
       width: 16px;
       height: 16px;
     }
@@ -73,9 +72,9 @@ foam.CLASS({
     }
 
     ^ .foam-u2-ActionView {
-      border: none !important;
-      background: none !important;
-      box-shadow: none !important;
+      border: none;
+      background: none;
+      box-shadow: none;
       border: none;
       box-shadow: none;
       width: auto;
@@ -90,8 +89,7 @@ foam.CLASS({
     }
 
     ^close-action:focus {
-      /*TODO: Remove this important once Action button CSS is fixed*/
-      border: 1px solid /*%PRIMARY1%*/ #406DEA !important;
+      border: 1px solid /*%PRIMARY1%*/ #406DEA;
     }
 
     ^close-action span {
