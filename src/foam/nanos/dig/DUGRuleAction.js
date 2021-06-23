@@ -21,6 +21,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.HTTPSink',
     'foam.log.LogLevel',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
     'foam.nanos.alarming.Alarm',
     'foam.nanos.alarming.AlarmReason',
     'foam.nanos.logger.Logger',
@@ -41,6 +43,11 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'foam.nanos.http.Format',
       name: 'format'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'actingUser'
     }
   ],
 
@@ -49,64 +56,66 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
       final var dugRule = (DUGRule) rule;
+
+      if ( actingUserIsSet_ ) {
+        final var userDAO = (DAO) x.get("bareUserDAO");
+        final var user = (User) userDAO.find(actingUser_);
+        if ( user != null )
+          x = x.put("subject", new Subject.Builder(x).setUser(user).build());
+      }
+
       ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "Sending DUG webhook", obj);
-
-      agency.submit(x, new ContextAgent() {
-        @Override
-        public void execute(X x) {
-          PM pm = new PM(getClass(), rule.getDaoKey(), rule.getName());
-          DAO dugDigestConfigDAO = (DAO) x.get("dugDigestConfigDAO");
-          DUGDigestConfig dugDigestConfig = (DUGDigestConfig) dugDigestConfigDAO.find(rule.getSpid());
-          try {
-            AbstractSink sink = null;
-            if ( dugDigestConfig != null && dugDigestConfig.getEnabled() ) {
-              sink = new HTTPDigestSink(
-                dugRule.getUrl(),
-                dugRule.evaluateBearerToken(),
-                dugDigestConfig,
-                dugRule.getFormat(),
-                new foam.lib.AndPropertyPredicate(
-                  x,
-                  new foam.lib.PropertyPredicate[] {
-                    new foam.lib.ExternalPropertyPredicate(),
-                    new foam.lib.NetworkPropertyPredicate(),
-                    new foam.lib.PermissionedPropertyPredicate()
-                  }
-                ),
-                true,
-                true
-              );
-            } else {
-              sink = new HTTPSink(
-                dugRule.getUrl(),
-                dugRule.evaluateBearerToken(),
-                dugRule.getFormat(),
-                new foam.lib.AndPropertyPredicate(
-                  x,
-                  new foam.lib.PropertyPredicate[] {
-                    new foam.lib.ExternalPropertyPredicate(),
-                    new foam.lib.NetworkPropertyPredicate(),
-                    new foam.lib.PermissionedPropertyPredicate()
-                  }
-                ),
-                true
-              );
-            }
-
-            sink.setX(x);
-            sink.put(obj, null);
-          } catch (Throwable t) {
-            ((Logger) x.get("logger")).error(this.getClass().getSimpleName(), "Error Sending DUG webhook", t);
-            var alarmDAO = (DAO) x.get("alarmDAO");
-            alarmDAO.put(
-              new Alarm.Builder(x)
-                .setName("DUG/"+rule.getDaoKey() + "/" + rule.getName())
-                .build()
+        
+      agency.submit(x, (agencyX) -> {
+        PM pm = new PM(getClass(), rule.getDaoKey(), rule.getName());
+        DAO dugDigestConfigDAO = (DAO) agencyX.get("dugDigestConfigDAO");
+        DUGDigestConfig dugDigestConfig = (DUGDigestConfig) dugDigestConfigDAO.find(rule.getSpid());
+        try {
+          AbstractSink sink = null;
+          if ( dugDigestConfig != null && dugDigestConfig.getEnabled() ) {
+            sink = new HTTPDigestSink(
+              dugRule.getUrl(),
+              dugRule.evaluateBearerToken(),
+              dugDigestConfig,
+              dugRule.getFormat(),
+              new foam.lib.AndPropertyPredicate(
+                agencyX,
+                new foam.lib.PropertyPredicate[] {
+                  new foam.lib.ExternalPropertyPredicate(),
+                  new foam.lib.NetworkPropertyPredicate(),
+                  new foam.lib.PermissionedPropertyPredicate()
+                }
+              ),
+              true,
+              true
             );
-            pm.error(x);
-          } finally {
-            pm.log(x);
+          } else {
+            sink = new HTTPSink(
+              dugRule.getUrl(),
+              dugRule.evaluateBearerToken(),
+              dugRule.getFormat(),
+              new foam.lib.AndPropertyPredicate(
+                agencyX,
+                new foam.lib.PropertyPredicate[] {
+                  new foam.lib.ExternalPropertyPredicate(),
+                  new foam.lib.NetworkPropertyPredicate(),
+                  new foam.lib.PermissionedPropertyPredicate()
+                }
+              ),
+              true
+            );
           }
+        } catch (Throwable t) {
+          ((Logger) agencyX.get("logger")).error(this.getClass().getSimpleName(), "Error Sending DUG webhook", t);
+          var alarmDAO = (DAO) agencyX.get("alarmDAO");
+          alarmDAO.put(
+            new Alarm.Builder(agencyX)
+              .setName("DUG/"+rule.getDaoKey() + "/" + rule.getName())
+              .build()
+          );
+          pm.error(agencyX);
+        } finally {
+          pm.log(agencyX);
         }
       }, "DUG Rule (url: " + getUrl() + " )");
       `

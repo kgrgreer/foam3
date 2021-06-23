@@ -131,7 +131,22 @@ foam.CLASS({
       name: 'action',
       hidden: true,
       section: 'basicInfo',
-      networkTransient: true
+      networkTransient: true,
+      javaGetter: `
+      if ( ! actionIsSet_ ) {
+        return null;
+      }
+
+      if ( action_ instanceof DUGRuleAction ) {
+        final var draction = (DUGRuleAction) action_;
+        if ( actingUserIsSet_ )
+          draction.setActingUser(actingUser_);
+        else
+          draction.clearActingUser();
+      }
+
+      return action_;
+      `
     },
     {
       name: 'asyncAction',
@@ -182,6 +197,11 @@ foam.CLASS({
     {
       name: 'createdByAgent',
       hidden: true
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'actingUser'
     }
   ]
 });
