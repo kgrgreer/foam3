@@ -101,7 +101,75 @@ p({
 <h3>Wizardlet configuration for a specific capability</h3>
 
 <h4>Specify When the Capability Appears</h4>
-<foam class="foam.flow.widgets.DocumentationIncomplete" status="todo" isSection="true" />
+
+<p>
+In CRUNCH, visibility and availability are two separate concepts. Visibility
+<u>with respect to capabilities</u><sup>1</sup> determines whether or not a
+capability is dislpayed in the capability store, while availability determines
+whether or not a capability is available by any means to the user, such as by
+being a prerequisite of another capability. Additionally, whether or not a
+capability is a prerequisite of another can be determined by using the
+`predicate` property of CapabilityCapabilityJunction.
+</p>
+
+<p>
+The <b>visibilityPredicate</b> property of Capability can specify under what
+conditions the capability is visible. This uses context predicates (predicates
+which recieve a context as their object to evaluate on), simlar to rule
+predicates.
+</p>
+
+<p>
+For example, if we wanted to display "Example Capability" only when another
+capability, "crunch.example.prerequisite" is granted, we can use the following
+configuration:
+
+<code>
+p({
+  "class": "foam.nanos.crunch.Capability",
+  "id": "crunch.example",
+  "name": "Example Capability",
+
+  ...
+
+  "visibilityPredicate": {
+    "class": "foam.nanos.crunch.predicate.CapabilityIsStatus",
+    "capabilityId": "crunch.example",
+    "subjectFromUCJ": false
+  },
+})
+</code>
+</p>
+
+<p>
+The <b>availabilityPredicate</b> property of Capability takes the same type of
+predicate as does visibilityPredicate, but instead of controlling the
+capability's visibility in the Capability Store in controls whether or not the
+user can recieve information that this capability exists, or perform actions
+that assume it exists.
+</p>
+
+<p>
+In CapabilityCapabilityJunction, the <b>predicate</b> property may be set to a
+context predicate that determines when the prerequisite junction is active.
+A common example of this is for conditional prerequisites added by a rule
+action; this can be done by setting a predicate that evaluates to false until
+a junction has not been manually set.
+</p>
+
+<p>
+Another important factor in the visibility of capabilities is whether or not
+there exists a Capability-CapabilityCategory junction. If a capability is not
+in a category, it is possible it will not appear in the Capability Store. A
+notable exception is if the capability's `keywords` property contains the
+"featured" keyword. In this case, the capability will display as a large card
+at the top of the Capability store.
+</p>
+
+<hr />
+<pre>
+[1] The CRUNCH wizard also distiguishes between visibility and availability, but in this case it is concerning wizardlets and is completely independant of Capability availability and visibility.
+</pre>
 
 <h3>Capability Prerequisites</h3>
 <foam class="foam.flow.widgets.DocumentationIncomplete" status="todo" isSection="true" />
