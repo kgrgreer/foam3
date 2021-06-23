@@ -87,6 +87,7 @@ public class JSONFObjectFormatter
   // TODO: should be combined with outputClassNames_?
   protected boolean outputDefaultClassNames_         = true;
 
+  protected boolean calculateDeltaForNestedFObjects_     = true;
 
   public JSONFObjectFormatter(X x) {
     super(x);
@@ -367,7 +368,12 @@ public class JSONFObjectFormatter
           append(',');
           addInnerNewline();
         }
-        if ( maybeOutputFObjectProperty(newFObject, oldFObject, prop) ) delta += 1;
+        if ( calculateDeltaForNestedFObjects_) {
+          if ( maybeOutputFObjectProperty(newFObject, oldFObject, prop) ) delta += 1;
+        } else {
+          outputProperty(newFObject, prop);
+          delta += 1;
+        }
 
         if ( parentProp == null &&
              prop.includeInID() ) {
@@ -548,6 +554,10 @@ public class JSONFObjectFormatter
   public JSONFObjectFormatter setOutputClassNames(boolean outputClassNames) {
     outputClassNames_ = outputClassNames;
     return this;
+  }
+
+  public void setCalculateDeltaForNestedFObjects(boolean calculateDeltaForNestedFObjects) {
+    this.calculateDeltaForNestedFObjects_ = calculateDeltaForNestedFObjects;
   }
 
   public void outputKey(String val) {
