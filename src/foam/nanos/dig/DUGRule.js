@@ -157,6 +157,10 @@ foam.CLASS({
         action.setUrl(getUrl());
         action.setBearerToken(getBearerToken());
         action.setFormat(getFormat());
+
+        if ( actingUserIsSet_ )
+          action.setActingUser(actingUser_);
+
         return action;
       `
     },
