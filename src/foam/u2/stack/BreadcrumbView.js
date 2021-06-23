@@ -48,7 +48,6 @@ foam.CLASS({
           .callIf(navStack.length != 1, () => { self.start('span').addClass(this.myClass('slash')).add('/').end(); });
         } else {
           console.warn('Missing Title for BreadcrumbView ' + navStack[i][0].class);
-          debugger;
         }
       });
     }
