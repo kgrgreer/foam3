@@ -9,6 +9,13 @@ foam.CLASS({
   name: 'FragmentedTextField',
   extends: 'foam.u2.View',
 
+  documentation: `
+    FormattedTextField should now be prefered over this view.
+    
+    FragmentedTextField displays a text input made of multiple text fields
+    separated by read-only strings. This can be used for formatted inputs.
+  `,
+
   requires: [
     'foam.core.ArraySlot',
   ],
