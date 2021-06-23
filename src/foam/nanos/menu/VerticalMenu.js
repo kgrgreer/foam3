@@ -31,7 +31,7 @@ foam.CLASS({
 
   css: `
   ^ input[type="search"] {
-    width: 240px;
+    width: 100%;
   }
 
   ^ .side-nav-view {
@@ -48,9 +48,11 @@ foam.CLASS({
   }
 
   ^search {
-    text-align: center;
+    box-sizing: border-box;
     margin-top: 14px;
     padding: 0 5px;
+    text-align: center;
+    width: 240px;
   }
 
   ^ .tree-view-height-manager {
