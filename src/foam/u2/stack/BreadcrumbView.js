@@ -41,7 +41,7 @@ foam.CLASS({
         });
         if ( navStack[i][3].navStackTitle ) {
           self.tag(jumpAction, {
-            label: navStack[i][3].navStackTitle || 'Back',
+            label: navStack[i][3].navStackTitle,
             themeIcon: themeIcon,
             buttonStyle: 'LINK'
           })
