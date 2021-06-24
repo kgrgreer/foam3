@@ -240,8 +240,9 @@ foam.CLASS({
         .start(this.isVertical ? foam.u2.layout.Rows : foam.u2.layout.Cols)
           .addClass(this.myClass('flexer'))
           .add( // TODO isDoaFetched and simpSlot0 aren't used should be clean up
-            this.isDaoFetched$.map(isDaoFetched => {
-              var toRender = this.choices.sort().map((choice, index) => {
+            // this.isDaoFetched$.map(isDaoFetched => {
+            self.slot(function(choices) {
+              var toRender = choices.sort().map((choice, index) => {
                 var valueSimpSlot = this.mustSlot(choice[0]);
                 var labelSimpSlot = this.mustSlot(choice[1]);
 
@@ -261,6 +262,7 @@ foam.CLASS({
                 var customDisabledSlot = foam.core.Slot.isInstance(choice[3]) ? choice[3] : null;
                 var isDisabledSlot = customDisabledSlot ||
                   self.slot(function(choices, data, maxSelected, returnChoiceObj) {
+                    debugger;
                     if ( returnChoiceObj ) return false;
                     try {
                         if ( isFinal ) {
