@@ -64,12 +64,12 @@ foam.CLASS({
     }
 
     ^ .foam-u2-borders-CardBorder {
-      padding: 0px;
-      border-radius: 6px;
-      box-shadow: 0px 1px 3px 0px #E7E7E7;
+      border: 1px solid /*%GREY4%*/ #DADDE2;
+      border-radius: 4px;
+      box-sizing: border-box;
+      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1);
       height: 100%;
-      -webkit-box-shadow: 0px 1px 3px 0px #E7E7E7;
-      -moz-box-shadow: 0px 1px 3px 0px #E7E7E7;
+      padding: 0;
     }
   `,
 
