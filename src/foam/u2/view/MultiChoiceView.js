@@ -170,7 +170,8 @@ foam.CLASS({
         if ( n && this.maxSelected > 1 ) return false;
         return n;
       }
-    }
+    },
+    'selectionInvalid'
   ],
 
   methods: [
@@ -248,7 +249,12 @@ foam.CLASS({
 
                 var isFinal = choice[2];
                 
-                var isSelectedSlot = self.slot(function(choices, data) {
+                var isSelectedSlot = self.slot(function(choices, data, selectionInvalid, returnChoiceObj) {
+                  if ( selectionInvalid ) {
+                    if ( returnChoiceObj ) self.data = null;
+                    // TODO remove selected obj from data array otherwise
+                    return false;
+                  }
                   try {
                     var isSelected = self.isChoiceSelected(data, choices[index][0]);
                     return !! isSelected;
@@ -320,6 +326,11 @@ foam.CLASS({
                             }
                           }
                           self.data = array;
+                        }),
+                        this.dataUpdate?.sub(() => {
+                          if ( ! self.data.isAvailable ) {
+                            self.selectionInvalid = true;
+                          }
                         })
                       )
                     })
