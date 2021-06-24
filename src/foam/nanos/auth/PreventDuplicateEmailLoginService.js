@@ -66,7 +66,7 @@ foam.CLASS({
 
         if ( list != null ){
           if ( list.size() == 0 ) {
-            throw new AuthenticationException("User is not found with this email");
+            throw new AuthenticationException("User is not found");
           } else if ( list.size() > 1 ) {
             throw new AuthenticationException("Duplicate Email.");
           }
