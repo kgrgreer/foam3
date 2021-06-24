@@ -163,7 +163,6 @@ foam.CLASS({
               foam.dao.ProxyDAO fixedSizeDAO = (foam.dao.ProxyDAO) getFixedSize();
               fixedSizeDAO.setDelegate(getMdao());
               delegate = fixedSizeDAO;
-              //setMdao(fixedSizeDAO);
             }
             delegate = getJournalDelegate(getX(), delegate);
           }
