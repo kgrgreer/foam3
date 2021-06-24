@@ -35,7 +35,7 @@ foam.CLASS({
   }
 
   ^ .side-nav-view {
-    font-size: medium!important;
+    font-size: medium;
     font-weight: normal;
     position: absolute;
     height: calc(100vh - 80px);

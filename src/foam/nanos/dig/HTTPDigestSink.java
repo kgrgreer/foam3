@@ -89,17 +89,19 @@ public class HTTPDigestSink extends AbstractSink {
         conn.addRequestProperty("Content-Type", "application/xml");
       }
       // add hashed payload-digest to request headers
-      String payload = outputter.stringify((FObject) obj);
+      FObject fobj = (FObject) obj;
+      String payload = outputter.stringify(fobj);
       String digest = getDigest(getX(), dugDigestConfig_, payload);
       conn.addRequestProperty("payload-digest", digest);
       conn.connect();
 
       try (OutputStream os = conn.getOutputStream()) {
         try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8))) {
-          writer.write(outputter.stringify((FObject)obj));
+          writer.write(payload);
           writer.flush();
         }
       }
+      ((Logger) getX().get("logger")).debug(this.getClass().getSimpleName(), "Sent DUG webhook with digest", url_, payload, digest, conn.getResponseCode());
 
       // check response code
       int code = conn.getResponseCode();
