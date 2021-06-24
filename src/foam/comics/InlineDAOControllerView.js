@@ -26,7 +26,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'stack', 'memento'
+    'stack'
   ],
 
   properties: [
@@ -41,16 +41,14 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      var view = foam.u2.ViewSpec.createView(this.summaryView, {
-        data$: this.data.filteredDAO$,
-        multiSelectEnabled: !! this.data.relationship,
-        selectedObjects$: this.data.selectedObjects$
-      },
-      this,
-      this.__subContext__.createSubContext({ memento: this.memento }));
+      this.currentMemento_ = this.memento;
 
       this.
-        add(view).
+        tag(this.summaryView, {
+          data$: this.data.filteredDAO$,
+          multiSelectEnabled: !! this.data.relationship,
+          selectedObjects$: this.data.selectedObjects$
+        }).
         start('span').
           show(this.mode$.map(function(m) { return m == foam.u2.DisplayMode.RW; })).
           add(this.cls.getAxiomsByClass(foam.core.Action)).

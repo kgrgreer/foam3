@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.u2.detail',
   name: 'TabbedDetailView',
   extends: 'foam.u2.detail.AbstractSectionedDetailView',
+  mixins: ['foam.nanos.controller.MementoMixin'],
 
   imports: [
     'memento'
@@ -96,13 +97,12 @@ foam.CLASS({
                     this
                       .start(self.Tab, { label$: title$ || self.defaultSectionLabel, selected: self.memento && self.memento.tail && self.memento.tail.head === s.title }, tab)
                         .call(function() {
-                          var sectionView = foam.u2.ViewSpec.createView(self.SectionView, {
+                          this.tag(self.SectionView, {
                             data$: self.data$,
                             section: s,
                             showTitle: false,
                             selected$: tab.value.selected$
-                          }, self, self.__subContext__.createSubContext({ memento: self.memento }));
-                          this.add(sectionView);
+                          });
                         })
                       .end();
                   })
