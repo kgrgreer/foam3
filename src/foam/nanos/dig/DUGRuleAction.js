@@ -57,11 +57,20 @@ foam.CLASS({
       javaCode: `
       final var dugRule = (DUGRule) rule;
 
+      // If the actingUser is set, we want to refind the obj with that user as the subject
+      // The goal with this is to filter the permissioned properties based on acting user
+      // Instead of the user that triggered the rule
+
       if ( actingUserIsSet_ ) {
         final var userDAO = (DAO) x.get("bareUserDAO");
         final var user = (User) userDAO.find(actingUser_);
-        if ( user != null )
-          x = x.put("subject", new Subject.Builder(x).setUser(user).build());
+        if ( user != null ) {
+          final var actingX = x.put("subject", new Subject.Builder(x).setUser(user).build());
+          var objDAO = (DAO) x.get(rule.getDaoKey());
+          if ( objDAO != null ) {
+            obj = objDAO.find(obj.getProperty("id"));
+          }
+        }
       }
 
       ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "Sending DUG webhook", obj);
@@ -105,6 +114,9 @@ foam.CLASS({
               true
             );
           }
+
+          sink.setX(agencyX);
+          sink.put(obj, null);
         } catch (Throwable t) {
           ((Logger) agencyX.get("logger")).error(this.getClass().getSimpleName(), "Error Sending DUG webhook", t);
           var alarmDAO = (DAO) agencyX.get("alarmDAO");

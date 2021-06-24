@@ -129,27 +129,14 @@ foam.CLASS({
     },
     {
       name: 'action',
+      documentation: `Action is not used for DUGRules, see asyncAction instead`,
       hidden: true,
       section: 'basicInfo',
-      networkTransient: true,
-      javaGetter: `
-      if ( ! actionIsSet_ ) {
-        return null;
-      }
-
-      if ( action_ instanceof DUGRuleAction ) {
-        final var draction = (DUGRuleAction) action_;
-        if ( actingUserIsSet_ )
-          draction.setActingUser(actingUser_);
-        else
-          draction.clearActingUser();
-      }
-
-      return action_;
-      `
+      networkTransient: true
     },
     {
       name: 'asyncAction',
+      documentation: `All DUGRules use the same rule action, so a default one is created on demand instead of being configured`,
       section: 'dugInfo',
       view: { class: 'foam.u2.tag.TextArea' },
       javaGetter: `
