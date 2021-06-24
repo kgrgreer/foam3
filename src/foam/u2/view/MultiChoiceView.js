@@ -306,7 +306,7 @@ foam.CLASS({
                           var array;
                           var indexDataToAdd = self.getIndexOfChoice(self.data, valueSimpSlot.get());
                           if ( indexDataToAdd === -1 ) {
-                            if ( self.data?.length >= self.maxSelected ){
+                            if ( self.data && self.data.length >= self.maxSelected ){
                               return;
                             }
                             array = self.returnChoiceObj ?
@@ -327,7 +327,7 @@ foam.CLASS({
                           }
                           self.data = array;
                         }),
-                        this.dataUpdate?.sub(() => {
+                        this.dataUpdate && this.dataUpdate.sub(() => {
                           if ( ! self.data.isAvailable ) {
                             self.selectionInvalid = true;
                           }
