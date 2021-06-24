@@ -109,25 +109,24 @@ public class MDAO
 
 
 
-  protected ArrayList<PropertyInfo> propertyInfoList_(Index index){
-        ArrayList<PropertyInfo> infoList = new ArrayList<PropertyInfo>();
-        var current = index;
-        while ( current != null && ( current instanceof TreeIndex ) ){
-          infoList.add(((TreeIndex)current).getProp());
-          current = ((TreeIndex)current).getTail();
-        }
-        return infoList;
-
+  protected ArrayList<PropertyInfo> propertyInfoList_(Index index) {
+    ArrayList<PropertyInfo> infoList = new ArrayList<PropertyInfo>();
+    var current = index;
+    while ( current != null && ( current instanceof TreeIndex ) ) {
+      infoList.add(((TreeIndex)current).getProp());
+      current = ((TreeIndex)current).getTail();
+    }
+    return infoList;
   }
 
   public void addIndex(Index index) {
     synchronized ( writeLock_ ) {
-      if ( index instanceof TreeIndex ){
+      if ( index instanceof TreeIndex ) {
         var properties = propertyInfoList_(index);
         var delegates = index_.getDelegates();
-        for ( Index i : delegates ){
+        for ( Index i : delegates ) {
           var properties2 = propertyInfoList_(i);
-          if ( properties.containsAll(properties2) || properties2.containsAll(properties) ){
+          if ( properties.containsAll(properties2) || properties2.containsAll(properties) ) {
             //Logger  logger = (Logger) getX().get("logger");
             //logger.warning("redundant indexes...did not add");
             System.err.println("redundant indexes...did not add");

@@ -28,9 +28,9 @@ public class TreeIndex
   }
 
   public TreeIndex(PropertyInfo prop, Index tail) {
-    prop_ = prop;
+    prop_        = prop;
     selectCount_ = 0;
-    tail_ = tail;
+    tail_        = tail;
   }
 
   public Object bulkLoad(FObject[] a) {
@@ -174,7 +174,7 @@ public class TreeIndex
     return this.tail_;
   }
 
- public PropertyInfo getProp(){
+ public PropertyInfo getProp() {
     return this.prop_;
- }
+  }
 }
