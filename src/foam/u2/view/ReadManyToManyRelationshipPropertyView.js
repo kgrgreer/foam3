@@ -41,7 +41,7 @@ foam.CLASS({
         config: this.config
       },
       this,
-      this.__subContext__);
+      this.__subContext__.createSubContext({ memento: this.memento }));
 
       this.add(view);
     },
@@ -54,7 +54,7 @@ foam.CLASS({
         config: this.config,
         idOfRecord: id,
         backLabel: 'Back'
-      }, this);
+      }, this.__subContext__.createSubContext({ memento: null }));
     }
   ]
 });
