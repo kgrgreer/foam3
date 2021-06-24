@@ -73,8 +73,9 @@ foam.CLASS({
         }
       }
 
-      ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "Sending DUG webhook", obj);
-        
+      ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "Sending DUG webhook", obj);  
+      
+      final var finalObj = obj;
       agency.submit(x, (agencyX) -> {
         PM pm = new PM(getClass(), rule.getDaoKey(), rule.getName());
         DAO dugDigestConfigDAO = (DAO) agencyX.get("dugDigestConfigDAO");
@@ -116,7 +117,7 @@ foam.CLASS({
           }
 
           sink.setX(agencyX);
-          sink.put(obj, null);
+          sink.put(finalObj, null);
         } catch (Throwable t) {
           ((Logger) agencyX.get("logger")).error(this.getClass().getSimpleName(), "Error Sending DUG webhook", t);
           var alarmDAO = (DAO) agencyX.get("alarmDAO");
