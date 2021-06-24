@@ -19,8 +19,6 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.theme.Theme',
 
-    'java.util.List',
-
     'static foam.mlang.MLang.*'
   ],
 
