@@ -15,21 +15,14 @@
 * limitations under the License.
 */
 
-foam.CLASS({
-  package: 'foam.box.sf',
-  name: 'SFEntry',
-  extends: 'foam.nanos.medusa.MedusaEntry',
+package foam.box.sf;
 
-  properties: [
-    {
-      class: 'Boolean',
-      name: 'isSent',
-      value: false
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.box.Message',
-      name: 'message'
-    }
-  ]
-})
+import foam.core.ContextAwareSupport;
+
+public class SFDemo extends ContextAwareSupport {
+
+  public void runDemo() {
+
+  }
+  
+}

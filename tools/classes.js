@@ -149,6 +149,7 @@ var classes = [
   'foam.box.socket.SocketServer',
   'foam.box.socket.SslContextFactory',
   'foam.box.sf.StoreAndForwardBox',
+  'foam.box.sf.SFEntry',
  // 'foam.box.network.DemoSocketClientReplyBox',
   'foam.box.NullBox',
   'foam.dao.DAO',
