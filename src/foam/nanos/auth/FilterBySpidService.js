@@ -44,7 +44,7 @@ foam.CLASS({
           )).limit(2).select(sink);
 
         List list = ((ArraySink) sink).getArray();
-        if ( list.size() > 0) {
+        if ( list.size() > 0 ) {
           userDAO = userDAO
             .where(OR(
               EQ(User.SPID, ((Theme) x.get("theme")).getSpid()),
