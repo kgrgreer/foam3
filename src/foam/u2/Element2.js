@@ -18,14 +18,14 @@ TODO:
   - remove use of this.sub('onload')
   - replace this.sub('onunload') with this.onDetach()
   - el() is now synchronous instead of returning a Promise
-  - you can use views directly instead of ViewSpecs
   - the Element.state property no longer exists
   - innerHTML and outerHTML have been removed
   - replace ^ in CSS (which has meaning in CSS) with <<
-  - ILLEGAL_CLOSE_TAGS and OPTIONAL_CLOSE_TAGS are gone
+  - ILLEGAL_CLOSE_TAGS and OPTIONAL_CLOSE_TAGS have been removed
   - this.addClass() is the same as this.addClass(this.myClass())
 
   TODO:
+  - you can use views directly instead of ViewSpecs
   - remove use of SPAN tags for dynamic slot content by using reference to TextNode
 */
 
@@ -148,7 +148,7 @@ foam.CLASS({
       name: 'expands_',
       documentation: 'True iff the CSS contains a ^ which needs to be expanded.',
       expression: function(code) {
-        return code.includes('^') || code.includes('<<');
+        return code.includes('^') || code.includes(foam.u2.Element.CSS_SELF);
       }
     }
   ],
@@ -447,6 +447,10 @@ foam.CLASS({
   ],
 
   constants: [
+    {
+      name: 'CSS_SELF',
+      value: '<<'
+    },
     {
       name: 'CSS_CLASSNAME_PATTERN',
       factory: function() { return /^[a-z_-][a-z\d_-]*$/i; }
