@@ -8,9 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.auth',
   name: 'ProxyUserLocatorService',
 
-  implements: [
-    'foam.nanos.auth.UserLocatorService'
-  ],
+  implements: ['foam.nanos.auth.UserLocatorService'],
 
   properties: [
     {
@@ -21,7 +19,7 @@ foam.CLASS({
       },
       setter: function(n) {
         this.delegate.serviceName = n;
-      },
+      }
     },
     {
       class: 'Proxy',
