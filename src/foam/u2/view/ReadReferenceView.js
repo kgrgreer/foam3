@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-foam.CLASS({
+ foam.CLASS({
   package: 'foam.u2.view',
   name: 'ReadReferenceView',
   extends: 'foam.u2.View',
@@ -228,14 +228,10 @@ foam.CLASS({
         } else {
           // access to dao summary?
           if (
-            (await this.auth.check(
+            await this.auth.check(
               this.__subContext__,
               `service.${this.prop.targetDAOKey}`
-            )) ||
-            (await this.auth.check(
-              this.__subContext__,
-              `service.read.${this.prop.targetDAOKey}`
-            ))
+            )
           ) {
             this.enableLink = true;
             this.linkTo = 'daoSummary';
