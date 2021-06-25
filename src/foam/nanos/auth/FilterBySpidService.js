@@ -26,7 +26,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'superSpid',
-      documentation: 'Set spid of a theme that is accessible to all users',
+      documentation: 'Set spid of a theme that is accessible to all users'
     }
   ],
 
