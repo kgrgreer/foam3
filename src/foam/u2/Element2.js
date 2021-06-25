@@ -652,11 +652,6 @@ foam.CLASS({
     function el() {
       return Promise.resolve(this.el_());
     },
-    function output(out) {
-      // this.state = this.OUTPUT;
-      this.output_(out);
-      return out;
-    },
     function load() {
       if ( this.hasOwnProperty('elListeners') ) {
         var ls = this.elListeners;
@@ -1637,14 +1632,6 @@ if ( ! this.el_() ) return;
         array.forEach(fn.bind(this));
       }
       return this;
-    },
-
-    function outputInnerHTML(out) {
-      var cs = this.childNodes;
-      for ( var i = 0 ; i < cs.length ; i++ ) {
-        out(cs[i]);
-      }
-      return out;
     },
 
     function write() {
