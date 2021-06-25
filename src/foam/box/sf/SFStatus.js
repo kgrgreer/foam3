@@ -15,27 +15,25 @@
 * limitations under the License.
 */
 
-foam.CLASS({
+foam.ENUM({
   package: 'foam.box.sf',
-  name: 'SFEntry',
-  extends: 'foam.nanos.medusa.MedusaEntry',
-
-  properties: [
+  name: 'SFStatus',
+  
+  values: [
     {
-      class: 'Boolean',
-      name: 'isSent',
-      value: false
+      name: 'FAILURE',
+      ordinal: 0,
+      documentation: 'Msg is not send successfully, still retry.'
     },
     {
-      class: 'FObjectProperty',
-      of: 'foam.box.Message',
-      name: 'message'
+      name: 'COMPLETED',
+      ordinal: 1,
+      documentation: 'Msg is send successfully.'
     },
     {
-      name: 'status',
-      class: 'Enum',
-      of: 'foam.box.sf.SFStatus',
-      value: 'FAILURE'
+      name: 'CANCELLED',
+      ordinal: 2,
+      documentation: 'Msg reach to retry limit.'
     },
   ]
 })

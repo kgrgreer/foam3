@@ -29,6 +29,7 @@ foam.CLASS({
     'foam.dao.NullDAO',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
+    'foam.core.X'
   ],
   
   properties: [
@@ -86,9 +87,9 @@ foam.CLASS({
       `
     },
     {
-      class: 'Long',
+      class: 'Int',
       name: 'initialValue',
-      value: 1
+      value: 10
     },
     {
       class: 'Object',
@@ -99,10 +100,15 @@ foam.CLASS({
       `
     },
     {
+      class: 'Int',
+      name: 'maxRetryDelay',
+      value: 20000
+    },
+    {
       name: 'maxRetryAttempts',
       class: 'Int',
       documentation: 'Set to -1 to infinitely retry.',
-      value: -1
+      value: 20
     },
     {
       name: 'logger',
@@ -156,6 +162,7 @@ foam.CLASS({
             if ( getMaxRetryAttempts() > -1 &&
               retryAttempt >= getMaxRetryAttempts() ) {
               getLogger().warning("retryAttempt >= maxRetryAttempts", retryAttempt, getMaxRetryAttempts());
+              //TODO: set entry to cancel.
               throw new RuntimeException("Rejected, retry limit reached.");
             }
 
@@ -163,12 +170,14 @@ foam.CLASS({
 
             /* Delay and retry */
             try {
-              delay = getStepFunction(delay);
+              delay = getStepFunction().next(delay);
+              if ( delay > getMaxRetryDelay() ) {
+                delay = getMaxRetryDelay();
+              }
               getLogger().info("retry attempt", retryAttempt, "delay", delay);
               Thread.sleep(delay);
             } catch(InterruptedException e) {
               Thread.currentThread().interrupt();
-              pm.error(x, t);
               throw t;
             }
           } 
@@ -180,9 +189,13 @@ foam.CLASS({
       `
     },
     {
-      documentation: `writer from file and send`,
-      name: 'init',
-      javaCode: ``
+      documentation: `Read unsend entries from file and send`,
+      name: 'initReader',
+      javaCode: `
+        //TODO: search latest modify file
+        //Using: Async AssemblyLine.
+        return;
+      `
     }
   ],
 
@@ -193,7 +206,12 @@ foam.CLASS({
         cls.extras.push(foam.java.Code.create({
           data: `
             static private interface StepFunction {
-              public long next(long cur);
+              public int next(int cur);
+            }
+
+            /* Initial Reader. */
+            {
+              initReader();
             }
           `
         }));
