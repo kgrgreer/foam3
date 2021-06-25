@@ -11,7 +11,7 @@ foam.CLASS({
 
   implements: ['foam.mlang.Expressions'],
 
-  requires: ['foam.nanos.test.Test'],
+  requires: ['foam.nanos.test.Test', 'foam.u2.view.ScrollTableView'],
 
   css: `
     ^upper > span{
@@ -53,7 +53,7 @@ foam.CLASS({
           .start('span').add('Failed: ', this.failed$).end()
           .start('span').add('Status: ', this.status$).end()
         .end()
-        .start(foam.u2.view.ScrollTableView, { data$: this.data$ })
+        .start(this.ScrollTableView, { data$: this.data$ })
           .addClass(this.myClass('table'))
         .end();
         
