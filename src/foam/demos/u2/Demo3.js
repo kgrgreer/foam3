@@ -38,7 +38,7 @@ foam.CLASS({
 
   css: `
     << { color: red; }
-    <<tick { font-weight: 900; }
+    <<tick { background: black; }
   `,
 
   properties: [
@@ -52,13 +52,15 @@ foam.CLASS({
     function render() {
       this.addClass();
       this.add('before');
-      this.start('h1').add('Dynamic Test 1').end();
+      this.start('h1')
+        .add('Dynamic Test 1')
+        .enableClass(this.myClass('tick'), this.state$)
+      .end();
       this.start('h2').add('Dynamic Test 2').end();
       this.add('after');
-      this.add(this.state$);
+      this.br();
+      this.add('state:', this.state, this.state$);
       this.style({background: 'lightgray'});
-//      this.add('child1', 'child2', this.state$).br().start('b').add('bold').end().br().br().entity('lt').add('>').add('end');
-      this.enableClass(this.myClass('tick'), this.state$);
       this.tag('hr');
       this.add('end');
       this.tick();
