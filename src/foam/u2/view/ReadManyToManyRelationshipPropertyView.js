@@ -38,7 +38,8 @@ foam.CLASS({
 
       var view = foam.u2.ViewSpec.createView(this.ScrollTableView, {
         data: this.data.dao,
-        config: this.config
+        config: this.config,
+        showNav: false
       },
       this,
       this.__subContext__.createSubContext({ memento: null }));
