@@ -341,11 +341,7 @@ This is the heart of Medusa.`,
               if ( nextIndex == replaying.getIndex() + 1 &&
                    ( replaying.getReplaying() ||
                      ( System.currentTimeMillis() - nextIndexSince ) > 1000 ) ) {
-                try {
                   gap(x, nextIndex, nextIndexSince);
-                } catch (MedusaException e) {
-                  // ignore for now, too many false positives.
-                }
               }
             }
           } finally {
@@ -667,7 +663,7 @@ During replay gaps are treated differently; If the index after the gap is ready 
                 ((DAO) x.get("alarmDAO")).put(alarm);
                 config.setErrorMessage("gap with dependencies");
                 ((DAO) x.get("clusterConfigDAO")).put(config);
-                throw new MedusaException("gap with dependencies");
+                // throw new MedusaException("gap with dependencies");
               } else {
                 getLogger().info("gap", "investigating", index, "dependencies", dependencies.getValue(), "lookAhead", lookAhead.getValue(), "lookAhead threshold",lookAheadThreshold);
               }
