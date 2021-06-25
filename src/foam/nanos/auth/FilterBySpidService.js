@@ -40,8 +40,8 @@ foam.CLASS({
         sink = userDAO
           .where(OR(
             EQ(User.EMAIL, identifier.toLowerCase()),
-            EQ(User.USER_NAME, identifier)
-          )).limit(2).select(sink);
+            EQ(User.USER_NAME, identifier)))
+          .limit(2).select(sink);
 
         List list = ((ArraySink) sink).getArray();
         if ( list.size() > 0 ) {
