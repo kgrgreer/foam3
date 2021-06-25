@@ -34,8 +34,7 @@ foam.CLASS({
     {
       class: 'Reference',
       name: 'capability',
-      of: 'foam.nanos.crunch.Capability',
-      controlAccessToDAOSummary: true
+      of: 'foam.nanos.crunch.Capability'
     },
     {
       name: 'data',

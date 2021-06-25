@@ -153,8 +153,7 @@ foam.CLASS({
           else
             this.currentMemento_ = null;
         }
-      },
-      controlAccessToDAOSummary: true
+      }
     },
     {
       class: 'Boolean',

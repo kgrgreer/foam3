@@ -900,14 +900,6 @@ foam.CLASS({
       value: true
     },
     {
-      class: 'Boolean',
-      name: 'controlAccessToDAOSummary',
-      documentation: `
-        When set to true, DAO summary can be only viewed if group has permission to read it.
-        Check ReadReferenceView documentation for more info.
-      `
-    },
-    {
       class: 'StringArray',
       name: 'menuKeys',
       documentation: `

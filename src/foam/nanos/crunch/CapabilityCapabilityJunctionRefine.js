@@ -25,8 +25,7 @@ foam.CLASS({
           .catch((error) => {
             this.add(value);
           });
-      },
-      controlAccessToDAOSummary: true
+      }
     },
     {
       class: 'Reference',
@@ -39,8 +38,7 @@ foam.CLASS({
           .catch((error) => {
             this.add(value);
           });
-      },
-      controlAccessToDAOSummary: true
+      }
     },
     {
       class: 'Boolean',
