@@ -33,7 +33,8 @@ foam.CLASS({
       name: 'duration',
       factory: () => {
         return foam.nanos.cron.TimeHMS.create();
-      }
+      },
+      javaFactory: 'return new foam.nanos.cron.TimeHMS();'
     },
     {
       class: 'DateTime',

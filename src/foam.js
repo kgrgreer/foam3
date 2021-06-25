@@ -15,6 +15,17 @@
  * limitations under the License.
  */
 
+// TODO:
+//  break into foam.js for web and foam_node.js for node.js
+//  change flag defaults for each
+//     default: web, debug, js
+//     node: node, java, swift, debug, js
+//  ???: is 'js' flag used anywhere, if so, where?
+//  replace use of global and window with new globalThis
+//  replace all use of 'global' in foam with globalThis
+//  remove support for workers
+//  case-specific setting of flags (HTTP parameters or command-line)
+
 (function() {
 
   var isWorker = typeof importScripts !== 'undefined';
@@ -54,7 +65,7 @@
     if ( typeof window !== 'undefined' && ! window.FOAM_ROOT ) window.FOAM_ROOT = path;
 
     var loadedMap = {};
-    var scripts = '';
+    var scripts   = '';
 
     return function(filename, opt_batch) {
       if ( filename && loadedMap[filename] ) {

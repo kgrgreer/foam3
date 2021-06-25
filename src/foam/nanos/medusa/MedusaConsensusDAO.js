@@ -341,7 +341,11 @@ This is the heart of Medusa.`,
               if ( nextIndex == replaying.getIndex() + 1 &&
                    ( replaying.getReplaying() ||
                      ( System.currentTimeMillis() - nextIndexSince ) > 1000 ) ) {
-                gap(x, nextIndex, nextIndexSince);
+                try {
+                  gap(x, nextIndex, nextIndexSince);
+                } catch (MedusaException e) {
+                  // ignore for now, too many false positives.
+                }
               }
             }
           } finally {

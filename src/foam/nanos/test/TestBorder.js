@@ -14,8 +14,17 @@ foam.CLASS({
   requires: ['foam.nanos.test.Test'],
 
   css: `
-    ^ > span, ^ .buttons .foam-u2-ActionView {
+    ^upper > span{
       margin: 0 10px 10px 0;
+    }
+    ^container{
+      display: flex;
+      flex-direction: column;
+      height: 100%
+    }
+    ^upper{
+      flex: 0 0 0;
+      margin-bottom: 10px;
     }
   `,
 
@@ -28,22 +37,18 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this
-        .addClass(this.myClass())
-        .start('span')
-          .addClass('buttons')
-          .startContext({ data: this })
-            .add(this.RUN_ALL, this.RUN_FAILED_TESTS)
-          .endContext()
-        .end()
-        .start('span').add('Total: ', this.total$).end()
-        .start('span').add('Passed: ', this.passed$).end()
-        .start('span').add('Failed: ', this.failed$).end()
-        .start('span').add('Status: ', this.status$).end();
-
-      this.SUPER();
-
       var self = this;
+      this
+        .addClass(this.myClass('container'))
+        .start()
+          .addClass(this.myClass('upper'))
+          .start('span').add('Total: ', this.total$).end()
+          .start('span').add('Passed: ', this.passed$).end()
+          .start('span').add('Failed: ', this.failed$).end()
+          .start('span').add('Status: ', this.status$).end()
+        .end();
+        this.SUPER();
+
       this.data.select({
         put: function(t) {
           if ( t && t.enabled ) {

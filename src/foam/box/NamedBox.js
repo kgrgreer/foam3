@@ -75,15 +75,15 @@ return ownClassInfo().create(args: [
     {
       name: 'getBaseName',
       type: 'String',
-      code: function getBaseName() {
+      code: function() {
         return this.name.substring(this.name.lastIndexOf('/') + 1);
       },
-      swiftCode: function getBaseName() {/*
+      swiftCode: `
 if let index = name.range(of: "/", options: .backwards)?.lowerBound {
   return String(name[name.index(after: index)..<name.endIndex])
 }
 return ""
-      */},
-    },
+      `
+    }
   ]
 });

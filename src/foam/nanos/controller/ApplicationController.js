@@ -139,10 +139,10 @@ foam.CLASS({
   },
 
   messages: [
-    { name: 'GROUP_FETCH_ERR', message: 'Error fetching group' },
-    { name: 'GROUP_NULL_ERR', message: 'Group was null' },
+    { name: 'GROUP_FETCH_ERR',         message: 'Error fetching group' },
+    { name: 'GROUP_NULL_ERR',          message: 'Group was null' },
     { name: 'LOOK_AND_FEEL_NOT_FOUND', message: 'Could not fetch look and feel object' },
-    { name: 'LANGUAGE_FETCH_ERR', message: 'Error fetching language' },
+    { name: 'LANGUAGE_FETCH_ERR',      message: 'Error fetching language' },
   ],
 
   css: `
@@ -179,7 +179,7 @@ foam.CLASS({
     {
       name: 'sessionID',
       factory: function() {
-        var urlSession = "";
+        var urlSession = '';
         try {
           urlSession = window.location.search.substring(1).split('&')
            .find(element => element.startsWith("sessionId")).split('=')[1];
@@ -191,7 +191,7 @@ foam.CLASS({
     {
       name: 'memento',
       factory: function() {
-        return this.Memento.create({ replaceHistoryState : false });
+        return this.Memento.create({ replaceHistoryState: false });
       }
     },
     {
@@ -752,7 +752,7 @@ foam.CLASS({
         this.displayWidth = foam.u2.layout.DisplayWidth.VALUES
           .concat()
           .sort((a, b) => b.minWidth - a.minWidth)
-          .find(o => o.minWidth <= window.innerWidth);
+          .find(o => o.minWidth <= Math.min(window.innerWidth, window.screen.width) );
       }
     }
   ]

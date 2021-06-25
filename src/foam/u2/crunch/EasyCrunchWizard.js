@@ -7,6 +7,12 @@
 foam.CLASS({
   package: 'foam.u2.crunch',
   name: 'EasyCrunchWizard',
+
+  documentation: `
+    EasyCrunchWizard is a facade to configure context agents typically found
+    in a CRUNCH wizard sequence.
+  `,
+
   requires: [
     'foam.u2.crunch.wizardflow.SkipGrantedAgent',
     'foam.u2.crunch.wizardflow.SkipMode',
@@ -16,12 +22,18 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
-      name: 'allowSkipping'
+      name: 'allowSkipping',
+      documentation: `
+        Allow skipping sections without completing them in incremental wizards.
+      `
     },
     {
       class: 'Boolean',
       name: 'allowBacktracking',
-      value: true
+      value: true,
+      documentation: `
+        Allow going back to previous sections in incremental wizards.
+      `
     },
     {
       name: 'skipMode',
@@ -33,7 +45,11 @@ foam.CLASS({
     },
     {
       name: 'incrementalWizard',
-      class: 'Boolean'
+      class: 'Boolean',
+      documentation: `
+        Set this to true to use the incremental wizard, which shows sections
+        on separate screens, instead of the default scrolling wizard.
+      `
     },
     {
       class: 'String',
@@ -43,17 +59,17 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'rejectOnInvalidatedSave',
-      value: false
+      documentation: `
+        Set to true when ScrollingWizard is used in association with an Approval Request
+        and requires the approval request to be rejected if invalidated data is saved.
+      `,
     },
     {
       class: 'Boolean',
       name: 'requireAll',
-      value: false
-    },
-    {
-      name: 'approval',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.approval.ApprovalRequest'
+      documentation: `
+        Require all sections to be valid to invoke wizard completion (done button).
+      `
     }
   ],
 

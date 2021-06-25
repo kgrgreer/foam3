@@ -414,7 +414,7 @@ foam.CLASS({
   messages: [
     {
       name: 'ERROR_MESSAGE',
-      message: 'Permission denied. You cannot change the parent of a group.',
+      message: 'You cannot change the parent of a group.',
     }
   ],
 

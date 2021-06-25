@@ -7,6 +7,7 @@
 foam.CLASS({
   package: 'foam.nanos.export',
   name: 'CSVTableExportDriver',
+  documentation: 'The driver to export data retrieved with projection to CSV',
   implements: [ 'foam.nanos.export.ExportDriver' ],
 
   extends: 'foam.nanos.export.TableExportDriver',

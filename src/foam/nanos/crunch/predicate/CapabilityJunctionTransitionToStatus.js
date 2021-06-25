@@ -49,7 +49,7 @@ foam.CLASS({
 
         return ( old == null || old != null && old.getStatus() != ucj.getStatus() ) &&
             ucj.getStatus() == getStatus() &&
-            ucj.getTargetId() == getCapabilityId();
+            ucj.getTargetId().equals(getCapabilityId());
       `
     }
   ]

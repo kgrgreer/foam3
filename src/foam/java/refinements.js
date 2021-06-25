@@ -570,7 +570,7 @@ foam.LIB({
         })
         .filter(flagFilter)
         .map(function(p) {
-          return foam.java.Field.create({ name: p.name, type: p.javaType });
+          return foam.java.Field.create({ name: p.name, type: p.javaType, includeInHash: p.includeInHash });
         });
 
       var properties = this.getAxiomsByClass(foam.core.Property)
@@ -725,8 +725,9 @@ return sb.toString();`
           name: 'hashCode',
           type: 'int',
           body:
-            ['int hash = 1'].concat(props.map(function(f) {
-              return 'hash += hash * 31 + foam.util.SafetyUtil.hashCode('+f.name+ '_' +')';
+            ['int hash = 1'].concat(props.filter(function(p) {
+              return p.includeInHash; }).map(function(f) {
+              return 'hash = hash * 31 + foam.util.SafetyUtil.hashCode(' + f.name + '_)';
             })).join(';\n') + ';\n'
             +'return hash;\n'
         });
@@ -1254,8 +1255,8 @@ foam.CLASS({
   mixins: [ 'foam.java.JavaCompareImplementor' ],
 
   properties: [
-    ['javaType',                     'long'],
-    ['javaInfoType',                 'foam.core.AbstractLongPropertyInfo']
+    ['javaType',     'long'],
+    ['javaInfoType', 'foam.core.AbstractLongPropertyInfo']
   ]
 });
 
@@ -1268,8 +1269,8 @@ foam.CLASS({
   mixins: [ 'foam.java.JavaCompareImplementor' ],
 
   properties: [
-    ['javaType',       'double'],
-    ['javaInfoType',   'foam.core.AbstractDoublePropertyInfo']
+    ['javaType',     'double'],
+    ['javaInfoType', 'foam.core.AbstractDoublePropertyInfo']
   ]
 });
 
@@ -2420,9 +2421,10 @@ foam.CLASS({
   flags: ['java'],
   properties: [
     [ 'javaCompare',       '' ],
-    [ 'javaCloneProperty', null ]
+    [ 'javaCloneProperty', 'set(dest, get(source));' ]
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.java',

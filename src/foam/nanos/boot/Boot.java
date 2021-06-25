@@ -132,7 +132,10 @@ public class Boot {
 
     // Freeze sub contexts
     for ( var path : subContexts ) {
-      ((SubX) root_.cd(path)).freeze();
+      var x = root_.cd(path);
+      if ( x instanceof SubX ) {
+        ((SubX) x).freeze();
+      }
     }
 
     // Revert root_ to non ProxyX to avoid letting children add new bindings.

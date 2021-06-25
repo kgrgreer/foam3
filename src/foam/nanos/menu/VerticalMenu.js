@@ -31,11 +31,11 @@ foam.CLASS({
 
   css: `
   ^ input[type="search"] {
-    width: 240px;
+    width: 100%;
   }
 
   ^ .side-nav-view {
-    font-size: medium!important;
+    font-size: medium;
     font-weight: normal;
     position: absolute;
     height: calc(100vh - 80px);
@@ -48,9 +48,11 @@ foam.CLASS({
   }
 
   ^search {
-    text-align: center;
+    box-sizing: border-box;
     margin-top: 14px;
     padding: 0 5px;
+    text-align: center;
+    width: 240px;
   }
 
   ^ .tree-view-height-manager {

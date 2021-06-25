@@ -17,6 +17,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.lib.csv.CSVOutputter',
     'foam.lib.json.OutputterMode',
+    'foam.nanos.auth.AuthorizationException',
     'foam.nanos.boot.NSpec',
     'foam.nanos.dig.*',
     'foam.nanos.dig.exception.*',
@@ -227,28 +228,28 @@ foam.CLASS({
       String daoName = p.getParameter("dao");
 
       if ( SafetyUtil.isEmpty(daoName) ) {
-        DigUtil.outputException(x, new GeneralException("DAO name is required."), getFormat());
+        DigUtil.outputException(x, new DAORequiredException(), getFormat());
         return null;
       }
 
       DAO nSpecDAO = (DAO) x.get("AuthenticatedNSpecDAO");
       NSpec nspec = (NSpec) nSpecDAO.find(daoName);
       if ( nspec == null || ! nspec.getServe() ) {
-        DigUtil.outputException(x, new DAONotFoundException("DAO not found: " + daoName), getFormat());
+        DigUtil.outputException(x, new DAONotFoundException(daoName), getFormat());
         return null;
       }
 
       // Check if the user is authorized to access the DAO.
       try {
         nspec.checkAuthorization(x);
-      } catch (foam.nanos.auth.AuthorizationException e) {
-        DigUtil.outputException(x, new AuthorizationException(e.getMessage()), getFormat());
+      } catch (AuthorizationException e) {
+        DigUtil.outputFObject(x, e, 403, getFormat());
         return null;
       }
 
       DAO dao = (DAO) x.get(daoName);
       if ( dao == null ) {
-        DigUtil.outputException(x, new DAONotFoundException("DAO not found: " + daoName), getFormat());
+        DigUtil.outputException(x, new DAONotFoundException(daoName), getFormat());
         return null;
       }
 
@@ -280,7 +281,7 @@ foam.CLASS({
         // the existing behavior.
         var clientEx = ce.getClientRethrowException();
         if ( clientEx instanceof ValidationException ) {
-          throw new DAOPutException(clientEx.getMessage(), ce);
+          throw new DAOPutException(clientEx.getMessage(), clientEx);
         }
         throw ce;
       }

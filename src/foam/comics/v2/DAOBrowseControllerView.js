@@ -18,7 +18,8 @@ foam.CLASS({
     'auth',
     'currentMenu?',
     'memento',
-    'stack'
+    'stack',
+    'translationService'
   ],
 
   exports: [
@@ -31,7 +32,8 @@ foam.CLASS({
     'foam.u2.borders.CardBorder',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
-    'foam.u2.view.IconChoiceView'
+    'foam.u2.view.IconChoiceView',
+    'foam.u2.view.OverlayActionListView'
   ],
 
   css: `
@@ -57,18 +59,23 @@ foam.CLASS({
       padding: 12px 16px 0 0;
     }
 
+    ^buttons{
+      margin-right: 8px;
+    }
+
     ^ .foam-u2-borders-CardBorder {
-      padding: 0px;
-      border-radius: 6px;
-      box-shadow: 0px 1px 3px 0px #E7E7E7;
+      border: 1px solid /*%GREY4%*/ #DADDE2;
+      border-radius: 4px;
+      box-sizing: border-box;
+      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1);
       height: 100%;
-      -webkit-box-shadow: 0px 1px 3px 0px #E7E7E7;
-      -moz-box-shadow: 0px 1px 3px 0px #E7E7E7;
+      padding: 0;
     }
   `,
 
   messages: [
-    { name: 'VIEW_ALL', message: 'View all ' }
+    { name: 'VIEW_ALL', message: 'View all ' },
+    { name: 'ACTIONS', message: 'Actions' }
   ],
 
   properties: [
@@ -154,7 +161,7 @@ foam.CLASS({
     var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
     this.addClass(this.myClass())
 
-      .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$browseSubtitle, config$primaryAction, config$createTitle, config$createControllerView) {
+      .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$browseSubtitle, config$primaryAction, config$createTitle, config$createControllerView, config$browseContext) {
         return self.E()
           .start(self.Rows)
             .addClass(self.myClass('container'))
@@ -162,22 +169,47 @@ foam.CLASS({
                 .addClass(self.myClass('header-container'))
                 .start(self.Cols)
                   .start()
-                    .addClasses(['h100',self.myClass('browse-title')])
+                    .addClasses(['h100', self.myClass('browse-title')])
                     .translate(menuId + ".browseTitle", config$browseTitle)
                   .end()
-                  .callIf( ! config.detailView, function() {
-                    this.startContext({ data: self })
-                      .tag(self.CREATE, { label: config$createTitle, buttonStyle: foam.u2.ButtonStyle.PRIMARY })
-                    .endContext()
-                  })
-                  .callIf( config.createControllerView, function() {
-                    this.startContext({ data: self })
-                      .tag(self.CREATE, { label: config$createControllerView.view.title, buttonStyle: foam.u2.ButtonStyle.PRIMARY })
-                    .endContext()
-                  })
-                  .callIf( config$primaryAction, function() {
-                    this.startContext({ data: self }).tag(config$primaryAction, { size: 'LARGE', buttonStyle: 'PRIMARY' }).endContext();
-                  })
+                  .start(self.Cols)
+                    .callIf( config.browseActions.length && config.browseContext, function() {
+                      if ( config.browseActions.length > 2 ) {
+                        this.start(self.OverlayActionListView, {
+                          label: this.ACTIONS,
+                          data: config.browseActions,
+                          obj: config$browseContext
+                        }).addClass(self.myClass('buttons')).end();
+                      } else {
+                        var actions = this.E().addClass(self.myClass('buttons')).startContext({ data: config.browseContext });
+                        for ( action of config.browseActions ) {
+                          actions.tag(action, { size: 'LARGE' });
+                        }
+                        this.add(actions.endContext());
+                      }
+                    })
+                    .callIf( ! config.detailView, function() {
+                      this.startContext({ data: self })
+                        .tag(self.CREATE, {
+                            label: this.translationService.getTranslation(foam.locale, menuId + '.createTitle', config$createTitle),
+                            buttonStyle: foam.u2.ButtonStyle.PRIMARY,
+                            size: 'LARGE'
+                        })
+                      .endContext()
+                    })
+                    .callIf( config.createControllerView, function() {
+                      this.startContext({ data: self })
+                        .tag(self.CREATE, {
+                            label: this.translationService.getTranslation(foam.locale, menuId + '.handler.createControllerView.view.title', config$createControllerView.view.title),
+                            buttonStyle: foam.u2.ButtonStyle.PRIMARY,
+                            size: 'LARGE'
+                        })
+                      .endContext();
+                    })
+                    .callIf( config$primaryAction, function() {
+                      this.startContext({ data: self }).tag(config$primaryAction, { size: 'LARGE', buttonStyle: 'PRIMARY' }).endContext();
+                    })
+                  .end()
                 .end()
                 .callIf(config$browseSubtitle.length > 0, function() {
                   this
@@ -196,7 +228,7 @@ foam.CLASS({
                 })
               .end()
             .start(self.CardBorder)
-              .style({ position: 'relative', 'min-height': config.minHeight })
+              .style({ position: 'relative', 'min-height': config.minHeight + 'px' })
               .start(config$browseBorder)
                 .callIf(config$browseViews.length > 1 && config.cannedQueries.length > 0, function() {
                   this

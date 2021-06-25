@@ -32,6 +32,7 @@
     ^ {
       overflow: auto;
       max-height: 100%;
+      flex: 1;
     }
     ^table {
       position: relative;
@@ -39,6 +40,9 @@
     ^table  .foam-u2-view-TableView-thead {
       z-index: 1;
       overflow: visible;
+    }
+    ^scrolled .foam-u2-view-TableView-thead {
+      box-shadow: 0 1.5px 4px /*%GREY4%*/ #DADDE2;
     }
   `,
 
@@ -64,7 +68,7 @@
     {
       type: 'Integer',
       name: 'TABLE_HEAD_HEIGHT',
-      value: 52
+      value: 48
     }
   ],
 
@@ -97,7 +101,7 @@
       class: 'Int',
       name: 'rowHeight',
       documentation: 'The height of one row of the table in px.',
-      value: 49
+      value: 48
     },
     {
       name: 'table_',
@@ -237,6 +241,7 @@
             on('scroll', this.onScroll).
             start().
               add(this.table_).
+              enableClass(this.myClass('scrolled'), this.scrollPos_$).
               addClass(this.myClass('table')).
               style({
                 height: this.scrollHeight$.map(h => h + 'px')

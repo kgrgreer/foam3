@@ -199,13 +199,13 @@ foam.CLASS({
       name: 'hash',
       javaCode: `
       PM pm = PM.create(x, DefaultDaggerService.getOwnClassInfo(), "hash");
-      try {
-        if ( ! getHashingEnabled() ) {
-          entry.setHash(byte2Hex(Long.toString(entry.getIndex()).getBytes(StandardCharsets.UTF_8)));
-          entry.setAlgorithm("NONE");
-          return entry;
-        }
+      if ( ! getHashingEnabled() ) {
+        entry.setHash(byte2Hex(Long.toString(entry.getIndex()).getBytes(StandardCharsets.UTF_8)));
+        entry.setAlgorithm("NONE");
+        return entry;
+      }
 
+      try {
         MessageDigest md = MessageDigest.getInstance(getAlgorithm());
         md.update(Long.toString(entry.getIndex1()).getBytes(StandardCharsets.UTF_8));
         md.update(entry.getHash1().getBytes(StandardCharsets.UTF_8));
