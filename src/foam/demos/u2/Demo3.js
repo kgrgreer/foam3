@@ -30,3 +30,44 @@ v1.data$ = v2.data$;
 var v1 = foam.u2.TextField.create({data: 'data2', onKey: true}).write();
 var v2 = foam.u2.TextField.create({data: 'data2', onKey: true}).write();
 v1.data$ = v2.data$;
+
+
+foam.CLASS({
+  name: 'DynamicTest',
+  extends: 'foam.u2.Element',
+
+  css: `
+    << { color: red; }
+    <<tick { font-weight: 900; }
+  `,
+
+  properties: [
+    {
+      class: 'Boolean',
+      name: 'state'
+    }
+  ],
+
+  methods: [
+    function render() {
+      this.addClass();
+      this.add('child1', 'child2', this.state$).br().start('b').add('bold').end().br().entity('lt').add('>').add('end');
+      this.enableClass(this.myClass('tick'), this.state$);
+      this.tick();
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'tick',
+      isMerged: true,
+      mergeDelay: 1000,
+      code: function() {
+        this.state = ! this.state;
+        this.tick();
+      }
+    }
+  ]
+});
+
+var dt = DynamicTest.create().write();
