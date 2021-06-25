@@ -376,48 +376,26 @@ foam.CLASS({
 
     To insert a U2 Element into a regular DOM element, either:
 
+    el.write() // to append to the end of the document
+
     el.innerHTML = view.outerHTML;
     view.load();
+
+    el.appendAsChild(parentElement);
 
     Or use a foam tag in your markup:
 
     <foam class="com.acme.mypackage.MyView"></foam>
-
-    // TODO: Decide if we want this or not:
-    // function XXXE(opt_nodeName // | DIV //) {
-    //   // Create a new Element
-    //   var Y = this.__subContext__;
-    //
-    //   // ???: Is this needed / a good idea?
-    //   if ( this.data && ! Y.data ) Y = Y.createSubContext({ data: this.data });
-    //
-    //   // Some names have sub-Models registered for them.
-    //   // Example 'input'
-    //   var e = Y.elementForName(opt_nodeName);
-    //
-    //   if ( ! e ) {
-    //     e = foam.u2.Element.create(null, Y);
-    //     if ( opt_nodeName ) e.nodeName = opt_nodeName;
-    //   }
-    //
-    //   return e;
-    // },
 `,
 
   requires: [
-    {
-      path: 'foam.core.PromiseSlot',
-//      flags: ['js']
-    },
-    {
-      path: 'foam.u2.ViewSpec',
-//      flags: ['js']
-    },
+    'foam.core.PromiseSlot',
     'foam.dao.MergedResetSink',
     'foam.u2.AttrSlot',
     'foam.u2.Entity',
     'foam.u2.RenderSink',
-    'foam.u2.Tooltip'
+    'foam.u2.Tooltip',
+    'foam.u2.ViewSpec'
   ],
 
   imports: [
@@ -452,19 +430,16 @@ foam.CLASS({
         checked: true
       }
     },
-
     {
       name: 'DEFAULT_VALIDATOR',
       type: 'foam.u2.DefaultValidator',
       flags: ['js'],
       factory: function() { return foam.u2.DefaultValidator.create(); }
     },
-
     {
       name: '__ID__',
       value: [ 1 ]
     },
-
     {
       name: 'NEXT_ID',
       flags: ['js'],
@@ -472,13 +447,11 @@ foam.CLASS({
         return this.__ID__[ 0 ]++;
       }
     },
-
     {
       documentation: `Keys which respond to keydown but not keypress`,
       name: 'KEYPRESS_CODES',
       value: { 8: true, 13: true, 27: true, 33: true, 34: true, 37: true, 38: true, 39: true, 40: true }
     },
-
     {
       name: 'NAMED_CODES',
       value: {
