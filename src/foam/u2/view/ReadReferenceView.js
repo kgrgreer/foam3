@@ -4,7 +4,7 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
- foam.CLASS({
+foam.CLASS({
   package: 'foam.u2.view',
   name: 'ReadReferenceView',
   extends: 'foam.u2.View',
@@ -27,7 +27,6 @@
       class: 'Reference',
       of: 'foam.nanos.auth.Group',
       name: 'group',
-      enableLink: false,
       menuKeys: [
         'someMenuId',
         'someMenuId2'
@@ -38,11 +37,7 @@
 
     view: {
       class: 'foam.u2.view.ReadReferenceView',
-      enableLink: false,
-      menuKeys: [
-        'someMenuId',
-        'someMenuId2'
-      ]
+      enableLink: false
     }
 
     A flow chart for determining access to the link + what view the link is linked to
@@ -120,7 +115,7 @@
   methods: [
     {
       name: 'initE',
-      code: function () {
+      code: function() {
         var self = this;
         this.SUPER();
         this.add(
