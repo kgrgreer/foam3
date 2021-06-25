@@ -267,20 +267,6 @@ foam.CLASS({
 
     function validateStyleValue(value) {
       // TODO
-    },
-
-    function sanitizeText(text) {
-      if ( ! text ) return text;
-      text = text.toString();
-      if ( text.search(/[&<"']/) == -1 ) return text;
-      return text.replace(/[&<"']/g, (m) => {
-        switch ( m ) {
-          case '&': return '&amp;';
-          case '<': return '&lt;';
-          case '"': return '&quot;';
-          case "'": return '&#039';
-        }
-      });
     }
   ]
 });
