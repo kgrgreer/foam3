@@ -51,8 +51,16 @@ foam.CLASS({
   methods: [
     function render() {
       this.addClass();
-      this.add('child1', 'child2', this.state$).br().start('b').add('bold').end().br().entity('lt').add('>').add('end');
+      this.add('before');
+      this.start('h1').add('Dynamic Test 1').end();
+      this.start('h2').add('Dynamic Test 2').end();
+      this.add('after');
+      this.add(this.state$);
+      this.style({background: 'lightgray'});
+//      this.add('child1', 'child2', this.state$).br().start('b').add('bold').end().br().br().entity('lt').add('>').add('end');
       this.enableClass(this.myClass('tick'), this.state$);
+      this.tag('hr');
+      this.add('end');
       this.tick();
     }
   ],
