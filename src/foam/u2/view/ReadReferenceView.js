@@ -91,7 +91,7 @@ foam.CLASS({
       documentation: `
         A reference view anchor link.
         This will be set to either 'daoSummary', a menu in menuKyes, or an empty string.
-        If set to 'daoSummary, the link will be to reference property's dao summary view.
+        If set to 'daoSummary', the link will be to reference property's dao summary view.
         If set to a menu, the link will be to this menu.
         If set to an empty string, the link will be disabled.
       `
