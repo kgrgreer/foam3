@@ -467,7 +467,7 @@ foam.CLASS({
   messages: [
     {
       name: 'SELECT_BAD_USAGE',
-      message: `You're using Element.select() wrong. The function passed to it must return an Element. Don't try to modify the view by side effects.`
+      message: "You're using Element.select() wrong. The function passed to it must return an Element. Don't try to modify the view by side effects."
     }
   ],
 
