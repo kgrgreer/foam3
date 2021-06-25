@@ -12,14 +12,21 @@ TODO:
 */
 
 /* PORTING U2 to U3:
-  - rename initE to render
-  - move init() rendering code to render
+  - rename initE to render()
+  - move init() rendering code to render()
   - replace use of setNodeName to setting the nodeName property
   - remove use of this.sub('onload')
   - replace this.sub('onunload') with this.onDetach()
   - el() is now synchronous instead of returning a Promise
   - you can use views directly instead of ViewSpecs
   - the Element.state property no longer exists
+  - innerHTML and outerHTML have been removed
+  - replace ^ in CSS (which has meaning in CSS) with <<
+  - ILLEGAL_CLOSE_TAGS and OPTIONAL_CLOSE_TAGS are gone
+  - this.addClass() is the same as this.addClass(this.myClass())
+
+  TODO:
+  - remove use of SPAN tags for dynamic slot content by using reference to TextNode
 */
 
 foam.ENUM({
@@ -113,8 +120,10 @@ foam.CLASS({
   ],
 
   methods: [
-    function output(out) { out('&', this.name, ';'); },
-    function toE() { return this; }
+    function toE() { return this; },
+    function appendAsChild(el) {
+      el.insertAdjacentHTML('beforeend', '&' + this.name + ';');
+    }
   ]
 });
 
@@ -139,7 +148,7 @@ foam.CLASS({
       name: 'expands_',
       documentation: 'True iff the CSS contains a ^ which needs to be expanded.',
       expression: function(code) {
-        return code.includes('^');
+        return code.includes('^') || code.includes('<<');
       }
     }
   ],
@@ -206,11 +215,11 @@ foam.CLASS({
     function expandCSS(cls, text) {
       if ( ! this.expands_ ) return text;
 
-      /* Performs expansion of the ^ shorthand on the CSS. */
+      /* Performs expansion of the ^/<< shorthand on the CSS. */
       // TODO(braden): Parse and validate the CSS.
       // TODO(braden): Add the automatic prefixing once we have the parser.
       var base = '.' + foam.String.cssClassize(cls.id);
-      return text.replace(/\^(.)/g, function(match, next) {
+      return text.replace(/(<<|\^)(.)/g, function(match, _, next) {
         var c = next.charCodeAt(0);
         // Check if the next character is an uppercase or lowercase letter,
         // number, - or _. If so, add a - because this is a modified string.
@@ -273,312 +282,6 @@ foam.CLASS({
         }
       });
     }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.u2',
-  name: 'ElementState',
-
-  documentation: `
-    Current lifecycle state of an Element.
-    // TODO: Do we want the following method?
-    // function detach() {},
-  `,
-
-  methods: [
-    function el() {},
-    function output(out) {},
-    function load() {},
-    function unload() {},
-    function onRemove() {},
-    function onSetClass() {},
-    function onFocus() {},
-    function onAddListener() {},
-    function onRemoveListener() {},
-    function onSetStyle() {},
-    function onSetAttr() {},
-    function onRemoveAttr() {},
-    function onAddChildren() {},
-    function onInsertChildren() {},
-    function onReplaceChild() {},
-    function onRemoveChild() {},
-    function getBoundingClientRect() {
-      return {
-        left:   0,
-        right:  0,
-        bottom: 0,
-        top:    0,
-        width:  0,
-        height: 0
-      };
-    }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.u2',
-  name: 'InitialElementState',
-  extends: 'foam.u2.UnloadedElementState',
-
-  documentation: 'Initial state of a newly created Element.',
-
-  axioms: [ foam.pattern.Singleton.create() ],
-
-  methods: [
-    function el() {
-      var self = this;
-      return new Promise(function(resolve, reject) {
-        self.sub('onload', () => resolve(self.el_()));
-      });
-    },
-    function output(out) {
-      this.state = this.OUTPUT;
-      this.output_(out);
-      return out;
-    },
-    function toString() { return 'INITIAL'; }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.u2',
-  name: 'OutputElementState',
-  extends: 'foam.u2.ElementState',
-
-  documentation: 'State of Element after it has been output to DOM, but not yet loaded.',
-
-  methods: [
-    function el() {
-      var self = this;
-      return new Promise(function(resolve, reject) {
-        self.sub('onload', () => resolve(self.el_()));
-      });
-    },
-    function output(out) {
-      // TODO: raise a real error
-      this.__context__.warn('ERROR: Duplicate output.');
-      return this.UNLOADED.output.call(this, out);
-    },
-    function load() {
-      if ( this.hasOwnProperty('elListeners') ) {
-        var ls = this.elListeners;
-        for ( var i = 0 ; i < ls.length ; i += 3 ) {
-          this.addEventListener_(ls[i], ls[i+1], ls[i+2] || false);
-        }
-      }
-
-      this.visitChildren('load');
-      this.state = this.LOADED;
-
-      for ( var i = 0 ; i < this.attributes.length ; i++ ) {
-        var attr = this.attributes[i];
-        this.onSetAttr(attr.name, attr.value);
-      }
-
-      // disable adding to content$ during render()
-      this.add = function() { return this.add_(arguments, this); }
-      this.initTooltip();
-      this.initKeyboardShortcuts();
-      this.render();
-      if ( this.initE != foam.u2.Element.prototype.initE ) {
-        console.warn('Deprecated use of Element.initE(). Use render instead: ', this.cls_.name);
-        this.initE();
-      }
-      this.add = foam.u2.Element.prototype.add;
-
-      if ( this.tabIndex ) this.setAttribute('tabindex', this.tabIndex);
-      // Add a delay before setting the focus in case the DOM isn't visible yet.
-      if ( this.focused ) this.el().then(el => el.focus());
-      // Allows you to take the DOM element and map it back to a
-      // foam.u2.Element object.  This is expensive when building
-      // lots of DOM since it adds an extra DOM call per Element.
-      // But you could use it to cut down on the number of listeners
-      // in something like a table view by doing per table listeners
-      // rather than per-row listeners and in the event finding the right
-      // U2 view by walking the DOM tree and checking e_.
-      // This could save more time than the work spent here adding e_ to each
-      // DOM element.
-      // this.el().e_ = this;
-    },
-    function unload() {
-      this.state = this.UNLOADED;
-      this.visitChildren('unload');
-      this.detach();
-    },
-    function onSetClass() { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onFocus() { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onAddListener() { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onRemoveListener() { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onSetStyle() { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onSetAttr() { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onRemoveAttr() { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onAddChildren() { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onInsertChildren() { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onReplaceChild() { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function onRemoveChild() { throw new Error('Mutations not allowed in OUTPUT state.'); },
-    function toString() { return 'OUTPUT'; }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.u2',
-  name: 'LoadedElementState',
-  extends: 'foam.u2.ElementState',
-
-  documentation: 'State of an Element after it has been output to the DOM and loaded.',
-
-  methods: [
-    function el() {
-      return Promise.resolve(this.el_());
-    },
-
-    function output(out) {
-      this.__context__.warn('Duplicate output.');
-      return this.UNLOADED.output.call(this, out);
-    },
-    function load() { this.__console__.warn('Duplicate load.'); },
-    function unload() {
-      if ( ! this.parentNode || this.parentNode.state === this.LOADED ) {
-        var e = this.el_();
-        if ( e ) e.remove();
-      }
-
-      this.state = this.UNLOADED;
-      this.visitChildren('unload');
-      this.detach();
-    },
-    function onRemove() { this.unload(); },
-    function onSetClass(cls, enabled) {
-      var e = this.el_();
-      if ( e ) {
-        e.classList[enabled ? 'add' : 'remove'](cls);
-      } else {
-        this.__context__.warn('Missing Element: ', this.id);
-      }
-    },
-    function onFocus() {
-      this.el_().focus();
-    },
-    function onAddListener(topic, listener, opt_args) {
-      this.addEventListener_(topic, listener, opt_args);
-    },
-    function onRemoveListener(topic, listener) {
-      this.addRemoveListener_(topic, listener);
-    },
-    function onSetStyle(key, value) {
-if ( ! this.el_() ) return;
-      this.el_().style[key] = value;
-    },
-    function onSetAttr(key, value) {
-if ( ! this.el_() ) return;
-      if ( this.PSEDO_ATTRIBUTES[key] ) {
-        this.el_()[key] = value;
-      } else {
-        this.el_().setAttribute(key, value === true ? '' : value);
-      }
-    },
-    function onRemoveAttr(key) {
-      if ( this.PSEDO_ATTRIBUTES[key] ) {
-        this.el_()[key] = '';
-      } else {
-        this.el_().removeAttribute(key);
-      }
-    },
-    function onAddChildren() {
-      var e = this.el_();
-      if ( ! e ) {
-        this.__context__.warn('Missing Element: ', this.id);
-        return;
-      }
-      var out = this.createOutputStream();
-      for ( var i = 0 ; i < arguments.length ; i++ ) {
-        out(arguments[i]);
-      }
-      e.insertAdjacentHTML('beforeend', out);
-      for ( var i = 0 ; i < arguments.length ; i++ ) {
-        arguments[i].load && arguments[i].load();
-      }
-    },
-    function onInsertChildren(children, reference, where) {
-      var e = this.el_();
-      if ( ! e ) {
-        this.__context__.warn('Missing Element: ', this.id);
-        return;
-      }
-      var out = this.createOutputStream();
-      for ( var i = 0 ; i < children.length ; i++ ) {
-        out(children[i]);
-      }
-
-      reference.el_().insertAdjacentHTML(where, out);
-
-      // EXPERIMENTAL:
-      // TODO(kgr): This causes some elements to get stuck in OUTPUT state
-      // forever. It can be resurrected if that problem is fixed.
-      // Load (mostly adding listeners) on the next frame
-      // to allow the HTML to be shown more quickly.
-      // this.__context__.window.setTimeout(function() {
-      for ( var i = 0 ; i < children.length ; i++ ) {
-        children[i].load && children[i].load();
-      }
-      // }, 33);
-    },
-    function onReplaceChild(oldE, newE) {
-      var e = this.el_();
-      if ( ! e ) {
-        this.__context__.warn('Missing Element: ', this.id);
-        return;
-      }
-      var out = this.createOutputStream();
-      out(newE);
-      oldE.el_().outerHTML = out.toString();
-      newE.load && newE.load();
-    },
-    function onRemoveChild(child, index) {
-      if ( typeof child === 'string' ) {
-        this.el_().childNodes[index].remove();
-      } else {
-        child.remove();
-      }
-    },
-    function getBoundingClientRect() {
-      return this.el_().getBoundingClientRect();
-    },
-    function toString() { return 'LOADED'; }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.u2',
-  name: 'UnloadedElementState',
-  extends: 'foam.u2.ElementState',
-
-  documentation: 'State of an unloaded Element.',
-
-  methods: [
-    function el() {
-      // A NOOP Promise that will never resolve
-      return { then: function() {}, catch: function() {} };
-    },
-    function output(out) {
-      this.__context__.warn('Outputting unloaded element can cause event/binding bugs.', this.cls_.id);
-      this.state = this.OUTPUT;
-      this.output_(out);
-      return out;
-    },
-    function load() {
-      this.__context__.warn('Must output before loading.');
-    },
-    function unload() {
-      this.__context__.warn('Must output before loading.');
-    },
-    function toString() { return 'UNLOADED'; }
   ]
 });
 
@@ -718,11 +421,11 @@ foam.CLASS({
   requires: [
     {
       path: 'foam.core.PromiseSlot',
-      flags: ['js']
+//      flags: ['js']
     },
     {
       path: 'foam.u2.ViewSpec',
-      flags: ['js']
+//      flags: ['js']
     },
     'foam.dao.MergedResetSink',
     'foam.u2.AttrSlot',
@@ -740,12 +443,7 @@ foam.CLASS({
   ],
 
   implements: [
-    'foam.mlang.Expressions',
-  ],
-
-  topics: [
-    'onload',
-    'onunload'
+    'foam.mlang.Expressions'
   ],
 
   constants: [
@@ -770,101 +468,6 @@ foam.CLASS({
       type: 'foam.u2.DefaultValidator',
       flags: ['js'],
       factory: function() { return foam.u2.DefaultValidator.create(); }
-    },
-
-    {
-      documentation: `
-        Initial state of an Element before it has been added to the DOM.
-      `,
-      name: 'INITIAL',
-      type: 'foam.u2.InitialElementState',
-      flags: ['js'],
-      factory: function() {
-        return foam.u2.InitialElementState.create();
-      }
-    },
-
-    {
-      documentation: `
-        State of an Element after it has been output (to a String) but before it
-        is loaded. This should be only a brief transitory state, as the Element
-        should be loaded almost immediately after being output. It is an error
-        to try and mutate the Element while in the OUTPUT state.
-      `,
-      name: 'OUTPUT',
-      type: 'foam.u2.OutputElementState',
-      flags: ['js'],
-      factory: function() { return foam.u2.OutputElementState.create(); }
-    },
-
-    {
-      documentation: `
-        State of an Element after it has been loaded.
-        A Loaded Element should be visible in the DOM.
-      `,
-      name: 'LOADED',
-      type: 'foam.u2.LoadedElementState',
-      flags: ['js'],
-      factory: function() { return foam.u2.LoadedElementState.create(); }
-    },
-
-    {
-      documentation: `
-        State of an Element after it has been removed from the DOM.
-        An unloaded Element can be re-added to the DOM.
-      `,
-      name: 'UNLOADED',
-      type: 'foam.u2.UnloadedElementState',
-      flags: ['js'],
-      factory: function() { return foam.u2.UnloadedElementState.create(); }
-    },
-
-    // ???: Add DESTROYED State?
-
-    {
-      documentation: `TODO: Don't allow these as they lead to ambiguous markup.`,
-      name: 'OPTIONAL_CLOSE_TAGS',
-      value: {
-        BODY: true,
-        COLGROUP: true,
-        DD: true,
-        DT: true,
-        HEAD: true,
-        HTML: true,
-        LI: true,
-        OPTION: true,
-        P: true,
-        TBODY: true,
-        TD: true,
-        TFOOT: true,
-        TH: true,
-        THEAD: true,
-        TR: true
-      }
-    },
-
-    {
-      documentation: `
-        Element nodeName's that are self-closing.
-        Used to generate valid HTML output.
-        Used by ElementParser for valid HTML parsing.
-      `,
-      name: 'ILLEGAL_CLOSE_TAGS',
-      value: {
-        AREA: true,
-        BASE: true,
-        BASEFONT: true,
-        BR: true,
-        COL: true,
-        FRAME: true,
-        HR: true,
-        IMG: true,
-        INPUT: true,
-        ISINDEX: true,
-        LINK: true,
-        META: true,
-        PARAM: true
-      }
     },
 
     {
@@ -907,6 +510,9 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'element_'
+    },
+    {
       // TODO: class is needed to fix the Java build, but this shouldn't be building for Java anyway.
       class: 'Object',
       name: 'id',
@@ -920,24 +526,6 @@ foam.CLASS({
       factory: function() { return this.__context__.controllerMode || foam.u2.ControllerMode.CREATE; }
     },
     {
-      name: 'state',
-      class: 'Proxy',
-      of: 'foam.u2.ElementState',
-      flags: ['js'],
-      transient: true,
-      topics: [],
-      delegates: foam.u2.ElementState.getOwnAxiomsByClass(foam.core.Method).
-        map(function(m) { return m.name; }),
-      factory: function() { return this.LOADED; },
-      postSet: function(oldState, state) {
-        if ( state === this.LOADED ) {
-          this.pub('onload');
-        } else if ( state === this.UNLOADED ) {
-          this.pub('onunload');
-        }
-      }
-    },
-    {
       name: 'content',
       preSet: function(o, n) {
         // Prevent setting to 'this', which wouldn't change the behaviour.
@@ -948,7 +536,7 @@ foam.CLASS({
       class: 'String',
       name: 'tooltip',
       postSet: function(o, n) {
-        if ( n && ! o && this.state == this.LOADED ) this.initTooltip();
+        if ( n && ! o ) this.initTooltip();
         return n;
       }
     },
@@ -981,11 +569,7 @@ foam.CLASS({
     },
     {
       name: 'nodeName',
-      adapt: function(_, v) {
-        // Convert to uppercase so that checks against OPTIONAL_CLOSE_TAGS
-        // and ILLEGAL_CLOSE_TAGS work.
-        return foam.String.toUpperCase(v);
-      },
+      adapt: function(_, v) { return foam.String.toUpperCase(v); },
       value: 'DIV'
     },
     {
@@ -1043,22 +627,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'outerHTML',
-      transient: true,
-      hidden: true,
-      getter: function() {
-        return this.output(this.createOutputStream()).toString();
-      }
-    },
-    {
-      name: 'innerHTML',
-      transient: true,
-      hidden: true,
-      getter: function() {
-        return this.outputInnerHTML(this.createOutputStream()).toString();
-      }
-    },
-    {
       name: 'scrollHeight'
     },
     {
@@ -1079,6 +647,152 @@ foam.CLASS({
   ],
 
   methods: [
+
+    // from state
+    function el() {
+      return Promise.resolve(this.el_());
+    },
+    function output(out) {
+      // this.state = this.OUTPUT;
+      this.output_(out);
+      return out;
+    },
+    function load() {
+      if ( this.hasOwnProperty('elListeners') ) {
+        var ls = this.elListeners;
+        for ( var i = 0 ; i < ls.length ; i += 3 ) {
+          this.addEventListener_(ls[i], ls[i+1], ls[i+2] || false);
+        }
+      }
+
+      // shouldn't have any children
+      // this.visitChildren('load');
+
+      for ( var i = 0 ; i < this.attributes.length ; i++ ) {
+        var attr = this.attributes[i];
+        this.onSetAttr(attr.name, attr.value);
+      }
+
+      // disable adding to content$ during render()
+      this.add = function() { return this.add_(arguments, this); }
+      this.initTooltip();
+      this.initKeyboardShortcuts();
+      this.render();
+      if ( this.initE != foam.u2.Element.prototype.initE ) {
+        console.warn('Deprecated use of Element.initE(). Use render instead: ', this.cls_.name);
+        this.initE();
+      }
+      this.add = foam.u2.Element.prototype.add;
+
+      if ( this.tabIndex ) this.setAttribute('tabindex', this.tabIndex);
+      // Add a delay before setting the focus in case the DOM isn't visible yet.
+      if ( this.focused ) this.el().then(el => el.focus());
+      // Allows you to take the DOM element and map it back to a
+      // foam.u2.Element object.  This is expensive when building
+      // lots of DOM since it adds an extra DOM call per Element.
+      // But you could use it to cut down on the number of listeners
+      // in something like a table view by doing per table listeners
+      // rather than per-row listeners and in the event finding the right
+      // U2 view by walking the DOM tree and checking e_.
+      // This could save more time than the work spent here adding e_ to each
+      // DOM element.
+      // this.el().e_ = this;
+    },
+    function unload() {
+      var e = this.el_();
+      if ( e ) e.remove();
+
+      // this.state = this.UNLOADED;
+      this.visitChildren('unload');
+      this.detach();
+    },
+    function onRemove() { this.unload(); },
+    function onSetClass(cls, enabled) {
+      var e = this.el_();
+      if ( e ) {
+        e.classList[enabled ? 'add' : 'remove'](cls);
+      } else {
+        console.warn('Missing Element: ', this.id);
+      }
+    },
+    function onFocus() {
+      this.el_().focus();
+    },
+    function onAddListener(topic, listener, opt_args) {
+      this.addEventListener_(topic, listener, opt_args);
+    },
+    function onRemoveListener(topic, listener) {
+      this.addRemoveListener_(topic, listener);
+    },
+    function onSetStyle(key, value) {
+if ( ! this.el_() ) return;
+      this.el_().style[key] = value;
+    },
+    function onSetAttr(key, value) {
+if ( ! this.el_() ) return;
+      if ( this.PSEDO_ATTRIBUTES[key] ) {
+        this.el_()[key] = value;
+      } else {
+        this.el_().setAttribute(key, value === true ? '' : value);
+      }
+    },
+    function onRemoveAttr(key) {
+      if ( this.PSEDO_ATTRIBUTES[key] ) {
+        this.el_()[key] = '';
+      } else {
+        this.el_().removeAttribute(key);
+      }
+    },
+    /*
+    function onInsertChildren(children, reference, where) {
+      var e = this.el_();
+      if ( ! e ) {
+        console.warn('Missing Element: ', this.id);
+        return;
+      }
+      var out = this.createOutputStream();
+      for ( var i = 0 ; i < children.length ; i++ ) {
+        out(children[i]);
+      }
+
+      reference.el_().insertAdjacentHTML(where, out);
+
+      // EXPERIMENTAL:
+      // TODO(kgr): This causes some elements to get stuck in OUTPUT state
+      // forever. It can be resurrected if that problem is fixed.
+      // Load (mostly adding listeners) on the next frame
+      // to allow the HTML to be shown more quickly.
+      // this.__context__.window.setTimeout(function() {
+      for ( var i = 0 ; i < children.length ; i++ ) {
+        children[i].load && children[i].load();
+      }
+      // }, 33);
+    },
+    */
+    function onReplaceChild(oldE, newE) {
+      var e = this.el_();
+      if ( ! e ) {
+        console.warn('Missing Element: ', this.id);
+        return;
+      }
+      // TODO
+      oldE.el_().outerHTML = '<' + this.nodeName + ' id=' + this.id + '></' + this.nodeName + '>';
+      newE.load && newE.load();
+    },
+    function onRemoveChild(child, index) {
+      if ( typeof child === 'string' ) {
+        this.el_().childNodes[index].remove();
+      } else {
+        child.remove();
+      }
+    },
+    function getBoundingClientRect() {
+      return this.el_().getBoundingClientRect();
+    },
+
+
+
+
     function init() {
       /*
       if ( ! this.translationService )
@@ -1198,7 +912,7 @@ foam.CLASS({
     },
 
     function el_() {
-      return this.getElementById(this.id);
+      return this.element_;
     },
 
     function findChildForEvent(e) {
@@ -1507,7 +1221,7 @@ foam.CLASS({
 
     function entity(name) {
       /* Create and add a named entity. Ex. .entity('gt') */
-      this.add(this.Entity.create({ name: name }));
+      this.addChild_(this.Entity.create({ name: name }));
       return this;
     },
 
@@ -1522,7 +1236,9 @@ foam.CLASS({
     function addClass(cls) { /* Slot | String */
       /* Add a CSS cls to this Element. */
       var self = this;
-      if ( foam.core.Slot.isInstance(cls) ) {
+      if ( cls === undefined ) {
+        this.addClass_(null, this.myClass());
+      } else if ( foam.core.Slot.isInstance(cls) ) {
         var lastValue = null;
         var l = function() {
           var v = cls.get();
@@ -1687,22 +1403,30 @@ foam.CLASS({
       return this.add_(arguments, this);
     },
 
-    function add_(cs, parentNode) {
-      // Common case is one String, so optimize that case.
-      if ( cs.length == 1 && typeof cs[0] === 'string' ) {
-        var sanitized = this.sanitizeText(cs[0]);
-        this.childNodes.push(sanitized);
-        this.onAddChildren(sanitized);
-        return this;
+    function addChild_(c, parentNode) {
+      if ( c === null || c === undefined ) return;
+
+      if ( c.toE ) {
+        c = c.toE(null, this.__subSubContext__);
       }
 
+      if ( foam.String.isInstance(c) || foam.Number.isInstance(c) ) {
+        this.element_ && this.element_.appendChild(this.document.createTextNode(c));
+      } else if ( c.appendAsChild ) {
+        c.parentNode = parentNode;
+        c.appendAsChild(this.element_);
+      }
+    },
+
+    function add_(cs, parentNode) {
       /* Add Children to this Element. */
-      var es = [];
+//      var es = [];
       var Y = this.__subSubContext__;
 
       for ( var i = 0 ; i < cs.length ; i++ ) {
-        var c = cs[i];
-
+        this.addChild_(cs[i], parentNode);
+      }
+        /*
         // Remove null values
         if ( c === undefined || c === null ) {
           // nop
@@ -1735,7 +1459,8 @@ foam.CLASS({
           es.push(c);
         }
       }
-
+      */
+/*
       if ( es.length ) {
         for ( var i = 0 ; i < es.length ; i++ ) {
           if ( foam.u2.Element.isInstance(es[i]) ) {
@@ -1747,9 +1472,10 @@ foam.CLASS({
           }
         }
 
-        this.childNodes.push.apply(this.childNodes, es);
-        this.onAddChildren.apply(this, es);
+        // this.childNodes.push.apply(this.childNodes, es);
+        // this.onAddChildren.apply(this, es);
       }
+      */
 
       return this;
     },
@@ -1829,7 +1555,8 @@ foam.CLASS({
         comparator: opt_comparator,
         addRow: function(o) {
           // No use adding new children if the parent has already been removed
-          if ( self.state === foam.u2.Element.UNLOADED ) return;
+          // TODO:
+          // if ( self.state === foam.u2.Element.UNLOADED ) return;
 
           if ( update ) {
             o = o.clone();
@@ -1920,54 +1647,19 @@ foam.CLASS({
       return out;
     },
 
-    function createOutputStream() {
-      /*
-        Create an OutputStream.
-        Suitable for providing to the output() method for
-        serializing an Element hierarchy.
-        Call toString() on the OutputStream to get output.
-      */
-      var buf = '';
-      var Element = foam.u2.Element;
-      var Entity  = this.Entity;
-      var f = function templateOut(/* arguments */) {
-        for ( var i = 0 ; i < arguments.length ; i++ ) {
-          var o = arguments[i];
-          if ( o === null || o === undefined ) {
-            // NOP
-          } else if ( typeof o === 'string' ) {
-            buf += o;
-          } else if ( typeof o === 'number' ) {
-            buf += o;
-          } else if ( Element.isInstance(o) || Entity.isInstance(o) ) {
-            o.output(f);
-          }
-        }
-      };
-
-      f.toString = function() {
-        return buf;
-      };
-
-      return f;
+    function write() {
+      this.appendAsChild(this.document.body)
+      return this;
     },
 
-    function write() {
-      /* Write Element to document. */
-      this.document.body.insertAdjacentHTML('beforeend', this.outerHTML);
+    function appendAsChild(el) {
+      this.element_ = this.document.createElement(this.nodeName);
+      el.appendChild(this.element_);
       this.load();
-      return this;
     },
 
     function toString() {
       return this.cls_.id + '(id=' + this.id + ', nodeName=' + this.nodeName + ', state=' + this.state + ')';
-      /* Converts Element to HTML String without transitioning state. */
-      /*
-        TODO: put this somewhere useful for debugging
-      var s = this.createOutputStream();
-      this.output_(s);
-      return s.toString();
-      */
     },
 
     function insertAt_(children, reference, before) {
@@ -1992,11 +1684,13 @@ foam.CLASS({
       var index = before ? i : (i + 1);
       this.childNodes.splice.apply(this.childNodes, [index, 0].concat(children));
 
+      /*
       this.state.onInsertChildren.call(
         this,
         children,
         reference,
         before ? 'beforebegin' : 'afterend');
+        */
 
       return this;
     },
@@ -2077,28 +1771,35 @@ foam.CLASS({
 
       var e = nextE();
       var l = this.framed(function() {
+        /*
+        TODO
         if ( self.state !== self.LOADED ) {
           return;
         }
+        */
         var first = Array.isArray(e) ? e[0] : e;
 
+        /*
         if ( first && first.state == first.INITIAL ) {
           // updated requested before initial element loaded
           // not a problem, just defer loading
           first.onload.sub(foam.events.oneTime(l));
           return;
         }
+          */
 
         var tmp = self.E();
         self.insertBefore(tmp, first);
         if ( Array.isArray(e) ) {
           for ( var i = 0 ; i < e.length ; i++ ) {
-            if ( e[i].state === e[i].LOADED ) {
-              e[i].remove(); e[i].detach();
-            }
+            // TODO: combine these two
+            e[i].remove();
+            e[i].detach();
           }
         } else {
-          if ( e.state === e.LOADED ) { e.remove(); e.detach(); }
+          // TODO: combine these two
+          e.remove();
+          e.detach();
         }
         var e2 = nextE();
         self.insertBefore(e2, tmp);
@@ -2119,69 +1820,6 @@ foam.CLASS({
     function removeEventListener_(topic, listener) {
       var el = this.el_();
       el && el.removeEventListener(topic, listener);
-    },
-
-    function output_(out) {
-      /** Output the element without transitioning to the OUTPUT state. **/
-      out('<', this.nodeName);
-      if ( this.id !== null ) out(' id="', this.id.replace ? this.id.replace(/"/g, "&quot;") : this.id, '"');
-
-      var first = true;
-      if ( this.hasOwnProperty('classes') ) {
-        var cs = this.classes;
-        for ( var key in cs ) {
-          if ( ! cs[key] ) continue;
-          if ( first ) {
-            out(' class="');
-            first = false;
-          } else {
-            out(' ');
-          }
-          out(key);
-        }
-        if ( ! first ) out('"');
-      }
-
-      if ( this.hasOwnProperty('css') ) {
-        first = true;
-        var cs = this.css;
-        for ( var key in cs ) {
-          var value = cs[key];
-
-          if ( first ) {
-            out(' style="');
-            first = false;
-          }
-          out(key, ':', value, ';');
-        }
-        if ( ! first ) out('"');
-      }
-
-      if ( this.hasOwnProperty('attributes') ) {
-        var as = this.attributes;
-        for ( var i = 0 ; i < as.length ; i++ ) {
-          var attr  = as[i];
-          var name  = attr.name;
-          var value = attr.value;
-
-          if ( value !== false ) {
-            out(' ', name, '="');
-            out(foam.String.isInstance(value) ? value.replace(/"/g, '&quot;') : value);
-            out('"');
-          }
-        }
-      }
-
-      if ( ! this.ILLEGAL_CLOSE_TAGS[this.nodeName] ) {
-        var hasChildren = this.hasOwnProperty('childNodes') && this.childNodes.length;
-        if ( hasChildren || ! this.OPTIONAL_CLOSE_TAGS[this.nodeName] ) {
-          out('>');
-          if ( hasChildren ) this.outputInnerHTML(out);
-          out('</', this.nodeName);
-        }
-      }
-
-      out('>');
     }
   ],
 
