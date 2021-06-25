@@ -12,20 +12,8 @@ foam.INTERFACE({
     {
       name: 'getUser',
       type: 'foam.nanos.auth.User',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'identifier',
-          type: 'String'
-        },
-        {
-          name: 'password',
-          class: 'String'
-        }
-      ]
+      documentation: 'Helper logic function to reduce code duplication',
+      args: [ 'Context x', 'String identifier', 'String password' ]
     }
   ]
 });

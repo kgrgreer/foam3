@@ -10,15 +10,15 @@ foam.CLASS({
    extends: 'foam.nanos.auth.ProxyUserLocatorService',
    flags: ['java'],
 
-  documentation: `Restrict login to the url that matches the spid of the user.`,
-
+  documentation: `Filter users by email/username or spid.`,
 
   javaImports: [
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.nanos.auth.AuthenticationException',
+    'foam.dao.Sink',
     'foam.nanos.auth.User',
     'foam.nanos.theme.Theme',
-
+    'java.util.List',
     'static foam.mlang.MLang.*'
   ],
 
@@ -27,44 +27,29 @@ foam.CLASS({
       class: 'String',
       name: 'superSpid',
       documentation: 'Set spid of a theme that is accessible to all users',
-      value: "",
     }
   ],
 
   methods: [
     {
       name: 'getUser',
-      documentation: 'Helper logic function to reduce code duplication',
-      type: 'User',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'identifier',
-          type: 'String'
-        },
-        {
-          name: 'password',
-          class: 'String'
-        }
-      ],
       javaCode: `
         DAO userDAO = (DAO) getX().get("localUserDAO");
 
-        userDAO = userDAO
-          .where(
-          AND(
-            OR(
-              EQ(User.EMAIL, identifier.toLowerCase()),
-              EQ(User.USER_NAME, identifier)
-            ),
-            OR(
+        Sink sink = new ArraySink();
+        sink = userDAO
+          .where(OR(
+            EQ(User.EMAIL, identifier.toLowerCase()),
+            EQ(User.USER_NAME, identifier)
+          )).limit(2).select(sink);
+
+        List list = ((ArraySink) sink).getArray();
+        if ( list.size() > 0) {
+          userDAO = userDAO
+            .where(OR(
               EQ(User.SPID, ((Theme) x.get("theme")).getSpid()),
-              EQ(User.SPID, getSuperSpid())
-            )
-          ));
+              EQ(User.SPID, getSuperSpid())));
+        }
 
         x = x.put("localUserDAO", userDAO);
         return getDelegate().getUser(x, identifier, password);
@@ -72,3 +57,4 @@ foam.CLASS({
     }
   ]
 });
+

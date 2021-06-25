@@ -19,40 +19,13 @@ foam.CLASS({
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.User',
     'foam.nanos.theme.Theme',
-
     'java.util.List',
-
     'static foam.mlang.MLang.*'
-  ],
-
-  properties: [
-    {
-      class: 'String',
-      name: 'superSpid',
-      documentation: 'Set spid of a theme that is accessible to all users',
-      value: "",
-    }
   ],
 
   methods: [
     {
       name: 'getUser',
-      documentation: 'Helper logic function to reduce code duplication',
-      type: 'User',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'identifier',
-          type: 'String'
-        },
-        {
-          name: 'password',
-          class: 'String'
-        }
-      ],
       javaCode: `
         DAO userDAO = (DAO) x.get("localUserDAO");
 
@@ -61,15 +34,11 @@ foam.CLASS({
           .where(OR(
             EQ(User.EMAIL, identifier.toLowerCase()),
             EQ(User.USER_NAME, identifier)))
-          .select(sink);
-        List list = ((ArraySink) sink).getArray();
+          .limit(2).select(sink);
 
-        if ( list != null ){
-          if ( list.size() == 0 ) {
-            throw new AuthenticationException("User is not found");
-          } else if ( list.size() > 1 ) {
-            throw new AuthenticationException("Duplicate Email.");
-          }
+        List list = ((ArraySink) sink).getArray();
+        if ( list.size() == 0 || list.size() > 1 ) {
+          return null;
         }
         return (User) list.get(0);
       `

@@ -154,7 +154,7 @@ foam.CLASS({
         // Freeze user
         user = (User) user.fclone();
         user.freeze();
-        
+
         session.setUserId(user.getId());
 
         if ( check(userX, "*") ) {
@@ -180,17 +180,7 @@ foam.CLASS({
       documentation: `Login a user by their identifier (email or username) provided, validate the password and
         return the user in the context`,
       javaCode: `
-        User user = (User) ((DAO) getLocalUserDAO())
-          .inX(x)
-          .find(
-            AND(
-              OR(
-                EQ(User.EMAIL, identifier.toLowerCase()),
-                EQ(User.USER_NAME, identifier)
-              ),
-              CLASS_OF(User.class)
-            )
-          );
+        User user = ((UserLocatorService) x.get("userLocator")).getUser(x, identifier, password);
 
         if ( user == null ) {
           throw new UserNotFoundException();

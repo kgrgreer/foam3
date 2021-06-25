@@ -23,7 +23,6 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.theme.Theme',
@@ -34,22 +33,19 @@ foam.CLASS({
     {
       name: 'checkAvailability',
       javaCode: `
-        DAO userDAO = (DAO) getX().get("localUserDAO");
-
-        if ( ! targetProperty.equals("userName") && ! targetProperty.equals("email") ) {
+        if ( ! targetProperty.equals("userName") &&
+             ! targetProperty.equals("email")
+        ) {
           throw new AuthorizationException();
         }
 
-        ArraySink select = (ArraySink) userDAO.inX(x).where(
-          AND(
+        DAO userDAO = ((DAO) getX().get("localUserDAO")).inX(x);
+        User user = (User) userDAO
+          .find(AND(
             EQ(User.getOwnClassInfo().getAxiomByName(targetProperty), value),
-            // Find a user within the same spid.
-            // Support having users with the same email or user name in different spids.
-            EQ(User.SPID, ((Theme) x.get("theme")).getSpid())
-          ))
-          .select(new ArraySink());
+            EQ(User.SPID, ((Theme) x.get("theme")).getSpid())));
 
-        if ( select.getArray().size() != 0 ) {
+        if ( user != null ) {
           return false;
         }
         return true;
