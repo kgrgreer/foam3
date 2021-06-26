@@ -284,7 +284,11 @@ This is the heart of Medusa.`,
           MedusaEntry entry = null;
           try {
             Long nextIndex = replaying.getIndex() + 1;
-            getLogger().debug("promoter", "next", nextIndex);
+            if ( nextIndex % 10000 == 0 ) {
+              getLogger().info("promoter", "next", nextIndex);
+            } else {
+              getLogger().debug("promoter", "next", nextIndex);
+            }
             MedusaEntry next = (MedusaEntry) getDelegate().find_(x, nextIndex);
             if ( next != null ) {
               synchronized ( next.getId().toString().intern() ) {
