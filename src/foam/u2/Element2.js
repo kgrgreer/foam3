@@ -96,12 +96,26 @@ foam.ENUM({
 
 foam.CLASS({
   package: 'foam.u2',
-  name: 'Entity',
+  name: 'Node',
 
-  documentation: `
-    Virtual-DOM Entity.
-    // TODO: Make both Entity and Element extend a common base-Model (Node?)
-  `,
+  properties: [
+    'element_'
+  ],
+
+  methods: [
+    function toE() { return this; },
+//    appendAsChild(el)
+
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'Entity',
+  extends: 'foam.u2.Node',
+
+  documentation: 'U3 Entity Reference',
 
   properties: [
     {
@@ -120,9 +134,27 @@ foam.CLASS({
   ],
 
   methods: [
-    function toE() { return this; },
     function appendAsChild(el) {
-      el.insertAdjacentHTML('beforeend', '&' + this.name + ';');
+      var element_ = el.insertAdjacentHTML('beforeend', '&' + this.name + ';');
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'Text',
+  extends: 'foam.u2.Node',
+
+  documentation: 'U3 Text Node',
+
+  properties: [
+    'text'
+  ],
+
+  methods: [
+    function appendAsChild(el) {
+      var element_ = el.insertAdjacentHTML('beforeend', this.text);
     }
   ]
 });
@@ -370,6 +402,7 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.u2',
   name: 'Element',
+  extends: 'foam.u2.Node',
 
   documentation: `
     Virtual-DOM Element. Root model for all U2 UI components.
@@ -472,9 +505,6 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      name: 'element_'
-    },
     {
       // TODO: class is needed to fix the Java build, but this shouldn't be building for Java anyway.
       class: 'Object',
@@ -1179,7 +1209,7 @@ if ( ! this.el_() ) return;
 
     function entity(name) {
       /* Create and add a named entity. Ex. .entity('gt') */
-      this.addChild_(this.Entity.create({ name: name }));
+      this.addChild_(this.Entity.create({name: name}));
       return this;
     },
 
@@ -1368,8 +1398,20 @@ if ( ! this.el_() ) return;
         c = c.toE(null, this.__subSubContext__);
       }
 
-      if ( foam.String.isInstance(c) || foam.Number.isInstance(c) ) {
+      if ( foam.core.Slot.isInstance(c) ) {
+        var v = this.slotE_(c);
+        if ( Array.isArray(v) ) {
+          for ( var j = 0 ; j < v.length ; j++ ) {
+            var u = v[j];
+            es.push(u.toE ? u.toE(null, Y) : u);
+          }
+        } else {
+          this.addChild_(v, parentNode);
+        }
+      } if ( foam.String.isInstance(c) || foam.Number.isInstance(c) ) {
         this.element_ && this.element_.appendChild(this.document.createTextNode(c));
+      } else if ( c.then ) {
+        this.addChild_(this.PromiseSlot.create({ promise: c }), parentNode);
       } else if ( c.appendAsChild ) {
         c.parentNode = parentNode;
         c.appendAsChild(this.element_);
@@ -1471,8 +1513,6 @@ if ( ! this.el_() ) return;
 
       return this;
     },
-
-    function toE() { return this; },
 
     function repeat(s, e, f) {
       // TODO: support descending
