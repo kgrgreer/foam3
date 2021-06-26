@@ -26,6 +26,7 @@ TODO:
 
   TODO:
   - you can use views directly instead of ViewSpecs
+  - remove ID support?
   - remove use of SPAN tags for dynamic slot content by using reference to TextNode
 */
 
@@ -98,14 +99,20 @@ foam.CLASS({
   package: 'foam.u2',
   name: 'Node',
 
+  imports: [
+    'document'
+  ],
+
   properties: [
     'element_'
   ],
 
   methods: [
     function toE() { return this; },
-//    appendAsChild(el)
 
+    function appendAsChild(el) {
+      el.appendChild(this.element_);
+    }
   ]
 });
 
@@ -130,12 +137,12 @@ foam.CLASS({
           throw new Error('Invalid Entity name: ' + nu);
         }
       }
-    }
-  ],
-
-  methods: [
-    function appendAsChild(el) {
-      var element_ = el.insertAdjacentHTML('beforeend', '&' + this.name + ';');
+    },
+    {
+      name: 'element_',
+      factory: function() {
+        return this.document.createTextNode('&' + this.name + ';');
+      }
     }
   ]
 });
@@ -149,12 +156,56 @@ foam.CLASS({
   documentation: 'U3 Text Node',
 
   properties: [
-    'text'
+    { class: 'String', name: 'text' },
+    {
+      name: 'element_',
+      factory: function() {
+        return this.document.createTextNode(this.text);
+      }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'SlotNode',
+  extends: 'foam.u2.Node',
+
+  properties: [
+    {
+      name: 'slot'
+    }
   ],
 
   methods: [
     function appendAsChild(el) {
-      var element_ = el.insertAdjacentHTML('beforeend', this.text);
+      var t = foam.u2.Text.create({}, this);
+
+      t.appendAsChild(el);
+      this.element_ = t.element_;
+      this.slot.sub(this.update);
+      this.update();
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'update',
+      isFramed: true,
+      code: function() {
+        var val = this.slot.get();
+        var e;
+        if ( val === undefined || val === null ) {
+          e = foam.u2.Text.create({}, this);
+        } else if ( foam.String.isInstance(val) || foam.Boolean.isInstance(val) || foam.Number.isInstance(val) ) {
+          e = foam.u2.Text.create({text: val}, this);
+        } else {
+          debugger;
+        }
+        this.element_.parentNode.replaceChild(e.element_, this.element_);
+        this.element_ = e.element_;
+      }
     }
   ]
 });
@@ -432,7 +483,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'document',
     'elementValidator',
     'framed',
     'getElementById',
@@ -1399,6 +1449,9 @@ if ( ! this.el_() ) return;
       }
 
       if ( foam.core.Slot.isInstance(c) ) {
+        c = foam.u2.SlotNode.create({slot: c}, this);
+      }
+        /*
         var v = this.slotE_(c);
         if ( Array.isArray(v) ) {
           for ( var j = 0 ; j < v.length ; j++ ) {
@@ -1408,7 +1461,8 @@ if ( ! this.el_() ) return;
         } else {
           this.addChild_(v, parentNode);
         }
-      } if ( foam.String.isInstance(c) || foam.Number.isInstance(c) ) {
+        */
+      if ( foam.String.isInstance(c) || foam.Number.isInstance(c) ) {
         this.element_ && this.element_.appendChild(this.document.createTextNode(c));
       } else if ( c.then ) {
         this.addChild_(this.PromiseSlot.create({ promise: c }), parentNode);
