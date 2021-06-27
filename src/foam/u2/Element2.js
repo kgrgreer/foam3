@@ -11,7 +11,8 @@ TODO:
  - Don't generate .java and remove need for flags: ['js'].
 */
 
-/* PORTING U2 to U3:
+/*
+PORTING U2 to U3:
   - rename initE to render()
   - move init() rendering code to render()
   - replace use of setNodeName to setting the nodeName property
@@ -23,10 +24,10 @@ TODO:
   - replace ^ in CSS (which has meaning in CSS) with <<
   - ILLEGAL_CLOSE_TAGS and OPTIONAL_CLOSE_TAGS have been removed
   - this.addClass() is the same as this.addClass(this.myClass())
+  - automatic ID generation has been removed
 
   TODO:
   - you can use views directly instead of ViewSpecs
-  - remove ID support?
   - remove use of SPAN tags for dynamic slot content by using reference to TextNode
 */
 
@@ -520,17 +521,6 @@ foam.CLASS({
       factory: function() { return foam.u2.DefaultValidator.create(); }
     },
     {
-      name: '__ID__',
-      value: [ 1 ]
-    },
-    {
-      name: 'NEXT_ID',
-      flags: ['js'],
-      value: function() {
-        return this.__ID__[ 0 ]++;
-      }
-    },
-    {
       documentation: `Keys which respond to keydown but not keypress`,
       name: 'KEYPRESS_CODES',
       value: { 8: true, 13: true, 27: true, 33: true, 34: true, 37: true, 38: true, 39: true, 40: true }
@@ -562,11 +552,7 @@ foam.CLASS({
       }
     },
     {
-      // TODO: class is needed to fix the Java build, but this shouldn't be building for Java anyway.
-      class: 'Object',
-      name: 'id',
-      transient: true,
-      factory: function() { return this.NEXT_ID(); }
+      name: 'id'
     },
     {
       class: 'Enum',
@@ -1255,11 +1241,7 @@ if ( ! this.el_() ) return;
     },
 
     function setID(id) {
-      /*
-        Explicitly set Element's id.
-        Normally id's are automatically assigned.
-        Setting specific ID's hinders composability.
-      */
+      /* Explicitly set Element's id. */
       this.id = id;
       return this;
     },
