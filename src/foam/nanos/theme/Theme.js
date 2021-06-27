@@ -33,8 +33,12 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.FObject',
     'foam.core.PropertyInfo',
-    'java.util.List'
+    'foam.util.SafetyUtil',
+    'java.util.HashMap',
+    'java.util.List',
+    'java.util.Map'
   ],
 
   tableColumns: [
@@ -603,12 +607,93 @@ foam.CLASS({
         return theme;
       },
       javaCode: `
-        var theme = new Theme();
+        var result = (Theme) this.fclone();
         List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
         for ( PropertyInfo p : props ) {
-          p.set(theme, p.merge(this, other));
+          if ( ! p.isSet(other) && ! p.isSet(this) ) continue;
+
+          if ( p.getValueClass().isArray()                            ) mergeArrayProperty(p, result, other);
+          else if ( Map.class.isAssignableFrom(p.getValueClass())     ) mergeMapProperty(p, result, other);
+          else if ( FObject.class.isAssignableFrom(p.getValueClass()) ) mergeFObjectProperty(p, result, other);
+          else
+            p.set(result, p.get(other));
         }
-        return theme;
+        return result;
+      `
+    },
+    {
+      name: 'mergeArrayProperty',
+      args: [ 'PropertyInfo prop', 'Theme t1', 'Theme t2' ],
+      javaCode: `
+        if ( prop.isSet(t2) ) {
+          if ( ! prop.isSet(t1) ) prop.set(t1, prop.get(t2));
+          else if ( SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) return;
+          else {
+            var value1 = (Object[]) prop.get(t1);
+            var value2 = (Object[]) prop.get(t2);
+
+            if ( value2 == null ) return;
+            if ( value1 == null ) {
+              prop.set(t1, value2);
+              return;
+            }
+
+            Object[] merged = new Object[value1.length + value2.length];
+            System.arraycopy(value1, 0, merged, 0, value1.length);
+            System.arraycopy(value2, 0, merged, value1.length, value2.length);
+            prop.set(t1, merged);
+          }
+        }
+      `
+    },
+    {
+      name: 'mergeMapProperty',
+      args: [ 'PropertyInfo prop', 'Theme t1', 'Theme t2' ],
+      javaCode: `
+        if ( prop.isSet(t2) ) {
+          if ( ! prop.isSet(t1) ) prop.set(t1, prop.get(t2));
+          else if ( SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) return;
+          else {
+            var m1 = (Map) prop.get(t1);
+            var m2 = (Map) prop.get(t2);
+
+            if ( m2 == null ) return;
+            if ( m1 == null ) {
+              prop.set(t1, m2);
+              return;
+            }
+
+            Map merged = new HashMap(m2);
+            for ( var k : m1.keySet() ) {
+              if ( ! merged.containsKey(k) ) {
+                merged.put(k, m1.get(k));
+              }
+            }
+            prop.set(t1, merged);
+          }
+        }
+      `
+    },
+    {
+      name: 'mergeFObjectProperty',
+      args: [ 'PropertyInfo prop', 'Theme t1', 'Theme t2' ],
+      javaCode: `
+        if ( prop.isSet(t2) ) {
+          if ( ! prop.isSet(t1) ) prop.set(t1, prop.get(t2));
+          else if ( SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) return;
+          else {
+            var value1 = (FObject) prop.get(t1);
+            var value2 = (FObject) prop.get(t2);
+
+            if ( value2 == null ) return;
+            if ( value1 == null ) {
+              prop.set(t1, value2);
+              return;
+            }
+
+            prop.set(t1, value1.fclone().copyFrom(value2));
+          }
+        }
       `
     }
   ]
