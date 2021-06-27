@@ -556,6 +556,12 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'element_',
+      expression: function(nodeName) {
+        return this.document.createElement(this.nodeName);
+      }
+    },
+    {
       // TODO: class is needed to fix the Java build, but this shouldn't be building for Java anyway.
       class: 'Object',
       name: 'id',
@@ -1243,6 +1249,7 @@ if ( ! this.el_() ) return;
     },
 
     function setNodeName(name) {
+      console.warn('Deprecated use of setNodeName. Set the nodeName property instead.');
       this.nodeName = name;
       return this;
     },
@@ -1697,7 +1704,6 @@ if ( ! this.el_() ) return;
     },
 
     function appendAsChild(el) {
-      this.element_ = this.document.createElement(this.nodeName);
       el.appendChild(this.element_);
       this.load();
     },
