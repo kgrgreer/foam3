@@ -160,9 +160,7 @@ foam.CLASS({
     { class: 'String', name: 'text' },
     {
       name: 'element_',
-      factory: function() {
-        return this.document.createTextNode(this.text);
-      }
+      factory: function() { return this.document.createTextNode(this.text); }
     }
   ]
 });
@@ -174,17 +172,18 @@ foam.CLASS({
   extends: 'foam.u2.Node',
 
   properties: [
+    'slot',
     {
-      name: 'slot'
+      name: 'element_',
+      // Create a placeholder to insert into the right location, to be replaced
+      // by slot value.
+      factory: function() { return this.document.createTextNode(''); }
     }
   ],
 
   methods: [
     function appendAsChild(el) {
-      var t = foam.u2.Text.create({}, this);
-
-      t.appendAsChild(el);
-      this.element_ = t.element_;
+      this.SUPER(el);
       this.slot.sub(this.update);
       this.update();
     }
