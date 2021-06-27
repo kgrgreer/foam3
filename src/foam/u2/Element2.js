@@ -113,6 +113,10 @@ foam.CLASS({
 
     function appendAsChild(el) {
       el.appendChild(this.element_);
+    },
+
+    function isLiteral(o) {
+      return foam.String.isInstance(o) || foam.Number.isInstance(o) || foam.Boolean.isInstance(o);
     }
   ]
 });
@@ -198,7 +202,7 @@ foam.CLASS({
         var e;
         if ( val === undefined || val === null ) {
           e = foam.u2.Text.create({}, this);
-        } else if ( foam.String.isInstance(val) || foam.Boolean.isInstance(val) || foam.Number.isInstance(val) ) {
+        } else if ( this.isLiteral(val) ) {
           e = foam.u2.Text.create({text: val}, this);
         } else {
           debugger;
@@ -1450,7 +1454,7 @@ if ( ! this.el_() ) return;
           this.addChild_(v, parentNode);
         }
         */
-      if ( foam.String.isInstance(c) || foam.Number.isInstance(c) ) {
+      if ( this.isLiteral(c) ) {
         this.element_ && this.element_.appendChild(this.document.createTextNode(c));
       } else if ( c.then ) {
         this.addChild_(this.PromiseSlot.create({ promise: c }), parentNode);
