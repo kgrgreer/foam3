@@ -12,8 +12,7 @@
   imports: [
     'getElementById',
     'memento?',
-    'stack',
-    'window?'
+    'stack'
   ],
 
   exports: [
@@ -421,7 +420,6 @@
       isFramed: true,
       code: function() {
         return this.data$proxy.select(this.Count.create()).then((s) => {
-          debugger;
           this.daoCount = s.value;
           this.refresh();
         });
