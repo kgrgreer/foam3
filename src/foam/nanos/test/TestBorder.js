@@ -4,10 +4,10 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-foam.CLASS({
+ foam.CLASS({
   package: 'foam.nanos.test',
   name: 'TestBorder',
-  extends: 'foam.u2.View',
+  extends: 'foam.u2.view.ScrollTableView',
 
   implements: ['foam.mlang.Expressions'],
 
@@ -26,11 +26,6 @@ foam.CLASS({
       flex: 0 0 0;
       margin-bottom: 10px;
     }
-    ^table{ 
-      /* Add a fixed height and let flex extend to max possible */
-      flex: 1;
-      height: 10;
-    }
   `,
 
   properties: [
@@ -42,7 +37,6 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.SUPER();
       var self = this;
       this
         .addClass(this.myClass('container'))
@@ -52,11 +46,8 @@ foam.CLASS({
           .start('span').add('Passed: ', this.passed$).end()
           .start('span').add('Failed: ', this.failed$).end()
           .start('span').add('Status: ', this.status$).end()
-        .end()
-        .start(foam.u2.view.ScrollTableView, { data$: this.data$ })
-          .addClass(this.myClass('table'))
         .end();
-        
+        this.SUPER();
 
       this.data.select({
         put: function(t) {

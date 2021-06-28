@@ -65,7 +65,7 @@ foam.CLASS({
     },
 
     function initWriteView() {
-      this.removeAllChildren().add(this.toWriteE().on('blur', this.initReadView ).focus());
+      this.removeAllChildren().add(this.toWriteE().on('blur', this.initReadView).focus());
     }
   ]
 });
