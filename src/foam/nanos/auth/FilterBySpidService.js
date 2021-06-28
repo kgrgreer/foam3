@@ -18,6 +18,7 @@ foam.CLASS({
     'foam.dao.Sink',
     'foam.nanos.auth.User',
     'foam.nanos.theme.Theme',
+    'foam.nanos.theme.Themes',
     'java.util.List',
     'static foam.mlang.MLang.*'
   ],
@@ -34,23 +35,11 @@ foam.CLASS({
     {
       name: 'getUser',
       javaCode: `
-        DAO userDAO = (DAO) getX().get("localUserDAO");
-
-        Sink sink = new ArraySink();
-        sink = userDAO
+        DAO userDAO = (DAO) x.get("localUserDAO");
+        userDAO = userDAO
           .where(OR(
-            EQ(User.EMAIL, identifier.toLowerCase()),
-            EQ(User.USER_NAME, identifier)))
-          .limit(2).select(sink);
-
-        List list = ((ArraySink) sink).getArray();
-        if ( list.size() > 0 ) {
-          userDAO = userDAO
-            .where(OR(
-              EQ(User.SPID, ((Theme) x.get("theme")).getSpid()),
-              EQ(User.SPID, getSuperSpid())));
-        }
-
+            EQ(User.SPID, ((Theme) ((Themes) x.get("themes")).findTheme(x)).getSpid()),
+            EQ(User.SPID, getSuperSpid())));
         x = x.put("localUserDAO", userDAO);
         return getDelegate().getUser(x, identifier, password);
       `
