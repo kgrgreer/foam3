@@ -25,6 +25,7 @@ PORTING U2 to U3:
   - ILLEGAL_CLOSE_TAGS and OPTIONAL_CLOSE_TAGS have been removed
   - this.addClass() is the same as this.addClass(this.myClass())
   - automatic ID generation has been removed
+  - replace use of slots that return elements with functions that add them
 
   TODO:
   - you can use views directly instead of ViewSpecs
@@ -199,6 +200,45 @@ foam.CLASS({
       isFramed: true,
       code: function() {
         var val = this.slot.get();
+        var e;
+        if ( val === undefined || val === null ) {
+          e = foam.u2.Text.create({}, this);
+        } else if ( this.isLiteral(val) ) {
+          e = foam.u2.Text.create({text: val}, this);
+        } else {
+          debugger;
+        }
+        this.element_.parentNode.replaceChild(e.element_, this.element_);
+        this.element_ = e.element_;
+      }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'FunctionNode',
+  extends: 'foam.u2.SlotNode',
+
+  properties: [
+    'self', 'fn',
+    {
+      name: 'slot', factory: function() {
+        return foam.core.ExpressionSlot.create({
+          obj: this.self,
+          code: function() {
+
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'update',
+      isFramed: true,
+      code: function() {
+        var val = this.slot.get.apply(self;
         var e;
         if ( val === undefined || val === null ) {
           e = foam.u2.Text.create({}, this);
@@ -1909,6 +1949,7 @@ foam.CLASS({
       code: function E(ctx, opt_nodeName) {
         var nodeName = (opt_nodeName || 'DIV').toUpperCase();
 
+        // Check if a class has been registered for the specified nodeName
         return (ctx.elementForName(nodeName) || foam.u2.Element).
           create({nodeName: nodeName}, ctx);
       }
