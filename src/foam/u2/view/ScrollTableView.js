@@ -254,7 +254,7 @@
       },
       expression: function(displayedRowCount_, topRow_, daoCount) {
         var possibleMin = daoCount > displayedRowCount_ ? displayedRowCount_ : daoCount;
-        return foam.Number.clamp(possibleMin, topRow_ == 1 ? 0 : topRow_ + displayedRowCount_, daoCount);
+        return foam.Number.clamp(possibleMin, topRow_ + displayedRowCount_ - 1, daoCount);
       }
     },
     {
