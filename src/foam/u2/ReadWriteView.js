@@ -29,12 +29,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.addClass(this.myClass());
-      // Don't create ReadView if no data (saves memory and startup time).
-      if ( this.isLoaded() ) {
-        this.initReadView();
-      } else {
-        this.listenForLoad();
-      }
+      this.initReadView();
     },
 
     // Template Methods
@@ -70,7 +65,7 @@ foam.CLASS({
     },
 
     function initWriteView() {
-      this.removeAllChildren().add(this.toWriteE().on('blur', this.initReadView).focus());
+      this.removeAllChildren().add(this.toWriteE().on('blur', this.initReadView ).focus());
     }
   ]
 });

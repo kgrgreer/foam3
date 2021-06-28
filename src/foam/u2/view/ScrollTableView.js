@@ -44,6 +44,7 @@
       max-height: 100%;
       overflow: auto;
       scroll-behavior: smooth;
+      overscroll-behavior: contain;
     }
     ^table {
       position: relative;
@@ -70,6 +71,16 @@
     ^buttons svg{
       width: 1em;
       height: 1em;
+    }
+    ^counters > *:focus {
+      border: 0px;
+      border-radius: 0px;
+      padding: 0px;
+      height: auto;
+      border-bottom: 2px solid /*%PRIMARY3%*/ #406DEA;
+    }
+    ^counters:hover {
+      cursor: pointer;
     }
   `,
 
@@ -228,15 +239,23 @@
     {
       class: 'Int',
       name: 'topRow_',
-      expression: function(scrollPos_, rowHeight, daoCount) {
-        return Math.min(Math.round(scrollPos_/rowHeight + 1), daoCount);
+      preSet: function(o, n) {
+        this.scrollTable(this.scrollPos_ + Math.round((n - o) * this.rowHeight));
+      },
+      expression: function(scrollPos_, rowHeight, daoCount, displayedRowCount_) {
+        var possibleMax = daoCount > displayedRowCount_ ? daoCount - displayedRowCount_ + 1 : daoCount;
+        return foam.Number.clamp(daoCount ? 1 : 0, Math.round(scrollPos_/rowHeight) + 1, possibleMax);
       }
     },
     {
       class: 'Int',
       name: 'lastDisplayedEl_',
+      preSet: function(o, n) {
+        this.scrollTable(this.scrollPos_ + (n - o) * this.rowHeight);
+      },
       expression: function(displayedRowCount_, topRow_, daoCount) {
-        return Math.min(Math.round(topRow_ + displayedRowCount_ - 1), daoCount);
+        var possibleMin = daoCount > displayedRowCount_ ? displayedRowCount_ : daoCount;
+        return foam.Number.clamp(possibleMin, topRow_ == 1 ? 0 : topRow_ + displayedRowCount_, daoCount);
       }
     },
     {
@@ -308,11 +327,10 @@
               style({ 'justify-content': 'flex-end'}). // Have to do this here because Cols CSS is installed after nav. Investigate later. 
               startContext({ data: self }).
                 start(self.Cols).
-                  style({ gap: '4px' }).
-                  // Maybe make these Read-Write Views
-                  start().add(self.topRow_$).end().
+                  style({ gap: '4px', 'box-sizing': 'border-box' }).
+                  start(this.ReadWriteView, { data$: self.topRow_$ }).addClass(this.myClass('counters')).end().
                   add('-').
-                  start().add(self.lastDisplayedEl_$).end().
+                  start(this.ReadWriteView, { data$: self.lastDisplayedEl_$ }).addClass(this.myClass('counters')).end().
                   start().addClass(self.myClass('separator')).add('of').end().add(self.daoCount$).
                 end().
                 start(self.FIRST_PAGE, { ...buttonStyle, themeIcon: 'first' }).
@@ -403,6 +421,7 @@
       isFramed: true,
       code: function() {
         return this.data$proxy.select(this.Count.create()).then((s) => {
+          debugger;
           this.daoCount = s.value;
           this.refresh();
         });
