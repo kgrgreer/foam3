@@ -11,7 +11,10 @@ foam.CLASS({
 
   implements: ['foam.mlang.Expressions'],
 
-  requires: ['foam.nanos.test.Test', 'foam.u2.view.ScrollTableView'],
+  requires: [
+    'foam.nanos.test.Test', 
+    'foam.u2.view.ScrollTableView'
+  ],
 
   css: `
     ^upper > span{
