@@ -33,7 +33,6 @@ foam.CLASS({
     ^account-name {
       font-size: 36px;
       font-weight: 600;
-      margin-bottom: 32px;
     }
 
     ^actions-header .foam-u2-ActionView {
@@ -310,13 +309,13 @@ foam.CLASS({
                       label: self.backLabel
                     })
                   .endContext()
-                  .start(self.Cols).style({ 'align-items': 'center' })
+                  .start(self.Cols).style({ 'align-items': 'center', 'margin-bottom': '32px' })
                     .start()
                       .add(data && data.toSummary() ? data.toSummary() : '')
                       .addClass(self.myClass('account-name'))
                       .addClass('truncate-ellipsis')
                     .end()
-                    .startContext({ data }).tag(self.primary, { buttonStyle: 'PRIMARY'}).endContext()
+                    .startContext({ data }).tag(self.primary, { buttonStyle: 'PRIMARY' }).endContext()
                   .end()
                 .end()
 
