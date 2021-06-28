@@ -10,7 +10,7 @@ foam.CLASS({
    extends: 'foam.nanos.auth.ProxyUserLocatorService',
    flags: ['java'],
 
-  documentation: `Filter users by email/username or spid.`,
+  documentation: `Filter users by spid.`,
 
   javaImports: [
     'foam.dao.ArraySink',
