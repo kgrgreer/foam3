@@ -27,7 +27,7 @@ public class FileSystemStorage
   }
 
   @Override
-  protected Path getRootPath() {
+  public Path getRootPath() {
     FileSystem fs = getFS();
     if ( fs == null ) return null;
     return SafetyUtil.isEmpty(resourceDir_) ? fs.getPath("") : fs.getPath(resourceDir_);

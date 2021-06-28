@@ -23,13 +23,20 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'net.nanopay.security.HashingReplayJournal',
-    'net.nanopay.security.HashingJDAO',
     'foam.dao.java.JDAO',
     'foam.dao.NullDAO',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
-    'foam.core.X'
+    'foam.core.X',
+    'foam.nanos.fs.Storage',
+    'foam.nanos.fs.FileSystemStorage',
+    'net.nanopay.security.HashingReplayJournal',
+    'net.nanopay.security.HashingJDAO',
+    'java.nio.file.Path',
+    'java.nio.file.DirectoryStream',
+    'java.nio.file.Files',
+    'java.nio.file.DirectoryIteratorException',
+    'java.io.IOException'
   ],
   
   properties: [
@@ -98,6 +105,11 @@ foam.CLASS({
       javaFactory: `
         return x -> x*2;
       `
+    },
+    {
+      class: 'Int',
+      name: 'fileSuffix',
+      value: 0
     },
     {
       class: 'Int',
@@ -191,9 +203,35 @@ foam.CLASS({
     {
       documentation: `Read unsend entries from file and send`,
       name: 'initReader',
+      args: 'Context x',
       javaCode: `
-        //TODO: search latest modify file
-        //Using: Async AssemblyLine.
+        //TODO: search latest modify file or file index
+        /* Get path from Context and find latest journal. */
+        Path journal = null;
+        int latestSuffix = getFileSuffix();
+        Path rootPath = ((FileSystemStorage) x.get(Storage.class)).getRootPath();
+        try ( DirectoryStream<Path> stream = Files.newDirectoryStream(rootPath) ) {
+          for ( Path entry: stream ) {
+            if ( entry.toString().contains(getFileName()) ) {
+              int suffix = Integer.parseInt(entry.toString().split("\\\\.")[1]);
+              if ( latestSuffix <= suffix  ) {
+                latestSuffix =  suffix;
+                journal = entry;
+              }
+            }
+          }
+        } catch ( IOException e ) {
+          //throw e.getCause();
+        }
+        /* Update new file suffix. */
+        setFileSuffix(latestSuffix);
+
+        /* Read unsend entries and re-send. */
+        if ( journal != null ) {
+
+        }
+        //trigger send. using async assembly.
+        /* Get FileSystemStorage from Context. It has default data directory that register in Boot.js */
         return;
       `
     }
@@ -207,11 +245,6 @@ foam.CLASS({
           data: `
             static private interface StepFunction {
               public int next(int cur);
-            }
-
-            /* Initial Reader. */
-            {
-              initReader();
             }
           `
         }));
