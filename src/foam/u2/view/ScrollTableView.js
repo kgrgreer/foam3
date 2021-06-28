@@ -58,7 +58,7 @@
     ^nav{
       align-items: center;
       background: /*%WHITE%*/ white;
-      border-radius: 4px;
+      border-radius: 0 0 4px 4px;
       border-top: 1px solid /*%GREY4%*/ #DADDE2;
       box-sizing: border-box;
       gap: 8px;
@@ -66,7 +66,6 @@
       max-height: 56px;
       padding: 16px 24px;
       width: 100%;
-      z-index: 1;
     }
     ^buttons svg{
       width: 1em;
@@ -310,7 +309,7 @@
               startContext({ data: self }).
                 start(self.Cols).
                   style({ gap: '4px' }).
-                  // Make these Read-Write Views
+                  // Maybe make these Read-Write Views
                   start().add(self.topRow_$).end().
                   add('-').
                   start().add(self.lastDisplayedEl_$).end().
