@@ -16,7 +16,6 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.Sink',
-    'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.User',
     'foam.nanos.theme.Theme',
     'java.util.List',
