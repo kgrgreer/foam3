@@ -225,7 +225,7 @@ foam.CLASS({
           if (
             await this.auth.check(
               this.__subContext__,
-              `service.read.${this.prop.targetDAOKey}`
+              `service.${this.prop.targetDAOKey}`
             )
           ) {
             this.enableLink = true;
