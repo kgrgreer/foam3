@@ -104,9 +104,9 @@ Later themes:
             group = await group.parent$find;
           }
 
-          if ( !! group.defaultMenu ) {
-            theme.defaultMenu = group.defaultMenu;
-            theme.logoRedirect = group.defaultMenu;
+          if ( !! defaultMenu ) {
+            theme.defaultMenu = defaultMenu;
+            theme.logoRedirect = defaultMenu;
           }
 
           var userTheme = await user.theme$find;

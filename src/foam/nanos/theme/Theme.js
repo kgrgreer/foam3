@@ -36,7 +36,6 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.PropertyInfo',
     'foam.util.SafetyUtil',
-    'java.util.HashMap',
     'java.util.List',
     'java.util.Map'
   ],
