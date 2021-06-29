@@ -233,11 +233,13 @@
     {
       class: 'Boolean',
       name: 'showNav',
+      documentation: 'Controls visibility for the pagination elements',
       value: true
     },
     {
       class: 'Int',
       name: 'topRow_',
+      documentation: 'Stores the index top row that is currently displayed in the div height',
       preSet: function(o, n) {
         this.scrollTable(this.scrollPos_ + Math.round((n - o) * this.rowHeight));
       },
@@ -249,6 +251,7 @@
     {
       class: 'Int',
       name: 'lastDisplayedEl_',
+      documentation: 'Stores the index of last row that is currently displayed in the div height',
       preSet: function(o, n) {
         this.scrollTable(this.scrollPos_ + (n - o) * this.rowHeight);
       },
@@ -259,7 +262,8 @@
     },
     {
       class: 'Float',
-      name: 'displayedRowCount_'
+      name: 'displayedRowCount_',
+      documentation: 'Stores the number of rows that are currently displayed in the div height',
     }
   ],
 
@@ -301,7 +305,7 @@
         disableUserSelection: this.disableUserSelection,
         multiSelectEnabled: this.multiSelectEnabled,
         selectedObjects$: this.selectedObjects$
-      }, this, this.__subSubContext__.createSubContext({ memento: this.currentMemento_ ? this.currentMemento_.tail : this.currentMemento_ }));
+      }, this, this.__subSubContext__.createSubContext({ memento: this.currentMemento_ && this.currentMemento_.tail }));
 
       if ( ! this.table_.memento || ! this.table_.memento.tail || this.table_.memento.tail.head.length == 0 ) {
         var buttonStyle = { label: '', buttonStyle: 'TERTIARY', size: 'SMALL' };
