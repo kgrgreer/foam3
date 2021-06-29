@@ -7,11 +7,14 @@
 foam.CLASS({
   package: 'foam.nanos.test',
   name: 'TestBorder',
-  extends: 'foam.u2.view.ScrollTableView',
+  extends: 'foam.u2.View',
 
   implements: ['foam.mlang.Expressions'],
 
-  requires: ['foam.nanos.test.Test'],
+  requires: [
+    'foam.nanos.test.Test', 
+    'foam.u2.view.ScrollTableView'
+  ],
 
   css: `
     ^upper > span{
@@ -26,6 +29,11 @@ foam.CLASS({
       flex: 0 0 0;
       margin-bottom: 10px;
     }
+    ^table{ 
+      /* Add a fixed height and let flex extend to max possible */
+      flex: 1;
+      height: 424px;
+    }
   `,
 
   properties: [
@@ -37,6 +45,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      this.SUPER();
       var self = this;
       this
         .addClass(this.myClass('container'))
@@ -46,8 +55,11 @@ foam.CLASS({
           .start('span').add('Passed: ', this.passed$).end()
           .start('span').add('Failed: ', this.failed$).end()
           .start('span').add('Status: ', this.status$).end()
+        .end()
+        .start(this.ScrollTableView, { data$: this.data$ })
+          .addClass(this.myClass('table'))
         .end();
-        this.SUPER();
+        
 
       this.data.select({
         put: function(t) {
