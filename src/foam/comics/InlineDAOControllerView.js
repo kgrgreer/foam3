@@ -46,7 +46,7 @@ foam.CLASS({
       this.
         tag(this.summaryView, {
           data$: this.data.filteredDAO$,
-          multiSelectEnabled: !! this.data.relationship,
+          multiSelectEnabled: this.data.relationship,
           selectedObjects$: this.data.selectedObjects$
         }).
         start('span').
