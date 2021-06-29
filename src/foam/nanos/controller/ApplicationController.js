@@ -571,18 +571,17 @@ foam.CLASS({
         var eid = foam.u2.Element.NEXT_ID();
 
         for ( var i = 0 ; i < this.MACROS.length ; i++ ) {
-          let m     = this.MACROS[i];
-          var text2 = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
+          const m     = this.MACROS[i];
+          const re    = new RegExp('/\\*%' + m.toUpperCase() + '%\\*/', 'g');
 
-            // If the macro was found, then listen for changes to the property
-            // and update the CSS if it changes.
-            if ( text != text2 ) {
-              text = text2;
-              this.onDetach(this.theme$.dot(m).sub(() => {
-                var el = this.getElementById(eid);
-                el.innerText = this.expandLongFormMacro(el.innerText, m);
-              }));
-            }
+          text = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
+          // If the macro was found, then listen for changes to the property.
+          if ( re.test(text) ) {
+            this.onDetach(this.theme$.dot(m).sub(() => {
+              var el = this.getElementById(eid);
+              el.textContent = this.expandLongFormMacro(el.textContent, m);
+            }));
+          }
         }
 
         this.installCSS(text, id, eid);
