@@ -27,6 +27,10 @@ PORTING U2 to U3:
   - automatic ID generation has been removed
   - replace use of slots that return elements with functions that add them
 
+.add(this.slot(function(a, b, c) { return this.E().start()...; }));
+becomes:
+.add(function(a, b, c) { this.start()...; });
+
   TODO:
   - you can use views directly instead of ViewSpecs
   - remove use of SPAN tags for dynamic slot content by using reference to TextNode
@@ -189,6 +193,7 @@ foam.CLASS({
   methods: [
     function appendAsChild(el) {
       this.SUPER(el);
+
       this.slot.sub(this.update);
       this.update();
     }
@@ -222,14 +227,21 @@ foam.CLASS({
   extends: 'foam.u2.SlotNode',
 
   properties: [
-    'self', 'fn',
-    {
-      name: 'slot', factory: function() {
-        return foam.core.ExpressionSlot.create({
-          obj: this.self,
-          code: function() {
+    'self',
+    'code'
+  ],
 
+  methods: [
+    function appendAsChild(el) {
+      this.SUPER(el);
+
+      var args = foam.Function.argNames(this.code);
+      for ( var i = 0 ; i < args.length ; i++ ) {
+        var s = obj.slot(args[i]);
+        this.self.onDetach(s.sub(this.update));
       }
+
+      this.update();
     }
   ],
 
@@ -238,7 +250,11 @@ foam.CLASS({
       name: 'update',
       isFramed: true,
       code: function() {
-        var val = this.slot.get.apply(self;
+        return this.code.apply(this.obj || this, this.args.map(function(a) {
+          return a.get();
+        }));
+
+        var val = this.slot.get.apply(self);
         var e;
         if ( val === undefined || val === null ) {
           e = foam.u2.Text.create({}, this);
