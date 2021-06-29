@@ -615,7 +615,7 @@ foam.CLASS({
         var theme = (Theme) this.fclone();
         List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
         for ( PropertyInfo p : props ) {
-          if ( ! p.isSet(other) && ! p.isSet(this) ) continue;
+          if ( ! p.isSet(other) ) continue;
 
           if ( p.getValueClass().isArray()                            ) mergeArrayProperty(p, theme, other);
           else if ( Map.class.isAssignableFrom(p.getValueClass())     ) mergeMapProperty(p, theme, other);
@@ -639,24 +639,22 @@ foam.CLASS({
         }
       },
       javaCode: `
-        if ( prop.isSet(t2) ) {
-          if ( ! prop.isSet(t1) ) prop.set(t1, prop.get(t2));
-          else if ( SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) return;
-          else {
-            var value1 = (Object[]) prop.get(t1);
-            var value2 = (Object[]) prop.get(t2);
+        if ( ! prop.isSet(t1) ) prop.set(t1, prop.get(t2));
+        else if ( SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) return;
+        else {
+          var value1 = (Object[]) prop.get(t1);
+          var value2 = (Object[]) prop.get(t2);
 
-            if ( value2 == null ) return;
-            if ( value1 == null ) {
-              prop.set(t1, value2);
-              return;
-            }
-
-            Object[] merged = new Object[value1.length + value2.length];
-            System.arraycopy(value1, 0, merged, 0, value1.length);
-            System.arraycopy(value2, 0, merged, value1.length, value2.length);
-            prop.set(t1, merged);
+          if ( value2 == null ) return;
+          if ( value1 == null ) {
+            prop.set(t1, value2);
+            return;
           }
+
+          Object[] merged = new Object[value1.length + value2.length];
+          System.arraycopy(value1, 0, merged, 0, value1.length);
+          System.arraycopy(value2, 0, merged, value1.length, value2.length);
+          prop.set(t1, merged);
         }
       `
     },
@@ -673,22 +671,20 @@ foam.CLASS({
         }
       },
       javaCode: `
-        if ( prop.isSet(t2) ) {
-          if ( ! prop.isSet(t1) ) prop.set(t1, prop.get(t2));
-          else if ( SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) return;
-          else {
-            var m1 = (Map) prop.get(t1);
-            var m2 = (Map) prop.get(t2);
+        if ( ! prop.isSet(t1) ) prop.set(t1, prop.get(t2));
+        else if ( SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) return;
+        else {
+          var m1 = (Map) prop.get(t1);
+          var m2 = (Map) prop.get(t2);
 
-            if ( m2 == null ) return;
-            if ( m1 == null ) {
-              prop.set(t1, m2);
-              return;
-            }
+          if ( m2 == null ) return;
+          if ( m1 == null ) {
+            prop.set(t1, m2);
+            return;
+          }
 
-            for ( var k : m2.keySet() ) {
-              m1.put(k, m2.get(k));
-            }
+          for ( var k : m2.keySet() ) {
+            m1.put(k, m2.get(k));
           }
         }
       `
@@ -706,21 +702,19 @@ foam.CLASS({
         }
       },
       javaCode: `
-        if ( prop.isSet(t2) ) {
-          if ( ! prop.isSet(t1) ) prop.set(t1, prop.get(t2));
-          else if ( SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) return;
-          else {
-            var value1 = (FObject) prop.get(t1);
-            var value2 = (FObject) prop.get(t2);
+        if ( ! prop.isSet(t1) ) prop.set(t1, prop.get(t2));
+        else if ( SafetyUtil.equals(prop.get(t1), prop.get(t2)) ) return;
+        else {
+          var value1 = (FObject) prop.get(t1);
+          var value2 = (FObject) prop.get(t2);
 
-            if ( value2 == null ) return;
-            if ( value1 == null ) {
-              prop.set(t1, value2);
-              return;
-            }
-
-            value1.copyFrom(value2);
+          if ( value2 == null ) return;
+          if ( value1 == null ) {
+            prop.set(t1, value2);
+            return;
           }
+
+          value1.copyFrom(value2);
         }
       `
     }
