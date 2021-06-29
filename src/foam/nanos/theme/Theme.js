@@ -603,8 +603,8 @@ foam.CLASS({
           var name = props[i].name;
           if ( ! other.hasOwnProperty(name) ) continue;
 
-          if ( foam.core.StringArray.isInstance(props[i])      ) this.mergeArrayProperty(props[i], theme, other);
-          else if ( foam.core.Map.isInstance(props[i])         ) this.mergeMapProperty(props[i], theme, other);
+          if ( foam.core.StringArray.isInstance(props[i])          ) this.mergeArrayProperty(props[i], theme, other);
+          else if ( foam.core.Map.isInstance(props[i])             ) this.mergeMapProperty(props[i], theme, other);
           else if ( foam.core.FObjectProperty.isInstance(props[i]) ) this.mergeFObjectProperty(props[i], theme, other);
           else
             theme[name] = other[name];
