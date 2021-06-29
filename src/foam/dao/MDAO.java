@@ -22,12 +22,10 @@ import java.util.Set;
 /**
  The MDAO class for an ordering, fast lookup, single value,
  index multiplexer, or any other MDAO select() assistance class.
-
- The assistance class TreeIndex implements the
+ The assitance class TreeIndex implements the
  data nodes that hold the indexed items and plan and execute
  queries. For any particular operational Index, there may be
  many IndexNode instances:
-
  <pre>
  1---------> TreeIndex(id)
  MDAO: AltIndex 2---------> TreeIndex(propA) ---> TreeIndex(id) -------------> ValueIndex
@@ -39,9 +37,8 @@ import java.util.Set;
  Each tree node contains a tail instance of the next level down, thus
  the TreeIndex on id has created 14 TreeIndexNodes. Each of those contains some number
  of tree nodes, each holding one tail instance of the ValueIndex at the end of the chain.
-
  */
- // TODO: clone and freeze objects stored in memory
+// TODO: clone and freeze objects stored in memory
 public class MDAO
   extends AbstractDAO
 {
@@ -90,7 +87,7 @@ public class MDAO
       state_ = state;
     }
 
-     public Object getState() {
+    public Object getState() {
       return state_;
     }
 
@@ -107,37 +104,11 @@ public class MDAO
     index_ = new AltIndex(new TreeIndex((PropertyInfo) this.of_.getAxiomByName("id")));
   }
 
-
-
-  protected ArrayList<PropertyInfo> propertyInfoList_(Index index) {
-    ArrayList<PropertyInfo> infoList = new ArrayList<PropertyInfo>();
-    var current = index;
-    while ( current != null && ( current instanceof TreeIndex ) ) {
-      infoList.add(((TreeIndex)current).getProp());
-      current = ((TreeIndex)current).getTail();
-    }
-    return infoList;
-  }
-
   public void addIndex(Index index) {
     synchronized ( writeLock_ ) {
-      if ( index instanceof TreeIndex ) {
-        var properties = propertyInfoList_(index);
-        var delegates = index_.getDelegates();
-        for ( Index i : delegates ) {
-          var properties2 = propertyInfoList_(i);
-          if ( properties.containsAll(properties2) || properties2.containsAll(properties) ) {
-            //Logger  logger = (Logger) getX().get("logger");
-            //logger.warning("redundant indexes...did not add");
-            System.err.println("redundant indexes...did not add");
-            return;
-          }
-        }
-      }
       state_ = index_.addIndex(state_, index);
     }
-    }
-
+  }
 
   /** Add an Index which is for a unique value. Use addIndex() if the index is not unique. **/
   public void addUniqueIndex(PropertyInfo... props) {

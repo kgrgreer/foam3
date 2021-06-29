@@ -18,10 +18,9 @@ import java.util.Arrays;
 public class TreeIndex
   extends AbstractIndex
 {
-  protected Index tail_;
+  protected Index        tail_;
   protected PropertyInfo prop_;
-  protected long selectCount_;
-
+  protected long         selectCount_;
 
   public TreeIndex(PropertyInfo prop) {
     this(prop, ValueIndex.instance());
@@ -35,7 +34,7 @@ public class TreeIndex
 
   public Object bulkLoad(FObject[] a) {
     Arrays.sort(a);
-    return TreeNode.getNullNode().bulkLoad(tail_, prop_, 0, a.length - 1, a);
+    return TreeNode.getNullNode().bulkLoad(tail_, prop_, 0, a.length-1, a);
   }
 
   /**
@@ -167,14 +166,5 @@ public class TreeIndex
 
   public long size(Object state) {
     return ((TreeNode) state).size;
-  }
-
-
-  public Index getTail() {
-    return this.tail_;
-  }
-
- public PropertyInfo getProp() {
-    return this.prop_;
   }
 }
