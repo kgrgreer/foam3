@@ -98,7 +98,7 @@ Later themes:
           while ( group ) {
             var groupTheme = await group.theme$find;
             if ( groupTheme ) {
-              theme = theme && theme.copyFrom(groupTheme) || groupTheme;
+              theme = theme && theme.merge(groupTheme) || groupTheme;
               break;
             }
             group = await group.parent$find;
@@ -111,7 +111,7 @@ Later themes:
 
           var userTheme = await user.theme$find;
           if ( userTheme ) {
-            theme = theme && theme.copyFrom(userTheme) || userTheme;
+            theme = theme && theme.merge(userTheme) || userTheme;
           }
         }
         if ( theme ) {
