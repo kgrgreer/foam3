@@ -687,13 +687,9 @@ foam.CLASS({
               return;
             }
 
-            Map merged = new HashMap(m2);
-            for ( var k : m1.keySet() ) {
-              if ( ! merged.containsKey(k) ) {
-                merged.put(k, m1.get(k));
-              }
+            for ( var k : m2.keySet() ) {
+              m1.put(k, m2.get(k));
             }
-            prop.set(t1, merged);
           }
         }
       `
@@ -724,7 +720,7 @@ foam.CLASS({
               return;
             }
 
-            prop.set(t1, value1.fclone().copyFrom(value2));
+            value1.copyFrom(value2);
           }
         }
       `

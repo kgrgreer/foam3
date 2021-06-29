@@ -97,7 +97,7 @@ Later themes:
           var defaultMenu = group && group.defaultMenu;
           while ( group ) {
             var groupTheme = await group.theme$find;
-            if ( groupTheme ) {
+            if ( groupTheme && ! foam.util.equals(theme, groupTheme) ) {
               theme = theme && theme.merge(groupTheme) || groupTheme;
               break;
             }
@@ -110,7 +110,7 @@ Later themes:
           }
 
           var userTheme = await user.theme$find;
-          if ( userTheme ) {
+          if ( userTheme && ! foam.util.equals(theme, userTheme) ) {
             theme = theme && theme.merge(userTheme) || userTheme;
           }
         }
@@ -198,7 +198,7 @@ Later themes:
         var defaultMenu = group != null ? group.getDefaultMenu() : "";
         while ( group != null ) {
           Theme groupTheme = group.findTheme(x);
-          if ( groupTheme != null ) {
+          if ( groupTheme != null && ! SafetyUtil.equals(theme, groupTheme) ) {
             theme = theme.merge(groupTheme);
             break;
           }
@@ -212,7 +212,7 @@ Later themes:
         }
 
         Theme userTheme = user.findTheme(x);
-        if ( userTheme != null ) {
+        if ( userTheme != null && ! SafetyUtil.equals(theme, userTheme) ) {
           theme = theme.merge(userTheme);
         }
       }
