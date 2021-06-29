@@ -300,9 +300,4 @@ public abstract class AbstractPropertyInfo
   public Object castObject(Object value) {
     return value;
   }
-
-  @Override
-  public Object merge(Object o1, Object o2) {
-    return this.get(o2);
-  }
 }

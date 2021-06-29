@@ -120,22 +120,8 @@ public abstract class AbstractArrayPropertyInfo
     this.set(diff, this.get(o2));
     return true;
   }
-  
+
   public String getSQLType() {
     return "TEXT";
-  }
-
-  @Override
-  public Object merge(Object o1, Object o2) {
-    Object[] value1 = (Object[]) this.get(o1);
-    Object[] value2 = (Object[]) this.get(o2);
-
-    if ( value1 == null ) return value2;
-    if ( value2 == null ) return value1;
-
-    Object[] merged = new Object[value1.length + value2.length];
-    System.arraycopy(value1, 0, merged, 0, value1.length);
-    System.arraycopy(value2, 0, merged, value1.length, value2.length);
-    return merged;
   }
 }
