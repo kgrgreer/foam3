@@ -20,6 +20,7 @@ foam.CLASS({
 
   requires: [
     'foam.core.ArraySlot',
+    'foam.nanos.controller.Memento',
     'foam.u2.borders.CardBorder',
     'foam.u2.detail.SectionView',
     'foam.u2.Tab',
@@ -45,7 +46,7 @@ foam.CLASS({
       border-top-right-radius: 6px;
     }
     
-    ^ .foam-u2-borders-CardBorder {
+    ^wrapper {
       padding: 14px 24px;
     }
   `,
@@ -66,6 +67,7 @@ foam.CLASS({
 
       this.currentMemento_$ = this.memento$;
 
+
       this.SUPER();
       this
         .addClass(this.myClass())
@@ -80,7 +82,7 @@ foam.CLASS({
             .add(arraySlot.map(visibilities => {
               var availableSections = visibilities.length == sections.length ? sections.filter((_, i) => visibilities[i]) : sections;
               var e = availableSections.length == 1 ? 
-                this.E().start(self.CardBorder)
+                this.E().start(self.CardBorder).addClass(self.myClass('wrapper'))
                   .tag(self.SectionView, { data$: self.data$, section: availableSections[0], showTitle: false })
                 .end() :
                 this.E()

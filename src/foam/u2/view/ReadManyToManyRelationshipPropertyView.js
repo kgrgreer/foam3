@@ -22,6 +22,7 @@ foam.CLASS({
 
   requires: [
     'foam.u2.view.ScrollTableView',
+    'foam.u2.view.TableSummaryView',
     'foam.comics.v2.DAOControllerConfig'
   ],
 
@@ -35,10 +36,11 @@ foam.CLASS({
 
       this.config = this.DAOControllerConfig.create({ dao: this.data.dao.delegate });
 
-      this.tag(this.ScrollTableView, {
+      this.tag(this.TableSummaryView, {
         data: this.data.dao,
         config: this.config
       });
+
     },
     function click(obj, id) {
       if ( ! this.stack ) return;
