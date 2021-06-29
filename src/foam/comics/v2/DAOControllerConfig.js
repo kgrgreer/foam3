@@ -109,11 +109,11 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'summaryView',
-      expression: function(defaultColumns) {
+      expression: function(tableColumns) {
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: true,
-          columns: defaultColumns,
+          columns: tableColumns,
           css: {
             width: '100%',
             'min-height': this.minHeight + 'px'
@@ -128,7 +128,7 @@ foam.CLASS({
     },
     {
       class: 'Array',
-      name: 'defaultColumns',
+      name: 'tableColumns',
       factory: null,
       expression: function(of) {
         var tableColumns = of.getAxiomByName('tableColumns');
