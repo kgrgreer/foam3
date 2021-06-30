@@ -26,6 +26,9 @@ PORTING U2 to U3:
   - this.addClass() is the same as this.addClass(this.myClass())
   - automatic ID generation has been removed
   - replace use of slots that return elements with functions that add them
+  - remove daoSlot() method
+  -    TODO: https://github.com/foam-framework/foam2/search?q=daoSlot
+
 
 .add(this.slot(function(a, b, c) { return this.E().start()...; }));
 becomes:
@@ -1242,7 +1245,7 @@ if ( ! this.el_() ) return;
         if ( cs[i] === oldE ) {
           cs[i] = newE;
           newE.parentNode = this;
-          this.state.onReplaceChild.call(this, oldE, newE);
+          this.onReplaceChild.call(this, oldE, newE);
           oldE.unload && oldE.unload();
           return;
         }
@@ -1599,31 +1602,11 @@ if ( ! this.el_() ) return;
     },
 
     function removeAllChildren() {
-//      this.element_.innerHTML = '';
-//      this.childNodes = [];
-      // TODO:
-
-      /* Remove all of this Element's children. */
-      var cs = this.childNodes;
-      while ( cs.length ) {
-        this.removeChild(cs[0]);
+      this.element_.innerHTML = '';
+      this.childNodes = [];
+      for ( var i = 0 ; i < this.childNodes.length ; i++ ) {
+        this.childNodes[i].unload();
       }
-      return this;
-    },
-
-    function setChildren(slot) {
-      /**
-         slot -- a Slot of an array of children which set this element's
-         contents, replacing old children
-      **/
-      var l = function() {
-        this.removeAllChildren();
-        this.add.apply(this, slot.get());
-      }.bind(this);
-
-      this.onDetach(slot.sub(l));
-      l();
-
       return this;
     },
 
@@ -1633,17 +1616,6 @@ if ( ! this.el_() ) return;
         f.call(this, i);
       }
       return this;
-    },
-
-    function daoSlot(dao, sink) {
-      var slot = foam.dao.DAOSlot.create({
-        dao: dao,
-        sink: sink
-      });
-
-      this.onDetach(slot);
-
-      return slot;
     },
 
     /**
