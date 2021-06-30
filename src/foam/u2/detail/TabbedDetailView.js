@@ -10,13 +10,6 @@ foam.CLASS({
   extends: 'foam.u2.detail.AbstractSectionedDetailView',
   mixins: ['foam.nanos.controller.MementoMixin'],
 
-  imports: [
-    'memento'
-  ],
-
-  exports: [
-    'currentMemento_ as memento'
-  ],
 
   requires: [
     'foam.core.ArraySlot',
@@ -65,7 +58,7 @@ foam.CLASS({
     function initE() {
       var self = this;
 
-      this.currentMemento_$ = this.memento$;
+      this.initMemento();
 
 
       this.SUPER();
