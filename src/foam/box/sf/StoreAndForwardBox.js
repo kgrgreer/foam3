@@ -22,12 +22,21 @@ foam.CLASS({
   extends: 'foam.box.ProxyBox',
 
   javaImports: [
+    'foam.core.FObject',
     'foam.dao.DAO',
     'foam.dao.java.JDAO',
     'foam.dao.NullDAO',
+    'foam.dao.Journal',
+    'foam.dao.MDAO',
+    'foam.dao.ProxyDAO',
+    'foam.dao.ReadOnlyF3FileJournal',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
     'foam.core.X',
+    'foam.core.Agency',
+    'foam.core.ContextAgent',
+    'foam.core.Detachable',
+    'foam.dao.AbstractSink',
     'foam.nanos.fs.Storage',
     'foam.nanos.fs.FileSystemStorage',
     'net.nanopay.security.HashingReplayJournal',
@@ -36,7 +45,9 @@ foam.CLASS({
     'java.nio.file.DirectoryStream',
     'java.nio.file.Files',
     'java.nio.file.DirectoryIteratorException',
-    'java.io.IOException'
+    'java.io.IOException',
+    'java.util.concurrent.atomic.AtomicInteger',
+    'foam.mlang.MLang'
   ],
   
   properties: [
@@ -62,7 +73,7 @@ foam.CLASS({
             new NullDAO.Builder(getX())
               .setOf(SFEntry.getOwnClassInfo())
               .build(), 
-            getFileName()
+            getFileName() + "." + getFileSuffix()
           );
         } else {
           return new JDAO(
@@ -70,7 +81,7 @@ foam.CLASS({
             new NullDAO.Builder(getX())
               .setOf(SFEntry.getOwnClassInfo())
               .build(),
-            getFileName(),
+            getFileName() + "." + getFileSuffix(),
             false
           );
         }
@@ -113,7 +124,7 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'maxRetryDelay',
+      name: 'maxRetryDelayMS',
       value: 20000
     },
     {
@@ -121,6 +132,11 @@ foam.CLASS({
       class: 'Int',
       documentation: 'Set to -1 to infinitely retry.',
       value: 20
+    },
+    {
+      class: 'String',
+      name: 'threadPoolName',
+      value: 'threadPool'
     },
     {
       name: 'logger',
@@ -164,8 +180,9 @@ foam.CLASS({
             getDelegate().send(msg);
 
             /* Forward success. */
-            entry.setIsSent(true);
+            entry.setStatus(SFStatus.COMPLETED);
             ((DAO) getStoreDAO()).put(entry);
+            //TODO: check entry for httpbox;
             break;
           } catch ( Throwable t ) {
             getLogger().warning(t.getMessage());
@@ -183,8 +200,8 @@ foam.CLASS({
             /* Delay and retry */
             try {
               delay = getStepFunction().next(delay);
-              if ( delay > getMaxRetryDelay() ) {
-                delay = getMaxRetryDelay();
+              if ( delay > getMaxRetryDelayMS() ) {
+                delay = getMaxRetryDelayMS();
               }
               getLogger().info("retry attempt", retryAttempt, "delay", delay);
               Thread.sleep(delay);
@@ -206,9 +223,63 @@ foam.CLASS({
       args: 'Context x',
       javaCode: `
         //TODO: search latest modify file or file index
+
         /* Get path from Context and find latest journal. */
-        Path journal = null;
+        Path journalPath = getJournalPath(x);
+
+        /* Read unsend entries and re-send. */
+        if ( journalPath != null ) {
+          resend(x, journalPath);
+        }
+
+        //trigger send. using async assembly.
+        /* Get FileSystemStorage from Context. It has default data directory that register in Boot.js */
+        return;
+      `
+    },
+    {
+      name: 'resend',
+      args: 'Context x, Path journalPath',
+      javaCode: `
+        /* read unsend entries from journal */
+        Agency pool = (Agency) x.get(getThreadPoolName());
+        String fileName = journalPath.getFileName().toString();
+        Journal readJournal = new ReadOnlyF3FileJournal.Builder(x)
+                                  .setFilename(fileName)
+                                  .setCreateFile(false)
+                                  .build();
+        
+        MDAO dao = new foam.dao.MDAO(SFEntry.getOwnClassInfo());
+        DAO storeDAO = new FilterDAO(x, dao);
+        readJournal.replay(x, storeDAO);
+
+        final AtomicInteger num = new AtomicInteger(0);
+        storeDAO.select(new AbstractSink() {
+          @Override
+          public void put(Object obj, Detachable sub) {
+            num.getAndIncrement();
+          }
+        });
+        int unsendCount = num.get();
+
+        /* resend entries */
+        pool.submit(x, new ContextAgent() {
+          @Override
+          public void execute(X x) {
+            while ( true ) {
+
+            }
+          }
+        }, String.format("%s SFBox retry", this.getFileName()));
+      `
+    },
+    {
+      name: 'getJournalPath',
+      args: 'Context x',
+      javaType: 'Path',
+      javaCode: `
         int latestSuffix = getFileSuffix();
+        Path journalPath = null;
         Path rootPath = ((FileSystemStorage) x.get(Storage.class)).getRootPath();
         try ( DirectoryStream<Path> stream = Files.newDirectoryStream(rootPath) ) {
           for ( Path entry: stream ) {
@@ -216,24 +287,19 @@ foam.CLASS({
               int suffix = Integer.parseInt(entry.toString().split("\\\\.")[1]);
               if ( latestSuffix <= suffix  ) {
                 latestSuffix =  suffix;
-                journal = entry;
+                journalPath = entry;
               }
             }
           }
         } catch ( IOException e ) {
           //throw e.getCause();
         }
+
         /* Update new file suffix. */
         setFileSuffix(latestSuffix);
-
-        /* Read unsend entries and re-send. */
-        if ( journal != null ) {
-
-        }
-        //trigger send. using async assembly.
-        /* Get FileSystemStorage from Context. It has default data directory that register in Boot.js */
-        return;
+        return journalPath;
       `
+
     }
   ],
 
@@ -245,6 +311,19 @@ foam.CLASS({
           data: `
             static private interface StepFunction {
               public int next(int cur);
+            }
+            static private class FilterDAO extends ProxyDAO {
+              @Override
+              public FObject put_(X x, FObject obj) {
+                SFEntry entry = (SFEntry) obj;
+                entry.setScheduledTime(System.currentTimeMillis());
+                if ( entry.getStatus() == SFStatus.FAILURE ) return getDelegate().put_(x, entry);
+                return obj;
+              }
+
+              public FilterDAO(X x, DAO delegate) {
+                super(x, delegate);
+              }
             }
           `
         }));

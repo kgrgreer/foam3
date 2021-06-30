@@ -22,14 +22,14 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Boolean',
-      name: 'isSent',
-      value: false
-    },
-    {
       class: 'FObjectProperty',
       of: 'foam.box.Message',
       name: 'message'
+    },
+    {
+      class: 'Long',
+      name: 'scheduledTime',
+      storageTransient: true,
     },
     {
       name: 'status',
