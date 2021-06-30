@@ -51,6 +51,9 @@ foam.CLASS({
       outline: none;
       padding: 3px;
     }
+    ^ .foam-u2-ActionView-toggle:focus {
+      background-color: white;
+    }
     ^control > .foam-u2-ActionView-toggle {
       transform: rotate(-90deg);
       transition: transform 0.3s;
