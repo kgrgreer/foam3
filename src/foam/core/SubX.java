@@ -6,9 +6,9 @@
 
 package foam.core;
 
+import java.util.function.Supplier;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Supplier;
 
 public class SubX extends ProxyX {
   /**
@@ -41,7 +41,7 @@ public class SubX extends ProxyX {
   }
 
   public SubX(Supplier<X> root, String parent, X delegate) {
-    root_ = root;
+    root_   = root;
     parent_ = parent;
 
     serviceKeys_ = (Set) delegate.get(SERVICE_KEYS);

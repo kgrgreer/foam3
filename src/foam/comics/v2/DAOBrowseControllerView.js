@@ -32,6 +32,7 @@ foam.CLASS({
     'foam.u2.borders.CardBorder',
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
+    'foam.u2.stack.BreadcrumbView',
     'foam.u2.view.IconChoiceView',
     'foam.u2.view.OverlayActionListView'
   ],
@@ -100,6 +101,11 @@ foam.CLASS({
           : this.DAOBrowserView
           ;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'showNav',
+      value: true
     }
   ],
 
@@ -159,6 +165,7 @@ foam.CLASS({
 
     var self = this;
     var menuId = this.currentMenu ? this.currentMenu.id : this.config.of.id;
+    var nav = this.showNav ? self.BreadcrumbView : '';
     this.addClass(this.myClass())
 
       .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$browseSubtitle, config$primaryAction, config$createTitle, config$createControllerView, config$browseContext) {
@@ -167,6 +174,7 @@ foam.CLASS({
             .addClass(self.myClass('container'))
               .start()
                 .addClass(self.myClass('header-container'))
+                .tag(nav)
                 .start(self.Cols)
                   .start()
                     .addClasses(['h100', self.myClass('browse-title')])

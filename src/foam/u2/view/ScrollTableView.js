@@ -173,7 +173,7 @@
     {
       name: 'dblClickListenerAction',
       factory: function() {
-        return function(obj, id) {
+        return function(obj, id, title) {
           if ( ! this.stack ) return;
 
           this.stack.push({
@@ -181,7 +181,7 @@
             data: obj,
             config: this.config,
             idOfRecord: id
-          }, this.__subContext__.createSubContext({ memento: this.table_.memento }));
+          }, this.__subContext__.createSubContext({ memento: this.table_.memento }), undefined, { navStackTitle: title });
         }
       }
     },
@@ -221,8 +221,7 @@
         this.currentMemento_ = this.memento.tail;
       }
 
-
-
+      var self = this;
       this.table_ = foam.u2.ViewSpec.createView(this.TableView, {
         data: foam.dao.NullDAO.create({of: this.data.of}),
         columns: this.columns,
@@ -271,12 +270,16 @@
                 axiom.set(id, idFromJSON[key]);
             }
           }
-          this.stack.push({
-            class: 'foam.comics.v2.DAOSummaryView',
-            data: null,
-            config: this.config,
-            idOfRecord: id
-          }, this.__subContext__.createSubContext({ memento: this.table_.memento }));
+          this.config.dao.inX(ctrl.__subContext__).find(id).then(v => {
+            if ( ! v ) return;
+            if ( self.state != self.LOADED ) return;
+            this.stack.push({
+              class: 'foam.comics.v2.DAOSummaryView',
+              data: null,
+              config: this.config,
+              idOfRecord: id
+            }, this.__subContext__.createSubContext({ memento: this.table_.memento }), undefined, { navStackTitle: v.toSummary() });
+          });
         }
       }
 
@@ -353,8 +356,8 @@
         }
       }
     },
-    function dblclick(obj, id) {
-      this.dblClickListenerAction(obj, id);
+    function dblclick(obj, id, title) {
+      this.dblClickListenerAction(obj, id, title);
     }
   ]
 });

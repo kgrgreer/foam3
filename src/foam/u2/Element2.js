@@ -11,7 +11,8 @@ TODO:
  - Don't generate .java and remove need for flags: ['js'].
 */
 
-/* PORTING U2 to U3:
+/*
+PORTING U2 to U3:
   - rename initE to render()
   - move init() rendering code to render()
   - replace use of setNodeName to setting the nodeName property
@@ -23,10 +24,15 @@ TODO:
   - replace ^ in CSS (which has meaning in CSS) with <<
   - ILLEGAL_CLOSE_TAGS and OPTIONAL_CLOSE_TAGS have been removed
   - this.addClass() is the same as this.addClass(this.myClass())
+  - automatic ID generation has been removed
+  - replace use of slots that return elements with functions that add them
+
+.add(this.slot(function(a, b, c) { return this.E().start()...; }));
+becomes:
+.add(function(a, b, c) { this.start()...; });
 
   TODO:
   - you can use views directly instead of ViewSpecs
-  - remove ID support?
   - remove use of SPAN tags for dynamic slot content by using reference to TextNode
 */
 
@@ -112,6 +118,10 @@ foam.CLASS({
 
     function appendAsChild(el) {
       el.appendChild(this.element_);
+    },
+
+    function isLiteral(o) {
+      return foam.String.isInstance(o) || foam.Number.isInstance(o) || foam.Boolean.isInstance(o);
     }
   ]
 });
@@ -159,9 +169,7 @@ foam.CLASS({
     { class: 'String', name: 'text' },
     {
       name: 'element_',
-      factory: function() {
-        return this.document.createTextNode(this.text);
-      }
+      factory: function() { return this.document.createTextNode(this.text); }
     }
   ]
 });
@@ -173,17 +181,19 @@ foam.CLASS({
   extends: 'foam.u2.Node',
 
   properties: [
+    'slot',
     {
-      name: 'slot'
+      name: 'element_',
+      // Create a placeholder to insert into the right location, to be replaced
+      // by slot value.
+      factory: function() { return this.document.createTextNode(''); }
     }
   ],
 
   methods: [
     function appendAsChild(el) {
-      var t = foam.u2.Text.create({}, this);
+      this.SUPER(el);
 
-      t.appendAsChild(el);
-      this.element_ = t.element_;
       this.slot.sub(this.update);
       this.update();
     }
@@ -198,7 +208,57 @@ foam.CLASS({
         var e;
         if ( val === undefined || val === null ) {
           e = foam.u2.Text.create({}, this);
-        } else if ( foam.String.isInstance(val) || foam.Boolean.isInstance(val) || foam.Number.isInstance(val) ) {
+        } else if ( this.isLiteral(val) ) {
+          e = foam.u2.Text.create({text: val}, this);
+        } else {
+          debugger;
+        }
+        this.element_.parentNode.replaceChild(e.element_, this.element_);
+        this.element_ = e.element_;
+      }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'FunctionNode',
+  extends: 'foam.u2.SlotNode',
+
+  properties: [
+    'self',
+    'code'
+  ],
+
+  methods: [
+    function appendAsChild(el) {
+      this.SUPER(el);
+
+      var args = foam.Function.argNames(this.code);
+      for ( var i = 0 ; i < args.length ; i++ ) {
+        var s = obj.slot(args[i]);
+        this.self.onDetach(s.sub(this.update));
+      }
+
+      this.update();
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'update',
+      isFramed: true,
+      code: function() {
+        return this.code.apply(this.obj || this, this.args.map(function(a) {
+          return a.get();
+        }));
+
+        var val = this.slot.get.apply(self);
+        var e;
+        if ( val === undefined || val === null ) {
+          e = foam.u2.Text.create({}, this);
+        } else if ( this.isLiteral(val) ) {
           e = foam.u2.Text.create({text: val}, this);
         } else {
           debugger;
@@ -520,17 +580,6 @@ foam.CLASS({
       factory: function() { return foam.u2.DefaultValidator.create(); }
     },
     {
-      name: '__ID__',
-      value: [ 1 ]
-    },
-    {
-      name: 'NEXT_ID',
-      flags: ['js'],
-      value: function() {
-        return this.__ID__[ 0 ]++;
-      }
-    },
-    {
       documentation: `Keys which respond to keydown but not keypress`,
       name: 'KEYPRESS_CODES',
       value: { 8: true, 13: true, 27: true, 33: true, 34: true, 37: true, 38: true, 39: true, 40: true }
@@ -556,11 +605,13 @@ foam.CLASS({
 
   properties: [
     {
-      // TODO: class is needed to fix the Java build, but this shouldn't be building for Java anyway.
-      class: 'Object',
-      name: 'id',
-      transient: true,
-      factory: function() { return this.NEXT_ID(); }
+      name: 'element_',
+      expression: function(nodeName) {
+        return this.document.createElement(this.nodeName);
+      }
+    },
+    {
+      name: 'id'
     },
     {
       class: 'Enum',
@@ -1243,16 +1294,13 @@ if ( ! this.el_() ) return;
     },
 
     function setNodeName(name) {
+      console.warn('Deprecated use of setNodeName. Set the nodeName property instead.');
       this.nodeName = name;
       return this;
     },
 
     function setID(id) {
-      /*
-        Explicitly set Element's id.
-        Normally id's are automatically assigned.
-        Setting specific ID's hinders composability.
-      */
+      /* Explicitly set Element's id. */
       this.id = id;
       return this;
     },
@@ -1462,7 +1510,7 @@ if ( ! this.el_() ) return;
           this.addChild_(v, parentNode);
         }
         */
-      if ( foam.String.isInstance(c) || foam.Number.isInstance(c) ) {
+      if ( this.isLiteral(c) ) {
         this.element_ && this.element_.appendChild(this.document.createTextNode(c));
       } else if ( c.then ) {
         this.addChild_(this.PromiseSlot.create({ promise: c }), parentNode);
@@ -1697,7 +1745,6 @@ if ( ! this.el_() ) return;
     },
 
     function appendAsChild(el) {
-      this.element_ = this.document.createElement(this.nodeName);
       el.appendChild(this.element_);
       this.load();
     },
@@ -1918,6 +1965,7 @@ foam.CLASS({
       code: function E(ctx, opt_nodeName) {
         var nodeName = (opt_nodeName || 'DIV').toUpperCase();
 
+        // Check if a class has been registered for the specified nodeName
         return (ctx.elementForName(nodeName) || foam.u2.Element).
           create({nodeName: nodeName}, ctx);
       }

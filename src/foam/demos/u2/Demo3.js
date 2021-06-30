@@ -50,7 +50,10 @@ foam.CLASS({
 
   methods: [
     function render() {
+      var self = this;
+
       this.addClass();
+      this.style({background: 'lightgray'});
       this.add('before');
       this.start('h1')
         .add('Dynamic Test 1')
@@ -59,10 +62,20 @@ foam.CLASS({
       this.start('h2').add('Dynamic Test 2').end();
       this.add('after');
       this.br();
-      this.add('state:', this.state, this.state$);
-      this.style({background: 'lightgray'});
+      this.add('state: ', this.state, ' ', this.state$);
+      this.br();
+      this.add(this.slot(function(state) {
+        return state ? 'ping' : 'pong';
+      }));
+      this.add(function(state) {
+        if ( state ) {
+          this.start('b').add('ping').end();
+        } else {
+          this.start('i').add('pong').end();
+        }
+      });
+
       this.tag('hr');
-      this.add('end');
       this.tick();
     }
   ],

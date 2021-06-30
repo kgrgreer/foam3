@@ -233,16 +233,6 @@
       gridColumns: 6
     },
     {
-      class: 'String',
-      name: 'description',
-      documentation: `Approval request description.`,
-      includeInDigest: false,
-      tableWidth: 200,
-      section: 'approvalRequestInformation',
-      order: 40,
-      gridColumns: 6
-    },
-    {
       class: 'Reference',
       of: 'foam.nanos.auth.Group',
       name: 'group',
