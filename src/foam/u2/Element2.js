@@ -28,7 +28,13 @@ PORTING U2 to U3:
   - replace use of slots that return elements with functions that add them
   - remove daoSlot() method
   -    TODO: https://github.com/foam-framework/foam2/search?q=daoSlot
-
+  - remove cssClass() (use addClass() instead
+  -    TODO: https://github.com/foam-framework/foam2/search?q=cssClass
+  - remove addBefore()
+  - remove insertAt_()
+  - remove insertBefore()
+  - remove insertAfter()
+  - remove slotE_()
 
 .add(this.slot(function(a, b, c) { return this.E().start()...; }));
 becomes:
@@ -258,20 +264,6 @@ foam.CLASS({
       code: function() {
         this.removeAllChildren();
         this.code.apply(this, this.args.map(a => a.get()));
-
-        /*
-        var val = this.slot.get.apply(self);
-        var e;
-        if ( val === undefined || val === null ) {
-          e = foam.u2.Text.create({}, this);
-        } else if ( this.isLiteral(val) ) {
-          e = foam.u2.Text.create({text: val}, this);
-        } else {
-          debugger;
-        }
-        this.element_.parentNode.replaceChild(e.element_, this.element_);
-        this.element_ = e.element_;
-        */
       }
     }
   ]
@@ -324,9 +316,9 @@ foam.CLASS({
 
     function installInClass(cls) {
       // Install myself in this Window, if not already there.
-      var oldCreate   = cls.create;
-      var axiom       = this;
-      var isFirstCSS  = ! cls.private_.hasCSS;
+      var oldCreate  = cls.create;
+      var axiom      = this;
+      var isFirstCSS = ! cls.private_.hasCSS;
 
       if ( isFirstCSS ) cls.private_.hasCSS = true;
 
@@ -425,9 +417,7 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.u2',
   name: 'RenderSink',
-  implements: [
-    'foam.dao.Sink'
-  ],
+  implements: [ 'foam.dao.Sink' ],
 
   documentation: `
     Any call to put, remove, or reset on this sink will:
@@ -1252,16 +1242,6 @@ if ( ! this.el_() ) return;
       }
     },
 
-    function insertBefore(child, reference) {
-      /* Insert a single child before the reference element. */
-      return this.insertAt_(child, reference, true);
-    },
-
-    function insertAfter(child, reference) {
-      /* Insert a single child after the reference element. */
-      return this.insertAt_(child, reference, false);
-    },
-
     function remove() {
       /*
         Remove this Element from its parent Element.
@@ -1309,6 +1289,7 @@ if ( ! this.el_() ) return;
     function setID(id) {
       /* Explicitly set Element's id. */
       this.id = id;
+      this.element_.id = id;
       return this;
     },
 
@@ -1322,9 +1303,10 @@ if ( ! this.el_() ) return;
       return this.entity('nbsp');
     },
 
-    function cssClass(cls) {
-      return this.addClass(cls);
-    },
+function cssClass(cls) {
+  console.warn('DEPRECATED use of cssClass(). Use addClass() instead.');
+  return this.addClass(cls);
+},
 
     function addClass(cls) { /* Slot | String */
       /* Add a CSS cls to this Element. */
@@ -1592,14 +1574,14 @@ if ( ! this.el_() ) return;
       return this;
     },
 
-    function addBefore(reference) { /*, vargs */
-      /* Add a variable number of children before the reference element. */
-      var children = [];
-      for ( var i = 1 ; i < arguments.length ; i++ ) {
-        children.push(arguments[i]);
-      }
-      return this.insertAt_(children, reference, true);
-    },
+    // function addBefore(reference) { /*, vargs */
+    //   /* Add a variable number of children before the reference element. */
+    //   var children = [];
+    //   for ( var i = 1 ; i < arguments.length ; i++ ) {
+    //     children.push(arguments[i]);
+    //   }
+    //   return this.insertAt_(children, reference, true);
+    // },
 
     function removeAllChildren() {
       this.element_.innerHTML = '';
@@ -1733,41 +1715,41 @@ if ( ! this.el_() ) return;
     },
 
     function toString() {
-      return this.cls_.id + '(id=' + this.id + ', nodeName=' + this.nodeName + ', state=' + this.state + ')';
+      return this.cls_.id + '(id=' + this.id + ', nodeName=' + this.nodeName + ')';
     },
 
-    function insertAt_(children, reference, before) {
-      // (Element[], Element, Boolean)
-
-      var i = this.childNodes.indexOf(reference);
-
-      if ( i === -1 ) {
-        this.__context__.warn("Reference node isn't a child of this.");
-        return this;
-      }
-
-      if ( ! Array.isArray(children) ) children = [ children ];
-
-      var Y = this.__subSubContext__;
-      children = children.map(e => {
-        e = e.toE ? e.toE(null, Y) : e;
-        e.parentNode = this;
-        return e;
-      });
-
-      var index = before ? i : (i + 1);
-      this.childNodes.splice.apply(this.childNodes, [index, 0].concat(children));
-
-      /*
-      this.state.onInsertChildren.call(
-        this,
-        children,
-        reference,
-        before ? 'beforebegin' : 'afterend');
-        */
-
-      return this;
-    },
+    // function insertAt_(children, reference, before) {
+    //   // (Element[], Element, Boolean)
+    //
+    //   var i = this.childNodes.indexOf(reference);
+    //
+    //   if ( i === -1 ) {
+    //     this.__context__.warn("Reference node isn't a child of this.");
+    //     return this;
+    //   }
+    //
+    //   if ( ! Array.isArray(children) ) children = [ children ];
+    //
+    //   var Y = this.__subSubContext__;
+    //   children = children.map(e => {
+    //     e = e.toE ? e.toE(null, Y) : e;
+    //     e.parentNode = this;
+    //     return e;
+    //   });
+    //
+    //   var index = before ? i : (i + 1);
+    //   this.childNodes.splice.apply(this.childNodes, [index, 0].concat(children));
+    //
+    //   /*
+    //   this.state.onInsertChildren.call(
+    //     this,
+    //     children,
+    //     reference,
+    //     before ? 'beforebegin' : 'afterend');
+    //     */
+    //
+    //   return this;
+    // },
 
     function addClass_(oldClass, newClass) {
       /* Replace oldClass with newClass. Called by cls(). */
@@ -1804,86 +1786,6 @@ if ( ! this.el_() ) return;
       this.css[key] = value;
       this.onSetStyle(key, value);
       return this;
-    },
-
-    function slotE_(slot) {
-      // TODO: add same context capturing behviour to other slotXXX_() methods.
-      /*
-        Return an Element or an Array of Elements which are
-        returned from the supplied dynamic Slot.
-        The Element(s) are replaced when the Slot changes.
-      */
-      var self = this;
-      var ctx  = this.__subSubContext__;
-
-      function nextE() {
-        // Run Slot in same subSubContext that it was created in.
-        var oldCtx = self.__subSubContext__;
-        self.__subSubContext__ = ctx;
-        var e = slot.get();
-
-        // Convert e or e[0] into a SPAN if needed,
-        // So that it can be located later.
-        if ( e === undefined || e === null || e === '' ) {
-          e = self.E('SPAN');
-        } else if ( Array.isArray(e) ) {
-          if ( e.length ) {
-            if ( typeof e[0] === 'string' ) {
-              e[0] = self.E('SPAN').add(e[0]);
-            }
-          } else {
-            e = self.E('SPAN');
-          }
-        } else if ( ! foam.u2.Element.isInstance(e) ) {
-          e = self.E('SPAN').add(e);
-        }
-
-        self.__subSubContext__ = oldCtx;
-
-        return e;
-      }
-
-      var e = nextE();
-      var l = this.framed(function() {
-        /*
-        TODO
-        if ( self.state !== self.LOADED ) {
-          return;
-        }
-        */
-        var first = Array.isArray(e) ? e[0] : e;
-
-        /*
-        if ( first && first.state == first.INITIAL ) {
-          // updated requested before initial element loaded
-          // not a problem, just defer loading
-          first.onload.sub(foam.events.oneTime(l));
-          return;
-        }
-          */
-
-        var tmp = self.E();
-        self.insertBefore(tmp, first);
-        if ( Array.isArray(e) ) {
-          for ( var i = 0 ; i < e.length ; i++ ) {
-            // TODO: combine these two
-            e[i].remove();
-            e[i].detach();
-          }
-        } else {
-          // TODO: combine these two
-          e.remove();
-          e.detach();
-        }
-        var e2 = nextE();
-        self.insertBefore(e2, tmp);
-        tmp.remove();
-        e = e2;
-      });
-
-      this.onDetach(slot.sub(l));
-
-      return e;
     },
 
     function addEventListener_(topic, listener, opt_args) {
