@@ -26,7 +26,6 @@ foam.CLASS({
     }
     ^control {
       display: inline;
-      height: 30px;
       position: relative;
       width: 30px;
     }
@@ -44,15 +43,17 @@ foam.CLASS({
     }
     ^title {
       background: white;
-      padding: 3px;
       position: relative;
+    }
+    ^ .foam-u2-ActionView-toggle {
+      font-size: inherit !important;
+      border: none;
+      outline: none;
+      padding: 3px;
     }
     ^control > .foam-u2-ActionView-toggle {
       transform: rotate(-90deg);
       transition: transform 0.3s;
-      border: none;
-      outline: none;
-      padding: 3px;
       width: 30px;
     }
     ^.expanded .foam-u2-ActionView-toggle {
@@ -97,7 +98,7 @@ foam.CLASS({
           start('span').
             // TODO add support for toggle action on title click
             addClass(this.myClass('title')).
-            add(this.title$).
+            tag(this.TOGGLE, { label: this.title$, tabIndex: -1 }).
           end().
         end().
         start('div', null, this.content$).
