@@ -99,7 +99,6 @@ foam.CLASS({
             tag(this.TOGGLE, { label: this.label$ }).
           end().
           start('span').
-            // TODO add support for toggle action on title click
             addClass(this.myClass('title')).
             tag(this.TOGGLE, { label: this.title$, tabIndex: -1 }).
           end().
