@@ -224,21 +224,24 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.u2',
   name: 'FunctionNode',
-  extends: 'foam.u2.SlotNode',
+  extends: 'foam.u2.Element',
 
   properties: [
     'self',
-    'code'
+    'code',
+    {
+      name: 'args',
+      factory: function() { return foam.Function.argNames(this.code).map(a => this.self.slot(a)); }
+    }
   ],
 
   methods: [
     function appendAsChild(el) {
       this.SUPER(el);
 
-      var args = foam.Function.argNames(this.code);
+      var args = this.args;
       for ( var i = 0 ; i < args.length ; i++ ) {
-        var s = obj.slot(args[i]);
-        this.self.onDetach(s.sub(this.update));
+        this.self.onDetach(args[i].sub(this.update));
       }
 
       this.update();
@@ -250,10 +253,10 @@ foam.CLASS({
       name: 'update',
       isFramed: true,
       code: function() {
-        return this.code.apply(this.obj || this, this.args.map(function(a) {
-          return a.get();
-        }));
+        this.removeAllChildren();
+        this.code.apply(this, this.args.map(a => a.get()));
 
+        /*
         var val = this.slot.get.apply(self);
         var e;
         if ( val === undefined || val === null ) {
@@ -265,6 +268,7 @@ foam.CLASS({
         }
         this.element_.parentNode.replaceChild(e.element_, this.element_);
         this.element_ = e.element_;
+        */
       }
     }
   ]
@@ -1225,7 +1229,7 @@ if ( ! this.el_() ) return;
       for ( var i = 0 ; i < cs.length ; ++i ) {
         if ( cs[i] === c ) {
           cs.splice(i, 1);
-          this.state.onRemoveChild.call(this, c, i);
+          this.onRemoveChild.call(this, c, i);
           return;
         }
       }
@@ -1496,7 +1500,9 @@ if ( ! this.el_() ) return;
         c = c.toE(null, this.__subSubContext__);
       }
 
-      if ( foam.core.Slot.isInstance(c) ) {
+      if ( foam.Function.isInstance(c) ) {
+        c = foam.u2.FunctionNode.create({self: this, code: c});
+      } else if ( foam.core.Slot.isInstance(c) ) {
         c = foam.u2.SlotNode.create({slot: c}, this);
       }
         /*
@@ -1515,6 +1521,7 @@ if ( ! this.el_() ) return;
       } else if ( c.then ) {
         this.addChild_(this.PromiseSlot.create({ promise: c }), parentNode);
       } else if ( c.appendAsChild ) {
+        this.childNodes.push(c);
         c.parentNode = parentNode;
         c.appendAsChild(this.element_);
       }
@@ -1592,6 +1599,10 @@ if ( ! this.el_() ) return;
     },
 
     function removeAllChildren() {
+//      this.element_.innerHTML = '';
+//      this.childNodes = [];
+      // TODO:
+
       /* Remove all of this Element's children. */
       var cs = this.childNodes;
       while ( cs.length ) {
