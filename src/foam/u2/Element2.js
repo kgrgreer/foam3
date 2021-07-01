@@ -42,8 +42,10 @@ becomes:
 .add(function(a, b, c) { this.start()...; });
 
   TODO:
+  - consistently use _ for all internal properties and methods
   - ??? remove removeChild() appendChild()
   - ??? replace replaceChild() with replace() on Node
+  - ??? replace E() with custom Element constructor
   - Replace TableCellFormatters with Elements
   - ??? Replace toE() with toNode/toView/to???
   - you can use views directly instead of ViewSpecs
@@ -518,16 +520,17 @@ foam.CLASS({
   extends: 'foam.u2.Node',
 
   documentation: `
-    Virtual-DOM Element. Root model for all U2 UI components.
+    DOM API Element. Root model for all U3 UI components.
 
-    To insert a U2 Element into a regular DOM element, either:
+    To insert a U3 Element into a regular DOM element, either:
 
-    el.write() // to append to the end of the document
+    Add to the end of the imported document:
 
-    el.innerHTML = view.outerHTML;
-    view.load();
+      el.write();
 
-    el.appendAsChild(parentElement);
+    Append to the end of a specified parent element:
+
+      el.appendAsChild(parentElement);
 
     Or use a foam tag in your markup:
 
@@ -557,6 +560,7 @@ foam.CLASS({
 
   constants: [
     {
+      // TODO: document
       name: 'CSS_SELF',
       value: '<<'
     },
@@ -719,7 +723,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'focused',
       postSet: function(o, n) {
-        if ( n ) this.onFocus();
+        if ( n ) this.element_.focus();
       }
     },
     {
@@ -745,9 +749,12 @@ foam.CLASS({
   methods: [
 
     // from state
+
+    // TODO: remove
     function el() {
       return Promise.resolve(this.el_());
     },
+
     function load() {
       if ( this.hasOwnProperty('elListeners') ) {
         var ls = this.elListeners;
@@ -797,7 +804,6 @@ foam.CLASS({
       this.visitChildren('unload');
       this.detach();
     },
-    function onRemove() { this.unload(); },
     function onSetClass(cls, enabled) {
       var e = this.el_();
       if ( e ) {
@@ -805,9 +811,6 @@ foam.CLASS({
       } else {
         console.warn('Missing Element: ', this.id);
       }
-    },
-    function onFocus() {
-      this.el_().focus();
     },
     function onAddListener(topic, listener, opt_args) {
       this.addEventListener_(topic, listener, opt_args);
@@ -834,32 +837,6 @@ if ( ! this.el_() ) return;
         this.el_().removeAttribute(key);
       }
     },
-    /*
-    function onInsertChildren(children, reference, where) {
-      var e = this.el_();
-      if ( ! e ) {
-        console.warn('Missing Element: ', this.id);
-        return;
-      }
-      var out = this.createOutputStream();
-      for ( var i = 0 ; i < children.length ; i++ ) {
-        out(children[i]);
-      }
-
-      reference.el_().insertAdjacentHTML(where, out);
-
-      // EXPERIMENTAL:
-      // TODO(kgr): This causes some elements to get stuck in OUTPUT state
-      // forever. It can be resurrected if that problem is fixed.
-      // Load (mostly adding listeners) on the next frame
-      // to allow the HTML to be shown more quickly.
-      // this.__context__.window.setTimeout(function() {
-      for ( var i = 0 ; i < children.length ; i++ ) {
-        children[i].load && children[i].load();
-      }
-      // }, 33);
-    },
-    */
     function onReplaceChild(oldE, newE) {
       var e = this.el_();
       if ( ! e ) {
@@ -880,8 +857,6 @@ if ( ! this.el_() ) return;
     function getBoundingClientRect() {
       return this.el_().getBoundingClientRect();
     },
-
-
 
 
     function init() {
@@ -1253,7 +1228,7 @@ if ( ! this.el_() ) return;
         Remove this Element from its parent Element.
         Will transition to UNLOADED state.
       */
-      this.onRemove();
+      this.unload();
 
       if ( this.parentNode ) {
         var cs = this.parentNode.childNodes;
@@ -1607,6 +1582,21 @@ function cssClass(cls) {
     },
 
     /**
+     * Call the given function on each element in the array. In the function,
+     * `this` will refer to the element.
+     * @param {Array} array An array to loop over.
+     * @param {Function} fn A function to call for each item in the given array.
+     */
+    function forEach(array, fn) {
+      if ( foam.core.Slot.isInstance(array) ) {
+        this.add(array.map(a => this.E().forEach(a, fn)));
+      } else {
+        array.forEach(fn.bind(this));
+      }
+      return this;
+    },
+
+    /**
      * Given a DAO and a function that maps from a record in that DAO to an
      * Element, call the function with each record as an argument and add the
      * returned elements to the view.
@@ -1693,21 +1683,6 @@ function cssClass(cls) {
     function callIfElse(bool, iff, elsef, args) {
       (bool ? iff : elsef).apply(this, args);
 
-      return this;
-    },
-
-    /**
-     * Call the given function on each element in the array. In the function,
-     * `this` will refer to the element.
-     * @param {Array} array An array to loop over.
-     * @param {Function} fn A function to call for each item in the given array.
-     */
-    function forEach(array, fn) {
-      if ( foam.core.Slot.isInstance(array) ) {
-        this.add(array.map(a => this.E().forEach(a, fn)));
-      } else {
-        array.forEach(fn.bind(this));
-      }
       return this;
     },
 
@@ -2098,6 +2073,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.u2',
   name: 'FormattedStringViewRefinement',
@@ -2116,6 +2092,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.u2',
