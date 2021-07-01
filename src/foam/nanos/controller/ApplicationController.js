@@ -95,6 +95,10 @@ foam.CLASS({
     'wrapCSS as installCSS'
   ],
 
+  topics: [
+    'themeChange'
+  ],
+
   constants: {
     MACROS: [
       'customCSS',
@@ -303,7 +307,10 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.theme.Theme',
-      name: 'theme'
+      name: 'theme',
+      postSet: function() {
+        this.pub('themeChange');
+      }
     },
     {
       class: 'foam.u2.ViewSpec',
@@ -333,6 +340,10 @@ foam.CLASS({
     {
       name: 'languageDefaults_',
       factory: function() { return []; }
+    },
+    {
+      name: 'styles',
+      factory: function() { return {}; }
     }
   ],
 
@@ -412,6 +423,23 @@ foam.CLASS({
         self.onUserAgentAndGroupLoaded();
         self.mementoChange();
       });
+
+      // Reload styling on theme change
+      this.onDetach(this.sub('themeChange', () => {
+        console.log('themeChange');
+        for ( const eid in this.styles ) {
+          let text = this.styles[eid];
+          for ( var i = 0 ; i < this.MACROS.length; i++ ) {
+            const m = this.MACROS[i];
+            text = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
+          }
+
+          const el = this.getElementById(eid);
+          if ( text !== el.textContent ) {
+            el.textContent = text;
+          }
+        }
+      }));
     },
 
     function initE() {
@@ -567,28 +595,16 @@ foam.CLASS({
 
     function wrapCSS(text, id) {
       /** CSS preprocessor, works on classes instantiated in subContext. */
-      var result = text;
-      if ( result ) {
+      if ( text ) {
         var eid = foam.u2.Element.NEXT_ID();
+        this.styles[eid] = text;
 
         for ( var i = 0 ; i < this.MACROS.length ; i++ ) {
-          const m     = this.MACROS[i];
-          const re    = new RegExp('/\\*%' + m.toUpperCase() + '%\\*/', 'g');
-
-          result = this.expandShortFormMacro(this.expandLongFormMacro(result, m), m);
-          // If the macro was found, then listen for changes to the property.
-          if ( re.test(result) ) {
-            this.onDetach(this.theme$.dot(m).sub(() => {
-              var el = this.getElementById(eid);
-              var result2 = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
-              if ( result2 != el.textContent ) {
-                el.textContent = result2;
-              }
-            }));
-          }
+          const m = this.MACROS[i];
+          text = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
         }
 
-        this.installCSS(result, id, eid);
+        this.installCSS(text, id, eid);
       }
     },
 
