@@ -97,8 +97,8 @@ foam.CLASS({
 
   constants: {
     MACROS: [
-      'logoBackgroundColour',
       'customCSS',
+      'logoBackgroundColour',
       'font1',
       'primary1',
       'primary2',
@@ -567,24 +567,28 @@ foam.CLASS({
 
     function wrapCSS(text, id) {
       /** CSS preprocessor, works on classes instantiated in subContext. */
-      if ( text ) {
+      var result = text;
+      if ( result ) {
         var eid = foam.u2.Element.NEXT_ID();
 
         for ( var i = 0 ; i < this.MACROS.length ; i++ ) {
           const m     = this.MACROS[i];
           const re    = new RegExp('/\\*%' + m.toUpperCase() + '%\\*/', 'g');
 
-          text = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
+          result = this.expandShortFormMacro(this.expandLongFormMacro(result, m), m);
           // If the macro was found, then listen for changes to the property.
-          if ( re.test(text) ) {
+          if ( re.test(result) ) {
             this.onDetach(this.theme$.dot(m).sub(() => {
               var el = this.getElementById(eid);
-              el.textContent = this.expandLongFormMacro(el.textContent, m);
+              var result2 = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
+              if ( result2 != el.textContent ) {
+                el.textContent = result2;
+              }
             }));
           }
         }
 
-        this.installCSS(text, id, eid);
+        this.installCSS(result, id, eid);
       }
     },
 
