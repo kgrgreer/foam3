@@ -426,7 +426,6 @@ foam.CLASS({
 
       // Reload styling on theme change
       this.onDetach(this.sub('themeChange', () => {
-        console.log('themeChange');
         for ( const eid in this.styles ) {
           let text = this.styles[eid];
           for ( var i = 0 ; i < this.MACROS.length; i++ ) {
