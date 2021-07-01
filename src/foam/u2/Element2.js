@@ -35,14 +35,19 @@ PORTING U2 to U3:
   - remove insertBefore()
   - remove insertAfter()
   - remove slotE_()
+  - removed use of SPAN tags for dynamic slot content by using reference to TextNode
 
 .add(this.slot(function(a, b, c) { return this.E().start()...; }));
 becomes:
 .add(function(a, b, c) { this.start()...; });
 
   TODO:
+  - ??? remove removeChild() appendChild()
+  - ??? replace replaceChild() with replace() on Node
+  - Replace TableCellFormatters with Elements
+  - ??? Replace toE() with toNode/toView/to???
   - you can use views directly instead of ViewSpecs
-  - remove use of SPAN tags for dynamic slot content by using reference to TextNode
+  - remove callOn
 */
 
 foam.ENUM({
@@ -1212,11 +1217,12 @@ if ( ! this.el_() ) return;
     },
 
     function appendChild(c) {
-      // TODO: finish implementation
+      // TODO: can this be removed
       this.childNodes.push(c);
     },
 
     function removeChild(c) {
+      // TODO: is this needed
       /* Remove a Child node (String or Element). */
       var cs = this.childNodes;
       for ( var i = 0 ; i < cs.length ; ++i ) {
@@ -1672,6 +1678,7 @@ function cssClass(cls) {
     },
 
     function callOn(obj, f, args) {
+      // TODO: remove
       /** Call the method named f on obj with the supplied args. **/
       obj[f].apply(obj, [this].concat(args));
       return this;
