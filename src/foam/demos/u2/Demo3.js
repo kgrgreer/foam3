@@ -7,6 +7,11 @@ foam.u2.Element.create().write().style({color: 'red'}).add('children');
 foam.u2.Element.create().on('click', () => console.log('clicked')).add('clickme').write();
 foam.u2.Element.create().write().on('click', () => console.log('clicked')).add('clickme');
 
+foam.u2.Element.create().write().start('ol').forEach(['a','b','c'], function(v) {
+  this.start('li').add(v).end();
+});
+
+
 foam.CLASS({
   name: 'Test',
   extends: 'foam.u2.Element',
@@ -39,12 +44,17 @@ foam.CLASS({
   css: `
     << { color: red; }
     <<tick { background: black; }
+    .orange { color: orange; }
   `,
 
   properties: [
     {
       class: 'Boolean',
       name: 'state'
+    },
+    {
+      class: 'Int',
+      name: 'count'
     }
   ],
 
@@ -64,16 +74,24 @@ foam.CLASS({
       this.br();
       this.add('state: ', this.state, ' ', this.state$);
       this.br();
+      this.start().addClass('orange').add('orange').end();
+      this.start().addClass('orange').removeClass('orange').add('not orange').end();
+      this.start().style({color: 'green'}).add('green style').end();
+      var gone = this.start().add('gone');
+      gone.remove();
       this.add(this.slot(function(state) {
         return state ? 'ping' : 'pong';
       }));
-      this.add(function(state) {
+      this.add(function(state, count) {
+        this.start('b').add(count, ' ').end();
         if ( state ) {
           this.start('b').add('ping').end();
         } else {
           this.start('i').add('pong').end();
         }
       });
+
+      this.start().setID(42).add('has id set').end();
 
       this.tag('hr');
       this.tick();
@@ -86,6 +104,7 @@ foam.CLASS({
       isMerged: true,
       mergeDelay: 1000,
       code: function() {
+        this.count++;
         this.state = ! this.state;
         this.tick();
       }
