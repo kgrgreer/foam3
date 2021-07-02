@@ -27,12 +27,13 @@ foam.CLASS({
     {
       name: 'put_',
       code: function(x, obj) {
-        return this.delegate.put_(x, obj).then(() => {
+        this.delegate.put_(x, obj).then((obj) => {
           if ( this.daoKey ) {
             var dao = this.__subContext__[this.daoKey];
             dao.cmd(this.TTLSelectCachingDAO.PURGE);
             dao.cmd(this.AbstractDAO.RESET_CMD);
           }
+          return obj;
         });
       }
     }
