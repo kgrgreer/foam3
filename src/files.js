@@ -358,6 +358,7 @@ FOAM_FILES([
   { name: "foam/dao/EnabledAwareDAO" },
   { name: "foam/dao/EnabledAwareDAOTest" },
   { name: "foam/dao/ValidationDAODecorator" },
+  { name: "foam/dao/ResetDAODecorator", flags: ['web']  },
   { name: "foam/dao/SQL", flags: ['sql'] },
   { name: "foam/dao/NoDisjunctionDAO" },
   { name: "foam/dao/NoNeqDAO" },

@@ -21,6 +21,13 @@ foam.CLASS({
 
   imports: [ 'merged' ],
 
+  constants: [
+    {
+      name: 'PURGE',
+      value: 'PURGE'
+    }
+  ],
+
   properties: [
     {
       /** The cache to read items quickly. */
