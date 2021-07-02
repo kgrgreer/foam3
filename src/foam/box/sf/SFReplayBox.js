@@ -15,9 +15,19 @@
 * limitations under the License.
 */
 
-//TODO: retry, reader and writer, persistance, writer and reader async work.
 foam.CLASS({
   package: 'foam.box.sf',
   name: 'SFReplayBox',
   extends: 'foam.box.Box',
+
+  methods: [
+    {
+      name: 'send',
+      javaCode: `
+        if ( msg.getObject() instanceof Exception ) {
+          throw e;
+        }
+      `
+    }
+  ]
 })

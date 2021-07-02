@@ -15,7 +15,6 @@
 * limitations under the License.
 */
 
-//TODO: retry, reader and writer, persistance, writer and reader async work.
 foam.CLASS({
   package: 'foam.box.sf',
   name: 'StoreAndForwardBox',
