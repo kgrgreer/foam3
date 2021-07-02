@@ -68,8 +68,11 @@ foam.CLASS({
       class: 'Object',
       name: 'storeDAO',
       javaFactory: `
-        // get dao from context
-        if ( getIsHashEntry() ) {
+        if ( ! getIsStore() ) {
+          return new NullDAO.Builder(getX())
+                  .setOf(SFEntry.getOwnClassInfo())
+                  .build();
+        } else if ( getIsHashEntry() ) {
           return new HashingJDAO(
             getX(), 
             "SHA-256", 
@@ -162,13 +165,6 @@ foam.CLASS({
     {
       name: 'send',
       javaCode: `
-        //persist
-        //send delegate
-        //if sucess
-        //if fail - retry
-        //how to know the fail
-        //becarefull of replay box. and error
-
         SFEntry entry = new SFEntry.Builder(getX())
                               .setMessage(msg)
                               .build();
@@ -293,8 +289,6 @@ foam.CLASS({
       name: 'initReader',
       args: 'Context x',
       javaCode: `
-        //TODO: search latest modify file or file index
-
         /* Get path from Context and find latest journal. */
         Path journalPath = getJournalPath(x);
 
@@ -302,10 +296,6 @@ foam.CLASS({
         if ( journalPath != null ) {
           resend(x, journalPath);
         }
-
-        //trigger send. using async assembly.
-        /* Get FileSystemStorage from Context. It has default data directory that register in Boot.js */
-        return;
       `
     },
     {
