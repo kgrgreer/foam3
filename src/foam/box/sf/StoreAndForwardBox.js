@@ -29,6 +29,7 @@ foam.CLASS({
     'foam.dao.Journal',
     'foam.dao.MDAO',
     'foam.dao.ProxyDAO',
+    'foam.dao.WriteOnlyJDAO',
     'foam.dao.ReadOnlyF3FileJournal',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
@@ -80,13 +81,10 @@ foam.CLASS({
             getFileName() + "." + getFileSuffix()
           );
         } else {
-          return new JDAO(
+          return new WriteOnlyJDAO(
             getX(),
-            new NullDAO.Builder(getX())
-              .setOf(SFEntry.getOwnClassInfo())
-              .build(),
-            getFileName() + "." + getFileSuffix(),
-            false
+            SFEntry.getOwnClassInfo(),
+            getFileName() + "." + getFileSuffix()
           );
         }
       `
@@ -97,21 +95,23 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'isStore',
+      value: true
+    },
+    {
+      class: 'Boolean',
       name: 'isHashEntry',
       value: false
     },
     {
-      name: 'replayJournal',
-      class: 'FObjectProperty',
-      of: 'foam.dao.Journal',
-      javaFactory: `
-        return null;
-      `
+      class: 'Boolean',
+      name: 'async',
+      value: false
     },
     {
       class: 'Int',
       name: 'initialValue',
-      value: 10
+      value: 1000
     },
     {
       class: 'Object',
@@ -120,16 +120,6 @@ foam.CLASS({
       javaFactory: `
         return x -> x*2;
       `
-    },
-    {
-      class: 'Boolean',
-      name: 'async',
-      value: false
-    },
-    {
-      class: 'Object',
-      javaType: 'Thread',
-      name: 'sendingThread'
     },
     {
       class: 'Int',
@@ -179,9 +169,6 @@ foam.CLASS({
         //how to know the fail
         //becarefull of replay box. and error
 
-        int retryAttempt = 0;
-        int delay = getInitialValue();
-
         SFEntry entry = new SFEntry.Builder(getX())
                               .setMessage(msg)
                               .build();
@@ -189,14 +176,30 @@ foam.CLASS({
         /* Create store entry and persist it. */
         entry = (SFEntry)(((DAO) getStoreDAO()).put(entry));
 
+        if ( getAsync() ) {
+          sendAsync(getX(), entry);
+        } else {
+          sendSync(getX(), entry);
+        }
+
+      `
+    },
+    {
+      name: 'sendSync',
+      args: 'Context x, SFEntry entry',
+      javaCode:`
+        Message msg = entry.getMessage();
+        int retryAttempt = 0;
+        int delay = getInitialValue();
+
         while ( true ) {
           try {
             getDelegate().send(msg);
 
             /* Forward success. */
-            entry.setStatus(SFStatus.COMPLETED);
-            ((DAO) getStoreDAO()).put(entry);
-            //TODO: check entry for httpbox;
+            SFEntry en = (SFEntry) entry.fclone();
+            en.setStatus(SFStatus.COMPLETED);
+            ((DAO) getStoreDAO()).put(en);
             break;
           } catch ( Throwable t ) {
             getLogger().warning(t.getMessage());
@@ -205,7 +208,10 @@ foam.CLASS({
             if ( getMaxRetryAttempts() > -1 &&
               retryAttempt >= getMaxRetryAttempts() ) {
               getLogger().warning("retryAttempt >= maxRetryAttempts", retryAttempt, getMaxRetryAttempts());
-              //TODO: set entry to cancel.
+              
+              SFEntry en = (SFEntry) entry.fclone();
+              en.setStatus(SFStatus.CANCELLED);
+              ((DAO) getStoreDAO()).put(en);
               throw new RuntimeException("Rejected, retry limit reached.");
             }
 
@@ -225,6 +231,61 @@ foam.CLASS({
             }
           } 
         }
+      `
+    },
+    {
+      name: 'sendAsync',
+      args: 'Context x, SFEntry entry',
+      javaCode:`
+        Agency pool = (Agency) x.get(getThreadPoolName());
+        Message msg = entry.getMessage();
+
+        pool.submit(x, new ContextAgent() {
+          @Override
+          public void execute(X x) {
+            int retryAttempt = 0;
+            int delay = getInitialValue();
+
+            while( true ) {
+              try {
+                getDelegate().send(msg);
+
+                /* Forward success. */
+                SFEntry en = (SFEntry) entry.fclone();
+                en.setStatus(SFStatus.COMPLETED);
+                ((DAO) getStoreDAO()).put(en);
+                break;
+              } catch( Throwable t ) {
+                getLogger().warning(t.getMessage());
+
+                /* Reach retry limit. */
+                if ( getMaxRetryAttempts() > -1 &&
+                  retryAttempt >= getMaxRetryAttempts() ) {
+                    getLogger().warning("retryAttempt >= maxRetryAttempts", retryAttempt, getMaxRetryAttempts(), entry.toString());
+
+                    SFEntry en = (SFEntry) entry.fclone();
+                    en.setStatus(SFStatus.CANCELLED);
+                    ((DAO) getStoreDAO()).put(en);
+                    break;
+                }
+
+                retryAttempt += 1;
+
+                /* Delay and retry */
+                try {
+                  delay = getStepFunction().next(delay);
+                  if ( delay > getMaxRetryDelayMS() ) {
+                    delay = getMaxRetryDelayMS();
+                  }
+                  getLogger().info("retry attempt", retryAttempt, "delay", delay);
+                  Thread.sleep(delay);
+                } catch(InterruptedException e) {
+                  getLogger().warning(e.getMessage());
+                }
+              }
+            }
+          }
+        }, String.format("%s SFBox retry %s", this.getFileName(), msg.toString()));
       `
     },
     {
@@ -260,8 +321,8 @@ foam.CLASS({
                                   .build();
         
         MDAO dao = new foam.dao.MDAO(SFEntry.getOwnClassInfo());
-        DAO storeDAO = new FilterDAO(x, dao);
-        readJournal.replay(x, storeDAO);
+        DAO tmpDAO = new FilterDAO(x, dao);
+        readJournal.replay(x, tmpDAO);
 
         /* Store unsend entries in the queue. */
         final PriorityQueue<SFEntry> sfq = new PriorityQueue<SFEntry>(16, (s1, s2) -> {
@@ -274,7 +335,7 @@ foam.CLASS({
                                                 return 0;
                                               });
 
-        storeDAO.select(new AbstractSink() {
+        tmpDAO.select(new AbstractSink() {
           @Override
           public void put(Object obj, Detachable sub) {
             sfq.add((SFEntry) obj);
@@ -285,15 +346,16 @@ foam.CLASS({
         pool.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            setSendingThread(Thread.currentThread());
             while ( sfq.size() > 0 ) {
               if ( sfq.peek().getScheduledTime() <= System.currentTimeMillis() ) {
                 SFEntry e = sfq.poll();
                 try {
                   getDelegate().send(e.getMessage());
-                  e.setStatus(SFStatus.COMPLETED);
+
                   /* Update entries in the journal. */
-                  ((DAO) getStoreDAO()).put(e);
+                  SFEntry en = (SFEntry) e.fclone();
+                  en.setStatus(SFStatus.COMPLETED);
+                  ((DAO) getStoreDAO()).put(en);
                 } catch ( Throwable t ) {
                   getLogger().warning(t.getMessage());
 
@@ -301,14 +363,19 @@ foam.CLASS({
                   if ( getMaxRetryAttempts() > -1 &&
                     e.getRetryAttempt() >= getMaxRetryAttempts() ) {
                     getLogger().warning("retryAttempt >= maxRetryAttempts", e.getRetryAttempt(), getMaxRetryAttempts(), e.toString());
-                    e.setStatus(SFStatus.CANCELLED);
-                    ((DAO) getStoreDAO()).put(e);
+                    
+                    SFEntry en = (SFEntry) e.fclone();
+                    en.setStatus(SFStatus.CANCELLED);
+                    ((DAO) getStoreDAO()).put(en);
                     continue;
                   }
 
                   /* Continue next retry and set new schedule time. */
                   e.setRetryAttempt(e.getRetryAttempt()+1);
                   e.setCurStep(getStepFunction().next(e.getCurStep()));
+                  if ( e.getCurStep() > getMaxRetryDelayMS() ) {
+                    e.setCurStep(getMaxRetryDelayMS());
+                  }
                   e.setScheduledTime(System.currentTimeMillis()+e.getCurStep());
                   sfq.add((SFEntry) e);
                 }
