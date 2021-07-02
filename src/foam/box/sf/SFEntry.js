@@ -32,6 +32,18 @@ foam.CLASS({
       storageTransient: true,
     },
     {
+      class: 'Int',
+      name: 'curStep',
+      value: 1,
+      storageTransient: true,
+    },
+    {
+      class: 'Int',
+      name: 'retryAttempt',
+      value: 0,
+      storageTransient: true,
+    },
+    {
       name: 'status',
       class: 'Enum',
       of: 'foam.box.sf.SFStatus',

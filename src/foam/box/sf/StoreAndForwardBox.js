@@ -37,7 +37,9 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.Detachable',
     'foam.dao.AbstractSink',
+    'foam.dao.ArraySink',
     'foam.nanos.fs.Storage',
+    'foam.box.Message',
     'foam.nanos.fs.FileSystemStorage',
     'net.nanopay.security.HashingReplayJournal',
     'net.nanopay.security.HashingJDAO',
@@ -47,7 +49,9 @@ foam.CLASS({
     'java.nio.file.DirectoryIteratorException',
     'java.io.IOException',
     'java.util.concurrent.atomic.AtomicInteger',
-    'foam.mlang.MLang'
+    'foam.mlang.MLang',
+    'java.util.List',
+    'java.util.PriorityQueue'
   ],
   
   properties: [
@@ -116,6 +120,16 @@ foam.CLASS({
       javaFactory: `
         return x -> x*2;
       `
+    },
+    {
+      class: 'Boolean',
+      name: 'async',
+      value: false
+    },
+    {
+      class: 'Object',
+      javaType: 'Thread',
+      name: 'sendingThread'
     },
     {
       class: 'Int',
@@ -211,10 +225,6 @@ foam.CLASS({
             }
           } 
         }
-
-        /* Forward success */
-
-        /* Forward fail - retry */
       `
     },
     {
@@ -253,21 +263,65 @@ foam.CLASS({
         DAO storeDAO = new FilterDAO(x, dao);
         readJournal.replay(x, storeDAO);
 
-        final AtomicInteger num = new AtomicInteger(0);
+        /* Store unsend entries in the queue. */
+        final PriorityQueue<SFEntry> sfq = new PriorityQueue<SFEntry>(16, (s1, s2) -> {
+                                                if ( s1.getScheduledTime() < s2.getScheduledTime() ) {
+                                                  return -1;
+                                                }
+                                                if ( s1.getScheduledTime() > s2.getScheduledTime() ) {
+                                                  return 1;
+                                                }
+                                                return 0;
+                                              });
+
         storeDAO.select(new AbstractSink() {
           @Override
           public void put(Object obj, Detachable sub) {
-            num.getAndIncrement();
+            sfq.add((SFEntry) obj);
           }
         });
-        int unsendCount = num.get();
 
         /* resend entries */
         pool.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            while ( true ) {
+            setSendingThread(Thread.currentThread());
+            while ( sfq.size() > 0 ) {
+              if ( sfq.peek().getScheduledTime() <= System.currentTimeMillis() ) {
+                SFEntry e = sfq.poll();
+                try {
+                  getDelegate().send(e.getMessage());
+                  e.setStatus(SFStatus.COMPLETED);
+                  /* Update entries in the journal. */
+                  ((DAO) getStoreDAO()).put(e);
+                } catch ( Throwable t ) {
+                  getLogger().warning(t.getMessage());
 
+                  /* Reach retry limit. */
+                  if ( getMaxRetryAttempts() > -1 &&
+                    e.getRetryAttempt() >= getMaxRetryAttempts() ) {
+                    getLogger().warning("retryAttempt >= maxRetryAttempts", e.getRetryAttempt(), getMaxRetryAttempts(), e.toString());
+                    e.setStatus(SFStatus.CANCELLED);
+                    ((DAO) getStoreDAO()).put(e);
+                    continue;
+                  }
+
+                  /* Continue next retry and set new schedule time. */
+                  e.setRetryAttempt(e.getRetryAttempt()+1);
+                  e.setCurStep(getStepFunction().next(e.getCurStep()));
+                  e.setScheduledTime(System.currentTimeMillis()+e.getCurStep());
+                  sfq.add((SFEntry) e);
+                }
+              }
+
+              long delay = System.currentTimeMillis() - sfq.peek().getScheduledTime();
+              if ( delay > 0 ) {
+                try {
+                  Thread.sleep(delay);
+                } catch(InterruptedException e) {
+                  getLogger().warning(e.getMessage());
+                }
+              }
             }
           }
         }, String.format("%s SFBox retry", this.getFileName()));
