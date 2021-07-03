@@ -144,14 +144,14 @@ The data of a MedusaEntry is the json delta of the original put or remove DAO op
       visibility: 'HIDDEN',
       factory: function() { return {}; },
       javaFactory: 'return new java.util.HashMap();',
-      transient: true,
+      transient: true
     },
     {
       name: 'promoted',
       class: 'Boolean',
       visibility: 'RO',
       storageTransient: true,
-      clusterTransient: true,
+      clusterTransient: true
     },
     {
       name: 'algorithm',

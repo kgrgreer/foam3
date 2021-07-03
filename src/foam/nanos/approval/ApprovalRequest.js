@@ -58,6 +58,12 @@
     'summaryView?'
   ],
 
+  searchColumns: [
+    'id',
+    'classificationEnum',
+    'status'
+  ],
+
   tableColumns: [
     'id',
     'referenceSummary',
@@ -224,16 +230,6 @@
       includeInDigest: false,
       section: 'approvalRequestInformation',
       order: 30,
-      gridColumns: 6
-    },
-    {
-      class: 'String',
-      name: 'description',
-      documentation: `Approval request description.`,
-      includeInDigest: false,
-      tableWidth: 200,
-      section: 'approvalRequestInformation',
-      order: 40,
       gridColumns: 6
     },
     {
@@ -927,7 +923,6 @@
         if ( obj.propertiesToUpdate ) {
           if ( obj.operation === foam.nanos.dao.Operation.CREATE ) {
             summaryData = obj.of.create({}, X);
-            daoKey = obj.daoKey;
             of = summaryData.cls_;
 
             Object.keys(obj.propertiesToUpdate).map(k => summaryData.cls_.getAxiomByName(k))
@@ -935,6 +930,14 @@
               .forEach(p => {
                 summaryData[p.name] = obj.propertiesToUpdate[p.name];
               });
+            if ( obj.isUsingNestedJournal ) {
+              X.stack.push({
+                class: 'foam.u2.view.ViewReferenceFObjectView',
+                data: summaryData,
+                of: of
+              });
+              return;
+            }
           } else {
             of = obj.of;
 

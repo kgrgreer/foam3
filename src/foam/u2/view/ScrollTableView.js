@@ -32,6 +32,7 @@
     ^ {
       overflow: auto;
       max-height: 100%;
+      flex: 1;
     }
     ^table {
       position: relative;
@@ -39,6 +40,9 @@
     ^table  .foam-u2-view-TableView-thead {
       z-index: 1;
       overflow: visible;
+    }
+    ^scrolled .foam-u2-view-TableView-thead {
+      box-shadow: 0 1.5px 4px /*%GREY4%*/ #DADDE2;
     }
   `,
 
@@ -64,7 +68,7 @@
     {
       type: 'Integer',
       name: 'TABLE_HEAD_HEIGHT',
-      value: 52
+      value: 48
     }
   ],
 
@@ -97,7 +101,7 @@
       class: 'Int',
       name: 'rowHeight',
       documentation: 'The height of one row of the table in px.',
-      value: 49
+      value: 48
     },
     {
       name: 'table_',
@@ -169,7 +173,7 @@
     {
       name: 'dblClickListenerAction',
       factory: function() {
-        return function(obj, id) {
+        return function(obj, id, title) {
           if ( ! this.stack ) return;
 
           this.stack.push({
@@ -177,7 +181,7 @@
             data: obj,
             config: this.config,
             idOfRecord: id
-          }, this.__subContext__.createSubContext({ memento: this.table_.memento }));
+          }, this.__subContext__.createSubContext({ memento: this.table_.memento }), undefined, { navStackTitle: title });
         }
       }
     },
@@ -217,8 +221,7 @@
         this.currentMemento_ = this.memento.tail;
       }
 
-
-
+      var self = this;
       this.table_ = foam.u2.ViewSpec.createView(this.TableView, {
         data: foam.dao.NullDAO.create({of: this.data.of}),
         columns: this.columns,
@@ -237,6 +240,7 @@
             on('scroll', this.onScroll).
             start().
               add(this.table_).
+              enableClass(this.myClass('scrolled'), this.scrollPos_$).
               addClass(this.myClass('table')).
               style({
                 height: this.scrollHeight$.map(h => h + 'px')
@@ -266,12 +270,16 @@
                 axiom.set(id, idFromJSON[key]);
             }
           }
-          this.stack.push({
-            class: 'foam.comics.v2.DAOSummaryView',
-            data: null,
-            config: this.config,
-            idOfRecord: id
-          }, this.__subContext__.createSubContext({ memento: this.table_.memento }));
+          this.config.dao.inX(ctrl.__subContext__).find(id).then(v => {
+            if ( ! v ) return;
+            if ( self.state != self.LOADED ) return;
+            this.stack.push({
+              class: 'foam.comics.v2.DAOSummaryView',
+              data: null,
+              config: this.config,
+              idOfRecord: id
+            }, this.__subContext__.createSubContext({ memento: this.table_.memento }), undefined, { navStackTitle: v.toSummary() });
+          });
         }
       }
 
@@ -348,8 +356,8 @@
         }
       }
     },
-    function dblclick(obj, id) {
-      this.dblClickListenerAction(obj, id);
+    function dblclick(obj, id, title) {
+      this.dblClickListenerAction(obj, id, title);
     }
   ]
 });

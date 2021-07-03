@@ -4,6 +4,10 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+/*
+FYI: https://exploringjs.com/impatient-js/ch_dynamic-code-evaluation.html#eval
+*/
+
 foam.CLASS({
   package: 'foam.u2',
   name: 'ViewReloader',

@@ -29,8 +29,8 @@ public class Boot {
   // Context key used to store the top-level root context in the context.
   public final static String ROOT = "_ROOT_";
 
-  protected DAO serviceDAO_;
-  protected X   root_ = new ProxyX();
+  protected DAO                       serviceDAO_;
+  protected X                         root_      = new ProxyX();
   protected Map<String, NSpecFactory> factories_ = new HashMap<>();
 
   public Boot() {
@@ -49,12 +49,10 @@ public class Boot {
       datadir = System.getProperty("JOURNAL_HOME");
     }
 
-    root_.put(foam.nanos.fs.Storage.class,
-      new foam.nanos.fs.FileSystemStorage(datadir));
+    root_.put(foam.nanos.fs.Storage.class, new foam.nanos.fs.FileSystemStorage(datadir));
 
     // Used for all the services that will be required when Booting
     serviceDAO_ = new JDAO(((foam.core.ProxyX) root_).getX(), new foam.dao.MDAO(NSpec.getOwnClassInfo()), "services", cluster);
-
     serviceDAO_ = new foam.nanos.auth.PermissionedPropertyDAO(root_, serviceDAO_);
 
     installSystemUser();
@@ -73,12 +71,12 @@ public class Boot {
         continue;
       }
 
-      var x = root_;
-      var path = sp.getName().split("\\.");
+      var x      = root_;
+      var path   = sp.getName().split("\\.");
       var parent = new StringBuilder();
 
       // Register path as sub context
-      for ( int j = 0; j < path.length - 1; j++ ) {
+      for ( int j = 0 ; j < path.length - 1 ; j++ ) {
         var contextName = path[j];
         if ( x.get(contextName) == null ) {
           var subX = new SubX(Boot.this::getX, parent.toString());
@@ -132,7 +130,10 @@ public class Boot {
 
     // Freeze sub contexts
     for ( var path : subContexts ) {
-      ((SubX) root_.cd(path)).freeze();
+      var x = root_.cd(path);
+      if ( x instanceof SubX ) {
+        ((SubX) x).freeze();
+      }
     }
 
     // Revert root_ to non ProxyX to avoid letting children add new bindings.
@@ -168,12 +169,12 @@ public class Boot {
 
     String startScript = System.getProperty("foam.main", "main");
     if ( startScript != null ) {
-      DAO    scriptDAO = (DAO) root_.get("bootScriptDAO");
+      DAO scriptDAO = (DAO) root_.get("bootScriptDAO");
       if ( scriptDAO == null ) {
         logger.warning("DAO Not Found: bootScriptDAO. Falling back to scriptDAO");
         scriptDAO = (DAO) root_.get("scriptDAO");
       }
-      Script script    = (Script) scriptDAO.find(startScript);
+      Script script = (Script) scriptDAO.find(startScript);
       if ( script != null ) {
         logger.info("Boot,script", startScript);
         ((Script) script.fclone()).runScript(root_);

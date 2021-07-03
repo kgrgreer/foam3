@@ -36,3 +36,24 @@ self-documenting.
 
 <h3>Sequence from createCapableWizardSequence</h3>
 <foam class="foam.flow.widgets.SequenceSummary" of="foam.u2.crunch.CrunchController" method="createCapableWizardSequence" />
+
+<h2>UCJProperty</h2>
+
+<p>
+While a property of class `Reference` could be used to reference a
+UCJ (UserCapabilityJunction), this requires knowing the value of the UCJ's `id`
+property - however, UCJ's can be uniquely identified by their corresponding
+capability ID and subject's user IDs. This is a little more complex than a
+multipart ID however, as sometimes a UCJ has the subclass
+AgentCapabilityJunction and the `effectiveUser` property needs to be specified.
+</p>
+
+<p>
+The solution to the above problem is to use a Predicate property instead of a
+Reference property. UCJProperty is a convenience property which extends
+PredicateProperty. It adapts an object containing the keys `sourceId`,
+`targetId`, and optionally `effectiveUser`; to a Predicate that finds the UCJ
+based on these values.
+</p>
+
+<foam class="foam.flow.widgets.PropertyShortSummary" of="foam.nanos.crunch.UCJProperty" whitelist="['of', 'capability', 'view']" />
