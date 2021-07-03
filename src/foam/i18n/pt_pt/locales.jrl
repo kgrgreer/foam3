@@ -433,7 +433,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.RetrievePassword
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.RetrievePassword.SEND_EMAIL.label",target:"Enviar"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOControllerConfig.CREATE_NEW",target:"crie um novo "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOControllerConfig.VIEW_ALL",target:"Ver tudo "})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.FilterView.SELECTED",target:" selecionado"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.FilterView.RESULTS",target:"resultado(s) encontrados"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.User.model_.name",target:"Usuário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.User.model_.plural",target:"Usuários"})
@@ -727,6 +728,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.wizard.IncrementalStepWi
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOBrowserView.REFRESH_MSG",target:"Atualização solicitada ..."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOBrowserView.REFRESH_TABLE.toolTip",target:"Tabela de atualização"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOBrowserView.EXPORT.toolTip",target:"Exportar dados da tabela"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOBrowserView.REFRESH_TABLE.label",target:"Refrescar"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOBrowserView.EXPORT.label",target:"Exportar"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.comics.v2.DAOBrowserView.IMPORT.label",target:"Importar"})
 
 /* Script */
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.script.Script.ID.label",target:"ID"})
@@ -815,7 +819,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequ
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.MANUAL_USER_IDENTITYMIND.label",target:"Identidade Manual do Usuário (Acuant)"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.MANUAL_BUSINESS_DOW_JONES.label",target:"Manual de Negócios Dow Jones R&C"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanosoval.ApprovalRequestClassificationEnum.BUSINESS_SECUREFACT_LEV.label",target:"Fato Segurança Comercial LEV"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.BUSINESS_IDENTITYMIND_KYC.label",target:"Negócio IdentityMind KYC (Acuant)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.MANUAL_BUSINESS_IDENTITYMIND.label",target:"Negócio IdentityMind KYC (Acuant)"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.COMPLIANCE_CAPABILITY_GRANTED.label",target:"Capacidade Conformidade Concedida"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.GENERIC_SIGNING_OFFICER_VALIDATION.label",target:"Validador Oficial Assinatura Genérico"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.approval.ApprovalRequestClassificationEnum.USER_DOW_JONES.label",target:"Usuário Dow Jones R&C"})

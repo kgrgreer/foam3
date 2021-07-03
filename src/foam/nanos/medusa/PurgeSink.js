@@ -40,6 +40,10 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.medusa.MedusaRegistry',
       javaFactory: 'return (MedusaRegistry) getX().get("medusaRegistry");'
+    },
+    {
+      name: 'count',
+      class: 'Long'
     }
   ],
 
@@ -60,6 +64,7 @@ foam.CLASS({
       MedusaEntry entry = (MedusaEntry) obj;
       getRegistry().notify(getX(), entry);
       getDelegate().put(entry, sub);
+      setCount(getCount() + 1);
       `
     },
     {

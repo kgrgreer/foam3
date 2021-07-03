@@ -749,6 +749,7 @@ foam.CLASS({
           color: /*%PRIMARY3%*/ #406dea;
           display: flex;
           font-size: 12px;
+          justify-content: flex-start;
           text-align: left;
           width: 100%;
         }

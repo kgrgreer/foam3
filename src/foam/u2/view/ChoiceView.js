@@ -334,7 +334,7 @@ foam.CLASS({
               choices[i][1] = resolvedChoiceLabels[i];
             }
             this.choices = choices;
-            if ( this.data == null && this.index === -1 ) this.index = this.placeholder && this.choices.length != 1 ? -1 : 0;
+            if ( ! this.data && this.index === -1 ) this.index = this.placeholder && this.choices.length != 1 ? -1 : 0;
           });
         });
       }

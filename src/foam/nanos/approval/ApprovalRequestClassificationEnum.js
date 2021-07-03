@@ -85,8 +85,8 @@
       ordinal: 14
     },
     {
-      name: 'BUSINESS_IDENTITYMIND_KYC',
-      label: 'Business IdentityMind KYC (Acuant)',
+      name: 'MANUAL_BUSINESS_IDENTITYMIND',
+      label: 'Manual Business IdentityMind (Acuant)',
       ordinal: 15
     },
     {
@@ -193,6 +193,11 @@
       name: 'UPDATE_ON_ACTIVE_UCJ',
       label: 'Update on Active UCJ',
       ordinal: 36
+    },
+    {
+      name: 'MANUAL_BUSINESS_SECUREFACT_LEV',
+      label: 'Manual Business SecureFact LEV',
+      ordinal: 37
     }
   ]
 });
