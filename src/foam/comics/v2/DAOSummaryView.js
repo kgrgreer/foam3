@@ -33,7 +33,6 @@ foam.CLASS({
     ^account-name {
       font-size: 36px;
       font-weight: 600;
-      margin-bottom: 32px;
     }
 
     ^actions-header .foam-u2-ActionView {
@@ -51,7 +50,8 @@ foam.CLASS({
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
     'foam.u2.ControllerMode',
-    'foam.u2.dialog.Popup'
+    'foam.u2.dialog.Popup',
+    'foam.u2.stack.BreadcrumbView'
   ],
 
   imports: [
@@ -304,19 +304,15 @@ foam.CLASS({
                 .start(self.Rows)
                   // we will handle this in the StackView instead
                   .startContext({ onBack: self.onBack })
-                    .tag(self.BACK, {
-                      buttonStyle: foam.u2.ButtonStyle.LINK,
-                      themeIcon: 'back',
-                      label: self.backLabel
-                    })
+                    .tag(self.BreadcrumbView)
                   .endContext()
-                  .start(self.Cols).style({ 'align-items': 'center' })
+                  .start(self.Cols).style({ 'align-items': 'center', 'margin-bottom': '32px' })
                     .start()
                       .add(data && data.toSummary() ? data.toSummary() : '')
                       .addClass(self.myClass('account-name'))
                       .addClass('truncate-ellipsis')
                     .end()
-                    .startContext({ data }).tag(self.primary, { buttonStyle: 'PRIMARY'}).endContext()
+                    .startContext({ data }).tag(self.primary, { buttonStyle: 'PRIMARY' }).endContext()
                   .end()
                 .end()
 

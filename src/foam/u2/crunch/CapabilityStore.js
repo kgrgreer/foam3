@@ -6,7 +6,7 @@
 
 foam.CLASS({
   class: 'foam.core.Model',
-  
+
   package: 'foam.u2.crunch',
   name: 'TestView',
   extends: 'foam.u2.View',
@@ -254,15 +254,6 @@ foam.CLASS({
         .add(this.slot(function(junctions, featuredCapabilities){
           return self.renderFeatured();
         }))
-        .add(this.slot(function(junctions, visibleCapabilityDAO){
-          return self.renderPredicatedSection(
-            this.TRUE,
-            this.EQ(
-              this.UserCapabilityJunction.STATUS,
-              this.CapabilityJunctionStatus.GRANTED
-            )
-          );
-        }))
         // NOTE: TEMPORARILY REMOVED
         // .add(self.accountAndAccountingCard())
         // .start(self.Tabs)
@@ -290,10 +281,6 @@ foam.CLASS({
       var spot = self.E();
       this.featuredCapabilities.select().then(result => {
         var arr = result.array;
-        var arr = result.array.filter(cap => {
-          let ucj = self.junctions.find(ucj => ucj.targetId == cap.id);
-          return ! ucj || ucj.status != this.CapabilityJunctionStatus.GRANTED;
-        });
         self.totalNumCards = arr.length;
         self.featureCardArray = [];
         for ( let i = 0 ; i < self.totalNumCards ; i++ ) { // build featured cards as elements

@@ -437,7 +437,7 @@ public interface FObject
       try {
         prop.validateObj(x, this);
       } catch (IllegalStateException e) {
-        var ve = new ValidationException(e.getMessage());
+        var ve = new ValidationException(e);
         ve.setPropertyInfo(prop);
         ve.setPropName(prop.getName());
         compoundException.add(ve);

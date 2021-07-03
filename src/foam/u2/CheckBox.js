@@ -30,7 +30,7 @@ foam.CLASS({
       border: solid 2px /*%GREY2%*/ #5a5a5a;
       height: 18px;
       margin: 7px 0;
-      padding: 0px !important;
+      padding: 0px;
       transition: background-color 140ms, border-color 140ms;
       width: 18px;
     }
