@@ -18,14 +18,14 @@
 foam.CLASS({
   package: 'foam.box.sf',
   name: 'SFReplayBox',
-  extends: 'foam.box.Box',
+  implements: [ 'foam.box.Box' ],
 
   methods: [
     {
       name: 'send',
       javaCode: `
         if ( msg.getObject() instanceof Exception ) {
-          throw e;
+          throw new RuntimeException(((Exception) msg.getObject()).getMessage());
         }
       `
     }

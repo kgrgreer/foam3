@@ -189,6 +189,7 @@ foam.CLASS({
 
         while ( true ) {
           try {
+            msg.getAttributes().put("replyBox", (new SFReplayBox.Builder(x)).build());
             getDelegate().send(msg);
 
             /* Forward success. */
@@ -243,6 +244,7 @@ foam.CLASS({
 
             while( true ) {
               try {
+                msg.getAttributes().put("replyBox", (new SFReplayBox.Builder(x)).build());
                 getDelegate().send(msg);
 
                 /* Forward success. */
@@ -339,6 +341,7 @@ foam.CLASS({
               if ( sfq.peek().getScheduledTime() <= System.currentTimeMillis() ) {
                 SFEntry e = sfq.poll();
                 try {
+                  e.getMessage().getAttributes().put("replyBox", (new SFReplayBox.Builder(x)).build());
                   getDelegate().send(e.getMessage());
 
                   /* Update entries in the journal. */
