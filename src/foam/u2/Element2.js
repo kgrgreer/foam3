@@ -1325,7 +1325,7 @@ function cssClass(cls) {
         var parts = cls.split(' ');
         for ( var i = 0 ; i < parts.length ; i++ ) {
           this.classes[parts[i]] = enabled;
-          this.classList.add(parts[i]);
+          this.element_.classList.add(parts[i]);
         }
       }
       return this;
@@ -1335,7 +1335,7 @@ function cssClass(cls) {
       /* Remove specified CSS class. */
       if ( cls ) {
         delete this.classes[cls];
-        this.classList.remove(cls);
+        this.element_.classList.remove(cls);
       }
       return this;
     },
@@ -1735,7 +1735,7 @@ function cssClass(cls) {
           throw "Invalid CSS classname";
         }
         this.classes[newClass] = true;
-        this.classList.add(newClass);
+        this.element_.classList.add(newClass);
       }
     },
 
