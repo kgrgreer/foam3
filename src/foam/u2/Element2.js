@@ -804,14 +804,6 @@ foam.CLASS({
       this.visitChildren('unload');
       this.detach();
     },
-    function onSetClass(cls, enabled) {
-      var e = this.el_();
-      if ( e ) {
-        e.classList[enabled ? 'add' : 'remove'](cls);
-      } else {
-        console.warn('Missing Element: ', this.id);
-      }
-    },
     function onAddListener(topic, listener, opt_args) {
       this.addEventListener_(topic, listener, opt_args);
     },
@@ -1333,7 +1325,7 @@ function cssClass(cls) {
         var parts = cls.split(' ');
         for ( var i = 0 ; i < parts.length ; i++ ) {
           this.classes[parts[i]] = enabled;
-          this.onSetClass(parts[i], enabled);
+          this.classList.add(parts[i]);
         }
       }
       return this;
@@ -1343,7 +1335,7 @@ function cssClass(cls) {
       /* Remove specified CSS class. */
       if ( cls ) {
         delete this.classes[cls];
-        this.onSetClass(cls, false);
+        this.classList.remove(cls);
       }
       return this;
     },
@@ -1743,7 +1735,7 @@ function cssClass(cls) {
           throw "Invalid CSS classname";
         }
         this.classes[newClass] = true;
-        this.onSetClass(newClass, true);
+        this.classList.add(newClass);
       }
     },
 
