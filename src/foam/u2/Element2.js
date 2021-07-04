@@ -810,10 +810,6 @@ foam.CLASS({
     function onRemoveListener(topic, listener) {
       this.addRemoveListener_(topic, listener);
     },
-    function onSetStyle(key, value) {
-if ( ! this.el_() ) return;
-      this.el_().style[key] = value;
-    },
     function onSetAttr(key, value) {
 if ( ! this.el_() ) return;
       if ( this.PSEDO_ATTRIBUTES[key] ) {
@@ -1325,7 +1321,11 @@ function cssClass(cls) {
         var parts = cls.split(' ');
         for ( var i = 0 ; i < parts.length ; i++ ) {
           this.classes[parts[i]] = enabled;
-          this.element_.classList.add(parts[i]);
+          if ( enabled ) {
+            this.element_.classList.add(parts[i]);
+          } else {
+            this.element_.classList.remove(parts[i]);
+          }
         }
       }
       return this;
@@ -1758,7 +1758,7 @@ function cssClass(cls) {
     function style_(key, value) {
       /* Set a CSS style based off of a literal value. */
       this.css[key] = value;
-      this.onSetStyle(key, value);
+      this.element_.style[key] = value;
       return this;
     },
 
