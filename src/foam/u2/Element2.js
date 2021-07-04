@@ -804,13 +804,6 @@ foam.CLASS({
       this.visitChildren('unload');
       this.detach();
     },
-    function onRemoveAttr(key) {
-      if ( this.PSEDO_ATTRIBUTES[key] ) {
-        this.el_()[key] = '';
-      } else {
-        this.el_().removeAttribute(key);
-      }
-    },
     function onReplaceChild(oldE, newE) {
       var e = this.el_();
       if ( ! e ) {
@@ -1129,10 +1122,15 @@ foam.CLASS({
         if ( this.attributes[i].name === name ) {
           this.attributes.splice(i, 1);
           delete this.attributeMap[name];
-          this.onRemoveAttr(name);
-          return;
+          if ( this.PSEDO_ATTRIBUTES[name] ) {
+            this.element_[name] = '';
+          } else {
+            this.element_.removeAttribute(name);
+          }
+          break;
         }
       }
+      return this;
     },
 
     function getAttributeNode(name) {
