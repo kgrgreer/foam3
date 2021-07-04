@@ -814,15 +814,9 @@ foam.CLASS({
       oldE.el_().outerHTML = '<' + this.nodeName + ' id=' + this.id + '></' + this.nodeName + '>';
       newE.load && newE.load();
     },
-    function onRemoveChild(child, index) {
-      if ( typeof child === 'string' ) {
-        this.el_().childNodes[index].remove();
-      } else {
-        child.remove();
-      }
-    },
+
     function getBoundingClientRect() {
-      return this.el_().getBoundingClientRect();
+      return this.element_.getBoundingClientRect();
     },
 
 
@@ -1176,13 +1170,18 @@ foam.CLASS({
       // TODO: is this needed
       /* Remove a Child node (String or Element). */
       var cs = this.childNodes;
-      for ( var i = 0 ; i < cs.length ; ++i ) {
+      for ( var i = 0 ; i < cs.length ; i++ ) {
         if ( cs[i] === c ) {
           cs.splice(i, 1);
-          this.onRemoveChild.call(this, c, i);
-          return;
+          if ( typeof c === 'string' ) {
+            this.element_.childNodes[i].remove();
+          } else {
+            c.remove();
+          }
+          break;
         }
       }
+      return this;
     },
 
     function replaceChild(newE, oldE) {
