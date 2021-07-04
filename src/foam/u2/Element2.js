@@ -765,12 +765,12 @@ foam.CLASS({
 
       // shouldn't have any children
       // this.visitChildren('load');
-
+/*
       for ( var i = 0 ; i < this.attributes.length ; i++ ) {
         var attr = this.attributes[i];
         this.onSetAttr(attr.name, attr.value);
       }
-
+*/
       // disable adding to content$ during render()
       this.add = function() { return this.add_(arguments, this); }
       this.initTooltip();
@@ -803,14 +803,6 @@ foam.CLASS({
       // this.state = this.UNLOADED;
       this.visitChildren('unload');
       this.detach();
-    },
-    function onSetAttr(key, value) {
-if ( ! this.el_() ) return;
-      if ( this.PSEDO_ATTRIBUTES[key] ) {
-        this.el_()[key] = value;
-      } else {
-        this.el_().setAttribute(key, value === true ? '' : value);
-      }
     },
     function onRemoveAttr(key) {
       if ( this.PSEDO_ATTRIBUTES[key] ) {
@@ -1120,7 +1112,11 @@ if ( ! this.el_() ) return;
             this.attributeMap[name] = attr;
           }
 
-          this.onSetAttr(name, value);
+          if ( this.PSEDO_ATTRIBUTES[name] ) {
+            this.element_[name] = value;
+          } else {
+            this.element_.setAttribute(name, value === true ? '' : value);
+          }
         }
       }
 
