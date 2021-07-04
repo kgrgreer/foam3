@@ -804,12 +804,6 @@ foam.CLASS({
       this.visitChildren('unload');
       this.detach();
     },
-    function onAddListener(topic, listener, opt_args) {
-      this.addEventListener_(topic, listener, opt_args);
-    },
-    function onRemoveListener(topic, listener) {
-      this.addRemoveListener_(topic, listener);
-    },
     function onSetAttr(key, value) {
 if ( ! this.el_() ) return;
       if ( this.PSEDO_ATTRIBUTES[key] ) {
@@ -1233,7 +1227,7 @@ if ( ! this.el_() ) return;
     function addEventListener(topic, listener, opt_args) {
       /* Add DOM listener. */
       this.elListeners.push(topic, listener, opt_args);
-      this.onAddListener(topic, listener, opt_args);
+      this.addEventListener_(topic, listener, opt_args);
     },
 
     function removeEventListener(topic, listener) {
@@ -1243,7 +1237,7 @@ if ( ! this.el_() ) return;
         var t = ls[i], l = ls[i+1];
         if ( t === topic && l === listener ) {
           ls.splice(i, 3);
-          this.onRemoveListener(topic, listener);
+          this.onRemoveListener_(topic, listener);
           return;
         }
       }
