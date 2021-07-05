@@ -95,10 +95,14 @@ foam.CLASS({
     'wrapCSS as installCSS'
   ],
 
+  topics: [
+    'themeChange'
+  ],
+
   constants: {
     MACROS: [
-      'logoBackgroundColour',
       'customCSS',
+      'logoBackgroundColour',
       'font1',
       'primary1',
       'primary2',
@@ -303,7 +307,10 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.theme.Theme',
-      name: 'theme'
+      name: 'theme',
+      postSet: function() {
+        this.pub('themeChange');
+      }
     },
     {
       class: 'foam.u2.ViewSpec',
@@ -333,6 +340,10 @@ foam.CLASS({
     {
       name: 'languageDefaults_',
       factory: function() { return []; }
+    },
+    {
+      name: 'styles',
+      factory: function() { return {}; }
     }
   ],
 
@@ -412,6 +423,17 @@ foam.CLASS({
         self.onUserAgentAndGroupLoaded();
         self.mementoChange();
       });
+
+      // Reload styling on theme change
+      this.onDetach(this.sub('themeChange', () => {
+        for ( const eid in this.styles ) {
+          const text = this.returnExpandedCSS(this.styles[eid]);
+          const el = this.getElementById(eid);
+          if ( text !== el.textContent ) {
+            el.textContent = text;
+          }
+        }
+      }));
     },
 
     function initE() {
@@ -569,20 +591,11 @@ foam.CLASS({
       /** CSS preprocessor, works on classes instantiated in subContext. */
       if ( text ) {
         var eid = foam.u2.Element.NEXT_ID();
+        this.styles[eid] = text;
 
         for ( var i = 0 ; i < this.MACROS.length ; i++ ) {
-          let m     = this.MACROS[i];
-          var text2 = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
-
-            // If the macro was found, then listen for changes to the property
-            // and update the CSS if it changes.
-            if ( text != text2 ) {
-              text = text2;
-              this.onDetach(this.theme$.dot(m).sub(() => {
-                var el = this.getElementById(eid);
-                el.innerText = this.expandLongFormMacro(el.innerText, m);
-              }));
-            }
+          const m = this.MACROS[i];
+          text = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
         }
 
         this.installCSS(text, id, eid);
@@ -729,7 +742,7 @@ foam.CLASS({
         return;
       }
 
-      if ( ! lastTheme || lastTheme.id != this.theme.id ) this.useCustomElements();
+      if ( ! lastTheme || ! lastTheme.equals(this.theme) ) this.useCustomElements();
     },
 
     function useCustomElements() {
