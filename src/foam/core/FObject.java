@@ -292,22 +292,19 @@ public interface FObject
   }
 
   default FObject copyFrom(FObject obj) {
-    if ( ! ( this.getClass().isAssignableFrom(obj.getClass()))) {
-      System.err.println("FObject.copyFrom "+this.getClass().getName()+" not assignable from "+obj.getClass().getName());
-    }
-    List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
+    // NOTE: using obj.getClassInfo() reduces ClassCastExceptions of Concrete to Interface/BaseClass
+    List<PropertyInfo> props = obj.getClassInfo().getAxiomsByClass(PropertyInfo.class);
     for ( PropertyInfo p : props ) {
       try {
         if ( p.isSet(obj) ) p.set(this, p.get(obj));
       } catch (ClassCastException e) {
-        System.err.println("FObject.copyFrom "+p.getName()+" "+e.getMessage());
         try {
-          PropertyInfo p2 = (PropertyInfo) obj.getClassInfo().getAxiomByName(p.getName());
+          PropertyInfo p2 = (PropertyInfo) getClassInfo().getAxiomByName(p.getName());
           if ( p2 != null ) {
             if ( p2.isSet(obj) ) p.set(this, p2.get(obj));
           }
         } catch (ClassCastException ignore) {
-          System.err.println("FObject.copyFrom "+p.getName()+" p2.get(obj) "+ignore.getMessage());
+          System.err.println("FObject.copyFrom "+p.getName()+" "+ignore.getMessage());
         }
       }
     }
@@ -323,64 +320,50 @@ public interface FObject
   }
 
   default FObject overlay_(FObject obj, java.util.Set visited) {
-    foam.nanos.logger.Logger logger = new foam.nanos.logger.StdoutLogger();
-    // int code = obj.hashCode();
-    String code = obj.toString();
+    int code = obj.hashCode();
     if ( visited.contains(code) ) {
-      logger.info("FObject.overlay",this.getClass().getName(),"visited",obj.getClass().getName(), code);
       return this;
     } else {
-      logger.info("FObject.overlay",this.getClass().getName(),"visiting",obj.getClass().getName(), code);
       visited.add(code);
-      // if ( this.hashCode() == obj.hashCode() ) {
-      if ( this.toString().equals(obj.toString()) ) {
-        logger.info("FObject.overlay",this.getClass().getName(),"visiting self", code);
+      if ( this.hashCode() == obj.hashCode() ) {
         return this;
       }
     }
 
-    //    throw ClassCastException {
-    if ( ! ( this.getClass().isAssignableFrom(obj.getClass()))) {
-      logger.info("FObject.overlay", this.getClass().getName(), "not assignable from",obj.getClass().getName());
-    }
-    List<PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
+    // NOTE: using obj.getClassInfo() reduces ClassCastExceptions of Concrete to Interface/BaseClass
+    List<PropertyInfo> props = obj.getClassInfo().getAxiomsByClass(PropertyInfo.class);
     for ( PropertyInfo p : props ) {
       Object remote = null;
       try {
         remote = p.get(obj);
       } catch ( ClassCastException e ) {
-        logger.info("FObject.overlay ",p.getName(),"p.get(obj)",e.getMessage());
-        PropertyInfo p2 = (PropertyInfo) obj.getClassInfo().getAxiomByName(p.getName());
+        System.err.println("FObject.overlay "+p.getName()+" remote.get "+e);
+        PropertyInfo p2 = (PropertyInfo) getClassInfo().getAxiomByName(p.getName());
         if ( p2 != null ) {
           p = p2;
           try {
             remote = p.get(obj);
           } catch ( ClassCastException ee ) {
-            logger.info("FObject.overlay",p.getName(),"p2.get(obj)",ee.getMessage());
+            System.err.println("FObject.overlay "+p.getName()+" this.get "+ee);
           }
-        } else {
-          logger.info("FObject.overlay",p.getName(),"p2: null");
         }
       }
       try {
-        if ( remote != null &&
-             remote instanceof FObject ) {
-          Object local = p.get(this);
-          if ( local != null ) {
-            if ( local == remote ) {
-              logger.info("FObject.overlay",p.getName(),"local == remote");
-            } else {
-              logger.info("FObject.overlay",p.getName(),"local != remote");
+        if ( p.isSet(obj) ) {
+          if ( remote != null &&
+               remote instanceof FObject ) {
+            Object local = p.get(this);
+            if ( local != null &&
+                 ! local.equals(remote) ) {
               p.set(this, ((FObject)local).overlay_((FObject)remote, visited));
             }
           } else {
             p.set(this, remote);
           }
-        } else if ( p.isSet(obj) ) {
-          p.set(this, remote);
         }
       } catch ( ClassCastException e ) {
-        logger.error("FObject.overlay",p.getName(),"local",e.getMessage());
+        System.err.println("FObject.overlay "+p.getName()+" set "+e);
+        e.printStackTrace();
       }
     }
     return this;
