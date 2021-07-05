@@ -23,6 +23,7 @@ foam.CLASS({
   documentation: 'Sign Out View',
 
   imports: [
+    'ctrl',
     'auth',
     'setTimeout',
     'window'
@@ -31,10 +32,9 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      this.window.location.hash = 'empty';
+      this.ctrl.memento.value = '';
       this.window.location.hash = '';
       this.auth.logout().then(() => {
-        this.window.location.hash = '';
         localStorage.removeItem('defaultSession');
         this.window.location.reload();
       });

@@ -19,8 +19,7 @@ package foam.core;
 
 import java.util.Map;
 
-public interface X
-{
+public interface X {
   public <T> T get(Class<T> key);
   public Object get(Object key);
   public Object get(X x, Object key);

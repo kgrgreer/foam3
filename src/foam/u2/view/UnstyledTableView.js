@@ -572,7 +572,7 @@ foam.CLASS({
                           if ( view.importSelection$ ) view.importSelection = v;
                           if ( view.editRecord$ ) view.editRecord(v);
                           view.importSelection = v;
-                          view.click(null, obj.id);
+                          view.click(null, obj.id, v ? v.toSummary() : '');
                         });
                       } else {
                         if ( view.importSelection$ ) view.importSelection = thisObjValue;
