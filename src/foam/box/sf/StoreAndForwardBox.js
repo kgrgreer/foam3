@@ -327,6 +327,7 @@ foam.CLASS({
                                                 }
                                                 return 0;
                                               });
+        getLogger().info("load ", sfq.size(), " unsend entries from file: ", getFileName(), getFileSuffix());
 
         tmpDAO.select(new AbstractSink() {
           @Override

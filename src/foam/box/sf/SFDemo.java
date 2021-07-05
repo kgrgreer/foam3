@@ -18,6 +18,7 @@
 package foam.box.sf;
 
 import foam.core.ContextAwareSupport;
+import foam.box.*;
 
 public class SFDemo extends ContextAwareSupport {
 
@@ -25,4 +26,6 @@ public class SFDemo extends ContextAwareSupport {
 
   }
   
+  public static class ExceptionPutBox extends ProxyBox {
+  }
 }
