@@ -427,12 +427,7 @@ foam.CLASS({
       // Reload styling on theme change
       this.onDetach(this.sub('themeChange', () => {
         for ( const eid in this.styles ) {
-          let text = this.styles[eid];
-          for ( var i = 0 ; i < this.MACROS.length; i++ ) {
-            const m = this.MACROS[i];
-            text = this.expandShortFormMacro(this.expandLongFormMacro(text, m), m);
-          }
-
+          const text = this.returnExpandedCSS(this.styles[eid]);
           const el = this.getElementById(eid);
           if ( text !== el.textContent ) {
             el.textContent = text;
