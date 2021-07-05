@@ -742,7 +742,7 @@ foam.CLASS({
         return;
       }
 
-      if ( ! lastTheme || lastTheme.id != this.theme.id ) this.useCustomElements();
+      if ( ! lastTheme || ! lastTheme.equals(this.theme) ) this.useCustomElements();
     },
 
     function useCustomElements() {
