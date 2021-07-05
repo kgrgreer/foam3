@@ -77,7 +77,6 @@ foam.CLASS({
     },
     function openFullTable() {
       this.memento.head = `&${this.data.of.name}`;
-      debugger;
       var navStackTitle = foam.String.pluralize(foam.String.labelize(this.data.of.name));
       this.stack.push({
         class: this.DAOBrowseControllerView,
