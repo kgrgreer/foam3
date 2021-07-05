@@ -181,6 +181,7 @@ foam.CLASS({
     },
     {
       name: 'sendSync',
+      documentation: 'writer/store',
       args: 'Context x, SFEntry entry',
       javaCode:`
         Message msg = entry.getMessage();
@@ -232,6 +233,7 @@ foam.CLASS({
     {
       name: 'sendAsync',
       args: 'Context x, SFEntry entry',
+      documentation: 'writer/store',
       javaCode:`
         Agency pool = (Agency) x.get(getThreadPoolName());
         Message msg = entry.getMessage();
