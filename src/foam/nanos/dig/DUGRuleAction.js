@@ -23,6 +23,7 @@ foam.CLASS({
     'foam.log.LogLevel',
     'foam.nanos.alarming.Alarm',
     'foam.nanos.alarming.AlarmReason',
+    'foam.nanos.logger.Logger',
     'foam.nanos.dig.HTTPDigestSink',
     'foam.nanos.pm.PM'
   ],
@@ -48,7 +49,8 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
       final var dugRule = (DUGRule) rule;
-        
+      ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "Sending DUG webhook", obj);
+
       agency.submit(x, new ContextAgent() {
         @Override
         public void execute(X x) {
@@ -94,6 +96,7 @@ foam.CLASS({
             sink.setX(x);
             sink.put(obj, null);
           } catch (Throwable t) {
+            ((Logger) x.get("logger")).error(this.getClass().getSimpleName(), "Error Sending DUG webhook", t);
             var alarmDAO = (DAO) x.get("alarmDAO");
             alarmDAO.put(
               new Alarm.Builder(x)

@@ -44,14 +44,16 @@ foam.CLASS({
 
     ^container-search {
       display: flex;
+      gap: 24px;
     }
 
     ^container-drawer {
-      border: 1px solid transparent;
+      border-color: transparent;
       border-radius: 5px;
       display: flex;
       max-height: 0;
       overflow: hidden;
+      padding: 0 24px;
       transition: all 0.24s linear;
       -webkit-transition: all 0.24s linear;
       -moz-transition: all 0.24s linear;
@@ -59,10 +61,9 @@ foam.CLASS({
 
     ^container-drawer-open {
       align-items: center;
-      border-color: #cbcfd4;
-      margin-top: 24px;
+      border: 1px solid #cbcfd4;
       max-height: -webkit-fill-available;
-      max-height:-moz-available;
+      max-height: -moz-available;
       overflow: auto;
       padding: 24px;
     }
@@ -76,12 +77,12 @@ foam.CLASS({
 
     ^general-field {
       margin: 0;
-      flex: 1 1 80%;
+      flex: 0 0 40%;
     }
 
     ^general-field input {
       border: 1px solid /*%GREY4%*/ #e7eaec;
-      border-radius: 0 5px 5px 0;
+      border-radius: 5px;
       height: 34px;
       width: 100%;
     }
@@ -89,30 +90,34 @@ foam.CLASS({
     ^container-handle {
       box-sizing: border-box;
       height: 34px;
-      border: 1px solid /*%GREY4%*/ #e7eaec;
-      border-radius: 5px 0 0 5px;
-      background-image: linear-gradient(to bottom, #ffffff, #e7eaec);
 
-      flex: 1 1 5%;
-      display: flex;
       align-items: center;
       justify-content: center;
     }
 
     ^container-handle:hover {
       cursor: pointer;
-      background-image: linear-gradient(to bottom, #ffffff, #d3d6d8);
+    }
+    
+    ^filter-button svg{
+      fill: initial;
+      transform: rotate(0deg);
+      transition: all 0.5s ease;
     }
 
-    ^filter-button{
-      width: 100%;
-      height: 100%;
+    ^filter-button-active{
+      color: /*%PRIMARY3%*/ #406DEA;
+      background: /*%GREY5%*/ #F5F7FA;
+    }
+
+    ^filter-button-active svg {
+      fill: /*%PRIMARY3%*/ #406DEA;
+      transform: rotate(180deg);
     }
 
     ^link-mode {
-      margin: 0;
       font-size: 14px;
-      margin: 16px;
+      margin-left: 16px;
       cursor: pointer;
     }
 
@@ -156,11 +161,6 @@ foam.CLASS({
       height: 80%;
       border-radius: 5px;
     }
-
-    ^float-result-count {
-      float: right;
-      padding-top: 8px;
-    }
   `,
 
   messages: [
@@ -168,10 +168,13 @@ foam.CLASS({
     { name: 'LINK_ADVANCED', message: 'Advanced filters' },
     { name: 'LINK_SIMPLE', message: 'Switch to simple filters' },
     { name: 'MESSAGE_ADVANCEDMODE', message: 'Advanced filters are currently being used.' },
-    { name: 'SELECTED', message: 'selected' },
+    { name: 'RESULTS', message: 'result(s) found' },
   ],
 
   properties: [
+    {
+      name: 'filtersContainer'
+    },
     {
       class: 'Class',
       name: 'of'
@@ -309,28 +312,31 @@ foam.CLASS({
           var e = this.E();
           e.onDetach(self.filterController);
           e.start().addClass(self.myClass('container-search'))
+            .start()
+              .add(self.generalSearchField)
+              .addClass(self.myClass('general-field'))
+            .end()
             .start().addClass(self.myClass('container-handle'))
             .startContext({ data: self })
-              .start(self.TOGGLE_DRAWER, { buttonStyle: 'UNSTYLED' })
+              .start(self.TOGGLE_DRAWER, { buttonStyle: 'SECONDARY', isIconAfter: true })
+                .enableClass(this.myClass('filter-button-active'), this.isOpen$)
                 .addClass(this.myClass('filter-button'))
               .end()
             .endContext()
             .end()
             .start()
-              .add(self.generalSearchField)
-              .addClass(self.myClass('general-field'))
-            .end()
-          .end()
-          .start()
-            .style({overflow: 'hidden'})
+            .style({ overflow: 'hidden', 'align-self': 'center' })
+            //TODO: remove when filter button gets a badge
             .add(this.filterController.slot(function (totalCount, resultsCount) {
-              return self.E().addClass(self.myClass('float-result-count')).add(`${resultsCount.toLocaleString(foam.locale)} of ${totalCount.toLocaleString(foam.locale)} ` + selectedLabel);
+              return self.E().addClass('p-legal').add(`${resultsCount.toLocaleString(foam.locale)} ${self.RESULTS} `);
             }))
-          .end()
-          .add(this.filterController.slot(function (criterias) {
+            .end()
+          .end();
+          self.filtersContainer = this.E().add(self.filterController.slot(function (criterias) {
             return self.E().start().addClass(self.myClass('container-drawer'))
               .enableClass(self.myClass('container-drawer-open'), self.isOpen$)
                 .start().addClass(self.myClass('container-filters'))
+                  .show(self.isOpen$)
                   .forEach(filters, function(f) {
                     var axiom = self.dao.of.getAxiomByName(f);
                     if ( axiom ) {
@@ -369,10 +375,11 @@ foam.CLASS({
                     .endContext()
                   .end()
                 .end()
-                .start('p')
+                .start()
                   .hide(self.filterController$.dot('isAdvanced'))
                   .addClass(self.myClass('link-mode'))
                   .addClass('clear')
+                  .show(self.isOpen$)
                   .startContext({ data: self })
                     .tag(self.CLEAR_ALL, {
                       isDestructive: true,
@@ -488,6 +495,7 @@ foam.CLASS({
     {
       name: 'toggleDrawer',
       label: 'Filters',
+      icon: '/images/dropdown-icon.svg',
       code: function() {
         this.isOpen = ! this.isOpen;
       }

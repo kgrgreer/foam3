@@ -10,6 +10,9 @@ foam.CLASS({
   extends: 'foam.dao.ProxyDAO',
   flags: ['java'],
 
+  documentation: `Implements a Journal DAO - a file based DAO.
+In this current implementation setDelegate must be called last.`,
+
   javaImports: [
     'foam.nanos.fs.ResourceStorage',
     'foam.core.X',
@@ -19,7 +22,7 @@ foam.CLASS({
     'foam.dao.MDAO',
     'foam.dao.NullJournal',
     'foam.dao.ReadOnlyF3FileJournal',
-    'foam.dao.WriteOnlyF3FileJournal',
+    'foam.dao.WriteOnlyF3FileJournal'
   ],
 
   axioms: [
@@ -39,22 +42,50 @@ foam.CLASS({
           public JDAO(X x, DAO delegate, String filename, Boolean cluster) {
             setX(x);
             setOf(delegate.getOf());
+            setFilename(filename);
+            setCluster(cluster);
             setDelegate(delegate);
+          }
+        `);
+      }
+    }
+  ],
 
+  properties: [
+    {
+      name: 'filename',
+      class: 'String'
+    },
+    {
+      name: 'cluster',
+      class: 'Boolean',
+      value: false
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.dao.Journal',
+      name: 'journal'
+    },
+    {
+      name: 'delegate',
+      class: 'foam.dao.DAOProperty',
+      javaFactory: 'return new MDAO(getOf());',
+      javaPostSet: `
+            var delegate = val;
             // Runtime Journal
-            if ( cluster ) {
-              setJournal(new NullJournal.Builder(x).build());
+            if ( getCluster() ) {
+              setJournal(new NullJournal.Builder(getX()).build());
             } else {
               if ( "ro".equals(System.getProperty("FS")) ) {
-                setJournal(new ReadOnlyF3FileJournal.Builder(x)
-                  .setFilename(filename)
+                setJournal(new ReadOnlyF3FileJournal.Builder(getX())
+                  .setFilename(getFilename())
                   .setCreateFile(true)
                   .setDao(delegate)
                   .build());
               } else {
-                setJournal(new F3FileJournal.Builder(x)
+                setJournal(new F3FileJournal.Builder(getX())
                   .setDao(delegate)
-                  .setFilename(filename)
+                  .setFilename(getFilename())
                   .setCreateFile(false)
                   .build());
               }
@@ -62,15 +93,15 @@ foam.CLASS({
 
             /* Create a composite journal of repo journal and runtime journal
               and load them all.*/
-            X resourceStorageX = x;
+            X resourceStorageX = getX();
             if ( System.getProperty("resource.journals.dir") != null ) {
-              resourceStorageX = x.put(foam.nanos.fs.Storage.class,
+              resourceStorageX = getX().put(foam.nanos.fs.Storage.class,
                   new ResourceStorage(System.getProperty("resource.journals.dir")));
             }
 
             // Repo Journal
             F3FileJournal journal0 = new ReadOnlyF3FileJournal.Builder(resourceStorageX)
-              .setFilename(filename + ".0")
+              .setFilename(getFilename() + ".0")
               .build();
 
             new CompositeJournal.Builder(resourceStorageX)
@@ -80,17 +111,7 @@ foam.CLASS({
               })
               .build()
               .replay(resourceStorageX, delegate);
-          }
-        `);
-      }
-    }
-  ],
-
-  properties: [
-    {
-      class: 'FObjectProperty',
-      of: 'foam.dao.Journal',
-      name: 'journal'
+    `
     }
   ],
 
