@@ -12,16 +12,6 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
-      name: 'serviceName',
-      expression: function(delegate$serviceName) {
-        return delegate$serviceName
-      },
-      setter: function(n) {
-        this.delegate.serviceName = n;
-      }
-    },
-    {
       class: 'Proxy',
       of: 'foam.nanos.auth.UserLocatorService',
       name: 'delegate'

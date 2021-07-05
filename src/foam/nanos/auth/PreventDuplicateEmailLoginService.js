@@ -36,7 +36,7 @@ foam.CLASS({
           .limit(2).select(sink);
 
         List list = ((ArraySink) sink).getArray();
-        if ( list.size() == 0 || list.size() > 1 ) {
+        if ( list.size() != 1 ) {
           return null;
         }
         return (User) list.get(0);
