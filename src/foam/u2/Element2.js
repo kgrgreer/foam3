@@ -765,12 +765,12 @@ foam.CLASS({
 
       // shouldn't have any children
       // this.visitChildren('load');
-
+/*
       for ( var i = 0 ; i < this.attributes.length ; i++ ) {
         var attr = this.attributes[i];
         this.onSetAttr(attr.name, attr.value);
       }
-
+*/
       // disable adding to content$ during render()
       this.add = function() { return this.add_(arguments, this); }
       this.initTooltip();
@@ -804,39 +804,6 @@ foam.CLASS({
       this.visitChildren('unload');
       this.detach();
     },
-    function onSetClass(cls, enabled) {
-      var e = this.el_();
-      if ( e ) {
-        e.classList[enabled ? 'add' : 'remove'](cls);
-      } else {
-        console.warn('Missing Element: ', this.id);
-      }
-    },
-    function onAddListener(topic, listener, opt_args) {
-      this.addEventListener_(topic, listener, opt_args);
-    },
-    function onRemoveListener(topic, listener) {
-      this.addRemoveListener_(topic, listener);
-    },
-    function onSetStyle(key, value) {
-if ( ! this.el_() ) return;
-      this.el_().style[key] = value;
-    },
-    function onSetAttr(key, value) {
-if ( ! this.el_() ) return;
-      if ( this.PSEDO_ATTRIBUTES[key] ) {
-        this.el_()[key] = value;
-      } else {
-        this.el_().setAttribute(key, value === true ? '' : value);
-      }
-    },
-    function onRemoveAttr(key) {
-      if ( this.PSEDO_ATTRIBUTES[key] ) {
-        this.el_()[key] = '';
-      } else {
-        this.el_().removeAttribute(key);
-      }
-    },
     function onReplaceChild(oldE, newE) {
       var e = this.el_();
       if ( ! e ) {
@@ -847,15 +814,9 @@ if ( ! this.el_() ) return;
       oldE.el_().outerHTML = '<' + this.nodeName + ' id=' + this.id + '></' + this.nodeName + '>';
       newE.load && newE.load();
     },
-    function onRemoveChild(child, index) {
-      if ( typeof child === 'string' ) {
-        this.el_().childNodes[index].remove();
-      } else {
-        child.remove();
-      }
-    },
+
     function getBoundingClientRect() {
-      return this.el_().getBoundingClientRect();
+      return this.element_.getBoundingClientRect();
     },
 
 
@@ -1138,7 +1099,11 @@ if ( ! this.el_() ) return;
             this.attributeMap[name] = attr;
           }
 
-          this.onSetAttr(name, value);
+          if ( this.PSEDO_ATTRIBUTES[name] ) {
+            this.element_[name] = value;
+          } else {
+            this.element_.setAttribute(name, value === true ? '' : value);
+          }
         }
       }
 
@@ -1151,10 +1116,15 @@ if ( ! this.el_() ) return;
         if ( this.attributes[i].name === name ) {
           this.attributes.splice(i, 1);
           delete this.attributeMap[name];
-          this.onRemoveAttr(name);
-          return;
+          if ( this.PSEDO_ATTRIBUTES[name] ) {
+            this.element_[name] = '';
+          } else {
+            this.element_.removeAttribute(name);
+          }
+          break;
         }
       }
+      return this;
     },
 
     function getAttributeNode(name) {
@@ -1200,13 +1170,18 @@ if ( ! this.el_() ) return;
       // TODO: is this needed
       /* Remove a Child node (String or Element). */
       var cs = this.childNodes;
-      for ( var i = 0 ; i < cs.length ; ++i ) {
+      for ( var i = 0 ; i < cs.length ; i++ ) {
         if ( cs[i] === c ) {
           cs.splice(i, 1);
-          this.onRemoveChild.call(this, c, i);
-          return;
+          if ( typeof c === 'string' ) {
+            this.element_.childNodes[i].remove();
+          } else {
+            c.remove();
+          }
+          break;
         }
       }
+      return this;
     },
 
     function replaceChild(newE, oldE) {
@@ -1245,7 +1220,7 @@ if ( ! this.el_() ) return;
     function addEventListener(topic, listener, opt_args) {
       /* Add DOM listener. */
       this.elListeners.push(topic, listener, opt_args);
-      this.onAddListener(topic, listener, opt_args);
+      this.addEventListener_(topic, listener, opt_args);
     },
 
     function removeEventListener(topic, listener) {
@@ -1255,7 +1230,7 @@ if ( ! this.el_() ) return;
         var t = ls[i], l = ls[i+1];
         if ( t === topic && l === listener ) {
           ls.splice(i, 3);
-          this.onRemoveListener(topic, listener);
+          this.onRemoveListener_(topic, listener);
           return;
         }
       }
@@ -1333,7 +1308,11 @@ function cssClass(cls) {
         var parts = cls.split(' ');
         for ( var i = 0 ; i < parts.length ; i++ ) {
           this.classes[parts[i]] = enabled;
-          this.onSetClass(parts[i], enabled);
+          if ( enabled ) {
+            this.element_.classList.add(parts[i]);
+          } else {
+            this.element_.classList.remove(parts[i]);
+          }
         }
       }
       return this;
@@ -1343,7 +1322,7 @@ function cssClass(cls) {
       /* Remove specified CSS class. */
       if ( cls ) {
         delete this.classes[cls];
-        this.onSetClass(cls, false);
+        this.element_.classList.remove(cls);
       }
       return this;
     },
@@ -1743,7 +1722,7 @@ function cssClass(cls) {
           throw "Invalid CSS classname";
         }
         this.classes[newClass] = true;
-        this.onSetClass(newClass, true);
+        this.element_.classList.add(newClass);
       }
     },
 
@@ -1766,7 +1745,7 @@ function cssClass(cls) {
     function style_(key, value) {
       /* Set a CSS style based off of a literal value. */
       this.css[key] = value;
-      this.onSetStyle(key, value);
+      this.element_.style[key] = value;
       return this;
     },
 
