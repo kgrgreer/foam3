@@ -22,11 +22,10 @@ foam.CLASS({
       javaCode: `
         Cron newCron = (Cron) obj;
         Cron oldCron = (Cron) getDelegate().find_(x, obj);
-
-        if ( oldCron == null ||
-             newCron.getStatus() == ScriptStatus.SCHEDULED ||
-             ! SafetyUtil.equals(oldCron.getSchedule(), newCron.getSchedule())
-        ) {
+        if ( newCron.getStatus() == ScriptStatus.UNSCHEDULED ||
+             newCron.getStatus() == ScriptStatus.ERROR ||
+             ( oldCron != null &&
+               ! SafetyUtil.equals(oldCron.getSchedule(), newCron.getSchedule()) ) ) {
           newCron.setScheduledTime(newCron.getNextScheduledTime(x));
         }
         return getDelegate().put_(x, newCron);
