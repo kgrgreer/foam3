@@ -12,6 +12,7 @@ foam.CLASS({
 
   requires: [
     'foam.comics.v2.DAOBrowseControllerView',
+    'foam.comics.v2.DAOControllerConfig',
     'foam.u2.borders.CardBorder',
     'foam.u2.view.ScrollTableView'
   ],
@@ -30,10 +31,11 @@ foam.CLASS({
       box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.06), 0px 1px 3px rgba(0, 0, 0, 0.1);
       padding: 0px;
     }
-    ^ > .foam-u2-view-TableView-thead > .foam-u2-view-TableView-tr {
-      border-radius: 4px 4px 0 0;
-    }
   `,
+
+  messages: [
+    { name: 'VIEW_MORE', message: 'View More' }
+  ],
 
   properties: [
     {
@@ -57,31 +59,38 @@ foam.CLASS({
   methods: [
     async function initE() {
       this.initMemento();
-      var daoCount = await this.data.select(this.Count.create()).then(s => { return s.value; });
-      this.start(this.CardBorder).addClass(this.myClass('wrapper'))
-        .start(this.ScrollTableView, { data: this.data.limit(this.rowsToDisplay), editColumnsEnabled: false, multiSelectEnabled: false })
-          .on('click', this.tableClick)
-          .addClass(this.myClass())
-        .end()
-        .startContext({ data: this })
-          .start(this.OPEN_TABLE, { label: `View More (${daoCount})`, buttonStyle: 'TERTIARY', themeIcon: 'plus' })
-            .addClass(this.myClass('button'))
+      if ( this.memento && this.memento.head == `&${this.data.of.name}` ) {
+        this.openFullTable();
+      } else {
+        var daoCount = await this.data.select(this.Count.create()).then(s => { return s.value; });
+        this.start(this.CardBorder).addClass(this.myClass('wrapper'))
+          .start(this.ScrollTableView, { data: this.data.limit(this.rowsToDisplay), editColumnsEnabled: false, multiSelectEnabled: false })
+            .addClass(this.myClass())
           .end()
-        .endContext()
-      .end();
+          .startContext({ data: this })
+            .start(this.OPEN_TABLE, { label: `${this.VIEW_MORE} (${daoCount})`, buttonStyle: 'TERTIARY', themeIcon: 'plus' })
+              .addClass(this.myClass('button'))
+            .end()
+          .endContext()
+        .end();
+      }
+    },
+    function openFullTable() {
+      this.memento.head = `&${this.data.of.name}`;
+      debugger;
+      var navStackTitle = foam.String.pluralize(foam.String.labelize(this.data.of.name));
+      this.stack.push({
+        class: this.DAOBrowseControllerView,
+        data$: this.data$,
+        config$: this.config$
+      }, this, undefined, { navStackTitle: navStackTitle, mementoHead: `&${this.data.of.name}` });
     }
   ],
   actions: [
     {
       name: 'openTable',
       code: function() {
-        //Add Memento support
-        console.log(this.memento.head);
-        this.memento.head = `&${this.data.delegate.id}`;
-        this.stack.push({
-          class: this.DAOBrowseControllerView,
-          data: this.data
-        }, this);
+        this.openFullTable();
       }
     }
   ]

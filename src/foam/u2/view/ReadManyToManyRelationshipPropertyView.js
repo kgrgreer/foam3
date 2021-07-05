@@ -34,13 +34,12 @@ foam.CLASS({
     function initE() {
       this.SUPER();
 
-      this.config = this.DAOControllerConfig.create({ dao: this.data.dao.delegate });
+      this.config = this.DAOControllerConfig.create({ dao: this.data.dao });
 
       this.tag(this.TableSummaryView, {
         data: this.data.dao,
         config: this.config
       });
-
     },
     function click(obj, id) {
       if ( ! this.stack ) return;
