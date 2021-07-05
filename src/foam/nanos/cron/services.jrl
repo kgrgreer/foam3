@@ -11,9 +11,10 @@ p({
       .setMdao(mdao)
       .setInnerDAO(new foam.dao.java.JDAO(x, mdao, "cronjobs"))
       .setGuid(true)
-      .setDecorator(new foam.nanos.cron.CronScheduleDAO.Builder(x)
-        .setDelegate(new foam.nanos.script.ScriptRunnerDAO(null))
-        .build())
+      .setDecorator(new foam.nanos.script.ScriptRunnerDAO(
+        new foam.nanos.cron.CronScheduleDAO.Builder(x)
+          .setDelegate(new foam.dao.NullDAO(x, foam.nanos.cron.Cron.getOwnClassInfo()))
+          .build()))
       .setPm(true)
       .setOrder(new foam.mlang.order.Comparator[] {
         new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.script.Script.ENABLED).build(),

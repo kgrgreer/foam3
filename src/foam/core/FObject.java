@@ -292,7 +292,8 @@ public interface FObject
   }
 
   default FObject copyFrom(FObject obj) {
-    // NOTE: using obj.getClassInfo() reduces ClassCastExceptions of Concrete to Interface/BaseClass
+    // NOTE: Acquiring properties from argument FObject rather than 'this'
+    // resolves ClassCastExceptions from Concrete to Interface/Baseclass
     List<PropertyInfo> props = obj.getClassInfo().getAxiomsByClass(PropertyInfo.class);
     for ( PropertyInfo p : props ) {
       try {
