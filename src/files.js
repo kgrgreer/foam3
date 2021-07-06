@@ -219,7 +219,7 @@ FOAM_FILES([
   { name: 'foam/u2/borders/CollapseBorder', flags: ['web'] },
   { name: 'foam/u2/borders/ExpandableBorder', flags: ['web'] },
   { name: 'foam/u2/borders/MarginBorder', flags: ['web'] },
-  { name: 'foam/u2/borders/SplitScreenBorder', flags: ['web'] },
+  { name: 'foam/u2/borders/SplitScreenBorder', flags: ['web'] }, // TODO reemove
   { name: 'foam/u2/borders/LoadingBorder', flags: ['web'] },
   { name: 'foam/u2/borders/Block', flags: ['web'] },
   { name: 'foam/nanos/u2/navigation/IFrameTopNavigation', flags: ['web']},
@@ -494,6 +494,7 @@ FOAM_FILES([
   { name: "foam/core/async" },
   { name: "foam/core/NullAgent", flags: ['web'] },
   { name: "foam/dao/ClientSink" },
+  { name: 'foam/u2/SplitScreen', flags: ['web'] },
   { name: "foam/u2/ViewFactory", flags: ['web'] },
   { name: "foam/u2/DAOList", flags: ['web'] },
   { name: "foam/u2/GroupingDAOList", flags: ['web'] },
