@@ -34,8 +34,7 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'defaultSummaryView_',
       value: {
-        class: 'foam.u2.view.ScrollTableView',
-        showPagination: false
+        class: 'foam.u2.view.EmbeddedTableView'
       }
     }
   ],
@@ -58,7 +57,7 @@ foam.CLASS({
     function click(obj, id) {
       if ( ! this.stack ) return;
 
-      this.stack.push({
+      ctrl.stack.push({
         class: 'foam.comics.v2.DAOSummaryView',
         data: obj,
         config: foam.comics.v2.DAOControllerConfig.create({ dao: this.__subContext__[this.data.data.targetDAOKey] }),
