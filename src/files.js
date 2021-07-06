@@ -492,6 +492,7 @@ FOAM_FILES([
   { name: "foam/core/async" },
   { name: "foam/core/NullAgent", flags: ['web'] },
   { name: "foam/dao/ClientSink" },
+  { name: 'foam/u2/SplitScreen', flags: ['web'] },
   { name: "foam/u2/ViewFactory", flags: ['web'] },
   { name: "foam/u2/DAOList", flags: ['web'] },
   { name: "foam/u2/GroupingDAOList", flags: ['web'] },
