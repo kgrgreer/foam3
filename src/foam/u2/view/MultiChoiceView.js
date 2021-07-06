@@ -82,7 +82,6 @@
       class: 'foam.dao.DAOProperty',
       name: 'dao',
       documentation: `
-        Not supported when returnObjChoice is true.
         If the user wants to be able to export data as a dao, then this needs to be filled out.
 
         If the user just wants to pass in a dao and no choices array, useDao should be true as well and it will be processed to populate the
@@ -101,8 +100,7 @@
     {
       class: 'Boolean',
       name: 'isValidNumberOfChoices',
-      expression: function(minSelected, maxSelected, data, returnChoiceObj){
-        if ( returnChoiceObj ) return !! data;
+      expression: function(minSelected, maxSelected, data){
         return data.length >= minSelected && data.length <= maxSelected;
       }
     },
@@ -153,23 +151,7 @@
     },
     {
       name: 'data',
-      value: [],
-      adapt: function(_, n) {
-        return this.returnChoiceObj && Array.isArray(n) ?
-          n.length ? n[0] : null
-          : n;
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'returnChoiceObj',
-      documentation: `
-        if maxSelected <= 1, set true to return data[0] as data.
-      `,
-      preSet: function(_, n) {
-        if ( n && this.maxSelected > 1 ) return false;
-        return n;
-      }
+      value: []
     }
   ],
 
@@ -186,7 +168,6 @@
     },
 
     function isChoiceSelected(data, choice){
-      if ( this.returnChoiceObj ) return foam.util.equals(data, choice);
       for ( var i = 0 ; i < data.length ; i++ ) {
         if ( foam.util.equals(data[i], choice) ) return true;
       }
@@ -194,7 +175,6 @@
     },
 
     function getIndexOfChoice(data, choice){
-      if ( this.returnChoiceObj ) data = [data];
       for ( var i = 0 ; i < data.length ; i++ ) {
         if ( foam.util.equals(data[i], choice) ) return i;
       }
@@ -204,7 +184,7 @@
     function getSelectedSlot(choice) {
       var slot = foam.core.SimpleSlot.create();
       slot.sub(() => {
-        var arr = this.returnChoiceObj ? [ this.data ] : [
+        var arr = [
           ...this.data,
         ];
         arr = arr.filter(o => ! foam.util.equals(o, choice));
@@ -258,8 +238,7 @@
       
                 });
 
-                var isDisabledSlot = self.slot(function(choices, data, maxSelected, returnChoiceObj) {
-                  if ( returnChoiceObj ) return false;
+                var isDisabledSlot = self.slot(function(choices, data, maxSelected) {
                   try {
                       if ( isFinal ) {
                         return true;
@@ -295,25 +274,21 @@
                         this.clicked.sub(() => {
                           var array;
                           var indexDataToAdd = self.getIndexOfChoice(self.data, valueSimpSlot.get());
-                          if ( indexDataToAdd === -1 ) {
-                            if ( self.data?.length >= self.maxSelected ){
+                          if ( indexDataToAdd === -1 ){
+                            if ( self.data.length >= self.maxSelected ){
                               return;
                             }
-                            array = self.returnChoiceObj ?
-                              [ valueSimpSlot.get() ] :
-                              [
-                                ...self.data,
-                                valueSimpSlot.get()
-                              ];
+
+                            array = [
+                              ...self.data,
+                              valueSimpSlot.get()
+                            ];
                           } else {
-                            if ( self.returnChoiceObj ) array = [];
-                            else {
-                              array = [
-                                ...self.data
-                              ]
-  
-                              array.splice(indexDataToAdd, 1);
-                            }
+                            array = [
+                              ...self.data
+                            ]
+
+                            array.splice(indexDataToAdd, 1);
                           }
                           self.data = array;
                         })
