@@ -804,8 +804,8 @@ foam.CLASS({
        * Returns the input object, which can be useful for chaining.
        */
       foam.assert(! d || foam.Function.isInstance(d.detach) ||
-          foam.Function.isInstance(d),
-          'Argument to onDetach() must be callable or detachable.');
+        foam.Function.isInstance(d),
+        'Argument to onDetach() must be callable or detachable.');
       if ( d ) this.sub('detach', d.detach ? d.detach.bind(d) : d);
       return d;
     },
@@ -824,6 +824,8 @@ foam.CLASS({
       this.instance_.detaching_ = false;
       this.clearPrivate_('listeners');
     },
+
+    function isDetached() { return t.hasOwnProperty('detaching_'); },
 
 
     /************************************************
@@ -898,8 +900,10 @@ foam.CLASS({
       var ps = this.cls_.getAxiomsByClass(foam.core.Property);
       for ( var i = 0 ; i < ps.length ; i++ ) {
         var prop = this[ps[i].name];
-        hash = ((hash << 5) - hash) + foam.util.hashCode(prop);
-        hash &= hash; // forces 'hash' back to a 32-bit int
+        if ( prop.includeInHash ) {
+          hash = ((hash << 5) - hash) + foam.util.hashCode(prop);
+          hash &= hash; // forces 'hash' back to a 32-bit int
+        }
       }
 
       return hash;
