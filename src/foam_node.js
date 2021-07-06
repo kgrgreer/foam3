@@ -22,8 +22,8 @@
 
     var flags    = this.FOAM_FLAGS = this.FOAM_FLAGS || {};
 
-    flags.node   = true;
-    flags.web    = false;
+    if ( ! flags.hasOwnProperty('node')  ) flags.node  = true;
+    if ( ! flags.hasOwnProperty('web')   ) flags.web   = false;
     if ( ! flags.hasOwnProperty('java')  ) flags.java  = true;
     if ( ! flags.hasOwnProperty('swift') ) flags.swift = true;
     if ( ! flags.hasOwnProperty('debug') ) flags.debug = true;

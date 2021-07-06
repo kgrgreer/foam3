@@ -226,7 +226,15 @@ public class LiveScriptBundler
     if ( req.getParameter("java") != null && req.getParameter("java").equals("true") ) {
       doRegenJava(req);
     }
-    if ( req.getParameter("debug") != null ) {
+
+    if (
+      req.getParameter("node") != null  ||
+      req.getParameter("web") != null   ||
+      req.getParameter("java") != null  ||
+      req.getParameter("swift") != null ||
+      req.getParameter("debug") != null ||
+      req.getParameter("js") != null 
+    ) {
       doRebuildJavascript(req);
     }
     synchronized (this) { /* Wait for build to finish before serving */ }
