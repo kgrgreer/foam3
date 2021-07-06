@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'foam.box.sf',
-  name: 'StoreAndForwardBox',
+  name: 'SFBOX',
   extends: 'foam.box.ProxyBox',
 
   javaImports: [

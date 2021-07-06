@@ -20,14 +20,91 @@ foam.CLASS({
   name: 'SFBoxManager',
   
   implements: [
-    'foam.nanos.NanoService'
+    'foam.nanos.NanoService',
+  ],
+
+  javaImports: [
+    'foam.box.Box',
+    'foam.box.ReplyBox',
+    'foam.core.Agency',
+    'foam.core.ContextAgent',
+    'foam.core.X',
+    'foam.nanos.logger.PrefixLogger',
+    'foam.nanos.logger.Logger',
   ],
 
   properties: [
-    
+    {
+      class: 'Map',
+      name: 'boxes',
+      javaFactory: `
+        return java.util.Collections.synchronizedMap(new java.util.HashMap());
+      `
+    },
+    {
+      name: 'logger',
+      class: 'FObjectProperty',
+      of: 'foam.nanos.logger.Logger',
+      visibility: 'HIDDEN',
+      transient: true,
+      javaCloneProperty: '//noop',
+      javaFactory: `
+        return new PrefixLogger(new Object[] {
+          this.getClass().getSimpleName()
+        }, (Logger) getX().get("logger"));
+      `
+    }
   ],
   
   methods: [
+    {
+      name: 'add',
+      args: [
+        {
+          name: 'box',
+          type: 'SFBOX'
+        }
+      ],
+      javaCode: `
+        getBoxes().put(makeKey(box.getFileName()), box);
+      `
+    },
+    {
+      name: 'makeKey',
+      type: 'String',
+      args: [
+        {
+          name: 'fileName',
+          type: 'String'
+        }
+      ],
+      javaCode: `
+        return fileName;
+      `
+    },
+    {
+      name: 'get',
+      synchronized: true,
+      type: 'foam.box.Box',
+      args: [
+        {
+          name: 'x',
+          type: 'X'
+        },
+        {
+          name: 'fileName',
+          type: 'String'
+        }
+      ],
+      javaCode: `
+        String key = makeKey(fileName);
+        SFBOX box = (SFBOX) getBoxes().get(key);
+        if ( box != null ) {
+          return box;
+        }
+        return null;
+      `
+    },
     {
       name: 'start',
       javaCode: `
