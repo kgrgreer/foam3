@@ -315,7 +315,12 @@
       name: 'updateCount',
       isFramed: true,
       code: function() {
-        return this.data$proxy.select(this.Count.create()).then((s) => {
+        if ( this.data.limit_ ) {
+          this.daoCount = this.data.limit_;
+          this.refresh();
+          return;
+        }
+        return this.data$proxy.select(this.Count.create()).then(s => {
           this.daoCount = s.value;
           this.refresh();
         });
