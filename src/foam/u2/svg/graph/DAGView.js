@@ -175,9 +175,6 @@ foam.CLASS({
             this
               .tag(self.nodeView, {
                 of: node.data.cls_,
-                isSelected$: self.slot(function(selectedNodeId) {
-                  return selectedNodeId === node.data.id; 
-                }),
                 data: node.data,
                 position: coords,
                 size: Array(coords.length).fill(self.cellSize)
