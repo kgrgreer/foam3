@@ -1,12 +1,12 @@
 /**
  * @license
- * Copyright 2017 The FOAM Authors. All Rights Reserved.
+ * Copyright 2021 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
 foam.CLASS({
   package: 'foam.u2.view',
-  name: 'TableSummaryView',
+  name: 'EmbeddedTableView',
   extends: 'foam.u2.View',
   mixins: ['foam.nanos.controller.MementoMixin'],
 
@@ -64,7 +64,12 @@ foam.CLASS({
       } else {
         var daoCount = await this.data.select(this.Count.create()).then(s => { return s.value; });
         this.start(this.CardBorder).addClass(this.myClass('wrapper'))
-          .start(this.ScrollTableView, { data: this.data.limit(this.rowsToDisplay), editColumnsEnabled: false, multiSelectEnabled: false })
+          .start(this.ScrollTableView, {
+            data: this.data.limit(this.rowsToDisplay),
+            editColumnsEnabled: false,
+            multiSelectEnabled: false,
+            showPagination: false
+          })
             .addClass(this.myClass())
           .end()
           .startContext({ data: this })

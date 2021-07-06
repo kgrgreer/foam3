@@ -35,7 +35,7 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'daoView',
-      factory: function() { return foam.u2.view.TableSummaryView; }
+      factory: function() { return foam.u2.view.EmbeddedTableView; }
     },
     {
       name: 'dao',
@@ -57,7 +57,7 @@ foam.CLASS({
 
       this.addClass(this.myClass());
 
-      this.start('foam.u2.view.TableSummaryView', { data: this.dao }).end();
+      this.start('foam.u2.view.EmbeddedTableView', { data: this.dao }).end();
     }
   ]
 });

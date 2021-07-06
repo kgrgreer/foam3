@@ -22,7 +22,7 @@ foam.CLASS({
 
   requires: [
     'foam.u2.view.ScrollTableView',
-    'foam.u2.view.TableSummaryView',
+    'foam.u2.view.EmbeddedTableView',
     'foam.comics.v2.DAOControllerConfig'
   ],
 
@@ -36,7 +36,7 @@ foam.CLASS({
 
       this.config = this.DAOControllerConfig.create({ dao: this.data.dao });
 
-      this.tag(this.TableSummaryView, {
+      this.tag(this.EmbeddedTableView, {
         data: this.data.dao,
         config: this.config
       });
