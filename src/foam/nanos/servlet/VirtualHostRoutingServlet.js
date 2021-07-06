@@ -148,7 +148,7 @@ foam.CLASS({
         // development
         else {
           if ( x.get("liveScriptBundler") == null ) {
-            out.println("<script language=\\"javascript\\" src=\\"../../../../foam3/src/foam_node.js\\"></script>");
+            out.println("<script language=\\"javascript\\" src=\\"../../../../foam3/src/foam.js\\"></script>");
             out.println("<script language=\\"javascript\\" src=\\"../../../../foam3/src/foam/nanos/nanos.js\\"></script>");
             out.println("<script language=\\"javascript\\" src=\\"../../../../foam3/src/foam/support/support.js\\"></script>");
             out.println("<script language=\\"javascript\\" src=\\"../../../../nanopay/src/net/nanopay/files.js\\"></script>");

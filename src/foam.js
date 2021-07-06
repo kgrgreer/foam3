@@ -25,6 +25,15 @@
   if ( ! flags.hasOwnProperty('debug') ) flags.debug = true;
   if ( ! flags.hasOwnProperty('js')    ) flags.js    = true;
 
+  // set flags by url parameters
+  var urlParams = new URLSearchParams(globalThis.location.search);
+  if ( urlParams.get('node')  ) flags.node = urlParams.get('node') === 'true';
+  if ( urlParams.get('web')   ) flags.web = urlParams.get('web') !== 'false';
+  if ( urlParams.get('java')  ) flags.java = urlParams.get('java') === 'true';
+  if ( urlParams.get('swift') ) flags.swift = urlParams.get('swift') === 'true';
+  if ( urlParams.get('debug') ) flags.debug = urlParams.get('debug') !== 'false';
+  if ( urlParams.get('js')    ) flags.js = urlParams.get('js') !== 'false';
+
   function createLoadBrowser() {
     var path = document.currentScript && document.currentScript.src;
     // document.currentScript isn't supported on all browsers, so the following
