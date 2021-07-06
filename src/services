@@ -101,10 +101,10 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "userLocator",
+  "name": "UniqueUser",
   "serve": true,
   "authenticate": true,
-  "boxClass": "foam.nanos.auth.UserLocatorServiceSkeleton",
+  "boxClass": "foam.nanos.auth.UniqueUserServiceSkeleton",
   "serviceScript": """
     ul = new foam.nanos.auth.PreventDuplicateEmailLoginService(x);
     ul = new foam.nanos.auth.FilterBySpidService.Builder(x)
