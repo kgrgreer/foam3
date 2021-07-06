@@ -152,6 +152,7 @@ var classes = [
   'foam.box.sf.SFReplayBox',
   'foam.box.sf.SFEntry',
   'foam.box.sf.SFStatus',
+  'foam.box.sf.SFBoxManager',
  // 'foam.box.network.DemoSocketClientReplyBox',
   'foam.box.NullBox',
   'foam.dao.DAO',
