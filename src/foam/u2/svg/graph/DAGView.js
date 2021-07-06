@@ -40,7 +40,8 @@ foam.CLASS({
       name: 'selectedNodeId',
       class: 'String',
       documentation:`
-        OPTIONAL: Set a value if you want to enable node higlighting
+        OPTIONAL: Set a value if you want to enable node higlighting.
+        If used, ensure that the nodeView has an isSelected property to bind to.
       `
     },
     {
