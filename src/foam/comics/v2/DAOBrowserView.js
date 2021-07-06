@@ -72,8 +72,6 @@ foam.CLASS({
       flex-direction: column;
       height: 100%;
       overflow: hidden;
-      padding: 0 24px;
-      padding-bottom: 24px;
     }
 
     /*

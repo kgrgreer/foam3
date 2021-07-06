@@ -270,6 +270,14 @@ foam.CLASS({
       padding-left: 0;
       padding-right: 0;
     }
+
+    ^link > .foam-u2-HTMLView{
+      height: 1em;
+    }
+    // TODO: Find a better selector for this
+    ^link > .foam-u2-HTMLView > *{
+      height: 100%
+    }
   `,
 
   properties: [

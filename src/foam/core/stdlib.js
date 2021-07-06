@@ -534,7 +534,13 @@ foam.LIB({
           intArrayForHash[1];
         return hash & hash; // Truncate to 32 bits.
       };
-    })()
+    })(),
+    {
+      name: 'clamp',
+      code: function(min, value, max) {
+        return Math.min(Math.max(value, min), max);
+      }
+    }
   ]
 });
 

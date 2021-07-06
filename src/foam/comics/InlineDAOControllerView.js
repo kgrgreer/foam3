@@ -34,7 +34,8 @@ foam.CLASS({
       class: 'foam.u2.ViewSpec',
       name: 'defaultSummaryView_',
       value: {
-        class: 'foam.u2.view.ScrollTableView'
+        class: 'foam.u2.view.ScrollTableView',
+        showPagination: false
       }
     }
   ],
