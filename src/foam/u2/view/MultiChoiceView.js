@@ -71,7 +71,7 @@ foam.CLASS({
     {
       name: 'choices',
       documentation: `
-        An array of choices which are single choice is denoted as [value, label, isFinal, customDisabledSlot(optional)]
+        An array of choices which are single choice is denoted as [value, label, isFinal]
 
       `,
       factory: function() {
@@ -82,7 +82,6 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'dao',
       documentation: `
-        Not supported when returnObjChoice is true.
         If the user wants to be able to export data as a dao, then this needs to be filled out.
 
         If the user just wants to pass in a dao and no choices array, useDao should be true as well and it will be processed to populate the
@@ -101,8 +100,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'isValidNumberOfChoices',
-      expression: function(minSelected, maxSelected, data, returnChoiceObj){
-        if ( returnChoiceObj ) return !! data;
+      expression: function(minSelected, maxSelected, data){
         return data.length >= minSelected && data.length <= maxSelected;
       }
     },
@@ -153,25 +151,8 @@ foam.CLASS({
     },
     {
       name: 'data',
-      value: [],
-      adapt: function(_, n) {
-        return this.returnChoiceObj && Array.isArray(n) ?
-          n.length ? n[0] : null
-          : n;
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'returnChoiceObj',
-      documentation: `
-        if maxSelected <= 1, set true to return data[0] as data.
-      `,
-      preSet: function(_, n) {
-        if ( n && this.maxSelected > 1 ) return false;
-        return n;
-      }
-    },
-    'selectionInvalid'
+      value: []
+    }
   ],
 
   methods: [
@@ -187,7 +168,6 @@ foam.CLASS({
     },
 
     function isChoiceSelected(data, choice){
-      if ( this.returnChoiceObj ) return foam.util.equals(data, choice);
       for ( var i = 0 ; i < data.length ; i++ ) {
         if ( foam.util.equals(data[i], choice) ) return true;
       }
@@ -195,7 +175,6 @@ foam.CLASS({
     },
 
     function getIndexOfChoice(data, choice){
-      if ( this.returnChoiceObj ) data = [data];
       for ( var i = 0 ; i < data.length ; i++ ) {
         if ( foam.util.equals(data[i], choice) ) return i;
       }
@@ -205,7 +184,7 @@ foam.CLASS({
     function getSelectedSlot(choice) {
       var slot = foam.core.SimpleSlot.create();
       slot.sub(() => {
-        var arr = this.returnChoiceObj ? [ this.data ] : [
+        var arr = [
           ...this.data,
         ];
         arr = arr.filter(o => ! foam.util.equals(o, choice));
@@ -241,20 +220,14 @@ foam.CLASS({
         .start(this.isVertical ? foam.u2.layout.Rows : foam.u2.layout.Cols)
           .addClass(this.myClass('flexer'))
           .add( // TODO isDoaFetched and simpSlot0 aren't used should be clean up
-            // this.isDaoFetched$.map(isDaoFetched => {
-            self.slot(function(choices) {
-              var toRender = choices.sort().map((choice, index) => {
+            this.isDaoFetched$.map(isDaoFetched => {
+              var toRender = this.choices.sort().map((choice, index) => {
                 var valueSimpSlot = this.mustSlot(choice[0]);
                 var labelSimpSlot = this.mustSlot(choice[1]);
 
                 var isFinal = choice[2];
                 
-                var isSelectedSlot = self.slot(function(choices, data, selectionInvalid, returnChoiceObj) {
-                  if ( selectionInvalid ) {
-                    if ( returnChoiceObj ) self.data = null;
-                    // TODO remove selected obj from data array otherwise
-                    return false;
-                  }
+                var isSelectedSlot = self.slot(function(choices, data) {
                   try {
                     var isSelected = self.isChoiceSelected(data, choices[index][0]);
                     return !! isSelected;
@@ -265,23 +238,19 @@ foam.CLASS({
       
                 });
 
-                var customDisabledSlot = foam.core.Slot.isInstance(choice[3]) ? choice[3] : null;
-                var isDisabledSlot = customDisabledSlot ||
-                  self.slot(function(choices, data, maxSelected, returnChoiceObj) {
-                    debugger;
-                    if ( returnChoiceObj ) return false;
-                    try {
-                        if ( isFinal ) {
-                          return true;
-                        }
+                var isDisabledSlot = self.slot(function(choices, data, maxSelected) {
+                  try {
+                      if ( isFinal ) {
+                        return true;
+                      }
   
-                        var isSelected = self.isChoiceSelected(data, choices[index][0]);
-                        return !! (! isSelected && data.length >= maxSelected);
-                    } catch(err) {
-                      console.error('isDisabledSlot', err);
-                      return false;
-                    }
-                  });
+                      var isSelected = self.isChoiceSelected(data, choices[index][0]);
+                      return !! (! isSelected && data.length >= maxSelected);
+                  } catch(err) {
+                    console.error('isDisabledSlot', err);
+                    return false;
+                  }
+                });
                 
                 var cls =  choice[0] && choice[0].cls_.id;
 
@@ -305,32 +274,23 @@ foam.CLASS({
                         this.clicked.sub(() => {
                           var array;
                           var indexDataToAdd = self.getIndexOfChoice(self.data, valueSimpSlot.get());
-                          if ( indexDataToAdd === -1 ) {
-                            if ( self.data && self.data.length >= self.maxSelected ){
+                          if ( indexDataToAdd === -1 ){
+                            if ( self.data.length >= self.maxSelected ){
                               return;
                             }
-                            array = self.returnChoiceObj ?
-                              [ valueSimpSlot.get() ] :
-                              [
-                                ...self.data,
-                                valueSimpSlot.get()
-                              ];
+
+                            array = [
+                              ...self.data,
+                              valueSimpSlot.get()
+                            ];
                           } else {
-                            if ( self.returnChoiceObj ) array = [];
-                            else {
-                              array = [
-                                ...self.data
-                              ]
-  
-                              array.splice(indexDataToAdd, 1);
-                            }
+                            array = [
+                              ...self.data
+                            ]
+
+                            array.splice(indexDataToAdd, 1);
                           }
                           self.data = array;
-                        }),
-                        this.dataUpdate && this.dataUpdate.sub(() => {
-                          if ( ! self.data.isAvailable ) {
-                            self.selectionInvalid = true;
-                          }
                         })
                       )
                     })

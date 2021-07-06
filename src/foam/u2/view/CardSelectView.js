@@ -18,7 +18,8 @@ foam.CLASS({
   ],
 
   topics: [
-    'clicked'
+    'clicked',
+    'selectionDisabled'
   ],
 
   css: `
@@ -70,7 +71,10 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'isDisabled'
+      name: 'isDisabled',
+      postSet: function(_, n) {
+        if ( n ) this.selectionDisabled.pub();
+      }
     }
   ],
 
