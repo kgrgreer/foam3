@@ -39,12 +39,7 @@ foam.CLASS({
       this.tag(this.EmbeddedTableView, {
         data: this.data.dao,
         config: this.config,
-        showPagination: false
-      },
-      this,
-      this.__subContext__.createSubContext({ memento: null }));
-
-      this.add(view);
+      });
     },
     function click(obj, id) {
       if ( ! this.stack ) return;

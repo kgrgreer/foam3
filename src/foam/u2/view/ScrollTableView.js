@@ -35,8 +35,10 @@
   css: `
     ^{
       border-radius: 4px;
-      height: 100%;
       position: relative;
+    }
+    ^full-height{
+      height: 100%;
     }
     ^table-wrapper {
       flex: 1;
@@ -310,6 +312,7 @@
       if ( ! this.table_.memento || ! this.table_.memento.tail || this.table_.memento.tail.head.length == 0 ) {
         var buttonStyle = { label: '', buttonStyle: 'TERTIARY', size: 'SMALL' };
         this.start(this.Rows).addClass(this.myClass()).
+          enableClass(this.myClass('full-height'), this.showPagination$).
           start('div', {}, this.tableWrapper_$).
             call(() => { this.updateRowCount(); }).
             addClass(this.myClass('table-wrapper')).
@@ -427,13 +430,9 @@
       name: 'updateCount',
       isFramed: true,
       code: function() {
-        if ( this.data.limit_ ) {
-          this.daoCount = this.data.limit_;
-          this.refresh();
-          return;
-        }
+        var limit = this.data.limit_ || undefined;
         return this.data$proxy.select(this.Count.create()).then(s => {
-          this.daoCount = s.value;
+          this.daoCount = limit && limit < s.value ? limit : s.value;
           this.refresh();
         });
       }
