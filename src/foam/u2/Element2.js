@@ -11,7 +11,8 @@ TODO:
  - Don't generate .java and remove need for flags: ['js'].
 */
 
-/* PORTING U2 to U3:
+/*
+PORTING U2 to U3:
   - rename initE to render()
   - move init() rendering code to render()
   - replace use of setNodeName to setting the nodeName property
@@ -23,11 +24,32 @@ TODO:
   - replace ^ in CSS (which has meaning in CSS) with <<
   - ILLEGAL_CLOSE_TAGS and OPTIONAL_CLOSE_TAGS have been removed
   - this.addClass() is the same as this.addClass(this.myClass())
+  - automatic ID generation has been removed
+  - replace use of slots that return elements with functions that add them
+  - remove daoSlot() method
+  -    TODO: https://github.com/foam-framework/foam2/search?q=daoSlot
+  - remove cssClass() (use addClass() instead
+  -    TODO: https://github.com/foam-framework/foam2/search?q=cssClass
+  - remove addBefore()
+  - remove insertAt_()
+  - remove insertBefore()
+  - remove insertAfter()
+  - remove slotE_()
+  - removed use of SPAN tags for dynamic slot content by using reference to TextNode
+
+.add(this.slot(function(a, b, c) { return this.E().start()...; }));
+becomes:
+.add(function(a, b, c) { this.start()...; });
 
   TODO:
+  - consistently use _ for all internal properties and methods
+  - ??? remove removeChild() appendChild()
+  - ??? replace replaceChild() with replace() on Node
+  - ??? replace E() with custom Element constructor
+  - Replace TableCellFormatters with Elements
+  - ??? Replace toE() with toNode/toView/to???
   - you can use views directly instead of ViewSpecs
-  - remove ID support?
-  - remove use of SPAN tags for dynamic slot content by using reference to TextNode
+  - remove callOn
 */
 
 foam.ENUM({
@@ -112,6 +134,10 @@ foam.CLASS({
 
     function appendAsChild(el) {
       el.appendChild(this.element_);
+    },
+
+    function isLiteral(o) {
+      return foam.String.isInstance(o) || foam.Number.isInstance(o) || foam.Boolean.isInstance(o);
     }
   ]
 });
@@ -159,9 +185,7 @@ foam.CLASS({
     { class: 'String', name: 'text' },
     {
       name: 'element_',
-      factory: function() {
-        return this.document.createTextNode(this.text);
-      }
+      factory: function() { return this.document.createTextNode(this.text); }
     }
   ]
 });
@@ -173,17 +197,19 @@ foam.CLASS({
   extends: 'foam.u2.Node',
 
   properties: [
+    'slot',
     {
-      name: 'slot'
+      name: 'element_',
+      // Create a placeholder to insert into the right location, to be replaced
+      // by slot value.
+      factory: function() { return this.document.createTextNode(''); }
     }
   ],
 
   methods: [
     function appendAsChild(el) {
-      var t = foam.u2.Text.create({}, this);
+      this.SUPER(el);
 
-      t.appendAsChild(el);
-      this.element_ = t.element_;
       this.slot.sub(this.update);
       this.update();
     }
@@ -198,13 +224,53 @@ foam.CLASS({
         var e;
         if ( val === undefined || val === null ) {
           e = foam.u2.Text.create({}, this);
-        } else if ( foam.String.isInstance(val) || foam.Boolean.isInstance(val) || foam.Number.isInstance(val) ) {
+        } else if ( this.isLiteral(val) ) {
           e = foam.u2.Text.create({text: val}, this);
         } else {
           debugger;
         }
         this.element_.parentNode.replaceChild(e.element_, this.element_);
         this.element_ = e.element_;
+      }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'FunctionNode',
+  extends: 'foam.u2.Element',
+
+  properties: [
+    'self',
+    'code',
+    {
+      name: 'args',
+      factory: function() { return foam.Function.argNames(this.code).map(a => this.self.slot(a)); }
+    }
+  ],
+
+  methods: [
+    function appendAsChild(el) {
+      this.SUPER(el);
+
+      var args = this.args;
+      for ( var i = 0 ; i < args.length ; i++ ) {
+        this.self.onDetach(args[i].sub(this.update));
+      }
+
+      this.update();
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'update',
+      isFramed: true,
+      code: function() {
+        this.removeAllChildren();
+        this.code.apply(this, this.args.map(a => a.get()));
       }
     }
   ]
@@ -257,9 +323,9 @@ foam.CLASS({
 
     function installInClass(cls) {
       // Install myself in this Window, if not already there.
-      var oldCreate   = cls.create;
-      var axiom       = this;
-      var isFirstCSS  = ! cls.private_.hasCSS;
+      var oldCreate  = cls.create;
+      var axiom      = this;
+      var isFirstCSS = ! cls.private_.hasCSS;
 
       if ( isFirstCSS ) cls.private_.hasCSS = true;
 
@@ -358,9 +424,7 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.u2',
   name: 'RenderSink',
-  implements: [
-    'foam.dao.Sink'
-  ],
+  implements: [ 'foam.dao.Sink' ],
 
   documentation: `
     Any call to put, remove, or reset on this sink will:
@@ -456,16 +520,17 @@ foam.CLASS({
   extends: 'foam.u2.Node',
 
   documentation: `
-    Virtual-DOM Element. Root model for all U2 UI components.
+    DOM API Element. Root model for all U3 UI components.
 
-    To insert a U2 Element into a regular DOM element, either:
+    To insert a U3 Element into a regular DOM element, either:
 
-    el.write() // to append to the end of the document
+    Add to the end of the imported document:
 
-    el.innerHTML = view.outerHTML;
-    view.load();
+      el.write();
 
-    el.appendAsChild(parentElement);
+    Append to the end of a specified parent element:
+
+      el.appendAsChild(parentElement);
 
     Or use a foam tag in your markup:
 
@@ -495,6 +560,7 @@ foam.CLASS({
 
   constants: [
     {
+      // TODO: document
       name: 'CSS_SELF',
       value: '<<'
     },
@@ -518,17 +584,6 @@ foam.CLASS({
       type: 'foam.u2.DefaultValidator',
       flags: ['js'],
       factory: function() { return foam.u2.DefaultValidator.create(); }
-    },
-    {
-      name: '__ID__',
-      value: [ 1 ]
-    },
-    {
-      name: 'NEXT_ID',
-      flags: ['js'],
-      value: function() {
-        return this.__ID__[ 0 ]++;
-      }
     },
     {
       documentation: `Keys which respond to keydown but not keypress`,
@@ -556,11 +611,13 @@ foam.CLASS({
 
   properties: [
     {
-      // TODO: class is needed to fix the Java build, but this shouldn't be building for Java anyway.
-      class: 'Object',
-      name: 'id',
-      transient: true,
-      factory: function() { return this.NEXT_ID(); }
+      name: 'element_',
+      expression: function(nodeName) {
+        return this.document.createElement(this.nodeName);
+      }
+    },
+    {
+      name: 'id'
     },
     {
       class: 'Enum',
@@ -666,7 +723,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'focused',
       postSet: function(o, n) {
-        if ( n ) this.onFocus();
+        if ( n ) this.element_.focus();
       }
     },
     {
@@ -692,9 +749,12 @@ foam.CLASS({
   methods: [
 
     // from state
+
+    // TODO: remove
     function el() {
       return Promise.resolve(this.el_());
     },
+
     function load() {
       if ( this.hasOwnProperty('elListeners') ) {
         var ls = this.elListeners;
@@ -705,12 +765,12 @@ foam.CLASS({
 
       // shouldn't have any children
       // this.visitChildren('load');
-
+/*
       for ( var i = 0 ; i < this.attributes.length ; i++ ) {
         var attr = this.attributes[i];
         this.onSetAttr(attr.name, attr.value);
       }
-
+*/
       // disable adding to content$ during render()
       this.add = function() { return this.add_(arguments, this); }
       this.initTooltip();
@@ -744,69 +804,6 @@ foam.CLASS({
       this.visitChildren('unload');
       this.detach();
     },
-    function onRemove() { this.unload(); },
-    function onSetClass(cls, enabled) {
-      var e = this.el_();
-      if ( e ) {
-        e.classList[enabled ? 'add' : 'remove'](cls);
-      } else {
-        console.warn('Missing Element: ', this.id);
-      }
-    },
-    function onFocus() {
-      this.el_().focus();
-    },
-    function onAddListener(topic, listener, opt_args) {
-      this.addEventListener_(topic, listener, opt_args);
-    },
-    function onRemoveListener(topic, listener) {
-      this.addRemoveListener_(topic, listener);
-    },
-    function onSetStyle(key, value) {
-if ( ! this.el_() ) return;
-      this.el_().style[key] = value;
-    },
-    function onSetAttr(key, value) {
-if ( ! this.el_() ) return;
-      if ( this.PSEDO_ATTRIBUTES[key] ) {
-        this.el_()[key] = value;
-      } else {
-        this.el_().setAttribute(key, value === true ? '' : value);
-      }
-    },
-    function onRemoveAttr(key) {
-      if ( this.PSEDO_ATTRIBUTES[key] ) {
-        this.el_()[key] = '';
-      } else {
-        this.el_().removeAttribute(key);
-      }
-    },
-    /*
-    function onInsertChildren(children, reference, where) {
-      var e = this.el_();
-      if ( ! e ) {
-        console.warn('Missing Element: ', this.id);
-        return;
-      }
-      var out = this.createOutputStream();
-      for ( var i = 0 ; i < children.length ; i++ ) {
-        out(children[i]);
-      }
-
-      reference.el_().insertAdjacentHTML(where, out);
-
-      // EXPERIMENTAL:
-      // TODO(kgr): This causes some elements to get stuck in OUTPUT state
-      // forever. It can be resurrected if that problem is fixed.
-      // Load (mostly adding listeners) on the next frame
-      // to allow the HTML to be shown more quickly.
-      // this.__context__.globalThis.setTimeout(function() {
-      for ( var i = 0 ; i < children.length ; i++ ) {
-        children[i].load && children[i].load();
-      }
-      // }, 33);
-    },
-    */
     function onReplaceChild(oldE, newE) {
       var e = this.el_();
       if ( ! e ) {
@@ -817,18 +814,10 @@ if ( ! this.el_() ) return;
       oldE.el_().outerHTML = '<' + this.nodeName + ' id=' + this.id + '></' + this.nodeName + '>';
       newE.load && newE.load();
     },
-    function onRemoveChild(child, index) {
-      if ( typeof child === 'string' ) {
-        this.el_().childNodes[index].remove();
-      } else {
-        child.remove();
-      }
-    },
+
     function getBoundingClientRect() {
-      return this.el_().getBoundingClientRect();
+      return this.element_.getBoundingClientRect();
     },
-
-
 
 
     function init() {
@@ -1110,7 +1099,11 @@ if ( ! this.el_() ) return;
             this.attributeMap[name] = attr;
           }
 
-          this.onSetAttr(name, value);
+          if ( this.PSEDO_ATTRIBUTES[name] ) {
+            this.element_[name] = value;
+          } else {
+            this.element_.setAttribute(name, value === true ? '' : value);
+          }
         }
       }
 
@@ -1123,10 +1116,15 @@ if ( ! this.el_() ) return;
         if ( this.attributes[i].name === name ) {
           this.attributes.splice(i, 1);
           delete this.attributeMap[name];
-          this.onRemoveAttr(name);
-          return;
+          if ( this.PSEDO_ATTRIBUTES[name] ) {
+            this.element_[name] = '';
+          } else {
+            this.element_.removeAttribute(name);
+          }
+          break;
         }
       }
+      return this;
     },
 
     function getAttributeNode(name) {
@@ -1164,20 +1162,26 @@ if ( ! this.el_() ) return;
     },
 
     function appendChild(c) {
-      // TODO: finish implementation
+      // TODO: can this be removed
       this.childNodes.push(c);
     },
 
     function removeChild(c) {
+      // TODO: is this needed
       /* Remove a Child node (String or Element). */
       var cs = this.childNodes;
-      for ( var i = 0 ; i < cs.length ; ++i ) {
+      for ( var i = 0 ; i < cs.length ; i++ ) {
         if ( cs[i] === c ) {
           cs.splice(i, 1);
-          this.state.onRemoveChild.call(this, c, i);
-          return;
+          if ( typeof c === 'string' ) {
+            this.element_.childNodes[i].remove();
+          } else {
+            c.remove();
+          }
+          break;
         }
       }
+      return this;
     },
 
     function replaceChild(newE, oldE) {
@@ -1187,21 +1191,11 @@ if ( ! this.el_() ) return;
         if ( cs[i] === oldE ) {
           cs[i] = newE;
           newE.parentNode = this;
-          this.state.onReplaceChild.call(this, oldE, newE);
+          this.onReplaceChild.call(this, oldE, newE);
           oldE.unload && oldE.unload();
           return;
         }
       }
-    },
-
-    function insertBefore(child, reference) {
-      /* Insert a single child before the reference element. */
-      return this.insertAt_(child, reference, true);
-    },
-
-    function insertAfter(child, reference) {
-      /* Insert a single child after the reference element. */
-      return this.insertAt_(child, reference, false);
     },
 
     function remove() {
@@ -1209,7 +1203,7 @@ if ( ! this.el_() ) return;
         Remove this Element from its parent Element.
         Will transition to UNLOADED state.
       */
-      this.onRemove();
+      this.unload();
 
       if ( this.parentNode ) {
         var cs = this.parentNode.childNodes;
@@ -1226,7 +1220,7 @@ if ( ! this.el_() ) return;
     function addEventListener(topic, listener, opt_args) {
       /* Add DOM listener. */
       this.elListeners.push(topic, listener, opt_args);
-      this.onAddListener(topic, listener, opt_args);
+      this.addEventListener_(topic, listener, opt_args);
     },
 
     function removeEventListener(topic, listener) {
@@ -1236,24 +1230,22 @@ if ( ! this.el_() ) return;
         var t = ls[i], l = ls[i+1];
         if ( t === topic && l === listener ) {
           ls.splice(i, 3);
-          this.onRemoveListener(topic, listener);
+          this.onRemoveListener_(topic, listener);
           return;
         }
       }
     },
 
     function setNodeName(name) {
+      console.warn('Deprecated use of setNodeName. Set the nodeName property instead.');
       this.nodeName = name;
       return this;
     },
 
     function setID(id) {
-      /*
-        Explicitly set Element's id.
-        Normally id's are automatically assigned.
-        Setting specific ID's hinders composability.
-      */
+      /* Explicitly set Element's id. */
       this.id = id;
+      this.element_.id = id;
       return this;
     },
 
@@ -1267,9 +1259,10 @@ if ( ! this.el_() ) return;
       return this.entity('nbsp');
     },
 
-    function cssClass(cls) {
-      return this.addClass(cls);
-    },
+function cssClass(cls) {
+  console.warn('DEPRECATED use of cssClass(). Use addClass() instead.');
+  return this.addClass(cls);
+},
 
     function addClass(cls) { /* Slot | String */
       /* Add a CSS cls to this Element. */
@@ -1315,7 +1308,11 @@ if ( ! this.el_() ) return;
         var parts = cls.split(' ');
         for ( var i = 0 ; i < parts.length ; i++ ) {
           this.classes[parts[i]] = enabled;
-          this.onSetClass(parts[i], enabled);
+          if ( enabled ) {
+            this.element_.classList.add(parts[i]);
+          } else {
+            this.element_.classList.remove(parts[i]);
+          }
         }
       }
       return this;
@@ -1325,7 +1322,7 @@ if ( ! this.el_() ) return;
       /* Remove specified CSS class. */
       if ( cls ) {
         delete this.classes[cls];
-        this.onSetClass(cls, false);
+        this.element_.classList.remove(cls);
       }
       return this;
     },
@@ -1448,7 +1445,9 @@ if ( ! this.el_() ) return;
         c = c.toE(null, this.__subSubContext__);
       }
 
-      if ( foam.core.Slot.isInstance(c) ) {
+      if ( foam.Function.isInstance(c) ) {
+        c = foam.u2.FunctionNode.create({self: this, code: c});
+      } else if ( foam.core.Slot.isInstance(c) ) {
         c = foam.u2.SlotNode.create({slot: c}, this);
       }
         /*
@@ -1462,11 +1461,12 @@ if ( ! this.el_() ) return;
           this.addChild_(v, parentNode);
         }
         */
-      if ( foam.String.isInstance(c) || foam.Number.isInstance(c) ) {
+      if ( this.isLiteral(c) ) {
         this.element_ && this.element_.appendChild(this.document.createTextNode(c));
       } else if ( c.then ) {
         this.addChild_(this.PromiseSlot.create({ promise: c }), parentNode);
       } else if ( c.appendAsChild ) {
+        this.childNodes.push(c);
         c.parentNode = parentNode;
         c.appendAsChild(this.element_);
       }
@@ -1534,37 +1534,21 @@ if ( ! this.el_() ) return;
       return this;
     },
 
-    function addBefore(reference) { /*, vargs */
-      /* Add a variable number of children before the reference element. */
-      var children = [];
-      for ( var i = 1 ; i < arguments.length ; i++ ) {
-        children.push(arguments[i]);
-      }
-      return this.insertAt_(children, reference, true);
-    },
+    // function addBefore(reference) { /*, vargs */
+    //   /* Add a variable number of children before the reference element. */
+    //   var children = [];
+    //   for ( var i = 1 ; i < arguments.length ; i++ ) {
+    //     children.push(arguments[i]);
+    //   }
+    //   return this.insertAt_(children, reference, true);
+    // },
 
     function removeAllChildren() {
-      /* Remove all of this Element's children. */
-      var cs = this.childNodes;
-      while ( cs.length ) {
-        this.removeChild(cs[0]);
+      this.element_.innerHTML = '';
+      this.childNodes = [];
+      for ( var i = 0 ; i < this.childNodes.length ; i++ ) {
+        this.childNodes[i].unload();
       }
-      return this;
-    },
-
-    function setChildren(slot) {
-      /**
-         slot -- a Slot of an array of children which set this element's
-         contents, replacing old children
-      **/
-      var l = function() {
-        this.removeAllChildren();
-        this.add.apply(this, slot.get());
-      }.bind(this);
-
-      this.onDetach(slot.sub(l));
-      l();
-
       return this;
     },
 
@@ -1576,15 +1560,19 @@ if ( ! this.el_() ) return;
       return this;
     },
 
-    function daoSlot(dao, sink) {
-      var slot = foam.dao.DAOSlot.create({
-        dao: dao,
-        sink: sink
-      });
-
-      this.onDetach(slot);
-
-      return slot;
+    /**
+     * Call the given function on each element in the array. In the function,
+     * `this` will refer to the element.
+     * @param {Array} array An array to loop over.
+     * @param {Function} fn A function to call for each item in the given array.
+     */
+    function forEach(array, fn) {
+      if ( foam.core.Slot.isInstance(array) ) {
+        this.add(array.map(a => this.E().forEach(a, fn)));
+      } else {
+        array.forEach(fn.bind(this));
+      }
+      return this;
     },
 
     /**
@@ -1659,6 +1647,7 @@ if ( ! this.el_() ) return;
     },
 
     function callOn(obj, f, args) {
+      // TODO: remove
       /** Call the method named f on obj with the supplied args. **/
       obj[f].apply(obj, [this].concat(args));
       return this;
@@ -1676,68 +1665,52 @@ if ( ! this.el_() ) return;
       return this;
     },
 
-    /**
-     * Call the given function on each element in the array. In the function,
-     * `this` will refer to the element.
-     * @param {Array} array An array to loop over.
-     * @param {Function} fn A function to call for each item in the given array.
-     */
-    function forEach(array, fn) {
-      if ( foam.core.Slot.isInstance(array) ) {
-        this.add(array.map(a => this.E().forEach(a, fn)));
-      } else {
-        array.forEach(fn.bind(this));
-      }
-      return this;
-    },
-
     function write() {
       this.appendAsChild(this.document.body)
       return this;
     },
 
     function appendAsChild(el) {
-      this.element_ = this.document.createElement(this.nodeName);
       el.appendChild(this.element_);
       this.load();
     },
 
     function toString() {
-      return this.cls_.id + '(id=' + this.id + ', nodeName=' + this.nodeName + ', state=' + this.state + ')';
+      return this.cls_.id + '(id=' + this.id + ', nodeName=' + this.nodeName + ')';
     },
 
-    function insertAt_(children, reference, before) {
-      // (Element[], Element, Boolean)
-
-      var i = this.childNodes.indexOf(reference);
-
-      if ( i === -1 ) {
-        this.__context__.warn("Reference node isn't a child of this.");
-        return this;
-      }
-
-      if ( ! Array.isArray(children) ) children = [ children ];
-
-      var Y = this.__subSubContext__;
-      children = children.map(e => {
-        e = e.toE ? e.toE(null, Y) : e;
-        e.parentNode = this;
-        return e;
-      });
-
-      var index = before ? i : (i + 1);
-      this.childNodes.splice.apply(this.childNodes, [index, 0].concat(children));
-
-      /*
-      this.state.onInsertChildren.call(
-        this,
-        children,
-        reference,
-        before ? 'beforebegin' : 'afterend');
-        */
-
-      return this;
-    },
+    // function insertAt_(children, reference, before) {
+    //   // (Element[], Element, Boolean)
+    //
+    //   var i = this.childNodes.indexOf(reference);
+    //
+    //   if ( i === -1 ) {
+    //     this.__context__.warn("Reference node isn't a child of this.");
+    //     return this;
+    //   }
+    //
+    //   if ( ! Array.isArray(children) ) children = [ children ];
+    //
+    //   var Y = this.__subSubContext__;
+    //   children = children.map(e => {
+    //     e = e.toE ? e.toE(null, Y) : e;
+    //     e.parentNode = this;
+    //     return e;
+    //   });
+    //
+    //   var index = before ? i : (i + 1);
+    //   this.childNodes.splice.apply(this.childNodes, [index, 0].concat(children));
+    //
+    //   /*
+    //   this.state.onInsertChildren.call(
+    //     this,
+    //     children,
+    //     reference,
+    //     before ? 'beforebegin' : 'afterend');
+    //     */
+    //
+    //   return this;
+    // },
 
     function addClass_(oldClass, newClass) {
       /* Replace oldClass with newClass. Called by cls(). */
@@ -1749,7 +1722,7 @@ if ( ! this.el_() ) return;
           throw "Invalid CSS classname";
         }
         this.classes[newClass] = true;
-        this.onSetClass(newClass, true);
+        this.element_.classList.add(newClass);
       }
     },
 
@@ -1772,88 +1745,8 @@ if ( ! this.el_() ) return;
     function style_(key, value) {
       /* Set a CSS style based off of a literal value. */
       this.css[key] = value;
-      this.onSetStyle(key, value);
+      this.element_.style[key] = value;
       return this;
-    },
-
-    function slotE_(slot) {
-      // TODO: add same context capturing behviour to other slotXXX_() methods.
-      /*
-        Return an Element or an Array of Elements which are
-        returned from the supplied dynamic Slot.
-        The Element(s) are replaced when the Slot changes.
-      */
-      var self = this;
-      var ctx  = this.__subSubContext__;
-
-      function nextE() {
-        // Run Slot in same subSubContext that it was created in.
-        var oldCtx = self.__subSubContext__;
-        self.__subSubContext__ = ctx;
-        var e = slot.get();
-
-        // Convert e or e[0] into a SPAN if needed,
-        // So that it can be located later.
-        if ( e === undefined || e === null || e === '' ) {
-          e = self.E('SPAN');
-        } else if ( Array.isArray(e) ) {
-          if ( e.length ) {
-            if ( typeof e[0] === 'string' ) {
-              e[0] = self.E('SPAN').add(e[0]);
-            }
-          } else {
-            e = self.E('SPAN');
-          }
-        } else if ( ! foam.u2.Element.isInstance(e) ) {
-          e = self.E('SPAN').add(e);
-        }
-
-        self.__subSubContext__ = oldCtx;
-
-        return e;
-      }
-
-      var e = nextE();
-      var l = this.framed(function() {
-        /*
-        TODO
-        if ( self.state !== self.LOADED ) {
-          return;
-        }
-        */
-        var first = Array.isArray(e) ? e[0] : e;
-
-        /*
-        if ( first && first.state == first.INITIAL ) {
-          // updated requested before initial element loaded
-          // not a problem, just defer loading
-          first.onload.sub(foam.events.oneTime(l));
-          return;
-        }
-          */
-
-        var tmp = self.E();
-        self.insertBefore(tmp, first);
-        if ( Array.isArray(e) ) {
-          for ( var i = 0 ; i < e.length ; i++ ) {
-            // TODO: combine these two
-            e[i].remove();
-            e[i].detach();
-          }
-        } else {
-          // TODO: combine these two
-          e.remove();
-          e.detach();
-        }
-        var e2 = nextE();
-        self.insertBefore(e2, tmp);
-        tmp.remove();
-        e = e2;
-      });
-
-      this.onDetach(slot.sub(l));
-
-      return e;
     },
 
     function addEventListener_(topic, listener, opt_args) {
@@ -1918,6 +1811,7 @@ foam.CLASS({
       code: function E(ctx, opt_nodeName) {
         var nodeName = (opt_nodeName || 'DIV').toUpperCase();
 
+        // Check if a class has been registered for the specified nodeName
         return (ctx.elementForName(nodeName) || foam.u2.Element).
           create({nodeName: nodeName}, ctx);
       }
@@ -2158,6 +2052,7 @@ foam.CLASS({
   ]
 });
 
+
 foam.CLASS({
   package: 'foam.u2',
   name: 'FormattedStringViewRefinement',
@@ -2176,6 +2071,7 @@ foam.CLASS({
     }
   ]
 });
+
 
 foam.CLASS({
   package: 'foam.u2',
