@@ -64,11 +64,15 @@ foam.CLASS({
       if ( actingUserIsSet_ ) {
         final var userDAO = (DAO) x.get("bareUserDAO");
         final var user = (User) userDAO.find(actingUser_);
-        if ( user != null ) {
-          final var actingX = x.put("subject", new Subject.Builder(x).setUser(user).build());
-          var objDAO = (DAO) x.get(rule.getDaoKey());
+
+        final var groupDAO = (DAO) x.get("localGroupDAO");
+        final var group = groupDAO.find(user.getGroup());
+
+        if ( user != null && group != null ) {
+          final var actingX = x.put("group", group);
+          final var objDAO = (DAO) actingX.get(rule.getDaoKey());
           if ( objDAO != null ) {
-            obj = objDAO.find(obj.getProperty("id"));
+            obj = objDAO.inX(actingX).find(obj.getProperty("id"));
           }
         }
       }
