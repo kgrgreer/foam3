@@ -120,7 +120,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'window'
+    'globalThis'
   ],
 
   exports: [
@@ -463,7 +463,7 @@ foam.CLASS({
         // in place. Here we detect such a situation and remove the listener if
         // it arises, preventing a memory leak.
         if ( selfDOMElement == null || containerDOMElement == null ) {
-          self.window.removeEventListener('click', fn);
+          self.globalThis.removeEventListener('click', fn);
           return;
         }
 
@@ -484,8 +484,8 @@ foam.CLASS({
           self.isOpen_ = false;
         }
       };
-      this.window.addEventListener('click', fn);
-      this.onDetach(() => this.window.removeEventListener('click', fn));
+      this.globalThis.addEventListener('click', fn);
+      this.onDetach(() => this.globalThis.removeEventListener('click', fn));
 
       this
         .add(this.slot(function(mode, fullObject_) {

@@ -375,7 +375,7 @@ foam.CLASS({
           inserted into row views as soon as they are available. Since the user
           may "jump" to a far away scroll position, this controller keeps track
           of a list of ranges, and only fetches missing data in the current
-          scroll window. The onReset() listener throws away data and ranges.
+          scroll globalThis. The onReset() listener throws away data and ranges.
 
           A smaller window (the "buffer") must contain gaps to trigger a data
           fetch. When a fetch is triggered a larger window (the "runway")
@@ -551,7 +551,7 @@ foam.CLASS({
                 skip += batchSize;
                 limit = Math.min(batchSize, end - skip);
                 // TODO(markdittmer): Import rAF.
-                if ( limit > 0 ) window.requestAnimationFrame(fetchBatch);
+                if ( limit > 0 ) globalThis.requestAnimationFrame(fetchBatch);
               });
           };
           fetchBatch();
@@ -646,7 +646,7 @@ foam.CLASS({
     {
       name: 'moveAnchorForward_',
       documentation: `Layout necessary rows for anchor moving forward within row
-          window.`,
+          globalThis.`,
       code: function(anchorDAOIdx) {
         var delta = anchorDAOIdx - this.anchorDAOIdx_;
         var daoStart = this.anchorDAOIdx_ + this.numRows;
@@ -664,7 +664,7 @@ foam.CLASS({
     {
       name: 'moveAnchorBackward_',
       documentation: `Layout necessary rows for anchor moving backward within
-          row window.`,
+          row globalThis.`,
       code: function(anchorDAOIdx) {
         var delta = this.anchorDAOIdx_ - anchorDAOIdx;
         var rowStart = this.anchorRowIdx_ + this.numRows;

@@ -279,7 +279,7 @@ foam.CLASS({
       label: 'Send Request',
       code: async function() {
         var req = this.HTTPRequest.create({
-          url: window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + this.postURL + "&sessionId=" + localStorage.defaultSession,
+          url: globalThis.location.protocol + '//' + globalThis.location.hostname + ':' + globalThis.location.port + this.postURL + "&sessionId=" + localStorage.defaultSession,
           method: 'POST',
           payload: this.data,
         }).send();

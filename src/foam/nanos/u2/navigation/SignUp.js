@@ -157,7 +157,7 @@ foam.CLASS({
     {
       name: 'footerLink',
       code: function(topBarShow_, param) {
-        window.history.replaceState(null, null, window.location.origin);
+        globalThis.history.replaceState(null, null, globalThis.location.origin);
         this.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn', topBarShow_: topBarShow_, param: param }, this);
       }
     },
@@ -179,7 +179,7 @@ foam.CLASS({
         if ( this.user.emailVerified ) {
           // When a link was sent to user to SignUp, they will have already verified thier email,
           // thus thier user.emailVerified should be true and they can simply login from here.
-          window.history.replaceState(null, null, window.location.origin);
+          globalThis.history.replaceState(null, null, globalThis.location.origin);
           location.reload();
         } else {
           await this.auth.login(x, this.email, this.desiredPassword);

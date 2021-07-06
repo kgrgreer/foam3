@@ -25,7 +25,7 @@ foam.CLASS({
     'foam.u2.tag.Select'
   ],
 
-  imports: [ 'window' ],
+  imports: [ 'globalThis' ],
 
   css: `
     ^ { padding: 10px; }
@@ -93,7 +93,7 @@ foam.CLASS({
       code: function() {
         var depart = this.departDate.toLocaleDateString(foam.locale);
 
-        this.window.alert('You have booked a ' + (this.isReturn ?
+        this.globalThis.alert('You have booked a ' + (this.isReturn ?
           'flight departing on ' + depart + ' and returning ' + this.returnDate.toLocaleDateString(foam.locale):
           'one-way flight on ' + depart) + '.');
       }

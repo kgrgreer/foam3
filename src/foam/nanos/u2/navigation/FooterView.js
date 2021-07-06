@@ -130,21 +130,21 @@ foam.CLASS({
       name: 'goTo',
       label: '',
       code: function(X) {
-        this.window.location.assign(X.appConfig.url);
+        this.globalThis.location.assign(X.appConfig.url);
       }
     },
     {
       name: 'goToTerm',
       label: '',
       code: function(X) {
-        X.window.location.assign(X.appConfig.termsAndCondLink);
+        X.globalThis.location.assign(X.appConfig.termsAndCondLink);
       }
     },
     {
       name: 'goToPrivacy',
       label: '',
       code: function(X) {
-        this.window.location.assign(X.appConfig.privacyUrl);
+        this.globalThis.location.assign(X.appConfig.privacyUrl);
       }
     }
   ]

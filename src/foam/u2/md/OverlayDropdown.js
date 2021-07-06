@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'OverlayDropdown',
   extends: 'foam.u2.Element',
 
-  imports: [ 'document', 'window' ],
+  imports: [ 'document', 'globalThis' ],
 
   exports: [
     'as dropdown'
@@ -107,8 +107,8 @@ foam.CLASS({
 
     function open(x, y) {
       var domRect       = this.parentEl.getBoundingClientRect();
-      var screenHeight  = this.window.innerHeight;
-      var scrollY       = this.window.scrollY;
+      var screenHeight  = this.globalThis.innerHeight;
+      var scrollY       = this.globalThis.scrollY;
       if ( domRect.top - scrollY < screenHeight / 2 ) {
         this.top = y; this.bottom = 'auto';
       } else {
@@ -116,7 +116,7 @@ foam.CLASS({
       }
       this.x = x;
       this.opened = true;
-      window.addEventListener('resize', this.onResize);
+      globalThis.addEventListener('resize', this.onResize);
     },
 
     function close() {
@@ -193,7 +193,7 @@ foam.CLASS({
 
     function onResize() {
       this.close();
-      window.removeEventListener("resize", onResize);
+      globalThis.removeEventListener("resize", onResize);
     }
   ]
 });

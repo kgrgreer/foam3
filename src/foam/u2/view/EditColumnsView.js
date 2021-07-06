@@ -84,7 +84,7 @@ foam.CLASS({
           .start()
             .addClass(this.myClass('container'))
             .style({
-              'max-height': window.innerHeight - 100 > 0 ? window.innerHeight - 100 : window.innerHeight + 'px',
+              'max-height': globalThis.innerHeight - 100 > 0 ? globalThis.innerHeight - 100 : globalThis.innerHeight + 'px',
             })
             .add(this.columnConfigPropView)
           .end()

@@ -57,7 +57,7 @@ foam.CLASS({
       type: 'foam.box.Box'
     },
     'sessionID as jsSessionID',
-    'window'
+    'globalThis'
   ],
 
   constants: [
@@ -88,7 +88,7 @@ foam.CLASS({
       name: 'origin',
       class: 'String',
       factory: function() {
-        return this.window && this.window.location.origin;
+        return this.globalThis && this.globalThis.location.origin;
       },
       javaFactory: `
       HttpServletRequest req = getX().get(HttpServletRequest.class);
@@ -187,8 +187,8 @@ protected class ResponseThread implements Runnable {
   methods: [
     function prepareURL(url) {
       /* Add window's origin if url is not complete. */
-      if ( this.window && url.indexOf(':') == -1 ) {
-        return this.window.location.origin + '/' + url;
+      if ( this.globalThis && url.indexOf(':') == -1 ) {
+        return this.globalThis.location.origin + '/' + url;
       }
 
       return url;

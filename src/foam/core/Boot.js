@@ -126,10 +126,10 @@ foam.LIB({
 
       if ( this.refines ) {
         // TODO This should probably live elsewhere.
-        if ( this.flags && global.FOAM_FLAGS ) {
+        if ( this.flags && globalThis.FOAM_FLAGS ) {
           var flagged = false;
           for ( var i = 0 ; i < this.flags.length ; i++ ) {
-            if ( global.FOAM_FLAGS[this.flags[i]] ) {
+            if ( globalThis.FOAM_FLAGS[this.flags[i]] ) {
               flagged = true;
               break;
             }
@@ -207,7 +207,7 @@ foam.LIB({
 
         return cls;
       };
-      let l = global.localStorage && global.localStorage.getItem('localeLanguage');
+      let l = globalThis.localStorage && globalThis.localStorage.getItem('localeLanguage');
       var locale_;
 
       // Update foam.lang and foam.variant whenever foam.locale is set
@@ -225,7 +225,7 @@ foam.LIB({
         }
       );
       foam.locale = l || 'en';
-      foam.xmsg = global.window && ( global.window.location.href.indexOf('XMSG') != -1 );
+      foam.xmsg = globalThis.window && ( globalThis.window.location.href.indexOf('XMSG') != -1 );
     },
 
     /** Start second phase of bootstrap process. */

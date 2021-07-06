@@ -294,7 +294,7 @@ foam.CLASS({
             this.filteredTableColumns = filteredColumnsCopy;
         }
         if ( url && url.length > 0 )
-          window.location.replace(url);
+          globalThis.location.replace(url);
       }
     }
   ]

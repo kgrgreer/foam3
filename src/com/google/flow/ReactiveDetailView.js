@@ -34,7 +34,7 @@ foam.CLASS({
     function startReaction_(name, formula) {
       // HACK: delay starting reaction in case we're loading a file
       // and dependent variables haven't loaded yet.
-      window.setTimeout(function() {
+      globalThis.setTimeout(function() {
         var self = this;
         var f;
 

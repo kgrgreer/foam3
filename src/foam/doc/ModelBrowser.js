@@ -128,7 +128,7 @@ foam.CLASS({
       name: 'printPage',
       label: 'Print',
       code: function() {
-        window.print();
+        globalThis.print();
       }
     }
   ]

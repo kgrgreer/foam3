@@ -19,7 +19,7 @@ foam.CLASS({
     'ctrl',
     'subject',
     'userCapabilityJunctionDAO',
-    'window'
+    'globalThis'
   ],
 
   requires: [

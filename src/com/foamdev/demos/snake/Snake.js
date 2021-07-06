@@ -282,8 +282,8 @@ foam.CLASS({
       factory: function() {
         return this.Box.create({
           color:  'lightblue',
-          width:  window.innerWidth,
-          height: window.innerHeight
+          width:  globalThis.innerWidth,
+          height: globalThis.innerHeight
         });
       }
     },

@@ -241,7 +241,7 @@ foam.CLASS({
       this.SUPER();
       this.onDetach(this.crunchService.sub('grantedJunction', this.onChange));
       var self = this;
-      window.cstore = self;
+      globalThis.cstore = self;
 
       self
         .addClass(self.myClass())
@@ -328,10 +328,10 @@ foam.CLASS({
           .end()
         .end();
 
-        window.addEventListener('resize', checkCardsOverflow);
+        globalThis.addEventListener('resize', checkCardsOverflow);
         checkCardsOverflow();
         self.onDetach(() => {
-          window.removeEventListener('resize', checkCardsOverflow);
+          globalThis.removeEventListener('resize', checkCardsOverflow);
         });
       });
       return spot;

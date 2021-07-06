@@ -26,7 +26,7 @@ foam.CLASS({
     'stack',
     'summaryView? as importedSummaryView',
     'updateView? as importedUpdateView',
-    'window',
+    'globalThis',
     'translationService'
   ],
 
@@ -235,7 +235,7 @@ foam.CLASS({
 
     function isIframe() {
       try {
-        return window.self !== window.top;
+        return globalThis.self !== globalThis.top;
       } catch (e) {
         return true;
       }

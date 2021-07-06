@@ -26,17 +26,17 @@ foam.CLASS({
     'ctrl',
     'auth',
     'setTimeout',
-    'window'
+    'globalThis'
   ],
 
   methods: [
     function initE() {
       this.SUPER();
       this.ctrl.memento.value = '';
-      this.window.location.hash = '';
+      this.globalThis.location.hash = '';
       this.auth.logout().then(() => {
         localStorage.removeItem('defaultSession');
-        this.window.location.reload();
+        this.globalThis.location.reload();
       });
     }
   ]

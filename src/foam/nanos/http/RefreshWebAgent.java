@@ -35,7 +35,7 @@ public class RefreshWebAgent
 
     if ( refresh != -1 ) {
       out.println("<script>");
-      out.println("setTimeout(function(){ window.location.href = window.location.href; }, "+ refresh * 1000 + "); ");
+      out.println("setTimeout(function(){ globalThis.location.href = globalThis.location.href; }, "+ refresh * 1000 + "); ");
       out.println("</script>");
     }
   }

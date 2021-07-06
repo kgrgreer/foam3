@@ -36,7 +36,7 @@ foam.CLASS({
 
   imports: [
     'classloader',
-    'window',
+    'globalThis',
   ],
 
   exports: [
@@ -78,7 +78,7 @@ foam.CLASS({
   methods: [
     function fromQuery(opt_query) {
       var search = /([^&=]+)=?([^&]*)/g;
-      var query  = opt_query || this.window.location.search.substring(1);
+      var query  = opt_query || this.globalThis.location.search.substring(1);
       var decode = function(s) {
         return decodeURIComponent(s.replace(/\+/g, ' '));
       };
@@ -113,7 +113,7 @@ foam.CLASS({
       ]).then(function(args) {
         var cls = args[0];
         var m = cls.create(null, self);
-        window.__foam_obj__ = m;
+        globalThis.__foam_obj__ = m;
 
         var viewSpec = self.view ? { class: self.view, data: m } : m.toE.bind(m);
 

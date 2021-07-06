@@ -63,7 +63,7 @@ foam.CLASS({
     'installCSS',
     'notificationDAO',
     'sessionSuccess',
-    'window'
+    'globalThis'
   ],
 
   exports: [
@@ -181,7 +181,7 @@ foam.CLASS({
       factory: function() {
         var urlSession = '';
         try {
-          urlSession = window.location.search.substring(1).split('&')
+          urlSession = globalThis.location.search.substring(1).split('&')
            .find(element => element.startsWith("sessionId")).split('=')[1];
         } catch { };
         return urlSession !== "" ? urlSession : localStorage[this.sessionName] ||
@@ -415,7 +415,7 @@ foam.CLASS({
     },
 
     function initE() {
-      window.addEventListener('resize', this.updateDisplayWidth);
+      globalThis.addEventListener('resize', this.updateDisplayWidth);
       this.updateDisplayWidth();
 
 
@@ -471,7 +471,7 @@ foam.CLASS({
       var map = this.__subContext__.translationService.localeEntries;
       for ( var key in map ) {
         try {
-          var node = global;
+          var node = globalThis;
           var path = key.split('.');
 
           for ( var i = 0 ; node && i < path.length-1 ; i++ ) node = node[path[i]];
@@ -686,13 +686,13 @@ foam.CLASS({
 
       this.fetchTheme();
 
-      var hash = this.window.location.hash;
+      var hash = this.globalThis.location.hash;
       if ( hash ) hash = hash.substring(1);
 
       if ( hash ) {
-        window.onpopstate();
+        globalThis.onpopstate();
       } else if ( this.theme ) {
-        this.window.location.hash = this.theme.defaultMenu;
+        this.globalThis.location.hash = this.theme.defaultMenu;
       }
 
 //      this.__subContext__.localSettingDAO.put(foam.nanos.session.LocalSetting.create({id: 'homeDenomination', value: localStorage.getItem("homeDenomination")}));
@@ -752,7 +752,7 @@ foam.CLASS({
         this.displayWidth = foam.u2.layout.DisplayWidth.VALUES
           .concat()
           .sort((a, b) => b.minWidth - a.minWidth)
-          .find(o => o.minWidth <= Math.min(window.innerWidth, window.screen.width) );
+          .find(o => o.minWidth <= Math.min(globalThis.innerWidth, globalThis.screen.width) );
       }
     }
   ]

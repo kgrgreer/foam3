@@ -93,7 +93,7 @@ foam.CLASS({
       transient: true,
       expression: function (id) {
         var sessionId = localStorage['defaultSession'];
-        var url = window.location.origin + '/service/httpFileService/' + id
+        var url = globalThis.location.origin + '/service/httpFileService/' + id
         // attach session id if available
         if ( sessionId ) {
           url += '?sessionId=' + sessionId;

@@ -23,7 +23,7 @@ foam.CLASS({
 
   imports: [
     'setTimeout',
-    'window'
+    'globalThis'
   ],
 
   properties: [
@@ -89,7 +89,7 @@ foam.CLASS({
 
   actions: [
     function play() {
-      var audio       = new this.window.AudioContext();
+      var audio       = new this.globalThis.AudioContext();
       var now         = audio.currentTime;
       var destination = audio.destination;
       var o           = audio.createOscillator();

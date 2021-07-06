@@ -253,7 +253,7 @@
   // To demonstrate let's first add a "delay" function which waits a
   // given timeout before running the continuation.
   function delay(then, abort, time) {
-    window.setTimeout(then, time);
+    globalThis.setTimeout(then, time);
   }
 
   with ( foam.cps ) {

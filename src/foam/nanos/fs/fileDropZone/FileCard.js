@@ -150,10 +150,10 @@ foam.CLASS({
       code: function() {
         var blob = this.data.data;
         if ( this.BlobBlob.isInstance(blob) ) {
-          window.open(URL.createObjectURL(blob.blob));
+          globalThis.open(URL.createObjectURL(blob.blob));
         } else {
           var url = this.data.address;
-          window.open(url);
+          globalThis.open(url);
         }
       }
     },

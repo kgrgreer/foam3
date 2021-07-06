@@ -21,7 +21,7 @@ foam.CLASS({
   extends: 'foam.dao.AbstractDAO',
 
   imports: [
-    'window'
+    'globalThis'
   ],
 
   requires: [
@@ -32,7 +32,7 @@ foam.CLASS({
     {
       name: 'url',
       factory: function() {
-        return this.window.location.protocol + '//' + this.window.location.host + '/src/';
+        return this.globalThis.location.protocol + '//' + this.globalThis.location.host + '/src/';
       }
     }
   ],

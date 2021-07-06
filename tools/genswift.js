@@ -8,7 +8,7 @@ var execSync = require('child_process').execSync
 var path_ = require('path');
 
 // Enable FOAM swift support.
-global.FOAM_FLAGS = {
+globalThis.FOAM_FLAGS = {
   'js': false,
   'java': false,
   'node': false,

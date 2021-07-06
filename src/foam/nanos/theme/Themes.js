@@ -55,7 +55,7 @@ Later themes:
       code: async function(x) {
         var theme;
         var themeDomain;
-        var domain = window && window.location.hostname || 'localhost';
+        var domain = globalThis && globalThis.location.hostname || 'localhost';
         var user = x.subject.user;
         if ( domain ) {
           console.debug('domain', domain);

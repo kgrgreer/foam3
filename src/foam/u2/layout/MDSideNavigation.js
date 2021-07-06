@@ -121,8 +121,8 @@ foam.CLASS({
       name: 'logout',
       code: function() {
         this.auth.logout().then(function() {
-          this.window.location.hash = '';
-          this.window.location.reload();
+          this.globalThis.location.hash = '';
+          this.globalThis.location.reload();
           localStorage.removeItem('defaultSession');
         });
       }

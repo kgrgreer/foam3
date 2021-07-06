@@ -114,7 +114,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.initHTML();
-      window.addEventListener('hashchange', this.initHTML.bind(this));
+      globalThis.addEventListener('hashchange', this.initHTML.bind(this));
     },
 
     function initHTML() {

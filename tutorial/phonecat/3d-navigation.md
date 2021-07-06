@@ -60,17 +60,17 @@ foam.CLASS({
   methods: [
     function initE() {
       this.initHTML();
-      window.addEventListener('hashchange', this.initHTML.bind(this));
+      globalThis.addEventListener('hashchange', this.initHTML.bind(this));
     },
 
     function initHTML() {
       var self = this;
       this.removeAllChildren();
 
-      if (window.location.hash) {
+      if (globalThis.location.hash) {
         var expr = foam.mlang.Expressions.create();
         this.dao.where(expr.EQ(Phone.ID, 
-            window.location.hash.substring(1))).select()
+            globalThis.location.hash.substring(1))).select()
           .then(function (sink) {
             var phone = sink.a[0];
             self.add(tutorial.PhoneDetialView.create({ data: phone }));
@@ -92,8 +92,8 @@ foam.CLASS({
 
 #### **About the Above Code:**
 
-1. The original `Controller` is now the `else` branch; what will be shown when `window.location.hash` is empty.
-2. You're navigating by setting `window.location.hash` to the `id` of the phone we want to see.
+1. The original `Controller` is now the `else` branch; what will be shown when `globalThis.location.hash` is empty.
+2. You're navigating by setting `globalThis.location.hash` to the `id` of the phone we want to see.
 3. In that first branch, you created a `PhoneDetailView` which you'll define shortly. You told it what `model` it should display as a view. 
 4. You added `PhoneDetailView` to the view’s list of child views by calling add().
 5. You looked up the phone in the master `dao`, not the filtered one, for the phone whose ID is equal to the one in the hash, with the leading # chopped off.

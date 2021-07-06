@@ -11,11 +11,11 @@ foam.CLASS({
 
   documentation: 'Converts <foam> tags in document into Views.',
 
-  imports: [ 'classloader', 'document', 'window' ],
+  imports: [ 'classloader', 'document', 'globalThis' ],
 
   methods: [
     function init() {
-      this.window.addEventListener('load', this.onLoad, false);
+      this.globalThis.addEventListener('load', this.onLoad, false);
     },
 
     function findPropertyIC(cls, name) {
@@ -55,7 +55,7 @@ foam.CLASS({
       view.load();
 
       // Store view in global variable if named. Useful for testing.
-      if ( id ) global[id] = view;
+      if ( id ) globalThis[id] = view;
     },
 
     function setAttributes(el, obj) {
@@ -70,7 +70,7 @@ foam.CLASS({
   listeners: [
     function onLoad() {
       var els = Array.from(this.document.getElementsByTagName('foam'));
-      this.window.removeEventListener('load', this.onLoad);
+      this.globalThis.removeEventListener('load', this.onLoad);
 
       els.forEach(this.loadTag.bind(this));
     }

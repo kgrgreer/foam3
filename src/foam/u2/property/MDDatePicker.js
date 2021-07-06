@@ -17,7 +17,7 @@ foam.CLASS({
 
   imports: [
     'popup',
-    'window'
+    'globalThis'
   ],
 
   exports: [

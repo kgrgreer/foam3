@@ -105,8 +105,8 @@ foam.CLASS({
       label: 'Go to sign in page.',
       code: function(X) {
         this.auth.logout().then(function() {
-          this.window.location.hash = '';
-          this.window.location.reload();
+          this.globalThis.location.hash = '';
+          this.globalThis.location.reload();
           localStorage.removeItem('defaultSession');
         });
       }

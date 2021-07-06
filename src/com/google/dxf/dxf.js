@@ -289,7 +289,7 @@ foam.CLASS({
 
   imports: [
     'document',
-    'window'
+    'globalThis'
   ],
 
   exports: [
@@ -334,13 +334,13 @@ foam.CLASS({
       hidden: true,
       factory: function() {
         var self = this;
-        return this.window.fetch(this.dxfUrl).then(function(resp) {
+        return this.globalThis.fetch(this.dxfUrl).then(function(resp) {
           return resp.text();
         }).then(function(text) {
-          var parser = new self.window.DxfParser();
+          var parser = new self.globalThis.DxfParser();
           return parser.parseSync(text);
         }).then(function(tree) { // TODO: Debugging, remove this.
-          self.window.__tree = tree;
+          self.globalThis.__tree = tree;
 
           var colors = {};
           // Map from layers to colours.

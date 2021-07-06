@@ -20,13 +20,13 @@ foam.CLASS({
   name: 'DetachedURLState',
 
   documentation: `foam.web.URLState that is detached from
-      window.location.hash.`,
+      globalThis.location.hash.`,
 
   requires: [
     'foam.json.Outputter',
     'foam.json.Parser'
   ],
-  imports: [ 'warn', 'window' ],
+  imports: [ 'warn', 'globalThis' ],
 
   properties: [
     {
@@ -148,8 +148,8 @@ foam.CLASS({
         if ( str !== '' ) str += '&';
 
         var value = this.serializer.stringify(getMapValue(key));
-        str += this.window.encodeURIComponent(key) + '=' +
-            this.window.encodeURIComponent(value);
+        str += this.globalThis.encodeURIComponent(key) + '=' +
+            this.globalThis.encodeURIComponent(value);
       }
       return str;
     },
@@ -158,14 +158,14 @@ foam.CLASS({
       var res = this.hashGrammar.parseString(hash, 'hash');
       foam.assert(res, 'Invalid URLState hash: ' + hash);
 
-      this.path_ = this.window.decodeURIComponent(res.path);
+      this.path_ = this.globalThis.decodeURIComponent(res.path);
       var bindingsMap = this.bindingsMap_;
       var bindings = res.bindings;
       for ( var i = 0; i < bindings.length; i++ ) {
         var binding = bindings[i];
-        var key = this.window.decodeURIComponent(binding.key);
+        var key = this.globalThis.decodeURIComponent(binding.key);
         var value = this.deserializer.parseString(
-            this.window.decodeURIComponent(binding.value));
+            this.globalThis.decodeURIComponent(binding.value));
         if ( bindingsMap.hasOwnProperty(key) ) {
           if ( ! foam.util.equals(bindingsMap[key].get(), value) )
             bindingsMap[key].set(value);

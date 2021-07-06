@@ -87,7 +87,7 @@ foam.CLASS({
       return true;
     },
     async function s(a, b, c, d) {
-      await new Promise((r) => window.setTimeout(r, 100-this.speed));
+      await new Promise((r) => globalThis.setTimeout(r, 100-this.speed));
       if ( d == 3 ) { d = 0; c++; }
       if ( c == 3 ) { c = 0; b++; }
       if ( b == 3 ) { b = 0; a++; }

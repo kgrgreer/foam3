@@ -8,7 +8,7 @@ foam.CLASS({
   package: 'foam.nanos.controller',
   name: 'WindowHash',
 
-  imports: [ 'window' ],
+  imports: [ 'globalThis' ],
 
   properties: [
     {
@@ -24,14 +24,14 @@ foam.CLASS({
       this.SUPER(args, ctx);
 
       this.onPopState();
-      this.window.onpopstate = this.onPopState;
+      this.globalThis.onpopstate = this.onPopState;
     },
     function valueChanged(value, replaceHistoryState) {
       if ( value )
         this.value = value;
 
       if ( replaceHistoryState )
-        this.window.history.replaceState(null, '', this.window.origin + '/#' + this.value);
+        this.globalThis.history.replaceState(null, '', this.globalThis.origin + '/#' + this.value);
       else
         this.updateHash();
     },
@@ -39,7 +39,7 @@ foam.CLASS({
       if ( this.feedback_ ) return;
 
         this.feedback_ = true;
-        this.window.location.hash = this.value;
+        this.globalThis.location.hash = this.value;
         this.feedback_ = false;
     }
   ],
@@ -48,7 +48,7 @@ foam.CLASS({
     function onPopState() {
       if ( this.feedback_ ) return;
       
-      this.value = this.window.location.hash.substr(1);
+      this.value = this.globalThis.location.hash.substr(1);
       this.feedback_ = false;
     },
     {
@@ -58,7 +58,7 @@ foam.CLASS({
         if ( this.feedback_ ) return;
 
         this.feedback_ = true;
-        this.window.location.hash = this.value;
+        this.globalThis.location.hash = this.value;
         this.feedback_ = false;
       }
     }

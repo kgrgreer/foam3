@@ -22,7 +22,7 @@ foam.CLASS({
         // Or check URL
         var urlSession = '';
         try {
-          urlSession = window.location.search.substring(1).split('&')
+          urlSession = globalThis.location.search.substring(1).split('&')
            .find(element => element.startsWith("sessionId")).split('=')[1];
            if ( urlSession ) return urlSession;
         } catch { };

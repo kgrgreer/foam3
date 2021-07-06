@@ -27,7 +27,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'window'
+    'globalThis'
   ],
 
   properties: [

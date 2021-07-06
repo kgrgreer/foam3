@@ -19,7 +19,7 @@ foam.CLASS({
     'loginSuccess',
     'requestLogin',
     'sessionTimer',
-    'window'
+    'globalThis'
   ],
 
   messages: [
@@ -58,7 +58,7 @@ foam.CLASS({
           if ( this.loginSuccess ) {
             if ( this.ctrl )  this.ctrl.remove();
             alert(this.REFRESH_MSG);
-            (this.window || window).location.reload(false);
+            ( this.globalThis ).location.reload(false);
             return;
           }
 
