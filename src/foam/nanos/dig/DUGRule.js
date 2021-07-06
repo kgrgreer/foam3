@@ -86,6 +86,36 @@ foam.CLASS({
       }
     },
     {
+      class: 'String',
+      name: 'secureDaoKey',
+      documentation: `
+        The permissioned DAO the refind will happen on if the acting user is specified
+        ie. If the DAOKey was 'localUserDAO' then the SecureDAOKey could be 'userDAO'
+      `,
+      label: 'Secure DAO',
+      section: 'dugInfo',
+      tableWidth: 150,
+      targetDAOKey: 'AuthenticatedNSpecDAO',
+      view: function(_, X) {
+        var E = foam.mlang.Expressions.create();
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          sections: [
+            {
+              heading: 'DAO',
+              dao: X.AuthenticatedNSpecDAO
+                .where(E.AND(
+                  E.EQ(foam.nanos.boot.NSpec.SERVE, true),
+                  E.ENDS_WITH(foam.nanos.boot.NSpec.ID, 'DAO')
+                ))
+                .orderBy(foam.nanos.boot.NSpec.ID)
+            }
+          ]
+        };
+      }
+    },
+    {
       name: 'ruleGroup',
       value: 'DUG',
       hidden: true
@@ -144,10 +174,6 @@ foam.CLASS({
         action.setUrl(getUrl());
         action.setBearerToken(getBearerToken());
         action.setFormat(getFormat());
-
-        if ( getActAsUser() )
-          action.setActingUser(getActingUser());
-
         return action;
       `
     },
@@ -212,11 +238,6 @@ foam.CLASS({
     {
       name: 'spid',
       value: ""
-    },
-    {
-      class: 'String',
-      name: 'secureDaoKey',
-      label: 'Secure DAO Key',
     }
   ]
 });
