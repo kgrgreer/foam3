@@ -7,7 +7,7 @@
 foam.CLASS({
    package: 'foam.nanos.auth',
    name: 'FilterBySpidService',
-   extends: 'foam.nanos.auth.ProxyUserLocatorService',
+   extends: 'foam.nanos.auth.ProxyUniqueUserService',
    flags: ['java'],
 
   documentation: `Filter users by spid.`,
@@ -46,4 +46,3 @@ foam.CLASS({
     }
   ]
 });
-

@@ -6,14 +6,14 @@
 
 foam.CLASS({
   package: 'foam.nanos.auth',
-  name: 'ProxyUserLocatorService',
+  name: 'ProxyUniqueUserService',
 
-  implements: ['foam.nanos.auth.UserLocatorService'],
+  implements: ['foam.nanos.auth.UniqueUserService'],
 
   properties: [
     {
       class: 'Proxy',
-      of: 'foam.nanos.auth.UserLocatorService',
+      of: 'foam.nanos.auth.UniqueUserService',
       name: 'delegate'
     }
   ]
