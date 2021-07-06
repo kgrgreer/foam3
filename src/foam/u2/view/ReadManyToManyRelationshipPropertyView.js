@@ -38,11 +38,10 @@ foam.CLASS({
       this.tag(this.ScrollTableView, {
         data: this.data.dao,
         config: this.config,
-        showNav: false
+        showPagination: false
       },
       this,
       this.__subContext__.createSubContext({ memento: null }));
-      
 
       this.add(view);
     },

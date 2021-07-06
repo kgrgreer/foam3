@@ -232,7 +232,7 @@
     // Navigation props
     {
       class: 'Boolean',
-      name: 'showNav',
+      name: 'showPagination',
       documentation: 'Controls visibility for the pagination elements',
       value: true
     },
@@ -296,8 +296,6 @@
         this.currentMemento_ = this.memento.tail;
       }
 
-      var self = this;
-
       this.table_ = foam.u2.ViewSpec.createView(this.TableView, {
         data: foam.dao.NullDAO.create({of: this.data.of}),
         columns: this.columns,
@@ -325,8 +323,8 @@
               }).
             end().
           end().
-          add(this.slot(showNav => {
-            return showNav ?
+          add(this.slot(showPagination => {
+            return showPagination ?
              this.E().start(self.Cols).
               addClass(self.myClass('nav')).
               style({ 'justify-content': 'flex-end'}). // Have to do this here because Cols CSS is installed after nav. Investigate later. 
