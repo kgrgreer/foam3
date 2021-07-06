@@ -81,6 +81,9 @@ foam.CLASS({
         }
       }
 
+      if ( obj == null )
+        return;
+
       ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "Sending DUG webhook", obj);  
       
       final var finalObj = obj;

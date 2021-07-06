@@ -212,6 +212,11 @@ foam.CLASS({
     {
       name: 'spid',
       value: ""
+    },
+    {
+      class: 'String',
+      name: 'secureDaoKey',
+      label: 'Secure DAO Key',
     }
   ]
 });
