@@ -61,18 +61,22 @@ foam.CLASS({
       // The goal with this is to filter the permissioned properties based on acting user
       // Instead of the user that triggered the rule
 
-      if ( actingUserIsSet_ ) {
+      final var actingUserId = getActingUser();
+
+      if ( actingUserId != 0 ) {
         final var userDAO = (DAO) x.get("bareUserDAO");
-        final var user = (User) userDAO.find(actingUser_);
+        final var user = (User) userDAO.find(actingUserId);
 
-        final var groupDAO = (DAO) x.get("localGroupDAO");
-        final var group = groupDAO.find(user.getGroup());
+        if ( user != null ) {
+          final var groupDAO = (DAO) x.get("localGroupDAO");
+          final var group = groupDAO.find(user.getGroup());
 
-        if ( user != null && group != null ) {
-          final var actingX = x.put("group", group);
-          final var objDAO = (DAO) actingX.get(rule.getDaoKey());
-          if ( objDAO != null ) {
-            obj = objDAO.inX(actingX).find(obj.getProperty("id"));
+          if ( group != null ) {
+            final var actingX = x.put("group", group);
+            final var objDAO = (DAO) actingX.get(rule.getDaoKey());
+            if ( objDAO != null ) {
+              obj = objDAO.inX(actingX).find(obj.getProperty("id"));
+            }
           }
         }
       }

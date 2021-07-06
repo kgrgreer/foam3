@@ -145,8 +145,8 @@ foam.CLASS({
         action.setBearerToken(getBearerToken());
         action.setFormat(getFormat());
 
-        if ( actingUserIsSet_ )
-          action.setActingUser(actingUser_);
+        if ( getActAsUser() )
+          action.setActingUser(getActingUser());
 
         return action;
       `
@@ -192,7 +192,26 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
-      name: 'actingUser'
+      name: 'actingUser',
+      writepermissionrequired: true,
+      readpermissionrequired: true,
+      section: 'dugInfo'
+    },
+    {
+      class: 'Boolean',
+      name: 'actAsUser',
+      section: 'dugInfo',
+      writepermissionrequired: true,
+      readpermissionrequired: true,
+      value: true
+    },
+    {
+      name: 'createdBy',
+      section: 'basicInfo'
+    },
+    {
+      name: 'spid',
+      value: ""
     }
   ]
 });
