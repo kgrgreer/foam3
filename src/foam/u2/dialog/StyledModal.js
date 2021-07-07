@@ -97,11 +97,6 @@ foam.CLASS({
       documentation: 'Setting modal styles adds a coloured bar at the top of the modal'
     },
     {
-      name: 'isStyled',
-      value: true,
-      documentation: 'Can be used to turn off all styling for modal container'
-    },
-    {
       name: 'title',
       class: 'String'
     },
@@ -121,7 +116,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      bgColor = this.returnExpandedCSS(this.modalStyle.color);
+      var bgColor = this.returnExpandedCSS(this.modalStyle.color);
       this
         .addClass(this.myClass())
         .on('keydown', this.onKeyDown)
@@ -130,13 +125,13 @@ foam.CLASS({
           .on('click', this.closeable ? this.close : null)
         .end()
         .start(this.Rows)
+          .style({ 'max-height': this.maxHeight+'vh', 'max-width': this.maxWidth+'vw' })
           .enableClass(this.myClass('top'), this.isTop$)
           .start()
               .enableClass(this.myClass('colorBar'), this.isStyled$)
               .style({ 'background-color': bgColor, 'border-color': this.modalStyle != 'DEFAULT' ? bgColor : this.returnExpandedCSS('/*%GREY4%*/ #DADDE2')})
           .end()
           .start()
-            .style({ 'max-height': this.maxHeight+'vh', 'max-width': this.maxWidth+'vw' })
             .enableClass(this.myClass('inner'), this.isStyled$)
             .startContext({ data: this })
               .start(this.CLOSE_MODAL, { buttonStyle: 'TERTIARY' }).show(this.closeable$)
@@ -146,7 +141,7 @@ foam.CLASS({
             .start().addClasses(['h400', this.myClass('title')]).add(this.title).end()
             .start()
               .addClass(this.myClass('modal-body'))
-              .tag('', null, this.content$)
+              .add(this.addBody())
             .end()
             .start()
               .addClass(this.myClass('actionBar'))
@@ -155,8 +150,11 @@ foam.CLASS({
           .end()
         .end();
     },
+    function addBody() {
+      return this.tag('', null, this.content$);
+    },
     function addActions() {
-      var actions = this.E().startContext({ data: this });
+      var actions = this.E().startContext({ data$: this.data$ });
       for ( action of this.actionArray ) {
         actions.tag(action);
       }

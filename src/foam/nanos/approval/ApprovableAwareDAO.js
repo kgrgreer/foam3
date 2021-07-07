@@ -331,7 +331,6 @@ foam.CLASS({
           .setServerDaoKey(getDaoKey())
           .setObjId(String.valueOf(obj.getProperty("id")))
           .setClassificationEnum(ApprovalRequestClassificationEnum.APPROVABLE_REQUEST)
-          .setDescription(getOf().getObjClass().getSimpleName())
           .setOperation(operation)
           .setCreatedBy(user.getId())
           .setStatus(ApprovalStatus.REQUESTED).build();
@@ -373,7 +372,6 @@ foam.CLASS({
           .setDaoKey("approvableDAO")
           .setObjId(approvable.getId())
           .setClassificationEnum(ApprovalRequestClassificationEnum.APPROVABLE_REQUEST)
-          .setDescription(getOf().getObjClass().getSimpleName())
           .setOperation(operation)
           .setCreatedBy(user.getId())
           .setStatus(ApprovalStatus.REQUESTED).build();

@@ -32,8 +32,7 @@ foam.CLASS({
       cursor: pointer;
       max-width: 100%;
       overflow: hidden;
-      /* TODO: Remove this once css class loading is fixed */
-      padding-right: 2.1em !important; 
+      padding-right: 2.1em;
       text-overflow: ellipsis;
       width: 100%;
     }
@@ -102,8 +101,7 @@ foam.CLASS({
             value: i,
             selected: self.data === i
           }).translate(c[1]+'.name', value)
-
-          if ( value.indexOf('  ') !== -1 ) {
+          if ( value.toString().indexOf('  ') !== -1 ) {
             // Hack to display spaces as nbsp's
             e.el().then(el => el.innerHTML = value.replace(/ /g, '&nbsp;'));
           }

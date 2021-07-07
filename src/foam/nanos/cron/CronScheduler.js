@@ -64,24 +64,6 @@ foam.CLASS({
       name: 'enabled',
       class: 'Boolean',
       value: true
-    },
-    {
-      name: 'timer',
-      class: 'Object',
-      visibility: 'HIDDEN'
-    },
-    {
-      name: 'logger',
-      class: 'FObjectProperty',
-      of: 'foam.nanos.logger.Logger',
-      visibility: 'HIDDEN',
-      transient: true,
-      javaCloneProperty: '//noop',
-      javaFactory: `
-        return new PrefixLogger(new Object[] {
-          this.getClass().getSimpleName()
-        }, (Logger) getX().get("logger"));
-      `
     }
   ],
 
@@ -91,7 +73,6 @@ foam.CLASS({
       name: 'start',
       javaCode: `
       Timer timer = new Timer(this.getClass().getSimpleName());
-      setTimer(timer);
       timer.schedule(
         new AgencyTimerTask(getX(), this),
         getInitialTimerDelay());
@@ -119,12 +100,11 @@ foam.CLASS({
     Logger logger = new PrefixLogger(new Object[] {
         this.getClass().getSimpleName()
       }, (Logger) x.get("logger"));
-    logger.info("execute");
 
     try {
       while ( true ) {
         foam.nanos.medusa.ClusterConfigSupport support = (foam.nanos.medusa.ClusterConfigSupport) x.get("clusterConfigSupport");
-        if ( getEnabled() ) {
+       if ( getEnabled() ) {
           Date now = new Date();
 
           getCronDAO().where(
@@ -148,7 +128,7 @@ foam.CLASS({
                                       support == null ||
                                       support.cronEnabled(x) ) {
                                    cron.setStatus(ScriptStatus.SCHEDULED);
-                                   getCronDAO().put(cron);
+                                   getCronDAO().put_(x, cron);
                                  }
                                } catch (Throwable t) {
                                  logger.error("Unable to schedule cron job", cron.getId(), t.getMessage(), t);

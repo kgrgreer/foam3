@@ -58,6 +58,12 @@
     'summaryView?'
   ],
 
+  searchColumns: [
+    'id',
+    'classificationEnum',
+    'status'
+  ],
+
   tableColumns: [
     'id',
     'referenceSummary',
@@ -111,7 +117,7 @@
       class: 'foam.comics.v2.CannedQuery',
       label: 'Approved',
       predicateFactory: function(e) {
-        return  e.EQ(
+        return e.EQ(
           foam.nanos.approval.ApprovalRequest.STATUS,
           foam.nanos.approval.ApprovalStatus.APPROVED
         );
@@ -121,7 +127,7 @@
       class: 'foam.comics.v2.CannedQuery',
       label: 'Rejected',
       predicateFactory: function(e) {
-        return  e.EQ(
+        return e.EQ(
           foam.nanos.approval.ApprovalRequest.STATUS,
           foam.nanos.approval.ApprovalStatus.REJECTED
         );
@@ -224,16 +230,6 @@
       includeInDigest: false,
       section: 'approvalRequestInformation',
       order: 30,
-      gridColumns: 6
-    },
-    {
-      class: 'String',
-      name: 'description',
-      documentation: `Approval request description.`,
-      includeInDigest: false,
-      tableWidth: 200,
-      section: 'approvalRequestInformation',
-      order: 40,
       gridColumns: 6
     },
     {
@@ -927,7 +923,6 @@
         if ( obj.propertiesToUpdate ) {
           if ( obj.operation === foam.nanos.dao.Operation.CREATE ) {
             summaryData = obj.of.create({}, X);
-            daoKey = obj.daoKey;
             of = summaryData.cls_;
 
             Object.keys(obj.propertiesToUpdate).map(k => summaryData.cls_.getAxiomByName(k))
@@ -935,6 +930,14 @@
               .forEach(p => {
                 summaryData[p.name] = obj.propertiesToUpdate[p.name];
               });
+            if ( obj.isUsingNestedJournal ) {
+              X.stack.push({
+                class: 'foam.u2.view.ViewReferenceFObjectView',
+                data: summaryData,
+                of: of
+              });
+              return;
+            }
           } else {
             of = obj.of;
 
@@ -980,7 +983,7 @@
       ],
       code: function(X) {
         var objToAdd = X.objectSummaryView ? X.objectSummaryView : X.summaryView;
-        objToAdd.add(this.Popup.create({ backgroundColor: 'transparent' }).tag({
+        objToAdd.tag({
           class: "foam.u2.PropertyModal",
           property: this.ASSIGNED_TO.clone().copyFrom({ label: '' }),
           isModalRequired: true,
@@ -988,7 +991,7 @@
           propertyData$: X.data.assignedTo$,
           title: this.ASSIGN_TITLE,
           onExecute: this.assignRequest.bind(this, X)
-        }));
+        });
       }
     },
     {

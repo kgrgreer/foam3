@@ -40,8 +40,7 @@ foam.CLASS({
               var classes = spec.split('.');
               spec = classes.shift();
             }
-            return foam.u2.Element.create(args, ctx)
-              .setNodeName(spec || 'div')
+            return foam.u2.Element.create({nodeName: spec || 'DIV', ...args}, ctx)
               .addClasses(classes);
           }
 
