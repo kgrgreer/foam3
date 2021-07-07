@@ -1,28 +1,13 @@
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"foam.nanos.auth.ruler.EnsurePropertyOnCreateRule",
   "id":"set-dug-rule-acting-user-rule",
   "name":"Set DUG Rules acting user if it's blank",
   "priority": 1,
   "enabled": true,
   "ruleGroup": "DUG",
   "daoKey": "localRuleDAO",
-  "operation": 0,
-  "predicate": {
-    "class": "foam.mlang.predicate.And",
-    "args": [
-      {
-        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
-        "of":"foam.nanos.dig.DUGRule"
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName": "actingUser",
-        "propValue": 0
-      }
-    ]
-  },
-  "action": {
-    "class": "foam.nanos.dig.DUGRuleActingUserRuleAction"
-  },
+  "targetClass": "foam.nanos.dig.DUGRule",
+  "propName": "actingUser",
+  "propValueFrom": "createdBy",
   "lifecycleState": 1
 })

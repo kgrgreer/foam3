@@ -649,7 +649,6 @@ var classes = [
   'foam.nanos.dig.SUGAR',
   'foam.nanos.dig.DUGDigestConfig',
   'foam.nanos.dig.DUGRule',
-  'foam.nanos.dig.DUGRuleActingUserRuleAction',
   'foam.nanos.dig.DUGRuleAction',
 
   'foam.nanos.jetty.HttpServer',
