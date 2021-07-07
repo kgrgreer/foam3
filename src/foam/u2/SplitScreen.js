@@ -78,15 +78,15 @@
       this.SUPER();
 
       var right = this.GUnit.create({ columns: this.columnsConfig })
+        .addClass(this.myClass('split-screen'))
         .add(foam.u2.Element.create({}, this)
         .start()
-          .addClass(this.myClass('split-screen'))
           .start('div', null, this.rightPanel$).end()
         .end());
       var left = this.GUnit.create({ columns: this.columnsConfig })
+        .addClass(this.myClass('split-screen'))
         .add(foam.u2.Element.create({}, this)
         .start()
-          .addClass(this.myClass('split-screen'))
           .start('div', null, this.leftPanel$).end()
         .end());
 

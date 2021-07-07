@@ -136,9 +136,6 @@ foam.CLASS({
 
 /* ON LEFT SIDE IMG */
   ^ .cover-img-block1 {
-    margin-top: 10vh;
-    margin-left: 5vw;
-
     /* align img with disclaimer */
     display: flex;
     flex-direction: column;
