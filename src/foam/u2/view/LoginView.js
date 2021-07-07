@@ -30,7 +30,7 @@ foam.CLASS({
   DEPENDING ON PASSED IN ARGUMENTS:
 
   Property functionality:
-  imgPath: if present view uses SplitScreen (-USED to toggle splitScreen - picked up from ApplicationController)
+  imgPath: if present view uses SplitScreenGridBorder (-USED to toggle splitScreen - picked up from ApplicationController)
   backLink_: if on model uses string link from model, other wise gets appConfig.url (-USED for top-top nav- toggled by this.topBarShow_)
   `,
 
@@ -43,7 +43,7 @@ foam.CLASS({
 
   requires: [
     'foam.u2.Element',
-    'foam.u2.SplitScreen',
+    'foam.u2.borders.SplitScreenGridBorder',
     'foam.nanos.u2.navigation.SignIn',
     'foam.nanos.u2.navigation.SignUp'
   ],
@@ -265,7 +265,7 @@ foam.CLASS({
 
       // CREATE SPLIT VIEW
       if ( this.imgPath ) {
-        var split = this.SplitScreen.create();
+        var split = this.SplitScreenGridBorder.create();
         split.rightPanel.add(right);
       } else {
         right.addClass('centerVertical').start().addClass('disclaimer-login').add(this.model.DISCLAIMER).end();

@@ -5,8 +5,8 @@
  */
 
  foam.CLASS({
-  package: 'foam.u2',
-  name: 'SplitScreen',
+  package: 'foam.u2.borders',
+  name: 'SplitScreenGridBorder',
   extends: 'foam.u2.Element',
 
   imports: [
