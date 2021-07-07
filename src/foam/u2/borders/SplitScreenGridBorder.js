@@ -1,23 +1,12 @@
 /**
- * NANOPAY CONFIDENTIAL
- *
- * [2021] nanopay Corporation
- * All Rights Reserved.
- *
- * NOTICE:  All information contained herein is, and remains
- * the property of nanopay Corporation.
- * The intellectual and technical concepts contained
- * herein are proprietary to nanopay Corporation
- * and may be covered by Canadian and Foreign Patents, patents
- * in process, and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained
- * from nanopay Corporation.
+ * @license
+ * Copyright 2021 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
  */
 
  foam.CLASS({
-  package: 'foam.u2',
-  name: 'SplitScreen',
+  package: 'foam.u2.borders',
+  name: 'SplitScreenGridBorder',
   extends: 'foam.u2.Element',
 
   imports: [
@@ -43,14 +32,16 @@
       height: -webkit-calc(100% - 65px);
     }
 
-    ^ .foam-u2-layout-Grid {
-      grid-gap: 2vmax 2vmin;
+    ^grid {
+      grid-gap: clamp(1vmax, 1.5vmax, 2vmax) clamp(1vmax, 1.5vmax, 2vmax);
     }
     
     /* vertically center the 2 sides of splitscreen */
-    ^split-screen { 
-      height: 100%;
-      max-width: 100%;
+    ^split-screen {
+      display: flex;
+      align-content: center;
+      justify-content: center;
+      align-items: center;
     }
   `,
 
@@ -76,20 +67,22 @@
       this.SUPER();
 
       var right = this.GUnit.create({ columns: this.columnsConfig })
+        .addClass(this.myClass('split-screen'))
         .add(foam.u2.Element.create({}, this)
         .start()
-          .addClass(this.myClass('split-screen'))
           .start('div', null, this.rightPanel$).end()
         .end());
       var left = this.GUnit.create({ columns: this.columnsConfig })
+        .addClass(this.myClass('split-screen'))
         .add(foam.u2.Element.create({}, this)
         .start()
-          .addClass(this.myClass('split-screen'))
           .start('div', null, this.leftPanel$).end()
         .end());
 
       var grid = this.Grid.create();
-      grid.add(left, right);
+      grid
+        .addClass(this.myClass('grid'))
+        .add(left, right);
 
       this.start()
         .addClass(this.myClass())
@@ -98,4 +91,3 @@
     }
   ]
 });
-
