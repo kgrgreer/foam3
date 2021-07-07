@@ -43,8 +43,8 @@
       height: -webkit-calc(100% - 65px);
     }
 
-    ^ .foam-u2-layout-Grid {
-      grid-gap: 2vmax 2vmin;
+    ^grid {
+      grid-gap: clamp(1vmax, 1.5vmax, 2vmax) clamp(1vmax, 1.5vmax, 2vmax);
     }
     
     /* vertically center the 2 sides of splitscreen */
@@ -91,7 +91,9 @@
         .end());
 
       var grid = this.Grid.create();
-      grid.add(left, right);
+      grid
+        .addClass(this.myClass('grid'))
+        .add(left, right);
 
       this.start()
         .addClass(this.myClass())
