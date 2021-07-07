@@ -11,6 +11,13 @@ foam.u2.Element.create().write().start('ol').forEach(['a','b','c'], function(v) 
   this.start('li').add(v).end();
 });
 
+foam.u2.Element.create().write().start('ul').repeat(1, 10, function(v) {
+  this.start('li').add(v).end();
+});
+
+foam.u2.Element.create().write().add(function() {
+  this.add('here','I','am');
+});
 
 foam.CLASS({
   name: 'Test',
@@ -64,6 +71,8 @@ foam.CLASS({
 
       this.addClass();
       this.style({background: 'lightgray'});
+      this.start(null, {tooltip: 'tooltip'}).add('hover for tooltip');
+      this.start(null, {tooltip: 'title tooltip'}).setAttribute('title', 'title tooltip').add('hover for title tooltip');
       this.add('before');
       this.start('h1')
         .add('Dynamic Test 1')

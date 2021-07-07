@@ -637,7 +637,9 @@ foam.CLASS({
       class: 'String',
       name: 'tooltip',
       postSet: function(o, n) {
-        if ( n && ! o ) this.initTooltip();
+        if ( n && ! o ) {
+          this.Tooltip.create({target: this, text$: this.tooltip$});
+        }
         return n;
       }
     },
@@ -773,7 +775,6 @@ foam.CLASS({
 */
       // disable adding to content$ during render()
       this.add = function() { return this.add_(arguments, this); }
-      this.initTooltip();
       this.initKeyboardShortcuts();
       this.render();
       if ( this.initE != foam.u2.Element.prototype.initE ) {
@@ -908,14 +909,6 @@ foam.CLASS({
       for ( var key in keyMap ) map[key] = keyMap[key].maybeCall.bind(keyMap[key], this.__subContext__, this);
 
       return map;
-    },
-
-    function initTooltip() {
-      if ( this.tooltip ) {
-        this.Tooltip.create({target: this, text$: this.tooltip$});
-      } else if ( this.getAttribute('title') ) {
-        this.Tooltip.create({target: this, text$: this.attrSlot('title')});
-      }
     },
 
     function initKeyboardShortcuts() {
@@ -1054,6 +1047,10 @@ foam.CLASS({
       // TODO: type checking
 
       if ( name === 'tabindex' ) this.tabIndex = parseInt(value);
+
+      if ( name === 'title' && ! this.tooltip ) {
+        this.Tooltip.create({target: this, text$: this.attrSlot('title')});
+      }
 
       // handle slot binding, ex.: data$: ...,
       // Remove if we add a props() method
