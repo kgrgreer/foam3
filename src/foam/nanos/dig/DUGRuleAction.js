@@ -73,18 +73,10 @@ foam.CLASS({
 
         if ( actingUserId != 0 ) {
           final var userDAO = (DAO) x.get("bareUserDAO");
-          final var user = (User) userDAO.find(actingUserId);
+          final var actingUser = (User) userDAO.find(actingUserId);
 
-          if ( user == null ) {
+          if ( actingUser == null ) {
             getLogger(x).error("DUGRule ", dugRule.getId(), " has acting user but user couldn't be found");
-            return;
-          }
-
-          final var groupDAO = (DAO) x.get("localGroupDAO");
-          final var group = groupDAO.find(user.getGroup());
-
-          if ( group == null ) {
-            getLogger(x).error("DUGRule ", dugRule.getId(), " has acting user but group couldn't be found");
             return;
           }
 
@@ -94,7 +86,8 @@ foam.CLASS({
 
           final var daoKey = SafetyUtil.isEmpty(dugRule.getSecureDaoKey()) ? dugRule.getDaoKey() : dugRule.getSecureDaoKey();
 
-          final var actingX = x.put("group", group);
+          final var actingX = x.put("group", null).put("subject", new Subject.Builder(x).setUser(actingUser).build());
+
           final var objDAO = (DAO) actingX.get(daoKey);
 
           if ( objDAO == null ) {
