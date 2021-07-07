@@ -39,9 +39,7 @@ foam.CLASS({
 
       // Iterate over rootObject's children
       var parent = this.data[rootObject.id];
-      var relationshipDAO = rootObject[relationshipKey].dao 
-        ? rootObject[relationshipKey].dao
-        : rootObject[relationshipKey];
+      var relationshipDAO = rootObject[relationshipKey].dao || rootObject[relationshipKey];
       
       return relationshipDAO
         .select().then(r => Promise.all(r.array.map(o => {
