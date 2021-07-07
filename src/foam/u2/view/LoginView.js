@@ -148,14 +148,6 @@ foam.CLASS({
   ^ .image-one {
     width: 34vw;
   }
-
-  /* align split content vertically */
-  ^ .foam-u2-SplitScreen-split-screen {
-    display: flex;
-    align-content: center;
-    justify-content: center;
-    align-items: center;
-  }
   `,
 
   properties: [
