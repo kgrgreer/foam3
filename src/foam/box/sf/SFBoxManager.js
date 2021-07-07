@@ -94,15 +94,30 @@ foam.CLASS({
         {
           name: 'fileName',
           type: 'String'
+        },
+        {
+          name: 'stepFunction',
+          type: 'SFBOX.StepFunction'
+        },
+        {
+          name: 'maxRetryAttempts',
+          type: 'int'
         }
       ],
       javaCode: `
         String key = makeKey(fileName);
         SFBOX box = (SFBOX) getBoxes().get(key);
         if ( box != null ) {
-          return box;
+          throw new RuntimeException("SFBOX can not be reference more than once");
         }
-        return null;
+        box = (new SFBOX.Builder(getX()))
+                .setFileName(fileName)
+                .setStepFunction(stepFunction)
+                .setMaxRetryAttempts(maxRetryAttempts)
+                .build();
+        box.initReader(getX());
+        add(box);
+        return box;
       `
     },
     {

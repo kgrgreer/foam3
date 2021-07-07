@@ -27,6 +27,11 @@ foam.CLASS({
       name: 'message'
     },
     {
+      class: 'FObjectProperty',
+      of: 'foam.core.FObject',
+      name: 'object'
+    },
+    {
       class: 'Long',
       name: 'scheduledTime',
       storageTransient: true,

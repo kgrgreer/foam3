@@ -93,6 +93,11 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'isStore',
+      value: false
+    },
+    {
+      class: 'Boolean',
       name: 'isHashEntry',
       value: false
     },
@@ -108,11 +113,6 @@ foam.CLASS({
       javaFactory: `
         return x -> x*2;
       `
-    },
-    {
-      class: 'Int',
-      name: 'fileSuffix',
-      value: 0
     },
     {
       class: 'Int',
@@ -147,6 +147,11 @@ foam.CLASS({
       `
     },
     {
+      class: 'FObjectProperty',
+      of: 'foam.box.sf.SF',
+      name: 'sf'
+    },
+    {
       name: 'logger',
       class: 'FObjectProperty',
       of: 'foam.nanos.logger.Logger',
@@ -174,6 +179,8 @@ foam.CLASS({
         /* Create store entry and persist it. */
         entry = (SFEntry)(((DAO) getStoreDAO()).put(entry));
 
+        //TODO: replace by -> entry = sf.store(msg);
+
         entry.setScheduledTime(System.currentTimeMillis());
         // Add new entry into reader queue.
         PriorityQueue<SFEntry> queue = (PriorityQueue) getProrityQueue();
@@ -184,8 +191,10 @@ foam.CLASS({
         } finally {
           lock_.unlock();
         }
+        return;
       `
     },
+    //TODO: make this method static.
     {
       name: 'initReader',
       args: 'Context x',
@@ -194,8 +203,8 @@ foam.CLASS({
         /* read unsend entries from journal */
         Path journalPath = getJournalPath(x);
         Agency pool = (Agency) x.get(getThreadPoolName());
-        DAO dao = new foam.dao.MDAO(SFEntry.getOwnClassInfo());
-        DAO tmpDAO = new FilterDAO(x, dao);
+        DAO tmpDAO = new foam.dao.MDAO(SFEntry.getOwnClassInfo());
+
         if ( journalPath != null ) {
           String fileName = journalPath.getFileName().toString();
           Journal readJournal = new ReadOnlyF3FileJournal.Builder(x)
@@ -222,20 +231,25 @@ foam.CLASS({
             }
           }
         });
-        getLogger().info("load ", queue.size(), " unsend entries from file: ", getFileName(), getFileSuffix());
+        getLogger().info("load ", queue.size(), " unsend entries from file: " + getFileName() + getFileSuffix());
 
 
-        final AssemblyLine assemblyLine = x.get("threadPool") == null ?
-          new foam.util.concurrent.SyncAssemblyLine()   :
-          new foam.util.concurrent.AsyncAssemblyLine(x) ;
+        // final AssemblyLine assemblyLine = x.get("threadPool") == null ?
+        //   new foam.util.concurrent.SyncAssemblyLine()   :
+        //   new foam.util.concurrent.AsyncAssemblyLine(x) ;
+
+        final AssemblyLine assemblyLine = new foam.util.concurrent.SyncAssemblyLine();
 
         /* resend entries */
         pool.submit(x, new ContextAgent() {
+          volatile long count = 0;
+
           @Override
           public void execute(X x) {
             final ReentrantLock lock = lock_;
             lock.lock();
             while ( true ) {
+              System.out.println("$$$$ SF running: " + count++);
               if ( queue.size() > 0 ) {
                 if ( queue.peek().getScheduledTime() <= System.currentTimeMillis() ) {
                   SFEntry e = queue.poll();
@@ -244,7 +258,7 @@ foam.CLASS({
 
                     public void executeJob() {
                       try {
-                        e.getMessage().getAttributes().put("replyBox", (new SFReplayBox.Builder(x)).build());
+                        //e.getMessage().getAttributes().put("replyBox", (new SFReplayBox.Builder(x)).build());
                         getDelegate().send(e.getMessage());
       
                         /* Update entries in the journal. */
@@ -267,11 +281,13 @@ foam.CLASS({
       
                         /* Continue next retry and set new schedule time. */
                         e.setRetryAttempt(e.getRetryAttempt()+1);
+                        //TODO------: replace.
                         e.setCurStep(getStepFunction().next(e.getCurStep()));
                         if ( e.getCurStep() > getMaxRetryDelayMS() ) {
                           e.setCurStep(getMaxRetryDelayMS());
                         }
                         e.setScheduledTime(System.currentTimeMillis()+e.getCurStep());
+                        //END-----:
                         lock_.lock();
                         try {
                           queue.offer(e);
@@ -342,21 +358,9 @@ foam.CLASS({
             private final ReentrantLock lock_ = new ReentrantLock();
             private final Condition notEmpty_ = lock_.newCondition();
         
-            static private interface StepFunction {
+            //Make to public because beanshell do not support.
+            static public interface StepFunction {
               public int next(int cur);
-            }
-            static private class FilterDAO extends ProxyDAO {
-              @Override
-              public FObject put_(X x, FObject obj) {
-                SFEntry entry = (SFEntry) obj;
-                entry.setScheduledTime(System.currentTimeMillis());
-                if ( entry.getStatus() == SFStatus.FAILURE ) return getDelegate().put_(x, entry);
-                return obj;
-              }
-
-              public FilterDAO(X x, DAO delegate) {
-                super(x, delegate);
-              }
             }
           `
         }));

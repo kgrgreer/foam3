@@ -17,37 +17,28 @@
 
 package foam.box.sf;
 
-import foam.core.ContextAwareSupport;
-import foam.box.Message;
+import foam.dao.Sink;
+import foam.box.Box;
 import foam.box.ProxyBox;
 
-public class SFDemo extends ContextAwareSupport {
 
-  public void runDemo() {
+public class SFBoxAdaptor {
 
-  }
-  
-  public static class ExceptionSendBox extends ProxyBox {
+  public static class SinkToBox extends ProxyBox {
+    private Sink sink_ = null;
+
+    public SinkToBox(Sink sink) {
+      sink_ = sink;
+    }
+
     @Override
-    public void send(Message msg) {
-      throw new RuntimeException("ExceptionSendBox: try again");
+    public void send(foam.box.Message msg) {
+      sink_.put(msg.getObject(), null);
     }
   }
 
-  public static class SuccessSendBox extends ProxyBox {
-    @Override
-    public void send(Message msg) {
-      return ;
-    }
+  public static Box sinkToBox(Sink sink) {
+    return new SinkToBox(sink);
   }
 
-  public static class SuccessSendBox2 extends ProxyBox {
-    volatile int i = 0;
-    @Override
-    public void send(Message msg) {
-      i++;
-      if ( i <= 2 ) return;
-      throw new RuntimeException("SuccessSendBox2: try again");
-    }
-  }
 }
