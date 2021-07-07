@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2020 The FOAM Authors. All Rights Reserved.
+ * Copyright 2021 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
@@ -17,18 +17,9 @@
 
   requires: [ 'foam.u2.view.CardSelectView' ],
 
-  documentation: `
-  `,
-
   css: `
     ^flexer {
       flex-wrap: wrap;
-    }
-    ^innerFlexer {
-      width: 100%;
-      display: inline-flex;
-      padding: 4px;
-      box-sizing: border-box;
     }
   `,
 
@@ -65,7 +56,6 @@
                 });
 
                 return self.E()
-                  .addClass(self.myClass('innerFlexer'))
                   .style({
                     'width': self.isVertical ? '100%' : `${100 / self.numCols}%`
                   })
