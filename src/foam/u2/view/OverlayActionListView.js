@@ -99,7 +99,7 @@ foam.CLASS({
     }
 
     ^iconOnly{
-      padding: 0px !important;
+      padding: 0px;
     }
 
     ^dropdownIcon {

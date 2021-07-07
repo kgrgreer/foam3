@@ -8,6 +8,11 @@ foam.CLASS({
   package: 'foam.u2.wizard',
   name: 'SearchableWizardlet',
 
+  documentation: `
+    This model wraps a Wizardlet to include a string containing search keywords.
+    This allows searching recursive data with acceptable performance.
+  `,
+
   properties: [
     {
       name: 'value',
@@ -24,6 +29,11 @@ foam.CLASS({
 foam.CLASS({
   package: 'foam.u2.wizard',
   name: 'WizardletSearchController',
+
+  documentation: `
+    A controller that sets the isHidden property for wizardlets depending on
+    a search query.
+  `,
 
   implements: [
     'foam.mlang.Expressions'

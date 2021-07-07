@@ -151,7 +151,7 @@ foam.CLASS({
           return function(x) {
             return x.
               E('article').
-              cssClass('foam-flow-Document').
+              addClass('foam-flow-Document').
               // This is needed because one you click on a #link href
               // the document view moves up for some unknown reason.
               style({'margin-top': '60px'}).
@@ -344,7 +344,7 @@ foam.CLASS({
           return function(x) {
             this.
               start('pre').
-                cssClass('code').
+                addClass('code').
                 add(code).
               end();
           };

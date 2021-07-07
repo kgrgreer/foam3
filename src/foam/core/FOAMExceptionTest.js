@@ -23,7 +23,7 @@ foam.CLASS({
         throw new FOAMException();
       } catch (FOAMException e) {
         String expected = "";
-        test(expected.equals(e.getMessage()), "expecting: "+expected+", found: \\\""+e.getMessage()+"\\\"");
+        test(e.getMessage() == null || expected.equals(e.getMessage()), "expecting: "+expected+", found: \\\""+e.getMessage()+"\\\"");
       }
       try {
         throw new FOAMException("test message");

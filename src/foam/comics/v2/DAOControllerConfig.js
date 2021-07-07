@@ -109,11 +109,11 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'summaryView',
-      expression: function(defaultColumns) {
+      expression: function(tableColumns) {
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: true,
-          columns: defaultColumns,
+          columns: tableColumns,
           css: {
             width: '100%'
           }
@@ -127,7 +127,7 @@ foam.CLASS({
     },
     {
       class: 'Array',
-      name: 'defaultColumns',
+      name: 'tableColumns',
       factory: null,
       expression: function(of) {
         var tableColumns = of.getAxiomByName('tableColumns');
@@ -135,6 +135,42 @@ foam.CLASS({
         return tableColumns
           ? tableColumns.columns
           : of.getAxiomsByClass(foam.core.Property).map(p => p.name);
+      }
+    },
+    {
+      class: 'StringArray',
+      name: 'searchColumns',
+      factory: null,
+      expression: function(of, tableColumns) {
+        var tableSearchColumns = of.getAxiomByName('searchColumns');
+
+        var filteredDefaultColumns = tableColumns.filter(c => {
+          //  to account for nested columns like approver.legalName
+          if ( c.split('.').length > 1 ) return false;
+
+          var a = of.getAxiomByName(c);
+
+          if ( ! a ) console.warn("Column does not exist for " + of.name + ": " + c);
+
+          return a
+            && ! a.storageTransient
+            && ! a.networkTransient
+            && a.searchView
+            && ! a.hidden
+        });
+
+        var allProps = of.getAxiomsByClass(foam.core.Property).filter(p => {
+          return ! p.storageTransient
+            && ! p.networkTransient
+            && p.searchView
+            && ! p.hidden
+        })
+
+        return tableSearchColumns
+          ? tableSearchColumns.columns
+          : filteredDefaultColumns
+            ? filteredDefaultColumns
+            : allProps
       }
     },
     {

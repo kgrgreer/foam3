@@ -44,17 +44,10 @@ foam.CLASS({
   methods: [
     {
       name: 'checkOwnership',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'obj',
-          type: 'foam.nanos.crunch.UserCapabilityJunction'
-        }
-      ],
-      documentation: `Check if current user has permission to add this junction`,
+      args: [ 'Context x', 'foam.nanos.crunch.UserCapabilityJunction obj' ],
+      type: 'Boolean',
+      documentation: `Check if current user has permission to find this junction.
+      Returns false if user should not have acccess.`,
       javaCode: `
         Subject subject = (Subject) x.get("subject");
         User user = subject.getUser();
@@ -62,7 +55,7 @@ foam.CLASS({
 
         AuthService auth = (AuthService) x.get("auth");
         boolean isOwner = obj.getSourceId() == user.getId() || obj.getSourceId() == realUser.getId();
-        if ( ! isOwner && ! auth.check(x, "usercapabilityjunction.read.*") ) throw new AuthorizationException();
+        return isOwner || auth.check(x, "usercapabilityjunction.read.*");
       `
     },
     {
@@ -81,7 +74,7 @@ foam.CLASS({
       User realUser = (User) subject.getRealUser();
 
       AuthService auth = (AuthService) x.get("auth");
-      if ( auth.check(x, "service.userCapabilityJunctionDAO.admin") ) return getDelegate();
+      if ( auth.check(x, "usercapabilityjunction.read.*") ) return getDelegate();
       return getDelegate().where(
         OR(
           EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),
@@ -112,8 +105,8 @@ foam.CLASS({
     {
       name: 'find_',
       javaCode: `
-        FObject result = super.find_(x, id);
-        if ( result != null ) checkOwnership(x, (UserCapabilityJunction) result);
+        UserCapabilityJunction result = (UserCapabilityJunction) super.find_(x, id);
+        if ( result == null || ! checkOwnership(x, result) ) return null;
         return result;
       `
     },

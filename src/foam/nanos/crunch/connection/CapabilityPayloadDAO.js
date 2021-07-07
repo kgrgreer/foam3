@@ -304,7 +304,7 @@ foam.CLASS({
             }
             
             UserCapabilityJunction ucj = (UserCapabilityJunction) crunchService.updateJunction(x, cap.getId(), dataObj, null);
-            getLogger().debug("Updated capability: " + cap.getName() + " - " + cap.getId(), ucj.getStatus(), ucj.findSourceId(x), dataObj);
+            getLogger().debug("Updated capability: " + cap.getName() + " - " + cap.getId(), ucj.getStatus(), ucj.getSourceId(), dataObj);
           } else if ( item instanceof List ) {
             processCapabilityList(x, (List) item, capabilityDataObjects);
           } else {
