@@ -103,10 +103,8 @@ foam.CLASS({
       }
       this.addContentHeaders();
 
-      // disable caching
       this.headers['Pragma'] = 'no-cache';
-      this.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
-      this.headers['Expires'] = 0;
+      this.headers['Cache-Control'] = 'no-cache, no-store';
 
       var self = this;
 
