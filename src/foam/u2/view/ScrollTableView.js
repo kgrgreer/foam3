@@ -10,6 +10,7 @@
   extends: 'foam.u2.Element',
 
   imports: [
+    'getElementById',
     'memento?',
     'stack'
   ],
@@ -23,16 +24,28 @@
   requires: [
     'foam.dao.FnSink',
     'foam.mlang.sink.Count',
+    'foam.u2.layout.Cols',
+    'foam.u2.layout.Rows',
+    'foam.u2.ReadWriteView',
     'foam.u2.view.TableView',
     'foam.comics.v2.DAOControllerConfig',
     'foam.nanos.controller.Memento'
   ],
 
   css: `
-    ^ {
-      overflow: auto;
-      max-height: 100%;
+    ^{
+      border-radius: 4px;
+      position: relative;
+    }
+    ^full-height{
+      height: 100%;
+    }
+    ^table-wrapper {
       flex: 1;
+      max-height: 100%;
+      overflow: auto;
+      scroll-behavior: smooth;
+      overscroll-behavior: contain;
     }
     ^table {
       position: relative;
@@ -43,6 +56,32 @@
     }
     ^scrolled .foam-u2-view-TableView-thead {
       box-shadow: 0 1.5px 4px /*%GREY4%*/ #DADDE2;
+    }
+    ^nav{
+      align-items: center;
+      background: /*%WHITE%*/ white;
+      border-radius: 0 0 4px 4px;
+      border-top: 1px solid /*%GREY4%*/ #DADDE2;
+      box-sizing: border-box;
+      gap: 8px;
+      justify-content: flex-end;
+      max-height: 56px;
+      padding: 16px 24px;
+      width: 100%;
+    }
+    ^buttons svg{
+      width: 1em;
+      height: 1em;
+    }
+    ^counters > *:focus {
+      border: 0px;
+      border-radius: 0px;
+      padding: 0px;
+      height: auto;
+      border-bottom: 2px solid /*%PRIMARY3%*/ #406DEA;
+    }
+    ^counters:hover {
+      cursor: pointer;
     }
   `,
 
@@ -190,7 +229,44 @@
       class: 'Boolean',
       name: 'isInit'
     },
-    'tableWrapper_'
+    'tableWrapper_',
+
+    // Navigation props
+    {
+      class: 'Boolean',
+      name: 'showPagination',
+      documentation: 'Controls visibility for the pagination elements',
+      value: true
+    },
+    {
+      class: 'Int',
+      name: 'topRow_',
+      documentation: 'Stores the index top row that is currently displayed in the div height',
+      preSet: function(o, n) {
+        this.scrollTable(this.scrollPos_ + Math.round((n - o) * this.rowHeight));
+      },
+      expression: function(scrollPos_, rowHeight, daoCount, displayedRowCount_) {
+        var possibleMax = daoCount > displayedRowCount_ ? daoCount - displayedRowCount_ + 1 : daoCount;
+        return foam.Number.clamp(daoCount ? 1 : 0, Math.round(scrollPos_/rowHeight) + 1, possibleMax);
+      }
+    },
+    {
+      class: 'Int',
+      name: 'lastDisplayedEl_',
+      documentation: 'Stores the index of last row that is currently displayed in the div height',
+      preSet: function(o, n) {
+        this.scrollTable(this.scrollPos_ + (n - o) * this.rowHeight);
+      },
+      expression: function(displayedRowCount_, topRow_, daoCount) {
+        var possibleMin = daoCount > displayedRowCount_ ? displayedRowCount_ : daoCount;
+        return foam.Number.clamp(possibleMin, topRow_ + displayedRowCount_ - 1, daoCount);
+      }
+    },
+    {
+      class: 'Float',
+      name: 'displayedRowCount_',
+      documentation: 'Stores the number of rows that are currently displayed in the div height',
+    }
   ],
 
   reactions: [
@@ -204,6 +280,7 @@
     },
 
     function initE() {
+      var self = this;
       if ( this.memento ) {
         //as there two settings to configure for table scroll and columns params
         //scroll setting which setts the record to which table currently scrolled
@@ -221,7 +298,6 @@
         this.currentMemento_ = this.memento.tail;
       }
 
-      var self = this;
       this.table_ = foam.u2.ViewSpec.createView(this.TableView, {
         data: foam.dao.NullDAO.create({of: this.data.of}),
         columns: this.columns,
@@ -231,12 +307,15 @@
         disableUserSelection: this.disableUserSelection,
         multiSelectEnabled: this.multiSelectEnabled,
         selectedObjects$: this.selectedObjects$
-      },  this, this.__subSubContext__.createSubContext({ memento: this.currentMemento_ ? this.currentMemento_.tail : this.currentMemento_ }));
-      
+      }, this, this.__subSubContext__.createSubContext({ memento: this.currentMemento_ && this.currentMemento_.tail }));
+
       if ( ! this.table_.memento || ! this.table_.memento.tail || this.table_.memento.tail.head.length == 0 ) {
-        this.
+        var buttonStyle = { label: '', buttonStyle: 'TERTIARY', size: 'SMALL' };
+        this.start(this.Rows).addClass(this.myClass()).
+          enableClass(this.myClass('full-height'), this.showPagination$).
           start('div', {}, this.tableWrapper_$).
-            addClass(this.myClass()).
+            call(() => { this.updateRowCount(); }).
+            addClass(this.myClass('table-wrapper')).
             on('scroll', this.onScroll).
             start().
               add(this.table_).
@@ -246,7 +325,40 @@
                 height: this.scrollHeight$.map(h => h + 'px')
               }).
             end().
-          end();
+          end().
+          add(this.slot(showPagination => {
+            return showPagination ?
+             this.E().start(self.Cols).
+              addClass(self.myClass('nav')).
+              style({ 'justify-content': 'flex-end'}). // Have to do this here because Cols CSS is installed after nav. Investigate later. 
+              startContext({ data: self }).
+                start(self.Cols).
+                  style({ gap: '4px', 'box-sizing': 'border-box' }).
+                  start(this.ReadWriteView, { data$: self.topRow_$ }).addClass(this.myClass('counters')).end().
+                  add('-').
+                  start(this.ReadWriteView, { data$: self.lastDisplayedEl_$ }).addClass(this.myClass('counters')).end().
+                  start().addClass(self.myClass('separator')).add('of').end().add(self.daoCount$).
+                end().
+                start(self.FIRST_PAGE, { ...buttonStyle, themeIcon: 'first' }).
+                addClass(self.myClass('buttons')).end().
+                start(self.PREV_PAGE, { ...buttonStyle, themeIcon: 'back' }).
+                addClass(self.myClass('buttons')).end().
+                start(self.NEXT_PAGE, { ...buttonStyle, themeIcon: 'next' }).
+                addClass(self.myClass('buttons')).end().
+                start(self.LAST_PAGE, {  ...buttonStyle, themeIcon: 'last' }).
+                addClass(self.myClass('buttons')).end().
+              endContext().
+              end() : this.E();
+          })).
+        end();
+
+        // TODO: REPALCE WITH FOAM IMPLMEMENTATION WITH U3
+        var resize = new ResizeObserver (self.updateRowCount);
+        this.tableWrapper_.sub('onload', () => {
+          resize.observe(self.tableWrapper_.el_());
+        })
+        this.onDetach(resize.disconnect());
+
       } else if ( this.table_.memento.tail.head.length != 0 ) {
         if ( this.table_.memento.tail.head == 'create' ) {
           this.stack.push({
@@ -284,6 +396,10 @@
       }
 
       this.onDetach(this.table_$.sub(this.updateRenderedPages_));
+    },
+    function scrollTable(scroll) {
+      if ( this.childNodes && this.childNodes.length > 0 )
+        this.getElementById(this.tableWrapper_.id).scrollTop = scroll;
     }
   ],
 
@@ -302,8 +418,7 @@
           var scroll = this.currentMemento_.head * this.rowHeight;
           scroll = scroll >= this.rowHeight && scroll < this.scrollHeight ? scroll : 0;
 
-          if ( this.childNodes && this.childNodes.length > 0 )
-            document.getElementById(this.tableWrapper_.id).scrollTop = scroll;
+          this.scrollTable(scroll);
 
           this.isInit = true;
         } else {
@@ -315,8 +430,9 @@
       name: 'updateCount',
       isFramed: true,
       code: function() {
-        return this.data$proxy.select(this.Count.create()).then((s) => {
-          this.daoCount = s.value;
+        var limit = this.data.limit_ || undefined;
+        return this.data$proxy.select(this.Count.create()).then(s => {
+          this.daoCount = limit && limit < s.value ? limit : s.value;
           this.refresh();
         });
       }
@@ -358,6 +474,68 @@
     },
     function dblclick(obj, id, title) {
       this.dblClickListenerAction(obj, id, title);
+    },
+    // Navigation
+    {
+      name: 'updateRowCount',
+      isframed: true,
+      code: function() {
+        this.tableWrapper_.el().then(e => {
+          var displayHeight = e.getBoundingClientRect().height;
+          this.displayedRowCount_ = Math.round((displayHeight - this.TABLE_HEAD_HEIGHT)/this.rowHeight);
+        });
+      }
+    }
+  ],
+
+  actions: [
+    {
+      name: 'nextPage',
+      toolTip: 'Next Page',
+      isEnabled: function(lastDisplayedEl_, daoCount) {
+        return lastDisplayedEl_ != daoCount;
+      },
+      code: function() {
+        if ( this.displayedRowCount_ ) {
+          var scroll = this.scrollPos_ + (this.displayedRowCount_*this.rowHeight);
+          this.scrollTable(scroll);
+        }
+      }
+    },
+    {
+      name: 'lastPage',
+      toolTip: 'Last Page',
+      isEnabled: function(lastDisplayedEl_, daoCount) {
+        return lastDisplayedEl_ != daoCount;
+      },
+      code: function() {
+        if ( this.displayedRowCount_ ) {
+          this.scrollTable(this.scrollHeight);
+        }
+      }
+    },
+    {
+      name: 'prevPage',
+      toolTip: 'Previous Page',
+      isEnabled: function(topRow_) {
+        return topRow_ != 1;
+      },
+      code: function() {
+        if ( this.displayedRowCount_ ) {
+          var scroll = this.scrollPos_ - (this.displayedRowCount_*this.rowHeight);
+          this.scrollTable(scroll);
+        }
+      }
+    },
+    {
+      name: 'firstPage',
+      toolTip: 'First Page',
+      isEnabled: function(topRow_) {
+        return topRow_ != 1;
+      },
+      code: function() {
+        this.scrollTable(0);
+      }
     }
   ]
 });
