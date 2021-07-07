@@ -160,26 +160,21 @@ foam.CLASS({
         .callIf(! self.alreadyRendered_[node.id], function () {
           self.alreadyRendered_[node.id] = true;
 
-          if ( self.selectedNodeId && self.nodeView.hasOwnAxiom("isSelected") ){
-            this
-              .tag(self.nodeView, {
-                of: node.data.cls_,
-                isSelected$: self.slot(function(selectedNodeId) {
-                  return selectedNodeId === node.data.id; 
-                }),
-                data: node.data,
-                position: coords,
-                size: Array(coords.length).fill(self.cellSize)
-              })
-          } else {
-            this
-              .tag(self.nodeView, {
-                of: node.data.cls_,
-                data: node.data,
-                position: coords,
-                size: Array(coords.length).fill(self.cellSize)
-              })
+          var args = {
+            of: node.data.cls_,
+            data: node.data,
+            position: coords,
+            size: Array(coords.length).fill(self.cellSize)
           }
+
+          if ( self.selectedNodeId && self.nodeView.hasOwnAxiom("isSelected") ){ 
+            args.isSelected$ = self.slot(function(selectedNodeId) {
+              return selectedNodeId === node.data.id; 
+            })
+          }
+          
+          this
+            .tag(self.nodeView, args)
         })
         // .callIf(parent, function () {
         //   var pcoords = self.placement_.getPlacement(parent);
