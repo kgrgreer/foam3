@@ -70,6 +70,9 @@ foam.CLASS({
       var self = this;
 
       this.addClass();
+      this.start('input', {tabIndex: 3, data: 'focused'});
+      this.start('input', {tabIndex: 2, data: 'focused'});
+      this.start('input', {tabIndex: 1, data: 'focused'});
       this.style({background: 'lightgray'});
       this.start(null, {tooltip: 'tooltip'}).add('hover for tooltip');
       this.start(null, {tooltip: 'title tooltip'}).setAttribute('title', 'title tooltip').add('hover for title tooltip');

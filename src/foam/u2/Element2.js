@@ -36,6 +36,7 @@ PORTING U2 to U3:
   - remove insertBefore()
   - remove insertAfter()
   - remove slotE_()
+  - remove initTooltip
   - removed use of SPAN tags for dynamic slot content by using reference to TextNode
 
 .add(this.slot(function(a, b, c) { return this.E().start()...; }));
@@ -765,14 +766,6 @@ foam.CLASS({
     },
 
     function load() {
-      // shouldn't have any children
-      // this.visitChildren('load');
-/*
-      for ( var i = 0 ; i < this.attributes.length ; i++ ) {
-        var attr = this.attributes[i];
-        this.onSetAttr(attr.name, attr.value);
-      }
-*/
       // disable adding to content$ during render()
       this.add = function() { return this.add_(arguments, this); }
       this.initKeyboardShortcuts();
@@ -783,21 +776,9 @@ foam.CLASS({
       }
       this.add = foam.u2.Element.prototype.add;
 
-      // TODO: test and then remove if postSet works
-      // if ( this.tabIndex ) this.setAttribute('tabindex', this.tabIndex);
-
-      // Add a delay before setting the focus in case the DOM isn't visible yet.
-      if ( this.focused ) this.el().then(el => el.focus());
-      // Allows you to take the DOM element and map it back to a
-      // foam.u2.Element object.  This is expensive when building
-      // lots of DOM since it adds an extra DOM call per Element.
-      // But you could use it to cut down on the number of listeners
-      // in something like a table view by doing per table listeners
-      // rather than per-row listeners and in the event finding the right
-      // U2 view by walking the DOM tree and checking e_.
-      // This could save more time than the work spent here adding e_ to each
-      // DOM element.
-      // this.el().e_ = this;
+      // Is also called in postSet of focused property, but if DOM not added
+      // to document yet, then that doesn't work, so try again now.
+      if ( this.focused ) this.element_.focus();
     },
     function remove() {
       if ( this.parentNode ) {
@@ -906,7 +887,8 @@ foam.CLASS({
 
       var map = {};
 
-      for ( var key in keyMap ) map[key] = keyMap[key].maybeCall.bind(keyMap[key], this.__subContext__, this);
+      for ( var key in keyMap )
+        map[key] = keyMap[key].maybeCall.bind(keyMap[key], this.__subContext__, this);
 
       return map;
     },
@@ -915,7 +897,7 @@ foam.CLASS({
       /* Initializes keyboard shortcuts. */
       var keyMap = this.initKeyMap_(keyMap, this.cls_);
 
-      //      if ( this.of ) count += this.initKeyMap_(keyMap, this.of);
+      // if ( this.of ) count += this.initKeyMap_(keyMap, this.of);
       if ( keyMap ) {
         this.keyMap_ = keyMap;
         var target = this.parentNode || this;
@@ -1235,11 +1217,6 @@ foam.CLASS({
     function nbsp() {
       return this.entity('nbsp');
     },
-
-function cssClass(cls) {
-  console.warn('DEPRECATED use of cssClass(). Use addClass() instead.');
-  return this.addClass(cls);
-},
 
     function addClass(cls) { /* Slot | String */
       /* Add a CSS cls to this Element. */
