@@ -48,9 +48,11 @@
     }
     
     /* vertically center the 2 sides of splitscreen */
-    ^split-screen { 
-      height: 100%;
-      max-width: 100%;
+    ^split-screen {
+      display: flex;
+      align-content: center;
+      justify-content: center;
+      align-items: center;
     }
   `,
 
