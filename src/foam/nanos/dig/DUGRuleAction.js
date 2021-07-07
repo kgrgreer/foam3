@@ -64,49 +64,50 @@ foam.CLASS({
       javaCode: `
       final var dugRule = (DUGRule) rule;
 
-      // If the actingUser is set, we want to refind the obj with that user as the subject
-      // The goal with this is to filter the permissioned properties based on acting user
-      // Instead of the user that triggered the rule
+      if ( dugRule.getActAsUser() ) {
+        // If the actingUser is set, we want to refind the obj with that user as the subject
+        // The goal with this is to filter the permissioned properties based on acting user
+        // Instead of the user that triggered the rule
 
-      final var actingUserId = dugRule.getActingUser();
+        final var actingUserId = dugRule.getActingUser();
 
-      if ( actingUserId != 0 ) {
-        final var userDAO = (DAO) x.get("bareUserDAO");
-        final var user = (User) userDAO.find(actingUserId);
+        if ( actingUserId != 0 ) {
+          final var userDAO = (DAO) x.get("bareUserDAO");
+          final var user = (User) userDAO.find(actingUserId);
 
-        if ( user == null ) {
-          getLogger(x).error("DUGRule ", dugRule.getId(), " has acting user but user couldn't be found");
-          return;
+          if ( user == null ) {
+            getLogger(x).error("DUGRule ", dugRule.getId(), " has acting user but user couldn't be found");
+            return;
+          }
+
+          final var groupDAO = (DAO) x.get("localGroupDAO");
+          final var group = groupDAO.find(user.getGroup());
+
+          if ( group == null ) {
+            getLogger(x).error("DUGRule ", dugRule.getId(), " has acting user but group couldn't be found");
+            return;
+          }
+
+          if ( SafetyUtil.isEmpty(dugRule.getSecureDaoKey()) ) {
+            getLogger(x).debug("DUGRule ", dugRule.getId(), " has acting user but secure DAO key couldn't be found");
+          }
+
+          final var daoKey = SafetyUtil.isEmpty(dugRule.getSecureDaoKey()) ? dugRule.getDaoKey() : dugRule.getSecureDaoKey();
+
+          final var actingX = x.put("group", group);
+          final var objDAO = (DAO) actingX.get(daoKey);
+
+          if ( objDAO == null ) {
+            getLogger(x).error("DUGRule ", dugRule.getId(), " has acting user but ", dugRule.getSecureDaoKey(), " wasn't in context");
+            return;
+          }
+
+          obj = objDAO.inX(actingX).find(obj.getProperty("id"));
         }
 
-        final var groupDAO = (DAO) x.get("localGroupDAO");
-        final var group = groupDAO.find(user.getGroup());
-
-        if ( group == null ) {
-          getLogger(x).error("DUGRule ", dugRule.getId(), " has acting user but group couldn't be found");
+        if ( obj == null )
           return;
-        }
-
-        if ( SafetyUtil.isEmpty(dugRule.getSecureDaoKey()) ) {
-          getLogger(x).error("DUGRule ", dugRule.getId(), " has acting user but secure DAO key couldn't be found");
-          return;
-        }
-
-        final var daoKey = SafetyUtil.isEmpty(dugRule.getSecureDaoKey()) ? dugRule.getDaoKey() : dugRule.getSecureDaoKey();
-
-        final var actingX = x.put("group", group);
-        final var objDAO = (DAO) actingX.get(daoKey);
-
-        if ( objDAO == null ) {
-          getLogger(x).error("DUGRule ", dugRule.getId(), " has acting user but ", dugRule.getSecureDaoKey(), " wasn't in context");
-          return;
-        }
-
-        obj = objDAO.inX(actingX).find(obj.getProperty("id"));
       }
-
-      if ( obj == null )
-        return;
 
       ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "Sending DUG webhook", obj);  
       
