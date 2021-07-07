@@ -17,15 +17,11 @@
 
   requires: [ 'foam.u2.view.CardSelectView' ],
 
-  documentation: `
-  `,
-
   css: `
     ^flexer {
       flex-wrap: wrap;
     }
     ^innerFlexer {
-      width: 100%;
       display: inline-flex;
       padding: 4px;
       box-sizing: border-box;
