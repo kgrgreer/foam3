@@ -21,11 +21,6 @@
     ^flexer {
       flex-wrap: wrap;
     }
-    ^innerFlexer {
-      display: inline-flex;
-      padding: 4px;
-      box-sizing: border-box;
-    }
   `,
 
   properties: [
@@ -61,7 +56,6 @@
                 });
 
                 return self.E()
-                  .addClass(self.myClass('innerFlexer'))
                   .style({
                     'width': self.isVertical ? '100%' : `${100 / self.numCols}%`
                   })
