@@ -42,7 +42,7 @@ foam.CLASS({
     ^thead > ^tr {
       border-bottom: 2px solid /*%GREY4%*/ #DADDE2;
       box-sizing: border-box;
-      border-radius: 0px;
+      border-radius: 4px 4px 0 0;
     }
 
     ^td,
