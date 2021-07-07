@@ -40,7 +40,7 @@ foam.CLASS({
         return alarm;
       }
 
-      if ( ! "localhost".equals(System.getProperty("hostname", "localhost")) ) {
+      if ( "localhost".equals(System.getProperty("hostname", "localhost")) ) {
         return alarm;
       }
 

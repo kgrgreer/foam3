@@ -114,7 +114,7 @@ foam.CLASS({
 
     function deleteMemento(mementoToDelete) {
       /** setting the last not null memento in memento chain to null to update application controller memento value on stack.back **/
-      var m = this.memento;
+      var m = this.findCurrentMemento();
       if ( ! m ) return;
 
       var tail = this.memento.tail;
@@ -124,12 +124,13 @@ foam.CLASS({
         return;
       }
 
-      while ( m != null && m.tail != null && m.tail.value.indexOf(mementoToDelete) != 0 ) {
-        m = m.tail;
+      while ( m != null && m.parent != null && m.value.indexOf(mementoToDelete) != 0 ) {
+        m = m.parent;
       }
 
-      if ( m && m.tail ) {
-        m.tail$.set(null);
+      if ( m && m.parent ) {
+        // Find a better way to set this. This is kinda hacky
+        m.parent.tail$.set(null);
       }
     },
     function findCurrentMemento() {
@@ -150,7 +151,10 @@ foam.CLASS({
       //or if the view is object and it has mementoHead set
       //if so we need to set last not-null memento in the memento chain to null as we're going back
       while ( this.pos > jumpPos ) {
-        if ( this.stack_[this.pos][0].class ) {
+        if ( this.stack_[this.pos][3] && this.stack_[this.pos][3].mementoHead ) {
+          isMementoSetWithView = true;
+          var obj = { mementoHead: this.stack_[this.pos][3].mementoHead };
+        } else if ( this.stack_[this.pos][0].class ) {
           var classObj = this.stack_[this.pos][0].class;
           if ( foam.String.isInstance(classObj) ) {
             classObj = foam.lookup(this.stack_[this.pos][0].class);
