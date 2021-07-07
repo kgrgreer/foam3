@@ -101,7 +101,7 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "UniqueUser",
+  "name": "uniqueUser",
   "serve": true,
   "authenticate": true,
   "boxClass": "foam.nanos.auth.UniqueUserServiceSkeleton",
