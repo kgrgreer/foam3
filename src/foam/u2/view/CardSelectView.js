@@ -50,6 +50,7 @@ foam.CLASS({
       position: relative;
       padding: 16px;
       transition: all 0.2s linear;
+      margin: 4px;
     }
   `,
 
