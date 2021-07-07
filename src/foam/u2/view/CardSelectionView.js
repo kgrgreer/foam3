@@ -17,9 +17,6 @@
 
   requires: [ 'foam.u2.view.CardSelectView' ],
 
-  documentation: `
-  `,
-
   css: `
     ^flexer {
       flex-wrap: wrap;
