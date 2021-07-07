@@ -384,6 +384,7 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
           ((foam.nanos.logger.Logger) x.get("logger")).warning(this.getClass().getSimpleName(), "validateCidrWhiteList", remoteIp, e.getMessage());
         }
       }
+      ((foam.nanos.logger.Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "validateCidrWhiteList", "Restricted IP address not allowed", remoteIp, getId());
       throw new foam.core.ValidationException("Restricted IP");
       `
     }

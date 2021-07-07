@@ -89,14 +89,13 @@ foam.CLASS({
         'currentMemento_ as memento'
       ],
 
+      requires: ['foam.u2.stack.BreadcrumbView'],
+
       css: `
-        ^title {
-          padding: 25px;
-          font-size: 26px;
-        }
-        ^title a {
-          color: blue;
-          text-decoration: underline;
+        ^nav {
+          margin-top: 32px;
+          margin-left: 32px;
+          margin-bottom: 16px;
         }
       `,
 
@@ -105,6 +104,10 @@ foam.CLASS({
         {
           class: 'foam.u2.ViewSpec',
           name: 'inner'
+        },
+        {
+          name: 'mementoHead',
+          expression: function(title) { return title; }
         },
         'currentMemento_'
       ],
@@ -117,16 +120,7 @@ foam.CLASS({
             this.currentMemento_$ = this.memento.tail$;
 
           this.
-            start().
-              addClass(this.myClass('title')).
-              start('a').
-                add('Data Management').on('click', () => {
-                  this.memento.tail$.set(null);
-                  this.stack.back();
-                }).
-              end().
-              add(' / ', this.title).
-            end().
+            start(this.BreadcrumbView).addClass(this.myClass('nav')).end().
             tag(this.inner);
         }
       ]
@@ -163,7 +157,7 @@ foam.CLASS({
     }
     /* TODO: scope this better so it doesn't affect nested AltViews also */
     .foam-u2-view-AltView .property-selectedView {
-      margin-left: 24px;
+      margin-left: 32px;
     }
   `,
 
@@ -337,7 +331,6 @@ foam.CLASS({
         if ( ! isInitializing && ! m.tail ) this.stack.back();
         return;
       }
-
       var x = this.__subContext__.createSubContext({ memento: this.memento });
       x.register(this.DAOUpdateControllerView, 'foam.comics.DAOUpdateControllerView');
       x.register(this.CustomDAOSummaryView,    'foam.comics.v2.DAOSummaryView');
@@ -361,13 +354,14 @@ foam.CLASS({
             [
               {
                 class: this.DAOBrowseControllerView,
-                stack: this.stack
+                stack: this.stack,
+                showNav: false
               },
               this.CONTROLLER2
             ]
           ]
         }
-      }, x);
+      }, x, undefined, { navStackTitle: m.tail.head });
     }
   ]
 });

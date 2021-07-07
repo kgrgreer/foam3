@@ -93,7 +93,7 @@ tag('input');
 ##  Keyboard Shortcuts
 ##  el() and id
 ##  E()
-##  addClass() / cssClass() / addClasses()
+##  addClass() / addClasses()
 ##  enableClass()
 ##  myClass()
 --

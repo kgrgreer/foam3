@@ -25,6 +25,6 @@ foam.CLASS({
   properties: [
     [ 'type', 'Boolean' ],
     [ 'value', false ],
-    [ 'adapt', function adaptBoolean(_, v) { return !!v; } ]
+    [ 'adapt', function adaptBoolean(_, v) { return !! v; } ]
   ]
 });
