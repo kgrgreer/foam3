@@ -165,9 +165,11 @@ foam.CLASS({
     {
       name: 'find_',
       documentation: `
-        Allow users to find object for which they have permission to via "serviceprovider.read.<spid>"
-        
-        Alternatively, if user has the global read permission "serviceprovider.read.*" for ServiceProvider,
+        Add an additional predicate to find based on the context given:
+          - If there is a user in the context, only allow users to find object for which they have permission to via "serviceprovider.read.<spid>"
+          - Otherwise, restrict find based on the getUnauthenticatedPredicate(x)
+
+        Alternatively, if user exists and has the global read permission "serviceprovider.read.*" for ServiceProvider,
         they are also authorized to read any object associated to the serviceproviders.
       `,
       javaCode: `

@@ -56,13 +56,19 @@ foam.CLASS({
                 .attrs({href: '#'})
                 .on('click', function(evt) {
                   evt.preventDefault();
+                  var pred = foam.mlang.predicate.False.create();
                   self.stack.push({
                     class:     'foam.comics.v2.DAOSummaryView',
                     data:      self.obj,
                     of:        self.of,
                     backLabel: 'Back',
                     config: self.DAOControllerConfig.create({
-                      daoKey: self.prop.targetDAOKey
+                      daoKey: self.prop.targetDAOKey,
+                      createPredicate: pred,
+                      editPredicate: pred,
+                      deletePredicate: pred,
+                      editEnabled: false
+
                     })
                   }, self);
                 })

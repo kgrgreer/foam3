@@ -35,7 +35,7 @@ foam.CLASS({
     {
       class: 'foam.u2.ViewSpec',
       name: 'daoView',
-      factory: function() { return foam.comics.InlineBrowserView; }
+      factory: function() { return foam.u2.view.EmbeddedTableView; }
     },
     {
       name: 'dao',
@@ -55,11 +55,9 @@ foam.CLASS({
 
       this.SUPER();
 
-      // I'm not sure why we need to add a Stack. Shouldn't InlineBrowserView
-      // do that itself? -- KGR
-      this.addClass(this.myClass()).tag(this.STACK);
+      this.addClass(this.myClass());
 
-      this.stack.push({class: 'foam.comics.InlineBrowserView', data: this.dao }, this);
+      this.start('foam.u2.view.EmbeddedTableView', { data: this.dao }).end();
     }
   ]
 });

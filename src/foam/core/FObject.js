@@ -129,6 +129,12 @@ foam.LIB({
        */
       this.private_.axiomCache = {};
 
+      // Sort axioms by priority, higher priority gets installed first.
+      // Default to 100.
+      axs = axs.sort(function(a, b) {
+        return foam.Number.compare(b.priority || 100, a.priority || 100);
+      });
+
       // We install in two passes to avoid ordering issues from Axioms which
       // need to access other axioms, like ids: and exports:.
 
@@ -155,15 +161,6 @@ foam.LIB({
         this.axiomMap_[a.name] = a;
       }
 
-      // Sort axioms by priority, higher priority gets installed first.
-      // Default to 100.
-      axs = axs.sort(function(a, b) {
-        var p1 = foam.Number.isInstance(a.priority) ? a.priority : 100;
-        var p2 = foam.Number.isInstance(b.priority) ? b.priority : 100;
-
-        // compare p2 vs p1, as we want higher priority values first.
-        return foam.Number.compare(p2, p1);
-      });
 
       for ( var i = 0 ; i < axs.length ; i++ ) {
         var a = axs[i];
@@ -807,8 +804,8 @@ foam.CLASS({
        * Returns the input object, which can be useful for chaining.
        */
       foam.assert(! d || foam.Function.isInstance(d.detach) ||
-          foam.Function.isInstance(d),
-          'Argument to onDetach() must be callable or detachable.');
+        foam.Function.isInstance(d),
+        'Argument to onDetach() must be callable or detachable.');
       if ( d ) this.sub('detach', d.detach ? d.detach.bind(d) : d);
       return d;
     },
@@ -827,6 +824,8 @@ foam.CLASS({
       this.instance_.detaching_ = false;
       this.clearPrivate_('listeners');
     },
+
+    function isDetached() { return t.hasOwnProperty('detaching_'); },
 
 
     /************************************************
@@ -901,8 +900,10 @@ foam.CLASS({
       var ps = this.cls_.getAxiomsByClass(foam.core.Property);
       for ( var i = 0 ; i < ps.length ; i++ ) {
         var prop = this[ps[i].name];
-        hash = ((hash << 5) - hash) + foam.util.hashCode(prop);
-        hash &= hash; // forces 'hash' back to a 32-bit int
+        if ( prop.includeInHash ) {
+          hash = ((hash << 5) - hash) + foam.util.hashCode(prop);
+          hash &= hash; // forces 'hash' back to a 32-bit int
+        }
       }
 
       return hash;

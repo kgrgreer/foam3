@@ -31,7 +31,7 @@ foam.CLASS({
     'hoverSelection',
     'selection',
     'subStack as stack',
-    'memento'
+    'currentMemento_ as memento'
   ],
 
   imports: [
@@ -255,7 +255,8 @@ foam.CLASS({
         // but if such an action is called from TableView we stay on the TableView screen
         return foam.nanos.approval.NoBackStack.create({delegate: this.stack});
       },
-    }
+    },
+    'currentMemento_'
   ],
 
   methods: [
@@ -311,7 +312,7 @@ foam.CLASS({
       this.allColumns = ! view.of ? [] : [].concat(
         asyncRes.map(a => a.name),
         view.of.getAxiomsByClass(foam.core.Action)
-        .map(a => a.name).filter( a => view.of.getAxiomByName('tableColumns').columns.includes(a))
+        .map(a => a.name).filter( a => view.of.getAxiomByName('tableColumns') ? view.of.getAxiomByName('tableColumns').columns.includes(a) : false)
       );
 
       this.columns$.sub(this.updateColumns_);
@@ -340,6 +341,10 @@ foam.CLASS({
           this.memento.head = this.columns_.map(c => {
             return this.columnHandler.checkIfArrayAndReturnPropertyNamesForColumn(c);
           }).join(',');
+        }
+        if ( ! this.memento.tail ) {
+          this.memento.tail = foam.nanos.controller.Memento.create({value: '', parent: this.memento});
+          this.currentMemento_ = this.memento.tail;
         }
       }
 
@@ -572,7 +577,7 @@ foam.CLASS({
                           if ( view.importSelection$ ) view.importSelection = v;
                           if ( view.editRecord$ ) view.editRecord(v);
                           view.importSelection = v;
-                          view.click(null, obj.id);
+                          view.click(null, obj.id, v ? v.toSummary() : '');
                         });
                       } else {
                         if ( view.importSelection$ ) view.importSelection = thisObjValue;

@@ -86,6 +86,13 @@ return listener
         // TODO: Return a detachable
         getDelegate().listen_(getX(), sink, predicate);
       `
+    },
+    {
+      name: 'fclone',
+      type: 'FObject',
+      javaCode: `
+        return this;
+      `
     }
   ],
 

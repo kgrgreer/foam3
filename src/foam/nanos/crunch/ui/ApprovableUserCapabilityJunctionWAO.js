@@ -20,6 +20,7 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.approval.Approvable',
+    'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.crunch.UserCapabilityJunction',
   ],
 

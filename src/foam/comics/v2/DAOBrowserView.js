@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.comics.v2',
   name: 'DAOBrowserView',
   extends: 'foam.u2.View',
+  mixins: ['foam.nanos.controller.MementoMixin'],
 
   requires: [
     'foam.comics.SearchMode',
@@ -34,16 +35,10 @@ foam.CLASS({
   `,
 
   css: `
-    ^export {
-      margin-left: 16px;
-    }
-
-    ^export img {
-      margin-right: 0;
-    }
-
-    .foam-u2-ActionView-refreshTable > img {
-      margin-right: 0;
+    ^wrapper {
+      box-sizing: border-box;
+      height: 100%;
+      justify-content: flex-start;
     }
 
     ^top-bar {
@@ -52,20 +47,42 @@ foam.CLASS({
       padding-top: 16px;
     }
 
-    ^query-bar {
-      padding: 32px 16px;
-    }
-
     ^toolbar {
       flex-grow: 1;
     }
 
+    ^query-bar {
+      padding: 12px 24px;
+      padding-top: 32px;
+    }
+
+    ^buttons{
+      gap: 0.5em;
+      align-items: flex-start;
+    }
+
+    ^filters{
+      padding: 0 24px;
+      padding-bottom: 12px;
+    }
+
     ^browse-view-container {
       box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
       height: 100%;
-      margin-bottom: 20px;
-      padding: 0 16px;
       overflow: hidden;
+    }
+
+    /*
+      Scroll is handled here to ensure summaryView always has a scroll 
+      even if it is not configured in the summaryView.
+      This is the generalised way to do this but should be removed 
+      if double scroll bars start appearing
+    */
+    ^browse-view-container > * {
+      height: 100%;
+      overflow: auto;
     }
 
     ^canned-queries {
@@ -99,7 +116,6 @@ foam.CLASS({
   imports: [
     'ctrl',
     'exportDriverRegistryDAO',
-    'memento',
     'stack?'
   ],
 
@@ -107,6 +123,7 @@ foam.CLASS({
     'click',
     'config',
     'filteredTableColumns',
+    'searchColumns',
     'serviceName'
   ],
 
@@ -125,6 +142,14 @@ foam.CLASS({
       name: 'config',
       factory: function() {
         return this.DAOControllerConfig.create({ dao: this.data });
+      }
+    },
+    {
+      class: 'StringArray',
+      name: 'searchColumns',
+      factory: null,
+      expression: function(config$searchColumns){
+        return config$searchColumns;
       }
     },
     {
@@ -195,7 +220,7 @@ foam.CLASS({
   actions: [
     {
       name: 'export',
-      label: '',
+      label: 'Export',
       toolTip: 'Export Table Data',
       icon: 'images/export-arrow-icon.svg',
       isAvailable: async function() {
@@ -212,7 +237,7 @@ foam.CLASS({
     },
     {
       name: 'refreshTable',
-      label: '',
+      label: 'Refresh',
       toolTip: 'Refresh Table',
       icon: 'images/refresh-icon-black.svg',
       code: function(X) {
@@ -223,10 +248,10 @@ foam.CLASS({
     },
     {
       name: 'import',
-      label: '',
+      label: 'Import',
+      icon: 'images/import-arrow-icon.svg',
       availablePermissions: [ "data.import.googleSheets" ],
       toolTip: 'Import From Google Sheet',
-      // icon: 'images/export-arrow-icon.svg',//need find out where we're getting the icons
       code: function() {
         this.add(this.Popup.create().tag(this.importModal));
       }
@@ -254,9 +279,7 @@ foam.CLASS({
       var filterView;
       var simpleSearch;
 
-      if ( this.memento && ! this.memento.tail ) {
-        this.memento.tail = foam.nanos.controller.Memento.create();
-      }
+      this.initMemento();
 
       this.addClass(this.myClass());
       this.SUPER();
@@ -269,7 +292,7 @@ foam.CLASS({
             var simpleSearch = foam.u2.ViewSpec.createView(self.SimpleSearch, {
               showCount: false,
               data$: self.searchPredicate$,
-            }, this, self.__subSubContext__.createSubContext({ memento: self.memento }));
+            }, this, self.__subSubContext__.createSubContext({ memento: self.currentMemento_ }));
     
             var filterView = foam.u2.ViewSpec.createView(self.FilterView, {
               dao$: self.searchFilterDAO$,
@@ -279,17 +302,21 @@ foam.CLASS({
             var filterView = foam.u2.ViewSpec.createView(self.FilterView, {
               dao$: self.searchFilterDAO$,
               data$: self.searchPredicate$
-            }, this, self.__subContext__.createSubContext({ memento: self.memento }));
+            }, this, self.__subContext__.createSubContext({ memento: self.currentMemento_ }));
           }
 
           summaryView = foam.u2.ViewSpec.createView(self.summaryView ,{
             data: self.predicatedDAO$proxy,
             config: self.config
           },  this, filterView.__subContext__.createSubContext());
-          
+
+          if ( ! self.config.browseContext ) {
+            self.config.browseContext = summaryView;
+          }
+
           return self.E()
             .start(self.Rows)
-            .style({ height: '100%', 'justify-content': 'flex-start' })
+            .addClass(this.myClass('wrapper'))
               .callIf(config$cannedQueries.length >= 1, function() {
                 this
                   .start(self.Cols)
@@ -321,21 +348,23 @@ foam.CLASS({
                         this.add(filterView);
                     })
                     .endContext()
-                    .start()
+                    .start(self.Cols)
+                      .addClass(self.myClass('buttons'))
                       .startContext({ data: self })
-                        .start(self.EXPORT, { buttonStyle: 'SECONDARY', size: 'SMALL' })
+                        .start(self.EXPORT, { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true })
                           .addClass(self.myClass('export'))
                         .end()
-                        .start(self.IMPORT, { buttonStyle: 'SECONDARY', size: 'SMALL', icon: 'images/export-arrow-icon.svg', css: {'transform': 'rotate(180deg)'} })
+                        .start(self.IMPORT, { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true })
                           .addClass(self.myClass('export'))
                         .end()
-                        .start(self.REFRESH_TABLE, { buttonStyle: 'SECONDARY', size: 'SMALL' })
+                        .start(self.REFRESH_TABLE, { buttonStyle: 'SECONDARY', size: 'SMALL', isIconAfter: true })
                           .addClass(self.myClass('refresh'))
                         .end()
                       .endContext()
                     .end()
-                  .end();
-              })
+                  .end()
+                  .start().tag(filterView.filtersContainer$).addClass(self.myClass('filters')).end();
+                })
               .start()
                 .add(summaryView)
                 .addClass(self.myClass('browse-view-container'))

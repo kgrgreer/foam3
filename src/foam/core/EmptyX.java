@@ -69,7 +69,7 @@ abstract class AbstractX
 }
 
 abstract class AbstractXI
-  extends AbstractX
+  extends    AbstractX
   implements Cloneable
 {
   protected X leftChild_;

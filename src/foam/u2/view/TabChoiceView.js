@@ -8,6 +8,7 @@ foam.CLASS({
   package: 'foam.u2.view',
   name: 'TabChoiceView',
   extends: 'foam.u2.view.ChoiceView',
+  mixins: ['foam.nanos.controller.MementoMixin'],
 
   documentation: `
     A choice view that outputs user-specified tabs
@@ -43,14 +44,17 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      this.initMemento();
+      this.addClass(this.myClass());
+
       // If no item is selected, and data has not been provided, select the 0th
       // entry.
-      this
-        .addClass(this.myClass())
-
       if ( ! this.data && ! this.index ) {
         this.index = 0;
       }
+
+      if ( ! this.memento.head ) 
+        this.memento.head = this.choices[this.index][1];
 
       if ( this.dao ) this.onDAOUpdate();
       this.choices$.sub(this.onChoicesUpdate);
@@ -62,10 +66,11 @@ foam.CLASS({
     function onChoicesUpdate() {
       var self = this;
       var id;
-
       this.removeAllChildren();
 
       this.add(this.choices.map(function(c) {
+        if ( this.memento.head == c[1] )
+          this.data = c[0];
         return this.E('div').
           addClass(this.myClass('item')).
           start('input').
@@ -77,10 +82,11 @@ foam.CLASS({
             setID(id = self.NEXT_ID()).
             on('change', function(evt) {
               self.data = c[0];
+              self.memento.head = c[1];
             }).
           end().
           start('label').
-            attrs({for: id}).
+            attrs({ for: id }).
             start('span').
               translate(c[1], c[1]).
             end().

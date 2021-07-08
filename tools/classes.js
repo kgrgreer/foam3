@@ -391,6 +391,7 @@ var classes = [
   'foam.nanos.logger.LoggerJournal',
   'foam.nanos.logger.LoggingDAO',
   'foam.nanos.logger.StdoutLoggerDAO',
+  'foam.nanos.logger.benchmark.LoggerBenchmark',
   'foam.nanos.menu.XRegistration',
   'foam.nanos.menu.Menu',
   'foam.nanos.menu.DAOMenu',
@@ -646,6 +647,7 @@ var classes = [
   'foam.nanos.http.HttpParameters',
   'foam.nanos.dig.DIG',
   'foam.nanos.dig.SUGAR',
+  'foam.nanos.dig.DUGDigestConfig',
   'foam.nanos.dig.DUGRule',
   'foam.nanos.dig.DUGRuleAction',
 
