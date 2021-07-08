@@ -18,6 +18,7 @@
 foam.CLASS({
   package: 'foam.box.sf',
   name: 'SF',
+  abstract: true,
   extends: 'foam.dao.CompositeJournal',
 
   javaImports: [
@@ -54,14 +55,8 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'fileSuffix'
-    },
-    {
-      class: 'Object',
-      name: 'storeDAO',
-      javaFactory: `
-        return null;
-      `
+      name: 'fileSuffix',
+      value: 0
     },
     {
       class: 'Boolean',
@@ -105,7 +100,15 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'foam.dao.Journal',
-      name: 'storeJournal'
+      name: 'storeJournal',
+      javaFactory: `
+        return new foam.dao.WriteOnlyF3FileJournal.Builder(getX())
+                .setFilename(getFileName() + "." + getFileSuffix())
+                .setCreateFile(true)
+                .setDao(new foam.dao.NullDAO())
+                .setLogger(new foam.nanos.logger.PrefixLogger(new Object[] { "[SF]", getFileName() }, new foam.nanos.logger.StdoutLogger()))
+                .build();
+      `
     },
     {
       class: 'Long',
@@ -161,7 +164,7 @@ foam.CLASS({
       name: 'forward',
       args: 'SFEntry e',
       javaCode: `
-        /* Assign time and enqueue. */
+        /* Assign initial time and enqueue. */
         e.setScheduledTime(System.currentTimeMillis());
         ((SFManager) getManager()).enqueue(e);
       `
@@ -171,7 +174,7 @@ foam.CLASS({
       args: 'SFEntry e',
       javaCode: `
         /* Update journal for success */
-        //TODO:
+        //TODO: update journal when success.
       `
     },
     {
@@ -182,7 +185,9 @@ foam.CLASS({
         if ( getMaxRetryAttempts() > -1 && 
               e.getRetryAttempt() >= getMaxRetryAttempts() )  {
           getLogger().warning("retryAttempt >= maxRetryAttempts", e.getRetryAttempt(), getMaxRetryAttempts(), e.toString());
-        
+
+          //TODO: update journal when exceed max retry?
+
         } else {
           updateNextScheduledTime(e);
           updateAttempt(e);
@@ -190,17 +195,19 @@ foam.CLASS({
         }
       `
     },
-    {
-      name: 'submit',
-      args: 'Context x, SFEntry entry',
-      javaCode: `
-        Object delegate = getDelegateObject();
-        if ( delegate instanceof Box ) ((Box) delegate).send((Message) entry.getObject());
-        else if ( delegate instanceof DAO ) ((DAO) delegate).put_(x, entry.getObject());
-        else if ( delegate instanceof Sink ) ((Sink) delegate).put(entry.getObject(), null);
-        else throw new RuntimeException("DelegateObject do not support"); 
-      `
-    },
+    // {
+    //   name: 'submit',
+    //   args: 'Context x, SFEntry entry',
+    //   abstract: true,
+    //   javaCode: `
+    //     throw new RuntimeException("Do not implement");
+    //     // Object delegate = getDelegateObject();
+    //     // if ( delegate instanceof Box ) ((Box) delegate).send((Message) entry.getObject());
+    //     // else if ( delegate instanceof DAO ) ((DAO) delegate).put_(x, entry.getObject());
+    //     // else if ( delegate instanceof Sink ) ((Sink) delegate).put(entry.getObject(), null);
+    //     // else throw new RuntimeException("DelegateObject do not support"); 
+    //   `
+    // },
     {
       name: 'updateNextScheduledTime',
       args: 'SFEntry e',
@@ -227,7 +234,7 @@ foam.CLASS({
       name: 'buildReplayJournals',
       args: 'Context x',
       javaCode: `
-        //foam.dao.Journal[]
+        //TODO: file filter?
         List<Integer> fileIndexs = getFileIndexs(x);
         ArrayList<Journal> journals = new ArrayList<Journal>();
         for ( int index : fileIndexs ) {
@@ -259,6 +266,16 @@ foam.CLASS({
         }
         return l;
       `
+    },
+    {
+      name: 'initSF',
+      args: 'Context x',
+      documentation: 'Loading entries from files, then send again',
+      javaCode: `
+        /* Find files, loading entries, filter, forward */
+        buildReplayJournals(x);
+        //super.replay(x, new PoxyDAO(){});
+      `
     }
   ],
 
@@ -268,6 +285,8 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data: `
+            public abstract void submit(X x, SFEntry entry);
+
             //Make to public because beanshell do not support.
             static public interface StepFunction {
               public int next(int cur);
