@@ -302,7 +302,67 @@ public interface FObject
           if ( p2 != null ) {
             if ( p2.isSet(obj) ) p.set(this, p2.get(obj));
           }
-        } catch (ClassCastException ignore) {}
+        } catch (ClassCastException ignore) {
+          System.err.println("FObject.copyFrom "+p.getName()+" "+ignore.getMessage());
+        }
+      }
+    }
+    return this;
+  }
+
+  /**
+   * Similar to copyFrom, with recursion on nested FObjects, only setting
+   * isSet=true properties.
+   */
+  default FObject overlay(FObject obj) {
+    return overlay_(obj, new java.util.HashSet());
+  }
+
+  default FObject overlay_(FObject obj, java.util.Set visited) {
+    int code = obj.hashCode();
+    if ( visited.contains(code) ) {
+      return this;
+    } else {
+      visited.add(code);
+      if ( this.hashCode() == obj.hashCode() ) {
+        return this;
+      }
+    }
+
+    // NOTE: using obj.getClassInfo() reduces ClassCastExceptions of Concrete to Interface/BaseClass
+    List<PropertyInfo> props = obj.getClassInfo().getAxiomsByClass(PropertyInfo.class);
+    for ( PropertyInfo p : props ) {
+      Object remote = null;
+      try {
+        remote = p.get(obj);
+      } catch ( ClassCastException e ) {
+        System.err.println("FObject.overlay "+p.getName()+" remote.get "+e);
+        PropertyInfo p2 = (PropertyInfo) getClassInfo().getAxiomByName(p.getName());
+        if ( p2 != null ) {
+          p = p2;
+          try {
+            remote = p.get(obj);
+          } catch ( ClassCastException ee ) {
+            System.err.println("FObject.overlay "+p.getName()+" this.get "+ee);
+          }
+        }
+      }
+      try {
+        if ( p.isSet(obj) ) {
+          if ( remote != null &&
+               remote instanceof FObject ) {
+            Object local = p.get(this);
+            if ( local != null &&
+                 ! local.equals(remote) ) {
+              p.set(this, ((FObject)local).overlay_((FObject)remote, visited));
+            }
+          } else {
+            p.set(this, remote);
+          }
+        }
+      } catch ( ClassCastException e ) {
+        System.err.println("FObject.overlay "+p.getName()+" set "+e);
+        e.printStackTrace();
       }
     }
     return this;
