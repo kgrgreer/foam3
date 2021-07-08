@@ -219,7 +219,7 @@ var classes = [
   'foam.dao.PMDAO',
   'foam.dao.PurgeRecordCmd',
   'foam.dao.UniqueConstraintException',
-  'foam.dao.UserIDDAO',
+  'foam.dao.FUIDAO',
   'foam.nanos.pm.PMFactory',
   'foam.nanos.pm.PMInfo',
   'foam.nanos.pm.PMLogger',
