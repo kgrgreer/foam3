@@ -238,6 +238,15 @@ foam.CLASS({
     {
       name: 'spid',
       value: ""
-    }
+    },
+    {
+      name: 'authorizeOnCreate',
+      javaCode: `
+        var auth = (AuthService) x.get("auth");
+        if ( ! auth.check(x, "rule.create") && ! auth.check(x, "dugrule.create") ) {
+          throw new AuthorizationException("You do not have permission to create the rule.");
+        }
+      `
+    },
   ]
 });
