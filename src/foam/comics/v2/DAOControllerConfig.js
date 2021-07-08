@@ -86,11 +86,6 @@ foam.CLASS({
       factory: function() { return this.of.model_.plural; }
     },
     {
-      class: 'String',
-      name: 'browseSubtitle',
-      value: ''
-    },
-    {
       class: 'FObjectProperty',
       name: 'primaryAction',
       documentation: `
