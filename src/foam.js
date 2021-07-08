@@ -27,12 +27,9 @@
 
   // set flags by url parameters
   var urlParams = new URLSearchParams(globalThis.location.search);
-  if ( urlParams.get('node')  ) flags.node = urlParams.get('node') === 'true';
-  if ( urlParams.get('web')   ) flags.web = urlParams.get('web') !== 'false';
-  if ( urlParams.get('java')  ) flags.java = urlParams.get('java') === 'true';
-  if ( urlParams.get('swift') ) flags.swift = urlParams.get('swift') === 'true';
-  if ( urlParams.get('debug') ) flags.debug = urlParams.get('debug') !== 'false';
-  if ( urlParams.get('js')    ) flags.js = urlParams.get('js') !== 'false';
+  for ( var pair of urlParams.entries() ) {
+    if ( flags.hasOwnProperty(pair[0]) ) flags[pair[0]] = pair[1] === 'true';
+  }
 
   function createLoader() {
     var path = document.currentScript && document.currentScript.src;
