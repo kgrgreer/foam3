@@ -393,6 +393,16 @@ foam.CLASS({
         await client.translationService.initLatch;
         self.installLanguage();
 
+        if ( self.memento.value && self.memento.value == 'shop-rates' ) {
+          var menu = await self.__subContext__.menuDAO.find(self.memento.value);
+          if ( menu ) {
+            self.pushMenu(menu);
+            await self.maybeReinstallLanguage(client);
+            self.languageInstalled.resolve();
+            return;
+          }
+        }
+
         await self.fetchSubject();
 
         await self.maybeReinstallLanguage(client);
