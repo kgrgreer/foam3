@@ -307,6 +307,7 @@ FOAM_FILES([
   { name: "foam/dao/VersionNoDAO" },
   { name: "foam/dao/sync/SyncRecord" },
   { name: "foam/dao/SyncDAO" },
+  { name: "foam/dao/UserIDDAO" },
 
   { name: 'foam/nanos/approval/AuthenticatedApprovalDAOAuthorizer' },
   { name: 'foam/nanos/approval/UCJApprovable' },

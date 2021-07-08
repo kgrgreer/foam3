@@ -25,10 +25,6 @@ foam.CLASS({
 
   documentation: 'DAO Decorator which sets a specified property\'s value with an auto-increment sequence number on DAO.put() if the value is set to the default value.',
 
-  javaImports: [
-    'foam.util.UIDGenerator'
-  ],
-
   properties: [
     {
       /** The property to set uniquely. */
@@ -98,14 +94,6 @@ foam.CLASS({
       javaType: 'foam.core.PropertyInfo',
       javaInfoType: 'foam.core.AbstractObjectPropertyInfo',
       javaFactory: 'return (foam.core.PropertyInfo)(getOf().getAxiomByName(getProperty()));'
-    },
-    {
-      class: 'Object',
-      name: 'uIDGenerator',
-      javaType: 'foam.util.UIDGenerator',
-      javaFactory: `
-        return new UIDGenerator();
-      `
     }
   ],
 
@@ -140,7 +128,10 @@ foam.CLASS({
         synchronized (this) {
           long id = (long) getProperty_().get(obj);
           if ( id == 0 ) {
-            getProperty_().set(obj, Long.parseLong(getUIDGenerator().generate(), 16));
+            getProperty_().set(obj, getValue_());
+            setValue_(getValue_() + 1);
+          } else if ( id >= getValue_() ) {
+            setValue_(id + 1);
           }
         }
         return getDelegate().put_(x, obj);

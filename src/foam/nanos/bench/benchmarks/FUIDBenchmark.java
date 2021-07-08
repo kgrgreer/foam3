@@ -7,8 +7,6 @@
 package foam.nanos.bench.benchmarks;
 
 import foam.core.X;
-import foam.dao.*;
-import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
 import foam.util.UIDGenerator;
 import foam.nanos.app.AppConfig;
