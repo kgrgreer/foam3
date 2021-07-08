@@ -231,9 +231,11 @@ List entries are of the form: 172.0.0.0/24 - this would restrict logins to the 1
       // Do not allow IP to change if not in whitelist
       if ( ! SafetyUtil.isEmpty(getRemoteHost()) &&
            ! SafetyUtil.equals(getRemoteHost(), remoteIp) ) {
+        ((foam.nanos.logger.Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "validateRemoteHost", "IP change detected", getRemoteHost(), remoteIp, getUserId());
         throw new foam.core.ValidationException("IP changed");
       }
 
+      ((foam.nanos.logger.Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "validateRemoteHost", "Restricted IP address not allowed", getRemoteHost(), remoteIp, getUserId());
       throw new foam.core.ValidationException("Restricted IP");
       `
     },

@@ -37,6 +37,14 @@ foam.CLASS({
       of: 'foam.graph.Graph'
     },
     {
+      name: 'selectedNodeId',
+      class: 'String',
+      documentation:`
+        OPTIONAL: Set a value if you want to enable node higlighting.
+        If used, ensure that the nodeView has an isSelected property to bind to.
+      `
+    },
+    {
       name: 'nodeView',
       class: 'foam.u2.ViewSpec',
       documentation: `
@@ -151,12 +159,22 @@ foam.CLASS({
       g
         .callIf(! self.alreadyRendered_[node.id], function () {
           self.alreadyRendered_[node.id] = true;
-          this
-            .tag(self.nodeView, {
-              data: node.data,
-              position: coords,
-              size: Array(coords.length).fill(self.cellSize)
+
+          var args = {
+            of: node.data.cls_,
+            data: node.data,
+            position: coords,
+            size: Array(coords.length).fill(self.cellSize)
+          }
+
+          if ( self.selectedNodeId && self.nodeView.hasOwnAxiom("isSelected") ){ 
+            args.isSelected$ = self.slot(function(selectedNodeId) {
+              return selectedNodeId === node.data.id; 
             })
+          }
+          
+          this
+            .tag(self.nodeView, args)
         })
         // .callIf(parent, function () {
         //   var pcoords = self.placement_.getPlacement(parent);

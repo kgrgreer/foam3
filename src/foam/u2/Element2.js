@@ -17,6 +17,7 @@ PORTING U2 to U3:
   - move init() rendering code to render()
   - replace use of setNodeName to setting the nodeName property
   - remove use of this.sub('onload')
+  - replace unload() with remove()
   - replace this.sub('onunload') with this.onDetach()
   - el() is now synchronous instead of returning a Promise
   - the Element.state property no longer exists
@@ -35,6 +36,7 @@ PORTING U2 to U3:
   - remove insertBefore()
   - remove insertAfter()
   - remove slotE_()
+  - remove initTooltip
   - removed use of SPAN tags for dynamic slot content by using reference to TextNode
 
 .add(this.slot(function(a, b, c) { return this.E().start()...; }));
@@ -636,13 +638,18 @@ foam.CLASS({
       class: 'String',
       name: 'tooltip',
       postSet: function(o, n) {
-        if ( n && ! o ) this.initTooltip();
+        if ( n && ! o ) {
+          this.Tooltip.create({target: this, text$: this.tooltip$});
+        }
         return n;
       }
     },
     {
       name: 'parentNode',
-      transient: true
+      transient: true,
+      postSet: function(o, n) {
+        n.onDetach(this);
+      }
     },
     {
       class: 'Boolean',
@@ -732,6 +739,9 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'tabIndex',
+      postSet: function(o, n) {
+        this.element_.setAttribute('tabindex', n);
+      }
     },
     {
       name: 'clickTarget_'
@@ -756,24 +766,8 @@ foam.CLASS({
     },
 
     function load() {
-      if ( this.hasOwnProperty('elListeners') ) {
-        var ls = this.elListeners;
-        for ( var i = 0 ; i < ls.length ; i += 3 ) {
-          this.addEventListener_(ls[i], ls[i+1], ls[i+2] || false);
-        }
-      }
-
-      // shouldn't have any children
-      // this.visitChildren('load');
-/*
-      for ( var i = 0 ; i < this.attributes.length ; i++ ) {
-        var attr = this.attributes[i];
-        this.onSetAttr(attr.name, attr.value);
-      }
-*/
       // disable adding to content$ during render()
       this.add = function() { return this.add_(arguments, this); }
-      this.initTooltip();
       this.initKeyboardShortcuts();
       this.render();
       if ( this.initE != foam.u2.Element.prototype.initE ) {
@@ -782,27 +776,18 @@ foam.CLASS({
       }
       this.add = foam.u2.Element.prototype.add;
 
-      if ( this.tabIndex ) this.setAttribute('tabindex', this.tabIndex);
-      // Add a delay before setting the focus in case the DOM isn't visible yet.
-      if ( this.focused ) this.el().then(el => el.focus());
-      // Allows you to take the DOM element and map it back to a
-      // foam.u2.Element object.  This is expensive when building
-      // lots of DOM since it adds an extra DOM call per Element.
-      // But you could use it to cut down on the number of listeners
-      // in something like a table view by doing per table listeners
-      // rather than per-row listeners and in the event finding the right
-      // U2 view by walking the DOM tree and checking e_.
-      // This could save more time than the work spent here adding e_ to each
-      // DOM element.
-      // this.el().e_ = this;
+      // Is also called in postSet of focused property, but if DOM not added
+      // to document yet, then that doesn't work, so try again now.
+      if ( this.focused ) this.element_.focus();
     },
-    function unload() {
-      var e = this.el_();
-      if ( e ) e.remove();
-
-      // this.state = this.UNLOADED;
-      this.visitChildren('unload');
-      this.detach();
+    function remove() {
+      if ( this.parentNode ) {
+        // parent will remove from DOM and detach
+        this.parentNode.removeChild(this);
+      } else {
+        this.element_.remove();
+        this.detach();
+      }
     },
     function onReplaceChild(oldE, newE) {
       var e = this.el_();
@@ -821,10 +806,7 @@ foam.CLASS({
 
 
     function init() {
-      /*
-      if ( ! this.translationService )
-        console.warn('Element ' + this.cls_.name + ' created with globalContext');
-      */
+      // TODO: better if children just do this themselves
       this.onDetach(this.visitChildren.bind(this, 'detach'));
     },
 
@@ -832,6 +814,7 @@ foam.CLASS({
     },
 
     function initE() {
+      // TODO: remove
     },
 
     async function observeScrollHeight() {
@@ -844,11 +827,8 @@ foam.CLASS({
       });
       var config = { attributes: true, childList: true, characterData: true };
 
-      var e = await this.el();
-      observer.observe(e, config);
-      this.onunload.sub(function(s) {
-        observer.disconnect()
-      });
+      observer.observe(this.element_, config);
+      this.onDetach((s) => observer.disconnect());
       return this;
     },
 
@@ -907,24 +887,17 @@ foam.CLASS({
 
       var map = {};
 
-      for ( var key in keyMap ) map[key] = keyMap[key].maybeCall.bind(keyMap[key], this.__subContext__, this);
+      for ( var key in keyMap )
+        map[key] = keyMap[key].maybeCall.bind(keyMap[key], this.__subContext__, this);
 
       return map;
-    },
-
-    function initTooltip() {
-      if ( this.tooltip ) {
-        this.Tooltip.create({target: this, text$: this.tooltip$});
-      } else if ( this.getAttribute('title') ) {
-        this.Tooltip.create({target: this, text$: this.attrSlot('title')});
-      }
     },
 
     function initKeyboardShortcuts() {
       /* Initializes keyboard shortcuts. */
       var keyMap = this.initKeyMap_(keyMap, this.cls_);
 
-      //      if ( this.of ) count += this.initKeyMap_(keyMap, this.of);
+      // if ( this.of ) count += this.initKeyMap_(keyMap, this.of);
       if ( keyMap ) {
         this.keyMap_ = keyMap;
         var target = this.parentNode || this;
@@ -1028,7 +1001,7 @@ foam.CLASS({
       } else if ( foam.core.Slot.isInstance(opt_shown) ) {
         this.onDetach(this.shown$.follow(opt_shown));
       } else {
-        this.shown = !! opt_shown;
+        this.shown = opt_shown;
       }
 
       return this;
@@ -1036,9 +1009,9 @@ foam.CLASS({
 
     function hide(opt_hidden) {
       return this.show(
-          opt_hidden === undefined              ? false :
-          foam.core.Slot.isInstance(opt_hidden) ? opt_hidden.map(function(s) { return ! s; }) :
-          ! opt_hidden);
+        opt_hidden === undefined              ? false :
+        foam.core.Slot.isInstance(opt_hidden) ? opt_hidden.map(function(s) { return ! s; }) :
+        ! opt_hidden);
     },
 
     function setAttribute(name, value) {
@@ -1056,6 +1029,10 @@ foam.CLASS({
       // TODO: type checking
 
       if ( name === 'tabindex' ) this.tabIndex = parseInt(value);
+
+      if ( name === 'title' && ! this.tooltip ) {
+        this.Tooltip.create({target: this, text$: this.attrSlot('title')});
+      }
 
       // handle slot binding, ex.: data$: ...,
       // Remove if we add a props() method
@@ -1176,7 +1153,8 @@ foam.CLASS({
           if ( typeof c === 'string' ) {
             this.element_.childNodes[i].remove();
           } else {
-            c.remove();
+            c.element_.remove();
+            c.detach();
           }
           break;
         }
@@ -1192,28 +1170,9 @@ foam.CLASS({
           cs[i] = newE;
           newE.parentNode = this;
           this.onReplaceChild.call(this, oldE, newE);
-          oldE.unload && oldE.unload();
+          oldE.remove();
           return;
         }
-      }
-    },
-
-    function remove() {
-      /*
-        Remove this Element from its parent Element.
-        Will transition to UNLOADED state.
-      */
-      this.unload();
-
-      if ( this.parentNode ) {
-        var cs = this.parentNode.childNodes;
-        for ( var i = 0 ; i < cs.length ; i++ ) {
-          if ( cs[i] === this ) {
-            cs.splice(i, 1);
-            return;
-          }
-        }
-        this.parentNode = undefined;
       }
     },
 
@@ -1258,11 +1217,6 @@ foam.CLASS({
     function nbsp() {
       return this.entity('nbsp');
     },
-
-function cssClass(cls) {
-  console.warn('DEPRECATED use of cssClass(). Use addClass() instead.');
-  return this.addClass(cls);
-},
 
     function addClass(cls) { /* Slot | String */
       /* Add a CSS cls to this Element. */
@@ -1547,7 +1501,7 @@ function cssClass(cls) {
       this.element_.innerHTML = '';
       this.childNodes = [];
       for ( var i = 0 ; i < this.childNodes.length ; i++ ) {
-        this.childNodes[i].unload();
+        this.childNodes[i].detach();
       }
       return this;
     },
