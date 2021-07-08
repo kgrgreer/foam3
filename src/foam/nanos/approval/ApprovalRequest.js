@@ -165,15 +165,14 @@
           this.__subSubContext__[obj.daoKey].find(obj.objId).then(requestObj => {
             let referenceSummaryString = `ID:${obj.objId}`;
 
-            if ( requestObj ){
-              Promise.resolve(requestObj.toSummary()).then(function(requestObjSummary) {
-                if ( requestObjSummary ){
-                  referenceSummaryString = requestObjSummary;
-                }
+            if ( ! requestObj ) return self.add(referenceSummaryString);
+            
+            // need to use a  Promise resolve because toSummary doesn't always return a promise
+            Promise.resolve(requestObj.toSummary()).then(requestObjSummary => {
+              if ( requestObjSummary ) referenceSummaryString = requestObjSummary;
 
-                self.add(referenceSummaryString);
-              })
-            }
+              self.add(referenceSummaryString);
+            })
           });
         } catch (x) {}
       },
