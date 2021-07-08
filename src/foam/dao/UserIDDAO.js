@@ -31,7 +31,6 @@ foam.CLASS({
 
   properties: [
     {
-      /** The property to set uniquely. */
       class: 'String',
       name: 'property',
       value: 'id'
