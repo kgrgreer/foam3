@@ -307,7 +307,7 @@ foam.CLASS({
         if ( self.memento && self.memento.tail && self.memento.tail.head.toLowerCase() === 'edit' ) {
           self.edit();
         } else {
-          if ( ! this.memento.tail.value.startsWith(this.mementoHead) ) {
+          if ( this.memento && this.memento.tail && ! this.memento.tail.value.startsWith(this.mementoHead) ) {
             var m = foam.nanos.controller.Memento.create({ value: this.mementoHead, parent: this.memento, replaceHistoryState: false });
             this.memento.tail = m;
             if ( ! m.tail ) 
