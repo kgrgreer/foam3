@@ -49,11 +49,6 @@ foam.CLASS({
       align-items: center;
     }
 
-    ^browse-subtitle {
-      color: #5e6061;
-      width: 50%;
-    }
-
     ^altview-container {
       position: absolute;
       right: 0;
@@ -168,7 +163,7 @@ foam.CLASS({
     var nav = this.showNav ? self.BreadcrumbView : '';
     this.addClass(this.myClass())
 
-      .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$browseSubtitle, config$primaryAction, config$createTitle, config$createControllerView, config$browseContext) {
+      .add(this.slot(function(data, config, config$of, config$browseBorder, config$browseViews, config$browseTitle, config$primaryAction, config$createTitle, config$createControllerView, config$browseContext) {
         return self.E()
           .start(self.Rows)
             .addClass(self.myClass('container'))
@@ -219,21 +214,6 @@ foam.CLASS({
                     })
                   .end()
                 .end()
-                .callIf(config$browseSubtitle.length > 0, function() {
-                  this
-                    .start()
-                      .addClass(self.myClass('browse-subtitle'))
-                      .translate(menuId + ".browseSubtitle", config$browseSubtitle)
-                    .end();
-                })
-                .callIf(! config$browseSubtitle, function() {
-                  this
-                    .start()
-                      .addClass(self.myClass('browse-subtitle'))
-                      .translate(self.cls_.id + '.VIEW_ALL', self.VIEW_ALL)
-                      .translate(menuId + ".browseTitle", config$browseTitle)
-                    .end();
-                })
               .end()
             .start(self.CardBorder)
               .style({ position: 'relative', 'min-height': config.minHeight + 'px' })
