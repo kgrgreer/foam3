@@ -34,7 +34,7 @@
   if ( urlParams.get('debug') ) flags.debug = urlParams.get('debug') !== 'false';
   if ( urlParams.get('js')    ) flags.js = urlParams.get('js') !== 'false';
 
-  function createLoadBrowser() {
+  function createLoader() {
     var path = document.currentScript && document.currentScript.src;
     // document.currentScript isn't supported on all browsers, so the following
     // hack gets the job done on those browsers.
@@ -68,7 +68,7 @@
   }
 
   this.FOAM_FILES = async function(files) {
-    var load = createLoadBrowser();
+    var load = createLoader();
     files.
       map(function(f) { return f.name; }).
       forEach(f => load(f, true));
@@ -76,5 +76,5 @@
   //  delete this.FOAM_FILES;
   };
 
-  createLoadBrowser()('files', false);
+  createLoader()('files', false);
 })();

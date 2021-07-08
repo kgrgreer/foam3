@@ -18,8 +18,7 @@ foam.CLASS({
     'crunchService',
     'ctrl',
     'subject',
-    'userCapabilityJunctionDAO',
-    'globalThis'
+    'userCapabilityJunctionDAO'
   ],
 
   requires: [

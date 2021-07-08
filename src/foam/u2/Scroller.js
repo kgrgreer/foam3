@@ -40,7 +40,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'globalThis'
+    'window'
   ],
 
   css: `
@@ -137,11 +137,11 @@ foam.CLASS({
 
       this.onload.sub(function() {
         self.onResize();
-        self.globalThis.addEventListener('resize', self.onResize);
+        self.window.addEventListener('resize', self.onResize);
       });
 
       this.onunload.sub(function() {
-        self.globalThis.removeEventListener('resize', self.onResize);
+        self.window.removeEventListener('resize', self.onResize);
       });
     }
   ],

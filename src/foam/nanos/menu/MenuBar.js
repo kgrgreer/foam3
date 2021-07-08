@@ -17,7 +17,7 @@ foam.CLASS({
     'currentMenu',
     'lastMenuLaunched',
     'menuDAO',
-    'globalThis'
+    'window'
   ],
 
   documentation: 'Navigational menu bar',
@@ -67,7 +67,7 @@ foam.CLASS({
                     .enableClass('hovered', self.lastMenuLaunched$.map(function (value) { return value ? value.id === menu.id : false; }))
                     .enableClass('selected', self.currentMenu$.map(function (value) {
                       // only show selected menu if user settings sub menu item has not been selected
-                      if ( self.globalThis.location.hash.includes('#set') ) return false;
+                      if ( self.window.location.hash.includes('#set') ) return false;
                       return self.isSelected(value, menu);
                     }))
                     .add(menu.label)
@@ -85,7 +85,7 @@ foam.CLASS({
     function isSelected(current, menu) {
       if ( ! current ) return false;
 
-      if ( this.globalThis.location.hash.includes('#' + menu.id) ) {
+      if ( this.window.location.hash.includes('#' + menu.id) ) {
         return true;
       }
 

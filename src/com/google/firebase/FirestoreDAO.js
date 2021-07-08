@@ -17,7 +17,7 @@ foam.CLASS({
   imports: [
     'gcloudProjectId?',
     'gcloudCredentialsPath?',
-    'globalThis?',
+    'window?',
   ],
 
   documentation: `DAO that wraps a Firestore collection. Implemented against
@@ -42,8 +42,8 @@ foam.CLASS({
       transient: true,
       factory: function() {
         // Browser:
-        if ( this.globalThis && this.globalThis.firebase && this.globalThis.firebase.firestore ) {
-          return this.globalThis.firebase.firestore();
+        if ( this.window && this.window.firebase && this.window.firebase.firestore ) {
+          return this.window.firebase.firestore();
         }
 
         // NodeJS:

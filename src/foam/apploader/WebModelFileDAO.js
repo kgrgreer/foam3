@@ -26,9 +26,6 @@ foam.CLASS({
     'foam.net.HTTPRequest'
   ],
 
-  imports: [
-    'globalThis'
-  ],
 
   properties: [
     'root',

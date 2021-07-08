@@ -36,7 +36,7 @@ foam.CLASS({
 
   imports: [
     'classloader',
-    'globalThis',
+    'window',
   ],
 
   exports: [
@@ -78,7 +78,7 @@ foam.CLASS({
   methods: [
     function fromQuery(opt_query) {
       var search = /([^&=]+)=?([^&]*)/g;
-      var query  = opt_query || this.globalThis.location.search.substring(1);
+      var query  = opt_query || this.window.location.search.substring(1);
       var decode = function(s) {
         return decodeURIComponent(s.replace(/\+/g, ' '));
       };

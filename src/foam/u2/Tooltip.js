@@ -11,7 +11,7 @@ foam.CLASS({
   documentation: 'Tooltip handler for any class extending Element',
 
   imports: [
-    'globalThis'
+    'window'
   ],
 
   requires: ['foam.u2.TooltipView'],
@@ -47,9 +47,9 @@ foam.CLASS({
       var el            = await this.target.el();
       this.tooltipStore = this.TooltipView.create({ data: this.text });
       var domRect       = el.getBoundingClientRect();
-      this.screenWidth  = this.globalThis.innerWidth;
-      var screenHeight  = this.globalThis.innerHeight;
-      var scrollY       = this.globalThis.scrollY;
+      this.screenWidth  = this.window.innerWidth;
+      var screenHeight  = this.window.innerHeight;
+      var scrollY       = this.window.scrollY;
       var height        = this.tooltipStore.getBoundingClientRect().height;
       this.top = (domRect.top - scrollY > screenHeight / 2) ?
         evt.pageY - 30 - height : evt.pageY + 20;

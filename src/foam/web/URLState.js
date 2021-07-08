@@ -33,19 +33,19 @@ foam.CLASS({
     'foam.json.Outputter',
     'foam.json.Parser'
   ],
-  imports: [ 'warn', 'globalThis' ],
+  imports: [ 'warn', 'window' ],
 
   methods: [
     function init() {
       this.SUPER();
-      this.setHash(this.globalThis.location.hash);
-      this.globalThis.addEventListener('hashchange', this.onHashChange);
+      this.setHash(this.window.location.hash);
+      this.window.addEventListener('hashchange', this.onHashChange);
     },
   ],
 
   listeners: [
     function onHashChange() {
-      this.setHash(this.globalThis.location.hash);
+      this.setHash(this.window.location.hash);
       this.hashToState_();
     },
     {
@@ -54,7 +54,7 @@ foam.CLASS({
       mergeDelay: 150,
       code: function() {
         this.stateToHash_();
-        this.globalThis.location.hash = this.hash_;
+        this.window.location.hash = this.hash_;
       }
     }
   ]

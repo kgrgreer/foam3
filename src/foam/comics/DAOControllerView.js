@@ -26,7 +26,6 @@ foam.CLASS({
     'stack',
     'summaryView? as importedSummaryView',
     'updateView? as importedUpdateView',
-    'globalThis',
     'translationService'
   ],
 

@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'LinkMenu',
   extends: 'foam.nanos.menu.AbstractMenu',
 
-  imports: [ 'globalThis' ],
+  imports: [ 'window' ],
 
   documentation: 'A menu item which links to an external URL.',
 
@@ -22,7 +22,7 @@ foam.CLASS({
 
   methods: [
     function launch(X, menu) {
-      this.globalThis.location = this.link;
+      this.window.location = this.link;
     }
   ]
 });

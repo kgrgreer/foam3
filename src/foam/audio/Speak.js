@@ -22,7 +22,8 @@ foam.CLASS({
   documentation: 'Speak text.',
 
   imports: [
-    'globalThis'
+    'window',
+    'setTimeout'
   ],
 
   properties: [
@@ -71,7 +72,7 @@ foam.CLASS({
     {
       name: 'voice',
       view: function(_, X) {
-        var synth = X.globalThis.speechSynthesis;
+        var synth = X.window.speechSynthesis;
         var view  = foam.u2.view.ChoiceView.create({
           choices: []
         }, X);
@@ -102,7 +103,7 @@ foam.CLASS({
 
   methods: [
     function init() {
-      var synth = this.globalThis.speechSynthesis;
+      var synth = this.window.speechSynthesis;
       this.voicesChanged();
       synth.addEventListener('voiceschanged', this.voicesChanged);
     }
@@ -110,7 +111,7 @@ foam.CLASS({
 
   listeners: [
     function voicesChanged() {
-      var synth = this.globalThis.speechSynthesis;
+      var synth = this.window.speechSynthesis;
       this.voices = synth.getVoices();
       if ( this.voices && ! this.voice ) {
         for ( var i = 0 ; i < this.voices.length ; i++ ) {
@@ -124,11 +125,11 @@ foam.CLASS({
   actions: [
     function play() {
       if ( ! this.voices ) {
-        globalThis.setTimeout(50, () => this.play());
+        this.setTimeout(50, () => this.play());
         return;
       }
 
-      var synth = this.globalThis.speechSynthesis;
+      var synth = this.window.speechSynthesis;
       var u     = new SpeechSynthesisUtterance(this.text);
 
       u.voice  = this.voice;

@@ -63,7 +63,7 @@ foam.CLASS({
     'installCSS',
     'notificationDAO',
     'sessionSuccess',
-    'globalThis'
+    'window'
   ],
 
   exports: [
@@ -699,13 +699,13 @@ foam.CLASS({
 
       this.fetchTheme();
 
-      var hash = this.globalThis.location.hash;
+      var hash = this.window.location.hash;
       if ( hash ) hash = hash.substring(1);
 
       if ( hash ) {
         globalThis.onpopstate();
       } else if ( this.theme ) {
-        this.globalThis.location.hash = this.theme.defaultMenu;
+        this.window.location.hash = this.theme.defaultMenu;
       }
 
 //      this.__subContext__.localSettingDAO.put(foam.nanos.session.LocalSetting.create({id: 'homeDenomination', value: localStorage.getItem("homeDenomination")}));

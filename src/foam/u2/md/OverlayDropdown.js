@@ -9,7 +9,7 @@ foam.CLASS({
   name: 'OverlayDropdown',
   extends: 'foam.u2.Element',
 
-  imports: [ 'document', 'globalThis' ],
+  imports: [ 'document', 'window' ],
 
   exports: [
     'as dropdown'
@@ -107,8 +107,8 @@ foam.CLASS({
 
     function open(x, y) {
       var domRect       = this.parentEl.getBoundingClientRect();
-      var screenHeight  = this.globalThis.innerHeight;
-      var scrollY       = this.globalThis.scrollY;
+      var screenHeight  = this.window.innerHeight;
+      var scrollY       = this.window.scrollY;
       if ( domRect.top - scrollY < screenHeight / 2 ) {
         this.top = y; this.bottom = 'auto';
       } else {

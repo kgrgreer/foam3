@@ -28,7 +28,7 @@ foam.CLASS({
   imports: [
     'webSocketService',
     'me',
-    'globalThis'
+    'window'
   ],
 
   axioms: [
@@ -69,14 +69,14 @@ foam.CLASS({
   methods: [
     function prepareURL(url) {
       /* Add window's origin if url is not complete. */
-      if ( this.globalThis && url.indexOf(':') == -1 ) {
+      if ( this.window && url.indexOf(':') == -1 ) {
         var protocol = "ws://";
-        if ( this.globalThis.location.protocol === "https:" ) {
+        if ( this.window.location.protocol === "https:" ) {
           protocol = "wss://";
         }
 
-        return protocol + this.globalThis.location.hostname +
-          ( this.globalThis.location.port ? ':' + ( parseInt(this.globalThis.location.port) + 1 ) : '' ) +
+        return protocol + this.window.location.hostname +
+          ( this.window.location.port ? ':' + ( parseInt(this.window.location.port) + 1 ) : '' ) +
           '/' + url;
       }
 

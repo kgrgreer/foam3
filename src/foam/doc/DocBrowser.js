@@ -623,7 +623,7 @@ foam.CLASS({
     'foam.doc.DocBrowser'
   ],
 
-  imports: [ 'globalThis' ],
+  imports: [ 'window' ],
 
   properties: [
     'initialClass'
@@ -632,7 +632,7 @@ foam.CLASS({
   methods: [
     function init() {
       // TODO: There should be some helper support to make this easier
-      var w = this.globalThis.open('', '', 'width=700, heigh=1000');
+      var w = this.window.open('', '', 'width=700, heigh=1000');
       var globalThis = foam.core.Window.create({globalThis: w});
       var browser = this.DocBrowser.create({path: this.initialClass}, globalThis.__subContext__);
       w.document.body.insertAdjacentHTML('beforeend', browser.outerHTML);

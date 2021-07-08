@@ -31,7 +31,7 @@ foam.CLASS({
     All FObjects already import: [ 'error', 'log', 'warn' ], meaning
     that these do not need to be explicitly imported.
 
-    This is done to remove dependency on the globals 'document' and 'globalThis',
+    This is done to remove dependency on the globals 'document' and 'window',
     which makes it easier to write code which works with multiple windows.
 
     It also allows for common services to be decorated, trapped, or replaced
@@ -64,19 +64,19 @@ foam.CLASS({
     'setInterval',
     'setTimeout',
     'warn',
-    'globalThis'
+    'window'
   ],
 
   properties: [
-    [ 'name', 'globalThis' ],
-    'globalThis',
+    [ 'name', 'window' ],
+    'window',
     {
       name: 'document',
-      factory: function() { return this.globalThis.document; }
+      factory: function() { return this.window.document; }
     },
     {
       name: 'console',
-      factory: function() { return this.globalThis.console; }
+      factory: function() { return this.window.console; }
     }
   ],
 
@@ -190,24 +190,24 @@ foam.CLASS({
     },
 
     function setTimeout(f, t) {
-      return this.globalThis.setTimeout(f, t);
+      return this.window.setTimeout(f, t);
     },
     function clearTimeout(id) {
-      this.globalThis.clearTimeout(id);
+      this.window.clearTimeout(id);
     },
 
     function setInterval(f, t) {
-      return this.globalThis.setInterval(f, t);
+      return this.window.setInterval(f, t);
     },
     function clearInterval(id) {
-      this.globalThis.clearInterval(id);
+      this.window.clearInterval(id);
     },
 
     function requestAnimationFrame(f) {
-      return this.globalThis.requestAnimationFrame(f);
+      return this.window.requestAnimationFrame(f);
     },
     function cancelAnimationFrame(id) {
-      this.globalThis.cancelAnimationFrame(id);
+      this.window.cancelAnimationFrame(id);
     },
 
     function installCSS(text,  /* optional */ owner, /* optional */ id) {
@@ -249,7 +249,7 @@ foam.SCRIPT({
   ],
   code: function() {
     foam.__context__ = foam.core.Window.create(
-      { globalThis: globalThis },
+      { window: globalThis },
       foam.__context__
     ).__subContext__;
   }

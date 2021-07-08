@@ -15,7 +15,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'globalThis',
+    'window',
     'setTimeout'
   ],
 
@@ -46,8 +46,8 @@ foam.CLASS({
          from the given sourceElement's client rect. */
       var startingClientRect = sourceElement.getBoundingClientRect();
       var vp = {
-        height: this.globalThis.innerHeight || this.document.documentElement.clientHeight,
-        width: this.globalThis.innerWidth || this.document.documentElement.clientWidth
+        height: this.window.innerHeight || this.document.documentElement.clientHeight,
+        width: this.window.innerWidth || this.document.documentElement.clientWidth
       };
       this.itemHeight = startingClientRect.height;
       this.itemWidth = startingClientRect.width - 16;
