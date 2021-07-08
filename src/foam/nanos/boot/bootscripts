@@ -27,3 +27,4 @@ p({
   """
 })
 p({"class": "foam.nanos.script.TestRunnerScript", "id":"testRunnerScript"})
+p({"class": "foam.nanos.script.BenchmarkRunnerScript", "id":"benchmarkRunnerScript"})
