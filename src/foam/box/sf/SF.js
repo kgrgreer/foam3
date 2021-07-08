@@ -22,7 +22,10 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
+    'foam.box.Box',
+    'foam.box.Message',
     'foam.dao.DAO',
+    'foam.dao.Sink',
     'foam.dao.ProxyDAO',
     'foam.dao.NullDAO',
     'foam.core.FObject',
@@ -110,6 +113,19 @@ foam.CLASS({
       value: 0
     },
     {
+      class: 'Object',
+      name: 'delegateObject',
+      transient: true,
+    },
+    {
+      class: 'Object',
+      name: 'manager',
+      transient: true,
+      javaFactory: `
+        return (SFManager) getX().get("SFManager");
+      `
+    },
+    {
       name: 'logger',
       class: 'FObjectProperty',
       of: 'foam.nanos.logger.Logger',
@@ -139,6 +155,50 @@ foam.CLASS({
         //TODO: assgn index and rolling.
         getStoreJournal().put(getX(), "", new NullDAO.Builder(getX()).setOf(SFEntry.getOwnClassInfo()).build(), entry);
         return entry;
+      `
+    },
+    {
+      name: 'forward',
+      args: 'SFEntry e',
+      javaCode: `
+        /* Assign time and enqueue. */
+        e.setScheduledTime(System.currentTimeMillis());
+        ((SFManager) getManager()).enqueue(e);
+      `
+    },
+    {
+      name: 'successForward',
+      args: 'SFEntry e',
+      javaCode: `
+        /* Update journal for success */
+        //TODO:
+      `
+    },
+    {
+      name: 'failForward',
+      args: 'SFEntry e',
+      javaCode: `
+        /* Check retry attempt, then Update ScheduledTime and enqueue. */
+        if ( getMaxRetryAttempts() > -1 && 
+              e.getRetryAttempt() >= getMaxRetryAttempts() )  {
+          getLogger().warning("retryAttempt >= maxRetryAttempts", e.getRetryAttempt(), getMaxRetryAttempts(), e.toString());
+        
+        } else {
+          updateNextScheduledTime(e);
+          updateAttempt(e);
+          ((SFManager) getManager()).enqueue(e);
+        }
+      `
+    },
+    {
+      name: 'submit',
+      args: 'Context x, SFEntry entry',
+      javaCode: `
+        Object delegate = getDelegateObject();
+        if ( delegate instanceof Box ) ((Box) delegate).send((Message) entry.getObject());
+        else if ( delegate instanceof DAO ) ((DAO) delegate).put_(x, entry.getObject());
+        else if ( delegate instanceof Sink ) ((Sink) delegate).put(entry.getObject(), null);
+        else throw new RuntimeException("DelegateObject do not support"); 
       `
     },
     {

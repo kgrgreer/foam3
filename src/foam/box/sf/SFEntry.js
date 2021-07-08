@@ -35,6 +35,7 @@ foam.CLASS({
       class: 'Long',
       name: 'scheduledTime',
       storageTransient: true,
+      value: 0
     },
     {
       class: 'Int',
@@ -47,6 +48,12 @@ foam.CLASS({
       name: 'retryAttempt',
       value: 0,
       storageTransient: true,
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.box.sf.SF',
+      name: 'sf',
+      storageTransient: true
     },
     {
       name: 'status',
