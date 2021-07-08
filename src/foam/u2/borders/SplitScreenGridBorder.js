@@ -33,7 +33,7 @@
     }
 
     ^grid {
-      grid-gap: clamp(1vmax, 1.5vmax, 2vmax) clamp(1vmax, 1.5vmax, 2vmax);
+      grid-gap: clamp(1rem, 1.5vmax, 5rem);
     }
     
     /* vertically center the 2 sides of splitscreen */
