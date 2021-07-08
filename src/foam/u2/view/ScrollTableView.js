@@ -18,7 +18,8 @@
   exports: [
     'as summaryView',
     'dblclick as click',
-    'dblclick'
+    'dblclick',
+    'currentMemento_ as memento'
   ],
 
   requires: [
@@ -221,6 +222,7 @@
             config: this.config,
             idOfRecord: id
           }, this.__subContext__.createSubContext({ memento: this.table_.memento }), undefined, { navStackTitle: title });
+          //We give this the table memento because DAOSummaryView sets memento.tail instead of memento.value
         }
       }
     },
@@ -391,6 +393,7 @@
               config: this.config,
               idOfRecord: id
             }, this.__subContext__.createSubContext({ memento: this.table_.memento }), undefined, { navStackTitle: v.toSummary() });
+            //We give this the table memento because DAOSummaryView sets memento.tail instead of memento.value
           });
         }
       }

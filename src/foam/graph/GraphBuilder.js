@@ -39,7 +39,9 @@ foam.CLASS({
 
       // Iterate over rootObject's children
       var parent = this.data[rootObject.id];
-      return rootObject[relationshipKey].dao
+      var relationshipDAO = rootObject[relationshipKey].dao || rootObject[relationshipKey];
+      
+      return relationshipDAO
         .select().then(r => Promise.all(r.array.map(o => {
           parent.forwardLinks = [...parent.forwardLinks, o.id];
           // Add child and its children (recursively)
