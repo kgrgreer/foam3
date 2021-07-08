@@ -39,19 +39,19 @@ foam.CLASS({
         ) {
           throw new AuthorizationException();
         }
+
         Theme theme = (Theme) ((Themes) x.get("themes")).findTheme(x);
         if ( targetProperty.equals("email") && theme.getAllowDuplicateEmails() ) {
           return true;
         }
+
         DAO userDAO = ((DAO) getX().get("localUserDAO")).inX(x);
         User user = (User) userDAO
           .find(AND(
             EQ(User.getOwnClassInfo().getAxiomByName(targetProperty), value),
             EQ(User.SPID, theme.getSpid())));
-        if ( user != null ) {
-          return false;
-        }
-        return true;
+
+        return user == null;
       `
     }
   ]
