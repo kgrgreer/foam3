@@ -54,8 +54,7 @@
       flags: ['web'],
       value: {
         class: 'foam.u2.layout.GridColumns',
-        columns: 8,
-        mdColumns: 6,
+        columns: 12,
         lgColumns: 6,
         xlColumns: 6
       }
