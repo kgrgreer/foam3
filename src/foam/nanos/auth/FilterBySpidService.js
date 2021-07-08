@@ -10,7 +10,7 @@ foam.CLASS({
    extends: 'foam.nanos.auth.ProxyUniqueUserService',
    flags: ['java'],
 
-  documentation: `Filter users by spid.`,
+  documentation: 'Filter users by spid.',
 
   javaImports: [
     'foam.dao.ArraySink',
@@ -40,6 +40,7 @@ foam.CLASS({
           .where(OR(
             EQ(User.SPID, ((Theme) ((Themes) x.get("themes")).findTheme(x)).getSpid()),
             EQ(User.SPID, getSuperSpid())));
+
         x = x.put("localUserDAO", userDAO);
         return getDelegate().getUser(x, identifier, password);
       `
