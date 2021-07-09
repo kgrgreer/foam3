@@ -864,6 +864,7 @@ foam.RELATIONSHIP({
   forwardName: 'entities',
   inverseName: 'agents',
   junctionDAOKey: 'agentJunctionDAO',
+  junctionModelPlural: 'User Proxy Management',
   sourceProperty: {
     createVisibility: 'HIDDEN',
     label: 'Businesses',

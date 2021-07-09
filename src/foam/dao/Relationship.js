@@ -199,6 +199,16 @@ foam.CLASS({
       factory: function() {
         return ['sourceId', 'targetId'];
       }
+    },
+    {
+      class: 'String',
+      name: 'junctionModelPlural',
+      documentation: 'Plural of the junction model.',
+      factory: function(junctionModel) {
+        var name = this.junctionModel.substring(
+          this.junctionModel.lastIndexOf('.') + 1);
+        return foam.String.labelize(foam.String.pluralize(name));
+      }
     }
     /* FUTURE:
     {
@@ -318,6 +328,7 @@ foam.CLASS({
         name: name,
         extends: this.extends,
         ids: this.ids,
+        plural: this.junctionModelPlural,
         properties: [
           {
             class: 'Reference',
