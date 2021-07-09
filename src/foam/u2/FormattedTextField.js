@@ -128,7 +128,7 @@ foam.CLASS({
 
     async function resetState() {
       var el = await this.el();
-      if ( el && globalThis.getComputedStyle(el, ':after').content !== ( '"' + this.dynamicPlaceholder + '"' ) ) {
+      if ( el && window.getComputedStyle(el, ':after').content !== ( '"' + this.dynamicPlaceholder + '"' ) ) {
         // workaround for Safari isssue where attr(data-placeholder) is not
         // being recalculated on data-placeholder changes
         this.removeClass(this.myClass('placeholder'));

@@ -136,7 +136,7 @@ foam.CLASS({
         });
         this.resetPasswordToken.processToken(null, user, this.token)
         .then((_) => {
-          location = globalThis.location.origin;
+          location = window.location.origin;
           this.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, this);
           this.notify(this.SUCCESS_MSG_TITLE, this.SUCCESS_MSG, this.LogLevel.INFO, true);
         }).catch((err) => {

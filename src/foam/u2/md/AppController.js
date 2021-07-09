@@ -87,7 +87,7 @@ foam.CLASS({
   methods: [
     async function initE() {
 
-      globalThis.addEventListener('resize', this.updateDisplayWidth);
+      window.addEventListener('resize', this.updateDisplayWidth);
       this.updateDisplayWidth();
 
       await this.clientPromise;

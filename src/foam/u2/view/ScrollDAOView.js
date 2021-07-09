@@ -551,7 +551,7 @@ foam.CLASS({
                 skip += batchSize;
                 limit = Math.min(batchSize, end - skip);
                 // TODO(markdittmer): Import rAF.
-                if ( limit > 0 ) globalThis.requestAnimationFrame(fetchBatch);
+                if ( limit > 0 ) window.requestAnimationFrame(fetchBatch);
               });
           };
           fetchBatch();

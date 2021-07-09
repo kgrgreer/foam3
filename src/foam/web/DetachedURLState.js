@@ -20,7 +20,7 @@ foam.CLASS({
   name: 'DetachedURLState',
 
   documentation: `foam.web.URLState that is detached from
-      globalThis.location.hash.`,
+      window.location.hash.`,
 
   requires: [
     'foam.json.Outputter',

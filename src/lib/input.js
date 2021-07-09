@@ -98,8 +98,8 @@ foam.CLASS({
 
         // While the mouse is down, track the movements and mouseup on the
         // entire window so it's tracked if/when the mouse leaves the element.
-        globalThis.addEventListener('mouseup',   this.onMouseUp);
-        globalThis.addEventListener('mousemove', this.onMouseMove);
+        window.addEventListener('mouseup',   this.onMouseUp);
+        window.addEventListener('mousemove', this.onMouseMove);
       }
     },
     {
@@ -112,8 +112,8 @@ foam.CLASS({
           this.lastTouch = undefined;
         }
 
-        globalThis.removeEventListener('mouseup',   this.onMouseUp);
-        globalThis.removeEventListener('mousemove', this.onMouseMove);
+        window.addEventListener('mouseup',   this.onMouseUp);
+        window.addEventListener('mousemove', this.onMouseMove);
       }
     },
     {

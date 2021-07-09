@@ -278,7 +278,7 @@ foam.CLASS({
               .end()
               .start('span').add(this.GO_BACK).add(this.backLinkTxt_)
                 .on('click', () => {
-                  globalThis.location = this.backLink_;
+                  window.location = this.backLink_;
                 })
               .end()
             .end()

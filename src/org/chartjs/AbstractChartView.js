@@ -49,7 +49,7 @@ foam.CLASS({
     function initE() {
       this.onDetach(this.data$proxy.listen(this.FnSink.create({ fn: this.dataUpdate })));
       this.dataUpdate();
-      globalThis.addEventListener('resize', this.onResize);
+      window.addEventListener('resize', this.onResize);
       this
         .start('div', null, this.parentEl_$)
           .style({

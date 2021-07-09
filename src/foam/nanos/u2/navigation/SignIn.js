@@ -77,7 +77,7 @@ foam.CLASS({
     {
       name: 'footerLink',
       code: function(topBarShow_, param) {
-        globalThis.history.replaceState(null, null, globalThis.location.origin);
+        window.history.replaceState(null, null, window.location.origin);
         this.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignUp', topBarShow_: topBarShow_, param: param }, this);
       }
     },
@@ -95,7 +95,7 @@ foam.CLASS({
       code: function(X) {
         if ( this.user.twoFactorEnabled ) {
           this.loginSuccess = false;
-          globalThis.history.replaceState({}, document.title, '/');
+          window.history.replaceState({}, document.title, '/');
           this.stack.push({
             class: 'foam.nanos.auth.twofactor.TwoFactorSignInView'
           });
@@ -107,7 +107,7 @@ foam.CLASS({
           } else {
             this.menuDAO.cmd_(X, foam.dao.CachingDAO.PURGE);
             if ( ! this.memento || this.memento.value.length === 0 )
-              globalThis.location.hash = '';
+              window.location.hash = '';
             this.loginSuccess = !! this.user;
           }
         }

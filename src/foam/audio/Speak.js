@@ -22,7 +22,6 @@ foam.CLASS({
   documentation: 'Speak text.',
 
   imports: [
-    'window',
     'setTimeout'
   ],
 

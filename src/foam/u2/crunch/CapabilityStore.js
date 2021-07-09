@@ -328,10 +328,10 @@ foam.CLASS({
           .end()
         .end();
 
-        globalThis.addEventListener('resize', checkCardsOverflow);
+        window.addEventListener('resize', checkCardsOverflow);
         checkCardsOverflow();
         self.onDetach(() => {
-          globalThis.removeEventListener('resize', checkCardsOverflow);
+          window.removeEventListener('resize', checkCardsOverflow);
         });
       });
       return spot;

@@ -50,9 +50,9 @@ foam.CLASS({
       var self = this;
       this.removeAllChildren();
 
-      if (globalThis.location.hash) {
+      if (window.location.hash) {
         var expr = foam.mlang.Expressions.create();
-        this.dao.where(expr.EQ(Phone.ID, globalThis.location.hash.substring(1))).select().then(function (sink) {
+        this.dao.where(expr.EQ(Phone.ID, window.location.hash.substring(1))).select().then(function (sink) {
           var phone = sink.a[0];
           self.add(tutorial.PhoneDetialView.create({ data: phone }));
         })

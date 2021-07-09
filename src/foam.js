@@ -26,7 +26,7 @@
   if ( ! flags.hasOwnProperty('js')    ) flags.js    = true;
 
   // set flags by url parameters
-  var urlParams = new URLSearchParams(globalThis.location.search);
+  var urlParams = new URLSearchParams(window.location.search);
   for ( var pair of urlParams.entries() ) {
     if ( flags.hasOwnProperty(pair[0]) ) flags[pair[0]] = pair[1] === 'true';
   }

@@ -185,7 +185,7 @@ foam.CLASS({
       factory: function() {
         var urlSession = '';
         try {
-          urlSession = globalThis.location.search.substring(1).split('&')
+          urlSession = window.location.search.substring(1).split('&')
            .find(element => element.startsWith("sessionId")).split('=')[1];
         } catch { };
         return urlSession !== "" ? urlSession : localStorage[this.sessionName] ||
@@ -437,7 +437,7 @@ foam.CLASS({
     },
 
     function initE() {
-      globalThis.addEventListener('resize', this.updateDisplayWidth);
+      window.addEventListener('resize', this.updateDisplayWidth);
       this.updateDisplayWidth();
 
 
@@ -703,7 +703,7 @@ foam.CLASS({
       if ( hash ) hash = hash.substring(1);
 
       if ( hash ) {
-        globalThis.onpopstate();
+        window.onpopstate();
       } else if ( this.theme ) {
         this.window.location.hash = this.theme.defaultMenu;
       }
@@ -765,7 +765,7 @@ foam.CLASS({
         this.displayWidth = foam.u2.layout.DisplayWidth.VALUES
           .concat()
           .sort((a, b) => b.minWidth - a.minWidth)
-          .find(o => o.minWidth <= Math.min(globalThis.innerWidth, globalThis.screen.width) );
+          .find(o => o.minWidth <= Math.min(window.innerWidth, window.screen.width) );
       }
     }
   ]

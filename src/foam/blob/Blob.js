@@ -848,7 +848,7 @@ foam.CLASS({
       class: 'String',
       name: 'address',
       factory: function() {
-        return globalThis.location.origin + '/' + this.serviceName;
+        return window.location.origin + '/' + this.serviceName;
       }
     }
   ],

@@ -24,9 +24,9 @@ foam.CLASS({
       w.document.head.innerHTML = '<title>Translation Console</title>';
       w.document.$UID = foam.next$UID();
 
-      var globalThis = foam.core.Window.create({globalThis: w}, ctrl);
-      var v      = this.create({}, globalThis);
-      v.write(globalThis.document);
+      var window = foam.core.Window.create({window: w}, ctrl);
+      var v      = this.create({}, window);
+      v.write(window.document);
 
       foam.core.I18NString.GETTER__ = function(proto, prop, obj, key) {
         if ( obj.sourceCls_ ) {

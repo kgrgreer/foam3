@@ -100,7 +100,7 @@ foam.CLASS({
             .start().addClass('Back-Button')
               .add('Back to Sign In')
               .on('click', function() {
-                globalThis.location.href = '#';
+                window.location.href = '#';
                 self.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, self);
               })
             .end()

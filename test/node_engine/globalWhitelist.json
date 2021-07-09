@@ -1,5 +1,5 @@
 [
-  "globalThis",
+  "window",
   "GLOBAL",
   "X",
   "CLASS"

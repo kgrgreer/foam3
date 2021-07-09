@@ -95,7 +95,7 @@ foam.CLASS({
       factory: function() {
         return this.DisplayWidth.VALUES
           .sort((a, b) => b.minWidth - a.minWidth)
-          .find(o => o.minWidth <= globalThis.innerWidth);
+          .find(o => o.minWidth <= window.innerWidth);
       }
     },
     {

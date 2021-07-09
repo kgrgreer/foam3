@@ -116,7 +116,7 @@ foam.CLASS({
       }
       this.x = x;
       this.opened = true;
-      globalThis.addEventListener('resize', this.onResize);
+      window.addEventListener('resize', this.onResize);
     },
 
     function close() {
@@ -193,7 +193,7 @@ foam.CLASS({
 
     function onResize() {
       this.close();
-      globalThis.removeEventListener("resize", onResize);
+      window.removeEventListener("resize", onResize);
     }
   ]
 });
