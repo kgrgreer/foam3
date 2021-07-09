@@ -70,6 +70,7 @@ the notification will be handled. `,
             template = (Notification) ((FObject)templates.get(0)).fclone();
             template.setId(notification.getId());
             template.setBody(notification.getBody());
+            template.setClusterable(notification.getClusterable());
             template.setRead(notification.getRead());
             if ( SafetyUtil.isEmpty(template.getSpid()) ) {
               template.setSpid(notification.getSpid());
