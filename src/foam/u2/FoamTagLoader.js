@@ -55,7 +55,7 @@ foam.CLASS({
       view.load();
 
       // Store view in global variable if named. Useful for testing.
-      if ( id ) global[id] = view;
+      if ( id ) globalThis[id] = view;
     },
 
     function setAttributes(el, obj) {

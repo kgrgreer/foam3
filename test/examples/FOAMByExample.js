@@ -1406,11 +1406,11 @@ var examples = [
       console.log("Access through outer:", InnerClassTest.InnerClass1.name);
 
       // Inner-classes do not appear in the global namespace
-      console.log("Available globally?", !! global.InnerClass1);
+      console.log("Available globally?", !! globalThis.InnerClass1);
     },
     postTestCode: function() {
       //toBeAssertedThat(InnerClassTest.InnerClass1).not.toBeUndefined();
-      //toBeAssertedThat(global.InnerClass1).toBeUndefined();
+      //toBeAssertedThat(globalThis.InnerClass1).toBeUndefined();
     }
   },
   {
@@ -1449,11 +1449,11 @@ var examples = [
       console.log("Access through outer:", InnerEnumTest.InnerEnum.name);
 
       // Inner-enums do not appear in the global namespace
-      console.log("Available globally?", !! global.InnerEnum);
+      console.log("Available globally?", !! globalThis.InnerEnum);
     },
     postTestCode: function() {
       //toBeAssertedThat(InnerEnumTest.InnerEnum).not.toBeUndefined();
-      //toBeAssertedThat(global.InnerEnum).toBeUndefined();
+      //toBeAssertedThat(globalThis.InnerEnum).toBeUndefined();
     }
   },
   {
@@ -2030,7 +2030,7 @@ var examples = [
     description: 'PromiseSlot provides a declarative way of creating a slot that should contain the value of a promise when it resolves.',
     code: function() {
       var promise = new Promise(function(resolve, reject) {
-        window.setTimeout(function() {
+        globalThis.setTimeout(function() {
           resolve(66);
         }, 3000);
       }).then((value) => {
@@ -2043,7 +2043,7 @@ var examples = [
         promise: promise
       });
       console.log("Intial value of the slot:", s.get());
-      window.setTimeout(() => {
+      globalThis.setTimeout(() => {
         console.log('Value 1 second later, at ' + new Date() + ':', s.get());
       }, 1000);
       return promise;
@@ -2054,7 +2054,7 @@ var examples = [
     description: 'ArraySlot provides a way to group several slots together so that when any of them update we can invalidate.',
     code: function() {
       var promise = new Promise(function(resolve, reject) {
-        window.setTimeout(() => resolve('bar'), 3000);
+        globalThis.setTimeout(() => resolve('bar'), 3000);
       });
       var s1 = foam.core.SimpleSlot.create({ value: 42 });
       var s2 = foam.core.PromiseSlot.create({ value: 'foo', promise: promise });
@@ -3529,8 +3529,8 @@ For instance, my name is %%name
   }
 ];
 
-global.FBEreg = global.FBEreg || test.helpers.ExemplarRegistry.create();
-global.FBE = global.FBE || [];
+globalThis.FBEreg = globalThis.FBEreg || test.helpers.ExemplarRegistry.create();
+globalThis.FBE = globalThis.FBE || [];
 examples.forEach(function(def) {
   FBE.push(test.helpers.Exemplar.create(def, FBEreg));
 });

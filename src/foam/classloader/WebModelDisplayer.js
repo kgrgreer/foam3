@@ -113,7 +113,7 @@ foam.CLASS({
       ]).then(function(args) {
         var cls = args[0];
         var m = cls.create(null, self);
-        window.__foam_obj__ = m;
+        globalThis.__foam_obj__ = m;
 
         var viewSpec = self.view ? { class: self.view, data: m } : m.toE.bind(m);
 
