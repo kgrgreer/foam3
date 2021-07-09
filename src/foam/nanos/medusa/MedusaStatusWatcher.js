@@ -13,7 +13,7 @@ foam.CLASS({
     'foam.nanos.NanoService'
   ],
 
-  documentation: '',
+  documentation: 'Monitor the etc directory for the apperance of a file named OFFLINE which will trigger the instance to transition to OFFLINE.  This will allow ssh control of an mediator or node.',
 
   javaImports: [
     'foam.core.Agency',
