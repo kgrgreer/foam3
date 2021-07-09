@@ -71,6 +71,8 @@ foam.CLASS({
 
         final var actingUserId = dugRule.getActingUser();
 
+        getLogger(x).debug(this.getClass().getSimpleName(), "Checking actingUser on DUG webhook", actingUserId, obj.getProperty("id"));
+
         if ( actingUserId != 0 ) {
           final var userDAO = (DAO) x.get("bareUserDAO");
           final var actingUser = (User) userDAO.find(actingUserId);
@@ -102,7 +104,7 @@ foam.CLASS({
           return;
       }
 
-      ((Logger) x.get("logger")).debug(this.getClass().getSimpleName(), "Sending DUG webhook", obj);  
+      getLogger(x).debug(this.getClass().getSimpleName(), "Sending DUG webhook", obj);
       
       final var finalObj = obj;
       agency.submit(x, (agencyX) -> {
