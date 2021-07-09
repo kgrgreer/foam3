@@ -18,8 +18,7 @@ foam.CLASS({
   properties: [
     {
       name: 'seqNo',
-      class: 'Int',
-      javaFactory: 'return 0;'
+      class: 'Int'
     },
     {
       name: 'lastSecondCalled',
