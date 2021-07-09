@@ -13,7 +13,7 @@ foam.CLASS({
 
   static: [
     function OPEN() {
-      var w = global.window.open("", 'Translation Console', "width=800,height=800,scrollbars=no", true);
+      var w = globalThis.window.open("", 'Translation Console', "width=800,height=800,scrollbars=no", true);
 
       // I would like to close 'w' when the parent window is reloaded, but it doesn't work.
       document.body.addEventListener('beforeunload', () => w.close());

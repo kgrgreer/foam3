@@ -33,7 +33,7 @@ describe('DatastoreDAO', function() {
   }
 
   // From helpers/generic_dao.js.
-  global.genericDAOTestBattery(daoFactory);
+  globalThis.genericDAOTestBattery(daoFactory);
 
   describe('construction', function() {
     it('should support "gcloudProjectId" from context', function() {

@@ -22,7 +22,7 @@ foam.CLASS({
   documentation: 'Speak text.',
 
   imports: [
-    'window'
+    'setTimeout'
   ],
 
   properties: [
@@ -124,7 +124,7 @@ foam.CLASS({
   actions: [
     function play() {
       if ( ! this.voices ) {
-        window.setTimeout(50, () => this.play());
+        this.setTimeout(50, () => this.play());
         return;
       }
 

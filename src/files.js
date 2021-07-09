@@ -21,7 +21,6 @@
  * pages via script tags easily.
  */
 
-if ( typeof window !== 'undefined' ) global = window;
 
 FOAM_FILES([
   { name: "foam/core/poly" },

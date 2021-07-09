@@ -31,9 +31,6 @@ foam.CLASS({
     'foam.u2.search.FilterController'
   ],
 
-  imports: [
-    'window'
-  ],
 
   properties: [
     {
