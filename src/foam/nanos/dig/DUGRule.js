@@ -115,6 +115,7 @@ foam.CLASS({
       documentation: `
         The permissioned DAO the refind will happen on if the acting user is specified
         ie. If the DAOKey was 'localUserDAO' then the SecureDAOKey could be 'userDAO'
+        DUGRule action will use daoKey if this property is not set
       `,
       label: 'Secure DAO',
       section: 'dugInfo',
