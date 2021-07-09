@@ -37,7 +37,7 @@ foam.CLASS({
     },
     {
       /** @private */
-      name: 'property_',
+      name: 'propertyInfo',
       hidden: true,
       javaType: 'foam.core.PropertyInfo',
       javaInfoType: 'foam.core.AbstractObjectPropertyInfo',
@@ -58,9 +58,9 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
         synchronized (this) {
-          long id = (long) getProperty_().get(obj);
+          long id = (long) getPropertyInfo().get(obj);
           if ( id == 0 ) {
-            getProperty_().set(obj, getUIDGenerator().getNextLong());
+            getPropertyInfo().set(obj, getUIDGenerator().getNextLong());
           }
         }
         return getDelegate().put_(x, obj);

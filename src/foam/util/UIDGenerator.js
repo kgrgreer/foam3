@@ -11,7 +11,6 @@ foam.CLASS({
 
   javaImports: [
     'java.util.Arrays',
-    'java.util.concurrent.ThreadLocalRandom',
     'java.util.List'
   ],
 
