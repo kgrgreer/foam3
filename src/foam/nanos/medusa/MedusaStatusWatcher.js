@@ -51,12 +51,6 @@ foam.CLASS({
       value: 'OFFLINE'
     },
     {
-      documentation: 'Status watch file - allowing external VM control of instance.',
-      name: 'statusFile',
-      class: 'Object',
-      hidden: true
-    },
-    {
       name: 'initialTimerDelay',
       class: 'Int',
       value: 60000
