@@ -129,7 +129,9 @@ foam.CLASS({
           case 'natureCodeDAO':
             return ['admin.natureCodes'];
           case 'capabilityDAO':
-            return ['admin.capabilities']
+            return ['admin.capabilities'];
+          default:
+            return null;
         }
       }
     }
