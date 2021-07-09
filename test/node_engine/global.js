@@ -142,7 +142,7 @@ function isContextReportClean(contextReport) {
 //           vm.runInContext('global = undefined;window = this;' + coreScriptContents, context);
 //           var report = buildContextReport(context, whitelistMap);
 //
-//           window.close();
+//           globalThis.close();
 //
 //           if (!isContextReportClean(report)) {
 //             console.log(report);

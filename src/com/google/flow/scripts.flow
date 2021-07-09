@@ -1341,7 +1341,7 @@ grid(function(x, y) {
 
 circle1.x = 150;
 
-global.hsl = hsl;
+globalThis.hsl = hsl;
 
 function tree(t, size) {
   if ( size < 40 ) return;

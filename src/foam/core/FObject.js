@@ -825,7 +825,7 @@ foam.CLASS({
       this.clearPrivate_('listeners');
     },
 
-    function isDetached() { return t.hasOwnProperty('detaching_'); },
+    function isDetached() { return this.hasOwnProperty('detaching_'); },
 
 
     /************************************************

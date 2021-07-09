@@ -11,15 +11,15 @@ const util = require('util');
 var fs = require('fs');
 var projRoot = process.cwd() + '/';
 
-global.FOAM_FLAGS = {
+globalThis.FOAM_FLAGS = {
   js: true,
-  web: true,
+  web: false,
   node: true,
   java: true,
   swift: true,
 };
 
-require(projRoot + 'foam3/src/foam.js');
+require(projRoot + 'foam3/src/foam_node.js');
 require(projRoot + 'foam3/src/foam/nanos/nanos.js');
 require(projRoot + 'foam3/src/foam/support/support.js');
 

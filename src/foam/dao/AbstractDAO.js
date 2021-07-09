@@ -459,7 +459,7 @@ this.removeAll_(this.getX(), 0, this.MAX_SAFE_INTEGER, null, null);
           put: function(o) { console.log(o, foam.json.Pretty.stringify(o)); },
           eof: function() {}
         };
-      else if ( sink == global.document )
+      else if ( sink == globalThis.document )
         sink = {
           put: function(o) { foam.u2.DetailView.create({data: o}).write(document); },
           eof: function() {}
