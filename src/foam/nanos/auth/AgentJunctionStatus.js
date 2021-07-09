@@ -12,8 +12,8 @@ foam.ENUM({
     {
       name: 'ACTIVE',
       label: 'Active',
-      color: '04612',
-      background: 'EEF7ED',
+      color: '/*%APPROVAL1%*/ #04612E',
+      background: '/*%APPROVAL5%*/ #EEF7ED',
       documentation: 'Junction is satisfied and agent may act as entity.'
     },
     {
