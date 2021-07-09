@@ -28,6 +28,7 @@ the notification will be handled. `,
     'foam.dao.Sink',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'foam.util.SafetyUtil',
     'java.util.List'
   ],
 
@@ -70,6 +71,9 @@ the notification will be handled. `,
             template.setId(notification.getId());
             template.setBody(notification.getBody());
             template.setRead(notification.getRead());
+            if ( SafetyUtil.isEmpty(template.getSpid()) ) {
+              template.setSpid(notification.getSpid());
+            }
             template.setTemplate(notification.getToastMessage());
 
             // Notify a user directly
