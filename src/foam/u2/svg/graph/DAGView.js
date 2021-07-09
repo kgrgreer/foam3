@@ -364,13 +364,14 @@ foam.CLASS({
     function cellLaneRatio_(lane) {
       // f0 produces the series: [1 2 2 4 4 4 4....] as v increases from 0.
       //  Multiplying the output of f0 by 2 gives the denominator
+      // NOTE: Seems to center the exit lane without multiplying by 2
       let f0 = v => Math.pow(2, Math.floor(Math.log2(v+1)));
 
       // f1 produces the series: [1 1 3 1 3 5 7....] as v increases from 0.
       // ???: If this has a formal name please let me know
       let f1 = v => (v - f0(v) + 2) * 2 - 1;
 
-      return f1(lane) / (2*f0(lane));
+      return f1(lane) / f0(lane);
     }
   ]
 });
