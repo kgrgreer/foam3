@@ -231,7 +231,11 @@ foam.CLASS({
           if (firstMenu) {
             this.enableLink = true;
             // if menu is dao menu and daoKey matches prop's targetDAOkey, set link to dao summary
-            if (firstMenu.handler?.config?.daoKey === this.prop.targetDAOKey) {
+            if (
+              firstMenu.handler &&
+              firstMenu.handler.config &&
+              firstMenu.handler.config.daoKey === this.prop.targetDAOKey
+            ) {
               this.linkTo = 'daoSummary';
             } else {
               this.linkTo = firstMenu.id;
