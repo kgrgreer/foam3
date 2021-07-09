@@ -12594,11 +12594,11 @@ language binding.</p>
 
             return {
                 start: function() {
-                    globalThis.addEventListener("scroll", onscroll, false);
+                    window.addEventListener("scroll", onscroll, false);
                 },
 
                 stop: function() {
-                    globalThis.removeEventListener("scroll", onscroll, false);
+                    window.removeEventListener("scroll", onscroll, false);
                     toc.forEach(function(a) {
                         a.className = "";
                     });

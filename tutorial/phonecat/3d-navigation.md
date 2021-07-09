@@ -60,7 +60,7 @@ foam.CLASS({
   methods: [
     function initE() {
       this.initHTML();
-      globalThis.addEventListener('hashchange', this.initHTML.bind(this));
+      window.addEventListener('hashchange', this.initHTML.bind(this));
     },
 
     function initHTML() {
