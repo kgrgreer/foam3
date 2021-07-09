@@ -58,6 +58,7 @@ foam.CLASS({
           if ( this.loginSuccess ) {
             if ( this.ctrl )  this.ctrl.remove();
             alert(this.REFRESH_MSG);
+
             return;
           }
 
