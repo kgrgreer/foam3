@@ -27,6 +27,7 @@
 
   javaImports: [
     'foam.core.DirectAgency',
+    'foam.dao.DAO',
     'foam.mlang.predicate.MQLExpr',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
@@ -441,6 +442,11 @@
         var auth = (AuthService) x.get("auth");
         if ( ! auth.check(x, "rule.create") ) {
           throw new AuthorizationException("You do not have permission to create the rule.");
+        }
+
+        final var nspecDAO = (DAO) x.get("AuthenticatedNSpecDAO");
+        if ( nspecDAO == null || nspecDAO.find(getDaoKey()) == null ) {
+          throw new AuthorizationException("You do not have permission to create a rule on the specified dao.");
         }
       `
     },
