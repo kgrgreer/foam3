@@ -681,13 +681,13 @@ foam.CLASS({
       if ( this.client ) {
         dao = this.client.menuDAO;
         var menu = await dao.find(this.memento.head);
-        if ( ! menu && ! this.menuNull ) menu = await this.findFirstMenuIHavePermissionFor(dao);
+        if ( ! menu ) menu = await this.findFirstMenuIHavePermissionFor(dao);
         menu && menu.launch(this);
       } else {
         this.clientPromise.then(async () => {
           dao = this.client.menuDAO;
           var menu = await dao.find(this.memento.head);
-          if ( ! menu && ! this.menuNull ) menu = await this.findFirstMenuIHavePermissionFor(dao);
+          if ( ! menu ) menu = await this.findFirstMenuIHavePermissionFor(dao);
           menu && menu.launch(this);
         });
       }

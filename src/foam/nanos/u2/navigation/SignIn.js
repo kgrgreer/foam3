@@ -16,7 +16,6 @@ foam.CLASS({
     'ctrl',
     'loginSuccess',
     'menuDAO',
-    'menuNull',
     'memento',
     'stack',
     'translationService',
@@ -124,7 +123,6 @@ foam.CLASS({
       // if you use isAvailable or isEnabled - with model error_, then note that auto validate will not
       // work correctly. Chorme for example will not read a field auto populated without a user action
       code: async function(X) {
-        this.menuNull = false;
         if ( this.identifier.length > 0 ) {
           this.auth.login(X, this.identifier, this.password).then(
             logedInUser => {

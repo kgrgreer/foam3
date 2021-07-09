@@ -25,7 +25,7 @@ foam.CLASS({
   imports: [
     'ctrl',
     'auth',
-    'menuNull',
+    'pushMenu',
     'setTimeout',
     'window'
   ],
@@ -33,9 +33,6 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      this.menuNull = true;
-      this.ctrl.memento.value = '';
-      this.window.location.hash = '';
       this.auth.logout().then(() => {
         localStorage.removeItem('defaultSession');
         this.window.location.reload();
