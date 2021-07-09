@@ -112,8 +112,8 @@ foam.CLASS({
           this.lastTouch = undefined;
         }
 
-        window.addEventListener('mouseup',   this.onMouseUp);
-        window.addEventListener('mousemove', this.onMouseMove);
+        window.removeEventListener('mouseup',   this.onMouseUp);
+        window.removeEventListener('mousemove', this.onMouseMove);
       }
     },
     {
