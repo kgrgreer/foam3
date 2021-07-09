@@ -433,7 +433,7 @@
       name: 'updateCount',
       isFramed: true,
       code: function() {
-        var limit = this.data.limit_ || undefined;
+        var limit = ( this.data && this.data.limit_ ) || undefined;
         return this.data$proxy.select(this.Count.create()).then(s => {
           this.daoCount = limit && limit < s.value ? limit : s.value;
           this.refresh();
