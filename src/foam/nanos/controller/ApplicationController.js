@@ -625,7 +625,6 @@ foam.CLASS({
     },
 
     async function findFirstMenuIHavePermissionFor(dao) {
-      // used in pushMenu()
       // dao is expected to be the menuDAO
       // arg(dao) passed in cause context handled in calling function
       return await dao.orderBy(foam.nanos.menu.Menu.ORDER).select().then(ableToAccessMenus => {
@@ -694,8 +693,8 @@ foam.CLASS({
        *   - Update the look and feel of the app based on the group or user
        *   - Go to a menu based on either the hash or the group
        */
-      var userNotificationQueryId = this.subject && this.subject.realUser ?
-        this.subject.realUser.id : this.user.id;
+       var userNotificationQueryId = this.subject && this.subject.realUser ?
+             this.subject.realUser.id : this.user.id;
       this.__subSubContext__.notificationDAO.where(
         this.EQ(this.Notification.USER_ID, userNotificationQueryId)
       ).on.put.sub((sub, on, put, obj) => {
