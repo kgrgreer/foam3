@@ -43,7 +43,7 @@ foam.CLASS({
     {
       name: 'watchDir',
       class: 'String',
-      value: '../etc'
+      javaFactory: 'return System.getProperty("java.io.tmpdir", "/tmp");'
     },
     {
       name: 'statusFilename',
@@ -81,15 +81,14 @@ foam.CLASS({
       Logger logger = new PrefixLogger(new Object[] {
           this.getClass().getSimpleName()
         }, (Logger) x.get("logger"));
-      logger.info("execute");
+      logger.info("execute", getWatchDir());
       try {
-        File file = ((Storage) getX().get(foam.nanos.fs.Storage.class)).get(Paths.get(getWatchDir(), getStatusFilename()).toString());
-        Path existing = Paths.get(file.getPath());
+        Path existing = Paths.get(getWatchDir(), getStatusFilename());
         Files.deleteIfExists(existing);
-        file.deleteOnExit();
+        existing.toFile().deleteOnExit();
 
         WatchService watchService = FileSystems.getDefault().newWatchService();
-        Path path = Paths.get(file.getParentFile().getPath());
+        Path path = Paths.get(getWatchDir());
         path.register(
           watchService,
           StandardWatchEventKinds.ENTRY_CREATE
