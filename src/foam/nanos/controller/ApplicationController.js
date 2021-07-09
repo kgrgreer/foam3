@@ -624,6 +624,16 @@ foam.CLASS({
       }
     },
 
+    async function findFirstMenuIHavePermissionFor(dao) {
+      // used in pushMenu()
+      // dao is expected to be the menuDAO
+      // arg(dao) passed in cause context handled in calling function
+      return await dao.orderBy(foam.nanos.menu.Menu.ORDER).select().then(ableToAccessMenus => {
+        ableToAccessMenus.array[0].launch(this);
+        return ableToAccessMenus.array[0];
+      }).catch(e => console.error(e.message || e));
+    },
+
     function requestLogin() {
       var self = this;
 
@@ -661,12 +671,17 @@ foam.CLASS({
   listeners: [
     async function mementoChange() {
       // TODO: make a latch instead
+      var dao;
       if ( this.client ) {
-        var menu = await this.client.menuDAO.find(this.memento.head);
+        dao = this.client.menuDAO;
+        var menu = await dao.find(this.memento.head);
+        if ( ! menu ) menu = await findFirstMenuIHavePermissionFor(dao);
         menu && menu.launch(this);
       } else {
         this.clientPromise.then(async () => {
-          var menu = await this.client.menuDAO.find(this.memento.head);
+          dao = this.client.menuDAO;
+          var menu = await dao.find(this.memento.head);
+          if ( ! menu ) menu = await findFirstMenuIHavePermissionFor(dao);
           menu && menu.launch(this);
         });
       }
@@ -679,8 +694,8 @@ foam.CLASS({
        *   - Update the look and feel of the app based on the group or user
        *   - Go to a menu based on either the hash or the group
        */
-       var userNotificationQueryId = this.subject && this.subject.realUser ?
-             this.subject.realUser.id : this.user.id;
+      var userNotificationQueryId = this.subject && this.subject.realUser ?
+        this.subject.realUser.id : this.user.id;
       this.__subSubContext__.notificationDAO.where(
         this.EQ(this.Notification.USER_ID, userNotificationQueryId)
       ).on.put.sub((sub, on, put, obj) => {
