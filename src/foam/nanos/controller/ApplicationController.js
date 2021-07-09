@@ -78,6 +78,7 @@ foam.CLASS({
     'lastMenuLaunchedListener',
     'loginSuccess',
     'loginVariables',
+    'menuNull',
     'memento',
     'menuListener',
     'notify',
@@ -344,6 +345,12 @@ foam.CLASS({
     {
       name: 'styles',
       factory: function() { return {}; }
+    },
+    {
+      class: 'Boolean',
+      name: 'menuNull',
+      documentation: 'Value to accept a null menu - otherwise Controller will try to set a value.',
+      hidden: true
     }
   ],
 
@@ -674,13 +681,13 @@ foam.CLASS({
       if ( this.client ) {
         dao = this.client.menuDAO;
         var menu = await dao.find(this.memento.head);
-        if ( ! menu ) menu = await findFirstMenuIHavePermissionFor(dao);
+        if ( ! menu && ! this.menuNull ) menu = await this.findFirstMenuIHavePermissionFor(dao);
         menu && menu.launch(this);
       } else {
         this.clientPromise.then(async () => {
           dao = this.client.menuDAO;
           var menu = await dao.find(this.memento.head);
-          if ( ! menu ) menu = await findFirstMenuIHavePermissionFor(dao);
+          if ( ! menu && ! this.menuNull ) menu = await this.findFirstMenuIHavePermissionFor(dao);
           menu && menu.launch(this);
         });
       }
