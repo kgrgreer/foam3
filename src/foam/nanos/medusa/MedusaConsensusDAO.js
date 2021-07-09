@@ -430,8 +430,8 @@ This is the heart of Medusa.`,
               Alarm alarm = new Alarm("Medusa Failed to parse");
               alarm.setSeverity(foam.log.LogLevel.ERROR);
               alarm.setClusterable(false);
-              alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
-              alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+              // alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
+              // alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
               throw new MedusaException("Failed to parse.", cause);
             }
             if ( nu == null ) {
@@ -440,7 +440,7 @@ This is the heart of Medusa.`,
               alarm.setSeverity(foam.log.LogLevel.ERROR);
               alarm.setClusterable(false);
               alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
-              alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+              // alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
               throw new MedusaException("Failed to parse");
             }
 
@@ -456,7 +456,7 @@ This is the heart of Medusa.`,
               Alarm alarm = new Alarm("Medusa Failed to parse (transient)");
               alarm.setClusterable(false);
               alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
-              alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+              // alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
             } else {
               if ( nu == null ) {
                 nu = tran;
