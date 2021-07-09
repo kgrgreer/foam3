@@ -31,7 +31,8 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.AuthService',
-    'foam.nanos.auth.AuthorizationException'
+    'foam.nanos.auth.AuthorizationException',
+    'foam.util.SafetyUtil'
   ],
 
   sections: [
@@ -59,7 +60,7 @@ foam.CLASS({
         }
 
         final var nspecDAO = ((DAO) x.get("AuthenticatedNSpecDAO")).inX(x);
-        if ( nspecDAO == null || nspecDAO.find(getDaoKey()) == null || nspecDAO.find(getSecureDaoKey()) == null ) {
+        if ( nspecDAO == null || nspecDAO.find(getDaoKey()) == null || ( !SafetyUtil.isEmpty(getSecureDaoKey()) && nspecDAO.find(getSecureDaoKey()) == null) ) {
           throw new AuthorizationException("You do not have permission to create a rule on the specified dao.");
         }
       `
