@@ -217,6 +217,7 @@ FOAM_FILES([
   { name: 'foam/nanos/medusa/MedusaNOPRegistryService' },
   { name: 'foam/nanos/medusa/MedusaSigningDAO' },
   { name: 'foam/nanos/medusa/MedusaSetNodeDAO' },
+  { name: 'foam/nanos/medusa/MedusaStatusWatcher' },
   { name: 'foam/nanos/medusa/MedusaTestingDAO' },
   { name: 'foam/nanos/medusa/MedusaType' },
   { name: 'foam/nanos/medusa/MedusaUniqueDAO' },
