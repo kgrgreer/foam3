@@ -70,6 +70,7 @@ the notification will be handled. `,
             template.setId(notification.getId());
             template.setBody(notification.getBody());
             template.setRead(notification.getRead());
+            template.setSpid(notification.getSpid());
             template.setTemplate(notification.getToastMessage());
 
             // Notify a user directly
