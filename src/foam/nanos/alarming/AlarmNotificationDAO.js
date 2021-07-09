@@ -14,7 +14,10 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.log.LogLevel',
+    'foam.nanos.auth.ServiceProviderAware',
     'foam.nanos.notification.Notification',
+    'foam.nanos.theme.Theme',
+    'foam.nanos.theme.Themes',
     'java.util.HashMap'
   ],
 
@@ -78,16 +81,25 @@ foam.CLASS({
       args.put("alarm.cleared", alarm.getIsActive() ? "" : alarm.getLastModified().toString());
       args.put("alarm.note", alarm.getNote());
 
+      // Notifications are ServiceProviderAware
+      String spid = ServiceProviderAware.GLOBAL_SPID;
+      Theme theme = ((Themes) x.get("themes")).findTheme(x);
+      if ( theme != null &&
+           ! foam.util.SafetyUtil.isEmpty(theme.getSpid()) ) {
+        spid = theme.getSpid();
+      }
+
       Notification notification = new Notification.Builder(x)
         .setBody(body.toString())
         .setEmailArgs(args)
         .setEmailName("alarm")
         .setSeverity(alarm.getSeverity())
+        .setSpid(spid)
         .setTemplate(getNotificationTemplate())
         .setToastMessage(alarm.getName())
         .build();
 
-     ((DAO) x.get("localNotificationDAO")).put(notification);
+     ((DAO) x.get("localNotificationDAO")).put_(getX(), notification);
       return alarm;
       `
     }
