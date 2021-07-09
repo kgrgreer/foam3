@@ -28,6 +28,12 @@ foam.CLASS({
     'operation'
   ],
 
+  javaImports: [
+    'foam.dao.DAO',
+    'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.AuthorizationException'
+  ],
+
   sections: [
     {
       name: 'basicInfo',
@@ -40,6 +46,23 @@ foam.CLASS({
     {
       name: 'dugInfo',
       order: 10
+    }
+  ],
+
+  methods: [
+    {
+      name: 'authorizeOnCreate',
+      javaCode: `
+        var auth = (AuthService) x.get("auth");
+        if ( ! auth.check(x, "rule.create") && ! auth.check(x, "dugrule.create") ) {
+          throw new AuthorizationException("You do not have permission to create the rule.");
+        }
+
+        final var nspecDAO = ((DAO) x.get("AuthenticatedNSpecDAO")).inX(x);
+        if ( nspecDAO == null || nspecDAO.find(getDaoKey()) == null || nspecDAO.find(getSecureDaoKey()) == null ) {
+          throw new AuthorizationException("You do not have permission to create a rule on the specified dao.");
+        }
+      `
     }
   ],
 
@@ -238,15 +261,6 @@ foam.CLASS({
     {
       name: 'spid',
       value: ""
-    },
-    {
-      name: 'authorizeOnCreate',
-      javaCode: `
-        var auth = (AuthService) x.get("auth");
-        if ( ! auth.check(x, "rule.create") && ! auth.check(x, "dugrule.create") ) {
-          throw new AuthorizationException("You do not have permission to create the rule.");
-        }
-      `
-    },
+    }
   ]
 });
