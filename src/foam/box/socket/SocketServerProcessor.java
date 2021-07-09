@@ -123,7 +123,7 @@ public class SocketServerProcessor
           pm.log(x);
 
           // NOTE: enable along with send and receive debug calls in SocketConnectionBox to monitor all messages.
-          logger_.debug("execute", "service", (String) msg.getAttributes().get("serviceKey"), message);
+          // logger_.debug("execute", "service", (String) msg.getAttributes().get("serviceKey"), message);
 
           socketRouter_.service(msg);
         } catch ( java.net.SocketTimeoutException e ) {

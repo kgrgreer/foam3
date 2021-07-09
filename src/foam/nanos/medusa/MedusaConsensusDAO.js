@@ -431,7 +431,7 @@ This is the heart of Medusa.`,
               alarm.setSeverity(foam.log.LogLevel.ERROR);
               alarm.setClusterable(false);
               alarm.setNote("Index: "+entry.getIndex()+"\\nNSpec: "+entry.getNSpecName());
-              alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
+              // alarm = (Alarm) ((DAO) x.get("alarmDAO")).put(alarm);
               throw new MedusaException("Failed to parse.", cause);
             }
             if ( nu == null ) {
