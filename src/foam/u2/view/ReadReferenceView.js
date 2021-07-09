@@ -16,7 +16,8 @@ foam.CLASS({
         - Use enableLink and menuKeys to configure the link.
           - To disable the link, set enableLink to false.
           - To set the link to a custom menu, you can provide a list of menus to 'menuKeys'. The first menu
-            with permission in the list will be set to the link
+            with permission in the list will be set to the link. If no menus are permissioned, the link will
+            be disabled.
           - If enableLink and menuKeys are not set, the link will be set to dao summary view if you have
             service.{prop.targetDaoKey}. Otherwise, the link will be disabled.
         - Flow chart for how the links are set
@@ -136,15 +137,15 @@ foam.CLASS({
 
   imports: [
     'ctrl',
+    'menuDAO',
     'pushMenu',
-    'stack',
-    'menuDAO'
+    'stack'
   ],
 
   methods: [
     {
       name: 'initE',
-      code: function () {
+      code: function() {
         var self = this;
         this.SUPER();
         this.add(
@@ -213,11 +214,6 @@ foam.CLASS({
     },
 
     async function configLink() {
-      /*
-       * Uses the flow chart above to control access to the link
-       * and to which view the link is linked.
-       */
-
       // enableLink set to false?
       if (!this.enableLink) {
         this.enableLink = false;
