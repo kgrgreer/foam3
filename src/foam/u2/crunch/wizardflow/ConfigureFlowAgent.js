@@ -44,32 +44,21 @@ foam.CLASS({
       value: true
     },
     {
-      name: 'ensureHash',
-      documentation: `
-        Sets the url hash on subsequent stack pushes.
-      `,
-      class: 'String'
-    },
-    {
       name: 'pushView',
       class: 'Function',
       expression: function () {
-        var self = this;
         return this.popupMode
-          ? function (viewSpec, onClose) {
+          ? (viewSpec, onClose) => {
             ctrl.add(
-              self.Popup.create({
+              this.Popup.create({
                 closeable: viewSpec.closeable ? viewSpec.closeable : false,
-                ...(onClose ? { onClose: onClose } : {}),
+                onClose: onClose
               })
                 .tag(viewSpec)
-            )
+            );
           }
-          : function (viewSpec) {
-            self.stack.push(viewSpec, self);
-            if ( self.ensureHash ) {
-              location.hash = self.ensureHash;
-            }
+          : viewSpec => {
+            this.stack.push(viewSpec, this);
           }
           ;
       }
