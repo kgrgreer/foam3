@@ -900,7 +900,6 @@ foam.CLASS({
       value: true
     },
     {
-      class: 'StringArray',
       name: 'menuKeys',
       documentation: `
         A list of menu ids.

@@ -114,13 +114,23 @@ foam.CLASS({
       value: true
     },
     {
-      class: 'StringArray',
       name: 'menuKeys',
       documentation: `
         A list of menu ids.
         The link will reference to the first menu to which you have permission
         in this list. If no menus are permissioned, the link will be disabled.
-      `
+      `,
+      expression: function(prop) {
+        // set default menuKeys for group, nature code and capability
+        switch (prop.targetDAOKey) {
+          case 'groupDAO':
+            return ['admin.groups'];
+          case 'natureCodeDAO':
+            return ['admin.natureCodes'];
+          case 'capabilityDAO':
+            return ['admin.capabilities']
+        }
+      }
     }
   ],
 
@@ -192,8 +202,7 @@ foam.CLASS({
       // set link config properties
       // first figure out where these properties were provided (i.e., set to reference property or passed to this view)
       this.enableLink = this.prop.enableLink && this.enableLink;
-      this.menuKeys =
-        this.prop.menuKeys.length > 0 ? this.prop.menuKeys : this.menuKeys;
+      this.menuKeys = this.prop.menuKeys || this.menuKeys;
 
       this.configLink().then(() => {
         const dao = this.ctrl.__subContext__[prop.targetDAOKey];
@@ -218,7 +227,7 @@ foam.CLASS({
 
       try {
         // menus are provided?
-        if (this.menuKeys.length > 0) {
+        if (this.menuKeys) {
           // check permissions for menus
           const permissions = await Promise.all(
             [...this.menuKeys].map((menuId) => {
