@@ -12,55 +12,69 @@ foam.CLASS({
   documentation: `
     A read-only view for a reference property that creates a link on this reference property.
     
-    Use 'enableLink' and 'menuKeys' to configure the link.
-      - To disable the link, set 'enableLink' to false.
-      - To have the link to a custom menu, you can provide a list of menus to 'menuKeys'.
-      - If none of them are provided, the link will default to reference's dao summary view (permission required).
-  
-    'enableLink' and 'menuKeys' can be set directly to reference property or
-    they can be passed to the view. 
-    Warning: Do not try to do both or it will result in an unexpected behaviour.
+    -- How to configure the link -- 
+        - Use enableLink and menuKeys to configure the link.
+          - To disable the link, set enableLink to false.
+          - To set the link to a custom menu, you can provide a list of menus to 'menuKeys'. The first menu
+            with permission in the list will be set to the link
+          - If enableLink and menuKeys are not set, the link will be set to dao summary view if you have
+            service.{prop.targetDaoKey}. Otherwise, the link will be disabled.
+        - Flow chart for how the links are set
+
+                                                      enableLink is
+                                                      set to true ?
+                                                      /          \
+                                                   y /            \ n
+                                                    /              \
+                                              - - -                 - - - - - - - - - - - - - -
+                                            /                                                  \
+                                      menus provided ?                                      disable link
+                                        /      \   n
+                                     y /         - - - - - - - - - - - - - - - - -
+                                      /                                            \
+                              have a menu with                            have permission to    
+                                permission ?                          service.{prop.targetDAOKey}?
+                                 /       \   n                                   /     \     n
+                              y /          - - - - - -                        y /        - - - - -
+                               /                       \                       /                   \
+                    Is the menu dao Menu and      disable link           enable link           disable link
+                    dao Menu daoKey matches                           link to daoSummary
+                    prop.targetDAOKey ?
+                        /      \  n
+                     y /        - - - - - -
+                      /                     \
+                enable link            enable link
+              link to daoSummary     link to the menu
+
+    -- Where to set enableLink and menuKeys --
+        - enableLink and menuKeys can be set directly to reference property or
+          they can be passed to the view. 
+          Warning: Do not try to do both or it may result in unexpected behaviours.
     
-    1. setting properties on reference property
+        1. setting properties on reference property
 
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.Group',
-      name: 'group',
-      menuKeys: [
-        'someMenuId',
-        'someMenuId2'
-      ]
-    }
+        {
+          class: 'Reference',
+          of: 'foam.nanos.auth.Group',
+          name: 'group',
+          menuKeys: [
+            'someMenuId',
+            'someMenuId2'
+          ]
+        }
 
-    2. passing properties to view
+        2. passing properties to view
 
-    view: {
-      class: 'foam.u2.view.ReadReferenceView',
-      enableLink: false
-    }
-
-    A flow chart for determining access to the link + what view the link is linked to
-
-                                         enableLink is
-                                         set to true ?
-                                         /          \
-                                      y /            \ n
-                                       /              \
-                                  - - -                - - - - - - - - - - - - - -
-                                 /                                                 \
-                          menus provided ?                                      disable link
-                            /      \   n
-                         y /         - - - - - - - - - - - - - -
-                          /                                      \
-                   have a menu with                             can read   
-                   read permission ?                          DAO summary ?
-                    /            \   n                           /     \       n
-                 y /              - - -                       y /        - - - - -
-                  /                     \                      /                   \
-              enable link          disable link          enable link          disable link
-            link to this menu                        link to dao summary
-
+        class: 'Reference',
+        of: 'foam.nanos.auth.Group',
+        name: 'group',
+        view: {
+          class: 'foam.u2.view.ReadReferenceView',
+          menuKeys: [
+            'someMenuId',
+            'someMenuId2'
+          ]
+        }
   `,
 
   requires: [
@@ -85,7 +99,7 @@ foam.CLASS({
       name: 'linkTo',
       documentation: `
         A reference view anchor link.
-        This will be set to either 'daoSummary', a menu in menuKyes, or an empty string.
+        This will be set to either 'daoSummary', a menu in menuKeys, or an empty string.
         If set to 'daoSummary', the link will be to reference property's dao summary view.
         If set to a menu, the link will be to this menu.
         If set to an empty string, the link will be disabled.
@@ -104,18 +118,23 @@ foam.CLASS({
       name: 'menuKeys',
       documentation: `
         A list of menu ids.
-        The link will reference to the first menu to which group has permission
+        The link will reference to the first menu to which you have permission
         in this list. If no menus are permissioned, the link will be disabled.
       `
     }
   ],
 
-  imports: ['auth?', 'ctrl', 'pushMenu', 'stack'],
+  imports: [
+    'ctrl',
+    'pushMenu',
+    'stack',
+    'menuDAO'
+  ],
 
   methods: [
     {
       name: 'initE',
-      code: function() {
+      code: function () {
         var self = this;
         this.SUPER();
         this.add(
@@ -190,8 +209,8 @@ foam.CLASS({
        * and to which view the link is linked.
        */
 
-      // enableLink explicitly set to false?
-      if (!this.auth || !this.enableLink) {
+      // enableLink set to false?
+      if (!this.enableLink) {
         this.enableLink = false;
         this.linkTo = '';
         return;
@@ -203,31 +222,28 @@ foam.CLASS({
           // check permissions for menus
           const permissions = await Promise.all(
             [...this.menuKeys].map((menuId) => {
-              return this.auth.check(
-                this.__subContext__,
-                `menu.read.${menuId}`
-              );
+              return this.menuDAO.find(menuId); 
             })
           );
 
-          const firstAt = permissions.indexOf(true);
-          // can read menu?
-          if (firstAt > -1) {
+          const firstMenu = permissions.find(p => p);
+          // have a menu with permission?
+          if (firstMenu) {
             this.enableLink = true;
-            this.linkTo = this.menuKeys[firstAt];
+            // if menu is dao menu and daoKey matches prop's targetDAOkey, set link to dao summary
+            if (firstMenu.handler?.config?.daoKey === this.prop.targetDAOKey) {
+              this.linkTo = 'daoSummary';
+            } else {
+              this.linkTo = firstMenu.id;
+            }
           } else {
             this.enableLink = false;
             this.linkTo = '';
           }
-          // menus not provided
+        // menus not provided
         } else {
-          // access to dao summary?
-          if (
-            await this.auth.check(
-              this.__subContext__,
-              `service.${this.prop.targetDAOKey}`
-            )
-          ) {
+          // have permission to service.{prop.targetDAOKey} ?
+          if (this.__subContext__[this.prop.targetDAOKey]) {
             this.enableLink = true;
             this.linkTo = 'daoSummary';
           } else {
