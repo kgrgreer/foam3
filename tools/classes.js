@@ -308,6 +308,7 @@ var classes = [
   'foam.nanos.auth.Country',
   'foam.nanos.auth.PropertyType',
   'foam.nanos.auth.AuthService',
+  'foam.nanos.auth.UniqueUserService',
   'foam.nanos.auth.PMAuthService',
   'foam.nanos.auth.UserUserJunction',
   'foam.nanos.auth.ClientAuthService',
@@ -358,6 +359,7 @@ var classes = [
   'foam.nanos.auth.AddressConfig',
   'foam.nanos.auth.UserNotFoundException',
   'foam.nanos.auth.ResetSpidBeforeLoginAuthService',
+  'foam.nanos.auth.PreventDuplicateEmailLoginService',
   'foam.nanos.http.HttpParameters',
   'foam.nanos.http.DefaultHttpParameters',
   'foam.nanos.http.SendErrorHandler',
@@ -857,6 +859,7 @@ var classes = [
   // spid
   'foam.nanos.auth.CreateUserCapabilityJunctionOnSpidSet',
   'foam.nanos.auth.SetUserServiceProviderJunctionRuleAction',
+  'foam.nanos.auth.FilterBySpidService',
 
   //ucjdao rules
   'foam.nanos.crunch.ruler.AuthorizeUCJStatusOnPut',
@@ -951,6 +954,7 @@ var skeletons = [
   'foam.nanos.app.AppConfigService',
   'foam.nanos.auth.AuthService',
   'foam.nanos.auth.AgentAuthService',
+  'foam.nanos.auth.UniqueUserService',
   'foam.nanos.auth.email.EmailDocInterface',
   'foam.nanos.auth.twofactor.OTPAuthService',
   'foam.nanos.auth.token.TokenService',
@@ -981,6 +985,7 @@ var proxies = [
   'foam.nanos.auth.AuthService',
   'foam.nanos.auth.twofactor.OTPAuthService',
   'foam.nanos.auth.UserPropertyAvailabilityServiceInterface',
+  'foam.nanos.auth.UniqueUserService',
   'foam.nanos.http.WebAgent',
   'foam.nanos.notification.email.EmailService',
   'foam.nanos.notification.push.PushService',
