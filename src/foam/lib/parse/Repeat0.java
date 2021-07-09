@@ -37,7 +37,7 @@ public class Repeat0 implements Parser {
     this(parser, delimiter, minimum, -1);
   }
 
-  public Repeat0(Parser parser, Parser delimiter, int minimum, int maximum) {
+  public Repeat0(Parser parser, int minimum, int maximum) {
     this(parser, null, minimum, maximum);
   }
 
