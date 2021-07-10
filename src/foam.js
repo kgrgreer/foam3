@@ -19,7 +19,6 @@
 (function() {
   var foam  = globalThis.foam || ( globalThis.foam = {} );
   var flags = this.FOAM_FLAGS = this.FOAM_FLAGS || {};
-
   foam.flags = flags;
 
   flags.web  = true;
