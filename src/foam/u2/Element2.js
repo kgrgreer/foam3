@@ -1416,7 +1416,7 @@ foam.CLASS({
         this.childNodes.push(c);
         c.parentNode = parentNode;
         this.element_.appendChild(c.element_);
-        c.load();
+        c.load && c.load();
       }
     },
 
