@@ -21,13 +21,14 @@
   var flags = this.FOAM_FLAGS = this.FOAM_FLAGS || {};
 
   foam.flags = flags;
-  flags.node = false;
+
   flags.web  = true;
 
-  if ( ! flags.hasOwnProperty('java')  ) flags.java  = false;
-  if ( ! flags.hasOwnProperty('swift') ) flags.swift = false;
   if ( ! flags.hasOwnProperty('debug') ) flags.debug = true;
   if ( ! flags.hasOwnProperty('js')    ) flags.js    = true;
+
+  // TODO: fix, needed to run web client for some reason
+  if ( ! flags.hasOwnProperty('java')  ) flags.java = true;
 
   // set flags by url parameters
   var urlParams = new URLSearchParams(window.location.search);
@@ -75,7 +76,6 @@
     var load = createLoader();
 
     files.
-    /*
       filter(f => {
         // If flags is defined, at least one flag must be true to load the file
         if ( f.flags ) {
@@ -87,7 +87,6 @@
         }
         return true;
       }).
-      */
       filter(f => (! f.predicate) || f.predicate()).
       map(f => f.name).
       forEach(f => load(f, true));
