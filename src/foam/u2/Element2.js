@@ -340,20 +340,23 @@ foam.CLASS({
       isMerged: true,
       mergeDelay: 160,
       code: function() {
-        console.log('*********************** update');
         this.removeAllChildren();
         var batch = ++this.batch;
         this.dao.select(d => {
-          console.log('***** d: ', d);
           if ( this.isDetached() || this.batch !== batch ) {
             debugger;
             return;
           }
           var oldSize = this.self.childNodes.length;
+
+          this.self.appendChild_ = c => {
+            this.self.element_.insertBefore(c, this.element_);
+          };
           this.code.call(this.self, d);
+          this.self.appendChild_ = foam.u2.Element.prototype.appendChild_;
+
           var newSize = this.self.childNodes.length;
           for ( var i = oldSize ; i < newSize ; i++ ) {
-            console.log('***** add Child', i);
             this.children.push(this.self.childNodes[i]);
           }
         });
@@ -1131,9 +1134,10 @@ foam.CLASS({
       return attr && attr.value;
     },
 
-    function appendChild(c) {
-      debugger;
-      this.childNodes.push(c);
+    function appendChild_(c) {
+      this.element_.appendChild(c);
+//      debugger;
+//      this.childNodes.push(c);
     },
 
     function removeChild(c) {
@@ -1409,13 +1413,13 @@ foam.CLASS({
         }
         */
       if ( this.isLiteral(c) ) {
-        this.element_ && this.element_.appendChild(this.document.createTextNode(c));
+        this.appendChild_(this.document.createTextNode(c));
       } else if ( c.then ) {
         this.addChild_(this.PromiseSlot.create({ promise: c }), parentNode);
       } else if ( c.element_ ) {
         this.childNodes.push(c);
         c.parentNode = parentNode;
-        this.element_.appendChild(c.element_);
+        this.appendChild_(c.element_);
         c.load && c.load();
       }
     },
