@@ -348,10 +348,8 @@ public interface FObject
       try {
         if ( p.isSet(obj) ) {
           Object local = p.get(this);
-          if ( remote != null &&
-               remote instanceof FObject &&
-               local != null &&
-               ! local.equals(remote) ) {
+          if ( remote instanceof FObject &&
+               ! remote.equals(local) ) {
             p.set(this, ((FObject)local).overlay_((FObject)remote, visited));
           } else {
             p.set(this, remote);
