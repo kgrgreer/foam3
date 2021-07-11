@@ -61,7 +61,7 @@
        view: 'foam.u2.view.AnyView'
      },
      {
-       name: 'storageTransientFobject',
+       name: 'storageTransientFobjectWithFactory',
        class: 'FObjectProperty',
        of: 'foam.nanos.medusa.ClusterCommand',
        storageTransient: true,
@@ -69,5 +69,16 @@
          return foam.nanos.medusa.ClusterCommand.create();
        }
      },
+     {
+       name: 'storageTransientFobject',
+       class: 'FObjectProperty',
+       of: 'foam.nanos.medusa.ClusterCommand',
+       storageTransient: true
+     },
+     {
+       name: 'storageTransientObject',
+       class: 'Object',
+       storageTransient: true
+     }
    ]
  });
