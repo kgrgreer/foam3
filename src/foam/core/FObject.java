@@ -329,40 +329,36 @@ public interface FObject
       }
     }
 
-    // NOTE: using obj.getClassInfo() reduces ClassCastExceptions of Concrete to Interface/BaseClass
     List<PropertyInfo> props = obj.getClassInfo().getAxiomsByClass(PropertyInfo.class);
     for ( PropertyInfo p : props ) {
       Object remote = null;
       try {
         remote = p.get(obj);
       } catch ( ClassCastException e ) {
-        System.err.println("FObject.overlay "+p.getName()+" remote.get "+e);
         PropertyInfo p2 = (PropertyInfo) getClassInfo().getAxiomByName(p.getName());
         if ( p2 != null ) {
           p = p2;
           try {
             remote = p.get(obj);
           } catch ( ClassCastException ee ) {
-            System.err.println("FObject.overlay "+p.getName()+" this.get "+ee);
+            System.err.println("FObject.overlay "+p.getName()+" get "+ee);
           }
         }
       }
       try {
         if ( p.isSet(obj) ) {
+          Object local = p.get(this);
           if ( remote != null &&
-               remote instanceof FObject ) {
-            Object local = p.get(this);
-            if ( local != null &&
-                 ! local.equals(remote) ) {
-              p.set(this, ((FObject)local).overlay_((FObject)remote, visited));
-            }
+               remote instanceof FObject &&
+               local != null &&
+               ! local.equals(remote) ) {
+            p.set(this, ((FObject)local).overlay_((FObject)remote, visited));
           } else {
             p.set(this, remote);
           }
         }
       } catch ( ClassCastException e ) {
         System.err.println("FObject.overlay "+p.getName()+" set "+e);
-        e.printStackTrace();
       }
     }
     return this;
