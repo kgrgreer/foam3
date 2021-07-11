@@ -17,18 +17,22 @@
 
 
 (function() {
-  var flags    = this.FOAM_FLAGS = this.FOAM_FLAGS || {};
-  flags.node   = false;
-  flags.web    = true;
-  if ( ! flags.hasOwnProperty('java')  ) flags.java  = false;
-  if ( ! flags.hasOwnProperty('swift') ) flags.swift = false;
+  var foam  = globalThis.foam || ( globalThis.foam = {} );
+  var flags = this.FOAM_FLAGS = this.FOAM_FLAGS || {};
+  foam.flags = flags;
+
+  flags.web  = true;
+
   if ( ! flags.hasOwnProperty('debug') ) flags.debug = true;
   if ( ! flags.hasOwnProperty('js')    ) flags.js    = true;
+
+  // TODO: fix, needed to run web client for some reason
+  if ( ! flags.hasOwnProperty('java')  ) flags.java = true;
 
   // set flags by url parameters
   var urlParams = new URLSearchParams(window.location.search);
   for ( var pair of urlParams.entries() ) {
-    if ( flags.hasOwnProperty(pair[0]) ) flags[pair[0]] = pair[1] === 'true';
+    flags[pair[0]] = (pair[1] == 'true');
   }
 
   function createLoader() {
@@ -44,10 +48,13 @@
         }
       }
     }
+
     path = path && path.length > 3 && path.substring(0, path.lastIndexOf('src/')+4) || '';
     if ( ! globalThis.FOAM_ROOT ) globalThis.FOAM_ROOT = path;
+
     var loadedMap = {};
     var scripts   = '';
+
     return function(filename, opt_batch) {
       if ( filename && loadedMap[filename] ) {
         console.warn(`Duplicated load of '${filename}'`);
@@ -66,9 +73,23 @@
 
   this.FOAM_FILES = async function(files) {
     var load = createLoader();
+
     files.
-      map(function(f) { return f.name; }).
+      filter(f => {
+        // If flags is defined, at least one flag must be true to load the file
+        if ( f.flags ) {
+          for ( var i = 0 ; i < f.flags.length ; i++ ) {
+            if ( foam.flags[f.flags[i]] ) return true;
+          }
+          console.log('Not loading', f);
+          return false;
+        }
+        return true;
+      }).
+      filter(f => (! f.predicate) || f.predicate()).
+      map(f => f.name).
       forEach(f => load(f, true));
+
     load(null, false);
   //  delete this.FOAM_FILES;
   };
