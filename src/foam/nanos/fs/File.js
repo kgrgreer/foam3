@@ -11,11 +11,16 @@ foam.CLASS({
   documentation: 'Represents a file',
 
   implements: [
-    'foam.nanos.auth.Authorizable'
+    'foam.nanos.auth.Authorizable',
+    'foam.nanos.auth.ServiceProviderAware'
   ],
 
   requires: [
     'foam.blob.BlobBlob'
+  ],
+
+  imports: [
+    'fileTypeDAO'
   ],
 
   javaImports: [
@@ -24,6 +29,7 @@ foam.CLASS({
     'foam.blob.InputStreamBlob',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.ServiceProviderAwareSupport',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
@@ -38,10 +44,19 @@ foam.CLASS({
       'mimeType'
     ],
 
+  searchColumns: [
+    'id',
+    'filename',
+    'mimeType'
+  ],
+
   properties: [
     {
       class: 'String',
       name: 'id',
+      createVisibility: 'HIDDEN',
+      updatevisibility: 'RO',
+      readVisibility: 'RO',
       documentation: 'GUID'
     },
     {
@@ -52,19 +67,53 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'filesize',
+      updateVisibility: 'RO',
+      readVisibility: 'RO',
       documentation: 'Filesize'
     },
     {
       class: 'String',
       name: 'mimeType',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
+      readVisibility: 'RO',
       documentation: 'File mime type'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.fs.FileType',
+      name: 'fileType',
+      label: 'Mime Type',
+      updateVisibility: 'HIDDEN',
+      readVisibility: 'HIDDEN',
+      documentation: 'File mime type',
+      storageTransient: true,
     },
     {
       class: 'String',
       name: 'dataString',
+      updateVisibility: 'RO',
+      readVisibility: 'RO',
       documentation: 'File converted to base64 string',
-      postSet: function() {
-        this.instance_.data = undefined;
+      view: {
+        class: 'foam.u2.MultiView',
+        views: [
+          {
+            class: 'foam.u2.tag.TextArea',
+            rows: 4, cols: 80
+          }
+        ]
+      },
+    },
+    {
+      class: 'String',
+      name: 'address',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
+      readVisibility: 'RO',
+      transient: true,
+      expression: function (id) {
+        return window.location.origin + '/service/httpFileService/' + id
       }
     },
     {
@@ -74,6 +123,7 @@ foam.CLASS({
       updateVisibility: 'RO',
       readVisibility: 'RO',
       transient: true,
+      storageTransient: true,
       expression: function () {
         return [this];
       },
@@ -87,24 +137,10 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
-      name: 'address',
-      label: 'Download Link',
-      transient: true,
-      expression: function (id) {
-        var sessionId = localStorage['defaultSession'];
-        var url = window.location.origin + '/service/httpFileService/' + id
-        // attach session id if available
-        if ( sessionId ) {
-          url += '?sessionId=' + sessionId;
-        }
-        return url;
-      },
-      view: 'foam.nanos.dig.LinkView'
-    },
-    {
       class: 'Blob',
       name: 'data',
+      updateVisibility: 'HIDDEN',
+      readVisibility: 'HIDDEN',
       javaGetter:`
         if ( dataIsSet_ ) return data_;
 
@@ -119,8 +155,7 @@ foam.CLASS({
 
         return null;
       `,
-      getter: function() {
-        if ( this.instance_.data ) return this.instance_.data;
+      getter: async function() {
         if ( this.dataString ) {
           let b64Data = this.dataString.split(',')[1];
           const b64toBlob = (b64Data, contentType = this.mimeType, sliceSize = 512) => {
@@ -138,10 +173,10 @@ foam.CLASS({
               byteArrays.push(new Uint8Array(byteNumbers));
             }
 
-            return this.instance_.data = new Blob(byteArrays, { type: contentType });
+            return new Blob(byteArrays, {type: contentType});
           }
 
-          return this.instance_.data = this.BlobBlob.create({ blob: b64toBlob(b64Data) });
+          return this.BlobBlob.create({blob: b64toBlob(b64Data)});
         }
 
         return this.instance_.data || null;
@@ -155,7 +190,24 @@ foam.CLASS({
       adapt: function(oldObj, newObj) {
         return newObj;
       }
-    }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid',
+      visibility: 'HIDDEN',
+      storageTransient: true,
+      section: 'systemInformation',
+      javaFactory: `
+        var map = new java.util.HashMap();
+        map.put(
+          File.class.getName(),
+          new foam.core.PropertyInfo[] { File.OWNER }
+        );
+        return new ServiceProviderAwareSupport()
+          .findSpid(foam.core.XLocator.get(), map, this);
+      `
+    },
   ],
   methods: [
     {
