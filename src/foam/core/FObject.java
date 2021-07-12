@@ -320,14 +320,9 @@ public interface FObject
 
   default FObject overlay_(FObject obj, java.util.Set visited) {
     int code = obj.hashCode();
-    if ( visited.contains(code) ) {
-      return this;
-    } else {
-      visited.add(code);
-      if ( this.hashCode() == obj.hashCode() ) {
-        return this;
-      }
-    }
+    if ( visited.contains(code) ) return this;
+    visited.add(code);
+    if ( this.hashCode() == obj.hashCode() ) return this;
 
     List<PropertyInfo> props = obj.getClassInfo().getAxiomsByClass(PropertyInfo.class);
     for ( PropertyInfo p : props ) {
