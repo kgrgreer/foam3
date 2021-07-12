@@ -140,7 +140,7 @@ foam.CLASS({
         self.window.addEventListener('resize', self.onResize);
       });
 
-      this.onunload.sub(function() {
+      this.onDetach(function() {
         self.window.removeEventListener('resize', self.onResize);
       });
     }
