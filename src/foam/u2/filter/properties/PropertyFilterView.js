@@ -241,14 +241,13 @@ foam.CLASS({
         if ( this.view_.predicate !== this.TRUE && this.activeFilterCheck_ ) {
           this.labelFiltering = this.LABEL_PROPERTY_FILTER;
           this.filterController.activeFilterCount++;
-          this.activeFilterCheck_ = !this.activeFilterCheck_;
+          this.activeFilterCheck_ = ! this.activeFilterCheck_;
         }
-        else if ( this.view_.predicate === this.TRUE && !this.activeFilterCheck_ ) {
+        else if ( this.view_.predicate === this.TRUE && ! this.activeFilterCheck_ ) {
           this.labelFiltering = this.LABEL_PROPERTY_ALL;
           this.filterController.activeFilterCount--;
-          this.activeFilterCheck_ = !this.activeFilterCheck_;
+          this.activeFilterCheck_ = ! this.activeFilterCheck_;
         }
-
     }
   ]
 });
