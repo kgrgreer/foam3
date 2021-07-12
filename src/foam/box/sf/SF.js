@@ -25,22 +25,21 @@ foam.CLASS({
     'foam.core.X',
     'foam.box.Box',
     'foam.box.Message',
-    'foam.dao.DAO',
-    'foam.dao.Sink',
-    'foam.dao.ProxyDAO',
-    'foam.dao.NullDAO',
+    'foam.dao.*',
     'foam.core.FObject',
-    'foam.dao.Journal',
+    'foam.mlang.sink.Max;',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.fs.Storage',
     'foam.nanos.fs.FileSystemStorage',
     'foam.dao.ReadOnlyF3FileJournal',
-    'java.nio.file.Path',
-    'java.nio.file.DirectoryStream',
-    'java.nio.file.Files',
-    'java.nio.file.DirectoryIteratorException',
+    'foam.mlang.MLang',
+    'java.nio.file.*',
+    'java.nio.file.attribute.*',
     'java.io.IOException',
+    'java.util.concurrent.atomic.AtomicInteger',
+    'java.util.concurrent.atomic.AtomicLong',
+    'java.util.concurrent.ConcurrentHashMap',
     'java.util.*'
   ],
 
@@ -59,14 +58,14 @@ foam.CLASS({
       value: 0
     },
     {
-      class: 'Boolean',
-      name: 'isStore',
-      value: false
+      class: 'Int',
+      name: 'fileCapability',
+      value: 1024
     },
     {
       class: 'Boolean',
-      name: 'isHashEntry',
-      value: false
+      name: 'enable',
+      value: true
     },
     {
       class: 'Int',
@@ -111,9 +110,10 @@ foam.CLASS({
       `
     },
     {
-      class: 'Long',
+      class: 'Int',
       name: 'timeWindow',
-      value: 0
+      documentation: 'In second.',
+      value: 240
     },
     {
       class: 'Object',
@@ -126,6 +126,14 @@ foam.CLASS({
       transient: true,
       javaFactory: `
         return (SFManager) getX().get("SFManager");
+      `
+    },
+    {
+      class: 'Object',
+      name: 'nullDao',
+      transient: true,
+      javaFactory: `
+        return new NullDAO.Builder(getX()).setOf(SFEntry.getOwnClassInfo()).build();
       `
     },
     {
@@ -146,18 +154,37 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'createWriteJournal',
+      args: 'String fileName',
+      javaType: 'Journal',
+      javaCode: `
+        return new foam.dao.WriteOnlyF3FileJournal.Builder(getX())
+                .setFilename(fileName)
+                .setCreateFile(true)
+                .setDao(new foam.dao.NullDAO())
+                .setLogger(new foam.nanos.logger.PrefixLogger(new Object[] { "[SF]", fileName }, new foam.nanos.logger.StdoutLogger()))
+                .build();
+
+      `
+    },
+    {
       name: 'store',
       args: 'FObject fobject',
       javaType: 'SFEntry',
       javaCode: `
-        /* Assign index and persist */
         SFEntry entry = new SFEntry.Builder(getX())
                               .setObject(fobject)
                               .build();
         
-        //TODO: assgn index and rolling.
-        getStoreJournal().put(getX(), "", new NullDAO.Builder(getX()).setOf(SFEntry.getOwnClassInfo()).build(), entry);
-        return entry;
+        entry.setCreated(new Date());
+        long index = entryIndex_.	incrementAndGet();
+        long fileIndex = index / ((long) getFileCapability());
+        long entryIndex = index % ((long) getFileCapability());
+        entry.setIndex(entryIndex);
+        String filename = getFileName() + fileIndex;
+        Journal journal = journalMap_.putIfAbsent(filename, createWriteJournal(filename));
+        
+        return (SFEntry) journal.put(getX(), "", (DAO) getNullDao(), entry);
       `
     },
     {
@@ -173,8 +200,7 @@ foam.CLASS({
       name: 'successForward',
       args: 'SFEntry e',
       javaCode: `
-        /* Update journal for success */
-        //TODO: update journal when success.
+        /* Update journal for success - depends on strategy. */
       `
     },
     {
@@ -186,7 +212,7 @@ foam.CLASS({
               e.getRetryAttempt() >= getMaxRetryAttempts() )  {
           getLogger().warning("retryAttempt >= maxRetryAttempts", e.getRetryAttempt(), getMaxRetryAttempts(), e.toString());
 
-          //TODO: update journal when exceed max retry?
+          //TODO: update journal when exceed max retry? - on stratepgy
 
         } else {
           updateNextScheduledTime(e);
@@ -209,6 +235,64 @@ foam.CLASS({
     //   `
     // },
     {
+      name: 'initForwarder',
+      args: 'Context x',
+      javaCode: `
+        FileSystemStorage fileSystemStorage = (FileSystemStorage) x.get(Storage.class);
+        List<String> filenames = new ArrayList<>(fileSystemStorage.getAvailableFiles("", getFileName()+".*"));
+        // Do nothing if no file
+        if ( filenames.size() == 0 ) return;
+
+        List<String> availableFilenames = new ArrayList<>();
+        //Sort file from high index to low.
+        filenames.sort((f1, f2) -> {
+          int l1 = Integer.parseInt(f1.split("\\\\.")[1]);
+          int l2 = Integer.parseInt(f2.split("\\\\.")[1]);
+          return l1 > l2 ? -1 : 1;
+        });
+
+        Calendar rightNow = Calendar.getInstance();
+        rightNow.add(Calendar.SECOND, -getTimeWindow());
+        Date timeWindow = rightNow.getTime();
+
+        for ( String filename : filenames ) {
+          BasicFileAttributes attr = fileSystemStorage.getFileAttributes(filename);
+          Date fileLastModifiedDate = new Date(attr.lastModifiedTime().toMillis());
+          if ( fileLastModifiedDate.before(timeWindow) ) break;
+          availableFilenames.add(0, filename);
+        }
+
+        if ( availableFilenames.size() == 0 ) {
+          availableFilenames.add(filenames.get(filenames.size() - 1));
+        }
+
+        // Find re forward entry.
+        long latestIndex = -1;
+        MDAO tempDAO = new MDAO(SFEntry.getOwnClassInfo());
+        for ( String filename : availableFilenames ) {
+
+          Journal journal = new F3FileJournal.Builder(x)
+                              .setDao(tempDAO)
+                              .setFilename(filename)
+                              .setCreateFile(false)
+                              .build();
+          journal.replay(x, tempDAO);
+        }
+        ArraySink sink = new ArraySink(x);
+        tempDAO.where(
+          MLang.GTE(SFEntry.CREATED, timeWindow)
+        ).select(sink);
+        List<SFEntry> sfEntryList = sink.getArray();
+        //TODO: enqueue.
+        Max max = (Max) tempDAO.select(MLang.MAX(SFEntry.INDEX));
+        entryIndex_.set((Long)max.getValue());
+
+        for ( SFEntry entry : sfEntryList ) {
+          forward(entry);
+        }
+      `
+    },
+    {
       name: 'updateNextScheduledTime',
       args: 'SFEntry e',
       javaType: 'SFEntry',
@@ -229,53 +313,6 @@ foam.CLASS({
         e.setRetryAttempt(e.getRetryAttempt()+1);
         return e;
       `
-    },
-    {
-      name: 'buildReplayJournals',
-      args: 'Context x',
-      javaCode: `
-        //TODO: file filter?
-        List<Integer> fileIndexs = getFileIndexs(x);
-        ArrayList<Journal> journals = new ArrayList<Journal>();
-        for ( int index : fileIndexs ) {
-          journals.add(new ReadOnlyF3FileJournal.Builder(x)
-            .setFilename(getFileName()+"."+index)
-            .setCreateFile(false)
-            .build());
-        }
-        setDelegates(journals.toArray(new Journal[0]));
-      `
-    },
-    {
-      name: 'getFileIndexs',
-      args: 'Context x',
-      javaType: 'ArrayList<Integer>',
-      javaCode: `
-        ArrayList<Integer> l = new ArrayList<Integer>();
-        Path rootPath = ((FileSystemStorage) x.get(Storage.class)).getRootPath();
-        try ( DirectoryStream<Path> stream = Files.newDirectoryStream(rootPath) ) {
-          for ( Path entry: stream ) {
-            if ( entry.toString().contains(getFileName()) ) {
-              int suffix = Integer.parseInt(entry.toString().split("\\\\.")[1]);
-              l.add(suffix);
-            }
-          }
-          Collections.sort(l);
-        } catch ( IOException e ) {
-          //throw e.getCause();
-        }
-        return l;
-      `
-    },
-    {
-      name: 'initSF',
-      args: 'Context x',
-      documentation: 'Loading entries from files, then send again',
-      javaCode: `
-        /* Find files, loading entries, filter, forward */
-        buildReplayJournals(x);
-        //super.replay(x, new PoxyDAO(){});
-      `
     }
   ],
 
@@ -285,6 +322,9 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data: `
+            final protected AtomicLong entryIndex_ = new AtomicLong(0);
+            final protected Map<String, Journal> journalMap_ = new ConcurrentHashMap<String, Journal>();
+
             public abstract void submit(X x, SFEntry entry);
 
             //Make to public because beanshell do not support.

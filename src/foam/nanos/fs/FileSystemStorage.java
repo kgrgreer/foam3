@@ -8,6 +8,7 @@ package foam.nanos.fs;
 
 import foam.util.SafetyUtil;
 import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 
 public class FileSystemStorage
   extends AbstractStorage
@@ -27,7 +28,7 @@ public class FileSystemStorage
   }
 
   @Override
-  public Path getRootPath() {
+  protected Path getRootPath() {
     FileSystem fs = getFS();
     if ( fs == null ) return null;
     return SafetyUtil.isEmpty(resourceDir_) ? fs.getPath("") : fs.getPath(resourceDir_);
@@ -38,5 +39,17 @@ public class FileSystemStorage
     FileSystem fs = getFS();
     if ( fs == null ) return null;
     return SafetyUtil.isEmpty(resourceDir_) ? fs.getPath(name) : fs.getPath(resourceDir_, name);
+  }
+
+  public BasicFileAttributes getFileAttributes(String name) {
+
+    try {
+      Path file = this.getPath(name);
+      BasicFileAttributes attr =
+          Files.readAttributes(file, BasicFileAttributes.class);
+      return attr;
+    } catch ( java.io.IOException e ) {
+      return null;
+    }
   }
 }
