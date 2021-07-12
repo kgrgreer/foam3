@@ -72,6 +72,11 @@ foam.CLASS({
       };
     },
 
+    function follow(other) {
+      this.SUPER(other);
+      this.set(other.get());
+    },
+
     function toString() {
       return 'AttrSlot(' + this.event + ', ' + this.property + ')';
     }
