@@ -46,12 +46,14 @@ for ( let i = 8 ; i < 18 ; i++ ) {
 
 foam.u2.Element.create().add('children').write();
 foam.u2.Element.create().write().add('children');
+foam.u2.Element.create().add('entities: ').add('<','here').entity('#xb6').entity('#182').entity('#x2691').entity('#x2699').entity('lt').entity('#x2691').entity('#x2699').add('start').nbsp().add('end').write();
 foam.u2.Element.create({nodeName: 'b'}).add('children').write();
 foam.u2.Element.create({nodeName: 'b'}).write().add('children');
 foam.u2.Element.create().style({color: 'red'}).add('children').write();
 foam.u2.Element.create().write().style({color: 'red'}).add('children');
 foam.u2.Element.create().on('click', () => console.log('clicked')).add('clickme').write();
 foam.u2.Element.create().write().on('click', () => console.log('clicked')).add('clickme');
+
 
 foam.u2.Element.create().write().start('ol').forEach(['a','b','c'], function(v) {
   this.start('li').add(v).end();
