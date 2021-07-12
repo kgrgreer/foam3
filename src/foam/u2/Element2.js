@@ -14,6 +14,8 @@ TODO:
 /*
 PORTING U2 to U3:
   - rename initE to render()
+  - when setting nodeName value, set to lower-case
+    ie. ['nodeName', 'DIV'] -> ['nodeName', 'div']
   - move init() rendering code to render()
   - replace use of setNodeName to setting the nodeName property
   - remove use of this.sub('onload')
@@ -31,6 +33,7 @@ PORTING U2 to U3:
   -    TODO: https://github.com/foam-framework/foam2/search?q=daoSlot
   - remove cssClass() (use addClass() instead
   -    TODO: https://github.com/foam-framework/foam2/search?q=cssClass
+  - remove entity() support
   - remove addBefore()
   - remove insertAt_()
   - remove insertBefore()
@@ -569,7 +572,7 @@ foam.CLASS({
   ],
 
   exports: [
-    'isSVG_ as isSVG'
+    'isSVG_ as isSVG' // maybe better to export a namespace
   ],
 
   implements: [
@@ -1650,7 +1653,7 @@ foam.CLASS({
       if ( oldClass ) this.removeClass(oldClass);
       if ( newClass ) {
         if ( ! this.CSS_CLASSNAME_PATTERN.test(newClass) ) {
-          console.log('!!!!!!!!!!!!!!!!!!! Invalid CSS ClassName: ', newClass);
+          console.log('Invalid CSS ClassName: ', newClass);
           throw "Invalid CSS classname";
         }
         this.classes[newClass] = true;
