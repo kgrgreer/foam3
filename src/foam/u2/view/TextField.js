@@ -62,7 +62,7 @@ foam.CLASS({
 
       if ( this.autocompleter ) {
         this.onDetach(this.onload.sub(this.loaded));
-        this.onDetach(this.onunload.sub(this.removeList));
+        this.onDetach(this.removeList);
       }
     },
 
