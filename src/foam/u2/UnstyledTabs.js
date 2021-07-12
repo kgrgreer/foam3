@@ -56,7 +56,6 @@ foam.CLASS({
 
         this.tabRow.start('span').
           addClass(this.myClass('tab')).
-          attr('data-title', tab.label$).
           enableClass('selected', tab.selected$).
           on('click', function() {
             this.selected = tab;
