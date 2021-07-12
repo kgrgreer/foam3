@@ -404,6 +404,7 @@ foam.CLASS({
       ],
 
       properties: [
+        [ 'nodeName', 'ul' ],
         {
           class: 'Int',
           name: 'negativeBuffer',
@@ -592,7 +593,6 @@ foam.CLASS({
     function initE() {
       this.addEventListener('scroll', this.onScroll);
       this.
-        setNodeName('ul').
         add(this.sentinel_).
         addClass(this.myClass()).
         forEach(this.rows_, function(row, idx) {

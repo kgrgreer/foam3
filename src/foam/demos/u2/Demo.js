@@ -561,7 +561,7 @@ foam.CLASS({
         .start(ActionDemo.ADD, {showLabel: false, icon:'https://cdn4.iconfinder.com/data/icons/48x48-free-object-icons/48/Add.png'}).end()
 
         // Set the ActionView's icon and hide the label and make an anchor to avoid button decoration
-        .start(ActionDemo.ADD, {showLabel: false, icon:'https://cdn4.iconfinder.com/data/icons/48x48-free-object-icons/48/Add.png'}).setNodeName('a').end()
+        .start(ActionDemo.ADD, {nodeName: 'a', showLabel: false, icon:'https://cdn4.iconfinder.com/data/icons/48x48-free-object-icons/48/Add.png'}).end()
 
         // Show an Action that already has an icon defined
         .start(ActionDemo.ADD2).end()

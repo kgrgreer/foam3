@@ -389,11 +389,13 @@ foam.CLASS({
 
   imports: [ 'browserPath' ],
 
+  properties: [ [ 'nodeName', 'a' ] ],
+
   methods: [
     function initE() {
       this.SUPER();
 
-      this.setNodeName('a').
+      this.
         on('click', this.click).
         attrs({href: this.data.path}).
         add(this.data.label);
