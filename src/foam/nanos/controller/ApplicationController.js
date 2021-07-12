@@ -641,7 +641,11 @@ foam.CLASS({
       }
       /** Use to load a specific menu. **/
       // Do it this way so as to not reset mementoTail if set
-      // todo ; not this will trigger another call to pushMenu ... should ensure one change by adding a check for current state and menu change....if its the same don't doo menu calls
+      // NOTE: if pushMenu is called from code the memento changes here cause memento.head !== menu
+      //       and this then changes the memento.value which then triggers ApplicationController.mementoChange
+      //       which then trigger pushMenu again.
+      //       however it only does one duplicate call and think a feedback check isn't worth it.
+      //       noneTheLess leaving topic for future consideration
       if ( menu.id ) menu = menu.id;
       if ( this.memento.head !== menu || opt_forceReload ) {
         this.memento.value = menu;

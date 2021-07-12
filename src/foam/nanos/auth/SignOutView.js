@@ -25,7 +25,6 @@ foam.CLASS({
   imports: [
     'ctrl',
     'auth',
-    'pushMenu',
     'setTimeout',
     'window'
   ],

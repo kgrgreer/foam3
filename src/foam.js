@@ -81,7 +81,7 @@
           for ( var i = 0 ; i < f.flags.length ; i++ ) {
             if ( foam.flags[f.flags[i]] ) return true;
           }
-          console.log('Not loading', f);
+          // console.log('Not loading', f);
           return false;
         }
         return true;
