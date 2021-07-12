@@ -623,13 +623,26 @@ foam.CLASS({
       return text;
     },
 
-    function pushMenu(menu, opt_forceReload) {
-      if ( menu.id ) {
-        menu.launch(this);
-        menu = menu.id;
+    async function pushMenu(menu, opt_forceReload) {
+      var dao;
+      var menu;
+      if ( this.client ) {
+        dao = this.client.menuDAO;
+        menu = await dao.find(menu);
+        if ( ! menu ) menu = await this.findFirstMenuIHavePermissionFor(dao);
+        menu && menu.launch(this);
+      } else {
+        await this.clientPromise.then(async () => {
+          dao = this.client.menuDAO;
+          menu = await dao.find(menu);
+          if ( ! menu ) menu = await this.findFirstMenuIHavePermissionFor(dao);
+          menu && menu.launch(this);
+        });
       }
       /** Use to load a specific menu. **/
       // Do it this way so as to not reset mementoTail if set
+      // todo ; not this will trigger another call to pushMenu ... should ensure one change by adding a check for current state and menu change....if its the same don't doo menu calls
+      if ( menu.id ) menu = menu.id;
       if ( this.memento.head !== menu || opt_forceReload ) {
         this.memento.value = menu;
       }
@@ -681,20 +694,7 @@ foam.CLASS({
   listeners: [
     async function mementoChange() {
       // TODO: make a latch instead
-      var dao;
-      if ( this.client ) {
-        dao = this.client.menuDAO;
-        var menu = await dao.find(this.memento.head);
-        if ( ! menu ) menu = await this.findFirstMenuIHavePermissionFor(dao);
-        menu && menu.launch(this);
-      } else {
-        this.clientPromise.then(async () => {
-          dao = this.client.menuDAO;
-          var menu = await dao.find(this.memento.head);
-          if ( ! menu ) menu = await this.findFirstMenuIHavePermissionFor(dao);
-          menu && menu.launch(this);
-        });
-      }
+      this.pushMenu(this.memento.head);
     },
 
     function onUserAgentAndGroupLoaded() {
