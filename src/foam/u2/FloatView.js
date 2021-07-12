@@ -74,7 +74,7 @@ foam.CLASS({
       // to ensure it's formatted properly.
       this.on('blur', function () {
         var value = self.dataToText(data.get());
-        if ( preventFeedback ) return;
+        preventFeedback = true;
         view.set('0');
         view.set(value);
         preventFeedback = false;
