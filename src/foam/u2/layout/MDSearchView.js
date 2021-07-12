@@ -58,7 +58,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-      this.addClass(self.myClass())
+      self.addClass()
       this.start().addClass('container-search')
         .start(self.TextSearchView, {
              richSearch: true,
