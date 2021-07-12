@@ -22,6 +22,7 @@ var dao = foam.dao.EasyDAO.create({
 });
 
 
+
 // This works, but doesn't refresh if the DAO updates
 foam.u2.Element.create().write().start('ol').call(function() {
   dao.select(d => {
@@ -37,14 +38,11 @@ foam.u2.Element.create().write().start('ol')
   .start('li').add('last').end();
 
 
-dao.put(SampleData.create({id: 'key7', name: 'Mr.', value: '7'}));
-
 for ( let i = 8 ; i < 18 ; i++ ) {
   window.setTimeout(() => {
     dao.put(SampleData.create({id: 'key' + i, name: 'Mr.', value: '' + i}));
-  }, 5000 * (i-7));
+  }, 1000 * (i-7));
 }
-
 
 foam.u2.Element.create().add('children').write();
 foam.u2.Element.create().write().add('children');
@@ -172,4 +170,4 @@ foam.CLASS({
   ]
 });
 
-var dt = DynamicTest.create().write();
+//var dt = DynamicTest.create().write();
