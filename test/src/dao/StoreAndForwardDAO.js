@@ -78,7 +78,7 @@ describe('StoreAndForwardDAO', function() {
   });
 
   // From node_modules/foam3/test/helpers/generic_dao.js.
-  global.genericDAOTestBattery(function(of) {
+  globalThis.genericDAOTestBattery(function(of) {
     return Promise.resolve(StoreAndForwardDAO.create({
       of: of,
       delegate: FlakyDAO.create({

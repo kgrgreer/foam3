@@ -60,9 +60,9 @@ foam.CLASS({
         var self = this;
 
         return new Promise(function(resolve, reject) {
-          var indexedDB = global.indexedDB ||
-            global.webkitIndexedDB         ||
-            global.mozIndexedDB;
+          var indexedDB = globalThis.indexedDB ||
+            globalThis.webkitIndexedDB         ||
+            globalThis.mozIndexedDB;
 
           var request = indexedDB.open("FOAM:" + self.name, self.version);
 

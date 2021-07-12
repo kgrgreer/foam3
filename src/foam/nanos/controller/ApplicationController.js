@@ -511,7 +511,7 @@ foam.CLASS({
       var map = this.__subContext__.translationService.localeEntries;
       for ( var key in map ) {
         try {
-          var node = global;
+          var node = globalThis;
           var path = key.split('.');
 
           for ( var i = 0 ; node && i < path.length-1 ; i++ ) node = node[path[i]];

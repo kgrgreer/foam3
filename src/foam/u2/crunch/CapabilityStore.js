@@ -241,7 +241,7 @@ foam.CLASS({
       this.SUPER();
       this.onDetach(this.crunchService.sub('grantedJunction', this.onChange));
       var self = this;
-      window.cstore = self;
+      globalThis.cstore = self;
 
       self
         .addClass(self.myClass())

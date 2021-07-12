@@ -134,10 +134,6 @@ foam.CLASS({
   methods: [
     function toE() { return this; },
 
-    function appendAsChild(el) {
-      el.appendChild(this.element_);
-    },
-
     function isLiteral(o) {
       return foam.String.isInstance(o) || foam.Number.isInstance(o) || foam.Boolean.isInstance(o);
     }
@@ -209,9 +205,8 @@ foam.CLASS({
   ],
 
   methods: [
-    function appendAsChild(el) {
-      this.SUPER(el);
-
+    function load() {
+      this.SUPER();
       this.slot.sub(this.update);
       this.update();
     }
@@ -254,8 +249,8 @@ foam.CLASS({
   ],
 
   methods: [
-    function appendAsChild(el) {
-      this.SUPER(el);
+    function load() {
+      this.SUPER();
 
       var args = this.args;
       for ( var i = 0 ; i < args.length ; i++ ) {
@@ -273,6 +268,98 @@ foam.CLASS({
       code: function() {
         this.removeAllChildren();
         this.code.apply(this, this.args.map(a => a.get()));
+      }
+    }
+  ]
+});
+
+
+foam.CLASS({
+  package: 'foam.u2',
+  name: 'DAOSelectNode',
+  extends: 'foam.u2.Element',
+  implements: [ 'foam.dao.Sink' ],
+
+  axioms: [
+    {
+      class: 'foam.box.Remote',
+      clientClass: 'foam.dao.ClientSink'
+    }
+  ],
+
+  properties: [
+    'self',
+    'dao',
+    'code',
+    {
+      class: 'Int',
+      name: 'batch',
+      documentation: `Used to check whether a paint should be performed or not.`
+    },
+    {
+      name: 'element_',
+      factory: function() { return this.document.createTextNode(''); }
+    },
+    {
+      class: 'Array',
+      name: 'children'
+    }
+  ],
+
+  methods: [
+    function load() {
+      this.SUPER();
+      this.onDetach(dao.listen(this));
+
+      this.update();
+    },
+
+    function put(obj, s) {
+      this.update();
+    },
+
+    function remove(obj, s) {
+      this.update();
+    },
+
+    function reset() {
+      this.update();
+    },
+
+    function removeAllChildren() {
+      for ( var i = 0 ; i < this.children.length ; i++ ) {
+        this.children[i].remove();
+      }
+      this.children = [];
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'update',
+      isMerged: true,
+      mergeDelay: 160,
+      code: function() {
+        this.removeAllChildren();
+        var batch = ++this.batch;
+        this.dao.select(d => {
+          if ( this.isDetached() || this.batch !== batch ) {
+            debugger;
+            return;
+          }
+          var oldSize = this.self.childNodes.length;
+
+          this.self.appendChild_ = c => {
+            this.self.element_.insertBefore(c, this.element_);
+          };
+          this.code.call(this.self, d);
+          this.self.appendChild_ = foam.u2.Element.prototype.appendChild_;
+
+          var newSize = this.self.childNodes.length;
+          for ( var i = oldSize ; i < newSize ; i++ ) {
+            this.children.push(this.self.childNodes[i]);
+          }
+        });
       }
     }
   ]
@@ -425,99 +512,6 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'foam.u2',
-  name: 'RenderSink',
-  implements: [ 'foam.dao.Sink' ],
-
-  documentation: `
-    Any call to put, remove, or reset on this sink will:
-
-      1. call the 'cleanup' method, then
-      2. call the 'addRow' method on each object in the DAO.
-
-    You must provide three things:
-
-      1. the DAO,
-      2. an implementation of the 'addRow' method, and
-      3. an implementation of the 'cleanup' method.
-  `,
-
-  axioms: [
-    {
-      class: 'foam.box.Remote',
-      clientClass: 'foam.dao.ClientSink'
-    }
-  ],
-
-  properties: [
-    {
-      class: 'foam.dao.DAOProperty',
-      name: 'dao',
-    },
-    {
-      class: 'Function',
-      name: 'addRow',
-      documentation: `Called on each object in the DAO.`
-    },
-    {
-      class: 'Function',
-      name: 'cleanup',
-      documentation: `Called before addRow is applied to objects in the DAO.`
-    },
-    {
-      class: 'Int',
-      name: 'batch',
-      documentation: `Used to check whether a paint should be performed or not.`
-    },
-    'comparator'
-  ],
-
-  methods: [
-    function put(obj, s) {
-      this.reset();
-    },
-
-    function remove(obj, s) {
-      this.reset();
-    },
-
-    function reset() {
-      this.paint();
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'paint',
-      isFramed: true,
-      code: function() {
-        var batch = ++this.batch;
-        var self = this;
-
-        if ( ! foam.dao.DAO.isInstance(this.dao) ) {
-          throw new Exception("You must set the 'dao' property of RenderSink.");
-        }
-
-        var dao = this.dao;
-        this.dao.select().then(function(a) {
-          // Check if this is a stale render
-          if ( self.batch !== batch ) return;
-
-          var objs = a.array;
-          if ( self.comparator ) objs.sort(self.comparator.compare.bind(self.comparator));
-
-          self.cleanup();
-          for ( var i = 0 ; i < objs.length ; i++ ) {
-            self.addRow(objs[i]);
-          }
-        });
-      }
-    }
-  ]
-});
-
-
-foam.CLASS({
-  package: 'foam.u2',
   name: 'Element',
   extends: 'foam.u2.Node',
 
@@ -532,7 +526,8 @@ foam.CLASS({
 
     Append to the end of a specified parent element:
 
-      el.appendAsChild(parentElement);
+      parentElement.appendChild(el.element_);
+      el.load();
 
     Or use a foam tag in your markup:
 
@@ -619,6 +614,7 @@ foam.CLASS({
       }
     },
     {
+      class: 'String',
       name: 'id'
     },
     {
@@ -1138,9 +1134,10 @@ foam.CLASS({
       return attr && attr.value;
     },
 
-    function appendChild(c) {
-      // TODO: can this be removed
-      this.childNodes.push(c);
+    function appendChild_(c) {
+      this.element_.appendChild(c);
+//      debugger;
+//      this.childNodes.push(c);
     },
 
     function removeChild(c) {
@@ -1416,13 +1413,14 @@ foam.CLASS({
         }
         */
       if ( this.isLiteral(c) ) {
-        this.element_ && this.element_.appendChild(this.document.createTextNode(c));
+        this.appendChild_(this.document.createTextNode(c));
       } else if ( c.then ) {
         this.addChild_(this.PromiseSlot.create({ promise: c }), parentNode);
-      } else if ( c.appendAsChild ) {
+      } else if ( c.element_ ) {
         this.childNodes.push(c);
         c.parentNode = parentNode;
-        c.appendAsChild(this.element_);
+        this.appendChild_(c.element_);
+        c.load && c.load();
       }
     },
 
@@ -1499,10 +1497,10 @@ foam.CLASS({
 
     function removeAllChildren() {
       this.element_.innerHTML = '';
-      this.childNodes = [];
       for ( var i = 0 ; i < this.childNodes.length ; i++ ) {
         this.childNodes[i].detach();
       }
+      this.childNodes = [];
       return this;
     },
 
@@ -1541,56 +1539,11 @@ foam.CLASS({
      * the DAO
      */
     function select(dao, f, update, opt_comparator) {
-      var es   = {};
-      var self = this;
-
-      var listener = this.RenderSink.create({
+      this.add(foam.u2.DAOSelectNode.create({
+        self: this,
         dao: dao,
-        comparator: opt_comparator,
-        addRow: function(o) {
-          // No use adding new children if the parent has already been removed
-          // TODO:
-          // if ( self.state === foam.u2.Element.UNLOADED ) return;
-
-          if ( update ) {
-            o = o.clone();
-            o.propertyChange.sub(function() {
-              o.copyFrom(dao.put(o.clone()));
-            });
-          }
-
-          self.startContext({data: o});
-
-          var e = f.call(self, o);
-
-          // By checking for undefined, f can still return null if it doesn't
-          // want anything to be added.
-          if ( e === undefined )
-            this.__context__.warn(self.SELECT_BAD_USAGE);
-
-          self.endContext();
-
-          if ( es[o.id] ) {
-            self.replaceChild(es[o.id], e);
-          } else {
-            self.add(e);
-          }
-          es[o.id] = e;
-        },
-        cleanup: function() {
-          for ( var key in es ) es[key] && es[key].remove();
-
-          es = {};
-        }
-      }, this);
-
-      listener = this.MergedResetSink.create({
-        delegate: listener
-      }, this);
-
-      this.onDetach(dao.listen(listener));
-      listener.delegate.paint();
-
+        code: f
+      }));
       return this;
     },
 
@@ -1620,13 +1573,9 @@ foam.CLASS({
     },
 
     function write() {
-      this.appendAsChild(this.document.body)
-      return this;
-    },
-
-    function appendAsChild(el) {
-      el.appendChild(this.element_);
+      this.document.body.appendChild(this.element_);
       this.load();
+      return this;
     },
 
     function toString() {
@@ -1797,7 +1746,7 @@ foam.SCRIPT({
   }
 });
 
-
+/*
 foam.CLASS({
   package: 'foam.u2',
   name: 'FObjectToERefinement',
@@ -1810,6 +1759,7 @@ foam.CLASS({
     }
   ]
 });
+*/
 
 
 foam.CLASS({

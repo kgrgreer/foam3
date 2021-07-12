@@ -21,7 +21,6 @@
  * pages via script tags easily.
  */
 
-if ( typeof window !== 'undefined' ) global = window;
 
 FOAM_FILES([
   { name: "foam/core/poly" },
@@ -115,7 +114,7 @@ FOAM_FILES([
   { name: 'foam/u2/ModalOverlay', flags: ['web'] },
   { name: "foam/core/Agency"},
   { name: "foam/nanos/auth/Authorizable" },
-  { name: "foam/i18n/TranslationFormatStringParser", flags: ['swift'] },
+  { name: "foam/i18n/TranslationFormatStringParser"},
   { name: "foam/swift/SwiftLib", flags: ['swift'] },
   { name: "foam/swift/SwiftClass", flags: ['swift'] },
   { name: "foam/swift/Outputter", flags: ['swift'] },
@@ -186,6 +185,7 @@ FOAM_FILES([
   { name: "foam/util/PasswordTest" },
   { name: "foam/util/SecurityUtilTest" },
   { name: "foam/util/async/Sequence" },
+  { name: "foam/util/UIDGenerator" },
   { name: "foam/log/LogLevel" },
   { name: "foam/log/Logger" },
   { name: "foam/log/ConsoleLogger" },
@@ -205,8 +205,9 @@ FOAM_FILES([
   { name: "foam/u2/ViewSpec" },
   { name: "foam/u2/Tooltip", flags: ['web'] },
   { name: "foam/u2/RowFormatter" },
-  { name: "foam/u2/WeakMap", flags: ['web'] },
-  { name: "foam/u2/Element", flags: ['js'] },
+  { name: "foam/u2/WeakMap", flags: ['web'], predicate: () => ! globalThis.WeakMap },
+  { name: "foam/u2/Element", flags: ['js'], predicate: () => ! foam.flags.u3 },
+//  { name: "foam/u2/Element2", flags: ['u3'] },
   { name: "foam/u2/MNRowFormatter", flags: ['web'] },
   { name: "foam/u2/ProgressView", flags: ['web'] },
   { name: "foam/u2/LoadingSpinner", flags: ['web'] },
@@ -306,6 +307,7 @@ FOAM_FILES([
   { name: "foam/dao/VersionNoDAO" },
   { name: "foam/dao/sync/SyncRecord" },
   { name: "foam/dao/SyncDAO" },
+  { name: "foam/dao/FUIDAO" },
 
   { name: 'foam/nanos/approval/AuthenticatedApprovalDAOAuthorizer' },
   { name: 'foam/nanos/approval/UCJApprovable' },
