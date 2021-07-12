@@ -306,7 +306,7 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      this.addClass(this.myClass()).attrs({cellspacing: 0}).
+      this.addClass().attrs({cellspacing: 0}).
         start('tr').
           tag('th').
           repeat(0, this.columns-1, function (i) {
