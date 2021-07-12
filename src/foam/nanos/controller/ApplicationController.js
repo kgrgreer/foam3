@@ -78,7 +78,6 @@ foam.CLASS({
     'lastMenuLaunchedListener',
     'loginSuccess',
     'loginVariables',
-    'menuNull',
     'memento',
     'menuListener',
     'notify',
@@ -345,12 +344,6 @@ foam.CLASS({
     {
       name: 'styles',
       factory: function() { return {}; }
-    },
-    {
-      class: 'Boolean',
-      name: 'menuNull',
-      documentation: 'Value to accept a null menu - otherwise Controller will try to set a value.',
-      hidden: true
     }
   ],
 
