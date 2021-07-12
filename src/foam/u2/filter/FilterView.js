@@ -328,7 +328,6 @@ foam.CLASS({
             .end()
             .start()
             .style({ overflow: 'hidden', 'align-self': 'center' })
-            //TODO: remove when filter button gets a badge
             .end()
           .end();
           self.filtersContainer = this.E().add(self.filterController.slot(function (criterias) {
