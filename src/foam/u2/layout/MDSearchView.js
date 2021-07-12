@@ -79,7 +79,6 @@ foam.CLASS({
 
     function init() {
       this.onload.sub(this.addStyleOpenClose);
-      this.onunload.sub(this.removeStyleOpenClose);
     }
   ],
 
@@ -99,16 +98,9 @@ foam.CLASS({
   listeners: [
     {
       name: 'addStyleOpenClose',
-      isMerged:true,
-      mergeDelay:10, code: function() { this.enableClass('open-close', true);}
-    },
-    {
-      name: 'removeStyleOpenClose',
-      isMerged:true,
-      mergeDelay:10,
-      code: function() { this.addClass('test');}
+      isFramed: true,
+      code: function() { this.addClass('open-close'); }
     }
-
   ],
 
   css: `
@@ -152,4 +144,3 @@ foam.CLASS({
     }
   `
 });
-
