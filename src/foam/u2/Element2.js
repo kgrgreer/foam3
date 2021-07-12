@@ -148,6 +148,16 @@ foam.CLASS({
 
   documentation: 'U3 Entity Reference',
 
+  constants: {
+    MAP: {
+      lt: '<',
+      gt: '>',
+      amp: '&',
+      nbsp: '\xa0',
+      quot: '"'
+    }
+  },
+
   properties: [
     {
       name: 'name',
@@ -165,9 +175,11 @@ foam.CLASS({
     {
       name: 'element_',
       factory: function() {
-        var ret = this.document.createTextNode('&' + this.name + ';');
-        ret.innerHTML = '&' + this.name + '; ';
-        return ret;
+        var char = this.MAP[this.name];
+        if ( char ) return this.document.createTextNode(char);
+        if ( this.name.startsWith('#x') ) return this.document.createTextNode(String.fromCharCode(parseInt(this.name.substring(2), 16)));
+        if ( this.name.startsWith('#')  ) return this.document.createTextNode(String.fromCharCode(parseInt(this.name.substring(1))));
+        return this.document.createTextNode('&' + this.name + ';');
       }
     }
   ]
@@ -225,8 +237,11 @@ foam.CLASS({
           e = foam.u2.Text.create({}, this);
         } else if ( this.isLiteral(val) ) {
           e = foam.u2.Text.create({text: val}, this);
+        } else if ( foam.u2.Element.isInstance(val) ) {
+          e = val;
         } else {
-          debugger;
+          console.log('Unknown slot type: ', typeof val);
+//          debugger;
         }
         this.element_.parentNode.replaceChild(e.element_, this.element_);
         this.element_ = e.element_;
