@@ -629,6 +629,17 @@ foam.LIB({
         return str.toUpperCase();
       })
     },
+
+    {
+      name: 'toLowerCase',
+      code: foam.Function.memoize1(function(str) {
+        foam.assert(
+          typeof str === 'string',
+          'Cannot toLowerCase non-string values.');
+
+        return str.toLowerCase();
+      })
+    },
     {
       name: 'cssClassize',
       code: foam.Function.memoize1(function(str) {

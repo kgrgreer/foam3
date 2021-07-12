@@ -19,6 +19,7 @@ foam.CLASS({
   extends: 'foam.u2.Element',
 
   properties: [
+    [ 'nodeName', 'g' ],
     { class: 'Float', name: 'w', value: 80 },
     { class: 'Float', name: 'x' },
     { class: 'Float', name: 'y' },
@@ -33,12 +34,12 @@ foam.CLASS({
     function initE() {
       this.SUPER();
 
-      this.setNodeName('g').
-          attrs({transform: 'translate(' + this.x + ' ' + this.y + ') ' + this.rotate}).
-          start('rect').
-            attrs({width: this.w, height: this.w, x: 0, y: 0}).
-            style({fill: 'hsl(' + this.lvl/this.maxlvl*180 + ',70%,70%)'}).
-          end();
+      this.
+        attrs({transform: 'translate(' + this.x + ' ' + this.y + ') ' + this.rotate}).
+        start('rect').
+          attrs({width: this.w, height: this.w, x: 0, y: 0}).
+          style({fill: 'hsl(' + this.lvl/this.maxlvl*180 + ',70%,70%)'}).
+        end();
 
       if ( this.lvl < this.maxlvl ) {
         var lean      = this.lean, w = this.w;
@@ -84,6 +85,7 @@ foam.CLASS({
   requires: [ 'PyTree' ],
 
   properties: [
+    [ 'nodeName', 'svg' ],
     { name: 'heightFactor', value: 0.55 },
     { name: 'lean',         value: 0 }
   ],
@@ -92,20 +94,23 @@ foam.CLASS({
     function initE() {
       this.SUPER();
 
-      this.setNodeName('svg').
+      this.
         attrs({width: 1600, height: 800}).
         on('mousemove', this.onMouseMove).
-        add(this.slot(function(heightFactor, lean) {
-          return this.PyTree.create({x: 800, y: 500, heightFactor: heightFactor, lean: lean});
-        }));
+        tag(this.PyTree.create({x: 800, y: 500, heightFactor: heightFactor, lean: lean}));
+        /*
+        call(function(heightFactor, lean) {
+          this.tag(this.PyTree.create({x: 800, y: 500, heightFactor: heightFactor, lean: lean}));
+        });*/
     }
   ],
 
   listeners: [
     {
       name: 'onMouseMove',
-//      isFramed: true,
+      isFramed: true,
       code: function(e) {
+        console.log('PyTree1 MouseMove: ', e);
         var x = e.clientX, y = e.clientY;
         this.heightFactor = y / this.getAttribute('height') * 0.8;
         this.lean         = x / this.getAttribute('width') - 0.5;
