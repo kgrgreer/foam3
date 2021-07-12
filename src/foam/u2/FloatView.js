@@ -86,9 +86,9 @@ foam.CLASS({
         preventFeedback = true;
         // check bounds on data update and set to boundary values if out of bounds
         let val = view.get();
-        if ( val < self.min )
+        if ( self.min !== null && val < self.min )
           val = self.min;
-        else if ( val > self.max )
+        else if ( self.max !== null && val > self.max )
           val = self.max;
         data.set(self.textToData(val));
         preventFeedback = false;
