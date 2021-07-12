@@ -387,14 +387,12 @@ public class JSONFObjectFormatter
     String output = builder().toString();
     reset();
 
-    if ( delta > 0 && delta > ids + optional ) {
-      boolean outputClass = outputClassNames_ || ( outputDefaultClassNames_ && newInfo != defaultClass );
-
+    if ( delta > ids + optional ) {
       append(before);
       append('{');
       addInnerNewline();
-      if ( outputClass ) {
-        //output Class name
+      if ( outputClassNames_ ||
+           ( outputDefaultClassNames_ && newInfo != defaultClass ) ) {
         outputKey("class");
         append(':');
         output(newInfo.getId());
