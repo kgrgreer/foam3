@@ -152,7 +152,7 @@ foam.CLASS({
 
       this.isSearchActive$.sub(this.onSearchActiveChanged);
 
-      this.addClass(this.myClass())
+      this.addClass()
       .startContext({data: this})
          .tag({
            class: 'foam.u2.layout.MDToolbarView',

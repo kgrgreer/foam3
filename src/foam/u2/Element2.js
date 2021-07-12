@@ -26,7 +26,7 @@ PORTING U2 to U3:
   - innerHTML and outerHTML have been removed
   - replace ^ in CSS (which has meaning in CSS) with <<
   - ILLEGAL_CLOSE_TAGS and OPTIONAL_CLOSE_TAGS have been removed
-  - this.addClass() is the same as this.addClass(this.myClass())
+  - this.addClass() is the same as this.addClass()
   - automatic ID generation has been removed
   - replace use of slots that return elements with functions that add them
   - remove daoSlot() method

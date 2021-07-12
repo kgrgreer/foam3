@@ -266,7 +266,7 @@ foam.CLASS({
       }
 
       // RENDER EVERYTHING ONTO PAGE
-      this.addClass(this.myClass())
+      this.addClass()
       // full width bar with navigation to app landing page
         .start().addClass('top-bar-nav').show(this.topBarShow_)
           .start()

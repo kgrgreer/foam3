@@ -162,7 +162,7 @@ foam.CLASS({
   methods: [
     function initE() {
       var self = this;
-      this.addClass(this.myClass())
+      this.addClass()
         .start().addClass(this.myClass('container-search'))
           .start({
             class: 'foam.u2.TextField',

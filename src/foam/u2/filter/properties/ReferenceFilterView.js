@@ -263,7 +263,7 @@ foam.CLASS({
       this.onDetach(this.dao$.sub(this.daoUpdate));
       this.daoUpdate();
 
-      this.addClass(this.myClass())
+      this.addClass()
         .start().addClass(this.myClass('container-search'))
           .start({
             class: 'foam.u2.TextField',

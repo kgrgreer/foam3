@@ -281,7 +281,7 @@ foam.CLASS({
 
       this.initMemento();
 
-      this.addClass(this.myClass());
+      this.addClass();
       this.SUPER();
 
       this

@@ -94,7 +94,7 @@ foam.CLASS({
       var typingTimer;
       var doneTypingInterval = 400; 
 
-      this.addClass(this.myClass()).start()
+      this.addClass().start()
         .start(this.TextField, {
           type: this.type,
           data$: this.data$,

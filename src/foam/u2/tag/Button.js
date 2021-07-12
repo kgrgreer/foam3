@@ -365,7 +365,7 @@ foam.CLASS({
     },
 
     function initCls() {
-      this.addClass(this.myClass());
+      this.addClass();
     },
 
     async function addContent() {

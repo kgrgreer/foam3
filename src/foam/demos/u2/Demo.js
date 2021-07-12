@@ -586,7 +586,7 @@ foam.CLASS({
   extends: 'foam.u2.Element',
   css: '^ { background: pink }',
   methods: [ function initE() {
-    this.addClass(this.myClass()).add('text');
+    this.addClass().add('text');
   }]
 });
 

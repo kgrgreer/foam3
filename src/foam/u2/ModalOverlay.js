@@ -38,7 +38,7 @@ foam.CLASS({
     function initE() {
       this.redirectToInner_ = false;
 
-      var container = this.addClass(this.myClass()).start().addClass(this.myClass('container'));
+      var container = this.addClass().start().addClass(this.myClass('container'));
 
       container.start().addClass(this.myClass('background'))
         .on('click', this.close.bind(this))

@@ -30,7 +30,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.addClass(this.myClass())
+      this.addClass()
         .start()
           .addClass(this.myClass('top-nav'))
           .tag({ class: 'foam.nanos.u2.navigation.TopNavigation' })

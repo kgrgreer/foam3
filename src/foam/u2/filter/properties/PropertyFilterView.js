@@ -136,7 +136,7 @@ foam.CLASS({
       this.SUPER();
       var self = this;
 
-      this.addClass(this.myClass())
+      this.addClass()
         .start().addClass(this.myClass('container-property'))
           .enableClass(this.myClass('container-property-active'), this.active$)
           .on('click', this.switchActive)

@@ -40,7 +40,7 @@ foam.CLASS({
     this.curView$.sub(this.onViewUpdate);
 
     var self = this;
-      this.addClass(this.myClass());
+      this.addClass();
 
       this.start('div').addClass('primary-stack')
         .add(this.slot(function(data) {

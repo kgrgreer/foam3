@@ -61,7 +61,7 @@ foam.CLASS({
 
       this.onDAOUpdate();
       var self = this;
-      this.addClass(this.myClass())
+      this.addClass()
       this.start('label')
         .addClass('label')
         .addClass(this.slot(function(data) {

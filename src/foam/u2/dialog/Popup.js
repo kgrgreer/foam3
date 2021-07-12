@@ -92,7 +92,7 @@ foam.CLASS({
       this.SUPER();
       var content;
 
-      this.addClass(this.myClass())
+      this.addClass()
         .on('keydown', this.onKeyDown)
         .start()
           .addClass(this.myClass('background'))

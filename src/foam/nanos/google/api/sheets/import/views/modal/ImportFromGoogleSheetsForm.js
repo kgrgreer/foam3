@@ -46,7 +46,7 @@
 
     function initE() {
       this.SUPER();
-      this.addClass(this.myClass());
+      this.addClass();
     }
   ]
 });

@@ -229,7 +229,7 @@
 
     function initE() {
       this.SUPER();
-      this.addClass(this.myClass())
+      this.addClass()
       .start().addClass('titleClass')
         .start().addClass('backPosition')
           .tag(this.BACK, {

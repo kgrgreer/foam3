@@ -118,7 +118,7 @@ foam.CLASS({
         }
       }
 
-      this.addClass(this.myClass())
+      this.addClass()
       this.startContext({data: this})
         this.start()
           .add(this.SELECTED_VIEW)

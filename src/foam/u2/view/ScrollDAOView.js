@@ -328,7 +328,7 @@ foam.CLASS({
         },
         function initE() {
           var self = this;
-          this.addClass(this.myClass());
+          this.addClass();
           this.enableClass(this.myClass('selectable'), this.selectionEnabled$);
           this.enableClass(
               this.myClass('selected'),

@@ -113,7 +113,7 @@ foam.CLASS({
         height$: this.scrollHeight_$
       });
 
-      this.addClass(this.myClass())
+      this.addClass()
           .start()
               .addClass(this.myClass('container'))
               .call(function() { self.table = this; })

@@ -20,7 +20,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      this.addClass(this.myClass())
+      this.addClass()
       this
         .start('toolbar')
           .start('div').add(this.leftAction$).addClass('left').end()
