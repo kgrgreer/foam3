@@ -207,7 +207,7 @@ FOAM_FILES([
   { name: "foam/u2/RowFormatter" },
   { name: "foam/u2/WeakMap", flags: ['web'], predicate: () => ! globalThis.WeakMap },
   { name: "foam/u2/Element", flags: ['js'], predicate: () => ! foam.flags.u3 },
-  { name: "foam/u2/Element2", flags: ['u3'] },
+//  { name: "foam/u2/Element2", flags: ['u3'] },
   { name: "foam/u2/MNRowFormatter", flags: ['web'] },
   { name: "foam/u2/ProgressView", flags: ['web'] },
   { name: "foam/u2/LoadingSpinner", flags: ['web'] },
